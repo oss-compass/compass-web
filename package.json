@@ -4,17 +4,28 @@
   "private": true,
   "scripts": {
     "postinstall": "husky install",
-    "dev": "next dev",
     "build": "next build",
+    "build:analyze": "cross-env ANALYZE='true' yarn build",
+    "dev": "next dev",
+    "dev:debugger": "cross-env NODE_OPTIONS='--inspect' next dev",
+    "generate": "graphql-codegen -r dotenv/config",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.2.1",
+    "graphql": "^16.6.0",
+    "graphql-request": "^4.3.0",
     "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^3.2.1",
+    "@graphql-codegen/cli": "^2.11.6",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typescript-react-query": "^4.0.1",
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/node": "18.7.13",
     "@types/react": "18.0.17",
