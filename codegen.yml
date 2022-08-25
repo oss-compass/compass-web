@@ -1,7 +1,6 @@
-schema: ${GRAPHQL_API_URL}
+schema: ${NEXT_PUBLIC_GRAPHQL_API_URL}
 documents:
   - './graphql/**/*.graphql'
-  - './pages/**/*.tsx?'
 generates:
   ./graphql/generated.ts:
     plugins:
