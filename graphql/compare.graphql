@@ -1,0 +1,72 @@
+query getOverview {
+    overview {
+        issuesCount
+        pullsCount
+        reposCount
+        stargazersCount
+        subscribersCount
+        trends {
+            backend
+            forksCount
+            issuesCount
+            language
+            name
+            openIssuesCount
+            path
+            pullsCount
+            stargazersCount
+            watchersCount
+        }
+    }
+}
+
+query metricActivity($url: String!) {
+    metricActivity(url: $url){
+        activityScore
+        closedIssuesCount
+        codeReviewCount
+        commentFrequency
+        commitFrequency
+        contributorCount
+        createdSince
+        grimoireCreationDate
+        label
+        level
+        updatedIssuesCount
+        updatedSince
+    }
+}
+
+query metricCodequality($url: String!){
+    metricCodequality(url: $url){
+        codeMergeRatio
+        codeQualityGuarantee
+        codeReviewRatio
+        commitFrequency
+        contributorCount
+        grimoireCreationDate
+        isMaintained
+        label
+        level
+        locFrequency
+        prIssueLinkedRatio
+    }
+}
+query metricCommunity($url: String!){
+    metricCommunity(url: $url){
+        closedPrsCount
+        codeReviewCount
+        commentFrequency
+        communitySupportScore
+        grimoireCreationDate
+        issueFirstReponseAvg
+        issueFirstReponseMid
+        issueOpenTimeAvg
+        issueOpenTimeMid
+        label
+        level
+        prOpenTimeAvg
+        prOpenTimeMid
+        updatedIssuesCount
+    }
+}

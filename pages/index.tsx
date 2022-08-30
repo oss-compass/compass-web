@@ -1,15 +1,13 @@
 import type { NextPage } from 'next';
+import Link from 'next/link';
 import { useGetOverviewQuery } from '@graphql/generated';
 import client from '@graphql/client';
+import { Header } from '@components/BaseLayout';
+import Home from '@modules/home';
 
-const Home: NextPage = () => {
-  const { data } = useGetOverviewQuery(client);
-  return (
-    <div>
-      <h1 className="text-3xl font-bold ">Overview</h1>
-      <pre> {JSON.stringify(data || {})}</pre>
-    </div>
-  );
+const HomePage: NextPage = () => {
+  // const { data } = useGetOverviewQuery(client);
+  return <Home />;
 };
 
-export default Home;
+export default HomePage;

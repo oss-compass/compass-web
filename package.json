@@ -13,9 +13,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.3.1",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@tanstack/react-query": "^4.2.1",
+    "classnames": "^2.3.1",
+    "date-fns": "^2.29.2",
+    "echarts": "^5.3.3",
+    "echarts-for-react": "^3.0.2",
+    "framer-motion": "^7.2.1",
     "graphql": "^16.6.0",
     "graphql-request": "^4.3.0",
+    "lodash": "^4.17.21",
     "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"

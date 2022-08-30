@@ -1,0 +1,9 @@
+<svg viewBox="0 0 216 166" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:anim="http://www.w3.org/2000/anim" anim="" anim:transform-origin="50% 50%" anim:duration="0.5" anim:ease="power1.inOut">
+  <g id="96efa2c28220e1f0b47186fae7c54ca0">
+    <rect width="216" height="166" fill="white"></rect>
+    <path id="16918f21c7a00d712335c228ad1616f4" d="M100.832 110.754C126.421 125.528 158.022 118.699 171.415 95.5022C184.808 72.305 174.921 41.5236 149.332 26.75C123.744 11.9764 92.1429 18.805 78.75 42.0022C65.3571 65.1994 75.2437 95.9808 100.832 110.754Z" fill="white" stroke="black" anim="" anim:x="0|-10" anim:y="0|5" anim:delay="0" anim:duration="0.5"></path>
+    <path id="55a1ff48dbb77509a479dc589691c237" d="M100.832 110.754C126.421 125.528 158.022 118.699 171.415 95.5022C184.808 72.305 174.921 41.5236 149.332 26.75C123.744 11.9764 92.1429 18.805 78.75 42.0022C65.3571 65.1994 75.2437 95.9808 100.832 110.754Z" fill="white" stroke="black" anim="" anim:x="0|-20" anim:y="0|10" anim:delay="0" anim:duration="0.5"></path>
+    <path id="bbdd6917cad8ed7cfc60b16c3a452ae3" d="M100.832 110.754C126.421 125.528 158.022 118.699 171.415 95.5022C184.808 72.305 174.921 41.5236 149.332 26.75C123.744 11.9764 92.1429 18.805 78.75 42.0022C65.3571 65.1994 75.2437 95.9808 100.832 110.754Z" fill="white" stroke="black" anim="" anim:x="0|-30" anim:y="0|15" anim:delay="0" anim:duration="0.5"></path>
+    <path id="7454810c61b321e1543b6efac71ac289" d="M100.832 110.754C126.421 125.528 158.022 118.699 171.415 95.5022C184.808 72.305 174.921 41.5236 149.332 26.75C123.744 11.9764 92.1429 18.805 78.75 42.0022C65.3571 65.1994 75.2437 95.9808 100.832 110.754Z" fill="#FFDA83" stroke="black" anim="" anim:x="0|-40" anim:y="0|20" anim:delay="0" anim:duration="0.5"></path>
+  </g>
+</svg>
