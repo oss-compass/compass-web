@@ -1,7 +1,10 @@
 import React, { memo } from 'react';
-import { Header, Main, SideBar, Content, Footer } from '@components/BaseLayout';
+import { Header, Main, Content } from '@components/BaseLayout';
+import SideBar from './SideBar';
+import Footer from '@components/Footer';
 import { ClosedPrsCount } from '@modules/analyze/charts';
 import NavBar from '@modules/analyze/NavBar';
+import CompareBar from '@modules/analyze/CompareBar';
 
 export const DataPanel = () => {
   return (
@@ -19,6 +22,7 @@ const Analyze = memo(() => {
       <Main>
         <SideBar />
         <Content>
+          <CompareBar />
           <DataPanel />
           <Footer />
         </Content>

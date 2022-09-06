@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDebounceFn } from 'ahooks';
 import { FaSearch } from 'react-icons/fa';
 import { gsap } from 'gsap';
-import classnames from 'classnames';
+import { useRouter } from 'next/router';
 import { Center } from '@components/BaseLayout';
 
 import Svg1 from './svg/01.svg';
@@ -58,6 +58,20 @@ const SvgBlock = () => {
 };
 
 const RepoSearch = () => {
+  const [repoUrl, setRepoUrl] = useState('https://github.com/facebook/react');
+  const router = useRouter();
+
+  const navigateToAnalyze = () => {
+    try {
+      if (!repoUrl) return;
+      const u = new URL(repoUrl);
+      router.push(`/analyze${u.pathname}`);
+    } catch (e) {
+      alert('Invalid URL');
+      console.log(e);
+    }
+  };
+
   return (
     <div className="absolute bottom-16 w-[500px] bg-white p-4">
       <h1 id="test" className="mb-4 text-7xl">
@@ -73,11 +87,27 @@ const RepoSearch = () => {
       </p>
       <div className="flex items-center border-2 border-black px-4">
         <input
+          value={repoUrl}
           type="text"
           className="h-[70px]  w-full  text-xl outline-0"
-          placeholder="Type the name to insight into your project"
+          placeholder="eg: https://github.com/facebook/react"
+          // placeholder="Type the name to insight into your project"
+          onChange={(event) => {
+            const val = event.target.value;
+            setRepoUrl(val);
+          }}
+          onKeyDown={async (event) => {
+            if (event.key === 'Enter') {
+              navigateToAnalyze();
+            }
+          }}
         />
-        <div className="h-8 w-8 cursor-pointer pl-2">
+        <div
+          className="h-8 w-8 cursor-pointer select-none pl-2"
+          onClick={() => {
+            navigateToAnalyze();
+          }}
+        >
           <FaSearch className="h-full w-full" />
         </div>
       </div>

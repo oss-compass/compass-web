@@ -87,15 +87,13 @@ const ClosedPrsCount = () => {
 
   console.log(echartsOpts);
   return (
-    <div>
-      <BaseCard
-        loading={isLoading}
-        title="Overview"
-        description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
-      >
-        <EChartsReact option={echartsOpts} />
-      </BaseCard>
-    </div>
+    <BaseCard
+      loading={isLoading}
+      title="Overview"
+      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+    >
+      <EChartsReact option={echartsOpts} />
+    </BaseCard>
   );
 };
 
