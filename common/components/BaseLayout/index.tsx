@@ -7,7 +7,7 @@ export const Header: React.FC<{
   contentCenter?: boolean;
 }> = ({ contentCenter = false, sticky = false }) => {
   return (
-    <header className={classnames({ 'sticky top-0': sticky })}>
+    <header className={classnames('flex-shrink-0', { 'sticky top-0': sticky })}>
       <div
         className={classnames(
           { 'mx-auto w-[1200px]': contentCenter },
@@ -46,23 +46,10 @@ export const Main: React.FC<PropsWithChildren> = ({ children }) => {
   return <main className="flex flex-1">{children}</main>;
 };
 
-export const SideBar = () => {
-  return (
-    <div className="h-full w-64 flex-shrink-0 border-r p-6">
-      <div>Overview</div>
-      <div>Overview</div>
-      <div>Overview</div>
-      <div>Overview</div>
-    </div>
-  );
-};
-
 export const Content: React.FC<PropsWithChildren> = ({ children }) => {
-  return <div className="flex-1  bg-slate-50 px-10 py-8">{children}</div>;
-};
-
-export const Footer = () => {
-  return <div>Footer</div>;
+  return (
+    <div className="relative flex-1  bg-slate-50 px-10 pt-8">{children}</div>
+  );
 };
 
 export const Center: React.FC<PropsWithChildren<{ className?: string }>> = ({

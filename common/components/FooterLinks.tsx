@@ -36,28 +36,23 @@ const linkData = [
 
 const FooterLinks = () => {
   return (
-    <Center>
-      <div className="flex w-full flex-wrap justify-around pt-20 pb-16">
-        <Logo />
-        {linkData.map((item) => {
-          return (
-            <div
-              className="mr-12 ml-12 mb-4 flex w-44 flex-col "
-              key={item.title}
-            >
-              <h3 className="mb-4 text-sm font-bold">Solutions</h3>
-              {item.links.map((link) => {
-                return (
-                  <Link href={link.href} key={link.text}>
-                    <a className="mb-2 text-sm text-gray-500">{link.text}</a>
-                  </Link>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-    </Center>
+    <div className="flex w-full flex-wrap justify-around pt-20 pb-16">
+      <Logo />
+      {linkData.map((item) => {
+        return (
+          <div className="mr-4 ml-4 mb-4 flex w-44 flex-col " key={item.title}>
+            <h3 className="mb-4 text-sm font-bold">Solutions</h3>
+            {item.links.map((link) => {
+              return (
+                <Link href={link.href} key={link.text}>
+                  <a className="mb-2 text-sm text-gray-500">{link.text}</a>
+                </Link>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
