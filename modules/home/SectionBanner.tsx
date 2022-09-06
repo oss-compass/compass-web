@@ -58,13 +58,18 @@ const SvgBlock = () => {
 };
 
 const RepoSearch = () => {
-  const [repoUrl, setRepoUrl] = useState('https://github.com/facebook/react');
+  const [repoUrl, setRepoUrl] = useState('');
   const router = useRouter();
 
   const navigateToAnalyze = () => {
     try {
       if (!repoUrl) return;
       const u = new URL(repoUrl);
+      if (!u.pathname) {
+        alert('Invalid Repo');
+        return;
+      }
+      sessionStorage.setItem(u.pathname, repoUrl);
       router.push(`/analyze${u.pathname}`);
     } catch (e) {
       alert('Invalid URL');
