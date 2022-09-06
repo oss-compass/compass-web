@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import Link from 'next/link';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, ComponentProps } from 'react';
 
 export const Header: React.FC<{
   sticky?: boolean;
@@ -24,13 +24,13 @@ export const Header: React.FC<{
               OSS Compass
             </h1>
           </Link>
-          <Link href="/">
+          <Link href="/analyze/facebook/react">
             <a className="mr-[70px] px-2.5 font-medium">Explore</a>
           </Link>
-          <Link href="/">
+          <Link href="/analyze/facebook/react">
             <a className="mr-[70px] px-2.5 font-medium">Explore</a>
           </Link>
-          <Link href="/">
+          <Link href="/analyze/facebook/react">
             <a className="mr-[70px] px-2.5 font-medium">About</a>
           </Link>
         </div>
@@ -65,4 +65,15 @@ export const Footer = () => {
   return <div>Footer</div>;
 };
 
-export const Center = () => {};
+export const Center: React.FC<PropsWithChildren<{ className?: string }>> = ({
+  children,
+  className,
+}) => {
+  return (
+    <div
+      className={classnames('w-full', 'xl:mx-auto xl:w-[1200px]', className)}
+    >
+      {children}
+    </div>
+  );
+};

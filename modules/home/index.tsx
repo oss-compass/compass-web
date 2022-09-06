@@ -1,10 +1,14 @@
 import React from 'react';
 import { Header } from '@components/BaseLayout';
+import Logo from '@components/Logo';
 import Link from 'next/link';
 import Image from 'next/image';
 import SectionBanner from './SectionBanner';
 import SectionProjects from './SectionProjects';
 import SectionExplain from './SectionExplain';
+import FooterLinks from './FooterLinks';
+import Copyright from './Copyright';
+import styles from './index.module.scss';
 
 const Home = () => {
   return (
@@ -16,8 +20,8 @@ const Home = () => {
         <SectionExplain />
       </main>
       <footer>
-        <div className="h-[360px] w-full"></div>
-        <div className="h-[78px] w-full bg-gray-100"></div>
+        <FooterLinks />
+        <Copyright />
       </footer>
     </div>
   );
