@@ -37,7 +37,7 @@ query metricActivity($url: String!) {
     }
 }
 
-query metricCodequality($url: String!){
+query metricCodeQuality($url: String!){
     metricCodequality(url: $url){
         codeMergeRatio
         codeQualityGuarantee
@@ -52,6 +52,7 @@ query metricCodequality($url: String!){
         prIssueLinkedRatio
     }
 }
+
 query metricCommunity($url: String!){
     metricCommunity(url: $url){
         closedPrsCount
@@ -68,5 +69,33 @@ query metricCommunity($url: String!){
         prOpenTimeAvg
         prOpenTimeMid
         updatedIssuesCount
+    }
+}
+
+query getRepo($url: String!){
+    repo(url: $url){
+        backend
+        forksCount
+        issuesCount
+        language
+        name
+        openIssuesCount
+        origin
+        path
+        pullsCount
+        stargazersCount
+        createdAt
+        updatedAt
+        watchersCount
+    }
+}
+
+mutation createRepoTask($repoUrl: String!){
+    createRepoTask(input: {repoUrl: $repoUrl}){
+        message
+        status
+        errors {
+            message
+        }
     }
 }

@@ -1,0 +1,36 @@
+import React from 'react';
+import Link from 'next/link';
+import { Center } from '@components/BaseLayout';
+import { AiFillGithub, AiOutlineTwitter } from 'react-icons/ai';
+
+const Copyright = () => {
+  return (
+    <div className="h-[78px] w-full bg-gray-100">
+      <Center className="flex h-full items-center justify-between">
+        <div className="flex flex-col justify-center text-gray-500">
+          <p className="mb-2 text-xs ">
+            Copyright © 2022 Compass. All Rights Reserved. 1st Floor, Sovereign
+            House, Church Street, Brighton, BN1 1UJ
+          </p>
+          <p className="text-xs ">
+            Company number: 03898053 | VAT number: 754 750 710
+          </p>
+        </div>
+        <div className="flex">
+          <Link href="/">
+            <a>
+              <AiOutlineTwitter className="mr-4 h-6 w-6 cursor-pointer" />
+            </a>
+          </Link>
+          <Link href="/">
+            <a>
+              <AiFillGithub className="h-6 w-6 cursor-pointer" />
+            </a>
+          </Link>
+        </div>
+      </Center>
+    </div>
+  );
+};
+
+export default Copyright;
