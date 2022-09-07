@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
-import { Trends } from '../Misc';
+import Trends from './Trends';
+import TrendsList from './TrendsList';
 import { ContributorCount } from '../CodeQuality';
 import { ClosedPrsCount } from '../CommunitySupport';
 

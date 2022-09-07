@@ -8,7 +8,7 @@ import DataView from './DataView';
 
 const Analyze = memo(() => {
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-col">
       <Header />
       <NavBar />
       <Main>

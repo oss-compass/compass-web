@@ -1,4 +1,4 @@
-query getOverview {
+query overview {
     overview {
         projectsCount
         dimensionsCount
@@ -19,7 +19,7 @@ query getOverview {
     }
 }
 
-query getRepo($url: String!){
+query repo($url: String!){
     repo(url: $url){
         backend
         forksCount
@@ -37,7 +37,7 @@ query getRepo($url: String!){
     }
 }
 
-query metricCodeQuality($url: String!){
+query metric($url: String!){
     metricCodequality(url: $url){
         codeMergeRatio
         codeQualityGuarantee
@@ -51,9 +51,6 @@ query metricCodeQuality($url: String!){
         locFrequency
         prIssueLinkedRatio
     }
-}
-
-query metricCommunity($url: String!){
     metricCommunity(url: $url){
         closedPrsCount
         codeReviewCount
@@ -70,9 +67,6 @@ query metricCommunity($url: String!){
         prOpenTimeMid
         updatedIssuesCount
     }
-}
-
-query metricActivity($url: String!) {
     metricActivity(url: $url){
         activityScore
         closedIssuesCount
