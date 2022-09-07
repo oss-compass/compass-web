@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { useTimePickerContext } from '@modules/analyze/context';
+import React, { useState } from 'react';
+import { useDatePickerContext } from '@modules/analyze/context';
 import classnames from 'classnames';
 
 const quickSelectRange = [
@@ -13,18 +13,9 @@ const quickSelectRange = [
   'Since 2000',
 ];
 
-const Compares = () => {
-  return (
-    <div className="flex">
-      <div>React</div>
-      <div className="px-2 text-slate-300">vs</div>
-      <div>Vue</div>
-    </div>
-  );
-};
-const TimePicker = () => {
+const DatePicker = () => {
   const [activeRange, setActiveRange] = useState('3M');
-  const { value, update } = useTimePickerContext();
+  const { value, update } = useDatePickerContext();
   const { startTime, endTime } = value;
 
   return (
@@ -50,13 +41,4 @@ const TimePicker = () => {
   );
 };
 
-const NavBar = () => {
-  return (
-    <nav className="flex h-14 flex-shrink-0 items-center justify-between border-b border-t px-6">
-      <Compares />
-      <TimePicker />
-    </nav>
-  );
-};
-
-export default NavBar;
+export default DatePicker;

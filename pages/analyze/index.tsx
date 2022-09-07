@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Analyze from '@modules/analyze';
 import {
-  TimePickerContext,
-  DEFAULT_TIMEPICKER_VALUE,
+  DatePickerContext,
+  DEFAULT_DATEPICKER_VALUE,
   CompareUrlsValue,
   CompareUrlsContext,
   DEFAULT_COMPARE_URLS_VALUE,
@@ -12,17 +12,17 @@ const AnalyzePage = () => {
   const [compareUrls, setCompareUrls] = useState<CompareUrlsValue>(
     DEFAULT_COMPARE_URLS_VALUE
   );
-  const [timePicker, setTimePicker] = useState(DEFAULT_TIMEPICKER_VALUE);
+  const [datePicker, setDatePicker] = useState(DEFAULT_DATEPICKER_VALUE);
 
   return (
     <CompareUrlsContext.Provider
       value={{ value: compareUrls, update: setCompareUrls }}
     >
-      <TimePickerContext.Provider
-        value={{ value: timePicker, update: setTimePicker }}
+      <DatePickerContext.Provider
+        value={{ value: datePicker, update: setDatePicker }}
       >
         <Analyze />
-      </TimePickerContext.Provider>
+      </DatePickerContext.Provider>
     </CompareUrlsContext.Provider>
   );
 };

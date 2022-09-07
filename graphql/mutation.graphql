@@ -1,0 +1,9 @@
+mutation createRepoTask($repoUrl: String!){
+    createRepoTask(input: {repoUrl: $repoUrl}){
+        message
+        status
+        errors {
+            message
+        }
+    }
+}

@@ -16,8 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["common/components/*"],
-      "@utils/*": ["common/utils/*"],
+      "@common/*": ["common/*"],
       "@graphql/*": ["graphql/*"],
       "@modules/*": ["modules/*"],
       "@styles/*": ["styles/*"]
