@@ -1,10 +1,9 @@
 query getOverview {
     overview {
-        issuesCount
-        pullsCount
-        reposCount
-        stargazersCount
-        subscribersCount
+        projectsCount
+        dimensionsCount
+        metricsCount
+        modelsCount
         trends {
             backend
             forksCount
@@ -20,20 +19,21 @@ query getOverview {
     }
 }
 
-query metricActivity($url: String!) {
-    metricActivity(url: $url){
-        activityScore
-        closedIssuesCount
-        codeReviewCount
-        commentFrequency
-        commitFrequency
-        contributorCount
-        createdSince
-        grimoireCreationDate
-        label
-        level
-        updatedIssuesCount
-        updatedSince
+query getRepo($url: String!){
+    repo(url: $url){
+        backend
+        forksCount
+        issuesCount
+        language
+        name
+        openIssuesCount
+        origin
+        path
+        pullsCount
+        stargazersCount
+        createdAt
+        updatedAt
+        watchersCount
     }
 }
 
@@ -72,30 +72,19 @@ query metricCommunity($url: String!){
     }
 }
 
-query getRepo($url: String!){
-    repo(url: $url){
-        backend
-        forksCount
-        issuesCount
-        language
-        name
-        openIssuesCount
-        origin
-        path
-        pullsCount
-        stargazersCount
-        createdAt
-        updatedAt
-        watchersCount
-    }
-}
-
-mutation createRepoTask($repoUrl: String!){
-    createRepoTask(input: {repoUrl: $repoUrl}){
-        message
-        status
-        errors {
-            message
-        }
+query metricActivity($url: String!) {
+    metricActivity(url: $url){
+        activityScore
+        closedIssuesCount
+        codeReviewCount
+        commentFrequency
+        commitFrequency
+        contributorCount
+        createdSince
+        grimoireCreationDate
+        label
+        level
+        updatedIssuesCount
+        updatedSince
     }
 }

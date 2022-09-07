@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import Logo from '@components/Logo';
-import { Center } from '@components/BaseLayout';
+import Logo from '@common/components/Logo';
+import { Center } from '@common/components/BaseLayout';
 
 const linkData = [
   {

@@ -1,7 +1,12 @@
 /* eslint-disable max-lines */
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  UseMutationOptions,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -168,11 +173,10 @@ export type MutationCreateRepoTaskArgs = {
 
 export type Overview = {
   __typename?: 'Overview';
-  issuesCount?: Maybe<Scalars['Int']>;
-  pullsCount?: Maybe<Scalars['Int']>;
-  reposCount?: Maybe<Scalars['Int']>;
-  stargazersCount?: Maybe<Scalars['Int']>;
-  subscribersCount?: Maybe<Scalars['Int']>;
+  dimensionsCount?: Maybe<Scalars['Int']>;
+  metricsCount?: Maybe<Scalars['Int']>;
+  modelsCount?: Maybe<Scalars['Int']>;
+  projectsCount?: Maybe<Scalars['Int']>;
   trends?: Maybe<Array<Repo>>;
 };
 
@@ -191,20 +195,23 @@ export type Query = {
 };
 
 export type QueryMetricActivityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   level?: InputMaybe<Scalars['String']>;
-  range?: InputMaybe<Scalars['String']>;
   url: Scalars['String'];
 };
 
 export type QueryMetricCodequalityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   level?: InputMaybe<Scalars['String']>;
-  range?: InputMaybe<Scalars['String']>;
   url: Scalars['String'];
 };
 
 export type QueryMetricCommunityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   level?: InputMaybe<Scalars['String']>;
-  range?: InputMaybe<Scalars['String']>;
   url: Scalars['String'];
 };
 
@@ -229,17 +236,30 @@ export type Repo = {
   watchersCount?: Maybe<Scalars['Int']>;
 };
 
+export type CreateRepoTaskMutationVariables = Exact<{
+  repoUrl: Scalars['String'];
+}>;
+
+export type CreateRepoTaskMutation = {
+  __typename?: 'Mutation';
+  createRepoTask?: {
+    __typename?: 'CreateRepoTaskPayload';
+    message?: string | null;
+    status: string;
+    errors?: Array<{ __typename?: 'Error'; message?: string | null }> | null;
+  } | null;
+};
+
 export type GetOverviewQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetOverviewQuery = {
   __typename?: 'Query';
   overview: {
     __typename?: 'Overview';
-    issuesCount?: number | null;
-    pullsCount?: number | null;
-    reposCount?: number | null;
-    stargazersCount?: number | null;
-    subscribersCount?: number | null;
+    projectsCount?: number | null;
+    dimensionsCount?: number | null;
+    metricsCount?: number | null;
+    modelsCount?: number | null;
     trends?: Array<{
       __typename?: 'Repo';
       backend?: string | null;
@@ -254,6 +274,30 @@ export type GetOverviewQuery = {
       watchersCount?: number | null;
     }> | null;
   };
+};
+
+export type GetRepoQueryVariables = Exact<{
+  url: Scalars['String'];
+}>;
+
+export type GetRepoQuery = {
+  __typename?: 'Query';
+  repo?: {
+    __typename?: 'Repo';
+    backend?: string | null;
+    forksCount?: number | null;
+    issuesCount?: number | null;
+    language?: string | null;
+    name?: string | null;
+    openIssuesCount?: number | null;
+    origin: string;
+    path?: string | null;
+    pullsCount?: number | null;
+    stargazersCount?: number | null;
+    createdAt: any;
+    updatedAt: any;
+    watchersCount?: number | null;
+  } | null;
 };
 
 export type MetricActivityQueryVariables = Exact<{
@@ -279,11 +323,11 @@ export type MetricActivityQuery = {
   }>;
 };
 
-export type MetricCodequalityQueryVariables = Exact<{
+export type MetricCodeQualityQueryVariables = Exact<{
   url: Scalars['String'];
 }>;
 
-export type MetricCodequalityQuery = {
+export type MetricCodeQualityQuery = {
   __typename?: 'Query';
   metricCodequality: Array<{
     __typename?: 'CodequalityMetric';
@@ -326,14 +370,61 @@ export type MetricCommunityQuery = {
   }>;
 };
 
+export const CreateRepoTaskDocument = /*#__PURE__*/ `
+    mutation createRepoTask($repoUrl: String!) {
+  createRepoTask(input: {repoUrl: $repoUrl}) {
+    message
+    status
+    errors {
+      message
+    }
+  }
+}
+    `;
+export const useCreateRepoTaskMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    CreateRepoTaskMutation,
+    TError,
+    CreateRepoTaskMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    CreateRepoTaskMutation,
+    TError,
+    CreateRepoTaskMutationVariables,
+    TContext
+  >(
+    ['createRepoTask'],
+    (variables?: CreateRepoTaskMutationVariables) =>
+      fetcher<CreateRepoTaskMutation, CreateRepoTaskMutationVariables>(
+        client,
+        CreateRepoTaskDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+useCreateRepoTaskMutation.fetcher = (
+  client: GraphQLClient,
+  variables: CreateRepoTaskMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CreateRepoTaskMutation, CreateRepoTaskMutationVariables>(
+    client,
+    CreateRepoTaskDocument,
+    variables,
+    headers
+  );
 export const GetOverviewDocument = /*#__PURE__*/ `
     query getOverview {
   overview {
-    issuesCount
-    pullsCount
-    reposCount
-    stargazersCount
-    subscribersCount
+    projectsCount
+    dimensionsCount
+    metricsCount
+    modelsCount
     trends {
       backend
       forksCount
@@ -376,6 +467,57 @@ useGetOverviewQuery.fetcher = (
   fetcher<GetOverviewQuery, GetOverviewQueryVariables>(
     client,
     GetOverviewDocument,
+    variables,
+    headers
+  );
+export const GetRepoDocument = /*#__PURE__*/ `
+    query getRepo($url: String!) {
+  repo(url: $url) {
+    backend
+    forksCount
+    issuesCount
+    language
+    name
+    openIssuesCount
+    origin
+    path
+    pullsCount
+    stargazersCount
+    createdAt
+    updatedAt
+    watchersCount
+  }
+}
+    `;
+export const useGetRepoQuery = <TData = GetRepoQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables: GetRepoQueryVariables,
+  options?: UseQueryOptions<GetRepoQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<GetRepoQuery, TError, TData>(
+    ['getRepo', variables],
+    fetcher<GetRepoQuery, GetRepoQueryVariables>(
+      client,
+      GetRepoDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useGetRepoQuery.getKey = (variables: GetRepoQueryVariables) => [
+  'getRepo',
+  variables,
+];
+useGetRepoQuery.fetcher = (
+  client: GraphQLClient,
+  variables: GetRepoQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<GetRepoQuery, GetRepoQueryVariables>(
+    client,
+    GetRepoDocument,
     variables,
     headers
   );
@@ -432,8 +574,8 @@ useMetricActivityQuery.fetcher = (
     variables,
     headers
   );
-export const MetricCodequalityDocument = /*#__PURE__*/ `
-    query metricCodequality($url: String!) {
+export const MetricCodeQualityDocument = /*#__PURE__*/ `
+    query metricCodeQuality($url: String!) {
   metricCodequality(url: $url) {
     codeMergeRatio
     codeQualityGuarantee
@@ -449,37 +591,37 @@ export const MetricCodequalityDocument = /*#__PURE__*/ `
   }
 }
     `;
-export const useMetricCodequalityQuery = <
-  TData = MetricCodequalityQuery,
+export const useMetricCodeQualityQuery = <
+  TData = MetricCodeQualityQuery,
   TError = unknown
 >(
   client: GraphQLClient,
-  variables: MetricCodequalityQueryVariables,
-  options?: UseQueryOptions<MetricCodequalityQuery, TError, TData>,
+  variables: MetricCodeQualityQueryVariables,
+  options?: UseQueryOptions<MetricCodeQualityQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<MetricCodequalityQuery, TError, TData>(
-    ['metricCodequality', variables],
-    fetcher<MetricCodequalityQuery, MetricCodequalityQueryVariables>(
+  useQuery<MetricCodeQualityQuery, TError, TData>(
+    ['metricCodeQuality', variables],
+    fetcher<MetricCodeQualityQuery, MetricCodeQualityQueryVariables>(
       client,
-      MetricCodequalityDocument,
+      MetricCodeQualityDocument,
       variables,
       headers
     ),
     options
   );
 
-useMetricCodequalityQuery.getKey = (
-  variables: MetricCodequalityQueryVariables
-) => ['metricCodequality', variables];
-useMetricCodequalityQuery.fetcher = (
+useMetricCodeQualityQuery.getKey = (
+  variables: MetricCodeQualityQueryVariables
+) => ['metricCodeQuality', variables];
+useMetricCodeQualityQuery.fetcher = (
   client: GraphQLClient,
-  variables: MetricCodequalityQueryVariables,
+  variables: MetricCodeQualityQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<MetricCodequalityQuery, MetricCodequalityQueryVariables>(
+  fetcher<MetricCodeQualityQuery, MetricCodeQualityQueryVariables>(
     client,
-    MetricCodequalityDocument,
+    MetricCodeQualityDocument,
     variables,
     headers
   );

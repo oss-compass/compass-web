@@ -24,13 +24,13 @@ export const Header: React.FC<{
               OSS Compass
             </h1>
           </Link>
-          <Link href="/analyze/facebook/react">
+          <Link href="/">
             <a className="mr-[70px] px-2.5 font-medium">Explore</a>
           </Link>
-          <Link href="/analyze/facebook/react">
+          <Link href="/">
             <a className="mr-[70px] px-2.5 font-medium">Explore</a>
           </Link>
-          <Link href="/analyze/facebook/react">
+          <Link href="/">
             <a className="mr-[70px] px-2.5 font-medium">About</a>
           </Link>
         </div>

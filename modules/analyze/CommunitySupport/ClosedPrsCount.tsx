@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import {
   useMetricActivityQuery,
-  useMetricCodequalityQuery,
   useMetricCommunityQuery,
 } from '@graphql/generated';
 import client from '@graphql/client';
 import { EChartsReactProps } from 'echarts-for-react/src/types';
 import EChartsReact from 'echarts-for-react';
 import { getLineOption } from '../options';
-import BaseCard from '@modules/analyze/BaseCard';
+import BaseCard from '@common/components/BaseCard';
 //
 // const echartsOpts = {
 //   ...line(),

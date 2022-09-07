@@ -3,16 +3,16 @@ import { useDebounceFn } from 'ahooks';
 import { FaSearch } from 'react-icons/fa';
 import { gsap } from 'gsap';
 import { useRouter } from 'next/router';
-import { Center } from '@components/BaseLayout';
+import { Center } from '@common/components/BaseLayout';
 
-import Svg1 from './svg/01.svg';
-import Svg2 from './svg/02.svg';
-import Svg3 from './svg/03.svg';
-import Svg4 from './svg/04.svg';
-import Svg5 from './svg/05.svg';
-import Svg6 from './svg/06.svg';
+import Svg1 from './assets/01.svg';
+import Svg2 from './assets/02.svg';
+import Svg3 from './assets/03.svg';
+import Svg4 from './assets/04.svg';
+import Svg5 from './assets/05.svg';
+import Svg6 from './assets/06.svg';
 
-import styles from '@modules/home/index.module.scss';
+import styles from './index.module.scss';
 
 const anim = (id: string) => {
   const list = [
@@ -69,8 +69,7 @@ const RepoSearch = () => {
         alert('Invalid Repo');
         return;
       }
-      sessionStorage.setItem(u.pathname, repoUrl);
-      router.push(`/analyze${u.pathname}`);
+      router.push(`/analyze?url=${encodeURIComponent(repoUrl)}`);
     } catch (e) {
       alert('Invalid URL');
       console.log(e);

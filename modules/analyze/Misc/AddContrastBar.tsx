@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import { AiOutlinePlus } from 'react-icons/ai';
 
-const CompareBar = () => {
+const AddContrastBar = () => {
+  const [inputValue, setInputVal] = useState('');
   const [showInput, setShowInput] = useState(false);
+
+  const router = useRouter();
+
   return (
     <div className="mb-8 flex h-[100px] overflow-hidden rounded-xl">
       <div className="flex-1 bg-[#3A5BEF]"></div>
@@ -19,11 +24,28 @@ const CompareBar = () => {
           <div className="flex h-full w-full items-center justify-center ">
             <div className="flex items-center rounded  border ">
               <input
+                value={inputValue}
                 type="text"
                 className="h-10 w-36 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-neutral-300"
                 placeholder="Pick a project"
+                onChange={(v) => {
+                  setInputVal(v.target.value);
+                }}
               />
-              <button className="h-10 w-24 bg-white text-[#00B5EA] hover:bg-gray-100">
+              <button
+                className="h-10 w-24 bg-white text-[#00B5EA] hover:bg-gray-100"
+                onClick={() => {
+                  if (inputValue) {
+                    const pathname = window.location.pathname;
+                    const search = window.location.search;
+                    router.push(
+                      pathname +
+                        search +
+                        `&vs=${encodeURIComponent(inputValue)}`
+                    );
+                  }
+                }}
+              >
                 compare
               </button>
             </div>
@@ -39,4 +61,4 @@ const CompareBar = () => {
   );
 };
 
-export default CompareBar;
+export default AddContrastBar;

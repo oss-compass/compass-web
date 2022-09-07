@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import { Header, Main, Content } from '@components/BaseLayout';
-import SideBar from './SideBar';
-import Footer from '@components/Footer';
-import NavBar from '@modules/analyze/NavBar';
-import CompareBar from '@modules/analyze/CompareBar';
+import { Header, Main, Content } from '@common/components/BaseLayout';
+import Footer from '@common/components/Footer';
+import SideBar from './Misc/SideBar';
+import NavBar from './Misc/NavBar';
+import AddContrastBar from './Misc/AddContrastBar';
 import DataView from './DataView';
 
 const Analyze = memo(() => {
@@ -14,7 +14,7 @@ const Analyze = memo(() => {
       <Main>
         <SideBar />
         <Content>
-          <CompareBar />
+          <AddContrastBar />
           <DataView />
           <Footer />
         </Content>

@@ -1,27 +1,27 @@
 import { Dispatch, SetStateAction, createContext, useContext } from 'react';
 
-export interface TimePickerValue {
+export interface DatePickerValue {
   startTime: string;
   endTime: string;
 }
 
-export interface TimePicker {
-  value: TimePickerValue;
-  update: Dispatch<SetStateAction<TimePickerValue>>;
+export interface DatePicker {
+  value: DatePickerValue;
+  update: Dispatch<SetStateAction<DatePickerValue>>;
 }
 
-export const DEFAULT_TIMEPICKER_VALUE = {
+export const DEFAULT_DATEPICKER_VALUE = {
   startTime: '',
   endTime: '',
 };
 
-export const TimePickerContext = createContext<TimePicker>({
-  value: DEFAULT_TIMEPICKER_VALUE,
-  update: () => DEFAULT_TIMEPICKER_VALUE,
+export const DatePickerContext = createContext<DatePicker>({
+  value: DEFAULT_DATEPICKER_VALUE,
+  update: () => DEFAULT_DATEPICKER_VALUE,
 });
 
-export function useTimePickerContext() {
-  return useContext(TimePickerContext);
+export function useDatePickerContext() {
+  return useContext(DatePickerContext);
 }
 
 export interface CompareUrlsValue {
