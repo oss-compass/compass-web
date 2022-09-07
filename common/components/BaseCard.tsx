@@ -23,8 +23,8 @@ const BaseCard: React.FC<
 
   return (
     <div className={cls}>
-      <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="text-sm">{description}</p>
+      <h2 className="mb-2 text-lg font-semibold">{title}</h2>
+      <p className="mb-4 text-sm">{description}</p>
       {children}
     </div>
   );

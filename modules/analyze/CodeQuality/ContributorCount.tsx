@@ -1,12 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import {
-  useMetricActivityQuery,
-  useMetricCodeQualityQuery,
-  useMetricCommunityQuery,
-} from '@graphql/generated';
+import { useMetricQuery } from '@graphql/generated';
 import client from '@graphql/client';
-import { EChartsReactProps } from 'echarts-for-react/src/types';
-import EChartsReact from 'echarts-for-react';
+import EChartX from '@common/components/EChartX';
 import { getLineOption } from '../options';
 import BaseCard from '@common/components/BaseCard';
 //
@@ -49,14 +44,14 @@ import BaseCard from '@common/components/BaseCard';
 const ContributorCount = () => {
   const chartInesRef = useRef(false);
 
-  const { data, isLoading } = useMetricCodeQualityQuery(client, {
+  const { data, isLoading } = useMetricQuery(client, {
     url: 'https://github.com/facebook/react',
   });
 
   useEffect(() => {}, []);
 
   const echartsOpts = useMemo(() => {
-    if (!data) return;
+    if (!data) return {};
     const metricCommunity = data?.metricCodequality;
 
     const closedPrsCount = metricCommunity?.map((i) =>
@@ -85,7 +80,7 @@ const ContributorCount = () => {
       title="Contributors"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
-      <EChartsReact option={echartsOpts} />
+      <EChartX option={echartsOpts} />
     </BaseCard>
   );
 };

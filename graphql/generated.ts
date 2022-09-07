@@ -250,9 +250,9 @@ export type CreateRepoTaskMutation = {
   } | null;
 };
 
-export type GetOverviewQueryVariables = Exact<{ [key: string]: never }>;
+export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetOverviewQuery = {
+export type OverviewQuery = {
   __typename?: 'Query';
   overview: {
     __typename?: 'Overview';
@@ -276,11 +276,11 @@ export type GetOverviewQuery = {
   };
 };
 
-export type GetRepoQueryVariables = Exact<{
+export type RepoQueryVariables = Exact<{
   url: Scalars['String'];
 }>;
 
-export type GetRepoQuery = {
+export type RepoQuery = {
   __typename?: 'Query';
   repo?: {
     __typename?: 'Repo';
@@ -300,34 +300,11 @@ export type GetRepoQuery = {
   } | null;
 };
 
-export type MetricActivityQueryVariables = Exact<{
+export type MetricQueryVariables = Exact<{
   url: Scalars['String'];
 }>;
 
-export type MetricActivityQuery = {
-  __typename?: 'Query';
-  metricActivity: Array<{
-    __typename?: 'ActivityMetric';
-    activityScore?: number | null;
-    closedIssuesCount?: number | null;
-    codeReviewCount?: number | null;
-    commentFrequency?: number | null;
-    commitFrequency?: number | null;
-    contributorCount?: number | null;
-    createdSince?: number | null;
-    grimoireCreationDate?: any | null;
-    label?: string | null;
-    level?: string | null;
-    updatedIssuesCount?: number | null;
-    updatedSince?: number | null;
-  }>;
-};
-
-export type MetricCodeQualityQueryVariables = Exact<{
-  url: Scalars['String'];
-}>;
-
-export type MetricCodeQualityQuery = {
+export type MetricQuery = {
   __typename?: 'Query';
   metricCodequality: Array<{
     __typename?: 'CodequalityMetric';
@@ -343,14 +320,6 @@ export type MetricCodeQualityQuery = {
     locFrequency?: number | null;
     prIssueLinkedRatio?: number | null;
   }>;
-};
-
-export type MetricCommunityQueryVariables = Exact<{
-  url: Scalars['String'];
-}>;
-
-export type MetricCommunityQuery = {
-  __typename?: 'Query';
   metricCommunity: Array<{
     __typename?: 'CommunityMetric';
     closedPrsCount?: number | null;
@@ -367,6 +336,21 @@ export type MetricCommunityQuery = {
     prOpenTimeAvg?: number | null;
     prOpenTimeMid?: number | null;
     updatedIssuesCount?: number | null;
+  }>;
+  metricActivity: Array<{
+    __typename?: 'ActivityMetric';
+    activityScore?: number | null;
+    closedIssuesCount?: number | null;
+    codeReviewCount?: number | null;
+    commentFrequency?: number | null;
+    commitFrequency?: number | null;
+    contributorCount?: number | null;
+    createdSince?: number | null;
+    grimoireCreationDate?: any | null;
+    label?: string | null;
+    level?: string | null;
+    updatedIssuesCount?: number | null;
+    updatedSince?: number | null;
   }>;
 };
 
@@ -418,8 +402,8 @@ useCreateRepoTaskMutation.fetcher = (
     variables,
     headers
   );
-export const GetOverviewDocument = /*#__PURE__*/ `
-    query getOverview {
+export const OverviewDocument = /*#__PURE__*/ `
+    query overview {
   overview {
     projectsCount
     dimensionsCount
@@ -440,38 +424,38 @@ export const GetOverviewDocument = /*#__PURE__*/ `
   }
 }
     `;
-export const useGetOverviewQuery = <TData = GetOverviewQuery, TError = unknown>(
+export const useOverviewQuery = <TData = OverviewQuery, TError = unknown>(
   client: GraphQLClient,
-  variables?: GetOverviewQueryVariables,
-  options?: UseQueryOptions<GetOverviewQuery, TError, TData>,
+  variables?: OverviewQueryVariables,
+  options?: UseQueryOptions<OverviewQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<GetOverviewQuery, TError, TData>(
-    variables === undefined ? ['getOverview'] : ['getOverview', variables],
-    fetcher<GetOverviewQuery, GetOverviewQueryVariables>(
+  useQuery<OverviewQuery, TError, TData>(
+    variables === undefined ? ['overview'] : ['overview', variables],
+    fetcher<OverviewQuery, OverviewQueryVariables>(
       client,
-      GetOverviewDocument,
+      OverviewDocument,
       variables,
       headers
     ),
     options
   );
 
-useGetOverviewQuery.getKey = (variables?: GetOverviewQueryVariables) =>
-  variables === undefined ? ['getOverview'] : ['getOverview', variables];
-useGetOverviewQuery.fetcher = (
+useOverviewQuery.getKey = (variables?: OverviewQueryVariables) =>
+  variables === undefined ? ['overview'] : ['overview', variables];
+useOverviewQuery.fetcher = (
   client: GraphQLClient,
-  variables?: GetOverviewQueryVariables,
+  variables?: OverviewQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<GetOverviewQuery, GetOverviewQueryVariables>(
+  fetcher<OverviewQuery, OverviewQueryVariables>(
     client,
-    GetOverviewDocument,
+    OverviewDocument,
     variables,
     headers
   );
-export const GetRepoDocument = /*#__PURE__*/ `
-    query getRepo($url: String!) {
+export const RepoDocument = /*#__PURE__*/ `
+    query repo($url: String!) {
   repo(url: $url) {
     backend
     forksCount
@@ -489,93 +473,37 @@ export const GetRepoDocument = /*#__PURE__*/ `
   }
 }
     `;
-export const useGetRepoQuery = <TData = GetRepoQuery, TError = unknown>(
+export const useRepoQuery = <TData = RepoQuery, TError = unknown>(
   client: GraphQLClient,
-  variables: GetRepoQueryVariables,
-  options?: UseQueryOptions<GetRepoQuery, TError, TData>,
+  variables: RepoQueryVariables,
+  options?: UseQueryOptions<RepoQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<GetRepoQuery, TError, TData>(
-    ['getRepo', variables],
-    fetcher<GetRepoQuery, GetRepoQueryVariables>(
+  useQuery<RepoQuery, TError, TData>(
+    ['repo', variables],
+    fetcher<RepoQuery, RepoQueryVariables>(
       client,
-      GetRepoDocument,
+      RepoDocument,
       variables,
       headers
     ),
     options
   );
 
-useGetRepoQuery.getKey = (variables: GetRepoQueryVariables) => [
-  'getRepo',
-  variables,
-];
-useGetRepoQuery.fetcher = (
+useRepoQuery.getKey = (variables: RepoQueryVariables) => ['repo', variables];
+useRepoQuery.fetcher = (
   client: GraphQLClient,
-  variables: GetRepoQueryVariables,
+  variables: RepoQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<GetRepoQuery, GetRepoQueryVariables>(
+  fetcher<RepoQuery, RepoQueryVariables>(
     client,
-    GetRepoDocument,
+    RepoDocument,
     variables,
     headers
   );
-export const MetricActivityDocument = /*#__PURE__*/ `
-    query metricActivity($url: String!) {
-  metricActivity(url: $url) {
-    activityScore
-    closedIssuesCount
-    codeReviewCount
-    commentFrequency
-    commitFrequency
-    contributorCount
-    createdSince
-    grimoireCreationDate
-    label
-    level
-    updatedIssuesCount
-    updatedSince
-  }
-}
-    `;
-export const useMetricActivityQuery = <
-  TData = MetricActivityQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: MetricActivityQueryVariables,
-  options?: UseQueryOptions<MetricActivityQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<MetricActivityQuery, TError, TData>(
-    ['metricActivity', variables],
-    fetcher<MetricActivityQuery, MetricActivityQueryVariables>(
-      client,
-      MetricActivityDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useMetricActivityQuery.getKey = (variables: MetricActivityQueryVariables) => [
-  'metricActivity',
-  variables,
-];
-useMetricActivityQuery.fetcher = (
-  client: GraphQLClient,
-  variables: MetricActivityQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<MetricActivityQuery, MetricActivityQueryVariables>(
-    client,
-    MetricActivityDocument,
-    variables,
-    headers
-  );
-export const MetricCodeQualityDocument = /*#__PURE__*/ `
-    query metricCodeQuality($url: String!) {
+export const MetricDocument = /*#__PURE__*/ `
+    query metric($url: String!) {
   metricCodequality(url: $url) {
     codeMergeRatio
     codeQualityGuarantee
@@ -589,44 +517,6 @@ export const MetricCodeQualityDocument = /*#__PURE__*/ `
     locFrequency
     prIssueLinkedRatio
   }
-}
-    `;
-export const useMetricCodeQualityQuery = <
-  TData = MetricCodeQualityQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: MetricCodeQualityQueryVariables,
-  options?: UseQueryOptions<MetricCodeQualityQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<MetricCodeQualityQuery, TError, TData>(
-    ['metricCodeQuality', variables],
-    fetcher<MetricCodeQualityQuery, MetricCodeQualityQueryVariables>(
-      client,
-      MetricCodeQualityDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useMetricCodeQualityQuery.getKey = (
-  variables: MetricCodeQualityQueryVariables
-) => ['metricCodeQuality', variables];
-useMetricCodeQualityQuery.fetcher = (
-  client: GraphQLClient,
-  variables: MetricCodeQualityQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<MetricCodeQualityQuery, MetricCodeQualityQueryVariables>(
-    client,
-    MetricCodeQualityDocument,
-    variables,
-    headers
-  );
-export const MetricCommunityDocument = /*#__PURE__*/ `
-    query metricCommunity($url: String!) {
   metricCommunity(url: $url) {
     closedPrsCount
     codeReviewCount
@@ -643,40 +533,51 @@ export const MetricCommunityDocument = /*#__PURE__*/ `
     prOpenTimeMid
     updatedIssuesCount
   }
+  metricActivity(url: $url) {
+    activityScore
+    closedIssuesCount
+    codeReviewCount
+    commentFrequency
+    commitFrequency
+    contributorCount
+    createdSince
+    grimoireCreationDate
+    label
+    level
+    updatedIssuesCount
+    updatedSince
+  }
 }
     `;
-export const useMetricCommunityQuery = <
-  TData = MetricCommunityQuery,
-  TError = unknown
->(
+export const useMetricQuery = <TData = MetricQuery, TError = unknown>(
   client: GraphQLClient,
-  variables: MetricCommunityQueryVariables,
-  options?: UseQueryOptions<MetricCommunityQuery, TError, TData>,
+  variables: MetricQueryVariables,
+  options?: UseQueryOptions<MetricQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<MetricCommunityQuery, TError, TData>(
-    ['metricCommunity', variables],
-    fetcher<MetricCommunityQuery, MetricCommunityQueryVariables>(
+  useQuery<MetricQuery, TError, TData>(
+    ['metric', variables],
+    fetcher<MetricQuery, MetricQueryVariables>(
       client,
-      MetricCommunityDocument,
+      MetricDocument,
       variables,
       headers
     ),
     options
   );
 
-useMetricCommunityQuery.getKey = (variables: MetricCommunityQueryVariables) => [
-  'metricCommunity',
+useMetricQuery.getKey = (variables: MetricQueryVariables) => [
+  'metric',
   variables,
 ];
-useMetricCommunityQuery.fetcher = (
+useMetricQuery.fetcher = (
   client: GraphQLClient,
-  variables: MetricCommunityQueryVariables,
+  variables: MetricQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<MetricCommunityQuery, MetricCommunityQueryVariables>(
+  fetcher<MetricQuery, MetricQueryVariables>(
     client,
-    MetricCommunityDocument,
+    MetricDocument,
     variables,
     headers
   );

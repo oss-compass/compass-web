@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGetOverviewQuery } from '@graphql/generated';
+import { useOverviewQuery } from '@graphql/generated';
 import client from '@graphql/client';
 
 const Hotspots = () => {
@@ -47,7 +47,7 @@ const HotProjects = () => {
 };
 
 const SectionProjects = () => {
-  const { data, isLoading } = useGetOverviewQuery(client);
+  const { data, isLoading } = useOverviewQuery(client);
   return (
     <section className="relative mx-auto flex w-[1200px] justify-between pt-[40px] pb-[120px]">
       <Hotspots />

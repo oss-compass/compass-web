@@ -11,7 +11,9 @@ import {
 import {
   DimensionLoose,
   OptionEncodeValue,
+  OptionDataValue,
 } from 'echarts/types/src/util/types';
+import { formatISO } from '@common/utils/time';
 
 export const getLineOption = ({
   xAxisData,
@@ -25,9 +27,10 @@ export const getLineOption = ({
     tooltip: {
       trigger: 'axis',
     },
-    // legend: {
-    //   data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
-    // },
+    legend: {
+      icon: 'circle',
+      left: 0,
+    },
     grid: {
       left: '3%',
       right: '4%',
@@ -44,4 +47,28 @@ export const getLineOption = ({
     },
     series,
   };
+};
+
+export const toTimeXAxis = (arr: any[], key: string): string[] => {
+  return arr.map((i) => formatISO(i[key]));
+};
+
+export const toLineSeries = (opts: {
+  name: string;
+  data: (string | number)[];
+}): LineSeriesOption => {
+  return {
+    name: opts.name,
+    type: 'line',
+    smooth: true,
+    data: opts.data,
+  };
+};
+export const mapToLineSeries = (
+  arr: any[],
+  key: string,
+  name: string
+): LineSeriesOption => {
+  const values = arr.map((i) => String(i[key]));
+  return toLineSeries({ name: name, data: values });
 };
