@@ -4,7 +4,9 @@ import Footer from '@common/components/Footer';
 import SideBar from './Misc/SideBar';
 import NavBar from './Misc/NavBar';
 import AddContrastBar from './Misc/AddContrastBar';
-import DataView from './DataView';
+import dynamic from 'next/dynamic';
+
+const DynamicDataView = dynamic(() => import('./DataView'), { ssr: false });
 
 const Analyze = memo(() => {
   return (
@@ -15,7 +17,7 @@ const Analyze = memo(() => {
         <SideBar />
         <Content>
           <AddContrastBar />
-          <DataView />
+          <DynamicDataView />
           <Footer />
         </Content>
       </Main>

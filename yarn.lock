@@ -2038,10 +2038,26 @@
   resolved "https://registry.npmmirror.com/@tailwindcss/line-clamp/-/line-clamp-0.4.0.tgz#03353e31e77636b785f2336e8c978502cec1de81"
   integrity sha512-HQZo6gfx1D0+DU3nWlNLD5iA6Ef4JAXh0LeD8lOGrJwEDBwwJNKQza6WoXhhY1uQrxOuU8ROxV7CqiQV4CoiLw==
 
+"@tanstack/match-sorter-utils@^8.0.0-alpha.82":
+  version "8.1.1"
+  resolved "https://registry.npmmirror.com/@tanstack/match-sorter-utils/-/match-sorter-utils-8.1.1.tgz#895f407813254a46082a6bbafad9b39b943dc834"
+  integrity sha512-IdmEekEYxQsoLOR0XQyw3jD1GujBpRRYaGJYQUw1eOT1eUugWxdc7jomh1VQ1EKHcdwDLpLaCz/8y4KraU4T9A==
+  dependencies:
+    remove-accents "0.4.2"
+
 "@tanstack/query-core@^4.0.0-beta.1":
   version "4.2.1"
   resolved "https://registry.npmmirror.com/@tanstack/query-core/-/query-core-4.2.1.tgz#21ff3a33f27bf038c990ea53af89cf7c7e8078fc"
   integrity sha512-UOyOhHKLS/5i9qG2iUnZNVV3R9riJJmG9eG+hnMFIPT/oRh5UzAfjxCtBneNgPQZLDuP8y6YtRYs/n4qVAD5Ng==
+
+"@tanstack/react-query-devtools@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.npmmirror.com/@tanstack/react-query-devtools/-/react-query-devtools-4.2.3.tgz#85e5990a447850c7cfffd64fef9f926554d460fb"
+  integrity sha512-0PH8n824BnFyMrtv7q5uLS0b7jYg2tDH8vU4etkSYzV1uL4RJjiqMh7Gyi8qhYCwM+khlrkRYlNZvE0cxlp3SQ==
+  dependencies:
+    "@tanstack/match-sorter-utils" "^8.0.0-alpha.82"
+    "@types/use-sync-external-store" "^0.0.3"
+    use-sync-external-store "^1.2.0"
 
 "@tanstack/react-query@^4.2.1":
   version "4.2.1"
@@ -4922,6 +4938,11 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
+odometer@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.npmmirror.com/odometer/-/odometer-0.4.8.tgz#2f6703bf4c6b384c278236d04d4bc8171abe4374"
+  integrity sha512-bfKuAhWE/qMCiX9bwX90c5bTpt7MDVeq1e6YsOHQrYokNhv9jhS5JbR9kg6i+FeWmDgalf3VUtwNx1aVaZ8cgg==
+
 once@^1.3.0:
   version "1.4.0"
   resolved "https://registry.npmmirror.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
@@ -5540,6 +5561,13 @@ react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.npmmirror.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-odometerjs@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.npmmirror.com/react-odometerjs/-/react-odometerjs-2.1.2.tgz#0a6376aac44fc68613c4b04ed6cb6952cd68182f"
+  integrity sha512-e2fflNzoOwCGOI2PG5HZkp8Sl8AEIk/Ug1UilU4H93GZWxK94g5AnrGuaqfAZKp85QxG61L/uHd98OOh/8HOyg==
+  dependencies:
+    odometer "^0.4.8"
+
 react-resize-detector@^7.1.2:
   version "7.1.2"
   resolved "https://registry.npmmirror.com/react-resize-detector/-/react-resize-detector-7.1.2.tgz#8ef975dd8c3d56f9a5160ac382ef7136dcd2d86c"
@@ -5652,6 +5680,11 @@ remedial@^1.0.7:
   version "1.0.8"
   resolved "https://registry.npmmirror.com/remedial/-/remedial-1.0.8.tgz#a5e4fd52a0e4956adbaf62da63a5a46a78c578a0"
   integrity sha512-/62tYiOe6DzS5BqVsNpH/nkGlX45C/Sp6V+NtiN6JQNS1Viay7cWkazmRkrQrdFj2eshDe96SIQNIoMxqhzBOg==
+
+remove-accents@0.4.2:
+  version "0.4.2"
+  resolved "https://registry.npmmirror.com/remove-accents/-/remove-accents-0.4.2.tgz#0a43d3aaae1e80db919e07ae254b285d9e1c7bb5"
+  integrity sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA==
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

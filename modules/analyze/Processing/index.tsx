@@ -1,7 +1,7 @@
 import React from 'react';
 
-const TrendsList = () => {
+const Index = () => {
   return <div></div>;
 };
 
-export default TrendsList;
+export default Index;

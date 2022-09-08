@@ -1,23 +1,28 @@
-import React, { PropsWithChildren } from 'react';
-import Trends from './Trends';
-import TrendsList from './TrendsList';
-import { ContributorCount } from '../CodeQuality';
-import { ClosedPrsCount } from '../CommunitySupport';
-
-const Topic: React.FC<PropsWithChildren> = ({ children }) => (
-  <h1 className="mt-14 mb-6 text-3xl">{children}</h1>
-);
+import React from 'react';
+import { useQueries } from '@tanstack/react-query';
+import { useMetricQuery } from '@graphql/generated';
+import client from '@graphql/client';
+import useCompareItems from '../hooks/useCompareItems';
+import Trend from '../Trend';
+import CodeQuality from '../CodeQuality';
+import CommunitySupport from '../CommunitySupport';
 
 const DataPanel = () => {
+  const { urls } = useCompareItems();
+  useQueries({
+    queries: urls.map((url) => {
+      return {
+        queryKey: useMetricQuery.getKey({ url }),
+        queryFn: useMetricQuery.fetcher(client, { url }),
+      };
+    }),
+  });
+
   return (
     <>
-      <Trends />
-
-      <Topic>Code Quality Guarantee</Topic>
-      <ContributorCount />
-
-      <Topic>Community Support</Topic>
-      <ClosedPrsCount />
+      <Trend />
+      <CodeQuality />
+      <CommunitySupport />
     </>
   );
 };

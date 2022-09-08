@@ -8,7 +8,7 @@ import SectionExplain from './SectionExplain';
 
 const Home = () => {
   return (
-    <div>
+    <>
       <Header contentCenter />
       <main>
         <SectionBanner />
@@ -21,7 +21,7 @@ const Home = () => {
         </Center>
         <Copyright />
       </footer>
-    </div>
+    </>
   );
 };
 

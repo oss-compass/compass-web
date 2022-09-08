@@ -1,19 +1,17 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import BaseCard from '@common/components/BaseCard';
-import EChartX from '@common/components/EChartX';
-import { useMetricQuery } from '@graphql/generated';
-import client from '@graphql/client';
+import React, { useMemo } from 'react';
 import {
   getLineOption,
   mapToLineSeries,
   toTimeXAxis,
 } from '@modules/analyze/options';
+import BaseCard from '@common/components/BaseCard';
+import EChartX from '@common/components/EChartX';
+import { MetricQuery } from '@graphql/generated';
 
-const Trends = () => {
-  const { data, isLoading } = useMetricQuery(client, {
-    url: 'https://github.com/facebook/react',
-  });
-
+const TrendsChart: React.FC<{
+  loading: boolean;
+  data: MetricQuery | undefined;
+}> = ({ loading = false, data }) => {
   const echartsOpts = useMemo(() => {
     if (!data) return {};
     const metricActivity = data?.metricActivity;
@@ -46,7 +44,7 @@ const Trends = () => {
 
   return (
     <BaseCard
-      loading={isLoading}
+      loading={loading}
       title="Trending"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
@@ -55,4 +53,4 @@ const Trends = () => {
   );
 };
 
-export default Trends;
+export default TrendsChart;
