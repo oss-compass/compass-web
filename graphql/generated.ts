@@ -182,6 +182,8 @@ export type Overview = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Fuzzy search project by keyword */
+  fuzzySearch: Array<Scalars['String']>;
   /** Get activity metrics data of compass */
   metricActivity: Array<ActivityMetric>;
   /** Get code quality metrics data of compass */
@@ -192,6 +194,10 @@ export type Query = {
   overview: Overview;
   /** Get repo data by specified url */
   repo?: Maybe<Repo>;
+};
+
+export type QueryFuzzySearchArgs = {
+  keyword: Scalars['String'];
 };
 
 export type QueryMetricActivityArgs = {
@@ -249,6 +255,12 @@ export type CreateRepoTaskMutation = {
     errors?: Array<{ __typename?: 'Error'; message?: string | null }> | null;
   } | null;
 };
+
+export type SearchQueryVariables = Exact<{
+  keyword: Scalars['String'];
+}>;
+
+export type SearchQuery = { __typename?: 'Query'; fuzzySearch: Array<string> };
 
 export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -399,6 +411,43 @@ useCreateRepoTaskMutation.fetcher = (
   fetcher<CreateRepoTaskMutation, CreateRepoTaskMutationVariables>(
     client,
     CreateRepoTaskDocument,
+    variables,
+    headers
+  );
+export const SearchDocument = /*#__PURE__*/ `
+    query search($keyword: String!) {
+  fuzzySearch(keyword: $keyword)
+}
+    `;
+export const useSearchQuery = <TData = SearchQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables: SearchQueryVariables,
+  options?: UseQueryOptions<SearchQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<SearchQuery, TError, TData>(
+    ['search', variables],
+    fetcher<SearchQuery, SearchQueryVariables>(
+      client,
+      SearchDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useSearchQuery.getKey = (variables: SearchQueryVariables) => [
+  'search',
+  variables,
+];
+useSearchQuery.fetcher = (
+  client: GraphQLClient,
+  variables: SearchQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<SearchQuery, SearchQueryVariables>(
+    client,
+    SearchDocument,
     variables,
     headers
   );
