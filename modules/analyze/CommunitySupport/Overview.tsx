@@ -1,27 +1,27 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
+import React, { useMemo } from 'react';
+import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
 import { getLineOption, mapToLineSeries, toTimeXAxis } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 
-const ContributorCount: React.FC<{
+const Overview: React.FC<{
   loading?: boolean;
   data: { url: string; result: MetricQuery | undefined }[];
 }> = ({ loading = false, data }) => {
   const echartsOpts = useMemo(() => {
-    if (!data[0]?.result?.metricCodequality) return {};
+    if (!data[0]?.result?.metricCommunity) return {};
 
-    const metricCodequality = data[0].result.metricCodequality;
-    const xAxisDate = toTimeXAxis(metricCodequality, 'grimoireCreationDate');
+    const metricCommunity = data[0].result.metricCommunity;
+    const xAxisDate = toTimeXAxis(metricCommunity, 'grimoireCreationDate');
 
     const isCompare = data?.length > 1;
 
     const series = data.map((item) => {
       return mapToLineSeries(
-        item.result!.metricCodequality,
-        'contributorCount',
-        isCompare ? item.url : 'Contributor Count'
+        item.result!.metricCommunity,
+        'communitySupportScore',
+        isCompare ? item.url : 'Community Support'
       );
     });
 
@@ -34,17 +34,17 @@ const ContributorCount: React.FC<{
   return (
     <BaseCard
       loading={loading}
-      title="Contributors"
-      description="Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days."
+      title="Overview"
+      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       <EChartX option={echartsOpts} />
     </BaseCard>
   );
 };
 
-const ContributorCountWithData = () => {
+const OverviewWithData = () => {
   const data = useMetricQueryData();
-  return <ContributorCount data={data} />;
+  return <Overview data={data} />;
 };
 
-export default ContributorCountWithData;
+export default OverviewWithData;

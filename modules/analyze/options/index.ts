@@ -41,6 +41,11 @@ export const getLineOption = ({
       type: 'category',
       boundaryGap: false,
       data: xAxisData,
+      axisLabel: {
+        align: 'center',
+        rotate: 10,
+        margin: 20,
+      },
     },
     yAxis: {
       type: 'value',

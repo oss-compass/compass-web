@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import useContrastItems from '../hooks/useContrastItems';
+import useCompareItems from '../hooks/useCompareItems';
 
 const ContrastItems = () => {
-  const { contrastItems } = useContrastItems();
+  const { contrastItems } = useCompareItems();
   return (
     <div className="flex">
       {contrastItems.map((item, index) => {

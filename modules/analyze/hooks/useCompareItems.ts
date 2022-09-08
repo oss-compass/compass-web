@@ -9,7 +9,7 @@ const getPathname = (url: string): string => {
   return u?.pathname.slice(1) || '';
 };
 
-const getContrastItemsFormUrl = (parsed: ParsedQuery) => {
+const getCompareItemsFormUrl = (parsed: ParsedQuery) => {
   let items: string[] = [];
   if (typeof parsed.url === 'string') {
     items = [getPathname(parsed.url)];
@@ -25,16 +25,22 @@ const getContrastItemsFormUrl = (parsed: ParsedQuery) => {
   return uniq(items);
 };
 
-const useContrastItems = () => {
-  useRouter();
+const useCompareItemsItems = () => {
+  const router = useRouter();
   const query = qs.parse(location.search);
-  const contrastItems = getContrastItemsFormUrl(query);
+  const contrastItems = getCompareItemsFormUrl(query);
+
+  const url = typeof router.query.url == 'string' ? router.query.url : '';
 
   return {
-    url: query.url,
+    // todo:
+    urls: [
+      'https://github.com/vuejs/vue',
+      // 'https://github.com/facebook/react'
+    ],
     vs: query.vs,
     contrastItems,
   };
 };
 
-export default useContrastItems;
+export default useCompareItemsItems;

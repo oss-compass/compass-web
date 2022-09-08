@@ -15,7 +15,7 @@ const BaseCard: React.FC<
   title = '',
   description = '',
 }) => {
-  const cls = classnames(className, 'rounded-lg bg-white p-6 drop-shadow');
+  const cls = classnames(className, 'rounded-lg bg-white p-6 drop-shadow-sm');
 
   if (loading) {
     return <div className={classnames(cls, 'p-10')}>loading...</div>;

@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import type { AppProps } from 'next/app';
-import {
-  QueryClient,
-  QueryClientProvider,
-  Hydrate,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import dynamic from 'next/dynamic';
 
 import '../styles/globals.scss';
@@ -31,6 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient} contextSharing>
       <NextNProgress startPosition={0.15} color="#000" />
       <Component {...pageProps} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
