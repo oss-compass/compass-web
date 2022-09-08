@@ -4,6 +4,7 @@ import { FaSearch } from 'react-icons/fa';
 import { gsap } from 'gsap';
 import { useRouter } from 'next/router';
 import { Center } from '@common/components/BaseLayout';
+import Search from './Search';
 
 import Svg1 from './assets/01.svg';
 import Svg2 from './assets/02.svg';
@@ -52,68 +53,6 @@ const SvgBlock = () => {
         }}
       >
         <Svg3 />
-      </div>
-    </div>
-  );
-};
-
-const RepoSearch = () => {
-  const [repoUrl, setRepoUrl] = useState('');
-  const router = useRouter();
-
-  const navigateToAnalyze = () => {
-    try {
-      if (!repoUrl) return;
-      const u = new URL(repoUrl);
-      if (!u.pathname) {
-        alert('Invalid Repo');
-        return;
-      }
-      router.push(`/analyze?url=${encodeURIComponent(repoUrl)}`);
-    } catch (e) {
-      alert('Invalid URL');
-      console.log(e);
-    }
-  };
-
-  return (
-    <div className="absolute bottom-16 w-[500px] bg-white p-4">
-      <h1 id="test" className="mb-4 text-7xl">
-        Know more
-        <br />
-        your projects
-        <br />
-        way forward
-      </h1>
-      <p className="mb-8 break-words text-lg">
-        We help open source projects gain insight into its trends, and getting
-        more value of it.
-      </p>
-      <div className="flex items-center border-2 border-black px-4">
-        <input
-          value={repoUrl}
-          type="text"
-          className="h-[70px]  w-full  text-xl outline-0"
-          placeholder="eg: https://github.com/facebook/react"
-          // placeholder="Type the name to insight into your project"
-          onChange={(event) => {
-            const val = event.target.value;
-            setRepoUrl(val);
-          }}
-          onKeyDown={async (event) => {
-            if (event.key === 'Enter') {
-              navigateToAnalyze();
-            }
-          }}
-        />
-        <div
-          className="h-8 w-8 cursor-pointer select-none pl-2"
-          onClick={() => {
-            navigateToAnalyze();
-          }}
-        >
-          <FaSearch className="h-full w-full" />
-        </div>
       </div>
     </div>
   );
@@ -211,7 +150,7 @@ const SectionBanner = () => {
               <Svg6 />
             </div>
           </div>
-          <RepoSearch />
+          <Search />
         </div>
       </Center>
     </section>

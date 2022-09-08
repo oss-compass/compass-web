@@ -1,3 +1,7 @@
+query search($keyword: String!) {
+    fuzzySearch(keyword: $keyword)
+}
+
 query overview {
     overview {
         projectsCount

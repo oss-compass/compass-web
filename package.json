@@ -31,10 +31,11 @@
     "query-string": "^7.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hotkeys-hook": "^3.4.7",
     "react-icons": "^4.4.0",
     "react-odometerjs": "^2.1.2",
     "react-resize-detector": "^7.1.2",
-    "screenfull": "^6.0.2"
+    "react-use": "^17.4.0"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.2.1",

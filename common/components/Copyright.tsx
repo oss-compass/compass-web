@@ -22,8 +22,8 @@ const Copyright = () => {
               <AiOutlineTwitter className="mr-4 h-6 w-6 cursor-pointer" />
             </a>
           </Link>
-          <Link href="/">
-            <a>
+          <Link href="https://github.com/open-metrics-code" passHref>
+            <a target="_blank">
               <AiFillGithub className="h-6 w-6 cursor-pointer" />
             </a>
           </Link>
