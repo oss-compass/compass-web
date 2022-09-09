@@ -58,7 +58,7 @@ export const toTimeXAxis = (arr: any[], key: string): string[] => {
   return arr.map((i) => formatISO(i[key]));
 };
 
-export const toLineSeries = (opts: {
+export const line = (opts: {
   name: string;
   data: (string | number)[];
 }): LineSeriesOption => {
@@ -69,11 +69,42 @@ export const toLineSeries = (opts: {
     data: opts.data,
   };
 };
+
+export const lineArea = (opts: {
+  name: string;
+  data: (string | number)[];
+}): LineSeriesOption => {
+  return {
+    name: opts.name,
+    type: 'line',
+    smooth: true,
+    data: opts.data,
+    areaStyle: {},
+  };
+};
+
+export const mapToSeries = (
+  arr: any[],
+  key: string,
+  name: string,
+  func: (opts: { name: string; data: (string | number)[] }) => LineSeriesOption
+): LineSeriesOption => {
+  const values = arr.map((i) => String(i[key]));
+  return func({ name: name, data: values });
+};
+
 export const mapToLineSeries = (
   arr: any[],
   key: string,
   name: string
 ): LineSeriesOption => {
-  const values = arr.map((i) => String(i[key]));
-  return toLineSeries({ name: name, data: values });
+  return mapToSeries(arr, key, name, line);
+};
+
+export const mapToLineAreaSeries = (
+  arr: any[],
+  key: string,
+  name: string
+): LineSeriesOption => {
+  return mapToSeries(arr, key, name, lineArea);
 };
