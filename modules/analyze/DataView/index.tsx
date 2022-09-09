@@ -6,6 +6,7 @@ import useCompareItems from '../hooks/useCompareItems';
 import Trend from '../Trend';
 import CodeQuality from '../CodeQuality';
 import CommunitySupport from '../CommunitySupport';
+import CommunityActivity from '../CommunityActivity';
 
 const DataPanel = () => {
   const { urls } = useCompareItems();
@@ -23,6 +24,7 @@ const DataPanel = () => {
       <Trend />
       <CodeQuality />
       <CommunitySupport />
+      <CommunityActivity />
     </>
   );
 };
