@@ -7,8 +7,10 @@ const CommunitySupport = () => {
   return (
     <>
       <Topic>Community Support</Topic>
-      <div className="grid gap-4">
+      <div className="mb-4">
         <Overview />
+      </div>
+      <div className="mb-4">
         <ClosedPrsCount />
       </div>
     </>

@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import { getLineOption, mapToLineAreaSeries, toTimeXAxis } from '../options';
+import { getLineOption, mapToLineSeries, toTimeXAxis } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 
-const ContributorCount: React.FC<{
+const IsMaintained: React.FC<{
   loading?: boolean;
   data: { url: string; result: MetricQuery | undefined }[];
 }> = ({ loading = false, data }) => {
@@ -18,10 +18,10 @@ const ContributorCount: React.FC<{
     const isCompare = data?.length > 1;
 
     const series = data.map((item) => {
-      return mapToLineAreaSeries(
+      return mapToLineSeries(
         item.result!.metricCodequality,
-        'commitFrequency',
-        isCompare ? item.url : 'Commit frequency'
+        'isMaintained',
+        isCompare ? item.url : 'Contributor Count'
       );
     });
 
@@ -34,17 +34,17 @@ const ContributorCount: React.FC<{
   return (
     <BaseCard
       loading={loading}
-      title="Commit frequency"
-      description="Determine the average number of commits per week in the past 90 days."
+      title="Is Maintained"
+      description="Percentage of weeks with at least one code commit in the past 90 days."
     >
       <EChartX option={echartsOpts} />
     </BaseCard>
   );
 };
 
-const ContributorCountWithData = () => {
+const IsMaintainedWithData = () => {
   const data = useMetricQueryData();
-  return <ContributorCount data={data} />;
+  return <IsMaintained data={data} />;
 };
 
-export default ContributorCountWithData;
+export default IsMaintainedWithData;

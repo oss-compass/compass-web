@@ -1,11 +1,16 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import { getLineOption, mapToLineAreaSeries, toTimeXAxis } from '../options';
+import {
+  getLineOption,
+  mapToLineAreaSeries,
+  mapToLineSeries,
+  toTimeXAxis,
+} from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 
-const ContributorCount: React.FC<{
+const CodeMergeRatio: React.FC<{
   loading?: boolean;
   data: { url: string; result: MetricQuery | undefined }[];
 }> = ({ loading = false, data }) => {
@@ -20,8 +25,8 @@ const ContributorCount: React.FC<{
     const series = data.map((item) => {
       return mapToLineAreaSeries(
         item.result!.metricCodequality,
-        'commitFrequency',
-        isCompare ? item.url : 'Commit frequency'
+        'locFrequency',
+        isCompare ? item.url : 'locFrequency'
       );
     });
 
@@ -34,17 +39,17 @@ const ContributorCount: React.FC<{
   return (
     <BaseCard
       loading={loading}
-      title="Commit frequency"
-      description="Determine the average number of commits per week in the past 90 days."
+      title="loc frequency"
+      description="Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
     >
       <EChartX option={echartsOpts} />
     </BaseCard>
   );
 };
 
-const ContributorCountWithData = () => {
+const CodeMergeRatioWithData = () => {
   const data = useMetricQueryData();
-  return <ContributorCount data={data} />;
+  return <CodeMergeRatio data={data} />;
 };
 
-export default ContributorCountWithData;
+export default CodeMergeRatioWithData;
