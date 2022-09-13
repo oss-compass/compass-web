@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import Link from 'next/link';
 import classnames from 'classnames';
-import { useRouter } from 'next/router';
 import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
 
-const DropDownList: React.FC<{ result: string[] }> = ({ result }) => {
-  const router = useRouter();
+const DropDownList: React.FC<{
+  result: string[];
+  onConfirm: (url: string) => void;
+}> = ({ result, onConfirm }) => {
   const { active } = useDropDown({
     totalLength: result.length,
     onPressEnter: () => {
-      router.push(`/analyze?url=${encodeURIComponent(result[active])}`);
+      const cp = result[active];
+      onConfirm(cp);
     },
   });
 
@@ -19,16 +19,21 @@ const DropDownList: React.FC<{ result: string[] }> = ({ result }) => {
     <>
       {result.map((url, index) => {
         return (
-          <Link href={`/analyze?url=${encodeURIComponent(url)}`} key={url}>
+          <div
+            key={url}
+            onClick={() => {
+              onConfirm(url);
+            }}
+          >
             <a
               className={classnames(
                 { 'bg-gray-100': active === index },
-                'block px-4 py-3 text-xl hover:bg-gray-100'
+                'my-1 py-1 px-4 text-base text-black line-clamp-1'
               )}
             >
               {url}
             </a>
-          </Link>
+          </div>
         );
       })}
     </>
@@ -37,13 +42,14 @@ const DropDownList: React.FC<{ result: string[] }> = ({ result }) => {
 
 const SearchDropdown: React.FC<{
   result: string[] | undefined;
-}> = ({ result }) => {
+  onConfirm: (url: string) => void;
+}> = ({ result, onConfirm }) => {
   if (!result) return <Empty type="DropDownItem" />;
   if (Array.isArray(result) && result.length === 0) {
     return <Empty type="DropDownItem" />;
   }
 
-  return <DropDownList result={result!} />;
+  return <DropDownList result={result!} onConfirm={onConfirm} />;
 };
 
 export default SearchDropdown;

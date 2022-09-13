@@ -1,35 +1,28 @@
 import React, { useMemo } from 'react';
 import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import { getLineOption, mapToLineSeries, toTimeXAxis } from '../options';
+import {
+  ChartComponentProps,
+  getLineOption,
+  lineArea,
+  toTimeXAxis,
+} from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 
-const CodeReviewCount: React.FC<{
-  loading?: boolean;
-  data: { url: string; result: MetricQuery | undefined }[];
-}> = ({ loading = false, data }) => {
+const CodeReviewCount: React.FC<ChartComponentProps> = ({
+  loading = false,
+  xAxis,
+  yAxis,
+}) => {
   const echartsOpts = useMemo(() => {
-    if (!data[0]?.result?.metricActivity) return {};
-
-    const metricActivity = data[0].result.metricActivity;
-    const xAxisDate = toTimeXAxis(metricActivity, 'grimoireCreationDate');
-
-    const isCompare = data?.length > 1;
-
-    const series = data.map((item) => {
-      return mapToLineSeries(
-        item.result!.metricActivity,
-        'codeReviewCount',
-        isCompare ? item.url : 'code review count'
-      );
+    const series = yAxis.map(({ name, data }) => {
+      return lineArea({ name, data });
     });
-
-    return getLineOption({
-      xAxisData: xAxisDate,
-      series,
-    });
-  }, [data]);
+    return getLineOption({ xAxisData: xAxis, series });
+  }, [xAxis, yAxis]);
 
   return (
     <BaseCard
@@ -44,7 +37,32 @@ const CodeReviewCount: React.FC<{
 
 const CodeReviewCountWithData = () => {
   const data = useMetricQueryData();
-  return <CodeReviewCount data={data} />;
+  const isLoading = data?.some((i) => i.loading);
+
+  const xAxis = useMemo(() => {
+    const metricActivity = get(data, '[0].result.metricActivity', []);
+    if (isArray(metricActivity)) {
+      return toTimeXAxis(metricActivity, 'grimoireCreationDate');
+    }
+    return [];
+  }, [data]);
+
+  const yAxis = useMemo(() => {
+    if (isArray(data)) {
+      const isCompare = data.length > 1;
+      return data.map((item) => {
+        const metricActivity = item.result?.metricActivity;
+        const data = metricActivity?.map((i) => String(i['codeReviewCount']));
+        return {
+          name: isCompare ? item.url : 'code review count',
+          data: data || [],
+        };
+      });
+    }
+    return [];
+  }, [data]);
+
+  return <CodeReviewCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
 export default CodeReviewCountWithData;

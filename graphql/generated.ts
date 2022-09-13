@@ -314,6 +314,9 @@ export type RepoQuery = {
 
 export type MetricQueryVariables = Exact<{
   url: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  start?: InputMaybe<Scalars['ISO8601DateTime']>;
+  end?: InputMaybe<Scalars['ISO8601DateTime']>;
 }>;
 
 export type MetricQuery = {
@@ -552,8 +555,8 @@ useRepoQuery.fetcher = (
     headers
   );
 export const MetricDocument = /*#__PURE__*/ `
-    query metric($url: String!) {
-  metricCodequality(url: $url) {
+    query metric($url: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
+  metricCodequality(url: $url, level: $level, beginDate: $start, endDate: $end) {
     codeMergeRatio
     codeQualityGuarantee
     codeReviewRatio
@@ -566,7 +569,7 @@ export const MetricDocument = /*#__PURE__*/ `
     locFrequency
     prIssueLinkedRatio
   }
-  metricCommunity(url: $url) {
+  metricCommunity(url: $url, level: $level, beginDate: $start, endDate: $end) {
     closedPrsCount
     codeReviewCount
     commentFrequency
@@ -582,7 +585,7 @@ export const MetricDocument = /*#__PURE__*/ `
     prOpenTimeMid
     updatedIssuesCount
   }
-  metricActivity(url: $url) {
+  metricActivity(url: $url, level: $level, beginDate: $start, endDate: $end) {
     activityScore
     closedIssuesCount
     codeReviewCount

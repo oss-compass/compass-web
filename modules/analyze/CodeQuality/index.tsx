@@ -13,16 +13,13 @@ const CodeQuality = () => {
   return (
     <>
       <Topic>Code Quality Guarantee</Topic>
-      <div className="mb-4 grid gap-4 lg:grid-cols-2">
+      <div className="mb-4 grid min-w-0 gap-4 lg:grid-cols-2">
         <Overview />
         <ContributorCount />
         <CommitFrequency />
         <IsMaintained />
         <PRIssueLinked />
         <CodeReviewRatio />
-      </div>
-      <div className="mb-4">
-        <CodeMergeRatio />
       </div>
       <div className="mb-4">
         <CodeMergeRatio />

@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, createContext, useContext } from 'react';
+import { quickSelectRange, timeRange } from '@modules/analyze/constant';
 
 export interface DatePickerValue {
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
 }
 
 export interface DatePicker {
@@ -11,8 +12,8 @@ export interface DatePicker {
 }
 
 export const DEFAULT_DATEPICKER_VALUE = {
-  startTime: '',
-  endTime: '',
+  startTime: timeRange['3M'].start,
+  endTime: timeRange['3M'].end,
 };
 
 export const DatePickerContext = createContext<DatePicker>({

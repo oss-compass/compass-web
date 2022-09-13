@@ -7,14 +7,26 @@ import Trend from '../Trend';
 import CodeQuality from '../CodeQuality';
 import CommunitySupport from '../CommunitySupport';
 import CommunityActivity from '../CommunityActivity';
+import { useDatePickerContext } from '@modules/analyze/context';
 
-const DataPanel = () => {
+const DataView = () => {
+  const { value } = useDatePickerContext();
+  const { startTime, endTime } = value;
+
   const { urls } = useCompareItems();
   useQueries({
     queries: urls.map((url) => {
       return {
-        queryKey: useMetricQuery.getKey({ url }),
-        queryFn: useMetricQuery.fetcher(client, { url }),
+        queryKey: useMetricQuery.getKey({
+          url,
+          start: startTime,
+          end: endTime,
+        }),
+        queryFn: useMetricQuery.fetcher(client, {
+          url,
+          start: startTime,
+          end: endTime,
+        }),
       };
     }),
   });
@@ -29,4 +41,4 @@ const DataPanel = () => {
   );
 };
 
-export default DataPanel;
+export default DataView;

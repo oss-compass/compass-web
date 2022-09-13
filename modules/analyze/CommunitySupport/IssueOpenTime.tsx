@@ -1,42 +1,30 @@
 import React, { useMemo } from 'react';
 import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import { getLineOption, mapToLineSeries, toTimeXAxis } from '../options';
+import {
+  ChartComponentProps,
+  getLineOption,
+  line,
+  mapToLineSeries,
+  toTimeXAxis,
+} from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { LineSeriesOption } from 'echarts';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 
-const IssueOpenTime: React.FC<{
-  loading?: boolean;
-  data: { url: string; result: MetricQuery | undefined }[];
-}> = ({ loading = false, data }) => {
+const IssueOpenTime: React.FC<ChartComponentProps> = ({
+  loading = false,
+  xAxis,
+  yAxis,
+}) => {
   const echartsOpts = useMemo(() => {
-    if (!data[0]?.result?.metricCommunity) return {};
-
-    const metricCommunity = data[0].result.metricCommunity;
-    const xAxisDate = toTimeXAxis(metricCommunity, 'grimoireCreationDate');
-
-    const isCompare = data?.length > 1;
-
-    const series = data.reduce<LineSeriesOption[]>((acc, item) => {
-      const avg = mapToLineSeries(
-        item.result!.metricCommunity,
-        'issueOpenTimeAvg',
-        isCompare ? item.url : 'Issue open time avg'
-      );
-      const mid = mapToLineSeries(
-        item.result!.metricCommunity,
-        'issueOpenTimeMid',
-        isCompare ? item.url : 'Issue open time mid'
-      );
-      return [...acc, avg, mid];
-    }, []);
-
-    return getLineOption({
-      xAxisData: xAxisDate,
-      series,
+    const series = yAxis.map(({ name, data }) => {
+      return line({ name, data });
     });
-  }, [data]);
+    return getLineOption({ xAxisData: xAxis, series });
+  }, [xAxis, yAxis]);
 
   return (
     <BaseCard
@@ -51,7 +39,42 @@ const IssueOpenTime: React.FC<{
 
 const IssueOpenTimeWithData = () => {
   const data = useMetricQueryData();
-  return <IssueOpenTime data={data} />;
+  const isLoading = data?.some((i) => i.loading);
+
+  const xAxis = useMemo(() => {
+    const metricCommunity = get(data, '[0].result.metricCommunity', []);
+    if (isArray(metricCommunity)) {
+      return toTimeXAxis(metricCommunity, 'grimoireCreationDate');
+    }
+    return [];
+  }, [data]);
+
+  const yAxis = useMemo(() => {
+    if (isArray(data)) {
+      const isCompare = data.length > 1;
+
+      return data.reduce<any>((acc, item) => {
+        if (!item.result) return [];
+        const metricCommunity = item.result.metricCommunity;
+        const avg = metricCommunity.map((i) => String(i['issueOpenTimeAvg']));
+        const mid = metricCommunity?.map((i) => String(i['issueOpenTimeMid']));
+        return [
+          ...acc,
+          {
+            name: isCompare ? `${item.url} avg` : 'Issue open time avg',
+            data: avg,
+          },
+          {
+            name: isCompare ? `${item.url} mid` : 'Issue open time mid',
+            data: mid,
+          },
+        ];
+      }, []);
+    }
+    return [];
+  }, [data]);
+
+  return <IssueOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
 export default IssueOpenTimeWithData;
