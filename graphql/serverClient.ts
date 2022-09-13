@@ -4,9 +4,7 @@ import { GetServerSidePropsContext } from 'next';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const gqlClient = new GraphQLClient(
-  isDevelopment
-    ? 'http://localhost:3000/api/graphql'
-    : process.env.NEXT_PUBLIC_GRAPHQL_API_URL || ''
+  isDevelopment ? '/api/graphql' : process.env.NEXT_PUBLIC_GRAPHQL_API_URL || ''
 );
 
 const serverGqlClient = (req: GetServerSidePropsContext['req']) => {
