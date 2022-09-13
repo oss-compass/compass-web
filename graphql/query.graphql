@@ -41,8 +41,8 @@ query repo($url: String!){
     }
 }
 
-query metric($url: String!){
-    metricCodequality(url: $url){
+query metric($url: String!, $level:String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
+    metricCodequality(url: $url,level: $level, beginDate: $start, endDate: $end) {
         codeMergeRatio
         codeQualityGuarantee
         codeReviewRatio
@@ -55,7 +55,7 @@ query metric($url: String!){
         locFrequency
         prIssueLinkedRatio
     }
-    metricCommunity(url: $url){
+    metricCommunity(url: $url,level: $level, beginDate: $start, endDate: $end){
         closedPrsCount
         codeReviewCount
         commentFrequency
@@ -71,7 +71,7 @@ query metric($url: String!){
         prOpenTimeMid
         updatedIssuesCount
     }
-    metricActivity(url: $url){
+    metricActivity(url: $url,level: $level, beginDate: $start, endDate: $end){
         activityScore
         closedIssuesCount
         codeReviewCount

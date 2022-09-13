@@ -3,6 +3,8 @@ import type { PropsWithChildren, ComponentProps } from 'react';
 import classnames from 'classnames';
 import BaseCard from '@common/components/BaseCard';
 import styles from './index.module.scss';
+import { MetricQuery } from '@graphql/generated';
+import { getLastPathSegment } from '@common/utils/url';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -58,10 +60,13 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
   );
 };
 
-function TrendsList() {
+const TrendsList: React.FC<{
+  loading: boolean;
+  data: { url: string; result: MetricQuery | undefined }[];
+}> = ({ loading, data }) => {
   return (
     <BaseCard
-      loading={false}
+      loading={loading}
       title="Trending"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
@@ -90,28 +95,24 @@ function TrendsList() {
           </tr>
         </thead>
         <tbody>
-          <tr className="">
-            <td>Next.js</td>
-            <Td className="bg-[#f2fcff]">122</Td>
-            <Td className="bg-[#f2fcff]">122</Td>
-            <Td className="bg-[#fff9f3]">122</Td>
-            <Td className="bg-[#fff9f3]">122</Td>
-            <Td className="bg-[#f8f3ff]">122</Td>
-            <Td className="bg-[#f8f3ff]">122</Td>
-          </tr>
-          <tr className="">
-            <td>Next.js</td>
-            <Td className="bg-[#f2fcff]">122</Td>
-            <Td className="bg-[#f2fcff]">122</Td>
-            <Td className="bg-[#fff9f3]">122</Td>
-            <Td className="bg-[#fff9f3]">122</Td>
-            <Td className="bg-[#f8f3ff]">122</Td>
-            <Td className="bg-[#f8f3ff]">122</Td>
-          </tr>
+          {Array.isArray(data) &&
+            data.map((item, index) => {
+              return (
+                <tr className="" key={item.url}>
+                  <td>{getLastPathSegment(item.url)}</td>
+                  <Td className="bg-[#f2fcff]">122</Td>
+                  <Td className="bg-[#f2fcff]">122</Td>
+                  <Td className="bg-[#fff9f3]">122</Td>
+                  <Td className="bg-[#fff9f3]">122</Td>
+                  <Td className="bg-[#f8f3ff]">122</Td>
+                  <Td className="bg-[#f8f3ff]">122</Td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </BaseCard>
   );
-}
+};
 
 export default TrendsList;

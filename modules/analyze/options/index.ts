@@ -14,6 +14,7 @@ import {
   OptionDataValue,
 } from 'echarts/types/src/util/types';
 import { formatISO } from '@common/utils/time';
+import { MetricQuery } from '@graphql/generated';
 
 export const getLineOption = ({
   xAxisData,
@@ -65,7 +66,7 @@ export const line = (opts: {
   return {
     name: opts.name,
     type: 'line',
-    smooth: true,
+    smooth: false,
     data: opts.data,
   };
 };
@@ -77,7 +78,7 @@ export const lineArea = (opts: {
   return {
     name: opts.name,
     type: 'line',
-    smooth: true,
+    smooth: false,
     data: opts.data,
     areaStyle: {},
   };
@@ -107,4 +108,10 @@ export const mapToLineAreaSeries = (
   name: string
 ): LineSeriesOption => {
   return mapToSeries(arr, key, name, lineArea);
+};
+
+export type ChartComponentProps = {
+  loading?: boolean;
+  xAxis: string[];
+  yAxis: { name: string; data: (string | number)[] }[];
 };

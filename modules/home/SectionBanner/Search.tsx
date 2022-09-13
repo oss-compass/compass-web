@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { AiOutlineLoading, AiOutlineSearch } from 'react-icons/ai';
 import { useThrottle } from 'ahooks';
 import { useSearchQuery } from '@graphql/generated';
@@ -51,7 +49,13 @@ const Search = () => {
             )}
           </div>
         </div>
-        <SearchDropdown keyword={throttledKeyword} result={data?.fuzzySearch} />
+        {throttledKeyword && (
+          <div className="absolute left-0 right-0 top-[76px] z-[100] border-2 border-black bg-white drop-shadow">
+            <div className="w-full">
+              <SearchDropdown result={data?.fuzzySearch} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

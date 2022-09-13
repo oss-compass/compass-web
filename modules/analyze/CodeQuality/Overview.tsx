@@ -1,35 +1,27 @@
 import React, { useMemo } from 'react';
-import { MetricQuery } from '@graphql/generated';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import EChartX from '@common/components/EChartX';
-import { getLineOption, mapToLineSeries, toTimeXAxis } from '../options';
+import {
+  ChartComponentProps,
+  getLineOption,
+  line,
+  toTimeXAxis,
+} from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 
-const Overview: React.FC<{
-  loading?: boolean;
-  data: { url: string; result: MetricQuery | undefined }[];
-}> = ({ loading = false, data }) => {
+const Overview: React.FC<ChartComponentProps> = ({
+  loading = false,
+  xAxis,
+  yAxis,
+}) => {
   const echartsOpts = useMemo(() => {
-    if (!data[0]?.result?.metricCodequality) return {};
-
-    const metricCodequality = data[0].result.metricCodequality;
-    const xAxisDate = toTimeXAxis(metricCodequality, 'grimoireCreationDate');
-
-    const isCompare = data?.length > 1;
-
-    const series = data.map((item) => {
-      return mapToLineSeries(
-        item.result!.metricCodequality,
-        'codeQualityGuarantee',
-        isCompare ? item.url : 'Code Quality'
-      );
+    const series = yAxis.map(({ name, data }) => {
+      return line({ name, data });
     });
-
-    return getLineOption({
-      xAxisData: xAxisDate,
-      series,
-    });
-  }, [data]);
+    return getLineOption({ xAxisData: xAxis, series });
+  }, [xAxis, yAxis]);
 
   return (
     <BaseCard
@@ -44,7 +36,32 @@ const Overview: React.FC<{
 
 const OverviewWithData = () => {
   const data = useMetricQueryData();
-  return <Overview data={data} />;
+  const isLoading = data?.some((i) => i.loading);
+
+  const xAxis = useMemo(() => {
+    const codeQuality = get(data, '[0].result.metricCodequality', []);
+    if (isArray(codeQuality)) {
+      return toTimeXAxis(codeQuality, 'grimoireCreationDate');
+    }
+    return [];
+  }, [data]);
+
+  const yAxis = useMemo(() => {
+    if (isArray(data)) {
+      const isCompare = data.length > 1;
+      return data.map((item) => {
+        const codeQuality = item.result?.metricCodequality;
+        const data = codeQuality?.map((i) => String(i['codeQualityGuarantee']));
+        return {
+          name: isCompare ? item.url : 'Code Quality',
+          data: data || [],
+        };
+      });
+    }
+    return [];
+  }, [data]);
+
+  return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
 export default OverviewWithData;

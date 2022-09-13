@@ -9,11 +9,11 @@ const Trends: React.FC<{
   data: { url: string; result: MetricQuery | undefined }[];
 }> = ({ loading, data }) => {
   if (data.length > 1) {
-    return <TrendList />;
+    return <TrendList loading={loading} data={data} />;
   }
 
   if (data.length == 1) {
-    return <TrendChart loading={false} data={data[0].result} />;
+    return <TrendChart loading={loading} data={data[0].result} />;
   }
 
   return null;
@@ -21,7 +21,9 @@ const Trends: React.FC<{
 
 const TrendsWithData = () => {
   const data = useMetricQueryData();
-  return <Trends loading data={data} />;
+  const isLoading = data?.some((i) => i.loading);
+
+  return <Trends loading={isLoading} data={data} />;
 };
 
 export default TrendsWithData;
