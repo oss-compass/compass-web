@@ -15,24 +15,15 @@ const Hotspots: React.FC<
   metricsCount = 0,
   dimensionsCount = 0,
 }) => {
-  const ref = useRef(null);
-  const [inViewport] = useInViewport(ref);
   return (
     <div>
       <div className="mb-6 text-2xl font-bold">Hotspots</div>
       <div className="relative">
         <div className="absolute -right-1.5 -bottom-1.5 h-[139px] w-[496px] rounded border" />
-        <div
-          className="relative mb-6 flex h-[139px] w-[496px] flex-col justify-center rounded bg-black"
-          ref={ref}
-        >
+        <div className="relative mb-6 flex h-[139px] w-[496px] flex-col justify-center rounded bg-black">
           <h3 className="mb-6 text-center text-gray-100">Projects</h3>
           <div className="text-center text-4xl font-semibold italic text-white">
-            <Odometer
-              value={inViewport ? projectsCount! : 0}
-              duration={500}
-              format="d"
-            />
+            <Odometer value={projectsCount!} duration={500} format="d" />
           </div>
         </div>
       </div>
@@ -40,34 +31,19 @@ const Hotspots: React.FC<
         <div>
           <h3 className="mb-6">Dimensions</h3>
           <div className="text-center text-4xl italic">
-            <Odometer
-              value={dimensionsCount!}
-              auto={inViewport}
-              duration={500}
-              format="d"
-            />
+            <Odometer value={dimensionsCount!} duration={500} format="d" />
           </div>
         </div>
         <div>
           <h3 className="mb-6">Models</h3>
           <div className="text-center text-4xl italic">
-            <Odometer
-              value={modelsCount!}
-              auto={inViewport}
-              duration={500}
-              format="d"
-            />
+            <Odometer value={modelsCount!} duration={500} format="d" />
           </div>
         </div>
         <div>
           <h3 className="mb-6">Metrics</h3>
           <div className="text-center text-4xl italic">
-            <Odometer
-              value={metricsCount!}
-              auto={inViewport}
-              duration={500}
-              format="d"
-            />
+            <Odometer value={metricsCount!} duration={500} format="d" />
           </div>
         </div>
       </div>

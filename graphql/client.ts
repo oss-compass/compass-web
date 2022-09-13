@@ -9,7 +9,7 @@ const config: { mode: RequestMode; credentials: RequestCredentials } = {
 
 const gqlClient = new GraphQLClient(
   isDevelopment
-    ? 'http://localhost:3000/api/graphql'
+    ? '/api/graphql'
     : process.env.NEXT_PUBLIC_GRAPHQL_API_URL || '',
   config
 );
