@@ -7,11 +7,6 @@ const config: { mode: RequestMode; credentials: RequestCredentials } = {
   credentials: isDevelopment ? 'include' : 'same-origin',
 };
 
-const gqlClient = new GraphQLClient(
-  isDevelopment
-    ? '/api/graphql'
-    : process.env.NEXT_PUBLIC_GRAPHQL_API_URL || '',
-  config
-);
+const gqlClient = new GraphQLClient('/api/graphql');
 
 export default gqlClient;
