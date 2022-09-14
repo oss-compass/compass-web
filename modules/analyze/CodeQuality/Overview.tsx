@@ -29,7 +29,9 @@ const Overview: React.FC<ChartComponentProps> = ({
       title="Overview"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

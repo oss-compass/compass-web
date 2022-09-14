@@ -31,7 +31,9 @@ const UpdatedIssuesCount: React.FC<ChartComponentProps> = ({
       title="updated Issues Count"
       description="Number of issue updates in the last 90 days."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

@@ -30,7 +30,9 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
       title="Code review count"
       description="Determine the average number of review comments per pull request created in the last 90 days"
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

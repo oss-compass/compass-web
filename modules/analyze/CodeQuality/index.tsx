@@ -13,8 +13,10 @@ const CodeQuality = () => {
   return (
     <>
       <Topic>Code Quality Guarantee</Topic>
-      <div className="mb-4 grid min-w-0 gap-4 lg:grid-cols-2">
+      <div className="mb-4">
         <Overview />
+      </div>
+      <div className="mb-4 grid min-w-0 gap-4 lg:grid-cols-2">
         <ContributorCount />
         <CommitFrequency />
         <IsMaintained />

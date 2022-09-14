@@ -31,7 +31,9 @@ const IsMaintained: React.FC<ChartComponentProps> = ({
       title="Is Maintained"
       description="Percentage of weeks with at least one code commit in the past 90 days."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

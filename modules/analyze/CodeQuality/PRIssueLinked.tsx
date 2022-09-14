@@ -30,7 +30,9 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
       title="PR Issue Linked"
       description="Percentage of new pr link issues in the last 90 days."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

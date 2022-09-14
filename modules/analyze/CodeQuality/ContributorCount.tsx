@@ -31,7 +31,9 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
       title="Contributors"
       description="Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

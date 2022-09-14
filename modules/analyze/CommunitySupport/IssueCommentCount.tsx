@@ -31,7 +31,9 @@ const IssueCommentCount: React.FC<ChartComponentProps> = ({
       title="Issue comment count"
       description="Determine the average number of comments per issue created in the last 90 days"
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

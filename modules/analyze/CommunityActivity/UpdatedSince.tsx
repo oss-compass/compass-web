@@ -31,7 +31,9 @@ const UpdatedSince: React.FC<ChartComponentProps> = ({
       title="Updated since"
       description="Determine the average time per repository since the repository was last updated (in months)."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };
