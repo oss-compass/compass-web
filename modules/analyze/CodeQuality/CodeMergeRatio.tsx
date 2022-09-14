@@ -32,7 +32,9 @@ const CodeMergeRatio: React.FC<ChartComponentProps> = ({
       title="Code merge ratio"
       description="Percentage of recent 90-day code commits with at least one reviewer (not PR creator)"
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

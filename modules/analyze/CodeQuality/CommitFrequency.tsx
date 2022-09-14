@@ -31,7 +31,9 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
       title="Commit frequency"
       description="Determine the average number of commits per week in the past 90 days."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

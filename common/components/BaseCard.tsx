@@ -1,21 +1,29 @@
-import React, { PropsWithChildren } from 'react';
+import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import classnames from 'classnames';
+import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 
-const BaseCard: React.FC<
-  PropsWithChildren<{
-    loading?: boolean;
-    className?: string;
-    title?: string;
-    description?: string;
-  }>
-> = ({
+interface BaseCardProps {
+  loading?: boolean;
+  className?: string;
+  title?: string;
+  description?: string;
+  children: ((containerRef: RefObject<HTMLElement>) => ReactNode) | ReactNode;
+}
+
+const BaseCard: React.FC<BaseCardProps> = ({
   className = '',
   children,
   loading = false,
   title = '',
   description = '',
 }) => {
-  const cls = classnames(className, 'rounded-lg bg-white p-6 drop-shadow-sm');
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [fullScreen, setFullScreen] = useState(false);
+
+  const cls = classnames(className, 'rounded-lg bg-white p-6 drop-shadow-sm', {
+    'w-screen h-screen fixed left-0 right-0 top-0 bottom-0 z-[1000]':
+      fullScreen,
+  });
 
   if (loading) {
     return (
@@ -38,10 +46,20 @@ const BaseCard: React.FC<
   }
 
   return (
-    <div className={cls}>
-      <h2 className="mb-2 text-lg font-semibold">{title}</h2>
+    <div className={cls} ref={cardRef}>
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-lg font-semibold">{title}</h2>
+        <span
+          className="cursor-pointer p-2"
+          onClick={() => {
+            setFullScreen((pre) => !pre);
+          }}
+        >
+          {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
+        </span>
+      </div>
       <p className="mb-4 text-sm">{description}</p>
-      {children}
+      {typeof children === 'function' ? children(cardRef) : children}
     </div>
   );
 };

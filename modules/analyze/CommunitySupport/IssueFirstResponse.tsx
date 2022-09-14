@@ -32,7 +32,9 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
       title="Issue first response"
       description="Average/Median first comments response (in days) for new Issues created in the last 90 days."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

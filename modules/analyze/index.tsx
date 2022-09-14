@@ -10,14 +10,16 @@ const DynamicDataView = dynamic(() => import('./DataView'), { ssr: false });
 
 const Analyze = memo(() => {
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <Header />
       <NavBar />
       <Main>
         <SideBar />
         <Content>
-          <CompareBar />
-          <DynamicDataView />
+          <div className="flex-1">
+            <CompareBar />
+            <DynamicDataView />
+          </div>
           <Footer />
         </Content>
       </Main>

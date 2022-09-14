@@ -1,11 +1,9 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import type { PropsWithChildren } from 'react';
 import { useDeepCompareEffect } from 'ahooks';
-import debounce from 'lodash/debounce';
-import { useResizeDetector } from 'react-resize-detector';
 import { init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
 import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
+import { useResizeDetector } from 'react-resize-detector';
 
 export interface ReactEChartsProps {
   option: EChartsOption;
@@ -13,6 +11,7 @@ export interface ReactEChartsProps {
   settings?: SetOptionOpts;
   loading?: boolean;
   theme?: 'light' | 'dark';
+  containerRef?: React.RefObject<HTMLElement>;
 }
 
 const EChartX: React.FC<ReactEChartsProps> = ({
@@ -21,6 +20,7 @@ const EChartX: React.FC<ReactEChartsProps> = ({
   settings,
   loading,
   theme,
+  containerRef,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -31,16 +31,8 @@ const EChartX: React.FC<ReactEChartsProps> = ({
       chart = init(chartRef.current, theme);
     }
 
-    // resize
-    const resizeChart = debounce(() => {
-      chart?.resize();
-    }, 200);
-
-    window.addEventListener('resize', resizeChart);
-    // dispose
     return () => {
       chart?.dispose();
-      window.removeEventListener('resize', resizeChart);
     };
   }, [theme]);
 
@@ -60,20 +52,23 @@ const EChartX: React.FC<ReactEChartsProps> = ({
     }
   }, [loading]);
 
+  // ----------------container resize------------------------------
+  const onResize = useCallback((width?: number, height?: number) => {
+    if (chartRef.current !== null) {
+      const chart = getInstanceByDom(chartRef.current)!;
+      chart.resize({ width: 'auto', height: Number(height) > 650 ? 650 : 350 });
+    }
+  }, []);
+
+  useResizeDetector({
+    targetRef: containerRef,
+    onResize,
+    skipOnMount: true,
+  });
+
   return (
     <div ref={chartRef} style={{ width: '100%', height: '350px', ...style }} />
   );
 };
-
-// const EChartX: React.FC<PropsWithChildren> = ({ children }) => {
-//   const onResize = useCallback(() => {
-//     console.log('-----------onResize---------------------');
-//     // on resize logic
-//   }, []);
-//
-//   const { ref, width, height } = useResizeDetector({ onResize });
-//   return <div ref={ref}>{children}</div>;
-// };
-//
 
 export default EChartX;

@@ -7,7 +7,6 @@ export const quickSelectRange = [
   '2Y',
   '3Y',
   '5Y',
-  '10Y',
   'Since 2000',
 ];
 
@@ -34,10 +33,6 @@ export const timeRange = {
   },
   '5Y': {
     start: subYears(new Date(), 5),
-    end: new Date(),
-  },
-  '10Y': {
-    start: subYears(new Date(), 10),
     end: new Date(),
   },
   'Since 2000': {

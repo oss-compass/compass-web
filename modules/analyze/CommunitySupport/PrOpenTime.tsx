@@ -32,7 +32,9 @@ const PrOpenTime: React.FC<ChartComponentProps> = ({
       title="PR open time"
       description="Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change request and unresolved change request."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };

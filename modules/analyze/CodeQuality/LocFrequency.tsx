@@ -29,7 +29,9 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
       title="loc frequency"
       description="Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
     >
-      <EChartX option={echartsOpts} />
+      {(containerRef) => (
+        <EChartX option={echartsOpts} containerRef={containerRef} />
+      )}
     </BaseCard>
   );
 };
