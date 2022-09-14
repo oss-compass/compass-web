@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const PRIssueLinked: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -28,6 +29,7 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="PR Issue Linked"
+      id={CodeQuality.PRIssueLinked}
       description="Percentage of new pr link issues in the last 90 days."
     >
       {(containerRef) => (

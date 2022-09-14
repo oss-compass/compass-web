@@ -10,6 +10,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const Overview: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -27,6 +28,7 @@ const Overview: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Overview"
+      id={CommunitySupport.Overview}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

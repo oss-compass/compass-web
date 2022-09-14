@@ -10,6 +10,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const LocFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -27,6 +28,7 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="loc frequency"
+      id={CodeQuality.LocFrequency}
       description="Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
     >
       {(containerRef) => (

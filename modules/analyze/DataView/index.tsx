@@ -2,6 +2,7 @@ import React from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useMetricQuery } from '@graphql/generated';
 import client from '@graphql/client';
+import useHashScroll from '@common/hooks/useHashScroll';
 import useCompareItems from '../hooks/useCompareItems';
 import Trend from '../Trend';
 import CodeQuality from '../CodeQuality';
@@ -30,6 +31,8 @@ const DataView = () => {
       };
     }),
   });
+
+  useHashScroll(50);
 
   return (
     <>

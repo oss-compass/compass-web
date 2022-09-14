@@ -14,10 +14,7 @@ const useDropDown = ({ totalLength, onPressEnter }: Props) => {
     'up,down,enter',
     (e, he) => {
       e.preventDefault();
-
       const press = he.key;
-      console.log('----press key--------', he.key);
-
       // press first time
       if ((press === 'up' || press === 'down') && active === -1) {
         setActive(0);

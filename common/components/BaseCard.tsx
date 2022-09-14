@@ -1,8 +1,11 @@
 import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
+import { useHotkeys } from 'react-hotkeys-hook';
+import snakeCase from 'lodash/snakeCase';
 
 interface BaseCardProps {
+  id?: string;
   loading?: boolean;
   className?: string;
   title?: string;
@@ -11,6 +14,7 @@ interface BaseCardProps {
 }
 
 const BaseCard: React.FC<BaseCardProps> = ({
+  id,
   className = '',
   children,
   loading = false,
@@ -20,9 +24,18 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const [fullScreen, setFullScreen] = useState(false);
 
-  const cls = classnames(className, 'rounded-lg bg-white p-6 drop-shadow-sm', {
-    'w-screen h-screen fixed left-0 right-0 top-0 bottom-0 z-[1000]':
-      fullScreen,
+  const cls = classnames(
+    className,
+    'rounded-lg bg-white p-5 drop-shadow-sm border-2 border-white',
+    {
+      'w-screen h-screen fixed left-0 right-0 top-0 bottom-0 z-[1000]':
+        fullScreen,
+    }
+  );
+
+  useHotkeys('esc', (e, he) => {
+    e.preventDefault();
+    setFullScreen(false);
   });
 
   if (loading) {
@@ -46,7 +59,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   }
 
   return (
-    <div className={cls} ref={cardRef}>
+    <div className={cls} ref={cardRef} id={id}>
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-lg font-semibold">{title}</h2>
         <span

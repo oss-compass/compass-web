@@ -12,6 +12,7 @@ import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CommunityActivity } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const ClosedPrsCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -28,7 +29,7 @@ const ClosedPrsCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="Closed PR Count"
+      title="Closed PR count"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

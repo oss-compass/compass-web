@@ -26,7 +26,6 @@ const CodeQuality = () => {
       <div className="mb-4">
         <CodeMergeRatio />
       </div>
-      <h3>Code Changes Lines</h3>
       <LocFrequency />
     </>
   );

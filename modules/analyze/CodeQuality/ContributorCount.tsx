@@ -12,6 +12,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const ContributorCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -29,6 +30,7 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Contributors"
+      id={CodeQuality.ContributorCount}
       description="Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days."
     >
       {(containerRef) => (
