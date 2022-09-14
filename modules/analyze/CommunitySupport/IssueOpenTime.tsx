@@ -13,6 +13,7 @@ import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { LineSeriesOption } from 'echarts';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const IssueOpenTime: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -29,7 +30,8 @@ const IssueOpenTime: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="IssueOpenTime"
+      title="Issue open time"
+      id={CommunitySupport.IssueOpenTime}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

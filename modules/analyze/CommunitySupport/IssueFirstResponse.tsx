@@ -13,6 +13,7 @@ import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -30,6 +31,7 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Issue first response"
+      id={CommunitySupport.IssueFirstResponse}
       description="Average/Median first comments response (in days) for new Issues created in the last 90 days."
     >
       {(containerRef) => (

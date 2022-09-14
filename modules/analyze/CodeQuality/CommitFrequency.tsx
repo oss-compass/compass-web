@@ -12,6 +12,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const CommitFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -29,6 +30,7 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Commit frequency"
+      id={CodeQuality.CommitFrequency}
       description="Determine the average number of commits per week in the past 90 days."
     >
       {(containerRef) => (

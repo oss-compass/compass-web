@@ -10,6 +10,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const CodeReviewRatio: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -27,6 +28,7 @@ const CodeReviewRatio: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Code review ratio"
+      id={CodeQuality.CodeReviewRatio}
       description="Percentage of recent 90-day code commits with at least one reviewer (not PR creator)"
     >
       {(containerRef) => (

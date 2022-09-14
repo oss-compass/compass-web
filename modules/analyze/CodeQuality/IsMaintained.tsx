@@ -12,6 +12,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const IsMaintained: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -29,6 +30,7 @@ const IsMaintained: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Is Maintained"
+      id={CodeQuality.IsMaintained}
       description="Percentage of weeks with at least one code commit in the past 90 days."
     >
       {(containerRef) => (

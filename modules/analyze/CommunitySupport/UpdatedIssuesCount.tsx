@@ -12,6 +12,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const UpdatedIssuesCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -28,7 +29,8 @@ const UpdatedIssuesCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="updated Issues Count"
+      title="Updated issues count"
+      id={CommunitySupport.UpdatedIssuesCount}
       description="Number of issue updates in the last 90 days."
     >
       {(containerRef) => (

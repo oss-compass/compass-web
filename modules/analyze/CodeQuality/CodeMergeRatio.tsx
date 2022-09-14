@@ -1,18 +1,16 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
   lineArea,
-  mapToLineAreaSeries,
-  mapToLineSeries,
   toTimeXAxis,
 } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 
 const CodeMergeRatio: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -30,6 +28,7 @@ const CodeMergeRatio: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Code merge ratio"
+      id={CodeQuality.CodeMergeRatio}
       description="Percentage of recent 90-day code commits with at least one reviewer (not PR creator)"
     >
       {(containerRef) => (
