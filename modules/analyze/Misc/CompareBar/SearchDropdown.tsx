@@ -2,27 +2,28 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
+import { SearchQuery } from '@graphql/generated';
 
 const DropDownList: React.FC<{
-  result: string[];
+  result: SearchQuery['fuzzySearch'];
   onConfirm: (url: string) => void;
 }> = ({ result, onConfirm }) => {
   const { active } = useDropDown({
     totalLength: result.length,
     onPressEnter: () => {
       const cp = result[active];
-      onConfirm(cp);
+      onConfirm(cp.label!);
     },
   });
 
   return (
     <>
-      {result.map((url, index) => {
+      {result.map((item, index) => {
         return (
           <div
-            key={url}
+            key={item.label}
             onClick={() => {
-              onConfirm(url);
+              onConfirm(item.label!);
             }}
           >
             <a
@@ -31,7 +32,7 @@ const DropDownList: React.FC<{
                 'my-1 py-1 px-4 text-base text-black line-clamp-1'
               )}
             >
-              {url}
+              {item.label}
             </a>
           </div>
         );
@@ -41,7 +42,7 @@ const DropDownList: React.FC<{
 };
 
 const SearchDropdown: React.FC<{
-  result: string[] | undefined;
+  result: SearchQuery['fuzzySearch'];
   onConfirm: (url: string) => void;
 }> = ({ result, onConfirm }) => {
   if (!result) return <Empty type="DropDownItem" />;

@@ -5,28 +5,35 @@ import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
+import { SearchQuery } from '@graphql/generated';
 
-const DropDownList: React.FC<{ result: string[] }> = ({ result }) => {
+const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
+  result,
+}) => {
   const router = useRouter();
   const { active } = useDropDown({
     totalLength: result.length,
     onPressEnter: () => {
-      router.push(`/analyze?url=${encodeURIComponent(result[active])}`);
+      const activeItem = result[active];
+      router.push(`/analyze?url=${encodeURIComponent(activeItem.label!)}`);
     },
   });
 
   return (
     <>
-      {result.map((url, index) => {
+      {result.map((item, index) => {
         return (
-          <Link href={`/analyze?url=${encodeURIComponent(url)}`} key={url}>
+          <Link
+            href={`/analyze?url=${encodeURIComponent(item.label!)}`}
+            key={item.label}
+          >
             <a
               className={classnames(
                 { 'bg-gray-100': active === index },
                 'block px-4 py-3 text-xl hover:bg-gray-100'
               )}
             >
-              {url}
+              {item.label}
             </a>
           </Link>
         );
@@ -36,7 +43,7 @@ const DropDownList: React.FC<{ result: string[] }> = ({ result }) => {
 };
 
 const SearchDropdown: React.FC<{
-  result: string[] | undefined;
+  result: SearchQuery['fuzzySearch'];
 }> = ({ result }) => {
   if (!result) return <Empty type="DropDownItem" />;
   if (Array.isArray(result) && result.length === 0) {

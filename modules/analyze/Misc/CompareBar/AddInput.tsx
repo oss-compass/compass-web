@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import SearchDropdown from './SearchDropdown';
-import { useThrottle, useDebounce } from 'ahooks';
+import { useThrottle } from 'ahooks';
+import { useClickAway } from 'react-use';
 import { useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import { AiOutlineLoading, AiOutlinePlus } from 'react-icons/ai';
@@ -9,10 +10,15 @@ import classnames from 'classnames';
 
 const AddInput = () => {
   const search = window.location.search;
+  const ref = useRef(null);
   const router = useRouter();
   const [confirmVal, setConfirmVal] = useState('');
   const [keyword, setKeyword] = useState('');
   const [showInput, setShowInput] = useState(false);
+
+  useClickAway(ref, () => {
+    setShowInput(false);
+  });
 
   const throttledKeyword = useThrottle(keyword, { wait: 300 });
   const { isLoading, data, fetchStatus } = useSearchQuery(
@@ -28,15 +34,11 @@ const AddInput = () => {
 
   return (
     <div
+      ref={ref}
       className={classnames(
-        ' ml-0.5 w-24 flex-shrink-0 cursor-pointer rounded-tr-lg rounded-br-lg  bg-[#00B5EA] text-white transition-all hover:w-[350px]'
+        ' ml-0.5 w-24 flex-shrink-0 cursor-pointer rounded-tr-lg rounded-br-lg  bg-[#00B5EA] text-white transition-all',
+        { 'w-[350px]': showInput }
       )}
-      onMouseEnter={() => {
-        setShowInput(true);
-      }}
-      onMouseLeave={() => {
-        setShowInput(false);
-      }}
     >
       {showInput ? (
         <div className="flex h-full w-full items-center justify-center ">
@@ -45,7 +47,7 @@ const AddInput = () => {
               <input
                 value={confirmVal || keyword}
                 type="text"
-                className="h-10 w-36 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-neutral-300"
+                className="w-55 h-10 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white"
                 placeholder="Pick a project"
                 onChange={(v) => {
                   setKeyword(v.target.value);
@@ -76,7 +78,7 @@ const AddInput = () => {
               <div className="border-1 absolute left-0 right-0 top-[44px] z-[100] rounded  bg-white drop-shadow">
                 <div className="w-full">
                   <SearchDropdown
-                    result={data?.fuzzySearch}
+                    result={data?.fuzzySearch!}
                     onConfirm={(url) => {
                       setConfirmVal(url);
                     }}
@@ -87,7 +89,12 @@ const AddInput = () => {
           </div>
         </div>
       ) : (
-        <div className=" flex h-full w-full flex-col items-center justify-center">
+        <div
+          className=" flex h-full w-full flex-col items-center justify-center"
+          onClick={() => {
+            setShowInput(true);
+          }}
+        >
           <AiOutlinePlus className="text-2xl" />
           <div>compare</div>
         </div>
