@@ -14,6 +14,8 @@ import { LineSeriesOption } from 'echarts';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { repoUrlFormatForChart } from '@common/utils/url';
+import { pickKeyToXAxis } from '@modules/analyze/options/metric';
 
 const IssueOpenTime: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -46,11 +48,10 @@ const IssueOpenTimeWithData = () => {
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
-    const metricCommunity = get(data, '[0].result.metricCommunity', []);
-    if (isArray(metricCommunity)) {
-      return toTimeXAxis(metricCommunity, 'grimoireCreationDate');
-    }
-    return [];
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'grimoireCreationDate',
+    });
   }, [data]);
 
   const yAxis = useMemo(() => {
@@ -65,11 +66,15 @@ const IssueOpenTimeWithData = () => {
         return [
           ...acc,
           {
-            name: isCompare ? `${item.url} avg` : 'Issue open time avg',
+            name: isCompare
+              ? `${repoUrlFormatForChart(item.url)} avg`
+              : 'Issue open time avg',
             data: avg,
           },
           {
-            name: isCompare ? `${item.url} mid` : 'Issue open time mid',
+            name: isCompare
+              ? `${repoUrlFormatForChart(item.url)} mid`
+              : 'Issue open time mid',
             data: mid,
           },
         ];

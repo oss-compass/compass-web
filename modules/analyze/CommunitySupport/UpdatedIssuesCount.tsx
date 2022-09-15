@@ -13,6 +13,11 @@ import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { repoUrlFormatForChart } from '@common/utils/url';
+import {
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 
 const UpdatedIssuesCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -45,28 +50,18 @@ const UpdatedIssuesCountWithData = () => {
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
-    const metricCommunity = get(data, '[0].result.metricCommunity', []);
-    if (isArray(metricCommunity)) {
-      return toTimeXAxis(metricCommunity, 'grimoireCreationDate');
-    }
-    return [];
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'grimoireCreationDate',
+    });
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-      return data.map((item) => {
-        const metricCommunity = item.result?.metricCommunity;
-        const data = metricCommunity?.map((i) =>
-          String(i['updatedIssuesCount'])
-        );
-        return {
-          name: isCompare ? item.url : 'updatedIssuesCount',
-          data: data || [],
-        };
-      });
-    }
-    return [];
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'updatedIssuesCount',
+      legendName: 'Updated Issues Count',
+    });
   }, [data]);
 
   return <UpdatedIssuesCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

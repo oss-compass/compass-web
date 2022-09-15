@@ -11,6 +11,11 @@ import {
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { repoUrlFormatForChart } from '@common/utils/url';
+import {
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 
 const Overview: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -43,26 +48,18 @@ const OverviewWithData = () => {
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
-    const codeQuality = get(data, '[0].result.metricCodequality', []);
-    if (isArray(codeQuality)) {
-      return toTimeXAxis(codeQuality, 'grimoireCreationDate');
-    }
-    return [];
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCodequality',
+      valueKey: 'grimoireCreationDate',
+    });
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-      return data.map((item) => {
-        const codeQuality = item.result?.metricCodequality;
-        const data = codeQuality?.map((i) => String(i['codeQualityGuarantee']));
-        return {
-          name: isCompare ? item.url : 'Code Quality',
-          data: data || [],
-        };
-      });
-    }
-    return [];
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricCodequality',
+      valueKey: 'codeQualityGuarantee',
+      legendName: 'Code Quality',
+    });
   }, [data]);
 
   return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

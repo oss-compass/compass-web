@@ -22,8 +22,6 @@ const CodeQuality = () => {
         <IsMaintained />
         <PRIssueLinked />
         <CodeReviewRatio />
-      </div>
-      <div className="mb-4">
         <CodeMergeRatio />
       </div>
       <LocFrequency />

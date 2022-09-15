@@ -1,17 +1,13 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  lineArea,
-  toTimeXAxis,
-} from '../options';
+import { ChartComponentProps, getLineOption, lineArea } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import {
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 
 const PRIssueLinked: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -44,26 +40,18 @@ const PRIssueLinkedWithData = () => {
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
-    const codeQuality = get(data, '[0].result.metricCodequality', []);
-    if (isArray(codeQuality)) {
-      return toTimeXAxis(codeQuality, 'grimoireCreationDate');
-    }
-    return [];
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCodequality',
+      valueKey: 'grimoireCreationDate',
+    });
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-      return data.map((item) => {
-        const codeQuality = item.result?.metricCodequality;
-        const data = codeQuality?.map((i) => String(i['prIssueLinkedRatio']));
-        return {
-          name: isCompare ? item.url : 'PR Issue Linked',
-          data: data || [],
-        };
-      });
-    }
-    return [];
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricCodequality',
+      valueKey: 'prIssueLinkedRatio',
+      legendName: 'PR Issue Linked',
+    });
   }, [data]);
 
   return <PRIssueLinked loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
