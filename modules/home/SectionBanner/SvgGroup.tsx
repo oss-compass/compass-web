@@ -82,7 +82,7 @@ export const SvgPositionConfig = [
     width: 139,
     height: 143,
     el: <Svg7 />,
-    animate: true,
+    animate: false,
   },
   {
     id: 9,

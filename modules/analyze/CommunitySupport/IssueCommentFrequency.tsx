@@ -12,8 +12,14 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { repoUrlFormatForChart } from '@common/utils/url';
+import {
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 
-const IssueCommentCount: React.FC<ChartComponentProps> = ({
+const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
@@ -29,6 +35,7 @@ const IssueCommentCount: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Issue comment count"
+      id={CommunitySupport.IssueCommentFrequency}
       description="Determine the average number of comments per issue created in the last 90 days"
     >
       {(containerRef) => (
@@ -38,36 +45,28 @@ const IssueCommentCount: React.FC<ChartComponentProps> = ({
   );
 };
 
-const IssueCommentCountWithData = () => {
+const IssueCommentFrequencyWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
-  //
-  // const xAxis = useMemo(() => {
-  //   const metricCommunity = get(data, '[0].result.metricCommunity', []);
-  //   if (isArray(metricCommunity)) {
-  //     return toTimeXAxis(metricCommunity, 'grimoireCreationDate');
-  //   }
-  //   return [];
-  // }, [data]);
-  //
-  // const yAxis = useMemo(() => {
-  //   if (isArray(data)) {
-  //     const isCompare = data.length > 1;
-  //     return data.map((item) => {
-  //       const metricCommunity = item.result?.metricCommunity;
-  //       const data = metricCommunity?.map((i) =>
-  //         String(i['communitySupportScore'])
-  //       );
-  //       return {
-  //         name: isCompare ? item.url : 'Community Support',
-  //         data: data || [],
-  //       };
-  //     });
-  //   }
-  //   return [];
-  // }, [data]);
 
-  return <IssueCommentCount loading={isLoading} xAxis={[]} yAxis={[]} />;
+  const xAxis = useMemo(() => {
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'grimoireCreationDate',
+    });
+  }, [data]);
+
+  const yAxis = useMemo(() => {
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'commentFrequency',
+      legendName: 'Issue comment frequency',
+    });
+  }, [data]);
+
+  return (
+    <IssueCommentFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />
+  );
 };
 
-export default IssueCommentCountWithData;
+export default IssueCommentFrequencyWithData;

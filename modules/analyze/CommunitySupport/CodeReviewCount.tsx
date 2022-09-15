@@ -12,6 +12,11 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { repoUrlFormatForChart } from '@common/utils/url';
+import {
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 
 const CodeReviewCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -43,26 +48,18 @@ const CodeReviewCountWithData = () => {
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
-    const metricCommunity = get(data, '[0].result.metricCommunity', []);
-    if (isArray(metricCommunity)) {
-      return toTimeXAxis(metricCommunity, 'grimoireCreationDate');
-    }
-    return [];
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'grimoireCreationDate',
+    });
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-      return data.map((item) => {
-        const metricCommunity = item.result?.metricCommunity;
-        const data = metricCommunity?.map((i) => String(i['codeReviewCount']));
-        return {
-          name: isCompare ? item.url : 'code review count',
-          data: data || [],
-        };
-      });
-    }
-    return [];
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'codeReviewCount',
+      legendName: 'code review count',
+    });
   }, [data]);
 
   return <CodeReviewCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

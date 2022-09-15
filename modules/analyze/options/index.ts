@@ -14,7 +14,6 @@ import {
   OptionDataValue,
 } from 'echarts/types/src/util/types';
 import { formatISO } from '@common/utils/time';
-import { MetricQuery } from '@graphql/generated';
 
 export const getLineOption = ({
   xAxisData,
@@ -33,19 +32,22 @@ export const getLineOption = ({
       left: 0,
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
+      left: '5%',
+      right: '5%',
+      bottom: '5%',
       containLabel: true,
     },
     xAxis: {
       type: 'category',
-      boundaryGap: false,
+      boundaryGap: true,
       data: xAxisData,
       axisLabel: {
         align: 'center',
-        rotate: 10,
+        rotate: 5,
         margin: 20,
+      },
+      axisTick: {
+        alignWithLabel: true,
       },
     },
     yAxis: {
@@ -67,6 +69,7 @@ export const line = (opts: {
     name: opts.name,
     type: 'line',
     smooth: false,
+    showSymbol: false,
     data: opts.data,
   };
 };
@@ -79,6 +82,7 @@ export const lineArea = (opts: {
     name: opts.name,
     type: 'line',
     smooth: false,
+    showSymbol: false,
     data: opts.data,
     areaStyle: {},
   };

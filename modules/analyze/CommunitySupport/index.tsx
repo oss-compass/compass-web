@@ -4,7 +4,7 @@ import Overview from './Overview';
 
 import IssueFirstResponse from './IssueFirstResponse';
 import IssueOpenTime from './IssueOpenTime';
-import IssueCommentCount from './IssueCommentCount';
+import IssueCommentFrequency from './IssueCommentFrequency';
 import UpdatedIssuesCount from './UpdatedIssuesCount';
 
 import PrOpenTime from './PrOpenTime';
@@ -21,7 +21,7 @@ const CommunitySupport = () => {
       <div className="mb-4 grid min-w-0 gap-4 lg:grid-cols-2">
         <IssueFirstResponse />
         <IssueOpenTime />
-        <IssueCommentCount />
+        <IssueCommentFrequency />
         <UpdatedIssuesCount />
       </div>
       <div className="mb-4 grid min-w-0 gap-4 lg:grid-cols-2">

@@ -10,6 +10,11 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import { repoUrlFormatForChart } from '@common/utils/url';
+import {
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 
 const ContributorCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -41,26 +46,18 @@ const ContributorCountWithData = () => {
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
-    const metricActivity = get(data, '[0].result.metricActivity', []);
-    if (isArray(metricActivity)) {
-      return toTimeXAxis(metricActivity, 'grimoireCreationDate');
-    }
-    return [];
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricActivity',
+      valueKey: 'grimoireCreationDate',
+    });
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-      return data.map((item) => {
-        const metricActivity = item.result?.metricActivity;
-        const data = metricActivity?.map((i) => String(i['contributorCount']));
-        return {
-          name: isCompare ? item.url : 'Contributor Count',
-          data: data || [],
-        };
-      });
-    }
-    return [];
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricActivity',
+      valueKey: 'contributorCount',
+      legendName: 'Contributor Count',
+    });
   }, [data]);
 
   return <ContributorCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

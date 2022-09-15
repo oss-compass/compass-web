@@ -14,6 +14,8 @@ import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { repoUrlFormatForChart } from '@common/utils/url';
+import { pickKeyToXAxis } from '@modules/analyze/options/metric';
 
 const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -46,11 +48,10 @@ const IssueFirstResponseWithData = () => {
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
-    const metricCommunity = get(data, '[0].result.metricCommunity', []);
-    if (isArray(metricCommunity)) {
-      return toTimeXAxis(metricCommunity, 'grimoireCreationDate');
-    }
-    return [];
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'grimoireCreationDate',
+    });
   }, [data]);
 
   const yAxis = useMemo(() => {
@@ -69,11 +70,15 @@ const IssueFirstResponseWithData = () => {
         return [
           ...acc,
           {
-            name: isCompare ? `${item.url} avg` : 'Issue first response avg',
+            name: isCompare
+              ? `${repoUrlFormatForChart(item.url)} avg`
+              : 'Issue first response avg',
             data: avg,
           },
           {
-            name: isCompare ? `${item.url} mid` : 'Issue first response mid',
+            name: isCompare
+              ? `${repoUrlFormatForChart(item.url)} mid`
+              : 'Issue first response mid',
             data: mid,
           },
         ];

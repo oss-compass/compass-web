@@ -16,7 +16,7 @@ const Analyze = memo(() => {
       <Main>
         <SideBar />
         <Content>
-          <div className="flex-1">
+          <div className="w-full flex-1 xl:mx-auto xl:max-w-[1200px]">
             <CompareBar />
             <DynamicDataView />
           </div>
