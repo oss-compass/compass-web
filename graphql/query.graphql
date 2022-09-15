@@ -1,5 +1,8 @@
 query search($keyword: String!) {
-    fuzzySearch(keyword: $keyword)
+    fuzzySearch(keyword: $keyword){
+        level
+        label
+    }
 }
 
 query overview {

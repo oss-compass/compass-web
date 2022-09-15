@@ -40,6 +40,16 @@ export type Scalars = {
 
 export type ActivityMetric = {
   __typename?: 'ActivityMetric';
+  /** number of active C1 issue comments contributors in the past 90 days */
+  activeC1IssueCommentsContributorCount?: Maybe<Scalars['Float']>;
+  /** number of active C1 issue create contributors in the past 90 days */
+  activeC1IssueCreateContributorCount?: Maybe<Scalars['Float']>;
+  /** number of active C1 pr comments contributors in the past 90 days */
+  activeC1PrCommentsContributorCount?: Maybe<Scalars['Float']>;
+  /** number of active C1 pr create contributors in the past 90 days */
+  activeC1PrCreateContributorCount?: Maybe<Scalars['Float']>;
+  /** number of active C2 developers in the past 90 days */
+  activeC2ContributorCount?: Maybe<Scalars['Float']>;
   /** score of activity metric model */
   activityScore?: Maybe<Scalars['Float']>;
   /** number of issues closed in the past 90 days */
@@ -180,10 +190,18 @@ export type Overview = {
   trends?: Maybe<Array<Repo>>;
 };
 
+export type ProjectCompletionRow = {
+  __typename?: 'ProjectCompletionRow';
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level (project or repo) */
+  level?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Fuzzy search project by keyword */
-  fuzzySearch: Array<Scalars['String']>;
+  fuzzySearch: Array<ProjectCompletionRow>;
   /** Get activity metrics data of compass */
   metricActivity: Array<ActivityMetric>;
   /** Get code quality metrics data of compass */
@@ -260,7 +278,14 @@ export type SearchQueryVariables = Exact<{
   keyword: Scalars['String'];
 }>;
 
-export type SearchQuery = { __typename?: 'Query'; fuzzySearch: Array<string> };
+export type SearchQuery = {
+  __typename?: 'Query';
+  fuzzySearch: Array<{
+    __typename?: 'ProjectCompletionRow';
+    level?: string | null;
+    label?: string | null;
+  }>;
+};
 
 export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -419,7 +444,10 @@ useCreateRepoTaskMutation.fetcher = (
   );
 export const SearchDocument = /*#__PURE__*/ `
     query search($keyword: String!) {
-  fuzzySearch(keyword: $keyword)
+  fuzzySearch(keyword: $keyword) {
+    level
+    label
+  }
 }
     `;
 export const useSearchQuery = <TData = SearchQuery, TError = unknown>(
