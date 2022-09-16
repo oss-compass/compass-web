@@ -67,13 +67,13 @@ const IssueOpenTimeWithData = () => {
           ...acc,
           {
             name: isCompare
-              ? `${repoUrlFormatForChart(item.url)} avg`
+              ? `${repoUrlFormatForChart(item.label)} avg`
               : 'Issue open time avg',
             data: avg,
           },
           {
             name: isCompare
-              ? `${repoUrlFormatForChart(item.url)} mid`
+              ? `${repoUrlFormatForChart(item.label)} mid`
               : 'Issue open time mid',
             data: mid,
           },

@@ -3,27 +3,27 @@ import Analyze from '@modules/analyze';
 import {
   DatePickerContext,
   DEFAULT_DATEPICKER_VALUE,
-  CompareUrlsValue,
-  CompareUrlsContext,
-  DEFAULT_COMPARE_URLS_VALUE,
+  CompareItemsValue,
+  CompareItemsContext,
+  DEFAULT_COMPARE_ITEMS_VALUE,
 } from '@modules/analyze/context';
 
 const AnalyzePage = () => {
-  const [compareUrls, setCompareUrls] = useState<CompareUrlsValue>(
-    DEFAULT_COMPARE_URLS_VALUE
+  const [compareItems, setCompareItems] = useState<CompareItemsValue>(
+    DEFAULT_COMPARE_ITEMS_VALUE
   );
   const [datePicker, setDatePicker] = useState(DEFAULT_DATEPICKER_VALUE);
 
   return (
-    <CompareUrlsContext.Provider
-      value={{ value: compareUrls, update: setCompareUrls }}
+    <CompareItemsContext.Provider
+      value={{ value: compareItems, update: setCompareItems }}
     >
       <DatePickerContext.Provider
         value={{ value: datePicker, update: setDatePicker }}
       >
         <Analyze />
       </DatePickerContext.Provider>
-    </CompareUrlsContext.Provider>
+    </CompareItemsContext.Provider>
   );
 };
 

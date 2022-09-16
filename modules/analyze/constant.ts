@@ -40,3 +40,8 @@ export const timeRange = {
     end: new Date(),
   },
 };
+
+export enum Level {
+  PROJECT = 'project',
+  REPO = 'repo',
+}

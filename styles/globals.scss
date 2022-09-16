@@ -3,9 +3,15 @@
 @import 'tailwindcss/utilities';
 
 html, body {
+  height: 100%;
+}
+
+body > div {
   height: 100%
 }
 
-#__next {
-  height: 100%
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }

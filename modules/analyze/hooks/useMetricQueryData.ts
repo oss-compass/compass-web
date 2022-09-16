@@ -6,18 +6,29 @@ import { useDatePickerContext } from '@modules/analyze/context';
 const useMetricQueryData = () => {
   const { value } = useDatePickerContext();
   const { startTime, endTime } = value;
-  const { urls } = useCompareItems();
+  const { compareItems } = useCompareItems();
   const queryClient = useQueryClient();
 
-  return urls.map((url) => {
+  return compareItems.map(({ label, level }) => {
     const data = queryClient.getQueryData<MetricQuery>(
-      useMetricQuery.getKey({ url, start: startTime, end: endTime })
+      useMetricQuery.getKey({
+        label,
+        level,
+        start: startTime,
+        end: endTime,
+      })
     );
     const states = queryClient.getQueryState(
-      useMetricQuery.getKey({ url, start: startTime, end: endTime })
+      useMetricQuery.getKey({
+        label,
+        level,
+        start: startTime,
+        end: endTime,
+      })
     );
     return {
-      url,
+      label,
+      level,
       loading: states?.status === 'loading',
       result: data,
     };

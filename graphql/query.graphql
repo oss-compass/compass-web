@@ -26,26 +26,8 @@ query overview {
     }
 }
 
-query repo($url: String!){
-    repo(url: $url){
-        backend
-        forksCount
-        issuesCount
-        language
-        name
-        openIssuesCount
-        origin
-        path
-        pullsCount
-        stargazersCount
-        createdAt
-        updatedAt
-        watchersCount
-    }
-}
-
-query metric($url: String!, $level:String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
-    metricCodequality(url: $url,level: $level, beginDate: $start, endDate: $end) {
+query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
+    metricCodequality(label: $label,level: $level, beginDate: $start, endDate: $end) {
         codeMergeRatio
         codeQualityGuarantee
         codeReviewRatio
@@ -56,9 +38,8 @@ query metric($url: String!, $level:String = "repo", $start: ISO8601DateTime, $en
         label
         level
         locFrequency
-        prIssueLinkedRatio
     }
-    metricCommunity(url: $url,level: $level, beginDate: $start, endDate: $end){
+    metricCommunity(label: $label,level: $level, beginDate: $start, endDate: $end){
         closedPrsCount
         codeReviewCount
         commentFrequency
@@ -74,7 +55,7 @@ query metric($url: String!, $level:String = "repo", $start: ISO8601DateTime, $en
         prOpenTimeMid
         updatedIssuesCount
     }
-    metricActivity(url: $url,level: $level, beginDate: $start, endDate: $end){
+    metricActivity(label: $label,level: $level, beginDate: $start, endDate: $end){
         activityScore
         closedIssuesCount
         codeReviewCount

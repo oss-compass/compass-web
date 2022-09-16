@@ -15,7 +15,9 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
     totalLength: result.length,
     onPressEnter: () => {
       const activeItem = result[active];
-      router.push(`/analyze?url=${encodeURIComponent(activeItem.label!)}`);
+      router.push(
+        `/analyze?${activeItem.level}=${encodeURIComponent(activeItem.label!)}`
+      );
     },
   });
 
@@ -24,7 +26,7 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
       {result.map((item, index) => {
         return (
           <Link
-            href={`/analyze?url=${encodeURIComponent(item.label!)}`}
+            href={`/analyze?${item.level}=${encodeURIComponent(item.label!)}`}
             key={item.label}
           >
             <a
@@ -33,6 +35,9 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
                 'block px-4 py-3 text-xl hover:bg-gray-100'
               )}
             >
+              <span className="mr-2 rounded bg-gray-200 p-1 leading-none text-gray-400">
+                {item.level}
+              </span>
               {item.label}
             </a>
           </Link>

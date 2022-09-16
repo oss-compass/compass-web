@@ -67,13 +67,13 @@ const PrOpenTimeWithData = () => {
           ...acc,
           {
             name: isCompare
-              ? `${repoUrlFormatForChart(item.url)} avg`
+              ? `${repoUrlFormatForChart(item.label)} avg`
               : 'Rr open time avg',
             data: avg,
           },
           {
             name: isCompare
-              ? `${repoUrlFormatForChart(item.url)} mid`
+              ? `${repoUrlFormatForChart(item.label)} mid`
               : 'Rr open time mid',
             data: mid,
           },

@@ -71,13 +71,13 @@ const IssueFirstResponseWithData = () => {
           ...acc,
           {
             name: isCompare
-              ? `${repoUrlFormatForChart(item.url)} avg`
+              ? `${repoUrlFormatForChart(item.label)} avg`
               : 'Issue first response avg',
             data: avg,
           },
           {
             name: isCompare
-              ? `${repoUrlFormatForChart(item.url)} mid`
+              ? `${repoUrlFormatForChart(item.label)} mid`
               : 'Issue first response mid',
             data: mid,
           },

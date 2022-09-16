@@ -6,13 +6,13 @@ import { SearchQuery } from '@graphql/generated';
 
 const DropDownList: React.FC<{
   result: SearchQuery['fuzzySearch'];
-  onConfirm: (url: string) => void;
+  onConfirm: (item: SearchQuery['fuzzySearch'][number]) => void;
 }> = ({ result, onConfirm }) => {
   const { active } = useDropDown({
     totalLength: result.length,
     onPressEnter: () => {
       const cp = result[active];
-      onConfirm(cp.label!);
+      onConfirm(cp);
     },
   });
 
@@ -23,7 +23,7 @@ const DropDownList: React.FC<{
           <div
             key={item.label}
             onClick={() => {
-              onConfirm(item.label!);
+              onConfirm(item);
             }}
           >
             <a
@@ -43,7 +43,7 @@ const DropDownList: React.FC<{
 
 const SearchDropdown: React.FC<{
   result: SearchQuery['fuzzySearch'];
-  onConfirm: (url: string) => void;
+  onConfirm: (item: SearchQuery['fuzzySearch'][number]) => void;
 }> = ({ result, onConfirm }) => {
   if (!result) return <Empty type="DropDownItem" />;
   if (Array.isArray(result) && result.length === 0) {

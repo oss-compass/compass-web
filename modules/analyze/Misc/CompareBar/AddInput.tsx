@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import SearchDropdown from './SearchDropdown';
 import { useThrottle } from 'ahooks';
 import { useClickAway } from 'react-use';
-import { useSearchQuery } from '@graphql/generated';
+import { SearchQuery, useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import { AiOutlineLoading, AiOutlinePlus } from 'react-icons/ai';
 import classnames from 'classnames';
@@ -12,7 +12,11 @@ const AddInput = () => {
   const search = window.location.search;
   const ref = useRef(null);
   const router = useRouter();
-  const [confirmVal, setConfirmVal] = useState('');
+
+  const [confirmItem, setConfirmItem] = useState<
+    SearchQuery['fuzzySearch'][number] | null
+  >(null);
+
   const [keyword, setKeyword] = useState('');
   const [showInput, setShowInput] = useState(false);
 
@@ -45,26 +49,28 @@ const AddInput = () => {
           <div className="relative">
             <div className="flex items-center rounded  border ">
               <input
-                value={confirmVal || keyword}
+                value={confirmItem?.label || keyword}
                 type="text"
                 className="w-55 h-10 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white"
                 placeholder="Pick a project"
                 onChange={(v) => {
                   setKeyword(v.target.value);
-                  setConfirmVal('');
+                  setConfirmItem(null);
                 }}
               />
               <button
                 className="flex h-10 w-24 items-center justify-center bg-white text-[#00B5EA] hover:bg-gray-100"
                 onClick={async () => {
-                  if (confirmVal) {
-                    setKeyword('');
-                    setConfirmVal('');
+                  if (confirmItem) {
+                    const { label, level } = confirmItem;
                     await router.push(
-                      `${router.pathname}${search}&url=${encodeURIComponent(
-                        confirmVal
-                      )}`
+                      `${
+                        router.pathname
+                      }${search}&${level}=${encodeURIComponent(label!)}`
                     );
+
+                    setKeyword('');
+                    setConfirmItem(null);
                   }
                 }}
               >
@@ -74,13 +80,13 @@ const AddInput = () => {
                 compare
               </button>
             </div>
-            {!confirmVal && throttledKeyword && (
+            {!confirmItem && throttledKeyword && (
               <div className="border-1 absolute left-0 right-0 top-[44px] z-[100] rounded  bg-white drop-shadow">
                 <div className="w-full">
                   <SearchDropdown
                     result={data?.fuzzySearch!}
-                    onConfirm={(url) => {
-                      setConfirmVal(url);
+                    onConfirm={(item) => {
+                      setConfirmItem(item);
                     }}
                   />
                 </div>
