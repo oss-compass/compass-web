@@ -35,7 +35,7 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
                 'block px-4 py-3 text-xl hover:bg-gray-100'
               )}
             >
-              <span className="mr-2 rounded bg-gray-200 p-1 leading-none text-gray-400">
+              <span className="mr-2 rounded bg-gray-200 p-1 text-base leading-none text-gray-400">
                 {item.level}
               </span>
               {item.label}

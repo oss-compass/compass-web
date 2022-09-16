@@ -39,8 +39,8 @@ const CompareBar = () => {
               <div
                 key={item.label}
                 className={classnames(
-                  'group relative min-w-[150px] flex-1 border-r-2 border-r-white bg-[#3A5BEF] p-3 text-2xl text-white line-clamp-1',
-                  { 'rounded-tl-lg rounded-bl-lg': index === 0 }
+                  'group relative min-w-[150px] flex-1 border-l-2 border-r-white bg-[#3A5BEF] p-3 text-2xl text-white line-clamp-1',
+                  { 'rounded-tl-lg rounded-bl-lg !border-l-0': index === 0 }
                 )}
               >
                 {compareItems.length > 1 && <CloseIcons {...item} />}

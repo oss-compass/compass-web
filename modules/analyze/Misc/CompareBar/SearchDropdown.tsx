@@ -29,7 +29,7 @@ const DropDownList: React.FC<{
             <a
               className={classnames(
                 { 'bg-gray-100': active === index },
-                'my-1 py-1 px-4 text-base text-black line-clamp-1'
+                'my-1 py-1 px-4 text-base text-black line-clamp-1 hover:bg-gray-100'
               )}
             >
               {item.label}
