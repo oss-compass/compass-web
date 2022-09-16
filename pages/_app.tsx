@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import dynamic from 'next/dynamic';
+import { gaPageView } from '@common/utils/ga';
 
 import '../styles/globals.scss';
 
@@ -10,7 +12,10 @@ const NextNProgress = dynamic(() => import('nextjs-progressbar'), {
   ssr: false,
 });
 
+const isProd = process.env.NODE_ENV === 'production';
+
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -23,6 +28,17 @@ function MyApp({ Component, pageProps }: AppProps) {
         },
       })
   );
+
+  useEffect(() => {
+    if (!isProd) return;
+    const handleRouteChange = (url: string) => {
+      gaPageView(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
 
   return (
     <QueryClientProvider client={queryClient} contextSharing>
