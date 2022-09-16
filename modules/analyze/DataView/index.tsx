@@ -14,17 +14,19 @@ const DataView = () => {
   const { value } = useDatePickerContext();
   const { startTime, endTime } = value;
 
-  const { urls } = useCompareItems();
+  const { compareItems } = useCompareItems();
   useQueries({
-    queries: urls.map((url) => {
+    queries: compareItems.map(({ label, level }) => {
       return {
         queryKey: useMetricQuery.getKey({
-          url,
+          label,
+          level,
           start: startTime,
           end: endTime,
         }),
         queryFn: useMetricQuery.fetcher(client, {
-          url,
+          label,
+          level,
           start: startTime,
           end: endTime,
         }),

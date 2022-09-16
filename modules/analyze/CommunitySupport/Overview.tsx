@@ -61,7 +61,7 @@ const OverviewWithData = () => {
         );
         return {
           name: isCompare
-            ? repoUrlFormatForChart(item.url)
+            ? repoUrlFormatForChart(item.label)
             : 'Community Support',
           data: data || [],
         };

@@ -62,7 +62,7 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
 
 const TrendsList: React.FC<{
   loading: boolean;
-  data: { url: string; result: MetricQuery | undefined }[];
+  data: { label: string; result: MetricQuery | undefined }[];
 }> = ({ loading, data }) => {
   return (
     <BaseCard
@@ -98,8 +98,8 @@ const TrendsList: React.FC<{
           {Array.isArray(data) &&
             data.map((item, index) => {
               return (
-                <tr className="" key={item.url}>
-                  <td>{getLastPathSegment(item.url)}</td>
+                <tr className="" key={item.label}>
+                  <td>{getLastPathSegment(item.label)}</td>
                   <Td className="bg-[#f2fcff]">122</Td>
                   <Td className="bg-[#f2fcff]">122</Td>
                   <Td className="bg-[#fff9f3]">122</Td>

@@ -6,7 +6,7 @@ import useMetricQueryData from '../hooks/useMetricQueryData';
 
 const Trends: React.FC<{
   loading: boolean;
-  data: { url: string; result: MetricQuery | undefined }[];
+  data: { label: string; result: MetricQuery | undefined }[];
 }> = ({ loading, data }) => {
   if (data.length > 1) {
     return <TrendList loading={loading} data={data} />;

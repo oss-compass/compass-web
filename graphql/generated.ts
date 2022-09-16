@@ -78,6 +78,12 @@ export type ActivityMetric = {
 
 export type CodequalityMetric = {
   __typename?: 'CodequalityMetric';
+  /** number of active C1 pr comments contributors in the past 90 days */
+  activeC1PrCommentsContributorCount?: Maybe<Scalars['Float']>;
+  /** number of active C1 pr create contributors in the past 90 days */
+  activeC1PrCreateContributorCount?: Maybe<Scalars['Float']>;
+  /** number of active C2 developers in the past 90 days */
+  activeC2ContributorCount?: Maybe<Scalars['Float']>;
   /** ratio of merge pulls and all pulls */
   codeMergeRatio?: Maybe<Scalars['Float']>;
   /** score of code quality metric model */
@@ -86,8 +92,12 @@ export type CodequalityMetric = {
   codeReviewRatio?: Maybe<Scalars['Float']>;
   /** mean of submissions per week over the past 90 days */
   commitFrequency?: Maybe<Scalars['Float']>;
+  /** mean of inside submissions per week over the past 90 days */
+  commitFrequencyInside?: Maybe<Scalars['Float']>;
   /** number of active D1 developers in the past 90 days */
   contributorCount?: Maybe<Scalars['Float']>;
+  /** ratio of pulls which are linked issues and all pulls */
+  gitPrIssueLinkedRatio?: Maybe<Scalars['Float']>;
   /** metric model creatiton time */
   grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
   /** maintenance status */
@@ -98,8 +108,6 @@ export type CodequalityMetric = {
   level?: Maybe<Scalars['String']>;
   /** average of lines code each commit */
   locFrequency?: Maybe<Scalars['Float']>;
-  /** ratio of pulls which are linked issues and all pulls */
-  prIssueLinkedRatio?: Maybe<Scalars['Float']>;
 };
 
 export type CommunityMetric = {
@@ -200,6 +208,8 @@ export type ProjectCompletionRow = {
 
 export type Query = {
   __typename?: 'Query';
+  /** repo or project analysis status (pending/progress/success/error/canceled/unsumbit) */
+  analysisStatus: Scalars['String'];
   /** Fuzzy search project by keyword */
   fuzzySearch: Array<ProjectCompletionRow>;
   /** Get activity metrics data of compass */
@@ -214,29 +224,34 @@ export type Query = {
   repo?: Maybe<Repo>;
 };
 
+export type QueryAnalysisStatusArgs = {
+  label: Scalars['String'];
+};
+
 export type QueryFuzzySearchArgs = {
   keyword: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryMetricActivityArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
-  url: Scalars['String'];
 };
 
 export type QueryMetricCodequalityArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
-  url: Scalars['String'];
 };
 
 export type QueryMetricCommunityArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
-  url: Scalars['String'];
 };
 
 export type QueryRepoArgs = {
@@ -313,32 +328,8 @@ export type OverviewQuery = {
   };
 };
 
-export type RepoQueryVariables = Exact<{
-  url: Scalars['String'];
-}>;
-
-export type RepoQuery = {
-  __typename?: 'Query';
-  repo?: {
-    __typename?: 'Repo';
-    backend?: string | null;
-    forksCount?: number | null;
-    issuesCount?: number | null;
-    language?: string | null;
-    name?: string | null;
-    openIssuesCount?: number | null;
-    origin: string;
-    path?: string | null;
-    pullsCount?: number | null;
-    stargazersCount?: number | null;
-    createdAt: any;
-    updatedAt: any;
-    watchersCount?: number | null;
-  } | null;
-};
-
 export type MetricQueryVariables = Exact<{
-  url: Scalars['String'];
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
   start?: InputMaybe<Scalars['ISO8601DateTime']>;
   end?: InputMaybe<Scalars['ISO8601DateTime']>;
@@ -358,7 +349,6 @@ export type MetricQuery = {
     label?: string | null;
     level?: string | null;
     locFrequency?: number | null;
-    prIssueLinkedRatio?: number | null;
   }>;
   metricCommunity: Array<{
     __typename?: 'CommunityMetric';
@@ -534,57 +524,14 @@ useOverviewQuery.fetcher = (
     variables,
     headers
   );
-export const RepoDocument = /*#__PURE__*/ `
-    query repo($url: String!) {
-  repo(url: $url) {
-    backend
-    forksCount
-    issuesCount
-    language
-    name
-    openIssuesCount
-    origin
-    path
-    pullsCount
-    stargazersCount
-    createdAt
-    updatedAt
-    watchersCount
-  }
-}
-    `;
-export const useRepoQuery = <TData = RepoQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables: RepoQueryVariables,
-  options?: UseQueryOptions<RepoQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<RepoQuery, TError, TData>(
-    ['repo', variables],
-    fetcher<RepoQuery, RepoQueryVariables>(
-      client,
-      RepoDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useRepoQuery.getKey = (variables: RepoQueryVariables) => ['repo', variables];
-useRepoQuery.fetcher = (
-  client: GraphQLClient,
-  variables: RepoQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<RepoQuery, RepoQueryVariables>(
-    client,
-    RepoDocument,
-    variables,
-    headers
-  );
 export const MetricDocument = /*#__PURE__*/ `
-    query metric($url: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
-  metricCodequality(url: $url, level: $level, beginDate: $start, endDate: $end) {
+    query metric($label: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
+  metricCodequality(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
     codeMergeRatio
     codeQualityGuarantee
     codeReviewRatio
@@ -595,9 +542,8 @@ export const MetricDocument = /*#__PURE__*/ `
     label
     level
     locFrequency
-    prIssueLinkedRatio
   }
-  metricCommunity(url: $url, level: $level, beginDate: $start, endDate: $end) {
+  metricCommunity(label: $label, level: $level, beginDate: $start, endDate: $end) {
     closedPrsCount
     codeReviewCount
     commentFrequency
@@ -613,7 +559,7 @@ export const MetricDocument = /*#__PURE__*/ `
     prOpenTimeMid
     updatedIssuesCount
   }
-  metricActivity(url: $url, level: $level, beginDate: $start, endDate: $end) {
+  metricActivity(label: $label, level: $level, beginDate: $start, endDate: $end) {
     activityScore
     closedIssuesCount
     codeReviewCount

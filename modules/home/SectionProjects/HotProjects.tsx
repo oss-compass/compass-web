@@ -38,7 +38,7 @@ const HotProjects: React.FC<{
               key={repo.path}
             >
               <Link
-                href={`/analyze?url=${encodeURIComponent(
+                href={`/analyze?repo=${encodeURIComponent(
                   getLink(repo.path, repo.backend)
                 )}`}
               >

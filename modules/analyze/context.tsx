@@ -25,24 +25,24 @@ export function useDatePickerContext() {
   return useContext(DatePickerContext);
 }
 
-export interface CompareUrlsValue {
-  urls: string[];
+export interface CompareItemsValue {
+  items: { label: string; level: string }[];
 }
 
-export const DEFAULT_COMPARE_URLS_VALUE = {
-  urls: [],
+export const DEFAULT_COMPARE_ITEMS_VALUE = {
+  items: [],
 };
 
-export interface CompareUrls {
-  value: CompareUrlsValue;
-  update: Dispatch<SetStateAction<CompareUrlsValue>>;
+export interface CompareItems {
+  value: CompareItemsValue;
+  update: Dispatch<SetStateAction<CompareItemsValue>>;
 }
 
-export const CompareUrlsContext = createContext<CompareUrls>({
-  value: DEFAULT_COMPARE_URLS_VALUE,
-  update: () => DEFAULT_COMPARE_URLS_VALUE,
+export const CompareItemsContext = createContext<CompareItems>({
+  value: DEFAULT_COMPARE_ITEMS_VALUE,
+  update: () => DEFAULT_COMPARE_ITEMS_VALUE,
 });
 
-export function useCompareUrlsContext() {
-  return useContext(CompareUrlsContext);
+export function useCompareItemsContext() {
+  return useContext(CompareItemsContext);
 }

@@ -1,12 +1,12 @@
 const qs = require('query-string');
 
-export const removeUrlValue = (value: string): string => {
+export const removeSearchValue = (key: string, value: string): string => {
   const { pathname, search } = window.location;
   const result = qs.parse(search);
 
-  if (Array.isArray(result['url'])) {
-    const filtered = result['url'].filter((i) => !i.includes(value));
-    const newSearch = qs.stringify({ url: filtered });
+  if (Array.isArray(result[key])) {
+    const filtered = result[key].filter((i: string) => !i.includes(value));
+    const newSearch = qs.stringify({ [key]: filtered });
     return `${pathname}?${newSearch}`;
   }
   return '';

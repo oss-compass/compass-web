@@ -7,7 +7,7 @@ const Empty: React.FC<{
   if (type === 'DropDownItem') {
     return (
       <p className="block px-4 py-3 text-center text-lg text-gray-400">
-        {content || 'No project'}
+        {content || 'No result'}
       </p>
     );
   }

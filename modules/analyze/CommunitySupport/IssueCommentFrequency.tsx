@@ -10,10 +10,7 @@ import {
 } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
-import { repoUrlFormatForChart } from '@common/utils/url';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,

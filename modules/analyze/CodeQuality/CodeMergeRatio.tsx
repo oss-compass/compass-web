@@ -1,17 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  lineArea,
-  toTimeXAxis,
-} from '../options';
+import { ChartComponentProps, getLineOption, lineArea } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
-import { getHostLabel, repoUrlFormatForChart } from '@common/utils/url';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
