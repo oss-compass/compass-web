@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import EChartX from '@common/components/EChartX';
 import {
+  bar,
   ChartComponentProps,
+  getBarOption,
   getLineOption,
   lineArea,
   toTimeXAxis,
@@ -10,8 +12,8 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
-  pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
@@ -23,9 +25,9 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
+      return bar({ name, data });
     });
-    return getLineOption({ xAxisData: xAxis, series });
+    return getBarOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
 
   return (
@@ -54,11 +56,19 @@ const LocFrequencyWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'locFrequency',
-      legendName: 'LocFrequency',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'linesAddedFrequency',
+        legendName: 'lines add',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'linesRemovedFrequency',
+        valueFormat: (v) => v * -1,
+        legendName: 'lines remove',
+      },
+    ]);
   }, [data]);
 
   return <LocFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

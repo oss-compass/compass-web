@@ -56,8 +56,6 @@ const PRIssueLinkedWithData = () => {
     });
   }, [data]);
 
-  console.log({ xAxis, yAxis });
-
   return <PRIssueLinked loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 

@@ -23,8 +23,8 @@ const CodeQuality = () => {
         <PRIssueLinked />
         <CodeReviewRatio />
         <CodeMergeRatio />
+        <LocFrequency />
       </div>
-      <LocFrequency />
     </>
   );
 };
