@@ -1,11 +1,11 @@
 import { createContext, useContext } from 'react';
 
 export interface AnalyzeConfigValue {
-  status: string | undefined;
+  status: string;
 }
 
 export const DEFAULT_ANALYZE_CONFIG: AnalyzeConfigValue = {
-  status: undefined,
+  status: 'pending',
 };
 
 export interface AnalyzeConfig {

@@ -45,3 +45,6 @@ export enum Level {
   PROJECT = 'project',
   REPO = 'repo',
 }
+
+export const checkIsPadding = (status: string) =>
+  ['pending', 'progress'].indexOf(status) > -1;

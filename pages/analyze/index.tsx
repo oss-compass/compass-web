@@ -26,14 +26,10 @@ const AnalyzePage = () => {
     { enabled: Boolean(label) }
   );
 
+  const status = data?.analysisStatus || 'pending';
+
   return (
-    <AnalyzeConfigCtx.Provider
-      value={{
-        value: {
-          status: data?.analysisStatus,
-        },
-      }}
-    >
+    <AnalyzeConfigCtx.Provider value={{ value: { status } }}>
       <DatePickerContext.Provider
         value={{ value: datePicker, update: setDatePicker }}
       >
