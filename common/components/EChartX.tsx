@@ -17,7 +17,7 @@ export interface ReactEChartsProps {
 const EChartX: React.FC<ReactEChartsProps> = ({
   option,
   style,
-  settings,
+  settings = { notMerge: true },
   loading,
   theme,
   containerRef,

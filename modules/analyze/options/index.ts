@@ -7,13 +7,42 @@ import {
   ScatterSeriesOption,
   TreemapSeriesOption,
   EChartsOption,
+  SeriesOption,
+  XAXisComponentOption,
 } from 'echarts';
-import {
-  DimensionLoose,
-  OptionEncodeValue,
-  OptionDataValue,
-} from 'echarts/types/src/util/types';
+
 import { formatISO } from '@common/utils/time';
+
+const tooltip: EChartsOption['tooltip'] = {
+  trigger: 'axis',
+};
+
+const legend: EChartsOption['legend'] = {
+  type: 'scroll',
+  icon: 'circle',
+  left: 10,
+};
+
+const grid: EChartsOption['grid'] = {
+  left: '5%',
+  right: '5%',
+  bottom: '5%',
+  containLabel: true,
+};
+
+const categoryAxis = (data: any[]): EChartsOption['xAxis'] => ({
+  type: 'category',
+  boundaryGap: true,
+  data,
+  axisLabel: {
+    align: 'center',
+    rotate: 5,
+    margin: 20,
+  },
+  axisTick: {
+    alignWithLabel: true,
+  },
+});
 
 export const getLineOption = ({
   xAxisData,
@@ -24,33 +53,30 @@ export const getLineOption = ({
 }): EChartsOption => {
   return {
     title: {},
-    tooltip: {
-      trigger: 'axis',
+    tooltip,
+    legend,
+    grid,
+    xAxis: categoryAxis(xAxisData),
+    yAxis: {
+      type: 'value',
     },
-    legend: {
-      type: 'scroll',
-      icon: 'circle',
-      left: 10,
-    },
-    grid: {
-      left: '5%',
-      right: '5%',
-      bottom: '5%',
-      containLabel: true,
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: true,
-      data: xAxisData,
-      axisLabel: {
-        align: 'center',
-        rotate: 5,
-        margin: 20,
-      },
-      axisTick: {
-        alignWithLabel: true,
-      },
-    },
+    series,
+  };
+};
+
+export const getBarOption = ({
+  xAxisData,
+  series,
+}: {
+  xAxisData: string[];
+  series: BarSeriesOption[];
+}): EChartsOption => {
+  return {
+    title: {},
+    tooltip,
+    legend,
+    grid,
+    xAxis: categoryAxis(xAxisData),
     yAxis: {
       type: 'value',
     },
@@ -86,6 +112,21 @@ export const lineArea = (opts: {
     showSymbol: false,
     data: opts.data,
     areaStyle: {},
+  };
+};
+
+export const bar = (opts: {
+  name: string;
+  data: (string | number)[];
+}): BarSeriesOption => {
+  return {
+    name: opts.name,
+    type: 'bar',
+    stack: 'Total',
+    data: opts.data,
+    emphasis: {
+      focus: 'series',
+    },
   };
 };
 

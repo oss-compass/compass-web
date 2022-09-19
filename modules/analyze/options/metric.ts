@@ -51,3 +51,45 @@ export const pickKeyToYAxis = (
   }
   return [];
 };
+
+export const pickKeyGroupToYAxis = (
+  data: Array<{
+    label: string;
+    level: Level;
+    result: MetricQuery | undefined;
+  }>,
+  opts: Array<{
+    typeKey: Exclude<keyof MetricQuery, '__typename'>;
+    valueKey: string;
+    valueFormat?: (v: any) => number;
+    legendName: string;
+  }>
+) => {
+  if (!isArray(data)) {
+    return [];
+  }
+
+  const isCompare = data.length > 1;
+  return data.reduce<{ name: string; data: (number | string)[] }[]>(
+    (acc, item) => {
+      if (!item.result) return [];
+
+      const yData = opts.map((opt) => {
+        const { typeKey, valueKey, valueFormat, legendName } = opt;
+        const typeResult = item.result?.[typeKey];
+        const values = typeResult?.map((i) => {
+          // @ts-ignore
+          if (valueFormat) return valueFormat(i[valueKey]);
+          // @ts-ignore
+          return Number(i[valueKey]) || 0;
+        });
+        return {
+          name: isCompare ? repoUrlFormatForChart(item.label) : legendName,
+          data: values || [],
+        };
+      });
+      return [...acc, ...yData];
+    },
+    []
+  );
+};

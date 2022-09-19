@@ -70,8 +70,6 @@ const OverviewWithData = () => {
     return [];
   }, [data]);
 
-  console.log(yAxis);
-
   return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 

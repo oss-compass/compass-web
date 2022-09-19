@@ -3,7 +3,7 @@ import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 
 const CompareItems = () => {
   const { compareItems } = useCompareItems();
-  console.log(compareItems);
+
   return (
     <div className="flex">
       {compareItems.map(({ name }, index) => {
