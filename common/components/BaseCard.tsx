@@ -2,7 +2,6 @@ import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
-import snakeCase from 'lodash/snakeCase';
 
 interface BaseCardProps {
   id?: string;

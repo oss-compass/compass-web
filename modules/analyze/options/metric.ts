@@ -37,7 +37,7 @@ export const pickKeyToYAxis = (
     return data.map((item) => {
       const typeResult = item.result?.[opts.typeKey];
       // @ts-ignore
-      const data = typeResult?.map((i) => String(i[opts.valueKey]));
+      const data = typeResult?.map((i) => Number(i[opts.valueKey]));
 
       const label =
         item.level === 'repo' ? repoUrlFormatForChart(item.label) : item.label;

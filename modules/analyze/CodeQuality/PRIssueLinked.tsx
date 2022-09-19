@@ -8,12 +8,14 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const PRIssueLinked: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return lineArea({ name, data });
@@ -26,7 +28,7 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="PR Issue Linked"
       id={CodeQuality.PRIssueLinked}
-      description="Percentage of new pr link issues in the last 90 days."
+      description={`Percentage of new pr link issues in the last ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -53,6 +55,8 @@ const PRIssueLinkedWithData = () => {
       legendName: 'PR Issue Linked',
     });
   }, [data]);
+
+  console.log({ xAxis, yAxis });
 
   return <PRIssueLinked loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };

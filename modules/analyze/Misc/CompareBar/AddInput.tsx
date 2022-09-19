@@ -13,6 +13,7 @@ const AddInput = () => {
   const search = window.location.search;
   const ref = useRef(null);
   const router = useRouter();
+  const isRepoCompare = router.query.hasOwnProperty('repo');
   const q = gsap.utils.selector(ref);
 
   const [confirmItem, setConfirmItem] = useState<
@@ -24,7 +25,10 @@ const AddInput = () => {
   const throttledKeyword = useThrottle(keyword, { wait: 300 });
   const { isLoading, data, fetchStatus } = useSearchQuery(
     client,
-    { keyword: throttledKeyword },
+    {
+      keyword: throttledKeyword,
+      level: isRepoCompare ? 'repo' : 'project',
+    },
     { enabled: Boolean(throttledKeyword) }
   );
   const showLoading = isLoading && fetchStatus === 'fetching';
@@ -60,7 +64,7 @@ const AddInput = () => {
               value={confirmItem?.label || keyword}
               type="text"
               className="w-55 h-10 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
-              placeholder="search repo or project"
+              placeholder={`search ${isRepoCompare ? 'repo' : 'project'}`}
               onChange={(v) => {
                 setKeyword(v.target.value);
                 setConfirmItem(null);

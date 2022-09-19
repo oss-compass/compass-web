@@ -18,12 +18,14 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const IsMaintained: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -36,7 +38,7 @@ const IsMaintained: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="Is Maintained"
       id={CodeQuality.IsMaintained}
-      description="Percentage of weeks with at least one code commit in the past 90 days."
+      description={`Percentage of weeks with at least one code commit in the past ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

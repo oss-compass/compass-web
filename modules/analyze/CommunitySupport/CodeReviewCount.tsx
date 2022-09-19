@@ -14,12 +14,14 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const CodeReviewCount: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -31,7 +33,7 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Code review count"
-      description="Determine the average number of review comments per pull request created in the last 90 days"
+      description={`Determine the average number of review comments per pull request created in the last ${dateDesc}`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

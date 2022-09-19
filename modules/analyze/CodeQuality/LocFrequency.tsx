@@ -13,12 +13,14 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const LocFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return lineArea({ name, data });
@@ -31,7 +33,7 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="loc frequency"
       id={CodeQuality.LocFrequency}
-      description="Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
+      description={`Determine the average number of lines touched (lines added plus lines removed) per week in the past ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

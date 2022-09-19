@@ -9,8 +9,6 @@ import Planet03 from './assets/planet-03.svg';
 import styles from './index.module.scss';
 import { useCounter } from 'react-use';
 
-const PositionList = [{}, {}, {}, {}];
-
 const PopCard: React.FC<{
   className?: string;
   onNext: () => void;
@@ -62,7 +60,6 @@ const MaskPlanet: React.FC<{ className?: string; enable: boolean }> = ({
 
 const SectionExplain = () => {
   const [value, { inc, reset }] = useCounter(1, 3, 1);
-  console.log(value);
 
   return (
     <section>
@@ -72,7 +69,7 @@ const SectionExplain = () => {
             How Compass working
           </h1>
 
-          <div className="absolute top-[400px] left-[160px]">
+          <div className="absolute top-[400px] left-[160px] cursor-pointer">
             <Planet01 />
             <MaskPlanet
               enable={value === 1}
@@ -89,9 +86,12 @@ const SectionExplain = () => {
             />
           </div>
 
-          <div className="absolute top-[200px] right-[160px]">
+          <div className="absolute top-[200px] right-[160px] cursor-pointer">
             <Planet02 />
-            <MaskPlanet enable={value === 2} />
+            <MaskPlanet
+              enable={value === 2}
+              className="top-[10px] left-[10px] h-[48px] w-[48px]"
+            />
             <PopCard
               className={classnames('right-[45px] top-[45px]', {
                 '!opacity-100': value === 2,
@@ -103,9 +103,12 @@ const SectionExplain = () => {
             />
           </div>
 
-          <div className="absolute top-[500px] right-[180px]">
+          <div className="absolute top-[500px] right-[180px] cursor-pointer">
             <Planet03 />
-            <MaskPlanet enable={value === 3} />
+            <MaskPlanet
+              enable={value === 3}
+              className="top-[6px] left-[5px] h-[51px] w-[51px]"
+            />
             <PopCard
               className={classnames('right-[45px] top-[45px]', {
                 '!opacity-100': value === 3,
