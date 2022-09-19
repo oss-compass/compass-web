@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import dynamic from 'next/dynamic';
+import { SessionProvider } from 'next-auth/react';
 import { gaPageView } from '@common/utils/ga';
 
 import '../styles/globals.scss';
@@ -14,7 +15,7 @@ const NextNProgress = dynamic(() => import('nextjs-progressbar'), {
 
 const isProd = process.env.NODE_ENV === 'production';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter();
   const [queryClient] = useState(
     () =>
@@ -41,11 +42,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router.events]);
 
   return (
-    <QueryClientProvider client={queryClient} contextSharing>
-      <NextNProgress startPosition={0.15} color="#000" />
-      <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient} contextSharing>
+        <NextNProgress startPosition={0.15} color="#000" />
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </SessionProvider>
   );
 }
 
