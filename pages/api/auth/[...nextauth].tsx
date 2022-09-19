@@ -7,6 +7,9 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      httpOptions: {
+        timeout: 5000,
+      },
     }),
     // ...add more providers here
   ],
@@ -26,6 +29,9 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
+  },
+  pages: {
+    error: '/auth/error', // Error code passed in query string as ?error=
   },
 };
 
