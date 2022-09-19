@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext, useContext } from 'react';
-import { quickSelectRange, timeRange } from '@modules/analyze/constant';
+import { timeRange } from '@modules/analyze/constant';
 
 export interface DatePickerValue {
   startTime: Date;
@@ -23,26 +23,4 @@ export const DatePickerContext = createContext<DatePicker>({
 
 export function useDatePickerContext() {
   return useContext(DatePickerContext);
-}
-
-export interface CompareItemsValue {
-  items: { label: string; level: string }[];
-}
-
-export const DEFAULT_COMPARE_ITEMS_VALUE = {
-  items: [],
-};
-
-export interface CompareItems {
-  value: CompareItemsValue;
-  update: Dispatch<SetStateAction<CompareItemsValue>>;
-}
-
-export const CompareItemsContext = createContext<CompareItems>({
-  value: DEFAULT_COMPARE_ITEMS_VALUE,
-  update: () => DEFAULT_COMPARE_ITEMS_VALUE,
-});
-
-export function useCompareItemsContext() {
-  return useContext(CompareItemsContext);
 }

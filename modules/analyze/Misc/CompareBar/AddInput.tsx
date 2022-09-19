@@ -7,7 +7,7 @@ import gsap from 'gsap';
 import { SearchQuery, useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import { AiOutlineLoading, AiOutlinePlus } from 'react-icons/ai';
-import classnames from 'classnames';
+import { Level } from '@modules/analyze/constant';
 
 const AddInput = () => {
   const search = window.location.search;
@@ -27,7 +27,7 @@ const AddInput = () => {
     client,
     {
       keyword: throttledKeyword,
-      level: isRepoCompare ? 'repo' : 'project',
+      level: isRepoCompare ? Level.REPO : Level.PROJECT,
     },
     { enabled: Boolean(throttledKeyword) }
   );
@@ -37,7 +37,7 @@ const AddInput = () => {
     setKeyword('');
   }, [search]);
 
-  useClickAway(ref, () => {
+  const resetInput = () => {
     setKeyword('');
     setConfirmItem(null);
 
@@ -47,6 +47,10 @@ const AddInput = () => {
       width: 96,
       duration: 0.2,
     });
+  };
+
+  useClickAway(ref, () => {
+    resetInput();
   });
 
   return (
@@ -64,7 +68,9 @@ const AddInput = () => {
               value={confirmItem?.label || keyword}
               type="text"
               className="w-55 h-10 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
-              placeholder={`search ${isRepoCompare ? 'repo' : 'project'}`}
+              placeholder={`search ${
+                isRepoCompare ? Level.REPO : Level.PROJECT
+              }`}
               onChange={(v) => {
                 setKeyword(v.target.value);
                 setConfirmItem(null);
@@ -80,9 +86,7 @@ const AddInput = () => {
                       label!
                     )}`
                   );
-
-                  setKeyword('');
-                  setConfirmItem(null);
+                  resetInput();
                 }
               }}
             >
