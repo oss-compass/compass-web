@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 const DynamicDataView = dynamic(() => import('./DataView'), { ssr: false });
 
 const Analyze = memo(() => {
+  console.log('-----------Analyze---------------------');
   return (
     <div className="flex min-h-full flex-col">
       <Header />

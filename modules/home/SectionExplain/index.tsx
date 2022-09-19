@@ -17,7 +17,7 @@ const PopCard: React.FC<{
     <div
       className={classnames(
         styles.popCardBg,
-        'absolute h-[141px] w-[304px] rounded p-4 opacity-0 transition-all duration-150',
+        'absolute h-[141px] w-[304px] rounded p-4 opacity-0 transition-all',
         className
       )}
     >
