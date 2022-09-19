@@ -28,8 +28,9 @@ export const getLineOption = ({
       trigger: 'axis',
     },
     legend: {
+      type: 'scroll',
       icon: 'circle',
-      left: 0,
+      left: 10,
     },
     grid: {
       left: '5%',

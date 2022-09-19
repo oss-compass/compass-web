@@ -16,12 +16,14 @@ import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import { repoUrlFormatForChart } from '@common/utils/url';
 import { pickKeyToXAxis } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const PrOpenTime: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -34,7 +36,7 @@ const PrOpenTime: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="PR open time"
       id={CommunitySupport.PrOpenTime}
-      description="Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change request and unresolved change request."
+      description={`Average/Median processing time (days) for new change requests created in the last ${dateDesc}, including closed/accepted change request and unresolved change request.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

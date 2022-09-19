@@ -9,12 +9,14 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const ContributorCount: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -27,7 +29,7 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="Contributors"
       id={CodeQuality.ContributorCount}
-      description="Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days."
+      description={`Determine how many active pr creators, code reviewers, commit authors there are in the past ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

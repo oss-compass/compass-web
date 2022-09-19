@@ -18,12 +18,14 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const UpdatedIssuesCount: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -36,7 +38,7 @@ const UpdatedIssuesCount: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="Updated issues count"
       id={CommunitySupport.UpdatedIssuesCount}
-      description="Number of issue updates in the last 90 days."
+      description={`Number of issue updates in the last ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

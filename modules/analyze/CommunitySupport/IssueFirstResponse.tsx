@@ -16,12 +16,14 @@ import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import { repoUrlFormatForChart } from '@common/utils/url';
 import { pickKeyToXAxis } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -34,7 +36,7 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="Issue first response"
       id={CommunitySupport.IssueFirstResponse}
-      description="Average/Median first comments response (in days) for new Issues created in the last 90 days."
+      description={`Average/Median first comments response (in days) for new Issues created in the last ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -58,31 +60,34 @@ const IssueFirstResponseWithData = () => {
     if (isArray(data)) {
       const isCompare = data.length > 1;
 
-      return data.reduce<any>((acc, item) => {
-        if (!item.result) return [];
-        const metricCommunity = item.result.metricCommunity;
-        const avg = metricCommunity.map((i) =>
-          String(i['issueFirstReponseAvg'])
-        );
-        const mid = metricCommunity?.map((i) =>
-          String(i['issueFirstReponseMid'])
-        );
-        return [
-          ...acc,
-          {
-            name: isCompare
-              ? `${repoUrlFormatForChart(item.label)} avg`
-              : 'Issue first response avg',
-            data: avg,
-          },
-          {
-            name: isCompare
-              ? `${repoUrlFormatForChart(item.label)} mid`
-              : 'Issue first response mid',
-            data: mid,
-          },
-        ];
-      }, []);
+      return data.reduce<{ name: string; data: (number | string)[] }[]>(
+        (acc, item) => {
+          if (!item.result) return [];
+          const metricCommunity = item.result.metricCommunity;
+          const avg = metricCommunity.map((i) =>
+            Number(i['issueFirstReponseAvg'])
+          );
+          const mid = metricCommunity?.map((i) =>
+            Number(i['issueFirstReponseMid'])
+          );
+          return [
+            ...acc,
+            {
+              name: isCompare
+                ? `${repoUrlFormatForChart(item.label)} avg`
+                : 'Issue first response avg',
+              data: avg,
+            },
+            {
+              name: isCompare
+                ? `${repoUrlFormatForChart(item.label)} mid`
+                : 'Issue first response mid',
+              data: mid,
+            },
+          ];
+        },
+        []
+      );
     }
     return [];
   }, [data]);

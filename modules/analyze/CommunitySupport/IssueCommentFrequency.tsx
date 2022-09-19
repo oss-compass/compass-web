@@ -15,12 +15,14 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -33,7 +35,7 @@ const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="Issue comment count"
       id={CommunitySupport.IssueCommentFrequency}
-      description="Determine the average number of comments per issue created in the last 90 days"
+      description={`Determine the average number of comments per issue created in the last ${dateDesc}`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

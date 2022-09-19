@@ -8,19 +8,19 @@ import {
 } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const CodeReviewRatio: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return lineArea({ name, data });
@@ -33,7 +33,7 @@ const CodeReviewRatio: React.FC<ChartComponentProps> = ({
       loading={loading}
       title="Code review ratio"
       id={CodeQuality.CodeReviewRatio}
-      description="Percentage of recent 90-day code commits with at least one reviewer (not PR creator)"
+      description={`Percentage of recent ${dateDesc} code commits with at least one reviewer (not PR creator)`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />

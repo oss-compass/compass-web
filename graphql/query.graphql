@@ -1,5 +1,9 @@
-query search($keyword: String!) {
-    fuzzySearch(keyword: $keyword){
+query status($label: String!) {
+    analysisStatus(label: $label)
+}
+
+query search($keyword: String!, $level:String) {
+    fuzzySearch(keyword: $keyword, level: $level){
         level
         label
     }
@@ -28,6 +32,9 @@ query overview {
 
 query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
     metricCodequality(label: $label,level: $level, beginDate: $start, endDate: $end) {
+        activeC1PrCommentsContributorCount
+        activeC1PrCreateContributorCount
+        activeC2ContributorCount
         codeMergeRatio
         codeQualityGuarantee
         codeReviewRatio
@@ -38,6 +45,8 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         label
         level
         locFrequency
+        linesAddedFrequency
+        linesRemovedFrequency
     }
     metricCommunity(label: $label,level: $level, beginDate: $start, endDate: $end){
         closedPrsCount
@@ -56,6 +65,11 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         updatedIssuesCount
     }
     metricActivity(label: $label,level: $level, beginDate: $start, endDate: $end){
+        activeC1IssueCommentsContributorCount
+        activeC1IssueCreateContributorCount
+        activeC1PrCommentsContributorCount
+        activeC1PrCreateContributorCount
+        activeC2ContributorCount
         activityScore
         closedIssuesCount
         codeReviewCount
