@@ -16,6 +16,12 @@ const NextNProgress = dynamic(() => import('nextjs-progressbar'), {
 const isProd = process.env.NODE_ENV === 'production';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  console.table?.({
+    APP_NAME: 'compass-web',
+    APP_VERSION: process.env.NEXT_PUBLIC_APP_VERSION || 'unknown',
+    GIT_COMMIT: process.env.NEXT_PUBLIC_GIT_COMMIT || 'unknown',
+  });
+
   const router = useRouter();
   const [queryClient] = useState(
     () =>

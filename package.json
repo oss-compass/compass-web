@@ -10,7 +10,8 @@
     "dev:debugger": "cross-env NODE_OPTIONS='--inspect' next dev",
     "generate": "graphql-codegen -r dotenv/config",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker": "./docker/build.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
