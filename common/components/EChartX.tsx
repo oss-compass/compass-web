@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import { useDeepCompareEffect } from 'ahooks';
+import { useDeepCompareEffect, useInViewport } from 'ahooks';
 import { init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
 import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
@@ -22,6 +22,7 @@ const EChartX: React.FC<ReactEChartsProps> = ({
   theme,
   containerRef,
 }) => {
+  const [inViewport] = useInViewport(containerRef);
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,25 +39,28 @@ const EChartX: React.FC<ReactEChartsProps> = ({
 
   useDeepCompareEffect(() => {
     // Update chart
-    if (chartRef.current !== null) {
+    if (inViewport && chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current)!;
       chart.setOption(option, settings);
     }
-  }, [option, settings]);
+  }, [option, settings, inViewport]);
 
   useEffect(() => {
     // Update chart
-    if (chartRef.current !== null) {
+    if (inViewport && chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current)!;
-      loading === true ? chart.showLoading() : chart.hideLoading();
+      loading === true ? chart?.showLoading() : chart?.hideLoading();
     }
-  }, [loading]);
+  }, [loading, inViewport]);
 
   // ----------------container resize------------------------------
   const onResize = useCallback((width?: number, height?: number) => {
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current)!;
-      chart.resize({ width: 'auto', height: Number(height) > 650 ? 650 : 350 });
+      chart?.resize({
+        width: 'auto',
+        height: Number(height) > 650 ? 650 : 350,
+      });
     }
   }, []);
 
