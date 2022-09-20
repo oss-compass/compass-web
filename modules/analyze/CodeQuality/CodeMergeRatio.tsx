@@ -5,6 +5,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
@@ -49,11 +50,18 @@ const CodeMergeRatioWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'codeMergeRatio',
-      legendName: 'Code merge ratio',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'prCount',
+        legendName: 'Total PR',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'codeMergeRatio',
+        legendName: 'Code merge ratio',
+      },
+    ]);
   }, [data]);
 
   return <CodeMergeRatio loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

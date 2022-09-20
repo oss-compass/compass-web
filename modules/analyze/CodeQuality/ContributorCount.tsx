@@ -6,6 +6,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
@@ -50,11 +51,23 @@ const ContributorCountWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'contributorCount',
-      legendName: 'Contributor Count',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'contributorCount',
+        legendName: 'Total',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'activeC1PrCommentsContributorCount',
+        legendName: 'PR comments',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'activeC1PrCreateContributorCount',
+        legendName: 'PR create',
+      },
+    ]);
   }, [data]);
 
   return <ContributorCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
