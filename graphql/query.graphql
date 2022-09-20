@@ -39,14 +39,20 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         codeQualityGuarantee
         codeReviewRatio
         commitFrequency
+        commitFrequencyInside
         contributorCount
+        gitPrLinkedRatio
         grimoireCreationDate
         isMaintained
         label
         level
-        locFrequency
         linesAddedFrequency
         linesRemovedFrequency
+        locFrequency
+        prCommitCount
+        prCommitLinkedCount
+        prCount
+        prIssueLinkedRatio
     }
     metricCommunity(label: $label,level: $level, beginDate: $start, endDate: $end){
         closedPrsCount
