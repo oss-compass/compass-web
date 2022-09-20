@@ -60,13 +60,13 @@ const LocFrequencyWithData = () => {
       {
         typeKey: 'metricCodequality',
         valueKey: 'linesAddedFrequency',
-        legendName: 'lines add',
+        legendName: 'Lines add',
       },
       {
         typeKey: 'metricCodequality',
         valueKey: 'linesRemovedFrequency',
         valueFormat: (v) => v * -1,
-        legendName: 'lines remove',
+        legendName: 'Lines remove',
       },
     ]);
   }, [data]);

@@ -10,6 +10,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
@@ -54,11 +55,18 @@ const CodeReviewRatioWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'codeReviewRatio',
-      legendName: 'Code review ratio',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'prCount',
+        legendName: 'Total PR',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'codeReviewRatio',
+        legendName: 'Code review ratio',
+      },
+    ]);
   }, [data]);
 
   return <CodeReviewRatio loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

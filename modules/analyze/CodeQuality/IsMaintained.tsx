@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
 import {
+  bar,
   ChartComponentProps,
+  getBarOption,
   getLineOption,
   line,
   mapToLineSeries,
@@ -28,9 +30,9 @@ const IsMaintained: React.FC<ChartComponentProps> = ({
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
+      return bar({ name, data });
     });
-    return getLineOption({ xAxisData: xAxis, series });
+    return getBarOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
 
   return (

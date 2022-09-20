@@ -5,6 +5,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
@@ -49,11 +50,18 @@ const PRIssueLinkedWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'prIssueLinkedRatio',
-      legendName: 'PR Issue Linked',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'prCount',
+        legendName: 'Total PR',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'prIssueLinkedRatio',
+        legendName: 'Linked Issue',
+      },
+    ]);
   }, [data]);
 
   return <PRIssueLinked loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
