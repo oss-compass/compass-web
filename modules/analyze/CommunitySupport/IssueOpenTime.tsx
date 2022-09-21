@@ -15,7 +15,10 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import { repoUrlFormatForChart } from '@common/utils/url';
-import { pickKeyToXAxis } from '@modules/analyze/options/metric';
+import {
+  pickKeyGroupToYAxis,
+  pickKeyToXAxis,
+} from '@modules/analyze/options/metric';
 
 const IssueOpenTime: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -55,32 +58,18 @@ const IssueOpenTimeWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-
-      return data.reduce<any>((acc, item) => {
-        if (!item.result) return [];
-        const metricCommunity = item.result.metricCommunity;
-        const avg = metricCommunity.map((i) => String(i['issueOpenTimeAvg']));
-        const mid = metricCommunity?.map((i) => String(i['issueOpenTimeMid']));
-        return [
-          ...acc,
-          {
-            name: isCompare
-              ? `${repoUrlFormatForChart(item.label)} avg`
-              : 'Issue open time avg',
-            data: avg,
-          },
-          {
-            name: isCompare
-              ? `${repoUrlFormatForChart(item.label)} mid`
-              : 'Issue open time mid',
-            data: mid,
-          },
-        ];
-      }, []);
-    }
-    return [];
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'issueOpenTimeAvg',
+        legendName: 'avg',
+      },
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'issueOpenTimeMid',
+        legendName: 'mid',
+      },
+    ]);
   }, [data]);
 
   return <IssueOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

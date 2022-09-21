@@ -15,7 +15,10 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import { repoUrlFormatForChart } from '@common/utils/url';
-import { pickKeyToXAxis } from '@modules/analyze/options/metric';
+import {
+  pickKeyGroupToYAxis,
+  pickKeyToXAxis,
+} from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const PrOpenTime: React.FC<ChartComponentProps> = ({
@@ -57,32 +60,18 @@ const PrOpenTimeWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-
-      return data.reduce<any>((acc, item) => {
-        if (!item.result) return [];
-        const metricCommunity = item.result.metricCommunity;
-        const avg = metricCommunity.map((i) => String(i['prOpenTimeAvg']));
-        const mid = metricCommunity?.map((i) => String(i['prOpenTimeMid']));
-        return [
-          ...acc,
-          {
-            name: isCompare
-              ? `${repoUrlFormatForChart(item.label)} avg`
-              : 'Rr open time avg',
-            data: avg,
-          },
-          {
-            name: isCompare
-              ? `${repoUrlFormatForChart(item.label)} mid`
-              : 'Rr open time mid',
-            data: mid,
-          },
-        ];
-      }, []);
-    }
-    return [];
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'prOpenTimeAvg',
+        legendName: 'avg',
+      },
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'prOpenTimeMid',
+        legendName: 'mid',
+      },
+    ]);
   }, [data]);
 
   return <PrOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

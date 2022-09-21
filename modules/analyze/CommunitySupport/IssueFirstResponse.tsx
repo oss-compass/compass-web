@@ -15,7 +15,11 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import { repoUrlFormatForChart } from '@common/utils/url';
-import { pickKeyToXAxis } from '@modules/analyze/options/metric';
+import {
+  pickKeyGroupToYAxis,
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const IssueFirstResponse: React.FC<ChartComponentProps> = ({
@@ -57,39 +61,18 @@ const IssueFirstResponseWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-
-      return data.reduce<{ name: string; data: (number | string)[] }[]>(
-        (acc, item) => {
-          if (!item.result) return [];
-          const metricCommunity = item.result.metricCommunity;
-          const avg = metricCommunity.map((i) =>
-            Number(i['issueFirstReponseAvg'])
-          );
-          const mid = metricCommunity?.map((i) =>
-            Number(i['issueFirstReponseMid'])
-          );
-          return [
-            ...acc,
-            {
-              name: isCompare
-                ? `${repoUrlFormatForChart(item.label)} avg`
-                : 'Issue first response avg',
-              data: avg,
-            },
-            {
-              name: isCompare
-                ? `${repoUrlFormatForChart(item.label)} mid`
-                : 'Issue first response mid',
-              data: mid,
-            },
-          ];
-        },
-        []
-      );
-    }
-    return [];
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'issueFirstReponseAvg',
+        legendName: 'avg',
+      },
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'issueFirstReponseMid',
+        legendName: 'mid',
+      },
+    ]);
   }, [data]);
 
   return <IssueFirstResponse loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
