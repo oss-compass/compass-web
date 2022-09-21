@@ -24,7 +24,7 @@ export function getLastPathSegment(path: string) {
 
 //https://github.com/  =>  github
 export function getHostLabel(url: string) {
-  const result = url.match(/^https:\/\/(.+)\..+$/);
+  const result = url.match(/^https:\/\/(.+?)\..+$/i);
   if (result && result.length >= 2) {
     return result[1];
   }
