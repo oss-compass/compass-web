@@ -11,14 +11,6 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/graphql',
-        destination: `${process.env.NEXT_PUBLIC_GRAPHQL_API_URL}`,
-      },
-    ];
-  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,

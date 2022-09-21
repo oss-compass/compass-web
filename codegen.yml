@@ -1,4 +1,4 @@
-schema: ${NEXT_PUBLIC_GRAPHQL_API_URL}
+schema: ${API_URL}/api/graphql
 documents:
   - './graphql/**/*.graphql'
 generates:
