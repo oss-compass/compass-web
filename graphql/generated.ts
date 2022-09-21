@@ -399,8 +399,10 @@ export type MetricQuery = {
     activeC1PrCreateContributorCount?: number | null;
     activeC2ContributorCount?: number | null;
     codeMergeRatio?: number | null;
+    codeMergedCount?: number | null;
     codeQualityGuarantee?: number | null;
     codeReviewRatio?: number | null;
+    codeReviewedCount?: number | null;
     commitFrequency?: number | null;
     commitFrequencyInside?: number | null;
     contributorCount?: number | null;
@@ -645,8 +647,10 @@ export const MetricDocument = /*#__PURE__*/ `
     activeC1PrCreateContributorCount
     activeC2ContributorCount
     codeMergeRatio
+    codeMergedCount
     codeQualityGuarantee
     codeReviewRatio
+    codeReviewedCount
     commitFrequency
     commitFrequencyInside
     contributorCount

@@ -25,15 +25,15 @@ describe('utils url ', () => {
     const testCases = [
       {
         input: 'https://github.com/EdmondFrank/.emacs.d',
-        result: 'github EdmondFrank/.emacs.d',
+        result: 'github .emacs.d',
       },
       {
         input: 'https://github.com/ant-design/ant-design',
-        result: 'github ant-design/ant-design',
+        result: 'github ant-design',
       },
       {
         input: 'https://gitee.com/dotnetchina/MiniWord',
-        result: 'gitee dotnetchina/MiniWord',
+        result: 'gitee MiniWord',
       },
     ];
 

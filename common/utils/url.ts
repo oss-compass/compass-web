@@ -33,5 +33,5 @@ export function getHostLabel(url: string) {
 
 export function repoUrlFormatForChart(url: string | undefined) {
   if (!url) return '';
-  return `${getHostLabel(url)} ${getPathname(url)}`;
+  return `${getHostLabel(url)} ${getLastPathSegment(getPathname(url))}`;
 }

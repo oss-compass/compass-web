@@ -1,11 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  lineArea,
-  toTimeXAxis,
-} from '../options';
+import { ChartComponentProps, getLineOption, lineArea } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
@@ -16,7 +11,7 @@ import {
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
-const CodeReviewRatio: React.FC<ChartComponentProps> = ({
+const CodeMergeRatio: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
@@ -32,8 +27,8 @@ const CodeReviewRatio: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="Code review ratio"
-      id={CodeQuality.CodeReviewRatio}
+      title="Code merge"
+      id={CodeQuality.CodeMerge}
       description={`Percentage of recent ${dateDesc} code commits with at least one reviewer (not PR creator)`}
     >
       {(containerRef) => (
@@ -43,7 +38,7 @@ const CodeReviewRatio: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CodeReviewRatioWithData = () => {
+const CodeMergeRatioWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -63,13 +58,13 @@ const CodeReviewRatioWithData = () => {
       },
       {
         typeKey: 'metricCodequality',
-        valueKey: 'codeReviewRatio',
-        legendName: 'Code review ratio',
+        valueKey: 'codeMergedCount',
+        legendName: 'Code merge',
       },
     ]);
   }, [data]);
 
-  return <CodeReviewRatio loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <CodeMergeRatio loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default CodeReviewRatioWithData;
+export default CodeMergeRatioWithData;

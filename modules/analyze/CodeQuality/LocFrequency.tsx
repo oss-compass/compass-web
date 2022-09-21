@@ -16,6 +16,7 @@ import {
   pickKeyToXAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { toFixed } from '@common/utils';
 
 const LocFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -33,7 +34,7 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="loc frequency"
+      title="Lines of code changed"
       id={CodeQuality.LocFrequency}
       description={`Determine the average number of lines touched (lines added plus lines removed) per week in the past ${dateDesc}.`}
     >
@@ -65,7 +66,7 @@ const LocFrequencyWithData = () => {
       {
         typeKey: 'metricCodequality',
         valueKey: 'linesRemovedFrequency',
-        valueFormat: (v) => v * -1,
+        valueFormat: (v) => toFixed(v * -1, 3),
         legendName: 'Lines remove',
       },
     ]);
