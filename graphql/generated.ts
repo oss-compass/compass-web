@@ -86,10 +86,14 @@ export type CodequalityMetric = {
   activeC2ContributorCount?: Maybe<Scalars['Float']>;
   /** ratio of merge pulls and all pulls */
   codeMergeRatio?: Maybe<Scalars['Float']>;
+  /** merged pr count past 90 days */
+  codeMergedCount?: Maybe<Scalars['Float']>;
   /** score of code quality metric model */
   codeQualityGuarantee?: Maybe<Scalars['Float']>;
   /** ratio of pulls with one more reviewers and all pulls */
   codeReviewRatio?: Maybe<Scalars['Float']>;
+  /** count of pulls with one more reviewers */
+  codeReviewedCount?: Maybe<Scalars['Float']>;
   /** mean of submissions per week over the past 90 days */
   commitFrequency?: Maybe<Scalars['Float']>;
   /** mean of inside submissions per week over the past 90 days */
@@ -118,6 +122,8 @@ export type CodequalityMetric = {
   prCommitLinkedCount?: Maybe<Scalars['Float']>;
   /** all pr count past 90 days */
   prCount?: Maybe<Scalars['Float']>;
+  /** count of pulls which are linked issues */
+  prIssueLinkedCount?: Maybe<Scalars['Float']>;
   /** ratio of pulls which are linked issues and all pulls */
   prIssueLinkedRatio?: Maybe<Scalars['Float']>;
 };
