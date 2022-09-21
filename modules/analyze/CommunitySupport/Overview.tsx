@@ -12,7 +12,10 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/SideBarConfig';
 import { repoUrlFormatForChart } from '@common/utils/url';
-import { pickKeyToXAxis } from '@modules/analyze/options/metric';
+import {
+  pickKeyToXAxis,
+  pickKeyToYAxis,
+} from '@modules/analyze/options/metric';
 
 const Overview: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -52,22 +55,11 @@ const OverviewWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    if (isArray(data)) {
-      const isCompare = data.length > 1;
-      return data.map((item) => {
-        const metricCommunity = item.result?.metricCommunity;
-        const data = metricCommunity?.map((i) =>
-          String(i['communitySupportScore'])
-        );
-        return {
-          name: isCompare
-            ? repoUrlFormatForChart(item.label)
-            : 'Community Support',
-          data: data || [],
-        };
-      });
-    }
-    return [];
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'communitySupportScore',
+      legendName: 'Community Support',
+    });
   }, [data]);
 
   return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;

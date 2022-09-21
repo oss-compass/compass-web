@@ -23,39 +23,45 @@ export const pickKeyToXAxis = (
   return [];
 };
 
-export const pickKeyToYAxis = (
-  data: {
-    label: string;
-    level: Level;
-    result: MetricQuery | undefined;
-  }[],
-  opts: {
-    typeKey: Exclude<keyof MetricQuery, '__typename'>;
-    valueKey: string;
-    legendName: string;
+interface DateItem {
+  label: string;
+  level: Level;
+  result: MetricQuery | undefined;
+}
+
+interface Option {
+  typeKey: Exclude<keyof MetricQuery, '__typename'>;
+  valueKey: string;
+  valueFormat?: (v: any) => number;
+  legendName: string;
+}
+
+const formatLegendName = (name: string, level: Level) => {
+  let label = name;
+  if (level === Level.REPO) {
+    label = repoUrlFormatForChart(name);
   }
-) => {
+
+  return label;
+};
+
+export const pickKeyToYAxis = (data: Array<DateItem>, opt: Option) => {
   if (!isArray(data)) {
     return [];
   }
-
   const isCompare = data.length > 1;
-  const result = data.map((item) => {
-    const typeResult = item.result?.[opts.typeKey];
+  const { typeKey, valueKey, valueFormat, legendName } = opt;
 
-    let compareNames = '';
-    if (item.level === Level.REPO) {
-      compareNames = repoUrlFormatForChart(item.label);
-    } else {
-      compareNames = item.label;
-    }
+  const result = data.map((item) => {
+    const typeResult = item.result?.[typeKey];
 
     // format legend name
-    const name = isCompare ? compareNames : opts.legendName;
+    const compareNames = formatLegendName(item.label, item.level);
+    const name = isCompare ? compareNames : legendName;
 
     const values = typeResult?.map((i) => {
       // @ts-ignore
-      const val = i[opts.valueKey];
+      const val = i[valueKey];
       return toFixed(val, 3) || 0;
     });
 
@@ -70,17 +76,8 @@ export const pickKeyToYAxis = (
 };
 
 export const pickKeyGroupToYAxis = (
-  data: Array<{
-    label: string;
-    level: Level;
-    result: MetricQuery | undefined;
-  }>,
-  opts: Array<{
-    typeKey: Exclude<keyof MetricQuery, '__typename'>;
-    valueKey: string;
-    valueFormat?: (v: any) => number;
-    legendName: string;
-  }>
+  data: Array<DateItem>,
+  opts: Array<Option>
 ) => {
   if (!isArray(data)) {
     return [];
@@ -96,14 +93,9 @@ export const pickKeyGroupToYAxis = (
         const typeResult = item.result?.[typeKey];
 
         // format legend name
-        let compareNames = '';
-        if (item.level === Level.REPO) {
-          compareNames = repoUrlFormatForChart(item.label);
-        } else {
-          compareNames = item.label;
-        }
-
+        const compareNames = formatLegendName(item.label, item.level);
         const name = isCompare ? `${compareNames} ${legendName}` : legendName;
+
         const values = typeResult?.map((i) => {
           // @ts-ignore
           const val = i[valueKey];

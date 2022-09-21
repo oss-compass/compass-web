@@ -63,9 +63,6 @@ const IssueCommentFrequencyWithData = () => {
     });
   }, [data]);
 
-  console.log(data);
-  console.log(yAxis);
-
   return (
     <IssueCommentFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />
   );
