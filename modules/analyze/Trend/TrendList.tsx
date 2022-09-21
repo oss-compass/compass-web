@@ -14,7 +14,7 @@ const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   return (
     <td
       className={classnames(
-        'w-72 border-t py-2 text-center font-semibold',
+        'w-72 border-t border-b border-b-[#ffffff] py-4 text-center font-semibold',
         className
       )}
       {...props}
@@ -72,27 +72,27 @@ const TrendsList: React.FC<{
     >
       <table className={classnames(styles.table, 'w-full')}>
         <thead>
-          <tr>
+          <tr className="">
             <th style={{ width: '15%' }} />
             <TT colSpan={2} className="border-t-[#90E6FF] bg-[#f2fcff]">
-              Productivity
+              Code quality
             </TT>
             <TT colSpan={2} className="border-t-[#FFB290] bg-[#fff9f3]">
-              Robustness
+              Community support
             </TT>
             <TT colSpan={2} className="border-t-[#B990FF] bg-[#f8f3ff]">
-              Creativity
+              Community activity
             </TT>
           </tr>
-          <tr>
-            <th></th>
-            <Th className="bg-[#f2fcff]">Code quality</Th>
-            <Th className="bg-[#f2fcff]">Community support</Th>
-            <Th className="bg-[#fff9f3]">Community activity</Th>
-            <Th className="bg-[#fff9f3]">Developer Retention</Th>
-            <Th className="bg-[#f8f3ff]">Diversity</Th>
-            <Th className="bg-[#f8f3ff]">Developer Attraction</Th>
-          </tr>
+          {/*<tr>*/}
+          {/*  <th></th>*/}
+          {/*  <Th className="bg-[#f2fcff]">Code quality</Th>*/}
+          {/*  <Th className="bg-[#f2fcff]">Community support</Th>*/}
+          {/*  <Th className="bg-[#fff9f3]">Community activity</Th>*/}
+          {/*  <Th className="bg-[#fff9f3]">Developer Retention</Th>*/}
+          {/*  <Th className="bg-[#f8f3ff]">Diversity</Th>*/}
+          {/*  <Th className="bg-[#f8f3ff]">Developer Attraction</Th>*/}
+          {/*</tr>*/}
         </thead>
         <tbody>
           {Array.isArray(data) &&

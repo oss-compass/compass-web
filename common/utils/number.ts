@@ -4,3 +4,10 @@ export function numberFormatK(num: number) {
   }
   return num;
 }
+
+export function toFixed(n: number, d: number): number {
+  if (String(n).indexOf('.') === -1) {
+    return n;
+  }
+  return Number(n.toFixed(d));
+}

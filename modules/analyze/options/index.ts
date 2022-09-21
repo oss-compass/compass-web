@@ -21,6 +21,7 @@ const legend: EChartsOption['legend'] = {
   type: 'scroll',
   icon: 'circle',
   left: 10,
+  // orient: 'vertical',
 };
 
 const grid: EChartsOption['grid'] = {
@@ -122,7 +123,6 @@ export const bar = (opts: {
   return {
     name: opts.name,
     type: 'bar',
-    stack: 'Total',
     data: opts.data,
     emphasis: {
       focus: 'series',

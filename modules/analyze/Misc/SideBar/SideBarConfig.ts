@@ -5,8 +5,8 @@ export enum CodeQuality {
   CommitFrequency = 'code_quality_commit_frequency',
   IsMaintained = 'code_quality_is_maintained',
   PRIssueLinked = 'code_quality_pr_issue_linked',
-  CodeReviewRatio = 'code_quality_code_review_ratio',
-  CodeMergeRatio = 'code_quality_code_merge_ratio',
+  CodeReview = 'code_quality_code_review',
+  CodeMerge = 'code_quality_code_merge',
   LocFrequency = 'code_quality_loc_frequency',
 }
 
@@ -40,8 +40,8 @@ const SideBarConfig = [
       { name: 'Commit frequency', id: CodeQuality.CommitFrequency },
       { name: 'Is Maintained', id: CodeQuality.IsMaintained },
       { name: 'PR Issue Linked', id: CodeQuality.PRIssueLinked },
-      { name: 'Code review ratio', id: CodeQuality.CodeReviewRatio },
-      { name: 'Code merge ratio', id: CodeQuality.CodeMergeRatio },
+      { name: 'Code review', id: CodeQuality.CodeReview },
+      { name: 'Code merge', id: CodeQuality.CodeMerge },
       { name: 'Loc frequency', id: CodeQuality.LocFrequency },
     ],
   },

@@ -5,8 +5,8 @@ import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import IsMaintained from './IsMaintained';
 import PRIssueLinked from './PRIssueLinked';
-import CodeReviewRatio from './CodeReviewRatio';
-import CodeMergeRatio from './CodeMergeRatio';
+import CodeReview from './CodeReview';
+import CodeMerge from './CodeMerge';
 import LocFrequency from './LocFrequency';
 
 const CodeQuality = () => {
@@ -21,8 +21,8 @@ const CodeQuality = () => {
         <CommitFrequency />
         <IsMaintained />
         <PRIssueLinked />
-        <CodeReviewRatio />
-        <CodeMergeRatio />
+        <CodeReview />
+        <CodeMerge />
         <LocFrequency />
       </div>
     </>

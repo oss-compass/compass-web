@@ -36,8 +36,10 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         activeC1PrCreateContributorCount
         activeC2ContributorCount
         codeMergeRatio
+        codeMergedCount
         codeQualityGuarantee
         codeReviewRatio
+        codeReviewedCount
         commitFrequency
         commitFrequencyInside
         contributorCount

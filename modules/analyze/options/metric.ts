@@ -1,9 +1,12 @@
 import { MetricQuery } from '@graphql/generated';
 import isArray from 'lodash/isArray';
+import maxBy from 'lodash/maxBy';
 import { repoUrlFormatForChart } from '@common/utils/url';
 import get from 'lodash/get';
 import { toTimeXAxis } from '@modules/analyze/options/index';
 import { Level } from '@modules/analyze/constant';
+import { toFixed } from '@common/utils';
+import { padArrayStart } from '@common/utils/array';
 
 export const pickKeyToXAxis = (
   data: {
@@ -32,24 +35,38 @@ export const pickKeyToYAxis = (
     legendName: string;
   }
 ) => {
-  if (isArray(data)) {
-    const isCompare = data.length > 1;
-    return data.map((item) => {
-      const typeResult = item.result?.[opts.typeKey];
-      // @ts-ignore
-      const data = typeResult?.map((i) => Number(i[opts.valueKey]));
-
-      const label =
-        item.level === 'repo' ? repoUrlFormatForChart(item.label) : item.label;
-      const name = isCompare ? label : opts.legendName;
-
-      return {
-        name,
-        data: data || [],
-      };
-    });
+  if (!isArray(data)) {
+    return [];
   }
-  return [];
+
+  const isCompare = data.length > 1;
+  const result = data.map((item) => {
+    const typeResult = item.result?.[opts.typeKey];
+
+    let compareNames = '';
+    if (item.level === Level.REPO) {
+      compareNames = repoUrlFormatForChart(item.label);
+    } else {
+      compareNames = item.label;
+    }
+
+    // format legend name
+    const name = isCompare ? compareNames : opts.legendName;
+
+    const values = typeResult?.map((i) => {
+      // @ts-ignore
+      const val = i[opts.valueKey];
+      return toFixed(val, 3) || 0;
+    });
+
+    return { name, data: values || [] };
+  });
+
+  const max = maxBy(result, (i) => i.data.length);
+  return result.map((i) => {
+    i.data = padArrayStart(i.data, max?.data.length || 0, 0);
+    return i;
+  });
 };
 
 export const pickKeyGroupToYAxis = (
@@ -70,26 +87,40 @@ export const pickKeyGroupToYAxis = (
   }
 
   const isCompare = data.length > 1;
-  return data.reduce<{ name: string; data: (number | string)[] }[]>(
+  const result = data.reduce<{ name: string; data: (number | string)[] }[]>(
     (acc, item) => {
       if (!item.result) return [];
 
       const yData = opts.map((opt) => {
         const { typeKey, valueKey, valueFormat, legendName } = opt;
         const typeResult = item.result?.[typeKey];
+
+        // format legend name
+        let compareNames = '';
+        if (item.level === Level.REPO) {
+          compareNames = repoUrlFormatForChart(item.label);
+        } else {
+          compareNames = item.label;
+        }
+
+        const name = isCompare ? `${compareNames} ${legendName}` : legendName;
         const values = typeResult?.map((i) => {
           // @ts-ignore
-          if (valueFormat) return valueFormat(i[valueKey]);
-          // @ts-ignore
-          return Number(i[valueKey]) || 0;
+          const val = i[valueKey];
+          if (valueFormat) return valueFormat(val);
+          return toFixed(val, 3) || 0;
         });
-        return {
-          name: isCompare ? repoUrlFormatForChart(item.label) : legendName,
-          data: values || [],
-        };
+
+        return { name, data: values || [] };
       });
       return [...acc, ...yData];
     },
     []
   );
+
+  const max = maxBy(result, (i) => i.data.length);
+  return result.map((i) => {
+    i.data = padArrayStart(i.data, max?.data.length || 0, 0);
+    return i;
+  });
 };
