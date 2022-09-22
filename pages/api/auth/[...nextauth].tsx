@@ -18,14 +18,16 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async session({ session, user, token }) {
-      session.uid = token.uid;
       session.login = token.login;
+      session.accessToken = token.accessToken;
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
       if (profile) {
-        token.uid = profile.id;
         token.login = profile.login;
+      }
+      if (account) {
+        token.accessToken = account.access_token;
       }
       return token;
     },
