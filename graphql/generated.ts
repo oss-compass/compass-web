@@ -164,10 +164,14 @@ export type CommunityMetric = {
 export type CreateProjectTaskInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
+  /** user's origin (gitee/github) */
+  origin: Scalars['String'];
   /** project label for following repositories */
   projectName: Scalars['String'];
   /** project detail information */
   projectTypes: Array<ProjectTypeInput>;
+  /** user's oauth token only for username verification */
+  token: Scalars['String'];
   /** gitee or github login/username */
   username: Scalars['String'];
 };
@@ -188,8 +192,12 @@ export type CreateProjectTaskPayload = {
 export type CreateRepoTaskInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
+  /** user's origin (gitee/github) */
+  origin: Scalars['String'];
   /** repository url */
   repoUrl: Scalars['String'];
+  /** user's oauth token only for username verification */
+  token: Scalars['String'];
   /** gitee or github login/username */
   username: Scalars['String'];
 };
@@ -326,12 +334,32 @@ export type Repo = {
 export type CreateRepoTaskMutationVariables = Exact<{
   username: Scalars['String'];
   repoUrl: Scalars['String'];
+  token: Scalars['String'];
+  origin: Scalars['String'];
 }>;
 
 export type CreateRepoTaskMutation = {
   __typename?: 'Mutation';
   createRepoTask?: {
     __typename?: 'CreateRepoTaskPayload';
+    message?: string | null;
+    status: string;
+    errors?: Array<{ __typename?: 'Error'; message?: string | null }> | null;
+  } | null;
+};
+
+export type CreateProjectTaskMutationVariables = Exact<{
+  username: Scalars['String'];
+  projectName: Scalars['String'];
+  projectTypes: Array<ProjectTypeInput> | ProjectTypeInput;
+  token: Scalars['String'];
+  origin: Scalars['String'];
+}>;
+
+export type CreateProjectTaskMutation = {
+  __typename?: 'Mutation';
+  createProjectTask?: {
+    __typename?: 'CreateProjectTaskPayload';
     message?: string | null;
     status: string;
     errors?: Array<{ __typename?: 'Error'; message?: string | null }> | null;
@@ -459,8 +487,10 @@ export type MetricQuery = {
 };
 
 export const CreateRepoTaskDocument = /*#__PURE__*/ `
-    mutation createRepoTask($username: String!, $repoUrl: String!) {
-  createRepoTask(input: {username: $username, repoUrl: $repoUrl}) {
+    mutation createRepoTask($username: String!, $repoUrl: String!, $token: String!, $origin: String!) {
+  createRepoTask(
+    input: {username: $username, repoUrl: $repoUrl, origin: $origin, token: $token}
+  ) {
     message
     status
     errors {
@@ -503,6 +533,59 @@ useCreateRepoTaskMutation.fetcher = (
   fetcher<CreateRepoTaskMutation, CreateRepoTaskMutationVariables>(
     client,
     CreateRepoTaskDocument,
+    variables,
+    headers
+  );
+export const CreateProjectTaskDocument = /*#__PURE__*/ `
+    mutation createProjectTask($username: String!, $projectName: String!, $projectTypes: [ProjectTypeInput!]!, $token: String!, $origin: String!) {
+  createProjectTask(
+    input: {username: $username, projectName: $projectName, projectTypes: $projectTypes, origin: $origin, token: $token}
+  ) {
+    message
+    status
+    errors {
+      message
+    }
+  }
+}
+    `;
+export const useCreateProjectTaskMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    CreateProjectTaskMutation,
+    TError,
+    CreateProjectTaskMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    CreateProjectTaskMutation,
+    TError,
+    CreateProjectTaskMutationVariables,
+    TContext
+  >(
+    ['createProjectTask'],
+    (variables?: CreateProjectTaskMutationVariables) =>
+      fetcher<CreateProjectTaskMutation, CreateProjectTaskMutationVariables>(
+        client,
+        CreateProjectTaskDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+useCreateProjectTaskMutation.fetcher = (
+  client: GraphQLClient,
+  variables: CreateProjectTaskMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CreateProjectTaskMutation, CreateProjectTaskMutationVariables>(
+    client,
+    CreateProjectTaskDocument,
     variables,
     headers
   );
