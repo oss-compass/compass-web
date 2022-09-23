@@ -1,48 +1,68 @@
 import React from 'react';
-import { useQueries } from '@tanstack/react-query';
-import { useMetricQuery } from '@graphql/generated';
-import client from '@graphql/client';
-import useHashScroll from '@common/hooks/useHashScroll';
-import useCompareItems from '../hooks/useCompareItems';
-import Trend from '../Trend';
-import CodeQuality from '../CodeQuality';
-import CommunitySupport from '../CommunitySupport';
-import CommunityActivity from '../CommunityActivity';
-import { useDatePickerContext } from '@modules/analyze/context';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useConfigContext } from '@modules/analyze/context';
+import { checkIsPadding } from '@modules/analyze/constant';
+import CompareBar from '@modules/analyze/Misc/CompareBar';
+import NoSsr from '@common/components/NoSsr';
+import Charts from './Charts';
+
+const Loading = () => (
+  <div className="flex flex-1 flex-col">
+    <div className="animate-pulse p-10">
+      <div className="flex-1 space-y-4 ">
+        <div className="h-4 rounded bg-slate-200"></div>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+          <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+        </div>
+        <div className="h-4 rounded bg-slate-200"></div>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+          <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+        </div>
+        <div className="h-4 rounded bg-slate-200"></div>
+      </div>
+    </div>
+  </div>
+);
+
+const Padding = () => (
+  <div className="flex flex-1 flex-col items-center justify-center">
+    <div className="mb-4">
+      <Image
+        src="/images/analyze/padding.gif"
+        width={79}
+        height={60}
+        alt={'padding'}
+      />
+    </div>
+    <p className="mb-2">
+      The current project is under analysis, please visit later.
+    </p>
+    <Link href={'/'}>
+      <a className="text-blue-600">Explore other projects</a>
+    </Link>
+  </div>
+);
 
 const DataView = () => {
-  const { value } = useDatePickerContext();
-  const { startTime, endTime } = value;
+  const { loading, status } = useConfigContext();
+  if (loading) {
+    return <Loading />;
+  }
 
-  const { compareItems } = useCompareItems();
-  useQueries({
-    queries: compareItems.map(({ label, level }) => {
-      return {
-        queryKey: useMetricQuery.getKey({
-          label,
-          level,
-          start: startTime,
-          end: endTime,
-        }),
-        queryFn: useMetricQuery.fetcher(client, {
-          label,
-          level,
-          start: startTime,
-          end: endTime,
-        }),
-      };
-    }),
-  });
-
-  useHashScroll(50);
+  if (checkIsPadding(status)) {
+    return <Padding />;
+  }
 
   return (
-    <>
-      <Trend />
-      <CodeQuality />
-      <CommunitySupport />
-      <CommunityActivity />
-    </>
+    <NoSsr>
+      <div className="w-full flex-1 xl:mx-auto xl:max-w-[1200px]">
+        <CompareBar />
+        <Charts />
+      </div>
+    </NoSsr>
   );
 };
 

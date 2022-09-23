@@ -336,7 +336,7 @@ export type CreateRepoTaskMutation = {
     __typename?: 'CreateRepoTaskPayload';
     message?: string | null;
     status: string;
-    errors?: Array<{ __typename?: 'Error'; message?: string | null }> | null;
+    prUrl?: string | null;
   } | null;
 };
 
@@ -354,7 +354,7 @@ export type CreateProjectTaskMutation = {
     __typename?: 'CreateProjectTaskPayload';
     message?: string | null;
     status: string;
-    errors?: Array<{ __typename?: 'Error'; message?: string | null }> | null;
+    prUrl?: string | null;
   } | null;
 };
 
@@ -484,9 +484,7 @@ export const CreateRepoTaskDocument = /*#__PURE__*/ `
   ) {
     message
     status
-    errors {
-      message
-    }
+    prUrl
   }
 }
     `;
@@ -534,9 +532,7 @@ export const CreateProjectTaskDocument = /*#__PURE__*/ `
   ) {
     message
     status
-    errors {
-      message
-    }
+    prUrl
   }
 }
     `;
