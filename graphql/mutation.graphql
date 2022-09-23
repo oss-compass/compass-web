@@ -2,9 +2,7 @@ mutation createRepoTask($username:String!,$repoUrl: String!, $token:String!, $or
     createRepoTask(input: {username:$username, repoUrl: $repoUrl, origin: $origin, token: $token}){
         message
         status
-        errors {
-            message
-        }
+        prUrl
     }
 }
 
@@ -12,8 +10,6 @@ mutation createProjectTask($username:String!, $projectName:String!, $projectType
     createProjectTask(input: {username:$username, projectName: $projectName, projectTypes: $projectTypes, origin: $origin, token: $token }){
         message
         status
-        errors {
-            message
-        }
+        prUrl
     }
 }

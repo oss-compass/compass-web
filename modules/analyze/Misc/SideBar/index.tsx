@@ -2,7 +2,7 @@ import React, { PropsWithChildren, Fragment } from 'react';
 import { BiChart } from 'react-icons/bi';
 import classnames from 'classnames';
 import SideBarConfig from './SideBarConfig';
-import { useAnalyzeConfigContext } from '@modules/analyze/context';
+import { useConfigContext } from '@modules/analyze/context';
 import { checkIsPadding } from '@modules/analyze/constant';
 
 const MenuItem: React.FC<PropsWithChildren<{ hash: string }>> = ({
@@ -23,8 +23,8 @@ const MenuItem: React.FC<PropsWithChildren<{ hash: string }>> = ({
 const Divider = () => <div className="m-2 border-b"></div>;
 
 const SideBarMenu = () => {
-  const { value } = useAnalyzeConfigContext();
-  if (checkIsPadding(value.status)) {
+  const { status } = useConfigContext();
+  if (checkIsPadding(status)) {
     return (
       <div>
         <div className="mb-8 flex-1 space-y-4">

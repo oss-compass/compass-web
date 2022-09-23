@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, createContext, useContext } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  PropsWithChildren,
+} from 'react';
 import { timeRange } from '@modules/analyze/constant';
 
 export interface DatePickerValue {
@@ -24,3 +30,15 @@ export const DatePickerContext = createContext<DatePicker>({
 export function useDatePickerContext() {
   return useContext(DatePickerContext);
 }
+
+export const DatePickerContextProvider: React.FC<
+  PropsWithChildren<{
+    value: DatePicker;
+  }>
+> = ({ value, children }) => {
+  return (
+    <DatePickerContext.Provider value={value}>
+      {children}
+    </DatePickerContext.Provider>
+  );
+};
