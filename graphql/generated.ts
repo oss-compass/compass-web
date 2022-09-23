@@ -276,8 +276,6 @@ export type Query = {
   metricCommunity: Array<CommunityMetric>;
   /** Get overview data of compass */
   overview: Overview;
-  /** Get repo data by specified url */
-  repo?: Maybe<Repo>;
 };
 
 export type QueryAnalysisStatusArgs = {
@@ -310,22 +308,16 @@ export type QueryMetricCommunityArgs = {
   level?: InputMaybe<Scalars['String']>;
 };
 
-export type QueryRepoArgs = {
-  url: Scalars['String'];
-};
-
 export type Repo = {
   __typename?: 'Repo';
   backend?: Maybe<Scalars['String']>;
   createdAt: Scalars['ISO8601DateTime'];
   forksCount?: Maybe<Scalars['Int']>;
-  issuesCount?: Maybe<Scalars['Int']>;
   language?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   openIssuesCount?: Maybe<Scalars['Int']>;
   origin: Scalars['String'];
   path?: Maybe<Scalars['String']>;
-  pullsCount?: Maybe<Scalars['Int']>;
   stargazersCount?: Maybe<Scalars['Int']>;
   updatedAt: Scalars['ISO8601DateTime'];
   watchersCount?: Maybe<Scalars['Int']>;
@@ -400,12 +392,10 @@ export type OverviewQuery = {
       __typename?: 'Repo';
       backend?: string | null;
       forksCount?: number | null;
-      issuesCount?: number | null;
       language?: string | null;
       name?: string | null;
       openIssuesCount?: number | null;
       path?: string | null;
-      pullsCount?: number | null;
       stargazersCount?: number | null;
       watchersCount?: number | null;
     }> | null;
@@ -446,6 +436,7 @@ export type MetricQuery = {
     prCommitLinkedCount?: number | null;
     prCount?: number | null;
     prIssueLinkedRatio?: number | null;
+    prIssueLinkedCount?: number | null;
   }>;
   metricCommunity: Array<{
     __typename?: 'CommunityMetric';
@@ -676,12 +667,10 @@ export const OverviewDocument = /*#__PURE__*/ `
     trends {
       backend
       forksCount
-      issuesCount
       language
       name
       openIssuesCount
       path
-      pullsCount
       stargazersCount
       watchersCount
     }
@@ -749,6 +738,7 @@ export const MetricDocument = /*#__PURE__*/ `
     prCommitLinkedCount
     prCount
     prIssueLinkedRatio
+    prIssueLinkedCount
   }
   metricCommunity(label: $label, level: $level, beginDate: $start, endDate: $end) {
     closedPrsCount

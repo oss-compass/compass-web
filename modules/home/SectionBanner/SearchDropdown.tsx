@@ -32,13 +32,13 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
             <a
               className={classnames(
                 { 'bg-gray-100': active === index },
-                'block px-4 py-3 text-xl hover:bg-gray-100'
+                'flex px-4 py-3 text-xl hover:bg-gray-100'
               )}
             >
               <span className="mr-2 rounded bg-gray-200 p-1 text-base leading-none text-gray-400">
                 {item.level}
               </span>
-              {item.label}
+              <span className="line-clamp-1">{item.label}</span>
             </a>
           </Link>
         );
@@ -52,7 +52,14 @@ const SearchDropdown: React.FC<{
 }> = ({ result }) => {
   if (!result) return <Empty type="DropDownItem" />;
   if (Array.isArray(result) && result.length === 0) {
-    return <Empty type="DropDownItem" />;
+    return (
+      <p className="block px-4 py-3 text-center text-lg text-gray-400">
+        {'No result! '}
+        <Link href="/analyze/create">
+          <a className="text-primary">submit an analysis request</a>
+        </Link>
+      </p>
+    );
   }
 
   return <DropDownList result={result!} />;
