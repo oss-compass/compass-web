@@ -13,7 +13,7 @@ const Trends: React.FC<{
   }
 
   if (data.length == 1) {
-    return <TrendChart loading={loading} data={data[0].result} />;
+    return <TrendChart />;
   }
 
   return null;

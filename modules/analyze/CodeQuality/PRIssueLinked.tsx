@@ -58,7 +58,7 @@ const PRIssueLinkedWithData = () => {
       },
       {
         typeKey: 'metricCodequality',
-        valueKey: 'prIssueLinkedRatio',
+        valueKey: 'prIssueLinkedCount',
         legendName: 'Linked Issue',
       },
     ]);

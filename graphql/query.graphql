@@ -18,12 +18,10 @@ query overview {
         trends {
             backend
             forksCount
-            issuesCount
             language
             name
             openIssuesCount
             path
-            pullsCount
             stargazersCount
             watchersCount
         }
@@ -55,6 +53,7 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         prCommitLinkedCount
         prCount
         prIssueLinkedRatio
+        prIssueLinkedCount
     }
     metricCommunity(label: $label,level: $level, beginDate: $start, endDate: $end){
         closedPrsCount

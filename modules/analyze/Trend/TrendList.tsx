@@ -74,13 +74,11 @@ const TrendsList: React.FC<{
         <thead>
           <tr className="">
             <th style={{ width: '15%' }} />
-            <TT colSpan={2} className="border-t-[#90E6FF] bg-[#f2fcff]">
-              Code quality
-            </TT>
-            <TT colSpan={2} className="border-t-[#FFB290] bg-[#fff9f3]">
+            <TT className="border-t-[#90E6FF] bg-[#f2fcff]">Code quality</TT>
+            <TT className="border-t-[#FFB290] bg-[#fff9f3]">
               Community support
             </TT>
-            <TT colSpan={2} className="border-t-[#B990FF] bg-[#f8f3ff]">
+            <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
               Community activity
             </TT>
           </tr>
@@ -100,11 +98,11 @@ const TrendsList: React.FC<{
               return (
                 <tr className="" key={item.label}>
                   <td>{getLastPathSegment(item.label)}</td>
+                  {/*<Td className="bg-[#f2fcff]">122</Td>*/}
                   <Td className="bg-[#f2fcff]">122</Td>
-                  <Td className="bg-[#f2fcff]">122</Td>
+                  {/*<Td className="bg-[#fff9f3]">122</Td>*/}
                   <Td className="bg-[#fff9f3]">122</Td>
-                  <Td className="bg-[#fff9f3]">122</Td>
-                  <Td className="bg-[#f8f3ff]">122</Td>
+                  {/*<Td className="bg-[#f8f3ff]">122</Td>*/}
                   <Td className="bg-[#f8f3ff]">122</Td>
                 </tr>
               );

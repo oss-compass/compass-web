@@ -1,46 +1,31 @@
 import React, { useMemo } from 'react';
 import {
+  ChartComponentProps,
   getLineOption,
+  line,
   mapToLineSeries,
   toTimeXAxis,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import { MetricQuery } from '@graphql/generated';
+import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import {
+  pickKeyGroupToYAxis,
+  pickKeyToXAxis,
+} from '@modules/analyze/options/metric';
 
-const TrendsChart: React.FC<{
-  loading: boolean;
-  data: MetricQuery | undefined;
-}> = ({ loading = false, data }) => {
+const TrendsChart: React.FC<ChartComponentProps> = ({
+  loading = false,
+  xAxis,
+  yAxis,
+}) => {
   const echartsOpts = useMemo(() => {
-    if (!data) return {};
-    const metricActivity = data?.metricActivity;
-    const metricCodequality = data?.metricCodequality;
-    const metricCommunity = data?.metricCommunity;
-
-    const xAxisDate = toTimeXAxis(metricActivity, 'grimoireCreationDate');
-
-    const activityScore = mapToLineSeries(
-      metricActivity,
-      'activityScore',
-      'Community Activity'
-    );
-    const codeQuality = mapToLineSeries(
-      metricCodequality,
-      'codeQualityGuarantee',
-      'Code Quality'
-    );
-    const communitySupport = mapToLineSeries(
-      metricCommunity,
-      'communitySupportScore',
-      'Community Support'
-    );
-
-    return getLineOption({
-      xAxisData: xAxisDate,
-      series: [activityScore, codeQuality, communitySupport],
+    const series = yAxis.map(({ name, data }) => {
+      return line({ name, data });
     });
-  }, [data]);
+    return getLineOption({ xAxisData: xAxis, series });
+  }, [xAxis, yAxis]);
 
   return (
     <BaseCard
@@ -55,4 +40,38 @@ const TrendsChart: React.FC<{
   );
 };
 
-export default TrendsChart;
+const TrendsChartWithData = () => {
+  const data = useMetricQueryData();
+  const isLoading = data?.some((i) => i.loading);
+
+  const xAxis = useMemo(() => {
+    return pickKeyToXAxis(data, {
+      typeKey: 'metricCodequality',
+      valueKey: 'grimoireCreationDate',
+    });
+  }, [data]);
+
+  const yAxis = useMemo(() => {
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'codeQualityGuarantee',
+        legendName: 'Code Quality',
+      },
+      {
+        typeKey: 'metricActivity',
+        valueKey: 'activityScore',
+        legendName: 'Community Activity',
+      },
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'communitySupportScore',
+        legendName: 'Community Support',
+      },
+    ]);
+  }, [data]);
+
+  return <TrendsChart loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+};
+
+export default TrendsChartWithData;
