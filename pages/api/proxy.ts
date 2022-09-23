@@ -1,7 +1,6 @@
-import { authOptions } from 'pages/api/auth/[...nextauth]';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import httpProxy from 'http-proxy';
-import { unstable_getServerSession } from 'next-auth/next';
+import { sleep } from '@common/utils';
 
 export const config = {
   api: {
@@ -30,17 +29,14 @@ proxy.on('proxyReq', function (proxyReq, req: any, res, options) {
   }
 });
 
+/**
+ * use in development mode to proxy requests to the API
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.body?.operationName === 'createRepoTask') {
-    const session = await unstable_getServerSession(req, res, authOptions);
-    if (!session) {
-      res.status(401).json({ message: 'You must be logged in.' });
-      return;
-    }
-  }
+  await sleep(500);
 
   return new Promise((resolve, reject) => {
     proxy.once('error', reject);
