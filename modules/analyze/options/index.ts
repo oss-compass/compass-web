@@ -124,6 +124,7 @@ export const bar = (opts: {
     name: opts.name,
     type: 'bar',
     data: opts.data,
+    stack: 'Total',
     emphasis: {
       focus: 'series',
     },
