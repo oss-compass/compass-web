@@ -1,8 +1,8 @@
 import React from 'react';
 
-const ErrorMessage = () => {
+const ErrorMessage: React.FC<{ content?: string }> = ({ content }) => {
   return (
-    <div className="alert alert-error shadow-lg">
+    <div className="daisy-alert-error daisy-alert mt-5 text-red-500  ">
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@ const ErrorMessage = () => {
             d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span>Error! Task failed</span>
+        <span>Error! {content}</span>
       </div>
     </div>
   );

@@ -15,11 +15,12 @@ module.exports = {
   },
   plugins: [require('@tailwindcss/line-clamp'), require('daisyui')],
   daisyui: {
-    styled: true,
+    styled: false,
     themes: ['light'],
-    base: true,
-    utils: true,
+    base: false,
+    utils: false,
     logs: true,
     rtl: false,
+    prefix: 'daisy-',
   },
 };

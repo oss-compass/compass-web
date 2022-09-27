@@ -2,7 +2,7 @@ import React from 'react';
 
 const SuccessMessage: React.FC<{ url: string }> = ({ url }) => {
   return (
-    <div className="alert alert-success shadow-lg">
+    <div className="daisy-alert-success daisy-alert mt-5 text-green-500">
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"

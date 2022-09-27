@@ -6,6 +6,7 @@ import {
   RegisterOptions,
 } from 'react-hook-form';
 import { CreateFields } from './type';
+import classnames from 'classnames';
 
 type ArrayFieldName = Exclude<keyof CreateFields, 'projectName'>;
 
@@ -13,8 +14,9 @@ const InputFieldArray: React.FC<{
   name: ArrayFieldName;
   label: string;
   registerOptions: RegisterOptions;
+  disable?: boolean;
 }> = (props) => {
-  const { label, name, registerOptions } = props;
+  const { label, name, registerOptions, disable = false } = props;
   const { register, control, getFieldState, formState } =
     useFormContext<CreateFields>();
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
@@ -28,8 +30,8 @@ const InputFieldArray: React.FC<{
   const { error: _ } = getFieldState(name, formState);
 
   return (
-    <div className="mb-10 flex">
-      <label className="w-60">{label}</label>
+    <div className="mt-10 mb-10">
+      <label className="mb-4 inline-block text-xl font-medium">{label}</label>
       <div>
         {fields.map((item, index) => {
           const { error } = getFieldState(`${name}.${index}.value`);
@@ -39,18 +41,28 @@ const InputFieldArray: React.FC<{
                 <input
                   type="text"
                   placeholder="Type here"
+                  disabled={disable}
                   {...register(`${name}.${index}.value`, registerOptions)}
-                  className="input input-bordered input-sm w-80 "
+                  className={classnames(
+                    'daisy-input-bordered daisy-input h-12 flex-1 border-2  px-4 text-base outline-none',
+                    [
+                      Boolean(error?.message)
+                        ? 'border-red-500'
+                        : 'border-black',
+                    ]
+                  )}
                 />
-                {fields.length > 1 && (
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-warning btn-sm ml-4 px-2"
-                    onClick={() => remove(index)}
-                  >
-                    Delete
-                  </button>
-                )}
+                <div className="ml-5 flex w-16 items-center">
+                  {fields.length > 1 && (
+                    <button
+                      type="button"
+                      className="text-primary"
+                      onClick={() => remove(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               </div>
               {error?.message && (
                 <p className="p-1 text-red-500">{error.message}</p>
@@ -60,7 +72,7 @@ const InputFieldArray: React.FC<{
         })}
         <button
           type="button"
-          className="btn btn-outline btn-sm flex items-center"
+          className="flex items-center text-primary"
           onClick={() => append({ value: '' })}
         >
           <AiOutlinePlus /> Add repository

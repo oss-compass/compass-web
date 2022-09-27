@@ -6,6 +6,17 @@ import Image from 'next/image';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
 import { BuiltInProviderType } from 'next-auth/providers';
 
+const getIcons = (type: LiteralUnion<BuiltInProviderType>) => {
+  switch (type) {
+    case 'github':
+      return <AiFillGithub className="cursor-pointer text-5xl" />;
+    case 'gitee':
+      return <SiGitee color="#c71c27" className="cursor-pointer text-5xl" />;
+    default:
+      return null;
+  }
+};
+
 const Auth: React.FC<{
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
@@ -17,51 +28,53 @@ const Auth: React.FC<{
 
   return (
     <>
-      <h1 className="mb-4">Your project repository is hosted at</h1>
+      <h1 className="mb-4 text-xl font-medium">
+        Your project repository is hosted at
+      </h1>
 
-      <div className="pl-60">
-        {!isLogin && (
+      {!isLogin && (
+        <div className="flex">
+          {Object.values(providers).map((provider) => (
+            <button
+              key={provider.name}
+              className="h-12 w-12"
+              onClick={() => signIn(provider.id)}
+            >
+              {getIcons(provider.id)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {isLogin && (
+        <div className="flex items-center justify-between ">
           <div className="flex">
-            {Object.values(providers).map((provider) => (
-              <div key={provider.name}>
-                <button onClick={() => signIn(provider.id)}>
-                  {provider.id === 'github' && (
-                    <AiFillGithub className="cursor-pointer text-6xl" />
-                  )}
-                  {provider.id === 'gitee' && (
-                    <SiGitee
-                      color="#c71c27"
-                      className="cursor-pointer text-6xl"
-                    />
-                  )}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {isLogin && (
-          <div className="flex flex-col items-start">
-            <div className="avatar flex-shrink-0">
-              <div className="rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
+            <div className="daisy-avatar">
+              <div className="rounded-full">
                 <Image
-                  width={40}
-                  height={40}
-                  src={session.data!.user?.image as string}
+                  width={48}
+                  height={48}
+                  src={session!.data!.user?.image!}
                   alt={''}
                 />
               </div>
             </div>
-            <span>{session.data!.user?.name}</span>
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() => signOut()}
-            >
-              logout
+            <div className="ml-4 flex flex-col">
+              <span className="text-base font-medium line-clamp-1">
+                {session?.data?.user?.name}
+              </span>
+              <span className="text-sm text-gray-400">
+                {session?.data?.provider}
+              </span>
+            </div>
+          </div>
+          <div className="ml-5 flex w-16 items-center">
+            <button className="text-primary" onClick={() => signOut()}>
+              Logout
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };

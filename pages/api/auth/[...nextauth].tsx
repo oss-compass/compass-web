@@ -21,9 +21,9 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async session({ session, user, token }) {
-      session.provider = token.provider;
-      session.login = token.login;
-      session.accessToken = token.accessToken;
+      session.provider = token.provider as string;
+      session.accessToken = token.accessToken as string;
+      session.user.login = token.login as string;
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
