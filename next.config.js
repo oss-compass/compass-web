@@ -14,7 +14,7 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'styles')],
   },
   images: {
-    domains: ['portrait.gitee.com'],
+    domains: ['portrait.gitee.com', 'avatars.githubusercontent.com'],
   },
   async rewrites() {
     return [

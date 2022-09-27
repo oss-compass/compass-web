@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AiOutlineStar } from 'react-icons/ai';
 import { OverviewQuery } from '@graphql/generated';
 import { numberFormatK } from '@common/utils';
+import { gsap } from 'gsap';
 
 const getLink = (
   path: string | null | undefined,
@@ -18,6 +19,33 @@ const getLink = (
   }
 };
 
+const list: { target: string; vars: gsap.TweenVars }[] = [
+  {
+    target: `#HotProjects div:nth-child(1)`,
+    vars: { rotateX: 360, delay: 0 },
+  },
+  {
+    target: `#HotProjects div:nth-child(2)`,
+    vars: { rotateX: 360, delay: 0.05 },
+  },
+  {
+    target: `#HotProjects div:nth-child(3)`,
+    vars: { rotateX: 360, delay: 0.1 },
+  },
+  {
+    target: `#HotProjects div:nth-child(4)`,
+    vars: { rotateX: 360, delay: 0.15 },
+  },
+  {
+    target: `#HotProjects div:nth-child(5)`,
+    vars: { rotateX: 360, delay: 0.2 },
+  },
+  {
+    target: `#HotProjects div:nth-child(6)`,
+    vars: { rotateX: 360, delay: 0.25 },
+  },
+];
+
 const HotProjects: React.FC<{
   trends: OverviewQuery['overview']['trends'];
 }> = ({ trends = [] }) => {
@@ -27,10 +55,24 @@ const HotProjects: React.FC<{
     return trends?.slice(0, 6);
   }, [trends]);
 
+  useEffect(() => {
+    const t = setTimeout(() => {
+      list.forEach((item) => {
+        gsap.to(item.target, item.vars);
+      });
+    }, 3000);
+    return () => {
+      clearTimeout(t);
+    };
+  }, []);
+
   return (
     <div>
       <div className="mb-6 text-2xl font-bold">Hot Projects</div>
-      <div className="flex h-[300px] w-[664px] flex-wrap rounded border-t border-l ">
+      <div
+        className="flex h-[300px] w-[664px] flex-wrap rounded border-t border-l "
+        id="HotProjects"
+      >
         {showTrends?.map((repo) => {
           return (
             <div

@@ -8,6 +8,8 @@ import {
 } from 'react-hook-form';
 import { CreateFields } from './type';
 import { getLastPathSegment, getPathname } from '@common/utils';
+import styles from './index.module.css';
+import classnames from 'classnames';
 
 type ArrayFieldName = keyof CreateFields;
 
@@ -32,25 +34,29 @@ const SelectFieldArray: React.FC<{
     .map((item) => item.value.trim())
     .filter(Boolean);
 
-  const options = uniq([...softwareArtifactUrls, ...communityUrls]).map(
-    getPathname
-  );
+  const options = uniq([...softwareArtifactUrls, ...communityUrls])
+    .map(getPathname)
+    .filter(Boolean);
 
   if (softwareArtifactUrls.length >= 1 && communityUrls.length >= 1) {
     return (
-      <div className="mb-10 flex">
-        <label className="w-60">{label}</label>
+      <div className="mt-10 mb-10">
+        <label className="mb-4 inline-block text-xl font-medium">{label}</label>
         <div>
           <div className="mb-4">
             <div className="flex">
               <select
-                className="select select-bordered w-60 max-w-xs"
+                className={classnames(
+                  'daisy-select  h-12 flex-1  border-2 border-black text-base outline-none',
+                  styles.select
+                )}
                 {...register(name, registerOptions)}
               >
                 {options.map((url) => {
                   return <option key={url}>{url}</option>;
                 })}
               </select>
+              <div className="ml-5 w-16" />
             </div>
             {error?.message && (
               <p className="p-1 text-red-500">{error.message}</p>

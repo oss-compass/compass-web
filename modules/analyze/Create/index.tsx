@@ -16,7 +16,8 @@ import SelectField from './SelectField';
 import Auth from './Auth';
 import { CreateFields } from './type';
 
-export const UrlReg = /^https:\/\/(gitee|github)\.com\/.+/i;
+export const getUrlReg = (provider: string) =>
+  new RegExp(`/^https:\\/\\/${provider}\\.com\\/.+/i`);
 
 const AnalyzeCreate: React.FC<{
   providers: Record<
@@ -26,6 +27,7 @@ const AnalyzeCreate: React.FC<{
 }> = ({ providers }) => {
   const session = useSession();
   const isLogin = Boolean(session?.data);
+  const provider = session?.data?.provider || 'github';
 
   const {
     isLoading: isRepoTaskLoading,
@@ -60,7 +62,7 @@ const AnalyzeCreate: React.FC<{
       .filter(Boolean);
 
     const common = {
-      username: session!.data!.login as string,
+      username: session!.data!.user!.login as string,
       token: session!.data!.accessToken as string,
       origin: session!.data!.provider as string,
     };
@@ -86,67 +88,71 @@ const AnalyzeCreate: React.FC<{
   };
 
   return (
-    <div className="mx-auto w-[1000px] pt-20">
-      {(repoTaskError || errorProject) && <ErrorMessage />}
-      {(repoTaskSuccess || successProject) && (
-        <SuccessMessage
-          url={
-            repoTaskData?.createRepoTask?.prUrl! ||
-            projectTaskData?.createProjectTask?.prUrl!
-          }
-        />
-      )}
+    <>
+      <div className="h-40 bg-[#2c5fea]"></div>
+      <div className="mx-auto w-[1000px]">
+        <div className="w-[560px] pb-10 pt-10">
+          <Auth providers={providers} />
 
-      <br />
-      <br />
-      <Auth providers={providers} />
-
-      <div className="py-10">
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <InputFieldArray
-              label="Software Artifact Projects"
-              name="softwareArtifactProjects"
-              registerOptions={{
-                required: 'This is required',
-                pattern: {
-                  value: UrlReg,
-                  message: `must be a url`,
-                },
-              }}
-            />
-            <InputFieldArray
-              label="Comminuty Repository"
-              name="communityProject"
-              registerOptions={{
-                pattern: {
-                  value: UrlReg,
-                  message: `must be a url`,
-                },
-              }}
-            />
-            <SelectField
-              label="Project Name"
-              name="projectName"
-              registerOptions={{
-                required: 'This is required',
-              }}
-            />
-            <div className="pl-60">
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <InputFieldArray
+                label="Software Artifact Projects"
+                name="softwareArtifactProjects"
+                registerOptions={{
+                  required: 'this is required',
+                  pattern: {
+                    value: getUrlReg(provider!),
+                    message: `must be a ${provider} repo url`,
+                  },
+                }}
+              />
+              <InputFieldArray
+                label="Comminuty Repository"
+                name="communityProject"
+                registerOptions={{
+                  pattern: {
+                    value: getUrlReg(provider!),
+                    message: `must be a ${provider} repo url`,
+                  },
+                }}
+              />
+              <SelectField
+                label="Project Name"
+                name="projectName"
+                registerOptions={{
+                  required: 'this is required',
+                }}
+              />
               <button
-                className={classnames('btn btn-sm', {
-                  loading: isRepoTaskLoading || loadingProject,
-                })}
                 type="submit"
                 disabled={!isLogin}
+                className={classnames(
+                  'daisy-btn h-12 w-32 rounded-none bg-black text-white',
+                  {
+                    ['daisy-loading']: isRepoTaskLoading || loadingProject,
+                    ['daisy-btn-disabled']: !isLogin,
+                    ['bg-gray-400']: !isLogin,
+                  }
+                )}
               >
-                {isLogin ? 'submit' : 'please login'}
+                {isLogin ? 'Submit' : 'Please Login'}
               </button>
-            </div>
-          </form>
-        </FormProvider>
+            </form>
+
+            {(repoTaskError || errorProject) && <ErrorMessage />}
+            {(repoTaskSuccess || successProject) && (
+              <SuccessMessage
+                url={
+                  repoTaskData?.createRepoTask?.prUrl! ||
+                  projectTaskData?.createProjectTask?.prUrl!
+                }
+              />
+            )}
+          </FormProvider>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
