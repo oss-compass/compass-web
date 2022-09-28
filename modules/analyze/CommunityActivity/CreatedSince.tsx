@@ -14,6 +14,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import { CommunityActivity } from '../Misc/SideBar/menus';
 
 const CreatedSince: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -30,6 +31,7 @@ const CreatedSince: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
+      id={CommunityActivity.CreatedSince}
       title="Created since"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >

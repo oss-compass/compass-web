@@ -10,7 +10,7 @@ import {
 } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyGroupToYAxis,
   pickKeyToXAxis,

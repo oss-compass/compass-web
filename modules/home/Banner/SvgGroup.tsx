@@ -2,14 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useDebounceFn } from 'ahooks';
 
-import Svg1 from '@modules/home/SectionBanner/assets/01.svg';
-import Svg2 from '@modules/home/SectionBanner/assets/02.svg';
-import Svg3 from '@modules/home/SectionBanner/assets/03.svg';
-import Svg4 from '@modules/home/SectionBanner/assets/04.svg';
-import Svg5 from '@modules/home/SectionBanner/assets/05.svg';
-import Svg6 from '@modules/home/SectionBanner/assets/06.svg';
-import Svg7 from '@modules/home/SectionBanner/assets/07.svg';
-import Svg8 from '@modules/home/SectionBanner/assets/08.svg';
+import Svg1 from './assets/01.svg';
+import Svg2 from './assets/02.svg';
+import Svg3 from './assets/03.svg';
+import Svg4 from './assets/04.svg';
+import Svg5 from './assets/05.svg';
+import Svg6 from './assets/06.svg';
+import Svg7 from './assets/07.svg';
+import Svg8 from './assets/08.svg';
 
 export const SvgPositionConfig = [
   {

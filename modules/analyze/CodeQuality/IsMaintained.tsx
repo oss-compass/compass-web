@@ -3,7 +3,7 @@ import EChartX from '@common/components/EChartX';
 import { bar, ChartComponentProps, getBarOption } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,

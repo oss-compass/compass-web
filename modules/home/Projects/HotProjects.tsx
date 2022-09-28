@@ -67,16 +67,16 @@ const HotProjects: React.FC<{
   }, []);
 
   return (
-    <div>
+    <div className="lg:px-4">
       <div className="mb-6 text-2xl font-bold">Hot Projects</div>
       <div
-        className="flex h-[300px] w-[664px] flex-wrap rounded border-t border-l "
+        className="flex w-[664px] flex-wrap rounded border-t border-l lg:w-full"
         id="HotProjects"
       >
         {showTrends?.map((repo) => {
           return (
             <div
-              className="h-1/2 w-1/3 border-b border-r px-6 pt-6"
+              className="h-1/2 w-1/3 border-b border-r px-6 py-6  lg:w-1/2"
               key={repo.path}
             >
               <Link

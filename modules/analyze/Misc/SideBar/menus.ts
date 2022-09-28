@@ -10,16 +10,6 @@ export enum CodeQuality {
   LocFrequency = 'code_quality_loc_frequency',
 }
 
-export enum CommunityActivity {
-  Overview = 'community_activity_overview',
-  ContributorCount = 'community_activity_contributor_count',
-  CommitFrequency = 'community_activity_commit_frequency',
-  CodeReviewCount = 'community_activity_code_review_count',
-  CreatedSince = 'community_activity_created_since',
-  UpdatedSince = 'community_activity_updated_since',
-  CommentFrequency = 'community_activity_comment_frequency',
-}
-
 export enum CommunitySupport {
   Overview = 'community_support_overview',
   IssueFirstResponse = 'community_support_issue_first_response',
@@ -29,6 +19,16 @@ export enum CommunitySupport {
   PrOpenTime = 'community_support_pr_open_time',
   CodeReviewCount = 'community_support_code_review_count',
   ClosedPrsCount = 'community_support_closed_prs_count',
+}
+
+export enum CommunityActivity {
+  Overview = 'community_activity_overview',
+  ContributorCount = 'community_activity_contributor_count',
+  CommitFrequency = 'community_activity_commit_frequency',
+  CodeReviewCount = 'community_activity_code_review_count',
+  CreatedSince = 'community_activity_created_since',
+  UpdatedSince = 'community_activity_updated_since',
+  CommentFrequency = 'community_activity_comment_frequency',
 }
 
 const SideBarConfig = [
@@ -61,18 +61,18 @@ const SideBarConfig = [
       { name: 'Closed PR count', id: CommunitySupport.ClosedPrsCount },
     ],
   },
-  // {
-  //   name: 'Community Activity ',
-  //   groups: [
-  //     { name: 'Overview', id: CommunityActivity.Overview },
-  //     { name: 'ContributorCount', id: CommunityActivity.ContributorCount },
-  //     { name: 'CommitFrequency', id: CommunityActivity.CommitFrequency },
-  //     { name: 'CodeReviewCount', id: CommunityActivity.CodeReviewCount },
-  //     { name: 'CreatedSince', id: CommunityActivity.CreatedSince },
-  //     { name: 'UpdatedSince', id: CommunityActivity.UpdatedSince },
-  //     { name: 'CommentFrequency', id: CommunityActivity.CommentFrequency },
-  //   ],
-  // },
+  {
+    name: 'Community Activity ',
+    groups: [
+      { name: 'Overview', id: CommunityActivity.Overview },
+      { name: 'Contributor Count', id: CommunityActivity.ContributorCount },
+      { name: 'Commit Frequency', id: CommunityActivity.CommitFrequency },
+      { name: 'Code Review Count', id: CommunityActivity.CodeReviewCount },
+      { name: 'Created Since', id: CommunityActivity.CreatedSince },
+      { name: 'Updated Since', id: CommunityActivity.UpdatedSince },
+      { name: 'Comment Frequency', id: CommunityActivity.CommentFrequency },
+    ],
+  },
 ];
 
 export default SideBarConfig;

@@ -28,7 +28,7 @@ const Loading = () => (
 );
 
 const Padding = () => (
-  <div className="flex flex-1 flex-col items-center justify-center">
+  <div className="flex flex-1 flex-col items-center justify-center md:px-4 md:py-20">
     <div className="mb-4">
       <Image
         src="/images/analyze/padding.gif"
@@ -58,7 +58,7 @@ const DataView = () => {
 
   return (
     <NoSsr>
-      <div className="w-full flex-1 xl:mx-auto xl:max-w-[1200px]">
+      <div className="mx-auto w-full flex-1 xl:max-w-full">
         <CompareBar />
         <Charts />
       </div>

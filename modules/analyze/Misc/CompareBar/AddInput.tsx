@@ -97,7 +97,7 @@ const AddInput = () => {
             </button>
           </div>
           {!confirmItem && throttledKeyword && (
-            <div className="border-1 absolute left-0 right-0 top-[44px] z-[100] rounded  bg-white drop-shadow">
+            <div className="border-1 absolute left-0 right-0 top-[44px] z-dropdown rounded  bg-white drop-shadow">
               <div className="w-full">
                 <SearchDropdown
                   result={data?.fuzzySearch!}
