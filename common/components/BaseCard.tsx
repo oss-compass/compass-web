@@ -26,8 +26,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const cls = classnames(
     className,
     'rounded-lg bg-white p-5 drop-shadow-sm border-2 border-white',
+    'md:rounded-none',
     {
-      'w-screen h-screen fixed left-0 right-0 top-0 bottom-0 z-[1000]':
+      'w-screen h-screen fixed left-0 right-0 top-0 bottom-0 z-fullscreen':
         fullScreen,
     }
   );
@@ -62,7 +63,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-lg font-semibold">{title}</h2>
         <span
-          className="cursor-pointer p-2"
+          className="cursor-pointer p-2 md:hidden"
           onClick={() => {
             setFullScreen((pre) => !pre);
           }}

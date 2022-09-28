@@ -3,7 +3,10 @@ import { AiOutlineLoading, AiOutlineSearch } from 'react-icons/ai';
 import { useThrottle } from 'ahooks';
 import { useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
+import classnames from 'classnames';
 import SearchDropdown from './SearchDropdown';
+
+import styles from './index.module.scss';
 
 const Search = () => {
   const [keyword, setKeyword] = useState('');
@@ -16,8 +19,14 @@ const Search = () => {
   const showLoading = isLoading && fetchStatus === 'fetching';
 
   return (
-    <div className="absolute bottom-16 w-[500px] bg-white p-4">
-      <h1 id="test" className="mb-4 text-7xl">
+    <div
+      className={classnames(
+        'absolute top-60 w-[500px] p-6',
+        'md:top-20 md:w-[330px]',
+        styles.searchBg
+      )}
+    >
+      <h1 id="test" className="mb-4 text-7xl md:text-5xl">
         Know more
         <br />
         your projects
@@ -33,7 +42,10 @@ const Search = () => {
           <input
             value={keyword}
             type="text"
-            className="h-[70px]  w-full  text-xl outline-0"
+            className={classnames(
+              'h-[70px]  w-full appearance-none bg-transparent text-xl outline-0',
+              'md:h-[40px]'
+            )}
             placeholder="eg: vscode"
             // placeholder="Type the name to insight into your project"
             onChange={(event) => {
@@ -50,7 +62,12 @@ const Search = () => {
           </div>
         </div>
         {throttledKeyword && (
-          <div className="absolute left-0 right-0 top-[76px] z-[100] border-2 border-black bg-white drop-shadow">
+          <div
+            className={classnames(
+              'absolute left-0 right-0 top-[76px] z-dropdown border-2 border-black bg-white drop-shadow',
+              'md:top-[46px]'
+            )}
+          >
             <div className="w-full">
               <SearchDropdown result={data?.fuzzySearch!} />
             </div>

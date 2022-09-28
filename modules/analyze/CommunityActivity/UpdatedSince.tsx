@@ -14,6 +14,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import { CommunityActivity } from '../Misc/SideBar/menus';
 
 const UpdatedSince: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -30,6 +31,7 @@ const UpdatedSince: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
+      id={CommunityActivity.UpdatedSince}
       title="Updated since"
       description="Determine the average time per repository since the repository was last updated (in months)."
     >

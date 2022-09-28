@@ -31,7 +31,7 @@ const CloseIcons: React.FC<{ label: string; level: Level }> = ({
 const CompareBar = () => {
   const { compareItems } = useCompareItems();
   return (
-    <div className="mb-8 flex h-[100px] ">
+    <div className="mb-8 flex h-[100px] md:hidden">
       <div className="min-w-0 flex-1 rounded-tl-lg rounded-bl-lg bg-[#00B5EA]">
         <div className="overflow flex h-full">
           {compareItems.map((item, index) => {

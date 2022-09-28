@@ -17,7 +17,7 @@ import Auth from './Auth';
 import { CreateFields } from './type';
 
 export const getUrlReg = (provider: string) =>
-  new RegExp(`/^https:\\/\\/${provider}\\.com\\/.+/i`);
+  new RegExp(`^https:\/\/${provider}\.com\/.+\/.+`, 'i');
 
 const AnalyzeCreate: React.FC<{
   providers: Record<
@@ -90,10 +90,9 @@ const AnalyzeCreate: React.FC<{
   return (
     <>
       <div className="h-40 bg-[#2c5fea]"></div>
-      <div className="mx-auto w-[1000px]">
-        <div className="w-[560px] pb-10 pt-10">
+      <div className="mx-auto w-[1000px] md:w-full">
+        <div className="w-[560px] pb-10 pt-10 md:w-full md:px-4">
           <Auth providers={providers} />
-
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <InputFieldArray

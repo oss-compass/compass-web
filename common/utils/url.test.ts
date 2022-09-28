@@ -1,4 +1,4 @@
-import { getHostLabel, repoUrlFormatForChart } from './url';
+import { getHostLabel, repoUrlFormat } from './url';
 
 describe('utils url ', () => {
   it('getHostLabel', () => {
@@ -21,7 +21,7 @@ describe('utils url ', () => {
     });
   });
 
-  it('repoUrlFormatForChart', () => {
+  it('repoUrlFormat', () => {
     const testCases = [
       {
         input: 'https://github.com/EdmondFrank/.emacs.d',
@@ -38,7 +38,7 @@ describe('utils url ', () => {
     ];
 
     testCases.map((item) => {
-      expect(repoUrlFormatForChart(item.input)).toEqual(item.result);
+      expect(repoUrlFormat(item.input)).toEqual(item.result);
     });
   });
 });

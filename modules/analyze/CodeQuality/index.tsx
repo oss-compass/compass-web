@@ -16,7 +16,7 @@ const CodeQuality = () => {
       <div className="mb-4">
         <Overview />
       </div>
-      <div className="mb-4 grid min-w-0 gap-4 lg:grid-cols-2">
+      <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ContributorCount />
         <CommitFrequency />
         <IsMaintained />

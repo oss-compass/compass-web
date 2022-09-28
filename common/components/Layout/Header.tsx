@@ -1,18 +1,22 @@
+import React from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
-import React, { PropsWithChildren, ComponentProps } from 'react';
+import MobileHeader from './MobileHeader';
 
-export const Header: React.FC<{
+const Header: React.FC<{
   sticky?: boolean;
   contentCenter?: boolean;
-}> = ({ contentCenter = false, sticky = false }) => {
+  mobileMenu?: React.ReactNode;
+}> = ({ sticky = false, contentCenter = false, mobileMenu }) => {
   return (
     <header className={classnames('flex-shrink-0', { 'sticky top-0': sticky })}>
       <div
         className={classnames(
           { 'mx-auto w-[1200px]': contentCenter },
           'h-20 px-6 py-4',
-          'flex items-center justify-between'
+          'flex items-center justify-between',
+          'lg:w-full',
+          'md:hidden'
         )}
       >
         <div className="flex items-center">
@@ -38,32 +42,8 @@ export const Header: React.FC<{
           Contact us
         </div>
       </div>
+      <MobileHeader>{mobileMenu}</MobileHeader>
     </header>
   );
 };
-
-export const Main: React.FC<PropsWithChildren> = ({ children }) => {
-  return <main className="flex flex-1">{children}</main>;
-};
-
-export const Content: React.FC<PropsWithChildren> = ({ children }) => {
-  return (
-    // min-w-0 can let div(flex-1) narrow with parent div
-    <div className="relative flex min-w-0 flex-1 flex-col bg-slate-50 px-10 pt-8">
-      {children}
-    </div>
-  );
-};
-
-export const Center: React.FC<PropsWithChildren<{ className?: string }>> = ({
-  children,
-  className,
-}) => {
-  return (
-    <div
-      className={classnames('w-full', 'xl:mx-auto xl:w-[1200px]', className)}
-    >
-      {children}
-    </div>
-  );
-};
+export default Header;

@@ -8,7 +8,7 @@ const DatePicker = () => {
   const { update } = useDatePickerContext();
 
   return (
-    <div className="flex h-8 items-center rounded-3xl border">
+    <div className="flex h-8 items-center rounded-3xl border md:hidden">
       {quickSelectRange.map((range) => {
         return (
           <div

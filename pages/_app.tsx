@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import dynamic from 'next/dynamic';
@@ -50,6 +51,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient} contextSharing>
+        <Head>
+          <title>OSS Compass</title>
+          <meta charSet="utf-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+          />
+          <meta name="keywords" content={''} />
+          <meta name="description" content={''} />
+          <meta name="applicable-device" content="pc,mobile" />
+        </Head>
         <NextNProgress startPosition={0.15} color="#000" />
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} />

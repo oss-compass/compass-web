@@ -1,16 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  line,
-  mapToLineAreaSeries,
-  toTimeXAxis,
-} from '../options';
+import { ChartComponentProps, getLineOption, line } from '../options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/SideBarConfig';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,

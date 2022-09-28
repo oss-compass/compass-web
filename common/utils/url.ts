@@ -31,7 +31,12 @@ export function getHostLabel(url: string) {
   return url;
 }
 
-export function repoUrlFormatForChart(url: string | undefined) {
+export function repoUrlFormat(url: string | undefined) {
   if (!url) return '';
   return `${getHostLabel(url)} ${getLastPathSegment(getPathname(url))}`;
+}
+
+export function removeHttps(url: string | undefined) {
+  if (!url) return '';
+  return url.replace(/^https:\/\//, '');
 }

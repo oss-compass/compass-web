@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
+import { removeHttps } from '@common/utils';
 
 const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
   result,
@@ -32,13 +33,19 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
             <a
               className={classnames(
                 { 'bg-gray-100': active === index },
-                'flex px-4 py-3 text-xl hover:bg-gray-100'
+                'flex px-4 py-3 text-xl hover:bg-gray-100',
+                'md:py-2 md:px-2 md:text-base'
               )}
             >
-              <span className="mr-2 rounded bg-gray-200 p-1 text-base leading-none text-gray-400">
+              <span
+                className={classnames(
+                  'mr-2 rounded bg-gray-200 p-1 text-base leading-none text-gray-400',
+                  'md:text-sm'
+                )}
+              >
                 {item.level}
               </span>
-              <span className="line-clamp-1">{item.label}</span>
+              <span className="line-clamp-1">{removeHttps(item.label!)}</span>
             </a>
           </Link>
         );
@@ -53,7 +60,7 @@ const SearchDropdown: React.FC<{
   if (!result) return <Empty type="DropDownItem" />;
   if (Array.isArray(result) && result.length === 0) {
     return (
-      <p className="block px-4 py-3 text-center text-lg text-gray-400">
+      <p className="block px-4 py-3 text-lg text-gray-400 md:py-2 md:text-base">
         {'No result! '}
         <Link href="/analyze/create">
           <a className="text-primary">submit an analysis request</a>

@@ -15,6 +15,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import { CommunityActivity } from '../Misc/SideBar/menus';
 
 const CommitFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -31,6 +32,7 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
+      id={CommunityActivity.CommitFrequency}
       title="CommitFrequency"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >

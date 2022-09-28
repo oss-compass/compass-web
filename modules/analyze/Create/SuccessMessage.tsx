@@ -17,9 +17,9 @@ const SuccessMessage: React.FC<{ url: string }> = ({ url }) => {
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <p>submit success! see more: </p>
         <p>
-          <a className="text-primary" href={url}>
+          <span>submit success! see more: </span>
+          <a className="underline underline-offset-2" href={url}>
             {url}
           </a>
         </p>

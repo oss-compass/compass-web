@@ -64,12 +64,12 @@ const SectionExplain = () => {
   return (
     <section>
       <div className={classnames(styles.bg, 'h-[900px] w-full')}>
-        <div className="relative mx-auto w-[1200px]">
-          <h1 className="absolute top-16 text-6xl text-white">
+        <div className="relative mx-auto w-[1200px] lg:w-full">
+          <h1 className="absolute top-16 text-6xl text-white md:px-2 md:text-3xl">
             How Compass working
           </h1>
 
-          <div className="absolute top-[400px] left-[160px] cursor-pointer">
+          <div className="absolute top-[400px] left-[160px] cursor-pointer md:hidden">
             <Planet01 />
             <MaskPlanet
               enable={value === 1}
@@ -86,7 +86,7 @@ const SectionExplain = () => {
             />
           </div>
 
-          <div className="absolute top-[200px] right-[160px] cursor-pointer">
+          <div className="absolute top-[200px] right-[160px] cursor-pointer md:hidden">
             <Planet02 />
             <MaskPlanet
               enable={value === 2}
@@ -103,7 +103,7 @@ const SectionExplain = () => {
             />
           </div>
 
-          <div className="absolute top-[500px] right-[180px] cursor-pointer">
+          <div className="absolute top-[500px] right-[180px] cursor-pointer md:hidden">
             <Planet03 />
             <MaskPlanet
               enable={value === 3}

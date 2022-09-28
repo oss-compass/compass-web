@@ -1,7 +1,7 @@
 import { MetricQuery } from '@graphql/generated';
 import isArray from 'lodash/isArray';
 import maxBy from 'lodash/maxBy';
-import { repoUrlFormatForChart } from '@common/utils/url';
+import { repoUrlFormat } from '@common/utils/url';
 import get from 'lodash/get';
 import { toTimeXAxis } from '@modules/analyze/options/index';
 import { Level } from '@modules/analyze/constant';
@@ -39,7 +39,7 @@ interface Option {
 const formatLegendName = (name: string, level: Level) => {
   let label = name;
   if (level === Level.REPO) {
-    label = repoUrlFormatForChart(name);
+    label = repoUrlFormat(name);
   }
 
   return label;

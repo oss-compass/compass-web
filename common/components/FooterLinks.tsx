@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Logo from '@common/components/Logo';
-import { Center } from '@common/components/BaseLayout';
+import { Center } from '@common/components/Layout';
 
 const linkData = [
   {
@@ -36,7 +36,7 @@ const linkData = [
 
 const FooterLinks = () => {
   return (
-    <div className="flex w-full flex-wrap justify-around pt-20 pb-16">
+    <div className="flex w-full flex-wrap justify-around pt-20 pb-16 md:flex-col">
       <Logo />
       {linkData.map((item) => {
         return (

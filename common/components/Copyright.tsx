@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Center } from '@common/components/BaseLayout';
+import { Center } from '@common/components/Layout';
 import { AiFillGithub, AiOutlineTwitter } from 'react-icons/ai';
 
 const Copyright = () => {
