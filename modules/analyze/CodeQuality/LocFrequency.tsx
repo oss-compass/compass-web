@@ -25,8 +25,8 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return bar({ name, data, stack: 'line' });
+    const series = yAxis.map(({ name, label, data }) => {
+      return bar({ name, data, stack: label });
     });
     return getBarOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);

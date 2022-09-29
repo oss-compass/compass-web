@@ -222,6 +222,26 @@ export type Error = {
   path?: Maybe<Array<Scalars['String']>>;
 };
 
+export type LatestMetrics = {
+  __typename?: 'LatestMetrics';
+  /** latest score of activity metric model */
+  activityScore?: Maybe<Scalars['Float']>;
+  /** latest score of activity metric model updated_at */
+  activityScoreUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  /** latest score of code quality metric model */
+  codeQualityGuarantee?: Maybe<Scalars['Float']>;
+  /** latest score of code quality metric model updated_at */
+  codeQualityGuaranteeUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  /** latest score of community support metric model */
+  communitySupportScore?: Maybe<Scalars['Float']>;
+  /** latest score of community support metric model up */
+  communitySupportScoreUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Submit a project analysis task */
@@ -268,6 +288,8 @@ export type Query = {
   analysisStatus: Scalars['String'];
   /** Fuzzy search project by keyword */
   fuzzySearch: Array<ProjectCompletionRow>;
+  /** Get latest metrics data of the specified label */
+  latestMetrics: LatestMetrics;
   /** Get activity metrics data of compass */
   metricActivity: Array<ActivityMetric>;
   /** Get code quality metrics data of compass */
@@ -284,6 +306,11 @@ export type QueryAnalysisStatusArgs = {
 
 export type QueryFuzzySearchArgs = {
   keyword: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryLatestMetricsArgs = {
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
 };
 
@@ -376,6 +403,26 @@ export type SearchQuery = {
     level?: string | null;
     label?: string | null;
   }>;
+};
+
+export type LatestMetricsQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+}>;
+
+export type LatestMetricsQuery = {
+  __typename?: 'Query';
+  latestMetrics: {
+    __typename?: 'LatestMetrics';
+    activityScore?: number | null;
+    activityScoreUpdatedAt?: any | null;
+    codeQualityGuarantee?: number | null;
+    codeQualityGuaranteeUpdatedAt?: any | null;
+    communitySupportScore?: number | null;
+    communitySupportScoreUpdatedAt?: any | null;
+    label?: string | null;
+    level?: string | null;
+  };
 };
 
 export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
@@ -650,6 +697,55 @@ useSearchQuery.fetcher = (
   fetcher<SearchQuery, SearchQueryVariables>(
     client,
     SearchDocument,
+    variables,
+    headers
+  );
+export const LatestMetricsDocument = /*#__PURE__*/ `
+    query latestMetrics($label: String!, $level: String) {
+  latestMetrics(level: $level, label: $label) {
+    activityScore
+    activityScoreUpdatedAt
+    codeQualityGuarantee
+    codeQualityGuaranteeUpdatedAt
+    communitySupportScore
+    communitySupportScoreUpdatedAt
+    label
+    level
+  }
+}
+    `;
+export const useLatestMetricsQuery = <
+  TData = LatestMetricsQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: LatestMetricsQueryVariables,
+  options?: UseQueryOptions<LatestMetricsQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<LatestMetricsQuery, TError, TData>(
+    ['latestMetrics', variables],
+    fetcher<LatestMetricsQuery, LatestMetricsQueryVariables>(
+      client,
+      LatestMetricsDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useLatestMetricsQuery.getKey = (variables: LatestMetricsQueryVariables) => [
+  'latestMetrics',
+  variables,
+];
+useLatestMetricsQuery.fetcher = (
+  client: GraphQLClient,
+  variables: LatestMetricsQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<LatestMetricsQuery, LatestMetricsQueryVariables>(
+    client,
+    LatestMetricsDocument,
     variables,
     headers
   );

@@ -3,8 +3,16 @@ import type { PropsWithChildren, ComponentProps } from 'react';
 import classnames from 'classnames';
 import BaseCard from '@common/components/BaseCard';
 import styles from './index.module.scss';
-import { MetricQuery } from '@graphql/generated';
+import {
+  MetricQuery,
+  useLatestMetricsQuery,
+  useMetricQuery,
+} from '@graphql/generated';
 import { getLastPathSegment } from '@common/utils/url';
+import client from '@graphql/client';
+import useCompareItems from '@modules/analyze/hooks/useCompareItems';
+import { useQueries, useQueryClient } from '@tanstack/react-query';
+import { formatISO, toFixed } from '@common/utils';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -14,7 +22,7 @@ const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   return (
     <td
       className={classnames(
-        'w-72 border-t border-b border-b-[#ffffff] py-4 text-center font-semibold',
+        'w-1/4 border-t border-b border-b-[#ffffff] py-4 text-center font-semibold',
         className
       )}
       {...props}
@@ -60,10 +68,26 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
   );
 };
 
-const TrendsList: React.FC<{
-  loading: boolean;
-  data: { label: string; result: MetricQuery | undefined }[];
-}> = ({ loading, data }) => {
+const TrendsList: React.FC = () => {
+  const { compareItems } = useCompareItems();
+  const data = useQueries({
+    queries: compareItems.map(({ label, level }) => {
+      return {
+        queryKey: useLatestMetricsQuery.getKey({
+          label,
+          level,
+        }),
+        queryFn: useLatestMetricsQuery.fetcher(client, {
+          label,
+          level,
+        }),
+      };
+    }),
+  });
+
+  const loading = data.some((i) => i.isLoading);
+  const list = data.map((i) => i.data?.latestMetrics).filter(Boolean);
+
   return (
     <BaseCard
       loading={loading}
@@ -93,17 +117,25 @@ const TrendsList: React.FC<{
           {/*</tr>*/}
         </thead>
         <tbody>
-          {Array.isArray(data) &&
-            data.map((item, index) => {
+          {Array.isArray(list) &&
+            list.map((item, index) => {
               return (
-                <tr className="" key={item.label}>
-                  <td>{getLastPathSegment(item.label)}</td>
-                  {/*<Td className="bg-[#f2fcff]">122</Td>*/}
-                  <Td className="bg-[#f2fcff]">122</Td>
-                  {/*<Td className="bg-[#fff9f3]">122</Td>*/}
-                  <Td className="bg-[#fff9f3]">122</Td>
-                  {/*<Td className="bg-[#f8f3ff]">122</Td>*/}
-                  <Td className="bg-[#f8f3ff]">122</Td>
+                <tr className="" key={item!.label}>
+                  <td className="flex flex-col px-1">
+                    <span>{getLastPathSegment(item!.label!)}</span>
+                    <span className={'text-xs text-gray-400'}>
+                      {`update at ${formatISO(item!.activityScoreUpdatedAt!)}`}
+                    </span>
+                  </td>
+                  <Td className="bg-[#f2fcff]">
+                    {toFixed(item!.codeQualityGuarantee!, 3)}
+                  </Td>
+                  <Td className="bg-[#fff9f3]">
+                    {toFixed(item!.communitySupportScore!, 3)}
+                  </Td>
+                  <Td className="bg-[#f8f3ff]">
+                    {toFixed(item!.activityScore!, 3)}
+                  </Td>
                 </tr>
               );
             })}

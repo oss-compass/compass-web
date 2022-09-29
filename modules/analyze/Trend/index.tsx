@@ -9,7 +9,7 @@ const Trends: React.FC<{
   data: { label: string; result: MetricQuery | undefined }[];
 }> = ({ loading, data }) => {
   if (data.length > 1) {
-    return <TrendList loading={loading} data={data} />;
+    return <TrendList />;
   }
 
   if (data.length == 1) {

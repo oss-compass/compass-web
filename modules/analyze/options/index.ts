@@ -162,5 +162,5 @@ export const mapToLineAreaSeries = (
 export type ChartComponentProps = {
   loading?: boolean;
   xAxis: string[];
-  yAxis: { name: string; data: (string | number)[] }[];
+  yAxis: { name: string; label: string; data: (string | number)[] }[];
 };
