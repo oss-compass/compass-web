@@ -36,7 +36,7 @@ const linkData = [
 
 const FooterLinks = () => {
   return (
-    <div className="flex w-full flex-wrap justify-around pt-20 pb-16 md:flex-col">
+    <div className="grid grid-cols-5 gap-4 px-6 pt-20 pb-16 md:grid-cols-2 md:flex-col ">
       <Logo />
       {linkData.map((item) => {
         return (

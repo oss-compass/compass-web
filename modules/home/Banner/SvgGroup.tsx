@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useDebounceFn } from 'ahooks';
 
@@ -12,6 +12,89 @@ import Svg7 from './assets/07.svg';
 import Svg8 from './assets/08.svg';
 
 export const SvgPositionConfig = [
+  {
+    id: 1,
+    top: 0,
+    right: 768,
+    width: 163,
+    height: 180,
+    el: <Svg1 />,
+    animate: true,
+  },
+  {
+    id: 2,
+    top: 10,
+    right: 472,
+    width: 308,
+    height: 291,
+    el: <Svg2 />,
+    animate: true,
+  },
+  {
+    id: 3,
+    top: 28,
+    right: 56,
+    width: 284,
+    height: 292,
+    el: <Svg3 />,
+    animate: true,
+  },
+  {
+    id: 4,
+    top: 172,
+    right: 28,
+    width: 139,
+    height: 143,
+    el: <Svg4 />,
+    animate: true,
+  },
+  {
+    id: 5,
+    top: 230,
+    right: 417,
+    width: 139,
+    height: 143,
+    el: <Svg4 />,
+    animate: true,
+  },
+  {
+    id: 6,
+    top: 451,
+    right: 177,
+    width: 387,
+    height: 293,
+    el: <Svg5 />,
+    animate: true,
+  },
+  {
+    id: 7,
+    top: 615,
+    right: 47,
+    width: 139,
+    height: 143,
+    el: <Svg6 />,
+    animate: true,
+  },
+  {
+    id: 8,
+    top: 300,
+    right: 290,
+    width: 139,
+    height: 143,
+    el: <Svg7 />,
+    animate: false,
+  },
+  {
+    id: 9,
+    top: 313,
+    right: 18,
+    width: 139,
+    height: 143,
+    el: <Svg8 />,
+    animate: false,
+  },
+];
+export const SvgPositionMobileConfig = [
   {
     id: 1,
     top: 0,
@@ -121,13 +204,15 @@ const anim = (id: string) => {
 
 export const SvgBlock: React.FC<{
   id: number;
-  top: number;
-  right: number;
+  left?: number;
+  right?: number;
+  top?: number;
+  bottom?: number;
   width: number;
   height: number;
   el: React.ReactElement;
   animate: boolean;
-}> = ({ id, top, right, width, height, el, animate }) => {
+}> = ({ id, top, bottom, left, right, width, height, el, animate }) => {
   const ref = useRef(false);
 
   useEffect(() => {
@@ -142,11 +227,17 @@ export const SvgBlock: React.FC<{
     { wait: 1000, leading: true, trailing: false }
   );
 
+  const style = useMemo(() => {
+    const styles: React.CSSProperties = {};
+    if (top) styles.top = `${top}px`;
+    if (bottom) styles.bottom = `${top}px`;
+    if (left) styles.left = `${left}px`;
+    if (right) styles.right = `${right}px`;
+    return styles;
+  }, [top, right, left, bottom]);
+
   return (
-    <div
-      className={`absolute`}
-      style={{ top: `${top}px`, right: `${right}px` }}
-    >
+    <div className={`absolute`} style={style}>
       <div
         id={`svg${id}`}
         style={{ width: `${width}px`, height: `${height}px` }}
