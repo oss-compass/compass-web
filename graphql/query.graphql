@@ -9,6 +9,19 @@ query search($keyword: String!, $level:String) {
     }
 }
 
+query latestMetrics($label: String!, $level:String){
+    latestMetrics(level: $level, label: $label){
+        activityScore
+        activityScoreUpdatedAt
+        codeQualityGuarantee
+        codeQualityGuaranteeUpdatedAt
+        communitySupportScore
+        communitySupportScoreUpdatedAt
+        label
+        level
+    }
+}
+
 query overview {
     overview {
         projectsCount

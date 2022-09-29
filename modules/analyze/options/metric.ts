@@ -65,7 +65,7 @@ export const pickKeyToYAxis = (data: Array<DateItem>, opt: Option) => {
       return toFixed(val, 3) || 0;
     });
 
-    return { name, data: values || [] };
+    return { name, label: item.label, data: values || [] };
   });
 
   const max = maxBy(result, (i) => i.data.length);
@@ -84,31 +84,30 @@ export const pickKeyGroupToYAxis = (
   }
 
   const isCompare = data.length > 1;
-  const result = data.reduce<{ name: string; data: (number | string)[] }[]>(
-    (acc, item) => {
-      if (!item.result) return [];
+  const result = data.reduce<
+    { name: string; label: string; data: (number | string)[] }[]
+  >((acc, item) => {
+    if (!item.result) return [];
 
-      const yData = opts.map((opt) => {
-        const { typeKey, valueKey, valueFormat, legendName } = opt;
-        const typeResult = item.result?.[typeKey];
+    const yData = opts.map((opt) => {
+      const { typeKey, valueKey, valueFormat, legendName } = opt;
+      const typeResult = item.result?.[typeKey];
 
-        // format legend name
-        const compareNames = formatLegendName(item.label, item.level);
-        const name = isCompare ? `${compareNames} ${legendName}` : legendName;
+      // format legend name
+      const compareNames = formatLegendName(item.label, item.level);
+      const name = isCompare ? `${compareNames} ${legendName}` : legendName;
 
-        const values = typeResult?.map((i) => {
-          // @ts-ignore
-          const val = i[valueKey];
-          if (valueFormat) return valueFormat(val);
-          return toFixed(val, 3) || 0;
-        });
-
-        return { name, data: values || [] };
+      const values = typeResult?.map((i) => {
+        // @ts-ignore
+        const val = i[valueKey];
+        if (valueFormat) return valueFormat(val);
+        return toFixed(val, 3) || 0;
       });
-      return [...acc, ...yData];
-    },
-    []
-  );
+
+      return { name, label: item.label, data: values || [] };
+    });
+    return [...acc, ...yData];
+  }, []);
 
   const max = maxBy(result, (i) => i.data.length);
   return result.map((i) => {
