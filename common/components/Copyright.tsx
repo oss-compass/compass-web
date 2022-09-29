@@ -5,7 +5,7 @@ import { AiFillGithub, AiOutlineTwitter } from 'react-icons/ai';
 
 const Copyright = () => {
   return (
-    <div className="h-[78px] w-full bg-gray-100">
+    <div className="h-[78px] w-full bg-gray-100 md:px-4">
       <Center className="flex h-full items-center justify-between">
         <div className="flex flex-col justify-center text-gray-500">
           <p className="mb-2 text-xs ">

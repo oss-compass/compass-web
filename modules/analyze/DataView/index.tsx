@@ -58,7 +58,7 @@ const DataView = () => {
 
   return (
     <NoSsr>
-      <div className="mx-auto w-full flex-1 xl:max-w-full">
+      <div className="mx-auto w-full flex-1 >2xl:w-[1200px]">
         <CompareBar />
         <Charts />
       </div>

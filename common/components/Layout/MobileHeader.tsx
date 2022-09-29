@@ -40,7 +40,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      <div className="flex h-12 w-full justify-between px-4 >md:hidden">
+      <div className="flex h-12 w-full justify-between px-4 >lg:hidden">
         <div className="flex items-center">
           <div
             className="mr-2"
@@ -48,9 +48,9 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
               toggle();
             }}
           >
-            <AiOutlineMenu />
+            <AiOutlineMenu className="text-xl" />
           </div>
-          <h1 className="text-base font-bold">Oss compass</h1>
+          <h1 className="text-base font-semibold">Oss compass</h1>
         </div>
         <div className="flex items-center">
           <div className="cursor-pointer border border-black px-1 py-1 text-sm ">

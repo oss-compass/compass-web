@@ -15,8 +15,7 @@ const Header: React.FC<{
           { 'mx-auto w-[1200px]': contentCenter },
           'h-20 px-6 py-4',
           'flex items-center justify-between',
-          'lg:w-full',
-          'md:hidden'
+          'lg:hidden'
         )}
       >
         <div className="flex items-center">

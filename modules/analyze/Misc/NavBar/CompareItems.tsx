@@ -9,7 +9,7 @@ const CompareItems = () => {
       {compareItems.map(({ name }, index) => {
         return (
           <React.Fragment key={name}>
-            <div className="font-bold">{name}</div>
+            <div className="font-semibold">{name}</div>
 
             {index < compareItems.length - 1 ? (
               <div className="px-2 text-slate-300">vs</div>

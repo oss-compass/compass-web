@@ -25,7 +25,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   const cls = classnames(
     className,
-    'rounded-lg bg-white p-5 drop-shadow-sm border-2 border-white',
+    'rounded-lg bg-white p-5 drop-shadow-sm border-2 border-white min-w-0',
     'md:rounded-none',
     {
       'w-screen h-screen fixed left-0 right-0 top-0 bottom-0 z-fullscreen':
@@ -41,7 +41,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   if (loading) {
     return (
       <div className={classnames(cls, 'animate-pulse p-10')}>
-        <div className="flex-1 space-y-4 ">
+        <div className="flex-1 space-y-4">
           <div className="h-4 rounded bg-slate-200"></div>
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2 h-4 rounded bg-slate-200"></div>

@@ -5,7 +5,7 @@ import { useLockBodyScroll } from 'react-use';
 const Drawer: React.FC<
   PropsWithChildren<{ visible: boolean; onClose: () => void }>
 > = ({ visible, onClose, children }) => {
-  useLockBodyScroll(visible);
+  // useLockBodyScroll(visible);
   return (
     <div
       className={classnames(
