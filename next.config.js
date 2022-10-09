@@ -1,8 +1,9 @@
 const path = require('path');
+const execSync = require('child_process').execSync;
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
-
+const lastCommitCommand = 'git rev-parse HEAD';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 /** @type {import("next").NextConfig} */
@@ -37,6 +38,9 @@ const nextConfig = {
     });
 
     return config;
+  },
+  generateBuildId: async () => {
+    return execSync(lastCommitCommand).toString().trim();
   },
 };
 
