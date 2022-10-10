@@ -5,6 +5,7 @@ import { OverviewQuery } from '@graphql/generated';
 import { numberFormatK } from '@common/utils';
 import { gsap } from 'gsap';
 import { useInterval } from 'ahooks';
+import { getAnalyzeLink } from '@common/utils';
 
 const getLink = (
   path: string | null | undefined,
@@ -86,9 +87,10 @@ const HotProjects: React.FC<{
               key={repo.path}
             >
               <Link
-                href={`/analyze?repo=${encodeURIComponent(
-                  getLink(repo.path, repo.backend)
-                )}`}
+                href={getAnalyzeLink({
+                  label: getLink(repo.path, repo.backend),
+                  level: 'repo',
+                })}
               >
                 <a className="mb-5 block">
                   <h3 className="mb-2 text-xl line-clamp-1 hover:underline">

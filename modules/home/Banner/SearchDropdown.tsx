@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
 import Link from 'next/link';
 import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
-import { removeHttps } from '@common/utils';
+import { removeHttps, getAnalyzeLink } from '@common/utils';
 
 const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
   result,
@@ -16,9 +15,7 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
     totalLength: result.length,
     onPressEnter: () => {
       const activeItem = result[active];
-      router.push(
-        `/analyze?${activeItem.level}=${encodeURIComponent(activeItem.label!)}`
-      );
+      router.push(getAnalyzeLink(activeItem));
     },
   });
 
@@ -26,10 +23,7 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
     <>
       {result.map((item, index) => {
         return (
-          <Link
-            href={`/analyze?${item.level}=${encodeURIComponent(item.label!)}`}
-            key={item.label}
-          >
+          <Link key={item.label} href={getAnalyzeLink(item)}>
             <a
               className={classnames(
                 { 'bg-gray-100': active === index },

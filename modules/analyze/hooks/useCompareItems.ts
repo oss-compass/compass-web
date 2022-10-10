@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import uniq from 'lodash/uniq';
-import { getPathname } from '@common/utils/url';
 import { useRouter } from 'next/router';
 import { Level } from '@modules/analyze/constant';
+import { getPathname } from '@common/utils';
 
 function formatToArray(value: string | string[]) {
   if (typeof value === 'string') {
@@ -13,36 +13,23 @@ function formatToArray(value: string | string[]) {
 
 const useCompareItems = () => {
   const router = useRouter();
-  const repos = useMemo(() => {
-    const values = router.query.repo;
+  const level = router.query.level as Level;
+  const labels = useMemo(() => {
+    const values = router.query.label;
     return formatToArray(values!);
-  }, [router.query.repo]);
-
-  const projects = useMemo(() => {
-    const values = router.query.project;
-    return formatToArray(values!);
-  }, [router.query.project]);
+  }, [router.query.label]);
 
   const items = useMemo(() => {
     return [
-      ...projects.map((project) => ({
-        label: project,
-        name: project,
-        level: Level.PROJECT,
-      })),
-      ...repos.map((repo) => ({
-        label: repo,
-        name: getPathname(repo),
-        level: Level.REPO,
+      ...labels.map((label) => ({
+        name: getPathname(label),
+        label,
+        level,
       })),
     ];
-  }, [repos, projects]);
+  }, [level, labels]);
 
-  return {
-    repos,
-    projects,
-    compareItems: items,
-  };
+  return { compareItems: items };
 };
 
 export default useCompareItems;
