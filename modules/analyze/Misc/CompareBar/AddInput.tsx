@@ -13,7 +13,7 @@ const AddInput = () => {
   const search = window.location.search;
   const ref = useRef(null);
   const router = useRouter();
-  const isRepoCompare = router.query.hasOwnProperty('repo');
+  const level = router.query.level as Level;
   const q = gsap.utils.selector(ref);
 
   const [confirmItem, setConfirmItem] = useState<
@@ -27,7 +27,7 @@ const AddInput = () => {
     client,
     {
       keyword: throttledKeyword,
-      level: isRepoCompare ? Level.REPO : Level.PROJECT,
+      level,
     },
     { enabled: Boolean(throttledKeyword) }
   );
@@ -68,9 +68,7 @@ const AddInput = () => {
               value={confirmItem?.label || keyword}
               type="text"
               className="w-55 h-10 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
-              placeholder={`search ${
-                isRepoCompare ? Level.REPO : Level.PROJECT
-              }`}
+              placeholder={`search ${level}`}
               onChange={(v) => {
                 setKeyword(v.target.value);
                 setConfirmItem(null);
@@ -80,9 +78,9 @@ const AddInput = () => {
               className="flex h-10 w-24 items-center justify-center bg-white text-[#00B5EA] hover:bg-gray-100"
               onClick={async () => {
                 if (confirmItem) {
-                  const { label, level } = confirmItem;
+                  const { label } = confirmItem;
                   await router.push(
-                    `${router.pathname}${search}&${level}=${encodeURIComponent(
+                    `${router.pathname}${search}&label=${encodeURIComponent(
                       label!
                     )}`
                   );

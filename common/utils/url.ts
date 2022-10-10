@@ -19,6 +19,7 @@ export const getAllPathname = (urls: string[]) => {
 };
 
 export function getLastPathSegment(path: string) {
+  if (!path) return;
   return path.split('/').pop() || '';
 }
 
