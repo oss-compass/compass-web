@@ -51,8 +51,7 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
 const SearchDropdown: React.FC<{
   result: SearchQuery['fuzzySearch'];
 }> = ({ result }) => {
-  if (!result) return <Empty type="DropDownItem" />;
-  if (Array.isArray(result) && result.length === 0) {
+  if (!result || (Array.isArray(result) && result.length === 0)) {
     return (
       <p className="block px-4 py-3 text-lg text-gray-400 md:py-2 md:text-base">
         {'No result! '}
