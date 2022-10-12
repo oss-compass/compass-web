@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { AiOutlineStar } from 'react-icons/ai';
 import { OverviewQuery } from '@graphql/generated';
@@ -21,32 +21,41 @@ const getLink = (
   }
 };
 
-const list: { target: string; vars: gsap.TweenVars }[] = [
-  {
-    target: `#HotProjects div:nth-child(1)`,
-    vars: { rotateX: 360, delay: 0, transformStyle: 'preserve-3d' },
-  },
-  {
-    target: `#HotProjects div:nth-child(2)`,
-    vars: { rotateX: 360, delay: 0.025, transformStyle: 'preserve-3d' },
-  },
-  {
-    target: `#HotProjects div:nth-child(3)`,
-    vars: { rotateX: 360, delay: 0.05, transformStyle: 'preserve-3d' },
-  },
-  {
-    target: `#HotProjects div:nth-child(4)`,
-    vars: { rotateX: 360, delay: 0.075, transformStyle: 'preserve-3d' },
-  },
-  {
-    target: `#HotProjects div:nth-child(5)`,
-    vars: { rotateX: 360, delay: 0.1, transformStyle: 'preserve-3d' },
-  },
-  {
-    target: `#HotProjects div:nth-child(6)`,
-    vars: { rotateX: 360, delay: 0.125, transformStyle: 'preserve-3d' },
-  },
-];
+type Repo = NonNullable<OverviewQuery['overview']['trends']>[number];
+
+const Project: React.FC<{ repo: Repo; index: number }> = ({ repo, index }) => {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    gsap.to(ref.current, {
+      rotateX: 360,
+      delay: 0.025 * (index + 1),
+      transformStyle: 'preserve-3d',
+    });
+  }, [index]);
+
+  return (
+    <div ref={ref} className="w-1/3 border-b border-r px-6 py-6  lg:w-1/2">
+      <Link
+        href={getAnalyzeLink({
+          label: getLink(repo.path, repo.backend),
+          level: 'repo',
+        })}
+      >
+        <a className="mb-5 block">
+          <h3 className="mb-2 text-xl line-clamp-1 hover:underline">
+            {repo.name}
+          </h3>
+          <p className="text-sm text-gray-400 line-clamp-1">{repo.language}</p>
+        </a>
+      </Link>
+      <p className="text flex items-center">
+        <AiOutlineStar className="mr-1 text-gray-600" />
+        {numberFormatK(Number(repo.stargazersCount))}
+      </p>
+    </div>
+  );
+};
 
 const HotProjects: React.FC<{
   trends: OverviewQuery['overview']['trends'];
@@ -67,12 +76,6 @@ const HotProjects: React.FC<{
     });
   }, 3000);
 
-  useEffect(() => {
-    list.forEach((item) => {
-      gsap.to(item.target, item.vars);
-    });
-  }, [index]);
-
   return (
     <div className="lg:px-4">
       <div className="mb-6 text-2xl font-bold">Hot Projects</div>
@@ -80,33 +83,8 @@ const HotProjects: React.FC<{
         className="flex w-[664px] flex-wrap rounded border-t border-l lg:w-full"
         id="HotProjects"
       >
-        {showTrends?.map((repo) => {
-          return (
-            <div
-              className="w-1/3 border-b border-r px-6 py-6  lg:w-1/2"
-              key={repo.path}
-            >
-              <Link
-                href={getAnalyzeLink({
-                  label: getLink(repo.path, repo.backend),
-                  level: 'repo',
-                })}
-              >
-                <a className="mb-5 block">
-                  <h3 className="mb-2 text-xl line-clamp-1 hover:underline">
-                    {repo.name}
-                  </h3>
-                  <p className="text-sm text-gray-400 line-clamp-1">
-                    {repo.language}
-                  </p>
-                </a>
-              </Link>
-              <p className="text flex items-center">
-                <AiOutlineStar className="mr-1 text-gray-600" />
-                {numberFormatK(Number(repo.stargazersCount))}
-              </p>
-            </div>
-          );
+        {showTrends?.map((repo, index) => {
+          return <Project key={repo.path} repo={repo} index={index} />;
         })}
       </div>
     </div>
