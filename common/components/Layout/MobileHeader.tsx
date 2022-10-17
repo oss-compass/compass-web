@@ -6,12 +6,12 @@ import Drawer from '../Drawer';
 
 const headLinks = [
   {
-    title: 'Home',
+    title: 'Metrics Models',
     href: '/',
     icon: <AiOutlineHome />,
   },
   {
-    title: 'How',
+    title: 'Community',
     href: '/',
     icon: <AiOutlineHome />,
   },

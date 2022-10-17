@@ -28,10 +28,10 @@ const Header: React.FC<{
             </h1>
           </Link>
           <Link href="/">
-            <a className="mr-[70px] px-2.5 font-medium">Explore</a>
+            <a className="mr-[70px] px-2.5 font-medium">Metrics Models</a>
           </Link>
           <Link href="/">
-            <a className="mr-[70px] px-2.5 font-medium">Explore</a>
+            <a className="mr-[70px] px-2.5 font-medium">Community</a>
           </Link>
           <Link href="/">
             <a className="mr-[70px] px-2.5 font-medium">About</a>
