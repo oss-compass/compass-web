@@ -94,40 +94,41 @@ export const SvgPositionConfig = [
     animate: false,
   },
 ];
+
 export const SvgPositionMobileConfig = [
   {
     id: 1,
-    top: 0,
-    right: 768,
-    width: 163,
-    height: 180,
+    top: 10,
+    left: -10,
+    width: 78,
+    height: 70,
     el: <Svg1 />,
     animate: true,
   },
   {
     id: 2,
     top: 10,
-    right: 472,
-    width: 308,
-    height: 291,
+    left: 50,
+    width: 151,
+    height: 136,
     el: <Svg2 />,
     animate: true,
   },
   {
     id: 3,
-    top: 28,
-    right: 56,
-    width: 284,
-    height: 292,
+    top: 10,
+    right: 41,
+    width: 122,
+    height: 126,
     el: <Svg3 />,
     animate: true,
   },
   {
     id: 4,
-    top: 172,
-    right: 28,
-    width: 139,
-    height: 143,
+    top: 150,
+    right: 20,
+    width: 100,
+    height: 100,
     el: <Svg4 />,
     animate: true,
   },
@@ -142,16 +143,16 @@ export const SvgPositionMobileConfig = [
   },
   {
     id: 6,
-    top: 451,
-    right: 177,
-    width: 387,
-    height: 293,
+    bottom: 20,
+    right: 50,
+    width: 167,
+    height: 126,
     el: <Svg5 />,
     animate: true,
   },
   {
     id: 7,
-    top: 615,
+    top: 205,
     right: 47,
     width: 139,
     height: 143,
@@ -169,10 +170,10 @@ export const SvgPositionMobileConfig = [
   },
   {
     id: 9,
-    top: 313,
+    bottom: 100,
     right: 18,
-    width: 139,
-    height: 143,
+    width: 61,
+    height: 65,
     el: <Svg8 />,
     animate: false,
   },
@@ -227,17 +228,17 @@ export const SvgBlock: React.FC<{
     { wait: 1000, leading: true, trailing: false }
   );
 
-  const style = useMemo(() => {
+  const styles = useMemo(() => {
     const styles: React.CSSProperties = {};
     if (top) styles.top = `${top}px`;
-    if (bottom) styles.bottom = `${top}px`;
+    if (bottom) styles.bottom = `${bottom}px`;
     if (left) styles.left = `${left}px`;
     if (right) styles.right = `${right}px`;
     return styles;
   }, [top, right, left, bottom]);
 
   return (
-    <div className={`absolute`} style={style}>
+    <div className={`absolute`} style={styles}>
       <div
         id={`svg${id}`}
         style={{ width: `${width}px`, height: `${height}px` }}

@@ -60,18 +60,19 @@ const Project: React.FC<{ repo: Repo; index: number }> = ({ repo, index }) => {
 const HotProjects: React.FC<{
   trends: OverviewQuery['overview']['trends'];
 }> = ({ trends = [] }) => {
+  const total = trends?.length || 0;
   const [index, setIndex] = useState(1);
 
   const showTrends = useMemo(() => {
-    if (!trends?.length) return [];
+    if (!total) return [];
     const start = (index - 1) * 6;
     const end = index * 6;
     return trends?.slice(start, end);
-  }, [trends, index]);
+  }, [total, index, trends]);
 
   useInterval(() => {
     setIndex((pre) => {
-      if (pre >= 4) return 1;
+      if (pre >= Math.floor(total / 6)) return 1;
       return pre + 1;
     });
   }, 3000);

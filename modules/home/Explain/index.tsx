@@ -1,13 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
+import { useCounter } from 'react-use';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import Planet01 from './assets/planet-01.svg';
 import Planet02 from './assets/planet-02.svg';
 import Planet03 from './assets/planet-03.svg';
 
 import styles from './index.module.scss';
-import { useCounter } from 'react-use';
 
 const PopCard: React.FC<{
   className?: string;
