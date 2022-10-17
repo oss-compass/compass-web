@@ -5,8 +5,9 @@ import Head from 'next/head';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import dynamic from 'next/dynamic';
+import Script from 'next/script';
 import { SessionProvider } from 'next-auth/react';
-import { gaPageView } from '@common/utils/ga';
+import { gaPageView, PUBLIC_GA_ID } from '@common/utils/ga';
 
 import '../styles/globals.scss';
 
@@ -20,7 +21,7 @@ const NextNProgress = dynamic(() => import('nextjs-progressbar'), {
   ssr: false,
 });
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter();
@@ -38,7 +39,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   );
 
   useEffect(() => {
-    if (!isProd) return;
+    if (!isProduction) return;
     const handleRouteChange = (url: string) => {
       gaPageView(url);
     };
@@ -63,6 +64,23 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           <meta name="applicable-device" content="pc,mobile" />
         </Head>
         <NextNProgress startPosition={0.15} color="#000" />
+        {isProduction && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA_ID}`}
+            ></Script>
+            <Script id="google-analytics">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${PUBLIC_GA_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
