@@ -22,18 +22,18 @@ const Search = () => {
     <div
       className={classnames(
         'absolute top-60 w-[500px] p-6',
-        'md:top-20 md:w-[330px]',
+        'md:top-auto md:bottom-6 md:w-[300px]',
         styles.searchBg
       )}
     >
-      <h1 id="test" className="mb-4 text-7xl md:text-5xl">
+      <h1 id="test" className="mb-4 text-7xl md:text-4xl">
         Know more
         <br />
         your projects
         <br />
         way forward
       </h1>
-      <p className="mb-8 break-words text-lg">
+      <p className="mb-8 text-lg md:text-sm">
         We help open source projects gain insight into its trends, and getting
         more value of it.
       </p>

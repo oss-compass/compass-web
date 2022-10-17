@@ -34,15 +34,16 @@ const Auth: React.FC<{
 
       {!isLogin && (
         <div className="flex">
-          {Object.values(providers).map((provider) => (
-            <button
-              key={provider.name}
-              className="h-12 w-12"
-              onClick={() => signIn(provider.id)}
-            >
-              {getIcons(provider.id)}
-            </button>
-          ))}
+          {providers &&
+            Object.values(providers).map((provider) => (
+              <button
+                key={provider.name}
+                className="h-12 w-12"
+                onClick={() => signIn(provider.id)}
+              >
+                {getIcons(provider.id)}
+              </button>
+            ))}
         </div>
       )}
 
