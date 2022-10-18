@@ -25,8 +25,8 @@ const nextConfig = {
             destination: `/api/proxy`,
           }
         : {
-            source: '/api/graphql',
-            destination: `${process.env.API_URL}/api/graphql`,
+            source: '/api/:path*',
+            destination: `${process.env.API_URL}/api/:path*`,
           },
     ];
   },
