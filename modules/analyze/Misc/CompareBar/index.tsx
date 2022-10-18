@@ -19,7 +19,7 @@ const CloseIcons: React.FC<{ label: string; level: Level }> = ({
     <div
       className="absolute top-2 right-2 hidden cursor-pointer p-2 group-hover:block"
       onClick={() => {
-        const p = removeSearchValue(level, label);
+        const p = removeSearchValue(label);
         router.push(p);
       }}
     >

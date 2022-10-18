@@ -1,9 +1,9 @@
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
-import { useDatePickerContext } from '../context';
+import useQueryDateRange from './useQueryDateRange';
 
 const useDatePickerFormat = () => {
-  const { value } = useDatePickerContext();
-  return formatDistanceStrict(value.startTime, value.endTime);
+  const { timeStart, timeEnd } = useQueryDateRange();
+  return formatDistanceStrict(timeStart, timeEnd);
 };
 
 export default useDatePickerFormat;

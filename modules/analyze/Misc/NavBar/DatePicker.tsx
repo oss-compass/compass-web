@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { useDatePickerContext } from '@modules/analyze/context';
 import classnames from 'classnames';
-import { quickSelectRange, timeRange } from '@modules/analyze/constant';
+import { useRouter } from 'next/router';
+import qs from 'query-string';
+import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+import { getTimeRangeTags } from '@modules/analyze/constant';
+
+const rangeTags = getTimeRangeTags();
 
 const DatePicker = () => {
-  const [activeRange, setActiveRange] = useState('3M');
-  const { update } = useDatePickerContext();
+  const route = useRouter();
+  const { range } = useQueryDateRange();
 
   return (
     <div className="flex h-8 items-center rounded-3xl border md:hidden">
-      {quickSelectRange.map((range) => {
+      {rangeTags.map((t) => {
         return (
           <div
+            key={t}
             className={classnames(
-              { 'bg-gray-100 ': activeRange === range },
+              { 'bg-gray-200 ': range === t },
               'flex h-full cursor-pointer items-center rounded-3xl px-4 text-sm'
             )}
-            key={range}
             onClick={() => {
-              setActiveRange(range);
-              // @ts-ignore
-              const { start, end } = timeRange[range];
-              update({ startTime: start, endTime: end });
+              const result = qs.parse(window.location.search);
+              result.range = t;
+              route.replace(`/analyze?${qs.stringify(result)}`);
             }}
           >
-            {range}
+            {t}
           </div>
         );
       })}

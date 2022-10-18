@@ -8,11 +8,10 @@ import Trend from '../Trend';
 import CodeQuality from '../CodeQuality';
 import CommunitySupport from '../CommunitySupport';
 import CommunityActivity from '../CommunityActivity';
-import { useDatePickerContext } from '@modules/analyze/context';
+import useQueryDateRange from '../hooks/useQueryDateRange';
 
 const DataView = () => {
-  const { value } = useDatePickerContext();
-  const { startTime, endTime } = value;
+  const { timeStart, timeEnd } = useQueryDateRange();
 
   const { compareItems } = useCompareItems();
   useQueries({
@@ -21,14 +20,14 @@ const DataView = () => {
         queryKey: useMetricQuery.getKey({
           label,
           level,
-          start: startTime,
-          end: endTime,
+          start: timeStart,
+          end: timeEnd,
         }),
         queryFn: useMetricQuery.fetcher(client, {
           label,
           level,
-          start: startTime,
-          end: endTime,
+          start: timeStart,
+          end: timeEnd,
         }),
       };
     }),

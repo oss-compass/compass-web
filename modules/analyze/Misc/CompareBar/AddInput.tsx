@@ -8,6 +8,7 @@ import { SearchQuery, useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import { AiOutlineLoading, AiOutlinePlus } from 'react-icons/ai';
 import { Level } from '@modules/analyze/constant';
+import { removeHttps } from '@common/utils';
 
 const AddInput = () => {
   const search = window.location.search;
@@ -65,7 +66,7 @@ const AddInput = () => {
         <div className="relative">
           <div className="flex items-center rounded  border ">
             <input
-              value={confirmItem?.label || keyword}
+              value={removeHttps(confirmItem?.label!) || keyword}
               type="text"
               className="w-55 h-10 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
               placeholder={`search ${level}`}
