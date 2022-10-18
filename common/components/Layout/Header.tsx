@@ -14,14 +14,16 @@ const Header: React.FC<{
       <div
         className={classnames(
           { 'mx-auto w-[1200px]': contentCenter },
-          'h-20 px-6 py-4',
+          'h-20 py-4 pl-4 pr-6',
           'flex items-center justify-between',
           'lg:hidden'
         )}
       >
         <div className="flex items-center">
           <Link href="/">
-            <Logo />
+            <a className="mr-4">
+              <Logo />
+            </a>
           </Link>
           <Link href="/metrics">
             <a className="mx-6 px-2.5 font-medium">Metrics Models</a>

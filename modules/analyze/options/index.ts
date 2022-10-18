@@ -15,6 +15,10 @@ import { formatISO } from '@common/utils/time';
 
 const tooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
+  axisPointer: {
+    type: 'cross',
+  },
+  order: 'valueDesc',
 };
 
 const legend: EChartsOption['legend'] = {

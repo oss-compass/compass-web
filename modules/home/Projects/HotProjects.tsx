@@ -75,7 +75,7 @@ const HotProjects: React.FC<{
       if (pre >= Math.floor(total / 6)) return 1;
       return pre + 1;
     });
-  }, 3000);
+  }, 6000);
 
   return (
     <div className="lg:px-4">
