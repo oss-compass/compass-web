@@ -3,9 +3,7 @@ import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import qs from 'query-string';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-import { getTimeRangeTags } from '@modules/analyze/constant';
-
-const rangeTags = getTimeRangeTags();
+import { rangeTags } from '@modules/analyze/constant';
 
 const DatePicker = () => {
   const route = useRouter();

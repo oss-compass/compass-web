@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
+import Logo from '../Logo';
 import MobileHeader from './MobileHeader';
 
 const Header: React.FC<{
@@ -20,21 +21,19 @@ const Header: React.FC<{
       >
         <div className="flex items-center">
           <Link href="/">
-            <h1 className="mr-20 flex cursor-pointer items-center text-2xl font-bold ">
-              <span className="mr-4 flex h-[44px] w-[44px] items-end justify-end bg-black p-1 text-sm  text-white">
-                OSS
-              </span>
-              OSS Compass
-            </h1>
+            <Logo />
           </Link>
           <Link href="/metrics">
-            <a className="mr-[70px] px-2.5 font-medium">Metrics Models</a>
+            <a className="mx-6 px-2.5 font-medium">Metrics Models</a>
+          </Link>
+          <Link href="https://github.com/orgs/oss-compass/discussions">
+            <a className="mx-6 px-2.5 font-medium">Community</a>
           </Link>
           <Link href="/">
-            <a className="mr-[70px] px-2.5 font-medium">Community</a>
+            <a className="mx-6 px-2.5 font-medium">About</a>
           </Link>
           <Link href="/">
-            <a className="mr-[70px] px-2.5 font-medium">About</a>
+            <a className="mx-6 px-2.5 font-medium">Code</a>
           </Link>
         </div>
         <div className="cursor-pointer border-2 border-black px-6 py-3 font-semibold">

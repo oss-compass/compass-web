@@ -21,6 +21,7 @@ import {
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { colorGenerator } from '@modules/analyze/options/color';
 
 const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -29,8 +30,10 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
+    const gen = colorGenerator();
+    const series = yAxis.map(({ name, label, data }) => {
+      const color = gen(label);
+      return line({ name, data, color });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
