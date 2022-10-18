@@ -1,15 +1,5 @@
 import { subMonths, subYears } from 'date-fns';
 
-export const quickSelectRange = [
-  '3M',
-  '6M',
-  '1Y',
-  '2Y',
-  '3Y',
-  '5Y',
-  'Since 2000',
-];
-
 export const timeRange = {
   '3M': {
     start: subMonths(new Date(), 3),
@@ -39,6 +29,16 @@ export const timeRange = {
     start: new Date('2000'),
     end: new Date(),
   },
+};
+
+export type RangeTag = keyof typeof timeRange;
+
+export const getTimeRangeTags = () =>
+  Object.keys(timeRange) as unknown as RangeTag[];
+
+export const defaultDatePicker = {
+  timeStart: timeRange['3M'].start,
+  timeEnd: timeRange['3M'].end,
 };
 
 export enum Level {

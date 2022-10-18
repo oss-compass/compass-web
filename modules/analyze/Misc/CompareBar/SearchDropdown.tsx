@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
+import { removeHttps } from '@common/utils';
 
 const DropDownList: React.FC<{
   result: SearchQuery['fuzzySearch'];
@@ -32,7 +33,7 @@ const DropDownList: React.FC<{
                 'my-1 py-1 px-4 text-base text-black line-clamp-1 hover:bg-gray-100'
               )}
             >
-              {item.label}
+              {removeHttps(item.label!)}
             </a>
           </div>
         );

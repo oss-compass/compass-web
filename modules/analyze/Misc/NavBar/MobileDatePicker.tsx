@@ -1,51 +1,53 @@
 import React, { useState, useRef } from 'react';
 import { BiCalendar } from 'react-icons/bi';
-import { useDatePickerContext } from '@modules/analyze/context';
-import { quickSelectRange, timeRange } from '@modules/analyze/constant';
+import { getTimeRangeTags, timeRange } from '@modules/analyze/constant';
 import classnames from 'classnames';
 import { useClickAway, useToggle } from 'react-use';
+import qs from 'query-string';
+import { useRouter } from 'next/router';
+import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+
+const rangeTags = getTimeRangeTags();
 
 const MobileDatePicker = () => {
-  const [show, toggle] = useToggle(false);
+  const route = useRouter();
+  const [dropdownOpen, toggleDropdown] = useToggle(false);
   const ref = useRef(null);
   useClickAway(ref, () => {
-    toggle(false);
+    toggleDropdown(false);
   });
 
-  const [activeRange, setActiveRange] = useState('3M');
-  const { update } = useDatePickerContext();
+  const { range } = useQueryDateRange();
 
   return (
     <div className="relative >md:hidden">
-      <div className="flex h-10 items-center " onClick={() => toggle()}>
-        <span>{activeRange}</span>
+      <div className="flex h-10 items-center " onClick={() => toggleDropdown()}>
+        <span>{range}</span>
         <BiCalendar className="ml-1 text-xl" />
       </div>
       <ul
         ref={ref}
         className={classnames(
           'absolute right-0 rounded bg-base-100 p-2 shadow',
-          { hidden: !show }
+          { hidden: !dropdownOpen }
         )}
       >
-        {quickSelectRange.map((range) => {
+        {rangeTags.map((t) => {
           return (
             <li
               className={classnames(
-                { 'bg-gray-100 ': activeRange === range },
+                { 'bg-gray-200 ': range === t },
                 'h-full w-32 cursor-pointer rounded-3xl py-2 px-2 text-center text-sm'
               )}
-              key={range}
+              key={t}
               onClick={() => {
-                setActiveRange(range);
-                // @ts-ignore
-                const { start, end } = timeRange[range];
-                update({ startTime: start, endTime: end });
-
-                toggle(false);
+                const result = qs.parse(window.location.search);
+                result.range = t;
+                route.replace(`/analyze?${qs.stringify(result)}`);
+                toggleDropdown(false);
               }}
             >
-              {range}
+              {t}
             </li>
           );
         })}

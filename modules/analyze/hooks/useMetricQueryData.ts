@@ -1,11 +1,10 @@
-import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueryClient } from '@tanstack/react-query';
 import { MetricQuery, useMetricQuery } from '@graphql/generated';
-import { useDatePickerContext } from '@modules/analyze/context';
+import useQueryDateRange from './useQueryDateRange';
+import useCompareItems from './useCompareItems';
 
 const useMetricQueryData = () => {
-  const { value } = useDatePickerContext();
-  const { startTime, endTime } = value;
+  const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
   const queryClient = useQueryClient();
 
@@ -14,16 +13,16 @@ const useMetricQueryData = () => {
       useMetricQuery.getKey({
         label,
         level,
-        start: startTime,
-        end: endTime,
+        start: timeStart,
+        end: timeEnd,
       })
     );
     const states = queryClient.getQueryState(
       useMetricQuery.getKey({
         label,
         level,
-        start: startTime,
-        end: endTime,
+        start: timeStart,
+        end: timeEnd,
       })
     );
     return {
