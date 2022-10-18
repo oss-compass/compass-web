@@ -25,7 +25,7 @@ const Header: React.FC<{
               <Logo />
             </a>
           </Link>
-          <Link href="/metrics">
+          <Link href="/docs/metrics">
             <a className="mx-6 px-2.5 font-medium">Metrics Models</a>
           </Link>
           <Link href="https://github.com/orgs/oss-compass/discussions">
