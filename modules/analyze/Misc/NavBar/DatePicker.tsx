@@ -22,7 +22,9 @@ const DatePicker = () => {
             onClick={() => {
               const result = qs.parse(window.location.search);
               result.range = t;
-              route.replace(`/analyze?${qs.stringify(result)}`);
+              route.replace(`/analyze?${qs.stringify(result)}`, undefined, {
+                scroll: false,
+              });
             }}
           >
             {t}
