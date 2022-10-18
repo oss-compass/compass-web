@@ -1,13 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { BiCalendar } from 'react-icons/bi';
-import { getTimeRangeTags, timeRange } from '@modules/analyze/constant';
+import { rangeTags, timeRange } from '@modules/analyze/constant';
 import classnames from 'classnames';
 import { useClickAway, useToggle } from 'react-use';
 import qs from 'query-string';
 import { useRouter } from 'next/router';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-
-const rangeTags = getTimeRangeTags();
 
 const MobileDatePicker = () => {
   const route = useRouter();

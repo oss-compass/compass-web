@@ -92,6 +92,7 @@ export const toTimeXAxis = (arr: any[], key: string): string[] => {
 export const line = (opts: {
   name: string;
   data: (string | number)[];
+  color?: string;
 }): LineSeriesOption => {
   return {
     name: opts.name,
@@ -99,12 +100,15 @@ export const line = (opts: {
     smooth: false,
     showSymbol: false,
     data: opts.data,
+    lineStyle: opts.color ? { color: opts.color } : {},
+    itemStyle: opts.color ? { color: opts.color } : {},
   };
 };
 
 export const lineArea = (opts: {
   name: string;
   data: (string | number)[];
+  color?: string;
 }): LineSeriesOption => {
   return {
     name: opts.name,
@@ -112,25 +116,27 @@ export const lineArea = (opts: {
     smooth: false,
     showSymbol: false,
     data: opts.data,
-    areaStyle: {},
+    areaStyle: opts.color ? { color: opts.color } : {},
+    itemStyle: opts.color ? { color: opts.color } : {},
   };
 };
 
-export const bar = (arg: {
+export const bar = (opts: {
   name: string;
   data: (string | number)[];
   stack?: string;
+  color?: string;
 }): BarSeriesOption => {
-  const options: BarSeriesOption = {
-    name: arg.name,
+  return {
+    name: opts.name,
     type: 'bar',
-    data: arg.data,
+    data: opts.data,
     emphasis: {
       focus: 'series',
     },
+    stack: opts.stack ? opts.stack : undefined,
+    itemStyle: opts.color ? { color: opts.color } : {},
   };
-  if (arg.stack) options.stack = arg.stack;
-  return options;
 };
 
 export const mapToSeries = (

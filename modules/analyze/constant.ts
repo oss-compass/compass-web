@@ -33,8 +33,9 @@ export const timeRange = {
 
 export type RangeTag = keyof typeof timeRange;
 
-export const getTimeRangeTags = () =>
-  Object.keys(timeRange) as unknown as RangeTag[];
+const getTimeRangeTags = () => Object.keys(timeRange) as unknown as RangeTag[];
+
+export const rangeTags = getTimeRangeTags();
 
 export const defaultDatePicker = {
   timeStart: timeRange['3M'].start,

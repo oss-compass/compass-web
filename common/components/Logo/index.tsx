@@ -1,9 +1,10 @@
 import React from 'react';
+import LogoWithName from './logo-with-name.svg';
 
 const Logo = () => {
   return (
-    <div className="flex h-[88px] w-[88px] items-end justify-end bg-black p-1 text-sm font-bold text-white md:hidden">
-      OSS Compass
+    <div className="flex items-end justify-end p-1 text-sm font-bold text-white md:hidden">
+      <LogoWithName className=" h-[42px] w-[230px]" />
     </div>
   );
 };
