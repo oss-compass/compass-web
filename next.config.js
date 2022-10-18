@@ -28,16 +28,28 @@ const nextConfig = {
     domains: ['portrait.gitee.com', 'avatars.githubusercontent.com'],
   },
   async rewrites() {
+    if (isDevelopment) {
+      return [
+        {
+          source: '/api/graphql',
+          destination: `/api/proxy`,
+        },
+      ];
+    }
+
     return [
-      isDevelopment
-        ? {
-            source: '/api/graphql',
-            destination: `/api/proxy`,
-          }
-        : {
-            source: '/api/:path*',
-            destination: `${process.env.API_URL}/api/:path*`,
-          },
+      {
+        source: '/api/graphql',
+        destination: `${process.env.API_URL}/api/graphql`,
+      },
+      {
+        source: '/api/workflow',
+        destination: `${process.env.API_URL}/api/workflow`,
+      },
+      {
+        source: '/api/hook',
+        destination: `${process.env.API_URL}/api/hook`,
+      },
     ];
   },
   webpack(config) {
