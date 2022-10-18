@@ -47,5 +47,6 @@ export enum Level {
   REPO = 'repo',
 }
 
-export const checkIsPadding = (status: string) =>
-  ['pending', 'progress'].indexOf(status) > -1;
+// todo: add pages
+// pending progress success error canceled unsumbit
+export const checkIsPadding = (status: string) => !['success'].includes(status);
