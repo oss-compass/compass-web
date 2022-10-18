@@ -10,6 +10,7 @@ import {
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { colorGenerator } from '@modules/analyze/options/color';
 
 const PRIssueLinked: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -18,8 +19,10 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
+    const gen = colorGenerator();
+    const series = yAxis.map(({ label, name, data }) => {
+      const color = gen(label);
+      return lineArea({ name, data, color });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);

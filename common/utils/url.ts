@@ -34,7 +34,7 @@ export function getHostLabel(url: string) {
 
 export function repoUrlFormat(url: string | undefined) {
   if (!url) return '';
-  return `${getHostLabel(url)} ${getLastPathSegment(getPathname(url))}`;
+  return `${getLastPathSegment(getPathname(url))}`;
 }
 
 export function removeHttps(url: string | undefined) {

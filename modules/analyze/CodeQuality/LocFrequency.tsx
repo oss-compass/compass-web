@@ -17,6 +17,7 @@ import {
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 import { toFixed } from '@common/utils';
+import { colorGenerator } from '@modules/analyze/options/color';
 
 const LocFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -25,8 +26,10 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
+    const gen = colorGenerator();
     const series = yAxis.map(({ name, label, data }) => {
-      return bar({ name, data, stack: label });
+      const color = gen(label);
+      return bar({ name, data, stack: label, color });
     });
     return getBarOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
