@@ -2,10 +2,10 @@ import React from 'react';
 import LogoWhite from './logo-white.svg';
 import LogoBlack from './logo-black.svg';
 
-const Logo: React.FC<{ black: boolean }> = ({ black = false }) => {
+const Logo: React.FC<{ color: 'black' | 'white' }> = ({ color = 'black' }) => {
   return (
     <div className="h-[42px] w-[230px]  md:hidden">
-      {black ? <LogoWhite /> : <LogoBlack />}
+      {color === 'black' ? <LogoBlack /> : <LogoWhite />}
     </div>
   );
 };

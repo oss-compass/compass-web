@@ -20,7 +20,7 @@ const Create: React.FC<{
 }> = ({ providers }) => {
   return (
     <>
-      <Header contentCenter />
+      <Header />
       <AnalyzeCreate providers={providers} />
     </>
   );
