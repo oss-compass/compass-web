@@ -1,29 +1,28 @@
-import React, { useMemo } from 'react';
-import { MetricQuery } from '@graphql/generated';
+import React, { useEffect, useMemo, useRef } from 'react';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
-  lineArea,
-  mapToLineSeries,
-  toTimeXAxis,
-} from '../options';
+  line,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '../Misc/SideBar/menus';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
-const CreatedSince: React.FC<ChartComponentProps> = ({
+const CommitFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
+      return line({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
@@ -31,9 +30,9 @@ const CreatedSince: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      id={CommunityActivity.CreatedSince}
-      title="Created since"
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      title="Commit frequency"
+      id={CodeQuality.CommitFrequency}
+      description={`Determine the average number of commits per week in the past ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -42,26 +41,26 @@ const CreatedSince: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CreatedSinceWithData = () => {
+const CommitFrequencyWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
     return pickKeyToXAxis(data, {
-      typeKey: 'metricActivity',
+      typeKey: 'metricCodequality',
       valueKey: 'grimoireCreationDate',
     });
   }, [data]);
 
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
-      typeKey: 'metricActivity',
-      valueKey: 'createdSince',
-      legendName: 'Created Since',
+      typeKey: 'metricCodequality',
+      valueKey: 'commitFrequency',
+      legendName: 'Commit frequency',
     });
   }, [data]);
 
-  return <CreatedSince loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <CommitFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default CreatedSinceWithData;
+export default CommitFrequencyWithData;

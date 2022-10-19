@@ -1,6 +1,12 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import EChartX from '@common/components/EChartX';
-import { bar, ChartComponentProps, getBarOption } from '../options';
+import {
+  ChartComponentProps,
+  getLineOption,
+  line,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
@@ -8,27 +14,25 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
-const IsMaintained: React.FC<ChartComponentProps> = ({
+const Overview: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      return bar({ name, data });
+      return line({ name, data });
     });
-    return getBarOption({ xAxisData: xAxis, series });
+    return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
 
   return (
     <BaseCard
       loading={loading}
-      title="Is Maintained"
-      id={CodeQuality.IsMaintained}
-      description={`Percentage of weeks with at least one code commit in the past ${dateDesc}.`}
+      title="Overview"
+      id={CodeQuality.Overview}
+      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -37,7 +41,7 @@ const IsMaintained: React.FC<ChartComponentProps> = ({
   );
 };
 
-const IsMaintainedWithData = () => {
+const OverviewWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -51,12 +55,12 @@ const IsMaintainedWithData = () => {
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
       typeKey: 'metricCodequality',
-      valueKey: 'isMaintained',
-      legendName: 'Is Maintained',
+      valueKey: 'codeQualityGuarantee',
+      legendName: 'Code Quality',
     });
   }, [data]);
 
-  return <IsMaintained loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default IsMaintainedWithData;
+export default OverviewWithData;

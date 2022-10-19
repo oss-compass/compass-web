@@ -7,14 +7,14 @@ import {
   line,
   mapToLineSeries,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '../Misc/SideBar/menus';
+import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
 
 const Overview: React.FC<ChartComponentProps> = ({
   loading = false,

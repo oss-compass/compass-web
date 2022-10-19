@@ -1,32 +1,27 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { LineSeriesOption } from 'echarts';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
+import React, { useMemo } from 'react';
+import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
   line,
-  mapToLineSeries,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
-import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
 import { repoUrlFormat } from '@common/utils/url';
 import {
-  pickKeyGroupToYAxis,
   pickKeyToXAxis,
+  pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
-const PrOpenTime: React.FC<ChartComponentProps> = ({
+const Overview: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -37,9 +32,9 @@ const PrOpenTime: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="PR open time"
-      id={CommunitySupport.PrOpenTime}
-      description={`Average/Median processing time (days) for new change requests created in the last ${dateDesc}, including closed/accepted change request and unresolved change request.`}
+      title="Overview"
+      id={CommunitySupport.Overview}
+      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -48,7 +43,7 @@ const PrOpenTime: React.FC<ChartComponentProps> = ({
   );
 };
 
-const PrOpenTimeWithData = () => {
+const OverviewWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -60,21 +55,14 @@ const PrOpenTimeWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCommunity',
-        valueKey: 'prOpenTimeAvg',
-        legendName: 'avg',
-      },
-      {
-        typeKey: 'metricCommunity',
-        valueKey: 'prOpenTimeMid',
-        legendName: 'mid',
-      },
-    ]);
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricCommunity',
+      valueKey: 'communitySupportScore',
+      legendName: 'Community Support',
+    });
   }, [data]);
 
-  return <PrOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default PrOpenTimeWithData;
+export default OverviewWithData;

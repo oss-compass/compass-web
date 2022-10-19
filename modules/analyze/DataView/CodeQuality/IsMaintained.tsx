@@ -1,40 +1,38 @@
-import React, { useMemo } from 'react';
-import { MetricQuery } from '@graphql/generated';
+import React, { useEffect, useMemo, useRef } from 'react';
 import EChartX from '@common/components/EChartX';
 import {
+  bar,
   ChartComponentProps,
-  getLineOption,
-  line,
-  lineArea,
-  mapToLineSeries,
-  toTimeXAxis,
-} from '../options';
+  getBarOption,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '../Misc/SideBar/menus';
+import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
-const CommitFrequency: React.FC<ChartComponentProps> = ({
+const IsMaintained: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
+      return bar({ name, data });
     });
-    return getLineOption({ xAxisData: xAxis, series });
+    return getBarOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
 
   return (
     <BaseCard
       loading={loading}
-      id={CommunityActivity.CommitFrequency}
-      title="CommitFrequency"
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      title="Is Maintained"
+      id={CodeQuality.IsMaintained}
+      description={`Percentage of weeks with at least one code commit in the past ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -43,26 +41,26 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CommitFrequencyWithData = () => {
+const IsMaintainedWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
     return pickKeyToXAxis(data, {
-      typeKey: 'metricActivity',
+      typeKey: 'metricCodequality',
       valueKey: 'grimoireCreationDate',
     });
   }, [data]);
 
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
-      typeKey: 'metricActivity',
-      valueKey: 'commitFrequency',
-      legendName: 'Commit Frequency',
+      typeKey: 'metricCodequality',
+      valueKey: 'isMaintained',
+      legendName: 'Is Maintained',
     });
   }, [data]);
 
-  return <CommitFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <IsMaintained loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default CommitFrequencyWithData;
+export default IsMaintainedWithData;

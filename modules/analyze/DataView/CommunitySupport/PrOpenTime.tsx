@@ -7,7 +7,7 @@ import {
   line,
   mapToLineSeries,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
@@ -18,22 +18,18 @@ import { repoUrlFormat } from '@common/utils/url';
 import {
   pickKeyGroupToYAxis,
   pickKeyToXAxis,
-  pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
-import { colorGenerator } from '@modules/analyze/options/color';
 
-const IssueFirstResponse: React.FC<ChartComponentProps> = ({
+const PrOpenTime: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const gen = colorGenerator();
-    const series = yAxis.map(({ name, label, data }) => {
-      const color = gen(label);
-      return line({ name, data, color });
+    const series = yAxis.map(({ name, data }) => {
+      return line({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
@@ -41,9 +37,9 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="Issue first response"
-      id={CommunitySupport.IssueFirstResponse}
-      description={`Average/Median first comments response (in days) for new Issues created in the last ${dateDesc}.`}
+      title="PR open time"
+      id={CommunitySupport.PrOpenTime}
+      description={`Average/Median processing time (days) for new change requests created in the last ${dateDesc}, including closed/accepted change request and unresolved change request.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -52,7 +48,7 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   );
 };
 
-const IssueFirstResponseWithData = () => {
+const PrOpenTimeWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -67,18 +63,18 @@ const IssueFirstResponseWithData = () => {
     return pickKeyGroupToYAxis(data, [
       {
         typeKey: 'metricCommunity',
-        valueKey: 'issueFirstReponseAvg',
+        valueKey: 'prOpenTimeAvg',
         legendName: 'avg',
       },
       {
         typeKey: 'metricCommunity',
-        valueKey: 'issueFirstReponseMid',
+        valueKey: 'prOpenTimeMid',
         legendName: 'mid',
       },
     ]);
   }, [data]);
 
-  return <IssueFirstResponse loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <PrOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default IssueFirstResponseWithData;
+export default PrOpenTimeWithData;

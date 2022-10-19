@@ -14,7 +14,7 @@ import ClosedPrsCount from './ClosedPrsCount';
 const CommunitySupport = () => {
   return (
     <>
-      <Topic>Community Support</Topic>
+      <Topic>Community Service and Support</Topic>
       <div className="mb-4">
         <Overview />
       </div>

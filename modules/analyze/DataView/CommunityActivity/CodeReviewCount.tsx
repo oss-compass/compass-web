@@ -4,10 +4,9 @@ import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
-  line,
-  mapToLineSeries,
+  lineArea,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import {
@@ -15,6 +14,7 @@ import {
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
 
 const CodeReviewCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -24,7 +24,7 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
+      return lineArea({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
@@ -32,6 +32,7 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
+      id={CommunityActivity.CodeReviewCount}
       title="Code review count"
       description={`Determine the average number of review comments per pull request created in the last ${dateDesc}`}
     >
@@ -48,14 +49,14 @@ const CodeReviewCountWithData = () => {
 
   const xAxis = useMemo(() => {
     return pickKeyToXAxis(data, {
-      typeKey: 'metricCommunity',
+      typeKey: 'metricActivity',
       valueKey: 'grimoireCreationDate',
     });
   }, [data]);
 
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
-      typeKey: 'metricCommunity',
+      typeKey: 'metricActivity',
       valueKey: 'codeReviewCount',
       legendName: 'code review count',
     });

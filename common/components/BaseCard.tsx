@@ -2,6 +2,7 @@ import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useInViewport } from 'ahooks';
 
 interface BaseCardProps {
   id?: string;
@@ -38,25 +39,26 @@ const BaseCard: React.FC<BaseCardProps> = ({
     setFullScreen(false);
   });
 
-  if (loading) {
-    return (
-      <div className={classnames(cls, 'animate-pulse p-10')}>
-        <div className="flex-1 space-y-4">
-          <div className="h-4 rounded bg-slate-200"></div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-            <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-          </div>
-          <div className="h-4 rounded bg-slate-200"></div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-            <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-          </div>
-          <div className="h-4 rounded bg-slate-200"></div>
-        </div>
-      </div>
-    );
-  }
+  // todo
+  // if (loading) {
+  //   return (
+  //     <div className={classnames(cls, 'animate-pulse p-10')}>
+  //       <div className="flex-1 space-y-4">
+  //         <div className="h-4 rounded bg-slate-200"></div>
+  //         <div className="grid grid-cols-3 gap-4">
+  //           <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+  //           <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+  //         </div>
+  //         <div className="h-4 rounded bg-slate-200"></div>
+  //         <div className="grid grid-cols-3 gap-4">
+  //           <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+  //           <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+  //         </div>
+  //         <div className="h-4 rounded bg-slate-200"></div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={cls} ref={cardRef} id={id}>
