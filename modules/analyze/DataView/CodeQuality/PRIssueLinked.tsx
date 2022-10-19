@@ -1,24 +1,32 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import EChartX from '@common/components/EChartX';
-import { ChartComponentProps, getLineOption, line } from '../options';
+import {
+  ChartComponentProps,
+  getLineOption,
+  lineArea,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { colorGenerator } from '@modules/analyze/options/color';
 
-const CommitFrequency: React.FC<ChartComponentProps> = ({
+const PRIssueLinked: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
+    const gen = colorGenerator();
+    const series = yAxis.map(({ label, name, data }) => {
+      const color = gen(label);
+      return lineArea({ name, data, color });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
@@ -26,9 +34,9 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="Commit frequency"
-      id={CodeQuality.CommitFrequency}
-      description={`Determine the average number of commits per week in the past ${dateDesc}.`}
+      title="PR Issue Linked"
+      id={CodeQuality.PRIssueLinked}
+      description={`Percentage of new pr link issues in the last ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -37,7 +45,7 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CommitFrequencyWithData = () => {
+const PRIssueLinkedWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -49,14 +57,21 @@ const CommitFrequencyWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'commitFrequency',
-      legendName: 'Commit frequency',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'prCount',
+        legendName: 'Total PR',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'prIssueLinkedCount',
+        legendName: 'Linked Issue',
+      },
+    ]);
   }, [data]);
 
-  return <CommitFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <PRIssueLinked loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default CommitFrequencyWithData;
+export default PRIssueLinkedWithData;

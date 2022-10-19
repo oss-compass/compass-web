@@ -1,20 +1,23 @@
 import React, { useMemo } from 'react';
+import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
+  line,
   lineArea,
+  mapToLineSeries,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '../Misc/SideBar/menus';
+import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
 
-const ContributorCount: React.FC<ChartComponentProps> = ({
+const CommitFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
@@ -29,8 +32,8 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      id={CommunityActivity.ContributorCount}
-      title="ContributorCount"
+      id={CommunityActivity.CommitFrequency}
+      title="CommitFrequency"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (
@@ -40,7 +43,7 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
   );
 };
 
-const ContributorCountWithData = () => {
+const CommitFrequencyWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -54,12 +57,12 @@ const ContributorCountWithData = () => {
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
       typeKey: 'metricActivity',
-      valueKey: 'contributorCount',
-      legendName: 'Contributor Count',
+      valueKey: 'commitFrequency',
+      legendName: 'Commit Frequency',
     });
   }, [data]);
 
-  return <ContributorCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <CommitFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default ContributorCountWithData;
+export default CommitFrequencyWithData;

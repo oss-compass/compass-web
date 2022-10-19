@@ -7,16 +7,16 @@ import {
   lineArea,
   mapToLineSeries,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '../Misc/SideBar/menus';
+import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
 
-const CommentFrequency: React.FC<ChartComponentProps> = ({
+const UpdatedSince: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
@@ -31,9 +31,9 @@ const CommentFrequency: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      id={CommunityActivity.CommentFrequency}
-      title="commentFrequency"
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      id={CommunityActivity.UpdatedSince}
+      title="Updated since"
+      description="Determine the average time per repository since the repository was last updated (in months)."
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -42,7 +42,7 @@ const CommentFrequency: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CommentFrequencyWithData = () => {
+const UpdatedSinceWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -56,12 +56,12 @@ const CommentFrequencyWithData = () => {
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
       typeKey: 'metricActivity',
-      valueKey: 'commentFrequency',
-      legendName: 'Comment Frequency',
+      valueKey: 'updatedSince',
+      legendName: 'updated since',
     });
   }, [data]);
 
-  return <CommentFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <UpdatedSince loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default CommentFrequencyWithData;
+export default UpdatedSinceWithData;

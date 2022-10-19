@@ -6,7 +6,7 @@ import {
   line,
   mapToLineSeries,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';

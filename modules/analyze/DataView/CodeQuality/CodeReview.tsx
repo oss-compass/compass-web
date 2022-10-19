@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import { ChartComponentProps, getLineOption, line } from '../options';
+import {
+  ChartComponentProps,
+  getLineOption,
+  lineArea,
+  toTimeXAxis,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
@@ -11,19 +15,16 @@ import {
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
-import { colorGenerator } from '@modules/analyze/options/color';
 
-const ContributorCount: React.FC<ChartComponentProps> = ({
+const CodeReview: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const gen = colorGenerator();
-    const series = yAxis.map(({ name, label, data }) => {
-      const color = gen(label);
-      return line({ name, data, color });
+    const series = yAxis.map(({ name, data }) => {
+      return lineArea({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
@@ -31,9 +32,9 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="Contributors"
-      id={CodeQuality.ContributorCount}
-      description={`Determine how many active pr creators, code reviewers, commit authors there are in the past ${dateDesc}.`}
+      title="Code review"
+      id={CodeQuality.CodeReview}
+      description={`Percentage of recent ${dateDesc} code commits with at least one reviewer (not PR creator)`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -42,7 +43,7 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
   );
 };
 
-const ContributorCountWithData = () => {
+const CodeReviewWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -57,23 +58,18 @@ const ContributorCountWithData = () => {
     return pickKeyGroupToYAxis(data, [
       {
         typeKey: 'metricCodequality',
-        valueKey: 'contributorCount',
-        legendName: 'Total',
+        valueKey: 'prCount',
+        legendName: 'Total PR',
       },
       {
         typeKey: 'metricCodequality',
-        valueKey: 'activeC1PrCommentsContributorCount',
-        legendName: 'PR comments',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'activeC1PrCreateContributorCount',
-        legendName: 'PR create',
+        valueKey: 'codeReviewedCount',
+        legendName: 'Code review',
       },
     ]);
   }, [data]);
 
-  return <ContributorCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <CodeReview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default ContributorCountWithData;
+export default CodeReviewWithData;

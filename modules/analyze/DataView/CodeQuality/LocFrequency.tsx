@@ -1,35 +1,45 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import EChartX from '@common/components/EChartX';
-import { ChartComponentProps, getLineOption, lineArea } from '../options';
+import {
+  bar,
+  ChartComponentProps,
+  getBarOption,
+  getLineOption,
+  lineArea,
+  toTimeXAxis,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyGroupToYAxis,
   pickKeyToXAxis,
-  pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { toFixed } from '@common/utils';
+import { colorGenerator } from '@modules/analyze/options/color';
 
-const CodeMergeRatio: React.FC<ChartComponentProps> = ({
+const LocFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
   const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
+    const gen = colorGenerator();
+    const series = yAxis.map(({ name, label, data }) => {
+      const color = gen(label);
+      return bar({ name, data, stack: label, color });
     });
-    return getLineOption({ xAxisData: xAxis, series });
+    return getBarOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
 
   return (
     <BaseCard
       loading={loading}
-      title="Code merge"
-      id={CodeQuality.CodeMerge}
-      description={`Percentage of recent ${dateDesc} code commits with at least one reviewer (not PR creator)`}
+      title="Lines of code changed"
+      id={CodeQuality.LocFrequency}
+      description={`Determine the average number of lines touched (lines added plus lines removed) per week in the past ${dateDesc}.`}
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -38,7 +48,7 @@ const CodeMergeRatio: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CodeMergeRatioWithData = () => {
+const LocFrequencyWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -53,18 +63,19 @@ const CodeMergeRatioWithData = () => {
     return pickKeyGroupToYAxis(data, [
       {
         typeKey: 'metricCodequality',
-        valueKey: 'prCount',
-        legendName: 'Total PR',
+        valueKey: 'linesAddedFrequency',
+        legendName: 'Lines add',
       },
       {
         typeKey: 'metricCodequality',
-        valueKey: 'codeMergedCount',
-        legendName: 'Code merge',
+        valueKey: 'linesRemovedFrequency',
+        valueFormat: (v) => toFixed(v * -1, 3),
+        legendName: 'Lines remove',
       },
     ]);
   }, [data]);
 
-  return <CodeMergeRatio loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <LocFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default CodeMergeRatioWithData;
+export default LocFrequencyWithData;

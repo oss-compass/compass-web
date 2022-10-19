@@ -4,13 +4,13 @@ import { useMetricQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useHashScroll from '@common/hooks/useHashScroll';
 import useCompareItems from '../hooks/useCompareItems';
-import Trend from '../Trend';
-import CodeQuality from '../CodeQuality';
-import CommunitySupport from '../CommunitySupport';
-import CommunityActivity from '../CommunityActivity';
 import useQueryDateRange from '../hooks/useQueryDateRange';
+import Trend from '../Trend';
+import CodeQuality from './CodeQuality';
+import CommunitySupport from './CommunitySupport';
+import CommunityActivity from './CommunityActivity';
 
-const DataView = () => {
+const Charts = () => {
   const { timeStart, timeEnd } = useQueryDateRange();
 
   const { compareItems } = useCompareItems();
@@ -45,4 +45,4 @@ const DataView = () => {
   );
 };
 
-export default DataView;
+export default Charts;

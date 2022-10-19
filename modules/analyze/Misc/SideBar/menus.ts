@@ -33,7 +33,7 @@ export enum CommunityActivity {
 
 const SideBarConfig = [
   {
-    name: 'Code Quality ',
+    name: 'Code Quality Guarantee',
     groups: [
       { name: 'Overview', id: CodeQuality.Overview },
       { name: 'Contributors', id: CodeQuality.ContributorCount },

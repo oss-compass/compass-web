@@ -1,17 +1,26 @@
 import React, { useMemo } from 'react';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
+import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import { ChartComponentProps, getLineOption, line } from '../options';
+import {
+  ChartComponentProps,
+  getLineOption,
+  line,
+  mapToLineSeries,
+  toTimeXAxis,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
+import { LineSeriesOption } from 'echarts';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { repoUrlFormat } from '@common/utils/url';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
-  pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 
-const Overview: React.FC<ChartComponentProps> = ({
+const IssueOpenTime: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
@@ -26,8 +35,8 @@ const Overview: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      title="Overview"
-      id={CodeQuality.Overview}
+      title="Issue open time"
+      id={CommunitySupport.IssueOpenTime}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (
@@ -37,26 +46,33 @@ const Overview: React.FC<ChartComponentProps> = ({
   );
 };
 
-const OverviewWithData = () => {
+const IssueOpenTimeWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
     return pickKeyToXAxis(data, {
-      typeKey: 'metricCodequality',
+      typeKey: 'metricCommunity',
       valueKey: 'grimoireCreationDate',
     });
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'codeQualityGuarantee',
-      legendName: 'Code Quality',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'issueOpenTimeAvg',
+        legendName: 'avg',
+      },
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'issueOpenTimeMid',
+        legendName: 'mid',
+      },
+    ]);
   }, [data]);
 
-  return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <IssueOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default OverviewWithData;
+export default IssueOpenTimeWithData;

@@ -1,27 +1,24 @@
 import React, { useMemo } from 'react';
-import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
   lineArea,
   toTimeXAxis,
-} from '../options';
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
-import { CommunityActivity } from '../Misc/SideBar/menus';
+import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
 
-const CodeReviewCount: React.FC<ChartComponentProps> = ({
+const ContributorCount: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return lineArea({ name, data });
@@ -32,9 +29,9 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       loading={loading}
-      id={CommunityActivity.CodeReviewCount}
-      title="Code review count"
-      description={`Determine the average number of review comments per pull request created in the last ${dateDesc}`}
+      id={CommunityActivity.ContributorCount}
+      title="ContributorCount"
+      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (
         <EChartX option={echartsOpts} containerRef={containerRef} />
@@ -43,7 +40,7 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CodeReviewCountWithData = () => {
+const ContributorCountWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -57,12 +54,12 @@ const CodeReviewCountWithData = () => {
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
       typeKey: 'metricActivity',
-      valueKey: 'codeReviewCount',
-      legendName: 'code review count',
+      valueKey: 'contributorCount',
+      legendName: 'Contributor Count',
     });
   }, [data]);
 
-  return <CodeReviewCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <ContributorCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default CodeReviewCountWithData;
+export default ContributorCountWithData;

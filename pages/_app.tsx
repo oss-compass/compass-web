@@ -63,7 +63,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           <meta name="description" content={''} />
           <meta name="applicable-device" content="pc,mobile" />
         </Head>
-        <NextNProgress startPosition={0.15} color="#000" />
+        <NextNProgress
+          startPosition={0.15}
+          color="#2c5fea"
+          options={{ showSpinner: false }}
+        />
         {isProduction && (
           <>
             <Script
