@@ -6,7 +6,7 @@ import Copyright from 'common/components/Copyright';
 const DocLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <div className="flex h-full flex-col">
-      <Header contentCenter />
+      <Header />
       <main className="mx-auto w-[1200px] flex-1 py-10 md:w-full">
         {children}
       </main>

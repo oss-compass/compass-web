@@ -1,7 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { Center } from '@common/components/Layout';
-import { AiFillGithub, AiOutlineTwitter } from 'react-icons/ai';
+import { AiFillGithub } from 'react-icons/ai';
+import { SiGitee } from 'react-icons/si';
 
 const Copyright = () => {
   return (
@@ -17,12 +18,12 @@ const Copyright = () => {
           </p>
         </div>
         <div className="flex">
-          <Link href="/">
-            <a>
-              <AiOutlineTwitter className="mr-4 h-6 w-6 cursor-pointer" />
+          <Link href="https://gitee.com/oss-compass">
+            <a target="_blank">
+              <SiGitee className="mr-4 h-6 w-6 cursor-pointer" />
             </a>
           </Link>
-          <Link href="https://github.com/open-metrics-code" passHref>
+          <Link href="https://github.com/oss-compass" passHref>
             <a target="_blank">
               <AiFillGithub className="h-6 w-6 cursor-pointer" />
             </a>

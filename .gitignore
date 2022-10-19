@@ -39,3 +39,5 @@ next-env.d.ts
 # graphql
 graphql/.graphqlconfig
 graphql/schema.graphql
+
+localtest

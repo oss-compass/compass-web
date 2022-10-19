@@ -9,7 +9,7 @@ import Explain from '@modules/home/Explain';
 const Home = () => {
   return (
     <>
-      <Header contentCenter blackMode />
+      <Header />
       <main>
         <Banner />
         <Projects />

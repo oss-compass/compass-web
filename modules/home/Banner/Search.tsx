@@ -21,29 +21,29 @@ const Search = () => {
   return (
     <div
       className={classnames(
-        'absolute top-60 w-[500px] p-6',
-        'md:top-auto md:bottom-6 md:w-[300px]',
+        'absolute bottom-9 -left-5 w-[600px] p-6',
+        'md:bottom-6 md:left-0 md:w-[380px]',
         styles.searchBg
       )}
     >
-      <h1 id="test" className="mb-4 text-7xl md:text-4xl">
-        Know more
+      <h1 id="test" className="mb-6 text-[64px]  leading-[80px] md:text-4xl">
+        It points to the thing
         <br />
-        your projects
+        you want most in
         <br />
-        way forward
+        open source world
       </h1>
-      <p className="mb-8 text-lg md:text-sm">
+      <p className="mb-10 text-lg md:text-sm">
         We help open source projects gain insight into its trends, and getting
         more value of it.
       </p>
-      <div className="relative">
+      <div className="relative w-[496px] md:w-full">
         <div className="flex items-center border-2 border-black px-4">
           <input
             value={keyword}
             type="text"
             className={classnames(
-              'h-[70px]  w-full appearance-none bg-transparent text-xl outline-0',
+              'h-[52px] w-full appearance-none bg-transparent text-xl outline-0 ',
               'md:h-[40px]'
             )}
             placeholder="eg: vscode"
@@ -64,7 +64,7 @@ const Search = () => {
         {throttledKeyword && (
           <div
             className={classnames(
-              'absolute left-0 right-0 top-[76px] z-dropdown border-2 border-black bg-white drop-shadow',
+              'absolute left-0 right-0 top-[58px] z-dropdown border-2 border-black bg-white drop-shadow',
               'md:top-[46px]'
             )}
           >

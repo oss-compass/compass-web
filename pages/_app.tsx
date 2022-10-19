@@ -65,7 +65,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         </Head>
         <NextNProgress
           startPosition={0.15}
-          color="#2c5fea"
+          color="#cccccc"
           options={{ showSpinner: false }}
         />
         {isProduction && (

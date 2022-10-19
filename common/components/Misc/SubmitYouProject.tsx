@@ -12,14 +12,9 @@ const SubmitYouProject: React.FC<{ blackMode?: boolean }> = ({ blackMode }) => {
   return (
     <Link href="/analyze/create">
       <a
-        className={classnames(
-          'cursor-pointer border-2 border-black px-6 py-3 font-semibold',
-          {
-            '!border-white': blackMode,
-            'bg-black': blackMode,
-            'text-white': blackMode,
-          }
-        )}
+        className={
+          'cursor-pointer border-2 border-white bg-black px-6 py-3 font-semibold text-white'
+        }
       >
         Submit your project
       </a>
