@@ -61,14 +61,14 @@ const AddInput = () => {
     >
       <div
         id="search-input"
-        className=" relative left-[30px] flex hidden h-full w-full items-center justify-center"
+        className="relative left-[60px] flex hidden h-full w-full items-center justify-center"
       >
         <div className="relative">
           <div className="flex items-center rounded  border ">
             <input
               value={removeHttps(confirmItem?.label!) || keyword}
               type="text"
-              className="w-55 h-10 bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
+              className="h-10 w-[300px] bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
               placeholder={`search ${level}`}
               onChange={(v) => {
                 setKeyword(v.target.value);
@@ -117,7 +117,7 @@ const AddInput = () => {
           const tl = gsap.timeline();
           tl.to(q('#add-compare-btn'), { display: 'none', duration: 0 });
           tl.to(ref.current, {
-            width: 350,
+            width: 450,
             duration: 0.15,
           });
           tl.to(q('#search-input'), { display: 'flex', duration: 0 });
