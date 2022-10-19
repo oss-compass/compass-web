@@ -1,5 +1,4 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { getLastPathSegment } from '@common/utils/url';
 import classnames from 'classnames';
@@ -7,8 +6,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { useRouter } from 'next/router';
 import { removeSearchValue } from '@modules/analyze/Misc/urlTool';
 import { Level } from '@modules/analyze/constant';
-
-const DynamicAddInput = dynamic(() => import('./AddInput'), { ssr: false });
+import AddInput from './AddInput';
 
 const CloseIcons: React.FC<{ label: string; level: Level }> = ({
   label,
@@ -50,7 +48,7 @@ const CompareBar = () => {
           })}
         </div>
       </div>
-      <DynamicAddInput />
+      <AddInput />
     </div>
   );
 };
