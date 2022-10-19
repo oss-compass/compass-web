@@ -30,7 +30,7 @@ const SectionBanner = () => {
   const breakpoint = useBreakpoint();
 
   return (
-    <section className={styles.bg}>
+    <section className={`${styles.bg} mt-4`}>
       <Center className="relative z-10 mx-auto h-[800px] md:h-[500px]">
         <NoSsr>
           <SvgGroup breakpoint={breakpoint} />
