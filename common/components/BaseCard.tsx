@@ -1,8 +1,8 @@
 import React, { useState, RefObject, useRef, ReactNode } from 'react';
+import Link from 'next/link';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useInViewport } from 'ahooks';
 
 interface BaseCardProps {
   id?: string;
@@ -29,7 +29,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
     'rounded-lg bg-white p-5 drop-shadow-sm border-2 border-white min-w-0',
     'md:rounded-none',
     {
-      'w-screen h-screen fixed left-0 right-0 top-0 bottom-0 z-fullscreen':
+      'w-full h-full fixed left-0 right-0 top-0 bottom-0 z-fullscreen':
         fullScreen,
     }
   );
@@ -61,18 +61,25 @@ const BaseCard: React.FC<BaseCardProps> = ({
   // }
 
   return (
-    <div className={cls} ref={cardRef} id={id}>
-      <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <span
-          className="cursor-pointer p-2 md:hidden"
-          onClick={() => {
-            setFullScreen((pre) => !pre);
-          }}
-        >
-          {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
-        </span>
-      </div>
+    <div className={classnames(cls)} ref={cardRef}>
+      <h2 className="group -mt-24 mb-2 pt-24 text-lg font-semibold" id={id}>
+        <Link href={`#${id}`}>
+          <a>
+            {title}
+            <span className="invisible ml-2 cursor-pointer group-hover:visible group-hover:text-primary">
+              #
+            </span>
+          </a>
+        </Link>
+      </h2>
+      <span
+        className="absolute right-4 top-4 cursor-pointer p-2 md:hidden"
+        onClick={() => {
+          setFullScreen((pre) => !pre);
+        }}
+      >
+        {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
+      </span>
       <p className="mb-4 text-sm">{description}</p>
       {typeof children === 'function' ? children(cardRef) : children}
     </div>
