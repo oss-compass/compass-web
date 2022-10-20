@@ -5,12 +5,12 @@ import classnames from 'classnames';
 
 const SubmitYouProject: React.FC<{ blackMode?: boolean }> = ({ blackMode }) => {
   const router = useRouter();
-  if (router.pathname === '/analyze/create') {
+  if (router.pathname === '/submit-your-project') {
     return null;
   }
 
   return (
-    <Link href="/analyze/create">
+    <Link href="/submit-your-project">
       <a
         className={
           'cursor-pointer border-2 border-white bg-black px-6 py-3 font-semibold text-white'

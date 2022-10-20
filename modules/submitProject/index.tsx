@@ -19,7 +19,7 @@ import { CreateFields } from './type';
 export const getUrlReg = (provider: string) =>
   new RegExp(`^https:\/\/${provider}\.com\/.+\/.+`, 'i');
 
-const AnalyzeCreate: React.FC<{
+const SubmitProject: React.FC<{
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
     ClientSafeProvider
@@ -155,4 +155,4 @@ const AnalyzeCreate: React.FC<{
   );
 };
 
-export default AnalyzeCreate;
+export default SubmitProject;

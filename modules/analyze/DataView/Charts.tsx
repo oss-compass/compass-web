@@ -5,7 +5,7 @@ import client from '@graphql/client';
 import useHashScroll from '@common/hooks/useHashScroll';
 import useCompareItems from '../hooks/useCompareItems';
 import useQueryDateRange from '../hooks/useQueryDateRange';
-import Trend from '../Trend';
+import Trend from './Trend';
 import CodeQuality from './CodeQuality';
 import CommunitySupport from './CommunitySupport';
 import CommunityActivity from './CommunityActivity';
@@ -32,8 +32,6 @@ const Charts = () => {
       };
     }),
   });
-
-  useHashScroll(50);
 
   return (
     <>

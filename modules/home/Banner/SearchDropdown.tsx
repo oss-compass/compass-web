@@ -55,8 +55,8 @@ const SearchDropdown: React.FC<{
     return (
       <p className="block px-4 py-3 text-lg text-gray-400 md:py-2 md:text-base">
         {'No result! '}
-        <Link href="/analyze/create">
-          <a className="text-primary">submit an analysis request</a>
+        <Link href="/submit-your-project">
+          <a className="text-primary">submit your project</a>
         </Link>
       </p>
     );
