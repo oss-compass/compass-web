@@ -1,6 +1,6 @@
 import React from 'react';
 import { useConfigContext } from '@modules/analyze/context';
-import { checkIsPadding } from '@modules/analyze/constant';
+import { checkIsPending } from '@modules/analyze/constant';
 import CompareBar from '@modules/analyze/Misc/CompareBar';
 import NoSsr from '@common/components/NoSsr';
 import UnderAnalysis from './UnderAnalysis';
@@ -32,7 +32,7 @@ const DataView = () => {
     return <Loading />;
   }
 
-  if (checkIsPadding(status)) {
+  if (checkIsPending(status)) {
     return <UnderAnalysis />;
   }
 

@@ -31,13 +31,16 @@ const CodeReview: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Code review"
       id={CodeQuality.CodeReview}
       description={`Percentage of recent ${dateDesc} code commits with at least one reviewer (not PR creator)`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

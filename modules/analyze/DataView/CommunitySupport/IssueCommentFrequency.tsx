@@ -29,13 +29,16 @@ const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Issue comment count"
       id={CommunitySupport.IssueCommentFrequency}
       description={`Determine the average number of comments per issue created in the last ${dateDesc}`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

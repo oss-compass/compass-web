@@ -12,7 +12,7 @@ import LocFrequency from './LocFrequency';
 const CodeQuality = () => {
   return (
     <>
-      <Topic>Code Quality Guarantee</Topic>
+      <Topic id={'code_quality_guarantee'}>Code Quality Guarantee</Topic>
       <div className="mb-4">
         <Overview />
       </div>

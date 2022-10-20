@@ -2,7 +2,6 @@ import React from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useMetricQuery } from '@graphql/generated';
 import client from '@graphql/client';
-import useHashScroll from '@common/hooks/useHashScroll';
 import useCompareItems from '../hooks/useCompareItems';
 import useQueryDateRange from '../hooks/useQueryDateRange';
 import Trend from './Trend';
@@ -12,7 +11,6 @@ import CommunityActivity from './CommunityActivity';
 
 const Charts = () => {
   const { timeStart, timeEnd } = useQueryDateRange();
-
   const { compareItems } = useCompareItems();
   useQueries({
     queries: compareItems.map(({ label, level }) => {

@@ -34,13 +34,16 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Contributors"
       id={CodeQuality.ContributorCount}
       description={`Determine how many active pr creators, code reviewers, commit authors there are in the past ${dateDesc}.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

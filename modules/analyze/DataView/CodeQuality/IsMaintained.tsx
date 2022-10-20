@@ -29,13 +29,16 @@ const IsMaintained: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Is Maintained"
       id={CodeQuality.IsMaintained}
       description={`Percentage of weeks with at least one code commit in the past ${dateDesc}.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

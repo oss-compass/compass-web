@@ -34,6 +34,7 @@ export enum CommunityActivity {
 const SideBarConfig = [
   {
     name: 'Code Quality Guarantee',
+    id: 'code_quality_guarantee',
     groups: [
       { name: 'Overview', id: CodeQuality.Overview },
       { name: 'Contributors', id: CodeQuality.ContributorCount },
@@ -47,6 +48,7 @@ const SideBarConfig = [
   },
   {
     name: 'Community Service and Support',
+    id: 'community_service_support',
     groups: [
       { name: 'Overview', id: CommunitySupport.Overview },
       { name: 'Issue first response', id: CommunitySupport.IssueFirstResponse },
@@ -63,6 +65,7 @@ const SideBarConfig = [
   },
   {
     name: 'Community Activity ',
+    id: 'community_activity',
     groups: [
       { name: 'Overview', id: CommunityActivity.Overview },
       { name: 'Contributor Count', id: CommunityActivity.ContributorCount },

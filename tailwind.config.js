@@ -26,7 +26,7 @@ module.exports = {
         mask: 100,
         fullscreen: 80,
         dropdown: 50,
-        nav: 30,
+        nav: 40,
       },
       colors: {
         primary: '#3A5BEF',

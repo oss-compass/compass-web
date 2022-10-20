@@ -36,13 +36,16 @@ const PrOpenTime: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="PR open time"
       id={CommunitySupport.PrOpenTime}
       description={`Average/Median processing time (days) for new change requests created in the last ${dateDesc}, including closed/accepted change request and unresolved change request.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );
