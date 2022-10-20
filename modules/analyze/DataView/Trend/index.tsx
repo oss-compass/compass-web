@@ -2,7 +2,7 @@ import React from 'react';
 import { MetricQuery } from '@graphql/generated';
 import TrendChart from './TrendChart';
 import TrendList from './TrendList';
-import useMetricQueryData from '../hooks/useMetricQueryData';
+import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 
 const Trends: React.FC<{
   loading: boolean;

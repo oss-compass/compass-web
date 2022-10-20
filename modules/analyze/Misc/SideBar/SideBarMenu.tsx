@@ -10,7 +10,7 @@ const MenuItem: React.FC<PropsWithChildren<{ hash: string }>> = ({
 }) => {
   return (
     <a
-      href={`#anchor_${hash}`}
+      href={`#${hash}`}
       className="flex h-8 cursor-pointer items-center rounded p-2 text-zinc-600 hover:bg-slate-100 hover:text-black"
     >
       <BiChart className="mr-2 flex-shrink-0 " />

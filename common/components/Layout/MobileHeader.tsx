@@ -53,7 +53,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
           <h1 className="text-base font-semibold">Oss compass</h1>
         </div>
         <div className="flex items-center">
-          <Link href="/analyze/create">
+          <Link href="/submit-your-project">
             <a className="cursor-pointer border border-black px-1 py-1 text-sm ">
               Submit your project
             </a>

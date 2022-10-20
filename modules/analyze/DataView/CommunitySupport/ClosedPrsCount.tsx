@@ -14,6 +14,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
 
 const ClosedPrsCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -31,6 +32,7 @@ const ClosedPrsCount: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Closed PR count"
+      id={CommunitySupport.ClosedPrsCount}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

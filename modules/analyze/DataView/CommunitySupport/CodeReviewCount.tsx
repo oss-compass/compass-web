@@ -15,6 +15,7 @@ import {
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
 
 const CodeReviewCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -33,6 +34,7 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
     <BaseCard
       loading={loading}
       title="Code review count"
+      id={CommunitySupport.CodeReviewCount}
       description={`Determine the average number of review comments per pull request created in the last ${dateDesc}`}
     >
       {(containerRef) => (

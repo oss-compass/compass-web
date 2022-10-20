@@ -2,7 +2,7 @@ import React from 'react';
 import { getProviders, signIn, signOut, useSession } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
-import AnalyzeCreate from '@modules/analyze/Create';
+import SubmitProject from '@modules/submitProject';
 import { Header } from '@common/components/Layout';
 
 export async function getServerSideProps() {
@@ -12,7 +12,7 @@ export async function getServerSideProps() {
   };
 }
 
-const Create: React.FC<{
+const SubmitYourProject: React.FC<{
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
     ClientSafeProvider
@@ -21,9 +21,9 @@ const Create: React.FC<{
   return (
     <>
       <Header />
-      <AnalyzeCreate providers={providers} />
+      <SubmitProject providers={providers} />
     </>
   );
 };
 
-export default Create;
+export default SubmitYourProject;
