@@ -11,7 +11,7 @@ import CodeReviewCount from './CodeReviewCount';
 const CommunityActivity = () => {
   return (
     <>
-      <Topic>Community Activity</Topic>
+      <Topic id="community_activity">Community Activity</Topic>
       <div className="mb-4">
         <Overview />
       </div>

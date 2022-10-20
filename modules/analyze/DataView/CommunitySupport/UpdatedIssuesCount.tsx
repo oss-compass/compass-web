@@ -35,13 +35,16 @@ const UpdatedIssuesCount: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Updated issues count"
       id={CommunitySupport.UpdatedIssuesCount}
       description={`Number of issue updates in the last ${dateDesc}.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

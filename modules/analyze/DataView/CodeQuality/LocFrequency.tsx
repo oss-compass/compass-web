@@ -36,13 +36,16 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Lines of code changed"
       id={CodeQuality.LocFrequency}
       description={`Determine the average number of lines touched (lines added plus lines removed) per week in the past ${dateDesc}.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

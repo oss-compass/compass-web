@@ -13,14 +13,12 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const CodeMergeRatio: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return lineArea({ name, data });
@@ -30,13 +28,16 @@ const CodeMergeRatio: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Code merge"
       id={CodeQuality.CodeMerge}
-      description={`Percentage of recent ${dateDesc} code commits with at least one reviewer (not PR creator)`}
+      description={`Percentage of recent 90 days code commits with at least one reviewer (not PR creator)`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

@@ -29,13 +29,16 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Commit frequency"
       id={CodeQuality.CommitFrequency}
       description={`Determine the average number of commits per week in the past ${dateDesc}.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

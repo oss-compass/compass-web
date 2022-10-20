@@ -33,13 +33,16 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="PR Issue Linked"
       id={CodeQuality.PRIssueLinked}
       description={`Percentage of new pr link issues in the last ${dateDesc}.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

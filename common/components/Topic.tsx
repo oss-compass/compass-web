@@ -1,9 +1,30 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useRef } from 'react';
+import useHashScroll from '@common/hooks/useHashScroll';
 
-const Topic: React.FC<PropsWithChildren> = ({ children }) => (
-  <h1 className="mt-14 mb-6 text-3xl md:mt-9 md:mb-4 md:px-4 md:text-xl md:font-semibold">
-    {children}
-  </h1>
-);
+const Topic: React.FC<PropsWithChildren<{ id: string }>> = ({
+  children,
+  id,
+}) => {
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  useHashScroll(id!, {
+    anchorElement: titleRef,
+  });
+
+  return (
+    <h1
+      className="group relative z-10 -mt-10 mb-6 pt-24 text-3xl md:mt-9 md:mb-4 md:px-4 md:text-xl md:font-semibold"
+      id={id}
+      ref={titleRef}
+    >
+      <a href={`#${id}`}>
+        {children}
+        <span className="invisible ml-2 cursor-pointer group-hover:visible group-hover:text-primary">
+          #
+        </span>
+      </a>
+    </h1>
+  );
+};
 
 export default Topic;

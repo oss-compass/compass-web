@@ -40,13 +40,16 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       title="Issue first response"
       id={CommunitySupport.IssueFirstResponse}
       description={`Average/Median first comments response (in days) for new Issues created in the last ${dateDesc}.`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );

@@ -49,4 +49,4 @@ export enum Level {
 
 // todo: add pages
 // pending progress success error canceled unsumbit
-export const checkIsPadding = (status: string) => !['success'].includes(status);
+export const checkIsPending = (status: string) => !['success'].includes(status);

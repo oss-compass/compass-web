@@ -31,13 +31,16 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      loading={loading}
       id={CommunityActivity.CodeReviewCount}
       title="Code review count"
       description={`Determine the average number of review comments per pull request created in the last ${dateDesc}`}
     >
       {(containerRef) => (
-        <EChartX option={echartsOpts} containerRef={containerRef} />
+        <EChartX
+          option={echartsOpts}
+          loading={loading}
+          containerRef={containerRef}
+        />
       )}
     </BaseCard>
   );
