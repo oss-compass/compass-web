@@ -62,6 +62,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           <meta name="keywords" content={''} />
           <meta name="description" content={''} />
           <meta name="applicable-device" content="pc,mobile" />
+          <link rel="shortcut icon" href="/favicon.ico" />
         </Head>
         <NextNProgress
           startPosition={0.15}
