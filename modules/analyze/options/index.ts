@@ -21,6 +21,21 @@ const tooltip: EChartsOption['tooltip'] = {
   order: 'valueDesc',
 };
 
+const legendVerticalMode: EChartsOption['legend'] = {
+  icon: 'circle',
+  type: 'scroll',
+  orient: 'vertical',
+  top: 50,
+  left: '78%',
+};
+
+const gridVerticalMode: EChartsOption['grid'] = {
+  left: '5%',
+  right: '25%',
+  bottom: '5%',
+  containLabel: true,
+};
+
 const legend: EChartsOption['legend'] = {
   type: 'scroll',
   icon: 'circle',

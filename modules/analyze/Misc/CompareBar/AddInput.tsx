@@ -12,7 +12,8 @@ import { removeHttps } from '@common/utils';
 
 const AddInput = () => {
   const search = window.location.search;
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const level = router.query.level as Level;
   const q = gsap.utils.selector(ref);
@@ -66,6 +67,7 @@ const AddInput = () => {
         <div className="relative">
           <div className="flex items-center rounded  border ">
             <input
+              ref={inputRef}
               value={removeHttps(confirmItem?.label!) || keyword}
               type="text"
               className="h-10 w-[300px] bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
@@ -122,6 +124,10 @@ const AddInput = () => {
           });
           tl.to(q('#search-input'), { display: 'flex', duration: 0 });
           tl.to(q('#search-input'), { left: 0, duration: 0.15 });
+
+          tl.eventCallback('onComplete', () => {
+            inputRef.current?.focus();
+          });
         }}
       >
         <AiOutlinePlus className="text-2xl" />
