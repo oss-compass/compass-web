@@ -6,6 +6,7 @@ import { useClickAway, useToggle } from 'react-use';
 import qs from 'query-string';
 import { useRouter } from 'next/router';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+import useSwitchRange from '@modules/analyze/Misc/NavBar/useSwitchRange';
 
 const MobileDatePicker = () => {
   const route = useRouter();
@@ -16,6 +17,7 @@ const MobileDatePicker = () => {
   });
 
   const { range } = useQueryDateRange();
+  const { switchRange } = useSwitchRange();
 
   return (
     <div className="relative >md:hidden">
@@ -38,12 +40,8 @@ const MobileDatePicker = () => {
                 'h-full w-32 cursor-pointer rounded-3xl py-2 px-2 text-center text-sm'
               )}
               key={t}
-              onClick={() => {
-                const result = qs.parse(window.location.search);
-                result.range = t;
-                route.replace(`/analyze?${qs.stringify(result)}`, undefined, {
-                  scroll: false,
-                });
+              onClick={async () => {
+                await switchRange(t);
                 toggleDropdown(false);
               }}
             >
