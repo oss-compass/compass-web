@@ -9,7 +9,7 @@ const MenuItem: React.FC<
     <a
       href={`#${hash}`}
       className={classnames(
-        'mb-0.5 flex h-8 cursor-pointer items-center rounded p-2 text-zinc-600 hover:bg-slate-100 hover:text-black',
+        'mb-0.5 flex cursor-pointer items-center rounded py-1 px-2 text-zinc-600 hover:bg-slate-100 hover:text-black',
         { 'bg-slate-100 !text-black': active }
       )}
     >

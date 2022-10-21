@@ -18,27 +18,29 @@ import { repoUrlFormat } from '@common/utils/url';
 import {
   pickKeyGroupToYAxis,
   pickKeyToXAxis,
+  pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
+import { colorGenerator } from '@modules/analyze/options/color';
 
-const PrOpenTime: React.FC<ChartComponentProps> = ({
+const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
+    const gen = colorGenerator();
+    const series = yAxis.map(({ name, label, data }) => {
+      const color = gen(label);
+      return line({ name, data, color });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
 
   return (
     <BaseCard
-      title="PR open time"
-      id={CommunitySupport.PrOpenTime}
-      description={`Average/Median processing time (days) for new change requests created in the last ${dateDesc}, including closed/accepted change request and unresolved change request.`}
+      title="Issue first response"
+      id={CommunitySupport.IssueFirstResponse}
+      description={`Average/Median first comments response (in days) for new Issues created in the last 90 days.`}
     >
       {(containerRef) => (
         <EChartX
@@ -51,7 +53,7 @@ const PrOpenTime: React.FC<ChartComponentProps> = ({
   );
 };
 
-const PrOpenTimeWithData = () => {
+const IssueFirstResponseWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -66,18 +68,18 @@ const PrOpenTimeWithData = () => {
     return pickKeyGroupToYAxis(data, [
       {
         typeKey: 'metricCommunity',
-        valueKey: 'prOpenTimeAvg',
+        valueKey: 'issueFirstReponseAvg',
         legendName: 'avg',
       },
       {
         typeKey: 'metricCommunity',
-        valueKey: 'prOpenTimeMid',
+        valueKey: 'issueFirstReponseMid',
         legendName: 'mid',
       },
     ]);
   }, [data]);
 
-  return <PrOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return <IssueFirstResponse loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default PrOpenTimeWithData;
+export default IssueFirstResponseWithData;

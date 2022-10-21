@@ -13,7 +13,6 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 import { colorGenerator } from '@modules/analyze/options/color';
 
 const PRIssueLinked: React.FC<ChartComponentProps> = ({
@@ -21,7 +20,6 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const gen = colorGenerator();
     const series = yAxis.map(({ label, name, data }) => {
@@ -33,9 +31,9 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="PR Issue Linked"
+      title="PR issue linked"
       id={CodeQuality.PRIssueLinked}
-      description={`Percentage of new pr link issues in the last ${dateDesc}.`}
+      description={`Percentage of new pr link issues in the last 90 days.`}
     >
       {(containerRef) => (
         <EChartX

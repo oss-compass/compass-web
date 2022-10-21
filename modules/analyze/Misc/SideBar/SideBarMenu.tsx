@@ -2,6 +2,7 @@ import React, { PropsWithChildren, Fragment, useEffect, useState } from 'react';
 import MenuItem from './MenuItem';
 import MenuLoading from './MenuLoading';
 import { useConfigContext } from '@modules/analyze/context';
+import { useDebounce } from 'react-use';
 import { checkIsPending } from '@modules/analyze/constant';
 import menus from './menus';
 
@@ -20,6 +21,25 @@ const Menus = () => {
       window.removeEventListener('hashchange', hashChangeHandle, false);
     };
   }, []);
+
+  useDebounce(
+    () => {
+      if (!activeId) return;
+      const id = activeId.replace('#', '');
+      const el = document.getElementById(id)?.parentElement;
+      if (!el) return;
+
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.base-card');
+        cards.forEach((card) => {
+          card.setAttribute('style', 'border-color: transparent');
+        });
+        el.style.borderColor = '#3A5BEF';
+      });
+    },
+    150,
+    [activeId]
+  );
 
   return (
     <>
@@ -49,7 +69,7 @@ const Menus = () => {
   );
 };
 
-const SideBarMenu = () => {
+const SideBarMenus: React.FC<PropsWithChildren> = ({ children }) => {
   const { status } = useConfigContext();
 
   if (checkIsPending(status)) {
@@ -59,4 +79,4 @@ const SideBarMenu = () => {
   return <Menus />;
 };
 
-export default SideBarMenu;
+export default SideBarMenus;

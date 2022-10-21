@@ -6,7 +6,7 @@ import useCompareItems from '../hooks/useCompareItems';
 import useQueryDateRange from '../hooks/useQueryDateRange';
 import Trend from './Trend';
 import CodeQuality from './CodeQuality';
-import CommunitySupport from './CommunitySupport';
+import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
 
 const Charts = () => {
@@ -35,7 +35,7 @@ const Charts = () => {
     <>
       <Trend />
       <CodeQuality />
-      <CommunitySupport />
+      <CommunityServiceSupport />
       <CommunityActivity />
     </>
   );

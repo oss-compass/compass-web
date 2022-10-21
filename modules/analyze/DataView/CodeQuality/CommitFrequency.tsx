@@ -12,14 +12,12 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
 const CommitFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -31,7 +29,7 @@ const CommitFrequency: React.FC<ChartComponentProps> = ({
     <BaseCard
       title="Commit frequency"
       id={CodeQuality.CommitFrequency}
-      description={`Determine the average number of commits per week in the past ${dateDesc}.`}
+      description={`Determine the average number of commits per week in the past 90 days.`}
     >
       {(containerRef) => (
         <EChartX
