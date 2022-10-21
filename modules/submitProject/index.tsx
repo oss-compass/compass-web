@@ -16,6 +16,8 @@ import SelectField from './SelectField';
 import Auth from './Auth';
 import { CreateFields } from './type';
 
+import style from './index.module.css';
+
 export const getUrlReg = (provider: string) =>
   new RegExp(`^https:\/\/${provider}\.com\/.+\/.+`, 'i');
 
@@ -89,7 +91,22 @@ const SubmitProject: React.FC<{
 
   return (
     <>
-      <div className="h-40 bg-[#2c5fea]"></div>
+      <div
+        className={classnames(
+          'relative h-40 overflow-hidden bg-[#2c5fea]',
+          style.headerBgLine
+        )}
+      >
+        <div
+          className={classnames(
+            'absolute -top-16  right-10 h-[303px] w-[490px] md:-right-[300px]',
+            style.headerBgGraph
+          )}
+        ></div>
+        <div className="relative mx-auto w-[1000px] pt-12 text-5xl font-medium text-white md:w-full md:px-2">
+          Enroll your project
+        </div>
+      </div>
       <div className="mx-auto w-[1000px] md:w-full">
         <div className="w-[560px] pb-10 pt-10 md:w-full md:px-4">
           <Auth providers={providers} />

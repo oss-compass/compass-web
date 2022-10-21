@@ -29,7 +29,7 @@ const Auth: React.FC<{
   return (
     <>
       <h1 className="mb-4 text-xl font-medium">
-        Your project repository is hosted at
+        Where your project hosting on
       </h1>
 
       {!isLogin && (

@@ -5,9 +5,8 @@ import TrendList from './TrendList';
 import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 
 const Trends: React.FC<{
-  loading: boolean;
   data: { label: string; result: MetricQuery | undefined }[];
-}> = ({ loading, data }) => {
+}> = ({ data }) => {
   if (data.length > 1) {
     return <TrendList />;
   }
@@ -21,9 +20,8 @@ const Trends: React.FC<{
 
 const TrendsWithData = () => {
   const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
 
-  return <Trends loading={isLoading} data={data} />;
+  return <Trends data={data} />;
 };
 
 export default TrendsWithData;

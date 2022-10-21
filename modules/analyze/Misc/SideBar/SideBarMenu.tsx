@@ -12,8 +12,10 @@ const Menus = () => {
   const [activeId, setActiveId] = useState(window.location.hash);
 
   useEffect(() => {
-    const hashChangeHandle = () => {
-      setActiveId(window.location.hash);
+    const hashChangeHandle = (e: HashChangeEvent) => {
+      const hash = window.location.hash;
+      console.log('hashChangeHandle', hash);
+      setActiveId(hash);
     };
     // hashChangeHandle();
     window.addEventListener('hashchange', hashChangeHandle, false);
@@ -29,13 +31,13 @@ const Menus = () => {
       const el = document.getElementById(id)?.parentElement;
       if (!el) return;
 
-      setTimeout(() => {
-        const cards = document.querySelectorAll('.base-card');
-        cards.forEach((card) => {
-          card.setAttribute('style', 'border-color: transparent');
-        });
-        el.style.borderColor = '#3A5BEF';
+      const cards = document.querySelectorAll('.base-card');
+      cards.forEach((card) => {
+        card.setAttribute('style', 'border-color: transparent');
       });
+      if (el.classList.contains?.('base-card')) {
+        el.setAttribute('style', 'border-color: #505050');
+      }
     },
     150,
     [activeId]

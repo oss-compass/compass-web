@@ -43,7 +43,7 @@ const Project: React.FC<{ repo: Repo; index: number }> = ({ repo, index }) => {
         })}
       >
         <a className="mb-5 block">
-          <h3 className="mb-2 text-xl line-clamp-1 hover:underline">
+          <h3 className="mb-2 text-xl font-medium line-clamp-1 hover:underline">
             {repo.name}
           </h3>
           <p className="text-sm text-gray-400 line-clamp-1">{repo.language}</p>
