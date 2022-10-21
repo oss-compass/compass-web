@@ -26,7 +26,7 @@ const Drawer: React.FC<
           { '!left-0': visible }
         )}
       >
-        <div className="">{children}</div>
+        {visible && <div>{children}</div>}
       </div>
     </div>
   );

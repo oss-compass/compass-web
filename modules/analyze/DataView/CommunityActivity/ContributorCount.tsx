@@ -29,7 +29,7 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       id={CommunityActivity.ContributorCount}
-      title="ContributorCount"
+      title="Contributor count"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

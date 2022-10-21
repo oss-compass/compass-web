@@ -35,6 +35,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   const cls = classnames(
     className,
+    'base-card',
     'rounded-lg bg-white p-5 drop-shadow-sm border-2 border-white min-w-0',
     'md:rounded-none',
     {
@@ -42,10 +43,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
         fullScreen,
     }
   );
-  useHashScroll(id!, {
-    anchorElement: titleRef,
-    borderFlashElement: cardRef,
-  });
+  useHashScroll(id!, { anchorRef: titleRef });
 
   useHotkeys('esc', (e, he) => {
     e.preventDefault();
@@ -59,8 +57,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
         ref={titleRef}
         id={id}
       >
+        {title}
         <a href={`#${id}`}>
-          {title}
           <span className="invisible ml-2 cursor-pointer group-hover:visible group-hover:text-primary">
             #
           </span>

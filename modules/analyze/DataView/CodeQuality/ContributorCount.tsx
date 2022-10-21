@@ -14,7 +14,6 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 import { colorGenerator } from '@modules/analyze/options/color';
 
 const ContributorCount: React.FC<ChartComponentProps> = ({
@@ -22,7 +21,6 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const gen = colorGenerator();
     const series = yAxis.map(({ name, label, data }) => {
@@ -36,7 +34,7 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
     <BaseCard
       title="Contributors"
       id={CodeQuality.ContributorCount}
-      description={`Determine how many active pr creators, code reviewers, commit authors there are in the past ${dateDesc}.`}
+      description={`Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.`}
     >
       {(containerRef) => (
         <EChartX

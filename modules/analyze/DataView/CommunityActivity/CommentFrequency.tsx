@@ -31,7 +31,7 @@ const CommentFrequency: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       id={CommunityActivity.CommentFrequency}
-      title="commentFrequency"
+      title="Comment frequency"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

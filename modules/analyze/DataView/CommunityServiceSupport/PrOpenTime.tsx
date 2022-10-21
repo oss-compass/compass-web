@@ -1,25 +1,30 @@
-import React, { useMemo } from 'react';
-import EChartX from '@common/components/EChartX';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { LineSeriesOption } from 'echarts';
+import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import {
   ChartComponentProps,
   getLineOption,
   line,
+  mapToLineSeries,
+  toTimeXAxis,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
+import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { repoUrlFormat } from '@common/utils/url';
 import {
+  pickKeyGroupToYAxis,
   pickKeyToXAxis,
-  pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 
-const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
+const PrOpenTime: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -29,9 +34,9 @@ const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="Issue comment count"
-      id={CommunitySupport.IssueCommentFrequency}
-      description={`Determine the average number of comments per issue created in the last ${dateDesc}`}
+      title="PR open time"
+      id={CommunitySupport.PrOpenTime}
+      description={`Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change request and unresolved change request.`}
     >
       {(containerRef) => (
         <EChartX
@@ -44,7 +49,7 @@ const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
   );
 };
 
-const IssueCommentFrequencyWithData = () => {
+const PrOpenTimeWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -56,16 +61,21 @@ const IssueCommentFrequencyWithData = () => {
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCommunity',
-      valueKey: 'commentFrequency',
-      legendName: 'Issue comment frequency',
-    });
+    return pickKeyGroupToYAxis(data, [
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'prOpenTimeAvg',
+        legendName: 'avg',
+      },
+      {
+        typeKey: 'metricCommunity',
+        valueKey: 'prOpenTimeMid',
+        legendName: 'mid',
+      },
+    ]);
   }, [data]);
 
-  return (
-    <IssueCommentFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />
-  );
+  return <PrOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
 };
 
-export default IssueCommentFrequencyWithData;
+export default PrOpenTimeWithData;

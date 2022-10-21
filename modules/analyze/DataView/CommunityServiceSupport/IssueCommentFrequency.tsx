@@ -1,28 +1,23 @@
 import React, { useMemo } from 'react';
-import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
   line,
-  mapToLineSeries,
-  toTimeXAxis,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
 
-const CodeReviewCount: React.FC<ChartComponentProps> = ({
+const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
@@ -32,9 +27,9 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="Code review count"
-      id={CommunitySupport.CodeReviewCount}
-      description={`Determine the average number of review comments per pull request created in the last ${dateDesc}`}
+      title="Issue comment count"
+      id={CommunitySupport.IssueCommentFrequency}
+      description={`Determine the average number of comments per issue created in the last 90 days.`}
     >
       {(containerRef) => (
         <EChartX
@@ -47,7 +42,7 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CodeReviewCountWithData = () => {
+const IssueCommentFrequencyWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -61,12 +56,14 @@ const CodeReviewCountWithData = () => {
   const yAxis = useMemo(() => {
     return pickKeyToYAxis(data, {
       typeKey: 'metricCommunity',
-      valueKey: 'codeReviewCount',
-      legendName: 'code review count',
+      valueKey: 'commentFrequency',
+      legendName: 'Issue comment frequency',
     });
   }, [data]);
 
-  return <CodeReviewCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return (
+    <IssueCommentFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />
+  );
 };
 
-export default CodeReviewCountWithData;
+export default IssueCommentFrequencyWithData;

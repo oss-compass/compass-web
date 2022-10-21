@@ -8,7 +8,7 @@ const Topic: React.FC<PropsWithChildren<{ id: string }>> = ({
   const titleRef = useRef<HTMLDivElement>(null);
 
   useHashScroll(id!, {
-    anchorElement: titleRef,
+    anchorRef: titleRef,
   });
 
   return (
@@ -17,8 +17,8 @@ const Topic: React.FC<PropsWithChildren<{ id: string }>> = ({
       id={id}
       ref={titleRef}
     >
+      {children}
       <a href={`#${id}`}>
-        {children}
         <span className="invisible ml-2 cursor-pointer group-hover:visible group-hover:text-primary">
           #
         </span>

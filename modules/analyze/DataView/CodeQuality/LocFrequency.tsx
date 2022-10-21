@@ -15,7 +15,6 @@ import {
   pickKeyGroupToYAxis,
   pickKeyToXAxis,
 } from '@modules/analyze/options/metric';
-import useDatePickerFormat from '@modules/analyze/hooks/useDatePickerFormat';
 import { toFixed } from '@common/utils';
 import { colorGenerator } from '@modules/analyze/options/color';
 
@@ -24,7 +23,6 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
   xAxis,
   yAxis,
 }) => {
-  const dateDesc = useDatePickerFormat();
   const echartsOpts = useMemo(() => {
     const gen = colorGenerator();
     const series = yAxis.map(({ name, label, data }) => {
@@ -36,9 +34,9 @@ const LocFrequency: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="Lines of code changed"
+      title="Line of code frequency"
       id={CodeQuality.LocFrequency}
-      description={`Determine the average number of lines touched (lines added plus lines removed) per week in the past ${dateDesc}.`}
+      description={`Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.`}
     >
       {(containerRef) => (
         <EChartX
