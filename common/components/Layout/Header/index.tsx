@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Logo from '@common/components/Logo';
 import SubmitYouProject from '@common/components/Misc/SubmitYouProject';
 import MobileHeader from '@common/components/Layout/MobileHeader';
+import { HeaderCommunityMenu } from '@common/components/MenuDropdown';
 import LogoGitee from './logo-gitee.svg';
 import LogoGithub from './logo-github.svg';
 
@@ -20,11 +21,11 @@ const Header: React.FC<{
       >
         <div
           className={classnames(
-            'h-20 py-4 px-8',
+            'h-20 px-8',
             'flex items-center justify-between'
           )}
         >
-          <div className="flex items-center">
+          <div className="flex h-full items-center">
             <Link href="/">
               <a className="mr-6">
                 <Logo color="white" />
@@ -35,11 +36,7 @@ const Header: React.FC<{
                 Metrics Models
               </a>
             </Link>
-            <div
-              className={'mx-6 cursor-pointer px-2.5 font-medium text-white'}
-            >
-              Community
-            </div>
+            <HeaderCommunityMenu />
             <Link href="/">
               <a className={'mx-6 px-2.5 font-medium text-white'}>About</a>
             </Link>
