@@ -3,10 +3,13 @@ import Topic from '@common/components/Topic';
 import Overview from './Overview';
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
-import CreatedSince from './CreatedSince';
 import UpdatedSince from './UpdatedSince';
+// import OrgCount from './OrgCount';
+import CreatedSince from './CreatedSince';
 import CommentFrequency from './CommentFrequency';
 import CodeReviewCount from './CodeReviewCount';
+import UpdatedIssuesCount from './UpdatedIssuesCount';
+import RecentReleasesCount from './RecentReleasesCount';
 
 const CommunityActivity = () => {
   return (
@@ -18,13 +21,14 @@ const CommunityActivity = () => {
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ContributorCount />
         <CommitFrequency />
-        <CodeReviewCount />
-        <CreatedSince />
         <UpdatedSince />
+        {/*<OrgCount />*/}
+        <CreatedSince />
         <CommentFrequency />
+        <CodeReviewCount />
+        <UpdatedIssuesCount />
+        <RecentReleasesCount />
       </div>
-      <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1"></div>
-      <div className="mb-4"></div>
     </>
   );
 };

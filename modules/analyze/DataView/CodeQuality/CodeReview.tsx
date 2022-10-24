@@ -29,8 +29,8 @@ const CodeReview: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="Code review"
-      id={CodeQuality.CodeReview}
+      title="Code review ratio"
+      id={CodeQuality.CodeReviewRatio}
       description={`Percentage of recent 90-day code commits with at least one reviewer (not PR creator).`}
     >
       {(containerRef) => (

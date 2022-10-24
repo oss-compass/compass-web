@@ -7,7 +7,7 @@ import {
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { Support } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyToXAxis,
   pickKeyToYAxis,
@@ -28,7 +28,7 @@ const IssueCommentFrequency: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       title="Issue comment count"
-      id={CommunitySupport.IssueCommentFrequency}
+      id={Support.IssueCommentFrequency}
       description={`Determine the average number of comments per issue created in the last 90 days.`}
     >
       {(containerRef) => (

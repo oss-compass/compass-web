@@ -70,6 +70,8 @@ export type ActivityMetric = {
   label?: Maybe<Scalars['String']>;
   /** metric model object level */
   level?: Maybe<Scalars['String']>;
+  /** number of releases in the last 90 days */
+  recentReleasesCount?: Maybe<Scalars['Float']>;
   /** number of issue updates in the past 90 days */
   updatedIssuesCount?: Maybe<Scalars['Float']>;
   /** (average of months from the last code commit to the time of statistics */
@@ -130,6 +132,10 @@ export type CodequalityMetric = {
 
 export type CommunityMetric = {
   __typename?: 'CommunityMetric';
+  /** mean of bug issues open time (days) */
+  bugIssueOpenTimeAvg?: Maybe<Scalars['Float']>;
+  /** middle of bug issues open time (days) */
+  bugIssueOpenTimeMid?: Maybe<Scalars['Float']>;
   /** number of pulls closed in the past 90 days */
   closedPrsCount?: Maybe<Scalars['Float']>;
   /** mean of comments per PR over the past 90 days */
@@ -222,6 +228,38 @@ export type Error = {
   path?: Maybe<Array<Scalars['String']>>;
 };
 
+export type GroupActivityMetric = {
+  __typename?: 'GroupActivityMetric';
+  /** mean of submissions per week over the past 90 days */
+  commitFrequency?: Maybe<Scalars['Float']>;
+  /** mean of org submissions per week over the past 90 days */
+  commitFrequencyOrg?: Maybe<Scalars['Float']>;
+  /** percentage of org submissions per week over the past 90 days */
+  commitFrequencyOrgPercentage?: Maybe<Scalars['Float']>;
+  /** percentage of submissions per week over the past 90 days */
+  commitFrequencyPercentage?: Maybe<Scalars['Float']>;
+  /** (average of months from the last org code commit to the time of statistics */
+  contributionLast?: Maybe<Scalars['Float']>;
+  /** number of active D1 developers in the past 90 days */
+  contributorCount?: Maybe<Scalars['Float']>;
+  /** number of active orgs in the past 90 days */
+  contributorOrgCount?: Maybe<Scalars['Float']>;
+  /** metric model creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** is org */
+  isOrg?: Maybe<Scalars['Boolean']>;
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** organization count */
+  orgCount?: Maybe<Scalars['Float']>;
+  /** organization name */
+  orgName?: Maybe<Scalars['String']>;
+  /** score of organization activity metric model */
+  organizationsActivity?: Maybe<Scalars['Float']>;
+};
+
 export type LatestMetrics = {
   __typename?: 'LatestMetrics';
   /** latest score of activity metric model */
@@ -288,6 +326,8 @@ export type Query = {
   analysisStatus: Scalars['String'];
   /** Fuzzy search project by keyword */
   fuzzySearch: Array<ProjectCompletionRow>;
+  /** Get group activity metrics data of compass */
+  groupMetricActivity: Array<GroupActivityMetric>;
   /** Get latest metrics data of the specified label */
   latestMetrics: LatestMetrics;
   /** Get activity metrics data of compass */
@@ -306,6 +346,13 @@ export type QueryAnalysisStatusArgs = {
 
 export type QueryFuzzySearchArgs = {
   keyword: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryGroupMetricActivityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
 };
 
@@ -482,11 +529,13 @@ export type MetricQuery = {
     prCommitCount?: number | null;
     prCommitLinkedCount?: number | null;
     prCount?: number | null;
-    prIssueLinkedRatio?: number | null;
     prIssueLinkedCount?: number | null;
+    prIssueLinkedRatio?: number | null;
   }>;
   metricCommunity: Array<{
     __typename?: 'CommunityMetric';
+    bugIssueOpenTimeAvg?: number | null;
+    bugIssueOpenTimeMid?: number | null;
     closedPrsCount?: number | null;
     codeReviewCount?: number | null;
     commentFrequency?: number | null;
@@ -519,6 +568,7 @@ export type MetricQuery = {
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
+    recentReleasesCount?: number | null;
     updatedIssuesCount?: number | null;
     updatedSince?: number | null;
   }>;
@@ -829,10 +879,12 @@ export const MetricDocument = /*#__PURE__*/ `
     prCommitCount
     prCommitLinkedCount
     prCount
-    prIssueLinkedRatio
     prIssueLinkedCount
+    prIssueLinkedRatio
   }
   metricCommunity(label: $label, level: $level, beginDate: $start, endDate: $end) {
+    bugIssueOpenTimeAvg
+    bugIssueOpenTimeMid
     closedPrsCount
     codeReviewCount
     commentFrequency
@@ -864,6 +916,7 @@ export const MetricDocument = /*#__PURE__*/ `
     grimoireCreationDate
     label
     level
+    recentReleasesCount
     updatedIssuesCount
     updatedSince
   }

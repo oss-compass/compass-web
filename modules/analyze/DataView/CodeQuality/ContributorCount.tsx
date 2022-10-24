@@ -68,12 +68,17 @@ const ContributorCountWithData = () => {
       {
         typeKey: 'metricCodequality',
         valueKey: 'activeC1PrCommentsContributorCount',
-        legendName: 'PR comments',
+        legendName: 'Code reviewer',
       },
       {
         typeKey: 'metricCodequality',
         valueKey: 'activeC1PrCreateContributorCount',
-        legendName: 'PR create',
+        legendName: 'PR creator',
+      },
+      {
+        typeKey: 'metricCodequality',
+        valueKey: 'activeC2ContributorCount',
+        legendName: 'Commit author',
       },
     ]);
   }, [data]);

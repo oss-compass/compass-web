@@ -13,7 +13,7 @@ import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { Support } from '@modules/analyze/Misc/SideBar/menus';
 import { repoUrlFormat } from '@common/utils/url';
 import {
   pickKeyGroupToYAxis,
@@ -35,7 +35,7 @@ const PrOpenTime: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       title="PR open time"
-      id={CommunitySupport.PrOpenTime}
+      id={Support.PrOpenTime}
       description={`Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change request and unresolved change request.`}
     >
       {(containerRef) => (

@@ -31,8 +31,8 @@ const PRIssueLinked: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="PR issue linked"
-      id={CodeQuality.PRIssueLinked}
+      title="PR issue linked ratio"
+      id={CodeQuality.PRIssueLinkedRatio}
       description={`Percentage of new pr link issues in the last 90 days.`}
     >
       {(containerRef) => (
