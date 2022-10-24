@@ -20,7 +20,7 @@ export const HeaderCommunityMenu = () => {
             href="https://join.slack.com/t/slack-vit2156/shared_invite/zt-1hv9pabzr-80W3QeM4zABSJFWEmPNipw"
             passHref
           >
-            <a target="_blank">
+            <a target="_blank" rel="noopener noreferrer">
               <p className="text-base">Slack</p>
               <p className="text-sm text-white/50">
                 Join our community channel on Slack

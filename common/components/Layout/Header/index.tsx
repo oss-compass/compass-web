@@ -44,14 +44,14 @@ const Header: React.FC<{
           <div className="flex cursor-pointer items-center">
             <div className="ml-10">
               <Link href="https://gitee.com/oss-compass" passHref>
-                <a target="_blank">
+                <a target="_blank" rel="noopener noreferrer">
                   <LogoGitee />
                 </a>
               </Link>
             </div>
             <div className="ml-10 mr-10 cursor-pointer">
               <Link href="https://github.com/oss-compass" passHref>
-                <a target="_blank">
+                <a target="_blank" rel="noopener noreferrer">
                   <LogoGithub />
                 </a>
               </Link>
