@@ -14,7 +14,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { Support } from '@modules/analyze/Misc/SideBar/menus';
 
 const CodeReviewCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -31,7 +31,7 @@ const CodeReviewCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       title="Code review count"
-      id={CommunitySupport.CodeReviewCount}
+      id={Support.CodeReviewCount}
       description={`Determine the average number of review comments per pull request created in the last 90 days.`}
     >
       {(containerRef) => (

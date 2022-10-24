@@ -1,12 +1,9 @@
 import React, { useMemo } from 'react';
-import { MetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
   lineArea,
-  mapToLineSeries,
-  toTimeXAxis,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
@@ -14,7 +11,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
+import { Activity } from '@modules/analyze/Misc/SideBar/menus';
 
 const UpdatedSince: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -30,7 +27,7 @@ const UpdatedSince: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      id={CommunityActivity.UpdatedSince}
+      id={Activity.UpdatedSince}
       title="Updated since"
       description="Determine the average time per repository since the repository was last updated (in months)."
     >

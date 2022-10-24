@@ -12,7 +12,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
+import { Activity } from '@modules/analyze/Misc/SideBar/menus';
 
 const ContributorCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -28,7 +28,7 @@ const ContributorCount: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      id={CommunityActivity.ContributorCount}
+      id={Activity.ContributorCount}
       title="Contributor count"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >

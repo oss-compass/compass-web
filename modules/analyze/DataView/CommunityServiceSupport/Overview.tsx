@@ -10,7 +10,7 @@ import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { Support } from '@modules/analyze/Misc/SideBar/menus';
 import { repoUrlFormat } from '@common/utils/url';
 import {
   pickKeyToXAxis,
@@ -32,7 +32,7 @@ const Overview: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       title="Overview"
-      id={CommunitySupport.Overview}
+      id={Support.Overview}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

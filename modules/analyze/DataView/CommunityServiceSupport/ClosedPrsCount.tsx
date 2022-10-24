@@ -1,11 +1,8 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import {
   ChartComponentProps,
   getLineOption,
   line,
-  mapToLineSeries,
-  toTimeXAxis,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
@@ -14,7 +11,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { Support } from '@modules/analyze/Misc/SideBar/menus';
 
 const ClosedPrsCount: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -31,7 +28,7 @@ const ClosedPrsCount: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       title="Closed PR count"
-      id={CommunitySupport.ClosedPrsCount}
+      id={Support.ClosedPrsCount}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

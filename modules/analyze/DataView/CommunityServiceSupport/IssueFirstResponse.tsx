@@ -13,7 +13,7 @@ import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
+import { Support } from '@modules/analyze/Misc/SideBar/menus';
 import { repoUrlFormat } from '@common/utils/url';
 import {
   pickKeyGroupToYAxis,
@@ -39,7 +39,7 @@ const IssueFirstResponse: React.FC<ChartComponentProps> = ({
   return (
     <BaseCard
       title="Issue first response"
-      id={CommunitySupport.IssueFirstResponse}
+      id={Support.IssueFirstResponse}
       description={`Average/Median first comments response (in days) for new Issues created in the last 90 days.`}
     >
       {(containerRef) => (

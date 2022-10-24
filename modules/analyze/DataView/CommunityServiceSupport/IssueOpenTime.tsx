@@ -10,11 +10,7 @@ import {
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { LineSeriesOption } from 'echarts';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import { CommunitySupport } from '@modules/analyze/Misc/SideBar/menus';
-import { repoUrlFormat } from '@common/utils/url';
+import { Support } from '@modules/analyze/Misc/SideBar/menus';
 import {
   pickKeyGroupToYAxis,
   pickKeyToXAxis,
@@ -34,8 +30,8 @@ const IssueOpenTime: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="Issue open time"
-      id={CommunitySupport.IssueOpenTime}
+      title="Bug issue open time"
+      id={Support.BugIssueOpenTime}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
       {(containerRef) => (

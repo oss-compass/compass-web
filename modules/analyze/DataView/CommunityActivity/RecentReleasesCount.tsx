@@ -1,36 +1,35 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
   getLineOption,
-  lineArea,
+  line,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
+import { Activity } from '@modules/analyze/Misc/SideBar/menus';
 import {
-  pickKeyGroupToYAxis,
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
 
-const CodeMergeRatio: React.FC<ChartComponentProps> = ({
+const RecentReleasesCount: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
+      return line({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
   }, [xAxis, yAxis]);
 
   return (
     <BaseCard
-      title="Code merge ratio"
-      id={CodeQuality.CodeMergeRatio}
-      description={`The percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.`}
+      title="Recent releases count"
+      id={Activity.RecentReleasesCount}
+      description={`Number of releases in the past year.`}
     >
       {(containerRef) => (
         <EChartX
@@ -43,33 +42,28 @@ const CodeMergeRatio: React.FC<ChartComponentProps> = ({
   );
 };
 
-const CodeMergeRatioWithData = () => {
+const RecentReleasesCountWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
   const xAxis = useMemo(() => {
     return pickKeyToXAxis(data, {
-      typeKey: 'metricCodequality',
+      typeKey: 'metricActivity',
       valueKey: 'grimoireCreationDate',
     });
   }, [data]);
 
   const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'prCount',
-        legendName: 'Total PR',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'codeMergedCount',
-        legendName: 'Code merge',
-      },
-    ]);
+    return pickKeyToYAxis(data, {
+      typeKey: 'metricActivity',
+      valueKey: 'recentReleasesCount',
+      legendName: 'Recent releases count',
+    });
   }, [data]);
 
-  return <CodeMergeRatio loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return (
+    <RecentReleasesCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />
+  );
 };
 
-export default CodeMergeRatioWithData;
+export default RecentReleasesCountWithData;

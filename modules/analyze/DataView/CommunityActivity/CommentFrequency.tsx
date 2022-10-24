@@ -14,7 +14,7 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
-import { CommunityActivity } from '@modules/analyze/Misc/SideBar/menus';
+import { Activity } from '@modules/analyze/Misc/SideBar/menus';
 
 const CommentFrequency: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -30,7 +30,7 @@ const CommentFrequency: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      id={CommunityActivity.CommentFrequency}
+      id={Activity.CommentFrequency}
       title="Comment frequency"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
     >
