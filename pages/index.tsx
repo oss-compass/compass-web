@@ -5,6 +5,7 @@ import Copyright from '@common/components/Copyright';
 import Banner from '@modules/home/Banner';
 import Projects from '@modules/home/Projects';
 import Explain from '@modules/home/Explain';
+import SpecialThank from '@modules/home/SpecialThank';
 
 const Home = () => {
   return (
@@ -14,6 +15,7 @@ const Home = () => {
         <Banner />
         <Projects />
         <Explain />
+        <SpecialThank />
       </main>
       <footer>
         <Center>
