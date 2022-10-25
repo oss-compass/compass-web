@@ -26,7 +26,10 @@ const Search = () => {
         styles.searchBg
       )}
     >
-      <h1 id="test" className="mb-6 text-[64px]  leading-[80px] md:text-4xl">
+      <h1
+        id="test"
+        className="mb-6 text-[64px] leading-[80px] tracking-tight md:text-4xl"
+      >
         It points to the thing
         <br />
         you want most in
@@ -46,12 +49,13 @@ const Search = () => {
               'h-[52px] w-full appearance-none bg-transparent text-xl outline-0 ',
               'md:h-[40px]'
             )}
-            placeholder="eg: vscode"
+            placeholder="Enter project name or GitHub/Gitee repository address"
             // placeholder="Type the name to insight into your project"
             onChange={(event) => {
               const val = event.target.value;
               setKeyword(val);
             }}
+            alt={'Enter project name or GitHub/Gitee repository url'}
           />
           <div className="h-8 w-8 cursor-pointer select-none pl-2">
             {showLoading ? (

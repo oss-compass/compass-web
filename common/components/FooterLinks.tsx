@@ -7,7 +7,7 @@ const linkData = [
   {
     title: 'Tutorial',
     links: [
-      { text: 'Insight Standard', href: '' },
+      { text: 'Get Standard', href: '' },
       { text: 'Dimensions Define', href: '' },
       { text: 'Models', href: '' },
       { text: 'Metrics Define', href: '' },
@@ -24,8 +24,11 @@ const linkData = [
   {
     title: 'Community',
     links: [
-      { text: 'Link1', href: '' },
-      { text: 'Link2', href: '' },
+      {
+        text: 'Slack',
+        href: 'https://join.slack.com/t/slack-vit2156/shared_invite/zt-1hv9pabzr-80W3QeM4zABSJFWEmPNipw',
+      },
+      { text: 'WeChat', href: '' },
     ],
   },
   {

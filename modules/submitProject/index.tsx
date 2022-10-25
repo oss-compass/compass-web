@@ -16,8 +16,6 @@ import SelectField from './SelectField';
 import Auth from './Auth';
 import { CreateFields } from './type';
 
-import style from './index.module.css';
-
 export const getUrlReg = (provider: string) =>
   new RegExp(`^https:\/\/${provider}\.com\/.+\/.+`, 'i');
 
@@ -72,18 +70,19 @@ const SubmitProject: React.FC<{
 
   const methods = useForm<CreateFields>({
     defaultValues: {
-      softwareArtifactProjects: [{ value: '' }],
-      communityProject: [{ value: '' }],
+      softwareArtifactRepository: [{ value: '' }],
+      governanceRepository: [{ value: '' }],
     },
   });
   const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<CreateFields> = async (data) => {
-    const { projectName, softwareArtifactProjects, communityProject } = data;
-    const repoUrls = softwareArtifactProjects
+    const { projectName, softwareArtifactRepository, governanceRepository } =
+      data;
+    const repoUrls = softwareArtifactRepository
       .map((item) => item.value.trim())
       .filter(Boolean);
-    const comRepoUrls = communityProject
+    const comRepoUrls = governanceRepository
       .map((item) => item.value.trim())
       .filter(Boolean);
 
@@ -106,7 +105,7 @@ const SubmitProject: React.FC<{
         ...common,
         projectTypes: [
           { type: 'software-artifact-projects', repoList: repoUrls },
-          { type: 'community-projects', repoList: comRepoUrls },
+          { type: 'governance-projects', repoList: comRepoUrls },
         ],
         projectName,
       });
@@ -115,30 +114,14 @@ const SubmitProject: React.FC<{
 
   return (
     <>
-      <div
-        className={classnames(
-          'relative h-40 overflow-hidden bg-[#2c5fea]',
-          style.headerBgLine
-        )}
-      >
-        <div
-          className={classnames(
-            'absolute -top-16  right-10 h-[303px] w-[490px] md:-right-[300px]',
-            style.headerBgGraph
-          )}
-        ></div>
-        <div className="relative mx-auto w-[1000px] pt-12 text-5xl font-medium text-white md:w-full md:px-2">
-          Enroll your project
-        </div>
-      </div>
       <div className="mx-auto w-[1000px] md:w-full">
         <div className="w-[560px] pb-10 pt-10 md:w-full md:px-4">
           <Auth providers={providers} />
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <InputFieldArray
-                label="Software Artifact Projects"
-                name="softwareArtifactProjects"
+                label="Software Artifact Repository"
+                name="softwareArtifactRepository"
                 registerOptions={{
                   required: 'this is required',
                   pattern: {
@@ -148,8 +131,8 @@ const SubmitProject: React.FC<{
                 }}
               />
               <InputFieldArray
-                label="Comminuty Repository"
-                name="communityProject"
+                label="Governance Repository"
+                name="governanceRepository"
                 registerOptions={{
                   pattern: {
                     value: getUrlReg(provider!),
@@ -166,13 +149,10 @@ const SubmitProject: React.FC<{
               />
               <button
                 type="submit"
-                disabled={!isLogin}
                 className={classnames(
                   'daisy-btn h-12 w-32 rounded-none bg-black text-white',
                   {
                     ['daisy-loading']: isRepoTaskLoading || loadingProject,
-                    ['daisy-btn-disabled']: !isLogin,
-                    ['bg-gray-400']: !isLogin,
                   }
                 )}
               >
