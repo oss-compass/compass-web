@@ -12,6 +12,8 @@ import {
 } from 'echarts';
 
 import { formatISO } from '@common/utils/time';
+import { Level } from '@modules/analyze/constant';
+import { TransResult } from '@modules/analyze/DataTransform/transToAxis';
 
 const tooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -188,4 +190,10 @@ export type ChartComponentProps = {
   loading?: boolean;
   xAxis: string[];
   yAxis: { name: string; label: string; data: (string | number)[] }[];
+};
+
+export type ChartProps = {
+  loading?: boolean;
+  xAxis: string[];
+  comparesYAxis: TransResult[];
 };
