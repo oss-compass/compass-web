@@ -50,7 +50,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
           >
             <AiOutlineMenu className="text-xl" />
           </div>
-          <h1 className="text-base font-semibold">Oss compass</h1>
+          <h1 className="text-base font-semibold">OSS compass</h1>
         </div>
         <div className="flex items-center">
           <Link href="/submit-your-project">
