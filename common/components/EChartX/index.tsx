@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { useDeepCompareEffect, useInViewport } from 'ahooks';
-import { init, getInstanceByDom } from 'echarts';
+import { connect, disconnect, init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
 import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
 import { useResizeDetector } from 'react-resize-detector';
@@ -30,8 +30,8 @@ const EChartX: React.FC<ReactEChartsProps> = ({
     let chart: ECharts | undefined;
     if (chartRef.current !== null) {
       chart = init(chartRef.current, theme);
+      connect('group1');
     }
-
     return () => {
       chart?.dispose();
     };
@@ -47,9 +47,14 @@ const EChartX: React.FC<ReactEChartsProps> = ({
 
   useEffect(() => {
     // Update chart
-    if (inViewport && chartRef.current !== null) {
+    if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current)!;
-      loading === true ? chart?.showLoading() : chart?.hideLoading();
+      if (inViewport) {
+        loading === true ? chart?.showLoading() : chart?.hideLoading();
+        chart!.group = 'group1';
+      } else {
+        chart!.group = '';
+      }
     }
   }, [loading, inViewport]);
 
