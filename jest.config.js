@@ -8,7 +8,14 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  moduleNameMapper: {},
+  moduleNameMapper: {
+    '^@common/(.*)$': '<rootDir>/common/$1',
+    '^@modules/(.*)$': '<rootDir>/modules/$1',
+    '^@components/(.*)$': '<rootDir>/common/components/$1',
+    '^@utils/(.*)$': '<rootDir>/common/utils/$1',
+    '^@hooks/(.*)$': '<rootDir>/common/hooks/$1',
+    '^@graphql/(.*)$': '<rootDir>/graphql/$1',
+  },
   testEnvironment: 'jest-environment-jsdom',
 };
 

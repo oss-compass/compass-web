@@ -1,34 +1,44 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  line,
-} from '@modules/analyze/options';
+import { ChartProps, getLineOption, line } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
-import {
-  pickKeyGroupToYAxis,
-  pickKeyToXAxis,
-  pickKeyToYAxis,
-} from '@modules/analyze/options/metric';
 import { colorGenerator } from '@modules/analyze/options/color';
+import {
+  getLegendName,
+  transToAxis,
+} from '@modules/analyze/DataTransform/transToAxis';
+import { LineSeriesOption } from 'echarts';
+import { toFixed } from '@common/utils';
 
-const ContributorCount: React.FC<ChartComponentProps> = ({
+const ContributorCount: React.FC<ChartProps> = ({
   loading = false,
   xAxis,
-  yAxis,
+  comparesYAxis,
 }) => {
   const echartsOpts = useMemo(() => {
     const gen = colorGenerator();
-    const series = yAxis.map(({ name, label, data }) => {
-      const color = gen(label);
-      return line({ name, data, color });
-    });
+    const isCompare = comparesYAxis.length > 1;
+    const series = comparesYAxis.reduce<LineSeriesOption[]>(
+      (acc, { label, level, yAxisResult }) => {
+        const result = yAxisResult.map((item) => {
+          const { legendName, data } = item;
+          const color = isCompare ? gen(label) : '';
+          return line({
+            name: getLegendName(legendName, { label, level, isCompare }),
+            data: data,
+            color,
+          });
+        });
+        acc = [...acc, ...result];
+        return acc;
+      },
+      []
+    );
+
     return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+  }, [xAxis, comparesYAxis]);
 
   return (
     <BaseCard
@@ -51,39 +61,38 @@ const ContributorCountWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'grimoireCreationDate',
+  const { xAxis, yResults } = useMemo(() => {
+    return transToAxis(data, {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: [
+        {
+          legendName: 'Total',
+          valueKey: 'contributorCount',
+        },
+        {
+          legendName: 'Code reviewer',
+          valueKey: 'activeC1PrCommentsContributorCount',
+        },
+        {
+          legendName: 'PR creator',
+          valueKey: 'activeC1PrCreateContributorCount',
+        },
+        {
+          legendName: 'Commit author',
+          valueKey: 'activeC2ContributorCount',
+        },
+      ],
     });
   }, [data]);
 
-  const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'contributorCount',
-        legendName: 'Total',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'activeC1PrCommentsContributorCount',
-        legendName: 'Code reviewer',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'activeC1PrCreateContributorCount',
-        legendName: 'PR creator',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'activeC2ContributorCount',
-        legendName: 'Commit author',
-      },
-    ]);
-  }, [data]);
-
-  return <ContributorCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
+  return (
+    <ContributorCount
+      loading={isLoading}
+      xAxis={xAxis}
+      comparesYAxis={yResults}
+    />
+  );
 };
 
 export default ContributorCountWithData;
