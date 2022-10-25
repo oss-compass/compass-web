@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { useDeepCompareEffect, useInViewport } from 'ahooks';
-import { connect, disconnect, init, getInstanceByDom } from 'echarts';
+import { connect, init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
 import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
 import { useResizeDetector } from 'react-resize-detector';
+
+connect('group-time');
 
 export interface ReactEChartsProps {
   option: EChartsOption;
@@ -30,7 +32,6 @@ const EChartX: React.FC<ReactEChartsProps> = ({
     let chart: ECharts | undefined;
     if (chartRef.current !== null) {
       chart = init(chartRef.current, theme);
-      connect('group1');
     }
     return () => {
       chart?.dispose();
@@ -51,7 +52,7 @@ const EChartX: React.FC<ReactEChartsProps> = ({
       const chart = getInstanceByDom(chartRef.current)!;
       if (inViewport) {
         loading === true ? chart?.showLoading() : chart?.hideLoading();
-        chart!.group = 'group1';
+        chart!.group = 'group-time';
       } else {
         chart!.group = '';
       }
