@@ -14,6 +14,9 @@ export const authOptions: NextAuthOptions = {
     GiteeProvider({
       clientId: process.env.GITEE_ID!,
       clientSecret: process.env.GITEE_SECRET!,
+      httpOptions: {
+        timeout: 5000,
+      },
     }),
   ],
   callbacks: {
@@ -34,7 +37,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    error: '/auth/error', // Error code passed in query string as ?error=
+    signIn: '/submit-your-project',
   },
 };
 

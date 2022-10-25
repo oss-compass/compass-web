@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
 import { BuiltInProviderType } from 'next-auth/providers';
 
-const getIcons = (type: LiteralUnion<BuiltInProviderType>) => {
+export const getIcons = (type: LiteralUnion<BuiltInProviderType>) => {
   switch (type) {
     case 'github':
       return <AiFillGithub className="cursor-pointer text-5xl" />;
@@ -28,9 +28,7 @@ const Auth: React.FC<{
 
   return (
     <>
-      <h1 className="mb-4 text-xl font-medium">
-        Where your project hosting on
-      </h1>
+      <h1 className="mb-4 text-xl font-medium">Your project hosting on</h1>
 
       {!isLogin && (
         <div className="flex">
@@ -65,7 +63,8 @@ const Auth: React.FC<{
                 {session?.data?.user?.name}
               </span>
               <span className="text-sm text-gray-400">
-                {session?.data?.provider}
+                {session?.data?.provider === 'gitee' ? 'Gitee' : ''}
+                {session?.data?.provider === 'github' ? 'GitHub' : ''}
               </span>
             </div>
           </div>

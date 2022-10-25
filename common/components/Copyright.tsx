@@ -10,11 +10,7 @@ const Copyright = () => {
       <Center className="flex h-full items-center justify-between">
         <div className="flex flex-col justify-center text-gray-500">
           <p className="mb-2 text-xs ">
-            Copyright © 2022 Compass. All Rights Reserved. 1st Floor, Sovereign
-            House, Church Street, Brighton, BN1 1UJ
-          </p>
-          <p className="text-xs ">
-            Company number: 03898053 | VAT number: 754 750 710
+            Copyright © 2022 Compass. All Rights Reserved.
           </p>
         </div>
         <div className="flex">

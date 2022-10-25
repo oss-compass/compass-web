@@ -24,21 +24,21 @@ const SelectFieldArray: React.FC<{
 
   const { error } = getFieldState(name, formState);
 
-  const softwareArtifactProjects = watch('softwareArtifactProjects');
-  const communityProject = watch('communityProject');
+  const softwareArtifactRepository = watch('softwareArtifactRepository');
+  const governanceRepository = watch('governanceRepository');
 
-  const softwareArtifactUrls = softwareArtifactProjects
+  const softwareArtifactUrls = softwareArtifactRepository
     .map((item) => item.value.trim())
     .filter(Boolean);
-  const communityUrls = communityProject
+  const governanceUrls = governanceRepository
     .map((item) => item.value.trim())
     .filter(Boolean);
 
-  const options = uniq([...softwareArtifactUrls, ...communityUrls])
+  const options = uniq([...softwareArtifactUrls, ...governanceUrls])
     .map(getPathname)
     .filter(Boolean);
 
-  if (softwareArtifactUrls.length >= 1 && communityUrls.length >= 1) {
+  if (softwareArtifactUrls.length >= 1 && governanceUrls.length >= 1) {
     return (
       <div className="mt-10 mb-10">
         <label className="mb-4 inline-block text-xl font-medium">{label}</label>

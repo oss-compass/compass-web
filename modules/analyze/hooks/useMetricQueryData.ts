@@ -25,6 +25,7 @@ const useMetricQueryData = () => {
         end: timeEnd,
       })
     );
+
     return {
       label,
       level,

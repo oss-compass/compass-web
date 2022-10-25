@@ -1,5 +1,5 @@
 export type CreateFields = {
   projectName: string;
-  softwareArtifactProjects: { value: string }[];
-  communityProject: { value: string }[];
+  softwareArtifactRepository: { value: string }[];
+  governanceRepository: { value: string }[];
 };
