@@ -21,6 +21,24 @@ import style from './index.module.css';
 export const getUrlReg = (provider: string) =>
   new RegExp(`^https:\/\/${provider}\.com\/.+\/.+`, 'i');
 
+const Message: React.FC<{
+  show: boolean;
+  isError: boolean;
+  status?: string;
+  message?: string;
+  url?: string | null;
+}> = ({ show, isError, status, message, url }) => {
+  if (!show) {
+    return null;
+  }
+  if (isError) {
+    return <ErrorMessage />;
+  }
+  return (
+    <SuccessMessage content={message || 'submit success!'} url={url || ''} />
+  );
+};
+
 const SubmitProject: React.FC<{
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
@@ -33,18 +51,24 @@ const SubmitProject: React.FC<{
 
   const {
     isLoading: isRepoTaskLoading,
-    isSuccess: repoTaskSuccess,
     isError: repoTaskError,
     mutate: mutateRepo,
     data: repoTaskData,
   } = useCreateRepoTaskMutation(client);
   const {
     isLoading: loadingProject,
-    isSuccess: successProject,
     isError: errorProject,
     mutate: mutateProject,
     data: projectTaskData,
   } = useCreateProjectTaskMutation(client);
+
+  const repoCreateStatus = repoTaskData?.createRepoTask?.status;
+  const repoCreateMessage = repoTaskData?.createRepoTask?.message;
+  const repoCreateUrl = repoTaskData?.createRepoTask?.prUrl;
+
+  const projectCreateStatus = projectTaskData?.createProjectTask?.status;
+  const projectCreateMessage = projectTaskData?.createProjectTask?.message;
+  const projectCreateUrl = projectTaskData?.createProjectTask?.prUrl;
 
   const methods = useForm<CreateFields>({
     defaultValues: {
@@ -156,15 +180,13 @@ const SubmitProject: React.FC<{
               </button>
             </form>
 
-            {(repoTaskError || errorProject) && <ErrorMessage />}
-            {(repoTaskSuccess || successProject) && (
-              <SuccessMessage
-                url={
-                  repoTaskData?.createRepoTask?.prUrl! ||
-                  projectTaskData?.createProjectTask?.prUrl!
-                }
-              />
-            )}
+            <Message
+              show={Boolean(repoTaskData || projectTaskData)}
+              isError={repoTaskError || errorProject}
+              message={repoCreateMessage || projectCreateMessage || ''}
+              status={repoCreateStatus || projectCreateStatus}
+              url={repoCreateUrl || projectCreateUrl}
+            />
           </FormProvider>
         </div>
       </div>
