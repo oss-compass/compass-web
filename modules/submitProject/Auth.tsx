@@ -49,11 +49,12 @@ const Auth: React.FC<{
         <div className="flex items-center justify-between ">
           <div className="flex">
             <div className="daisy-avatar">
-              <div className="rounded-full">
+              <div className="h-12 w-12 rounded-full bg-slate-100">
                 <Image
                   width={48}
                   height={48}
                   src={session!.data!.user?.image!}
+                  unoptimized
                   alt={''}
                 />
               </div>
