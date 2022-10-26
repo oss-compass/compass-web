@@ -5,13 +5,23 @@ import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
 import { Header } from '@common/components/Layout';
 import Banner from '@modules/submitProject/Banner';
 import SubmitProject from '@modules/submitProject';
-import LoginOptionCard from '@modules/submitProject/LoginOptionCard';
+import { GetServerSidePropsContext } from 'next';
+import { unstable_getServerSession } from 'next-auth/next';
+import { authOptions } from '../api/auth/[...nextauth]';
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const providers = await getProviders();
-  return {
-    props: { providers },
-  };
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
+  if (!session) {
+    return { redirect: { destination: '/auth/signin', permanent: false } };
+  }
+
+  return { props: { session, providers } };
 }
 
 const SubmitYourProject: React.FC<{
@@ -20,29 +30,13 @@ const SubmitYourProject: React.FC<{
     ClientSafeProvider
   >;
 }> = ({ providers }) => {
-  const { status } = useSession();
-
-  if (status === 'authenticated') {
-    return (
-      <>
-        <Header />
-        <Banner />
-        <SubmitProject providers={providers} />
-      </>
-    );
-  }
-
-  if (status === 'unauthenticated') {
-    return (
-      <>
-        <Header />
-        <Banner />
-        <LoginOptionCard providers={providers} />
-      </>
-    );
-  }
-
-  return null;
+  return (
+    <>
+      <Header />
+      <Banner />
+      <SubmitProject providers={providers} />
+    </>
+  );
 };
 
 export default SubmitYourProject;

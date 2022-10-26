@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/submit-your-project',
+    signIn: '/auth/signin',
   },
 };
 

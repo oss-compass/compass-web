@@ -52,7 +52,7 @@ const LoginOptionCard: React.FC<{
   const error = router.query.error;
 
   return (
-    <div className="mx-auto w-[1000px] md:w-full md:px-10">
+    <div className="mx-auto w-[1000px] md:w-full md:px-10 md:pb-10">
       <h3 className="mt-32 mb-10 text-xl font-medium">
         Please select the platform where your project is hosted
       </h3>
@@ -64,14 +64,16 @@ const LoginOptionCard: React.FC<{
                 <div
                   key={provider.name}
                   className={classnames(
-                    'flex h-48 w-[calc(50%-20px)] cursor-pointer flex-col items-center justify-center hover:opacity-90 md:w-full',
+                    'flex h-48 w-[calc(50%-20px)] cursor-pointer flex-col items-center justify-center hover:opacity-90 md:mb-4 md:w-full',
                     {
                       'bg-black': provider.id === 'github',
                       'bg-[#d9001a]': provider.id === 'gitee',
                     }
                   )}
                   onClick={async () => {
-                    await signIn(provider.id);
+                    await signIn(provider.id, {
+                      callbackUrl: '/submit-your-project',
+                    });
                   }}
                 >
                   {getIcons(provider.id)}
