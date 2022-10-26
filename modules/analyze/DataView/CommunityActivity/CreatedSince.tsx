@@ -32,7 +32,7 @@ const CreatedSince: React.FC<ChartComponentProps> = ({
     <BaseCard
       id={Activity.CreatedSince}
       title="Created since"
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      description="Determine the average time per repository since a repository was created (in months)."
     >
       {(containerRef) => (
         <EChartX

@@ -15,8 +15,9 @@ const InputFieldArray: React.FC<{
   label: string;
   registerOptions: RegisterOptions;
   disable?: boolean;
+  placeholder: string;
 }> = (props) => {
-  const { label, name, registerOptions, disable = false } = props;
+  const { label, name, registerOptions, disable = false, placeholder } = props;
   const { register, control, getFieldState, formState } =
     useFormContext<CreateFields>();
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
@@ -40,7 +41,7 @@ const InputFieldArray: React.FC<{
               <div className="flex">
                 <input
                   type="text"
-                  placeholder="Type here"
+                  placeholder={placeholder}
                   disabled={disable}
                   {...register(`${name}.${index}.value`, registerOptions)}
                   className={classnames(

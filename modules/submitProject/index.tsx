@@ -44,7 +44,6 @@ const SubmitProject: React.FC<{
   >;
 }> = ({ providers }) => {
   const session = useSession();
-  const isLogin = Boolean(session?.data);
   const provider = session?.data?.provider || 'github';
 
   const {
@@ -122,6 +121,7 @@ const SubmitProject: React.FC<{
               <InputFieldArray
                 label="Software Artifact Repository"
                 name="softwareArtifactRepository"
+                placeholder="eg: https://github.com/oss-compass/compass-web-service"
                 registerOptions={{
                   required: 'this is required',
                   pattern: {
@@ -133,6 +133,7 @@ const SubmitProject: React.FC<{
               <InputFieldArray
                 label="Governance Repository"
                 name="governanceRepository"
+                placeholder="eg: https://github.com/oss-compass/community"
                 registerOptions={{
                   pattern: {
                     value: getUrlReg(provider!),
@@ -156,7 +157,7 @@ const SubmitProject: React.FC<{
                   }
                 )}
               >
-                {isLogin ? 'Submit' : 'Please Login'}
+                Submit
               </button>
             </form>
 

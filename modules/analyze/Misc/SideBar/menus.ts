@@ -71,7 +71,7 @@ const SideBarConfig = [
       { name: 'Contributor count', id: Activity.ContributorCount },
       { name: 'Commit frequency', id: Activity.CommitFrequency },
       { name: 'Updated since', id: Activity.UpdatedSince },
-      { name: 'Org count', id: Activity.OrgCount },
+      // { name: 'Org count', id: Activity.OrgCount },
       { name: 'Created since', id: Activity.CreatedSince },
       { name: 'Comment frequency', id: Activity.CommentFrequency },
       { name: 'Code review count', id: Activity.CodeReviewCount },
