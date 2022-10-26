@@ -9,7 +9,7 @@ interface DateItem {
   result: MetricQuery | undefined;
 }
 
-export interface TransResult {
+export interface YResult {
   label: string;
   level: Level;
   yAxisResult: {
@@ -19,26 +19,31 @@ export interface TransResult {
   }[];
 }
 
+export interface TransResult {
+  xAxis: string[];
+  yResults: YResult[];
+}
+
+export interface TransOpts {
+  metricType: Exclude<keyof MetricQuery, '__typename'>;
+  xAxisKey: string;
+  yAxisOpts: {
+    legendName: string;
+    valueKey: string;
+    valueFormat?: (v: any) => number;
+  }[];
+}
+
 // todo add generic type
 export function transToAxis(
   data: Array<DateItem>,
-  {
-    metricType,
-    xAxisKey,
-    yAxisOpts,
-  }: {
-    metricType: Exclude<keyof MetricQuery, '__typename'>;
-    xAxisKey: string;
-    yAxisOpts: {
-      legendName: string;
-      valueKey: string;
-      valueFormat?: (v: any) => number;
-    }[];
-  }
-): { xAxis: string[]; yResults: TransResult[] } {
+  { metricType, xAxisKey, yAxisOpts }: TransOpts
+): TransResult {
   let xAxis: string[] = [];
   const tempMap: any = {};
   const yResults: any = [];
+
+  console.log('------------transToAxis-----------', data);
 
   data.forEach((repo) => {
     // temporary store the value in map by xAxisKey

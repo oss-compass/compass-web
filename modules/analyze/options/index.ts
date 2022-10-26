@@ -13,7 +13,12 @@ import {
 
 import { formatISO } from '@common/utils/time';
 import { Level } from '@modules/analyze/constant';
-import { TransResult } from '@modules/analyze/DataTransform/transToAxis';
+import {
+  TransResult,
+  YResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import { colorGenerator } from '@modules/analyze/options/color';
+import React from 'react';
 
 const tooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -193,7 +198,30 @@ export type ChartComponentProps = {
 };
 
 export type ChartProps = {
-  loading?: boolean;
-  xAxis: string[];
-  comparesYAxis: TransResult[];
+  containerRef?: React.RefObject<HTMLElement>;
 };
+
+export function genSeries<T>(
+  comparesYAxis: YResult[],
+  seriesItem: (item: {
+    label: string;
+    level: Level;
+    legendName: string;
+    isCompare: boolean;
+    color: string;
+    key: string;
+    data: (string | number)[];
+  }) => T
+) {
+  const colorGen = colorGenerator();
+  const isCompare = comparesYAxis.length > 1;
+
+  return comparesYAxis.reduce<T[]>((acc, { label, level, yAxisResult }) => {
+    const result = yAxisResult.map((item) => {
+      const color = isCompare ? colorGen(label) : '';
+      return seriesItem({ isCompare, color, level, label, ...item });
+    });
+    acc = [...acc, ...result];
+    return acc;
+  }, []);
+}

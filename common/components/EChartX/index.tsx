@@ -8,6 +8,7 @@ import { useResizeDetector } from 'react-resize-detector';
 connect('group-time');
 
 export interface ReactEChartsProps {
+  _flag?: string;
   option: EChartsOption;
   style?: CSSProperties;
   settings?: SetOptionOpts;
@@ -17,6 +18,7 @@ export interface ReactEChartsProps {
 }
 
 const EChartX: React.FC<ReactEChartsProps> = ({
+  _flag,
   option,
   style,
   settings = { notMerge: true },
@@ -26,6 +28,10 @@ const EChartX: React.FC<ReactEChartsProps> = ({
 }) => {
   const [inViewport] = useInViewport(containerRef);
   const chartRef = useRef<HTMLDivElement>(null);
+
+  if (_flag === 'debug') {
+    console.log('debug echartx', { inViewport, loading, option });
+  }
 
   useEffect(() => {
     // init
@@ -81,4 +87,4 @@ const EChartX: React.FC<ReactEChartsProps> = ({
   );
 };
 
-export default EChartX;
+export default React.memo(EChartX);
