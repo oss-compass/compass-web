@@ -37,7 +37,9 @@ const UpdatedIssuesCount = () => {
     <LazyLoadCard
       title="Updated issues count"
       id={Activity.UpdatedIssuesCount}
-      description={'Number of issue updates in the last 90 days.'}
+      description={
+        'Determine the number of issues updated in the last 90 days.'
+      }
     >
       <Chart getOptions={getOptions} tansOpts={tansOpts} />
     </LazyLoadCard>

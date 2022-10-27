@@ -1,4 +1,6 @@
 import set from 'lodash/set';
+import parseISO from 'date-fns/parseISO';
+import getUnixTime from 'date-fns/getUnixTime';
 import { Level } from '@modules/analyze/constant';
 import { MetricQuery } from '@graphql/generated';
 import { formatISO, repoUrlFormat, toFixed } from '@common/utils';
@@ -57,7 +59,10 @@ export function transToAxis(
     });
 
     // get value from map and fill null by xAxisKey
-    xAxis = Object.keys(tempMap);
+    xAxis = Object.keys(tempMap).sort((a, b) => {
+      return getUnixTime(parseISO(a)) - getUnixTime(parseISO(b));
+    });
+
     const yAxisResult: any = [];
     yAxisOpts.forEach((yAxisOpt) => {
       const {

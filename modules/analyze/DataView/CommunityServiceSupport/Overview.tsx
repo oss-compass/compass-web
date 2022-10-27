@@ -34,13 +34,7 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const Overview = () => {
   return (
-    <LazyLoadCard
-      title="Overview"
-      id={Support.Overview}
-      description={
-        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
-      }
-    >
+    <LazyLoadCard title="Overview" id={Support.Overview} description={''}>
       <Chart getOptions={getOptions} tansOpts={tansOpts} />
     </LazyLoadCard>
   );

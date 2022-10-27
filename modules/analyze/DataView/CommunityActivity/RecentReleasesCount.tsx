@@ -37,7 +37,7 @@ const RecentReleasesCount = () => {
     <LazyLoadCard
       title="Recent releases count"
       id={Activity.RecentReleasesCount}
-      description={'Number of releases in the past year.'}
+      description={'Determine the number of releases in the last year.'}
     >
       <Chart getOptions={getOptions} tansOpts={tansOpts} />
     </LazyLoadCard>

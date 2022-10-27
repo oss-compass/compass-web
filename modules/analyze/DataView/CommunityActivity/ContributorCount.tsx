@@ -38,7 +38,7 @@ const ContributorCount = () => {
       title="Contributor count"
       id={Activity.ContributorCount}
       description={
-        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+        'Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days'
       }
     >
       <Chart getOptions={getOptions} tansOpts={tansOpts} />
