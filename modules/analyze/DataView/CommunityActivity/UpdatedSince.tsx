@@ -1,67 +1,47 @@
 import React, { useMemo } from 'react';
-import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  lineArea,
-} from '@modules/analyze/options';
-import BaseCard from '@common/components/BaseCard';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import {
-  pickKeyToXAxis,
-  pickKeyToYAxis,
-} from '@modules/analyze/options/metric';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import { Activity } from '@modules/analyze/Misc/SideBar/menus';
+import {
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import { LineSeriesOption } from 'echarts';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
 
-const UpdatedSince: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
-    });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricActivity',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [{ legendName: 'updated since', valueKey: 'updatedSince' }],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  const series = genSeries<LineSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      return line({
+        name: getLegendName(legendName, { label, level, isCompare }),
+        data: data,
+        color,
+      });
+    }
+  );
+  return getLineOption({ xAxisData: xAxis, series });
+};
+
+const UpdatedSince = () => {
   return (
-    <BaseCard
-      id={Activity.UpdatedSince}
+    <LazyLoadCard
       title="Updated since"
-      description="Determine the average time per repository since the repository was last updated (in months)."
+      id={Activity.UpdatedSince}
+      description={
+        'Determine the average time per repository since the repository was last updated (in months).'
+      }
     >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const UpdatedSinceWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricActivity',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricActivity',
-      valueKey: 'updatedSince',
-      legendName: 'updated since',
-    });
-  }, [data]);
-
-  return <UpdatedSince loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default UpdatedSinceWithData;
+export default UpdatedSince;
