@@ -7,10 +7,6 @@ const Topic: React.FC<PropsWithChildren<{ id: string }>> = ({
 }) => {
   const titleRef = useRef<HTMLDivElement>(null);
 
-  useHashScroll(id!, {
-    anchorRef: titleRef,
-  });
-
   return (
     <h1
       className="group relative z-10 -mt-10 mb-6 pt-24 text-3xl md:mt-9 md:mb-4 md:px-4 md:text-xl md:font-semibold"

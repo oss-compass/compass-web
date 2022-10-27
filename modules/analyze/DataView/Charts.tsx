@@ -8,10 +8,12 @@ import Trend from './Trend';
 import CodeQuality from './CodeQuality';
 import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
+import useHashScroll from '@common/hooks/useHashScroll';
 
 const Charts = () => {
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
+  useHashScroll();
 
   useQueries({
     queries: compareItems.map(({ label, level }) => {

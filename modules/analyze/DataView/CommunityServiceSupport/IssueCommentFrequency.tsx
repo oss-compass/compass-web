@@ -35,7 +35,7 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 const IssueCommentFrequency = () => {
   return (
     <LazyLoadCard
-      title="Issue comment count"
+      title="Comment frequency"
       id={Support.IssueCommentFrequency}
       description={
         'Determine the average number of comments per issue created in the last 90 days.'
