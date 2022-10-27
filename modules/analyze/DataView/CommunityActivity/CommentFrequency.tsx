@@ -38,7 +38,7 @@ const CommentFrequency = () => {
       title="Comment frequency"
       id={Activity.CommentFrequency}
       description={
-        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+        'Determine the average number of comments per issue created in the last 90 days.'
       }
     >
       <Chart getOptions={getOptions} tansOpts={tansOpts} />

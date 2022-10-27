@@ -36,7 +36,7 @@ const CommitFrequency = () => {
       title="Commit frequency"
       id={Activity.CommitFrequency}
       description={
-        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+        'Determine the average number of commits per week in the past 90 days.'
       }
     >
       <Chart getOptions={getOptions} tansOpts={tansOpts} />

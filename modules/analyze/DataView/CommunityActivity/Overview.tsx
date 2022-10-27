@@ -36,7 +36,7 @@ const Overview = () => {
       title="Overview"
       id={Activity.Overview}
       description={
-        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+        'Community Activity is used to describe how active an open source community is.'
       }
     >
       <Chart getOptions={getOptions} tansOpts={tansOpts} />

@@ -36,7 +36,7 @@ const CreatedSince = () => {
       title="Created since"
       id={Activity.CreatedSince}
       description={
-        'Determine the average time per repository since a repository was created (in months).'
+        'Determine how long a repository has existed since it was created (in months).'
       }
     >
       <Chart getOptions={getOptions} tansOpts={tansOpts} />

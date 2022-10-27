@@ -22,7 +22,7 @@ const useCompareItems = () => {
   const items = useMemo(() => {
     return [
       ...labels.map((label) => ({
-        name: getPathname(label),
+        name: level === Level.REPO ? getPathname(label) : label,
         label,
         level,
       })),
