@@ -43,7 +43,6 @@ const BaseCard: React.FC<BaseCardProps> = ({
         fullScreen,
     }
   );
-  useHashScroll(id!, { anchorRef: titleRef });
 
   useHotkeys('esc', (e, he) => {
     e.preventDefault();

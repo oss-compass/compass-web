@@ -47,7 +47,6 @@ const ChartCard = forwardRef<HTMLDivElement, BaseCardProps>(
           fullScreen,
       }
     );
-    useHashScroll(id!, { anchorRef: titleRef });
 
     useHotkeys('esc', (e, he) => {
       e.preventDefault();

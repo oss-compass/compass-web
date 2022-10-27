@@ -43,8 +43,6 @@ export function transToAxis(
   const tempMap: any = {};
   const yResults: any = [];
 
-  console.log('------------transToAxis-----------', data);
-
   data.forEach((repo) => {
     // temporary store the value in map by xAxisKey
     const metrics = repo.result?.[metricType];
