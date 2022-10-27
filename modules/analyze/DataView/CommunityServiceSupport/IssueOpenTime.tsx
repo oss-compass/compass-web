@@ -1,77 +1,50 @@
 import React, { useMemo } from 'react';
-import { MetricQuery } from '@graphql/generated';
-import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  line,
-  mapToLineSeries,
-  toTimeXAxis,
-} from '@modules/analyze/options';
-import BaseCard from '@common/components/BaseCard';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import { Support } from '@modules/analyze/Misc/SideBar/menus';
 import {
-  pickKeyGroupToYAxis,
-  pickKeyToXAxis,
-} from '@modules/analyze/options/metric';
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import { LineSeriesOption } from 'echarts';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
 
-const IssueOpenTime: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
-    });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricCommunity',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [
+    { legendName: 'avg', valueKey: 'issueOpenTimeAvg' },
+    { legendName: 'mid', valueKey: 'issueOpenTimeMid' },
+  ],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  const series = genSeries<LineSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      return line({
+        name: getLegendName(legendName, { label, level, isCompare }),
+        data: data,
+        color,
+      });
+    }
+  );
+  return getLineOption({ xAxisData: xAxis, series });
+};
+
+const IssueOpenTime = () => {
   return (
-    <BaseCard
+    <LazyLoadCard
       title="Bug issue open time"
       id={Support.BugIssueOpenTime}
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      description={
+        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+      }
     >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const IssueOpenTimeWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCommunity',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCommunity',
-        valueKey: 'issueOpenTimeAvg',
-        legendName: 'avg',
-      },
-      {
-        typeKey: 'metricCommunity',
-        valueKey: 'issueOpenTimeMid',
-        legendName: 'mid',
-      },
-    ]);
-  }, [data]);
-
-  return <IssueOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default IssueOpenTimeWithData;
+export default IssueOpenTime;

@@ -1,67 +1,47 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React from 'react';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
+import { Activity, Support } from '@modules/analyze/Misc/SideBar/menus';
 import {
-  ChartComponentProps,
-  getLineOption,
-  line,
-} from '@modules/analyze/options';
-import BaseCard from '@common/components/BaseCard';
-import EChartX from '@common/components/EChartX';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import {
-  pickKeyToXAxis,
-  pickKeyToYAxis,
-} from '@modules/analyze/options/metric';
-import { Support } from '@modules/analyze/Misc/SideBar/menus';
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import { LineSeriesOption } from 'echarts';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
 
-const ClosedPrsCount: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
-    });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricCommunity',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [{ legendName: 'closed pr count', valueKey: 'closedPrsCount' }],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  const series = genSeries<LineSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      return line({
+        name: getLegendName(legendName, { label, level, isCompare }),
+        data: data,
+        color,
+      });
+    }
+  );
+  return getLineOption({ xAxisData: xAxis, series });
+};
+
+const ClosedPrsCount = () => {
   return (
-    <BaseCard
+    <LazyLoadCard
       title="Closed PR count"
       id={Support.ClosedPrsCount}
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      description={
+        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+      }
     >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const ClosedPrsCountWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCommunity',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCommunity',
-      valueKey: 'closedPrsCount',
-      legendName: 'Closed PR Count',
-    });
-  }, [data]);
-
-  return <ClosedPrsCount loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default ClosedPrsCountWithData;
+export default ClosedPrsCount;
