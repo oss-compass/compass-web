@@ -1,81 +1,50 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React from 'react';
 import { LineSeriesOption } from 'echarts';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
-import {
-  ChartComponentProps,
-  getLineOption,
-  line,
-  mapToLineSeries,
-  toTimeXAxis,
-} from '@modules/analyze/options';
-import BaseCard from '@common/components/BaseCard';
-import EChartX from '@common/components/EChartX';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import { Support } from '@modules/analyze/Misc/SideBar/menus';
-import { repoUrlFormat } from '@common/utils/url';
 import {
-  pickKeyGroupToYAxis,
-  pickKeyToXAxis,
-} from '@modules/analyze/options/metric';
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
 
-const PrOpenTime: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
-    });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricCommunity',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [
+    { legendName: 'avg', valueKey: 'prOpenTimeAvg' },
+    { legendName: 'mid', valueKey: 'prOpenTimeMid' },
+  ],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  const series = genSeries<LineSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      return line({
+        name: getLegendName(legendName, { label, level, isCompare }),
+        data: data,
+        color,
+      });
+    }
+  );
+  return getLineOption({ xAxisData: xAxis, series });
+};
+
+const PrOpenTime = () => {
   return (
-    <BaseCard
+    <LazyLoadCard
       title="PR open time"
       id={Support.PrOpenTime}
-      description={`Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change request and unresolved change request.`}
+      description={
+        'Average/Median processing time (days) for new change requests created in the last 90 days, including closed'
+      }
     >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const PrOpenTimeWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCommunity',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCommunity',
-        valueKey: 'prOpenTimeAvg',
-        legendName: 'avg',
-      },
-      {
-        typeKey: 'metricCommunity',
-        valueKey: 'prOpenTimeMid',
-        legendName: 'mid',
-      },
-    ]);
-  }, [data]);
-
-  return <PrOpenTime loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default PrOpenTimeWithData;
+export default PrOpenTime;

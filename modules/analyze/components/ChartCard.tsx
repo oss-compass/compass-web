@@ -97,7 +97,7 @@ const ChartCard = forwardRef<HTMLDivElement, BaseCardProps>(
           {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
         </span>
         <p className="mb-4 text-sm">{description}</p>
-        {children}
+        <div className="h-[350px]">{children}</div>
       </div>
     );
   }
