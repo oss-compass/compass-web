@@ -41,3 +41,5 @@ graphql/.graphqlconfig
 graphql/schema.graphql
 
 localtest
+
+demo.html

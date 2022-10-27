@@ -14,16 +14,16 @@ const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
-    { legendName: 'Total', valueKey: 'contributorCount' },
+    { legendName: 'total', valueKey: 'contributorCount' },
     {
-      legendName: 'Code reviewer',
+      legendName: 'code reviewer',
       valueKey: 'activeC1PrCommentsContributorCount',
     },
     {
-      legendName: 'PR creator',
+      legendName: 'pr creator',
       valueKey: 'activeC1PrCreateContributorCount',
     },
-    { legendName: 'Commit author', valueKey: 'activeC2ContributorCount' },
+    { legendName: 'commit author', valueKey: 'activeC2ContributorCount' },
   ],
 };
 
