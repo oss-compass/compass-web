@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { PropsWithChildren, ComponentProps } from 'react';
 import classnames from 'classnames';
 import BaseCard from '@common/components/BaseCard';
@@ -13,6 +13,7 @@ import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
+import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -69,6 +70,7 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
 };
 
 const TrendsList: React.FC = () => {
+  const [percentage, setPercentage] = useState(true);
   const { compareItems } = useCompareItems();
   const data = useQueries({
     queries: compareItems.map(({ label, level }) => {
@@ -87,13 +89,15 @@ const TrendsList: React.FC = () => {
 
   const loading = data.some((i) => i.isLoading);
   const list = data.map((i) => i.data?.latestMetrics).filter(Boolean);
-
+  console.log(list);
   return (
     <BaseCard
       loading={loading}
       title="Trending"
       id={'trending'}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      showPercentageBtn={true}
+      getPercentage={(val) => setPercentage(val)}
     >
       <table className={classnames(styles.table, 'w-full')}>
         <thead>
@@ -129,13 +133,19 @@ const TrendsList: React.FC = () => {
                     </span>
                   </td>
                   <Td className="bg-[#f2fcff]">
-                    {toFixed(item!.codeQualityGuarantee!, 3)}
+                    {percentage
+                      ? transMarkingSystem(item!.codeQualityGuarantee!)
+                      : toFixed(item!.codeQualityGuarantee!, 3)}
                   </Td>
                   <Td className="bg-[#fff9f3]">
-                    {toFixed(item!.communitySupportScore!, 3)}
+                    {percentage
+                      ? transMarkingSystem(item!.communitySupportScore!)
+                      : toFixed(item!.communitySupportScore!, 3)}
                   </Td>
                   <Td className="bg-[#f8f3ff]">
-                    {toFixed(item!.activityScore!, 3)}
+                    {percentage
+                      ? transMarkingSystem(item!.activityScore!)
+                      : toFixed(item!.activityScore!, 3)}
                   </Td>
                 </tr>
               );

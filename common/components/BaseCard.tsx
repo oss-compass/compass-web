@@ -18,7 +18,9 @@ interface BaseCardProps {
   className?: string;
   title?: string;
   description?: string;
+  showPercentageBtn?: boolean;
   children: ((containerRef: RefObject<HTMLElement>) => ReactNode) | ReactNode;
+  getPercentage?: (pre: boolean) => void;
 }
 
 const BaseCard: React.FC<BaseCardProps> = ({
@@ -28,10 +30,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
   loading = false,
   title = '',
   description = '',
+  showPercentageBtn = false,
+  getPercentage,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const [fullScreen, setFullScreen] = useState(false);
+  const [percentage, setPercentage] = useState(true);
 
   const cls = classnames(
     className,
@@ -50,6 +55,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
     setFullScreen(false);
   });
 
+  const changePercentage = (pre: boolean) => {
+    setPercentage(pre);
+    getPercentage && getPercentage(pre);
+  };
   if (loading) {
     return (
       <div className={classnames(cls, 'animate-pulse p-10')}>
@@ -84,6 +93,18 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h2>
+      {showPercentageBtn ? (
+        <span
+          className="absolute right-14 top-4 cursor-pointer p-2 md:hidden"
+          onClick={() => {
+            changePercentage(!percentage);
+          }}
+        >
+          {percentage ? <BiExitFullscreen /> : <BiFullscreen />}
+        </span>
+      ) : (
+        ''
+      )}
       <span
         className="absolute right-4 top-4 cursor-pointer p-2 md:hidden"
         onClick={() => {

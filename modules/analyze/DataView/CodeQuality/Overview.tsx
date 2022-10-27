@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import EChartX from '@common/components/EChartX';
@@ -14,24 +14,29 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 
 const Overview: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const [percentage, setPercentage] = useState(true);
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
+      percentage && (data = data.map((i) => transMarkingSystem(Number(i))));
       return line({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+  }, [xAxis, yAxis, percentage]);
 
   return (
     <BaseCard
       title="Overview"
       id={CodeQuality.Overview}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      showPercentageBtn={true}
+      getPercentage={(val) => setPercentage(val)}
     >
       {(containerRef) => (
         <EChartX

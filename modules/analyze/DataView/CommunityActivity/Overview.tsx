@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
@@ -18,18 +18,21 @@ const Overview: React.FC<ChartComponentProps> = ({
   xAxis,
   yAxis,
 }) => {
+  const [percentage, setPercentage] = useState(true);
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
       return line({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+  }, [xAxis, yAxis, percentage]);
 
   return (
     <BaseCard
       id={Activity.Overview}
       title="Overview"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      showPercentageBtn={true}
+      getPercentage={(val) => setPercentage(val)}
     >
       {(containerRef) => (
         <EChartX
