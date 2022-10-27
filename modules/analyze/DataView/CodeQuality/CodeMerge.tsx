@@ -1,75 +1,101 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import EChartX from '@common/components/EChartX';
+import React from 'react';
 import {
   ChartComponentProps,
+  genSeries,
   getLineOption,
   lineArea,
 } from '@modules/analyze/options';
-import BaseCard from '@common/components/BaseCard';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
-  pickKeyGroupToYAxis,
-  pickKeyToXAxis,
-  pickKeyToYAxis,
-} from '@modules/analyze/options/metric';
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import { LineSeriesOption } from 'echarts';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
 
-const CodeMergeRatio: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return lineArea({ name, data });
-    });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricCodequality',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [
+    { legendName: 'total pr', valueKey: 'prCount' },
+    { legendName: 'code merge', valueKey: 'codeMergedCount' },
+    { legendName: 'code merge ratio', valueKey: 'codeMergeRatio' },
+  ],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  let tooltips: Record<string, (string | number)[]> = {};
+  const series = genSeries<LineSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      const name = getLegendName(legendName, { label, level, isCompare });
+      if (legendName === 'code merge ratio') {
+        tooltips[name] = data;
+        return null;
+      }
+      return lineArea({ name, data, color });
+    }
+  );
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+      },
+      order: 'seriesDesc',
+
+      // todo optimize code
+      formatter: function (params: any) {
+        if (!params) return '';
+        let label = '';
+        let tpl = params
+          .map((param: any) => {
+            label = param.axisValueLabel;
+            const data = param.data === null ? '-' : param.data;
+            let ratioTpl = '';
+            const ratio =
+              tooltips[param.seriesName + ' ratio']?.[param.dataIndex];
+            const ratioValueFmt = ratio === null ? '-' : ratio;
+
+            if (param.seriesName.indexOf('code merge') > -1) {
+              ratioTpl = `<div style="margin: 0px 0 0;line-height:1;">
+<span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">ratio: ${ratioValueFmt}</span><div style="clear:both;"/></div>`;
+            }
+
+            return (
+              `<div style="margin: 5px 0 5px;line-height:1;">${param.marker}
+<span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${param.seriesName}</span>
+<span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${data}</span>
+</div>` + ratioTpl
+            );
+          })
+          .join('');
+
+        return (
+          `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${label}</div>` +
+          tpl
+        );
+      },
+    },
+  });
+};
+
+const CodeMergeRatio = () => {
   return (
-    <BaseCard
+    <LazyLoadCard
       title="Code merge ratio"
       id={CodeQuality.CodeMergeRatio}
-      description={`The percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.`}
+      description={
+        'The percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.'
+      }
     >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const CodeMergeRatioWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'prCount',
-        legendName: 'Total PR',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'codeMergedCount',
-        legendName: 'Code merge',
-      },
-    ]);
-  }, [data]);
-
-  return <CodeMergeRatio loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default CodeMergeRatioWithData;
+export default CodeMergeRatio;

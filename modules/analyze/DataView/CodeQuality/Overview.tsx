@@ -4,6 +4,7 @@ import isArray from 'lodash/isArray';
 import EChartX from '@common/components/EChartX';
 import {
   ChartComponentProps,
+  genSeries,
   getLineOption,
   line,
 } from '@modules/analyze/options';
@@ -14,56 +15,46 @@ import {
   pickKeyToXAxis,
   pickKeyToYAxis,
 } from '@modules/analyze/options/metric';
+import {
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
+import { LineSeriesOption } from 'echarts';
 
-const Overview: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const series = yAxis.map(({ name, data }) => {
-      return line({ name, data });
-    });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricCodequality',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [
+    {
+      legendName: 'code quality',
+      valueKey: 'codeQualityGuarantee',
+    },
+  ],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  const series = genSeries<LineSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      return line({
+        name: getLegendName(legendName, { label, level, isCompare }),
+        data: data,
+        color,
+      });
+    }
+  );
+  return getLineOption({ xAxisData: xAxis, series });
+};
+
+const Overview = () => {
   return (
-    <BaseCard
-      title="Overview"
-      id={CodeQuality.Overview}
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
-    >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+    <LazyLoadCard title="Overview" id={CodeQuality.Overview}>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const OverviewWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyToYAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'codeQualityGuarantee',
-      legendName: 'Code Quality',
-    });
-  }, [data]);
-
-  return <Overview loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default OverviewWithData;
+export default Overview;

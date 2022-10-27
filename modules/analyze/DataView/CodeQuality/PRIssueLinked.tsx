@@ -1,78 +1,50 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  getLineOption,
-  lineArea,
-} from '@modules/analyze/options';
-import BaseCard from '@common/components/BaseCard';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import React from 'react';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
 import {
-  pickKeyGroupToYAxis,
-  pickKeyToXAxis,
-  pickKeyToYAxis,
-} from '@modules/analyze/options/metric';
-import { colorGenerator } from '@modules/analyze/options/color';
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
+import { LineSeriesOption } from 'echarts';
 
-const PRIssueLinked: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const gen = colorGenerator();
-    const series = yAxis.map(({ label, name, data }) => {
-      const color = gen(label);
-      return lineArea({ name, data, color });
-    });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricCodequality',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [
+    { legendName: 'total pr', valueKey: 'prCount' },
+    {
+      legendName: 'linked issue',
+      valueKey: 'prIssueLinkedCount',
+    },
+  ],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  const series = genSeries<LineSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      return line({
+        name: getLegendName(legendName, { label, level, isCompare }),
+        data: data,
+        color,
+      });
+    }
+  );
+  return getLineOption({ xAxisData: xAxis, series });
+};
+const PRIssueLinked = () => {
   return (
-    <BaseCard
+    <LazyLoadCard
       title="PR issue linked ratio"
       id={CodeQuality.PRIssueLinkedRatio}
-      description={`Percentage of new pr link issues in the last 90 days.`}
+      description={'Percentage of new pr link issues in the last 90 days.'}
     >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const PRIssueLinkedWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'prCount',
-        legendName: 'Total PR',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'prIssueLinkedCount',
-        legendName: 'Linked Issue',
-      },
-    ]);
-  }, [data]);
-
-  return <PRIssueLinked loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default PRIssueLinkedWithData;
+export default PRIssueLinked;

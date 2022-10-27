@@ -20,7 +20,7 @@ import {
 import { colorGenerator } from '@modules/analyze/options/color';
 import React from 'react';
 
-const tooltip: EChartsOption['tooltip'] = {
+const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
   axisPointer: {
     type: 'cross',
@@ -74,13 +74,15 @@ const categoryAxis = (data: any[]): EChartsOption['xAxis'] => ({
 export const getLineOption = ({
   xAxisData,
   series,
+  tooltip,
 }: {
   xAxisData: string[];
   series: LineSeriesOption[];
+  tooltip?: EChartsOption['tooltip'];
 }): EChartsOption => {
   return {
     title: {},
-    tooltip,
+    tooltip: tooltip ? tooltip : defaultTooltip,
     legend,
     grid,
     xAxis: categoryAxis(xAxisData),
@@ -100,7 +102,7 @@ export const getBarOption = ({
 }): EChartsOption => {
   return {
     title: {},
-    tooltip,
+    tooltip: defaultTooltip,
     legend,
     grid,
     xAxis: categoryAxis(xAxisData),
@@ -211,16 +213,18 @@ export function genSeries<T>(
     color: string;
     key: string;
     data: (string | number)[];
-  }) => T
+  }) => T | null
 ) {
   const colorGen = colorGenerator();
   const isCompare = comparesYAxis.length > 1;
 
   return comparesYAxis.reduce<T[]>((acc, { label, level, yAxisResult }) => {
-    const result = yAxisResult.map((item) => {
-      const color = isCompare ? colorGen(label) : '';
-      return seriesItem({ isCompare, color, level, label, ...item });
-    });
+    const result = yAxisResult
+      .map((item) => {
+        const color = isCompare ? colorGen(label) : '';
+        return seriesItem({ isCompare, color, level, label, ...item });
+      })
+      .filter(Boolean) as T[];
     acc = [...acc, ...result];
     return acc;
   }, []);

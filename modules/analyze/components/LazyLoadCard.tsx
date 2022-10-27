@@ -28,7 +28,7 @@ const LazyLoadCard: React.FC<
   PropsWithChildren<{
     title: string;
     id: string;
-    description: string;
+    description?: string;
   }>
 > = ({ children, title, id, description }) => {
   const cardRef = useRef<HTMLDivElement>(null);

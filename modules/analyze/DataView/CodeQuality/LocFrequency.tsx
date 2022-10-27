@@ -1,82 +1,60 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import EChartX from '@common/components/EChartX';
-import {
-  bar,
-  ChartComponentProps,
-  getBarOption,
-  getLineOption,
-  lineArea,
-  toTimeXAxis,
-} from '@modules/analyze/options';
-import BaseCard from '@common/components/BaseCard';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import React from 'react';
+import { bar, genSeries, getBarOption } from '@modules/analyze/options';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
+
 import {
-  pickKeyGroupToYAxis,
-  pickKeyToXAxis,
-} from '@modules/analyze/options/metric';
+  getLegendName,
+  TransOpts,
+  TransResult,
+} from '@modules/analyze/DataTransform/transToAxis';
+import { BarSeriesOption, LineSeriesOption } from 'echarts';
+import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import Chart from '@modules/analyze/components/Chart';
 import { toFixed } from '@common/utils';
-import { colorGenerator } from '@modules/analyze/options/color';
 
-const LocFrequency: React.FC<ChartComponentProps> = ({
-  loading = false,
-  xAxis,
-  yAxis,
-}) => {
-  const echartsOpts = useMemo(() => {
-    const gen = colorGenerator();
-    const series = yAxis.map(({ name, label, data }) => {
-      const color = gen(label);
-      return bar({ name, data, stack: label, color });
-    });
-    return getBarOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+const tansOpts: TransOpts = {
+  metricType: 'metricCodequality',
+  xAxisKey: 'grimoireCreationDate',
+  yAxisOpts: [
+    {
+      legendName: 'lines add',
+      valueKey: 'linesAddedFrequency',
+    },
+    {
+      legendName: 'lines remove',
+      valueKey: 'linesRemovedFrequency',
+      valueFormat: (v) => toFixed(v * -1, 3),
+    },
+  ],
+};
 
+const getOptions = ({ xAxis, yResults }: TransResult) => {
+  const series = genSeries<BarSeriesOption>(
+    yResults,
+    ({ legendName, label, level, isCompare, color, data }) => {
+      return bar({
+        name: getLegendName(legendName, { label, level, isCompare }),
+        stack: label,
+        data: data,
+        color,
+      });
+    }
+  );
+  return getBarOption({ xAxisData: xAxis, series });
+};
+
+const LocFrequency = () => {
   return (
-    <BaseCard
+    <LazyLoadCard
       title="Line of code frequency"
       id={CodeQuality.LocFrequency}
-      description={`Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.`}
+      description={
+        'Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.'
+      }
     >
-      {(containerRef) => (
-        <EChartX
-          option={echartsOpts}
-          loading={loading}
-          containerRef={containerRef}
-        />
-      )}
-    </BaseCard>
+      <Chart getOptions={getOptions} tansOpts={tansOpts} />
+    </LazyLoadCard>
   );
 };
 
-const LocFrequencyWithData = () => {
-  const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-
-  const xAxis = useMemo(() => {
-    return pickKeyToXAxis(data, {
-      typeKey: 'metricCodequality',
-      valueKey: 'grimoireCreationDate',
-    });
-  }, [data]);
-
-  const yAxis = useMemo(() => {
-    return pickKeyGroupToYAxis(data, [
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'linesAddedFrequency',
-        legendName: 'Lines add',
-      },
-      {
-        typeKey: 'metricCodequality',
-        valueKey: 'linesRemovedFrequency',
-        valueFormat: (v) => toFixed(v * -1, 3),
-        legendName: 'Lines remove',
-      },
-    ]);
-  }, [data]);
-
-  return <LocFrequency loading={isLoading} xAxis={xAxis} yAxis={yAxis} />;
-};
-
-export default LocFrequencyWithData;
+export default LocFrequency;
