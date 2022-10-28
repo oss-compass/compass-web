@@ -17,7 +17,7 @@ import {
   TransResult,
   YResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import { colorGenerator } from '@modules/analyze/options/color';
+import { colorGenerator, colors } from '@modules/analyze/options/color';
 import React from 'react';
 
 const defaultTooltip: EChartsOption['tooltip'] = {
@@ -81,6 +81,7 @@ export const getLineOption = ({
   tooltip?: EChartsOption['tooltip'];
 }): EChartsOption => {
   return {
+    color: colors,
     title: {},
     tooltip: tooltip ? tooltip : defaultTooltip,
     legend,
@@ -101,6 +102,7 @@ export const getBarOption = ({
   series: BarSeriesOption[];
 }): EChartsOption => {
   return {
+    color: colors,
     title: {},
     tooltip: defaultTooltip,
     legend,
