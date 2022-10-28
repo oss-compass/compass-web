@@ -11,7 +11,7 @@ import EChartX from '@common/components/EChartX';
 
 const Chart: React.FC<
   ChartProps & {
-    getOptions: (a: TransResult) => EChartsOption;
+    getOptions: (result: TransResult) => EChartsOption;
     tansOpts: TransOpts;
   }
 > = ({ containerRef, getOptions, tansOpts }) => {

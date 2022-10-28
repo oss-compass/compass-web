@@ -7,7 +7,8 @@ import {
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 
 const tansOpts: TransOpts = {
@@ -35,15 +36,21 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const IssueFirstResponse = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="Issue first response "
       id={Support.IssueFirstResponse}
       description={
         'Average/Median first comments response (in days) for new Issues created in the last 90 days.'
       }
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

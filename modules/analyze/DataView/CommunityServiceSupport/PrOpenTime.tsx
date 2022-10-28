@@ -7,7 +7,8 @@ import {
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 
 const tansOpts: TransOpts = {
@@ -35,15 +36,21 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const PrOpenTime = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="PR open time"
       id={Support.PrOpenTime}
       description={
         'Average/Median processing time (days) for new change requests created in the last 90 days, including closed'
       }
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

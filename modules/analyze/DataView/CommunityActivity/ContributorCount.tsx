@@ -6,7 +6,8 @@ import {
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { LineSeriesOption } from 'echarts';
 
@@ -34,15 +35,21 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const ContributorCount = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="Contributor count"
       id={Activity.ContributorCount}
       description={
         'Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days'
       }
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 
