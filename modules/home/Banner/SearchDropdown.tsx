@@ -7,6 +7,27 @@ import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
 import { removeHttps, getAnalyzeLink } from '@common/utils';
 
+const SubmitYourProject: React.FC<{ content: string; className?: string }> = ({
+  className,
+  content,
+}) => {
+  return (
+    <p
+      className={classnames(
+        className,
+        'block flex items-center justify-between px-4 py-2  text-lg text-gray-500 md:py-2 md:text-base'
+      )}
+    >
+      <span>{content}</span>
+      <Link href="/submit-your-project">
+        <a className="bg-black py-1 px-3 text-white shadow hover:opacity-90">
+          Submit your project
+        </a>
+      </Link>
+    </p>
+  );
+};
+
 const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
   result,
 }) => {
@@ -44,6 +65,10 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
           </Link>
         );
       })}
+      <SubmitYourProject
+        content="Can't find the right option?"
+        className="border-t-2 border-black"
+      />
     </>
   );
 };
@@ -52,14 +77,7 @@ const SearchDropdown: React.FC<{
   result: SearchQuery['fuzzySearch'];
 }> = ({ result }) => {
   if (!result || (Array.isArray(result) && result.length === 0)) {
-    return (
-      <p className="block px-4 py-3 text-lg text-gray-400 md:py-2 md:text-base">
-        {'No result! '}
-        <Link href="/submit-your-project">
-          <a className="text-primary">submit your project</a>
-        </Link>
-      </p>
-    );
+    return <SubmitYourProject content="No results" />;
   }
 
   return <DropDownList result={result!} />;

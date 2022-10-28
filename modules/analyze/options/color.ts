@@ -1,5 +1,9 @@
 import ColorLib from 'color';
 
+const palette = {
+  GeekBlue: '',
+};
+
 const colors = [
   '#5470c6',
   '#91cc75',

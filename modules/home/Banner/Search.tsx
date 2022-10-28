@@ -21,7 +21,7 @@ const Search = () => {
   return (
     <div
       className={classnames(
-        'absolute bottom-9 -left-5 w-[600px] p-6',
+        'absolute bottom-9 -left-[24px] w-[600px] p-6',
         'md:bottom-6 md:left-0 md:w-[380px]',
         styles.searchBg
       )}
@@ -49,13 +49,12 @@ const Search = () => {
               'h-[52px] w-full appearance-none bg-transparent text-xl outline-0 ',
               'md:h-[40px]'
             )}
-            placeholder="Enter project name or GitHub/Gitee repository address"
-            // placeholder="Type the name to insight into your project"
+            placeholder="Type the name to insight into your project"
             onChange={(event) => {
               const val = event.target.value;
               setKeyword(val);
             }}
-            alt={'Enter project name or GitHub/Gitee repository url'}
+            alt={'Type the name to insight into your project'}
           />
           <div className="h-8 w-8 cursor-pointer select-none pl-2">
             {showLoading ? (
@@ -65,6 +64,9 @@ const Search = () => {
             )}
           </div>
         </div>
+        <p className="mt-3 text-gray-500">
+          Please enter GitHub/Gitee repository name or community name
+        </p>
         {throttledKeyword && (
           <div
             className={classnames(
