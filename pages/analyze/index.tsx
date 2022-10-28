@@ -1,6 +1,6 @@
 import React from 'react';
 import Analyze from '@modules/analyze';
-import { ConfigContextProvider } from '@modules/analyze/context';
+import { ConfigContextProvider, ColorProvider } from '@modules/analyze/context';
 import { useStatusQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
@@ -23,7 +23,9 @@ const AnalyzePage = () => {
 
   return (
     <ConfigContextProvider value={{ status, loading: isLoading }}>
-      <Analyze />
+      <ColorProvider>
+        <Analyze />
+      </ColorProvider>
     </ConfigContextProvider>
   );
 };
