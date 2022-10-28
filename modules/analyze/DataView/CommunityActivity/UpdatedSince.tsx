@@ -7,7 +7,8 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 
 const tansOpts: TransOpts = {
@@ -32,15 +33,21 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const UpdatedSince = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="Updated since"
       id={Activity.UpdatedSince}
       description={
         'Determine the average time per repository since the repository was last updated (in months).'
       }
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

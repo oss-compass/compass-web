@@ -12,7 +12,8 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 
 const tansOpts: TransOpts = {
@@ -86,15 +87,21 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const CodeMergeRatio = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="Code merge ratio"
       id={CodeQuality.CodeMergeRatio}
       description={
         'The percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.'
       }
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

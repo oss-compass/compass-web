@@ -7,7 +7,8 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 
 const tansOpts: TransOpts = {
@@ -34,13 +35,19 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const RecentReleasesCount = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="Recent releases count"
       id={Activity.RecentReleasesCount}
       description={'Determine the number of releases in the last year.'}
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

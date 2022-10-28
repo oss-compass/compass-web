@@ -6,7 +6,8 @@ import {
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { LineSeriesOption } from 'echarts';
 
@@ -83,13 +84,19 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 };
 const PRIssueLinked = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="PR issue linked ratio"
       id={CodeQuality.PRIssueLinkedRatio}
       description={'Percentage of new pr link issues in the last 90 days.'}
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

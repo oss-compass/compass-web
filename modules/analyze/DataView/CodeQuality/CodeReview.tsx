@@ -7,8 +7,9 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
 import Chart from '@modules/analyze/components/Chart';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
@@ -81,15 +82,21 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const CodeReview = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="Code review ratio"
       id={CodeQuality.CodeReviewRatio}
       description={
         'Percentage of recent 90-day code commits with at least one reviewer (not PR creator).'
       }
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

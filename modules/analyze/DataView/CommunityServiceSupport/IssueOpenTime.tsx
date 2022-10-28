@@ -7,7 +7,8 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 
 const tansOpts: TransOpts = {
@@ -35,15 +36,21 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const IssueOpenTime = () => {
   return (
-    <LazyLoadCard
+    <BaseCard
       title="Bug issue open time"
       id={Support.BugIssueOpenTime}
       description={
         'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
       }
     >
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

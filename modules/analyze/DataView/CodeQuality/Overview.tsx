@@ -1,26 +1,13 @@
 import React, { useMemo } from 'react';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import EChartX from '@common/components/EChartX';
-import {
-  ChartComponentProps,
-  genSeries,
-  getLineOption,
-  line,
-} from '@modules/analyze/options';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
-import {
-  pickKeyToXAxis,
-  pickKeyToYAxis,
-} from '@modules/analyze/options/metric';
 import {
   getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import LazyLoadCard from '@modules/analyze/components/LazyLoadCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { LineSeriesOption } from 'echarts';
 
@@ -51,9 +38,15 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
 
 const Overview = () => {
   return (
-    <LazyLoadCard title="Overview" id={CodeQuality.Overview}>
-      <Chart getOptions={getOptions} tansOpts={tansOpts} />
-    </LazyLoadCard>
+    <BaseCard title="Overview" id={CodeQuality.Overview}>
+      {(ref) => {
+        return (
+          <LoadInView containerRef={ref}>
+            <Chart getOptions={getOptions} tansOpts={tansOpts} />
+          </LoadInView>
+        );
+      }}
+    </BaseCard>
   );
 };
 

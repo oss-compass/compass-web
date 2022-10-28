@@ -1,16 +1,25 @@
-import React, {
-  useState,
-  RefObject,
-  useRef,
-  ReactNode,
-  useEffect,
-} from 'react';
-import Link from 'next/link';
+import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { gsap } from 'gsap';
-import useHashScroll from '@common/hooks/useHashScroll';
+
+const Loading: React.FC<{ className: string }> = ({ className }) => (
+  <div className={classnames(className, 'animate-pulse p-10')}>
+    <div className="flex-1 space-y-4">
+      <div className="h-4 rounded bg-slate-200"></div>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+        <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+      </div>
+      <div className="h-4 rounded bg-slate-200"></div>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+        <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+      </div>
+      <div className="h-4 rounded bg-slate-200"></div>
+    </div>
+  </div>
+);
 
 interface BaseCardProps {
   id?: string;
@@ -18,6 +27,7 @@ interface BaseCardProps {
   className?: string;
   title?: string;
   description?: string;
+  headRight?: ReactNode;
   children: ((containerRef: RefObject<HTMLElement>) => ReactNode) | ReactNode;
 }
 
@@ -28,6 +38,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   loading = false,
   title = '',
   description = '',
+  headRight = null,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -36,10 +47,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const cls = classnames(
     className,
     'base-card',
-    'rounded-lg bg-white p-5 drop-shadow-sm border-2 border-transparent min-w-0',
+    'rounded-lg relative bg-white p-5 drop-shadow-sm border-2 border-transparent min-w-0',
     'md:rounded-none',
     {
-      'w-full h-full fixed left-0 right-0 top-0 bottom-0 z-fullscreen':
+      'w-full h-full !fixed left-0 right-0 top-0 bottom-0 z-fullscreen':
         fullScreen,
     }
   );
@@ -50,23 +61,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   });
 
   if (loading) {
-    return (
-      <div className={classnames(cls, 'animate-pulse p-10')}>
-        <div className="flex-1 space-y-4">
-          <div className="h-4 rounded bg-slate-200"></div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-            <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-          </div>
-          <div className="h-4 rounded bg-slate-200"></div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-            <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-          </div>
-          <div className="h-4 rounded bg-slate-200"></div>
-        </div>
-      </div>
-    );
+    return <Loading className={cls} />;
   }
 
   return (
@@ -83,15 +78,18 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h2>
-      <span
-        className="absolute right-4 top-4 cursor-pointer p-2 md:hidden"
-        onClick={() => {
-          setFullScreen((pre) => !pre);
-        }}
-      >
-        {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
-      </span>
       <p className="mb-4 text-sm">{description}</p>
+      <div className="absolute right-4 top-4 flex items-center ">
+        {headRight}
+        <div
+          className="cursor-pointer p-2 md:hidden"
+          onClick={() => {
+            setFullScreen((pre) => !pre);
+          }}
+        >
+          {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
+        </div>
+      </div>
       {typeof children === 'function' ? children(cardRef) : children}
     </div>
   );

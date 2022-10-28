@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import { useInViewport } from 'ahooks';
-import ChartCard from '@modules/analyze/components/ChartCard';
+import classnames from 'classnames';
 
 const Render: React.FC<
   PropsWithChildren<{
@@ -24,30 +24,28 @@ const Render: React.FC<
 });
 Render.displayName = 'Render';
 
-const LazyLoadCard: React.FC<
+const LoadInView: React.FC<
   PropsWithChildren<{
-    title: string;
-    id: string;
-    description?: string;
+    className?: string;
+    containerRef: RefObject<HTMLElement>;
   }>
-> = ({ children, title, id, description }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const showedRef = useRef<boolean>(false);
-  const [inView] = useInViewport(cardRef);
+> = ({ className, children, containerRef }) => {
+  const showed = useRef<boolean>(false);
+  const [inView] = useInViewport(containerRef);
 
   useEffect(() => {
-    if (inView) showedRef.current = true;
+    if (inView) showed.current = true;
   }, [inView]);
 
-  const isRender = inView || showedRef.current;
+  const isRender = inView || showed.current;
 
   return (
-    <ChartCard ref={cardRef} title={title} id={id} description={description}>
-      <Render containerRef={cardRef} isRender={isRender}>
+    <div className={classnames(className, 'h-[350px]')}>
+      <Render containerRef={containerRef} isRender={isRender}>
         {children}
       </Render>
-    </ChartCard>
+    </div>
   );
 };
 
-export default LazyLoadCard;
+export default LoadInView;
