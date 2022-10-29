@@ -82,7 +82,7 @@ const LoginOptionCard: React.FC<{
             })}
         </div>
       </div>
-      {error && (
+      {error === 'OAuthCallback' && (
         <h4 className="mt-10 flex items-center text-lg font-medium text-warning">
           <FiAlertCircle className="mr-2 text-2xl" /> outgoing request timed
           out, please try again!
