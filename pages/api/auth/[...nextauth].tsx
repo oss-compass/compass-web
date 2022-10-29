@@ -1,5 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
-import GithubProvider, { GithubProfile } from 'next-auth/providers/github';
+import GithubProvider, {
+  GithubProfile,
+} from '@common/lib/authProviders/github';
 import GiteeProvider, { GiteeProfile } from '@common/lib/authProviders/gitee';
 
 export const authOptions: NextAuthOptions = {
@@ -9,6 +11,9 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
       httpOptions: {
         timeout: 5000,
+        // https://github.com/nextauthjs/next-auth/issues/2509#issuecomment-1035410802
+        // https://next-auth.js.org/tutorials/corporate-proxy
+        agent: true,
       },
     }),
     GiteeProvider({
