@@ -41,13 +41,13 @@ const Search = () => {
         more value of it.
       </p>
       <div className="relative w-[496px] md:w-full">
-        <div className="flex items-center border-2 border-black px-4">
+        <div className="flex items-center border-2 border-black px-4 md:px-2">
           <input
             value={keyword}
             type="text"
             className={classnames(
               'h-[52px] w-full appearance-none bg-transparent text-xl outline-0 ',
-              'md:h-[40px]'
+              'md:h-[40px] md:text-sm'
             )}
             placeholder="Type the name to insight into your project"
             onChange={(event) => {
@@ -64,7 +64,7 @@ const Search = () => {
             )}
           </div>
         </div>
-        <p className="mt-3 text-gray-500">
+        <p className="mt-3 text-gray-500 md:text-sm">
           Please enter GitHub/Gitee repository name or community name
         </p>
         {throttledKeyword && (
