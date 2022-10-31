@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ChartComponentProps,
   getLineOption,
@@ -14,24 +14,30 @@ import {
   pickKeyGroupToYAxis,
   pickKeyToXAxis,
 } from '@modules/analyze/options/metric';
+import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 
 const TrendsChart: React.FC<ChartComponentProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
+  const [markingSys, setMarkingSys] = useState(true);
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
+      console.log(123);
+      markingSys && (data = data.map((i) => transMarkingSystem(Number(i))));
       return line({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis]);
+  }, [xAxis, yAxis, markingSys]);
 
   return (
     <BaseCard
       title="Trending"
       id={'trending'}
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      showMarkingSysBtn={true}
+      getMarkingSys={(val) => setMarkingSys(val)}
     >
       {(containerRef) => (
         <EChartX
