@@ -10,6 +10,7 @@ import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
+import { ChartThemeState } from '@modules/analyze/context';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCommunity',
@@ -20,7 +21,10 @@ const tansOpts: TransOpts = {
   ],
 };
 
-const getOptions = ({ xAxis, yResults }: TransResult) => {
+const getOptions = (
+  { xAxis, yResults }: TransResult,
+  theme?: ChartThemeState
+) => {
   const series = genSeries<LineSeriesOption>(
     yResults,
     ({ legendName, label, level, isCompare, color, data }) => {
@@ -29,7 +33,8 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
         data: data,
         color,
       });
-    }
+    },
+    theme
   );
   return getLineOption({ xAxisData: xAxis, series });
 };

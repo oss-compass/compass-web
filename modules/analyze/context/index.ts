@@ -1,2 +1,2 @@
 export * from './ConfigContext';
-export * from './ColorContext';
+export * from './ChartThemeContext';
