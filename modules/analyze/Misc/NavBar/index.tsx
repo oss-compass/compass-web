@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import CompareItems from './CompareItems';
+import LabelItems from './LabelItems';
 import DatePicker from './DatePicker';
 import MobileDatePicker from './MobileDatePicker';
 
@@ -12,7 +12,7 @@ const NavBar = () => {
         'md:h-12 md:px-4'
       )}
     >
-      <CompareItems />
+      <LabelItems />
       <DatePicker />
       <MobileDatePicker />
     </nav>

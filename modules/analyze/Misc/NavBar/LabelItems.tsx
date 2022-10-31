@@ -13,7 +13,7 @@ const Icon: React.FC<{ provider: string }> = ({ provider, ...restProps }) => {
   return null;
 };
 
-const CompareItems = () => {
+const LabelItems = () => {
   const { compareItems } = useCompareItems();
   return (
     <div className="flex flex-wrap items-center">
@@ -33,4 +33,4 @@ const CompareItems = () => {
   );
 };
 
-export default CompareItems;
+export default LabelItems;
