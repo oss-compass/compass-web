@@ -15,12 +15,18 @@ const SubmitYourProject: React.FC<{ content: string; className?: string }> = ({
     <p
       className={classnames(
         className,
-        'block flex items-center justify-between px-4 py-2  text-lg text-gray-500 md:py-2 md:text-base'
+        'block flex items-center justify-between px-4 py-2  text-lg text-gray-500',
+        'md:py-2 md:px-2 md:text-sm'
       )}
     >
       <span>{content}</span>
       <Link href="/submit-your-project">
-        <a className="bg-black py-1 px-3 text-white shadow hover:opacity-90">
+        <a
+          className={classnames(
+            'flex-shrink-0 bg-black py-1 px-3 text-white shadow hover:opacity-90 ',
+            'md:px-2 md:text-sm'
+          )}
+        >
           Submit your project
         </a>
       </Link>
