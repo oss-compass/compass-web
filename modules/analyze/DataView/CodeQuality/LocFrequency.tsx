@@ -11,6 +11,7 @@ import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
+import { ChartThemeState } from '@modules/analyze/context';
 import { toFixed } from '@common/utils';
 
 const tansOpts: TransOpts = {
@@ -29,7 +30,10 @@ const tansOpts: TransOpts = {
   ],
 };
 
-const getOptions = ({ xAxis, yResults }: TransResult) => {
+const getOptions = (
+  { xAxis, yResults }: TransResult,
+  theme?: ChartThemeState
+) => {
   const series = genSeries<BarSeriesOption>(
     yResults,
     ({ legendName, label, level, isCompare, color, data }) => {
@@ -39,7 +43,8 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
         data: data,
         color,
       });
-    }
+    },
+    theme
   );
   return getBarOption({ xAxisData: xAxis, series });
 };

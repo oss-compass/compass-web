@@ -17,8 +17,14 @@ import {
   TransResult,
   YResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import { colorGenerator, colors } from '@modules/analyze/options/color';
+import {
+  colorGenerator,
+  colors,
+  getPalette,
+  getPaletteColor,
+} from '@modules/analyze/options/color';
 import React from 'react';
+import { ChartThemeState } from '@modules/analyze/context';
 
 const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -205,6 +211,13 @@ export type ChartProps = {
   containerRef?: React.RefObject<HTMLElement>;
 };
 
+const getPaletteIndex = (
+  themeState: ChartThemeState | undefined,
+  label: string
+) => {
+  return themeState?.color?.find((i) => i.label === label)?.paletteIndex || 0;
+};
+
 export function genSeries<T>(
   comparesYAxis: YResult[],
   seriesItem: (item: {
@@ -215,16 +228,28 @@ export function genSeries<T>(
     color: string;
     key: string;
     data: (string | number)[];
-  }) => T | null
+  }) => T | null,
+  theme?: ChartThemeState
 ) {
-  const colorGen = colorGenerator();
   const isCompare = comparesYAxis.length > 1;
 
   return comparesYAxis.reduce<T[]>((acc, { label, level, yAxisResult }) => {
+    const paletteIndex = getPaletteIndex(theme, label);
+    const palette = getPalette(paletteIndex);
+
     const result = yAxisResult
-      .map((item) => {
-        const color = isCompare ? colorGen(label) : '';
-        return seriesItem({ isCompare, color, level, label, ...item });
+      .map((item, legendIndex) => {
+        const color = isCompare
+          ? getPaletteColor(palette, legendIndex + 3)
+          : '';
+
+        return seriesItem({
+          isCompare,
+          color: color,
+          level,
+          label,
+          ...item,
+        });
       })
       .filter(Boolean) as T[];
     acc = [...acc, ...result];

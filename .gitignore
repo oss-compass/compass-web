@@ -42,3 +42,7 @@ graphql/schema.graphql
 localtest
 
 demo.html
+
+
+yarn.lock
+package-lock.json

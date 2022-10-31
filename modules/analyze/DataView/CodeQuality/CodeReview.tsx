@@ -8,6 +8,7 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import Chart from '@modules/analyze/components/Chart';
+import { ChartThemeState } from '@modules/analyze/context';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 
@@ -21,7 +22,10 @@ const tansOpts: TransOpts = {
   ],
 };
 
-const getOptions = ({ xAxis, yResults }: TransResult) => {
+const getOptions = (
+  { xAxis, yResults }: TransResult,
+  theme?: ChartThemeState
+) => {
   let tooltips: Record<string, (string | number)[]> = {};
   const series = genSeries<LineSeriesOption>(
     yResults,
@@ -32,7 +36,8 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
         return null;
       }
       return lineArea({ name, data, color });
-    }
+    },
+    theme
   );
   return getLineOption({
     xAxisData: xAxis,

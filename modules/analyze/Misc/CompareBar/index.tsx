@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { removeSearchValue } from '@modules/analyze/Misc/urlTool';
 import { Level } from '@modules/analyze/constant';
 import AddInput from './AddInput';
+import ColorSwitcher from './ColorSwitcher';
 
 const CloseIcons: React.FC<{ label: string; level: Level }> = ({
   label,
@@ -41,14 +42,10 @@ const CompareItem: React.FC<{
       )}
     >
       {showCloseIcon && <CloseIcons {...item} />}
-      <div className="text-2xl font-bold text-white line-clamp-1">
+      <div className="mb-2 text-2xl font-bold text-white line-clamp-1">
         {getLastPathSegment(item.label)}
       </div>
-      {showColorSwitch && (
-        <div className="mt-2 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-xl">
-          <div className="h-3 w-3 rounded-full bg-blue-600"></div>
-        </div>
-      )}
+      {showColorSwitch && <ColorSwitcher label={item.label} />}
     </div>
   );
 };
@@ -58,7 +55,7 @@ const CompareBar = () => {
   const len = compareItems.length;
 
   return (
-    <div className="mb-8 flex h-[100px] md:hidden">
+    <div className="relative z-20 mb-8 flex min-h-[80px] md:hidden">
       <div className="min-w-0 flex-1 rounded-tl-lg rounded-bl-lg bg-[#00B5EA]">
         <div className="overflow flex h-full">
           {compareItems.map((item, index) => {
