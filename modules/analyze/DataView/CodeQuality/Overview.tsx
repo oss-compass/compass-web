@@ -32,8 +32,7 @@ const getOptions = (
   const series = genSeries<LineSeriesOption>(
     yResults,
     ({ legendName, label, level, isCompare, color, data }) => {
-      hundredMarkingSys &&
-        (data = data.map((i) => transMarkingSystem(Number(i))));
+      hundredMarkingSys && (data = data.map((i) => transMarkingSystem(i)));
       return line({
         name: getLegendName(legendName, { label, level, isCompare }),
         data: data,

@@ -24,7 +24,7 @@ const TrendsChart: React.FC<ChartComponentProps> = ({
   const [markingSys, setMarkingSys] = useState(true);
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ name, data }) => {
-      markingSys && (data = data.map((i) => transMarkingSystem(Number(i))));
+      markingSys && (data = data.map((i) => transMarkingSystem(i)));
       return line({ name, data });
     });
     return getLineOption({ xAxisData: xAxis, series });

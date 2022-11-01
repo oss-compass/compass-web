@@ -484,6 +484,7 @@ export type OverviewQuery = {
     modelsCount?: number | null;
     trends?: Array<{
       __typename?: 'Repo';
+      metricActivity?: Array<{ activityScore?: number | null }>;
       backend?: string | null;
       forksCount?: number | null;
       language?: string | null;
@@ -815,6 +816,9 @@ export const OverviewDocument = /*#__PURE__*/ `
       path
       stargazersCount
       watchersCount
+      metricActivity {
+        activityScore
+      }
     }
   }
 }

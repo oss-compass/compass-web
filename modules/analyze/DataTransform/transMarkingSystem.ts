@@ -21,9 +21,15 @@ const oneMarkList = [
   [0.8, 1],
 ];
 
-export const transMarkingSystem = (oneMark: number): number | string => {
-  if (oneMark === null || oneMark < 0 || oneMark > 1) {
-    return '';
+export const transMarkingSystem = (
+  oneMark: number | string
+): number | string => {
+  if (oneMark === null || oneMark === '') {
+    return '-';
+  }
+  oneMark = Number(oneMark);
+  if (oneMark < 0 || oneMark > 1) {
+    return '-';
   }
   let index = 0;
   if (oneMark === 1) {
