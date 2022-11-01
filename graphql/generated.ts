@@ -200,8 +200,8 @@ export type CreateRepoTaskInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** user's origin (gitee/github) */
   origin: Scalars['String'];
-  /** repository url */
-  repoUrl: Scalars['String'];
+  /** repository urls */
+  repoUrls: Array<Scalars['String']>;
   /** user's oauth token only for username verification */
   token: Scalars['String'];
   /** gitee or github login/username */
@@ -311,6 +311,8 @@ export type ProjectCompletionRow = {
   label?: Maybe<Scalars['String']>;
   /** metric model object level (project or repo) */
   level?: Maybe<Scalars['String']>;
+  /** metric task status (pending/progress/success/error/canceled/unsumbit) */
+  status?: Maybe<Scalars['String']>;
 };
 
 export type ProjectTypeInput = {
@@ -388,6 +390,7 @@ export type Repo = {
   createdAt: Scalars['ISO8601DateTime'];
   forksCount?: Maybe<Scalars['Int']>;
   language?: Maybe<Scalars['String']>;
+  metricActivity: Array<ActivityMetric>;
   name?: Maybe<Scalars['String']>;
   openIssuesCount?: Maybe<Scalars['Int']>;
   origin: Scalars['String'];
@@ -399,7 +402,7 @@ export type Repo = {
 
 export type CreateRepoTaskMutationVariables = Exact<{
   username: Scalars['String'];
-  repoUrl: Scalars['String'];
+  repoUrls: Array<Scalars['String']> | Scalars['String'];
   token: Scalars['String'];
   origin: Scalars['String'];
 }>;
@@ -484,7 +487,6 @@ export type OverviewQuery = {
     modelsCount?: number | null;
     trends?: Array<{
       __typename?: 'Repo';
-      metricActivity?: Array<{ activityScore?: number | null }>;
       backend?: string | null;
       forksCount?: number | null;
       language?: string | null;
@@ -493,6 +495,10 @@ export type OverviewQuery = {
       path?: string | null;
       stargazersCount?: number | null;
       watchersCount?: number | null;
+      metricActivity: Array<{
+        __typename?: 'ActivityMetric';
+        activityScore?: number | null;
+      }>;
     }> | null;
   };
 };
@@ -576,9 +582,9 @@ export type MetricQuery = {
 };
 
 export const CreateRepoTaskDocument = /*#__PURE__*/ `
-    mutation createRepoTask($username: String!, $repoUrl: String!, $token: String!, $origin: String!) {
+    mutation createRepoTask($username: String!, $repoUrls: [String!]!, $token: String!, $origin: String!) {
   createRepoTask(
-    input: {username: $username, repoUrl: $repoUrl, origin: $origin, token: $token}
+    input: {username: $username, repoUrls: $repoUrls, origin: $origin, token: $token}
   ) {
     message
     status

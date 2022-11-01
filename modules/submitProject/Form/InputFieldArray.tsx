@@ -5,7 +5,7 @@ import {
   useFormContext,
   RegisterOptions,
 } from 'react-hook-form';
-import { CreateFields } from './type';
+import { CreateFields } from '../type';
 import classnames from 'classnames';
 
 type ArrayFieldName = Exclude<keyof CreateFields, 'projectName'>;

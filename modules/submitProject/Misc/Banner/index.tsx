@@ -1,8 +1,8 @@
-import classnames from 'classnames';
-import style from '@modules/submitProject/index.module.css';
 import React from 'react';
+import classnames from 'classnames';
+import style from './index.module.css';
 
-const Banner = () => {
+const Banner: React.FC<{ content: string }> = ({ content }) => {
   return (
     <div
       className={classnames(
@@ -17,7 +17,7 @@ const Banner = () => {
         )}
       ></div>
       <div className="relative mx-auto w-[1000px] pt-12 text-5xl font-medium text-white md:w-full md:px-2">
-        Enroll your project
+        {content}
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ module.exports = {
     },
     extend: {
       zIndex: {
+        modal: 200,
         drawer: 120,
         mask: 100,
         fullscreen: 80,

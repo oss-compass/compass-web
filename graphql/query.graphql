@@ -37,6 +37,9 @@ query overview {
             path
             stargazersCount
             watchersCount
+            metricActivity {
+                activityScore
+            }
         }
     }
 }

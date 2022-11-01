@@ -34,6 +34,15 @@ export function getHostLabel(url: string) {
   return url;
 }
 
+//github.com/cli/cli  => https://github.com/cli/cli
+export function fillHttps(url: string): string {
+  if (!url) return '';
+  if (url.indexOf('https') === -1) {
+    return `https://${url}`;
+  }
+  return url;
+}
+
 //https://github.com/cli/cli  => cli
 export function repoUrlFormat(url: string | undefined) {
   if (!url) return '';

@@ -20,14 +20,19 @@ const SuccessMessage: React.FC<{ url?: string; content: string }> = ({
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <p className="flex flex-col">
+        <div className="flex flex-col">
           <h3 className="mr-2 text-xl font-bold">{content}</h3>
           {url && (
-            <a className="underline underline-offset-2" href={url}>
+            <a
+              className="underline underline-offset-2"
+              target="_blank"
+              rel="noopener noreferrer"
+              href={url}
+            >
               {url}
             </a>
           )}
-        </p>
+        </div>
       </div>
     </div>
   );

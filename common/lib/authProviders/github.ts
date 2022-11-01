@@ -65,13 +65,12 @@ export default function Github<P extends GithubProfile>(
     type: 'oauth',
     authorization: {
       url: 'https://github.com/login/oauth/authorize',
-      params: { scope: 'read:user user:email' },
+      params: { scope: 'read:user user:email read:org public_repo' },
     },
     token: 'https://github.com/login/oauth/access_token',
     userinfo: {
       url: 'https://api.github.com/user',
       async request({ client, tokens }) {
-        debugger;
         const profile = await client.userinfo(tokens.access_token!);
 
         if (!profile.email) {

@@ -1,5 +1,5 @@
-mutation createRepoTask($username:String!,$repoUrl: String!, $token:String!, $origin:String!){
-    createRepoTask(input: {username:$username, repoUrl: $repoUrl, origin: $origin, token: $token}){
+mutation createRepoTask($username:String!,$repoUrls: [String!]!, $token:String!, $origin:String!){
+    createRepoTask(input: {username:$username, repoUrls: $repoUrls, origin: $origin, token: $token}){
         message
         status
         prUrl
