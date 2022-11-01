@@ -36,7 +36,7 @@ export interface TransOpts {
   }[];
 }
 
-// todo add generic type
+// todo reduce complexity add generic type
 export function transToAxis(
   data: Array<DateItem>,
   { metricType, xAxisKey, yAxisOpts }: TransOpts
@@ -50,14 +50,16 @@ export function transToAxis(
     const metrics = repo.result?.[metricType];
     metrics?.map((metric) => {
       // @ts-ignore
-      const xAxis = metric[xAxisKey];
+      const xAxisVal = metric[xAxisKey];
       yAxisOpts.forEach((yAxisOpt) => {
         const { valueKey } = yAxisOpt;
         // @ts-ignore
-        set(tempMap, [xAxis, repo.label, valueKey], metric[valueKey]);
+        set(tempMap, [xAxisVal, repo.label, valueKey], metric[valueKey]);
       });
     });
+  });
 
+  data.forEach((repo) => {
     // get value from map and fill null by xAxisKey
     xAxis = Object.keys(tempMap).sort((a, b) => {
       return getUnixTime(parseISO(a)) - getUnixTime(parseISO(b));
