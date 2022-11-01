@@ -102,7 +102,14 @@ const BaseCard: React.FC<BaseCardProps> = ({
             }}
           >
             {markingSys ? <Svg1 /> : <Svg100 />}
-            {/* <div className='p-2 absolute top-[100%] right-4 z-dropdown hidden w-[260px] border-t-2 border-white bg-black/90 text-white group-hover:block'>Based on the position of the absolute score of the model in all samples,the results of the percentile conversion are given in combination with the general knowledge of the percentile system.[0,100] Absolute score of the model [0,1]</div> */}
+            <div
+              style={{ boxShadow: 'rgba(0, 0, 0, 0.2) 1px 2px 10px' }}
+              className="absolute top-[100%] right-1 z-dropdown hidden w-[280px] rounded border border-white bg-white p-2 text-sm group-hover:block"
+            >
+              {!markingSys
+                ? '[0, 100]: distribution result based on [0, 1]'
+                : '[0, 1]: absolute score of the model'}
+            </div>
           </div>
         ) : (
           ''
