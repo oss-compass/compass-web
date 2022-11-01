@@ -15,4 +15,8 @@ declare module 'next-auth' {
       login?: string;
     };
   }
+
+  interface Profile {
+    login?: string;
+  }
 }
