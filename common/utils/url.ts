@@ -8,6 +8,7 @@ export const parseUrl = (url: string): URL | null => {
   }
 };
 
+//https://github.com/cli/cli =>  cli/cli
 export const getPathname = (url: string): string => {
   const u = parseUrl(url);
   return u?.pathname.slice(1) || '';
@@ -18,6 +19,7 @@ export const getAllPathname = (urls: string[]) => {
   return uniq(pathName);
 };
 
+//  cli/cli => cli
 export function getLastPathSegment(path: string) {
   if (!path) return;
   return path.split('/').pop() || '';
@@ -32,11 +34,13 @@ export function getHostLabel(url: string) {
   return url;
 }
 
+//https://github.com/cli/cli  => cli
 export function repoUrlFormat(url: string | undefined) {
   if (!url) return '';
   return `${getLastPathSegment(getPathname(url))}`;
 }
 
+//https://github.com/cli/cli  => github.com/cli/cli
 export function removeHttps(url: string | undefined) {
   if (!url) return '';
   return url.replace(/^https:\/\//, '');

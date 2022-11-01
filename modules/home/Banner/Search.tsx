@@ -70,12 +70,12 @@ const Search = () => {
         {throttledKeyword && (
           <div
             className={classnames(
-              'absolute left-0 right-0 top-[58px] z-dropdown border-2 border-black bg-white drop-shadow',
+              'absolute left-0 right-0 top-[58px] z-dropdown border-2 border-black bg-white drop-shadow-xl',
               'md:top-[46px]'
             )}
           >
             <div className="w-full">
-              <SearchDropdown result={data?.fuzzySearch!} />
+              <SearchDropdown keyword={keyword} result={data?.fuzzySearch!} />
             </div>
           </div>
         )}

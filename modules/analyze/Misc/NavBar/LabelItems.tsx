@@ -6,7 +6,7 @@ import ColorSwitcher from '@modules/analyze/Misc/CompareBar/ColorSwitcher';
 
 const Icon: React.FC<{ provider: string }> = ({ provider, ...restProps }) => {
   if (provider === 'gitee') {
-    return <SiGitee />;
+    return <SiGitee className="text-[#c71c27]" />;
   }
   if (provider === 'github') {
     return <SiGithub />;

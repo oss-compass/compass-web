@@ -11,7 +11,7 @@ export const HeaderCommunityMenu = () => {
         <a className={'font-medium text-white'}>Community</a>
         <AiFillCaretDown color="#fff" className="ml-2" />
       </div>
-      <ul className="absolute top-[100%]  z-dropdown hidden w-[360px] border-t-2 border-white bg-black/90 text-white group-hover:block">
+      <ul className="absolute top-[82px] z-dropdown hidden w-[360px] bg-black/90 text-white group-hover:block">
         <li className="flex cursor-pointer items-center border-b border-white/30 py-4 pl-6 hover:bg-[#333333]">
           <div className="mr-4 w-8">
             <Slack />

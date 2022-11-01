@@ -16,7 +16,7 @@ const Copyright = () => {
         <div className="flex">
           <Link href="https://gitee.com/oss-compass">
             <a target="_blank" rel="noopener noreferrer">
-              <SiGitee className="mr-4 h-6 w-6 cursor-pointer" />
+              <SiGitee className="mr-4 h-6 w-6 cursor-pointer text-[#c71c27]" />
             </a>
           </Link>
           <Link href="https://github.com/oss-compass" passHref>
