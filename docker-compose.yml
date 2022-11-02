@@ -8,4 +8,17 @@ services:
     volumes:
       - .env:/app/.env
     ports:
-      - "8080:3000"
+      - "8082:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - next-server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
