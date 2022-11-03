@@ -2,6 +2,19 @@ import React, { useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 import { AiFillGithub, AiOutlineLink, AiOutlinePlus } from 'react-icons/ai';
 import classnames from 'classnames';
+import useProvider from '@modules/submitProject/Form/useProvider';
+import { SiGitee } from 'react-icons/si';
+
+export const getIcons = (type: string) => {
+  switch (type) {
+    case 'github':
+      return <AiFillGithub />;
+    case 'gitee':
+      return <SiGitee color="#c71c27" />;
+    default:
+      return null;
+  }
+};
 
 const AddSelectPopover: React.FC<{
   open: boolean;
@@ -10,11 +23,14 @@ const AddSelectPopover: React.FC<{
   onSelect: (v: 'input' | 'select') => void;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }> = ({ className, onSelect, onClick, open, onClose }) => {
+  const provider = useProvider();
   const ref = useRef<HTMLDivElement>(null);
 
   useClickAway(ref, () => {
     onClose();
   });
+
+  const providerName = provider === 'github' ? 'GitHub' : 'Gitee';
 
   return (
     <div className={classnames('relative z-10 mt-4', className)}>
@@ -37,9 +53,9 @@ const AddSelectPopover: React.FC<{
               onSelect('select');
             }}
           >
-            <AiFillGithub />
+            {getIcons(provider)}
             <p className="ml-2 text-sm font-medium">
-              Select from your own repository on GitHub
+              {`Select your own repository on ${providerName}`}
             </p>
           </div>
           <div
@@ -50,7 +66,7 @@ const AddSelectPopover: React.FC<{
           >
             <AiOutlineLink />
             <p className="ml-2 text-sm font-medium">
-              Add from the GitHub repository url
+              {`Select your own repository on ${providerName}`}
             </p>
           </div>
         </div>

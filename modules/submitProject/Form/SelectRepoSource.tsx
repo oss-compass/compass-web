@@ -4,22 +4,8 @@ import { AiFillCaretDown, AiFillGithub } from 'react-icons/ai';
 import { useClickAway } from 'react-use';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
-import { getOrganizations } from '@modules/submitProject/api/github';
-import { LiteralUnion } from 'next-auth/react/types';
-import { BuiltInProviderType } from 'next-auth/providers';
-import { SiGitee } from 'react-icons/si';
+import { getOrganizations } from '@modules/submitProject/api';
 import Image from 'next/image';
-
-export const getIcons = (type: LiteralUnion<BuiltInProviderType>) => {
-  switch (type) {
-    case 'github':
-      return <AiFillGithub className="cursor-pointer text-xl" />;
-    case 'gitee':
-      return <SiGitee color="#c71c27" className="cursor-pointer text-xl" />;
-    default:
-      return null;
-  }
-};
 
 const SourceItem: React.FC<{
   avatar_url: string;
@@ -57,10 +43,13 @@ const SelectRepoSource: React.FC<
 
   const { data: session } = useSession();
   const token = session?.accessToken!;
+  const provider = session?.provider!;
 
   const { data } = useQuery(
     ['getOrganizations', token],
-    () => getOrganizations({ token }),
+    () => {
+      return getOrganizations(provider)({ token });
+    },
     { enabled: Boolean(token) }
   );
 

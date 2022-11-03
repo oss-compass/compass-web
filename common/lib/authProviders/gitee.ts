@@ -42,7 +42,7 @@ export default function Gitee<P extends GiteeProfile>(
     type: 'oauth',
     authorization: {
       url: 'https://gitee.com/oauth/authorize',
-      params: { scope: 'user_info' },
+      params: { scope: 'projects user_info groups' },
     },
     token: 'https://gitee.com/oauth/token',
     userinfo: {

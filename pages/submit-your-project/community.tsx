@@ -22,6 +22,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return { redirect: { destination: '/auth/signin', permanent: false } };
   }
 
+  if (!session.user.email) session.user.email = '';
   return { props: { session, providers } };
 }
 

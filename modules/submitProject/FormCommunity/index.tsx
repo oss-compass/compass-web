@@ -14,13 +14,15 @@ import Message from '@modules/submitProject/Misc/Message';
 
 const FormCommunity = () => {
   const { data: session } = useSession();
+  const login = session!.user!.login;
+
   const [communityName, setCommunityName] = useState('');
   const [sarUrls, setSarUrls] = useSessionStorage<string[]>(
-    'software_artifact_repository',
+    `${login}_software_artifact_repository`,
     []
   );
   const [grUrls, setGrUrls] = useSessionStorage<string[]>(
-    'governance_repository',
+    `${login}_governance_repository`,
     []
   );
 

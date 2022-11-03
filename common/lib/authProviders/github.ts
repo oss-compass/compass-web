@@ -65,7 +65,7 @@ export default function Github<P extends GithubProfile>(
     type: 'oauth',
     authorization: {
       url: 'https://github.com/login/oauth/authorize',
-      params: { scope: 'read:user user:email read:org public_repo' },
+      params: { scope: 'read:user read:org public_repo' },
     },
     token: 'https://github.com/login/oauth/access_token',
     userinfo: {
@@ -73,18 +73,18 @@ export default function Github<P extends GithubProfile>(
       async request({ client, tokens }) {
         const profile = await client.userinfo(tokens.access_token!);
 
-        if (!profile.email) {
-          // If the user does not have a public email, get another via the GitHub API
-          // See https://docs.github.com/en/rest/users/emails#list-public-email-addresses-for-the-authenticated-user
-          const res = await fetch('https://api.github.com/user/emails', {
-            headers: { Authorization: `token ${tokens.access_token}` },
-          });
-
-          if (res.ok) {
-            const emails: GithubEmail[] = await res.json();
-            profile.email = (emails.find((e) => e.primary) ?? emails[0]).email;
-          }
-        }
+        // if (!profile.email) {
+        //   // If the user does not have a public email, get another via the GitHub API
+        //   // See https://docs.github.com/en/rest/users/emails#list-public-email-addresses-for-the-authenticated-user
+        //   const res = await fetch('https://api.github.com/user/emails', {
+        //     headers: { Authorization: `token ${tokens.access_token}` },
+        //   });
+        //
+        //   if (res.ok) {
+        //     const emails: GithubEmail[] = await res.json();
+        //     profile.email = (emails.find((e) => e.primary) ?? emails[0]).email;
+        //   }
+        // }
 
         return profile;
       },

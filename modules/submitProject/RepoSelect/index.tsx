@@ -2,14 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import {
+  defaultPageSize,
   getOrgRepos,
   getRepos,
   Repos,
-} from '@modules/submitProject/api/github';
+} from '@modules/submitProject/api';
 import { useDebounce } from 'ahooks';
 import Input from '@modules/submitProject/Form/Input';
 import { CgSpinner } from 'react-icons/cg';
-import { defaultPageSize } from '@modules/submitProject/api/constant';
 import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
 import RepoItem from './RepoItem';
 import Loading from './Loading';
@@ -19,6 +19,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
 }) => {
   const { data: session } = useSession();
   const token = session?.accessToken!;
+  const provider = session?.provider!;
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, { wait: 180 });
 
@@ -32,13 +33,13 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const { isLoading, isFetching } = useQuery(
+  const { isLoading, isFetching, isError, error } = useQuery(
     ['getRepos', token, page, { org }],
     () => {
       if (org.user) {
-        return getRepos({ token, page });
+        return getRepos(provider)({ token, page });
       }
-      return getOrgRepos({ token, page, org: org.login! });
+      return getOrgRepos(provider)({ token, page, org: org.login! });
     },
     {
       enabled: Boolean(token),
@@ -52,6 +53,8 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
       },
     }
   );
+  // @ts-ignore
+  const errorMsg = error?.response?.data?.message || 'failed to fetch data !';
 
   const showData = useMemo(() => {
     if (debouncedSearch) {
@@ -87,7 +90,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
             <div className="py-10 text-center text-gray-400">No Result!</div>
           )}
 
-          {!search && hasMore && (
+          {!isError && !search && hasMore && (
             <div
               className="flex cursor-pointer items-center justify-center py-4 text-center text-primary"
               onClick={() => {
@@ -99,7 +102,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
               {isFetching ? (
                 <>
                   <CgSpinner className="mr-1 animate-spin text-xl" /> fetching
-                  data...
+                  ...
                 </>
               ) : (
                 'load more'
@@ -107,8 +110,14 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
             </div>
           )}
 
-          {!search && !hasMore && (
-            <div className="py-5 text-center text-gray-400">No more data!</div>
+          {!isError && !search && !hasMore && (
+            <div className="py-5 text-center text-sm text-gray-300">
+              No more data !
+            </div>
+          )}
+
+          {isError && errorMsg && (
+            <div className="py-5 text-center text-gray-400">{errorMsg}</div>
           )}
         </div>
       </>

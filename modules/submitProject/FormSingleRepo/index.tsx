@@ -54,13 +54,15 @@ const FormSingleRepo = () => {
     mutate({ ...common, repoUrls: urls });
   };
 
+  const providerName = provider === 'github' ? 'GitHub' : 'Gitee';
+
   return (
     <>
       <div className="flex w-full  md:flex-col md:px-6">
         <div className="flex-1">
           <h3 className="mb-6 text-[28px] font-medium">Single repository</h3>
           <label className="mb-4 block text-xl font-medium">
-            Select your own repository on GitHub
+            {`Select your own repository on ${providerName}`}
           </label>
           <SelectLike
             value={selectVal}
@@ -68,7 +70,7 @@ const FormSingleRepo = () => {
               setSelectVal(v);
             }}
             className="w-[560px] md:w-full"
-            placeholder="Pick your own repository on GitHub"
+            placeholder={`Pick your own repository on ${providerName}`}
             onClick={() => setRepoSelectVisible(true)}
           />
 
@@ -84,7 +86,7 @@ const FormSingleRepo = () => {
             <div className={'mb-10'}>
               <Input
                 className="w-[560px] md:w-full"
-                placeholder={`Type address of ${provider} repository`}
+                placeholder={`Type address of ${providerName} repository`}
                 error={Boolean(errors?.url?.message)}
                 {...register('url', {
                   required: false,

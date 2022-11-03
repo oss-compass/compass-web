@@ -1,28 +1,20 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { defaultPageSize } from './constant';
+import {
+  defaultPageSize,
+  Repos,
+  ReposParams,
+  OrgParams,
+  Organization,
+} from './common';
 
 export async function getRepos({
   token,
   sort = 'updated',
   q,
-}: {
-  token: string;
-  sort?: 'created' | 'updated' | 'pushed' | 'full_name';
-  q?: string;
-}): Promise<
-  AxiosResponse<
-    {
-      id: number;
-      full_name: string;
-      language: string;
-      html_url: string;
-      updated_at: string;
-    }[]
-  >
-> {
+}: ReposParams): Promise<AxiosResponse<Repos[]>> {
   return await axios.get('https://gitee.com/api/v5/user/repos', {
-    params: { sort, q },
+    params: { sort, q, type: 'public' },
     headers: {
       accept: 'application/json',
       authorization: `Bearer ${token}`,
@@ -30,8 +22,28 @@ export async function getRepos({
   });
 }
 
-export async function getOrgs({ token }: { token: string }) {
-  return await axios.get('https://gitee.com/api/v5/user/repos', {
+export async function getOrgRepos({
+  org,
+  token,
+  sort = 'updated',
+  page,
+  per_page = defaultPageSize,
+}: OrgParams): Promise<AxiosResponse<Repos[]>> {
+  return await axios.get(`https://gitee.com/api/v5/orgs/${org}/repos`, {
+    params: { sort, page, per_page, type: 'public' },
+    headers: {
+      accept: 'application/json',
+      authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getOrganizations({
+  token,
+}: {
+  token: string;
+}): Promise<AxiosResponse<Organization[]>> {
+  return await axios.get('https://gitee.com/api/v5/user/orgs', {
     headers: {
       accept: 'application/json',
       authorization: `Bearer ${token}`,

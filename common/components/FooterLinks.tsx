@@ -7,10 +7,9 @@ const linkData = [
   {
     title: 'Tutorial',
     links: [
-      { text: 'Get Standard', href: '' },
-      { text: 'Dimensions Define', href: '' },
-      { text: 'Models', href: '' },
-      { text: 'Metrics Define', href: '' },
+      { text: 'Get Standard', href: '/docs/quick-start' },
+      { text: 'Dimensions Define', href: '/docs/dimensions-define' },
+      { text: 'Models', href: '/docs/category/productivity-metrics-models' },
     ],
   },
   {
@@ -50,7 +49,7 @@ const FooterLinks = () => {
             <h3 className="mb-4 text-sm font-bold">{item.title}</h3>
             {item.links.map((link) => {
               return (
-                <Link href={link.href} key={link.text}>
+                <Link href={link.href} key={link.text} legacyBehavior>
                   <a className="mb-2 text-sm text-gray-500">{link.text}</a>
                 </Link>
               );
