@@ -146,7 +146,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
           <div className="w-[calc(50%-8px)]">
             <Input
               className="w-full"
-              placeholder="Search…"
+              placeholder="Search..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);

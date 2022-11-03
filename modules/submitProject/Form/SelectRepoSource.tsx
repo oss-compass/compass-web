@@ -103,6 +103,9 @@ const SelectRepoSource: React.FC<
         </div>
       )}
       <div
+        onClick={() => {
+          setOpen((pre) => !pre);
+        }}
         className={classnames('absolute top-2 right-2 cursor-pointer p-2', {
           'rotate-180': open,
         })}

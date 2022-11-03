@@ -66,7 +66,7 @@ const AddSelectPopover: React.FC<{
           >
             <AiOutlineLink />
             <p className="ml-2 text-sm font-medium">
-              {`Select your own repository on ${providerName}`}
+              {`Input any ${providerName} repository address`}
             </p>
           </div>
         </div>
