@@ -6,13 +6,13 @@ import { AiOutlineRightCircle } from 'react-icons/ai';
 import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
 import {
-  removeHttps,
   getAnalyzeLink,
   repoUrlFormat,
   getPathname,
   getHostLabel,
 } from '@common/utils';
 import { SiGitee, SiGithub } from 'react-icons/si';
+import { Level } from '@modules/analyze/constant';
 
 const SubmitYourProject: React.FC<{
   content: React.ReactNode;
@@ -54,7 +54,6 @@ const Icon: React.FC<{ name: string }> = ({ name, ...restProps }) => {
   return null;
 };
 
-// todo community level
 const LinkItem: React.FC<{
   item: SearchQuery['fuzzySearch'][number];
   active: boolean;
@@ -70,16 +69,29 @@ const LinkItem: React.FC<{
           { 'bg-gray-100': active }
         )}
       >
-        <div className="min-w-0 flex-1 overflow-hidden">
-          <div className="mb-1 text-xl font-medium line-clamp-1">
-            {repoUrlFormat(item.label!)}
-          </div>
-          <div className="flex items-center text-xs ">
-            <Icon name={host} />
-            <div className="ml-1 text-gray-600 line-clamp-1">
-              {getPathname(item.label!)}
+        <div className="min-w-0 flex-1 overflow-hidden pr-4">
+          {item.level === Level.REPO ? (
+            <>
+              <div className="mb-1 truncate text-xl font-medium">
+                {repoUrlFormat(item.label!)}
+              </div>
+              <div className="flex items-center text-xs ">
+                <Icon name={host} />
+                <div className="ml-1 truncate text-gray-600">
+                  {getPathname(item.label!)}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center">
+              <div className="mb-1 truncate text-xl font-medium">
+                {item.label}
+              </div>
+              <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
+                Community
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex flex-shrink-0 items-center text-sm font-medium text-primary">
           Insights report <AiOutlineRightCircle className="ml-2 text-base" />
