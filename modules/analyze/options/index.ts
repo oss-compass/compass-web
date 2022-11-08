@@ -1,15 +1,4 @@
-import {
-  BarSeriesOption,
-  BoxplotSeriesOption,
-  EffectScatterSeriesOption,
-  HeatmapSeriesOption,
-  LineSeriesOption,
-  ScatterSeriesOption,
-  TreemapSeriesOption,
-  EChartsOption,
-  SeriesOption,
-  XAXisComponentOption,
-} from 'echarts';
+import { BarSeriesOption, LineSeriesOption, EChartsOption } from 'echarts';
 
 import { formatISO } from '@common/utils/time';
 import { Level } from '@modules/analyze/constant';
@@ -18,7 +7,6 @@ import {
   YResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import {
-  colorGenerator,
   colors,
   getPalette,
   getPaletteColor,
@@ -77,15 +65,14 @@ const categoryAxis = (data: any[]): EChartsOption['xAxis'] => ({
   },
 });
 
-export const getLineOption = ({
-  xAxisData,
-  series,
-  tooltip,
-}: {
-  xAxisData: string[];
-  series: LineSeriesOption[];
-  tooltip?: EChartsOption['tooltip'];
-}): EChartsOption => {
+export const getLineOption = (
+  opts: {
+    xAxisData: string[];
+    series: LineSeriesOption[];
+    tooltip?: EChartsOption['tooltip'];
+  } & EChartsOption
+): EChartsOption => {
+  const { xAxisData, series, tooltip, ...restOpts } = opts;
   return {
     color: colors,
     title: {},
@@ -97,16 +84,17 @@ export const getLineOption = ({
       type: 'value',
     },
     series,
+    ...restOpts,
   };
 };
 
-export const getBarOption = ({
-  xAxisData,
-  series,
-}: {
-  xAxisData: string[];
-  series: BarSeriesOption[];
-}): EChartsOption => {
+export const getBarOption = (
+  opts: {
+    xAxisData: string[];
+    series: BarSeriesOption[];
+  } & EChartsOption
+): EChartsOption => {
+  const { xAxisData, series, ...restOpts } = opts;
   return {
     color: colors,
     title: {},
@@ -118,6 +106,7 @@ export const getBarOption = ({
       type: 'value',
     },
     series,
+    ...restOpts,
   };
 };
 
@@ -125,11 +114,15 @@ export const toTimeXAxis = (arr: any[], key: string): string[] => {
   return arr.map((i) => formatISO(i[key]));
 };
 
-export const line = (opts: {
-  name: string;
-  data: (string | number)[];
-  color?: string;
-}): LineSeriesOption => {
+export const line = (
+  opts: {
+    name: string;
+    data: (string | number)[];
+    color?: string;
+  } & LineSeriesOption
+): LineSeriesOption => {
+  const { name, data, color, ...restOpts } = opts;
+
   return {
     name: opts.name,
     type: 'line',
@@ -138,31 +131,40 @@ export const line = (opts: {
     data: opts.data,
     lineStyle: opts.color ? { color: opts.color } : {},
     itemStyle: opts.color ? { color: opts.color } : {},
+    ...restOpts,
   };
 };
 
-export const lineArea = (opts: {
-  name: string;
-  data: (string | number)[];
-  color?: string;
-}): LineSeriesOption => {
+export const lineArea = (
+  opts: {
+    name: string;
+    data: (string | number)[];
+    color?: string;
+  } & LineSeriesOption
+): LineSeriesOption => {
+  const { name, data, color, ...restOpts } = opts;
   return {
-    name: opts.name,
+    name,
     type: 'line',
     smooth: false,
     showSymbol: false,
-    data: opts.data,
-    areaStyle: opts.color ? { color: opts.color } : {},
-    itemStyle: opts.color ? { color: opts.color } : {},
+    data,
+    areaStyle: color ? { color } : {},
+    itemStyle: opts.color ? { color } : {},
+    ...restOpts,
   };
 };
 
-export const bar = (opts: {
-  name: string;
-  data: (string | number)[];
-  stack?: string;
-  color?: string;
-}): BarSeriesOption => {
+export const bar = (
+  opts: {
+    name: string;
+    data: (string | number)[];
+    stack?: string;
+    color?: string;
+  } & BarSeriesOption
+): BarSeriesOption => {
+  const { name, data, color, ...restOpts } = opts;
+
   return {
     name: opts.name,
     type: 'bar',
@@ -172,6 +174,7 @@ export const bar = (opts: {
     },
     stack: opts.stack ? opts.stack : undefined,
     itemStyle: opts.color ? { color: opts.color } : {},
+    ...restOpts,
   };
 };
 
