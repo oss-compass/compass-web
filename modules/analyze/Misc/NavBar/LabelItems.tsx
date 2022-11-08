@@ -19,39 +19,44 @@ const Icon: React.FC<{ provider: string }> = ({ provider, ...restProps }) => {
 const LabelItems = () => {
   const { compareItems } = useCompareItems();
   return (
-    <div className="flex flex-wrap items-center">
-      {compareItems.map(({ name, label, level }, index) => {
-        const host = getHostLabel(label);
+    <>
+      <div className="flex flex-wrap items-center md:hidden">
+        {compareItems.map(({ name, label, level }, index) => {
+          const host = getHostLabel(label);
 
-        let labelNode = (
-          <span className={'ml-1 mr-1 font-semibold'}>{name}</span>
-        );
-
-        if (level === Level.REPO) {
-          labelNode = (
-            <a
-              className="ml-1 mr-1 font-semibold hover:underline"
-              href={label}
-              target="_blank"
-              rel={'noreferrer'}
-            >
-              {name}
-            </a>
+          let labelNode = (
+            <span className={'ml-1 mr-1 font-semibold'}>{name}</span>
           );
-        }
 
-        return (
-          <div key={name} className="flex flex-wrap items-center">
-            <Icon provider={host} />
-            {labelNode}
-            {compareItems.length > 1 && <ColorSwitcher label={label} />}
-            {index < compareItems.length - 1 ? (
-              <span className="px-2 text-slate-300">vs</span>
-            ) : null}
-          </div>
-        );
-      })}
-    </div>
+          if (level === Level.REPO) {
+            labelNode = (
+              <a
+                className="ml-1 mr-1 font-semibold hover:underline"
+                href={label}
+                target="_blank"
+                rel={'noreferrer'}
+              >
+                {name}
+              </a>
+            );
+          }
+
+          return (
+            <div key={name} className="flex flex-wrap items-center">
+              <Icon provider={host} />
+              {labelNode}
+              {compareItems.length > 1 && <ColorSwitcher label={label} />}
+              {index < compareItems.length - 1 ? (
+                <span className="px-2 text-slate-300">vs</span>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+      <div className="hidden md:block">
+        {/* todo show compare items in mobile */}
+      </div>
+    </>
   );
 };
 

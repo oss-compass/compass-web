@@ -23,7 +23,7 @@ const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   return (
     <td
       className={classnames(
-        'w-1/4 border-t border-b border-b-[#ffffff] py-4 text-center font-semibold',
+        'w-1/4 border-t border-b border-b-[#ffffff] py-4 text-center font-semibold md:text-sm',
         className
       )}
       {...props}
@@ -129,10 +129,12 @@ const TrendsList: React.FC = () => {
               return (
                 <tr className="" key={item!.label}>
                   <td className="flex flex-col px-1">
-                    <span>{getLastPathSegment(item!.label!)}</span>
-                    <span className={'text-xs text-gray-400'}>
+                    <p className="break-words md:w-[140px]">
+                      {getLastPathSegment(item!.label!)}
+                    </p>
+                    <p className={'text-xs text-gray-400'}>
                       {`update at ${formatISO(item!.activityScoreUpdatedAt!)}`}
-                    </span>
+                    </p>
                   </td>
                   <Td className="bg-[#f2fcff]">
                     {markingSys
