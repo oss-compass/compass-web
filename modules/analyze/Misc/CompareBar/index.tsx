@@ -42,7 +42,7 @@ const CompareItem: React.FC<{
       )}
     >
       {showCloseIcon && <CloseIcons {...item} />}
-      <div className="mb-2 text-2xl font-bold text-white line-clamp-1">
+      <div className="mb-2 truncate text-2xl font-bold text-white">
         {getLastPathSegment(item.label)}
       </div>
       {showColorSwitch && <ColorSwitcher label={item.label} />}
