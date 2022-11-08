@@ -1,22 +1,24 @@
 import React, { useMemo, useState } from 'react';
-import { genSeries, getLineOption, lineArea } from '@modules/analyze/options';
-import { Activity } from '@modules/analyze/Misc/SideBar/menus';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
+import { Support } from '@modules/analyze/Misc/SideBar/config';
 import {
   getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
+import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-import { ChartThemeState } from '@modules/analyze/context';
-import { LineSeriesOption } from 'echarts';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import { ChartThemeState } from '@modules/analyze/context';
 
 const tansOpts: TransOpts = {
-  metricType: 'metricActivity',
+  metricType: 'metricCommunity',
   xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'activity score', valueKey: 'activityScore' }],
+  yAxisOpts: [
+    { legendName: 'community support', valueKey: 'communitySupportScore' },
+  ],
 };
 
 let hundredMarkingSys = true;
@@ -28,7 +30,7 @@ const getOptions = (
     yResults,
     ({ legendName, label, level, isCompare, color, data }) => {
       hundredMarkingSys && (data = data.map((i) => transMarkingSystem(i)));
-      return lineArea({
+      return line({
         name: getLegendName(legendName, { label, level, isCompare }),
         data: data,
         color,
@@ -39,7 +41,7 @@ const getOptions = (
   return getLineOption({ xAxisData: xAxis, series });
 };
 
-const Overview = () => {
+const CommunityServiceSupportOverview = () => {
   const [markingSys, setMarkingSys] = useState(true);
   const getMarkingSys = (val: boolean) => {
     hundredMarkingSys = val;
@@ -47,11 +49,9 @@ const Overview = () => {
   };
   return (
     <BaseCard
-      title="Overview"
-      id={Activity.Overview}
-      description={
-        'Community Activity is used to describe how active an open source community is.'
-      }
+      title="Community Service Support"
+      id={Support.Overview}
+      description={''}
       showMarkingSysBtn={true}
       getMarkingSys={(val) => getMarkingSys(val)}
     >
@@ -66,4 +66,4 @@ const Overview = () => {
   );
 };
 
-export default Overview;
+export default CommunityServiceSupportOverview;

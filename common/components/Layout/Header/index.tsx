@@ -11,14 +11,10 @@ import LogoGithub from './logo-github.svg';
 const Header: React.FC<{
   sticky?: boolean;
   mobileMenu?: React.ReactNode;
-}> = ({ sticky = false, mobileMenu }) => {
+}> = ({ sticky = true, mobileMenu }) => {
   return (
-    <>
-      <header
-        className={classnames('flex-shrink-0 bg-black lg:hidden', {
-          'sticky top-0': sticky,
-        })}
-      >
+    <header>
+      <div className={classnames('bg-black lg:hidden')}>
         <div
           className={classnames(
             'h-20 px-8',
@@ -62,11 +58,11 @@ const Header: React.FC<{
             <SubmitYouProject />
           </div>
         </div>
-      </header>
-      <header className={classnames('flex-shrink-0 >lg:hidden')}>
+      </div>
+      <div className={classnames('bg-white >lg:hidden')}>
         <MobileHeader>{mobileMenu}</MobileHeader>
-      </header>
-    </>
+      </div>
+    </header>
   );
 };
 export default Header;

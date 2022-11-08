@@ -1,6 +1,6 @@
 import React from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Activity, Support } from '@modules/analyze/Misc/SideBar/menus';
+import { Activity, Support } from '@modules/analyze/Misc/SideBar/config';
 import {
   getLegendName,
   TransOpts,

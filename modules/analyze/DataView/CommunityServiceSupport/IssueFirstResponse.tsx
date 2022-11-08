@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { LineSeriesOption } from 'echarts';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Support } from '@modules/analyze/Misc/SideBar/menus';
+import { Support } from '@modules/analyze/Misc/SideBar/config';
 import {
   getLegendName,
   TransOpts,

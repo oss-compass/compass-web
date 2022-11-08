@@ -1,6 +1,6 @@
 import React from 'react';
 import BaseCard from '@common/components/BaseCard';
-import { Activity } from '@modules/analyze/Misc/SideBar/menus';
+import { Activity } from '@modules/analyze/Misc/SideBar/config';
 
 const OrgCount = () => {
   return (

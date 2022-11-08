@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Activity } from '@modules/analyze/Misc/SideBar/menus';
+import { Activity } from '@modules/analyze/Misc/SideBar/config';
 import {
   getLegendName,
   TransOpts,

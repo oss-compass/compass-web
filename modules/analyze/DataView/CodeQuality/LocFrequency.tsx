@@ -1,6 +1,6 @@
 import React from 'react';
 import { bar, genSeries, getBarOption } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/menus';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
 
 import {
   getLegendName,

@@ -1,6 +1,5 @@
 import React from 'react';
 import Topic from '@common/components/Topic';
-import Overview from './Overview';
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import IsMaintained from './IsMaintained';
@@ -13,9 +12,6 @@ const CodeQuality = () => {
   return (
     <>
       <Topic id={'code_quality_guarantee'}>Code Quality Guarantee</Topic>
-      <div className="mb-4">
-        <Overview />
-      </div>
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ContributorCount />
         <CommitFrequency />

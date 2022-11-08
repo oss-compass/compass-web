@@ -1,23 +1,26 @@
 import React, { useMemo, useState } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Support } from '@modules/analyze/Misc/SideBar/menus';
+import BaseCard from '@common/components/BaseCard';
+import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
 import {
   getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
-import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 import { ChartThemeState } from '@modules/analyze/context';
+import { LineSeriesOption } from 'echarts';
+import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 
 const tansOpts: TransOpts = {
-  metricType: 'metricCommunity',
+  metricType: 'metricCodequality',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
-    { legendName: 'community support', valueKey: 'communitySupportScore' },
+    {
+      legendName: 'code quality',
+      valueKey: 'codeQualityGuarantee',
+    },
   ],
 };
 
@@ -41,7 +44,7 @@ const getOptions = (
   return getLineOption({ xAxisData: xAxis, series });
 };
 
-const Overview = () => {
+const CodeQualityOverview = () => {
   const [markingSys, setMarkingSys] = useState(true);
   const getMarkingSys = (val: boolean) => {
     hundredMarkingSys = val;
@@ -49,9 +52,8 @@ const Overview = () => {
   };
   return (
     <BaseCard
-      title="Overview"
-      id={Support.Overview}
-      description={''}
+      title="Code Quality"
+      id={CodeQuality.Overview}
       showMarkingSysBtn={true}
       getMarkingSys={(val) => getMarkingSys(val)}
     >
@@ -66,4 +68,4 @@ const Overview = () => {
   );
 };
 
-export default Overview;
+export default CodeQualityOverview;

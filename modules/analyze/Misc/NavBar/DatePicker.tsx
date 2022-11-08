@@ -9,13 +9,13 @@ const DatePicker = () => {
   const { switchRange } = useSwitchRange();
 
   return (
-    <div className="flex h-8 items-center rounded-3xl border md:hidden">
+    <div className="flex h-8 shrink-0 items-center rounded-3xl border md:hidden">
       {rangeTags.map((t) => {
         return (
           <div
             key={t}
             className={classnames(
-              { 'bg-gray-200 ': range === t },
+              { 'bg-gray-100 font-bold text-primary': range === t },
               'flex h-full cursor-pointer items-center rounded-3xl px-4 text-sm'
             )}
             onClick={async () => {
