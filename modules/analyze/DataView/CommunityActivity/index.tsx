@@ -1,5 +1,6 @@
 import React from 'react';
-import Topic from '@common/components/Topic';
+import MenuSection from '@modules/analyze/Misc/MenuSection';
+import { CommunityActivity } from '@modules/analyze/Misc/SideBar/config';
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import UpdatedSince from './UpdatedSince';
@@ -10,10 +11,10 @@ import CodeReviewCount from './CodeReviewCount';
 import UpdatedIssuesCount from './UpdatedIssuesCount';
 import RecentReleasesCount from './RecentReleasesCount';
 
-const CommunityActivity = () => {
+const Activity = () => {
   return (
     <>
-      <Topic id="community_activity">Community Activity</Topic>
+      <MenuSection id={CommunityActivity.id}>Activity</MenuSection>
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ContributorCount />
         <CommitFrequency />
@@ -29,4 +30,4 @@ const CommunityActivity = () => {
   );
 };
 
-export default CommunityActivity;
+export default Activity;

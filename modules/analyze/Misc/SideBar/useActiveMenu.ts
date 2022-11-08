@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from 'react-use';
 
 const useActiveMenu = () => {
@@ -7,8 +7,11 @@ const useActiveMenu = () => {
   useEffect(() => {
     const hashChangeHandle = (e: HashChangeEvent) => {
       const hash = window.location.hash;
+      if (!hash) return;
       console.log('hashChangeHandle', hash);
-      setActiveId(hash);
+
+      const id = hash.replace('#', '');
+      setActiveId(id);
     };
     // hashChangeHandle();
     window.addEventListener('hashchange', hashChangeHandle, false);
@@ -20,8 +23,7 @@ const useActiveMenu = () => {
   useDebounce(
     () => {
       if (!activeId) return;
-      const id = activeId.replace('#', '');
-      const el = document.getElementById(id)?.parentElement;
+      const el = document.getElementById(activeId)?.parentElement;
       if (!el) return;
 
       const cards = document.querySelectorAll('.base-card');
@@ -36,7 +38,13 @@ const useActiveMenu = () => {
     [activeId]
   );
 
-  return activeId;
+  return useMemo(() => {
+    return {
+      topic: activeId,
+      menu: activeId,
+      subMenu: activeId,
+    };
+  }, [activeId]);
 };
 
 export default useActiveMenu;

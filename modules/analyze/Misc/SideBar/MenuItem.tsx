@@ -6,35 +6,21 @@ const MenuItem: React.FC<
     id: string;
     disabled?: boolean;
     active?: boolean;
-    bold?: boolean;
     subMenu?: React.ReactNode;
   }>
-> = ({
-  bold = false,
-  disabled = false,
-  active = false,
-  id,
-  subMenu,
-  children,
-}) => {
+> = ({ disabled = false, active = false, id, subMenu, children }) => {
   return (
-    <div className="group px-4">
-      <div
-        className={classnames(
-          'relative',
-          'mb-0.5 flex cursor-pointer items-center rounded py-2 px-6',
-          { 'cursor-not-allowed': disabled },
-          { 'bg-gray-100 !text-black': active },
-          { 'group-hover:bg-gray-100': !disabled }
-        )}
-      >
+    <div className="group mb-0.5 px-4">
+      <div className={classnames('relative')}>
         <a
           href={`#${id}`}
-          className={classnames('truncate text-xs text-gray-600', {
-            'font-medium': bold,
-            '!text-gray-400': disabled,
-            'group-hover:text-black': !disabled,
-          })}
+          className={classnames(
+            'truncate text-xs text-gray-700',
+            'flex cursor-pointer items-center rounded py-2 px-6',
+            { 'bg-gray-100 !text-black': active },
+            { 'cursor-not-allowed !text-gray-300': disabled },
+            { 'group-hover:bg-gray-100 group-hover:text-black': !disabled }
+          )}
         >
           {children}
         </a>

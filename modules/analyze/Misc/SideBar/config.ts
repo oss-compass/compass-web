@@ -1,7 +1,3 @@
-import Productivity from '@modules/analyze/Misc/SideBar/TopicProductivity';
-import Robustness from '@modules/analyze/Misc/SideBar/TopicRobustness';
-import NicheCreation from '@modules/analyze/Misc/SideBar/TopicNicheCreation';
-
 export enum CodeQuality {
   Overview = 'code_quality_overview',
   ContributorCount = 'code_quality_contributor_count',
@@ -45,6 +41,7 @@ export enum Topic {
 }
 
 export const CodeQualityGuarantee = {
+  topic: Topic.Productivity,
   name: 'Code Quality Guarantee',
   id: 'code_quality_guarantee',
   groups: [
@@ -60,6 +57,7 @@ export const CodeQualityGuarantee = {
 };
 
 export const CommunityServiceAndSupport = {
+  topic: Topic.Productivity,
   name: 'Community Service and Support',
   id: 'community_service_support',
   groups: [
@@ -75,6 +73,7 @@ export const CommunityServiceAndSupport = {
 };
 
 export const CommunityActivity = {
+  topic: Topic.Robustness,
   name: 'Community Activity ',
   id: 'community_activity',
   groups: [

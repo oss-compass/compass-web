@@ -39,7 +39,7 @@ const getOptions = (
       if (legendName === 'code merge ratio') {
         return line({ name, data, color, yAxisIndex: 1 });
       }
-      return lineArea({ name, data, color, yAxisIndex: 0 });
+      return line({ name, data, color, yAxisIndex: 0 });
     },
     theme
   );

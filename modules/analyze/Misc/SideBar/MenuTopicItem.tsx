@@ -5,11 +5,10 @@ const TopicItem: React.FC<
   PropsWithChildren<{
     hash: string;
     active?: boolean;
-    bold: boolean;
     icon: React.ReactNode;
     menus?: React.ReactNode;
   }>
-> = ({ bold = false, active = false, hash, children, menus, icon }) => {
+> = ({ active = false, hash, children, menus, icon }) => {
   return (
     <>
       <div className="group px-4">
@@ -21,11 +20,7 @@ const TopicItem: React.FC<
           )}
         >
           {icon}
-          <h3
-            className={classnames('text-sm line-clamp-1', {
-              'font-medium': bold,
-            })}
-          >
+          <h3 className={classnames('text-sm font-medium line-clamp-1')}>
             {children}
           </h3>
         </a>

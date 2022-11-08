@@ -8,7 +8,6 @@ const NicheCreation = () => {
   return (
     <MenuTopicItem
       hash={Topic.NicheCreation}
-      bold
       icon={
         <span className="mr-1 flex-shrink-0">
           <NicheCreationIcon />

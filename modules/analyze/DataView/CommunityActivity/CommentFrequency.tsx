@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { genSeries, getLineOption, lineArea } from '@modules/analyze/options';
+import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import { Activity } from '@modules/analyze/Misc/SideBar/config';
 import {
   getLegendName,
@@ -27,7 +27,7 @@ const getOptions = (
   const series = genSeries<LineSeriesOption>(
     yResults,
     ({ legendName, label, level, isCompare, color, data }) => {
-      return lineArea({
+      return line({
         name: getLegendName(legendName, { label, level, isCompare }),
         data: data,
         color,

@@ -51,7 +51,7 @@ const SideBar = () => {
   return (
     <aside
       className={classnames(
-        'relative z-menu w-64 flex-shrink-0 border-r',
+        'relative z-menu w-64 flex-shrink-0 border-r bg-white',
         'lg:hidden'
       )}
     >

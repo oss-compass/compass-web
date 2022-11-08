@@ -1,5 +1,6 @@
 import React from 'react';
-import Topic from '@common/components/Topic';
+import MenuSection from '@modules/analyze/Misc/MenuSection';
+import { CodeQualityGuarantee } from '@modules/analyze/Misc/SideBar/config';
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import IsMaintained from './IsMaintained';
@@ -11,7 +12,9 @@ import LocFrequency from './LocFrequency';
 const CodeQuality = () => {
   return (
     <>
-      <Topic id={'code_quality_guarantee'}>Code Quality Guarantee</Topic>
+      <MenuSection id={CodeQualityGuarantee.id}>
+        Code Quality Guarantee
+      </MenuSection>
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ContributorCount />
         <CommitFrequency />

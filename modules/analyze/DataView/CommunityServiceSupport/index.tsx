@@ -1,5 +1,6 @@
 import React from 'react';
-import Topic from '@common/components/Topic';
+import MenuSection from '@modules/analyze/Misc/MenuSection';
+import { CommunityServiceAndSupport } from '@modules/analyze/Misc/SideBar/config';
 
 import IssueFirstResponse from './IssueFirstResponse';
 import IssueOpenTime from './IssueOpenTime';
@@ -13,9 +14,9 @@ import ClosedPrsCount from './ClosedPrsCount';
 const CommunitySupport = () => {
   return (
     <>
-      <Topic id={'community_service_support'}>
+      <MenuSection id={CommunityServiceAndSupport.id}>
         Community Service and Support
-      </Topic>
+      </MenuSection>
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4  md:grid-cols-1">
         <IssueFirstResponse />
         <IssueOpenTime />

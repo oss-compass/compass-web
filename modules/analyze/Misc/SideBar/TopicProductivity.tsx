@@ -10,60 +10,61 @@ import {
 } from './config';
 
 const Productivity = () => {
+  const menu = (
+    <>
+      <MenuItem
+        id={CodeQualityGuarantee.id}
+        subMenu={
+          <>
+            {CodeQualityGuarantee.groups.map((item) => {
+              return (
+                <MenuSubItem key={item.id} id={item.id}>
+                  {item.name}
+                </MenuSubItem>
+              );
+            })}
+          </>
+        }
+      >
+        Code Quality Guarantee
+      </MenuItem>
+      <MenuItem id="2" disabled>
+        Code Security Guarantee
+      </MenuItem>
+      <MenuItem id="3" disabled>
+        Code Compliance Guarantee
+      </MenuItem>
+      <MenuItem id="4" disabled>
+        Content
+      </MenuItem>
+      <MenuItem
+        id={CommunityServiceAndSupport.id}
+        subMenu={
+          <>
+            {CommunityServiceAndSupport.groups.map((item) => {
+              return (
+                <MenuSubItem key={item.id} id={item.id}>
+                  {item.name}
+                </MenuSubItem>
+              );
+            })}
+          </>
+        }
+      >
+        Community Service and Support
+      </MenuItem>
+    </>
+  );
+
   return (
     <MenuTopicItem
       hash={Topic.Productivity}
-      bold
       icon={
         <span className="mr-1 flex-shrink-0">
           <ProductivityIcon />
         </span>
       }
-      menus={
-        <>
-          <MenuItem
-            id={CodeQualityGuarantee.id}
-            subMenu={
-              <>
-                {CodeQualityGuarantee.groups.map((item) => {
-                  return (
-                    <MenuSubItem key={item.id} id={item.id}>
-                      {item.name}
-                    </MenuSubItem>
-                  );
-                })}
-              </>
-            }
-          >
-            Code Quality Guarantee
-          </MenuItem>
-          <MenuItem id="2" disabled>
-            Code Security Guarantee
-          </MenuItem>
-          <MenuItem id="3" disabled>
-            Code Compliance Guarantee
-          </MenuItem>
-          <MenuItem id="4" disabled>
-            Content
-          </MenuItem>
-          <MenuItem
-            id={CommunityServiceAndSupport.id}
-            subMenu={
-              <>
-                {CommunityServiceAndSupport.groups.map((item) => {
-                  return (
-                    <MenuSubItem key={item.id} id={item.id}>
-                      {item.name}
-                    </MenuSubItem>
-                  );
-                })}
-              </>
-            }
-          >
-            Community Service and Support
-          </MenuItem>
-        </>
-      }
+      menus={menu}
     >
       Productivity
     </MenuTopicItem>

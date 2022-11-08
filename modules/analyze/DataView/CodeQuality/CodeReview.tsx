@@ -38,7 +38,7 @@ const getOptions = (
       if (legendName === 'code review ratio') {
         return line({ name, data, color, yAxisIndex: 1 });
       }
-      return lineArea({ name, data, color });
+      return line({ name, data, color });
     },
     theme
   );
