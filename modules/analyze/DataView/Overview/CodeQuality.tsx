@@ -18,7 +18,7 @@ const tansOpts: TransOpts = {
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     {
-      legendName: 'code quality',
+      legendName: 'code quality guarantee',
       valueKey: 'codeQualityGuarantee',
     },
   ],

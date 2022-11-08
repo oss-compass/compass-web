@@ -119,7 +119,7 @@ export function getLegendName(
   const compareNames = formatRepoName(label, level);
 
   // if only one legend type, only show compareNames
-  if (legendTypeCount === 1) {
+  if (isCompare && legendTypeCount === 1) {
     return compareNames;
   }
 

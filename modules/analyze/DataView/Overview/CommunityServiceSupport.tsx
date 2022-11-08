@@ -17,7 +17,10 @@ const tansOpts: TransOpts = {
   metricType: 'metricCommunity',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
-    { legendName: 'community support', valueKey: 'communitySupportScore' },
+    {
+      legendName: 'community service support',
+      valueKey: 'communitySupportScore',
+    },
   ],
 };
 

@@ -16,7 +16,7 @@ import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingS
 const tansOpts: TransOpts = {
   metricType: 'metricActivity',
   xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'activity', valueKey: 'activityScore' }],
+  yAxisOpts: [{ legendName: 'community activity', valueKey: 'activityScore' }],
 };
 
 let hundredMarkingSys = true;
