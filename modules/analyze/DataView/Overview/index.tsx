@@ -11,10 +11,10 @@ const OverView = () => {
         <CodeQuality />
       </div>
       <div className="mb-4">
-        <CommunityActivity />
+        <CommunityServiceSupport />
       </div>
       <div className="mb-4">
-        <CommunityServiceSupport />
+        <CommunityActivity />
       </div>
     </>
   );

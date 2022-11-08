@@ -5,7 +5,7 @@ import client from '@graphql/client';
 import useCompareItems from '../hooks/useCompareItems';
 import useQueryDateRange from '../hooks/useQueryDateRange';
 import Trend from './Trend';
-import OverView from './OverView';
+import Overview from './Overview';
 import CodeQuality from './CodeQuality';
 import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
@@ -34,7 +34,7 @@ const Charts = () => {
       <Topic id={TopicID.Overview} paddingTop>
         Overview
       </Topic>
-      <OverView />
+      <Overview />
 
       <Topic id={TopicID.Productivity}>Productivity</Topic>
       <CodeQuality />
