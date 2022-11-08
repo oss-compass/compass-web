@@ -23,40 +23,31 @@ const LabelItems = () => {
       {compareItems.map(({ name, label, level }, index) => {
         const host = getHostLabel(label);
 
-        const Item = (
-          <>
-            <Icon provider={host} />
-            <span
-              className={classnames('ml-1 mr-1 font-semibold', {
-                'hover:underline': level === Level.REPO,
-              })}
-            >
-              {name}
-            </span>
-            {compareItems.length > 1 && <ColorSwitcher label={label} />}
-            {index < compareItems.length - 1 ? (
-              <span className="px-2 text-slate-300">vs</span>
-            ) : null}
-          </>
+        let labelNode = (
+          <span className={'ml-1 mr-1 font-semibold'}>{name}</span>
         );
 
         if (level === Level.REPO) {
-          return (
+          labelNode = (
             <a
-              key={name}
-              href={level === Level.REPO ? label : 'void 0'}
+              className="ml-1 mr-1 font-semibold hover:underline"
+              href={label}
               target="_blank"
               rel={'noreferrer'}
-              className="flex flex-wrap items-center"
             >
-              {Item}
+              {name}
             </a>
           );
         }
 
         return (
           <div key={name} className="flex flex-wrap items-center">
-            {Item}
+            <Icon provider={host} />
+            {labelNode}
+            {compareItems.length > 1 && <ColorSwitcher label={label} />}
+            {index < compareItems.length - 1 ? (
+              <span className="px-2 text-slate-300">vs</span>
+            ) : null}
           </div>
         );
       })}

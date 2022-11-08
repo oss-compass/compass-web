@@ -32,7 +32,7 @@ const Charts = () => {
     <>
       <Trend />
       <Topic id={TopicID.Overview} paddingTop>
-        OverView
+        Overview
       </Topic>
       <OverView />
 

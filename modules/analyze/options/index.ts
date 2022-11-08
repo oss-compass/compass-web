@@ -223,15 +223,18 @@ const getPaletteIndex = (
 
 export function genSeries<T>(
   comparesYAxis: YResult[],
-  seriesItem: (item: {
-    label: string;
-    level: Level;
-    legendName: string;
-    isCompare: boolean;
-    color: string;
-    key: string;
-    data: (string | number)[];
-  }) => T | null,
+  seriesItem: (
+    item: {
+      label: string;
+      level: Level;
+      legendName: string;
+      isCompare: boolean;
+      color: string;
+      key: string;
+      data: (string | number)[];
+    },
+    length?: number
+  ) => T | null,
   theme?: ChartThemeState
 ) {
   const isCompare = comparesYAxis.length > 1;
@@ -246,13 +249,10 @@ export function genSeries<T>(
           ? getPaletteColor(palette, legendIndex + 3)
           : '';
 
-        return seriesItem({
-          isCompare,
-          color: color,
-          level,
-          label,
-          ...item,
-        });
+        return seriesItem(
+          { isCompare, color: color, level, label, ...item },
+          yAxisResult.length
+        );
       })
       .filter(Boolean) as T[];
     acc = [...acc, ...result];

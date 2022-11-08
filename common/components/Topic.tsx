@@ -7,7 +7,7 @@ const Topic: React.FC<
   return (
     <h1
       className={classnames(
-        'group relative z-20 mb-6 pt-[138px] text-3xl',
+        'z-2 group relative mb-6 pt-[138px] text-3xl',
         'md:-mt-[108px] md:px-4 md:pt-[138px] md:text-3xl',
         [paddingTop ? '-mt-[138px]' : '-mt-[88px]']
       )}

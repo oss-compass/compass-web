@@ -96,6 +96,7 @@ const TrendsList: React.FC = () => {
       loading={loading}
       title="Trending"
       id={'trending'}
+      className="mb-10"
       description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
       showMarkingSysBtn={true}
       getMarkingSys={(val) => setMarkingSys(val)}

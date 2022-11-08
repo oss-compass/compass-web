@@ -97,7 +97,7 @@ export function transToAxis(
   };
 }
 
-const formatLegendName = (name: string, level: Level) => {
+const formatRepoName = (name: string, level: Level) => {
   let label = name;
   if (level === Level.REPO) {
     label = repoUrlFormat(name);
@@ -107,11 +107,22 @@ const formatLegendName = (name: string, level: Level) => {
 
 export function getLegendName(
   legendName: string,
-  opts: { label: string; level: Level; isCompare: boolean }
+  opts: {
+    label: string;
+    level: Level;
+    isCompare: boolean;
+    legendTypeCount?: number;
+  }
 ) {
-  const { label, level, isCompare } = opts;
+  const { label, level, isCompare, legendTypeCount } = opts;
   // format legend name
-  const compareNames = formatLegendName(label, level);
+  const compareNames = formatRepoName(label, level);
+
+  // if only one legend type, only show compareNames
+  if (legendTypeCount === 1) {
+    return compareNames;
+  }
+
   const name = isCompare ? `${compareNames} ${legendName}` : legendName;
   return name;
 }

@@ -31,8 +31,13 @@ const getOptions = (
 ) => {
   const series = genSeries<LineSeriesOption>(
     yResults,
-    ({ legendName, label, level, isCompare, color, data }) => {
-      const name = getLegendName(legendName, { label, level, isCompare });
+    ({ legendName, label, level, isCompare, color, data }, len) => {
+      const name = getLegendName(legendName, {
+        label,
+        level,
+        isCompare,
+        legendTypeCount: len,
+      });
       if (legendName === 'linked issue ratio') {
         return line({ name, data, color, yAxisIndex: 1 });
       }

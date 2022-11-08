@@ -55,7 +55,7 @@ const CompareBar = () => {
   const len = compareItems.length;
 
   return (
-    <div className="relative z-20 mb-8 flex min-h-[80px] md:hidden">
+    <div className="relative z-[70] mb-8 flex min-h-[80px] md:hidden">
       <div className="min-w-0 flex-1 rounded-tl-lg rounded-bl-lg bg-[#00B5EA]">
         <div className="overflow flex h-full">
           {compareItems.map((item, index) => {

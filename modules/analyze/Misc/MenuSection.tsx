@@ -8,7 +8,7 @@ const MenuSection: React.FC<PropsWithChildren<{ id: string }>> = ({
   return (
     <h1
       className={classnames(
-        'group relative z-10 mb-6 -mt-[118px] pt-[138px] text-2xl',
+        'z-1 group relative mb-6 -mt-[118px] pt-[138px] text-2xl',
         'md:-mt-[138px] md:px-4 md:pt-[138px] md:text-xl'
       )}
       id={id}
