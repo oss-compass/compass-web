@@ -55,10 +55,15 @@ const Project: React.FC<{
         })}
       >
         <a className="mb-5 block">
-          <h3 className="mb-2 text-xl font-medium line-clamp-1 hover:underline">
-            {repo.name}
+          <h3
+            className="mb-2 text-xl font-medium line-clamp-1 hover:underline"
+            title={repo.path || ''}
+          >
+            {repo.path}
           </h3>
-          <p className="text-sm text-gray-400 line-clamp-1">{repo.language}</p>
+          <div className="h-[20px] text-sm text-gray-400 line-clamp-1">
+            {repo.language}
+          </div>
         </a>
       </Link>
       <div className="h-6 w-1/3">
@@ -77,7 +82,7 @@ const HotProjects: React.FC<{
 }> = ({ trends = [] }) => {
   const total = trends?.length || 0;
   const [index, setIndex] = useState(1);
-  const [interval, setInterval] = useState<number | undefined>(20000);
+  const [interval, setIntervalTime] = useState<number | undefined>(20000);
   const ref = useRef(null);
   const [inViewport] = useInViewport(ref);
 
@@ -107,7 +112,7 @@ const HotProjects: React.FC<{
                 if (pre === 1) return Math.floor(total / 6);
                 return pre - 1;
               });
-              setInterval((pre) => {
+              setIntervalTime((pre) => {
                 if (pre === 20000) return pre + 1;
                 return 20000;
               });
@@ -122,7 +127,7 @@ const HotProjects: React.FC<{
                 if (pre >= Math.floor(total / 6)) return 1;
                 return pre + 1;
               });
-              setInterval((pre) => {
+              setIntervalTime((pre) => {
                 if (pre === 20000) return pre + 1;
                 return 20000;
               });
