@@ -44,10 +44,10 @@ const getOptions = (
 const CodeReviewCount = () => {
   return (
     <BaseCard
-      title="Code review count"
+      title="Code Review Count"
       id={Activity.CodeReviewCount}
       description={
-        'Determine the average number of review comments per pull request created in the last 90 days'
+        'Determine the average number of review comments per pull request created in the last 90 days.'
       }
     >
       {(ref) => {

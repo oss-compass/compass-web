@@ -46,9 +46,11 @@ const getOptions = (
 const UpdatedIssuesCount = () => {
   return (
     <BaseCard
-      title="Updated issues count"
+      title="Updated Issues Count"
       id={Support.UpdatedIssuesCount}
-      description={'Number of issue updates in the last 90 days.'}
+      description={
+        'Determine the number of issues updated in the last 90 days.'
+      }
     >
       {(ref) => {
         return (

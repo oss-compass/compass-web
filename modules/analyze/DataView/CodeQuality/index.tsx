@@ -1,27 +1,37 @@
 import React from 'react';
-import MenuSection from '@modules/analyze/Misc/MenuSection';
-import { CodeQualityGuarantee } from '@modules/analyze/Misc/SideBar/config';
+import SectionTitle from '@modules/analyze/Misc/SectionTitle';
+import { Section } from '@modules/analyze/Misc/SideBar/config';
+
+import CodeQualityOverview from '../Overview/CodeQuality';
+
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import IsMaintained from './IsMaintained';
 import PRIssueLinked from './PRIssueLinked';
-import CodeReview from './CodeReview';
-import CodeMerge from './CodeMerge';
+import CommitPRLinkedRatio from './CommitPRLinkedRatio';
+import CodeReviewRatio from './CodeReviewRatio';
+import CodeMergeRatio from './CodeMergeRatio';
 import LocFrequency from './LocFrequency';
 
 const CodeQuality = () => {
   return (
     <>
-      <MenuSection id={CodeQualityGuarantee.id}>
+      <SectionTitle id={Section.CodeQualityGuarantee}>
         Code Quality Guarantee
-      </MenuSection>
+      </SectionTitle>
+
+      <div className="mb-4">
+        <CodeQualityOverview />
+      </div>
+
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ContributorCount />
         <CommitFrequency />
         <IsMaintained />
+        <CommitPRLinkedRatio />
         <PRIssueLinked />
-        <CodeReview />
-        <CodeMerge />
+        <CodeReviewRatio />
+        <CodeMergeRatio />
         <LocFrequency />
       </div>
     </>

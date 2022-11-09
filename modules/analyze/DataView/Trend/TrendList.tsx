@@ -14,6 +14,7 @@ import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import { Topic } from '@modules/analyze/Misc/SideBar/config';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -94,10 +95,10 @@ const TrendsList: React.FC = () => {
   return (
     <BaseCard
       loading={loading}
-      title="Trending"
-      id={'trending'}
+      title="Overview"
+      id={Topic.Overview}
       className="mb-10"
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      description=""
       showMarkingSysBtn={true}
       getMarkingSys={(val) => setMarkingSys(val)}
     >
@@ -105,13 +106,13 @@ const TrendsList: React.FC = () => {
         <thead>
           <tr className="">
             <th style={{ width: '15%' }} />
-            <TT className="border-t-[#90E6FF] bg-[#f2fcff]">Code quality</TT>
+            <TT className="border-t-[#90E6FF] bg-[#f2fcff]">
+              Code Quality Guarantee
+            </TT>
             <TT className="border-t-[#FFB290] bg-[#fff9f3]">
-              Community support
+              Community Service and Support
             </TT>
-            <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
-              Community activity
-            </TT>
+            <TT className="border-t-[#B990FF] bg-[#f8f3ff]">Activity</TT>
           </tr>
           {/*<tr>*/}
           {/*  <th></th>*/}

@@ -44,7 +44,7 @@ const getOptions = (
 const UpdatedSince = () => {
   return (
     <BaseCard
-      title="Updated since"
+      title="Updated Since"
       id={Activity.UpdatedSince}
       description={
         'Determine the average time per repository since the repository was last updated (in months).'

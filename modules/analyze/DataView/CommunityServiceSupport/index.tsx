@@ -1,10 +1,12 @@
 import React from 'react';
-import MenuSection from '@modules/analyze/Misc/MenuSection';
-import { CommunityServiceAndSupport } from '@modules/analyze/Misc/SideBar/config';
+import SectionTitle from '@modules/analyze/Misc/SectionTitle';
+import { Section } from '@modules/analyze/Misc/SideBar/config';
+
+import CommunityServiceSupport from '../Overview/CommunityServiceSupport';
 
 import IssueFirstResponse from './IssueFirstResponse';
-import IssueOpenTime from './IssueOpenTime';
-import IssueCommentFrequency from './IssueCommentFrequency';
+import BugIssueOpenTime from './BugIssueOpenTime';
+import CommentFrequency from './CommentFrequency';
 import UpdatedIssuesCount from './UpdatedIssuesCount';
 
 import PrOpenTime from './PrOpenTime';
@@ -14,17 +16,22 @@ import ClosedPrsCount from './ClosedPrsCount';
 const CommunitySupport = () => {
   return (
     <>
-      <MenuSection id={CommunityServiceAndSupport.id}>
+      <SectionTitle id={Section.CommunityServiceAndSupport}>
         Community Service and Support
-      </MenuSection>
+      </SectionTitle>
+
+      <div className="mb-4">
+        <CommunityServiceSupport />
+      </div>
+
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4  md:grid-cols-1">
-        <IssueFirstResponse />
-        <IssueOpenTime />
-        <IssueCommentFrequency />
         <UpdatedIssuesCount />
-        <PrOpenTime />
-        <CodeReviewCount />
         <ClosedPrsCount />
+        <IssueFirstResponse />
+        <BugIssueOpenTime />
+        <PrOpenTime />
+        <CommentFrequency />
+        <CodeReviewCount />
       </div>
     </>
   );

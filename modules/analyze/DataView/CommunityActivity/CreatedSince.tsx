@@ -44,7 +44,7 @@ const getOptions = (
 const CreatedSince = () => {
   return (
     <BaseCard
-      title="Created since"
+      title="Created Since"
       id={Activity.CreatedSince}
       description={
         'Determine how long a repository has existed since it was created (in months).'

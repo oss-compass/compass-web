@@ -61,9 +61,11 @@ const getOptions = (
 const PRIssueLinked = () => {
   return (
     <BaseCard
-      title="PR issue linked ratio"
+      title="PR Issue Linked Ratio"
       id={CodeQuality.PRIssueLinkedRatio}
-      description={'Percentage of new pr link issues in the last 90 days.'}
+      description={
+        'Determine the percentage of new pull request link issues in the last 90 days.'
+      }
     >
       {(ref) => {
         return (

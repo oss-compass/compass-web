@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import classnames from 'classnames';
 
-const SubMenuItem: React.FC<
+const MenuSubItem: React.FC<
   PropsWithChildren<{ id: string; active?: boolean }>
 > = ({ active = false, id, children }) => {
   return (
@@ -10,7 +10,7 @@ const SubMenuItem: React.FC<
       className={classnames(
         'block min-w-[180px] cursor-pointer border-b py-2 px-4 text-xs text-gray-600 last:border-b-0',
         'hover:bg-gray-100 hover:text-black',
-        { '!text-primary': active }
+        { '!text-black': active }
       )}
     >
       {children}
@@ -18,4 +18,4 @@ const SubMenuItem: React.FC<
   );
 };
 
-export default SubMenuItem;
+export default MenuSubItem;

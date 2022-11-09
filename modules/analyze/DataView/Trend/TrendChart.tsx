@@ -15,6 +15,7 @@ import {
   pickKeyToXAxis,
 } from '@modules/analyze/options/metric';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import { Topic } from '@modules/analyze/Misc/SideBar/config';
 
 const TrendsChart: React.FC<ChartComponentProps> = ({
   loading = false,
@@ -32,9 +33,9 @@ const TrendsChart: React.FC<ChartComponentProps> = ({
 
   return (
     <BaseCard
-      title="Trending"
-      id={'trending'}
-      description="The growth in the aggregated count of unique contributors analyzed during the selected time period."
+      title="Overview"
+      id={Topic.Overview}
+      description=""
       showMarkingSysBtn={true}
       getMarkingSys={(val) => setMarkingSys(val)}
     >

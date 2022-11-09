@@ -44,10 +44,10 @@ const getOptions = (
 const IsMaintained = () => {
   return (
     <BaseCard
-      title="Is maintained"
+      title="Is Maintained"
       id={CodeQuality.IsMaintained}
       description={
-        'Percentage of weeks with at least one code commit in the past 90 days.'
+        'Percentage of weeks with at least one code commit in the past 90 days (single repository). Percentage of code repositories with at least one code commit in the last 30 days (multiple repositories).'
       }
     >
       {(ref) => {

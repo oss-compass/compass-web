@@ -11,9 +11,9 @@ const Trends: React.FC<{
     return <TrendList />;
   }
 
-  // if (data.length == 1) {
-  //   return <TrendChart />;
-  // }
+  if (data.length == 1) {
+    return <TrendChart />;
+  }
 
   return null;
 };

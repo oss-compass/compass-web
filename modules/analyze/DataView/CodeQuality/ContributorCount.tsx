@@ -55,7 +55,7 @@ const getOptions = (
 const ContributorCount = () => {
   return (
     <BaseCard
-      title="Contributors"
+      title="Contributor Count"
       id={CodeQuality.ContributorCount}
       description={
         'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.'
