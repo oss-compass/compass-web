@@ -4,7 +4,7 @@ import { AiOutlineStar } from 'react-icons/ai';
 import { OverviewQuery } from '@graphql/generated';
 import { numberFormatK } from '@common/utils';
 import { gsap } from 'gsap';
-import { useInterval } from 'ahooks';
+import { useInterval, useInViewport } from 'ahooks';
 import { getAnalyzeLink } from '@common/utils';
 import MiniChart from './MiniChart';
 import AngleL from './assets/angle-left.svg';
@@ -27,18 +27,23 @@ const getLink = (
 
 type Repo = NonNullable<OverviewQuery['overview']['trends']>[number];
 
-const Project: React.FC<{ repo: Repo; index: number }> = ({ repo, index }) => {
+const Project: React.FC<{
+  repo: Repo;
+  index: number;
+  inViewport: Boolean | undefined;
+}> = ({ repo, index, inViewport }) => {
   const ref = useRef(null);
   const echartsData =
     repo.metricActivity?.map((item) =>
       transMarkingSystem(item.activityScore || '')
     ) || [];
   useEffect(() => {
-    gsap.to(ref.current, {
-      rotateX: 360,
-      delay: 0.025 * (index + 1),
-      transformStyle: 'preserve-3d',
-    });
+    inViewport &&
+      gsap.to(ref.current, {
+        rotateX: 360,
+        delay: 0.025 * (index + 1),
+        transformStyle: 'preserve-3d',
+      });
   }, [index]);
 
   return (
@@ -50,10 +55,15 @@ const Project: React.FC<{ repo: Repo; index: number }> = ({ repo, index }) => {
         })}
       >
         <a className="mb-5 block">
-          <h3 className="mb-2 text-xl font-medium line-clamp-1 hover:underline">
-            {repo.name}
+          <h3
+            className="mb-2 text-xl font-medium line-clamp-1 hover:underline"
+            title={repo.path || ''}
+          >
+            {repo.path}
           </h3>
-          <p className="text-sm text-gray-400 line-clamp-1">{repo.language}</p>
+          <div className="h-[20px] text-sm text-gray-400 line-clamp-1">
+            {repo.language}
+          </div>
         </a>
       </Link>
       <div className="h-6 w-1/3">
@@ -72,6 +82,9 @@ const HotProjects: React.FC<{
 }> = ({ trends = [] }) => {
   const total = trends?.length || 0;
   const [index, setIndex] = useState(1);
+  const [interval, setIntervalTime] = useState<number | undefined>(20000);
+  const ref = useRef(null);
+  const [inViewport] = useInViewport(ref);
 
   const showTrends = useMemo(() => {
     if (!total) return [];
@@ -85,7 +98,7 @@ const HotProjects: React.FC<{
       if (pre >= Math.floor(total / 6)) return 1;
       return pre + 1;
     });
-  }, 20000);
+  }, interval);
 
   return (
     <div className="lg:px-4">
@@ -99,6 +112,10 @@ const HotProjects: React.FC<{
                 if (pre === 1) return Math.floor(total / 6);
                 return pre - 1;
               });
+              setIntervalTime((pre) => {
+                if (pre === 20000) return pre + 1;
+                return 20000;
+              });
             }}
           >
             <AngleL />
@@ -110,6 +127,10 @@ const HotProjects: React.FC<{
                 if (pre >= Math.floor(total / 6)) return 1;
                 return pre + 1;
               });
+              setIntervalTime((pre) => {
+                if (pre === 20000) return pre + 1;
+                return 20000;
+              });
             }}
           >
             <AngleR />
@@ -119,9 +140,17 @@ const HotProjects: React.FC<{
       <div
         className="flex w-[664px] flex-wrap rounded border-t border-l lg:w-full"
         id="HotProjects"
+        ref={ref}
       >
         {showTrends?.map((repo, index) => {
-          return <Project key={repo.path} repo={repo} index={index} />;
+          return (
+            <Project
+              key={repo.path}
+              repo={repo}
+              index={index}
+              inViewport={inViewport}
+            />
+          );
         })}
       </div>
     </div>

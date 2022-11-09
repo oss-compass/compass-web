@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { init } from 'echarts';
 import type { ECharts } from 'echarts';
+import { useDeepCompareEffect } from 'ahooks';
 
 interface EchartsData {
   echartsData: Array<number | string>;
@@ -46,7 +47,7 @@ const MiniChart: React.FC<EchartsData> = ({ echartsData }) => {
       data: echartsData,
     },
   };
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     // init
     let chart: ECharts | undefined;
     if (chartRef.current !== null) {
