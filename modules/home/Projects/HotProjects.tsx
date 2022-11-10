@@ -49,41 +49,40 @@ const Project: React.FC<{
   }, [inViewport, index]);
 
   return (
-    <div ref={ref} className="w-1/3 border-b border-r px-4 py-3  lg:w-1/2">
+    <div ref={ref} className="w-1/3 border-b border-r px-5 py-4  lg:w-1/2">
       <Link
         href={getAnalyzeLink({
           label: getLink(repo.path, repo.backend),
           level: 'repo',
         })}
       >
-        <a className="mb-4 block">
+        <a className="mb-4 block h-20">
           <h3
-            className="mb-1 h-14 break-words text-xl font-bold line-clamp-2 hover:underline"
+            className="mb-1  break-words text-xl font-bold line-clamp-2 hover:underline"
             title={repo.path || ''}
           >
             {repo.name}
           </h3>
           <div className="h-6 truncate text-sm text-gray-400">
-            {repo.backend ? (
-              repo.backend === 'GitHub' ? (
-                <AiFillGithub className="inline-block h-5 w-7 text-[#000000]" />
-              ) : (
-                <SiGitee className="inline-block h-5 w-7 text-[#c71c27]" />
-              )
-            ) : (
-              ''
-            )}
             {repo.path?.split('/')[0]}
           </div>
         </a>
       </Link>
-      <div className="h-6 w-1/3">
+      <div className="flex h-6 w-full">
+        <div className="mr-auto flex-1">
+          {repo.backend ? (
+            repo.backend === 'GitHub' ? (
+              <AiFillGithub className="inline-block h-5 w-7 text-[#000000]" />
+            ) : (
+              <SiGitee className="inline-block h-5 w-7 text-[#c71c27]" />
+            )
+          ) : (
+            ''
+          )}
+        </div>
+
         <MiniChart echartsData={echartsData} />
       </div>
-      {/* <p className="text flex items-center">
-        <AiOutlineStar className="mr-1 text-gray-600" />
-        {numberFormatK(Number(repo.stargazersCount))}
-      </p> */}
     </div>
   );
 };
