@@ -72,9 +72,9 @@ const Project: React.FC<{
         <div className="mr-auto flex-1">
           {repo.backend ? (
             repo.backend === 'GitHub' ? (
-              <AiFillGithub className="inline-block h-5 w-7 text-[#000000]" />
+              <AiFillGithub className="inline-block h-5 w-5 text-[#000000]" />
             ) : (
-              <SiGitee className="inline-block h-5 w-7 text-[#c71c27]" />
+              <SiGitee className="inline-block h-5 w-5 text-[#c71c27]" />
             )
           ) : (
             ''
