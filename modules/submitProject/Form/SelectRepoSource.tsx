@@ -1,10 +1,7 @@
 import React, { PropsWithChildren, useRef, useState } from 'react';
 import classnames from 'classnames';
-import {
-  AiFillCaretDown,
-  AiOutlinePlus,
-  AiOutlineQuestionCircle,
-} from 'react-icons/ai';
+import { AiFillCaretDown, AiOutlinePlus } from 'react-icons/ai';
+import { HiOutlineExternalLink } from 'react-icons/hi';
 import { useClickAway } from 'react-use';
 import { useSession, signIn } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
@@ -42,7 +39,6 @@ const OrganizationAccess: React.FC<{
 
   if (provider === 'github') {
     scope = 'public_repo read:org';
-    grantAccessUrl = `https://${provider}.com/settings/connections/applications/${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`;
   }
 
   if (provider === 'gitee') {
@@ -69,7 +65,7 @@ const OrganizationAccess: React.FC<{
 
       {provider === 'github' && (
         <div className="flex h-12 cursor-pointer items-center px-4 hover:bg-gray-100">
-          <AiOutlineQuestionCircle className="h-5 w-5" />
+          <HiOutlineExternalLink className="h-5 w-5" />
           <a
             className="ml-2 text-base"
             target="_blank"
