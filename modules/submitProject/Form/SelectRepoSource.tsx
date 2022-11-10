@@ -1,20 +1,28 @@
 import React, { PropsWithChildren, useRef, useState } from 'react';
 import classnames from 'classnames';
-import { AiFillCaretDown, AiFillGithub } from 'react-icons/ai';
+import {
+  AiFillCaretDown,
+  AiOutlinePlus,
+  AiOutlineQuestionCircle,
+} from 'react-icons/ai';
 import { useClickAway } from 'react-use';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { getOrganizations } from '@modules/submitProject/api';
 import Image from 'next/image';
 
 const SourceItem: React.FC<{
+  className?: string;
   avatar_url: string;
   login: string;
   onClick?: () => void;
-}> = ({ login, avatar_url, onClick }) => {
+}> = ({ login, avatar_url, onClick, className }) => {
   return (
     <div
-      className="flex h-12 cursor-pointer items-center px-4"
+      className={classnames(
+        'flex h-12 cursor-pointer items-center px-4',
+        className
+      )}
       onClick={() => onClick?.()}
     >
       <div className="h-5 w-5  bg-slate-100">
@@ -22,6 +30,57 @@ const SourceItem: React.FC<{
       </div>
       <div className="ml-2">{login}</div>
     </div>
+  );
+};
+
+const OrganizationAccess: React.FC<{
+  provider: string;
+  hasOrgList: boolean;
+}> = ({ provider, hasOrgList }) => {
+  let scope = '';
+  let grantAccessUrl = '';
+
+  if (provider === 'github') {
+    scope = 'public_repo read:org';
+    grantAccessUrl = `https://${provider}.com/settings/connections/applications/${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`;
+  }
+
+  if (provider === 'gitee') {
+    scope = 'projects groups';
+  }
+
+  return (
+    <>
+      {!hasOrgList && (
+        <div
+          className="flex h-12 cursor-pointer items-center px-4 hover:bg-gray-100"
+          onClick={async () => {
+            await signIn(
+              provider,
+              { callbackUrl: '/submit-your-project' },
+              { scope }
+            );
+          }}
+        >
+          <AiOutlinePlus className="h-5 w-5" />
+          <div className="ml-2 text-base">Add Organization</div>
+        </div>
+      )}
+
+      {provider === 'github' && (
+        <div className="flex h-12 cursor-pointer items-center px-4 hover:bg-gray-100">
+          <AiOutlineQuestionCircle className="h-5 w-5" />
+          <a
+            className="ml-2 text-base"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={grantAccessUrl}
+          >
+            Grant Organization access
+          </a>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -52,6 +111,7 @@ const SelectRepoSource: React.FC<
     },
     { enabled: Boolean(token) }
   );
+  const hasOrgList = Array.isArray(data?.data) && data?.data?.length;
 
   const options: Item[] = React.useMemo(() => {
     const items =
@@ -74,7 +134,7 @@ const SelectRepoSource: React.FC<
   });
 
   return (
-    <div className={classnames(className, 'group relative')} ref={ref}>
+    <div className={classnames(className, 'group relative z-10')} ref={ref}>
       <div
         onClick={() => {
           setOpen(true);
@@ -93,6 +153,7 @@ const SelectRepoSource: React.FC<
                 key={item.login}
                 avatar_url={item.avatar_url}
                 login={item.login}
+                className={'hover:bg-gray-100'}
                 onClick={() => {
                   onChange?.(item);
                   setOpen(false);
@@ -100,6 +161,10 @@ const SelectRepoSource: React.FC<
               />
             );
           })}
+          <OrganizationAccess
+            provider={provider}
+            hasOrgList={Boolean(hasOrgList)}
+          />
         </div>
       )}
       <div
