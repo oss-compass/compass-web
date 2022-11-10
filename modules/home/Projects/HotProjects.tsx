@@ -10,6 +10,8 @@ import MiniChart from './MiniChart';
 import AngleL from './assets/angle-left.svg';
 import AngleR from './assets/angle-right.svg';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import { AiFillGithub } from 'react-icons/ai';
+import { SiGitee } from 'react-icons/si';
 
 const getLink = (
   path: string | null | undefined,
@@ -54,15 +56,24 @@ const Project: React.FC<{
           level: 'repo',
         })}
       >
-        <a className="mb-5 block">
+        <a className="mb-4 block">
           <h3
             className="mb-1 h-14 break-words text-xl font-bold line-clamp-2 hover:underline"
             title={repo.path || ''}
           >
             {repo.path?.replace('/', '/ ')}
           </h3>
-          <div className="h-[20px] truncate text-sm text-gray-400">
-            {repo.language}
+          <div className="h-6 truncate text-sm text-gray-400">
+            {repo.backend ? (
+              repo.backend === 'GitHub' ? (
+                <AiFillGithub className="inline-block h-5 w-7 text-[#000000]" />
+              ) : (
+                <SiGitee className="inline-block h-5 w-7 text-[#c71c27]" />
+              )
+            ) : (
+              ''
+            )}
+            {repo.path?.split('/')[0]}
           </div>
         </a>
       </Link>
