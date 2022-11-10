@@ -47,7 +47,7 @@ const Project: React.FC<{
   }, [inViewport, index]);
 
   return (
-    <div ref={ref} className="w-1/3 border-b border-r px-6 py-6  lg:w-1/2">
+    <div ref={ref} className="w-1/3 border-b border-r px-4 py-3  lg:w-1/2">
       <Link
         href={getAnalyzeLink({
           label: getLink(repo.path, repo.backend),
@@ -56,10 +56,10 @@ const Project: React.FC<{
       >
         <a className="mb-5 block">
           <h3
-            className="mb-2 truncate text-base font-medium hover:underline"
+            className="mb-1 h-14 break-words text-xl font-bold line-clamp-2 hover:underline"
             title={repo.path || ''}
           >
-            {repo.path}
+            {repo.path?.replace('/', '/ ')}
           </h3>
           <div className="h-[20px] truncate text-sm text-gray-400">
             {repo.language}
