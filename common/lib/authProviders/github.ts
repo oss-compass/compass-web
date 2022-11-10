@@ -65,7 +65,7 @@ export default function Github<P extends GithubProfile>(
     type: 'oauth',
     authorization: {
       url: 'https://github.com/login/oauth/authorize',
-      params: { scope: 'read:user read:org public_repo' },
+      params: { scope: 'public_repo' },
     },
     token: 'https://github.com/login/oauth/access_token',
     userinfo: {
