@@ -4,7 +4,7 @@ import { Activity } from '@modules/analyze/Misc/SideBar/config';
 
 const OrgCount = () => {
   return (
-    <BaseCard title="Org count" id={Activity.OrgCount} description="">
+    <BaseCard title="Org Count" id={Activity.OrgCount} description="">
       {(containerRef) => <div></div>}
     </BaseCard>
   );

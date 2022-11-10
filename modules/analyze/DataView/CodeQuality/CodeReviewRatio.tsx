@@ -1,10 +1,9 @@
 import React from 'react';
 import {
-  ChartComponentProps,
   genSeries,
   getLineOption,
-  lineArea,
   line,
+  lineArea,
 } from '@modules/analyze/options';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
 import {
@@ -13,18 +12,18 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     { legendName: 'total pr', valueKey: 'prCount' },
-    { legendName: 'code merge', valueKey: 'codeMergedCount' },
-    { legendName: 'code merge ratio', valueKey: 'codeMergeRatio' },
+    { legendName: 'code review', valueKey: 'codeReviewedCount' },
+    { legendName: 'code review ratio', valueKey: 'codeReviewRatio' },
   ],
 };
 
@@ -41,10 +40,10 @@ const getOptions = (
         isCompare,
         legendTypeCount: len,
       });
-      if (legendName === 'code merge ratio') {
+      if (legendName === 'code review ratio') {
         return line({ name, data, color, yAxisIndex: 1 });
       }
-      return line({ name, data, color, yAxisIndex: 0 });
+      return line({ name, data, color });
     },
     theme
   );
@@ -62,13 +61,13 @@ const getOptions = (
   });
 };
 
-const CodeMergeRatio = () => {
+const CodeReviewRatio = () => {
   return (
     <BaseCard
-      title="Code merge ratio"
-      id={CodeQuality.CodeMergeRatio}
+      title="Code Review Ratio"
+      id={CodeQuality.CodeReviewRatio}
       description={
-        'The percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.'
+        'Determine the percentage of code commits with at least one reviewer (not PR creator) in the last 90 days.'
       }
     >
       {(ref) => {
@@ -82,4 +81,4 @@ const CodeMergeRatio = () => {
   );
 };
 
-export default CodeMergeRatio;
+export default CodeReviewRatio;

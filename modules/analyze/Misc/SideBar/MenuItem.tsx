@@ -15,9 +15,9 @@ const MenuItem: React.FC<
         <a
           href={`#${id}`}
           className={classnames(
-            'truncate text-xs text-gray-700',
-            'flex cursor-pointer items-center rounded py-2 px-6',
-            { 'bg-gray-100 !text-black': active },
+            'block truncate text-xs text-gray-600',
+            'cursor-pointer items-center rounded py-2 px-6',
+            { '!text-black': active },
             { 'cursor-not-allowed !text-gray-300': disabled },
             { 'group-hover:bg-gray-100 group-hover:text-black': !disabled }
           )}

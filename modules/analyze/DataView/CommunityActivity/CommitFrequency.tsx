@@ -44,7 +44,7 @@ const getOptions = (
 const CommitFrequency = () => {
   return (
     <BaseCard
-      title="Commit frequency"
+      title="Commit Frequency"
       id={Activity.CommitFrequency}
       description={
         'Determine the average number of commits per week in the past 90 days.'

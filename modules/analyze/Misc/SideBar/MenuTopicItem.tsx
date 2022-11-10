@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import classnames from 'classnames';
 
-const TopicItem: React.FC<
+const MenuTopicItem: React.FC<
   PropsWithChildren<{
     hash: string;
     active?: boolean;
@@ -16,7 +16,7 @@ const TopicItem: React.FC<
           href={`#${hash}`}
           className={classnames(
             'mb-0.5 flex cursor-pointer items-center rounded py-2 px-2 hover:bg-gray-100 hover:text-black',
-            { 'bg-gray-100 !text-black': active }
+            { 'bg-gray-100 !text-primary': active }
           )}
         >
           {icon}
@@ -30,4 +30,4 @@ const TopicItem: React.FC<
   );
 };
 
-export default TopicItem;
+export default MenuTopicItem;

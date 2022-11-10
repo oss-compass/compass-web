@@ -46,7 +46,7 @@ const getOptions = (
 const CommentFrequency = () => {
   return (
     <BaseCard
-      title="Comment frequency"
+      title="Comment Frequency"
       id={Activity.CommentFrequency}
       description={
         'Determine the average number of comments per issue created in the last 90 days.'

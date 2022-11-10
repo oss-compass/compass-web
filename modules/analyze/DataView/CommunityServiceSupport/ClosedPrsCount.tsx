@@ -44,10 +44,10 @@ const getOptions = (
 const ClosedPrsCount = () => {
   return (
     <BaseCard
-      title="Closed PR count"
+      title="Close PR Count"
       id={Support.ClosedPrsCount}
       description={
-        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+        'The number of PR accepted and declined in the last 90 days.'
       }
     >
       {(ref) => {

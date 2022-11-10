@@ -16,8 +16,7 @@ const tansOpts: TransOpts = {
   metricType: 'metricCommunity',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
-    { legendName: 'avg', valueKey: 'issueOpenTimeAvg' },
-    { legendName: 'mid', valueKey: 'issueOpenTimeMid' },
+    { legendName: 'issue comment frequency', valueKey: 'commentFrequency' },
   ],
 };
 
@@ -44,13 +43,13 @@ const getOptions = (
   return getLineOption({ xAxisData: xAxis, series });
 };
 
-const IssueOpenTime = () => {
+const CommentFrequency = () => {
   return (
     <BaseCard
-      title="Bug issue open time"
-      id={Support.BugIssueOpenTime}
+      title="Comment Frequency"
+      id={Support.CommentFrequency}
       description={
-        'The growth in the aggregated count of unique contributors analyzed during the selected time period.'
+        'Determine the average number of comments per issue created in the last 90 days.'
       }
     >
       {(ref) => {
@@ -64,4 +63,4 @@ const IssueOpenTime = () => {
   );
 };
 
-export default IssueOpenTime;
+export default CommentFrequency;

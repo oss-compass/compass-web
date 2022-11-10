@@ -57,7 +57,7 @@ const getOptions = (
 const LocFrequency = () => {
   return (
     <BaseCard
-      title="Line of code frequency"
+      title="Lines of Code Frequency"
       id={CodeQuality.LocFrequency}
       description={
         'Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.'

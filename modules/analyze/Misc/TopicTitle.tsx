@@ -1,15 +1,15 @@
 import React, { PropsWithChildren, useRef } from 'react';
 import classnames from 'classnames';
 
-const MenuSection: React.FC<PropsWithChildren<{ id: string }>> = ({
-  children,
-  id,
-}) => {
+const TopicTitle: React.FC<
+  PropsWithChildren<{ id: string; paddingTop?: boolean }>
+> = ({ children, id, paddingTop = false }) => {
   return (
     <h1
       className={classnames(
-        'z-1 group relative mb-6 -mt-[118px] pt-[138px] text-2xl',
-        'md:-mt-[138px] md:px-4 md:pt-[138px] md:text-xl'
+        'group relative z-20 mb-6 pt-[128px] text-3xl',
+        'md:-mt-[108px] md:px-4 md:pt-[128px] md:text-3xl',
+        [paddingTop ? '-mt-[108px]' : '-mt-[48px]']
       )}
       id={id}
     >
@@ -23,4 +23,4 @@ const MenuSection: React.FC<PropsWithChildren<{ id: string }>> = ({
   );
 };
 
-export default MenuSection;
+export default TopicTitle;

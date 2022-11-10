@@ -52,7 +52,7 @@ const CommunityActivityOverview = () => {
   };
   return (
     <BaseCard
-      title="Community Activity"
+      title="Activity"
       id={Activity.Overview}
       description={
         'Community Activity is used to describe how active an open source community is.'

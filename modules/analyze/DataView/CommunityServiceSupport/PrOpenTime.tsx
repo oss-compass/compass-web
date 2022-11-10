@@ -47,10 +47,10 @@ const getOptions = (
 const PrOpenTime = () => {
   return (
     <BaseCard
-      title="PR open time"
+      title="PR Open Time"
       id={Support.PrOpenTime}
       description={
-        'Average/Median processing time (days) for new change requests created in the last 90 days, including closed'
+        'Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change requests and unresolved change requests.'
       }
     >
       {(ref) => {

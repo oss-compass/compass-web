@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import RobustnessIcon from './assets/Robustness.svg';
-import { CommunityActivity, Topic } from './config';
+import { Activity, CodeQuality, CommunityActivity, Topic } from './config';
 import MenuItem from './MenuItem';
 import MenuTopicItem from './MenuTopicItem';
 import MenuSubItem from './MenuSubItem';
+import { SideBarContext } from '@modules/analyze/context/SideBarContext';
 
 const Robustness = () => {
+  const { menuId, subMenuId } = useContext(SideBarContext);
+
   const menu = (
     <>
       <MenuItem
-        id={CommunityActivity.id}
+        active={menuId === Activity.Overview}
+        id={Activity.Overview}
         subMenu={
           <>
             {CommunityActivity.groups.map((item) => {
               return (
-                <MenuSubItem key={item.id} id={item.id}>
+                <MenuSubItem
+                  key={item.id}
+                  active={item.id === subMenuId}
+                  id={item.id}
+                >
                   {item.name}
                 </MenuSubItem>
               );

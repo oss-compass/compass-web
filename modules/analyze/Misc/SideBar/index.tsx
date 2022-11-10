@@ -8,17 +8,18 @@ import TopicOverview from '@modules/analyze/Misc/SideBar/TopicOverview';
 import TopicProductivity from '@modules/analyze/Misc/SideBar/TopicProductivity';
 import TopicRobustness from '@modules/analyze/Misc/SideBar/TopicRobustness';
 import TopicNicheCreation from '@modules/analyze/Misc/SideBar/TopicNicheCreation';
-import useActiveMenu from '@modules/analyze/Misc/SideBar/useActiveMenu';
+import useHashchangeEvent from '@modules/analyze/Misc/SideBar/useHashchangeEvent';
 import NoSsr from '@common/components/NoSsr';
+import { SideBarContextProvider } from '@modules/analyze/context/SideBarContext';
 
 const Divider = () => (
   <div className="mx-6 mt-2 mb-4 border-b border-gray-200"></div>
 );
 
 const SideBarMenuContent = () => {
-  const active = useActiveMenu();
+  const active = useHashchangeEvent();
   return (
-    <>
+    <SideBarContextProvider value={active}>
       <TopicOverview />
       <Divider />
       <TopicProductivity />
@@ -26,7 +27,7 @@ const SideBarMenuContent = () => {
       <TopicRobustness />
       <Divider />
       <TopicNicheCreation />
-    </>
+    </SideBarContextProvider>
   );
 };
 

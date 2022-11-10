@@ -1,9 +1,10 @@
 import React from 'react';
 import {
+  ChartComponentProps,
   genSeries,
   getLineOption,
-  line,
   lineArea,
+  line,
 } from '@modules/analyze/options';
 import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
 import {
@@ -12,18 +13,18 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import Chart from '@modules/analyze/components/Chart';
-import { ChartThemeState } from '@modules/analyze/context';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
+import Chart from '@modules/analyze/components/Chart';
+import { ChartThemeState } from '@modules/analyze/context';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     { legendName: 'total pr', valueKey: 'prCount' },
-    { legendName: 'code review', valueKey: 'codeReviewedCount' },
-    { legendName: 'code review ratio', valueKey: 'codeReviewRatio' },
+    { legendName: 'code merge', valueKey: 'codeMergedCount' },
+    { legendName: 'code merge ratio', valueKey: 'codeMergeRatio' },
   ],
 };
 
@@ -40,10 +41,10 @@ const getOptions = (
         isCompare,
         legendTypeCount: len,
       });
-      if (legendName === 'code review ratio') {
+      if (legendName === 'code merge ratio') {
         return line({ name, data, color, yAxisIndex: 1 });
       }
-      return line({ name, data, color });
+      return line({ name, data, color, yAxisIndex: 0 });
     },
     theme
   );
@@ -61,13 +62,13 @@ const getOptions = (
   });
 };
 
-const CodeReview = () => {
+const CodeMergeRatio = () => {
   return (
     <BaseCard
-      title="Code review ratio"
-      id={CodeQuality.CodeReviewRatio}
+      title="Code Merge Ratio"
+      id={CodeQuality.CodeMergeRatio}
       description={
-        'Percentage of recent 90-day code commits with at least one reviewer (not PR creator).'
+        'Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.'
       }
     >
       {(ref) => {
@@ -81,4 +82,4 @@ const CodeReview = () => {
   );
 };
 
-export default CodeReview;
+export default CodeMergeRatio;

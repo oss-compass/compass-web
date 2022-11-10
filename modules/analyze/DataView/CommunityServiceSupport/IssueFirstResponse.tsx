@@ -47,10 +47,10 @@ const getOptions = (
 const IssueFirstResponse = () => {
   return (
     <BaseCard
-      title="Issue first response "
+      title="Issue First Response"
       id={Support.IssueFirstResponse}
       description={
-        'Average/Median first comments response (in days) for new Issues created in the last 90 days.'
+        "Average/Median first comments response (in days) for new issues created in the last 90 days. This excludes bot responses,, the creator's own comment, or an action assigned by the issue. If the issue has been unanswered, the first response time is not counted."
       }
     >
       {(ref) => {

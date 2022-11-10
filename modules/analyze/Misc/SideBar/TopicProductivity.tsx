@@ -1,24 +1,34 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ProductivityIcon from './assets/Productivity.svg';
 import MenuTopicItem from './MenuTopicItem';
 import MenuItem from './MenuItem';
 import MenuSubItem from './MenuSubItem';
 import {
+  CodeQuality,
   CodeQualityGuarantee,
   CommunityServiceAndSupport,
+  Support,
   Topic,
 } from './config';
+import { SideBarContext } from '@modules/analyze/context/SideBarContext';
 
 const Productivity = () => {
+  const { menuId, subMenuId } = useContext(SideBarContext);
+  console.log({ menuId, subMenuId });
   const menu = (
     <>
       <MenuItem
-        id={CodeQualityGuarantee.id}
+        active={menuId === CodeQuality.Overview}
+        id={CodeQuality.Overview}
         subMenu={
           <>
             {CodeQualityGuarantee.groups.map((item) => {
               return (
-                <MenuSubItem key={item.id} id={item.id}>
+                <MenuSubItem
+                  key={item.id}
+                  active={item.id === subMenuId}
+                  id={item.id}
+                >
                   {item.name}
                 </MenuSubItem>
               );
@@ -38,12 +48,17 @@ const Productivity = () => {
         Content
       </MenuItem>
       <MenuItem
-        id={CommunityServiceAndSupport.id}
+        active={menuId === Support.Overview}
+        id={Support.Overview}
         subMenu={
           <>
             {CommunityServiceAndSupport.groups.map((item) => {
               return (
-                <MenuSubItem key={item.id} id={item.id}>
+                <MenuSubItem
+                  key={item.id}
+                  active={item.id === subMenuId}
+                  id={item.id}
+                >
                   {item.name}
                 </MenuSubItem>
               );

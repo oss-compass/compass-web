@@ -18,7 +18,7 @@ const tansOpts: TransOpts = {
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     {
-      legendName: 'community service support',
+      legendName: 'community service and support',
       valueKey: 'communitySupportScore',
     },
   ],
@@ -57,7 +57,7 @@ const CommunityServiceSupportOverview = () => {
   };
   return (
     <BaseCard
-      title="Community Service Support"
+      title="Community Service and Support"
       id={Support.Overview}
       description={
         'Community Service and Support measures the quality of services and support provided by the community as directly perceived by a developer during the contribution process.'

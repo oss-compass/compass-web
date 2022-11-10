@@ -44,7 +44,7 @@ const Project: React.FC<{
         delay: 0.025 * (index + 1),
         transformStyle: 'preserve-3d',
       });
-  }, [index]);
+  }, [inViewport, index]);
 
   return (
     <div ref={ref} className="w-1/3 border-b border-r px-6 py-6  lg:w-1/2">
@@ -56,12 +56,12 @@ const Project: React.FC<{
       >
         <a className="mb-5 block">
           <h3
-            className="mb-2 text-xl font-medium line-clamp-1 hover:underline"
+             className="mb-2 truncate text-base font-medium hover:underline"
             title={repo.path || ''}
           >
             {repo.path}
           </h3>
-          <div className="h-[20px] text-sm text-gray-400 line-clamp-1">
+          <div className="h-[20px] truncate text-sm text-gray-400">
             {repo.language}
           </div>
         </a>

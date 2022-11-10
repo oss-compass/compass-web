@@ -46,7 +46,7 @@ const getOptions = (
 const RecentReleasesCount = () => {
   return (
     <BaseCard
-      title="Recent releases count"
+      title="Recent Releases Count"
       id={Activity.RecentReleasesCount}
       description={'Determine the number of releases in the last year.'}
     >

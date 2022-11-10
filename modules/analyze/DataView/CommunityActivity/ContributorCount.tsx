@@ -46,7 +46,7 @@ const getOptions = (
 const ContributorCount = () => {
   return (
     <BaseCard
-      title="Contributor count"
+      title="Contributor Count"
       id={Activity.ContributorCount}
       description={
         'Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days'
