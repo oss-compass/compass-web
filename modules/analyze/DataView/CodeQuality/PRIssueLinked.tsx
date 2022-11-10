@@ -43,8 +43,6 @@ const getOptions = (
         isCompare,
         legendTypeCount: len,
       });
-      console.log(yResults);
-
       if (legendName === 'linked issue ratio') {
         return line({ name, data, color, yAxisIndex: 0 });
       }
