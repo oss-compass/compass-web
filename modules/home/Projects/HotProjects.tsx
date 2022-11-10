@@ -61,7 +61,7 @@ const Project: React.FC<{
             className="mb-1 h-14 break-words text-xl font-bold line-clamp-2 hover:underline"
             title={repo.path || ''}
           >
-            {repo.name}
+            {repo.path?.replace('/', '/ ')}
           </h3>
           <div className="h-6 truncate text-sm text-gray-400">
             {repo.backend ? (
