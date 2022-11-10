@@ -39,6 +39,7 @@ const OrganizationAccess: React.FC<{
 
   if (provider === 'github') {
     scope = 'public_repo read:org';
+    grantAccessUrl = `https://github.com/settings/connections/applications/${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`;
   }
 
   if (provider === 'gitee') {
