@@ -59,6 +59,6 @@ const MiniChart: React.FC<EchartsData> = ({ echartsData }) => {
     };
   }, [echartsData]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />;
+  return <div ref={chartRef} style={{ width: '30%', height: '100%' }} />;
 };
 export default React.memo(MiniChart);
