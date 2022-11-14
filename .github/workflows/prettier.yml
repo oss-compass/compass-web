@@ -1,0 +1,21 @@
+name: Check Code with Prettier
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'npm'
+          registry-url: https://registry.npmjs.org/
+      - run: npx prettier -c './**/*.{js,jsx,ts,tsx,md}'
