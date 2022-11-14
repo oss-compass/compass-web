@@ -19,6 +19,6 @@ describe('transToAxis', () => {
         },
       ],
     });
-    console.log(JSON.stringify(result, null, 2));
+    expect(result).toEqual(outputData);
   });
 });
