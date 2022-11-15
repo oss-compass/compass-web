@@ -9,15 +9,14 @@ const linkData = [
     links: [
       { text: 'Get Standard', href: '/docs/quick-start' },
       { text: 'Dimensions Define', href: '/docs/dimensions-define' },
-      { text: 'Models', href: '/docs/category/productivity-metrics-models' },
     ],
   },
   {
     title: 'Legal',
     links: [
-      { text: 'Terms', href: '' },
-      { text: 'Privacy', href: '' },
-      { text: 'Built With', href: '' },
+      { text: 'Terms', href: '/docs/terms-of-use' },
+      { text: 'Privacy', href: '/docs/privacy-policy' },
+      { text: 'Built With', href: '/docs/built-with' },
     ],
   },
   {

@@ -27,7 +27,12 @@ export function getLastPathSegment(path: string) {
 
 export function getNameSpace(path: string) {
   if (!path) return;
-  return path.split('/').shift() || '';
+  return getPathname(path).split('/').shift() || '';
+}
+
+export function getRepoName(path: string) {
+  if (!path) return;
+  return getPathname(path).split('/').pop() || '';
 }
 
 //https://github.com/  =>  github
@@ -48,7 +53,11 @@ export function fillHttps(url: string): string {
   return url;
 }
 
-//https://github.com/cli/cli  => cli
+/**
+ * https://github.com/cli/cli  => cli
+ * @param url
+ * @deprecated
+ */
 export function repoUrlFormat(url: string | undefined) {
   if (!url) return '';
   return `${getLastPathSegment(getPathname(url))}`;

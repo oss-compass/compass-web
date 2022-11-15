@@ -1,6 +1,10 @@
 import React from 'react';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import { getLastPathSegment, getNameSpace } from '@common/utils/url';
+import {
+  getLastPathSegment,
+  getNameSpace,
+  getRepoName,
+} from '@common/utils/url';
 import classnames from 'classnames';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useRouter } from 'next/router';
@@ -31,9 +35,16 @@ const CompareItem: React.FC<{
   item: { label: string; name: string; level: Level };
   showCloseIcon: boolean;
   showColorSwitch: boolean;
+  showGuideTips?: boolean;
   className?: string;
 }> = (props) => {
-  const { item, showColorSwitch, showCloseIcon, className } = props;
+  const {
+    item,
+    showColorSwitch,
+    showCloseIcon,
+    className,
+    showGuideTips = false,
+  } = props;
   return (
     <div
       className={classnames(
@@ -45,14 +56,13 @@ const CompareItem: React.FC<{
       <div className="mb-2 truncate text-2xl font-bold text-white">
         {getLastPathSegment(item.label)}
       </div>
-      <div className="flex items-center">
-        {showColorSwitch && (
-          <ColorSwitcher showPickTooltips={false} label={item.label} />
-        )}
-        {/*<div className="ml-2 text-base text-white/50">*/}
-        {/*  {getNameSpace(item.label)}*/}
-        {/*</div>*/}
-      </div>
+      {showColorSwitch && (
+        <ColorSwitcher
+          showPickGuideIcon={true}
+          showGuideTips={showGuideTips}
+          label={item.label}
+        />
+      )}
     </div>
   );
 };
@@ -72,6 +82,7 @@ const CompareBar = () => {
                 item={item}
                 showCloseIcon={len > 1}
                 showColorSwitch={len > 1}
+                showGuideTips={index === 0}
                 className={classnames({
                   'rounded-tl-lg rounded-bl-lg !border-l-0': index === 0,
                   // 'text-center': len == 1,

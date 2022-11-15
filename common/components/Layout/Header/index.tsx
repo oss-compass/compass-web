@@ -27,16 +27,13 @@ const Header: React.FC<{
                 <Logo color="white" />
               </a>
             </Link>
-            <Link
-              href="/docs/category/productivity-metrics-models"
-              legacyBehavior
-            >
+            <Link href="/docs/dimensions-define" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 Metrics Models
               </a>
             </Link>
             <HeaderCommunityMenu />
-            <Link href="/">
+            <Link href="/docs/about" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>About</a>
             </Link>
           </div>
