@@ -232,30 +232,18 @@ export type GroupActivityMetric = {
   __typename?: 'GroupActivityMetric';
   /** mean of submissions per week over the past 90 days */
   commitFrequency?: Maybe<Scalars['Float']>;
-  /** mean of org submissions per week over the past 90 days */
-  commitFrequencyOrg?: Maybe<Scalars['Float']>;
-  /** percentage of org submissions per week over the past 90 days */
-  commitFrequencyOrgPercentage?: Maybe<Scalars['Float']>;
-  /** percentage of submissions per week over the past 90 days */
-  commitFrequencyPercentage?: Maybe<Scalars['Float']>;
   /** (average of months from the last org code commit to the time of statistics */
   contributionLast?: Maybe<Scalars['Float']>;
   /** number of active D1 developers in the past 90 days */
   contributorCount?: Maybe<Scalars['Float']>;
-  /** number of active orgs in the past 90 days */
-  contributorOrgCount?: Maybe<Scalars['Float']>;
   /** metric model creatiton time */
   grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
-  /** is org */
-  isOrg?: Maybe<Scalars['Boolean']>;
   /** metric model object identification */
   label?: Maybe<Scalars['String']>;
   /** metric model object level */
   level?: Maybe<Scalars['String']>;
   /** organization count */
   orgCount?: Maybe<Scalars['Float']>;
-  /** organization name */
-  orgName?: Maybe<Scalars['String']>;
   /** score of organization activity metric model */
   organizationsActivity?: Maybe<Scalars['Float']>;
 };
@@ -582,18 +570,12 @@ export type MetricQuery = {
   groupMetricActivity: Array<{
     __typename?: 'GroupActivityMetric';
     commitFrequency?: number | null;
-    commitFrequencyOrg?: number | null;
-    commitFrequencyOrgPercentage?: number | null;
-    commitFrequencyPercentage?: number | null;
     contributionLast?: number | null;
     contributorCount?: number | null;
-    contributorOrgCount?: number | null;
     grimoireCreationDate?: any | null;
-    isOrg?: boolean | null;
     label?: string | null;
     level?: string | null;
     orgCount?: number | null;
-    orgName?: string | null;
     organizationsActivity?: number | null;
   }>;
 };
@@ -954,18 +936,12 @@ export const MetricDocument = /*#__PURE__*/ `
     endDate: $end
   ) {
     commitFrequency
-    commitFrequencyOrg
-    commitFrequencyOrgPercentage
-    commitFrequencyPercentage
     contributionLast
     contributorCount
-    contributorOrgCount
     grimoireCreationDate
-    isOrg
     label
     level
     orgCount
-    orgName
     organizationsActivity
   }
 }
