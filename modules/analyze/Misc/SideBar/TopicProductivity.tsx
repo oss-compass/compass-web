@@ -14,7 +14,6 @@ import { SideBarContext } from '@modules/analyze/context/SideBarContext';
 
 const Productivity = () => {
   const { menuId, subMenuId } = useContext(SideBarContext);
-  console.log({ menuId, subMenuId });
   const menu = (
     <>
       <MenuItem
