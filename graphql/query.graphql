@@ -109,4 +109,20 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         updatedIssuesCount
         updatedSince
     }
+    groupMetricActivity(label: $label,level: $level, beginDate: $start, endDate: $end){
+        commitFrequency
+        commitFrequencyOrg
+        commitFrequencyOrgPercentage
+        commitFrequencyPercentage
+        contributionLast
+        contributorCount
+        contributorOrgCount
+        grimoireCreationDate
+        isOrg
+        label
+        level
+        orgCount
+        orgName
+        organizationsActivity
+    }
 }

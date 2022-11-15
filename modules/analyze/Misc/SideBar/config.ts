@@ -34,6 +34,17 @@ export enum Activity {
   RecentReleasesCount = 'activity_recent_releases_count',
 }
 
+export enum Organizations {
+  Overview = 'organizations_activity_overview',
+  ContributorCount = 'organizations_activity_contributor_count',
+  CommitFrequency = 'organizations_activity_commit_frequency',
+  OrgCount = 'organizations_activity_org_count',
+  ContributionLast = 'organizations_activity_contribution_last',
+  // MaintainerCount = "MaintainerCount",
+  // MeetingFrequency= 'MeetingFrequency',
+  // MeetingAttendeeCount = "MeetingAttendeeCount"
+}
+
 export enum Topic {
   Overview = 'topic_overview',
   Productivity = 'topic_productivity',
@@ -45,6 +56,7 @@ export enum Section {
   CodeQualityGuarantee = 'code_quality_guarantee',
   CommunityServiceAndSupport = 'community_service_support',
   CommunityActivity = 'community_activity',
+  OrganizationsActivity = 'organizations_activity',
 }
 
 export const CodeQualityGuarantee = {
@@ -98,5 +110,20 @@ export const CommunityActivity = {
     { name: 'Code Review Count', id: Activity.CodeReviewCount },
     { name: 'Updated Issues Count', id: Activity.UpdatedIssuesCount },
     { name: 'Recent Releases Count', id: Activity.RecentReleasesCount },
+  ],
+};
+
+export const OrganizationsActivity = {
+  topic: Topic.NicheCreation,
+  name: 'Organizations Activity ',
+  id: Organizations.Overview,
+  groups: [
+    { name: 'Contributor Count', id: Organizations.ContributorCount },
+    { name: 'Commit Frequency', id: Organizations.CommitFrequency },
+    { name: 'Org Count', id: Organizations.OrgCount },
+    { name: 'Contribution Last', id: Organizations.ContributionLast },
+    // { name: 'Maintainer Count', id: Organizations.MaintainerCount },
+    // { name: 'MeetingFrequency', id: Organizations.MeetingFrequency },
+    // { name: 'Meeting Attendee Count', id: Organizations.MeetingAttendeeCount },
   ],
 };
