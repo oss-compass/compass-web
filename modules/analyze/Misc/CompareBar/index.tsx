@@ -1,6 +1,6 @@
 import React from 'react';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import { getLastPathSegment } from '@common/utils/url';
+import { getLastPathSegment, getNameSpace } from '@common/utils/url';
 import classnames from 'classnames';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useRouter } from 'next/router';
@@ -45,7 +45,14 @@ const CompareItem: React.FC<{
       <div className="mb-2 truncate text-2xl font-bold text-white">
         {getLastPathSegment(item.label)}
       </div>
-      {showColorSwitch && <ColorSwitcher label={item.label} />}
+      <div className="flex items-center">
+        {showColorSwitch && (
+          <ColorSwitcher showPickTooltips={false} label={item.label} />
+        )}
+        {/*<div className="ml-2 text-base text-white/50">*/}
+        {/*  {getNameSpace(item.label)}*/}
+        {/*</div>*/}
+      </div>
     </div>
   );
 };

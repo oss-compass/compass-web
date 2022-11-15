@@ -4,15 +4,18 @@ import {
   ChartThemeContext,
 } from '@modules/analyze/context';
 import { useClickAway } from 'react-use';
+import { CiPickerHalf } from 'react-icons/ci';
 import {
   DefaultIndex,
   getPalette,
   colors,
 } from '@modules/analyze/options/color';
+import CPTooltip from '@common/components/Tooltip';
 
 const ColorSwitcher: React.FC<{
   label: string;
-}> = ({ label }) => {
+  showPickTooltips?: boolean;
+}> = ({ label, showPickTooltips = false }) => {
   const colorPopoverRef = useRef<HTMLDivElement>(null);
   const [popoverVisible, setPopoverVisible] = useState(false);
   const chartTheme = useContext(ChartThemeContext);
@@ -33,27 +36,38 @@ const ColorSwitcher: React.FC<{
 
   return (
     <div className="relative">
-      <div
-        className="flex h-4 w-4 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow"
-        onClick={() => {
-          setPopoverVisible(true);
-        }}
+      <CPTooltip
+        title="Pick a color you like"
+        arrow
+        disableHoverListener={!showPickTooltips}
       >
-        <div
-          className="h-3 w-3 rounded-full"
-          style={{ backgroundColor: `${color}` }}
-        ></div>
-      </div>
+        <div className="group inline-flex cursor-pointer">
+          <div
+            className="flex h-4 w-4 items-center justify-center rounded-full bg-white drop-shadow"
+            onClick={() => {
+              setPopoverVisible(true);
+            }}
+          >
+            <div
+              className="h-3 w-3 rounded-full"
+              style={{ backgroundColor: `${color}` }}
+            />
+          </div>
+          {showPickTooltips && (
+            <CiPickerHalf className="ml-2 text-lg text-white" />
+          )}
+        </div>
+      </CPTooltip>
 
       {popoverVisible && (
         <div
-          className="absolute top-6 w-20 overflow-hidden rounded bg-white px-0.5 pt-0.5 drop-shadow-xl"
+          className="absolute top-6 flex w-[152px] flex-wrap justify-around overflow-hidden rounded bg-white px-2 pt-2 pb-1 drop-shadow-2xl"
           ref={colorPopoverRef}
         >
           {colors.map((c, index) => (
             <div
               key={c}
-              className="mb-0.5 cursor-pointer rounded"
+              className="mb-1 cursor-pointer rounded"
               onClick={() => {
                 chartTheme.dispatch({
                   type: ActionThemeColorUpdate,
@@ -65,10 +79,7 @@ const ColorSwitcher: React.FC<{
                 setPopoverVisible(false);
               }}
             >
-              <div
-                style={{ backgroundColor: `${c}` }}
-                className="h-10 w-full"
-              />
+              <div style={{ backgroundColor: `${c}` }} className="h-6 w-6" />
             </div>
           ))}
         </div>
