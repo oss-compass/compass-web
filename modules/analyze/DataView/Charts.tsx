@@ -8,6 +8,7 @@ import Trend from './Trend';
 import CodeQuality from './CodeQuality';
 import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
+import OrganizationsActivity from './OrganizationsActivity';
 import useHashScroll from '@common/hooks/useHashScroll';
 import TopicTitle from '@modules/analyze/Misc/TopicTitle';
 import { Topic } from '@modules/analyze/Misc/SideBar/config';
@@ -38,7 +39,8 @@ const Charts = () => {
       <TopicTitle id={Topic.Robustness}>Robustness</TopicTitle>
       <CommunityActivity />
 
-      {/*<TopicTitle id={TopicID.NicheCreation}>Niche Creation</Topic>*/}
+      <TopicTitle id={Topic.NicheCreation}>Niche Creation</TopicTitle>
+      <OrganizationsActivity />
     </>
   );
 };

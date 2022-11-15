@@ -579,6 +579,23 @@ export type MetricQuery = {
     updatedIssuesCount?: number | null;
     updatedSince?: number | null;
   }>;
+  groupMetricActivity: Array<{
+    __typename?: 'GroupActivityMetric';
+    commitFrequency?: number | null;
+    commitFrequencyOrg?: number | null;
+    commitFrequencyOrgPercentage?: number | null;
+    commitFrequencyPercentage?: number | null;
+    contributionLast?: number | null;
+    contributorCount?: number | null;
+    contributorOrgCount?: number | null;
+    grimoireCreationDate?: any | null;
+    isOrg?: boolean | null;
+    label?: string | null;
+    level?: string | null;
+    orgCount?: number | null;
+    orgName?: string | null;
+    organizationsActivity?: number | null;
+  }>;
 };
 
 export const CreateRepoTaskDocument = /*#__PURE__*/ `
@@ -929,6 +946,27 @@ export const MetricDocument = /*#__PURE__*/ `
     recentReleasesCount
     updatedIssuesCount
     updatedSince
+  }
+  groupMetricActivity(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
+    commitFrequency
+    commitFrequencyOrg
+    commitFrequencyOrgPercentage
+    commitFrequencyPercentage
+    contributionLast
+    contributorCount
+    contributorOrgCount
+    grimoireCreationDate
+    isOrg
+    label
+    level
+    orgCount
+    orgName
+    organizationsActivity
   }
 }
     `;
