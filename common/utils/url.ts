@@ -25,6 +25,11 @@ export function getLastPathSegment(path: string) {
   return path.split('/').pop() || '';
 }
 
+export function getNameSpace(path: string) {
+  if (!path) return;
+  return path.split('/').shift() || '';
+}
+
 //https://github.com/  =>  github
 export function getHostLabel(url: string) {
   const result = url.match(/^https:\/\/(.+?)\..+$/i);

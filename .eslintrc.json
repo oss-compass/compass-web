@@ -2,7 +2,13 @@
   "extends": ["next/core-web-vitals", "prettier"],
   "plugins": ["prettier", "testing-library"],
   "rules": {
-    "prettier/prettier": "warn"
+    "prettier/prettier": "warn",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
+      }
+    ]
   },
   "overrides": [
     // Only uses Testing Library lint rules in test files
