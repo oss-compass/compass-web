@@ -7,17 +7,17 @@ import Drawer from '../Drawer';
 const headLinks = [
   {
     title: 'Metrics Models',
-    href: '/',
+    href: '/docs/dimensions-define',
     icon: <AiOutlineHome />,
   },
   {
     title: 'Community',
-    href: '/',
+    href: '/docs/community',
     icon: <AiOutlineHome />,
   },
   {
     title: 'About',
-    href: '/',
+    href: '/docs/about',
     icon: <AiOutlineHome />,
   },
 ];
@@ -26,7 +26,7 @@ const MenuItem: React.FC<
   PropsWithChildren<{ title: string; href: string }>
 > = ({ title, href, children }) => {
   return (
-    <Link href={href}>
+    <Link href={href} legacyBehavior>
       <a className="flex cursor-pointer items-center py-2 px-6 hover:bg-gray-200">
         {children}
         <h2 className="pl-2 font-semibold">{title}</h2>
