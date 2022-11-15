@@ -23,11 +23,8 @@ const linkData = [
   {
     title: 'Community',
     links: [
-      {
-        text: 'Slack',
-        href: 'https://join.slack.com/t/slack-vit2156/shared_invite/zt-1hv9pabzr-80W3QeM4zABSJFWEmPNipw',
-      },
-      { text: 'WeChat', href: '' },
+      { text: 'Slack', href: '/docs/community/slack' },
+      { text: 'WeChat', href: '/docs/community/wechat' },
     ],
   },
   {
