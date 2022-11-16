@@ -1,14 +1,29 @@
 import React from 'react';
 import { AiFillGithub, AiOutlineClose } from 'react-icons/ai';
+import useProvider from '@modules/submitProject/Form/useProvider';
+import { SiGitee } from 'react-icons/si';
+
+export const getIcons = (type: string) => {
+  switch (type) {
+    case 'github':
+      return <AiFillGithub className="mr-2" />;
+    case 'gitee':
+      return <SiGitee color="#c71c27" className="mr-2" />;
+    default:
+      return null;
+  }
+};
 
 const FillItem: React.FC<{ url: string; onDelete: (v: string) => void }> = ({
   url,
   onDelete,
 }) => {
+  const provider = useProvider();
+
   return (
     <div className="mb-6 flex max-w-[600px] items-center">
       <div className="flex flex-1 items-center">
-        <AiFillGithub className="mr-2" />
+        {getIcons(provider)}
         <p className="max-w-[400px] truncate">{url}</p>
       </div>
       <div
