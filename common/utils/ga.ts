@@ -1,12 +1,4 @@
-import getConfig from 'next/config';
-
-/**
- * publicRuntimeConfig undefined in test environment with Jest
- * // https://github.com/vercel/next.js/issues/4024
- */
-const { publicRuntimeConfig = {} } = getConfig() || {};
-
-export const PUBLIC_GA_ID = publicRuntimeConfig.googleAnalyticsId;
+export const PUBLIC_GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
 export const gaPageView = (url: string) => {
   window.gtag('config', PUBLIC_GA_ID!, { page_path: url });

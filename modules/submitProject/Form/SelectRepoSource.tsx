@@ -2,14 +2,12 @@ import React, { PropsWithChildren, useRef, useState } from 'react';
 import classnames from 'classnames';
 import { AiFillCaretDown, AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlineExternalLink } from 'react-icons/hi';
-import { useClickAway } from 'react-use';
+import { useClickAway, useSessionStorage } from 'react-use';
 import { useSession, signIn } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { getOrganizations } from '@modules/submitProject/api';
 import Image from 'next/image';
-import getConfig from 'next/config';
-
-const { publicRuntimeConfig } = getConfig();
+import { GITHUB_CLIENT_ID } from '@modules/submitProject/constant';
 
 const SourceItem: React.FC<{
   className?: string;
@@ -37,12 +35,14 @@ const OrganizationAccess: React.FC<{
   provider: string;
   hasOrgList: boolean;
 }> = ({ provider, hasOrgList }) => {
+  const [githubClientID] = useSessionStorage(GITHUB_CLIENT_ID);
+
   let scope = '';
   let grantAccessUrl = '';
 
   if (provider === 'github') {
     scope = 'public_repo read:org';
-    grantAccessUrl = `https://github.com/settings/connections/applications/${publicRuntimeConfig.githubClientId}`;
+    grantAccessUrl = `https://github.com/settings/connections/applications/${githubClientID}`;
   }
 
   if (provider === 'gitee') {

@@ -19,10 +19,6 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: 'standalone',
-  publicRuntimeConfig: {
-    githubClientId: process.env.GITHUB_ID,
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS,
-  },
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
