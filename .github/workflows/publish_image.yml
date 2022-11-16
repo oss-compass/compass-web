@@ -23,7 +23,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t "compass-web:latest" \
+          docker build -t "registry.cn-hongkong.aliyuncs.com/oss-compass/compass-web:latest" \
           -t registry.cn-hongkong.aliyuncs.com/oss-compass/compass-web:$IMAGE_TAG \
           --build-arg GIT_COMMIT=$IMAGE_TAG \
           -f "./docker/Dockerfile" \
