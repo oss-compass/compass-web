@@ -1,4 +1,8 @@
-export const PUBLIC_GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+
+export const PUBLIC_GA_ID = publicRuntimeConfig.googleAnalyticsId;
 
 export const gaPageView = (url: string) => {
   window.gtag('config', PUBLIC_GA_ID!, { page_path: url });

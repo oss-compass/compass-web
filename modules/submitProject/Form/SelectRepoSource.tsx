@@ -7,6 +7,9 @@ import { useSession, signIn } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { getOrganizations } from '@modules/submitProject/api';
 import Image from 'next/image';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 const SourceItem: React.FC<{
   className?: string;
@@ -39,7 +42,7 @@ const OrganizationAccess: React.FC<{
 
   if (provider === 'github') {
     scope = 'public_repo read:org';
-    grantAccessUrl = `https://github.com/settings/connections/applications/${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`;
+    grantAccessUrl = `https://github.com/settings/connections/applications/${publicRuntimeConfig.githubClientId}`;
   }
 
   if (provider === 'gitee') {
