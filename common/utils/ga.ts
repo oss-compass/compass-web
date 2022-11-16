@@ -1,6 +1,10 @@
 import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
+/**
+ * publicRuntimeConfig undefined in test environment with Jest
+ * // https://github.com/vercel/next.js/issues/4024
+ */
+const { publicRuntimeConfig = {} } = getConfig() || {};
 
 export const PUBLIC_GA_ID = publicRuntimeConfig.googleAnalyticsId;
 
