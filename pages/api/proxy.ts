@@ -8,6 +8,7 @@ export const config = {
   },
 };
 
+const isDevelopment = process.env.NODE_ENV === 'development';
 const API_URL = process.env.API_URL;
 const proxy = httpProxy.createProxyServer({});
 
@@ -30,13 +31,15 @@ proxy.on('proxyReq', function (proxyReq, req: any, res, options) {
 });
 
 /**
- * use in development mode to proxy requests to the API
+ * proxy requests to the API_URL
  */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await sleep(500);
+  if (isDevelopment) {
+    await sleep(500);
+  }
 
   return new Promise((resolve, reject) => {
     proxy.once('error', reject);

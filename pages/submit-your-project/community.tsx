@@ -1,5 +1,5 @@
-import React from 'react';
-import { getProviders } from 'next-auth/react';
+import React, { useEffect } from 'react';
+import { getProviders, useSession } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
 import { Header } from '@common/components/Layout';
