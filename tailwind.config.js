@@ -35,6 +35,9 @@ module.exports = {
         primary: '#3A5BEF',
         mask: 'rgba(0, 0, 0, 0.5)',
       },
+      inset: {
+        '-16': '-4rem',
+      },
     },
   },
   plugins: [require('@tailwindcss/line-clamp'), require('daisyui')],

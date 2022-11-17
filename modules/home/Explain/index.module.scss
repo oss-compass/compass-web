@@ -1,12 +1,35 @@
 
 .bg {
-  background-image: url("/images/home/starry-sky.jpeg");
+  background-image: url("/images/home/starry-sky.jpg");
   background-size: 2560px 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-color: #040721;
 }
-
 .popCardBg {
   background-color: rgba(0, 0, 0, .7);
+}
+.box{
+  border-radius:50%;
+}
+.boxHover{
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  border-radius:50%;
+}
+.productivity{
+  opacity: 0;
+  background: rgba(62,150,202,0.26);
+  border: 1px solid rgba(62,150,202,0.80);
+}
+.robustness{
+  opacity: 0;
+  background: rgba(255,228,116,0.26);
+  border: 1px solid rgba(255,228,116,0.80);
+}
+.nicheCreation{
+  opacity: 0;
+  background: rgba(255,116,240,0.26);
+  border: 1px solid rgba(255,116,240,0.80);
 }
