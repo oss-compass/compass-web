@@ -13,7 +13,6 @@ import '../styles/globals.scss';
 
 console.table?.({
   APP_NAME: 'compass-web',
-  APP_VERSION: process.env.NEXT_PUBLIC_APP_VERSION || 'unknown',
   GIT_COMMIT: process.env.NEXT_PUBLIC_GIT_COMMIT || 'unknown',
 });
 

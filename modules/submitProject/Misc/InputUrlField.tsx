@@ -55,6 +55,7 @@ const InputUrlField = forwardRef<InputRef, Props>(
         e.preventDefault();
         const press = he.key;
         if (press === 'enter') {
+          if (!value) return;
           if (error) return;
           onPressEnter?.(value);
           setValue('');

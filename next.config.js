@@ -3,8 +3,6 @@ const execSync = require('child_process').execSync;
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
-const lastCommitCommand = 'git rev-parse HEAD';
-const isDevelopment = process.env.NODE_ENV === 'development';
 
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
@@ -28,27 +26,18 @@ const nextConfig = {
     domains: ['portrait.gitee.com', 'avatars.githubusercontent.com'],
   },
   async rewrites() {
-    if (isDevelopment) {
-      return [
-        {
-          source: '/api/graphql',
-          destination: `/api/proxy`,
-        },
-      ];
-    }
-
     return [
       {
         source: '/api/graphql',
-        destination: `${process.env.API_URL}/api/graphql`,
+        destination: `/api/proxy`,
       },
       {
         source: '/api/workflow',
-        destination: `${process.env.API_URL}/api/workflow`,
+        destination: `/api/proxy`,
       },
       {
         source: '/api/hook',
-        destination: `${process.env.API_URL}/api/hook`,
+        destination: `/api/proxy`,
       },
     ];
   },
@@ -62,7 +51,10 @@ const nextConfig = {
     return config;
   },
   generateBuildId: async () => {
-    return execSync(lastCommitCommand).toString().trim();
+    if (process.env.NEXT_PUBLIC_GIT_COMMIT) {
+      return process.env.NEXT_PUBLIC_GIT_COMMIT;
+    }
+    return execSync('git rev-parse HEAD').toString().trim();
   },
 };
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { getProviders } from 'next-auth/react';
+import React, { useEffect } from 'react';
+import { getProviders, useSession } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
 import { Header } from '@common/components/Layout';
@@ -9,8 +9,11 @@ import FormCommunity from '@modules/submitProject/FormCommunity';
 import { GetServerSidePropsContext } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { authOptions } from '../api/auth/[...nextauth]';
+import { useSessionStorage } from 'react-use';
+import { GITHUB_CLIENT_ID } from '@modules/submitProject/constant';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const githubClientID = process.env.GITHUB_ID;
   const providers = await getProviders();
   const session = await unstable_getServerSession(
     context.req,
@@ -23,7 +26,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   if (!session.user.email) session.user.email = '';
-  return { props: { session, providers } };
+  return { props: { session, providers, githubClientID } };
 }
 
 const SubmitYourProject: React.FC<{
@@ -31,7 +34,9 @@ const SubmitYourProject: React.FC<{
     LiteralUnion<BuiltInProviderType, string>,
     ClientSafeProvider
   >;
-}> = ({ providers }) => {
+  githubClientID: string;
+}> = ({ providers, githubClientID }) => {
+  useSessionStorage(GITHUB_CLIENT_ID, githubClientID);
   return (
     <>
       <Header />
