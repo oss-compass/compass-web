@@ -4,7 +4,7 @@ import { useMetricQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useCompareItems from '../hooks/useCompareItems';
 import useQueryDateRange from '../hooks/useQueryDateRange';
-import Trend from './Trend';
+import OverviewSummary from './OverviewSummary';
 import CodeQuality from './CodeQuality';
 import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
@@ -30,7 +30,7 @@ const Charts = () => {
 
   return (
     <>
-      <Trend />
+      <OverviewSummary />
 
       <TopicTitle id={Topic.Productivity}>Productivity</TopicTitle>
       <CodeQuality />

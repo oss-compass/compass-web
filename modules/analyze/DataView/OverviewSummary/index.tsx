@@ -1,18 +1,18 @@
 import React from 'react';
 import { MetricQuery } from '@graphql/generated';
-import TrendChart from './TrendChart';
-import TrendList from './TrendList';
+import LineChart from './LineChart';
+import TableList from './TableList';
 import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 
 const Trends: React.FC<{
   data: { label: string; result: MetricQuery | undefined }[];
 }> = ({ data }) => {
   if (data.length > 1) {
-    return <TrendList />;
+    return <TableList />;
   }
 
   if (data.length == 1) {
-    return <TrendChart />;
+    return <LineChart />;
   }
 
   return null;
