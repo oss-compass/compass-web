@@ -13,8 +13,10 @@ import CommentFrequency from './CommentFrequency';
 import CodeReviewCount from './CodeReviewCount';
 import UpdatedIssuesCount from './UpdatedIssuesCount';
 import RecentReleasesCount from './RecentReleasesCount';
+import { withErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '@common/components/ErrorFallback';
 
-const Activity = () => {
+const CommunityActivity = () => {
   return (
     <>
       <SectionTitle id={Section.CommunityActivity}>Activity</SectionTitle>
@@ -38,4 +40,11 @@ const Activity = () => {
   );
 };
 
-export default Activity;
+export default withErrorBoundary(CommunityActivity, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});

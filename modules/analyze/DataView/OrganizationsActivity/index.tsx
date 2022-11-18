@@ -8,6 +8,8 @@ import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import OrgCount from './OrgCount';
 import ContributionLast from './ContributionLast';
+import { withErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '@common/components/ErrorFallback';
 
 const OrganizationsActivity = () => {
   return (
@@ -30,4 +32,11 @@ const OrganizationsActivity = () => {
   );
 };
 
-export default OrganizationsActivity;
+export default withErrorBoundary(OrganizationsActivity, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});

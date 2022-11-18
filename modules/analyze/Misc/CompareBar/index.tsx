@@ -13,6 +13,8 @@ import { Level } from '@modules/analyze/constant';
 import AddInput from './AddInput';
 import ColorSwitcher from './ColorSwitcher';
 import useBreakpoint from '@common/hooks/useBreakpoint';
+import { withErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '@common/components/ErrorFallback';
 
 const CloseIcons: React.FC<{ label: string; level: Level }> = ({
   label,
@@ -99,4 +101,11 @@ const CompareBar = () => {
   );
 };
 
-export default CompareBar;
+export default withErrorBoundary(CompareBar, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});

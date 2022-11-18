@@ -12,6 +12,8 @@ import UpdatedIssuesCount from './UpdatedIssuesCount';
 import PrOpenTime from './PrOpenTime';
 import CodeReviewCount from './CodeReviewCount';
 import ClosedPrsCount from './ClosedPrsCount';
+import { withErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '@common/components/ErrorFallback';
 
 const CommunitySupport = () => {
   return (
@@ -37,4 +39,11 @@ const CommunitySupport = () => {
   );
 };
 
-export default CommunitySupport;
+export default withErrorBoundary(CommunitySupport, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});

@@ -3,6 +3,8 @@ import { MetricQuery } from '@graphql/generated';
 import LineChart from './LineChart';
 import TableList from './TableList';
 import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
+import { withErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '@common/components/ErrorFallback';
 
 const Trends: React.FC<{
   data: { label: string; result: MetricQuery | undefined }[];
@@ -24,4 +26,11 @@ const TrendsWithData = () => {
   return <Trends data={data} />;
 };
 
-export default TrendsWithData;
+export default withErrorBoundary(TrendsWithData, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});

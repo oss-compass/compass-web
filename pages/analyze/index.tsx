@@ -13,6 +13,7 @@ import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 const useLabelStatus = () => {
   const { compareItems } = useCompareItems();
   const label = React.useMemo(() => {
+    // todo check all compare items status
     if (compareItems.length >= 1) {
       return compareItems[0].label;
     }
