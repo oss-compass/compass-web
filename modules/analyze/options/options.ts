@@ -123,6 +123,12 @@ export type ChartComponentProps = {
   yAxis: { name: string; label: string; data: (string | number)[] }[];
 };
 
+export type ChartSummaryProps = {
+  loading?: boolean;
+  xAxis: string[];
+  yAxis: { name: string; legendName: string; data: (string | number)[] }[];
+};
+
 export type ChartProps = {
   containerRef?: React.RefObject<HTMLElement>;
 };
