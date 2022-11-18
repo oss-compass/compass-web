@@ -19,6 +19,8 @@ query latestMetrics($label: String!, $level:String){
         communitySupportScoreUpdatedAt
         label
         level
+        organizationsActivity
+        organizationsActivityUpdatedAt
     }
 }
 

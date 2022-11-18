@@ -24,7 +24,7 @@ const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   return (
     <td
       className={classnames(
-        'w-1/4 border-t border-b border-b-[#ffffff] py-4 text-center font-semibold md:text-sm',
+        'border-t border-b border-b-[#ffffff] py-4 text-center font-semibold md:text-sm',
         className
       )}
       {...props}
@@ -112,17 +112,13 @@ const TrendsList: React.FC = () => {
             <TT className="border-t-[#FFB290] bg-[#fff9f3]">
               Community Service and Support
             </TT>
-            <TT className="border-t-[#B990FF] bg-[#f8f3ff]">Activity</TT>
+            <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
+              Community Activity
+            </TT>
+            <TT className="border-t-[#61a2ff] bg-[#ddebff]">
+              Organizations Activity
+            </TT>
           </tr>
-          {/*<tr>*/}
-          {/*  <th></th>*/}
-          {/*  <Th className="bg-[#f2fcff]">Code quality</Th>*/}
-          {/*  <Th className="bg-[#f2fcff]">Community support</Th>*/}
-          {/*  <Th className="bg-[#fff9f3]">Community activity</Th>*/}
-          {/*  <Th className="bg-[#fff9f3]">Developer Retention</Th>*/}
-          {/*  <Th className="bg-[#f8f3ff]">Diversity</Th>*/}
-          {/*  <Th className="bg-[#f8f3ff]">Developer Attraction</Th>*/}
-          {/*</tr>*/}
         </thead>
         <tbody>
           {Array.isArray(list) &&
@@ -151,6 +147,11 @@ const TrendsList: React.FC = () => {
                     {markingSys
                       ? transMarkingSystem(item!.activityScore!)
                       : toFixed(item!.activityScore!, 3)}
+                  </Td>
+                  <Td className="bg-[#ddebff]">
+                    {markingSys
+                      ? transMarkingSystem(item!.organizationsActivity!)
+                      : toFixed(item!.organizationsActivity!, 3)}
                   </Td>
                 </tr>
               );
