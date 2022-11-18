@@ -24,7 +24,7 @@ const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   return (
     <td
       className={classnames(
-        'border-t border-b border-b-[#ffffff] py-4 text-center font-semibold md:text-sm',
+        'min-w-[150px] border-t border-b border-b-[#ffffff] py-4 text-center font-semibold md:text-sm',
         className
       )}
       {...props}
@@ -102,62 +102,66 @@ const TrendsList: React.FC = () => {
       showMarkingSysBtn={true}
       getMarkingSys={(val) => setMarkingSys(val)}
     >
-      <table className={classnames(styles.table, 'w-full')}>
-        <thead>
-          <tr className="">
-            <th style={{ width: '15%' }} />
-            <TT className="border-t-[#90E6FF] bg-[#f2fcff]">
-              Code Quality Guarantee
-            </TT>
-            <TT className="border-t-[#FFB290] bg-[#fff9f3]">
-              Community Service and Support
-            </TT>
-            <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
-              Community Activity
-            </TT>
-            <TT className="border-t-[#61a2ff] bg-[#ddebff]">
-              Organizations Activity
-            </TT>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(list) &&
-            list.map((item, index) => {
-              return (
-                <tr className="" key={item!.label}>
-                  <td className="flex flex-col px-1">
-                    <p className="break-words md:w-[140px]">
-                      {getLastPathSegment(item!.label!)}
-                    </p>
-                    <p className={'text-xs text-gray-400'}>
-                      {`update at ${formatISO(item!.activityScoreUpdatedAt!)}`}
-                    </p>
-                  </td>
-                  <Td className="bg-[#f2fcff]">
-                    {markingSys
-                      ? transMarkingSystem(item!.codeQualityGuarantee!)
-                      : toFixed(item!.codeQualityGuarantee!, 3)}
-                  </Td>
-                  <Td className="bg-[#fff9f3]">
-                    {markingSys
-                      ? transMarkingSystem(item!.communitySupportScore!)
-                      : toFixed(item!.communitySupportScore!, 3)}
-                  </Td>
-                  <Td className="bg-[#f8f3ff]">
-                    {markingSys
-                      ? transMarkingSystem(item!.activityScore!)
-                      : toFixed(item!.activityScore!, 3)}
-                  </Td>
-                  <Td className="bg-[#ddebff]">
-                    {markingSys
-                      ? transMarkingSystem(item!.organizationsActivity!)
-                      : toFixed(item!.organizationsActivity!, 3)}
-                  </Td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
+      <div className="overflow-auto">
+        <table className={classnames(styles.table, 'w-full table-auto')}>
+          <thead>
+            <tr className="">
+              <th style={{ width: '15%' }} />
+              <TT className="border-t-[#90E6FF] bg-[#f2fcff]">
+                Code Quality Guarantee
+              </TT>
+              <TT className="border-t-[#FFB290] bg-[#fff9f3]">
+                Community Service and Support
+              </TT>
+              <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
+                Community Activity
+              </TT>
+              <TT className="border-t-[#61a2ff] bg-[#ddebff]">
+                Organizations Activity
+              </TT>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.isArray(list) &&
+              list.map((item, index) => {
+                return (
+                  <tr className="" key={item!.label}>
+                    <td className="flex flex-col px-1">
+                      <p className="break-words md:w-[140px]">
+                        {getLastPathSegment(item!.label!)}
+                      </p>
+                      <p className={'text-xs text-gray-400'}>
+                        {`update at ${formatISO(
+                          item!.activityScoreUpdatedAt!
+                        )}`}
+                      </p>
+                    </td>
+                    <Td className="bg-[#f2fcff]">
+                      {markingSys
+                        ? transMarkingSystem(item!.codeQualityGuarantee!)
+                        : toFixed(item!.codeQualityGuarantee!, 3)}
+                    </Td>
+                    <Td className="bg-[#fff9f3]">
+                      {markingSys
+                        ? transMarkingSystem(item!.communitySupportScore!)
+                        : toFixed(item!.communitySupportScore!, 3)}
+                    </Td>
+                    <Td className="bg-[#f8f3ff]">
+                      {markingSys
+                        ? transMarkingSystem(item!.activityScore!)
+                        : toFixed(item!.activityScore!, 3)}
+                    </Td>
+                    <Td className="bg-[#ddebff]">
+                      {markingSys
+                        ? transMarkingSystem(item!.organizationsActivity!)
+                        : toFixed(item!.organizationsActivity!, 3)}
+                    </Td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
     </BaseCard>
   );
 };
