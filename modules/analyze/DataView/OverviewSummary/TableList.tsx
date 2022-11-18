@@ -8,13 +8,15 @@ import {
   useLatestMetricsQuery,
   useMetricQuery,
 } from '@graphql/generated';
-import { getLastPathSegment } from '@common/utils/url';
+import { getRepoName } from '@common/utils/url';
 import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 import { Topic } from '@modules/analyze/Misc/SideBar/config';
+import { formatRepoName } from '@modules/analyze/DataTransform/transToAxis';
+import { Level } from '@modules/analyze/constant';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -91,6 +93,7 @@ const TrendsList: React.FC = () => {
 
   const loading = data.some((i) => i.isLoading);
   const list = data.map((i) => i.data?.latestMetrics).filter(Boolean);
+  const labels = list.map((item) => item?.label).filter(Boolean) as string[];
 
   return (
     <BaseCard
@@ -128,7 +131,11 @@ const TrendsList: React.FC = () => {
                   <tr className="" key={item!.label}>
                     <td className="flex flex-col px-1">
                       <p className="break-words md:w-[140px]">
-                        {getLastPathSegment(item!.label!)}
+                        {formatRepoName({
+                          label: item!.label!,
+                          level: item!.level as Level,
+                          compareLabels: labels,
+                        })}
                       </p>
                       <p className={'text-xs text-gray-400'}>
                         {`update at ${formatISO(

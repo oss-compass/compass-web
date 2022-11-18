@@ -36,10 +36,14 @@ const getOptions = (
 ) => {
   const series = genSeries<BarSeriesOption>(
     yResults,
-    ({ legendName, label, level, isCompare, color, data }, len) => {
+    (
+      { legendName, label, compareLabels, level, isCompare, color, data },
+      len
+    ) => {
       return bar({
         name: getLegendName(legendName, {
           label,
+          compareLabels,
           level,
           isCompare,
           legendTypeCount: len,

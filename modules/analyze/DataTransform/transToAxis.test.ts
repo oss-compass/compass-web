@@ -21,4 +21,6 @@ describe('transToAxis', () => {
     });
     expect(result).toEqual(outputData);
   });
+
+  it('checkHasSameRepoPath', function () {});
 });

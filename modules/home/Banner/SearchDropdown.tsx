@@ -7,9 +7,9 @@ import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
 import {
   getAnalyzeLink,
-  repoUrlFormat,
   getPathname,
-  getHostLabel,
+  getProvider,
+  getRepoName,
 } from '@common/utils';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import { Level } from '@modules/analyze/constant';
@@ -58,7 +58,7 @@ const LinkItem: React.FC<{
   item: SearchQuery['fuzzySearch'][number];
   active: boolean;
 }> = ({ item, active }) => {
-  const host = getHostLabel(item.label!);
+  const host = getProvider(item.label!);
 
   return (
     <Link key={item.label} href={getAnalyzeLink(item)}>
@@ -73,7 +73,7 @@ const LinkItem: React.FC<{
           {item.level === Level.REPO ? (
             <>
               <div className="mb-1 truncate text-xl font-medium">
-                {repoUrlFormat(item.label!)}
+                {getRepoName(item.label!)}
               </div>
               <div className="flex items-center text-xs ">
                 <Icon name={host} />

@@ -26,11 +26,15 @@ const getOptions = (
 ) => {
   const series = genSeries<LineSeriesOption>(
     yResults,
-    ({ legendName, label, level, isCompare, color, data }, len) => {
+    (
+      { legendName, label, compareLabels, level, isCompare, color, data },
+      len
+    ) => {
       hundredMarkingSys && (data = data.map((i) => transMarkingSystem(i)));
       return line({
         name: getLegendName(legendName, {
           label,
+          compareLabels,
           level,
           isCompare,
           legendTypeCount: len,

@@ -21,22 +21,22 @@ export const getAllPathname = (urls: string[]) => {
 
 //  cli/cli => cli
 export function getLastPathSegment(path: string) {
-  if (!path) return;
+  if (!path) return '';
   return path.split('/').pop() || '';
 }
 
 export function getNameSpace(path: string) {
-  if (!path) return;
+  if (!path) return '';
   return getPathname(path).split('/').shift() || '';
 }
 
 export function getRepoName(path: string) {
-  if (!path) return;
+  if (!path) return '';
   return getPathname(path).split('/').pop() || '';
 }
 
 //https://github.com/  =>  github
-export function getHostLabel(url: string) {
+export function getProvider(url: string) {
   const result = url.match(/^https:\/\/(.+?)\..+$/i);
   if (result && result.length >= 2) {
     return result[1];
@@ -51,16 +51,6 @@ export function fillHttps(url: string): string {
     return `https://${url}`;
   }
   return url;
-}
-
-/**
- * https://github.com/cli/cli  => cli
- * @param url
- * @deprecated
- */
-export function repoUrlFormat(url: string | undefined) {
-  if (!url) return '';
-  return `${getLastPathSegment(getPathname(url))}`;
 }
 
 //https://github.com/cli/cli  => github.com/cli/cli

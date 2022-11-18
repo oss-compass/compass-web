@@ -8,7 +8,7 @@ import Button from '@modules/submitProject/Form/Button';
 import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';
-import { fillHttps, repoUrlFormat } from '@common/utils';
+import { fillHttps, getRepoName } from '@common/utils';
 import { useSession } from 'next-auth/react';
 import Message from '@modules/submitProject/Misc/Message';
 
@@ -26,7 +26,7 @@ const FormCommunity = () => {
     []
   );
 
-  const options = uniq([...sarUrls, ...grUrls].map((v) => repoUrlFormat(v)));
+  const options = uniq([...sarUrls, ...grUrls].map((v) => getRepoName(v)));
   const { isLoading, isError, mutate, data } = useCreateProjectTaskMutation(
     client,
     {
