@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import classnames from 'classnames';
+import { withErrorBoundary } from 'react-error-boundary';
 import { usePrevious, useWindowScroll } from 'react-use';
 import { useConfigContext } from '@modules/analyze/context';
 import { checkIsPending } from '@modules/analyze/constant';
@@ -11,6 +12,7 @@ import TopicNicheCreation from '@modules/analyze/Misc/SideBar/TopicNicheCreation
 import useHashchangeEvent from '@modules/analyze/Misc/SideBar/useHashchangeEvent';
 import NoSsr from '@common/components/NoSsr';
 import { SideBarContextProvider } from '@modules/analyze/context/SideBarContext';
+import ErrorFallback from '@common/components/ErrorFallback';
 
 const Divider = () => (
   <div className="mx-6 mt-2 mb-4 border-b border-gray-200"></div>
@@ -71,4 +73,11 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default withErrorBoundary(SideBar, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});

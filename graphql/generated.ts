@@ -266,6 +266,10 @@ export type LatestMetrics = {
   label?: Maybe<Scalars['String']>;
   /** metric model object level */
   level?: Maybe<Scalars['String']>;
+  /** latest score of organizations activity metric model */
+  organizationsActivity?: Maybe<Scalars['Float']>;
+  /** latest score of organizations activity metric model updated_at */
+  organizationsActivityUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
 };
 
 export type Mutation = {
@@ -460,6 +464,8 @@ export type LatestMetricsQuery = {
     communitySupportScoreUpdatedAt?: any | null;
     label?: string | null;
     level?: string | null;
+    organizationsActivity?: number | null;
+    organizationsActivityUpdatedAt?: any | null;
   };
 };
 
@@ -767,6 +773,8 @@ export const LatestMetricsDocument = /*#__PURE__*/ `
     communitySupportScoreUpdatedAt
     label
     level
+    organizationsActivity
+    organizationsActivityUpdatedAt
   }
 }
     `;

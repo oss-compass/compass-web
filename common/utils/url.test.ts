@@ -1,18 +1,44 @@
-import { getHostLabel, repoUrlFormat, getNameSpace, getRepoName } from './url';
+import {
+  getPathname,
+  getProvider,
+  getNameSpace,
+  getRepoName,
+  getLastPathSegment,
+} from './url';
 
 describe('utils url ', () => {
-  it('getHostLabel', () => {
+  it('getPathname', () => {
+    const testCases = [
+      {
+        input: 'https://github.com/EdmondFrank/.emacs.d',
+        result: 'EdmondFrank/.emacs.d',
+      },
+      {
+        input: 'https://github.com/ant-design/ant-design',
+        result: 'ant-design/ant-design',
+      },
+      {
+        input: 'https://gitee.com/dotnetchina/MiniWord',
+        result: 'dotnetchina/MiniWord',
+      },
+    ];
+    testCases.map((item) => {
+      expect(getPathname(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('getProvider', () => {
     const testCases = [
       { input: 'https://github.com/EdmondFrank/.emacs.d', result: 'github' },
       { input: 'https://github.com/ant-design/ant-design', result: 'github' },
       { input: 'https://gitee.com/dotnetchina/MiniWord', result: 'gitee' },
     ];
     testCases.map((item) => {
-      expect(getHostLabel(item.input)).toEqual(item.result);
+      expect(getProvider(item.input)).toEqual(item.result);
     });
   });
 
-  it('repoUrlFormat', () => {
+  it('getLastPathSegment', () => {
     const testCases = [
       { input: 'https://github.com/EdmondFrank/.emacs.d', result: '.emacs.d' },
       {
@@ -23,7 +49,7 @@ describe('utils url ', () => {
     ];
 
     testCases.map((item) => {
-      expect(repoUrlFormat(item.input)).toEqual(item.result);
+      expect(getLastPathSegment(item.input)).toEqual(item.result);
     });
   });
 

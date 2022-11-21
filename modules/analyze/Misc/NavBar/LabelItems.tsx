@@ -1,9 +1,8 @@
 import React from 'react';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import { getHostLabel } from '@common/utils';
+import { getProvider } from '@common/utils';
 import ColorSwitcher from '@modules/analyze/Misc/CompareBar/ColorSwitcher';
-import classnames from 'classnames';
 import { Level } from '@modules/analyze/constant';
 
 const Icon: React.FC<{ provider: string }> = ({ provider, ...restProps }) => {
@@ -22,7 +21,7 @@ const LabelItems = () => {
     <>
       <div className="flex flex-wrap items-center md:hidden">
         {compareItems.map(({ name, label, level }, index) => {
-          const host = getHostLabel(label);
+          const host = getProvider(label);
 
           let labelNode = (
             <span className={'ml-1 mr-1 font-semibold'}>{name}</span>
@@ -42,7 +41,7 @@ const LabelItems = () => {
           }
 
           return (
-            <div key={name} className="flex flex-wrap items-center">
+            <div key={label} className="flex flex-wrap items-center">
               <Icon provider={host} />
               {labelNode}
               {compareItems.length > 1 && <ColorSwitcher label={label} />}

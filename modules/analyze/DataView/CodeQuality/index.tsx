@@ -12,6 +12,8 @@ import CommitPRLinkedRatio from './CommitPRLinkedRatio';
 import CodeReviewRatio from './CodeReviewRatio';
 import CodeMergeRatio from './CodeMergeRatio';
 import LocFrequency from './LocFrequency';
+import { withErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '@common/components/ErrorFallback';
 
 const CodeQuality = () => {
   return (
@@ -38,4 +40,11 @@ const CodeQuality = () => {
   );
 };
 
-export default CodeQuality;
+export default withErrorBoundary(CodeQuality, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});

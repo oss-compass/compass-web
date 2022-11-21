@@ -3,7 +3,13 @@ import parseISO from 'date-fns/parseISO';
 import getUnixTime from 'date-fns/getUnixTime';
 import { Level } from '@modules/analyze/constant';
 import { MetricQuery } from '@graphql/generated';
-import { formatISO, repoUrlFormat, toFixed } from '@common/utils';
+import {
+  formatISO,
+  getPathname,
+  getProvider,
+  getRepoName,
+  toFixed,
+} from '@common/utils';
 
 interface DateItem {
   label: string;
@@ -97,32 +103,62 @@ export function transToAxis(
   };
 }
 
-const formatRepoName = (name: string, level: Level) => {
-  let label = name;
+/**
+ * check is need show provider in legend
+ * eg:
+ * https://github.com/cli/cli
+ * https://gitee.com/cli/cli
+ *
+ * need show gitee or github
+ */
+const checkHasSameRepoPath = (label: string, labels: string[]) => {
+  const pathname = getPathname(label);
+
+  let count = 0;
+  return labels.some((item) => {
+    if (item.indexOf(pathname) > -1) count++;
+    return count >= 2;
+  });
+};
+
+export const formatRepoName = ({
+  label,
+  compareLabels,
+  level,
+}: {
+  label: string;
+  compareLabels: string[];
+  level: Level;
+}) => {
+  let name = label;
   if (level === Level.REPO) {
-    label = repoUrlFormat(name);
+    const hasSamePath = checkHasSameRepoPath(label, compareLabels);
+    const provider = getProvider(label);
+    const repoName = getRepoName(name);
+    name = hasSamePath ? `${provider} ${repoName}` : repoName;
   }
-  return label;
+  return name;
 };
 
 export function getLegendName(
   legendName: string,
   opts: {
     label: string;
+    compareLabels: string[];
     level: Level;
     isCompare: boolean;
     legendTypeCount?: number;
   }
 ) {
-  const { label, level, isCompare, legendTypeCount } = opts;
-  // format legend name
-  const compareNames = formatRepoName(label, level);
+  const { compareLabels, label, level, isCompare, legendTypeCount } = opts;
 
-  // if only one legend type, only show compareNames
+  // format label
+  const shortLabel = formatRepoName({ label, compareLabels, level });
+
+  // if only one legend type, only show shortLabel
   if (isCompare && legendTypeCount === 1) {
-    return compareNames;
+    return shortLabel;
   }
 
-  const name = isCompare ? `${compareNames} ${legendName}` : legendName;
-  return name;
+  return isCompare ? `${shortLabel} ${legendName}` : legendName;
 }

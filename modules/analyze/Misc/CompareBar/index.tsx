@@ -12,6 +12,9 @@ import { removeSearchValue } from '@modules/analyze/Misc/urlTool';
 import { Level } from '@modules/analyze/constant';
 import AddInput from './AddInput';
 import ColorSwitcher from './ColorSwitcher';
+import useBreakpoint from '@common/hooks/useBreakpoint';
+import { withErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '@common/components/ErrorFallback';
 
 const CloseIcons: React.FC<{ label: string; level: Level }> = ({
   label,
@@ -68,6 +71,7 @@ const CompareItem: React.FC<{
 };
 
 const CompareBar = () => {
+  const breakpoint = useBreakpoint();
   const { compareItems } = useCompareItems();
   const len = compareItems.length;
 
@@ -82,7 +86,7 @@ const CompareBar = () => {
                 item={item}
                 showCloseIcon={len > 1}
                 showColorSwitch={len > 1}
-                showGuideTips={index === 0}
+                showGuideTips={index === 0 && breakpoint === 'lg'}
                 className={classnames({
                   'rounded-tl-lg rounded-bl-lg !border-l-0': index === 0,
                   // 'text-center': len == 1,
@@ -97,4 +101,11 @@ const CompareBar = () => {
   );
 };
 
-export default CompareBar;
+export default withErrorBoundary(CompareBar, {
+  FallbackComponent: ErrorFallback,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});
