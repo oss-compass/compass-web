@@ -1,17 +1,21 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import Logo from '@common/components/Logo';
 import SubmitYouProject from '@common/components/Misc/SubmitYouProject';
 import MobileHeader from '@common/components/Layout/MobileHeader';
 import { HeaderCommunityMenu } from '@common/components/MenuDropdown';
 import LogoGitee from './logo-gitee.svg';
 import LogoGithub from './logo-github.svg';
+import ChangeLanguage from '@common/components/Layout/Header/ChangeLanguage';
 
 const Header: React.FC<{
   sticky?: boolean;
   mobileMenu?: React.ReactNode;
 }> = ({ sticky = true, mobileMenu }) => {
+  const { t } = useTranslation();
+
   return (
     <header>
       <div className={classnames('bg-black lg:hidden')}>
@@ -34,7 +38,9 @@ const Header: React.FC<{
             </Link>
             <HeaderCommunityMenu />
             <Link href="/docs/about" legacyBehavior>
-              <a className={'mx-6 px-2.5 font-medium text-white'}>About</a>
+              <a className={'mx-6 px-2.5 font-medium text-white'}>
+                {t('header.about')}
+              </a>
             </Link>
           </div>
           <div className="flex cursor-pointer items-center">
@@ -52,6 +58,7 @@ const Header: React.FC<{
                 </a>
               </Link>
             </div>
+            <ChangeLanguage />
             <SubmitYouProject />
           </div>
         </div>
