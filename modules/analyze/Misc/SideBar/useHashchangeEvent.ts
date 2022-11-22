@@ -4,6 +4,7 @@ import {
   CodeQualityGuarantee,
   CommunityActivity,
   CommunityServiceAndSupport,
+  OrganizationsActivity,
   Topic,
 } from './config';
 
@@ -50,6 +51,7 @@ const useHashchangeEvent = () => {
       CodeQualityGuarantee,
       CommunityServiceAndSupport,
       CommunityActivity,
+      OrganizationsActivity,
     ].reduce<{ topicId: string; menuId: string; subMenuId: string }>(
       (acc, cur) => {
         const { topic, id, groups } = cur;

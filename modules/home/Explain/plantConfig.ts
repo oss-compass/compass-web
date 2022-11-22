@@ -15,9 +15,9 @@ export type PlantList = {
 
 export const plantList: PlantList[] = [
   {
-    top: -107,
-    left: -427,
-    size: 78,
+    top: 199,
+    left: -377,
+    size: 76,
     color: 'productivity',
     popContent: {
       title: 'Contributor Count',
@@ -27,9 +27,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 102,
+    top: 214,
     left: -232,
-    size: 78,
+    size: 66,
     color: 'productivity',
     popContent: {
       title: 'Commit Frequency',
@@ -39,9 +39,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 91,
-    left: -325,
-    size: 70,
+    top: 117,
+    left: -300,
+    size: 62,
     color: 'productivity',
     popContent: {
       title: 'Is Maintained',
@@ -52,8 +52,8 @@ export const plantList: PlantList[] = [
   },
   {
     top: 127,
-    left: -394,
-    size: 66,
+    left: -228,
+    size: 59,
     color: 'productivity',
     popContent: {
       title: 'Commit PR Linked Ratio',
@@ -63,9 +63,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 24,
-    left: -196,
-    size: 62,
+    top: 184,
+    left: -201,
+    size: 47,
     color: 'productivity',
     popContent: {
       title: 'PR Issue Linked Ratio',
@@ -75,9 +75,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 42,
-    left: -120,
-    size: 62,
+    top: 222,
+    left: -309,
+    size: 46,
     color: 'productivity',
     popContent: {
       title: 'Code Review Ratio',
@@ -87,9 +87,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -103,
-    left: -160,
-    size: 60,
+    top: 166,
+    left: -157,
+    size: 38,
     color: 'productivity',
     popContent: {
       title: 'Code Merge Ratio',
@@ -99,9 +99,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -196,
-    left: -492,
-    size: 60,
+    top: 154,
+    left: -369,
+    size: 34,
     color: 'productivity',
     popContent: {
       title: 'Lines of Code Frequency',
@@ -110,10 +110,11 @@ export const plantList: PlantList[] = [
       hash: '/docs/metrics-models/productivity/code-quality-guarantee#lines-of-code-frequency',
     },
   },
+
   {
-    top: -42,
-    left: -611,
-    size: 54,
+    top: 9,
+    left: -348,
+    size: 76,
     color: 'productivity',
     popContent: {
       title: 'Updated Issues Count',
@@ -122,9 +123,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 206,
-    left: -109,
-    size: 50,
+    top: -69,
+    left: -382,
+    size: 68,
     color: 'productivity',
     popContent: {
       title: 'Close PR Count',
@@ -133,11 +134,10 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 329,
-    left: -349,
-    size: 48,
+    top: -63,
+    left: -508,
+    size: 55,
     color: 'productivity',
-    bottom: true,
     popContent: {
       title: 'Issue First Response',
       content:
@@ -146,9 +146,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 285,
-    left: -17,
-    size: 38,
+    top: 22,
+    left: -510,
+    size: 56,
     color: 'productivity',
     bottom: true,
     popContent: {
@@ -159,9 +159,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 88,
-    left: -503,
-    size: 36,
+    top: -17,
+    left: -533,
+    size: 46,
     color: 'productivity',
     bottom: true,
     popContent: {
@@ -172,9 +172,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -189,
-    left: -370,
-    size: 34,
+    top: 75,
+    left: -410,
+    size: 30,
     color: 'productivity',
     popContent: {
       title: 'Comment Frequency',
@@ -184,9 +184,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 8,
-    left: -159,
-    size: 24,
+    top: 60,
+    left: -461,
+    size: 23,
     color: 'productivity',
     popContent: {
       title: 'Code Review Count',
@@ -197,9 +197,9 @@ export const plantList: PlantList[] = [
   },
 
   {
-    top: -213,
-    left: 73,
-    size: 66,
+    top: -330,
+    left: -74,
+    size: 64,
     color: 'robustness',
     popContent: {
       title: 'Contributor Count',
@@ -209,9 +209,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -250,
-    left: -267,
-    size: 64,
+    top: -358,
+    left: -20,
+    size: 60,
     color: 'robustness',
     popContent: {
       title: 'Commit Frequency',
@@ -221,9 +221,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -132,
-    left: 98,
-    size: 58,
+    top: -250,
+    left: -58,
+    size: 56,
     color: 'robustness',
     popContent: {
       title: 'Updated Since',
@@ -233,9 +233,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -176,
-    left: -254,
-    size: 48,
+    top: -313,
+    left: 97,
+    size: 55,
     color: 'robustness',
     popContent: {
       title: 'Organization Count',
@@ -245,9 +245,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -407,
-    left: 470,
-    size: 58,
+    top: -252,
+    left: 93,
+    size: 46,
     color: 'robustness',
     right: true,
     popContent: {
@@ -258,9 +258,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -395,
-    left: 262,
-    size: 46,
+    top: -226,
+    left: 20,
+    size: 45,
     color: 'robustness',
     popContent: {
       title: 'Comment Frequency',
@@ -270,8 +270,8 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -381,
-    left: 7,
+    top: -341,
+    left: 64,
     size: 46,
     color: 'robustness',
     popContent: {
@@ -282,9 +282,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -427,
-    left: -200,
-    size: 46,
+    top: -264,
+    left: 58,
+    size: 38,
     color: 'robustness',
     popContent: {
       title: 'Updated Issues Count',
@@ -293,9 +293,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -390,
-    left: -402,
-    size: 46,
+    top: -291,
+    left: -108,
+    size: 30,
     color: 'robustness',
     popContent: {
       title: 'Recent Releases Count',
@@ -303,10 +303,11 @@ export const plantList: PlantList[] = [
       hash: '/docs/metrics-models/robustness/activity#recent-releases-count',
     },
   },
+
   {
-    top: -291,
-    left: -141,
-    size: 44,
+    top: -351,
+    left: -318,
+    size: 55,
     color: 'robustness',
     popContent: {
       title: 'Maintainer Count',
@@ -315,9 +316,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -224,
-    left: 318,
-    size: 40,
+    top: -352,
+    left: -166,
+    size: 46,
     color: 'robustness',
     popContent: {
       title: 'Meeting Count',
@@ -326,9 +327,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -270,
-    left: -326,
-    size: 31,
+    top: -422,
+    left: -176,
+    size: 46,
     color: 'robustness',
     popContent: {
       title: 'Meeting Attendee Count',
@@ -338,8 +339,41 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -189,
-    left: -101,
+    top: -346,
+    left: 179,
+    size: 44,
+    color: 'robustness',
+    popContent: {
+      title: 'Closed Issues Count',
+      content: 'Determine the number of issues closed in the last 90 days.',
+      hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
+    },
+  },
+  {
+    top: -366,
+    left: 236,
+    size: 44,
+    color: 'robustness',
+    popContent: {
+      title: 'Closed Issues Count',
+      content: 'Determine the number of issues closed in the last 90 days.',
+      hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
+    },
+  },
+  {
+    top: -412,
+    left: 234,
+    size: 38,
+    color: 'robustness',
+    popContent: {
+      title: 'Closed Issues Count',
+      content: 'Determine the number of issues closed in the last 90 days.',
+      hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
+    },
+  },
+  {
+    top: -391,
+    left: 123,
     size: 29,
     color: 'robustness',
     popContent: {
@@ -350,9 +384,9 @@ export const plantList: PlantList[] = [
   },
 
   {
-    top: 3,
-    left: 410,
-    size: 71,
+    top: 48,
+    left: 257,
+    size: 61,
     color: 'nicheCreation',
     popContent: {
       title: 'Org Count',
@@ -362,9 +396,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 11,
-    left: 147,
-    size: 66,
+    top: 118,
+    left: 171,
+    size: 60,
     color: 'nicheCreation',
     popContent: {
       title: 'Contributor Count',
@@ -374,9 +408,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -149,
-    left: 332,
-    size: 64,
+    top: 113,
+    left: 413,
+    size: 50,
     color: 'nicheCreation',
     popContent: {
       title: 'Commit Frequency',
@@ -386,11 +420,11 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: 330,
-    left: 161,
-    size: 64,
+    top: 174,
+    left: 329,
+    size: 46,
     color: 'nicheCreation',
-    bottom: true,
+    // bottom: true,
     popContent: {
       title: 'Contribution Last',
       content:
@@ -398,10 +432,11 @@ export const plantList: PlantList[] = [
       hash: '/docs/metrics-models/niche-creation/developer-retention#contribution-last',
     },
   },
+
   {
-    top: 240,
-    left: 518,
-    size: 50,
+    top: 222,
+    left: 453,
+    size: 56,
     color: 'nicheCreation',
     right: true,
     popContent: {
@@ -412,10 +447,11 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -133,
-    left: 197,
-    size: 48,
+    top: 206,
+    left: 580,
+    size: 56,
     color: 'nicheCreation',
+    right: true,
     popContent: {
       title: 'Contributor Count',
       content:
@@ -424,9 +460,9 @@ export const plantList: PlantList[] = [
     },
   },
   {
-    top: -89,
-    left: 598,
-    size: 36,
+    top: 182,
+    left: 537,
+    size: 33,
     color: 'nicheCreation',
     right: true,
     popContent: {
