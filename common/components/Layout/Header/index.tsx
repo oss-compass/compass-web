@@ -31,33 +31,38 @@ const Header: React.FC<{
                 <Logo color="white" />
               </a>
             </Link>
+
             <Link href="/docs/dimensions-define" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 Metrics Models
               </a>
             </Link>
+
             <HeaderCommunityMenu />
+
             <Link href="/docs/about" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('header.about')}
               </a>
             </Link>
           </div>
-          <div className="flex cursor-pointer items-center">
-            <div className="ml-10">
+          <div className="flex h-full items-center">
+            <div className="mx-5">
               <Link href="https://gitee.com/oss-compass" passHref>
                 <a target="_blank" rel="noopener noreferrer">
                   <LogoGitee />
                 </a>
               </Link>
             </div>
-            <div className="ml-10 mr-10 cursor-pointer">
+
+            <div className="mx-5 cursor-pointer">
               <Link href="https://github.com/oss-compass" passHref>
                 <a target="_blank" rel="noopener noreferrer">
                   <LogoGithub />
                 </a>
               </Link>
             </div>
+
             <ChangeLanguage />
             <SubmitYouProject />
           </div>
