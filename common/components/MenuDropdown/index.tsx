@@ -11,34 +11,36 @@ export const HeaderCommunityMenu = () => {
         <a className={'font-medium text-white'}>Community</a>
         <AiFillCaretDown color="#fff" className="ml-2" />
       </div>
-      <ul className="absolute top-[100%] z-dropdown hidden w-[360px] border-t-2 bg-black/90 text-white group-hover:block">
-        <li className="flex cursor-pointer items-center border-b border-white/30 py-4 pl-6 hover:bg-[#333333]">
-          <div className="mr-4 w-8">
-            <Slack />
-          </div>
-          <Link href="/docs/community/slack" passHref legacyBehavior>
-            <a target="_blank" rel="noopener noreferrer">
-              <p className="text-base">Slack</p>
-              <p className="text-sm text-white/50">
-                Join our community channel on Slack
-              </p>
-            </a>
-          </Link>
-        </li>
-        <li className="flex cursor-pointer items-center py-4 pl-6 hover:bg-[#333333]">
-          <div className="mr-4 w-8">
-            <Wechat />
-          </div>
-          <Link href="/docs/community/wechat" passHref legacyBehavior>
-            <a target="_blank" rel="noopener noreferrer">
-              <div className="text-base">Wechat</div>
-              <div className="text-sm text-white/50">
-                Scan our group chat QR code to join
-              </div>
-            </a>
-          </Link>
-        </li>
-      </ul>
+      <div className="absolute top-[100%] z-dropdown hidden w-[360px] border-t-2 border-transparent group-hover:block">
+        <ul className="bg-black/90 text-white">
+          <li className="flex cursor-pointer items-center border-b border-white/20 py-4 pl-6 hover:bg-[#333333]">
+            <div className="mr-4 w-8">
+              <Slack />
+            </div>
+            <Link href="/docs/community/slack" passHref legacyBehavior>
+              <a target="_blank" rel="noopener noreferrer">
+                <p className="text-base">Slack</p>
+                <p className="text-sm text-white/50">
+                  Join our community channel on Slack
+                </p>
+              </a>
+            </Link>
+          </li>
+          <li className="flex cursor-pointer items-center py-4 pl-6 hover:bg-[#333333]">
+            <div className="mr-4 w-8">
+              <Wechat />
+            </div>
+            <Link href="/docs/community/wechat" passHref legacyBehavior>
+              <a target="_blank" rel="noopener noreferrer">
+                <div className="text-base">Wechat</div>
+                <div className="text-sm text-white/50">
+                  Scan our group chat QR code to join
+                </div>
+              </a>
+            </Link>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

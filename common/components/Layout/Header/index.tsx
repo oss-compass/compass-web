@@ -40,7 +40,7 @@ const Header: React.FC<{
 
             <HeaderCommunityMenu />
 
-            <Link href="/docs/about" legacyBehavior>
+            <Link href="/about">
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('header.about')}
               </a>
