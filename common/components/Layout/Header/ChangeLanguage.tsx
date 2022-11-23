@@ -30,7 +30,7 @@ const ChangeLanguage = () => {
     <div className="group relative mx-5 flex h-full items-center transition">
       <div className="flex h-[32px] cursor-pointer items-center justify-center border border-gray-200 px-2">
         <MdLanguage className="mr-1 text-white" />
-        <span className="mr-1 text-white">{language?.value}</span>
+        <span className="mr-1 text-sm text-white">{language?.value}</span>
         <AiFillCaretDown className="text-white" />
       </div>
 

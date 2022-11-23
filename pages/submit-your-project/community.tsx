@@ -11,8 +11,10 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { useSessionStorage } from 'react-use';
 import { GITHUB_CLIENT_ID } from '@modules/submitProject/constant';
+import getLocalesFile from '@common/utils/getLocalesFile';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { req } = context;
   const githubClientID = process.env.GITHUB_ID;
   const providers = await getProviders();
   const session = await unstable_getServerSession(
@@ -26,7 +28,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   if (!session.user.email) session.user.email = '';
-  return { props: { session, providers, githubClientID } };
+  return {
+    props: {
+      session,
+      providers,
+      githubClientID,
+      ...(await getLocalesFile(req.cookies)),
+    },
+  };
 }
 
 const SubmitYourProject: React.FC<{

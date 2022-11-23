@@ -9,6 +9,8 @@ import {
 import { useStatusQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
+import { GetServerSideProps } from 'next';
+import getLocalesFile from '@common/utils/getLocalesFile';
 
 const useLabelStatus = () => {
   const { compareItems } = useCompareItems();
@@ -77,3 +79,11 @@ const AnalyzePage = () => {
 };
 
 export default AnalyzePage;
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  return {
+    props: {
+      ...(await getLocalesFile(req.cookies)),
+    },
+  };
+};

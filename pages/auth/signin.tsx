@@ -6,10 +6,12 @@ import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
 import { Header } from '@common/components/Layout';
 import Banner from '@modules/submitProject/Misc/Banner';
 import LoginOptionCard from '@modules/auth/LoginOptionCard';
+import getLocalesFile from '@common/utils/getLocalesFile';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { req } = context;
   const providers = await getProviders();
-  return { props: { providers } };
+  return { props: { providers, ...(await getLocalesFile(req.cookies)) } };
 }
 
 const SignIn: React.FC<{
