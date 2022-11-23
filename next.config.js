@@ -1,20 +1,11 @@
 const path = require('path');
+const { i18n } = require('./next-i18next.config');
 const execSync = require('child_process').execSync;
+
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-const withMDX = require('@next/mdx')({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [],
-    rehypePlugins: [],
-    // If you use `MDXProvider`, uncomment the following line.
-    // providerImportSource: "@mdx-js/react",
-  },
-});
-
-/** @type {import("next").NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -58,10 +49,7 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer(
-  withMDX({
-    ...nextConfig,
-    // Append the default value with md extensions
-    pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  })
-);
+module.exports = withBundleAnalyzer({
+  ...nextConfig,
+  i18n,
+});

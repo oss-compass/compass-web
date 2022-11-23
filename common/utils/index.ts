@@ -1,5 +1,7 @@
 export * from './array';
 export * from './ga';
+export * from './getTopDomain';
+export * from './isBrowser';
 export * from './links';
 export * from './misc';
 export * from './number';
