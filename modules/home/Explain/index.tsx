@@ -93,9 +93,9 @@ const Estrela: React.FC = React.memo(() => {
       }}
       className={classnames(
         styles['estrela'],
-        styles['estrelaStyle' + getRandomArbitrary(1, 5)],
-        styles['estrelaOpacity' + getRandomArbitrary(1, 4)],
-        styles['estrelaTam' + getRandomArbitrary(1, 4)]
+        styles[`estrelaStyle${getRandomArbitrary(1, 5)}`],
+        styles[`estrelaOpacity${getRandomArbitrary(1, 4)}`],
+        styles[`estrelaTam${getRandomArbitrary(1, 4)}`]
       )}
     ></span>
   );
