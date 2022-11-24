@@ -7,11 +7,12 @@
 }
 .working {
   position: absolute;
-  top: calc(50% - 75px);
-  left: calc(50% - 75px);
-  width: 156px;
+  top: calc(50% - 73px);
+  left: calc(50% - 85px);
+  width: 180px;
   height: 150px;
   font-size: 32px;
+  font-weight: 600;
   line-height: 48px;
   text-align: center;
 }
@@ -136,13 +137,13 @@
 }
 @keyframes estrela {
   0% {
-    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.1);
   }
   50% {
-    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
   }
   100% {
-    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.1);
   }
 }
 
