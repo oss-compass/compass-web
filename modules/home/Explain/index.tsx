@@ -1,8 +1,7 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
-import { useCounter } from 'react-use';
+import { useCounter, useWindowSize } from 'react-use';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { plantList, PopContent } from './plantConfig';
 
@@ -74,47 +73,109 @@ const Plant: React.FC<
     </div>
   );
 };
+const getRandomArbitrary = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min)) + min;
+};
+/* eslint-disable react/display-name */
+const Estrela: React.FC = React.memo(() => {
+  const [width, setWidth] = useState(900);
+  useEffect(() => {
+    const box = document.getElementById('sectionexplain');
+    const offsetWidth = box?.offsetWidth;
+    setWidth(offsetWidth || 900);
+  }, []);
+  return (
+    <span
+      style={{
+        animationDelay: '0.' + getRandomArbitrary(0, 9) + 's',
+        left: getRandomArbitrary(50, width) + 'px',
+        top: getRandomArbitrary(50, 900) + 'px',
+      }}
+      className={classnames(
+        styles['estrela'],
+        styles[`estrelaStyle${getRandomArbitrary(1, 5)}`],
+        styles[`estrelaOpacity${getRandomArbitrary(1, 4)}`],
+        styles[`estrelaTam${getRandomArbitrary(1, 4)}`]
+      )}
+    ></span>
+  );
+});
 const SectionExplain = () => {
-  const { t } = useTranslation();
-  const [value, { inc, reset, set }] = useCounter(0, plantList.length, 0);
+  const [value, { inc, reset, set }] = useCounter(
+    plantList.length,
+    plantList.length,
+    0
+  );
   return (
     <section>
       <div
+        id="sectionexplain"
         className={classnames(
           styles.bg,
           'relative h-[900px] w-full overflow-hidden'
         )}
       >
-        <div className="mx-auto w-[1200px] lg:w-full">
-          <h1 className="absolute top-16 text-6xl text-white md:px-2 md:text-3xl">
-            {t('home:how_compass_working')}
-          </h1>
+        <div className={classnames('h-full w-full')}>
+          <div className={classnames(styles.constelacao)}>
+            {Array.from({ length: 250 }, (v, k) => k).map((i) => (
+              <Estrela key={i} />
+            ))}
+          </div>
+          <div
+            className={classnames(styles.plantBg, 'h-full w-full')}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                set(plantList.length);
+              }
+            }}
+          >
+            <div className="absolute top-1/2 left-1/2">
+              <a
+                href="/docs/category/productivity"
+                className={classnames(styles.title1)}
+              ></a>
+              <a
+                href="/docs/category/robustness"
+                className={classnames(styles.title2)}
+              ></a>
+              <a
+                href="/docs/category/niche-creation"
+                className={classnames(styles.title3)}
+              ></a>
+              {plantList.map(({ popContent, ...item }, i) => {
+                return (
+                  <Plant
+                    key={i}
+                    prop={item}
+                    onMouseHover={() => {
+                      set(i);
+                    }}
+                    className={classnames({ '!opacity-100': value == i })}
+                  >
+                    <PopCard
+                      className={classnames('left-[25px]', {
+                        invisible: value !== i,
+                        '-top-[145px]': item.bottom,
+                        '-left-[245px]': item.right,
+                      })}
+                      popContent={popContent}
+                      onNext={() => {
+                        i === plantList.length - 1 ? reset() : inc();
+                      }}
+                    />
+                  </Plant>
+                );
+              })}
+            </div>
+          </div>
         </div>
-        <div className="relative top-1/2 left-1/2">
-          {plantList.map(({ popContent, ...item }, i) => {
-            return (
-              <Plant
-                key={i}
-                prop={item}
-                onMouseHover={() => {
-                  set(i);
-                }}
-                className={classnames({ '!opacity-100': value == i })}
-              >
-                <PopCard
-                  className={classnames('left-[25px]', {
-                    invisible: value !== i,
-                    '-top-[145px]': item.bottom,
-                    '-left-[245px]': item.right,
-                  })}
-                  popContent={popContent}
-                  onNext={() => {
-                    i === plantList.length - 1 ? reset() : inc();
-                  }}
-                />
-              </Plant>
-            );
-          })}
+        <div
+          className={classnames(
+            styles.working,
+            'text-white md:px-2 md:text-3xl'
+          )}
+        >
+          How Compass working
         </div>
       </div>
     </section>

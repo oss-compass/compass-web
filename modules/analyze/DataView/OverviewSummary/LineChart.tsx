@@ -61,11 +61,6 @@ const opts = [
     key: 'activityScore',
     legendName: 'activity score',
   },
-  {
-    type: 'groupMetricActivity',
-    key: 'organizationsActivity',
-    legendName: 'organizations activity',
-  },
 ];
 
 const dateKey = 'grimoireCreationDate';
@@ -73,11 +68,22 @@ const dateKey = 'grimoireCreationDate';
 const LineChartWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
-
+  const hasOrganizations =
+    !isLoading && data?.some((i) => i.result?.groupMetricActivity.length !== 0);
+  const copyOpts = hasOrganizations
+    ? [
+        ...opts,
+        {
+          type: 'groupMetricActivity',
+          key: 'organizationsActivity',
+          legendName: 'organizations activity',
+        },
+      ]
+    : [...opts];
   const { xAxis, yAxisResult } = useMemo(() => {
     const result = data[0].result;
     if (!result) return { xAxis: [], yAxisResult: [] };
-    return transDataForOverview(result, opts, dateKey);
+    return transDataForOverview(result, copyOpts, dateKey);
   }, [data]);
 
   return <LineChart loading={isLoading} xAxis={xAxis} yAxis={yAxisResult} />;
