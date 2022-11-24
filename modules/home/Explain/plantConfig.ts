@@ -304,84 +304,84 @@ export const plantList: PlantList[] = [
     },
   },
 
-  {
-    top: -351,
-    left: -318,
-    size: 55,
-    color: 'robustness',
-    popContent: {
-      title: 'Maintainer Count',
-      content: 'Determine the average number of maintainers per repository.',
-      hash: '/docs/metrics-models/robustness/activity#maintainer-count',
-    },
-  },
-  {
-    top: -352,
-    left: -166,
-    size: 46,
-    color: 'robustness',
-    popContent: {
-      title: 'Meeting Count',
-      content: 'Determine the number of meetings held in the last 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#meeting-count',
-    },
-  },
-  {
-    top: -422,
-    left: -176,
-    size: 46,
-    color: 'robustness',
-    popContent: {
-      title: 'Meeting Attendee Count',
-      content:
-        'Determine the average number of attendees per meeting in the last 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#meeting-attendee-count',
-    },
-  },
-  {
-    top: -346,
-    left: 179,
-    size: 44,
-    color: 'robustness',
-    popContent: {
-      title: 'Closed Issues Count',
-      content: 'Determine the number of issues closed in the last 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
-    },
-  },
-  {
-    top: -366,
-    left: 236,
-    size: 44,
-    color: 'robustness',
-    popContent: {
-      title: 'Closed Issues Count',
-      content: 'Determine the number of issues closed in the last 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
-    },
-  },
-  {
-    top: -412,
-    left: 234,
-    size: 38,
-    color: 'robustness',
-    popContent: {
-      title: 'Closed Issues Count',
-      content: 'Determine the number of issues closed in the last 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
-    },
-  },
-  {
-    top: -391,
-    left: 123,
-    size: 29,
-    color: 'robustness',
-    popContent: {
-      title: 'Closed Issues Count',
-      content: 'Determine the number of issues closed in the last 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
-    },
-  },
+  // {
+  //   top: -351,
+  //   left: -318,
+  //   size: 55,
+  //   color: 'robustness',
+  //   popContent: {
+  //     title: 'Maintainer Count',
+  //     content: 'Determine the average number of maintainers per repository.',
+  //     hash: '/docs/metrics-models/robustness/activity#maintainer-count',
+  //   },
+  // },
+  // {
+  //   top: -352,
+  //   left: -166,
+  //   size: 46,
+  //   color: 'robustness',
+  //   popContent: {
+  //     title: 'Meeting Count',
+  //     content: 'Determine the number of meetings held in the last 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#meeting-count',
+  //   },
+  // },
+  // {
+  //   top: -422,
+  //   left: -176,
+  //   size: 46,
+  //   color: 'robustness',
+  //   popContent: {
+  //     title: 'Meeting Attendee Count',
+  //     content:
+  //       'Determine the average number of attendees per meeting in the last 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#meeting-attendee-count',
+  //   },
+  // },
+  // {
+  //   top: -346,
+  //   left: 179,
+  //   size: 44,
+  //   color: 'robustness',
+  //   popContent: {
+  //     title: 'Closed Issues Count',
+  //     content: 'Determine the number of issues closed in the last 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
+  //   },
+  // },
+  // {
+  //   top: -366,
+  //   left: 236,
+  //   size: 44,
+  //   color: 'robustness',
+  //   popContent: {
+  //     title: 'Closed Issues Count',
+  //     content: 'Determine the number of issues closed in the last 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
+  //   },
+  // },
+  // {
+  //   top: -412,
+  //   left: 234,
+  //   size: 38,
+  //   color: 'robustness',
+  //   popContent: {
+  //     title: 'Closed Issues Count',
+  //     content: 'Determine the number of issues closed in the last 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
+  //   },
+  // },
+  // {
+  //   top: -391,
+  //   left: 123,
+  //   size: 29,
+  //   color: 'robustness',
+  //   popContent: {
+  //     title: 'Closed Issues Count',
+  //     content: 'Determine the number of issues closed in the last 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#closed-issues-count',
+  //   },
+  // },
 
   {
     top: 48,
@@ -433,43 +433,43 @@ export const plantList: PlantList[] = [
     },
   },
 
-  {
-    top: 222,
-    left: 453,
-    size: 56,
-    color: 'nicheCreation',
-    right: true,
-    popContent: {
-      title: 'Contributor Count',
-      content:
-        'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#contributor-count',
-    },
-  },
-  {
-    top: 206,
-    left: 580,
-    size: 56,
-    color: 'nicheCreation',
-    right: true,
-    popContent: {
-      title: 'Contributor Count',
-      content:
-        'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#contributor-count',
-    },
-  },
-  {
-    top: 182,
-    left: 537,
-    size: 33,
-    color: 'nicheCreation',
-    right: true,
-    popContent: {
-      title: 'Contributor Count',
-      content:
-        'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.',
-      hash: '/docs/metrics-models/robustness/activity#contributor-count',
-    },
-  },
+  // {
+  //   top: 222,
+  //   left: 453,
+  //   size: 56,
+  //   color: 'nicheCreation',
+  //   right: true,
+  //   popContent: {
+  //     title: 'Contributor Count',
+  //     content:
+  //       'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#contributor-count',
+  //   },
+  // },
+  // {
+  //   top: 206,
+  //   left: 580,
+  //   size: 56,
+  //   color: 'nicheCreation',
+  //   right: true,
+  //   popContent: {
+  //     title: 'Contributor Count',
+  //     content:
+  //       'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#contributor-count',
+  //   },
+  // },
+  // {
+  //   top: 182,
+  //   left: 537,
+  //   size: 33,
+  //   color: 'nicheCreation',
+  //   right: true,
+  //   popContent: {
+  //     title: 'Contributor Count',
+  //     content:
+  //       'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.',
+  //     hash: '/docs/metrics-models/robustness/activity#contributor-count',
+  //   },
+  // },
 ];
