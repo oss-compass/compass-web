@@ -1,5 +1,13 @@
 {
   "header": {
+    "metrics_models": "Metrics Models",
+    "community": "交流",
     "about": "关于"
+  },
+  "contact": {
+    "slack": "Slack",
+    "wechat": "微信",
+    "join_slack": "加入我们的 Slack 频道",
+    "join_wechat": "加入微信群"
   }
 }

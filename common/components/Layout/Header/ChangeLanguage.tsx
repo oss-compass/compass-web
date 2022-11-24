@@ -9,14 +9,14 @@ import { NoSsr } from '@mui/base';
 
 const languages = [
   {
-    id: 'zh',
-    label: '简体中文',
-    value: '中文',
-  },
-  {
     id: 'en',
     label: 'English',
     value: 'EN',
+  },
+  {
+    id: 'zh',
+    label: '简体中文',
+    value: '中文',
   },
 ];
 

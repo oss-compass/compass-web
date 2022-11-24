@@ -1,4 +1,4 @@
-/** @type {import('next-i18next').UserConfig} */
+/** @type {import("next-i18next").UserConfig} */
 module.exports = {
   i18n: {
     defaultLocale: 'en',
@@ -10,4 +10,5 @@ module.exports = {
   },
   localePath: 'i18n/locales',
   defaultNS: 'common',
+  debug: process.env.NODE_ENV === 'development',
 };
