@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { useCounter } from 'react-use';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { plantList, PopContent } from './plantConfig';
@@ -74,6 +75,7 @@ const Plant: React.FC<
   );
 };
 const SectionExplain = () => {
+  const { t } = useTranslation();
   const [value, { inc, reset, set }] = useCounter(0, plantList.length, 0);
   return (
     <section>
@@ -85,7 +87,7 @@ const SectionExplain = () => {
       >
         <div className="mx-auto w-[1200px] lg:w-full">
           <h1 className="absolute top-16 text-6xl text-white md:px-2 md:text-3xl">
-            How Compass working
+            {t('home:how_compass_working')}
           </h1>
         </div>
         <div className="relative top-1/2 left-1/2">
