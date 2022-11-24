@@ -12,6 +12,7 @@ import OrganizationsActivity from './OrganizationsActivity';
 import useHashScroll from '@common/hooks/useHashScroll';
 import TopicTitle from '@modules/analyze/Misc/TopicTitle';
 import { Topic } from '@modules/analyze/Misc/SideBar/config';
+import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 
 const Charts = () => {
   const { timeStart, timeEnd } = useQueryDateRange();
@@ -27,7 +28,10 @@ const Charts = () => {
       };
     }),
   });
-
+  const data = useMetricQueryData();
+  const hasOrganizations = data.some(
+    (i) => i.result?.groupMetricActivity.length !== 0
+  );
   return (
     <>
       <OverviewSummary />
@@ -40,7 +44,7 @@ const Charts = () => {
       <CommunityActivity />
 
       <TopicTitle id={Topic.NicheCreation}>Niche Creation</TopicTitle>
-      <OrganizationsActivity />
+      {hasOrganizations && <OrganizationsActivity />}
     </>
   );
 };

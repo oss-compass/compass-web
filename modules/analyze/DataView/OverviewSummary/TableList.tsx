@@ -95,6 +95,8 @@ const TrendsList: React.FC = () => {
   const list = data.map((i) => i.data?.latestMetrics).filter(Boolean);
   const labels = list.map((item) => item?.label).filter(Boolean) as string[];
 
+  const hasOrganizations =
+    !loading && data.some((i) => i.data!.latestMetrics?.organizationsActivity);
   return (
     <BaseCard
       loading={loading}
@@ -119,9 +121,11 @@ const TrendsList: React.FC = () => {
               <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
                 Community Activity
               </TT>
-              <TT className="border-t-[#61a2ff] bg-[#ddebff]">
-                Organizations Activity
-              </TT>
+              {hasOrganizations && (
+                <TT className="border-t-[#61a2ff] bg-[#ddebff]">
+                  Organizations Activity
+                </TT>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -158,11 +162,13 @@ const TrendsList: React.FC = () => {
                         ? transMarkingSystem(item!.activityScore!)
                         : toFixed(item!.activityScore!, 3)}
                     </Td>
-                    <Td className="bg-[#ddebff]">
-                      {markingSys
-                        ? transMarkingSystem(item!.organizationsActivity!)
-                        : toFixed(item!.organizationsActivity!, 3)}
-                    </Td>
+                    {hasOrganizations && (
+                      <Td className="bg-[#ddebff]">
+                        {markingSys
+                          ? transMarkingSystem(item!.organizationsActivity!)
+                          : toFixed(item!.organizationsActivity!, 3)}
+                      </Td>
+                    )}
                   </tr>
                 );
               })}
