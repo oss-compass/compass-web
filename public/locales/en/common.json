@@ -1,0 +1,25 @@
+{
+  "header": {
+    "metrics_models": "Metrics Models",
+    "community": "Community",
+    "about": "About"
+  },
+  "contact": {
+    "slack": "Slack",
+    "wechat": "WeChat",
+    "join_slack": "Join our community channel on Slack",
+    "join_wechat": "Scan our group chat QR code to join"
+  },
+  "footer": {
+    "tutorial": "Tutorial",
+    "get_standard": "Get Standard",
+    "dimensions_define": "Dimensions Define",
+    "legal": "Legal",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "built_with": "Built With",
+    "community": "Community",
+    "slack": "Slack",
+    "code": "Code"
+  }
+}

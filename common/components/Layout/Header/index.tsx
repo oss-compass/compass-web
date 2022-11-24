@@ -15,7 +15,6 @@ const Header: React.FC<{
   mobileMenu?: React.ReactNode;
 }> = ({ sticky = true, mobileMenu }) => {
   const { t } = useTranslation();
-
   return (
     <header>
       <div className={classnames('bg-black lg:hidden')}>
@@ -34,7 +33,7 @@ const Header: React.FC<{
 
             <Link href="/docs/dimensions-define" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
-                Metrics Models
+                {t('common:header.metrics_models')}
               </a>
             </Link>
 
@@ -42,7 +41,7 @@ const Header: React.FC<{
 
             <Link href="/docs/about" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
-                {t('header.about')}
+                {t('common:header.about')}
               </a>
             </Link>
           </div>
