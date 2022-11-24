@@ -12,7 +12,7 @@
   },
   "footer": {
     "tutorial": "Tutorial",
-    "get_standard": "Get Standard",
+    "quick_start": "快速起步",
     "dimensions_define": "Dimensions Define",
     "legal": "Legal",
     "terms": "Terms",
@@ -20,6 +20,6 @@
     "built_with": "Built With",
     "community": "Community",
     "slack": "Slack",
-    "code": "Code"
+    "code": "代码"
   }
 }
