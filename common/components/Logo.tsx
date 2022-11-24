@@ -1,6 +1,6 @@
 import React from 'react';
-import LogoWhite from './logo-white.svg';
-import LogoBlack from './logo-black.svg';
+import LogoBlack from '../svgs/compass-black.svg';
+import LogoWhite from '../svgs/compass-white.svg';
 
 const Logo: React.FC<{ color: 'black' | 'white' }> = ({ color = 'black' }) => {
   return (

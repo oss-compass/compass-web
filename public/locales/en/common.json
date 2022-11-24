@@ -4,11 +4,15 @@
     "community": "Community",
     "about": "About"
   },
-  "contact": {
+  "community": {
     "slack": "Slack",
-    "wechat": "WeChat",
     "join_slack": "Join our community channel on Slack",
-    "join_wechat": "Scan our group chat QR code to join"
+    "wechat": "WeChat",
+    "join_wechat": "Scan our group chat QR code to join",
+    "github": "GitHub",
+    "official_repository_on_github": "Official repository on GitHub",
+    "gitee": "Gitee",
+    "official_repository_on_gitee": "Official repository on Gitee"
   },
   "footer": {
     "tutorial": "Tutorial",

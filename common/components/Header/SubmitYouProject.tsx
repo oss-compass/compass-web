@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import classnames from 'classnames';
 
 const SubmitYouProject: React.FC<{ blackMode?: boolean }> = ({ blackMode }) => {
   const router = useRouter();
@@ -13,7 +12,7 @@ const SubmitYouProject: React.FC<{ blackMode?: boolean }> = ({ blackMode }) => {
     <Link href="/submit-your-project">
       <a
         className={
-          'ml-5 cursor-pointer truncate border-2 border-white bg-black px-6 py-3 font-semibold text-white'
+          'ml-5 cursor-pointer truncate border-2 border-white bg-black px-6 py-3 font-medium text-white'
         }
       >
         Submit your project

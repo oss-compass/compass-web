@@ -4,11 +4,15 @@
     "community": "Community",
     "about": "关于"
   },
-  "contact": {
+  "community": {
     "slack": "Slack",
-    "wechat": "微信",
     "join_slack": "加入我们的 Slack 频道",
-    "join_wechat": "加入微信群"
+    "wechat": "微信",
+    "join_wechat": "加入微信群",
+    "github": "GitHub",
+    "official_repository_on_github": "Official repository on GitHub",
+    "gitee": "Gitee",
+    "official_repository_on_gitee": "Official repository on Gitee"
   },
   "footer": {
     "tutorial": "Tutorial",

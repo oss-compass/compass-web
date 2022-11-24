@@ -1,7 +1,8 @@
 import React from 'react';
 import type { GetServerSideProps } from 'next';
 import { NoSsr } from '@mui/base';
-import { Header, Center } from '@common/components/Layout';
+import Header from '@common/components/Header';
+import { Center } from '@common/components/Layout';
 import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
 import Banner from '@modules/home/Banner';

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { getProviders, useSession } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
-import { Header } from '@common/components/Layout';
+import Header from '@common/components/Header';
 import Banner from '@modules/submitProject/Misc/Banner';
 import SubmitProject from '@modules/submitProject';
 import FormCommunity from '@modules/submitProject/FormCommunity';
