@@ -1,5 +1,7 @@
 {
   "code_quality_guarantee": {
+    "title": "Code Quality Guarantee",
+    "desc": "Code, as the final output of a project, is the essence of the entire community's contribution. Code quality guarantee is the measurement of how to guarantee software quality using multiple proxies.",
     "contributor_count": "Contributor Count",
     "contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
     "commit_frequency": "Commit Frequency",
@@ -18,6 +20,8 @@
     "lines_of_code_frequency_desc": "Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
   },
   "community_service_and_support": {
+    "title": "Community Service and Support",
+    "desc": "Community Service and Support measures the quality of services and support provided by the community as directly perceived by a developer during the contribution process.\n\n",
     "updated_issues_count": "Updated Issues Count",
     "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
     "close_pr_count": "Close PR Count",
@@ -34,6 +38,8 @@
     "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days."
   },
   "community_activity": {
+    "title": "Community Activity",
+    "desc": "Community Activity is used to describe how active an open source community is.",
     "contributor_count": "Contributor Count",
     "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
     "commit_frequency": "Commit Frequency",
@@ -54,6 +60,8 @@
     "recent_releases_count_desc": "Determine the number of releases in the last year."
   },
   "organization_activity": {
+    "title": "Organizations Activity",
+    "desc": "Organizational activity is used to describe how active organizations are in a community.",
     "org_count": "Org Count",
     "org_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
     "contributor_count": "Contributor Count",

@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
@@ -46,13 +47,14 @@ const getOptions = (
 };
 
 const IsMaintained = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Is Maintained"
+      title={t('metrics_models:code_quality_guarantee.is_maintained')}
       id={CodeQuality.IsMaintained}
-      description={
-        'Percentage of weeks with at least one code commit in the past 90 days (single repository). Percentage of code repositories with at least one code commit in the last 30 days (multiple repositories).'
-      }
+      description={t(
+        'metrics_models:code_quality_guarantee.is_maintained_desc'
+      )}
     >
       {(ref) => {
         return (

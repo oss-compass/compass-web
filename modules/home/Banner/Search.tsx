@@ -52,9 +52,7 @@ const Search = () => {
               'h-[52px] w-full appearance-none bg-transparent text-xl outline-0 ',
               'md:h-[40px] md:text-sm'
             )}
-            placeholder={
-              t('home:type_the_name_to_insight_into_your_project') as string
-            }
+            placeholder={t('home:type_the_name_to_insight_into_your_project')}
             onChange={(event) => {
               const val = event.target.value;
               setKeyword(val);

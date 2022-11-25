@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import { CodeQuality } from '@modules/analyze/components/SideBar/config';
@@ -54,6 +55,7 @@ const getOptions = (
 };
 
 const CodeQualityOverview = () => {
+  const { t } = useTranslation();
   const [markingSys, setMarkingSys] = useState(true);
   const getMarkingSys = (val: boolean) => {
     hundredMarkingSys = val;
@@ -61,11 +63,9 @@ const CodeQualityOverview = () => {
   };
   return (
     <BaseCard
-      title="Code Quality Guarantee"
+      title={t('metrics_models:code_quality_guarantee.title')}
       id={CodeQuality.Overview}
-      description={
-        "Code, as the final output of a project, is the essence of the entire community's contribution. Code quality guarantee is the measurement of how to guarantee software quality using multiple proxies."
-      }
+      description={t('metrics_models:code_quality_guarantee.desc')}
       showMarkingSysBtn={true}
       getMarkingSys={(val) => getMarkingSys(val)}
     >

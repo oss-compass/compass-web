@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCommunity',
@@ -49,13 +50,16 @@ const getOptions = (
 };
 
 const BugIssueOpenTime = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Bug Issue Open Time"
+      title={t(
+        'metrics_models:community_service_and_support.bug_issue_open_time'
+      )}
       id={Support.BugIssueOpenTime}
-      description={
-        'Average/Median time (days) that bug issues have been opened for issues created in the last 90 days.'
-      }
+      description={t(
+        'metrics_models:community_service_and_support.bug_issue_open_time_desc'
+      )}
     >
       {(ref) => {
         return (

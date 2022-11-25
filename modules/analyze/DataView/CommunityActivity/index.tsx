@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
 
@@ -7,7 +8,7 @@ import CommunityActivityOverview from '../Overview/CommunityActivity';
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import UpdatedSince from './UpdatedSince';
-// import OrgCount from './OrgCount';
+import OrgCount from './OrgCount';
 import CreatedSince from './CreatedSince';
 import CommentFrequency from './CommentFrequency';
 import CodeReviewCount from './CodeReviewCount';
@@ -17,6 +18,7 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 
 const CommunityActivity = () => {
+  const { t } = useTranslation();
   return (
     <>
       <SectionTitle id={Section.CommunityActivity}>Activity</SectionTitle>
@@ -29,7 +31,7 @@ const CommunityActivity = () => {
         <ContributorCount />
         <CommitFrequency />
         <UpdatedSince />
-        {/*<OrgCount />*/}
+        <OrgCount />
         <CreatedSince />
         <CommentFrequency />
         <CodeReviewCount />

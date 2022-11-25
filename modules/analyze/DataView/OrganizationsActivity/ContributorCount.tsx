@@ -11,6 +11,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'groupMetricActivity',
@@ -49,13 +50,14 @@ const getOptions = (
 };
 
 const ContributorCount = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Contributor Count"
+      title={t('metrics_models:organization_activity.contributor_count')}
       id={Organizations.ContributorCount}
-      description={
-        'Number of active code contributors with organization affiliation in the past 90 days.'
-      }
+      description={t(
+        'metrics_models:organization_activity.contributor_count_desc'
+      )}
     >
       {(ref) => {
         return (

@@ -12,6 +12,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'groupMetricActivity',
@@ -54,6 +55,7 @@ const getOptions = (
 };
 
 const OrganizationsActivity = () => {
+  const { t } = useTranslation();
   const [markingSys, setMarkingSys] = useState(true);
   const getMarkingSys = (val: boolean) => {
     hundredMarkingSys = val;
@@ -61,11 +63,9 @@ const OrganizationsActivity = () => {
   };
   return (
     <BaseCard
-      title="Organizations Activity"
+      title={t('metrics_models:organization_activity.title')}
       id={Organizations.Overview}
-      description={
-        'Organizational activity is used to describe how active organizations are in a community.'
-      }
+      description={t('metrics_models:organization_activity.desc')}
       showMarkingSysBtn={true}
       getMarkingSys={(val) => getMarkingSys(val)}
     >

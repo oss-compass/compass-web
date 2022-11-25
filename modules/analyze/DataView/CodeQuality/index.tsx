@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
 
@@ -16,10 +17,11 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 
 const CodeQuality = () => {
+  const { t } = useTranslation();
   return (
     <>
       <SectionTitle id={Section.CodeQualityGuarantee}>
-        Code Quality Guarantee
+        {t('metrics_models:code_quality_guarantee.title')}
       </SectionTitle>
 
       <div className="mb-4">

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
+
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
 
@@ -16,6 +18,7 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 
 const CommunitySupport = () => {
+  const { t } = useTranslation();
   return (
     <>
       <SectionTitle id={Section.CommunityServiceAndSupport}>
