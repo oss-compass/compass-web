@@ -10,7 +10,7 @@ export default function ErrorFallback({
     <div role="alert">
       <div className="py-50 rounded-md px-10 ">
         <div className="flex flex-col items-center">
-          <h1 className="mb-10 text-3xl font-bold text-blue-600">
+          <h1 className="mb-4 text-3xl font-bold text-yellow-600">
             {t('common:error.something_went_wrong')}
           </h1>
 

@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import { SessionProvider } from 'next-auth/react';
 import { gaPageView, PUBLIC_GA_ID } from '@common/utils/ga';
+import '@common/dev/WhyDidRender';
 
 import '../styles/globals.scss';
 

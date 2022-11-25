@@ -6,7 +6,6 @@ import {
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
-import Bomb from '@common/components/DevelopTool/Bomb';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 import { transDataForOverview } from '@modules/analyze/DataTransform/transDataForOverview';
