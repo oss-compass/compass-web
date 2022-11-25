@@ -1,1 +1,6 @@
-{}
+{
+  "enroll_your_project": "Enroll your project",
+  "please_select_the_platform_where_your_project_is_h": "请选择代码托管平台",
+  "sign_in_with_github": "使用 GitHub 登录",
+  "sign_in_with_gitee": "使用 Gitee 登录"
+}

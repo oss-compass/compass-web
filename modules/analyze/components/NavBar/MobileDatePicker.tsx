@@ -1,15 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { BiCalendar } from 'react-icons/bi';
-import { rangeTags, timeRange } from '@modules/analyze/constant';
+import { rangeTags } from '@modules/analyze/constant';
 import classnames from 'classnames';
 import { useClickAway, useToggle } from 'react-use';
-import qs from 'query-string';
-import { useRouter } from 'next/router';
+import useI18RangeTag from './useI18RangeTag';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 
 const MobileDatePicker = () => {
-  const route = useRouter();
+  const i18RangeTag = useI18RangeTag();
   const [dropdownOpen, toggleDropdown] = useToggle(false);
   const ref = useRef(null);
   useClickAway(ref, () => {
@@ -45,7 +44,7 @@ const MobileDatePicker = () => {
                 toggleDropdown(false);
               }}
             >
-              {t}
+              {i18RangeTag[t]}
             </li>
           );
         })}

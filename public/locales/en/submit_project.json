@@ -1,1 +1,6 @@
-{}
+{
+  "enroll_your_project": "Enroll your project",
+  "please_select_the_platform_where_your_project_is_h": "Please select the platform where your project is hosted",
+  "sign_in_with_github": "Sign in with GitHub",
+  "sign_in_with_gitee": "Sign in with Gitee"
+}
