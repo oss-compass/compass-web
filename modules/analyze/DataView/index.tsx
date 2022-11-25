@@ -1,16 +1,16 @@
 import React from 'react';
 import { useConfigContext } from '@modules/analyze/context';
 import { checkIsPending } from '@modules/analyze/constant';
-import CompareBar from '@modules/analyze/Misc/CompareBar';
+import CompareBar from '@modules/analyze/components/CompareBar';
 import NoSsr from '@common/components/NoSsr';
 import UnderAnalysis from './UnderAnalysis';
 import Charts from './Charts';
-import DataViewLoading from './DataViewLoading';
+import Loading from './Loading';
 
 const DataView = () => {
   const { loading, status } = useConfigContext();
   if (loading) {
-    return <DataViewLoading />;
+    return <Loading />;
   }
 
   if (checkIsPending(status)) {

@@ -10,7 +10,7 @@ import Bomb from '@common/components/DevelopTool/Bomb';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
 import { transDataForOverview } from '@modules/analyze/DataTransform/transDataForOverview';
-import { Topic } from '@modules/analyze/Misc/SideBar/config';
+import { Topic } from '@modules/analyze/components/SideBar/config';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
   loading = false,

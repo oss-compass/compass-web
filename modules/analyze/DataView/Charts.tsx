@@ -10,8 +10,8 @@ import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
 import OrganizationsActivity from './OrganizationsActivity';
 import useHashScroll from '@common/hooks/useHashScroll';
-import TopicTitle from '@modules/analyze/Misc/TopicTitle';
-import { Topic } from '@modules/analyze/Misc/SideBar/config';
+import TopicTitle from '@modules/analyze/components/TopicTitle';
+import { Topic } from '@modules/analyze/components/SideBar/config';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 
 const Charts = () => {

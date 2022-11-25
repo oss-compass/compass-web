@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-import useSwitchRange from '@modules/analyze/Misc/NavBar/useSwitchRange';
+import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 import { rangeTags } from '@modules/analyze/constant';
 
 const DatePicker = () => {

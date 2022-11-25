@@ -2,7 +2,7 @@ import React from 'react';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { getProvider } from '@common/utils';
-import ColorSwitcher from '@modules/analyze/Misc/CompareBar/ColorSwitcher';
+import ColorSwitcher from '@modules/analyze/components/CompareBar/ColorSwitcher';
 import { Level } from '@modules/analyze/constant';
 
 const Icon: React.FC<{ provider: string }> = ({ provider, ...restProps }) => {

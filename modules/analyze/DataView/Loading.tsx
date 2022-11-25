@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DataViewLoading = () => (
+const Loading = () => (
   <div className="flex flex-1 flex-col bg-white">
     <div className="animate-pulse p-10">
       <div className="flex-1 space-y-4 ">
@@ -20,4 +20,4 @@ const DataViewLoading = () => (
   </div>
 );
 
-export default DataViewLoading;
+export default Loading;

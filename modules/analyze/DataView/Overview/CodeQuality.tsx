@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
+import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,

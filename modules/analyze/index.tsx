@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
-import AnalyzeHeader from './components/AnalyzeHeader';
+import HeaderWithFilterBar from './components/HeaderWithFitlerBar';
 import { Main, Content } from '@common/components/Layout';
-import SideBar from './Misc/SideBar';
+import SideBar from './components/SideBar';
 import DataView from './DataView';
 import Footer from '@common/components/Footer';
 
 const Analyze = () => {
   return (
     <>
-      <AnalyzeHeader />
+      <HeaderWithFilterBar />
       <Main>
         <SideBar />
         <Content>

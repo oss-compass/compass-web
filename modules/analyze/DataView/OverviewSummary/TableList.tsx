@@ -14,7 +14,7 @@ import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
-import { Topic } from '@modules/analyze/Misc/SideBar/config';
+import { Topic } from '@modules/analyze/components/SideBar/config';
 import { formatRepoName } from '@modules/analyze/DataTransform/transToAxis';
 import { Level } from '@modules/analyze/constant';
 

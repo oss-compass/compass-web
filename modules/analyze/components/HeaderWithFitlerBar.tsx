@@ -1,11 +1,11 @@
 import { usePrevious, useWindowScroll } from 'react-use';
 import classnames from 'classnames';
 import Header from '@common/components/Header';
-import { SideBarMenu } from '@modules/analyze/Misc/SideBar';
-import NavBar from '@modules/analyze/Misc/NavBar';
+import { SideBarMenu } from '@modules/analyze/components/SideBar';
+import NavBar from '@modules/analyze/components/NavBar';
 import React from 'react';
 
-const AnalyzeHeader = () => {
+const HeaderWithFilterBar = () => {
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
 
@@ -27,4 +27,4 @@ const AnalyzeHeader = () => {
   );
 };
 
-export default AnalyzeHeader;
+export default HeaderWithFilterBar;

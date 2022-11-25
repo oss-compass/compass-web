@@ -6,27 +6,25 @@ import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 
-const Trends: React.FC<{
+const Overview: React.FC<{
   data: { label: string; result: MetricQuery | undefined }[];
 }> = ({ data }) => {
-  if (data.length > 1) {
-    return <TableList />;
-  }
-
   if (data.length == 1) {
     return <LineChart />;
   }
 
+  if (data.length > 1) {
+    return <TableList />;
+  }
   return null;
 };
 
-const TrendsWithData = () => {
+const OverviewSummary = () => {
   const data = useMetricQueryData();
-
-  return <Trends data={data} />;
+  return <Overview data={data} />;
 };
 
-export default withErrorBoundary(TrendsWithData, {
+export default withErrorBoundary(OverviewSummary, {
   FallbackComponent: ErrorFallback,
   onError(error, info) {
     console.log(error, info);

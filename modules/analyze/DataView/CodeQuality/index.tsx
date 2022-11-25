@@ -1,6 +1,6 @@
 import React from 'react';
-import SectionTitle from '@modules/analyze/Misc/SectionTitle';
-import { Section } from '@modules/analyze/Misc/SideBar/config';
+import SectionTitle from '@modules/analyze/components/SectionTitle';
+import { Section } from '@modules/analyze/components/SideBar/config';
 
 import CodeQualityOverview from '../Overview/CodeQuality';
 

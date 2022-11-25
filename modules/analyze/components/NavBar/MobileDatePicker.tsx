@@ -6,7 +6,7 @@ import { useClickAway, useToggle } from 'react-use';
 import qs from 'query-string';
 import { useRouter } from 'next/router';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-import useSwitchRange from '@modules/analyze/Misc/NavBar/useSwitchRange';
+import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 
 const MobileDatePicker = () => {
   const route = useRouter();

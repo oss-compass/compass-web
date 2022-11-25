@@ -5,7 +5,7 @@ import {
   line,
   lineArea,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
+import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
