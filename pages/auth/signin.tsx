@@ -3,7 +3,7 @@ import { GetServerSidePropsContext } from 'next';
 import { getProviders } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
-import { Header } from '@common/components/Layout';
+import Header from '@common/components/Header';
 import Banner from '@modules/submitProject/Misc/Banner';
 import LoginOptionCard from '@modules/auth/LoginOptionCard';
 import getLocalesFile from '@common/utils/getLocalesFile';

@@ -1,6 +1,8 @@
 import React from 'react';
 import type { GetServerSideProps } from 'next';
-import { Header, Center } from '@common/components/Layout';
+import { NoSsr } from '@mui/base';
+import Header from '@common/components/Header';
+import { Center } from '@common/components/Layout';
 import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
 import Banner from '@modules/home/Banner';
@@ -16,7 +18,9 @@ const Home: React.FC = (props) => {
       <main>
         <Banner />
         <Projects />
-        <Explain />
+        <NoSsr>
+          <Explain />
+        </NoSsr>
         <SpecialThank />
       </main>
       <footer>

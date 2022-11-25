@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoSquareSvg from './logo-square.svg';
+import LogoSquareSvg from '../svgs/compass-square.svg';
 
 const LogoSquare = () => {
   return (
