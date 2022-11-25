@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import RobustnessIcon from './assets/Robustness.svg';
 import { Activity, CodeQuality, CommunityActivity, Topic } from './config';
-import MenuItem from './MenuItem';
-import MenuTopicItem from './MenuTopicItem';
-import MenuSubItem from './MenuSubItem';
+import MenuItem from './Menu/MenuItem';
+import MenuTopicItem from './Menu/MenuTopicItem';
+import MenuSubItem from './Menu/MenuSubItem';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';
 
 const Robustness = () => {

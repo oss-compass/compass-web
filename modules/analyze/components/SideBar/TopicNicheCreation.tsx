@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import MenuTopicItem from './MenuTopicItem';
-import MenuItem from './MenuItem';
-import MenuSubItem from './MenuSubItem';
+import MenuTopicItem from './Menu/MenuTopicItem';
+import MenuItem from './Menu/MenuItem';
+import MenuSubItem from './Menu/MenuSubItem';
 import { OrganizationsActivity, Organizations, Topic } from './config';
 import NicheCreationIcon from './assets/NicheCreation.svg';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';

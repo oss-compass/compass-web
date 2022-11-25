@@ -1,6 +1,6 @@
 import React from 'react';
 import { CiGrid41 } from 'react-icons/ci';
-import MenuTopicItem from './MenuTopicItem';
+import MenuTopicItem from './Menu/MenuTopicItem';
 import { Topic } from './config';
 
 const Overview = () => {
