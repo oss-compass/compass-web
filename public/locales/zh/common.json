@@ -25,5 +25,8 @@
     "community": "Community",
     "slack": "Slack",
     "code": "代码"
+  },
+  "search": {
+    "no_result": "未找到相关内容"
   }
 }

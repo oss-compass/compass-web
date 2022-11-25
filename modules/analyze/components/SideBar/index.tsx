@@ -4,7 +4,7 @@ import { withErrorBoundary } from 'react-error-boundary';
 import { usePrevious, useWindowScroll } from 'react-use';
 import { useConfigContext } from '@modules/analyze/context';
 import { checkIsPending } from '@modules/analyze/constant';
-import MenuLoading from '@modules/analyze/components/SideBar/MenuLoading';
+import MenuLoading from '@modules/analyze/components/SideBar/Menu/MenuLoading';
 import TopicOverview from '@modules/analyze/components/SideBar/TopicOverview';
 import TopicProductivity from '@modules/analyze/components/SideBar/TopicProductivity';
 import TopicRobustness from '@modules/analyze/components/SideBar/TopicRobustness';
@@ -47,7 +47,7 @@ export const SideBarMenu: React.FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-const SideBar = () => {
+const SideBarWrap: React.FC<PropsWithChildren> = ({ children }) => {
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
 
@@ -65,11 +65,17 @@ const SideBar = () => {
             : 'top-[56px] h-[calc(100vh-56px)]',
         ])}
       >
-        <div className="py-4">
-          <SideBarMenu />
-        </div>
+        <div className="py-4">{children}</div>
       </div>
     </aside>
+  );
+};
+
+const SideBar = () => {
+  return (
+    <SideBarWrap>
+      <SideBarMenu />
+    </SideBarWrap>
   );
 };
 

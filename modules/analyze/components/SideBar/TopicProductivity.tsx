@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import ProductivityIcon from './assets/Productivity.svg';
-import MenuTopicItem from './MenuTopicItem';
-import MenuItem from './MenuItem';
-import MenuSubItem from './MenuSubItem';
+import MenuTopicItem from './Menu/MenuTopicItem';
+import MenuItem from './Menu/MenuItem';
+import MenuSubItem from './Menu/MenuSubItem';
 import {
   CodeQuality,
   CodeQualityGuarantee,

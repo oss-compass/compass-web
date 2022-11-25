@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import SearchDropdown from './SearchDropdown';
 import { useThrottle } from 'ahooks';
@@ -11,6 +12,7 @@ import { Level } from '@modules/analyze/constant';
 import { removeHttps } from '@common/utils';
 
 const AddInput = () => {
+  const { t } = useTranslation();
   const search = window.location.search;
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,6 +57,16 @@ const AddInput = () => {
     resetInput();
   });
 
+  const placeholder = React.useMemo(() => {
+    if (level === Level.REPO) {
+      return t('analyze:search_repo_input_placeholder');
+    }
+    if (level === Level.COMMUNITY) {
+      return t('analyze:search_community_input_placeholder');
+    }
+    return 'search';
+  }, [level, t]);
+
   return (
     <div
       ref={ref}
@@ -71,7 +83,7 @@ const AddInput = () => {
               value={removeHttps(confirmItem?.label!) || keyword}
               type="text"
               className="h-10 w-[300px] bg-transparent px-2 py-1 text-white outline-0 placeholder:text-white/60"
-              placeholder={`search ${level}`}
+              placeholder={placeholder}
               onChange={(v) => {
                 setKeyword(v.target.value);
                 setConfirmItem(null);
@@ -94,7 +106,7 @@ const AddInput = () => {
               {showLoading ? (
                 <AiOutlineLoading className="mr-1 animate-spin" />
               ) : null}
-              compare
+              {t('analyze:compare')}
             </button>
           </div>
           {!confirmItem && throttledKeyword && (
@@ -131,7 +143,7 @@ const AddInput = () => {
         }}
       >
         <AiOutlinePlus className="text-2xl" />
-        <div>compare</div>
+        <div>{t('analyze:compare')}</div>
       </div>
     </div>
   );

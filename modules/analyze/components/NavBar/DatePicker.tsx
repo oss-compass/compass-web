@@ -3,10 +3,12 @@ import classnames from 'classnames';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 import { rangeTags } from '@modules/analyze/constant';
+import useI18RangeTag from './useI18RangeTag';
 
 const DatePicker = () => {
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
+  const i18RangeTag = useI18RangeTag();
 
   return (
     <div className="flex h-8 shrink-0 items-center rounded-3xl border md:hidden">
@@ -22,7 +24,7 @@ const DatePicker = () => {
               await switchRange(t);
             }}
           >
-            {t}
+            {i18RangeTag[t]}
           </div>
         );
       })}

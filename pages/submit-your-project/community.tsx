@@ -33,7 +33,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       session,
       providers,
       githubClientID,
-      ...(await getLocalesFile(req.cookies)),
+      ...(await getLocalesFile(req.cookies, ['submit_project'])),
     },
   };
 }

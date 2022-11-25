@@ -1,1 +1,14 @@
-{}
+{
+  "range": {
+    "3M": "3M",
+    "6M": "6M",
+    "1Y": "1Y",
+    "2Y": "2Y",
+    "3Y": "3Y",
+    "5Y": "5Y",
+    "Since2000": "Since 2000"
+  },
+  "compare": "compare",
+  "search_repo_input_placeholder": "please input repo",
+  "search_community_input_placeholder": "please input community"
+}
