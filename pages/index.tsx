@@ -11,6 +11,14 @@ import Explain from '@modules/home/Explain';
 import SpecialThank from '@modules/home/SpecialThank';
 import getLocalesFile from '@common/utils/getLocalesFile';
 
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  return {
+    props: {
+      ...(await getLocalesFile(req.cookies, ['home', 'metrics_models'])),
+    },
+  };
+};
+
 const Home: React.FC = (props) => {
   return (
     <>
@@ -34,11 +42,3 @@ const Home: React.FC = (props) => {
 };
 
 export default Home;
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  return {
-    props: {
-      ...(await getLocalesFile(req.cookies, ['home'])),
-    },
-  };
-};

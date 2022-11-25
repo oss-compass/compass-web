@@ -1,18 +1,22 @@
 import React from 'react';
 import classnames from 'classnames';
+import { useTranslation } from 'next-i18next';
 import { useCounter } from 'react-use';
-import { plantList } from './plantConfig';
+import { usePlantList } from './plantConfig';
 import PopCard from './PopCard';
 import Plant from './Plant';
 import Estrela from './Estrela';
 import styles from './index.module.scss';
 
 const SectionExplain = () => {
+  const { t } = useTranslation();
+  const plantList = usePlantList();
   const [value, { inc, reset, set }] = useCounter(
     plantList.length,
     plantList.length,
     0
   );
+
   return (
     <section>
       <div
@@ -59,17 +63,18 @@ const SectionExplain = () => {
                     }}
                     className={classnames({ '!opacity-100': value == i })}
                   >
-                    <PopCard
-                      className={classnames('left-[25px]', {
-                        invisible: value !== i,
-                        '-top-[145px]': item.bottom,
-                        '-left-[245px]': item.right,
-                      })}
-                      popContent={popContent}
-                      onNext={() => {
-                        i === plantList.length - 1 ? reset() : inc();
-                      }}
-                    />
+                    {value === i && (
+                      <PopCard
+                        className={classnames('left-[25px]', {
+                          '-top-[145px]': item.bottom,
+                          '-left-[245px]': item.right,
+                        })}
+                        popContent={popContent}
+                        onNext={() => {
+                          i === plantList.length - 1 ? reset() : inc();
+                        }}
+                      />
+                    )}
                   </Plant>
                 );
               })}
@@ -82,7 +87,7 @@ const SectionExplain = () => {
             'text-white md:px-2 md:text-3xl'
           )}
         >
-          OSS ECO Evaluation System
+          {t('home:oss_eco_evaluation_system')}
         </div>
       </div>
     </section>
