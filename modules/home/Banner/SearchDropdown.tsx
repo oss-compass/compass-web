@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import classnames from 'classnames';
 import { useRouter } from 'next/router';
+import { useTranslation, Trans } from 'next-i18next';
 import { AiOutlineRightCircle } from 'react-icons/ai';
 import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
@@ -19,6 +20,7 @@ const SubmitYourProject: React.FC<{
   noResult?: boolean;
   className?: string;
 }> = ({ className, noResult, content }) => {
+  const { t } = useTranslation();
   return (
     <p
       className={classnames(
@@ -28,7 +30,7 @@ const SubmitYourProject: React.FC<{
         [noResult ? 'min-h-[84px]' : 'min-h-[48px]']
       )}
     >
-      <span className="flex-wrap leading-none">{content}</span>
+      <span className="flex-wrap text-base leading-none">{content}</span>
       <Link href="/submit-your-project">
         <a
           className={classnames(
@@ -37,7 +39,7 @@ const SubmitYourProject: React.FC<{
             [noResult ? 'py-2.5' : 'py-1']
           )}
         >
-          Submit your project
+          {t('home:submit_your_project')}
         </a>
       </Link>
     </p>
@@ -58,6 +60,7 @@ const LinkItem: React.FC<{
   item: SearchQuery['fuzzySearch'][number];
   active: boolean;
 }> = ({ item, active }) => {
+  const { t } = useTranslation();
   const host = getProvider(item.label!);
 
   return (
@@ -88,13 +91,14 @@ const LinkItem: React.FC<{
                 {item.label}
               </div>
               <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
-                Community
+                {t('home:community')}
               </div>
             </div>
           )}
         </div>
         <div className="flex flex-shrink-0 items-center text-sm font-medium text-primary">
-          Insights report <AiOutlineRightCircle className="ml-2 text-base" />
+          {t('home:insights_report')}
+          <AiOutlineRightCircle className="ml-2 text-base" />
         </div>
       </div>
     </Link>
@@ -104,6 +108,7 @@ const LinkItem: React.FC<{
 const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
   result,
 }) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { active } = useDropDown({
     totalLength: result.length,
@@ -121,7 +126,7 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
         );
       })}
       <SubmitYourProject
-        content="Can't find the right option?"
+        content={t('home:cant_find_the_right_option')}
         className="border-t-2 border-black"
       />
     </>
@@ -138,11 +143,17 @@ const SearchDropdown: React.FC<{
         noResult
         content={
           <>
-            Nothing about
-            <span className="mx-2 font-semibold italic">
-              {keyword?.length > 10 ? keyword.slice(0, 10) + '...' : keyword}
-            </span>
-            yet.
+            <Trans
+              i18nKey="nothing_about_yet"
+              ns="home"
+              values={{
+                expr:
+                  keyword?.length > 10 ? keyword.slice(0, 10) + '...' : keyword,
+              }}
+              components={{
+                s: <span className="mx-2 font-semibold italic" />,
+              }}
+            />
           </>
         }
       />

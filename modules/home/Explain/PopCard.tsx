@@ -14,12 +14,12 @@ const PopCard: React.FC<{
     <div
       className={classnames(
         styles.popCardBg,
-        'absolute h-[141px] w-[304px] rounded p-4 transition-all',
+        'absolute w-[304px] rounded p-4 transition-all',
         className
       )}
     >
       <h2 className="text-white">{popContent.title}</h2>
-      <p className="mb-4 max-h-[60px] break-words text-xs text-gray-400 line-clamp-4">
+      <p className="mb-4 break-words text-xs text-gray-400 line-clamp-4">
         {popContent.content}
       </p>
       <div className="flex justify-between">

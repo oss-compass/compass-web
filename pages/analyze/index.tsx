@@ -12,7 +12,7 @@ import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['analyze'])),
+      ...(await getLocalesFile(req.cookies, ['analyze', 'metrics_models'])),
     },
   };
 };
