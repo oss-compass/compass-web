@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricActivity',
@@ -46,13 +47,12 @@ const getOptions = (
 };
 
 const UpdatedSince = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Updated Since"
+      title={t('metrics_models:community_activity.updated_since')}
       id={Activity.UpdatedSince}
-      description={
-        'Determine the average time per repository since the repository was last updated (in months).'
-      }
+      description={t('metrics_models:community_activity.updated_since_desc')}
     >
       {(ref) => {
         return (

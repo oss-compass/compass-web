@@ -11,6 +11,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricActivity',
@@ -48,13 +49,14 @@ const getOptions = (
 };
 
 const ContributorCount = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Contributor Count"
+      title={t('metrics_models:community_activity.contributor_count')}
       id={Activity.ContributorCount}
-      description={
-        'Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days'
-      }
+      description={t(
+        'metrics_models:community_activity.contributor_count_desc'
+      )}
     >
       {(ref) => {
         return (

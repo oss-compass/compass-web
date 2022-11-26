@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricActivity',
@@ -48,11 +49,14 @@ const getOptions = (
 };
 
 const RecentReleasesCount = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Recent Releases Count"
+      title={t('metrics_models:community_activity.recent_releases_count')}
       id={Activity.RecentReleasesCount}
-      description={'Determine the number of releases in the last year.'}
+      description={t(
+        'metrics_models:community_activity.recent_releases_count_desc'
+      )}
     >
       {(ref) => {
         return (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
 
@@ -12,10 +13,11 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 
 const OrganizationsActivity = () => {
+  const { t } = useTranslation();
   return (
     <>
       <SectionTitle id={Section.OrganizationsActivity}>
-        Organizations Activity
+        {t('metrics_models:organization_activity.title')}
       </SectionTitle>
 
       <div className="mb-4">

@@ -11,6 +11,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCommunity',
@@ -46,13 +47,16 @@ const getOptions = (
 };
 
 const CodeReviewCount = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Code Review Count"
+      title={t(
+        'metrics_models:community_service_and_support.code_review_count'
+      )}
       id={Support.CodeReviewCount}
-      description={
-        'Determine the average number of review comments per pull request created in the last 90 days.'
-      }
+      description={t(
+        'metrics_models:community_service_and_support.code_review_count_desc'
+      )}
     >
       {(ref) => {
         return (

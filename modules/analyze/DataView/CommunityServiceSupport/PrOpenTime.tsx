@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCommunity',
@@ -49,13 +50,14 @@ const getOptions = (
 };
 
 const PrOpenTime = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="PR Open Time"
+      title={t('metrics_models:community_service_and_support.pr_open_time')}
       id={Support.PrOpenTime}
-      description={
-        'Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change requests and unresolved change requests.'
-      }
+      description={t(
+        'metrics_models:community_service_and_support.pr_open_time_desc'
+      )}
     >
       {(ref) => {
         return (

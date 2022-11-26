@@ -17,6 +17,7 @@ import { ChartThemeState } from '@modules/analyze/context';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import { toFixed } from '@common/utils';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
@@ -96,13 +97,14 @@ const getOptions = (
 };
 
 const CodeReviewRatio = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Code Review Ratio"
+      title={t('metrics_models:code_quality_guarantee.code_review_ratio')}
       id={CodeQuality.CodeReviewRatio}
-      description={
-        'Determine the percentage of code commits with at least one reviewer (not PR creator) in the last 90 days.'
-      }
+      description={t(
+        'metrics_models:code_quality_guarantee.code_review_ratio_desc'
+      )}
     >
       {(ref) => {
         return (

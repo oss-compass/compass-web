@@ -12,6 +12,7 @@ import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
 import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricActivity',
@@ -49,6 +50,7 @@ const getOptions = (
 };
 
 const CommunityActivityOverview = () => {
+  const { t } = useTranslation();
   const [markingSys, setMarkingSys] = useState(true);
   const getMarkingSys = (val: boolean) => {
     hundredMarkingSys = val;
@@ -56,11 +58,9 @@ const CommunityActivityOverview = () => {
   };
   return (
     <BaseCard
-      title="Activity"
+      title={t('metrics_models:community_activity.title')}
       id={Activity.Overview}
-      description={
-        'Community Activity is used to describe how active an open source community is.'
-      }
+      description={t('metrics_models:community_activity.desc')}
       showMarkingSysBtn={true}
       getMarkingSys={(val) => getMarkingSys(val)}
     >

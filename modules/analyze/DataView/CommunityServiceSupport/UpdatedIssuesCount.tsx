@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCommunity',
@@ -48,13 +49,16 @@ const getOptions = (
 };
 
 const UpdatedIssuesCount = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Updated Issues Count"
+      title={t(
+        'metrics_models:community_service_and_support.updated_issues_count'
+      )}
       id={Support.UpdatedIssuesCount}
-      description={
-        'Determine the number of issues updated in the last 90 days.'
-      }
+      description={t(
+        'metrics_models:community_service_and_support.updated_issues_count_desc'
+      )}
     >
       {(ref) => {
         return (
