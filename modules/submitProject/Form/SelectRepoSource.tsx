@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getOrganizations } from '@modules/submitProject/api';
 import Image from 'next/image';
 import { GITHUB_CLIENT_ID } from '@modules/submitProject/constant';
+import { useTranslation } from 'react-i18next';
 
 const SourceItem: React.FC<{
   className?: string;
@@ -36,6 +37,7 @@ const OrganizationAccess: React.FC<{
   hasOrgList: boolean;
 }> = ({ provider, hasOrgList }) => {
   const [githubClientID] = useSessionStorage(GITHUB_CLIENT_ID);
+  const { t } = useTranslation();
 
   let scope = '';
   let grantAccessUrl = '';
@@ -63,7 +65,9 @@ const OrganizationAccess: React.FC<{
           }}
         >
           <AiOutlinePlus className="h-5 w-5" />
-          <div className="ml-2 text-base">Add Organization</div>
+          <div className="ml-2 text-base">
+            {t('submit_project:add_organization')}
+          </div>
         </div>
       )}
 
@@ -76,7 +80,7 @@ const OrganizationAccess: React.FC<{
             rel="noopener noreferrer"
             href={grantAccessUrl}
           >
-            Grant Organization access
+            {t('submit_project:grant_organization_access')}
           </a>
         </div>
       )}

@@ -12,6 +12,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { useSessionStorage } from 'react-use';
 import { GITHUB_CLIENT_ID } from '@modules/submitProject/constant';
 import getLocalesFile from '@common/utils/getLocalesFile';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
@@ -45,11 +46,12 @@ const SubmitYourProject: React.FC<{
   >;
   githubClientID: string;
 }> = ({ providers, githubClientID }) => {
+  const { t } = useTranslation();
   useSessionStorage(GITHUB_CLIENT_ID, githubClientID);
   return (
     <>
       <Header />
-      <Banner content="Submit your project" />
+      <Banner content={t('submit_project:submit_your_project')} />
       <SubmitProject providers={providers}>
         <FormCommunity />
       </SubmitProject>

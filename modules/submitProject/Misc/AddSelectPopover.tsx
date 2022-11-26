@@ -4,6 +4,7 @@ import { AiFillGithub, AiOutlineLink, AiOutlinePlus } from 'react-icons/ai';
 import classnames from 'classnames';
 import useProvider from '@modules/submitProject/Form/useProvider';
 import { SiGitee } from 'react-icons/si';
+import { useTranslation } from 'react-i18next';
 
 export const getIcons = (type: string) => {
   switch (type) {
@@ -23,6 +24,7 @@ const AddSelectPopover: React.FC<{
   onSelect: (v: 'input' | 'select') => void;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }> = ({ className, onSelect, onClick, open, onClose }) => {
+  const { t } = useTranslation();
   const provider = useProvider();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -39,7 +41,7 @@ const AddSelectPopover: React.FC<{
         className="flex items-center text-primary"
         onClick={(e) => onClick(e)}
       >
-        <AiOutlinePlus /> Add repository
+        <AiOutlinePlus /> {t('submit_project:add_repository')}
       </button>
 
       {open && (
@@ -55,7 +57,9 @@ const AddSelectPopover: React.FC<{
           >
             {getIcons(provider)}
             <p className="ml-2 text-sm font-medium">
-              {`Select your own repository on ${providerName}`}
+              {t('submit_project:select_your_own_repository_on', {
+                providerName: providerName,
+              })}
             </p>
           </div>
           <div
@@ -66,7 +70,9 @@ const AddSelectPopover: React.FC<{
           >
             <AiOutlineLink />
             <p className="ml-2 text-sm font-medium">
-              {`Input any ${providerName} repository address`}
+              {t('submit_project:select_your_own_repository_on', {
+                providerName: providerName,
+              })}
             </p>
           </div>
         </div>
