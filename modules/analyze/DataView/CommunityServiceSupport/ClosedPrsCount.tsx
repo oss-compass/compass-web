@@ -50,10 +50,12 @@ const ClosedPrsCount = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:community_service_and_support.close_pr_count')}
+      title={t(
+        'metrics_models:community_service_and_support.metrics.close_pr_count'
+      )}
       id={Support.ClosedPrsCount}
       description={t(
-        'metrics_models:community_service_and_support.close_pr_count_desc'
+        'metrics_models:community_service_and_support.metrics.close_pr_count_desc'
       )}
     >
       {(ref) => {

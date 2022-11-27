@@ -53,11 +53,11 @@ const CommentFrequency = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:community_service_and_support.comment_frequency'
+        'metrics_models:community_service_and_support.metrics.comment_frequency'
       )}
       id={Support.CommentFrequency}
       description={t(
-        'metrics_models:community_service_and_support.comment_frequency_desc'
+        'metrics_models:community_service_and_support.metrics.comment_frequency_desc'
       )}
     >
       {(ref) => {

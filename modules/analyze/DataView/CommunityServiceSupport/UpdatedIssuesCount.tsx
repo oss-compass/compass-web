@@ -53,11 +53,11 @@ const UpdatedIssuesCount = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:community_service_and_support.updated_issues_count'
+        'metrics_models:community_service_and_support.metrics.updated_issues_count'
       )}
       id={Support.UpdatedIssuesCount}
       description={t(
-        'metrics_models:community_service_and_support.updated_issues_count_desc'
+        'metrics_models:community_service_and_support.metrics.updated_issues_count_desc'
       )}
     >
       {(ref) => {

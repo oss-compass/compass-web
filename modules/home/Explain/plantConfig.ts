@@ -25,9 +25,11 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       size: 76,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:code_quality_guarantee.contributor_count'),
+        title: t(
+          'metrics_models:code_quality_guarantee.metrics.contributor_count'
+        ),
         content: t(
-          'metrics_models:code_quality_guarantee.contributor_count_desc'
+          'metrics_models:code_quality_guarantee.metrics.contributor_count_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#contributor-count',
       },
@@ -38,9 +40,11 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       size: 66,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:code_quality_guarantee.commit_frequency'),
+        title: t(
+          'metrics_models:code_quality_guarantee.metrics.commit_frequency'
+        ),
         content: t(
-          'metrics_models:code_quality_guarantee.commit_frequency_desc'
+          'metrics_models:code_quality_guarantee.metrics.commit_frequency_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#commit-frequency',
       },
@@ -51,8 +55,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       size: 62,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:code_quality_guarantee.is_maintained'),
-        content: t('metrics_models:code_quality_guarantee.is_maintained_desc'),
+        title: t('metrics_models:code_quality_guarantee.metrics.is_maintained'),
+        content: t(
+          'metrics_models:code_quality_guarantee.metrics.is_maintained_desc'
+        ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#is-maintained',
       },
     },
@@ -63,10 +69,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.commit_pr_linked_ratio'
+          'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.commit_pr_linked_ratio_desc'
+          'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#contributor-count',
       },
@@ -77,9 +83,11 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       size: 47,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:code_quality_guarantee.pr_issue_linked_ratio'),
+        title: t(
+          'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio'
+        ),
         content: t(
-          'metrics_models:code_quality_guarantee.pr_issue_linked_ratio_desc'
+          'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#pr-issue-linked-ratio',
       },
@@ -90,9 +98,11 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       size: 46,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:code_quality_guarantee.code_review_ratio'),
+        title: t(
+          'metrics_models:code_quality_guarantee.metrics.code_review_ratio'
+        ),
         content: t(
-          'metrics_models:code_quality_guarantee.code_review_ratio_desc'
+          'metrics_models:code_quality_guarantee.metrics.code_review_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#code-review-ratio',
       },
@@ -103,9 +113,11 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       size: 38,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:code_quality_guarantee.code_merge_ratio'),
+        title: t(
+          'metrics_models:code_quality_guarantee.metrics.code_merge_ratio'
+        ),
         content: t(
-          'metrics_models:code_quality_guarantee.code_merge_ratio_desc'
+          'metrics_models:code_quality_guarantee.metrics.code_merge_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#code-merge-ratio',
       },
@@ -117,10 +129,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.lines_of_code_frequency'
+          'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.lines_of_code_frequency_desc'
+          'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#lines-of-code-frequency',
       },
@@ -138,10 +150,10 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:community_service_and_support.updated_issues_count'
+          'metrics_models:community_service_and_support.metrics.updated_issues_count'
         ),
         content: t(
-          'metrics_models:community_service_and_support.updated_issues_count_desc'
+          'metrics_models:community_service_and_support.metrics.updated_issues_count_desc'
         ),
         hash: '/docs/metrics-models/productivity/niche-creation#updated-issues-count',
       },
@@ -152,9 +164,11 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
       size: 68,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:community_service_and_support.close_pr_count'),
+        title: t(
+          'metrics_models:community_service_and_support.metrics.close_pr_count'
+        ),
         content: t(
-          'metrics_models:community_service_and_support.close_pr_count_desc'
+          'metrics_models:community_service_and_support.metrics.close_pr_count_desc'
         ),
         hash: '/docs/metrics-models/productivity/niche-creation#close-pr-count',
       },
@@ -166,10 +180,10 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:community_service_and_support.issue_first_response'
+          'metrics_models:community_service_and_support.metrics.issue_first_response'
         ),
         content: t(
-          'metrics_models:community_service_and_support.issue_first_response_desc'
+          'metrics_models:community_service_and_support.metrics.issue_first_response_desc'
         ),
         hash: '/docs/metrics-models/productivity/niche-creation#issue-first-response',
       },
@@ -182,10 +196,10 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
       bottom: true,
       popContent: {
         title: t(
-          'metrics_models:community_service_and_support.bug_issue_open_time'
+          'metrics_models:community_service_and_support.metrics.bug_issue_open_time'
         ),
         content: t(
-          'metrics_models:community_service_and_support.bug_issue_open_time_desc'
+          'metrics_models:community_service_and_support.metrics.bug_issue_open_time_desc'
         ),
         hash: '/docs/metrics-models/productivity/niche-creation#bug-issue-open-time',
       },
@@ -197,9 +211,11 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
       color: 'productivity',
       bottom: true,
       popContent: {
-        title: t('metrics_models:community_service_and_support.pr_open_time'),
+        title: t(
+          'metrics_models:community_service_and_support.metrics.pr_open_time'
+        ),
         content: t(
-          'metrics_models:community_service_and_support.pr_open_time_desc'
+          'metrics_models:community_service_and_support.metrics.pr_open_time_desc'
         ),
         hash: '/docs/metrics-models/productivity/niche-creation#pr-open-time',
       },
@@ -211,10 +227,10 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:community_service_and_support.comment_frequency'
+          'metrics_models:community_service_and_support.metrics.comment_frequency'
         ),
         content: t(
-          'metrics_models:community_service_and_support.comment_frequency_desc'
+          'metrics_models:community_service_and_support.metrics.comment_frequency_desc'
         ),
         hash: '/docs/metrics-models/productivity/niche-creation#comment-frequency',
       },
@@ -226,10 +242,10 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:community_service_and_support.code_review_count'
+          'metrics_models:community_service_and_support.metrics.code_review_count'
         ),
         content: t(
-          'metrics_models:community_service_and_support.code_review_count_desc'
+          'metrics_models:community_service_and_support.metrics.code_review_count_desc'
         ),
         hash: '/docs/metrics-models/productivity/niche-creation#code-review-count',
       },
@@ -246,8 +262,10 @@ const useCommunityActivity = (): PlantList[] => {
       size: 64,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.contributor_count'),
-        content: t('metrics_models:community_activity.contributor_count_desc'),
+        title: t('metrics_models:community_activity.metrics.contributor_count'),
+        content: t(
+          'metrics_models:community_activity.metrics.contributor_count_desc'
+        ),
         hash: '/docs/metrics-models/robustness/activity#contributor-count',
       },
     },
@@ -257,8 +275,10 @@ const useCommunityActivity = (): PlantList[] => {
       size: 60,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.commit_frequency'),
-        content: t('metrics_models:community_activity.commit_frequency_desc'),
+        title: t('metrics_models:community_activity.metrics.commit_frequency'),
+        content: t(
+          'metrics_models:community_activity.metrics.commit_frequency_desc'
+        ),
         hash: '/docs/metrics-models/robustness/activity#commit-frequency',
       },
     },
@@ -268,8 +288,10 @@ const useCommunityActivity = (): PlantList[] => {
       size: 56,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.updated_since'),
-        content: t('metrics_models:community_activity.updated_since_desc'),
+        title: t('metrics_models:community_activity.metrics.updated_since'),
+        content: t(
+          'metrics_models:community_activity.metrics.updated_since_desc'
+        ),
         hash: '/docs/metrics-models/robustness/activity#updated-since',
       },
     },
@@ -279,8 +301,12 @@ const useCommunityActivity = (): PlantList[] => {
       size: 55,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.organization_count'),
-        content: t('metrics_models:community_activity.organization_count_desc'),
+        title: t(
+          'metrics_models:community_activity.metrics.organization_count'
+        ),
+        content: t(
+          'metrics_models:community_activity.metrics.organization_count_desc'
+        ),
         hash: '/docs/metrics-models/robustness/activity#organization-count',
       },
     },
@@ -291,8 +317,10 @@ const useCommunityActivity = (): PlantList[] => {
       color: 'robustness',
       right: true,
       popContent: {
-        title: t('metrics_models:community_activity.created_since'),
-        content: t('metrics_models:community_activity.created_since_desc'),
+        title: t('metrics_models:community_activity.metrics.created_since'),
+        content: t(
+          'metrics_models:community_activity.metrics.created_since_desc'
+        ),
         hash: '/docs/metrics-models/robustness/activity#created-since',
       },
     },
@@ -302,8 +330,10 @@ const useCommunityActivity = (): PlantList[] => {
       size: 45,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.comment_frequency'),
-        content: t('metrics_models:community_activity.comment_frequency_desc'),
+        title: t('metrics_models:community_activity.metrics.comment_frequency'),
+        content: t(
+          'metrics_models:community_activity.metrics.comment_frequency_desc'
+        ),
         hash: '/docs/metrics-models/robustness/activity#comment-frequency',
       },
     },
@@ -313,8 +343,10 @@ const useCommunityActivity = (): PlantList[] => {
       size: 46,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.code_review_count'),
-        content: t('metrics_models:community_activity.code_review_count_desc'),
+        title: t('metrics_models:community_activity.metrics.code_review_count'),
+        content: t(
+          'metrics_models:community_activity.metrics.code_review_count_desc'
+        ),
         hash: '/docs/metrics-models/robustness/activity#code-review-count',
       },
     },
@@ -324,9 +356,11 @@ const useCommunityActivity = (): PlantList[] => {
       size: 38,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.updated_issues_count'),
+        title: t(
+          'metrics_models:community_activity.metrics.updated_issues_count'
+        ),
         content: t(
-          'metrics_models:community_activity.updated_issues_count_desc'
+          'metrics_models:community_activity.metrics.updated_issues_count_desc'
         ),
         hash: '/docs/metrics-models/robustness/activity#updated-issues-count',
       },
@@ -337,9 +371,11 @@ const useCommunityActivity = (): PlantList[] => {
       size: 30,
       color: 'robustness',
       popContent: {
-        title: t('metrics_models:community_activity.recent_releases_count'),
+        title: t(
+          'metrics_models:community_activity.metrics.recent_releases_count'
+        ),
         content: t(
-          'metrics_models:community_activity.recent_releases_count_desc'
+          'metrics_models:community_activity.metrics.recent_releases_count_desc'
         ),
         hash: '/docs/metrics-models/robustness/activity#recent-releases-count',
       },
@@ -356,8 +392,10 @@ const useOrganizationActivity = (): PlantList[] => {
       size: 61,
       color: 'nicheCreation',
       popContent: {
-        title: t('metrics_models:organization_activity.org_count'),
-        content: t('metrics_models:organization_activity.org_count_desc'),
+        title: t('metrics_models:organization_activity.metrics.org_count'),
+        content: t(
+          'metrics_models:organization_activity.metrics.org_count_desc'
+        ),
         hash: '/docs/metrics-models/niche-creation/developer-retention#org-count',
       },
     },
@@ -367,9 +405,11 @@ const useOrganizationActivity = (): PlantList[] => {
       size: 60,
       color: 'nicheCreation',
       popContent: {
-        title: t('metrics_models:organization_activity.contributor_count'),
+        title: t(
+          'metrics_models:organization_activity.metrics.contributor_count'
+        ),
         content: t(
-          'metrics_models:organization_activity.contributor_count_desc'
+          'metrics_models:organization_activity.metrics.contributor_count_desc'
         ),
         hash: '/docs/metrics-models/niche-creation/developer-retention#contributor-count',
       },
@@ -380,9 +420,11 @@ const useOrganizationActivity = (): PlantList[] => {
       size: 50,
       color: 'nicheCreation',
       popContent: {
-        title: t('metrics_models:organization_activity.commit_frequency'),
+        title: t(
+          'metrics_models:organization_activity.metrics.commit_frequency'
+        ),
         content: t(
-          'metrics_models:organization_activity.commit_frequency_desc'
+          'metrics_models:organization_activity.metrics.commit_frequency_desc'
         ),
         hash: '/docs/metrics-models/niche-creation/developer-retention#commit-frequency',
       },
@@ -394,9 +436,11 @@ const useOrganizationActivity = (): PlantList[] => {
       color: 'nicheCreation',
       // bottom: true,
       popContent: {
-        title: t('metrics_models:organization_activity.contribution_last'),
+        title: t(
+          'metrics_models:organization_activity.metrics.contribution_last'
+        ),
         content: t(
-          'metrics_models:organization_activity.contribution_last_desc'
+          'metrics_models:organization_activity.metrics.contribution_last_desc'
         ),
         hash: '/docs/metrics-models/niche-creation/developer-retention#contribution-last',
       },

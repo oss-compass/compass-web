@@ -4,6 +4,7 @@ import {
   getLineOption,
   line,
 } from '@modules/analyze/options';
+import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
@@ -16,6 +17,7 @@ const LineChart: React.FC<ChartSummaryProps> = ({
   xAxis,
   yAxis,
 }) => {
+  const { t } = useTranslation();
   const [markingSys, setMarkingSys] = useState(true);
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ legendName, data }) => {
@@ -27,7 +29,7 @@ const LineChart: React.FC<ChartSummaryProps> = ({
 
   return (
     <BaseCard
-      title="Overview"
+      title={t('analyze:overview')}
       id={Topic.Overview}
       description=""
       showMarkingSysBtn={true}

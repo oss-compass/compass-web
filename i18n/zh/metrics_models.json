@@ -1,66 +1,118 @@
 {
   "code_quality_guarantee": {
-    "contributor_count": "Contributor Count",
-    "contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
-    "commit_frequency": "Commit Frequency",
-    "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
-    "is_maintained": "Is Maintained",
-    "is_maintained_desc": "Percentage of weeks with at least one code commit in the past 90 days(single repository). Percentage of code repositories with at least one code commit in the last 30 days(multiple repositories).",
-    "commit_pr_linked_ratio": "Commit PR Linked Ratio",
-    "commit_pr_linked_ratio_desc": "Determine the percentage of new code commit link pull request in the last 90 days.",
-    "pr_issue_linked_ratio": "PR Issue Linked Ratio",
-    "pr_issue_linked_ratio_desc": "Determine the percentage of new pull request link issues in the last 90 days.",
-    "code_review_ratio": "Code Review Ratio",
-    "code_merge_ratio": "Code Merge Ratio",
-    "lines_of_code_frequency": "Lines of Code Frequency",
-    "code_review_ratio_desc": "Determine the percentage of code commits with at least one reviewer (not PR creator) in the last 90 days.",
-    "code_merge_ratio_desc": "Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
-    "lines_of_code_frequency_desc": "Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
+    "title": "代码质量保障",
+    "desc": "代码，作为一个软件项目的最终输出件，是整个社区的核心内容。 代码质量保障是使用多个代理指标来评估软件质量的保障制度。",
+    "metrics": {
+      "contributor_count": "贡献者数量",
+      "contributor_count_desc": "在过去90天内有多少活跃的代码提交者、代码审核者和PR提交者。",
+      "commit_frequency": "代码提交频率",
+      "commit_frequency_desc": "过去90天内平均每周代码提交次数。",
+      "is_maintained": "是否维护",
+      "is_maintained_desc": "过去90天内至少提交了一次代码的周百分比(单仓场景)。 在过去 30 天内至少有一次代码提交记录的的代码仓百分比(多仓场景)。",
+      "commit_pr_linked_ratio": "代码提交关联PR的比率",
+      "commit_pr_linked_ratio_desc": "在过去90天内提交的代码链接PR的百分比。",
+      "pr_issue_linked_ratio": "PR关联Issue的比率",
+      "pr_issue_linked_ratio_desc": "过去90天内新建PR关联Issue的百分比。",
+      "code_review_ratio": "代码审查比率",
+      "code_review_ratio_desc": "过去90天内提交代码中，至少包含一名审核者(不是PR 创建者) 的百分比。",
+      "code_merge_ratio": "代码合并比率",
+      "code_merge_ratio_desc": "过去90天提交代码中，PR合并者和PR 作者不属于同一人的百分比。",
+      "lines_of_code_frequency": "代码行数变更",
+      "lines_of_code_frequency_desc": "过去90天内平均每周提交的代码行数(增加行数加上删除行数)。"
+    }
   },
   "community_service_and_support": {
-    "updated_issues_count": "Updated Issues Count",
-    "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
-    "close_pr_count": "Close PR Count",
-    "close_pr_count_desc": "The number of PR accepted and declined in the last 90 days.",
-    "issue_first_response": "Issue First Response",
-    "issue_first_response_desc": "Average/Median first comments response (in days) for new issues created in the last 90 days. This excludes bot responses, the creator's own comment, or an action assigned by the issue. If the issue has been unanswered, the first response time is not counted.",
-    "bug_issue_open_time": "Bug Issue Open Time",
-    "bug_issue_open_time_desc": "Average/Median time (days) that bug issues have been opened for issues created in the last 90 days.",
-    "pr_open_time": "PR Open Time",
-    "pr_open_time_desc": "Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change requests and unresolved change requests.",
-    "comment_frequency": "Comment Frequency",
-    "comment_frequency_desc": "Determine the average number of comments per issue created in the last 90 days.",
-    "code_review_count": "Code Review Count",
-    "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days."
+    "title": "社区服务与支撑",
+    "desc": "用于评估开发者在贡献过程中，所能直接感知到社区提供的服务和支撑做得如何。",
+    "metrics": {
+      "updated_issues_count": "更新Issue数量",
+      "updated_issues_count_desc": "过去90天Issue更新的数量。",
+      "close_pr_count": "关闭 PR 数量",
+      "close_pr_count_desc": "过去90天内合并和拒绝的PR数量。",
+      "issue_first_response": "Issue首次响应时间",
+      "issue_first_response_desc": "过去90天新建Issue首次响应时间的均值和中位数（天）。 这不包括机器人响应、创建者自己的评论或Issue 的分配动作（action）。 如果Issue一直未被响应，该Issue不被算入统计。",
+      "bug_issue_open_time": "Bug类Issue处理时间",
+      "bug_issue_open_time_desc": "过去90天新建的Bug类Issue处理时间的均值和中位数（天），包含已经关闭的Issue以及未解决的Issue。",
+      "pr_open_time": "PR 处理时间",
+      "pr_open_time_desc": "过去90天新建PR的处理时间的均值和中位数（天），包含已经关闭的PR以及未解决的PR",
+      "comment_frequency": "Issue评论频率",
+      "comment_frequency_desc": "过去90天内新建Issue的评论平均数（不包含机器人和Issue作者本人评论）。",
+      "code_review_count": "代码审查评论频率",
+      "code_review_count_desc": "过去90天内新建PR的评论平均数量（不包含机器人和PR作者本人评论）。"
+    }
   },
   "community_activity": {
-    "contributor_count": "Contributor Count",
-    "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
-    "commit_frequency": "Commit Frequency",
-    "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
-    "updated_since": "Updated Since",
-    "updated_since_desc": "Determine the average time per repository since the repository was last updated (in months).",
-    "organization_count": "Organization Count",
-    "organization_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
-    "created_since": "Created Since",
-    "created_since_desc": "Determine how long a repository has existed since it was created (in months).",
-    "comment_frequency": "Comment Frequency",
-    "comment_frequency_desc": "Determine the average number of comments per issue created in the last 90 days.",
-    "code_review_count": "Code Review Count",
-    "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days.",
-    "updated_issues_count": "Updated Issues Count",
-    "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
-    "recent_releases_count": "Recent Releases Count",
-    "recent_releases_count_desc": "Determine the number of releases in the last year."
+    "title": "活跃度",
+    "desc": "活跃度用来描述一个开源社区或者项目的活跃程度。",
+    "metrics": {
+      "contributor_count": "贡献者数量",
+      "contributor_count_desc": "过去 90 天中活跃的代码提交者、Pull Request 作者、代码审查者、Issue 作者和 Issue 评论者的数量。",
+      "commit_frequency": "代码提交频率",
+      "commit_frequency_desc": "过去90天内平均每周代码提交次数。",
+      "updated_since": "更新于",
+      "updated_since_desc": "每个代码仓自上次更新以来的平均时间(月份)，即多久没更新了。",
+      "organization_count": "组织数量",
+      "organization_count_desc": "过去90天内活跃的代码提交者所属组织的数目",
+      "created_since": "创建于",
+      "created_since_desc": "代码仓自创建以来存在了多长时间(月份)。",
+      "comment_frequency": "Issue评论频率",
+      "comment_frequency_desc": "过去90天内新建Issue的评论平均数（不包含机器人和Issue作者本人评论）。",
+      "code_review_count": "代码审查评论频率",
+      "code_review_count_desc": "过去90天内新建PR的评论平均数量（不包含机器人和PR作者本人评论）。",
+      "updated_issues_count": "更新Issue数量",
+      "updated_issues_count_desc": "过去90天Issue更新的数量。",
+      "recent_releases_count": "最近版本发布次数",
+      "recent_releases_count_desc": "过去12个月版本发布的数量。"
+    }
   },
   "organization_activity": {
-    "org_count": "Org Count",
-    "org_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
-    "contributor_count": "Contributor Count",
-    "contributor_count_desc": "Number of active code contributors with organization affiliation in the past 90 days.",
-    "commit_frequency": "Commit Frequency",
-    "commit_frequency_desc": "Definition: Determine the average number of commits with organization affiliation per week in the past 90 days.",
-    "contribution_last": "Contribution Last",
-    "contribution_last_desc": "Total contribution time of all organizations to the community in the past 90 days (weeks)."
+    "title": "组织活跃度",
+    "desc": "该模型用于评估社区中组织的活跃程度。",
+    "metrics": {
+      "org_count": "组织数量",
+      "org_count_desc": "过去90天内活跃的代码提交者所属组织的数目。",
+      "contributor_count": "贡献者数量",
+      "contributor_count_desc": "过去90天内有组织附属关系的活跃的代码贡献者人数。",
+      "commit_frequency": "代码提交频率",
+      "commit_frequency_desc": "过去90天内平均每周有组织归属的代码提交次数。",
+      "contribution_last": "持续贡献",
+      "contribution_last_desc": "在过去90天所有组织向社区有代码贡献的累计时间（周）。"
+    }
+  },
+  "developer_attraction": {
+    "title": "开发者吸引"
+  },
+  "organizations_activity": {
+    "title": "组织活跃度"
+  },
+  "technological_advancement": {
+    "title": "技术先进性"
+  },
+  "code_security_guarantee": {
+    "title": "代码安全保障"
+  },
+  "code_compliance_guarantee": {
+    "title": "代码合规保障"
+  },
+  "content": {
+    "title": "文档"
+  },
+  "activity": {
+    "title": "活跃度"
+  },
+  "developer_convertion": {
+    "title": "开发者转换"
+  },
+  "developer_retention": {
+    "title": "开发者留存"
+  },
+  "inner_connectedness": {
+    "title": "内部联接"
+  },
+  "organization_collaboration_relationships": {
+    "title": "组织协作关系"
+  },
+  "outbound_connectedness": {
+    "title": "外部联接"
   }
 }

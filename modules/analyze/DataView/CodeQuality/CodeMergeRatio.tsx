@@ -101,10 +101,12 @@ const CodeMergeRatio = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:code_quality_guarantee.code_merge_ratio')}
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.code_merge_ratio'
+      )}
       id={CodeQuality.CodeMergeRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.code_merge_ratio_desc'
+        'metrics_models:code_quality_guarantee.metrics.code_merge_ratio_desc'
       )}
     >
       {(ref) => {

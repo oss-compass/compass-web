@@ -2,73 +2,117 @@
   "code_quality_guarantee": {
     "title": "Code Quality Guarantee",
     "desc": "Code, as the final output of a project, is the essence of the entire community's contribution. Code quality guarantee is the measurement of how to guarantee software quality using multiple proxies.",
-    "contributor_count": "Contributor Count",
-    "contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
-    "commit_frequency": "Commit Frequency",
-    "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
-    "is_maintained": "Is Maintained",
-    "is_maintained_desc": "Percentage of weeks with at least one code commit in the past 90 days(single repository). Percentage of code repositories with at least one code commit in the last 30 days(multiple repositories).",
-    "commit_pr_linked_ratio": "Commit PR Linked Ratio",
-    "commit_pr_linked_ratio_desc": "Determine the percentage of new code commit link pull request in the last 90 days.",
-    "pr_issue_linked_ratio": "PR Issue Linked Ratio",
-    "pr_issue_linked_ratio_desc": "Determine the percentage of new pull request link issues in the last 90 days.",
-    "code_review_ratio": "Code Review Ratio",
-    "code_merge_ratio": "Code Merge Ratio",
-    "lines_of_code_frequency": "Lines of Code Frequency",
-    "code_review_ratio_desc": "Determine the percentage of code commits with at least one reviewer (not PR creator) in the last 90 days.",
-    "code_merge_ratio_desc": "Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
-    "lines_of_code_frequency_desc": "Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
+    "metrics": {
+      "contributor_count": "Contributor Count",
+      "contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
+      "commit_frequency": "Commit Frequency",
+      "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
+      "is_maintained": "Is Maintained",
+      "is_maintained_desc": "Percentage of weeks with at least one code commit in the past 90 days(single repository). Percentage of code repositories with at least one code commit in the last 30 days(multiple repositories).",
+      "commit_pr_linked_ratio": "Commit PR Linked Ratio",
+      "commit_pr_linked_ratio_desc": "Determine the percentage of new code commit link pull request in the last 90 days.",
+      "pr_issue_linked_ratio": "PR Issue Linked Ratio",
+      "pr_issue_linked_ratio_desc": "Determine the percentage of new pull request link issues in the last 90 days.",
+      "code_review_ratio": "Code Review Ratio",
+      "code_merge_ratio": "Code Merge Ratio",
+      "lines_of_code_frequency": "Lines of Code Frequency",
+      "code_review_ratio_desc": "Determine the percentage of code commits with at least one reviewer (not PR creator) in the last 90 days.",
+      "code_merge_ratio_desc": "Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
+      "lines_of_code_frequency_desc": "Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days."
+    }
   },
   "community_service_and_support": {
     "title": "Community Service and Support",
-    "desc": "Community Service and Support measures the quality of services and support provided by the community as directly perceived by a developer during the contribution process.\n\n",
-    "updated_issues_count": "Updated Issues Count",
-    "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
-    "close_pr_count": "Close PR Count",
-    "close_pr_count_desc": "The number of PR accepted and declined in the last 90 days.",
-    "issue_first_response": "Issue First Response",
-    "issue_first_response_desc": "Average/Median first comments response (in days) for new issues created in the last 90 days. This excludes bot responses, the creator's own comment, or an action assigned by the issue. If the issue has been unanswered, the first response time is not counted.",
-    "bug_issue_open_time": "Bug Issue Open Time",
-    "bug_issue_open_time_desc": "Average/Median time (days) that bug issues have been opened for issues created in the last 90 days.",
-    "pr_open_time": "PR Open Time",
-    "pr_open_time_desc": "Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change requests and unresolved change requests.",
-    "comment_frequency": "Comment Frequency",
-    "comment_frequency_desc": "Determine the average number of comments per issue created in the last 90 days.",
-    "code_review_count": "Code Review Count",
-    "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days."
+    "desc": "Community Service and Support measures the quality of services and support provided by the community as directly perceived by a developer during the contribution process.",
+    "metrics": {
+      "updated_issues_count": "Updated Issues Count",
+      "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
+      "close_pr_count": "Close PR Count",
+      "close_pr_count_desc": "The number of PR accepted and declined in the last 90 days.",
+      "issue_first_response": "Issue First Response",
+      "issue_first_response_desc": "Average/Median first comments response (in days) for new issues created in the last 90 days. This excludes bot responses, the creator's own comment, or an action assigned by the issue. If the issue has been unanswered, the first response time is not counted.",
+      "bug_issue_open_time": "Bug Issue Open Time",
+      "bug_issue_open_time_desc": "Average/Median time (days) that bug issues have been opened for issues created in the last 90 days.",
+      "pr_open_time": "PR Open Time",
+      "pr_open_time_desc": "Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change requests and unresolved change requests.",
+      "comment_frequency": "Comment Frequency",
+      "comment_frequency_desc": "Determine the average number of comments per issue created in the last 90 days.",
+      "code_review_count": "Code Review Count",
+      "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days."
+    }
   },
   "community_activity": {
     "title": "Community Activity",
     "desc": "Community Activity is used to describe how active an open source community is.",
-    "contributor_count": "Contributor Count",
-    "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
-    "commit_frequency": "Commit Frequency",
-    "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
-    "updated_since": "Updated Since",
-    "updated_since_desc": "Determine the average time per repository since the repository was last updated (in months).",
-    "organization_count": "Organization Count",
-    "organization_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
-    "created_since": "Created Since",
-    "created_since_desc": "Determine how long a repository has existed since it was created (in months).",
-    "comment_frequency": "Comment Frequency",
-    "comment_frequency_desc": "Determine the average number of comments per issue created in the last 90 days.",
-    "code_review_count": "Code Review Count",
-    "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days.",
-    "updated_issues_count": "Updated Issues Count",
-    "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
-    "recent_releases_count": "Recent Releases Count",
-    "recent_releases_count_desc": "Determine the number of releases in the last year."
+    "metrics": {
+      "contributor_count": "Contributor Count",
+      "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
+      "commit_frequency": "Commit Frequency",
+      "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
+      "updated_since": "Updated Since",
+      "updated_since_desc": "Determine the average time per repository since the repository was last updated (in months).",
+      "organization_count": "Organization Count",
+      "organization_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
+      "created_since": "Created Since",
+      "created_since_desc": "Determine how long a repository has existed since it was created (in months).",
+      "comment_frequency": "Comment Frequency",
+      "comment_frequency_desc": "Determine the average number of comments per issue created in the last 90 days.",
+      "code_review_count": "Code Review Count",
+      "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days.",
+      "updated_issues_count": "Updated Issues Count",
+      "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
+      "recent_releases_count": "Recent Releases Count",
+      "recent_releases_count_desc": "Determine the number of releases in the last year."
+    }
   },
   "organization_activity": {
     "title": "Organizations Activity",
     "desc": "Organizational activity is used to describe how active organizations are in a community.",
-    "org_count": "Org Count",
-    "org_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
-    "contributor_count": "Contributor Count",
-    "contributor_count_desc": "Number of active code contributors with organization affiliation in the past 90 days.",
-    "commit_frequency": "Commit Frequency",
-    "commit_frequency_desc": "Definition: Determine the average number of commits with organization affiliation per week in the past 90 days.",
-    "contribution_last": "Contribution Last",
-    "contribution_last_desc": "Total contribution time of all organizations to the community in the past 90 days (weeks)."
+    "metrics": {
+      "org_count": "Org Count",
+      "org_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
+      "contributor_count": "Contributor Count",
+      "contributor_count_desc": "Number of active code contributors with organization affiliation in the past 90 days.",
+      "commit_frequency": "Commit Frequency",
+      "commit_frequency_desc": "Definition: Determine the average number of commits with organization affiliation per week in the past 90 days.",
+      "contribution_last": "Contribution Last",
+      "contribution_last_desc": "Total contribution time of all organizations to the community in the past 90 days (weeks)."
+    }
+  },
+  "developer_attraction": {
+    "title": "Developer Attraction"
+  },
+  "organizations_activity": {
+    "title": "Organizations Activity"
+  },
+  "technological_advancement": {
+    "title": "Technological Advancement"
+  },
+  "code_security_guarantee": {
+    "title": "Code Security Guarantee"
+  },
+  "code_compliance_guarantee": {
+    "title": "Code Compliance Guarantee"
+  },
+  "content": {
+    "title": "Content"
+  },
+  "activity": {
+    "title": "Activity"
+  },
+  "developer_convertion": {
+    "title": "Developer Convertion"
+  },
+  "developer_retention": {
+    "title": "Developer Retention"
+  },
+  "inner_connectedness": {
+    "title": "Inner Connectedness"
+  },
+  "organization_collaboration_relationships": {
+    "title": "Organization Collaboration Relationships"
+  },
+  "outbound_connectedness": {
+    "title": "Outbound Connectedness"
   }
 }

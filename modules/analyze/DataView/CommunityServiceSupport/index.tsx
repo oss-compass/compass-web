@@ -22,7 +22,7 @@ const CommunitySupport = () => {
   return (
     <>
       <SectionTitle id={Section.CommunityServiceAndSupport}>
-        Community Service and Support
+        {t('metrics_models:community_service_and_support.title')}
       </SectionTitle>
 
       <div className="mb-4">

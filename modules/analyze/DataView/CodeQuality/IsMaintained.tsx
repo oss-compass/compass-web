@@ -50,10 +50,10 @@ const IsMaintained = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:code_quality_guarantee.is_maintained')}
+      title={t('metrics_models:code_quality_guarantee.metrics.is_maintained')}
       id={CodeQuality.IsMaintained}
       description={t(
-        'metrics_models:code_quality_guarantee.is_maintained_desc'
+        'metrics_models:code_quality_guarantee.metrics.is_maintained_desc'
       )}
     >
       {(ref) => {

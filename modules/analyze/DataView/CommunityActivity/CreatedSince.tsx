@@ -50,9 +50,11 @@ const CreatedSince = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.created_since')}
+      title={t('metrics_models:community_activity.metrics.created_since')}
       id={Activity.CreatedSince}
-      description={t('metrics_models:community_activity.created_since_desc')}
+      description={t(
+        'metrics_models:community_activity.metrics.created_since_desc'
+      )}
     >
       {(ref) => {
         return (
