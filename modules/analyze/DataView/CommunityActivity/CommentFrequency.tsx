@@ -52,10 +52,10 @@ const CommentFrequency = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.comment_frequency')}
+      title={t('metrics_models:community_activity.metrics.comment_frequency')}
       id={Activity.CommentFrequency}
       description={t(
-        'metrics_models:community_activity.comment_frequency_desc'
+        'metrics_models:community_activity.metrics.comment_frequency_desc'
       )}
     >
       {(ref) => {

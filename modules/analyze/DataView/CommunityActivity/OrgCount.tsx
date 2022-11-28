@@ -51,10 +51,10 @@ const OrgCount = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.organization_count')}
+      title={t('metrics_models:community_activity.metrics.organization_count')}
       id={Organizations.OrgCount}
       description={t(
-        'metrics_models:community_activity.organization_count_desc'
+        'metrics_models:community_activity.metrics.organization_count_desc'
       )}
     >
       {(ref) => {

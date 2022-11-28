@@ -21,7 +21,9 @@ const CommunityActivity = () => {
   const { t } = useTranslation();
   return (
     <>
-      <SectionTitle id={Section.CommunityActivity}>Activity</SectionTitle>
+      <SectionTitle id={Section.CommunityActivity}>
+        {t('metrics_models:activity.title')}
+      </SectionTitle>
 
       <div className="mb-4">
         <CommunityActivityOverview />

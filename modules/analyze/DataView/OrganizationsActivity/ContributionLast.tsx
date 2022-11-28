@@ -52,10 +52,12 @@ const ContributionLast = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:organization_activity.contribution_last')}
+      title={t(
+        'metrics_models:organization_activity.metrics.contribution_last'
+      )}
       id={Organizations.ContributionLast}
       description={t(
-        'metrics_models:organization_activity.contribution_last_desc'
+        'metrics_models:organization_activity.metrics.contribution_last_desc'
       )}
     >
       {(ref) => {

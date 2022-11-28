@@ -63,10 +63,12 @@ const LocFrequency = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:code_quality_guarantee.lines_of_code_frequency')}
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency'
+      )}
       id={CodeQuality.LocFrequency}
       description={t(
-        'metrics_models:code_quality_guarantee.lines_of_code_frequency_desc'
+        'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency_desc'
       )}
     >
       {(ref) => {

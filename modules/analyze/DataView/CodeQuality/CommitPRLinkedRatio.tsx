@@ -94,10 +94,12 @@ const CommitPRLinkedRatio = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:code_quality_guarantee.commit_pr_linked_ratio')}
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio'
+      )}
       id={CodeQuality.CommitPRLinkedRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.commit_pr_linked_ratio_desc'
+        'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio_desc'
       )}
     >
       {(ref) => {

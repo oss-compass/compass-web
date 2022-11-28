@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
+import { useTranslation } from 'next-i18next';
 import RobustnessIcon from './assets/Robustness.svg';
-import { Activity, CodeQuality, CommunityActivity, Topic } from './config';
+import { Activity, CodeQuality, useCommunityActivity, Topic } from './config';
 import MenuItem from './Menu/MenuItem';
 import MenuTopicItem from './Menu/MenuTopicItem';
 import MenuSubItem from './Menu/MenuSubItem';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';
 
 const Robustness = () => {
+  const { t } = useTranslation();
+  const communityActivity = useCommunityActivity();
   const { menuId, subMenuId } = useContext(SideBarContext);
 
   const menu = (
@@ -16,7 +19,7 @@ const Robustness = () => {
         id={Activity.Overview}
         subMenu={
           <>
-            {CommunityActivity.groups.map((item) => {
+            {communityActivity.groups.map((item) => {
               return (
                 <MenuSubItem
                   key={item.id}
@@ -30,22 +33,22 @@ const Robustness = () => {
           </>
         }
       >
-        Activity
+        {t('metrics_models:activity.title')}
       </MenuItem>
       <MenuItem id="2" disabled>
-        Developer Convertion
+        {t('metrics_models:developer_convertion.title')}
       </MenuItem>
       <MenuItem id="3" disabled>
-        Developer Retention
+        {t('metrics_models:developer_retention.title')}
       </MenuItem>
       <MenuItem id="4" disabled>
-        Inner Connectedness
+        {t('metrics_models:inner_connectedness.title')}
       </MenuItem>
       <MenuItem id="5" disabled>
-        Organization Collaboration Relationships
+        {t('metrics_models:organization_collaboration_relationships.title')}
       </MenuItem>
       <MenuItem id="6" disabled>
-        Outbound Connectedness
+        {t('metrics_models:outbound_connectedness.title')}
       </MenuItem>
     </>
   );
@@ -60,7 +63,7 @@ const Robustness = () => {
       }
       menus={menu}
     >
-      Robustness
+      {t('analyze:topic.robustness')}
     </MenuTopicItem>
   );
 };

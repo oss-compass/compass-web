@@ -54,11 +54,11 @@ const BugIssueOpenTime = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:community_service_and_support.bug_issue_open_time'
+        'metrics_models:community_service_and_support.metrics.bug_issue_open_time'
       )}
       id={Support.BugIssueOpenTime}
       description={t(
-        'metrics_models:community_service_and_support.bug_issue_open_time_desc'
+        'metrics_models:community_service_and_support.metrics.bug_issue_open_time_desc'
       )}
     >
       {(ref) => {

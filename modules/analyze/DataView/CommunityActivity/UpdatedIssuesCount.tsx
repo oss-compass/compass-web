@@ -52,10 +52,12 @@ const UpdatedIssuesCount = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.updated_issues_count')}
+      title={t(
+        'metrics_models:community_activity.metrics.updated_issues_count'
+      )}
       id={Activity.UpdatedIssuesCount}
       description={t(
-        'metrics_models:community_activity.updated_issues_count_desc'
+        'metrics_models:community_activity.metrics.updated_issues_count_desc'
       )}
     >
       {(ref) => {
