@@ -5,9 +5,9 @@ import { Level } from '@modules/analyze/constant';
 import { getPathname } from '@common/utils';
 
 function matchUrl(label: string) {
-  const reg =
-    /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
-  if (label && new RegExp(reg).test(label) && new RegExp(/^\S*$/).test(label)) {
+  // const reg =
+  //   /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
+  if (label && new RegExp(/^\S*$/).test(label)) {
     return label;
   }
   return false;
