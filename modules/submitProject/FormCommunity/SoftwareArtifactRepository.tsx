@@ -9,7 +9,7 @@ import Modal from '@common/components/Modal';
 import InputUrlField, { InputRef } from '../Misc/InputUrlField';
 import AddSelectPopover from '../Misc/AddSelectPopover';
 import FillItem from '../Misc/FillItem';
-
+import { useTranslation } from 'react-i18next';
 export interface Props {
   value: string[];
   onChange: (v: string[]) => void;
@@ -21,6 +21,7 @@ export interface Ref {
 
 const SoftwareArtifactRepository = forwardRef<Ref, Props>(
   ({ value, onChange }, ref) => {
+    const { t } = useTranslation();
     const inputRef = useRef<InputRef>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [popoverOpen, setPopoverOpen] = useState(false);
@@ -35,7 +36,7 @@ const SoftwareArtifactRepository = forwardRef<Ref, Props>(
     return (
       <>
         <label className="mb-4 block text-xl font-medium">
-          Software Artifact Repository
+          {t('submit_project:software_artifact_repository')}
         </label>
 
         {value.map((item, index, array) => {

@@ -10,18 +10,19 @@ import Modal from '@common/components/Modal';
 import InputUrlField, { InputRef } from '../Misc/InputUrlField';
 import AddSelectPopover from '../Misc/AddSelectPopover';
 import FillItem from '../Misc/FillItem';
+import { useTranslation } from 'react-i18next';
 
 export interface Props {
   value: string[];
   onChange: (v: string[]) => void;
 }
-
 export interface Ref {
   getValues: () => string[];
 }
 
 const GovernanceRepository = forwardRef<Ref, Props>(
   ({ value, onChange }, ref) => {
+    const { t } = useTranslation();
     const inputRef = useRef<InputRef>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [popoverOpen, setPopoverOpen] = useState(false);
@@ -36,9 +37,9 @@ const GovernanceRepository = forwardRef<Ref, Props>(
     return (
       <>
         <label className="mt-10 mb-4 block text-xl font-medium">
-          Governance Repository
+          {t('submit_project:governance_repository')}
           <span className="ml-2 text-base font-normal text-gray-400">
-            (Optional)
+            ({t('submit_project:optional')})
           </span>
         </label>
 

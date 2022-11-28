@@ -9,7 +9,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { getUrlReg } from '../Misc';
 import useProvider from '../Form/useProvider';
 import { useHotkeys } from 'react-hotkeys-hook';
-
+import { useTranslation } from 'react-i18next';
 interface Props {
   onClose: () => void;
   onPressEnter?: (v: string) => void;
@@ -20,21 +20,26 @@ export interface InputRef {
   shakeInput: () => void;
 }
 
-const verificationUrl = (
-  val: string,
-  provider: string
-): { message: string; error: boolean } => {
-  if (!val) return { error: false, message: '' };
-  return getUrlReg(provider).test(val)
-    ? { error: false, message: '' }
-    : { error: true, message: `please enter a valid ${provider} url` };
-};
-
 const InputUrlField = forwardRef<InputRef, Props>(
   ({ onClose, onPressEnter }, ref) => {
+    const { t } = useTranslation();
     const inputRef = useRef<HTMLInputElement>(null);
     const provider = useProvider();
     const [value, setValue] = useState('');
+    const verificationUrl = (
+      val: string,
+      provider: string
+    ): { message: string; error: boolean } => {
+      if (!val) return { error: false, message: '' };
+      return getUrlReg(provider).test(val)
+        ? { error: false, message: '' }
+        : {
+            error: true,
+            message: t('submit_project:please_enter_a_valid', {
+              provider: provider,
+            }),
+          };
+    };
     const { error, message } = verificationUrl(value, provider);
 
     useImperativeHandle(ref, () => ({
@@ -72,7 +77,11 @@ const InputUrlField = forwardRef<InputRef, Props>(
               ref={inputRef}
               value={value}
               className="w-full"
-              placeholder={`Type address of ${provider} repository`}
+              placeholder={
+                t('submit_project:type_address_of', {
+                  providerName: provider,
+                }) as string
+              }
               error={error}
               onChange={(e) => {
                 setValue(e.target.value);
@@ -89,7 +98,7 @@ const InputUrlField = forwardRef<InputRef, Props>(
         </div>
         {error && (
           <p className="p-1 text-red-500">
-            {message} ( eg:
+            {message} ( {t('submit_project:eg')}:
             <span className="mx-2 font-semibold">{provider}.com/xxx/xxx</span>)
           </p>
         )}
