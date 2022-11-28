@@ -9,7 +9,7 @@ import { getAnalyzeLink } from '@common/utils';
 import MiniChart from './MiniChart';
 import AngleL from './assets/angle-left.svg';
 import AngleR from './assets/angle-right.svg';
-import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
 
@@ -37,7 +37,7 @@ const Project: React.FC<{
   const ref = useRef(null);
   const echartsData =
     repo.metricActivity?.map((item) =>
-      transMarkingSystem(item.activityScore || '')
+      transHundredMarkSystem(item.activityScore || '')
     ) || [];
   useEffect(() => {
     inViewport &&

@@ -10,4 +10,5 @@ module.exports = {
   },
   defaultNS: 'common',
   reloadOnPrerender: process.env.NODE_ENV === 'development',
+  localePath: './i18n',
 };

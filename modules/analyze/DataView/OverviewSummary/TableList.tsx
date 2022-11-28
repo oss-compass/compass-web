@@ -3,20 +3,17 @@ import type { PropsWithChildren, ComponentProps } from 'react';
 import classnames from 'classnames';
 import BaseCard from '@common/components/BaseCard';
 import styles from './index.module.scss';
-import {
-  MetricQuery,
-  useLatestMetricsQuery,
-  useMetricQuery,
-} from '@graphql/generated';
-import { getRepoName } from '@common/utils/url';
+import { useLatestMetricsQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
-import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import { formatRepoName } from '@modules/analyze/DataTransform/transToAxis';
 import { Level } from '@modules/analyze/constant';
+import ScoreConversion from '@modules/analyze/components/ScoreConversion';
+import { useTranslation } from 'next-i18next';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -73,7 +70,8 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
 };
 
 const TrendsList: React.FC = () => {
-  const [markingSys, setMarkingSys] = useState(true);
+  const { t } = useTranslation();
+  const [onePointSys, setOnePointSys] = useState(false);
 
   const { compareItems } = useCompareItems();
   const data = useQueries({
@@ -97,15 +95,27 @@ const TrendsList: React.FC = () => {
 
   const hasOrganizations =
     !loading && data.some((i) => i.data!.latestMetrics?.organizationsActivity);
+
+  const formatScore = (num: number | null | undefined) => {
+    if (num === undefined || num === null) return '-';
+    return onePointSys ? toFixed(num, 3) : transHundredMarkSystem(num);
+  };
+
   return (
     <BaseCard
       loading={loading}
-      title="Overview"
+      title={t('analyze:overview')}
       id={Topic.Overview}
       className="mb-10"
       description=""
-      showMarkingSysBtn={true}
-      getMarkingSys={(val) => setMarkingSys(val)}
+      headRight={
+        <ScoreConversion
+          onePoint={onePointSys}
+          onChange={(v) => {
+            setOnePointSys(v);
+          }}
+        />
+      }
     >
       <div className="overflow-auto">
         <table className={classnames(styles.table, 'w-full table-auto')}>
@@ -148,25 +158,17 @@ const TrendsList: React.FC = () => {
                       </p>
                     </td>
                     <Td className="bg-[#f2fcff]">
-                      {markingSys
-                        ? transMarkingSystem(item!.codeQualityGuarantee!)
-                        : toFixed(item!.codeQualityGuarantee!, 3)}
+                      {formatScore(item!.codeQualityGuarantee)}
                     </Td>
                     <Td className="bg-[#fff9f3]">
-                      {markingSys
-                        ? transMarkingSystem(item!.communitySupportScore!)
-                        : toFixed(item!.communitySupportScore!, 3)}
+                      {formatScore(item!.communitySupportScore)}
                     </Td>
                     <Td className="bg-[#f8f3ff]">
-                      {markingSys
-                        ? transMarkingSystem(item!.activityScore!)
-                        : toFixed(item!.activityScore!, 3)}
+                      {formatScore(item!.activityScore)}
                     </Td>
                     {hasOrganizations && (
                       <Td className="bg-[#ddebff]">
-                        {markingSys
-                          ? transMarkingSystem(item!.organizationsActivity!)
-                          : toFixed(item!.organizationsActivity!, 3)}
+                        {formatScore(item!.organizationsActivity)}
                       </Td>
                     )}
                   </tr>

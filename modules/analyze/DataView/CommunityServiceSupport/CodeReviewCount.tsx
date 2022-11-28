@@ -51,11 +51,11 @@ const CodeReviewCount = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:community_service_and_support.code_review_count'
+        'metrics_models:community_service_and_support.metrics.code_review_count'
       )}
       id={Support.CodeReviewCount}
       description={t(
-        'metrics_models:community_service_and_support.code_review_count_desc'
+        'metrics_models:community_service_and_support.metrics.code_review_count_desc'
       )}
     >
       {(ref) => {

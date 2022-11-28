@@ -21,9 +21,7 @@ const oneMarkList = [
   [0.8, 1],
 ];
 
-export const transMarkingSystem = (
-  oneMark: number | string
-): number | string => {
+const transHundredMarkSystem = (oneMark: number | string): number | string => {
   if (oneMark === null || oneMark === '') {
     return '-';
   }
@@ -45,3 +43,5 @@ export const transMarkingSystem = (
     hundredMarkArr[0];
   return toFixed(hundredMark, 2);
 };
+
+export default transHundredMarkSystem;

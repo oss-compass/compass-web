@@ -1,14 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from 'react-use';
 import {
-  CodeQualityGuarantee,
-  CommunityActivity,
-  CommunityServiceAndSupport,
-  OrganizationsActivity,
+  useCodeQualityGuarantee,
+  useCommunityActivity,
+  useCommunityServiceAndSupport,
+  useOrganizationsActivity,
   Topic,
 } from './config';
 
 const useHashchangeEvent = () => {
+  const codeQualityGuarantee = useCodeQualityGuarantee();
+  const communityActivity = useCommunityActivity();
+  const communityServiceAndSupport = useCommunityServiceAndSupport();
+  const organizationsActivity = useOrganizationsActivity();
+
   const initialHash = window.location.hash ? window.location.hash.slice(1) : '';
   const [activeId, setActiveId] = useState(initialHash);
 
@@ -48,10 +53,10 @@ const useHashchangeEvent = () => {
 
   return useMemo(() => {
     return [
-      CodeQualityGuarantee,
-      CommunityServiceAndSupport,
-      CommunityActivity,
-      OrganizationsActivity,
+      codeQualityGuarantee,
+      communityServiceAndSupport,
+      communityActivity,
+      organizationsActivity,
     ].reduce<{ topicId: string; menuId: string; subMenuId: string }>(
       (acc, cur) => {
         const { topic, id, groups } = cur;

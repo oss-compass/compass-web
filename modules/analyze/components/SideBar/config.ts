@@ -1,3 +1,5 @@
+import { useTranslation } from 'next-i18next';
+
 export enum CodeQuality {
   Overview = 'code_quality_overview',
   ContributorCount = 'code_quality_contributor_count',
@@ -59,71 +61,202 @@ export enum Section {
   OrganizationsActivity = 'organizations_activity',
 }
 
-export const CodeQualityGuarantee = {
-  topic: Topic.Productivity,
-  name: 'Code Quality Guarantee',
-  // id: 'code_quality_guarantee',
-  id: CodeQuality.Overview,
-  groups: [
-    // { name: 'Overview', id: CodeQuality.Overview },
-    { name: 'Contributor Count', id: CodeQuality.ContributorCount },
-    { name: 'Commit Frequency', id: CodeQuality.CommitFrequency },
-    { name: 'Is Maintained', id: CodeQuality.IsMaintained },
-    { name: 'Commit PR Linked Ratio', id: CodeQuality.CommitPRLinkedRatio },
-    { name: 'PR Issue Linked Ratio', id: CodeQuality.PRIssueLinkedRatio },
-    { name: 'Code Review Ratio', id: CodeQuality.CodeReviewRatio },
-    { name: 'Code Merge Ratio', id: CodeQuality.CodeMergeRatio },
-    { name: 'Lines of Code Frequency', id: CodeQuality.LocFrequency },
-  ],
+export const useCodeQualityGuarantee = () => {
+  const { t } = useTranslation();
+  return {
+    topic: Topic.Productivity,
+    name: t('metrics_models:code_quality_guarantee.title'),
+    id: CodeQuality.Overview,
+    groups: [
+      // { name: 'Overview', id: CodeQuality.Overview },
+      {
+        name: t(
+          'metrics_models:code_quality_guarantee.metrics.contributor_count'
+        ),
+        id: CodeQuality.ContributorCount,
+      },
+      {
+        name: t(
+          'metrics_models:code_quality_guarantee.metrics.commit_frequency'
+        ),
+        id: CodeQuality.CommitFrequency,
+      },
+      {
+        name: t('metrics_models:code_quality_guarantee.metrics.is_maintained'),
+        id: CodeQuality.IsMaintained,
+      },
+      {
+        name: t(
+          'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio'
+        ),
+        id: CodeQuality.CommitPRLinkedRatio,
+      },
+      {
+        name: t(
+          'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio'
+        ),
+        id: CodeQuality.PRIssueLinkedRatio,
+      },
+      {
+        name: t(
+          'metrics_models:code_quality_guarantee.metrics.code_review_ratio'
+        ),
+        id: CodeQuality.CodeReviewRatio,
+      },
+      {
+        name: t(
+          'metrics_models:code_quality_guarantee.metrics.code_merge_ratio'
+        ),
+        id: CodeQuality.CodeMergeRatio,
+      },
+      {
+        name: t(
+          'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency'
+        ),
+        id: CodeQuality.LocFrequency,
+      },
+    ],
+  };
 };
 
-export const CommunityServiceAndSupport = {
-  topic: Topic.Productivity,
-  name: 'Community Service and Support',
-  // id: 'community_service_support',
-  id: Support.Overview,
-  groups: [
-    // { name: 'Overview', id: Support.Overview },
-    { name: 'Updated Issues Count', id: Support.UpdatedIssuesCount },
-    { name: 'Close PR Count', id: Support.ClosedPrsCount },
-    { name: 'Issue First Response', id: Support.IssueFirstResponse },
-    { name: 'Bug Issue Open Time', id: Support.BugIssueOpenTime },
-    { name: 'PR Open Time', id: Support.PrOpenTime },
-    { name: 'Comment Frequency', id: Support.CommentFrequency },
-    { name: 'Code Review Count', id: Support.CodeReviewCount },
-  ],
+export const useCommunityServiceAndSupport = () => {
+  const { t } = useTranslation();
+  return {
+    topic: Topic.Productivity,
+    name: t('metrics_models:community_service_and_support.title'),
+    id: Support.Overview,
+    groups: [
+      // { name: 'Overview', id: Support.Overview },
+      {
+        name: t(
+          'metrics_models:community_service_and_support.metrics.updated_issues_count'
+        ),
+        id: Support.UpdatedIssuesCount,
+      },
+      {
+        name: t(
+          'metrics_models:community_service_and_support.metrics.close_pr_count'
+        ),
+        id: Support.ClosedPrsCount,
+      },
+      {
+        name: t(
+          'metrics_models:community_service_and_support.metrics.issue_first_response'
+        ),
+        id: Support.IssueFirstResponse,
+      },
+      {
+        name: t(
+          'metrics_models:community_service_and_support.metrics.bug_issue_open_time'
+        ),
+        id: Support.BugIssueOpenTime,
+      },
+      {
+        name: t(
+          'metrics_models:community_service_and_support.metrics.pr_open_time'
+        ),
+        id: Support.PrOpenTime,
+      },
+      {
+        name: t(
+          'metrics_models:community_service_and_support.metrics.comment_frequency'
+        ),
+        id: Support.CommentFrequency,
+      },
+      {
+        name: t(
+          'metrics_models:community_service_and_support.metrics.code_review_count'
+        ),
+        id: Support.CodeReviewCount,
+      },
+    ],
+  };
 };
 
-export const CommunityActivity = {
-  topic: Topic.Robustness,
-  name: 'Community Activity ',
-  // id: 'community_activity',
-  id: Activity.Overview,
-  groups: [
-    // { name: 'Overview', id: Activity.Overview },
-    { name: 'Contributor Count', id: Activity.ContributorCount },
-    { name: 'Commit Frequency', id: Activity.CommitFrequency },
-    { name: 'Updated Since', id: Activity.UpdatedSince },
-    // { name: 'Organization Count', id: Activity.OrgCount },
-    { name: 'Created Since', id: Activity.CreatedSince },
-    { name: 'Comment Frequency', id: Activity.CommentFrequency },
-    { name: 'Code Review Count', id: Activity.CodeReviewCount },
-    { name: 'Updated Issues Count', id: Activity.UpdatedIssuesCount },
-    { name: 'Recent Releases Count', id: Activity.RecentReleasesCount },
-  ],
+export const useCommunityActivity = () => {
+  const { t } = useTranslation();
+  return {
+    topic: Topic.Robustness,
+    name: t('metrics_models:community_activity.title'),
+    id: Activity.Overview,
+    groups: [
+      // { name: 'Overview', id: Activity.Overview },
+      {
+        name: t('metrics_models:community_activity.metrics.contributor_count'),
+        id: Activity.ContributorCount,
+      },
+      {
+        name: t('metrics_models:community_activity.metrics.commit_frequency'),
+        id: Activity.CommitFrequency,
+      },
+      {
+        name: t('metrics_models:community_activity.metrics.updated_since'),
+        id: Activity.UpdatedSince,
+      },
+      {
+        name: t('metrics_models:community_activity.metrics.organization_count'),
+        id: Activity.OrgCount,
+      },
+      {
+        name: t('metrics_models:community_activity.metrics.created_since'),
+        id: Activity.CreatedSince,
+      },
+      {
+        name: t('metrics_models:community_activity.metrics.comment_frequency'),
+        id: Activity.CommentFrequency,
+      },
+      {
+        name: t('metrics_models:community_activity.metrics.code_review_count'),
+        id: Activity.CodeReviewCount,
+      },
+      {
+        name: t(
+          'metrics_models:community_activity.metrics.updated_issues_count'
+        ),
+        id: Activity.UpdatedIssuesCount,
+      },
+      {
+        name: t(
+          'metrics_models:community_activity.metrics.recent_releases_count'
+        ),
+        id: Activity.RecentReleasesCount,
+      },
+    ],
+  };
 };
 
-export const OrganizationsActivity = {
-  topic: Topic.NicheCreation,
-  name: 'Organizations Activity ',
-  id: Organizations.Overview,
-  groups: [
-    { name: 'Contributor Count', id: Organizations.ContributorCount },
-    { name: 'Commit Frequency', id: Organizations.CommitFrequency },
-    { name: 'Org Count', id: Organizations.OrgCount },
-    { name: 'Contribution Last', id: Organizations.ContributionLast },
-    // { name: 'Maintainer Count', id: Organizations.MaintainerCount },
-    // { name: 'MeetingFrequency', id: Organizations.MeetingFrequency },
-    // { name: 'Meeting Attendee Count', id: Organizations.MeetingAttendeeCount },
-  ],
+export const useOrganizationsActivity = () => {
+  const { t } = useTranslation();
+  return {
+    topic: Topic.NicheCreation,
+    name: t('metrics_models:organization_activity.title'),
+    id: Organizations.Overview,
+    groups: [
+      {
+        name: t(
+          'metrics_models:organization_activity.metrics.contributor_count'
+        ),
+        id: Organizations.ContributorCount,
+      },
+      {
+        name: t(
+          'metrics_models:organization_activity.metrics.commit_frequency'
+        ),
+        id: Organizations.CommitFrequency,
+      },
+      {
+        name: t('metrics_models:organization_activity.metrics.org_count'),
+        id: Organizations.OrgCount,
+      },
+      {
+        name: t(
+          'metrics_models:organization_activity.metrics.contribution_last'
+        ),
+        id: Organizations.ContributionLast,
+      },
+      // { name: 'Maintainer Count', id: Organizations.MaintainerCount },
+      // { name: 'MeetingFrequency', id: Organizations.MeetingFrequency },
+      // { name: 'Meeting Attendee Count', id: Organizations.MeetingAttendeeCount },
+    ],
+  };
 };

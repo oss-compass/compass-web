@@ -4,12 +4,14 @@ import { AiOutlineArrowRight } from 'react-icons/ai';
 import Link from 'next/link';
 import { PopContent } from './plantConfig';
 import styles from './index.module.scss';
+import { useTranslation } from 'next-i18next';
 
 const PopCard: React.FC<{
   className?: string;
   popContent: PopContent;
   onNext: () => void;
 }> = ({ className, popContent, onNext }) => {
+  const { t } = useTranslation();
   return (
     <div
       className={classnames(
@@ -24,7 +26,9 @@ const PopCard: React.FC<{
       </p>
       <div className="flex justify-between">
         <Link href={popContent.hash}>
-          <a className="cursor-pointer text-xs text-[#3A5BEF]">Know more</a>
+          <a className="cursor-pointer text-xs text-[#3A5BEF]">
+            {t('common:know_more')}
+          </a>
         </Link>
         <div
           className="flex cursor-pointer items-center text-xs text-gray-400"
@@ -32,7 +36,7 @@ const PopCard: React.FC<{
             onNext();
           }}
         >
-          Next <AiOutlineArrowRight className="ml-1" />
+          {t('common:next')} <AiOutlineArrowRight className="ml-1" />
         </div>
       </div>
     </div>

@@ -53,10 +53,12 @@ const PrOpenTime = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:community_service_and_support.pr_open_time')}
+      title={t(
+        'metrics_models:community_service_and_support.metrics.pr_open_time'
+      )}
       id={Support.PrOpenTime}
       description={t(
-        'metrics_models:community_service_and_support.pr_open_time_desc'
+        'metrics_models:community_service_and_support.metrics.pr_open_time_desc'
       )}
     >
       {(ref) => {

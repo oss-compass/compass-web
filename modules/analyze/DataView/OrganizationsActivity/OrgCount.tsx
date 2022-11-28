@@ -50,9 +50,11 @@ const OrgCount = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:organization_activity.org_count')}
+      title={t('metrics_models:organization_activity.metrics.org_count')}
       id={Organizations.OrgCount}
-      description={t('metrics_models:organization_activity.org_count_desc')}
+      description={t(
+        'metrics_models:organization_activity.metrics.org_count_desc'
+      )}
     >
       {(ref) => {
         return (

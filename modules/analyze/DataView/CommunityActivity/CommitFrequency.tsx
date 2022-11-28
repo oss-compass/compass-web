@@ -53,9 +53,11 @@ const CommitFrequency = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.commit_frequency')}
+      title={t('metrics_models:community_activity.metrics.commit_frequency')}
       id={Activity.CommitFrequency}
-      description={t('metrics_models:community_activity.commit_frequency_desc')}
+      description={t(
+        'metrics_models:community_activity.metrics.commit_frequency_desc'
+      )}
     >
       {(ref) => {
         return (

@@ -1,0 +1,26 @@
+{
+  "overview": "Overview",
+  "topic": {
+    "productivity": "Productivity",
+    "robustness": "Robustness",
+    "niche_creation": "Niche Creation"
+  },
+  "range": {
+    "3M": "3M",
+    "6M": "6M",
+    "1Y": "1Y",
+    "2Y": "2Y",
+    "3Y": "3Y",
+    "5Y": "5Y",
+    "Since2000": "Since 2000"
+  },
+  "compare": "compare",
+  "search_repo_input_placeholder": "please input repo",
+  "search_community_input_placeholder": "please input community",
+  "explore_other_projects": "Explore other projects",
+  "the_current_project_is_under_analysis_please_visit": "The current project is under analysis, please visit later.",
+  "score_conversion": {
+    "on_point": "[0, 1]: absolute score of the model",
+    "hundred_mark": "[0, 100]: distribution result based on [0, 1]"
+  }
+}

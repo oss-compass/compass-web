@@ -97,10 +97,12 @@ const PRIssueLinked = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:code_quality_guarantee.pr_issue_linked_ratio')}
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio'
+      )}
       id={CodeQuality.PRIssueLinkedRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.pr_issue_linked_ratio_desc'
+        'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio_desc'
       )}
     >
       {(ref) => {

@@ -54,11 +54,11 @@ const IssueFirstResponse = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:community_service_and_support.issue_first_response'
+        'metrics_models:community_service_and_support.metrics.issue_first_response'
       )}
       id={Support.IssueFirstResponse}
       description={t(
-        'metrics_models:community_service_and_support.issue_first_response_desc'
+        'metrics_models:community_service_and_support.metrics.issue_first_response_desc'
       )}
     >
       {(ref) => {

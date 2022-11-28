@@ -100,10 +100,12 @@ const CodeReviewRatio = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
-      title={t('metrics_models:code_quality_guarantee.code_review_ratio')}
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.code_review_ratio'
+      )}
       id={CodeQuality.CodeReviewRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.code_review_ratio_desc'
+        'metrics_models:code_quality_guarantee.metrics.code_review_ratio_desc'
       )}
     >
       {(ref) => {
