@@ -6,10 +6,10 @@ const SectionTitle: React.FC<PropsWithChildren<{ id: string }>> = ({
   id,
 }) => {
   return (
-    <h1
+    <h2
       className={classnames(
-        'group relative z-10 mb-6 -mt-[108px] pt-[138px] text-2xl',
-        'md:-mt-[108px] md:px-4 md:pt-[138px] md:text-xl'
+        'group relative z-10 mb-6 scroll-mt-[140px] text-2xl',
+        'md:px-4 md:text-xl'
       )}
       id={id}
     >
@@ -19,7 +19,7 @@ const SectionTitle: React.FC<PropsWithChildren<{ id: string }>> = ({
           #
         </span>
       </a>
-    </h1>
+    </h2>
   );
 };
 

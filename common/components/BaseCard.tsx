@@ -70,8 +70,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   return (
     <div className={classnames(cls)} ref={cardRef}>
-      <h2
-        className="group -mt-[88px] mb-2 pt-[88px] text-lg font-semibold"
+      <h3
+        className="group mb-2 scroll-mt-[165px] text-lg font-semibold"
         ref={titleRef}
         id={id}
       >
@@ -81,7 +81,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
             #
           </span>
         </a>
-      </h2>
+      </h3>
       <p className="mb-8 text-sm text-gray-600">
         {description}
         {docLink && (
