@@ -1,9 +1,6 @@
-import React, { PropsWithChildren, useContext, useEffect } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import {
-  ActionThemeColorInit,
-  ChartThemeContext,
-} from '@modules/analyze/context';
+import { initThemeColor } from '@modules/analyze/store';
 
 const getInitialTheme = (
   compareItems: { label: string }[]
@@ -24,14 +21,12 @@ const getInitialTheme = (
 
 const ColorThemeInit: React.FC<PropsWithChildren> = ({ children }) => {
   const { compareItems } = useCompareItems();
+
   // chart Theme
-  const { dispatch } = useContext(ChartThemeContext);
   useEffect(() => {
-    dispatch({
-      type: ActionThemeColorInit,
-      payload: getInitialTheme(compareItems),
-    });
-  }, [dispatch, compareItems]);
+    const initialTheme = getInitialTheme(compareItems);
+    initThemeColor(initialTheme);
+  }, [compareItems]);
 
   return <>{children}</>;
 };

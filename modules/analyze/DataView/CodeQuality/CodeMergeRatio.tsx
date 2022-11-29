@@ -16,7 +16,7 @@ import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-import { ChartThemeState } from '@modules/analyze/context';
+
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 
@@ -34,10 +34,7 @@ const tansOpts: TransOpts = {
   ],
 };
 
-const getOptions = (
-  { xAxis, yResults }: TransResult,
-  theme?: ChartThemeState
-) => {
+const getOptions = ({ xAxis, yResults }: TransResult) => {
   const series = genSeries<LineSeriesOption>(
     yResults,
     (
@@ -55,9 +52,9 @@ const getOptions = (
         return line({ name, data, color, yAxisIndex: 0 });
       }
       return line({ name, data, color, yAxisIndex: 1 });
-    },
-    theme
+    }
   );
+
   return getLineOption({
     xAxisData: xAxis,
     series,

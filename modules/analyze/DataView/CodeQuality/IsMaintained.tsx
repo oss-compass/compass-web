@@ -10,7 +10,7 @@ import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-import { ChartThemeState } from '@modules/analyze/context';
+
 import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
@@ -19,10 +19,7 @@ const tansOpts: TransOpts = {
   yAxisOpts: [{ legendName: 'is maintained', valueKey: 'isMaintained' }],
 };
 
-const getOptions = (
-  { xAxis, yResults }: TransResult,
-  theme?: ChartThemeState
-) => {
+const getOptions = ({ xAxis, yResults }: TransResult) => {
   const series = genSeries<BarSeriesOption>(
     yResults,
     (
@@ -40,8 +37,7 @@ const getOptions = (
         data: data,
         color,
       });
-    },
-    theme
+    }
   );
   return getBarOption({ xAxisData: xAxis, series });
 };

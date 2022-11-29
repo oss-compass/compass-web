@@ -10,7 +10,7 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-import { ChartThemeState } from '@modules/analyze/context';
+
 import { LineSeriesOption } from 'echarts';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
@@ -30,10 +30,7 @@ const CodeQualityOverview = () => {
     ],
   };
 
-  const getOptions = (
-    { xAxis, yResults }: TransResult,
-    theme?: ChartThemeState
-  ) => {
+  const getOptions = ({ xAxis, yResults }: TransResult) => {
     const series = genSeries<LineSeriesOption>(
       yResults,
       (
@@ -53,8 +50,7 @@ const CodeQualityOverview = () => {
           data: data,
           color,
         });
-      },
-      theme
+      }
     );
     return getLineOption({ xAxisData: xAxis, series });
   };

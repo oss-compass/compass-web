@@ -8,15 +8,13 @@ import {
 import { EChartsOption } from 'echarts';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import EChartX from '@common/components/EChartX';
-import { ChartThemeContext, ChartThemeState } from '@modules/analyze/context';
 
 const Chart: React.FC<
   ChartProps & {
-    getOptions: (result: TransResult, theme?: ChartThemeState) => EChartsOption;
+    getOptions: (result: TransResult) => EChartsOption;
     tansOpts: TransOpts;
   }
 > = ({ containerRef, getOptions, tansOpts }) => {
-  const { state: theme } = useContext(ChartThemeContext);
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
 
@@ -25,8 +23,8 @@ const Chart: React.FC<
   }, [data, tansOpts]);
 
   const echartsOpts = useMemo(() => {
-    return getOptions({ xAxis, yResults }, theme);
-  }, [getOptions, theme, xAxis, yResults]);
+    return getOptions({ xAxis, yResults });
+  }, [getOptions, xAxis, yResults]);
 
   return (
     <EChartX

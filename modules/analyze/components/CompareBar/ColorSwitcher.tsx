@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActionThemeColorUpdate,
-  ChartThemeContext,
-} from '@modules/analyze/context';
+  ChartThemeState,
+  chartThemeState,
+  updateThemeColor,
+} from '@modules/analyze/store';
 import { useClickAway, useHoverDirty, useLocalStorage } from 'react-use';
 import { CgColorPicker } from 'react-icons/cg';
 import {
@@ -12,6 +13,16 @@ import {
 } from '@modules/analyze/options/color';
 import CPTooltip from '@common/components/Tooltip';
 import { getNameSpace } from '@common/utils';
+import { useSnapshot } from 'valtio';
+
+const getColor = (label: string, theme: DeepReadonly<ChartThemeState>) => {
+  const current = theme.color.find((i) => i.label === label);
+  if (!current) return { palette: [] };
+
+  const { paletteIndex } = current;
+  const palette = getPalette(paletteIndex);
+  return palette[DefaultIndex];
+};
 
 const SHOWED_PICKER_TOOLTIPS_KEY = 'showed-picker-tooltips';
 
@@ -30,21 +41,12 @@ const ColorSwitcher: React.FC<{
     false
   );
 
-  const chartTheme = useContext(ChartThemeContext);
+  const theme = useSnapshot(chartThemeState);
+  const color = getColor(label, theme);
 
   useClickAway(colorPopoverRef, () => {
     setPopoverVisible(false);
   });
-
-  const color = useMemo(() => {
-    const color = chartTheme.state.color;
-    const current = color.find((i) => i.label === label);
-    if (!current) return { palette: [] };
-
-    const { paletteIndex } = current;
-    const palette = getPalette(paletteIndex);
-    return palette[DefaultIndex];
-  }, [chartTheme.state.color, label]);
 
   const isHover = useHoverDirty(iconsRef);
 
@@ -100,13 +102,7 @@ const ColorSwitcher: React.FC<{
               key={c}
               className="mb-1 cursor-pointer rounded"
               onClick={() => {
-                chartTheme.dispatch({
-                  type: ActionThemeColorUpdate,
-                  payload: {
-                    label,
-                    paletteIndex: index,
-                  },
-                });
+                updateThemeColor({ label, paletteIndex: index });
                 setPopoverVisible(false);
               }}
             >

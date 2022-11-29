@@ -1,42 +1,17 @@
-import { useMemo } from 'react';
-import uniq from 'lodash/uniq';
-import { useRouter } from 'next/router';
-import { Level } from '@modules/analyze/constant';
+import { useState, useEffect } from 'react';
+import { snapshot, subscribe, useSnapshot } from 'valtio';
+import { verifiedLabels } from '@modules/analyze/store';
 import { getPathname } from '@common/utils';
-
-function matchUrl(label: string) {
-  // const reg =
-  //   /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
-  if (label && new RegExp(/^\S*$/).test(label)) {
-    return label;
-  }
-  return false;
-}
-function formatToArray(value: string | string[]) {
-  if (typeof value === 'string') {
-    return [value].filter(matchUrl);
-  }
-  return Array.isArray(value) ? uniq(value).filter(matchUrl) : [];
-}
+import { Level } from '@modules/analyze/constant';
 
 const useCompareItems = () => {
-  const router = useRouter();
-  const level = router.query.level as Level;
-  const labels = useMemo(() => {
-    const values = router.query.label;
-    return formatToArray(values!);
-  }, [router.query.label]);
+  const labels = useSnapshot(verifiedLabels);
 
-  const items = useMemo(() => {
-    return [
-      ...labels.map((label) => ({
-        name: level === Level.REPO ? getPathname(label) : label,
-        label,
-        level,
-      })),
-    ];
-  }, [level, labels]);
-
+  const items = labels.values.map(({ label, level }) => ({
+    name: level === Level.REPO ? getPathname(label) : label,
+    label,
+    level,
+  }));
   return { compareItems: items };
 };
 

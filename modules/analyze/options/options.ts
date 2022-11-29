@@ -12,7 +12,7 @@ import {
   getPaletteColor,
 } from '@modules/analyze/options/color';
 import React from 'react';
-import { ChartThemeState } from '@modules/analyze/context';
+import { chartThemeState, ChartThemeState } from '@modules/analyze/store';
 import { number } from 'echarts/types/dist/echarts';
 import { ScaleDataValue } from 'echarts/types/src/util/types';
 
@@ -154,11 +154,11 @@ export function genSeries<T>(
       data: (string | number)[];
     },
     length?: number
-  ) => T | null,
-  theme?: ChartThemeState
+  ) => T | null
 ) {
   const isCompare = comparesYAxis.length > 1;
   const compareLabels = comparesYAxis.map((i) => i.label);
+  const theme = chartThemeState;
 
   return comparesYAxis.reduce<T[]>((acc, { label, level, yAxisResult }) => {
     const paletteIndex = getPaletteIndex(theme, label);

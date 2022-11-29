@@ -1,27 +1,59 @@
-import React from 'react';
-import { useStatusQuery } from '@graphql/generated';
+import { useEffect } from 'react';
 import client from '@graphql/client';
-import useCompareItems from '@modules/analyze/hooks/useCompareItems';
+import { StatusQuery, useStatusQuery } from '@graphql/generated';
+import { useQueries, useQueryClient } from '@tanstack/react-query';
+import useExtractUrlLabels from './useExtractUrlLabels';
+import { setVerifiedLabels } from '../store/verifiedLabels';
 
 const useLabelStatus = () => {
-  const { compareItems } = useCompareItems();
-  const label = React.useMemo(() => {
-    // todo check all compare items status
-    if (compareItems.length >= 1) {
-      return compareItems[0].label;
-    }
-    return '';
-  }, [compareItems]);
+  const queryClient = useQueryClient();
+  const { urlLabels } = useExtractUrlLabels();
 
-  const { data, isLoading } = useStatusQuery(
-    client,
-    { label },
-    { enabled: Boolean(label) }
-  );
-  const status = data?.analysisStatus || 'pending';
+  const queries = useQueries({
+    queries: urlLabels.map(({ label, level }) => {
+      return {
+        queryKey: useStatusQuery.getKey({ label }),
+        queryFn: useStatusQuery.fetcher(client, { label }),
+      };
+    }),
+  });
+  const isLoading = queries.some((query) => query.isLoading);
+  const queriesResult = urlLabels.map(({ label, level }) => {
+    const key = useStatusQuery.getKey({ label });
+    const data = queryClient.getQueryData<StatusQuery>(key);
+    return { label, level, data };
+  });
+
+  // server verified Items
+  const verifiedItems = queriesResult
+    .map(({ label, level, data }) => ({
+      label,
+      level,
+      status: data?.analysisStatus,
+    }))
+    .filter(({ status }) => {
+      return ['pending', 'progress', 'success'].includes(status || '');
+    });
+
+  // store
+  useEffect(() => {
+    if (!isLoading && verifiedItems.length > 0) {
+      setVerifiedLabels(verifiedItems);
+    }
+  }, [isLoading, verifiedItems]);
+
+  if (verifiedItems.length === 1) {
+    return {
+      isLoading,
+      status: verifiedItems[0].status || '',
+    };
+  }
+
+  const isSuccess = verifiedItems.every(({ status }) => status === 'success');
+
   return {
     isLoading,
-    status,
+    status: isSuccess ? 'success' : 'progress',
   };
 };
 
