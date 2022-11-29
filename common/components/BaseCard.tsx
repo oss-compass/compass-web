@@ -1,4 +1,5 @@
 import React, { useState, RefObject, useRef, ReactNode } from 'react';
+import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -27,6 +28,7 @@ interface BaseCardProps {
   className?: string;
   title?: string;
   description?: string;
+  docLink?: string;
   headRight?: ReactNode;
   children: ((containerRef: RefObject<HTMLElement>) => ReactNode) | ReactNode;
 }
@@ -38,11 +40,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
   loading = false,
   title = '',
   description = '',
+  docLink = '',
   headRight = null,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const [fullScreen, setFullScreen] = useState(false);
+  const { t } = useTranslation();
 
   const cls = classnames(
     className,
@@ -78,7 +82,17 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h2>
-      <p className="mb-8 text-sm text-gray-600">{description}</p>
+      <p className="mb-8 text-sm text-gray-600">
+        {description}
+        {docLink && (
+          <>
+            {t('analyze:for_more')}
+            <a className="text-primary hover:underline" href={docLink}>
+              {title}
+            </a>
+          </>
+        )}
+      </p>
       <div className="absolute right-4 top-4 flex items-center ">
         {headRight}
         <div

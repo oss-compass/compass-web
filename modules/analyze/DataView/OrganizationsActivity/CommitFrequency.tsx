@@ -55,6 +55,9 @@ const CommitFrequency = () => {
       description={t(
         'metrics_models:organization_activity.metrics.commit_frequency_desc'
       )}
+      docLink={
+        'docs/metrics-models/niche-creation/developer-retention/#commit-frequency'
+      }
     >
       {(ref) => {
         return (

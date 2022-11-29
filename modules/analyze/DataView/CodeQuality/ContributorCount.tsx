@@ -68,6 +68,9 @@ const ContributorCount = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.contributor_count_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#contributor-count'
+      }
     >
       {(ref) => {
         return (

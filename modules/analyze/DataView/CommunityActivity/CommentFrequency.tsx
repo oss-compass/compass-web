@@ -57,6 +57,7 @@ const CommentFrequency = () => {
       description={t(
         'metrics_models:community_activity.metrics.comment_frequency_desc'
       )}
+      docLink={'docs/metrics-models/robustness/activity/#comment-frequency'}
     >
       {(ref) => {
         return (

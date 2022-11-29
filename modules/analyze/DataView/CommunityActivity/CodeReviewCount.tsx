@@ -58,6 +58,7 @@ const CodeReviewCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.code_review_count_desc'
       )}
+      docLink={'docs/metrics-models/robustness/activity/#code-review-count'}
     >
       {(ref) => {
         return (

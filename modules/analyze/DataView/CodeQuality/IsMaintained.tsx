@@ -55,6 +55,9 @@ const IsMaintained = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.is_maintained_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#is-maintained'
+      }
     >
       {(ref) => {
         return (

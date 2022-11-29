@@ -14,7 +14,7 @@ const NicheCreation = () => {
   const { menuId, subMenuId } = useContext(SideBarContext);
   const data = useMetricQueryData();
   const hasOrganizations = data.some(
-    (i) => i.result?.groupMetricActivity.length !== 0
+    (i) => i.result && i.result.groupMetricActivity.length !== 0
   );
 
   const menus = (

@@ -64,6 +64,7 @@ const CodeQualityOverview = () => {
       title={t('metrics_models:code_quality_guarantee.title')}
       id={CodeQuality.Overview}
       description={t('metrics_models:code_quality_guarantee.desc')}
+      docLink={'docs/metrics-models/productivity/code-quality-guarantee/'}
       headRight={
         <ScoreConversion
           onePoint={onePointSys}

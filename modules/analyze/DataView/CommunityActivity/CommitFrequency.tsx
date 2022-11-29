@@ -58,6 +58,7 @@ const CommitFrequency = () => {
       description={t(
         'metrics_models:community_activity.metrics.commit_frequency_desc'
       )}
+      docLink={'docs/metrics-models/robustness/activity/#commit-frequency'}
     >
       {(ref) => {
         return (

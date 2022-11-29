@@ -59,6 +59,9 @@ const CommentFrequency = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.comment_frequency_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/niche-creation/#comment-frequency'
+      }
     >
       {(ref) => {
         return (

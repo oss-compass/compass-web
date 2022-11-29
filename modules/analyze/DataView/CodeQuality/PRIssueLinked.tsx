@@ -104,6 +104,9 @@ const PRIssueLinked = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#pr-issue-linked-ratio'
+      }
     >
       {(ref) => {
         return (
