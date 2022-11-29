@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import { useMetricQuery } from '@graphql/generated';
@@ -14,8 +14,13 @@ import useHashScroll from '@common/hooks/useHashScroll';
 import TopicTitle from '@modules/analyze/components/TopicTitle';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
+import {
+  dataState,
+  toggleShowOrganizations,
+} from '@modules/analyze/store/dataState';
+import { useSnapshot } from 'valtio';
 
-const Charts = () => {
+const ChartsWrap: React.FC<PropsWithChildren> = ({ children }) => {
   const { t } = useTranslation();
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
@@ -31,11 +36,23 @@ const Charts = () => {
     }),
   });
   const data = useMetricQueryData();
-  const hasOrganizations = data.some(
-    (i) => i.result?.groupMetricActivity.length !== 0
-  );
+
+  useEffect(() => {
+    const hasOrganizations = data.some(
+      (i) => i.result?.groupMetricActivity.length !== 0
+    );
+    toggleShowOrganizations(hasOrganizations);
+  }, [data]);
+
+  return <>{children}</>;
+};
+
+const Charts = () => {
+  const { t } = useTranslation();
+  const snapshot = useSnapshot(dataState);
+
   return (
-    <>
+    <ChartsWrap>
       <OverviewSummary />
 
       <TopicTitle id={Topic.Productivity}>
@@ -52,8 +69,8 @@ const Charts = () => {
       <TopicTitle id={Topic.NicheCreation}>
         {t('analyze:topic.niche_creation')}
       </TopicTitle>
-      {hasOrganizations && <OrganizationsActivity />}
-    </>
+      {snapshot.showOrganizations && <OrganizationsActivity />}
+    </ChartsWrap>
   );
 };
 

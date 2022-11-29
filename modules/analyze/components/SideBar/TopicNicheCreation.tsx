@@ -6,16 +6,14 @@ import MenuSubItem from './Menu/MenuSubItem';
 import { useOrganizationsActivity, Organizations, Topic } from './config';
 import NicheCreationIcon from './assets/NicheCreation.svg';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';
-import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
+import { useSnapshot } from 'valtio';
+import { dataState } from '@modules/analyze/store/dataState';
 
 const NicheCreation = () => {
   const { t } = useTranslation();
   const organizationsActivity = useOrganizationsActivity();
   const { menuId, subMenuId } = useContext(SideBarContext);
-  const data = useMetricQueryData();
-  const hasOrganizations = data.some(
-    (i) => i.result && i.result.groupMetricActivity.length !== 0
-  );
+  const snapshot = useSnapshot(dataState);
 
   const menus = (
     <>
@@ -23,11 +21,11 @@ const NicheCreation = () => {
         {t('metrics_models:developer_attraction.title')}
       </MenuItem>
       <MenuItem
-        disabled={!hasOrganizations}
+        disabled={!snapshot.showOrganizations}
         active={menuId === Organizations.Overview}
         id={Organizations.Overview}
         subMenu={
-          hasOrganizations && (
+          snapshot.showOrganizations && (
             <>
               {organizationsActivity.groups.map((item) => {
                 return (

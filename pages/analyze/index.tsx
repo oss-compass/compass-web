@@ -1,13 +1,7 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import Analyze from '@modules/analyze';
-import {
-  ConfigContextProvider,
-  ChartThemeProvider,
-} from '@modules/analyze/context';
-import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import getLocalesFile from '@common/utils/getLocalesFile';
-import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -18,16 +12,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 };
 
 const AnalyzePage = () => {
-  const { status, isLoading } = useLabelStatus();
-  return (
-    <ConfigContextProvider value={{ status, loading: isLoading }}>
-      <ChartThemeProvider>
-        <ColorThemeInit>
-          <Analyze />
-        </ColorThemeInit>
-      </ChartThemeProvider>
-    </ConfigContextProvider>
-  );
+  return <Analyze />;
 };
 
 export default AnalyzePage;

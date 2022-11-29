@@ -1,6 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
-  "plugins": ["prettier", "testing-library"],
+  "plugins": ["prettier", "testing-library", "valtio"],
   "rules": {
     "prettier/prettier": "warn",
     "no-restricted-imports": [
@@ -8,7 +8,9 @@
       {
         "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
       }
-    ]
+    ],
+    "valtio/state-snapshot-rule": "error",
+    "valtio/avoid-this-in-proxy": "error"
   },
   "overrides": [
     // Only uses Testing Library lint rules in test files

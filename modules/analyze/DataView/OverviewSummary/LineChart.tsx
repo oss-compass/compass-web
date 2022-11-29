@@ -12,6 +12,8 @@ import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredM
 import { transDataForOverview } from '@modules/analyze/DataTransform/transDataForOverview';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
+import { useSnapshot } from 'valtio';
+import { dataState } from '@modules/analyze/store/dataState';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
   loading = false,
@@ -71,25 +73,23 @@ const opts = [
   },
 ];
 
+const optsWithOrg = [
+  ...opts,
+  {
+    type: 'groupMetricActivity',
+    key: 'organizationsActivity',
+    legendName: 'organizations activity',
+  },
+];
+
 const dateKey = 'grimoireCreationDate';
 
 const LineChartWithData = () => {
+  const snapshot = useSnapshot(dataState);
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
+  const copyOpts = snapshot.showOrganizations ? optsWithOrg : opts;
 
-  const hasOrganizations =
-    !isLoading && data?.some((i) => i.result?.groupMetricActivity.length !== 0);
-
-  const copyOpts = hasOrganizations
-    ? [
-        ...opts,
-        {
-          type: 'groupMetricActivity',
-          key: 'organizationsActivity',
-          legendName: 'organizations activity',
-        },
-      ]
-    : [...opts];
   const { xAxis, yAxisResult } = useMemo(() => {
     const result = data[0].result;
     if (!result) return { xAxis: [], yAxisResult: [] };

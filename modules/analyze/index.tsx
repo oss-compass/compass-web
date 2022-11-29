@@ -1,13 +1,30 @@
-import React, { memo } from 'react';
+import React, { memo, PropsWithChildren } from 'react';
 import HeaderWithFilterBar from './components/HeaderWithFitlerBar';
 import { Main, Content } from '@common/components/Layout';
 import SideBar from './components/SideBar';
 import DataView from './DataView';
 import Footer from '@common/components/Footer';
+import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
+import {
+  ChartThemeProvider,
+  ConfigContextProvider,
+} from '@modules/analyze/context';
+import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
+
+const AnalyzeWrap: React.FC<PropsWithChildren> = ({ children }) => {
+  const { status, isLoading } = useLabelStatus();
+  return (
+    <ConfigContextProvider value={{ status, loading: isLoading }}>
+      <ChartThemeProvider>
+        <ColorThemeInit>{children}</ColorThemeInit>
+      </ChartThemeProvider>
+    </ConfigContextProvider>
+  );
+};
 
 const Analyze = () => {
   return (
-    <>
+    <AnalyzeWrap>
       <HeaderWithFilterBar />
       <Main>
         <SideBar />
@@ -16,8 +33,8 @@ const Analyze = () => {
           <Footer />
         </Content>
       </Main>
-    </>
+    </AnalyzeWrap>
   );
 };
 
-export default memo(Analyze);
+export default Analyze;
