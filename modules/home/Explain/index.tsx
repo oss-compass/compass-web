@@ -27,11 +27,11 @@ const SectionExplain = () => {
         )}
       >
         <div className={classnames('h-full w-full')}>
-          <div className={classnames(styles.constelacao)}>
-            {Array.from({ length: 250 }, (v, k) => k).map((i) => (
-              <Estrela key={i} />
-            ))}
-          </div>
+          {/*<div className={classnames(styles.constelacao)}>*/}
+          {/*  {Array.from({ length: 250 }, (v, k) => k).map((i) => (*/}
+          {/*    <Estrela key={i} />*/}
+          {/*  ))}*/}
+          {/*</div>*/}
           <div
             className={classnames(styles.plantBg, 'h-full w-full')}
             onClick={(e) => {
