@@ -35,14 +35,19 @@ const ChartsWrap: React.FC<PropsWithChildren> = ({ children }) => {
       };
     }),
   });
+
   const data = useMetricQueryData();
+  const hasOrganizations = data.some((i) => {
+    const groupMetricActivity = i.result?.groupMetricActivity;
+    if (Array.isArray(groupMetricActivity)) {
+      return groupMetricActivity.length > 0;
+    }
+    return false;
+  });
 
   useEffect(() => {
-    const hasOrganizations = data.some(
-      (i) => i.result?.groupMetricActivity.length !== 0
-    );
     toggleShowOrganizations(hasOrganizations);
-  }, [data]);
+  }, [hasOrganizations]);
 
   return <>{children}</>;
 };

@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useIsFetching } from '@tanstack/react-query';
 import { MetricQuery, useMetricQuery } from '@graphql/generated';
 import useQueryDateRange from './useQueryDateRange';
 import useCompareItems from './useCompareItems';
@@ -7,6 +7,9 @@ const useMetricQueryData = () => {
   const queryClient = useQueryClient();
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
+
+  // update ui when useQueries status is updated
+  useIsFetching({ queryKey: ['metric'] });
 
   return compareItems.map(({ label, level }) => {
     const variables = { label, level, start: timeStart, end: timeEnd };

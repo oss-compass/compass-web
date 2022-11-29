@@ -14,6 +14,8 @@ import { formatRepoName } from '@modules/analyze/DataTransform/transToAxis';
 import { Level } from '@modules/analyze/constant';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
+import { useSnapshot } from 'valtio';
+import { dataState } from '@modules/analyze/store/dataState';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -72,6 +74,7 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
 const TrendsList: React.FC = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
+  const snapshot = useSnapshot(dataState);
 
   const { compareItems } = useCompareItems();
   const data = useQueries({
@@ -92,9 +95,6 @@ const TrendsList: React.FC = () => {
   const loading = data.some((i) => i.isLoading);
   const list = data.map((i) => i.data?.latestMetrics).filter(Boolean);
   const labels = list.map((item) => item?.label).filter(Boolean) as string[];
-
-  const hasOrganizations =
-    !loading && data.some((i) => i.data!.latestMetrics?.organizationsActivity);
 
   const formatScore = (num: number | null | undefined) => {
     if (num === undefined || num === null) return '-';
@@ -131,7 +131,7 @@ const TrendsList: React.FC = () => {
               <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
                 Community Activity
               </TT>
-              {hasOrganizations && (
+              {snapshot.showOrganizations && (
                 <TT className="border-t-[#61a2ff] bg-[#ddebff]">
                   Organizations Activity
                 </TT>
@@ -166,7 +166,7 @@ const TrendsList: React.FC = () => {
                     <Td className="bg-[#f8f3ff]">
                       {formatScore(item!.activityScore)}
                     </Td>
-                    {hasOrganizations && (
+                    {snapshot.showOrganizations && (
                       <Td className="bg-[#ddebff]">
                         {formatScore(item!.organizationsActivity)}
                       </Td>
