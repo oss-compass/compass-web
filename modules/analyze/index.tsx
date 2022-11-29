@@ -9,9 +9,9 @@ import { ConfigContextProvider } from '@modules/analyze/context';
 import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
 
 const AnalyzeWrap: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, isLoading } = useLabelStatus();
+  const { status, isLoading, isError } = useLabelStatus();
   return (
-    <ConfigContextProvider value={{ status, loading: isLoading }}>
+    <ConfigContextProvider value={{ status, isError, isLoading }}>
       <ColorThemeInit>{children}</ColorThemeInit>
     </ConfigContextProvider>
   );

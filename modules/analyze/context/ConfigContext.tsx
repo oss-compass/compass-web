@@ -2,11 +2,13 @@ import React, { createContext, useContext, PropsWithChildren } from 'react';
 
 export interface ConfigValue {
   status: string;
-  loading: boolean;
+  isLoading: boolean;
+  isError: boolean;
 }
 
 export const DEFAULT_CONFIG: ConfigValue = {
-  loading: false,
+  isError: false,
+  isLoading: false,
   status: '',
 };
 

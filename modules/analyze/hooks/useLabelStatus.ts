@@ -46,14 +46,23 @@ const useLabelStatus = () => {
     return {
       isLoading,
       status: verifiedItems[0].status || '',
+      isError: false,
     };
   }
 
-  const isSuccess = verifiedItems.every(({ status }) => status === 'success');
+  if (verifiedItems.length > 1) {
+    const isSuccess = verifiedItems.every(({ status }) => status === 'success');
+    return {
+      isLoading,
+      status: isSuccess ? 'success' : 'progress',
+      isError: false,
+    };
+  }
 
   return {
-    isLoading,
-    status: isSuccess ? 'success' : 'progress',
+    isError: true,
+    isLoading: false,
+    status: '',
   };
 };
 

@@ -27,6 +27,7 @@
     "code": "代码"
   },
   "error": {
+    "invalid_url_query": "非法参数链接",
     "something_went_wrong": "Something went wrong:",
     "try_to_refresh_this_page_or_feel_free_to_contact_u": "Try to refresh this page or feel free to contact us if the problem presists.",
     "try_again": "Try again",

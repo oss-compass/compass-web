@@ -4,13 +4,18 @@ import { checkIsPending } from '@modules/analyze/constant';
 import CompareBar from '@modules/analyze/components/CompareBar';
 import NoSsr from '@common/components/NoSsr';
 import UnderAnalysis from './UnderAnalysis';
+import ErrorAnalysis from './ErrorAnalysis';
 import Charts from './Charts';
 import Loading from './Loading';
 
 const DataView = () => {
-  const { loading, status } = useConfigContext();
-  if (loading) {
+  const { isError, isLoading, status } = useConfigContext();
+  if (isLoading) {
     return <Loading />;
+  }
+
+  if (isError) {
+    return <ErrorAnalysis />;
   }
 
   if (checkIsPending(status)) {
