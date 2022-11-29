@@ -60,6 +60,9 @@ const ContributorCount = () => {
       description={t(
         'metrics_models:organization_activity.metrics.contributor_count_desc'
       )}
+      docLink={
+        'docs/metrics-models/niche-creation/developer-retention/#contributor-count'
+      }
     >
       {(ref) => {
         return (

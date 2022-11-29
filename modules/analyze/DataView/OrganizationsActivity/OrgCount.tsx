@@ -55,6 +55,9 @@ const OrgCount = () => {
       description={t(
         'metrics_models:organization_activity.metrics.org_count_desc'
       )}
+      docLink={
+        'docs/metrics-models/niche-creation/developer-retention/#org-count'
+      }
     >
       {(ref) => {
         return (

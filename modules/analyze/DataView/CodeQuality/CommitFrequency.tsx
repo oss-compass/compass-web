@@ -57,6 +57,9 @@ const CommitFrequency = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.commit_frequency_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#commit-frequency'
+      }
     >
       {(ref) => {
         return (

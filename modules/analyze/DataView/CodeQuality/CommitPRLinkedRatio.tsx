@@ -101,6 +101,9 @@ const CommitPRLinkedRatio = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#commit-pr-linked-ratio'
+      }
     >
       {(ref) => {
         return (

@@ -108,6 +108,9 @@ const CodeMergeRatio = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.code_merge_ratio_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#code-merge-ratio'
+      }
     >
       {(ref) => {
         return (

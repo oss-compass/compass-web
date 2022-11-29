@@ -70,6 +70,9 @@ const LocFrequency = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#lines-of-code-frequency'
+      }
     >
       {(ref) => {
         return (

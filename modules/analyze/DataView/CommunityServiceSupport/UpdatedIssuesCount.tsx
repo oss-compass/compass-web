@@ -59,6 +59,9 @@ const UpdatedIssuesCount = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.updated_issues_count_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/niche-creation/#updated-issues-count'
+      }
     >
       {(ref) => {
         return (

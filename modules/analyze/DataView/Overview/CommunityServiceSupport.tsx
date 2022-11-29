@@ -63,6 +63,7 @@ const CommunityServiceSupportOverview = () => {
       title={t('metrics_models:community_service_and_support.title')}
       id={Support.Overview}
       description={t('metrics_models:community_service_and_support.desc')}
+      docLink={'docs/metrics-models/productivity/niche-creation/'}
       headRight={
         <ScoreConversion
           onePoint={onePointSys}

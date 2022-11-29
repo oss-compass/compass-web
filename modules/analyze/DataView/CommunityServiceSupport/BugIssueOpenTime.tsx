@@ -60,6 +60,9 @@ const BugIssueOpenTime = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.bug_issue_open_time_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/niche-creation/#bug-issue-open-time'
+      }
     >
       {(ref) => {
         return (

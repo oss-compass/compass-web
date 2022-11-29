@@ -107,6 +107,9 @@ const CodeReviewRatio = () => {
       description={t(
         'metrics_models:code_quality_guarantee.metrics.code_review_ratio_desc'
       )}
+      docLink={
+        'docs/metrics-models/productivity/code-quality-guarantee/#code-review-ratio'
+      }
     >
       {(ref) => {
         return (

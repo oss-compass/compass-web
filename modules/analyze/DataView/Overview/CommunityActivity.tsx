@@ -60,6 +60,7 @@ const CommunityActivityOverview = () => {
       title={t('metrics_models:community_activity.title')}
       id={Activity.Overview}
       description={t('metrics_models:community_activity.desc')}
+      docLink={'docs/metrics-models/robustness/activity/'}
       headRight={
         <ScoreConversion
           onePoint={onePointSys}
