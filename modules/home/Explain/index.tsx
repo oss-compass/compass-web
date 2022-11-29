@@ -42,11 +42,11 @@ const SectionExplain = () => {
           >
             <div className="absolute top-1/2 left-1/2">
               <a
-                href="/docs/category/productivity/"
+                href="/docs/metrics-models/robustness/"
                 className={classnames(styles.title1)}
               ></a>
               <a
-                href="/docs/metrics-models/robustness/"
+                href="/docs/category/productivity/"
                 className={classnames(styles.title2)}
               ></a>
               <a
