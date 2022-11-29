@@ -70,6 +70,8 @@ export type ActivityMetric = {
   label?: Maybe<Scalars['String']>;
   /** metric model object level */
   level?: Maybe<Scalars['String']>;
+  /** organization count */
+  orgCount?: Maybe<Scalars['Float']>;
   /** number of releases in the last 90 days */
   recentReleasesCount?: Maybe<Scalars['Float']>;
   /** number of issue updates in the past 90 days */
@@ -560,6 +562,7 @@ export type MetricQuery = {
     activeC1PrCreateContributorCount?: number | null;
     activeC2ContributorCount?: number | null;
     activityScore?: number | null;
+    orgCount?: number | null;
     closedIssuesCount?: number | null;
     codeReviewCount?: number | null;
     commentFrequency?: number | null;
@@ -924,6 +927,7 @@ export const MetricDocument = /*#__PURE__*/ `
     activeC1PrCreateContributorCount
     activeC2ContributorCount
     activityScore
+    orgCount
     closedIssuesCount
     codeReviewCount
     commentFrequency

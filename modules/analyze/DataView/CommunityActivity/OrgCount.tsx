@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Organizations } from '@modules/analyze/components/SideBar/config';
+import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -48,7 +48,7 @@ const OrgCount = () => {
   return (
     <BaseCard
       title={t('metrics_models:community_activity.metrics.organization_count')}
-      id={Organizations.OrgCount}
+      id={Activity.OrgCount}
       description={t(
         'metrics_models:community_activity.metrics.organization_count_desc'
       )}
