@@ -1,13 +1,14 @@
 import React from 'react';
-import SectionTitle from '@modules/analyze/Misc/SectionTitle';
-import { Section } from '@modules/analyze/Misc/SideBar/config';
+import { useTranslation } from 'next-i18next';
+import SectionTitle from '@modules/analyze/components/SectionTitle';
+import { Section } from '@modules/analyze/components/SideBar/config';
 
 import CommunityActivityOverview from '../Overview/CommunityActivity';
 
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import UpdatedSince from './UpdatedSince';
-// import OrgCount from './OrgCount';
+import OrgCount from './OrgCount';
 import CreatedSince from './CreatedSince';
 import CommentFrequency from './CommentFrequency';
 import CodeReviewCount from './CodeReviewCount';
@@ -17,9 +18,12 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 
 const CommunityActivity = () => {
+  const { t } = useTranslation();
   return (
     <>
-      <SectionTitle id={Section.CommunityActivity}>Activity</SectionTitle>
+      <SectionTitle id={Section.CommunityActivity}>
+        {t('metrics_models:activity.title')}
+      </SectionTitle>
 
       <div className="mb-4">
         <CommunityActivityOverview />
@@ -29,7 +33,7 @@ const CommunityActivity = () => {
         <ContributorCount />
         <CommitFrequency />
         <UpdatedSince />
-        {/*<OrgCount />*/}
+        <OrgCount />
         <CreatedSince />
         <CommentFrequency />
         <CodeReviewCount />

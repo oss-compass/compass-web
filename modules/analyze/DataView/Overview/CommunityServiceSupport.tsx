@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Support } from '@modules/analyze/Misc/SideBar/config';
+import { Support } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -10,64 +10,67 @@ import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { ChartThemeState } from '@modules/analyze/context';
-
-const tansOpts: TransOpts = {
-  metricType: 'metricCommunity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'community service and support',
-      valueKey: 'communitySupportScore',
-    },
-  ],
-};
-
-let hundredMarkingSys = true;
-const getOptions = (
-  { xAxis, yResults }: TransResult,
-  theme?: ChartThemeState
-) => {
-  const series = genSeries<LineSeriesOption>(
-    yResults,
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      hundredMarkingSys && (data = data.map((i) => transMarkingSystem(i)));
-      return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
-        data: data,
-        color,
-      });
-    },
-    theme
-  );
-  return getLineOption({ xAxisData: xAxis, series });
-};
+import { useTranslation } from 'next-i18next';
+import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
 const CommunityServiceSupportOverview = () => {
-  const [markingSys, setMarkingSys] = useState(true);
-  const getMarkingSys = (val: boolean) => {
-    hundredMarkingSys = val;
-    setMarkingSys(val);
+  const { t } = useTranslation();
+  const [onePointSys, setOnePointSys] = useState(false);
+
+  const tansOpts: TransOpts = {
+    metricType: 'metricCommunity',
+    xAxisKey: 'grimoireCreationDate',
+    yAxisOpts: [
+      {
+        legendName: 'community service and support',
+        valueKey: 'communitySupportScore',
+      },
+    ],
   };
+
+  const getOptions = (
+    { xAxis, yResults }: TransResult,
+    theme?: ChartThemeState
+  ) => {
+    const series = genSeries<LineSeriesOption>(
+      yResults,
+      (
+        { legendName, label, compareLabels, level, isCompare, color, data },
+        len
+      ) => {
+        !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
+        return line({
+          name: getLegendName(legendName, {
+            label,
+            compareLabels,
+            level,
+            isCompare,
+            legendTypeCount: len,
+          }),
+          data: data,
+          color,
+        });
+      },
+      theme
+    );
+    return getLineOption({ xAxisData: xAxis, series });
+  };
+
   return (
     <BaseCard
-      title="Community Service and Support"
+      title={t('metrics_models:community_service_and_support.title')}
       id={Support.Overview}
-      description={
-        'Community Service and Support measures the quality of services and support provided by the community as directly perceived by a developer during the contribution process.'
+      description={t('metrics_models:community_service_and_support.desc')}
+      headRight={
+        <ScoreConversion
+          onePoint={onePointSys}
+          onChange={(v) => {
+            setOnePointSys(v);
+          }}
+        />
       }
-      showMarkingSysBtn={true}
-      getMarkingSys={(val) => getMarkingSys(val)}
     >
       {(ref) => {
         return (

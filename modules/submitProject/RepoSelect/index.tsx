@@ -13,10 +13,12 @@ import { CgSpinner } from 'react-icons/cg';
 import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
 import RepoItem from './RepoItem';
 import Loading from './Loading';
+import { useTranslation } from 'react-i18next';
 
 const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   onConfirm,
 }) => {
+  const { t } = useTranslation();
   const { data: session } = useSession();
   const token = session?.accessToken!;
   const provider = session?.provider!;
@@ -53,8 +55,9 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
       },
     }
   );
-  // @ts-ignore
-  const errorMsg = error?.response?.data?.message || 'failed to fetch data !';
+  const errorMsg =
+    // @ts-ignore
+    error?.response?.data?.message || t('submit_project:failed_to_fetch_data');
 
   const showData = useMemo(() => {
     if (debouncedSearch) {
@@ -87,7 +90,9 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
           })}
 
           {search && noShowData && (
-            <div className="py-10 text-center text-gray-400">No Result!</div>
+            <div className="py-10 text-center text-gray-400">
+              {t('submit_project:no_result')}
+            </div>
           )}
 
           {!isError && !search && hasMore && (
@@ -101,18 +106,18 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
             >
               {isFetching ? (
                 <>
-                  <CgSpinner className="mr-1 animate-spin text-xl" /> fetching
-                  ...
+                  <CgSpinner className="mr-1 animate-spin text-xl" />
+                  {t('submit_project:fetching')}
                 </>
               ) : (
-                'load more'
+                t('submit_project:load_more')
               )}
             </div>
           )}
 
           {!isError && !search && !hasMore && (
             <div className="py-5 text-center text-sm text-gray-300">
-              No more data !
+              {t('submit_project:no_more_data')}
             </div>
           )}
 
@@ -127,8 +132,12 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   return (
     <div className="flex h-full flex-col">
       <div className="px-10 pb-2 pt-6">
-        <h3 className="mb-4 text-[28px] font-medium">Select repository</h3>
-        <p className="mb-6">Please choose owner and pick your repository</p>
+        <h3 className="mb-4 text-[28px] font-medium">
+          {t('submit_project:select_repository')}
+        </h3>
+        <p className="mb-6">
+          {t('submit_project:please_choose_owner_and_pick_your_repository')}
+        </p>
         <div className="flex justify-between">
           <div className="w-[calc(50%-8px)]">
             <SelectRepoSource
@@ -146,7 +155,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
           <div className="w-[calc(50%-8px)]">
             <Input
               className="w-full"
-              placeholder="Search..."
+              placeholder={t('submit_project:search') as string}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Activity } from '@modules/analyze/Misc/SideBar/config';
+import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -11,6 +11,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricActivity',
@@ -46,13 +47,14 @@ const getOptions = (
 };
 
 const CreatedSince = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Created Since"
+      title={t('metrics_models:community_activity.metrics.created_since')}
       id={Activity.CreatedSince}
-      description={
-        'Determine how long a repository has existed since it was created (in months).'
-      }
+      description={t(
+        'metrics_models:community_activity.metrics.created_since_desc'
+      )}
     >
       {(ref) => {
         return (

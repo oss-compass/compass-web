@@ -1,0 +1,20 @@
+{
+  "hotspots": "Hotspots",
+  "projects": "Projects",
+  "dimensions": "Dimensions",
+  "models": "Models",
+  "metrics": "Metrics",
+  "how_compass_working": "How Compass working",
+  "it_points_to_the_thing_you_want_most_in_open_source": "It points to the thing <br/> you want most in <br/> open source world",
+  "we_help_open_source_projects_gain_insight_into_its": "We help open source projects gain insight into its trends, and getting more value of it.",
+  "type_the_name_to_insight_into_your_project": "Type the name to insight into your project",
+  "please_enter_repository_name_or_community": "Please enter GitHub/Gitee repository name or community name",
+  "a_special_thank_you": "A special thank you…",
+  "oss_compass_follows_the_best_practices_and_specifi": "OSS Compass follows the best practices and specifications of the CHAOSS project, including metrics models and metrics, with some back-end components originally from Grimoirelabs.",
+  "submit_your_project": "Submit your project",
+  "community": "Community",
+  "insights_report": "Insights report",
+  "nothing_about_yet": "Nothing about <s> {{expr}} </s> yet.",
+  "cant_find_the_right_option": "Can't find the right option?",
+  "oss_eco_evaluation_system": "OSS ECO Evaluation System"
+}

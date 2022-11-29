@@ -1,6 +1,6 @@
 import React from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
+import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -12,6 +12,7 @@ import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
 import { toFixed } from '@common/utils';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
@@ -93,13 +94,16 @@ const getOptions = (
   });
 };
 const PRIssueLinked = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="PR Issue Linked Ratio"
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio'
+      )}
       id={CodeQuality.PRIssueLinkedRatio}
-      description={
-        'Determine the percentage of new pull request link issues in the last 90 days.'
-      }
+      description={t(
+        'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio_desc'
+      )}
     >
       {(ref) => {
         return (

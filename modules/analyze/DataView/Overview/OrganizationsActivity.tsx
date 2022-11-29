@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Organizations } from '@modules/analyze/Misc/SideBar/config';
+import { Organizations } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -10,64 +10,67 @@ import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-import { transMarkingSystem } from '@modules/analyze/DataTransform/transMarkingSystem';
+import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { ChartThemeState } from '@modules/analyze/context';
-
-const tansOpts: TransOpts = {
-  metricType: 'groupMetricActivity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'organizations activity',
-      valueKey: 'organizationsActivity',
-    },
-  ],
-};
-
-let hundredMarkingSys = true;
-const getOptions = (
-  { xAxis, yResults }: TransResult,
-  theme?: ChartThemeState
-) => {
-  const series = genSeries<LineSeriesOption>(
-    yResults,
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      hundredMarkingSys && (data = data.map((i) => transMarkingSystem(i)));
-      return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
-        data: data,
-        color,
-      });
-    },
-    theme
-  );
-  return getLineOption({ xAxisData: xAxis, series });
-};
+import { useTranslation } from 'next-i18next';
+import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
 const OrganizationsActivity = () => {
-  const [markingSys, setMarkingSys] = useState(true);
-  const getMarkingSys = (val: boolean) => {
-    hundredMarkingSys = val;
-    setMarkingSys(val);
+  const { t } = useTranslation();
+  const [onePointSys, setOnePointSys] = useState(false);
+
+  const tansOpts: TransOpts = {
+    metricType: 'groupMetricActivity',
+    xAxisKey: 'grimoireCreationDate',
+    yAxisOpts: [
+      {
+        legendName: 'organizations activity',
+        valueKey: 'organizationsActivity',
+      },
+    ],
   };
+
+  const getOptions = (
+    { xAxis, yResults }: TransResult,
+    theme?: ChartThemeState
+  ) => {
+    const series = genSeries<LineSeriesOption>(
+      yResults,
+      (
+        { legendName, label, compareLabels, level, isCompare, color, data },
+        len
+      ) => {
+        !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
+        return line({
+          name: getLegendName(legendName, {
+            label,
+            compareLabels,
+            level,
+            isCompare,
+            legendTypeCount: len,
+          }),
+          data: data,
+          color,
+        });
+      },
+      theme
+    );
+    return getLineOption({ xAxisData: xAxis, series });
+  };
+
   return (
     <BaseCard
-      title="Organizations Activity"
+      title={t('metrics_models:organization_activity.title')}
       id={Organizations.Overview}
-      description={
-        'Organizational activity is used to describe how active organizations are in a community.'
+      description={t('metrics_models:organization_activity.desc')}
+      headRight={
+        <ScoreConversion
+          onePoint={onePointSys}
+          onChange={(v) => {
+            setOnePointSys(v);
+          }}
+        />
       }
-      showMarkingSysBtn={true}
-      getMarkingSys={(val) => getMarkingSys(val)}
     >
       {(ref) => {
         return (

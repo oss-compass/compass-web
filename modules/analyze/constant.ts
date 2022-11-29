@@ -43,6 +43,7 @@ export const defaultDatePicker = {
 };
 
 export enum Level {
+  COMMUNITY = 'community',
   PROJECT = 'project',
   REPO = 'repo',
 }

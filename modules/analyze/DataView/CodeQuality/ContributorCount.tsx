@@ -1,6 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
+import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -57,13 +58,16 @@ const getOptions = (
 };
 
 const ContributorCount = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Contributor Count"
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.contributor_count'
+      )}
       id={CodeQuality.ContributorCount}
-      description={
-        'Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.'
-      }
+      description={t(
+        'metrics_models:code_quality_guarantee.metrics.contributor_count_desc'
+      )}
     >
       {(ref) => {
         return (

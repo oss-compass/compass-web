@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Activity } from '@modules/analyze/Misc/SideBar/config';
+import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricActivity',
@@ -48,13 +49,14 @@ const getOptions = (
 };
 
 const CommentFrequency = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Comment Frequency"
+      title={t('metrics_models:community_activity.metrics.comment_frequency')}
       id={Activity.CommentFrequency}
-      description={
-        'Determine the average number of comments per issue created in the last 90 days.'
-      }
+      description={t(
+        'metrics_models:community_activity.metrics.comment_frequency_desc'
+      )}
     >
       {(ref) => {
         return (

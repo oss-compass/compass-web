@@ -6,7 +6,7 @@ import {
   lineArea,
   line,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
+import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -18,6 +18,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { toFixed } from '@common/utils';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
@@ -97,13 +98,16 @@ const getOptions = (
 };
 
 const CodeMergeRatio = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Code Merge Ratio"
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.code_merge_ratio'
+      )}
       id={CodeQuality.CodeMergeRatio}
-      description={
-        'Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.'
-      }
+      description={t(
+        'metrics_models:code_quality_guarantee.metrics.code_merge_ratio_desc'
+      )}
     >
       {(ref) => {
         return (

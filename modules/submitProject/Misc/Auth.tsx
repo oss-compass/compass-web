@@ -5,6 +5,7 @@ import { SiGitee } from 'react-icons/si';
 import Image from 'next/image';
 import { ClientSafeProvider, LiteralUnion } from 'next-auth/react/types';
 import { BuiltInProviderType } from 'next-auth/providers';
+import { useTranslation } from 'react-i18next';
 
 export const getIcons = (type: LiteralUnion<BuiltInProviderType>) => {
   switch (type) {
@@ -23,12 +24,15 @@ const Auth: React.FC<{
     ClientSafeProvider
   >;
 }> = ({ providers }) => {
+  const { t } = useTranslation();
   const session = useSession();
   const isLogin = Boolean(session?.data);
 
   return (
     <>
-      <h1 className="mb-4 text-xl font-medium">Your project hosting on</h1>
+      <h1 className="mb-4 text-xl font-medium">
+        {t('submit_project:your_project_hosting_on')}
+      </h1>
 
       {!isLogin && (
         <div className="flex">
@@ -71,7 +75,7 @@ const Auth: React.FC<{
           </div>
           <div className="ml-5 flex w-16 items-center">
             <button className="text-primary" onClick={() => signOut()}>
-              Logout
+              {t('submit_project:logout')}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AiOutlineLoading, AiOutlineSearch } from 'react-icons/ai';
 import { useThrottle } from 'ahooks';
+import { Trans, useTranslation } from 'react-i18next';
 import { useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import classnames from 'classnames';
@@ -9,6 +10,7 @@ import SearchDropdown from './SearchDropdown';
 import styles from './index.module.scss';
 
 const Search = () => {
+  const { t } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const throttledKeyword = useThrottle(keyword, { wait: 300 });
   const { isLoading, data, fetchStatus } = useSearchQuery(
@@ -30,15 +32,16 @@ const Search = () => {
         id="test"
         className="mb-6 text-[64px] leading-[80px] tracking-tight md:text-4xl"
       >
-        It points to the thing
-        <br />
-        you want most in
-        <br />
-        open source world
+        <Trans
+          i18nKey="it_points_to_the_thing_you_want_most_in_open_source"
+          ns="home"
+          components={{
+            br: <br />,
+          }}
+        />
       </h1>
       <p className="mb-10 text-lg md:text-sm">
-        We help open source projects gain insight into its trends, and getting
-        more value of it.
+        {t('home:we_help_open_source_projects_gain_insight_into_its')}
       </p>
       <div className="relative w-[496px] md:w-full">
         <div className="flex items-center border-2 border-black px-4 md:px-2">
@@ -49,7 +52,7 @@ const Search = () => {
               'h-[52px] w-full appearance-none bg-transparent text-xl outline-0 ',
               'md:h-[40px] md:text-sm'
             )}
-            placeholder="Type the name to insight into your project"
+            placeholder={t('home:type_the_name_to_insight_into_your_project')}
             onChange={(event) => {
               const val = event.target.value;
               setKeyword(val);
@@ -65,7 +68,7 @@ const Search = () => {
           </div>
         </div>
         <p className="mt-3 text-gray-500 md:text-sm">
-          Please enter GitHub/Gitee repository name or community name
+          {t('home:please_enter_repository_name_or_community')}
         </p>
         {throttledKeyword && (
           <div

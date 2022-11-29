@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Organizations } from '@modules/analyze/Misc/SideBar/config';
+import { Organizations } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -11,6 +11,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'groupMetricActivity',
@@ -45,14 +46,15 @@ const getOptions = (
   return getLineOption({ xAxisData: xAxis, series });
 };
 
-const ContributorCount = () => {
+const OrgCount = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Org Count"
+      title={t('metrics_models:organization_activity.metrics.org_count')}
       id={Organizations.OrgCount}
-      description={
-        'Number of organizations to which active code contributors belong in the past 90 days.'
-      }
+      description={t(
+        'metrics_models:organization_activity.metrics.org_count_desc'
+      )}
     >
       {(ref) => {
         return (
@@ -65,4 +67,4 @@ const ContributorCount = () => {
   );
 };
 
-export default ContributorCount;
+export default OrgCount;

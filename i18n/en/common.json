@@ -1,0 +1,40 @@
+{
+  "header": {
+    "metrics_models": "Metrics Models",
+    "community": "Community",
+    "about": "About"
+  },
+  "community": {
+    "slack": "Slack",
+    "join_slack": "Join our community channel on Slack",
+    "wechat": "WeChat",
+    "join_wechat": "Scan our group chat QR code to join",
+    "github": "GitHub",
+    "official_repository_on_github": "Official repository on GitHub",
+    "gitee": "Gitee",
+    "official_repository_on_gitee": "Official repository on Gitee"
+  },
+  "footer": {
+    "tutorial": "Tutorial",
+    "quick_start": "Quick Start",
+    "dimensions_define": "Dimensions Define",
+    "legal": "Legal",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "built_with": "Built With",
+    "community": "Community",
+    "slack": "Slack",
+    "code": "Code"
+  },
+  "error": {
+    "something_went_wrong": "Something went wrong:",
+    "try_to_refresh_this_page_or_feel_free_to_contact_u": "Try to refresh this page or feel free to contact us if the problem presists.",
+    "try_again": "Try again",
+    "oops": "<s> Oops! </s> {{message}}"
+  },
+  "search": {
+    "no_result": "No result"
+  },
+  "next": "Next",
+  "know_more": "Know more"
+}

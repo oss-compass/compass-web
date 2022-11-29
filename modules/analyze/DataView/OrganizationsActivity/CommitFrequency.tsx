@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { Organizations } from '@modules/analyze/Misc/SideBar/config';
+import { Organizations } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -11,6 +11,7 @@ import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'groupMetricActivity',
@@ -46,13 +47,14 @@ const getOptions = (
 };
 
 const CommitFrequency = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Commit Frequency"
+      title={t('metrics_models:organization_activity.metrics.commit_frequency')}
       id={Organizations.CommitFrequency}
-      description={
-        'Determine the average number of commits with organization affiliation per week in the past 90 days.'
-      }
+      description={t(
+        'metrics_models:organization_activity.metrics.commit_frequency_desc'
+      )}
     >
       {(ref) => {
         return (

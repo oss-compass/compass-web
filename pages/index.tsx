@@ -1,6 +1,8 @@
 import React from 'react';
 import type { GetServerSideProps } from 'next';
-import { Header, Center } from '@common/components/Layout';
+import { NoSsr } from '@mui/base';
+import Header from '@common/components/Header';
+import { Center } from '@common/components/Layout';
 import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
 import Banner from '@modules/home/Banner';
@@ -9,6 +11,14 @@ import Explain from '@modules/home/Explain';
 import SpecialThank from '@modules/home/SpecialThank';
 import getLocalesFile from '@common/utils/getLocalesFile';
 
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  return {
+    props: {
+      ...(await getLocalesFile(req.cookies, ['home', 'metrics_models'])),
+    },
+  };
+};
+
 const Home: React.FC = (props) => {
   return (
     <>
@@ -16,7 +26,9 @@ const Home: React.FC = (props) => {
       <main>
         <Banner />
         <Projects />
-        <Explain />
+        <NoSsr>
+          <Explain />
+        </NoSsr>
         <SpecialThank />
       </main>
       <footer>
@@ -30,11 +42,3 @@ const Home: React.FC = (props) => {
 };
 
 export default Home;
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  return {
-    props: {
-      ...(await getLocalesFile(req.cookies)),
-    },
-  };
-};

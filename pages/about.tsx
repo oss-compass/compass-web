@@ -1,6 +1,7 @@
 import React from 'react';
 import type { GetStaticProps } from 'next';
-import { Header, Center } from '@common/components/Layout';
+import Header from '@common/components/Header';
+import { Center } from '@common/components/Layout';
 import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
 import AboutContent from '@modules/about';

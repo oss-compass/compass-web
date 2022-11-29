@@ -1,68 +1,20 @@
-import React, { PropsWithChildren, useContext, useEffect } from 'react';
+import React from 'react';
+import { GetServerSideProps } from 'next';
 import Analyze from '@modules/analyze';
 import {
   ConfigContextProvider,
   ChartThemeProvider,
-  ChartThemeContext,
-  ActionThemeColorInit,
 } from '@modules/analyze/context';
-import { useStatusQuery } from '@graphql/generated';
-import client from '@graphql/client';
-import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import { GetServerSideProps } from 'next';
+import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import getLocalesFile from '@common/utils/getLocalesFile';
+import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
 
-const useLabelStatus = () => {
-  const { compareItems } = useCompareItems();
-  const label = React.useMemo(() => {
-    // todo check all compare items status
-    if (compareItems.length >= 1) {
-      return compareItems[0].label;
-    }
-    return '';
-  }, [compareItems]);
-
-  const { data, isLoading } = useStatusQuery(
-    client,
-    { label },
-    { enabled: Boolean(label) }
-  );
-  const status = data?.analysisStatus || 'pending';
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
-    isLoading,
-    status,
-  };
-};
-
-const getInitialTheme = (
-  compareItems: { label: string }[]
-): { label: string; paletteIndex: number }[] => {
-  return compareItems.reduce<{ label: string; paletteIndex: number }[]>(
-    (acc, cur, index) => {
-      const item = { label: cur.label, paletteIndex: index };
-      if (acc) {
-        acc.push(item);
-        return acc;
-      }
-      acc = [item];
-      return acc;
+    props: {
+      ...(await getLocalesFile(req.cookies, ['analyze', 'metrics_models'])),
     },
-    []
-  );
-};
-
-const ColorThemeInit: React.FC<PropsWithChildren> = ({ children }) => {
-  const { compareItems } = useCompareItems();
-  // chart Theme
-  const { dispatch } = useContext(ChartThemeContext);
-  useEffect(() => {
-    dispatch({
-      type: ActionThemeColorInit,
-      payload: getInitialTheme(compareItems),
-    });
-  }, [dispatch, compareItems]);
-
-  return <>{children}</>;
+  };
 };
 
 const AnalyzePage = () => {
@@ -79,11 +31,3 @@ const AnalyzePage = () => {
 };
 
 export default AnalyzePage;
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  return {
-    props: {
-      ...(await getLocalesFile(req.cookies)),
-    },
-  };
-};

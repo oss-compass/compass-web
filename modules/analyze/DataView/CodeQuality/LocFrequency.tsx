@@ -1,6 +1,6 @@
 import React from 'react';
 import { bar, genSeries, getBarOption } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
+import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 
 import {
   getLegendName,
@@ -13,6 +13,7 @@ import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { toFixed } from '@common/utils';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
@@ -59,13 +60,16 @@ const getOptions = (
 };
 
 const LocFrequency = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Lines of Code Frequency"
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency'
+      )}
       id={CodeQuality.LocFrequency}
-      description={
-        'Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.'
-      }
+      description={t(
+        'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency_desc'
+      )}
     >
       {(ref) => {
         return (

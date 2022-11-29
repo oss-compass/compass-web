@@ -23,7 +23,7 @@ function getLocalesFile(
     : fileNames.concat('common');
 
   if (typeof reqOrLang === 'string') {
-    return serverSideTranslations(reqOrLang, [...fileNames, 'common']);
+    return serverSideTranslations(reqOrLang, fileNamesWidthDefault);
   } else {
     return serverSideTranslations(getLocale(reqOrLang), fileNamesWidthDefault);
   }

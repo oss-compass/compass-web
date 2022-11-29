@@ -1,6 +1,6 @@
 import React from 'react';
 import { genSeries, getLineOption, line } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/Misc/SideBar/config';
+import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -12,6 +12,7 @@ import Chart from '@modules/analyze/components/Chart';
 import { ChartThemeState } from '@modules/analyze/context';
 import { LineSeriesOption } from 'echarts';
 import { toFixed } from '@common/utils';
+import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
@@ -90,13 +91,16 @@ const getOptions = (
   });
 };
 const CommitPRLinkedRatio = () => {
+  const { t } = useTranslation();
   return (
     <BaseCard
-      title="Commit PR Linked Ratio"
+      title={t(
+        'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio'
+      )}
       id={CodeQuality.CommitPRLinkedRatio}
-      description={
-        'Determine the percentage of new code commit link pull request in the last 90 days.'
-      }
+      description={t(
+        'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio_desc'
+      )}
     >
       {(ref) => {
         return (
