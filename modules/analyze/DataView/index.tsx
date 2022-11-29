@@ -14,12 +14,12 @@ const DataView = () => {
     return <Loading />;
   }
 
-  if (isError) {
-    return <ErrorAnalysis />;
+  if (!isError && checkIsPending(status)) {
+    return <UnderAnalysis />;
   }
 
-  if (checkIsPending(status)) {
-    return <UnderAnalysis />;
+  if (isError) {
+    return <ErrorAnalysis />;
   }
 
   return (
