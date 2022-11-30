@@ -1,6 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { genSeries, getLineOption, line } from '@modules/analyze/options';
+import {
+  genSeries,
+  getLineOption,
+  line,
+  GetChartOptions,
+} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
@@ -30,10 +35,11 @@ const CodeQualityOverview = () => {
     ],
   };
 
-  const getOptions = ({ xAxis, yResults }: TransResult) => {
-    const series = genSeries<LineSeriesOption>(
-      yResults,
-      (
+  const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+    const series = genSeries<LineSeriesOption>({
+      theme,
+      comparesYAxis: yResults,
+      seriesEachFunc: (
         { legendName, label, compareLabels, level, isCompare, color, data },
         len
       ) => {
@@ -50,8 +56,8 @@ const CodeQualityOverview = () => {
           data: data,
           color,
         });
-      }
-    );
+      },
+    });
     return getLineOption({ xAxisData: xAxis, series });
   };
 

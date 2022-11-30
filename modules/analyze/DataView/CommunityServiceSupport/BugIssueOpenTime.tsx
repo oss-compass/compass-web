@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react';
-import { genSeries, getLineOption, line } from '@modules/analyze/options';
+import {
+  genSeries,
+  GetChartOptions,
+  getLineOption,
+  line,
+} from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
@@ -22,26 +27,25 @@ const tansOpts: TransOpts = {
   ],
 };
 
-const getOptions = ({ xAxis, yResults }: TransResult) => {
-  const series = genSeries<LineSeriesOption>(
-    yResults,
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
-        data: data,
-        color,
+const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const series = genSeries<LineSeriesOption>({
+    theme,
+    comparesYAxis: yResults,
+    seriesEachFunc: (opts, len) => {
+      const getName = getLegendName(opts.legendName, {
+        label: opts.label,
+        compareLabels: opts.compareLabels,
+        level: opts.level,
+        isCompare: opts.isCompare,
+        legendTypeCount: len,
       });
-    }
-  );
+      return line({
+        name: getName,
+        data: opts.data,
+        color: opts.color,
+      });
+    },
+  });
   return getLineOption({ xAxisData: xAxis, series });
 };
 

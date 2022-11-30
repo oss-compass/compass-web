@@ -1,5 +1,10 @@
 import React from 'react';
-import { bar, genSeries, getBarOption } from '@modules/analyze/options';
+import {
+  bar,
+  genSeries,
+  getBarOption,
+  GetChartOptions,
+} from '@modules/analyze/options';
 import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 
 import {
@@ -31,10 +36,11 @@ const tansOpts: TransOpts = {
   ],
 };
 
-const getOptions = ({ xAxis, yResults }: TransResult) => {
-  const series = genSeries<BarSeriesOption>(
-    yResults,
-    (
+const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const series = genSeries<BarSeriesOption>({
+    theme,
+    comparesYAxis: yResults,
+    seriesEachFunc: (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
@@ -50,8 +56,8 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
         data: data,
         color,
       });
-    }
-  );
+    },
+  });
   return getBarOption({ xAxisData: xAxis, series });
 };
 

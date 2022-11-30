@@ -1,5 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { genSeries, getLineOption, line } from '@modules/analyze/options';
+import {
+  genSeries,
+  getLineOption,
+  line,
+  GetChartOptions,
+} from '@modules/analyze/options';
 import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
@@ -27,10 +32,11 @@ const CommunityActivityOverview = () => {
     ],
   };
 
-  const getOptions = ({ xAxis, yResults }: TransResult) => {
-    const series = genSeries<LineSeriesOption>(
-      yResults,
-      (
+  const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+    const series = genSeries<LineSeriesOption>({
+      theme,
+      comparesYAxis: yResults,
+      seriesEachFunc: (
         { legendName, label, compareLabels, level, isCompare, color, data },
         len
       ) => {
@@ -46,8 +52,8 @@ const CommunityActivityOverview = () => {
           data: data,
           color,
         });
-      }
-    );
+      },
+    });
     return getLineOption({ xAxisData: xAxis, series });
   };
 
