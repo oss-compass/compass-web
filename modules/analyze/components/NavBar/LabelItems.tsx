@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { getProvider } from '@common/utils';
@@ -16,6 +17,7 @@ const Icon: React.FC<{ provider: string }> = ({ provider, ...restProps }) => {
 };
 
 const LabelItems = () => {
+  const { t } = useTranslation();
   const { compareItems } = useCompareItems();
   return (
     <>
@@ -45,6 +47,11 @@ const LabelItems = () => {
               <Icon provider={host} />
               {labelNode}
               {compareItems.length > 1 && <ColorSwitcher label={label} />}
+              {level === Level.COMMUNITY && (
+                <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
+                  {t('home:community')}
+                </div>
+              )}
               {index < compareItems.length - 1 ? (
                 <span className="px-2 text-slate-300">vs</span>
               ) : null}

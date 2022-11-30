@@ -12,9 +12,7 @@ import {
   getPaletteColor,
 } from '@modules/analyze/options/color';
 import React from 'react';
-import { chartThemeState, ChartThemeState } from '@modules/analyze/store';
-import { number } from 'echarts/types/dist/echarts';
-import { ScaleDataValue } from 'echarts/types/src/util/types';
+import { ChartThemeState } from '@modules/analyze/store';
 
 const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -133,33 +131,41 @@ export type ChartProps = {
   containerRef?: React.RefObject<HTMLElement>;
 };
 
+export type GetChartOptions = (
+  result: TransResult,
+  theme?: DeepReadonly<ChartThemeState>
+) => EChartsOption;
+
 const getPaletteIndex = (
-  themeState: ChartThemeState | undefined,
+  themeState: DeepReadonly<ChartThemeState> | undefined,
   label: string
 ) => {
   return themeState?.color?.find((i) => i.label === label)?.paletteIndex || 0;
 };
 
-export function genSeries<T>(
-  comparesYAxis: YResult[],
-  seriesEachFunc: (
-    item: {
-      compareLabels: string[];
-      label: string;
-      level: Level;
-      legendName: string;
-      isCompare: boolean;
-      color: string;
-      key: string;
-      data: (string | number)[];
-    },
-    length?: number
-  ) => T | null
-) {
+export type SeriesEachFunc<T> = (
+  item: {
+    compareLabels: string[];
+    label: string;
+    level: Level;
+    legendName: string;
+    isCompare: boolean;
+    color: string;
+    key: string;
+    data: (string | number)[];
+  },
+  length?: number
+) => T | null;
+
+export function genSeries<T>(opt: {
+  comparesYAxis: YResult[];
+  seriesEachFunc: SeriesEachFunc<T>;
+  theme?: DeepReadonly<ChartThemeState>;
+}) {
+  const { comparesYAxis, seriesEachFunc, theme } = opt;
+
   const isCompare = comparesYAxis.length > 1;
   const compareLabels = comparesYAxis.map((i) => i.label);
-  const theme = chartThemeState;
-
   return comparesYAxis.reduce<T[]>((acc, { label, level, yAxisResult }) => {
     const paletteIndex = getPaletteIndex(theme, label);
     const palette = getPalette(paletteIndex);

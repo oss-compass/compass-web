@@ -5,6 +5,7 @@ import {
   getLineOption,
   lineArea,
   line,
+  GetChartOptions,
 } from '@modules/analyze/options';
 import { CodeQuality } from '@modules/analyze/components/SideBar/config';
 import {
@@ -34,10 +35,11 @@ const tansOpts: TransOpts = {
   ],
 };
 
-const getOptions = ({ xAxis, yResults }: TransResult) => {
-  const series = genSeries<LineSeriesOption>(
-    yResults,
-    (
+const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const series = genSeries<LineSeriesOption>({
+    theme,
+    comparesYAxis: yResults,
+    seriesEachFunc: (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
@@ -52,8 +54,8 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
         return line({ name, data, color, yAxisIndex: 0 });
       }
       return line({ name, data, color, yAxisIndex: 1 });
-    }
-  );
+    },
+  });
 
   return getLineOption({
     xAxisData: xAxis,

@@ -1,5 +1,10 @@
 import React from 'react';
-import { genSeries, getLineOption, line } from '@modules/analyze/options';
+import {
+  genSeries,
+  GetChartOptions,
+  getLineOption,
+  line,
+} from '@modules/analyze/options';
 import { Activity, Support } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
@@ -18,10 +23,11 @@ const tansOpts: TransOpts = {
   yAxisOpts: [{ legendName: 'closed pr count', valueKey: 'closedPrsCount' }],
 };
 
-const getOptions = ({ xAxis, yResults }: TransResult) => {
-  const series = genSeries<LineSeriesOption>(
-    yResults,
-    (
+const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const series = genSeries<LineSeriesOption>({
+    theme,
+    comparesYAxis: yResults,
+    seriesEachFunc: (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
@@ -36,8 +42,8 @@ const getOptions = ({ xAxis, yResults }: TransResult) => {
         data: data,
         color,
       });
-    }
-  );
+    },
+  });
   return getLineOption({ xAxisData: xAxis, series });
 };
 

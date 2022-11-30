@@ -8,23 +8,23 @@ import {
 import { EChartsOption } from 'echarts';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import EChartX from '@common/components/EChartX';
+import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
 
 const Chart: React.FC<
   ChartProps & {
-    getOptions: (result: TransResult) => EChartsOption;
+    getOptions: (
+      result: TransResult,
+      theme?: DeepReadonly<ChartThemeState>
+    ) => EChartsOption;
     tansOpts: TransOpts;
   }
 > = ({ containerRef, getOptions, tansOpts }) => {
+  const theme = useSnapshot(chartThemeState);
   const data = useMetricQueryData();
   const isLoading = data?.some((i) => i.loading);
-
-  const { xAxis, yResults } = useMemo(() => {
-    return transToAxis(data, tansOpts);
-  }, [data, tansOpts]);
-
-  const echartsOpts = useMemo(() => {
-    return getOptions({ xAxis, yResults });
-  }, [getOptions, xAxis, yResults]);
+  const { xAxis, yResults } = transToAxis(data, tansOpts);
+  const echartsOpts = getOptions({ xAxis, yResults }, theme);
 
   return (
     <EChartX

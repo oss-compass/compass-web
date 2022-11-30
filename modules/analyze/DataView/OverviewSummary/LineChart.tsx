@@ -3,6 +3,7 @@ import {
   ChartSummaryProps,
   getLineOption,
   line,
+  GetChartOptions,
 } from '@modules/analyze/options';
 import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
