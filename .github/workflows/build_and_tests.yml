@@ -3,6 +3,7 @@ name: Build and Unit Tests
 on:
   push:
     branches:
+      - 'release'
       - 'main'
   pull_request:
     branches:

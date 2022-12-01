@@ -24,6 +24,7 @@ const ChangeLanguage = () => {
   const { reload } = useRouter();
   const topDomain = getTopDomain();
   const local = getLocale();
+  console.log('local', local);
   const language = languages.find((i) => i.id === local);
 
   return (

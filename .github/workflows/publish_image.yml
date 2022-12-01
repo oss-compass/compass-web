@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [Build and Unit Tests]
     types: [completed]
-    branches: [main]
+    branches: [release]
 
 jobs:
   publish-images:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: main
+          ref: release
 
       - name: Docker meta
         id: meta
