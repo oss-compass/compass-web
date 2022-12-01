@@ -4,7 +4,7 @@ import { OverviewQuery } from '@graphql/generated';
 import { gsap } from 'gsap';
 import { useInterval, useInViewport } from 'ahooks';
 import { getAnalyzeLink, getRepoLink } from '@common/utils';
-import MiniChart from './MiniChart';
+import MiniChart from '@common/components/MiniChart';
 import AngleL from './assets/angle-left.svg';
 import AngleR from './assets/angle-right.svg';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
