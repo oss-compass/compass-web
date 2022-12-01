@@ -36,7 +36,7 @@ const Header: React.FC<{
 
             <CommunityDropdown />
 
-            <Link href="/docs/about" legacyBehavior>
+            <Link href="/about">
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.about')}
               </a>
