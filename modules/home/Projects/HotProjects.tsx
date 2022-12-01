@@ -6,7 +6,7 @@ import { numberFormatK } from '@common/utils';
 import { gsap } from 'gsap';
 import { useInterval, useInViewport } from 'ahooks';
 import { getAnalyzeLink } from '@common/utils';
-import MiniChart from './MiniChart';
+import MiniChart from '@common/components/MiniChart';
 import AngleL from './assets/angle-left.svg';
 import AngleR from './assets/angle-right.svg';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
