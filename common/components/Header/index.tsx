@@ -28,6 +28,7 @@ const Header: React.FC<{
                 <Logo color="white" />
               </a>
             </Link>
+
             <Link href="/docs/dimensions-define" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.metrics_models')}
@@ -35,6 +36,12 @@ const Header: React.FC<{
             </Link>
 
             <CommunityDropdown />
+
+            <Link href="/lab">
+              <a className={'mx-6 px-2.5 font-medium text-white'}>
+                {t('common:header.lab')}
+              </a>
+            </Link>
 
             <Link href="/docs/about" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
