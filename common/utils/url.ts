@@ -19,6 +19,12 @@ export const getAllPathname = (urls: string[]) => {
   return uniq(pathName);
 };
 
+//  gg/cli => gg
+export function getFirstPathSegment(path: string) {
+  if (!path) return '';
+  return path.split('/').shift() || '';
+}
+
 //  cli/cli => cli
 export function getLastPathSegment(path: string) {
   if (!path) return '';

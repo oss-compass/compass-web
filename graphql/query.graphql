@@ -1,129 +1,195 @@
 query status($label: String!) {
-    analysisStatus(label: $label)
+  analysisStatus(label: $label)
 }
 
-query search($keyword: String!, $level:String) {
-    fuzzySearch(keyword: $keyword, level: $level){
-        level
-        label
-    }
+query search($keyword: String!, $level: String) {
+  fuzzySearch(keyword: $keyword, level: $level) {
+    level
+    label
+  }
 }
 
-query latestMetrics($label: String!, $level:String){
-    latestMetrics(level: $level, label: $label){
-        activityScore
-        activityScoreUpdatedAt
-        codeQualityGuarantee
-        codeQualityGuaranteeUpdatedAt
-        communitySupportScore
-        communitySupportScoreUpdatedAt
-        label
-        level
-        organizationsActivity
-        organizationsActivityUpdatedAt
-    }
+query latestMetrics($label: String!, $level: String) {
+  latestMetrics(level: $level, label: $label) {
+    activityScore
+    activityScoreUpdatedAt
+    codeQualityGuarantee
+    codeQualityGuaranteeUpdatedAt
+    communitySupportScore
+    communitySupportScoreUpdatedAt
+    label
+    level
+    organizationsActivity
+    organizationsActivityUpdatedAt
+  }
 }
 
 query overview {
-    overview {
-        projectsCount
-        dimensionsCount
-        metricsCount
-        modelsCount
-        trends {
-            backend
-            forksCount
-            language
-            name
-            openIssuesCount
-            path
-            stargazersCount
-            watchersCount
-            metricActivity {
-                activityScore
-            }
-        }
+  overview {
+    projectsCount
+    dimensionsCount
+    metricsCount
+    modelsCount
+    trends {
+      backend
+      forksCount
+      language
+      name
+      openIssuesCount
+      path
+      stargazersCount
+      watchersCount
+      metricActivity {
+        activityScore
+      }
     }
+  }
 }
 
-query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
-    metricCodequality(label: $label,level: $level, beginDate: $start, endDate: $end) {
-        activeC1PrCommentsContributorCount
-        activeC1PrCreateContributorCount
-        activeC2ContributorCount
-        codeMergeRatio
-        codeMergedCount
-        codeQualityGuarantee
-        codeReviewRatio
-        codeReviewedCount
-        commitFrequency
-        commitFrequencyInside
-        contributorCount
-        gitPrLinkedRatio
-        grimoireCreationDate
-        isMaintained
-        label
-        level
-        linesAddedFrequency
-        linesRemovedFrequency
-        locFrequency
-        prCommitCount
-        prCommitLinkedCount
-        prCount
-        prIssueLinkedCount
-        prIssueLinkedRatio
-    }
-    metricCommunity(label: $label,level: $level, beginDate: $start, endDate: $end){
-        bugIssueOpenTimeAvg
-        bugIssueOpenTimeMid
-        closedPrsCount
-        codeReviewCount
-        commentFrequency
-        communitySupportScore
-        grimoireCreationDate
-        issueFirstReponseAvg
-        issueFirstReponseMid
-        issueOpenTimeAvg
-        issueOpenTimeMid
-        label
-        level
-        prOpenTimeAvg
-        prOpenTimeMid
-        updatedIssuesCount
-    }
-    metricActivity(label: $label,level: $level, beginDate: $start, endDate: $end){
-        activeC1IssueCommentsContributorCount
-        activeC1IssueCreateContributorCount
-        activeC1PrCommentsContributorCount
-        activeC1PrCreateContributorCount
-        activeC2ContributorCount
+query communityRepos($label: String!, $page: Int, $per: Int) {
+  communityOverview(label: $label, page: $page, per: $per) {
+    projectsCount
+    trends {
+      backend
+      name
+      path
+      metricActivity {
         activityScore
-        orgCount
-        closedIssuesCount
-        codeReviewCount
-        commentFrequency
-        commitFrequency
-        contributorCount
-        createdSince
         grimoireCreationDate
-        label
-        level
-        recentReleasesCount
-        updatedIssuesCount
-        updatedSince
+      }
     }
-    groupMetricActivity(label: $label,level: $level, beginDate: $start, endDate: $end){
-        commitFrequency
-        # commitFrequencyOrg
-        # commitFrequencyOrgPercentage
-        # commitFrequencyPercentage
-        contributionLast
-        contributorCount
-        # contributorOrgCount
+  }
+}
+
+query betaMetricOverview($id: Int!, $limit: Int) {
+  betaMetricOverview(id: $id, limit: $limit) {
+    projectsCount
+    trends {
+      path
+      origin
+      name
+      backend
+      betaMetricScores {
         grimoireCreationDate
-        label
-        level
-        orgCount
-        organizationsActivity
+        score
+      }
     }
+  }
+}
+
+query betaMetricsIndex($per: Int, $page: Int) {
+  betaMetricsIndex(per: $per, page: $page) {
+    id
+    dimensionality
+    desc
+    extra
+    metric
+  }
+}
+
+query metric(
+  $label: String!
+  $level: String = "repo"
+  $start: ISO8601DateTime
+  $end: ISO8601DateTime
+) {
+  metricCodequality(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
+    activeC1PrCommentsContributorCount
+    activeC1PrCreateContributorCount
+    activeC2ContributorCount
+    codeMergeRatio
+    codeMergedCount
+    codeQualityGuarantee
+    codeReviewRatio
+    codeReviewedCount
+    commitFrequency
+    commitFrequencyInside
+    contributorCount
+    gitPrLinkedRatio
+    grimoireCreationDate
+    isMaintained
+    label
+    level
+    linesAddedFrequency
+    linesRemovedFrequency
+    locFrequency
+    prCommitCount
+    prCommitLinkedCount
+    prCount
+    prIssueLinkedCount
+    prIssueLinkedRatio
+  }
+  metricCommunity(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
+    bugIssueOpenTimeAvg
+    bugIssueOpenTimeMid
+    closedPrsCount
+    codeReviewCount
+    commentFrequency
+    communitySupportScore
+    grimoireCreationDate
+    issueFirstReponseAvg
+    issueFirstReponseMid
+    issueOpenTimeAvg
+    issueOpenTimeMid
+    label
+    level
+    prOpenTimeAvg
+    prOpenTimeMid
+    updatedIssuesCount
+  }
+  metricActivity(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
+    activeC1IssueCommentsContributorCount
+    activeC1IssueCreateContributorCount
+    activeC1PrCommentsContributorCount
+    activeC1PrCreateContributorCount
+    activeC2ContributorCount
+    activityScore
+    orgCount
+    closedIssuesCount
+    codeReviewCount
+    commentFrequency
+    commitFrequency
+    contributorCount
+    createdSince
+    grimoireCreationDate
+    label
+    level
+    recentReleasesCount
+    updatedIssuesCount
+    updatedSince
+  }
+  groupMetricActivity(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
+    commitFrequency
+    # commitFrequencyOrg
+    # commitFrequencyOrgPercentage
+    # commitFrequencyPercentage
+    contributionLast
+    contributorCount
+    # contributorOrgCount
+    grimoireCreationDate
+    label
+    level
+    orgCount
+    organizationsActivity
+  }
 }

@@ -1,0 +1,4 @@
+{
+  "the_locale_names_are_used_for": "The locale names are used for the translation files' locations, as well as your translated locales' base URL. When building all locales, only the default locale will have its name omitted in the base URL.",
+  "discuss": "Discuss"
+}

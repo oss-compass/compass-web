@@ -1,31 +1,15 @@
 import React, { useMemo, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { AiOutlineStar } from 'react-icons/ai';
 import { OverviewQuery } from '@graphql/generated';
-import { numberFormatK } from '@common/utils';
 import { gsap } from 'gsap';
 import { useInterval, useInViewport } from 'ahooks';
-import { getAnalyzeLink } from '@common/utils';
-import MiniChart from './MiniChart';
+import { getAnalyzeLink, getRepoLink } from '@common/utils';
+import MiniChart from '@common/components/MiniChart';
 import AngleL from './assets/angle-left.svg';
 import AngleR from './assets/angle-right.svg';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
-
-const getLink = (
-  path: string | null | undefined,
-  backend: string | null | undefined
-) => {
-  switch (backend) {
-    case 'GitHub':
-      return `https://github.com/${path}`;
-    case 'Gitee':
-      return `https://gitee.com/${path}`;
-    default:
-      return '/';
-  }
-};
 
 type Repo = NonNullable<OverviewQuery['overview']['trends']>[number];
 
@@ -52,7 +36,7 @@ const Project: React.FC<{
     <div ref={ref} className="w-1/3 border-b border-r px-5 py-4  lg:w-1/2">
       <Link
         href={getAnalyzeLink({
-          label: getLink(repo.path, repo.backend),
+          label: getRepoLink(repo.path, repo.backend),
           level: 'repo',
         })}
       >

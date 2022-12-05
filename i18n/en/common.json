@@ -2,8 +2,8 @@
   "header": {
     "metrics_models": "Metrics Models",
     "community": "Community",
-    "about": "About",
-    "lab": "Lab"
+    "lab": "Lab",
+    "about": "About"
   },
   "community": {
     "slack": "Slack",
