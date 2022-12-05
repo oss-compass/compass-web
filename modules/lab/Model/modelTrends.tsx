@@ -10,6 +10,7 @@ import { SiGitee } from 'react-icons/si';
 import MiniChart from '@common/components/MiniChart';
 import Link from 'next/link';
 import Loading from './Loading';
+import { getLabDetailLink } from '@common/utils';
 
 type Repo = NonNullable<
   BetaMetricOverviewQuery['betaMetricOverview']['trends']
@@ -25,7 +26,7 @@ const Project: React.FC<{
 
   return (
     <div className=" w-[14.76rem] border border-[#CFCFCF] px-5 py-4 ">
-      <Link href={''}>
+      <Link href={getLabDetailLink(repo)}>
         <a className="mb-4 block h-20">
           <h3
             className="mb-1  break-words text-xl font-bold line-clamp-2 hover:underline"
