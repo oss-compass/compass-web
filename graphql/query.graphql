@@ -46,6 +46,21 @@ query overview {
   }
 }
 
+query communityRepos($label: String!, $page: Int, $per: Int) {
+  communityOverview(label: $label, page: $page, per: $per) {
+    projectsCount
+    trends {
+      backend
+      name
+      path
+      metricActivity {
+        activityScore
+        grimoireCreationDate
+      }
+    }
+  }
+}
+
 query betaMetricOverview($id: Int!, $limit: Int) {
   betaMetricOverview(id: $id, limit: $limit) {
     projectsCount
@@ -61,6 +76,7 @@ query betaMetricOverview($id: Int!, $limit: Int) {
     }
   }
 }
+
 query betaMetricsIndex($per: Int, $page: Int) {
   betaMetricsIndex(per: $per, page: $page) {
     id

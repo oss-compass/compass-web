@@ -574,6 +574,31 @@ export type OverviewQuery = {
   };
 };
 
+export type CommunityReposQueryVariables = Exact<{
+  label: Scalars['String'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type CommunityReposQuery = {
+  __typename?: 'Query';
+  communityOverview: {
+    __typename?: 'CommunityOverview';
+    projectsCount?: number | null;
+    trends?: Array<{
+      __typename?: 'Repo';
+      backend?: string | null;
+      name?: string | null;
+      path?: string | null;
+      metricActivity: Array<{
+        __typename?: 'ActivityMetric';
+        activityScore?: number | null;
+        grimoireCreationDate?: any | null;
+      }>;
+    }> | null;
+  };
+};
+
 export type BetaMetricOverviewQueryVariables = Exact<{
   id: Scalars['Int'];
   limit?: InputMaybe<Scalars['Int']>;
@@ -983,6 +1008,57 @@ useOverviewQuery.fetcher = (
   fetcher<OverviewQuery, OverviewQueryVariables>(
     client,
     OverviewDocument,
+    variables,
+    headers
+  );
+export const CommunityReposDocument = /*#__PURE__*/ `
+    query communityRepos($label: String!, $page: Int, $per: Int) {
+  communityOverview(label: $label, page: $page, per: $per) {
+    projectsCount
+    trends {
+      backend
+      name
+      path
+      metricActivity {
+        activityScore
+        grimoireCreationDate
+      }
+    }
+  }
+}
+    `;
+export const useCommunityReposQuery = <
+  TData = CommunityReposQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommunityReposQueryVariables,
+  options?: UseQueryOptions<CommunityReposQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommunityReposQuery, TError, TData>(
+    ['communityRepos', variables],
+    fetcher<CommunityReposQuery, CommunityReposQueryVariables>(
+      client,
+      CommunityReposDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommunityReposQuery.getKey = (variables: CommunityReposQueryVariables) => [
+  'communityRepos',
+  variables,
+];
+useCommunityReposQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommunityReposQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommunityReposQuery, CommunityReposQueryVariables>(
+    client,
+    CommunityReposDocument,
     variables,
     headers
   );
