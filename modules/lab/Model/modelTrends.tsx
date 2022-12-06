@@ -7,7 +7,8 @@ import client from '@graphql/client';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
-import MiniChart from '@common/components/MiniChart';
+// import MiniChart from '@common/components/MiniChart';
+import MiniChart from '@common/components/EChartX/MiniChart';
 import Link from 'next/link';
 import Loading from './Loading';
 import { getLabDetailLink } from '@common/utils';
@@ -52,7 +53,7 @@ const Project: React.FC<{
           )}
         </div>
 
-        <MiniChart echartsData={echartsData} />
+        <MiniChart data={echartsData} />
       </div>
     </div>
   );
