@@ -24,14 +24,6 @@ const Analyze = () => {
       <HeaderWithFilterBar />
       <Main>
         <div className="relative flex min-w-0 flex-1 flex-col bg-gray-50 px-10 pt-4 md:p-0">
-          <div className="mb-4 flex items-center rounded border border-[#DDCAA0] bg-[#FFEBBC] py-2 px-3 text-[#876E35]">
-            <FaInfoCircle className="mr-2 text-[#F9A001]" /> Basing on
-            <span className="mx-2 font-bold">Model I</span>, an experimental
-            model in Lab,
-            <Link href="/">
-              <a className="underline">know more about the model</a>
-            </Link>
-          </div>
           <DataView />
           <Footer />
         </div>
