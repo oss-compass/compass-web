@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'release'
+      - 'main'
 
 jobs:
   publish-images:
@@ -22,7 +23,8 @@ jobs:
             registry.cn-hongkong.aliyuncs.com/oss-compass/compass-web
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'release') }}
-            type=sha
+            type=raw,value=nightly,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=sha,prefix={{branch}}-
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
