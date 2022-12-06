@@ -1,10 +1,9 @@
 name: Publish image
 
 on:
-  workflow_run:
-    workflows: [Build and Unit Tests]
-    types: [completed]
-    branches: [release]
+  push:
+    branches:
+      - 'release'
 
 jobs:
   publish-images:
@@ -22,7 +21,7 @@ jobs:
           images: |
             registry.cn-hongkong.aliyuncs.com/oss-compass/compass-web
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'release') }}
             type=sha
 
       - name: Set up QEMU
