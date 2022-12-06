@@ -1,8 +1,19 @@
-import { SearchQuery } from '@graphql/generated';
+import { SearchQuery, BetaMetricOverviewQuery } from '@graphql/generated';
+import { Level } from '@modules/analyze/constant';
 
 export const getAnalyzeLink = (item: SearchQuery['fuzzySearch'][number]) => {
   return `/analyze?label=${encodeURIComponent(item.label!)}&level=${
     item.level
+  }`;
+};
+
+export const getLabDetailLink = (
+  repo: NonNullable<
+    BetaMetricOverviewQuery['betaMetricOverview']['trends']
+  >[number]
+) => {
+  return `/lab/explore?label=${encodeURIComponent(repo?.origin!)}&level=${
+    Level.REPO
   }`;
 };
 
