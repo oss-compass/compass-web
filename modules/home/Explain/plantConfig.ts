@@ -20,9 +20,9 @@ const useCodeQualityGuarantee = (): PlantList[] => {
   const { t } = useTranslation();
   return [
     {
-      top: 199,
+      top: 200,
       left: -377,
-      size: 76,
+      size: 74,
       color: 'productivity',
       popContent: {
         title: t(
@@ -146,7 +146,7 @@ const useCommunityServiceAndSupport = (): PlantList[] => {
     {
       top: 9,
       left: -348,
-      size: 76,
+      size: 75,
       color: 'productivity',
       popContent: {
         title: t(
@@ -416,7 +416,7 @@ const useOrganizationActivity = (): PlantList[] => {
     },
     {
       top: 113,
-      left: 413,
+      left: 412,
       size: 50,
       color: 'nicheCreation',
       popContent: {
