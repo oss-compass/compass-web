@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="168px" height="158px" viewBox="0 0 168 158" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>field-ai</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="168" height="158"></rect>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#F5F5F5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="99.1668488%" id="linearGradient-4">
+            <stop stop-color="#000000" offset="0%"></stop>
+            <stop stop-color="#7C7C7C" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-166.000000, -122.000000)">
+            <g id="field-ai" transform="translate(166.000000, 122.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="mask"></g>
+                <g id="AI" mask="url(#mask-2)">
+                    <g transform="translate(0.016083, 23.435508)">
+                        <path d="M136.62813,101.985241 C148.336469,96.9544789 155.445542,90.3406936 155.447913,83.0980471 C155.453065,67.362592 121.910935,54.6174582 80.5294675,54.6309402 C67.8665183,54.635133 55.9368566,55.8335095 45.4773042,57.9457315" id="Path" stroke-opacity="0.25" stroke="#000000" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0.5185831652039999,7.260164312855999" transform="translate(100.462609, 78.308090) rotate(17.000000) translate(-100.462609, -78.308090) "></path>
+                        <path d="M108.115748,115.015368 C120.230984,109.95796 127.615143,103.229364 127.61083,95.8396772 C127.601613,80.0969055 94.0634247,67.3152567 52.7011804,67.2908962 C37.8692321,67.2823861 24.0452549,68.9153034 12.4139401,71.7394952" id="Path" stroke-opacity="0.25" stroke="#000000" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0.5185831652039999,7.260164312855999" transform="translate(70.012385, 91.153132) rotate(136.000000) translate(-70.012385, -91.153132) "></path>
+                        <path d="M108.988323,86.3290787 C121.479782,81.229291 129.125823,74.3847678 129.128155,66.8624029 C129.133037,51.1114963 95.6235965,38.3532621 54.2827247,38.3660411 C39.0950117,38.3707981 24.9632101,40.0985216 13.1610715,43.0636119" id="Path" stroke-opacity="0.25" stroke="#000000" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0.5185831652039999,7.260164312855999" transform="translate(71.144613, 62.347560) rotate(254.000000) translate(-71.144613, -62.347560) "></path>
+                        <ellipse id="Oval" stroke-opacity="0.15" stroke="#A5A5A5" stroke-width="8" fill="url(#linearGradient-3)" fill-rule="evenodd" cx="80.9176632" cy="78.7896861" rx="50.6724849" ry="50.6178887"></ellipse>
+                        <path d="M64.8505998,81.9915966 L70.6314068,65.8459384 L70.7557252,65.8459384 L76.3500545,81.9915966 L64.8505998,81.9915966 Z M65.782988,55 L49,99 L58.8211559,99 L62.302072,89.2016807 L78.8985823,89.2016807 L82.2551799,99 L92.387132,99 L75.7906216,55 L65.782988,55 Z M96.2410033,55 L96.2410033,99 L106,99 L106,55 L96.2410033,55 Z" id="AI" stroke="none" fill="url(#linearGradient-4)" fill-rule="nonzero"></path>
+                        <path d="M34.9953133,50.5485017 C16.650474,55.747927 4.76650831,64.0611761 4.76344222,73.4257479 C4.75829021,89.161203 38.3004209,101.906337 79.681888,101.892812 C99.1874886,101.886421 116.953194,99.0464458 130.286006,94.397651" id="Path" stroke-opacity="0.25" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" transform="translate(67.524724, 76.220657) rotate(17.000000) translate(-67.524724, -76.220657) "></path>
+                        <path d="M53.4787493,39.6397643 C35.1471703,44.8248814 23.2763066,53.1311621 23.2817844,62.5000883 C23.290994,78.24286 56.8291824,91.0245088 98.1914267,91.0487343 C117.687966,91.0601026 135.442833,88.2350055 148.765214,83.5962051" id="Path" stroke-opacity="0.25" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" transform="translate(86.023499, 65.344249) rotate(136.000000) translate(-86.023499, -65.344249) "></path>
+                        <path d="M53.7217119,62.5218785 C35.3949564,67.7260895 23.5227886,76.0472945 23.519883,85.4210619 C23.5150007,101.171968 57.0244411,113.930203 98.3653129,113.917385 C117.851778,113.911329 135.600008,111.068875 148.919662,106.415748" id="Path" stroke-opacity="0.25" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" transform="translate(86.219773, 88.219632) rotate(254.000000) translate(-86.219773, -88.219632) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
