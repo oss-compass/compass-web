@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'next-i18next';
+import Chaoss from '@common/components/PoweredBy/Chaoss';
 import ProductivityIcon from './assets/Productivity.svg';
 import MenuTopicItem from './Menu/MenuTopicItem';
 import MenuItem from './Menu/MenuItem';
@@ -24,6 +25,7 @@ const Productivity = () => {
       <MenuItem
         active={menuId === CodeQuality.Overview}
         id={CodeQuality.Overview}
+        leftIcons={<Chaoss />}
         subMenu={
           <>
             {codeQualityGuarantee.groups.map((item) => {
@@ -54,6 +56,7 @@ const Productivity = () => {
       <MenuItem
         active={menuId === Support.Overview}
         id={Support.Overview}
+        leftIcons={<Chaoss />}
         subMenu={
           <>
             {communityServiceAndSupport.groups.map((item) => {

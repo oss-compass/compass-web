@@ -6,6 +6,7 @@ import MenuItem from './Menu/MenuItem';
 import MenuTopicItem from './Menu/MenuTopicItem';
 import MenuSubItem from './Menu/MenuSubItem';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';
+import Chaoss from '@common/components/PoweredBy/Chaoss';
 
 const Robustness = () => {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ const Robustness = () => {
       <MenuItem
         active={menuId === Activity.Overview}
         id={Activity.Overview}
+        leftIcons={<Chaoss />}
         subMenu={
           <>
             {communityActivity.groups.map((item) => {

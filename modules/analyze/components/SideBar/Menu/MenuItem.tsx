@@ -7,22 +7,31 @@ const MenuItem: React.FC<
     disabled?: boolean;
     active?: boolean;
     subMenu?: React.ReactNode;
+    leftIcons?: React.ReactNode;
   }>
-> = ({ disabled = false, active = false, id, subMenu, children }) => {
+> = ({
+  disabled = false,
+  active = false,
+  id,
+  subMenu,
+  children,
+  leftIcons,
+}) => {
   return (
     <div className="group mb-0.5 px-4">
       <div className={classnames('relative')}>
         <a
           href={`#${id}`}
           className={classnames(
-            'block truncate text-xs text-gray-600',
-            'cursor-pointer items-center rounded py-2 px-6',
+            'flex items-center justify-between  text-xs text-gray-600',
+            'cursor-pointer rounded py-2 pl-6 pr-2',
             { '!text-black': active },
             { 'cursor-not-allowed !text-gray-300': disabled },
             { 'group-hover:bg-gray-100 group-hover:text-black': !disabled }
           )}
         >
-          {children}
+          <span className="truncate">{children}</span>
+          {leftIcons}
         </a>
         {subMenu && (
           <div
