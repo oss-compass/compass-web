@@ -1,5 +1,6 @@
 import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
+import LinkX from '@common/components/LinkX';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -86,9 +87,11 @@ const BaseCard: React.FC<BaseCardProps> = ({
         {description}
         {docLink && (
           <>
-            <a className="ml-1 text-primary hover:underline" href={docLink}>
-              {t('common:know_more')}
-            </a>
+            <LinkX href={docLink}>
+              <a className="ml-1 text-primary hover:underline">
+                {t('common:know_more')}
+              </a>
+            </LinkX>
           </>
         )}
       </p>

@@ -1,7 +1,6 @@
 import React from 'react';
-import Link from 'next/link';
+import LinkX from '@common/components/LinkX';
 import LogoSquare from '@common/components/LogoSquare';
-import { Center } from '@common/components/Layout';
 import { useTranslation } from 'react-i18next';
 
 const FooterLinks = () => {
@@ -50,9 +49,9 @@ const FooterLinks = () => {
             <h3 className="mb-4 text-sm font-bold">{item.title}</h3>
             {item.links.map((link) => {
               return (
-                <Link href={link.href} key={link.text} legacyBehavior>
+                <LinkX href={link.href} key={link.text} legacyBehavior>
                   <a className="mb-2 text-sm text-gray-500">{link.text}</a>
-                </Link>
+                </LinkX>
               );
             })}
           </div>

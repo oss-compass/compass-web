@@ -23,8 +23,8 @@ const Search = () => {
   return (
     <div
       className={classnames(
-        'absolute bottom-9 -left-[24px] w-[600px] p-6',
-        'md:bottom-6 md:left-0 md:w-[380px]',
+        'absolute bottom-9 -left-6 w-[600px] p-6',
+        'lg:left-0 md:bottom-6 md:w-[380px]',
         styles.searchBg
       )}
     >

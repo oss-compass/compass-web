@@ -21,14 +21,15 @@ interface FieldItem {
 const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
   const { t } = useTranslation();
   return (
-    <div className="relative h-40 w-1/4 border-b border-r px-5 py-4  lg:w-1/2">
-      <h3 className="mb-1 break-words text-xl font-bold">{name}</h3>
+    <div className="md:h-50 relative h-40 w-1/4 border-b border-r px-5 py-4 lg:w-1/2 md:w-full">
+      <div className="absolute right-0 bottom-0 w-[160px]">{svg}</div>
+      <h3 className="relative mb-1 break-words text-xl font-bold">{name}</h3>
       {comingSoon && (
         <div className="h-5 w-24 rounded-xl bg-[#ECECEC] text-center text-xs leading-5 text-gray-400">
           {t('home:coming_soon')}
         </div>
       )}
-      <div className="relative z-10 flex w-1/2 flex-col">
+      <div className="relative flex w-1/2 flex-col">
         {category &&
           category.map((c) => {
             if (c.link) {
@@ -52,7 +53,6 @@ const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
             );
           })}
       </div>
-      <div className="absolute right-0 bottom-0">{svg}</div>
     </div>
   );
 };
@@ -111,21 +111,23 @@ const HotFields = () => {
         'lg:w-full'
       )}
     >
-      <div className="mb-6 flex justify-between text-2xl font-bold">
-        {t('home:hot_fields')}
-      </div>
-      <div className="flex w-full flex-wrap rounded border-t border-l lg:w-full">
-        {fieldList.map((item) => {
-          return (
-            <Field
-              key={item.name}
-              name={item.name}
-              comingSoon={item.comingSoon}
-              category={item.category}
-              svg={item.svg}
-            />
-          );
-        })}
+      <div className="lg:px-4  lg:pb-10">
+        <div className="mb-6 flex justify-between text-2xl font-bold">
+          {t('home:hot_fields')}
+        </div>
+        <div className="flex w-full flex-wrap rounded border-t border-l lg:w-full">
+          {fieldList.map((item) => {
+            return (
+              <Field
+                key={item.name}
+                name={item.name}
+                comingSoon={item.comingSoon}
+                category={item.category}
+                svg={item.svg}
+              />
+            );
+          })}
+        </div>
       </div>
     </section>
   );

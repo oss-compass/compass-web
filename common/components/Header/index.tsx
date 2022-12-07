@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
+import LinkX from '@common/components/LinkX';
 import { useTranslation } from 'react-i18next';
 import Logo from '@common/components/Logo';
 import MobileHeader from './MobileHeader';
@@ -28,19 +29,19 @@ const Header: React.FC<{
                 <Logo color="white" />
               </a>
             </Link>
-            <Link href="/docs/dimensions-define" legacyBehavior>
+            <LinkX href="/docs/dimensions-define" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.metrics_models')}
               </a>
-            </Link>
+            </LinkX>
 
             <CommunityDropdown />
 
-            <Link href="/docs/about" legacyBehavior>
+            <LinkX href="/docs/about" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.about')}
               </a>
-            </Link>
+            </LinkX>
           </div>
 
           <div className="flex h-full items-center">

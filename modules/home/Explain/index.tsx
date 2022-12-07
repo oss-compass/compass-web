@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useCounter } from 'react-use';
+import LinkX from '@common/components/LinkX';
 import { usePlantList } from './plantConfig';
 import PopCard from './PopCard';
 import Plant from './Plant';
@@ -41,18 +42,15 @@ const SectionExplain = () => {
             }}
           >
             <div className="absolute top-1/2 left-1/2">
-              <a
-                href="/docs/metrics-models/robustness/"
-                className={classnames(styles.title1)}
-              ></a>
-              <a
-                href="/docs/category/productivity/"
-                className={classnames(styles.title2)}
-              ></a>
-              <a
-                href="/docs/metrics-models/niche-creation/"
-                className={classnames(styles.title3)}
-              ></a>
+              <LinkX href="/docs/metrics-models/robustness/">
+                <a className={classnames(styles.title1)}></a>
+              </LinkX>
+              <LinkX href="/docs/category/productivity/">
+                <a className={classnames(styles.title2)}></a>
+              </LinkX>
+              <LinkX href="/docs/metrics-models/niche-creation/">
+                <a className={classnames(styles.title3)}></a>
+              </LinkX>
               {plantList.map(({ popContent, ...item }, i) => {
                 return (
                   <Plant
