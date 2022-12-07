@@ -12,3 +12,7 @@ export const verifiedLabels = proxy<{ values: Label[] }>({
 export const setVerifiedLabels = (labels: Label[]) => {
   verifiedLabels.values = labels;
 };
+
+export const resetVerifiedLabels = () => {
+  verifiedLabels.values = [];
+};
