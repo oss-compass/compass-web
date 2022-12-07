@@ -63,6 +63,33 @@ const LinkItem: React.FC<{
   const { t } = useTranslation();
   const host = getProvider(item.label!);
 
+  const getContent = () => {
+    if (item.level === Level.REPO) {
+      return (
+        <>
+          <div className="mb-1 truncate text-xl font-medium">
+            {getRepoName(item.label!)}
+          </div>
+          <div className="flex items-center text-xs ">
+            <Icon name={host} />
+            <div className="ml-1 truncate text-gray-600">
+              {getPathname(item.label!)}
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <div className="flex items-center">
+        <div className="mb-1 truncate text-xl font-medium">{item.label}</div>
+        <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
+          {item.level === Level.COMMUNITY ? t('home:community') : item.level}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Link key={item.label} href={getAnalyzeLink(item)}>
       <div
@@ -73,28 +100,7 @@ const LinkItem: React.FC<{
         )}
       >
         <div className="min-w-0 flex-1 overflow-hidden pr-4">
-          {item.level === Level.REPO ? (
-            <>
-              <div className="mb-1 truncate text-xl font-medium">
-                {getRepoName(item.label!)}
-              </div>
-              <div className="flex items-center text-xs ">
-                <Icon name={host} />
-                <div className="ml-1 truncate text-gray-600">
-                  {getPathname(item.label!)}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center">
-              <div className="mb-1 truncate text-xl font-medium">
-                {item.label}
-              </div>
-              <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
-                {t('home:community')}
-              </div>
-            </div>
-          )}
+          {getContent()}
         </div>
         <div className="flex flex-shrink-0 items-center text-sm font-medium text-primary">
           {t('home:insights_report')}
