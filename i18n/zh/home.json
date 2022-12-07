@@ -11,7 +11,7 @@
   "please_enter_repository_name_or_community": "Please enter GitHub/Gitee repository name or community name",
   "submit_your_project": "提交项目",
   "community": "社区",
-  "insights_report": "查看报告",
+  "compass_report": "查看报告",
   "nothing_about_yet": "未找到与 <s> {{expr}} </s> 匹配的结果.",
   "cant_find_the_right_option": "未找到想要的结果？"
 }

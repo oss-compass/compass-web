@@ -103,7 +103,7 @@ const LinkItem: React.FC<{
           {getContent()}
         </div>
         <div className="flex flex-shrink-0 items-center text-sm font-medium text-primary">
-          {t('home:insights_report')}
+          {t('home:compass_report')}
           <AiOutlineRightCircle className="ml-2 text-base" />
         </div>
       </div>

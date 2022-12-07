@@ -13,7 +13,7 @@
   "oss_compass_follows_the_best_practices_and_specifi": "OSS Compass follows the best practices and specifications of the CHAOSS project, including metrics models and metrics, with some back-end components originally from Grimoirelabs.",
   "submit_your_project": "Submit your project",
   "community": "Community",
-  "insights_report": "Insights report",
+  "compass_report": "Compass report",
   "nothing_about_yet": "Nothing about <s> {{expr}} </s> yet.",
   "cant_find_the_right_option": "Can't find the right option?",
   "oss_eco_evaluation_system": "OSS ECO Evaluation System"
