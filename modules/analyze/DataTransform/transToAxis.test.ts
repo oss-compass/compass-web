@@ -1,6 +1,7 @@
-import { transToAxis } from './transToAxis';
+import { formatRepoNameV2, transToAxis } from './transToAxis';
 import inputData from './testdata/input.json';
 import outputData from './testdata/output.json';
+import { Level } from '@modules/analyze/constant';
 
 describe('transToAxis', () => {
   it('transToAxis', function () {
@@ -23,4 +24,24 @@ describe('transToAxis', () => {
   });
 
   it('checkHasSameRepoPath', function () {});
+
+  it('formatRepoNameV2', function () {
+    const result = formatRepoNameV2({
+      label: 'https://github.com/oss-compass/compass-web',
+      compareLabels: [
+        'https://github.com/oss-compass/compass-web',
+        'https://github.com/xxxx/compass-web',
+        'https://gitee.com/oss-compass/compass-web',
+      ],
+      level: Level.REPO,
+    });
+    expect(result).toEqual({
+      name: 'compass-web',
+      meta: {
+        namespace: 'oss-compass',
+        provider: 'github',
+        showProvider: true,
+      },
+    });
+  });
 });

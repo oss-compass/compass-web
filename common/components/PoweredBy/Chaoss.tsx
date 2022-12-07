@@ -6,7 +6,7 @@ import Tooltip from '@common/components/Tooltip';
 const Chaoss = () => {
   const { t } = useTranslation();
   return (
-    <Tooltip title={t('analyze:powered_by_choass')} arrow placement="top">
+    <Tooltip title={t('analyze:powered_by_chaoss')} arrow placement="top">
       <span className="ml-2">
         <ChaossSvg />
       </span>

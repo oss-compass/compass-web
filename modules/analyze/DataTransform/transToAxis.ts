@@ -5,6 +5,7 @@ import { Level } from '@modules/analyze/constant';
 import { MetricQuery } from '@graphql/generated';
 import {
   formatISO,
+  getNameSpace,
   getPathname,
   getProvider,
   getRepoName,
@@ -119,6 +120,40 @@ const checkHasSameRepoPath = (label: string, labels: string[]) => {
     if (item.indexOf(pathname) > -1) count++;
     return count >= 2;
   });
+};
+export const formatRepoNameV2 = ({
+  label,
+  compareLabels,
+  level,
+}: {
+  label: string;
+  compareLabels: string[];
+  level: Level;
+}): {
+  name: string;
+  meta?: {
+    namespace: string;
+    provider: string;
+    showProvider: boolean;
+  };
+} => {
+  if (level === Level.REPO) {
+    const repoName = getRepoName(label);
+    const namespace = getNameSpace(label);
+    const provider = getProvider(label);
+    const showProvider = checkHasSameRepoPath(label, compareLabels);
+
+    return {
+      name: repoName,
+      meta: {
+        namespace,
+        provider,
+        showProvider,
+      },
+    };
+  } else {
+    return { name: label };
+  }
 };
 
 export const formatRepoName = ({

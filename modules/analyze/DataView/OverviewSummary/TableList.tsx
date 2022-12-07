@@ -10,7 +10,10 @@ import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
-import { formatRepoName } from '@modules/analyze/DataTransform/transToAxis';
+import {
+  formatRepoName,
+  formatRepoNameV2,
+} from '@modules/analyze/DataTransform/transToAxis';
 import { Level } from '@modules/analyze/constant';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
@@ -25,7 +28,7 @@ const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   return (
     <td
       className={classnames(
-        'min-w-[150px] border-t border-b border-b-[#ffffff] py-4 text-center font-semibold md:text-sm',
+        'min-w-[150px] border-t-2 border-b border-b-[#ffffff] py-4 text-center font-semibold md:text-sm',
         className
       )}
       {...props}
@@ -141,23 +144,29 @@ const TrendsList: React.FC = () => {
           <tbody>
             {Array.isArray(list) &&
               list.map((item, index) => {
+                const r = formatRepoNameV2({
+                  label: item!.label!,
+                  level: item!.level as Level,
+                  compareLabels: labels,
+                });
+
                 return (
-                  <tr className="" key={item!.label}>
-                    <td className="flex flex-col px-1">
-                      <p className="break-words md:w-[140px]">
-                        {formatRepoName({
-                          label: item!.label!,
-                          level: item!.level as Level,
-                          compareLabels: labels,
-                        })}
+                  <tr className="group" key={item!.label}>
+                    <td className="flex flex-col px-1 py-2 ">
+                      <p className="break-words text-sm font-bold md:w-[140px]">
+                        {r.name}
+                      </p>
+                      <p className="break-words text-xs text-gray-600 md:w-[140px]">
+                        {r.meta?.namespace}
+                        {r.meta?.showProvider ? ` on ${r.meta?.provider}` : ''}
                       </p>
                       <p className={'text-xs text-gray-400'}>
-                        {`update at ${formatISO(
+                        {`updated on ${formatISO(
                           item!.activityScoreUpdatedAt!
                         )}`}
                       </p>
                     </td>
-                    <Td className="bg-[#f2fcff]">
+                    <Td className="bg-[#f2fcff] ">
                       {formatScore(item!.codeQualityGuarantee)}
                     </Td>
                     <Td className="bg-[#fff9f3]">
@@ -167,7 +176,7 @@ const TrendsList: React.FC = () => {
                       {formatScore(item!.activityScore)}
                     </Td>
                     {snapshot.showOrganizations && (
-                      <Td className="bg-[#ddebff]">
+                      <Td className="bg-[#ddebff] ">
                         {formatScore(item!.organizationsActivity)}
                       </Td>
                     )}
