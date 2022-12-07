@@ -1,16 +1,23 @@
 import React from 'react';
 import { MetricQuery } from '@graphql/generated';
+import CommunityRepos from './CommunityRepos';
 import LineChart from './LineChart';
 import TableList from './TableList';
 import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
+import { Level } from '@modules/analyze/constant';
 
 const Overview: React.FC<{
-  data: { label: string; result: MetricQuery | undefined }[];
+  data: { label: string; level: Level; result: MetricQuery | undefined }[];
 }> = ({ data }) => {
   if (data.length == 1) {
-    return <LineChart />;
+    return (
+      <>
+        {data[0].level === Level.COMMUNITY && <CommunityRepos />}
+        <LineChart />
+      </>
+    );
   }
 
   if (data.length > 1) {

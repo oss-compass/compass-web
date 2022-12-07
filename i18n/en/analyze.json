@@ -1,5 +1,6 @@
 {
   "overview": "Overview",
+  "repositories": "Repositories ({{count}})",
   "topic": {
     "productivity": "Productivity",
     "robustness": "Robustness",

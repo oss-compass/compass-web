@@ -46,6 +46,21 @@ query overview {
     }
 }
 
+query communityRepos( $label: String!, $page: Int,$per: Int) {
+    communityOverview(label:$label, page: $page, per: $per){
+        projectsCount
+        trends {
+            backend
+            name
+            path
+            metricActivity {
+                activityScore
+                grimoireCreationDate
+            }
+        }
+    }
+}
+
 query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
     metricCodequality(label: $label,level: $level, beginDate: $start, endDate: $end) {
         activeC1PrCommentsContributorCount
