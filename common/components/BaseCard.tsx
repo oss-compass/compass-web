@@ -86,9 +86,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
         {description}
         {docLink && (
           <>
-            {t('analyze:for_more')}
-            <a className="text-primary hover:underline" href={docLink}>
-              {title}
+            <a className="ml-1 text-primary hover:underline" href={docLink}>
+              {t('common:know_more')}
             </a>
           </>
         )}
