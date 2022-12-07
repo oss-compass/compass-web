@@ -11,32 +11,47 @@ import FieldItdo from './assets/field-itdo.svg';
 interface FieldItem {
   name: string;
   comingSoon: Boolean;
-  link: string;
   svg: React.ReactElement;
+  category?: {
+    name: string;
+    link: string;
+  }[];
 }
 
-const Field: React.FC<FieldItem> = ({ name, comingSoon, link, svg }) => {
+const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
   const { t } = useTranslation();
   return (
     <div className="relative h-40 w-1/4 border-b border-r px-5 py-4  lg:w-1/2">
-      <Link href={link} legacyBehavior={true}>
-        <a
-          onClick={(e) => {
-            console.log(e);
-            comingSoon && e.preventDefault();
-          }}
-          className="mb-4 block h-20 w-3/4"
-        >
-          <h3 className="mb-1  break-words text-xl font-bold line-clamp-2 hover:underline">
-            {name}
-          </h3>
-          {comingSoon && (
-            <div className="h-5 w-24  rounded-xl bg-[#ECECEC] text-center text-xs leading-5 text-gray-400">
-              {t('home:coming_soon')}
-            </div>
-          )}
-        </a>
-      </Link>
+      <h3 className="mb-1 break-words text-xl font-bold">{name}</h3>
+      {comingSoon && (
+        <div className="h-5 w-24 rounded-xl bg-[#ECECEC] text-center text-xs leading-5 text-gray-400">
+          {t('home:coming_soon')}
+        </div>
+      )}
+      <div className="relative z-10 flex w-1/2 flex-col">
+        {category &&
+          category.map((c) => {
+            if (c.link) {
+              return (
+                <Link key={c.name} href={c.link}>
+                  <a className="mb-1 flex items-center text-sm hover:underline">
+                    <span className="mr-1 h-1 w-1 shrink-0 rounded-full bg-black" />
+                    {c.name}
+                  </a>
+                </Link>
+              );
+            }
+            return (
+              <a
+                key={c.name}
+                className="mb-1 flex cursor-not-allowed items-center text-sm text-gray-400"
+              >
+                <span className="mr-1 h-1 w-1 shrink-0 rounded-full bg-gray-400" />
+                {c.name}
+              </a>
+            );
+          })}
+      </div>
       <div className="absolute right-0 bottom-0">{svg}</div>
     </div>
   );
@@ -45,28 +60,47 @@ const HotFields = () => {
   const { t } = useTranslation();
   const fieldList: Array<FieldItem> = [
     {
-      name: t('home:artificial_intelligence'),
+      name: t('home:hot_fields_content.artificial_intelligence'),
       comingSoon: false,
-      link: '/analyze?label=https%3A%2F%2Fgithub.com%2Ftensorflow%2Ftensorflow&level=repo&label=https%3A%2F%2Fgithub.com%2Fpytorch%2Fpytorch&label=https%3A%2F%2Fgitee.com%2Fmindspore%2Fmindspore&label=https%3A%2F%2Fgithub.com%2FPaddlePaddle%2FPaddle',
       svg: <FieldAi />,
+      category: [
+        {
+          name: t('home:hot_fields_content.machine_learning_framework'),
+          link: '/analyze?label=https%3A%2F%2Fgithub.com%2Ftensorflow%2Ftensorflow&level=repo&label=https%3A%2F%2Fgithub.com%2Fpytorch%2Fpytorch&label=https%3A%2F%2Fgitee.com%2Fmindspore%2Fmindspore&label=https%3A%2F%2Fgithub.com%2FPaddlePaddle%2FPaddle',
+        },
+      ],
     },
     {
-      name: t('home:server_os'),
+      name: t('home:hot_fields_content.server_os'),
       comingSoon: true,
-      link: '',
       svg: <FieldSos />,
     },
     {
-      name: t('home:database'),
+      name: t('home:hot_fields_content.database'),
       comingSoon: false,
-
-      link: '/analyze?label=https%3A%2F%2Fgitee.com%2Fopengauss%2FopenGauss-server&label=https%3A%2F%2Fgithub.com%2Foceanbase%2Foceanbase&label=https%3A%2F%2Fgithub.com%2Fpingcap%2Ftidb&level=repo',
       svg: <FieldDb />,
+      category: [
+        {
+          name: t('home:hot_fields_content.relational_db'),
+          link: '/analyze?label=https%3A%2F%2Fgitee.com%2Fopengauss%2FopenGauss-server&label=https%3A%2F%2Fgithub.com%2Foceanbase%2Foceanbase&label=https%3A%2F%2Fgithub.com%2Fpingcap%2Ftidb&level=repo',
+        },
+        {
+          name: t('home:hot_fields_content.document_db'),
+          link: '',
+        },
+        {
+          name: t('home:hot_fields_content.time_series_db'),
+          link: '',
+        },
+        {
+          name: t('home:hot_fields_content.graph_db'),
+          link: '',
+        },
+      ],
     },
     {
-      name: t('home:intelligent_terminal_distributed_os'),
+      name: t('home:hot_fields_content.intelligent_terminal_distributed_os'),
       comingSoon: true,
-      link: '',
       svg: <FieldItdo />,
     },
   ];
@@ -87,7 +121,7 @@ const HotFields = () => {
               key={item.name}
               name={item.name}
               comingSoon={item.comingSoon}
-              link={item.link}
+              category={item.category}
               svg={item.svg}
             />
           );

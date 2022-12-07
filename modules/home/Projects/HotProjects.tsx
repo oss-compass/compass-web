@@ -10,6 +10,7 @@ import AngleR from './assets/angle-right.svg';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
+import { useTranslation } from 'react-i18next';
 
 type Repo = NonNullable<OverviewQuery['overview']['trends']>[number];
 
@@ -74,6 +75,7 @@ const Project: React.FC<{
 const HotProjects: React.FC<{
   trends: OverviewQuery['overview']['trends'];
 }> = ({ trends = [] }) => {
+  const { t } = useTranslation();
   const total = trends?.length || 0;
   const [index, setIndex] = useState(1);
   const [interval, setIntervalTime] = useState<number | undefined>(20000);
@@ -97,7 +99,7 @@ const HotProjects: React.FC<{
   return (
     <div className="lg:px-4">
       <div className="mb-6 flex justify-between text-2xl font-bold">
-        Trends
+        {t('home:trends')}
         <div className="flex justify-between py-2">
           <span
             className="mr-2.5 cursor-pointer"
