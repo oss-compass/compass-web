@@ -61,7 +61,7 @@ const UpdatedIssuesCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.updated_issues_count_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#updated-issues-count'}
+      docLink={'/docs/metrics-models/robustness/activity/#updated-issues-count'}
     >
       {(ref) => {
         return (

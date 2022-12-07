@@ -61,7 +61,9 @@ const RecentReleasesCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.recent_releases_count_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#recent-releases-count'}
+      docLink={
+        '/docs/metrics-models/robustness/activity/#recent-releases-count'
+      }
     >
       {(ref) => {
         return (

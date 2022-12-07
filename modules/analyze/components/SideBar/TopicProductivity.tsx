@@ -6,8 +6,8 @@ import MenuTopicItem from './Menu/MenuTopicItem';
 import MenuItem from './Menu/MenuItem';
 import MenuSubItem from './Menu/MenuSubItem';
 import {
-  CodeQuality,
-  useCodeQualityGuarantee,
+  CollaborationDevelopment,
+  useCollaborationDevelopmentIndex,
   useCommunityServiceAndSupport,
   Support,
   Topic,
@@ -17,18 +17,18 @@ import { SideBarContext } from '@modules/analyze/context/SideBarContext';
 const Productivity = () => {
   const { t } = useTranslation();
   const { menuId, subMenuId } = useContext(SideBarContext);
-  const codeQualityGuarantee = useCodeQualityGuarantee();
+  const collaborationDevelopmentIndex = useCollaborationDevelopmentIndex();
   const communityServiceAndSupport = useCommunityServiceAndSupport();
 
   const menu = (
     <>
       <MenuItem
-        active={menuId === CodeQuality.Overview}
-        id={CodeQuality.Overview}
+        active={menuId === CollaborationDevelopment.Overview}
+        id={CollaborationDevelopment.Overview}
         leftIcons={<Chaoss />}
         subMenu={
           <>
-            {codeQualityGuarantee.groups.map((item) => {
+            {collaborationDevelopmentIndex.groups.map((item) => {
               return (
                 <MenuSubItem
                   key={item.id}
@@ -42,16 +42,7 @@ const Productivity = () => {
           </>
         }
       >
-        {t('metrics_models:code_quality_guarantee.title')}
-      </MenuItem>
-      <MenuItem id="2" disabled>
-        {t('metrics_models:code_security_guarantee.title')}
-      </MenuItem>
-      <MenuItem id="3" disabled>
-        {t('metrics_models:code_compliance_guarantee.title')}
-      </MenuItem>
-      <MenuItem id="4" disabled>
-        {t('metrics_models:content.title')}
+        {t('metrics_models:collaboration_development_index.title')}
       </MenuItem>
       <MenuItem
         active={menuId === Support.Overview}
@@ -74,6 +65,15 @@ const Productivity = () => {
         }
       >
         {t('metrics_models:community_service_and_support.title')}
+      </MenuItem>
+      <MenuItem id="3" disabled>
+        {t('metrics_models:code_compliance_guarantee.title')}
+      </MenuItem>
+      <MenuItem id="2" disabled>
+        {t('metrics_models:code_security_guarantee.title')}
+      </MenuItem>
+      <MenuItem id="4" disabled>
+        {t('metrics_models:content.title')}
       </MenuItem>
     </>
   );

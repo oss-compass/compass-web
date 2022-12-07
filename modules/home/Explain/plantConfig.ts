@@ -26,10 +26,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.metrics.contributor_count'
+          'metrics_models:collaboration_development_index.metrics.contributor_count'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.contributor_count_desc'
+          'metrics_models:collaboration_development_index.metrics.contributor_count_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#contributor-count',
       },
@@ -41,10 +41,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.metrics.commit_frequency'
+          'metrics_models:collaboration_development_index.metrics.commit_frequency'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.commit_frequency_desc'
+          'metrics_models:collaboration_development_index.metrics.commit_frequency_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#commit-frequency',
       },
@@ -55,9 +55,11 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       size: 62,
       color: 'productivity',
       popContent: {
-        title: t('metrics_models:code_quality_guarantee.metrics.is_maintained'),
+        title: t(
+          'metrics_models:collaboration_development_index.metrics.is_maintained'
+        ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.is_maintained_desc'
+          'metrics_models:collaboration_development_index.metrics.is_maintained_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#is-maintained',
       },
@@ -69,10 +71,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio'
+          'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio_desc'
+          'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#contributor-count',
       },
@@ -84,10 +86,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio'
+          'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio_desc'
+          'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#pr-issue-linked-ratio',
       },
@@ -99,10 +101,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.metrics.code_review_ratio'
+          'metrics_models:collaboration_development_index.metrics.code_review_ratio'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.code_review_ratio_desc'
+          'metrics_models:collaboration_development_index.metrics.code_review_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#code-review-ratio',
       },
@@ -114,10 +116,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.metrics.code_merge_ratio'
+          'metrics_models:collaboration_development_index.metrics.code_merge_ratio'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.code_merge_ratio_desc'
+          'metrics_models:collaboration_development_index.metrics.code_merge_ratio_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#code-merge-ratio',
       },
@@ -129,10 +131,10 @@ const useCodeQualityGuarantee = (): PlantList[] => {
       color: 'productivity',
       popContent: {
         title: t(
-          'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency'
+          'metrics_models:collaboration_development_index.metrics.lines_of_code_frequency'
         ),
         content: t(
-          'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency_desc'
+          'metrics_models:collaboration_development_index.metrics.lines_of_code_frequency_desc'
         ),
         hash: '/docs/metrics-models/productivity/code-quality-guarantee#lines-of-code-frequency',
       },

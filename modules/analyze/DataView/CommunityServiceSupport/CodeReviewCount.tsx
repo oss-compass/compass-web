@@ -60,7 +60,7 @@ const CodeReviewCount = () => {
         'metrics_models:community_service_and_support.metrics.code_review_count_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/niche-creation/#code-review-count'
+        '/docs/metrics-models/productivity/community-service-and-support/#code-review-count'
       }
     >
       {(ref) => {

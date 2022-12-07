@@ -5,10 +5,7 @@ import {
   line,
   GetChartOptions,
 } from '@modules/analyze/options';
-import {
-  Activity,
-  CodeQuality,
-} from '@modules/analyze/components/SideBar/config';
+import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -60,7 +57,7 @@ const CodeReviewCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.code_review_count_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#code-review-count'}
+      docLink={'/docs/metrics-models/robustness/activity/#code-review-count'}
     >
       {(ref) => {
         return (

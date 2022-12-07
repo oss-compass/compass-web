@@ -5,7 +5,7 @@ import {
   getBarOption,
   GetChartOptions,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 
 import {
   getLegendName,
@@ -66,14 +66,14 @@ const LocFrequency = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency'
+        'metrics_models:collaboration_development_index.metrics.lines_of_code_frequency'
       )}
-      id={CodeQuality.LocFrequency}
+      id={CollaborationDevelopment.LocFrequency}
       description={t(
-        'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency_desc'
+        'metrics_models:collaboration_development_index.metrics.lines_of_code_frequency_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/code-quality-guarantee/#lines-of-code-frequency'
+        '/docs/metrics-models/productivity/collaboration-development-index/#lines-of-code-frequency'
       }
     >
       {(ref) => {

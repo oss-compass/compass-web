@@ -3,19 +3,20 @@ import {
   genSeries,
   getLineOption,
   line,
+  lineArea,
   GetChartOptions,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
+import { LineSeriesOption } from 'echarts';
 import Chart from '@modules/analyze/components/Chart';
 
-import { LineSeriesOption } from 'echarts';
+import BaseCard from '@common/components/BaseCard';
+import LoadInView from '@modules/analyze/components/LoadInView';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 
@@ -24,15 +25,12 @@ const tansOpts: TransOpts = {
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     {
-      legendName: 'linked issue ratio',
-      valueKey: 'prIssueLinkedRatio',
+      legendName: 'code review ratio',
+      valueKey: 'codeReviewRatio',
       valueFormat: (v) => toFixed(v * 100, 2),
     },
     { legendName: 'total pr', valueKey: 'prCount' },
-    {
-      legendName: 'linked issue',
-      valueKey: 'prIssueLinkedCount',
-    },
+    { legendName: 'code review', valueKey: 'codeReviewedCount' },
   ],
 };
 
@@ -51,12 +49,13 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         isCompare,
         legendTypeCount: len,
       });
-      if (legendName === 'linked issue ratio') {
+      if (legendName === 'code review ratio') {
         return line({ name, data, color, yAxisIndex: 0 });
       }
       return line({ name, data, color, yAxisIndex: 1 });
     },
   });
+
   return getLineOption({
     xAxisData: xAxis,
     series,
@@ -95,19 +94,20 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
     },
   });
 };
-const PRIssueLinked = () => {
+
+const CodeReviewRatio = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
       title={t(
-        'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio'
+        'metrics_models:collaboration_development_index.metrics.code_review_ratio'
       )}
-      id={CodeQuality.PRIssueLinkedRatio}
+      id={CollaborationDevelopment.CodeReviewRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio_desc'
+        'metrics_models:collaboration_development_index.metrics.code_review_ratio_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/code-quality-guarantee/#pr-issue-linked-ratio'
+        '/docs/metrics-models/productivity/collaboration-development-index/#code-review-ratio'
       }
     >
       {(ref) => {
@@ -121,4 +121,4 @@ const PRIssueLinked = () => {
   );
 };
 
-export default PRIssueLinked;
+export default CodeReviewRatio;

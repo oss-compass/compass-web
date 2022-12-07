@@ -1,22 +1,23 @@
 import React from 'react';
 import {
+  ChartComponentProps,
   genSeries,
   getLineOption,
-  line,
   lineArea,
+  line,
   GetChartOptions,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import Chart from '@modules/analyze/components/Chart';
-
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
+import Chart from '@modules/analyze/components/Chart';
+
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 
@@ -25,12 +26,12 @@ const tansOpts: TransOpts = {
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     {
-      legendName: 'code review ratio',
-      valueKey: 'codeReviewRatio',
+      legendName: 'code merge ratio',
+      valueKey: 'codeMergeRatio',
       valueFormat: (v) => toFixed(v * 100, 2),
     },
     { legendName: 'total pr', valueKey: 'prCount' },
-    { legendName: 'code review', valueKey: 'codeReviewedCount' },
+    { legendName: 'code merge', valueKey: 'codeMergedCount' },
   ],
 };
 
@@ -49,7 +50,7 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         isCompare,
         legendTypeCount: len,
       });
-      if (legendName === 'code review ratio') {
+      if (legendName === 'code merge ratio') {
         return line({ name, data, color, yAxisIndex: 0 });
       }
       return line({ name, data, color, yAxisIndex: 1 });
@@ -95,19 +96,19 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   });
 };
 
-const CodeReviewRatio = () => {
+const CodeMergeRatio = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
       title={t(
-        'metrics_models:code_quality_guarantee.metrics.code_review_ratio'
+        'metrics_models:collaboration_development_index.metrics.code_merge_ratio'
       )}
-      id={CodeQuality.CodeReviewRatio}
+      id={CollaborationDevelopment.CodeMergeRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.metrics.code_review_ratio_desc'
+        'metrics_models:collaboration_development_index.metrics.code_merge_ratio_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/code-quality-guarantee/#code-review-ratio'
+        '/docs/metrics-models/productivity/collaboration-development-index/#code-merge-ratio'
       }
     >
       {(ref) => {
@@ -121,4 +122,4 @@ const CodeReviewRatio = () => {
   );
 };
 
-export default CodeReviewRatio;
+export default CodeMergeRatio;

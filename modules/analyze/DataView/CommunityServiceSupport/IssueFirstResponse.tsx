@@ -63,7 +63,7 @@ const IssueFirstResponse = () => {
         'metrics_models:community_service_and_support.metrics.issue_first_response_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/niche-creation/#issue-first-response'
+        '/docs/metrics-models/productivity/community-service-and-support/#issue-first-response'
       }
     >
       {(ref) => {

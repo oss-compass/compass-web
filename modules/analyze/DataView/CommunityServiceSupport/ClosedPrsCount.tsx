@@ -59,7 +59,7 @@ const ClosedPrsCount = () => {
         'metrics_models:community_service_and_support.metrics.close_pr_count_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/niche-creation/#close-pr-count'
+        '/docs/metrics-models/productivity/community-service-and-support/#close-pr-count'
       }
     >
       {(ref) => {

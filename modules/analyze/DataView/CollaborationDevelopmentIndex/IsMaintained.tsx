@@ -1,17 +1,17 @@
 import React from 'react';
 import {
   genSeries,
-  getLineOption,
-  line,
+  getBarOption,
+  bar,
   GetChartOptions,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
+import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
@@ -21,18 +21,18 @@ import { useTranslation } from 'next-i18next';
 const tansOpts: TransOpts = {
   metricType: 'metricCodequality',
   xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'commit frequency', valueKey: 'commitFrequency' }],
+  yAxisOpts: [{ legendName: 'is maintained', valueKey: 'isMaintained' }],
 };
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-  const series = genSeries<LineSeriesOption>({
+  const series = genSeries<BarSeriesOption>({
     theme,
     comparesYAxis: yResults,
     seriesEachFunc: (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
-      return line({
+      return bar({
         name: getLegendName(legendName, {
           label,
           compareLabels,
@@ -45,22 +45,22 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     },
   });
-  return getLineOption({ xAxisData: xAxis, series });
+  return getBarOption({ xAxisData: xAxis, series });
 };
 
-const CommitFrequency = () => {
+const IsMaintained = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
       title={t(
-        'metrics_models:code_quality_guarantee.metrics.commit_frequency'
+        'metrics_models:collaboration_development_index.metrics.is_maintained'
       )}
-      id={CodeQuality.CommitFrequency}
+      id={CollaborationDevelopment.IsMaintained}
       description={t(
-        'metrics_models:code_quality_guarantee.metrics.commit_frequency_desc'
+        'metrics_models:collaboration_development_index.metrics.is_maintained_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/code-quality-guarantee/#commit-frequency'
+        '/docs/metrics-models/productivity/collaboration-development-index/#is-maintained'
       }
     >
       {(ref) => {
@@ -74,4 +74,4 @@ const CommitFrequency = () => {
   );
 };
 
-export default CommitFrequency;
+export default IsMaintained;

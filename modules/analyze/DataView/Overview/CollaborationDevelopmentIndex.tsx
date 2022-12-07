@@ -7,7 +7,7 @@ import {
   GetChartOptions,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -20,7 +20,7 @@ import { LineSeriesOption } from 'echarts';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
-const CodeQualityOverview = () => {
+const CollaborationDevelopmentIndex = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
 
@@ -29,7 +29,7 @@ const CodeQualityOverview = () => {
     xAxisKey: 'grimoireCreationDate',
     yAxisOpts: [
       {
-        legendName: 'code quality guarantee',
+        legendName: 'collaboration development index',
         valueKey: 'codeQualityGuarantee',
       },
     ],
@@ -63,10 +63,12 @@ const CodeQualityOverview = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:code_quality_guarantee.title')}
-      id={CodeQuality.Overview}
-      description={t('metrics_models:code_quality_guarantee.desc')}
-      docLink={'docs/metrics-models/productivity/code-quality-guarantee/'}
+      title={t('metrics_models:collaboration_development_index.title')}
+      id={CollaborationDevelopment.Overview}
+      description={t('metrics_models:collaboration_development_index.desc')}
+      docLink={
+        '/docs/metrics-models/productivity/collaboration-development-index/'
+      }
       headRight={
         <ScoreConversion
           onePoint={onePointSys}
@@ -87,4 +89,4 @@ const CodeQualityOverview = () => {
   );
 };
 
-export default CodeQualityOverview;
+export default CollaborationDevelopmentIndex;

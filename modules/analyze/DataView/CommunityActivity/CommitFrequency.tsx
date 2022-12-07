@@ -5,10 +5,7 @@ import {
   getLineOption,
   line,
 } from '@modules/analyze/options';
-import {
-  Activity,
-  CodeQuality,
-} from '@modules/analyze/components/SideBar/config';
+import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -60,7 +57,7 @@ const CommitFrequency = () => {
       description={t(
         'metrics_models:community_activity.metrics.commit_frequency_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#commit-frequency'}
+      docLink={'/docs/metrics-models/robustness/activity/#commit-frequency'}
     >
       {(ref) => {
         return (

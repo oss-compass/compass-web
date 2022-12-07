@@ -57,7 +57,7 @@ const CreatedSince = () => {
       description={t(
         'metrics_models:community_activity.metrics.created_since_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#created-since'}
+      docLink={'/docs/metrics-models/robustness/activity/#created-since'}
     >
       {(ref) => {
         return (

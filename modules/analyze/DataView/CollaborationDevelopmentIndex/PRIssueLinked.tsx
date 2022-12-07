@@ -1,23 +1,21 @@
 import React from 'react';
 import {
-  ChartComponentProps,
   genSeries,
   getLineOption,
-  lineArea,
   line,
   GetChartOptions,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
 
+import { LineSeriesOption } from 'echarts';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 
@@ -26,12 +24,15 @@ const tansOpts: TransOpts = {
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     {
-      legendName: 'code merge ratio',
-      valueKey: 'codeMergeRatio',
+      legendName: 'linked issue ratio',
+      valueKey: 'prIssueLinkedRatio',
       valueFormat: (v) => toFixed(v * 100, 2),
     },
     { legendName: 'total pr', valueKey: 'prCount' },
-    { legendName: 'code merge', valueKey: 'codeMergedCount' },
+    {
+      legendName: 'linked issue',
+      valueKey: 'prIssueLinkedCount',
+    },
   ],
 };
 
@@ -50,13 +51,12 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         isCompare,
         legendTypeCount: len,
       });
-      if (legendName === 'code merge ratio') {
+      if (legendName === 'linked issue ratio') {
         return line({ name, data, color, yAxisIndex: 0 });
       }
       return line({ name, data, color, yAxisIndex: 1 });
     },
   });
-
   return getLineOption({
     xAxisData: xAxis,
     series,
@@ -95,20 +95,19 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
     },
   });
 };
-
-const CodeMergeRatio = () => {
+const PRIssueLinked = () => {
   const { t } = useTranslation();
   return (
     <BaseCard
       title={t(
-        'metrics_models:code_quality_guarantee.metrics.code_merge_ratio'
+        'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio'
       )}
-      id={CodeQuality.CodeMergeRatio}
+      id={CollaborationDevelopment.PRIssueLinkedRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.metrics.code_merge_ratio_desc'
+        'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/code-quality-guarantee/#code-merge-ratio'
+        '/docs/metrics-models/productivity/collaboration-development-index/#pr-issue-linked-ratio'
       }
     >
       {(ref) => {
@@ -122,4 +121,4 @@ const CodeMergeRatio = () => {
   );
 };
 
-export default CodeMergeRatio;
+export default PRIssueLinked;

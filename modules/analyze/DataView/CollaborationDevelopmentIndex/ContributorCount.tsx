@@ -6,7 +6,7 @@ import {
   line,
   GetChartOptions,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -63,14 +63,14 @@ const ContributorCount = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:code_quality_guarantee.metrics.contributor_count'
+        'metrics_models:collaboration_development_index.metrics.contributor_count'
       )}
-      id={CodeQuality.ContributorCount}
+      id={CollaborationDevelopment.ContributorCount}
       description={t(
-        'metrics_models:code_quality_guarantee.metrics.contributor_count_desc'
+        'metrics_models:collaboration_development_index.metrics.contributor_count_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/code-quality-guarantee/#contributor-count'
+        '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
       }
     >
       {(ref) => {

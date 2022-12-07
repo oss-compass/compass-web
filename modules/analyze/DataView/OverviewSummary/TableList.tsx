@@ -123,17 +123,17 @@ const TrendsList: React.FC = () => {
             <tr className="">
               <th style={{ width: '15%' }} />
               <TT className="border-t-[#90E6FF] bg-[#f2fcff]">
-                Code Quality Guarantee
+                {t('metrics_models:collaboration_development_index.title')}
               </TT>
               <TT className="border-t-[#FFB290] bg-[#fff9f3]">
-                Community Service and Support
+                {t('metrics_models:community_service_and_support.title')}
               </TT>
               <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
-                Community Activity
+                {t('metrics_models:community_activity.title')}
               </TT>
               {snapshot.showOrganizations && (
                 <TT className="border-t-[#61a2ff] bg-[#ddebff]">
-                  Organizations Activity
+                  {t('metrics_models:organization_activity.title')}
                 </TT>
               )}
             </tr>

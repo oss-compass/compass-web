@@ -58,7 +58,7 @@ const OrgCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.organization_count_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#organization-count'}
+      docLink={'/docs/metrics-models/robustness/activity/#organization-count'}
     >
       {(ref) => {
         return (

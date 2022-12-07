@@ -59,7 +59,7 @@ const ContributorCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.contributor_count_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#contributor-count'}
+      docLink={'/docs/metrics-models/robustness/activity/#contributor-count'}
     >
       {(ref) => {
         return (

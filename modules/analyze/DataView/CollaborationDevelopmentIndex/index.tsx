@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
 
-import CodeQualityOverview from '../Overview/CodeQuality';
+import CollaborationDevelopmentIndex from '../Overview/CollaborationDevelopmentIndex';
 
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
@@ -16,16 +16,16 @@ import LocFrequency from './LocFrequency';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 
-const CodeQuality = () => {
+const CollaborationDevelopmentIndexOverview = () => {
   const { t } = useTranslation();
   return (
     <>
-      <SectionTitle id={Section.CodeQualityGuarantee}>
-        {t('metrics_models:code_quality_guarantee.title')}
+      <SectionTitle id={Section.CollaborationDevelopmentIndex}>
+        {t('metrics_models:collaboration_development_index.title')}
       </SectionTitle>
 
       <div className="mb-4">
-        <CodeQualityOverview />
+        <CollaborationDevelopmentIndex />
       </div>
 
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
@@ -42,7 +42,7 @@ const CodeQuality = () => {
   );
 };
 
-export default withErrorBoundary(CodeQuality, {
+export default withErrorBoundary(CollaborationDevelopmentIndexOverview, {
   FallbackComponent: ErrorFallback,
   onError(error, info) {
     console.log(error, info);

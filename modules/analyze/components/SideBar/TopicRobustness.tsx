@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'next-i18next';
 import RobustnessIcon from './assets/Robustness.svg';
-import { Activity, CodeQuality, useCommunityActivity, Topic } from './config';
+import { Activity, useCommunityActivity, Topic } from './config';
 import MenuItem from './Menu/MenuItem';
 import MenuTopicItem from './Menu/MenuTopicItem';
 import MenuSubItem from './Menu/MenuSubItem';

@@ -57,7 +57,7 @@ const UpdatedSince = () => {
       description={t(
         'metrics_models:community_activity.metrics.updated_since_desc'
       )}
-      docLink={'docs/metrics-models/robustness/activity/#updated-since'}
+      docLink={'/docs/metrics-models/robustness/activity/#updated-since'}
     >
       {(ref) => {
         return (

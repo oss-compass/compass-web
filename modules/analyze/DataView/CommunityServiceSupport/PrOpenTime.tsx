@@ -62,7 +62,9 @@ const PrOpenTime = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.pr_open_time_desc'
       )}
-      docLink={'docs/metrics-models/productivity/niche-creation/#pr-open-time'}
+      docLink={
+        '/docs/metrics-models/productivity/community-service-and-support/#pr-open-time'
+      }
     >
       {(ref) => {
         return (

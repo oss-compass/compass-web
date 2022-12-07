@@ -62,7 +62,7 @@ const ContributionLast = () => {
         'metrics_models:organization_activity.metrics.contribution_last_desc'
       )}
       docLink={
-        'docs/metrics-models/niche-creation/developer-retention/#contribution-last'
+        '/docs/metrics-models/niche-creation/developer-retention/#contribution-last'
       }
     >
       {(ref) => {

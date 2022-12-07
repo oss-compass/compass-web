@@ -5,7 +5,7 @@ import {
   line,
   GetChartOptions,
 } from '@modules/analyze/options';
-import { CodeQuality } from '@modules/analyze/components/SideBar/config';
+import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -98,14 +98,14 @@ const CommitPRLinkedRatio = () => {
   return (
     <BaseCard
       title={t(
-        'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio'
+        'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio'
       )}
-      id={CodeQuality.CommitPRLinkedRatio}
+      id={CollaborationDevelopment.CommitPRLinkedRatio}
       description={t(
-        'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio_desc'
+        'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/code-quality-guarantee/#commit-pr-linked-ratio'
+        '/docs/metrics-models/productivity/collaboration-development-index/#commit-pr-linked-ratio'
       }
     >
       {(ref) => {
