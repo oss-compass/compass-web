@@ -18,7 +18,7 @@ const Hotspots: React.FC<
 
   return (
     <div className="lg:px-4  lg:pb-10">
-      <div className="mb-6 text-2xl font-bold">{t('home:hotspots')}</div>
+      <div className="mb-6 text-2xl font-bold">{t('home:facts')}</div>
       <div className="relative mb-6 flex h-[139px] w-[496px] flex-col justify-center rounded bg-black lg:w-full">
         <h3 className="mb-6 text-center text-gray-100">{t('home:projects')}</h3>
         <div className="text-center text-4xl font-semibold italic text-white">

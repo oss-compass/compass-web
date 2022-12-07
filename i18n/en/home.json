@@ -1,5 +1,11 @@
 {
-  "hotspots": "Hotspots",
+  "artificial_intelligence": "Artificial Intelligence",
+  "server_os": "Server OS",
+  "database": "Database",
+  "intelligent_terminal_distributed_os": "Intelligent Terminal Distributed OS",
+  "coming_soon": "Coming Soon",
+  "hot_fields": "Hot Fields",
+  "facts": "Facts",
   "projects": "Projects",
   "dimensions": "Dimensions",
   "models": "Models",
