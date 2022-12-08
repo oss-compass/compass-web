@@ -39,6 +39,7 @@ const CodeReviewRatio = () => {
   };
 
   const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+    const isCompare = yResults.length > 1;
     const series = genSeries<LineSeriesOption>({
       theme,
       comparesYAxis: yResults,
@@ -60,15 +61,6 @@ const CodeReviewRatio = () => {
       },
     });
 
-    const legendSelected = series.reduce<{ [key: string]: boolean }>(
-      (acc, cur) => {
-        const name = cur.name as string;
-        acc[name] = name.indexOf('ratio') > -1;
-        return acc;
-      },
-      {}
-    );
-
     return getLineOption({
       xAxisData: xAxis,
       series,
@@ -77,7 +69,7 @@ const CodeReviewRatio = () => {
         { type: 'value' },
       ],
       legend: {
-        selected: getLegendSelected(series, 'ratio'),
+        selected: isCompare ? getLegendSelected(series, 'ratio') : {},
       },
       tooltip: {
         trigger: 'axis',

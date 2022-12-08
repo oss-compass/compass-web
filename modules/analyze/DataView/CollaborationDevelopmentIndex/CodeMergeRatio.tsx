@@ -37,6 +37,7 @@ const tansOpts: TransOpts = {
 };
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const isCompare = yResults.length > 1;
   const series = genSeries<LineSeriesOption>({
     theme,
     comparesYAxis: yResults,
@@ -66,7 +67,7 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       { type: 'value' },
     ],
     legend: {
-      selected: getLegendSelected(series, 'ratio'),
+      selected: isCompare ? getLegendSelected(series, 'ratio') : {},
     },
     tooltip: {
       trigger: 'axis',

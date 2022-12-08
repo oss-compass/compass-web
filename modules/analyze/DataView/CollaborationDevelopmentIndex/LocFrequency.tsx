@@ -38,6 +38,7 @@ const tansOpts: TransOpts = {
 };
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const isCompare = yResults.length > 1;
   const series = genSeries<BarSeriesOption>({
     theme,
     comparesYAxis: yResults,
@@ -63,7 +64,7 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
     xAxisData: xAxis,
     series,
     legend: {
-      selected: getLegendSelected(series, 'add'),
+      selected: isCompare ? getLegendSelected(series, 'add') : {},
     },
   });
 };
