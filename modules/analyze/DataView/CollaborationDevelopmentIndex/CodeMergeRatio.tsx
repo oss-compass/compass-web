@@ -6,6 +6,7 @@ import {
   lineArea,
   line,
   GetChartOptions,
+  getLegendSelected,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
@@ -64,6 +65,9 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       { type: 'value', axisLabel: { formatter: '{value}%' } },
       { type: 'value' },
     ],
+    legend: {
+      selected: getLegendSelected(series, 'ratio'),
+    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -111,7 +115,7 @@ const CodeMergeRatio = () => {
         '/docs/metrics-models/productivity/collaboration-development-index/#code-merge-ratio'
       }
     >
-      {(ref) => {
+      {(ref, fullScreen) => {
         return (
           <LoadInView containerRef={ref}>
             <Chart getOptions={getOptions} tansOpts={tansOpts} />

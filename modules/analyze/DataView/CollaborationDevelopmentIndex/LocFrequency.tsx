@@ -4,6 +4,7 @@ import {
   genSeries,
   getBarOption,
   GetChartOptions,
+  getLegendSelected,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 
@@ -58,7 +59,13 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     },
   });
-  return getBarOption({ xAxisData: xAxis, series });
+  return getBarOption({
+    xAxisData: xAxis,
+    series,
+    legend: {
+      selected: getLegendSelected(series, 'add'),
+    },
+  });
 };
 
 const LocFrequency = () => {

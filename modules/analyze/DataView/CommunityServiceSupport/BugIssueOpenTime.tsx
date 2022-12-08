@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import {
   genSeries,
   GetChartOptions,
+  getLegendSelected,
   getLineOption,
   line,
 } from '@modules/analyze/options';
@@ -46,7 +47,13 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     },
   });
-  return getLineOption({ xAxisData: xAxis, series });
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    legend: {
+      selected: getLegendSelected(series, 'avg'),
+    },
+  });
 };
 
 const BugIssueOpenTime = () => {

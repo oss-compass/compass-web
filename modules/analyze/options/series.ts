@@ -1,4 +1,4 @@
-import { BarSeriesOption, LineSeriesOption } from 'echarts';
+import { BarSeriesOption, LineSeriesOption, SeriesOption } from 'echarts';
 
 export const line = (
   opts: {
@@ -74,18 +74,10 @@ export const mapToSeries = (
   return func({ name: name, data: values });
 };
 
-export const mapToLineSeries = (
-  arr: any[],
-  key: string,
-  name: string
-): LineSeriesOption => {
-  return mapToSeries(arr, key, name, line);
-};
-
-export const mapToLineAreaSeries = (
-  arr: any[],
-  key: string,
-  name: string
-): LineSeriesOption => {
-  return mapToSeries(arr, key, name, lineArea);
+export const getLegendSelected = (s: SeriesOption[], includeWord: string) => {
+  return s.reduce<{ [key: string]: boolean }>((acc, cur) => {
+    const name = cur.name as string;
+    acc[name] = name.endsWith(includeWord);
+    return acc;
+  }, {});
 };

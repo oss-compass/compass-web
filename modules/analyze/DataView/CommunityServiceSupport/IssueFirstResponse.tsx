@@ -5,6 +5,7 @@ import {
   getLineOption,
   line,
   GetChartOptions,
+  getLegendSelected,
 } from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import {
@@ -48,7 +49,13 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     },
   });
-  return getLineOption({ xAxisData: xAxis, series });
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    legend: {
+      selected: getLegendSelected(series, 'avg'),
+    },
+  });
 };
 
 const IssueFirstResponse = () => {

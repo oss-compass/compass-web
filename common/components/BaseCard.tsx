@@ -31,7 +31,9 @@ interface BaseCardProps {
   description?: string;
   docLink?: string;
   headRight?: ReactNode;
-  children: ((containerRef: RefObject<HTMLElement>) => ReactNode) | ReactNode;
+  children:
+    | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
+    | ReactNode;
 }
 
 const BaseCard: React.FC<BaseCardProps> = ({
@@ -106,7 +108,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
           {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
         </div>
       </div>
-      {typeof children === 'function' ? children(cardRef) : children}
+      {typeof children === 'function'
+        ? children(cardRef, fullScreen)
+        : children}
     </div>
   );
 };
