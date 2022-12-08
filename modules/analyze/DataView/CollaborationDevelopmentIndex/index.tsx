@@ -28,7 +28,7 @@ const CollaborationDevelopmentIndexOverview = () => {
         <CollaborationDevelopmentIndex />
       </div>
 
-      <div className="mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
+      <div className="mb-14 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ContributorCount />
         <CommitFrequency />
         <IsMaintained />
