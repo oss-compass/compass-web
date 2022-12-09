@@ -5,6 +5,7 @@ import {
   getLineOption,
   line,
   GetChartOptions,
+  getLegendSelected,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
@@ -35,6 +36,7 @@ const tansOpts: TransOpts = {
 };
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const isCompare = yResults.length > 1;
   const series = genSeries<LineSeriesOption>({
     theme,
     comparesYAxis: yResults,
@@ -55,7 +57,13 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     },
   });
-  return getLineOption({ xAxisData: xAxis, series });
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    legend: {
+      selected: isCompare ? getLegendSelected(series, 'total') : {},
+    },
+  });
 };
 
 const ContributorCount = () => {

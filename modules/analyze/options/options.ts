@@ -37,7 +37,7 @@ const gridVerticalMode: EChartsOption['grid'] = {
   containLabel: true,
 };
 
-const legend: EChartsOption['legend'] = {
+const defaultLegend: EChartsOption['legend'] = {
   type: 'scroll',
   icon: 'circle',
   left: 10,
@@ -70,14 +70,15 @@ export const getLineOption = (
     xAxisData: string[];
     series: LineSeriesOption[];
     tooltip?: EChartsOption['tooltip'];
+    legend?: EChartsOption['legend'];
   } & EChartsOption
 ): EChartsOption => {
-  const { xAxisData, series, tooltip, ...restOpts } = opts;
+  const { xAxisData, series, legend, tooltip, ...restOpts } = opts;
   return {
     color: colors,
     title: {},
     tooltip: tooltip ? tooltip : defaultTooltip,
-    legend,
+    legend: legend ? { ...defaultLegend, ...legend } : defaultLegend,
     grid,
     xAxis: categoryAxis(xAxisData),
     yAxis: {
@@ -93,14 +94,15 @@ export const getBarOption = (
   opts: {
     xAxisData: string[];
     series: BarSeriesOption[];
+    legend?: EChartsOption['legend'];
   } & EChartsOption
 ): EChartsOption => {
-  const { xAxisData, series, ...restOpts } = opts;
+  const { xAxisData, series, legend, ...restOpts } = opts;
   return {
     color: colors,
     title: {},
     tooltip: defaultTooltip,
-    legend,
+    legend: legend ? { ...defaultLegend, ...legend } : defaultLegend,
     grid,
     xAxis: categoryAxis(xAxisData),
     yAxis: {

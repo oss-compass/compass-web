@@ -4,6 +4,7 @@ import {
   genSeries,
   getBarOption,
   GetChartOptions,
+  getLegendSelected,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 
@@ -37,6 +38,7 @@ const tansOpts: TransOpts = {
 };
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const isCompare = yResults.length > 1;
   const series = genSeries<BarSeriesOption>({
     theme,
     comparesYAxis: yResults,
@@ -58,7 +60,13 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     },
   });
-  return getBarOption({ xAxisData: xAxis, series });
+  return getBarOption({
+    xAxisData: xAxis,
+    series,
+    legend: {
+      selected: isCompare ? getLegendSelected(series, 'add') : {},
+    },
+  });
 };
 
 const LocFrequency = () => {
