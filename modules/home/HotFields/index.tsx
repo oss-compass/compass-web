@@ -82,7 +82,7 @@ const HotFields = () => {
       category: [
         {
           name: t('home:hot_fields_content.relational_db'),
-          link: '/analyze?label=https%3A%2F%2Fgitee.com%2Fopengauss%2FopenGauss-server&label=https%3A%2F%2Fgithub.com%2Foceanbase%2Foceanbase&label=https%3A%2F%2Fgithub.com%2Fpingcap%2Ftidb&level=repo',
+          link: '/analyze?label=https%3A%2F%2Fgitee.com%2Fopengauss%2FopenGauss-server&label=https%3A%2F%2Fgithub.com%2Foceanbase%2Foceanbase&label=https%3A%2F%2Fgithub.com%2Fpingcap%2Ftidb&label=https%3A%2F%2Fgithub.com%2FMariaDB%2Fserver&label=https%3A%2F%2Fgithub.com%2Fpostgres%2Fpostgres&level=repo',
         },
         {
           name: t('home:hot_fields_content.document_db'),
