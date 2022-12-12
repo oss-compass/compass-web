@@ -12,7 +12,7 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
+
 import Chart from '@modules/analyze/components/Chart';
 
 import { LineSeriesOption } from 'echarts';
@@ -63,9 +63,11 @@ const OrgCount = () => {
     >
       {(ref) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <Chart
+            containerRef={ref}
+            getOptions={getOptions}
+            tansOpts={tansOpts}
+          />
         );
       }}
     </BaseCard>

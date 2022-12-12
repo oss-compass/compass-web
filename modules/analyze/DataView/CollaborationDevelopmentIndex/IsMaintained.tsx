@@ -13,7 +13,7 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
+
 import Chart from '@modules/analyze/components/Chart';
 
 import { useTranslation } from 'next-i18next';
@@ -65,9 +65,11 @@ const IsMaintained = () => {
     >
       {(ref) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <Chart
+            containerRef={ref}
+            getOptions={getOptions}
+            tansOpts={tansOpts}
+          />
         );
       }}
     </BaseCard>

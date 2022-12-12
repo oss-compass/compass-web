@@ -15,59 +15,59 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
 import Chart from '@modules/analyze/components/Chart';
-
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    { legendName: 'total', valueKey: 'contributorCount' },
-    {
-      legendName: 'code reviewer',
-      valueKey: 'activeC1PrCommentsContributorCount',
-    },
-    {
-      legendName: 'pr creator',
-      valueKey: 'activeC1PrCreateContributorCount',
-    },
-    { legendName: 'commit author', valueKey: 'activeC2ContributorCount' },
-  ],
-};
-
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-  const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    comparesYAxis: yResults,
-    seriesEachFunc: (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
-        data: data,
-        color,
-      });
-    },
-  });
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'total') : {},
-    },
-  });
-};
 
 const ContributorCount = () => {
   const { t } = useTranslation();
+
+  const tansOpts: TransOpts = {
+    metricType: 'metricCodequality',
+    xAxisKey: 'grimoireCreationDate',
+    yAxisOpts: [
+      { legendName: 'total', valueKey: 'contributorCount' },
+      {
+        legendName: 'code reviewer',
+        valueKey: 'activeC1PrCommentsContributorCount',
+      },
+      {
+        legendName: 'pr creator',
+        valueKey: 'activeC1PrCreateContributorCount',
+      },
+      { legendName: 'commit author', valueKey: 'activeC2ContributorCount' },
+    ],
+  };
+
+  const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+    const isCompare = yResults.length > 1;
+    const series = genSeries<LineSeriesOption>({
+      theme,
+      comparesYAxis: yResults,
+      seriesEachFunc: (
+        { legendName, label, compareLabels, level, isCompare, color, data },
+        len
+      ) => {
+        return line({
+          name: getLegendName(legendName, {
+            label,
+            compareLabels,
+            level,
+            isCompare,
+            legendTypeCount: len,
+          }),
+          data: data,
+          color,
+        });
+      },
+    });
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: {
+        selected: isCompare ? getLegendSelected(series, 'total') : {},
+      },
+    });
+  };
+
   return (
     <BaseCard
       title={t(
@@ -81,11 +81,13 @@ const ContributorCount = () => {
         '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
       }
     >
-      {(ref) => {
+      {(ref, fullScreen) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <Chart
+            containerRef={ref}
+            getOptions={getOptions}
+            tansOpts={tansOpts}
+          />
         );
       }}
     </BaseCard>

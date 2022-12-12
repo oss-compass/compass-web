@@ -17,7 +17,6 @@ import { LineSeriesOption } from 'echarts';
 import Chart from '@modules/analyze/components/Chart';
 
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 
@@ -118,9 +117,11 @@ const CodeReviewRatio = () => {
     >
       {(ref) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <Chart
+            containerRef={ref}
+            getOptions={getOptions}
+            tansOpts={tansOpts}
+          />
         );
       }}
     </BaseCard>

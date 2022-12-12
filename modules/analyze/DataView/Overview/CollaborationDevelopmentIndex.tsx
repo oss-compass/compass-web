@@ -13,7 +13,7 @@ import {
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import LoadInView from '@modules/analyze/components/LoadInView';
+
 import Chart from '@modules/analyze/components/Chart';
 
 import { LineSeriesOption } from 'echarts';
@@ -80,9 +80,11 @@ const CollaborationDevelopmentIndex = () => {
     >
       {(ref) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <Chart
+            containerRef={ref}
+            getOptions={getOptions}
+            tansOpts={tansOpts}
+          />
         );
       }}
     </BaseCard>

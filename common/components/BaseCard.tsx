@@ -1,6 +1,7 @@
 import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
 import LinkX from '@common/components/LinkX';
+import LoadInView from '@common/components/LoadInView';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -108,9 +109,11 @@ const BaseCard: React.FC<BaseCardProps> = ({
           {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
         </div>
       </div>
-      {typeof children === 'function'
-        ? children(cardRef, fullScreen)
-        : children}
+      <LoadInView containerRef={cardRef}>
+        {typeof children === 'function'
+          ? children(cardRef, fullScreen)
+          : children}
+      </LoadInView>
     </div>
   );
 };
