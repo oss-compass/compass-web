@@ -18,7 +18,7 @@
     {
       "label": "https://github.com/graphql-go/graphql",
       "level": "repo",
-      "yAxisResult": [
+      "result": [
         {
           "key": "commitFrequency",
           "legendName": "Commit Frequency",
@@ -40,7 +40,7 @@
     {
       "label": "https://github.com/rails/rails",
       "level": "repo",
-      "yAxisResult": [
+      "result": [
         {
           "key": "commitFrequency",
           "legendName": "Commit Frequency",
@@ -62,7 +62,7 @@
     {
       "label": "https://github.com/emacs-eaf/eaf-git",
       "level": "repo",
-      "yAxisResult": [
+      "result": [
         {
           "key": "commitFrequency",
           "legendName": "Commit Frequency",

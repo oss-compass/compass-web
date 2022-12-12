@@ -86,7 +86,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h3>
-      <p className="mb-8 text-sm text-gray-600">
+      <p className="mb-4 text-sm text-gray-600">
         {description}
         {docLink && (
           <>

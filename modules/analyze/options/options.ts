@@ -160,19 +160,19 @@ export type SeriesEachFunc<T> = (
 ) => T | null;
 
 export function genSeries<T>(opt: {
-  comparesYAxis: YResult[];
-  seriesEachFunc: SeriesEachFunc<T>;
   theme?: DeepReadonly<ChartThemeState>;
+  yResults: YResult[];
+  seriesEachFunc: SeriesEachFunc<T>;
 }) {
-  const { comparesYAxis, seriesEachFunc, theme } = opt;
+  const { yResults, seriesEachFunc, theme } = opt;
+  const isCompare = yResults.length > 1;
+  const compareLabels = yResults.map((i) => i.label);
 
-  const isCompare = comparesYAxis.length > 1;
-  const compareLabels = comparesYAxis.map((i) => i.label);
-  return comparesYAxis.reduce<T[]>((acc, { label, level, yAxisResult }) => {
+  return yResults.reduce<T[]>((acc, { label, level, result }) => {
     const paletteIndex = getPaletteIndex(theme, label);
     const palette = getPalette(paletteIndex);
 
-    const result = yAxisResult
+    const series = result
       .map((item, legendIndex) => {
         const color = isCompare
           ? getPaletteColor(palette, legendIndex + 3)
@@ -181,11 +181,11 @@ export function genSeries<T>(opt: {
         // foreach series gen item
         return seriesEachFunc(
           { isCompare, color: color, level, label, compareLabels, ...item },
-          yAxisResult.length
+          result.length
         );
       })
       .filter(Boolean) as T[];
-    acc = [...acc, ...result];
+    acc = [...acc, ...series];
     return acc;
   }, []);
 }

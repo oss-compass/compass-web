@@ -21,7 +21,7 @@ interface DateItem {
 export interface YResult {
   label: string;
   level: Level;
-  yAxisResult: {
+  result: {
     legendName: string;
     key: string;
     data: (string | number)[];
@@ -72,7 +72,7 @@ export function transToAxis(
       return getUnixTime(parseISO(a)) - getUnixTime(parseISO(b));
     });
 
-    const yAxisResult: any = [];
+    const result: YResult['result'] = [];
     yAxisOpts.forEach((yAxisOpt) => {
       const {
         valueKey,
@@ -80,7 +80,7 @@ export function transToAxis(
         valueFormat = (v) => toFixed(v, 3),
       } = yAxisOpt;
 
-      yAxisResult.push({
+      result.push({
         key: valueKey,
         legendName,
         data: xAxis.map((xAxis) => {
@@ -95,7 +95,7 @@ export function transToAxis(
       });
     });
 
-    yResults.push({ label: repo.label, level: repo.level, yAxisResult });
+    yResults.push({ label: repo.label, level: repo.level, result });
   });
 
   return {

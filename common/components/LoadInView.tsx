@@ -18,7 +18,7 @@ const LoadInView: React.FC<
   const isRender = inView || showed.current;
 
   return (
-    <div className={classnames(className, 'h-[350px]')}>
+    <div className={classnames(className)}>
       {isRender ? <>{children}</> : null}
     </div>
   );

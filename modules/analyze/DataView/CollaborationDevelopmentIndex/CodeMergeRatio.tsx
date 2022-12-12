@@ -40,7 +40,7 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
   const series = genSeries<LineSeriesOption>({
     theme,
-    comparesYAxis: yResults,
+    yResults,
     seriesEachFunc: (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
   genSeries,
@@ -11,62 +11,82 @@ import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/co
 import {
   getLegendName,
   TransOpts,
-  TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
+import Tab from '@common/components/Tab';
 import Chart from '@modules/analyze/components/Chart';
+
+const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const series = genSeries<LineSeriesOption>({
+    theme,
+    yResults,
+    seriesEachFunc: (
+      { legendName, label, compareLabels, level, isCompare, color, data },
+      len
+    ) => {
+      return line({
+        name: getLegendName(legendName, {
+          label,
+          compareLabels,
+          level,
+          isCompare,
+          legendTypeCount: len,
+        }),
+        data: data,
+        color,
+      });
+    },
+  });
+
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+  });
+};
+
+const chartTabs = {
+  '1': [{ legendName: 'total', valueKey: 'contributorCount' }],
+  '2': [
+    {
+      legendName: 'code reviewer',
+      valueKey: 'activeC1PrCommentsContributorCount',
+    },
+  ],
+  '3': [
+    {
+      legendName: 'pr creator',
+      valueKey: 'activeC1PrCreateContributorCount',
+    },
+  ],
+  '4': [
+    {
+      legendName: 'commit author',
+      valueKey: 'activeC2ContributorCount',
+    },
+  ],
+};
+
+type TabValue = keyof typeof chartTabs;
+
+const tabOptions = [
+  { label: 'total', value: '1' },
+  { label: 'code reviewer', value: '2' },
+  { label: 'pr creator', value: '3' },
+  { label: 'commit author', value: '4' },
+];
 
 const ContributorCount = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
 
-  const tansOpts: TransOpts = {
-    metricType: 'metricCodequality',
-    xAxisKey: 'grimoireCreationDate',
-    yAxisOpts: [
-      { legendName: 'total', valueKey: 'contributorCount' },
-      {
-        legendName: 'code reviewer',
-        valueKey: 'activeC1PrCommentsContributorCount',
-      },
-      {
-        legendName: 'pr creator',
-        valueKey: 'activeC1PrCreateContributorCount',
-      },
-      { legendName: 'commit author', valueKey: 'activeC2ContributorCount' },
-    ],
-  };
-
-  const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-    const isCompare = yResults.length > 1;
-    const series = genSeries<LineSeriesOption>({
-      theme,
-      comparesYAxis: yResults,
-      seriesEachFunc: (
-        { legendName, label, compareLabels, level, isCompare, color, data },
-        len
-      ) => {
-        return line({
-          name: getLegendName(legendName, {
-            label,
-            compareLabels,
-            level,
-            isCompare,
-            legendTypeCount: len,
-          }),
-          data: data,
-          color,
-        });
-      },
-    });
-    return getLineOption({
-      xAxisData: xAxis,
-      series,
-      legend: {
-        selected: isCompare ? getLegendSelected(series, 'total') : {},
-      },
-    });
-  };
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
 
   return (
     <BaseCard
@@ -83,11 +103,20 @@ const ContributorCount = () => {
     >
       {(ref, fullScreen) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <div>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <Chart
+              containerRef={ref}
+              getOptions={getOptions}
+              tansOpts={tansOpts}
+            />
+          </div>
         );
       }}
     </BaseCard>
