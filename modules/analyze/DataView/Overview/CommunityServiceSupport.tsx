@@ -38,7 +38,8 @@ const CommunityServiceSupportOverview = () => {
     const series = genSeries<LineSeriesOption>({
       theme,
       yResults,
-      seriesEachFunc: (
+    })(
+      (
         { legendName, label, compareLabels, level, isCompare, color, data },
         len
       ) => {
@@ -54,8 +55,8 @@ const CommunityServiceSupportOverview = () => {
           data: data,
           color,
         });
-      },
-    });
+      }
+    );
     return getLineOption({ xAxisData: xAxis, series });
   };
 

@@ -39,7 +39,8 @@ const CollaborationDevelopmentIndex = () => {
     const series = genSeries<LineSeriesOption>({
       theme,
       yResults,
-      seriesEachFunc: (
+    })(
+      (
         { legendName, label, compareLabels, level, isCompare, color, data },
         len
       ) => {
@@ -56,8 +57,8 @@ const CollaborationDevelopmentIndex = () => {
           data: data,
           color,
         });
-      },
-    });
+      }
+    );
     return getLineOption({ xAxisData: xAxis, series });
   };
 

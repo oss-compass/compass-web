@@ -38,13 +38,17 @@ const tansOpts: TransOpts = {
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-    seriesEachFunc: (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
+  const series = genSeries<LineSeriesOption>({ theme, yResults })(
+    (opt, len) => {
+      const {
+        legendName,
+        label,
+        compareLabels,
+        level,
+        isCompare,
+        color,
+        data,
+      } = opt;
       const name = getLegendName(legendName, {
         label,
         compareLabels,
@@ -56,8 +60,8 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         return line({ name, data, color, yAxisIndex: 0 });
       }
       return line({ name, data, color, yAxisIndex: 1 });
-    },
-  });
+    }
+  );
 
   return getLineOption({
     xAxisData: xAxis,

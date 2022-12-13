@@ -33,7 +33,8 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const series = genSeries<LineSeriesOption>({
     theme,
     yResults,
-    seriesEachFunc: (
+  })(
+    (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
@@ -48,8 +49,8 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         data: data,
         color,
       });
-    },
-  });
+    }
+  );
   return getLineOption({
     xAxisData: xAxis,
     series,

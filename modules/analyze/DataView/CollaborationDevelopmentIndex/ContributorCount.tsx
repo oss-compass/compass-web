@@ -18,10 +18,8 @@ import Tab from '@common/components/Tab';
 import Chart from '@modules/analyze/components/Chart';
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-    seriesEachFunc: (
+  const series = genSeries<LineSeriesOption>({ theme, yResults })(
+    (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
@@ -36,8 +34,8 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         data: data,
         color,
       });
-    },
-  });
+    }
+  );
 
   return getLineOption({
     xAxisData: xAxis,

@@ -39,7 +39,8 @@ const OrganizationsActivity = () => {
     const series = genSeries<LineSeriesOption>({
       theme,
       yResults,
-      seriesEachFunc: (
+    })(
+      (
         { legendName, label, compareLabels, level, isCompare, color, data },
         len
       ) => {
@@ -55,8 +56,8 @@ const OrganizationsActivity = () => {
           data: data,
           color,
         });
-      },
-    });
+      }
+    );
     return getLineOption({ xAxisData: xAxis, series });
   };
 

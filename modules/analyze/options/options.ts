@@ -162,30 +162,32 @@ export type SeriesEachFunc<T> = (
 export function genSeries<T>(opt: {
   theme?: DeepReadonly<ChartThemeState>;
   yResults: YResult[];
-  seriesEachFunc: SeriesEachFunc<T>;
 }) {
-  const { yResults, seriesEachFunc, theme } = opt;
+  const { yResults, theme } = opt;
   const isCompare = yResults.length > 1;
   const compareLabels = yResults.map((i) => i.label);
 
-  return yResults.reduce<T[]>((acc, { label, level, result }) => {
-    const paletteIndex = getPaletteIndex(theme, label);
-    const palette = getPalette(paletteIndex);
+  return function (seriesEachFunc: SeriesEachFunc<T>) {
+    return yResults.reduce<T[]>((acc, { label, level, result }) => {
+      const paletteIndex = getPaletteIndex(theme, label);
+      const palette = getPalette(paletteIndex);
 
-    const series = result
-      .map((item, legendIndex) => {
-        const color = isCompare
-          ? getPaletteColor(palette, legendIndex + 3)
-          : '';
+      const series = result
+        .map((item, legendIndex) => {
+          const color = isCompare
+            ? getPaletteColor(palette, legendIndex + 3)
+            : '';
 
-        // foreach series gen item
-        return seriesEachFunc(
-          { isCompare, color: color, level, label, compareLabels, ...item },
-          result.length
-        );
-      })
-      .filter(Boolean) as T[];
-    acc = [...acc, ...series];
-    return acc;
-  }, []);
+          // each series gen item
+          return seriesEachFunc(
+            { isCompare, color: color, level, label, compareLabels, ...item },
+            result.length
+          );
+        })
+        .filter(Boolean) as T[];
+
+      acc = [...acc, ...series];
+      return acc;
+    }, []);
+  };
 }

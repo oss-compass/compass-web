@@ -25,10 +25,8 @@ const tansOpts: TransOpts = {
 };
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-  const series = genSeries<BarSeriesOption>({
-    theme,
-    yResults,
-    seriesEachFunc: (
+  const series = genSeries<BarSeriesOption>({ theme, yResults })(
+    (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
@@ -43,8 +41,8 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         data: data,
         color,
       });
-    },
-  });
+    }
+  );
   return getBarOption({ xAxisData: xAxis, series });
 };
 

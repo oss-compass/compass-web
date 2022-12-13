@@ -39,10 +39,8 @@ const CodeReviewRatio = () => {
 
   const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
     const isCompare = yResults.length > 1;
-    const series = genSeries<LineSeriesOption>({
-      theme,
-      yResults,
-      seriesEachFunc: (
+    const series = genSeries<LineSeriesOption>({ theme, yResults })(
+      (
         { legendName, label, compareLabels, level, isCompare, color, data },
         len
       ) => {
@@ -57,8 +55,8 @@ const CodeReviewRatio = () => {
           return line({ name, data, color, yAxisIndex: 0 });
         }
         return line({ name, data, color, yAxisIndex: 1 });
-      },
-    });
+      }
+    );
 
     return getLineOption({
       xAxisData: xAxis,

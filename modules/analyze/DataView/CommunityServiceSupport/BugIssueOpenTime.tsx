@@ -30,10 +30,8 @@ const tansOpts: TransOpts = {
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-    seriesEachFunc: (opts, len) => {
+  const series = genSeries<LineSeriesOption>({ theme, yResults })(
+    (opts, len) => {
       const getName = getLegendName(opts.legendName, {
         label: opts.label,
         compareLabels: opts.compareLabels,
@@ -46,8 +44,8 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
         data: opts.data,
         color: opts.color,
       });
-    },
-  });
+    }
+  );
   return getLineOption({
     xAxisData: xAxis,
     series,
