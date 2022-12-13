@@ -14,7 +14,8 @@ import {
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 
-import Chart from '@modules/analyze/components/Chart';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
 import { LineSeriesOption } from 'echarts';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
@@ -47,13 +48,7 @@ const CollaborationDevelopmentIndex = () => {
         !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
 
         return line({
-          name: getLegendName(legendName, {
-            label,
-            compareLabels,
-            level,
-            isCompare,
-            legendTypeCount: len,
-          }),
+          name: label,
           data: data,
           color,
         });
@@ -81,11 +76,13 @@ const CollaborationDevelopmentIndex = () => {
     >
       {(ref) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            {(loading, option) => {
+              return (
+                <EChartX containerRef={ref} loading={loading} option={option} />
+              );
+            }}
+          </ChartWithData>
         );
       }}
     </BaseCard>

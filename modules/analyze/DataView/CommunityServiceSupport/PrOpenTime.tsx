@@ -15,7 +15,8 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
 
-import Chart from '@modules/analyze/components/Chart';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
@@ -31,13 +32,7 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       len
     ) => {
       return line({
-        name: getLegendName(legendName, {
-          label,
-          level,
-          compareLabels,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         data: data,
         color,
       });
@@ -96,11 +91,17 @@ const PrOpenTime = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <Chart
-              containerRef={ref}
-              getOptions={getOptions}
-              tansOpts={tansOpts}
-            />
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
           </>
         );
       }}

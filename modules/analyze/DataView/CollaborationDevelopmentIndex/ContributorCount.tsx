@@ -6,6 +6,8 @@ import {
   line,
   GetChartOptions,
   getLegendSelected,
+  getTooltipsFormatter,
+  legendFormat,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
@@ -15,22 +17,20 @@ import {
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import Tab from '@common/components/Tab';
-import Chart from '@modules/analyze/components/Chart';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const series = genSeries<LineSeriesOption>({ theme, yResults })(
     (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
       return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         data: data,
         color,
       });
@@ -40,6 +40,10 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   return getLineOption({
     xAxisData: xAxis,
     series,
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
+    },
   });
 };
 
@@ -109,11 +113,17 @@ const ContributorCount = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <Chart
-              containerRef={ref}
-              getOptions={getOptions}
-              tansOpts={tansOpts}
-            />
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
           </div>
         );
       }}

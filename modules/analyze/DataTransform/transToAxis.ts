@@ -29,6 +29,8 @@ export interface YResult {
 }
 
 export interface TransResult {
+  isCompare: boolean;
+  compareLabels: string[];
   xAxis: string[];
   yResults: YResult[];
 }
@@ -47,7 +49,10 @@ export interface TransOpts {
 export function transToAxis(
   data: Array<DateItem>,
   { metricType, xAxisKey, yAxisOpts }: TransOpts
-): TransResult {
+): {
+  xAxis: string[];
+  yResults: YResult[];
+} {
   let xAxis: string[] = [];
   const tempMap: any = {};
   const yResults: any = [];
@@ -124,11 +129,9 @@ const checkHasSameRepoPath = (label: string, labels: string[]) => {
 export const formatRepoNameV2 = ({
   label,
   compareLabels,
-  level,
 }: {
   label: string;
   compareLabels: string[];
-  level: Level;
 }): {
   name: string;
   meta?: {
@@ -137,7 +140,7 @@ export const formatRepoNameV2 = ({
     showProvider: boolean;
   };
 } => {
-  if (level === Level.REPO) {
+  if (label.indexOf('https://') != -1) {
     const repoName = getRepoName(label);
     const namespace = getNameSpace(label);
     const provider = getProvider(label);

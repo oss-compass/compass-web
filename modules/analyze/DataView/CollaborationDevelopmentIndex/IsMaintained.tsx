@@ -4,6 +4,7 @@ import {
   getBarOption,
   bar,
   GetChartOptions,
+  getTooltipsFormatter,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
@@ -14,7 +15,8 @@ import {
 import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 
-import Chart from '@modules/analyze/components/Chart';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
 
@@ -24,26 +26,29 @@ const tansOpts: TransOpts = {
   yAxisOpts: [{ legendName: 'is maintained', valueKey: 'isMaintained' }],
 };
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const series = genSeries<BarSeriesOption>({ theme, yResults })(
     (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
       return bar({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         data: data,
         color,
       });
     }
   );
-  return getBarOption({ xAxisData: xAxis, series });
+  return getBarOption({
+    xAxisData: xAxis,
+    series,
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
+    },
+  });
 };
 
 const IsMaintained = () => {
@@ -63,11 +68,13 @@ const IsMaintained = () => {
     >
       {(ref) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            {(loading, option) => {
+              return (
+                <EChartX containerRef={ref} loading={loading} option={option} />
+              );
+            }}
+          </ChartWithData>
         );
       }}
     </BaseCard>

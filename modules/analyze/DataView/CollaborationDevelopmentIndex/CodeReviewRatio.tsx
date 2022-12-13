@@ -6,43 +6,37 @@ import {
   lineArea,
   GetChartOptions,
   getLegendSelected,
+  getTooltipsFormatter,
+  legendFormat,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
-  getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
-import Chart from '@modules/analyze/components/Chart';
-
+import ChartWithData from '@modules/analyze/components/ChartWithData';
 import BaseCard from '@common/components/BaseCard';
+import EChartX from '@common/components/EChartX';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-  const isCompare = yResults.length > 1;
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const series = genSeries<LineSeriesOption>({ theme, yResults })(
     (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
-      const name = getLegendName(legendName, {
-        label,
-        compareLabels,
-        level,
-        isCompare,
-        legendTypeCount: len,
-      });
       if (legendName === 'code review ratio') {
-        return line({ name, data, color, yAxisIndex: 0 });
+        return line({ name: label, data, color, yAxisIndex: 0 });
       }
-      return line({ name, data, color, yAxisIndex: 1 });
+      return line({ name: label, data, color, yAxisIndex: 1 });
     }
   );
-
-  console.log(series);
 
   return getLineOption({
     xAxisData: xAxis,
@@ -51,34 +45,9 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       { type: 'value', axisLabel: { formatter: '{value}%' } },
       { type: 'value' },
     ],
+    legend: legendFormat(compareLabels),
     tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-      },
-      order: 'seriesDesc',
-      formatter: function (params: any) {
-        if (!params) return '';
-        let label = '';
-        let tpl = params
-          .map((param: any) => {
-            label = param.axisValueLabel;
-            let data = param.data === null ? '-' : param.data;
-            if (param.seriesName.indexOf('ratio') > -1 && data !== '-') {
-              data += '%';
-            }
-            return `<div style="margin: 5px 0 5px;line-height:1;">${param.marker}
-<span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${param.seriesName}</span>
-<span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${data}</span>
-</div>`;
-          })
-          .join('');
-
-        return (
-          `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${label}</div>` +
-          tpl
-        );
-      },
+      formatter: getTooltipsFormatter({ compareLabels }),
     },
   });
 };
@@ -138,11 +107,17 @@ const CodeReviewRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <Chart
-              containerRef={ref}
-              getOptions={getOptions}
-              tansOpts={tansOpts}
-            />
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
           </>
         );
       }}

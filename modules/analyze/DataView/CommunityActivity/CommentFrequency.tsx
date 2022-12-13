@@ -7,14 +7,14 @@ import {
 } from '@modules/analyze/options';
 import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
-  getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 
-import Chart from '@modules/analyze/components/Chart';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
 
@@ -33,13 +33,7 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       len
     ) => {
       return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         data: data,
         color,
       });
@@ -61,11 +55,13 @@ const CommentFrequency = () => {
     >
       {(ref) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            {(loading, option) => {
+              return (
+                <EChartX containerRef={ref} loading={loading} option={option} />
+              );
+            }}
+          </ChartWithData>
         );
       }}
     </BaseCard>

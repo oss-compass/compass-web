@@ -15,7 +15,8 @@ import {
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 
-import Chart from '@modules/analyze/components/Chart';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
 import { toFixed } from '@common/utils';
@@ -25,15 +26,8 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
   const series = genSeries<LineSeriesOption>({ theme, yResults })(
     (opts, len) => {
-      const getName = getLegendName(opts.legendName, {
-        label: opts.label,
-        compareLabels: opts.compareLabels,
-        level: opts.level,
-        isCompare: opts.isCompare,
-        legendTypeCount: len,
-      });
       return line({
-        name: getName,
+        name: opts.label,
         data: opts.data,
         color: opts.color,
       });
@@ -92,11 +86,17 @@ const BugIssueOpenTime = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <Chart
-              containerRef={ref}
-              getOptions={getOptions}
-              tansOpts={tansOpts}
-            />
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
           </>
         );
       }}

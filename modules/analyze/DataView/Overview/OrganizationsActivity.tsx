@@ -14,7 +14,8 @@ import {
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 
-import Chart from '@modules/analyze/components/Chart';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 
 import { useTranslation } from 'next-i18next';
@@ -46,13 +47,7 @@ const OrganizationsActivity = () => {
       ) => {
         !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
         return line({
-          name: getLegendName(legendName, {
-            label,
-            compareLabels,
-            level,
-            isCompare,
-            legendTypeCount: len,
-          }),
+          name: label,
           data: data,
           color,
         });
@@ -78,11 +73,13 @@ const OrganizationsActivity = () => {
     >
       {(ref) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            {(loading, option) => {
+              return (
+                <EChartX containerRef={ref} loading={loading} option={option} />
+              );
+            }}
+          </ChartWithData>
         );
       }}
     </BaseCard>

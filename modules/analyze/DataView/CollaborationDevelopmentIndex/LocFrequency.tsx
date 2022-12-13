@@ -5,6 +5,7 @@ import {
   getBarOption,
   GetChartOptions,
   getLegendSelected,
+  getTooltipsFormatter,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 
@@ -15,14 +16,16 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-
-import Chart from '@modules/analyze/components/Chart';
-
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const isCompare = yResults.length > 1;
   const series = genSeries<BarSeriesOption>({ theme, yResults })(
     (
@@ -30,13 +33,7 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       len
     ) => {
       return bar({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         stack: label,
         data: data,
         color,
@@ -46,6 +43,9 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   return getBarOption({
     xAxisData: xAxis,
     series,
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
+    },
   });
 };
 
@@ -107,11 +107,17 @@ const LocFrequency = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <Chart
-              containerRef={ref}
-              getOptions={getOptions}
-              tansOpts={tansOpts}
-            />
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
           </>
         );
       }}

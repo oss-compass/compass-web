@@ -146,7 +146,6 @@ const TrendsList: React.FC = () => {
               list.map((item, index) => {
                 const r = formatRepoNameV2({
                   label: item!.label!,
-                  level: item!.level as Level,
                   compareLabels: labels,
                 });
 
