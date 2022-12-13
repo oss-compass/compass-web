@@ -6,6 +6,8 @@ import {
   line,
   GetChartOptions,
   getLegendSelected,
+  legendFormat,
+  getTooltipsFormatter,
 } from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import {
@@ -21,7 +23,10 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const isCompare = yResults.length > 1;
   const series = genSeries<LineSeriesOption>({
     theme,
@@ -41,6 +46,10 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   return getLineOption({
     xAxisData: xAxis,
     series,
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
+    },
   });
 };
 

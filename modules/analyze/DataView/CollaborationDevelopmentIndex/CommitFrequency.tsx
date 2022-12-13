@@ -5,6 +5,7 @@ import {
   line,
   GetChartOptions,
   getTooltipsFormatter,
+  legendFormat,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
@@ -43,6 +44,7 @@ const getOptions: GetChartOptions = (
   return getLineOption({
     xAxisData: xAxis,
     series,
+    legend: legendFormat(compareLabels),
     tooltip: {
       formatter: getTooltipsFormatter({ compareLabels }),
     },
@@ -68,6 +70,8 @@ const CommitFrequency = () => {
         return (
           <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
             {(loading, option) => {
+              console.log('xxxxxxxxxx option', loading, option);
+
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
               );

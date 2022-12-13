@@ -79,8 +79,8 @@ export const getLineOption = (
     color: colors,
     title: {},
     grid,
-    legend: merge(defaultLegend, legend),
-    tooltip: merge(defaultTooltip, tooltip),
+    legend: { ...defaultLegend, ...legend },
+    tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
     yAxis: {
       type: 'value',
@@ -103,8 +103,8 @@ export const getBarOption = (
     color: colors,
     title: {},
     grid,
-    legend: merge(defaultLegend, legend),
-    tooltip: merge(defaultTooltip, tooltip),
+    legend: { ...defaultLegend, ...legend },
+    tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
     yAxis: {
       type: 'value',

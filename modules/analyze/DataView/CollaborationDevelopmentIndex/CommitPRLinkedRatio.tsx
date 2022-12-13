@@ -6,6 +6,7 @@ import {
   GetChartOptions,
   getLegendSelected,
   getTooltipsFormatter,
+  legendFormat,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
@@ -44,6 +45,7 @@ const getOptions: GetChartOptions = (
       { type: 'value', axisLabel: { formatter: '{value}%' } },
       { type: 'value' },
     ],
+    legend: legendFormat(compareLabels),
     tooltip: {
       formatter: getTooltipsFormatter({ compareLabels }),
     },

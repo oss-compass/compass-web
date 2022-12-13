@@ -3,6 +3,8 @@ import {
   genSeries,
   GetChartOptions,
   getLineOption,
+  getTooltipsFormatter,
+  legendFormat,
   line,
 } from '@modules/analyze/options';
 import { Activity } from '@modules/analyze/components/SideBar/config';
@@ -25,7 +27,10 @@ const tansOpts: TransOpts = {
   yAxisOpts: [{ legendName: 'commit frequency', valueKey: 'commitFrequency' }],
 };
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const series = genSeries<LineSeriesOption>({ theme, yResults })(
     (
       { legendName, label, compareLabels, level, isCompare, color, data },
@@ -38,7 +43,14 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     }
   );
-  return getLineOption({ xAxisData: xAxis, series });
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
+    },
+  });
 };
 
 const CommitFrequency = () => {

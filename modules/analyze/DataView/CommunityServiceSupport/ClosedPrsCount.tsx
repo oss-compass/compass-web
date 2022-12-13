@@ -3,6 +3,8 @@ import {
   genSeries,
   GetChartOptions,
   getLineOption,
+  getTooltipsFormatter,
+  legendFormat,
   line,
 } from '@modules/analyze/options';
 import { Activity, Support } from '@modules/analyze/components/SideBar/config';
@@ -24,7 +26,10 @@ const tansOpts: TransOpts = {
   yAxisOpts: [{ legendName: 'closed pr count', valueKey: 'closedPrsCount' }],
 };
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const series = genSeries<LineSeriesOption>({
     theme,
     yResults,
@@ -40,7 +45,14 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     }
   );
-  return getLineOption({ xAxisData: xAxis, series });
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
+    },
+  });
 };
 
 const ClosedPrsCount = () => {

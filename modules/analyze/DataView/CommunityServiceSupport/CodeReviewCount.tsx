@@ -4,6 +4,8 @@ import {
   getLineOption,
   line,
   GetChartOptions,
+  legendFormat,
+  getTooltipsFormatter,
 } from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import {
@@ -25,7 +27,10 @@ const tansOpts: TransOpts = {
   yAxisOpts: [{ legendName: 'code review count', valueKey: 'codeReviewCount' }],
 };
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const series = genSeries<LineSeriesOption>({
     theme,
     yResults,
@@ -41,7 +46,14 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       });
     }
   );
-  return getLineOption({ xAxisData: xAxis, series });
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
+    },
+  });
 };
 
 const CodeReviewCount = () => {
