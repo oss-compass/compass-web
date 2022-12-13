@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   genSeries,
   getLineOption,
@@ -19,20 +19,7 @@ import Chart from '@modules/analyze/components/Chart';
 import { LineSeriesOption } from 'echarts';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
-
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'commit pr linked ratio',
-      valueKey: 'gitPrLinkedRatio',
-      valueFormat: (v) => toFixed(v * 100, 2),
-    },
-    { legendName: 'commit pr', valueKey: 'prCommitCount' },
-    { legendName: 'commit pr linked', valueKey: 'prCommitLinkedCount' },
-  ],
-};
+import Tab from '@common/components/Tab';
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
@@ -62,9 +49,6 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       { type: 'value', axisLabel: { formatter: '{value}%' } },
       { type: 'value' },
     ],
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'ratio') : {},
-    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -96,8 +80,39 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
     },
   });
 };
+
+const tabOptions = [
+  { label: 'commit pr linked ratio', value: '1' },
+  { label: 'commit pr', value: '2' },
+  { label: 'commit pr linked', value: '3' },
+];
+
+const chartTabs = {
+  '1': [
+    {
+      legendName: 'commit pr linked ratio',
+      valueKey: 'gitPrLinkedRatio',
+      valueFormat: (v: number) => toFixed(v * 100, 2),
+    },
+  ],
+  '2': [{ legendName: 'commit pr', valueKey: 'prCommitCount' }],
+  '3': [{ legendName: 'commit pr linked', valueKey: 'prCommitLinkedCount' }],
+};
+
+type TabValue = keyof typeof chartTabs;
+
 const CommitPRLinkedRatio = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
+
   return (
     <BaseCard
       title={t(
@@ -113,11 +128,20 @@ const CommitPRLinkedRatio = () => {
     >
       {(ref) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <Chart
+              containerRef={ref}
+              getOptions={getOptions}
+              tansOpts={tansOpts}
+            />
+          </>
         );
       }}
     </BaseCard>

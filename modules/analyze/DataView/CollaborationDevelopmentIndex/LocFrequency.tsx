@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   bar,
   genSeries,
@@ -20,22 +20,7 @@ import Chart from '@modules/analyze/components/Chart';
 
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
-
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'lines add',
-      valueKey: 'linesAddedFrequency',
-    },
-    {
-      legendName: 'lines remove',
-      valueKey: 'linesRemovedFrequency',
-      valueFormat: (v) => toFixed(v * -1, 3),
-    },
-  ],
-};
+import Tab from '@common/components/Tab';
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
@@ -61,14 +46,44 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   return getBarOption({
     xAxisData: xAxis,
     series,
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'add') : {},
-    },
   });
 };
 
+const chartTabs = {
+  '1': [
+    {
+      legendName: 'lines add',
+      valueKey: 'linesAddedFrequency',
+    },
+  ],
+  '2': [
+    {
+      legendName: 'lines remove',
+      valueKey: 'linesRemovedFrequency',
+      valueFormat: (v: number) => toFixed(v * -1, 3),
+    },
+  ],
+};
+
+type TabValue = keyof typeof chartTabs;
+
+const tabOptions = [
+  { label: 'lines add', value: '1' },
+  { label: 'lines remove', value: '2' },
+];
+
 const LocFrequency = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
+
   return (
     <BaseCard
       title={t(
@@ -84,11 +99,20 @@ const LocFrequency = () => {
     >
       {(ref) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <Chart
+              containerRef={ref}
+              getOptions={getOptions}
+              tansOpts={tansOpts}
+            />
+          </>
         );
       }}
     </BaseCard>

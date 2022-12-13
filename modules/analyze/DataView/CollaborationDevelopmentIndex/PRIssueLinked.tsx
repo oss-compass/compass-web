@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   genSeries,
   getLineOption,
@@ -19,23 +19,7 @@ import Chart from '@modules/analyze/components/Chart';
 import { LineSeriesOption } from 'echarts';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
-
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'linked issue ratio',
-      valueKey: 'prIssueLinkedRatio',
-      valueFormat: (v) => toFixed(v * 100, 2),
-    },
-    { legendName: 'total pr', valueKey: 'prCount' },
-    {
-      legendName: 'linked issue',
-      valueKey: 'prIssueLinkedCount',
-    },
-  ],
-};
+import Tab from '@common/components/Tab';
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
@@ -65,9 +49,6 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       { type: 'value', axisLabel: { formatter: '{value}%' } },
       { type: 'value' },
     ],
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'ratio') : {},
-    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -99,8 +80,43 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
     },
   });
 };
+
+const chartTabs = {
+  '1': [
+    {
+      legendName: 'linked issue ratio',
+      valueKey: 'prIssueLinkedRatio',
+      valueFormat: (v: number) => toFixed(v * 100, 2),
+    },
+  ],
+  '2': [{ legendName: 'total pr', valueKey: 'prCount' }],
+  '3': [
+    {
+      legendName: 'linked issue',
+      valueKey: 'prIssueLinkedCount',
+    },
+  ],
+};
+
+type TabValue = keyof typeof chartTabs;
+
+const tabOptions = [
+  { label: 'linked issue ratio', value: '1' },
+  { label: 'total pr', value: '2' },
+  { label: 'linked issue', value: '3' },
+];
+
 const PRIssueLinked = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
+
   return (
     <BaseCard
       title={t(
@@ -116,11 +132,20 @@ const PRIssueLinked = () => {
     >
       {(ref) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <Chart
+              containerRef={ref}
+              getOptions={getOptions}
+              tansOpts={tansOpts}
+            />
+          </>
         );
       }}
     </BaseCard>

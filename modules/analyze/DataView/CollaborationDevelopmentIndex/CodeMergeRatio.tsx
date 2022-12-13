@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ChartComponentProps,
   genSeries,
@@ -21,20 +21,7 @@ import Chart from '@modules/analyze/components/Chart';
 
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
-
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'code merge ratio',
-      valueKey: 'codeMergeRatio',
-      valueFormat: (v) => toFixed(v * 100, 2),
-    },
-    { legendName: 'total pr', valueKey: 'prCount' },
-    { legendName: 'code merge', valueKey: 'codeMergedCount' },
-  ],
-};
+import Tab from '@common/components/Tab';
 
 const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   const isCompare = yResults.length > 1;
@@ -70,9 +57,6 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       { type: 'value', axisLabel: { formatter: '{value}%' } },
       { type: 'value' },
     ],
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'ratio') : {},
-    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -105,8 +89,37 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
   });
 };
 
+const tabOptions = [
+  { label: 'code merge ratio', value: '1' },
+  { label: 'total pr', value: '2' },
+  { label: 'code merge', value: '3' },
+];
+
+const chartTabs = {
+  '1': [
+    {
+      legendName: 'code merge ratio',
+      valueKey: 'codeMergeRatio',
+      valueFormat: (v: number) => toFixed(v * 100, 2),
+    },
+  ],
+  '2': [{ legendName: 'total pr', valueKey: 'prCount' }],
+  '3': [{ legendName: 'code merge', valueKey: 'codeMergedCount' }],
+};
+
+type TabValue = keyof typeof chartTabs;
 const CodeMergeRatio = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
+
   return (
     <BaseCard
       title={t(
@@ -122,11 +135,20 @@ const CodeMergeRatio = () => {
     >
       {(ref, fullScreen) => {
         return (
-          <Chart
-            containerRef={ref}
-            getOptions={getOptions}
-            tansOpts={tansOpts}
-          />
+          <>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <Chart
+              containerRef={ref}
+              getOptions={getOptions}
+              tansOpts={tansOpts}
+            />
+          </>
         );
       }}
     </BaseCard>
