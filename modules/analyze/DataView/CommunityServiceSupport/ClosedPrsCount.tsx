@@ -3,6 +3,8 @@ import {
   genSeries,
   GetChartOptions,
   getLineOption,
+  getTooltipsFormatter,
+  legendFormat,
   line,
 } from '@modules/analyze/options';
 import { Activity, Support } from '@modules/analyze/components/SideBar/config';
@@ -13,8 +15,9 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
-import Chart from '@modules/analyze/components/Chart';
+
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
@@ -23,28 +26,33 @@ const tansOpts: TransOpts = {
   yAxisOpts: [{ legendName: 'closed pr count', valueKey: 'closedPrsCount' }],
 };
 
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const series = genSeries<LineSeriesOption>({
     theme,
-    comparesYAxis: yResults,
-    seriesEachFunc: (
+    yResults,
+  })(
+    (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
       return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         data: data,
         color,
       });
+    }
+  );
+  return getLineOption({
+    xAxisData: xAxis,
+    series,
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
     },
   });
-  return getLineOption({ xAxisData: xAxis, series });
 };
 
 const ClosedPrsCount = () => {
@@ -59,14 +67,18 @@ const ClosedPrsCount = () => {
         'metrics_models:community_service_and_support.metrics.close_pr_count_desc'
       )}
       docLink={
-        'docs/metrics-models/productivity/niche-creation/#close-pr-count'
+        '/docs/metrics-models/productivity/community-service-and-support/#close-pr-count'
       }
     >
       {(ref) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            {(loading, option) => {
+              return (
+                <EChartX containerRef={ref} loading={loading} option={option} />
+              );
+            }}
+          </ChartWithData>
         );
       }}
     </BaseCard>

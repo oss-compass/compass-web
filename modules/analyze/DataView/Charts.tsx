@@ -6,7 +6,7 @@ import client from '@graphql/client';
 import useCompareItems from '../hooks/useCompareItems';
 import useQueryDateRange from '../hooks/useQueryDateRange';
 import OverviewSummary from './OverviewSummary';
-import CodeQuality from './CodeQuality';
+import CollaborationDevelopmentIndex from './CollaborationDevelopmentIndex';
 import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
 import OrganizationsActivity from './OrganizationsActivity';
@@ -63,7 +63,7 @@ const Charts = () => {
       <TopicTitle id={Topic.Productivity}>
         {t('analyze:topic.productivity')}
       </TopicTitle>
-      <CodeQuality />
+      <CollaborationDevelopmentIndex />
       <CommunityServiceSupport />
 
       <TopicTitle id={Topic.Robustness}>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from 'react-use';
 import {
-  useCodeQualityGuarantee,
+  useCollaborationDevelopmentIndex,
   useCommunityActivity,
   useCommunityServiceAndSupport,
   useOrganizationsActivity,
@@ -9,7 +9,7 @@ import {
 } from './config';
 
 const useHashchangeEvent = () => {
-  const codeQualityGuarantee = useCodeQualityGuarantee();
+  const collaborationDevelopmentIndex = useCollaborationDevelopmentIndex();
   const communityActivity = useCommunityActivity();
   const communityServiceAndSupport = useCommunityServiceAndSupport();
   const organizationsActivity = useOrganizationsActivity();
@@ -53,7 +53,7 @@ const useHashchangeEvent = () => {
 
   return useMemo(() => {
     return [
-      codeQualityGuarantee,
+      collaborationDevelopmentIndex,
       communityServiceAndSupport,
       communityActivity,
       organizationsActivity,
@@ -82,7 +82,13 @@ const useHashchangeEvent = () => {
       },
       { topicId: '', menuId: '', subMenuId: '' }
     );
-  }, [activeId]);
+  }, [
+    activeId,
+    collaborationDevelopmentIndex,
+    communityActivity,
+    communityServiceAndSupport,
+    organizationsActivity,
+  ]);
 };
 
 export default useHashchangeEvent;

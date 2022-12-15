@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'next-i18next';
 import RobustnessIcon from './assets/Robustness.svg';
-import { Activity, CodeQuality, useCommunityActivity, Topic } from './config';
+import { Activity, useCommunityActivity, Topic } from './config';
 import MenuItem from './Menu/MenuItem';
 import MenuTopicItem from './Menu/MenuTopicItem';
 import MenuSubItem from './Menu/MenuSubItem';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';
+import Chaoss from '@common/components/PoweredBy/Chaoss';
 
 const Robustness = () => {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ const Robustness = () => {
       <MenuItem
         active={menuId === Activity.Overview}
         id={Activity.Overview}
+        leftIcons={<Chaoss />}
         subMenu={
           <>
             {communityActivity.groups.map((item) => {

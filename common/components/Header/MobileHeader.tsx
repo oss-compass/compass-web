@@ -6,19 +6,24 @@ import Drawer from '../Drawer';
 
 const headLinks = [
   {
+    title: 'Home',
+    href: '/',
+    icon: null,
+  },
+  {
     title: 'Metrics Models',
     href: '/docs/dimensions-define',
-    icon: <AiOutlineHome />,
+    icon: null,
   },
   {
     title: 'Community',
     href: '/docs/community',
-    icon: <AiOutlineHome />,
+    icon: null,
   },
   {
     title: 'About',
     href: '/docs/about',
-    icon: <AiOutlineHome />,
+    icon: null,
   },
 ];
 

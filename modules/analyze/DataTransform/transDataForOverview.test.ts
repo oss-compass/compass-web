@@ -6,7 +6,7 @@ const opts = [
   {
     type: 'metricCodequality',
     key: 'codeQualityGuarantee',
-    legendName: 'code quality guarantee',
+    legendName: 'collaboration development index',
   },
   {
     type: 'metricCommunity',

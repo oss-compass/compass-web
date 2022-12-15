@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next';
 
-export enum CodeQuality {
-  Overview = 'code_quality_overview',
+export enum CollaborationDevelopment {
+  Overview = 'collaboration_development_index_overview',
   ContributorCount = 'code_quality_contributor_count',
   CommitFrequency = 'code_quality_commit_frequency',
   IsMaintained = 'code_quality_is_maintained',
@@ -55,65 +55,67 @@ export enum Topic {
 }
 
 export enum Section {
-  CodeQualityGuarantee = 'code_quality_guarantee',
+  CollaborationDevelopmentIndex = 'collaboration_development_index',
   CommunityServiceAndSupport = 'community_service_support',
   CommunityActivity = 'community_activity',
   OrganizationsActivity = 'organizations_activity',
 }
 
-export const useCodeQualityGuarantee = () => {
+export const useCollaborationDevelopmentIndex = () => {
   const { t } = useTranslation();
   return {
     topic: Topic.Productivity,
-    name: t('metrics_models:code_quality_guarantee.title'),
-    id: CodeQuality.Overview,
+    name: t('metrics_models:collaboration_development_index.title'),
+    id: CollaborationDevelopment.Overview,
     groups: [
       // { name: 'Overview', id: CodeQuality.Overview },
       {
         name: t(
-          'metrics_models:code_quality_guarantee.metrics.contributor_count'
+          'metrics_models:collaboration_development_index.metrics.contributor_count'
         ),
-        id: CodeQuality.ContributorCount,
+        id: CollaborationDevelopment.ContributorCount,
       },
       {
         name: t(
-          'metrics_models:code_quality_guarantee.metrics.commit_frequency'
+          'metrics_models:collaboration_development_index.metrics.commit_frequency'
         ),
-        id: CodeQuality.CommitFrequency,
-      },
-      {
-        name: t('metrics_models:code_quality_guarantee.metrics.is_maintained'),
-        id: CodeQuality.IsMaintained,
+        id: CollaborationDevelopment.CommitFrequency,
       },
       {
         name: t(
-          'metrics_models:code_quality_guarantee.metrics.commit_pr_linked_ratio'
+          'metrics_models:collaboration_development_index.metrics.is_maintained'
         ),
-        id: CodeQuality.CommitPRLinkedRatio,
+        id: CollaborationDevelopment.IsMaintained,
       },
       {
         name: t(
-          'metrics_models:code_quality_guarantee.metrics.pr_issue_linked_ratio'
+          'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio'
         ),
-        id: CodeQuality.PRIssueLinkedRatio,
+        id: CollaborationDevelopment.CommitPRLinkedRatio,
       },
       {
         name: t(
-          'metrics_models:code_quality_guarantee.metrics.code_review_ratio'
+          'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio'
         ),
-        id: CodeQuality.CodeReviewRatio,
+        id: CollaborationDevelopment.PRIssueLinkedRatio,
       },
       {
         name: t(
-          'metrics_models:code_quality_guarantee.metrics.code_merge_ratio'
+          'metrics_models:collaboration_development_index.metrics.code_review_ratio'
         ),
-        id: CodeQuality.CodeMergeRatio,
+        id: CollaborationDevelopment.CodeReviewRatio,
       },
       {
         name: t(
-          'metrics_models:code_quality_guarantee.metrics.lines_of_code_frequency'
+          'metrics_models:collaboration_development_index.metrics.code_merge_ratio'
         ),
-        id: CodeQuality.LocFrequency,
+        id: CollaborationDevelopment.CodeMergeRatio,
+      },
+      {
+        name: t(
+          'metrics_models:collaboration_development_index.metrics.lines_of_code_frequency'
+        ),
+        id: CollaborationDevelopment.LocFrequency,
       },
     ],
   };

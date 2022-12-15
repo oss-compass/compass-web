@@ -1,10 +1,12 @@
 import set from 'lodash/set';
+import capitalize from 'lodash/capitalize';
 import parseISO from 'date-fns/parseISO';
 import getUnixTime from 'date-fns/getUnixTime';
 import { Level } from '@modules/analyze/constant';
 import { MetricQuery } from '@graphql/generated';
 import {
   formatISO,
+  getNameSpace,
   getPathname,
   getProvider,
   getRepoName,
@@ -20,7 +22,7 @@ interface DateItem {
 export interface YResult {
   label: string;
   level: Level;
-  yAxisResult: {
+  result: {
     legendName: string;
     key: string;
     data: (string | number)[];
@@ -28,6 +30,8 @@ export interface YResult {
 }
 
 export interface TransResult {
+  isCompare: boolean;
+  compareLabels: string[];
   xAxis: string[];
   yResults: YResult[];
 }
@@ -46,7 +50,10 @@ export interface TransOpts {
 export function transToAxis(
   data: Array<DateItem>,
   { metricType, xAxisKey, yAxisOpts }: TransOpts
-): TransResult {
+): {
+  xAxis: string[];
+  yResults: YResult[];
+} {
   let xAxis: string[] = [];
   const tempMap: any = {};
   const yResults: any = [];
@@ -71,7 +78,7 @@ export function transToAxis(
       return getUnixTime(parseISO(a)) - getUnixTime(parseISO(b));
     });
 
-    const yAxisResult: any = [];
+    const result: YResult['result'] = [];
     yAxisOpts.forEach((yAxisOpt) => {
       const {
         valueKey,
@@ -79,7 +86,7 @@ export function transToAxis(
         valueFormat = (v) => toFixed(v, 3),
       } = yAxisOpt;
 
-      yAxisResult.push({
+      result.push({
         key: valueKey,
         legendName,
         data: xAxis.map((xAxis) => {
@@ -94,7 +101,7 @@ export function transToAxis(
       });
     });
 
-    yResults.push({ label: repo.label, level: repo.level, yAxisResult });
+    yResults.push({ label: repo.label, level: repo.level, result });
   });
 
   return {
@@ -119,6 +126,38 @@ const checkHasSameRepoPath = (label: string, labels: string[]) => {
     if (item.indexOf(pathname) > -1) count++;
     return count >= 2;
   });
+};
+export const formatRepoNameV2 = ({
+  label,
+  compareLabels,
+}: {
+  label: string;
+  compareLabels: string[];
+}): {
+  name: string;
+  meta?: {
+    namespace: string;
+    provider: string;
+    showProvider: boolean;
+  };
+} => {
+  if (label.indexOf('https://') != -1) {
+    const repoName = getRepoName(label);
+    const namespace = getNameSpace(label);
+    const provider = getProvider(label);
+    const showProvider = checkHasSameRepoPath(label, compareLabels);
+
+    return {
+      name: repoName,
+      meta: {
+        namespace,
+        provider: capitalize(provider),
+        showProvider,
+      },
+    };
+  } else {
+    return { name: label };
+  }
 };
 
 export const formatRepoName = ({

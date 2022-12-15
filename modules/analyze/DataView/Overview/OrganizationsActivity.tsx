@@ -4,6 +4,8 @@ import {
   getLineOption,
   line,
   GetChartOptions,
+  legendFormat,
+  getTooltipsFormatter,
 } from '@modules/analyze/options';
 import { Organizations } from '@modules/analyze/components/SideBar/config';
 import {
@@ -13,8 +15,9 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
-import Chart from '@modules/analyze/components/Chart';
+
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 
 import { useTranslation } from 'next-i18next';
@@ -35,29 +38,34 @@ const OrganizationsActivity = () => {
     ],
   };
 
-  const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+  const getOptions: GetChartOptions = (
+    { xAxis, compareLabels, yResults },
+    theme
+  ) => {
     const series = genSeries<LineSeriesOption>({
       theme,
-      comparesYAxis: yResults,
-      seriesEachFunc: (
+      yResults,
+    })(
+      (
         { legendName, label, compareLabels, level, isCompare, color, data },
         len
       ) => {
         !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
         return line({
-          name: getLegendName(legendName, {
-            label,
-            compareLabels,
-            level,
-            isCompare,
-            legendTypeCount: len,
-          }),
+          name: label,
           data: data,
           color,
         });
+      }
+    );
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
       },
     });
-    return getLineOption({ xAxisData: xAxis, series });
   };
 
   return (
@@ -65,7 +73,7 @@ const OrganizationsActivity = () => {
       title={t('metrics_models:organization_activity.title')}
       id={Organizations.Overview}
       description={t('metrics_models:organization_activity.desc')}
-      docLink={'docs/metrics-models/niche-creation/developer-retention/'}
+      docLink={'/docs/metrics-models/niche-creation/developer-retention/'}
       headRight={
         <ScoreConversion
           onePoint={onePointSys}
@@ -77,9 +85,13 @@ const OrganizationsActivity = () => {
     >
       {(ref) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            {(loading, option) => {
+              return (
+                <EChartX containerRef={ref} loading={loading} option={option} />
+              );
+            }}
+          </ChartWithData>
         );
       }}
     </BaseCard>

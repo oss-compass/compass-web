@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { AiOutlineArrowRight } from 'react-icons/ai';
-import Link from 'next/link';
+import LinkX from '@common/components/LinkX';
 import { PopContent } from './plantConfig';
 import styles from './index.module.scss';
 import { useTranslation } from 'next-i18next';
@@ -25,11 +25,11 @@ const PopCard: React.FC<{
         {popContent.content}
       </p>
       <div className="flex justify-between">
-        <Link href={popContent.hash}>
+        <LinkX href={popContent.hash}>
           <a className="cursor-pointer text-xs text-[#3A5BEF]">
             {t('common:know_more')}
           </a>
-        </Link>
+        </LinkX>
         <div
           className="flex cursor-pointer items-center text-xs text-gray-400"
           onClick={() => {

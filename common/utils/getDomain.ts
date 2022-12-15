@@ -6,3 +6,10 @@ export const getTopDomain = () => {
   }
   return;
 };
+
+export const getDomain = () => {
+  if (isBrowser()) {
+    return document.domain;
+  }
+  return;
+};

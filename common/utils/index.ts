@@ -1,6 +1,6 @@
 export * from './array';
 export * from './ga';
-export * from './getTopDomain';
+export * from './getDomain';
 export * from './isBrowser';
 export * from './links';
 export * from './misc';

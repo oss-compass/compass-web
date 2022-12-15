@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import LinkX from '@common/components/LinkX';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { AiFillCaretDown } from 'react-icons/ai';
@@ -29,56 +30,56 @@ const CommunityDropdown = () => {
           <div className="mr-4 w-8">
             <Slack />
           </div>
-          <Link href="/docs/community/slack" passHref legacyBehavior>
+          <LinkX href="/docs/community/slack" passHref legacyBehavior>
             <a target="_blank">
               <p className="text-base">{t('common:community.slack')}</p>
               <p className="text-sm text-white/50">
                 {t('common:community.join_slack')}
               </p>
             </a>
-          </Link>
+          </LinkX>
         </li>
 
         <li className={classnames(itemClass, borderClass)}>
           <div className="mr-4 w-8">
             <Wechat />
           </div>
-          <Link href="/docs/community/wechat" passHref legacyBehavior>
+          <LinkX href="/docs/community/wechat" passHref legacyBehavior>
             <a target="_blank">
               <div className="text-base">{t('common:community.wechat')}</div>
               <div className="text-sm text-white/50">
                 {t('common:community.join_wechat')}
               </div>
             </a>
-          </Link>
+          </LinkX>
         </li>
 
         <li className={classnames(itemClass, borderClass)}>
           <div className="mr-4 w-8">
             <Github />
           </div>
-          <Link href="https://github.com/oss-compass" passHref legacyBehavior>
+          <LinkX href="https://github.com/oss-compass" passHref legacyBehavior>
             <a target="_blank" rel="noopener noreferrer">
               <div className="text-base">{t('common:community.github')}</div>
               <div className="text-sm text-white/50">
                 {t('common:community.official_repository_on_github')}
               </div>
             </a>
-          </Link>
+          </LinkX>
         </li>
 
         <li className={classnames(itemClass)}>
           <div className="mr-4 w-8">
             <GiteeRed />
           </div>
-          <Link href="https://gitee.com/oss-compass" passHref legacyBehavior>
+          <LinkX href="https://gitee.com/oss-compass" passHref legacyBehavior>
             <a target="_blank" rel="noopener noreferrer">
               <div className="text-base">{t('common:community.gitee')}</div>
               <div className="text-sm text-white/50">
                 {t('common:community.official_repository_on_gitee')}
               </div>
             </a>
-          </Link>
+          </LinkX>
         </li>
       </ul>
     </div>

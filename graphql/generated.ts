@@ -80,6 +80,42 @@ export type ActivityMetric = {
   updatedSince?: Maybe<Scalars['Float']>;
 };
 
+export type ActivitySummary = {
+  __typename?: 'ActivitySummary';
+  /** number of active C1 issue comments contributors in the past 90 days */
+  activeC1IssueCommentsContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 issue create contributors in the past 90 days */
+  activeC1IssueCreateContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 pr comments contributors in the past 90 days */
+  activeC1PrCommentsContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 pr create contributors in the past 90 days */
+  activeC1PrCreateContributorCount?: Maybe<MetricStat>;
+  /** number of active C2 developers in the past 90 days */
+  activeC2ContributorCount?: Maybe<MetricStat>;
+  /** score of activity metric model */
+  activityScore?: Maybe<MetricStat>;
+  /** number of issues closed in the past 90 days */
+  closedIssuesCount?: Maybe<MetricStat>;
+  /** mean of comments per PR over the past 90 days */
+  codeReviewCount?: Maybe<MetricStat>;
+  /** mean of comments per issue over the past 90 days */
+  commentFrequency?: Maybe<MetricStat>;
+  /** mean of submissions per week over the past 90 days */
+  commitFrequency?: Maybe<MetricStat>;
+  /** number of active D1 developers in the past 90 days */
+  contributorCount?: Maybe<MetricStat>;
+  /** number of months since the project was created */
+  createdSince?: Maybe<MetricStat>;
+  /** organization count */
+  orgCount?: Maybe<MetricStat>;
+  /** number of releases in the last 90 days */
+  recentReleasesCount?: Maybe<MetricStat>;
+  /** number of issue updates in the past 90 days */
+  updatedIssuesCount?: Maybe<MetricStat>;
+  /** (average of months from the last code commit to the time of statistics */
+  updatedSince?: Maybe<MetricStat>;
+};
+
 export type BetaMetric = {
   __typename?: 'BetaMetric';
   createdAt: Scalars['ISO8601DateTime'];
@@ -176,6 +212,52 @@ export type CodequalityMetric = {
   prIssueLinkedRatio?: Maybe<Scalars['Float']>;
 };
 
+export type CodequalitySummary = {
+  __typename?: 'CodequalitySummary';
+  /** number of active C1 pr comments contributors in the past 90 days */
+  activeC1PrCommentsContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 pr create contributors in the past 90 days */
+  activeC1PrCreateContributorCount?: Maybe<MetricStat>;
+  /** number of active C2 developers in the past 90 days */
+  activeC2ContributorCount?: Maybe<MetricStat>;
+  /** ratio of merge pulls and all pulls */
+  codeMergeRatio?: Maybe<MetricStat>;
+  /** merged pr count past 90 days */
+  codeMergedCount?: Maybe<MetricStat>;
+  /** score of code quality metric model */
+  codeQualityGuarantee?: Maybe<MetricStat>;
+  /** ratio of pulls with one more reviewers and all pulls */
+  codeReviewRatio?: Maybe<MetricStat>;
+  /** count of pulls with one more reviewers */
+  codeReviewedCount?: Maybe<MetricStat>;
+  /** mean of submissions per week over the past 90 days */
+  commitFrequency?: Maybe<MetricStat>;
+  /** mean of inside submissions per week over the past 90 days */
+  commitFrequencyInside?: Maybe<MetricStat>;
+  /** number of active D1 developers in the past 90 days */
+  contributorCount?: Maybe<MetricStat>;
+  /** ratio of pr_commit_linked_count and pr_commit_count */
+  gitPrLinkedRatio?: Maybe<MetricStat>;
+  /** maintenance status */
+  isMaintained?: Maybe<MetricStat>;
+  /** average of added lines code each commit */
+  linesAddedFrequency?: Maybe<MetricStat>;
+  /** average of removed lines code each commit */
+  linesRemovedFrequency?: Maybe<MetricStat>;
+  /** average of lines code each commit */
+  locFrequency?: Maybe<MetricStat>;
+  /** pr count base for pr_commit_linked_count past 90 days */
+  prCommitCount?: Maybe<MetricStat>;
+  /** pr with commits linked count past 90 days */
+  prCommitLinkedCount?: Maybe<MetricStat>;
+  /** all pr count past 90 days */
+  prCount?: Maybe<MetricStat>;
+  /** count of pulls which are linked issues */
+  prIssueLinkedCount?: Maybe<MetricStat>;
+  /** ratio of pulls which are linked issues and all pulls */
+  prIssueLinkedRatio?: Maybe<MetricStat>;
+};
+
 export type CommunityMetric = {
   __typename?: 'CommunityMetric';
   /** mean of bug issues open time (days) */
@@ -216,6 +298,36 @@ export type CommunityOverview = {
   __typename?: 'CommunityOverview';
   projectsCount?: Maybe<Scalars['Int']>;
   trends?: Maybe<Array<Repo>>;
+};
+
+export type CommunitySummary = {
+  __typename?: 'CommunitySummary';
+  /** mean of bug issues open time (days) */
+  bugIssueOpenTimeAvg?: Maybe<MetricStat>;
+  /** middle of bug issues open time (days) */
+  bugIssueOpenTimeMid?: Maybe<MetricStat>;
+  /** number of pulls closed in the past 90 days */
+  closedPrsCount?: Maybe<MetricStat>;
+  /** mean of comments per PR over the past 90 days */
+  codeReviewCount?: Maybe<MetricStat>;
+  /** mean of comments per issue over the past 90 days */
+  commentFrequency?: Maybe<MetricStat>;
+  /** score of community support metric model */
+  communitySupportScore?: Maybe<MetricStat>;
+  /** mean of issues first response time (days) */
+  issueFirstReponseAvg?: Maybe<MetricStat>;
+  /** middle of issues first response time (days) */
+  issueFirstReponseMid?: Maybe<MetricStat>;
+  /** mean of issues open time (days) */
+  issueOpenTimeAvg?: Maybe<MetricStat>;
+  /** middle of issues open time (days) */
+  issueOpenTimeMid?: Maybe<MetricStat>;
+  /** mean of pulls open time (days) */
+  prOpenTimeAvg?: Maybe<MetricStat>;
+  /** middle of pulls open time (days) */
+  prOpenTimeMid?: Maybe<MetricStat>;
+  /** number of issue updates in the past 90 days */
+  updatedIssuesCount?: Maybe<MetricStat>;
 };
 
 /** Autogenerated input type of CreateProjectTask */
@@ -300,6 +412,20 @@ export type GroupActivityMetric = {
   organizationsActivity?: Maybe<Scalars['Float']>;
 };
 
+export type GroupActivitySummary = {
+  __typename?: 'GroupActivitySummary';
+  /** mean of submissions per week over the past 90 days */
+  commitFrequency?: Maybe<MetricStat>;
+  /** (average of months from the last org code commit to the time of statistics */
+  contributionLast?: Maybe<MetricStat>;
+  /** number of active D1 developers in the past 90 days */
+  contributorCount?: Maybe<MetricStat>;
+  /** organization count */
+  orgCount?: Maybe<MetricStat>;
+  /** score of organization activity metric model */
+  organizationsActivity?: Maybe<MetricStat>;
+};
+
 export type LatestMetrics = {
   __typename?: 'LatestMetrics';
   /** latest score of activity metric model */
@@ -322,6 +448,30 @@ export type LatestMetrics = {
   organizationsActivity?: Maybe<Scalars['Float']>;
   /** latest score of organizations activity metric model updated_at */
   organizationsActivityUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+};
+
+export type MetricStat = {
+  __typename?: 'MetricStat';
+  /** arithmetic mean */
+  mean?: Maybe<Scalars['Float']>;
+  /** 50 percentile */
+  median?: Maybe<Scalars['Float']>;
+};
+
+export type MetricsSummary = {
+  __typename?: 'MetricsSummary';
+  /** activity metric model summary */
+  activitySummary?: Maybe<ActivitySummary>;
+  /** begin date */
+  beginDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** code quality metric model summary */
+  codequalitySummary?: Maybe<CodequalitySummary>;
+  /** community support metric model summary */
+  communitySummary?: Maybe<CommunitySummary>;
+  /** end date */
+  endDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** organizations activity metric model summary */
+  groupActivitySummary?: Maybe<GroupActivitySummary>;
 };
 
 export type Mutation = {
@@ -388,6 +538,8 @@ export type Query = {
   metricCodequality: Array<CodequalityMetric>;
   /** Get community metrics data of compass */
   metricCommunity: Array<CommunityMetric>;
+  /** Get metrics statics summary */
+  metricsSummary: MetricsSummary;
   /** Get overview data of compass */
   overview: Overview;
 };
@@ -451,6 +603,11 @@ export type QueryMetricCommunityArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryMetricsSummaryArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
 };
 
 export type Repo = {

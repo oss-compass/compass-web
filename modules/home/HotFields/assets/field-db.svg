@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 150 158" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>field-db</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="150" height="158"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-766.000000, -122.000000)">
+            <g id="field-db" transform="translate(766.000000, 122.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Mask"></g>
+                <g id="Group-38" mask="url(#mask-2)">
+                    <g transform="translate(16.000000, 31.000000)">
+                        <polyline id="Path-16" stroke="#979797" stroke-width="0.5" fill="none" points="115.018868 102.516129 115.018868 36.5806452 60.2264151 4.96774194 4.98113208 36.5806452 4.98113208 102.516129"></polyline>
+                        <polygon id="Rectangle" stroke="none" fill="#D8D8D8" fill-rule="evenodd" points="28 52 59 68.2484848 59 103.248485 28 87"></polygon>
+                        <polygon id="Rectangle" stroke="none" fill="#D8D8D8" fill-rule="evenodd" transform="translate(76.900000, 77.624242) scale(-1, 1) translate(-76.900000, -77.624242) " points="61.4 52 92.4 68.2484848 92.4 103.248485 61.4 87"></polygon>
+                        <polygon id="Rectangle" stroke="none" fill="#F2F2F2" fill-rule="evenodd" points="30 50 60 33 90 50 60 66"></polygon>
+                        <polyline id="Path-17" stroke="#979797" stroke-width="0.5" fill="none" points="4.98113208 36.5806452 60.2264151 65.9354839 115.018868 36.5806452"></polyline>
+                        <path d="M4.98113208,102.516129 L60.2264151,135.032258 L115.018868,102.516129" id="Path-18" stroke-opacity="0.25" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1,4"></path>
+                        <line x1="60.2264151" y1="135.032258" x2="60.2264151" y2="65.9354839" id="Path-19" stroke-opacity="0.25" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1,4"></line>
+                        <ellipse id="Oval" stroke="none" fill="#484848" fill-rule="evenodd" cx="60.2264151" cy="4.96774194" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-22" stroke="none" fill="#484848" fill-rule="evenodd" cx="60.2264151" cy="65.9354839" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-18" stroke="none" fill="#484848" fill-rule="evenodd" cx="4.98113208" cy="36.5806452" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-20" stroke="none" fill="#484848" fill-rule="evenodd" cx="115.018868" cy="36.5806452" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-19" stroke="none" fill="#484848" fill-rule="evenodd" cx="4.98113208" cy="102.516129" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-21" stroke="none" fill="#484848" fill-rule="evenodd" cx="115.018868" cy="102.516129" rx="4.98113208" ry="4.96774194"></ellipse>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CodeQuality from './CodeQuality';
+import CollaborationDevelopmentIndex from './CollaborationDevelopmentIndex';
 import CommunityActivity from './CommunityActivity';
 import CommunityServiceSupport from './CommunityServiceSupport';
 
@@ -8,7 +8,7 @@ const OverView = () => {
   return (
     <>
       <div className="mb-4">
-        <CodeQuality />
+        <CollaborationDevelopmentIndex />
       </div>
       <div className="mb-4">
         <CommunityServiceSupport />

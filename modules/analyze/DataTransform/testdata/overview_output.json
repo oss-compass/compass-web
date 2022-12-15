@@ -17,7 +17,7 @@
   "yAxisResult": [
     {
       "name": "codeQualityGuarantee",
-      "legendName": "code quality guarantee",
+      "legendName": "collaboration development index",
       "data": [
         0.39873,
         0.39159,

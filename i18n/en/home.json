@@ -1,5 +1,4 @@
 {
-  "hotspots": "Hotspots",
   "projects": "Projects",
   "dimensions": "Dimensions",
   "models": "Models",
@@ -13,8 +12,23 @@
   "oss_compass_follows_the_best_practices_and_specifi": "OSS Compass follows the best practices and specifications of the CHAOSS project, including metrics models and metrics, with some back-end components originally from Grimoirelabs.",
   "submit_your_project": "Submit your project",
   "community": "Community",
-  "insights_report": "Insights report",
+  "compass_report": "Compass report",
   "nothing_about_yet": "Nothing about <s> {{expr}} </s> yet.",
   "cant_find_the_right_option": "Can't find the right option?",
-  "oss_eco_evaluation_system": "OSS ECO Evaluation System"
+  "oss_eco_evaluation_system": "OSS ECO Evaluation System",
+  "facts": "Facts",
+  "trends": "Activity Trends",
+  "coming_soon": "Coming Soon",
+  "hot_fields": "Hot Fields",
+  "hot_fields_content": {
+    "artificial_intelligence": "Artificial Intelligence",
+    "server_os": "Server OS",
+    "database": "Database",
+    "machine_learning_framework": "Machine Learning Framework",
+    "intelligent_terminal_distributed_os": "Intelligent Terminal Distributed OS",
+    "relational_db": "Relational DB",
+    "document_db": "Document DB",
+    "time_series_db": "Time series DB",
+    "graph_db": "Graph DB"
+  }
 }

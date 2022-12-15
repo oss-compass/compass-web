@@ -12,7 +12,7 @@ import {
   dataState,
   toggleShowOrganizations,
 } from '@modules/analyze/store/dataState';
-import CodeQualityOverview from '@modules/analyze/DataView/Overview/CodeQuality';
+import CollaborationDevelopmentIndex from '@modules/analyze/DataView/Overview/CollaborationDevelopmentIndex';
 
 const ChartsWrap: React.FC<PropsWithChildren> = ({ children }) => {
   const { t } = useTranslation();
@@ -53,7 +53,7 @@ const Charts = () => {
   return (
     <ChartsWrap>
       <div className="mb-4">
-        <CodeQualityOverview />
+        <CollaborationDevelopmentIndex />
       </div>
     </ChartsWrap>
   );

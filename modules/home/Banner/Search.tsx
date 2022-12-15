@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AiOutlineLoading, AiOutlineSearch } from 'react-icons/ai';
 import { useThrottle } from 'ahooks';
+import { useClickAway } from 'react-use';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
@@ -11,6 +12,7 @@ import styles from './index.module.scss';
 
 const Search = () => {
   const { t } = useTranslation();
+  const ref = useRef(null);
   const [keyword, setKeyword] = useState('');
   const throttledKeyword = useThrottle(keyword, { wait: 300 });
   const { isLoading, data, fetchStatus } = useSearchQuery(
@@ -20,11 +22,15 @@ const Search = () => {
   );
   const showLoading = isLoading && fetchStatus === 'fetching';
 
+  useClickAway(ref, () => {
+    setKeyword('');
+  });
+
   return (
     <div
       className={classnames(
-        'absolute bottom-9 -left-[24px] w-[600px] p-6',
-        'md:bottom-6 md:left-0 md:w-[380px]',
+        'absolute bottom-9 -left-6 w-[600px] p-6',
+        'lg:left-0 md:bottom-6 md:w-[380px]',
         styles.searchBg
       )}
     >
@@ -43,7 +49,7 @@ const Search = () => {
       <p className="mb-10 text-lg md:text-sm">
         {t('home:we_help_open_source_projects_gain_insight_into_its')}
       </p>
-      <div className="relative w-[496px] md:w-full">
+      <div className="relative w-[496px] md:w-full" ref={ref}>
         <div className="flex items-center border-2 border-black px-4 md:px-2">
           <input
             value={keyword}
