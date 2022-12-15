@@ -34,6 +34,7 @@ export interface TransResult {
   compareLabels: string[];
   xAxis: string[];
   yResults: YResult[];
+  tabValue?: string;
 }
 
 export interface TransOpts {
@@ -44,6 +45,7 @@ export interface TransOpts {
     valueKey: string;
     valueFormat?: (v: any) => number;
   }[];
+  tabValue?: string;
 }
 
 // todo reduce complexity add generic type
