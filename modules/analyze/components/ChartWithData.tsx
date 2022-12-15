@@ -26,7 +26,7 @@ const ChartWithData: React.FC<{
   const compareLabels = yResults.map((i) => i.label);
   const isCompare = yResults.length > 1;
   const echartsOpts = getOptions(
-    { isCompare, compareLabels, xAxis, yResults },
+    { isCompare, tabValue: tansOpts.tabValue, compareLabels, xAxis, yResults },
     theme
   );
 

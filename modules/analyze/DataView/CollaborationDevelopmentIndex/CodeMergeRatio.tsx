@@ -19,7 +19,7 @@ import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
 
 const getOptions: GetChartOptions = (
-  { isCompare, compareLabels, xAxis, yResults },
+  { isCompare, tabValue, compareLabels, xAxis, yResults },
   theme
 ) => {
   const series = genSeries<LineSeriesOption>({ theme, yResults })(
@@ -46,7 +46,10 @@ const getOptions: GetChartOptions = (
     ],
     legend: legendFormat(compareLabels),
     tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
+      formatter: getTooltipsFormatter({
+        compareLabels,
+        valueFormat: tabValue === '1' ? percentageValueFormat : undefined,
+      }),
     },
   });
 };
@@ -80,6 +83,7 @@ const CodeMergeRatio = () => {
       metricType: 'metricCodequality',
       xAxisKey: 'grimoireCreationDate',
       yAxisOpts: chartTabs[tab],
+      tabValue: tab,
     };
   }, [tab]);
 

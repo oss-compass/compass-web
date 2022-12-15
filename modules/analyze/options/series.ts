@@ -13,6 +13,7 @@ import {
   TopLevelFormatterParams,
 } from 'echarts/types/dist/shared';
 import { formatRepoNameV2 } from '@modules/analyze/DataTransform/transToAxis';
+import isNumber from 'lodash/isNumber';
 
 export const line = (
   opts: {
@@ -174,7 +175,7 @@ const genTooltipsItem = (
        </div>
     </div>
     
-    <div style="margin-left:20px;margin-top:3px;font-size:14px;color:#666;font-weight:900">
+    <div style="margin-left:20px;margin-top:3px;font-size:14px;color:#666;font-weight:500">
       ${valueFormat ? valueFormat(p.value) : formatDataValue(p.value)}
     </div>
   </div>
@@ -191,9 +192,16 @@ export const getTooltipsFormatter = (args: {
   ): string | HTMLElement | HTMLElement[] => {
     const paramsArray = Array.isArray(params) ? params : [params];
     const [first] = paramsArray || [];
-    const items = paramsArray.map((p) => {
-      return genTooltipsItem(p, compareLabels, valueFormat);
-    });
+    const items = paramsArray
+      .sort((a, b) => {
+        if (isNumber(a.data) && isNumber(b.data)) {
+          return b.data - a.data;
+        }
+        return 0;
+      })
+      .map((p) => {
+        return genTooltipsItem(p, compareLabels, valueFormat);
+      });
 
     return `
 <div style="margin: 0 0 0;line-height:1;">
