@@ -1,6 +1,7 @@
 import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
 import LinkX from '@common/components/LinkX';
+import LoadInView from '@common/components/LoadInView';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -74,7 +75,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   return (
     <div className={classnames(cls)} ref={cardRef}>
       <h3
-        className="group mb-2 scroll-mt-[165px] text-lg font-semibold"
+        className="group mb-2 scroll-mt-[165px] text-lg font-medium"
         ref={titleRef}
         id={id}
       >
@@ -85,7 +86,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h3>
-      <p className="mb-8 text-sm text-gray-600">
+      <p className="mb-4 text-xs text-[#585858]">
         {description}
         {docLink && (
           <>
@@ -108,9 +109,11 @@ const BaseCard: React.FC<BaseCardProps> = ({
           {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
         </div>
       </div>
-      {typeof children === 'function'
-        ? children(cardRef, fullScreen)
-        : children}
+      <LoadInView containerRef={cardRef}>
+        {typeof children === 'function'
+          ? children(cardRef, fullScreen)
+          : children}
+      </LoadInView>
     </div>
   );
 };

@@ -8,7 +8,7 @@ const useMetricQueryData = () => {
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
 
-  // update ui when useQueries status is updated
+  // todo: it causes multiple updates
   useIsFetching({ queryKey: ['metric'] });
 
   return compareItems.map(({ label, level }) => {

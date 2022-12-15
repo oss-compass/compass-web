@@ -1,3 +1,4 @@
+import merge from 'lodash/merge';
 import { BarSeriesOption, LineSeriesOption, EChartsOption } from 'echarts';
 
 import { formatISO } from '@common/utils/time';
@@ -14,7 +15,7 @@ import {
 import React from 'react';
 import { ChartThemeState } from '@modules/analyze/store';
 
-const defaultTooltip: EChartsOption['tooltip'] = {
+export const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
   axisPointer: {
     type: 'cross',
@@ -22,7 +23,7 @@ const defaultTooltip: EChartsOption['tooltip'] = {
   order: 'valueDesc',
 };
 
-const legendVerticalMode: EChartsOption['legend'] = {
+export const legendVerticalMode: EChartsOption['legend'] = {
   icon: 'circle',
   type: 'scroll',
   orient: 'vertical',
@@ -30,21 +31,21 @@ const legendVerticalMode: EChartsOption['legend'] = {
   left: '78%',
 };
 
-const gridVerticalMode: EChartsOption['grid'] = {
+export const gridVerticalMode: EChartsOption['grid'] = {
   left: '5%',
   right: '25%',
   bottom: '5%',
   containLabel: true,
 };
 
-const defaultLegend: EChartsOption['legend'] = {
+export const defaultLegend: EChartsOption['legend'] = {
   type: 'scroll',
   icon: 'circle',
-  left: 10,
+  left: 0,
   // orient: 'vertical',
 };
 
-const grid: EChartsOption['grid'] = {
+export const grid: EChartsOption['grid'] = {
   left: '5%',
   right: '5%',
   bottom: '5%',
@@ -77,9 +78,9 @@ export const getLineOption = (
   return {
     color: colors,
     title: {},
-    tooltip: tooltip ? tooltip : defaultTooltip,
-    legend: legend ? { ...defaultLegend, ...legend } : defaultLegend,
     grid,
+    legend: { ...defaultLegend, ...legend },
+    tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
     yAxis: {
       type: 'value',
@@ -97,13 +98,13 @@ export const getBarOption = (
     legend?: EChartsOption['legend'];
   } & EChartsOption
 ): EChartsOption => {
-  const { xAxisData, series, legend, ...restOpts } = opts;
+  const { xAxisData, series, legend, tooltip, ...restOpts } = opts;
   return {
     color: colors,
     title: {},
-    tooltip: defaultTooltip,
-    legend: legend ? { ...defaultLegend, ...legend } : defaultLegend,
     grid,
+    legend: { ...defaultLegend, ...legend },
+    tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
     yAxis: {
       type: 'value',
@@ -160,32 +161,34 @@ export type SeriesEachFunc<T> = (
 ) => T | null;
 
 export function genSeries<T>(opt: {
-  comparesYAxis: YResult[];
-  seriesEachFunc: SeriesEachFunc<T>;
   theme?: DeepReadonly<ChartThemeState>;
+  yResults: YResult[];
 }) {
-  const { comparesYAxis, seriesEachFunc, theme } = opt;
+  const { yResults, theme } = opt;
+  const isCompare = yResults.length > 1;
+  const compareLabels = yResults.map((i) => i.label);
 
-  const isCompare = comparesYAxis.length > 1;
-  const compareLabels = comparesYAxis.map((i) => i.label);
-  return comparesYAxis.reduce<T[]>((acc, { label, level, yAxisResult }) => {
-    const paletteIndex = getPaletteIndex(theme, label);
-    const palette = getPalette(paletteIndex);
+  return function (seriesEachFunc: SeriesEachFunc<T>) {
+    return yResults.reduce<T[]>((acc, { label, level, result }) => {
+      const paletteIndex = getPaletteIndex(theme, label);
+      const palette = getPalette(paletteIndex);
 
-    const result = yAxisResult
-      .map((item, legendIndex) => {
-        const color = isCompare
-          ? getPaletteColor(palette, legendIndex + 3)
-          : '';
+      const series = result
+        .map((item, legendIndex) => {
+          const color = isCompare
+            ? getPaletteColor(palette, legendIndex + 3)
+            : '';
 
-        // foreach series gen item
-        return seriesEachFunc(
-          { isCompare, color: color, level, label, compareLabels, ...item },
-          yAxisResult.length
-        );
-      })
-      .filter(Boolean) as T[];
-    acc = [...acc, ...result];
-    return acc;
-  }, []);
+          // each series gen item
+          return seriesEachFunc(
+            { isCompare, color: color, level, label, compareLabels, ...item },
+            result.length
+          );
+        })
+        .filter(Boolean) as T[];
+
+      acc = [...acc, ...series];
+      return acc;
+    }, []);
+  };
 }

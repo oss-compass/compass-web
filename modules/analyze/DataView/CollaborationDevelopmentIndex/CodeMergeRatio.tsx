@@ -1,63 +1,41 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  ChartComponentProps,
   genSeries,
   getLineOption,
-  lineArea,
   line,
   GetChartOptions,
-  getLegendSelected,
+  percentageValueFormat,
+  legendFormat,
+  getTooltipsFormatter,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
+import { TransOpts } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
-import Chart from '@modules/analyze/components/Chart';
-
+import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
+import Tab from '@common/components/Tab';
+import EChartX from '@common/components/EChartX';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'code merge ratio',
-      valueKey: 'codeMergeRatio',
-      valueFormat: (v) => toFixed(v * 100, 2),
-    },
-    { legendName: 'total pr', valueKey: 'prCount' },
-    { legendName: 'code merge', valueKey: 'codeMergedCount' },
-  ],
-};
-
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-  const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    comparesYAxis: yResults,
-    seriesEachFunc: (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      const name = getLegendName(legendName, {
-        label,
-        compareLabels,
-        level,
-        isCompare,
-        legendTypeCount: len,
-      });
+const getOptions: GetChartOptions = (
+  { isCompare, compareLabels, xAxis, yResults },
+  theme
+) => {
+  const series = genSeries<LineSeriesOption>({ theme, yResults })(
+    (opt, len) => {
+      const { legendName, label, color, data } = opt;
       if (legendName === 'code merge ratio') {
-        return line({ name, data, color, yAxisIndex: 0 });
+        return line({
+          name: label,
+          data,
+          color,
+          yAxisIndex: 0,
+        });
       }
-      return line({ name, data, color, yAxisIndex: 1 });
-    },
-  });
+      return line({ name: label, data, color, yAxisIndex: 1 });
+    }
+  );
 
   return getLineOption({
     xAxisData: xAxis,
@@ -66,43 +44,45 @@ const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
       { type: 'value', axisLabel: { formatter: '{value}%' } },
       { type: 'value' },
     ],
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'ratio') : {},
-    },
+    legend: legendFormat(compareLabels),
     tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-      },
-      order: 'seriesDesc',
-      formatter: function (params: any) {
-        if (!params) return '';
-        let label = '';
-        let tpl = params
-          .map((param: any) => {
-            label = param.axisValueLabel;
-            let data = param.data === null ? '-' : param.data;
-            if (param.seriesName.indexOf('ratio') > -1 && data !== '-') {
-              data += '%';
-            }
-            return `<div style="margin: 5px 0 5px;line-height:1;">${param.marker}
-<span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${param.seriesName}</span>
-<span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${data}</span>
-</div>`;
-          })
-          .join('');
-
-        return (
-          `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${label}</div>` +
-          tpl
-        );
-      },
+      formatter: getTooltipsFormatter({ compareLabels }),
     },
   });
 };
 
+const tabOptions = [
+  { label: 'code merge ratio', value: '1' },
+  { label: 'total pr', value: '2' },
+  { label: 'code merge', value: '3' },
+];
+
+const chartTabs = {
+  '1': [
+    {
+      legendName: 'code merge ratio',
+      valueKey: 'codeMergeRatio',
+      valueFormat: (v: number) => toFixed(v * 100, 2),
+    },
+  ],
+  '2': [{ legendName: 'total pr', valueKey: 'prCount' }],
+  '3': [{ legendName: 'code merge', valueKey: 'codeMergedCount' }],
+};
+
+type TabValue = keyof typeof chartTabs;
+
 const CodeMergeRatio = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
+
   return (
     <BaseCard
       title={t(
@@ -118,9 +98,26 @@ const CodeMergeRatio = () => {
     >
       {(ref, fullScreen) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
+          </>
         );
       }}
     </BaseCard>
