@@ -38,7 +38,7 @@ describe('transToAxis', () => {
       name: 'compass-web',
       meta: {
         namespace: 'oss-compass',
-        provider: 'github',
+        provider: 'Github',
         showProvider: true,
       },
     });
