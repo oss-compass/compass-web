@@ -46,7 +46,7 @@ export const defaultLegend: EChartsOption['legend'] = {
 };
 
 export const grid: EChartsOption['grid'] = {
-  top: '60px',
+  top: '60',
   left: '5%',
   right: '5%',
   bottom: '5%',

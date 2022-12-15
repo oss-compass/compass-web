@@ -1,4 +1,5 @@
 import set from 'lodash/set';
+import capitalize from 'lodash/capitalize';
 import parseISO from 'date-fns/parseISO';
 import getUnixTime from 'date-fns/getUnixTime';
 import { Level } from '@modules/analyze/constant';
@@ -150,7 +151,7 @@ export const formatRepoNameV2 = ({
       name: repoName,
       meta: {
         namespace,
-        provider,
+        provider: capitalize(provider),
         showProvider,
       },
     };
