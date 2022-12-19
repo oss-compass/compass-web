@@ -11,6 +11,7 @@ import {
   colors,
   getPalette,
   getPaletteColor,
+  getPaletteIndex,
 } from '@modules/analyze/options/color';
 import React from 'react';
 import { ChartThemeState } from '@modules/analyze/store';
@@ -139,13 +140,6 @@ export type GetChartOptions = (
   result: TransResult,
   theme?: DeepReadonly<ChartThemeState>
 ) => EChartsOption;
-
-const getPaletteIndex = (
-  themeState: DeepReadonly<ChartThemeState> | undefined,
-  label: string
-) => {
-  return themeState?.color?.find((i) => i.label === label)?.paletteIndex || 0;
-};
 
 export type SeriesEachFunc<T> = (
   item: {

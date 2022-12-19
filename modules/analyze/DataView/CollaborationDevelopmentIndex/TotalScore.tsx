@@ -1,64 +1,58 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
   legendFormat,
   getTooltipsFormatter,
+  getColorWithLabel,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-
-import ChartWithData from '@modules/analyze/components/ChartWithData';
+import { GenChartData, GenChartOptions, TransOpt } from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 
-import { LineSeriesOption } from 'echarts';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
+import ChartWithDataV2 from '@modules/analyze/components/ChartWithDataV2';
+import { nonNullable } from 'next/dist/lib/non-nullable';
 
 const TotalScore = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
 
-  const tansOpts: TransOpts = {
-    metricType: 'metricCodequality',
-    xAxisKey: 'grimoireCreationDate',
-    yAxisOpts: [
-      {
-        legendName: 'collaboration development index',
-        valueKey: 'codeQualityGuarantee',
-      },
-    ],
+  const tansOpts: TransOpt = {
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.codeQualityGuarantee',
+    statKey: 'summaryCodequality.codeQualityGuarantee',
+    legendName: 'collaboration development index',
   };
 
-  const getOptions: GetChartOptions = (
-    { xAxis, compareLabels, yResults },
+  const getOptions: GenChartOptions = (
+    { compareLabels, xAxis, yResults, summaryMedian, summaryMean },
     theme
   ) => {
-    const series = genSeries<LineSeriesOption>({
-      theme,
-      yResults,
-    })(
-      (
-        { legendName, label, compareLabels, level, isCompare, color, data },
-        len
-      ) => {
-        !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
+      !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
+      return line({ name: label, data: data, color });
+    });
 
-        return line({
-          name: label,
-          data: data,
-          color,
-        });
-      }
+    series.push(
+      line({
+        name: 'Median',
+        data: summaryMedian,
+        lineStyle: { type: 'dotted' },
+      })
     );
+    series.push(
+      line({
+        name: 'Mean',
+        data: summaryMean,
+        lineStyle: { type: 'dotted' },
+      })
+    );
+
     return getLineOption({
       xAxisData: xAxis,
       series,
@@ -88,13 +82,13 @@ const TotalScore = () => {
     >
       {(ref) => {
         return (
-          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+          <ChartWithDataV2 tansOpts={tansOpts} getOptions={getOptions}>
             {(loading, option) => {
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
               );
             }}
-          </ChartWithData>
+          </ChartWithDataV2>
         );
       }}
     </BaseCard>

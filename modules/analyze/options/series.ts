@@ -17,8 +17,6 @@ import isNumber from 'lodash/isNumber';
 
 export const line = (
   opts: {
-    name: string;
-    data: (string | number)[];
     color?: string;
   } & LineSeriesOption
 ): LineSeriesOption => {
@@ -38,14 +36,11 @@ export const line = (
 
 export const lineArea = (
   opts: {
-    name: string;
-    data: (string | number)[];
     color?: string;
   } & LineSeriesOption
 ): LineSeriesOption => {
   const { name, data, color, ...restOpts } = opts;
   return {
-    name,
     type: 'line',
     smooth: false,
     showSymbol: false,
