@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'next-i18next';
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
@@ -11,9 +11,17 @@ import OrgCount from './OrgCount';
 import ContributionLast from './ContributionLast';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
+import { ChartsDataContext } from '@modules/analyze/context/ChartsDataProvider';
+import { useSnapshot } from 'valtio';
+import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
 
 const OrganizationsActivity = () => {
   const { t } = useTranslation();
+  const showOrganizations = useShowOrganizations();
+  if (!showOrganizations) {
+    return null;
+  }
+
   return (
     <>
       <SectionTitle id={Section.OrganizationsActivity}>

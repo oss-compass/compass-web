@@ -2,10 +2,9 @@ import { useContext } from 'react';
 import { useSnapshot } from 'valtio';
 import { ChartsDataContext } from '@modules/analyze/context/ChartsDataProvider';
 
-const useMetricQueryData = () => {
+const useShowOrganizations = () => {
   const state = useContext(ChartsDataContext);
-  const { loading, items } = useSnapshot(state);
-  return { loading, items };
+  const { showOrganizations } = useSnapshot(state);
+  return showOrganizations;
 };
-
-export default useMetricQueryData;
+export default useShowOrganizations;

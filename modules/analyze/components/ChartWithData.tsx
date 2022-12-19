@@ -21,8 +21,8 @@ const ChartWithData: React.FC<{
 }> = ({ children, getOptions, tansOpts }) => {
   const theme = useSnapshot(chartThemeState);
   const data = useMetricQueryData();
-  const loading = data?.some((i) => i.loading);
-  const { xAxis, yResults } = transToAxis(data, tansOpts);
+  const loading = data?.loading;
+  const { xAxis, yResults } = transToAxis(data?.items, tansOpts);
   const compareLabels = yResults.map((i) => i.label);
   const isCompare = yResults.length > 1;
   const echartsOpts = getOptions(

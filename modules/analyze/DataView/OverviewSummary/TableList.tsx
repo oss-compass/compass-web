@@ -10,15 +10,10 @@ import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
-import {
-  formatRepoName,
-  formatRepoNameV2,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { Level } from '@modules/analyze/constant';
+import { formatRepoNameV2 } from '@modules/analyze/DataTransform/transToAxis';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
-import { useSnapshot } from 'valtio';
-import { dataState } from '@modules/analyze/store/dataState';
+import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -77,7 +72,7 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
 const TrendsList: React.FC = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
-  const snapshot = useSnapshot(dataState);
+  const showOrganizations = useShowOrganizations();
 
   const { compareItems } = useCompareItems();
   const data = useQueries({
@@ -134,7 +129,7 @@ const TrendsList: React.FC = () => {
               <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
                 {t('metrics_models:community_activity.title')}
               </TT>
-              {snapshot.showOrganizations && (
+              {showOrganizations && (
                 <TT className="border-t-[#61a2ff] bg-[#ddebff]">
                   {t('metrics_models:organization_activity.title')}
                 </TT>
@@ -174,7 +169,7 @@ const TrendsList: React.FC = () => {
                     <Td className="bg-[#f8f3ff]">
                       {formatScore(item!.activityScore)}
                     </Td>
-                    {snapshot.showOrganizations && (
+                    {showOrganizations && (
                       <Td className="bg-[#ddebff] ">
                         {formatScore(item!.organizationsActivity)}
                       </Td>

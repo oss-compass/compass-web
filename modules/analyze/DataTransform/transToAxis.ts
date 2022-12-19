@@ -50,7 +50,7 @@ export interface TransOpts {
 
 // todo reduce complexity add generic type
 export function transToAxis(
-  data: Array<DateItem>,
+  data: DeepReadonly<Array<DateItem>>,
   { metricType, xAxisKey, yAxisOpts }: TransOpts
 ): {
   xAxis: string[];

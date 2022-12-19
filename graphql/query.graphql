@@ -141,14 +141,7 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         orgCount
         organizationsActivity
     }
-}
 
-fragment MetricStat on MetricStat {
-    mean
-    median
-}
-
-query summary ($start: ISO8601DateTime, $end: ISO8601DateTime){
     summaryActivity( beginDate: $start, endDate: $end){
         activeC1IssueCommentsContributorCount{ ...MetricStat}
         activeC1IssueCreateContributorCount{ ...MetricStat}
@@ -168,7 +161,6 @@ query summary ($start: ISO8601DateTime, $end: ISO8601DateTime){
         updatedIssuesCount{ ...MetricStat}
         updatedSince{ ...MetricStat}
     }
-
     summaryCodequality( beginDate: $start, endDate: $end){
         activeC1PrCommentsContributorCount{ ...MetricStat}
         activeC1PrCreateContributorCount{ ...MetricStat}
@@ -193,7 +185,6 @@ query summary ($start: ISO8601DateTime, $end: ISO8601DateTime){
         prIssueLinkedCount{ ...MetricStat}
         prIssueLinkedRatio{ ...MetricStat}
     }
-
     summaryCommunity( beginDate: $start, endDate: $end){
         bugIssueOpenTimeAvg{ ...MetricStat}
         bugIssueOpenTimeMid{ ...MetricStat}
@@ -210,7 +201,6 @@ query summary ($start: ISO8601DateTime, $end: ISO8601DateTime){
         prOpenTimeMid{ ...MetricStat}
         updatedIssuesCount{ ...MetricStat}
     }
-
     summaryGroupActivity( beginDate: $start, endDate: $end){
         commitFrequency{ ...MetricStat}
         contributionLast{ ...MetricStat}
@@ -219,4 +209,9 @@ query summary ($start: ISO8601DateTime, $end: ISO8601DateTime){
         orgCount{ ...MetricStat}
         organizationsActivity{ ...MetricStat}
     }
+}
+
+fragment MetricStat on MetricStat {
+    mean
+    median
 }

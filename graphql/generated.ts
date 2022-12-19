@@ -857,21 +857,6 @@ export type MetricQuery = {
     orgCount?: number | null;
     organizationsActivity?: number | null;
   }>;
-};
-
-export type MetricStatFragment = {
-  __typename?: 'MetricStat';
-  mean?: number | null;
-  median?: number | null;
-};
-
-export type SummaryQueryVariables = Exact<{
-  start?: InputMaybe<Scalars['ISO8601DateTime']>;
-  end?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type SummaryQuery = {
-  __typename?: 'Query';
   summaryActivity: Array<{
     __typename?: 'ActivitySummary';
     grimoireCreationDate?: any | null;
@@ -1163,6 +1148,12 @@ export type SummaryQuery = {
       median?: number | null;
     } | null;
   }>;
+};
+
+export type MetricStatFragment = {
+  __typename?: 'MetricStat';
+  mean?: number | null;
+  median?: number | null;
 };
 
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
@@ -1589,42 +1580,6 @@ export const MetricDocument = /*#__PURE__*/ `
     orgCount
     organizationsActivity
   }
-}
-    `;
-export const useMetricQuery = <TData = MetricQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables: MetricQueryVariables,
-  options?: UseQueryOptions<MetricQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<MetricQuery, TError, TData>(
-    ['metric', variables],
-    fetcher<MetricQuery, MetricQueryVariables>(
-      client,
-      MetricDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useMetricQuery.getKey = (variables: MetricQueryVariables) => [
-  'metric',
-  variables,
-];
-useMetricQuery.fetcher = (
-  client: GraphQLClient,
-  variables: MetricQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<MetricQuery, MetricQueryVariables>(
-    client,
-    MetricDocument,
-    variables,
-    headers
-  );
-export const SummaryDocument = /*#__PURE__*/ `
-    query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
   summaryActivity(beginDate: $start, endDate: $end) {
     activeC1IssueCommentsContributorCount {
       ...MetricStat
@@ -1804,33 +1759,35 @@ export const SummaryDocument = /*#__PURE__*/ `
   }
 }
     ${MetricStatFragmentDoc}`;
-export const useSummaryQuery = <TData = SummaryQuery, TError = unknown>(
+export const useMetricQuery = <TData = MetricQuery, TError = unknown>(
   client: GraphQLClient,
-  variables?: SummaryQueryVariables,
-  options?: UseQueryOptions<SummaryQuery, TError, TData>,
+  variables: MetricQueryVariables,
+  options?: UseQueryOptions<MetricQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<SummaryQuery, TError, TData>(
-    variables === undefined ? ['summary'] : ['summary', variables],
-    fetcher<SummaryQuery, SummaryQueryVariables>(
+  useQuery<MetricQuery, TError, TData>(
+    ['metric', variables],
+    fetcher<MetricQuery, MetricQueryVariables>(
       client,
-      SummaryDocument,
+      MetricDocument,
       variables,
       headers
     ),
     options
   );
 
-useSummaryQuery.getKey = (variables?: SummaryQueryVariables) =>
-  variables === undefined ? ['summary'] : ['summary', variables];
-useSummaryQuery.fetcher = (
+useMetricQuery.getKey = (variables: MetricQueryVariables) => [
+  'metric',
+  variables,
+];
+useMetricQuery.fetcher = (
   client: GraphQLClient,
-  variables?: SummaryQueryVariables,
+  variables: MetricQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<SummaryQuery, SummaryQueryVariables>(
+  fetcher<MetricQuery, MetricQueryVariables>(
     client,
-    SummaryDocument,
+    MetricDocument,
     variables,
     headers
   );

@@ -1,63 +1,20 @@
 import React, { PropsWithChildren, useEffect } from 'react';
-import { useQueries } from '@tanstack/react-query';
+import { useSnapshot } from 'valtio';
 import { useTranslation } from 'next-i18next';
-import { useMetricQuery } from '@graphql/generated';
-import client from '@graphql/client';
-import useCompareItems from '../hooks/useCompareItems';
-import useQueryDateRange from '../hooks/useQueryDateRange';
+import ChartsDataProvider from '../context/ChartsDataProvider';
 import OverviewSummary from './OverviewSummary';
 import CollaborationDevelopmentIndex from './CollaborationDevelopmentIndex';
 import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
 import OrganizationsActivity from './OrganizationsActivity';
-import useHashScroll from '@common/hooks/useHashScroll';
 import TopicTitle from '@modules/analyze/components/TopicTitle';
 import { Topic } from '@modules/analyze/components/SideBar/config';
-import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import {
-  dataState,
-  toggleShowOrganizations,
-} from '@modules/analyze/store/dataState';
-import { useSnapshot } from 'valtio';
-
-const ChartsWrap: React.FC<PropsWithChildren> = ({ children }) => {
-  const { t } = useTranslation();
-  const { timeStart, timeEnd } = useQueryDateRange();
-  const { compareItems } = useCompareItems();
-  useHashScroll();
-
-  useQueries({
-    queries: compareItems.map(({ label, level }) => {
-      const variables = { label, level, start: timeStart, end: timeEnd };
-      return {
-        queryKey: useMetricQuery.getKey(variables),
-        queryFn: useMetricQuery.fetcher(client, variables),
-      };
-    }),
-  });
-
-  const data = useMetricQueryData();
-  const hasOrganizations = data.some((i) => {
-    const metricGroupActivity = i.result?.metricGroupActivity;
-    if (Array.isArray(metricGroupActivity)) {
-      return metricGroupActivity.length > 0;
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    toggleShowOrganizations(hasOrganizations);
-  }, [hasOrganizations]);
-
-  return <>{children}</>;
-};
 
 const Charts = () => {
   const { t } = useTranslation();
-  const snapshot = useSnapshot(dataState);
-
+  console.log('--------------Charts------------------');
   return (
-    <ChartsWrap>
+    <ChartsDataProvider>
       <OverviewSummary />
 
       <TopicTitle id={Topic.Productivity}>
@@ -74,8 +31,8 @@ const Charts = () => {
       <TopicTitle id={Topic.NicheCreation}>
         {t('analyze:topic.niche_creation')}
       </TopicTitle>
-      {snapshot.showOrganizations && <OrganizationsActivity />}
-    </ChartsWrap>
+      <OrganizationsActivity />
+    </ChartsDataProvider>
   );
 };
 
