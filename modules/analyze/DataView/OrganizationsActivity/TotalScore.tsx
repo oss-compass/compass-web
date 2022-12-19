@@ -7,30 +7,34 @@ import {
   legendFormat,
   getTooltipsFormatter,
 } from '@modules/analyze/options';
-import { Activity } from '@modules/analyze/components/SideBar/config';
+import { Organizations } from '@modules/analyze/components/SideBar/config';
 import {
+  getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
+import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
-import { LineSeriesOption } from 'echarts';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
+
 import { useTranslation } from 'next-i18next';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
-const CommunityActivityOverview = () => {
+const TotalScore = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
 
   const tansOpts: TransOpts = {
-    metricType: 'metricActivity',
+    metricType: 'metricGroupActivity',
     xAxisKey: 'grimoireCreationDate',
     yAxisOpts: [
-      { legendName: 'community activity', valueKey: 'activityScore' },
+      {
+        legendName: 'organizations activity',
+        valueKey: 'organizationsActivity',
+      },
     ],
   };
 
@@ -66,10 +70,10 @@ const CommunityActivityOverview = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.title')}
-      id={Activity.Overview}
-      description={t('metrics_models:community_activity.desc')}
-      docLink={'/docs/metrics-models/robustness/activity/'}
+      title={t('metrics_models:organization_activity.title')}
+      id={Organizations.Overview}
+      description={t('metrics_models:organization_activity.desc')}
+      docLink={'/docs/metrics-models/niche-creation/developer-retention/'}
       headRight={
         <ScoreConversion
           onePoint={onePointSys}
@@ -94,4 +98,4 @@ const CommunityActivityOverview = () => {
   );
 };
 
-export default CommunityActivityOverview;
+export default TotalScore;

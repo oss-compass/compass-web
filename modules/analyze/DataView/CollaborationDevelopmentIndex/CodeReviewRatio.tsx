@@ -22,6 +22,7 @@ import EChartX from '@common/components/EChartX';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
+import { TabOption } from '@modules/analyze/type';
 
 const getOptions: GetChartOptions = (
   { xAxis, compareLabels, tabValue, yResults },
@@ -56,7 +57,7 @@ const getOptions: GetChartOptions = (
   });
 };
 
-const tabOptions = [
+const tabOptions: TabOption[] = [
   { label: 'code review ratio', value: '1' },
   { label: 'total pr', value: '2' },
   { label: 'code review', value: '3' },

@@ -13,7 +13,7 @@ import {
   toFixed,
 } from '@common/utils';
 
-interface DateItem {
+interface DataItem {
   label: string;
   level: Level;
   result: MetricQuery | undefined;
@@ -44,13 +44,17 @@ export interface TransOpts {
     legendName: string;
     valueKey: string;
     valueFormat?: (v: any) => number;
+    metricStat?: {
+      meanKey?: string;
+      medianKey?: string;
+    };
   }[];
   tabValue?: string;
 }
 
 // todo reduce complexity add generic type
 export function transToAxis(
-  data: DeepReadonly<Array<DateItem>>,
+  data: DeepReadonly<Array<DataItem>>,
   { metricType, xAxisKey, yAxisOpts }: TransOpts
 ): {
   xAxis: string[];

@@ -7,7 +7,7 @@ import {
   legendFormat,
   getTooltipsFormatter,
 } from '@modules/analyze/options';
-import { Organizations } from '@modules/analyze/components/SideBar/config';
+import { Support } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
@@ -19,21 +19,20 @@ import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
-
 import { useTranslation } from 'next-i18next';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
-const OrganizationsActivity = () => {
+const TotalScore = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
 
   const tansOpts: TransOpts = {
-    metricType: 'metricGroupActivity',
+    metricType: 'metricCommunity',
     xAxisKey: 'grimoireCreationDate',
     yAxisOpts: [
       {
-        legendName: 'organizations activity',
-        valueKey: 'organizationsActivity',
+        legendName: 'community service and support',
+        valueKey: 'communitySupportScore',
       },
     ],
   };
@@ -70,10 +69,12 @@ const OrganizationsActivity = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:organization_activity.title')}
-      id={Organizations.Overview}
-      description={t('metrics_models:organization_activity.desc')}
-      docLink={'/docs/metrics-models/niche-creation/developer-retention/'}
+      title={t('metrics_models:community_service_and_support.title')}
+      id={Support.Overview}
+      description={t('metrics_models:community_service_and_support.desc')}
+      docLink={
+        '/docs/metrics-models/productivity/community-service-and-support/'
+      }
       headRight={
         <ScoreConversion
           onePoint={onePointSys}
@@ -98,4 +99,4 @@ const OrganizationsActivity = () => {
   );
 };
 
-export default OrganizationsActivity;
+export default TotalScore;

@@ -23,7 +23,7 @@ import { LineSeriesOption } from 'echarts';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
-const CollaborationDevelopmentIndex = () => {
+const TotalScore = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
 
@@ -101,4 +101,4 @@ const CollaborationDevelopmentIndex = () => {
   );
 };
 
-export default CollaborationDevelopmentIndex;
+export default TotalScore;

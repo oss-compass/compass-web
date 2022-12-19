@@ -7,33 +7,30 @@ import {
   legendFormat,
   getTooltipsFormatter,
 } from '@modules/analyze/options';
-import { Support } from '@modules/analyze/components/SideBar/config';
+import { Activity } from '@modules/analyze/components/SideBar/config';
 import {
-  getLegendName,
   TransOpts,
   TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
+
+import { LineSeriesOption } from 'echarts';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { useTranslation } from 'next-i18next';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
-const CommunityServiceSupportOverview = () => {
+const TotalScore = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
 
   const tansOpts: TransOpts = {
-    metricType: 'metricCommunity',
+    metricType: 'metricActivity',
     xAxisKey: 'grimoireCreationDate',
     yAxisOpts: [
-      {
-        legendName: 'community service and support',
-        valueKey: 'communitySupportScore',
-      },
+      { legendName: 'community activity', valueKey: 'activityScore' },
     ],
   };
 
@@ -69,12 +66,10 @@ const CommunityServiceSupportOverview = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:community_service_and_support.title')}
-      id={Support.Overview}
-      description={t('metrics_models:community_service_and_support.desc')}
-      docLink={
-        '/docs/metrics-models/productivity/community-service-and-support/'
-      }
+      title={t('metrics_models:community_activity.title')}
+      id={Activity.Overview}
+      description={t('metrics_models:community_activity.desc')}
+      docLink={'/docs/metrics-models/robustness/activity/'}
       headRight={
         <ScoreConversion
           onePoint={onePointSys}
@@ -99,4 +94,4 @@ const CommunityServiceSupportOverview = () => {
   );
 };
 
-export default CommunityServiceSupportOverview;
+export default TotalScore;
