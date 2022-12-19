@@ -127,7 +127,7 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         updatedIssuesCount
         updatedSince
     }
-    groupMetricActivity(label: $label,level: $level, beginDate: $start, endDate: $end){
+    metricGroupActivity(label: $label,level: $level, beginDate: $start, endDate: $end){
         commitFrequency
         # commitFrequencyOrg
         # commitFrequencyOrgPercentage
@@ -140,5 +140,83 @@ query metric($label: String!, $level:String = "repo", $start: ISO8601DateTime, $
         level
         orgCount
         organizationsActivity
+    }
+}
+
+fragment MetricStat on MetricStat {
+    mean
+    median
+}
+
+query summary ($start: ISO8601DateTime, $end: ISO8601DateTime){
+    summaryActivity( beginDate: $start, endDate: $end){
+        activeC1IssueCommentsContributorCount{ ...MetricStat}
+        activeC1IssueCreateContributorCount{ ...MetricStat}
+        activeC1PrCommentsContributorCount{ ...MetricStat}
+        activeC1PrCreateContributorCount{ ...MetricStat}
+        activeC2ContributorCount{ ...MetricStat}
+        activityScore{ ...MetricStat}
+        closedIssuesCount{ ...MetricStat}
+        codeReviewCount{ ...MetricStat}
+        commentFrequency{ ...MetricStat}
+        commitFrequency{ ...MetricStat}
+        contributorCount{ ...MetricStat}
+        createdSince{ ...MetricStat}
+        grimoireCreationDate
+        orgCount{ ...MetricStat}
+        recentReleasesCount{ ...MetricStat}
+        updatedIssuesCount{ ...MetricStat}
+        updatedSince{ ...MetricStat}
+    }
+
+    summaryCodequality( beginDate: $start, endDate: $end){
+        activeC1PrCommentsContributorCount{ ...MetricStat}
+        activeC1PrCreateContributorCount{ ...MetricStat}
+        activeC2ContributorCount{ ...MetricStat}
+        codeMergeRatio{ ...MetricStat}
+        codeMergedCount{ ...MetricStat}
+        codeQualityGuarantee{ ...MetricStat}
+        codeReviewRatio{ ...MetricStat}
+        codeReviewedCount{ ...MetricStat}
+        commitFrequency{ ...MetricStat}
+        commitFrequencyInside{ ...MetricStat}
+        contributorCount{ ...MetricStat}
+        gitPrLinkedRatio{ ...MetricStat}
+        grimoireCreationDate
+        isMaintained{ ...MetricStat}
+        linesAddedFrequency{ ...MetricStat}
+        linesRemovedFrequency{ ...MetricStat}
+        locFrequency{ ...MetricStat}
+        prCommitCount{ ...MetricStat}
+        prCommitLinkedCount{ ...MetricStat}
+        prCount{ ...MetricStat}
+        prIssueLinkedCount{ ...MetricStat}
+        prIssueLinkedRatio{ ...MetricStat}
+    }
+
+    summaryCommunity( beginDate: $start, endDate: $end){
+        bugIssueOpenTimeAvg{ ...MetricStat}
+        bugIssueOpenTimeMid{ ...MetricStat}
+        closedPrsCount{ ...MetricStat}
+        codeReviewCount{ ...MetricStat}
+        commentFrequency{ ...MetricStat}
+        communitySupportScore{ ...MetricStat}
+        grimoireCreationDate
+        issueFirstReponseAvg{ ...MetricStat}
+        issueFirstReponseMid{ ...MetricStat}
+        issueOpenTimeAvg{ ...MetricStat}
+        issueOpenTimeMid{ ...MetricStat}
+        prOpenTimeAvg{ ...MetricStat}
+        prOpenTimeMid{ ...MetricStat}
+        updatedIssuesCount{ ...MetricStat}
+    }
+
+    summaryGroupActivity( beginDate: $start, endDate: $end){
+        commitFrequency{ ...MetricStat}
+        contributionLast{ ...MetricStat}
+        contributorCount{ ...MetricStat}
+        grimoireCreationDate
+        orgCount{ ...MetricStat}
+        organizationsActivity{ ...MetricStat}
     }
 }

@@ -22,7 +22,7 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
-  metricType: 'groupMetricActivity',
+  metricType: 'metricGroupActivity',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [{ legendName: 'commit frequency', valueKey: 'commitFrequency' }],
 };

@@ -38,9 +38,9 @@ const ChartsWrap: React.FC<PropsWithChildren> = ({ children }) => {
 
   const data = useMetricQueryData();
   const hasOrganizations = data.some((i) => {
-    const groupMetricActivity = i.result?.groupMetricActivity;
-    if (Array.isArray(groupMetricActivity)) {
-      return groupMetricActivity.length > 0;
+    const metricGroupActivity = i.result?.metricGroupActivity;
+    if (Array.isArray(metricGroupActivity)) {
+      return metricGroupActivity.length > 0;
     }
     return false;
   });

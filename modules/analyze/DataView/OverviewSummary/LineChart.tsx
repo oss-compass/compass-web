@@ -77,7 +77,7 @@ const opts = [
 const optsWithOrg = [
   ...opts,
   {
-    type: 'groupMetricActivity',
+    type: 'metricGroupActivity',
     key: 'organizationsActivity',
     legendName: 'organizations activity',
   },

@@ -22,7 +22,7 @@ import { LineSeriesOption } from 'echarts';
 import { useTranslation } from 'next-i18next';
 
 const tansOpts: TransOpts = {
-  metricType: 'groupMetricActivity',
+  metricType: 'metricGroupActivity',
   xAxisKey: 'grimoireCreationDate',
   yAxisOpts: [
     { legendName: 'contribution last', valueKey: 'contributionLast' },

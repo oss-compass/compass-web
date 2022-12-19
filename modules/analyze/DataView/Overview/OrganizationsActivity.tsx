@@ -28,7 +28,7 @@ const OrganizationsActivity = () => {
   const [onePointSys, setOnePointSys] = useState(false);
 
   const tansOpts: TransOpts = {
-    metricType: 'groupMetricActivity',
+    metricType: 'metricGroupActivity',
     xAxisKey: 'grimoireCreationDate',
     yAxisOpts: [
       {
