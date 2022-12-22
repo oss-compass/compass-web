@@ -14,6 +14,7 @@ import {
 import CPTooltip from '@common/components/Tooltip';
 import { getNameSpace } from '@common/utils';
 import { useSnapshot } from 'valtio';
+import Popper from '@mui/material/Popper';
 
 const getColor = (label: string, theme: DeepReadonly<ChartThemeState>) => {
   const current = theme.color.find((i) => i.label === label);
@@ -35,6 +36,7 @@ const ColorSwitcher: React.FC<{
   const colorPopoverRef = useRef<HTMLDivElement>(null);
   const iconsRef = useRef<HTMLDivElement>(null);
   const [popoverVisible, setPopoverVisible] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const [hasShowedGuide, setShowedGuideTooltips] = useLocalStorage(
     SHOWED_PICKER_TOOLTIPS_KEY,
@@ -70,7 +72,8 @@ const ColorSwitcher: React.FC<{
           <div
             className="group inline-flex cursor-pointer"
             ref={iconsRef}
-            onClick={() => {
+            onClick={(event) => {
+              setAnchorEl(event.currentTarget);
               setPopoverVisible(true);
             }}
           >
@@ -91,8 +94,33 @@ const ColorSwitcher: React.FC<{
           </div>
         )}
       </div>
-
-      {popoverVisible && (
+      <Popper
+        open={popoverVisible}
+        anchorEl={anchorEl}
+        placement={'bottom-start'}
+        sx={{
+          zIndex: 9999,
+        }}
+      >
+        <div
+          className="flex w-[152px] flex-wrap justify-around overflow-hidden rounded bg-white px-2 pt-2 pb-1 drop-shadow-2xl"
+          ref={colorPopoverRef}
+        >
+          {colors.map((c, index) => (
+            <div
+              key={c}
+              className="mb-1 cursor-pointer rounded"
+              onClick={() => {
+                updateThemeColor({ label, paletteIndex: index });
+                setPopoverVisible(false);
+              }}
+            >
+              <div style={{ backgroundColor: `${c}` }} className="h-6 w-6" />
+            </div>
+          ))}
+        </div>
+      </Popper>
+      {/* {popoverVisible && (
         <div
           className="absolute top-8 flex w-[152px] flex-wrap justify-around overflow-hidden rounded bg-white px-2 pt-2 pb-1 drop-shadow-2xl"
           ref={colorPopoverRef}
@@ -110,7 +138,7 @@ const ColorSwitcher: React.FC<{
             </div>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 };
