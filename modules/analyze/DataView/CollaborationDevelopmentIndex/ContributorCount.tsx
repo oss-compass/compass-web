@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
   genSeries,
@@ -6,68 +6,90 @@ import {
   line,
   GetChartOptions,
   getLegendSelected,
+  getTooltipsFormatter,
+  legendFormat,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import {
   getLegendName,
   TransOpts,
-  TransResult,
 } from '@modules/analyze/DataTransform/transToAxis';
 import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
-import Chart from '@modules/analyze/components/Chart';
+import Tab from '@common/components/Tab';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    { legendName: 'total', valueKey: 'contributorCount' },
-    {
-      legendName: 'code reviewer',
-      valueKey: 'activeC1PrCommentsContributorCount',
-    },
-    {
-      legendName: 'pr creator',
-      valueKey: 'activeC1PrCreateContributorCount',
-    },
-    { legendName: 'commit author', valueKey: 'activeC2ContributorCount' },
-  ],
-};
-
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
-  const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    comparesYAxis: yResults,
-    seriesEachFunc: (
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
+  const series = genSeries<LineSeriesOption>({ theme, yResults })(
+    (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
       return line({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         data: data,
         color,
       });
-    },
-  });
+    }
+  );
+
   return getLineOption({
     xAxisData: xAxis,
     series,
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'total') : {},
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
     },
   });
 };
 
+const chartTabs = {
+  '1': [{ legendName: 'total', valueKey: 'contributorCount' }],
+  '2': [
+    {
+      legendName: 'code reviewer',
+      valueKey: 'activeC1PrCommentsContributorCount',
+    },
+  ],
+  '3': [
+    {
+      legendName: 'pr creator',
+      valueKey: 'activeC1PrCreateContributorCount',
+    },
+  ],
+  '4': [
+    {
+      legendName: 'commit author',
+      valueKey: 'activeC2ContributorCount',
+    },
+  ],
+};
+
+type TabValue = keyof typeof chartTabs;
+
+const tabOptions = [
+  { label: 'total', value: '1' },
+  { label: 'code reviewer', value: '2' },
+  { label: 'pr creator', value: '3' },
+  { label: 'commit author', value: '4' },
+];
+
 const ContributorCount = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
+
   return (
     <BaseCard
       title={t(
@@ -81,11 +103,28 @@ const ContributorCount = () => {
         '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
       }
     >
-      {(ref) => {
+      {(ref, fullScreen) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <div>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
+          </div>
         );
       }}
     </BaseCard>

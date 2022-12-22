@@ -33,13 +33,12 @@ describe('transToAxis', () => {
         'https://github.com/xxxx/compass-web',
         'https://gitee.com/oss-compass/compass-web',
       ],
-      level: Level.REPO,
     });
     expect(result).toEqual({
       name: 'compass-web',
       meta: {
         namespace: 'oss-compass',
-        provider: 'github',
+        provider: 'Github',
         showProvider: true,
       },
     });

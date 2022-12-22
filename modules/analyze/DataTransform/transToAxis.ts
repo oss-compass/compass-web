@@ -1,4 +1,5 @@
 import set from 'lodash/set';
+import capitalize from 'lodash/capitalize';
 import parseISO from 'date-fns/parseISO';
 import getUnixTime from 'date-fns/getUnixTime';
 import { Level } from '@modules/analyze/constant';
@@ -21,7 +22,7 @@ interface DateItem {
 export interface YResult {
   label: string;
   level: Level;
-  yAxisResult: {
+  result: {
     legendName: string;
     key: string;
     data: (string | number)[];
@@ -29,8 +30,11 @@ export interface YResult {
 }
 
 export interface TransResult {
+  isCompare: boolean;
+  compareLabels: string[];
   xAxis: string[];
   yResults: YResult[];
+  tabValue?: string;
 }
 
 export interface TransOpts {
@@ -41,13 +45,17 @@ export interface TransOpts {
     valueKey: string;
     valueFormat?: (v: any) => number;
   }[];
+  tabValue?: string;
 }
 
 // todo reduce complexity add generic type
 export function transToAxis(
   data: Array<DateItem>,
   { metricType, xAxisKey, yAxisOpts }: TransOpts
-): TransResult {
+): {
+  xAxis: string[];
+  yResults: YResult[];
+} {
   let xAxis: string[] = [];
   const tempMap: any = {};
   const yResults: any = [];
@@ -72,7 +80,7 @@ export function transToAxis(
       return getUnixTime(parseISO(a)) - getUnixTime(parseISO(b));
     });
 
-    const yAxisResult: any = [];
+    const result: YResult['result'] = [];
     yAxisOpts.forEach((yAxisOpt) => {
       const {
         valueKey,
@@ -80,7 +88,7 @@ export function transToAxis(
         valueFormat = (v) => toFixed(v, 3),
       } = yAxisOpt;
 
-      yAxisResult.push({
+      result.push({
         key: valueKey,
         legendName,
         data: xAxis.map((xAxis) => {
@@ -95,7 +103,7 @@ export function transToAxis(
       });
     });
 
-    yResults.push({ label: repo.label, level: repo.level, yAxisResult });
+    yResults.push({ label: repo.label, level: repo.level, result });
   });
 
   return {
@@ -124,11 +132,9 @@ const checkHasSameRepoPath = (label: string, labels: string[]) => {
 export const formatRepoNameV2 = ({
   label,
   compareLabels,
-  level,
 }: {
   label: string;
   compareLabels: string[];
-  level: Level;
 }): {
   name: string;
   meta?: {
@@ -137,7 +143,7 @@ export const formatRepoNameV2 = ({
     showProvider: boolean;
   };
 } => {
-  if (level === Level.REPO) {
+  if (label.indexOf('https://') != -1) {
     const repoName = getRepoName(label);
     const namespace = getNameSpace(label);
     const provider = getProvider(label);
@@ -147,7 +153,7 @@ export const formatRepoNameV2 = ({
       name: repoName,
       meta: {
         namespace,
-        provider,
+        provider: capitalize(provider),
         showProvider,
       },
     };

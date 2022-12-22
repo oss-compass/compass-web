@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   bar,
   genSeries,
   getBarOption,
   GetChartOptions,
   getLegendSelected,
+  getTooltipsFormatter,
+  legendFormat,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 
@@ -15,62 +17,75 @@ import {
 } from '@modules/analyze/DataTransform/transToAxis';
 import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-import LoadInView from '@modules/analyze/components/LoadInView';
-import Chart from '@modules/analyze/components/Chart';
-
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
+import Tab from '@common/components/Tab';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    {
-      legendName: 'lines add',
-      valueKey: 'linesAddedFrequency',
-    },
-    {
-      legendName: 'lines remove',
-      valueKey: 'linesRemovedFrequency',
-      valueFormat: (v) => toFixed(v * -1, 3),
-    },
-  ],
-};
-
-const getOptions: GetChartOptions = ({ xAxis, yResults }, theme) => {
+const getOptions: GetChartOptions = (
+  { xAxis, compareLabels, yResults },
+  theme
+) => {
   const isCompare = yResults.length > 1;
-  const series = genSeries<BarSeriesOption>({
-    theme,
-    comparesYAxis: yResults,
-    seriesEachFunc: (
+  const series = genSeries<BarSeriesOption>({ theme, yResults })(
+    (
       { legendName, label, compareLabels, level, isCompare, color, data },
       len
     ) => {
       return bar({
-        name: getLegendName(legendName, {
-          label,
-          compareLabels,
-          level,
-          isCompare,
-          legendTypeCount: len,
-        }),
+        name: label,
         stack: label,
         data: data,
         color,
       });
-    },
-  });
+    }
+  );
   return getBarOption({
     xAxisData: xAxis,
     series,
-    legend: {
-      selected: isCompare ? getLegendSelected(series, 'add') : {},
+    legend: legendFormat(compareLabels),
+    tooltip: {
+      formatter: getTooltipsFormatter({ compareLabels }),
     },
   });
 };
 
+const chartTabs = {
+  '1': [
+    {
+      legendName: 'lines add',
+      valueKey: 'linesAddedFrequency',
+    },
+  ],
+  '2': [
+    {
+      legendName: 'lines remove',
+      valueKey: 'linesRemovedFrequency',
+      valueFormat: (v: number) => toFixed(v * -1, 3),
+    },
+  ],
+};
+
+type TabValue = keyof typeof chartTabs;
+
+const tabOptions = [
+  { label: 'lines add', value: '1' },
+  { label: 'lines remove', value: '2' },
+];
+
 const LocFrequency = () => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const tansOpts: TransOpts = useMemo(() => {
+    return {
+      metricType: 'metricCodequality',
+      xAxisKey: 'grimoireCreationDate',
+      yAxisOpts: chartTabs[tab],
+    };
+  }, [tab]);
+
   return (
     <BaseCard
       title={t(
@@ -86,9 +101,26 @@ const LocFrequency = () => {
     >
       {(ref) => {
         return (
-          <LoadInView containerRef={ref}>
-            <Chart getOptions={getOptions} tansOpts={tansOpts} />
-          </LoadInView>
+          <>
+            <div className="mb-4">
+              <Tab
+                options={tabOptions}
+                value={tab}
+                onChange={(v) => setTab(v as TabValue)}
+              />
+            </div>
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {(loading, option) => {
+                return (
+                  <EChartX
+                    containerRef={ref}
+                    loading={loading}
+                    option={option}
+                  />
+                );
+              }}
+            </ChartWithData>
+          </>
         );
       }}
     </BaseCard>
