@@ -2,7 +2,8 @@
   "header": {
     "metrics_models": "Metrics Models",
     "community": "Community",
-    "about": "About"
+    "about": "About",
+    "submit_your_project": "Submit your project"
   },
   "community": {
     "slack": "Slack",
@@ -24,6 +25,7 @@
     "built_with": "Built With",
     "community": "Community",
     "slack": "Slack",
+    "wechat": "WeChat",
     "code": "Code"
   },
   "error": {
