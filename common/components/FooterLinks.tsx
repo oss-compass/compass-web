@@ -27,8 +27,8 @@ const FooterLinks = () => {
     {
       title: t('common:footer.community'),
       links: [
-        { text: t('common:community.slack'), href: '/docs/community/slack' },
-        { text: t('common:community.wechat'), href: '/docs/community/wechat' },
+        { text: t('common:footer.slack'), href: '/docs/community/slack' },
+        { text: t('common:footer.wechat'), href: '/docs/community/wechat' },
       ],
     },
     {
