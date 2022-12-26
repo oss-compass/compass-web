@@ -520,6 +520,8 @@ export type Query = {
   communityOverview: CommunityOverview;
   /** Fuzzy search project by keyword */
   fuzzySearch: Array<ProjectCompletionRow>;
+  /** Get group activity metrics data of compass */
+  groupMetricActivity: Array<GroupActivityMetric>;
   /** Get latest metrics data of the specified label */
   latestMetrics: LatestMetrics;
   /** Get activity metrics data of compass */
@@ -567,6 +569,13 @@ export type QueryCommunityOverviewArgs = {
 
 export type QueryFuzzySearchArgs = {
   keyword: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryGroupMetricActivityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
 };
 
@@ -857,6 +866,15 @@ export type MetricQuery = {
     orgCount?: number | null;
     organizationsActivity?: number | null;
   }>;
+};
+
+export type SummaryQueryVariables = Exact<{
+  start?: InputMaybe<Scalars['ISO8601DateTime']>;
+  end?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type SummaryQuery = {
+  __typename?: 'Query';
   summaryActivity: Array<{
     __typename?: 'ActivitySummary';
     grimoireCreationDate?: any | null;
@@ -1157,7 +1175,7 @@ export type MetricStatFragment = {
 };
 
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
-    fragment MetricStat on MetricStat {
+    fragment metricStat on MetricStat {
   mean
   median
 }
@@ -1580,185 +1598,8 @@ export const MetricDocument = /*#__PURE__*/ `
     orgCount
     organizationsActivity
   }
-  summaryActivity(beginDate: $start, endDate: $end) {
-    activeC1IssueCommentsContributorCount {
-      ...MetricStat
-    }
-    activeC1IssueCreateContributorCount {
-      ...MetricStat
-    }
-    activeC1PrCommentsContributorCount {
-      ...MetricStat
-    }
-    activeC1PrCreateContributorCount {
-      ...MetricStat
-    }
-    activeC2ContributorCount {
-      ...MetricStat
-    }
-    activityScore {
-      ...MetricStat
-    }
-    closedIssuesCount {
-      ...MetricStat
-    }
-    codeReviewCount {
-      ...MetricStat
-    }
-    commentFrequency {
-      ...MetricStat
-    }
-    commitFrequency {
-      ...MetricStat
-    }
-    contributorCount {
-      ...MetricStat
-    }
-    createdSince {
-      ...MetricStat
-    }
-    grimoireCreationDate
-    orgCount {
-      ...MetricStat
-    }
-    recentReleasesCount {
-      ...MetricStat
-    }
-    updatedIssuesCount {
-      ...MetricStat
-    }
-    updatedSince {
-      ...MetricStat
-    }
-  }
-  summaryCodequality(beginDate: $start, endDate: $end) {
-    activeC1PrCommentsContributorCount {
-      ...MetricStat
-    }
-    activeC1PrCreateContributorCount {
-      ...MetricStat
-    }
-    activeC2ContributorCount {
-      ...MetricStat
-    }
-    codeMergeRatio {
-      ...MetricStat
-    }
-    codeMergedCount {
-      ...MetricStat
-    }
-    codeQualityGuarantee {
-      ...MetricStat
-    }
-    codeReviewRatio {
-      ...MetricStat
-    }
-    codeReviewedCount {
-      ...MetricStat
-    }
-    commitFrequency {
-      ...MetricStat
-    }
-    commitFrequencyInside {
-      ...MetricStat
-    }
-    contributorCount {
-      ...MetricStat
-    }
-    gitPrLinkedRatio {
-      ...MetricStat
-    }
-    grimoireCreationDate
-    isMaintained {
-      ...MetricStat
-    }
-    linesAddedFrequency {
-      ...MetricStat
-    }
-    linesRemovedFrequency {
-      ...MetricStat
-    }
-    locFrequency {
-      ...MetricStat
-    }
-    prCommitCount {
-      ...MetricStat
-    }
-    prCommitLinkedCount {
-      ...MetricStat
-    }
-    prCount {
-      ...MetricStat
-    }
-    prIssueLinkedCount {
-      ...MetricStat
-    }
-    prIssueLinkedRatio {
-      ...MetricStat
-    }
-  }
-  summaryCommunity(beginDate: $start, endDate: $end) {
-    bugIssueOpenTimeAvg {
-      ...MetricStat
-    }
-    bugIssueOpenTimeMid {
-      ...MetricStat
-    }
-    closedPrsCount {
-      ...MetricStat
-    }
-    codeReviewCount {
-      ...MetricStat
-    }
-    commentFrequency {
-      ...MetricStat
-    }
-    communitySupportScore {
-      ...MetricStat
-    }
-    grimoireCreationDate
-    issueFirstReponseAvg {
-      ...MetricStat
-    }
-    issueFirstReponseMid {
-      ...MetricStat
-    }
-    issueOpenTimeAvg {
-      ...MetricStat
-    }
-    issueOpenTimeMid {
-      ...MetricStat
-    }
-    prOpenTimeAvg {
-      ...MetricStat
-    }
-    prOpenTimeMid {
-      ...MetricStat
-    }
-    updatedIssuesCount {
-      ...MetricStat
-    }
-  }
-  summaryGroupActivity(beginDate: $start, endDate: $end) {
-    commitFrequency {
-      ...MetricStat
-    }
-    contributionLast {
-      ...MetricStat
-    }
-    contributorCount {
-      ...MetricStat
-    }
-    grimoireCreationDate
-    orgCount {
-      ...MetricStat
-    }
-    organizationsActivity {
-      ...MetricStat
-    }
-  }
 }
-    ${MetricStatFragmentDoc}`;
+    `;
 export const useMetricQuery = <TData = MetricQuery, TError = unknown>(
   client: GraphQLClient,
   variables: MetricQueryVariables,
@@ -1788,6 +1629,217 @@ useMetricQuery.fetcher = (
   fetcher<MetricQuery, MetricQueryVariables>(
     client,
     MetricDocument,
+    variables,
+    headers
+  );
+export const SummaryDocument = /*#__PURE__*/ `
+    query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
+  summaryActivity(beginDate: $start, endDate: $end) {
+    activeC1IssueCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1IssueCreateContributorCount {
+      ...metricStat
+    }
+    activeC1PrCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1PrCreateContributorCount {
+      ...metricStat
+    }
+    activeC2ContributorCount {
+      ...metricStat
+    }
+    activityScore {
+      ...metricStat
+    }
+    closedIssuesCount {
+      ...metricStat
+    }
+    codeReviewCount {
+      ...metricStat
+    }
+    commentFrequency {
+      ...metricStat
+    }
+    commitFrequency {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    createdSince {
+      ...metricStat
+    }
+    grimoireCreationDate
+    orgCount {
+      ...metricStat
+    }
+    recentReleasesCount {
+      ...metricStat
+    }
+    updatedIssuesCount {
+      ...metricStat
+    }
+    updatedSince {
+      ...metricStat
+    }
+  }
+  summaryCodequality(beginDate: $start, endDate: $end) {
+    activeC1PrCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1PrCreateContributorCount {
+      ...metricStat
+    }
+    activeC2ContributorCount {
+      ...metricStat
+    }
+    codeMergeRatio {
+      ...metricStat
+    }
+    codeMergedCount {
+      ...metricStat
+    }
+    codeQualityGuarantee {
+      ...metricStat
+    }
+    codeReviewRatio {
+      ...metricStat
+    }
+    codeReviewedCount {
+      ...metricStat
+    }
+    commitFrequency {
+      ...metricStat
+    }
+    commitFrequencyInside {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    gitPrLinkedRatio {
+      ...metricStat
+    }
+    grimoireCreationDate
+    isMaintained {
+      ...metricStat
+    }
+    linesAddedFrequency {
+      ...metricStat
+    }
+    linesRemovedFrequency {
+      ...metricStat
+    }
+    locFrequency {
+      ...metricStat
+    }
+    prCommitCount {
+      ...metricStat
+    }
+    prCommitLinkedCount {
+      ...metricStat
+    }
+    prCount {
+      ...metricStat
+    }
+    prIssueLinkedCount {
+      ...metricStat
+    }
+    prIssueLinkedRatio {
+      ...metricStat
+    }
+  }
+  summaryCommunity(beginDate: $start, endDate: $end) {
+    bugIssueOpenTimeAvg {
+      ...metricStat
+    }
+    bugIssueOpenTimeMid {
+      ...metricStat
+    }
+    closedPrsCount {
+      ...metricStat
+    }
+    codeReviewCount {
+      ...metricStat
+    }
+    commentFrequency {
+      ...metricStat
+    }
+    communitySupportScore {
+      ...metricStat
+    }
+    grimoireCreationDate
+    issueFirstReponseAvg {
+      ...metricStat
+    }
+    issueFirstReponseMid {
+      ...metricStat
+    }
+    issueOpenTimeAvg {
+      ...metricStat
+    }
+    issueOpenTimeMid {
+      ...metricStat
+    }
+    prOpenTimeAvg {
+      ...metricStat
+    }
+    prOpenTimeMid {
+      ...metricStat
+    }
+    updatedIssuesCount {
+      ...metricStat
+    }
+  }
+  summaryGroupActivity(beginDate: $start, endDate: $end) {
+    commitFrequency {
+      ...metricStat
+    }
+    contributionLast {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    grimoireCreationDate
+    orgCount {
+      ...metricStat
+    }
+    organizationsActivity {
+      ...metricStat
+    }
+  }
+}
+    ${MetricStatFragmentDoc}`;
+export const useSummaryQuery = <TData = SummaryQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables?: SummaryQueryVariables,
+  options?: UseQueryOptions<SummaryQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<SummaryQuery, TError, TData>(
+    variables === undefined ? ['summary'] : ['summary', variables],
+    fetcher<SummaryQuery, SummaryQueryVariables>(
+      client,
+      SummaryDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useSummaryQuery.getKey = (variables?: SummaryQueryVariables) =>
+  variables === undefined ? ['summary'] : ['summary', variables];
+useSummaryQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: SummaryQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<SummaryQuery, SummaryQueryVariables>(
+    client,
+    SummaryDocument,
     variables,
     headers
   );

@@ -1,60 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
-  getLegendSelected,
   getTooltipsFormatter,
   legendFormat,
+  getColorWithLabel,
   percentageValueFormat,
+  percentageUnitFormat,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
-import ChartWithData from '@modules/analyze/components/ChartWithData';
-import { LineSeriesOption } from 'echarts';
-import { toFixed } from '@common/utils';
+import ChartWithDataV2 from '@modules/analyze/components/ChartWithDataV2';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
-
-const getOptions: GetChartOptions = (
-  { xAxis, tabValue, compareLabels, yResults },
-  theme
-) => {
-  const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      if (legendName === 'commit pr linked ratio') {
-        return line({ name: label, data, color, yAxisIndex: 0 });
-      }
-      return line({ name: label, data, color, yAxisIndex: 1 });
-    }
-  );
-
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    yAxis: [
-      { type: 'value', axisLabel: { formatter: '{value}%' } },
-      { type: 'value' },
-    ],
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({
-        compareLabels,
-        valueFormat: tabValue === '1' ? percentageValueFormat : undefined,
-      }),
-    },
-  });
-};
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 
 const tabOptions = [
   { label: 'commit pr linked ratio', value: '1' },
@@ -63,15 +23,24 @@ const tabOptions = [
 ];
 
 const chartTabs = {
-  '1': [
-    {
-      legendName: 'commit pr linked ratio',
-      valueKey: 'gitPrLinkedRatio',
-      valueFormat: (v: number) => toFixed(v * 100, 2),
-    },
-  ],
-  '2': [{ legendName: 'commit pr', valueKey: 'prCommitCount' }],
-  '3': [{ legendName: 'commit pr linked', valueKey: 'prCommitLinkedCount' }],
+  '1': {
+    legendName: 'commit pr linked ratio',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.gitPrLinkedRatio',
+    summaryKey: 'summaryCodequality.gitPrLinkedRatio',
+  },
+  '2': {
+    legendName: 'commit pr',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.prCommitCount',
+    summaryKey: 'summaryCodequality.prCommitCount',
+  },
+  '3': {
+    legendName: 'commit pr linked',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.prCommitLinkedCount',
+    summaryKey: 'summaryCodequality.prCommitLinkedCount',
+  },
 };
 
 type TabValue = keyof typeof chartTabs;
@@ -80,14 +49,40 @@ const CommitPRLinkedRatio = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
-  const tansOpts: TransOpts = useMemo(() => {
-    return {
-      metricType: 'metricCodequality',
-      xAxisKey: 'grimoireCreationDate',
-      yAxisOpts: chartTabs[tab],
-      tabValue: tab,
-    };
+  const tansOpts: TransOpt = useMemo(() => {
+    return chartTabs[tab];
   }, [tab]);
+
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults },
+    theme
+  ) => {
+    const series = yResults.map(({ label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
+      return line({
+        name: label,
+        data: tab === '1' ? data.map((v) => percentageValueFormat(v)) : data,
+        color,
+        yAxisIndex: tab === '1' ? 0 : 1,
+      });
+    });
+
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      yAxis: [
+        { type: 'value', axisLabel: { formatter: '{value}%' } },
+        { type: 'value' },
+      ],
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({
+          compareLabels,
+          valueFormat: tab === '1' ? percentageUnitFormat : undefined,
+        }),
+      },
+    });
+  };
 
   return (
     <BaseCard
@@ -112,7 +107,7 @@ const CommitPRLinkedRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            <ChartWithDataV2 tansOpts={tansOpts} getOptions={getOptions}>
               {(loading, option) => {
                 return (
                   <EChartX
@@ -122,7 +117,7 @@ const CommitPRLinkedRatio = () => {
                   />
                 );
               }}
-            </ChartWithData>
+            </ChartWithDataV2>
           </>
         );
       }}

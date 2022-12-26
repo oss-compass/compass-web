@@ -1,5 +1,5 @@
 import { Level } from '@modules/analyze/constant';
-import { MetricQuery } from '@graphql/generated';
+import { MetricQuery, SummaryQuery } from '@graphql/generated';
 import { formatISO, toFixed } from '@common/utils';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
@@ -39,33 +39,11 @@ function getYDateMap(
   return dateMap;
 }
 
-function getSummaryMap(
-  labelsData: DeepReadonly<Array<DataItem>>,
-  xKey: string,
-  statKey: string
-) {
-  const summary = labelsData?.[0];
-  if (!summary) return null;
-
-  const summaryDateMap = new Map<string, { mean: number; median: number }>();
-  const [firstKey, secondKey] = statKey.split('.');
-
-  // @ts-ignore
-  const metric = summary.result[firstKey];
-  metric.forEach((i: any) => {
-    const xAxis = i[xKey] as string;
-    const yAxis = i[secondKey] as { mean: number; median: number };
-    summaryDateMap.set(xAxis, { mean: yAxis['mean'], median: yAxis['median'] });
-  });
-  return summaryDateMap;
-}
-
-function transToAxisWithSummary(
+export function transDataToAxis(
   labelsData: DeepReadonly<Array<DataItem>>,
   opts: TransOpt
 ): TransResult {
   const dateMap = getYDateMap(labelsData, opts.xKey, opts.yKey);
-  const summaryMap = getSummaryMap(labelsData, opts.xKey, opts.statKey);
 
   const dateMapKeys: string[] = [];
   dateMap.forEach((value, key) => {
@@ -94,6 +72,40 @@ function transToAxisWithSummary(
     };
   });
 
+  return {
+    xAxis,
+    yResults,
+  };
+}
+
+function getSummaryMap(
+  summaryData: DeepReadonly<SummaryQuery> | null,
+  xKey: string,
+  valKeyPath: string
+) {
+  if (!summaryData) return null;
+
+  const summaryDateMap = new Map<string, { mean: number; median: number }>();
+  const [firstKey, secondKey] = valKeyPath.split('.');
+  if (!firstKey || !secondKey) return;
+
+  // @ts-ignore
+  const metric = summaryData[firstKey];
+  metric.forEach((i: any) => {
+    const xAxis = i[xKey] as string;
+    const yAxis = i[secondKey] as { mean: number; median: number };
+    summaryDateMap.set(xAxis, { mean: yAxis['mean'], median: yAxis['median'] });
+  });
+  return summaryDateMap;
+}
+
+export function transSummaryToAxis(
+  data: DeepReadonly<SummaryQuery> | null,
+  xAxis: string[],
+  valKeyPath: string
+) {
+  const summaryMap = getSummaryMap(data, 'grimoireCreationDate', valKeyPath);
+
   const summaryMean = xAxis.map((x) => {
     const summaryItem = summaryMap?.get(x);
     if (summaryItem?.mean === undefined) {
@@ -109,12 +121,5 @@ function transToAxisWithSummary(
     return toFixed(summaryItem?.median, 3);
   });
 
-  return {
-    xAxis: xAxis.map((i) => formatISO(i)),
-    yResults,
-    summaryMean,
-    summaryMedian,
-  };
+  return { summaryMean, summaryMedian };
 }
-
-export default transToAxisWithSummary;

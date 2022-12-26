@@ -1,5 +1,10 @@
 import merge from 'lodash/merge';
-import { BarSeriesOption, LineSeriesOption, EChartsOption } from 'echarts';
+import {
+  BarSeriesOption,
+  LineSeriesOption,
+  EChartsOption,
+  SeriesOption,
+} from 'echarts';
 
 import { formatISO } from '@common/utils/time';
 import { Level } from '@modules/analyze/constant';
@@ -15,6 +20,8 @@ import {
 } from '@modules/analyze/options/color';
 import React from 'react';
 import { ChartThemeState } from '@modules/analyze/store';
+import { line } from '@modules/analyze/options/series';
+import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 
 export const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -87,6 +94,12 @@ export const getLineOption = (
     yAxis: {
       type: 'value',
       scale: true,
+      // splitLine: {
+      //   show: false,
+      //   lineStyle: {
+      //     color: ['#f1f1f1'],
+      //   },
+      // },
     },
     series,
     ...restOpts,
@@ -110,6 +123,12 @@ export const getBarOption = (
     xAxis: categoryAxis(xAxisData),
     yAxis: {
       type: 'value',
+      // splitLine: {
+      //   show: false,
+      //   lineStyle: {
+      //     color: ['#f1f1f1'],
+      //   },
+      // },
     },
     series,
     ...restOpts,
@@ -186,4 +205,26 @@ export function genSeries<T>(opt: {
       return acc;
     }, []);
   };
+}
+
+export function summaryLine(cfg: {
+  id: string;
+  name: string;
+  data: (string | number)[];
+  color: string;
+  formatDataToHundred?: boolean;
+}) {
+  const { formatDataToHundred, data } = cfg;
+  let showData = cfg.data;
+  if (formatDataToHundred) {
+    showData = data?.map((i) => transHundredMarkSystem(i));
+  }
+
+  return line({
+    id: cfg.id,
+    name: cfg.name,
+    data: showData,
+    lineStyle: { type: 'dashed', width: 1, color: cfg.color },
+    itemStyle: { color: cfg.color },
+  });
 }

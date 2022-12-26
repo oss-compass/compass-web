@@ -9,7 +9,12 @@ import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import useHashScroll from '@common/hooks/useHashScroll';
 import { QueryStatus, useQueries, useQueryClient } from '@tanstack/react-query';
-import { MetricQuery, useMetricQuery } from '@graphql/generated';
+import {
+  MetricQuery,
+  SummaryQuery,
+  useMetricQuery,
+  useSummaryQuery,
+} from '@graphql/generated';
 import client from '@graphql/client';
 import { Level } from '@modules/analyze/constant';
 
@@ -22,6 +27,7 @@ interface Store {
     status: QueryStatus | undefined;
     result: MetricQuery | undefined;
   }[];
+  summary: SummaryQuery | null;
 }
 
 const defaultVal = {
@@ -29,6 +35,7 @@ const defaultVal = {
   // if it is completely contributed by individuals， hidden organizations section
   showOrganizations: false,
   items: [],
+  summary: null,
 };
 
 const dataState = proxy<Store>(defaultVal);
@@ -39,7 +46,7 @@ const toggleShowOrganizations = (bool: boolean) => {
 };
 
 const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const state = useRef(dataState).current;
+  const proxyState = useRef(dataState).current;
 
   const queryClient = useQueryClient();
   const { timeStart, timeEnd } = useQueryDateRange();
@@ -55,6 +62,16 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
       };
     }),
   });
+
+  useSummaryQuery(
+    client,
+    { start: timeStart, end: timeEnd },
+    {
+      onSuccess(e) {
+        proxyState.summary = e;
+      },
+    }
+  );
 
   const items = compareItems
     .map(({ label, level }) => {
@@ -79,15 +96,15 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
   });
 
   useEffect(() => {
-    state.loading = isLoading;
+    proxyState.loading = isLoading;
     if (!isLoading) {
-      state.items = items;
+      proxyState.items = items;
       toggleShowOrganizations(hasOrganizations);
     }
-  }, [isLoading, items, hasOrganizations, state]);
+  }, [isLoading, items, hasOrganizations, proxyState]);
 
   return (
-    <ChartsDataContext.Provider value={state}>
+    <ChartsDataContext.Provider value={proxyState}>
       {children}
     </ChartsDataContext.Provider>
   );

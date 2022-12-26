@@ -1,5 +1,4 @@
 import React, { PropsWithChildren, useEffect } from 'react';
-import { useSnapshot } from 'valtio';
 import { useTranslation } from 'next-i18next';
 import ChartsDataProvider from '../context/ChartsDataProvider';
 import OverviewSummary from './OverviewSummary';
@@ -12,7 +11,7 @@ import { Topic } from '@modules/analyze/components/SideBar/config';
 
 const Charts = () => {
   const { t } = useTranslation();
-  console.log('--------------Charts------------------');
+
   return (
     <ChartsDataProvider>
       <OverviewSummary />

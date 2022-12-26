@@ -11,13 +11,12 @@ export interface TransOpt {
   xKey: string;
   yKey: string;
   legendName: string;
-  statKey: string;
+  summaryKey: string;
 }
 
 export interface GenChartData {
   isCompare: boolean;
   compareLabels: string[];
-  tabValue?: string;
   xAxis: string[];
   yResults: YResult[];
   summaryMean: (number | string)[];
@@ -32,6 +31,9 @@ export type GenChartOptions = (
 export interface TransResult {
   xAxis: string[];
   yResults: YResult[];
+}
+
+export interface SummaryResult {
   summaryMean: (number | string)[];
   summaryMedian: (number | string)[];
 }

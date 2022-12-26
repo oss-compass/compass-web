@@ -1,58 +1,51 @@
 import React from 'react';
 import {
-  genSeries,
-  getLineOption,
   line,
-  GetChartOptions,
+  getLineOption,
   getTooltipsFormatter,
   legendFormat,
+  getColorWithLabel,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
+import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import BaseCard from '@common/components/BaseCard';
+import ChartWithDataV2 from '@modules/analyze/components/ChartWithDataV2';
 import EChartX from '@common/components/EChartX';
-import ChartWithData from '@modules/analyze/components/ChartWithData';
 
 import { useTranslation } from 'next-i18next';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'commit frequency', valueKey: 'commitFrequency' }],
-};
+const CommitFrequency = () => {
+  const { t } = useTranslation();
 
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
+  const tansOpts: TransOpt = {
+    legendName: 'commit frequency',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.commitFrequency',
+    summaryKey: 'summaryCodequality.commitFrequency',
+  };
+
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults },
+    theme
+  ) => {
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
       return line({
         name: label,
         data: data,
         color,
       });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+    });
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
+      },
+    });
+  };
 
-const CommitFrequency = () => {
-  const { t } = useTranslation();
   return (
     <BaseCard
       title={t(
@@ -68,15 +61,13 @@ const CommitFrequency = () => {
     >
       {(ref) => {
         return (
-          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+          <ChartWithDataV2 tansOpts={tansOpts} getOptions={getOptions}>
             {(loading, option) => {
-              console.log('xxxxxxxxxx option', loading, option);
-
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
               );
             }}
-          </ChartWithData>
+          </ChartWithDataV2>
         );
       }}
     </BaseCard>

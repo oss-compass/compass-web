@@ -1,13 +1,17 @@
 import React, { ReactNode } from 'react';
-import transToAxisWithSummary from '@modules/analyze/DataTransform/transToAxisWithSummary';
+import {
+  transDataToAxis,
+  transSummaryToAxis,
+} from '@modules/analyze/DataTransform/transToAxisWithSummary';
 import { EChartsOption } from 'echarts';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
+import { formatISO } from '@common/utils';
 import { TransOpt, GenChartData } from '@modules/analyze/type';
 
 const ChartWithDataV2: React.FC<{
-  tansOpts: TransOpt & { tabValue?: string };
+  tansOpts: TransOpt;
   getOptions: (
     input: GenChartData,
     theme?: DeepReadonly<ChartThemeState>
@@ -20,8 +24,12 @@ const ChartWithDataV2: React.FC<{
   const data = useMetricQueryData();
   const loading = data?.loading;
 
-  const { xAxis, yResults, summaryMean, summaryMedian } =
-    transToAxisWithSummary(data?.items, tansOpts);
+  const { xAxis, yResults } = transDataToAxis(data?.items, tansOpts);
+  const { summaryMean, summaryMedian } = transSummaryToAxis(
+    data?.summary,
+    xAxis,
+    tansOpts.summaryKey
+  );
 
   const compareLabels = yResults.map((i) => i.label);
   const isCompare = yResults.length > 1;
@@ -29,9 +37,8 @@ const ChartWithDataV2: React.FC<{
   const echartsOpts = getOptions(
     {
       isCompare,
-      tabValue: tansOpts.tabValue,
       compareLabels,
-      xAxis,
+      xAxis: xAxis.map((i) => formatISO(i)),
       yResults,
       summaryMean,
       summaryMedian,
