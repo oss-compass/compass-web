@@ -3,7 +3,6 @@ import {
   ChartSummaryProps,
   getLineOption,
   line,
-  GetChartOptions,
 } from '@modules/analyze/options';
 import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
@@ -14,7 +13,6 @@ import { transDataForOverview } from '@modules/analyze/DataTransform/transDataFo
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
-import { useSnapshot } from 'valtio';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
   loading = false,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MetricQuery } from '@graphql/generated';
+import { MetricQuery, SummaryQuery } from '@graphql/generated';
 import CommunityRepos from './CommunityRepos';
 import LineChart from './LineChart';
 import TableList from './TableList';

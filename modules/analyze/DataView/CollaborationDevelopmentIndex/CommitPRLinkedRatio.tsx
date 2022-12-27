@@ -7,11 +7,13 @@ import {
   getColorWithLabel,
   percentageValueFormat,
   percentageUnitFormat,
+  summaryLine,
+  checkFormatPercentageValue,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
-import ChartWithDataV2 from '@modules/analyze/components/ChartWithDataV2';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { TransOpt, GenChartOptions } from '@modules/analyze/type';
@@ -49,12 +51,10 @@ const CommitPRLinkedRatio = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
-  const tansOpts: TransOpt = useMemo(() => {
-    return chartTabs[tab];
-  }, [tab]);
+  const tansOpts: TransOpt = chartTabs[tab];
 
   const getOptions: GenChartOptions = (
-    { xAxis, compareLabels, yResults },
+    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
     theme
   ) => {
     const series = yResults.map(({ label, level, data }) => {
@@ -63,17 +63,33 @@ const CommitPRLinkedRatio = () => {
         name: label,
         data: tab === '1' ? data.map((v) => percentageValueFormat(v)) : data,
         color,
-        yAxisIndex: tab === '1' ? 0 : 1,
       });
     });
+
+    series.push(
+      summaryLine({
+        id: 'median',
+        name: 'Median',
+        data: checkFormatPercentageValue(tab === '1', summaryMedian),
+        color: '#5B8FF9',
+      })
+    );
+    series.push(
+      summaryLine({
+        id: 'average',
+        name: 'Average',
+        data: checkFormatPercentageValue(tab === '1', summaryMean),
+        color: '#F95B5B',
+      })
+    );
 
     return getLineOption({
       xAxisData: xAxis,
       series,
-      yAxis: [
-        { type: 'value', axisLabel: { formatter: '{value}%' } },
-        { type: 'value' },
-      ],
+      yAxis:
+        tab === '1'
+          ? { type: 'value', axisLabel: { formatter: '{value}%' } }
+          : { type: 'value' },
       legend: legendFormat(compareLabels),
       tooltip: {
         formatter: getTooltipsFormatter({
@@ -107,7 +123,7 @@ const CommitPRLinkedRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartWithDataV2 tansOpts={tansOpts} getOptions={getOptions}>
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
               {(loading, option) => {
                 return (
                   <EChartX
@@ -117,7 +133,7 @@ const CommitPRLinkedRatio = () => {
                   />
                 );
               }}
-            </ChartWithDataV2>
+            </ChartWithData>
           </>
         );
       }}

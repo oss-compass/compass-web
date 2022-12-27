@@ -7,13 +7,14 @@ import {
   getTooltipsFormatter,
   getColorWithLabel,
   summaryLine,
+  formatToHundredMark,
 } from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
-import ChartWithDataV2 from '@modules/analyze/components/ChartWithDataV2';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
 
 const TotalScore = () => {
   const { t } = useTranslation();
@@ -34,9 +35,8 @@ const TotalScore = () => {
       const color = getColorWithLabel(theme, label);
       return line({
         name: label,
-        data: data,
+        data: formatToHundredMark(!onePointSys, data),
         color,
-        formatDataToHundred: !onePointSys,
       });
     });
 
@@ -44,18 +44,16 @@ const TotalScore = () => {
       summaryLine({
         id: 'median',
         name: 'Median',
-        data: summaryMedian,
+        data: formatToHundredMark(!onePointSys, summaryMedian),
         color: '#5B8FF9',
-        formatDataToHundred: !onePointSys,
       })
     );
     series.push(
       summaryLine({
         id: 'average',
         name: 'Average',
-        data: summaryMean,
+        data: formatToHundredMark(!onePointSys, summaryMean),
         color: '#F95B5B',
-        formatDataToHundred: !onePointSys,
       })
     );
 
@@ -88,13 +86,13 @@ const TotalScore = () => {
     >
       {(ref) => {
         return (
-          <ChartWithDataV2 tansOpts={tansOpts} getOptions={getOptions}>
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
             {(loading, option) => {
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
               );
             }}
-          </ChartWithDataV2>
+          </ChartWithData>
         );
       }}
     </BaseCard>

@@ -1,51 +1,56 @@
 import React, { useMemo } from 'react';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
   legendFormat,
   getTooltipsFormatter,
+  getColorWithLabel,
+  summaryLine,
 } from '@modules/analyze/options';
 import { Organizations } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import { useTranslation } from 'next-i18next';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricGroupActivity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'commit frequency', valueKey: 'commitFrequency' }],
+const tansOpts: TransOpt = {
+  legendName: 'commit frequency',
+  xKey: 'grimoireCreationDate',
+  yKey: 'metricGroupActivity.commitFrequency',
+  summaryKey: 'summaryGroupActivity.commitFrequency',
 };
 
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
+const getOptions: GenChartOptions = (
+  { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
   theme
 ) => {
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-  })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    }
+  const series = yResults.map(({ legendName, label, level, data }) => {
+    const color = getColorWithLabel(theme, label);
+    return line({
+      name: label,
+      data: data,
+      color,
+    });
+  });
+
+  series.push(
+    summaryLine({
+      id: 'median',
+      name: 'Median',
+      data: summaryMedian,
+      color: '#5B8FF9',
+    })
   );
+  series.push(
+    summaryLine({
+      id: 'average',
+      name: 'Average',
+      data: summaryMean,
+      color: '#F95B5B',
+    })
+  );
+
   return getLineOption({
     xAxisData: xAxis,
     series,

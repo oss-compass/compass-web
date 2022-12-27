@@ -5,11 +5,12 @@ import {
   getTooltipsFormatter,
   legendFormat,
   getColorWithLabel,
+  summaryLine,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import BaseCard from '@common/components/BaseCard';
-import ChartWithDataV2 from '@modules/analyze/components/ChartWithDataV2';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
@@ -25,7 +26,7 @@ const CommitFrequency = () => {
   };
 
   const getOptions: GenChartOptions = (
-    { xAxis, compareLabels, yResults },
+    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
     theme
   ) => {
     const series = yResults.map(({ legendName, label, level, data }) => {
@@ -36,6 +37,23 @@ const CommitFrequency = () => {
         color,
       });
     });
+
+    series.push(
+      summaryLine({
+        id: 'median',
+        name: 'Median',
+        data: summaryMedian,
+        color: '#5B8FF9',
+      })
+    );
+    series.push(
+      summaryLine({
+        id: 'average',
+        name: 'Average',
+        data: summaryMean,
+        color: '#F95B5B',
+      })
+    );
     return getLineOption({
       xAxisData: xAxis,
       series,
@@ -61,13 +79,13 @@ const CommitFrequency = () => {
     >
       {(ref) => {
         return (
-          <ChartWithDataV2 tansOpts={tansOpts} getOptions={getOptions}>
+          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
             {(loading, option) => {
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
               );
             }}
-          </ChartWithDataV2>
+          </ChartWithData>
         );
       }}
     </BaseCard>

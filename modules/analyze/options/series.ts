@@ -4,39 +4,25 @@ import {
   LineSeriesOption,
   SeriesOption,
 } from 'echarts';
-import {
-  OptionDataValue,
-  TooltipFormatterCallback,
-} from 'echarts/types/src/util/types';
-import {
-  CallbackDataParams,
-  TopLevelFormatterParams,
-} from 'echarts/types/dist/shared';
-import { formatRepoNameV2 } from '@modules/analyze/DataTransform/transToAxis';
+import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { formatRepoName } from '@modules/analyze/options/format';
 import isNumber from 'lodash/isNumber';
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
-import { toFixed } from '@common/utils';
+import { fmtEmptyDataValue } from './format';
 
 export const line = (
   opts: {
     color?: string;
     data: (string | number)[];
-    formatDataToHundred?: boolean;
   } & LineSeriesOption
 ): LineSeriesOption => {
-  const { formatDataToHundred = false, name, data, color, ...restOpts } = opts;
-
-  let showData = opts.data;
-  if (formatDataToHundred) {
-    showData = opts.data?.map((i) => transHundredMarkSystem(i));
-  }
+  const { data, name, color, ...restOpts } = opts;
 
   return {
     name: opts.name,
     type: 'line',
     smooth: false,
     showSymbol: false,
-    data: showData,
+    data,
     lineStyle: opts.color ? { color: opts.color } : {},
     itemStyle: opts.color ? { color: opts.color } : {},
     ...restOpts,
@@ -47,21 +33,15 @@ export const lineArea = (
   opts: {
     color?: string;
     data: (string | number)[];
-    formatDataToHundred?: boolean;
   } & LineSeriesOption
 ): LineSeriesOption => {
-  const { formatDataToHundred = false, name, data, color, ...restOpts } = opts;
-
-  let showData = opts.data;
-  if (formatDataToHundred) {
-    showData = opts.data?.map((i) => transHundredMarkSystem(i));
-  }
+  const { name, data, color, ...restOpts } = opts;
 
   return {
     type: 'line',
     smooth: false,
     showSymbol: false,
-    data: showData,
+    data,
     areaStyle: color ? { color } : {},
     itemStyle: opts.color ? { color } : {},
     ...restOpts,
@@ -72,22 +52,16 @@ export const bar = (
   opts: {
     name: string;
     data: (string | number)[];
-    formatDataToHundred?: boolean;
     stack?: string;
     color?: string;
   } & BarSeriesOption
 ): BarSeriesOption => {
-  const { formatDataToHundred = false, name, data, color, ...restOpts } = opts;
-
-  let showData = opts.data;
-  if (formatDataToHundred) {
-    showData = opts.data?.map((i) => transHundredMarkSystem(i));
-  }
+  const { name, data, color, ...restOpts } = opts;
 
   return {
     name: opts.name,
     type: 'bar',
-    data: showData,
+    data,
     emphasis: {
       focus: 'series',
     },
@@ -95,16 +69,6 @@ export const bar = (
     itemStyle: opts.color ? { color: opts.color } : {},
     ...restOpts,
   };
-};
-
-export const mapToSeries = (
-  arr: any[],
-  key: string,
-  name: string,
-  func: (opts: { name: string; data: (string | number)[] }) => LineSeriesOption
-): LineSeriesOption => {
-  const values = arr.map((i) => String(i[key]));
-  return func({ name: name, data: values });
 };
 
 export const getLegendSelected = (s: SeriesOption[], includeWord: string) => {
@@ -135,7 +99,7 @@ export const legendFormat = (
       },
     },
     formatter: function (label) {
-      const { name, meta } = formatRepoNameV2({ label, compareLabels });
+      const { name, meta } = formatRepoName({ label, compareLabels });
       const { namespace = '', provider = '', showProvider } = meta || {};
       let b = `{b|${namespace}}`;
       if (showProvider) {
@@ -146,35 +110,12 @@ export const legendFormat = (
   };
 };
 
-export const percentageValueFormat = (value: number) => {
-  if (!isNaN(Number(value))) {
-    return toFixed(value * 100, 3);
-  }
-  return value;
-};
-
-export const percentageUnitFormat = (
-  value: OptionDataValue | OptionDataValue[]
-): string => {
-  if (value === undefined || value === null || value === '-') {
-    return '-';
-  }
-  return value + '%';
-};
-
-export const fmtEmptyDataValue = (value: any): any => {
-  if (value === undefined || value === null) {
-    return '-';
-  }
-  return value;
-};
-
 const genTooltipsItem = (
   p: CallbackDataParams,
   compareLabels: string[],
   valueFormat?: (v: any) => any
 ) => {
-  const { name, meta } = formatRepoNameV2({
+  const { name, meta } = formatRepoName({
     label: p.seriesName || '',
     compareLabels,
   });

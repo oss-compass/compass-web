@@ -10,7 +10,7 @@ import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, toFixed } from '@common/utils';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
-import { formatRepoNameV2 } from '@modules/analyze/DataTransform/transToAxis';
+import { formatRepoName } from '@modules/analyze/options/format';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
 import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
@@ -139,7 +139,7 @@ const TrendsList: React.FC = () => {
           <tbody>
             {Array.isArray(list) &&
               list.map((item, index) => {
-                const r = formatRepoNameV2({
+                const r = formatRepoName({
                   label: item!.label!,
                   compareLabels: labels,
                 });

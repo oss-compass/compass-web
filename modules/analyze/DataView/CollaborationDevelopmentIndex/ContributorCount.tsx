@@ -12,7 +12,7 @@ import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/co
 import BaseCard from '@common/components/BaseCard';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
-import ChartWithDataV2 from '@modules/analyze/components/ChartWithDataV2';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 
 const chartTabs = {
@@ -121,7 +121,7 @@ const ContributorCount = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartWithDataV2 tansOpts={tansOpts} getOptions={getOptions}>
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
               {(loading, option) => {
                 return (
                   <EChartX
@@ -131,7 +131,7 @@ const ContributorCount = () => {
                   />
                 );
               }}
-            </ChartWithDataV2>
+            </ChartWithData>
           </div>
         );
       }}

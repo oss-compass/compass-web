@@ -1,62 +1,62 @@
 import React, { useMemo, useState } from 'react';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
   legendFormat,
   getTooltipsFormatter,
+  getColorWithLabel,
+  summaryLine,
+  formatToHundredMark,
 } from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
-import EChartX from '@common/components/EChartX';
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
-import { useTranslation } from 'next-i18next';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
+import EChartX from '@common/components/EChartX';
+import { useTranslation } from 'next-i18next';
 
 const TotalScore = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
 
-  const tansOpts: TransOpts = {
-    metricType: 'metricCommunity',
-    xAxisKey: 'grimoireCreationDate',
-    yAxisOpts: [
-      {
-        legendName: 'community service and support',
-        valueKey: 'communitySupportScore',
-      },
-    ],
+  const tansOpts: TransOpt = {
+    legendName: 'community service and support',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.communitySupportScore',
+    summaryKey: 'summaryCommunity.communitySupportScore',
   };
 
-  const getOptions: GetChartOptions = (
-    { xAxis, compareLabels, yResults },
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
     theme
   ) => {
-    const series = genSeries<LineSeriesOption>({
-      theme,
-      yResults,
-    })(
-      (
-        { legendName, label, compareLabels, level, isCompare, color, data },
-        len
-      ) => {
-        !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
-        return line({
-          name: label,
-          data: data,
-          color,
-        });
-      }
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
+      return line({
+        name: label,
+        data: formatToHundredMark(!onePointSys, data),
+        color,
+      });
+    });
+
+    series.push(
+      summaryLine({
+        id: 'median',
+        name: 'Median',
+        data: formatToHundredMark(!onePointSys, summaryMedian),
+        color: '#5B8FF9',
+      })
     );
+    series.push(
+      summaryLine({
+        id: 'average',
+        name: 'Average',
+        data: formatToHundredMark(!onePointSys, summaryMean),
+        color: '#F95B5B',
+      })
+    );
+
     return getLineOption({
       xAxisData: xAxis,
       series,

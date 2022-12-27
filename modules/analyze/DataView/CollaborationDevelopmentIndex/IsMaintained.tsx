@@ -1,60 +1,51 @@
 import React from 'react';
 import {
-  genSeries,
   getBarOption,
   bar,
-  GetChartOptions,
   getTooltipsFormatter,
   legendFormat,
+  getColorWithLabel,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { BarSeriesOption, LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
 import { useTranslation } from 'next-i18next';
+import { GenChartOptions } from '@modules/analyze/type';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'is maintained', valueKey: 'isMaintained' }],
+const tansOpt = {
+  legendName: 'is maintained',
+  xKey: 'grimoireCreationDate',
+  yKey: 'metricCodequality.isMaintained',
+  summaryKey: 'summaryCodequality.isMaintained',
 };
 
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<BarSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
+const IsMaintained = () => {
+  const { t } = useTranslation();
+
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults },
+    theme
+  ) => {
+    const series = yResults.map(({ label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
       return bar({
         name: label,
         data: data,
         color,
       });
-    }
-  );
-  return getBarOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+    });
 
-const IsMaintained = () => {
-  const { t } = useTranslation();
+    return getBarOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
+      },
+    });
+  };
+
   return (
     <BaseCard
       title={t(
@@ -70,7 +61,7 @@ const IsMaintained = () => {
     >
       {(ref) => {
         return (
-          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+          <ChartWithData tansOpts={tansOpt} getOptions={getOptions}>
             {(loading, option) => {
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />

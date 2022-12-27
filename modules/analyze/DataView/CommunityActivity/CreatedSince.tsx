@@ -1,59 +1,69 @@
 import React, { useMemo } from 'react';
 import {
-  genSeries,
-  getLineOption,
   line,
-  GetChartOptions,
+  getLineOption,
   legendFormat,
   getTooltipsFormatter,
+  getColorWithLabel,
+  summaryLine,
 } from '@modules/analyze/options';
 import { Activity } from '@modules/analyze/components/SideBar/config';
-import {
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
-import { LineSeriesOption } from 'echarts';
 import { useTranslation } from 'next-i18next';
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricActivity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'created since', valueKey: 'createdSince' }],
-};
+const CreatedSince = () => {
+  const { t } = useTranslation();
 
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
+  const tansOpts: TransOpt = {
+    legendName: 'created since',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricActivity.createdSince',
+    summaryKey: 'summaryActivity.createdSince',
+  };
+
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
+    theme
+  ) => {
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
       return line({
         name: label,
         data: data,
         color,
       });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+    });
 
-const CreatedSince = () => {
-  const { t } = useTranslation();
+    series.push(
+      summaryLine({
+        id: 'median',
+        name: 'Median',
+        data: summaryMedian,
+        color: '#5B8FF9',
+      })
+    );
+    series.push(
+      summaryLine({
+        id: 'average',
+        name: 'Average',
+        data: summaryMean,
+        color: '#F95B5B',
+      })
+    );
+
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
+      },
+    });
+  };
+
   return (
     <BaseCard
       title={t('metrics_models:community_activity.metrics.created_since')}
