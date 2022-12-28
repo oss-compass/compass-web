@@ -24,6 +24,5 @@
     "on_point": "[0, 1]: absolute score of the model",
     "hundred_mark": "[0, 100]: distribution result based on [0, 1]"
   },
-  "for_more": " For more, please visit:",
   "powered_by_chaoss": "Powered by CHAOSS"
 }
