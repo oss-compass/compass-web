@@ -2,7 +2,7 @@ import React from 'react';
 import Svg100 from 'public/images/analyze/number-100.svg';
 import Svg1 from 'public/images/analyze/number-1.svg';
 import { useTranslation } from 'next-i18next';
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from '@common/components/Tooltip';
 
 const ScoreConversion: React.FC<{
   onePoint: boolean;
@@ -20,7 +20,7 @@ const ScoreConversion: React.FC<{
       }
     >
       <div
-        className="group cursor-pointer p-2 transition md:hidden"
+        className="group cursor-pointer p-1 transition md:hidden"
         onClick={() => {
           onChange(!onePoint);
         }}

@@ -11,6 +11,7 @@ import Script from 'next/script';
 import { SessionProvider } from 'next-auth/react';
 import { gaPageView, PUBLIC_GA_ID } from '@common/utils/ga';
 import '@common/dev/WhyDidRender';
+import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
 
 import '../styles/globals.scss';
 
@@ -50,6 +51,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       router.events.off('routeChangeComplete', handleRouteChange);
     };
   }, [router.events]);
+
+  useEffect(() => {
+    browserLanguageDetectorAndReload();
+  }, []);
 
   return (
     <SessionProvider session={session}>
