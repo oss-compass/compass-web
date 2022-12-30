@@ -80,6 +80,44 @@ export type ActivityMetric = {
   updatedSince?: Maybe<Scalars['Float']>;
 };
 
+export type ActivitySummary = {
+  __typename?: 'ActivitySummary';
+  /** number of active C1 issue comments contributors in the past 90 days */
+  activeC1IssueCommentsContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 issue create contributors in the past 90 days */
+  activeC1IssueCreateContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 pr comments contributors in the past 90 days */
+  activeC1PrCommentsContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 pr create contributors in the past 90 days */
+  activeC1PrCreateContributorCount?: Maybe<MetricStat>;
+  /** number of active C2 developers in the past 90 days */
+  activeC2ContributorCount?: Maybe<MetricStat>;
+  /** score of activity metric model */
+  activityScore?: Maybe<MetricStat>;
+  /** number of issues closed in the past 90 days */
+  closedIssuesCount?: Maybe<MetricStat>;
+  /** mean of comments per PR over the past 90 days */
+  codeReviewCount?: Maybe<MetricStat>;
+  /** mean of comments per issue over the past 90 days */
+  commentFrequency?: Maybe<MetricStat>;
+  /** mean of submissions per week over the past 90 days */
+  commitFrequency?: Maybe<MetricStat>;
+  /** number of active D1 developers in the past 90 days */
+  contributorCount?: Maybe<MetricStat>;
+  /** number of months since the project was created */
+  createdSince?: Maybe<MetricStat>;
+  /** metric summary creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** organization count */
+  orgCount?: Maybe<MetricStat>;
+  /** number of releases in the last 90 days */
+  recentReleasesCount?: Maybe<MetricStat>;
+  /** number of issue updates in the past 90 days */
+  updatedIssuesCount?: Maybe<MetricStat>;
+  /** (average of months from the last code commit to the time of statistics */
+  updatedSince?: Maybe<MetricStat>;
+};
+
 export type BetaMetric = {
   __typename?: 'BetaMetric';
   createdAt: Scalars['ISO8601DateTime'];
@@ -176,6 +214,54 @@ export type CodequalityMetric = {
   prIssueLinkedRatio?: Maybe<Scalars['Float']>;
 };
 
+export type CodequalitySummary = {
+  __typename?: 'CodequalitySummary';
+  /** number of active C1 pr comments contributors in the past 90 days */
+  activeC1PrCommentsContributorCount?: Maybe<MetricStat>;
+  /** number of active C1 pr create contributors in the past 90 days */
+  activeC1PrCreateContributorCount?: Maybe<MetricStat>;
+  /** number of active C2 developers in the past 90 days */
+  activeC2ContributorCount?: Maybe<MetricStat>;
+  /** ratio of merge pulls and all pulls */
+  codeMergeRatio?: Maybe<MetricStat>;
+  /** merged pr count past 90 days */
+  codeMergedCount?: Maybe<MetricStat>;
+  /** score of code quality metric model */
+  codeQualityGuarantee?: Maybe<MetricStat>;
+  /** ratio of pulls with one more reviewers and all pulls */
+  codeReviewRatio?: Maybe<MetricStat>;
+  /** count of pulls with one more reviewers */
+  codeReviewedCount?: Maybe<MetricStat>;
+  /** mean of submissions per week over the past 90 days */
+  commitFrequency?: Maybe<MetricStat>;
+  /** mean of inside submissions per week over the past 90 days */
+  commitFrequencyInside?: Maybe<MetricStat>;
+  /** number of active D1 developers in the past 90 days */
+  contributorCount?: Maybe<MetricStat>;
+  /** ratio of pr_commit_linked_count and pr_commit_count */
+  gitPrLinkedRatio?: Maybe<MetricStat>;
+  /** metric summary creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** maintenance status */
+  isMaintained?: Maybe<MetricStat>;
+  /** average of added lines code each commit */
+  linesAddedFrequency?: Maybe<MetricStat>;
+  /** average of removed lines code each commit */
+  linesRemovedFrequency?: Maybe<MetricStat>;
+  /** average of lines code each commit */
+  locFrequency?: Maybe<MetricStat>;
+  /** pr count base for pr_commit_linked_count past 90 days */
+  prCommitCount?: Maybe<MetricStat>;
+  /** pr with commits linked count past 90 days */
+  prCommitLinkedCount?: Maybe<MetricStat>;
+  /** all pr count past 90 days */
+  prCount?: Maybe<MetricStat>;
+  /** count of pulls which are linked issues */
+  prIssueLinkedCount?: Maybe<MetricStat>;
+  /** ratio of pulls which are linked issues and all pulls */
+  prIssueLinkedRatio?: Maybe<MetricStat>;
+};
+
 export type CommunityMetric = {
   __typename?: 'CommunityMetric';
   /** mean of bug issues open time (days) */
@@ -216,6 +302,38 @@ export type CommunityOverview = {
   __typename?: 'CommunityOverview';
   projectsCount?: Maybe<Scalars['Int']>;
   trends?: Maybe<Array<Repo>>;
+};
+
+export type CommunitySummary = {
+  __typename?: 'CommunitySummary';
+  /** mean of bug issues open time (days) */
+  bugIssueOpenTimeAvg?: Maybe<MetricStat>;
+  /** middle of bug issues open time (days) */
+  bugIssueOpenTimeMid?: Maybe<MetricStat>;
+  /** number of pulls closed in the past 90 days */
+  closedPrsCount?: Maybe<MetricStat>;
+  /** mean of comments per PR over the past 90 days */
+  codeReviewCount?: Maybe<MetricStat>;
+  /** mean of comments per issue over the past 90 days */
+  commentFrequency?: Maybe<MetricStat>;
+  /** score of community support metric model */
+  communitySupportScore?: Maybe<MetricStat>;
+  /** metric summary creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** mean of issues first response time (days) */
+  issueFirstReponseAvg?: Maybe<MetricStat>;
+  /** middle of issues first response time (days) */
+  issueFirstReponseMid?: Maybe<MetricStat>;
+  /** mean of issues open time (days) */
+  issueOpenTimeAvg?: Maybe<MetricStat>;
+  /** middle of issues open time (days) */
+  issueOpenTimeMid?: Maybe<MetricStat>;
+  /** mean of pulls open time (days) */
+  prOpenTimeAvg?: Maybe<MetricStat>;
+  /** middle of pulls open time (days) */
+  prOpenTimeMid?: Maybe<MetricStat>;
+  /** number of issue updates in the past 90 days */
+  updatedIssuesCount?: Maybe<MetricStat>;
 };
 
 /** Autogenerated input type of CreateProjectTask */
@@ -300,6 +418,22 @@ export type GroupActivityMetric = {
   organizationsActivity?: Maybe<Scalars['Float']>;
 };
 
+export type GroupActivitySummary = {
+  __typename?: 'GroupActivitySummary';
+  /** mean of submissions per week over the past 90 days */
+  commitFrequency?: Maybe<MetricStat>;
+  /** (average of months from the last org code commit to the time of statistics */
+  contributionLast?: Maybe<MetricStat>;
+  /** number of active D1 developers in the past 90 days */
+  contributorCount?: Maybe<MetricStat>;
+  /** metric summary creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** organization count */
+  orgCount?: Maybe<MetricStat>;
+  /** score of organization activity metric model */
+  organizationsActivity?: Maybe<MetricStat>;
+};
+
 export type LatestMetrics = {
   __typename?: 'LatestMetrics';
   /** latest score of activity metric model */
@@ -322,6 +456,14 @@ export type LatestMetrics = {
   organizationsActivity?: Maybe<Scalars['Float']>;
   /** latest score of organizations activity metric model updated_at */
   organizationsActivityUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+};
+
+export type MetricStat = {
+  __typename?: 'MetricStat';
+  /** arithmetic mean */
+  mean?: Maybe<Scalars['Float']>;
+  /** 50 percentile */
+  median?: Maybe<Scalars['Float']>;
 };
 
 export type Mutation = {
@@ -371,7 +513,7 @@ export type Query = {
   /** repo or project analysis status (pending/progress/success/error/canceled/unsumbit) */
   analysisStatus: Scalars['String'];
   /** return beta metric overview */
-  betaMetricOverview: Array<BetaMetricOverview>;
+  betaMetricOverview: BetaMetricOverview;
   /** return beta metrics list */
   betaMetricsIndex: Array<BetaMetric>;
   /** Get overview data of a community */
@@ -388,8 +530,18 @@ export type Query = {
   metricCodequality: Array<CodequalityMetric>;
   /** Get community metrics data of compass */
   metricCommunity: Array<CommunityMetric>;
+  /** Get group activity metrics data of compass */
+  metricGroupActivity: Array<GroupActivityMetric>;
   /** Get overview data of compass */
   overview: Overview;
+  /** Get activity summary data of compass */
+  summaryActivity: Array<ActivitySummary>;
+  /** Get codequality summary data of compass */
+  summaryCodequality: Array<CodequalitySummary>;
+  /** Get community summary data of compass */
+  summaryCommunity: Array<CommunitySummary>;
+  /** Get group activity summary data of compass */
+  summaryGroupActivity: Array<GroupActivitySummary>;
 };
 
 export type QueryAnalysisStatusArgs = {
@@ -451,6 +603,33 @@ export type QueryMetricCommunityArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryMetricGroupActivityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QuerySummaryActivityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+};
+
+export type QuerySummaryCodequalityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+};
+
+export type QuerySummaryCommunityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+};
+
+export type QuerySummaryGroupActivityArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
 };
 
 export type Repo = {
@@ -676,7 +855,7 @@ export type MetricQuery = {
     updatedIssuesCount?: number | null;
     updatedSince?: number | null;
   }>;
-  groupMetricActivity: Array<{
+  metricGroupActivity: Array<{
     __typename?: 'GroupActivityMetric';
     commitFrequency?: number | null;
     contributionLast?: number | null;
@@ -689,6 +868,318 @@ export type MetricQuery = {
   }>;
 };
 
+export type SummaryQueryVariables = Exact<{
+  start?: InputMaybe<Scalars['ISO8601DateTime']>;
+  end?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type SummaryQuery = {
+  __typename?: 'Query';
+  summaryActivity: Array<{
+    __typename?: 'ActivitySummary';
+    grimoireCreationDate?: any | null;
+    activeC1IssueCommentsContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    activeC1IssueCreateContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    activeC1PrCommentsContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    activeC1PrCreateContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    activeC2ContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    activityScore?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    closedIssuesCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    codeReviewCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    commentFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    commitFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    contributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    createdSince?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    orgCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    recentReleasesCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    updatedIssuesCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    updatedSince?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+  }>;
+  summaryCodequality: Array<{
+    __typename?: 'CodequalitySummary';
+    grimoireCreationDate?: any | null;
+    activeC1PrCommentsContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    activeC1PrCreateContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    activeC2ContributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    codeMergeRatio?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    codeMergedCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    codeQualityGuarantee?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    codeReviewRatio?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    codeReviewedCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    commitFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    commitFrequencyInside?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    contributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    gitPrLinkedRatio?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    isMaintained?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    linesAddedFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    linesRemovedFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    locFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    prCommitCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    prCommitLinkedCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    prCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    prIssueLinkedCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    prIssueLinkedRatio?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+  }>;
+  summaryCommunity: Array<{
+    __typename?: 'CommunitySummary';
+    grimoireCreationDate?: any | null;
+    bugIssueOpenTimeAvg?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    bugIssueOpenTimeMid?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    closedPrsCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    codeReviewCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    commentFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    communitySupportScore?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    issueFirstReponseAvg?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    issueFirstReponseMid?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    issueOpenTimeAvg?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    issueOpenTimeMid?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    prOpenTimeAvg?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    prOpenTimeMid?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    updatedIssuesCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+  }>;
+  summaryGroupActivity: Array<{
+    __typename?: 'GroupActivitySummary';
+    grimoireCreationDate?: any | null;
+    commitFrequency?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    contributionLast?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    contributorCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    orgCount?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+    organizationsActivity?: {
+      __typename?: 'MetricStat';
+      mean?: number | null;
+      median?: number | null;
+    } | null;
+  }>;
+};
+
+export type MetricStatFragment = {
+  __typename?: 'MetricStat';
+  mean?: number | null;
+  median?: number | null;
+};
+
+export const MetricStatFragmentDoc = /*#__PURE__*/ `
+    fragment metricStat on MetricStat {
+  mean
+  median
+}
+    `;
 export const CreateRepoTaskDocument = /*#__PURE__*/ `
     mutation createRepoTask($username: String!, $repoUrls: [String!]!, $token: String!, $origin: String!) {
   createRepoTask(
@@ -1092,7 +1583,7 @@ export const MetricDocument = /*#__PURE__*/ `
     updatedIssuesCount
     updatedSince
   }
-  groupMetricActivity(
+  metricGroupActivity(
     label: $label
     level: $level
     beginDate: $start
@@ -1138,6 +1629,217 @@ useMetricQuery.fetcher = (
   fetcher<MetricQuery, MetricQueryVariables>(
     client,
     MetricDocument,
+    variables,
+    headers
+  );
+export const SummaryDocument = /*#__PURE__*/ `
+    query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
+  summaryActivity(beginDate: $start, endDate: $end) {
+    activeC1IssueCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1IssueCreateContributorCount {
+      ...metricStat
+    }
+    activeC1PrCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1PrCreateContributorCount {
+      ...metricStat
+    }
+    activeC2ContributorCount {
+      ...metricStat
+    }
+    activityScore {
+      ...metricStat
+    }
+    closedIssuesCount {
+      ...metricStat
+    }
+    codeReviewCount {
+      ...metricStat
+    }
+    commentFrequency {
+      ...metricStat
+    }
+    commitFrequency {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    createdSince {
+      ...metricStat
+    }
+    grimoireCreationDate
+    orgCount {
+      ...metricStat
+    }
+    recentReleasesCount {
+      ...metricStat
+    }
+    updatedIssuesCount {
+      ...metricStat
+    }
+    updatedSince {
+      ...metricStat
+    }
+  }
+  summaryCodequality(beginDate: $start, endDate: $end) {
+    activeC1PrCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1PrCreateContributorCount {
+      ...metricStat
+    }
+    activeC2ContributorCount {
+      ...metricStat
+    }
+    codeMergeRatio {
+      ...metricStat
+    }
+    codeMergedCount {
+      ...metricStat
+    }
+    codeQualityGuarantee {
+      ...metricStat
+    }
+    codeReviewRatio {
+      ...metricStat
+    }
+    codeReviewedCount {
+      ...metricStat
+    }
+    commitFrequency {
+      ...metricStat
+    }
+    commitFrequencyInside {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    gitPrLinkedRatio {
+      ...metricStat
+    }
+    grimoireCreationDate
+    isMaintained {
+      ...metricStat
+    }
+    linesAddedFrequency {
+      ...metricStat
+    }
+    linesRemovedFrequency {
+      ...metricStat
+    }
+    locFrequency {
+      ...metricStat
+    }
+    prCommitCount {
+      ...metricStat
+    }
+    prCommitLinkedCount {
+      ...metricStat
+    }
+    prCount {
+      ...metricStat
+    }
+    prIssueLinkedCount {
+      ...metricStat
+    }
+    prIssueLinkedRatio {
+      ...metricStat
+    }
+  }
+  summaryCommunity(beginDate: $start, endDate: $end) {
+    bugIssueOpenTimeAvg {
+      ...metricStat
+    }
+    bugIssueOpenTimeMid {
+      ...metricStat
+    }
+    closedPrsCount {
+      ...metricStat
+    }
+    codeReviewCount {
+      ...metricStat
+    }
+    commentFrequency {
+      ...metricStat
+    }
+    communitySupportScore {
+      ...metricStat
+    }
+    grimoireCreationDate
+    issueFirstReponseAvg {
+      ...metricStat
+    }
+    issueFirstReponseMid {
+      ...metricStat
+    }
+    issueOpenTimeAvg {
+      ...metricStat
+    }
+    issueOpenTimeMid {
+      ...metricStat
+    }
+    prOpenTimeAvg {
+      ...metricStat
+    }
+    prOpenTimeMid {
+      ...metricStat
+    }
+    updatedIssuesCount {
+      ...metricStat
+    }
+  }
+  summaryGroupActivity(beginDate: $start, endDate: $end) {
+    commitFrequency {
+      ...metricStat
+    }
+    contributionLast {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    grimoireCreationDate
+    orgCount {
+      ...metricStat
+    }
+    organizationsActivity {
+      ...metricStat
+    }
+  }
+}
+    ${MetricStatFragmentDoc}`;
+export const useSummaryQuery = <TData = SummaryQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables?: SummaryQueryVariables,
+  options?: UseQueryOptions<SummaryQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<SummaryQuery, TError, TData>(
+    variables === undefined ? ['summary'] : ['summary', variables],
+    fetcher<SummaryQuery, SummaryQueryVariables>(
+      client,
+      SummaryDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useSummaryQuery.getKey = (variables?: SummaryQueryVariables) =>
+  variables === undefined ? ['summary'] : ['summary', variables];
+useSummaryQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: SummaryQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<SummaryQuery, SummaryQueryVariables>(
+    client,
+    SummaryDocument,
     variables,
     headers
   );

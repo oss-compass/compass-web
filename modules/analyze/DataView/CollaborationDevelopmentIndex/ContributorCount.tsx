@@ -1,94 +1,111 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
-  getLegendSelected,
   getTooltipsFormatter,
   legendFormat,
+  getColorWithLabel,
+  summaryLine,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import Tab from '@common/components/Tab';
-import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import { GenChartOptions, TransOpt } from '@modules/analyze/type';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
+const chartTabs = {
+  '1': {
+    legendName: 'total',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.contributorCount',
+    summaryKey: 'summaryCodequality.contributorCount',
+  },
+  '2': {
+    legendName: 'code reviewer',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.activeC1PrCommentsContributorCount',
+    summaryKey: 'summaryCodequality.activeC1PrCommentsContributorCount',
+  },
+  '3': {
+    legendName: 'pr creator',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.activeC1PrCreateContributorCount',
+    summaryKey: 'summaryCodequality.activeC1PrCreateContributorCount',
+  },
+  '4': {
+    legendName: 'commit author',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.activeC2ContributorCount',
+    summaryKey: 'summaryCodequality.activeC2ContributorCount',
+  },
+};
+
+const ContributorCount = () => {
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
+
+  const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const tansOpts: TransOpt = useMemo(() => {
+    return chartTabs[tab];
+  }, [tab]);
+
+  type TabValue = keyof typeof chartTabs;
+
+  const tabOptions = [
+    { label: 'total', value: '1' },
+    { label: 'code reviewer', value: '2' },
+    { label: 'pr creator', value: '3' },
+    { label: 'commit author', value: '4' },
+  ];
+
+  const getOptions: GenChartOptions = (
+    { compareLabels, xAxis, yResults, summaryMedian, summaryMean },
+    theme
+  ) => {
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
       return line({
         name: label,
         data: data,
         color,
       });
+    });
+
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: summaryMedian,
+          color: '#5B8FF9',
+        })
+      );
     }
-  );
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: summaryMean,
+          color: '#F95B5B',
+        })
+      );
+    }
 
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
-
-const chartTabs = {
-  '1': [{ legendName: 'total', valueKey: 'contributorCount' }],
-  '2': [
-    {
-      legendName: 'code reviewer',
-      valueKey: 'activeC1PrCommentsContributorCount',
-    },
-  ],
-  '3': [
-    {
-      legendName: 'pr creator',
-      valueKey: 'activeC1PrCreateContributorCount',
-    },
-  ],
-  '4': [
-    {
-      legendName: 'commit author',
-      valueKey: 'activeC2ContributorCount',
-    },
-  ],
-};
-
-type TabValue = keyof typeof chartTabs;
-
-const tabOptions = [
-  { label: 'total', value: '1' },
-  { label: 'code reviewer', value: '2' },
-  { label: 'pr creator', value: '3' },
-  { label: 'commit author', value: '4' },
-];
-
-const ContributorCount = () => {
-  const { t } = useTranslation();
-  const [tab, setTab] = useState<TabValue>('1');
-
-  const tansOpts: TransOpts = useMemo(() => {
-    return {
-      metricType: 'metricCodequality',
-      xAxisKey: 'grimoireCreationDate',
-      yAxisOpts: chartTabs[tab],
-    };
-  }, [tab]);
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
+      },
+    });
+  };
 
   return (
     <BaseCard
@@ -101,6 +118,16 @@ const ContributorCount = () => {
       )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref, fullScreen) => {

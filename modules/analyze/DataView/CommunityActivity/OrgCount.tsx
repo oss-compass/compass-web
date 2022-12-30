@@ -1,59 +1,67 @@
 import React, { useMemo } from 'react';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
   legendFormat,
   getTooltipsFormatter,
+  getColorWithLabel,
+  summaryLine,
 } from '@modules/analyze/options';
 import { Activity } from '@modules/analyze/components/SideBar/config';
-import {
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
-import { LineSeriesOption } from 'echarts';
 import { useTranslation } from 'next-i18next';
+import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricActivity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'org count', valueKey: 'orgCount' }],
-};
+const OrgCount = () => {
+  const { t } = useTranslation();
 
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
+  const tansOpts: TransOpt = {
+    legendName: 'org count',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricActivity.orgCount',
+    summaryKey: 'summaryActivity.orgCount',
+  };
+
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults, summaryMean, summaryMedian },
+    theme
+  ) => {
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
       return line({
         name: label,
         data: data,
         color,
       });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+    });
+    series.push(
+      summaryLine({
+        id: 'median',
+        name: 'Median',
+        data: summaryMedian,
+        color: '#5B8FF9',
+      })
+    );
+    series.push(
+      summaryLine({
+        id: 'average',
+        name: 'Average',
+        data: summaryMean,
+        color: '#F95B5B',
+      })
+    );
 
-const OrgCount = () => {
-  const { t } = useTranslation();
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
+      },
+    });
+  };
 
   return (
     <BaseCard

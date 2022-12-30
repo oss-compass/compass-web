@@ -1,57 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { LineSeriesOption } from 'echarts';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
   getLegendSelected,
   legendFormat,
   getTooltipsFormatter,
+  getColorWithLabel,
+  summaryLine,
 } from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
-
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
-
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-  })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
 
 const tabOptions = [
   { label: 'avg', value: '1' },
@@ -59,8 +22,18 @@ const tabOptions = [
 ];
 
 const chartTabs = {
-  '1': [{ legendName: 'avg', valueKey: 'prOpenTimeAvg' }],
-  '2': [{ legendName: 'mid', valueKey: 'prOpenTimeMid' }],
+  '1': {
+    legendName: 'avg',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.prOpenTimeAvg',
+    summaryKey: 'summaryCommunity.prOpenTimeAvg',
+  },
+  '2': {
+    legendName: 'mid',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.prOpenTimeMid',
+    summaryKey: 'summaryCommunity.prOpenTimeMid',
+  },
 };
 
 type TabValue = keyof typeof chartTabs;
@@ -68,14 +41,46 @@ type TabValue = keyof typeof chartTabs;
 const PrOpenTime = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
+  const tansOpts: TransOpt = chartTabs[tab];
 
-  const tansOpts: TransOpts = useMemo(() => {
-    return {
-      metricType: 'metricCommunity',
-      xAxisKey: 'grimoireCreationDate',
-      yAxisOpts: chartTabs[tab],
-    };
-  }, [tab]);
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
+    theme
+  ) => {
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
+      return line({
+        name: label,
+        data: data,
+        color,
+      });
+    });
+
+    series.push(
+      summaryLine({
+        id: 'median',
+        name: 'Median',
+        data: summaryMedian,
+        color: '#5B8FF9',
+      })
+    );
+    series.push(
+      summaryLine({
+        id: 'average',
+        name: 'Average',
+        data: summaryMean,
+        color: '#F95B5B',
+      })
+    );
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
+      },
+    });
+  };
 
   return (
     <BaseCard

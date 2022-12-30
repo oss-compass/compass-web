@@ -101,7 +101,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
       <div className="absolute right-4 top-4 flex items-center ">
         {headRight}
         <div
-          className="cursor-pointer p-2 md:hidden"
+          className="ml-2 cursor-pointer p-1 md:hidden"
           onClick={() => {
             setFullScreen((pre) => !pre);
           }}

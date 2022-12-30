@@ -1,58 +1,24 @@
 import React, { useMemo, useState } from 'react';
 import {
-  genSeries,
   getLineOption,
   line,
-  GetChartOptions,
   percentageValueFormat,
   legendFormat,
   getTooltipsFormatter,
+  getColorWithLabel,
+  percentageUnitFormat,
+  summaryLine,
+  checkFormatPercentageValue,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import { TransOpts } from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
-import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
-
-const getOptions: GetChartOptions = (
-  { isCompare, tabValue, compareLabels, xAxis, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (opt, len) => {
-      const { legendName, label, color, data } = opt;
-      if (legendName === 'code merge ratio') {
-        return line({
-          name: label,
-          data,
-          color,
-          yAxisIndex: 0,
-        });
-      }
-      return line({ name: label, data, color, yAxisIndex: 1 });
-    }
-  );
-
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    yAxis: [
-      { type: 'value', axisLabel: { formatter: '{value}%' } },
-      { type: 'value' },
-    ],
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({
-        compareLabels,
-        valueFormat: tabValue === '1' ? percentageValueFormat : undefined,
-      }),
-    },
-  });
-};
+import { GenChartOptions, TransOpt } from '@modules/analyze/type';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 
 const tabOptions = [
   { label: 'code merge ratio', value: '1' },
@@ -61,31 +27,86 @@ const tabOptions = [
 ];
 
 const chartTabs = {
-  '1': [
-    {
-      legendName: 'code merge ratio',
-      valueKey: 'codeMergeRatio',
-      valueFormat: (v: number) => toFixed(v * 100, 2),
-    },
-  ],
-  '2': [{ legendName: 'total pr', valueKey: 'prCount' }],
-  '3': [{ legendName: 'code merge', valueKey: 'codeMergedCount' }],
+  '1': {
+    legendName: 'code merge ratio',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.codeMergeRatio',
+    summaryKey: 'summaryCodequality.codeMergeRatio',
+  },
+  '2': {
+    legendName: 'total pr',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.prCount',
+    summaryKey: 'summaryCodequality.prCount',
+  },
+  '3': {
+    legendName: 'code merge',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.codeMergedCount',
+    summaryKey: 'summaryCodequality.codeMergedCount',
+  },
 };
 
 type TabValue = keyof typeof chartTabs;
 
 const CodeMergeRatio = () => {
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
+
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
+  const tansOpts: TransOpt = chartTabs[tab];
+  const getOptions: GenChartOptions = (
+    { isCompare, compareLabels, xAxis, yResults, summaryMedian, summaryMean },
+    theme
+  ) => {
+    const series = yResults.map(({ label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
+      return line({
+        name: label,
+        data: tab === '1' ? data.map((v) => percentageValueFormat(v)) : data,
+        color,
+      });
+    });
 
-  const tansOpts: TransOpts = useMemo(() => {
-    return {
-      metricType: 'metricCodequality',
-      xAxisKey: 'grimoireCreationDate',
-      yAxisOpts: chartTabs[tab],
-      tabValue: tab,
-    };
-  }, [tab]);
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: checkFormatPercentageValue(tab === '1', summaryMedian),
+          color: '#5B8FF9',
+        })
+      );
+    }
+
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: checkFormatPercentageValue(tab === '1', summaryMean),
+          color: '#F95B5B',
+        })
+      );
+    }
+
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      yAxis:
+        tab === '1'
+          ? { type: 'value', axisLabel: { formatter: '{value}%' } }
+          : { type: 'value' },
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({
+          compareLabels,
+          valueFormat: tab === '1' ? percentageUnitFormat : undefined,
+        }),
+      },
+    });
+  };
 
   return (
     <BaseCard
@@ -98,6 +119,16 @@ const CodeMergeRatio = () => {
       )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-merge-ratio'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref, fullScreen) => {

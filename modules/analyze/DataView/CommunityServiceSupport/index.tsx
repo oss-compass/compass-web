@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
 
-import CommunityServiceSupport from '../Overview/CommunityServiceSupport';
+import TotalScore from './TotalScore';
 
 import IssueFirstResponse from './IssueFirstResponse';
 import BugIssueOpenTime from './BugIssueOpenTime';
@@ -26,7 +26,7 @@ const CommunitySupport = () => {
       </SectionTitle>
 
       <div className="mb-4">
-        <CommunityServiceSupport />
+        <TotalScore />
       </div>
 
       <div className="mb-4 grid min-w-0 grid-cols-2 gap-4  md:grid-cols-1">

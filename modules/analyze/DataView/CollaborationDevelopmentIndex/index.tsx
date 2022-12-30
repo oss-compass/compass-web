@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import SectionTitle from '@modules/analyze/components/SectionTitle';
 import { Section } from '@modules/analyze/components/SideBar/config';
 
-import CollaborationDevelopmentIndex from '../Overview/CollaborationDevelopmentIndex';
+import TotalScore from './TotalScore';
 
 import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
@@ -25,7 +25,7 @@ const CollaborationDevelopmentIndexOverview = () => {
       </SectionTitle>
 
       <div className="mb-4">
-        <CollaborationDevelopmentIndex />
+        <TotalScore />
       </div>
 
       <div className="mb-14 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">

@@ -1,5 +1,7 @@
 import type { NextApiRequestCookies } from 'next/dist/server/api-utils';
 import Cookies from 'js-cookie';
+import { navigatorLangLookup } from '@common/utils/languageDetector';
+import { getDomain } from '@common/utils/getDomain';
 
 type TypeLang = 'zh' | 'en';
 
@@ -22,3 +24,22 @@ function getLocale(reqCookies?: NextApiRequestCookies | undefined): TypeLang {
 
 export type { TypeLang };
 export default getLocale;
+
+export function getLang(found: string[]) {
+  if (found[0].startsWith('zh')) return 'zh';
+  return 'en';
+}
+
+export function browserLanguageDetectorAndReload() {
+  const found = navigatorLangLookup();
+
+  if (found && !Cookies.get(USER_LOCALE_KEY)) {
+    const lang = getLang(found);
+    Cookies.set(USER_LOCALE_KEY, lang, {
+      expires: 365,
+      path: '/',
+      domain: getDomain(),
+    });
+    window.location.reload();
+  }
+}

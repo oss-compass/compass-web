@@ -1,5 +1,5 @@
 import React from 'react';
-import { MetricQuery } from '@graphql/generated';
+import { MetricQuery, SummaryQuery } from '@graphql/generated';
 import CommunityRepos from './CommunityRepos';
 import LineChart from './LineChart';
 import TableList from './TableList';
@@ -9,7 +9,9 @@ import ErrorFallback from '@common/components/ErrorFallback';
 import { Level } from '@modules/analyze/constant';
 
 const Overview: React.FC<{
-  data: { label: string; level: Level; result: MetricQuery | undefined }[];
+  data: DeepReadonly<
+    { label: string; level: Level; result: MetricQuery | undefined }[]
+  >;
 }> = ({ data }) => {
   if (data.length == 1) {
     return (
@@ -27,8 +29,8 @@ const Overview: React.FC<{
 };
 
 const OverviewSummary = () => {
-  const data = useMetricQueryData();
-  return <Overview data={data} />;
+  const { items } = useMetricQueryData();
+  return <Overview data={items} />;
 };
 
 export default withErrorBoundary(OverviewSummary, {

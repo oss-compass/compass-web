@@ -1,58 +1,78 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  genSeries,
-  getLineOption,
   line,
-  GetChartOptions,
+  getLineOption,
   getTooltipsFormatter,
   legendFormat,
+  getColorWithLabel,
+  summaryLine,
 } from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
+import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import BaseCard from '@common/components/BaseCard';
-import EChartX from '@common/components/EChartX';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
+import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
-const tansOpts: TransOpts = {
-  metricType: 'metricCodequality',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'commit frequency', valueKey: 'commitFrequency' }],
-};
+const CommitFrequency = () => {
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
 
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
+  const { t } = useTranslation();
+
+  const tansOpts: TransOpt = {
+    legendName: 'commit frequency',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.commitFrequency',
+    summaryKey: 'summaryCodequality.commitFrequency',
+  };
+
+  const getOptions: GenChartOptions = (
+    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
+    theme
+  ) => {
+    const series = yResults.map(({ legendName, label, level, data }) => {
+      const color = getColorWithLabel(theme, label);
       return line({
         name: label,
         data: data,
         color,
       });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+    });
 
-const CommitFrequency = () => {
-  const { t } = useTranslation();
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: summaryMedian,
+          color: '#5B8FF9',
+        })
+      );
+    }
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: summaryMean,
+          color: '#F95B5B',
+        })
+      );
+    }
+
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      legend: legendFormat(compareLabels),
+      tooltip: {
+        formatter: getTooltipsFormatter({ compareLabels }),
+      },
+    });
+  };
+
   return (
     <BaseCard
       title={t(
@@ -65,13 +85,21 @@ const CommitFrequency = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-frequency'
       }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
+      }
     >
       {(ref) => {
         return (
           <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
             {(loading, option) => {
-              console.log('xxxxxxxxxx option', loading, option);
-
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
               );
