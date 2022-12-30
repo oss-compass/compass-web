@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   line,
   getLineOption,
@@ -14,8 +14,12 @@ import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const CommitFrequency = () => {
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
+
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
@@ -38,22 +42,27 @@ const CommitFrequency = () => {
       });
     });
 
-    series.push(
-      summaryLine({
-        id: 'median',
-        name: 'Median',
-        data: summaryMedian,
-        color: '#5B8FF9',
-      })
-    );
-    series.push(
-      summaryLine({
-        id: 'average',
-        name: 'Average',
-        data: summaryMean,
-        color: '#F95B5B',
-      })
-    );
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: summaryMedian,
+          color: '#5B8FF9',
+        })
+      );
+    }
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: summaryMean,
+          color: '#F95B5B',
+        })
+      );
+    }
+
     return getLineOption({
       xAxisData: xAxis,
       series,
@@ -75,6 +84,16 @@ const CommitFrequency = () => {
       )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-frequency'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref) => {

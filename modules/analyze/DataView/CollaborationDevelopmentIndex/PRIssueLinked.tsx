@@ -17,6 +17,7 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { GenChartOptions } from '@modules/analyze/type';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const chartTabs = {
   '1': {
@@ -48,6 +49,9 @@ const tabOptions = [
 ];
 
 const PRIssueLinked = () => {
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
+
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts = chartTabs[tab];
@@ -64,22 +68,27 @@ const PRIssueLinked = () => {
         color,
       });
     });
-    series.push(
-      summaryLine({
-        id: 'median',
-        name: 'Median',
-        data: checkFormatPercentageValue(tab === '1', summaryMedian),
-        color: '#5B8FF9',
-      })
-    );
-    series.push(
-      summaryLine({
-        id: 'average',
-        name: 'Average',
-        data: checkFormatPercentageValue(tab === '1', summaryMean),
-        color: '#F95B5B',
-      })
-    );
+
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: checkFormatPercentageValue(tab === '1', summaryMedian),
+          color: '#5B8FF9',
+        })
+      );
+    }
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: checkFormatPercentageValue(tab === '1', summaryMean),
+          color: '#F95B5B',
+        })
+      );
+    }
 
     return getLineOption({
       xAxisData: xAxis,
@@ -108,6 +117,16 @@ const PRIssueLinked = () => {
       )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#pr-issue-linked-ratio'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref) => {

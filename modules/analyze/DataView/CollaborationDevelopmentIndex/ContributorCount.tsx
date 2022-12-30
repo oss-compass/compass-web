@@ -14,6 +14,7 @@ import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const chartTabs = {
   '1': {
@@ -43,6 +44,9 @@ const chartTabs = {
 };
 
 const ContributorCount = () => {
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
+
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
@@ -72,22 +76,27 @@ const ContributorCount = () => {
       });
     });
 
-    series.push(
-      summaryLine({
-        id: 'median',
-        name: 'Median',
-        data: summaryMedian,
-        color: '#5B8FF9',
-      })
-    );
-    series.push(
-      summaryLine({
-        id: 'average',
-        name: 'Average',
-        data: summaryMean,
-        color: '#F95B5B',
-      })
-    );
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: summaryMedian,
+          color: '#5B8FF9',
+        })
+      );
+    }
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: summaryMean,
+          color: '#F95B5B',
+        })
+      );
+    }
+
     return getLineOption({
       xAxisData: xAxis,
       series,
@@ -109,6 +118,16 @@ const ContributorCount = () => {
       )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref, fullScreen) => {

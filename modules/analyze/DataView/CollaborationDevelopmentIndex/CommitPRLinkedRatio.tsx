@@ -17,6 +17,7 @@ import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { TransOpt, GenChartOptions } from '@modules/analyze/type';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const tabOptions = [
   { label: 'commit pr linked ratio', value: '1' },
@@ -48,6 +49,9 @@ const chartTabs = {
 type TabValue = keyof typeof chartTabs;
 
 const CommitPRLinkedRatio = () => {
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
+
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
@@ -66,22 +70,26 @@ const CommitPRLinkedRatio = () => {
       });
     });
 
-    series.push(
-      summaryLine({
-        id: 'median',
-        name: 'Median',
-        data: checkFormatPercentageValue(tab === '1', summaryMedian),
-        color: '#5B8FF9',
-      })
-    );
-    series.push(
-      summaryLine({
-        id: 'average',
-        name: 'Average',
-        data: checkFormatPercentageValue(tab === '1', summaryMean),
-        color: '#F95B5B',
-      })
-    );
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: checkFormatPercentageValue(tab === '1', summaryMedian),
+          color: '#5B8FF9',
+        })
+      );
+    }
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: checkFormatPercentageValue(tab === '1', summaryMean),
+          color: '#F95B5B',
+        })
+      );
+    }
 
     return getLineOption({
       xAxisData: xAxis,
@@ -111,6 +119,16 @@ const CommitPRLinkedRatio = () => {
       )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-pr-linked-ratio'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref) => {

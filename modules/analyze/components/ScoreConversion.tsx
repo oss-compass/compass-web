@@ -20,7 +20,7 @@ const ScoreConversion: React.FC<{
       }
     >
       <div
-        className="group cursor-pointer p-1 transition md:hidden"
+        className="group ml-2 cursor-pointer p-1 transition md:hidden"
         onClick={() => {
           onChange(!onePoint);
         }}

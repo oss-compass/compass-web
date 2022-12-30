@@ -15,10 +15,13 @@ import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const TotalScore = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
+  const [showAvg, setShowAvg] = useState(true);
+  const [showMedian, setShowMedian] = useState(true);
 
   const tansOpts: TransOpt = {
     xKey: 'grimoireCreationDate',
@@ -40,22 +43,27 @@ const TotalScore = () => {
       });
     });
 
-    series.push(
-      summaryLine({
-        id: 'median',
-        name: 'Median',
-        data: formatToHundredMark(!onePointSys, summaryMedian),
-        color: '#5B8FF9',
-      })
-    );
-    series.push(
-      summaryLine({
-        id: 'average',
-        name: 'Average',
-        data: formatToHundredMark(!onePointSys, summaryMean),
-        color: '#F95B5B',
-      })
-    );
+    if (showMedian) {
+      series.push(
+        summaryLine({
+          id: 'median',
+          name: 'Median',
+          data: formatToHundredMark(!onePointSys, summaryMedian),
+          color: '#5B8FF9',
+        })
+      );
+    }
+
+    if (showAvg) {
+      series.push(
+        summaryLine({
+          id: 'average',
+          name: 'Average',
+          data: formatToHundredMark(!onePointSys, summaryMean),
+          color: '#F95B5B',
+        })
+      );
+    }
 
     return getLineOption({
       xAxisData: xAxis,
@@ -76,12 +84,20 @@ const TotalScore = () => {
         '/docs/metrics-models/productivity/collaboration-development-index/'
       }
       headRight={
-        <ScoreConversion
-          onePoint={onePointSys}
-          onChange={(v) => {
-            setOnePointSys(v);
-          }}
-        />
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+          <ScoreConversion
+            onePoint={onePointSys}
+            onChange={(v) => {
+              setOnePointSys(v);
+            }}
+          />
+        </>
       }
     >
       {(ref) => {
