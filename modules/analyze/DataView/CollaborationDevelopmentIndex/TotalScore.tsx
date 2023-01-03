@@ -1,14 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import {
-  getLineOption,
-  line,
-  legendFormat,
-  getTooltipsFormatter,
-  getColorWithLabel,
-  summaryLine,
-  formatToHundredMark,
-} from '@modules/analyze/options';
 import BaseCard from '@common/components/BaseCard';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
@@ -16,12 +7,10 @@ import EChartX from '@common/components/EChartX';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 
 const TotalScore = () => {
   const { t } = useTranslation();
-  const [onePointSys, setOnePointSys] = useState(false);
-  const [showAvg, setShowAvg] = useState(true);
-  const [showMedian, setShowMedian] = useState(true);
 
   const tansOpts: TransOpt = {
     xKey: 'grimoireCreationDate',
@@ -29,51 +18,18 @@ const TotalScore = () => {
     legendName: 'collaboration development index',
     summaryKey: 'summaryCodequality.codeQualityGuarantee',
   };
-
-  const getOptions: GenChartOptions = (
-    { compareLabels, xAxis, yResults, summaryMedian, summaryMean },
-    theme
-  ) => {
-    const series = yResults.map(({ legendName, label, level, data }) => {
-      const color = getColorWithLabel(theme, label);
-      return line({
-        name: label,
-        data: formatToHundredMark(!onePointSys, data),
-        color,
-      });
-    });
-
-    if (showMedian) {
-      series.push(
-        summaryLine({
-          id: 'median',
-          name: 'Median',
-          data: formatToHundredMark(!onePointSys, summaryMedian),
-          color: '#5B8FF9',
-        })
-      );
-    }
-
-    if (showAvg) {
-      series.push(
-        summaryLine({
-          id: 'average',
-          name: 'Average',
-          data: formatToHundredMark(!onePointSys, summaryMean),
-          color: '#F95B5B',
-        })
-      );
-    }
-
-    return getLineOption({
-      xAxisData: xAxis,
-      series,
-      legend: legendFormat(compareLabels),
-      tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
-      },
-    });
-  };
+  const {
+    getOptions,
+    onePointSys,
+    setOnePointSys,
+    showAvg,
+    setShowAvg,
+    showMedian,
+    setShowMedian,
+  } = useGetLineOption({
+    enableDataFormat: true,
+    defaultOnePointSystem: false,
+  });
 
   return (
     <BaseCard

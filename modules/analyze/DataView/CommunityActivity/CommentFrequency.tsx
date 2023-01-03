@@ -1,18 +1,12 @@
-import React, { useMemo } from 'react';
-import {
-  getLineOption,
-  line,
-  legendFormat,
-  getTooltipsFormatter,
-  getColorWithLabel,
-  summaryLine,
-} from '@modules/analyze/options';
+import React from 'react';
 import { Activity } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const CommentFrequency = () => {
   const { t } = useTranslation();
@@ -23,45 +17,8 @@ const CommentFrequency = () => {
     yKey: 'metricActivity.commentFrequency',
     summaryKey: 'summaryActivity.commentFrequency',
   };
-
-  const getOptions: GenChartOptions = (
-    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
-    theme
-  ) => {
-    const series = yResults.map(({ legendName, label, level, data }) => {
-      const color = getColorWithLabel(theme, label);
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    });
-    series.push(
-      summaryLine({
-        id: 'median',
-        name: 'Median',
-        data: summaryMedian,
-        color: '#5B8FF9',
-      })
-    );
-    series.push(
-      summaryLine({
-        id: 'average',
-        name: 'Average',
-        data: summaryMean,
-        color: '#F95B5B',
-      })
-    );
-
-    return getLineOption({
-      xAxisData: xAxis,
-      series,
-      legend: legendFormat(compareLabels),
-      tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
-      },
-    });
-  };
+  const { showAvg, setShowAvg, showMedian, setShowMedian, getOptions } =
+    useGetLineOption();
 
   return (
     <BaseCard
@@ -71,6 +28,16 @@ const CommentFrequency = () => {
         'metrics_models:community_activity.metrics.comment_frequency_desc'
       )}
       docLink={'/docs/metrics-models/robustness/activity/#comment-frequency'}
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
+      }
     >
       {(ref) => {
         return (

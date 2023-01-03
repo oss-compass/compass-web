@@ -1,13 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import {
-  getLineOption,
-  line,
-  legendFormat,
-  getTooltipsFormatter,
-  getColorWithLabel,
-  summaryLine,
-  formatToHundredMark,
-} from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
@@ -15,10 +6,11 @@ import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const TotalScore = () => {
   const { t } = useTranslation();
-  const [onePointSys, setOnePointSys] = useState(false);
 
   const tansOpts: TransOpt = {
     legendName: 'community service and support',
@@ -26,46 +18,18 @@ const TotalScore = () => {
     yKey: 'metricCommunity.communitySupportScore',
     summaryKey: 'summaryCommunity.communitySupportScore',
   };
-
-  const getOptions: GenChartOptions = (
-    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
-    theme
-  ) => {
-    const series = yResults.map(({ legendName, label, level, data }) => {
-      const color = getColorWithLabel(theme, label);
-      return line({
-        name: label,
-        data: formatToHundredMark(!onePointSys, data),
-        color,
-      });
-    });
-
-    series.push(
-      summaryLine({
-        id: 'median',
-        name: 'Median',
-        data: formatToHundredMark(!onePointSys, summaryMedian),
-        color: '#5B8FF9',
-      })
-    );
-    series.push(
-      summaryLine({
-        id: 'average',
-        name: 'Average',
-        data: formatToHundredMark(!onePointSys, summaryMean),
-        color: '#F95B5B',
-      })
-    );
-
-    return getLineOption({
-      xAxisData: xAxis,
-      series,
-      legend: legendFormat(compareLabels),
-      tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
-      },
-    });
-  };
+  const {
+    getOptions,
+    onePointSys,
+    setOnePointSys,
+    showAvg,
+    setShowAvg,
+    showMedian,
+    setShowMedian,
+  } = useGetLineOption({
+    enableDataFormat: true,
+    defaultOnePointSystem: false,
+  });
 
   return (
     <BaseCard
@@ -76,12 +40,20 @@ const TotalScore = () => {
         '/docs/metrics-models/productivity/community-service-and-support/'
       }
       headRight={
-        <ScoreConversion
-          onePoint={onePointSys}
-          onChange={(v) => {
-            setOnePointSys(v);
-          }}
-        />
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+          <ScoreConversion
+            onePoint={onePointSys}
+            onChange={(v) => {
+              setOnePointSys(v);
+            }}
+          />
+        </>
       }
     >
       {(ref) => {
