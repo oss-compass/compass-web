@@ -18,6 +18,7 @@ import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { GenChartOptions, TabOption, TransOpt } from '@modules/analyze/type';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
 
 const tabOptions: TabOption[] = [
   { label: 'code review ratio', value: '1' },
@@ -49,62 +50,11 @@ const chartTabs = {
 type TabValue = keyof typeof chartTabs;
 
 const CodeReviewRatio = () => {
-  const [showAvg, setShowAvg] = useState(true);
-  const [showMedian, setShowMedian] = useState(true);
-
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
-  const getOptions: GenChartOptions = (
-    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
-    theme
-  ) => {
-    const series = yResults.map(({ label, level, data }) => {
-      const color = getColorWithLabel(theme, label);
-      return line({
-        name: label,
-        data: tab === '1' ? data.map((v) => percentageValueFormat(v)) : data,
-        color,
-      });
-    });
-
-    if (showMedian) {
-      series.push(
-        summaryLine({
-          id: 'median',
-          name: 'Median',
-          data: checkFormatPercentageValue(tab === '1', summaryMedian),
-          color: '#5B8FF9',
-        })
-      );
-    }
-    if (showAvg) {
-      series.push(
-        summaryLine({
-          id: 'average',
-          name: 'Average',
-          data: checkFormatPercentageValue(tab === '1', summaryMean),
-          color: '#F95B5B',
-        })
-      );
-    }
-
-    return getLineOption({
-      xAxisData: xAxis,
-      series,
-      yAxis:
-        tab === '1'
-          ? { type: 'value', axisLabel: { formatter: '{value}%' } }
-          : { type: 'value' },
-      legend: legendFormat(compareLabels),
-      tooltip: {
-        formatter: getTooltipsFormatter({
-          compareLabels,
-          valueFormat: tab === '1' ? percentageUnitFormat : undefined,
-        }),
-      },
-    });
-  };
+  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
+    useGetRatioLineOption({ tab });
 
   return (
     <BaseCard

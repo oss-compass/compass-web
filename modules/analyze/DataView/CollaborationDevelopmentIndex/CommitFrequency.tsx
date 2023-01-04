@@ -1,12 +1,4 @@
 import React, { useState } from 'react';
-import {
-  line,
-  getLineOption,
-  getTooltipsFormatter,
-  legendFormat,
-  getColorWithLabel,
-  summaryLine,
-} from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import BaseCard from '@common/components/BaseCard';
@@ -15,11 +7,9 @@ import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 
 const CommitFrequency = () => {
-  const [showAvg, setShowAvg] = useState(true);
-  const [showMedian, setShowMedian] = useState(true);
-
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
@@ -28,50 +18,8 @@ const CommitFrequency = () => {
     yKey: 'metricCodequality.commitFrequency',
     summaryKey: 'summaryCodequality.commitFrequency',
   };
-
-  const getOptions: GenChartOptions = (
-    { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
-    theme
-  ) => {
-    const series = yResults.map(({ legendName, label, level, data }) => {
-      const color = getColorWithLabel(theme, label);
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    });
-
-    if (showMedian) {
-      series.push(
-        summaryLine({
-          id: 'median',
-          name: 'Median',
-          data: summaryMedian,
-          color: '#5B8FF9',
-        })
-      );
-    }
-    if (showAvg) {
-      series.push(
-        summaryLine({
-          id: 'average',
-          name: 'Average',
-          data: summaryMean,
-          color: '#F95B5B',
-        })
-      );
-    }
-
-    return getLineOption({
-      xAxisData: xAxis,
-      series,
-      legend: legendFormat(compareLabels),
-      tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
-      },
-    });
-  };
+  const { getOptions, showAvg, setShowAvg, showMedian, setShowMedian } =
+    useGetLineOption();
 
   return (
     <BaseCard

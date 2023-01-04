@@ -1,13 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import {
-  getLineOption,
-  line,
-  getTooltipsFormatter,
-  legendFormat,
-  getColorWithLabel,
-  summaryLine,
-} from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import Tab from '@common/components/Tab';
@@ -15,6 +7,7 @@ import EChartX from '@common/components/EChartX';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 
 const chartTabs = {
   '1': {
@@ -44,9 +37,6 @@ const chartTabs = {
 };
 
 const ContributorCount = () => {
-  const [showAvg, setShowAvg] = useState(true);
-  const [showMedian, setShowMedian] = useState(true);
-
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
@@ -62,50 +52,8 @@ const ContributorCount = () => {
     { label: 'pr creator', value: '3' },
     { label: 'commit author', value: '4' },
   ];
-
-  const getOptions: GenChartOptions = (
-    { compareLabels, xAxis, yResults, summaryMedian, summaryMean },
-    theme
-  ) => {
-    const series = yResults.map(({ legendName, label, level, data }) => {
-      const color = getColorWithLabel(theme, label);
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    });
-
-    if (showMedian) {
-      series.push(
-        summaryLine({
-          id: 'median',
-          name: 'Median',
-          data: summaryMedian,
-          color: '#5B8FF9',
-        })
-      );
-    }
-    if (showAvg) {
-      series.push(
-        summaryLine({
-          id: 'average',
-          name: 'Average',
-          data: summaryMean,
-          color: '#F95B5B',
-        })
-      );
-    }
-
-    return getLineOption({
-      xAxisData: xAxis,
-      series,
-      legend: legendFormat(compareLabels),
-      tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
-      },
-    });
-  };
+  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
+    useGetLineOption();
 
   return (
     <BaseCard

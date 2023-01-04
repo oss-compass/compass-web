@@ -1,68 +1,24 @@
 import React, { useMemo } from 'react';
-import {
-  getLineOption,
-  line,
-  legendFormat,
-  getTooltipsFormatter,
-  getColorWithLabel,
-  summaryLine,
-} from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { TransOpt, GenChartOptions } from '@modules/analyze/type';
-
-const tansOpts: TransOpt = {
-  legendName: 'code review count',
-  xKey: 'grimoireCreationDate',
-  yKey: 'metricCommunity.codeReviewCount',
-  summaryKey: 'summaryCommunity.codeReviewCount',
-};
-
-const getOptions: GenChartOptions = (
-  { xAxis, compareLabels, yResults, summaryMean, summaryMedian },
-  theme
-) => {
-  const series = yResults.map(({ legendName, label, level, data }) => {
-    const color = getColorWithLabel(theme, label);
-    return line({
-      name: label,
-      data: data,
-      color,
-    });
-  });
-
-  series.push(
-    summaryLine({
-      id: 'median',
-      name: 'Median',
-      data: summaryMedian,
-      color: '#5B8FF9',
-    })
-  );
-  series.push(
-    summaryLine({
-      id: 'average',
-      name: 'Average',
-      data: summaryMean,
-      color: '#F95B5B',
-    })
-  );
-
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const CodeReviewCount = () => {
   const { t } = useTranslation();
+  const tansOpts: TransOpt = {
+    legendName: 'code review count',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.codeReviewCount',
+    summaryKey: 'summaryCommunity.codeReviewCount',
+  };
+  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
+    useGetLineOption();
+
   return (
     <BaseCard
       title={t(
@@ -74,6 +30,16 @@ const CodeReviewCount = () => {
       )}
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#code-review-count'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref) => {
