@@ -73,7 +73,7 @@ const LabelItems = () => {
           if (level === Level.REPO) {
             labelNode = (
               <a
-                className="ml-1 mr-1 font-semibold hover:underline"
+                className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline"
                 href={label}
                 target="_blank"
                 rel={'noreferrer'}
