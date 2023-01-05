@@ -21,7 +21,7 @@ const FooterLinks = () => {
       links: [
         { text: t('common:footer.terms'), href: '/docs/terms-of-use' },
         { text: t('common:footer.privacy'), href: '/docs/privacy-policy' },
-        { text: t('common:footer.built_with'), href: '/docs/built-with' },
+        // { text: t('common:footer.built_with'), href: '/docs/built-with' },
       ],
     },
     {

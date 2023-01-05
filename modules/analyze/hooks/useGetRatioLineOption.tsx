@@ -11,12 +11,14 @@ import {
   summaryLine,
 } from '@modules/analyze/options';
 import { useState } from 'react';
+import { useTranslation } from 'next-i18next';
 
 const useGetRatioLineOption = (opt: {
   tab: string;
   defaultShowAvg?: boolean;
   defaultShowMedian?: boolean;
 }) => {
+  const { t } = useTranslation();
   const { tab = '1', defaultShowAvg = true, defaultShowMedian = true } = opt;
   const [showAvg, setShowAvg] = useState(defaultShowAvg);
   const [showMedian, setShowMedian] = useState(defaultShowMedian);
@@ -38,7 +40,7 @@ const useGetRatioLineOption = (opt: {
       series.push(
         summaryLine({
           id: 'median',
-          name: 'Median',
+          name: t('analyze:median'),
           data: checkFormatPercentageValue(tab === '1', summaryMedian),
           color: '#5B8FF9',
         })
@@ -48,7 +50,7 @@ const useGetRatioLineOption = (opt: {
       series.push(
         summaryLine({
           id: 'average',
-          name: 'Average',
+          name: t('analyze:average'),
           data: checkFormatPercentageValue(tab === '1', summaryMean),
           color: '#F95B5B',
         })

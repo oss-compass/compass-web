@@ -24,9 +24,11 @@
     "on_point": "[0, 1]: 模型的绝对分值",
     "hundred_mark": "[0, 100]: 基于[0, 1]的分布结果"
   },
+  "median": "中位数",
+  "average": "平均数",
   "avg_line": {
-    "show": "显示平均分",
-    "hide": "隐藏平均分"
+    "show": "显示平均数",
+    "hide": "隐藏平均数"
   },
   "median_line": {
     "show": "显示中位数",

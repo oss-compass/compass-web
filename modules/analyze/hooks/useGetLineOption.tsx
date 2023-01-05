@@ -9,6 +9,7 @@ import {
   summaryLine,
 } from '@modules/analyze/options';
 import { useState } from 'react';
+import { useTranslation } from 'next-i18next';
 
 const useGetLineOption = (opt?: {
   enableDataFormat?: boolean;
@@ -23,6 +24,7 @@ const useGetLineOption = (opt?: {
     defaultShowMedian = true,
   } = opt || {};
 
+  const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(defaultOnePointSystem);
   const [showAvg, setShowAvg] = useState(defaultShowAvg);
   const [showMedian, setShowMedian] = useState(defaultShowMedian);
@@ -44,7 +46,7 @@ const useGetLineOption = (opt?: {
       series.push(
         summaryLine({
           id: 'median',
-          name: 'Median',
+          name: t('analyze:median'),
           data: enableDataFormat
             ? formatToHundredMark(!onePointSys, summaryMedian)
             : summaryMedian,
@@ -57,7 +59,7 @@ const useGetLineOption = (opt?: {
       series.push(
         summaryLine({
           id: 'average',
-          name: 'Average',
+          name: t('analyze:average'),
           data: enableDataFormat
             ? formatToHundredMark(!onePointSys, summaryMean)
             : summaryMean,
