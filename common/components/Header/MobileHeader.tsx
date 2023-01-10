@@ -3,29 +3,7 @@ import Link from 'next/link';
 import { AiOutlineMenu, AiOutlineClose, AiOutlineHome } from 'react-icons/ai';
 import { useToggle } from 'react-use';
 import Drawer from '../Drawer';
-
-const headLinks = [
-  {
-    title: 'Home',
-    href: '/',
-    icon: null,
-  },
-  {
-    title: 'Metrics Models',
-    href: '/docs/dimensions-define',
-    icon: null,
-  },
-  {
-    title: 'Community',
-    href: '/docs/community',
-    icon: null,
-  },
-  {
-    title: 'About',
-    href: '/docs/about',
-    icon: null,
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const MenuItem: React.FC<
   PropsWithChildren<{ title: string; href: string }>
@@ -41,7 +19,30 @@ const MenuItem: React.FC<
 };
 
 const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
+  const { t } = useTranslation();
   const [show, toggle] = useToggle(false);
+  const headLinks = [
+    {
+      title: t('common:header.home'),
+      href: '/',
+      icon: null,
+    },
+    {
+      title: t('common:header.metrics_models'),
+      href: '/docs/dimensions-define',
+      icon: null,
+    },
+    {
+      title: t('common:header.community'),
+      href: '/docs/community',
+      icon: null,
+    },
+    {
+      title: t('common:header.about'),
+      href: '/docs/about',
+      icon: null,
+    },
+  ];
 
   return (
     <>
