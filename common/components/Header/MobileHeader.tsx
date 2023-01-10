@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import Link from 'next/link';
+import LinkX from '@common/components/LinkX';
 import { AiOutlineMenu, AiOutlineClose, AiOutlineHome } from 'react-icons/ai';
 import { useToggle } from 'react-use';
 import Drawer from '../Drawer';
@@ -9,12 +10,12 @@ const MenuItem: React.FC<
   PropsWithChildren<{ title: string; href: string }>
 > = ({ title, href, children }) => {
   return (
-    <Link href={href} legacyBehavior>
+    <LinkX href={href} legacyBehavior>
       <a className="flex cursor-pointer items-center py-2 px-6 hover:bg-gray-200">
         {children}
         <h2 className="pl-2 font-semibold">{title}</h2>
       </a>
-    </Link>
+    </LinkX>
   );
 };
 
@@ -61,7 +62,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
         <div className="flex items-center">
           <Link href="/submit-your-project">
             <a className="cursor-pointer border border-black px-1 py-1 text-sm ">
-              Submit your project
+              {t('common:header.submit_your_project')}
             </a>
           </Link>
         </div>
