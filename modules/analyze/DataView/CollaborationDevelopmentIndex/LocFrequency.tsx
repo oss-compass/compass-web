@@ -78,6 +78,7 @@ const LocFrequency = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#lines-of-code-frequency'
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

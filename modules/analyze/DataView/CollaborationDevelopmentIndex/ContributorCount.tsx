@@ -77,6 +77,7 @@ const ContributorCount = () => {
           />
         </>
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref, fullScreen) => {
         return (

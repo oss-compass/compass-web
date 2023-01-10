@@ -61,6 +61,7 @@ const BugIssueOpenTime = () => {
           />
         </>
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

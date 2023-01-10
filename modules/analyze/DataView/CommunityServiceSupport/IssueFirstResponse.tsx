@@ -59,6 +59,7 @@ const IssueFirstResponse = () => {
           />
         </>
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

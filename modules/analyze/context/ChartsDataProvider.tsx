@@ -7,7 +7,7 @@ import React, {
 import { proxy } from 'valtio';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import useHashScroll from '@common/hooks/useHashScroll';
+import usePageLoadHashScroll from '@common/hooks/usePageLoadHashScroll';
 import { QueryStatus, useQueries, useQueryClient } from '@tanstack/react-query';
 import {
   MetricQuery,
@@ -51,7 +51,7 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useQueryClient();
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
-  useHashScroll();
+  usePageLoadHashScroll();
 
   useQueries({
     queries: compareItems.map(({ label, level }) => {

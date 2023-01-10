@@ -60,6 +60,7 @@ const PrOpenTime = () => {
           />
         </>
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

@@ -78,6 +78,7 @@ const CodeReviewRatio = () => {
           />
         </>
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

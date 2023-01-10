@@ -79,6 +79,7 @@ const CodeMergeRatio = () => {
           />
         </>
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref, fullScreen) => {
         return (

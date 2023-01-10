@@ -68,6 +68,7 @@ const CommitPRLinkedRatio = () => {
           />
         </>
       }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (
