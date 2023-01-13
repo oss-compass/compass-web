@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useCounter } from 'react-use';
 import LinkX from '@common/components/LinkX';
 import { usePlantList } from './plantConfig';
@@ -28,11 +28,6 @@ const SectionExplain = () => {
         )}
       >
         <div className={classnames('h-full w-full')}>
-          {/*<div className={classnames(styles.constelacao)}>*/}
-          {/*  {Array.from({ length: 250 }, (v, k) => k).map((i) => (*/}
-          {/*    <Estrela key={i} />*/}
-          {/*  ))}*/}
-          {/*</div>*/}
           <div
             className={classnames(styles.plantBg, 'h-full w-full')}
             onClick={(e) => {
@@ -85,7 +80,13 @@ const SectionExplain = () => {
             'text-white md:px-2 md:text-3xl'
           )}
         >
-          {t('home:oss_eco_evaluation_system')}
+          <Trans
+            i18nKey="oss_eco_evaluation_system"
+            ns="home"
+            components={{
+              br: <br />,
+            }}
+          />
         </div>
       </div>
     </section>
