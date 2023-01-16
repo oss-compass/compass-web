@@ -51,7 +51,6 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useQueryClient();
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
-  usePageLoadHashScroll();
 
   useQueries({
     queries: compareItems.map(({ label, level }) => {
@@ -94,6 +93,9 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
     return false;
   });
+
+  // scroll to url hash element
+  usePageLoadHashScroll(isLoading);
 
   useEffect(() => {
     proxyState.loading = isLoading;

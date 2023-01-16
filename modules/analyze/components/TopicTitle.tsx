@@ -7,7 +7,7 @@ const TopicTitle: React.FC<
   return (
     <h1
       className={classnames(
-        'group relative z-20 mt-20 mb-8 scroll-mt-[140px] text-3xl',
+        'group relative z-20 mt-20 mb-8 scroll-mt-[180px] text-3xl',
         ' md:px-4  md:text-3xl'
       )}
       id={id}
