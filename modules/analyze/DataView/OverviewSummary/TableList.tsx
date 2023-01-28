@@ -106,6 +106,7 @@ const TrendsList: React.FC = () => {
       id={Topic.Overview}
       className="mb-10"
       description=""
+      bodyClass={'min-h-[200px]'}
       headRight={
         <ScoreConversion
           onePoint={onePointSys}

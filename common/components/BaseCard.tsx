@@ -77,7 +77,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   return (
     <div className={classnames(cls)} ref={cardRef}>
       <h3
-        className="group mb-2 scroll-mt-[165px] text-lg font-medium"
+        className="group mb-2 scroll-mt-[180px] text-lg font-medium"
         ref={titleRef}
         id={id}
       >
