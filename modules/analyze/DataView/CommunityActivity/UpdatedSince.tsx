@@ -1,60 +1,25 @@
-import React, { useMemo } from 'react';
-import {
-  genSeries,
-  getLineOption,
-  line,
-  GetChartOptions,
-  legendFormat,
-  getTooltipsFormatter,
-} from '@modules/analyze/options';
+import React, { useMemo, useState } from 'react';
 import { Activity } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
 import { useTranslation } from 'next-i18next';
-
-const tansOpts: TransOpts = {
-  metricType: 'metricActivity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'updated since', valueKey: 'updatedSince' }],
-};
-
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+import { TransOpt } from '@modules/analyze/type';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const UpdatedSince = () => {
   const { t } = useTranslation();
+
+  const tansOpts: TransOpt = {
+    legendName: 'updated since',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricActivity.updatedSince',
+    summaryKey: 'summaryActivity.updatedSince',
+  };
+  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
+    useGetLineOption();
+
   return (
     <BaseCard
       title={t('metrics_models:community_activity.metrics.updated_since')}
@@ -63,6 +28,16 @@ const UpdatedSince = () => {
         'metrics_models:community_activity.metrics.updated_since_desc'
       )}
       docLink={'/docs/metrics-models/robustness/activity/#updated-since'}
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
+      }
     >
       {(ref) => {
         return (

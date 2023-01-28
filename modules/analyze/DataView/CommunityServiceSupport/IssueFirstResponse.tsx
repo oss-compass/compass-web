@@ -1,56 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { LineSeriesOption } from 'echarts';
-import {
-  genSeries,
-  getLineOption,
-  line,
-  GetChartOptions,
-  getLegendSelected,
-  legendFormat,
-  getTooltipsFormatter,
-} from '@modules/analyze/options';
 import { Support } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
-
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
-
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-  })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const tabOptions = [
   { label: 'avg', value: '1' },
@@ -58,8 +15,18 @@ const tabOptions = [
 ];
 
 const chartTabs = {
-  '1': [{ legendName: 'avg', valueKey: 'issueFirstReponseAvg' }],
-  '2': [{ legendName: 'mid', valueKey: 'issueFirstReponseMid' }],
+  '1': {
+    legendName: 'avg',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.issueFirstReponseAvg',
+    summaryKey: 'summaryCommunity.issueFirstReponseAvg',
+  },
+  '2': {
+    legendName: 'mid',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.issueFirstReponseMid',
+    summaryKey: 'summaryCommunity.issueFirstReponseMid',
+  },
 };
 
 type TabValue = keyof typeof chartTabs;
@@ -67,15 +34,9 @@ type TabValue = keyof typeof chartTabs;
 const IssueFirstResponse = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
-
-  const tansOpts: TransOpts = useMemo(() => {
-    return {
-      metricType: 'metricCommunity',
-      xAxisKey: 'grimoireCreationDate',
-      yAxisOpts: chartTabs[tab],
-    };
-  }, [tab]);
-
+  const tansOpts: TransOpt = chartTabs[tab];
+  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
+    useGetLineOption();
   return (
     <BaseCard
       title={t(
@@ -88,6 +49,17 @@ const IssueFirstResponse = () => {
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#issue-first-response'
       }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
+      }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

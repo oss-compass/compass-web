@@ -35,6 +35,7 @@ interface BaseCardProps {
   children:
     | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
     | ReactNode;
+  bodyClass?: string;
 }
 
 const BaseCard: React.FC<BaseCardProps> = ({
@@ -46,6 +47,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   description = '',
   docLink = '',
   headRight = null,
+  bodyClass = 'h-[350px]',
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -75,7 +77,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   return (
     <div className={classnames(cls)} ref={cardRef}>
       <h3
-        className="group mb-2 scroll-mt-[165px] text-lg font-medium"
+        className="group mb-2 scroll-mt-[180px] text-lg font-medium"
         ref={titleRef}
         id={id}
       >
@@ -99,7 +101,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
       <div className="absolute right-4 top-4 flex items-center ">
         {headRight}
         <div
-          className="cursor-pointer p-2 md:hidden"
+          className="ml-2 cursor-pointer p-1 md:hidden"
           onClick={() => {
             setFullScreen((pre) => !pre);
           }}
@@ -107,7 +109,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
         </div>
       </div>
-      <LoadInView containerRef={cardRef}>
+      <LoadInView containerRef={cardRef} className={bodyClass}>
         {typeof children === 'function'
           ? children(cardRef, fullScreen)
           : children}

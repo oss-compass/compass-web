@@ -3,7 +3,6 @@ import {
   ChartSummaryProps,
   getLineOption,
   line,
-  GetChartOptions,
 } from '@modules/analyze/options';
 import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
@@ -13,8 +12,7 @@ import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredM
 import { transDataForOverview } from '@modules/analyze/DataTransform/transDataForOverview';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
-import { useSnapshot } from 'valtio';
-import { dataState } from '@modules/analyze/store/dataState';
+import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
   loading = false,
@@ -77,7 +75,7 @@ const opts = [
 const optsWithOrg = [
   ...opts,
   {
-    type: 'groupMetricActivity',
+    type: 'metricGroupActivity',
     key: 'organizationsActivity',
     legendName: 'organizations activity',
   },
@@ -86,13 +84,13 @@ const optsWithOrg = [
 const dateKey = 'grimoireCreationDate';
 
 const LineChartWithData = () => {
-  const snapshot = useSnapshot(dataState);
+  const showOrganizations = useShowOrganizations();
   const data = useMetricQueryData();
-  const isLoading = data?.some((i) => i.loading);
-  const copyOpts = snapshot.showOrganizations ? optsWithOrg : opts;
+  const isLoading = data.loading;
+  const copyOpts = showOrganizations ? optsWithOrg : opts;
 
   const { xAxis, yAxisResult } = useMemo(() => {
-    const result = data[0].result;
+    const result = data.items[0].result;
     if (!result) return { xAxis: [], yAxisResult: [] };
     return transDataForOverview(result, copyOpts, dateKey);
   }, [copyOpts, data]);

@@ -1,65 +1,24 @@
 import React, { useMemo } from 'react';
-import {
-  genSeries,
-  getLineOption,
-  line,
-  GetChartOptions,
-  legendFormat,
-  getTooltipsFormatter,
-} from '@modules/analyze/options';
 import { Organizations } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
-import { LineSeriesOption } from 'echarts';
 import { useTranslation } from 'next-i18next';
-
-const tansOpts: TransOpts = {
-  metricType: 'groupMetricActivity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [
-    { legendName: 'contribution last', valueKey: 'contributionLast' },
-  ],
-};
-
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-  })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const ContributionLast = () => {
   const { t } = useTranslation();
+  const tansOpts: TransOpt = {
+    legendName: 'contribution last',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricGroupActivity.contributionLast',
+    summaryKey: 'summaryGroupActivity.contributionLast',
+  };
+  const { getOptions, showAvg, showMedian, setShowAvg, setShowMedian } =
+    useGetLineOption();
+
   return (
     <BaseCard
       title={t(
@@ -71,6 +30,16 @@ const ContributionLast = () => {
       )}
       docLink={
         '/docs/metrics-models/niche-creation/developer-retention/#contribution-last'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref) => {

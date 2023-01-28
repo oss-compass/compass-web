@@ -1,47 +1,49 @@
 import React, { PropsWithChildren } from 'react';
 import Link from 'next/link';
+import LinkX from '@common/components/LinkX';
 import { AiOutlineMenu, AiOutlineClose, AiOutlineHome } from 'react-icons/ai';
 import { useToggle } from 'react-use';
 import Drawer from '../Drawer';
-
-const headLinks = [
-  {
-    title: 'Home',
-    href: '/',
-    icon: null,
-  },
-  {
-    title: 'Metrics Models',
-    href: '/docs/dimensions-define',
-    icon: null,
-  },
-  {
-    title: 'Community',
-    href: '/docs/community',
-    icon: null,
-  },
-  {
-    title: 'About',
-    href: '/docs/about',
-    icon: null,
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const MenuItem: React.FC<
   PropsWithChildren<{ title: string; href: string }>
 > = ({ title, href, children }) => {
   return (
-    <Link href={href} legacyBehavior>
+    <LinkX href={href} legacyBehavior>
       <a className="flex cursor-pointer items-center py-2 px-6 hover:bg-gray-200">
         {children}
         <h2 className="pl-2 font-semibold">{title}</h2>
       </a>
-    </Link>
+    </LinkX>
   );
 };
 
 const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
+  const { t } = useTranslation();
   const [show, toggle] = useToggle(false);
+  const headLinks = [
+    {
+      title: t('common:header.home'),
+      href: '/',
+      icon: null,
+    },
+    {
+      title: t('common:header.metrics_models'),
+      href: '/docs/dimensions-define',
+      icon: null,
+    },
+    {
+      title: t('common:header.community'),
+      href: '/docs/community',
+      icon: null,
+    },
+    {
+      title: t('common:header.about'),
+      href: '/docs/about',
+      icon: null,
+    },
+  ];
 
   return (
     <>
@@ -60,7 +62,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
         <div className="flex items-center">
           <Link href="/submit-your-project">
             <a className="cursor-pointer border border-black px-1 py-1 text-sm ">
-              Submit your project
+              {t('common:header.submit_your_project')}
             </a>
           </Link>
         </div>

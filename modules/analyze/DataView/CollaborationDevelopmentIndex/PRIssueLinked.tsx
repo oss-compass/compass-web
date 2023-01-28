@@ -1,77 +1,32 @@
 import React, { useMemo, useState } from 'react';
-import {
-  genSeries,
-  getLineOption,
-  line,
-  GetChartOptions,
-  getLegendSelected,
-  getTooltipsFormatter,
-  legendFormat,
-  percentageValueFormat,
-} from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-import { LineSeriesOption } from 'echarts';
-import { toFixed } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
-
-const getOptions: GetChartOptions = (
-  { xAxis, tabValue, compareLabels, yResults },
-  theme
-) => {
-  const isCompare = yResults.length > 1;
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      if (legendName === 'linked issue ratio') {
-        return line({ name: label, data, color, yAxisIndex: 0 });
-      }
-      return line({ name: label, data, color, yAxisIndex: 1 });
-    }
-  );
-
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    yAxis: [
-      { type: 'value', axisLabel: { formatter: '{value}%' } },
-      { type: 'value' },
-    ],
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({
-        compareLabels,
-        valueFormat: tabValue === '1' ? percentageValueFormat : undefined,
-      }),
-    },
-  });
-};
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
 
 const chartTabs = {
-  '1': [
-    {
-      legendName: 'linked issue ratio',
-      valueKey: 'prIssueLinkedRatio',
-      valueFormat: (v: number) => toFixed(v * 100, 2),
-    },
-  ],
-  '2': [{ legendName: 'total pr', valueKey: 'prCount' }],
-  '3': [
-    {
-      legendName: 'linked issue',
-      valueKey: 'prIssueLinkedCount',
-    },
-  ],
+  '1': {
+    legendName: 'linked issue ratio',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.prIssueLinkedRatio',
+    summaryKey: 'summaryCodequality.prIssueLinkedRatio',
+  },
+  '2': {
+    legendName: 'total pr',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.prCount',
+    summaryKey: 'summaryCodequality.prCount',
+  },
+  '3': {
+    legendName: 'linked issue',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.prIssueLinkedCount',
+    summaryKey: 'summaryCodequality.prIssueLinkedCount',
+  },
 };
 
 type TabValue = keyof typeof chartTabs;
@@ -85,14 +40,9 @@ const tabOptions = [
 const PRIssueLinked = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
-  const tansOpts: TransOpts = useMemo(() => {
-    return {
-      metricType: 'metricCodequality',
-      xAxisKey: 'grimoireCreationDate',
-      yAxisOpts: chartTabs[tab],
-      tabValue: tab,
-    };
-  }, [tab]);
+  const tansOpts = chartTabs[tab];
+  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
+    useGetRatioLineOption({ tab });
 
   return (
     <BaseCard
@@ -106,6 +56,17 @@ const PRIssueLinked = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#pr-issue-linked-ratio'
       }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
+      }
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

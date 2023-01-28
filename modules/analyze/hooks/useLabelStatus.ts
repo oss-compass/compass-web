@@ -42,8 +42,6 @@ const useLabelStatus = () => {
     }
   }, [isLoading, verifiedItems]);
 
-  console.log({ verifiedItems });
-
   if (verifiedItems.length === 1) {
     return {
       isLoading,

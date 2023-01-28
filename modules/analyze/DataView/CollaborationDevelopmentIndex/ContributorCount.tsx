@@ -1,94 +1,59 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import {
-  genSeries,
-  getLineOption,
-  line,
-  GetChartOptions,
-  getLegendSelected,
-  getTooltipsFormatter,
-  legendFormat,
-} from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
 import Tab from '@common/components/Tab';
-import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({ theme, yResults })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    }
-  );
-
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+import ChartWithData from '@modules/analyze/components/ChartWithData';
+import { GenChartOptions, TransOpt } from '@modules/analyze/type';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 
 const chartTabs = {
-  '1': [{ legendName: 'total', valueKey: 'contributorCount' }],
-  '2': [
-    {
-      legendName: 'code reviewer',
-      valueKey: 'activeC1PrCommentsContributorCount',
-    },
-  ],
-  '3': [
-    {
-      legendName: 'pr creator',
-      valueKey: 'activeC1PrCreateContributorCount',
-    },
-  ],
-  '4': [
-    {
-      legendName: 'commit author',
-      valueKey: 'activeC2ContributorCount',
-    },
-  ],
+  '1': {
+    legendName: 'total',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.contributorCount',
+    summaryKey: 'summaryCodequality.contributorCount',
+  },
+  '2': {
+    legendName: 'code reviewer',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.activeC1PrCommentsContributorCount',
+    summaryKey: 'summaryCodequality.activeC1PrCommentsContributorCount',
+  },
+  '3': {
+    legendName: 'pr creator',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.activeC1PrCreateContributorCount',
+    summaryKey: 'summaryCodequality.activeC1PrCreateContributorCount',
+  },
+  '4': {
+    legendName: 'commit author',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.activeC2ContributorCount',
+    summaryKey: 'summaryCodequality.activeC2ContributorCount',
+  },
 };
-
-type TabValue = keyof typeof chartTabs;
-
-const tabOptions = [
-  { label: 'total', value: '1' },
-  { label: 'code reviewer', value: '2' },
-  { label: 'pr creator', value: '3' },
-  { label: 'commit author', value: '4' },
-];
 
 const ContributorCount = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
-  const tansOpts: TransOpts = useMemo(() => {
-    return {
-      metricType: 'metricCodequality',
-      xAxisKey: 'grimoireCreationDate',
-      yAxisOpts: chartTabs[tab],
-    };
+  const tansOpts: TransOpt = useMemo(() => {
+    return chartTabs[tab];
   }, [tab]);
+
+  type TabValue = keyof typeof chartTabs;
+
+  const tabOptions = [
+    { label: 'total', value: '1' },
+    { label: 'code reviewer', value: '2' },
+    { label: 'pr creator', value: '3' },
+    { label: 'commit author', value: '4' },
+  ];
+  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
+    useGetLineOption();
 
   return (
     <BaseCard
@@ -102,6 +67,17 @@ const ContributorCount = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
       }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
+      }
+      bodyClass={'h-[400px]'}
     >
       {(ref, fullScreen) => {
         return (

@@ -21,14 +21,14 @@ const FooterLinks = () => {
       links: [
         { text: t('common:footer.terms'), href: '/docs/terms-of-use' },
         { text: t('common:footer.privacy'), href: '/docs/privacy-policy' },
-        { text: t('common:footer.built_with'), href: '/docs/built-with' },
+        // { text: t('common:footer.built_with'), href: '/docs/built-with' },
       ],
     },
     {
       title: t('common:footer.community'),
       links: [
-        { text: t('common:community.slack'), href: '/docs/community/slack' },
-        { text: t('common:community.wechat'), href: '/docs/community/wechat' },
+        { text: t('common:footer.slack'), href: '/docs/community/slack' },
+        { text: t('common:footer.wechat'), href: '/docs/community/wechat' },
       ],
     },
     {

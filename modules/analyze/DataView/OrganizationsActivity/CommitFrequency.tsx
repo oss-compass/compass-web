@@ -1,63 +1,23 @@
 import React, { useMemo } from 'react';
-import {
-  genSeries,
-  getLineOption,
-  line,
-  GetChartOptions,
-  legendFormat,
-  getTooltipsFormatter,
-} from '@modules/analyze/options';
 import { Organizations } from '@modules/analyze/components/SideBar/config';
-import {
-  getLegendName,
-  TransOpts,
-  TransResult,
-} from '@modules/analyze/DataTransform/transToAxis';
-import { LineSeriesOption } from 'echarts';
 import BaseCard from '@common/components/BaseCard';
-
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
+import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import { useTranslation } from 'next-i18next';
-
-const tansOpts: TransOpts = {
-  metricType: 'groupMetricActivity',
-  xAxisKey: 'grimoireCreationDate',
-  yAxisOpts: [{ legendName: 'commit frequency', valueKey: 'commitFrequency' }],
-};
-
-const getOptions: GetChartOptions = (
-  { xAxis, compareLabels, yResults },
-  theme
-) => {
-  const series = genSeries<LineSeriesOption>({
-    theme,
-    yResults,
-  })(
-    (
-      { legendName, label, compareLabels, level, isCompare, color, data },
-      len
-    ) => {
-      return line({
-        name: label,
-        data: data,
-        color,
-      });
-    }
-  );
-  return getLineOption({
-    xAxisData: xAxis,
-    series,
-    legend: legendFormat(compareLabels),
-    tooltip: {
-      formatter: getTooltipsFormatter({ compareLabels }),
-    },
-  });
-};
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
 const CommitFrequency = () => {
   const { t } = useTranslation();
+  const tansOpts: TransOpt = {
+    legendName: 'commit frequency',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricGroupActivity.commitFrequency',
+    summaryKey: 'summaryGroupActivity.commitFrequency',
+  };
+  const { getOptions, showAvg, showMedian, setShowAvg, setShowMedian } =
+    useGetLineOption();
   return (
     <BaseCard
       title={t('metrics_models:organization_activity.metrics.commit_frequency')}
@@ -67,6 +27,16 @@ const CommitFrequency = () => {
       )}
       docLink={
         '/docs/metrics-models/niche-creation/developer-retention/#commit-frequency'
+      }
+      headRight={
+        <>
+          <MedianAndAvg
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
+        </>
       }
     >
       {(ref) => {

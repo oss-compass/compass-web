@@ -22,6 +22,9 @@ const oneMarkList = [
 ];
 
 const transHundredMarkSystem = (oneMark: number | string): number | string => {
+  if (oneMark === '-') {
+    return oneMark;
+  }
   if (oneMark === null || oneMark === '') {
     return '-';
   }

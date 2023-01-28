@@ -4,32 +4,25 @@ import {
   LineSeriesOption,
   SeriesOption,
 } from 'echarts';
-import {
-  OptionDataValue,
-  TooltipFormatterCallback,
-} from 'echarts/types/src/util/types';
-import {
-  CallbackDataParams,
-  TopLevelFormatterParams,
-} from 'echarts/types/dist/shared';
-import { formatRepoNameV2 } from '@modules/analyze/DataTransform/transToAxis';
+import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { formatRepoName } from '@modules/analyze/options/format';
 import isNumber from 'lodash/isNumber';
+import { fmtEmptyDataValue } from './format';
 
 export const line = (
   opts: {
-    name: string;
-    data: (string | number)[];
     color?: string;
+    data: (string | number)[];
   } & LineSeriesOption
 ): LineSeriesOption => {
-  const { name, data, color, ...restOpts } = opts;
+  const { data, name, color, ...restOpts } = opts;
 
   return {
     name: opts.name,
     type: 'line',
     smooth: false,
     showSymbol: false,
-    data: opts.data,
+    data,
     lineStyle: opts.color ? { color: opts.color } : {},
     itemStyle: opts.color ? { color: opts.color } : {},
     ...restOpts,
@@ -38,14 +31,13 @@ export const line = (
 
 export const lineArea = (
   opts: {
-    name: string;
-    data: (string | number)[];
     color?: string;
+    data: (string | number)[];
   } & LineSeriesOption
 ): LineSeriesOption => {
   const { name, data, color, ...restOpts } = opts;
+
   return {
-    name,
     type: 'line',
     smooth: false,
     showSymbol: false,
@@ -69,7 +61,7 @@ export const bar = (
   return {
     name: opts.name,
     type: 'bar',
-    data: opts.data,
+    data,
     emphasis: {
       focus: 'series',
     },
@@ -77,16 +69,6 @@ export const bar = (
     itemStyle: opts.color ? { color: opts.color } : {},
     ...restOpts,
   };
-};
-
-export const mapToSeries = (
-  arr: any[],
-  key: string,
-  name: string,
-  func: (opts: { name: string; data: (string | number)[] }) => LineSeriesOption
-): LineSeriesOption => {
-  const values = arr.map((i) => String(i[key]));
-  return func({ name: name, data: values });
 };
 
 export const getLegendSelected = (s: SeriesOption[], includeWord: string) => {
@@ -101,6 +83,7 @@ export const legendFormat = (
   compareLabels: string[]
 ): EChartsOption['legend'] => {
   return {
+    data: compareLabels.map((v) => ({ name: v })),
     textStyle: {
       rich: {
         a: {
@@ -116,7 +99,7 @@ export const legendFormat = (
       },
     },
     formatter: function (label) {
-      const { name, meta } = formatRepoNameV2({ label, compareLabels });
+      const { name, meta } = formatRepoName({ label, compareLabels });
       const { namespace = '', provider = '', showProvider } = meta || {};
       let b = `{b|${namespace}}`;
       if (showProvider) {
@@ -127,28 +110,12 @@ export const legendFormat = (
   };
 };
 
-export const percentageValueFormat = (
-  value: OptionDataValue | OptionDataValue[]
-): string => {
-  if (value === undefined || value === null) {
-    return '-';
-  }
-  return value + '%';
-};
-
-export const formatDataValue = (value: any): any => {
-  if (value === undefined || value === null) {
-    return '-';
-  }
-  return value;
-};
-
 const genTooltipsItem = (
   p: CallbackDataParams,
   compareLabels: string[],
   valueFormat?: (v: any) => any
 ) => {
-  const { name, meta } = formatRepoNameV2({
+  const { name, meta } = formatRepoName({
     label: p.seriesName || '',
     compareLabels,
   });
@@ -176,7 +143,32 @@ const genTooltipsItem = (
     </div>
     
     <div style="margin-left:20px;margin-top:3px;font-size:14px;color:#666;font-weight:500">
-      ${valueFormat ? valueFormat(p.value) : formatDataValue(p.value)}
+      ${valueFormat ? valueFormat(p.value) : fmtEmptyDataValue(p.value)}
+    </div>
+  </div>
+</div>`;
+};
+
+const genSummaryItem = (
+  p: CallbackDataParams,
+  valueFormat?: (v: any) => any
+) => {
+  return `
+<div style="margin: 0 0 8px;line-height:1;">
+  <div style="margin: 0 0 0;line-height:1;display: flex; justify-content:space-between;">
+    <div style="display: flex">
+       <div style="margin-right:4px;margin-top:3px;border-radius:10px;width:10px;height:10px;border:1px dashed ${
+         p.color
+       };"></div>
+       <div style="display:flex;flex-direction: column;">
+          <div style="font-size:14px;color:#333;font-weight:500;margin-bottom:3px;margin-left:2px">
+            ${p.seriesName}
+          </div>
+       </div>
+    </div>
+    
+    <div style="margin-left:20px;margin-top:3px;font-size:14px;color:#666;font-weight:500">
+      ${valueFormat ? valueFormat(p.value) : fmtEmptyDataValue(p.value)}
     </div>
   </div>
 </div>`;
@@ -192,6 +184,8 @@ export const getTooltipsFormatter = (args: {
   ): string | HTMLElement | HTMLElement[] => {
     const paramsArray = Array.isArray(params) ? params : [params];
     const [first] = paramsArray || [];
+
+    const summaryItems: string[] = [];
     const items = paramsArray
       .sort((a, b) => {
         if (isNumber(a.data) && isNumber(b.data)) {
@@ -200,17 +194,31 @@ export const getTooltipsFormatter = (args: {
         return 0;
       })
       .map((p) => {
+        if (p.seriesId === 'average' || p.seriesId === 'median') {
+          summaryItems.push(genSummaryItem(p, valueFormat));
+          return '';
+        }
         return genTooltipsItem(p, compareLabels, valueFormat);
       });
 
     return `
 <div style="margin: 0 0 0;line-height:1;">
   <div style="margin: 0 0 0;line-height:1;">
-    <div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
+    <div style="font-size:14px;color:#000;font-weight:400;line-height:1;">
       ${first?.name}
     </div>
     <div style="margin: 10px 0 0;line-height:1;">
       ${items.join('')}
+      
+      ${
+        summaryItems.length > 0
+          ? `<div style="position:relative;margin-top:10px;padding:10px 0 0;">
+        <div style="position:absolute;top:0;left:-10px;right:-10px;border-top: 1px solid #E3E9ED;"></div>
+        ${summaryItems.join('')}
+      </div> `
+          : ''
+      }
+      
       <div style="clear:both"></div>
     </div>
     <div style="clear:both"></div>

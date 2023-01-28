@@ -173,7 +173,7 @@ query metric(
     updatedIssuesCount
     updatedSince
   }
-  groupMetricActivity(
+  metricGroupActivity(
     label: $label
     level: $level
     beginDate: $start
@@ -192,4 +192,189 @@ query metric(
     orgCount
     organizationsActivity
   }
+}
+
+query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
+  summaryActivity(beginDate: $start, endDate: $end) {
+    activeC1IssueCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1IssueCreateContributorCount {
+      ...metricStat
+    }
+    activeC1PrCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1PrCreateContributorCount {
+      ...metricStat
+    }
+    activeC2ContributorCount {
+      ...metricStat
+    }
+    activityScore {
+      ...metricStat
+    }
+    closedIssuesCount {
+      ...metricStat
+    }
+    codeReviewCount {
+      ...metricStat
+    }
+    commentFrequency {
+      ...metricStat
+    }
+    commitFrequency {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    createdSince {
+      ...metricStat
+    }
+    grimoireCreationDate
+    orgCount {
+      ...metricStat
+    }
+    recentReleasesCount {
+      ...metricStat
+    }
+    updatedIssuesCount {
+      ...metricStat
+    }
+    updatedSince {
+      ...metricStat
+    }
+  }
+  summaryCodequality(beginDate: $start, endDate: $end) {
+    activeC1PrCommentsContributorCount {
+      ...metricStat
+    }
+    activeC1PrCreateContributorCount {
+      ...metricStat
+    }
+    activeC2ContributorCount {
+      ...metricStat
+    }
+    codeMergeRatio {
+      ...metricStat
+    }
+    codeMergedCount {
+      ...metricStat
+    }
+    codeQualityGuarantee {
+      ...metricStat
+    }
+    codeReviewRatio {
+      ...metricStat
+    }
+    codeReviewedCount {
+      ...metricStat
+    }
+    commitFrequency {
+      ...metricStat
+    }
+    commitFrequencyInside {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    gitPrLinkedRatio {
+      ...metricStat
+    }
+    grimoireCreationDate
+    isMaintained {
+      ...metricStat
+    }
+    linesAddedFrequency {
+      ...metricStat
+    }
+    linesRemovedFrequency {
+      ...metricStat
+    }
+    locFrequency {
+      ...metricStat
+    }
+    prCommitCount {
+      ...metricStat
+    }
+    prCommitLinkedCount {
+      ...metricStat
+    }
+    prCount {
+      ...metricStat
+    }
+    prIssueLinkedCount {
+      ...metricStat
+    }
+    prIssueLinkedRatio {
+      ...metricStat
+    }
+  }
+  summaryCommunity(beginDate: $start, endDate: $end) {
+    bugIssueOpenTimeAvg {
+      ...metricStat
+    }
+    bugIssueOpenTimeMid {
+      ...metricStat
+    }
+    closedPrsCount {
+      ...metricStat
+    }
+    codeReviewCount {
+      ...metricStat
+    }
+    commentFrequency {
+      ...metricStat
+    }
+    communitySupportScore {
+      ...metricStat
+    }
+    grimoireCreationDate
+    issueFirstReponseAvg {
+      ...metricStat
+    }
+    issueFirstReponseMid {
+      ...metricStat
+    }
+    issueOpenTimeAvg {
+      ...metricStat
+    }
+    issueOpenTimeMid {
+      ...metricStat
+    }
+    prOpenTimeAvg {
+      ...metricStat
+    }
+    prOpenTimeMid {
+      ...metricStat
+    }
+    updatedIssuesCount {
+      ...metricStat
+    }
+  }
+  summaryGroupActivity(beginDate: $start, endDate: $end) {
+    commitFrequency {
+      ...metricStat
+    }
+    contributionLast {
+      ...metricStat
+    }
+    contributorCount {
+      ...metricStat
+    }
+    grimoireCreationDate
+    orgCount {
+      ...metricStat
+    }
+    organizationsActivity {
+      ...metricStat
+    }
+  }
+}
+
+fragment metricStat on MetricStat {
+  mean
+  median
 }
