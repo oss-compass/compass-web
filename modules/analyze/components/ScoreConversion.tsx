@@ -3,13 +3,19 @@ import Svg100 from 'public/images/analyze/number-100.svg';
 import Svg1 from 'public/images/analyze/number-1.svg';
 import { useTranslation } from 'next-i18next';
 import Tooltip from '@common/components/Tooltip';
+import { subscribeKey } from 'valtio/utils';
+import { avgAndScoreState } from '@modules/analyze/store';
 
 const ScoreConversion: React.FC<{
   onePoint: boolean;
   onChange: (pre: boolean) => void;
 }> = ({ onePoint, onChange }) => {
   const { t } = useTranslation();
-
+  const unsubscribe = subscribeKey(avgAndScoreState, 'onePointSys', (v) => {
+    if (onePoint !== v) {
+      onChange(v);
+    }
+  });
   return (
     <Tooltip
       arrow
