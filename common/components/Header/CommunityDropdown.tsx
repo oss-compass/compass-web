@@ -25,63 +25,73 @@ const CommunityDropdown = () => {
         <AiFillCaretDown color="#fff" className="ml-2" />
       </div>
 
-      <ul className="absolute top-[100%] z-dropdown hidden w-[360px] border-t-2 bg-black/90 text-white group-hover:block">
-        <li className={classnames(itemClass, borderClass)}>
-          <div className="mr-4 w-8">
-            <Slack />
-          </div>
+      <div className="absolute top-[100%] z-dropdown hidden w-[360px] group-hover:block">
+        <div className="mt-[2px] bg-black/90 text-white">
           <LinkX href="/docs/community/slack" passHref legacyBehavior>
-            <a target="_blank">
-              <p className="text-base">{t('common:community.slack')}</p>
-              <p className="text-sm text-white/50">
-                {t('common:community.join_slack')}
-              </p>
+            <a target="_blank" className={classnames(itemClass, borderClass)}>
+              <div className="mr-4 w-8">
+                <Slack />
+              </div>
+              <div>
+                <p className="text-base">{t('common:community.slack')}</p>
+                <p className="text-sm text-white/50">
+                  {t('common:community.join_slack')}
+                </p>
+              </div>
             </a>
           </LinkX>
-        </li>
 
-        <li className={classnames(itemClass, borderClass)}>
-          <div className="mr-4 w-8">
-            <Wechat />
-          </div>
           <LinkX href="/docs/community/wechat" passHref legacyBehavior>
-            <a target="_blank">
-              <div className="text-base">{t('common:community.wechat')}</div>
-              <div className="text-sm text-white/50">
-                {t('common:community.join_wechat')}
+            <a target="_blank" className={classnames(itemClass, borderClass)}>
+              <div className="mr-4 w-8">
+                <Wechat />
+              </div>
+              <div>
+                <p className="text-base">{t('common:community.wechat')}</p>
+                <p className="text-sm text-white/50">
+                  {t('common:community.join_wechat')}
+                </p>
               </div>
             </a>
           </LinkX>
-        </li>
 
-        <li className={classnames(itemClass, borderClass)}>
-          <div className="mr-4 w-8">
-            <Github />
-          </div>
           <LinkX href="https://github.com/oss-compass" passHref legacyBehavior>
-            <a target="_blank" rel="noopener noreferrer">
-              <div className="text-base">{t('common:community.github')}</div>
-              <div className="text-sm text-white/50">
-                {t('common:community.official_repository_on_github')}
+            <a
+              target="_blank"
+              className={classnames(itemClass, borderClass)}
+              rel="noopener noreferrer"
+            >
+              <div className="mr-4 w-8">
+                <Github />
+              </div>
+              <div>
+                <p className="text-base">{t('common:community.github')}</p>
+                <p className="text-sm text-white/50">
+                  {t('common:community.official_repository_on_github')}
+                </p>
               </div>
             </a>
           </LinkX>
-        </li>
 
-        <li className={classnames(itemClass)}>
-          <div className="mr-4 w-8">
-            <GiteeRed />
-          </div>
           <LinkX href="https://gitee.com/oss-compass" passHref legacyBehavior>
-            <a target="_blank" rel="noopener noreferrer">
-              <div className="text-base">{t('common:community.gitee')}</div>
-              <div className="text-sm text-white/50">
-                {t('common:community.official_repository_on_gitee')}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classnames(itemClass)}
+            >
+              <div className="mr-4 w-8">
+                <GiteeRed />
+              </div>
+              <div>
+                <p className="text-base">{t('common:community.gitee')}</p>
+                <p className="text-sm text-white/50">
+                  {t('common:community.official_repository_on_gitee')}
+                </p>
               </div>
             </a>
           </LinkX>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   );
 };
