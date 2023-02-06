@@ -1,6 +1,6 @@
 schema: ${API_URL}/api/graphql
 documents:
-  - './graphql/**/*.graphql'
+  - './src/graphql/**/*.graphql'
 generates:
   ./graphql/generated.ts:
     plugins:
