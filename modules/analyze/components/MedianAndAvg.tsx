@@ -4,6 +4,8 @@ import Median from 'public/images/analyze/median.svg';
 import { useTranslation } from 'next-i18next';
 import Tooltip from '@common/components/Tooltip';
 import classnames from 'classnames';
+import { subscribeKey } from 'valtio/utils';
+import { avgAndScoreState } from '@modules/analyze/store';
 
 const MedianAndAvg: React.FC<{
   showAvg: boolean;
@@ -12,7 +14,16 @@ const MedianAndAvg: React.FC<{
   onMedianChange: (pre: boolean) => void;
 }> = ({ showAvg, onAvgChange, showMedian, onMedianChange }) => {
   const { t } = useTranslation();
-
+  subscribeKey(avgAndScoreState, 'showAvg', (v) => {
+    if (showAvg !== v) {
+      onAvgChange(v);
+    }
+  });
+  subscribeKey(avgAndScoreState, 'showMedian', (v) => {
+    if (showMedian !== v) {
+      onMedianChange(v);
+    }
+  });
   return (
     <>
       <Tooltip
