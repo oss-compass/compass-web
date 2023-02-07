@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useOverviewQuery, OverviewQuery } from '@graphql/generated';
+import { useOverviewQuery } from '@graphql/generated';
 import client from '@graphql/client';
-import Hotspots from './Hotspots';
+import Recently from './Recently';
 import HotProjects from './HotProjects';
 import classnames from 'classnames';
 
 const SectionProjects = () => {
   const { data, isLoading } = useOverviewQuery(client);
-  const { projectsCount, metricsCount, dimensionsCount, modelsCount, trends } =
-    data?.overview || {};
+  const { trends } = data?.overview || {};
 
   return (
     <section
@@ -17,12 +16,7 @@ const SectionProjects = () => {
         'lg:w-full lg:flex-col'
       )}
     >
-      <Hotspots
-        projectsCount={projectsCount}
-        metricsCount={metricsCount}
-        dimensionsCount={dimensionsCount}
-        modelsCount={modelsCount}
-      />
+      <Recently list={data?.recentUpdates} />
       <HotProjects trends={trends} />
     </section>
   );

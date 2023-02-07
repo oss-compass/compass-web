@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatToNow } from '@common/utils';
+import { formatToNowStrict } from '@common/utils';
 import Button from '@modules/submitProject/Form/Button';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,7 @@ const RepoItem: React.FC<{
       <div className="flex flex-1 items-center">
         <p className="max-w-[300px]  truncate font-medium">{name}</p>
         <p className="ml-4 text-sm text-gray-400">
-          • {formatToNow(updateAt)} {t('submit_project:agao')}
+          • {formatToNowStrict(updateAt)} {t('common:ago')}
         </p>
       </div>
       <Button className="bg-primary text-white" onClick={() => onPick()}>
