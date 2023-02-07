@@ -2,7 +2,7 @@ schema: ${API_URL}/api/graphql
 documents:
   - './src/graphql/**/*.graphql'
 generates:
-  ./graphql/generated.ts:
+  ./src/graphql/generated.ts:
     plugins:
       - add:
           content: '/* eslint-disable max-lines */'
