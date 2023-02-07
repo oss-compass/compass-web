@@ -8,7 +8,7 @@
     "build:analyze": "cross-env ANALYZE='true' yarn build",
     "dev": "next dev",
     "dev:debugger": "cross-env NODE_OPTIONS='--inspect' next dev",
-    "generate": "graphql-codegen -r ./graphql/codegenEnv.js",
+    "generate": "graphql-codegen -r ./src/graphql/codegenEnv.js",
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",

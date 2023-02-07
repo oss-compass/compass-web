@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react';
-import Header from 'common/components/Header';
-import { Center } from 'common/components/Layout';
-import FooterLinks from 'common/components/FooterLinks';
-import Copyright from 'common/components/Copyright';
+import Header from '@common/components/Header';
+import { Center } from '@common/components/Layout';
+import FooterLinks from '@common/components/FooterLinks';
+import Copyright from '@common/components/Copyright';
 
 const DocLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (

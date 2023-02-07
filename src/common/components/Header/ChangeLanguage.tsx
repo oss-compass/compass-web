@@ -34,23 +34,25 @@ const ChangeLanguage = () => {
         <AiFillCaretDown className="text-white" />
       </div>
 
-      <div className="absolute top-[100%] z-dropdown hidden w-[160px] border-t-2 bg-black/90 text-white group-hover:block">
-        {languages.map((item) => (
-          <div
-            key={item.id}
-            className="flex cursor-pointer border-b border-white/30 py-4 pl-6 text-center hover:bg-[#333333]"
-            onClick={() => {
-              Cookies.set(USER_LOCALE_KEY, item.id, {
-                expires: 365,
-                path: '/',
-                domain: getDomain(),
-              });
-              reload();
-            }}
-          >
-            {item.label}
-          </div>
-        ))}
+      <div className="absolute top-[100%] z-dropdown hidden w-[160px] group-hover:block">
+        <div className="mt-[2px] bg-black/90 text-white">
+          {languages.map((item) => (
+            <div
+              key={item.id}
+              className="flex cursor-pointer border-b border-white/30 py-4 pl-6 text-center hover:bg-[#333333]"
+              onClick={() => {
+                Cookies.set(USER_LOCALE_KEY, item.id, {
+                  expires: 365,
+                  path: '/',
+                  domain: getDomain(),
+                });
+                reload();
+              }}
+            >
+              {item.label}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
