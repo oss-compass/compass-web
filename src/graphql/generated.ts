@@ -468,7 +468,7 @@ export type MetricStat = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Submit a project analysis task */
+  /** Submit a community analysis task */
   createProjectTask?: Maybe<CreateProjectTaskPayload>;
   /** Submit a repository analysis task */
   createRepoTask?: Maybe<CreateRepoTaskPayload>;
@@ -499,6 +499,8 @@ export type ProjectCompletionRow = {
   level?: Maybe<Scalars['String']>;
   /** metric task status (pending/progress/success/error/canceled/unsumbit) */
   status?: Maybe<Scalars['String']>;
+  /** metric model last update time */
+  updatedAt?: Maybe<Scalars['ISO8601DateTime']>;
 };
 
 export type ProjectTypeInput = {
@@ -516,12 +518,14 @@ export type Query = {
   betaMetricOverview: BetaMetricOverview;
   /** return beta metrics list */
   betaMetricsIndex: Array<BetaMetric>;
+  /** Get bulk reports for a label list */
+  bulkOverview: Array<Repo>;
+  /** Get hottest reports of a collection */
+  collectionHottest: Array<ProjectCompletionRow>;
   /** Get overview data of a community */
   communityOverview: CommunityOverview;
   /** Fuzzy search project by keyword */
   fuzzySearch: Array<ProjectCompletionRow>;
-  /** Get group activity metrics data of compass */
-  groupMetricActivity: Array<GroupActivityMetric>;
   /** Get latest metrics data of the specified label */
   latestMetrics: LatestMetrics;
   /** Get activity metrics data of compass */
@@ -534,6 +538,8 @@ export type Query = {
   metricGroupActivity: Array<GroupActivityMetric>;
   /** Get overview data of compass */
   overview: Overview;
+  /** Recent update reports */
+  recentUpdates: Array<ProjectCompletionRow>;
   /** Get activity summary data of compass */
   summaryActivity: Array<ActivitySummary>;
   /** Get codequality summary data of compass */
@@ -561,6 +567,16 @@ export type QueryBetaMetricsIndexArgs = {
   status?: InputMaybe<Scalars['String']>;
 };
 
+export type QueryBulkOverviewArgs = {
+  labels: Array<Scalars['String']>;
+};
+
+export type QueryCollectionHottestArgs = {
+  ident: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryCommunityOverviewArgs = {
   label: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
@@ -569,13 +585,6 @@ export type QueryCommunityOverviewArgs = {
 
 export type QueryFuzzySearchArgs = {
   keyword: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-};
-
-export type QueryGroupMetricActivityArgs = {
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
 };
 
@@ -1172,6 +1181,45 @@ export type MetricStatFragment = {
   __typename?: 'MetricStat';
   mean?: number | null;
   median?: number | null;
+};
+
+export type CollectionHottestQueryVariables = Exact<{
+  ident: Scalars['String'];
+  limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type CollectionHottestQuery = {
+  __typename?: 'Query';
+  collectionHottest: Array<{
+    __typename?: 'ProjectCompletionRow';
+    label?: string | null;
+    level?: string | null;
+    status?: string | null;
+    updatedAt?: any | null;
+  }>;
+};
+
+export type BulkOverviewQueryVariables = Exact<{
+  labels: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type BulkOverviewQuery = {
+  __typename?: 'Query';
+  bulkOverview: Array<{
+    __typename?: 'Repo';
+    backend?: string | null;
+    forksCount?: number | null;
+    language?: string | null;
+    name?: string | null;
+    openIssuesCount?: number | null;
+    path?: string | null;
+    stargazersCount?: number | null;
+    watchersCount?: number | null;
+    metricActivity: Array<{
+      __typename?: 'ActivityMetric';
+      activityScore?: number | null;
+    }>;
+  }>;
 };
 
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
@@ -1840,6 +1888,102 @@ useSummaryQuery.fetcher = (
   fetcher<SummaryQuery, SummaryQueryVariables>(
     client,
     SummaryDocument,
+    variables,
+    headers
+  );
+export const CollectionHottestDocument = /*#__PURE__*/ `
+    query collectionHottest($ident: String!, $limit: Int) {
+  collectionHottest(ident: $ident, limit: $limit) {
+    label
+    level
+    status
+    updatedAt
+  }
+}
+    `;
+export const useCollectionHottestQuery = <
+  TData = CollectionHottestQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CollectionHottestQueryVariables,
+  options?: UseQueryOptions<CollectionHottestQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CollectionHottestQuery, TError, TData>(
+    ['collectionHottest', variables],
+    fetcher<CollectionHottestQuery, CollectionHottestQueryVariables>(
+      client,
+      CollectionHottestDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCollectionHottestQuery.getKey = (
+  variables: CollectionHottestQueryVariables
+) => ['collectionHottest', variables];
+useCollectionHottestQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CollectionHottestQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CollectionHottestQuery, CollectionHottestQueryVariables>(
+    client,
+    CollectionHottestDocument,
+    variables,
+    headers
+  );
+export const BulkOverviewDocument = /*#__PURE__*/ `
+    query bulkOverview($labels: [String!]!) {
+  bulkOverview(labels: $labels) {
+    backend
+    forksCount
+    language
+    name
+    openIssuesCount
+    path
+    stargazersCount
+    watchersCount
+    metricActivity {
+      activityScore
+    }
+  }
+}
+    `;
+export const useBulkOverviewQuery = <
+  TData = BulkOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: BulkOverviewQueryVariables,
+  options?: UseQueryOptions<BulkOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<BulkOverviewQuery, TError, TData>(
+    ['bulkOverview', variables],
+    fetcher<BulkOverviewQuery, BulkOverviewQueryVariables>(
+      client,
+      BulkOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useBulkOverviewQuery.getKey = (variables: BulkOverviewQueryVariables) => [
+  'bulkOverview',
+  variables,
+];
+useBulkOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: BulkOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<BulkOverviewQuery, BulkOverviewQueryVariables>(
+    client,
+    BulkOverviewDocument,
     variables,
     headers
   );
