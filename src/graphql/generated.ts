@@ -1227,6 +1227,45 @@ export type MetricStatFragment = {
   median?: number | null;
 };
 
+export type CollectionHottestQueryVariables = Exact<{
+  ident: Scalars['String'];
+  limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type CollectionHottestQuery = {
+  __typename?: 'Query';
+  collectionHottest: Array<{
+    __typename?: 'ProjectCompletionRow';
+    label?: string | null;
+    level?: string | null;
+    status?: string | null;
+    updatedAt?: any | null;
+  }>;
+};
+
+export type BulkOverviewQueryVariables = Exact<{
+  labels: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type BulkOverviewQuery = {
+  __typename?: 'Query';
+  bulkOverview: Array<{
+    __typename?: 'Repo';
+    backend?: string | null;
+    forksCount?: number | null;
+    language?: string | null;
+    name?: string | null;
+    openIssuesCount?: number | null;
+    path?: string | null;
+    stargazersCount?: number | null;
+    watchersCount?: number | null;
+    metricActivity: Array<{
+      __typename?: 'ActivityMetric';
+      activityScore?: number | null;
+    }>;
+  }>;
+};
+
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
     fragment metricStat on MetricStat {
   mean
@@ -1995,6 +2034,102 @@ useSummaryQuery.fetcher = (
   fetcher<SummaryQuery, SummaryQueryVariables>(
     client,
     SummaryDocument,
+    variables,
+    headers
+  );
+export const CollectionHottestDocument = /*#__PURE__*/ `
+    query collectionHottest($ident: String!, $limit: Int) {
+  collectionHottest(ident: $ident, limit: $limit) {
+    label
+    level
+    status
+    updatedAt
+  }
+}
+    `;
+export const useCollectionHottestQuery = <
+  TData = CollectionHottestQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CollectionHottestQueryVariables,
+  options?: UseQueryOptions<CollectionHottestQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CollectionHottestQuery, TError, TData>(
+    ['collectionHottest', variables],
+    fetcher<CollectionHottestQuery, CollectionHottestQueryVariables>(
+      client,
+      CollectionHottestDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCollectionHottestQuery.getKey = (
+  variables: CollectionHottestQueryVariables
+) => ['collectionHottest', variables];
+useCollectionHottestQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CollectionHottestQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CollectionHottestQuery, CollectionHottestQueryVariables>(
+    client,
+    CollectionHottestDocument,
+    variables,
+    headers
+  );
+export const BulkOverviewDocument = /*#__PURE__*/ `
+    query bulkOverview($labels: [String!]!) {
+  bulkOverview(labels: $labels) {
+    backend
+    forksCount
+    language
+    name
+    openIssuesCount
+    path
+    stargazersCount
+    watchersCount
+    metricActivity {
+      activityScore
+    }
+  }
+}
+    `;
+export const useBulkOverviewQuery = <
+  TData = BulkOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: BulkOverviewQueryVariables,
+  options?: UseQueryOptions<BulkOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<BulkOverviewQuery, TError, TData>(
+    ['bulkOverview', variables],
+    fetcher<BulkOverviewQuery, BulkOverviewQueryVariables>(
+      client,
+      BulkOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useBulkOverviewQuery.getKey = (variables: BulkOverviewQueryVariables) => [
+  'bulkOverview',
+  variables,
+];
+useBulkOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: BulkOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<BulkOverviewQuery, BulkOverviewQueryVariables>(
+    client,
+    BulkOverviewDocument,
     variables,
     headers
   );
