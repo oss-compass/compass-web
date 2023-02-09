@@ -8,11 +8,10 @@ const git = simpleGit();
 const repoPath = './script/tmp/compass-projects-information';
 const collectionsDir = './script/tmp/compass-projects-information/collections';
 const gitAddress =
-  'git@github.com:EdmondFrank/compass-projects-information.git';
+  'https://github.com/EdmondFrank/compass-projects-information.git';
 
 async function handle() {
   await fs.remove(repoPath);
-  await fs.ensureDir('./script/tmp/compass-projects-information');
   const res = await git.clone(gitAddress, repoPath);
   console.log(res);
   const files = await fs.readdir(collectionsDir);
@@ -34,4 +33,5 @@ async function handle() {
 
 handle().catch((e) => {
   console.log(e);
+  process.exit(1);
 });
