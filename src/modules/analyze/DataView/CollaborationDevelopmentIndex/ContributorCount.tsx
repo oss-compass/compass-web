@@ -48,7 +48,7 @@ const ContributorCount = () => {
 
   const tabOptions = [
     { label: 'total', value: '1' },
-    { label: 'code reviewer', value: '2' },
+    { label: t('analyze:code_reviewer'), value: '2' },
     { label: 'pr creator', value: '3' },
     { label: 'commit author', value: '4' },
   ];

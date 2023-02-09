@@ -34,5 +34,6 @@
     "show": "show median",
     "hide": "hide median"
   },
-  "powered_by_chaoss": "Powered by CHAOSS"
+  "powered_by_chaoss": "Powered by CHAOSS",
+  "code_reviewer": "code reviewer"
 }
