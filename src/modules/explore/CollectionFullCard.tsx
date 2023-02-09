@@ -110,10 +110,10 @@ const CollectionFullCard = (props: { collection: Collection }) => {
                     <div className="flex w-full items-center">
                       <div className="mr-auto flex-1">
                         {provider ? (
-                          provider === 'gitHub' ? (
-                            <AiFillGithub className="inline-block h-5 w-5 text-[#000000]" />
-                          ) : (
+                          provider === 'gitee' ? (
                             <SiGitee className="inline-block h-5 w-5 text-[#c71c27]" />
+                          ) : (
+                            <AiFillGithub className="inline-block h-5 w-5 text-[#000000]" />
                           )
                         ) : (
                           ''
