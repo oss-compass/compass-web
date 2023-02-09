@@ -1,4 +1,4 @@
-import { formatToNow, formatISO } from './time';
+import { formatToNow, formatToNowStrict, formatISO } from './time';
 
 describe('time', () => {
   beforeAll(() => {
@@ -14,6 +14,10 @@ describe('time', () => {
   });
 
   it('formatToNow', function () {
-    expect(formatToNow('2022-09-28T02:11:54Z')).toBe('2 months');
+    expect(formatToNow('2022-09-28T02:11:54Z')).toBe('about 2 months');
+  });
+
+  it('formatToNowStrict', function () {
+    expect(formatToNowStrict('2022-09-28T02:11:54Z')).toBe('2 months');
   });
 });
