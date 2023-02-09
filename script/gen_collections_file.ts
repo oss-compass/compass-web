@@ -12,7 +12,9 @@ const gitAddress =
 
 async function handle() {
   await fs.remove(repoPath);
-  await git.clone(gitAddress, repoPath);
+  await fs.ensureDir('./script/tmp/compass-projects-information');
+  const res = await git.clone(gitAddress, repoPath);
+  console.log(res);
   const files = await fs.readdir(collectionsDir);
   const collectionsData: Record<string, object> = {};
 
