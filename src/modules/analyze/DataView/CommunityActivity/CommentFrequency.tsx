@@ -12,7 +12,9 @@ const CommentFrequency = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'comment frequency',
+    legendName: t(
+      'metrics_models:community_activity.metrics.comment_frequency'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.commentFrequency',
     summaryKey: 'summaryActivity.commentFrequency',

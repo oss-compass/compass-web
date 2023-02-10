@@ -12,7 +12,7 @@ import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 const TotalScore = () => {
   const { t } = useTranslation();
   const tansOpts: TransOpt = {
-    legendName: 'community activity',
+    legendName: t('metrics_models:community_activity.title'),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.activityScore',
     summaryKey: 'summaryActivity.activityScore',

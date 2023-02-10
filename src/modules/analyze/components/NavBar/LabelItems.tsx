@@ -62,7 +62,10 @@ const LabelItems = () => {
   };
   return (
     <>
-      <div className="relative flex h-6 items-center overflow-hidden" ref={ref}>
+      <div
+        className="relative flex h-6 flex-1 items-center overflow-hidden"
+        ref={ref}
+      >
         {compareItems.map(({ name, label, level }, index) => {
           const host = getProvider(label);
 

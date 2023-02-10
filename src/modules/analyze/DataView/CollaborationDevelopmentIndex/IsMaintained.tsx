@@ -13,16 +13,15 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { GenChartOptions } from '@modules/analyze/type';
 
-const tansOpt = {
-  legendName: 'is maintained',
-  xKey: 'grimoireCreationDate',
-  yKey: 'metricCodequality.isMaintained',
-  summaryKey: 'summaryCodequality.isMaintained',
-};
-
 const IsMaintained = () => {
   const { t } = useTranslation();
 
+  const tansOpt = {
+    legendName: 'is maintained',
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCodequality.isMaintained',
+    summaryKey: 'summaryCodequality.isMaintained',
+  };
   const getOptions: GenChartOptions = (
     { xAxis, compareLabels, yResults },
     theme

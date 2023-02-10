@@ -15,7 +15,7 @@ const TotalScore = () => {
   const tansOpts: TransOpt = {
     xKey: 'grimoireCreationDate',
     yKey: 'metricCodequality.codeQualityGuarantee',
-    legendName: 'collaboration development index',
+    legendName: t('metrics_models:collaboration_development_index.title'),
     summaryKey: 'summaryCodequality.codeQualityGuarantee',
   };
   const {

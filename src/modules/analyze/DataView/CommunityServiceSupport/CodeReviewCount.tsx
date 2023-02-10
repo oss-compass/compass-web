@@ -11,7 +11,9 @@ import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 const CodeReviewCount = () => {
   const { t } = useTranslation();
   const tansOpts: TransOpt = {
-    legendName: 'code review count',
+    legendName: t(
+      'metrics_models:community_service_and_support.metrics.code_review_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricCommunity.codeReviewCount',
     summaryKey: 'summaryCommunity.codeReviewCount',

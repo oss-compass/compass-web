@@ -8,37 +8,37 @@ import Tab from '@common/components/Tab';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
 
-const chartTabs = {
-  '1': {
-    legendName: 'linked issue ratio',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.prIssueLinkedRatio',
-    summaryKey: 'summaryCodequality.prIssueLinkedRatio',
-  },
-  '2': {
-    legendName: 'total pr',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.prCount',
-    summaryKey: 'summaryCodequality.prCount',
-  },
-  '3': {
-    legendName: 'linked issue',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.prIssueLinkedCount',
-    summaryKey: 'summaryCodequality.prIssueLinkedCount',
-  },
-};
-
-type TabValue = keyof typeof chartTabs;
-
-const tabOptions = [
-  { label: 'linked issue ratio', value: '1' },
-  { label: 'total pr', value: '2' },
-  { label: 'linked issue', value: '3' },
-];
-
 const PRIssueLinked = () => {
   const { t } = useTranslation();
+  const chartTabs = {
+    '1': {
+      legendName: t('analyze:linked_issue_ratio'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.prIssueLinkedRatio',
+      summaryKey: 'summaryCodequality.prIssueLinkedRatio',
+    },
+    '2': {
+      legendName: t('analyze:total_pr'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.prCount',
+      summaryKey: 'summaryCodequality.prCount',
+    },
+    '3': {
+      legendName: t('analyze:linked_issue'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.prIssueLinkedCount',
+      summaryKey: 'summaryCodequality.prIssueLinkedCount',
+    },
+  };
+
+  type TabValue = keyof typeof chartTabs;
+
+  const tabOptions = [
+    { label: 'linked issue ratio', value: '1' },
+    { label: 'total pr', value: '2' },
+    { label: 'linked issue', value: '3' },
+  ];
+
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts = chartTabs[tab];
   const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =

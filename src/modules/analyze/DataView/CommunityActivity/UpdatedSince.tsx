@@ -12,7 +12,7 @@ const UpdatedSince = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'updated since',
+    legendName: t('metrics_models:community_activity.metrics.updated_since'),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.updatedSince',
     summaryKey: 'summaryActivity.updatedSince',

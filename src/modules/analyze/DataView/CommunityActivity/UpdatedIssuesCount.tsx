@@ -12,7 +12,9 @@ const UpdatedIssuesCount = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'updated issues count',
+    legendName: t(
+      'metrics_models:community_activity.metrics.updated_issues_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.updatedIssuesCount',
     summaryKey: 'summaryActivity.updatedIssuesCount',

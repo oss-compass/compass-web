@@ -21,37 +21,37 @@ import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
 
-const tabOptions = [
-  { label: 'code merge ratio', value: '1' },
-  { label: 'total pr', value: '2' },
-  { label: 'code merge', value: '3' },
-];
-
-const chartTabs = {
-  '1': {
-    legendName: 'code merge ratio',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.codeMergeRatio',
-    summaryKey: 'summaryCodequality.codeMergeRatio',
-  },
-  '2': {
-    legendName: 'total pr',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.prCount',
-    summaryKey: 'summaryCodequality.prCount',
-  },
-  '3': {
-    legendName: 'code merge',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.codeMergedCount',
-    summaryKey: 'summaryCodequality.codeMergedCount',
-  },
-};
-
-type TabValue = keyof typeof chartTabs;
-
 const CodeMergeRatio = () => {
   const { t } = useTranslation();
+
+  const tabOptions = [
+    { label: 'code merge ratio', value: '1' },
+    { label: 'total pr', value: '2' },
+    { label: 'code merge', value: '3' },
+  ];
+
+  const chartTabs = {
+    '1': {
+      legendName: 'code merge ratio',
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.codeMergeRatio',
+      summaryKey: 'summaryCodequality.codeMergeRatio',
+    },
+    '2': {
+      legendName: 'total pr',
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.prCount',
+      summaryKey: 'summaryCodequality.prCount',
+    },
+    '3': {
+      legendName: 'code merge',
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.codeMergedCount',
+      summaryKey: 'summaryCodequality.codeMergedCount',
+    },
+  };
+
+  type TabValue = keyof typeof chartTabs;
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
   const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =

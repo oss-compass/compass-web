@@ -11,7 +11,9 @@ import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 const CommitFrequency = () => {
   const { t } = useTranslation();
   const tansOpts: TransOpt = {
-    legendName: 'commit frequency',
+    legendName: t(
+      'metrics_models:organization_activity.metrics.commit_frequency'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricGroupActivity.commitFrequency',
     summaryKey: 'summaryGroupActivity.commitFrequency',

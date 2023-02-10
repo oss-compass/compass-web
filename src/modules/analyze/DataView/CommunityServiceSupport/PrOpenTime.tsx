@@ -9,30 +9,31 @@ import Tab from '@common/components/Tab';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 
-const tabOptions = [
-  { label: 'avg', value: '1' },
-  { label: 'mid', value: '2' },
-];
-
-const chartTabs = {
-  '1': {
-    legendName: 'avg',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCommunity.prOpenTimeAvg',
-    summaryKey: 'summaryCommunity.prOpenTimeAvg',
-  },
-  '2': {
-    legendName: 'mid',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCommunity.prOpenTimeMid',
-    summaryKey: 'summaryCommunity.prOpenTimeMid',
-  },
-};
-
-type TabValue = keyof typeof chartTabs;
-
 const PrOpenTime = () => {
   const { t } = useTranslation();
+
+  const tabOptions = [
+    { label: t('analyze:average'), value: '1' },
+    { label: t('analyze:median'), value: '2' },
+  ];
+
+  const chartTabs = {
+    '1': {
+      legendName: t('analyze:average'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCommunity.prOpenTimeAvg',
+      summaryKey: 'summaryCommunity.prOpenTimeAvg',
+    },
+    '2': {
+      legendName: t('analyze:median'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCommunity.prOpenTimeMid',
+      summaryKey: 'summaryCommunity.prOpenTimeMid',
+    },
+  };
+
+  type TabValue = keyof typeof chartTabs;
+
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =

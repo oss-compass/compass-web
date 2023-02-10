@@ -11,7 +11,9 @@ import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 const CommentFrequency = () => {
   const { t } = useTranslation();
   const tansOpts: TransOpt = {
-    legendName: 'issue comment frequency',
+    legendName: t(
+      'metrics_models:community_service_and_support.metrics.comment_frequency'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricCommunity.commentFrequency',
     summaryKey: 'summaryCommunity.commentFrequency',

@@ -12,7 +12,9 @@ const ContributorCount = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'contributor count',
+    legendName: t(
+      'metrics_models:community_activity.metrics.contributor_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.contributorCount',
     summaryKey: 'summaryActivity.contributorCount',

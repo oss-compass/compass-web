@@ -12,7 +12,9 @@ const RecentReleasesCount = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'recent releases count',
+    legendName: t(
+      'metrics_models:community_activity.metrics.recent_releases_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.recentReleasesCount',
     summaryKey: 'summaryActivity.recentReleasesCount',

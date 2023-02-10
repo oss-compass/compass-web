@@ -12,7 +12,9 @@ const OrgCount = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'org count',
+    legendName: t(
+      'metrics_models:community_activity.metrics.organization_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.orgCount',
     summaryKey: 'summaryActivity.orgCount',

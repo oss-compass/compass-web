@@ -11,7 +11,9 @@ import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 const ClosedPrsCount = () => {
   const { t } = useTranslation();
   const tansOpts: TransOpt = {
-    legendName: 'closed pr count',
+    legendName: t(
+      'metrics_models:community_service_and_support.metrics.close_pr_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricCommunity.closedPrsCount',
     summaryKey: 'summaryCommunity.closedPrsCount',

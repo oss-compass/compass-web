@@ -13,7 +13,7 @@ const TotalScore = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'community service and support',
+    legendName: t('metrics_models:community_service_and_support.title'),
     xKey: 'grimoireCreationDate',
     yKey: 'metricCommunity.communitySupportScore',
     summaryKey: 'summaryCommunity.communitySupportScore',

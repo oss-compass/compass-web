@@ -11,7 +11,9 @@ import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 const ContributorCount = () => {
   const { t } = useTranslation();
   const tansOpts: TransOpt = {
-    legendName: 'contributor count',
+    legendName: t(
+      'metrics_models:organization_activity.metrics.contributor_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricGroupActivity.contributorCount',
     summaryKey: 'summaryGroupActivity.contributorCount',

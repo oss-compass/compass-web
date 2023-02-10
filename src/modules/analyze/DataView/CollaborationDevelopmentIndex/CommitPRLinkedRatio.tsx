@@ -9,39 +9,38 @@ import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
 
-const tabOptions = [
-  { label: 'commit pr linked ratio', value: '1' },
-  { label: 'commit pr', value: '2' },
-  { label: 'commit pr linked', value: '3' },
-];
-
-const chartTabs = {
-  '1': {
-    legendName: 'commit pr linked ratio',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.gitPrLinkedRatio',
-    summaryKey: 'summaryCodequality.gitPrLinkedRatio',
-  },
-  '2': {
-    legendName: 'commit pr',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.prCommitCount',
-    summaryKey: 'summaryCodequality.prCommitCount',
-  },
-  '3': {
-    legendName: 'commit pr linked',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.prCommitLinkedCount',
-    summaryKey: 'summaryCodequality.prCommitLinkedCount',
-  },
-};
-
-type TabValue = keyof typeof chartTabs;
-
 const CommitPRLinkedRatio = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
+  const tabOptions = [
+    { label: t('analyze:commit_pr_linked_ratio'), value: '1' },
+    { label: t('analyze:commit_pr'), value: '2' },
+    { label: t('analyze:commit_pr_linked'), value: '3' },
+  ];
+
+  const chartTabs = {
+    '1': {
+      legendName: t('analyze:commit_pr_linked_ratio'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.gitPrLinkedRatio',
+      summaryKey: 'summaryCodequality.gitPrLinkedRatio',
+    },
+    '2': {
+      legendName: t('analyze:commit_pr'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.prCommitCount',
+      summaryKey: 'summaryCodequality.prCommitCount',
+    },
+    '3': {
+      legendName: t('analyze:commit_pr_linked'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.prCommitLinkedCount',
+      summaryKey: 'summaryCodequality.prCommitLinkedCount',
+    },
+  };
+
+  type TabValue = keyof typeof chartTabs;
   const tansOpts: TransOpt = chartTabs[tab];
   const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
     useGetRatioLineOption({ tab });

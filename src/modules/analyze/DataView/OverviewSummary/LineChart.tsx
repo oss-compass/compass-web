@@ -54,36 +54,37 @@ const LineChart: React.FC<ChartSummaryProps> = ({
   );
 };
 
-const opts = [
-  {
-    type: 'metricCodequality',
-    key: 'codeQualityGuarantee',
-    legendName: 'collaboration development index',
-  },
-  {
-    type: 'metricCommunity',
-    key: 'communitySupportScore',
-    legendName: 'community support score',
-  },
-  {
-    type: 'metricActivity',
-    key: 'activityScore',
-    legendName: 'activity score',
-  },
-];
-
-const optsWithOrg = [
-  ...opts,
-  {
-    type: 'metricGroupActivity',
-    key: 'organizationsActivity',
-    legendName: 'organizations activity',
-  },
-];
-
 const dateKey = 'grimoireCreationDate';
 
 const LineChartWithData = () => {
+  const { t } = useTranslation();
+  const opts = [
+    {
+      type: 'metricCodequality',
+      key: 'codeQualityGuarantee',
+      legendName: t('metrics_models:collaboration_development_index.title'),
+    },
+    {
+      type: 'metricCommunity',
+      key: 'communitySupportScore',
+      legendName: t('metrics_models:community_service_and_support.title'),
+    },
+    {
+      type: 'metricActivity',
+      key: 'activityScore',
+      legendName: t('metrics_models:activity.title'),
+    },
+  ];
+
+  const optsWithOrg = [
+    ...opts,
+    {
+      type: 'metricGroupActivity',
+      key: 'organizationsActivity',
+      legendName: t('metrics_models:organization_activity.title'),
+    },
+  ];
+
   const showOrganizations = useShowOrganizations();
   const data = useMetricQueryData();
   const isLoading = data.loading;

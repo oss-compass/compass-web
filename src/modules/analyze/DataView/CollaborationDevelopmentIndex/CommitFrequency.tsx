@@ -13,7 +13,9 @@ const CommitFrequency = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'commit frequency',
+    legendName: t(
+      'metrics_models:collaboration_development_index.metrics.commit_frequency'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricCodequality.commitFrequency',
     summaryKey: 'summaryCodequality.commitFrequency',
