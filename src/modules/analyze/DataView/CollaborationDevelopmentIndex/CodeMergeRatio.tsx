@@ -25,26 +25,26 @@ const CodeMergeRatio = () => {
   const { t } = useTranslation();
 
   const tabOptions = [
-    { label: 'code merge ratio', value: '1' },
-    { label: 'total pr', value: '2' },
-    { label: 'code merge', value: '3' },
+    { label: t('analyze:code_merge_ratio'), value: '1' },
+    { label: t('analyze:total_pr'), value: '2' },
+    { label: t('analyze:code_merge'), value: '3' },
   ];
 
   const chartTabs = {
     '1': {
-      legendName: 'code merge ratio',
+      legendName: t('analyze:code_merge_ratio'),
       xKey: 'grimoireCreationDate',
       yKey: 'metricCodequality.codeMergeRatio',
       summaryKey: 'summaryCodequality.codeMergeRatio',
     },
     '2': {
-      legendName: 'total pr',
+      legendName: t('analyze:total_pr'),
       xKey: 'grimoireCreationDate',
       yKey: 'metricCodequality.prCount',
       summaryKey: 'summaryCodequality.prCount',
     },
     '3': {
-      legendName: 'code merge',
+      legendName: t('analyze:code_merge'),
       xKey: 'grimoireCreationDate',
       yKey: 'metricCodequality.codeMergedCount',
       summaryKey: 'summaryCodequality.codeMergedCount',

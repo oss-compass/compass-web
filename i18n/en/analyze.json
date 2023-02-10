@@ -48,5 +48,7 @@
   "lines_remove": "lines remove",
   "lines_add": "lines add",
   "code_review_ratio": "code review ratio",
-  "code_review": "code review"
+  "code_review": "code review",
+  "code_merge_ratio": "code merge ratio",
+  "code_merge": "code merge"
 }
