@@ -738,12 +738,14 @@ export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OverviewQuery = {
   __typename?: 'Query';
+  recentUpdates: Array<{
+    __typename?: 'ProjectCompletionRow';
+    label?: string | null;
+    level?: string | null;
+    updatedAt?: any | null;
+  }>;
   overview: {
     __typename?: 'Overview';
-    projectsCount?: number | null;
-    dimensionsCount?: number | null;
-    metricsCount?: number | null;
-    modelsCount?: number | null;
     trends?: Array<{
       __typename?: 'Repo';
       backend?: string | null;
@@ -1457,11 +1459,12 @@ useLatestMetricsQuery.fetcher = (
   );
 export const OverviewDocument = /*#__PURE__*/ `
     query overview {
+  recentUpdates {
+    label
+    level
+    updatedAt
+  }
   overview {
-    projectsCount
-    dimensionsCount
-    metricsCount
-    modelsCount
     trends {
       backend
       forksCount

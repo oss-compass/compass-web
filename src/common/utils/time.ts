@@ -1,7 +1,7 @@
 import {
+  formatDistanceToNow,
   formatDistanceToNowStrict,
   format,
-  parseISO,
   parseJSON,
 } from 'date-fns';
 import { enGB, zhCN } from 'date-fns/locale';
@@ -18,6 +18,12 @@ export const formatISO = (s: string, layout?: string) => {
 };
 
 export const formatToNow = (s: string) => {
+  if (!s) return '';
+  const p = parseJSON(s);
+  return formatDistanceToNow(p, { locale: languages[local] });
+};
+
+export const formatToNowStrict = (s: string) => {
   if (!s) return '';
   const p = parseJSON(s);
   return formatDistanceToNowStrict(p, { locale: languages[local] });

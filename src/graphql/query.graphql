@@ -25,11 +25,12 @@ query latestMetrics($label: String!, $level:String){
 }
 
 query overview {
+    recentUpdates {
+        label
+        level
+        updatedAt
+    }
     overview {
-        projectsCount
-        dimensionsCount
-        metricsCount
-        modelsCount
         trends {
             backend
             forksCount
