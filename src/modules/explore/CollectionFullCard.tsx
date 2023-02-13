@@ -1,22 +1,14 @@
 import React from 'react';
-import { AiFillGithub } from 'react-icons/ai';
-import { SiGitee } from 'react-icons/si';
 import Link from 'next/link';
-import {
-  getRepoName,
-  getNameSpace,
-  getAnalyzeLink,
-  getProvider,
-  getPathname,
-} from '@common/utils';
+import { getRepoName, getAnalyzeLink, getPathname } from '@common/utils';
 import { Collection } from './type';
 import { useTranslation } from 'next-i18next';
-import MiniChart from '@common/components/EChartX/MiniChart';
 import {
   useBulkOverviewQuery,
   useCollectionHottestQuery,
 } from '@graphql/generated';
 import client from '@graphql/client';
+import RepoCard from '@modules/explore/RepoCard';
 
 const CollectionFullCard = (props: { collection: Collection }) => {
   const { collection } = props;
@@ -82,47 +74,15 @@ const CollectionFullCard = (props: { collection: Collection }) => {
         <div className="flex flex-1 items-end pl-5">
           <div className="grid flex-1 grid-cols-3 gap-6">
             {showPreviousThree.map((label) => {
-              const repo = getRepoName(label);
               const pathname = getPathname(label);
-              const nameSpace = getNameSpace(label);
-              const provider = getProvider(label);
               const overview = bulkOverview?.bulkOverview.find(
                 (i) => i.path === pathname
               );
               const chartData = overview?.metricActivity.map(
                 (i) => i.activityScore as number
               );
-
               return (
-                <Link
-                  key={label}
-                  href={getAnalyzeLink({ label: label, level: 'repo' })}
-                >
-                  <div className="w-full cursor-pointer border py-4 px-6">
-                    <div className="h-20">
-                      <p className="mb-1 truncate break-words text-xl font-bold hover:underline">
-                        {repo}
-                      </p>
-                      <p className="h-6 truncate text-sm text-gray-400">
-                        {nameSpace}
-                      </p>
-                    </div>
-                    <div className="flex w-full items-center">
-                      <div className="mr-auto flex-1">
-                        {provider ? (
-                          provider === 'gitee' ? (
-                            <SiGitee className="inline-block h-5 w-5 text-[#c71c27]" />
-                          ) : (
-                            <AiFillGithub className="inline-block h-5 w-5 text-[#000000]" />
-                          )
-                        ) : (
-                          ''
-                        )}
-                      </div>
-                      <MiniChart data={chartData} />
-                    </div>
-                  </div>
-                </Link>
+                <RepoCard key={label} label={label} chartData={chartData} />
               );
             })}
           </div>
