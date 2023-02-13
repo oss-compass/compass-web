@@ -39,9 +39,9 @@ next-env.d.ts
 src/graphql/.graphqlconfig
 src/graphql/schema.graphql
 
+# tmp
+script/tmp
+
 localtest
-
 demo.html
-
-
 package-lock.json

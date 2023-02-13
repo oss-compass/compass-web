@@ -17,9 +17,8 @@ import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
-import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const CodeMergeRatio = () => {
   const { t } = useTranslation();
@@ -69,16 +68,19 @@ const CodeMergeRatio = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-merge-ratio'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(v) => {
+            setFullScreen(v);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
       bodyClass={'h-[400px]'}
     >
       {(ref, fullScreen) => {

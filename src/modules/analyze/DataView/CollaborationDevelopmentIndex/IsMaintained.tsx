@@ -12,6 +12,7 @@ import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { GenChartOptions } from '@modules/analyze/type';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const IsMaintained = () => {
   const { t } = useTranslation();
@@ -57,6 +58,16 @@ const IsMaintained = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#is-maintained'
       }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          fullScreen={fullScreen}
+          enableReference={false}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          cardRef={ref}
+        />
+      )}
     >
       {(ref) => {
         return (

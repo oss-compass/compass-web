@@ -13,6 +13,7 @@ import { transDataForOverview } from '@modules/analyze/DataTransform/transDataFo
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
   loading = false,
@@ -34,14 +35,24 @@ const LineChart: React.FC<ChartSummaryProps> = ({
       title={t('analyze:overview')}
       id={Topic.Overview}
       description=""
-      headRight={
-        <ScoreConversion
-          onePoint={onePointSys}
-          onChange={(v) => {
-            setOnePointSys(v);
-          }}
-        />
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <>
+          <ScoreConversion
+            onePoint={onePointSys}
+            onChange={(v) => {
+              setOnePointSys(v);
+            }}
+          />
+          <CardDropDownMenu
+            cardRef={ref}
+            fullScreen={fullScreen}
+            onFullScreen={(b) => {
+              setFullScreen(b);
+            }}
+            enableReference={false}
+          />
+        </>
+      )}
     >
       {(containerRef) => (
         <EChartX

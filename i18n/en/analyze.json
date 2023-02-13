@@ -34,6 +34,9 @@
     "show": "show median",
     "hide": "hide median"
   },
+  "full_screen": "full screen",
+  "full_screen_exit": "exit full screen",
+  "download_chart_img": "download image",
   "powered_by_chaoss": "Powered by CHAOSS",
   "total": "total",
   "code_reviewer": "code reviewer",
@@ -50,5 +53,9 @@
   "code_review_ratio": "code review ratio",
   "code_review": "code review",
   "code_merge_ratio": "code merge ratio",
-  "code_merge": "code merge"
+  "code_merge": "code merge",
+  "mark": {
+    "point": "point system",
+    "percentage": "percentage system"
+  }
 }

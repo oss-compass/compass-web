@@ -14,6 +14,7 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { GenChartOptions } from '@modules/analyze/type';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const LocFrequency = () => {
   const { t } = useTranslation();
@@ -35,8 +36,8 @@ const LocFrequency = () => {
   type TabValue = keyof typeof chartTabs;
 
   const tabOptions = [
-    { label: 'lines add', value: '1' },
-    { label: 'lines remove', value: '2' },
+    { label: t('analyze:lines_add'), value: '1' },
+    { label: t('analyze:lines_remove'), value: '2' },
   ];
 
   const [tab, setTab] = useState<TabValue>('1');
@@ -78,6 +79,15 @@ const LocFrequency = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#lines-of-code-frequency'
       }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          cardRef={ref}
+        />
+      )}
       bodyClass={'h-[400px]'}
     >
       {(ref) => {

@@ -7,25 +7,26 @@ import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const BugIssueOpenTime = () => {
   const { t } = useTranslation();
 
   const tabOptions = [
-    { label: 'avg', value: '1' },
-    { label: 'mid', value: '2' },
+    { label: t('analyze:average'), value: '1' },
+    { label: t('analyze:median'), value: '2' },
   ];
 
   const chartTabs = {
     '1': {
-      legendName: 'avg',
+      legendName: t('analyze:average'),
       xKey: 'grimoireCreationDate',
       yKey: 'metricCommunity.issueOpenTimeAvg',
       summaryKey: 'summaryCommunity.issueOpenTimeAvg',
     },
     '2': {
-      legendName: 'mid',
+      legendName: t('analyze:median'),
       xKey: 'grimoireCreationDate',
       yKey: 'metricCommunity.issueOpenTimeMid',
       summaryKey: 'summaryCommunity.issueOpenTimeMid',
@@ -50,16 +51,19 @@ const BugIssueOpenTime = () => {
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#bug-issue-open-time'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
       bodyClass={'h-[400px]'}
     >
       {(ref) => {

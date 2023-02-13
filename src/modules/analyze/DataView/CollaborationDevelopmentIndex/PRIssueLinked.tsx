@@ -5,8 +5,9 @@ import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const PRIssueLinked = () => {
   const { t } = useTranslation();
@@ -34,9 +35,9 @@ const PRIssueLinked = () => {
   type TabValue = keyof typeof chartTabs;
 
   const tabOptions = [
-    { label: 'linked issue ratio', value: '1' },
-    { label: 'total pr', value: '2' },
-    { label: 'linked issue', value: '3' },
+    { label: t('analyze:linked_issue_ratio'), value: '1' },
+    { label: t('analyze:total_pr'), value: '2' },
+    { label: t('analyze:linked_issue'), value: '3' },
   ];
 
   const [tab, setTab] = useState<TabValue>('1');
@@ -56,16 +57,19 @@ const PRIssueLinked = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#pr-issue-linked-ratio'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
       bodyClass={'h-[400px]'}
     >
       {(ref) => {

@@ -34,19 +34,28 @@
     "show": "显示中位数",
     "hide": "隐藏中位数"
   },
+  "full_screen": "全屏",
+  "full_screen_exit": "退出全屏",
+  "download_chart_img": "下载图表",
   "powered_by_chaoss": "Powered by CHAOSS",
   "total": "总共",
   "code_reviewer": "代码审核者",
   "pr_creator": "PR 提交者",
   "commit_author": "代码提交者",
-  "commit_pr_linked_ratio": "commit pr linked ratio",
-  "commit_pr": "commit pr",
-  "commit_pr_linked": "commit pr linked",
+  "commit_pr_linked_ratio": "代码提交关联 PR 的比率",
+  "commit_pr": "代码提交",
+  "commit_pr_linked": "代码提交关联 PR",
   "linked_issue_ratio": "关联 issue 比例",
   "total_pr": "PR 总数",
   "linked_issue": "关联 issue 总数",
   "lines_add": "增加行数",
   "lines_remove": "删减行数",
   "code_review_ratio": "代码审核比例",
-  "code_review": "代码审核总数"
+  "code_review": "代码审核总数",
+  "code_merge_ratio": "代码合并比率",
+  "code_merge": "代码合并",
+  "mark": {
+    "point": "一分制",
+    "percentage": "百分制"
+  }
 }

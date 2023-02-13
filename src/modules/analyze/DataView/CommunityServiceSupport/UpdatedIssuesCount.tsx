@@ -7,7 +7,8 @@ import EChartX from '@common/components/EChartX';
 
 import { useTranslation } from 'next-i18next';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const UpdatedIssuesCount = () => {
   const { t } = useTranslation();
@@ -32,16 +33,19 @@ const UpdatedIssuesCount = () => {
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#updated-issues-count'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
     >
       {(ref) => {
         return (

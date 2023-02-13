@@ -6,8 +6,8 @@ import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const TotalScore = () => {
   const { t } = useTranslation();
@@ -39,22 +39,28 @@ const TotalScore = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/'
       }
-      headRight={
+      headRight={(ref, fullScreen, setFullScreen) => (
         <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
           <ScoreConversion
             onePoint={onePointSys}
             onChange={(v) => {
               setOnePointSys(v);
             }}
           />
+          <CardDropDownMenu
+            downloadImageSize={'full'}
+            cardRef={ref}
+            fullScreen={fullScreen}
+            onFullScreen={(b) => {
+              setFullScreen(b);
+            }}
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
         </>
-      }
+      )}
     >
       {(ref) => {
         return (

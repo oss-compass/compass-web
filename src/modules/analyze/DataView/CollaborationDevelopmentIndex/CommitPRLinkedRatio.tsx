@@ -6,8 +6,9 @@ import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { TransOpt, GenChartOptions } from '@modules/analyze/type';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const CommitPRLinkedRatio = () => {
   const { t } = useTranslation();
@@ -57,16 +58,19 @@ const CommitPRLinkedRatio = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-pr-linked-ratio'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
       bodyClass={'h-[400px]'}
     >
       {(ref) => {

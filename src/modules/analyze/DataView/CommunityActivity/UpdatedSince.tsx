@@ -6,7 +6,8 @@ import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { TransOpt } from '@modules/analyze/type';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const UpdatedSince = () => {
   const { t } = useTranslation();
@@ -28,16 +29,19 @@ const UpdatedSince = () => {
         'metrics_models:community_activity.metrics.updated_since_desc'
       )}
       docLink={'/docs/metrics-models/robustness/activity/#updated-since'}
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
     >
       {(ref) => {
         return (
