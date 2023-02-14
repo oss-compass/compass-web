@@ -4538,6 +4538,11 @@ eslint-plugin-testing-library@^5.6.4:
   dependencies:
     "@typescript-eslint/utils" "^5.13.0"
 
+eslint-plugin-valtio@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.npmmirror.com/eslint-plugin-valtio/-/eslint-plugin-valtio-0.6.1.tgz#f2083cbcacf2e1826d4084815c9195dc74c358ac"
+  integrity sha512-oFfE++Eix1lsW2DmmmQyJrwkjbA2QC3PYj8u82c4IuxtG90Qq9zx2rwrZVjWEL2xba+7oE/GGuujz2/nA1Bmlg==
+
 eslint-scope@^5.1.1:
   version "5.1.1"
   resolved "https://registry.npmmirror.com/eslint-scope/-/eslint-scope-5.1.1.tgz#e786e59a66cb92b3f6c1fb0d508aab174848f48c"

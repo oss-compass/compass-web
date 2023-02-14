@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 159 158" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>field-itdo</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="159" height="158"></rect>
+        <linearGradient x1="16.7021865%" y1="0%" x2="38.3298038%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#D9D9D9" offset="0%"></stop>
+            <stop stop-color="#F8F8F8" offset="47.5511222%"></stop>
+            <stop stop-color="#FCFCFC" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#000000" stop-opacity="0.7" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="99.1668488%" id="linearGradient-5">
+            <stop stop-color="#000000" offset="0%"></stop>
+            <stop stop-color="#7C7C7C" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-6">
+            <stop stop-color="#000000" stop-opacity="0.8" offset="0%"></stop>
+            <stop stop-color="#979797" stop-opacity="0.2" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="75.0076802%" y1="13.7185669%" x2="36.8546371%" y2="100%" id="linearGradient-7">
+            <stop stop-color="#000000" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0.1" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="75.0076802%" y1="13.7185669%" x2="36.8546371%" y2="100%" id="linearGradient-8">
+            <stop stop-color="#000000" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0.1" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="99.1668488%" id="linearGradient-9">
+            <stop stop-color="#000000" offset="0%"></stop>
+            <stop stop-color="#7C7C7C" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="11.6024795%" x2="0%" y2="88.3975205%" id="linearGradient-10">
+            <stop stop-color="#000000" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#000000" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-1036.000000, -122.000000)">
+            <g id="field-itdo" transform="translate(1036.000000, 122.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Mask"></g>
+                <g id="img10" mask="url(#mask-2)">
+                    <g transform="translate(27.256630, 49.000000)" id="编组-12">
+                        <g id="编组">
+                            <g id="编组-87" fill-rule="nonzero">
+                                <ellipse id="椭圆形" stroke="url(#linearGradient-4)" fill-opacity="0.56" fill="url(#linearGradient-3)" cx="54" cy="54.06" rx="54" ry="54.06"></ellipse>
+                                <ellipse id="椭圆形" fill="url(#linearGradient-5)" cx="90" cy="15.0166667" rx="7" ry="7.00777778"></ellipse>
+                            </g>
+                            <g id="编组-87" transform="translate(16.679245, 18.020000)">
+                                <ellipse id="椭圆形" stroke="url(#linearGradient-6)" fill="#FFFFFF" cx="37" cy="36.04" rx="35.5" ry="35.54"></ellipse>
+                                <ellipse id="椭圆形-copy" stroke="url(#linearGradient-7)" stroke-width="0.996084433" fill="#FFFFFF" fill-rule="nonzero" cx="58.3207547" cy="61.9966667" rx="6.50195778" ry="6.50973556"></ellipse>
+                                <ellipse id="椭圆形" stroke="url(#linearGradient-8)" stroke-width="0.996084433" fill="#E4E4E4" fill-rule="nonzero" cx="4.83018868" cy="21.0611111" rx="4.33214646" ry="4.33751334"></ellipse>
+                            </g>
+                            <path d="M40,54.06 C40,61.8005776 46.2680135,68.0755556 54,68.0755556 C61.7319865,68.0755556 68,61.8005776 68,54.06 C68,46.3194224 61.7319865,40.0444444 54,40.0444444 C46.2680135,40.0444444 40,46.3194224 40,54.06 Z" id="路径" fill="url(#linearGradient-9)" fill-rule="nonzero"></path>
+                        </g>
+                        <g id="编组-71" transform="translate(98.735164, 63.223831)">
+                            <g id="编组-46" transform="translate(17.093267, 16.950163) rotate(-40.000000) translate(-17.093267, -16.950163) translate(4.430609, 5.448529)">
+                                <path d="M1,20.719741 C9.70117187,22.1379113 16.1432292,21.030332 20.3261719,17.3970033 C24.5091146,13.7636745 26.0670573,7.9646734 25,-5.69065782e-14" id="路径-3" stroke="url(#linearGradient-10)" stroke-linecap="round"></path>
+                                <ellipse id="椭圆形" fill="#000000" cx="2" cy="21.0029844" rx="2" ry="2.00028423"></ellipse>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

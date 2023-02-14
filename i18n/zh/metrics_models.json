@@ -1,44 +1,44 @@
 {
-  "code_quality_guarantee": {
-    "title": "代码质量保障",
-    "desc": "代码，作为一个软件项目的最终输出件，是整个社区的核心内容。 代码质量保障是使用多个代理指标来评估软件质量的保障制度。",
+  "collaboration_development_index": {
+    "title": "协作开发指数",
+    "desc": "开源项目作为人类群体智能的典型表现，是否能够建立协作式的开发管理，是促成项目成功的关键要素。",
     "metrics": {
-      "contributor_count": "贡献者数量",
-      "contributor_count_desc": "在过去90天内有多少活跃的代码提交者、代码审核者和PR提交者。",
+      "contributor_count": "代码参与者数量",
+      "contributor_count_desc": "在过去 90 天内有多少活跃的代码提交者、代码审核者和 PR 提交者。",
       "commit_frequency": "代码提交频率",
       "commit_frequency_desc": "过去90天内平均每周代码提交次数。",
       "is_maintained": "是否维护",
       "is_maintained_desc": "过去90天内至少提交了一次代码的周百分比(单仓场景)。 在过去 30 天内至少有一次代码提交记录的的代码仓百分比(多仓场景)。",
-      "commit_pr_linked_ratio": "代码提交关联PR的比率",
+      "commit_pr_linked_ratio": "代码提交关联 PR 的比率",
       "commit_pr_linked_ratio_desc": "在过去90天内提交的代码链接PR的百分比。",
-      "pr_issue_linked_ratio": "PR关联Issue的比率",
-      "pr_issue_linked_ratio_desc": "过去90天内新建PR关联Issue的百分比。",
+      "pr_issue_linked_ratio": "PR 关联 Issue 的比率",
+      "pr_issue_linked_ratio_desc": "过去90天内新建 PR 关联 Issue 的百分比。",
       "code_review_ratio": "代码审查比率",
       "code_review_ratio_desc": "过去90天内提交代码中，至少包含一名审核者(不是PR 创建者) 的百分比。",
       "code_merge_ratio": "代码合并比率",
       "code_merge_ratio_desc": "过去90天提交代码中，PR合并者和PR 作者不属于同一人的百分比。",
-      "lines_of_code_frequency": "代码行数变更",
+      "lines_of_code_frequency": "代码行数",
       "lines_of_code_frequency_desc": "过去90天内平均每周提交的代码行数(增加行数加上删除行数)。"
     }
   },
   "community_service_and_support": {
     "title": "社区服务与支撑",
-    "desc": "用于评估开发者在贡献过程中，所能直接感知到社区提供的服务和支撑做得如何。",
+    "desc": "该模型用于评估开发者在贡献过程中，所能直接感知到社区提供的服务和支撑做得如何。",
     "metrics": {
-      "updated_issues_count": "更新Issue数量",
-      "updated_issues_count_desc": "过去90天Issue更新的数量。",
+      "updated_issues_count": "更新 Issue 数量",
+      "updated_issues_count_desc": "过去90天 Issue 更新的数量。",
       "close_pr_count": "关闭 PR 数量",
-      "close_pr_count_desc": "过去90天内合并和拒绝的PR数量。",
-      "issue_first_response": "Issue首次响应时间",
-      "issue_first_response_desc": "过去90天新建Issue首次响应时间的均值和中位数（天）。 这不包括机器人响应、创建者自己的评论或Issue 的分配动作（action）。 如果Issue一直未被响应，该Issue不被算入统计。",
-      "bug_issue_open_time": "Bug类Issue处理时间",
-      "bug_issue_open_time_desc": "过去90天新建的Bug类Issue处理时间的均值和中位数（天），包含已经关闭的Issue以及未解决的Issue。",
+      "close_pr_count_desc": "过去 90 天内合并和拒绝的 PR 数量。",
+      "issue_first_response": "Issue 首次响应时间",
+      "issue_first_response_desc": "过去 90 天新建 Issue 首次响应时间的均值和中位数（天）。这不包括机器人响应、创建者自己的评论或 Issue 的分配动作（action）。如果 Issue 一直未被响应，该 Issue 不被算入统计。",
+      "bug_issue_open_time": "Bug 类 Issue 处理时间",
+      "bug_issue_open_time_desc": "过去 90 天新建的 Bug 类 Issue 处理时间的均值和中位数（天），包含已经关闭的 Issue 以及未解决的 Issue。",
       "pr_open_time": "PR 处理时间",
-      "pr_open_time_desc": "过去90天新建PR的处理时间的均值和中位数（天），包含已经关闭的PR以及未解决的PR",
-      "comment_frequency": "Issue评论频率",
-      "comment_frequency_desc": "过去90天内新建Issue的评论平均数（不包含机器人和Issue作者本人评论）。",
+      "pr_open_time_desc": "过去90天新建 PR 的处理时间的均值和中位数（天），包含已经关闭的PR以及未解决的 PR",
+      "comment_frequency": "Issue 评论频率",
+      "comment_frequency_desc": "过去90天内新建 Issue 的评论平均数（不包含机器人和 Issue 作者本人评论）。",
       "code_review_count": "代码审查评论频率",
-      "code_review_count_desc": "过去90天内新建PR的评论平均数量（不包含机器人和PR作者本人评论）。"
+      "code_review_count_desc": "过去 90 天内新建 PR 的评论平均数量（不包含机器人和 PR 作者本人评论）。"
     }
   },
   "community_activity": {
@@ -55,12 +55,12 @@
       "organization_count_desc": "过去90天内活跃的代码提交者所属组织的数目",
       "created_since": "创建于",
       "created_since_desc": "代码仓自创建以来存在了多长时间(月份)。",
-      "comment_frequency": "Issue评论频率",
-      "comment_frequency_desc": "过去90天内新建Issue的评论平均数（不包含机器人和Issue作者本人评论）。",
+      "comment_frequency": "Issue 评论频率",
+      "comment_frequency_desc": "过去90天内新建 Issue 的评论平均数（不包含机器人和 Issue 作者本人评论）。",
       "code_review_count": "代码审查评论频率",
-      "code_review_count_desc": "过去90天内新建PR的评论平均数量（不包含机器人和PR作者本人评论）。",
-      "updated_issues_count": "更新Issue数量",
-      "updated_issues_count_desc": "过去90天Issue更新的数量。",
+      "code_review_count_desc": "过去90天内新建 PR 的评论平均数量（不包含机器人和PR作者本人评论）。",
+      "updated_issues_count": "更新 Issue 数量",
+      "updated_issues_count_desc": "过去90天 Issue 更新的数量。",
       "recent_releases_count": "最近版本发布次数",
       "recent_releases_count_desc": "过去12个月版本发布的数量。"
     }

@@ -1,5 +1,4 @@
 {
-  "hotspots": "Hotspots",
   "projects": "Projects",
   "dimensions": "Dimensions",
   "models": "Models",
@@ -9,9 +8,28 @@
   "we_help_open_source_projects_gain_insight_into_its": "We help open source projects gain insight into its trends, and getting more value of it.",
   "type_the_name_to_insight_into_your_project": "Type the name to insight into your project",
   "please_enter_repository_name_or_community": "Please enter GitHub/Gitee repository name or community name",
+  "a_special_thank_you": "致谢…",
+  "oss_compass_follows_the_best_practices_and_specifi": "开源指南针遵循 CHAOSS 项目的最佳实践，包括度量模型和度量标准，其中部分后端组件最初来自 Grimoirebs。我们衷心感谢 CHAOSS 社区。",
   "submit_your_project": "提交项目",
   "community": "社区",
-  "insights_report": "查看报告",
+  "compass_report": "查看报告",
   "nothing_about_yet": "未找到与 <s> {{expr}} </s> 匹配的结果.",
-  "cant_find_the_right_option": "未找到想要的结果？"
+  "cant_find_the_right_option": "未找到想要的结果？",
+  "oss_eco_evaluation_system": "开源<br/>生态评估<br/>体系",
+  "facts": "Facts",
+  "recently": "最近更新",
+  "trends": "活跃度趋势",
+  "coming_soon": "即将推出",
+  "hot_fields": "热门领域",
+  "hot_fields_content": {
+    "artificial_intelligence": "人工智能",
+    "server_os": "操作系统",
+    "database": "数据库",
+    "machine_learning_framework": "机器学习框架",
+    "intelligent_terminal_distributed_os": "智能终端分布式操作系统",
+    "relational_db": "关系型数据库",
+    "document_db": "文档数据库",
+    "time_series_db": "时序数据库",
+    "graph_db": "图数据库"
+  }
 }

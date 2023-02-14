@@ -1,8 +1,10 @@
 {
   "header": {
+    "home": "Home",
     "metrics_models": "Metrics Models",
     "community": "Community",
-    "about": "About"
+    "about": "About",
+    "submit_your_project": "Submit your project"
   },
   "community": {
     "slack": "Slack",
@@ -24,9 +26,11 @@
     "built_with": "Built With",
     "community": "Community",
     "slack": "Slack",
+    "wechat": "WeChat",
     "code": "Code"
   },
   "error": {
+    "invalid_url_query": "invalid url query",
     "something_went_wrong": "Something went wrong:",
     "try_to_refresh_this_page_or_feel_free_to_contact_u": "Try to refresh this page or feel free to contact us if the problem presists.",
     "try_again": "Try again",
@@ -36,5 +40,6 @@
     "no_result": "No result"
   },
   "next": "Next",
-  "know_more": "Know more"
+  "know_more": "Know more",
+  "ago": "ago"
 }

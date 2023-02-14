@@ -1,8 +1,10 @@
 {
   "header": {
-    "metrics_models": "Metrics Models",
+    "home": "首页",
+    "metrics_models": "评估模型",
     "community": "社区",
-    "about": "关于"
+    "about": "关于",
+    "submit_your_project": "提交项目"
   },
   "community": {
     "slack": "Slack",
@@ -15,26 +17,29 @@
     "official_repository_on_gitee": "官方 Gitee 仓库"
   },
   "footer": {
-    "tutorial": "Tutorial",
+    "tutorial": "文档教程",
     "quick_start": "快速起步",
-    "dimensions_define": "Dimensions Define",
-    "legal": "Legal",
-    "terms": "Terms",
-    "privacy": "Privacy",
+    "dimensions_define": "度量维度定义",
+    "legal": "法律合规",
+    "terms": "使用条款",
+    "privacy": "隐私政策",
     "built_with": "Built With",
-    "community": "Community",
-    "slack": "Slack",
-    "code": "代码"
+    "community": "社区交流",
+    "slack": "Slack 频道",
+    "wechat": "微信交流群",
+    "code": "开源代码"
   },
   "error": {
-    "something_went_wrong": "Something went wrong:",
-    "try_to_refresh_this_page_or_feel_free_to_contact_u": "Try to refresh this page or feel free to contact us if the problem presists.",
-    "try_again": "Try again",
+    "invalid_url_query": "非法参数链接",
+    "something_went_wrong": "出错了:",
+    "try_to_refresh_this_page_or_feel_free_to_contact_u": "请刷新此页，如果问题仍然存在，请随时与我们联系.",
+    "try_again": "再试一次",
     "oops": "<s> Oops! </s> {{message}}"
   },
   "search": {
     "no_result": "未找到相关内容"
   },
   "next": "下一个",
-  "know_more": "了解更多"
+  "know_more": "了解更多",
+  "ago": "前"
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>median</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Projects-compare" transform="translate(-1298.000000, -1359.000000)">
+            <g id="Group-8-Copy-3" transform="translate(285.000000, 1293.989623)">
+                <g id="median" transform="translate(1013.000000, 65.010377)">
+                    <polygon id="Path" points="0 0 16 0 16 16 0 16"></polygon>
+                    <path d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M8,2 C4.85463498,2 2.27455798,4.42028573 2.02052886,7.50009733 L5,7.5 L5,8.5 L2.02061151,8.50090367 C2.27511705,11.5802387 4.85497576,14 8,14 C11.1450242,14 13.7248829,11.5802387 13.9793885,8.50090367 L11,8.5 L11,7.5 L13.9794711,7.50009733 C13.725442,4.42028573 11.145365,2 8,2 Z M9.5,6.5 L9.5,9.5 L6.5,9.5 L6.5,6.5 L9.5,6.5 Z" id="Combined-Shape" fill="#585858" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

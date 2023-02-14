@@ -1,9 +1,9 @@
 {
-  "code_quality_guarantee": {
-    "title": "Code Quality Guarantee",
-    "desc": "Code, as the final output of a project, is the essence of the entire community's contribution. Code quality guarantee is the measurement of how to guarantee software quality using multiple proxies.",
+  "collaboration_development_index": {
+    "title": "Collaboration Development Index",
+    "desc": "Open source projects, as a typical manifestation of human group intelligence, the ability to establish collaborative development management is a key element contributing to the success of the project. ",
     "metrics": {
-      "contributor_count": "Contributor Count",
+      "contributor_count": "Code Contributor Count",
       "contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
       "commit_frequency": "Commit Frequency",
       "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",

@@ -16,10 +16,10 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@common/*": ["common/*"],
-      "@graphql/*": ["graphql/*"],
-      "@modules/*": ["modules/*"],
-      "@styles/*": ["styles/*"]
+      "@common/*": ["src/common/*"],
+      "@graphql/*": ["src/graphql/*"],
+      "@modules/*": ["src/modules/*"],
+      "@styles/*": ["src/styles/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
