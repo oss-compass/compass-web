@@ -33,6 +33,7 @@ module.exports = {
       },
       colors: {
         primary: '#3A5BEF',
+        gray58: '#585858',
         mask: 'rgba(0, 0, 0, 0.5)',
       },
       inset: {

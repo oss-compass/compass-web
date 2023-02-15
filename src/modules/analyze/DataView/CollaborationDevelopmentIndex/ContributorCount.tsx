@@ -6,51 +6,49 @@ import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
-import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 
-const chartTabs = {
-  '1': {
-    legendName: 'total',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.contributorCount',
-    summaryKey: 'summaryCodequality.contributorCount',
-  },
-  '2': {
-    legendName: 'code reviewer',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.activeC1PrCommentsContributorCount',
-    summaryKey: 'summaryCodequality.activeC1PrCommentsContributorCount',
-  },
-  '3': {
-    legendName: 'pr creator',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.activeC1PrCreateContributorCount',
-    summaryKey: 'summaryCodequality.activeC1PrCreateContributorCount',
-  },
-  '4': {
-    legendName: 'commit author',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.activeC2ContributorCount',
-    summaryKey: 'summaryCodequality.activeC2ContributorCount',
-  },
-};
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const ContributorCount = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabValue>('1');
 
-  const tansOpts: TransOpt = useMemo(() => {
-    return chartTabs[tab];
-  }, [tab]);
+  const chartTabs = {
+    '1': {
+      legendName: t('analyze:total'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.contributorCount',
+      summaryKey: 'summaryCodequality.contributorCount',
+    },
+    '2': {
+      legendName: t('analyze:code_reviewer'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.activeC1PrCommentsContributorCount',
+      summaryKey: 'summaryCodequality.activeC1PrCommentsContributorCount',
+    },
+    '3': {
+      legendName: t('analyze:pr_creator'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.activeC1PrCreateContributorCount',
+      summaryKey: 'summaryCodequality.activeC1PrCreateContributorCount',
+    },
+    '4': {
+      legendName: t('analyze:commit_author'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.activeC2ContributorCount',
+      summaryKey: 'summaryCodequality.activeC2ContributorCount',
+    },
+  };
 
+  const tansOpts: TransOpt = chartTabs[tab];
   type TabValue = keyof typeof chartTabs;
 
   const tabOptions = [
-    { label: 'total', value: '1' },
-    { label: 'code reviewer', value: '2' },
-    { label: 'pr creator', value: '3' },
-    { label: 'commit author', value: '4' },
+    { label: t('analyze:total'), value: '1' },
+    { label: t('analyze:code_reviewer'), value: '2' },
+    { label: t('analyze:pr_creator'), value: '3' },
+    { label: t('analyze:commit_author'), value: '4' },
   ];
   const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
     useGetLineOption();
@@ -67,16 +65,19 @@ const ContributorCount = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
       bodyClass={'h-[400px]'}
     >
       {(ref, fullScreen) => {

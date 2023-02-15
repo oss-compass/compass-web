@@ -40,9 +40,9 @@ src/graphql/.graphqlconfig
 src/graphql/schema.graphql
 script/tmp
 
+# tmp
+script/tmp
+
 localtest
-
 demo.html
-
-
 package-lock.json

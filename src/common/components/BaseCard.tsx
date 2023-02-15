@@ -31,7 +31,13 @@ interface BaseCardProps {
   title?: string;
   description?: string;
   docLink?: string;
-  headRight?: ReactNode;
+  headRight?:
+    | ((
+        containerRef: RefObject<HTMLElement>,
+        fullScreen: boolean,
+        setFullScreen: React.Dispatch<React.SetStateAction<boolean>>
+      ) => ReactNode)
+    | ReactNode;
   children:
     | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
     | ReactNode;
@@ -91,23 +97,22 @@ const BaseCard: React.FC<BaseCardProps> = ({
       <p className="mb-4 text-xs text-[#585858]">
         {description}
         {docLink && (
-          <LinkX href={docLink}>
-            <a className="ml-1 text-primary hover:underline">
-              {t('common:know_more')}
-            </a>
-          </LinkX>
+          <>
+            <LinkX href={docLink}>
+              <a
+                className="ml-1 text-primary hover:underline"
+                data-html2canvas-ignore="true"
+              >
+                {t('common:know_more')}
+              </a>
+            </LinkX>
+          </>
         )}
       </p>
-      <div className="absolute right-4 top-4 flex items-center ">
-        {headRight}
-        <div
-          className="ml-2 cursor-pointer p-1 md:hidden"
-          onClick={() => {
-            setFullScreen((pre) => !pre);
-          }}
-        >
-          {fullScreen ? <BiExitFullscreen /> : <BiFullscreen />}
-        </div>
+      <div className="absolute right-4 top-4 flex items-center md:hidden">
+        {typeof headRight === 'function'
+          ? headRight(cardRef, fullScreen, setFullScreen)
+          : headRight}
       </div>
       <LoadInView containerRef={cardRef} className={bodyClass}>
         {typeof children === 'function'

@@ -20,8 +20,8 @@ const useGetLineOption = (opt?: {
   const {
     enableDataFormat = false,
     defaultOnePointSystem = false,
-    defaultShowAvg = true,
-    defaultShowMedian = true,
+    defaultShowAvg = false,
+    defaultShowMedian = false,
   } = opt || {};
 
   const { t } = useTranslation();
