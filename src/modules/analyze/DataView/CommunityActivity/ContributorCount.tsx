@@ -6,13 +6,16 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const ContributorCount = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'contributor count',
+    legendName: t(
+      'metrics_models:community_activity.metrics.contributor_count'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricActivity.contributorCount',
     summaryKey: 'summaryActivity.contributorCount',
@@ -28,16 +31,19 @@ const ContributorCount = () => {
         'metrics_models:community_activity.metrics.contributor_count_desc'
       )}
       docLink={'/docs/metrics-models/robustness/activity/#contributor-count'}
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
     >
       {(ref) => {
         return (

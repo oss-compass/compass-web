@@ -27,11 +27,26 @@ const ScoreConversion: React.FC<{
     >
       <div
         className="group ml-2 cursor-pointer p-1 transition md:hidden"
+        data-html2canvas-ignore="true"
         onClick={() => {
           onChange(!onePoint);
         }}
       >
-        {onePoint ? <Svg1 /> : <Svg100 />}
+        {onePoint ? (
+          <div className="flex items-center">
+            <Svg1 />
+            <span className="ml-2 text-xs text-gray58">
+              {t('analyze:mark.point')}
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center">
+            <Svg100 />
+            <span className="ml-2 text-xs text-gray58">
+              {t('analyze:mark.percentage')}
+            </span>
+          </div>
+        )}
         {/* <div
           style={{ boxShadow: 'rgba(0, 0, 0, 0.2) 1px 2px 10px' }}
           className="absolute top-[100%] right-1 z-dropdown hidden w-[280px] rounded border border-white bg-white p-2 text-sm group-hover:block"

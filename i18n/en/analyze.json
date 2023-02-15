@@ -34,5 +34,28 @@
     "show": "show median",
     "hide": "hide median"
   },
-  "powered_by_chaoss": "Powered by CHAOSS"
+  "full_screen": "full screen",
+  "full_screen_exit": "exit full screen",
+  "download_chart_img": "download image",
+  "powered_by_chaoss": "Powered by CHAOSS",
+  "total": "total",
+  "code_reviewer": "code reviewer",
+  "pr_creator": "pr creator",
+  "commit_author": "commit author",
+  "commit_pr_linked_ratio": "commit pr linked ratio",
+  "commit_pr": "commit pr",
+  "commit_pr_linked": "commit pr linked",
+  "linked_issue_ratio": "linked issue ratio",
+  "total_pr": "total pr",
+  "linked_issue": "linked issue",
+  "lines_remove": "lines remove",
+  "lines_add": "lines add",
+  "code_review_ratio": "code review ratio",
+  "code_review": "code review",
+  "code_merge_ratio": "code merge ratio",
+  "code_merge": "code merge",
+  "mark": {
+    "point": "point system",
+    "percentage": "percentage system"
+  }
 }

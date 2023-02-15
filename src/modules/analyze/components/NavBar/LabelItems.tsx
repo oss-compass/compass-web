@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
-import { SiGitee, SiGithub } from 'react-icons/si';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { getProvider } from '@common/utils';
 import ColorSwitcher from '@modules/analyze/components/CompareBar/ColorSwitcher';
@@ -9,16 +8,7 @@ import { useClickAway } from 'react-use';
 import { useResizeDetector } from 'react-resize-detector';
 import classnames from 'classnames';
 import Popper from '@mui/material/Popper';
-
-const Icon: React.FC<{ provider: string }> = ({ provider, ...restProps }) => {
-  if (provider === 'gitee') {
-    return <SiGitee className="text-[#c71c27]" />;
-  }
-  if (provider === 'github') {
-    return <SiGithub />;
-  }
-  return null;
-};
+import ProviderIcon from '../ProviderIcon';
 
 const LabelItems = () => {
   const { t } = useTranslation();
@@ -62,7 +52,10 @@ const LabelItems = () => {
   };
   return (
     <>
-      <div className="relative flex h-6 items-center overflow-hidden" ref={ref}>
+      <div
+        className="relative flex h-6 flex-1 items-center overflow-hidden"
+        ref={ref}
+      >
         {compareItems.map(({ name, label, level }, index) => {
           const host = getProvider(label);
 
@@ -90,7 +83,7 @@ const LabelItems = () => {
                 invisible: hiddenVisible && index >= hiddenIndex,
               })}
             >
-              <Icon provider={host} />
+              <ProviderIcon provider={host} />
               {labelNode}
               {compareItems.length > 1 && <ColorSwitcher label={label} />}
               {level === Level.COMMUNITY && (
@@ -157,7 +150,7 @@ const LabelItems = () => {
 
                 return (
                   <div key={label} className={classnames('flex items-center')}>
-                    <Icon provider={host} />
+                    <ProviderIcon provider={host} />
                     {labelNode}
                     {compareItems.length > 1 && <ColorSwitcher label={label} />}
                     {level === Level.COMMUNITY && (
