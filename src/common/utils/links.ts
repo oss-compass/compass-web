@@ -7,6 +7,13 @@ export const getAnalyzeLink = (item: SearchQuery['fuzzySearch'][number]) => {
   }`;
 };
 
+export const getCompareAnalyzeLink = (list: string[], level: string) => {
+  const url = list.reduce((pre, cur) => {
+    return pre + `label=${encodeURIComponent(cur!)}&`;
+  }, '/analyze?');
+  return `${url}level=${level}`;
+};
+
 export const getLabDetailLink = (
   repo: NonNullable<
     BetaMetricOverviewQuery['betaMetricOverview']['trends']
