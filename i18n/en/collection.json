@@ -1,0 +1,10 @@
+{
+  "more_repositories": "More repositories",
+  "recently_hottest": "Recently hottest",
+  "repositories": "{{length}} repositories",
+  "collections": "Collections",
+  "please_select_two_or_more_repositories_below": "Please select two or more repositories below",
+  "cancel": "Cancel",
+  "compare": "Compare",
+  "pick_for_compare": "Pick for compare"
+}
