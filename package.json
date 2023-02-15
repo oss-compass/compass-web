@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "husky install && patch-package",
-    "build": "next build",
+    "build": "npm run generate:collections && next build",
     "build:analyze": "cross-env ANALYZE='true' yarn build",
     "dev": "next dev",
     "dev:debugger": "cross-env NODE_OPTIONS='--inspect' next dev",

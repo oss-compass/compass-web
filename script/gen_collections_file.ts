@@ -11,6 +11,8 @@ const gitAddress =
   'https://github.com/EdmondFrank/compass-projects-information.git';
 
 async function handle() {
+  console.log('start generate collections json...');
+
   await fs.remove(repoPath);
   const res = await git.clone(gitAddress, repoPath);
   console.log(res);
@@ -29,9 +31,14 @@ async function handle() {
   }
 
   await fs.writeJSON('./script/tmp/collections.json', collectionsData);
+
+  console.log('collections.json generate success!');
+  console.log();
 }
 
 handle().catch((e) => {
+  console.log('collections.json generate failed!');
   console.log(e);
+  console.log();
   process.exit(1);
 });
