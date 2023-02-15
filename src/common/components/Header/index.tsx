@@ -29,13 +29,6 @@ const Header: React.FC<{
                 <Logo color="white" />
               </a>
             </Link>
-
-            <Link href="/explore">
-              <a className={'mx-6 px-2.5 font-medium text-white'}>
-                {t('common:header.explore')}
-              </a>
-            </Link>
-
             <LinkX href="/docs/dimensions-define" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.metrics_models')}
