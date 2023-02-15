@@ -5,7 +5,12 @@ export const getAnalyzeLink = (item: SearchQuery['fuzzySearch'][number]) => {
     item.level
   }`;
 };
-
+export const getCompareAnalyzeLink = (list: string[], level: string) => {
+  const url = list.reduce((pre, cur) => {
+    return pre + `label=${encodeURIComponent(cur!)}&`;
+  }, '/analyze?');
+  return `${url}level=${level}`;
+};
 export const getRepoLink = (
   path: string | null | undefined,
   backend: string | null | undefined

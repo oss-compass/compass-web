@@ -4,16 +4,17 @@ import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
-
 import { useTranslation } from 'next-i18next';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const CommitFrequency = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'commit frequency',
+    legendName: t(
+      'metrics_models:collaboration_development_index.metrics.commit_frequency'
+    ),
     xKey: 'grimoireCreationDate',
     yKey: 'metricCodequality.commitFrequency',
     summaryKey: 'summaryCodequality.commitFrequency',
@@ -33,16 +34,19 @@ const CommitFrequency = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-frequency'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(b) => {
+            setFullScreen(b);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
     >
       {(ref) => {
         return (

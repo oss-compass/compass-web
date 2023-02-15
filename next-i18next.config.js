@@ -10,5 +10,8 @@ module.exports = {
   },
   defaultNS: 'common',
   reloadOnPrerender: process.env.NODE_ENV === 'development',
-  localePath: './i18n',
+  localePath:
+    typeof window === 'undefined'
+      ? require('path').resolve('./i18n')
+      : undefined,
 };

@@ -17,41 +17,40 @@ import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
-import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
-
-const tabOptions = [
-  { label: 'code merge ratio', value: '1' },
-  { label: 'total pr', value: '2' },
-  { label: 'code merge', value: '3' },
-];
-
-const chartTabs = {
-  '1': {
-    legendName: 'code merge ratio',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.codeMergeRatio',
-    summaryKey: 'summaryCodequality.codeMergeRatio',
-  },
-  '2': {
-    legendName: 'total pr',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.prCount',
-    summaryKey: 'summaryCodequality.prCount',
-  },
-  '3': {
-    legendName: 'code merge',
-    xKey: 'grimoireCreationDate',
-    yKey: 'metricCodequality.codeMergedCount',
-    summaryKey: 'summaryCodequality.codeMergedCount',
-  },
-};
-
-type TabValue = keyof typeof chartTabs;
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const CodeMergeRatio = () => {
   const { t } = useTranslation();
+
+  const tabOptions = [
+    { label: t('analyze:code_merge_ratio'), value: '1' },
+    { label: t('analyze:total_pr'), value: '2' },
+    { label: t('analyze:code_merge'), value: '3' },
+  ];
+
+  const chartTabs = {
+    '1': {
+      legendName: t('analyze:code_merge_ratio'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.codeMergeRatio',
+      summaryKey: 'summaryCodequality.codeMergeRatio',
+    },
+    '2': {
+      legendName: t('analyze:total_pr'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.prCount',
+      summaryKey: 'summaryCodequality.prCount',
+    },
+    '3': {
+      legendName: t('analyze:code_merge'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.codeMergedCount',
+      summaryKey: 'summaryCodequality.codeMergedCount',
+    },
+  };
+
+  type TabValue = keyof typeof chartTabs;
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
   const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
@@ -69,16 +68,19 @@ const CodeMergeRatio = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-merge-ratio'
       }
-      headRight={
-        <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
-        </>
-      }
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardDropDownMenu
+          cardRef={ref}
+          fullScreen={fullScreen}
+          onFullScreen={(v) => {
+            setFullScreen(v);
+          }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+        />
+      )}
       bodyClass={'h-[400px]'}
     >
       {(ref, fullScreen) => {

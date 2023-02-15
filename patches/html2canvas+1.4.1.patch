@@ -1,0 +1,14 @@
+diff --git a/node_modules/html2canvas/dist/html2canvas.js b/node_modules/html2canvas/dist/html2canvas.js
+index 84cb30d..23edebc 100644
+--- a/node_modules/html2canvas/dist/html2canvas.js
++++ b/node_modules/html2canvas/dist/html2canvas.js
+@@ -6703,7 +6703,8 @@
+         CanvasRenderer.prototype.renderTextWithLetterSpacing = function (text, letterSpacing, baseline) {
+             var _this = this;
+             if (letterSpacing === 0) {
+-                this.ctx.fillText(text.text, text.bounds.left, text.bounds.top + baseline);
++                this.ctx.textBaseline = 'ideographic'
++                this.ctx.fillText(text.text, text.bounds.left, text.bounds.top + text.bounds.height);
+             }
+             else {
+                 var letters = segmentGraphemes(text.text);

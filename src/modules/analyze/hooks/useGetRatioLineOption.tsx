@@ -19,7 +19,7 @@ const useGetRatioLineOption = (opt: {
   defaultShowMedian?: boolean;
 }) => {
   const { t } = useTranslation();
-  const { tab = '1', defaultShowAvg = true, defaultShowMedian = true } = opt;
+  const { tab = '1', defaultShowAvg = false, defaultShowMedian = false } = opt;
   const [showAvg, setShowAvg] = useState(defaultShowAvg);
   const [showMedian, setShowMedian] = useState(defaultShowMedian);
 

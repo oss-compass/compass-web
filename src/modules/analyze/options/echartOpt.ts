@@ -117,7 +117,7 @@ export const getBarOption = (
 export type ChartSummaryProps = {
   loading?: boolean;
   xAxis: string[];
-  yAxis: { name: string; legendName: string; data: (string | number)[] }[];
+  yAxis: { name: string; legendName: string; data: any[] }[];
 };
 
 export function summaryLine(cfg: {
