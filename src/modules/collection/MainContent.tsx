@@ -11,6 +11,7 @@ import {
 } from '@graphql/generated';
 import client from '@graphql/client';
 import { getPathname, getCompareAnalyzeLink } from '@common/utils';
+import Compare from './assets/compare.svg';
 
 const collections = jsonData as unknown as Record<string, Collection>;
 
@@ -74,11 +75,10 @@ const MainContent = () => {
               }}
               className="h-8 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-8"
             >
-              {/* <img
-                className="mr-2 inline-block align-text-top "
-                src="/images/lab/logo-slack.png"
-                alt=""
-              /> */}
+              <div className="mr-2 inline-block align-text-bottom">
+                <Compare></Compare>
+              </div>
+
               {t('collection:pick_for_compare')}
             </div>
           )}
