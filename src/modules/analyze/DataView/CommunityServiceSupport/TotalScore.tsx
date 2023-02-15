@@ -7,13 +7,14 @@ import { TransOpt, GenChartOptions } from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+
+import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const TotalScore = () => {
   const { t } = useTranslation();
 
   const tansOpts: TransOpt = {
-    legendName: 'community service and support',
+    legendName: t('metrics_models:community_service_and_support.title'),
     xKey: 'grimoireCreationDate',
     yKey: 'metricCommunity.communitySupportScore',
     summaryKey: 'summaryCommunity.communitySupportScore',
@@ -39,22 +40,28 @@ const TotalScore = () => {
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/'
       }
-      headRight={
+      headRight={(ref, fullScreen, setFullScreen) => (
         <>
-          <MedianAndAvg
-            showAvg={showAvg}
-            onAvgChange={(b) => setShowAvg(b)}
-            showMedian={showMedian}
-            onMedianChange={(b) => setShowMedian(b)}
-          />
           <ScoreConversion
             onePoint={onePointSys}
             onChange={(v) => {
               setOnePointSys(v);
             }}
           />
+          <CardDropDownMenu
+            downloadImageSize={'full'}
+            cardRef={ref}
+            fullScreen={fullScreen}
+            onFullScreen={(b) => {
+              setFullScreen(b);
+            }}
+            showAvg={showAvg}
+            onAvgChange={(b) => setShowAvg(b)}
+            showMedian={showMedian}
+            onMedianChange={(b) => setShowMedian(b)}
+          />
         </>
-      }
+      )}
     >
       {(ref) => {
         return (

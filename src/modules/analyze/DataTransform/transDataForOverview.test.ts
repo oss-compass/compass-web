@@ -30,6 +30,7 @@ const dateKey = 'grimoireCreationDate';
 describe('transDataForOverview', () => {
   it('transDataForOverview', function () {
     const result = transDataForOverview(overviewData.data, opts, dateKey);
+    // console.log(JSON.stringify(result, null, 2));
     expect(result).toEqual(overviewOutputData);
   });
 });

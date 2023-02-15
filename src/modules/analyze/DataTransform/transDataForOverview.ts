@@ -1,4 +1,4 @@
-import { formatISO } from '@common/utils';
+import { formatISO, toFixed } from '@common/utils';
 
 const set = require('lodash/set');
 import parseISO from 'date-fns/parseISO';
@@ -36,7 +36,7 @@ export function transDataForOverview(
         if (obj[date][key] === undefined) {
           return null;
         }
-        return obj[date][key];
+        return toFixed(obj[date][key], 3);
       }),
     };
   });
