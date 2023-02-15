@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>compare</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-36.000000, -37.000000)">
+            <g id="compare" transform="translate(36.000000, 37.000000)">
+                <rect id="bounds" x="0" y="0" width="16" height="16"></rect>
+                <rect id="Rectangle" fill="#3A5BEF" x="4" y="2.5" width="3" height="2"></rect>
+                <rect id="Rectangle-Copy-2" fill="#00B5EA" x="3" y="5.5" width="4" height="2"></rect>
+                <rect id="Rectangle-Copy" fill="#00B5EA" x="9" y="2.5" width="3" height="2"></rect>
+                <rect id="Rectangle-Copy-3" fill="#3A5BEF" x="9" y="5.5" width="7" height="2"></rect>
+                <rect id="Rectangle-Copy-9" fill="#3A5BEF" x="0" y="8.5" width="7" height="2"></rect>
+                <rect id="Rectangle-Copy-4" fill="#00B5EA" x="9" y="8.5" width="5" height="2"></rect>
+                <rect id="Rectangle-Copy-11" fill="#00B5EA" x="4" y="11.5" width="3" height="2"></rect>
+                <rect id="Rectangle-Copy-10" fill="#3A5BEF" x="9" y="11.5" width="4" height="2"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

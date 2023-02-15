@@ -1,5 +1,10 @@
 {
   "more_repositories": "More repositories",
   "recently_hottest": "Recently hottest",
-  "repositories": "{{length}} 个仓库"
+  "repositories": "{{length}} 个仓库",
+  "collections": "分类",
+  "please_select_two_or_more_repositories_below": "请选择以下两个或多个仓库",
+  "cancel": "取消",
+  "compare": "对比",
+  "pick_for_compare": "勾选对比"
 }
