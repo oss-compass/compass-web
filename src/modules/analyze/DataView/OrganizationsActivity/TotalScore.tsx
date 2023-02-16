@@ -36,7 +36,7 @@ const TotalScore = () => {
       title={t('metrics_models:organization_activity.title')}
       id={Organizations.Overview}
       description={t('metrics_models:organization_activity.desc')}
-      docLink={'/docs/metrics-models/niche-creation/developer-retention/'}
+      docLink={'/docs/metrics-models/niche-creation/organization-activity/'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <>
           <ScoreConversion
