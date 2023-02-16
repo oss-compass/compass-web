@@ -13,12 +13,9 @@ export const addLinkLocale = (href: string, locale: string): string => {
 type DocLinkProps = Omit<LinkProps, 'href'>;
 
 // auto add local prefix
-const LinkX: React.FC<PropsWithChildren<DocLinkProps & { href: string }>> = ({
-  children,
-  href,
-  legacyBehavior,
-  ...restProps
-}) => {
+const LinkX: React.FC<
+  PropsWithChildren<DocLinkProps & { href: string; aTagClassName?: string }>
+> = ({ children, href, aTagClassName, legacyBehavior, ...restProps }) => {
   const isDocLink = href.startsWith('/docs');
   const [local, setLocale] = useState('en');
   const localHref = addLinkLocale(href, local);
@@ -33,7 +30,11 @@ const LinkX: React.FC<PropsWithChildren<DocLinkProps & { href: string }>> = ({
       legacyBehavior={legacyBehavior || isDocLink}
       {...restProps}
     >
-      {children}
+      {aTagClassName ? (
+        <a className={aTagClassName}>{children}</a>
+      ) : (
+        <>{children}</>
+      )}
     </Link>
   );
 };

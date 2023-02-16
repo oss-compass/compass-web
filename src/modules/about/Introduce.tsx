@@ -1,46 +1,70 @@
 import React from 'react';
-import { Title, Paragraph, Link } from './components';
+import LinkX from '@common/components/LinkX';
+import { Paragraph, LinkLegacy, DocTitle } from './components';
+import { useTranslation, Trans } from 'next-i18next';
 
 const Introduce = () => {
+  const { t } = useTranslation();
   return (
-    <div className="mb-12">
-      <Paragraph>Welcome to the OSS Compass Community! </Paragraph>
+    <div className="mb-24">
+      <DocTitle>{t('about:our_vision')}</DocTitle>
       <Paragraph>
-        We provide a public SaaS platform
-        <Link href="https://oss-compass.org/">OSS Compass</Link>
-        for open source community health analytics, that is open for all the
-        projects hosted on Github, Gitee, etc.
+        <Trans
+          i18nKey={'about:our_vision_desc1'}
+          components={{
+            s: <LinkLegacy href="https://oss-compass.org/" />,
+          }}
+          values={{
+            v: t('common:oss_compass'),
+          }}
+        />
       </Paragraph>
-      <Title>Our Vision</Title>
+
       <Paragraph>
-        Through <Link href="https://oss-compass.org/">OSS Compass</Link>, we
-        help people who need community data analysis, including but not limited
-        to OSPOs, community managers, academic researchers, project owners,
-        maintainers, developers, etc.
+        <Trans
+          i18nKey={'about:our_vision_desc2'}
+          components={{
+            m: (
+              <LinkLegacy href="https://github.com/oss-compass/docs/tree/main/metrics-models/" />
+            ),
+            s: <LinkLegacy href="https://oss-compass.org/" />,
+          }}
+          values={{
+            e: t('about:ecosystem_evaluation_system'),
+            v: t('common:oss_compass'),
+          }}
+        />
       </Paragraph>
+
+      <DocTitle>{t('about:communication')}</DocTitle>
       <Paragraph>
-        By analyzing real data from a large number of open source projects, and
-        referring to research results from industry best practices and
-        academics, we create an open source community
-        <Link href="https://github.com/oss-compass/docs/tree/main/metrics-models">
-          Ecosystem Evaluation System
-        </Link>
-        that can be continuously improved and evolved, and give back to the
-        general open source communities by means of
-        <Link href="https://oss-compass.org/">OSS Compass</Link>.
+        <Trans
+          i18nKey={'about:communication_desc'}
+          components={{
+            l: (
+              <LinkX
+                aTagClassName="mx-1 inline-block text-primary"
+                href="/docs/community/"
+              />
+            ),
+          }}
+          values={{
+            v: t('about:this_page'),
+          }}
+        />
       </Paragraph>
-      <Title>Quick Start</Title>
+
+      <DocTitle>{t('about:acknowledgements')}</DocTitle>
       <Paragraph>
-        <Link href="https://oss-compass.org/docs/quick-start">Quick Start</Link>
-      </Paragraph>
-      <Title>Communication</Title>
-      <Paragraph>
-        We have multiple communication channels such as chat, issues, etc. You
-        can refer to
-        <Link href="https://github.com/oss-compass/community/tree/main/communication">
-          this page
-        </Link>
-        .
+        <Trans
+          i18nKey={'about:acknowledgements_desc'}
+          components={{
+            l: <LinkLegacy href="https://chaoss.community/" />,
+          }}
+          values={{
+            v: t('about:chaoss_community'),
+          }}
+        />
       </Paragraph>
     </div>
   );

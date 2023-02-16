@@ -1,0 +1,23 @@
+{
+  "our_vision": "Our Vision",
+  "our_vision_desc1": "Through <s>{{v}}</s>, we help people who need community data analysis, including but not limited to OSPOs, community managers, academic researchers, project owners, maintainers, developers, etc.",
+  "our_vision_desc2": "By analyzing real data from a large number of open source projects, and referring to research results from industry best practices and academics, we create an open source community <m>{{e}}</m> that can be continuously improved and evolved, and give back to the general open source communities by means of <s>{{v}}</s>.",
+  "ecosystem_evaluation_system": "Ecosystem Evaluation System",
+  "communication": "Communication",
+  "communication_desc": "We have multiple communication channels such as chat, issues, etc. You can refer to <l>{{v}}</l>.",
+  "this_page": "this page",
+  "acknowledgements": "Acknowledgements",
+  "acknowledgements_desc": "OSS Compass follows the best practices of the CHAOSS projects, including metrics models and metrics, with some back-end components originally from Grimoirelabs. Our heartfelt thanks to the <l>{{v}}</l>.",
+  "chaoss_community": "CHAOSS Community",
+  "governing_board": "Governing Board",
+  "welcome_to_the_oss_compass_community": "Welcome to the OSS Compass Community!",
+  "we_provide_a_public_saas_platform_oss_compass_for": "We provide a public SaaS platform OSS Compass for open source community health analytics, that is open for all the projects hosted on Github, Gitee, etc.",
+  "members": "Members",
+  "platinum_members": "Platinum Members",
+  "community_members": "Community Members",
+  "partners": "Partners",
+  "technical_committee": "Technical Committee",
+  "outreach_committee": "Outreach Committee",
+  "assessment_model_working_group": "Assessment Model Working Group",
+  "saas_working_group": "SaaS Working Group"
+}

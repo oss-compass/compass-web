@@ -1,17 +1,16 @@
 import React from 'react';
-import type { GetStaticProps } from 'next';
 import Header from '@common/components/Header';
 import { Center } from '@common/components/Layout';
 import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
 import AboutContent from '@modules/about';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { GetServerSideProps } from 'next';
+import getLocalesFile from '@common/utils/getLocalesFile';
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  console.log('locale', locale);
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale as string)),
+      ...(await getLocalesFile(req.cookies, ['about'])),
     },
   };
 };
