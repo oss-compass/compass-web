@@ -3,15 +3,16 @@ import classnames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { useCounter } from 'react-use';
 import LinkX from '@common/components/LinkX';
-import { usePlantList } from './plantConfig';
+import { usePlantList, useModelList } from './plantConfig';
 import PopCard from './PopCard';
 import Plant from './Plant';
 import Estrela from './Estrela';
 import styles from './index.module.scss';
 
 const SectionExplain = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const plantList = usePlantList();
+  const modelList = useModelList();
   const [value, { inc, reset, set }] = useCounter(
     plantList.length,
     plantList.length,
@@ -29,7 +30,11 @@ const SectionExplain = () => {
       >
         <div className={classnames('h-full w-full')}>
           <div
-            className={classnames(styles.plantBg, 'h-full w-full')}
+            className={classnames(
+              styles.plantBg,
+              i18n.language === 'zh' ? styles.plantBgZh : styles.plantBgEu,
+              'h-full w-full'
+            )}
             onClick={(e) => {
               if (e.target === e.currentTarget) {
                 set(plantList.length);
@@ -46,6 +51,23 @@ const SectionExplain = () => {
               <LinkX href="/docs/metrics-models/niche-creation/">
                 <a className={classnames(styles.title3)}></a>
               </LinkX>
+              {modelList.map(({ name, ...item }, i) => {
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      top: item.top + 'px',
+                      left: item.left + 'px',
+                      width: item.width + 'px',
+                      height: item.height + 'px',
+                      color: item.color,
+                    }}
+                    className={classnames(styles.modelStyle)}
+                  >
+                    {name}
+                  </div>
+                );
+              })}
               {plantList.map(({ popContent, ...item }, i) => {
                 return (
                   <Plant
