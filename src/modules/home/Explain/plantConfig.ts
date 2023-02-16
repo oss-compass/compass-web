@@ -16,6 +16,15 @@ export type PlantList = {
   popContent: PopContent;
 };
 
+export type ModelList = {
+  name: string;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  color: string;
+};
+
 const useCodeQualityGuarantee = (): PlantList[] => {
   const { t } = useTranslation();
   return [
@@ -462,7 +471,133 @@ export const usePlantList = (): PlantList[] => {
     ...organizationActivity,
   ];
 };
+export const useModelList = (): ModelList[] => {
+  const { t } = useTranslation();
+  return [
+    {
+      name: t('metrics_models:code_security_guarantee.title'),
+      top: -165,
+      left: -557,
+      width: 117,
+      height: 40,
+      color: '#727fff',
+    },
+    {
+      name: t('metrics_models:community_service_and_support.title'),
+      top: 0,
+      left: -462,
+      width: 129,
+      height: 40,
+      color: '#727fff',
+    },
+    {
+      name: t('metrics_models:content.title'),
+      top: 150,
+      left: -564,
+      width: 130,
+      height: 40,
+      color: '#727fff',
+    },
+    {
+      name: t('metrics_models:code_security_guarantee.title'),
+      top: 180,
+      left: -320,
+      width: 130,
+      height: 40,
+      color: '#727fff',
+    },
+    {
+      name: t('metrics_models:code_compliance_guarantee.title'),
+      top: 308,
+      left: -150,
+      width: 130,
+      height: 38,
+      color: '#727fff',
+    },
 
+    {
+      name: t('metrics_models:organization_activity.title'),
+      top: 115,
+      left: 252,
+      width: 130,
+      height: 38,
+      color: '#b06ffa',
+    },
+    {
+      name: t('metrics_models:developer_attraction.title'),
+      top: 215,
+      left: 490,
+      width: 100,
+      height: 38,
+      color: '#b06ffa',
+    },
+    {
+      name: t('metrics_models:technological_advancement.title'),
+      top: -70,
+      left: 453,
+      width: 100,
+      height: 38,
+      color: '#b06ffa',
+    },
+
+    {
+      name: t('metrics_models:organization_collaboration_relationships.title'),
+      top: -348,
+      left: -348,
+      width: 180,
+      height: 38,
+      color: '#cea936',
+    },
+    {
+      name: t('metrics_models:inner_connectedness.title'),
+      top: -222,
+      left: -234,
+      width: 130,
+      height: 38,
+      color: '#cea936',
+    },
+    {
+      name: t('metrics_models:activity.title'),
+      top: -285,
+      left: -40,
+      width: 130,
+      height: 38,
+      color: '#cea936',
+    },
+    {
+      name: t('metrics_models:activity.title'),
+      top: -285,
+      left: -40,
+      width: 130,
+      height: 38,
+      color: '#cea936',
+    },
+    {
+      name: t('metrics_models:developer_retention.title'),
+      top: -382,
+      left: 147,
+      width: 100,
+      height: 38,
+      color: '#cea936',
+    },
+    {
+      name: t('metrics_models:developer_convertion.title'),
+      top: -288,
+      left: 268,
+      width: 100,
+      height: 38,
+      color: '#cea936',
+    },
+    {
+      name: t('metrics_models:outbound_connectedness.title'),
+      top: -200,
+      left: 147,
+      width: 100,
+      height: 38,
+      color: '#cea936',
+    },
+  ];
+};
 const p = [
   // {
   //   top: -351,
