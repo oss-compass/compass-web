@@ -1,0 +1,5 @@
+<svg id="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+<style><![CDATA[
+#logo-u-compass_tr {animation: logo-u-compass_tr__tr 2000ms linear infinite normal forwards}@keyframes logo-u-compass_tr__tr { 0% {transform: translate(63.39px,64px) rotate(180deg);animation-timing-function: cubic-bezier(0.42,0,0.58,1)} 25% {transform: translate(63.39px,64px) rotate(720deg)} 100% {transform: translate(63.39px,64px) rotate(720deg)}}
+]]></style>
+<circle id="logo-u-oval" r="64" transform="translate(64 64)" fill="#fff" fill-rule="evenodd"/><g id="logo-u-compass_tr" transform="translate(63.39,64) rotate(180)"><path id="logo-u-compass" d="M162,11.07042l23.207191,58.017979c.508937,1.272341.508937,2.691701,0,3.964042L162,131.07042L138.792809,73.052441c-.508937-1.272341-.508937-2.691701,0-3.964042L162,11.07042Zm0,54.666667c-2.980929,0-5.397449,2.387814-5.397449,5.333333s2.41652,5.333333,5.397449,5.333333s5.397449-2.387814,5.397449-5.333333-2.41652-5.333333-5.397449-5.333333Z" transform="translate(-162,-71.034)" fill-rule="evenodd"/></g></svg>

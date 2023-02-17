@@ -39,7 +39,7 @@ const ChangeLanguage = () => {
           {languages.map((item) => (
             <div
               key={item.id}
-              className="flex cursor-pointer border-b border-white/30 py-4 pl-6 text-center hover:bg-[#333333]"
+              className="flex cursor-pointer border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]"
               onClick={() => {
                 Cookies.set(USER_LOCALE_KEY, item.id, {
                   expires: 365,
