@@ -39,6 +39,9 @@ const CommunityMembers = () => {
     <>
       <div className="mb-6 font-medium">{t('about:community_members')}</div>
       <div className="mb-10 bg-[#fafafa] py-10 px-16 ">
+        <div className="mb-4 text-xs font-medium">
+          {t('about:organization_member')}
+        </div>
         <div className="mb-8">
           <Image
             src={'/images/about/国家金融科技测评中心@2x.png'}
@@ -47,7 +50,9 @@ const CommunityMembers = () => {
             alt={'国家金融科技测评中心'}
           />
         </div>
-        <div className="mb-8 border-b" />
+        <div className="mb-4 text-xs font-medium">
+          {t('about:individual_members')}
+        </div>
         <Grid className="">
           {data.map((item) => {
             return <MemberCard key={item.name} {...item} />;
