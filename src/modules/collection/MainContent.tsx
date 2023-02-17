@@ -36,8 +36,8 @@ const MainContent = () => {
 
   return (
     <div className="flex-1 px-8 py-4">
-      <div className="flex justify-between pb-5">
-        <div className="">
+      <div className="flex pb-5">
+        <div className="mr-8">
           <div className="text-xl font-bold">
             {collection && collection[nameKey]}
           </div>
@@ -45,7 +45,7 @@ const MainContent = () => {
             {t('collection:repositories', { length: length })}
           </div>
         </div>
-        <div className="pt-2">
+        <div className="pt-1">
           {compareMode ? (
             <div className="flex text-xs ">
               <div className="text-sm leading-8 text-gray-400">

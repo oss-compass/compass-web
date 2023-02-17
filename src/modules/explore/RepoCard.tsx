@@ -32,11 +32,9 @@ const RepoCard = (props: {
 
   return (
     <div
-      className={classnames('relative cursor-pointer  py-4 px-6', {
-        'border-blue-600': select,
-        'border-2': select,
-        border: !select,
-      })}
+      className={classnames('relative cursor-pointer', [
+        select ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
+      ])}
       onClick={async () => {
         if (compareMode) {
           setSelect(!select);
@@ -47,36 +45,38 @@ const RepoCard = (props: {
         }
       }}
     >
-      <div className="absolute top-2 right-3">
-        {compareMode && <input checked={select} type="checkbox" />}
-      </div>
-      <div>
-        <div className="h-20">
-          <p
-            className={classnames(
-              'mb-1 truncate break-words text-xl font-bold ',
-              { 'hover:underline': !compareMode }
-            )}
-          >
-            {repo}
-          </p>
-          <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
+      <div className="py-4 px-6">
+        <div className="absolute top-2 right-3">
+          {compareMode && <input checked={select} type="checkbox" />}
         </div>
-      </div>
+        <div>
+          <div className="h-20">
+            <p
+              className={classnames(
+                'mb-1 truncate break-words text-xl font-bold ',
+                { 'hover:underline': !compareMode }
+              )}
+            >
+              {repo}
+            </p>
+            <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
+          </div>
+        </div>
 
-      <div className="flex w-full items-center">
-        <div className="mr-auto flex-1">
-          {provider ? (
-            provider === 'gitee' ? (
-              <SiGitee className="inline-block h-5 w-5 text-[#c71c27]" />
+        <div className="flex w-full items-center">
+          <div className="mr-auto flex-1">
+            {provider ? (
+              provider === 'gitee' ? (
+                <SiGitee className="inline-block h-5 w-5 text-[#c71c27]" />
+              ) : (
+                <AiFillGithub className="inline-block h-5 w-5 text-[#000000]" />
+              )
             ) : (
-              <AiFillGithub className="inline-block h-5 w-5 text-[#000000]" />
-            )
-          ) : (
-            ''
-          )}
+              ''
+            )}
+          </div>
+          <MiniChart data={chartData} />
         </div>
-        <MiniChart data={chartData} />
       </div>
     </div>
   );
