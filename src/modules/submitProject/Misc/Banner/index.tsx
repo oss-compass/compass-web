@@ -10,12 +10,12 @@ const Banner: React.FC<{ content: string }> = ({ content }) => {
         style.headerBgLine
       )}
     >
-      {/*<div*/}
-      {/*  className={classnames(*/}
-      {/*    'absolute -top-16  right-10 h-[303px] w-[490px] md:-right-[300px]',*/}
-      {/*    style.headerBgGraph*/}
-      {/*  )}*/}
-      {/*/>*/}
+      <div
+        className={classnames(
+          'absolute -top-16  right-10 h-[303px] w-[490px] md:-right-[300px]',
+          style.headerBgGraph
+        )}
+      ></div>
       <div className="relative mx-auto w-[1000px] pt-12 text-5xl font-medium text-white md:w-full md:px-2">
         {content}
       </div>

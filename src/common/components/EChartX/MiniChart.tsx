@@ -18,7 +18,6 @@ const MiniChart: React.FC<EchartsData> = ({
   useEffect(() => {
     const echartsOpts: EChartsOption = {
       title: {},
-      animation: false,
       grid: {
         backgroundColor: 'white',
         top: '2%',

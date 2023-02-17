@@ -1,5 +1,9 @@
-import React, { PropsWithChildren, useState, useEffect } from 'react';
-import Link, { LinkProps } from 'next/link';
+import React, {
+  PropsWithChildren,
+  useState,
+  useEffect,
+  ComponentProps,
+} from 'react';
 import getLocale from '@common/utils/getLocale';
 
 export const addLinkLocale = (href: string, locale: string): string => {
@@ -10,32 +14,30 @@ export const addLinkLocale = (href: string, locale: string): string => {
   return href;
 };
 
-type DocLinkProps = Omit<LinkProps, 'href'>;
+type DocLinkProps = Omit<ComponentProps<'a'>, 'href'>;
 
 // auto add local prefix
-const LinkX: React.FC<PropsWithChildren<DocLinkProps & { href: string }>> = ({
+const DocLink: React.FC<
+  PropsWithChildren<DocLinkProps & { className?: string; href: string }>
+> = ({
   children,
+  className = 'mx-1 inline-block text-primary',
   href,
-  legacyBehavior,
   ...restProps
 }) => {
-  const isDocLink = href.startsWith('/docs');
   const [local, setLocale] = useState('en');
   const localHref = addLinkLocale(href, local);
+
   useEffect(() => {
     const l = getLocale();
     setLocale(l);
   }, []);
 
   return (
-    <Link
-      href={localHref}
-      legacyBehavior={legacyBehavior || isDocLink}
-      {...restProps}
-    >
+    <a href={localHref} className={className} {...restProps}>
       {children}
-    </Link>
+    </a>
   );
 };
 
-export default LinkX;
+export default DocLink;

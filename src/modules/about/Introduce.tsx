@@ -1,6 +1,7 @@
 import React from 'react';
-import LinkX from '@common/components/LinkX';
-import { Paragraph, LinkLegacy, DocTitle } from './components';
+import DocLink from '@common/components/DocLink';
+import LinkLegacy from '@common/components/LinkLegacy';
+import { Paragraph, DocTitle } from './components';
 import { useTranslation, Trans } from 'next-i18next';
 
 const Introduce = () => {
@@ -41,12 +42,7 @@ const Introduce = () => {
         <Trans
           i18nKey={'about:communication_desc'}
           components={{
-            l: (
-              <LinkX
-                aTagClassName="mx-1 inline-block text-primary"
-                href="/docs/community/"
-              />
-            ),
+            l: <DocLink href="/docs/community/" />,
           }}
           values={{
             v: t('about:this_page'),
