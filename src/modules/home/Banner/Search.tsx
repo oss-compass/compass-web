@@ -11,7 +11,7 @@ import SearchDropdown from './SearchDropdown';
 import styles from './index.module.scss';
 
 const Search = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const ref = useRef(null);
   const [keyword, setKeyword] = useState('');
   const throttledKeyword = useThrottle(keyword, { wait: 300 });
@@ -29,14 +29,22 @@ const Search = () => {
   return (
     <div
       className={classnames(
-        'absolute bottom-9 -left-6 w-[600px] p-6',
-        'lg:left-0 md:bottom-6 md:w-[380px]',
+        'absolute -left-6 w-[600px] p-6',
+        'lg:left-0 md:w-[380px]',
+        [
+          i18n.language === 'en'
+            ? 'bottom-9 md:bottom-6'
+            : 'top-[51%] -translate-y-1/2',
+        ],
         styles.searchBg
       )}
     >
       <h1
         id="test"
-        className="mb-6 text-[64px] leading-[80px] tracking-tight md:text-4xl"
+        className={classnames(
+          'mb-6 text-[64px] leading-[80px] tracking-tight md:text-4xl',
+          { 'font-black': i18n.language === 'zh' }
+        )}
       >
         <Trans
           i18nKey="it_points_to_the_thing_you_want_most_in_open_source"
