@@ -30,7 +30,7 @@ const ContributorCount = () => {
         'metrics_models:organization_activity.metrics.contributor_count_desc'
       )}
       docLink={
-        '/docs/metrics-models/niche-creation/developer-retention/#contributor-count'
+        '/docs/metrics-models/niche-creation/organization-activity/#contributor-count'
       }
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

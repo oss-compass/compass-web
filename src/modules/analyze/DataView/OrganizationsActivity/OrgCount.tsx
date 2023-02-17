@@ -26,7 +26,7 @@ const OrgCount = () => {
         'metrics_models:organization_activity.metrics.org_count_desc'
       )}
       docLink={
-        '/docs/metrics-models/niche-creation/developer-retention/#org-count'
+        '/docs/metrics-models/niche-creation/organization-activity/#org-count'
       }
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

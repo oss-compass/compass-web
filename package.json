@@ -57,6 +57,7 @@
     "react-odometerjs": "^2.1.2",
     "react-resize-detector": "^7.1.2",
     "react-use": "^17.4.0",
+    "sharp": "^0.31.3",
     "valtio": "^1.7.6"
   },
   "devDependencies": {
