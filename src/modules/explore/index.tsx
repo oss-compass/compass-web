@@ -13,17 +13,17 @@ const Explore = () => {
       <Header />
       <div className="bg-gray-50">
         <Banner content={t('common:header.explore')} />
-        <div className="mx-auto w-[1280px]  pb-20 md:w-full">
-          <div className="flex justify-between py-7">
-            <div className="text-2xl">Collections</div>
-            <AiOutlinePlusSquare
-              className="cursor-pointer text-3xl text-gray-400"
-              onClick={() => {
-                window.location.href =
-                  'https://github.com/oss-compass/compass-projects-information';
-              }}
-            />
-          </div>
+        <div className="mx-auto w-[1280px] pb-20 pt-10 md:w-full">
+          {/*<div className="flex justify-between py-7">*/}
+          {/*  <div className="text-2xl">Collections</div>*/}
+          {/*  <AiOutlinePlusSquare*/}
+          {/*    className="cursor-pointer text-3xl text-gray-400"*/}
+          {/*    onClick={() => {*/}
+          {/*      window.location.href =*/}
+          {/*        'https://github.com/oss-compass/compass-projects-information';*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <Collections />
         </div>
       </div>

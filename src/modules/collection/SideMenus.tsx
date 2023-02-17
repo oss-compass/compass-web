@@ -20,15 +20,15 @@ const SideMenus = () => {
     <div className="flex h-full w-[272px] flex-col border-r bg-white py-4 px-4">
       <div className="mb-4 flex items-center justify-between px-2">
         <div className="text-xl font-medium">{t('collection:collections')}</div>
-        <div
-          className="cursor-pointer text-2xl text-gray-500"
-          onClick={() => {
-            window.location.href =
-              'https://github.com/oss-compass/compass-projects-information';
-          }}
-        >
-          <AiOutlinePlusSquare />
-        </div>
+        {/*<div*/}
+        {/*  className="cursor-pointer text-2xl text-gray-500"*/}
+        {/*  onClick={() => {*/}
+        {/*    window.location.href =*/}
+        {/*      'https://github.com/oss-compass/compass-projects-information';*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <AiOutlinePlusSquare />*/}
+        {/*</div>*/}
       </div>
 
       <div className="overflow-y-auto">
