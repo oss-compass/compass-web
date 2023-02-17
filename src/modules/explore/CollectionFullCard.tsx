@@ -9,6 +9,7 @@ import {
 } from '@graphql/generated';
 import client from '@graphql/client';
 import RepoCard from '@modules/explore/RepoCard';
+import { Level } from '@modules/analyze/constant';
 
 const CollectionFullCard = (props: { collection: Collection }) => {
   const { collection } = props;
@@ -18,8 +19,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
   const { data: hottestData, isLoading } = useCollectionHottestQuery(client, {
     ident: collection.ident,
   });
-  const showHottestData =
-    hottestData?.collectionHottest?.map((i) => i.label) || [];
+  const showHottestData = hottestData?.collectionHottest || [];
   const { data: bulkOverview } = useBulkOverviewQuery(client, {
     labels: showPreviousThree,
   });
@@ -55,14 +55,14 @@ const CollectionFullCard = (props: { collection: Collection }) => {
               </div>
             ) : (
               <>
-                {showHottestData.map((label) => {
+                {showHottestData.map(({ label, level }) => {
                   return (
-                    <Link
-                      key={label}
-                      href={getAnalyzeLink({ label: label, level: 'repo' })}
-                    >
-                      <a className="block truncate text-sm hover:underline">
-                        {getRepoName(label!)}
+                    <Link key={label} href={getAnalyzeLink({ label, level })}>
+                      <a className="flex w-full items-center text-sm hover:underline">
+                        <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
+                        <span className="truncate">
+                          {level === Level.REPO ? getRepoName(label!) : label}
+                        </span>
                       </a>
                     </Link>
                   );
