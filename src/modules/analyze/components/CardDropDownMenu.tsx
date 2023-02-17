@@ -9,6 +9,8 @@ import Median from 'public/images/analyze/median.svg';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import DownCardLoadImage from './DownCardLoadImage';
+import { subscribeKey } from 'valtio/utils';
+import { avgAndScoreState } from '@modules/analyze/store';
 
 interface CardDropDownMenuProps {
   downloadImageSize?: 'middle' | 'full';
@@ -43,6 +45,17 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     setAnchorEl(event.currentTarget);
     setOpen((previousOpen) => !previousOpen);
   };
+
+  subscribeKey(avgAndScoreState, 'showAvg', (v) => {
+    if (showAvg !== v) {
+      onAvgChange?.(v);
+    }
+  });
+  subscribeKey(avgAndScoreState, 'showMedian', (v) => {
+    if (showMedian !== v) {
+      onMedianChange?.(v);
+    }
+  });
 
   const canBeOpen = open && Boolean(anchorEl);
   const id = canBeOpen ? 'transition-popper' : undefined;
