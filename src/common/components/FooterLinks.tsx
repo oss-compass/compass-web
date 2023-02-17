@@ -3,7 +3,11 @@ import LinkX from '@common/components/LinkX';
 import LogoSquare from '@common/components/LogoSquare';
 import { useTranslation } from 'react-i18next';
 
-const FooterLinks = () => {
+interface FooterLinks {
+  dark?: boolean;
+}
+
+const FooterLinks = ({ dark = false }: FooterLinks) => {
   const { t } = useTranslation();
   const linkData = [
     {

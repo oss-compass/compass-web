@@ -6,9 +6,14 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
+console.log();
+console.log('process.env.API_URL:', process.env.API_URL);
+console.log();
+
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  compress: false,
   output: 'standalone',
   sassOptions: {
     includePaths: [path.join(__dirname, 'src/styles')],
@@ -20,15 +25,7 @@ const nextConfig = {
     return [
       {
         source: '/api/graphql',
-        destination: `/api/proxy`,
-      },
-      {
-        source: '/api/workflow',
-        destination: `/api/proxy`,
-      },
-      {
-        source: '/api/hook',
-        destination: `/api/proxy`,
+        destination: `${process.env.API_URL}/api/graphql`,
       },
     ];
   },

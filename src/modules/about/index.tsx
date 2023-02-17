@@ -1,24 +1,30 @@
 import React from 'react';
 import Banner from './Banner';
 import Introduce from './Introduce';
-import Board from './Board';
-import Members from './Members';
-import Contributors from './Contributors';
+import Board from './10Board';
+import Members from './20Members';
+import TechnicalCommittee from './30TechnicalCommittee';
+import OutreachCommittee from './40OutreachCommittee';
+import AssessmentModelWorkingGroup from './50AssessmentModelWorkingGroup';
+import SaaSWorkingGroup from './60SaaSWorkingGroup';
 
-const Index = () => {
+const About = () => {
   return (
     <>
       <Banner />
-      <div className="bg-black py-20 text-white/90">
+      <div className="py-20">
         <div className="mx-auto  w-[1000px] md:w-full md:px-4">
           <Introduce />
           <Board />
           <Members />
-          <Contributors />
+          <TechnicalCommittee />
+          <OutreachCommittee />
+          <AssessmentModelWorkingGroup />
+          <SaaSWorkingGroup />
         </div>
       </div>
     </>
   );
 };
 
-export default Index;
+export default About;
