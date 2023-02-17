@@ -30,12 +30,6 @@ const Header: React.FC<{
               </a>
             </Link>
 
-            <Link href="/explore">
-              <a className={'mx-6 px-2.5 font-medium text-white'}>
-                {t('common:header.explore')}
-              </a>
-            </Link>
-
             <LinkX href="/docs/dimensions-define" legacyBehavior>
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.metrics_models')}
@@ -44,11 +38,11 @@ const Header: React.FC<{
 
             <CommunityDropdown />
 
-            <LinkX href="/docs/about" legacyBehavior>
+            <Link href="/about">
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.about')}
               </a>
-            </LinkX>
+            </Link>
           </div>
 
           <div className="flex h-full items-center">

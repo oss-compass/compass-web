@@ -4,13 +4,16 @@ import { Center } from '@common/components/Layout';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
 
-const Copyright = () => {
+interface CopyrightProps {
+  dark?: boolean;
+}
+const Copyright = ({ dark = false }: CopyrightProps) => {
   return (
     <div className="h-[78px] w-full bg-gray-100 md:px-4">
       <Center className="flex h-full items-center justify-between">
         <div className="flex flex-col justify-center text-gray-500">
           <p className="mb-2 text-xs ">
-            Copyright © {new Date().getFullYear()} Compass. All Rights Reserved.
+            Copyright © 2022 Compass. All Rights Reserved.
           </p>
         </div>
         <div className="flex">

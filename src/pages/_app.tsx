@@ -15,11 +15,6 @@ import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
 
 import '../styles/globals.scss';
 
-console.table?.({
-  APP_NAME: 'compass-web',
-  GIT_COMMIT: process.env.NEXT_PUBLIC_GIT_COMMIT || 'unknown',
-});
-
 const NextNProgress = dynamic(() => import('nextjs-progressbar'), {
   ssr: false,
 });
@@ -54,6 +49,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 
   useEffect(() => {
     browserLanguageDetectorAndReload();
+    console.table?.({
+      APP_NAME: 'compass-web',
+      GIT_COMMIT: process.env.NEXT_PUBLIC_GIT_COMMIT || 'unknown',
+    });
   }, []);
 
   return (
