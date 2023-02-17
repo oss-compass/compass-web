@@ -13,17 +13,16 @@ import { Collection } from './type';
 import { useTranslation } from 'next-i18next';
 import { useCollectionHottestQuery } from '@graphql/generated';
 import client from '@graphql/client';
+import { Level } from '@modules/analyze/constant';
 
 const CollectionCard = (props: { collection: Collection }) => {
   const { collection } = props;
   const { t, i18n } = useTranslation();
   const length = collection.items.length;
-  const showPreviousThree = collection.items.slice(0, 3);
   const { data: hottestData, isLoading } = useCollectionHottestQuery(client, {
     ident: collection.ident,
   });
-  const showHottestData =
-    hottestData?.collectionHottest?.map((i) => i.label) || [];
+  const showHottestData = hottestData?.collectionHottest || [];
   const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
   return (
     <div className="rounded-xl bg-white p-7 shadow">
@@ -53,14 +52,14 @@ const CollectionCard = (props: { collection: Collection }) => {
           </div>
         ) : (
           <>
-            {showHottestData.map((label) => {
+            {showHottestData.map(({ label, level }) => {
               return (
-                <Link
-                  key={label}
-                  href={getAnalyzeLink({ label: label, level: 'repo' })}
-                >
-                  <a className="block truncate text-sm hover:underline">
-                    {getRepoName(label!)}
+                <Link key={label} href={getAnalyzeLink({ label, level })}>
+                  <a className="flex w-full items-center text-sm hover:underline">
+                    <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
+                    <span className="truncate">
+                      {level === Level.REPO ? getRepoName(label!) : label}
+                    </span>
                   </a>
                 </Link>
               );
