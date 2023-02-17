@@ -18,7 +18,8 @@ const collections = jsonData as unknown as Record<string, Collection>;
 const MainContent = () => {
   const router = useRouter();
   const { slug } = router.query;
-  const [select, setSelect] = useState(false);
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareList, setCompareList] = useState<string[]>([]);
   const { t, i18n } = useTranslation();
   const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
 
@@ -32,7 +33,7 @@ const MainContent = () => {
   const { data: bulkOverview } = useBulkOverviewQuery(client, {
     labels: labelList,
   });
-  const selectList: string[] = [];
+
   return (
     <div className="flex-1 px-8 py-4">
       <div className="flex justify-between pb-5">
@@ -45,25 +46,32 @@ const MainContent = () => {
           </div>
         </div>
         <div className="pt-2">
-          {select ? (
+          {compareMode ? (
             <div className="flex text-xs ">
               <div className="text-sm leading-8 text-gray-400">
                 {t('collection:please_select_two_or_more_repositories_below')}
               </div>
               <div
                 onClick={() => {
-                  setSelect(false);
+                  setCompareMode(false);
                 }}
                 className="ml-5 h-8 cursor-pointer border border-gray-500 px-3 py-2 text-center text-xs text-black "
               >
                 {t('collection:cancel')}
               </div>
               <div
-                onClick={() => {
-                  router.push(getCompareAnalyzeLink(selectList, 'repo'));
+                onClick={async () => {
+                  if (compareList.length > 1) {
+                    await router.push(
+                      getCompareAnalyzeLink(compareList, 'repo')
+                    );
+                  }
                   // setSelect(false);
                 }}
-                className="ml-2 h-8 cursor-pointer border-0 border-gray-500 bg-blue-600 px-3 py-2 text-center text-xs text-gray-50"
+                className={classnames(
+                  'ml-2 h-8 cursor-pointer border-0 border-gray-500 bg-blue-600 px-3 py-2 text-center text-xs text-gray-50',
+                  { 'bg-gray-300': compareList.length < 2 }
+                )}
               >
                 {t('collection:compare')}
               </div>
@@ -71,12 +79,12 @@ const MainContent = () => {
           ) : (
             <div
               onClick={() => {
-                setSelect(true);
+                setCompareMode(true);
               }}
               className="h-8 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-8"
             >
               <div className="mr-2 inline-block align-text-bottom">
-                <Compare></Compare>
+                <Compare />
               </div>
 
               {t('collection:pick_for_compare')}
@@ -110,12 +118,15 @@ const MainContent = () => {
                   key={label}
                   label={label}
                   chartData={chartData}
-                  checked={select}
-                  checkedFun={(e, label) => {
-                    if (e) {
-                      selectList.push(label);
+                  compareMode={compareMode}
+                  onSelectChange={(checked, label) => {
+                    if (checked) {
+                      setCompareList((pre) => [...pre, label]);
                     } else {
-                      selectList.splice(selectList.indexOf(label), 1);
+                      setCompareList((pre) => {
+                        pre.splice(pre.indexOf(label), 1);
+                        return [...pre];
+                      });
                     }
                   }}
                 />
