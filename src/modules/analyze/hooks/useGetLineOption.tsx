@@ -42,7 +42,7 @@ const useGetLineOption = (opt?: {
       });
     });
 
-    if (showAvg) {
+    if (showMedian) {
       series.push(
         summaryLine({
           id: 'median',
@@ -55,7 +55,7 @@ const useGetLineOption = (opt?: {
       );
     }
 
-    if (showMedian) {
+    if (showAvg) {
       series.push(
         summaryLine({
           id: 'average',
