@@ -29,6 +29,24 @@ const MedianAndAvg: React.FC<{
       <Tooltip
         arrow
         title={
+          showAvg ? t('analyze:avg_line.hide') : t('analyze:avg_line.show')
+        }
+      >
+        <div
+          className={classnames(
+            'group ml-2 cursor-pointer p-1 transition md:hidden',
+            { 'opacity-60': !showAvg }
+          )}
+          onClick={() => {
+            onAvgChange(!showAvg);
+          }}
+        >
+          <Average />
+        </div>
+      </Tooltip>
+      <Tooltip
+        arrow
+        title={
           showMedian
             ? t('analyze:median_line.hide')
             : t('analyze:median_line.show')
@@ -41,24 +59,6 @@ const MedianAndAvg: React.FC<{
           )}
           onClick={() => {
             onMedianChange(!showMedian);
-          }}
-        >
-          <Average />
-        </div>
-      </Tooltip>
-      <Tooltip
-        arrow
-        title={
-          showAvg ? t('analyze:avg_line.hide') : t('analyze:avg_line.show')
-        }
-      >
-        <div
-          className={classnames(
-            'group ml-2 cursor-pointer p-1 transition md:hidden',
-            { 'opacity-60': !showAvg }
-          )}
-          onClick={() => {
-            onAvgChange(!showAvg);
           }}
         >
           <Median />
