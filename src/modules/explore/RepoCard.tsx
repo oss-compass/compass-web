@@ -32,7 +32,7 @@ const RepoCard = (props: {
 
   return (
     <div
-      className={classnames('relative cursor-pointer', [
+      className={classnames('relative cursor-pointer bg-white', [
         select ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
       ])}
       onClick={async () => {
@@ -47,7 +47,9 @@ const RepoCard = (props: {
     >
       <div className="py-4 px-6">
         <div className="absolute top-2 right-3">
-          {compareMode && <input checked={select} type="checkbox" />}
+          {compareMode && (
+            <input checked={select} type="checkbox" onChange={() => {}} />
+          )}
         </div>
         <div>
           <div className="h-20">
