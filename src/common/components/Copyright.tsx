@@ -13,7 +13,7 @@ const Copyright = ({ dark = false }: CopyrightProps) => {
       <Center className="flex h-full items-center justify-between">
         <div className="flex flex-col justify-center text-gray-500">
           <p className="mb-2 text-xs ">
-            Copyright © 2022 Compass. All Rights Reserved.
+            Copyright © {new Date().getFullYear()} Compass. All Rights Reserved.
           </p>
         </div>
         <div className="flex">
