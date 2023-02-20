@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import RepoCard from '../explore/RepoCard';
 import { useTranslation } from 'next-i18next';
@@ -18,6 +18,7 @@ const collections = jsonData as unknown as Record<string, Collection>;
 
 const MainContent = ({ items }: { items: Collection[] }) => {
   const router = useRouter();
+  const selectRef = useRef<HTMLSelectElement>(null);
   const { slug } = router.query;
   const [compareMode, setCompareMode] = useState(false);
   const [compareList, setCompareList] = useState<string[]>([]);
@@ -34,6 +35,21 @@ const MainContent = ({ items }: { items: Collection[] }) => {
   const { data: bulkOverview } = useBulkOverviewQuery(client, {
     labels: labelList,
   });
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const checkEle = selectRef.current?.querySelector('option:checked');
+      const helper = document.getElementById('select-element-width-helper')!;
+      if (helper) {
+        helper.innerHTML = checkEle!.innerHTML;
+        const width = helper.offsetWidth;
+        selectRef.current!.style.width = `${width + 10}px`;
+      }
+    }, 0);
+    return () => {
+      clearTimeout(t);
+    };
+  }, [slug]);
 
   const CompareBar = (
     <div className="flex px-8 pt-4 pb-5 md:hidden">
@@ -93,32 +109,41 @@ const MainContent = ({ items }: { items: Collection[] }) => {
   );
 
   const MobileBar = (
-    <div className="mb-4 flex flex h-11 items-center justify-between border-b bg-white px-4 >md:hidden">
-      <div className="flex items-center">
-        <select
-          className={classnames('w-auto appearance-none font-medium outline-0')}
-          value={`/${slug}`}
-          onChange={async (e) => {
-            const collectionSlug = e.target.value;
-            await router.push(`/collection${collectionSlug}`);
-          }}
-        >
-          {items.map((item) => {
-            return (
-              <option key={item.ident} value={item.slug}>
-                {`${item[nameKey]}`}
-              </option>
-            );
-          })}
-        </select>
-        <div className="text-xs">
-          <AiFillCaretDown />
+    <>
+      <div className="mb-4 flex flex h-11 items-center justify-between border-b bg-white px-4 >md:hidden">
+        <div className="flex items-center">
+          <select
+            ref={selectRef}
+            className={classnames(
+              'appearance-none bg-white font-medium outline-0'
+            )}
+            value={`/${slug}`}
+            onChange={async (e) => {
+              const collectionSlug = e.target.value;
+              await router.push(`/collection${collectionSlug}`);
+            }}
+          >
+            {items.map((item) => {
+              return (
+                <option key={item.ident} value={item.slug}>
+                  {`${item[nameKey]}`}
+                </option>
+              );
+            })}
+          </select>
+          <div className="text-xs">
+            <AiFillCaretDown />
+          </div>
+        </div>
+        <div className="text-xs text-gray-400">
+          {t('collection:repositories', { length: length })}
         </div>
       </div>
-      <div className="text-xs text-gray-400">
-        {t('collection:repositories', { length: length })}
-      </div>
-    </div>
+      <span
+        id="select-element-width-helper"
+        className="absolute -left-[9999px]  appearance-none bg-white font-medium outline-0"
+      />
+    </>
   );
 
   return (
