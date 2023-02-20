@@ -23,13 +23,15 @@
   "hot_fields": "Hot Fields",
   "hot_fields_content": {
     "artificial_intelligence": "Artificial Intelligence",
-    "server_os": "Server OS",
+    "server_os": "Big Data",
     "database": "Database",
-    "machine_learning_framework": "Machine Learning Framework",
-    "intelligent_terminal_distributed_os": "Intelligent Terminal Distributed OS",
+    "machine_learning_framework": "Deep Learning Framework",
+    "intelligent_terminal_distributed_os": "Web",
     "relational_db": "Relational DB",
     "document_db": "Document DB",
     "time_series_db": "Time series DB",
-    "graph_db": "Graph DB"
+    "graph_db": "Graph DB",
+    "big_data_framework": "Big Data Framework",
+    "web_framework": "Web Framework"
   }
 }

@@ -499,9 +499,9 @@ export const useModelList = (): ModelList[] => {
       color: '#727fff',
     },
     {
-      name: t('metrics_models:code_security_guarantee.title'),
+      name: t('metrics_models:collaboration_development_index.title'),
       top: 180,
-      left: -320,
+      left: -322,
       width: 130,
       height: 40,
       color: '#727fff',
