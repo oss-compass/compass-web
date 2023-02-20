@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="159px" height="158px" viewBox="0 0 159 158" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>field-web</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="159" height="158"></rect>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#484848" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-4">
+            <stop stop-color="#767676" offset="0%"></stop>
+            <stop stop-color="#484848" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-5">
+            <stop stop-color="#484848" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-6">
+            <stop stop-color="#767676" offset="0%"></stop>
+            <stop stop-color="#484848" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-7">
+            <stop stop-color="#787878" offset="0%"></stop>
+            <stop stop-color="#484848" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-8" x="7.71616766" y="7.91783439" width="56.1676647" height="52.1656051"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-927.000000, -346.000000)">
+            <g id="Group-9-Copy-4" transform="translate(788.000000, 345.000000)">
+                <rect id="border" stroke="#CFCFCF" x="0.5" y="0.5" width="311" height="159"></rect>
+                <g id="Bitmap" transform="translate(0.000000, 1.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Mask"></g>
+                </g>
+            </g>
+            <g id="Group-3" transform="translate(947.000000, 370.000000)">
+                <rect id="Rectangle" stroke="url(#linearGradient-3)" stroke-width="0.5" x="0.25" y="0.25" width="133.5" height="109.5"></rect>
+                <rect id="Rectangle" fill="url(#linearGradient-4)" x="0" y="0" width="134" height="14"></rect>
+                <g id="Group-6" transform="translate(7.000000, 4.500000)" fill="#FFFFFF">
+                    <ellipse id="Oval-Copy-25" cx="11" cy="2.5" rx="2.53846154" ry="2.5"></ellipse>
+                    <ellipse id="Oval-Copy-26" cx="19.4615385" cy="2.5" rx="2.53846154" ry="2.5"></ellipse>
+                    <ellipse id="Oval" cx="2.53846154" cy="2.5" rx="2.53846154" ry="2.5"></ellipse>
+                </g>
+                <circle id="Oval-Copy-27" fill="#D8D8D8" fill-rule="nonzero" cx="18.5" cy="30" r="7.5"></circle>
+                <rect id="Rectangle" fill="#D8D8D8" x="35" y="28" width="11" height="2"></rect>
+                <rect id="Rectangle-Copy" fill="#D8D8D8" x="54" y="28" width="11" height="2"></rect>
+                <rect id="Rectangle-Copy-2" fill="#D8D8D8" x="73" y="28" width="11" height="2"></rect>
+                <rect id="Rectangle" fill="#D8D8D8" x="99" y="25" width="22" height="9" rx="1"></rect>
+                <g id="Group-5" transform="translate(65.000000, 41.000000)" stroke-width="0.5">
+                    <rect id="Rectangle-Copy-4" stroke="#484848" x="0.25" y="0.25" width="55.5" height="30.5"></rect>
+                    <line x1="55" y1="30.5" x2="1" y2="0.5" id="Path-8" stroke="#D8D8D8" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="55" y1="0.5" x2="1" y2="30.5" id="Path-9" stroke="#D8D8D8" stroke-linecap="round" stroke-linejoin="round"></line>
+                </g>
+                <rect id="Rectangle-Copy-5" stroke="url(#linearGradient-5)" stroke-width="0.5" x="65.25" y="77.25" width="55.5" height="26.5"></rect>
+                <rect id="Rectangle" fill="#D8D8D8" x="72" y="83" width="42" height="1"></rect>
+                <rect id="Rectangle-Copy-3" fill="#D8D8D8" x="72" y="88" width="42" height="1"></rect>
+                <rect id="Rectangle-Copy-13" fill="#D8D8D8" x="72" y="93" width="42" height="1"></rect>
+                <rect id="Rectangle-Copy-14" fill="#D8D8D8" x="72" y="98" width="32" height="1"></rect>
+            </g>
+            <g id="Group-4" transform="translate(932.700000, 424.700000)">
+                <rect id="Rectangle" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" x="1.95419162" y="2.15509554" width="67.6916168" height="63.6910828"></rect>
+                <rect id="Rectangle" fill="#484848" x="0" y="0" width="4.01197605" height="4.01273885"></rect>
+                <rect id="Rectangle-Copy-11" fill="#484848" x="0" y="32.3955414" width="4.01197605" height="4.01273885"></rect>
+                <rect id="Rectangle-Copy-8" fill="#484848" x="0" y="63.6" width="4.01197605" height="4.01273885"></rect>
+                <rect id="Rectangle-Copy-6" fill="#484848" x="67.6" y="0" width="4.01197605" height="4.01273885"></rect>
+                <rect id="Rectangle-Copy-12" fill="#484848" x="67.6" y="32.3955414" width="4.01197605" height="4.01273885"></rect>
+                <rect id="Rectangle-Copy-9" fill="#484848" x="67.6" y="63.6" width="4.01197605" height="4.01273885"></rect>
+                <rect id="Rectangle-Copy-7" fill="#484848" x="33.794012" y="0" width="4.01197605" height="4.01273885"></rect>
+                <rect id="Rectangle-Copy-10" fill="#484848" x="33.794012" y="63.6" width="4.01197605" height="4.01273885"></rect>
+                <g id="Rectangle" stroke-linejoin="square">
+                    <rect stroke="#FFFFFF" stroke-width="4.5" fill="url(#linearGradient-6)" fill-rule="evenodd" x="9.96616766" y="10.1678344" width="51.6676647" height="47.6656051"></rect>
+                    <rect stroke="url(#linearGradient-7)" stroke-width="4" x="9.71616766" y="9.91783439" width="52.1676647" height="48.1656051"></rect>
+                </g>
+                <path d="M27.384491,30.8630128 L40.2944706,47.0186453 L48.3341032,38.3771814 L58.9744264,55.5707006 L12.6097122,55.5707006 L27.384491,30.8630128 Z" id="Path-13" stroke="#FFFFFF" fill="#FFFFFF"></path>
+                <ellipse id="Oval" fill="#FFFFFF" cx="43.8239521" cy="25.9751592" rx="4.01197605" ry="4.01273885"></ellipse>
+            </g>
+        </g>
+    </g>
+</svg>

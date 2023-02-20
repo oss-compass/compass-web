@@ -14,12 +14,12 @@ const SaaSWorkingGroup = () => {
     {
       avatar: '/images/about/赖兴友@2x.png',
       name: '赖兴友',
-      intro: '华为 前端开发',
+      intro: '开源前端开发',
     },
     {
       avatar: '/images/about/李升保@2x.png',
       name: '李升保',
-      intro: '华为 软件工程师',
+      intro: '开源软件工程师',
     },
     {
       avatar: '/images/about/罗雅新1@2x.jpeg',
