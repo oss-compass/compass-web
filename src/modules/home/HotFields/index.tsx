@@ -3,27 +3,46 @@ import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { getAnalyzeLink, getRepoLink } from '@common/utils';
-import FieldAi from './assets/field-ai.svg';
-import FieldSos from './assets/field-sos.svg';
+import FieldDl from './assets/field-dl.svg';
+import FieldBigData from './assets/field-bigdata.svg';
+
 import FieldDb from './assets/field-db.svg';
-import FieldItdo from './assets/field-itdo.svg';
+import FieldWeb from './assets/field-web.svg';
 
 interface FieldItem {
   name: string;
   comingSoon: Boolean;
   svg: React.ReactElement;
+  nLink?: string;
   category?: {
     name: string;
     link: string;
   }[];
 }
 
-const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
+const Field: React.FC<FieldItem> = ({
+  nLink,
+  name,
+  comingSoon,
+  category,
+  svg,
+}) => {
   const { t } = useTranslation();
   return (
     <div className="md:h-50 relative h-40 w-1/4 border-b border-r px-5 py-4 lg:w-1/2 md:w-full">
-      <div className="absolute right-0 bottom-0 w-[160px]">{svg}</div>
-      <h3 className="relative mb-1 break-words text-xl font-bold">{name}</h3>
+      <div className="absolute right-0 bottom-0 w-[165px]">{svg}</div>
+      {nLink ? (
+        <Link key={name} href={nLink}>
+          <a className="mb-1 flex items-center text-sm hover:underline">
+            <h3 className="relative mb-1 break-words text-xl font-bold">
+              {name}
+            </h3>
+          </a>
+        </Link>
+      ) : (
+        <h3 className="relative mb-1 break-words text-xl font-bold">{name}</h3>
+      )}
+
       {comingSoon && (
         <div className="h-5 w-24 rounded-xl bg-[#ECECEC] text-center text-xs leading-5 text-gray-400">
           {t('home:coming_soon')}
@@ -62,18 +81,25 @@ const HotFields = () => {
     {
       name: t('home:hot_fields_content.artificial_intelligence'),
       comingSoon: false,
-      svg: <FieldAi />,
+      svg: <FieldDl />,
       category: [
         {
           name: t('home:hot_fields_content.machine_learning_framework'),
-          link: '/analyze?label=https%3A%2F%2Fgithub.com%2Ftensorflow%2Ftensorflow&level=repo&label=https%3A%2F%2Fgithub.com%2Fpytorch%2Fpytorch&label=https%3A%2F%2Fgitee.com%2Fmindspore%2Fmindspore&label=https%3A%2F%2Fgithub.com%2FPaddlePaddle%2FPaddle',
+          link: '/collection/deep-learning-frameworks',
         },
       ],
     },
     {
       name: t('home:hot_fields_content.server_os'),
-      comingSoon: true,
-      svg: <FieldSos />,
+      comingSoon: false,
+      // nLink:'/collection/big-data',
+      svg: <FieldBigData />,
+      category: [
+        {
+          name: t('home:hot_fields_content.big_data_framework'),
+          link: '/collection/big-data',
+        },
+      ],
     },
     {
       name: t('home:hot_fields_content.database'),
@@ -82,7 +108,7 @@ const HotFields = () => {
       category: [
         {
           name: t('home:hot_fields_content.relational_db'),
-          link: '/analyze?label=https%3A%2F%2Fgitee.com%2Fopengauss%2FopenGauss-server&label=https%3A%2F%2Fgithub.com%2Foceanbase%2Foceanbase&label=https%3A%2F%2Fgithub.com%2Fpingcap%2Ftidb&label=https%3A%2F%2Fgithub.com%2FMariaDB%2Fserver&label=https%3A%2F%2Fgithub.com%2Fpostgres%2Fpostgres&level=repo',
+          link: '/collection/sql-databases',
         },
         {
           name: t('home:hot_fields_content.document_db'),
@@ -100,8 +126,15 @@ const HotFields = () => {
     },
     {
       name: t('home:hot_fields_content.intelligent_terminal_distributed_os'),
-      comingSoon: true,
-      svg: <FieldItdo />,
+      comingSoon: false,
+      // nLink:'/collection/web-framework',
+      svg: <FieldWeb />,
+      category: [
+        {
+          name: t('home:hot_fields_content.web_framework'),
+          link: '/collection/web-framework',
+        },
+      ],
     },
   ];
   return (
@@ -120,6 +153,7 @@ const HotFields = () => {
             return (
               <Field
                 key={item.name}
+                nLink={item.nLink}
                 name={item.name}
                 comingSoon={item.comingSoon}
                 category={item.category}

@@ -23,13 +23,15 @@
   "hot_fields": "热门领域",
   "hot_fields_content": {
     "artificial_intelligence": "人工智能",
-    "server_os": "操作系统",
+    "server_os": "大数据",
     "database": "数据库",
     "machine_learning_framework": "深度学习框架",
-    "intelligent_terminal_distributed_os": "智能终端分布式操作系统",
+    "intelligent_terminal_distributed_os": "Web",
     "relational_db": "关系型数据库",
     "document_db": "文档数据库",
     "time_series_db": "时序数据库",
-    "graph_db": "图数据库"
+    "graph_db": "图数据库",
+    "big_data_framework": "大数据框架",
+    "web_framework": "Web框架"
   }
 }

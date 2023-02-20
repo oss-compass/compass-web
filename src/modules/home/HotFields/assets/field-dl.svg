@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="159px" height="158px" viewBox="0 0 159 158" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>field-dl</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="312" height="158"></rect>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#F2F2F2" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#EFEFEF" offset="0%"></stop>
+            <stop stop-color="#D5D5D5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="22.3657386%" y1="38.5685915%" x2="100%" y2="58.4153039%" id="linearGradient-5">
+            <stop stop-color="#484848" stop-opacity="0.59" offset="0%"></stop>
+            <stop stop-color="#484848" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="22.3657386%" y1="36.583972%" x2="100%" y2="59.8762942%" id="linearGradient-6">
+            <stop stop-color="#484848" stop-opacity="0.59" offset="0%"></stop>
+            <stop stop-color="#484848" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-428.000000, -346.000000)">
+            <g id="Group-9-Copy-3" transform="translate(293.000000, 345.000000)">
+                <rect id="border" stroke="#CFCFCF" x="0.5" y="0.5" width="311" height="159"></rect>
+                <g id="Bitmap" transform="translate(0.000000, 1.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Mask"></g>
+                    <g id="Group-2" mask="url(#mask-2)">
+                        <g transform="translate(143.000000, -3.179870)">
+                            <path d="M79.1300972,9.67711785 L154.011795,136.92987 L5.98308356,136.92987 L79.1300972,9.67711785 Z" id="Rectangle" stroke="url(#linearGradient-4)" stroke-width="0.5" fill="url(#linearGradient-3)" fill-rule="evenodd"></path>
+                            <polygon id="Path-3" stroke="#484848" stroke-width="0.5" fill="none" points="47 66.1798699 74.2094 51.1798699 103.5328 55.8253699 120.527 69.1798699 132.2916 85.2541864 124.744 106.47367 107.303255 107.25897 106.14634 112.180438 93.7487 119.49777 77.9266 117.12497 61.8193296 131.328503 60.1170701 114.17987 53.9292664 108.93697 41 107.567436 32.2323273 90.2086475"></polygon>
+                            <polyline id="Path-5" stroke="#484848" stroke-width="0.5" fill="none" points="130.8113 86.7401699 111 81.7401699 126 104.04197 93.5436 98.1798699 106.7498 108.93697"></polyline>
+                            <polyline id="Path-6" stroke="#484848" stroke-width="0.5" fill="none" points="94.0438242 116.52367 93.5436 96.2008699 78.9884483 116.52367 73.9865789 100.415933"></polyline>
+                            <polyline id="Path-4" stroke="#484848" stroke-width="0.5" fill="none" points="41.8058 104.71997 52.2737985 90.9261699 74.7096 71.3327699 90.9884483 67.1173699 110.1471 82.1798699 93.0433663 99.4178699 72.6436991 99.1798699 61.0400624 113.83227 53.227119 92.6945976 47.5418659 66.9549699 70.462 72.4810699 74.356262 51.1798699 89.3266 66.0365699 93.0433663 65.2804699 103.819123 55.6138699 110.19868 81.1798699 120 69.6219936"></polyline>
+                            <polyline id="Path-7" stroke="#484848" stroke-width="0.5" fill="none" points="72.6436991 99.1798699 71 73.1798699 94.0438242 98.1798699 91 67.1798699"></polyline>
+                            <circle id="Oval" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="74" cy="51.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-3" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="103" cy="55.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-4" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="120" cy="69.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-5" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="132" cy="86.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-6" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="126" cy="104.17987" r="3.75"></circle>
+                            <circle id="Oval-Copy-7" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="107" cy="109.17987" r="3.75"></circle>
+                            <circle id="Oval-Copy-8" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="94" cy="98.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-9" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="91" cy="67.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-10" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="73" cy="99.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-11" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="60" cy="114.17987" r="3.75"></circle>
+                            <circle id="Oval-Copy-12" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="63" cy="129.17987" r="3.75"></circle>
+                            <circle id="Oval-Copy" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="48" cy="66.1798699" r="3.75"></circle>
+                            <circle id="Oval-Copy-2" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="35" cy="87.1798699" r="5.75"></circle>
+                            <circle id="Oval-Copy-14" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="41.5" cy="105.67987" r="5.25"></circle>
+                            <circle id="Oval-Copy-24" stroke="#484848" stroke-width="0.5" fill="#FFFFFF" fill-rule="evenodd" cx="94.5" cy="118.67987" r="5.25"></circle>
+                            <circle id="Oval-Copy-15" stroke="none" fill="#484848" fill-rule="evenodd" cx="52.5" cy="90.6798699" r="4.5"></circle>
+                            <circle id="Oval-Copy-16" stroke="none" fill="#484848" fill-rule="evenodd" cx="110.5" cy="81.6798699" r="4.5"></circle>
+                            <circle id="Oval-Copy-23" stroke="none" fill="#484848" fill-rule="evenodd" cx="78.5" cy="117.67987" r="4.5"></circle>
+                            <circle id="Oval-Copy-13" stroke="none" fill="#484848" fill-rule="evenodd" cx="71" cy="73.1798699" r="6"></circle>
+                            <path d="M60.4597828,35.1642514 C42.1282038,41.2158611 30.2573401,50.910217 30.2628179,61.8447984 C30.2720275,80.2183683 63.8102159,95.1359776 105.17246,95.1642514 C124.669,95.1775196 142.423866,91.8803163 155.746248,86.4663189" id="Path" stroke="url(#linearGradient-5)" stroke-width="0.5" fill="none" stroke-linecap="round" transform="translate(93.004533, 65.164251) rotate(136.000000) translate(-93.004533, -65.164251) "></path>
+                            <path d="M35.1642597,72.6424708 C16.8326807,79.1983813 4.96181698,89.7006001 4.96729481,101.546397 C4.97650439,121.451097 38.5146928,137.611841 79.8769371,137.642471 C99.3734768,137.656845 117.128343,134.084874 130.450725,128.219711" id="Path" stroke="url(#linearGradient-6)" stroke-width="0.5" fill="none" stroke-linecap="round" transform="translate(67.709010, 105.142471) scale(-1, -1) rotate(136.000000) translate(-67.709010, -105.142471) "></path>
+                            <ellipse id="椭圆形" stroke="none" fill="#484848" fill-rule="evenodd" cx="137" cy="64.1801541" rx="2" ry="2.00028423"></ellipse>
+                            <ellipse id="椭圆形" stroke="none" fill="#484848" fill-rule="evenodd" cx="22" cy="104.180154" rx="2" ry="2.00028423"></ellipse>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
