@@ -12,10 +12,11 @@ import {
 import client from '@graphql/client';
 import { getPathname, getCompareAnalyzeLink } from '@common/utils';
 import Compare from './assets/compare.svg';
+import { AiFillCaretDown } from 'react-icons/ai';
 
 const collections = jsonData as unknown as Record<string, Collection>;
 
-const MainContent = () => {
+const MainContent = ({ items }: { items: Collection[] }) => {
   const router = useRouter();
   const { slug } = router.query;
   const [compareMode, setCompareMode] = useState(false);
@@ -34,66 +35,98 @@ const MainContent = () => {
     labels: labelList,
   });
 
+  const CompareBar = (
+    <div className="flex px-8 pt-4 pb-5 md:hidden">
+      <div className="mr-8">
+        <div className="text-xl font-bold">
+          {collection && collection[nameKey]}
+        </div>
+        <div className="text-xs text-gray-400">
+          {t('collection:repositories', { length: length })}
+        </div>
+      </div>
+      <div className="pt-1">
+        {compareMode ? (
+          <div className="flex text-xs ">
+            <div className="text-sm leading-8 text-gray-400">
+              {t('collection:please_select_two_or_more_repositories_below')}
+            </div>
+            <div
+              onClick={() => {
+                setCompareMode(false);
+              }}
+              className="ml-5 h-8 cursor-pointer border border-gray-500 px-3 py-2 text-center text-xs text-black "
+            >
+              {t('collection:cancel')}
+            </div>
+            <div
+              onClick={async () => {
+                if (compareList.length > 1) {
+                  await router.push(getCompareAnalyzeLink(compareList, 'repo'));
+                }
+                // setSelect(false);
+              }}
+              className={classnames(
+                'ml-2 h-8 cursor-pointer border-0 border-gray-500 bg-blue-600 px-3 py-2 text-center text-xs text-gray-50',
+                { 'bg-gray-300': compareList.length < 2 }
+              )}
+            >
+              {t('collection:compare')}
+            </div>
+          </div>
+        ) : (
+          <div
+            onClick={() => {
+              setCompareMode(true);
+            }}
+            className="h-8 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-8"
+          >
+            <div className="mr-2 inline-block align-text-bottom">
+              <Compare />
+            </div>
+
+            {t('collection:pick_for_compare')}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const MobileBar = (
+    <div className="mb-4 flex flex h-11 items-center justify-between border-b bg-white px-4 >md:hidden">
+      <div className="flex items-center">
+        <select
+          className={classnames('w-auto appearance-none font-medium outline-0')}
+          value={`/${slug}`}
+          onChange={async (e) => {
+            const collectionSlug = e.target.value;
+            await router.push(`/collection${collectionSlug}`);
+          }}
+        >
+          {items.map((item) => {
+            return (
+              <option key={item.ident} value={item.slug}>
+                {`${item[nameKey]}`}
+              </option>
+            );
+          })}
+        </select>
+        <div className="text-xs">
+          <AiFillCaretDown />
+        </div>
+      </div>
+      <div className="text-xs text-gray-400">
+        {t('collection:repositories', { length: length })}
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="w-full px-8 pt-4 pb-10">
-        <div className="flex pb-5">
-          <div className="mr-8">
-            <div className="text-xl font-bold">
-              {collection && collection[nameKey]}
-            </div>
-            <div className="text-xs text-gray-400">
-              {t('collection:repositories', { length: length })}
-            </div>
-          </div>
-          <div className="pt-1">
-            {compareMode ? (
-              <div className="flex text-xs ">
-                <div className="text-sm leading-8 text-gray-400">
-                  {t('collection:please_select_two_or_more_repositories_below')}
-                </div>
-                <div
-                  onClick={() => {
-                    setCompareMode(false);
-                  }}
-                  className="ml-5 h-8 cursor-pointer border border-gray-500 px-3 py-2 text-center text-xs text-black "
-                >
-                  {t('collection:cancel')}
-                </div>
-                <div
-                  onClick={async () => {
-                    if (compareList.length > 1) {
-                      await router.push(
-                        getCompareAnalyzeLink(compareList, 'repo')
-                      );
-                    }
-                    // setSelect(false);
-                  }}
-                  className={classnames(
-                    'ml-2 h-8 cursor-pointer border-0 border-gray-500 bg-blue-600 px-3 py-2 text-center text-xs text-gray-50',
-                    { 'bg-gray-300': compareList.length < 2 }
-                  )}
-                >
-                  {t('collection:compare')}
-                </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => {
-                  setCompareMode(true);
-                }}
-                className="h-8 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-8"
-              >
-                <div className="mr-2 inline-block align-text-bottom">
-                  <Compare />
-                </div>
-
-                {t('collection:pick_for_compare')}
-              </div>
-            )}
-          </div>
-        </div>
-        <div>
+      <div className="w-full">
+        {CompareBar}
+        {MobileBar}
+        <div className={classnames('px-8 pb-10', 'md:px-4')}>
           <div
             className={classnames(
               'grid flex-1 gap-6',
@@ -101,7 +134,7 @@ const MainContent = () => {
               '2xl:grid-cols-5',
               'xl:grid-cols-4',
               'lg:grid-cols-3',
-              'md:grid-cols-2',
+              'md:grid-cols-2 md:gap-4',
               'sm:grid-cols-1'
             )}
           >

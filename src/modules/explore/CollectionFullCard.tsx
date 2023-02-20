@@ -61,7 +61,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
                       <a className="flex w-full items-center text-sm hover:underline">
                         <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
                         <span className="truncate">
-                          {level === Level.REPO ? getRepoName(label!) : label}
+                          {level === Level.REPO ? getPathname(label!) : label}
                         </span>
                       </a>
                     </Link>

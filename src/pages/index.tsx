@@ -9,13 +9,18 @@ import Banner from '@modules/home/Banner';
 import HotFields from '@modules/home/HotFields';
 import Projects from '@modules/home/Projects';
 import Explain from '@modules/home/Explain';
+import ExplainMobile from '@modules/home/Explain/Mobile';
 import SpecialThank from '@modules/home/SpecialThank';
 import getLocalesFile from '@common/utils/getLocalesFile';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['home', 'metrics_models'])),
+      ...(await getLocalesFile(req.cookies, [
+        'home',
+        'analyze',
+        'metrics_models',
+      ])),
     },
   };
 };
@@ -30,6 +35,7 @@ const Home: React.FC = (props) => {
         <Projects />
         <NoSsr>
           <Explain />
+          <ExplainMobile />
         </NoSsr>
         <SpecialThank />
       </main>

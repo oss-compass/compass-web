@@ -61,13 +61,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <Head>
           <title>OSS Compass</title>
           <meta charSet="utf-8" />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-          />
+          <meta name="viewport" content="width=device-width" />
           <meta name="keywords" content={''} />
           <meta name="description" content={''} />
-          <meta name="applicable-device" content="pc,mobile" />
           <link rel="shortcut icon" href="/favicon.ico" />
         </Head>
         <NextNProgress

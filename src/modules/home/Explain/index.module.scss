@@ -5,6 +5,13 @@
   background-repeat: no-repeat;
   background-color: #040721;
 }
+.mobileBg {
+  background-image: url('/images/home/starry-sky.jpg');
+  background-size: 1714px 600px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #040721;
+}
 .working {
   position: absolute;
   top: calc(50% - 73px);
@@ -21,6 +28,15 @@
   left: 0;
   top: 0;
   background-size: 2560px 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+.mobilePlantBg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-size: 1714px 600px;
   background-position: center;
   background-repeat: no-repeat;
   background-color: transparent;
