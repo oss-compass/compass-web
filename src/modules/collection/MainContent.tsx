@@ -38,12 +38,16 @@ const MainContent = ({ items }: { items: Collection[] }) => {
 
   useEffect(() => {
     const t = setTimeout(() => {
-      const checkEle = selectRef.current?.querySelector('option:checked');
-      const helper = document.getElementById('select-element-width-helper')!;
-      if (helper) {
-        helper.innerHTML = checkEle!.innerHTML;
-        const width = helper.offsetWidth;
-        selectRef.current!.style.width = `${width + 10}px`;
+      try {
+        const checkEle = selectRef.current?.querySelector('option:checked');
+        const helper = document.getElementById('select-element-width-helper')!;
+        if (helper) {
+          helper.innerHTML = checkEle!.innerHTML;
+          const width = helper.offsetWidth;
+          selectRef.current!.style.width = `${width + 10}px`;
+        }
+      } catch (e) {
+        console.log(e);
       }
     }, 0);
     return () => {
