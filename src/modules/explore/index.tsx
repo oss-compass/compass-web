@@ -13,7 +13,7 @@ const Explore = () => {
       <Header />
       <div className="bg-gray-50">
         <Banner content={t('common:header.explore')} />
-        <div className="mx-auto w-[1280px] pb-20 pt-10 md:w-full">
+        <div className="mx-auto w-[1280px] pb-20 pt-10 xl:w-full md:pt-4">
           {/*<div className="flex justify-between py-7">*/}
           {/*  <div className="text-2xl">Collections</div>*/}
           {/*  <AiOutlinePlusSquare*/}

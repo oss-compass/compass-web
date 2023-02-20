@@ -7,11 +7,16 @@ import Drawer from '../Drawer';
 import { useTranslation } from 'react-i18next';
 
 const MenuItem: React.FC<
-  PropsWithChildren<{ title: string; href: string }>
-> = ({ title, href, children }) => {
+  PropsWithChildren<{ title: string; href: string; onClick?: () => void }>
+> = ({ title, href, children, onClick }) => {
   return (
     <LinkX href={href} legacyBehavior>
-      <a className="flex cursor-pointer items-center py-2 px-6 hover:bg-gray-200">
+      <a
+        className="flex cursor-pointer items-center py-2 px-6 hover:bg-gray-200"
+        onClick={() => {
+          onClick?.();
+        }}
+      >
         {children}
         <h2 className="pl-2 font-semibold">{title}</h2>
       </a>
@@ -26,6 +31,11 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
     {
       title: t('common:header.home'),
       href: '/',
+      icon: null,
+    },
+    {
+      title: t('common:header.explore'),
+      href: '/explore',
       icon: null,
     },
     {
@@ -47,7 +57,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      <div className="flex h-12 w-full justify-between px-4">
+      <div className="flex h-12 w-full justify-between border-b px-4">
         <div className="flex items-center">
           <div
             className="mr-2"
@@ -89,7 +99,14 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
           >
             {headLinks.map((item) => {
               return (
-                <MenuItem key={item.title} title={item.title} href={item.href}>
+                <MenuItem
+                  key={item.title}
+                  title={item.title}
+                  href={item.href}
+                  onClick={() => {
+                    toggle();
+                  }}
+                >
                   {item.icon}
                 </MenuItem>
               );

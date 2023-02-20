@@ -25,7 +25,7 @@ const SectionExplain = () => {
         id="sectionexplain"
         className={classnames(
           styles.bg,
-          'relative h-[900px] w-full overflow-hidden'
+          'relative h-[900px] w-full overflow-hidden lg:hidden'
         )}
       >
         <div className={classnames('h-full w-full')}>

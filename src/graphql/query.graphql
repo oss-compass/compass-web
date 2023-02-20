@@ -429,3 +429,28 @@ query bulkOverview($labels: [String!]!) {
     }
   }
 }
+
+query collectionHottest($ident: String!, $limit: Int) {
+  collectionHottest(ident: $ident, limit: $limit) {
+    label
+    level
+    status
+    updatedAt
+  }
+}
+
+query bulkOverview($labels: [String!]!) {
+  bulkOverview(labels: $labels) {
+    backend
+    forksCount
+    language
+    name
+    openIssuesCount
+    path
+    stargazersCount
+    watchersCount
+    metricActivity {
+      activityScore
+    }
+  }
+}
