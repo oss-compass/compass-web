@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
 
 const defaultVal = {
-  range: '3M' as RangeTag,
-  timeStart: timeRange['3M'].start,
-  timeEnd: timeRange['3M'].end,
+  range: '6M' as RangeTag,
+  timeStart: timeRange['6M'].start,
+  timeEnd: timeRange['6M'].end,
 };
 
 const useQueryDateRange = () => {
