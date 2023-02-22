@@ -4,6 +4,7 @@ import {
   getNameSpace,
   getRepoName,
   getLastPathSegment,
+  removeExtname,
 } from './url';
 
 describe('utils url ', () => {
@@ -92,6 +93,27 @@ describe('utils url ', () => {
 
     testCases.map((item) => {
       expect(getRepoName(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('removeUrlDotGit', function () {
+    const testCases = [
+      {
+        input: 'https://github.com/EdmondFrank/.emacs.d',
+        result: 'https://github.com/EdmondFrank/.emacs.d',
+      },
+      {
+        input: 'https://github.com/ant-design/ant-design.git',
+        result: 'https://github.com/ant-design/ant-design',
+      },
+      {
+        input: undefined,
+        result: '',
+      },
+    ];
+
+    testCases.map((item) => {
+      expect(removeExtname(item.input, '.git')).toEqual(item.result);
     });
   });
 });

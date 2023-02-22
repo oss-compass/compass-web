@@ -14,6 +14,7 @@ import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
 import RepoItem from './RepoItem';
 import Loading from './Loading';
 import { useTranslation } from 'react-i18next';
+import { removeExtname } from '@common/utils';
 
 const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   onConfirm,
@@ -83,7 +84,9 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
                 name={repo.full_name}
                 updateAt={repo.updated_at}
                 onPick={() => {
-                  onConfirm(repo.html_url);
+                  //  gitee html_url value endWith .git
+                  const repoUrl = removeExtname(repo.html_url, '.git');
+                  onConfirm(repoUrl);
                 }}
               />
             );
