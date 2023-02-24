@@ -37,11 +37,6 @@ const getTimeRangeTags = () => Object.keys(timeRange) as unknown as RangeTag[];
 
 export const rangeTags = getTimeRangeTags();
 
-export const defaultDatePicker = {
-  timeStart: timeRange['3M'].start,
-  timeEnd: timeRange['3M'].end,
-};
-
 export enum Level {
   COMMUNITY = 'community',
   PROJECT = 'project',
