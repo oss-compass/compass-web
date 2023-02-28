@@ -9,7 +9,7 @@
   "type_the_name_to_insight_into_your_project": "请输入 GitHub/Gitee 仓库名称或社区名称",
   "please_enter_repository_name_or_community": "",
   "a_special_thank_you": "致谢…",
-  "oss_compass_follows_the_best_practices_and_specifi": "开源指南针遵循 CHAOSS 项目的最佳实践，包括度量模型和度量标准，其中部分后端组件最初来自 Grimoirebs。我们衷心感谢 CHAOSS 社区。",
+  "oss_compass_follows_the_best_practices_and_specifi": "开源指南针遵循 CHAOSS 项目的最佳实践，包括度量模型和度量标准，其中部分后端组件最初来自 Grimoirelabs。我们衷心感谢 CHAOSS 社区。",
   "submit_your_project": "提交项目",
   "community": "社区",
   "compass_report": "查看报告",
