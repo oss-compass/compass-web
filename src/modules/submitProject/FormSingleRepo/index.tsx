@@ -71,13 +71,35 @@ const FormSingleRepo = () => {
             {t('submit_project:single_repository')}
           </h3>
 
-          <label className="mb-4 block text-xl font-medium">
-            {formType === 'select'
-              ? t('submit_project:select_your_own_repository_on', {
-                  providerName: providerName,
-                })
-              : t('submit_project:type_the_address_of_any_repository')}
-          </label>
+          <div className="mb-4 flex w-[560px] items-center justify-between md:w-full">
+            <label className=" block text-xl font-medium">
+              {formType === 'select'
+                ? t('submit_project:select_your_own_repository_on', {
+                    providerName: providerName,
+                  })
+                : t('submit_project:type_the_address_of_any_repository')}
+            </label>
+            <div
+              className="flex cursor-pointer items-center justify-end text-sm text-primary"
+              onClick={() => {
+                setFormType((pre) => {
+                  if (pre === 'select') return 'input';
+                  if (pre === 'input') return 'select';
+                  return 'input';
+                });
+
+                //  reset form
+                reset();
+                setSelectVal('');
+              }}
+            >
+              {formType === 'select'
+                ? t('submit_project:manually_enter_repository_url')
+                : t('submit_project:choose_a_repository', {
+                    providerName: providerName,
+                  })}
+            </div>
+          </div>
 
           <div className="mb-10 w-[560px] md:w-full">
             {formType === 'select' ? (
@@ -124,27 +146,6 @@ const FormSingleRepo = () => {
                 )
               </p>
             )}
-
-            <div
-              className="mt-2 flex cursor-pointer items-center justify-end text-sm text-primary"
-              onClick={() => {
-                setFormType((pre) => {
-                  if (pre === 'select') return 'input';
-                  if (pre === 'input') return 'select';
-                  return 'input';
-                });
-
-                //  reset form
-                reset();
-                setSelectVal('');
-              }}
-            >
-              {formType === 'select'
-                ? t('submit_project:manually_enter_repository_url')
-                : t('submit_project:choose_a_repository', {
-                    providerName: providerName,
-                  })}
-            </div>
           </div>
 
           <Button
