@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { getProvider } from '@common/utils';
@@ -18,7 +18,7 @@ const LabelItems = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const hiddenRef = useRef<HTMLDivElement>(null);
 
-  const onResize = useCallback(() => {
+  const computeWidth = () => {
     if (ref) {
       const parentsWidth = ref.current.offsetWidth;
       let childrenWidth = 0;
@@ -32,8 +32,9 @@ const LabelItems = () => {
       });
       setHiddenIndex(index);
     }
-  }, [hiddenIndex]);
-
+  };
+  const onResize = useCallback(computeWidth, [hiddenIndex, compareItems]);
+  useEffect(computeWidth, [compareItems]);
   useClickAway(hiddenRef, () => {
     setTimeout(() => {
       setHiddenVisible(false);
@@ -43,7 +44,7 @@ const LabelItems = () => {
   const { ref } = useResizeDetector({
     handleHeight: false,
     refreshMode: 'debounce',
-    refreshRate: 1000,
+    refreshRate: 200,
     onResize,
   });
 

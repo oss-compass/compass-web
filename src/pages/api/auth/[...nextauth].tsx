@@ -24,6 +24,9 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  session: {
+    maxAge: 60 * 60 * 12,
+  },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       return true;

@@ -64,3 +64,12 @@ export function removeHttps(url: string | undefined) {
   if (!url) return '';
   return url.replace(/^https:\/\//, '');
 }
+
+// https://github.com/cli/cli.git => https://github.com/cli/cli
+export function removeExtname(url: string | undefined, ext: string) {
+  if (!url) return '';
+  if (url.endsWith(ext)) {
+    return url.replace(new RegExp('\\' + ext + '$'), '');
+  }
+  return url;
+}
