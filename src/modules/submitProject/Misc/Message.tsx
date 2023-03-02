@@ -1,22 +1,30 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import ErrorMessage from './ErrorMessage';
 import SuccessMessage from './SuccessMessage';
 
 const Message: React.FC<{
   show: boolean;
   isError: boolean;
-  status?: string;
   message?: string;
-  url?: string | null;
-}> = ({ show, isError, status, message, url }) => {
+  prUrl?: string | null;
+  reportUrl?: string | null;
+}> = ({ show, isError, message, prUrl, reportUrl }) => {
+  const { t } = useTranslation();
+
   if (!show) {
     return null;
   }
+
   if (isError) {
-    return <ErrorMessage />;
+    return <ErrorMessage content={message} reportUrl={reportUrl || ''} />;
   }
+
   return (
-    <SuccessMessage content={message || 'submit success!'} url={url || ''} />
+    <SuccessMessage
+      content={message || t('submit_project:submit_success')}
+      url={prUrl || ''}
+    />
   );
 };
 

@@ -72,7 +72,7 @@ const IsMaintained = () => {
       {(ref) => {
         return (
           <ChartWithData tansOpts={tansOpt} getOptions={getOptions}>
-            {(loading, option) => {
+            {({ loading, option }) => {
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
               );

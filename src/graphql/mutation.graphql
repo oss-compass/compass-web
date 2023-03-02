@@ -15,6 +15,7 @@ mutation createRepoTask(
     message
     status
     prUrl
+    reportUrl
   }
 }
 
@@ -37,5 +38,6 @@ mutation createProjectTask(
     message
     status
     prUrl
+    reportUrl
   }
 }

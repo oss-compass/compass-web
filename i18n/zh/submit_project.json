@@ -8,9 +8,9 @@
   "your_project_hosting_on": "您的项目托管在",
   "logout": "注销",
   "select_your_own_repository_on": "在{{providerName}}选择你的仓库",
-  "or_type_the_address_of_any_repository": "或者输入代码仓地址",
-  "pick_your_own_repository_on": "在{{providerName}}选择你的仓库",
-  "type_address_of": "输入{{providerName}}代码仓地址",
+  "type_the_address_of_any_repository": "输入代码仓地址",
+  "pick_your_own_repository_on": "点击选择仓库",
+  "type_address_of": "请输入代码仓库地址",
   "please_enter_a_valid": "请输入一个有效的{{provider}}仓库链接",
   "eg": "例如",
   "submit": "提交",
@@ -38,5 +38,8 @@
   "input_any_repository_address": "Input any {{providerName}} repository address",
   "run_for_a_single_repository": "作为单个代码仓库提交?",
   "submit_a_single_repository": "作为单仓提交",
-  "please_note_that_when_submitted_as_single_repository": "请注意，当作为单个存储库提交时，所有分析维度都将来自单个存储库标准，这与社区标准不同."
+  "please_note_that_when_submitted_as_single_repository": "请注意，当作为单个存储库提交时，所有分析维度都将来自单个存储库标准，这与社区标准不同.",
+  "manually_enter_repository_url": "切换为手动输入",
+  "choose_a_repository": "切换为从 {{providerName}} 中选择",
+  "submit_success": "提交成功！"
 }

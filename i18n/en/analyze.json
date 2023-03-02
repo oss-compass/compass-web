@@ -57,5 +57,8 @@
   "mark": {
     "point": "point system",
     "percentage": "percentage system"
-  }
+  },
+  "there_is_currently_no_data_in_the_chart": "There is currently no data in the chart,",
+  "please_contact_us_if_you_have": "Please <l>{{e}}</l> if you have any questions.",
+  "contact_us": "contact us"
 }
