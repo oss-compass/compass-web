@@ -1,8 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 const ErrorMessage: React.FC<{ content?: string }> = ({ content }) => {
-  const { t } = useTranslation();
   return (
     <div className="daisy-alert-error daisy-alert mt-5 text-red-500  ">
       <div>
@@ -19,9 +17,7 @@ const ErrorMessage: React.FC<{ content?: string }> = ({ content }) => {
             d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span>
-          {t('submit_project:error')} {content}
-        </span>
+        <span>{content}</span>
       </div>
     </div>
   );

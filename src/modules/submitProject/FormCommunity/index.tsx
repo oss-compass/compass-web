@@ -43,6 +43,7 @@ const FormCommunity = () => {
   const createStatus = data?.createProjectTask?.status;
   const createMessage = data?.createProjectTask?.message || '';
   const createUrl = data?.createProjectTask?.prUrl;
+  const statusFailed = createStatus === 'false';
 
   const handleSubmit = () => {
     const common = {
@@ -118,9 +119,8 @@ const FormCommunity = () => {
 
         <Message
           show={Boolean(data)}
-          isError={isError}
+          isError={isError || statusFailed}
           message={createMessage}
-          status={createStatus}
           url={createUrl}
         />
       </div>

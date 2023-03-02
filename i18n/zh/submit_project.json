@@ -40,5 +40,6 @@
   "submit_a_single_repository": "作为单仓提交",
   "please_note_that_when_submitted_as_single_repository": "请注意，当作为单个存储库提交时，所有分析维度都将来自单个存储库标准，这与社区标准不同.",
   "manually_enter_repository_url": "手动输入仓库 url ",
-  "choose_a_repository": "从 {{providerName}} 中选择仓库"
+  "choose_a_repository": "从 {{providerName}} 中选择仓库",
+  "submit_success": "提交成功！"
 }

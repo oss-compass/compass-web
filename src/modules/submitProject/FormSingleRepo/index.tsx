@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCreateRepoTaskMutation } from '@graphql/generated';
@@ -42,19 +42,11 @@ const FormSingleRepo = () => {
       },
     }
   );
-
-  console.log('----------', {
-    isLoading,
-    isError,
-    mutate,
-    data,
-  });
-
-  const createStatus = data?.createRepoTask?.status;
+  const statusFailed = data?.createRepoTask?.status === 'false';
   const createMessage = data?.createRepoTask?.message || '';
   const createUrl = data?.createRepoTask?.prUrl;
 
-  const onSubmit: SubmitHandler<{ url: string }> = (data) => {
+  const onSubmit: SubmitHandler<{ url?: string }> = (data) => {
     const common = {
       username: session!.user!.login as string,
       token: session!.accessToken as string,
@@ -160,7 +152,12 @@ const FormSingleRepo = () => {
             disabled={!Boolean(selectVal || inputVal)}
             className="min-w-[130px] bg-black"
             onClick={() => {
-              handleSubmit(onSubmit)();
+              if (formType === 'input') {
+                handleSubmit(onSubmit)();
+              }
+              if (formType === 'select') {
+                onSubmit({});
+              }
             }}
           >
             {t('submit_project:submit')}
@@ -168,9 +165,8 @@ const FormSingleRepo = () => {
 
           <Message
             show={Boolean(data)}
-            isError={isError}
+            isError={isError || statusFailed}
             message={createMessage}
-            status={createStatus}
             url={createUrl}
           />
         </div>
