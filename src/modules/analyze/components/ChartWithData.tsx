@@ -4,9 +4,19 @@ import transSummaryToAxis from '@modules/analyze/DataTransform/transSummaryToAxi
 import { EChartsOption } from 'echarts';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
+import LinkLegacy from '@common/components/LinkLegacy';
 import { useSnapshot } from 'valtio';
 import { formatISO } from '@common/utils';
-import { TransOpt, GenChartData } from '@modules/analyze/type';
+import { TransOpt, GenChartData, YResult } from '@modules/analyze/type';
+import { isNull, isUndefined } from 'lodash';
+
+const isEmptyData = (result: YResult[]) => {
+  return result.every((r) => {
+    return r.data.every((i) => {
+      return isNull(i) || isUndefined(i);
+    });
+  });
+};
 
 const ChartWithData: React.FC<{
   tansOpts: TransOpt;
@@ -15,7 +25,11 @@ const ChartWithData: React.FC<{
     theme?: DeepReadonly<ChartThemeState>
   ) => EChartsOption;
   children:
-    | ((loading: boolean, option: EChartsOption) => ReactNode)
+    | ((args: {
+        loading: boolean;
+        isEmpty: boolean;
+        option: EChartsOption;
+      }) => ReactNode)
     | ReactNode;
 }> = ({ children, getOptions, tansOpts }) => {
   const theme = useSnapshot(chartThemeState);
@@ -44,10 +58,26 @@ const ChartWithData: React.FC<{
     theme
   );
 
+  const isEmpty = isEmptyData(yResults);
+  if (isEmpty && !loading) {
+    return (
+      <div className="absolute left-0 right-0 top-0 bottom-0 flex w-full flex-col items-center justify-center">
+        <p className="text-sm text-gray-400">
+          There is currently no data in the chart,
+        </p>
+        <p className="text-sm text-gray-400">
+          Please
+          <LinkLegacy href={'/docs/community/wechat/'}>contact us </LinkLegacy>
+          if you have any questions.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       {typeof children === 'function'
-        ? children(loading, echartsOpts)
+        ? children({ loading, isEmpty, option: echartsOpts })
         : children}
     </>
   );
