@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
+import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCreateRepoTaskMutation } from '@graphql/generated';
 import client from '@graphql/client';
@@ -19,6 +20,7 @@ const FormSingleRepo = () => {
   const { data: session } = useSession();
   const provider = session?.provider || 'github';
 
+  const [formType, setFormType] = useState<'select' | 'input'>('input');
   const [repoSelectVisible, setRepoSelectVisible] = useState(false);
   const [selectVal, setSelectVal] = useState('');
 
@@ -40,6 +42,13 @@ const FormSingleRepo = () => {
       },
     }
   );
+
+  console.log('----------', {
+    isLoading,
+    isError,
+    mutate,
+    data,
+  });
 
   const createStatus = data?.createRepoTask?.status;
   const createMessage = data?.createRepoTask?.message || '';
@@ -68,37 +77,33 @@ const FormSingleRepo = () => {
           <h3 className="mb-6 text-[28px] font-medium">
             {t('submit_project:single_repository')}
           </h3>
+
           <label className="mb-4 block text-xl font-medium">
-            {t('submit_project:select_your_own_repository_on', {
-              providerName: providerName,
-            })}
+            {formType === 'select'
+              ? t('submit_project:select_your_own_repository_on', {
+                  providerName: providerName,
+                })
+              : t('submit_project:type_the_address_of_any_repository')}
           </label>
-          <SelectLike
-            value={selectVal}
-            onChange={(v) => {
-              setSelectVal(v);
-            }}
-            className="w-[560px] md:w-full"
-            placeholder={
-              t('submit_project:pick_your_own_repository_on', {
-                providerName: providerName,
-              }) as string
-            }
-            onClick={() => setRepoSelectVisible(true)}
-          />
 
-          <p className="mt-4 mb-4 text-sm">
-            {t('submit_project:or_type_the_address_of_any_repository')}
-          </p>
-
-          <form
-            onSubmit={handleSubmit(onSubmit, (v) => {
-              console.log(v);
-            })}
-          >
-            <div className={'mb-10'}>
+          <div className="mb-10 w-[560px] md:w-full">
+            {formType === 'select' ? (
+              <SelectLike
+                value={selectVal}
+                onChange={(v) => {
+                  setSelectVal(v);
+                }}
+                className="w-full"
+                placeholder={
+                  t('submit_project:pick_your_own_repository_on', {
+                    providerName: providerName,
+                  }) as string
+                }
+                onClick={() => setRepoSelectVisible(true)}
+              />
+            ) : (
               <Input
-                className="w-[560px] md:w-full"
+                className="w-full"
                 placeholder={
                   t('submit_project:type_address_of', {
                     providerName: providerName,
@@ -115,34 +120,61 @@ const FormSingleRepo = () => {
                   },
                 })}
               />
-              {errors?.url?.message && (
-                <p className="p-1 text-red-500 ">
-                  {errors?.url.message} ( {t('submit_project:eg')}:
-                  <span className="mx-2 font-semibold">
-                    {provider}.com/xxx/xxx
-                  </span>
-                  )
-                </p>
-              )}
-            </div>
-            <Button
-              type="submit"
-              loading={isLoading}
-              disabled={!Boolean(selectVal || inputVal)}
-              className="min-w-[130px] bg-black"
-            >
-              {t('submit_project:submit')}
-            </Button>
+            )}
 
-            <Message
-              show={Boolean(data)}
-              isError={isError}
-              message={createMessage}
-              status={createStatus}
-              url={createUrl}
-            />
-          </form>
+            {errors?.url?.message && (
+              <p className="p-1 text-red-500 ">
+                {errors?.url.message} ( {t('submit_project:eg')}:
+                <span className="mx-2 font-semibold">
+                  {provider}.com/xxx/xxx
+                </span>
+                )
+              </p>
+            )}
+
+            <div
+              className="mt-2 flex cursor-pointer items-center justify-end text-sm text-primary"
+              onClick={() => {
+                setFormType((pre) => {
+                  if (pre === 'select') return 'input';
+                  if (pre === 'input') return 'select';
+                  return 'input';
+                });
+
+                //  reset form
+                reset();
+                setSelectVal('');
+              }}
+            >
+              {formType === 'select'
+                ? t('submit_project:manually_enter_repository_url')
+                : t('submit_project:choose_a_repository', {
+                    providerName: providerName,
+                  })}
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            loading={isLoading}
+            disabled={!Boolean(selectVal || inputVal)}
+            className="min-w-[130px] bg-black"
+            onClick={() => {
+              handleSubmit(onSubmit)();
+            }}
+          >
+            {t('submit_project:submit')}
+          </Button>
+
+          <Message
+            show={Boolean(data)}
+            isError={isError}
+            message={createMessage}
+            status={createStatus}
+            url={createUrl}
+          />
         </div>
+
         <SwitchToCommunity />
       </div>
 
