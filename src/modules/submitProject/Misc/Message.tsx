@@ -7,20 +7,23 @@ const Message: React.FC<{
   show: boolean;
   isError: boolean;
   message?: string;
-  url?: string | null;
-}> = ({ show, isError, message, url }) => {
+  prUrl?: string | null;
+  reportUrl?: string | null;
+}> = ({ show, isError, message, prUrl, reportUrl }) => {
   const { t } = useTranslation();
 
   if (!show) {
     return null;
   }
+
   if (isError) {
-    return <ErrorMessage content={message} />;
+    return <ErrorMessage content={message} reportUrl={reportUrl || ''} />;
   }
+
   return (
     <SuccessMessage
       content={message || t('submit_project:submit_success')}
-      url={url || ''}
+      url={prUrl || ''}
     />
   );
 };

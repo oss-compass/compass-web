@@ -361,6 +361,7 @@ export type CreateProjectTaskPayload = {
   errors?: Maybe<Array<Error>>;
   message?: Maybe<Scalars['String']>;
   prUrl?: Maybe<Scalars['String']>;
+  reportUrl?: Maybe<Scalars['String']>;
   status: Scalars['String'];
 };
 
@@ -387,6 +388,7 @@ export type CreateRepoTaskPayload = {
   errors?: Maybe<Array<Error>>;
   message?: Maybe<Scalars['String']>;
   prUrl?: Maybe<Scalars['String']>;
+  reportUrl?: Maybe<Scalars['String']>;
   status: Scalars['String'];
 };
 
@@ -671,6 +673,7 @@ export type CreateRepoTaskMutation = {
     message?: string | null;
     status: string;
     prUrl?: string | null;
+    reportUrl?: string | null;
   } | null;
 };
 
@@ -689,6 +692,7 @@ export type CreateProjectTaskMutation = {
     message?: string | null;
     status: string;
     prUrl?: string | null;
+    reportUrl?: string | null;
   } | null;
 };
 
@@ -1238,6 +1242,7 @@ export const CreateRepoTaskDocument = /*#__PURE__*/ `
     message
     status
     prUrl
+    reportUrl
   }
 }
     `;
@@ -1286,6 +1291,7 @@ export const CreateProjectTaskDocument = /*#__PURE__*/ `
     message
     status
     prUrl
+    reportUrl
   }
 }
     `;

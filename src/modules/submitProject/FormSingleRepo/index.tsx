@@ -44,7 +44,8 @@ const FormSingleRepo = () => {
   );
   const statusFailed = data?.createRepoTask?.status === 'false';
   const createMessage = data?.createRepoTask?.message || '';
-  const createUrl = data?.createRepoTask?.prUrl;
+  const createPrUrl = data?.createRepoTask?.prUrl;
+  const reportUrl = data?.createRepoTask?.reportUrl;
 
   const onSubmit: SubmitHandler<{ url?: string }> = (data) => {
     const common = {
@@ -167,7 +168,8 @@ const FormSingleRepo = () => {
             show={Boolean(data)}
             isError={isError || statusFailed}
             message={createMessage}
-            url={createUrl}
+            prUrl={createPrUrl}
+            reportUrl={reportUrl}
           />
         </div>
 

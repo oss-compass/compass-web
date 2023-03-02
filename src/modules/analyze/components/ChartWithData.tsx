@@ -58,10 +58,12 @@ const ChartWithData: React.FC<{
     theme
   );
 
+  console.log({ xAxis, yResults });
   const isEmpty = isEmptyData(yResults);
+  let EmptyNode = null;
   if (isEmpty && !loading) {
-    return (
-      <div className="absolute left-0 right-0 top-0 bottom-0 flex w-full flex-col items-center justify-center">
+    EmptyNode = (
+      <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex w-full flex-col items-center justify-center">
         <p className="text-sm text-gray-400">
           There is currently no data in the chart,
         </p>
@@ -79,6 +81,8 @@ const ChartWithData: React.FC<{
       {typeof children === 'function'
         ? children({ loading, isEmpty, option: echartsOpts })
         : children}
+
+      {EmptyNode}
     </>
   );
 };
