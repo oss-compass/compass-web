@@ -10,6 +10,8 @@ import { getUrlReg } from '../Misc';
 import useProvider from '../Form/useProvider';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
+import gsap from 'gsap';
+
 interface Props {
   onClose: () => void;
   onPressEnter?: (v: string) => void;
@@ -49,8 +51,15 @@ const InputUrlField = forwardRef<InputRef, Props>(
         return value;
       },
       shakeInput: () => {
+        gsap.to(inputRef.current, {
+          keyframes: {
+            x: [0, 130, -130, 0],
+            ease: 'power2.inOut',
+          },
+          repeat: 2,
+          duration: 0.3,
+        });
         inputRef.current?.focus();
-        // todo
       },
     }));
 

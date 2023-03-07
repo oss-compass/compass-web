@@ -70,9 +70,7 @@ const AddSelectPopover: React.FC<{
           >
             <AiOutlineLink />
             <p className="ml-2 text-sm font-medium">
-              {t('submit_project:select_your_own_repository_on', {
-                providerName: providerName,
-              })}
+              {t('submit_project:type_the_address_of_any_repository')}
             </p>
           </div>
         </div>
