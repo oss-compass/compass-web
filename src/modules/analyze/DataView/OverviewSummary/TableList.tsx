@@ -13,7 +13,6 @@ import { Topic } from '@modules/analyze/components/SideBar/config';
 import { formatRepoName } from '@modules/analyze/options/format';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
-import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -72,7 +71,6 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
 const TrendsList: React.FC = () => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
-  const showOrganizations = useShowOrganizations();
 
   const { compareItems } = useCompareItems();
   const data = useQueries({
@@ -130,11 +128,9 @@ const TrendsList: React.FC = () => {
               <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
                 {t('metrics_models:community_activity.title')}
               </TT>
-              {showOrganizations && (
-                <TT className="border-t-[#61a2ff] bg-[#ddebff]">
-                  {t('metrics_models:organization_activity.title')}
-                </TT>
-              )}
+              <TT className="border-t-[#61a2ff] bg-[#ddebff]">
+                {t('metrics_models:organization_activity.title')}
+              </TT>
             </tr>
           </thead>
           <tbody>
@@ -170,11 +166,9 @@ const TrendsList: React.FC = () => {
                     <Td className="bg-[#f8f3ff]">
                       {formatScore(item!.activityScore)}
                     </Td>
-                    {showOrganizations && (
-                      <Td className="bg-[#ddebff] ">
-                        {formatScore(item!.organizationsActivity)}
-                      </Td>
-                    )}
+                    <Td className="bg-[#ddebff] ">
+                      {formatScore(item!.organizationsActivity)}
+                    </Td>
                   </tr>
                 );
               })}

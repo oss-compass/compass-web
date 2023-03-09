@@ -6,14 +6,11 @@ import MenuSubItem from './Menu/MenuSubItem';
 import { useOrganizationsActivity, Organizations, Topic } from './config';
 import NicheCreationIcon from './assets/NicheCreation.svg';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';
-import { useSnapshot } from 'valtio';
-import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
 
 const NicheCreation = () => {
   const { t } = useTranslation();
   const organizationsActivity = useOrganizationsActivity();
   const { menuId, subMenuId } = useContext(SideBarContext);
-  const showOrganizations = useShowOrganizations();
 
   const menus = (
     <>
@@ -21,25 +18,22 @@ const NicheCreation = () => {
         {t('metrics_models:developer_attraction.title')}
       </MenuItem>
       <MenuItem
-        disabled={!showOrganizations}
         active={menuId === Organizations.Overview}
         id={Organizations.Overview}
         subMenu={
-          showOrganizations && (
-            <>
-              {organizationsActivity.groups.map((item) => {
-                return (
-                  <MenuSubItem
-                    key={item.id}
-                    active={item.id === subMenuId}
-                    id={item.id}
-                  >
-                    {item.name}
-                  </MenuSubItem>
-                );
-              })}
-            </>
-          )
+          <>
+            {organizationsActivity.groups.map((item) => {
+              return (
+                <MenuSubItem
+                  key={item.id}
+                  active={item.id === subMenuId}
+                  id={item.id}
+                >
+                  {item.name}
+                </MenuSubItem>
+              );
+            })}
+          </>
         }
       >
         {t('metrics_models:organizations_activity.title')}
