@@ -11,14 +11,9 @@ import OrgCount from './OrgCount';
 import ContributionLast from './ContributionLast';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
-import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
 
 const OrganizationsActivity = () => {
   const { t } = useTranslation();
-  const showOrganizations = useShowOrganizations();
-  if (!showOrganizations) {
-    return null;
-  }
 
   return (
     <>

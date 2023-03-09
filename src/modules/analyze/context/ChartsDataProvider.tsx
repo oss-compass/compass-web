@@ -20,7 +20,6 @@ import { Level } from '@modules/analyze/constant';
 
 interface Store {
   loading: boolean;
-  showOrganizations: boolean;
   items: {
     label: string;
     level: Level;
@@ -33,17 +32,12 @@ interface Store {
 const defaultVal = {
   loading: false,
   // if it is completely contributed by individuals， hidden organizations section
-  showOrganizations: false,
   items: [],
   summary: null,
 };
 
 const dataState = proxy<Store>(defaultVal);
 export const ChartsDataContext = createContext<typeof dataState>(dataState);
-
-const toggleShowOrganizations = (bool: boolean) => {
-  dataState.showOrganizations = bool;
-};
 
 const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const proxyState = useRef(dataState).current;
@@ -86,13 +80,6 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
     .filter((i) => i.status !== 'error');
 
   const isLoading = items.some((i) => i.status === 'loading');
-  const hasOrganizations = items.some((i) => {
-    const metricGroupActivity = i.result?.metricGroupActivity;
-    if (Array.isArray(metricGroupActivity)) {
-      return metricGroupActivity.length > 0;
-    }
-    return false;
-  });
 
   // scroll to url hash element
   usePageLoadHashScroll(isLoading);
@@ -101,9 +88,8 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
     proxyState.loading = isLoading;
     if (!isLoading) {
       proxyState.items = items;
-      toggleShowOrganizations(hasOrganizations);
     }
-  }, [isLoading, items, hasOrganizations, proxyState]);
+  }, [isLoading, items, proxyState]);
 
   return (
     <ChartsDataContext.Provider value={proxyState}>

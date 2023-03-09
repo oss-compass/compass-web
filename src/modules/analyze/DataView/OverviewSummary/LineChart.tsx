@@ -12,7 +12,6 @@ import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredM
 import { transDataForOverview } from '@modules/analyze/DataTransform/transDataForOverview';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
-import useShowOrganizations from '@modules/analyze/hooks/useShowOrganizations';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
@@ -96,10 +95,9 @@ const LineChartWithData = () => {
     },
   ];
 
-  const showOrganizations = useShowOrganizations();
   const data = useMetricQueryData();
   const isLoading = data.loading;
-  const copyOpts = showOrganizations ? optsWithOrg : opts;
+  const copyOpts = optsWithOrg;
 
   const { xAxis, yAxisResult } = useMemo(() => {
     const result = data.items[0].result;
