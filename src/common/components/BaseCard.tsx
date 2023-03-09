@@ -114,7 +114,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           ? headRight(cardRef, fullScreen, setFullScreen)
           : headRight}
       </div>
-      <LoadInView containerRef={cardRef} className={bodyClass}>
+      <LoadInView containerRef={cardRef} className={`relative ${bodyClass}`}>
         {typeof children === 'function'
           ? children(cardRef, fullScreen)
           : children}

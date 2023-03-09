@@ -1,15 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import {
-  getLineOption,
-  line,
-  percentageValueFormat,
-  legendFormat,
-  getTooltipsFormatter,
-  getColorWithLabel,
-  percentageUnitFormat,
-  summaryLine,
-  checkFormatPercentageValue,
-} from '@modules/analyze/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
@@ -94,7 +83,7 @@ const CodeMergeRatio = () => {
               />
             </div>
             <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
-              {(loading, option) => {
+              {({ loading, option }) => {
                 return (
                   <EChartX
                     containerRef={ref}

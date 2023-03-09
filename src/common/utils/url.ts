@@ -51,7 +51,7 @@ export function getProvider(url: string) {
 }
 
 //github.com/cli/cli  => https://github.com/cli/cli
-export function fillHttps(url: string): string {
+export function fillHttps(url?: string): string {
   if (!url) return '';
   if (url.indexOf('https') === -1) {
     return `https://${url}`;
