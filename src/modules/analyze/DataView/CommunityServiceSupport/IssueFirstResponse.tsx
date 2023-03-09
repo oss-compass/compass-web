@@ -76,7 +76,7 @@ const IssueFirstResponse = () => {
               />
             </div>
             <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
-              {(loading, option) => {
+              {({ loading, option }) => {
                 return (
                   <EChartX
                     containerRef={ref}

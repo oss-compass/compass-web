@@ -1,12 +1,24 @@
 import React, { ReactNode } from 'react';
+import { useTranslation } from 'next-i18next';
 import transMetricToAxis from '@modules/analyze/DataTransform/transMetricToAxis';
 import transSummaryToAxis from '@modules/analyze/DataTransform/transSummaryToAxis';
 import { EChartsOption } from 'echarts';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
+import LinkLegacy from '@common/components/LinkLegacy';
 import { useSnapshot } from 'valtio';
 import { formatISO } from '@common/utils';
-import { TransOpt, GenChartData } from '@modules/analyze/type';
+import { TransOpt, GenChartData, YResult } from '@modules/analyze/type';
+import { isNull, isUndefined } from 'lodash';
+import { Trans } from 'react-i18next';
+
+const isEmptyData = (result: YResult[]) => {
+  return result.every((r) => {
+    return r.data.every((i) => {
+      return isNull(i) || isUndefined(i);
+    });
+  });
+};
 
 const ChartWithData: React.FC<{
   tansOpts: TransOpt;
@@ -15,9 +27,14 @@ const ChartWithData: React.FC<{
     theme?: DeepReadonly<ChartThemeState>
   ) => EChartsOption;
   children:
-    | ((loading: boolean, option: EChartsOption) => ReactNode)
+    | ((args: {
+        loading: boolean;
+        isEmpty: boolean;
+        option: EChartsOption;
+      }) => ReactNode)
     | ReactNode;
 }> = ({ children, getOptions, tansOpts }) => {
+  const { t, i18n } = useTranslation();
   const theme = useSnapshot(chartThemeState);
   const data = useMetricQueryData();
   const loading = data?.loading;
@@ -44,11 +61,45 @@ const ChartWithData: React.FC<{
     theme
   );
 
+  const isEmpty = isEmptyData(yResults);
+  let EmptyNode = null;
+  if (isEmpty && !loading) {
+    EmptyNode = (
+      <div className="absolute left-0 right-0  bottom-0 z-10 flex h-[350px] w-full flex-col items-center justify-center bg-[rgba(255,255,255,.8)]">
+        <p className="text-xs text-gray-400">
+          {t('analyze:there_is_currently_no_data_in_the_chart')}
+        </p>
+        <p className="text-xs text-gray-400">
+          <Trans
+            i18nKey="please_contact_us_if_you_have"
+            ns="analyze"
+            components={{
+              l: (
+                <LinkLegacy
+                  href={
+                    i18n.language === 'en'
+                      ? 'docs/community/'
+                      : 'docs/zh/community/'
+                  }
+                />
+              ),
+            }}
+            values={{
+              e: t('analyze:contact_us'),
+            }}
+          />
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       {typeof children === 'function'
-        ? children(loading, echartsOpts)
+        ? children({ loading, isEmpty, option: echartsOpts })
         : children}
+
+      {EmptyNode}
     </>
   );
 };
