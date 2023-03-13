@@ -42,7 +42,7 @@
     "i18next": "^22.0.6",
     "lodash": "^4.17.21",
     "next": "12.2.5",
-    "next-auth": "^4.10.3",
+    "next-auth": "^4.20.1",
     "next-i18next": "^13.0.0",
     "nextjs-progressbar": "^0.0.14",
     "proxy-agent": "^5.0.0",
