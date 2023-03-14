@@ -16,7 +16,9 @@
     "github": "GitHub",
     "official_repository_on_github": "Official repository on GitHub",
     "gitee": "Gitee",
-    "official_repository_on_gitee": "Official repository on Gitee"
+    "official_repository_on_gitee": "Official repository on Gitee",
+    "meeting": "Weekly Meeting",
+    "join_meeting": "Technical Seminar Weekly Meeting"
   },
   "footer": {
     "tutorial": "Tutorial",

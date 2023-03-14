@@ -16,7 +16,9 @@
     "github": "GitHub",
     "official_repository_on_github": "官方 GitHub 仓库",
     "gitee": "Gitee",
-    "official_repository_on_gitee": "官方 Gitee 仓库"
+    "official_repository_on_gitee": "官方 Gitee 仓库",
+    "meeting": "腾讯会议",
+    "join_meeting": "技术研讨周会"
   },
   "footer": {
     "tutorial": "文档教程",
