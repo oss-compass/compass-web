@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+import Image from 'next/image';
 import LinkX from '@common/components/LinkX';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
@@ -77,7 +77,7 @@ const CommunityDropdown = () => {
             <a
               target="_blank"
               rel="noopener noreferrer"
-              className={classnames(itemClass)}
+              className={classnames(itemClass, borderClass)}
             >
               <div className="mr-4 w-8">
                 <GiteeRed />
@@ -86,6 +86,29 @@ const CommunityDropdown = () => {
                 <p className="text-base">{t('common:community.gitee')}</p>
                 <p className="text-sm text-white/50">
                   {t('common:community.official_repository_on_gitee')}
+                </p>
+              </div>
+            </a>
+          </LinkX>
+
+          <LinkX href="/docs/community/metting/" passHref legacyBehavior>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classnames(itemClass)}
+            >
+              <div className="mr-4 w-8">
+                <Image
+                  width="100%"
+                  height="100%"
+                  src="/images/tencentMeeting.png"
+                  alt="TencentMeeting"
+                />
+              </div>
+              <div>
+                <p className="text-base">{t('common:community.meeting')}</p>
+                <p className="text-sm text-white/50">
+                  {t('common:community.join_meeting')}
                 </p>
               </div>
             </a>

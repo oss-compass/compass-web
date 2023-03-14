@@ -34,7 +34,7 @@ const CommunityActivity = () => {
         <CommitFrequency />
         <UpdatedSince />
         <OrgCount />
-        <CreatedSince />
+        {/* <CreatedSince /> */}
         <CommentFrequency />
         <CodeReviewCount />
         <UpdatedIssuesCount />

@@ -166,7 +166,6 @@ query metric(
     commentFrequency
     commitFrequency
     contributorCount
-    createdSince
     grimoireCreationDate
     label
     level
@@ -228,9 +227,6 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
       ...metricStat
     }
     contributorCount {
-      ...metricStat
-    }
-    createdSince {
       ...metricStat
     }
     grimoireCreationDate

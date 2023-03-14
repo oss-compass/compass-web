@@ -321,20 +321,20 @@ const useCommunityActivity = (): PlantList[] => {
         hash: '/docs/metrics-models/robustness/activity#organization-count',
       },
     },
-    {
-      top: -252,
-      left: 93,
-      size: 46,
-      color: 'robustness',
-      right: true,
-      popContent: {
-        title: t('metrics_models:community_activity.metrics.created_since'),
-        content: t(
-          'metrics_models:community_activity.metrics.created_since_desc'
-        ),
-        hash: '/docs/metrics-models/robustness/activity#created-since',
-      },
-    },
+    // {
+    //   top: -252,
+    //   left: 93,
+    //   size: 46,
+    //   color: 'robustness',
+    //   right: true,
+    //   popContent: {
+    //     title: t('metrics_models:community_activity.metrics.created_since'),
+    //     content: t(
+    //       'metrics_models:community_activity.metrics.created_since_desc'
+    //     ),
+    //     hash: '/docs/metrics-models/robustness/activity#created-since',
+    //   },
+    // },
     {
       top: -226,
       left: 20,
