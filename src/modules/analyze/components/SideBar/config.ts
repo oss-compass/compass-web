@@ -199,10 +199,10 @@ export const useCommunityActivity = () => {
         name: t('metrics_models:community_activity.metrics.organization_count'),
         id: Activity.OrgCount,
       },
-      {
-        name: t('metrics_models:community_activity.metrics.created_since'),
-        id: Activity.CreatedSince,
-      },
+      // {
+      //   name: t('metrics_models:community_activity.metrics.created_since'),
+      //   id: Activity.CreatedSince,
+      // },
       {
         name: t('metrics_models:community_activity.metrics.comment_frequency'),
         id: Activity.CommentFrequency,

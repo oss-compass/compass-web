@@ -862,7 +862,6 @@ export type MetricQuery = {
     commentFrequency?: number | null;
     commitFrequency?: number | null;
     contributorCount?: number | null;
-    createdSince?: number | null;
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
@@ -944,11 +943,6 @@ export type SummaryQuery = {
       median?: number | null;
     } | null;
     contributorCount?: {
-      __typename?: 'MetricStat';
-      mean?: number | null;
-      median?: number | null;
-    } | null;
-    createdSince?: {
       __typename?: 'MetricStat';
       mean?: number | null;
       median?: number | null;
@@ -1632,7 +1626,6 @@ export const MetricDocument = /*#__PURE__*/ `
     commentFrequency
     commitFrequency
     contributorCount
-    createdSince
     grimoireCreationDate
     label
     level
@@ -1723,9 +1716,6 @@ export const SummaryDocument = /*#__PURE__*/ `
       ...metricStat
     }
     contributorCount {
-      ...metricStat
-    }
-    createdSince {
       ...metricStat
     }
     grimoireCreationDate
