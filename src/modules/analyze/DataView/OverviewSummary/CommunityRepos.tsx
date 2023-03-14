@@ -67,12 +67,13 @@ const CommunityRepos = () => {
   const totalPage = Math.ceil(count / PRE_PAGE);
 
   return (
-    <div className="mb-4">
+    <div className="mb-10">
       <BaseCard
         loading={isLoading}
         id={''}
         title={`${t('analyze:repositories', { count })} `}
         description=""
+        bodyClass="min-h-[350px]"
       >
         <div className="grid grid-cols-3 gap-4">
           {trends.map((repo) => {

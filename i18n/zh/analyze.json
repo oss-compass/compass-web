@@ -1,6 +1,6 @@
 {
   "overview": "概览",
-  "repositories": "Repositories ({{count}})",
+  "repositories": "仓库 ({{count}})",
   "topic": {
     "productivity": "生产力",
     "robustness": "稳健性",
