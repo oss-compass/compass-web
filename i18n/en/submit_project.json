@@ -40,6 +40,6 @@
   "submit_a_single_repository": "Submit a single repository",
   "please_note_that_when_submitted_as_single_repository": "Please note that when submitted as single repository, all analysis dimensions will be derived from single repository standards, which differ from the standards for community.",
   "manually_enter_repository_url": "Switch to manual input",
-  "choose_a_repository": "Switch to select",
+  "choose_a_repository": "Switch to selecting from {{providerName}}",
   "submit_success": "Submit success!"
 }
