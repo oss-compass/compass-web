@@ -13,36 +13,18 @@ interface FieldItem {
   name: string;
   comingSoon: Boolean;
   svg: React.ReactElement;
-  nLink?: string;
   category?: {
     name: string;
     link: string;
   }[];
 }
 
-const Field: React.FC<FieldItem> = ({
-  nLink,
-  name,
-  comingSoon,
-  category,
-  svg,
-}) => {
+const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
   const { t } = useTranslation();
   return (
     <div className="md:h-50 relative h-40 w-1/4 border-b border-r px-5 py-4 lg:w-1/2 md:w-full">
       <div className="absolute right-0 bottom-0 w-[165px]">{svg}</div>
-      {nLink ? (
-        <Link key={name} href={nLink}>
-          <a className="mb-1 flex items-center text-sm hover:underline">
-            <h3 className="relative mb-1 break-words text-xl font-bold">
-              {name}
-            </h3>
-          </a>
-        </Link>
-      ) : (
-        <h3 className="relative mb-1 break-words text-xl font-bold">{name}</h3>
-      )}
-
+      <h3 className="relative mb-1 break-words text-xl font-bold">{name}</h3>
       {comingSoon && (
         <div className="h-5 w-24 rounded-xl bg-[#ECECEC] text-center text-xs leading-5 text-gray-400">
           {t('home:coming_soon')}
@@ -92,7 +74,6 @@ const HotFields = () => {
     {
       name: t('home:hot_fields_content.server_os'),
       comingSoon: false,
-      // nLink:'/collection/big-data',
       svg: <FieldBigData />,
       category: [
         {
@@ -127,7 +108,6 @@ const HotFields = () => {
     {
       name: t('home:hot_fields_content.intelligent_terminal_distributed_os'),
       comingSoon: false,
-      // nLink:'/collection/web-framework',
       svg: <FieldWeb />,
       category: [
         {
@@ -153,7 +133,6 @@ const HotFields = () => {
             return (
               <Field
                 key={item.name}
-                nLink={item.nLink}
                 name={item.name}
                 comingSoon={item.comingSoon}
                 category={item.category}
