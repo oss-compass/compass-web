@@ -1,10 +1,16 @@
-// middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// This function can be marked `async` if using `await` inside
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export function middleware(request: NextRequest) {
-  // console.log('process.env.API_URL:', process.env.API_URL);
+  // for development
+  if (isDevelopment) {
+    return NextResponse.rewrite(new URL(`/api/proxy`, request.url));
+  }
+
+  // We use nginx proxy for production environments
+  // this is for https://vercel.com preview environments (pull request preview)
   return NextResponse.rewrite(
     new URL(`${process.env.API_URL}/api/graphql`, request.url)
   );
