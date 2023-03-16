@@ -34,6 +34,10 @@
     "show": "show median",
     "hide": "hide median"
   },
+  "unit_label": "Unit: {{unit}}",
+  "unit_day": "day",
+  "positive_indicators": "Positive indicators",
+  "negative_indicators": "Negative indicators",
   "full_screen": "full screen",
   "full_screen_exit": "exit full screen",
   "download_chart_img": "download image",

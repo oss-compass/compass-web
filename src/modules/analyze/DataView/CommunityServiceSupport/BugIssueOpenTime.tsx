@@ -7,11 +7,12 @@ import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
+import { getYAxisWithUnit } from '@modules/analyze/options';
 
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const BugIssueOpenTime = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const tabOptions = [
     { label: t('analyze:average'), value: '1' },
@@ -36,8 +37,20 @@ const BugIssueOpenTime = () => {
   const [tab, setTab] = useState<TabValue>('1');
   type TabValue = keyof typeof chartTabs;
   const tansOpts: TransOpt = chartTabs[tab];
+
+  const indicators = t('analyze:negative_indicators');
+  const unit = t('analyze:unit_label', {
+    unit: t('analyze:unit_day'),
+  });
+
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption();
+    useGetLineOption({
+      echartsOpt: getYAxisWithUnit({
+        indicators,
+        unit,
+        namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
+      }),
+    });
 
   return (
     <BaseCard
