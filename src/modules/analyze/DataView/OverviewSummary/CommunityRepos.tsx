@@ -33,7 +33,7 @@ const RepoItem: React.FC<{
         })}
       >
         <a className="hover:underline">
-          <h4 className="text-sm font-bold">{name}</h4>
+          <h4 className="text-sm font-bold line-clamp-2">{name}</h4>
         </a>
       </Link>
       <p className="text-xs text-gray-400">{getFirstPathSegment(path)}</p>

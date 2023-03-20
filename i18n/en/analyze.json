@@ -1,5 +1,6 @@
 {
   "overview": "Overview",
+  "repos": "repositories",
   "repositories": "Repositories ({{count}})",
   "topic": {
     "productivity": "Productivity",
@@ -58,6 +59,7 @@
     "point": "point system",
     "percentage": "percentage system"
   },
+  "updated_on": "Updated on",
   "there_is_currently_no_data_in_the_chart": "There is currently no data in the chart,",
   "please_contact_us_if_you_have": "Please <l>{{e}}</l> if you have any questions.",
   "contact_us": "contact us"

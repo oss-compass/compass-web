@@ -1,5 +1,6 @@
 {
   "overview": "概览",
+  "repos": "个仓库",
   "repositories": "仓库 ({{count}})",
   "topic": {
     "productivity": "生产力",
@@ -58,6 +59,7 @@
     "point": "一分制",
     "percentage": "百分制"
   },
+  "updated_on": "更新于",
   "there_is_currently_no_data_in_the_chart": "图表暂无数据，",
   "please_contact_us_if_you_have": "如果你有任何问题，请<l>{{e}}</l>。",
   "contact_us": "联系我们"

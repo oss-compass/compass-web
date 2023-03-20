@@ -21,6 +21,7 @@ query latestMetrics($label: String!, $level: String) {
     level
     organizationsActivity
     organizationsActivityUpdatedAt
+    reposCount
   }
 }
 
