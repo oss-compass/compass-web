@@ -10,12 +10,9 @@ const usePageLoadHashScroll = (isLoading: boolean) => {
     const elementToScroll = document.getElementById(hash.replace('#', ''));
     if (!elementToScroll) return;
     if (runOnce.current) return;
-
-    const top = elementToScroll.getBoundingClientRect().top;
-    if (!top) return;
     runOnce.current = true;
-    window.scrollTo?.({ top, behavior: 'smooth' });
 
+    elementToScroll.scrollIntoView?.({ behavior: 'smooth' });
     // set border style
     elementToScroll.parentElement?.setAttribute(
       'style',
@@ -29,7 +26,7 @@ const usePageLoadHashScroll = (isLoading: boolean) => {
         scrollToElement();
       }
     },
-    1000,
+    500,
     [isLoading]
   );
 };
