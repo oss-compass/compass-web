@@ -26,7 +26,8 @@ const UpdatedSince = () => {
 
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
     useGetLineOption({
-      echartsOpt: getYAxisWithUnit({
+      indicators,
+      mergeEchartsOpt: getYAxisWithUnit({
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
