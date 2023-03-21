@@ -9,9 +9,10 @@ import Tab from '@common/components/Tab';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
+import { getYAxisWithUnit } from '@modules/analyze/options';
 
 const IssueFirstResponse = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const tabOptions = [
     { label: t('analyze:average'), value: '1' },
     { label: t('analyze:median'), value: '2' },
@@ -36,8 +37,22 @@ const IssueFirstResponse = () => {
 
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
+
+  const indicators = t('analyze:negative_indicators');
+  const unit = t('analyze:unit_label', {
+    unit: t('analyze:unit_day'),
+  });
+
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption();
+    useGetLineOption({
+      indicators,
+      mergeEchartsOpt: getYAxisWithUnit({
+        indicators,
+        unit,
+        namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
+      }),
+    });
+
   return (
     <BaseCard
       title={t(

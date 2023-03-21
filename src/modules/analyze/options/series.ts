@@ -177,8 +177,9 @@ const genSummaryItem = (
 export const getTooltipsFormatter = (args: {
   compareLabels: string[];
   valueFormat?: (v: any) => any;
+  indicators?: string;
 }) => {
-  const { compareLabels, valueFormat } = args;
+  const { compareLabels, indicators, valueFormat } = args;
   return (
     params: CallbackDataParams | CallbackDataParams[]
   ): string | HTMLElement | HTMLElement[] => {
@@ -205,7 +206,14 @@ export const getTooltipsFormatter = (args: {
 <div style="margin: 0 0 0;line-height:1;">
   <div style="margin: 0 0 0;line-height:1;">
     <div style="font-size:14px;color:#000;font-weight:400;line-height:1;">
-      ${first?.name}
+        <div style="display:flex;align-items: center;">
+          <div style="font-size:14px;color:#333;font-weight:500;margin-left:2px">
+            ${first?.name}
+          </div>
+          <div style="font-size:12px;color:#A0A4AA;margin-left:8px">
+            ${indicators ? indicators : ''}
+          </div>
+       </div>
     </div>
     <div style="margin: 10px 0 0;line-height:1;">
       ${items.join('')}

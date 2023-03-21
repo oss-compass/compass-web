@@ -1,3 +1,4 @@
+import { EChartsOption } from 'echarts';
 import { GenChartOptions } from '@modules/analyze/type';
 import {
   formatToHundredMark,
@@ -16,12 +17,16 @@ const useGetLineOption = (opt?: {
   defaultOnePointSystem?: boolean;
   defaultShowAvg?: boolean;
   defaultShowMedian?: boolean;
+  indicators?: string;
+  mergeEchartsOpt?: EChartsOption;
 }) => {
   const {
     enableDataFormat = false,
     defaultOnePointSystem = false,
     defaultShowAvg = false,
     defaultShowMedian = false,
+    indicators,
+    mergeEchartsOpt = {},
   } = opt || {};
 
   const { t } = useTranslation();
@@ -73,8 +78,9 @@ const useGetLineOption = (opt?: {
       series,
       legend: legendFormat(compareLabels),
       tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
+        formatter: getTooltipsFormatter({ compareLabels, indicators }),
       },
+      ...mergeEchartsOpt,
     });
   };
 

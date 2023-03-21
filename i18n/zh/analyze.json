@@ -35,6 +35,10 @@
     "show": "显示中位数",
     "hide": "隐藏中位数"
   },
+  "unit_label": "单位: {{unit}}",
+  "unit_day": "天",
+  "positive_indicators": "正向化指标",
+  "negative_indicators": "负向化指标",
   "full_screen": "全屏",
   "full_screen_exit": "退出全屏",
   "download_chart_img": "下载图表",

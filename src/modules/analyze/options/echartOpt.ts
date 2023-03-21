@@ -1,6 +1,12 @@
-import { BarSeriesOption, LineSeriesOption, EChartsOption } from 'echarts';
+import {
+  BarSeriesOption,
+  LineSeriesOption,
+  SeriesOption,
+  EChartsOption,
+} from 'echarts';
 import { colors } from '@modules/analyze/options/color';
 import { line } from '@modules/analyze/options/series';
+import { isArray, isObject } from 'lodash';
 
 export const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -8,6 +14,7 @@ export const defaultTooltip: EChartsOption['tooltip'] = {
     type: 'cross',
   },
   order: 'valueDesc',
+  enterable: true,
 };
 
 export const legendVerticalMode: EChartsOption['legend'] = {
@@ -32,12 +39,54 @@ export const defaultLegend: EChartsOption['legend'] = {
   // orient: 'vertical',
 };
 
-export const grid: EChartsOption['grid'] = {
-  top: '60',
-  left: '5%',
-  right: '5%',
-  bottom: '5%',
-  containLabel: true,
+export const defaultGrid: EChartsOption['grid'] = {
+  top: 60,
+  left: '40px',
+  right: '30px',
+  bottom: '40px',
+};
+
+export const getYAxisWithUnit = ({
+  unit,
+  indicators,
+  namePaddingLeft = 35,
+}: {
+  unit: string;
+  indicators: string;
+  namePaddingLeft?: number;
+}): EChartsOption => {
+  return {
+    grid: {
+      top: 90,
+      left: '40px',
+      right: '30px',
+      bottom: '40px',
+    },
+    yAxis: {
+      name: [`{a|${unit}}`, `{b|${indicators}}`].join('\n'),
+      nameTextStyle: {
+        align: 'center',
+        padding: [0, 0, 0, namePaddingLeft],
+        rich: {
+          a: {
+            align: 'left',
+            color: '#2C3542',
+            fontSize: 10,
+            lineHeight: 14,
+            fontStyle: 'italic',
+            fontWeight: 'bold',
+          },
+          b: {
+            align: 'left',
+            color: '#A0A4AA',
+            fontSize: 10,
+            lineHeight: 14,
+            fontStyle: 'italic',
+          },
+        },
+      },
+    },
+  };
 };
 
 const categoryAxis = (data: any[]): EChartsOption['xAxis'] => ({
@@ -57,29 +106,20 @@ const categoryAxis = (data: any[]): EChartsOption['xAxis'] => ({
 export const getLineOption = (
   opts: {
     xAxisData: string[];
-    series: LineSeriesOption[];
     tooltip?: EChartsOption['tooltip'];
     legend?: EChartsOption['legend'];
   } & EChartsOption
 ): EChartsOption => {
-  const { xAxisData, series, legend, tooltip, ...restOpts } = opts;
+  const { xAxisData, series, grid, legend, tooltip, yAxis, ...restOpts } = opts;
+
   return {
     color: colors,
     title: {},
-    grid,
+    grid: grid || defaultGrid,
     legend: { ...defaultLegend, ...legend },
     tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
-    yAxis: {
-      type: 'value',
-      scale: true,
-      // splitLine: {
-      //   show: false,
-      //   lineStyle: {
-      //     color: ['#f1f1f1'],
-      //   },
-      // },
-    },
+    yAxis: yAxis || { type: 'value', scale: true },
     series,
     ...restOpts,
   };
@@ -96,7 +136,7 @@ export const getBarOption = (
   return {
     color: colors,
     title: {},
-    grid,
+    grid: defaultGrid,
     legend: { ...defaultLegend, ...legend },
     tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
