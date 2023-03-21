@@ -31,7 +31,7 @@
     "color": "^4.2.3",
     "daisyui": "^2.31.0",
     "date-fns": "^2.29.2",
-    "echarts": "^5.3.3",
+    "echarts": "^5.4.1",
     "file-saver": "^2.0.5",
     "framer-motion": "^7.2.1",
     "graphql": "^16.6.0",

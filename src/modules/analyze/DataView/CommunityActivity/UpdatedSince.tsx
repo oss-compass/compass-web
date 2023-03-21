@@ -6,11 +6,11 @@ import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { TransOpt } from '@modules/analyze/type';
-
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
+import { getYAxisWithUnit } from '@modules/analyze/options';
 
 const UpdatedSince = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const tansOpts: TransOpt = {
     legendName: t('metrics_models:community_activity.metrics.updated_since'),
@@ -18,8 +18,20 @@ const UpdatedSince = () => {
     yKey: 'metricActivity.updatedSince',
     summaryKey: 'summaryActivity.updatedSince',
   };
+
+  const indicators = t('analyze:negative_indicators');
+  const unit = t('analyze:unit_label', {
+    unit: t('analyze:unit_day'),
+  });
+
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption();
+    useGetLineOption({
+      echartsOpt: getYAxisWithUnit({
+        indicators,
+        unit,
+        namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
+      }),
+    });
 
   return (
     <BaseCard
