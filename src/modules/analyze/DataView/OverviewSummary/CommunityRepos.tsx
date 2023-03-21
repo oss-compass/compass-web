@@ -33,7 +33,7 @@ const RepoItem: React.FC<{
         })}
       >
         <a className="hover:underline">
-          <h4 className="text-sm font-bold">{name}</h4>
+          <h4 className="text-sm font-bold line-clamp-2">{name}</h4>
         </a>
       </Link>
       <p className="text-xs text-gray-400">{getFirstPathSegment(path)}</p>
@@ -73,7 +73,7 @@ const CommunityRepos = () => {
         id={''}
         title={`${t('analyze:repositories', { count })} `}
         description=""
-        bodyClass="min-h-[350px]"
+        bodyClass="h-auto"
       >
         <div className="grid grid-cols-3 gap-4">
           {trends.map((repo) => {

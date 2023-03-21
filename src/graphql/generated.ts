@@ -458,6 +458,10 @@ export type LatestMetrics = {
   organizationsActivity?: Maybe<Scalars['Float']>;
   /** latest score of organizations activity metric model updated_at */
   organizationsActivityUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  /** repositories origin */
+  origin?: Maybe<Scalars['String']>;
+  /** repositories count */
+  reposCount?: Maybe<Scalars['Float']>;
 };
 
 export type MetricStat = {
@@ -550,6 +554,8 @@ export type Query = {
   summaryCommunity: Array<CommunitySummary>;
   /** Get group activity summary data of compass */
   summaryGroupActivity: Array<GroupActivitySummary>;
+  /** Get trending data of compass */
+  trending: Array<Trending>;
 };
 
 export type QueryAnalysisStatusArgs = {
@@ -643,6 +649,10 @@ export type QuerySummaryGroupActivityArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
 };
 
+export type QueryTrendingArgs = {
+  level?: InputMaybe<Scalars['String']>;
+};
+
 export type Repo = {
   __typename?: 'Repo';
   backend?: Maybe<Scalars['String']>;
@@ -657,6 +667,17 @@ export type Repo = {
   stargazersCount?: Maybe<Scalars['Int']>;
   updatedAt: Scalars['ISO8601DateTime'];
   watchersCount?: Maybe<Scalars['Int']>;
+};
+
+export type Trending = {
+  __typename?: 'Trending';
+  activityScore?: Maybe<Scalars['Float']>;
+  fullPath?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  level?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  origin?: Maybe<Scalars['String']>;
+  reposCount?: Maybe<Scalars['Float']>;
 };
 
 export type CreateRepoTaskMutationVariables = Exact<{
@@ -735,6 +756,7 @@ export type LatestMetricsQuery = {
     level?: string | null;
     organizationsActivity?: number | null;
     organizationsActivityUpdatedAt?: any | null;
+    reposCount?: number | null;
   };
 };
 
@@ -1419,6 +1441,7 @@ export const LatestMetricsDocument = /*#__PURE__*/ `
     level
     organizationsActivity
     organizationsActivityUpdatedAt
+    reposCount
   }
 }
     `;
