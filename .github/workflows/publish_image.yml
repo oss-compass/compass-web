@@ -45,4 +45,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: GIT_COMMIT=${{ github.sha }}
+          build-args: |
+            SENTRY_DSN=${{secrets.SENTRY_DSN}}
+            GIT_COMMIT=${{github.sha}}
