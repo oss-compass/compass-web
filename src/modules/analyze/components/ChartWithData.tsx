@@ -49,6 +49,7 @@ const ChartWithData: React.FC<{
   const compareLabels = yResults.map((i) => i.label);
   const isCompare = yResults.length > 1;
 
+  // todo split chart options in different components
   const echartsOpts = getOptions(
     {
       isCompare,
@@ -60,6 +61,15 @@ const ChartWithData: React.FC<{
     },
     theme
   );
+  if (!isCompare) {
+    echartsOpts.grid = {
+      ...echartsOpts.grid,
+      top: 50,
+    };
+    echartsOpts.legend = {
+      show: false,
+    };
+  }
 
   const isEmpty = isEmptyData(yResults);
   let EmptyNode = null;

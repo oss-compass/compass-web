@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import type { PropsWithChildren, ComponentProps } from 'react';
 import classnames from 'classnames';
-import { HiOutlineCodeBracketSquare } from 'react-icons/hi2';
+import { BsCodeSquare } from 'react-icons/bs';
 import BaseCard from '@common/components/BaseCard';
 import { useLatestMetricsQuery } from '@graphql/generated';
 import client from '@graphql/client';
@@ -154,9 +154,15 @@ const TrendsList: React.FC = () => {
                         })}
                       >
                         <a>
-                          <p className="mb-1 break-words text-sm font-bold md:w-[140px]">
+                          <p className="break-words text-sm font-bold md:w-[140px]">
                             {r.name}
+                            {item?.level === Level.COMMUNITY ? (
+                              <span className="ml-2 inline-block rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs font-normal text-[#D98523]">
+                                {t('home:community')}
+                              </span>
+                            ) : null}
                           </p>
+
                           <p className="break-words text-xs text-gray-600 md:w-[140px]">
                             {r.meta?.namespace}
                             {r.meta?.showProvider
@@ -165,10 +171,12 @@ const TrendsList: React.FC = () => {
                           </p>
 
                           {item?.level === Level.COMMUNITY ? (
-                            <div className="mb-1 flex items-center text-xs text-gray-400">
-                              <HiOutlineCodeBracketSquare className="mr-1" />
-                              {item?.reposCount}
-                              {t('analyze:repos')}
+                            <div className="mb-1 mt-1 flex items-center text-xs text-gray58">
+                              <BsCodeSquare />
+                              <span className="ml-1">
+                                {item?.reposCount}
+                                {t('analyze:repos')}
+                              </span>
                             </div>
                           ) : null}
 

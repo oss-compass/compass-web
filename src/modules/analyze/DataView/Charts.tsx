@@ -20,7 +20,7 @@ const Charts = () => {
     <ChartsDataProvider>
       <h1
         className={
-          'group relative z-20 mt-8 mb-8 flex scroll-mt-[180px] text-3xl md:px-4  md:text-3xl'
+          'group relative z-20 mt-8 mb-8 flex scroll-mt-[200px] text-3xl md:px-4  md:text-3xl'
         }
         id="topic_overview_navbar"
       >

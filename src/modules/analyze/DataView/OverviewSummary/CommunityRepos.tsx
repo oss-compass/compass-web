@@ -73,7 +73,7 @@ const CommunityRepos = () => {
         id={''}
         title={`${t('analyze:repositories', { count })} `}
         description=""
-        bodyClass="min-h-[350px]"
+        bodyClass="h-auto"
       >
         <div className="grid grid-cols-3 gap-4">
           {trends.map((repo) => {
