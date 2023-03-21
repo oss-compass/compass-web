@@ -45,3 +45,9 @@ script/tmp
 localtest
 demo.html
 package-lock.json
+
+# Sentry
+.sentryclirc
+
+# Sentry
+next.config.original.js

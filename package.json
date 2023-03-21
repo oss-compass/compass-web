@@ -21,6 +21,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.10.13",
+    "@sentry/nextjs": "^7.44.1",
     "@tanstack/react-query": "^4.2.1",
     "@tanstack/react-query-devtools": "^4.2.3",
     "@types/file-saver": "^2.0.5",
