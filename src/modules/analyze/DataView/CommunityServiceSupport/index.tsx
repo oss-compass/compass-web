@@ -16,6 +16,7 @@ import CodeReviewCount from './CodeReviewCount';
 import ClosedPrsCount from './ClosedPrsCount';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
+import ConnectLine from '@modules/analyze/components/ConnectLine';
 
 const CommunitySupport = () => {
   const { t } = useTranslation();
@@ -29,7 +30,8 @@ const CommunitySupport = () => {
         <TotalScore />
       </div>
 
-      <div className="mb-4 grid min-w-0 grid-cols-2 gap-4  md:grid-cols-1">
+      <div className="relative mb-4 grid min-w-0 grid-cols-2 gap-4  md:grid-cols-1">
+        <ConnectLine />
         <UpdatedIssuesCount />
         <ClosedPrsCount />
         <IssueFirstResponse />

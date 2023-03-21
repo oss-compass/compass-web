@@ -8,11 +8,15 @@ const SectionTitle: React.FC<PropsWithChildren<{ id: string }>> = ({
   return (
     <h2
       className={classnames(
-        'group relative z-10 mb-6 scroll-mt-[180px] text-2xl',
+        'group relative z-10 mb-6 flex scroll-mt-[180px] text-2xl',
         'md:px-4 md:text-xl'
       )}
       id={id}
     >
+      <div className="relative mr-4 ml-1.5">
+        <div className="absolute left-[3px] -top-9 h-[92px] w-0.5 bg-[#e5e5e5]" />
+        <div className="relative mt-3 h-2 w-2 rounded bg-[#000000]"></div>
+      </div>
       {children}
       <a href={`#${id}`}>
         <span className="invisible ml-2 cursor-pointer group-hover:visible group-hover:text-primary">
