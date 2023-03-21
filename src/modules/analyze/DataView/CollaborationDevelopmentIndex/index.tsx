@@ -15,6 +15,7 @@ import CodeMergeRatio from './CodeMergeRatio';
 import LocFrequency from './LocFrequency';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
+import ConnectLine from '@modules/analyze/components/ConnectLine';
 
 const CollaborationDevelopmentIndexOverview = () => {
   const { t } = useTranslation();
@@ -28,7 +29,8 @@ const CollaborationDevelopmentIndexOverview = () => {
         <TotalScore />
       </div>
 
-      <div className="mb-14 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
+      <div className="relative mb-9 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
+        <ConnectLine />
         <ContributorCount />
         <CommitFrequency />
         <IsMaintained />

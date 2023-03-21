@@ -59,7 +59,7 @@ const Robustness = () => {
     <MenuTopicItem
       hash={Topic.Robustness}
       icon={
-        <span className="mr-1 flex-shrink-0">
+        <span className="mr-1 h-4 w-4 flex-shrink-0">
           <RobustnessIcon />
         </span>
       }

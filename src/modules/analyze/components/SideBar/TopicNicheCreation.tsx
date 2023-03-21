@@ -48,7 +48,7 @@ const NicheCreation = () => {
     <MenuTopicItem
       hash={Topic.NicheCreation}
       icon={
-        <span className="mr-1 flex-shrink-0">
+        <span className="mr-1 h-4 w-4 flex-shrink-0">
           <NicheCreationIcon />
         </span>
       }

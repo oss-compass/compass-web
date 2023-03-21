@@ -26,7 +26,7 @@ const MenuItem: React.FC<
             'flex items-center justify-between  text-xs text-gray-600',
             'cursor-pointer rounded py-2 pl-6 pr-2',
             { '!text-black': active },
-            { 'cursor-not-allowed !text-gray-300': disabled },
+            { 'cursor-not-allowed !text-gray-400': disabled },
             { 'group-hover:bg-gray-100 group-hover:text-black': !disabled }
           )}
         >
