@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import type { PropsWithChildren, ComponentProps } from 'react';
 import classnames from 'classnames';
+import { HiOutlineCodeBracketSquare } from 'react-icons/hi2';
 import BaseCard from '@common/components/BaseCard';
-import styles from './index.module.scss';
 import { useLatestMetricsQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
-import { formatISO, toFixed } from '@common/utils';
+import { formatISO, getAnalyzeLink, toFixed } from '@common/utils';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import { formatRepoName } from '@modules/analyze/options/format';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
+import styles from './index.module.scss';
+import { Level } from '@modules/analyze/constant';
 
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
@@ -144,18 +147,38 @@ const TrendsList: React.FC = () => {
                 return (
                   <tr className="group" key={item!.label}>
                     <td className="flex flex-col px-1 py-2 ">
-                      <p className="break-words text-sm font-bold md:w-[140px]">
-                        {r.name}
-                      </p>
-                      <p className="break-words text-xs text-gray-600 md:w-[140px]">
-                        {r.meta?.namespace}
-                        {r.meta?.showProvider ? ` on ${r.meta?.provider}` : ''}
-                      </p>
-                      <p className={'text-xs text-gray-400'}>
-                        {`updated on ${formatISO(
-                          item!.activityScoreUpdatedAt!
-                        )}`}
-                      </p>
+                      <Link
+                        href={getAnalyzeLink({
+                          label: item?.label,
+                          level: item?.level,
+                        })}
+                      >
+                        <a>
+                          <p className="mb-1 break-words text-sm font-bold md:w-[140px]">
+                            {r.name}
+                          </p>
+                          <p className="break-words text-xs text-gray-600 md:w-[140px]">
+                            {r.meta?.namespace}
+                            {r.meta?.showProvider
+                              ? ` on ${r.meta?.provider}`
+                              : ''}
+                          </p>
+
+                          {item?.level === Level.COMMUNITY ? (
+                            <div className="mb-1 flex items-center text-xs text-gray-400">
+                              <HiOutlineCodeBracketSquare className="mr-1" />
+                              {item?.reposCount}
+                              {t('analyze:repos')}
+                            </div>
+                          ) : null}
+
+                          <p className={'text-xs text-gray-400'}>
+                            {`${t('analyze:updated_on')} ${formatISO(
+                              item!.activityScoreUpdatedAt!
+                            )}`}
+                          </p>
+                        </a>
+                      </Link>
                     </td>
                     <Td className="bg-[#f2fcff] ">
                       {formatScore(item!.codeQualityGuarantee)}
