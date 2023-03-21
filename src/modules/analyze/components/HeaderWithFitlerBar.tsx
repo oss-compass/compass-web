@@ -4,6 +4,8 @@ import classnames from 'classnames';
 import Header from '@common/components/Header';
 import { SideBarMenu } from '@modules/analyze/components/SideBar';
 import NavBar from '@modules/analyze/components/NavBar';
+import TopicNavbar from '@modules/analyze/components/TopicNavbar';
+import NoSsr from '@common/components/NoSsr';
 
 const HeaderBarWrap: React.FC<PropsWithChildren> = ({ children }) => {
   const { y } = useWindowScroll();
@@ -31,6 +33,9 @@ const HeaderWithFilterBar = () => {
         }
       />
       <NavBar />
+      <NoSsr>
+        <TopicNavbar />
+      </NoSsr>
     </HeaderBarWrap>
   );
 };

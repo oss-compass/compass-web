@@ -11,6 +11,7 @@ import OrgCount from './OrgCount';
 import ContributionLast from './ContributionLast';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
+import ConnectLine from '@modules/analyze/components/ConnectLine';
 
 const OrganizationsActivity = () => {
   const { t } = useTranslation();
@@ -25,7 +26,8 @@ const OrganizationsActivity = () => {
         <TotalScore />
       </div>
 
-      <div className="mb-4 grid min-w-0 grid-cols-2 gap-4  md:grid-cols-1">
+      <div className="relative mb-4 grid min-w-0 grid-cols-2 gap-4  md:grid-cols-1">
+        <ConnectLine />
         <ContributorCount />
         <CommitFrequency />
         <OrgCount />

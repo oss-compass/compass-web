@@ -82,7 +82,7 @@ const Productivity = () => {
     <MenuTopicItem
       hash={Topic.Productivity}
       icon={
-        <span className="mr-1 flex-shrink-0">
+        <span className="mr-1 h-4 w-4 flex-shrink-0">
           <ProductivityIcon />
         </span>
       }
