@@ -17,14 +17,16 @@ const useGetLineOption = (opt?: {
   defaultOnePointSystem?: boolean;
   defaultShowAvg?: boolean;
   defaultShowMedian?: boolean;
-  echartsOpt?: EChartsOption;
+  indicators?: string;
+  mergeEchartsOpt?: EChartsOption;
 }) => {
   const {
     enableDataFormat = false,
     defaultOnePointSystem = false,
     defaultShowAvg = false,
     defaultShowMedian = false,
-    echartsOpt = {},
+    indicators,
+    mergeEchartsOpt = {},
   } = opt || {};
 
   const { t } = useTranslation();
@@ -76,9 +78,9 @@ const useGetLineOption = (opt?: {
       series,
       legend: legendFormat(compareLabels),
       tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
+        formatter: getTooltipsFormatter({ compareLabels, indicators }),
       },
-      ...echartsOpt,
+      ...mergeEchartsOpt,
     });
   };
 

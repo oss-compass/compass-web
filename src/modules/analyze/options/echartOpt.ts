@@ -14,6 +14,7 @@ export const defaultTooltip: EChartsOption['tooltip'] = {
     type: 'cross',
   },
   order: 'valueDesc',
+  enterable: true,
 };
 
 export const legendVerticalMode: EChartsOption['legend'] = {
