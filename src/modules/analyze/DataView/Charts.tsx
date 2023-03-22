@@ -20,11 +20,11 @@ const Charts = () => {
     <ChartsDataProvider>
       <h1
         className={
-          'group relative z-20 mt-8 mb-8 flex scroll-mt-[200px] text-3xl md:px-4  md:text-3xl'
+          'group relative z-20 mt-8 mb-8 flex scroll-mt-[200px] text-3xl font-semibold md:px-4 md:text-3xl'
         }
         id="topic_overview_navbar"
       >
-        <CiGrid41 className="mt-2 mr-2 h-5 w-5 flex-shrink-0" />
+        <CiGrid41 className="mt-2 mr-2 h-[21px] w-[21px] flex-shrink-0" />
         {t('analyze:overview')}
         <a href={`#${Topic.Overview}`}>
           <span className="invisible ml-2 cursor-pointer group-hover:visible group-hover:text-primary">
@@ -35,7 +35,7 @@ const Charts = () => {
       <OverviewSummary />
 
       <TopicTitle
-        icon={<ProductivityIcon className="mt-2 mr-2 h-5 w-5" />}
+        icon={<ProductivityIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
         id={Topic.Productivity}
       >
         {t('analyze:topic.productivity')}
@@ -44,7 +44,7 @@ const Charts = () => {
       <CommunityServiceSupport />
 
       <TopicTitle
-        icon={<RobustnessIcon className="mt-2 mr-2 h-5 w-5" />}
+        icon={<RobustnessIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
         id={Topic.Robustness}
       >
         {t('analyze:topic.robustness')}
@@ -52,7 +52,7 @@ const Charts = () => {
       <CommunityActivity />
 
       <TopicTitle
-        icon={<NicheCreationIcon className="mt-2 mr-2 h-5 w-5" />}
+        icon={<NicheCreationIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
         id={Topic.NicheCreation}
       >
         {t('analyze:topic.niche_creation')}
