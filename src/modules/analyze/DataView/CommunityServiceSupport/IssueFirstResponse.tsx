@@ -9,7 +9,7 @@ import Tab from '@common/components/Tab';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
-import { getYAxisWithUnit } from '@modules/analyze/options';
+import { getYAxisWithUnit } from '@common/options';
 
 const IssueFirstResponse = () => {
   const { t, i18n } = useTranslation();

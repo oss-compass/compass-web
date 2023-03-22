@@ -1,15 +1,17 @@
 import { GenChartOptions } from '@modules/analyze/type';
 import {
-  checkFormatPercentageValue,
   getColorWithLabel,
   getLineOption,
   getTooltipsFormatter,
   legendFormat,
   line,
+  summaryLine,
+} from '@common/options';
+import {
   percentageUnitFormat,
   percentageValueFormat,
-  summaryLine,
-} from '@modules/analyze/options';
+  checkFormatPercentageValue,
+} from '@common/utils/format';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 

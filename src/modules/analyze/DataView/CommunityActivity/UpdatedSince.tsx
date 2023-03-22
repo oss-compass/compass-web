@@ -7,7 +7,7 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import { TransOpt } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
-import { getYAxisWithUnit } from '@modules/analyze/options';
+import { getYAxisWithUnit } from '@common/options';
 
 const UpdatedSince = () => {
   const { t, i18n } = useTranslation();

@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-import { getYAxisWithUnit } from '@modules/analyze/options';
+import { getYAxisWithUnit } from '@common/options';
 
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 

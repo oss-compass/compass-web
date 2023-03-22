@@ -33,5 +33,9 @@
     "graph_db": "Graph DB",
     "big_data_framework": "Big Data Framework",
     "web_framework": "Web Framework"
+  },
+  "trending": {
+    "weekly_activity_board": "Weekly Activity Board",
+    "community_weekly_activity_board": "Community Weekly Activity Board"
   }
 }

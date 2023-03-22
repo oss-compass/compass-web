@@ -5,7 +5,7 @@ import {
   getTooltipsFormatter,
   legendFormat,
   getColorWithLabel,
-} from '@modules/analyze/options';
+} from '@common/options';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
