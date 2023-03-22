@@ -36,8 +36,8 @@ const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
             if (c.link) {
               return (
                 <Link key={c.name} href={c.link}>
-                  <a className="mb-1 flex items-center text-sm hover:underline">
-                    <span className="mr-1 h-1 w-1 shrink-0 rounded-full bg-black" />
+                  <a className="mb-1 flex text-sm hover:underline">
+                    <p className="mr-1 mt-2 h-1 w-1 shrink-0 rounded-full bg-black" />
                     {c.name}
                   </a>
                 </Link>
@@ -46,9 +46,9 @@ const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
             return (
               <a
                 key={c.name}
-                className="mb-1 flex cursor-not-allowed items-center text-sm text-gray-400"
+                className="mb-1 flex cursor-not-allowed text-sm text-gray-400"
               >
-                <span className="mr-1 h-1 w-1 shrink-0 rounded-full bg-gray-400" />
+                <span className="mr-1 mt-2 h-1 w-1 shrink-0 rounded-full bg-gray-400" />
                 {c.name}
               </a>
             );
