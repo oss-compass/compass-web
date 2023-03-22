@@ -12,13 +12,13 @@ const TopicNavbar = () => {
     [key: string]: React.ReactNode;
   }
   const iconMap: IconMap = {
-    Overview: <CiGrid41 className="mr-2 h-3 w-3" />,
+    Overview: <CiGrid41 className="mr-2 h-4 w-4" />,
     Productivity: <ProductivityIcon className="mr-2 h-4 w-4" />,
-    Robustness: <RobustnessIcon className=" mr-2 h-3 w-3" />,
+    Robustness: <RobustnessIcon className=" mr-2 h-4 w-4" />,
     'Niche Creation': <NicheCreationIcon className="mr-2 h-4 w-4" />,
-    概览: <CiGrid41 className="mr-2 h-3 w-3" />,
+    概览: <CiGrid41 className="mr-2 h-4 w-4" />,
     生产力: <ProductivityIcon className="mr-2 h-4 w-4" />,
-    稳健性: <RobustnessIcon className=" mr-2 h-3 w-3" />,
+    稳健性: <RobustnessIcon className=" mr-2 h-4 w-4" />,
     创新力: <NicheCreationIcon className="mr-2 h-4 w-4" />,
   };
   const [inViewport] = useInViewport(
@@ -34,7 +34,7 @@ const TopicNavbar = () => {
       )}
     >
       {topicId && (
-        <a className="p flex cursor-pointer items-center rounded px-4">
+        <a className="p flex cursor-pointer items-center rounded px-4 font-semibold">
           {iconMap[topicId]}
           <h3>
             {topicId}
