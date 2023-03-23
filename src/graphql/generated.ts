@@ -1286,6 +1286,24 @@ export type BulkOverviewQuery = {
   }>;
 };
 
+export type TrendingQueryVariables = Exact<{
+  level?: InputMaybe<Scalars['String']>;
+}>;
+
+export type TrendingQuery = {
+  __typename?: 'Query';
+  trending: Array<{
+    __typename?: 'Trending';
+    activityScore?: number | null;
+    fullPath?: string | null;
+    label?: string | null;
+    level?: string | null;
+    name?: string | null;
+    origin?: string | null;
+    reposCount?: number | null;
+  }>;
+};
+
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
     fragment metricStat on MetricStat {
   mean
@@ -2149,6 +2167,49 @@ useBulkOverviewQuery.fetcher = (
   fetcher<BulkOverviewQuery, BulkOverviewQueryVariables>(
     client,
     BulkOverviewDocument,
+    variables,
+    headers
+  );
+export const TrendingDocument = /*#__PURE__*/ `
+    query trending($level: String = "repo") {
+  trending(level: $level) {
+    activityScore
+    fullPath
+    label
+    level
+    name
+    origin
+    reposCount
+  }
+}
+    `;
+export const useTrendingQuery = <TData = TrendingQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables?: TrendingQueryVariables,
+  options?: UseQueryOptions<TrendingQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TrendingQuery, TError, TData>(
+    variables === undefined ? ['trending'] : ['trending', variables],
+    fetcher<TrendingQuery, TrendingQueryVariables>(
+      client,
+      TrendingDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useTrendingQuery.getKey = (variables?: TrendingQueryVariables) =>
+  variables === undefined ? ['trending'] : ['trending', variables];
+useTrendingQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: TrendingQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<TrendingQuery, TrendingQueryVariables>(
+    client,
+    TrendingDocument,
     variables,
     headers
   );

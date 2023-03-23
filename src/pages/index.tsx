@@ -7,7 +7,7 @@ import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
 import Banner from '@modules/home/Banner';
 import HotFields from '@modules/home/HotFields';
-import Projects from '@modules/home/Projects';
+import Trending from '@modules/home/Trending';
 import Explain from '@modules/home/Explain';
 import ExplainMobile from '@modules/home/Explain/Mobile';
 import SpecialThank from '@modules/home/SpecialThank';
@@ -32,7 +32,7 @@ const Home: React.FC = (props) => {
       <main>
         <Banner />
         <HotFields />
-        <Projects />
+        <Trending />
         <NoSsr>
           <Explain />
           <ExplainMobile />

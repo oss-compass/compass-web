@@ -11,7 +11,7 @@ import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, getAnalyzeLink, toFixed } from '@common/utils';
 import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
-import { formatRepoName } from '@modules/analyze/options/format';
+import { formatRepoName } from '@common/utils/format';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
 import styles from './index.module.scss';

@@ -1,9 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import {
-  ChartSummaryProps,
-  getLineOption,
-  line,
-} from '@modules/analyze/options';
+import { ChartSummaryProps, getLineOption, line } from '@common/options';
 import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';

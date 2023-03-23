@@ -63,32 +63,6 @@ query communityRepos($label: String!, $page: Int, $per: Int) {
   }
 }
 
-query betaMetricOverview($id: Int!, $limit: Int) {
-  betaMetricOverview(id: $id, limit: $limit) {
-    projectsCount
-    trends {
-      path
-      origin
-      name
-      backend
-      betaMetricScores {
-        grimoireCreationDate
-        score
-      }
-    }
-  }
-}
-
-query betaMetricsIndex($per: Int, $page: Int) {
-  betaMetricsIndex(per: $per, page: $page) {
-    id
-    dimensionality
-    desc
-    extra
-    metric
-  }
-}
-
 query metric(
   $label: String!
   $level: String = "repo"
@@ -402,52 +376,14 @@ query bulkOverview($labels: [String!]!) {
   }
 }
 
-query collectionHottest($ident: String!, $limit: Int) {
-  collectionHottest(ident: $ident, limit: $limit) {
+query trending($level: String = "repo") {
+  trending(level: $level) {
+    activityScore
+    fullPath
     label
     level
-    status
-    updatedAt
-  }
-}
-
-query bulkOverview($labels: [String!]!) {
-  bulkOverview(labels: $labels) {
-    backend
-    forksCount
-    language
     name
-    openIssuesCount
-    path
-    stargazersCount
-    watchersCount
-    metricActivity {
-      activityScore
-    }
-  }
-}
-
-query collectionHottest($ident: String!, $limit: Int) {
-  collectionHottest(ident: $ident, limit: $limit) {
-    label
-    level
-    status
-    updatedAt
-  }
-}
-
-query bulkOverview($labels: [String!]!) {
-  bulkOverview(labels: $labels) {
-    backend
-    forksCount
-    language
-    name
-    openIssuesCount
-    path
-    stargazersCount
-    watchersCount
-    metricActivity {
-      activityScore
-    }
+    origin
+    reposCount
   }
 }

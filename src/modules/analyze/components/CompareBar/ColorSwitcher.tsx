@@ -6,11 +6,7 @@ import {
 } from '@modules/analyze/store';
 import { useClickAway, useHoverDirty, useLocalStorage } from 'react-use';
 import { CgColorPicker } from 'react-icons/cg';
-import {
-  DefaultIndex,
-  getPalette,
-  colors,
-} from '@modules/analyze/options/color';
+import { DefaultIndex, getPalette, colors } from '@common/options/color';
 import CPTooltip from '@common/components/Tooltip';
 import { getNameSpace } from '@common/utils';
 import { useSnapshot } from 'valtio';
