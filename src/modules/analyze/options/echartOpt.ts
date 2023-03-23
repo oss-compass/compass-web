@@ -29,7 +29,6 @@ export const gridVerticalMode: EChartsOption['grid'] = {
   left: '5%',
   right: '25%',
   bottom: '5%',
-  containLabel: true,
 };
 
 export const defaultLegend: EChartsOption['legend'] = {
@@ -41,9 +40,9 @@ export const defaultLegend: EChartsOption['legend'] = {
 
 export const defaultGrid: EChartsOption['grid'] = {
   top: 60,
-  left: '40px',
+  left: '50px',
   right: '30px',
-  bottom: '40px',
+  bottom: '50px',
 };
 
 export const getYAxisWithUnit = ({
@@ -132,7 +131,7 @@ export const getBarOption = (
     legend?: EChartsOption['legend'];
   } & EChartsOption
 ): EChartsOption => {
-  const { xAxisData, series, legend, tooltip, ...restOpts } = opts;
+  const { xAxisData, series, legend, tooltip, yAxis, ...restOpts } = opts;
   return {
     color: colors,
     title: {},
@@ -140,15 +139,7 @@ export const getBarOption = (
     legend: { ...defaultLegend, ...legend },
     tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
-    yAxis: {
-      type: 'value',
-      // splitLine: {
-      //   show: false,
-      //   lineStyle: {
-      //     color: ['#f1f1f1'],
-      //   },
-      // },
-    },
+    yAxis: yAxis || { type: 'value' },
     series,
     ...restOpts,
   };
