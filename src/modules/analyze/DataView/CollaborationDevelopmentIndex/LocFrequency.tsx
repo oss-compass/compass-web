@@ -1,13 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import {
   bar,
-  formatNegativeNumber,
   getBarOption,
   getColorWithLabel,
   getTooltipsFormatter,
   legendFormat,
+} from '@common/options';
+import {
+  formatNegativeNumber,
   formatAxisLabelNumber,
-} from '@modules/analyze/options';
+} from '@common/utils/format';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';

@@ -3,6 +3,7 @@
   "dimensions": "Dimensions",
   "models": "Models",
   "metrics": "Metrics",
+  "activity": "活跃度",
   "how_compass_working": "How Compass working",
   "it_points_to_the_thing_you_want_most_in_open_source": "估量有尺 开源有道",
   "we_help_open_source_projects_gain_insight_into_its": "我们帮助开源项目洞察其趋势，并挖掘更多的价值。",
@@ -33,5 +34,9 @@
     "graph_db": "图数据库",
     "big_data_framework": "大数据框架",
     "web_framework": "Web框架"
+  },
+  "trending": {
+    "repository_weekly_activity_board": "仓库活跃度周榜",
+    "community_weekly_activity_board": "社区活跃度周榜"
   }
 }

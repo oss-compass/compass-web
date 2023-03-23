@@ -4,8 +4,8 @@ import {
   SeriesOption,
   EChartsOption,
 } from 'echarts';
-import { colors } from '@modules/analyze/options/color';
-import { line } from '@modules/analyze/options/series';
+import { colors } from '@common/options/color';
+import { line } from '@common/options/series';
 import { isArray, isObject } from 'lodash';
 
 export const defaultTooltip: EChartsOption['tooltip'] = {

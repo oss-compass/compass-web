@@ -1,16 +1,16 @@
 import { EChartsOption } from 'echarts';
 import { GenChartOptions } from '@modules/analyze/type';
 import {
-  formatToHundredMark,
   getColorWithLabel,
   getLineOption,
   getTooltipsFormatter,
   legendFormat,
   line,
   summaryLine,
-} from '@modules/analyze/options';
+} from '@common/options';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import { toHundredMark } from '@modules/analyze/DataTransform/transHundredMarkSystem';
 
 const useGetLineOption = (opt?: {
   enableDataFormat?: boolean;
@@ -42,7 +42,7 @@ const useGetLineOption = (opt?: {
       const color = getColorWithLabel(theme, label);
       return line({
         name: label,
-        data: enableDataFormat ? formatToHundredMark(!onePointSys, data) : data,
+        data: enableDataFormat ? toHundredMark(!onePointSys, data) : data,
         color,
       });
     });
@@ -53,7 +53,7 @@ const useGetLineOption = (opt?: {
           id: 'median',
           name: t('analyze:median'),
           data: enableDataFormat
-            ? formatToHundredMark(!onePointSys, summaryMedian)
+            ? toHundredMark(!onePointSys, summaryMedian)
             : summaryMedian,
           color: '#5B8FF9',
         })
@@ -66,7 +66,7 @@ const useGetLineOption = (opt?: {
           id: 'average',
           name: t('analyze:average'),
           data: enableDataFormat
-            ? formatToHundredMark(!onePointSys, summaryMean)
+            ? toHundredMark(!onePointSys, summaryMean)
             : summaryMean,
           color: '#F95B5B',
         })

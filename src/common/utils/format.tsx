@@ -7,7 +7,6 @@ import {
 } from '@common/utils';
 import capitalize from 'lodash/capitalize';
 import { OptionDataValue } from 'echarts/types/src/util/types';
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
 
 /**
  * check is need show provider in legend
@@ -25,6 +24,28 @@ export const checkHasSameRepoPath = (label: string, labels: string[]) => {
     if (item.indexOf(pathname) > -1) count++;
     return count >= 2;
   });
+};
+
+export const formatLabel = (
+  label: string
+): {
+  name: string;
+  namespace?: string;
+  provider?: string;
+} => {
+  if (label.indexOf('https://') != -1) {
+    const repoName = getRepoName(label);
+    const namespace = getNameSpace(label);
+    const provider = getProvider(label);
+
+    return {
+      name: repoName,
+      namespace,
+      provider: capitalize(provider),
+    };
+  } else {
+    return { name: label };
+  }
 };
 
 export const formatRepoName = ({
@@ -100,13 +121,6 @@ export const fmtEmptyDataValue = (value: any): any => {
     return '-';
   }
   return value;
-};
-
-export const formatToHundredMark = (
-  condition: boolean,
-  data: (string | number)[]
-) => {
-  return condition ? data.map((v) => transHundredMarkSystem(v)) : data;
 };
 
 export function formatAxisLabelNumber(value: number | string) {
