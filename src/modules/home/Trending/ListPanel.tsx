@@ -105,7 +105,9 @@ const ListPanel = (props: {
                 <div className="mb-1 text-right font-medium italic">
                   {transHundredMarkSystem(item.activityScore || 0)}
                 </div>
-                <div className="text-xs text-secondary">Activity Count</div>
+                <div className="text-xs text-secondary">
+                  {t('home:activity')}
+                </div>
               </div>
             </a>
           </Link>
