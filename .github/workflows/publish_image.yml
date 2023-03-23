@@ -47,4 +47,5 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             SENTRY_DSN=${{secrets.SENTRY_DSN}}
+            SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}
             GIT_COMMIT=${{github.sha}}

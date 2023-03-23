@@ -6,7 +6,10 @@ import {
   getTooltipsFormatter,
   legendFormat,
 } from '@common/options';
-import { formatNegativeNumber } from '@common/utils/format';
+import {
+  formatNegativeNumber,
+  formatAxisLabelNumber,
+} from '@common/utils/format';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
@@ -63,6 +66,14 @@ const LocFrequency = () => {
       legend: legendFormat(compareLabels),
       tooltip: {
         formatter: getTooltipsFormatter({ compareLabels }),
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: (value: any) => {
+            return formatAxisLabelNumber(value) as string;
+          },
+        },
       },
     });
   };

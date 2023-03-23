@@ -122,3 +122,17 @@ export const fmtEmptyDataValue = (value: any): any => {
   }
   return value;
 };
+
+export function formatAxisLabelNumber(value: number | string) {
+  const v = Number(value);
+  if (isNaN(v)) return value;
+
+  if (Math.abs(v) > 1000) {
+    return v / 1000 + 'k';
+  }
+  if (Math.abs(v) > 1000000) {
+    return v / 1000000 + 'm';
+  }
+
+  return value;
+}

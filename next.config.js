@@ -3,10 +3,13 @@
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 const { withSentryConfig } = require('@sentry/nextjs');
-
+const isDocker = require('./script/is-docker');
 const path = require('path');
 const { i18n } = require('./next-i18next.config');
 const execSync = require('child_process').execSync;
+
+const inDocker = isDocker();
+console.log({ inDocker });
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -47,6 +50,6 @@ module.exports = withBundleAnalyzer({
 
 module.exports = withSentryConfig(
   module.exports,
-  { silent: true },
+  { silent: !inDocker },
   { hideSourceMaps: true }
 );
