@@ -3,6 +3,7 @@
   "dimensions": "Dimensions",
   "models": "Models",
   "metrics": "Metrics",
+  "activity": "Activity",
   "how_compass_working": "How Compass working",
   "it_points_to_the_thing_you_want_most_in_open_source": "It points to the thing <br/> you want most in <br/> open source world",
   "we_help_open_source_projects_gain_insight_into_its": "We help open source projects gain insight into its trends, and getting more value of it.",
@@ -35,7 +36,7 @@
     "web_framework": "Web Framework"
   },
   "trending": {
-    "weekly_activity_board": "Weekly Activity Board",
+    "repository_weekly_activity_board": "Repository Weekly Activity Board",
     "community_weekly_activity_board": "Community Weekly Activity Board"
   }
 }
