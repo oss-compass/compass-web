@@ -90,7 +90,11 @@ const PrOpenTime = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+            <ChartWithData
+              tansOpts={tansOpts}
+              indicators={indicators}
+              getOptions={getOptions}
+            >
               {({ loading, option }) => {
                 return (
                   <EChartX
