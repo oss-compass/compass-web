@@ -26,6 +26,7 @@ const ChartWithData: React.FC<{
     input: GenChartData,
     theme?: DeepReadonly<ChartThemeState>
   ) => EChartsOption;
+  indicators?: string;
   children:
     | ((args: {
         loading: boolean;
@@ -33,7 +34,7 @@ const ChartWithData: React.FC<{
         option: EChartsOption;
       }) => ReactNode)
     | ReactNode;
-}> = ({ children, getOptions, tansOpts }) => {
+}> = ({ children, indicators, getOptions, tansOpts }) => {
   const { t, i18n } = useTranslation();
   const theme = useSnapshot(chartThemeState);
   const data = useMetricQueryData();
@@ -64,7 +65,7 @@ const ChartWithData: React.FC<{
   if (!isCompare) {
     echartsOpts.grid = {
       ...echartsOpts.grid,
-      top: 50,
+      top: indicators ? 50 : 10,
     };
     echartsOpts.legend = {
       show: false,
