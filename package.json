@@ -93,6 +93,7 @@
     "esno": "^0.16.3",
     "fs-extra": "^11.1.0",
     "husky": "^8.0.1",
+    "is-docker": "^3.0.0",
     "jest": "^29.0.3",
     "jest-environment-jsdom": "^29.0.3",
     "joi": "^17.7.1",

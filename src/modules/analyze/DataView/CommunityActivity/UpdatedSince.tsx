@@ -58,7 +58,11 @@ const UpdatedSince = () => {
     >
       {(ref) => {
         return (
-          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+          <ChartWithData
+            tansOpts={tansOpts}
+            indicators={indicators}
+            getOptions={getOptions}
+          >
             {({ loading, option }) => {
               return (
                 <EChartX containerRef={ref} loading={loading} option={option} />
