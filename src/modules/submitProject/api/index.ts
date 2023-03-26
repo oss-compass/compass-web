@@ -19,7 +19,7 @@ export const getOrgRepos = (provider: string) => {
 
 export const getOrganizations = (provider: string) => {
   if (provider === 'gitee') {
-    return giteeApi.getOrganizations;
+    return giteeApi.getUserOrgs;
   }
-  return githubApi.getOrganizations;
+  return githubApi.getUserOrgs;
 };
