@@ -10,7 +10,7 @@ export interface Repos {
 }
 
 export interface ReposParams {
-  token: string;
+  username: string;
   sort?: 'created' | 'updated' | 'pushed' | 'full_name';
   q?: string;
   page?: number;
@@ -18,8 +18,8 @@ export interface ReposParams {
 }
 
 export interface OrgParams {
+  username: string;
   org: string;
-  token: string;
   sort?: 'created' | 'updated' | 'pushed' | 'full_name';
   page?: number;
   per_page?: number;
