@@ -105,15 +105,15 @@ const SelectRepoSource: React.FC<
   const ref = useRef<HTMLDivElement>(null);
 
   const { data: session } = useSession();
-  const token = session?.accessToken!;
+  const username = session?.user?.login!;
   const provider = session?.provider!;
 
   const { data } = useQuery(
-    ['getOrganizations', token],
+    ['getOrganizations', username],
     () => {
-      return getOrganizations(provider)({ token });
+      return getOrganizations(provider)({ username });
     },
-    { enabled: Boolean(token) }
+    { enabled: Boolean(username) }
   );
   const hasOrgList = Array.isArray(data?.data) && data?.data?.length;
 

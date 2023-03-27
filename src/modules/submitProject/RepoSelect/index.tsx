@@ -21,7 +21,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
 }) => {
   const { t } = useTranslation();
   const { data: session } = useSession();
-  const token = session?.accessToken!;
+  const username = session?.user?.login!;
   const provider = session?.provider!;
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, { wait: 180 });
@@ -37,15 +37,15 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   const [hasMore, setHasMore] = useState(true);
 
   const { isLoading, isFetching, isError, error } = useQuery(
-    ['getRepos', token, page, { org }],
+    ['getRepos', username, page, { org }],
     () => {
       if (org.user) {
-        return getRepos(provider)({ token, page });
+        return getRepos(provider)({ username, page });
       }
-      return getOrgRepos(provider)({ token, page, org: org.login! });
+      return getOrgRepos(provider)({ username, page, org: org.login! });
     },
     {
-      enabled: Boolean(token),
+      enabled: Boolean(username),
       onSuccess(res) {
         if (res.data) {
           if (res.data.length < defaultPageSize) {
