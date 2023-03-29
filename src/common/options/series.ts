@@ -19,7 +19,7 @@ export const line = (
   return {
     name: opts.name,
     type: 'line',
-    smooth: false,
+    smooth: true,
     showSymbol: false,
     data,
     lineStyle: opts.color ? { color: opts.color } : {},
