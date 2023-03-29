@@ -48,3 +48,10 @@ const transHundredMarkSystem = (oneMark: number | string): number | string => {
 };
 
 export default transHundredMarkSystem;
+
+export const toHundredMark = (
+  condition: boolean,
+  data: (string | number)[]
+) => {
+  return condition ? data.map((v) => transHundredMarkSystem(v)) : data;
+};

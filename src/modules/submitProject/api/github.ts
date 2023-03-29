@@ -8,23 +8,33 @@ import {
 } from './common';
 
 export async function getRepos({
-  token,
+  username,
   sort = 'updated',
   page,
   per_page = defaultPageSize,
 }: ReposParams): Promise<AxiosResponse<Repos[]>> {
-  return await axios.get('https://api.github.com/user/repos', {
+  return await axios.get(`https://api.github.com/users/${username}/repos`, {
     params: { sort, page, per_page },
     headers: {
       accept: 'application/vnd.github+json',
-      authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getUserOrgs({
+  username,
+}: {
+  username: string;
+}): Promise<AxiosResponse<Organization[]>> {
+  return await axios.get(`https://api.github.com/users/${username}/orgs`, {
+    headers: {
+      accept: 'application/vnd.github+json',
     },
   });
 }
 
 export async function getOrgRepos({
   org,
-  token,
   sort = 'updated',
   page,
   per_page = defaultPageSize,
@@ -33,20 +43,6 @@ export async function getOrgRepos({
     params: { sort, page, per_page },
     headers: {
       accept: 'application/vnd.github+json',
-      authorization: `Bearer ${token}`,
-    },
-  });
-}
-
-export async function getOrganizations({
-  token,
-}: {
-  token: string;
-}): Promise<AxiosResponse<Organization[]>> {
-  return await axios.get('https://api.github.com/user/orgs', {
-    headers: {
-      accept: 'application/vnd.github+json',
-      authorization: `Bearer ${token}`,
     },
   });
 }

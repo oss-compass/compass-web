@@ -375,3 +375,15 @@ query bulkOverview($labels: [String!]!) {
     }
   }
 }
+
+query trending($level: String = "repo") {
+  trending(level: $level) {
+    activityScore
+    fullPath
+    label
+    level
+    name
+    origin
+    reposCount
+  }
+}

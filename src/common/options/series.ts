@@ -5,9 +5,8 @@ import {
   SeriesOption,
 } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
-import { formatRepoName } from '@modules/analyze/options/format';
+import { formatRepoName, fmtEmptyDataValue } from '@common/utils/format';
 import isNumber from 'lodash/isNumber';
-import { fmtEmptyDataValue } from './format';
 
 export const line = (
   opts: {
