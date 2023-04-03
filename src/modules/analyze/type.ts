@@ -14,6 +14,15 @@ export interface TransOpt {
   summaryKey: string;
 }
 
+export interface DataContainerResult {
+  isCompare: boolean;
+  compareLabels: string[];
+  xAxis: string[];
+  yResults: YResult[];
+  summaryMean: (number | string)[];
+  summaryMedian: (number | string)[];
+}
+
 export interface GenChartData {
   isCompare: boolean;
   compareLabels: string[];
@@ -24,7 +33,7 @@ export interface GenChartData {
 }
 
 export type GenChartOptions = (
-  input: GenChartData,
+  input: DataContainerResult,
   theme?: DeepReadonly<ChartThemeState>
 ) => EChartsOption;
 

@@ -4,8 +4,9 @@ import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/co
 import BaseCard from '@common/components/BaseCard';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
-import ChartWithData from '@modules/analyze/components/ChartWithData';
-import { GenChartOptions, TransOpt } from '@modules/analyze/type';
+import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
+import { TransOpt } from '@modules/analyze/type';
 
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
@@ -90,17 +91,26 @@ const ContributorCount = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
-              {({ loading, option }) => {
+            <ChartDataContainer tansOpts={tansOpts}>
+              {({ loading, result }) => {
                 return (
-                  <EChartX
-                    containerRef={ref}
-                    loading={loading}
-                    option={option}
-                  />
+                  <ChartOptionContainer
+                    data={result}
+                    optionCallback={getOptions}
+                  >
+                    {({ option }) => {
+                      return (
+                        <EChartX
+                          loading={loading}
+                          option={option}
+                          containerRef={ref}
+                        />
+                      );
+                    }}
+                  </ChartOptionContainer>
                 );
               }}
-            </ChartWithData>
+            </ChartDataContainer>
           </div>
         );
       }}

@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
-import ChartWithData from '@modules/analyze/components/ChartWithData';
+import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
@@ -82,17 +83,26 @@ const CodeMergeRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
-              {({ loading, option }) => {
+            <ChartDataContainer tansOpts={tansOpts}>
+              {({ loading, result }) => {
                 return (
-                  <EChartX
-                    containerRef={ref}
-                    loading={loading}
-                    option={option}
-                  />
+                  <ChartOptionContainer
+                    data={result}
+                    optionCallback={getOptions}
+                  >
+                    {({ option }) => {
+                      return (
+                        <EChartX
+                          loading={loading}
+                          option={option}
+                          containerRef={ref}
+                        />
+                      );
+                    }}
+                  </ChartOptionContainer>
                 );
               }}
-            </ChartWithData>
+            </ChartDataContainer>
           </>
         );
       }}
