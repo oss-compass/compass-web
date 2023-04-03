@@ -7,7 +7,7 @@ import { getProvider, sleep } from '@common/utils';
 import { Level } from '@modules/analyze/constant';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import ProviderIcon from '@modules/analyze/components/ProviderIcon';
-import CompassSquareLogo from '@common/svgs/compass-square.svg';
+import CompassSquareLogo from '@public/images/logos/compass-square.svg';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 

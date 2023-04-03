@@ -4,7 +4,7 @@ import {
   BetaMetricOverviewQuery,
 } from '@graphql/generated';
 import client from '@graphql/client';
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
+import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
 // import MiniChart from '@common/components/MiniChart';

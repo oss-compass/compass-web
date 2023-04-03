@@ -407,7 +407,7 @@ const useOrganizationActivity = (): PlantList[] => {
         content: t(
           'metrics_models:organization_activity.metrics.org_count_desc'
         ),
-        hash: '/docs/metrics-models/niche-creation/developer-retention#org-count',
+        hash: '/docs/metrics-models/niche-creation/organization-activity/#org-count',
       },
     },
     {
@@ -422,7 +422,7 @@ const useOrganizationActivity = (): PlantList[] => {
         content: t(
           'metrics_models:organization_activity.metrics.contributor_count_desc'
         ),
-        hash: '/docs/metrics-models/niche-creation/developer-retention#contributor-count',
+        hash: '/docs/metrics-models/niche-creation/organization-activity/#org-contributor-count',
       },
     },
     {
@@ -437,7 +437,7 @@ const useOrganizationActivity = (): PlantList[] => {
         content: t(
           'metrics_models:organization_activity.metrics.commit_frequency_desc'
         ),
-        hash: '/docs/metrics-models/niche-creation/developer-retention#commit-frequency',
+        hash: '/docs/metrics-models/niche-creation/organization-activity/#org-commit-frequency',
       },
     },
     {
@@ -453,7 +453,7 @@ const useOrganizationActivity = (): PlantList[] => {
         content: t(
           'metrics_models:organization_activity.metrics.contribution_last_desc'
         ),
-        hash: '/docs/metrics-models/niche-creation/developer-retention#contribution-last',
+        hash: '/docs/metrics-models/niche-creation/organization-activity/#org-contribution-last',
       },
     },
   ];

@@ -1,4 +1,4 @@
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
+import transHundredMarkSystem from './transHundredMarkSystem';
 
 describe('utils number ', () => {
   it('transHundredMarkSystem', () => {
