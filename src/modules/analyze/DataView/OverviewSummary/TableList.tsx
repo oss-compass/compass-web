@@ -9,7 +9,7 @@ import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { formatISO, getAnalyzeLink, toFixed } from '@common/utils';
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
+import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import { formatRepoName } from '@common/utils/format';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';

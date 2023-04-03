@@ -6,7 +6,7 @@ import { TrendingQuery } from '@graphql/generated';
 import { formatLabel } from '@common/utils/format';
 import { getAnalyzeLink } from '@common/utils/links';
 import ProviderIcon from '@common/components/ProviderIcon';
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
+import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Level } from '@modules/analyze/constant';
 
 const Loading = () => (

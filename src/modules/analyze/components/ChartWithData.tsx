@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
-import transMetricToAxis from '@modules/analyze/DataTransform/transMetricToAxis';
-import transSummaryToAxis from '@modules/analyze/DataTransform/transSummaryToAxis';
+import transMetricToAxis from '@common/transform/transMetricToAxis';
+import transSummaryToAxis from '@common/transform/transSummaryToAxis';
 import { EChartsOption } from 'echarts';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
