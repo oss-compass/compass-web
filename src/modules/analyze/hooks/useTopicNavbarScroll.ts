@@ -13,15 +13,16 @@ const useTopicNavbarScroll = () => {
   const scrollEventListener = () => {
     const list = document.querySelectorAll('.base-card');
     for (let i = 0; i < list.length; i++) {
-      const rectObject = list[i].getBoundingClientRect();
-      if (rectObject.top > 0) {
+      const { top, bottom } = list[i].getBoundingClientRect();
+      console.log(top, bottom);
+      if ((top < 0 && bottom > 250) || top > 0) {
         const h3 = list[i].firstChild as HTMLElement;
         setActiveId(h3.id);
         break;
       }
     }
   };
-  useDebounce(scrollEventListener, 1);
+  useDebounce(scrollEventListener, 100);
   return useMemo(() => {
     if (!activeId) {
       return { topicId: '', subId: '' };
