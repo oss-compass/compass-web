@@ -376,3 +376,29 @@ query trending($level: String = "repo") {
     reposCount
   }
 }
+
+query betaMetricOverview($id: Int!, $limit: Int) {
+  betaMetricOverview(id: $id, limit: $limit) {
+    projectsCount
+    trends {
+      path
+      origin
+      name
+      backend
+      betaMetricScores {
+        grimoireCreationDate
+        score
+      }
+    }
+  }
+}
+
+query betaMetricsIndex($per: Int, $page: Int) {
+  betaMetricsIndex(per: $per, page: $page) {
+    id
+    dimensionality
+    desc
+    extra
+    metric
+  }
+}

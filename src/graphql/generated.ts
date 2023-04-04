@@ -803,48 +803,6 @@ export type CommunityReposQuery = {
   };
 };
 
-export type BetaMetricOverviewQueryVariables = Exact<{
-  id: Scalars['Int'];
-  limit?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type BetaMetricOverviewQuery = {
-  __typename?: 'Query';
-  betaMetricOverview: {
-    __typename?: 'BetaMetricOverview';
-    projectsCount?: number | null;
-    trends?: Array<{
-      __typename?: 'BetaRepo';
-      path?: string | null;
-      origin: string;
-      name?: string | null;
-      backend?: string | null;
-      betaMetricScores: Array<{
-        __typename?: 'BetaMetricScore';
-        grimoireCreationDate?: any | null;
-        score?: number | null;
-      }>;
-    }> | null;
-  };
-};
-
-export type BetaMetricsIndexQueryVariables = Exact<{
-  per?: InputMaybe<Scalars['Int']>;
-  page?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type BetaMetricsIndexQuery = {
-  __typename?: 'Query';
-  betaMetricsIndex: Array<{
-    __typename?: 'BetaMetric';
-    id?: number | null;
-    dimensionality?: string | null;
-    desc?: string | null;
-    extra?: string | null;
-    metric?: string | null;
-  }>;
-};
-
 export type MetricQueryVariables = Exact<{
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
@@ -1296,6 +1254,48 @@ export type TrendingQuery = {
   }>;
 };
 
+export type BetaMetricOverviewQueryVariables = Exact<{
+  id: Scalars['Int'];
+  limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type BetaMetricOverviewQuery = {
+  __typename?: 'Query';
+  betaMetricOverview: {
+    __typename?: 'BetaMetricOverview';
+    projectsCount?: number | null;
+    trends?: Array<{
+      __typename?: 'BetaRepo';
+      path?: string | null;
+      origin: string;
+      name?: string | null;
+      backend?: string | null;
+      betaMetricScores: Array<{
+        __typename?: 'BetaMetricScore';
+        grimoireCreationDate?: any | null;
+        score?: number | null;
+      }>;
+    }> | null;
+  };
+};
+
+export type BetaMetricsIndexQueryVariables = Exact<{
+  per?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type BetaMetricsIndexQuery = {
+  __typename?: 'Query';
+  betaMetricsIndex: Array<{
+    __typename?: 'BetaMetric';
+    id?: number | null;
+    dimensionality?: string | null;
+    desc?: string | null;
+    extra?: string | null;
+    metric?: string | null;
+  }>;
+};
+
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
     fragment metricStat on MetricStat {
   mean
@@ -1619,107 +1619,6 @@ useCommunityReposQuery.fetcher = (
   fetcher<CommunityReposQuery, CommunityReposQueryVariables>(
     client,
     CommunityReposDocument,
-    variables,
-    headers
-  );
-export const BetaMetricOverviewDocument = /*#__PURE__*/ `
-    query betaMetricOverview($id: Int!, $limit: Int) {
-  betaMetricOverview(id: $id, limit: $limit) {
-    projectsCount
-    trends {
-      path
-      origin
-      name
-      backend
-      betaMetricScores {
-        grimoireCreationDate
-        score
-      }
-    }
-  }
-}
-    `;
-export const useBetaMetricOverviewQuery = <
-  TData = BetaMetricOverviewQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: BetaMetricOverviewQueryVariables,
-  options?: UseQueryOptions<BetaMetricOverviewQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<BetaMetricOverviewQuery, TError, TData>(
-    ['betaMetricOverview', variables],
-    fetcher<BetaMetricOverviewQuery, BetaMetricOverviewQueryVariables>(
-      client,
-      BetaMetricOverviewDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useBetaMetricOverviewQuery.getKey = (
-  variables: BetaMetricOverviewQueryVariables
-) => ['betaMetricOverview', variables];
-useBetaMetricOverviewQuery.fetcher = (
-  client: GraphQLClient,
-  variables: BetaMetricOverviewQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<BetaMetricOverviewQuery, BetaMetricOverviewQueryVariables>(
-    client,
-    BetaMetricOverviewDocument,
-    variables,
-    headers
-  );
-export const BetaMetricsIndexDocument = /*#__PURE__*/ `
-    query betaMetricsIndex($per: Int, $page: Int) {
-  betaMetricsIndex(per: $per, page: $page) {
-    id
-    dimensionality
-    desc
-    extra
-    metric
-  }
-}
-    `;
-export const useBetaMetricsIndexQuery = <
-  TData = BetaMetricsIndexQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables?: BetaMetricsIndexQueryVariables,
-  options?: UseQueryOptions<BetaMetricsIndexQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<BetaMetricsIndexQuery, TError, TData>(
-    variables === undefined
-      ? ['betaMetricsIndex']
-      : ['betaMetricsIndex', variables],
-    fetcher<BetaMetricsIndexQuery, BetaMetricsIndexQueryVariables>(
-      client,
-      BetaMetricsIndexDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useBetaMetricsIndexQuery.getKey = (
-  variables?: BetaMetricsIndexQueryVariables
-) =>
-  variables === undefined
-    ? ['betaMetricsIndex']
-    : ['betaMetricsIndex', variables];
-useBetaMetricsIndexQuery.fetcher = (
-  client: GraphQLClient,
-  variables?: BetaMetricsIndexQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<BetaMetricsIndexQuery, BetaMetricsIndexQueryVariables>(
-    client,
-    BetaMetricsIndexDocument,
     variables,
     headers
   );
@@ -2191,6 +2090,107 @@ useTrendingQuery.fetcher = (
   fetcher<TrendingQuery, TrendingQueryVariables>(
     client,
     TrendingDocument,
+    variables,
+    headers
+  );
+export const BetaMetricOverviewDocument = /*#__PURE__*/ `
+    query betaMetricOverview($id: Int!, $limit: Int) {
+  betaMetricOverview(id: $id, limit: $limit) {
+    projectsCount
+    trends {
+      path
+      origin
+      name
+      backend
+      betaMetricScores {
+        grimoireCreationDate
+        score
+      }
+    }
+  }
+}
+    `;
+export const useBetaMetricOverviewQuery = <
+  TData = BetaMetricOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: BetaMetricOverviewQueryVariables,
+  options?: UseQueryOptions<BetaMetricOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<BetaMetricOverviewQuery, TError, TData>(
+    ['betaMetricOverview', variables],
+    fetcher<BetaMetricOverviewQuery, BetaMetricOverviewQueryVariables>(
+      client,
+      BetaMetricOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useBetaMetricOverviewQuery.getKey = (
+  variables: BetaMetricOverviewQueryVariables
+) => ['betaMetricOverview', variables];
+useBetaMetricOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: BetaMetricOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<BetaMetricOverviewQuery, BetaMetricOverviewQueryVariables>(
+    client,
+    BetaMetricOverviewDocument,
+    variables,
+    headers
+  );
+export const BetaMetricsIndexDocument = /*#__PURE__*/ `
+    query betaMetricsIndex($per: Int, $page: Int) {
+  betaMetricsIndex(per: $per, page: $page) {
+    id
+    dimensionality
+    desc
+    extra
+    metric
+  }
+}
+    `;
+export const useBetaMetricsIndexQuery = <
+  TData = BetaMetricsIndexQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: BetaMetricsIndexQueryVariables,
+  options?: UseQueryOptions<BetaMetricsIndexQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<BetaMetricsIndexQuery, TError, TData>(
+    variables === undefined
+      ? ['betaMetricsIndex']
+      : ['betaMetricsIndex', variables],
+    fetcher<BetaMetricsIndexQuery, BetaMetricsIndexQueryVariables>(
+      client,
+      BetaMetricsIndexDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useBetaMetricsIndexQuery.getKey = (
+  variables?: BetaMetricsIndexQueryVariables
+) =>
+  variables === undefined
+    ? ['betaMetricsIndex']
+    : ['betaMetricsIndex', variables];
+useBetaMetricsIndexQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: BetaMetricsIndexQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<BetaMetricsIndexQuery, BetaMetricsIndexQueryVariables>(
+    client,
+    BetaMetricsIndexDocument,
     variables,
     headers
   );
