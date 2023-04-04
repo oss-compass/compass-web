@@ -52,16 +52,18 @@ const CommunityDropDownMenu: React.FC<{
             anchorEl={anchorEl}
           >
             <div className="rounded bg-white py-2 shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
-              {Object.keys(typeMap).map((item) => {
+              {Object.keys(typeMap).map((item, i) => {
                 return (
                   <div
                     key={item}
                     className={classnames(
-                      'h-8 cursor-pointer border-b px-4 text-center',
-                      { 'bg-[#f3f4f6]': item === type }
+                      'h-7 cursor-pointer  px-4 text-center',
+                      { 'bg-[#f3f4f6]': item === type },
+                      { 'border-b': i !== 2 }
                     )}
                     onClick={() => {
                       onTypeChange(item);
+                      setOpen(() => false);
                     }}
                   >
                     <span className="text-xs text-[#585858]">
