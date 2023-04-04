@@ -25,36 +25,37 @@ query latestMetrics($label: String!, $level: String) {
   }
 }
 
-query overview {
-  recentUpdates {
-    label
-    level
-    updatedAt
-  }
-  overview {
-    trends {
-      backend
-      forksCount
-      language
-      name
-      openIssuesCount
-      path
-      stargazersCount
-      watchersCount
-      metricActivity {
-        activityScore
-      }
-    }
-  }
-}
+# query overview {
+#   recentUpdates {
+#     label
+#     level
+#     updatedAt
+#   }
+#   overview {
+#     trends {
+#       backend
+#       forksCount
+#       language
+#       name
+#       openIssuesCount
+#       path
+#       stargazersCount
+#       watchersCount
+#       metricActivity {
+#         activityScore
+#       }
+#     }
+#   }
+# }
 
-query communityRepos($label: String!, $page: Int, $per: Int) {
-  communityOverview(label: $label, page: $page, per: $per) {
+query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
+  communityOverview(label: $label, page: $page, per: $per, type: $type) {
     projectsCount
     trends {
       backend
       name
       path
+      type
       metricActivity {
         activityScore
         grimoireCreationDate

@@ -74,6 +74,8 @@ export type ActivityMetric = {
   orgCount?: Maybe<Scalars['Float']>;
   /** number of releases in the last 90 days */
   recentReleasesCount?: Maybe<Scalars['Float']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
   /** number of issue updates in the past 90 days */
   updatedIssuesCount?: Maybe<Scalars['Float']>;
   /** (average of months from the last code commit to the time of statistics */
@@ -212,6 +214,8 @@ export type CodequalityMetric = {
   prIssueLinkedCount?: Maybe<Scalars['Float']>;
   /** ratio of pulls which are linked issues and all pulls */
   prIssueLinkedRatio?: Maybe<Scalars['Float']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
 };
 
 export type CodequalitySummary = {
@@ -294,6 +298,8 @@ export type CommunityMetric = {
   prOpenTimeAvg?: Maybe<Scalars['Float']>;
   /** middle of pulls open time (days) */
   prOpenTimeMid?: Maybe<Scalars['Float']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
   /** number of issue updates in the past 90 days */
   updatedIssuesCount?: Maybe<Scalars['Float']>;
 };
@@ -418,6 +424,8 @@ export type GroupActivityMetric = {
   orgCount?: Maybe<Scalars['Float']>;
   /** score of organization activity metric model */
   organizationsActivity?: Maybe<Scalars['Float']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
 };
 
 export type GroupActivitySummary = {
@@ -488,15 +496,6 @@ export type MutationCreateRepoTaskArgs = {
   input: CreateRepoTaskInput;
 };
 
-export type Overview = {
-  __typename?: 'Overview';
-  dimensionsCount?: Maybe<Scalars['Int']>;
-  metricsCount?: Maybe<Scalars['Int']>;
-  modelsCount?: Maybe<Scalars['Int']>;
-  projectsCount?: Maybe<Scalars['Int']>;
-  trends?: Maybe<Array<Repo>>;
-};
-
 export type ProjectCompletionRow = {
   __typename?: 'ProjectCompletionRow';
   /** metric model object identification */
@@ -542,8 +541,6 @@ export type Query = {
   metricCommunity: Array<CommunityMetric>;
   /** Get group activity metrics data of compass */
   metricGroupActivity: Array<GroupActivityMetric>;
-  /** Get overview data of compass */
-  overview: Overview;
   /** Recent update reports */
   recentUpdates: Array<ProjectCompletionRow>;
   /** Get activity summary data of compass */
@@ -589,6 +586,7 @@ export type QueryCommunityOverviewArgs = {
   label: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryFuzzySearchArgs = {
@@ -665,18 +663,26 @@ export type Repo = {
   origin: Scalars['String'];
   path?: Maybe<Scalars['String']>;
   stargazersCount?: Maybe<Scalars['Int']>;
+  type?: Maybe<Scalars['String']>;
   updatedAt: Scalars['ISO8601DateTime'];
   watchersCount?: Maybe<Scalars['Int']>;
 };
 
 export type Trending = {
   __typename?: 'Trending';
+  /** repo or community latest activity avg */
   activityScore?: Maybe<Scalars['Float']>;
+  /** repo or community full_path, if community: equals name */
   fullPath?: Maybe<Scalars['String']>;
+  /** repo or community label */
   label?: Maybe<Scalars['String']>;
+  /** repo or community level */
   level?: Maybe<Scalars['String']>;
+  /** repo or community name */
   name?: Maybe<Scalars['String']>;
+  /** repo or community origin (gitee/github/combine) */
   origin?: Maybe<Scalars['String']>;
+  /** repositories count */
   reposCount?: Maybe<Scalars['Float']>;
 };
 
@@ -760,40 +766,11 @@ export type LatestMetricsQuery = {
   };
 };
 
-export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
-
-export type OverviewQuery = {
-  __typename?: 'Query';
-  recentUpdates: Array<{
-    __typename?: 'ProjectCompletionRow';
-    label?: string | null;
-    level?: string | null;
-    updatedAt?: any | null;
-  }>;
-  overview: {
-    __typename?: 'Overview';
-    trends?: Array<{
-      __typename?: 'Repo';
-      backend?: string | null;
-      forksCount?: number | null;
-      language?: string | null;
-      name?: string | null;
-      openIssuesCount?: number | null;
-      path?: string | null;
-      stargazersCount?: number | null;
-      watchersCount?: number | null;
-      metricActivity: Array<{
-        __typename?: 'ActivityMetric';
-        activityScore?: number | null;
-      }>;
-    }> | null;
-  };
-};
-
 export type CommunityReposQueryVariables = Exact<{
   label: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+  type?: InputMaybe<Scalars['String']>;
 }>;
 
 export type CommunityReposQuery = {
@@ -806,6 +783,7 @@ export type CommunityReposQuery = {
       backend?: string | null;
       name?: string | null;
       path?: string | null;
+      type?: string | null;
       metricActivity: Array<{
         __typename?: 'ActivityMetric';
         activityScore?: number | null;
@@ -1498,68 +1476,15 @@ useLatestMetricsQuery.fetcher = (
     variables,
     headers
   );
-export const OverviewDocument = /*#__PURE__*/ `
-    query overview {
-  recentUpdates {
-    label
-    level
-    updatedAt
-  }
-  overview {
-    trends {
-      backend
-      forksCount
-      language
-      name
-      openIssuesCount
-      path
-      stargazersCount
-      watchersCount
-      metricActivity {
-        activityScore
-      }
-    }
-  }
-}
-    `;
-export const useOverviewQuery = <TData = OverviewQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables?: OverviewQueryVariables,
-  options?: UseQueryOptions<OverviewQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<OverviewQuery, TError, TData>(
-    variables === undefined ? ['overview'] : ['overview', variables],
-    fetcher<OverviewQuery, OverviewQueryVariables>(
-      client,
-      OverviewDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useOverviewQuery.getKey = (variables?: OverviewQueryVariables) =>
-  variables === undefined ? ['overview'] : ['overview', variables];
-useOverviewQuery.fetcher = (
-  client: GraphQLClient,
-  variables?: OverviewQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<OverviewQuery, OverviewQueryVariables>(
-    client,
-    OverviewDocument,
-    variables,
-    headers
-  );
 export const CommunityReposDocument = /*#__PURE__*/ `
-    query communityRepos($label: String!, $page: Int, $per: Int) {
-  communityOverview(label: $label, page: $page, per: $per) {
+    query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
+  communityOverview(label: $label, page: $page, per: $per, type: $type) {
     projectsCount
     trends {
       backend
       name
       path
+      type
       metricActivity {
         activityScore
         grimoireCreationDate
