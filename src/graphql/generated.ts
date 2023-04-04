@@ -766,6 +766,18 @@ export type LatestMetricsQuery = {
   };
 };
 
+export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OverviewQuery = {
+  __typename?: 'Query';
+  recentUpdates: Array<{
+    __typename?: 'ProjectCompletionRow';
+    label?: string | null;
+    level?: string | null;
+    updatedAt?: any | null;
+  }>;
+};
+
 export type CommunityReposQueryVariables = Exact<{
   label: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
@@ -820,6 +832,7 @@ export type MetricQuery = {
     isMaintained?: number | null;
     label?: string | null;
     level?: string | null;
+    type?: string | null;
     linesAddedFrequency?: number | null;
     linesRemovedFrequency?: number | null;
     locFrequency?: number | null;
@@ -844,6 +857,7 @@ export type MetricQuery = {
     issueOpenTimeMid?: number | null;
     label?: string | null;
     level?: string | null;
+    type?: string | null;
     prOpenTimeAvg?: number | null;
     prOpenTimeMid?: number | null;
     updatedIssuesCount?: number | null;
@@ -865,6 +879,7 @@ export type MetricQuery = {
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
+    type?: string | null;
     recentReleasesCount?: number | null;
     updatedIssuesCount?: number | null;
     updatedSince?: number | null;
@@ -877,6 +892,7 @@ export type MetricQuery = {
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
+    type?: string | null;
     orgCount?: number | null;
     organizationsActivity?: number | null;
   }>;
@@ -1476,6 +1492,45 @@ useLatestMetricsQuery.fetcher = (
     variables,
     headers
   );
+export const OverviewDocument = /*#__PURE__*/ `
+    query overview {
+  recentUpdates {
+    label
+    level
+    updatedAt
+  }
+}
+    `;
+export const useOverviewQuery = <TData = OverviewQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables?: OverviewQueryVariables,
+  options?: UseQueryOptions<OverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<OverviewQuery, TError, TData>(
+    variables === undefined ? ['overview'] : ['overview', variables],
+    fetcher<OverviewQuery, OverviewQueryVariables>(
+      client,
+      OverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useOverviewQuery.getKey = (variables?: OverviewQueryVariables) =>
+  variables === undefined ? ['overview'] : ['overview', variables];
+useOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: OverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<OverviewQuery, OverviewQueryVariables>(
+    client,
+    OverviewDocument,
+    variables,
+    headers
+  );
 export const CommunityReposDocument = /*#__PURE__*/ `
     query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
   communityOverview(label: $label, page: $page, per: $per, type: $type) {
@@ -1552,6 +1607,7 @@ export const MetricDocument = /*#__PURE__*/ `
     isMaintained
     label
     level
+    type
     linesAddedFrequency
     linesRemovedFrequency
     locFrequency
@@ -1575,6 +1631,7 @@ export const MetricDocument = /*#__PURE__*/ `
     issueOpenTimeMid
     label
     level
+    type
     prOpenTimeAvg
     prOpenTimeMid
     updatedIssuesCount
@@ -1595,6 +1652,7 @@ export const MetricDocument = /*#__PURE__*/ `
     grimoireCreationDate
     label
     level
+    type
     recentReleasesCount
     updatedIssuesCount
     updatedSince
@@ -1611,6 +1669,7 @@ export const MetricDocument = /*#__PURE__*/ `
     grimoireCreationDate
     label
     level
+    type
     orgCount
     organizationsActivity
   }
