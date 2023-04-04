@@ -65,7 +65,7 @@ describe('utils url ', () => {
         result: 'ant-design',
       },
       {
-        input: 'https://gitee.com/dotnetchina/MiniWord',
+        input: 'https://gitee.com/dotnetchina/MiniWord/',
         result: 'dotnetchina',
       },
     ];
@@ -86,7 +86,7 @@ describe('utils url ', () => {
         result: 'ant-design',
       },
       {
-        input: 'https://gitee.com/dotnetchina/MiniWord',
+        input: 'https://gitee.com/dotnetchina/MiniWord/',
         result: 'MiniWord',
       },
     ];
