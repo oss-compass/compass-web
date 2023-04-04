@@ -4,6 +4,7 @@ import { Level } from '@modules/analyze/constant';
 import { MetricQuery } from '@graphql/generated';
 import { toFixed } from '@common/utils';
 import { TransOpt, TransResult } from '@modules/analyze/type';
+import { CommunityRepoType } from '../constant';
 
 interface DataItem {
   label: string;
@@ -14,7 +15,8 @@ interface DataItem {
 function getDateMap(
   labelsData: DeepReadonly<Array<DataItem>>,
   xKey: string,
-  yKey: string
+  yKey: string,
+  communityRepoType?: CommunityRepoType
 ) {
   const [firstKey, secondKey] = yKey.split('.');
   const dateMap = new Map<string, Map<string, { y: number }>>();
@@ -22,6 +24,11 @@ function getDateMap(
   labelsData.forEach((item: any) => {
     const metric = item.result[firstKey];
     metric.forEach((i: any) => {
+      //  filter data
+      if (i.type && i.type !== communityRepoType) {
+        return;
+      }
+
       const xAxis = i[xKey] as string;
       const yAxis = i[secondKey] as number;
 
@@ -41,9 +48,17 @@ function getDateMap(
 
 export default function transMetricToAxis(
   labelsData: DeepReadonly<Array<DataItem>>,
-  opts: TransOpt
+  opts: TransOpt,
+  communityRepoType?: CommunityRepoType
 ): TransResult {
-  const dateMap = getDateMap(labelsData, opts.xKey, opts.yKey);
+  communityRepoType = communityRepoType || 'software-artifact';
+
+  const dateMap = getDateMap(
+    labelsData,
+    opts.xKey,
+    opts.yKey,
+    communityRepoType
+  );
 
   const dateMapKeys: string[] = [];
   dateMap.forEach((value, key) => {
