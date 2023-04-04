@@ -98,7 +98,9 @@ const LineChartWithData = () => {
   const { xAxis, yAxisResult } = useMemo(() => {
     const result = data.items[0].result;
     if (!result) return { xAxis: [], yAxisResult: [] };
-    return transDataForOverview(result, copyOpts, dateKey);
+
+    const repoType = 'software-artifact';
+    return transDataForOverview(result, copyOpts, dateKey, repoType);
   }, [copyOpts, data]);
 
   return <LineChart loading={isLoading} xAxis={xAxis} yAxis={yAxisResult} />;
