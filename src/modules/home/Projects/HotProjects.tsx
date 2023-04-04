@@ -7,7 +7,7 @@ import { getAnalyzeLink, getRepoLink } from '@common/utils';
 import MiniChart from './MiniChart';
 import AngleL from './assets/angle-left.svg';
 import AngleR from './assets/angle-right.svg';
-import transHundredMarkSystem from '@modules/analyze/DataTransform/transHundredMarkSystem';
+import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
 import { useTranslation } from 'react-i18next';

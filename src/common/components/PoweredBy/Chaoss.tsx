@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ChaossSvg from '@common/svgs/chaoss.svg';
+import ChaossSvg from '@public/images/logos/chaoss.svg';
 import Tooltip from '@common/components/Tooltip';
 
 const Chaoss = () => {

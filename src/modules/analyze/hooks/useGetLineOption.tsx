@@ -10,7 +10,7 @@ import {
 } from '@common/options';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { toHundredMark } from '@modules/analyze/DataTransform/transHundredMarkSystem';
+import { toHundredMark } from '@common/transform/transHundredMarkSystem';
 
 const useGetLineOption = (opt?: {
   enableDataFormat?: boolean;

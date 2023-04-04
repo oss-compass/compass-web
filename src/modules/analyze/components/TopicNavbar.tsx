@@ -25,7 +25,7 @@ const TopicNavbar = () => {
     document.getElementById('topic_overview_navbar')
   );
   const { topicId, subId } = useTopicNavbarScroll();
-  console.log(topicId, topicId.length);
+
   return (
     <div
       className={classnames(

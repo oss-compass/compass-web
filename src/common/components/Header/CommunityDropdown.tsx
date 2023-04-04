@@ -4,10 +4,10 @@ import LinkX from '@common/components/LinkX';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { AiFillCaretDown } from 'react-icons/ai';
-import Slack from '@common/svgs/slack.svg';
-import Wechat from '@common/svgs/wechat.svg';
-import Github from '@common/svgs/github.svg';
-import GiteeRed from '@common/svgs/gitee-red.svg';
+import Slack from '@public/images/logos/slack.svg';
+import Wechat from '@public/images/logos/wechat.svg';
+import Github from '@public/images/logos/github.svg';
+import GiteeRed from '@public/images/logos/gitee-red.svg';
 
 const itemClass =
   'flex cursor-pointer items-center py-4 pl-6 hover:bg-[#333333]';
