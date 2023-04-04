@@ -31,21 +31,6 @@ query overview {
     level
     updatedAt
   }
-  overview {
-    trends {
-      backend
-      forksCount
-      language
-      name
-      openIssuesCount
-      path
-      stargazersCount
-      watchersCount
-      metricActivity {
-        activityScore
-      }
-    }
-  }
 }
 
 query communityRepos($label: String!, $page: Int, $per: Int) {
@@ -91,6 +76,7 @@ query metric(
     isMaintained
     label
     level
+    type
     linesAddedFrequency
     linesRemovedFrequency
     locFrequency
@@ -119,6 +105,7 @@ query metric(
     issueOpenTimeMid
     label
     level
+    type
     prOpenTimeAvg
     prOpenTimeMid
     updatedIssuesCount
@@ -144,6 +131,7 @@ query metric(
     grimoireCreationDate
     label
     level
+    type
     recentReleasesCount
     updatedIssuesCount
     updatedSince
@@ -164,6 +152,7 @@ query metric(
     grimoireCreationDate
     label
     level
+    type
     orgCount
     organizationsActivity
   }

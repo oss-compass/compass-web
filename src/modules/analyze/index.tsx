@@ -1,5 +1,5 @@
 import React, { memo, PropsWithChildren, useEffect } from 'react';
-import AnalyzeContainer from './components/AnalyzeContainer';
+import AnalyzeContainer from './components/Container/AnalyzeContainer';
 import HeaderWithFilterBar from './components/HeaderWithFitlerBar';
 import { Main, Content } from '@common/components/Layout';
 import Footer from '@common/components/Footer';
