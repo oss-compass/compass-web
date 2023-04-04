@@ -98,7 +98,7 @@ const CommunityRepos = () => {
           />
         )}
       >
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 lg:grid-cols-2">
           {trends.map((repo) => {
             return (
               <RepoItem
