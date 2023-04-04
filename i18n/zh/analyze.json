@@ -66,5 +66,10 @@
   "updated_on": "更新于",
   "there_is_currently_no_data_in_the_chart": "图表暂无数据，",
   "please_contact_us_if_you_have": "如果你有任何问题，请<l>{{e}}</l>。",
-  "contact_us": "联系我们"
+  "contact_us": "联系我们",
+  "repos_type": {
+    "all": "全部",
+    "governance_repository": "治理仓",
+    "software_artifact_repository": "软件制品仓"
+  }
 }

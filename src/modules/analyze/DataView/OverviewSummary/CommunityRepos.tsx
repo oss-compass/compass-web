@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
+import CommunityDropDownMenu from './CommunityDropDownMenu';
 import { useCommunityReposQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
@@ -18,8 +19,10 @@ const RepoItem: React.FC<{
   name: string;
   path: string;
   backend: string;
+  type: string;
   metricActivity: any[];
-}> = ({ name, path, backend, metricActivity }) => {
+}> = ({ name, path, backend, type, metricActivity }) => {
+  const { t } = useTranslation();
   const data = Array.isArray(metricActivity)
     ? metricActivity.map((i) => toFixed(i['activityScore'], 3))
     : [];
@@ -37,7 +40,16 @@ const RepoItem: React.FC<{
         </a>
       </Link>
       <p className="text-xs text-gray-400">{getFirstPathSegment(path)}</p>
-      <div className="pt-3">
+      <div className="flex justify-between pt-3">
+        {type === 'governance' ? (
+          <div className="mt-1 h-6 rounded bg-[#E3FDFF] px-2 text-xs leading-6 text-[#5EAEB4] line-clamp-1">
+            {t('analyze:repos_type:governance_repository')}
+          </div>
+        ) : (
+          <div className="mt-1 h-6 rounded bg-[#F1F5FF] px-2 text-xs leading-6 text-[#6E89CD] line-clamp-1">
+            {t('analyze:repos_type:software_artifact_repository')}
+          </div>
+        )}
         <MiniChart data={data} />
       </div>
     </div>
@@ -51,6 +63,7 @@ const CommunityRepos = () => {
   const { compareItems } = useCompareItems();
   const { t } = useTranslation();
   const [firstItem] = compareItems;
+  const [type, setType] = useState('all');
 
   const { data, isLoading } = useCommunityReposQuery(
     client,
@@ -58,6 +71,7 @@ const CommunityRepos = () => {
       label: firstItem?.label,
       page: page,
       per: PRE_PAGE,
+      type: type === 'all' ? '' : type,
     },
     { enabled: Boolean(firstItem?.label) }
   );
@@ -74,12 +88,22 @@ const CommunityRepos = () => {
         title={`${t('analyze:repositories', { count })} `}
         description=""
         bodyClass="h-auto"
+        headRight={() => (
+          <CommunityDropDownMenu
+            type={type}
+            onTypeChange={(b: string) => {
+              setType(b);
+              setPage(1);
+            }}
+          />
+        )}
       >
         <div className="grid grid-cols-3 gap-4">
           {trends.map((repo) => {
             return (
               <RepoItem
                 key={repo.path}
+                type={repo.type!}
                 name={repo.name!}
                 path={repo.path!}
                 backend={repo.backend!}

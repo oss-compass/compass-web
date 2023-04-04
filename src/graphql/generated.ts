@@ -782,6 +782,7 @@ export type CommunityReposQueryVariables = Exact<{
   label: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+  type?: InputMaybe<Scalars['String']>;
 }>;
 
 export type CommunityReposQuery = {
@@ -794,6 +795,7 @@ export type CommunityReposQuery = {
       backend?: string | null;
       name?: string | null;
       path?: string | null;
+      type?: string | null;
       metricActivity: Array<{
         __typename?: 'ActivityMetric';
         activityScore?: number | null;
@@ -1530,13 +1532,14 @@ useOverviewQuery.fetcher = (
     headers
   );
 export const CommunityReposDocument = /*#__PURE__*/ `
-    query communityRepos($label: String!, $page: Int, $per: Int) {
-  communityOverview(label: $label, page: $page, per: $per) {
+    query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
+  communityOverview(label: $label, page: $page, per: $per, type: $type) {
     projectsCount
     trends {
       backend
       name
       path
+      type
       metricActivity {
         activityScore
         grimoireCreationDate
