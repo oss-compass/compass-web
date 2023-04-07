@@ -123,7 +123,7 @@ export const fmtEmptyDataValue = (value: any): any => {
   return value;
 };
 
-export function formatAxisLabelNumber(value: number | string) {
+export function shortenAxisLabel(value: number | string) {
   const v = Number(value);
   if (isNaN(v)) return value;
 
@@ -136,3 +136,12 @@ export function formatAxisLabelNumber(value: number | string) {
 
   return value;
 }
+
+export const convertMonthsToDays = (value: number | string) => {
+  if (value && !isNaN(Number(value))) {
+    const days = +value * 30;
+    // two decimal places
+    return Math.round(days * 100) / 100;
+  }
+  return value;
+};

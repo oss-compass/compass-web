@@ -1,4 +1,4 @@
-import { formatRepoName } from './format';
+import { formatRepoName, shortenAxisLabel } from './format';
 
 describe('format', () => {
   it('formatRepoName', function () {

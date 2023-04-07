@@ -18,7 +18,6 @@ const useGetLineOption = (opt?: {
   defaultShowAvg?: boolean;
   defaultShowMedian?: boolean;
   indicators?: string;
-  mergeEchartsOpt?: EChartsOption;
 }) => {
   const {
     enableDataFormat = false,
@@ -26,7 +25,6 @@ const useGetLineOption = (opt?: {
     defaultShowAvg = false,
     defaultShowMedian = false,
     indicators,
-    mergeEchartsOpt = {},
   } = opt || {};
 
   const { t } = useTranslation();
@@ -80,7 +78,6 @@ const useGetLineOption = (opt?: {
       tooltip: {
         formatter: getTooltipsFormatter({ compareLabels, indicators }),
       },
-      ...mergeEchartsOpt,
     });
   };
 

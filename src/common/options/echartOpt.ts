@@ -1,12 +1,7 @@
-import {
-  BarSeriesOption,
-  LineSeriesOption,
-  SeriesOption,
-  EChartsOption,
-} from 'echarts';
+import { BarSeriesOption, EChartsOption } from 'echarts';
 import { colors } from '@common/options/color';
 import { line } from '@common/options/series';
-import { isArray, isObject } from 'lodash';
+import { shortenAxisLabel } from '@common/utils/format';
 
 export const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -49,10 +44,12 @@ export const getYAxisWithUnit = ({
   unit,
   indicators,
   namePaddingLeft = 35,
+  shortenYaxisNumberLabel,
 }: {
   unit: string;
   indicators: string;
   namePaddingLeft?: number;
+  shortenYaxisNumberLabel?: boolean;
 }): EChartsOption => {
   return {
     grid: {
@@ -62,6 +59,7 @@ export const getYAxisWithUnit = ({
       bottom: '40px',
     },
     yAxis: {
+      type: 'value',
       name: [`{a|${unit}}`, `{b|${indicators}}`].join('\n'),
       nameTextStyle: {
         align: 'center',
@@ -82,6 +80,14 @@ export const getYAxisWithUnit = ({
             lineHeight: 14,
             fontStyle: 'italic',
           },
+        },
+      },
+      axisLabel: {
+        formatter: (value: any) => {
+          if (shortenYaxisNumberLabel) {
+            return shortenAxisLabel(value);
+          }
+          return value;
         },
       },
     },
