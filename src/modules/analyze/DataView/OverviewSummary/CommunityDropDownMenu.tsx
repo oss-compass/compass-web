@@ -57,7 +57,7 @@ const CommunityDropDownMenu: React.FC<{
                   <div
                     key={item}
                     className={classnames(
-                      'h-7 cursor-pointer  px-4 text-center',
+                      'h-7 cursor-pointer  px-4',
                       { 'bg-[#f3f4f6]': item === type },
                       { 'border-b': i !== 2 }
                     )}
