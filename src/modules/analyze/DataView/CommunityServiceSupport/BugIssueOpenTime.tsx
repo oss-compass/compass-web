@@ -10,7 +10,7 @@ import Tab from '@common/components/Tab';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import { getYAxisWithUnit } from '@common/options';
-
+import { DataContainerResult } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const BugIssueOpenTime = () => {
@@ -48,10 +48,14 @@ const BugIssueOpenTime = () => {
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
     useGetLineOption({ indicators });
 
-  const appendOptions = (options: EChartsOption): EChartsOption => {
+  const appendOptions = (
+    options: EChartsOption,
+    result: DataContainerResult
+  ): EChartsOption => {
     return {
       ...options,
       ...getYAxisWithUnit({
+        result,
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
@@ -105,7 +109,7 @@ const BugIssueOpenTime = () => {
                     optionCallback={getOptions}
                   >
                     {({ option }) => {
-                      const opts = appendOptions(option);
+                      const opts = appendOptions(option, result);
                       return (
                         <EChartX
                           loading={loading}

@@ -4,7 +4,11 @@ import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
-import { TransOpt, GenChartOptions } from '@modules/analyze/type';
+import {
+  TransOpt,
+  GenChartOptions,
+  DataContainerResult,
+} from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
@@ -48,13 +52,17 @@ const PrOpenTime = () => {
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
     useGetLineOption({ indicators });
 
-  const appendOptions = (options: EChartsOption): EChartsOption => {
+  const appendOptions = (
+    options: EChartsOption,
+    result: DataContainerResult
+  ): EChartsOption => {
     return {
       ...options,
       ...getYAxisWithUnit({
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
+        result,
       }),
     };
   };
@@ -105,7 +113,7 @@ const PrOpenTime = () => {
                     optionCallback={getOptions}
                   >
                     {({ option }) => {
-                      const opts = appendOptions(option);
+                      const opts = appendOptions(option, result);
                       return (
                         <EChartX
                           loading={loading}

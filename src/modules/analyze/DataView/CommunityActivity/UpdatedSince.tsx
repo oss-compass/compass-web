@@ -46,10 +46,14 @@ const UpdatedSince = () => {
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
     useGetLineOption({ indicators });
 
-  const appendOptions = (options: EChartsOption): EChartsOption => {
+  const appendOptions = (
+    options: EChartsOption,
+    result: DataContainerResult
+  ): EChartsOption => {
     return {
       ...options,
       ...getYAxisWithUnit({
+        result,
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
@@ -92,7 +96,7 @@ const UpdatedSince = () => {
                   optionCallback={getOptions}
                 >
                   {({ option }) => {
-                    const opts = appendOptions(option);
+                    const opts = appendOptions(option, result);
                     return (
                       <EChartX
                         loading={loading}

@@ -2,6 +2,7 @@ import { BarSeriesOption, EChartsOption } from 'echarts';
 import { colors } from '@common/options/color';
 import { line } from '@common/options/series';
 import { shortenAxisLabel } from '@common/utils/format';
+import { DataContainerResult } from '@modules/analyze/type';
 
 export const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -45,15 +46,17 @@ export const getYAxisWithUnit = ({
   indicators,
   namePaddingLeft = 35,
   shortenYaxisNumberLabel,
+  result,
 }: {
   unit: string;
   indicators: string;
   namePaddingLeft?: number;
   shortenYaxisNumberLabel?: boolean;
+  result: DataContainerResult;
 }): EChartsOption => {
   return {
     grid: {
-      top: 90,
+      top: result.isCompare ? 90 : 48,
       left: '40px',
       right: '30px',
       bottom: '40px',

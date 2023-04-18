@@ -9,7 +9,7 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-
+import { DataContainerResult } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 import { getYAxisWithUnit } from '@common/options';
 
@@ -48,10 +48,14 @@ const IssueFirstResponse = () => {
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
     useGetLineOption({ indicators });
 
-  const appendOptions = (options: EChartsOption): EChartsOption => {
+  const appendOptions = (
+    options: EChartsOption,
+    result: DataContainerResult
+  ): EChartsOption => {
     return {
       ...options,
       ...getYAxisWithUnit({
+        result,
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
@@ -105,7 +109,7 @@ const IssueFirstResponse = () => {
                     optionCallback={getOptions}
                   >
                     {({ option }) => {
-                      const opts = appendOptions(option);
+                      const opts = appendOptions(option, result);
                       return (
                         <EChartX
                           loading={loading}
