@@ -50,7 +50,7 @@
       "commit_frequency": "Commit Frequency",
       "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
       "updated_since": "Updated Since",
-      "updated_since_desc": "Determine the average time per repository since the repository was last updated (in months).",
+      "updated_since_desc": "Determine the average time per repository since the repository was last updated (in days).",
       "organization_count": "Organization Count",
       "organization_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
       "created_since": "Created Since",

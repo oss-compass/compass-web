@@ -6,10 +6,7 @@ import {
   getTooltipsFormatter,
   legendFormat,
 } from '@common/options';
-import {
-  formatNegativeNumber,
-  formatAxisLabelNumber,
-} from '@common/utils/format';
+import { formatNegativeNumber, shortenAxisLabel } from '@common/utils/format';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
@@ -71,7 +68,7 @@ const LocFrequency = () => {
         type: 'value',
         axisLabel: {
           formatter: (value: any) => {
-            return formatAxisLabelNumber(value) as string;
+            return shortenAxisLabel(value) as string;
           },
         },
       },
