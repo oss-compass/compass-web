@@ -17,7 +17,7 @@ const NavbarSetting: React.FC = () => {
   return (
     <div className="relative">
       <div
-        className="mx-4 flex h-8 w-8 items-center justify-center rounded-full border border-[#CFCFCF]"
+        className="mx-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-[#CFCFCF]"
         onClick={() => toggleDropdown()}
       >
         <AiOutlineSetting className="text-xl" />

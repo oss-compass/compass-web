@@ -52,8 +52,6 @@ const DateRangePicker: React.FC<{
           dateFormat={FORMAT_YMD}
           renderCustomHeader={({
             monthDate,
-            changeYear,
-            changeMonth,
             decreaseMonth,
             increaseMonth,
             decreaseYear,
