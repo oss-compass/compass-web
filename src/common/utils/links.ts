@@ -14,14 +14,16 @@ export const getCompareAnalyzeLink = (list: string[], level: string) => {
   return `${url}level=${level}`;
 };
 
-export const getLabDetailLink = (
-  repo: NonNullable<
-    BetaMetricOverviewQuery['betaMetricOverview']['trends']
-  >[number]
-) => {
+export const getLabDetailLink = (repo: { origin: string }) => {
   return `/lab/explore?label=${encodeURIComponent(repo?.origin!)}&level=${
     Level.REPO
   }`;
+};
+export const getLabCompareAnalyzeLink = (list: string[], level: string) => {
+  const url = list.reduce((pre, cur) => {
+    return pre + `label=${encodeURIComponent(cur!)}&`;
+  }, '/lab/explore?');
+  return `${url}level=${level}`;
 };
 
 export const getRepoLink = (

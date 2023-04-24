@@ -1,7 +1,7 @@
 import parseISO from 'date-fns/parseISO';
 import getUnixTime from 'date-fns/getUnixTime';
 import { Level } from '@modules/analyze/constant';
-import { MetricQuery } from '@graphql/generated';
+import { MetricQuery, LabMetricQuery } from '@graphql/generated';
 import { toFixed } from '@common/utils';
 import { TransOpt, TransResult } from '@modules/analyze/type';
 import { CommunityRepoType } from '../constant';
@@ -9,7 +9,7 @@ import { CommunityRepoType } from '../constant';
 interface DataItem {
   label: string;
   level: Level;
-  result: MetricQuery | undefined;
+  result: MetricQuery | LabMetricQuery | undefined;
 }
 
 function getDateMap(

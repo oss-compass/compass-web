@@ -1,4 +1,18 @@
 {
   "the_locale_names_are_used_for": "The locale names are used for the translation files' locations, as well as your translated locales' base URL. When building all locales, only the default locale will have its name omitted in the base URL.",
-  "discuss": "Discuss"
+  "discuss": "Discuss",
+  "create_a_model": "Create a model",
+  "pick_for_compare": "Pick for compare",
+  "datasets": "Datasets",
+  "projects_in_datasets": "projects in datasets are using this model",
+  "create_your_own_model_in_5_minutes": "Create your own model in 5 minutes",
+  "create_a_model_now": "Create a model now",
+  "select_dataset": "Select dataset",
+  "covering_datasets": "covering 200+ datasets in various fields and industries",
+  "select_metrics": "Select metrics",
+  "metrics_in_three_dimensions": "200+ metrics in three dimensions:productivity, robustness, andniche creation",
+  "select_algorithm": "Select algorithm",
+  "support_AHP": "support AHP, XHP and other algorithms",
+  "release_model": "Release model",
+  "expose_the_model": "expose the model and invite partners to improve it"
 }

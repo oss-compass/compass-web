@@ -114,5 +114,23 @@
   },
   "outbound_connectedness": {
     "title": "外部联接"
+  },
+  "starter_project_health": {
+    "title": "Starter Project Health",
+    "desc": "Starter Project Health is designed to help people get started with four key project health metrics that they can expand on and customize to meet their unique needs later.",
+    "metrics": {
+      "time_to_first_response": "Time to First Response",
+      "time_to_first_response_desc": "Determine the amount of time between when a PR was created and when it received the first response from a human.",
+      "change_request_closure_ratio_all_period": "Change Request Closure Ratio All Period",
+      "change_request_closure_ratio_all_period_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests in the past.",
+      "change_request_closure_ratio_same_period": "Change Request Closure Ratio Same Period",
+      "change_request_closure_ratio_same_period_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests in the last 90 days.",
+      "pr_time_to_close": "Pr Time To Close",
+      "pr_time_to_close_desc": "Determine the amount of time between when a PR was created and when it was closed.",
+      "bus_factor": "Bus Factor",
+      "bus_factor_desc": "Determine the smallest number of people that make 50% of contributions.",
+      "release_frequency": "Release Frequency",
+      "release_frequency_desc": "Determine the frequency of project releases (including point releases with bug fixes)."
+    }
   }
 }
