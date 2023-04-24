@@ -1,5 +1,5 @@
 {
-  "the_locale_names_are_used_for": "The locale names are used for the translation files' locations, as well as your translated locales' base URL. When building all locales, only the default locale will have its name omitted in the base URL.",
+  "the_locale_names_are_used_for": "Compass Lab is a sandbox that helps people quickly create and validate metrics models of their interest, which can be used for proprietary domain evaluations or as general models. It provides over 20,000 open-source project datasets from over 200 categories, 100+ CHAOSS metrics, and custom algorithms to promote continuous innovation in modeling.",
   "discuss": "Discuss",
   "create_a_model": "Create a model",
   "pick_for_compare": "Pick for compare",

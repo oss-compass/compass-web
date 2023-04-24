@@ -54,11 +54,11 @@ const ModeTitle: React.FC<{
             href={'/docs/community/slack/' || ''}
           >
             <img
-              className="mr-2 inline-block align-text-top "
-              src="/images/lab/logo-slack.png"
+              className="mr-2 inline-block h-4 w-4 align-text-top "
+              src="favicon.ico"
               alt=""
             />
-            {t('lab:discuss')}
+            Compass
           </a>
         </div>
       </div>

@@ -20,16 +20,16 @@ const Banner = () => {
         )}
       ></div>
 
-      <div className="relative mx-auto w-[1280px] pt-16 text-sm text-[#876E35] md:w-full md:px-2">
+      <div className="relative mx-auto w-[1280px] pt-10 text-sm text-[#876E35] md:w-full md:px-2">
         <div
           className={classnames(
-            ' h-[40px] w-[260px] md:-right-[300px]',
+            'h-[40px] w-[260px] md:-right-[300px]',
             style.headerTitle
           )}
         ></div>
         <div
           className={classnames(
-            'mt-4 mb-4 h-11 max-w-3xl line-clamp-2 md:-right-[300px]',
+            'mt-4 mb-4 h-16 max-w-3xl line-clamp-3 md:-right-[300px]',
             style.headerdsc
           )}
         >
