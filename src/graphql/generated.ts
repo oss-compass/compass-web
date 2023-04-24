@@ -681,10 +681,18 @@ export type StarterProjectHealthMetric = {
   __typename?: 'StarterProjectHealthMetric';
   /** the smallest number of people that make 50% of contributions */
   busFactor?: Maybe<Scalars['Float']>;
+  /** the change request closure ratio same period */
+  changeRequestClosedCountAllPeriod?: Maybe<Scalars['Float']>;
+  /** the change request closed count recently */
+  changeRequestClosedCountRecently?: Maybe<Scalars['Float']>;
   /** the change request closure ratio all period */
   changeRequestClosureRatioAllPeriod?: Maybe<Scalars['Float']>;
-  /** the change request closure ratio same period */
-  changeRequestClosureRatioSamePeriod?: Maybe<Scalars['Float']>;
+  /** the change request closure ratio recently */
+  changeRequestClosureRatioRecently?: Maybe<Scalars['Float']>;
+  /** the change request created count all period */
+  changeRequestCreatedCountAllPeriod?: Maybe<Scalars['Float']>;
+  /** the change request created count recently */
+  changeRequestCreatedCountRecently?: Maybe<Scalars['Float']>;
   /** metric model creatiton time */
   grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
   /** metric model object identification */
@@ -1244,8 +1252,12 @@ export type LabMetricQuery = {
   metricStarterProjectHealth: Array<{
     __typename?: 'StarterProjectHealthMetric';
     busFactor?: number | null;
+    changeRequestClosedCountAllPeriod?: number | null;
+    changeRequestClosedCountRecently?: number | null;
     changeRequestClosureRatioAllPeriod?: number | null;
-    changeRequestClosureRatioSamePeriod?: number | null;
+    changeRequestClosureRatioRecently?: number | null;
+    changeRequestCreatedCountAllPeriod?: number | null;
+    changeRequestCreatedCountRecently?: number | null;
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
@@ -2032,8 +2044,12 @@ export const LabMetricDocument = /*#__PURE__*/ `
     endDate: $end
   ) {
     busFactor
+    changeRequestClosedCountAllPeriod
+    changeRequestClosedCountRecently
     changeRequestClosureRatioAllPeriod
-    changeRequestClosureRatioSamePeriod
+    changeRequestClosureRatioRecently
+    changeRequestCreatedCountAllPeriod
+    changeRequestCreatedCountRecently
     grimoireCreationDate
     label
     level

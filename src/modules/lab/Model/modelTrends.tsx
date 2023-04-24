@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import classnames from 'classnames';
 import {
@@ -27,7 +27,7 @@ const ModelTrends: React.FC<{
   const { isLoading, data } = useBetaMetricOverviewQuery(client, {
     id: id,
   });
-  const [type, setType] = useState('');
+  const [typeList, setTypeList] = useState<string[]>([]);
   const [compareList, setCompareList] = useState<string[]>([]);
   const [compareMode, setCompareMode] = useState(false);
 
@@ -101,18 +101,22 @@ const ModelTrends: React.FC<{
     !repoType.includes(item.type) && repoType.push(item.type);
   });
   const handleClick = (e: string) => {
-    if (e === type) {
-      setType('');
-      setCompareMode(false);
+    if (typeList.includes(e)) {
+      setTypeList((pre) => {
+        pre.splice(pre.indexOf(e), 1);
+        return [...pre];
+      });
     } else {
-      setType(e);
+      setTypeList((pre) => [...pre, e]);
       setCompareList([]);
     }
   };
-
+  const repoList = trends?.filter((i) =>
+    typeList.length > 0 ? typeList.includes(i.type) : true
+  );
   return (
     <>
-      <div className="my-6 flex w-full">
+      <div className="mt-6 flex w-full md:hidden">
         <div className="mr-3 flex h-5 w-[80px] items-center text-sm font-medium">
           <img
             className="mr-2 mb-0.5 inline-block align-text-top"
@@ -126,8 +130,8 @@ const ModelTrends: React.FC<{
             <div
               key={i}
               className={classnames(
-                'mr-2 flex h-5 cursor-pointer rounded-full border bg-[#F1F1F1] px-2.5 text-xs text-[#585858]',
-                { 'text-[#2563eb]': type === i }
+                'mr-2 flex h-5 cursor-pointer rounded-full border bg-[#F1F1F1] px-2.5 text-xs text-[#585858] line-clamp-1',
+                { 'text-[#2563eb]': typeList.includes(i) }
               )}
               onClick={() => handleClick(i)}
             >
@@ -136,17 +140,15 @@ const ModelTrends: React.FC<{
           );
         })}
       </div>
-      <div className="flex h-6 text-sm font-medium">
-        <span>
-          {trends?.filter((i) => (type ? i.type === type : true)).length}{' '}
-          projects in datasets are using this model
+      <div className="mt-6 flex h-6 text-sm font-medium">
+        <span className="line-clamp-1">
+          {t('lab:projects_in_datasets', {
+            length: repoList.length,
+          })}
         </span>
-        <div>
+        <div className="md:hidden">
           {compareMode ? (
             <div className="flex text-xs">
-              {/* <div className="text-sm leading-8 text-gray-400">
-                {t('collection:please_select_two_or_more_repositories_below')}
-              </div> */}
               <div
                 onClick={() => {
                   setCompareMode(false);
@@ -172,45 +174,40 @@ const ModelTrends: React.FC<{
               </div>
             </div>
           ) : (
-            type && (
-              <div
-                onClick={() => {
-                  setCompareMode(true);
-                }}
-                className="ml-4 h-6 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-6"
-              >
-                <div className="mr-2 inline-block align-text-bottom">
-                  <Compare />
-                </div>
-
-                {t('lab:pick_for_compare')}
+            <div
+              onClick={() => {
+                setCompareMode(true);
+              }}
+              className="ml-4 h-6 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-6"
+            >
+              <div className="mr-2 inline-block align-text-bottom">
+                <Compare />
               </div>
-            )
+              {t('lab:pick_for_compare')}
+            </div>
           )}
         </div>
       </div>
-      <div className="flex w-full flex-wrap content-evenly gap-3 pb-12 pt-2">
-        {trends
-          ?.filter((i) => (type ? i.type === type : true))
-          .map((i) => {
-            return (
-              <RepoCard
-                repo={i}
-                key={i.path}
-                compareMode={compareMode}
-                onSelectChange={(checked, label) => {
-                  if (checked) {
-                    setCompareList((pre) => [...pre, label]);
-                  } else {
-                    setCompareList((pre) => {
-                      pre.splice(pre.indexOf(label), 1);
-                      return [...pre];
-                    });
-                  }
-                }}
-              />
-            );
-          })}
+      <div className="flex w-full flex-wrap content-evenly gap-3 pb-12 pt-2 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:gap-4 sm:grid-cols-1 >2xl:grid-cols-5">
+        {repoList.map((i) => {
+          return (
+            <RepoCard
+              repo={i}
+              key={i.path}
+              compareMode={compareMode}
+              onSelectChange={(checked, label) => {
+                if (checked) {
+                  setCompareList((pre) => [...pre, label]);
+                } else {
+                  setCompareList((pre) => {
+                    pre.splice(pre.indexOf(label), 1);
+                    return [...pre];
+                  });
+                }
+              }}
+            />
+          );
+        })}
       </div>
     </>
   );

@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/lab/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
-import { GenChartOptions, TransOpt } from '@modules/analyze/type';
+import { TransOpt } from '@modules/analyze/type';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import { getYAxisWithUnit } from '@common/options';
 
@@ -58,7 +57,7 @@ const PrTimeToClose = () => {
       title={t(
         'metrics_models:starter_project_health.metrics.time_to_first_response'
       )}
-      id={Support.BugIssueOpenTime}
+      id={'time_to_first_response'}
       description={t(
         'metrics_models:starter_project_health.metrics.time_to_first_response_desc'
       )}

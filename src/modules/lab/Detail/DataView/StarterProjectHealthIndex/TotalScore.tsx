@@ -34,7 +34,7 @@ const TotalScore = () => {
   return (
     <BaseCard
       title={t('metrics_models:starter_project_health.title')}
-      id={CollaborationDevelopment.Overview}
+      id={'starter_project_health_overview'}
       description={t('metrics_models:starter_project_health.desc')}
       docLink={
         'https://chaoss.community/kb/metrics-model-starter-project-health/'

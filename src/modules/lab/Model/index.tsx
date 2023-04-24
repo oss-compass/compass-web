@@ -40,7 +40,7 @@ const Model = () => {
   const isLoading = false;
   const data = { betaMetricsIndex: [{ id: 1 }] };
   return (
-    <div className="mx-auto flex h-10 w-[1280px] xl:w-full xl:px-2">
+    <div className="mx-auto flex h-10 w-[1280px] xl:w-full xl:px-2 md:flex-wrap">
       {data.betaMetricsIndex.map((i, index) => {
         if (index === 0) {
           return (

@@ -1,5 +1,4 @@
 import React from 'react';
-import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/lab/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
@@ -21,7 +20,7 @@ const BusFactor = () => {
   return (
     <BaseCard
       title={t('metrics_models:starter_project_health.metrics.bus_factor')}
-      id={CollaborationDevelopment.IsMaintained}
+      id={'bus_factor'}
       description={t(
         'metrics_models:starter_project_health.metrics.bus_factor_desc'
       )}

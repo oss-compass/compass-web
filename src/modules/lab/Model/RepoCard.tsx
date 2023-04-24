@@ -23,7 +23,7 @@ const RepoCard: React.FC<{
   return (
     <div
       className={classnames(
-        'relative h-[5.25rem] w-[12.5rem] cursor-pointer',
+        'relative h-[5.25rem] w-[12.5rem] cursor-pointer md:w-full',
         select
           ? ['border-blue-600', 'border-2']
           : ['border', 'p-px', '- [#CFCFCF] border']

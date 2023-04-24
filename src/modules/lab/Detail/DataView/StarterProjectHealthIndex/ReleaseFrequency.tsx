@@ -1,5 +1,4 @@
 import React from 'react';
-import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/lab/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
@@ -25,7 +24,7 @@ const ReleaseFrequency = () => {
       title={t(
         'metrics_models:starter_project_health.metrics.release_frequency'
       )}
-      id={CollaborationDevelopment.IsMaintained}
+      id={'release_frequency'}
       description={t(
         'metrics_models:starter_project_health.metrics.release_frequency_desc'
       )}

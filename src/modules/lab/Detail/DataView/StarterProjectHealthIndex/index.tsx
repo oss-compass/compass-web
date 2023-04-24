@@ -31,8 +31,8 @@ const CollaborationDevelopmentIndexOverview = () => {
         <ConnectLine />
         <TimeToFirstResponse />
         <PrTimeToClose />
-        <ChangeRequestClosureRatioSamePeriod />
         <ChangeRequestClosureRatioAllPeriod />
+        <ChangeRequestClosureRatioSamePeriod />
         <BusFactor />
         <ReleaseFrequency />
       </div>

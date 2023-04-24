@@ -35,7 +35,7 @@ const ModeTitle: React.FC<{
             {t('common:know_more')}
           </a>
         </div>
-        <div className="flex flex-none text-center text-sm font-semibold leading-8">
+        <div className="flex flex-none text-center text-sm font-semibold leading-8 md:hidden">
           <a
             className="h-8 w-[108px] border border-gray-500 "
             target="_blank"
@@ -44,16 +44,14 @@ const ModeTitle: React.FC<{
           >
             <img
               className="mr-2 inline-block align-text-top "
-              src="/images/lab/logo-discord.png"
+              src="/images/logos/chaoss.svg"
               alt=""
             />
             CHAOSS
           </a>
           <a
             className="ml-2 h-8 w-[108px] border border-gray-500 "
-            target="_blank"
-            rel="noopener noreferrer"
-            href={extra || ''}
+            href={'/docs/community/slack/' || ''}
           >
             <img
               className="mr-2 inline-block align-text-top "

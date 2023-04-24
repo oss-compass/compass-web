@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/lab/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
@@ -58,7 +57,7 @@ const PrTimeToClose = () => {
       title={t(
         'metrics_models:starter_project_health.metrics.pr_time_to_close'
       )}
-      id={Support.BugIssueOpenTime}
+      id={'pr_time_to_close'}
       description={t(
         'metrics_models:starter_project_health.metrics.pr_time_to_close_desc'
       )}

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 const CreateModel = () => {
   const { t, i18n } = useTranslation();
+  const [hover, setHover] = useState(false);
   return (
-    <div className="ml-10 h-[557px] w-[400px] bg-[#fafafa]">
+    <div className="ml-10 h-[557px] w-[400px] bg-[#fafafa] md:ml-0 md:w-full">
       <div className="flex h-24 bg-[#f4f4f4] p-4">
         <div className="h-16 w-16 bg-[#f6f6f6] p-2">
           <img
@@ -68,8 +69,12 @@ const CreateModel = () => {
           </div>
         </div>
       </div>
-      <div className="mx-6 flex h-10 cursor-not-allowed items-center justify-center bg-[#000000] text-white">
-        {t('lab:create_a_model_now')}
+      <div
+        className="mx-6 flex h-10 cursor-not-allowed items-center justify-center bg-[#000000] text-white hover:bg-[#d1d5db]"
+        onMouseOver={() => setHover(true)}
+        onMouseOut={() => setHover(false)}
+      >
+        {hover ? 'coming soon' : t('lab:create_a_model_now')}
       </div>
     </div>
   );

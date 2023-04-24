@@ -375,8 +375,12 @@ query labMetric(
     endDate: $end
   ) {
     busFactor
+    changeRequestClosedCountAllPeriod
+    changeRequestClosedCountRecently
     changeRequestClosureRatioAllPeriod
-    changeRequestClosureRatioSamePeriod
+    changeRequestClosureRatioRecently
+    changeRequestCreatedCountAllPeriod
+    changeRequestCreatedCountRecently
     grimoireCreationDate
     label
     level
