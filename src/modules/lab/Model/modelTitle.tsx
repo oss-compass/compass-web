@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ProductivityIcon from '../assets/Productivity.svg';
 import RobustnessIcon from '../assets/Robustness.svg';
 import { useTranslation } from 'next-i18next';
-import LinkX from '@common/components/LinkX';
+import Popper from '@mui/material/Popper';
+import ClickAwayListener from '@mui/base/ClickAwayListener';
 
 const ModeTitle: React.FC<{
   dimensionality?: string | null;
@@ -11,6 +12,9 @@ const ModeTitle: React.FC<{
   metric?: string | null;
 }> = ({ dimensionality, desc, extra, metric }) => {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
   return (
     <>
       <div className=" flex items-center">
@@ -36,30 +40,64 @@ const ModeTitle: React.FC<{
           </a>
         </div>
         <div className="flex flex-none text-center text-sm font-semibold leading-8 md:hidden">
-          <a
-            className="h-8 w-[108px] border border-gray-500 "
-            target="_blank"
-            rel="noopener noreferrer"
-            href={'https://chaoss.discourse.group/c/metrics/8' || ''}
+          <ClickAwayListener
+            onClickAway={() => {
+              if (!open) return;
+              setOpen(() => false);
+            }}
           >
-            <img
-              className="mr-2 inline-block align-text-top "
-              src="/images/logos/chaoss.svg"
-              alt=""
-            />
-            CHAOSS
-          </a>
-          <a
-            className="ml-2 h-8 w-[108px] border border-gray-500 "
-            href={'/docs/community/slack/' || ''}
-          >
-            <img
-              className="mr-2 inline-block h-4 w-4 align-text-top "
-              src="favicon.ico"
-              alt=""
-            />
-            Compass
-          </a>
+            <div className="h-8 w-[108px] cursor-pointer border border-gray-500">
+              <a
+                onClick={(e) => {
+                  setAnchorEl(e.currentTarget);
+                  setOpen((previousOpen) => !previousOpen);
+                }}
+              >
+                {t('common:discuss')}
+              </a>
+              <Popper
+                id={'1'}
+                open={open}
+                style={{
+                  zIndex: 1000,
+                }}
+                placement={'bottom'}
+                sx={{ p: 1 }}
+                anchorEl={anchorEl}
+              >
+                <div className="rounded bg-white py-2 text-sm font-semibold shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
+                  <div>
+                    <a
+                      className="block h-8 border-b px-3 leading-8 hover:bg-[#f2f2f2]"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={'https://chaoss.discourse.group/c/metrics/8' || ''}
+                    >
+                      <img
+                        className="mr-2 inline-block align-text-top"
+                        src="/images/logos/chaoss.svg"
+                        alt=""
+                      />
+                      CHAOSS
+                    </a>
+                  </div>
+                  <div>
+                    <a
+                      className="block h-8 px-3 leading-8 hover:bg-[#f2f2f2]"
+                      href={'/docs/community/slack/' || ''}
+                    >
+                      <img
+                        className="mr-2 inline-block h-4 w-3.5 align-text-top"
+                        src="favicon.ico"
+                        alt=""
+                      />
+                      Compass
+                    </a>
+                  </div>
+                </div>
+              </Popper>
+            </div>
+          </ClickAwayListener>
         </div>
       </div>
     </>
