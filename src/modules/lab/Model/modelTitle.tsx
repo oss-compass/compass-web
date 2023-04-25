@@ -46,15 +46,14 @@ const ModeTitle: React.FC<{
               setOpen(() => false);
             }}
           >
-            <div className="h-8 w-[108px] cursor-pointer border border-gray-500">
-              <a
-                onClick={(e) => {
-                  setAnchorEl(e.currentTarget);
-                  setOpen((previousOpen) => !previousOpen);
-                }}
-              >
-                {t('common:discuss')}
-              </a>
+            <div
+              onClick={(e) => {
+                setAnchorEl(e.currentTarget);
+                setOpen((previousOpen) => !previousOpen);
+              }}
+              className="h-8 w-[108px] cursor-pointer border border-gray-500"
+            >
+              <a>{t('common:discuss')}</a>
               <Popper
                 id={'1'}
                 open={open}
