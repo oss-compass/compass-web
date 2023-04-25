@@ -4,6 +4,7 @@ import RobustnessIcon from '../assets/Robustness.svg';
 import { useTranslation } from 'next-i18next';
 import Popper from '@mui/material/Popper';
 import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { AiFillCaretDown } from 'react-icons/ai';
 
 const ModeTitle: React.FC<{
   dimensionality?: string | null;
@@ -51,15 +52,16 @@ const ModeTitle: React.FC<{
                 setAnchorEl(e.currentTarget);
                 setOpen((previousOpen) => !previousOpen);
               }}
-              className="h-8 w-[108px] cursor-pointer border border-gray-500 px-2.5"
+              className="flex h-8 w-[118px] cursor-pointer border border-gray-500 px-2.5"
             >
               <a>
                 <img
                   className="mr-2 inline-block align-text-top"
                   src="/images/lab/comment.svg"
                 />
-                {t('lab:discuss')}
               </a>
+              {t('lab:discuss')}
+              <AiFillCaretDown color="#868690" className="ml-2 mt-2" />
               <Popper
                 id={'1'}
                 open={open}
