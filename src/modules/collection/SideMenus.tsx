@@ -32,7 +32,7 @@ const SideMenus = ({ items }: { items: Collection[] }) => {
             <Link key={i.ident} href={`/collection${i.slug}`}>
               <a
                 className={classnames(
-                  'mb-0.5 block h-8 cursor-pointer rounded px-2 text-sm leading-8 transition-all',
+                  'mb-0.5 block h-8 cursor-pointer truncate rounded px-2 text-sm leading-8 transition-all',
                   'hover:bg-[#F8F9FB]',
                   { 'bg-[#F8F9FB] text-primary': `/${slug}` === i.slug }
                 )}

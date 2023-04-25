@@ -1,12 +1,8 @@
-import {
-  BarSeriesOption,
-  LineSeriesOption,
-  SeriesOption,
-  EChartsOption,
-} from 'echarts';
+import { BarSeriesOption, EChartsOption } from 'echarts';
 import { colors } from '@common/options/color';
 import { line } from '@common/options/series';
-import { isArray, isObject } from 'lodash';
+import { shortenAxisLabel } from '@common/utils/format';
+import { DataContainerResult } from '@modules/analyze/type';
 
 export const defaultTooltip: EChartsOption['tooltip'] = {
   trigger: 'axis',
@@ -46,6 +42,65 @@ export const defaultGrid: EChartsOption['grid'] = {
 };
 
 export const getYAxisWithUnit = ({
+  unit,
+  indicators,
+  namePaddingLeft = 35,
+  shortenYaxisNumberLabel,
+  result,
+}: {
+  unit: string;
+  indicators: string;
+  namePaddingLeft?: number;
+  shortenYaxisNumberLabel?: boolean;
+  result: DataContainerResult;
+}): EChartsOption => {
+  return {
+    grid: {
+      top: result.isCompare ? 90 : 48,
+      left: '40px',
+      right: '30px',
+      bottom: '40px',
+    },
+    yAxis: {
+      type: 'value',
+      name: [`{a|${unit}}`, `{b|${indicators}}`].join('\n'),
+      nameTextStyle: {
+        align: 'center',
+        padding: [0, 0, 0, namePaddingLeft],
+        rich: {
+          a: {
+            align: 'left',
+            color: '#2C3542',
+            fontSize: 10,
+            lineHeight: 14,
+            fontStyle: 'italic',
+            fontWeight: 'bold',
+          },
+          b: {
+            align: 'left',
+            color: '#A0A4AA',
+            fontSize: 10,
+            lineHeight: 14,
+            fontStyle: 'italic',
+          },
+        },
+      },
+      axisLabel: {
+        formatter: (value: any) => {
+          if (shortenYaxisNumberLabel) {
+            return shortenAxisLabel(value);
+          }
+          return value;
+        },
+      },
+    },
+  };
+};
+
+/**
+ * @deprecated use getYAxisWithUnit instead
+ */
+export const getYAxisWithUnitV1 = ({
   unit,
   indicators,
   namePaddingLeft = 35,

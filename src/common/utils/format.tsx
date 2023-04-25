@@ -123,16 +123,31 @@ export const fmtEmptyDataValue = (value: any): any => {
   return value;
 };
 
-export function formatAxisLabelNumber(value: number | string) {
+export const roundedNum = (num: number, decimalPoint?: number) => {
+  const base = Math.pow(10, decimalPoint || 2);
+  return Math.round(num * base) / base;
+};
+
+export function shortenAxisLabel(value: number | string) {
   const v = Number(value);
   if (isNaN(v)) return value;
 
-  if (Math.abs(v) > 1000) {
-    return v / 1000 + 'k';
-  }
   if (Math.abs(v) > 1000000) {
-    return v / 1000000 + 'm';
+    return roundedNum(v / 1000000, 1) + 'm';
+  }
+
+  if (Math.abs(v) > 1000) {
+    return roundedNum(v / 1000, 1) + 'k';
   }
 
   return value;
 }
+
+export const convertMonthsToDays = (value: number | string) => {
+  if (value && !isNaN(Number(value))) {
+    const days = +value * 30;
+    // two decimal places
+    return roundedNum(days);
+  }
+  return value;
+};

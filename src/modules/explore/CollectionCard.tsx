@@ -1,14 +1,7 @@
-import React from 'react';
-import { AiFillGithub } from 'react-icons/ai';
-import { SiGitee } from 'react-icons/si';
+import React, { useRef, useEffect } from 'react';
+import { useInViewport } from 'ahooks';
 import Link from 'next/link';
-import {
-  getRepoName,
-  getNameSpace,
-  getAnalyzeLink,
-  getProvider,
-  getPathname,
-} from '@common/utils';
+import { getAnalyzeLink, getPathname } from '@common/utils';
 import { Collection } from './type';
 import { useTranslation } from 'next-i18next';
 import { useCollectionHottestQuery } from '@graphql/generated';
@@ -17,15 +10,30 @@ import { Level } from '@modules/analyze/constant';
 
 const CollectionCard = (props: { collection: Collection }) => {
   const { collection } = props;
+  const fetched = useRef<Boolean>(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const [inViewport] = useInViewport(ref);
   const { t, i18n } = useTranslation();
   const length = collection.items.length;
-  const { data: hottestData, isLoading } = useCollectionHottestQuery(client, {
-    ident: collection.ident,
-  });
+
+  const { data: hottestData, isLoading } = useCollectionHottestQuery(
+    client,
+    {
+      ident: collection.ident,
+    },
+    {
+      enabled: Boolean(inViewport && !fetched.current),
+      onSuccess: () => {
+        fetched.current = true;
+      },
+    }
+  );
+
   const showHottestData = hottestData?.collectionHottest || [];
   const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
+
   return (
-    <div className="rounded-xl bg-white p-7 shadow">
+    <div className="rounded-xl bg-white p-7 shadow" ref={ref}>
       <Link href={`/collection${collection.slug}`}>
         <a className="mb-2 block truncate text-xl font-bold hover:underline">
           {collection[nameKey]}
@@ -70,5 +78,4 @@ const CollectionCard = (props: { collection: Collection }) => {
     </div>
   );
 };
-
 export default CollectionCard;

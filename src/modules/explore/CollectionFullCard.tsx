@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
+import { useInViewport } from 'ahooks';
 import { getRepoName, getAnalyzeLink, getPathname } from '@common/utils';
 import { Collection } from './type';
 import { useTranslation } from 'next-i18next';
@@ -14,19 +15,31 @@ import { Level } from '@modules/analyze/constant';
 const CollectionFullCard = (props: { collection: Collection }) => {
   const { collection } = props;
   const { t, i18n } = useTranslation();
+  const ref = useRef<HTMLDivElement>(null);
+  const [inViewport] = useInViewport(ref);
   const length = collection.items.length;
   const showPreviousThree = collection.items.slice(0, 3);
-  const { data: hottestData, isLoading } = useCollectionHottestQuery(client, {
-    ident: collection.ident,
-  });
-  const showHottestData = hottestData?.collectionHottest || [];
-  const { data: bulkOverview } = useBulkOverviewQuery(client, {
-    labels: showPreviousThree,
-  });
+
   const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
+  const { data: hottestData, isLoading } = useCollectionHottestQuery(
+    client,
+    {
+      ident: collection.ident,
+    },
+    { enabled: Boolean(inViewport) }
+  );
+
+  const showHottestData = hottestData?.collectionHottest || [];
+  const { data: bulkOverview } = useBulkOverviewQuery(
+    client,
+    {
+      labels: showPreviousThree,
+    },
+    { enabled: Boolean(inViewport) }
+  );
 
   return (
-    <div className="mb-6 rounded-xl bg-white p-7 shadow">
+    <div className="mb-6 rounded-xl bg-white p-7 shadow" ref={ref}>
       <div className="flex">
         <div className="w-[250px]">
           <Link href={`/collection${collection.slug}`}>

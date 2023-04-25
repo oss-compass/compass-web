@@ -5,8 +5,8 @@ import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
-import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-import { getYAxisWithUnit } from '@common/options';
+import useGetLineOption from '@modules/lab/hooks/useGetLineOption';
+import { getYAxisWithUnitV1 } from '@common/options';
 
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
@@ -45,7 +45,7 @@ const PrTimeToClose = () => {
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
     useGetLineOption({
       indicators,
-      mergeEchartsOpt: getYAxisWithUnit({
+      mergeEchartsOpt: getYAxisWithUnitV1({
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,

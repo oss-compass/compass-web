@@ -1,8 +1,14 @@
 import React, { useMemo, useState } from 'react';
+import { EChartsOption } from 'echarts';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
-import ChartWithData from '@modules/analyze/components/ChartWithData';
-import { TransOpt, GenChartOptions } from '@modules/analyze/type';
+import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
+import {
+  TransOpt,
+  GenChartOptions,
+  DataContainerResult,
+} from '@modules/analyze/type';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
@@ -44,14 +50,22 @@ const PrOpenTime = () => {
   });
 
   const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption({
-      indicators,
-      mergeEchartsOpt: getYAxisWithUnit({
+    useGetLineOption({ indicators });
+
+  const appendOptions = (
+    options: EChartsOption,
+    result: DataContainerResult
+  ): EChartsOption => {
+    return {
+      ...options,
+      ...getYAxisWithUnit({
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
+        result,
       }),
-    });
+    };
+  };
 
   return (
     <BaseCard
@@ -90,21 +104,28 @@ const PrOpenTime = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartWithData
-              tansOpts={tansOpts}
-              indicators={indicators}
-              getOptions={getOptions}
-            >
-              {({ loading, option }) => {
+            <ChartDataContainer tansOpts={tansOpts}>
+              {({ loading, result }) => {
                 return (
-                  <EChartX
-                    containerRef={ref}
-                    loading={loading}
-                    option={option}
-                  />
+                  <ChartOptionContainer
+                    data={result}
+                    indicators={indicators}
+                    optionCallback={getOptions}
+                  >
+                    {({ option }) => {
+                      const opts = appendOptions(option, result);
+                      return (
+                        <EChartX
+                          loading={loading}
+                          option={opts}
+                          containerRef={ref}
+                        />
+                      );
+                    }}
+                  </ChartOptionContainer>
                 );
               }}
-            </ChartWithData>
+            </ChartDataContainer>
           </>
         );
       }}

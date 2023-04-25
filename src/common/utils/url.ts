@@ -33,12 +33,14 @@ export function getLastPathSegment(path: string) {
 
 export function getNameSpace(path: string) {
   if (!path) return '';
-  return getPathname(path).split('/').shift() || '';
+  //  https://jex.im/regulex/#!flags=&re=(.%2B%3F)%5C%2F.%2B%3F%5C%2F%3F%24
+  return getPathname(path).match(/(.+?)\/.+?\/?$/)?.[1] || '';
 }
 
 export function getRepoName(path: string) {
   if (!path) return '';
-  return getPathname(path).split('/').pop() || '';
+  // https://jex.im/regulex/#!flags=&re=.%2B%3F%5C%2F(.%2B%3F)%5C%2F%3F%24
+  return getPathname(path).match(/.+?\/(.+?)\/?$/)?.[1] || '';
 }
 
 //https://github.com/  =>  github
