@@ -63,6 +63,7 @@ const ChangeRequestClosureRatioAllPeriod = () => {
           cardRef={ref}
         />
       )}
+      bodyClass={'h-[400px]'}
     >
       {(ref) => {
         return (

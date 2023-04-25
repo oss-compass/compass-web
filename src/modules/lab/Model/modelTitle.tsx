@@ -39,7 +39,7 @@ const ModeTitle: React.FC<{
             {t('common:know_more')}
           </a>
         </div>
-        <div className="flex flex-none text-center text-sm font-semibold leading-8 md:hidden">
+        <div className="flex flex-none  text-sm font-semibold leading-8 md:hidden">
           <ClickAwayListener
             onClickAway={() => {
               if (!open) return;
@@ -51,47 +51,52 @@ const ModeTitle: React.FC<{
                 setAnchorEl(e.currentTarget);
                 setOpen((previousOpen) => !previousOpen);
               }}
-              className="h-8 w-[108px] cursor-pointer border border-gray-500"
+              className="h-8 w-[108px] cursor-pointer border border-gray-500 px-2.5"
             >
-              <a>{t('common:discuss')}</a>
+              <a>
+                <img
+                  className="mr-2 inline-block align-text-top"
+                  src="/images/lab/comment.svg"
+                />
+                {t('lab:discuss')}
+              </a>
               <Popper
                 id={'1'}
                 open={open}
                 style={{
                   zIndex: 1000,
                 }}
-                placement={'bottom'}
-                sx={{ p: 1 }}
+                placement={'bottom-end'}
                 anchorEl={anchorEl}
               >
-                <div className="rounded bg-white py-2 text-sm font-semibold shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
-                  <div>
+                <div className="rounded bg-white text-sm font-semibold shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
+                  <div className="h-14 px-3 pt-3 hover:bg-[#f2f2f2]">
                     <a
-                      className="block h-8 border-b px-3 leading-8 hover:bg-[#f2f2f2]"
                       target="_blank"
                       rel="noopener noreferrer"
                       href={'https://chaoss.discourse.group/c/metrics/8' || ''}
                     >
                       <img
-                        className="mr-2 inline-block align-text-top"
+                        className="mr-2 mt-[1px] inline-block align-text-top"
                         src="/images/logos/chaoss.svg"
-                        alt=""
                       />
-                      CHAOSS
+                      CHAOSS official channel
                     </a>
+                    <span className="ml-6 block h-4  font-normal text-[#86868f]">
+                      in Discourse
+                    </span>
                   </div>
-                  <div>
-                    <a
-                      className="block h-8 px-3 leading-8 hover:bg-[#f2f2f2]"
-                      href={'/docs/community/slack/' || ''}
-                    >
+                  <div className="h-15 px-3 py-2 hover:bg-[#f2f2f2]">
+                    <a href={'/docs/community/slack/' || ''}>
                       <img
                         className="mr-2 inline-block h-4 w-3.5 align-text-top"
                         src="favicon.ico"
-                        alt=""
                       />
-                      Compass
+                      Compass official channel
                     </a>
+                    <span className="ml-6 block h-4  font-normal text-[#86868f]">
+                      in Slack
+                    </span>
                   </div>
                 </div>
               </Popper>
