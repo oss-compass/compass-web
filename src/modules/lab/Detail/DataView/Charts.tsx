@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
-import CollaborationDevelopmentIndex from '@modules/analyze/DataView/CollaborationDevelopmentIndex';
-import ChartsDataProvider from '@modules/analyze/context/ChartsDataProvider';
+import StarterProjectHealthIndex from './StarterProjectHealthIndex';
+import ChartsDataProvider from '@modules/lab/context/ChartsDataProvider';
 
 const Charts = () => {
   const { t } = useTranslation();
@@ -9,7 +9,7 @@ const Charts = () => {
   return (
     <ChartsDataProvider>
       <div className="mb-4">
-        <CollaborationDevelopmentIndex />
+        <StarterProjectHealthIndex />
       </div>
     </ChartsDataProvider>
   );

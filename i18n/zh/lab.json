@@ -1,4 +1,18 @@
 {
-  "the_locale_names_are_used_for": "The locale names are used for the translation files' locations, as well as your translated locales' base URL. When building all locales, only the default locale will have its name omitted in the base URL.",
-  "discuss": "Discuss"
+  "the_locale_names_are_used_for": "Compass Lab is a sandbox that helps people quickly create and validate metrics models of their interest, which can be used for proprietary domain evaluations or as general models. It provides over 20,000 open-source project datasets from over 200 categories, 100+ CHAOSS metrics, and custom algorithms to promote continuous innovation in modeling.",
+  "discuss": "讨论",
+  "create_a_model": "创建一个模型",
+  "pick_for_compare": "勾选对比",
+  "datasets": "数据集",
+  "projects_in_datasets": "数据集中的 {{length}} 个项目在使用这个模型",
+  "create_your_own_model_in_5_minutes": "在5分钟内创建一个您自己的模型",
+  "create_a_model_now": "开始创建一个模型",
+  "select_dataset": "选择数据集",
+  "covering_datasets": "覆盖各领域各行业 200+ 数据集",
+  "select_metrics": "选择度量指标",
+  "metrics_in_three_dimensions": "来源于CHAOSS的 100+ 度量指标",
+  "select_algorithm": "选择算法",
+  "support_AHP": "支持 AHP 和其他自定义的多种算法",
+  "release_model": "发布模型",
+  "expose_the_model": "公开模型，还可以邀请伙伴们一起完善它"
 }

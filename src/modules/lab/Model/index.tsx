@@ -1,6 +1,7 @@
 import React from 'react';
 import ModelTitle from './modelTitle';
 import ModelTrends from './modelTrends';
+import CreateModel from './CreateModel';
 import {
   useBetaMetricsIndexQuery,
   BetaMetricsIndexQuery,
@@ -20,7 +21,7 @@ type BetaMetric = {
 const ModelItem: React.FC<{ betaMetric: BetaMetric }> = ({ betaMetric }) => {
   const { id, dimensionality, desc, extra, metric } = betaMetric;
   return (
-    <>
+    <div className="flex-1">
       <ModelTitle
         dimensionality={dimensionality}
         desc={desc}
@@ -28,21 +29,30 @@ const ModelItem: React.FC<{ betaMetric: BetaMetric }> = ({ betaMetric }) => {
         metric={metric}
       />
       <ModelTrends id={id!} />
-    </>
+    </div>
   );
 };
 
 const Model = () => {
-  const { isLoading, data } = useBetaMetricsIndexQuery(client, {
-    per: 2,
-  });
-
+  // const { isLoading, data } = useBetaMetricsIndexQuery(client, {
+  //   per: 1,
+  // });
+  const isLoading = false;
+  const data = { betaMetricsIndex: [{ id: 1 }] };
   return (
-    <div className="mx-auto h-10 w-[1280px] xl:w-full xl:px-2">
-      {!isLoading &&
-        data?.betaMetricsIndex.map((i) => {
+    <div className="mx-auto flex h-10 w-[1280px] xl:w-full xl:px-2 md:flex-wrap">
+      {data.betaMetricsIndex.map((i, index) => {
+        if (index === 0) {
+          return (
+            <>
+              <ModelItem betaMetric={i} key={i.id} />
+              <CreateModel key={index} />
+            </>
+          );
+        } else {
           return <ModelItem betaMetric={i} key={i.id} />;
-        })}
+        }
+      })}
     </div>
   );
 };
