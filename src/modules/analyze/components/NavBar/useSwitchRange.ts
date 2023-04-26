@@ -9,7 +9,7 @@ const useSwitchRange = () => {
     const result = qs.parse(window.location.search);
     result.range = t;
 
-    let url = `/analyze?${qs.stringify(result)}`;
+    const url = `${route.pathname}?${qs.stringify(result)}`;
     // if (hash) url += hash;
     await route.replace(url, undefined, { scroll: false });
   };

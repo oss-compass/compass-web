@@ -541,6 +541,8 @@ export type Query = {
   metricCommunity: Array<CommunityMetric>;
   /** Get group activity metrics data of compass */
   metricGroupActivity: Array<GroupActivityMetric>;
+  /** Get starter project health metrics data of compass */
+  metricStarterProjectHealth: Array<StarterProjectHealthMetric>;
   /** Recent update reports */
   recentUpdates: Array<ProjectCompletionRow>;
   /** Get activity summary data of compass */
@@ -627,6 +629,13 @@ export type QueryMetricGroupActivityArgs = {
   level?: InputMaybe<Scalars['String']>;
 };
 
+export type QueryMetricStarterProjectHealthArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
 export type QuerySummaryActivityArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
@@ -666,6 +675,44 @@ export type Repo = {
   type?: Maybe<Scalars['String']>;
   updatedAt: Scalars['ISO8601DateTime'];
   watchersCount?: Maybe<Scalars['Int']>;
+};
+
+export type StarterProjectHealthMetric = {
+  __typename?: 'StarterProjectHealthMetric';
+  /** the smallest number of people that make 50% of contributions */
+  busFactor?: Maybe<Scalars['Float']>;
+  /** the change request closure ratio same period */
+  changeRequestClosedCountAllPeriod?: Maybe<Scalars['Float']>;
+  /** the change request closed count recently */
+  changeRequestClosedCountRecently?: Maybe<Scalars['Float']>;
+  /** the change request closure ratio all period */
+  changeRequestClosureRatioAllPeriod?: Maybe<Scalars['Float']>;
+  /** the change request closure ratio recently */
+  changeRequestClosureRatioRecently?: Maybe<Scalars['Float']>;
+  /** the change request created count all period */
+  changeRequestCreatedCountAllPeriod?: Maybe<Scalars['Float']>;
+  /** the change request created count recently */
+  changeRequestCreatedCountRecently?: Maybe<Scalars['Float']>;
+  /** metric model creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** mean of pull request time to close */
+  prTimeToCloseAvg?: Maybe<Scalars['Float']>;
+  /** middle of pull request time to close */
+  prTimeToCloseMid?: Maybe<Scalars['Float']>;
+  /** mean of pull request time to first response */
+  prTimeToFirstResponseAvg?: Maybe<Scalars['Float']>;
+  /** middle of pull request time to first response */
+  prTimeToFirstResponseMid?: Maybe<Scalars['Float']>;
+  /** the frequency of project releases (including point releases with bug fixes) */
+  releaseFrequency?: Maybe<Scalars['Float']>;
+  /** score of starter project health model */
+  starterProjectHealth?: Maybe<Scalars['Float']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
 };
 
 export type Trending = {
@@ -1193,6 +1240,37 @@ export type SummaryQuery = {
   }>;
 };
 
+export type LabMetricQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  start?: InputMaybe<Scalars['ISO8601DateTime']>;
+  end?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type LabMetricQuery = {
+  __typename?: 'Query';
+  metricStarterProjectHealth: Array<{
+    __typename?: 'StarterProjectHealthMetric';
+    busFactor?: number | null;
+    changeRequestClosedCountAllPeriod?: number | null;
+    changeRequestClosedCountRecently?: number | null;
+    changeRequestClosureRatioAllPeriod?: number | null;
+    changeRequestClosureRatioRecently?: number | null;
+    changeRequestCreatedCountAllPeriod?: number | null;
+    changeRequestCreatedCountRecently?: number | null;
+    grimoireCreationDate?: any | null;
+    label?: string | null;
+    level?: string | null;
+    prTimeToCloseAvg?: number | null;
+    prTimeToCloseMid?: number | null;
+    prTimeToFirstResponseAvg?: number | null;
+    prTimeToFirstResponseMid?: number | null;
+    releaseFrequency?: number | null;
+    starterProjectHealth?: number | null;
+    type?: string | null;
+  }>;
+};
+
 export type MetricStatFragment = {
   __typename?: 'MetricStat';
   mean?: number | null;
@@ -1253,6 +1331,48 @@ export type TrendingQuery = {
     name?: string | null;
     origin?: string | null;
     reposCount?: number | null;
+  }>;
+};
+
+export type BetaMetricOverviewQueryVariables = Exact<{
+  id: Scalars['Int'];
+  limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type BetaMetricOverviewQuery = {
+  __typename?: 'Query';
+  betaMetricOverview: {
+    __typename?: 'BetaMetricOverview';
+    projectsCount?: number | null;
+    trends?: Array<{
+      __typename?: 'BetaRepo';
+      path?: string | null;
+      origin: string;
+      name?: string | null;
+      backend?: string | null;
+      betaMetricScores: Array<{
+        __typename?: 'BetaMetricScore';
+        grimoireCreationDate?: any | null;
+        score?: number | null;
+      }>;
+    }> | null;
+  };
+};
+
+export type BetaMetricsIndexQueryVariables = Exact<{
+  per?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type BetaMetricsIndexQuery = {
+  __typename?: 'Query';
+  betaMetricsIndex: Array<{
+    __typename?: 'BetaMetric';
+    id?: number | null;
+    dimensionality?: string | null;
+    desc?: string | null;
+    extra?: string | null;
+    metric?: string | null;
   }>;
 };
 
@@ -1915,6 +2035,66 @@ useSummaryQuery.fetcher = (
     variables,
     headers
   );
+export const LabMetricDocument = /*#__PURE__*/ `
+    query labMetric($label: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
+  metricStarterProjectHealth(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
+    busFactor
+    changeRequestClosedCountAllPeriod
+    changeRequestClosedCountRecently
+    changeRequestClosureRatioAllPeriod
+    changeRequestClosureRatioRecently
+    changeRequestCreatedCountAllPeriod
+    changeRequestCreatedCountRecently
+    grimoireCreationDate
+    label
+    level
+    prTimeToCloseAvg
+    prTimeToCloseMid
+    prTimeToFirstResponseAvg
+    prTimeToFirstResponseMid
+    releaseFrequency
+    starterProjectHealth
+    type
+  }
+}
+    `;
+export const useLabMetricQuery = <TData = LabMetricQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables: LabMetricQueryVariables,
+  options?: UseQueryOptions<LabMetricQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<LabMetricQuery, TError, TData>(
+    ['labMetric', variables],
+    fetcher<LabMetricQuery, LabMetricQueryVariables>(
+      client,
+      LabMetricDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useLabMetricQuery.getKey = (variables: LabMetricQueryVariables) => [
+  'labMetric',
+  variables,
+];
+useLabMetricQuery.fetcher = (
+  client: GraphQLClient,
+  variables: LabMetricQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<LabMetricQuery, LabMetricQueryVariables>(
+    client,
+    LabMetricDocument,
+    variables,
+    headers
+  );
 export const CollectionHottestDocument = /*#__PURE__*/ `
     query collectionHottest($ident: String!, $limit: Int) {
   collectionHottest(ident: $ident, limit: $limit) {
@@ -2051,6 +2231,107 @@ useTrendingQuery.fetcher = (
   fetcher<TrendingQuery, TrendingQueryVariables>(
     client,
     TrendingDocument,
+    variables,
+    headers
+  );
+export const BetaMetricOverviewDocument = /*#__PURE__*/ `
+    query betaMetricOverview($id: Int!, $limit: Int) {
+  betaMetricOverview(id: $id, limit: $limit) {
+    projectsCount
+    trends {
+      path
+      origin
+      name
+      backend
+      betaMetricScores {
+        grimoireCreationDate
+        score
+      }
+    }
+  }
+}
+    `;
+export const useBetaMetricOverviewQuery = <
+  TData = BetaMetricOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: BetaMetricOverviewQueryVariables,
+  options?: UseQueryOptions<BetaMetricOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<BetaMetricOverviewQuery, TError, TData>(
+    ['betaMetricOverview', variables],
+    fetcher<BetaMetricOverviewQuery, BetaMetricOverviewQueryVariables>(
+      client,
+      BetaMetricOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useBetaMetricOverviewQuery.getKey = (
+  variables: BetaMetricOverviewQueryVariables
+) => ['betaMetricOverview', variables];
+useBetaMetricOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: BetaMetricOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<BetaMetricOverviewQuery, BetaMetricOverviewQueryVariables>(
+    client,
+    BetaMetricOverviewDocument,
+    variables,
+    headers
+  );
+export const BetaMetricsIndexDocument = /*#__PURE__*/ `
+    query betaMetricsIndex($per: Int, $page: Int) {
+  betaMetricsIndex(per: $per, page: $page) {
+    id
+    dimensionality
+    desc
+    extra
+    metric
+  }
+}
+    `;
+export const useBetaMetricsIndexQuery = <
+  TData = BetaMetricsIndexQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: BetaMetricsIndexQueryVariables,
+  options?: UseQueryOptions<BetaMetricsIndexQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<BetaMetricsIndexQuery, TError, TData>(
+    variables === undefined
+      ? ['betaMetricsIndex']
+      : ['betaMetricsIndex', variables],
+    fetcher<BetaMetricsIndexQuery, BetaMetricsIndexQueryVariables>(
+      client,
+      BetaMetricsIndexDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useBetaMetricsIndexQuery.getKey = (
+  variables?: BetaMetricsIndexQueryVariables
+) =>
+  variables === undefined
+    ? ['betaMetricsIndex']
+    : ['betaMetricsIndex', variables];
+useBetaMetricsIndexQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: BetaMetricsIndexQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<BetaMetricsIndexQuery, BetaMetricsIndexQueryVariables>(
+    client,
+    BetaMetricsIndexDocument,
     variables,
     headers
   );

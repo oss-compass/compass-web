@@ -59,6 +59,7 @@ export enum Section {
   CommunityServiceAndSupport = 'community_service_support',
   CommunityActivity = 'community_activity',
   OrganizationsActivity = 'organizations_activity',
+  StarterProjectHealth = 'starter_project_health',
 }
 
 export const useCollaborationDevelopmentIndex = () => {

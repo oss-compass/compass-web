@@ -75,5 +75,8 @@
     "all": "All",
     "governance_repository": "Governance Repository",
     "software_artifact_repository": "Software Artifact Repository"
-  }
+  },
+  "ratio": "Ratio",
+  "closed": "Closed",
+  "created": "Created"
 }

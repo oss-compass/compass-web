@@ -97,6 +97,52 @@ export const getYAxisWithUnit = ({
   };
 };
 
+/**
+ * @deprecated use getYAxisWithUnit instead
+ */
+export const getYAxisWithUnitV1 = ({
+  unit,
+  indicators,
+  namePaddingLeft = 35,
+}: {
+  unit: string;
+  indicators: string;
+  namePaddingLeft?: number;
+}): EChartsOption => {
+  return {
+    grid: {
+      top: 90,
+      left: '40px',
+      right: '30px',
+      bottom: '40px',
+    },
+    yAxis: {
+      name: [`{a|${unit}}`, `{b|${indicators}}`].join('\n'),
+      nameTextStyle: {
+        align: 'center',
+        padding: [0, 0, 0, namePaddingLeft],
+        rich: {
+          a: {
+            align: 'left',
+            color: '#2C3542',
+            fontSize: 10,
+            lineHeight: 14,
+            fontStyle: 'italic',
+            fontWeight: 'bold',
+          },
+          b: {
+            align: 'left',
+            color: '#A0A4AA',
+            fontSize: 10,
+            lineHeight: 14,
+            fontStyle: 'italic',
+          },
+        },
+      },
+    },
+  };
+};
+
 const categoryAxis = (data: any[]): EChartsOption['xAxis'] => ({
   type: 'category',
   boundaryGap: true,

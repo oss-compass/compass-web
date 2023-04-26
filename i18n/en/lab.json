@@ -1,0 +1,18 @@
+{
+  "the_locale_names_are_used_for": "Compass Lab is a sandbox that helps people quickly create and validate metrics models of their interest, which can be used for proprietary domain evaluations or as general models. It provides over 20,000 open-source project datasets from over 200 categories, 100+ CHAOSS metrics, and custom algorithms to promote continuous innovation in modeling.",
+  "discuss": "Discuss",
+  "create_a_model": "Create a model",
+  "pick_for_compare": "Pick for compare",
+  "datasets": "Datasets",
+  "projects_in_datasets": "{{length}} projects in datasets are using this model",
+  "create_your_own_model_in_5_minutes": "Create your own model in 5 minutes",
+  "create_a_model_now": "Create a model now",
+  "select_dataset": "Select dataset",
+  "covering_datasets": "Covering 200+ datasets in various fields and industries",
+  "select_metrics": "Select metrics",
+  "metrics_in_three_dimensions": "100+ metrics originated from CHAOSS",
+  "select_algorithm": "Select algorithm",
+  "support_AHP": "Support AHP and other self-defined algorithms",
+  "release_model": "Publish model",
+  "expose_the_model": "Publish the model and invite partners to improve it"
+}

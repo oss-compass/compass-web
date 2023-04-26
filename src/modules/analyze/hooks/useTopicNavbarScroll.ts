@@ -40,8 +40,9 @@ const useTopicNavbarScroll = () => {
         h2 = parent!.previousSibling!.previousSibling as HTMLElement;
       }
       let pre = h2!.previousSibling as HTMLElement;
-      while (pre!.nodeName !== 'H1') {
-        pre = pre!.previousSibling as HTMLElement;
+      if (!pre) return {};
+      while (pre.nodeName !== 'H1') {
+        pre = pre?.previousSibling as HTMLElement;
       }
       const topic = pre!.innerText.replace('#', '').trim();
       return { topicId: topic, subId: h2.innerText.replace('#', '') };

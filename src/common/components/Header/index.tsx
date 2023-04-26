@@ -44,6 +44,12 @@ const Header: React.FC<{
 
             <CommunityDropdown />
 
+            <Link href="/lab">
+              <a className={'mx-6 px-2.5 font-medium text-white'}>
+                {t('common:header.lab')}
+              </a>
+            </Link>
+
             <Link href="/about">
               <a className={'mx-6 px-2.5 font-medium text-white'}>
                 {t('common:header.about')}

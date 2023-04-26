@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
 import { useSnapshot } from 'valtio';
 import { avgAndScoreState } from '@modules/analyze/store';
@@ -36,7 +35,7 @@ const NavbarSetting: React.FC = () => {
           showMedian={snap.showMedian}
           onMedianChange={(b) => (avgAndScoreState.showMedian = b)}
           onePoint={snap.onePointSys}
-          onChange={(v) => {
+          onChange={(v: boolean) => {
             avgAndScoreState.onePointSys = v;
           }}
         />

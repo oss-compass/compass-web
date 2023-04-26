@@ -69,6 +69,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
 
   const noShowData = showData?.length === 0;
 
+  // eslint-disable-next-line complexity
   const getList = () => {
     if (isLoading && noShowData) {
       return <Loading />;

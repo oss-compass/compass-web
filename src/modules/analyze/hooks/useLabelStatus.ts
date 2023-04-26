@@ -3,7 +3,7 @@ import client from '@graphql/client';
 import { StatusQuery, useStatusQuery } from '@graphql/generated';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import useExtractUrlLabels from './useExtractUrlLabels';
-import { setVerifiedLabels } from '../store/verifiedLabels';
+import { setVerifiedLabels } from '@modules/analyze/store';
 
 const useLabelStatus = () => {
   const queryClient = useQueryClient();

@@ -334,8 +334,65 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
       ...metricStat
     }
   }
+  # summaryStarterProjectHealth(beginDate: $start, endDate: $end) {
+  #   busFactor {
+  #     ...metricStat
+  #   }
+  #   changeRequestClosureRatioAllPeriod {
+  #     ...metricStat
+  #   }
+  #   changeRequestClosureRatioSamePeriod {
+  #     ...metricStat
+  #   }
+  #   grimoireCreationDate
+  #   prTimeToCloseAvg {
+  #     ...metricStat
+  #   }
+  #   prTimeToCloseMid {
+  #     ...metricStat
+  #   }
+  #   prTimeToFirstResponseMid {
+  #     ...metricStat
+  #   }
+  #   releaseFrequency {
+  #     ...metricStat
+  #   }
+  #   starterProjectHealth {
+  #     ...metricStat
+  #   }
+  # }
 }
-
+query labMetric(
+  $label: String!
+  $level: String = "repo"
+  $start: ISO8601DateTime
+  $end: ISO8601DateTime
+) {
+  metricStarterProjectHealth(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+  ) {
+    busFactor
+    changeRequestClosedCountAllPeriod
+    changeRequestClosedCountRecently
+    changeRequestClosureRatioAllPeriod
+    changeRequestClosureRatioRecently
+    changeRequestCreatedCountAllPeriod
+    changeRequestCreatedCountRecently
+    grimoireCreationDate
+    label
+    level
+    prTimeToCloseAvg
+    prTimeToCloseMid
+    prTimeToFirstResponseAvg
+    prTimeToFirstResponseMid
+    releaseFrequency
+    starterProjectHealth
+    type
+  }
+}
 fragment metricStat on MetricStat {
   mean
   median
@@ -375,5 +432,31 @@ query trending($level: String = "repo") {
     name
     origin
     reposCount
+  }
+}
+
+query betaMetricOverview($id: Int!, $limit: Int) {
+  betaMetricOverview(id: $id, limit: $limit) {
+    projectsCount
+    trends {
+      path
+      origin
+      name
+      backend
+      betaMetricScores {
+        grimoireCreationDate
+        score
+      }
+    }
+  }
+}
+
+query betaMetricsIndex($per: Int, $page: Int) {
+  betaMetricsIndex(per: $per, page: $page) {
+    id
+    dimensionality
+    desc
+    extra
+    metric
   }
 }
