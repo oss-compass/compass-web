@@ -173,7 +173,10 @@ export const getLineOption = (
     legend: { ...defaultLegend, ...legend },
     tooltip: { ...defaultTooltip, ...tooltip },
     xAxis: categoryAxis(xAxisData),
-    yAxis: yAxis || { type: 'value' },
+    yAxis: yAxis || {
+      type: 'value',
+      scale: true,
+    },
     series,
     ...restOpts,
   };
