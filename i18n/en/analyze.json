@@ -76,6 +76,7 @@
     "governance_repository": "Governance Repository",
     "software_artifact_repository": "Software Artifact Repository"
   },
+  "repo_filter": "Repository filter",
   "ratio": "Ratio",
   "closed": "Closed",
   "created": "Created"

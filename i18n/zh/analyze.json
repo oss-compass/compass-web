@@ -76,6 +76,7 @@
     "governance_repository": "治理仓",
     "software_artifact_repository": "软件制品仓"
   },
+  "repo_filter": "仓库筛选",
   "ratio": "比率",
   "closed": "已关闭",
   "created": "已创建"

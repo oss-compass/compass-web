@@ -1,12 +1,18 @@
 import React, { useRef } from 'react';
-import MedianAndAvg from '@modules/analyze/components/MedianAndAvg';
+import DisplaySetting from '@modules/analyze/components/NavBar/DisplaySetting';
+import RepoFilter from '@modules/analyze/components/NavBar/RepoFilter';
 import { useSnapshot } from 'valtio';
 import { avgAndScoreState } from '@modules/analyze/store';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { useClickAway, useToggle } from 'react-use';
 import classnames from 'classnames';
+import { useRouter } from 'next/router';
+import { Level } from '@modules/analyze/constant';
+import { CommunityRepoType } from '@common/constant';
 
 const NavbarSetting: React.FC = () => {
+  const router = useRouter();
+  const level = router.query.level as Level;
   const snap = useSnapshot(avgAndScoreState);
   const [dropdownOpen, toggleDropdown] = useToggle(false);
   const ref = useRef(null);
@@ -29,7 +35,7 @@ const NavbarSetting: React.FC = () => {
           { hidden: !dropdownOpen }
         )}
       >
-        <MedianAndAvg
+        <DisplaySetting
           showAvg={snap.showAvg}
           onAvgChange={(b) => (avgAndScoreState.showAvg = b)}
           showMedian={snap.showMedian}
@@ -39,6 +45,14 @@ const NavbarSetting: React.FC = () => {
             avgAndScoreState.onePointSys = v;
           }}
         />
+        {level === 'community' && (
+          <RepoFilter
+            repoType={snap.repoType}
+            onRepoChange={(b) =>
+              (avgAndScoreState.repoType = b as CommunityRepoType)
+            }
+          />
+        )}
       </ul>
     </div>
   );

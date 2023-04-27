@@ -8,7 +8,7 @@ import { avgAndScoreState } from '@modules/analyze/store';
 import Svg100 from 'public/images/analyze/number-100.svg';
 import Svg1 from 'public/images/analyze/number-1.svg';
 
-const MedianAndAvg: React.FC<{
+const DisplaySetting: React.FC<{
   showAvg: boolean;
   onAvgChange: (pre: boolean) => void;
   showMedian: boolean;
@@ -65,7 +65,7 @@ const MedianAndAvg: React.FC<{
       </div>
       <div
         className={classnames(
-          'group flex cursor-pointer py-2 pl-3.5 transition',
+          'group flex cursor-pointer border-b py-2 pl-3.5 transition',
           { 'text-primary': !onePoint }
         )}
         data-html2canvas-ignore="true"
@@ -78,7 +78,7 @@ const MedianAndAvg: React.FC<{
       </div>
       <div
         className={classnames(
-          'group flex cursor-pointer border-b py-2 pl-3.5 transition',
+          'group flex cursor-pointer  py-2 pl-3.5 transition',
           { 'text-primary': onePoint }
         )}
         data-html2canvas-ignore="true"
@@ -93,4 +93,4 @@ const MedianAndAvg: React.FC<{
   );
 };
 
-export default MedianAndAvg;
+export default DisplaySetting;
