@@ -4,7 +4,7 @@ import { NoSsr } from '@mui/base';
 import LabelItems from './LabelItems';
 import DatePicker from './DatePicker';
 import MobileDatePicker from './MobileDatePicker';
-import AvgAndScore from './AvgAndScore';
+import NavbarSetting from './NavbarSetting';
 
 const NavBar = () => {
   return (
@@ -16,11 +16,10 @@ const NavBar = () => {
         )}
       >
         <LabelItems />
-        <div className="flex">
-          <AvgAndScore />
-          <DatePicker />
+        <div className="flex items-center text-[#585858]">
+          <MobileDatePicker />
+          <NavbarSetting />
         </div>
-        <MobileDatePicker />
       </nav>
     </NoSsr>
   );

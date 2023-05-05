@@ -71,7 +71,7 @@
     "metrics": {
       "org_count": "组织数量",
       "org_count_desc": "过去90天内活跃的代码提交者所属组织的数目。",
-      "contributor_count": "贡献者数量",
+      "contributor_count": "组织贡献者数量",
       "contributor_count_desc": "过去90天内有组织附属关系的活跃的代码贡献者人数。",
       "commit_frequency": "代码提交频率",
       "commit_frequency_desc": "过去90天内平均每周有组织归属的代码提交次数。",

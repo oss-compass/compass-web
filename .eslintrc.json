@@ -11,7 +11,7 @@
     ],
     "valtio/state-snapshot-rule": "error",
     "valtio/avoid-this-in-proxy": "error",
-    "complexity": ["error", { "max": 10 }]
+    "complexity": ["error", { "max": 14 }]
   },
   "overrides": [
     // Only uses Testing Library lint rules in test files

@@ -71,7 +71,7 @@
     "metrics": {
       "org_count": "Org Count",
       "org_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
-      "contributor_count": "Contributor Count",
+      "contributor_count": "Organization Contributor Count",
       "contributor_count_desc": "Number of active code contributors with organization affiliation in the past 90 days.",
       "commit_frequency": "Commit Frequency",
       "commit_frequency_desc": "Definition: Determine the average number of commits with organization affiliation per week in the past 90 days.",

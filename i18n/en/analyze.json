@@ -8,14 +8,18 @@
     "niche_creation": "Niche Creation"
   },
   "range": {
-    "3M": "3M",
-    "6M": "6M",
-    "1Y": "1Y",
-    "2Y": "2Y",
-    "3Y": "3Y",
-    "5Y": "5Y",
+    "3M": "last 3 months",
+    "6M": "last 6 months",
+    "1Y": "last year",
+    "2Y": "last 2 years",
+    "3Y": "last 3 years",
+    "5Y": "last 5 years",
     "Since2000": "Since 2000"
   },
+  "pick_date": "pick date range",
+  "from": "from",
+  "to": "to",
+  "display": "display",
   "compare": "compare",
   "search_repo_input_placeholder": "please input repo",
   "search_community_input_placeholder": "please input community",
@@ -72,6 +76,7 @@
     "governance_repository": "Governance Repository",
     "software_artifact_repository": "Software Artifact Repository"
   },
+  "repo_filter": "Repository filter",
   "ratio": "Ratio",
   "closed": "Closed",
   "created": "Created"

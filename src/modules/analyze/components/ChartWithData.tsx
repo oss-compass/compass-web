@@ -4,9 +4,13 @@ import transMetricToAxis from '@common/transform/transMetricToAxis';
 import transSummaryToAxis from '@common/transform/transSummaryToAxis';
 import { EChartsOption } from 'echarts';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
-import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
-import LinkLegacy from '@common/components/LinkLegacy';
+import {
+  ChartThemeState,
+  chartThemeState,
+  avgAndScoreState,
+} from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
+import LinkLegacy from '@common/components/LinkLegacy';
 import { formatISO } from '@common/utils';
 import { TransOpt, GenChartData, YResult } from '@modules/analyze/type';
 import { isNull, isUndefined } from 'lodash';
@@ -37,10 +41,16 @@ const ChartWithData: React.FC<{
 }> = ({ children, indicators, getOptions, tansOpts }) => {
   const { t, i18n } = useTranslation();
   const theme = useSnapshot(chartThemeState);
+  const snap = useSnapshot(avgAndScoreState);
   const data = useMetricQueryData();
   const loading = data?.loading;
 
-  const { xAxis, yResults } = transMetricToAxis(data?.items, tansOpts);
+  const { xAxis, yResults } = transMetricToAxis(
+    data?.items,
+    tansOpts,
+    snap.repoType
+  );
+
   const { summaryMean, summaryMedian } = transSummaryToAxis(
     data?.summary,
     xAxis,

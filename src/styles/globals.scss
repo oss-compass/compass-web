@@ -2,7 +2,8 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -17,14 +18,23 @@ body {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC',
+    'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei',
+    sans-serif;
 }
 
 textarea,
-input[type="text"],
-input[type="button"],
-input[type="submit"] {
+input[type='text'],
+input[type='button'],
+input[type='submit'] {
   -webkit-appearance: none;
   border-radius: 0;
   outline: none;
+}
+.react-datepicker {
+  border: 1px solid #e4e7ed !important;
+  padding: 10px;
+}
+.react-datepicker__header {
+  background-color: #ffffff !important;
 }

@@ -9,6 +9,8 @@ import { transDataForOverview } from '@common/transform/transDataForOverview';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
+import { avgAndScoreState } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
   loading = false,
@@ -94,12 +96,12 @@ const LineChartWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data.loading;
   const copyOpts = optsWithOrg;
-
+  const snap = useSnapshot(avgAndScoreState);
+  const repoType = snap.repoType;
   const { xAxis, yAxisResult } = useMemo(() => {
     const result = data.items[0].result;
     if (!result) return { xAxis: [], yAxisResult: [] };
 
-    const repoType = 'software-artifact';
     return transDataForOverview(result, copyOpts, dateKey, repoType);
   }, [copyOpts, data]);
 
