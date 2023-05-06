@@ -7,11 +7,10 @@ const defaultVal = {
   timeStart: timeRange['6M'].start,
   timeEnd: timeRange['6M'].end,
 };
-const isDateRange = (range: string) => {
+export const isDateRange = (range: string) => {
   if (range.includes(' ~ ')) {
     const start = range.split(' ~ ')[0];
     const end = range.split(' ~ ')[1];
-    console.log(start, end);
     const re = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/;
     const r = start.match(re) && end.match(re);
     if (r) {
@@ -24,11 +23,8 @@ const isDateRange = (range: string) => {
 const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
-
   return useMemo(() => {
-    if (!range) {
-      return defaultVal;
-    } else if (rangeTags.includes(range)) {
+    if (rangeTags.includes(range)) {
       return {
         range,
         timeStart: timeRange[range].start,

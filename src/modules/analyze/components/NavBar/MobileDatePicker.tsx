@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BiCalendar, BiCaretDown } from 'react-icons/bi';
+import { BiCalendar, BiCaretDown, BiCheck } from 'react-icons/bi';
 import {
   BsChevronDoubleLeft,
   BsChevronDoubleRight,
@@ -43,10 +43,8 @@ const DateRangePicker: React.FC<{
   );
 
   return (
-    <div className="pl-3.5 pt-3 text-xs">
-      <span className="font-bold text-gray-900">{t('analyze:pick_date')}</span>
+    <div className="flex text-xs">
       <div className="flex items-center justify-between py-2">
-        {t('analyze:from')}
         <DatePicker
           locale={local}
           dateFormat={FORMAT_YMD}
@@ -94,11 +92,11 @@ const DateRangePicker: React.FC<{
           endDate={endDate}
           minDate={new Date('2000/01/01')}
           maxDate={fromUnixTime(getUnixTime(endDate!) - 7 * 3600 * 24)}
-          className="float-right ml-1 mr-2 flex h-6 w-[100px]  border px-2"
+          className="flex h-6 w-[84px] border px-2"
         />
       </div>
+      <div className="flex w-6 items-center justify-center"> ~ </div>
       <div className="flex items-center text-xs">
-        {t('analyze:to')}
         <DatePicker
           locale={local}
           dateFormat={FORMAT_YMD}
@@ -148,11 +146,11 @@ const DateRangePicker: React.FC<{
           endDate={endDate}
           minDate={fromUnixTime(getUnixTime(startDate!) + 7 * 3600 * 24)}
           maxDate={fromUnixTime(getUnixTime(new Date()) - 1 * 3600 * 24)}
-          className="float-right ml-1 mr-2 h-6 w-[100px] border px-2"
+          className="h-6 w-[84px] border px-2"
         />
       </div>
       <div
-        className="mt-2 flex h-6 w-12 cursor-pointer items-center border border-[#3A5BEF] px-2.5 text-primary"
+        className="mt-2 ml-2 h-6 w-12 cursor-pointer rounded-sm border border-[#3A5BEF] pt-1 text-center text-primary"
         onClick={() =>
           onClick(
             format(startDate!, FORMAT_YMD) +
@@ -161,20 +159,23 @@ const DateRangePicker: React.FC<{
           )
         }
       >
-        确定
+        {t('analyze:confirm')}
       </div>
     </div>
   );
 };
 
 const MobileDatePicker = () => {
+  const { t } = useTranslation();
   const i18RangeTag = useI18RangeTag();
   const [dropdownOpen, toggleDropdown] = useToggle(false);
+  const [custom, toggleCustom] = useToggle(false);
   const ref = useRef(null);
   useClickAway(ref, () => {
     toggleDropdown(false);
+    console.log(rangeTags.includes(range));
+    toggleCustom(!rangeTags.includes(range));
   });
-
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
 
@@ -185,41 +186,68 @@ const MobileDatePicker = () => {
         onClick={() => toggleDropdown()}
       >
         <BiCalendar className="mr-2.5 text-xl" />
-        <span className="text-sm">{range}</span>
+        <span className="text-sm">{i18RangeTag[range] || range}</span>
         <BiCaretDown className="ml-1 text-sm" />
       </div>
       <ul
         ref={ref}
         style={{ boxShadow: '0px 1px 4px 1px rgba(0,0,0,0.1)' }}
         className={classnames(
-          'absolute right-0 z-[200] w-[150px] rounded bg-base-100 py-2',
+          'absolute right-0 z-[200] w-[280px] rounded bg-base-100 text-xs',
           { hidden: !dropdownOpen }
         )}
       >
-        {rangeTags.map((t, index) => {
-          return (
-            <li
-              className={classnames(
-                { 'text-primary ': range === t },
-                { 'border-b ': index !== rangeTags.length - 1 },
-                'h-full cursor-pointer py-2 pl-3.5 text-xs'
-              )}
-              key={t}
-              onClick={async () => {
-                await switchRange(t);
-                toggleDropdown(false);
-              }}
-            >
-              {i18RangeTag[t]}
-            </li>
-          );
-        })}
-        <DateRangePicker
-          onClick={async (t) => {
-            await switchRange(t);
-            toggleDropdown(false);
-          }}
-        />
+        <div className="flex flex-wrap justify-between px-4 pt-4">
+          {rangeTags.map((t, index) => {
+            return (
+              <li
+                className={classnames(
+                  { 'bg-primary text-white': range === t && !custom },
+                  'mb-2 flex h-8 w-[120px] cursor-pointer justify-between border py-2 pl-3 pr-2 text-xs'
+                )}
+                key={t}
+                onClick={async () => {
+                  await switchRange(t);
+                  toggleDropdown(false);
+                  toggleCustom(false);
+                }}
+              >
+                {i18RangeTag[t]}
+                {range === t && !custom && (
+                  <div className="h-3.5 w-3.5 rounded-full bg-white">
+                    <BiCheck className="text-sm text-primary" />
+                  </div>
+                )}
+              </li>
+            );
+          })}
+          <li
+            className={classnames(
+              'mb-2 flex h-8 w-[120px] cursor-pointer justify-between border py-2 pl-3 pr-2 text-xs',
+              { 'bg-primary text-white': custom, 'mb-4': !custom }
+            )}
+            onClick={async () => {
+              toggleCustom(true);
+            }}
+          >
+            {t('analyze:custom')}
+            {custom && (
+              <div className="h-3.5 w-3.5 rounded-full bg-white">
+                <BiCheck className="text-sm text-primary" />
+              </div>
+            )}
+          </li>
+        </div>
+        <div
+          className={classnames('h-10 bg-[#F7F7F7] px-4', { hidden: !custom })}
+        >
+          <DateRangePicker
+            onClick={async (t) => {
+              await switchRange(t);
+              toggleDropdown(false);
+            }}
+          />
+        </div>
       </ul>
     </div>
   );

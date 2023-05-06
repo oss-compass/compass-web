@@ -95,7 +95,7 @@ const ListPanel = (props: {
                     <div className="ml-2 flex items-center text-xs text-gray58">
                       <BsCodeSquare />
                       <span className="ml-1">
-                        {`${item?.reposCount}${t('analyze:repos')}`}
+                        {`${item?.reposCount} ${t('analyze:repos')}`}
                       </span>
                     </div>
                   ) : null}
