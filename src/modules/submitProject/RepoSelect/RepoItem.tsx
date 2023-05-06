@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatToNowStrict } from '@common/utils';
-import Button from '@modules/submitProject/Form/Button';
+import Button from '@common/components/Button';
 import { useTranslation } from 'react-i18next';
 
 const RepoItem: React.FC<{

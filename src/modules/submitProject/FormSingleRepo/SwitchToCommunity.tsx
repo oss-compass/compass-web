@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import Button from '@modules/submitProject/Form/Button';
+import Button from '@common/components/Button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

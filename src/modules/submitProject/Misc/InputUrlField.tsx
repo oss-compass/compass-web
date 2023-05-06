@@ -4,7 +4,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import Input from '@modules/submitProject/Form/Input';
+import Input from '@common/components/Input';
 import { AiOutlineClose } from 'react-icons/ai';
 import { getUrlReg } from '../Misc';
 import useProvider from '../Form/useProvider';
