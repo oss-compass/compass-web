@@ -8,7 +8,7 @@ import {
   Repos,
 } from '@modules/submitProject/api';
 import { useDebounce } from 'ahooks';
-import Input from '@modules/submitProject/Form/Input';
+import Input from '@common/components/Input';
 import { CgSpinner } from 'react-icons/cg';
 import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
 import RepoItem from './RepoItem';

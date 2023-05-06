@@ -1,13 +1,12 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
+import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCreateRepoTaskMutation } from '@graphql/generated';
 import client from '@graphql/client';
 import { useSession } from 'next-auth/react';
 import Modal from '@common/components/Modal';
-import SelectLike from '@modules/submitProject/Form/SelectLike';
-import Input from '@modules/submitProject/Form/Input';
-import Button from '../Form/Button';
+import SelectLike from '@common/components/SelectLike';
+import Input from '@common/components/Input';
+import Button from '@common/components/Button';
 import SwitchToCommunity from './SwitchToCommunity';
 import RepoSelect from '../RepoSelect';
 import { getUrlReg } from '../Misc';
