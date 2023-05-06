@@ -24,7 +24,9 @@ const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
   return useMemo(() => {
-    if (rangeTags.includes(range)) {
+    if (!range) {
+      return defaultVal;
+    } else if (rangeTags.includes(range)) {
       return {
         range,
         timeStart: timeRange[range].start,
