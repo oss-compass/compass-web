@@ -17,3 +17,7 @@ type DeepReadonlyObject<T> = {
 interface NavigatorLanguage {
   userLanguage?: string;
 }
+
+interface Window {
+  _gaTrackingId?: string;
+}
