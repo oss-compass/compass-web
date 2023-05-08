@@ -14,11 +14,10 @@
     "2Y": "最近2年",
     "3Y": "最近3年",
     "5Y": "最近5年",
-    "Since2000": "2000年至今"
+    "Since2000": "创立以来"
   },
-  "pick_date": "自定义时间范围",
-  "from": "从",
-  "to": "至",
+  "confirm": "确定",
+  "custom": "自定义",
   "display": "显示",
   "compare": "对比",
   "search_repo_input_placeholder": "请输入仓库名",

@@ -1,5 +1,9 @@
 {
-  "extends": ["next/core-web-vitals", "prettier"],
+  "extends": [
+    "next/core-web-vitals",
+    "prettier",
+    "plugin:storybook/recommended"
+  ],
   "plugins": ["prettier", "testing-library", "valtio"],
   "rules": {
     "prettier/prettier": "warn",

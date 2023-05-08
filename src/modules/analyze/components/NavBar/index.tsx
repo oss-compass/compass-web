@@ -2,7 +2,6 @@ import React from 'react';
 import classnames from 'classnames';
 import { NoSsr } from '@mui/base';
 import LabelItems from './LabelItems';
-import DatePicker from './DatePicker';
 import MobileDatePicker from './MobileDatePicker';
 import NavbarSetting from './NavbarSetting';
 
