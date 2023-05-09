@@ -1,5 +1,4 @@
 export * from './array';
-export * from './ga';
 export * from './getDomain';
 export * from './isBrowser';
 export * from './links';
