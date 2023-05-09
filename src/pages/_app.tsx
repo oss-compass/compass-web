@@ -55,8 +55,14 @@ function MyApp({
           <title>OSS Compass</title>
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width" />
-          <meta name="keywords" content={''} />
-          <meta name="description" content={''} />
+          <meta
+            name="keywords"
+            content="Ecosystem Evaluation System,Code Compliance Guarantee,Code Security Guarantee,Robustness,Productivity,Collaboration Development Index,Community,Community Service and Support,"
+          />
+          <meta
+            name="description"
+            content="We help open source projects gain insight into its trends, and getting more value of it."
+          />
           <link rel="shortcut icon" href="/favicon.ico" />
         </Head>
         <GAScripts id={gaTrackingId} />

@@ -20,4 +20,5 @@ interface NavigatorLanguage {
 
 interface Window {
   _gaTrackingId?: string;
+  gtag: undefined | ((...args: any[]) => void);
 }

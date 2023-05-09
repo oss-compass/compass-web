@@ -1,14 +1,6 @@
-import { useRouter } from 'next/router';
-import Script from 'next/script';
 import * as React from 'react';
-
-export const isClient = typeof document !== 'undefined';
-
-declare global {
-  interface Window {
-    gtag: undefined | ((...args: any[]) => void);
-  }
-}
+import Script from 'next/script';
+import { useRouter } from 'next/router';
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: string, id?: string) => {
@@ -88,7 +80,6 @@ export const useAppGA = (gaTrackingId: string) => {
 
   React.useEffect(() => {
     const handleRouteChange = (url: string) => {
-      console.log('routeChange', url);
       pageview(url, gaTrackingId);
     };
     router.events.on('routeChangeComplete', handleRouteChange);
