@@ -1,14 +1,11 @@
 import React, { PropsWithChildren, useRef, useState } from 'react';
 import classnames from 'classnames';
-import { AiFillCaretDown, AiOutlinePlus } from 'react-icons/ai';
-import { HiOutlineExternalLink } from 'react-icons/hi';
-import { useClickAway, useSessionStorage } from 'react-use';
-import { useSession, signIn } from 'next-auth/react';
-import { useQuery } from '@tanstack/react-query';
-import { getOrganizations } from '@modules/submitProject/api';
 import Image from 'next/image';
-import { GITHUB_CLIENT_ID } from '@modules/submitProject/constant';
-import { useTranslation } from 'react-i18next';
+import { AiFillCaretDown, AiOutlinePlus } from 'react-icons/ai';
+import { useClickAway, useSessionStorage } from 'react-use';
+import { useQuery } from '@tanstack/react-query';
+import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { getOrganizations } from '@modules/submitProject/api';
 
 const SourceItem: React.FC<{
   className?: string;
@@ -32,62 +29,6 @@ const SourceItem: React.FC<{
   );
 };
 
-const OrganizationAccess: React.FC<{
-  provider: string;
-  hasOrgList: boolean;
-}> = ({ provider, hasOrgList }) => {
-  const [githubClientID] = useSessionStorage(GITHUB_CLIENT_ID);
-  const { t } = useTranslation();
-
-  let scope = '';
-  let grantAccessUrl = '';
-
-  if (provider === 'github') {
-    scope = 'public_repo read:org';
-    grantAccessUrl = `https://github.com/settings/connections/applications/${githubClientID}`;
-  }
-
-  if (provider === 'gitee') {
-    scope = 'projects groups';
-  }
-
-  return (
-    <>
-      {!hasOrgList && (
-        <div
-          className="flex h-12 cursor-pointer items-center px-4 hover:bg-gray-100"
-          onClick={async () => {
-            await signIn(
-              provider,
-              { callbackUrl: '/submit-your-project' },
-              { scope }
-            );
-          }}
-        >
-          <AiOutlinePlus className="h-5 w-5" />
-          <div className="ml-2 text-base">
-            {t('submit_project:add_organization')}
-          </div>
-        </div>
-      )}
-
-      {provider === 'github' && (
-        <div className="flex h-12 cursor-pointer items-center px-4 hover:bg-gray-100">
-          <HiOutlineExternalLink className="h-5 w-5" />
-          <a
-            className="ml-2 text-base"
-            target="_blank"
-            rel="noopener noreferrer"
-            href={grantAccessUrl}
-          >
-            {t('submit_project:grant_organization_access')}
-          </a>
-        </div>
-      )}
-    </>
-  );
-};
-
 interface Item {
   avatar_url: string;
   login: string;
@@ -104,18 +45,19 @@ const SelectRepoSource: React.FC<
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  const { data: session } = useSession();
-  const username = session?.user?.login!;
-  const provider = session?.provider!;
+  const { user } = useUserInfo();
+  const nickname = user?.nickname!;
+  const account = user?.account!;
+  const provider = user?.provider!;
+  const avatarUrl = user?.avatarUrl!;
 
   const { data } = useQuery(
-    ['getOrganizations', username],
+    ['getOrganizations', account],
     () => {
-      return getOrganizations(provider)({ username });
+      return getOrganizations(provider)({ username: account });
     },
-    { enabled: Boolean(username) }
+    { enabled: Boolean(account) }
   );
-  const hasOrgList = Array.isArray(data?.data) && data?.data?.length;
 
   const options: Item[] = React.useMemo(() => {
     const items =
@@ -126,12 +68,12 @@ const SelectRepoSource: React.FC<
     return [
       ...items,
       {
-        login: session?.user.login!,
-        avatar_url: session?.user.image!,
+        login: nickname,
+        avatar_url: avatarUrl!,
         user: true,
       },
     ];
-  }, [data, session]);
+  }, [data, nickname, avatarUrl]);
 
   useClickAway(ref, () => {
     setOpen(false);
@@ -165,10 +107,6 @@ const SelectRepoSource: React.FC<
               />
             );
           })}
-          <OrganizationAccess
-            provider={provider}
-            hasOrgList={Boolean(hasOrgList)}
-          />
         </div>
       )}
       <div

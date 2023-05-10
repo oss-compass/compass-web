@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCreateRepoTaskMutation } from '@graphql/generated';
 import client from '@graphql/client';
-import { useSession } from 'next-auth/react';
+import { useCreateRepoTaskMutation } from '@graphql/generated';
 import Modal from '@common/components/Modal';
 import SelectLike from '@common/components/SelectLike';
 import Input from '@common/components/Input';
 import Button from '@common/components/Button';
+import Message from '@modules/submitProject/Misc/Message';
+import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { fillHttps } from '@common/utils';
 import SwitchToCommunity from './SwitchToCommunity';
 import RepoSelect from '../RepoSelect';
 import { getUrlReg } from '../Misc';
-import Message from '@modules/submitProject/Misc/Message';
-import { fillHttps } from '@common/utils';
-import { useTranslation } from 'react-i18next';
 
 const FormSingleRepo = () => {
   const { t } = useTranslation();
-  const { data: session } = useSession();
-  const provider = session?.provider || 'github';
+  const { user } = useUserInfo();
+  const provider = user?.provider || 'github';
 
   const [formType, setFormType] = useState<'select' | 'input'>('input');
   const [repoSelectVisible, setRepoSelectVisible] = useState(false);
@@ -47,12 +47,7 @@ const FormSingleRepo = () => {
   const reportUrl = data?.createRepoTask?.reportUrl;
 
   const onSubmit: SubmitHandler<{ url?: string }> = (data) => {
-    const common = {
-      username: session!.user!.login as string,
-      token: session!.accessToken as string,
-      origin: session!.provider as string,
-    };
-
+    const common = { origin: user?.provider as string };
     const urls = [data.url, selectVal].map(fillHttps).filter(Boolean);
     mutate({ ...common, repoUrls: urls });
   };

@@ -12,8 +12,9 @@ export const config = {
 };
 
 const proxy = httpProxy.createProxyServer({
-  changeOrigin: true,
-  proxyTimeout: 5 * 1000,
+  autoRewrite: true,
+  changeOrigin: false,
+  proxyTimeout: 100 * 1000,
 });
 
 export default async function handler(
