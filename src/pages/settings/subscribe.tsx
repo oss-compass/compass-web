@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-const Report = () => {
+const Subscribe = () => {
   const { t } = useTranslation();
   return (
     <>
@@ -23,4 +23,4 @@ const Report = () => {
   );
 };
 
-export default Report;
+export default Subscribe;
