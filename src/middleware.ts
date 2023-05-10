@@ -6,7 +6,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 export function middleware(request: NextRequest) {
   // for development
   if (isDevelopment) {
-    return NextResponse.rewrite(new URL(`/api/proxy`, request.url));
+    return NextResponse.rewrite(new URL(`/api/development/proxy`, request.url));
   }
 
   // We use nginx proxy for production environments
