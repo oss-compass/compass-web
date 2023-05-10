@@ -27,15 +27,15 @@ export const useUserInfo = () => {
     user = ctx?.currentUser?.loginBinds?.[0];
   }
 
-  return {
-    user: {
+  if (user) {
+    user = {
       ...user,
-
       // todo Let the backend modify
       // The naming of the returned fields in the interface data is reversed.
       account: user?.nickname,
       nickname: user?.account,
-    },
-    ...ctx,
-  };
+    };
+  }
+
+  return { user, ...ctx };
 };
