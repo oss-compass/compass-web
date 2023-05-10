@@ -1,3 +1,14 @@
+query userinfo {
+  currentUser {
+    loginBinds {
+      account
+      avatarUrl
+      nickname
+      provider
+    }
+  }
+}
+
 query status($label: String!) {
   analysisStatus(label: $label)
 }

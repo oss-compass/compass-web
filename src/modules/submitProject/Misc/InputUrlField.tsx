@@ -4,13 +4,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import Input from '@common/components/Input';
-import { AiOutlineClose } from 'react-icons/ai';
-import { getUrlReg } from '../Misc';
-import useProvider from '../Form/useProvider';
+import gsap from 'gsap';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
-import gsap from 'gsap';
+import Input from '@common/components/Input';
+import { AiOutlineClose } from 'react-icons/ai';
+import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { getUrlReg } from '../Misc';
 
 interface Props {
   onClose: () => void;
@@ -26,8 +26,10 @@ const InputUrlField = forwardRef<InputRef, Props>(
   ({ onClose, onPressEnter }, ref) => {
     const { t } = useTranslation();
     const inputRef = useRef<HTMLInputElement>(null);
-    const provider = useProvider();
+    const { user } = useUserInfo();
+    const provider = user?.provider!;
     const [value, setValue] = useState('');
+
     const verificationUrl = (
       val: string,
       provider: string

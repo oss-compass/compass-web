@@ -2,9 +2,9 @@ import React, { useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 import { AiFillGithub, AiOutlineLink, AiOutlinePlus } from 'react-icons/ai';
 import classnames from 'classnames';
-import useProvider from '@modules/submitProject/Form/useProvider';
 import { SiGitee } from 'react-icons/si';
 import { useTranslation } from 'react-i18next';
+import { useUserInfo } from '@modules/auth/UserInfoContext';
 
 export const getIcons = (type: string) => {
   switch (type) {
@@ -25,7 +25,8 @@ const AddSelectPopover: React.FC<{
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }> = ({ className, onSelect, onClick, open, onClose }) => {
   const { t } = useTranslation();
-  const provider = useProvider();
+  const { user } = useUserInfo();
+  const provider = user?.provider!;
   const ref = useRef<HTMLDivElement>(null);
 
   useClickAway(ref, () => {

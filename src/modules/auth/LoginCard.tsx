@@ -1,11 +1,10 @@
 import React from 'react';
-import { ClientSafeProvider } from 'next-auth/react/types';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
-import { signIn } from 'next-auth/react';
 import Image from 'next/image';
+import { setCallbackUrl, setAuthProvider } from '@common/utils/cookie';
 
-const ProvideCard: React.FC<{ provider: ClientSafeProvider }> = ({
+const LoginCard: React.FC<{ provider: { id: string; name: string } }> = ({
   provider,
 }) => {
   const { t } = useTranslation();
@@ -14,15 +13,12 @@ const ProvideCard: React.FC<{ provider: ClientSafeProvider }> = ({
       <div
         className={classnames(
           'flex h-48 w-[calc(50%-20px)] cursor-pointer flex-col items-center justify-center hover:opacity-90 md:mb-4 md:w-full',
-          {
-            'bg-black': provider.id === 'github',
-            'bg-[#d9001a]': provider.id === 'gitee',
-          }
+          'bg-black'
         )}
         onClick={async () => {
-          await signIn(provider.id, {
-            callbackUrl: '/submit-your-project',
-          });
+          setAuthProvider('github');
+          setCallbackUrl('/submit-your-project');
+          window.location.href = '/users/auth/github';
         }}
       >
         <div className="mb-7  ">
@@ -45,15 +41,12 @@ const ProvideCard: React.FC<{ provider: ClientSafeProvider }> = ({
       <div
         className={classnames(
           'flex h-48 w-[calc(50%-20px)] cursor-pointer flex-col items-center justify-center hover:opacity-90 md:mb-4 md:w-full',
-          {
-            'bg-black': provider.id === 'github',
-            'bg-[#d9001a]': provider.id === 'gitee',
-          }
+          'bg-[#d9001a]'
         )}
         onClick={async () => {
-          await signIn(provider.id, {
-            callbackUrl: '/submit-your-project',
-          });
+          setAuthProvider('gitee');
+          setCallbackUrl('/submit-your-project');
+          window.location.href = '/users/auth/gitee';
         }}
       >
         <div className="mb-7  ">
@@ -74,4 +67,4 @@ const ProvideCard: React.FC<{ provider: ClientSafeProvider }> = ({
   return null;
 };
 
-export default ProvideCard;
+export default LoginCard;

@@ -9,22 +9,22 @@ import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';
 import { fillHttps, getRepoName } from '@common/utils';
-import { useSession } from 'next-auth/react';
+import { useUserInfo } from '@modules/auth/UserInfoContext';
 import Message from '@modules/submitProject/Misc/Message';
 import { useTranslation } from 'react-i18next';
 
 const FormCommunity = () => {
   const { t } = useTranslation();
-  const { data: session } = useSession();
-  const login = session!.user!.login;
+  const { user } = useUserInfo();
+  const account = user!.account;
 
   const [communityName, setCommunityName] = useState('');
   const [sarUrls, setSarUrls] = useSessionStorage<string[]>(
-    `${login}_software_artifact_repository`,
+    `${account}_software_artifact_repository`,
     []
   );
   const [grUrls, setGrUrls] = useSessionStorage<string[]>(
-    `${login}_governance_repository`,
+    `${account}_governance_repository`,
     []
   );
 
@@ -48,9 +48,7 @@ const FormCommunity = () => {
 
   const handleSubmit = () => {
     const common = {
-      username: session!.user!.login as string,
-      token: session!.accessToken as string,
-      origin: session!.provider as string,
+      origin: user!.provider as string,
     };
     const projectName = communityName || options[0];
     mutate({
