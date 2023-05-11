@@ -41,5 +41,16 @@
   "please_note_that_when_submitted_as_single_repository": "Please note that when submitted as single repository, all analysis dimensions will be derived from single repository standards, which differ from the standards for community.",
   "manually_enter_repository_url": "Switch to manual input",
   "choose_a_repository": "Switch to selecting from {{providerName}}",
-  "submit_success": "Submit success!"
+  "submit_success": "Submit success!",
+  "welcome_to": "Welcome to OSS Compass",
+  "continue_with_github": "Continue with GitHub",
+  "continue_with_gitee": "Continue with Gitee",
+  "by_creating_an_account": "By creating an account, you agree to the",
+  "as_well_as": "as well as",
+  "terms_of_use": " Terms of Use ",
+  "non_active_account_processing_specification": " Non-active Account Processing Specification.",
+  "email_verification_successful": "Email verification successful",
+  "the_email_address": "The email address",
+  "has_been_successfully": "has been successfully bound to your OSS Compass account",
+  "account_settings": "Account Settings"
 }
