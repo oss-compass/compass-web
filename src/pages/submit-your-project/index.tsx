@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
+import useAuthRedirect from '@modules/auth/useAuthRedirect';
 import Header from '@common/components/Header';
 import Banner from '@modules/submitProject/Misc/Banner';
 import SubmitProject from '@modules/submitProject';
@@ -18,6 +19,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 const SubmitYourProject = () => {
   const { t } = useTranslation();
+  useAuthRedirect();
+
   return (
     <>
       <Header />

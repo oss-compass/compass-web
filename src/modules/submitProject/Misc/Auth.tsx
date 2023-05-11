@@ -10,15 +10,9 @@ import { useSignOutMutation } from '@graphql/generated';
 const Auth: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { user, loading } = useSnapshot(userInfoStore);
+  const { user } = useSnapshot(userInfoStore);
   const hasLoggedIn = Boolean(user);
   const mutation = useSignOutMutation(client);
-
-  useEffect(() => {
-    if (!loading && !hasLoggedIn) {
-      router.push('/auth/signin');
-    }
-  }, [loading, hasLoggedIn, router]);
 
   if (!hasLoggedIn) return null;
 

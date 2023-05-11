@@ -22,7 +22,11 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'src/styles')],
   },
   images: {
-    domains: ['portrait.gitee.com', 'avatars.githubusercontent.com'],
+    domains: [
+      'portrait.gitee.com',
+      'foruda.gitee.com',
+      'avatars.githubusercontent.com',
+    ],
   },
   webpack(config) {
     config.module.rules.push({

@@ -1,13 +1,24 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
 import Image from 'next/image';
+import client from '@graphql/client';
+import { useSignOutMutation } from '@graphql/generated';
 import { setCallbackUrl, setAuthProvider } from '@common/utils/cookie';
 
 const LoginCard: React.FC<{ provider: { id: string; name: string } }> = ({
   provider,
 }) => {
+  const router = useRouter();
   const { t } = useTranslation();
+  const mutation = useSignOutMutation(client);
+
+  const redirectTo = React.useMemo(() => {
+    const rt = router.query.redirect_to;
+    return typeof rt === 'string' ? rt : '/settings/profile';
+  }, [router.query.redirect_to]);
+
   if (provider.id === 'github') {
     return (
       <div
@@ -16,9 +27,16 @@ const LoginCard: React.FC<{ provider: { id: string; name: string } }> = ({
           'bg-black'
         )}
         onClick={async () => {
-          setAuthProvider('github');
-          setCallbackUrl('/submit-your-project');
-          window.location.href = '/users/auth/github';
+          mutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                setAuthProvider('github');
+                setCallbackUrl(redirectTo);
+                window.location.href = '/users/auth/github';
+              },
+            }
+          );
         }}
       >
         <div className="mb-7  ">
@@ -44,9 +62,16 @@ const LoginCard: React.FC<{ provider: { id: string; name: string } }> = ({
           'bg-[#d9001a]'
         )}
         onClick={async () => {
-          setAuthProvider('gitee');
-          setCallbackUrl('/submit-your-project');
-          window.location.href = '/users/auth/gitee';
+          mutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                setAuthProvider('gitee');
+                setCallbackUrl(redirectTo);
+                window.location.href = '/users/auth/gitee';
+              },
+            }
+          );
         }}
       >
         <div className="mb-7  ">

@@ -3,6 +3,7 @@ import Header from '@common/components/Header';
 import Banner from '@modules/submitProject/Misc/Banner';
 import SubmitProject from '@modules/submitProject';
 import FormCommunity from '@modules/submitProject/FormCommunity';
+import useAuthRedirect from '@modules/auth/useAuthRedirect';
 import { GetServerSidePropsContext } from 'next';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +19,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 const SubmitYourProject: React.FC = () => {
   const { t } = useTranslation();
+  useAuthRedirect();
   return (
     <>
       <Header />

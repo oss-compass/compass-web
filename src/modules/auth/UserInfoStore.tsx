@@ -1,26 +1,11 @@
-import React, { PropsWithChildren, useEffect } from 'react';
-import client from '@graphql/client';
-import { proxy, useSnapshot } from 'valtio';
-import { useUserinfoQuery, UserinfoQuery } from '@graphql/generated';
+import React from 'react';
+import { proxy } from 'valtio';
+import { UserinfoQuery } from '@graphql/generated';
 import { getAuthProvider } from '@common/utils/cookie';
 
 type LoginBind = NonNullable<
   NonNullable<UserinfoQuery['currentUser']>['loginBinds']
 >[0];
-
-export const UserInfoFetcher: React.FC<PropsWithChildren> = ({ children }) => {
-  const { data, isLoading } = useUserinfoQuery(client, {});
-
-  useEffect(() => {
-    setUserInfo(data);
-  }, [data]);
-
-  useEffect(() => {
-    serUserLoading(isLoading);
-  }, [isLoading]);
-
-  return null;
-};
 
 export const userInfoStore = proxy<{
   loading: boolean;
