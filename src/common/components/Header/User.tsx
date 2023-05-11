@@ -8,8 +8,10 @@ import client from '@graphql/client';
 import { useSnapshot } from 'valtio';
 import { useSignOutMutation } from '@graphql/generated';
 import { resetUserInfo, userInfoStore } from '@modules/auth/UserInfoStore';
+import { useTranslation } from 'react-i18next';
 
 const User = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const mutation = useSignOutMutation(client);
   const { user } = useSnapshot(userInfoStore);
@@ -17,7 +19,7 @@ const User = () => {
   if (!user) {
     return (
       <Link href="/auth/signin">
-        <a className={'ml-6 font-medium text-white'}>登录</a>
+        <a className={'ml-6 font-medium text-white'}>{t('common:signin')}</a>
       </Link>
     );
   }
@@ -28,22 +30,23 @@ const User = () => {
         <Image src={user?.avatarUrl!} width={32} height={32} alt="" />
       </div>
 
-      <div className="absolute top-[100%] -right-4 z-dropdown hidden w-[160px] group-hover:block">
+      <div className="absolute top-[100%] -right-4 z-dropdown hidden w-auto group-hover:block">
         <div className="mt-[2px] bg-black/90 text-white">
           {/*<Link href="/settings/subscribe">*/}
-          {/*  <div className="flex cursor-pointer border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]">*/}
-          {/*    我的订阅*/}
-          {/*  </div>*/}
+          {/*  <a className="flex cursor-pointer border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]">*/}
+          {/*    {t('common:subscribe')}*/}
+          {/*  </a>*/}
           {/*</Link>*/}
 
           <Link href="/settings/profile">
-            <div className="flex cursor-pointer items-center border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]">
-              <AiOutlineUser className="mr-2 text-base" /> 账号设置
-            </div>
+            <a className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]">
+              <AiOutlineUser className="mr-2 text-base" />
+              {t('common:profile_setting')}
+            </a>
           </Link>
 
           <div
-            className="flex cursor-pointer items-center border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]"
+            className="flex cursor-pointer items-center  whitespace-nowrap border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]"
             onClick={() => {
               mutation.mutate(
                 {},
@@ -56,7 +59,7 @@ const User = () => {
               );
             }}
           >
-            <MdOutlineLogout className="mr-2 text-base" /> 退出
+            <MdOutlineLogout className="mr-2 text-base" /> {t('common:signout')}
           </div>
         </div>
       </div>

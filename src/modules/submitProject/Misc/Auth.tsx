@@ -4,7 +4,7 @@ import client from '@graphql/client';
 import { useRouter } from 'next/router';
 import { useSnapshot } from 'valtio';
 import { useTranslation } from 'react-i18next';
-import { userInfoStore } from '@modules/auth/UserInfoStore';
+import { resetUserInfo, userInfoStore } from '@modules/auth/UserInfoStore';
 import { useSignOutMutation } from '@graphql/generated';
 
 const Auth: React.FC = () => {
@@ -54,6 +54,7 @@ const Auth: React.FC = () => {
                 {},
                 {
                   onSuccess: () => {
+                    resetUserInfo();
                     router.push('/auth/signin');
                   },
                 }
