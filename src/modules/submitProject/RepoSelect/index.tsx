@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import {
   defaultPageSize,
@@ -11,6 +10,7 @@ import { useDebounce } from 'ahooks';
 import Input from '@common/components/Input';
 import { CgSpinner } from 'react-icons/cg';
 import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
+import { useUserInfo } from '@modules/auth/UserInfoContext';
 import RepoItem from './RepoItem';
 import Loading from './Loading';
 import { useTranslation } from 'react-i18next';
@@ -20,15 +20,16 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   onConfirm,
 }) => {
   const { t } = useTranslation();
-  const { data: session } = useSession();
-  const username = session?.user?.login!;
-  const provider = session?.provider!;
+  const { user } = useUserInfo();
+  const nickname = user?.nickname!;
+  const account = user?.account!;
+  const provider = user?.provider!;
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, { wait: 180 });
 
   const [org, setOrg] = useState({
-    login: session?.user.login!,
-    avatar_url: session?.user.image!,
+    login: nickname!,
+    avatar_url: user?.avatarUrl!,
     user: true,
   });
 
@@ -37,15 +38,19 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   const [hasMore, setHasMore] = useState(true);
 
   const { isLoading, isFetching, isError, error } = useQuery(
-    ['getRepos', username, page, { org }],
+    ['getRepos', account, page, { org }],
     () => {
       if (org.user) {
-        return getRepos(provider)({ username, page });
+        return getRepos(provider)({ username: account, page });
       }
-      return getOrgRepos(provider)({ username, page, org: org.login! });
+      return getOrgRepos(provider)({
+        username: account,
+        page,
+        org: org.login!,
+      });
     },
     {
-      enabled: Boolean(username),
+      enabled: Boolean(account),
       onSuccess(res) {
         if (res.data) {
           if (res.data.length < defaultPageSize) {
