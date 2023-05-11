@@ -6,6 +6,7 @@ import { appWithTranslation } from 'next-i18next';
 import i18nextConfig from 'next-i18next.config.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { UserInfoFetcher } from '@modules/auth/UserInfoStore';
 import { useAppGA, GAScripts } from '@common/lib/ga';
 import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
 
@@ -69,6 +70,7 @@ function MyApp({
         color="#3A5BEF"
         options={{ showSpinner: false }}
       />
+      <UserInfoFetcher />
       <Component {...pageProps} />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

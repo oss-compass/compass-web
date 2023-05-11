@@ -9,7 +9,8 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
 import Input from '@common/components/Input';
 import { AiOutlineClose } from 'react-icons/ai';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { useSnapshot } from 'valtio';
+import { userInfoStore } from '@modules/auth/UserInfoStore';
 import { getUrlReg } from '../Misc';
 
 interface Props {
@@ -26,7 +27,7 @@ const InputUrlField = forwardRef<InputRef, Props>(
   ({ onClose, onPressEnter }, ref) => {
     const { t } = useTranslation();
     const inputRef = useRef<HTMLInputElement>(null);
-    const { user } = useUserInfo();
+    const { user } = useSnapshot(userInfoStore);
     const provider = user?.provider!;
     const [value, setValue] = useState('');
 

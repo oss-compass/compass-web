@@ -4,7 +4,8 @@ import { AiFillGithub, AiOutlineLink, AiOutlinePlus } from 'react-icons/ai';
 import classnames from 'classnames';
 import { SiGitee } from 'react-icons/si';
 import { useTranslation } from 'react-i18next';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { useSnapshot } from 'valtio';
+import { userInfoStore } from '@modules/auth/UserInfoStore';
 
 export const getIcons = (type: string) => {
   switch (type) {
@@ -25,7 +26,7 @@ const AddSelectPopover: React.FC<{
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }> = ({ className, onSelect, onClick, open, onClose }) => {
   const { t } = useTranslation();
-  const { user } = useUserInfo();
+  const { user } = useSnapshot(userInfoStore);
   const provider = user?.provider!;
   const ref = useRef<HTMLDivElement>(null);
 

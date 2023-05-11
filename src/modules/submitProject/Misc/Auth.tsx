@@ -1,22 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import client from '@graphql/client';
 import { useRouter } from 'next/router';
+import { useSnapshot } from 'valtio';
 import { useTranslation } from 'react-i18next';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { userInfoStore } from '@modules/auth/UserInfoStore';
 import { useSignOutMutation } from '@graphql/generated';
 
 const Auth: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { user } = useUserInfo();
-  const isLogin = Boolean(user);
+  const { user, loading } = useSnapshot(userInfoStore);
+  const hasLoggedIn = Boolean(user);
   const mutation = useSignOutMutation(client);
 
-  if (!isLogin) {
-    router.push('/auth/signin');
-    return null;
-  }
+  useEffect(() => {
+    if (!loading && !hasLoggedIn) {
+      router.push('/auth/signin');
+    }
+  }, [loading, hasLoggedIn, router]);
+
+  if (!hasLoggedIn) return null;
 
   return (
     <>

@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useCreateProjectTaskMutation } from '@graphql/generated';
 import client from '@graphql/client';
 import uniq from 'lodash/uniq';
+import { useSnapshot } from 'valtio';
 import { useSessionStorage } from 'react-use';
 import Select from '@common/components/Select';
 import Button from '@common/components/Button';
@@ -9,14 +10,15 @@ import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';
 import { fillHttps, getRepoName } from '@common/utils';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { userInfoStore } from '@modules/auth/UserInfoStore';
 import Message from '@modules/submitProject/Misc/Message';
 import { useTranslation } from 'react-i18next';
 
 const FormCommunity = () => {
   const { t } = useTranslation();
-  const { user } = useUserInfo();
+  const { user } = useSnapshot(userInfoStore);
   const account = user!.account;
+  const provider = user!.provider;
 
   const [communityName, setCommunityName] = useState('');
   const [sarUrls, setSarUrls] = useSessionStorage<string[]>(
@@ -48,7 +50,7 @@ const FormCommunity = () => {
 
   const handleSubmit = () => {
     const common = {
-      origin: user!.provider as string,
+      origin: provider as string,
     };
     const projectName = communityName || options[0];
     mutate({
