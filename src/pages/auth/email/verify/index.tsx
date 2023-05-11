@@ -1,7 +1,7 @@
 import React from 'react';
 import Copyright from '@modules/auth/components/Copyright';
 import LogoHeader from '@modules/auth/components/LogoHeader';
-import Mail from '@public/images/login/Mail.svg';
+import Mail from '@public/images/login/mail.svg';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
