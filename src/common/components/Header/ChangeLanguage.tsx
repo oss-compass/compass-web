@@ -1,10 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
 import { MdLanguage } from 'react-icons/md';
 import { AiFillCaretDown } from 'react-icons/ai';
-import { getDomain } from '@common/utils/getDomain';
-import getLocale, { USER_LOCALE_KEY } from '@common/utils/getLocale';
+import getLocale from '@common/utils/getLocale';
+import { setCookieLocale } from '@common/utils/cookie';
 import { NoSsr } from '@mui/base';
 
 const languages = [
@@ -23,7 +22,6 @@ const languages = [
 const ChangeLanguage = () => {
   const { reload } = useRouter();
   const local = getLocale();
-  console.log('local', local);
   const language = languages.find((i) => i.id === local);
 
   return (
@@ -41,11 +39,7 @@ const ChangeLanguage = () => {
               key={item.id}
               className="flex cursor-pointer border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]"
               onClick={() => {
-                Cookies.set(USER_LOCALE_KEY, item.id, {
-                  expires: 365,
-                  path: '/',
-                  domain: getDomain(),
-                });
+                setCookieLocale(item.id);
                 reload();
               }}
             >

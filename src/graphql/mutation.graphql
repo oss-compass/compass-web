@@ -1,15 +1,22 @@
-mutation createRepoTask(
-  $username: String!
-  $repoUrls: [String!]!
-  $token: String!
+mutation createRepoTask($repoUrls: [String!]!, $origin: String!) {
+  createRepoTask(input: { repoUrls: $repoUrls, origin: $origin }) {
+    message
+    status
+    prUrl
+    reportUrl
+  }
+}
+
+mutation createProjectTask(
+  $projectName: String!
+  $projectTypes: [ProjectTypeInput!]!
   $origin: String!
 ) {
-  createRepoTask(
+  createProjectTask(
     input: {
-      username: $username
-      repoUrls: $repoUrls
+      projectName: $projectName
+      projectTypes: $projectTypes
       origin: $origin
-      token: $token
     }
   ) {
     message
@@ -19,25 +26,6 @@ mutation createRepoTask(
   }
 }
 
-mutation createProjectTask(
-  $username: String!
-  $projectName: String!
-  $projectTypes: [ProjectTypeInput!]!
-  $token: String!
-  $origin: String!
-) {
-  createProjectTask(
-    input: {
-      username: $username
-      projectName: $projectName
-      projectTypes: $projectTypes
-      origin: $origin
-      token: $token
-    }
-  ) {
-    message
-    status
-    prUrl
-    reportUrl
-  }
+mutation signOut {
+  signOut
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { AiFillGithub, AiOutlineClose } from 'react-icons/ai';
-import useProvider from '@modules/submitProject/Form/useProvider';
 import { SiGitee } from 'react-icons/si';
+import { useUserInfo } from '@modules/auth/UserInfoContext';
 
 export const getIcons = (type: string) => {
   switch (type) {
@@ -18,7 +18,8 @@ const FillItem: React.FC<{ url: string; onDelete: (v: string) => void }> = ({
   url,
   onDelete,
 }) => {
-  const provider = useProvider();
+  const { user } = useUserInfo();
+  const provider = user?.provider!;
 
   return (
     <div className="mb-6 flex max-w-[600px] items-center">

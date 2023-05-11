@@ -6,7 +6,6 @@ import { appWithTranslation } from 'next-i18next';
 import i18nextConfig from 'next-i18next.config.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { SessionProvider } from 'next-auth/react';
 import { useAppGA, GAScripts } from '@common/lib/ga';
 import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
 
@@ -49,32 +48,30 @@ function MyApp({
   }, []);
 
   return (
-    <SessionProvider session={session}>
-      <QueryClientProvider client={queryClient} contextSharing>
-        <Head>
-          <title>OSS Compass</title>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width" />
-          <meta
-            name="keywords"
-            content="Ecosystem Evaluation System,Code Compliance Guarantee,Code Security Guarantee,Robustness,Productivity,Collaboration Development Index,Community,Community Service and Support,"
-          />
-          <meta
-            name="description"
-            content="We help open source projects gain insight into its trends, and getting more value of it."
-          />
-          <link rel="shortcut icon" href="/favicon.ico" />
-        </Head>
-        <GAScripts id={gaTrackingId} />
-        <NextNProgress
-          startPosition={0.15}
-          color="#3A5BEF"
-          options={{ showSpinner: false }}
+    <QueryClientProvider client={queryClient} contextSharing>
+      <Head>
+        <title>OSS Compass</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta
+          name="keywords"
+          content="Ecosystem Evaluation System,Code Compliance Guarantee,Code Security Guarantee,Robustness,Productivity,Collaboration Development Index,Community,Community Service and Support,"
         />
-        <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </SessionProvider>
+        <meta
+          name="description"
+          content="We help open source projects gain insight into its trends, and getting more value of it."
+        />
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <GAScripts id={gaTrackingId} />
+      <NextNProgress
+        startPosition={0.15}
+        color="#3A5BEF"
+        options={{ showSpinner: false }}
+      />
+      <Component {...pageProps} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

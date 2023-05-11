@@ -12,14 +12,16 @@ export const config = {
 };
 
 const proxy = httpProxy.createProxyServer({
-  changeOrigin: true,
-  proxyTimeout: 5 * 1000,
+  autoRewrite: true,
+  changeOrigin: false,
+  proxyTimeout: 100 * 1000,
 });
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log(`proxy - source: ${req.url}  ->  target: ${API_URL}${req.url}`);
   await sleep(500);
   return new Promise((resolve, reject) => {
     proxy.once('error', reject);
