@@ -19,7 +19,7 @@ const FillItem: React.FC<{ url: string; onDelete: (v: string) => void }> = ({
   url,
   onDelete,
 }) => {
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
   const provider = user?.provider!;
 
   return (

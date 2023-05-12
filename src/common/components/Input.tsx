@@ -8,7 +8,6 @@ const Input = forwardRef<
     value?: string;
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
-    defaultValue?: string;
     className?: string;
     placeholder?: string;
     error?: boolean;
@@ -18,7 +17,6 @@ const Input = forwardRef<
   const {
     name,
     className,
-    defaultValue,
     value,
     onChange,
     onBlur,

@@ -14,7 +14,7 @@ const User = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const mutation = useSignOutMutation(client);
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
 
   if (!user) {
     return (

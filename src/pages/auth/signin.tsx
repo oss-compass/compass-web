@@ -51,7 +51,7 @@ const SignIn: React.FC = () => {
 
           <Link href="/docs/privacy-policy/">
             <a target="_blank" className="text-[#3A5BEF]">
-              {t('submit_project:non_active_account_processing_specification')}
+              {t('submit_project:privacy_policy')}
             </a>
           </Link>
         </div>

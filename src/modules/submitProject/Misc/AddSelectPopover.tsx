@@ -26,7 +26,7 @@ const AddSelectPopover: React.FC<{
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }> = ({ className, onSelect, onClick, open, onClose }) => {
   const { t } = useTranslation();
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
   const provider = user?.provider!;
   const ref = useRef<HTMLDivElement>(null);
 

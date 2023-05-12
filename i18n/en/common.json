@@ -50,5 +50,9 @@
   "signin": "Signin",
   "subscribe": "My Subscribe",
   "profile_setting": "Account Settings",
-  "signout": "SignOut"
+  "signout": "SignOut",
+  "btn": {
+    "save": "Save",
+    "cancel": "Cancel"
+  }
 }

@@ -46,7 +46,7 @@ const SelectRepoSource: React.FC<
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;

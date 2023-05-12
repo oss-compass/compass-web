@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import Header from '@common/components/Header';
 import Banner from '@modules/submitProject/Misc/Banner';
 import useAuthRedirect from '@modules/auth/useAuthRedirect';
-import ProfileSetting from '@modules/settings/ProfileSetting';
+import ProfileSetting from '@modules/settings/profile';
 import getLocalesFile from '@common/utils/getLocalesFile';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, [])),
+      ...(await getLocalesFile(req.cookies, ['setting'])),
     },
   };
 };
@@ -18,10 +18,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 const Settings = () => {
   const { t } = useTranslation();
   useAuthRedirect();
+
   return (
     <>
       <Header />
-      <Banner content={'Account Settings'} />
+      <Banner content={t('setting:profile.account_settings')} />
       <ProfileSetting />
     </>
   );

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 const FormCommunity = () => {
   const { t } = useTranslation();
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
   const account = user!.account;
   const provider = user!.provider;
 

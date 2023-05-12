@@ -10,7 +10,7 @@ import { useSignOutMutation } from '@graphql/generated';
 const Auth: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
   const hasLoggedIn = Boolean(user);
   const mutation = useSignOutMutation(client);
 

@@ -49,5 +49,9 @@
   "ago": "前",
   "signin": "登录",
   "profile_setting": "账号设置",
-  "signout": "退出"
+  "signout": "退出",
+  "btn": {
+    "save": "保存",
+    "cancel": "取消"
+  }
 }

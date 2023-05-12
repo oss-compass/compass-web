@@ -21,7 +21,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   onConfirm,
 }) => {
   const { t } = useTranslation();
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;

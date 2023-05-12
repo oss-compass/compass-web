@@ -17,7 +17,7 @@ import { getUrlReg } from '../Misc';
 
 const FormSingleRepo = () => {
   const { t } = useTranslation();
-  const { user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useSnapshot(userInfoStore);
   const provider = user?.provider || 'github';
 
   const [formType, setFormType] = useState<'select' | 'input'>('input');

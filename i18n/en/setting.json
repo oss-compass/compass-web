@@ -1,0 +1,23 @@
+{
+  "profile": {
+    "avatar": "Avatar",
+    "userinfo": "Profile",
+    "account_settings": "Account Settings",
+    "form": {
+      "name": "name",
+      "name_placeholder": "Please enter your name",
+      "email": "email",
+      "email_placeholder": "Please enter your email address",
+      "error_require": "{{field}} is a required field",
+      "error_name_max_len": "nickname cannot exceed {{length}} characters",
+      "error_email_format": "email format is incorrect"
+    },
+    "connected_accounts": "Connected Accounts",
+    "connected": "Connected",
+    "disconnect": "Disconnect",
+    "connect_multiple_accounts_to_your_user_and_sign_in": "Connect multiple accounts to your user and sign in with any of them",
+    "delete_account": "Delete account",
+    "delete_account_btn": "Delete account",
+    "delete_account_warning": " Once you delete your account, there is no going back. Please be certain when taking this action."
+  }
+}

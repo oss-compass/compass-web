@@ -27,7 +27,7 @@ const InputUrlField = forwardRef<InputRef, Props>(
   ({ onClose, onPressEnter }, ref) => {
     const { t } = useTranslation();
     const inputRef = useRef<HTMLInputElement>(null);
-    const { user } = useSnapshot(userInfoStore);
+    const { providerUser: user } = useSnapshot(userInfoStore);
     const provider = user?.provider!;
     const [value, setValue] = useState('');
 
