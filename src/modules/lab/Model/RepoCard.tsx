@@ -45,7 +45,7 @@ const RepoCard: React.FC<{
           )}
         </div>
         <div>
-          <a className="mb-1.5 block">
+          <a className="mb-1 block">
             <div
               className="mb-1 break-words font-bold leading-5 line-clamp-1"
               title={repo.path || ''}
