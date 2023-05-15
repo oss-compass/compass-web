@@ -62,7 +62,7 @@ export const formatRepoName = ({
     showProvider: boolean;
   };
 } => {
-  if (label.indexOf('https://') != -1) {
+  if (label && label.indexOf('https://') != -1) {
     const repoName = getRepoName(label);
     const namespace = getNameSpace(label);
     const provider = getProvider(label);
