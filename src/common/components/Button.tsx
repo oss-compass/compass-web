@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { ReactNode, forwardRef } from 'react';
 import classnames from 'classnames';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
@@ -38,17 +38,22 @@ const buttonVariants = cva(
 
 interface ButtonVariants extends VariantProps<typeof buttonVariants> {}
 
-const Button: React.FC<PropsWithChildren<ButtonProps & ButtonVariants>> = ({
-  children,
-  disabled = false,
-  loading = false,
-  type = 'button',
-  intent,
-  size,
-  className,
-  onClick,
-  ...props
-}) => {
+const Button = forwardRef<
+  HTMLButtonElement,
+  ButtonProps & ButtonVariants & { children?: ReactNode | undefined }
+>((props, ref) => {
+  const {
+    children,
+    disabled = false,
+    loading = false,
+    type = 'button',
+    intent,
+    size,
+    className,
+    onClick,
+    ...restProps
+  } = props;
+
   const cls = classnames(
     buttonVariants({ intent, size }),
     { 'opacity-50 cursor-not-allowed hover:opacity-50': disabled },
@@ -57,6 +62,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps & ButtonVariants>> = ({
 
   return (
     <button
+      ref={ref}
       type={type}
       className={twMerge(cls)}
       onClick={(e) => {
@@ -66,12 +72,14 @@ const Button: React.FC<PropsWithChildren<ButtonProps & ButtonVariants>> = ({
         }
         onClick?.(e);
       }}
-      {...props}
+      {...restProps}
     >
       {loading && <CgSpinner className="mr-1 animate-spin text-xl" />}
       {children}
     </button>
   );
-};
+});
+
+Button.displayName = 'Button';
 
 export default Button;

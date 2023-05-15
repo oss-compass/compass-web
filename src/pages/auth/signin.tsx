@@ -25,13 +25,14 @@ const SignIn: React.FC = () => {
 
   return (
     <div>
+      <LogoHeader />
+
       {error && (
         <h4 className="mt-4 flex items-center justify-center text-base font-medium text-warning">
           <FiAlertCircle className="mr-2 text-xl" /> {error}
         </h4>
       )}
 
-      <LogoHeader />
       <div className="flex flex-col items-center">
         <h1 className="my-12 text-3xl font-bold">
           {t('submit_project:welcome_to')}

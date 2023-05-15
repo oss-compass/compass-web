@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { useCreateProjectTaskMutation } from '@graphql/generated';
 import client from '@graphql/client';
 import uniq from 'lodash/uniq';
-import { useSnapshot } from 'valtio';
 import { useSessionStorage } from 'react-use';
 import Select from '@common/components/Select';
 import Button from '@common/components/Button';
@@ -10,13 +9,13 @@ import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';
 import { fillHttps, getRepoName } from '@common/utils';
-import { userInfoStore } from '@modules/auth/UserInfoStore';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 import Message from '@modules/submitProject/Misc/Message';
 import { useTranslation } from 'react-i18next';
 
 const FormCommunity = () => {
   const { t } = useTranslation();
-  const { providerUser: user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useProviderInfo();
   const account = user!.account;
   const provider = user!.provider;
 

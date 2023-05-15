@@ -10,8 +10,7 @@ import { useDebounce } from 'ahooks';
 import Input from '@common/components/Input';
 import { CgSpinner } from 'react-icons/cg';
 import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
-import { userInfoStore } from '@modules/auth/UserInfoStore';
-import { useSnapshot } from 'valtio';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 import RepoItem from './RepoItem';
 import Loading from './Loading';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +20,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   onConfirm,
 }) => {
   const { t } = useTranslation();
-  const { providerUser: user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useProviderInfo();
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;

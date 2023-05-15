@@ -52,6 +52,7 @@
   "signout": "退出",
   "btn": {
     "save": "保存",
-    "cancel": "取消"
+    "cancel": "取消",
+    "func_disabled": "该功能临时关闭"
   }
 }

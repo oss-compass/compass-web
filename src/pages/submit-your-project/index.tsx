@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
-import useAuthRedirect from '@modules/auth/useAuthRedirect';
+import AuthRequire from '@modules/auth/AuthRequire';
 import Header from '@common/components/Header';
 import Banner from '@modules/submitProject/Misc/Banner';
 import SubmitProject from '@modules/submitProject';
@@ -19,15 +19,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 const SubmitYourProject = () => {
   const { t } = useTranslation();
-  useAuthRedirect();
 
   return (
     <>
       <Header />
       <Banner content={t('submit_project:submit_your_project')} />
-      <SubmitProject>
-        <FormSingleRepo />
-      </SubmitProject>
+      <AuthRequire className="mx-auto w-[1000px] py-10 md:w-full md:px-6">
+        <SubmitProject>
+          <FormSingleRepo />
+        </SubmitProject>
+      </AuthRequire>
     </>
   );
 };

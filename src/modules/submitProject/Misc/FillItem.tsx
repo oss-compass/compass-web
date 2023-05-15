@@ -1,8 +1,7 @@
 import React from 'react';
 import { AiFillGithub, AiOutlineClose } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
-import { useSnapshot } from 'valtio';
-import { userInfoStore } from '@modules/auth/UserInfoStore';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 
 export const getIcons = (type: string) => {
   switch (type) {
@@ -19,7 +18,7 @@ const FillItem: React.FC<{ url: string; onDelete: (v: string) => void }> = ({
   url,
   onDelete,
 }) => {
-  const { providerUser: user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useProviderInfo();
   const provider = user?.provider!;
 
   return (

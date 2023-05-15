@@ -5,16 +5,16 @@ import Image from 'next/image';
 import { AiOutlineUser } from 'react-icons/ai';
 import { MdOutlineLogout } from 'react-icons/md';
 import client from '@graphql/client';
-import { useSnapshot } from 'valtio';
 import { useSignOutMutation } from '@graphql/generated';
-import { resetUserInfo, userInfoStore } from '@modules/auth/UserInfoStore';
+import { resetUserInfo } from '@modules/auth/UserInfoStore';
 import { useTranslation } from 'react-i18next';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 
 const User = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const mutation = useSignOutMutation(client);
-  const { providerUser: user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useProviderInfo();
 
   if (!user) {
     return (

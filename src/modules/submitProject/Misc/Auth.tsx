@@ -1,18 +1,13 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import client from '@graphql/client';
-import { useRouter } from 'next/router';
-import { useSnapshot } from 'valtio';
 import { useTranslation } from 'react-i18next';
-import { resetUserInfo, userInfoStore } from '@modules/auth/UserInfoStore';
-import { useSignOutMutation } from '@graphql/generated';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 
 const Auth: React.FC = () => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const { providerUser: user } = useSnapshot(userInfoStore);
+  const { providerUser: user, loginBinds, toggle } = useProviderInfo();
   const hasLoggedIn = Boolean(user);
-  const mutation = useSignOutMutation(client);
+  const bindLen = loginBinds?.length;
 
   if (!hasLoggedIn) return null;
 
@@ -46,23 +41,17 @@ const Auth: React.FC = () => {
           </div>
         </div>
 
-        <div className="ml-5 flex w-16 items-center">
-          <button
-            className="text-primary"
-            onClick={() => {
-              mutation.mutate(
-                {},
-                {
-                  onSuccess: () => {
-                    resetUserInfo();
-                    router.push('/auth/signin');
-                  },
-                }
-              );
-            }}
-          >
-            {t('submit_project:logout')}
-          </button>
+        <div className="ml-5 flex  items-center">
+          {bindLen && bindLen > 1 ? (
+            <button className="text-primary" onClick={() => toggle()}>
+              {user?.provider === 'gitee'
+                ? t('submit_project:switch_github')
+                : null}
+              {user?.provider === 'github'
+                ? t('submit_project:switch_gitee')
+                : null}
+            </button>
+          ) : null}
         </div>
       </div>
     </>

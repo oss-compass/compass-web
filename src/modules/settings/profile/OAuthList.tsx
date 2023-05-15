@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSnapshot } from 'valtio';
+import { toast } from 'react-hot-toast';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import Button from '@common/components/Button';
 import { userInfoStore, userEvent } from '@modules/auth/UserInfoStore';
@@ -20,22 +21,53 @@ const findBindInfo = (
   return null;
 };
 
-const OAuthList = () => {
+const UnBindBtn = ({ providerId }: { providerId: string }) => {
   const { t } = useTranslation();
   const mutation = useUserUnbindMutation(client);
+
+  return (
+    <Button
+      intent="text"
+      size="sm"
+      loading={mutation.isLoading}
+      className="text-primary"
+      onClick={() => {
+        mutation.mutate(
+          { provider: providerId },
+          {
+            onSuccess: (e) => {
+              if (e?.userUnbind?.status === 'false') {
+                toast.error((t) => <>{e?.userUnbind?.message}</>, {
+                  position: 'top-center',
+                });
+              } else {
+                userInfoStore.event$?.emit(userEvent.REFRESH);
+              }
+            },
+          }
+        );
+      }}
+    >
+      {t('setting:profile.disconnect')}
+    </Button>
+  );
+};
+
+const OAuthList = () => {
+  const { t } = useTranslation();
   const { currentUser } = useSnapshot(userInfoStore);
 
   const providers = [
     {
       name: 'GitHub',
       id: 'github',
-      desc: 'Can be used to submit project after binding',
+      desc: t('setting:profile.can_be_used_to_submit_project_after_binding'),
       icon: <SiGithub className="h-10 w-10" />,
     },
     {
       name: 'Gitee',
       id: 'gitee',
-      desc: 'Can be used to submit project after binding',
+      desc: t('setting:profile.can_be_used_to_submit_project_after_binding'),
       icon: <SiGitee className="h-10 w-10 text-[#c71c27]" />,
     },
   ];
@@ -71,24 +103,7 @@ const OAuthList = () => {
               </div>
               <div>
                 {bindInfo ? (
-                  <Button
-                    intent="text"
-                    size="sm"
-                    loading={mutation.isLoading}
-                    className="text-primary"
-                    onClick={() => {
-                      mutation.mutate(
-                        { provider: provider.id },
-                        {
-                          onSuccess: () => {
-                            userInfoStore.event$?.emit(userEvent.REFRESH);
-                          },
-                        }
-                      );
-                    }}
-                  >
-                    {t('setting:profile.disconnect')}
-                  </Button>
+                  <UnBindBtn providerId={provider.id} />
                 ) : (
                   <Button
                     intent="secondary"

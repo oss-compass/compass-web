@@ -8,8 +8,7 @@ import SelectLike from '@common/components/SelectLike';
 import Input from '@common/components/Input';
 import Button from '@common/components/Button';
 import Message from '@modules/submitProject/Misc/Message';
-import { useSnapshot } from 'valtio';
-import { userInfoStore } from '@modules/auth/UserInfoStore';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 import { fillHttps } from '@common/utils';
 import SwitchToCommunity from './SwitchToCommunity';
 import RepoSelect from '../RepoSelect';
@@ -17,7 +16,7 @@ import { getUrlReg } from '../Misc';
 
 const FormSingleRepo = () => {
   const { t } = useTranslation();
-  const { providerUser: user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useProviderInfo();
   const provider = user?.provider || 'github';
 
   const [formType, setFormType] = useState<'select' | 'input'>('input');

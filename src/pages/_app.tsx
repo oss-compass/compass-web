@@ -3,6 +3,7 @@ import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import App, { AppContext, AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
+import { Toaster } from 'react-hot-toast';
 import i18nextConfig from 'next-i18next.config.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -69,6 +70,17 @@ function MyApp({
         startPosition={0.15}
         color="#3A5BEF"
         options={{ showSpinner: false }}
+      />
+      <Toaster
+        containerStyle={{ top: 100 }}
+        // toastOptions={{
+        //   style: {
+        //     margin: 0,
+        //     padding: 0,
+        //     boxShadow: 'none',
+        //     background: 'transparent',
+        //   },
+        // }}
       />
       <UserInfoFetcher />
       <Component {...pageProps} />

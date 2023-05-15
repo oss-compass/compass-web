@@ -53,6 +53,7 @@
   "signout": "SignOut",
   "btn": {
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "func_disabled": "The feature is temporarily disabled"
   }
 }

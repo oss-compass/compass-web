@@ -4,9 +4,8 @@ import Image from 'next/image';
 import { AiFillCaretDown, AiOutlinePlus } from 'react-icons/ai';
 import { useClickAway, useSessionStorage } from 'react-use';
 import { useQuery } from '@tanstack/react-query';
-import { useSnapshot } from 'valtio';
-import { userInfoStore } from '@modules/auth/UserInfoStore';
 import { getOrganizations } from '@modules/submitProject/api';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 
 const SourceItem: React.FC<{
   className?: string;
@@ -45,8 +44,7 @@ const SelectRepoSource: React.FC<
 > = ({ className, onChange, value }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  const { providerUser: user } = useSnapshot(userInfoStore);
+  const { providerUser: user } = useProviderInfo();
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;

@@ -53,7 +53,7 @@ const DeleteAccount = () => {
             {t('setting:profile.delete_account_warning')}
           </DialogContentText>
         </DialogContent>
-        <DialogActions className="p-6">
+        <DialogActions className="!p-6">
           <Button
             intent="text"
             size="sm"

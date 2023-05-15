@@ -1,9 +1,10 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'react-i18next';
-import useAuthRedirect from '@modules/auth/useAuthRedirect';
+import AuthRequire from '@modules/auth/AuthRequire';
 import Header from '@common/components/Header';
 import Banner from '@modules/submitProject/Misc/Banner';
+import Subscribe from '@modules/settings/subscribe';
 import getLocalesFile from '@common/utils/getLocalesFile';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -14,15 +15,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-const Subscribe = () => {
+const SubscribePage = () => {
   const { t } = useTranslation();
-  useAuthRedirect();
   return (
     <>
       <Header />
-      <Banner content={''} />
+      <Banner content="Subscription" />
+      <AuthRequire className="mx-auto w-[1000px] py-10 md:w-full md:px-6">
+        <Subscribe />
+      </AuthRequire>
     </>
   );
 };
 
-export default Subscribe;
+export default SubscribePage;
