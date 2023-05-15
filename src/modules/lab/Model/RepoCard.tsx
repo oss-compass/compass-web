@@ -38,7 +38,7 @@ const RepoCard: React.FC<{
         }
       }}
     >
-      <div className="px-3 py-3">
+      <div className="px-3 pt-3">
         <div className="absolute top-2 right-3">
           {compareMode && (
             <input checked={select} type="checkbox" onChange={() => {}} />
