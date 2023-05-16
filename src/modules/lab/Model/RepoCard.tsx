@@ -38,14 +38,14 @@ const RepoCard: React.FC<{
         }
       }}
     >
-      <div className="px-3 py-3">
+      <div className="px-3 pt-3">
         <div className="absolute top-2 right-3">
           {compareMode && (
             <input checked={select} type="checkbox" onChange={() => {}} />
           )}
         </div>
         <div>
-          <a className="mb-1.5 block">
+          <a className="mb-1 block">
             <div
               className="mb-1 break-words font-bold leading-5 line-clamp-1"
               title={repo.path || ''}
