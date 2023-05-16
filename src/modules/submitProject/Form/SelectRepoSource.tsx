@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { AiFillCaretDown, AiOutlinePlus } from 'react-icons/ai';
 import { useClickAway, useSessionStorage } from 'react-use';
 import { useQuery } from '@tanstack/react-query';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
 import { getOrganizations } from '@modules/submitProject/api';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 
 const SourceItem: React.FC<{
   className?: string;
@@ -32,7 +32,7 @@ const SourceItem: React.FC<{
 interface Item {
   avatar_url: string;
   login: string;
-  user: boolean;
+  isUser: boolean;
 }
 
 const SelectRepoSource: React.FC<
@@ -44,8 +44,7 @@ const SelectRepoSource: React.FC<
 > = ({ className, onChange, value }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  const { user } = useUserInfo();
+  const { providerUser: user } = useProviderInfo();
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;
@@ -62,7 +61,11 @@ const SelectRepoSource: React.FC<
   const options: Item[] = React.useMemo(() => {
     const items =
       data?.data?.map((item) => {
-        return { login: item.login, avatar_url: item.avatar_url, user: false };
+        return {
+          login: item.login,
+          avatar_url: item.avatar_url,
+          isUser: false,
+        };
       }) || [];
 
     return [
@@ -70,7 +73,7 @@ const SelectRepoSource: React.FC<
       {
         login: nickname,
         avatar_url: avatarUrl!,
-        user: true,
+        isUser: true,
       },
     ];
   }, [data, nickname, avatarUrl]);

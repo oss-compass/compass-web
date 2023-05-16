@@ -10,7 +10,7 @@ import { useDebounce } from 'ahooks';
 import Input from '@common/components/Input';
 import { CgSpinner } from 'react-icons/cg';
 import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 import RepoItem from './RepoItem';
 import Loading from './Loading';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   onConfirm,
 }) => {
   const { t } = useTranslation();
-  const { user } = useUserInfo();
+  const { providerUser: user } = useProviderInfo();
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;
@@ -30,7 +30,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   const [org, setOrg] = useState({
     login: nickname!,
     avatar_url: user?.avatarUrl!,
-    user: true,
+    isUser: true,
   });
 
   const [repoList, setRepoList] = useState<Repos[]>([]);
@@ -40,7 +40,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   const { isLoading, isFetching, isError, error } = useQuery(
     ['getRepos', account, page, { org }],
     () => {
-      if (org.user) {
+      if (org.isUser) {
         return getRepos(provider)({ username: account, page });
       }
       return getOrgRepos(provider)({

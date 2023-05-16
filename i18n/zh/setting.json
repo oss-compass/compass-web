@@ -1,0 +1,28 @@
+{
+  "profile": {
+    "avatar": "头像",
+    "userinfo": "用户信息",
+    "account_settings": "账号设置",
+    "form": {
+      "name": "昵称",
+      "name_placeholder": "请输入昵称",
+      "email": "邮箱",
+      "email_ques_icon": "该电子邮件用于接收项目更新通知",
+      "email_placeholder": "请输入邮箱地址",
+      "error_require": "{{field}}不能为空",
+      "error_name_max_len": "昵称长度不能超过{{length}}",
+      "error_email_format": "邮件格式不正确"
+    },
+    "connected_accounts": "第三方绑定",
+    "connected": "绑定",
+    "disconnect": "解绑",
+    "connect_multiple_accounts_to_your_user_and_sign_in": "绑定第三方账号，即可使用任何一个账户进行登录。",
+    "delete_account": "删除账号",
+    "delete_account_btn": "删除我的账号",
+    "delete_account_warning": "删除账户后，就无法进行撤销。在执行此操作时，请确保您已经仔细考虑过。",
+    "can_be_used_to_submit_project_after_binding": "绑定后可用于提交项目",
+    "verified": "已验证",
+    "unverified_yet": "未验证，",
+    "resend_verification_email": "发送验证邮件"
+  }
+}

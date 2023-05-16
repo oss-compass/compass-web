@@ -9,14 +9,15 @@ import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';
 import { fillHttps, getRepoName } from '@common/utils';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 import Message from '@modules/submitProject/Misc/Message';
 import { useTranslation } from 'react-i18next';
 
 const FormCommunity = () => {
   const { t } = useTranslation();
-  const { user } = useUserInfo();
+  const { providerUser: user } = useProviderInfo();
   const account = user!.account;
+  const provider = user!.provider;
 
   const [communityName, setCommunityName] = useState('');
   const [sarUrls, setSarUrls] = useSessionStorage<string[]>(
@@ -48,7 +49,7 @@ const FormCommunity = () => {
 
   const handleSubmit = () => {
     const common = {
-      origin: user!.provider as string,
+      origin: provider as string,
     };
     const projectName = communityName || options[0];
     mutate({

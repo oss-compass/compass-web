@@ -1,7 +1,7 @@
 import React from 'react';
 import { AiFillGithub, AiOutlineClose } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import useProviderInfo from '@modules/auth/useProviderInfo';
 
 export const getIcons = (type: string) => {
   switch (type) {
@@ -18,7 +18,7 @@ const FillItem: React.FC<{ url: string; onDelete: (v: string) => void }> = ({
   url,
   onDelete,
 }) => {
-  const { user } = useUserInfo();
+  const { providerUser: user } = useProviderInfo();
   const provider = user?.provider!;
 
   return (

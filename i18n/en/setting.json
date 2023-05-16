@@ -1,0 +1,28 @@
+{
+  "profile": {
+    "avatar": "Avatar",
+    "userinfo": "Profile",
+    "account_settings": "Account Settings",
+    "form": {
+      "name": "name",
+      "name_placeholder": "Please enter your name",
+      "email": "email",
+      "email_ques_icon": "The email is used to receive project update notifications.",
+      "email_placeholder": "Please enter your email address",
+      "error_require": "{{field}} is a required field",
+      "error_name_max_len": "nickname cannot exceed {{length}} characters",
+      "error_email_format": "email format is incorrect"
+    },
+    "connected_accounts": "Connected Accounts",
+    "connected": "Connected",
+    "disconnect": "Disconnect",
+    "connect_multiple_accounts_to_your_user_and_sign_in": "Connect multiple accounts to your user and sign in with any of them",
+    "delete_account": "Delete account",
+    "delete_account_btn": "Delete account",
+    "delete_account_warning": " Once you delete your account, there is no going back. Please be certain when taking this action.",
+    "can_be_used_to_submit_project_after_binding": "Can be used to submit project after binding",
+    "verified": "Verified",
+    "unverified_yet": "Unverified yet,",
+    "resend_verification_email": "resend verification email"
+  }
+}
