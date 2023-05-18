@@ -7,7 +7,7 @@ import Button from '@common/components/Button';
 import { userInfoStore, userEvent } from '@modules/auth/UserInfoStore';
 import client from '@graphql/client';
 import { UserinfoQuery, useUserUnbindMutation } from '@graphql/generated';
-import { setCallbackUrl } from '@common/utils/cookie';
+import { cookieSetCallbackUrl } from '@common/utils/cookie';
 
 const findBindInfo = (
   provider: string,
@@ -109,7 +109,7 @@ const OAuthList = () => {
                     intent="secondary"
                     size="sm"
                     onClick={() => {
-                      setCallbackUrl('/settings/profile');
+                      cookieSetCallbackUrl('/settings/profile');
                       window.location.href = `/users/auth/${provider.id}`;
                     }}
                   >

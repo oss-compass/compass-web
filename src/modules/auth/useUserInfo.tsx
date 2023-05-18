@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
-import { useToggle } from 'ahooks';
 import { UserinfoQuery } from '@graphql/generated';
-import { getAuthProvider, setAuthProvider } from '@common/utils/cookie';
+import { cookieGetAuthProvider } from '@common/utils/cookie';
 import { userInfoStore } from '@modules/auth/UserInfoStore';
 import { ReadonlyDeep } from 'type-fest';
 
@@ -40,25 +39,22 @@ function findSpecifyProvider({
   return providerUser || null;
 }
 
-const toggleProviders = ['github', 'gitee'];
-const getAnother = (p?: string) => toggleProviders.filter((i) => i !== p)[0];
-
-const useProviderInfo = () => {
+export const useUserInfo = () => {
   const { currentUser: user } = useSnapshot(userInfoStore);
-
-  const login = getAuthProvider() || 'github';
-  const [provider, { toggle }] = useToggle(login, getAnother(login));
-
-  useEffect(() => {
-    setAuthProvider(provider);
-  }, [provider]);
-
-  const showUser = findSpecifyProvider({
+  const provider = cookieGetAuthProvider();
+  const providerUser = findSpecifyProvider({
     provider: provider,
     loginBinds: user?.loginBinds,
   });
-
-  return { providerUser: showUser, loginBinds: user?.loginBinds, toggle };
+  return { providerUser, loginBinds: user?.loginBinds };
 };
 
-export default useProviderInfo;
+export const useSubmitUser = () => {
+  const { currentUser, submitProvider } = useSnapshot(userInfoStore);
+  const provider = cookieGetAuthProvider();
+  const submitUser = findSpecifyProvider({
+    provider: submitProvider || provider,
+    loginBinds: currentUser?.loginBinds,
+  });
+  return { submitUser, loginBinds: currentUser?.loginBinds };
+};

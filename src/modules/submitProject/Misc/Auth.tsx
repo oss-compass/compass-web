@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 import { useTranslation } from 'react-i18next';
-import useProviderInfo from '@modules/auth/useProviderInfo';
+import { useSubmitUser, userInfoStore } from '@modules/auth';
 
 const Auth: React.FC = () => {
   const { t } = useTranslation();
-  const { providerUser: user, loginBinds, toggle } = useProviderInfo();
+  const { submitUser: user, loginBinds } = useSubmitUser();
   const hasLoggedIn = Boolean(user);
   const bindLen = loginBinds?.length;
 
@@ -43,7 +45,17 @@ const Auth: React.FC = () => {
 
         <div className="ml-5 flex  items-center">
           {bindLen && bindLen > 1 ? (
-            <button className="text-primary" onClick={() => toggle()}>
+            <button
+              className="flex items-center text-sm text-primary"
+              onClick={() => {
+                if (user?.provider === 'github') {
+                  userInfoStore.submitProvider = 'gitee';
+                } else {
+                  userInfoStore.submitProvider = 'github';
+                }
+              }}
+            >
+              <HiOutlineSwitchHorizontal className="mr-1" />
               {user?.provider === 'gitee'
                 ? t('submit_project:switch_github')
                 : null}
@@ -51,7 +63,13 @@ const Auth: React.FC = () => {
                 ? t('submit_project:switch_gitee')
                 : null}
             </button>
-          ) : null}
+          ) : (
+            <Link href="/settings/profile">
+              <a className="text-sm text-primary ">
+                {t('submit_project:bind_other_code_hosting_platforms')}
+              </a>
+            </Link>
+          )}
         </div>
       </div>
     </>

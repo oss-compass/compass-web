@@ -4,7 +4,10 @@ import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
 import client from '@graphql/client';
 import { useSignOutMutation } from '@graphql/generated';
-import { setCallbackUrl, setAuthProvider } from '@common/utils/cookie';
+import {
+  cookieSetCallbackUrl,
+  cookieSetAuthProvider,
+} from '@common/utils/cookie';
 
 const LoginItems: React.FC = () => {
   const router = useRouter();
@@ -25,8 +28,8 @@ const LoginItems: React.FC = () => {
             {},
             {
               onSuccess: () => {
-                setAuthProvider('github');
-                setCallbackUrl(redirectTo);
+                cookieSetAuthProvider('github');
+                cookieSetCallbackUrl(redirectTo);
                 window.location.href = '/users/auth/github';
               },
             }
@@ -49,8 +52,8 @@ const LoginItems: React.FC = () => {
             {},
             {
               onSuccess: () => {
-                setAuthProvider('gitee');
-                setCallbackUrl(redirectTo);
+                cookieSetAuthProvider('gitee');
+                cookieSetCallbackUrl(redirectTo);
                 window.location.href = '/users/auth/gitee';
               },
             }

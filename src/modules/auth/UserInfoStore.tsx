@@ -12,10 +12,12 @@ export type UserEventType = typeof userEvent[keyof typeof userEvent];
 export const userInfoStore = proxy<{
   loading: boolean;
   currentUser: UserinfoQuery['currentUser'] | null;
+  submitProvider: string | null;
   event$: EventEmitter<UserEventType> | null;
 }>({
   loading: true,
   currentUser: null,
+  submitProvider: null,
   event$: null,
 });
 

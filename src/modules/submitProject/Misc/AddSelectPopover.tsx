@@ -4,7 +4,7 @@ import { AiFillGithub, AiOutlineLink, AiOutlinePlus } from 'react-icons/ai';
 import classnames from 'classnames';
 import { SiGitee } from 'react-icons/si';
 import { useTranslation } from 'react-i18next';
-import useProviderInfo from '@modules/auth/useProviderInfo';
+import { useSubmitUser } from '@modules/auth';
 
 export const getIcons = (type: string) => {
   switch (type) {
@@ -25,7 +25,7 @@ const AddSelectPopover: React.FC<{
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }> = ({ className, onSelect, onClick, open, onClose }) => {
   const { t } = useTranslation();
-  const { providerUser: user } = useProviderInfo();
+  const { submitUser: user } = useSubmitUser();
   const provider = user?.provider!;
   const ref = useRef<HTMLDivElement>(null);
 

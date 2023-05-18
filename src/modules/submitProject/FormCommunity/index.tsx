@@ -9,13 +9,13 @@ import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';
 import { fillHttps, getRepoName } from '@common/utils';
-import useProviderInfo from '@modules/auth/useProviderInfo';
+import { useSubmitUser } from '@modules/auth';
 import Message from '@modules/submitProject/Misc/Message';
 import { useTranslation } from 'react-i18next';
 
 const FormCommunity = () => {
   const { t } = useTranslation();
-  const { providerUser: user } = useProviderInfo();
+  const { submitUser: user } = useSubmitUser();
   const account = user!.account;
   const provider = user!.provider;
 

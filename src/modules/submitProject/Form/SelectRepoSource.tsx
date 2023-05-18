@@ -1,11 +1,11 @@
 import React, { PropsWithChildren, useRef, useState } from 'react';
 import classnames from 'classnames';
 import Image from 'next/image';
-import { AiFillCaretDown, AiOutlinePlus } from 'react-icons/ai';
-import { useClickAway, useSessionStorage } from 'react-use';
+import { AiFillCaretDown } from 'react-icons/ai';
+import { useClickAway } from 'react-use';
 import { useQuery } from '@tanstack/react-query';
 import { getOrganizations } from '@modules/submitProject/api';
-import useProviderInfo from '@modules/auth/useProviderInfo';
+import { useSubmitUser } from '@modules/auth';
 
 const SourceItem: React.FC<{
   className?: string;
@@ -44,7 +44,7 @@ const SelectRepoSource: React.FC<
 > = ({ className, onChange, value }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { providerUser: user } = useProviderInfo();
+  const { submitUser: user } = useSubmitUser();
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;

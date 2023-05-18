@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { userInfoStore, userEvent } from '@modules/auth/UserInfoStore';
-import useProviderInfo from '@modules/auth/useProviderInfo';
+import { useUserInfo } from '@modules/auth';
 import { storageSaveResendEmailTime } from '@common/utils/storage';
 import SendVerificationEmail from './SendVerificationEmail';
 import Input from '@common/components/Input';
@@ -22,7 +22,7 @@ interface IFormInput {
 
 const ProfileForm = () => {
   const { t } = useTranslation();
-  const { providerUser } = useProviderInfo();
+  const { providerUser } = useUserInfo();
   const { currentUser } = useSnapshot(userInfoStore);
   const name = currentUser?.name;
   const email = currentUser?.email;

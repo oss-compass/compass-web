@@ -8,13 +8,13 @@ import client from '@graphql/client';
 import { useSignOutMutation } from '@graphql/generated';
 import { resetUserInfo } from '@modules/auth/UserInfoStore';
 import { useTranslation } from 'react-i18next';
-import useProviderInfo from '@modules/auth/useProviderInfo';
+import { useUserInfo } from '@modules/auth';
 
 const User = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const mutation = useSignOutMutation(client);
-  const { providerUser: user } = useProviderInfo();
+  const { providerUser: user } = useUserInfo();
 
   if (!user) {
     return (

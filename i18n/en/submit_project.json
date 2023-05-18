@@ -6,8 +6,8 @@
   "submit_your_project": "Submit your project",
   "single_repository": "Single repository",
   "your_project_hosting_on": "Your project hosting on",
-  "switch_gitee": "switch to Gitee account",
-  "switch_github": "switch to GitHub account",
+  "switch_gitee": "Use Gitee account",
+  "switch_github": "Use GitHub account",
   "select_your_own_repository_on": "Select your own repository on {{providerName}}",
   "type_the_address_of_any_repository": "Type the address of any repository",
   "pick_your_own_repository_on": "Pick your own repository on {{providerName}}",
@@ -40,8 +40,8 @@
   "run_for_a_single_repository": "Run for a single repository?",
   "submit_a_single_repository": "Submit a single repository",
   "please_note_that_when_submitted_as_single_repository": "Please note that when submitted as single repository, all analysis dimensions will be derived from single repository standards, which differ from the standards for community.",
-  "manually_enter_repository_url": "Switch to manual input",
-  "choose_a_repository": "Switch to selecting from {{providerName}}",
+  "manually_enter_repository_url": "manual input",
+  "choose_a_repository": "selecting from {{providerName}}",
   "submit_success": "Submit success!",
   "welcome_to": "Welcome to OSS Compass",
   "continue_with_github": "Continue with GitHub",
@@ -53,5 +53,6 @@
   "email_verification_successful": "Email verification successful",
   "the_email_address": "The email address",
   "has_been_successfully": "has been successfully bound to your OSS Compass account",
-  "account_settings": "Account Settings"
+  "account_settings": "Account Settings",
+  "bind_other_code_hosting_platforms": "Bind other code hosting platforms?"
 }

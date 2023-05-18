@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   defaultPageSize,
@@ -10,7 +10,7 @@ import { useDebounce } from 'ahooks';
 import Input from '@common/components/Input';
 import { CgSpinner } from 'react-icons/cg';
 import SelectRepoSource from '@modules/submitProject/Form/SelectRepoSource';
-import useProviderInfo from '@modules/auth/useProviderInfo';
+import { useSubmitUser } from '@modules/auth';
 import RepoItem from './RepoItem';
 import Loading from './Loading';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
   onConfirm,
 }) => {
   const { t } = useTranslation();
-  const { providerUser: user } = useProviderInfo();
+  const { submitUser: user } = useSubmitUser();
   const nickname = user?.nickname!;
   const account = user?.account!;
   const provider = user?.provider!;
