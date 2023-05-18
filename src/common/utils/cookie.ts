@@ -10,7 +10,7 @@ export const cookieKeys = {
 // ------------------------------auth callback url-----------------------------------
 const inMinutes = 1 / (24 * 60);
 
-export const setCallbackUrl = (path: string) => {
+export const cookieSetCallbackUrl = (path: string) => {
   jsCookie.set(cookieKeys.AUTH_CALLBACK_URL, path, {
     expires: 5 * inMinutes,
     path: '/',
@@ -19,7 +19,7 @@ export const setCallbackUrl = (path: string) => {
 };
 
 // -----------------------------auth provider------------------------------------
-export const setAuthProvider = (val: string) => {
+export const cookieSetAuthProvider = (val: string) => {
   jsCookie.set(cookieKeys.AUTH_PROVIDER, val, {
     expires: 365,
     path: '/',
@@ -27,12 +27,12 @@ export const setAuthProvider = (val: string) => {
   });
 };
 
-export const getAuthProvider = () => {
+export const cookieGetAuthProvider = () => {
   return jsCookie.get(cookieKeys.AUTH_PROVIDER);
 };
 
 // -----------------------------locale------------------------------------
-export const setCookieLocale = (local: string) => {
+export const cookieSetLocale = (local: string) => {
   jsCookie.set(cookieKeys.USER_LOCALE_KEY, local, {
     expires: 365,
     path: '/',
@@ -40,6 +40,6 @@ export const setCookieLocale = (local: string) => {
   });
 };
 
-export const getCookieLocale = () => {
+export const cookieGetLocale = () => {
   return jsCookie.get(cookieKeys.USER_LOCALE_KEY);
 };

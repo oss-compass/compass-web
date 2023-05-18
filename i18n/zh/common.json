@@ -46,5 +46,17 @@
   },
   "next": "下一个",
   "know_more": "了解更多",
-  "ago": "前"
+  "ago": "前",
+  "signin": "登录",
+  "profile_setting": "账号设置",
+  "signout": "退出",
+  "btn": {
+    "save": "保存",
+    "cancel": "取消",
+    "func_disabled": "该功能临时关闭"
+  },
+  "toast": {
+    "modification_successful": "修改成功",
+    "modification_failed": "修改失败"
+  }
 }

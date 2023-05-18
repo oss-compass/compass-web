@@ -8,7 +8,7 @@ import SelectLike from '@common/components/SelectLike';
 import Input from '@common/components/Input';
 import Button from '@common/components/Button';
 import Message from '@modules/submitProject/Misc/Message';
-import { useUserInfo } from '@modules/auth/UserInfoContext';
+import { useSubmitUser } from '@modules/auth';
 import { fillHttps } from '@common/utils';
 import SwitchToCommunity from './SwitchToCommunity';
 import RepoSelect from '../RepoSelect';
@@ -16,7 +16,7 @@ import { getUrlReg } from '../Misc';
 
 const FormSingleRepo = () => {
   const { t } = useTranslation();
-  const { user } = useUserInfo();
+  const { submitUser: user } = useSubmitUser();
   const provider = user?.provider || 'github';
 
   const [formType, setFormType] = useState<'select' | 'input'>('input');
@@ -47,7 +47,7 @@ const FormSingleRepo = () => {
   const reportUrl = data?.createRepoTask?.reportUrl;
 
   const onSubmit: SubmitHandler<{ url?: string }> = (data) => {
-    const common = { origin: user?.provider as string };
+    const common = { origin: provider };
     const urls = [data.url, selectVal].map(fillHttps).filter(Boolean);
     mutate({ ...common, repoUrls: urls });
   };
@@ -176,6 +176,7 @@ const FormSingleRepo = () => {
         bodyClass={
           'w-[640px] md:w-full h-[600px] bg-white border-2 border-black drop-shadow-2xl'
         }
+        destroyOnClose
         onClose={() => {
           setRepoSelectVisible(false);
         }}

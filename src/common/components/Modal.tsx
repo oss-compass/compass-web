@@ -6,12 +6,14 @@ const Modal: React.FC<
     visible: boolean;
     onClose: () => void;
     bodyClass?: string;
+    destroyOnClose?: boolean;
   }>
 > = ({
   visible,
   onClose,
   children,
   bodyClass = 'h-[500px] w-[500px]  bg-white',
+  destroyOnClose = false,
 }) => {
   const showed = useRef(false);
 
@@ -19,7 +21,8 @@ const Modal: React.FC<
     if (visible) showed.current = true;
   }, [visible]);
 
-  const isRenderChildren = visible || showed.current;
+  const noRenderShowed = visible || showed.current;
+  const isRenderChildren = destroyOnClose ? visible : noRenderShowed;
 
   return (
     <div
@@ -37,7 +40,7 @@ const Modal: React.FC<
           bodyClass
         )}
       >
-        {isRenderChildren && children}
+        {isRenderChildren ? children : null}
       </div>
     </div>
   );

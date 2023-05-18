@@ -1,5 +1,9 @@
 query userinfo {
   currentUser {
+    id
+    name
+    email
+    emailVerified
     loginBinds {
       account
       avatarUrl
@@ -373,6 +377,7 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
   #   }
   # }
 }
+
 query labMetric(
   $label: String!
   $level: String = "repo"
@@ -404,6 +409,7 @@ query labMetric(
     type
   }
 }
+
 fragment metricStat on MetricStat {
   mean
   median

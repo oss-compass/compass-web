@@ -8,9 +8,8 @@ const Input = forwardRef<
     value?: string;
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
-    defaultValue?: string;
     className?: string;
-    placeholder: string;
+    placeholder?: string;
     error?: boolean;
     disabled?: boolean;
   }
@@ -18,7 +17,6 @@ const Input = forwardRef<
   const {
     name,
     className,
-    defaultValue,
     value,
     onChange,
     onBlur,
@@ -42,7 +40,7 @@ const Input = forwardRef<
         disabled={disabled}
         className={classnames(
           className,
-          'daisy-input-bordered daisy-input h-12 flex-1 border-2  px-4 text-base outline-none',
+          'daisy-input-bordered daisy-input h-12 w-full flex-1 border-2  px-4 text-base outline-none',
           [error ? 'border-red-500' : 'border-black']
         )}
       />

@@ -26,6 +26,31 @@ mutation createProjectTask(
   }
 }
 
+mutation modifyUser($name: String!, $email: String!) {
+  modifyUser(input: { name: $name, email: $email }) {
+    message
+    status
+  }
+}
+
+mutation userUnbind($provider: String!) {
+  userUnbind(input: { provider: $provider }) {
+    message
+    status
+  }
+}
+
+mutation sendEmailVerify {
+  sendEmailVerify(input: {}) {
+    message
+    status
+  }
+}
+
 mutation signOut {
   signOut
+}
+
+mutation deleteUser {
+  destroyUser
 }

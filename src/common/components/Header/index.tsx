@@ -8,6 +8,7 @@ import MobileHeader from './MobileHeader';
 import CommunityDropdown from './CommunityDropdown';
 import ChangeLanguage from './ChangeLanguage';
 import SubmitYouProject from './SubmitYouProject';
+import User from './User';
 
 const Header: React.FC<{
   sticky?: boolean;
@@ -60,6 +61,7 @@ const Header: React.FC<{
           <div className="flex h-full items-center">
             <ChangeLanguage />
             <SubmitYouProject />
+            <User />
           </div>
         </div>
       </div>

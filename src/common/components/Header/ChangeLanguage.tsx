@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { MdLanguage } from 'react-icons/md';
 import { AiFillCaretDown } from 'react-icons/ai';
 import getLocale from '@common/utils/getLocale';
-import { setCookieLocale } from '@common/utils/cookie';
+import { cookieSetLocale } from '@common/utils/cookie';
 import { NoSsr } from '@mui/base';
 
 const languages = [
@@ -39,7 +39,7 @@ const ChangeLanguage = () => {
               key={item.id}
               className="flex cursor-pointer border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]"
               onClick={() => {
-                setCookieLocale(item.id);
+                cookieSetLocale(item.id);
                 reload();
               }}
             >

@@ -2,9 +2,10 @@ import type { NextApiRequestCookies } from 'next/dist/server/api-utils';
 import { navigatorLangLookup } from '@common/utils/languageDetector';
 import {
   cookieKeys,
-  setCookieLocale,
-  getCookieLocale,
+  cookieSetLocale,
+  cookieGetLocale,
 } from '@common/utils/cookie';
+
 const { USER_LOCALE_KEY } = cookieKeys;
 
 type TypeLang = 'zh' | 'en';
@@ -20,7 +21,7 @@ function getLocale(reqCookies?: NextApiRequestCookies | undefined): TypeLang {
     const language = reqCookies[USER_LOCALE_KEY] as TypeLang;
     return locales.includes(language) ? language : 'en';
   } else if (typeof reqCookies === 'undefined') {
-    return (getCookieLocale() as TypeLang) || 'en';
+    return (cookieGetLocale() as TypeLang) || 'en';
   }
   return 'en';
 }
@@ -36,9 +37,9 @@ export function getLang(found: string[]) {
 export function browserLanguageDetectorAndReload() {
   const found = navigatorLangLookup();
 
-  if (found && !getCookieLocale()) {
+  if (found && !cookieGetLocale()) {
     const lang = getLang(found);
-    setCookieLocale(lang);
+    cookieSetLocale(lang);
     window.location.reload();
   }
 }
