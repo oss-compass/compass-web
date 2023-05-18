@@ -23,6 +23,8 @@
     "can_be_used_to_submit_project_after_binding": "绑定后可用于提交项目",
     "verified": "已验证",
     "unverified_yet": "未验证，",
+    "email_sent": "验证邮件已发送，",
+    "email_sent_later": "{{sec}} 秒后可再次发送",
     "resend_verification_email": "发送验证邮件"
   }
 }

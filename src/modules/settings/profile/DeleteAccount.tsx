@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import router from 'next/router';
 import client from '@graphql/client';
 import { useTranslation } from 'next-i18next';
 import { useDeleteUserMutation } from '@graphql/generated';

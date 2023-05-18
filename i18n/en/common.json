@@ -55,5 +55,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "func_disabled": "The feature is temporarily disabled"
+  },
+  "toast": {
+    "modification_successful": "Modification Successful",
+    "modification_failed": "Modification Failed"
   }
 }

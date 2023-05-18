@@ -54,5 +54,9 @@
     "save": "保存",
     "cancel": "取消",
     "func_disabled": "该功能临时关闭"
+  },
+  "toast": {
+    "modification_successful": "修改成功",
+    "modification_failed": "修改失败"
   }
 }

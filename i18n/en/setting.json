@@ -23,6 +23,8 @@
     "can_be_used_to_submit_project_after_binding": "Can be used to submit project after binding",
     "verified": "Verified",
     "unverified_yet": "Unverified yet,",
+    "email_sent": "Verification email has been sent，",
+    "email_sent_later": "Send again after {{sec}} seconds",
     "resend_verification_email": "resend verification email"
   }
 }
