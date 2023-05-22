@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { BsFillFileImageFill } from 'react-icons/bs';
 import { useBindWechatLinkMutation } from '@graphql/generated';
 import client from '@graphql/client';
@@ -19,7 +19,7 @@ const WechatCodeImage = () => {
   }, [mutate]);
 
   const ShowImg = url ? (
-    <QRCodeSVG value={url} className="h-full w-full" />
+    <QRCodeCanvas value={url} className="h-full w-full" />
   ) : (
     <ErrorHolder />
   );
