@@ -9,6 +9,21 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Grow from '@mui/material/Grow';
+import { TransitionProps } from '@mui/material/transitions';
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return (
+    <Grow ref={ref} {...props}>
+      {props.children}
+    </Grow>
+  );
+});
 
 const DeleteAccount = () => {
   const { t } = useTranslation();
@@ -37,6 +52,7 @@ const DeleteAccount = () => {
       <Dialog
         className="py-6"
         open={open}
+        TransitionComponent={Transition}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

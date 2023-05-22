@@ -141,7 +141,7 @@ const ProfileForm = () => {
                 error={Boolean(errors['email'])}
               />
 
-              {currentUser?.emailVerified && !changedEmail ? (
+              {email && currentUser?.emailVerified && !changedEmail ? (
                 <div className="absolute right-2 top-3.5 rounded-lg bg-[#E6FDCD] px-2 text-sm text-[#00B400]">
                   {t('setting:profile.verified')}
                 </div>

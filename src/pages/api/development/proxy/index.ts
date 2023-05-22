@@ -13,7 +13,7 @@ export const config = {
 
 const proxy = httpProxy.createProxyServer({
   autoRewrite: true,
-  changeOrigin: false,
+  changeOrigin: true,
   proxyTimeout: 100 * 1000,
 });
 

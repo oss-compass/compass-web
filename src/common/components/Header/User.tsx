@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { AiOutlineUser } from 'react-icons/ai';
 import { MdOutlineLogout } from 'react-icons/md';
+import { FiBookmark } from 'react-icons/fi';
 import client from '@graphql/client';
 import { useSignOutMutation } from '@graphql/generated';
 import { resetUserInfo } from '@modules/auth/UserInfoStore';
@@ -32,11 +33,12 @@ const User = () => {
 
       <div className="absolute top-[100%] -right-4 z-dropdown hidden w-auto group-hover:block">
         <div className="mt-[2px] bg-black/90 text-white">
-          {/*<Link href="/settings/subscribe">*/}
-          {/*  <a className="flex cursor-pointer border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]">*/}
-          {/*    {t('common:subscribe')}*/}
-          {/*  </a>*/}
-          {/*</Link>*/}
+          <Link href="/settings/subscribe">
+            <a className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]">
+              <FiBookmark className="mr-2 text-base" />
+              {t('common:subscribe')}
+            </a>
+          </Link>
 
           <Link href="/settings/profile">
             <a className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]">

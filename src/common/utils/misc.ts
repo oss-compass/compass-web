@@ -5,3 +5,7 @@ export function sleep(time: number): Promise<void> {
     }, time);
   });
 }
+
+export function isWechat() {
+  return /MicroMessenger/i.test(window.navigator.userAgent);
+}

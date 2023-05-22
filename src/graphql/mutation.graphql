@@ -54,3 +54,10 @@ mutation signOut {
 mutation deleteUser {
   destroyUser
 }
+
+mutation bindWechatLink {
+  bindWechatLink(input: {}) {
+    url
+    message
+  }
+}
