@@ -61,3 +61,17 @@ mutation bindWechatLink {
     message
   }
 }
+
+mutation createSubscription($label: String!, $level: String!) {
+  createSubscription(input: { label: $label, level: $level }) {
+    message
+    status
+  }
+}
+
+mutation cancelSubscription($label: String!, $level: String!) {
+  cancelSubscription(input: { label: $label, level: $level }) {
+    message
+    status
+  }
+}

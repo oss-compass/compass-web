@@ -20,7 +20,7 @@ const SubscribePage = () => {
   return (
     <>
       <Header />
-      <Banner content="Subscription" />
+      <Banner content={t('setting:subscriptions.title')} />
       <AuthRequire className="mx-auto w-[1000px] py-10 md:w-full md:px-6">
         <Subscribe />
       </AuthRequire>

@@ -42,27 +42,33 @@ const Pagination: React.FC<{
             break;
           case 'previous':
             children = (
-              <div
+              <button
                 {...item}
-                className="mx-1 cursor-pointer rounded px-2 py-1 text-slate-600 hover:bg-blue-50"
+                className={classnames(
+                  'mx-1 h-[25px] cursor-pointer rounded px-2 text-slate-600 hover:bg-blue-50',
+                  { 'cursor-not-allowed opacity-50 ': item.disabled }
+                )}
               >
                 <AiOutlineLeft />
-              </div>
+              </button>
             );
             break;
           case 'next':
             children = (
-              <div
+              <button
                 {...item}
-                className="mx-1  cursor-pointer rounded px-2 py-1 text-slate-600 hover:bg-blue-50"
+                className={classnames(
+                  'mx-1 h-[25px] cursor-pointer rounded px-2  text-slate-600 hover:bg-blue-50',
+                  { 'cursor-not-allowed opacity-50 ': item.disabled }
+                )}
               >
                 <AiOutlineRight />
-              </div>
+              </button>
             );
             break;
           default:
             children = (
-              <button type="button" className="" {...item}>
+              <button type="button" className="h-[25px]" {...item}>
                 {type}
               </button>
             );

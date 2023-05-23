@@ -33,6 +33,7 @@
   "subscriptions": {
     "title": "My subscriptions",
     "submit_a_project": "Submit a project",
-    "unsubscribe": "Unsubscribe"
+    "unsubscribe": "Unsubscribe",
+    "empty_list": "No subscription data"
   }
 }

@@ -171,11 +171,12 @@ const NewDatePicker = () => {
   const [dropdownOpen, toggleDropdown] = useToggle(false);
   const [custom, toggleCustom] = useToggle(false);
   const ref = useRef(null);
+
   useClickAway(ref, () => {
     toggleDropdown(false);
-    console.log(rangeTags.includes(range));
     toggleCustom(!rangeTags.includes(range));
   });
+
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
 

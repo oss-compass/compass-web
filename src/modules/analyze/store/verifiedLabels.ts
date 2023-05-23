@@ -3,7 +3,7 @@ import { Level } from '../constant';
 
 type Label = { label: string; level: Level };
 
-export const verifiedLabels = proxy<{ values: Label[] }>({
+export const verifiedLabels = proxy<{ values: Label[] | [] }>({
   values: [],
 });
 

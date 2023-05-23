@@ -13,6 +13,31 @@ query userinfo {
   }
 }
 
+query subscriptions($page: Int!, $per: Int!) {
+  currentUser {
+    subscriptions(page: $page, per: $per) {
+      count
+      page
+      totalPage
+      items {
+        count
+        id
+        label
+        level
+        status
+        statusUpdatedAt
+      }
+    }
+  }
+}
+
+query subscriptionCount($label: String!, $level: String!) {
+  subjectSubscriptionCount(label: $label, level: $level) {
+    count
+    subscribed
+  }
+}
+
 query status($label: String!) {
   analysisStatus(label: $label)
 }

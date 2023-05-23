@@ -24,6 +24,8 @@
   "search_community_input_placeholder": "请输入社区名",
   "explore_other_projects": "探索其他项目",
   "the_current_project_is_under_analysis_please_visit": "正在分析中，请稍后访问...",
+  "subscribe": "订阅",
+  "subscribed": "已订阅",
   "score_conversion": {
     "on_point": "[0, 1]: 模型的绝对分值",
     "hundred_mark": "[0, 100]: 基于[0, 1]的分布结果"
