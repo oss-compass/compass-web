@@ -165,7 +165,7 @@ const DateRangePicker: React.FC<{
   );
 };
 
-const MobileDatePicker = () => {
+const NewDatePicker = () => {
   const { t } = useTranslation();
   const i18RangeTag = useI18RangeTag();
   const [dropdownOpen, toggleDropdown] = useToggle(false);
@@ -253,4 +253,4 @@ const MobileDatePicker = () => {
   );
 };
 
-export default MobileDatePicker;
+export default NewDatePicker;

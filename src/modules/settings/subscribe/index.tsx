@@ -1,33 +1,36 @@
 import React from 'react';
-import { SiGitee, SiGithub } from 'react-icons/si';
+import router from 'next/router';
+import { useTranslation } from 'react-i18next';
 import Center from '@common/components/Layout/Center';
 import Button from '@common/components/Button';
+import Pagination from '@common/components/Pagination';
+import SubscribeItem from './SubscribeItem';
 
 const Subscribe = () => {
+  const { t } = useTranslation();
   return (
     <Center widthClassName="w-[1000px] pb-20 lg:px-6">
       <div className="flex justify-between pb-3 pt-10">
-        <div className="text-xl font-bold">My subscriptions</div>
+        <div className="text-xl font-bold">
+          {t('setting:subscriptions.title')}
+        </div>
         <div>
-          <Button size="sm" intent="secondary" className="">
-            Submit a project
+          <Button
+            size="sm"
+            intent="secondary"
+            onClick={() => {
+              router.push('/submit-your-project');
+            }}
+          >
+            {t('setting:subscriptions.submit_a_project')}
           </Button>
         </div>
       </div>
 
-      <div className="flex border-b py-3">
-        <div>
-          <div>
-            <SiGithub />
-          </div>
-          <div></div>
-        </div>
-        <div className="flex flex-1 justify-end">
-          <div className="w-[200px] text-sm text-[#868690]">
-            Updated on 2023-04-28
-          </div>
-        </div>
-        <div>Unsubscribe</div>
+      <SubscribeItem />
+
+      <div className="py-6">
+        <Pagination page={1} pageTotal={10} onChange={() => {}} />
       </div>
     </Center>
   );

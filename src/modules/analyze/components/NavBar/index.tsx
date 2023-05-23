@@ -2,7 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import { NoSsr } from '@mui/base';
 import LabelItems from './LabelItems';
-import MobileDatePicker from './MobileDatePicker';
+import NewDatePicker from './NewDatePicker';
+import SubscribeButton from './SubscribeButton';
 import NavbarSetting from './NavbarSetting';
 
 const NavBar = () => {
@@ -16,7 +17,8 @@ const NavBar = () => {
       >
         <LabelItems />
         <div className="flex items-center text-[#585858]">
-          <MobileDatePicker />
+          <NewDatePicker />
+          <SubscribeButton />
           <NavbarSetting />
         </div>
       </nav>

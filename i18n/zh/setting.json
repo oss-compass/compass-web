@@ -29,5 +29,10 @@
     "email_sent": "验证邮件已发送，",
     "email_sent_later": "{{sec}} 秒后可再次发送",
     "resend_verification_email": "发送验证邮件"
+  },
+  "subscriptions": {
+    "title": "我的订阅",
+    "submit_a_project": "提交项目",
+    "unsubscribe": "取消订阅"
   }
 }

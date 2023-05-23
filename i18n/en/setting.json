@@ -29,5 +29,10 @@
     "email_sent": "Verification email has been sent，",
     "email_sent_later": "Send again after {{sec}} seconds",
     "resend_verification_email": "resend verification email"
+  },
+  "subscriptions": {
+    "title": "My subscriptions",
+    "submit_a_project": "Submit a project",
+    "unsubscribe": "Unsubscribe"
   }
 }
