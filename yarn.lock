@@ -12346,11 +12346,6 @@ pvutils@^1.1.3:
   resolved "https://registry.npmmirror.com/pvutils/-/pvutils-1.1.3.tgz"
   integrity sha512-pMpnA0qRdFp32b1sJl1wOJNxZLQ2cbQx+k6tjNtZ8CpvVhNqEPRgivZ2WOUev2YMajecdH7ctUPDvEe87nariQ==
 
-qrcode.react@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmmirror.com/qrcode.react/-/qrcode.react-3.1.0.tgz#5c91ddc0340f768316fbdb8fff2765134c2aecd8"
-  integrity sha512-oyF+Urr3oAMUG/OiOuONL3HXM+53wvuH3mtIWQrYmsXoAq0DkvZp2RYUWFSMFtbdOpuS++9v+WAkzNVkMlNW6Q==
-
 qrcode@^1.5.1:
   version "1.5.1"
   resolved "https://registry.npmmirror.com/qrcode/-/qrcode-1.5.1.tgz"

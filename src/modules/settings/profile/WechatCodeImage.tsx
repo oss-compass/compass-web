@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
+import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { toDataURL } from 'qrcode';
 import { BsFillFileImageFill } from 'react-icons/bs';
 import { useBindWechatLinkMutation } from '@graphql/generated';
 import client from '@graphql/client';
@@ -11,27 +12,42 @@ const ErrorHolder = () => (
 );
 
 const WechatCodeImage = () => {
-  const { mutate, isLoading, data } = useBindWechatLinkMutation(client);
-  const url = data?.bindWechatLink?.url || '';
+  const [imgUrl, setImageUrl] = useState('');
+  const { mutate, isLoading } = useBindWechatLinkMutation(client, {
+    onSuccess: (res) => {
+      const url = res?.bindWechatLink?.url || '';
+      if (url) {
+        toDataURL(url, { width: 500, margin: 0 }, function (error, dataUrl) {
+          if (error) {
+            console.error(error);
+            return;
+          }
+          setImageUrl(dataUrl);
+        });
+      }
+    },
+  });
 
   useEffect(() => {
     mutate({});
   }, [mutate]);
 
-  const ShowImg = url ? (
-    <QRCodeCanvas value={url} className="h-full w-full" />
+  const ShowImg = imgUrl ? (
+    <Image src={imgUrl} layout="fill" alt="" />
   ) : (
     <ErrorHolder />
   );
 
   return (
-    <div className=" h-[250px] w-[250px] ">
-      {isLoading ? (
-        <div className="h-full w-full animate-pulse bg-slate-200" />
-      ) : (
-        ShowImg
-      )}
-    </div>
+    <>
+      <div className="relative h-[250px] w-[250px] ">
+        {isLoading ? (
+          <div className="h-full w-full animate-pulse bg-slate-200" />
+        ) : (
+          ShowImg
+        )}
+      </div>
+    </>
   );
 };
 

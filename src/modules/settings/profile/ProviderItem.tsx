@@ -68,16 +68,16 @@ export const ProviderItem = ({ provider }: { provider: Provider }) => {
   const bindInfo = findBindInfo(provider.id, currentUser);
 
   const [wxPopOpen, setWxPopOpen] = React.useState(false);
-
   const handleClose = () => {
     setWxPopOpen(false);
   };
+  const inWechatBrowser = isWechat();
 
   useEffect(() => {
-    if (isWechat() && !bindInfo) {
+    if (inWechatBrowser && !bindInfo) {
       setWxPopOpen(true);
     }
-  }, [bindInfo]);
+  }, [bindInfo, inWechatBrowser]);
 
   // hidden wechat in oss-compass.org
   if (
@@ -128,10 +128,21 @@ export const ProviderItem = ({ provider }: { provider: Provider }) => {
 
       <Dialog
         open={wxPopOpen}
-        dialogTitle={t('setting:profile.wechat_connect')}
+        dialogTitle={
+          <div>
+            <h1>{t('setting:profile.wechat_connect')}</h1>
+          </div>
+        }
         dialogContent={
-          <div className="px-6 pt-5">
-            <WechatCodeImage />
+          <div>
+            <div className="px-6 pt-4">
+              <WechatCodeImage />
+            </div>
+            {inWechatBrowser ? (
+              <p className="pt-4 text-center text-sm text-gray-500">
+                长按二维码绑定
+              </p>
+            ) : null}
           </div>
         }
         dialogActions={
