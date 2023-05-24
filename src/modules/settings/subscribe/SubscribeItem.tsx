@@ -1,5 +1,4 @@
 import React from 'react';
-import router from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import { Subscription } from '@graphql/generated';
@@ -8,6 +7,7 @@ import Button from '@common/components/Button';
 import { useCancelSubscriptionMutation } from '@graphql/generated';
 import { getRepoName, getProvider, getNameSpace } from '@common/utils/url';
 import { formatISO } from '@common/utils/time';
+import { Level } from '@modules/analyze/constant';
 
 const ItemStatus = ({ item }: { item: Subscription }) => {
   const { t } = useTranslation();
@@ -28,6 +28,39 @@ const ItemStatus = ({ item }: { item: Subscription }) => {
   );
 };
 
+const RepoItem = ({ item }: { item: Subscription }) => {
+  const provider = getProvider(item.label);
+  const repo = getRepoName(item.label);
+  const ns = getNameSpace(item.label);
+  return (
+    <>
+      <div className="pr-2 pt-1">
+        {provider === 'github' ? (
+          <SiGithub />
+        ) : (
+          <SiGitee className="text-[#c71c27]" />
+        )}
+      </div>
+      <div>
+        <div className="text-sm font-bold">{repo}</div>
+        <div className="text-xs text-secondary">{ns}</div>
+      </div>
+    </>
+  );
+};
+
+const CommunityItem = ({ item }: { item: Subscription }) => {
+  return (
+    <>
+      <div className=""></div>
+      <div>
+        <div className="text-base font-bold">{item.label}</div>
+        <div className="text-xs text-secondary">{item.level}</div>
+      </div>
+    </>
+  );
+};
+
 const SubscribeItem = ({
   item,
   onRefresh,
@@ -36,10 +69,6 @@ const SubscribeItem = ({
   onRefresh: () => void;
 }) => {
   const { t } = useTranslation();
-
-  const provider = getProvider(item.label);
-  const repo = getRepoName(item.label);
-  const ns = getNameSpace(item.label);
 
   const Cancel = useCancelSubscriptionMutation(client, {
     onSuccess: (res) => {
@@ -50,17 +79,11 @@ const SubscribeItem = ({
   return (
     <div className="flex items-center border-b py-3">
       <div className="flex">
-        <div className="pr-2 pt-1">
-          {provider === 'github' ? (
-            <SiGithub />
-          ) : (
-            <SiGitee className="text-[#c71c27]" />
-          )}
-        </div>
-        <div>
-          <div className="text-sm font-bold">{repo}</div>
-          <div className="text-xs text-secondary">{ns}</div>
-        </div>
+        {item.level === Level.REPO ? (
+          <RepoItem item={item} />
+        ) : (
+          <CommunityItem item={item} />
+        )}
       </div>
 
       <div className="flex flex-1 justify-end">

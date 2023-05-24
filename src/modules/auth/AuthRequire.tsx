@@ -22,6 +22,7 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
     router.replace(
       `/auth/signin?redirect_to=${encodeURIComponent(redirectUrl)}`
     );
+    return null;
   }
 
   if (loading && loadingUi) {
