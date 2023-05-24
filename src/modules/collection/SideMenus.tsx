@@ -48,11 +48,11 @@ const MenuItem = ({
         }}
         className={classnames(
           style.menu,
-          'flex h-[31px] cursor-pointer items-center justify-between rounded pl-3'
+          'flex cursor-pointer items-center justify-between rounded pl-3'
         )}
       >
         <div
-          className={classnames('text-sm font-bold text-gray-700', {
+          className={classnames('py-1.5 text-sm font-bold text-gray-700', {
             '!text-primary': expand,
           })}
         >
@@ -80,14 +80,15 @@ const MenuItem = ({
               <a
                 className={classnames(
                   style.menu,
-                  'mt-1 flex h-[31px] cursor-pointer items-center justify-between rounded pl-3',
+                  'mt-1 flex cursor-pointer items-center justify-between rounded pl-3',
                   { [style.menuActive]: active }
                 )}
               >
                 <span
-                  className={classnames('text-sm font-bold text-gray-700', {
-                    '!text-primary': active,
-                  })}
+                  className={classnames(
+                    'py-1.5 text-sm font-bold text-gray-700',
+                    { '!text-primary': active }
+                  )}
                 >
                   {item[nameKey]}
                 </span>
