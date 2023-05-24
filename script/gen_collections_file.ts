@@ -21,7 +21,7 @@ const LEVEL_1_YML = './script/tmp/compass-projects-information/collections.yml';
 const LEVEL_2_DIR_COLLECTIONS =
   './script/tmp/compass-projects-information/collections';
 
-const DIST_LEVEL_1_JSON = './script/tmp/level1.json';
+const DIST_MENU_JSON = './script/tmp/menus.json';
 const DIST_DATA_JSON = './script/tmp/collections.json';
 
 async function cloneRepo() {
@@ -107,7 +107,7 @@ async function validateLevel2Yml(data: any) {
 }
 
 async function handle() {
-  // await cloneRepo();
+  await cloneRepo();
 
   // first-level directory
   const level1Data = await parseLevel1Yml();
@@ -115,24 +115,48 @@ async function handle() {
   if (!validate) {
     return;
   }
-  await fs.writeJSON(DIST_LEVEL_1_JSON, level1Data);
-  console.log('collections menu json generate success!');
-  console.log();
 
   // secondary directory and content
-  const data = await parseLevel2Yml();
-  const v2 = await validateLevel2Yml(data);
-  if (!v2) {
+  const contentData = await parseLevel2Yml();
+  const validateContent = await validateLevel2Yml(contentData);
+  if (!validateContent) {
     return;
   }
 
-  await fs.writeJSON(DIST_DATA_JSON, data);
+  // extract name info
+  const MenuData = level1Data.map((menu: any) => {
+    menu.items_info = menu.items
+      .map((item: any) => {
+        const info = contentData[item] as any;
+        if (!info) {
+          console.log(
+            'Warning: cant`t find this in collections.json -> ',
+            item
+          );
+          return;
+        }
+
+        return {
+          ident: info.ident,
+          name: info.name,
+          name_cn: info.name_cn,
+          slug: info.slug,
+        };
+      })
+      .filter(Boolean);
+    return menu;
+  });
+
+  console.log();
+  await fs.writeJSON(DIST_MENU_JSON, MenuData);
+  console.log('collections menu json generate success!');
+
+  await fs.writeJSON(DIST_DATA_JSON, contentData);
   console.log('collections content generate success!');
   console.log();
 }
 
 handle().catch((e) => {
-  console.log('collections.json generate failed!');
   console.log(e);
   console.log();
   process.exit(1);
