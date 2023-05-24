@@ -6,6 +6,7 @@ import MainContent from './MainContent';
 import classnames from 'classnames';
 import { Collection } from '../explore/type';
 import jsonData from '../../../script/tmp/collections.json';
+import menusData from '../../../script/tmp/menus.json';
 
 const collections = jsonData as unknown as Record<string, Collection>;
 
@@ -22,7 +23,7 @@ const Collection = () => {
           'md:h-[calc(100vh-44px)]'
         )}
       >
-        <SideMenus items={items} />
+        <SideMenus menus={menusData} />
         <MainContent items={items} />
       </div>
     </>

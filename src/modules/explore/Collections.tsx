@@ -3,16 +3,17 @@ import CollectionCard from './CollectionCard';
 import CollectionFullCard from './CollectionFullCard';
 import { Collection } from './type';
 import collections from '../../../script/tmp/collections.json';
+import collectionConfig from '../../../script/config.json';
 
-const fullShowCollections = ['deep-learning-frameworks', 'sql-databases'];
+const hotCollections = collectionConfig.hot_collections;
 
 const Collections = () => {
-  const fullCardItems: Collection[] = fullShowCollections.map((k) => {
+  const hotItemsCard: Collection[] = hotCollections.map((k) => {
     return (collections as any)[k];
   });
 
   const CardItems: Collection[] = Object.keys(collections)
-    .filter((k) => !fullShowCollections.includes(k))
+    .filter((k) => !hotCollections.includes(k))
     .map((k) => {
       return (collections as any)[k];
     });
@@ -20,7 +21,7 @@ const Collections = () => {
   return (
     <div className="xl:px-4">
       <div className="xl:hidden">
-        {fullCardItems.map((item) => {
+        {hotItemsCard.map((item) => {
           return <CollectionFullCard key={item.ident} collection={item} />;
         })}
       </div>

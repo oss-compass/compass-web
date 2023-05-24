@@ -16,9 +16,7 @@ body {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC',
-    'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei',
-    sans-serif;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 textarea,
@@ -29,10 +27,44 @@ input[type='submit'] {
   border-radius: 0;
   outline: none;
 }
+
 .react-datepicker {
   border: 1px solid #e4e7ed !important;
   padding: 10px;
 }
+
 .react-datepicker__header {
   background-color: #ffffff !important;
+}
+
+@media (pointer: fine) {
+  .thin-scrollbar {
+    scrollbar-width: thin
+  }
+
+  .thin-scrollbar::-webkit-scrollbar {
+    height: 7px;
+    width: 7px
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background: silver;
+    border-radius: 10px
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a7a7a7
+  }
+}
+
+@supports (scrollbar-gutter:stable) {
+  .thin-scrollbar {
+    padding: .5rem 0 .5rem .5rem;
+    scrollbar-gutter: stable
+  }
 }

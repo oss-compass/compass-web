@@ -4,6 +4,7 @@ import simpleGit, { SimpleGitProgressEvent } from 'simple-git';
 import yaml from 'yaml';
 import Joi from 'joi';
 import throttle from 'lodash/throttle';
+import collectionConfig from './config.json';
 
 const log = throttle(console.log.bind(null), 100);
 
@@ -72,13 +73,25 @@ async function parseLevel2Yml() {
     const ymlContent = await fs.readFile(p, { encoding: 'utf-8' });
     const jsonContent = yaml.parse(ymlContent);
 
-    const ident = jsonContent.ident;
+    const ident = jsonContent.ident.toLowerCase();
     collectionsData[ident] = jsonContent;
   }
   return collectionsData;
 }
 
 async function validateLevel2Yml(data: any) {
+  const hot_collections = collectionConfig.hot_collections;
+  const hasHotItems = hot_collections.every((id) => {
+    return data[id];
+  });
+  if (!hasHotItems) {
+    console.log(
+      'error: data should included hot collections: ',
+      hot_collections
+    );
+    return false;
+  }
+
   const CollectionSchema = Joi.object({
     ident: Joi.string().min(1),
     name: Joi.string().min(1),
@@ -126,12 +139,13 @@ async function handle() {
   // extract name info
   const MenuData = level1Data.map((menu: any) => {
     menu.items_info = menu.items
-      .map((item: any) => {
-        const info = contentData[item] as any;
+      .map((id: any) => {
+        const ident = id.toLowerCase();
+        const info = contentData[ident] as any;
         if (!info) {
           console.log(
             'Warning: cant`t find this in collections.json -> ',
-            item
+            ident
           );
           return;
         }
