@@ -7,9 +7,8 @@ import { useSubmitUser, userInfoStore } from '@modules/auth';
 
 const Auth: React.FC = () => {
   const { t } = useTranslation();
-  const { submitUser: user, loginBinds } = useSubmitUser();
+  const { submitUser: user, repoProviderCount } = useSubmitUser();
   const hasLoggedIn = Boolean(user);
-  const bindLen = loginBinds?.length;
 
   if (!hasLoggedIn) return null;
 
@@ -44,7 +43,7 @@ const Auth: React.FC = () => {
         </div>
 
         <div className="ml-5 flex  items-center">
-          {bindLen && bindLen > 1 ? (
+          {repoProviderCount && repoProviderCount > 1 ? (
             <button
               className="flex items-center text-sm text-primary"
               onClick={() => {

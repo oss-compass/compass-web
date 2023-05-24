@@ -177,6 +177,7 @@ const ProfileForm = () => {
               <Image
                 layout="fill"
                 src={providerUser?.avatarUrl!}
+                unoptimized
                 alt="avatar"
               />
             ) : null}
