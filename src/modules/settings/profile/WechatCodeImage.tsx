@@ -4,6 +4,8 @@ import { toDataURL } from 'qrcode';
 import { BsFillFileImageFill } from 'react-icons/bs';
 import { useBindWechatLinkMutation } from '@graphql/generated';
 import client from '@graphql/client';
+import { useInterval } from 'ahooks';
+import { userInfoStore, userEvent } from '@modules/auth';
 
 const ErrorHolder = () => (
   <div className="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400">
@@ -27,6 +29,12 @@ const WechatCodeImage = () => {
       }
     },
   });
+
+  useInterval(() => {
+    if (imgUrl) {
+      userInfoStore.event$?.emit(userEvent.REFRESH);
+    }
+  }, 1500);
 
   useEffect(() => {
     mutate({});

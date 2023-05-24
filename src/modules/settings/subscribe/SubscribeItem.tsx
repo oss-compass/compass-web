@@ -10,17 +10,20 @@ import { getRepoName, getProvider, getNameSpace } from '@common/utils/url';
 import { formatISO } from '@common/utils/time';
 
 const ItemStatus = ({ item }: { item: Subscription }) => {
+  const { t } = useTranslation();
+
   if (item.status === 'complete') {
     return (
-      <span className="text-sm text-secondary">
-        Updated on {formatISO(item.statusUpdatedAt)}
+      <span className="text-xs text-secondary">
+        {t('setting:subscriptions.updated_on')}
+        {formatISO(item.statusUpdatedAt)}
       </span>
     );
   }
 
   return (
-    <span className="inline-block rounded-full bg-[#FFEEC6] px-2 text-[#AA8122]">
-      Analyzing
+    <span className="inline-block rounded-full bg-[#FFEEC6] px-2 text-xs text-[#AA8122]">
+      {t('setting:subscriptions.analyzing')}
     </span>
   );
 };
@@ -69,6 +72,7 @@ const SubscribeItem = ({
       <Button
         intent="text"
         size="sm"
+        className="text-xs"
         loading={Cancel.isLoading}
         onClick={() => {
           Cancel.mutate({ label: item.label, level: item.level });

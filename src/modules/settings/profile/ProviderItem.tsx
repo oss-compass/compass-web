@@ -76,6 +76,8 @@ export const ProviderItem = ({ provider }: { provider: Provider }) => {
   useEffect(() => {
     if (inWechatBrowser && !bindInfo) {
       setWxPopOpen(true);
+    } else {
+      setWxPopOpen(false);
     }
   }, [bindInfo, inWechatBrowser]);
 

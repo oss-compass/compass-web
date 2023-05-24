@@ -34,6 +34,8 @@
     "title": "我的订阅",
     "submit_a_project": "提交项目",
     "unsubscribe": "取消订阅",
-    "empty_list": "暂无订阅数据"
+    "empty_list": "暂无订阅数据",
+    "updated_on": "更新于 ",
+    "analyzing": "分析中"
   }
 }
