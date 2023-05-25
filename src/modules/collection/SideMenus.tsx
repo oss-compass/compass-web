@@ -108,7 +108,7 @@ const SideMenus = ({ menus }: { menus: CollectionMenu[] }) => {
   return (
     <div className="flex h-full w-[272px] flex-col border-r bg-white md:hidden">
       <div className="thin-scrollbar overflow-y-auto">
-        <div className="mb-4 flex items-center justify-between pt-4 pl-3">
+        <div className="mb-4 flex items-center justify-between pt-2 pl-3">
           <div className="text-xl font-medium">
             {t('collection:collections')}
           </div>

@@ -4,9 +4,9 @@
     "userinfo": "Profile",
     "account_setting": "Account Setting",
     "form": {
-      "name": "name",
+      "name": "Name",
       "name_placeholder": "Please enter your name",
-      "email": "email",
+      "email": "Email",
       "email_ques_icon": "The email is used to receive project update notifications.",
       "email_placeholder": "Please enter your email address",
       "error_require": "{{field}} is a required field",
