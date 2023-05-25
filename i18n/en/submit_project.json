@@ -53,6 +53,6 @@
   "email_verification_successful": "Email verification successful",
   "the_email_address": "The email address",
   "has_been_successfully": "has been successfully bound to your OSS Compass account",
-  "account_settings": "Account Settings",
+  "account_setting": "Account Setting",
   "bind_other_code_hosting_platforms": "Bind other code hosting platforms?"
 }

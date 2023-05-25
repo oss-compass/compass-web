@@ -2,11 +2,11 @@
   "profile": {
     "avatar": "Avatar",
     "userinfo": "Profile",
-    "account_settings": "Account Settings",
+    "account_setting": "Account Setting",
     "form": {
-      "name": "name",
+      "name": "Name",
       "name_placeholder": "Please enter your name",
-      "email": "email",
+      "email": "Email",
       "email_ques_icon": "The email is used to receive project update notifications.",
       "email_placeholder": "Please enter your email address",
       "error_require": "{{field}} is a required field",
@@ -14,17 +14,30 @@
       "error_email_format": "email format is incorrect"
     },
     "connected_accounts": "Connected Accounts",
-    "connected": "Connected",
+    "bound_already": "Bound already",
+    "wechat_connect": "Connect Wechat",
+    "connect": "Connect",
     "disconnect": "Disconnect",
     "connect_multiple_accounts_to_your_user_and_sign_in": "Connect multiple accounts to your user and sign in with any of them",
     "delete_account": "Delete account",
     "delete_account_btn": "Delete account",
     "delete_account_warning": " Once you delete your account, there is no going back. Please be certain when taking this action.",
     "can_be_used_to_submit_project_after_binding": "Can be used to submit project after binding",
+    "can_be_used_to_receive_notifications_for_analysis_reports": "Can be used to receive notifications for analysis reports",
     "verified": "Verified",
     "unverified_yet": "Unverified yet,",
     "email_sent": "Verification email has been sent，",
     "email_sent_later": "Send again after {{sec}} seconds",
     "resend_verification_email": "resend verification email"
+  },
+  "subscriptions": {
+    "title": "My Subscriptions",
+    "submit_a_project": "Submit a project",
+    "unsubscribe": "Unsubscribe",
+    "empty_list": "No subscription data",
+    "updated_on": "Updated on ",
+    "analyzing": "Analyzing",
+    "confirm_cancel": "Confirm unsubscribe",
+    "after_unsubscribing_you_will_no_longer_receive_any": "After unsubscribing, you will no longer receive any notifications related to this project."
   }
 }

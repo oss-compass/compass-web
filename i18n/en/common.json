@@ -47,11 +47,13 @@
   "next": "Next",
   "know_more": "Know more",
   "ago": "ago",
-  "signin": "Signin",
-  "subscribe": "My Subscribe",
-  "profile_setting": "Account Settings",
-  "signout": "SignOut",
+  "signin": "Sign In",
+  "subscribe": "My Subscriptions",
+  "profile_setting": "Account Setting",
+  "signout": "Sign Out",
   "btn": {
+    "back": "Back",
+    "confirm": "Confirm",
     "save": "Save",
     "cancel": "Cancel",
     "func_disabled": "The feature is temporarily disabled"

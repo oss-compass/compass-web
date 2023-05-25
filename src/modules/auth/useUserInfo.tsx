@@ -56,5 +56,19 @@ export const useSubmitUser = () => {
     provider: submitProvider || provider,
     loginBinds: currentUser?.loginBinds,
   });
-  return { submitUser, loginBinds: currentUser?.loginBinds };
+
+  const count = currentUser?.loginBinds?.reduce?.((acc, cur) => {
+    if (['gitee', 'github'].includes(cur.provider!)) {
+      return ++acc;
+    }
+    return acc;
+  }, 0);
+
+  console.log({ repoProviderCount: count });
+
+  return {
+    submitUser,
+    loginBinds: currentUser?.loginBinds,
+    repoProviderCount: count,
+  };
 };

@@ -165,17 +165,18 @@ const DateRangePicker: React.FC<{
   );
 };
 
-const MobileDatePicker = () => {
+const NewDatePicker = () => {
   const { t } = useTranslation();
   const i18RangeTag = useI18RangeTag();
   const [dropdownOpen, toggleDropdown] = useToggle(false);
   const [custom, toggleCustom] = useToggle(false);
   const ref = useRef(null);
+
   useClickAway(ref, () => {
     toggleDropdown(false);
-    console.log(rangeTags.includes(range));
     toggleCustom(!rangeTags.includes(range));
   });
+
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
 
@@ -253,4 +254,4 @@ const MobileDatePicker = () => {
   );
 };
 
-export default MobileDatePicker;
+export default NewDatePicker;

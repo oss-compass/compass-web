@@ -21,7 +21,7 @@ const buttonVariants = cva(
         secondary: 'border border-black text-black font-bold hover:bg-gray-100',
         danger:
           'border-2 border-[#CC0000] text-[#CC0000] font-bold hover:bg-red-600/5',
-        text: '',
+        text: 'hover:bg-gray-100',
       },
       size: {
         lg: 'text-base px-10 py-3',
