@@ -70,7 +70,7 @@ const Content = ({ status }: { status: string }) => {
             router.push('/settings/profile');
           }}
         >
-          {t('auth:account_settings')}
+          {t('auth:account_setting')}
         </Button>
       </div>
     </>

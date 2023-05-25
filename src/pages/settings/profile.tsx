@@ -22,7 +22,7 @@ const Settings = () => {
   return (
     <>
       <Header />
-      <Banner content={t('setting:profile.account_settings')} />
+      <Banner content={t('setting:profile.account_setting')} />
       <FlashToast />
       <AuthRequire className="mx-auto w-[1000px] py-10 md:w-full md:px-6">
         <ProfileSetting />

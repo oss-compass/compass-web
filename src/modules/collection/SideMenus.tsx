@@ -52,7 +52,7 @@ const MenuItem = ({
         )}
       >
         <div
-          className={classnames('py-1.5 text-sm font-bold text-gray-700', {
+          className={classnames('py-1.5 text-sm font-medium text-gray-700', {
             '!text-primary': expand,
           })}
         >
@@ -69,8 +69,8 @@ const MenuItem = ({
 
       <div
         className={classnames(style.menuBox, 'pl-3', {
-          '!h-auto overflow-visible': expand,
-          'h-0 overflow-hidden ': !expand,
+          'h-auto overflow-visible': expand,
+          'h-0 overflow-hidden': !expand,
         })}
       >
         {menu.items_info.map((item) => {
@@ -86,7 +86,7 @@ const MenuItem = ({
               >
                 <span
                   className={classnames(
-                    'py-1.5 text-sm font-bold text-gray-700',
+                    'py-1.5 text-sm font-medium text-gray-700',
                     { '!text-primary': active }
                   )}
                 >
@@ -108,13 +108,13 @@ const SideMenus = ({ menus }: { menus: CollectionMenu[] }) => {
   return (
     <div className="flex h-full w-[272px] flex-col border-r bg-white md:hidden">
       <div className="thin-scrollbar overflow-y-auto">
-        <div className="mb-4 flex items-center justify-between pt-4 pl-5">
+        <div className="mb-4 flex items-center justify-between pt-4 pl-3">
           <div className="text-xl font-medium">
             {t('collection:collections')}
           </div>
         </div>
 
-        <div className="px-2 pb-4">
+        <div className="pb-4">
           {menus.map((menu) => {
             return <MenuItem menu={menu} key={menu.ident} event$={event$} />;
           })}

@@ -2,7 +2,7 @@
   "profile": {
     "avatar": "Avatar",
     "userinfo": "Profile",
-    "account_settings": "Account Settings",
+    "account_setting": "Account Setting",
     "form": {
       "name": "name",
       "name_placeholder": "Please enter your name",
@@ -31,11 +31,13 @@
     "resend_verification_email": "resend verification email"
   },
   "subscriptions": {
-    "title": "My subscriptions",
+    "title": "My Subscriptions",
     "submit_a_project": "Submit a project",
     "unsubscribe": "Unsubscribe",
     "empty_list": "No subscription data",
     "updated_on": "Updated on ",
-    "analyzing": "Analyzing"
+    "analyzing": "Analyzing",
+    "confirm_cancel": "Confirm unsubscribe",
+    "after_unsubscribing_you_will_no_longer_receive_any": "After unsubscribing, you will no longer receive any notifications related to this project."
   }
 }

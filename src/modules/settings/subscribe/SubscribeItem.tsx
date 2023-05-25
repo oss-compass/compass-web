@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import { Subscription } from '@graphql/generated';
 import client from '@graphql/client';
+import Dialog from '@common/components/Dialog';
 import Button from '@common/components/Button';
 import { useCancelSubscriptionMutation } from '@graphql/generated';
 import { getRepoName, getProvider, getNameSpace } from '@common/utils/url';
 import { formatISO } from '@common/utils/time';
+import { getAnalyzeLink } from '@common/utils/links';
 import { Level } from '@modules/analyze/constant';
 
 const ItemStatus = ({ item }: { item: Subscription }) => {
@@ -33,31 +36,32 @@ const RepoItem = ({ item }: { item: Subscription }) => {
   const repo = getRepoName(item.label);
   const ns = getNameSpace(item.label);
   return (
-    <>
-      <div className="pr-2 pt-1">
-        {provider === 'github' ? (
-          <SiGithub />
-        ) : (
-          <SiGitee className="text-[#c71c27]" />
-        )}
-      </div>
-      <div>
-        <div className="text-sm font-bold">{repo}</div>
-        <div className="text-xs text-secondary">{ns}</div>
-      </div>
-    </>
+    <Link href={getAnalyzeLink({ label: item.label, level: item.level })}>
+      <a className="flex cursor-pointer">
+        <span className="pr-2 pt-1">
+          {provider === 'github' ? (
+            <SiGithub />
+          ) : (
+            <SiGitee className="text-[#c71c27]" />
+          )}
+        </span>
+        <span className="flex flex-col">
+          <span className="text-sm font-bold">{repo}</span>
+          <span className="text-xs text-secondary">{ns}</span>
+        </span>
+      </a>
+    </Link>
   );
 };
 
 const CommunityItem = ({ item }: { item: Subscription }) => {
   return (
-    <>
-      <div className=""></div>
-      <div>
-        <div className="text-base font-bold">{item.label}</div>
-        <div className="text-xs text-secondary">{item.level}</div>
-      </div>
-    </>
+    <Link href={getAnalyzeLink({ label: item.label, level: item.level })}>
+      <a className="flex cursor-pointer flex-col">
+        <span className="text-base font-bold">{item.label}</span>
+        <span className="text-xs text-secondary">{item.level}</span>
+      </a>
+    </Link>
   );
 };
 
@@ -69,41 +73,81 @@ const SubscribeItem = ({
   onRefresh: () => void;
 }) => {
   const { t } = useTranslation();
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const Cancel = useCancelSubscriptionMutation(client, {
     onSuccess: (res) => {
+      setOpenConfirm(false);
       onRefresh();
     },
   });
 
   return (
-    <div className="flex items-center border-b py-3">
-      <div className="flex">
-        {item.level === Level.REPO ? (
-          <RepoItem item={item} />
-        ) : (
-          <CommunityItem item={item} />
-        )}
-      </div>
-
-      <div className="flex flex-1 justify-end">
-        <div className="w-[200px]">
-          <ItemStatus item={item} />
+    <>
+      <div className="flex items-center border-b py-3">
+        <div className="flex">
+          {item.level === Level.REPO ? (
+            <RepoItem item={item} />
+          ) : (
+            <CommunityItem item={item} />
+          )}
         </div>
+
+        <div className="flex flex-1 justify-end">
+          <div className="w-[200px]">
+            <ItemStatus item={item} />
+          </div>
+        </div>
+
+        <Button
+          intent="text"
+          size="sm"
+          className="text-xs"
+          onClick={() => {
+            setOpenConfirm(true);
+          }}
+        >
+          {t('setting:subscriptions.unsubscribe')}
+        </Button>
       </div>
 
-      <Button
-        intent="text"
-        size="sm"
-        className="text-xs"
-        loading={Cancel.isLoading}
-        onClick={() => {
-          Cancel.mutate({ label: item.label, level: item.level });
-        }}
-      >
-        {t('setting:subscriptions.unsubscribe')}
-      </Button>
-    </div>
+      <Dialog
+        open={openConfirm}
+        dialogTitle={<>{t('setting:subscriptions.confirm_cancel')}</>}
+        dialogContent={
+          <div className="w-96">
+            {t(
+              'setting:subscriptions.after_unsubscribing_you_will_no_longer_receive_any'
+            )}
+          </div>
+        }
+        dialogActions={
+          <div className="flex">
+            <Button
+              intent="text"
+              size="sm"
+              onClick={() => {
+                setOpenConfirm(false);
+              }}
+            >
+              {t('common:btn.back')}
+            </Button>
+            <Button
+              intent="primary"
+              size="sm"
+              className="ml-4"
+              loading={Cancel.isLoading}
+              onClick={() => {
+                Cancel.mutate({ label: item.label, level: item.level });
+              }}
+            >
+              {t('common:btn.confirm')}
+            </Button>
+          </div>
+        }
+        handleClose={() => {}}
+      />
+    </>
   );
 };
 
