@@ -28,7 +28,13 @@ const User = () => {
   return (
     <div className="group relative flex h-full items-center pl-6 transition">
       <div className="flex h-[32px] cursor-pointer items-center justify-center overflow-hidden rounded-full group-hover:bg-[#333333]">
-        <Image src={user?.avatarUrl!} width={32} height={32} alt="" />
+        <Image
+          src={user?.avatarUrl!}
+          unoptimized
+          width={32}
+          height={32}
+          alt=""
+        />
       </div>
 
       <div className="absolute top-[100%] -right-4 z-dropdown hidden w-auto group-hover:block">

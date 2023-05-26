@@ -37,6 +37,11 @@ const SaaSWorkingGroup = () => {
       intro: 'Programmer',
     },
     {
+      avatar: '/images/about/魏宏斌.jpeg',
+      name: '魏宏斌',
+      intro: 'Programmer',
+    },
+    {
       avatar: '/images/about/王晔晖2@2x.png',
       name: '王晔晖',
       intro: '华为 2012 实验室 开源管理中心',
