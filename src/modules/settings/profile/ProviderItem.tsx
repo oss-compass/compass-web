@@ -82,12 +82,12 @@ export const ProviderItem = ({ provider }: { provider: Provider }) => {
   }, [bindInfo, inWechatBrowser]);
 
   // hidden wechat in oss-compass.org
-  if (
-    provider.id === 'wechat' &&
-    window.location.origin.indexOf('oss-compass.org') > -1
-  ) {
-    return null;
-  }
+  // if (
+  //   provider.id === 'wechat' &&
+  //   window.location.origin.indexOf('oss-compass.org') > -1
+  // ) {
+  //   return null;
+  // }
 
   return (
     <>
