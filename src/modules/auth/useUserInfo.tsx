@@ -33,6 +33,7 @@ function findSpecifyProvider({
       // The naming of the returned fields in the interface data is reversed.
       account: providerUser?.nickname,
       nickname: providerUser?.account,
+      avatarUrl: providerUser?.avatarUrl || '/images/default-avatar.png',
     };
   }
 
