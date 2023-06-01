@@ -1,17 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useLocalStorageState } from 'ahooks';
 import { useTranslation } from 'react-i18next';
 
 const Questionnaire = () => {
   const { i18n } = useTranslation();
-  const [close, setClose] = useLocalStorageState<boolean>(
-    'questionnaire' + '/s2/12430808/ef24/',
-    {
-      defaultValue: false,
-    }
-  );
+  const [close, setClose] = useState(false);
 
   if (!close && i18n.language === 'zh') {
     return (
