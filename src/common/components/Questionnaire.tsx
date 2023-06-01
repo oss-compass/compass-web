@@ -15,7 +15,7 @@ const Questionnaire = () => {
 
   if (!close && i18n.language === 'zh') {
     return (
-      <div className="fixed bottom-[100px] right-10 ">
+      <div className="fixed bottom-[100px] right-10 z-modal ">
         <Link href="https://wj.qq.com/s2/12430808/ef24/">
           <a target="_blank" className="h-[124px] w-[124px]">
             <Image
