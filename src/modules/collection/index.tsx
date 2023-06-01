@@ -4,9 +4,9 @@ import { useTranslation } from 'next-i18next';
 import SideMenus from './SideMenus';
 import MainContent from './MainContent';
 import classnames from 'classnames';
+import jsonData from '@public/data/collections.json';
+import menusData from '@public/data/collections—menus.json';
 import { Collection } from '../explore/type';
-import jsonData from '../../../script/tmp/collections.json';
-import menusData from '../../../script/tmp/menus.json';
 
 const collections = jsonData as unknown as Record<string, Collection>;
 
