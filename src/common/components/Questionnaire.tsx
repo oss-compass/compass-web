@@ -11,11 +11,11 @@ const Questionnaire = () => {
     return (
       <div className="fixed bottom-[100px] right-10 z-modal ">
         <Link href="https://wj.qq.com/s2/12430808/ef24/">
-          <a target="_blank" className="h-[124px] w-[124px]">
+          <a target="_blank" className="h-[124px] w-[136px]">
             <Image
               src="/images/questionnaire/icon.png"
               width={124}
-              height={124}
+              height={136}
               alt={''}
             />
           </a>
