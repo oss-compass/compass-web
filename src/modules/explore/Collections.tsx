@@ -1,9 +1,9 @@
 import classnames from 'classnames';
+import collections from '@public/data/collections.json';
+import collectionConfig from '../../../script/config.json';
 import CollectionCard from './CollectionCard';
 import CollectionFullCard from './CollectionFullCard';
 import { Collection } from './type';
-import collections from '../../../script/tmp/collections.json';
-import collectionConfig from '../../../script/config.json';
 
 const hotCollections = collectionConfig.hot_collections;
 

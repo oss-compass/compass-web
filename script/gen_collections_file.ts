@@ -22,8 +22,8 @@ const LEVEL_1_YML = './script/tmp/compass-projects-information/collections.yml';
 const LEVEL_2_DIR_COLLECTIONS =
   './script/tmp/compass-projects-information/collections';
 
-const DIST_MENU_JSON = './script/tmp/menus.json';
-const DIST_DATA_JSON = './script/tmp/collections.json';
+const DIST_MENU_JSON = './public/data/collections—menus.json';
+const DIST_DATA_JSON = './public/data/collections.json';
 
 async function cloneRepo() {
   console.log('clone repo...', GIT_ADDRESS);

@@ -4,11 +4,8 @@ import RepoCard from '../explore/RepoCard';
 import { useTranslation } from 'next-i18next';
 import { Collection } from '@modules/explore/type';
 import classnames from 'classnames';
-import jsonData from '../../../script/tmp/collections.json';
-import {
-  useBulkOverviewQuery,
-  useCollectionHottestQuery,
-} from '@graphql/generated';
+import jsonData from '@public/data/collections.json';
+import { useBulkOverviewQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import { getPathname, getCompareAnalyzeLink } from '@common/utils';
 import Compare from './assets/compare.svg';
