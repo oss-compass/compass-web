@@ -5,6 +5,7 @@ import Header from '@common/components/Header';
 import { Center } from '@common/components/Layout';
 import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
+import Questionnaire from '@common/components/Questionnaire';
 import Banner from '@modules/home/Banner';
 import HotFields from '@modules/home/HotFields';
 import Trending from '@modules/home/Trending';
@@ -36,6 +37,7 @@ const Home: React.FC = (props) => {
         <NoSsr>
           <Explain />
           <ExplainMobile />
+          <Questionnaire />
         </NoSsr>
         <SpecialThank />
       </main>
