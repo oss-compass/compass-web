@@ -28,7 +28,9 @@
     "unverified_yet": "Unverified yet,",
     "email_sent": "Verification email has been sent，",
     "email_sent_later": "Send again after {{sec}} seconds",
-    "resend_verification_email": "resend verification email"
+    "resend_verification_email": "resend verification email",
+    "language_preferences": "Language preferences",
+    "language_preferences_desc": "Language settings for notification content, such as email, Slack, etc."
   },
   "subscriptions": {
     "title": "My Subscriptions",

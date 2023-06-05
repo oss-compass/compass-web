@@ -3,6 +3,7 @@ query userinfo {
     id
     name
     email
+    language
     emailVerified
     loginBinds {
       account

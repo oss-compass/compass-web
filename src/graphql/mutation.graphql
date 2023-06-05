@@ -26,8 +26,8 @@ mutation createProjectTask(
   }
 }
 
-mutation modifyUser($name: String!, $email: String!) {
-  modifyUser(input: { name: $name, email: $email }) {
+mutation modifyUser($name: String!, $email: String!, $language: String!) {
+  modifyUser(input: { name: $name, email: $email, language: $language }) {
     message
     status
   }
