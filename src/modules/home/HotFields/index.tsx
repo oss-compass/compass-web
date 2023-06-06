@@ -67,7 +67,7 @@ const HotFields = () => {
       category: [
         {
           name: t('home:hot_fields_content.machine_learning_framework'),
-          link: '/collection/deep-learning-frameworks',
+          link: '/collection/deep-learning-framework',
         },
       ],
     },
@@ -89,7 +89,7 @@ const HotFields = () => {
       category: [
         {
           name: t('home:hot_fields_content.relational_db'),
-          link: '/collection/sql-databases',
+          link: '/collection/sql-database',
         },
         {
           name: t('home:hot_fields_content.document_db'),
