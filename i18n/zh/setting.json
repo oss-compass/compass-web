@@ -28,7 +28,9 @@
     "unverified_yet": "未验证，",
     "email_sent": "验证邮件已发送，",
     "email_sent_later": "{{sec}} 秒后可再次发送",
-    "resend_verification_email": "发送验证邮件"
+    "resend_verification_email": "发送验证邮件",
+    "language_preferences": "通知语言偏好",
+    "language_preferences_desc": "通知内容的语言偏好，如电子邮件通知、Slack 订阅消息等等"
   },
   "subscriptions": {
     "title": "我的订阅",

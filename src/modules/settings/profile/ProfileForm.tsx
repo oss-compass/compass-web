@@ -6,7 +6,7 @@ import { useModifyUserMutation } from '@graphql/generated';
 import client from '@graphql/client';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { userInfoStore, userEvent } from '@modules/auth/UserInfoStore';
 import { useUserInfo } from '@modules/auth';
 import { storageSaveResendEmailTime } from '@common/utils/storage';
@@ -14,10 +14,12 @@ import SendVerificationEmail from './SendVerificationEmail';
 import Input from '@common/components/Input';
 import Button from '@common/components/Button';
 import Tooltip from '@common/components/Tooltip';
+import * as RadioGroup from '@radix-ui/react-radio-group';
 
 interface IFormInput {
   name: string;
   email: string;
+  language: string;
 }
 
 const ProfileForm = () => {
@@ -26,8 +28,10 @@ const ProfileForm = () => {
   const { currentUser } = useSnapshot(userInfoStore);
   const name = currentUser?.name;
   const email = currentUser?.email;
+  const language = currentUser?.language;
 
   const {
+    control,
     watch,
     setValue,
     register,
@@ -36,7 +40,11 @@ const ProfileForm = () => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    mutation.mutate({ name: data.name, email: data.email });
+    mutation.mutate({
+      name: data.name,
+      email: data.email,
+      language: data.language,
+    });
   };
 
   useEffect(() => {
@@ -46,9 +54,11 @@ const ProfileForm = () => {
 
   const inputEmail = watch('email');
   const inputName = watch('name');
+  const inputLang = watch('language');
 
   const changedName = inputName !== name;
   const changedEmail = inputEmail !== email;
+  const changedLanguage = inputLang !== language;
 
   const mutation = useModifyUserMutation(client, {
     onSuccess(res) {
@@ -152,6 +162,67 @@ const ProfileForm = () => {
             )}
           </div>
 
+          <div className="mb-10">
+            <div className="mb-4 flex items-center font-medium font-medium">
+              {t('setting:profile.language_preferences')}
+              <Tooltip
+                arrow
+                title={<> {t('setting:profile.language_preferences_desc')}</>}
+                placement="right"
+              >
+                <span className="ml-1 text-gray-400">
+                  <AiOutlineQuestionCircle />
+                </span>
+              </Tooltip>
+            </div>
+            <Controller
+              control={control}
+              name={'language'}
+              render={({ field, fieldState, formState }) => {
+                return (
+                  <RadioGroup.Root
+                    className="flex"
+                    defaultValue={language}
+                    onValueChange={(v) => {
+                      field.onChange(v);
+                    }}
+                  >
+                    <div className="mr-8 flex items-center">
+                      <RadioGroup.Item
+                        className="h-[20px] w-[20px] cursor-default rounded-full border-2 border-black bg-white outline-none "
+                        value="en"
+                        id="r1"
+                      >
+                        <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[12px] after:w-[12px] after:rounded-[50%] after:bg-black after:content-['']" />
+                      </RadioGroup.Item>
+                      <label
+                        className="pl-[15px] text-[15px] leading-none text-black"
+                        htmlFor="r1"
+                      >
+                        English
+                      </label>
+                    </div>
+                    <div className="flex items-center">
+                      <RadioGroup.Item
+                        className="h-[20px] w-[20px] cursor-default rounded-full border-2 border-black bg-white outline-none  "
+                        value="zh-CN"
+                        id="r2"
+                      >
+                        <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[12px] after:w-[12px] after:rounded-[50%] after:bg-black after:content-['']" />
+                      </RadioGroup.Item>
+                      <label
+                        className="pl-[15px] text-[15px] leading-none text-black"
+                        htmlFor="r2"
+                      >
+                        简体中文
+                      </label>
+                    </div>
+                  </RadioGroup.Root>
+                );
+              }}
+            />
+          </div>
+
           {/*<Tooltip*/}
           {/*  arrow*/}
           {/*  title={<>{t('common:btn.func_disabled')}</>}*/}
@@ -162,12 +233,10 @@ const ProfileForm = () => {
             className="w-[120px]"
             loading={mutation.isLoading}
             type="submit"
-            disabled={!changedName && !changedEmail}
+            disabled={!changedName && !changedEmail && !changedLanguage}
           >
             {t('common:btn.save')}
           </Button>
-
-          {/*</Tooltip>*/}
         </div>
 
         <div className="ml-10 mb-10 lg:ml-0 lg:w-full">
