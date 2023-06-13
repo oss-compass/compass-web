@@ -6,10 +6,10 @@ import React, {
 } from 'react';
 import getLocale from '@common/utils/getLocale';
 
-export const addLinkLocale = (href: string, locale: string): string => {
-  if (href.startsWith('/docs') && locale != 'en') {
+export const addDocsLinkLocale = (href: string, locale: string): string => {
+  if (href.includes('/docs/') && locale != 'en') {
     const [, link] = href.split('/docs');
-    return `/docs/${locale}${link}`;
+    return `/${locale}/docs${link}`;
   }
   return href;
 };
@@ -26,7 +26,7 @@ const DocLink: React.FC<
   ...restProps
 }) => {
   const [local, setLocale] = useState('en');
-  const localHref = addLinkLocale(href, local);
+  const localHref = addDocsLinkLocale(href, local);
 
   useEffect(() => {
     const l = getLocale();

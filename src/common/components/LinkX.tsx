@@ -1,14 +1,7 @@
 import React, { PropsWithChildren, useState, useEffect } from 'react';
 import Link, { LinkProps } from 'next/link';
 import getLocale from '@common/utils/getLocale';
-
-export const addLinkLocale = (href: string, locale: string): string => {
-  if (href.startsWith('/docs') && locale != 'en') {
-    const [, link] = href.split('/docs');
-    return `/docs/${locale}${link}`;
-  }
-  return href;
-};
+import { addDocsLinkLocale } from './DocLink';
 
 type DocLinkProps = Omit<LinkProps, 'href'>;
 
@@ -19,9 +12,10 @@ const LinkX: React.FC<PropsWithChildren<DocLinkProps & { href: string }>> = ({
   legacyBehavior,
   ...restProps
 }) => {
-  const isDocLink = href.startsWith('/docs');
+  const isDocLink = href.includes('/docs/');
   const [local, setLocale] = useState('en');
-  const localHref = addLinkLocale(href, local);
+  const localHref = addDocsLinkLocale(href, local);
+
   useEffect(() => {
     const l = getLocale();
     setLocale(l);
