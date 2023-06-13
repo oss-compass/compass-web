@@ -29,8 +29,8 @@
     "email_sent": "Verification email has been sent，",
     "email_sent_later": "Send again after {{sec}} seconds",
     "resend_verification_email": "resend verification email",
-    "language_preferences": "Language preferences for notification",
-    "language_preferences_desc": "Language preferences for notification content, such as email, Slack, etc."
+    "language_preferences": "Notification language preference",
+    "language_preferences_desc": "Language options for receiving notifications, including email notifications and Slack notifications"
   },
   "subscriptions": {
     "title": "My Subscriptions",

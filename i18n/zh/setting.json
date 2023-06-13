@@ -30,7 +30,7 @@
     "email_sent_later": "{{sec}} 秒后可再次发送",
     "resend_verification_email": "发送验证邮件",
     "language_preferences": "通知语言偏好",
-    "language_preferences_desc": "通知内容的语言偏好，如电子邮件通知、Slack 订阅消息等等"
+    "language_preferences_desc": "用于接收通知使用的语言选项，包含邮件通知和Slack 通知"
   },
   "subscriptions": {
     "title": "我的订阅",
