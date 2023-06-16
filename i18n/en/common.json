@@ -35,6 +35,7 @@
     "code": "Code"
   },
   "error": {
+    "url_404": "404 Not Found",
     "invalid_url_query": "invalid url query",
     "something_went_wrong": "Something went wrong:",
     "try_to_refresh_this_page_or_feel_free_to_contact_u": "Try to refresh this page or feel free to contact us if the problem presists.",

@@ -1,15 +1,21 @@
 import { proxy } from 'valtio';
 import { Level } from '../constant';
+import { StatusVerifyQuery } from '@graphql/generated';
 
-type Label = { label: string; level: Level };
+type Item = Pick<
+  StatusVerifyQuery['analysisStatusVerify'],
+  'label' | 'status' | 'shortCode'
+>;
 
-export const verifiedLabels = proxy<{ values: Label[] | [] }>({
+export type VerifiedLabelItem = {
+  [K in keyof Item]-?: NonNullable<Item[K]>;
+} & { level: Level };
+
+export const verifiedLabels = proxy<{ values: VerifiedLabelItem[] | [] }>({
   values: [],
 });
 
-// devtools(verifiedLabels, { name: 'verifiedLabels', enabled: true });
-
-export const setVerifiedLabels = (labels: Label[]) => {
+export const setVerifiedLabels = (labels: VerifiedLabelItem[]) => {
   verifiedLabels.values = labels;
 };
 

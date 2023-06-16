@@ -6,15 +6,15 @@ import { Main, Content } from '@common/components/Layout';
 import DataView from './DataView';
 import Footer from '@common/components/Footer';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import { ConfigContextProvider } from '@modules/analyze/context';
+import { StatusContextProvider } from '@modules/analyze/context';
 import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
 
 const AnalyzeWrap: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, isLoading, isError } = useLabelStatus();
+  const { status, isLoading, notFound } = useLabelStatus();
   return (
-    <ConfigContextProvider value={{ status, isError, isLoading }}>
+    <StatusContextProvider value={{ status, notFound, isLoading }}>
       <ColorThemeInit>{children}</ColorThemeInit>
-    </ConfigContextProvider>
+    </StatusContextProvider>
   );
 };
 

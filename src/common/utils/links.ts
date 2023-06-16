@@ -1,6 +1,22 @@
 import { SearchQuery, BetaMetricOverviewQuery } from '@graphql/generated';
 import { Level } from '@modules/analyze/constant';
 
+export const getShortAnalyzeLink = (
+  item: SearchQuery['fuzzySearch'][number] | string | undefined | null
+) => {
+  if (!item) return '/';
+  const shortCode = typeof item === 'string' ? item : item.shortCode;
+  return `/analyze/${shortCode}`;
+};
+
+export const getShortCompareLink = (list: string[]) => {
+  const url = list.reduce((pre, cur) => {
+    if (pre === '') return cur;
+    return pre + '..' + cur;
+  }, '');
+  return `/compare/${url}`;
+};
+
 export const getAnalyzeLink = (item: SearchQuery['fuzzySearch'][number]) => {
   return `/analyze?label=${encodeURIComponent(item.label!)}&level=${
     item.level

@@ -1,11 +1,14 @@
 import React from 'react';
-import { useConfigContext } from '@modules/analyze/context';
+import { useStatusContext } from '@modules/analyze/context';
 import { checkIsPending } from '@modules/analyze/constant';
 import CompareBar from '@modules/analyze/components/CompareBar';
 import NoSsr from '@common/components/NoSsr';
-import UnderAnalysis from '@modules/analyze/DataView/UnderAnalysis';
-import ErrorAnalysis from '@modules/analyze/DataView/ErrorAnalysis';
-import Loading from '@modules/analyze/DataView/Loading';
+import {
+  UnderAnalysis,
+  NotFoundAnalysis,
+  ErrorAnalysis,
+  LoadingAnalysis,
+} from '@modules/analyze/DataView/Status';
 
 import Charts from './Charts';
 import { FaInfoCircle } from 'react-icons/fa';
@@ -25,17 +28,17 @@ const LabNotice = () => {
 };
 
 const DataView = () => {
-  const { isError, isLoading, status } = useConfigContext();
+  const { notFound, isLoading, status } = useStatusContext();
   if (isLoading) {
-    return <Loading />;
+    return <LoadingAnalysis />;
   }
 
-  if (!isError && checkIsPending(status)) {
+  if (!notFound && checkIsPending(status)) {
     return <UnderAnalysis />;
   }
 
-  if (isError) {
-    return <ErrorAnalysis />;
+  if (notFound) {
+    return <NotFoundAnalysis />;
   }
 
   return (

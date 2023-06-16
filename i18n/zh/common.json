@@ -35,6 +35,7 @@
     "code": "开源代码"
   },
   "error": {
+    "url_404": "你访问的页面不存在",
     "invalid_url_query": "非法参数链接",
     "something_went_wrong": "出错了:",
     "try_to_refresh_this_page_or_feel_free_to_contact_u": "请刷新此页，如果问题仍然存在，请随时与我们联系.",

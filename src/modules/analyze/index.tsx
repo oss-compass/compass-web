@@ -1,4 +1,4 @@
-import React, { memo, PropsWithChildren, useEffect } from 'react';
+import React from 'react';
 import AnalyzeContainer from './components/Container/AnalyzeContainer';
 import HeaderWithFilterBar from './components/HeaderWithFitlerBar';
 import { Main, Content } from '@common/components/Layout';

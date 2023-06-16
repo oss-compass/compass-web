@@ -78,6 +78,8 @@ export type ActivityMetric = {
   orgCount?: Maybe<Scalars['Float']>;
   /** number of releases in the last 90 days */
   recentReleasesCount?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
   /** metric scores for repositories type, only for community (software-artifact/governance) */
   type?: Maybe<Scalars['String']>;
   /** number of issue updates in the past 90 days */
@@ -258,6 +260,8 @@ export type CodequalityMetric = {
   prIssueLinkedCount?: Maybe<Scalars['Float']>;
   /** ratio of pulls which are linked issues and all pulls */
   prIssueLinkedRatio?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
   /** metric scores for repositories type, only for community (software-artifact/governance) */
   type?: Maybe<Scalars['String']>;
 };
@@ -342,6 +346,8 @@ export type CommunityMetric = {
   prOpenTimeAvg?: Maybe<Scalars['Float']>;
   /** middle of pulls open time (days) */
   prOpenTimeMid?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
   /** metric scores for repositories type, only for community (software-artifact/governance) */
   type?: Maybe<Scalars['String']>;
   /** number of issue updates in the past 90 days */
@@ -484,6 +490,8 @@ export type GroupActivityMetric = {
   orgCount?: Maybe<Scalars['Float']>;
   /** score of organization activity metric model */
   organizationsActivity?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
   /** metric scores for repositories type, only for community (software-artifact/governance) */
   type?: Maybe<Scalars['String']>;
 };
@@ -502,6 +510,23 @@ export type GroupActivitySummary = {
   orgCount?: Maybe<MetricStat>;
   /** score of organization activity metric model */
   organizationsActivity?: Maybe<MetricStat>;
+};
+
+export type LabelRow = {
+  __typename?: 'LabelRow';
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level (project or repo) */
+  level?: Maybe<Scalars['String']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
+};
+
+export type LabelRowInput = {
+  /** metric model object identification */
+  label: Scalars['String'];
+  /** metric model object level (project or repo) */
+  level: Scalars['String'];
 };
 
 export type LatestMetrics = {
@@ -532,6 +557,8 @@ export type LatestMetrics = {
   referenceUrl?: Maybe<Scalars['String']>;
   /** repositories count */
   reposCount?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
 };
 
 export type LoginBind = {
@@ -635,6 +662,8 @@ export type ProjectCompletionRow = {
   label?: Maybe<Scalars['String']>;
   /** metric model object level (project or repo) */
   level?: Maybe<Scalars['String']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
   /** metric task status (pending/progress/success/error/canceled/unsumbit) */
   status?: Maybe<Scalars['String']>;
   /** metric model last update time */
@@ -652,12 +681,18 @@ export type Query = {
   __typename?: 'Query';
   /** repo or project analysis status (pending/progress/success/error/canceled/unsumbit) */
   analysisStatus: Scalars['String'];
+  /** repo or project analysis status (pending/progress/success/error/canceled/unsumbit) */
+  analysisStatusVerify: ProjectCompletionRow;
   /** return beta metric overview */
   betaMetricOverview: BetaMetricOverview;
   /** return beta metrics list */
   betaMetricsIndex: Array<BetaMetric>;
+  /** Get bulk label and level by a short code list */
+  bulkLabelWithLevel: Array<LabelRow>;
   /** Get bulk reports for a label list */
   bulkOverview: Array<Repo>;
+  /** Get bulk shortened id for a label list */
+  bulkShortenedLabel: Array<LabelRow>;
   /** Get hottest reports of a collection */
   collectionHottest: Array<ProjectCompletionRow>;
   /** Get overview data of a community */
@@ -696,6 +731,11 @@ export type QueryAnalysisStatusArgs = {
   label: Scalars['String'];
 };
 
+export type QueryAnalysisStatusVerifyArgs = {
+  label?: InputMaybe<Scalars['String']>;
+  shortCode?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryBetaMetricOverviewArgs = {
   id: Scalars['Int'];
   limit?: InputMaybe<Scalars['Int']>;
@@ -709,8 +749,16 @@ export type QueryBetaMetricsIndexArgs = {
   status?: InputMaybe<Scalars['String']>;
 };
 
+export type QueryBulkLabelWithLevelArgs = {
+  shortCodes: Array<Scalars['String']>;
+};
+
 export type QueryBulkOverviewArgs = {
   labels: Array<Scalars['String']>;
+};
+
+export type QueryBulkShortenedLabelArgs = {
+  labels: Array<LabelRowInput>;
 };
 
 export type QueryCollectionHottestArgs = {
@@ -866,6 +914,8 @@ export type StarterProjectHealthMetric = {
   prTimeToFirstResponseMid?: Maybe<Scalars['Float']>;
   /** the frequency of project releases (including point releases with bug fixes) */
   releaseFrequency?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
   /** score of starter project health model */
   starterProjectHealth?: Maybe<Scalars['Float']>;
   /** metric scores for repositories type, only for community (software-artifact/governance) */
@@ -880,12 +930,14 @@ export type SubjectSubscriptionCount = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  collectAt?: Maybe<Scalars['ISO8601DateTime']>;
+  completeAt?: Maybe<Scalars['ISO8601DateTime']>;
   count: Scalars['Int'];
   id: Scalars['Int'];
   label: Scalars['String'];
   level: Scalars['String'];
   status: Scalars['String'];
-  statusUpdatedAt: Scalars['ISO8601DateTime'];
+  statusUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
 };
 
 export type SubscriptionPage = {
@@ -912,6 +964,8 @@ export type Trending = {
   origin?: Maybe<Scalars['String']>;
   /** repositories count */
   reposCount?: Maybe<Scalars['Float']>;
+  /** repo or community short code */
+  shortCode?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -1118,7 +1172,7 @@ export type SubscriptionsQuery = {
         label: string;
         level: string;
         status: string;
-        statusUpdatedAt: any;
+        statusUpdatedAt?: any | null;
       }> | null;
     };
   } | null;
@@ -1144,6 +1198,22 @@ export type StatusQueryVariables = Exact<{
 
 export type StatusQuery = { __typename?: 'Query'; analysisStatus: string };
 
+export type StatusVerifyQueryVariables = Exact<{
+  label?: InputMaybe<Scalars['String']>;
+  shortCode?: InputMaybe<Scalars['String']>;
+}>;
+
+export type StatusVerifyQuery = {
+  __typename?: 'Query';
+  analysisStatusVerify: {
+    __typename?: 'ProjectCompletionRow';
+    label?: string | null;
+    level?: string | null;
+    shortCode?: string | null;
+    status?: string | null;
+  };
+};
+
 export type SearchQueryVariables = Exact<{
   keyword: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
@@ -1155,6 +1225,8 @@ export type SearchQuery = {
     __typename?: 'ProjectCompletionRow';
     level?: string | null;
     label?: string | null;
+    status?: string | null;
+    shortCode?: string | null;
   }>;
 };
 
@@ -1175,6 +1247,7 @@ export type LatestMetricsQuery = {
     communitySupportScoreUpdatedAt?: any | null;
     label?: string | null;
     level?: string | null;
+    shortCode?: string | null;
     organizationsActivity?: number | null;
     organizationsActivityUpdatedAt?: any | null;
     reposCount?: number | null;
@@ -1247,6 +1320,7 @@ export type MetricQuery = {
     isMaintained?: number | null;
     label?: string | null;
     level?: string | null;
+    shortCode?: string | null;
     type?: string | null;
     linesAddedFrequency?: number | null;
     linesRemovedFrequency?: number | null;
@@ -1272,6 +1346,7 @@ export type MetricQuery = {
     issueOpenTimeMid?: number | null;
     label?: string | null;
     level?: string | null;
+    shortCode?: string | null;
     type?: string | null;
     prOpenTimeAvg?: number | null;
     prOpenTimeMid?: number | null;
@@ -1294,6 +1369,7 @@ export type MetricQuery = {
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
+    shortCode?: string | null;
     type?: string | null;
     recentReleasesCount?: number | null;
     updatedIssuesCount?: number | null;
@@ -1307,6 +1383,7 @@ export type MetricQuery = {
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
+    shortCode?: string | null;
     type?: string | null;
     orgCount?: number | null;
     organizationsActivity?: number | null;
@@ -1629,6 +1706,7 @@ export type LabMetricQuery = {
     grimoireCreationDate?: any | null;
     label?: string | null;
     level?: string | null;
+    shortCode?: string | null;
     prTimeToCloseAvg?: number | null;
     prTimeToCloseMid?: number | null;
     prTimeToFirstResponseAvg?: number | null;
@@ -1656,6 +1734,7 @@ export type CollectionHottestQuery = {
     __typename?: 'ProjectCompletionRow';
     label?: string | null;
     level?: string | null;
+    shortCode?: string | null;
     status?: string | null;
     updatedAt?: any | null;
   }>;
@@ -1692,6 +1771,7 @@ export type TrendingQuery = {
   __typename?: 'Query';
   trending: Array<{
     __typename?: 'Trending';
+    shortCode?: string | null;
     activityScore?: number | null;
     fullPath?: string | null;
     label?: string | null;
@@ -2387,11 +2467,56 @@ useStatusQuery.fetcher = (
     variables,
     headers
   );
+export const StatusVerifyDocument = /*#__PURE__*/ `
+    query statusVerify($label: String, $shortCode: String) {
+  analysisStatusVerify(label: $label, shortCode: $shortCode) {
+    label
+    level
+    shortCode
+    status
+  }
+}
+    `;
+export const useStatusVerifyQuery = <
+  TData = StatusVerifyQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: StatusVerifyQueryVariables,
+  options?: UseQueryOptions<StatusVerifyQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<StatusVerifyQuery, TError, TData>(
+    variables === undefined ? ['statusVerify'] : ['statusVerify', variables],
+    fetcher<StatusVerifyQuery, StatusVerifyQueryVariables>(
+      client,
+      StatusVerifyDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useStatusVerifyQuery.getKey = (variables?: StatusVerifyQueryVariables) =>
+  variables === undefined ? ['statusVerify'] : ['statusVerify', variables];
+useStatusVerifyQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: StatusVerifyQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<StatusVerifyQuery, StatusVerifyQueryVariables>(
+    client,
+    StatusVerifyDocument,
+    variables,
+    headers
+  );
 export const SearchDocument = /*#__PURE__*/ `
     query search($keyword: String!, $level: String) {
   fuzzySearch(keyword: $keyword, level: $level) {
     level
     label
+    status
+    shortCode
   }
 }
     `;
@@ -2438,6 +2563,7 @@ export const LatestMetricsDocument = /*#__PURE__*/ `
     communitySupportScoreUpdatedAt
     label
     level
+    shortCode
     organizationsActivity
     organizationsActivityUpdatedAt
     reposCount
@@ -2594,6 +2720,7 @@ export const MetricDocument = /*#__PURE__*/ `
     isMaintained
     label
     level
+    shortCode
     type
     linesAddedFrequency
     linesRemovedFrequency
@@ -2618,6 +2745,7 @@ export const MetricDocument = /*#__PURE__*/ `
     issueOpenTimeMid
     label
     level
+    shortCode
     type
     prOpenTimeAvg
     prOpenTimeMid
@@ -2639,6 +2767,7 @@ export const MetricDocument = /*#__PURE__*/ `
     grimoireCreationDate
     label
     level
+    shortCode
     type
     recentReleasesCount
     updatedIssuesCount
@@ -2656,6 +2785,7 @@ export const MetricDocument = /*#__PURE__*/ `
     grimoireCreationDate
     label
     level
+    shortCode
     type
     orgCount
     organizationsActivity
@@ -2920,6 +3050,7 @@ export const LabMetricDocument = /*#__PURE__*/ `
     grimoireCreationDate
     label
     level
+    shortCode
     prTimeToCloseAvg
     prTimeToCloseMid
     prTimeToFirstResponseAvg
@@ -2967,6 +3098,7 @@ export const CollectionHottestDocument = /*#__PURE__*/ `
   collectionHottest(ident: $ident, limit: $limit) {
     label
     level
+    shortCode
     status
     updatedAt
   }
@@ -3061,6 +3193,7 @@ useBulkOverviewQuery.fetcher = (
 export const TrendingDocument = /*#__PURE__*/ `
     query trending($level: String = "repo") {
   trending(level: $level) {
+    shortCode
     activityScore
     fullPath
     label

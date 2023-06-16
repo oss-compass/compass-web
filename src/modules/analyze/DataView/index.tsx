@@ -1,25 +1,32 @@
 import React from 'react';
-import { useConfigContext } from '@modules/analyze/context';
+import { useStatusContext } from '@modules/analyze/context';
 import { checkIsPending } from '@modules/analyze/constant';
 import CompareBar from '@modules/analyze/components/CompareBar';
 import NoSsr from '@common/components/NoSsr';
-import UnderAnalysis from './UnderAnalysis';
-import ErrorAnalysis from './ErrorAnalysis';
+import UnderAnalysis from './Status/UnderAnalysis';
+import NotFoundAnalysis from './Status/NotFoundAnalysis';
+import LoadingAnalysis from './Status/LoadingAnalysis';
 import Charts from './Charts';
-import Loading from './Loading';
 
 const DataView = () => {
-  const { isError, isLoading, status } = useConfigContext();
+  const { notFound, isLoading, status } = useStatusContext();
+
+  console.log('--------------------------------', {
+    notFound,
+    isLoading,
+    status,
+  });
+
   if (isLoading) {
-    return <Loading />;
+    return <LoadingAnalysis />;
   }
 
-  if (!isError && checkIsPending(status)) {
+  if (!notFound && checkIsPending(status)) {
     return <UnderAnalysis />;
   }
 
-  if (isError) {
-    return <ErrorAnalysis />;
+  if (notFound) {
+    return <NotFoundAnalysis />;
   }
 
   return (

@@ -8,6 +8,7 @@ import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@graphql/generated';
 import {
   getAnalyzeLink,
+  getShortAnalyzeLink,
   getPathname,
   getProvider,
   getRepoName,
@@ -67,46 +68,46 @@ const LinkItem: React.FC<{
     if (item.level === Level.REPO) {
       return (
         <>
-          <div className="mb-1 truncate text-xl font-medium">
+          <span className="mb-1 truncate text-xl font-medium">
             {getRepoName(item.label!)}
-          </div>
-          <div className="flex items-center text-xs ">
+          </span>
+          <span className="flex items-center text-xs ">
             <Icon name={host} />
-            <div className="ml-1 truncate text-gray-600">
+            <span className="ml-1 truncate text-gray-600">
               {getPathname(item.label!)}
-            </div>
-          </div>
+            </span>
+          </span>
         </>
       );
     }
 
     return (
-      <div className="flex items-center">
-        <div className="mb-1 truncate text-xl font-medium">{item.label}</div>
-        <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
+      <span className="flex items-center">
+        <span className="mb-1 truncate text-xl font-medium">{item.label}</span>
+        <span className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
           {item.level === Level.COMMUNITY ? t('home:community') : item.level}
-        </div>
-      </div>
+        </span>
+      </span>
     );
   };
 
   return (
-    <Link key={item.label} href={getAnalyzeLink(item)}>
-      <div
+    <Link key={item.label} href={getShortAnalyzeLink(item)}>
+      <a
         className={classnames(
           'flex min-h-[66px] cursor-pointer items-center justify-between px-4 py-3 text-xl hover:bg-gray-100',
           'md:py-2 md:px-2 md:text-base',
           { 'bg-gray-100': active }
         )}
       >
-        <div className="min-w-0 flex-1 overflow-hidden pr-4">
+        <span className="flex min-w-0 flex-1 flex-col overflow-hidden pr-4">
           {getContent()}
-        </div>
-        <div className="flex flex-shrink-0 items-center text-sm font-medium text-primary">
+        </span>
+        <span className="flex flex-shrink-0 items-center text-sm font-medium text-primary">
           {t('home:compass_report')}
           <AiOutlineRightCircle className="ml-2 text-base" />
-        </div>
-      </div>
+        </span>
+      </a>
     </Link>
   );
 };
@@ -120,7 +121,7 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
     totalLength: result.length,
     onPressEnter: () => {
       const activeItem = result[active];
-      router.push(getAnalyzeLink(activeItem));
+      router.push(getShortAnalyzeLink(activeItem));
     },
   });
 

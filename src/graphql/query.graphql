@@ -43,10 +43,21 @@ query status($label: String!) {
   analysisStatus(label: $label)
 }
 
+query statusVerify($label: String, $shortCode: String) {
+  analysisStatusVerify(label: $label, shortCode: $shortCode) {
+    label
+    level
+    shortCode
+    status
+  }
+}
+
 query search($keyword: String!, $level: String) {
   fuzzySearch(keyword: $keyword, level: $level) {
     level
     label
+    status
+    shortCode
   }
 }
 
@@ -60,6 +71,7 @@ query latestMetrics($label: String!, $level: String) {
     communitySupportScoreUpdatedAt
     label
     level
+    shortCode
     organizationsActivity
     organizationsActivityUpdatedAt
     reposCount
@@ -118,6 +130,7 @@ query metric(
     isMaintained
     label
     level
+    shortCode
     type
     linesAddedFrequency
     linesRemovedFrequency
@@ -147,6 +160,7 @@ query metric(
     issueOpenTimeMid
     label
     level
+    shortCode
     type
     prOpenTimeAvg
     prOpenTimeMid
@@ -173,6 +187,7 @@ query metric(
     grimoireCreationDate
     label
     level
+    shortCode
     type
     recentReleasesCount
     updatedIssuesCount
@@ -194,6 +209,7 @@ query metric(
     grimoireCreationDate
     label
     level
+    shortCode
     type
     orgCount
     organizationsActivity
@@ -426,6 +442,7 @@ query labMetric(
     grimoireCreationDate
     label
     level
+    shortCode
     prTimeToCloseAvg
     prTimeToCloseMid
     prTimeToFirstResponseAvg
@@ -445,6 +462,7 @@ query collectionHottest($ident: String!, $limit: Int) {
   collectionHottest(ident: $ident, limit: $limit) {
     label
     level
+    shortCode
     status
     updatedAt
   }
@@ -468,6 +486,7 @@ query bulkOverview($labels: [String!]!) {
 
 query trending($level: String = "repo") {
   trending(level: $level) {
+    shortCode
     activityScore
     fullPath
     label

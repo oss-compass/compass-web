@@ -28,6 +28,14 @@ const nextConfig = {
       'avatars.githubusercontent.com',
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/compare',
+        destination: '/analyze',
+      },
+    ];
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
