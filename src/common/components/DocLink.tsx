@@ -1,19 +1,17 @@
-import React, {
-  PropsWithChildren,
-  useState,
-  useEffect,
-  ComponentProps,
-} from 'react';
-import getLocale from '@common/utils/getLocale';
+import React, { PropsWithChildren, ComponentProps } from 'react';
+import { useTranslation } from 'next-i18next';
+
+const docusaurusLinkPrefix = ['/docs', '/blog'];
+const checkIsDocusaurusLink = (link: string) => {
+  return docusaurusLinkPrefix.some((prefix) => link.startsWith(prefix));
+};
 
 export const addDocsLinkLocale = (href: string, locale: string): string => {
-  if (href.includes('/docs/') && locale != 'en') {
-    const [, link] = href.split('/docs');
-    return `/${locale}/docs${link}`;
+  // automatically local prefixed, except English
+  if (locale != 'en' && checkIsDocusaurusLink(href)) {
+    return `/${locale}${href}`;
   }
-  if (href.startsWith('/blog') && locale != 'en') {
-    return `/${locale}/${href}`;
-  }
+
   return href;
 };
 
@@ -28,13 +26,8 @@ const DocLink: React.FC<
   href,
   ...restProps
 }) => {
-  const [local, setLocale] = useState('en');
-  const localHref = addDocsLinkLocale(href, local);
-
-  useEffect(() => {
-    const l = getLocale();
-    setLocale(l);
-  }, []);
+  const { i18n } = useTranslation();
+  const localHref = addDocsLinkLocale(href, i18n.language);
 
   return (
     <a href={localHref} className={className} {...restProps}>
