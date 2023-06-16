@@ -11,6 +11,9 @@ export const addDocsLinkLocale = (href: string, locale: string): string => {
     const [, link] = href.split('/docs');
     return `/${locale}/docs${link}`;
   }
+  if (href.startsWith('/blog') && locale != 'en') {
+    return `/${locale}/${href}`;
+  }
   return href;
 };
 
