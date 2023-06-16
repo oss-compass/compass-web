@@ -1,20 +1,18 @@
-import { useSnapshot } from 'valtio';
-import { verifiedLabels } from '@modules/analyze/store';
-import { getPathname } from '@common/utils';
+import { getPathname, compareIdsJoin } from '@common/utils';
+import { useStatusContext } from '@modules/analyze/context';
 import { Level } from '@modules/analyze/constant';
 
 const useCompareItems = () => {
-  const labels = useSnapshot(verifiedLabels);
+  const { verifiedItems } = useStatusContext();
 
-  const items = labels.values.map(({ label, level }) => {
-    return {
-      label,
-      level,
-      name: level === Level.REPO ? getPathname(label) : label,
-    };
+  const items = verifiedItems.map(({ label, level, shortCode }) => {
+    const name = level === Level.REPO ? getPathname(label) : label;
+    return { label, level, shortCode, name };
   });
 
-  return { compareItems: items };
+  const ids = items.map((i) => i.shortCode);
+
+  return { compareItems: items, compareSlugs: compareIdsJoin(ids) };
 };
 
 export default useCompareItems;

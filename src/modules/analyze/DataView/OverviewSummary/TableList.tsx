@@ -8,7 +8,7 @@ import { useLatestMetricsQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
-import { formatISO, getAnalyzeLink, toFixed } from '@common/utils';
+import { formatISO, getShortAnalyzeLink, toFixed } from '@common/utils';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import { formatRepoName } from '@common/utils/format';
@@ -147,12 +147,7 @@ const TrendsList: React.FC = () => {
                 return (
                   <tr className="group" key={item!.label}>
                     <td className="flex flex-col px-1 py-2 ">
-                      <Link
-                        href={getAnalyzeLink({
-                          label: item?.label,
-                          level: item?.level,
-                        })}
-                      >
+                      <Link href={getShortAnalyzeLink(item!.shortCode)}>
                         <a>
                           <p className="break-words text-sm font-bold md:w-[140px]">
                             {r.name}

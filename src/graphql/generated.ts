@@ -167,6 +167,7 @@ export type BetaRepo = {
   name?: Maybe<Scalars['String']>;
   origin: Scalars['String'];
   path?: Maybe<Scalars['String']>;
+  shortCode?: Maybe<Scalars['String']>;
   updatedAt: Scalars['ISO8601DateTime'];
 };
 
@@ -859,6 +860,7 @@ export type Repo = {
   openIssuesCount?: Maybe<Scalars['Int']>;
   origin: Scalars['String'];
   path?: Maybe<Scalars['String']>;
+  shortCode?: Maybe<Scalars['String']>;
   stargazersCount?: Maybe<Scalars['Int']>;
   type?: Maybe<Scalars['String']>;
   updatedAt: Scalars['ISO8601DateTime'];
@@ -1284,6 +1286,7 @@ export type CommunityReposQuery = {
       name?: string | null;
       path?: string | null;
       type?: string | null;
+      shortCode?: string | null;
       metricActivity: Array<{
         __typename?: 'ActivityMetric';
         activityScore?: number | null;
@@ -1821,6 +1824,20 @@ export type BetaMetricsIndexQuery = {
     desc?: string | null;
     extra?: string | null;
     metric?: string | null;
+  }>;
+};
+
+export type BulkShortenedLabelQueryVariables = Exact<{
+  labels: Array<LabelRowInput> | LabelRowInput;
+}>;
+
+export type BulkShortenedLabelQuery = {
+  __typename?: 'Query';
+  bulkShortenedLabel: Array<{
+    __typename?: 'LabelRow';
+    label?: string | null;
+    level?: string | null;
+    shortCode?: string | null;
   }>;
 };
 
@@ -2653,6 +2670,7 @@ export const CommunityReposDocument = /*#__PURE__*/ `
       name
       path
       type
+      shortCode
       metricActivity {
         activityScore
         grimoireCreationDate
@@ -3332,6 +3350,49 @@ useBetaMetricsIndexQuery.fetcher = (
   fetcher<BetaMetricsIndexQuery, BetaMetricsIndexQueryVariables>(
     client,
     BetaMetricsIndexDocument,
+    variables,
+    headers
+  );
+export const BulkShortenedLabelDocument = /*#__PURE__*/ `
+    query bulkShortenedLabel($labels: [LabelRowInput!]!) {
+  bulkShortenedLabel(labels: $labels) {
+    label
+    level
+    shortCode
+  }
+}
+    `;
+export const useBulkShortenedLabelQuery = <
+  TData = BulkShortenedLabelQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: BulkShortenedLabelQueryVariables,
+  options?: UseQueryOptions<BulkShortenedLabelQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<BulkShortenedLabelQuery, TError, TData>(
+    ['bulkShortenedLabel', variables],
+    fetcher<BulkShortenedLabelQuery, BulkShortenedLabelQueryVariables>(
+      client,
+      BulkShortenedLabelDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useBulkShortenedLabelQuery.getKey = (
+  variables: BulkShortenedLabelQueryVariables
+) => ['bulkShortenedLabel', variables];
+useBulkShortenedLabelQuery.fetcher = (
+  client: GraphQLClient,
+  variables: BulkShortenedLabelQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<BulkShortenedLabelQuery, BulkShortenedLabelQueryVariables>(
+    client,
+    BulkShortenedLabelDocument,
     variables,
     headers
   );

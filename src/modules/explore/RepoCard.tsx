@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import {
   getAnalyzeLink,
   getNameSpace,
-  getPathname,
+  getShortAnalyzeLink,
   getProvider,
   getRepoName,
 } from '@common/utils';
@@ -14,11 +14,15 @@ import classnames from 'classnames';
 
 const RepoCard = (props: {
   label: string;
+  shortCode: string;
   chartData?: number[];
   compareMode?: boolean;
-  onSelectChange?: (pre: boolean, label: string) => void;
+  onSelectChange?: (
+    pre: boolean,
+    value: { label: string; shortCode: string }
+  ) => void;
 }) => {
-  const { label, chartData, compareMode, onSelectChange } = props;
+  const { label, shortCode, chartData, compareMode, onSelectChange } = props;
 
   const router = useRouter();
   const repo = getRepoName(label);
@@ -38,10 +42,12 @@ const RepoCard = (props: {
       onClick={async () => {
         if (compareMode) {
           setSelect(!select);
-          onSelectChange && onSelectChange(!select, label);
+          if (onSelectChange) {
+            onSelectChange(!select, { label, shortCode });
+          }
         } else {
           // go to analyze page
-          await router.push(getAnalyzeLink({ label: label, level: 'repo' }));
+          await router.push(getShortAnalyzeLink(shortCode));
         }
       }}
     >

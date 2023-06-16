@@ -23,7 +23,7 @@ const LEVEL_2_DIR_COLLECTIONS =
   './script/tmp/compass-projects-information/collections';
 
 const DIST_MENU_JSON = './public/data/collections—menus.json';
-const DIST_DATA_JSON = './public/data/collections.json';
+const DIST_COLLECTIONS_TMP_JSON = './public/data/collections_tmp.json';
 
 async function cloneRepo() {
   console.log('clone repo...', GIT_ADDRESS);
@@ -165,7 +165,7 @@ async function handle() {
   await fs.writeJSON(DIST_MENU_JSON, MenuData);
   console.log('collections menu json generate success!');
 
-  await fs.writeJSON(DIST_DATA_JSON, contentData);
+  await fs.writeJSON(DIST_COLLECTIONS_TMP_JSON, contentData);
   console.log('collections content generate success!');
   console.log();
 }

@@ -4,17 +4,22 @@ import { FaInfoCircle } from 'react-icons/fa';
 import HeaderWithFilterBar from '@modules/analyze/components/HeaderWithFitlerBar';
 import { Main, Content } from '@common/components/Layout';
 import DataView from './DataView';
+import NoSsr from '@common/components/NoSsr';
 import Footer from '@common/components/Footer';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import { StatusContextProvider } from '@modules/analyze/context';
 import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
 
 const AnalyzeWrap: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, isLoading, notFound } = useLabelStatus();
+  const { status, isLoading, notFound, verifiedItems } = useLabelStatus();
   return (
-    <StatusContextProvider value={{ status, notFound, isLoading }}>
-      <ColorThemeInit>{children}</ColorThemeInit>
-    </StatusContextProvider>
+    <NoSsr>
+      <StatusContextProvider
+        value={{ status, notFound, isLoading, verifiedItems }}
+      >
+        <ColorThemeInit>{children}</ColorThemeInit>
+      </StatusContextProvider>
+    </NoSsr>
   );
 };
 

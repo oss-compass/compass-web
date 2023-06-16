@@ -5,12 +5,14 @@ const useSwitchRange = () => {
   const route = useRouter();
 
   const switchRange = async (t: string) => {
+    const pathname = window.location.pathname;
     const hash = window.location.hash;
-    const result = qs.parse(window.location.search);
-    result.range = t;
 
-    const url = `${route.pathname}?${qs.stringify(result)}`;
-    // if (hash) url += hash;
+    const searchResult = qs.parse(window.location.search) || {};
+    searchResult.range = t;
+    const newSearch = qs.stringify(searchResult);
+
+    const url = `${pathname}?${newSearch}${hash}`;
     await route.replace(url, undefined, { scroll: false });
   };
 

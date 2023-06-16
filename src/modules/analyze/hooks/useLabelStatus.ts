@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
 import client from '@graphql/client';
 import { StatusVerifyQuery, useStatusVerifyQuery } from '@graphql/generated';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
-import useExtractShortId from './useExtractShortId';
-import { setVerifiedLabels, VerifiedLabelItem } from '@modules/analyze/store';
+import useExtractShortIds from './useExtractShortIds';
+import { VerifiedLabelItem } from '@modules/analyze/context';
 
 function nonNullable<T>(value: T): value is NonNullable<T> {
   return value !== null && value !== undefined;
@@ -11,7 +10,7 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 
 const useLabelStatus = () => {
   const queryClient = useQueryClient();
-  const { shortIds } = useExtractShortId();
+  const { shortIds } = useExtractShortIds();
 
   const queries = useQueries({
     queries: shortIds.map((shortCode) => {
@@ -38,19 +37,13 @@ const useLabelStatus = () => {
       return ['pending', 'progress', 'success'].includes(item?.status || '');
     }) as VerifiedLabelItem[];
 
-  // store
-  useEffect(() => {
-    if (!isLoading && verifiedItems.length > 0) {
-      setVerifiedLabels(verifiedItems);
-    }
-  }, [isLoading, verifiedItems]);
-
   // single
   if (verifiedItems.length === 1) {
     return {
       isLoading,
       status: verifiedItems[0].status || '',
       notFound: false,
+      verifiedItems,
     };
   }
 
@@ -61,11 +54,12 @@ const useLabelStatus = () => {
       isLoading,
       status: isSuccess ? 'success' : 'progress',
       notFound: false,
+      verifiedItems,
     };
   }
 
   // not found
-  return { isLoading, status: '', notFound: true };
+  return { isLoading, status: '', verifiedItems: [], notFound: true };
 };
 
 export default useLabelStatus;

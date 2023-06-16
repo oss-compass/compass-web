@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import Link from 'next/link';
 import { useInViewport } from 'ahooks';
-import { getRepoName, getAnalyzeLink, getPathname } from '@common/utils';
+import { getShortAnalyzeLink, getPathname } from '@common/utils';
 import { Collection } from './type';
 import { useTranslation } from 'next-i18next';
 import {
@@ -19,6 +19,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
   const [inViewport] = useInViewport(ref);
   const length = collection.items.length;
   const showPreviousThree = collection.items.slice(0, 3);
+  const showPreviousThreeLabel = showPreviousThree.map((i) => i.label);
 
   const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
   const { data: hottestData, isLoading } = useCollectionHottestQuery(
@@ -33,7 +34,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
   const { data: bulkOverview } = useBulkOverviewQuery(
     client,
     {
-      labels: showPreviousThree,
+      labels: showPreviousThreeLabel,
     },
     { enabled: Boolean(inViewport) }
   );
@@ -68,9 +69,9 @@ const CollectionFullCard = (props: { collection: Collection }) => {
               </div>
             ) : (
               <>
-                {showHottestData.map(({ label, level }) => {
+                {showHottestData.map(({ label, level, shortCode }) => {
                   return (
-                    <Link key={label} href={getAnalyzeLink({ label, level })}>
+                    <Link key={label} href={getShortAnalyzeLink(shortCode)}>
                       <a className="flex w-full items-center text-sm hover:underline">
                         <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
                         <span className="truncate">
@@ -86,7 +87,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
         </div>
         <div className="flex flex-1 items-end pl-5">
           <div className="grid flex-1 grid-cols-3 gap-6">
-            {showPreviousThree.map((label) => {
+            {showPreviousThree.map(({ label, shortCode }) => {
               const pathname = getPathname(label);
               const overview = bulkOverview?.bulkOverview.find(
                 (i) => i.path === pathname
@@ -95,7 +96,12 @@ const CollectionFullCard = (props: { collection: Collection }) => {
                 (i) => i.activityScore as number
               );
               return (
-                <RepoCard key={label} label={label} chartData={chartData} />
+                <RepoCard
+                  key={label}
+                  label={label}
+                  chartData={chartData}
+                  shortCode={shortCode}
+                />
               );
             })}
           </div>

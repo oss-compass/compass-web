@@ -8,9 +8,8 @@ import client from '@graphql/client';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import MiniChart from '@common/components/EChartX/MiniChart';
 import {
-  getAnalyzeLink,
+  getShortAnalyzeLink,
   getFirstPathSegment,
-  getRepoLink,
   toFixed,
 } from '@common/utils';
 import Pagination from '@common/components/Pagination';
@@ -19,9 +18,10 @@ const RepoItem: React.FC<{
   name: string;
   path: string;
   backend: string;
+  shortCode: string;
   type: string;
   metricActivity: any[];
-}> = ({ name, path, backend, type, metricActivity }) => {
+}> = ({ name, path, shortCode, backend, type, metricActivity }) => {
   const { t } = useTranslation();
   const data = Array.isArray(metricActivity)
     ? metricActivity.map((i) => toFixed(i['activityScore'], 3))
@@ -29,12 +29,7 @@ const RepoItem: React.FC<{
 
   return (
     <div className="rounded border border-gray-300 px-4 py-3">
-      <Link
-        href={getAnalyzeLink({
-          label: getRepoLink(path, backend),
-          level: 'repo',
-        })}
-      >
+      <Link href={getShortAnalyzeLink(shortCode)}>
         <a className="hover:underline">
           <h4 className="text-sm font-bold line-clamp-2">{name}</h4>
         </a>
@@ -105,6 +100,7 @@ const CommunityRepos = () => {
                 key={repo.path}
                 type={repo.type!}
                 name={repo.name!}
+                shortCode={repo.shortCode!}
                 path={repo.path!}
                 backend={repo.backend!}
                 metricActivity={repo.metricActivity!}

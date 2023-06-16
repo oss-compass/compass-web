@@ -94,6 +94,7 @@ query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
       name
       path
       type
+      shortCode
       metricActivity {
         activityScore
         grimoireCreationDate
@@ -520,5 +521,13 @@ query betaMetricsIndex($per: Int, $page: Int) {
     desc
     extra
     metric
+  }
+}
+
+query bulkShortenedLabel($labels: [LabelRowInput!]!) {
+  bulkShortenedLabel(labels: $labels) {
+    label
+    level
+    shortCode
   }
 }

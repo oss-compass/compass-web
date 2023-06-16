@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import jsonData from '@public/data/collections.json';
 import { useBulkOverviewQuery } from '@graphql/generated';
 import client from '@graphql/client';
-import { getPathname, getCompareAnalyzeLink } from '@common/utils';
+import { getPathname, getShortCompareLink } from '@common/utils';
 import Compare from './assets/compare.svg';
 import { AiFillCaretDown } from 'react-icons/ai';
 
@@ -30,7 +30,7 @@ const MainContent = ({ items }: { items: Collection[] }) => {
 
   const labelList = collection?.items || [];
   const { data: bulkOverview } = useBulkOverviewQuery(client, {
-    labels: labelList,
+    labels: labelList.map((i) => i.label),
   });
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const MainContent = ({ items }: { items: Collection[] }) => {
             <div
               onClick={async () => {
                 if (compareList.length > 1) {
-                  await router.push(getCompareAnalyzeLink(compareList, 'repo'));
+                  await router.push(getShortCompareLink(compareList));
                 }
                 // setSelect(false);
               }}
@@ -164,7 +164,7 @@ const MainContent = ({ items }: { items: Collection[] }) => {
               'sm:grid-cols-1'
             )}
           >
-            {collection?.items?.map((label) => {
+            {collection?.items?.map(({ label, level, shortCode }) => {
               const pathname = getPathname(label);
               const overview = bulkOverview?.bulkOverview.find(
                 (i) => i.path === pathname
@@ -177,14 +177,15 @@ const MainContent = ({ items }: { items: Collection[] }) => {
                   <RepoCard
                     key={label}
                     label={label}
+                    shortCode={shortCode}
                     chartData={chartData}
                     compareMode={compareMode}
-                    onSelectChange={(checked, label) => {
+                    onSelectChange={(checked, { shortCode }) => {
                       if (checked) {
-                        setCompareList((pre) => [...pre, label]);
+                        setCompareList((pre) => [...pre, shortCode]);
                       } else {
                         setCompareList((pre) => {
-                          pre.splice(pre.indexOf(label), 1);
+                          pre.splice(pre.indexOf(shortCode), 1);
                           return [...pre];
                         });
                       }

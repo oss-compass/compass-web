@@ -31,8 +31,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/compare',
-        destination: '/analyze',
+        source: '/compare/:path*',
+        destination: '/analyze/:path*',
       },
     ];
   },
