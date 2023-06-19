@@ -23,6 +23,7 @@ function formatToArray(value: string | string[]) {
 const useUrlLabels = () => {
   const router = useRouter();
   const level = router.query.level as Level;
+
   const labels = useMemo(() => {
     const values = router.query.label;
     return formatToArray(values!);
@@ -31,7 +32,6 @@ const useUrlLabels = () => {
   const urlLabels = useMemo(() => {
     return [
       ...labels.map((label) => ({
-        name: level === Level.REPO ? getPathname(label) : label,
         label,
         level,
       })),

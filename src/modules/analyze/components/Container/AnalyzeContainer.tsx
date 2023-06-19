@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect } from 'react';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import { StatusContextProvider } from '@modules/analyze/context';
-import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
+import PageInfoInit from '@modules/analyze/components/PageInfoInit';
 import NoSsr from '@common/components/NoSsr';
 
 const AnalyzeContainer: React.FC<PropsWithChildren> = ({ children }) => {
@@ -12,7 +12,7 @@ const AnalyzeContainer: React.FC<PropsWithChildren> = ({ children }) => {
       <StatusContextProvider
         value={{ status, notFound, verifiedItems, isLoading }}
       >
-        <ColorThemeInit>{children}</ColorThemeInit>
+        <PageInfoInit>{children}</PageInfoInit>
       </StatusContextProvider>
     </NoSsr>
   );
