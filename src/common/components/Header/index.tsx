@@ -32,13 +32,13 @@ const Header: React.FC<{
             </Link>
 
             <Link href="/explore">
-              <a className={'mx-6 px-2.5 font-medium text-white'}>
+              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
                 {t('common:header.explore')}
               </a>
             </Link>
 
             <LinkX href="/docs/dimensions-define" legacyBehavior>
-              <a className={'mx-6 px-2.5 font-medium text-white'}>
+              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
                 {t('common:header.metrics_models')}
               </a>
             </LinkX>
@@ -46,13 +46,13 @@ const Header: React.FC<{
             <CommunityDropdown />
 
             <Link href="/lab">
-              <a className={'mx-6 px-2.5 font-medium text-white'}>
+              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
                 {t('common:header.lab')}
               </a>
             </Link>
 
             <Link href="/about">
-              <a className={'mx-6 px-2.5 font-medium text-white'}>
+              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
                 {t('common:header.about')}
               </a>
             </Link>

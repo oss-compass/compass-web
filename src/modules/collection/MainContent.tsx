@@ -4,197 +4,207 @@ import RepoCard from '../explore/RepoCard';
 import { useTranslation } from 'next-i18next';
 import { Collection } from '@modules/explore/type';
 import classnames from 'classnames';
-import jsonData from '@public/data/collections.json';
-import { useBulkOverviewQuery } from '@graphql/generated';
+import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
+import {
+  useCollectionListQuery,
+  CollectionListQuery,
+} from '@graphql/generated';
 import client from '@graphql/client';
-import { getPathname, getShortCompareLink } from '@common/utils';
-import Compare from './assets/compare.svg';
-import { AiFillCaretDown } from 'react-icons/ai';
+import Button from '@common/components/Button';
+import last from 'lodash/last';
+import MainHeader from './MainHeader';
+import MainMobileHeader from './MainMobileHeader';
 
-const collections = jsonData as unknown as Record<string, Collection>;
+const RenderList = ({
+  total,
+  isLoading,
+  compareMode,
+  data,
+  compareIds,
+  onCompareIdsChange,
+}: {
+  total: number;
+  isLoading: boolean;
+  compareMode: boolean;
+  data?: InfiniteData<CollectionListQuery>;
+  compareIds: string[];
+  onCompareIdsChange: (ids: string[]) => void;
+}) => {
+  const { t } = useTranslation();
 
-const MainContent = ({ items }: { items: Collection[] }) => {
-  const router = useRouter();
-  const selectRef = useRef<HTMLSelectElement>(null);
-  const { slug } = router.query;
-  const [compareMode, setCompareMode] = useState(false);
-  const [compareList, setCompareList] = useState<string[]>([]);
-  const { t, i18n } = useTranslation();
-  const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
-
-  const ident = Object.keys(collections).find((ident) => {
-    return collections[ident].slug === `/${slug}`;
-  });
-  const collection = ident ? collections[ident] : null;
-  const length = collection?.items.length;
-
-  const labelList = collection?.items || [];
-  const { data: bulkOverview } = useBulkOverviewQuery(client, {
-    labels: labelList.map((i) => i.label),
-  });
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      try {
-        const checkEle = selectRef.current?.querySelector('option:checked');
-        const helper = document.getElementById('select-element-width-helper')!;
-        if (helper) {
-          helper.innerHTML = checkEle!.innerHTML;
-          const width = helper.offsetWidth;
-          selectRef.current!.style.width = `${width + 10}px`;
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }, 0);
-    return () => {
-      clearTimeout(t);
-    };
-  }, [slug]);
-
-  const CompareBar = (
-    <div className="flex px-8 pt-4 pb-5 md:hidden">
-      <div className="mr-8">
-        <div className="text-xl font-bold">
-          {collection && collection[nameKey]}
-        </div>
-        <div className="text-xs text-gray-400">
-          {t('collection:repositories', { length: length })}
-        </div>
-      </div>
-      <div className="pt-1">
-        {compareMode ? (
-          <div className="flex text-xs ">
-            <div className="text-sm leading-8 text-gray-400">
-              {t('collection:please_select_two_or_more_repositories_below')}
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 flex-col ">
+        <div className="animate-pulse p-4">
+          <div className="flex-1 space-y-4 ">
+            <div className="h-4 rounded bg-slate-200"></div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+              <div className="col-span-1 h-4 rounded bg-slate-200"></div>
             </div>
-            <div
-              onClick={() => {
-                setCompareMode(false);
-              }}
-              className="ml-5 h-8 cursor-pointer border border-gray-500 px-3 py-2 text-center text-xs text-black "
-            >
-              {t('collection:cancel')}
+            <div className="h-4 rounded bg-slate-200"></div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+              <div className="col-span-2 h-4 rounded bg-slate-200"></div>
             </div>
-            <div
-              onClick={async () => {
-                if (compareList.length > 1) {
-                  await router.push(getShortCompareLink(compareList));
-                }
-                // setSelect(false);
-              }}
-              className={classnames(
-                'ml-2 h-8 cursor-pointer border-0 border-gray-500 bg-blue-600 px-3 py-2 text-center text-xs text-gray-50',
-                { 'bg-gray-300': compareList.length < 2 }
-              )}
-            >
-              {t('collection:compare')}
-            </div>
-          </div>
-        ) : (
-          <div
-            onClick={() => {
-              setCompareMode(true);
-            }}
-            className="h-8 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-8"
-          >
-            <div className="mr-2 inline-block align-text-bottom">
-              <Compare />
-            </div>
-
-            {t('collection:pick_for_compare')}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const MobileBar = (
-    <>
-      <div className="mb-4 flex flex h-11 items-center justify-between border-b bg-white px-4 >md:hidden">
-        <div className="flex items-center">
-          <select
-            ref={selectRef}
-            className={classnames(
-              'appearance-none bg-white font-medium outline-0'
-            )}
-            value={`/${slug}`}
-            onChange={async (e) => {
-              const collectionSlug = e.target.value;
-              await router.push(`/collection${collectionSlug}`);
-            }}
-          >
-            {items.map((item) => {
-              return (
-                <option key={item.ident} value={item.slug}>
-                  {`${item[nameKey]}`}
-                </option>
-              );
-            })}
-          </select>
-          <div className="text-xs">
-            <AiFillCaretDown />
+            <div className="h-4 rounded bg-slate-200"></div>
           </div>
         </div>
-        <div className="text-xs text-gray-400">
-          {t('collection:repositories', { length: length })}
-        </div>
       </div>
-      <span
-        id="select-element-width-helper"
-        className="absolute -left-[9999px]  appearance-none bg-white font-medium outline-0"
-      />
-    </>
-  );
+    );
+  }
+
+  if (total === 0) {
+    return (
+      <div className="py-10 text-center text-gray-400">
+        {t('common:no_data')}
+      </div>
+    );
+  }
 
   return (
-    <div className="flex-1 overflow-y-auto">
-      <div className="w-full">
-        {CompareBar}
-        {MobileBar}
-        <div className={classnames('px-8 pb-10', 'md:px-4')}>
-          <div
-            className={classnames(
-              'grid flex-1 gap-6',
-              '>2xl:grid-cols-5',
-              '2xl:grid-cols-5',
-              'xl:grid-cols-4',
-              'lg:grid-cols-3',
-              'md:grid-cols-2 md:gap-4',
-              'sm:grid-cols-1'
-            )}
-          >
-            {collection?.items?.map(({ label, level, shortCode }) => {
-              const pathname = getPathname(label);
-              const overview = bulkOverview?.bulkOverview.find(
-                (i) => i.path === pathname
-              );
-              const chartData = overview?.metricActivity.map(
+    <div
+      className={classnames(
+        'grid flex-1 gap-6',
+        '>2xl:grid-cols-5',
+        '2xl:grid-cols-5',
+        'xl:grid-cols-4',
+        'lg:grid-cols-3',
+        'md:grid-cols-2 md:gap-4',
+        'sm:grid-cols-1'
+      )}
+    >
+      {data?.pages.map((group, i) => (
+        <React.Fragment key={i}>
+          {group.collectionList.items?.map(
+            ({ origin, metricActivity, path, shortCode }) => {
+              const chartData = metricActivity.map(
                 (i) => i.activityScore as number
               );
               return (
-                <div className="w-full" key={label}>
+                <div className="w-full" key={origin}>
                   <RepoCard
-                    key={label}
-                    label={label}
-                    shortCode={shortCode}
+                    label={origin!}
+                    shortCode={shortCode!}
                     chartData={chartData}
                     compareMode={compareMode}
                     onSelectChange={(checked, { shortCode }) => {
                       if (checked) {
-                        setCompareList((pre) => [...pre, shortCode]);
+                        onCompareIdsChange([...compareIds, shortCode]);
                       } else {
-                        setCompareList((pre) => {
-                          pre.splice(pre.indexOf(shortCode), 1);
-                          return [...pre];
-                        });
+                        compareIds.splice(compareIds.indexOf(shortCode), 1);
+                        onCompareIdsChange([...compareIds]);
                       }
                     }}
                   />
                 </div>
               );
-            })}
-          </div>
+            }
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};
+
+const MainContent = ({
+  collectionArray,
+}: {
+  collectionArray: Collection[];
+}) => {
+  const router = useRouter();
+  const slug = router.query.slug as string;
+  const { t, i18n } = useTranslation();
+  const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
+
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+
+  const params = { ident: slug, page: 1, per: 30 };
+  const {
+    data,
+    status,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery(
+    useCollectionListQuery.getKey(params),
+    async ({ pageParam }) => {
+      return await useCollectionListQuery.fetcher(client, {
+        ...params,
+        ...pageParam,
+      })();
+    },
+    {
+      getNextPageParam: (lastPage) => {
+        const page = lastPage?.collectionList?.page! || 0;
+        const totalPage = lastPage?.collectionList?.totalPage! || 0;
+        if (totalPage > page) {
+          return { page: page + 1 };
+        }
+        return null;
+      },
+    }
+  );
+
+  const lastItem = last(data?.pages);
+  const total = lastItem?.collectionList.count || 0;
+
+  return (
+    <div className="flex-1 overflow-y-auto">
+      <div className="w-full">
+        <MainHeader
+          slug={slug}
+          nameKey={nameKey}
+          compareIds={compareIds}
+          total={total}
+          compareMode={compareMode}
+          onCompareModeChange={(v) => setCompareMode(v)}
+        />
+
+        <MainMobileHeader
+          slug={slug}
+          nameKey={nameKey}
+          collectionArray={collectionArray}
+          total={total}
+        />
+
+        <div className={classnames('px-8 pb-10', 'md:px-4')}>
+          <RenderList
+            isLoading={isLoading}
+            data={data}
+            total={total}
+            compareMode={compareMode}
+            compareIds={compareIds}
+            onCompareIdsChange={(ids) => {
+              setCompareIds(ids);
+            }}
+          />
+
+          {isLoading ? null : (
+            <div className="flex justify-center py-6">
+              {total > 0 ? (
+                <Button
+                  intent={'text'}
+                  onClick={() => fetchNextPage()}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                >
+                  {isFetchingNextPage ? (
+                    <div>{t('common:loading_more')}</div>
+                  ) : hasNextPage ? (
+                    <div className={'cursor-pointer text-primary'}>
+                      {t('common:load_more')}
+                    </div>
+                  ) : (
+                    <div className="text-gray-600">
+                      {t('common:nothing_more_to_load')}
+                    </div>
+                  )}
+                </Button>
+              ) : null}
+            </div>
+          )}
         </div>
       </div>
     </div>

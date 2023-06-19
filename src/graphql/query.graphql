@@ -469,6 +469,26 @@ query collectionHottest($ident: String!, $limit: Int) {
   }
 }
 
+query collectionList($ident: String!, $level: String, $page: Int, $per: Int) {
+  collectionList(ident: $ident, level: $level, page: $page, per: $per) {
+    page
+    totalPage
+    count
+    items {
+      backend
+      language
+      name
+      openIssuesCount
+      origin
+      path
+      shortCode
+      metricActivity {
+        activityScore
+      }
+    }
+  }
+}
+
 query bulkOverview($labels: [String!]!) {
   bulkOverview(labels: $labels) {
     backend

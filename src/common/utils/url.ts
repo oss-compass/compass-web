@@ -45,6 +45,7 @@ export function getRepoName(path: string) {
 
 //https://github.com/  =>  github
 export function getProvider(url: string) {
+  if (!url) return '';
   const result = url.match(/^https:\/\/(.+?)\..+$/i);
   if (result && result.length >= 2) {
     return result[1];

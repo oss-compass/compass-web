@@ -45,6 +45,7 @@
   "search": {
     "no_result": "No result"
   },
+  "no_data": "No data available",
   "next": "Next",
   "know_more": "Know more",
   "ago": "ago",
@@ -62,5 +63,8 @@
   "toast": {
     "modification_successful": "Modification Successful",
     "modification_failed": "Modification Failed"
-  }
+  },
+  "loading_more": "Loading more...",
+  "load_more": "Load More",
+  "nothing_more_to_load": "Nothing more to load"
 }

@@ -156,6 +156,8 @@ export type BetaMetricScore = {
   name?: Maybe<Scalars['String']>;
   /** score of this beta metric */
   score?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
 };
 
 export type BetaRepo = {
@@ -313,6 +315,14 @@ export type CodequalitySummary = {
   prIssueLinkedCount?: Maybe<MetricStat>;
   /** ratio of pulls which are linked issues and all pulls */
   prIssueLinkedRatio?: Maybe<MetricStat>;
+};
+
+export type CollectionPage = {
+  __typename?: 'CollectionPage';
+  count?: Maybe<Scalars['Int']>;
+  items?: Maybe<Array<Repo>>;
+  page?: Maybe<Scalars['Int']>;
+  totalPage?: Maybe<Scalars['Int']>;
 };
 
 export type CommunityMetric = {
@@ -696,6 +706,8 @@ export type Query = {
   bulkShortenedLabel: Array<LabelRow>;
   /** Get hottest reports of a collection */
   collectionHottest: Array<ProjectCompletionRow>;
+  /** Get collection list by a ident */
+  collectionList: CollectionPage;
   /** Get overview data of a community */
   communityOverview: CommunityOverview;
   currentUser?: Maybe<User>;
@@ -766,6 +778,13 @@ export type QueryCollectionHottestArgs = {
   ident: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
   limit?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryCollectionListArgs = {
+  ident: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryCommunityOverviewArgs = {
@@ -1741,6 +1760,37 @@ export type CollectionHottestQuery = {
     status?: string | null;
     updatedAt?: any | null;
   }>;
+};
+
+export type CollectionListQueryVariables = Exact<{
+  ident: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type CollectionListQuery = {
+  __typename?: 'Query';
+  collectionList: {
+    __typename?: 'CollectionPage';
+    page?: number | null;
+    totalPage?: number | null;
+    count?: number | null;
+    items?: Array<{
+      __typename?: 'Repo';
+      backend?: string | null;
+      language?: string | null;
+      name?: string | null;
+      openIssuesCount?: number | null;
+      origin: string;
+      path?: string | null;
+      shortCode?: string | null;
+      metricActivity: Array<{
+        __typename?: 'ActivityMetric';
+        activityScore?: number | null;
+      }>;
+    }> | null;
+  };
 };
 
 export type BulkOverviewQueryVariables = Exact<{
@@ -3153,6 +3203,62 @@ useCollectionHottestQuery.fetcher = (
   fetcher<CollectionHottestQuery, CollectionHottestQueryVariables>(
     client,
     CollectionHottestDocument,
+    variables,
+    headers
+  );
+export const CollectionListDocument = /*#__PURE__*/ `
+    query collectionList($ident: String!, $level: String, $page: Int, $per: Int) {
+  collectionList(ident: $ident, level: $level, page: $page, per: $per) {
+    page
+    totalPage
+    count
+    items {
+      backend
+      language
+      name
+      openIssuesCount
+      origin
+      path
+      shortCode
+      metricActivity {
+        activityScore
+      }
+    }
+  }
+}
+    `;
+export const useCollectionListQuery = <
+  TData = CollectionListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CollectionListQueryVariables,
+  options?: UseQueryOptions<CollectionListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CollectionListQuery, TError, TData>(
+    ['collectionList', variables],
+    fetcher<CollectionListQuery, CollectionListQueryVariables>(
+      client,
+      CollectionListDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCollectionListQuery.getKey = (variables: CollectionListQueryVariables) => [
+  'collectionList',
+  variables,
+];
+useCollectionListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CollectionListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CollectionListQuery, CollectionListQueryVariables>(
+    client,
+    CollectionListDocument,
     variables,
     headers
   );
