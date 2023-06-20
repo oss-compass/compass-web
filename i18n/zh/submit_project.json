@@ -44,7 +44,7 @@
   "manually_enter_repository_url": "手动输入",
   "choose_a_repository": "从 {{providerName}} 中选择",
   "submit_success": "提交成功！",
-  "welcome_to": "欢迎到来 OSS Compass",
+  "welcome_to": "欢迎来到 OSS Compass",
   "continue_with_github": "使用 GitHub 登录",
   "continue_with_gitee": "使用 Gitee 登录",
   "by_creating_an_account": "要创建一个帐户，您同意",

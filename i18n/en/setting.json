@@ -38,6 +38,8 @@
     "unsubscribe": "Unsubscribe",
     "empty_list": "No subscription data",
     "updated_on": "Updated on ",
+    "collect_at": "Last data update time",
+    "complete_at": "Analysis report update time",
     "analyzing": "Analyzing",
     "confirm_cancel": "Confirm unsubscribe",
     "after_unsubscribing_you_will_no_longer_receive_any": "After unsubscribing, you will no longer receive any notifications related to this project."

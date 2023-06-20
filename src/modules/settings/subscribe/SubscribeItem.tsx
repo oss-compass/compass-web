@@ -11,15 +11,34 @@ import { getRepoName, getProvider, getNameSpace } from '@common/utils/url';
 import { formatISO } from '@common/utils/time';
 import { getAnalyzeLink } from '@common/utils/links';
 import { Level } from '@modules/analyze/constant';
+import Tooltip from '@common/components/Tooltip';
 
 const ItemStatus = ({ item }: { item: Subscription }) => {
   const { t } = useTranslation();
 
   if (item.status === 'complete') {
+    const tooltipText = `${t('setting:subscriptions.collect_at')} : ${formatISO(
+      item.collectAt
+    )}<br>   
+    ${t('setting:subscriptions.complete_at')} : ${formatISO(item.completeAt)}`;
+
     return (
-      <span className="text-xs text-secondary">
-        {t('setting:subscriptions.updated_on')}
-        {formatISO(item.statusUpdatedAt)}
+      <span className="cursor-default text-xs text-secondary">
+        <Tooltip
+          title={
+            <div
+              className="p-2 text-center"
+              dangerouslySetInnerHTML={{ __html: tooltipText }}
+            />
+          }
+          arrow
+          placement="bottom"
+        >
+          <span>
+            {t('setting:subscriptions.updated_on')}
+            {formatISO(item.statusUpdatedAt)}
+          </span>
+        </Tooltip>
       </span>
     );
   }

@@ -880,12 +880,14 @@ export type SubjectSubscriptionCount = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  collectAt?: Maybe<Scalars['ISO8601DateTime']>;
+  completeAt?: Maybe<Scalars['ISO8601DateTime']>;
   count: Scalars['Int'];
   id: Scalars['Int'];
   label: Scalars['String'];
   level: Scalars['String'];
   status: Scalars['String'];
-  statusUpdatedAt: Scalars['ISO8601DateTime'];
+  statusUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
 };
 
 export type SubscriptionPage = {
@@ -1118,7 +1120,9 @@ export type SubscriptionsQuery = {
         label: string;
         level: string;
         status: string;
-        statusUpdatedAt: any;
+        statusUpdatedAt?: any | null;
+        collectAt?: any | null;
+        completeAt?: any | null;
       }> | null;
     };
   } | null;
@@ -2268,6 +2272,8 @@ export const SubscriptionsDocument = /*#__PURE__*/ `
         level
         status
         statusUpdatedAt
+        collectAt
+        completeAt
       }
     }
   }
