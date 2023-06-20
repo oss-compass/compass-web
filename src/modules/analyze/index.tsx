@@ -1,4 +1,5 @@
-import React, { memo, PropsWithChildren, useEffect } from 'react';
+import React from 'react';
+import LegacyLabelRedirect from './components/Container/LegacyLabelRedirect';
 import AnalyzeContainer from './components/Container/AnalyzeContainer';
 import HeaderWithFilterBar from './components/HeaderWithFitlerBar';
 import { Main, Content } from '@common/components/Layout';
@@ -8,16 +9,18 @@ import DataView from './DataView';
 
 const Analyze = () => {
   return (
-    <AnalyzeContainer>
-      <HeaderWithFilterBar />
-      <Main>
-        <SideBar />
-        <Content>
-          <DataView />
-          <Footer />
-        </Content>
-      </Main>
-    </AnalyzeContainer>
+    <LegacyLabelRedirect>
+      <AnalyzeContainer>
+        <HeaderWithFilterBar />
+        <Main>
+          <SideBar />
+          <Content>
+            <DataView />
+            <Footer />
+          </Content>
+        </Main>
+      </AnalyzeContainer>
+    </LegacyLabelRedirect>
   );
 };
 

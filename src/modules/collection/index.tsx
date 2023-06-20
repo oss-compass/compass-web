@@ -8,11 +8,13 @@ import jsonData from '@public/data/collections.json';
 import menusData from '@public/data/collections—menus.json';
 import { Collection } from '../explore/type';
 
-const collections = jsonData as unknown as Record<string, Collection>;
+const collectionsMap = jsonData as unknown as Record<string, Collection>;
 
 const Collection = () => {
   const { t } = useTranslation();
-  const items = Object.keys(collections).map((k) => collections[k]);
+  const collectionArray = Object.keys(collectionsMap).map(
+    (k) => collectionsMap[k]
+  );
 
   return (
     <>
@@ -20,11 +22,11 @@ const Collection = () => {
       <div
         className={classnames(
           'flex h-[calc(100vh-80px)] w-full bg-[#FAFAFA]',
-          'md:h-[calc(100vh-44px)]'
+          'lg:h-[calc(100vh-44px)]'
         )}
       >
         <SideMenus menus={menusData} />
-        <MainContent items={items} />
+        <MainContent collectionArray={collectionArray} />
       </div>
     </>
   );

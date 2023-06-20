@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import classnames from 'classnames';
 import { withErrorBoundary } from 'react-error-boundary';
 import { usePrevious, useWindowScroll } from 'react-use';
-import { useConfigContext } from '@modules/analyze/context';
+import { useStatusContext } from '@modules/analyze/context';
 import { checkIsPending } from '@modules/analyze/constant';
 import MenuLoading from '@modules/analyze/components/SideBar/Menu/MenuLoading';
 import TopicOverview from '@modules/analyze/components/SideBar/TopicOverview';
@@ -34,7 +34,7 @@ const SideBarMenuContent = () => {
 };
 
 export const SideBarMenu: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status } = useConfigContext();
+  const { status } = useStatusContext();
 
   if (checkIsPending(status)) {
     return <MenuLoading />;

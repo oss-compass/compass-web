@@ -1,5 +1,43 @@
-import { SearchQuery, BetaMetricOverviewQuery } from '@graphql/generated';
+import { SearchQuery } from '@graphql/generated';
+import uniq from 'lodash/uniq';
 import { Level } from '@modules/analyze/constant';
+
+export const getShortAnalyzeLink = (
+  item: SearchQuery['fuzzySearch'][number] | string | undefined | null
+) => {
+  if (!item) return '/';
+  const shortCode = typeof item === 'string' ? item : item.shortCode;
+  return `/analyze/${shortCode}`;
+};
+
+export const getShortCompareLink = (list: string[]) => {
+  const url = list.reduce((pre, cur) => {
+    if (pre === '') return cur;
+    return pre + '..' + cur;
+  }, '');
+  return `/compare/${url}`;
+};
+
+export const compareIdsAdd = (ids: string, addId: string) => {
+  if (!ids) return addId;
+  const newIds = uniq(compareIdsSplit(ids));
+  return compareIdsJoin([...newIds, addId]);
+};
+
+export const compareIdsRemove = (ids: string, removeId: string) => {
+  const idArr = ids.split('..');
+  const newIds = idArr.filter((i) => i !== removeId);
+  return compareIdsJoin(newIds);
+};
+
+export const compareIdsSplit = (ids: string | undefined) => {
+  if (!ids) return [];
+  return ids.split('..').filter(Boolean);
+};
+
+export const compareIdsJoin = (ids: string[]) => {
+  return uniq(ids.filter(Boolean)).join('..');
+};
 
 export const getAnalyzeLink = (item: SearchQuery['fuzzySearch'][number]) => {
   return `/analyze?label=${encodeURIComponent(item.label!)}&level=${

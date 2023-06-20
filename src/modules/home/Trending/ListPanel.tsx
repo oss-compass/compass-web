@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { BsCodeSquare } from 'react-icons/bs';
 import { TrendingQuery } from '@graphql/generated';
 import { formatLabel } from '@common/utils/format';
-import { getAnalyzeLink } from '@common/utils/links';
+import { getShortAnalyzeLink, getAnalyzeLink } from '@common/utils/links';
 import ProviderIcon from '@common/components/ProviderIcon';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Level } from '@modules/analyze/constant';
@@ -75,10 +75,11 @@ const ListPanel = (props: {
       {props.trending.map((item) => {
         const info = formatLabel(item.label || '');
         return (
-          <Link
-            key={item.label}
-            href={getAnalyzeLink({ label: item.label, level: item.level })}
-          >
+          <Link key={item.label} href={getShortAnalyzeLink(item.shortCode)}>
+            {/*<Link*/}
+            {/*  key={item.label}*/}
+            {/*  href={getAnalyzeLink({ label: item.label, level: item.level })}*/}
+            {/*>*/}
             <a className="flex cursor-pointer justify-between border-b py-3 last:border-0">
               <div className="">
                 <div className="mb-1 font-bold">{info.name}</div>

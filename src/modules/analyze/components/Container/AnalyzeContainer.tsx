@@ -1,24 +1,20 @@
 import React, { PropsWithChildren, useEffect } from 'react';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import { resetVerifiedLabels } from '@modules/analyze/store';
-import { ConfigContextProvider } from '@modules/analyze/context';
-import ColorThemeInit from '@modules/analyze/components/ColorThemeInit';
+import { StatusContextProvider } from '@modules/analyze/context';
+import PageInfoInit from '@modules/analyze/components/PageInfoInit';
+import NoSsr from '@common/components/NoSsr';
 
 const AnalyzeContainer: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, isLoading, isError } = useLabelStatus();
-
-  // todo make state only live in React lifecycle
-  // https://github.com/pmndrs/valtio/wiki/How-to-use-with-context
-  useEffect(() => {
-    return () => {
-      resetVerifiedLabels();
-    };
-  }, []);
+  const { status, isLoading, notFound, verifiedItems } = useLabelStatus();
 
   return (
-    <ConfigContextProvider value={{ status, isError, isLoading }}>
-      <ColorThemeInit>{children}</ColorThemeInit>
-    </ConfigContextProvider>
+    <NoSsr>
+      <StatusContextProvider
+        value={{ status, notFound, verifiedItems, isLoading }}
+      >
+        <PageInfoInit>{children}</PageInfoInit>
+      </StatusContextProvider>
+    </NoSsr>
   );
 };
 

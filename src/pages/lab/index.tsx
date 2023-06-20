@@ -16,11 +16,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 const LabPage = () => {
   return (
-    <>
+    <NoSsr>
       <Header />
       <Banner />
       <Model />
-    </>
+    </NoSsr>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useInViewport } from 'ahooks';
 import Link from 'next/link';
-import { getAnalyzeLink, getPathname } from '@common/utils';
+import { getShortAnalyzeLink, getPathname } from '@common/utils';
 import { Collection } from './type';
 import { useTranslation } from 'next-i18next';
 import { useCollectionHottestQuery } from '@graphql/generated';
@@ -60,9 +60,9 @@ const CollectionCard = (props: { collection: Collection }) => {
           </div>
         ) : (
           <>
-            {showHottestData.map(({ label, level }) => {
+            {showHottestData.map(({ label, level, shortCode }) => {
               return (
-                <Link key={label} href={getAnalyzeLink({ label, level })}>
+                <Link key={label} href={getShortAnalyzeLink(shortCode)}>
                   <a className="flex w-full items-center text-sm hover:underline">
                     <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
                     <span className="truncate">

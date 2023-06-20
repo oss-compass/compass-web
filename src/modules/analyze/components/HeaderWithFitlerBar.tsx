@@ -5,7 +5,6 @@ import Header from '@common/components/Header';
 import { SideBarMenu } from '@modules/analyze/components/SideBar';
 import NavBar from '@modules/analyze/components/NavBar';
 import TopicNavbar from '@modules/analyze/components/TopicNavbar';
-import NoSsr from '@common/components/NoSsr';
 
 const HeaderBarWrap: React.FC<PropsWithChildren> = ({ children }) => {
   const { y } = useWindowScroll();
@@ -25,6 +24,7 @@ const HeaderBarWrap: React.FC<PropsWithChildren> = ({ children }) => {
 const HeaderWithFilterBar = () => {
   return (
     <HeaderBarWrap>
+      {/* Head Black Including language switch, login  */}
       <Header
         mobileMenu={
           <div className="pb-8 pt-8">
@@ -32,10 +32,11 @@ const HeaderWithFilterBar = () => {
           </div>
         }
       />
+
+      {/* date picker, and parameter settings bar */}
       <NavBar />
-      <NoSsr>
-        <TopicNavbar />
-      </NoSsr>
+
+      <TopicNavbar />
     </HeaderBarWrap>
   );
 };

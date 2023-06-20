@@ -1,69 +1,65 @@
-import { useEffect } from 'react';
 import client from '@graphql/client';
-import { StatusQuery, useStatusQuery } from '@graphql/generated';
+import { StatusVerifyQuery, useStatusVerifyQuery } from '@graphql/generated';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
-import useExtractUrlLabels from './useExtractUrlLabels';
-import { setVerifiedLabels } from '@modules/analyze/store';
+import useExtractShortIds from './useExtractShortIds';
+import { VerifiedLabelItem } from '@modules/analyze/context';
+
+function nonNullable<T>(value: T): value is NonNullable<T> {
+  return value !== null && value !== undefined;
+}
 
 const useLabelStatus = () => {
   const queryClient = useQueryClient();
-  const { urlLabels } = useExtractUrlLabels();
+  const { shortIds } = useExtractShortIds();
 
   const queries = useQueries({
-    queries: urlLabels.map(({ label, level }) => {
+    queries: shortIds.map((shortCode) => {
       return {
-        queryKey: useStatusQuery.getKey({ label }),
-        queryFn: useStatusQuery.fetcher(client, { label }),
+        queryKey: useStatusVerifyQuery.getKey({ shortCode }),
+        queryFn: useStatusVerifyQuery.fetcher(client, { shortCode }),
       };
     }),
   });
+
   const isLoading = queries.some((query) => query.isLoading);
-  const queriesResult = urlLabels.map(({ label, level }) => {
-    const key = useStatusQuery.getKey({ label });
-    const data = queryClient.getQueryData<StatusQuery>(key);
-    return { label, level, data };
+
+  const queriesResult = shortIds.map((shortCode) => {
+    const key = useStatusVerifyQuery.getKey({ shortCode });
+    const data = queryClient.getQueryData<StatusVerifyQuery>(key);
+    return { ...data?.analysisStatusVerify };
   });
 
   // server verified Items
   const verifiedItems = queriesResult
-    .map(({ label, level, data }) => ({
-      label,
-      level,
-      status: data?.analysisStatus,
-    }))
-    .filter(({ status }) => {
-      return ['pending', 'progress', 'success'].includes(status || '');
-    });
+    .filter(nonNullable)
+    .filter((item) => Boolean(item?.label))
+    .filter((item) => {
+      return ['pending', 'progress', 'success'].includes(item?.status || '');
+    }) as VerifiedLabelItem[];
 
-  // store
-  useEffect(() => {
-    if (!isLoading && verifiedItems.length > 0) {
-      setVerifiedLabels(verifiedItems);
-    }
-  }, [isLoading, verifiedItems]);
-
+  // single
   if (verifiedItems.length === 1) {
     return {
       isLoading,
       status: verifiedItems[0].status || '',
-      isError: false,
+      notFound: false,
+      verifiedItems,
     };
   }
 
+  //  compare
   if (verifiedItems.length > 1) {
     const isSuccess = verifiedItems.every(({ status }) => status === 'success');
     return {
       isLoading,
       status: isSuccess ? 'success' : 'progress',
-      isError: false,
+      notFound: false,
+      verifiedItems,
     };
   }
 
-  return {
-    isLoading,
-    isError: true,
-    status: '',
-  };
+  // not found
+  return { isLoading, status: '', verifiedItems: [], notFound: true };
 };
 
 export default useLabelStatus;

@@ -19,16 +19,21 @@ const getInitialTheme = (
   );
 };
 
-const ColorThemeInit: React.FC<PropsWithChildren> = ({ children }) => {
+// init page title and label color theme
+const PageInfoInit: React.FC<PropsWithChildren> = ({ children }) => {
   const { compareItems } = useCompareItems();
 
-  // chart Theme
   useEffect(() => {
+    // chart Theme
     const initialTheme = getInitialTheme(compareItems);
     initThemeColor(initialTheme);
+
+    // page title
+    const names = compareItems.map((i) => i.name);
+    document.title = 'OSS Compass | ' + names.join(' vs ');
   }, [compareItems]);
 
   return <>{children}</>;
 };
 
-export default ColorThemeInit;
+export default PageInfoInit;

@@ -9,6 +9,7 @@ import {
 } from '@graphql/generated';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { CgSpinner } from 'react-icons/cg';
+import { toast } from 'react-hot-toast';
 
 const SubscribeButton = () => {
   const { t } = useTranslation();
@@ -24,6 +25,15 @@ const SubscribeButton = () => {
   const Create = useCreateSubscriptionMutation(client, {
     onSuccess: () => {
       refetch();
+    },
+    onError: (e: any) => {
+      const errors = e?.response?.errors;
+      let msg = '';
+      if (Array.isArray(errors) && errors.length > 0) {
+        msg = errors[0].message;
+      }
+
+      toast.error(msg || 'failed');
     },
   });
   const Cancel = useCancelSubscriptionMutation(client, {

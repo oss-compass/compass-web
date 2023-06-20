@@ -36,6 +36,7 @@
     "code": "Code"
   },
   "error": {
+    "url_404": "404 Not Found",
     "invalid_url_query": "invalid url query",
     "something_went_wrong": "Something went wrong:",
     "try_to_refresh_this_page_or_feel_free_to_contact_u": "Try to refresh this page or feel free to contact us if the problem presists.",
@@ -45,6 +46,7 @@
   "search": {
     "no_result": "No result"
   },
+  "no_data": "No data available",
   "next": "Next",
   "know_more": "Know more",
   "ago": "ago",
@@ -62,5 +64,8 @@
   "toast": {
     "modification_successful": "Modification Successful",
     "modification_failed": "Modification Failed"
-  }
+  },
+  "loading_more": "Loading more...",
+  "load_more": "Load More",
+  "nothing_more_to_load": "Nothing more to load"
 }

@@ -9,15 +9,31 @@ import { SearchQuery, useSearchQuery } from '@graphql/generated';
 import client from '@graphql/client';
 import { AiOutlineLoading, AiOutlinePlus } from 'react-icons/ai';
 import { Level } from '@modules/analyze/constant';
+import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { removeHttps } from '@common/utils';
+import { compareIdsAdd } from '@common/utils/links';
+
+const checkLevel = (shortId: string) => {
+  if (shortId.startsWith('s')) {
+    return Level.REPO;
+  }
+  if (shortId.startsWith('c')) {
+    return Level.REPO;
+  }
+  return Level.REPO;
+};
 
 const AddInput = () => {
   const { t } = useTranslation();
   const search = window.location.search;
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
   const router = useRouter();
-  const level = router.query.level as Level;
+  const { compareItems, compareSlugs } = useCompareItems();
+  const firstItem = compareItems[0];
+  const level = firstItem.level;
+
   const q = gsap.utils.selector(ref);
 
   const [confirmItem, setConfirmItem] = useState<
@@ -93,12 +109,9 @@ const AddInput = () => {
               className="flex h-10 w-24 items-center justify-center bg-white text-[#00B5EA] hover:bg-gray-100"
               onClick={async () => {
                 if (confirmItem) {
-                  const { label } = confirmItem;
-                  await router.push(
-                    `${router.pathname}${search}&label=${encodeURIComponent(
-                      label!
-                    )}`
-                  );
+                  const { shortCode } = confirmItem;
+                  const slug = compareIdsAdd(compareSlugs, shortCode!);
+                  await router.push(`/compare/${slug}`);
                   resetInput();
                 }
               }}

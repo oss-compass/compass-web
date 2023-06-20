@@ -43,10 +43,21 @@ query status($label: String!) {
   analysisStatus(label: $label)
 }
 
+query statusVerify($label: String, $shortCode: String) {
+  analysisStatusVerify(label: $label, shortCode: $shortCode) {
+    label
+    level
+    shortCode
+    status
+  }
+}
+
 query search($keyword: String!, $level: String) {
   fuzzySearch(keyword: $keyword, level: $level) {
     level
     label
+    status
+    shortCode
   }
 }
 
@@ -60,6 +71,7 @@ query latestMetrics($label: String!, $level: String) {
     communitySupportScoreUpdatedAt
     label
     level
+    shortCode
     organizationsActivity
     organizationsActivityUpdatedAt
     reposCount
@@ -82,6 +94,7 @@ query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
       name
       path
       type
+      shortCode
       metricActivity {
         activityScore
         grimoireCreationDate
@@ -118,6 +131,7 @@ query metric(
     isMaintained
     label
     level
+    shortCode
     type
     linesAddedFrequency
     linesRemovedFrequency
@@ -147,6 +161,7 @@ query metric(
     issueOpenTimeMid
     label
     level
+    shortCode
     type
     prOpenTimeAvg
     prOpenTimeMid
@@ -173,6 +188,7 @@ query metric(
     grimoireCreationDate
     label
     level
+    shortCode
     type
     recentReleasesCount
     updatedIssuesCount
@@ -194,6 +210,7 @@ query metric(
     grimoireCreationDate
     label
     level
+    shortCode
     type
     orgCount
     organizationsActivity
@@ -426,6 +443,7 @@ query labMetric(
     grimoireCreationDate
     label
     level
+    shortCode
     prTimeToCloseAvg
     prTimeToCloseMid
     prTimeToFirstResponseAvg
@@ -445,8 +463,29 @@ query collectionHottest($ident: String!, $limit: Int) {
   collectionHottest(ident: $ident, limit: $limit) {
     label
     level
+    shortCode
     status
     updatedAt
+  }
+}
+
+query collectionList($ident: String!, $level: String, $page: Int, $per: Int) {
+  collectionList(ident: $ident, level: $level, page: $page, per: $per) {
+    page
+    totalPage
+    count
+    items {
+      backend
+      language
+      name
+      openIssuesCount
+      origin
+      path
+      shortCode
+      metricActivity {
+        activityScore
+      }
+    }
   }
 }
 
@@ -468,6 +507,7 @@ query bulkOverview($labels: [String!]!) {
 
 query trending($level: String = "repo") {
   trending(level: $level) {
+    shortCode
     activityScore
     fullPath
     label
@@ -501,5 +541,13 @@ query betaMetricsIndex($per: Int, $page: Int) {
     desc
     extra
     metric
+  }
+}
+
+query bulkShortenedLabel($labels: [LabelRowInput!]!) {
+  bulkShortenedLabel(labels: $labels) {
+    label
+    level
+    shortCode
   }
 }
