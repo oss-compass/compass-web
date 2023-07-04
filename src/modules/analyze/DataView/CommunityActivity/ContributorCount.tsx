@@ -30,6 +30,18 @@ const ContributorCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.contributor_count_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.contributor_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.contributor_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.contributor_count_more.detail'
+      )}
+      notes={t(
+        'metrics_models:community_activity.metrics.contributor_count_more.notes'
+      )}
       docLink={'/docs/metrics-models/robustness/activity/#contributor-count'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

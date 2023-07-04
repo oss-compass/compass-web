@@ -63,6 +63,15 @@ const ContributorCount = () => {
       description={t(
         'metrics_models:collaboration_development_index.metrics.contributor_count_desc'
       )}
+      weight={t(
+        'metrics_models:collaboration_development_index.metrics.contributor_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:collaboration_development_index.metrics.contributor_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:collaboration_development_index.metrics.contributor_count_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#code-contributor-count'
       }

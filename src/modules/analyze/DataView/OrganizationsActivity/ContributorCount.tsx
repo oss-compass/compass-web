@@ -29,6 +29,15 @@ const ContributorCount = () => {
       description={t(
         'metrics_models:organization_activity.metrics.contributor_count_desc'
       )}
+      weight={t(
+        'metrics_models:organization_activity.metrics.contributor_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:organization_activity.metrics.contributor_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:organization_activity.metrics.contributor_count_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/niche-creation/organization-activity/#contributor-count'
       }

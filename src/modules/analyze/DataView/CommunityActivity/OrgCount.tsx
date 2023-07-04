@@ -30,6 +30,15 @@ const OrgCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.organization_count_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.organization_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.organization_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.organization_count_more.detail'
+      )}
       docLink={'/docs/metrics-models/robustness/activity/#organization-count'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

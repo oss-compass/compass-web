@@ -56,6 +56,15 @@ const CommitPRLinkedRatio = () => {
       description={t(
         'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio_desc'
       )}
+      weight={t(
+        'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:collaboration_development_index.metrics.commit_pr_linked_ratio_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-pr-linked-ratio'
       }

@@ -31,6 +31,15 @@ const RecentReleasesCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.recent_releases_count_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.recent_releases_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.recent_releases_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.recent_releases_count_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/robustness/activity/#recent-releases-count'
       }

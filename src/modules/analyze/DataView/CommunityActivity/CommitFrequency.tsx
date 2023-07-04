@@ -27,6 +27,15 @@ const CommitFrequency = () => {
       description={t(
         'metrics_models:community_activity.metrics.commit_frequency_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.commit_frequency_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.commit_frequency_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.commit_frequency_more.detail'
+      )}
       docLink={'/docs/metrics-models/robustness/activity/#commit-frequency'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

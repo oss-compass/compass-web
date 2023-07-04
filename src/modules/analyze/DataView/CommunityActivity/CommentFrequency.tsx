@@ -30,6 +30,15 @@ const CommentFrequency = () => {
       description={t(
         'metrics_models:community_activity.metrics.comment_frequency_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.comment_frequency_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.comment_frequency_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.comment_frequency_more.detail'
+      )}
       docLink={'/docs/metrics-models/robustness/activity/#comment-frequency'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

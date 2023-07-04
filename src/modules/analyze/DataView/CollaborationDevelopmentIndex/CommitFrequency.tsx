@@ -32,6 +32,15 @@ const CommitFrequency = () => {
       description={t(
         'metrics_models:collaboration_development_index.metrics.commit_frequency_desc'
       )}
+      weight={t(
+        'metrics_models:collaboration_development_index.metrics.commit_frequency_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:collaboration_development_index.metrics.commit_frequency_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:collaboration_development_index.metrics.commit_frequency_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-frequency'
       }

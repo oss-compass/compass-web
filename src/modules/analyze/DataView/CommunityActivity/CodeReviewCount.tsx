@@ -29,6 +29,15 @@ const CodeReviewCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.code_review_count_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.code_review_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.code_review_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.code_review_count_more.detail'
+      )}
       docLink={'/docs/metrics-models/robustness/activity/#code-review-count'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

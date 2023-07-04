@@ -55,6 +55,18 @@ const IsMaintained = () => {
       description={t(
         'metrics_models:collaboration_development_index.metrics.is_maintained_desc'
       )}
+      weight={t(
+        'metrics_models:collaboration_development_index.metrics.is_maintained_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:collaboration_development_index.metrics.is_maintained_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:collaboration_development_index.metrics.is_maintained_more.detail'
+      )}
+      notes={t(
+        'metrics_models:collaboration_development_index.metrics.is_maintained_more.notes'
+      )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#is-maintained'
       }

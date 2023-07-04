@@ -54,6 +54,15 @@ const PRIssueLinked = () => {
       description={t(
         'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio_desc'
       )}
+      weight={t(
+        'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:collaboration_development_index.metrics.pr_issue_linked_ratio_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#pr-issue-linked-ratio'
       }
