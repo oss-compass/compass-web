@@ -1,82 +1,220 @@
 {
   "collaboration_development_index": {
     "title": "协作开发指数",
-    "desc": "开源项目作为人类群体智能的典型表现，是否能够建立协作式的开发管理，是促成项目成功的关键要素。",
+    "desc": "开源项目作为人类群体智能的典型表现，是否能够建立协作式的开发管理，是促成项目成功的关键要素。而代码，作为一个软件项目的最终输出件，是整个社区的核心内容。所以我们围绕一系列与代码贡献相关的间接指标，来评估开发流程管理，社区协作式开发做得如何。",
     "metrics": {
       "contributor_count": "代码参与者数量",
       "contributor_count_desc": "在过去 90 天内有多少活跃的代码提交者、代码审核者和 PR 提交者。",
+      "contributor_count_more": {
+        "weight": "19.987%",
+        "threshold": "1000",
+        "detail": "这里我们重点关注的是与代码贡献直接相关的贡献者数量。作为这个模型的结果性指标，它标识开发协作管理优秀的社区，会聚集越来越多的活跃代码贡献者。我们相信部分Issue也与代码贡献相关，如漏洞类，Bug类，新需求等，最终都会引入代码贡献。但作为通用指标，它很难用统一的方式（如Bug类型）来甄别Issue在每个项目的具体类型，因为每个项目对Bug类型的定义和理解是不同的。 所以我们做出了取舍，只选择PR相关和Code Commit相关的贡献者作为洞察对象。"
+      },
       "commit_frequency": "代码提交频率",
       "commit_frequency_desc": "过去90天内平均每周代码提交次数。",
+      "commit_frequency_more": {
+        "weight": "16.363%",
+        "threshold": "1000",
+        "detail": "作为这个模型的结果性指标，它标识项目贡献的持续性和数量。指代项目的整体工作量大小。"
+      },
       "is_maintained": "是否维护",
       "is_maintained_desc": "过去90天内至少提交了一次代码的周百分比(单仓场景)。 在过去 30 天内至少有一次代码提交记录的的代码仓百分比(多仓场景)。",
+      "is_maintained_more": {
+        "weight": "13.853%",
+        "threshold": "100%",
+        "detail": "这个指标用来判断代码仓是否得到了持续的维护。积极维护的代码仓对漏洞等风险的抵御能力可能会更高些。它与代码提交频率有相关性，但关注重点不同。前者关注周期内代码贡献的数量，后者关注代码贡献的持续性。但是我们不应该对该项指标偏低的项目给出任何直接的结论，需要进一步洞察。",
+        "notes": "单个仓库和多个仓库的定义是不同的。"
+      },
       "commit_pr_linked_ratio": "代码提交关联 PR 的比率",
       "commit_pr_linked_ratio_desc": "在过去90天内提交的代码链接PR的百分比。",
+      "commit_pr_linked_ratio_more": {
+        "weight": "12.612%",
+        "threshold": "100%",
+        "detail": "这个指标用来考察是码提交是否经过了PR的审核流程。判断一个项目是否开源，可能我们通过查验它声明的License即可。但开源项目是否使用开放式的社区协作模式来开展开发工作，社区是否与开源贡献者、组织合作伙伴共建社区的意愿，仅仅靠License是不够的。这里我们通过代码提交是否通过PR，用公开、透明的方式，告知贡献者此次代码提交的目的，并接受评审，来考察项目的协作意愿程度。"
+      },
       "pr_issue_linked_ratio": "PR 关联 Issue 的比率",
       "pr_issue_linked_ratio_desc": "过去90天内新建 PR 关联 Issue 的百分比。",
+      "pr_issue_linked_ratio_more": {
+        "weight": "11.319%",
+        "threshold": "100%",
+        "detail": "该指标是用来观察代码贡献是否都经过了开放的讨论，例如使用Issue的形式。需要注意的是，并不是所有Issue都会产生代码贡献，例如咨询类的Issue，一般就不会产生代码修改。同时，我们也要注意到PR是否经历公开讨论，Issue并不是唯一途径，可能来自于论坛的讨论。所以我们不能一味的追寻该指标的高比例。"
+      },
       "code_review_ratio": "代码审查比率",
       "code_review_ratio_desc": "过去90天内提交代码中，至少包含一名审核者(不是PR 创建者) 的百分比。",
+      "code_review_ratio_more": {
+        "weight": "10.113%",
+        "threshold": "100%",
+        "detail": "如果一个PR没有经过其他人review，就被合入，就会导致代码缺陷或者漏洞被有意或者无意的引入的概率大大提高。代码审查虽然不能全面防范这种风险，但大大改善风险的引入。"
+      },
       "code_merge_ratio": "代码合并比率",
       "code_merge_ratio_desc": "过去90天提交代码中，PR合并者和PR 作者不属于同一人的百分比。",
+      "code_merge_ratio_more": {
+        "weight": "10.113%",
+        "threshold": "100%",
+        "detail": "该指标是与代码审查比率配套观察的指标。当我们引入第三方review，但如果PR的建立者故意或者无意忽略了第三方给出的评审意见，自行合入了代码，风险同样存在。 需要注意的是，代码审查比率和代码合并比率是我们观察到的业界最佳实践，而不是唯一标准，我们同样看到一些社区基于对一些优秀、长期贡献者的信任，授予了这些人自建代码合入的权力。"
+      },
       "lines_of_code_frequency": "代码行数",
-      "lines_of_code_frequency_desc": "过去90天内平均每周提交的代码行数(增加行数加上删除行数)。"
+      "lines_of_code_frequency_desc": "过去90天内平均每周提交的代码行数(增加行数加上删除行数)。",
+      "lines_of_code_frequency_more": {
+        "weight": "5.640%",
+        "threshold": "300000",
+        "detail": "源代码行数与工作量确实是强相关的，但它与创造的价值相关性较差。另外什么形式的代码可以算入LOC，都是不确定因素。我们不关注代码形式，只用其描述工作量，其权重在整个度量模型较低。"
+      }
     }
   },
   "community_service_and_support": {
     "title": "社区服务与支撑",
-    "desc": "该模型用于评估开发者在贡献过程中，所能直接感知到社区提供的服务和支撑做得如何。",
+    "desc": "该模型用于评估开发者在贡献过程中，直接感知到的社区提供的服务和支撑做得如何。之所以强调直接感知，是因为社区提供的许多底层服务，例如开发涉及的Devops基础设施同样是构建社区服务的关键元素，但社区参与者很难有直观感受，同时缺乏通识性的评估手段。我们使用在社区式开发中，参与者所能感知到的指标维度，来间接性的评估社区整个“开源贡献马拉松的后勤保障系统”。需要注意的是，这并不意味着只做到模型中提及的指标就足够了，模型为了保证指标间的独立性，做了强相关性指标降维处理；所以如果想长期保持该项模型的长期积极发展，社区付出的努力要远远超过当前指标包含的内容。",
     "metrics": {
       "updated_issues_count": "更新 Issue 数量",
       "updated_issues_count_desc": "过去90天 Issue 更新的数量。",
+      "updated_issues_count_more": {
+        "weight": "19.721%",
+        "threshold": "2000",
+        "detail": "有两个原因促使我们选择使用Issue更新的数量而不是统计关闭或者解决Issue的数量。首先，Issue有很多不同的类型，比如bug、功能需求、用户咨询和CVEs。只有特定类型的问题必须很快得到解决，比如CVEs。对于其余类型的问题, 并不追求Issue的快速解决，我们需要与问题创建者进行多次沟通，以更好地了解详细信息。如果是功能需求，从接受到解决，是按照发布计划进行的，这类场景可能也需要几个月的时间。其次，从Issue更新的数量来看，我们可以监控Issue处理的活跃度。问题更新还可以包括重开问题，表明对问题理解的变化的关注度。"
+      },
       "close_pr_count": "关闭 PR 数量",
       "close_pr_count_desc": "过去 90 天内合并和拒绝的 PR 数量。",
+      "close_pr_count_more": {
+        "weight": "19.721%",
+        "threshold": "4500",
+        "detail": "代码贡献越多，需要关闭(接受或拒绝)的PR请求就越多。这表明社区正在积极地处理PR请求。我们将关闭 PR 数量 与 更新 Issue 数量 作为该模型的结果性指标，用来总体观察社区服务与支撑力度。"
+      },
       "issue_first_response": "Issue 首次响应时间",
       "issue_first_response_desc": "过去 90 天新建 Issue 首次响应时间的均值和中位数（天）。这不包括机器人响应、创建者自己的评论或 Issue 的分配动作（action）。如果 Issue 一直未被响应，该 Issue 不被算入统计。",
+      "issue_first_response_more": {
+        "weight": "14.372%",
+        "threshold": "15 天",
+        "detail": "我们用这项指标来感知“社区温度”，对于加入社区的贡献者来说，他的提问如果能得到社区的及时回复，将会很大几率留存并持续贡献社区(依据Mozilla研究报告)。 同时我们发现近年来越来越多的机器人被用来辅助Issue处理，所以我们排除了机器人的干扰，专注人的回复。"
+      },
       "bug_issue_open_time": "Bug 类 Issue 处理时间",
       "bug_issue_open_time_desc": "过去 90 天新建的 Bug 类 Issue 处理时间的均值和中位数（天），包含已经关闭的 Issue 以及未解决的 Issue。",
+      "bug_issue_open_time_more": {
+        "weight": "12.88%",
+        "threshold": "60 天",
+        "notes": "标记为 Bug 类的 Issue。",
+        "detail": "Bug类Issue代表了社区对需要快速解决的Issue的处理效率。我们选择使用Bug类型的Issue来代表这类Issue，当然也具有一定的局限性，因为并不是所有Bug都是高优先级处理的Bug，但相比于不区分issue类型， 该指标具备一定代表性。"
+      },
       "pr_open_time": "PR 处理时间",
       "pr_open_time_desc": "过去90天新建 PR 的处理时间的均值和中位数（天），包含已经关闭的PR以及未解决的 PR",
+      "pr_open_time_more": {
+        "weight": "12.88%",
+        "threshold": "30 天",
+        "detail": "我们追求PR的快速关闭，包括代码合并或拒绝。否则，解决PR请求所需的时间越长，发生合并冲突的风险就越大，而依赖于这个PR代码的其他代码提交请求也将堆积。"
+      },
       "comment_frequency": "Issue 评论频率",
       "comment_frequency_desc": "过去90天内新建 Issue 的评论平均数（不包含机器人和 Issue 作者本人评论）。",
+      "comment_frequency_more": {
+        "weight": "10.217%",
+        "threshold": "5",
+        "detail": "我们希望看到社区鼓励参与者围绕具体的Bug或者需求，通过Issue的方式进行公开和透明的讨论。这样Issue的相应结论也可以做为知识储备积累下来，同时为更多人所能看到。"
+      },
       "code_review_count": "代码审查评论频率",
-      "code_review_count_desc": "过去 90 天内新建 PR 的评论平均数量（不包含机器人和 PR 作者本人评论）。"
+      "code_review_count_desc": "过去 90 天内新建 PR 的评论平均数量（不包含机器人和 PR 作者本人评论）。",
+      "code_review_count_more": {
+        "weight": "10.217%",
+        "threshold": "8",
+        "detail": "我们希望代码审查能够通过PR review的方式展示出来，让大家看到社区对于代码质量，安全方面管理的重视程度，同时为新人快速成长提供帮助。"
+      }
     }
   },
   "community_activity": {
     "title": "活跃度",
-    "desc": "活跃度用来描述一个开源社区或者项目的活跃程度。",
+    "desc": "活跃度用来描述一个开源社区或者项目的活跃程度。为了使一个开源项目持续发展，必须在首次发布后进行持续的维护和改进。活跃度展示了一个项目随着时间的推移持续展开的工作有多少。高活跃度的社区可能表明该项目是可持续的，低活跃度的社区可能表明该项目面临风险。",
     "metrics": {
       "contributor_count": "贡献者数量",
       "contributor_count_desc": "过去 90 天中活跃的代码提交者、Pull Request 作者、代码审查者、Issue 作者和 Issue 评论者的数量。",
+      "contributor_count_more": {
+        "weight": "18.01%",
+        "threshold": "2000",
+        "notes": "当一个人在多个仓库中有多个不同角色的贡献时，例如代码提交者和 Issue 作者，我们只算一次。",
+        "detail": "在这个模型，我们把代码托管平台对于该项目的所有类型的贡献者全部囊括在内。因为我们认为项目的活跃度是由所有类型的贡献行为构成的，而且活跃贡献者数量越多，越表明项目的重要程度越高。"
+      },
       "commit_frequency": "代码提交频率",
       "commit_frequency_desc": "过去90天内平均每周代码提交次数。",
+      "commit_frequency_more": {
+        "weight": "18.01%",
+        "threshold": "1000",
+        "detail": "作为这个模型的结果性指标，它标识项目贡献的持续性和数量。指代项目的整体工作量大小。"
+      },
       "updated_since": "更新于",
       "updated_since_desc": "每个代码仓自上次更新以来的平均时间(天)，即多久没更新了。",
+      "updated_since_more": {
+        "weight": "12.74%",
+        "threshold": "0.25 个月",
+        "detail": "这个指标用来指代该项目的更新频率。它标识开发协作管理优秀的社区，会进行高频率的迭代式开发，以此来促进软件质量得到持续的改进。但是软件项目所属行业和领域不同，也决定了它的迭代频率并不是一味得越高越好，例如一些Linux发行版项目展现了非常典型的伴随版本规划的周期性的代码迭代规律。这里我们关注得是每个周期内该项目的趋势变化，以及与同类型项目相比较而得到的相对性结果。"
+      },
       "organization_count": "组织数量",
       "organization_count_desc": "过去90天内活跃的代码提交者所属组织的数目",
+      "organization_count_more": {
+        "weight": "11.50%",
+        "threshold": "10",
+        "detail": "越多的组织参与项目的持续贡献，代表越多的组织深度依赖这个项目。这样会极大几率促使生态的建立和繁荣。"
+      },
       "created_since": "创建于",
       "created_since_desc": "代码仓自创建以来存在了多长时间(月份)。",
       "comment_frequency": "Issue 评论频率",
       "comment_frequency_desc": "过去90天内新建 Issue 的评论平均数（不包含机器人和 Issue 作者本人评论）。",
+      "comment_frequency_more": {
+        "weight": "7.77%",
+        "threshold": "5",
+        "detail": "我们希望看到社区鼓励参与者围绕具体的Bug或者需求，通过Issue的方式进行公开和透明的讨论。这样Issue的相应结论也可以做为知识储备积累下来，同时为更多人所能看到。"
+      },
       "code_review_count": "代码审查评论频率",
       "code_review_count_desc": "过去90天内新建 PR 的评论平均数量（不包含机器人和PR作者本人评论）。",
+      "code_review_count_more": {
+        "weight": "4.92%",
+        "threshold": "8",
+        "detail": "我们希望代码审查能够通过PR review的方式展示出来，让大家看到社区对于代码质量，安全方面管理的重视程度，同时为新人快速成长提供帮助。"
+      },
       "updated_issues_count": "更新 Issue 数量",
       "updated_issues_count_desc": "过去90天 Issue 更新的数量。",
+      "updated_issues_count_more": {
+        "weight": "4.92%",
+        "threshold": "2500",
+        "detail": "有两个原因促使我们选择使用Issue更新的数量而不是统计关闭或者解决Issue的数量。首先，Issue有很多不同的类型，比如bug、功能需求、用户咨询和CVEs。只有特定类型的问题必须很快得到解决，比如CVEs。对于其余类型的问题, 并不追求Issue的快速解决，我们需要与问题创建者进行多次沟通，以更好地了解详细信息。如果是功能需求，从接受到解决，是按照发布计划进行的，这类场景可能也需要几个月的时间。其次，从Issue更新的数量来看，我们可以监控Issue处理的活跃度。问题更新还可以包括重开问题，表明对问题理解的变化的关注度。"
+      },
       "recent_releases_count": "最近版本发布次数",
-      "recent_releases_count_desc": "过去12个月版本发布的数量。"
+      "recent_releases_count_desc": "过去12个月版本发布的数量。",
+      "recent_releases_count_more": {
+        "weight": "3.18%",
+        "threshold": "12",
+        "detail": "高频率的版本发布，表明软件制品在快速迭代，来相应用户的需求。当然软件项目所属行业和领域不同，也决定了它的迭代频率并不是一味得越高越好，例如大型平台类软件项目的发布周期是半年到一年。"
+      }
     }
   },
   "organization_activity": {
     "title": "组织活跃度",
-    "desc": "该模型用于评估社区中组织的活跃程度。",
+    "desc": "该模型用于评估社区中组织（商业公司、高校等）的活跃程度。对于一个开源项目，尤其是对于平台型软件项目，越多的组织参与到社区贡献，表明社区的生态构建是朝向繁荣方向发展的。因为只有软件项目能够提供组织所需要的商业价值或者学术价值绑定，相关组织才愿意以组织身份参与社区贡献。",
     "metrics": {
       "org_count": "组织数量",
       "org_count_desc": "过去90天内活跃的代码提交者所属组织的数目。",
+      "org_count_more": {
+        "weight": "32.258%",
+        "threshold": "30",
+        "detail": "我们这里统计的是参与代码贡献的组织。之所有仅统计代码贡献，是因为代码贡献相较于其他类型社区贡献，它的技术门槛是最高的，同时也是组织参与社区贡献的最直接表现。同时通过分析组织的类别，也可以进行更深入的洞察，例如了解项目的南北向生态构建情况等。"
+      },
       "contributor_count": "组织贡献者数量",
       "contributor_count_desc": "过去90天内有组织附属关系的活跃的代码贡献者人数。",
+      "contributor_count_more": {
+        "weight": "25.806%",
+        "threshold": "300",
+        "detail": "我们这里统计的是有组织属性的代码贡献者数量。我们这里主要考察组织对社区人力资源的持续投入。"
+      },
       "commit_frequency": "代码提交频率",
       "commit_frequency_desc": "过去90天内平均每周有组织归属的代码提交次数。",
+      "commit_frequency_more": {
+        "weight": "25.81%",
+        "threshold": "800",
+        "detail": "该项指标与贡献者数量类似，是从代码贡献数量来考察组织对社区的投入情况。"
+      },
       "contribution_last": "持续贡献",
-      "contribution_last_desc": "在过去90天所有组织向社区有代码贡献的累计时间（周）。"
+      "contribution_last_desc": "在过去90天所有组织向社区有代码贡献的累计时间（周）。",
+      "contribution_last_more": {
+        "weight": "16.13%",
+        "threshold": "200",
+        "detail": "我们通过时间维度来了解，随着时间迁移，组织参与和投入的情况，来考察生态的发展情况。"
+      }
     }
   },
   "developer_attraction": {

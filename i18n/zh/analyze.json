@@ -80,5 +80,11 @@
   "repo_filter": "仓库筛选",
   "ratio": "比率",
   "closed": "已关闭",
-  "created": "已创建"
+  "created": "已创建",
+  "doc_popper": {
+    "definition": "定义",
+    "weight": "权重",
+    "threshold": "阈值",
+    "notes": "注"
+  }
 }

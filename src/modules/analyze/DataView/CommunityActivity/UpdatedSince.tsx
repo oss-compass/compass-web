@@ -69,6 +69,15 @@ const UpdatedSince = () => {
       description={t(
         'metrics_models:community_activity.metrics.updated_since_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.updated_since_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.updated_since_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.updated_since_more.detail'
+      )}
       docLink={'/docs/metrics-models/robustness/activity/#updated-since'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

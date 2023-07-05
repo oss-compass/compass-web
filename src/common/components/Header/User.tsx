@@ -20,7 +20,9 @@ const User = () => {
   if (!user) {
     return (
       <Link href="/auth/signin">
-        <a className={'ml-6 font-medium text-white'}>{t('common:signin')}</a>
+        <a className={'ml-6 flex-shrink-0 font-medium text-white'}>
+          {t('common:signin')}
+        </a>
       </Link>
     );
   }

@@ -76,6 +76,15 @@ const PrOpenTime = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.pr_open_time_desc'
       )}
+      weight={t(
+        'metrics_models:community_service_and_support.metrics.pr_open_time_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_service_and_support.metrics.pr_open_time_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_service_and_support.metrics.pr_open_time_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#pr-open-time'
       }

@@ -27,6 +27,8 @@ query subscriptions($page: Int!, $per: Int!) {
         level
         status
         statusUpdatedAt
+        collectAt
+        completeAt
       }
     }
   }

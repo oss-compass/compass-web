@@ -18,7 +18,7 @@ const CommunityDropdown = () => {
 
   return (
     <div className="group relative flex h-full items-center transition">
-      <div className="flex cursor-pointer items-center justify-center py-3 px-7 group-hover:bg-[#333333]">
+      <div className="flex cursor-pointer items-center justify-center py-3 px-7 group-hover:bg-[#333333] 2xl:px-4">
         <a className={'font-medium text-white'}>
           {t('common:header.community')}
         </a>

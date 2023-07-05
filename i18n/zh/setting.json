@@ -38,6 +38,8 @@
     "unsubscribe": "取消订阅",
     "empty_list": "暂无订阅数据",
     "updated_on": "更新于 ",
+    "collect_at": "最后一次数据更新时间",
+    "complete_at": "分析报告更新时间",
     "analyzing": "分析中",
     "confirm_cancel": "取消订阅",
     "after_unsubscribing_you_will_no_longer_receive_any": "取消订阅后，你将不会收到关于该项目的相关通知"

@@ -32,6 +32,15 @@ const UpdatedIssuesCount = () => {
       description={t(
         'metrics_models:community_activity.metrics.updated_issues_count_desc'
       )}
+      weight={t(
+        'metrics_models:community_activity.metrics.updated_issues_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_activity.metrics.updated_issues_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_activity.metrics.updated_issues_count_more.detail'
+      )}
       docLink={'/docs/metrics-models/robustness/activity/#updated-issues-count'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu

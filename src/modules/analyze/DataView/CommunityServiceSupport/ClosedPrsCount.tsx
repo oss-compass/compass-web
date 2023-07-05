@@ -30,6 +30,15 @@ const ClosedPrsCount = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.close_pr_count_desc'
       )}
+      weight={t(
+        'metrics_models:community_service_and_support.metrics.close_pr_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_service_and_support.metrics.close_pr_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_service_and_support.metrics.close_pr_count_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#close-pr-count'
       }
