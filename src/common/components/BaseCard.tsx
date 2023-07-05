@@ -5,6 +5,7 @@ import LoadInView from '@common/components/LoadInView';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
+import DocPopper from '@common/components/DocPopper';
 
 const Loading: React.FC<{ className: string }> = ({ className }) => (
   <div className={classnames(className, 'animate-pulse p-10')}>
@@ -31,6 +32,10 @@ interface BaseCardProps {
   title?: string;
   description?: string;
   docLink?: string;
+  weight?: string;
+  threshold?: string;
+  detail?: string;
+  notes?: string;
   headRight?:
     | ((
         containerRef: RefObject<HTMLElement>,
@@ -52,6 +57,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
   title = '',
   description = '',
   docLink = '',
+  weight = '',
+  threshold = '',
+  detail = '',
+  notes = '',
   headRight = null,
   bodyClass = 'h-[350px]',
 }) => {
@@ -94,20 +103,14 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h3>
-      <p className="mb-4 text-xs text-[#585858]">
-        {description}
-        {docLink && (
-          <>
-            <LinkX href={docLink}>
-              <a
-                className="ml-1 text-primary hover:underline"
-                data-html2canvas-ignore="true"
-              >
-                {t('common:know_more')}
-              </a>
-            </LinkX>
-          </>
-        )}
+      <p className="relative mb-4 text-xs text-[#585858] line-clamp-2 ">
+        <DocPopper
+          description={description}
+          weight={weight}
+          threshold={threshold}
+          detail={detail}
+          notes={notes}
+        ></DocPopper>
       </p>
       <div className="absolute right-4 top-4 flex items-center md:hidden">
         {typeof headRight === 'function'

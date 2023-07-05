@@ -72,6 +72,18 @@ const BugIssueOpenTime = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.bug_issue_open_time_desc'
       )}
+      weight={t(
+        'metrics_models:community_service_and_support.metrics.bug_issue_open_time_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_service_and_support.metrics.bug_issue_open_time_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_service_and_support.metrics.bug_issue_open_time_more.detail'
+      )}
+      notes={t(
+        'metrics_models:community_service_and_support.metrics.bug_issue_open_time_more.notes'
+      )}
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#bug-issue-open-time'
       }

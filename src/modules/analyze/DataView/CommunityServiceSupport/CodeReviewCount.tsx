@@ -31,6 +31,15 @@ const CodeReviewCount = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.code_review_count_desc'
       )}
+      weight={t(
+        'metrics_models:community_service_and_support.metrics.code_review_count_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_service_and_support.metrics.code_review_count_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_service_and_support.metrics.code_review_count_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#code-review-count'
       }

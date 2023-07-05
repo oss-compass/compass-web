@@ -72,6 +72,15 @@ const IssueFirstResponse = () => {
       description={t(
         'metrics_models:community_service_and_support.metrics.issue_first_response_desc'
       )}
+      weight={t(
+        'metrics_models:community_service_and_support.metrics.issue_first_response_more.weight'
+      )}
+      threshold={t(
+        'metrics_models:community_service_and_support.metrics.issue_first_response_more.threshold'
+      )}
+      detail={t(
+        'metrics_models:community_service_and_support.metrics.issue_first_response_more.detail'
+      )}
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#issue-first-response'
       }

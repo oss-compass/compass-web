@@ -80,5 +80,11 @@
   "repo_filter": "Repository filter",
   "ratio": "Ratio",
   "closed": "Closed",
-  "created": "Created"
+  "created": "Created",
+  "doc_popper": {
+    "definition": "Definition",
+    "weight": "Weight",
+    "threshold": "Threshold",
+    "notes": "Notes"
+  }
 }

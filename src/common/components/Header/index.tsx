@@ -24,39 +24,43 @@ const Header: React.FC<{
             'flex items-center justify-between'
           )}
         >
-          <div className="flex h-full items-center">
+          <div className="flex h-full flex-shrink-0 items-center">
             <Link href="/">
-              <a className="mr-6">
+              <a className="mr-6 2xl:mr-2">
                 <Logo color="white" />
               </a>
             </Link>
 
             <Link href="/explore">
-              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
+              <a className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}>
                 {t('common:header.explore')}
               </a>
             </Link>
 
             <LinkX href="/docs/dimensions-define" legacyBehavior>
-              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
+              <a
+                className={
+                  'mx-6 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
+                }
+              >
                 {t('common:header.metrics_models')}
               </a>
             </LinkX>
 
             <CommunityDropdown />
             <LinkX href="/blog" legacyBehavior>
-              <a className={'mx-6 px-2.5 font-medium text-white'}>
+              <a className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}>
                 {t('common:header.blog')}
               </a>
             </LinkX>
             <Link href="/lab">
-              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
+              <a className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}>
                 {t('common:header.lab')}
               </a>
             </Link>
 
             <Link href="/about">
-              <a className={'mx-6 px-2.5 font-medium text-white xl:px-0'}>
+              <a className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}>
                 {t('common:header.about')}
               </a>
             </Link>

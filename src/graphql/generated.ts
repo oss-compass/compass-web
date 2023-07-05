@@ -1194,6 +1194,8 @@ export type SubscriptionsQuery = {
         level: string;
         status: string;
         statusUpdatedAt?: any | null;
+        collectAt?: any | null;
+        completeAt?: any | null;
       }> | null;
     };
   } | null;
@@ -2415,6 +2417,8 @@ export const SubscriptionsDocument = /*#__PURE__*/ `
         level
         status
         statusUpdatedAt
+        collectAt
+        completeAt
       }
     }
   }
