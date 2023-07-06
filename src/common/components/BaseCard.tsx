@@ -103,7 +103,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h3>
-      <p className="relative mb-4 text-xs text-[#585858] line-clamp-2 ">
+      <div className="relative mb-4 text-xs text-[#585858] line-clamp-2 ">
         <DocPopper
           description={description}
           weight={weight}
@@ -111,7 +111,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           detail={detail}
           notes={notes}
         ></DocPopper>
-      </p>
+      </div>
       <div className="absolute right-4 top-4 flex items-center md:hidden">
         {typeof headRight === 'function'
           ? headRight(cardRef, fullScreen, setFullScreen)

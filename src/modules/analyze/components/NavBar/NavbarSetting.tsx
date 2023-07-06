@@ -6,14 +6,15 @@ import { avgAndScoreState } from '@modules/analyze/store';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { useClickAway, useToggle } from 'react-use';
 import classnames from 'classnames';
-import { useRouter } from 'next/router';
-import { Level } from '@modules/analyze/constant';
+import useLevel from '@modules/analyze/hooks/useLevel';
+import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { CommunityRepoType } from '@common/constant';
+import Badge from '../Badge';
 
 const NavbarSetting: React.FC = () => {
-  const router = useRouter();
-  const level = router.query.level as Level;
+  const level = useLevel();
   const snap = useSnapshot(avgAndScoreState);
+  const { compareItems } = useCompareItems();
   const [dropdownOpen, toggleDropdown] = useToggle(false);
   const ref = useRef(null);
   useClickAway(ref, () => {
@@ -53,6 +54,8 @@ const NavbarSetting: React.FC = () => {
             }
           />
         )}
+
+        {compareItems.length === 1 ? <Badge /> : null}
       </ul>
     </div>
   );
