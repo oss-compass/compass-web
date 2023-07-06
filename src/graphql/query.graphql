@@ -499,6 +499,7 @@ query bulkOverview($labels: [String!]!) {
     name
     openIssuesCount
     path
+    shortCode
     stargazersCount
     watchersCount
     metricActivity {

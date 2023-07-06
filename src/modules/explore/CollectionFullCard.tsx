@@ -18,8 +18,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [inViewport] = useInViewport(ref);
   const length = collection.items.length;
-  const showPreviousThree = collection.items.slice(0, 3);
-  const showPreviousThreeLabel = showPreviousThree.map((i) => i.label);
+  const showPreviousThreeLabel = collection.items.slice(0, 3);
 
   const nameKey = i18n.language === 'zh' ? 'name_cn' : 'name';
   const { data: hottestData, isLoading } = useCollectionHottestQuery(
@@ -87,11 +86,12 @@ const CollectionFullCard = (props: { collection: Collection }) => {
         </div>
         <div className="flex flex-1 items-end pl-5">
           <div className="grid flex-1 grid-cols-3 gap-6">
-            {showPreviousThree.map(({ label, shortCode }) => {
+            {showPreviousThreeLabel.map((label) => {
               const pathname = getPathname(label);
               const overview = bulkOverview?.bulkOverview.find(
                 (i) => i.path === pathname
               );
+
               const chartData = overview?.metricActivity.map(
                 (i) => i.activityScore as number
               );
@@ -100,7 +100,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
                   key={label}
                   label={label}
                   chartData={chartData}
-                  shortCode={shortCode}
+                  shortCode={overview?.shortCode!}
                 />
               );
             })}

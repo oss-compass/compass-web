@@ -1,15 +1,9 @@
-export interface CollectionItems {
-  label: string;
-  level: string;
-  shortCode: string;
-}
-
 export interface Collection {
   ident: string;
   name: string;
   name_cn: string;
   slug: string;
-  items: CollectionItems[];
+  items: string[];
 }
 
 export interface CollectionMenu {

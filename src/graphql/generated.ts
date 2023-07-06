@@ -1809,6 +1809,7 @@ export type BulkOverviewQuery = {
     name?: string | null;
     openIssuesCount?: number | null;
     path?: string | null;
+    shortCode?: string | null;
     stargazersCount?: number | null;
     watchersCount?: number | null;
     metricActivity: Array<{
@@ -3275,6 +3276,7 @@ export const BulkOverviewDocument = /*#__PURE__*/ `
     name
     openIssuesCount
     path
+    shortCode
     stargazersCount
     watchersCount
     metricActivity {
