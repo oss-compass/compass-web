@@ -144,11 +144,12 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
   const [targetDate, setTargetDate] = useState<number>();
   const [countdown] = useCountDown({ targetDate });
   const link = window.origin + badgeSrc;
-  let source = '';
+  const url = window.origin + window.location.pathname;
 
+  let source = '';
   switch (tab) {
     case 'Markdown': {
-      source = `![OSS Compass Analyze](${link})`;
+      source = `[![OSS Compass Analyze](${link})](${url})`;
       break;
     }
     case 'HTML': {
