@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   getAnalyzeLink,
@@ -34,23 +35,8 @@ const RepoCard = (props: {
     if (!compareMode) setSelect(false);
   }, [compareMode]);
 
-  return (
-    <div
-      className={classnames('relative cursor-pointer bg-white', [
-        select ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
-      ])}
-      onClick={async () => {
-        if (compareMode) {
-          setSelect(!select);
-          if (onSelectChange) {
-            onSelectChange(!select, { label, shortCode });
-          }
-        } else {
-          // go to analyze page
-          await router.push(getShortAnalyzeLink(shortCode));
-        }
-      }}
-    >
+  const item = (
+    <>
       <div className="py-4 px-6">
         <div className="absolute top-2 right-3">
           {compareMode && (
@@ -86,7 +72,33 @@ const RepoCard = (props: {
           <MiniChart data={chartData} />
         </div>
       </div>
-    </div>
+    </>
+  );
+
+  if (compareMode) {
+    return (
+      <div
+        className={classnames('relative cursor-pointer bg-white', [
+          select ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
+        ])}
+        onClick={async () => {
+          setSelect(!select);
+          if (onSelectChange) {
+            onSelectChange(!select, { label, shortCode });
+          }
+        }}
+      >
+        {item}
+      </div>
+    );
+  }
+
+  return (
+    <Link href={getShortAnalyzeLink(shortCode)}>
+      <a className="relative block cursor-pointer border bg-white p-px">
+        {item}
+      </a>
+    </Link>
   );
 };
 export default RepoCard;
