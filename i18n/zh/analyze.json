@@ -86,5 +86,10 @@
     "weight": "权重",
     "threshold": "阈值",
     "notes": "注"
-  }
+  },
+  "badge": {
+    "text": "徽章",
+    "title": "Compass 徽章"
+  },
+  "function_menu": "功能"
 }

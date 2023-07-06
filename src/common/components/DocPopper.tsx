@@ -20,7 +20,6 @@ const DocLink: React.FC<
   useClickAway(popoverRef, () => {
     setPopoverVisible(false);
   });
-  console.log(description);
 
   return (
     <div>

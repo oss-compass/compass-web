@@ -67,5 +67,9 @@
   },
   "loading_more": "Loading more...",
   "load_more": "Load More",
-  "nothing_more_to_load": "Nothing more to load"
+  "nothing_more_to_load": "Nothing more to load",
+  "copy": {
+    "click_to_copy": "click to copy",
+    "copy_successfully": "copy successfully"
+  }
 }

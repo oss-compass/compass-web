@@ -86,5 +86,10 @@
     "weight": "Weight",
     "threshold": "Threshold",
     "notes": "Notes"
-  }
+  },
+  "badge": {
+    "text": "Badge",
+    "title": "Compass Badge"
+  },
+  "function_menu": "Function"
 }

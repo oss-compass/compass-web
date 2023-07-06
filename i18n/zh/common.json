@@ -67,5 +67,9 @@
   },
   "loading_more": "加载中...",
   "load_more": "点击加载更多",
-  "nothing_more_to_load": "无更多数据了"
+  "nothing_more_to_load": "无更多数据了",
+  "copy": {
+    "click_to_copy": "点击复制",
+    "copy_successfully": "复制成功"
+  }
 }
