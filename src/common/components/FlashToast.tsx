@@ -5,20 +5,24 @@ import {
   storageGetToastError,
   storageSetToastError,
 } from '@common/utils/storage';
+import { isTimestampWithinSec } from '@common/utils/time';
 
 const FlashToast = () => {
   const { query } = useRouter();
 
   useEffect(() => {
+    const ts = query.ts as string;
+    const error = query.error as string;
+
     let t: number;
+    const hasToastError = storageGetToastError(`${ts}`);
+    const isShowError = isTimestampWithinSec(ts, 30);
 
-    const hasToastError = storageGetToastError(`${query.ts}`);
-
-    if (!hasToastError && query.ts && query.error) {
+    if (!hasToastError && isShowError && ts && error) {
       t = window.setTimeout(() => {
-        storageSetToastError(`${query.ts}`, `${query.error}`);
+        storageSetToastError(`${ts}`, `${error}`);
 
-        toast.error((t) => <>{query.error}</>, {
+        toast.error((t) => <>{error}</>, {
           position: 'top-center',
         });
       }, 400);

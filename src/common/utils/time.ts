@@ -28,3 +28,9 @@ export const formatToNowStrict = (s: string) => {
   const p = parseJSON(s);
   return formatDistanceToNowStrict(p, { locale: languages[local] });
 };
+
+export const isTimestampWithinSec = (ts: string, sec: number): boolean => {
+  if (isNaN(+ts)) return false;
+  const elapsed = Date.now() - Number(ts);
+  return elapsed > 0 && elapsed < sec * 1000;
+};

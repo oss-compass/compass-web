@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -8,6 +8,7 @@ import Copyright from '@modules/auth/components/Copyright';
 import LogoHeader from '@modules/auth/components/LogoHeader';
 import LoginItems from '@modules/auth/LoginItems';
 import getLocalesFile from '@common/utils/getLocalesFile';
+import { isTimestampWithinSec } from '@common/utils/time';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
@@ -21,13 +22,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const SignIn: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const error = router.query.error;
+  const error = router.query.error as string;
+  const ts = router.query.ts as string;
+  const isShowError = isTimestampWithinSec(ts, 30);
 
   return (
     <div>
       <LogoHeader />
 
-      {error && (
+      {error && ts && isShowError && (
         <h4 className="mt-4 flex items-center justify-center text-base font-medium text-warning">
           <FiAlertCircle className="mr-2 text-xl" /> {error}
         </h4>
