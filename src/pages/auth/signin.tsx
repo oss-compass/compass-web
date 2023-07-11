@@ -9,6 +9,7 @@ import LogoHeader from '@modules/auth/components/LogoHeader';
 import LoginItems from '@modules/auth/LoginItems';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import { isTimestampWithinSec } from '@common/utils/time';
+import NoSsr from '@common/components/NoSsr';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
@@ -31,9 +32,11 @@ const SignIn: React.FC = () => {
       <LogoHeader />
 
       {error && ts && isShowError && (
-        <h4 className="mt-4 flex items-center justify-center text-base font-medium text-warning">
-          <FiAlertCircle className="mr-2 text-xl" /> {error}
-        </h4>
+        <NoSsr>
+          <h4 className="mt-4 flex items-center justify-center text-base font-medium text-warning">
+            <FiAlertCircle className="mr-2 text-xl" /> {error}
+          </h4>
+        </NoSsr>
       )}
 
       <div className="flex flex-col items-center">
