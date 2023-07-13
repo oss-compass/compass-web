@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
+import { isDev } from '@common/constant';
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: string, id?: string) => {
@@ -48,6 +49,8 @@ export const GAScripts = ({ id }: { id: string }) => {
   React.useEffect(() => {
     window._gaTrackingId = id;
   }, [id]);
+
+  if (isDev) return null;
 
   return (
     <>
