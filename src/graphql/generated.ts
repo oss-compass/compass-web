@@ -1854,6 +1854,7 @@ export type BetaMetricOverviewQuery = {
       origin: string;
       name?: string | null;
       backend?: string | null;
+      shortCode?: string | null;
       betaMetricScores: Array<{
         __typename?: 'BetaMetricScore';
         grimoireCreationDate?: any | null;
@@ -3373,6 +3374,7 @@ export const BetaMetricOverviewDocument = /*#__PURE__*/ `
       origin
       name
       backend
+      shortCode
       betaMetricScores {
         grimoireCreationDate
         score

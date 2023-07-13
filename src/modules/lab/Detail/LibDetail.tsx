@@ -6,6 +6,7 @@ import { Main, Content } from '@common/components/Layout';
 import DataView from './DataView';
 import NoSsr from '@common/components/NoSsr';
 import Footer from '@common/components/Footer';
+import LegacyLabelRedirect from '@modules/analyze/components/Container/LegacyLabelRedirect';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import { StatusContextProvider } from '@modules/analyze/context';
 import PageInfoInit from '@modules/analyze/components/PageInfoInit';
@@ -25,15 +26,17 @@ const AnalyzeContainer: React.FC<PropsWithChildren> = ({ children }) => {
 
 const Analyze = () => {
   return (
-    <AnalyzeContainer>
-      <HeaderWithFilterBar />
-      <Main>
-        <div className="relative flex min-w-0 flex-1 flex-col bg-gray-50 px-10 pt-4 md:p-0">
-          <DataView />
-          <Footer />
-        </div>
-      </Main>
-    </AnalyzeContainer>
+    <LegacyLabelRedirect>
+      <AnalyzeContainer>
+        <HeaderWithFilterBar />
+        <Main>
+          <div className="relative flex min-w-0 flex-1 flex-col bg-gray-50 px-10 pt-4 md:p-0">
+            <DataView />
+            <Footer />
+          </div>
+        </Main>
+      </AnalyzeContainer>
+    </LegacyLabelRedirect>
   );
 };
 

@@ -529,6 +529,7 @@ query betaMetricOverview($id: Int!, $limit: Int) {
       origin
       name
       backend
+      shortCode
       betaMetricScores {
         grimoireCreationDate
         score

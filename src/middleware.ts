@@ -11,7 +11,8 @@ export function middleware(request: NextRequest) {
 
   // We use nginx proxy for production environments
   // this is for https://vercel.com preview environments (pull request preview)
-  return NextResponse.rewrite(new URL(`${process.env.API_URL}`, request.url));
+  const { pathname, search } = request.nextUrl;
+  return NextResponse.rewrite(new URL(pathname + search, process.env.API_URL));
 }
 
 // See "Matching Paths" below to learn more
