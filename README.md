@@ -1,53 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<a href="https://oss-compass.org">
+  <img alt="OSS Compass" src="/public/og.png">
+  <h1 align="center">Compass Web</h1>
+</a>
 
-## Getting Started
+[![Build and Unit Tests](https://github.com/oss-compass/compass-web/actions/workflows/build_and_tests.yml/badge.svg?branch=main)](https://github.com/oss-compass/compass-web/actions/workflows/build_and_tests.yml) [![Join on Slack](https://img.shields.io/badge/slack-join-635dc5?logo=slack)](https://join.slack.com/t/oss-compass/shared_invite/zt-1ttt9sv5h-8E~oPP6VJqm8ero5qH9LlA)
 
-First, run the development server:
+## About Compass web
 
-```bash
-# install dependencies
-yarn
+This is a frontend project for the oss compass, including official website and metric chart pages.
+Built using the popular front-end framework Next.js, and connected to the backend with graphql for data integration.
 
-# start dev server
-yarn dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Provide three-dimensional chart display: Productivity, Robustness and Niche Creation.
+- View rich indicator data for single repositories or community
+- Support for comparison view
+- Submit a project analysis request
+  - Submit as Single repository
+  - Submit as Community
+- Subscribe to receive notifications of report changes
 
-## Deploy by docker
+## Contribute
 
-```bash
-# build docker image
-yarn docker
+Building OSS Compass is a collaborative effort, and we owe a lot of gratitude to many smart and talented individuals. Building it together with community ensures that we build a product that solves real problems for real people. We'd love to have your help too: Please feel free to open issues or provide pull requests.
 
-```
+Check out [the CONTRIBUTING.md file](./docs/CONTRIBUTING.md) for contribution guidelines.
 
-### .env file
+## Know more about OSS Compass?
 
-```bash
-# Google Analytics ID
-NEXT_PUBLIC_GOOGLE_ANALYTICS=
-
-# Backend api endpoint
-API_URL=
-
-# URL of this site
-NEXTAUTH_URL=
-# Auth secret
-NEXTAUTH_SECRET=
-
-# Github OAuth
-GITHUB_ID=
-GITHUB_SECRET=
-
-# Gitee OAuth
-GITEE_ID=
-GITEE_SECRET=
-
-```
-
-### start server with env file
-
-```bash
-docker run -p 3000:3000 --env-file .env compass-web:0.1.0
-```
+- [The OSS Compass Website](https://oss-compass.org)
+- [Join Community on Slack](https://join.slack.com/t/oss-compass/shared_invite/zt-1ttt9sv5h-8E~oPP6VJqm8ero5qH9LlA)
