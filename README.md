@@ -1,9 +1,13 @@
-<a href="https://oss-compass.org">
-  <img alt="OSS Compass" src="/public/og.png">
+<div align="center">
+  <a href="https://oss-compass.org">
+    <img alt="OSS Compass" src="/public/og.png">
+  </a>
+  <br>
   <h1 align="center">Compass Web</h1>
-</a>
 
 [![Build and Unit Tests](https://github.com/oss-compass/compass-web/actions/workflows/build_and_tests.yml/badge.svg?branch=main)](https://github.com/oss-compass/compass-web/actions/workflows/build_and_tests.yml) [![Join on Slack](https://img.shields.io/badge/slack-join-635dc5?logo=slack)](https://join.slack.com/t/oss-compass/shared_invite/zt-1ttt9sv5h-8E~oPP6VJqm8ero5qH9LlA)
+
+</div>
 
 ## About Compass web
 
