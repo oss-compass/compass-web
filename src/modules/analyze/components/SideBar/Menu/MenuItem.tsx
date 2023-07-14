@@ -1,5 +1,6 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useRef, useState } from 'react';
 import classnames from 'classnames';
+import Popper from '@mui/material/Popper';
 
 const MenuItem: React.FC<
   PropsWithChildren<{
@@ -17,9 +18,21 @@ const MenuItem: React.FC<
   children,
   leftIcons,
 }) => {
+  const popoverAnchor = useRef<HTMLDivElement>(null);
+  const [openedPopover, setOpenedPopover] = useState(false);
+
   return (
     <div className="group mb-0.5 px-4">
-      <div className={classnames('relative')}>
+      <div
+        ref={popoverAnchor}
+        className="w-full"
+        onMouseEnter={(event) => {
+          setOpenedPopover(true);
+        }}
+        onMouseLeave={() => {
+          setOpenedPopover(false);
+        }}
+      >
         <a
           href={`#${id}`}
           className={classnames(
@@ -33,19 +46,28 @@ const MenuItem: React.FC<
           <span className="truncate">{children}</span>
           {leftIcons}
         </a>
-        {subMenu && (
-          <div
-            className={classnames(
-              'transition-opacity duration-300 ease-out md:hidden',
-              'absolute right-[1000px] top-0 z-10 rounded bg-white py-2 opacity-0 drop-shadow-lg',
-              'group-hover:-right-[186px]',
-              'group-hover:opacity-100'
-            )}
-          >
-            {subMenu}
-          </div>
-        )}
       </div>
+      <Popper
+        open={openedPopover}
+        anchorEl={popoverAnchor.current}
+        placement="right-start"
+        className="z-modal"
+      >
+        <div
+          className={classnames(
+            'rounded bg-white py-2 drop-shadow-lg',
+            'md:hidden'
+          )}
+          onMouseEnter={(event) => {
+            setOpenedPopover(true);
+          }}
+          onMouseLeave={() => {
+            setOpenedPopover(false);
+          }}
+        >
+          {subMenu}
+        </div>
+      </Popper>
     </div>
   );
 };

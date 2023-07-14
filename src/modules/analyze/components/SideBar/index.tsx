@@ -15,7 +15,7 @@ import { SideBarContextProvider } from '@modules/analyze/context/SideBarContext'
 import ErrorFallback from '@common/components/ErrorFallback';
 
 const Divider = () => (
-  <div className="mx-6 mt-2 mb-4 border-b border-gray-200"></div>
+  <div className="mx-6 mb-4 mt-2 border-b border-gray-200"></div>
 );
 
 const SideBarMenuContent = () => {
@@ -54,12 +54,12 @@ const SideBarWrap: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <aside
       className={classnames(
-        'relative z-menu w-64 flex-shrink-0 border-r bg-white',
+        'relative w-64 flex-shrink-0 border-r bg-white',
         'lg:hidden'
       )}
     >
       <div
-        className={classnames('sticky', [
+        className={classnames('thin-scrollbar sticky overflow-auto', [
           y < preY
             ? 'top-[136px] h-[calc(100vh-136px)]'
             : 'top-[56px] h-[calc(100vh-56px)]',
