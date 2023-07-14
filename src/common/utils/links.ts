@@ -18,6 +18,22 @@ export const getShortCompareLink = (list: string[]) => {
   return `/compare/${url}`;
 };
 
+export const getShortLabAnalyzeLink = (
+  item: SearchQuery['fuzzySearch'][number] | string | undefined | null
+) => {
+  if (!item) return '/';
+  const shortCode = typeof item === 'string' ? item : item.shortCode;
+  return `/lab/explore/${shortCode}`;
+};
+
+export const getShortLabCompareLink = (list: string[]) => {
+  const url = list.reduce((pre, cur) => {
+    if (pre === '') return cur;
+    return pre + '..' + cur;
+  }, '');
+  return `/lab/explore/${url}`;
+};
+
 export const compareIdsAdd = (ids: string, addId: string) => {
   if (!ids) return addId;
   const newIds = uniq(compareIdsSplit(ids));

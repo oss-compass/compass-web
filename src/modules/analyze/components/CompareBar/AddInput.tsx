@@ -12,6 +12,7 @@ import { Level } from '@modules/analyze/constant';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { removeHttps } from '@common/utils';
 import { compareIdsAdd } from '@common/utils/links';
+import { getRouteAsPath } from '@common/utils/url';
 
 const checkLevel = (shortId: string) => {
   if (shortId.startsWith('s')) {
@@ -111,7 +112,9 @@ const AddInput = () => {
                 if (confirmItem) {
                   const { shortCode } = confirmItem;
                   const slug = compareIdsAdd(compareSlugs, shortCode!);
-                  await router.push(`/compare/${slug}`);
+                  await router.push(
+                    getRouteAsPath(router.route, { slugs: slug })
+                  );
                   resetInput();
                 }
               }}

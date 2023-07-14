@@ -26,7 +26,7 @@ const AnalyzeContainer: React.FC<PropsWithChildren> = ({ children }) => {
 
 const Analyze = () => {
   return (
-    <LegacyLabelRedirect>
+    <LegacyLabelRedirect isLab>
       <AnalyzeContainer>
         <HeaderWithFilterBar />
         <Main>

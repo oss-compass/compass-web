@@ -3,6 +3,7 @@ import { Level } from '@modules/analyze/constant';
 import classnames from 'classnames';
 import { getLastPathSegment } from '@common/utils';
 import { compareIdsRemove } from '@common/utils/links';
+import { getRouteAsPath } from '@common/utils/url';
 import ColorSwitcher from '@modules/analyze/components/CompareBar/ColorSwitcher';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useRouter } from 'next/router';
@@ -24,10 +25,10 @@ const CloseIcons: React.FC<CompareItemProps> = ({ shortCode }) => {
       onClick={async () => {
         const p = compareIdsRemove(compareSlugs, shortCode);
         if (p.indexOf('..') > -1) {
-          await router.push(`/compare/${p}`);
+          await router.push(getRouteAsPath(router.route, { slugs: p }));
           return;
         }
-        await router.push(`/analyze/${p}`);
+        await router.push(getRouteAsPath(router.route, { slugs: p }));
       }}
     >
       <AiOutlineClose className="text-base" />

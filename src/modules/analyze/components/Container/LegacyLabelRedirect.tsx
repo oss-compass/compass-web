@@ -4,9 +4,16 @@ import { useRouter } from 'next/router';
 import { StatusVerifyQuery, useStatusVerifyQuery } from '@graphql/generated';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import useExtractUrlLabels from '@modules/analyze/hooks/useExtractUrlLabels';
-import { getShortAnalyzeLink, getShortCompareLink } from '@common//utils/links';
+import {
+  getShortAnalyzeLink,
+  getShortCompareLink,
+  getShortLabAnalyzeLink,
+  getShortLabCompareLink,
+} from '@common//utils/links';
 
-const LegacyLabelRedirect: React.FC<PropsWithChildren> = ({ children }) => {
+const LegacyLabelRedirect: React.FC<
+  PropsWithChildren & { isLab?: boolean }
+> = ({ children, isLab = false }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { urlLabels } = useExtractUrlLabels();
@@ -38,15 +45,25 @@ const LegacyLabelRedirect: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   if (!isLoading && verifiedItems && verifiedItems.length > 0) {
+    // compare
     if (verifiedItems.length > 1) {
       const ids = verifiedItems.map((i) => i.shortCode!);
-      router.push(getShortCompareLink(ids));
-      return null;
-    } else {
-      const id = verifiedItems[0].shortCode;
-      router.push(getShortAnalyzeLink(id));
+      if (isLab) {
+        router.push(getShortLabCompareLink(ids));
+      } else {
+        router.push(getShortCompareLink(ids));
+      }
       return null;
     }
+
+    // single
+    const id = verifiedItems[0].shortCode;
+    if (isLab) {
+      router.push(getShortLabAnalyzeLink(id));
+    } else {
+      router.push(getShortAnalyzeLink(id));
+    }
+    return null;
   }
 
   return <>{children}</>;
