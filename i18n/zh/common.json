@@ -11,6 +11,8 @@
     "submit_your_project": "提交项目"
   },
   "community": {
+    "code_base": "代码仓库",
+    "discussion": "讨论",
     "slack": "Slack",
     "join_slack": "加入 Slack 频道",
     "wechat": "微信",

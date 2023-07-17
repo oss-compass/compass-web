@@ -11,6 +11,8 @@
     "submit_your_project": "Submit your project"
   },
   "community": {
+    "code_base": "Repository",
+    "discussion": "Discussion",
     "slack": "Slack",
     "join_slack": "Join our community channel on Slack",
     "wechat": "WeChat",
