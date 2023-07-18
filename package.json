@@ -132,6 +132,13 @@
     "webpack": "^5.88.1",
     "yaml": "^2.2.2"
   },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown --cache",
+    "*.{ts,tsx,mjs,js,jsx}": [
+      "prettier . --ignore-unknown --write",
+      "eslint --cache --fix"
+    ]
+  },
   "engines": {
     "node": ">=16.0.0 <17.0.0",
     "npm": ">=8.0.0 <9.0.0"

@@ -55,3 +55,5 @@ package-lock.json
 
 # Sentry
 next.config.original.js
+
+.eslintcache
