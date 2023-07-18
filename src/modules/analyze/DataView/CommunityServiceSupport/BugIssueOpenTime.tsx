@@ -45,8 +45,15 @@ const BugIssueOpenTime = () => {
     unit: t('analyze:unit_day'),
   });
 
-  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption({ indicators });
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowMedian,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption({ indicators });
 
   const appendOptions = (
     options: EChartsOption,
@@ -98,6 +105,8 @@ const BugIssueOpenTime = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          showYAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
       bodyClass={'h-[400px]'}

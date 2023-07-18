@@ -42,8 +42,15 @@ const PRIssueLinked = () => {
 
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts = chartTabs[tab];
-  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
-    useGetRatioLineOption({ tab });
+  const {
+    getOptions,
+    setShowMedian,
+    showMedian,
+    showAvg,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetRatioLineOption({ tab });
 
   return (
     <BaseCard
@@ -77,6 +84,8 @@ const PRIssueLinked = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          showYAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
       bodyClass={'h-[400px]'}

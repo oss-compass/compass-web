@@ -18,8 +18,15 @@ const CommitFrequency = () => {
     yKey: 'metricGroupActivity.commitFrequency',
     summaryKey: 'summaryGroupActivity.commitFrequency',
   };
-  const { getOptions, showAvg, showMedian, setShowAvg, setShowMedian } =
-    useGetLineOption();
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowAvg,
+    setShowMedian,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
   return (
     <BaseCard
       title={t('metrics_models:organization_activity.metrics.commit_frequency')}
@@ -50,6 +57,8 @@ const CommitFrequency = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          showYAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
     >

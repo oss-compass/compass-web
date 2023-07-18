@@ -44,8 +44,15 @@ const CommitPRLinkedRatio = () => {
 
   type TabValue = keyof typeof chartTabs;
   const tansOpts: TransOpt = chartTabs[tab];
-  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
-    useGetRatioLineOption({ tab });
+  const {
+    getOptions,
+    setShowMedian,
+    showMedian,
+    showAvg,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetRatioLineOption({ tab });
 
   return (
     <BaseCard
@@ -79,6 +86,8 @@ const CommitPRLinkedRatio = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          showYAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
       bodyClass={'h-[400px]'}

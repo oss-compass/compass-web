@@ -26,6 +26,8 @@ const TotalScore = () => {
     setShowAvg,
     showMedian,
     setShowMedian,
+    yAxisScale,
+    setYAxisScale,
   } = useGetLineOption({
     enableDataFormat: true,
     defaultOnePointSystem: false,
@@ -58,6 +60,8 @@ const TotalScore = () => {
             onAvgChange={(b) => setShowAvg(b)}
             showMedian={showMedian}
             onMedianChange={(b) => setShowMedian(b)}
+            showYAxisScale={yAxisScale}
+            onYAxisScaleChange={(b) => setYAxisScale(b)}
           />
         </>
       )}

@@ -54,7 +54,8 @@ const TotalScore = () => {
             onFullScreen={(b) => {
               setFullScreen(b);
             }}
-            enableReference={false}
+            enableReferenceLineSwitch={false}
+            enableLineSettingSwitch={false}
             // showAvg={showAvg}
             // onAvgChange={(b) => setShowAvg(b)}
             // showMedian={showMedian}

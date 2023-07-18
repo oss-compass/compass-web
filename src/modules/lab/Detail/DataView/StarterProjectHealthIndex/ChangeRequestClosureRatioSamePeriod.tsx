@@ -56,7 +56,8 @@ const ChangeRequestClosureRatioSamePeriod = () => {
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu
           fullScreen={fullScreen}
-          enableReference={false}
+          enableReferenceLineSwitch={false}
+          enableLineSettingSwitch={false}
           onFullScreen={(b) => {
             setFullScreen(b);
           }}

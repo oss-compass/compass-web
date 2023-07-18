@@ -20,8 +20,15 @@ const CommentFrequency = () => {
     yKey: 'metricActivity.commentFrequency',
     summaryKey: 'summaryActivity.commentFrequency',
   };
-  const { showAvg, setShowAvg, showMedian, setShowMedian, getOptions } =
-    useGetLineOption();
+  const {
+    showAvg,
+    setShowAvg,
+    showMedian,
+    setShowMedian,
+    getOptions,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
 
   return (
     <BaseCard
@@ -51,6 +58,8 @@ const CommentFrequency = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          showYAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
     >

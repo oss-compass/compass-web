@@ -1,2 +1,2 @@
 export * from './chartTheme';
-export * from './avgAndScore';
+export * from './chatUserSetting';

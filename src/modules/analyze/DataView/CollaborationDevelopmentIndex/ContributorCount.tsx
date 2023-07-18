@@ -51,8 +51,15 @@ const ContributorCount = () => {
     { label: t('analyze:pr_creator'), value: '3' },
     { label: t('analyze:commit_author'), value: '4' },
   ];
-  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
-    useGetLineOption();
+  const {
+    getOptions,
+    setShowMedian,
+    showMedian,
+    showAvg,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
 
   return (
     <BaseCard
@@ -86,6 +93,8 @@ const ContributorCount = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          showYAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
       bodyClass={'h-[400px]'}

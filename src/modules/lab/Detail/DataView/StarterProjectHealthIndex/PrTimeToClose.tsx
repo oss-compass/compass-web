@@ -71,7 +71,8 @@ const PrTimeToClose = () => {
           onFullScreen={(b) => {
             setFullScreen(b);
           }}
-          enableReference={false}
+          enableReferenceLineSwitch={false}
+          enableLineSettingSwitch={false}
         />
       )}
       bodyClass={'h-[400px]'}
