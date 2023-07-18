@@ -93,7 +93,7 @@ const ContributorCount = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
-          showYAxisScale={yAxisScale}
+          yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}

@@ -47,11 +47,13 @@ export const getYAxisWithUnit = ({
   namePaddingLeft = 35,
   shortenYaxisNumberLabel,
   result,
+  scale = true,
 }: {
   unit: string;
   indicators: string;
   namePaddingLeft?: number;
   shortenYaxisNumberLabel?: boolean;
+  scale: boolean;
   result: DataContainerResult;
 }): EChartsOption => {
   return {
@@ -93,6 +95,7 @@ export const getYAxisWithUnit = ({
           return value;
         },
       },
+      scale,
     },
   };
 };

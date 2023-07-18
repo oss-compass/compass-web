@@ -65,6 +65,7 @@ const UpdatedSince = () => {
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
         shortenYaxisNumberLabel: true,
+        scale: yAxisScale,
       }),
     };
   };
@@ -97,7 +98,7 @@ const UpdatedSince = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
-          showYAxisScale={yAxisScale}
+          yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}

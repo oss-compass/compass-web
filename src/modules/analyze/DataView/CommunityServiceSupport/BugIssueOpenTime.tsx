@@ -66,6 +66,7 @@ const BugIssueOpenTime = () => {
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
+        scale: yAxisScale,
       }),
     };
   };
@@ -105,7 +106,7 @@ const BugIssueOpenTime = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
-          showYAxisScale={yAxisScale}
+          yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}

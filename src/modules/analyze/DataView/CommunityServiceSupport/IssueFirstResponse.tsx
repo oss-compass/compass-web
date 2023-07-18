@@ -66,6 +66,7 @@ const IssueFirstResponse = () => {
         indicators,
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
+        scale: yAxisScale,
       }),
     };
   };
@@ -102,7 +103,7 @@ const IssueFirstResponse = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
-          showYAxisScale={yAxisScale}
+          yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}

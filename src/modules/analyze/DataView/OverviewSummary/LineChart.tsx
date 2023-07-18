@@ -19,13 +19,22 @@ const LineChart: React.FC<ChartSummaryProps> = ({
 }) => {
   const { t } = useTranslation();
   const [onePointSys, setOnePointSys] = useState(false);
+  const [yAxisScale, setYAxisScale] = useState(true);
+
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ legendName, data }) => {
       !onePointSys && (data = data.map((i) => transHundredMarkSystem(i)));
       return line({ name: legendName, data });
     });
-    return getLineOption({ xAxisData: xAxis, series });
-  }, [xAxis, yAxis, onePointSys]);
+    return getLineOption({
+      xAxisData: xAxis,
+      series,
+      yAxis: {
+        type: 'value',
+        scale: yAxisScale,
+      },
+    });
+  }, [xAxis, yAxis, yAxisScale, onePointSys]);
 
   return (
     <BaseCard
@@ -47,6 +56,10 @@ const LineChart: React.FC<ChartSummaryProps> = ({
               setFullScreen(b);
             }}
             enableReferenceLineSwitch={false}
+            yAxisScale={yAxisScale}
+            onYAxisScaleChange={(v) => {
+              setYAxisScale(v);
+            }}
           />
         </>
       )}

@@ -26,7 +26,7 @@ interface CardDropDownMenuProps {
   onMedianChange?: (v: boolean) => void;
 
   enableLineSettingSwitch?: boolean;
-  showYAxisScale?: boolean;
+  yAxisScale?: boolean;
   onYAxisScaleChange?: (v: boolean) => void;
 }
 
@@ -40,7 +40,7 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     onMedianChange,
     onAvgChange,
     enableLineSettingSwitch = true,
-    showYAxisScale,
+    yAxisScale,
     onYAxisScaleChange,
   } = props;
 
@@ -62,6 +62,11 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
   subscribeKey(chatUserSettingState, 'showMedian', (v) => {
     if (showMedian !== v) {
       onMedianChange?.(v);
+    }
+  });
+  subscribeKey(chatUserSettingState, 'yAxisScale', (v) => {
+    if (yAxisScale !== v) {
+      onYAxisScaleChange?.(v);
     }
   });
 
@@ -101,14 +106,14 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     <div
       className={classnames(
         'flex h-8 cursor-pointer  items-center  border-b  px-4 md:hidden',
-        [showYAxisScale ? 'text-primary' : 'text-gray-500']
+        [yAxisScale ? 'text-primary' : 'text-gray-500']
       )}
       onClick={() => {
-        onYAxisScaleChange?.(!showYAxisScale);
+        onYAxisScaleChange?.(!yAxisScale);
       }}
     >
       <YScale />
-      <span className="ml-2 text-xs">Y 轴绝对</span>
+      <span className="ml-2 text-xs">Y 轴相对</span>
     </div>
   ) : null;
 
