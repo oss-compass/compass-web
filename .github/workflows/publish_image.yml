@@ -34,8 +34,8 @@ jobs:
         uses: aliyun/acr-login@v1
         with:
           login-server: https://registry.cn-hongkong.aliyuncs.com
-          username: "${{ secrets.REGISTRY_USERNAME }}"
-          password: "${{ secrets.REGISTRY_PASSWORD }}"
+          username: '${{ secrets.REGISTRY_USERNAME }}'
+          password: '${{ secrets.REGISTRY_PASSWORD }}'
 
       - name: Build and push
         uses: docker/build-push-action@v3

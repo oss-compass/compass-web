@@ -1,4 +1,4 @@
-@import "tailwind.css";
+@import 'tailwind.css';
 
 html,
 body {
@@ -16,7 +16,9 @@ body {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    Noto Sans, sans-serif, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 textarea,
@@ -39,32 +41,32 @@ input[type='submit'] {
 
 @media (pointer: fine) {
   .thin-scrollbar {
-    scrollbar-width: thin
+    scrollbar-width: thin;
   }
 
   .thin-scrollbar::-webkit-scrollbar {
     height: 7px;
-    width: 7px
+    width: 7px;
   }
 
   .thin-scrollbar::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 10px
+    border-radius: 10px;
   }
 
   .thin-scrollbar::-webkit-scrollbar-thumb {
     background: silver;
-    border-radius: 10px
+    border-radius: 10px;
   }
 
   .thin-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #a7a7a7
+    background: #a7a7a7;
   }
 }
 
-@supports (scrollbar-gutter:stable) {
+@supports (scrollbar-gutter: stable) {
   .thin-scrollbar {
-    padding: .5rem 0 .5rem .5rem;
-    scrollbar-gutter: stable
+    padding: 0.5rem 0 0.5rem 0.5rem;
+    scrollbar-gutter: stable;
   }
 }

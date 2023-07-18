@@ -1,20 +1,19 @@
-
 .headerBgLine {
-    background-image: url("/images/lab/bg-lab.png");
-    background-repeat: repeat;
-    background-size: 89px 57px;
+  background-image: url('/images/lab/bg-lab.png');
+  background-repeat: repeat;
+  background-size: 89px 57px;
 }
-.headerTitle{
-    background-image: url("/images/lab/lab-title@2x.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+.headerTitle {
+  background-image: url('/images/lab/lab-title@2x.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 .headerBgGraph {
-    background-image: url("/images/lab/lab-folder@2x.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+  background-image: url('/images/lab/lab-folder@2x.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
-.headerdsc{
-    line-height: 1.38rem;
-    margin-top: 0.94rem;
+.headerdsc {
+  line-height: 1.38rem;
+  margin-top: 0.94rem;
 }

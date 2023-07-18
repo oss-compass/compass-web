@@ -1,12 +1,11 @@
-
 .headerBgLine {
-    background-image: url("/images/submit-project/bg-line.png");
-    background-repeat: repeat;
-    background-size: 89px 57px;
+  background-image: url('/images/submit-project/bg-line.png');
+  background-repeat: repeat;
+  background-size: 89px 57px;
 }
 
 .headerBgGraph {
-    background-image: url("/images/submit-project/bg-graph.png");
-    background-repeat: no-repeat;
-    background-size: 500px 300px;
+  background-image: url('/images/submit-project/bg-graph.png');
+  background-repeat: no-repeat;
+  background-size: 500px 300px;
 }

@@ -1,13 +1,13 @@
 .menu {
-  transition: background .2s cubic-bezier(0.08, 0.52, 0.52, 1);
+  transition: background 0.2s cubic-bezier(0.08, 0.52, 0.52, 1);
 
   &:hover {
     background: #0000000d;
   }
 }
 
-.menuActive{
-  background: #0000000d
+.menuActive {
+  background: #0000000d;
 }
 
 .menuArrow {
@@ -16,7 +16,6 @@
   }
 }
 
-
-.menuBox{
+.menuBox {
   transition: height 297ms ease-in-out 0s;
 }
