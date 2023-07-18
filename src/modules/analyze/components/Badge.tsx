@@ -14,16 +14,42 @@ import { Transition } from '@common//components/Dialog';
 import Tooltip from '@common//components/Tooltip';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 
+const queryMap = {
+  COLLAB_DEV_INDEX: 'collab_dev_index',
+  COMMUNITY: 'community',
+  ACTIVITY: 'activity',
+  ORGANIZATIONS_ACTIVITY: 'organizations_activity',
+};
+
+const anchorList = [
+  {
+    badgeUrlQuery: queryMap.COLLAB_DEV_INDEX,
+    anchor: 'collaboration_development_index',
+  },
+  {
+    badgeUrlQuery: queryMap.COMMUNITY,
+    anchor: 'community_service_support',
+  },
+  {
+    badgeUrlQuery: queryMap.ACTIVITY,
+    anchor: 'community_activity',
+  },
+  {
+    badgeUrlQuery: queryMap.ORGANIZATIONS_ACTIVITY,
+    anchor: 'organizations_activity',
+  },
+];
+
 const Badge = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const slug = router.query.slugs as string;
   const badgeLinks = {
     logo: `/badge/${slug}.svg`,
-    collab_dev_index: `/badge/${slug}.svg?metric=collab_dev_index`,
-    community: `/badge/${slug}.svg?metric=community`,
-    activity: `/badge/${slug}.svg?metric=activity`,
-    organizations_activity: `/badge/${slug}.svg?metric=organizations_activity`,
+    collab_dev_index: `/badge/${slug}.svg?metric=${queryMap.COLLAB_DEV_INDEX}`,
+    community: `/badge/${slug}.svg?metric=${queryMap.COMMUNITY}`,
+    activity: `/badge/${slug}.svg?metric=${queryMap.ACTIVITY}`,
+    organizations_activity: `/badge/${slug}.svg?metric=${queryMap.ORGANIZATIONS_ACTIVITY}`,
   };
 
   const [open, setOpen] = useState(false);
@@ -138,26 +164,36 @@ const BadgeItem = ({ activeSrc, src }: { activeSrc: string; src: string }) => {
   );
 };
 
+const getMarkdownAnchorLink = (badgeSrc: string) => {
+  const url = window.origin + window.location.pathname;
+  const item = anchorList.find((i) => badgeSrc.endsWith(i.badgeUrlQuery));
+  if (!item) {
+    return url;
+  }
+  return `${url}#${item.anchor}`;
+};
+
 const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
   const { t } = useTranslation();
   const [tab, setTab] = React.useState('Markdown');
   const [targetDate, setTargetDate] = useState<number>();
   const [countdown] = useCountDown({ targetDate });
-  const link = window.origin + badgeSrc;
-  const url = window.origin + window.location.pathname;
+  const badgeLink = window.origin + badgeSrc;
 
   let source = '';
   switch (tab) {
     case 'Markdown': {
-      source = `[![OSS Compass Analyze](${link})](${url})`;
+      source = `[![OSS Compass Analyze](${badgeLink})](${getMarkdownAnchorLink(
+        badgeSrc
+      )})`;
       break;
     }
     case 'HTML': {
-      source = `<img src="${link}" alt="OSS Compass Analyze" />`;
+      source = `<img src="${badgeLink}" alt="OSS Compass Analyze" />`;
       break;
     }
     case 'Link': {
-      source = link;
+      source = badgeLink;
       break;
     }
     default: {
@@ -202,7 +238,7 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
         />
       </Tabs>
       <div className="mt-4 flex  h-[60px] items-center justify-between rounded border bg-[#fafafa] px-3">
-        <div className="text-xs">{source}</div>
+        <div className="break-all text-xs">{source}</div>
         <Tooltip
           title={
             countdown === 0
