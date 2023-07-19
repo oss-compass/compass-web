@@ -2,13 +2,19 @@ import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
-import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
-import { GenChartOptions, TransOpt } from '@modules/analyze/type';
-import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
+import { TransOpt } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
+import {
+  ChartOptionAdapter,
+  useCardManual,
+  useOptionBuilderFns,
+  getLineChartBuilder,
+  getCompareStyleBuilder,
+  getReferenceLineBuilder,
+} from '@modules/analyze/options';
 
 const CodeMergeRatio = () => {
   const { t } = useTranslation();
@@ -43,18 +49,31 @@ const CodeMergeRatio = () => {
   type TabValue = keyof typeof chartTabs;
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
+
   const {
-    getOptions,
     showMedian,
     setShowMedian,
     showAvg,
     setShowAvg,
     yAxisScale,
     setYAxisScale,
-  } = useGetRatioLineOption({ tab });
+  } = useCardManual();
+
+  const geOptionFn = useOptionBuilderFns([
+    getLineChartBuilder({ isRatio: tab === '1', yAxisScale }),
+    getReferenceLineBuilder({
+      showMedian,
+      showAvg,
+      medianMame: t('analyze:median'),
+      avgName: t('analyze:average'),
+      isRatio: tab === '1',
+    }),
+    getCompareStyleBuilder({ indicators: false }),
+  ]);
 
   return (
     <BaseCard
+      _tracing={'CodeMergeRatio'}
       title={t(
         'metrics_models:collaboration_development_index.metrics.code_merge_ratio'
       )}
@@ -90,8 +109,7 @@ const CodeMergeRatio = () => {
         />
       )}
       bodyClass={'h-[400px]'}
-    >
-      {(ref, fullScreen) => {
+      bodyRender={(ref, fullScreen) => {
         return (
           <>
             <div className="mb-4">
@@ -101,30 +119,29 @@ const CodeMergeRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer tansOpts={tansOpts}>
+            <ChartDataContainer _tracing={'CodeMergeRatio'} tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
-                  <ChartOptionContainer
+                  <ChartOptionAdapter
+                    _tracing={'CodeMergeRatio'}
                     data={result}
-                    optionCallback={getOptions}
-                  >
-                    {({ option }) => {
-                      return (
-                        <EChartX
-                          loading={loading}
-                          option={option}
-                          containerRef={ref}
-                        />
-                      );
-                    }}
-                  </ChartOptionContainer>
+                    optionFn={geOptionFn}
+                    render={({ option }) => (
+                      <EChartX
+                        _tracing={'CodeMergeRatio'}
+                        loading={loading}
+                        option={option}
+                        containerRef={ref}
+                      />
+                    )}
+                  />
                 );
               }}
             </ChartDataContainer>
           </>
         );
       }}
-    </BaseCard>
+    />
   );
 };
 

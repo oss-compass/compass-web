@@ -6,6 +6,9 @@ import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
 import DocPopper from '@common/components/DocPopper';
+import { DebugLogger } from '@common/debug';
+
+const logger = new DebugLogger('BaseCard');
 
 const Loading: React.FC<{ className: string }> = ({ className }) => (
   <div className={classnames(className, 'animate-pulse p-10')}>
@@ -26,6 +29,7 @@ const Loading: React.FC<{ className: string }> = ({ className }) => (
 );
 
 interface BaseCardProps {
+  _tracing?: string;
   id?: string;
   loading?: boolean;
   className?: string;
@@ -43,16 +47,22 @@ interface BaseCardProps {
         setFullScreen: React.Dispatch<React.SetStateAction<boolean>>
       ) => ReactNode)
     | ReactNode;
-  children:
+  bodyClass?: string;
+  bodyRender?:
     | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
     | ReactNode;
-  bodyClass?: string;
+  /**
+   * @deprecate  use bodyRender
+   */
+  children?:
+    | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
+    | ReactNode;
 }
 
 const BaseCard: React.FC<BaseCardProps> = ({
+  _tracing,
   id,
   className = '',
-  children,
   loading = false,
   title = '',
   description = '',
@@ -63,11 +73,17 @@ const BaseCard: React.FC<BaseCardProps> = ({
   notes = '',
   headRight = null,
   bodyClass = 'h-[350px]',
+  bodyRender,
+  children,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const [fullScreen, setFullScreen] = useState(false);
   const { t } = useTranslation();
+
+  if (_tracing) {
+    logger.debug(_tracing, { title, description, id });
+  }
 
   const cls = classnames(
     className,
@@ -110,14 +126,22 @@ const BaseCard: React.FC<BaseCardProps> = ({
           threshold={threshold}
           detail={detail}
           notes={notes}
-        ></DocPopper>
+        />
       </div>
       <div className="absolute right-4 top-4 flex items-center md:hidden">
         {typeof headRight === 'function'
           ? headRight(cardRef, fullScreen, setFullScreen)
           : headRight}
       </div>
-      <LoadInView containerRef={cardRef} className={`relative ${bodyClass}`}>
+      <LoadInView
+        _tracing={_tracing}
+        containerRef={cardRef}
+        className={`relative ${bodyClass}`}
+      >
+        {typeof bodyRender === 'function'
+          ? bodyRender(cardRef, fullScreen)
+          : bodyRender}
+
         {typeof children === 'function'
           ? children(cardRef, fullScreen)
           : children}
