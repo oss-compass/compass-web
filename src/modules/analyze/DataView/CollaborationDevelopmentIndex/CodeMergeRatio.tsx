@@ -11,9 +11,8 @@ import {
   ChartOptionProvider,
   useCardManual,
   useOptionBuilderFns,
-  getLineChartBuilder,
+  getRatioLineBuilder,
   getCompareStyleBuilder,
-  getReferenceLineBuilder,
 } from '@modules/analyze/options';
 
 const CodeMergeRatio = () => {
@@ -60,15 +59,15 @@ const CodeMergeRatio = () => {
   } = useCardManual();
 
   const geOptionFn = useOptionBuilderFns([
-    getLineChartBuilder({ isRatio: tab === '1', yAxisScale }),
-    getReferenceLineBuilder({
+    getRatioLineBuilder({
+      isRatio: tab === '1',
+      yAxisScale,
       showMedian,
       showAvg,
       medianMame: t('analyze:median'),
       avgName: t('analyze:average'),
-      isRatio: tab === '1',
     }),
-    getCompareStyleBuilder({ indicators: false }),
+    getCompareStyleBuilder({}),
   ]);
 
   return (

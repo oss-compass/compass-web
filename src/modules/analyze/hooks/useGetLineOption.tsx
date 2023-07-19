@@ -11,6 +11,9 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { toHundredMark } from '@common/transform/transHundredMarkSystem';
 
+/**
+ * @deprecated use useOptionBuilderFns instead
+ */
 const useGetLineOption = (opt?: {
   enableDataFormat?: boolean;
   defaultOnePointSystem?: boolean;

@@ -1,14 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import { TabOption, TransOpt } from '@modules/analyze/type';
-import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
-import { ChartDataProvider } from '@modules/analyze/options';
+import {
+  ChartDataProvider,
+  ChartOptionProvider,
+  useCardManual,
+  useOptionBuilderFns,
+  getRatioLineBuilder,
+  getCompareStyleBuilder,
+} from '@modules/analyze/options';
 
 const CodeReviewRatio = () => {
   const { t } = useTranslation();
@@ -43,15 +48,27 @@ const CodeReviewRatio = () => {
 
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
+
   const {
-    getOptions,
-    setShowMedian,
     showMedian,
+    setShowMedian,
     showAvg,
     setShowAvg,
     yAxisScale,
     setYAxisScale,
-  } = useGetRatioLineOption({ tab });
+  } = useCardManual();
+
+  const geOptionFn = useOptionBuilderFns([
+    getRatioLineBuilder({
+      isRatio: tab === '1',
+      yAxisScale,
+      showMedian,
+      showAvg,
+      medianMame: t('analyze:median'),
+      avgName: t('analyze:average'),
+    }),
+    getCompareStyleBuilder({}),
+  ]);
 
   return (
     <BaseCard
@@ -90,8 +107,7 @@ const CodeReviewRatio = () => {
         />
       )}
       bodyClass={'h-[400px]'}
-    >
-      {(ref) => {
+      bodyRender={(ref) => {
         return (
           <>
             <div className="mb-4">
@@ -104,27 +120,24 @@ const CodeReviewRatio = () => {
             <ChartDataProvider tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
-                  <ChartOptionContainer
+                  <ChartOptionProvider
                     data={result}
-                    optionCallback={getOptions}
-                  >
-                    {({ option }) => {
-                      return (
-                        <EChartX
-                          loading={loading}
-                          option={option}
-                          containerRef={ref}
-                        />
-                      );
-                    }}
-                  </ChartOptionContainer>
+                    optionFn={geOptionFn}
+                    render={({ option }) => (
+                      <EChartX
+                        loading={loading}
+                        option={option}
+                        containerRef={ref}
+                      />
+                    )}
+                  />
                 );
               }}
             </ChartDataProvider>
           </>
         );
       }}
-    </BaseCard>
+    />
   );
 };
 

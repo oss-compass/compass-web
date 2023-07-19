@@ -4,7 +4,7 @@ import { useInViewport, useDebounce } from 'ahooks';
 
 const useInViewportDebounce = (ref: RefObject<HTMLElement> | undefined) => {
   const [inView] = useInViewport(ref);
-  return useDebounce(inView, { wait: 200 });
+  return useDebounce(inView, { wait: 150 });
 };
 
 export default useInViewportDebounce;

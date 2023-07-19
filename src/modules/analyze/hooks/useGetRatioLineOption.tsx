@@ -16,6 +16,9 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
+/**
+ * @deprecated use useOptionBuilderFns instead
+ */
 const useGetRatioLineOption = (opt: {
   tab: string;
   defaultShowAvg?: boolean;
