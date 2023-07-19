@@ -40,6 +40,7 @@
     "show": "显示中位数",
     "hide": "隐藏中位数"
   },
+  "y_axis_scale": "Y 轴相对",
   "unit_label": "单位: {{unit}}",
   "unit_day": "天",
   "positive_indicators": "正向化指标",

@@ -113,7 +113,7 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
       }}
     >
       <YScale />
-      <span className="ml-2 text-xs">Y 轴相对</span>
+      <span className="ml-2 text-xs">{t('analyze:y_axis_scale')}</span>
     </div>
   ) : null;
 

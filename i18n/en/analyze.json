@@ -40,6 +40,7 @@
     "show": "show median",
     "hide": "hide median"
   },
+  "y_axis_scale": "Y axis scale",
   "unit_label": "Unit: {{unit}}",
   "unit_day": "day",
   "positive_indicators": "Positive indicators",

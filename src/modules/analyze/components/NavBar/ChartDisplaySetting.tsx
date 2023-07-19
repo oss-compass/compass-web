@@ -84,7 +84,7 @@ const YScaleItem = () => {
       }}
     >
       <YScale className="mr-2" />
-      <span>Y 轴相对</span>
+      <span>{t('analyze:y_axis_scale')}</span>
     </div>
   );
 };
