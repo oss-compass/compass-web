@@ -1,53 +1,104 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useDebounce } from 'react-use';
+import { throttle } from 'lodash';
+
+const isCardInView = (rect: DOMRect) => {
+  const { top, bottom } = rect;
+  return (
+    top >= 0 &&
+    bottom <= (window.innerHeight || document.documentElement.clientHeight)
+  );
+};
+
+const lookupSiblingTagH1 = (element: HTMLElement) => {
+  let sibling: Node | null = element.previousSibling;
+  while (sibling) {
+    if (
+      sibling.nodeType === 1 &&
+      (sibling as HTMLElement).tagName.toLowerCase() === 'h1'
+    ) {
+      return sibling as HTMLElement;
+    }
+    sibling = sibling.previousSibling;
+  }
+
+  return null;
+};
+
+function lookupParentSiblingH2(element: HTMLElement): HTMLElement | null {
+  let sibling: Node | null = element.previousSibling;
+
+  while (sibling) {
+    if (
+      sibling.nodeType === 1 &&
+      (sibling as HTMLElement).tagName.toLowerCase() === 'h2'
+    ) {
+      return sibling as HTMLElement;
+    }
+    sibling = sibling.previousSibling;
+  }
+
+  const parentElement = element.parentElement;
+  if (parentElement) {
+    return lookupParentSiblingH2(parentElement);
+  }
+
+  return null;
+}
 
 const useTopicNavbarScroll = () => {
-  const [activeId, setActiveId] = useState('');
+  const [inViewCardId, setInViewCardId] = useState('');
 
   useEffect(() => {
+    const scrollEventListener = throttle(() => {
+      if (document.documentElement.scrollTop < 190) {
+        setInViewCardId('');
+        return;
+      }
+
+      const list = document.querySelectorAll('.base-card');
+      for (let i = 0; i < list.length; i++) {
+        const cardEl = list[i];
+        const rect = cardEl.getBoundingClientRect();
+
+        if (isCardInView(rect)) {
+          const h3 = cardEl.firstChild as HTMLElement;
+          if (h3?.id) setInViewCardId(h3?.id);
+          return;
+        }
+      }
+    }, 500);
+
     document.addEventListener('scroll', scrollEventListener);
     return () => {
       document.removeEventListener('scroll', scrollEventListener);
     };
   }, []);
-  const scrollEventListener = () => {
-    const list = document.querySelectorAll('.base-card');
-    for (let i = 0; i < list.length; i++) {
-      const { top, bottom } = list[i].getBoundingClientRect();
-      if ((top < 0 && bottom > 250) || top > 0) {
-        const h3 = list[i].firstChild as HTMLElement;
-        setActiveId(h3.id);
-        break;
-      }
-    }
-  };
-  useDebounce(scrollEventListener, 100);
+
   return useMemo(() => {
-    if (!activeId) {
-      return { topicId: '', subId: '' };
-    } else if (activeId === 'topic_overview') {
-      return {
-        topicId: 'Overview',
-        subId: '',
-      };
-    } else {
-      const parent = document.querySelector('#' + activeId)!.parentNode!
-        .parentNode;
-      let h2: HTMLElement;
-      if (parent!.previousSibling!.nodeName === 'H2') {
-        h2 = parent!.previousSibling as HTMLElement;
-      } else {
-        h2 = parent!.previousSibling!.previousSibling as HTMLElement;
-      }
-      let pre = h2!.previousSibling as HTMLElement;
-      if (!pre) return {};
-      while (pre.nodeName !== 'H1') {
-        pre = pre?.previousSibling as HTMLElement;
-      }
-      const topic = pre!.innerText.replace('#', '').trim();
-      return { topicId: topic, subId: h2.innerText.replace('#', '') };
+    if (!inViewCardId) {
+      return { topicTitle: '', subTitle: '' };
     }
-  }, [activeId]);
+
+    if (inViewCardId === 'topic_overview') {
+      return { topicTitle: 'Overview', subTitle: '' };
+    }
+
+    let topicTitle = '';
+    let subTitle = '';
+
+    const card = document.querySelector('#' + inViewCardId) as HTMLElement;
+    const subIdNode = lookupParentSiblingH2(card);
+    if (subIdNode) {
+      subTitle = subIdNode.innerText.replace('#', '').trim();
+
+      const topicNode = lookupSiblingTagH1(subIdNode);
+      if (topicNode) {
+        topicTitle = topicNode.innerText.replace('#', '').trim();
+      }
+    }
+
+    return { topicTitle, subTitle };
+  }, [inViewCardId]);
 };
 
 export default useTopicNavbarScroll;

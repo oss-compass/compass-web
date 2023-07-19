@@ -22,7 +22,6 @@ const Charts = () => {
         className={
           'group relative z-20 mt-8 mb-8 flex scroll-mt-[200px] text-3xl font-semibold md:px-4 md:text-3xl'
         }
-        id="topic_overview_navbar"
       >
         <CiGrid41 className="mt-2 mr-2 h-[21px] w-[21px] flex-shrink-0" />
         {t('analyze:overview')}
