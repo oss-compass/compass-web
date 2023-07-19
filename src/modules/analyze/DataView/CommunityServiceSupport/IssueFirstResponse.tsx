@@ -3,7 +3,7 @@ import { EChartsOption } from 'echarts';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import { TransOpt, GenChartOptions } from '@modules/analyze/type';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import { ChartDataProvider } from '@modules/analyze/options';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
@@ -119,7 +119,7 @@ const IssueFirstResponse = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer tansOpts={tansOpts}>
+            <ChartDataProvider tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
                   <ChartOptionContainer
@@ -140,7 +140,7 @@ const IssueFirstResponse = () => {
                   </ChartOptionContainer>
                 );
               }}
-            </ChartDataContainer>
+            </ChartDataProvider>
           </>
         );
       }}

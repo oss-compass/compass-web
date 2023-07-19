@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import { ChartDataProvider } from '@modules/analyze/options';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
@@ -102,7 +102,7 @@ const CommitPRLinkedRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer tansOpts={tansOpts}>
+            <ChartDataProvider tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
                   <ChartOptionContainer
@@ -121,7 +121,7 @@ const CommitPRLinkedRatio = () => {
                   </ChartOptionContainer>
                 );
               }}
-            </ChartDataContainer>
+            </ChartDataProvider>
           </>
         );
       }}

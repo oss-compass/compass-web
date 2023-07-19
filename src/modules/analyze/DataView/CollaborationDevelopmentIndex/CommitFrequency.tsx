@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import BaseCard from '@common/components/BaseCard';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import { ChartDataProvider } from '@modules/analyze/options';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
@@ -69,7 +69,7 @@ const CommitFrequency = () => {
     >
       {(ref) => {
         return (
-          <ChartDataContainer tansOpts={tansOpts}>
+          <ChartDataProvider tansOpts={tansOpts}>
             {({ loading, result }) => {
               return (
                 <ChartOptionContainer data={result} optionCallback={getOptions}>
@@ -85,7 +85,7 @@ const CommitFrequency = () => {
                 </ChartOptionContainer>
               );
             }}
-          </ChartDataContainer>
+          </ChartDataProvider>
         );
       }}
     </BaseCard>

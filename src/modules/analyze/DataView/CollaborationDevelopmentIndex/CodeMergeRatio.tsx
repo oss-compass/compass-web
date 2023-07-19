@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
 import { TransOpt } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 import {
-  ChartOptionAdapter,
+  ChartDataProvider,
+  ChartOptionProvider,
   useCardManual,
   useOptionBuilderFns,
   getLineChartBuilder,
@@ -119,10 +119,10 @@ const CodeMergeRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer _tracing={'CodeMergeRatio'} tansOpts={tansOpts}>
+            <ChartDataProvider _tracing={'CodeMergeRatio'} tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
-                  <ChartOptionAdapter
+                  <ChartOptionProvider
                     _tracing={'CodeMergeRatio'}
                     data={result}
                     optionFn={geOptionFn}
@@ -137,7 +137,7 @@ const CodeMergeRatio = () => {
                   />
                 );
               }}
-            </ChartDataContainer>
+            </ChartDataProvider>
           </>
         );
       }}

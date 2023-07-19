@@ -8,6 +8,9 @@ import { DebugLogger } from '@common/debug';
 
 const logger = new DebugLogger('ChartOptionContainer');
 
+/**
+ * @deprecated use ChartOptionProvider instead
+ */
 const ChartOptionContainer = (props: {
   data: DataContainerResult;
   optionCallback: (

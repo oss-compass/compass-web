@@ -5,9 +5,9 @@ import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
 import { DataContainerResult } from '@modules/analyze/type';
 import { DebugLogger } from '@common/debug';
 
-const logger = new DebugLogger('ChartOptionAdapter');
+const logger = new DebugLogger('ChartOptionProvider');
 
-export const ChartOptionAdapter = ({
+export const ChartOptionProvider = ({
   _tracing,
   data,
   optionFn,

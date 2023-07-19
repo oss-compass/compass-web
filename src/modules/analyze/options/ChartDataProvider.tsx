@@ -52,7 +52,7 @@ const Empty = () => {
   );
 };
 
-const ChartDataContainer: React.FC<{
+export const ChartDataProvider: React.FC<{
   _tracing?: string;
   tansOpts: TransOpt;
   children:
@@ -104,5 +104,3 @@ const ChartDataContainer: React.FC<{
     <>{typeof children === 'function' ? children(childProps) : children}</>
   );
 };
-
-export default ChartDataContainer;

@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
@@ -9,6 +8,7 @@ import Tab from '@common/components/Tab';
 import { TabOption, TransOpt } from '@modules/analyze/type';
 import useGetRatioLineOption from '@modules/analyze/hooks/useGetRatioLineOption';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
+import { ChartDataProvider } from '@modules/analyze/options';
 
 const CodeReviewRatio = () => {
   const { t } = useTranslation();
@@ -101,7 +101,7 @@ const CodeReviewRatio = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer tansOpts={tansOpts}>
+            <ChartDataProvider tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
                   <ChartOptionContainer
@@ -120,7 +120,7 @@ const CodeReviewRatio = () => {
                   </ChartOptionContainer>
                 );
               }}
-            </ChartDataContainer>
+            </ChartDataProvider>
           </>
         );
       }}

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { EChartsOption } from 'echarts';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import { ChartDataProvider } from '@modules/analyze/options';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
@@ -122,7 +122,7 @@ const BugIssueOpenTime = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer tansOpts={tansOpts}>
+            <ChartDataProvider tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
                   <ChartOptionContainer
@@ -143,7 +143,7 @@ const BugIssueOpenTime = () => {
                   </ChartOptionContainer>
                 );
               }}
-            </ChartDataContainer>
+            </ChartDataProvider>
           </>
         );
       }}

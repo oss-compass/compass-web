@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { EChartsOption } from 'echarts';
 import { Support } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import { ChartDataProvider } from '@modules/analyze/options';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import {
   TransOpt,
@@ -123,7 +123,7 @@ const PrOpenTime = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer tansOpts={tansOpts}>
+            <ChartDataProvider tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
                   <ChartOptionContainer
@@ -144,7 +144,7 @@ const PrOpenTime = () => {
                   </ChartOptionContainer>
                 );
               }}
-            </ChartDataContainer>
+            </ChartDataProvider>
           </>
         );
       }}

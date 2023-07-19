@@ -4,7 +4,7 @@ import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/co
 import BaseCard from '@common/components/BaseCard';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import { ChartDataProvider } from '@modules/analyze/options';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import { TransOpt } from '@modules/analyze/type';
 
@@ -109,7 +109,7 @@ const ContributorCount = () => {
                 onChange={(v) => setTab(v as TabValue)}
               />
             </div>
-            <ChartDataContainer tansOpts={tansOpts}>
+            <ChartDataProvider tansOpts={tansOpts}>
               {({ loading, result }) => {
                 return (
                   <ChartOptionContainer
@@ -128,7 +128,7 @@ const ContributorCount = () => {
                   </ChartOptionContainer>
                 );
               }}
-            </ChartDataContainer>
+            </ChartDataProvider>
           </div>
         );
       }}
