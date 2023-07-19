@@ -13,3 +13,5 @@ export const oauthProvider = {
     name: 'Gitee',
   },
 };
+
+export type ChartTab = 'One' | 'two' | 'three' | 'four';

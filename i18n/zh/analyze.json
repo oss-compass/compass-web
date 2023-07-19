@@ -18,7 +18,7 @@
   },
   "confirm": "确定",
   "custom": "自定义",
-  "display": "显示",
+  "display": "图表显示",
   "compare": "对比",
   "search_repo_input_placeholder": "请输入仓库名",
   "search_community_input_placeholder": "请输入社区名",
@@ -40,6 +40,7 @@
     "show": "显示中位数",
     "hide": "隐藏中位数"
   },
+  "y_axis_scale": "Y 轴相对",
   "unit_label": "单位: {{unit}}",
   "unit_day": "天",
   "positive_indicators": "正向化指标",

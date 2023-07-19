@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>yAxis</title>
+    <g id="Project" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1250.000000, -2628.000000)" id="submenu">
+            <g transform="translate(1235.000000, 2552.000000)">
+                <g id="yAxis" transform="translate(15.000000, 76.000000)">
+                    <polygon id="Path" points="0 0 16 0 16 16 0 16"></polygon>
+                    <polygon id="Rectangle" fill="currentColor" points="2.5 1 4 6 3 6 3 15 2 15 2 6 1 6"></polygon>
+                    <rect id="Rectangle" fill="currentColor" x="2" y="14" width="13" height="1"></rect>
+                    <g id="Y" transform="translate(6.000000, 5.000000)" fill="currentColor" fill-rule="nonzero">
+                        <polygon id="Path" points="2.31303007 0.610576923 1.58673863 0.701923077 2.99768697 3.55769231 4.40863531 0.701923077 3.68696993 0.610576923 3.68696993 0 6 0 6 0.610576923 5.4309946 0.701923077 3.43253662 4.53846154 3.43253662 6.25961538 4.18658443 6.39423077 4.18658443 7 1.77178103 7 1.77178103 6.39423077 2.52582884 6.25961538 2.52582884 4.46634615 0.564379337 0.701923077 0 0.610576923 0 0 2.31303007 0"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

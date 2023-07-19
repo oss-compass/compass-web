@@ -43,8 +43,15 @@ const CodeMergeRatio = () => {
   type TabValue = keyof typeof chartTabs;
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
-  const { getOptions, setShowMedian, showMedian, showAvg, setShowAvg } =
-    useGetRatioLineOption({ tab });
+  const {
+    getOptions,
+    showMedian,
+    setShowMedian,
+    showAvg,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetRatioLineOption({ tab });
 
   return (
     <BaseCard
@@ -78,6 +85,8 @@ const CodeMergeRatio = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
       bodyClass={'h-[400px]'}

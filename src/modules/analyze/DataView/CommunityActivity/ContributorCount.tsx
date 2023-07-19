@@ -20,8 +20,15 @@ const ContributorCount = () => {
     yKey: 'metricActivity.contributorCount',
     summaryKey: 'summaryActivity.contributorCount',
   };
-  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption();
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowMedian,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
 
   return (
     <BaseCard
@@ -54,6 +61,8 @@ const ContributorCount = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
     >

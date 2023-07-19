@@ -1,4 +1,3 @@
-import { EChartsOption } from 'echarts';
 import { GenChartOptions } from '@modules/analyze/type';
 import {
   getColorWithLabel,
@@ -17,6 +16,7 @@ const useGetLineOption = (opt?: {
   defaultOnePointSystem?: boolean;
   defaultShowAvg?: boolean;
   defaultShowMedian?: boolean;
+  defaultYAxisScale?: boolean;
   indicators?: string;
 }) => {
   const {
@@ -24,6 +24,7 @@ const useGetLineOption = (opt?: {
     defaultOnePointSystem = false,
     defaultShowAvg = false,
     defaultShowMedian = false,
+    defaultYAxisScale = true,
     indicators,
   } = opt || {};
 
@@ -31,6 +32,7 @@ const useGetLineOption = (opt?: {
   const [onePointSys, setOnePointSys] = useState(defaultOnePointSystem);
   const [showAvg, setShowAvg] = useState(defaultShowAvg);
   const [showMedian, setShowMedian] = useState(defaultShowMedian);
+  const [yAxisScale, setYAxisScale] = useState(defaultYAxisScale);
 
   const getOptions: GenChartOptions = (
     { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
@@ -74,6 +76,7 @@ const useGetLineOption = (opt?: {
     return getLineOption({
       xAxisData: xAxis,
       series,
+      yAxis: { type: 'value', scale: yAxisScale },
       legend: legendFormat(compareLabels),
       tooltip: {
         formatter: getTooltipsFormatter({ compareLabels, indicators }),
@@ -89,6 +92,8 @@ const useGetLineOption = (opt?: {
     setShowMedian,
     onePointSys,
     setOnePointSys,
+    yAxisScale,
+    setYAxisScale,
   };
 };
 

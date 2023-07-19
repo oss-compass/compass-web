@@ -49,8 +49,15 @@ const PrOpenTime = () => {
     unit: t('analyze:unit_day'),
   });
 
-  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption({ indicators });
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowMedian,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption({ indicators });
 
   const appendOptions = (
     options: EChartsOption,
@@ -63,6 +70,7 @@ const PrOpenTime = () => {
         unit,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
         result,
+        scale: yAxisScale,
       }),
     };
   };
@@ -99,6 +107,8 @@ const PrOpenTime = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
       bodyClass={'h-[400px]'}

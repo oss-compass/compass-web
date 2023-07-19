@@ -18,8 +18,15 @@ const CreatedSince = () => {
     yKey: 'metricActivity.createdSince',
     summaryKey: 'summaryActivity.createdSince',
   };
-  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption();
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowMedian,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
 
   return (
     <BaseCard
@@ -40,6 +47,8 @@ const CreatedSince = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
     >

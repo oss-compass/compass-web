@@ -16,8 +16,15 @@ const ContributionLast = () => {
     yKey: 'metricGroupActivity.contributionLast',
     summaryKey: 'summaryGroupActivity.contributionLast',
   };
-  const { getOptions, showAvg, showMedian, setShowAvg, setShowMedian } =
-    useGetLineOption();
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowAvg,
+    setShowMedian,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
 
   return (
     <BaseCard
@@ -51,6 +58,8 @@ const ContributionLast = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
     >

@@ -7,7 +7,7 @@ import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import {
   ChartThemeState,
   chartThemeState,
-  avgAndScoreState,
+  chatUserSettingState,
 } from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
 import LinkLegacy from '@common/components/LinkLegacy';
@@ -41,7 +41,7 @@ const ChartWithData: React.FC<{
 }> = ({ children, indicators, getOptions, tansOpts }) => {
   const { t, i18n } = useTranslation();
   const theme = useSnapshot(chartThemeState);
-  const snap = useSnapshot(avgAndScoreState);
+  const snap = useSnapshot(chatUserSettingState);
   const data = useMetricQueryData();
   const loading = data?.loading;
 

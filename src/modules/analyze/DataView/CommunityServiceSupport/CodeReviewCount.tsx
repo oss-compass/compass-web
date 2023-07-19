@@ -19,8 +19,15 @@ const CodeReviewCount = () => {
     yKey: 'metricCommunity.codeReviewCount',
     summaryKey: 'summaryCommunity.codeReviewCount',
   };
-  const { getOptions, showAvg, showMedian, setShowMedian, setShowAvg } =
-    useGetLineOption();
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowMedian,
+    setShowAvg,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
 
   return (
     <BaseCard
@@ -54,6 +61,8 @@ const CodeReviewCount = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
     >

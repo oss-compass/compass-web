@@ -4,7 +4,7 @@ import transMetricToAxis from '@common/transform/transMetricToAxis';
 import transSummaryToAxis from '@common/transform/transSummaryToAxis';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import LinkLegacy from '@common/components/LinkLegacy';
-import { avgAndScoreState } from '@modules/analyze/store';
+import { chatUserSettingState } from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
 import { TransOpt, DataContainerResult, YResult } from '@modules/analyze/type';
 import { isNull, isUndefined } from 'lodash';
@@ -61,7 +61,7 @@ const ChartDataContainer: React.FC<{
 }> = ({ children, tansOpts }) => {
   const data = useMetricQueryData();
   const loading = data?.loading;
-  const snap = useSnapshot(avgAndScoreState);
+  const snap = useSnapshot(chatUserSettingState);
 
   const { xAxis, yResults } = transMetricToAxis(
     data?.items,

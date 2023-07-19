@@ -16,8 +16,15 @@ const OrgCount = () => {
     yKey: 'metricGroupActivity.orgCount',
     summaryKey: 'summaryGroupActivity.orgCount',
   };
-  const { getOptions, showAvg, showMedian, setShowAvg, setShowMedian } =
-    useGetLineOption();
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowAvg,
+    setShowMedian,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
   return (
     <BaseCard
       title={t('metrics_models:organization_activity.metrics.org_count')}
@@ -48,6 +55,8 @@ const OrgCount = () => {
           onAvgChange={(b) => setShowAvg(b)}
           showMedian={showMedian}
           onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
         />
       )}
     >

@@ -1,4 +1,5 @@
 import { GenChartOptions } from '@modules/analyze/type';
+import { EChartsOption } from 'echarts';
 import {
   getColorWithLabel,
   getLineOption,
@@ -19,11 +20,19 @@ const useGetRatioLineOption = (opt: {
   tab: string;
   defaultShowAvg?: boolean;
   defaultShowMedian?: boolean;
+  defaultYAxisScale?: boolean;
 }) => {
   const { t } = useTranslation();
-  const { tab = '1', defaultShowAvg = false, defaultShowMedian = false } = opt;
+  const {
+    tab = '1',
+    defaultShowAvg = false,
+    defaultShowMedian = false,
+    defaultYAxisScale = true,
+  } = opt;
+
   const [showAvg, setShowAvg] = useState(defaultShowAvg);
   const [showMedian, setShowMedian] = useState(defaultShowMedian);
+  const [yAxisScale, setYAxisScale] = useState(defaultYAxisScale);
 
   const getOptions: GenChartOptions = (
     { xAxis, compareLabels, yResults, summaryMedian, summaryMean },
@@ -59,13 +68,16 @@ const useGetRatioLineOption = (opt: {
       );
     }
 
+    const ratioYAxis: EChartsOption['yAxis'] = {
+      type: 'value',
+      axisLabel: { formatter: '{value}%' },
+      scale: yAxisScale,
+    };
+
     return getLineOption({
       xAxisData: xAxis,
       series,
-      yAxis:
-        tab === '1'
-          ? { type: 'value', axisLabel: { formatter: '{value}%' } }
-          : { type: 'value' },
+      yAxis: tab === '1' ? ratioYAxis : { type: 'value', scale: yAxisScale },
       legend: legendFormat(compareLabels),
       tooltip: {
         formatter: getTooltipsFormatter({
@@ -75,7 +87,16 @@ const useGetRatioLineOption = (opt: {
       },
     });
   };
-  return { getOptions, showAvg, setShowAvg, showMedian, setShowMedian };
+
+  return {
+    getOptions,
+    showAvg,
+    setShowAvg,
+    showMedian,
+    setShowMedian,
+    yAxisScale,
+    setYAxisScale,
+  };
 };
 
 export default useGetRatioLineOption;

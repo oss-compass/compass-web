@@ -6,11 +6,12 @@ import Popper from '@mui/material/Popper';
 import ClickAwayListener from '@mui/base/ClickAwayListener';
 import Average from 'public/images/analyze/average.svg';
 import Median from 'public/images/analyze/median.svg';
+import YScale from 'public/images/analyze/y-scale.svg';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import DownCardLoadImage from './DownCardLoadImage';
 import { subscribeKey } from 'valtio/utils';
-import { avgAndScoreState } from '@modules/analyze/store';
+import { chatUserSettingState } from '@modules/analyze/store';
 
 interface CardDropDownMenuProps {
   downloadImageSize?: 'middle' | 'full';
@@ -18,22 +19,29 @@ interface CardDropDownMenuProps {
   fullScreen: boolean;
   onFullScreen: (v: boolean) => void;
 
-  enableReference?: boolean;
+  enableReferenceLineSwitch?: boolean;
   showAvg?: boolean;
-  onAvgChange?: (pre: boolean) => void;
+  onAvgChange?: (v: boolean) => void;
   showMedian?: boolean;
-  onMedianChange?: (pre: boolean) => void;
+  onMedianChange?: (v: boolean) => void;
+
+  enableLineSettingSwitch?: boolean;
+  yAxisScale?: boolean;
+  onYAxisScaleChange?: (v: boolean) => void;
 }
 
 const CardDropDownMenu = (props: CardDropDownMenuProps) => {
   const {
     downloadImageSize = 'middle',
     cardRef,
-    enableReference = true,
+    enableReferenceLineSwitch = true,
     showAvg = false,
     showMedian = false,
     onMedianChange,
     onAvgChange,
+    enableLineSettingSwitch = true,
+    yAxisScale,
+    onYAxisScaleChange,
   } = props;
 
   const { t } = useTranslation();
@@ -46,19 +54,114 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     setOpen((previousOpen) => !previousOpen);
   };
 
-  subscribeKey(avgAndScoreState, 'showAvg', (v) => {
+  subscribeKey(chatUserSettingState, 'showAvg', (v) => {
     if (showAvg !== v) {
       onAvgChange?.(v);
     }
   });
-  subscribeKey(avgAndScoreState, 'showMedian', (v) => {
+  subscribeKey(chatUserSettingState, 'showMedian', (v) => {
     if (showMedian !== v) {
       onMedianChange?.(v);
+    }
+  });
+  subscribeKey(chatUserSettingState, 'yAxisScale', (v) => {
+    if (yAxisScale !== v) {
+      onYAxisScaleChange?.(v);
     }
   });
 
   const canBeOpen = open && Boolean(anchorEl);
   const id = canBeOpen ? 'transition-popper' : undefined;
+
+  const ReferenceNode = enableReferenceLineSwitch ? (
+    <>
+      <div
+        className={classnames(
+          'flex h-8 cursor-pointer  items-center  border-b  px-4 md:hidden',
+          [showAvg ? 'text-primary' : 'text-gray-500']
+        )}
+        onClick={() => {
+          onAvgChange?.(!showAvg);
+        }}
+      >
+        <Average />
+        <span className="ml-2 text-xs">{t('analyze:average')}</span>
+      </div>
+      <div
+        className={classnames(
+          'flex h-8 cursor-pointer items-center border-b  px-4 md:hidden',
+          [showMedian ? 'text-primary' : 'text-gray-500']
+        )}
+        onClick={() => {
+          onMedianChange?.(!showMedian);
+        }}
+      >
+        <Median />
+        <span className="ml-2 text-xs">{t('analyze:median')}</span>
+      </div>
+    </>
+  ) : null;
+
+  const LineSetting = enableLineSettingSwitch ? (
+    <div
+      className={classnames(
+        'flex h-8 cursor-pointer  items-center  border-b  px-4 md:hidden',
+        [yAxisScale ? 'text-primary' : 'text-gray-500']
+      )}
+      onClick={() => {
+        onYAxisScaleChange?.(!yAxisScale);
+      }}
+    >
+      <YScale />
+      <span className="ml-2 text-xs">{t('analyze:y_axis_scale')}</span>
+    </div>
+  ) : null;
+
+  const DownLoadNode = (
+    <div
+      className="flex  h-8 cursor-pointer items-center border-b  px-4"
+      onClick={() => {
+        setLoadingDownLoadImg(true);
+      }}
+    >
+      {loadingDownLoadImg ? (
+        <AiOutlineLoading className="t animate-spin" />
+      ) : (
+        <AiOutlineDownload className="text-[#585858]" />
+      )}
+      <span className="ml-2 text-xs text-[#585858]">
+        {t('analyze:download_chart_img')}
+      </span>
+    </div>
+  );
+
+  const FullScreen = (
+    <div
+      className={classnames(
+        'flex h-8 cursor-pointer items-center  px-4   md:hidden'
+      )}
+      onClick={() => {
+        props.onFullScreen(!props.fullScreen);
+        setOpen((previousOpen) => !previousOpen);
+      }}
+    >
+      {props.fullScreen ? (
+        <>
+          <BiExitFullscreen className="text-[#585858]" />
+          <span className="ml-2 text-xs text-[#585858]">
+            {t('analyze:full_screen_exit')}
+          </span>
+        </>
+      ) : (
+        <>
+          <BiFullscreen className="text-[#585858]" />
+          <span className="ml-2 text-xs text-[#585858]">
+            {t('analyze:full_screen')}
+          </span>
+        </>
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -85,85 +188,13 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
             anchorEl={anchorEl}
           >
             <div className="rounded bg-white py-2 shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
-              {enableReference ? (
-                <>
-                  <div
-                    className={classnames(
-                      'flex h-8 cursor-pointer  items-center  border-b  px-4 md:hidden'
-                    )}
-                    onClick={() => {
-                      onAvgChange?.(!showAvg);
-                    }}
-                  >
-                    <Average />
-                    <span className="ml-2 text-xs text-[#585858]">
-                      {showAvg
-                        ? t('analyze:avg_line.hide')
-                        : t('analyze:avg_line.show')}
-                    </span>
-                  </div>
-                  <div
-                    className={classnames(
-                      'flex h-8 cursor-pointer items-center border-b  px-4 md:hidden'
-                    )}
-                    onClick={() => {
-                      onMedianChange?.(!showMedian);
-                    }}
-                  >
-                    <Median />
-                    <span className="ml-2 text-xs text-[#585858]">
-                      {showMedian
-                        ? t('analyze:median_line.hide')
-                        : t('analyze:median_line.show')}
-                    </span>
-                  </div>
-                </>
-              ) : null}
-
-              <div
-                className="flex  h-8 cursor-pointer items-center border-b  px-4"
-                onClick={() => {
-                  setLoadingDownLoadImg(true);
-                }}
-              >
-                {loadingDownLoadImg ? (
-                  <AiOutlineLoading className="t animate-spin" />
-                ) : (
-                  <AiOutlineDownload className="text-[#585858]" />
-                )}
-                <span className="ml-2 text-xs text-[#585858]">
-                  {t('analyze:download_chart_img')}
-                </span>
-              </div>
-
-              <div
-                className={classnames(
-                  'flex h-8 cursor-pointer items-center  px-4   md:hidden'
-                )}
-                onClick={() => {
-                  props.onFullScreen(!props.fullScreen);
-                  setOpen((previousOpen) => !previousOpen);
-                }}
-              >
-                {props.fullScreen ? (
-                  <>
-                    <BiExitFullscreen className="text-[#585858]" />
-                    <span className="ml-2 text-xs text-[#585858]">
-                      {t('analyze:full_screen_exit')}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <BiFullscreen className="text-[#585858]" />
-                    <span className="ml-2 text-xs text-[#585858]">
-                      {t('analyze:full_screen')}
-                    </span>
-                  </>
-                )}
-              </div>
+              {ReferenceNode}
+              {LineSetting}
+              {DownLoadNode}
+              {FullScreen}
             </div>
-            `
           </Popper>
+
           {loadingDownLoadImg && (
             <DownCardLoadImage
               size={downloadImageSize}
