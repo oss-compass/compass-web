@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import DownCardLoadImage from './DownCardLoadImage';
 import { subscribeKey } from 'valtio/utils';
-import { chatUserSettingState } from '@modules/analyze/store';
+import { chartUserSettingState } from '@modules/analyze/store';
 
 interface CardDropDownMenuProps {
   downloadImageSize?: 'middle' | 'full';
@@ -54,17 +54,17 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     setOpen((previousOpen) => !previousOpen);
   };
 
-  subscribeKey(chatUserSettingState, 'showAvg', (v) => {
+  subscribeKey(chartUserSettingState, 'showAvg', (v) => {
     if (showAvg !== v) {
       onAvgChange?.(v);
     }
   });
-  subscribeKey(chatUserSettingState, 'showMedian', (v) => {
+  subscribeKey(chartUserSettingState, 'showMedian', (v) => {
     if (showMedian !== v) {
       onMedianChange?.(v);
     }
   });
-  subscribeKey(chatUserSettingState, 'yAxisScale', (v) => {
+  subscribeKey(chartUserSettingState, 'yAxisScale', (v) => {
     if (yAxisScale !== v) {
       onYAxisScaleChange?.(v);
     }

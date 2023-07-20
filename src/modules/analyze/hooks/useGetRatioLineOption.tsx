@@ -15,6 +15,7 @@ import {
 } from '@common/utils/format';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import { chartUserSettingState } from '@modules/analyze/store';
 
 /**
  * @deprecated use useOptionBuilderFns instead
@@ -28,9 +29,9 @@ const useGetRatioLineOption = (opt: {
   const { t } = useTranslation();
   const {
     tab = '1',
-    defaultShowAvg = false,
-    defaultShowMedian = false,
-    defaultYAxisScale = true,
+    defaultShowAvg = chartUserSettingState.showAvg,
+    defaultShowMedian = chartUserSettingState.showMedian,
+    defaultYAxisScale = chartUserSettingState.yAxisScale,
   } = opt;
 
   const [showAvg, setShowAvg] = useState(defaultShowAvg);

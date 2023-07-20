@@ -1,2 +1,2 @@
 export * from './chartTheme';
-export * from './chatUserSetting';
+export * from './chartUserSetting';

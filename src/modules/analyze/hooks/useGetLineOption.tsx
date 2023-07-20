@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { toHundredMark } from '@common/transform/transHundredMarkSystem';
+import { chartUserSettingState } from '@modules/analyze/store';
 
 /**
  * @deprecated use useOptionBuilderFns instead
@@ -24,10 +25,10 @@ const useGetLineOption = (opt?: {
 }) => {
   const {
     enableDataFormat = false,
-    defaultOnePointSystem = false,
-    defaultShowAvg = false,
-    defaultShowMedian = false,
-    defaultYAxisScale = true,
+    defaultOnePointSystem = chartUserSettingState.onePointSys,
+    defaultShowAvg = chartUserSettingState.showAvg,
+    defaultShowMedian = chartUserSettingState.showMedian,
+    defaultYAxisScale = chartUserSettingState.yAxisScale,
     indicators,
   } = opt || {};
 

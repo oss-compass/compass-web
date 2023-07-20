@@ -8,6 +8,7 @@ import {
 } from '@common/options';
 import type { getBuilderOptionFn } from '@modules/analyze/options/useOptionBuilderFns';
 import { toHundredMark } from '@common/transform/transHundredMarkSystem';
+import { formatISO } from '@common/utils';
 
 export const getLineBuilder: getBuilderOptionFn<{
   enableDataFormat?: boolean;
@@ -67,7 +68,7 @@ export const getLineBuilder: getBuilderOptionFn<{
     }
 
     const opts = getLineOption({
-      xAxisData: xAxis,
+      xAxisData: xAxis.map((i) => formatISO(i)),
       series,
       yAxis: { type: 'value', scale: yAxisScale },
       legend: legendFormat(compareLabels),

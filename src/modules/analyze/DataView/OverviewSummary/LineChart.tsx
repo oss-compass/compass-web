@@ -9,7 +9,7 @@ import { transDataForOverview } from '@common/transform/transDataForOverview';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
-import { chatUserSettingState } from '@modules/analyze/store';
+import { chartUserSettingState } from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
 
 const LineChart: React.FC<ChartSummaryProps> = ({
@@ -18,8 +18,12 @@ const LineChart: React.FC<ChartSummaryProps> = ({
   yAxis,
 }) => {
   const { t } = useTranslation();
-  const [onePointSys, setOnePointSys] = useState(false);
-  const [yAxisScale, setYAxisScale] = useState(true);
+  const [onePointSys, setOnePointSys] = useState(
+    chartUserSettingState.onePointSys
+  );
+  const [yAxisScale, setYAxisScale] = useState(
+    chartUserSettingState.yAxisScale
+  );
 
   const echartsOpts = useMemo(() => {
     const series = yAxis.map(({ legendName, data }) => {
@@ -109,7 +113,7 @@ const LineChartWithData = () => {
   const data = useMetricQueryData();
   const isLoading = data.loading;
   const copyOpts = optsWithOrg;
-  const snap = useSnapshot(chatUserSettingState);
+  const snap = useSnapshot(chartUserSettingState);
   const repoType = snap.repoType;
   const { xAxis, yAxisResult } = useMemo(() => {
     const result = data.items[0].result;

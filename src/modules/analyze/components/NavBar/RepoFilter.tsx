@@ -2,13 +2,13 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
 import { useSnapshot } from 'valtio';
-import { chatUserSettingState } from '@modules/analyze/store';
+import { chartUserSettingState } from '@modules/analyze/store';
 import SoftwareArtifact from 'public/images/analyze/Software-Artifact.svg';
 import Governance from 'public/images/analyze/Governance.svg';
 
 const RepoFilter = () => {
   const { t } = useTranslation();
-  const snap = useSnapshot(chatUserSettingState);
+  const snap = useSnapshot(chartUserSettingState);
 
   return (
     <>
@@ -21,7 +21,7 @@ const RepoFilter = () => {
           { 'text-primary': snap.repoType === 'software-artifact' }
         )}
         onClick={() => {
-          chatUserSettingState.repoType = 'software-artifact';
+          chartUserSettingState.repoType = 'software-artifact';
         }}
       >
         <SoftwareArtifact className="mr-2 flex-none" />
@@ -33,7 +33,7 @@ const RepoFilter = () => {
           { 'text-primary': snap.repoType === 'governance' }
         )}
         onClick={() => {
-          chatUserSettingState.repoType = 'governance';
+          chartUserSettingState.repoType = 'governance';
         }}
       >
         <Governance className="mr-2 flex-none" />

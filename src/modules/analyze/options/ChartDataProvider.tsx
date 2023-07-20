@@ -5,7 +5,7 @@ import transMetricToAxis from '@common/transform/transMetricToAxis';
 import transSummaryToAxis from '@common/transform/transSummaryToAxis';
 import useMetricQueryData from '@modules/analyze/hooks/useMetricQueryData';
 import LinkLegacy from '@common/components/LinkLegacy';
-import { chatUserSettingState } from '@modules/analyze/store';
+import { chartUserSettingState } from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
 import { TransOpt, DataContainerResult, YResult } from '@modules/analyze/type';
 import { isNull, isUndefined } from 'lodash';
@@ -65,7 +65,7 @@ export const ChartDataProvider: React.FC<{
 }> = ({ children, tansOpts, _tracing }) => {
   const data = useMetricQueryData();
   const loading = data?.loading;
-  const snap = useSnapshot(chatUserSettingState);
+  const snap = useSnapshot(chartUserSettingState);
   const { xAxis, yResults } = transMetricToAxis(
     data?.items,
     tansOpts,

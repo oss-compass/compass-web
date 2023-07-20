@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import { chartUserSettingState } from '@modules/analyze/store';
 
 type Props = {
   defaultOnePointSystem?: boolean;
@@ -10,10 +11,10 @@ type Props = {
 
 export const useCardManual = (props: Props = {}) => {
   const {
-    defaultOnePointSystem = false,
-    defaultShowMedian = false,
-    defaultShowAvg = false,
-    defaultYAxisScale = true,
+    defaultOnePointSystem = chartUserSettingState.onePointSys,
+    defaultShowMedian = chartUserSettingState.showMedian,
+    defaultShowAvg = chartUserSettingState.showAvg,
+    defaultYAxisScale = chartUserSettingState.yAxisScale,
   } = props;
 
   const [onePointSys, setOnePointSys] = useState(defaultOnePointSystem);

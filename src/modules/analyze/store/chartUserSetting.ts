@@ -29,7 +29,7 @@ type UserSettingProps = {
   yAxisScale: boolean;
 };
 
-export const chatUserSettingState = proxy<UserSettingProps>(
+export const chartUserSettingState = proxy<UserSettingProps>(
   localGet() || {
     showAvg: false,
     showMedian: false,
@@ -39,6 +39,6 @@ export const chatUserSettingState = proxy<UserSettingProps>(
   }
 );
 
-// subscribe(chatUserSettingState, () => {
-//   localSet(JSON.stringify(chatUserSettingState));
-// });
+subscribe(chartUserSettingState, () => {
+  localSet(JSON.stringify(chartUserSettingState));
+});

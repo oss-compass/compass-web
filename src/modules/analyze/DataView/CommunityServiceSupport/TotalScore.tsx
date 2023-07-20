@@ -31,7 +31,6 @@ const TotalScore = () => {
     setYAxisScale,
   } = useGetLineOption({
     enableDataFormat: true,
-    defaultOnePointSystem: false,
   });
 
   return (

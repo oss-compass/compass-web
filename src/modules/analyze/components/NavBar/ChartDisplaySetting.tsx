@@ -4,14 +4,14 @@ import Average from 'public/images/analyze/average.svg';
 import Median from 'public/images/analyze/median.svg';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
-import { chatUserSettingState } from '@modules/analyze/store';
+import { chartUserSettingState } from '@modules/analyze/store';
 import Svg100 from 'public/images/analyze/number-100.svg';
 import Svg1 from 'public/images/analyze/number-1.svg';
 import YScale from 'public/images/analyze/y-scale.svg';
 
 const AvgItem = () => {
   const { t } = useTranslation();
-  const snap = useSnapshot(chatUserSettingState);
+  const snap = useSnapshot(chartUserSettingState);
 
   return (
     <div
@@ -20,7 +20,7 @@ const AvgItem = () => {
         [snap.showAvg ? 'text-primary' : 'text-gray-500']
       )}
       onClick={() => {
-        chatUserSettingState.showAvg = !snap.showAvg;
+        chartUserSettingState.showAvg = !snap.showAvg;
       }}
     >
       <Average className="mr-2" />
@@ -31,7 +31,7 @@ const AvgItem = () => {
 
 const MedianItem = () => {
   const { t } = useTranslation();
-  const snap = useSnapshot(chatUserSettingState);
+  const snap = useSnapshot(chartUserSettingState);
 
   return (
     <div
@@ -40,7 +40,7 @@ const MedianItem = () => {
         [snap.showMedian ? 'text-primary' : 'text-gray-500']
       )}
       onClick={() => {
-        chatUserSettingState.showMedian = !snap.showMedian;
+        chartUserSettingState.showMedian = !snap.showMedian;
       }}
     >
       <Median className="mr-2" />
@@ -51,7 +51,7 @@ const MedianItem = () => {
 
 const OnePointItem = () => {
   const { t } = useTranslation();
-  const snap = useSnapshot(chatUserSettingState);
+  const snap = useSnapshot(chartUserSettingState);
 
   return (
     <div
@@ -60,7 +60,7 @@ const OnePointItem = () => {
         [snap.onePointSys ? 'text-primary' : 'text-gray-500']
       )}
       onClick={() => {
-        chatUserSettingState.onePointSys = !snap.onePointSys;
+        chartUserSettingState.onePointSys = !snap.onePointSys;
       }}
     >
       <Svg100 className="mr-2" />
@@ -71,7 +71,7 @@ const OnePointItem = () => {
 
 const YScaleItem = () => {
   const { t } = useTranslation();
-  const snap = useSnapshot(chatUserSettingState);
+  const snap = useSnapshot(chartUserSettingState);
 
   return (
     <div
@@ -80,7 +80,7 @@ const YScaleItem = () => {
         [snap.yAxisScale ? 'text-primary' : 'text-gray-500']
       )}
       onClick={() => {
-        chatUserSettingState.yAxisScale = !snap.yAxisScale;
+        chartUserSettingState.yAxisScale = !snap.yAxisScale;
       }}
     >
       <YScale className="mr-2" />
