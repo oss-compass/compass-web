@@ -8,34 +8,25 @@ import Slack from '@public/images/logos/slack.svg';
 import Wechat from '@public/images/logos/wechat.svg';
 import Github from '@public/images/logos/github.svg';
 import GiteeRed from '@public/images/logos/gitee-red.svg';
+import BlogLogo from '@public/images/logos/blog.svg';
 
-const categoryClass = 'flex cursor-pointer items-center py-4 pl-6';
+const categoryClass =
+  'flex cursor-pointer text-gray-300 items-center py-4 pl-6';
 
 const subItemClass =
-  'flex cursor-pointer items-center py-2 pl-8 hover:bg-[#333333]';
+  'flex cursor-pointer items-center py-2 pl-6 hover:bg-[#333333]';
 
 const borderBottomClass = 'border-b border-white/20';
 const borderTopClass = 'border-t border-white/20';
-
-const Blog = () => {
-  const { t } = useTranslation();
-  return (
-    <LinkX href="/blog" passHref legacyBehavior>
-      <a className={classnames(categoryClass, 'hover:bg-[#333333]')}>
-        {t('common:header.blog')}
-      </a>
-    </LinkX>
-  );
-};
 
 const Discussion = () => {
   const { t } = useTranslation();
   return (
     <>
-      <div className={classnames(categoryClass, borderTopClass)}>
+      <div className={classnames(categoryClass)}>
         {t('common:community.discussion')}
       </div>
-      <div className="pb-4">
+      <div className={classnames('pb-4', borderBottomClass)}>
         <LinkX href="/docs/community/slack" passHref legacyBehavior>
           <a target="_blank" className={classnames(subItemClass)}>
             <div className="mr-4 w-8">
@@ -93,10 +84,10 @@ const RepoLinks = () => {
   const { t } = useTranslation();
   return (
     <>
-      <div className={classnames(categoryClass, borderTopClass)}>
+      <div className={classnames(categoryClass)}>
         {t('common:community.code_base')}
       </div>
-      <div className="pb-4">
+      <div className={classnames('pb-4', borderBottomClass)}>
         <LinkX href="https://github.com/oss-compass" passHref legacyBehavior>
           <a
             target="_blank"
@@ -136,6 +127,20 @@ const RepoLinks = () => {
   );
 };
 
+const Blog = () => {
+  const { t } = useTranslation();
+  return (
+    <LinkX href="/blog" passHref legacyBehavior>
+      <a className={classnames(categoryClass, 'hover:bg-[#333333]')}>
+        <div className="mr-4 w-8">
+          <BlogLogo />
+        </div>
+        <div>{t('common:header.blog')}</div>
+      </a>
+    </LinkX>
+  );
+};
+
 const CommunityDropdown = () => {
   const { t } = useTranslation();
 
@@ -150,9 +155,9 @@ const CommunityDropdown = () => {
 
       <div className="absolute top-[100%] z-dropdown hidden w-[360px] group-hover:block">
         <div className="mt-[2px] bg-black/95 text-white">
-          <Blog />
           <Discussion />
           <RepoLinks />
+          <Blog />
         </div>
       </div>
     </div>
