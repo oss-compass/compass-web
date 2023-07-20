@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/analyze/type';
 import BaseCard from '@common/components/BaseCard';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
-import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
+import {
+  ChartDataProvider,
+  ChartOptionProvider,
+  useCardManual,
+  useOptionBuilderFns,
+  getRatioLineBuilder,
+  getCompareStyleBuilder,
+  getLineBuilder,
+} from '@modules/analyze/options';
 
 const CommitFrequency = () => {
   const { t } = useTranslation();
@@ -20,15 +27,26 @@ const CommitFrequency = () => {
     yKey: 'metricCodequality.commitFrequency',
     summaryKey: 'summaryCodequality.commitFrequency',
   };
+
   const {
-    getOptions,
-    showAvg,
-    setShowAvg,
     showMedian,
     setShowMedian,
+    showAvg,
+    setShowAvg,
     yAxisScale,
     setYAxisScale,
-  } = useGetLineOption();
+  } = useCardManual();
+
+  const geOptionFn = useOptionBuilderFns([
+    getLineBuilder({
+      yAxisScale,
+      showMedian,
+      showAvg,
+      medianMame: t('analyze:median'),
+      avgName: t('analyze:average'),
+    }),
+    getCompareStyleBuilder({}),
+  ]);
 
   return (
     <BaseCard
@@ -69,11 +87,13 @@ const CommitFrequency = () => {
     >
       {(ref) => {
         return (
-          <ChartDataContainer tansOpts={tansOpts}>
+          <ChartDataProvider tansOpts={tansOpts}>
             {({ loading, result }) => {
               return (
-                <ChartOptionContainer data={result} optionCallback={getOptions}>
-                  {({ option }) => {
+                <ChartOptionProvider
+                  data={result}
+                  optionFn={geOptionFn}
+                  render={({ option }) => {
                     return (
                       <EChartX
                         loading={loading}
@@ -82,10 +102,10 @@ const CommitFrequency = () => {
                       />
                     );
                   }}
-                </ChartOptionContainer>
+                />
               );
             }}
-          </ChartDataContainer>
+          </ChartDataProvider>
         );
       }}
     </BaseCard>

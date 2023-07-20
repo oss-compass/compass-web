@@ -4,7 +4,13 @@ import { formatISO } from '@common/utils';
 import { useSnapshot } from 'valtio';
 import { ChartThemeState, chartThemeState } from '@modules/analyze/store';
 import { DataContainerResult } from '@modules/analyze/type';
+import { DebugLogger } from '@common/debug';
 
+const logger = new DebugLogger('ChartOptionContainer');
+
+/**
+ * @deprecated use ChartOptionProvider instead
+ */
 const ChartOptionContainer = (props: {
   data: DataContainerResult;
   optionCallback: (
@@ -13,8 +19,14 @@ const ChartOptionContainer = (props: {
   ) => EChartsOption;
   indicators?: string;
   children: ((args: { option: EChartsOption }) => ReactNode) | ReactNode;
+  _tracing?: string;
 }) => {
-  const { optionCallback, indicators, children, data } = props;
+  const { optionCallback, indicators, children, data, _tracing } = props;
+
+  if (_tracing) {
+    logger.debug(_tracing);
+  }
+
   const theme = useSnapshot(chartThemeState);
   const {
     isCompare,

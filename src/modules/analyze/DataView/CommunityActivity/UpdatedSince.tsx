@@ -3,7 +3,7 @@ import { EChartsOption } from 'echarts';
 import { Activity } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
-import ChartDataContainer from '@modules/analyze/components/Container/ChartDataContainer';
+import { ChartDataProvider } from '@modules/analyze/options';
 import ChartOptionContainer from '@modules/analyze/components/Container/ChartOptionContainer';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
@@ -105,7 +105,7 @@ const UpdatedSince = () => {
     >
       {(ref) => {
         return (
-          <ChartDataContainer tansOpts={tansOpts}>
+          <ChartDataProvider tansOpts={tansOpts}>
             {({ loading, result }) => {
               const convertData = convertResult(result);
               return (
@@ -127,7 +127,7 @@ const UpdatedSince = () => {
                 </ChartOptionContainer>
               );
             }}
-          </ChartDataContainer>
+          </ChartDataProvider>
         );
       }}
     </BaseCard>

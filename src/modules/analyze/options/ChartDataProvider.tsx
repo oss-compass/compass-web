@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Trans } from 'react-i18next';
 import { useTranslation } from 'next-i18next';
 import transMetricToAxis from '@common/transform/transMetricToAxis';
 import transSummaryToAxis from '@common/transform/transSummaryToAxis';
@@ -8,7 +9,9 @@ import { chatUserSettingState } from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
 import { TransOpt, DataContainerResult, YResult } from '@modules/analyze/type';
 import { isNull, isUndefined } from 'lodash';
-import { Trans } from 'react-i18next';
+import { DebugLogger } from '@common/debug';
+
+const logger = new DebugLogger('ChartDataContainer');
 
 const isEmptyData = (result: YResult[]) => {
   return result.every((r) => {
@@ -49,7 +52,8 @@ const Empty = () => {
   );
 };
 
-const ChartDataContainer: React.FC<{
+export const ChartDataProvider: React.FC<{
+  _tracing?: string;
   tansOpts: TransOpt;
   children:
     | ((args: {
@@ -58,11 +62,10 @@ const ChartDataContainer: React.FC<{
         result: DataContainerResult;
       }) => ReactNode)
     | ReactNode;
-}> = ({ children, tansOpts }) => {
+}> = ({ children, tansOpts, _tracing }) => {
   const data = useMetricQueryData();
   const loading = data?.loading;
   const snap = useSnapshot(chatUserSettingState);
-
   const { xAxis, yResults } = transMetricToAxis(
     data?.items,
     tansOpts,
@@ -73,31 +76,31 @@ const ChartDataContainer: React.FC<{
     xAxis,
     tansOpts.summaryKey
   );
-
   const compareLabels = yResults.map((i) => i.label);
   const isCompare = yResults.length > 1;
-
   const isEmpty = isEmptyData(yResults);
+
+  if (_tracing) {
+    logger.debug(_tracing, { loading, data });
+  }
+
   if (isEmpty && !loading) {
     return <Empty />;
   }
 
-  const result = {
-    compareLabels,
-    isCompare,
-    xAxis,
-    yResults,
-    summaryMean,
-    summaryMedian,
+  const childProps = {
+    loading,
+    isEmpty,
+    result: {
+      compareLabels,
+      isCompare,
+      xAxis,
+      yResults,
+      summaryMean,
+      summaryMedian,
+    },
   };
-
   return (
-    <>
-      {typeof children === 'function'
-        ? children({ loading, isEmpty, result })
-        : children}
-    </>
+    <>{typeof children === 'function' ? children(childProps) : children}</>
   );
 };
-
-export default ChartDataContainer;

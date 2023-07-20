@@ -8,7 +8,7 @@ const SectionTitle: React.FC<PropsWithChildren<{ id: string }>> = ({
   return (
     <h2
       className={classnames(
-        'group relative z-10 mb-6 flex scroll-mt-[200px] text-2xl font-semibold',
+        'group relative mb-6 flex scroll-mt-[200px] text-2xl font-semibold',
         'md:px-4 md:text-xl'
       )}
       id={id}
