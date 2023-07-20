@@ -9,6 +9,7 @@ import Wechat from '@public/images/logos/wechat.svg';
 import Github from '@public/images/logos/github.svg';
 import GiteeRed from '@public/images/logos/gitee-red.svg';
 import BlogLogo from '@public/images/logos/blog.svg';
+import TencentMeeting from '@public/images/logos/tencentmeeting.svg';
 
 const categoryClass =
   'flex cursor-pointer text-gray-300 items-center py-4 pl-6';
@@ -60,12 +61,7 @@ const Discussion = () => {
             className={classnames(subItemClass)}
           >
             <div className="mr-4 w-8">
-              <Image
-                width="100%"
-                height="100%"
-                src="/images/tencentMeeting.png"
-                alt="TencentMeeting"
-              />
+              <TencentMeeting />
             </div>
             <div>
               <p className="text-base">{t('common:community.meeting')}</p>
