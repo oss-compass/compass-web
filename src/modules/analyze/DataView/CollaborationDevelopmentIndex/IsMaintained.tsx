@@ -72,8 +72,9 @@ const IsMaintained = () => {
       }
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu
-          fullScreen={fullScreen}
+          enableLineSettingSwitch={false}
           enableReferenceLineSwitch={false}
+          fullScreen={fullScreen}
           onFullScreen={(b) => {
             setFullScreen(b);
           }}

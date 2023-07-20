@@ -17,7 +17,7 @@ const AvgItem = () => {
     <div
       className={classnames(
         'group flex cursor-pointer border-b py-2 pl-3.5 transition',
-        [snap.showAvg ? 'text-primary' : 'text-gray-500']
+        [snap.showAvg ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.showAvg = !snap.showAvg;
@@ -37,7 +37,7 @@ const MedianItem = () => {
     <div
       className={classnames(
         'group flex cursor-pointer border-b py-2 pl-3.5 transition',
-        [snap.showMedian ? 'text-primary' : 'text-gray-500']
+        [snap.showMedian ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.showMedian = !snap.showMedian;
@@ -57,7 +57,7 @@ const OnePointItem = () => {
     <div
       className={classnames(
         'group flex cursor-pointer border-b py-2 pl-3.5 transition',
-        [snap.onePointSys ? 'text-primary' : 'text-gray-500']
+        [snap.onePointSys ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.onePointSys = !snap.onePointSys;
@@ -77,7 +77,7 @@ const YScaleItem = () => {
     <div
       className={classnames(
         'group flex cursor-pointer  py-2 pl-3.5 transition',
-        [snap.yAxisScale ? 'text-primary' : 'text-gray-500']
+        [snap.yAxisScale ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.yAxisScale = !snap.yAxisScale;

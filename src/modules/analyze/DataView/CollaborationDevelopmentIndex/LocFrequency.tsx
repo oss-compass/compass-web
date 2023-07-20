@@ -98,6 +98,8 @@ const LocFrequency = () => {
       }
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu
+          enableLineSettingSwitch={false}
+          enableReferenceLineSwitch={false}
           fullScreen={fullScreen}
           onFullScreen={(b) => {
             setFullScreen(b);

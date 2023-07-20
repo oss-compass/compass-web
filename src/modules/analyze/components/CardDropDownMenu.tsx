@@ -78,7 +78,7 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
       <div
         className={classnames(
           'flex h-8 cursor-pointer  items-center  border-b  px-4 md:hidden',
-          [showAvg ? 'text-primary' : 'text-gray-500']
+          [showAvg ? 'text-primary' : 'text-[#585858]']
         )}
         onClick={() => {
           onAvgChange?.(!showAvg);
@@ -90,7 +90,7 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
       <div
         className={classnames(
           'flex h-8 cursor-pointer items-center border-b  px-4 md:hidden',
-          [showMedian ? 'text-primary' : 'text-gray-500']
+          [showMedian ? 'text-primary' : 'text-[#585858]']
         )}
         onClick={() => {
           onMedianChange?.(!showMedian);
@@ -106,7 +106,7 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     <div
       className={classnames(
         'flex h-8 cursor-pointer  items-center  border-b  px-4 md:hidden',
-        [yAxisScale ? 'text-primary' : 'text-gray-500']
+        [yAxisScale ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         onYAxisScaleChange?.(!yAxisScale);
