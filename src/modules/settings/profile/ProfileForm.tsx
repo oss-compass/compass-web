@@ -12,7 +12,7 @@ import { useUserInfo } from '@modules/auth';
 import { storageSaveResendEmailTime } from '@common/utils/storage';
 import SendVerificationEmail from './SendVerificationEmail';
 import Input from '@common/components/Input';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import Tooltip from '@common/components/Tooltip';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 

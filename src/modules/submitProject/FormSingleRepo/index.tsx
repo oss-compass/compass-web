@@ -6,7 +6,7 @@ import { useCreateRepoTaskMutation } from '@graphql/generated';
 import Modal from '@common/components/Modal';
 import SelectLike from '@common/components/SelectLike';
 import Input from '@common/components/Input';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import Message from '@modules/submitProject/Misc/Message';
 import { useSubmitUser } from '@modules/auth';
 import { fillHttps } from '@common/utils';

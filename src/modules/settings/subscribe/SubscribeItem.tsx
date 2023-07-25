@@ -5,7 +5,7 @@ import { SiGitee, SiGithub } from 'react-icons/si';
 import { Subscription } from '@graphql/generated';
 import client from '@graphql/client';
 import Dialog from '@common/components/Dialog';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import { useCancelSubscriptionMutation } from '@graphql/generated';
 import { getRepoName, getProvider, getNameSpace } from '@common/utils/url';
 import { formatISO } from '@common/utils/time';

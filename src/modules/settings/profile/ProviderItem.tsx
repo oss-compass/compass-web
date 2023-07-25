@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSnapshot } from 'valtio';
 import { toast } from 'react-hot-toast';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import Dialog from '@common/components/Dialog';
 import { userInfoStore, userEvent } from '@modules/auth/UserInfoStore';
 import client from '@graphql/client';

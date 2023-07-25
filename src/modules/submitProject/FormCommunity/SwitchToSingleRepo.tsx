@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import Button from './Button';
+import { Button } from '@oss-compass/ui';
 
 const meta: Meta<typeof Button> = {
   title: 'basic/Button',

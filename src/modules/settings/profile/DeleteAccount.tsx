@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import client from '@graphql/client';
 import { useTranslation } from 'next-i18next';
 import { useDeleteUserMutation } from '@graphql/generated';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import { userInfoStore, userEvent } from '@modules/auth/UserInfoStore';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';

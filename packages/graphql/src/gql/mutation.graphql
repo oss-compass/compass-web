@@ -1,0 +1,77 @@
+mutation createRepoTask($repoUrls: [String!]!, $origin: String!) {
+  createRepoTask(input: { repoUrls: $repoUrls, origin: $origin }) {
+    message
+    status
+    prUrl
+    reportUrl
+  }
+}
+
+mutation createProjectTask(
+  $projectName: String!
+  $projectTypes: [ProjectTypeInput!]!
+  $origin: String!
+) {
+  createProjectTask(
+    input: {
+      projectName: $projectName
+      projectTypes: $projectTypes
+      origin: $origin
+    }
+  ) {
+    message
+    status
+    prUrl
+    reportUrl
+  }
+}
+
+mutation modifyUser($name: String!, $email: String!, $language: String!) {
+  modifyUser(input: { name: $name, email: $email, language: $language }) {
+    message
+    status
+  }
+}
+
+mutation userUnbind($provider: String!) {
+  userUnbind(input: { provider: $provider }) {
+    message
+    status
+  }
+}
+
+mutation sendEmailVerify {
+  sendEmailVerify(input: {}) {
+    message
+    status
+  }
+}
+
+mutation signOut {
+  signOut
+}
+
+mutation deleteUser {
+  destroyUser
+}
+
+mutation bindWechatLink {
+  bindWechatLink(input: {}) {
+    url
+    message
+  }
+}
+
+mutation createSubscription($label: String!, $level: String!) {
+  createSubscription(input: { label: $label, level: $level }) {
+    message
+    status
+  }
+}
+
+mutation cancelSubscription($label: String!, $level: String!) {
+  cancelSubscription(input: { label: $label, level: $level }) {
+    message
+    status
+  }
+}

@@ -10,7 +10,7 @@ import {
   CollectionListQuery,
 } from '@graphql/generated';
 import client from '@graphql/client';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import last from 'lodash/last';
 import MainHeader from './MainHeader';
 import MainMobileHeader from './MainMobileHeader';
