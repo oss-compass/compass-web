@@ -2,8 +2,8 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
-import client from '@graphql/client';
-import { useSignOutMutation } from '@graphql/generated';
+import client from '@common/gqlClient';
+import { useSignOutMutation } from '@oss-compass/graphql';
 import {
   cookieSetCallbackUrl,
   cookieSetAuthProvider,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTrendingQuery } from '@graphql/generated';
-import client from '@graphql/client';
+import { useTrendingQuery } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import ListPanel from './ListPanel';
 
 const Community = () => {

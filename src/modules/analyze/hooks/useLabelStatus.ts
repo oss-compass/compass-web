@@ -1,5 +1,5 @@
-import client from '@graphql/client';
-import { StatusVerifyQuery, useStatusVerifyQuery } from '@graphql/generated';
+import client from '@common/gqlClient';
+import { StatusVerifyQuery, useStatusVerifyQuery } from '@oss-compass/graphql';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import useExtractShortIds from './useExtractShortIds';
 import { VerifiedLabelItem } from '@modules/analyze/context';

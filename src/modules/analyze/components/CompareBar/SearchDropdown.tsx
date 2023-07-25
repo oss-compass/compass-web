@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
-import { SearchQuery } from '@graphql/generated';
+import { SearchQuery } from '@oss-compass/graphql';
 import { removeHttps } from '@common/utils';
 
 const DropDownList: React.FC<{

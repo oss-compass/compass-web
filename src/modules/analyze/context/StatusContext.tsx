@@ -1,5 +1,5 @@
 import React, { createContext, useContext, PropsWithChildren } from 'react';
-import { StatusVerifyQuery } from '@graphql/generated';
+import { StatusVerifyQuery } from '@oss-compass/graphql';
 import { Level } from '../constant';
 
 type Item = Pick<

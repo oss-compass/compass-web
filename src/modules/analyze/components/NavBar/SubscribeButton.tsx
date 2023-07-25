@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
-import client from '@graphql/client';
+import client from '@common/gqlClient';
 import {
   useSubscriptionCountQuery,
   useCreateSubscriptionMutation,
   useCancelSubscriptionMutation,
-} from '@graphql/generated';
+} from '@oss-compass/graphql';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { CgSpinner } from 'react-icons/cg';
 import { toast } from 'react-hot-toast';

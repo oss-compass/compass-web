@@ -1,4 +1,4 @@
-import { SummaryQuery } from '@graphql/generated';
+import { SummaryQuery } from '@oss-compass/graphql';
 import { toFixed } from '@common/utils';
 
 function getSummaryMap(

@@ -14,8 +14,8 @@ import {
   SummaryQuery,
   useMetricQuery,
   useSummaryQuery,
-} from '@graphql/generated';
-import client from '@graphql/client';
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import { Level } from '@modules/analyze/constant';
 
 interface Store {

@@ -1,4 +1,4 @@
-import { SearchQuery } from '@graphql/generated';
+import { SearchQuery } from '@oss-compass/graphql';
 import uniq from 'lodash/uniq';
 import { Level } from '@modules/analyze/constant';
 

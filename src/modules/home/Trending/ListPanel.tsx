@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import { BsCodeSquare } from 'react-icons/bs';
-import { TrendingQuery } from '@graphql/generated';
+import { TrendingQuery } from '@oss-compass/graphql';
 import { formatLabel } from '@common/utils/format';
 import { getShortAnalyzeLink, getAnalyzeLink } from '@common/utils/links';
 import ProviderIcon from '@common/components/ProviderIcon';

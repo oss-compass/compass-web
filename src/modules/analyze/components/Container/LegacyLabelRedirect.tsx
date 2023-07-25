@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
-import client from '@graphql/client';
+import client from '@common/gqlClient';
 import { useRouter } from 'next/router';
-import { StatusVerifyQuery, useStatusVerifyQuery } from '@graphql/generated';
+import { StatusVerifyQuery, useStatusVerifyQuery } from '@oss-compass/graphql';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import useExtractUrlLabels from '@modules/analyze/hooks/useExtractUrlLabels';
 import {

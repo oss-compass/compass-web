@@ -8,8 +8,8 @@ import {
   storageGetResendEmailTime,
   storageSaveResendEmailTime,
 } from '@common/utils/storage';
-import { useSendEmailVerifyMutation } from '@graphql/generated';
-import client from '@graphql/client';
+import { useSendEmailVerifyMutation } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 
 const SendVerificationEmail = ({ email }: { email?: string }) => {
   const { t } = useTranslation();

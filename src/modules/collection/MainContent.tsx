@@ -8,8 +8,8 @@ import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
 import {
   useCollectionListQuery,
   CollectionListQuery,
-} from '@graphql/generated';
-import client from '@graphql/client';
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import { Button } from '@oss-compass/ui';
 import last from 'lodash/last';
 import MainHeader from './MainHeader';

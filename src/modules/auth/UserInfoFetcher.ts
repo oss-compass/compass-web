@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect } from 'react';
-import client from '@graphql/client';
+import client from '@common/gqlClient';
 import { useEventEmitter } from 'ahooks';
-import { useUserinfoQuery } from '@graphql/generated';
+import { useUserinfoQuery } from '@oss-compass/graphql';
 import {
   serUserLoading,
   setUserInfo,

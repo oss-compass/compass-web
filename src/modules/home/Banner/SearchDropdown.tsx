@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useTranslation, Trans } from 'next-i18next';
 import { AiOutlineRightCircle } from 'react-icons/ai';
 import useDropDown from '@common/hooks/useDropDown';
-import { SearchQuery } from '@graphql/generated';
+import { SearchQuery } from '@oss-compass/graphql';
 import {
   getAnalyzeLink,
   getShortAnalyzeLink,

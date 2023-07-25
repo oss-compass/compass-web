@@ -1,6 +1,6 @@
 import React from 'react';
 import { proxy, ref } from 'valtio';
-import { UserinfoQuery } from '@graphql/generated';
+import { UserinfoQuery } from '@oss-compass/graphql';
 import { EventEmitter } from 'ahooks/lib/useEventEmitter';
 
 export const userEvent = {
