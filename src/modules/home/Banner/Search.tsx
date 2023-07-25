@@ -3,8 +3,8 @@ import { AiOutlineLoading, AiOutlineSearch } from 'react-icons/ai';
 import { useThrottle } from 'ahooks';
 import { useClickAway } from 'react-use';
 import { Trans, useTranslation } from 'react-i18next';
-import { useSearchQuery } from '@graphql/generated';
-import client from '@graphql/client';
+import { useSearchQuery } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import classnames from 'classnames';
 import SearchDropdown from './SearchDropdown';
 

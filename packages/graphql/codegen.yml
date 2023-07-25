@@ -1,0 +1,19 @@
+schema: ${API_URL}/api/graphql
+documents:
+  - './src/gql/**/*.graphql'
+generates:
+  ./src/generated.ts:
+    plugins:
+      - add:
+          content: '/* eslint-disable max-lines */'
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: graphql-request
+      exposeFetcher: true
+      exposeQueryKeys: true
+      pureMagicComment: true
+hooks:
+  afterAllFileWrite:
+    - prettier --write

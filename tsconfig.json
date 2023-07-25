@@ -16,6 +16,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@oss-compass/graphql": ["./packages/graphql/src/index"],
+      "@oss-compass/ui": ["./packages/ui/src/index"],
       "@public/*": ["public/*"],
       "@common/*": ["src/common/*"],
       "@graphql/*": ["src/graphql/*"],
@@ -24,5 +26,13 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "references": [
+    {
+      "path": "./packages/graphql"
+    },
+    {
+      "path": "./packages/ui"
+    }
+  ]
 }

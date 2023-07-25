@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
-import { UserinfoQuery } from '@graphql/generated';
+import { UserinfoQuery } from '@oss-compass/graphql';
 import { cookieGetAuthProvider } from '@common/utils/cookie';
 import { userInfoStore } from '@modules/auth/UserInfoStore';
 import { ReadonlyDeep } from 'type-fest';

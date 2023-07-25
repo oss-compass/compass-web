@@ -38,7 +38,7 @@ const buttonVariants = cva(
 
 interface ButtonVariants extends VariantProps<typeof buttonVariants> {}
 
-const Button = forwardRef<
+export const Button = forwardRef<
   HTMLButtonElement,
   ButtonProps & ButtonVariants & { children?: ReactNode | undefined }
 >((props, ref) => {
@@ -81,5 +81,3 @@ const Button = forwardRef<
 });
 
 Button.displayName = 'Button';
-
-export default Button;

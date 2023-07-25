@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { useCreateProjectTaskMutation } from '@graphql/generated';
-import client from '@graphql/client';
+import { useCreateProjectTaskMutation } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import uniq from 'lodash/uniq';
 import { useSessionStorage } from 'react-use';
 import Select from '@common/components/Select';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';

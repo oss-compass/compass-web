@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import {
   useBetaMetricOverviewQuery,
   BetaMetricOverviewQuery,
-} from '@graphql/generated';
-import client from '@graphql/client';
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import Loading from './Loading';
 import RepoCard from './RepoCard';
 import { useTranslation } from 'next-i18next';

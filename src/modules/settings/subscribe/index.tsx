@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import router from 'next/router';
 import { useTranslation } from 'react-i18next';
-import client from '@graphql/client';
-import { useSubscriptionsQuery } from '@graphql/generated';
+import client from '@common/gqlClient';
+import { useSubscriptionsQuery } from '@oss-compass/graphql';
 import Center from '@common/components/Layout/Center';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import Pagination from '@common/components/Pagination';
 import SubscribeItem from './SubscribeItem';
 

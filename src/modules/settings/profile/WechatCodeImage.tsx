@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { toDataURL } from 'qrcode';
 import { BsFillFileImageFill } from 'react-icons/bs';
-import { useBindWechatLinkMutation } from '@graphql/generated';
-import client from '@graphql/client';
+import { useBindWechatLinkMutation } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import { useInterval } from 'ahooks';
 import { userInfoStore, userEvent } from '@modules/auth';
 

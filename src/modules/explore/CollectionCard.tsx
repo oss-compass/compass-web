@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { getShortAnalyzeLink, getPathname } from '@common/utils';
 import { Collection } from './type';
 import { useTranslation } from 'next-i18next';
-import { useCollectionHottestQuery } from '@graphql/generated';
-import client from '@graphql/client';
+import { useCollectionHottestQuery } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import { Level } from '@modules/analyze/constant';
 
 const CollectionCard = (props: { collection: Collection }) => {

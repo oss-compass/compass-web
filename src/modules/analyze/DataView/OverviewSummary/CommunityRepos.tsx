@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
 import CommunityDropDownMenu from './CommunityDropDownMenu';
-import { useCommunityReposQuery } from '@graphql/generated';
-import client from '@graphql/client';
+import { useCommunityReposQuery } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import MiniChart from '@common/components/EChartX/MiniChart';
 import {

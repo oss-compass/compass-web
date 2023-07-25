@@ -6,7 +6,7 @@ import Copyright from '@modules/auth/components/Copyright';
 import LogoHeader from '@modules/auth/components/LogoHeader';
 import AuthRequire from '@modules/auth/AuthRequire';
 import { userInfoStore } from '@modules/auth/UserInfoStore';
-import Button from '@common/components/Button';
+import { Button } from '@oss-compass/ui';
 import Mail from '@public/images/login/mail.svg';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import { GetServerSidePropsContext } from 'next';

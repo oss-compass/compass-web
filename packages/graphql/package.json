@@ -1,0 +1,23 @@
+{
+  "name": "@oss-compass/graphql",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "gen": "graphql-codegen -r ./env.js"
+  },
+  "keywords": [],
+  "author": "",
+  "devDependencies": {
+    "@graphql-codegen/add": "^3.2.1",
+    "@graphql-codegen/cli": "^2.11.6",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typescript-react-query": "^4.0.1"
+  }
+}

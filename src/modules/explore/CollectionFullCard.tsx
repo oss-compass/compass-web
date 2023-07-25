@@ -7,8 +7,8 @@ import { useTranslation } from 'next-i18next';
 import {
   useBulkOverviewQuery,
   useCollectionHottestQuery,
-} from '@graphql/generated';
-import client from '@graphql/client';
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 import RepoCard from '@modules/explore/RepoCard';
 import { Level } from '@modules/analyze/constant';
 
