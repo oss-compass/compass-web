@@ -1,7 +1,14 @@
+const path = require('path');
+
+const ui = path.join(
+  path.resolve(__dirname, './node_modules/@oss-compass/ui'),
+  '**/*.{js,jsx,ts,tsx}'
+);
+
 /** @type {import("tailwindcss").Config} */
 module.exports = {
   darkMode: 'class',
-  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./src/**/*.{js,ts,jsx,tsx}', ui],
   theme: {
     // https://tailwindcss.com/docs/screens#max-width-breakpoints
     screens: {
