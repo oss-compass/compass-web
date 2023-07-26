@@ -5,7 +5,8 @@ RUN apk add --no-cache git libc6-compat
 
 WORKDIR /app
 COPY . .
-RUN yarn
+ARG REGISTRY
+RUN if [[ -z "$REGISTRY" ]] ; then yarn install ; else yarn install --registry $REGISTRY ; fi
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry

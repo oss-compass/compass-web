@@ -9,5 +9,7 @@ docker buildx build --platform linux/amd64 \
   -t "compass-web:$GIT_COMMIT" \
   -t "compass-web:latest" \
   --build-arg GIT_COMMIT="$GIT_COMMIT" \
-  -f "./Dockerfile" \
+  --build-arg REGISTRY="https://registry.npmmirror.com/" \
+  --progress=plain \
+  --file "./Dockerfile" \
   .

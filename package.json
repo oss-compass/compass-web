@@ -12,23 +12,19 @@
     "build:analyze": "cross-env ANALYZE='true' yarn build",
     "dev": "next dev",
     "dev:debugger": "cross-env NODE_OPTIONS='--inspect' next dev",
-    "generate": "graphql-codegen -r ./src/graphql/codegenEnv.js",
     "generate:collections": "esno script/gen_collections_file.ts",
-    "demo": "esno script/demo.ts",
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
     "test:ci": "jest --ci",
-    "docker": "./script/build.sh",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "docker": "./script/build.sh"
   },
   "dependencies": {
-    "@oss-compass/ui": "*",
-    "@oss-compass/graphql": "*",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.10.13",
+    "@oss-compass/graphql": "*",
+    "@oss-compass/ui": "*",
     "@radix-ui/react-radio-group": "^1.1.3",
     "@sentry/nextjs": "^7.44.1",
     "@tanstack/react-query": "^4.2.1",
@@ -134,21 +130,7 @@
     ]
   },
   "engines": {
-    "node": ">=16.0.0 <17.0.0",
-    "npm": ">=8.0.0 <9.0.0"
-  },
-  "browserslist": {
-    "production": [
-      "defaults",
-      "not dead",
-      "not ie <= 11",
-      "safari >= 11",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }
