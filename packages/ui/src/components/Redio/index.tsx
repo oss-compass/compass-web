@@ -6,6 +6,7 @@ export function CustomRadio(props: RadioProps) {
     <Radio
       disableRipple
       sx={{
+        padding: 0,
         color: '#868690',
         '&.Mui-checked': {
           color: '#3A5BEF',

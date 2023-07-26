@@ -1,7 +1,7 @@
 import React from 'react';
 import ModelTitle from './modelTitle';
 import ModelTrends from './modelTrends';
-import CreateModel from './CreateModel';
+import CreateGuide from './CreateGuide';
 import {
   useBetaMetricsIndexQuery,
   BetaMetricsIndexQuery,
@@ -46,7 +46,7 @@ const Model = () => {
           return (
             <>
               <ModelItem betaMetric={i} key={i.id} />
-              <CreateModel key={index} />
+              <CreateGuide key={index} />
             </>
           );
         } else {
