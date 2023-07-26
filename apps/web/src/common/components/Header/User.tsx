@@ -55,6 +55,14 @@ const User = () => {
           </Link>
 
           <Link
+            href="/lab/model/my"
+            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+          >
+            <AiOutlineUser className="mr-2 text-base" />
+            我的模型
+          </Link>
+
+          <Link
             href="/settings/profile"
             className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
           >
