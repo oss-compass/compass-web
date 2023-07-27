@@ -58,3 +58,6 @@ package-lock.json
 next.config.original.js
 
 .eslintcache
+
+
+tmp

@@ -5,6 +5,9 @@ on:
     branches:
       - 'release'
       - 'main'
+    paths-ignore:
+      - README.md
+      - docs/**
 
 jobs:
   publish-images:
@@ -41,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile
+          file: .github/deployment/web/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

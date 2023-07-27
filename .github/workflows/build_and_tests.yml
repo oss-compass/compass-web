@@ -5,11 +5,16 @@ on:
     branches:
       - 'release'
       - 'main'
+    paths-ignore:
+      - README.md
+      - docs/**
   pull_request:
     branches:
       - 'release'
       - 'main'
-
+    paths-ignore:
+      - README.md
+      - docs/**
   workflow_dispatch:
 
 jobs:
@@ -22,6 +27,6 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
           registry-url: https://registry.npmjs.org/
-      - run: yarn install --frozen-lockfile # optional, --immutable
+      - run: yarn install
       - run: yarn test:ci
       - run: yarn build
