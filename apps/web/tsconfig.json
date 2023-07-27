@@ -1,0 +1,17 @@
+{
+  "extends": "tsconfig/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@oss-compass/graphql": ["../../packages/graphql/index"],
+      "@oss-compass/ui": ["../../packages/ui/src/index"],
+      "@public/*": ["public/*"],
+      "@common/*": ["src/common/*"],
+      "@graphql/*": ["src/graphql/*"],
+      "@modules/*": ["src/modules/*"],
+      "@styles/*": ["src/styles/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", ".next"]
+}

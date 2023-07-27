@@ -1,7 +1,7 @@
 {
-  "extends": "../../tsconfig.json",
-  "exclude": ["dist"],
-  "include": ["./src/**/*", "./src/**/*.json"],
+  "extends": "tsconfig/react-library.json",
+  "include": ["./src"],
+  "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "composite": true,
     "noEmit": false,

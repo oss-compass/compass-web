@@ -1,0 +1,40 @@
+{
+  "name": "@oss-compass/storybook",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build",
+    "test": "test-storybook"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "next": "12.2.5",
+    "@oss-compass/ui": "*"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.13",
+    "@types/react": "18.0.17",
+    "@types/react-dom": "18.0.6",
+    "@babel/core": "^7.22.9",
+    "@storybook/addon-essentials": "^7.1.1",
+    "@storybook/addon-interactions": "^7.1.1",
+    "@storybook/addon-links": "^7.1.1",
+    "@storybook/blocks": "^7.1.1",
+    "@storybook/nextjs": "^7.1.1",
+    "@storybook/react": "^7.1.1",
+    "autoprefixer": "^10.4.14",
+    "storybook": "^7.1.1",
+    "postcss": "^8.4.23",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-preset-env": "^7.8.0",
+    "typescript": "4.7.4",
+    "webpack": "^5.88.1",
+    "tsconfig": "*"
+  }
+}
