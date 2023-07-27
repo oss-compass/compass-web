@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://oss-compass.org">
-    <img alt="OSS Compass" src="/public/og.png">
+    <img alt="OSS Compass" src="/apps/web/public/og.png">
   </a>
   <br>
   <h1 align="center">Compass Web</h1>
