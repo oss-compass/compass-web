@@ -14,7 +14,7 @@ COPY ./packages packages
 
 RUN if [[ -z "$REGISTRY" ]] ; then echo not set registry ; else yarn config set registry $REGISTRY && npm config set registry $REGISTRY ; fi
 RUN yarn config list
-RUN yarn --verbose
+RUN yarn
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -63,13 +63,14 @@ ENV NEXT_PUBLIC_SENTRY_DSN=$SENTRY_DSN
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /oss-compass/apps/web/public ./public
-COPY --from=builder /oss-compass/apps/web/i18n ./i18n
+COPY --from=builder /oss-compass/apps/web/next.config.js .
+COPY --from=builder /oss-compass/apps/web/package.json .
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /oss-compass/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /oss-compass/apps/web/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /oss-compass/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /oss-compass/apps/web/public ./apps/web/public
 
 USER nextjs
 
@@ -77,4 +78,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "apps/web/server.js"]
