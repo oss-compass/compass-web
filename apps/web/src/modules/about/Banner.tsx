@@ -10,7 +10,7 @@ const Banner = () => {
   return (
     <div className="relative bg-black text-white/90 ">
       <div className="absolute left-0 right-0 top-0 bottom-0">
-        <Image src={Bg} alt="" layout="fill" />
+        <Image priority src={Bg} alt="" fill sizes="100vw" />
       </div>
       <div className="relative mx-auto h-[700px] w-[1000px] pt-[145px] md:w-full md:px-4">
         <div className="mb-6 h-10 w-10">

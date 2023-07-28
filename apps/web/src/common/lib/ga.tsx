@@ -6,7 +6,6 @@ import { isDev } from '@common/constant';
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: string, id?: string) => {
   if (!window.gtag) {
-    console.warn('window.gtag is not defined');
     return;
   }
 

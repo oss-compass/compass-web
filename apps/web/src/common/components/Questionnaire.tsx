@@ -20,6 +20,10 @@ const Questionnaire = () => {
             width={124}
             height={136}
             alt={''}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
           />
         </Link>
         <span
@@ -33,6 +37,10 @@ const Questionnaire = () => {
             width={22}
             height={22}
             alt={''}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
           />
         </span>
       </div>

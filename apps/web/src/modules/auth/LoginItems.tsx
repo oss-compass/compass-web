@@ -41,6 +41,10 @@ const LoginItems: React.FC = () => {
           height={28}
           src={'/images/logos/white-github.svg'}
           alt={'github'}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
         />
         <span className="ml-3">{t('submit_project:continue_with_github')}</span>
       </div>
@@ -65,6 +69,10 @@ const LoginItems: React.FC = () => {
           height={28}
           src={'/images/logos/white-gitee.svg'}
           alt={'gitee'}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
         />
         <span className="ml-3">{t('submit_project:continue_with_gitee')}</span>
       </div>

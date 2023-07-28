@@ -41,7 +41,7 @@ const WechatCodeImage = () => {
   }, [mutate]);
 
   const ShowImg = imgUrl ? (
-    <Image src={imgUrl} layout="fill" alt="" />
+    <Image src={imgUrl} alt="" fill sizes="100vw" />
   ) : (
     <ErrorHolder />
   );

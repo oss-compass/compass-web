@@ -48,6 +48,10 @@ const CommunityMembers = () => {
             width={201}
             height={40}
             alt={'国家金融科技测评中心'}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
           />
         </div>
         <div className="mb-4 text-xs font-medium">

@@ -244,10 +244,11 @@ const ProfileForm = () => {
           <div className="relative h-[156px] w-[156px] border">
             {providerUser?.avatarUrl ? (
               <Image
-                layout="fill"
                 src={providerUser?.avatarUrl!}
                 unoptimized
                 alt="avatar"
+                fill
+                sizes="100vw"
               />
             ) : null}
           </div>

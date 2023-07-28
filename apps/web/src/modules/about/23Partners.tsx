@@ -38,6 +38,10 @@ const Partners = () => {
                 width={item.width}
                 height={item.height}
                 alt={item.name}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
             </div>
           );

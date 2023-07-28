@@ -22,7 +22,17 @@ const SourceItem: React.FC<{
       onClick={() => onClick?.()}
     >
       <div className="h-5 w-5  bg-slate-100">
-        <Image width={20} height={20} src={avatar_url} unoptimized alt={''} />
+        <Image
+          width={20}
+          height={20}
+          src={avatar_url}
+          unoptimized
+          alt={''}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
+        />
       </div>
       <div className="ml-2">{login}</div>
     </div>

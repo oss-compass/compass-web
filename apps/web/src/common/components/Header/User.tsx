@@ -37,6 +37,10 @@ const User = () => {
           width={32}
           height={32}
           alt=""
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
         />
       </div>
 

@@ -67,7 +67,16 @@ const SaaSWorkingGroup = () => {
           return (
             <div className="flex" key={item.name}>
               <div className="mr-4 h-12 w-12 overflow-hidden rounded-full">
-                <Image src={item.avatar} width={48} height={48} alt="" />
+                <Image
+                  src={item.avatar}
+                  width={48}
+                  height={48}
+                  alt=""
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                  }}
+                />
               </div>
               <div className="flex flex-col justify-center">
                 <div className="mb-1 text-sm font-medium">{item.name}</div>

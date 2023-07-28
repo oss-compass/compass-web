@@ -28,6 +28,10 @@ const Auth: React.FC = () => {
                 src={user?.avatarUrl!}
                 unoptimized
                 alt={''}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
             </div>
           </div>

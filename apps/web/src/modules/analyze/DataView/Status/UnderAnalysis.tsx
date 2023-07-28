@@ -13,6 +13,10 @@ const UnderAnalysis = () => {
           width={79}
           height={60}
           alt={'padding'}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
         />
       </div>
       <p className="mb-2">

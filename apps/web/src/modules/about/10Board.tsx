@@ -96,7 +96,16 @@ const Board = () => {
               <div className="" key={item.name}>
                 <div className="mb-4 h-[160px] w-[272px] overflow-hidden bg-gray-100">
                   {item.avatar && (
-                    <Image src={item.avatar} width={272} height={160} alt="" />
+                    <Image
+                      src={item.avatar}
+                      width={272}
+                      height={160}
+                      alt=""
+                      style={{
+                        maxWidth: '100%',
+                        height: 'auto',
+                      }}
+                    />
                   )}
                 </div>
                 <div className="mb-1 font-medium">{item.name}</div>
