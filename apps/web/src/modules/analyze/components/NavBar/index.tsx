@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import LabelItems from './LabelItems';
-import NewDatePicker from './NewDatePicker';
+import NavDatePicker from './NavDatePicker';
 import SubscribeButton from './SubscribeButton';
 import NavbarSetting from './NavbarSetting';
 
@@ -15,7 +15,7 @@ const NavBar = () => {
     >
       <LabelItems />
       <div className="flex items-center text-[#585858]">
-        <NewDatePicker />
+        <NavDatePicker />
         <SubscribeButton />
         <NavbarSetting />
       </div>

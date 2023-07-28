@@ -82,7 +82,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
 
     return (
       <>
-        <div className="px-10 pb-10 pt-3">
+        <div className="px-10 pb-10 pt-3 lg:px-4">
           {showData?.map((repo) => {
             return (
               <RepoItem
@@ -140,7 +140,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="px-10 pb-2 pt-6">
+      <div className="px-10 pb-2 pt-6 lg:px-4">
         <h3 className="mb-4 text-[28px] font-medium">
           {t('submit_project:select_repository')}
         </h3>

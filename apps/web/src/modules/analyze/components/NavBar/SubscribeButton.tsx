@@ -53,12 +53,16 @@ const SubscribeButton = () => {
   const icon = subscribed ? (
     <>
       <BsFillBookmarkFill className="text-primary text-base" />
-      <div className="mr-1 ml-2 text-sm">{t('analyze:subscribed')}</div>
+      <div className="mr-1 ml-2 text-sm lg:hidden">
+        {t('analyze:subscribed')}
+      </div>
     </>
   ) : (
     <>
       <BsBookmark className="text-base " />
-      <div className="mr-1 ml-2 text-sm">{t('analyze:subscribe')}</div>
+      <div className="mr-1 ml-2 text-sm lg:hidden">
+        {t('analyze:subscribe')}
+      </div>
     </>
   );
 
@@ -67,7 +71,7 @@ const SubscribeButton = () => {
 
   return (
     <div
-      className="ml-6 flex cursor-pointer select-none items-center rounded-full border border-[#CFCFCF] py-1 px-2 hover:bg-gray-100"
+      className="ml-6 flex cursor-pointer select-none items-center rounded-full border border-[#CFCFCF] py-1 px-2 hover:bg-gray-100 lg:ml-2"
       onClick={() => {
         if (subscribed) {
           Cancel.mutate({ level: item?.level, label: item?.label });

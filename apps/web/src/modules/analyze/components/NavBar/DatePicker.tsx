@@ -5,6 +5,9 @@ import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 import { rangeTags } from '@modules/analyze/constant';
 import useI18RangeTag from './useI18RangeTag';
 
+/**
+ * @deprecated use NewDatePicker instead
+ */
 const DatePicker = () => {
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();

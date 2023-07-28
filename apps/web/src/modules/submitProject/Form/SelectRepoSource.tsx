@@ -34,7 +34,7 @@ const SourceItem: React.FC<{
           }}
         />
       </div>
-      <div className="ml-2">{login}</div>
+      <div className="ml-2 truncate">{login}</div>
     </div>
   );
 };

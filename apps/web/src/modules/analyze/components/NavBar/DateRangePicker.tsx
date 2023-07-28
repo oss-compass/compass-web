@@ -1,24 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BiCalendar, BiCaretDown, BiCheck } from 'react-icons/bi';
 import {
   BsChevronDoubleLeft,
   BsChevronDoubleRight,
   BsChevronLeft,
   BsChevronRight,
 } from 'react-icons/bs';
-import { rangeTags } from '@modules/analyze/constant';
-import classnames from 'classnames';
-import { useClickAway, useToggle } from 'react-use';
-import useI18RangeTag from './useI18RangeTag';
-import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
+import { useTranslation } from 'next-i18next';
 import DatePicker from 'react-datepicker';
+import { format, getUnixTime, fromUnixTime } from 'date-fns';
 import { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { enGB, zhCN } from 'date-fns/locale';
-import { format, getUnixTime, fromUnixTime } from 'date-fns';
 import getLocale from '@common/utils/getLocale';
-import { useTranslation } from 'next-i18next';
+import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 
 const DateRangePicker: React.FC<{
   onClick: (t: string) => void;
@@ -164,94 +158,4 @@ const DateRangePicker: React.FC<{
     </div>
   );
 };
-
-const NewDatePicker = () => {
-  const { t } = useTranslation();
-  const i18RangeTag = useI18RangeTag();
-  const [dropdownOpen, toggleDropdown] = useToggle(false);
-  const [custom, toggleCustom] = useToggle(false);
-  const ref = useRef(null);
-
-  useClickAway(ref, () => {
-    toggleDropdown(false);
-    toggleCustom(!rangeTags.includes(range));
-  });
-
-  const { range } = useQueryDateRange();
-  const { switchRange } = useSwitchRange();
-
-  return (
-    <div className="relative">
-      <div
-        className="flex h-10 cursor-pointer items-center"
-        onClick={() => toggleDropdown()}
-      >
-        <BiCalendar className="mr-2.5 text-xl" />
-        <span className="text-sm">{i18RangeTag[range] || range}</span>
-        <BiCaretDown className="ml-1 text-sm" />
-      </div>
-      <ul
-        ref={ref}
-        style={{ boxShadow: '0px 1px 4px 1px rgba(0,0,0,0.1)' }}
-        className={classnames(
-          'bg-base-100 absolute right-0 z-[200] w-[280px] rounded text-xs',
-          { hidden: !dropdownOpen }
-        )}
-      >
-        <div className="flex flex-wrap justify-between px-4 pt-4">
-          {rangeTags.map((t, index) => {
-            return (
-              <li
-                className={classnames(
-                  { 'bg-primary text-white': range === t && !custom },
-                  'mb-2 flex h-8 w-[120px] cursor-pointer justify-between border py-2 pl-3 pr-2 text-xs'
-                )}
-                key={t}
-                onClick={async () => {
-                  await switchRange(t);
-                  toggleDropdown(false);
-                  toggleCustom(false);
-                }}
-              >
-                {i18RangeTag[t]}
-                {range === t && !custom && (
-                  <div className="h-3.5 w-3.5 rounded-full bg-white">
-                    <BiCheck className="text-primary text-sm" />
-                  </div>
-                )}
-              </li>
-            );
-          })}
-          <li
-            className={classnames(
-              'mb-2 flex h-8 w-[120px] cursor-pointer justify-between border py-2 pl-3 pr-2 text-xs',
-              { 'bg-primary text-white': custom, 'mb-4': !custom }
-            )}
-            onClick={async () => {
-              toggleCustom(true);
-            }}
-          >
-            {t('analyze:custom')}
-            {custom && (
-              <div className="h-3.5 w-3.5 rounded-full bg-white">
-                <BiCheck className="text-primary text-sm" />
-              </div>
-            )}
-          </li>
-        </div>
-        <div
-          className={classnames('h-10 bg-[#F7F7F7] px-4', { hidden: !custom })}
-        >
-          <DateRangePicker
-            onClick={async (t) => {
-              await switchRange(t);
-              toggleDropdown(false);
-            }}
-          />
-        </div>
-      </ul>
-    </div>
-  );
-};
-
-export default NewDatePicker;
+export default DateRangePicker;
