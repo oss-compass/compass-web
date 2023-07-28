@@ -10,15 +10,23 @@ const SpecialThank = () => {
   return (
     <div className="bg-gray-50">
       <Center className="flex items-center justify-between py-12 md:flex-col">
-        <Link href="https://chaoss.community/" passHref>
-          <a target="_blank" rel="noopener noreferrer" className="w-[250px]">
-            <Chaoss />
-          </a>
+        <Link
+          href="https://chaoss.community/"
+          passHref
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-[250px]"
+        >
+          <Chaoss />
         </Link>
-        <Link href="https://chaoss.github.io/grimoirelab/" passHref>
-          <a target="_blank" rel="noopener noreferrer" className="w-[250px]">
-            <Grimoirelab />
-          </a>
+        <Link
+          href="https://chaoss.github.io/grimoirelab/"
+          passHref
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-[250px]"
+        >
+          <Grimoirelab />
         </Link>
         <div className="basis-[500px] px-4 md:basis-auto">
           <h2 className="mb-2 text-4xl font-bold">

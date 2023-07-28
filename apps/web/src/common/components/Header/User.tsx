@@ -19,10 +19,11 @@ const User = () => {
 
   if (!user) {
     return (
-      <Link href="/auth/signin">
-        <a className={'ml-6 flex-shrink-0 font-medium text-white'}>
-          {t('common:signin')}
-        </a>
+      <Link
+        href="/auth/signin"
+        className={'ml-6 flex-shrink-0 font-medium text-white'}
+      >
+        {t('common:signin')}
       </Link>
     );
   }
@@ -41,18 +42,20 @@ const User = () => {
 
       <div className="z-dropdown absolute top-[100%] -right-4 hidden w-auto group-hover:block">
         <div className="mt-[2px] bg-black/90 text-white">
-          <Link href="/settings/subscribe">
-            <a className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]">
-              <FiBookmark className="mr-2 text-base" />
-              {t('common:subscribe')}
-            </a>
+          <Link
+            href="/settings/subscribe"
+            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+          >
+            <FiBookmark className="mr-2 text-base" />
+            {t('common:subscribe')}
           </Link>
 
-          <Link href="/settings/profile">
-            <a className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]">
-              <AiOutlineUser className="mr-2 text-base" />
-              {t('common:profile_setting')}
-            </a>
+          <Link
+            href="/settings/profile"
+            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+          >
+            <AiOutlineUser className="mr-2 text-base" />
+            {t('common:profile_setting')}
           </Link>
 
           <div

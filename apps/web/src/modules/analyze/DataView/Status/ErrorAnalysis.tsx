@@ -11,8 +11,8 @@ const ErrorAnalysis = () => {
         {t('common:error.invalid_url_query')}
       </h1>
 
-      <Link href={'/'}>
-        <a className="text-blue-600">{t('analyze:explore_other_projects')}</a>
+      <Link href={'/'} className="text-blue-600">
+        {t('analyze:explore_other_projects')}
       </Link>
     </div>
   );

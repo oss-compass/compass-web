@@ -29,10 +29,8 @@ const RepoItem: React.FC<{
 
   return (
     <div className="rounded border border-gray-300 px-4 py-3">
-      <Link href={getShortAnalyzeLink(shortCode)}>
-        <a className="hover:underline">
-          <h4 className="line-clamp-2 text-sm font-bold">{name}</h4>
-        </a>
+      <Link href={getShortAnalyzeLink(shortCode)} className="hover:underline">
+        <h4 className="line-clamp-2 text-sm font-bold">{name}</h4>
       </Link>
       <p className="text-xs text-gray-400">{getFirstPathSegment(path)}</p>
       <div className="flex justify-between pt-3">

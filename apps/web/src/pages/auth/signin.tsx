@@ -48,18 +48,22 @@ const SignIn: React.FC = () => {
 
         <div className="w-[400px] text-xs">
           {t('submit_project:by_creating_an_account')}
-          <Link href="/docs/terms-of-use/">
-            <a target="_blank" className="text-[#3A5BEF]">
-              {t('submit_project:terms_of_use')}
-            </a>
+          <Link
+            href="/docs/terms-of-use/"
+            target="_blank"
+            className="text-[#3A5BEF]"
+          >
+            {t('submit_project:terms_of_use')}
           </Link>
 
           {t('submit_project:as_well_as')}
 
-          <Link href="/docs/privacy-policy/">
-            <a target="_blank" className="text-[#3A5BEF]">
-              {t('submit_project:privacy_policy')}
-            </a>
+          <Link
+            href="/docs/privacy-policy/"
+            target="_blank"
+            className="text-[#3A5BEF]"
+          >
+            {t('submit_project:privacy_policy')}
           </Link>
         </div>
       </div>

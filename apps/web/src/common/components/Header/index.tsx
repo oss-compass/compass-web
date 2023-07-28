@@ -25,16 +25,15 @@ const Header: React.FC<{
           )}
         >
           <div className="flex h-full flex-shrink-0 items-center">
-            <Link href="/">
-              <a className="mr-6 2xl:mr-2">
-                <Logo color="white" />
-              </a>
+            <Link href="/" className="mr-6 2xl:mr-2">
+              <Logo color="white" />
             </Link>
 
-            <Link href="/explore">
-              <a className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}>
-                {t('common:header.explore')}
-              </a>
+            <Link
+              href="/explore"
+              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+            >
+              {t('common:header.explore')}
             </Link>
 
             <LinkX href="/docs/dimensions-define" legacyBehavior>
@@ -49,16 +48,18 @@ const Header: React.FC<{
 
             <CommunityDropdown />
 
-            <Link href="/lab">
-              <a className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}>
-                {t('common:header.lab')}
-              </a>
+            <Link
+              href="/lab"
+              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+            >
+              {t('common:header.lab')}
             </Link>
 
-            <Link href="/about">
-              <a className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}>
-                {t('common:header.about')}
-              </a>
+            <Link
+              href="/about"
+              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+            >
+              {t('common:header.about')}
             </Link>
           </div>
 

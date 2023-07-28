@@ -7,10 +7,11 @@ function NotFound() {
       <p className="mb-8 text-lg text-gray-600">
         Oops! The page you are looking for does not exist.
       </p>
-      <Link href="/">
-        <a className="bg-black py-2 px-4 font-bold text-white hover:bg-gray-700">
-          Go back to Home
-        </a>
+      <Link
+        href="/"
+        className="bg-black py-2 px-4 font-bold text-white hover:bg-gray-700"
+      >
+        Go back to Home
       </Link>
     </div>
   );

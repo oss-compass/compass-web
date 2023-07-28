@@ -63,10 +63,8 @@ const Auth: React.FC = () => {
                 : null}
             </button>
           ) : (
-            <Link href="/settings/profile">
-              <a className="text-primary text-sm ">
-                {t('submit_project:bind_other_code_hosting_platforms')}
-              </a>
+            <Link href="/settings/profile" className="text-primary text-sm ">
+              {t('submit_project:bind_other_code_hosting_platforms')}
             </Link>
           )}
         </div>

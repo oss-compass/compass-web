@@ -148,39 +148,34 @@ const TrendsList: React.FC = () => {
                   <tr className="group" key={item!.label}>
                     <td className="flex flex-col px-1 py-2 ">
                       <Link href={getShortAnalyzeLink(item!.shortCode)}>
-                        <a>
-                          <p className="break-words text-sm font-bold md:w-[140px]">
-                            {r.name}
-                            {item?.level === Level.COMMUNITY ? (
-                              <span className="ml-2 inline-block rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs font-normal text-[#D98523]">
-                                {t('home:community')}
-                              </span>
-                            ) : null}
-                          </p>
-
-                          <p className="break-words text-xs text-gray-600 md:w-[140px]">
-                            {r.meta?.namespace}
-                            {r.meta?.showProvider
-                              ? ` on ${r.meta?.provider}`
-                              : ''}
-                          </p>
-
+                        <p className="break-words text-sm font-bold md:w-[140px]">
+                          {r.name}
                           {item?.level === Level.COMMUNITY ? (
-                            <div className="text-gray58 mb-1 mt-1 flex items-center text-xs">
-                              <BsCodeSquare />
-                              <span className="ml-1">
-                                {item?.reposCount}
-                                {t('analyze:repos')}
-                              </span>
-                            </div>
+                            <span className="ml-2 inline-block rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs font-normal text-[#D98523]">
+                              {t('home:community')}
+                            </span>
                           ) : null}
-
-                          <p className={'text-xs text-gray-400'}>
-                            {`${t('analyze:updated_on')} ${formatISO(
-                              item!.activityScoreUpdatedAt!
-                            )}`}
-                          </p>
-                        </a>
+                        </p>
+                        <p className="break-words text-xs text-gray-600 md:w-[140px]">
+                          {r.meta?.namespace}
+                          {r.meta?.showProvider
+                            ? ` on ${r.meta?.provider}`
+                            : ''}
+                        </p>
+                        {item?.level === Level.COMMUNITY ? (
+                          <div className="text-gray58 mb-1 mt-1 flex items-center text-xs">
+                            <BsCodeSquare />
+                            <span className="ml-1">
+                              {item?.reposCount}
+                              {t('analyze:repos')}
+                            </span>
+                          </div>
+                        ) : null}
+                        <p className={'text-xs text-gray-400'}>
+                          {`${t('analyze:updated_on')} ${formatISO(
+                            item!.activityScoreUpdatedAt!
+                          )}`}
+                        </p>
                       </Link>
                     </td>
                     <Td className="bg-[#f2fcff] ">

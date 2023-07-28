@@ -17,15 +17,20 @@ const Copyright = ({ dark = false }: CopyrightProps) => {
           </p>
         </div>
         <div className="flex">
-          <Link href="https://gitee.com/oss-compass">
-            <a target="_blank" rel="noopener noreferrer">
-              <SiGitee className="mr-4 h-6 w-6 cursor-pointer text-[#c71c27]" />
-            </a>
+          <Link
+            href="https://gitee.com/oss-compass"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <SiGitee className="mr-4 h-6 w-6 cursor-pointer text-[#c71c27]" />
           </Link>
-          <Link href="https://github.com/oss-compass" passHref>
-            <a target="_blank" rel="noopener noreferrer">
-              <AiFillGithub className="h-6 w-6 cursor-pointer" />
-            </a>
+          <Link
+            href="https://github.com/oss-compass"
+            passHref
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <AiFillGithub className="h-6 w-6 cursor-pointer" />
           </Link>
         </div>
       </Center>

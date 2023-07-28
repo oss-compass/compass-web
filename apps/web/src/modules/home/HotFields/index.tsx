@@ -35,11 +35,13 @@ const Field: React.FC<FieldItem> = ({ name, comingSoon, category, svg }) => {
           category.map((c) => {
             if (c.link) {
               return (
-                <Link key={c.name} href={c.link}>
-                  <a className="mb-1 flex text-sm hover:underline">
-                    <p className="mr-1 mt-2 h-1 w-1 shrink-0 rounded-full bg-black" />
-                    {c.name}
-                  </a>
+                <Link
+                  key={c.name}
+                  href={c.link}
+                  className="mb-1 flex text-sm hover:underline"
+                >
+                  <p className="mr-1 mt-2 h-1 w-1 shrink-0 rounded-full bg-black" />
+                  {c.name}
                 </Link>
               );
             }

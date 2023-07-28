@@ -18,8 +18,8 @@ const UnderAnalysis = () => {
       <p className="mb-2">
         {t('analyze:the_current_project_is_under_analysis_please_visit')}
       </p>
-      <Link href={'/'}>
-        <a className="text-blue-600">{t('analyze:explore_other_projects')}</a>
+      <Link href={'/'} className="text-blue-600">
+        {t('analyze:explore_other_projects')}
       </Link>
     </div>
   );

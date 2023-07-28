@@ -76,23 +76,23 @@ const MenuItem = ({
         {menu.items_info.map((item) => {
           const active = `/${query.slug}` === item.slug;
           return (
-            <Link key={item.ident} href={`/collection${item.slug}`}>
-              <a
+            <Link
+              key={item.ident}
+              href={`/collection${item.slug}`}
+              className={classnames(
+                style.menu,
+                'mt-1 flex cursor-pointer items-center justify-between rounded pl-3',
+                { [style.menuActive]: active }
+              )}
+            >
+              <span
                 className={classnames(
-                  style.menu,
-                  'mt-1 flex cursor-pointer items-center justify-between rounded pl-3',
-                  { [style.menuActive]: active }
+                  'py-1.5 text-sm font-medium text-gray-700',
+                  { '!text-primary': active }
                 )}
               >
-                <span
-                  className={classnames(
-                    'py-1.5 text-sm font-medium text-gray-700',
-                    { '!text-primary': active }
-                  )}
-                >
-                  {item[nameKey]}
-                </span>
-              </a>
+                {item[nameKey]}
+              </span>
             </Link>
           );
         })}

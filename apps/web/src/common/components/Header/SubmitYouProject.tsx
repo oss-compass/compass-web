@@ -11,14 +11,13 @@ const SubmitYouProject: React.FC<{ blackMode?: boolean }> = ({ blackMode }) => {
   }
 
   return (
-    <Link href="/submit-your-project">
-      <a
-        className={
-          'ml-5 cursor-pointer truncate border-2 border-white bg-black px-6 py-2 font-medium text-white'
-        }
-      >
-        {t('common:header.submit_your_project')}
-      </a>
+    <Link
+      href="/submit-your-project"
+      className={
+        'ml-5 cursor-pointer truncate border-2 border-white bg-black px-6 py-2 font-medium text-white'
+      }
+    >
+      {t('common:header.submit_your_project')}
     </Link>
   );
 };

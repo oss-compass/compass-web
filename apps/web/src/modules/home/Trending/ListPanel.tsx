@@ -75,42 +75,43 @@ const ListPanel = (props: {
       {props.trending.map((item) => {
         const info = formatLabel(item.label || '');
         return (
-          <Link key={item.label} href={getShortAnalyzeLink(item.shortCode)}>
+          <Link
+            key={item.label}
+            href={getShortAnalyzeLink(item.shortCode)}
+            className="flex cursor-pointer justify-between border-b py-3 last:border-0"
+          >
             {/*<Link*/}
             {/*  key={item.label}*/}
             {/*  href={getAnalyzeLink({ label: item.label, level: item.level })}*/}
             {/*>*/}
-            <a className="flex cursor-pointer justify-between border-b py-3 last:border-0">
-              <div className="">
-                <div className="mb-1 font-bold">{info.name}</div>
-                <div className="flex items-center">
-                  <ProviderIcon provider={item.origin || ''} />
 
-                  {info.namespace ? (
-                    <span className="text-secondary ml-2 text-xs">
-                      {info.namespace}
+            <div className="">
+              <div className="mb-1 font-bold">{info.name}</div>
+              <div className="flex items-center">
+                <ProviderIcon provider={item.origin || ''} />
+
+                {info.namespace ? (
+                  <span className="text-secondary ml-2 text-xs">
+                    {info.namespace}
+                  </span>
+                ) : null}
+
+                {item?.level === Level.COMMUNITY ? (
+                  <div className="text-gray58 ml-2 flex items-center text-xs">
+                    <BsCodeSquare />
+                    <span className="ml-1">
+                      {`${item?.reposCount} ${t('analyze:repos')}`}
                     </span>
-                  ) : null}
-
-                  {item?.level === Level.COMMUNITY ? (
-                    <div className="text-gray58 ml-2 flex items-center text-xs">
-                      <BsCodeSquare />
-                      <span className="ml-1">
-                        {`${item?.reposCount} ${t('analyze:repos')}`}
-                      </span>
-                    </div>
-                  ) : null}
-                </div>
+                  </div>
+                ) : null}
               </div>
-              <div>
-                <div className="mb-1 text-right font-medium italic">
-                  {transHundredMarkSystem(item.activityScore || 0)}
-                </div>
-                <div className="text-secondary text-xs">
-                  {t('home:activity')}
-                </div>
+            </div>
+            <div>
+              <div className="mb-1 text-right font-medium italic">
+                {transHundredMarkSystem(item.activityScore || 0)}
               </div>
-            </a>
+              <div className="text-secondary text-xs">{t('home:activity')}</div>
+            </div>
           </Link>
         );
       })}

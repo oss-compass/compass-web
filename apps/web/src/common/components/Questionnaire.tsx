@@ -10,15 +10,17 @@ const Questionnaire = () => {
   if (!close && i18n.language === 'zh') {
     return (
       <div className="z-modal fixed bottom-[100px] right-10 ">
-        <Link href="https://wj.qq.com/s2/12430808/ef24/">
-          <a target="_blank" className="h-[124px] w-[136px]">
-            <Image
-              src="/images/questionnaire/icon.png"
-              width={124}
-              height={136}
-              alt={''}
-            />
-          </a>
+        <Link
+          href="https://wj.qq.com/s2/12430808/ef24/"
+          target="_blank"
+          className="h-[124px] w-[136px]"
+        >
+          <Image
+            src="/images/questionnaire/icon.png"
+            width={124}
+            height={136}
+            alt={''}
+          />
         </Link>
         <span
           className="absolute top-0 right-0 cursor-pointer p-1"

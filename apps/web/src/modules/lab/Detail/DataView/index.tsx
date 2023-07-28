@@ -20,8 +20,11 @@ const LabNotice = () => {
       <FaInfoCircle className="mr-2 text-[#F9A001]" /> Based on
       <span className="ml-2 font-bold">Starter Project Health</span>, an
       experimental CHAOSS model in Lab,
-      <Link href="https://chaoss.community/kb/metrics-model-starter-project-health/">
-        <a className="ml-2 underline">know more about the model</a>
+      <Link
+        href="https://chaoss.community/kb/metrics-model-starter-project-health/"
+        className="ml-2 underline"
+      >
+        know more about the model
       </Link>
     </div>
   );

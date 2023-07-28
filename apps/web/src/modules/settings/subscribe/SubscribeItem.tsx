@@ -55,31 +55,33 @@ const RepoItem = ({ item }: { item: Subscription }) => {
   const repo = getRepoName(item.label);
   const ns = getNameSpace(item.label);
   return (
-    <Link href={getAnalyzeLink({ label: item.label, level: item.level })}>
-      <a className="flex cursor-pointer">
-        <span className="pr-2 pt-1">
-          {provider === 'github' ? (
-            <SiGithub />
-          ) : (
-            <SiGitee className="text-[#c71c27]" />
-          )}
-        </span>
-        <span className="flex flex-col">
-          <span className="text-sm font-bold">{repo}</span>
-          <span className="text-secondary text-xs">{ns}</span>
-        </span>
-      </a>
+    <Link
+      href={getAnalyzeLink({ label: item.label, level: item.level })}
+      className="flex cursor-pointer"
+    >
+      <span className="pr-2 pt-1">
+        {provider === 'github' ? (
+          <SiGithub />
+        ) : (
+          <SiGitee className="text-[#c71c27]" />
+        )}
+      </span>
+      <span className="flex flex-col">
+        <span className="text-sm font-bold">{repo}</span>
+        <span className="text-secondary text-xs">{ns}</span>
+      </span>
     </Link>
   );
 };
 
 const CommunityItem = ({ item }: { item: Subscription }) => {
   return (
-    <Link href={getAnalyzeLink({ label: item.label, level: item.level })}>
-      <a className="flex cursor-pointer flex-col">
-        <span className="text-base font-bold">{item.label}</span>
-        <span className="text-secondary text-xs">{item.level}</span>
-      </a>
+    <Link
+      href={getAnalyzeLink({ label: item.label, level: item.level })}
+      className="flex cursor-pointer flex-col"
+    >
+      <span className="text-base font-bold">{item.label}</span>
+      <span className="text-secondary text-xs">{item.level}</span>
     </Link>
   );
 };

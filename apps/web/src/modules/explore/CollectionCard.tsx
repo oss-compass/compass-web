@@ -34,10 +34,11 @@ const CollectionCard = (props: { collection: Collection }) => {
 
   return (
     <div className="rounded-xl bg-white p-7 shadow" ref={ref}>
-      <Link href={`/collection${collection.slug}`}>
-        <a className="mb-2 block truncate text-xl font-bold hover:underline">
-          {collection[nameKey]}
-        </a>
+      <Link
+        href={`/collection${collection.slug}`}
+        className="mb-2 block truncate text-xl font-bold hover:underline"
+      >
+        {collection[nameKey]}
       </Link>
       <div className="mb-4 text-sm text-[#868690]">
         {t('collection:repositories', { length: length })}
@@ -62,13 +63,15 @@ const CollectionCard = (props: { collection: Collection }) => {
           <>
             {showHottestData.map(({ label, level, shortCode }) => {
               return (
-                <Link key={label} href={getShortAnalyzeLink(shortCode)}>
-                  <a className="flex w-full items-center text-sm hover:underline">
-                    <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
-                    <span className="truncate">
-                      {level === Level.REPO ? getPathname(label!) : label}
-                    </span>
-                  </a>
+                <Link
+                  key={label}
+                  href={getShortAnalyzeLink(shortCode)}
+                  className="flex w-full items-center text-sm hover:underline"
+                >
+                  <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
+                  <span className="truncate">
+                    {level === Level.REPO ? getPathname(label!) : label}
+                  </span>
                 </Link>
               );
             })}

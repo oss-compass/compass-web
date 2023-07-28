@@ -32,16 +32,15 @@ const SubmitYourProject: React.FC<{
       )}
     >
       <span className="flex-wrap text-base leading-none">{content}</span>
-      <Link href="/submit-your-project">
-        <a
-          className={classnames(
-            'flex-shrink-0 bg-black  px-3 text-sm text-white shadow hover:opacity-90 ',
-            'md:px-2 md:text-sm',
-            [noResult ? 'py-2.5' : 'py-1']
-          )}
-        >
-          {t('home:submit_your_project')}
-        </a>
+      <Link
+        href="/submit-your-project"
+        className={classnames(
+          'flex-shrink-0 bg-black  px-3 text-sm text-white shadow hover:opacity-90 ',
+          'md:px-2 md:text-sm',
+          [noResult ? 'py-2.5' : 'py-1']
+        )}
+      >
+        {t('home:submit_your_project')}
       </Link>
     </p>
   );
@@ -92,22 +91,22 @@ const LinkItem: React.FC<{
   };
 
   return (
-    <Link key={item.label} href={getShortAnalyzeLink(item)}>
-      <a
-        className={classnames(
-          'flex min-h-[66px] cursor-pointer items-center justify-between px-4 py-3 text-xl hover:bg-gray-100',
-          'md:py-2 md:px-2 md:text-base',
-          { 'bg-gray-100': active }
-        )}
-      >
-        <span className="flex min-w-0 flex-1 flex-col overflow-hidden pr-4">
-          {getContent()}
-        </span>
-        <span className="text-primary flex flex-shrink-0 items-center text-sm font-medium">
-          {t('home:compass_report')}
-          <AiOutlineRightCircle className="ml-2 text-base" />
-        </span>
-      </a>
+    <Link
+      key={item.label}
+      href={getShortAnalyzeLink(item)}
+      className={classnames(
+        'flex min-h-[66px] cursor-pointer items-center justify-between px-4 py-3 text-xl hover:bg-gray-100',
+        'md:py-2 md:px-2 md:text-base',
+        { 'bg-gray-100': active }
+      )}
+    >
+      <span className="flex min-w-0 flex-1 flex-col overflow-hidden pr-4">
+        {getContent()}
+      </span>
+      <span className="text-primary flex flex-shrink-0 items-center text-sm font-medium">
+        {t('home:compass_report')}
+        <AiOutlineRightCircle className="ml-2 text-base" />
+      </span>
     </Link>
   );
 };

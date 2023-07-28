@@ -42,10 +42,11 @@ const CollectionFullCard = (props: { collection: Collection }) => {
     <div className="mb-6 rounded-xl bg-white p-7 shadow" ref={ref}>
       <div className="flex">
         <div className="w-[250px]">
-          <Link href={`/collection${collection.slug}`}>
-            <a className="mb-2 block truncate text-xl font-bold hover:underline">
-              {collection[nameKey]}
-            </a>
+          <Link
+            href={`/collection${collection.slug}`}
+            className="mb-2 block truncate text-xl font-bold hover:underline"
+          >
+            {collection[nameKey]}
           </Link>
           <div className="mb-4 text-sm text-[#868690]">
             {t('collection:repositories', { length: length })}
@@ -70,13 +71,15 @@ const CollectionFullCard = (props: { collection: Collection }) => {
               <>
                 {showHottestData.map(({ label, level, shortCode }) => {
                   return (
-                    <Link key={label} href={getShortAnalyzeLink(shortCode)}>
-                      <a className="flex w-full items-center text-sm hover:underline">
-                        <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
-                        <span className="truncate">
-                          {level === Level.REPO ? getPathname(label!) : label}
-                        </span>
-                      </a>
+                    <Link
+                      key={label}
+                      href={getShortAnalyzeLink(shortCode)}
+                      className="flex w-full items-center text-sm hover:underline"
+                    >
+                      <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
+                      <span className="truncate">
+                        {level === Level.REPO ? getPathname(label!) : label}
+                      </span>
                     </Link>
                   );
                 })}
@@ -107,7 +110,7 @@ const CollectionFullCard = (props: { collection: Collection }) => {
           </div>
         </div>
       </div>
-      <Link href={`/collection${collection.slug}`}>
+      <Link href={`/collection${collection.slug}`} legacyBehavior>
         <div className="mt-4 flex cursor-pointer justify-end text-xs hover:underline">
           {t('collection:more_repositories')}
         </div>

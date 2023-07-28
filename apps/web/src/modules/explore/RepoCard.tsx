@@ -94,10 +94,11 @@ const RepoCard = (props: {
   }
 
   return (
-    <Link href={getShortAnalyzeLink(shortCode)}>
-      <a className="relative block cursor-pointer border bg-white p-px">
-        {item}
-      </a>
+    <Link
+      href={getShortAnalyzeLink(shortCode)}
+      className="relative block cursor-pointer border bg-white p-px"
+    >
+      {item}
     </Link>
   );
 };
