@@ -4,6 +4,7 @@ import Link from 'next/link';
 import LinkX from '@common/components/LinkX';
 import { useTranslation } from 'react-i18next';
 import Logo from '@common/components/Logo';
+import NoSsr from '@common/components/NoSsr';
 import MobileHeader from './MobileHeader';
 import CommunityDropdown from './CommunityDropdown';
 import ChangeLanguage from './ChangeLanguage';
@@ -71,9 +72,11 @@ const Header: React.FC<{
         </div>
       </div>
 
-      <div className={classnames('>lg:hidden bg-white')}>
-        <MobileHeader>{mobileMenu}</MobileHeader>
-      </div>
+      <NoSsr>
+        <div className={classnames('>lg:hidden bg-white')}>
+          <MobileHeader>{mobileMenu}</MobileHeader>
+        </div>
+      </NoSsr>
     </header>
   );
 };
