@@ -15,6 +15,7 @@ const silent = !process.env.SENTRY_LOG_ENABLE;
 
 const nextConfig = {
   reactStrictMode: false,
+  transpilePackages: ['ahooks', '@oss-compass/graphql', '@oss-compass/ui'],
   swcMinify: true,
   compress: false,
   output: 'standalone',
@@ -53,17 +54,10 @@ const nextConfig = {
   },
 };
 
-const withTM = require('next-transpile-modules')([
-  '@oss-compass/graphql',
-  '@oss-compass/ui',
-]);
-
-module.exports = withBundleAnalyzer(
-  withTM({
-    ...nextConfig,
-    i18n,
-  })
-);
+module.exports = withBundleAnalyzer({
+  ...nextConfig,
+  i18n,
+});
 
 // module.exports = withSentryConfig(
 //   module.exports,
