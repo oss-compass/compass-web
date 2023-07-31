@@ -34,6 +34,7 @@
   "community": "Community",
   "software_artifact_repository": "Software Artifact Repository",
   "governance_repository": "Governance Repository",
+  "select_or_type": "Select or type",
   "optional": "Optional",
   "add_repository": "Add repository",
   "input_any_repository_address": "Input any {{providerName}} repository address",

@@ -34,6 +34,7 @@
   "community_name": "社区名称",
   "community": "社区",
   "software_artifact_repository": "软件制品仓库",
+  "select_or_type": "选择或者手动输入",
   "governance_repository": "治理仓库",
   "optional": "可选的",
   "add_repository": "添加代码仓",

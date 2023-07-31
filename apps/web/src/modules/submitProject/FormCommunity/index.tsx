@@ -3,12 +3,17 @@ import { useCreateProjectTaskMutation } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import uniq from 'lodash/uniq';
 import { useSessionStorage } from 'react-use';
-import Select from '@common/components/Select';
+import SelectAndInput from '@common/components/SelectAndInput';
 import { Button } from '@oss-compass/ui';
 import SwitchToSingleRepo from './SwitchToSingleRepo';
 import SoftwareArtifactRepository from './SoftwareArtifactRepository';
 import GovernanceRepository from './GovernanceRepository';
-import { fillHttps, getRepoName } from '@common/utils';
+import {
+  fillHttps,
+  getRepoName,
+  getPathname,
+  getFirstPathSegment,
+} from '@common/utils';
 import { useSubmitUser } from '@modules/auth';
 import Message from '@modules/submitProject/Misc/Message';
 import { useTranslation } from 'react-i18next';
@@ -28,8 +33,11 @@ const FormCommunity = () => {
     `${account}_governance_repository`,
     []
   );
-
-  const options = uniq([...sarUrls, ...grUrls].map((v) => getRepoName(v)));
+  const firstName = uniq(
+    [...sarUrls, ...grUrls].map((v) => getFirstPathSegment(getPathname(v)))
+  );
+  const lastName = uniq([...sarUrls, ...grUrls].map((v) => getRepoName(v)));
+  const options = uniq([...firstName, ...lastName]);
   const { isLoading, isError, mutate, data } = useCreateProjectTaskMutation(
     client,
     {
@@ -90,21 +98,15 @@ const FormCommunity = () => {
             <label className="mt-10 mb-4 block text-xl font-medium">
               {t('submit_project:community_name')}
             </label>
-            <Select
+            <SelectAndInput
               className="w-full"
               value={communityName}
               onChange={(e) => {
                 setCommunityName(e);
               }}
-            >
-              {options.map((option) => {
-                return (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                );
-              })}
-            </Select>
+              options={options}
+              placeholder={t('submit_project:select_or_type')}
+            ></SelectAndInput>
           </div>
         )}
 
