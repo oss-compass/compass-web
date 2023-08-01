@@ -61,3 +61,6 @@ next.config.original.js
 
 
 tmp
+
+
+graphql.config.yml

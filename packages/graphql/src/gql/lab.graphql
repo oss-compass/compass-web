@@ -1,0 +1,102 @@
+query userModels($page: Int!, $per: Int!) {
+  myModels(page: $page, per: $per) {
+    count
+    items {
+      dimension
+      id
+      isGeneral
+      isPublic
+      latestVersions {
+        id
+        version
+        algorithm {
+          ...algorithm
+        }
+        dataset {
+          ...dataset
+        }
+        metrics {
+          ...metrics
+        }
+      }
+      name
+      userId
+    }
+    page
+    totalPage
+  }
+}
+
+query labModelDetail($id: Int!) {
+  labModelDetail(id: $id) {
+    dimension
+    id
+    isGeneral
+    isPublic
+    latestVersions {
+      id
+      version
+      algorithm {
+        ...algorithm
+      }
+      dataset {
+        ...dataset
+      }
+      metrics {
+        ...metrics
+      }
+    }
+    name
+    userId
+  }
+}
+
+query dataSetList($type: String, $firstIdent: String, $secondIdent: String) {
+  datasetOverview(
+    type: $type
+    firstIdent: $firstIdent
+    secondIdent: $secondIdent
+  )
+}
+
+query metricSetList {
+  metricSetOverview {
+    category
+    defaultThreshold
+    defaultWeight
+    from
+    id
+    ident
+    name
+    threshold
+    weight
+  }
+}
+
+fragment algorithm on Algorithm {
+  ident
+  name
+}
+
+fragment dataset on Dataset {
+  ident
+  items {
+    firstIdent
+    label
+    level
+    secondIdent
+  }
+  name
+}
+
+fragment metrics on ModelMetric {
+  category
+  defaultThreshold
+  defaultWeight
+  from
+  id
+  ident
+  name
+  threshold
+  weight
+}
