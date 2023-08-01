@@ -22,7 +22,6 @@ const Select: React.FC<
   error = false,
   placeholder,
 }) => {
-  console.log(options, value);
   const [showList, setShowlist] = useState(false);
   const [inputValue, setInputValue] = useState(value);
 
