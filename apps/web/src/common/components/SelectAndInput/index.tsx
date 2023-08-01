@@ -53,7 +53,7 @@ const Select: React.FC<
       {filteredOptions.length > 0 && (
         <div
           className={classnames(
-            'absolute z-50  w-full flex-1 border border-black bg-white text-base outline-none',
+            'absolute top-[50px]  max-h-36 w-full flex-1 overflow-auto border-2 border-black bg-white text-base outline-none',
             { hidden: !showList }
           )}
           id="option-list"
@@ -62,7 +62,7 @@ const Select: React.FC<
             return (
               <div
                 key={item}
-                className="px-4 hover:bg-[#1e90ff]"
+                className="flex h-11 cursor-pointer items-center px-4 hover:bg-gray-100"
                 onClick={() => {
                   setInputValue(item);
                   onChange(item);
