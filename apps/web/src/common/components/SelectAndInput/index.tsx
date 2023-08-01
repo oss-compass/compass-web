@@ -64,7 +64,6 @@ const Select: React.FC<
                 key={item}
                 className="px-4 hover:bg-[#1e90ff]"
                 onClick={() => {
-                  console.log(1);
                   setInputValue(item);
                   onChange(item);
                 }}
