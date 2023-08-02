@@ -25,7 +25,7 @@ const FillItem: React.FC<{ url: string; onDelete: (v: string) => void }> = ({
     <div className="mb-6 flex max-w-[600px] items-center">
       <div className="flex flex-1 items-center">
         {getIcons(provider)}
-        <p className="max-w-[400px] truncate">{url}</p>
+        <p className="max-w-[400px] truncate md:max-w-[300px]">{url}</p>
       </div>
       <div
         className="cursor-pointer p-2 transition-all hover:bg-gray-200"
