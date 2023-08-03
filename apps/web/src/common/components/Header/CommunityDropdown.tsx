@@ -153,7 +153,7 @@ const CommunityDropdown = () => {
         <div className="mt-[2px] bg-black/95 text-white">
           <Discussion />
           <RepoLinks />
-          <Blog />
+          {/*<Blog />*/}
         </div>
       </div>
     </div>
