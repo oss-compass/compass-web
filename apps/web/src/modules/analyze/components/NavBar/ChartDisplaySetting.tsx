@@ -57,7 +57,7 @@ const OnePointItem = () => {
     <div
       className={classnames(
         'group flex cursor-pointer border-b py-2 pl-3.5 transition',
-        [snap.onePointSys ? 'text-primary' : 'text-[#585858]']
+        [!snap.onePointSys ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.onePointSys = !snap.onePointSys;
