@@ -1,20 +1,39 @@
 import React, { useState, ReactNode, PropsWithChildren } from 'react';
 import classnames from 'classnames';
-import BadgeCount from './BadgeCount';
+import { useSnapshot, subscribe } from 'valtio';
+import { formFiledState, getKey } from './state';
+import { BadgeCount } from '../styled';
 
 const SubMenu = ({
-  children,
   active,
-  count,
+  ident,
+  subIdent,
+  onSelectItem,
 }: {
-  children?: ReactNode | undefined;
+  ident?: string;
+  subIdent?: string;
   active?: boolean;
-  count?: number;
+  onSelectItem: (sub: string) => void;
 }) => {
+  const snapshot = useSnapshot(formFiledState);
+
+  const keys = Object.keys(snapshot.selected);
+  const count = keys.reduce((acc, cur) => {
+    if (cur === getKey(ident, subIdent)) {
+      acc += formFiledState.selected[cur].length;
+    }
+    return acc;
+  }, 0);
+
   return (
-    <div className="hover:bg-smoke flex cursor-pointer items-center justify-between bg-white py-2 pl-6 pr-4">
+    <div
+      className="hover:bg-smoke flex cursor-pointer items-center justify-between bg-white py-2 pl-6 pr-4"
+      onClick={() => {
+        onSelectItem(subIdent);
+      }}
+    >
       <div className={classnames('truncate', [active ? 'text-primary' : ''])}>
-        {children}
+        {subIdent}
       </div>
       {count ? <BadgeCount count={count} /> : null}
     </div>

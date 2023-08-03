@@ -5,7 +5,9 @@ import { FormItemLabel } from '../styled';
 import classnames from 'classnames';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { BadgeCount } from '../styled';
 import { ItemCard, ItemCardPlus } from './ItemCard';
+import CategoryMenu from './CategoryMenu';
 
 const FormMetric = () => {
   const [open, setOpen] = useState(false);
@@ -48,7 +50,13 @@ const FormMetric = () => {
 
             <div className="flex h-[440px]">
               <div className="thin-scrollbar overflow-auto">
-                <div className="border-silver flex flex-col border-l border-r border-t "></div>
+                <div className="border-silver flex flex-col border-l border-r border-t ">
+                  <CategoryMenu />
+                  <CategoryMenu />
+                  <CategoryMenu />
+                  <CategoryMenu />
+                  <CategoryMenu />
+                </div>
               </div>
               <div className="thin-scrollbar flex-1 overflow-auto">
                 <div className="grid grid-cols-2 gap-4"></div>

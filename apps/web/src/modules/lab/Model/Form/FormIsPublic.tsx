@@ -1,30 +1,30 @@
 import React, { PropsWithChildren } from 'react';
+import { useSnapshot } from 'valtio';
+import { formState } from './state';
 import { FormItemLabel } from './styled';
-import classnames from 'classnames';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
 import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 
 const FormIsPublic = () => {
-  const [selectedValue, setSelectedValue] = React.useState('a');
+  const snapshot = useSnapshot(formState);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedValue(event.target.value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, v) => {
+    console.log(v);
   };
 
   const controlProps = (item: string) => ({
-    checked: selectedValue === item,
+    // eslint-disable-next-line valtio/state-snapshot-rule
+    checked: snapshot.isPublic,
     onChange: handleChange,
     value: item,
-    name: 'color-radio-button-demo',
-    inputProps: { 'aria-label': item },
+    name: 'radio-button-is-public',
   });
+
   return (
     <div className="mb-6">
       <FormItemLabel>是否公开</FormItemLabel>
       <div className="mb-3 flex items-center">
         <div className="flex w-40 items-center">
-          <CustomRadio id="modal-public" {...controlProps('a')} />
+          <CustomRadio id="modal-public" {...controlProps('1')} />
           <label htmlFor={'modal-public'} className="ml-2">
             公开
           </label>
@@ -38,7 +38,7 @@ const FormIsPublic = () => {
         <div className="flex w-40 items-center">
           <CustomRadio
             id="modal-private"
-            {...controlProps('b')}
+            {...controlProps('2')}
             color="secondary"
           />
           <label htmlFor="modal-private" className="ml-2">

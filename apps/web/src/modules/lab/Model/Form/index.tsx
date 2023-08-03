@@ -20,6 +20,7 @@ import FormAlgorithm from './FormAlgorithm';
 
 const ModelForm = () => {
   const router = useRouter();
+
   return (
     <div className="py-12 text-sm">
       <Center className="md:px-4">
