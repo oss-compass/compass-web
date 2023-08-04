@@ -6,14 +6,15 @@ import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 
 const FormIsPublic = () => {
   const snapshot = useSnapshot(formState);
+  const isPublic = snapshot.isPublic;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, v) => {
-    console.log(v);
+    const val = event.target.value;
+    formState.isPublic = val === 'public';
   };
 
   const controlProps = (item: string) => ({
-    // eslint-disable-next-line valtio/state-snapshot-rule
-    checked: snapshot.isPublic,
+    checked: (isPublic && item == 'public') || (!isPublic && item == 'private'),
     onChange: handleChange,
     value: item,
     name: 'radio-button-is-public',
@@ -24,8 +25,8 @@ const FormIsPublic = () => {
       <FormItemLabel>是否公开</FormItemLabel>
       <div className="mb-3 flex items-center">
         <div className="flex w-40 items-center">
-          <CustomRadio id="modal-public" {...controlProps('1')} />
-          <label htmlFor={'modal-public'} className="ml-2">
+          <CustomRadio id="modal-public" {...controlProps('public')} />
+          <label htmlFor={'modal-public'} className="ml-2 cursor-pointer">
             公开
           </label>
         </div>
@@ -38,10 +39,10 @@ const FormIsPublic = () => {
         <div className="flex w-40 items-center">
           <CustomRadio
             id="modal-private"
-            {...controlProps('2')}
+            {...controlProps('private')}
             color="secondary"
           />
-          <label htmlFor="modal-private" className="ml-2">
+          <label htmlFor="modal-private" className="ml-2 cursor-pointer">
             不公开
           </label>
         </div>

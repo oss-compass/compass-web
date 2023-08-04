@@ -4,7 +4,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import Banner from '@modules/lab/Model/Banner';
-import MyModel from '@modules/lab/Model/My';
+import ModelEditForm from '@modules/lab/Model/Edit';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -14,14 +14,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-const create = () => {
+const ModelEdit = () => {
   return (
     <NoSsr>
       <Header />
       <Banner />
-      <MyModel />
+      <ModelEditForm />
     </NoSsr>
   );
 };
 
-export default create;
+export default ModelEdit;

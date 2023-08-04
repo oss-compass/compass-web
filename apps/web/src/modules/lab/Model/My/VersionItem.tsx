@@ -1,10 +1,17 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { AiOutlineUser } from 'react-icons/ai';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { Popper } from '@oss-compass/ui';
+import { AiOutlinePlus } from 'react-icons/ai';
+import { ModelVersion } from '@oss-compass/graphql';
 
-const ItemMore = () => {
+const ItemMore = ({
+  modelId,
+  versionId,
+}: {
+  modelId: number;
+  versionId: number;
+}) => {
   const router = useRouter();
   return (
     <Popper
@@ -14,13 +21,12 @@ const ItemMore = () => {
           <div
             className="cursor-pointer border-b px-2 py-2 text-sm"
             onClick={() => {
-              router.push('/lab/model/create');
+              router.push(`/lab/model/${modelId}/version/${versionId}/edit`);
             }}
           >
             编辑
           </div>
-          {/*<div className="px-2 py-2 text-sm"></div>*/}
-          {/*<div className="px-2 py-2 text-sm"></div>*/}
+          <div className="cursor-pointer border-b px-2 py-2 text-sm">删除</div>
         </div>
       }
     >
@@ -36,23 +42,31 @@ const ItemMore = () => {
   );
 };
 
-export const VersionCreate = () => {
+export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
   return (
-    <div className="flex flex-col border bg-[#FAFAFA]">
-      <div className="flex-1"></div>
+    <div
+      className="flex cursor-pointer flex-col items-center  justify-center  border bg-[#FAFAFA]"
+      onClick={() => onClick()}
+    >
+      <AiOutlinePlus />
     </div>
   );
 };
 
-export const VersionCard = () => {
+export const VersionCard = ({
+  version,
+  modelId,
+}: {
+  modelId: number;
+  version: ModelVersion;
+}) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col border bg-[#FAFAFA]">
       <div className="flex-1">
         <div className="flex justify-between px-3 py-2">
-          <div className="flex-1 truncate font-bold">
-            v20230711v20230711v20230711v20230711.214155
-          </div>
-          <ItemMore />
+          <div className="flex-1 truncate font-bold">{version.version}</div>
+          <ItemMore modelId={modelId} versionId={version.id} />
         </div>
         <div className="px-3 pb-2">
           <div>
@@ -70,7 +84,12 @@ export const VersionCard = () => {
         <div className="flex w-1/2 cursor-pointer items-center justify-center border-r">
           <span className="text-sm">触发分析</span>
         </div>
-        <div className="flex w-1/2 cursor-pointer items-center justify-center">
+        <div
+          className="flex w-1/2 cursor-pointer items-center justify-center"
+          onClick={() => {
+            router.push(`/lab/model/${modelId}/version/${version.id}`);
+          }}
+        >
           <span className="text-sm">查看报告</span>
         </div>
       </div>

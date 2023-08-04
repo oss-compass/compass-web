@@ -1,10 +1,10 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
-import Banner from '@modules/lab/Model/Banner';
-import MyModel from '@modules/lab/Model/My';
+import ModelVersionView from '@modules/lab/Model/Version/View';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -14,14 +14,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-const create = () => {
+const Version = () => {
+  const router = useRouter();
   return (
     <NoSsr>
       <Header />
-      <Banner />
-      <MyModel />
+      <ModelVersionView />
     </NoSsr>
   );
 };
 
-export default create;
+export default Version;

@@ -4,7 +4,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import Banner from '@modules/lab/Model/Banner';
-import UserManage from '@modules/lab/Model/UserManage';
+import ModelVersionCreate from '@modules/lab/Model/Version/Create';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -14,14 +14,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-const User = () => {
+const VersionCreate = () => {
   return (
     <NoSsr>
       <Header />
       <Banner />
-      <UserManage />
+      <ModelVersionCreate />
     </NoSsr>
   );
 };
 
-export default User;
+export default VersionCreate;

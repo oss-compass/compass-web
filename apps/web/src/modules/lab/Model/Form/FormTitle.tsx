@@ -5,7 +5,7 @@ import { formState, actions } from './state';
 import { FormItemLabel } from './styled';
 
 const FormTitle = () => {
-  const snapshot = useSnapshot(formState);
+  const snapshot = useSnapshot(formState, { sync: true });
   return (
     <div className="mb-6 flex">
       <div className="w-36">
