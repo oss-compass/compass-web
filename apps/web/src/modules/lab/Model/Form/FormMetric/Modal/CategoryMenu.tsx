@@ -1,13 +1,19 @@
-import React, { useState, ReactNode, PropsWithChildren } from 'react';
+import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { useSnapshot } from 'valtio';
-import { formFiledState } from './state';
-import { BadgeCount } from '../styled';
+import { formFiledState } from '../state';
+import { BadgeCount } from '../../styled';
 
 const CategoryMenu = ({ category }: { category: string }) => {
   const snapshot = useSnapshot(formFiledState);
-  const categorySelected = snapshot[category];
+  const categorySelected = snapshot.selected[category];
   const count = categorySelected?.length || 0;
+
+  useEffect(() => {
+    if (!formFiledState.activeCategory && count > 0) {
+      formFiledState.activeCategory = category;
+    }
+  }, [count, category, snapshot.activeCategory]);
 
   return (
     <div className="w-60">

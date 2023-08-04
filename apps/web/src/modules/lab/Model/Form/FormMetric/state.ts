@@ -25,7 +25,7 @@ export const actions = {
     weight: number;
     category: string;
   }) => {
-    const { ident, category } = item;
+    const { category, ident } = item;
     if (!formFiledState.selected[category]) {
       formFiledState.selected[category] = [item];
       return;
@@ -40,6 +40,21 @@ export const actions = {
     } else {
       formFiledState.selected[category] = [...old, item];
     }
+  },
+  onBackFill: (item: {
+    id: number;
+    ident: string;
+    threshold: number;
+    weight: number;
+    category: string;
+  }) => {
+    const { category } = item;
+    if (!formFiledState.selected[category]) {
+      formFiledState.selected[category] = [item];
+      return;
+    }
+    const old = formFiledState.selected[category];
+    formFiledState.selected[category] = [...old, item];
   },
 };
 

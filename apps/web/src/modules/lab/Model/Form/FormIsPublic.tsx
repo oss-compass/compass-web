@@ -4,7 +4,7 @@ import { formState } from './state';
 import { FormItemLabel } from './styled';
 import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 
-const FormIsPublic = () => {
+const FormIsPublic = ({ disabled }: { disabled: boolean }) => {
   const snapshot = useSnapshot(formState);
   const isPublic = snapshot.isPublic;
 
@@ -18,6 +18,7 @@ const FormIsPublic = () => {
     onChange: handleChange,
     value: item,
     name: 'radio-button-is-public',
+    disabled,
   });
 
   return (

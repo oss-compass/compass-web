@@ -1,51 +1,14 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { FiMoreHorizontal } from 'react-icons/fi';
-import { Popper } from '@oss-compass/ui';
 import { AiOutlinePlus } from 'react-icons/ai';
+import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import { ModelVersion } from '@oss-compass/graphql';
-
-const ItemMore = ({
-  modelId,
-  versionId,
-}: {
-  modelId: number;
-  versionId: number;
-}) => {
-  const router = useRouter();
-  return (
-    <Popper
-      placement="bottom-end"
-      content={
-        <div className="w-24 rounded bg-white shadow">
-          <div
-            className="cursor-pointer border-b px-2 py-2 text-sm"
-            onClick={() => {
-              router.push(`/lab/model/${modelId}/version/${versionId}/edit`);
-            }}
-          >
-            编辑
-          </div>
-          <div className="cursor-pointer border-b px-2 py-2 text-sm">删除</div>
-        </div>
-      }
-    >
-      {(trigger) => (
-        <div
-          className="ml-2 cursor-pointer p-2 text-sm"
-          onClick={(e) => trigger(e)}
-        >
-          <FiMoreHorizontal />
-        </div>
-      )}
-    </Popper>
-  );
-};
+import VersionItemMore from './VersionItemMore';
 
 export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
   return (
     <div
-      className="flex cursor-pointer flex-col items-center  justify-center  border bg-[#FAFAFA]"
+      className="flex min-h-[160px] cursor-pointer flex-col items-center  justify-center  border bg-[#FAFAFA]"
       onClick={() => onClick()}
     >
       <AiOutlinePlus />
@@ -56,9 +19,11 @@ export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
 export const VersionCard = ({
   version,
   modelId,
+  event$,
 }: {
   modelId: number;
   version: ModelVersion;
+  event$: EventEmitter<string>;
 }) => {
   const router = useRouter();
   return (
@@ -66,7 +31,11 @@ export const VersionCard = ({
       <div className="flex-1">
         <div className="flex justify-between px-3 py-2">
           <div className="flex-1 truncate font-bold">{version.version}</div>
-          <ItemMore modelId={modelId} versionId={version.id} />
+          <VersionItemMore
+            modelId={modelId}
+            versionId={version.id}
+            event$={event$}
+          />
         </div>
         <div className="px-3 pb-2">
           <div>

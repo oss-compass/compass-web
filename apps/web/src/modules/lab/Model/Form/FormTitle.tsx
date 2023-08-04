@@ -4,13 +4,14 @@ import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 import { formState, actions } from './state';
 import { FormItemLabel } from './styled';
 
-const FormTitle = () => {
+const FormTitle = ({ disabled }: { disabled: boolean }) => {
   const snapshot = useSnapshot(formState, { sync: true });
   return (
     <div className="mb-6 flex">
       <div className="w-36">
         <FormItemLabel>所属生态维度</FormItemLabel>
         <Select
+          disabled={disabled}
           rootClassNames={'w-36'}
           placeholder="请选择"
           value={snapshot.dimension}
@@ -26,6 +27,7 @@ const FormTitle = () => {
       <div className="max-w-[600px] flex-1 pl-2">
         <FormItemLabel>模型名称</FormItemLabel>
         <Input
+          disabled={disabled}
           intent={'secondary'}
           placeholder="请输入"
           value={snapshot.name}

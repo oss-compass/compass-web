@@ -1,34 +1,54 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { useDataSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { GrClose } from 'react-icons/gr';
 import { Button, Input, Modal } from '@oss-compass/ui';
-import { actions, formFiledState, LEVEL_SEPARATOR } from './state';
-import { formState } from '../state';
+import { formFiledState, actions, LEVEL_SEPARATOR } from '../state';
+import { formState } from '../../state';
 import RepoCard from './RepoCard';
 import CategoryMenu from './CategoryMenu';
 
-const ModalContent = ({
+const ModalSelect = ({
   open,
   onClose,
 }: {
   open: boolean;
   onClose: () => void;
 }) => {
-  const snapshot = useSnapshot(formFiledState);
-  const { data, isLoading } = useDataSetListQuery(
+  const formSnapshot = useSnapshot(formState);
+  const fieldSnapshot = useSnapshot(formFiledState);
+
+  useEffect(() => {
+    if (open) {
+      // reset filed
+      formFiledState.selected = {};
+      formState.dataSet.forEach((item) => {
+        const { label, firstIdent, secondIdent } = item;
+        actions.onBackFill({
+          label,
+          levelFirst: firstIdent,
+          levelSecond: secondIdent,
+        });
+      });
+    }
+  }, [formSnapshot.dataSet, open]);
+
+  const isMenuSelect =
+    Boolean(fieldSnapshot.levelFirst) && Boolean(fieldSnapshot.levelSecond);
+
+  const { data } = useDataSetListQuery(
     gqlClient,
     {},
     { staleTime: 5 * 60 * 1000 }
   );
 
-  const isMenuSelect =
-    Boolean(snapshot.levelFirst) && Boolean(snapshot.levelSecond);
-
   const { data: repoList, isLoading: repoListLoading } = useDataSetListQuery(
     gqlClient,
-    { firstIdent: snapshot.levelFirst, secondIdent: snapshot.levelSecond },
+    {
+      firstIdent: fieldSnapshot.levelFirst,
+      secondIdent: fieldSnapshot.levelSecond,
+    },
     {
       enabled: isMenuSelect,
       staleTime: 5 * 60 * 1000,
@@ -105,7 +125,13 @@ const ModalContent = ({
                             key={repo}
                             label={repo}
                             onSelect={(label) => {
-                              actions.onSelect(label);
+                              const { levelFirst, levelSecond } =
+                                formFiledState;
+                              actions.onSelect({
+                                label,
+                                levelFirst,
+                                levelSecond,
+                              });
                             }}
                           />
                         );
@@ -142,4 +168,4 @@ const ModalContent = ({
   );
 };
 
-export default ModalContent;
+export default ModalSelect;

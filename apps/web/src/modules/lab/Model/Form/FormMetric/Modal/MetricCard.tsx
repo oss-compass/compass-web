@@ -4,7 +4,7 @@ import classname from 'classnames';
 import { useSnapshot } from 'valtio';
 import { FiEdit } from 'react-icons/fi';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { formFiledState, actions, FormFiledState } from './state';
+import { formFiledState, actions, FormFiledState } from '../state';
 
 export const SelectedItemCard = ({ ident }: { ident: string }) => {
   return (

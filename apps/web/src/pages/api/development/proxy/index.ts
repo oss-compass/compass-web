@@ -12,7 +12,7 @@ export const config = {
 };
 
 const proxy = httpProxy.createProxyServer({
-  autoRewrite: true,
+  autoRewrite: false,
   changeOrigin: true,
   // proxyTimeout: 100 * 1000,
 });
@@ -25,6 +25,8 @@ export default async function handler(
   // await sleep(500);
   return new Promise((resolve, reject) => {
     proxy.once('error', reject);
-    proxy.web(req, res, { target: API_URL });
+    proxy.web(req, res, { target: API_URL }, (err, req, res, target) => {
+      console.log(err, req, res, target);
+    });
   });
 }

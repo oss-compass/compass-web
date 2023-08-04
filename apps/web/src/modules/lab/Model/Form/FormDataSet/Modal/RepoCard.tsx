@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio';
 import { getNameSpace, getProvider, getRepoName } from '@common/utils';
 import { SiGitee } from 'react-icons/si';
 import { AiFillGithub } from 'react-icons/ai';
-import { formFiledState, FormFiledState, getKey } from './state';
+import { formFiledState, FormFiledState, getKey } from '../state';
 
 const labelIsSelect = (
   snapshot: DeepReadonly<FormFiledState>,

@@ -1,13 +1,11 @@
-import React, { useState, ReactNode, PropsWithChildren } from 'react';
+import React, { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import groupBy from 'lodash/groupBy';
-import classnames from 'classnames';
-import { GrClose } from 'react-icons/gr';
-import { Input, Modal, Button } from '@oss-compass/ui';
-import { FormItemLabel, ItemCard, ItemCardPlus } from '../styled';
-import CategoryMenu from './CategoryMenu';
-import ModalContent from './ModalContent';
-import { formState } from '../state';
+import { FormItemLabel } from '../styled';
+import { ItemCard, ItemCardPlus } from './SelectedItem';
+import ModalSelect from './Modal';
+import { formState, actions } from '../state';
+import { formFiledState } from './state';
 
 const FormDataSet = () => {
   const [open, setOpen] = useState(false);
@@ -20,16 +18,26 @@ const FormDataSet = () => {
     <div className="mb-6">
       <FormItemLabel>选择数据集</FormItemLabel>
       <div className="grid grid-cols-4 gap-4 md:grid-cols-2">
-        {subIdents.map((ident) => {
+        {subIdents.map((subIdent) => {
           return (
             <ItemCard
-              key={ident}
-              ident={ident}
-              count={item[ident].length}
+              key={subIdent}
+              ident={subIdent}
+              count={item[subIdent].length}
               onHandleEdit={() => {
                 setOpen(true);
+
+                // 弹窗内默认展开
+                const editItem = item[subIdent];
+                if (editItem && editItem.length > 0) {
+                  const { firstIdent, secondIdent } = editItem[0];
+                  formFiledState.levelFirst = firstIdent;
+                  formFiledState.levelSecond = secondIdent;
+                }
               }}
-              onHandleDelete={() => {}}
+              onHandleDelete={() => {
+                actions.onDeleteDataSetItem(subIdent);
+              }}
             />
           );
         })}
@@ -40,7 +48,7 @@ const FormDataSet = () => {
         />
       </div>
 
-      <ModalContent
+      <ModalSelect
         open={open}
         onClose={() => {
           setOpen(false);

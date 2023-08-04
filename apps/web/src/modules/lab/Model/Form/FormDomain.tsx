@@ -6,7 +6,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 
-const FormDomain = () => {
+const FormDomain = ({ disabled }: { disabled: boolean }) => {
   const snapshot = useSnapshot(formState);
   const isGeneral = snapshot.isGeneral;
 
@@ -21,6 +21,7 @@ const FormDomain = () => {
     onChange: handleChange,
     value: item,
     name: 'radio-button-domain',
+    disabled,
   });
 
   return (

@@ -14,7 +14,7 @@ export const Select = forwardRef(function Select<
   props: SelectProps<OptionValue, Multiple> & StyleProps,
   ref: React.ForwardedRef<HTMLButtonElement>
 ) {
-  const { rootClassNames, children, ...restProps } = props;
+  const { rootClassNames, children, disabled, ...restProps } = props;
   const isDarkMode = useIsDarkMode();
 
   const rootCls =
@@ -23,6 +23,7 @@ export const Select = forwardRef(function Select<
   return (
     <SelectBase
       ref={ref}
+      disabled={disabled}
       slotProps={{
         root: ({ focusVisible, open }) => {
           const focusCls = focusVisible
@@ -30,7 +31,9 @@ export const Select = forwardRef(function Select<
             : '';
           const openCls = open ? 'after:content-["▴"]' : 'after:content-["▾"]';
           return {
-            className: classnames(rootCls, focusCls, openCls, rootClassNames),
+            className: classnames(rootCls, focusCls, openCls, rootClassNames, [
+              disabled ? 'bg-smoke' : '',
+            ]),
           };
         },
         listbox: {

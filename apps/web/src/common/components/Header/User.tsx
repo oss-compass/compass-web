@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineUser, AiOutlineExperiment } from 'react-icons/ai';
 import { MdOutlineLogout } from 'react-icons/md';
 import { FiBookmark } from 'react-icons/fi';
 import client from '@common/gqlClient';
@@ -58,7 +58,7 @@ const User = () => {
             href="/lab/model/my"
             className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
           >
-            <AiOutlineUser className="mr-2 text-base" />
+            <AiOutlineExperiment className="mr-2 text-base" />
             我的模型
           </Link>
 

@@ -11,6 +11,10 @@ export function CustomRadio(props: RadioProps) {
         '&.Mui-checked': {
           color: '#3A5BEF',
         },
+        '&.Mui-disabled': {
+          cursor: 'not-allowed',
+          color: '#868690',
+        },
       }}
       {...props}
     />

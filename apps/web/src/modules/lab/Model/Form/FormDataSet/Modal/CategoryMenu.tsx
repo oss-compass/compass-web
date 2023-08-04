@@ -3,21 +3,25 @@ import classnames from 'classnames';
 import { useSnapshot, subscribe } from 'valtio';
 import { useDataSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
-import { BadgeCount } from '../styled';
-import { formFiledState, actions } from './state';
-import SubMenu from './SubMenu';
+import { BadgeCount } from '../../styled';
+import { formFiledState, actions, getKey } from '../state';
 
 const CategoryMenu = ({ ident }: { ident: string }) => {
-  const snapshot = useSnapshot(formFiledState);
-
   const [collapse, setCollapse] = useState(false);
+  const snapshot = useSnapshot(formFiledState);
   const { data, isLoading } = useDataSetListQuery(
     gqlClient,
     {
       firstIdent: snapshot.levelFirst,
     },
-    { enabled: collapse, staleTime: 5 * 60 * 1000 }
+    { enabled: Boolean(snapshot.levelFirst), staleTime: 5 * 60 * 1000 }
   );
+
+  useEffect(() => {
+    if (ident === snapshot.levelFirst) {
+      setCollapse(true);
+    }
+  }, [ident, snapshot.levelFirst]);
 
   const keys = Object.keys(snapshot.selected);
   const count = keys.reduce((acc, cur) => {
@@ -64,10 +68,11 @@ const CategoryMenu = ({ ident }: { ident: string }) => {
         ) : null}
 
         {data?.datasetOverview?.map((item) => {
+          const isSubMenuActive = snapshot.levelSecond === item;
           return (
-            <SubMenu
+            <CategorySubMenu
               key={item}
-              active={snapshot.levelSecond === item}
+              active={isSubMenuActive}
               ident={ident}
               subIdent={item}
               onSelectItem={(sub) => {
@@ -80,6 +85,42 @@ const CategoryMenu = ({ ident }: { ident: string }) => {
           );
         })}
       </div>
+    </div>
+  );
+};
+
+const CategorySubMenu = ({
+  active,
+  ident,
+  subIdent,
+  onSelectItem,
+}: {
+  ident?: string;
+  subIdent?: string;
+  active?: boolean;
+  onSelectItem: (sub: string) => void;
+}) => {
+  const snapshot = useSnapshot(formFiledState);
+
+  const keys = Object.keys(snapshot.selected);
+  const count = keys.reduce((acc, cur) => {
+    if (cur === getKey(ident, subIdent)) {
+      acc += formFiledState.selected[cur].length;
+    }
+    return acc;
+  }, 0);
+
+  return (
+    <div
+      className="hover:bg-smoke flex cursor-pointer items-center justify-between bg-white py-2 pl-6 pr-4"
+      onClick={() => {
+        onSelectItem(subIdent);
+      }}
+    >
+      <div className={classnames('truncate', [active ? 'text-primary' : ''])}>
+        {subIdent}
+      </div>
+      {count ? <BadgeCount count={count} /> : null}
     </div>
   );
 };

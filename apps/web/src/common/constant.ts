@@ -15,3 +15,5 @@ export const oauthProvider = {
 };
 
 export type ChartTab = 'One' | 'two' | 'three' | 'four';
+
+export const ReFetch = 'refetch';

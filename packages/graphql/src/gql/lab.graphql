@@ -1,4 +1,4 @@
-query userModels($page: Int!, $per: Int!) {
+query myLabModels($page: Int!, $per: Int!) {
   myModels(page: $page, per: $per) {
     count
     items {
@@ -6,6 +6,7 @@ query userModels($page: Int!, $per: Int!) {
       id
       isGeneral
       isPublic
+      triggerRemainingCount
       latestVersions {
         id
         version
@@ -33,6 +34,7 @@ query labModelDetail($id: Int!) {
     id
     isGeneral
     isPublic
+    triggerRemainingCount
     latestVersions {
       id
       version
@@ -48,6 +50,22 @@ query labModelDetail($id: Int!) {
     }
     name
     userId
+  }
+}
+
+query labModelVersion($modelId: Int!, $versionId: Int!) {
+  labModelVersion(modelId: $modelId, versionId: $versionId) {
+    id
+    version
+    algorithm {
+      ...algorithm
+    }
+    dataset {
+      ...dataset
+    }
+    metrics {
+      ...metrics
+    }
   }
 }
 
@@ -122,27 +140,31 @@ mutation createLabModel(
     }
   ) {
     clientMutationId
-    data {
-      dimension
-      id
-      isGeneral
-      isPublic
-      latestVersions {
-        id
-        version
-        algorithm {
-          ...algorithm
-        }
-        dataset {
-          ...dataset
-        }
-        metrics {
-          ...metrics
-        }
-      }
-      name
-      userId
+    errors {
+      message
+      path
     }
+    message
+  }
+}
+
+mutation createLabModelVersion(
+  $algorithm: String
+  $datasets: [DatasetRowTypeInput!]!
+  $metrics: [LabModelMetricInput!]!
+  $modelId: Int!
+  $version: String!
+) {
+  createLabModelVersion(
+    input: {
+      algorithm: $algorithm
+      datasets: $datasets
+      metrics: $metrics
+      modelId: $modelId
+      version: $version
+    }
+  ) {
+    clientMutationId
     errors {
       message
       path

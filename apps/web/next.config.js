@@ -37,6 +37,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/lab/model',
+        destination: '/lab/model/my',
+        permanent: false,
+      },
+    ];
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
@@ -51,6 +60,9 @@ const nextConfig = {
       return process.env.NEXT_PUBLIC_GIT_COMMIT;
     }
     return execSync('git rev-parse HEAD').toString().trim();
+  },
+  experimental: {
+    scrollRestoration: true,
   },
 };
 

@@ -1,23 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import Link from 'next/link';
 import { useSnapshot } from 'valtio';
 import { useMetricSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import groupBy from 'lodash/groupBy';
 import { GrClose } from 'react-icons/gr';
 import { Button, Input, Modal } from '@oss-compass/ui';
-import { formFiledState } from './state';
-import { formState } from '../state';
+import { formState } from '../../state';
+import { formFiledState, actions } from '../state';
 import { MetricItemsCard } from './MetricCard';
 import CategoryMenu from './CategoryMenu';
 
-const ModalContent = ({
+const ModalSelect = ({
   open,
   onClose,
 }: {
   open: boolean;
   onClose: () => void;
 }) => {
-  const snapshot = useSnapshot(formFiledState);
+  const formSnapshot = useSnapshot(formState);
+  const fieldSnapshot = useSnapshot(formFiledState);
+
+  useEffect(() => {
+    if (open) {
+      // reset filed
+      formFiledState.selected = {};
+      formState.metricSet.forEach((item) => {
+        actions.onBackFill({
+          id: item.id,
+          ident: item.ident,
+          threshold: item.threshold,
+          weight: item.weight,
+          category: item.category,
+        });
+      });
+    }
+  }, [formSnapshot.dataSet, open]);
 
   const { data, isLoading } = useMetricSetListQuery(
     gqlClient,
@@ -40,7 +58,7 @@ const ModalContent = ({
 
   const showListItem = data?.metricSetOverview?.filter((i) => {
     // eslint-disable-next-line valtio/state-snapshot-rule
-    return i.category === snapshot.activeCategory;
+    return i.category === fieldSnapshot.activeCategory;
   });
 
   return (
@@ -107,7 +125,9 @@ const ModalContent = ({
           <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9">
             <div>
               找不到合适的数据集？点此通过社区
-              <span className="text-primary mr-2">联系我们</span>
+              <Link href={'/docs/community/'} prefetch={false}>
+                <span className="text-primary mr-2">联系我们</span>
+              </Link>
             </div>
             <div>
               <Button
@@ -125,4 +145,4 @@ const ModalContent = ({
   );
 };
 
-export default ModalContent;
+export default ModalSelect;

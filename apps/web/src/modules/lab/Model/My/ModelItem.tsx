@@ -1,52 +1,50 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { AiOutlineUser } from 'react-icons/ai';
-import { FiMoreHorizontal } from 'react-icons/fi';
-import { Popper } from '@oss-compass/ui';
-import { ModelDetail } from '@oss-compass/graphql';
+import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
+import { ModelDetail, useDeleteLabModelMutation } from '@oss-compass/graphql';
+import ModelItemMore from './ModelItemMore';
+
 import IconProductivity from '@public/images/analyze/topic/Productivity.svg';
+import IconRobustness from '@public/images/analyze/topic/Robustness.svg';
+import IconNicheCreation from '@public/images/analyze/topic/NicheCreation.svg';
 
 import { VersionCard, VersionCreate } from './VersionItem';
 
-const ItemMore = ({ modelId }: { modelId: number }) => {
+const ModelItem = ({
+  model,
+  event$,
+}: {
+  model: ModelDetail;
+  event$: EventEmitter<string>;
+}) => {
   const router = useRouter();
-  return (
-    <Popper
-      placement="bottom-end"
-      content={
-        <div className="w-24 rounded bg-white shadow">
-          <div
-            className="cursor-pointer border-b px-2 py-2 text-sm"
-            onClick={() => {
-              router.push(`/lab/model/${modelId}/edit`);
-            }}
-          >
-            编辑
-          </div>
-          <div className="cursor-pointer border-b px-2 py-2 text-sm">删除</div>
-        </div>
-      }
-    >
-      {(trigger) => (
-        <div
-          className="ml-2 cursor-pointer p-2 text-sm"
-          onClick={(e) => trigger(e)}
-        >
-          <FiMoreHorizontal />
-        </div>
-      )}
-    </Popper>
-  );
-};
+  const dimensionLogo = {
+    '0': (
+      <>
+        <IconProductivity className="h-[21px] w-[21px]" />
+        <span className="ml-2 text-sm">Productivity</span>
+      </>
+    ),
+    '1': (
+      <>
+        <IconRobustness className="h-[21px] w-[21px]" />
+        <span className="ml-2 text-sm">Robustness</span>
+      </>
+    ),
+    '2': (
+      <>
+        <IconNicheCreation className="h-[21px] w-[21px]" />
+        <span className="ml-2 text-sm">NicheCreation</span>
+      </>
+    ),
+  };
 
-const ModelItem = ({ model }: { model: ModelDetail }) => {
-  const router = useRouter();
   return (
     <div className="mb-8 bg-white p-4 shadow">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <IconProductivity className="h-[21px] w-[21px]" />
-          <span className="ml-2 text-sm">Productivity</span>
+          {dimensionLogo[`${model.dimension}`]}
         </div>
         <div className="flex items-center">
           <div
@@ -58,7 +56,7 @@ const ModelItem = ({ model }: { model: ModelDetail }) => {
             <AiOutlineUser className="text-[#666]" />
             <div className="ml-1 text-sm">用户管理</div>
           </div>
-          <ItemMore modelId={model.id} />
+          <ModelItemMore modelId={model.id} event$={event$} />
         </div>
       </div>
 
@@ -67,14 +65,21 @@ const ModelItem = ({ model }: { model: ModelDetail }) => {
         <div className="text-secondary text-sm font-semibold">版本</div>
         <div className="text-sm">
           <span className="text-secondary">本周剩余分析次数</span>
-          <span className="ml-1 font-semibold text-black">2 次</span>
+          <span className="ml-1 font-semibold text-black">
+            {model.triggerRemainingCount} 次
+          </span>
         </div>
       </div>
 
       <div className="grid grid-cols-4 gap-4">
         {model.latestVersions?.map?.((item) => {
           return (
-            <VersionCard key={item.id} modelId={model.id} version={item} />
+            <VersionCard
+              key={item.id}
+              modelId={model.id}
+              event$={event$}
+              version={item}
+            />
           );
         })}
         <VersionCreate
