@@ -1,0 +1,237 @@
+query userModels($page: Int!, $per: Int!) {
+  myModels(page: $page, per: $per) {
+    count
+    items {
+      dimension
+      id
+      isGeneral
+      isPublic
+      latestVersions {
+        id
+        version
+        algorithm {
+          ...algorithm
+        }
+        dataset {
+          ...dataset
+        }
+        metrics {
+          ...metrics
+        }
+      }
+      name
+      userId
+    }
+    page
+    totalPage
+  }
+}
+
+query labModelDetail($id: Int!) {
+  labModelDetail(id: $id) {
+    dimension
+    id
+    isGeneral
+    isPublic
+    latestVersions {
+      id
+      version
+      algorithm {
+        ...algorithm
+      }
+      dataset {
+        ...dataset
+      }
+      metrics {
+        ...metrics
+      }
+    }
+    name
+    userId
+  }
+}
+
+query dataSetList($type: String, $firstIdent: String, $secondIdent: String) {
+  datasetOverview(
+    type: $type
+    firstIdent: $firstIdent
+    secondIdent: $secondIdent
+  )
+}
+
+query metricSetList {
+  metricSetOverview {
+    category
+    defaultThreshold
+    defaultWeight
+    from
+    id
+    ident
+    name
+    threshold
+    weight
+  }
+}
+
+fragment algorithm on Algorithm {
+  ident
+  name
+}
+
+fragment dataset on Dataset {
+  ident
+  items {
+    firstIdent
+    label
+    level
+    secondIdent
+  }
+  name
+}
+
+fragment metrics on ModelMetric {
+  category
+  defaultThreshold
+  defaultWeight
+  from
+  id
+  ident
+  name
+  threshold
+  weight
+}
+
+mutation createLabModel(
+  $algorithm: String
+  $datasets: [DatasetRowTypeInput!]!
+  $dimension: Int!
+  $isGeneral: Boolean!
+  $isPublic: Boolean!
+  $metrics: [LabModelMetricInput!]!
+  $name: String!
+) {
+  createLabModel(
+    input: {
+      algorithm: $algorithm
+      datasets: $datasets
+      dimension: $dimension
+      isGeneral: $isGeneral
+      isPublic: $isPublic
+      metrics: $metrics
+      name: $name
+    }
+  ) {
+    clientMutationId
+    data {
+      dimension
+      id
+      isGeneral
+      isPublic
+      latestVersions {
+        id
+        version
+        algorithm {
+          ...algorithm
+        }
+        dataset {
+          ...dataset
+        }
+        metrics {
+          ...metrics
+        }
+      }
+      name
+      userId
+    }
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation updateLabModel(
+  $dimension: Int
+  $isGeneral: Boolean
+  $isPublic: Boolean
+  $modelId: Int!
+  $name: String
+) {
+  updateLabModel(
+    input: {
+      dimension: $dimension
+      isGeneral: $isGeneral
+      isPublic: $isPublic
+      modelId: $modelId
+      name: $name
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation updateLabModelVersion(
+  $modelId: Int!
+  $versionId: Int!
+  $version: String
+  $algorithm: String
+  $datasets: [DatasetRowTypeInput!]!
+  $metrics: [LabModelMetricInput!]!
+) {
+  updateLabModelVersion(
+    input: {
+      algorithm: $algorithm
+      datasets: $datasets
+      metrics: $metrics
+      modelId: $modelId
+      versionId: $versionId
+      version: $version
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation deleteLabModel($id: Int!) {
+  deleteLabModel(input: { id: $id }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation deleteLabModelVersion($modelId: Int!, $versionId: Int!) {
+  deleteLabModelVersion(input: { modelId: $modelId, versionId: $versionId }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation deleteLabMember($modelId: Int!, $memberId: Int!) {
+  deleteLabMember(input: { modelId: $modelId, memberId: $memberId }) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}

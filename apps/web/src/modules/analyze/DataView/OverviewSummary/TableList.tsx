@@ -163,7 +163,7 @@ const TrendsList: React.FC = () => {
                             : ''}
                         </p>
                         {item?.level === Level.COMMUNITY ? (
-                          <div className="text-gray58 mb-1 mt-1 flex items-center text-xs">
+                          <div className="text-steel mb-1 mt-1 flex items-center text-xs">
                             <BsCodeSquare />
                             <span className="ml-1">
                               {item?.reposCount}

@@ -49,6 +49,16 @@ const Header: React.FC<{
 
             <CommunityDropdown />
 
+            <LinkX href="/blog" legacyBehavior>
+              <a
+                className={
+                  'mx-6 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
+                }
+              >
+                {t('common:header.news')}
+              </a>
+            </LinkX>
+
             <Link
               href="/lab"
               className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}

@@ -97,7 +97,7 @@ const ListPanel = (props: {
                 ) : null}
 
                 {item?.level === Level.COMMUNITY ? (
-                  <div className="text-gray58 ml-2 flex items-center text-xs">
+                  <div className="text-steel ml-2 flex items-center text-xs">
                     <BsCodeSquare />
                     <span className="ml-1">
                       {`${item?.reposCount} ${t('analyze:repos')}`}

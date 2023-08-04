@@ -37,7 +37,9 @@ module.exports = {
       colors: {
         primary: '#3A5BEF',
         secondary: '#868690',
-        gray58: '#585858',
+        steel: '#585858',
+        silver: '#cccccc',
+        smoke: '#f3f3f3',
         mask: 'rgba(0, 0, 0, 0.5)',
       },
       inset: {

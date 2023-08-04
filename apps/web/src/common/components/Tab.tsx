@@ -13,7 +13,7 @@ const Tab: React.FC<{
           <div
             key={option.label}
             className={classnames(
-              'text-gray58 cursor-pointer px-4 py-1 text-sm ',
+              'text-steel cursor-pointer px-4 py-1 text-sm ',
               { 'rounded bg-white text-black shadow': option.value === value }
             )}
             onClick={() => onChange(option.value)}

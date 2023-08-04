@@ -9464,10 +9464,10 @@ eslint-plugin-testing-library@^5.6.4:
   dependencies:
     "@typescript-eslint/utils" "^5.13.0"
 
-eslint-plugin-valtio@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.npmmirror.com/eslint-plugin-valtio/-/eslint-plugin-valtio-0.6.1.tgz"
-  integrity sha512-oFfE++Eix1lsW2DmmmQyJrwkjbA2QC3PYj8u82c4IuxtG90Qq9zx2rwrZVjWEL2xba+7oE/GGuujz2/nA1Bmlg==
+eslint-plugin-valtio@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.npmmirror.com/eslint-plugin-valtio/-/eslint-plugin-valtio-0.6.2.tgz#b66791b3b6c5964a1736c6a75106355e8cfb63be"
+  integrity sha512-7U870y+gjL6xsiwPyMcUFHFbrMPk2t02X6V4VF5rSDi0f3A/uQDqAVvsY7m035plKW0Ke2i1aRch4tNWtnRqLA==
 
 eslint-scope@5.1.1, eslint-scope@^5.1.1:
   version "5.1.1"

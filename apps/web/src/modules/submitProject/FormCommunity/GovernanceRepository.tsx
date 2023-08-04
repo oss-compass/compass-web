@@ -97,7 +97,7 @@ const GovernanceRepository = forwardRef<Ref, Props>(
         <Modal
           visible={modalVisible}
           bodyClass={
-            'w-[640px] h-[600px] bg-white border-2 border-black drop-shadow-2xl'
+            'w-[640px] md:w-full h-[600px] bg-white border-2 border-black drop-shadow-2xl'
           }
           onClose={() => {
             setModalVisible(false);
