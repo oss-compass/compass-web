@@ -113,6 +113,7 @@ fragment metrics on ModelMetric {
   defaultWeight
   from
   id
+  metricId
   ident
   name
   threshold

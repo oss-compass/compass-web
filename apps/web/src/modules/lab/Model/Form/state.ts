@@ -1,5 +1,6 @@
 import { proxy, subscribe } from 'valtio';
 import cloneDeep from 'lodash/cloneDeep';
+import { percentRound } from '@common/utils/number';
 
 interface State {
   // model
@@ -17,6 +18,9 @@ interface State {
     secondIdent: string;
   }[];
   metricSet: {
+    defaultThreshold: number;
+    defaultWeight: number;
+    metricId: number;
     id: number;
     ident: string;
     category: string;
@@ -45,6 +49,9 @@ export const actions = {
   onNameChange: (v: string) => {
     formState.name = v;
   },
+  onVersionNameChange: (v: string) => {
+    formState.version = v;
+  },
   onDimensionChange: (v: number) => {
     formState.dimension = v;
   },
@@ -54,7 +61,12 @@ export const actions = {
     );
   },
   onDeleteMetricItem: (ident: string) => {
-    formState.metricSet = formState.metricSet.filter((i) => i.ident !== ident);
+    const result = formState.metricSet.filter((i) => i.ident !== ident);
+    const weights = result.map((i) => i.defaultWeight);
+    const percentRoundWeights = percentRound(weights, 2);
+    formState.metricSet = result.map((i, index) => {
+      return { ...i, weight: percentRoundWeights[index] };
+    });
   },
   resetForm: () => {
     const resetObj = cloneDeep(initialObj);

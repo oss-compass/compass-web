@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { toast } from 'react-hot-toast';
 import Center from '@common/components/Layout/Center';
 import { formState, actions } from '../Form/state';
 import gqlClient from '@common/gqlClient';
@@ -16,7 +17,15 @@ const ModelCreate = () => {
 
   const mutation = useCreateLabModelMutation(gqlClient, {
     onSuccess() {
+      toast.success((t) => <>创建成功</>, {
+        position: 'top-center',
+      });
       router.push('/lab/model/my');
+    },
+    onError(err) {
+      toast.error((t) => <>{'创建失败'}</>, {
+        position: 'top-center',
+      });
     },
   });
 
@@ -25,6 +34,7 @@ const ModelCreate = () => {
       <Center className="md:px-4">
         <Breadcrumbs className="mb-6" />
         <Form
+          formType="ModelCreate"
           submitLoading={mutation.isLoading}
           onSubmit={() => {
             const {
@@ -45,7 +55,7 @@ const ModelCreate = () => {
               algorithm,
               datasets: dataSet,
               metrics: metricSet.map((i) => ({
-                id: i.id,
+                id: i.metricId,
                 threshold: i.threshold,
                 weight: i.weight,
               })),

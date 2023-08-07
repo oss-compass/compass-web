@@ -16,7 +16,7 @@ const FormMetric = () => {
         {snapshot.metricSet.map((i) => {
           return (
             <SelectedItemCard
-              key={i.id}
+              key={i.metricId}
               ident={i.ident}
               onHandleDelete={() => {
                 actions.onDeleteMetricItem(i.ident);

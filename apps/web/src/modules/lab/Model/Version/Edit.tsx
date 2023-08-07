@@ -61,7 +61,10 @@ const ModelVersionEdit = () => {
           });
           formState.metricSet = metrics.map((i) => {
             return {
+              defaultThreshold: i.defaultThreshold,
+              defaultWeight: i.defaultWeight,
               id: i.id,
+              metricId: i.metricId,
               ident: i.ident,
               threshold: i.threshold,
               weight: i.weight,
@@ -104,7 +107,8 @@ const ModelVersionEdit = () => {
               algorithm,
               datasets: dataSet,
               metrics: metricSet.map((i) => ({
-                id: i.id,
+                id: i.metricId,
+                versionId,
                 threshold: i.threshold,
                 weight: i.weight,
               })),

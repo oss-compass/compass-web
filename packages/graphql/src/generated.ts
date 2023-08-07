@@ -919,6 +919,7 @@ export type ModelMetric = {
   from?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
   ident?: Maybe<Scalars['String']>;
+  metricId?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   threshold?: Maybe<Scalars['Float']>;
   weight?: Maybe<Scalars['Float']>;
@@ -1712,6 +1713,7 @@ export type MyLabModelsQuery = {
           defaultWeight?: number | null;
           from?: string | null;
           id?: number | null;
+          metricId?: number | null;
           ident?: string | null;
           name?: string | null;
           threshold?: number | null;
@@ -1765,6 +1767,7 @@ export type LabModelDetailQuery = {
         defaultWeight?: number | null;
         from?: string | null;
         id?: number | null;
+        metricId?: number | null;
         ident?: string | null;
         name?: string | null;
         threshold?: number | null;
@@ -1809,6 +1812,7 @@ export type LabModelVersionQuery = {
       defaultWeight?: number | null;
       from?: string | null;
       id?: number | null;
+      metricId?: number | null;
       ident?: string | null;
       name?: string | null;
       threshold?: number | null;
@@ -1872,6 +1876,7 @@ export type MetricsFragment = {
   defaultWeight?: number | null;
   from?: string | null;
   id?: number | null;
+  metricId?: number | null;
   ident?: string | null;
   name?: string | null;
   threshold?: number | null;
@@ -2907,6 +2912,7 @@ export const MetricsFragmentDoc = /*#__PURE__*/ `
   defaultWeight
   from
   id
+  metricId
   ident
   name
   threshold

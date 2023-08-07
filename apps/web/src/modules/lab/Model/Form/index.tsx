@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { useRouter } from 'next/router';
 import { Button } from '@oss-compass/ui';
 import FormIsPublic from './FormIsPublic';
+import FormVersionTitle from './FormVersionTitle';
 import FormDomain from './FormDomain';
 import FormTitle from './FormTitle';
 import FormDataSet from './FormDataSet';
@@ -23,6 +24,7 @@ const Form = ({
   const router = useRouter();
 
   const isVersion = formType === 'VersionCreate' || formType === 'VersionEdit';
+  const isModel = formType === 'ModelCreate' || formType === 'ModelEdit';
 
   if (loading) {
     return (
@@ -52,6 +54,7 @@ const Form = ({
 
       {formType === 'ModelEdit' ? null : (
         <>
+          {isModel ? null : <FormVersionTitle />}
           <FormDataSet />
           <FormMetric />
           <FormWeight />

@@ -4,7 +4,7 @@ import classname from 'classnames';
 import { useSnapshot } from 'valtio';
 import { FiEdit } from 'react-icons/fi';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { formFiledState, actions, FormFiledState } from '../state';
+import { formFiledState, actions, MetricItem, FormFiledState } from '../state';
 
 export const SelectedItemCard = ({ ident }: { ident: string }) => {
   return (
@@ -32,19 +32,8 @@ const checkIsSelect = (
   return false;
 };
 
-export const MetricItemsCard = ({
-  id,
-  ident,
-  category,
-  threshold,
-  weight,
-}: {
-  id: number;
-  ident: string;
-  category: string;
-  threshold: number;
-  weight: number;
-}) => {
+export const MetricItemsCard = ({ item }: { item: Partial<MetricItem> }) => {
+  const { ident, category } = item;
   const snapshot = useSnapshot(formFiledState);
   const select = checkIsSelect(ident, snapshot.selected[category]);
 
@@ -55,7 +44,7 @@ export const MetricItemsCard = ({
         [select ? ['border-blue-600', 'border-2'] : ['border', 'p-px']]
       )}
       onClick={() => {
-        actions.onSelect({ id, ident, threshold, weight, category });
+        actions.onSelect({ ...item } as MetricItem);
       }}
     >
       <div className="flex-1">

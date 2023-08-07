@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import uniq from 'lodash/uniq';
 import { AiOutlinePlus } from 'react-icons/ai';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import { ModelVersion } from '@oss-compass/graphql';
@@ -26,6 +27,11 @@ export const VersionCard = ({
   event$: EventEmitter<string>;
 }) => {
   const router = useRouter();
+
+  const dataSetIdent = version?.dataset?.items?.map?.((i) => i.secondIdent);
+  const dataSetNames = uniq(dataSetIdent).join(',');
+  const metricsNames = version?.metrics?.map?.((i) => i.name).join(',');
+
   return (
     <div className="flex flex-col border bg-[#FAFAFA]">
       <div className="flex-1">
@@ -38,14 +44,20 @@ export const VersionCard = ({
           />
         </div>
         <div className="px-3 pb-2">
-          <div>
-            <span className="text-secondary text-xs">数据集：</span>
+          <div className="mb-2">
+            <span className="text-secondary block truncate text-xs">
+              数据集：{dataSetNames}
+            </span>
           </div>
-          <div>
-            <span className="text-secondary text-xs">度量指标：</span>
+          <div className="mb-2">
+            <span className="text-secondary block truncate  text-xs">
+              度量指标：{metricsNames}
+            </span>
           </div>
-          <div>
-            <span className="text-secondary text-xs">模型算法：</span>
+          <div className="mb-2">
+            <span className="text-secondary block truncate text-xs">
+              模型算法：默认
+            </span>
           </div>
         </div>
       </div>

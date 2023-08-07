@@ -14,6 +14,10 @@ type DeepReadonlyObject<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>;
 };
 
+type NoUndefinedField<T> = {
+  [P in keyof T]-?: NoUndefinedField<NonNullable<T[P]>>;
+};
+
 interface NavigatorLanguage {
   userLanguage?: string;
 }

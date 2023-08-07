@@ -6,6 +6,7 @@ import gqlClient from '@common/gqlClient';
 import groupBy from 'lodash/groupBy';
 import { GrClose } from 'react-icons/gr';
 import { Button, Input, Modal } from '@oss-compass/ui';
+import { percentRound } from '@common/utils/number';
 import { formState } from '../../state';
 import { formFiledState, actions } from '../state';
 import { MetricItemsCard } from './MetricCard';
@@ -27,7 +28,9 @@ const ModalSelect = ({
       formFiledState.selected = {};
       formState.metricSet.forEach((item) => {
         actions.onBackFill({
-          id: item.id,
+          defaultWeight: item.defaultWeight,
+          defaultThreshold: item.threshold,
+          metricId: item.metricId,
           ident: item.ident,
           threshold: item.threshold,
           weight: item.weight,
@@ -48,18 +51,27 @@ const ModalSelect = ({
 
   const handleSave = () => {
     const categoryKeys = Object.keys(formFiledState.selected);
-    formState.metricSet = categoryKeys.reduce((acc, category) => {
+    const result = categoryKeys.reduce((acc, category) => {
       const metrics = formFiledState.selected[category];
       const items = metrics.map((i) => ({ ...i }));
       return acc.concat(items);
     }, []);
+    const weights = result.map((i) => i.defaultWeight);
+    const percentRoundWeights = percentRound(weights, 2);
+
+    formState.metricSet = result.map((i, index) => {
+      return { ...i, weight: percentRoundWeights[index] };
+    });
+
     onClose();
   };
 
-  const showListItem = data?.metricSetOverview?.filter((i) => {
-    // eslint-disable-next-line valtio/state-snapshot-rule
-    return i.category === fieldSnapshot.activeCategory;
-  });
+  const activeCategory = fieldSnapshot.activeCategory;
+  const showListItem = data?.metricSetOverview
+    ?.filter((i) => {
+      return i.category === activeCategory;
+    })
+    .map((i) => ({ ...i, metricId: i.id }));
 
   return (
     <Modal open={open} onClose={() => onClose()}>
@@ -106,16 +118,7 @@ const ModalSelect = ({
               ) : (
                 <div className="grid grid-cols-1 gap-4">
                   {showListItem?.map((metric) => {
-                    return (
-                      <MetricItemsCard
-                        key={metric.ident}
-                        id={metric.id}
-                        ident={metric.ident}
-                        threshold={metric.threshold}
-                        weight={metric.weight}
-                        category={metric.category}
-                      />
-                    );
+                    return <MetricItemsCard key={metric.ident} item={metric} />;
                   })}
                 </div>
               )}

@@ -1,10 +1,17 @@
 import { proxy, subscribe } from 'valtio';
 
+export interface MetricItem {
+  defaultThreshold: number;
+  defaultWeight: number;
+  metricId: number;
+  ident: string;
+  threshold: number;
+  weight: number;
+  category: string;
+}
+
 export interface FormFiledState {
-  selected: Record<
-    string,
-    { id: number; ident: string; threshold: number; weight: number }[]
-  >;
+  selected: Record<string, MetricItem[]>;
   activeCategory: string;
 }
 
@@ -18,13 +25,7 @@ export const getKey = (levelFirst: string, levelSecond: string) => {
 };
 
 export const actions = {
-  onSelect: (item: {
-    id: number;
-    ident: string;
-    threshold: number;
-    weight: number;
-    category: string;
-  }) => {
+  onSelect: (item: MetricItem) => {
     const { category, ident } = item;
     if (!formFiledState.selected[category]) {
       formFiledState.selected[category] = [item];
@@ -41,13 +42,7 @@ export const actions = {
       formFiledState.selected[category] = [...old, item];
     }
   },
-  onBackFill: (item: {
-    id: number;
-    ident: string;
-    threshold: number;
-    weight: number;
-    category: string;
-  }) => {
+  onBackFill: (item: MetricItem) => {
     const { category } = item;
     if (!formFiledState.selected[category]) {
       formFiledState.selected[category] = [item];
