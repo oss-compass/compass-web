@@ -26,19 +26,10 @@ const SaaSWorkingGroup = () => {
       name: '罗雅新',
       intro: 'Gitee MaNong',
     },
-    {
-      avatar: '/images/about/欧阳康@2x.png',
-      name: '欧阳康',
-      intro: 'OSC SRE',
-    },
+    { avatar: '/images/about/欧阳康@2x.png', name: '欧阳康', intro: 'OSC SRE' },
     {
       avatar: '/images/about/覃华添@2x.png',
       name: '覃华添',
-      intro: 'Programmer',
-    },
-    {
-      avatar: '/images/about/魏宏斌.jpeg',
-      name: '魏宏斌',
       intro: 'Programmer',
     },
     {
@@ -47,15 +38,16 @@ const SaaSWorkingGroup = () => {
       intro: '华为 2012 实验室 开源管理中心',
     },
     {
+      avatar: '/images/about/魏宏斌.jpeg',
+      name: '魏宏斌',
+      intro: 'Programmer',
+    },
+    {
       avatar: '/images/about/张盛翔2@2x.png',
       name: '张盛翔',
       intro: 'Gitee 开源社区产品负责人',
     },
-    {
-      avatar: '/images/about/钟峰@2x.png',
-      name: '钟峰',
-      intro: 'Designer',
-    },
+    { avatar: '/images/about/钟峰@2x.png', name: '钟峰', intro: 'Designer' },
   ];
 
   return (

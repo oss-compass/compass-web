@@ -5,14 +5,14 @@ import MemberCard from '@modules/about/components/MemberCard';
 
 const data = [
   {
-    avatar: '/images/about/齐国强@2x.png',
-    name: '齐国强',
-    intro: '华为 2012 实验室',
-  },
-  {
     avatar: '/images/about/单晨琪@2x.png',
     name: '单晨琪',
     intro: '开源工程师、LF CHAOSS Maintainer',
+  },
+  {
+    avatar: '/images/about/齐国强@2x.png',
+    name: '齐国强',
+    intro: '华为 2012 实验室',
   },
   {
     avatar: '/images/about/汪亮2@2x.png',
@@ -35,7 +35,6 @@ const data = [
     intro: '开源社区产品负责人',
   },
 ];
-
 const AssessmentModelWorkingGroup = () => {
   const { t } = useTranslation();
   return (
