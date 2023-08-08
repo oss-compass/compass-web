@@ -1,4 +1,4 @@
-import { proxy, subscribe } from 'valtio';
+import { proxy, subscribe, useSnapshot } from 'valtio';
 
 export interface MetricItem {
   defaultThreshold: number;
@@ -56,3 +56,25 @@ export const actions = {
 subscribe(formFiledState, () => {
   console.log(JSON.stringify(formFiledState, null, 2));
 });
+
+export const useSelectedCount = ({
+  ident,
+}: {
+  ident?: string;
+} = {}) => {
+  const fieldSnapshot = useSnapshot(formFiledState);
+  const selected = fieldSnapshot.selected;
+  const keys = Object.keys(selected);
+
+  return keys.reduce((acc, cur) => {
+    if (ident) {
+      if (cur.startsWith(ident)) {
+        acc += selected[cur].length;
+      }
+      return acc;
+    }
+
+    acc += selected[cur].length;
+    return acc;
+  }, 0);
+};

@@ -98,17 +98,16 @@ const FormUsersItem = (props: {
       ])}
     >
       <div className="flex">
-        <div className="mr-4 flex h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
+        <div className="relative mr-4 flex h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
           <Image
             src={user.avatarUrl || '/images/default-avatar.png'}
             unoptimized
-            width={48}
-            height={48}
-            alt=""
+            fill
+            sizes="64px"
             style={{
-              maxWidth: '100%',
-              height: 'auto',
+              objectFit: 'cover',
             }}
+            alt="avatar"
           />
         </div>
         <div className="flex flex-col">

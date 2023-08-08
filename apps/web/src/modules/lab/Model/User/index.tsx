@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { Center } from '@common/components/Layout';
 import FormInvite from './FormInvite';
 import FormUsers from './FormUsers';
@@ -69,7 +70,8 @@ const UserManage = () => {
       <Center>
         <div className="flex items-center justify-between pt-10 pb-4">
           <div className="text-xl font-semibold">
-            {t('lab:my_models')} / {name} / {t('lab:user_management')}
+            <Link href={'/lab/model/my'}>{t('lab:my_models')}</Link> / {name} /{' '}
+            {t('lab:user_management')}
           </div>
         </div>
         <FormInvite modelId={modelId} event$={event$} />

@@ -22,7 +22,7 @@ export const ItemCard = ({
     <>
       <div className="flex h-24 flex-col border border-[#CCCCCC] bg-[#FAFAFA] p-3">
         <div className="flex-1">
-          <div>{ident}</div>
+          <div className="text-sm font-medium">{ident}</div>
           <div className="text-xs text-[#585858]">
             {count} projects selected
           </div>

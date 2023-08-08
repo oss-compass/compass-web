@@ -1,7 +1,7 @@
 import React, { RefObject, useEffect, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
-import Portal from '@mui/base/Portal';
+import { Portal } from '@mui/base/Portal';
 import qrcode from 'qrcode';
 import { getProvider, sleep } from '@common/utils';
 import { Level } from '@modules/analyze/constant';

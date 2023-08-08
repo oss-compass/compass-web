@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import Popper from '@mui/material/Popper';
 import { AiFillCaretDown } from 'react-icons/ai';
 import classnames from 'classnames';

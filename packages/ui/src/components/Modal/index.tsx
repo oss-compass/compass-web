@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import clsx from 'classnames';
 import { styled } from '@mui/system';
-import BaseModal, { ModalProps } from '@mui/base/Modal';
+import { Modal as BaseModal, ModalProps } from '@mui/base/Modal';
 
 const StyledModal = styled(BaseModal)`
   position: fixed;

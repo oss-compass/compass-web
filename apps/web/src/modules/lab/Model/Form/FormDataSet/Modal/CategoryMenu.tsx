@@ -4,7 +4,7 @@ import { useSnapshot, subscribe } from 'valtio';
 import { useDataSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { BadgeCount } from '../../styled';
-import { formFiledState, actions, getKey } from '../state';
+import { formFiledState, actions, useSelectedCount, getKey } from '../state';
 
 const CategoryMenu = ({ ident }: { ident: string }) => {
   const [collapse, setCollapse] = useState(false);
@@ -23,14 +23,7 @@ const CategoryMenu = ({ ident }: { ident: string }) => {
     }
   }, [ident, snapshot.levelFirst]);
 
-  const keys = Object.keys(snapshot.selected);
-  const count = keys.reduce((acc, cur) => {
-    if (cur.startsWith(ident)) {
-      // eslint-disable-next-line valtio/state-snapshot-rule
-      acc += snapshot.selected[cur].length;
-    }
-    return acc;
-  }, 0);
+  const count = useSelectedCount({ firstIdent: ident });
 
   return (
     <div className="w-60">
@@ -100,15 +93,7 @@ const CategorySubMenu = ({
   active?: boolean;
   onSelectItem: (sub: string) => void;
 }) => {
-  const snapshot = useSnapshot(formFiledState);
-
-  const keys = Object.keys(snapshot.selected);
-  const count = keys.reduce((acc, cur) => {
-    if (cur === getKey(ident, subIdent)) {
-      acc += formFiledState.selected[cur].length;
-    }
-    return acc;
-  }, 0);
+  const count = useSelectedCount({ firstIdent: ident, secondIdent: subIdent });
 
   return (
     <div

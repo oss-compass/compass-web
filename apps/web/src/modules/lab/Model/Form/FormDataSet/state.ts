@@ -1,4 +1,4 @@
-import { proxy, subscribe } from 'valtio';
+import { proxy, subscribe, useSnapshot } from 'valtio';
 import cloneDeep from 'lodash/cloneDeep';
 import uniq from 'lodash/uniq';
 
@@ -75,3 +75,34 @@ export const actions = {
 subscribe(formFiledState, () => {
   console.log(JSON.stringify(formFiledState, null, 2));
 });
+
+export const useSelectedCount = ({
+  firstIdent,
+  secondIdent,
+}: {
+  firstIdent?: string;
+  secondIdent?: string;
+} = {}) => {
+  const fieldSnapshot = useSnapshot(formFiledState);
+  const selected = fieldSnapshot.selected;
+  const keys = Object.keys(selected);
+
+  return keys.reduce((acc, cur) => {
+    if (firstIdent && secondIdent) {
+      if (cur === getKey(firstIdent, secondIdent)) {
+        acc += selected[cur].length;
+      }
+      return acc;
+    }
+
+    if (firstIdent) {
+      if (cur.startsWith(firstIdent)) {
+        acc += selected[cur].length;
+      }
+      return acc;
+    }
+
+    acc += selected[cur].length;
+    return acc;
+  }, 0);
+};

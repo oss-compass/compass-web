@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSnapshot } from 'valtio';
+import { useTranslation } from 'react-i18next';
 import groupBy from 'lodash/groupBy';
 import { FormItemLabel } from '../styled';
 import { ItemCard, ItemCardPlus } from './SelectedItem';
@@ -8,6 +9,7 @@ import { formState, actions } from '../state';
 import { formFiledState } from './state';
 
 const FormDataSet = () => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const snapshot = useSnapshot(formState);
@@ -16,7 +18,7 @@ const FormDataSet = () => {
 
   return (
     <div className="mb-6">
-      <FormItemLabel>选择数据集</FormItemLabel>
+      <FormItemLabel>{t('lab:add_dataset')}</FormItemLabel>
       <div className="grid grid-cols-4 gap-4 md:grid-cols-2">
         {subIdents.map((subIdent) => {
           return (

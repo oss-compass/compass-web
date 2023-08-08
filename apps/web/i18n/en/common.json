@@ -56,13 +56,19 @@
   "signin": "Sign In",
   "subscribe": "My Subscriptions",
   "profile_setting": "Account Setting",
+  "my_models": "My models",
   "signout": "Sign Out",
   "btn": {
     "back": "Back",
     "confirm": "Confirm",
     "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
     "cancel": "Cancel",
     "func_disabled": "The feature is temporarily disabled"
+  },
+  "confirm": {
+    "delete": "Are you sure you want to delete?"
   },
   "toast": {
     "modification_successful": "Modification Successful",

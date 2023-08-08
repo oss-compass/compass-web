@@ -3,7 +3,7 @@ import ProductivityIcon from '../assets/Productivity.svg';
 import RobustnessIcon from '../assets/Robustness.svg';
 import { useTranslation } from 'next-i18next';
 import Popper from '@mui/material/Popper';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import { AiFillCaretDown } from 'react-icons/ai';
 
 const ModeTitle: React.FC<{

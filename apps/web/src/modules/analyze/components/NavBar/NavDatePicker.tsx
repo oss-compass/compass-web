@@ -8,7 +8,7 @@ import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'next-i18next';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import DateRangePicker from './DateRangePicker';
 import Popper from '@mui/material/Popper';
 

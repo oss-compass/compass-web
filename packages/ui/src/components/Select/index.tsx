@@ -1,6 +1,10 @@
 import React, { PropsWithChildren, forwardRef } from 'react';
 import classnames from 'classnames';
-import SelectBase, { SelectProps, SelectSlots } from '@mui/base/Select';
+import {
+  Select as SelectBase,
+  SelectProps,
+  SelectSlots,
+} from '@mui/base/Select';
 import useIsDarkMode from '../shared/useIsDarkMode';
 
 interface StyleProps {

@@ -15,7 +15,11 @@
   "support_AHP": "支持 AHP 和其他自定义的多种算法",
   "release_model": "发布模型",
   "expose_the_model": "公开模型，还可以邀请伙伴们一起完善它",
+  "add_dataset": "添加数据集",
+  "add_metric": "添加度量指标",
   "my_models": "我的模型",
+  "new_model": "新建模型",
+  "versions": "版本",
   "user_management": "用户管理",
   "user": {
     "invite_users": "邀请用户",
@@ -39,5 +43,8 @@
     "uninvite": "取消邀请",
     "confirm_cancel_invitation": "确认取消邀请",
     "confirm_delete": "确认删除"
-  }
+  },
+  "remaining_times_of_analysis_performed_this_week": "本周剩余分析次数: ",
+  "view_report": "查看报告",
+  "trigger_analysis": "触发分析"
 }

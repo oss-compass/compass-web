@@ -1,32 +1,41 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'react-i18next';
-import { AiOutlineUser } from 'react-icons/ai';
-import { FiMoreHorizontal } from 'react-icons/fi';
 import { Popper } from '@oss-compass/ui';
-import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import { ModelDetail, useDeleteLabModelMutation } from '@oss-compass/graphql';
+import { useRouter } from 'next/router';
+import { CommentFragment } from '@oss-compass/graphql';
+import {
+  ModelDetail,
+  useDeleteLabModelCommentMutation,
+} from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
-import { ReFetch } from '@common/constant';
+import { FiMoreHorizontal } from 'react-icons/fi';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
+import { useUserInfo } from '@modules/auth/useUserInfo';
 
-const ModelItemMore = ({
-  modelId,
-  event$,
+const CommentItemMore = ({
+  comment,
+  onDeleteSuccess,
+  onDeleteEdit,
 }: {
-  modelId: number;
-  event$: EventEmitter<string>;
+  comment: CommentFragment;
+  onDeleteSuccess: () => void;
+  onDeleteEdit: () => void;
 }) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const useInfo = useUserInfo();
+  console.log(useInfo);
+  const modelId = Number(router.query.model);
+  const commentId = comment?.id;
+
   const [openConfirm, setOpenConfirm] = useState(false);
-  const deleteMutation = useDeleteLabModelMutation(gqlClient, {
+  const deleteMutation = useDeleteLabModelCommentMutation(gqlClient, {
     onSuccess: () => {
-      event$.emit(ReFetch);
       setOpenConfirm(false);
+      onDeleteSuccess();
     },
   });
+
+  // if(comment.user)
 
   return (
     <>
@@ -37,10 +46,10 @@ const ModelItemMore = ({
             <div
               className="cursor-pointer border-b px-2 py-2 text-sm"
               onClick={() => {
-                router.push(`/lab/model/${modelId}/edit`);
+                onDeleteEdit();
               }}
             >
-              {t('common:btn.edit')}
+              编辑
             </div>
             <div
               className="cursor-pointer border-b px-2 py-2 text-sm"
@@ -48,24 +57,25 @@ const ModelItemMore = ({
                 setOpenConfirm(true);
               }}
             >
-              {t('common:btn.delete')}
+              删除
             </div>
           </div>
         }
       >
         {(trigger) => (
           <div
-            className="ml-2 cursor-pointer p-2 text-sm"
+            className="text-secondary ml-1 cursor-pointer p-1 text-xs"
             onClick={(e) => trigger(e)}
           >
             <FiMoreHorizontal />
           </div>
         )}
       </Popper>
+
       <Dialog
         open={openConfirm}
-        dialogTitle={<> {t('common:btn.confirm')}</>}
-        dialogContent={<div className="w-96">{t('common:confirm.delete')}</div>}
+        dialogTitle={<>确定</>}
+        dialogContent={<div className="w-96">确认删除?</div>}
         dialogActions={
           <div className="flex">
             <Button
@@ -75,7 +85,7 @@ const ModelItemMore = ({
                 setOpenConfirm(false);
               }}
             >
-              {t('common:btn.cancel')}
+              取消
             </Button>
             <Button
               intent="primary"
@@ -83,10 +93,10 @@ const ModelItemMore = ({
               className="ml-4"
               loading={deleteMutation.isLoading}
               onClick={() => {
-                deleteMutation.mutate({ id: modelId });
+                deleteMutation.mutate({ modelId, commentId });
               }}
             >
-              {t('common:btn.confirm')}
+              确定
             </Button>
           </div>
         }
@@ -96,4 +106,4 @@ const ModelItemMore = ({
   );
 };
 
-export default ModelItemMore;
+export default CommentItemMore;

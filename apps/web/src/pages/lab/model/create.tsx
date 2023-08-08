@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import AuthRequire from '@modules/auth/AuthRequire';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
@@ -19,7 +20,9 @@ const create = () => {
     <NoSsr>
       <Header />
       <Banner />
-      <CreateForm />
+      <AuthRequire loadingClassName="mx-auto w-[1000px] py-10 md:w-full md:px-6">
+        <CreateForm />
+      </AuthRequire>
     </NoSsr>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
+import AuthRequire from '@modules/auth/AuthRequire';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
@@ -19,7 +20,9 @@ const Version = () => {
   return (
     <NoSsr>
       <Header />
-      <ModelVersionView />
+      <AuthRequire loadingClassName="mx-auto w-[1000px] py-10 md:w-full md:px-6">
+        <ModelVersionView />
+      </AuthRequire>
     </NoSsr>
   );
 };

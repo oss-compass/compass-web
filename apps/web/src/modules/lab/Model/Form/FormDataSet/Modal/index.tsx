@@ -3,8 +3,14 @@ import { useSnapshot } from 'valtio';
 import { useDataSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { GrClose } from 'react-icons/gr';
+import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '@oss-compass/ui';
-import { formFiledState, actions, LEVEL_SEPARATOR } from '../state';
+import {
+  formFiledState,
+  actions,
+  LEVEL_SEPARATOR,
+  useSelectedCount,
+} from '../state';
 import { formState } from '../../state';
 import RepoCard from './RepoCard';
 import CategoryMenu from './CategoryMenu';
@@ -16,6 +22,7 @@ const ModalSelect = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const { t } = useTranslation();
   const formSnapshot = useSnapshot(formState);
   const fieldSnapshot = useSnapshot(formFiledState);
 
@@ -73,6 +80,8 @@ const ModalSelect = ({
     onClose();
   };
 
+  const count = useSelectedCount();
+
   return (
     <Modal open={open} onClose={() => onClose()}>
       <div className="relative h-[700px] w-[900px] border-2 border-black bg-white shadow outline-0">
@@ -86,8 +95,10 @@ const ModalSelect = ({
         </div>
 
         <div className="px-10 pt-8">
-          <div className="mb-3 text-2xl font-medium">Add Dataset</div>
-          <div className="mb-4 text-sm">Select up to 10 projects</div>
+          <div className="mb-3 text-2xl font-medium">
+            {t('lab:add_dataset')}
+          </div>
+          <div className="mb-4 text-sm">Selected {count} items</div>
           <Input placeholder="search..." className="mb-4 border-2" />
 
           <div className="flex h-[440px]">

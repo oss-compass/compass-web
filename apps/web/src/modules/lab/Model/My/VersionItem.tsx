@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 import uniq from 'lodash/uniq';
 import { AiOutlinePlus } from 'react-icons/ai';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
@@ -9,7 +10,7 @@ import VersionItemMore from './VersionItemMore';
 export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
   return (
     <div
-      className="flex min-h-[160px] cursor-pointer flex-col items-center  justify-center  border bg-[#FAFAFA]"
+      className="hover:bg-smoke flex min-h-[160px] cursor-pointer flex-col  items-center  justify-center border bg-[#FAFAFA] "
       onClick={() => onClick()}
     >
       <AiOutlinePlus />
@@ -26,6 +27,7 @@ export const VersionCard = ({
   version: ModelVersion;
   event$: EventEmitter<string>;
 }) => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const dataSetIdent = version?.dataset?.items?.map?.((i) => i.secondIdent);
@@ -61,17 +63,17 @@ export const VersionCard = ({
           </div>
         </div>
       </div>
-      <div className="flex h-8 border-t py-3">
-        <div className="flex w-1/2 cursor-pointer items-center justify-center border-r">
-          <span className="text-sm">触发分析</span>
-        </div>
+      <div className="flex h-8 border-t">
         <div
-          className="flex w-1/2 cursor-pointer items-center justify-center"
+          className="hover:bg-smoke flex w-1/2 cursor-pointer items-center justify-center border-r"
           onClick={() => {
             router.push(`/lab/model/${modelId}/version/${version.id}`);
           }}
         >
-          <span className="text-sm">查看报告</span>
+          <span className="block text-sm">{t('lab:view_report')}</span>
+        </div>
+        <div className="hover:bg-smoke flex w-1/2 cursor-pointer items-center justify-center">
+          <span className="block text-sm">{t('lab:trigger_analysis')}</span>
         </div>
       </div>
     </div>

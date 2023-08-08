@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 import { AiOutlineUser } from 'react-icons/ai';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import { ModelDetail, useDeleteLabModelMutation } from '@oss-compass/graphql';
@@ -19,6 +20,8 @@ const ModelItem = ({
   event$: EventEmitter<string>;
 }) => {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const dimensionLogo = {
     '0': (
       <>
@@ -54,19 +57,23 @@ const ModelItem = ({
             }}
           >
             <AiOutlineUser className="text-[#666]" />
-            <div className="ml-1 text-sm">用户管理</div>
+            <div className="ml-1 text-sm">{t('lab:user_management')}</div>
           </div>
           <ModelItemMore modelId={model.id} event$={event$} />
         </div>
       </div>
 
       <div className="mb-2 text-lg font-semibold">{model.name}</div>
-      <div className="mb-2 flex items-center justify-between">
-        <div className="text-secondary text-sm font-semibold">版本</div>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="text-secondary text-sm font-semibold">
+          {t('lab:versions')}
+        </div>
         <div className="text-sm">
-          <span className="text-secondary">本周剩余分析次数</span>
+          <span className="text-secondary">
+            {t('lab:remaining_times_of_analysis_performed_this_week')}
+          </span>
           <span className="ml-1 font-semibold text-black">
-            {model.triggerRemainingCount} 次
+            {model.triggerRemainingCount}
           </span>
         </div>
       </div>

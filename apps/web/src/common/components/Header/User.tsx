@@ -30,17 +30,16 @@ const User = () => {
 
   return (
     <div className="group relative flex h-full items-center pl-6 transition">
-      <div className="flex h-[32px] cursor-pointer items-center justify-center overflow-hidden rounded-full group-hover:bg-[#333333]">
+      <div className="border-secondary relative flex h-[32px] w-[32px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-hover:bg-[#333333]">
         <Image
           src={user?.avatarUrl!}
           unoptimized
-          width={32}
-          height={32}
-          alt=""
+          fill
+          sizes="64px"
           style={{
-            maxWidth: '100%',
-            height: 'auto',
+            objectFit: 'cover',
           }}
+          alt=""
         />
       </div>
 
@@ -59,7 +58,7 @@ const User = () => {
             className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
           >
             <AiOutlineExperiment className="mr-2 text-base" />
-            我的模型
+            {t('common:my_models')}
           </Link>
 
           <Link

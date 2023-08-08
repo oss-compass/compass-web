@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
-import BaseOption, { OptionProps, OptionOwnerState } from '@mui/base/Option';
+import {
+  Option as BaseOption,
+  OptionProps,
+  OptionOwnerState,
+} from '@mui/base/Option';
 // import useIsDarkMode from '../shared/useIsDarkMode';
 
 const getOptionColorClasses = ({

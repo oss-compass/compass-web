@@ -56,13 +56,19 @@
   "signin": "登录",
   "subscribe": "我的订阅",
   "profile_setting": "账号设置",
+  "my_models": "我的模型",
   "signout": "退出",
   "btn": {
     "back": "返回",
     "confirm": "确认",
     "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
     "cancel": "取消",
     "func_disabled": "该功能临时关闭"
+  },
+  "confirm": {
+    "delete": "确定删除吗？"
   },
   "toast": {
     "modification_successful": "修改成功",

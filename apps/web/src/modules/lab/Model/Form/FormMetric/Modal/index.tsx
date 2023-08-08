@@ -5,10 +5,11 @@ import { useMetricSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import groupBy from 'lodash/groupBy';
 import { GrClose } from 'react-icons/gr';
+import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '@oss-compass/ui';
 import { percentRound } from '@common/utils/number';
 import { formState } from '../../state';
-import { formFiledState, actions } from '../state';
+import { formFiledState, actions, useSelectedCount } from '../state';
 import { MetricItemsCard } from './MetricCard';
 import CategoryMenu from './CategoryMenu';
 
@@ -19,6 +20,7 @@ const ModalSelect = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const { t } = useTranslation();
   const formSnapshot = useSnapshot(formState);
   const fieldSnapshot = useSnapshot(formFiledState);
 
@@ -73,6 +75,8 @@ const ModalSelect = ({
     })
     .map((i) => ({ ...i, metricId: i.id }));
 
+  const count = useSelectedCount();
+
   return (
     <Modal open={open} onClose={() => onClose()}>
       <div className="relative h-[700px] w-[900px] border-2 border-black bg-white shadow outline-0">
@@ -86,8 +90,8 @@ const ModalSelect = ({
         </div>
 
         <div className="px-10 pt-8">
-          <div className="mb-3 text-2xl font-medium">Add Dataset</div>
-          <div className="mb-4 text-sm">Select up to 10 projects</div>
+          <div className="mb-3 text-2xl font-medium">{t('lab:add_metric')}</div>
+          <div className="mb-4 text-sm">Selected {count} items</div>
           <Input placeholder="search..." className="mb-4 border-2" />
 
           <div className="flex h-[440px]">

@@ -3824,17 +3824,17 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/base@^5.0.0-beta.8":
-  version "5.0.0-beta.8"
-  resolved "https://registry.npmmirror.com/@mui/base/-/base-5.0.0-beta.8.tgz#a0a9531ae9147be92d17e4f0e3b9accc57916841"
-  integrity sha512-b4vVjMZx5KzzEMf4arXKoeV5ZegAMOoPwoy1vfUBwhvXc2QtaaAyBp50U7OA2L06Leubc1A+lEp3eqwZoFn87g==
+"@mui/base@^5.0.0-beta.10":
+  version "5.0.0-beta.10"
+  resolved "https://registry.npmmirror.com/@mui/base/-/base-5.0.0-beta.10.tgz#b9a2de21c7de45aa4275c7ecf5aa803ecc236ba6"
+  integrity sha512-moTAhGwFfQffj7hsu61FnqcGqVcd53A1CrOhnskM9TF0Uh2rnLDMCuar4JRUWWpaJofAfQEbQBBFPadFQLI4PA==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@emotion/is-prop-valid" "^1.2.1"
     "@mui/types" "^7.2.4"
-    "@mui/utils" "^5.14.1"
+    "@mui/utils" "^5.14.4"
     "@popperjs/core" "^2.11.8"
-    clsx "^1.2.1"
+    clsx "^2.0.0"
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
@@ -3922,10 +3922,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/utils@^5.14.1":
-  version "5.14.1"
-  resolved "https://registry.npmmirror.com/@mui/utils/-/utils-5.14.1.tgz#29696371016552a6eb3af975bc7af429ec88b29a"
-  integrity sha512-39KHKK2JeqRmuUcLDLwM+c2XfVC136C5/yUyQXmO2PVbOb2Bol4KxtkssEqCbTwg87PSCG3f1Tb0keRsK7cVGw==
+"@mui/utils@^5.14.4":
+  version "5.14.4"
+  resolved "https://registry.npmmirror.com/@mui/utils/-/utils-5.14.4.tgz#498cc2b08e46776c1e4327bfd8c23ad2f5890bc6"
+  integrity sha512-4ANV0txPD3x0IcTCSEHKDWnsutg1K3m6Vz5IckkbLXVYu17oOZCVUdOKsb/txUmaCd0v0PmSRe5PW+Mlvns5dQ==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@types/prop-types" "^15.7.5"
@@ -7862,6 +7862,11 @@ clsx@1.2.1, clsx@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmmirror.com/clsx/-/clsx-1.2.1.tgz"
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
+clsx@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/clsx/-/clsx-2.0.0.tgz#12658f3fd98fafe62075595a5c30e43d18f3d00b"
+  integrity sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==
 
 co@^4.6.0:
   version "4.6.0"

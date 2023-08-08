@@ -246,9 +246,12 @@ const ProfileForm = () => {
               <Image
                 src={providerUser?.avatarUrl!}
                 unoptimized
-                alt="avatar"
                 fill
-                sizes="100vw"
+                sizes="156px"
+                style={{
+                  objectFit: 'cover',
+                }}
+                alt="avatar"
               />
             ) : null}
           </div>

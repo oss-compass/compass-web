@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiOutlineDownload, AiOutlineLoading } from 'react-icons/ai';
 import Popper from '@mui/material/Popper';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import Average from 'public/images/analyze/average.svg';
 import Median from 'public/images/analyze/median.svg';
 import YScale from 'public/images/analyze/y-scale.svg';

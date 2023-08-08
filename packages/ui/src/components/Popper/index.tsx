@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import PopperBase, { PopperPlacementType } from '@mui/material/Popper';
 
 export const Popper: React.FC<{

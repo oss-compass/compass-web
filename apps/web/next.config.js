@@ -27,6 +27,7 @@ const nextConfig = {
       'portrait.gitee.com',
       'foruda.gitee.com',
       'avatars.githubusercontent.com',
+      'compass.gitee.co',
     ],
   },
   async rewrites() {

@@ -4,6 +4,7 @@ import { useEventEmitter } from 'ahooks';
 import { Button } from '@oss-compass/ui';
 import { useMyLabModelsQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
+import { useTranslation } from 'react-i18next';
 import { ReFetch } from '@common/constant';
 import Pagination from '@common/components/Pagination';
 import { Center } from '@common/components/Layout';
@@ -12,6 +13,7 @@ import ModelItem from './ModelItem';
 const per = 5;
 
 const MyModal = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const [page, setPage] = useState(1);
   const { data, isLoading, refetch } = useMyLabModelsQuery(gqlClient, {
@@ -51,7 +53,11 @@ const MyModal = () => {
     }
 
     if (count === 0) {
-      return <div className="py-20 text-center text-gray-500">暂无数据</div>;
+      return (
+        <div className="py-20 text-center text-gray-500">
+          {t('common:no_data')}
+        </div>
+      );
     }
 
     return (
@@ -67,7 +73,7 @@ const MyModal = () => {
     <div className="flex-1 bg-[#FAFAFA] pb-10">
       <Center>
         <div className="flex items-center justify-between pt-10 pb-4">
-          <div className="font-semibold">我的模型</div>
+          <div className="font-semibold">{t('lab:my_models')}</div>
           <div>
             <Button
               size="sm"
@@ -75,7 +81,7 @@ const MyModal = () => {
                 router.push('/lab/model/create');
               }}
             >
-              新建模型
+              {t('lab:new_model')}
             </Button>
           </div>
         </div>

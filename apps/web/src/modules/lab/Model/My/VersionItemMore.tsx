@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { Popper } from '@oss-compass/ui';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
@@ -19,6 +20,7 @@ const VersionItemMore = ({
   event$: EventEmitter<string>;
 }) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
   const deleteMutation = useDeleteLabModelVersionMutation(gqlClient, {
     onSuccess: () => {
@@ -39,7 +41,7 @@ const VersionItemMore = ({
                 router.push(`/lab/model/${modelId}/version/${versionId}/edit`);
               }}
             >
-              编辑
+              {t('common:btn.edit')}
             </div>
             <div
               className="cursor-pointer border-b px-2 py-2 text-sm"
@@ -47,7 +49,7 @@ const VersionItemMore = ({
                 setOpenConfirm(true);
               }}
             >
-              删除
+              {t('common:btn.delete')}
             </div>
           </div>
         }
@@ -63,8 +65,8 @@ const VersionItemMore = ({
       </Popper>
       <Dialog
         open={openConfirm}
-        dialogTitle={<>确定</>}
-        dialogContent={<div className="w-96">确认删除?</div>}
+        dialogTitle={<>{t('common:btn.confirm')}</>}
+        dialogContent={<div className="w-96">{t('common:confirm.delete')}</div>}
         dialogActions={
           <div className="flex">
             <Button
@@ -74,7 +76,7 @@ const VersionItemMore = ({
                 setOpenConfirm(false);
               }}
             >
-              取消
+              {t('common:btn.cancel')}
             </Button>
             <Button
               intent="primary"
@@ -85,7 +87,7 @@ const VersionItemMore = ({
                 deleteMutation.mutate({ modelId, versionId });
               }}
             >
-              确定
+              {t('common:btn.confirm')}
             </Button>
           </div>
         }

@@ -15,7 +15,11 @@
   "support_AHP": "Support AHP and other self-defined algorithms",
   "release_model": "Publish model",
   "expose_the_model": "Publish the model and invite partners to improve it",
+  "add_dataset": "Add Dataset",
+  "add_metric": "Add Metric",
   "my_models": "My models",
+  "new_model": "New model",
+  "versions": "Versions",
   "user_management": "Member management",
   "user": {
     "invite_users": "Invite member",
@@ -39,5 +43,8 @@
     "uninvite": "Cancel invitation",
     "confirm_cancel_invitation": "Confirm cancel invitation",
     "confirm_delete": "Confirm delete"
-  }
+  },
+  "remaining_times_of_analysis_performed_this_week": "Remaining times of analysis performed this week: ",
+  "view_report": "View report",
+  "trigger_analysis": "Trigger analysis"
 }

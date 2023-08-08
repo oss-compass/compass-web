@@ -1665,6 +1665,174 @@ export type UserUnbindPayload = {
   status: Scalars['String'];
 };
 
+export type CommentFragment = {
+  __typename?: 'ModelComment';
+  content: string;
+  createdAt: any;
+  id: number;
+  updatedAt: any;
+  images?: Array<{
+    __typename?: 'Image';
+    filename: string;
+    url: string;
+  }> | null;
+  model: {
+    __typename?: 'ModelDetail';
+    dimension: number;
+    id: number;
+    isGeneral: boolean;
+    isPublic: boolean;
+    name: string;
+    triggerRemainingCount: number;
+    userId: number;
+  };
+  parent?: {
+    __typename?: 'ModelComment';
+    content: string;
+    createdAt: any;
+    id: number;
+    updatedAt: any;
+    images?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      url: string;
+    }> | null;
+  } | null;
+  user: {
+    __typename?: 'SimpleUser';
+    avatarUrl?: string | null;
+    id: number;
+    name: string;
+  };
+};
+
+export type ParentCommentFragment = {
+  __typename?: 'ModelComment';
+  content: string;
+  createdAt: any;
+  id: number;
+  updatedAt: any;
+  images?: Array<{
+    __typename?: 'Image';
+    filename: string;
+    url: string;
+  }> | null;
+};
+
+export type ReplyFragment = {
+  __typename?: 'ModelComment';
+  content: string;
+  createdAt: any;
+  id: number;
+  updatedAt: any;
+  images?: Array<{
+    __typename?: 'Image';
+    filename: string;
+    url: string;
+  }> | null;
+  user: {
+    __typename?: 'SimpleUser';
+    avatarUrl?: string | null;
+    id: number;
+    name: string;
+  };
+};
+
+export type ModelDetailFragment = {
+  __typename?: 'ModelDetail';
+  dimension: number;
+  id: number;
+  isGeneral: boolean;
+  isPublic: boolean;
+  name: string;
+  triggerRemainingCount: number;
+  userId: number;
+};
+
+export type UserFragment = {
+  __typename?: 'SimpleUser';
+  avatarUrl?: string | null;
+  id: number;
+  name: string;
+};
+
+export type AlgorithmFragment = {
+  __typename?: 'Algorithm';
+  ident: string;
+  name: string;
+};
+
+export type DatasetFragment = {
+  __typename?: 'Dataset';
+  ident?: string | null;
+  name?: string | null;
+  items?: Array<{
+    __typename?: 'DatasetCompletionRow';
+    firstIdent?: string | null;
+    label?: string | null;
+    level?: string | null;
+    secondIdent?: string | null;
+  }> | null;
+};
+
+export type MetricsFragment = {
+  __typename?: 'ModelMetric';
+  category?: string | null;
+  defaultThreshold?: number | null;
+  defaultWeight?: number | null;
+  from?: string | null;
+  id?: number | null;
+  metricId?: number | null;
+  ident?: string | null;
+  name?: string | null;
+  threshold?: number | null;
+  weight?: number | null;
+};
+
+export type ModelVersionFragment = {
+  __typename?: 'ModelVersion';
+  id: number;
+  version?: string | null;
+  algorithm?: { __typename?: 'Algorithm'; ident: string; name: string } | null;
+  dataset: {
+    __typename?: 'Dataset';
+    ident?: string | null;
+    name?: string | null;
+    items?: Array<{
+      __typename?: 'DatasetCompletionRow';
+      firstIdent?: string | null;
+      label?: string | null;
+      level?: string | null;
+      secondIdent?: string | null;
+    }> | null;
+  };
+  metrics: Array<{
+    __typename?: 'ModelMetric';
+    category?: string | null;
+    defaultThreshold?: number | null;
+    defaultWeight?: number | null;
+    from?: string | null;
+    id?: number | null;
+    metricId?: number | null;
+    ident?: string | null;
+    name?: string | null;
+    threshold?: number | null;
+    weight?: number | null;
+  }>;
+};
+
+export type LabMemberFragment = {
+  __typename?: 'LabMember';
+  avatarUrl?: string | null;
+  canExecute: boolean;
+  canRead: boolean;
+  canUpdate: boolean;
+  id: number;
+  isOwner: boolean;
+  joinedAt: any;
+  name: string;
+};
+
 export type MyLabModelsQueryVariables = Exact<{
   page: Scalars['Int'];
   per: Scalars['Int'];
@@ -1851,37 +2019,236 @@ export type MetricSetListQuery = {
   }> | null;
 };
 
-export type AlgorithmFragment = {
-  __typename?: 'Algorithm';
-  ident: string;
-  name: string;
+export type LabModelCommentsQueryVariables = Exact<{
+  direction?: InputMaybe<Scalars['String']>;
+  modelId: Scalars['Int'];
+  modelMetricId?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  parentId?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Scalars['String']>;
+  versionId?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type LabModelCommentsQuery = {
+  __typename?: 'Query';
+  labModelComments?: {
+    __typename?: 'ModelCommentPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'ModelComment';
+      content: string;
+      createdAt: any;
+      id: number;
+      updatedAt: any;
+      images?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        url: string;
+      }> | null;
+      model: {
+        __typename?: 'ModelDetail';
+        dimension: number;
+        id: number;
+        isGeneral: boolean;
+        isPublic: boolean;
+        name: string;
+        triggerRemainingCount: number;
+        userId: number;
+      };
+      parent?: {
+        __typename?: 'ModelComment';
+        content: string;
+        createdAt: any;
+        id: number;
+        updatedAt: any;
+        images?: Array<{
+          __typename?: 'Image';
+          filename: string;
+          url: string;
+        }> | null;
+      } | null;
+      user: {
+        __typename?: 'SimpleUser';
+        avatarUrl?: string | null;
+        id: number;
+        name: string;
+      };
+    }> | null;
+  } | null;
 };
 
-export type DatasetFragment = {
-  __typename?: 'Dataset';
-  ident?: string | null;
-  name?: string | null;
-  items?: Array<{
-    __typename?: 'DatasetCompletionRow';
-    firstIdent?: string | null;
-    label?: string | null;
-    level?: string | null;
-    secondIdent?: string | null;
-  }> | null;
+export type LabModelCommentDetailQueryVariables = Exact<{
+  modelId: Scalars['Int'];
+  commentId: Scalars['Int'];
+}>;
+
+export type LabModelCommentDetailQuery = {
+  __typename?: 'Query';
+  labModelCommentDetail?: {
+    __typename?: 'ModelComment';
+    content: string;
+    createdAt: any;
+    id: number;
+    updatedAt: any;
+    images?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      url: string;
+    }> | null;
+    model: {
+      __typename?: 'ModelDetail';
+      dimension: number;
+      id: number;
+      isGeneral: boolean;
+      isPublic: boolean;
+      name: string;
+      triggerRemainingCount: number;
+      userId: number;
+    };
+    parent?: {
+      __typename?: 'ModelComment';
+      content: string;
+      createdAt: any;
+      id: number;
+      updatedAt: any;
+      images?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        url: string;
+      }> | null;
+      model: {
+        __typename?: 'ModelDetail';
+        dimension: number;
+        id: number;
+        isGeneral: boolean;
+        isPublic: boolean;
+        name: string;
+        triggerRemainingCount: number;
+        userId: number;
+      };
+      parent?: {
+        __typename?: 'ModelComment';
+        content: string;
+        createdAt: any;
+        id: number;
+        updatedAt: any;
+        images?: Array<{
+          __typename?: 'Image';
+          filename: string;
+          url: string;
+        }> | null;
+      } | null;
+      user: {
+        __typename?: 'SimpleUser';
+        avatarUrl?: string | null;
+        id: number;
+        name: string;
+      };
+    } | null;
+    replies?: Array<{
+      __typename?: 'ModelComment';
+      content: string;
+      createdAt: any;
+      id: number;
+      updatedAt: any;
+      images?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        url: string;
+      }> | null;
+      model: {
+        __typename?: 'ModelDetail';
+        dimension: number;
+        id: number;
+        isGeneral: boolean;
+        isPublic: boolean;
+        name: string;
+        triggerRemainingCount: number;
+        userId: number;
+      };
+      parent?: {
+        __typename?: 'ModelComment';
+        content: string;
+        createdAt: any;
+        id: number;
+        updatedAt: any;
+        images?: Array<{
+          __typename?: 'Image';
+          filename: string;
+          url: string;
+        }> | null;
+      } | null;
+      user: {
+        __typename?: 'SimpleUser';
+        avatarUrl?: string | null;
+        id: number;
+        name: string;
+      };
+    }> | null;
+    user: {
+      __typename?: 'SimpleUser';
+      avatarUrl?: string | null;
+      id: number;
+      name: string;
+    };
+  } | null;
 };
 
-export type MetricsFragment = {
-  __typename?: 'ModelMetric';
-  category?: string | null;
-  defaultThreshold?: number | null;
-  defaultWeight?: number | null;
-  from?: string | null;
-  id?: number | null;
-  metricId?: number | null;
-  ident?: string | null;
-  name?: string | null;
-  threshold?: number | null;
-  weight?: number | null;
+export type MemberOverviewQueryVariables = Exact<{
+  modelId?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MemberOverviewQuery = {
+  __typename?: 'Query';
+  memberOverview?: {
+    __typename?: 'MemberPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'LabMember';
+      avatarUrl?: string | null;
+      canExecute: boolean;
+      canRead: boolean;
+      canUpdate: boolean;
+      id: number;
+      isOwner: boolean;
+      joinedAt: any;
+      name: string;
+    }> | null;
+    model?: { __typename?: 'ModelDetail'; name: string } | null;
+  } | null;
+};
+
+export type InvitationOverviewQueryVariables = Exact<{
+  modelId?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type InvitationOverviewQuery = {
+  __typename?: 'Query';
+  invitationOverview?: {
+    __typename?: 'InvitationPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'LabInvitation';
+      canExecute: boolean;
+      canRead: boolean;
+      canUpdate: boolean;
+      email: string;
+      id: number;
+      sentAt: any;
+      status: string;
+    }> | null;
+  } | null;
 };
 
 export type CreateLabModelMutationVariables = Exact<{
@@ -2031,18 +2398,6 @@ export type DeleteLabMemberMutation = {
   } | null;
 };
 
-export type LabMemberFragment = {
-  __typename?: 'LabMember';
-  avatarUrl?: string | null;
-  canExecute: boolean;
-  canRead: boolean;
-  canUpdate: boolean;
-  id: number;
-  isOwner: boolean;
-  joinedAt: any;
-  name: string;
-};
-
 export type SendMemberInviteMutationVariables = Exact<{
   modelId: Scalars['Int'];
   emails: Array<Scalars['String']> | Scalars['String'];
@@ -2061,60 +2416,6 @@ export type SendMemberInviteMutation = {
       __typename?: 'Error';
       message?: string | null;
       path?: Array<string> | null;
-    }> | null;
-  } | null;
-};
-
-export type MemberOverviewQueryVariables = Exact<{
-  modelId?: InputMaybe<Scalars['Int']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type MemberOverviewQuery = {
-  __typename?: 'Query';
-  memberOverview?: {
-    __typename?: 'MemberPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'LabMember';
-      avatarUrl?: string | null;
-      canExecute: boolean;
-      canRead: boolean;
-      canUpdate: boolean;
-      id: number;
-      isOwner: boolean;
-      joinedAt: any;
-      name: string;
-    }> | null;
-    model?: { __typename?: 'ModelDetail'; name: string } | null;
-  } | null;
-};
-
-export type InvitationOverviewQueryVariables = Exact<{
-  modelId?: InputMaybe<Scalars['Int']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type InvitationOverviewQuery = {
-  __typename?: 'Query';
-  invitationOverview?: {
-    __typename?: 'InvitationPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'LabInvitation';
-      canExecute: boolean;
-      canRead: boolean;
-      canUpdate: boolean;
-      email: string;
-      id: number;
-      sentAt: any;
-      status: string;
     }> | null;
   } | null;
 };
@@ -2163,6 +2464,49 @@ export type CancelMemberInviteMutation = {
     clientMutationId?: string | null;
     message?: string | null;
     status: string;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type DeleteLabModelCommentMutationVariables = Exact<{
+  modelId: Scalars['Int'];
+  commentId: Scalars['Int'];
+}>;
+
+export type DeleteLabModelCommentMutation = {
+  __typename?: 'Mutation';
+  deleteLabModelComment?: {
+    __typename?: 'DeleteLabModelCommentPayload';
+    clientMutationId?: string | null;
+    message?: string | null;
+    status: string;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type CreateLabModelCommentMutationVariables = Exact<{
+  modelId: Scalars['Int'];
+  versionId: Scalars['Int'];
+  modelMetricId?: InputMaybe<Scalars['Int']>;
+  replyTo?: InputMaybe<Scalars['Int']>;
+  content: Scalars['String'];
+  images?: InputMaybe<Array<Base64ImageInput> | Base64ImageInput>;
+}>;
+
+export type CreateLabModelCommentMutation = {
+  __typename?: 'Mutation';
+  createLabModelComment?: {
+    __typename?: 'CreateLabModelCommentPayload';
+    clientMutationId?: string | null;
+    message?: string | null;
     errors?: Array<{
       __typename?: 'Error';
       message?: string | null;
@@ -3028,6 +3372,74 @@ export type BulkShortenedLabelQuery = {
   }>;
 };
 
+export const ModelDetailFragmentDoc = /*#__PURE__*/ `
+    fragment modelDetail on ModelDetail {
+  dimension
+  id
+  isGeneral
+  isPublic
+  name
+  triggerRemainingCount
+  userId
+}
+    `;
+export const ParentCommentFragmentDoc = /*#__PURE__*/ `
+    fragment parentComment on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+  }
+  updatedAt
+}
+    `;
+export const UserFragmentDoc = /*#__PURE__*/ `
+    fragment user on SimpleUser {
+  avatarUrl
+  id
+  name
+}
+    `;
+export const CommentFragmentDoc = /*#__PURE__*/ `
+    fragment comment on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+  }
+  model {
+    ...modelDetail
+  }
+  parent {
+    ...parentComment
+  }
+  updatedAt
+  user {
+    ...user
+  }
+}
+    ${ModelDetailFragmentDoc}
+${ParentCommentFragmentDoc}
+${UserFragmentDoc}`;
+export const ReplyFragmentDoc = /*#__PURE__*/ `
+    fragment reply on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+  }
+  updatedAt
+  user {
+    ...user
+  }
+}
+    ${UserFragmentDoc}`;
 export const AlgorithmFragmentDoc = /*#__PURE__*/ `
     fragment algorithm on Algorithm {
   ident
@@ -3060,6 +3472,23 @@ export const MetricsFragmentDoc = /*#__PURE__*/ `
   weight
 }
     `;
+export const ModelVersionFragmentDoc = /*#__PURE__*/ `
+    fragment modelVersion on ModelVersion {
+  id
+  version
+  algorithm {
+    ...algorithm
+  }
+  dataset {
+    ...dataset
+  }
+  metrics {
+    ...metrics
+  }
+}
+    ${AlgorithmFragmentDoc}
+${DatasetFragmentDoc}
+${MetricsFragmentDoc}`;
 export const LabMemberFragmentDoc = /*#__PURE__*/ `
     fragment labMember on LabMember {
   avatarUrl
@@ -3152,25 +3581,13 @@ export const LabModelDetailDocument = /*#__PURE__*/ `
     isPublic
     triggerRemainingCount
     latestVersions {
-      id
-      version
-      algorithm {
-        ...algorithm
-      }
-      dataset {
-        ...dataset
-      }
-      metrics {
-        ...metrics
-      }
+      ...modelVersion
     }
     name
     userId
   }
 }
-    ${AlgorithmFragmentDoc}
-${DatasetFragmentDoc}
-${MetricsFragmentDoc}`;
+    ${ModelVersionFragmentDoc}`;
 export const useLabModelDetailQuery = <
   TData = LabModelDetailQuery,
   TError = unknown
@@ -3340,6 +3757,230 @@ useMetricSetListQuery.fetcher = (
   fetcher<MetricSetListQuery, MetricSetListQueryVariables>(
     client,
     MetricSetListDocument,
+    variables,
+    headers
+  );
+export const LabModelCommentsDocument = /*#__PURE__*/ `
+    query labModelComments($direction: String, $modelId: Int!, $modelMetricId: Int, $page: Int, $parentId: Int, $per: Int, $sort: String, $versionId: Int) {
+  labModelComments(
+    direction: $direction
+    modelId: $modelId
+    modelMetricId: $modelMetricId
+    page: $page
+    parentId: $parentId
+    per: $per
+    sort: $sort
+    versionId: $versionId
+  ) {
+    count
+    items {
+      ...comment
+    }
+    page
+    totalPage
+  }
+}
+    ${CommentFragmentDoc}`;
+export const useLabModelCommentsQuery = <
+  TData = LabModelCommentsQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: LabModelCommentsQueryVariables,
+  options?: UseQueryOptions<LabModelCommentsQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<LabModelCommentsQuery, TError, TData>(
+    ['labModelComments', variables],
+    fetcher<LabModelCommentsQuery, LabModelCommentsQueryVariables>(
+      client,
+      LabModelCommentsDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useLabModelCommentsQuery.getKey = (
+  variables: LabModelCommentsQueryVariables
+) => ['labModelComments', variables];
+useLabModelCommentsQuery.fetcher = (
+  client: GraphQLClient,
+  variables: LabModelCommentsQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<LabModelCommentsQuery, LabModelCommentsQueryVariables>(
+    client,
+    LabModelCommentsDocument,
+    variables,
+    headers
+  );
+export const LabModelCommentDetailDocument = /*#__PURE__*/ `
+    query labModelCommentDetail($modelId: Int!, $commentId: Int!) {
+  labModelCommentDetail(modelId: $modelId, commentId: $commentId) {
+    content
+    createdAt
+    id
+    images {
+      filename
+      url
+    }
+    model {
+      ...modelDetail
+    }
+    parent {
+      ...comment
+    }
+    replies {
+      ...comment
+    }
+    updatedAt
+    user {
+      ...user
+    }
+  }
+}
+    ${ModelDetailFragmentDoc}
+${CommentFragmentDoc}
+${UserFragmentDoc}`;
+export const useLabModelCommentDetailQuery = <
+  TData = LabModelCommentDetailQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: LabModelCommentDetailQueryVariables,
+  options?: UseQueryOptions<LabModelCommentDetailQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<LabModelCommentDetailQuery, TError, TData>(
+    ['labModelCommentDetail', variables],
+    fetcher<LabModelCommentDetailQuery, LabModelCommentDetailQueryVariables>(
+      client,
+      LabModelCommentDetailDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useLabModelCommentDetailQuery.getKey = (
+  variables: LabModelCommentDetailQueryVariables
+) => ['labModelCommentDetail', variables];
+useLabModelCommentDetailQuery.fetcher = (
+  client: GraphQLClient,
+  variables: LabModelCommentDetailQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<LabModelCommentDetailQuery, LabModelCommentDetailQueryVariables>(
+    client,
+    LabModelCommentDetailDocument,
+    variables,
+    headers
+  );
+export const MemberOverviewDocument = /*#__PURE__*/ `
+    query memberOverview($modelId: Int, $page: Int, $per: Int) {
+  memberOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      ...labMember
+    }
+    model {
+      name
+    }
+    page
+    totalPage
+  }
+}
+    ${LabMemberFragmentDoc}`;
+export const useMemberOverviewQuery = <
+  TData = MemberOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: MemberOverviewQueryVariables,
+  options?: UseQueryOptions<MemberOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<MemberOverviewQuery, TError, TData>(
+    variables === undefined
+      ? ['memberOverview']
+      : ['memberOverview', variables],
+    fetcher<MemberOverviewQuery, MemberOverviewQueryVariables>(
+      client,
+      MemberOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useMemberOverviewQuery.getKey = (variables?: MemberOverviewQueryVariables) =>
+  variables === undefined ? ['memberOverview'] : ['memberOverview', variables];
+useMemberOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: MemberOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<MemberOverviewQuery, MemberOverviewQueryVariables>(
+    client,
+    MemberOverviewDocument,
+    variables,
+    headers
+  );
+export const InvitationOverviewDocument = /*#__PURE__*/ `
+    query invitationOverview($modelId: Int, $page: Int, $per: Int) {
+  invitationOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      canExecute
+      canRead
+      canUpdate
+      email
+      id
+      sentAt
+      status
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useInvitationOverviewQuery = <
+  TData = InvitationOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: InvitationOverviewQueryVariables,
+  options?: UseQueryOptions<InvitationOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<InvitationOverviewQuery, TError, TData>(
+    variables === undefined
+      ? ['invitationOverview']
+      : ['invitationOverview', variables],
+    fetcher<InvitationOverviewQuery, InvitationOverviewQueryVariables>(
+      client,
+      InvitationOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useInvitationOverviewQuery.getKey = (
+  variables?: InvitationOverviewQueryVariables
+) =>
+  variables === undefined
+    ? ['invitationOverview']
+    : ['invitationOverview', variables];
+useInvitationOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: InvitationOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<InvitationOverviewQuery, InvitationOverviewQueryVariables>(
+    client,
+    InvitationOverviewDocument,
     variables,
     headers
   );
@@ -3749,113 +4390,6 @@ useSendMemberInviteMutation.fetcher = (
     variables,
     headers
   );
-export const MemberOverviewDocument = /*#__PURE__*/ `
-    query memberOverview($modelId: Int, $page: Int, $per: Int) {
-  memberOverview(modelId: $modelId, page: $page, per: $per) {
-    count
-    items {
-      ...labMember
-    }
-    model {
-      name
-    }
-    page
-    totalPage
-  }
-}
-    ${LabMemberFragmentDoc}`;
-export const useMemberOverviewQuery = <
-  TData = MemberOverviewQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables?: MemberOverviewQueryVariables,
-  options?: UseQueryOptions<MemberOverviewQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<MemberOverviewQuery, TError, TData>(
-    variables === undefined
-      ? ['memberOverview']
-      : ['memberOverview', variables],
-    fetcher<MemberOverviewQuery, MemberOverviewQueryVariables>(
-      client,
-      MemberOverviewDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useMemberOverviewQuery.getKey = (variables?: MemberOverviewQueryVariables) =>
-  variables === undefined ? ['memberOverview'] : ['memberOverview', variables];
-useMemberOverviewQuery.fetcher = (
-  client: GraphQLClient,
-  variables?: MemberOverviewQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<MemberOverviewQuery, MemberOverviewQueryVariables>(
-    client,
-    MemberOverviewDocument,
-    variables,
-    headers
-  );
-export const InvitationOverviewDocument = /*#__PURE__*/ `
-    query invitationOverview($modelId: Int, $page: Int, $per: Int) {
-  invitationOverview(modelId: $modelId, page: $page, per: $per) {
-    count
-    items {
-      canExecute
-      canRead
-      canUpdate
-      email
-      id
-      sentAt
-      status
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useInvitationOverviewQuery = <
-  TData = InvitationOverviewQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables?: InvitationOverviewQueryVariables,
-  options?: UseQueryOptions<InvitationOverviewQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<InvitationOverviewQuery, TError, TData>(
-    variables === undefined
-      ? ['invitationOverview']
-      : ['invitationOverview', variables],
-    fetcher<InvitationOverviewQuery, InvitationOverviewQueryVariables>(
-      client,
-      InvitationOverviewDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useInvitationOverviewQuery.getKey = (
-  variables?: InvitationOverviewQueryVariables
-) =>
-  variables === undefined
-    ? ['invitationOverview']
-    : ['invitationOverview', variables];
-useInvitationOverviewQuery.fetcher = (
-  client: GraphQLClient,
-  variables?: InvitationOverviewQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<InvitationOverviewQuery, InvitationOverviewQueryVariables>(
-    client,
-    InvitationOverviewDocument,
-    variables,
-    headers
-  );
 export const UpdateMemberPermissionDocument = /*#__PURE__*/ `
     mutation updateMemberPermission($modelId: Int!, $memberId: Int!, $canUpdate: Boolean, $canExecute: Boolean) {
   updateMemberPermission(
@@ -3962,6 +4496,105 @@ useCancelMemberInviteMutation.fetcher = (
     variables,
     headers
   );
+export const DeleteLabModelCommentDocument = /*#__PURE__*/ `
+    mutation deleteLabModelComment($modelId: Int!, $commentId: Int!) {
+  deleteLabModelComment(input: {modelId: $modelId, commentId: $commentId}) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+    `;
+export const useDeleteLabModelCommentMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    DeleteLabModelCommentMutation,
+    TError,
+    DeleteLabModelCommentMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    DeleteLabModelCommentMutation,
+    TError,
+    DeleteLabModelCommentMutationVariables,
+    TContext
+  >(
+    ['deleteLabModelComment'],
+    (variables?: DeleteLabModelCommentMutationVariables) =>
+      fetcher<
+        DeleteLabModelCommentMutation,
+        DeleteLabModelCommentMutationVariables
+      >(client, DeleteLabModelCommentDocument, variables, headers)(),
+    options
+  );
+useDeleteLabModelCommentMutation.fetcher = (
+  client: GraphQLClient,
+  variables: DeleteLabModelCommentMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    DeleteLabModelCommentMutation,
+    DeleteLabModelCommentMutationVariables
+  >(client, DeleteLabModelCommentDocument, variables, headers);
+export const CreateLabModelCommentDocument = /*#__PURE__*/ `
+    mutation createLabModelComment($modelId: Int!, $versionId: Int!, $modelMetricId: Int, $replyTo: Int, $content: String!, $images: [Base64ImageInput!]) {
+  createLabModelComment(
+    input: {modelId: $modelId, versionId: $versionId, modelMetricId: $modelMetricId, replyTo: $replyTo, content: $content, images: $images}
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+    `;
+export const useCreateLabModelCommentMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    CreateLabModelCommentMutation,
+    TError,
+    CreateLabModelCommentMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    CreateLabModelCommentMutation,
+    TError,
+    CreateLabModelCommentMutationVariables,
+    TContext
+  >(
+    ['createLabModelComment'],
+    (variables?: CreateLabModelCommentMutationVariables) =>
+      fetcher<
+        CreateLabModelCommentMutation,
+        CreateLabModelCommentMutationVariables
+      >(client, CreateLabModelCommentDocument, variables, headers)(),
+    options
+  );
+useCreateLabModelCommentMutation.fetcher = (
+  client: GraphQLClient,
+  variables: CreateLabModelCommentMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    CreateLabModelCommentMutation,
+    CreateLabModelCommentMutationVariables
+  >(client, CreateLabModelCommentDocument, variables, headers);
 export const CreateRepoTaskDocument = /*#__PURE__*/ `
     mutation createRepoTask($repoUrls: [String!]!, $origin: String!) {
   createRepoTask(input: {repoUrls: $repoUrls, origin: $origin}) {

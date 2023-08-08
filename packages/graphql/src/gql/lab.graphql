@@ -1,3 +1,125 @@
+fragment comment on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+  }
+  model {
+    ...modelDetail
+  }
+  parent {
+    ...parentComment
+  }
+  #  replies {
+  #    ...reply
+  #  }
+  updatedAt
+  user {
+    ...user
+  }
+}
+
+fragment parentComment on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+  }
+  updatedAt
+  #  user {
+  #    ...user
+  #  }
+}
+
+fragment reply on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+  }
+  updatedAt
+  user {
+    ...user
+  }
+}
+
+fragment modelDetail on ModelDetail {
+  dimension
+  id
+  isGeneral
+  isPublic
+  #latestVersions
+  name
+  triggerRemainingCount
+  userId
+}
+
+fragment user on SimpleUser {
+  avatarUrl
+  id
+  name
+}
+
+fragment algorithm on Algorithm {
+  ident
+  name
+}
+
+fragment dataset on Dataset {
+  ident
+  items {
+    firstIdent
+    label
+    level
+    secondIdent
+  }
+  name
+}
+
+fragment metrics on ModelMetric {
+  category
+  defaultThreshold
+  defaultWeight
+  from
+  id
+  metricId
+  ident
+  name
+  threshold
+  weight
+}
+
+fragment modelVersion on ModelVersion {
+  id
+  version
+  algorithm {
+    ...algorithm
+  }
+  dataset {
+    ...dataset
+  }
+  metrics {
+    ...metrics
+  }
+}
+
+fragment labMember on LabMember {
+  avatarUrl
+  canExecute
+  canRead
+  canUpdate
+  id
+  isOwner
+  joinedAt
+  name
+}
+
 query myLabModels($page: Int!, $per: Int!) {
   myModels(page: $page, per: $per) {
     count
@@ -36,17 +158,7 @@ query labModelDetail($id: Int!) {
     isPublic
     triggerRemainingCount
     latestVersions {
-      id
-      version
-      algorithm {
-        ...algorithm
-      }
-      dataset {
-        ...dataset
-      }
-      metrics {
-        ...metrics
-      }
+      ...modelVersion
     }
     name
     userId
@@ -91,33 +203,89 @@ query metricSetList {
   }
 }
 
-fragment algorithm on Algorithm {
-  ident
-  name
-}
-
-fragment dataset on Dataset {
-  ident
-  items {
-    firstIdent
-    label
-    level
-    secondIdent
+query labModelComments(
+  $direction: String
+  $modelId: Int!
+  $modelMetricId: Int
+  $page: Int
+  $parentId: Int
+  $per: Int
+  $sort: String
+  $versionId: Int
+) {
+  labModelComments(
+    direction: $direction
+    modelId: $modelId
+    modelMetricId: $modelMetricId
+    page: $page
+    parentId: $parentId
+    per: $per
+    sort: $sort
+    versionId: $versionId
+  ) {
+    count
+    items {
+      ...comment
+    }
+    page
+    totalPage
   }
-  name
 }
 
-fragment metrics on ModelMetric {
-  category
-  defaultThreshold
-  defaultWeight
-  from
-  id
-  metricId
-  ident
-  name
-  threshold
-  weight
+query labModelCommentDetail($modelId: Int!, $commentId: Int!) {
+  labModelCommentDetail(modelId: $modelId, commentId: $commentId) {
+    content
+    createdAt
+    id
+    images {
+      filename
+      url
+    }
+    model {
+      ...modelDetail
+    }
+    parent {
+      ...comment
+    }
+    replies {
+      ...comment
+    }
+    updatedAt
+    user {
+      ...user
+    }
+  }
+}
+
+query memberOverview($modelId: Int, $page: Int, $per: Int) {
+  memberOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      ...labMember
+    }
+    model {
+      name
+    }
+    page
+    totalPage
+  }
+}
+
+query invitationOverview($modelId: Int, $page: Int, $per: Int) {
+  invitationOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      canExecute
+      canRead
+      canUpdate
+      email
+      id
+      sentAt
+      status
+    }
+    page
+    totalPage
+  }
 }
 
 mutation createLabModel(
@@ -258,16 +426,7 @@ mutation deleteLabMember($modelId: Int!, $memberId: Int!) {
     status
   }
 }
-fragment labMember on LabMember {
-  avatarUrl
-  canExecute
-  canRead
-  canUpdate
-  id
-  isOwner
-  joinedAt
-  name
-}
+
 mutation sendMemberInvite(
   $modelId: Int!
   $emails: [String!]!
@@ -291,35 +450,7 @@ mutation sendMemberInvite(
     status
   }
 }
-query memberOverview($modelId: Int, $page: Int, $per: Int) {
-  memberOverview(modelId: $modelId, page: $page, per: $per) {
-    count
-    items {
-      ...labMember
-    }
-    model {
-      name
-    }
-    page
-    totalPage
-  }
-}
-query invitationOverview($modelId: Int, $page: Int, $per: Int) {
-  invitationOverview(modelId: $modelId, page: $page, per: $per) {
-    count
-    items {
-      canExecute
-      canRead
-      canUpdate
-      email
-      id
-      sentAt
-      status
-    }
-    page
-    totalPage
-  }
-}
+
 mutation updateMemberPermission(
   $modelId: Int!
   $memberId: Int!
@@ -357,5 +488,44 @@ mutation cancelMemberInvite($modelId: Int!, $invitationId: Int!) {
     }
     message
     status
+  }
+}
+
+mutation deleteLabModelComment($modelId: Int!, $commentId: Int!) {
+  deleteLabModelComment(input: { modelId: $modelId, commentId: $commentId }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation createLabModelComment(
+  $modelId: Int!
+  $versionId: Int!
+  $modelMetricId: Int
+  $replyTo: Int
+  $content: String!
+  $images: [Base64ImageInput!]
+) {
+  createLabModelComment(
+    input: {
+      modelId: $modelId
+      versionId: $versionId
+      modelMetricId: $modelMetricId
+      replyTo: $replyTo
+      content: $content
+      images: $images
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
   }
 }
