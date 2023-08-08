@@ -26,6 +26,11 @@ const data = [
     name: '吴萍',
     intro: '华为开源管理中心',
   },
+  {
+    avatar: '/images/about/周冉.jpeg',
+    name: '周冉',
+    intro: '开源指南针社区经理',
+  },
 ];
 
 const OutreachCommittee = () => {

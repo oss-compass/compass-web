@@ -33,6 +33,16 @@ const CommunityMembers = () => {
       name: '庄宇乾',
       intro: '南京大学计算机系软件所在读博士研究生，研究方向为计算机软件与理论',
     },
+    {
+      avatar: '/images/about/杨文昊.jpeg',
+      name: '杨文昊',
+      intro: '北京大学计算机学院软件研究所在读博士研究生',
+    },
+    {
+      avatar: '/images/about/邱睿桥.jpeg',
+      name: '邱睿桥',
+      intro: '北京大学计算机学院软件研究所在读博士研究生',
+    },
   ];
 
   return (
