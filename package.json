@@ -28,9 +28,9 @@
     "yaml": "^2.2.2"
   },
   "lint-staged": {
-    "*": "prettier --write --ignore-unknown --cache",
+    "*.{json,md,mdx,css,html,yml,yaml,scss,graphql}": "prettier --ignore-unknown --write --cache",
     "*.{ts,tsx,mjs,js,jsx}": [
-      "prettier . --ignore-unknown --write",
+      "prettier . --ignore-unknown --write --cache",
       "eslint --cache --fix"
     ]
   },
