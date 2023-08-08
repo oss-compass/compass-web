@@ -8,10 +8,20 @@ const CommunityMembers = () => {
   const { t } = useTranslation();
   const data = [
     {
+      avatar: '/images/about/邱睿桥.jpeg',
+      name: '邱睿桥',
+      intro: '北京大学计算机学院软件研究所在读博士研究生',
+    },
+    {
       avatar: '/images/about/桑百惠@2x.png',
       name: '桑百惠',
       intro:
         '南京大学计算机软件研究所博士研究生在读，主要研究方向为开源软件协作的行为识别',
+    },
+    {
+      avatar: '/images/about/王雅薪@2x.png',
+      name: '王雅薪',
+      intro: '南京大学计算机系软件所在读研究生',
     },
     {
       avatar: '/images/about/吴向臣@2x.png',
@@ -19,9 +29,9 @@ const CommunityMembers = () => {
       intro: '河海大学信息学院模式识别与智能系统在读研究生',
     },
     {
-      avatar: '/images/about/王雅薪@2x.png',
-      name: '王雅薪',
-      intro: '南京大学计算机系软件所在读研究生',
+      avatar: '/images/about/杨文昊.jpeg',
+      name: '杨文昊',
+      intro: '北京大学计算机学院软件研究所在读博士研究生',
     },
     {
       avatar: '/images/about/张洁芮@2x.png',

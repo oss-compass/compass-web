@@ -89,8 +89,8 @@ const ChartWithData: React.FC<{
                 <LinkLegacy
                   href={
                     i18n.language === 'en'
-                      ? 'docs/community/'
-                      : 'docs/zh/community/'
+                      ? '/docs/community/'
+                      : '/zh/docs/community/'
                   }
                 />
               ),
