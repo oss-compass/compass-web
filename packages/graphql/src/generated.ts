@@ -865,6 +865,7 @@ export type MemberPage = {
   __typename?: 'MemberPage';
   count?: Maybe<Scalars['Int']>;
   items?: Maybe<Array<LabMember>>;
+  model?: Maybe<ModelDetail>;
   page?: Maybe<Scalars['Int']>;
   totalPage?: Maybe<Scalars['Int']>;
 };
@@ -1413,8 +1414,8 @@ export type SendMemberInviteInput = {
   canUpdate?: InputMaybe<Scalars['Boolean']>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** target member email */
-  email: Scalars['String'];
+  /** target member emails */
+  emails: Array<Scalars['String']>;
   /** lab model id */
   modelId: Scalars['Int'];
 };
@@ -2020,6 +2021,146 @@ export type DeleteLabMemberMutation = {
   __typename?: 'Mutation';
   deleteLabMember?: {
     __typename?: 'DeleteLabMemberPayload';
+    message?: string | null;
+    status: string;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type LabMemberFragment = {
+  __typename?: 'LabMember';
+  avatarUrl?: string | null;
+  canExecute: boolean;
+  canRead: boolean;
+  canUpdate: boolean;
+  id: number;
+  isOwner: boolean;
+  joinedAt: any;
+  name: string;
+};
+
+export type SendMemberInviteMutationVariables = Exact<{
+  modelId: Scalars['Int'];
+  emails: Array<Scalars['String']> | Scalars['String'];
+  canUpdate?: InputMaybe<Scalars['Boolean']>;
+  canExecute?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type SendMemberInviteMutation = {
+  __typename?: 'Mutation';
+  sendMemberInvite?: {
+    __typename?: 'SendMemberInvitePayload';
+    clientMutationId?: string | null;
+    message?: string | null;
+    status: string;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type MemberOverviewQueryVariables = Exact<{
+  modelId?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MemberOverviewQuery = {
+  __typename?: 'Query';
+  memberOverview?: {
+    __typename?: 'MemberPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'LabMember';
+      avatarUrl?: string | null;
+      canExecute: boolean;
+      canRead: boolean;
+      canUpdate: boolean;
+      id: number;
+      isOwner: boolean;
+      joinedAt: any;
+      name: string;
+    }> | null;
+    model?: { __typename?: 'ModelDetail'; name: string } | null;
+  } | null;
+};
+
+export type InvitationOverviewQueryVariables = Exact<{
+  modelId?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type InvitationOverviewQuery = {
+  __typename?: 'Query';
+  invitationOverview?: {
+    __typename?: 'InvitationPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'LabInvitation';
+      canExecute: boolean;
+      canRead: boolean;
+      canUpdate: boolean;
+      email: string;
+      id: number;
+      sentAt: any;
+      status: string;
+    }> | null;
+  } | null;
+};
+
+export type UpdateMemberPermissionMutationVariables = Exact<{
+  modelId: Scalars['Int'];
+  memberId: Scalars['Int'];
+  canUpdate?: InputMaybe<Scalars['Boolean']>;
+  canExecute?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type UpdateMemberPermissionMutation = {
+  __typename?: 'Mutation';
+  updateMemberPermission?: {
+    __typename?: 'UpdateMemberPermissionPayload';
+    clientMutationId?: string | null;
+    message?: string | null;
+    data?: {
+      __typename?: 'LabMember';
+      avatarUrl?: string | null;
+      canExecute: boolean;
+      canRead: boolean;
+      canUpdate: boolean;
+      id: number;
+      isOwner: boolean;
+      joinedAt: any;
+      name: string;
+    } | null;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type CancelMemberInviteMutationVariables = Exact<{
+  modelId: Scalars['Int'];
+  invitationId: Scalars['Int'];
+}>;
+
+export type CancelMemberInviteMutation = {
+  __typename?: 'Mutation';
+  cancelMemberInvite?: {
+    __typename?: 'CancelMemberInvitePayload';
+    clientMutationId?: string | null;
     message?: string | null;
     status: string;
     errors?: Array<{
@@ -2919,6 +3060,18 @@ export const MetricsFragmentDoc = /*#__PURE__*/ `
   weight
 }
     `;
+export const LabMemberFragmentDoc = /*#__PURE__*/ `
+    fragment labMember on LabMember {
+  avatarUrl
+  canExecute
+  canRead
+  canUpdate
+  id
+  isOwner
+  joinedAt
+  name
+}
+    `;
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
     fragment metricStat on MetricStat {
   mean
@@ -3538,6 +3691,274 @@ useDeleteLabMemberMutation.fetcher = (
   fetcher<DeleteLabMemberMutation, DeleteLabMemberMutationVariables>(
     client,
     DeleteLabMemberDocument,
+    variables,
+    headers
+  );
+export const SendMemberInviteDocument = /*#__PURE__*/ `
+    mutation sendMemberInvite($modelId: Int!, $emails: [String!]!, $canUpdate: Boolean, $canExecute: Boolean) {
+  sendMemberInvite(
+    input: {modelId: $modelId, emails: $emails, canUpdate: $canUpdate, canExecute: $canExecute}
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+    `;
+export const useSendMemberInviteMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    SendMemberInviteMutation,
+    TError,
+    SendMemberInviteMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    SendMemberInviteMutation,
+    TError,
+    SendMemberInviteMutationVariables,
+    TContext
+  >(
+    ['sendMemberInvite'],
+    (variables?: SendMemberInviteMutationVariables) =>
+      fetcher<SendMemberInviteMutation, SendMemberInviteMutationVariables>(
+        client,
+        SendMemberInviteDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+useSendMemberInviteMutation.fetcher = (
+  client: GraphQLClient,
+  variables: SendMemberInviteMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<SendMemberInviteMutation, SendMemberInviteMutationVariables>(
+    client,
+    SendMemberInviteDocument,
+    variables,
+    headers
+  );
+export const MemberOverviewDocument = /*#__PURE__*/ `
+    query memberOverview($modelId: Int, $page: Int, $per: Int) {
+  memberOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      ...labMember
+    }
+    model {
+      name
+    }
+    page
+    totalPage
+  }
+}
+    ${LabMemberFragmentDoc}`;
+export const useMemberOverviewQuery = <
+  TData = MemberOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: MemberOverviewQueryVariables,
+  options?: UseQueryOptions<MemberOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<MemberOverviewQuery, TError, TData>(
+    variables === undefined
+      ? ['memberOverview']
+      : ['memberOverview', variables],
+    fetcher<MemberOverviewQuery, MemberOverviewQueryVariables>(
+      client,
+      MemberOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useMemberOverviewQuery.getKey = (variables?: MemberOverviewQueryVariables) =>
+  variables === undefined ? ['memberOverview'] : ['memberOverview', variables];
+useMemberOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: MemberOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<MemberOverviewQuery, MemberOverviewQueryVariables>(
+    client,
+    MemberOverviewDocument,
+    variables,
+    headers
+  );
+export const InvitationOverviewDocument = /*#__PURE__*/ `
+    query invitationOverview($modelId: Int, $page: Int, $per: Int) {
+  invitationOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      canExecute
+      canRead
+      canUpdate
+      email
+      id
+      sentAt
+      status
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useInvitationOverviewQuery = <
+  TData = InvitationOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: InvitationOverviewQueryVariables,
+  options?: UseQueryOptions<InvitationOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<InvitationOverviewQuery, TError, TData>(
+    variables === undefined
+      ? ['invitationOverview']
+      : ['invitationOverview', variables],
+    fetcher<InvitationOverviewQuery, InvitationOverviewQueryVariables>(
+      client,
+      InvitationOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useInvitationOverviewQuery.getKey = (
+  variables?: InvitationOverviewQueryVariables
+) =>
+  variables === undefined
+    ? ['invitationOverview']
+    : ['invitationOverview', variables];
+useInvitationOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: InvitationOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<InvitationOverviewQuery, InvitationOverviewQueryVariables>(
+    client,
+    InvitationOverviewDocument,
+    variables,
+    headers
+  );
+export const UpdateMemberPermissionDocument = /*#__PURE__*/ `
+    mutation updateMemberPermission($modelId: Int!, $memberId: Int!, $canUpdate: Boolean, $canExecute: Boolean) {
+  updateMemberPermission(
+    input: {modelId: $modelId, memberId: $memberId, canUpdate: $canUpdate, canExecute: $canExecute}
+  ) {
+    clientMutationId
+    data {
+      ...labMember
+    }
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+    ${LabMemberFragmentDoc}`;
+export const useUpdateMemberPermissionMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    UpdateMemberPermissionMutation,
+    TError,
+    UpdateMemberPermissionMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    UpdateMemberPermissionMutation,
+    TError,
+    UpdateMemberPermissionMutationVariables,
+    TContext
+  >(
+    ['updateMemberPermission'],
+    (variables?: UpdateMemberPermissionMutationVariables) =>
+      fetcher<
+        UpdateMemberPermissionMutation,
+        UpdateMemberPermissionMutationVariables
+      >(client, UpdateMemberPermissionDocument, variables, headers)(),
+    options
+  );
+useUpdateMemberPermissionMutation.fetcher = (
+  client: GraphQLClient,
+  variables: UpdateMemberPermissionMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    UpdateMemberPermissionMutation,
+    UpdateMemberPermissionMutationVariables
+  >(client, UpdateMemberPermissionDocument, variables, headers);
+export const CancelMemberInviteDocument = /*#__PURE__*/ `
+    mutation cancelMemberInvite($modelId: Int!, $invitationId: Int!) {
+  cancelMemberInvite(input: {modelId: $modelId, invitationId: $invitationId}) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+    `;
+export const useCancelMemberInviteMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    CancelMemberInviteMutation,
+    TError,
+    CancelMemberInviteMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    CancelMemberInviteMutation,
+    TError,
+    CancelMemberInviteMutationVariables,
+    TContext
+  >(
+    ['cancelMemberInvite'],
+    (variables?: CancelMemberInviteMutationVariables) =>
+      fetcher<CancelMemberInviteMutation, CancelMemberInviteMutationVariables>(
+        client,
+        CancelMemberInviteDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+useCancelMemberInviteMutation.fetcher = (
+  client: GraphQLClient,
+  variables: CancelMemberInviteMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CancelMemberInviteMutation, CancelMemberInviteMutationVariables>(
+    client,
+    CancelMemberInviteDocument,
     variables,
     headers
   );

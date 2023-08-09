@@ -14,5 +14,30 @@
   "select_algorithm": "选择算法",
   "support_AHP": "支持 AHP 和其他自定义的多种算法",
   "release_model": "发布模型",
-  "expose_the_model": "公开模型，还可以邀请伙伴们一起完善它"
+  "expose_the_model": "公开模型，还可以邀请伙伴们一起完善它",
+  "my_models": "我的模型",
+  "user_management": "用户管理",
+  "user": {
+    "invite_users": "邀请用户",
+    "input_email": "请输入被邀请者的邮箱，多个邮箱以逗号分隔",
+    "send_email": "发送邀请邮件",
+    "please_enter_the_correct_email_format": "请输入正确的邮箱格式",
+    "multiple": "可多选",
+    "browsable": "可浏览",
+    "view_and_comment_the_report": "可查看和评论报告",
+    "trigger_analysis": "可触发分析",
+    "can_trigger_model_report_scan": "可触发模型报告扫描",
+    "modifiable_model": "可修改模型",
+    "can_modifiable_model_parameter": "可修改模型中的参数配置",
+    "send_successful": "发送成功",
+    "send_failed": "发送失败",
+    "member": "用户",
+    "owner": "拥有者",
+    "join_at": "加入于",
+    "member_to_be_added": "待加入用户",
+    "waiting_for_confirmation_to_join": "邀请已发出，等候对方确认加入",
+    "uninvite": "取消邀请",
+    "confirm_cancel_invitation": "确认取消邀请",
+    "confirm_delete": "确认删除"
+  }
 }
