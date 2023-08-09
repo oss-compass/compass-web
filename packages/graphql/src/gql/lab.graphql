@@ -258,3 +258,104 @@ mutation deleteLabMember($modelId: Int!, $memberId: Int!) {
     status
   }
 }
+fragment labMember on LabMember {
+  avatarUrl
+  canExecute
+  canRead
+  canUpdate
+  id
+  isOwner
+  joinedAt
+  name
+}
+mutation sendMemberInvite(
+  $modelId: Int!
+  $emails: [String!]!
+  $canUpdate: Boolean
+  $canExecute: Boolean
+) {
+  sendMemberInvite(
+    input: {
+      modelId: $modelId
+      emails: $emails
+      canUpdate: $canUpdate
+      canExecute: $canExecute
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+query memberOverview($modelId: Int, $page: Int, $per: Int) {
+  memberOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      ...labMember
+    }
+    model {
+      name
+    }
+    page
+    totalPage
+  }
+}
+query invitationOverview($modelId: Int, $page: Int, $per: Int) {
+  invitationOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      canExecute
+      canRead
+      canUpdate
+      email
+      id
+      sentAt
+      status
+    }
+    page
+    totalPage
+  }
+}
+mutation updateMemberPermission(
+  $modelId: Int!
+  $memberId: Int!
+  $canUpdate: Boolean
+  $canExecute: Boolean
+) {
+  updateMemberPermission(
+    input: {
+      modelId: $modelId
+      memberId: $memberId
+      canUpdate: $canUpdate
+      canExecute: $canExecute
+    }
+  ) {
+    clientMutationId
+    data {
+      ...labMember
+    }
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation cancelMemberInvite($modelId: Int!, $invitationId: Int!) {
+  cancelMemberInvite(
+    input: { modelId: $modelId, invitationId: $invitationId }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}

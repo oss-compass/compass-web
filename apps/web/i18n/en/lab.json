@@ -14,5 +14,30 @@
   "select_algorithm": "Select algorithm",
   "support_AHP": "Support AHP and other self-defined algorithms",
   "release_model": "Publish model",
-  "expose_the_model": "Publish the model and invite partners to improve it"
+  "expose_the_model": "Publish the model and invite partners to improve it",
+  "my_models": "My models",
+  "user_management": "Member management",
+  "user": {
+    "invite_users": "Invite member",
+    "input_email": "Please input the email address of the invitee, multiple email addresses are separated by commas",
+    "send_email": "Send email",
+    "please_enter_the_correct_email_format": "Please enter the correct email format",
+    "multiple": "Multiple",
+    "browsable": "Browsable",
+    "view_and_comment_the_report": "View and comment on reports",
+    "trigger_analysis": "Triggerable analysis",
+    "can_trigger_model_report_scan": "Trigger model report scanning",
+    "modifiable_model": "Modifiable models",
+    "can_modifiable_model_parameter": "Modify parameter configurations in the model",
+    "send_successful": "Send successful",
+    "send_failed": "Send failed",
+    "member": "Member",
+    "owner": "Owner",
+    "join_at": "Join at",
+    "member_to_be_added": "Member to be added",
+    "waiting_for_confirmation_to_join": "Invitation sent, waiting to join",
+    "uninvite": "Cancel invitation",
+    "confirm_cancel_invitation": "Confirm cancel invitation",
+    "confirm_delete": "Confirm delete"
+  }
 }
