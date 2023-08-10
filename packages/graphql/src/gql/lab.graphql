@@ -12,12 +12,26 @@ fragment comment on ModelComment {
   parent {
     ...parentComment
   }
-  #  replies {
-  #    ...reply
-  #  }
+  replies {
+    content
+    createdAt
+    id
+    images {
+      filename
+      url
+    }
+    updatedAt
+    user {
+      avatarUrl
+      id
+      name
+    }
+  }
   updatedAt
   user {
-    ...user
+    avatarUrl
+    id
+    name
   }
 }
 
@@ -33,20 +47,6 @@ fragment parentComment on ModelComment {
   #  user {
   #    ...user
   #  }
-}
-
-fragment reply on ModelComment {
-  content
-  createdAt
-  id
-  images {
-    filename
-    url
-  }
-  updatedAt
-  user {
-    ...user
-  }
 }
 
 fragment modelDetail on ModelDetail {

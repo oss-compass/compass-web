@@ -5,6 +5,7 @@ import Slider from '@common/components/Slider';
 import { formState } from '../state';
 import { FormItemLabel } from '../styled';
 import { sumPre, adjustmentArray } from './utils';
+import { countDecimalPlaces } from '@common/utils/number';
 
 const adjustHandle = (result: number, index: number) => {
   const weights = formState.metricSet.map((i) => i.weight);
@@ -12,6 +13,10 @@ const adjustHandle = (result: number, index: number) => {
   newWeights.forEach((newVal, index) => {
     formState.metricSet[index].weight = newVal;
   });
+};
+
+const adjustThresholdHandle = (result: number, index: number) => {
+  formState.metricSet[index].threshold = result;
 };
 
 const SliderRange = ({
@@ -98,6 +103,7 @@ const FormMetric = () => {
                         max={100}
                         onChange={(e) => {
                           const value = Number(e.target.value);
+                          if (countDecimalPlaces(value) > 2) return;
                           if (isNaN(value) || value > 100 || value < 0) return;
                           adjustHandle(value, index);
                         }}
@@ -116,7 +122,11 @@ const FormMetric = () => {
                       className="w-20 border outline-0"
                       type="number"
                       value={item.threshold}
-                      onChange={(e) => {}}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        if (countDecimalPlaces(value) > 2) return;
+                        adjustThresholdHandle(value, index);
+                      }}
                     />
                   </td>
                 </tr>

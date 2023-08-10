@@ -118,21 +118,23 @@ const CommentDrawer = ({
             </div>
           ) : null}
 
-          <CommentInput
-            ref={inputRef}
-            loading={commentMutation.isLoading}
-            onSubmit={(content) => {
-              commentMutation.mutate(
-                { modelId, versionId, content },
-                {
-                  onSuccess: () => {
-                    refetch();
-                    inputRef.current?.reset();
-                  },
-                }
-              );
-            }}
-          />
+          <div className="px-3 pt-3">
+            <CommentInput
+              ref={inputRef}
+              loading={commentMutation.isLoading}
+              onSubmit={(content) => {
+                commentMutation.mutate(
+                  { modelId, versionId, content },
+                  {
+                    onSuccess: () => {
+                      refetch();
+                      inputRef.current?.reset();
+                    },
+                  }
+                );
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

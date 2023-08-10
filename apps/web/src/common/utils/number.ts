@@ -89,3 +89,14 @@ export function percentRound(ipt: number[], precision?: number) {
 
   return out;
 }
+
+export function countDecimalPlaces(number: number) {
+  if (isNaN(number)) return 0;
+  const numberString = number.toString();
+  const decimalIndex = numberString.indexOf('.');
+  if (decimalIndex === -1) {
+    return 0;
+  }
+
+  return numberString.length - decimalIndex - 1;
+}

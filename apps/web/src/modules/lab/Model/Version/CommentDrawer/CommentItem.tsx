@@ -1,6 +1,8 @@
+import { useEffect, useState, useRef } from 'react';
 import { CommentFragment } from '@oss-compass/graphql';
 import Image from 'next/image';
 import CommentItemMore from './CommentItemMore';
+import CommentInput, { InputRefProps } from './CommentInput';
 
 const CommentItem = ({
   comment,
@@ -9,6 +11,9 @@ const CommentItem = ({
   comment: CommentFragment;
   onDeleteSuccess: () => void;
 }) => {
+  const ref = useRef<InputRefProps>(null);
+  const [edit, setEdit] = useState(false);
+
   return (
     <div className="px-3 pt-3">
       <div className="border-smoke flex border-b pb-4">
@@ -36,12 +41,20 @@ const CommentItem = ({
               </div>
               <CommentItemMore
                 comment={comment}
-                onDeleteEdit={() => {}}
+                onDeleteEdit={() => {
+                  setEdit(true);
+                }}
                 onDeleteSuccess={onDeleteSuccess}
               />
             </div>
           </div>
-          <div className="text-sm">{comment?.content}</div>
+          {edit ? (
+            <>
+              <CommentInput ref={ref} loading={false} onSubmit={() => {}} />
+            </>
+          ) : (
+            <div className="text-sm">{comment?.content}</div>
+          )}
         </div>
       </div>
     </div>

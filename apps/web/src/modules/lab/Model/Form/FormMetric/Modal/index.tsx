@@ -58,7 +58,9 @@ const ModalSelect = ({
       const items = metrics.map((i) => ({ ...i }));
       return acc.concat(items);
     }, []);
-    const weights = result.map((i) => i.defaultWeight);
+
+    //  Equal division
+    const weights = new Array(result.length).fill(1);
     const percentRoundWeights = percentRound(weights, 2);
 
     formState.metricSet = result.map((i, index) => {

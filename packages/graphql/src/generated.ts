@@ -884,6 +884,7 @@ export type ModelComment = {
   createdAt: Scalars['ISO8601DateTime'];
   id: Scalars['Int'];
   images?: Maybe<Array<Image>>;
+  metric?: Maybe<ModelMetric>;
   model: ModelDetail;
   parent?: Maybe<ModelComment>;
   replies?: Maybe<Array<ModelComment>>;
@@ -1698,6 +1699,24 @@ export type CommentFragment = {
       url: string;
     }> | null;
   } | null;
+  replies?: Array<{
+    __typename?: 'ModelComment';
+    content: string;
+    createdAt: any;
+    id: number;
+    updatedAt: any;
+    images?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      url: string;
+    }> | null;
+    user: {
+      __typename?: 'SimpleUser';
+      avatarUrl?: string | null;
+      id: number;
+      name: string;
+    };
+  }> | null;
   user: {
     __typename?: 'SimpleUser';
     avatarUrl?: string | null;
@@ -1717,25 +1736,6 @@ export type ParentCommentFragment = {
     filename: string;
     url: string;
   }> | null;
-};
-
-export type ReplyFragment = {
-  __typename?: 'ModelComment';
-  content: string;
-  createdAt: any;
-  id: number;
-  updatedAt: any;
-  images?: Array<{
-    __typename?: 'Image';
-    filename: string;
-    url: string;
-  }> | null;
-  user: {
-    __typename?: 'SimpleUser';
-    avatarUrl?: string | null;
-    id: number;
-    name: string;
-  };
 };
 
 export type ModelDetailFragment = {
@@ -2070,6 +2070,24 @@ export type LabModelCommentsQuery = {
           url: string;
         }> | null;
       } | null;
+      replies?: Array<{
+        __typename?: 'ModelComment';
+        content: string;
+        createdAt: any;
+        id: number;
+        updatedAt: any;
+        images?: Array<{
+          __typename?: 'Image';
+          filename: string;
+          url: string;
+        }> | null;
+        user: {
+          __typename?: 'SimpleUser';
+          avatarUrl?: string | null;
+          id: number;
+          name: string;
+        };
+      }> | null;
       user: {
         __typename?: 'SimpleUser';
         avatarUrl?: string | null;
@@ -2141,6 +2159,24 @@ export type LabModelCommentDetailQuery = {
           url: string;
         }> | null;
       } | null;
+      replies?: Array<{
+        __typename?: 'ModelComment';
+        content: string;
+        createdAt: any;
+        id: number;
+        updatedAt: any;
+        images?: Array<{
+          __typename?: 'Image';
+          filename: string;
+          url: string;
+        }> | null;
+        user: {
+          __typename?: 'SimpleUser';
+          avatarUrl?: string | null;
+          id: number;
+          name: string;
+        };
+      }> | null;
       user: {
         __typename?: 'SimpleUser';
         avatarUrl?: string | null;
@@ -2181,6 +2217,24 @@ export type LabModelCommentDetailQuery = {
           url: string;
         }> | null;
       } | null;
+      replies?: Array<{
+        __typename?: 'ModelComment';
+        content: string;
+        createdAt: any;
+        id: number;
+        updatedAt: any;
+        images?: Array<{
+          __typename?: 'Image';
+          filename: string;
+          url: string;
+        }> | null;
+        user: {
+          __typename?: 'SimpleUser';
+          avatarUrl?: string | null;
+          id: number;
+          name: string;
+        };
+      }> | null;
       user: {
         __typename?: 'SimpleUser';
         avatarUrl?: string | null;
@@ -2551,7 +2605,7 @@ export type CreateProjectTaskMutation = {
 export type ModifyUserMutationVariables = Exact<{
   name: Scalars['String'];
   email: Scalars['String'];
-  language: Scalars['String'];
+  language?: InputMaybe<Scalars['String']>;
 }>;
 
 export type ModifyUserMutation = {
@@ -3395,13 +3449,6 @@ export const ParentCommentFragmentDoc = /*#__PURE__*/ `
   updatedAt
 }
     `;
-export const UserFragmentDoc = /*#__PURE__*/ `
-    fragment user on SimpleUser {
-  avatarUrl
-  id
-  name
-}
-    `;
 export const CommentFragmentDoc = /*#__PURE__*/ `
     fragment comment on ModelComment {
   content
@@ -3417,29 +3464,37 @@ export const CommentFragmentDoc = /*#__PURE__*/ `
   parent {
     ...parentComment
   }
+  replies {
+    content
+    createdAt
+    id
+    images {
+      filename
+      url
+    }
+    updatedAt
+    user {
+      avatarUrl
+      id
+      name
+    }
+  }
   updatedAt
   user {
-    ...user
+    avatarUrl
+    id
+    name
   }
 }
     ${ModelDetailFragmentDoc}
-${ParentCommentFragmentDoc}
-${UserFragmentDoc}`;
-export const ReplyFragmentDoc = /*#__PURE__*/ `
-    fragment reply on ModelComment {
-  content
-  createdAt
+${ParentCommentFragmentDoc}`;
+export const UserFragmentDoc = /*#__PURE__*/ `
+    fragment user on SimpleUser {
+  avatarUrl
   id
-  images {
-    filename
-    url
-  }
-  updatedAt
-  user {
-    ...user
-  }
+  name
 }
-    ${UserFragmentDoc}`;
+    `;
 export const AlgorithmFragmentDoc = /*#__PURE__*/ `
     fragment algorithm on Algorithm {
   ident
@@ -4695,7 +4750,7 @@ useCreateProjectTaskMutation.fetcher = (
     headers
   );
 export const ModifyUserDocument = /*#__PURE__*/ `
-    mutation modifyUser($name: String!, $email: String!, $language: String!) {
+    mutation modifyUser($name: String!, $email: String!, $language: String) {
   modifyUser(input: {name: $name, email: $email, language: $language}) {
     message
     status

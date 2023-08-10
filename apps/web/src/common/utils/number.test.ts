@@ -1,4 +1,9 @@
-import { toFixed, numberFormatK, percentRound } from './number';
+import {
+  toFixed,
+  numberFormatK,
+  percentRound,
+  countDecimalPlaces,
+} from './number';
 
 describe('utils number ', () => {
   it('numberFormatK', function () {
@@ -24,5 +29,12 @@ describe('utils number ', () => {
     expect(r3).toEqual([10.34, 20.05, 30.04, 39.57]);
     expect(r4).toEqual([10, 20, 30, 40]);
     expect(r5).toEqual([50, 50]);
+  });
+
+  it('countDecimalPlaces', () => {
+    expect(countDecimalPlaces(0)).toEqual(0);
+    expect(countDecimalPlaces(NaN)).toEqual(0);
+    expect(countDecimalPlaces(-1.2)).toEqual(1);
+    expect(countDecimalPlaces(0.123456789)).toEqual(9);
   });
 });

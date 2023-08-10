@@ -1,0 +1,60 @@
+{
+  "contributor_title": "Contributor",
+  "contributor": {
+    "code_contributor_count": "Code Contributor Count",
+    "contributor_count": "Bus Factor",
+    "org_contributor_count": "Org Contributor Count",
+    "bus_factor": "Bus Factor"
+  },
+  "git": {
+    "commit_frequency": "Commit Frequency",
+    "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
+    "commit_frequency_more": {
+      "weight": "16.363%",
+      "threshold": "1000",
+      "detail": "As an outcome indicator of this model, it identifies the sustainability and quantity of project contributions. Refers to the overall workload of the project."
+    },
+    "is_maintained": "Is Maintained",
+    "is_maintained_desc": "Percentage of weeks with at least one code commit in the past 90 days(single repository). Percentage of code repositories with at least one code commit in the last 30 days(multiple repositories).",
+    "is_maintained_more": {
+      "weight": "13.853%",
+      "threshold": "100%",
+      "detail": "This metric is used to determine whether the repository is being maintained on an ongoing basis. An actively maintained projects may be more resistant to risks such as vulnerabilities. It is related to the Commit Frequency, but the focus is different. The former focuses on the number of code contributions during the cycle, while the latter focuses on the continuity of the code contributions. But we should not draw any direct conclusions about projects that are low on this indicator, and further insights are needed.",
+      "notes": "definitions of single repository and multiple repositories are differerent."
+    },
+    "commit_pr_linked_ratio": "Commit PR Linked Ratio",
+    "commit_pr_linked_ratio_desc": "Determine the percentage of new code commit link pull request in the last 90 days.",
+    "commit_pr_linked_ratio_more": {
+      "weight": "12.612%",
+      "threshold": "100%",
+      "detail": "This indicator is used to determine whether the code submission has gone through the PR process. To determine whether a project is open source, perhaps we can verify the License it declares. But whether open source projects use open community collaboration model to develop, and whether the community is willing to build community with open source contributors and organizational partners, it is not enough to rely on License alone. Here we examine the project's willingness to collaborate by informing contributors in an open and transparent manner about the purpose of the code submission, whether it is a PR or not, and by being reviewed."
+    },
+    "created_since": "Created Since",
+    "created_since_desc": "Determine how long a repository has existed since it was created (in months).",
+    "updated_since": "Updated Since",
+    "updated_since_desc": "Determine the average time per repository since the repository was last updated (in days).",
+    "updated_since_more": {
+      "weight": "12.74%",
+      "threshold": "0.25 months",
+      "detail": "This metric is used to indicate how often the project is updated. It identifies good communities for development collaboration and management, and makes frequent iterative and incremental development to promote continuous improvement in software quality. But the industr domains of a software project also determines that the frequency of its iterations is not always as high as possible, some Linux distribution projects, for example, exhibit a very typical pattern of code iterations with periodic release planning. Here we focus on the trend of the project during each cycle, and the relative results compared with the projects belong to the similar domains."
+    },
+    "org_count": "Org Count",
+    "org_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
+    "org_count_more": {
+      "weight": "32.258%",
+      "threshold": "30",
+      "detail": "What we count here are the organizations that contribute code. The reason for only counting code contributions is that code contributions have the highest technical threshold compared to other types of community contributions, and are the most direct manifestation of an organization's participation in community contributions. At the same time through the analysis of the organization's categories, we can also be more in-depth insight, such as understanding of the project's north-south ecological construction, etc."
+    },
+    "org_commit_frequency": "Org commit frequency",
+    "org_contribution_last": "Org contribution last",
+    "lines_of_code_frequency": "Lines of Code Frequency",
+    "lines_of_code_frequency_desc": "Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.",
+    "lines_of_code_frequency_more": {
+      "weight": "5.640%",
+      "threshold": "300000",
+      "detail": "The number of lines of source code is indeed strongly correlated with the amount of work, but it is less correlated with the value created. What forms of code can be counted in the LOC, are uncertain factors. We do not care so much about the code form(program language, configuration files etc), only use it as the description of the workload, so its weight in the overall metrics model is low."
+    }
+  },
+  "issue": {},
+  "repo": {}
+}
