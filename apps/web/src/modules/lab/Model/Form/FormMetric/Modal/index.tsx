@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useSnapshot } from 'valtio';
 import { useMetricSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import groupBy from 'lodash/groupBy';
 import { GrClose } from 'react-icons/gr';
+import { useThrottle } from 'ahooks';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '@oss-compass/ui';
 import { percentRound } from '@common/utils/number';
@@ -23,6 +24,9 @@ const ModalSelect = ({
   const { t } = useTranslation();
   const formSnapshot = useSnapshot(formState);
   const fieldSnapshot = useSnapshot(formFiledState);
+
+  const [search, setSearch] = useState('');
+  const throttleSearch = useThrottle(search, { wait: 200 });
 
   useEffect(() => {
     if (open) {
@@ -71,13 +75,82 @@ const ModalSelect = ({
   };
 
   const activeCategory = fieldSnapshot.activeCategory;
-  const showListItem = data?.metricSetOverview
-    ?.filter((i) => {
-      return i.category === activeCategory;
-    })
-    .map((i) => ({ ...i, metricId: i.id }));
+  const showListItem = useMemo(() => {
+    return data?.metricSetOverview
+      ?.filter((i) => {
+        return i.category === activeCategory;
+      })
+      .map((i) => ({ ...i, metricId: i.id }));
+  }, [data?.metricSetOverview, activeCategory]);
+
+  const searchResult = useMemo(() => {
+    return data?.metricSetOverview
+      .map((i) => ({ ...i, metricId: i.id }))
+      ?.filter((i) => {
+        return i.ident.indexOf(throttleSearch) > -1;
+      });
+  }, [data?.metricSetOverview, throttleSearch]);
 
   const count = useSelectedCount();
+
+  const content = () => {
+    if (throttleSearch) {
+      if (searchResult.length === 0) {
+        return (
+          <div className="text-secondary w-full text-center ">
+            {t('common:no_data')}
+          </div>
+        );
+      }
+
+      return (
+        <div className="thin-scrollbar flex-1 overflow-auto pl-4">
+          <div className="grid grid-cols-1 gap-4 pr-2">
+            {searchResult?.map((metric) => {
+              return <MetricItemsCard key={metric.ident} item={metric} />;
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <div className="thin-scrollbar overflow-auto">
+          <div className="border-silver flex flex-col border-l border-r border-t ">
+            {categoryKeys?.map((category) => {
+              return <CategoryMenu key={category} category={category} />;
+            })}
+          </div>
+        </div>
+        <div className="thin-scrollbar flex-1 overflow-auto pl-4">
+          {isLoading ? (
+            <div className="animate-pulse p-4">
+              <div className="flex-1 space-y-4 ">
+                <div className="h-4 rounded bg-slate-200"></div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+                  <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+                </div>
+                <div className="h-4 rounded bg-slate-200"></div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+                  <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+                </div>
+                <div className="h-4 rounded bg-slate-200"></div>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 pr-2">
+              {showListItem?.map((metric) => {
+                return <MetricItemsCard key={metric.ident} item={metric} />;
+              })}
+            </div>
+          )}
+        </div>
+      </>
+    );
+  };
 
   return (
     <Modal open={open} onClose={() => onClose()}>
@@ -94,42 +167,16 @@ const ModalSelect = ({
         <div className="px-10 pt-8">
           <div className="mb-3 text-2xl font-medium">{t('lab:add_metric')}</div>
           <div className="mb-4 text-sm">Selected {count} items</div>
-          <Input placeholder="search..." className="mb-4 border-2" />
+          <Input
+            value={search}
+            placeholder="search..."
+            className="mb-4 border-2"
+            onChange={(v) => {
+              setSearch(v);
+            }}
+          />
 
-          <div className="flex h-[440px]">
-            <div className="thin-scrollbar overflow-auto">
-              <div className="border-silver flex flex-col border-l border-r border-t ">
-                {categoryKeys?.map((category) => {
-                  return <CategoryMenu key={category} category={category} />;
-                })}
-              </div>
-            </div>
-            <div className="thin-scrollbar flex-1 overflow-auto pl-4">
-              {isLoading ? (
-                <div className="animate-pulse p-4">
-                  <div className="flex-1 space-y-4 ">
-                    <div className="h-4 rounded bg-slate-200"></div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-                      <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-                    </div>
-                    <div className="h-4 rounded bg-slate-200"></div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-                      <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-                    </div>
-                    <div className="h-4 rounded bg-slate-200"></div>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-4 pr-2">
-                  {showListItem?.map((metric) => {
-                    return <MetricItemsCard key={metric.ident} item={metric} />;
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
+          <div className="flex h-[440px]">{content()}</div>
 
           <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9">
             <div>

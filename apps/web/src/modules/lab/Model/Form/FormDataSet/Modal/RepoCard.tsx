@@ -21,30 +21,35 @@ const labelIsSelect = (
 
 const RepoCard = ({
   label,
+  firstIdent,
+  secondIdent,
   onSelect,
 }: {
   label: string;
+  firstIdent: string;
+  secondIdent: string;
   onSelect: (label: string) => void;
 }) => {
   const snapshot = useSnapshot(formFiledState);
   const repo = getRepoName(label);
   const nameSpace = getNameSpace(label);
   const provider = getProvider(label);
-  const select = labelIsSelect(snapshot, label, {
-    levelFirst: snapshot.levelFirst,
-    levelSecond: snapshot.levelSecond,
+
+  const selected = labelIsSelect(snapshot, label, {
+    levelFirst: firstIdent,
+    levelSecond: secondIdent,
   });
 
   return (
     <div
       className={classnames('relative cursor-pointer bg-white', [
-        select ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
+        selected ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
       ])}
       onClick={() => onSelect(label)}
     >
       <div className="py-2.5 px-4">
         <div className="absolute bottom-4 right-4">
-          <input checked={select} type="checkbox" onChange={() => {}} />
+          <input checked={selected} type="checkbox" onChange={() => {}} />
         </div>
 
         <div>

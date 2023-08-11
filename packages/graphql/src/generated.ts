@@ -1920,6 +1920,22 @@ export type LabMemberFragment = {
   name: string;
 };
 
+export type DatasetFuzzySearchQueryVariables = Exact<{
+  keyword: Scalars['String'];
+}>;
+
+export type DatasetFuzzySearchQuery = {
+  __typename?: 'Query';
+  datasetFuzzySearch?: Array<{
+    __typename?: 'DatasetCompletionRow';
+    firstIdent?: string | null;
+    label?: string | null;
+    level?: string | null;
+    secondIdent?: string | null;
+    shortCode?: string | null;
+  }> | null;
+};
+
 export type MyLabModelsQueryVariables = Exact<{
   page: Scalars['Int'];
   per: Scalars['Int'];
@@ -3767,6 +3783,51 @@ export const MetricStatFragmentDoc = /*#__PURE__*/ `
   median
 }
     `;
+export const DatasetFuzzySearchDocument = /*#__PURE__*/ `
+    query datasetFuzzySearch($keyword: String!) {
+  datasetFuzzySearch(keyword: $keyword) {
+    firstIdent
+    label
+    level
+    secondIdent
+    shortCode
+  }
+}
+    `;
+export const useDatasetFuzzySearchQuery = <
+  TData = DatasetFuzzySearchQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: DatasetFuzzySearchQueryVariables,
+  options?: UseQueryOptions<DatasetFuzzySearchQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<DatasetFuzzySearchQuery, TError, TData>(
+    ['datasetFuzzySearch', variables],
+    fetcher<DatasetFuzzySearchQuery, DatasetFuzzySearchQueryVariables>(
+      client,
+      DatasetFuzzySearchDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useDatasetFuzzySearchQuery.getKey = (
+  variables: DatasetFuzzySearchQueryVariables
+) => ['datasetFuzzySearch', variables];
+useDatasetFuzzySearchQuery.fetcher = (
+  client: GraphQLClient,
+  variables: DatasetFuzzySearchQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<DatasetFuzzySearchQuery, DatasetFuzzySearchQueryVariables>(
+    client,
+    DatasetFuzzySearchDocument,
+    variables,
+    headers
+  );
 export const MyLabModelsDocument = /*#__PURE__*/ `
     query myLabModels($page: Int!, $per: Int!) {
   myModels(page: $page, per: $per) {

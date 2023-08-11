@@ -59,6 +59,7 @@
   "my_models": "My Models",
   "signout": "Sign Out",
   "btn": {
+    "create": "Create",
     "back": "Back",
     "confirm": "Confirm",
     "save": "Save",
@@ -80,5 +81,6 @@
   "copy": {
     "click_to_copy": "click to copy",
     "copy_successfully": "copy successfully"
-  }
+  },
+  "contact_us": "Contact us through <s> the community </s>. "
 }

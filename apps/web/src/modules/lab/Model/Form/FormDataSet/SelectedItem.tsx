@@ -1,4 +1,6 @@
 import React, { PropsWithChildren, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import { FiEdit } from 'react-icons/fi';
 import { AiOutlinePlus } from 'react-icons/ai';
@@ -16,6 +18,7 @@ export const ItemCard = ({
   onHandleEdit: () => void;
   onHandleDelete: () => void;
 }) => {
+  const { t } = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
 
   return (
@@ -49,8 +52,8 @@ export const ItemCard = ({
 
       <Dialog
         open={openConfirm}
-        dialogTitle={<>确定</>}
-        dialogContent={<div className="w-96">确认删除?</div>}
+        dialogTitle={<> {t('common:btn.confirm')}</>}
+        dialogContent={<div className="w-96">{t('common:confirm.delete')}</div>}
         dialogActions={
           <div className="flex">
             <Button
@@ -60,7 +63,7 @@ export const ItemCard = ({
                 setOpenConfirm(false);
               }}
             >
-              取消
+              {t('common:btn.cancel')}
             </Button>
             <Button
               intent="primary"
@@ -70,7 +73,7 @@ export const ItemCard = ({
                 onHandleDelete();
               }}
             >
-              确定
+              {t('common:btn.confirm')}
             </Button>
           </div>
         }

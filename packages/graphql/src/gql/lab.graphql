@@ -143,6 +143,16 @@ fragment labMember on LabMember {
   name
 }
 
+query datasetFuzzySearch($keyword: String!) {
+  datasetFuzzySearch(keyword: $keyword) {
+    firstIdent
+    label
+    level
+    secondIdent
+    shortCode
+  }
+}
+
 query myLabModels($page: Int!, $per: Int!) {
   myModels(page: $page, per: $per) {
     count

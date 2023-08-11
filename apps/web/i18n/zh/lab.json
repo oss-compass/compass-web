@@ -46,5 +46,6 @@
   },
   "remaining_times_of_analysis_performed_this_week": "本周剩余分析次数: ",
   "view_report": "查看报告",
-  "trigger_analysis": "触发分析"
+  "trigger_analysis": "触发分析",
+  "click_on_the_left_menu_and_select_a_category": "点击左侧菜单，选择分类"
 }

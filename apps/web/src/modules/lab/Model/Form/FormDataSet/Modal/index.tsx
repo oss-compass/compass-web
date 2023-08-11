@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { useDataSetListQuery } from '@oss-compass/graphql';
+import { useDatasetFuzzySearchQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { GrClose } from 'react-icons/gr';
-import { useTranslation } from 'react-i18next';
+import { useThrottle } from 'ahooks';
+import { useTranslation, Trans } from 'react-i18next';
 import { Button, Input, Modal } from '@oss-compass/ui';
+import LinkA from '@common/components/LinkA';
 import {
   formFiledState,
   actions,
@@ -13,7 +15,7 @@ import {
 } from '../state';
 import { formState } from '../../state';
 import RepoCard from './RepoCard';
-import CategoryMenu from './CategoryMenu';
+import Content from './Content';
 
 const ModalSelect = ({
   open,
@@ -24,7 +26,8 @@ const ModalSelect = ({
 }) => {
   const { t } = useTranslation();
   const formSnapshot = useSnapshot(formState);
-  const fieldSnapshot = useSnapshot(formFiledState);
+  const [search, setSearch] = useState('');
+  const throttleSearch = useThrottle(search, { wait: 200 });
 
   useEffect(() => {
     if (open) {
@@ -41,25 +44,12 @@ const ModalSelect = ({
     }
   }, [formSnapshot.dataSet, open]);
 
-  const isMenuSelect =
-    Boolean(fieldSnapshot.levelFirst) && Boolean(fieldSnapshot.levelSecond);
-
-  const { data } = useDataSetListQuery(
-    gqlClient,
-    {},
-    { staleTime: 5 * 60 * 1000 }
-  );
-
-  const { data: repoList, isLoading: repoListLoading } = useDataSetListQuery(
+  const { isLoading, data: searchData } = useDatasetFuzzySearchQuery(
     gqlClient,
     {
-      firstIdent: fieldSnapshot.levelFirst,
-      secondIdent: fieldSnapshot.levelSecond,
+      keyword: throttleSearch,
     },
-    {
-      enabled: isMenuSelect,
-      staleTime: 5 * 60 * 1000,
-    }
+    { enabled: Boolean(throttleSearch) }
   );
 
   const handleSave = () => {
@@ -79,8 +69,53 @@ const ModalSelect = ({
     // close modal
     onClose();
   };
-
   const count = useSelectedCount();
+
+  const modalContent = () => {
+    if (!throttleSearch) {
+      return <Content />;
+    }
+
+    if (isLoading) {
+      return (
+        <div className="text-secondary w-full text-center ">loading...</div>
+      );
+    }
+    const repos = searchData?.datasetFuzzySearch || [];
+    const len = repos.length;
+
+    if (len === 0) {
+      return (
+        <div className="text-secondary w-full text-center ">
+          {t('common:no_data')}
+        </div>
+      );
+    }
+
+    return (
+      <div className="thin-scrollbar flex-1 overflow-auto ">
+        <div className="grid grid-cols-3 gap-4 pr-2">
+          {repos?.map?.((item) => {
+            return (
+              <RepoCard
+                key={item.label}
+                label={item.label}
+                firstIdent={item.firstIdent}
+                secondIdent={item.secondIdent}
+                onSelect={() => {
+                  actions.onSelect({
+                    label: item.label,
+                    levelFirst: item.firstIdent,
+                    levelSecond: item.secondIdent,
+                  });
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Modal open={open} onClose={() => onClose()}>
@@ -99,69 +134,27 @@ const ModalSelect = ({
             {t('lab:add_dataset')}
           </div>
           <div className="mb-4 text-sm">Selected {count} items</div>
-          <Input placeholder="search..." className="mb-4 border-2" />
+          <Input
+            value={search}
+            placeholder="search..."
+            className="mb-4 border-2"
+            onChange={(v) => {
+              setSearch(v);
+            }}
+          />
 
-          <div className="flex h-[440px]">
-            <div className="thin-scrollbar overflow-auto pr-1">
-              <div className="border-silver flex flex-col border-l border-r border-t ">
-                {data?.datasetOverview?.map((item) => {
-                  return <CategoryMenu key={item} ident={item} />;
-                })}
-              </div>
-            </div>
-            <div className="thin-scrollbar flex-1 overflow-auto pl-4">
-              {isMenuSelect ? (
-                <>
-                  {repoListLoading ? (
-                    <div className="animate-pulse p-4">
-                      <div className="flex-1 space-y-4 ">
-                        <div className="h-4 rounded bg-slate-200"></div>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-                          <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-                        </div>
-                        <div className="h-4 rounded bg-slate-200"></div>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-                          <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-                        </div>
-                        <div className="h-4 rounded bg-slate-200"></div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-4 pr-2">
-                      {repoList?.datasetOverview?.map((repo) => {
-                        return (
-                          <RepoCard
-                            key={repo}
-                            label={repo}
-                            onSelect={(label) => {
-                              const { levelFirst, levelSecond } =
-                                formFiledState;
-                              actions.onSelect({
-                                label,
-                                levelFirst,
-                                levelSecond,
-                              });
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-secondary pt-20 text-center">
-                  点击左侧菜单，选择分类
-                </div>
-              )}
-            </div>
-          </div>
+          <div className="flex h-[440px]">{modalContent()}</div>
 
           <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9">
             <div>
-              找不到合适的数据集？点此通过社区
-              <span className="text-primary mr-2">联系我们</span>
+              {t('lab:cant_find_a_suitable_dataset')}
+              <Trans
+                i18nKey="contact_us"
+                ns="common"
+                components={{
+                  s: <LinkA href={'/docs/community/'} />,
+                }}
+              />
             </div>
             <div>
               <Button

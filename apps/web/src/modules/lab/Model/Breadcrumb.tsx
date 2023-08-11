@@ -1,20 +1,23 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 
 const lab_prefix = '/lab';
 
 const Breadcrumbs = ({ className }: { className?: string }) => {
+  const { t } = useTranslation();
+
   const router = useRouter();
   const { pathname, query } = router;
   console.log(router);
 
   const textMap = {
-    model: '我的模型',
-    version: '版本',
-    create: '创建',
-    edit: '编辑',
+    model: t('lab:my_models'),
+    version: t('lab:versions'),
+    create: t('common:btn.create'),
+    edit: t('common:btn.edit'),
   };
 
   const routerMap = {
