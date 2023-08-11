@@ -2,12 +2,12 @@ import React, { useRef } from 'react';
 import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import { GrClose } from 'react-icons/gr';
+import last from 'lodash/last';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import {
   useLabModelCommentsQuery,
   useCreateLabModelCommentMutation,
 } from '@oss-compass/graphql';
-import last from 'lodash/last';
 import gqlClient from '@common/gqlClient';
 import { BsArrowDown, BsArrowUp, BsLink45Deg } from 'react-icons/bs';
 import CommentInput, { InputRefProps } from './CommentInput';
@@ -23,9 +23,9 @@ const CommentDrawer = ({
   const inputRef = useRef<InputRefProps>(null);
   const router = useRouter();
   const modelId = Number(router.query.model);
-  const versionId = Number(router.query.version);
+  const defaultVersionId = Number(router.query.version);
 
-  const params = { modelId, versionId, page: 1, per: 10 };
+  const params = { modelId, versionId: defaultVersionId, page: 1, per: 10 };
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
     useInfiniteQuery(
       useLabModelCommentsQuery.getKey(params),
@@ -48,17 +48,20 @@ const CommentDrawer = ({
       }
     );
 
+  const lastItem = last(data?.pages);
   const commentMutation = useCreateLabModelCommentMutation(gqlClient);
 
   return (
     <div
       className={classnames(
         'border-silver shrink-0 overflow-hidden  border-l transition-all',
-        [open ? 'w-[400px] opacity-100' : 'w-0 opacity-0']
+        [open ? 'h-auto w-[400px] opacity-100' : 'h-0 w-0 opacity-0']
       )}
     >
       <div className="flex h-10 items-center justify-between border-b border-[#EAEAEA] bg-[#FAFAFA] pl-4 pr-2">
-        <div className="text-sm">讨论（10）</div>
+        <div className="text-sm">
+          讨论（{lastItem?.labModelComments?.count || 0}）
+        </div>
         <div className="flex items-center">
           <div className="text-xs">基于版本：V20230711.13.19</div>
           <div
@@ -95,9 +98,14 @@ const CommentDrawer = ({
                 {item.labModelComments.items?.map((comment) => {
                   return (
                     <CommentItem
+                      parentId={comment.id}
+                      className="px-3 pt-3"
                       key={comment.id}
                       comment={comment}
                       onDeleteSuccess={() => {
+                        refetch();
+                      }}
+                      onUpdateSuccess={() => {
                         refetch();
                       }}
                     />
@@ -124,7 +132,7 @@ const CommentDrawer = ({
               loading={commentMutation.isLoading}
               onSubmit={(content) => {
                 commentMutation.mutate(
-                  { modelId, versionId, content },
+                  { modelId, versionId: defaultVersionId, content },
                   {
                     onSuccess: () => {
                       refetch();

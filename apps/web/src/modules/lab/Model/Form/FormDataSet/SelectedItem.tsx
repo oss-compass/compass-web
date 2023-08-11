@@ -85,7 +85,7 @@ export const ItemCard = ({
 export const ItemCardPlus = ({ onHandleAdd }: { onHandleAdd: () => void }) => {
   return (
     <div
-      className="flex h-24 cursor-pointer flex-col items-center justify-center border border-[#CCCCCC]  p-3 text-lg"
+      className="hover:bg-smoke flex h-24 cursor-pointer flex-col items-center justify-center border  border-[#CCCCCC] p-3  text-lg"
       onClick={() => {
         onHandleAdd();
       }}

@@ -5,7 +5,7 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { Popper } from '@oss-compass/ui';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import { ModelDetail, useDeleteLabModelMutation } from '@oss-compass/graphql';
+import { Permission, useDeleteLabModelMutation } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { ReFetch } from '@common/constant';
 import Dialog from '@common/components/Dialog';
@@ -14,9 +14,11 @@ import { Button } from '@oss-compass/ui';
 const ModelItemMore = ({
   modelId,
   event$,
+  permissions,
 }: {
   modelId: number;
   event$: EventEmitter<string>;
+  permissions: Permission;
 }) => {
   const router = useRouter();
   const { t } = useTranslation();

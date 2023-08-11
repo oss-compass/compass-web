@@ -5,8 +5,8 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import Banner from '@modules/lab/Model/Banner';
-import ModelEditForm from '@modules/lab/Model/Edit';
-import ModelProvider from '@modules/lab/Model/Provider/ModelProvider';
+import View from '@modules/lab/Model/Version/View';
+import ModelInfoProvider from '@modules/lab/Model/Provider/ModelVersionProvider';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -16,18 +16,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-const ModelEdit = () => {
+const VersionCreate = () => {
   return (
     <NoSsr>
       <Header />
-      <Banner />
       <AuthRequire loadingClassName="mx-auto w-[1000px] py-10 md:w-full md:px-6">
-        <ModelProvider>
-          <ModelEditForm />
-        </ModelProvider>
+        <ModelInfoProvider>
+          <View />
+        </ModelInfoProvider>
       </AuthRequire>
     </NoSsr>
   );
 };
 
-export default ModelEdit;
+export default VersionCreate;

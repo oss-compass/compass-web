@@ -122,7 +122,7 @@ const ModalSelect = ({
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-4 pr-2">
                   {showListItem?.map((metric) => {
                     return <MetricItemsCard key={metric.ident} item={metric} />;
                   })}

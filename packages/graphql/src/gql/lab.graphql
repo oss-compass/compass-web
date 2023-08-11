@@ -2,6 +2,9 @@ fragment comment on ModelComment {
   content
   createdAt
   id
+  metric {
+    ...metrics
+  }
   images {
     filename
     url
@@ -11,6 +14,31 @@ fragment comment on ModelComment {
   }
   parent {
     ...parentComment
+  }
+  replies {
+    ...reply
+  }
+  updatedAt
+  user {
+    avatarUrl
+    id
+    name
+  }
+}
+
+fragment reply on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+  }
+  updatedAt
+  user {
+    avatarUrl
+    id
+    name
   }
   replies {
     content
@@ -26,12 +54,6 @@ fragment comment on ModelComment {
       id
       name
     }
-  }
-  updatedAt
-  user {
-    avatarUrl
-    id
-    name
   }
 }
 
@@ -76,6 +98,7 @@ fragment dataset on Dataset {
   items {
     firstIdent
     label
+    shortCode
     level
     secondIdent
   }
@@ -144,6 +167,12 @@ query myLabModels($page: Int!, $per: Int!) {
       }
       name
       userId
+      permissions {
+        canDestroy
+        canExecute
+        canRead
+        canUpdate
+      }
     }
     page
     totalPage
@@ -151,14 +180,15 @@ query myLabModels($page: Int!, $per: Int!) {
 }
 
 query labModelDetail($id: Int!) {
-  labModelDetail(id: $id) {
+  labModelDetail(modelId: $id) {
     dimension
     id
     isGeneral
     isPublic
     triggerRemainingCount
     latestVersions {
-      ...modelVersion
+      id
+      version
     }
     name
     userId
@@ -520,6 +550,23 @@ mutation createLabModelComment(
       content: $content
       images: $images
     }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation updateLabModelComment(
+  $commentId: Int!
+  $content: String!
+  $modelId: Int!
+) {
+  updateLabModelComment(
+    input: { modelId: $modelId, content: $content, commentId: $commentId }
   ) {
     clientMutationId
     errors {

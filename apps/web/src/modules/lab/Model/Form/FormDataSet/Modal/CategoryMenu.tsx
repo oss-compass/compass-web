@@ -28,7 +28,10 @@ const CategoryMenu = ({ ident }: { ident: string }) => {
   return (
     <div className="w-60">
       <div
-        className="bg-smoke border-silver flex h-10 cursor-pointer  cursor-pointer items-center justify-between border-b pl-4 pr-4 font-medium "
+        className={classnames(
+          'border-silver hover:bg-smoke flex h-10  cursor-pointer cursor-pointer items-center justify-between border-b pl-4 pr-4 font-medium',
+          [collapse ? 'bg-smoke' : '']
+        )}
         onClick={() => {
           actions.changeLevelFirst(ident);
           setCollapse((p) => !p);

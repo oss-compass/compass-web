@@ -613,6 +613,8 @@ export type DatasetCompletionRow = {
   level?: Maybe<Scalars['String']>;
   /** second ident of the object */
   secondIdent?: Maybe<Scalars['String']>;
+  /** short code of metric model object label */
+  shortCode?: Maybe<Scalars['String']>;
 };
 
 export type DatasetRowTypeInput = {
@@ -909,6 +911,7 @@ export type ModelDetail = {
   /** Details of the 1000 latest updates */
   latestVersions?: Maybe<Array<ModelVersion>>;
   name: Scalars['String'];
+  permissions?: Maybe<Permission>;
   triggerRemainingCount: Scalars['Int'];
   userId: Scalars['Int'];
 };
@@ -1101,6 +1104,14 @@ export type MyModels = {
   totalPage?: Maybe<Scalars['Int']>;
 };
 
+export type Permission = {
+  __typename?: 'Permission';
+  canDestroy: Scalars['Boolean'];
+  canExecute: Scalars['Boolean'];
+  canRead: Scalars['Boolean'];
+  canUpdate: Scalars['Boolean'];
+};
+
 export type ProjectCompletionRow = {
   __typename?: 'ProjectCompletionRow';
   /** metric model object identification */
@@ -1177,6 +1188,8 @@ export type Query = {
   metricSetOverview?: Maybe<Array<ModelMetric>>;
   /** Get starter project health metrics data of compass */
   metricStarterProjectHealth: Array<StarterProjectHealthMetric>;
+  /** Get my member permissions of a lab model */
+  myMemberPermission?: Maybe<Permission>;
   /** Get detail data of my lab models */
   myModels?: Maybe<MyModels>;
   subjectSubscriptionCount: SubjectSubscriptionCount;
@@ -1284,7 +1297,7 @@ export type QueryLabModelCommentsArgs = {
 };
 
 export type QueryLabModelDetailArgs = {
-  id: Scalars['Int'];
+  modelId: Scalars['Int'];
 };
 
 export type QueryLabModelVersionArgs = {
@@ -1336,6 +1349,10 @@ export type QueryMetricStarterProjectHealthArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryMyMemberPermissionArgs = {
+  modelId?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryMyModelsArgs = {
@@ -1672,6 +1689,19 @@ export type CommentFragment = {
   createdAt: any;
   id: number;
   updatedAt: any;
+  metric?: {
+    __typename?: 'ModelMetric';
+    category?: string | null;
+    defaultThreshold?: number | null;
+    defaultWeight?: number | null;
+    from?: string | null;
+    id?: number | null;
+    metricId?: number | null;
+    ident?: string | null;
+    name?: string | null;
+    threshold?: number | null;
+    weight?: number | null;
+  } | null;
   images?: Array<{
     __typename?: 'Image';
     filename: string;
@@ -1716,6 +1746,24 @@ export type CommentFragment = {
       id: number;
       name: string;
     };
+    replies?: Array<{
+      __typename?: 'ModelComment';
+      content: string;
+      createdAt: any;
+      id: number;
+      updatedAt: any;
+      images?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        url: string;
+      }> | null;
+      user: {
+        __typename?: 'SimpleUser';
+        avatarUrl?: string | null;
+        id: number;
+        name: string;
+      };
+    }> | null;
   }> | null;
   user: {
     __typename?: 'SimpleUser';
@@ -1723,6 +1771,43 @@ export type CommentFragment = {
     id: number;
     name: string;
   };
+};
+
+export type ReplyFragment = {
+  __typename?: 'ModelComment';
+  content: string;
+  createdAt: any;
+  id: number;
+  updatedAt: any;
+  images?: Array<{
+    __typename?: 'Image';
+    filename: string;
+    url: string;
+  }> | null;
+  user: {
+    __typename?: 'SimpleUser';
+    avatarUrl?: string | null;
+    id: number;
+    name: string;
+  };
+  replies?: Array<{
+    __typename?: 'ModelComment';
+    content: string;
+    createdAt: any;
+    id: number;
+    updatedAt: any;
+    images?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      url: string;
+    }> | null;
+    user: {
+      __typename?: 'SimpleUser';
+      avatarUrl?: string | null;
+      id: number;
+      name: string;
+    };
+  }> | null;
 };
 
 export type ParentCommentFragment = {
@@ -1770,6 +1855,7 @@ export type DatasetFragment = {
     __typename?: 'DatasetCompletionRow';
     firstIdent?: string | null;
     label?: string | null;
+    shortCode?: string | null;
     level?: string | null;
     secondIdent?: string | null;
   }> | null;
@@ -1802,6 +1888,7 @@ export type ModelVersionFragment = {
       __typename?: 'DatasetCompletionRow';
       firstIdent?: string | null;
       label?: string | null;
+      shortCode?: string | null;
       level?: string | null;
       secondIdent?: string | null;
     }> | null;
@@ -1871,6 +1958,7 @@ export type MyLabModelsQuery = {
             __typename?: 'DatasetCompletionRow';
             firstIdent?: string | null;
             label?: string | null;
+            shortCode?: string | null;
             level?: string | null;
             secondIdent?: string | null;
           }> | null;
@@ -1889,6 +1977,13 @@ export type MyLabModelsQuery = {
           weight?: number | null;
         }>;
       }> | null;
+      permissions?: {
+        __typename?: 'Permission';
+        canDestroy: boolean;
+        canExecute: boolean;
+        canRead: boolean;
+        canUpdate: boolean;
+      } | null;
     }> | null;
   } | null;
 };
@@ -1912,36 +2007,6 @@ export type LabModelDetailQuery = {
       __typename?: 'ModelVersion';
       id: number;
       version?: string | null;
-      algorithm?: {
-        __typename?: 'Algorithm';
-        ident: string;
-        name: string;
-      } | null;
-      dataset: {
-        __typename?: 'Dataset';
-        ident?: string | null;
-        name?: string | null;
-        items?: Array<{
-          __typename?: 'DatasetCompletionRow';
-          firstIdent?: string | null;
-          label?: string | null;
-          level?: string | null;
-          secondIdent?: string | null;
-        }> | null;
-      };
-      metrics: Array<{
-        __typename?: 'ModelMetric';
-        category?: string | null;
-        defaultThreshold?: number | null;
-        defaultWeight?: number | null;
-        from?: string | null;
-        id?: number | null;
-        metricId?: number | null;
-        ident?: string | null;
-        name?: string | null;
-        threshold?: number | null;
-        weight?: number | null;
-      }>;
     }> | null;
   } | null;
 };
@@ -1970,6 +2035,7 @@ export type LabModelVersionQuery = {
         __typename?: 'DatasetCompletionRow';
         firstIdent?: string | null;
         label?: string | null;
+        shortCode?: string | null;
         level?: string | null;
         secondIdent?: string | null;
       }> | null;
@@ -2043,6 +2109,19 @@ export type LabModelCommentsQuery = {
       createdAt: any;
       id: number;
       updatedAt: any;
+      metric?: {
+        __typename?: 'ModelMetric';
+        category?: string | null;
+        defaultThreshold?: number | null;
+        defaultWeight?: number | null;
+        from?: string | null;
+        id?: number | null;
+        metricId?: number | null;
+        ident?: string | null;
+        name?: string | null;
+        threshold?: number | null;
+        weight?: number | null;
+      } | null;
       images?: Array<{
         __typename?: 'Image';
         filename: string;
@@ -2087,6 +2166,24 @@ export type LabModelCommentsQuery = {
           id: number;
           name: string;
         };
+        replies?: Array<{
+          __typename?: 'ModelComment';
+          content: string;
+          createdAt: any;
+          id: number;
+          updatedAt: any;
+          images?: Array<{
+            __typename?: 'Image';
+            filename: string;
+            url: string;
+          }> | null;
+          user: {
+            __typename?: 'SimpleUser';
+            avatarUrl?: string | null;
+            id: number;
+            name: string;
+          };
+        }> | null;
       }> | null;
       user: {
         __typename?: 'SimpleUser';
@@ -2132,6 +2229,19 @@ export type LabModelCommentDetailQuery = {
       createdAt: any;
       id: number;
       updatedAt: any;
+      metric?: {
+        __typename?: 'ModelMetric';
+        category?: string | null;
+        defaultThreshold?: number | null;
+        defaultWeight?: number | null;
+        from?: string | null;
+        id?: number | null;
+        metricId?: number | null;
+        ident?: string | null;
+        name?: string | null;
+        threshold?: number | null;
+        weight?: number | null;
+      } | null;
       images?: Array<{
         __typename?: 'Image';
         filename: string;
@@ -2176,6 +2286,24 @@ export type LabModelCommentDetailQuery = {
           id: number;
           name: string;
         };
+        replies?: Array<{
+          __typename?: 'ModelComment';
+          content: string;
+          createdAt: any;
+          id: number;
+          updatedAt: any;
+          images?: Array<{
+            __typename?: 'Image';
+            filename: string;
+            url: string;
+          }> | null;
+          user: {
+            __typename?: 'SimpleUser';
+            avatarUrl?: string | null;
+            id: number;
+            name: string;
+          };
+        }> | null;
       }> | null;
       user: {
         __typename?: 'SimpleUser';
@@ -2190,6 +2318,19 @@ export type LabModelCommentDetailQuery = {
       createdAt: any;
       id: number;
       updatedAt: any;
+      metric?: {
+        __typename?: 'ModelMetric';
+        category?: string | null;
+        defaultThreshold?: number | null;
+        defaultWeight?: number | null;
+        from?: string | null;
+        id?: number | null;
+        metricId?: number | null;
+        ident?: string | null;
+        name?: string | null;
+        threshold?: number | null;
+        weight?: number | null;
+      } | null;
       images?: Array<{
         __typename?: 'Image';
         filename: string;
@@ -2234,6 +2375,24 @@ export type LabModelCommentDetailQuery = {
           id: number;
           name: string;
         };
+        replies?: Array<{
+          __typename?: 'ModelComment';
+          content: string;
+          createdAt: any;
+          id: number;
+          updatedAt: any;
+          images?: Array<{
+            __typename?: 'Image';
+            filename: string;
+            url: string;
+          }> | null;
+          user: {
+            __typename?: 'SimpleUser';
+            avatarUrl?: string | null;
+            id: number;
+            name: string;
+          };
+        }> | null;
       }> | null;
       user: {
         __typename?: 'SimpleUser';
@@ -2559,6 +2718,26 @@ export type CreateLabModelCommentMutation = {
   __typename?: 'Mutation';
   createLabModelComment?: {
     __typename?: 'CreateLabModelCommentPayload';
+    clientMutationId?: string | null;
+    message?: string | null;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type UpdateLabModelCommentMutationVariables = Exact<{
+  commentId: Scalars['Int'];
+  content: Scalars['String'];
+  modelId: Scalars['Int'];
+}>;
+
+export type UpdateLabModelCommentMutation = {
+  __typename?: 'Mutation';
+  updateLabModelComment?: {
+    __typename?: 'UpdateLabModelCommentPayload';
     clientMutationId?: string | null;
     message?: string | null;
     errors?: Array<{
@@ -3426,6 +3605,20 @@ export type BulkShortenedLabelQuery = {
   }>;
 };
 
+export const MetricsFragmentDoc = /*#__PURE__*/ `
+    fragment metrics on ModelMetric {
+  category
+  defaultThreshold
+  defaultWeight
+  from
+  id
+  metricId
+  ident
+  name
+  threshold
+  weight
+}
+    `;
 export const ModelDetailFragmentDoc = /*#__PURE__*/ `
     fragment modelDetail on ModelDetail {
   dimension
@@ -3449,8 +3642,8 @@ export const ParentCommentFragmentDoc = /*#__PURE__*/ `
   updatedAt
 }
     `;
-export const CommentFragmentDoc = /*#__PURE__*/ `
-    fragment comment on ModelComment {
+export const ReplyFragmentDoc = /*#__PURE__*/ `
+    fragment reply on ModelComment {
   content
   createdAt
   id
@@ -3458,11 +3651,11 @@ export const CommentFragmentDoc = /*#__PURE__*/ `
     filename
     url
   }
-  model {
-    ...modelDetail
-  }
-  parent {
-    ...parentComment
+  updatedAt
+  user {
+    avatarUrl
+    id
+    name
   }
   replies {
     content
@@ -3479,6 +3672,29 @@ export const CommentFragmentDoc = /*#__PURE__*/ `
       name
     }
   }
+}
+    `;
+export const CommentFragmentDoc = /*#__PURE__*/ `
+    fragment comment on ModelComment {
+  content
+  createdAt
+  id
+  metric {
+    ...metrics
+  }
+  images {
+    filename
+    url
+  }
+  model {
+    ...modelDetail
+  }
+  parent {
+    ...parentComment
+  }
+  replies {
+    ...reply
+  }
   updatedAt
   user {
     avatarUrl
@@ -3486,8 +3702,10 @@ export const CommentFragmentDoc = /*#__PURE__*/ `
     name
   }
 }
-    ${ModelDetailFragmentDoc}
-${ParentCommentFragmentDoc}`;
+    ${MetricsFragmentDoc}
+${ModelDetailFragmentDoc}
+${ParentCommentFragmentDoc}
+${ReplyFragmentDoc}`;
 export const UserFragmentDoc = /*#__PURE__*/ `
     fragment user on SimpleUser {
   avatarUrl
@@ -3507,24 +3725,11 @@ export const DatasetFragmentDoc = /*#__PURE__*/ `
   items {
     firstIdent
     label
+    shortCode
     level
     secondIdent
   }
   name
-}
-    `;
-export const MetricsFragmentDoc = /*#__PURE__*/ `
-    fragment metrics on ModelMetric {
-  category
-  defaultThreshold
-  defaultWeight
-  from
-  id
-  metricId
-  ident
-  name
-  threshold
-  weight
 }
     `;
 export const ModelVersionFragmentDoc = /*#__PURE__*/ `
@@ -3587,6 +3792,12 @@ export const MyLabModelsDocument = /*#__PURE__*/ `
       }
       name
       userId
+      permissions {
+        canDestroy
+        canExecute
+        canRead
+        canUpdate
+      }
     }
     page
     totalPage
@@ -3629,20 +3840,21 @@ useMyLabModelsQuery.fetcher = (
   );
 export const LabModelDetailDocument = /*#__PURE__*/ `
     query labModelDetail($id: Int!) {
-  labModelDetail(id: $id) {
+  labModelDetail(modelId: $id) {
     dimension
     id
     isGeneral
     isPublic
     triggerRemainingCount
     latestVersions {
-      ...modelVersion
+      id
+      version
     }
     name
     userId
   }
 }
-    ${ModelVersionFragmentDoc}`;
+    `;
 export const useLabModelDetailQuery = <
   TData = LabModelDetailQuery,
   TError = unknown
@@ -4650,6 +4862,56 @@ useCreateLabModelCommentMutation.fetcher = (
     CreateLabModelCommentMutation,
     CreateLabModelCommentMutationVariables
   >(client, CreateLabModelCommentDocument, variables, headers);
+export const UpdateLabModelCommentDocument = /*#__PURE__*/ `
+    mutation updateLabModelComment($commentId: Int!, $content: String!, $modelId: Int!) {
+  updateLabModelComment(
+    input: {modelId: $modelId, content: $content, commentId: $commentId}
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+    `;
+export const useUpdateLabModelCommentMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    UpdateLabModelCommentMutation,
+    TError,
+    UpdateLabModelCommentMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    UpdateLabModelCommentMutation,
+    TError,
+    UpdateLabModelCommentMutationVariables,
+    TContext
+  >(
+    ['updateLabModelComment'],
+    (variables?: UpdateLabModelCommentMutationVariables) =>
+      fetcher<
+        UpdateLabModelCommentMutation,
+        UpdateLabModelCommentMutationVariables
+      >(client, UpdateLabModelCommentDocument, variables, headers)(),
+    options
+  );
+useUpdateLabModelCommentMutation.fetcher = (
+  client: GraphQLClient,
+  variables: UpdateLabModelCommentMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    UpdateLabModelCommentMutation,
+    UpdateLabModelCommentMutationVariables
+  >(client, UpdateLabModelCommentDocument, variables, headers);
 export const CreateRepoTaskDocument = /*#__PURE__*/ `
     mutation createRepoTask($repoUrls: [String!]!, $origin: String!) {
   createRepoTask(input: {repoUrls: $repoUrls, origin: $origin}) {

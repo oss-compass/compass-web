@@ -47,7 +47,7 @@ export const useUserInfo = () => {
     provider: provider,
     loginBinds: user?.loginBinds,
   });
-  return { providerUser, loginBinds: user?.loginBinds };
+  return { currentUser: user, providerUser, loginBinds: user?.loginBinds };
 };
 
 // for submit you project

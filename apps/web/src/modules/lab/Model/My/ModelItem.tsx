@@ -22,6 +22,8 @@ const ModelItem = ({
   const router = useRouter();
   const { t } = useTranslation();
 
+  const permissions = model?.permissions;
+
   const dimensionLogo = {
     '0': (
       <>
@@ -59,11 +61,22 @@ const ModelItem = ({
             <AiOutlineUser className="text-[#666]" />
             <div className="ml-1 text-sm">{t('lab:user_management')}</div>
           </div>
-          <ModelItemMore modelId={model.id} event$={event$} />
+          <ModelItemMore
+            modelId={model.id}
+            event$={event$}
+            permissions={permissions}
+          />
         </div>
       </div>
 
-      <div className="mb-2 text-lg font-semibold">{model.name}</div>
+      <div className="mb-2 flex items-center text-lg font-semibold">
+        {model.name}
+        {model.isPublic ? (
+          <span className="ml-2 rounded-2xl bg-[#cdf0ce] px-2 py-0.5  text-xs text-[#00B400]">
+            Public
+          </span>
+        ) : null}
+      </div>
       <div className="mb-4 flex items-center justify-between">
         <div className="text-secondary text-sm font-semibold">
           {t('lab:versions')}
@@ -86,6 +99,7 @@ const ModelItem = ({
               modelId={model.id}
               event$={event$}
               version={item}
+              permissions={permissions}
             />
           );
         })}

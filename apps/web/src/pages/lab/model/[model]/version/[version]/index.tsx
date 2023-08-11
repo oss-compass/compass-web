@@ -6,6 +6,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import ModelVersionView from '@modules/lab/Model/Version/View';
+import ModelVersionProvider from '@modules/lab/Model/Provider/ModelVersionProvider';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -20,8 +21,10 @@ const Version = () => {
   return (
     <NoSsr>
       <Header />
-      <AuthRequire loadingClassName="mx-auto w-[1000px] py-10 md:w-full md:px-6">
-        <ModelVersionView />
+      <AuthRequire loadingClassName="py-10 md:w-full md:px-6">
+        <ModelVersionProvider>
+          <ModelVersionView />
+        </ModelVersionProvider>
       </AuthRequire>
     </NoSsr>
   );

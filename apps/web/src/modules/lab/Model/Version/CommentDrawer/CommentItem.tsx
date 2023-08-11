@@ -1,21 +1,28 @@
 import { useEffect, useState, useRef } from 'react';
-import { CommentFragment } from '@oss-compass/graphql';
 import Image from 'next/image';
+import { CommentFragment } from '@oss-compass/graphql';
 import CommentItemMore from './CommentItemMore';
-import CommentInput, { InputRefProps } from './CommentInput';
+import CommentEdit from './CommentEdit';
+import CommentReply from './CommentReply';
 
 const CommentItem = ({
+  parentId,
   comment,
+  className,
   onDeleteSuccess,
+  onUpdateSuccess,
 }: {
+  parentId: number;
+  className?: string;
   comment: CommentFragment;
   onDeleteSuccess: () => void;
+  onUpdateSuccess: () => void;
 }) => {
-  const ref = useRef<InputRefProps>(null);
   const [edit, setEdit] = useState(false);
+  const [reply, setReply] = useState(false);
 
   return (
-    <div className="px-3 pt-3">
+    <div className={className}>
       <div className="border-smoke flex border-b pb-4">
         <div className="relative h-8 w-8  shrink-0 overflow-hidden rounded-full">
           <Image
@@ -36,7 +43,12 @@ const CommentItem = ({
               <div className="text-secondary ml-2 text-xs">04.09.2018</div>
             </div>
             <div className="flex items-center justify-between">
-              <div className="text-secondary cursor-pointer  p-1 text-xs">
+              <div
+                className="text-secondary cursor-pointer  p-1 text-xs"
+                onClick={() => {
+                  setReply(true);
+                }}
+              >
                 reply
               </div>
               <CommentItemMore
@@ -48,15 +60,54 @@ const CommentItem = ({
               />
             </div>
           </div>
+
           {edit ? (
-            <>
-              <CommentInput ref={ref} loading={false} onSubmit={() => {}} />
-            </>
+            <CommentEdit
+              comment={comment}
+              onUpdateSuccess={() => {
+                setEdit(false);
+                onUpdateSuccess();
+              }}
+              onCancel={() => {
+                setEdit(false);
+              }}
+            />
           ) : (
             <div className="text-sm">{comment?.content}</div>
           )}
+
+          {reply ? (
+            <CommentReply
+              parentId={parentId}
+              comment={comment}
+              onReplySuccess={() => {
+                setReply(false);
+                onUpdateSuccess();
+              }}
+              onCancel={() => {
+                setReply(false);
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      {comment.replies?.map?.((reply) => {
+        return (
+          <CommentItem
+            parentId={parentId}
+            className="pl-6 pt-3"
+            key={reply.id}
+            comment={reply}
+            onDeleteSuccess={() => {
+              onDeleteSuccess();
+            }}
+            onUpdateSuccess={() => {
+              onUpdateSuccess();
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

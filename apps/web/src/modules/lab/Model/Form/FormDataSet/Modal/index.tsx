@@ -102,7 +102,7 @@ const ModalSelect = ({
           <Input placeholder="search..." className="mb-4 border-2" />
 
           <div className="flex h-[440px]">
-            <div className="thin-scrollbar overflow-auto">
+            <div className="thin-scrollbar overflow-auto pr-1">
               <div className="border-silver flex flex-col border-l border-r border-t ">
                 {data?.datasetOverview?.map((item) => {
                   return <CategoryMenu key={item} ident={item} />;
@@ -129,7 +129,7 @@ const ModalSelect = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 pr-2">
                       {repoList?.datasetOverview?.map((repo) => {
                         return (
                           <RepoCard

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import uniq from 'lodash/uniq';
 import { AiOutlinePlus } from 'react-icons/ai';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import { ModelVersion } from '@oss-compass/graphql';
+import { ModelVersion, Permission } from '@oss-compass/graphql';
 import VersionItemMore from './VersionItemMore';
 
 export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
@@ -22,9 +22,11 @@ export const VersionCard = ({
   version,
   modelId,
   event$,
+  permissions,
 }: {
   modelId: number;
   version: ModelVersion;
+  permissions: Permission;
   event$: EventEmitter<string>;
 }) => {
   const { t } = useTranslation();
@@ -48,17 +50,17 @@ export const VersionCard = ({
         <div className="px-3 pb-2">
           <div className="mb-2">
             <span className="text-secondary block truncate text-xs">
-              数据集：{dataSetNames}
+              {t('lab:datasets')}: {dataSetNames}
             </span>
           </div>
           <div className="mb-2">
             <span className="text-secondary block truncate  text-xs">
-              度量指标：{metricsNames}
+              {t('lab:metrics')}：{metricsNames}
             </span>
           </div>
           <div className="mb-2">
             <span className="text-secondary block truncate text-xs">
-              模型算法：默认
+              {t('lab:algorithm')}：默认
             </span>
           </div>
         </div>
@@ -67,7 +69,7 @@ export const VersionCard = ({
         <div
           className="hover:bg-smoke flex w-1/2 cursor-pointer items-center justify-center border-r"
           onClick={() => {
-            router.push(`/lab/model/${modelId}/version/${version.id}`);
+            router.push(`/lab/model/${modelId}/version/${version.id}/dataset`);
           }}
         >
           <span className="block text-sm">{t('lab:view_report')}</span>

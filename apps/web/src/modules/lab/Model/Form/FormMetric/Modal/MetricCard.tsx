@@ -1,25 +1,7 @@
 import React, { PropsWithChildren } from 'react';
-import { RiDeleteBinLine } from 'react-icons/ri';
 import classname from 'classnames';
 import { useSnapshot } from 'valtio';
-import { FiEdit } from 'react-icons/fi';
-import { AiOutlinePlus } from 'react-icons/ai';
 import { formFiledState, actions, MetricItem, FormFiledState } from '../state';
-
-export const SelectedItemCard = ({ ident }: { ident: string }) => {
-  return (
-    <div className="flex h-24 flex-col border border-[#CCCCCC] bg-[#FAFAFA] p-3">
-      <div className="flex-1">
-        <div>{ident}</div>
-      </div>
-      <div className="flex justify-end text-[#585858]">
-        <div className="cursor-pointer p-1" onClick={() => {}}>
-          <RiDeleteBinLine />
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const checkIsSelect = (
   ident: string,
@@ -40,8 +22,12 @@ export const MetricItemsCard = ({ item }: { item: Partial<MetricItem> }) => {
   return (
     <div
       className={classname(
-        'relative flex h-16 cursor-pointer flex-col border border-[#CCCCCC] bg-[#FAFAFA] p-3',
-        [select ? ['border-blue-600', 'border-2'] : ['border', 'p-px']]
+        'relative flex h-16 cursor-pointer flex-col border border-[#CCCCCC]  p-3',
+        [
+          select
+            ? ['border-blue-600', 'border-2', 'bg-smoke']
+            : ['border', 'p-px'],
+        ]
       )}
       onClick={() => {
         actions.onSelect({ ...item } as MetricItem);
@@ -54,19 +40,6 @@ export const MetricItemsCard = ({ item }: { item: Partial<MetricItem> }) => {
       <div className="absolute bottom-4 right-4">
         <input checked={select} type="checkbox" onChange={() => {}} />
       </div>
-    </div>
-  );
-};
-
-export const ItemCardPlus = ({ onHandleAdd }: { onHandleAdd: () => void }) => {
-  return (
-    <div
-      className="flex h-24 cursor-pointer flex-col items-center justify-center border border-[#CCCCCC]  p-3 text-lg"
-      onClick={() => {
-        onHandleAdd();
-      }}
-    >
-      <AiOutlinePlus />
     </div>
   );
 };

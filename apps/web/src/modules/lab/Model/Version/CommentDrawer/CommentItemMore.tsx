@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Popper } from '@oss-compass/ui';
 import { useRouter } from 'next/router';
 import { CommentFragment } from '@oss-compass/graphql';
@@ -9,7 +9,7 @@ import {
 import gqlClient from '@common/gqlClient';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import Dialog from '@common/components/Dialog';
-import { Button } from '@oss-compass/ui';
+import { Button, PopperRefProps } from '@oss-compass/ui';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 
 const CommentItemMore = ({
@@ -21,9 +21,10 @@ const CommentItemMore = ({
   onDeleteSuccess: () => void;
   onDeleteEdit: () => void;
 }) => {
+  const popperRef = useRef<PopperRefProps>();
   const router = useRouter();
-  const useInfo = useUserInfo();
-  console.log(useInfo);
+  const { currentUser } = useUserInfo();
+
   const modelId = Number(router.query.model);
   const commentId = comment?.id;
 
@@ -35,11 +36,15 @@ const CommentItemMore = ({
     },
   });
 
-  // if(comment.user)
+  const isMySelf = currentUser?.id === comment?.user?.id;
+  if (!isMySelf) {
+    return null;
+  }
 
   return (
     <>
       <Popper
+        ref={popperRef}
         placement="bottom-end"
         content={
           <div className="w-24 rounded bg-white shadow">
@@ -47,6 +52,7 @@ const CommentItemMore = ({
               className="cursor-pointer border-b px-2 py-2 text-sm"
               onClick={() => {
                 onDeleteEdit();
+                popperRef.current?.toggle();
               }}
             >
               编辑
