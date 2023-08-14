@@ -28,19 +28,19 @@ const ModelItem = ({
     '0': (
       <>
         <IconProductivity className="h-[21px] w-[21px]" />
-        <span className="ml-2 text-sm">Productivity</span>
+        <span className="ml-2 text-sm">{t('common:topic.productivity')}</span>
       </>
     ),
     '1': (
       <>
         <IconRobustness className="h-[21px] w-[21px]" />
-        <span className="ml-2 text-sm">Robustness</span>
+        <span className="ml-2 text-sm">{t('common:topic.robustness')}</span>
       </>
     ),
     '2': (
       <>
         <IconNicheCreation className="h-[21px] w-[21px]" />
-        <span className="ml-2 text-sm">NicheCreation</span>
+        <span className="ml-2 text-sm">{t('common:topic.niche_creation')}</span>
       </>
     ),
   };

@@ -1,11 +1,11 @@
 import React from 'react';
-import { FormItemLabel } from './styled';
-import classnames from 'classnames';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
+import { useTranslation, Trans } from 'react-i18next';
+import LinkA from '@common/components/LinkA';
 import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
+import { FormItemLabel } from './Misc';
 
 const FormAlgorithm = () => {
+  const { t } = useTranslation();
   const [selectedValue, setSelectedValue] = React.useState('a');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,16 +21,16 @@ const FormAlgorithm = () => {
   });
   return (
     <div className="mb-6">
-      <FormItemLabel>选择算法</FormItemLabel>
+      <FormItemLabel>{t('lab:algorithm_selection.label')}</FormItemLabel>
       <div className="mb-3 flex items-center">
-        <div className="flex w-40 items-center">
+        <div className="flex w-80 items-center">
           <CustomRadio id="modal-public" {...controlProps('a')} />
           <label htmlFor={'modal-public'} className="ml-2">
-            系统默认算法
+            {t('lab:algorithm_selection.default')}
           </label>
         </div>
         <div className=" text-secondary">
-          使用 Compass 系统的默认值设置度量指标的权重
+          {t('lab:algorithm_selection.default_desc')}
         </div>
       </div>
 
@@ -49,7 +49,13 @@ const FormAlgorithm = () => {
       {/*</div>*/}
 
       <div className="border border-[#D6B76B] bg-[#FFF6D5] py-3 px-4">
-        对模型算法有更多想法？欢迎进入官方 Slack 社区或微信群与我们讨论。
+        <Trans
+          i18nKey="algorithm_selection.contact_us"
+          ns="lab"
+          components={{
+            s: <LinkA href={'/docs/community/'} />,
+          }}
+        />
       </div>
     </div>
   );

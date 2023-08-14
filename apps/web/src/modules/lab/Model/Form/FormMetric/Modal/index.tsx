@@ -5,9 +5,10 @@ import { useMetricSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import groupBy from 'lodash/groupBy';
 import { GrClose } from 'react-icons/gr';
+import { useTranslation, Trans } from 'react-i18next';
 import { useThrottle } from 'ahooks';
-import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '@oss-compass/ui';
+import LinkA from '@common/components/LinkA';
 import { percentRound } from '@common/utils/number';
 import { formState } from '../../state';
 import { formFiledState, actions, useSelectedCount } from '../state';
@@ -180,10 +181,14 @@ const ModalSelect = ({
 
           <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9">
             <div>
-              找不到合适的数据集？点此通过社区
-              <Link href={'/docs/community/'} prefetch={false}>
-                <span className="text-primary mr-2">联系我们</span>
-              </Link>
+              {t('lab:cant_find_a_suitable_metric')}
+              <Trans
+                i18nKey="contact_us"
+                ns="common"
+                components={{
+                  s: <LinkA href={'/docs/community/'} />,
+                }}
+              />
             </div>
             <div>
               <Button

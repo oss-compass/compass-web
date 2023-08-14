@@ -47,5 +47,32 @@
   "remaining_times_of_analysis_performed_this_week": "本周剩余分析次数: ",
   "view_report": "查看报告",
   "trigger_analysis": "触发分析",
-  "click_on_the_left_menu_and_select_a_category": "点击左侧菜单，选择分类"
+  "click_on_the_left_menu_and_select_a_category": "点击左侧菜单，选择分类",
+  "cant_find_a_suitable_dataset": "找不到合适的数据集？",
+  "cant_find_a_suitable_metric": "找不到合适的度量指标？",
+  "ecological_dimension": "生态维度",
+  "industry_options": {
+    "is_it_applicable_to_general_industries_fields": "适用于一般行业/领域吗？",
+    "yes": "是的",
+    "not": "不，这是一个特定行业的模型。"
+  },
+  "is_public_options": {
+    "label": "是否公开",
+    "public": "公开",
+    "public_desc": "这是一个开放的评估模型，允许在Compass LAB主页上展示，供用户参与评估演进。",
+    "non_public": "不公开",
+    "non_public_desc": "这是一个保密的内部评估模型。我只想与我的协作团队成员一起进行评估和迭代。"
+  },
+  "weight_threshold_settings": {
+    "label": "权重和阈值设置",
+    "metrics": "指标",
+    "weight_percentage": "权重百分比",
+    "threshold": "阈值"
+  },
+  "algorithm_selection": {
+    "label": "算法选择",
+    "default": "系统默认算法",
+    "default_desc": "使用指南针系统的默认值来设置测量指标的权重。",
+    "contact_us": "Have more ideas about model algorithms? Welcome to join the <s> official Slack community </s> and discuss with us."
+  }
 }

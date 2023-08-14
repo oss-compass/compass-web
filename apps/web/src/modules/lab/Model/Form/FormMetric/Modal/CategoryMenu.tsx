@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { useSnapshot } from 'valtio';
 import { formFiledState } from '../state';
-import { BadgeCount } from '../../styled';
+import { BadgeCount } from '../../Misc';
 
 const CategoryMenu = ({ category }: { category: string }) => {
   const snapshot = useSnapshot(formFiledState);

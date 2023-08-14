@@ -30,7 +30,7 @@
   "lint-staged": {
     "*.{json,md,mdx,css,html,yml,yaml,scss,graphql}": "prettier --ignore-unknown --write --cache",
     "*.{ts,tsx,mjs,js,jsx}": [
-      "prettier . --ignore-unknown --write --cache",
+      "prettier --ignore-unknown --write --cache",
       "eslint --cache --fix"
     ]
   },

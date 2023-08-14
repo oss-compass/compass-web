@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
+import { MetricName, MetricDesc } from '../Misc';
 
 export const SelectedItemCard = ({
+  category,
   ident,
   onHandleDelete,
 }: {
+  category: string;
   ident: string;
   onHandleDelete: () => void;
 }) => {
+  const { t } = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
 
   return (
     <>
-      <div className="flex h-24 flex-col border border-[#CCCCCC] bg-[#FAFAFA] p-3">
+      <div className="min-h-24 flex flex-col border border-[#CCCCCC] bg-[#FAFAFA] p-3">
         <div className="flex-1">
-          <div>{ident}</div>
+          <div className="text-sm font-medium">
+            <MetricName ident={ident} category={category} />
+          </div>
+          <div className="text-steel line-clamp-3 text-xs">
+            <MetricDesc ident={ident} category={category} />
+          </div>
         </div>
         <div className="flex justify-end text-[#585858]">
           <div
@@ -32,8 +42,8 @@ export const SelectedItemCard = ({
       </div>
       <Dialog
         open={openConfirm}
-        dialogTitle={<>确定</>}
-        dialogContent={<div className="w-96">确认删除?</div>}
+        dialogTitle={<>{t('common:btn.confirm')}</>}
+        dialogContent={<div className="w-96">{t('common:confirm.delete')}</div>}
         dialogActions={
           <div className="flex">
             <Button
@@ -43,7 +53,7 @@ export const SelectedItemCard = ({
                 setOpenConfirm(false);
               }}
             >
-              取消
+              {t('common:btn.cancel')}
             </Button>
             <Button
               intent="primary"
@@ -53,7 +63,7 @@ export const SelectedItemCard = ({
                 onHandleDelete();
               }}
             >
-              确定
+              {t('common:btn.confirm')}
             </Button>
           </div>
         }
@@ -68,7 +78,7 @@ export const SelectedItemCard = ({
 export const ItemCardPlus = ({ onHandleAdd }: { onHandleAdd: () => void }) => {
   return (
     <div
-      className="hover:bg-smoke flex h-24 cursor-pointer flex-col items-center justify-center border  border-[#CCCCCC] p-3 text-lg"
+      className="hover:bg-smoke flex min-h-[96px] cursor-pointer flex-col items-center justify-center border  border-[#CCCCCC] p-3 text-lg"
       onClick={() => {
         onHandleAdd();
       }}

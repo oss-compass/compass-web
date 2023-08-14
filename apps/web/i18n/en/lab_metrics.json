@@ -1,10 +1,14 @@
 {
   "contributor_title": "Contributor",
   "contributor": {
+    "contributor_count": "Contributor Count",
+    "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
     "code_contributor_count": "Code Contributor Count",
-    "contributor_count": "Bus Factor",
-    "org_contributor_count": "Org Contributor Count",
-    "bus_factor": "Bus Factor"
+    "code_contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
+    "org_contributor_count": "Organization Contributor Count",
+    "org_contributor_count_desc": "Number of active code contributors with organization affiliation in the past 90 days.",
+    "bus_factor": "Bus Factor",
+    "bus_factor_desc": "Determine the smallest number of people that make 50% of contributions in the past 90 days."
   },
   "git": {
     "commit_frequency": "Commit Frequency",
@@ -45,8 +49,10 @@
       "threshold": "30",
       "detail": "What we count here are the organizations that contribute code. The reason for only counting code contributions is that code contributions have the highest technical threshold compared to other types of community contributions, and are the most direct manifestation of an organization's participation in community contributions. At the same time through the analysis of the organization's categories, we can also be more in-depth insight, such as understanding of the project's north-south ecological construction, etc."
     },
-    "org_commit_frequency": "Org commit frequency",
+    "org_commit_frequency": "Org Commit Frequency",
+    "org_commit_frequency_desc": "Definition: Determine the average number of commits with organization affiliation per week in the past 90 days.",
     "org_contribution_last": "Org contribution last",
+    "org_contribution_last_desc": "Total contribution time of all organizations to the community in the past 90 days (weeks).",
     "lines_of_code_frequency": "Lines of Code Frequency",
     "lines_of_code_frequency_desc": "Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.",
     "lines_of_code_frequency_more": {
@@ -55,6 +61,28 @@
       "detail": "The number of lines of source code is indeed strongly correlated with the amount of work, but it is less correlated with the value created. What forms of code can be counted in the LOC, are uncertain factors. We do not care so much about the code form(program language, configuration files etc), only use it as the description of the workload, so its weight in the overall metrics model is low."
     }
   },
-  "issue": {},
-  "repo": {}
+  "issue": {
+    "pr_issue_linked_ratio": "PR Issue Linked Ratio",
+    "pr_issue_linked_ratio_desc": "Determine the percentage of new pull request link issues in the last 90 days.",
+    "pr_open_time": "PR Open Time",
+    "pr_open_time_desc": "Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change requests and unresolved change requests.",
+    "code_review_count": "Code Review Count",
+    "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days.",
+    "close_pr_count": "Close PR Count",
+    "close_pr_count_desc": "The number of PR accepted and declined in the last 90 days.",
+    "pr_time_to_first_response": "PR Time to First Response",
+    "pr_time_to_first_response_desc": "Determine the amount of time between when a PR was created and when it received the first response from a human in the past 90 days.",
+    "change_request_closure_ratio": "Change Request Closure Ratio",
+    "change_request_closure_ratio_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests from the beginning to now.",
+    "change_request_closure_ratio_recently_period": "Change Request Closure Ratio Recently Period",
+    "change_request_closure_ratio_recently_period_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests in the last 90 days.",
+    "code_review_ratio": "Code Review Ratio",
+    "code_review_ratio_desc": "Determine the percentage of code commits with at least one reviewer (not PR creator) in the last 90 days.",
+    "code_merge_ratio": "Code Merge Ratio",
+    "code_merge_ratio_desc": "Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits."
+  },
+  "repo": {
+    "recent_releases_count": "Recent Releases Count",
+    "recent_releases_count_desc": "Determine the number of releases in the last year."
+  }
 }

@@ -23,6 +23,8 @@
   "new_model": "New Model",
   "versions": "Versions",
   "user_management": "Member",
+  "model_name": "Model Name",
+  "version_name": "Version Name",
   "user": {
     "invite_users": "Invite member",
     "input_email": "Please input the email address of the invitee, multiple email addresses are separated by commas",
@@ -50,5 +52,31 @@
   "view_report": "View report",
   "trigger_analysis": "Trigger analysis",
   "click_on_the_left_menu_and_select_a_category": "Click on the left menu and select a category.",
-  "cant_find_a_suitable_dataset": "Can't find a suitable dataset? "
+  "cant_find_a_suitable_dataset": "Can't find a suitable dataset? ",
+  "cant_find_a_suitable_metric": "Can't find a suitable metric? ",
+  "ecological_dimension": "Ecological Dimension",
+  "industry_options": {
+    "is_it_applicable_to_general_industries_fields": "Is it applicable to general industries/fields?",
+    "yes": "Yes",
+    "not": "No, this is an industry specific model."
+  },
+  "is_public_options": {
+    "label": "Is public",
+    "public": "public",
+    "public_desc": "This is an open evaluation model that allows display on the Compass LAB homepage for user participation in assessment evolution.",
+    "non_public": "Non public",
+    "non_public_desc": "This is a confidential internal evaluation model. I only wish to conduct evaluations and iterations with my collaborative team members."
+  },
+  "weight_threshold_settings": {
+    "label": "Weight & Threshold Settings",
+    "metrics": "Metrics",
+    "weight_percentage": "Weight percentage",
+    "threshold": "Threshold"
+  },
+  "algorithm_selection": {
+    "label": "Algorithm selection",
+    "default": "System default algorithm",
+    "default_desc": "Use the default value of Compass system to set the weight of measurement indicators.",
+    "contact_us": "Have more ideas about model algorithms? Welcome to join the <s> official Slack community </s> and discuss with us."
+  }
 }

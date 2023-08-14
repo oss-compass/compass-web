@@ -10,7 +10,7 @@ import CreateForm from '@modules/lab/Model/Create';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['lab'])),
+      ...(await getLocalesFile(req.cookies, ['lab', 'lab_metrics'])),
     },
   };
 };
@@ -20,7 +20,7 @@ const create = () => {
     <NoSsr>
       <Header />
       <Banner />
-      <AuthRequire loadingClassName="mx-auto w-[1000px] py-10 md:w-full md:px-6">
+      <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
         <CreateForm />
       </AuthRequire>
     </NoSsr>

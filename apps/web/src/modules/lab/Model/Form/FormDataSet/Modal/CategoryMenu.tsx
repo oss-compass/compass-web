@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { useSnapshot, subscribe } from 'valtio';
 import { useDataSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
-import { BadgeCount } from '../../styled';
+import { BadgeCount } from '../../Misc';
 import { formFiledState, actions, useSelectedCount, getKey } from '../state';
 
 const CategoryMenu = ({ ident }: { ident: string }) => {

@@ -21,7 +21,7 @@ const User = () => {
     <NoSsr>
       <Header />
       <Banner />
-      <AuthRequire loadingClassName="mx-auto w-[1000px] py-10 md:w-full md:px-6">
+      <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
         <ModelProvider>
           <UserManage />
         </ModelProvider>

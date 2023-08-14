@@ -49,6 +49,11 @@
   "search": {
     "no_result": "No result"
   },
+  "topic": {
+    "productivity": "Productivity",
+    "robustness": "Robustness",
+    "niche_creation": "Niche Creation"
+  },
   "no_data": "No data available",
   "next": "Next",
   "know_more": "more",
@@ -67,6 +72,9 @@
     "edit": "Edit",
     "cancel": "Cancel",
     "func_disabled": "The feature is temporarily disabled"
+  },
+  "prompt": {
+    "please_enter": "Please enter"
   },
   "confirm": {
     "delete": "Are you sure you want to delete?"

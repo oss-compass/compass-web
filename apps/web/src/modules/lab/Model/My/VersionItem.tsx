@@ -60,7 +60,7 @@ export const VersionCard = ({
           </div>
           <div className="mb-2">
             <span className="text-secondary block truncate text-xs">
-              {t('lab:algorithm')}：默认
+              {t('lab:algorithm')}：Default
             </span>
           </div>
         </div>

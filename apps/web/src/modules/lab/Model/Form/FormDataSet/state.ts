@@ -72,9 +72,9 @@ export const actions = {
   },
 };
 
-subscribe(formFiledState, () => {
-  console.log(JSON.stringify(formFiledState, null, 2));
-});
+// subscribe(formFiledState, () => {
+//   console.log(JSON.stringify(formFiledState, null, 2));
+// });
 
 export const useSelectedCount = ({
   firstIdent,

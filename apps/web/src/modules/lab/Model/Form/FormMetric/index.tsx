@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormItemLabel } from '../styled';
+import { FormItemLabel } from '../Misc';
 import { useSnapshot } from 'valtio';
 import { formState, actions } from '../state';
 import { SelectedItemCard, ItemCardPlus } from './SelectedItem';
@@ -19,6 +19,7 @@ const FormMetric = () => {
           return (
             <SelectedItemCard
               key={i.metricId}
+              category={i.category}
               ident={i.ident}
               onHandleDelete={() => {
                 actions.onDeleteMetricItem(i.ident);

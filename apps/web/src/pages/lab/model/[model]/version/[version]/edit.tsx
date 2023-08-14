@@ -11,7 +11,7 @@ import ModelVersionProvider from '@modules/lab/Model/Provider/ModelVersionProvid
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['lab'])),
+      ...(await getLocalesFile(req.cookies, ['lab', 'lab_metrics'])),
     },
   };
 };
@@ -21,7 +21,7 @@ const ModelVersionEdit = () => {
     <NoSsr>
       <Header />
       <Banner />
-      <AuthRequire loadingClassName="mx-auto w-[1000px] py-10 md:w-full md:px-6">
+      <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
         <ModelVersionProvider>
           <VersionEdit />
         </ModelVersionProvider>

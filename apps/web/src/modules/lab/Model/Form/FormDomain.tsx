@@ -1,12 +1,14 @@
 import React, { PropsWithChildren } from 'react';
 import { useSnapshot } from 'valtio';
+import { useTranslation } from 'react-i18next';
 import { formState } from './state';
-import { FormItemLabel } from './styled';
+import { FormItemLabel } from './Misc';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 
 const FormDomain = ({ disabled }: { disabled: boolean }) => {
+  const { t } = useTranslation();
   const snapshot = useSnapshot(formState);
   const isGeneral = snapshot.isGeneral;
 
@@ -26,12 +28,16 @@ const FormDomain = ({ disabled }: { disabled: boolean }) => {
 
   return (
     <div className="mb-6">
-      <FormItemLabel>是否适用于通用行业/领域</FormItemLabel>
+      <FormItemLabel>
+        {t(
+          'lab:industry_options.is_it_applicable_to_general_industries_fields'
+        )}
+      </FormItemLabel>
       <div className="flex">
         <div className="flex w-40 items-center">
           <CustomRadio id="general-domain" {...controlProps('general')} />
           <label className="ml-2 cursor-pointer" htmlFor="general-domain">
-            是的
+            {t('lab:industry_options.yes')}
           </label>
         </div>
         <div className="flex items-center">
@@ -41,7 +47,7 @@ const FormDomain = ({ disabled }: { disabled: boolean }) => {
             color="secondary"
           />
           <label className="ml-2 cursor-pointer" htmlFor="specific-domain">
-            不是，这是个特定行业的专属模型
+            {t('lab:industry_options.not')}
           </label>
         </div>
       </div>

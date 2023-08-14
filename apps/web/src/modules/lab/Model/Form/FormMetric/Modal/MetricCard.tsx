@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import classname from 'classnames';
 import { useSnapshot } from 'valtio';
 import { formFiledState, actions, MetricItem, FormFiledState } from '../state';
+import { MetricName, MetricDesc } from '../../Misc';
 
 const checkIsSelect = (
   ident: string,
@@ -22,7 +23,7 @@ export const MetricItemsCard = ({ item }: { item: Partial<MetricItem> }) => {
   return (
     <div
       className={classname(
-        'relative flex h-16 cursor-pointer flex-col border border-[#CCCCCC]  p-3',
+        'min-h-16 flex cursor-pointer items-center justify-between border border-[#CCCCCC]  p-3',
         [
           select
             ? ['border-blue-600', 'border-2', 'bg-smoke']
@@ -34,10 +35,14 @@ export const MetricItemsCard = ({ item }: { item: Partial<MetricItem> }) => {
       }}
     >
       <div className="flex-1">
-        <div>{ident}</div>
-        <div className="text-xs text-[#585858]"></div>
+        <div className="text-sm font-medium">
+          <MetricName ident={ident} category={category} />
+        </div>
+        <div className="text-xs text-[#585858]">
+          <MetricDesc ident={ident} category={category} />
+        </div>
       </div>
-      <div className="absolute bottom-4 right-4">
+      <div className="pl-5">
         <input checked={select} type="checkbox" onChange={() => {}} />
       </div>
     </div>

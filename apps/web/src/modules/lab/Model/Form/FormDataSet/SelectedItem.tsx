@@ -52,7 +52,7 @@ export const ItemCard = ({
 
       <Dialog
         open={openConfirm}
-        dialogTitle={<> {t('common:btn.confirm')}</>}
+        dialogTitle={<>{t('common:btn.confirm')}</>}
         dialogContent={<div className="w-96">{t('common:confirm.delete')}</div>}
         dialogActions={
           <div className="flex">
