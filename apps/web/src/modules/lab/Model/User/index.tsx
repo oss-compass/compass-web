@@ -6,7 +6,10 @@ import FormInvite from './FormInvite';
 import FormUsers from './FormUsers';
 import FormInviteUsers from './FormInviteUsers';
 import Pagination from '@common/components/Pagination';
-import { useMemberOverviewQuery } from '@oss-compass/graphql';
+import {
+  useMemberOverviewQuery,
+  useMyMemberPermissionQuery,
+} from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import useEventEmitter from 'ahooks/lib/useEventEmitter';
 import { ReFetch } from '@common/constant';
@@ -29,6 +32,12 @@ const UserManage = () => {
   const count = data?.memberOverview?.count || 0;
   const items = data?.memberOverview?.items || [];
   const name = data?.memberOverview.model.name;
+
+  const myPermisssion = useMyMemberPermissionQuery(gqlClient, {
+    modelId,
+  });
+  console.log(myPermisssion);
+  const permission = myPermisssion.data?.myMemberPermission;
 
   const inviteUsers = useRef(null);
   const event$ = useEventEmitter<string>();
@@ -79,6 +88,7 @@ const UserManage = () => {
           items={items}
           count={count}
           modelId={modelId}
+          permission={permission}
           event$={event$}
         />
         {pageTotal > 1 ? (

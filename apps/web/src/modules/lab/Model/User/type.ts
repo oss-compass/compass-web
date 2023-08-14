@@ -11,3 +11,9 @@ export interface UserItem {
   isOwner?: boolean;
   id: number;
 }
+export interface myPermisssion {
+  canDestroy: Boolean;
+  canExecute: Boolean;
+  canRead: Boolean;
+  canUpdate: Boolean;
+}

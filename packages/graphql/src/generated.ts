@@ -710,6 +710,18 @@ export type DeleteLabModelVersionPayload = {
   status: Scalars['String'];
 };
 
+export type Diagram = {
+  __typename?: 'Diagram';
+  /** metric model creatiton time */
+  dates?: Maybe<Array<Scalars['ISO8601DateTime']>>;
+  /** Tab ident for this diagram */
+  tabIdent?: Maybe<Scalars['String']>;
+  /** Type of this diagram, default: `line` */
+  type?: Maybe<Scalars['String']>;
+  /** y-axis values for this diagram */
+  values?: Maybe<Array<Scalars['Float']>>;
+};
+
 export type Error = {
   __typename?: 'Error';
   /** 错误信息 */
@@ -930,12 +942,31 @@ export type ModelMetric = {
   weight?: Maybe<Scalars['Float']>;
 };
 
+export type ModelPublicOverview = {
+  __typename?: 'ModelPublicOverview';
+  dataset?: Maybe<Dataset>;
+  modelId?: Maybe<Scalars['Int']>;
+  modelName?: Maybe<Scalars['String']>;
+  reports?: Maybe<Array<SimpleReport>>;
+  version?: Maybe<Scalars['String']>;
+  versionId?: Maybe<Scalars['Int']>;
+};
+
+export type ModelPublicPage = {
+  __typename?: 'ModelPublicPage';
+  count?: Maybe<Scalars['Int']>;
+  items?: Maybe<Array<ModelPublicOverview>>;
+  page?: Maybe<Scalars['Int']>;
+  totalPage?: Maybe<Scalars['Int']>;
+};
+
 export type ModelVersion = {
   __typename?: 'ModelVersion';
   algorithm?: Maybe<Algorithm>;
   dataset: Dataset;
   id: Scalars['Int'];
   metrics: Array<ModelMetric>;
+  triggerStatus?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
 };
 
@@ -1000,6 +1031,8 @@ export type Mutation = {
   sendMemberInvite?: Maybe<SendMemberInvitePayload>;
   /** Sign out */
   signOut?: Maybe<Scalars['Boolean']>;
+  /** Trigger the analysis of a Lab model version */
+  triggerLabModelVersion?: Maybe<TriggerLabModelVersionPayload>;
   /** Update a Lab model */
   updateLabModel?: Maybe<UpdateLabModelPayload>;
   /** Update a comment for a lab model */
@@ -1076,6 +1109,10 @@ export type MutationSendMemberInviteArgs = {
   input: SendMemberInviteInput;
 };
 
+export type MutationTriggerLabModelVersionArgs = {
+  input: TriggerLabModelVersionInput;
+};
+
 export type MutationUpdateLabModelArgs = {
   input: UpdateLabModelInput;
 };
@@ -1102,6 +1139,14 @@ export type MyModels = {
   items?: Maybe<Array<ModelDetail>>;
   page?: Maybe<Scalars['Int']>;
   totalPage?: Maybe<Scalars['Int']>;
+};
+
+export type Panel = {
+  __typename?: 'Panel';
+  /** specific fields and chart types for metric data */
+  diagrams?: Maybe<Array<Diagram>>;
+  /** panel corresponding metric data */
+  metric?: Maybe<ModelMetric>;
 };
 
 export type Permission = {
@@ -1156,6 +1201,8 @@ export type Query = {
   /** Get overview data of a community */
   communityOverview: CommunityOverview;
   currentUser?: Maybe<User>;
+  /** Get custom lab model analysis status (pending/progress/success/error/canceled/unsumbit) */
+  customAnalysisStatus: Scalars['String'];
   /** Fuzzy search dataset by keyword */
   datasetFuzzySearch?: Maybe<Array<DatasetCompletionRow>>;
   /** Get data of Compass Collections */
@@ -1170,8 +1217,14 @@ export type Query = {
   labModelComments?: Maybe<ModelCommentPage>;
   /** Get detail data of a lab model */
   labModelDetail?: Maybe<ModelDetail>;
+  /** Get public lab model data of OSS Compass */
+  labModelPublicOverview?: Maybe<ModelPublicPage>;
   /** Get detail data of a lab model version */
   labModelVersion?: Maybe<ModelVersion>;
+  /** Get thumbnail data of a lab model version reports */
+  labModelVersionReportDetail?: Maybe<Report>;
+  /** Get thumbnail data of a lab model version reports */
+  labModelVersionReportList?: Maybe<Array<SimpleReport>>;
   /** Get latest metrics data of the specified label */
   latestMetrics: LatestMetrics;
   /** Get members data of a lab model */
@@ -1259,6 +1312,11 @@ export type QueryCommunityOverviewArgs = {
   type?: InputMaybe<Scalars['String']>;
 };
 
+export type QueryCustomAnalysisStatusArgs = {
+  modelId: Scalars['Int'];
+  versionId: Scalars['Int'];
+};
+
 export type QueryDatasetFuzzySearchArgs = {
   keyword: Scalars['String'];
 };
@@ -1300,7 +1358,28 @@ export type QueryLabModelDetailArgs = {
   modelId: Scalars['Int'];
 };
 
+export type QueryLabModelPublicOverviewArgs = {
+  direction?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryLabModelVersionArgs = {
+  modelId: Scalars['Int'];
+  versionId: Scalars['Int'];
+};
+
+export type QueryLabModelVersionReportDetailArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label?: InputMaybe<Scalars['String']>;
+  modelId: Scalars['Int'];
+  shortCode?: InputMaybe<Scalars['String']>;
+  versionId: Scalars['Int'];
+};
+
+export type QueryLabModelVersionReportListArgs = {
   modelId: Scalars['Int'];
   versionId: Scalars['Int'];
 };
@@ -1407,6 +1486,22 @@ export type Repo = {
   watchersCount?: Maybe<Scalars['Int']>;
 };
 
+export type Report = {
+  __typename?: 'Report';
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** main score diagram for metric model */
+  mainScore?: Maybe<Diagram>;
+  /** metric panels data of lab model */
+  panels?: Maybe<Array<Panel>>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
+};
+
 /** Autogenerated input type of SendEmailVerify */
 export type SendEmailVerifyInput = {
   /** A unique identifier for the client performing the mutation. */
@@ -1447,6 +1542,20 @@ export type SendMemberInvitePayload = {
   errors?: Maybe<Array<Error>>;
   message?: Maybe<Scalars['String']>;
   status: Scalars['String'];
+};
+
+export type SimpleReport = {
+  __typename?: 'SimpleReport';
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** main score diagram for metric model */
+  mainScore?: Maybe<Diagram>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
 };
 
 export type SimpleUser = {
@@ -1540,6 +1649,27 @@ export type Trending = {
   reposCount?: Maybe<Scalars['Float']>;
   /** repo or community short code */
   shortCode?: Maybe<Scalars['String']>;
+};
+
+/** Autogenerated input type of TriggerLabModelVersion */
+export type TriggerLabModelVersionInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** lab model id */
+  modelId: Scalars['Int'];
+  /** lab model version id */
+  versionId: Scalars['Int'];
+};
+
+/** Autogenerated return type of TriggerLabModelVersion */
+export type TriggerLabModelVersionPayload = {
+  __typename?: 'TriggerLabModelVersionPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Errors encountered during execution of the mutation. */
+  errors?: Maybe<Array<Error>>;
+  message?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
 };
 
 /** Autogenerated input type of UpdateLabModelComment */
@@ -2451,6 +2581,21 @@ export type MemberOverviewQuery = {
       name: string;
     }> | null;
     model?: { __typename?: 'ModelDetail'; name: string } | null;
+  } | null;
+};
+
+export type MyMemberPermissionQueryVariables = Exact<{
+  modelId?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MyMemberPermissionQuery = {
+  __typename?: 'Query';
+  myMemberPermission?: {
+    __typename?: 'Permission';
+    canDestroy: boolean;
+    canExecute: boolean;
+    canRead: boolean;
+    canUpdate: boolean;
   } | null;
 };
 
@@ -4252,6 +4397,55 @@ useMemberOverviewQuery.fetcher = (
   fetcher<MemberOverviewQuery, MemberOverviewQueryVariables>(
     client,
     MemberOverviewDocument,
+    variables,
+    headers
+  );
+export const MyMemberPermissionDocument = /*#__PURE__*/ `
+    query myMemberPermission($modelId: Int) {
+  myMemberPermission(modelId: $modelId) {
+    canDestroy
+    canExecute
+    canRead
+    canUpdate
+  }
+}
+    `;
+export const useMyMemberPermissionQuery = <
+  TData = MyMemberPermissionQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: MyMemberPermissionQueryVariables,
+  options?: UseQueryOptions<MyMemberPermissionQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<MyMemberPermissionQuery, TError, TData>(
+    variables === undefined
+      ? ['myMemberPermission']
+      : ['myMemberPermission', variables],
+    fetcher<MyMemberPermissionQuery, MyMemberPermissionQueryVariables>(
+      client,
+      MyMemberPermissionDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useMyMemberPermissionQuery.getKey = (
+  variables?: MyMemberPermissionQueryVariables
+) =>
+  variables === undefined
+    ? ['myMemberPermission']
+    : ['myMemberPermission', variables];
+useMyMemberPermissionQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: MyMemberPermissionQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<MyMemberPermissionQuery, MyMemberPermissionQueryVariables>(
+    client,
+    MyMemberPermissionDocument,
     variables,
     headers
   );
