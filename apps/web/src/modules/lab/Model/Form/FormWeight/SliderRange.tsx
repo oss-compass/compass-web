@@ -42,7 +42,7 @@ const SliderRange = ({
           actions.adjustMetricWeightHandle(result, index);
         } else {
           const result = isLast ? 100 - value : value;
-          actions.adjustThresholdHandle(result, index);
+          actions.adjustMetricWeightHandle(result, index);
         }
       }}
     />
