@@ -43,3 +43,16 @@ export const MetricDesc = ({
   const name = t(nameKey);
   return <>{name}</>;
 };
+
+export const MetricThresholdRanges = ({
+  category,
+  ident,
+}: {
+  category: string;
+  ident: string;
+}) => {
+  const { t } = useTranslation();
+  const nameKey = `lab_metrics:${category}.${ident}_value.threshold`;
+  const name = t(nameKey);
+  return <>{name}</>;
+};

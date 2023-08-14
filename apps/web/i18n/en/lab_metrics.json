@@ -3,6 +3,9 @@
   "contributor": {
     "contributor_count": "Contributor Count",
     "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
+    "contributor_count_value": {
+      "threshold": "Between 0 and 1000"
+    },
     "code_contributor_count": "Code Contributor Count",
     "code_contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
     "org_contributor_count": "Organization Contributor Count",

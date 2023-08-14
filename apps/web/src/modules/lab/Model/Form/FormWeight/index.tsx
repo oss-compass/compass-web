@@ -3,7 +3,7 @@ import { useSnapshot } from 'valtio';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { formState, actions } from '../state';
-import { FormItemLabel, MetricName } from '../Misc';
+import { FormItemLabel, MetricName, MetricThresholdRanges } from '../Misc';
 import SliderRange from './SliderRange';
 import { countDecimalPlaces } from '@common/utils/number';
 
@@ -66,17 +66,25 @@ const FormMetric = () => {
                       </div>
                     </div>
                   </td>
-                  <td className={classnames(bodyCell, 'w-3/12')}>
-                    <input
-                      className="w-20 border outline-0"
-                      type="number"
-                      value={item.threshold}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (countDecimalPlaces(value) > 2) return;
-                        actions.adjustThresholdHandle(value, index);
-                      }}
-                    />
+                  <td className={classnames(bodyCell, ' w-3/12 ')}>
+                    <div className="flex items-center">
+                      <input
+                        className="w-20 border outline-0"
+                        type="number"
+                        value={item.threshold}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          if (countDecimalPlaces(value) > 2) return;
+                          actions.adjustThresholdHandle(value, index);
+                        }}
+                      />
+                      <span className="text-steel ml-2 text-xs">
+                        <MetricThresholdRanges
+                          ident={item.ident}
+                          category={item.category}
+                        />
+                      </span>
+                    </div>
                   </td>
                 </tr>
               );
