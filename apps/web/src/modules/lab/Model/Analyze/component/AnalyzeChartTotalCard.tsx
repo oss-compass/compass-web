@@ -6,6 +6,7 @@ import EChartX from '@common/components/EChartX';
 import { getLineOption, line } from '@common/options';
 import { formatISO } from '@common/utils';
 import { LabModelVersionReportDetailQuery } from '@oss-compass/graphql';
+import CardHeadButtons from './CardHeadButtons';
 import { useLabModelDetail } from '../../hooks';
 
 const LabVersionTotalCard = ({
@@ -17,14 +18,14 @@ const LabVersionTotalCard = ({
   const { data } = useLabModelDetail();
   const modelDetail = data?.labModelDetail;
 
-  const { dates, tabIdent } = mainScore;
+  const { dates, tabIdent, values } = mainScore;
   const color = '#5470c6';
 
   const opts = getLineOption({
     xAxisData: dates.map((i) => formatISO(i)),
     series: line({
       name: tabIdent,
-      data: dates,
+      data: values,
       color,
     }),
     yAxis: { type: 'value', scale: true },
@@ -35,34 +36,7 @@ const LabVersionTotalCard = ({
       title={modelDetail?.name}
       id={mainScore.tabIdent}
       description={''}
-      // weight={t(
-      //   'metrics_models:collaboration_development_index.metrics.code_merge_ratio_more.weight'
-      // )}
-      // threshold={t(
-      //   'metrics_models:collaboration_development_index.metrics.code_merge_ratio_more.threshold'
-      // )}
-      // detail={t(
-      //   'metrics_models:collaboration_development_index.metrics.code_merge_ratio_more.detail'
-      // )}
-      // docLink={
-      //   '/docs/metrics-models/productivity/collaboration-development-index/#code-merge-ratio'
-      // }
-      headRight={(ref, fullScreen, setFullScreen) => (
-        // <CardDropDownMenu
-        //   cardRef={ref}
-        //   fullScreen={fullScreen}
-        //   onFullScreen={(v) => {
-        //     setFullScreen(v);
-        //   }}
-        //   showAvg={showAvg}
-        //   onAvgChange={(b) => setShowAvg(b)}
-        //   showMedian={showMedian}
-        //   onMedianChange={(b) => setShowMedian(b)}
-        //   yAxisScale={yAxisScale}
-        //   onYAxisScaleChange={(b) => setYAxisScale(b)}
-        // />
-        <div></div>
-      )}
+      headRight={(ref, fullScreen, setFullScreen) => <CardHeadButtons />}
       // bodyClass={'h-[400px]'}
       bodyRender={(ref, fullScreen) => {
         return (

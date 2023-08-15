@@ -17,6 +17,7 @@ import {
   colors,
 } from '@common/options';
 import { formatISO } from '@common/utils';
+import CardHeadButtons from './CardHeadButtons';
 
 const LabMetricCard = ({
   panel,
@@ -56,34 +57,7 @@ const LabMetricCard = ({
       title={t(key)}
       id={currentItem.tabIdent}
       description={t(keyDesc)}
-      weight={t(
-        'metrics_models:collaboration_development_index.metrics.code_merge_ratio_more.weight'
-      )}
-      threshold={t(
-        'metrics_models:collaboration_development_index.metrics.code_merge_ratio_more.threshold'
-      )}
-      detail={t(
-        'metrics_models:collaboration_development_index.metrics.code_merge_ratio_more.detail'
-      )}
-      docLink={
-        '/docs/metrics-models/productivity/collaboration-development-index/#code-merge-ratio'
-      }
-      headRight={(ref, fullScreen, setFullScreen) => (
-        // <CardDropDownMenu
-        //   cardRef={ref}
-        //   fullScreen={fullScreen}
-        //   onFullScreen={(v) => {
-        //     setFullScreen(v);
-        //   }}
-        //   showAvg={showAvg}
-        //   onAvgChange={(b) => setShowAvg(b)}
-        //   showMedian={showMedian}
-        //   onMedianChange={(b) => setShowMedian(b)}
-        //   yAxisScale={yAxisScale}
-        //   onYAxisScaleChange={(b) => setYAxisScale(b)}
-        // />
-        <div></div>
-      )}
+      headRight={(ref, fullScreen, setFullScreen) => <CardHeadButtons />}
       bodyClass={'h-[400px]'}
       bodyRender={(ref, fullScreen) => {
         return (

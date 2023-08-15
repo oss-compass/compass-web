@@ -1,8 +1,10 @@
 import React, { PropsWithChildren } from 'react';
 import classname from 'classnames';
 import { useSnapshot } from 'valtio';
+import { MetricSetListQuery } from '@oss-compass/graphql';
 import { formFiledState, actions, MetricItem, FormFiledState } from '../state';
 import { MetricName, MetricDesc } from '../../Misc';
+import Chaoss from '@public/images/logos/chaoss.svg';
 
 const checkIsSelect = (
   ident: string,
@@ -15,11 +17,15 @@ const checkIsSelect = (
   return false;
 };
 
-export const MetricItemsCard = ({ item }: { item: Partial<MetricItem> }) => {
+export const MetricItemsCard = ({
+  item,
+}: {
+  item: MetricSetListQuery['metricSetOverview'][number];
+}) => {
   const { ident, category } = item;
   const snapshot = useSnapshot(formFiledState);
   const select = checkIsSelect(ident, snapshot.selected[category]);
-
+  console.log(item.from);
   return (
     <div
       className={classname(
@@ -35,8 +41,13 @@ export const MetricItemsCard = ({ item }: { item: Partial<MetricItem> }) => {
       }}
     >
       <div className="flex-1">
-        <div className="text-sm font-medium">
-          <MetricName ident={ident} category={category} />
+        <div className="flex items-center ">
+          <span className="text-sm font-medium">
+            <MetricName ident={ident} category={category} />
+          </span>
+          <span className="text-secondary ml-2 text-xs">
+            {item.from ? <Chaoss /> : ''}
+          </span>
         </div>
         <div className="text-xs text-[#585858]">
           <MetricDesc ident={ident} category={category} />

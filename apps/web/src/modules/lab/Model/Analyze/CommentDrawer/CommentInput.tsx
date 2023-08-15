@@ -77,7 +77,11 @@ const CommentInput = forwardRef<InputRefProps, Props>(
                 if (event.shiftKey || event.ctrlKey) {
                   setValue((p) => p + '\n');
                 } else {
-                  if (value) onSubmit(value, images);
+                  if (value) {
+                    onSubmit(value, images);
+                  } else {
+                    toast.error('The content of comment cannot be empty');
+                  }
                 }
                 event.preventDefault();
               }
@@ -136,7 +140,11 @@ const CommentInput = forwardRef<InputRefProps, Props>(
               className="bg-primary hover:bg-primary/90 mr-2 flex h-6 cursor-pointer items-center justify-center rounded px-1 text-center text-xs leading-6 text-white"
               onClick={() => {
                 if (loading) return;
-                if (value) onSubmit(value, images);
+                if (value) {
+                  onSubmit(value, images);
+                } else {
+                  toast.error('The content of comment cannot be empty');
+                }
               }}
             >
               {loading ? (

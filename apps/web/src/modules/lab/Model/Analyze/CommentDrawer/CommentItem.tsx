@@ -79,18 +79,20 @@ const CommentItem = ({
           ) : (
             <div>
               <div className="text-sm">{comment?.content}</div>
-              <div className="flex pt-4 pb-4">
-                {comment.images.map((img) => {
-                  return (
-                    <ImageItem
-                      className="mr-2"
-                      key={img.url}
-                      id={img.id}
-                      src={img.url}
-                    />
-                  );
-                })}
-              </div>
+              {comment.images.length > 0 ? (
+                <div className="flex pt-4 pb-4">
+                  {comment.images.map((img) => {
+                    return (
+                      <ImageItem
+                        className="mr-2"
+                        key={img.url}
+                        id={img.id}
+                        src={img.url}
+                      />
+                    );
+                  })}
+                </div>
+              ) : null}
             </div>
           )}
 
