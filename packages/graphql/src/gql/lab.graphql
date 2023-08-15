@@ -311,6 +311,15 @@ query memberOverview($modelId: Int, $page: Int, $per: Int) {
   }
 }
 
+query myMemberPermission($modelId: Int) {
+  myMemberPermission(modelId: $modelId) {
+    canDestroy
+    canExecute
+    canRead
+    canUpdate
+  }
+}
+
 query invitationOverview($modelId: Int, $page: Int, $per: Int) {
   invitationOverview(modelId: $modelId, page: $page, per: $per) {
     count

@@ -18,14 +18,16 @@ import { Button } from '@oss-compass/ui';
 import SelectDrowBox from './SelectDrowBox';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { myPermisssion } from './type';
 
 const FormUsersItem = (props: {
   user: UserItem;
   modelId: number;
+  permission: myPermisssion;
   event$: EventEmitter<string>;
 }) => {
   const { t } = useTranslation();
-  const { user, modelId, event$ } = props;
+  const { user, modelId, permission, event$ } = props;
 
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
   const deleteMutation = useDeleteLabMemberMutation(client, {
@@ -156,33 +158,35 @@ const FormUsersItem = (props: {
               {t('lab:user.owner')}
             </div>
           ) : (
-            <div className="flex text-[#585858]">
-              <div
-                onClick={() => {
-                  setOpenDeleteConfirm(true);
-                }}
-                className="mr-1 cursor-pointer p-1"
-              >
-                <RiDeleteBinLine />
-              </div>
-              <div className="cursor-pointer p-1">
-                <SelectDrowBox
-                  options={optionList}
-                  roles={roles}
-                  onChange={(item) => {
-                    changeRoles(item);
+            permission?.canDestroy && (
+              <div className="flex text-[#585858]">
+                <div
+                  onClick={() => {
+                    setOpenDeleteConfirm(true);
                   }}
-                  onShowDrowBox={(e) => {
-                    setShowDrowBox(e);
-                    if (e === false) {
-                      updataMember();
-                    }
-                  }}
+                  className="mr-1 cursor-pointer p-1"
                 >
-                  <FiEdit />
-                </SelectDrowBox>
+                  <RiDeleteBinLine />
+                </div>
+                <div className="cursor-pointer p-1">
+                  <SelectDrowBox
+                    options={optionList}
+                    roles={roles}
+                    onChange={(item) => {
+                      changeRoles(item);
+                    }}
+                    onShowDrowBox={(e) => {
+                      setShowDrowBox(e);
+                      if (e === false) {
+                        updataMember();
+                      }
+                    }}
+                  >
+                    <FiEdit />
+                  </SelectDrowBox>
+                </div>
               </div>
-            </div>
+            )
           )
         ) : (
           <div
