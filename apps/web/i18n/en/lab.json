@@ -80,5 +80,11 @@
     "default": "System default algorithm",
     "default_desc": "Use the default value of Compass system to set the weight of measurement indicators.",
     "contact_us": "Have more ideas about model algorithms? Welcome to join the <s> official Slack community </s> and discuss with us."
-  }
+  },
+  "joining_the_compass": "Joining the Compass Lab",
+  "agree_to_join": "Agree to Join",
+  "i_have_understood_and_agreed_to_the": "I have understood and agreed to the",
+  "experimental_model_terms_of_use": "Experimental Model Terms of Use",
+  "please_check_the_terms": "Please check the Terms of Use",
+  "you_are_here_because_you_have_been_invited": "You are here because you have been invited by <s>{{invitee}}</s> to join the Compass Lab to collaborate in building the model <s>{{modelName}}</s>, do you agree to join?"
 }
