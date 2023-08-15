@@ -5,7 +5,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import Banner from '@modules/lab/Model/Banner';
-import VersionEdit from '@modules/lab/Model/Version/Edit';
+import EditPage from '@modules/lab/Model/Version/EditPage';
 import ModelVersionProvider from '@modules/lab/Model/Provider/ModelVersionProvider';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -23,7 +23,7 @@ const ModelVersionEdit = () => {
       <Banner />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
         <ModelVersionProvider>
-          <VersionEdit />
+          <EditPage />
         </ModelVersionProvider>
       </AuthRequire>
     </NoSsr>

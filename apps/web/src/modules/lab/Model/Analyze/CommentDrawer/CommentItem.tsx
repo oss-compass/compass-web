@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { CommentFragment } from '@oss-compass/graphql';
+import { CommentFragment, ReplyFragment } from '@oss-compass/graphql';
+import { formatToNow } from '@common/utils/time';
 import CommentItemMore from './CommentItemMore';
 import CommentEdit from './CommentEdit';
 import CommentReply from './CommentReply';
+import ImageItem from './ImageItem';
 
 const CommentItem = ({
   parentId,
@@ -14,7 +16,7 @@ const CommentItem = ({
 }: {
   parentId: number;
   className?: string;
-  comment: CommentFragment;
+  comment: CommentFragment | ReplyFragment;
   onDeleteSuccess: () => void;
   onUpdateSuccess: () => void;
 }) => {
@@ -40,7 +42,9 @@ const CommentItem = ({
           <div className="mb-2 flex items-center justify-between">
             <div className=" flex items-center ">
               <div className="text-sm font-medium">{comment?.user?.name}</div>
-              <div className="text-secondary ml-2 text-xs">04.09.2018</div>
+              <div className="text-secondary ml-2 text-xs">
+                {formatToNow(comment?.updatedAt)}
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <div
@@ -73,7 +77,21 @@ const CommentItem = ({
               }}
             />
           ) : (
-            <div className="text-sm">{comment?.content}</div>
+            <div>
+              <div className="text-sm">{comment?.content}</div>
+              <div className="flex pt-4 pb-4">
+                {comment.images.map((img) => {
+                  return (
+                    <ImageItem
+                      className="mr-2"
+                      key={img.url}
+                      id={img.id}
+                      src={img.url}
+                    />
+                  );
+                })}
+              </div>
+            </div>
           )}
 
           {reply ? (
@@ -92,7 +110,7 @@ const CommentItem = ({
         </div>
       </div>
 
-      {comment.replies?.map?.((reply) => {
+      {comment?.replies?.map?.((reply) => {
         return (
           <CommentItem
             parentId={parentId}

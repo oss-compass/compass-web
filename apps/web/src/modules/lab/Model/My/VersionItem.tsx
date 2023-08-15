@@ -3,8 +3,15 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import uniq from 'lodash/uniq';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { BiLoaderAlt } from 'react-icons/bi';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import { ModelVersion, Permission } from '@oss-compass/graphql';
+import {
+  ModelVersion,
+  Permission,
+  useTriggerLabModelVersionMutation,
+} from '@oss-compass/graphql';
+import gqlClient from '@common/gqlClient';
+import { ReFetch } from '@common/constant';
 import VersionItemMore from './VersionItemMore';
 
 export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
@@ -31,6 +38,7 @@ export const VersionCard = ({
 }) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const triggerMutation = useTriggerLabModelVersionMutation(gqlClient);
 
   const dataSetIdent = version?.dataset?.items?.map?.((i) => i.secondIdent);
   const dataSetNames = uniq(dataSetIdent).join(',');
@@ -41,11 +49,14 @@ export const VersionCard = ({
       <div className="flex-1">
         <div className="flex justify-between px-3 py-2">
           <div className="flex-1 truncate font-bold">{version.version}</div>
-          <VersionItemMore
-            modelId={modelId}
-            versionId={version.id}
-            event$={event$}
-          />
+          {permissions.canUpdate || permissions.canDestroy ? (
+            <VersionItemMore
+              permissions={permissions}
+              modelId={modelId}
+              versionId={version.id}
+              event$={event$}
+            />
+          ) : null}
         </div>
         <div className="px-3 pb-2">
           <div className="mb-2">
@@ -66,17 +77,50 @@ export const VersionCard = ({
         </div>
       </div>
       <div className="flex h-8 border-t">
-        <div
-          className="hover:bg-smoke flex w-1/2 cursor-pointer items-center justify-center border-r"
-          onClick={() => {
-            router.push(`/lab/model/${modelId}/version/${version.id}/dataset`);
-          }}
-        >
-          <span className="block text-sm">{t('lab:view_report')}</span>
-        </div>
-        <div className="hover:bg-smoke flex w-1/2 cursor-pointer items-center justify-center">
-          <span className="block text-sm">{t('lab:trigger_analysis')}</span>
-        </div>
+        {permissions?.canRead ? (
+          <div
+            className="hover:bg-smoke flex flex-1 basis-1/2 cursor-pointer items-center justify-center border-r last:border-r-0"
+            onClick={() => {
+              router.push(
+                `/lab/model/${modelId}/version/${version.id}/dataset`
+              );
+            }}
+          >
+            <span className="block text-sm">{t('lab:view_report')}</span>
+          </div>
+        ) : null}
+
+        {permissions?.canExecute ? (
+          <>
+            {version.triggerStatus === 'pending' ||
+            version.triggerStatus === 'progress' ? (
+              <div className="text-secondary flex basis-1/2 cursor-pointer items-center justify-center">
+                <span className="block text-sm">Analyzing...</span>
+              </div>
+            ) : (
+              <div
+                className="hover:bg-smoke flex basis-1/2 cursor-pointer items-center justify-center"
+                onClick={() => {
+                  triggerMutation.mutate(
+                    { modelId, versionId: version.id },
+                    {
+                      onSuccess: () => {
+                        event$.emit(ReFetch);
+                      },
+                    }
+                  );
+                }}
+              >
+                <span className="block flex items-center text-sm">
+                  {triggerMutation.isLoading ? (
+                    <BiLoaderAlt className="text-silver mr-2 animate-spin cursor-pointer text-xl" />
+                  ) : null}
+                  {t('lab:trigger_analysis')}
+                </span>
+              </div>
+            )}
+          </>
+        ) : null}
       </div>
     </div>
   );

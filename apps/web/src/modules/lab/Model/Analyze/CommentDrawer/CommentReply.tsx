@@ -2,27 +2,31 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import {
   CommentFragment,
+  ReplyFragment,
   useCreateLabModelCommentMutation,
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
+import { useSnapshot } from 'valtio';
+import { useTranslation } from 'next-i18next';
 import CommentInput, { InputRefProps } from './CommentInput';
+import { pageState } from '../state';
 
 const CommentReply = ({
   parentId,
-  comment,
   onReplySuccess,
   onCancel,
 }: {
   parentId;
-  comment: CommentFragment;
+  comment: CommentFragment | ReplyFragment;
   onReplySuccess: () => void;
   onCancel: () => void;
 }) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const modelId = Number(router.query.model);
-  const defaultVersionId = Number(router.query.version);
+  const snapshot = useSnapshot(pageState);
+  const versionId = snapshot.commentVersion?.id;
 
-  const commentId = comment.id;
   const replyInputRef = useRef<InputRefProps>(null);
   const commentMutation = useCreateLabModelCommentMutation(gqlClient);
 
@@ -31,15 +35,22 @@ const CommentReply = ({
       <CommentInput
         showFooter
         ref={replyInputRef}
-        placeholder="回复"
+        placeholder={t('lab:reply')}
         loading={commentMutation.isLoading}
-        onSubmit={(v) => {
+        onSubmit={(content, images) => {
+          const img = images.map((i) => ({
+            id: i.id,
+            filename: i.name,
+            base64: i.base64,
+          }));
+
           commentMutation.mutate(
             {
               modelId,
+              versionId,
               replyTo: parentId,
-              content: v,
-              versionId: 0,
+              content,
+              images: img,
             },
             {
               onSuccess() {

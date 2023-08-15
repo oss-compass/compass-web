@@ -5,6 +5,11 @@ export function numberFormatK(num: number) {
   return num;
 }
 
+// min and max included
+export function randomFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 export function toFixed(n: number, d: number): number {
   if (String(n).indexOf('.') === -1) {
     return n;

@@ -3,15 +3,19 @@ import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import { GrClose } from 'react-icons/gr';
 import last from 'lodash/last';
+import { useTranslation } from 'next-i18next';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import {
   useLabModelCommentsQuery,
   useCreateLabModelCommentMutation,
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
+import { useSnapshot } from 'valtio';
 import { BsArrowDown, BsArrowUp, BsLink45Deg } from 'react-icons/bs';
 import CommentInput, { InputRefProps } from './CommentInput';
 import CommentItem from './CommentItem';
+import VersionSelect from './VersionSelect';
+import { pageState } from '../state';
 
 const CommentDrawer = ({
   open,
@@ -20,12 +24,20 @@ const CommentDrawer = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const { t } = useTranslation();
+  const snapshot = useSnapshot(pageState);
   const inputRef = useRef<InputRefProps>(null);
   const router = useRouter();
   const modelId = Number(router.query.model);
-  const defaultVersionId = Number(router.query.version);
+  const versionId = snapshot.commentVersion?.id;
 
-  const params = { modelId, versionId: defaultVersionId, page: 1, per: 10 };
+  const params = {
+    versionId,
+    modelId,
+    page: 1,
+    per: 10,
+  };
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
     useInfiniteQuery(
       useLabModelCommentsQuery.getKey(params),
@@ -60,10 +72,10 @@ const CommentDrawer = ({
     >
       <div className="flex h-10 items-center justify-between border-b border-[#EAEAEA] bg-[#FAFAFA] pl-4 pr-2">
         <div className="text-sm">
-          讨论（{lastItem?.labModelComments?.count || 0}）
+          {t('lab:discuss')}（{lastItem?.labModelComments?.count || 0}）
         </div>
         <div className="flex items-center">
-          <div className="text-xs">基于版本：V20230711.13.19</div>
+          <VersionSelect />
           <div
             className="hover:bg-smoke ml-2 cursor-pointer p-2"
             onClick={() => {
@@ -122,7 +134,9 @@ const CommentDrawer = ({
                 fetchNextPage();
               }}
             >
-              {isFetchingNextPage ? '加载中...' : '加载更多'}
+              {isFetchingNextPage
+                ? t('common:loading_more')
+                : t('common:load_more')}
             </div>
           ) : null}
 
@@ -130,9 +144,19 @@ const CommentDrawer = ({
             <CommentInput
               ref={inputRef}
               loading={commentMutation.isLoading}
-              onSubmit={(content) => {
+              onSubmit={(content, images) => {
+                const img = images.map((i) => ({
+                  id: i.id,
+                  base64: i.base64,
+                  filename: i.name,
+                }));
                 commentMutation.mutate(
-                  { modelId, versionId: defaultVersionId, content },
+                  {
+                    modelId,
+                    versionId,
+                    content,
+                    images: img,
+                  },
                   {
                     onSuccess: () => {
                       refetch();

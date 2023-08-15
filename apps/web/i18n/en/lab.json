@@ -25,6 +25,8 @@
   "user_management": "Member",
   "model_name": "Model Name",
   "version_name": "Version Name",
+  "commit_enter": "Press Enter to send a comment",
+  "reply": "Reply",
   "user": {
     "invite_users": "Invite member",
     "input_email": "Please input the email address of the invitee, multiple email addresses are separated by commas",
