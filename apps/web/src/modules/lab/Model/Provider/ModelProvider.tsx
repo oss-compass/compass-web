@@ -1,24 +1,8 @@
 import React, { useEffect, PropsWithChildren } from 'react';
-import { useRouter } from 'next/router';
-import gqlClient from '@common/gqlClient';
-import { useLabModelDetailQuery } from '@oss-compass/graphql';
+import { useLabModelDetail } from '../hooks';
 
 const ModelProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const router = useRouter();
-  const modelId = Number(router.query.model);
-
-  const {
-    isLoading,
-    data: modelData,
-    error: modelError,
-  } = useLabModelDetailQuery(
-    gqlClient,
-    { id: modelId },
-    {
-      staleTime: 60 * 1000,
-      enabled: Boolean(modelId),
-    }
-  );
+  const { isLoading, data: modelData, error: modelError } = useLabModelDetail();
 
   if (isLoading) {
     return (

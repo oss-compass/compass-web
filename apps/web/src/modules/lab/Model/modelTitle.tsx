@@ -58,6 +58,7 @@ const ModeTitle: React.FC<{
                 <img
                   className="mr-2 inline-block align-text-top"
                   src="/images/lab/comment.svg"
+                  alt=""
                 />
               </a>
               {t('lab:discuss')}
@@ -81,6 +82,7 @@ const ModeTitle: React.FC<{
                       <img
                         className="mr-2 mt-[1px] inline-block align-text-top"
                         src="/images/logos/chaoss.svg"
+                        alt=""
                       />
                       CHAOSS official channel
                     </a>
@@ -93,6 +95,7 @@ const ModeTitle: React.FC<{
                       <img
                         className="mr-2 inline-block h-4 w-3.5 align-text-top"
                         src="favicon.ico"
+                        alt=""
                       />
                       Compass official channel
                     </a>

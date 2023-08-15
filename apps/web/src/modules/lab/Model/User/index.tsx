@@ -102,7 +102,12 @@ const UserManage = () => {
             />
           </div>
         ) : null}
-        <FormInviteUsers ref={inviteUsers} modelId={modelId} />
+
+        <FormInviteUsers
+          ref={inviteUsers}
+          modelId={modelId}
+          permission={permission}
+        />
       </Center>
     </div>
   );

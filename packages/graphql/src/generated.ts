@@ -137,6 +137,8 @@ export type Base64ImageInput = {
   base64: Scalars['String'];
   /** image filename */
   filename: Scalars['String'];
+  /** image id */
+  id?: InputMaybe<Scalars['Int']>;
 };
 
 export type BetaMetric = {
@@ -713,13 +715,13 @@ export type DeleteLabModelVersionPayload = {
 export type Diagram = {
   __typename?: 'Diagram';
   /** metric model creatiton time */
-  dates?: Maybe<Array<Scalars['ISO8601DateTime']>>;
+  dates?: Maybe<Array<Maybe<Scalars['ISO8601DateTime']>>>;
   /** Tab ident for this diagram */
   tabIdent?: Maybe<Scalars['String']>;
   /** Type of this diagram, default: `line` */
   type?: Maybe<Scalars['String']>;
   /** y-axis values for this diagram */
-  values?: Maybe<Array<Scalars['Float']>>;
+  values?: Maybe<Array<Maybe<Scalars['Float']>>>;
 };
 
 export type Error = {
@@ -773,6 +775,7 @@ export type GroupActivitySummary = {
 export type Image = {
   __typename?: 'Image';
   filename: Scalars['String'];
+  id: Scalars['Int'];
   url: Scalars['String'];
 };
 
@@ -1679,7 +1682,9 @@ export type UpdateLabModelCommentInput = {
   /** lab model comment id */
   commentId: Scalars['Int'];
   /** comment content */
-  content: Scalars['String'];
+  content?: InputMaybe<Scalars['String']>;
+  /** related images under this comment */
+  images?: InputMaybe<Array<Base64ImageInput>>;
   /** lab model id */
   modelId: Scalars['Int'];
 };
@@ -1836,6 +1841,7 @@ export type CommentFragment = {
     __typename?: 'Image';
     filename: string;
     url: string;
+    id: number;
   }> | null;
   model: {
     __typename?: 'ModelDetail';
@@ -1857,6 +1863,7 @@ export type CommentFragment = {
       __typename?: 'Image';
       filename: string;
       url: string;
+      id: number;
     }> | null;
   } | null;
   replies?: Array<{
@@ -1869,6 +1876,7 @@ export type CommentFragment = {
       __typename?: 'Image';
       filename: string;
       url: string;
+      id: number;
     }> | null;
     user: {
       __typename?: 'SimpleUser';
@@ -1884,16 +1892,21 @@ export type CommentFragment = {
       updatedAt: any;
       images?: Array<{
         __typename?: 'Image';
+        id: number;
         filename: string;
         url: string;
       }> | null;
-      user: {
-        __typename?: 'SimpleUser';
-        avatarUrl?: string | null;
-        id: number;
-        name: string;
-      };
     }> | null;
+    model: {
+      __typename?: 'ModelDetail';
+      dimension: number;
+      id: number;
+      isGeneral: boolean;
+      isPublic: boolean;
+      name: string;
+      triggerRemainingCount: number;
+      userId: number;
+    };
   }> | null;
   user: {
     __typename?: 'SimpleUser';
@@ -1913,6 +1926,7 @@ export type ReplyFragment = {
     __typename?: 'Image';
     filename: string;
     url: string;
+    id: number;
   }> | null;
   user: {
     __typename?: 'SimpleUser';
@@ -1928,16 +1942,21 @@ export type ReplyFragment = {
     updatedAt: any;
     images?: Array<{
       __typename?: 'Image';
+      id: number;
       filename: string;
       url: string;
     }> | null;
-    user: {
-      __typename?: 'SimpleUser';
-      avatarUrl?: string | null;
-      id: number;
-      name: string;
-    };
   }> | null;
+  model: {
+    __typename?: 'ModelDetail';
+    dimension: number;
+    id: number;
+    isGeneral: boolean;
+    isPublic: boolean;
+    name: string;
+    triggerRemainingCount: number;
+    userId: number;
+  };
 };
 
 export type ParentCommentFragment = {
@@ -1950,6 +1969,7 @@ export type ParentCommentFragment = {
     __typename?: 'Image';
     filename: string;
     url: string;
+    id: number;
   }> | null;
 };
 
@@ -2091,6 +2111,7 @@ export type MyLabModelsQuery = {
         __typename?: 'ModelVersion';
         id: number;
         version?: string | null;
+        triggerStatus?: string | null;
         algorithm?: {
           __typename?: 'Algorithm';
           ident: string;
@@ -2135,7 +2156,7 @@ export type MyLabModelsQuery = {
 };
 
 export type LabModelDetailQueryVariables = Exact<{
-  id: Scalars['Int'];
+  modelId: Scalars['Int'];
 }>;
 
 export type LabModelDetailQuery = {
@@ -2272,6 +2293,7 @@ export type LabModelCommentsQuery = {
         __typename?: 'Image';
         filename: string;
         url: string;
+        id: number;
       }> | null;
       model: {
         __typename?: 'ModelDetail';
@@ -2293,6 +2315,7 @@ export type LabModelCommentsQuery = {
           __typename?: 'Image';
           filename: string;
           url: string;
+          id: number;
         }> | null;
       } | null;
       replies?: Array<{
@@ -2305,6 +2328,7 @@ export type LabModelCommentsQuery = {
           __typename?: 'Image';
           filename: string;
           url: string;
+          id: number;
         }> | null;
         user: {
           __typename?: 'SimpleUser';
@@ -2320,16 +2344,21 @@ export type LabModelCommentsQuery = {
           updatedAt: any;
           images?: Array<{
             __typename?: 'Image';
+            id: number;
             filename: string;
             url: string;
           }> | null;
-          user: {
-            __typename?: 'SimpleUser';
-            avatarUrl?: string | null;
-            id: number;
-            name: string;
-          };
         }> | null;
+        model: {
+          __typename?: 'ModelDetail';
+          dimension: number;
+          id: number;
+          isGeneral: boolean;
+          isPublic: boolean;
+          name: string;
+          triggerRemainingCount: number;
+          userId: number;
+        };
       }> | null;
       user: {
         __typename?: 'SimpleUser';
@@ -2358,6 +2387,7 @@ export type LabModelCommentDetailQuery = {
       __typename?: 'Image';
       filename: string;
       url: string;
+      id: number;
     }> | null;
     model: {
       __typename?: 'ModelDetail';
@@ -2392,6 +2422,7 @@ export type LabModelCommentDetailQuery = {
         __typename?: 'Image';
         filename: string;
         url: string;
+        id: number;
       }> | null;
       model: {
         __typename?: 'ModelDetail';
@@ -2413,6 +2444,7 @@ export type LabModelCommentDetailQuery = {
           __typename?: 'Image';
           filename: string;
           url: string;
+          id: number;
         }> | null;
       } | null;
       replies?: Array<{
@@ -2425,6 +2457,7 @@ export type LabModelCommentDetailQuery = {
           __typename?: 'Image';
           filename: string;
           url: string;
+          id: number;
         }> | null;
         user: {
           __typename?: 'SimpleUser';
@@ -2440,16 +2473,21 @@ export type LabModelCommentDetailQuery = {
           updatedAt: any;
           images?: Array<{
             __typename?: 'Image';
+            id: number;
             filename: string;
             url: string;
           }> | null;
-          user: {
-            __typename?: 'SimpleUser';
-            avatarUrl?: string | null;
-            id: number;
-            name: string;
-          };
         }> | null;
+        model: {
+          __typename?: 'ModelDetail';
+          dimension: number;
+          id: number;
+          isGeneral: boolean;
+          isPublic: boolean;
+          name: string;
+          triggerRemainingCount: number;
+          userId: number;
+        };
       }> | null;
       user: {
         __typename?: 'SimpleUser';
@@ -2481,6 +2519,7 @@ export type LabModelCommentDetailQuery = {
         __typename?: 'Image';
         filename: string;
         url: string;
+        id: number;
       }> | null;
       model: {
         __typename?: 'ModelDetail';
@@ -2502,6 +2541,7 @@ export type LabModelCommentDetailQuery = {
           __typename?: 'Image';
           filename: string;
           url: string;
+          id: number;
         }> | null;
       } | null;
       replies?: Array<{
@@ -2514,6 +2554,7 @@ export type LabModelCommentDetailQuery = {
           __typename?: 'Image';
           filename: string;
           url: string;
+          id: number;
         }> | null;
         user: {
           __typename?: 'SimpleUser';
@@ -2529,16 +2570,21 @@ export type LabModelCommentDetailQuery = {
           updatedAt: any;
           images?: Array<{
             __typename?: 'Image';
+            id: number;
             filename: string;
             url: string;
           }> | null;
-          user: {
-            __typename?: 'SimpleUser';
-            avatarUrl?: string | null;
-            id: number;
-            name: string;
-          };
         }> | null;
+        model: {
+          __typename?: 'ModelDetail';
+          dimension: number;
+          id: number;
+          isGeneral: boolean;
+          isPublic: boolean;
+          name: string;
+          triggerRemainingCount: number;
+          userId: number;
+        };
       }> | null;
       user: {
         __typename?: 'SimpleUser';
@@ -2621,6 +2667,122 @@ export type InvitationOverviewQuery = {
       id: number;
       sentAt: any;
       status: string;
+    }> | null;
+  } | null;
+};
+
+export type SimpleReportFragment = {
+  __typename?: 'SimpleReport';
+  label?: string | null;
+  level?: string | null;
+  shortCode?: string | null;
+  type?: string | null;
+  mainScore?: {
+    __typename?: 'Diagram';
+    dates?: Array<any | null> | null;
+    tabIdent?: string | null;
+    type?: string | null;
+    values?: Array<number | null> | null;
+  } | null;
+};
+
+export type LabModelPublicOverviewQueryVariables = Exact<{
+  sort?: InputMaybe<Scalars['String']>;
+  direction?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type LabModelPublicOverviewQuery = {
+  __typename?: 'Query';
+  labModelPublicOverview?: {
+    __typename?: 'ModelPublicPage';
+    page?: number | null;
+    totalPage?: number | null;
+    count?: number | null;
+    items?: Array<{
+      __typename?: 'ModelPublicOverview';
+      modelId?: number | null;
+      modelName?: string | null;
+      version?: string | null;
+      versionId?: number | null;
+      dataset?: {
+        __typename?: 'Dataset';
+        ident?: string | null;
+        name?: string | null;
+        items?: Array<{
+          __typename?: 'DatasetCompletionRow';
+          firstIdent?: string | null;
+          label?: string | null;
+          shortCode?: string | null;
+          level?: string | null;
+          secondIdent?: string | null;
+        }> | null;
+      } | null;
+      reports?: Array<{
+        __typename?: 'SimpleReport';
+        label?: string | null;
+        level?: string | null;
+        shortCode?: string | null;
+        type?: string | null;
+        mainScore?: {
+          __typename?: 'Diagram';
+          dates?: Array<any | null> | null;
+          tabIdent?: string | null;
+          type?: string | null;
+          values?: Array<number | null> | null;
+        } | null;
+      }> | null;
+    }> | null;
+  } | null;
+};
+
+export type LabModelVersionReportDetailQueryVariables = Exact<{
+  modelId: Scalars['Int'];
+  versionId: Scalars['Int'];
+  label?: InputMaybe<Scalars['String']>;
+  shortCode?: InputMaybe<Scalars['String']>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type LabModelVersionReportDetailQuery = {
+  __typename?: 'Query';
+  labModelVersionReportDetail?: {
+    __typename?: 'Report';
+    label?: string | null;
+    level?: string | null;
+    shortCode?: string | null;
+    type?: string | null;
+    mainScore?: {
+      __typename?: 'Diagram';
+      dates?: Array<any | null> | null;
+      tabIdent?: string | null;
+      type?: string | null;
+      values?: Array<number | null> | null;
+    } | null;
+    panels?: Array<{
+      __typename?: 'Panel';
+      diagrams?: Array<{
+        __typename?: 'Diagram';
+        dates?: Array<any | null> | null;
+        tabIdent?: string | null;
+        type?: string | null;
+        values?: Array<number | null> | null;
+      }> | null;
+      metric?: {
+        __typename?: 'ModelMetric';
+        category?: string | null;
+        defaultThreshold?: number | null;
+        defaultWeight?: number | null;
+        from?: string | null;
+        id?: number | null;
+        metricId?: number | null;
+        ident?: string | null;
+        name?: string | null;
+        threshold?: number | null;
+        weight?: number | null;
+      } | null;
     }> | null;
   } | null;
 };
@@ -2893,6 +3055,7 @@ export type UpdateLabModelCommentMutationVariables = Exact<{
   commentId: Scalars['Int'];
   content: Scalars['String'];
   modelId: Scalars['Int'];
+  images?: InputMaybe<Array<Base64ImageInput> | Base64ImageInput>;
 }>;
 
 export type UpdateLabModelCommentMutation = {
@@ -2901,6 +3064,26 @@ export type UpdateLabModelCommentMutation = {
     __typename?: 'UpdateLabModelCommentPayload';
     clientMutationId?: string | null;
     message?: string | null;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type TriggerLabModelVersionMutationVariables = Exact<{
+  modelId: Scalars['Int'];
+  versionId: Scalars['Int'];
+}>;
+
+export type TriggerLabModelVersionMutation = {
+  __typename?: 'Mutation';
+  triggerLabModelVersion?: {
+    __typename?: 'TriggerLabModelVersionPayload';
+    clientMutationId?: string | null;
+    message?: string | null;
+    status: string;
     errors?: Array<{
       __typename?: 'Error';
       message?: string | null;
@@ -3799,6 +3982,7 @@ export const ParentCommentFragmentDoc = /*#__PURE__*/ `
   images {
     filename
     url
+    id
   }
   updatedAt
 }
@@ -3811,6 +3995,7 @@ export const ReplyFragmentDoc = /*#__PURE__*/ `
   images {
     filename
     url
+    id
   }
   updatedAt
   user {
@@ -3823,15 +4008,20 @@ export const ReplyFragmentDoc = /*#__PURE__*/ `
     createdAt
     id
     images {
+      id
       filename
       url
     }
     updatedAt
-    user {
-      avatarUrl
-      id
-      name
-    }
+  }
+  model {
+    dimension
+    id
+    isGeneral
+    isPublic
+    name
+    triggerRemainingCount
+    userId
   }
 }
     `;
@@ -3846,6 +4036,7 @@ export const CommentFragmentDoc = /*#__PURE__*/ `
   images {
     filename
     url
+    id
   }
   model {
     ...modelDetail
@@ -3922,6 +4113,20 @@ export const LabMemberFragmentDoc = /*#__PURE__*/ `
   name
 }
     `;
+export const SimpleReportFragmentDoc = /*#__PURE__*/ `
+    fragment simpleReport on SimpleReport {
+  label
+  level
+  mainScore {
+    dates
+    tabIdent
+    type
+    values
+  }
+  shortCode
+  type
+}
+    `;
 export const MetricStatFragmentDoc = /*#__PURE__*/ `
     fragment metricStat on MetricStat {
   mean
@@ -3986,6 +4191,7 @@ export const MyLabModelsDocument = /*#__PURE__*/ `
       latestVersions {
         id
         version
+        triggerStatus
         algorithm {
           ...algorithm
         }
@@ -4045,8 +4251,8 @@ useMyLabModelsQuery.fetcher = (
     headers
   );
 export const LabModelDetailDocument = /*#__PURE__*/ `
-    query labModelDetail($id: Int!) {
-  labModelDetail(modelId: $id) {
+    query labModelDetail($modelId: Int!) {
+  labModelDetail(modelId: $modelId) {
     dimension
     id
     isGeneral
@@ -4297,6 +4503,7 @@ export const LabModelCommentDetailDocument = /*#__PURE__*/ `
     images {
       filename
       url
+      id
     }
     model {
       ...modelDetail
@@ -4506,6 +4713,136 @@ useInvitationOverviewQuery.fetcher = (
     variables,
     headers
   );
+export const LabModelPublicOverviewDocument = /*#__PURE__*/ `
+    query labModelPublicOverview($sort: String, $direction: String, $page: Int, $per: Int) {
+  labModelPublicOverview(
+    sort: $sort
+    direction: $direction
+    page: $page
+    per: $per
+  ) {
+    page
+    totalPage
+    count
+    items {
+      dataset {
+        ...dataset
+      }
+      modelId
+      modelName
+      reports {
+        ...simpleReport
+      }
+      version
+      versionId
+    }
+  }
+}
+    ${DatasetFragmentDoc}
+${SimpleReportFragmentDoc}`;
+export const useLabModelPublicOverviewQuery = <
+  TData = LabModelPublicOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: LabModelPublicOverviewQueryVariables,
+  options?: UseQueryOptions<LabModelPublicOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<LabModelPublicOverviewQuery, TError, TData>(
+    variables === undefined
+      ? ['labModelPublicOverview']
+      : ['labModelPublicOverview', variables],
+    fetcher<LabModelPublicOverviewQuery, LabModelPublicOverviewQueryVariables>(
+      client,
+      LabModelPublicOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useLabModelPublicOverviewQuery.getKey = (
+  variables?: LabModelPublicOverviewQueryVariables
+) =>
+  variables === undefined
+    ? ['labModelPublicOverview']
+    : ['labModelPublicOverview', variables];
+useLabModelPublicOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: LabModelPublicOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<LabModelPublicOverviewQuery, LabModelPublicOverviewQueryVariables>(
+    client,
+    LabModelPublicOverviewDocument,
+    variables,
+    headers
+  );
+export const LabModelVersionReportDetailDocument = /*#__PURE__*/ `
+    query labModelVersionReportDetail($modelId: Int!, $versionId: Int!, $label: String, $shortCode: String, $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  labModelVersionReportDetail(
+    modelId: $modelId
+    versionId: $versionId
+    label: $label
+    shortCode: $shortCode
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    label
+    level
+    mainScore {
+      dates
+      tabIdent
+      type
+      values
+    }
+    panels {
+      diagrams {
+        dates
+        tabIdent
+        type
+        values
+      }
+      metric {
+        ...metrics
+      }
+    }
+    shortCode
+    type
+  }
+}
+    ${MetricsFragmentDoc}`;
+export const useLabModelVersionReportDetailQuery = <
+  TData = LabModelVersionReportDetailQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: LabModelVersionReportDetailQueryVariables,
+  options?: UseQueryOptions<LabModelVersionReportDetailQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<LabModelVersionReportDetailQuery, TError, TData>(
+    ['labModelVersionReportDetail', variables],
+    fetcher<
+      LabModelVersionReportDetailQuery,
+      LabModelVersionReportDetailQueryVariables
+    >(client, LabModelVersionReportDetailDocument, variables, headers),
+    options
+  );
+
+useLabModelVersionReportDetailQuery.getKey = (
+  variables: LabModelVersionReportDetailQueryVariables
+) => ['labModelVersionReportDetail', variables];
+useLabModelVersionReportDetailQuery.fetcher = (
+  client: GraphQLClient,
+  variables: LabModelVersionReportDetailQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    LabModelVersionReportDetailQuery,
+    LabModelVersionReportDetailQueryVariables
+  >(client, LabModelVersionReportDetailDocument, variables, headers);
 export const CreateLabModelDocument = /*#__PURE__*/ `
     mutation createLabModel($algorithm: String, $datasets: [DatasetRowTypeInput!]!, $dimension: Int!, $isGeneral: Boolean!, $isPublic: Boolean!, $metrics: [LabModelMetricInput!]!, $name: String!) {
   createLabModel(
@@ -5118,9 +5455,9 @@ useCreateLabModelCommentMutation.fetcher = (
     CreateLabModelCommentMutationVariables
   >(client, CreateLabModelCommentDocument, variables, headers);
 export const UpdateLabModelCommentDocument = /*#__PURE__*/ `
-    mutation updateLabModelComment($commentId: Int!, $content: String!, $modelId: Int!) {
+    mutation updateLabModelComment($commentId: Int!, $content: String!, $modelId: Int!, $images: [Base64ImageInput!]) {
   updateLabModelComment(
-    input: {modelId: $modelId, content: $content, commentId: $commentId}
+    input: {modelId: $modelId, content: $content, commentId: $commentId, images: $images}
   ) {
     clientMutationId
     errors {
@@ -5167,6 +5504,55 @@ useUpdateLabModelCommentMutation.fetcher = (
     UpdateLabModelCommentMutation,
     UpdateLabModelCommentMutationVariables
   >(client, UpdateLabModelCommentDocument, variables, headers);
+export const TriggerLabModelVersionDocument = /*#__PURE__*/ `
+    mutation triggerLabModelVersion($modelId: Int!, $versionId: Int!) {
+  triggerLabModelVersion(input: {modelId: $modelId, versionId: $versionId}) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+    `;
+export const useTriggerLabModelVersionMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    TriggerLabModelVersionMutation,
+    TError,
+    TriggerLabModelVersionMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    TriggerLabModelVersionMutation,
+    TError,
+    TriggerLabModelVersionMutationVariables,
+    TContext
+  >(
+    ['triggerLabModelVersion'],
+    (variables?: TriggerLabModelVersionMutationVariables) =>
+      fetcher<
+        TriggerLabModelVersionMutation,
+        TriggerLabModelVersionMutationVariables
+      >(client, TriggerLabModelVersionDocument, variables, headers)(),
+    options
+  );
+useTriggerLabModelVersionMutation.fetcher = (
+  client: GraphQLClient,
+  variables: TriggerLabModelVersionMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TriggerLabModelVersionMutation,
+    TriggerLabModelVersionMutationVariables
+  >(client, TriggerLabModelVersionDocument, variables, headers);
 export const CreateRepoTaskDocument = /*#__PURE__*/ `
     mutation createRepoTask($repoUrls: [String!]!, $origin: String!) {
   createRepoTask(input: {repoUrls: $repoUrls, origin: $origin}) {

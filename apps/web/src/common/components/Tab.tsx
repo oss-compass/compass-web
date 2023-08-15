@@ -6,7 +6,7 @@ const Tab: React.FC<{
   value: string;
   onChange: (v: string) => void;
 }> = ({ options, value, onChange }) => (
-  <div className="flex">
+  <div className="flex overflow-hidden ">
     <div className="flex rounded-md border border-[#DEE4EC] bg-[#f6f6f6] p-1">
       {options.map((option) => {
         return (

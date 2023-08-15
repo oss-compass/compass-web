@@ -5,7 +5,10 @@ import { FiMoreHorizontal } from 'react-icons/fi';
 import { Popper } from '@oss-compass/ui';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import gqlClient from '@common/gqlClient';
-import { useDeleteLabModelVersionMutation } from '@oss-compass/graphql';
+import {
+  useDeleteLabModelVersionMutation,
+  Permission,
+} from '@oss-compass/graphql';
 import { ReFetch } from '@common/constant';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
@@ -14,9 +17,11 @@ const VersionItemMore = ({
   modelId,
   versionId,
   event$,
+  permissions,
 }: {
   modelId: number;
   versionId: number;
+  permissions: Permission;
   event$: EventEmitter<string>;
 }) => {
   const router = useRouter();
@@ -35,22 +40,29 @@ const VersionItemMore = ({
         placement="bottom-end"
         content={
           <div className="w-24 rounded bg-white shadow">
-            <div
-              className="cursor-pointer border-b px-2 py-2 text-sm"
-              onClick={() => {
-                router.push(`/lab/model/${modelId}/version/${versionId}/edit`);
-              }}
-            >
-              {t('common:btn.edit')}
-            </div>
-            <div
-              className="cursor-pointer border-b px-2 py-2 text-sm"
-              onClick={() => {
-                setOpenConfirm(true);
-              }}
-            >
-              {t('common:btn.delete')}
-            </div>
+            {permissions?.canUpdate ? (
+              <div
+                className="cursor-pointer border-b px-2 py-2 text-sm"
+                onClick={() => {
+                  router.push(
+                    `/lab/model/${modelId}/version/${versionId}/edit`
+                  );
+                }}
+              >
+                {t('common:btn.edit')}
+              </div>
+            ) : null}
+
+            {permissions?.canDestroy ? (
+              <div
+                className="cursor-pointer border-b px-2 py-2 text-sm"
+                onClick={() => {
+                  setOpenConfirm(true);
+                }}
+              >
+                {t('common:btn.delete')}
+              </div>
+            ) : null}
           </div>
         }
       >
@@ -63,6 +75,7 @@ const VersionItemMore = ({
           </div>
         )}
       </Popper>
+
       <Dialog
         open={openConfirm}
         dialogTitle={<>{t('common:btn.confirm')}</>}

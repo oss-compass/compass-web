@@ -1,11 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
 import {
   CommentFragment,
+  ReplyFragment,
   useUpdateLabModelCommentMutation,
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
-import CommentItemMore from './CommentItemMore';
 import CommentInput, { InputRefProps } from './CommentInput';
 
 const CommentEdit = ({
@@ -13,7 +12,7 @@ const CommentEdit = ({
   onUpdateSuccess,
   onCancel,
 }: {
-  comment: CommentFragment;
+  comment: CommentFragment | ReplyFragment;
   onUpdateSuccess: () => void;
   onCancel: () => void;
 }) => {
@@ -24,8 +23,13 @@ const CommentEdit = ({
   const updateCommentMutation = useUpdateLabModelCommentMutation(gqlClient);
 
   useEffect(() => {
-    editInputRef.current.backFill(comment?.content);
-  }, [comment?.content]);
+    const images = comment?.images?.map((img) => ({
+      id: img.id,
+      name: img.filename,
+      base64: img.url,
+    }));
+    editInputRef.current.backFill(comment?.content, images);
+  }, [comment?.content, comment?.images]);
 
   return (
     <CommentInput
@@ -33,12 +37,19 @@ const CommentEdit = ({
       ref={editInputRef}
       placeholder="编辑"
       loading={updateCommentMutation.isLoading}
-      onSubmit={(v) => {
+      onSubmit={(v, images) => {
+        const img = images.map((i) => ({
+          id: i.id,
+          filename: i.name,
+          base64: i.base64,
+        }));
+
         updateCommentMutation.mutate(
           {
             modelId,
             commentId,
             content: v,
+            images: img,
           },
           {
             onSuccess() {

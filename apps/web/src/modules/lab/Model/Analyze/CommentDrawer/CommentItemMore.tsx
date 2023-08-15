@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Popper } from '@oss-compass/ui';
 import { useRouter } from 'next/router';
-import { CommentFragment } from '@oss-compass/graphql';
+import { CommentFragment, ReplyFragment } from '@oss-compass/graphql';
 import {
   ModelDetail,
   useDeleteLabModelCommentMutation,
@@ -17,7 +17,7 @@ const CommentItemMore = ({
   onDeleteSuccess,
   onDeleteEdit,
 }: {
-  comment: CommentFragment;
+  comment: CommentFragment | ReplyFragment;
   onDeleteSuccess: () => void;
   onDeleteEdit: () => void;
 }) => {

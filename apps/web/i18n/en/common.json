@@ -11,6 +11,15 @@
     "about": "About",
     "submit_your_project": "Submit your project"
   },
+  "range": {
+    "3M": "Last 3 months",
+    "6M": "Last 6 months",
+    "1Y": "Last year",
+    "2Y": "Last 2 years",
+    "3Y": "Last 3 years",
+    "5Y": "Last 5 years",
+    "Since2000": "Since inception"
+  },
   "community": {
     "code_base": "Repository",
     "discussion": "Discussion",

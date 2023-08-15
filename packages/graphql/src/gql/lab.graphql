@@ -8,6 +8,7 @@ fragment comment on ModelComment {
   images {
     filename
     url
+    id
   }
   model {
     ...modelDetail
@@ -33,6 +34,7 @@ fragment reply on ModelComment {
   images {
     filename
     url
+    id
   }
   updatedAt
   user {
@@ -45,15 +47,21 @@ fragment reply on ModelComment {
     createdAt
     id
     images {
+      id
       filename
       url
     }
     updatedAt
-    user {
-      avatarUrl
-      id
-      name
-    }
+  }
+  model {
+    dimension
+    id
+    isGeneral
+    isPublic
+    #latestVersions
+    name
+    triggerRemainingCount
+    userId
   }
 }
 
@@ -64,6 +72,7 @@ fragment parentComment on ModelComment {
   images {
     filename
     url
+    id
   }
   updatedAt
   #  user {
@@ -165,6 +174,7 @@ query myLabModels($page: Int!, $per: Int!) {
       latestVersions {
         id
         version
+        triggerStatus
         algorithm {
           ...algorithm
         }
@@ -189,8 +199,8 @@ query myLabModels($page: Int!, $per: Int!) {
   }
 }
 
-query labModelDetail($id: Int!) {
-  labModelDetail(modelId: $id) {
+query labModelDetail($modelId: Int!) {
+  labModelDetail(modelId: $modelId) {
     dimension
     id
     isGeneral
@@ -280,6 +290,7 @@ query labModelCommentDetail($modelId: Int!, $commentId: Int!) {
     images {
       filename
       url
+      id
     }
     model {
       ...modelDetail
@@ -334,6 +345,89 @@ query invitationOverview($modelId: Int, $page: Int, $per: Int) {
     }
     page
     totalPage
+  }
+}
+
+fragment simpleReport on SimpleReport {
+  label
+  level
+  mainScore {
+    dates
+    tabIdent
+    type
+    values
+  }
+  shortCode
+  type
+}
+
+query labModelPublicOverview(
+  $sort: String
+  $direction: String
+  $page: Int
+  $per: Int
+) {
+  labModelPublicOverview(
+    sort: $sort
+    direction: $direction
+    page: $page
+    per: $per
+  ) {
+    page
+    totalPage
+    count
+    items {
+      dataset {
+        ...dataset
+      }
+      modelId
+      modelName
+      reports {
+        ...simpleReport
+      }
+      version
+      versionId
+    }
+  }
+}
+
+query labModelVersionReportDetail(
+  $modelId: Int!
+  $versionId: Int!
+  $label: String
+  $shortCode: String
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  labModelVersionReportDetail(
+    modelId: $modelId
+    versionId: $versionId
+    label: $label
+    shortCode: $shortCode
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    label
+    level
+    mainScore {
+      dates
+      tabIdent
+      type
+      values
+    }
+    panels {
+      diagrams {
+        dates
+        tabIdent
+        type
+        values
+      }
+      metric {
+        ...metrics
+      }
+    }
+    shortCode
+    type
   }
 }
 
@@ -583,9 +677,15 @@ mutation updateLabModelComment(
   $commentId: Int!
   $content: String!
   $modelId: Int!
+  $images: [Base64ImageInput!]
 ) {
   updateLabModelComment(
-    input: { modelId: $modelId, content: $content, commentId: $commentId }
+    input: {
+      modelId: $modelId
+      content: $content
+      commentId: $commentId
+      images: $images
+    }
   ) {
     clientMutationId
     errors {
@@ -593,5 +693,17 @@ mutation updateLabModelComment(
       path
     }
     message
+  }
+}
+
+mutation triggerLabModelVersion($modelId: Int!, $versionId: Int!) {
+  triggerLabModelVersion(input: { modelId: $modelId, versionId: $versionId }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
   }
 }
