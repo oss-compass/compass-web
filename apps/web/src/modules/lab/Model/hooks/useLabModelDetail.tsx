@@ -9,7 +9,7 @@ export const useLabModelDetail = () => {
 
   return useLabModelDetailQuery(
     gqlClient,
-    { id: modelId },
+    { modelId },
     {
       staleTime: 60 * 1000,
       enabled: Boolean(modelId),

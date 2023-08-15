@@ -23,7 +23,7 @@ const ModelVersionEdit = () => {
 
   const { isLoading } = useLabModelDetailQuery(
     gqlClient,
-    { id: modelId },
+    { modelId },
     {
       enabled: Boolean(modelId),
       onSuccess(res) {

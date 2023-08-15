@@ -199,8 +199,8 @@ query myLabModels($page: Int!, $per: Int!) {
   }
 }
 
-query labModelDetail($id: Int!) {
-  labModelDetail(modelId: $id) {
+query labModelDetail($modelId: Int!) {
+  labModelDetail(modelId: $modelId) {
     dimension
     id
     isGeneral

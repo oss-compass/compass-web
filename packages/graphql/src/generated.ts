@@ -2156,7 +2156,7 @@ export type MyLabModelsQuery = {
 };
 
 export type LabModelDetailQueryVariables = Exact<{
-  id: Scalars['Int'];
+  modelId: Scalars['Int'];
 }>;
 
 export type LabModelDetailQuery = {
@@ -4251,8 +4251,8 @@ useMyLabModelsQuery.fetcher = (
     headers
   );
 export const LabModelDetailDocument = /*#__PURE__*/ `
-    query labModelDetail($id: Int!) {
-  labModelDetail(modelId: $id) {
+    query labModelDetail($modelId: Int!) {
+  labModelDetail(modelId: $modelId) {
     dimension
     id
     isGeneral
