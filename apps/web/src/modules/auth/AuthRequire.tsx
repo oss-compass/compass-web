@@ -30,7 +30,7 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
   if (loading) {
     return (
       <div className={classnames(className, loadingClassName)}>
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 animate-pulse space-y-4">
           <div className="h-6 rounded bg-slate-200"></div>
 
           <div className="grid grid-cols-3 gap-4">

@@ -30,28 +30,37 @@ const ModelItemMore = ({
     },
   });
 
+  if (!permissions?.canDestroy && !permissions?.canUpdate) {
+    return null;
+  }
+
   return (
     <>
       <Popper
         placement="bottom-end"
         content={
           <div className="w-24 rounded bg-white shadow">
-            <div
-              className="cursor-pointer border-b px-2 py-2 text-sm"
-              onClick={() => {
-                router.push(`/lab/model/${modelId}/edit`);
-              }}
-            >
-              {t('common:btn.edit')}
-            </div>
-            <div
-              className="cursor-pointer border-b px-2 py-2 text-sm"
-              onClick={() => {
-                setOpenConfirm(true);
-              }}
-            >
-              {t('common:btn.delete')}
-            </div>
+            {permissions?.canUpdate ? (
+              <div
+                className="cursor-pointer border-b px-2 py-2 text-sm"
+                onClick={() => {
+                  router.push(`/lab/model/${modelId}/edit`);
+                }}
+              >
+                {t('common:btn.edit')}
+              </div>
+            ) : null}
+
+            {permissions?.canDestroy ? (
+              <div
+                className="cursor-pointer border-b px-2 py-2 text-sm"
+                onClick={() => {
+                  setOpenConfirm(true);
+                }}
+              >
+                {t('common:btn.delete')}
+              </div>
+            ) : null}
           </div>
         }
       >

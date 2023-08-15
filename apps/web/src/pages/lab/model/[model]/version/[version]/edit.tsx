@@ -22,7 +22,7 @@ const ModelVersionEdit = () => {
       <Header />
       <Banner />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
-        <ModelVersionProvider>
+        <ModelVersionProvider loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
           <EditPage />
         </ModelVersionProvider>
       </AuthRequire>

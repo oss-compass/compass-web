@@ -6,7 +6,7 @@ import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import Banner from '@modules/lab/Model/Banner';
 import DataSetPage from '@modules/lab/Model/Version/DataSetPage';
-import ModelInfoProvider from '@modules/lab/Model/Provider/ModelVersionProvider';
+import ModelVersionProvider from '@modules/lab/Model/Provider/ModelVersionProvider';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -22,9 +22,9 @@ const VersionCreate = () => {
       <Header />
       <Banner />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
-        <ModelInfoProvider>
+        <ModelVersionProvider loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
           <DataSetPage />
-        </ModelInfoProvider>
+        </ModelVersionProvider>
       </AuthRequire>
     </NoSsr>
   );

@@ -7,8 +7,25 @@ import AnalyzeChartTotalCard from './AnalyzeChartTotalCard';
 import AnalyzeChartCard from './AnalyzeChartCard';
 import AnalyzeChartNav from './AnalyzeChartNav';
 
+const LoadingUi = () => (
+  <div className="rounded-lg bg-white  px-6 py-6 drop-shadow-sm">
+    <div className=" flex-1 animate-pulse space-y-4">
+      <div className="h-6 rounded bg-slate-200"></div>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-2 h-6 rounded bg-slate-200"></div>
+        <div className="col-span-1 h-6 rounded bg-slate-200"></div>
+      </div>
+      <div className="h-6 rounded bg-slate-200"></div>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-1 h-6 rounded bg-slate-200"></div>
+        <div className="col-span-2 h-6 rounded bg-slate-200"></div>
+      </div>
+      <div className="h-6 rounded bg-slate-200"></div>
+    </div>
+  </div>
+);
+
 const AnalyzeChart = () => {
-  const { t } = useTranslation();
   const router = useRouter();
   const modelId = Number(router.query.model);
   const versionId = Number(router.query.version);
@@ -29,32 +46,9 @@ const AnalyzeChart = () => {
   const mainScore = data?.labModelVersionReportDetail?.mainScore || {};
   const panels = data?.labModelVersionReportDetail?.panels || [];
 
-  if (isLoading) {
+  const getContent = () => {
     return (
-      <div className="flex flex-1 flex-col ">
-        <div className="animate-pulse p-10">
-          <div className="flex-1 space-y-4 ">
-            <div className="h-4 rounded bg-slate-200"></div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-              <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-            </div>
-            <div className="h-4 rounded bg-slate-200"></div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-1 h-4 rounded bg-slate-200"></div>
-              <div className="col-span-2 h-4 rounded bg-slate-200"></div>
-            </div>
-            <div className="h-4 rounded bg-slate-200"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <AnalyzeChartNav />
-      <div className="relative flex min-w-0 flex-1 flex-col px-10 pt-8 md:p-0">
+      <>
         <div className="mb-10">
           <AnalyzeChartTotalCard mainScore={mainScore} />
         </div>
@@ -63,6 +57,15 @@ const AnalyzeChart = () => {
             return <AnalyzeChartCard key={panel.metric.id} panel={panel} />;
           })}
         </div>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <AnalyzeChartNav />
+      <div className="relative flex min-w-0 flex-1 flex-col px-10 pt-8 md:p-0">
+        {isLoading ? <LoadingUi /> : getContent()}
       </div>
     </>
   );
