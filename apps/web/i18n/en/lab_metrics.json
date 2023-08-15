@@ -4,18 +4,30 @@
     "contributor_count": "Contributor Count",
     "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
     "contributor_count_value": {
-      "threshold": "Between 0 and 1000"
+      "threshold": "Between 0 and 2000"
     },
     "code_contributor_count": "Code Contributor Count",
     "code_contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
+    "code_contributor_count_value": {
+      "threshold": "Between 0 and 1000"
+    },
     "org_contributor_count": "Organization Contributor Count",
     "org_contributor_count_desc": "Number of active code contributors with organization affiliation in the past 90 days.",
+    "org_contributor_count_value": {
+      "threshold": "Between 0 and 300"
+    },
     "bus_factor": "Bus Factor",
-    "bus_factor_desc": "Determine the smallest number of people that make 50% of contributions in the past 90 days."
+    "bus_factor_desc": "Determine the smallest number of people that make 50% of contributions in the past 90 days.",
+    "bus_factor_value": {
+      "threshold": "Between 0 and 5"
+    }
   },
   "git": {
     "commit_frequency": "Commit Frequency",
     "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
+    "commit_frequency_value": {
+      "threshold": "Between 0 and 1000"
+    },
     "commit_frequency_more": {
       "weight": "16.363%",
       "threshold": "1000",
@@ -23,6 +35,9 @@
     },
     "is_maintained": "Is Maintained",
     "is_maintained_desc": "Percentage of weeks with at least one code commit in the past 90 days(single repository). Percentage of code repositories with at least one code commit in the last 30 days(multiple repositories).",
+    "is_maintained_value": {
+      "threshold": "Between 0 and 1"
+    },
     "is_maintained_more": {
       "weight": "13.853%",
       "threshold": "100%",
@@ -31,6 +46,9 @@
     },
     "commit_pr_linked_ratio": "Commit PR Linked Ratio",
     "commit_pr_linked_ratio_desc": "Determine the percentage of new code commit link pull request in the last 90 days.",
+    "commit_pr_linked_ratio_value": {
+      "threshold": "Between 0 and 1"
+    },
     "commit_pr_linked_ratio_more": {
       "weight": "12.612%",
       "threshold": "100%",
@@ -38,8 +56,14 @@
     },
     "created_since": "Created Since",
     "created_since_desc": "Determine how long a repository has existed since it was created (in months).",
+    "created_since_value": {
+      "threshold": "Between 0 and 120"
+    },
     "updated_since": "Updated Since",
     "updated_since_desc": "Determine the average time per repository since the repository was last updated (in days).",
+    "updated_since_value": {
+      "threshold": "Between 0 and 0.25"
+    },
     "updated_since_more": {
       "weight": "12.74%",
       "threshold": "0.25 months",
@@ -47,6 +71,9 @@
     },
     "org_count": "Org Count",
     "org_count_desc": "Number of organizations to which active code contributors belong in the past 90 days.",
+    "org_count_value": {
+      "threshold": "Between 0 and 30"
+    },
     "org_count_more": {
       "weight": "32.258%",
       "threshold": "30",
@@ -54,10 +81,19 @@
     },
     "org_commit_frequency": "Org Commit Frequency",
     "org_commit_frequency_desc": "Definition: Determine the average number of commits with organization affiliation per week in the past 90 days.",
+    "org_commit_frequency_value": {
+      "threshold": "Between 0 and 800"
+    },
     "org_contribution_last": "Org contribution last",
     "org_contribution_last_desc": "Total contribution time of all organizations to the community in the past 90 days (weeks).",
+    "org_contribution_last_value": {
+      "threshold": "Between 0 and 160"
+    },
     "lines_of_code_frequency": "Lines of Code Frequency",
     "lines_of_code_frequency_desc": "Determine the average number of lines touched (lines added plus lines removed) per week in the past 90 days.",
+    "lines_of_code_frequency_value": {
+      "threshold": "Between 0 and 300000"
+    },
     "lines_of_code_frequency_more": {
       "weight": "5.640%",
       "threshold": "300000",
@@ -67,25 +103,55 @@
   "issue": {
     "pr_issue_linked_ratio": "PR Issue Linked Ratio",
     "pr_issue_linked_ratio_desc": "Determine the percentage of new pull request link issues in the last 90 days.",
+    "pr_issue_linked_ratio_value": {
+      "threshold": "Between 0 and 0.2"
+    },
     "pr_open_time": "PR Open Time",
     "pr_open_time_desc": "Average/Median processing time (days) for new change requests created in the last 90 days, including closed/accepted change requests and unresolved change requests.",
+    "pr_open_time_value": {
+      "threshold": "Between 0 and 30"
+    },
     "code_review_count": "Code Review Count",
     "code_review_count_desc": "Determine the average number of review comments per pull request created in the last 90 days.",
+    "code_review_count_value": {
+      "threshold": "Between 0 and 8"
+    },
     "close_pr_count": "Close PR Count",
     "close_pr_count_desc": "The number of PR accepted and declined in the last 90 days.",
+    "close_pr_count_value": {
+      "threshold": "Between 0 and 4500"
+    },
     "pr_time_to_first_response": "PR Time to First Response",
     "pr_time_to_first_response_desc": "Determine the amount of time between when a PR was created and when it received the first response from a human in the past 90 days.",
+    "pr_time_to_first_response_value": {
+      "threshold": "Between 0 and 15"
+    },
     "change_request_closure_ratio": "Change Request Closure Ratio",
     "change_request_closure_ratio_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests from the beginning to now.",
+    "change_request_closure_ratio_value": {
+      "threshold": "Between 0 and 1"
+    },
     "change_request_closure_ratio_recently_period": "Change Request Closure Ratio Recently Period",
     "change_request_closure_ratio_recently_period_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests in the last 90 days.",
+    "change_request_closure_ratio_recently_period_value": {
+      "threshold": "Between 0 and 1"
+    },
     "code_review_ratio": "Code Review Ratio",
     "code_review_ratio_desc": "Determine the percentage of code commits with at least one reviewer (not PR creator) in the last 90 days.",
+    "code_review_ratio_value": {
+      "threshold": "Between 0 and 1"
+    },
     "code_merge_ratio": "Code Merge Ratio",
-    "code_merge_ratio_desc": "Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits."
+    "code_merge_ratio_desc": "Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
+    "code_merge_ratio_value": {
+      "threshold": "Between 0 and 1"
+    }
   },
   "repo": {
     "recent_releases_count": "Recent Releases Count",
-    "recent_releases_count_desc": "Determine the number of releases in the last year."
+    "recent_releases_count_desc": "Determine the number of releases in the last year.",
+    "recent_releases_count_value": {
+      "threshold": "Between 0 and 12"
+    }
   }
 }

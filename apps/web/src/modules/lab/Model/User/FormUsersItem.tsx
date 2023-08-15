@@ -158,7 +158,7 @@ const FormUsersItem = (props: {
               {t('lab:user.owner')}
             </div>
           ) : (
-            permission.canDestroy && (
+            permission?.canDestroy && (
               <div className="flex text-[#585858]">
                 <div
                   onClick={() => {
