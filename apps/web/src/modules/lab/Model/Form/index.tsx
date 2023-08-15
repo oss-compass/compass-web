@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button } from '@oss-compass/ui';
 import FormIsPublic from './FormIsPublic';
@@ -9,6 +9,9 @@ import FormDataSet from './FormDataSet';
 import FormMetric from './FormMetric';
 import FormWeight from './FormWeight';
 import FormAlgorithm from './FormAlgorithm';
+import CheckTerms from '@modules/lab/components/CheckTerms';
+import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const Form = ({
   formType,
@@ -22,9 +25,11 @@ const Form = ({
   onSubmit: () => void;
 }) => {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const isVersion = formType === 'VersionCreate' || formType === 'VersionEdit';
   const isModel = formType === 'ModelCreate' || formType === 'ModelEdit';
+  const [select, setSelect] = useState(false);
 
   if (loading) {
     return (
@@ -59,6 +64,14 @@ const Form = ({
           <FormMetric />
           <FormWeight />
           <FormAlgorithm />
+          {isModel && (
+            <CheckTerms
+              select={select}
+              setSelect={() => {
+                setSelect(!select);
+              }}
+            />
+          )}
         </>
       )}
 
@@ -68,7 +81,11 @@ const Form = ({
           size="md"
           loading={submitLoading}
           onClick={() => {
-            onSubmit();
+            if (formType !== 'ModelEdit' && isModel && !select) {
+              toast.error(t('lab:please_check_the_terms'));
+            } else {
+              onSubmit();
+            }
           }}
         >
           Save

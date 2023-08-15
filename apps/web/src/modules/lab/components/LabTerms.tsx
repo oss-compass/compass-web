@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import LinkLegacy from '@common/components/LinkLegacy';
 
 const LabTerms = () => {
   const { i18n } = useTranslation();
