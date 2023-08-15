@@ -1,11 +1,14 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import classnames from 'classnames';
-import style from './index.module.css';
 import { BsArrowRight } from 'react-icons/bs';
 import { useTranslation } from 'next-i18next';
 
+import style from './index.module.css';
+
 const Banner = () => {
   const { t } = useTranslation();
+  const router = useRouter();
   return (
     <div
       className={classnames(
@@ -36,7 +39,12 @@ const Banner = () => {
           {t('lab:the_locale_names_are_used_for')}
         </div>
         <div className="flex">
-          <div className="h-8 w-32 cursor-not-allowed bg-gradient-to-r from-[#F1B600] to-[#854700] text-center leading-8 text-[#fff]">
+          <div
+            className="h-8 w-32 cursor-pointer bg-gradient-to-r from-[#F1B600] to-[#854700] text-center leading-8 text-[#fff]"
+            onClick={() => {
+              router.push('/lab/model/create');
+            }}
+          >
             {t('lab:create_a_model')}
           </div>
           <div className="ml-6 h-8 text-center leading-8">

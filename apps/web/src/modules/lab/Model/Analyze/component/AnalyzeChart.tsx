@@ -6,7 +6,6 @@ import gqlClient from '@common/gqlClient';
 import AnalyzeChartTotalCard from './AnalyzeChartTotalCard';
 import AnalyzeChartCard from './AnalyzeChartCard';
 import AnalyzeChartNav from './AnalyzeChartNav';
-import mockData from './data.json';
 
 const AnalyzeChart = () => {
   const { t } = useTranslation();
@@ -27,8 +26,30 @@ const AnalyzeChart = () => {
     }
   );
 
-  const mainScore = mockData?.labModelVersionReportDetail?.mainScore;
-  const panels = mockData?.labModelVersionReportDetail?.panels;
+  const mainScore = data?.labModelVersionReportDetail?.mainScore || {};
+  const panels = data?.labModelVersionReportDetail?.panels || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 flex-col ">
+        <div className="animate-pulse p-10">
+          <div className="flex-1 space-y-4 ">
+            <div className="h-4 rounded bg-slate-200"></div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+              <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+            </div>
+            <div className="h-4 rounded bg-slate-200"></div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-1 h-4 rounded bg-slate-200"></div>
+              <div className="col-span-2 h-4 rounded bg-slate-200"></div>
+            </div>
+            <div className="h-4 rounded bg-slate-200"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

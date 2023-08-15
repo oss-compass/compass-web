@@ -28,14 +28,14 @@ const CommentItem = ({
       <div className="border-smoke flex border-b pb-4">
         <div className="relative h-8 w-8  shrink-0 overflow-hidden rounded-full">
           <Image
-            src={comment?.user?.avatarUrl}
+            src={comment?.user?.avatarUrl || '/images/default-avatar.png'}
             unoptimized
             fill
             sizes="64px"
             style={{
               objectFit: 'cover',
             }}
-            alt={''}
+            alt={'avatar'}
           />
         </div>
         <div className="flex-1 pl-2">
