@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import Copyright from '@modules/auth/components/Copyright';
 import LogoHeader from '@modules/auth/components/LogoHeader';
 import AuthRequire from '@modules/auth/AuthRequire';
@@ -10,8 +10,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation, Trans } from 'next-i18next';
 import { toast } from 'react-hot-toast';
-import Dialog from '@common/components/Dialog';
-import LabTerms from '@modules/lab/components/LabTerms';
+import CheckTerms from '@modules/lab/components/CheckTerms';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
@@ -30,7 +29,6 @@ const Content = ({ status }: { status: string }) => {
   const modelName = router.query.model as string;
 
   const [select, setSelect] = useState(false);
-  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -58,28 +56,15 @@ const Content = ({ status }: { status: string }) => {
               />
             </>
           </div>
-          <div className="mt-6 text-sm text-black">
-            <input
-              className="mr-2"
-              checked={select}
-              type="checkbox"
-              onChange={() => {
-                setSelect(!select);
-              }}
-            />
-            {t('lab:i_have_understood_and_agreed_to_the')}{' '}
-            <span
-              className="cursor-pointer underline"
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              {t('lab:experimental_model_terms_of_use')}
-            </span>
-          </div>
+          <CheckTerms
+            select={select}
+            setSelect={() => {
+              setSelect(!select);
+            }}
+          />
         </div>
       </div>
-      <div className="mt-5 mb-[56px] ml-[190px]">
+      <div className="mb-[56px] ml-[176px]">
         <Button
           size="lg"
           onClick={() => {
@@ -93,28 +78,6 @@ const Content = ({ status }: { status: string }) => {
           {t('lab:agree_to_join')}
         </Button>
       </div>
-      <Dialog
-        open={open}
-        maxWidth={'xl'}
-        dialogContent={<LabTerms />}
-        dialogActions={
-          <>
-            <Button
-              intent="text"
-              size="sm"
-              className="mr-2"
-              onClick={() => {
-                setOpen(false);
-              }}
-            >
-              {t('common:btn.confirm')}
-            </Button>
-          </>
-        }
-        handleClose={() => {
-          setOpen(false);
-        }}
-      />
     </>
   );
 };

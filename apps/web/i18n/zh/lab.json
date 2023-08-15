@@ -77,7 +77,7 @@
   },
   "joining_the_compass": "加入Compass 实验室",
   "agree_to_join": "同意加入",
-  "i_have_understood_and_agreed_to_the": "我已经理解并同意",
+  "i_have_understood_and_agreed_to_the": "我了解并同意",
   "experimental_model_terms_of_use": "实验模型使用条款",
   "please_check_the_terms": "请勾选使用条款",
   "you_are_here_because_you_have_been_invited": "<s>{{invitee}}</s> 邀请您加入 Compass 实验室，以合作构建模型 <s>{{modelName}}</s>, 您同意加入吗？"
