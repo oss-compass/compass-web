@@ -61,6 +61,7 @@ const RepoCard: React.FC<{
           <img
             className="mr-1 mb-1 inline-block h-3 w-3"
             src="/images/lab/datasets.png"
+            alt=""
           />
           {repo.type}
         </div>

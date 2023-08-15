@@ -1,10 +1,17 @@
 import React from 'react';
 import gqlClient from '@common/gqlClient';
 import { useRouter } from 'next/router';
-import { useLabModelVersionQuery } from '@oss-compass/graphql';
-import { pageState, actions } from '../Analyze/state';
+import {
+  useLabModelVersionQuery,
+  LabModelVersionQuery,
+} from '@oss-compass/graphql';
+import { pageState as AnalyzePageState, actions } from '../Analyze/state';
 
-export const useLabModelVersion = () => {
+export const useLabModelVersion = ({
+  onSuccess,
+}: {
+  onSuccess?: (res: LabModelVersionQuery) => void;
+} = {}) => {
   const router = useRouter();
   const modelId = Number(router.query.model);
   const versionId = Number(router.query.version);
@@ -19,8 +26,12 @@ export const useLabModelVersion = () => {
       staleTime: 60 * 1000,
       enabled: Boolean(modelId) && Boolean(versionId),
       onSuccess(res) {
+        //  callback
+        if (onSuccess) onSuccess(res);
+
+        // init
         if (res?.labModelVersion) {
-          if (!pageState.commentVersion) {
+          if (!AnalyzePageState.commentVersion) {
             const id = res.labModelVersion.id;
             const version = res.labModelVersion.version;
             actions.onCurrentVersionChange({ id, version });

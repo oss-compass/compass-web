@@ -13,6 +13,7 @@ const CreateModel = () => {
           <img
             className="mr-2 inline-block align-text-top "
             src="/images/lab/create.png"
+            alt=""
           />
         </div>
         <div className="w-[280px] pt-2 pl-4 text-xl font-medium">
