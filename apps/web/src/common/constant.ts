@@ -17,3 +17,9 @@ export const oauthProvider = {
 export type ChartTab = 'One' | 'two' | 'three' | 'four';
 
 export const ReFetch = 'refetch';
+
+export enum Level {
+  COMMUNITY = 'community',
+  PROJECT = 'project',
+  REPO = 'repo',
+}

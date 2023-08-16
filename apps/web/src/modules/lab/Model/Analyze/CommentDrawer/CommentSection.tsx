@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useRouter } from 'next/router';
+import { useInViewport } from 'ahooks';
 import { useTranslation } from 'next-i18next';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import {
@@ -22,9 +23,12 @@ const CommentSection = ({
   modelMetricId?: number;
 }) => {
   const { t } = useTranslation();
+  const cardRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<InputRefProps>(null);
   const router = useRouter();
   const snapshot = useSnapshot(pageState);
+  const [inViewport] = useInViewport(cardRef);
+
   const modelId = Number(router.query.model);
   const versionId = snapshot.commentVersion?.id;
 
@@ -47,6 +51,8 @@ const CommentSection = ({
         })();
       },
       {
+        enabled: inViewport,
+        staleTime: 60 * 1000,
         getNextPageParam: (lastPage) => {
           const page = lastPage?.labModelComments?.page! || 0;
           const totalPage = lastPage?.labModelComments?.totalPage! || 0;
@@ -68,7 +74,7 @@ const CommentSection = ({
 
   return (
     <div className="px-4 pt-4 pb-10">
-      <div className="rounded border border-black pb-4">
+      <div className="rounded border pb-4 hover:border-black" ref={cardRef}>
         <div className="flex items-center justify-between py-3 px-4 ">
           <div className="font-semibold"># {name}</div>
           <div className="flex">
