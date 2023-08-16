@@ -42,7 +42,10 @@
     "waiting_for_confirmation_to_join": "邀请已发出，等候对方确认加入",
     "uninvite": "取消邀请",
     "confirm_cancel_invitation": "确认取消邀请",
-    "confirm_delete": "确认删除"
+    "confirm_delete": "确认删除",
+    "quit": "退出",
+    "confirm_quit": "确认退出",
+    "quit_successful": "退出成功"
   },
   "remaining_times_of_analysis_performed_this_week": "本周剩余分析次数: ",
   "view_report": "查看报告",

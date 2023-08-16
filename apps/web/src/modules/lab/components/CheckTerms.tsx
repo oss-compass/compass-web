@@ -9,7 +9,7 @@ const CheckTerms = ({
   setSelect,
 }: {
   select: boolean;
-  setSelect: () => void;
+  setSelect: (e: boolean) => void;
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -22,7 +22,7 @@ const CheckTerms = ({
           checked={select}
           type="checkbox"
           onChange={() => {
-            setSelect();
+            setSelect(!select);
           }}
         />
         {t('lab:i_have_understood_and_agreed_to_the')}{' '}
@@ -46,6 +46,7 @@ const CheckTerms = ({
               size="sm"
               className="mr-2"
               onClick={() => {
+                setSelect(true);
                 setOpen(false);
               }}
             >

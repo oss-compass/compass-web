@@ -48,7 +48,10 @@
     "waiting_for_confirmation_to_join": "Invitation sent, waiting to join",
     "uninvite": "Cancel invitation",
     "confirm_cancel_invitation": "Confirm cancel invitation",
-    "confirm_delete": "Confirm delete"
+    "confirm_delete": "Confirm delete",
+    "quit": "quit",
+    "confirm_quit": "Confirm quit",
+    "quit_successful": "Quit successful"
   },
   "remaining_times_of_analysis_performed_this_week": "Remaining times of analysis performed this week: ",
   "view_report": "View report",

@@ -67,8 +67,8 @@ const Form = ({
           {isModel && (
             <CheckTerms
               select={select}
-              setSelect={() => {
-                setSelect(!select);
+              setSelect={(e) => {
+                setSelect(e);
               }}
             />
           )}
