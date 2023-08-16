@@ -10,7 +10,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation, Trans } from 'next-i18next';
 import { toast } from 'react-hot-toast';
-import CheckTerms from '@modules/lab/components/CheckTerms';
+import CheckTerms from '@modules/lab/model/components/CheckTerms';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;

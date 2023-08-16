@@ -377,11 +377,12 @@ query labModelPublicOverview(
     totalPage
     count
     items {
+      dimension
+      modelId
+      modelName
       dataset {
         ...dataset
       }
-      modelId
-      modelName
       reports {
         ...simpleReport
       }

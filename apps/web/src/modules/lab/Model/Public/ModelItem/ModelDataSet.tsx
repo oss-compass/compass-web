@@ -1,101 +1,92 @@
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import classnames from 'classnames';
-import {
-  useBetaMetricOverviewQuery,
-  BetaMetricOverviewQuery,
-} from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import Loading from './Loading';
-import RepoCard from './RepoCard';
+import { ModelPublicOverview } from '@oss-compass/graphql';
 import { useTranslation } from 'next-i18next';
 import { getLabCompareAnalyzeLink } from '@common/utils';
-import Compare from '../assets/compare.svg';
+import IconCompare from '@public/images/lab/compare.svg';
+import Loading from '../Loading';
+import RepoCard from './RepoCard';
 
-type Repo = {
-  path?: string | null | undefined;
-  origin: string;
-  name?: string | null | undefined;
-  type: string;
-};
+const trends = [
+  {
+    name: 'tensorflow',
+    path: 'tensorflow/tensorflow',
+    origin: 'https://github.com/tensorflow/tensorflow',
+    type: 'Deep Learning Frameworks',
+  },
+  {
+    name: 'pytorch',
+    path: 'pytorch/pytorch',
+    origin: 'https://github.com/pytorch/pytorch',
+    type: 'Deep Learning Frameworks',
+  },
+  {
+    name: 'mindspore',
+    path: 'mindspore/mindspore',
+    origin: 'https://gitee.com/mindspore/mindspore',
+    type: 'Deep Learning Frameworks',
+  },
+  {
+    name: 'Paddle',
+    path: 'PaddlePaddle/Paddle',
+    origin: 'https://github.com/PaddlePaddle/Paddle',
+    type: 'Deep Learning Frameworks',
+  },
+  {
+    name: 'onnx',
+    path: 'onnx/onnx',
+    origin: 'https://github.com/onnx/onnx',
+    type: 'Deep Learning Frameworks',
+  },
+  {
+    name: 'kubernetes',
+    path: 'kubernetes/kubernetes',
+    origin: 'https://github.com/kubernetes/kubernetes',
+    type: 'Container Technology',
+  },
+  {
+    name: 'podman',
+    path: 'containers/podman',
+    origin: 'https://github.com/containers/podman',
+    type: 'Container Technology',
+  },
+  {
+    name: 'minikube',
+    path: 'kubernetes/minikube',
+    origin: 'https://github.com/kubernetes/minikube',
+    type: 'Container Technology',
+  },
+  {
+    name: 'rancher',
+    path: 'rancher/rancher',
+    origin: 'https://github.com/rancher/rancher',
+    type: 'Container Technology',
+  },
+  {
+    name: 'moby',
+    path: 'moby/moby',
+    origin: 'https://github.com/moby/moby',
+    type: 'Container Technology',
+  },
+];
 
-const ModelTrends: React.FC<{
-  id: number;
-}> = ({ id }) => {
+const ModelDataSet: React.FC<{
+  model: ModelPublicOverview;
+}> = ({ model }) => {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { isLoading, data } = useBetaMetricOverviewQuery(client, {
-    id: id,
-  });
+  // const { isLoading, data } = useBetaMetricOverviewQuery(client, {
+  //   id: id,
+  // });
   const [typeList, setTypeList] = useState<string[]>([]);
   const [compareList, setCompareList] = useState<string[]>([]);
   const [compareMode, setCompareMode] = useState(false);
 
-  const trends = [
-    {
-      name: 'tensorflow',
-      path: 'tensorflow/tensorflow',
-      origin: 'https://github.com/tensorflow/tensorflow',
-      type: 'Deep Learning Frameworks',
-    },
-    {
-      name: 'pytorch',
-      path: 'pytorch/pytorch',
-      origin: 'https://github.com/pytorch/pytorch',
-      type: 'Deep Learning Frameworks',
-    },
-    {
-      name: 'mindspore',
-      path: 'mindspore/mindspore',
-      origin: 'https://gitee.com/mindspore/mindspore',
-      type: 'Deep Learning Frameworks',
-    },
-    {
-      name: 'Paddle',
-      path: 'PaddlePaddle/Paddle',
-      origin: 'https://github.com/PaddlePaddle/Paddle',
-      type: 'Deep Learning Frameworks',
-    },
-    {
-      name: 'onnx',
-      path: 'onnx/onnx',
-      origin: 'https://github.com/onnx/onnx',
-      type: 'Deep Learning Frameworks',
-    },
-    {
-      name: 'kubernetes',
-      path: 'kubernetes/kubernetes',
-      origin: 'https://github.com/kubernetes/kubernetes',
-      type: 'Container Technology',
-    },
-    {
-      name: 'podman',
-      path: 'containers/podman',
-      origin: 'https://github.com/containers/podman',
-      type: 'Container Technology',
-    },
-    {
-      name: 'minikube',
-      path: 'kubernetes/minikube',
-      origin: 'https://github.com/kubernetes/minikube',
-      type: 'Container Technology',
-    },
-    {
-      name: 'rancher',
-      path: 'rancher/rancher',
-      origin: 'https://github.com/rancher/rancher',
-      type: 'Container Technology',
-    },
-    {
-      name: 'moby',
-      path: 'moby/moby',
-      origin: 'https://github.com/moby/moby',
-      type: 'Container Technology',
-    },
-  ];
-  if (isLoading) {
-    return <Loading />;
-  }
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
   const repoType: string[] = [];
   trends.forEach((item) => {
     !repoType.includes(item.type) && repoType.push(item.type);
@@ -181,7 +172,7 @@ const ModelTrends: React.FC<{
               className="ml-4 h-6 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-6"
             >
               <div className="mr-2 inline-block align-text-bottom">
-                <Compare />
+                <IconCompare />
               </div>
               {t('lab:pick_for_compare')}
             </div>
@@ -213,4 +204,4 @@ const ModelTrends: React.FC<{
   );
 };
 
-export default ModelTrends;
+export default ModelDataSet;

@@ -948,6 +948,7 @@ export type ModelMetric = {
 export type ModelPublicOverview = {
   __typename?: 'ModelPublicOverview';
   dataset?: Maybe<Dataset>;
+  dimension?: Maybe<Scalars['Int']>;
   modelId?: Maybe<Scalars['Int']>;
   modelName?: Maybe<Scalars['String']>;
   reports?: Maybe<Array<SimpleReport>>;
@@ -2702,6 +2703,7 @@ export type LabModelPublicOverviewQuery = {
     count?: number | null;
     items?: Array<{
       __typename?: 'ModelPublicOverview';
+      dimension?: number | null;
       modelId?: number | null;
       modelName?: string | null;
       version?: string | null;
@@ -4725,11 +4727,12 @@ export const LabModelPublicOverviewDocument = /*#__PURE__*/ `
     totalPage
     count
     items {
+      dimension
+      modelId
+      modelName
       dataset {
         ...dataset
       }
-      modelId
-      modelName
       reports {
         ...simpleReport
       }

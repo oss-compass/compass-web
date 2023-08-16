@@ -29,9 +29,9 @@ const CommentSection = ({
   const versionId = snapshot.commentVersion?.id;
 
   const params = {
+    modelId,
     versionId,
     modelMetricId,
-    modelId,
     page: 1,
     per: 10,
   };

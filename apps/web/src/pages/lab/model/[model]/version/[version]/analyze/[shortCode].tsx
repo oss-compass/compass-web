@@ -4,8 +4,8 @@ import AuthRequire from '@modules/auth/AuthRequire';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
-import AnalyzePage from '@modules/lab/Model/Analyze';
-import ModelVersionProvider from '@modules/lab/Model/Provider/ModelVersionProvider';
+import AnalyzePage from '@modules/lab/model/Analyze';
+import ModelVersionProvider from '@modules/lab/model/Provider/ModelVersionProvider';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {

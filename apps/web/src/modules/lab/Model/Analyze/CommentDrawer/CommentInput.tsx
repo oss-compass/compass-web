@@ -61,6 +61,8 @@ const CommentInput = forwardRef<InputRefProps, Props>(
       setImages((pre) => [...pre, ...filesBase64]);
     };
 
+    const inputId = `comment-image-upload-${randomFromInterval(0, 100000)}`;
+
     return (
       <div className="relative">
         <div className="border-silver min-h-8 relative rounded-sm border  text-sm">
@@ -91,14 +93,14 @@ const CommentInput = forwardRef<InputRefProps, Props>(
             {loading && !showFooter ? (
               <BiLoaderAlt className="text-silver animate-spin cursor-pointer text-xl" />
             ) : (
-              <label htmlFor="comment-image-upload">
+              <label htmlFor={inputId}>
                 <FiImage className="text-silver cursor-pointer text-xl" />
               </label>
             )}
             <input
               type="file"
               multiple
-              id="comment-image-upload"
+              id={inputId}
               style={{ display: 'none' }}
               onChange={(e) => {
                 const files = e.target.files;

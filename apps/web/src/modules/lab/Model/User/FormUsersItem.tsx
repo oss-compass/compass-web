@@ -19,123 +19,7 @@ import SelectDrowBox from './SelectDrowBox';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { myPermisssion } from './type';
-import { useRouter } from 'next/router';
 
-const CancelInvitation = ({ modelId, invitationId, event$ }) => {
-  const { t } = useTranslation();
-  const [openCancelConfirm, setOpenCancelConfirm] = useState(false);
-  const cancelMutation = useCancelMemberInviteMutation(client, {
-    onSuccess: () => {
-      event$.emit(ReFetch);
-      setOpenCancelConfirm(false);
-    },
-  });
-  return (
-    <>
-      <div
-        className="flex cursor-pointer text-[#868690]"
-        onClick={() => {
-          setOpenCancelConfirm(true);
-        }}
-      >
-        <div className="pt-1 pr-1">
-          <AiOutlineCloseCircle />
-        </div>
-        <div>{t('lab:user.uninvite')}</div>
-      </div>
-      <Dialog
-        open={openCancelConfirm}
-        dialogTitle={t('common:btn.confirm')}
-        dialogContent={
-          <div className="w-96">{t('lab:user.confirm_cancel_invitation')}?</div>
-        }
-        dialogActions={
-          <div className="flex">
-            <Button
-              intent="text"
-              size="sm"
-              onClick={() => {
-                setOpenCancelConfirm(false);
-              }}
-            >
-              {t('common:btn.cancel')}
-            </Button>
-            <Button
-              intent="primary"
-              size="sm"
-              className="ml-4"
-              loading={cancelMutation.isLoading}
-              onClick={() => {
-                cancelMutation.mutate({ modelId, invitationId: invitationId });
-              }}
-            >
-              {t('common:btn.confirm')}
-            </Button>
-          </div>
-        }
-        handleClose={() => {}}
-      />
-    </>
-  );
-};
-const QuitModel = ({ modelId, memberId }) => {
-  const router = useRouter();
-  const { t } = useTranslation();
-  const [openQuitConfirm, setOpenQuitConfirm] = useState(false);
-  const quitMutation = useDeleteLabMemberMutation(client, {
-    onSuccess: (res) => {
-      toast.success(t('lab:user.quit_successful'));
-      router.push('/lab/model/my');
-    },
-  });
-  return (
-    <>
-      <div
-        className="flex cursor-pointer text-[#585858]"
-        onClick={() => {
-          setOpenQuitConfirm(true);
-        }}
-      >
-        <div className="p-1">
-          <AiOutlineCloseCircle />
-        </div>
-        <span>{t('lab:user.quit')}</span>
-      </div>
-      <Dialog
-        open={openQuitConfirm}
-        dialogTitle={t('common:btn.confirm')}
-        dialogContent={
-          <div className="w-96">{t('lab:user.confirm_quit')}?</div>
-        }
-        dialogActions={
-          <div className="flex">
-            <Button
-              intent="text"
-              size="sm"
-              onClick={() => {
-                setOpenQuitConfirm(false);
-              }}
-            >
-              {t('common:btn.cancel')}
-            </Button>
-            <Button
-              intent="primary"
-              size="sm"
-              className="ml-4"
-              loading={quitMutation.isLoading}
-              onClick={() => {
-                quitMutation.mutate({ modelId, memberId });
-              }}
-            >
-              {t('common:btn.confirm')}
-            </Button>
-          </div>
-        }
-        handleClose={() => {}}
-      />
-    </>
-  );
-};
 const FormUsersItem = (props: {
   user: UserItem;
   modelId: number;
@@ -150,6 +34,14 @@ const FormUsersItem = (props: {
     onSuccess: () => {
       event$.emit(ReFetch);
       setOpenDeleteConfirm(false);
+    },
+  });
+
+  const [openCancelConfirm, setOpenCancelConfirm] = useState(false);
+  const cancelMutation = useCancelMemberInviteMutation(client, {
+    onSuccess: () => {
+      event$.emit(ReFetch);
+      setOpenCancelConfirm(false);
     },
   });
 
@@ -265,45 +157,49 @@ const FormUsersItem = (props: {
             <div className="rounded-full bg-[#3A5BEF] px-2 pt-0.5 text-xs text-[#ffffff]">
               {t('lab:user.owner')}
             </div>
-          ) : permission?.canDestroy ? (
-            <div className="flex text-[#585858]">
-              <div
-                onClick={() => {
-                  setOpenDeleteConfirm(true);
-                }}
-                className="mr-1 cursor-pointer p-1"
-              >
-                <RiDeleteBinLine />
-              </div>
-              <div className="cursor-pointer p-1">
-                <SelectDrowBox
-                  options={optionList}
-                  roles={roles}
-                  onChange={(item) => {
-                    changeRoles(item);
-                  }}
-                  onShowDrowBox={(e) => {
-                    setShowDrowBox(e);
-                    if (e === false) {
-                      updataMember();
-                    }
-                  }}
-                >
-                  <FiEdit />
-                </SelectDrowBox>
-              </div>
-            </div>
           ) : (
-            <QuitModel modelId={modelId} memberId={user.id} />
+            permission?.canDestroy && (
+              <div className="flex text-[#585858]">
+                <div
+                  onClick={() => {
+                    setOpenDeleteConfirm(true);
+                  }}
+                  className="mr-1 cursor-pointer p-1"
+                >
+                  <RiDeleteBinLine />
+                </div>
+                <div className="cursor-pointer p-1">
+                  <SelectDrowBox
+                    options={optionList}
+                    roles={roles}
+                    onChange={(item) => {
+                      changeRoles(item);
+                    }}
+                    onShowDrowBox={(e) => {
+                      setShowDrowBox(e);
+                      if (e === false) {
+                        updataMember();
+                      }
+                    }}
+                  >
+                    <FiEdit />
+                  </SelectDrowBox>
+                </div>
+              </div>
+            )
           )
         ) : (
-          permission?.canDestroy && (
-            <CancelInvitation
-              modelId={modelId}
-              invitationId={user.id}
-              event$={event$}
-            />
-          )
+          <div
+            className="flex cursor-pointer text-[#868690]"
+            onClick={() => {
+              setOpenCancelConfirm(true);
+            }}
+          >
+            <div className="pt-1 pr-1">
+              <AiOutlineCloseCircle />
+            </div>
+            <div>{t('lab:user.uninvite')}</div>
+          </div>
         )}
       </div>
       <Dialog
@@ -330,6 +226,38 @@ const FormUsersItem = (props: {
               loading={deleteMutation.isLoading}
               onClick={() => {
                 deleteMutation.mutate({ modelId, memberId: user.id });
+              }}
+            >
+              {t('common:btn.confirm')}
+            </Button>
+          </div>
+        }
+        handleClose={() => {}}
+      />
+      <Dialog
+        open={openCancelConfirm}
+        dialogTitle={t('common:btn.confirm')}
+        dialogContent={
+          <div className="w-96">{t('lab:user.confirm_cancel_invitation')}?</div>
+        }
+        dialogActions={
+          <div className="flex">
+            <Button
+              intent="text"
+              size="sm"
+              onClick={() => {
+                setOpenCancelConfirm(false);
+              }}
+            >
+              {t('common:btn.cancel')}
+            </Button>
+            <Button
+              intent="primary"
+              size="sm"
+              className="ml-4"
+              loading={cancelMutation.isLoading}
+              onClick={() => {
+                cancelMutation.mutate({ modelId, invitationId: user.id });
               }}
             >
               {t('common:btn.confirm')}

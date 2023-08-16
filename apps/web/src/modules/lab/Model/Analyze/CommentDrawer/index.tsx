@@ -46,18 +46,19 @@ const CommentDrawer = ({
         </div>
       </div>
 
-      <div>
-        <CommentSection name={name} />
-        {metrics.map((metric) => {
-          return (
-            <CommentSection
-              key={metric.id}
-              modelMetricId={metric.id}
-              name={metric.name}
-            />
-          );
-        })}
-      </div>
+      {/* model comment */}
+      <CommentSection name={name} />
+
+      {/* metrics comment */}
+      {metrics.map((metric) => {
+        return (
+          <CommentSection
+            key={metric.id}
+            modelMetricId={metric.id}
+            name={metric.name}
+          />
+        );
+      })}
     </div>
   );
 };

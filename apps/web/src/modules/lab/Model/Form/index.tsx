@@ -9,7 +9,7 @@ import FormDataSet from './FormDataSet';
 import FormMetric from './FormMetric';
 import FormWeight from './FormWeight';
 import FormAlgorithm from './FormAlgorithm';
-import CheckTerms from '@modules/lab/components/CheckTerms';
+import CheckTerms from '@modules/lab/model/components/CheckTerms';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -67,8 +67,8 @@ const Form = ({
           {isModel && (
             <CheckTerms
               select={select}
-              setSelect={(e) => {
-                setSelect(e);
+              setSelect={() => {
+                setSelect(!select);
               }}
             />
           )}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import LabTerms from '@modules/lab/components/LabTerms';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
+import LabTerms from './LabTerms';
 
 const CheckTerms = ({
   select,

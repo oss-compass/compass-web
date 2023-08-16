@@ -103,11 +103,14 @@ const ModelItem = ({
             />
           );
         })}
-        <VersionCreate
-          onClick={() => {
-            router.push(`/lab/model/${model.id}/version/create`);
-          }}
-        />
+
+        {permissions?.canUpdate ? (
+          <VersionCreate
+            onClick={() => {
+              router.push(`/lab/model/${model.id}/version/create`);
+            }}
+          />
+        ) : null}
       </div>
     </div>
   );

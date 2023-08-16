@@ -4,8 +4,8 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import AuthRequire from '@modules/auth/AuthRequire';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
-import Banner from '@modules/lab/Model/Banner';
-import MyModel from '@modules/lab/Model/My';
+import MyModelsBanner from '@modules/lab/model/components/MyModelsBanner';
+import MyModel from '@modules/lab/model/My';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -19,7 +19,7 @@ const create = () => {
   return (
     <NoSsr>
       <Header />
-      <Banner />
+      <MyModelsBanner />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
         <MyModel />
       </AuthRequire>
