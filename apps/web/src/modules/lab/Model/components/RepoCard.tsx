@@ -12,50 +12,47 @@ import { SiGitee } from 'react-icons/si';
 import { AiFillGithub } from 'react-icons/ai';
 import classnames from 'classnames';
 
-const RepoCard = (props: {
+const RepoCard = ({
+  modelId,
+  versionId,
+  label,
+  shortCode,
+  selected,
+  compareMode,
+  onSelectChange,
+}: {
+  modelId: number;
+  versionId: number;
   label: string;
   shortCode: string;
+  selected: boolean;
   compareMode?: boolean;
   onSelectChange?: (
     pre: boolean,
     value: { label: string; shortCode: string }
   ) => void;
 }) => {
-  const router = useRouter();
-  const modelId = Number(router.query.model);
-  const versionId = Number(router.query.version);
-
-  const { label, shortCode, compareMode, onSelectChange } = props;
-
   const repo = getRepoName(label);
   const nameSpace = getNameSpace(label);
   const provider = getProvider(label);
-  const [select, setSelect] = useState(false);
 
-  useEffect(() => {
-    if (!compareMode) setSelect(false);
-  }, [compareMode]);
-
-  const item = (
+  const content = (
     <>
-      <div className="py-4 px-6">
+      <div className="p-4">
         <div className="absolute top-2 right-3">
           {compareMode && (
-            <input checked={select} type="checkbox" onChange={() => {}} />
+            <input checked={selected} type="checkbox" onChange={() => {}} />
           )}
         </div>
-        <div>
-          <div className="h-20">
-            <p
-              className={classnames(
-                'mb-1 truncate break-words text-xl font-bold ',
-                { 'hover:underline': !compareMode }
-              )}
-            >
-              {repo}
-            </p>
-            <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
-          </div>
+        <div className="mb-2">
+          <p
+            className={classnames('mb-1 truncate break-words font-bold ', {
+              'hover:underline': !compareMode,
+            })}
+          >
+            {repo}
+          </p>
+          <p className="truncate text-sm text-gray-400">{nameSpace}</p>
         </div>
 
         <div className="flex w-full items-center">
@@ -79,16 +76,13 @@ const RepoCard = (props: {
     return (
       <div
         className={classnames('relative cursor-pointer bg-white', [
-          select ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
+          selected ? ['border-blue-600', 'border-2'] : ['border', 'p-px'],
         ])}
         onClick={async () => {
-          setSelect(!select);
-          if (onSelectChange) {
-            onSelectChange(!select, { label, shortCode });
-          }
+          onSelectChange?.(!selected, { label, shortCode });
         }}
       >
-        {item}
+        {content}
       </div>
     );
   }
@@ -98,7 +92,7 @@ const RepoCard = (props: {
       href={`/lab/model/${modelId}/version/${versionId}/analyze/${shortCode}`}
       className="relative block cursor-pointer border bg-white p-px"
     >
-      {item}
+      {content}
     </Link>
   );
 };

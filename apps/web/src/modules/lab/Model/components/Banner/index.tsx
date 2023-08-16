@@ -12,7 +12,7 @@ const Banner = () => {
   return (
     <div
       className={classnames(
-        'relative mb-12 h-60 overflow-hidden bg-[#2c5fea]',
+        'relative mb-12 h-60 overflow-hidden bg-[#ffebbf]',
         style.headerBgLine
       )}
     >

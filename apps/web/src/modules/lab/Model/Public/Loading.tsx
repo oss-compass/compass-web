@@ -1,8 +1,9 @@
 import React from 'react';
+import cls from 'classnames';
 
-const Loading = () => (
-  <div className="flex flex-1 flex-col bg-white">
-    <div className="animate-pulse p-10">
+const Loading = ({ className }: { className?: string }) => (
+  <div className={cls('flex flex-1 flex-col bg-white', className)}>
+    <div className="animate-pulse">
       <div className="flex-1 space-y-4 ">
         <div className="h-4 rounded bg-slate-200"></div>
         <div className="grid grid-cols-3 gap-4">

@@ -7,7 +7,7 @@ const CreateModel = () => {
   const router = useRouter();
   // const [hover, setHover] = useState(false);
   return (
-    <div className="ml-10 h-[557px] w-[400px] bg-[#fafafa] md:ml-0 md:w-full">
+    <div className="ml-10 w-[400px] bg-[#fafafa] pb-10 md:hidden">
       <div className="flex h-24 bg-[#f4f4f4] p-4">
         <div className="h-16 w-16 bg-[#f6f6f6] p-2">
           <img

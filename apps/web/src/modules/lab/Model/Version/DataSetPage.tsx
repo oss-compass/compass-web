@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import classnames from 'classnames';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import Center from '@common/components/Layout/Center';
-import RepoCard from '../components/RepoCard';
+import DataSetPanel from '../components/DataSetPanel';
 import { useLabModelVersion, useLabModelDetail } from '../hooks';
 
 const ModelVersionDataSet = () => {
   const { t } = useTranslation();
   const { data: modelDetail } = useLabModelDetail();
   const { data: versionData } = useLabModelVersion();
+
+  const modelId = modelDetail?.labModelDetail?.id;
+  const versionId = versionData?.labModelVersion?.id;
   const dataset = versionData?.labModelVersion?.dataset?.items || [];
 
   return (
@@ -23,25 +25,12 @@ const ModelVersionDataSet = () => {
           </div>
         </div>
 
-        <div
-          className={classnames(
-            'grid flex-1 gap-6',
-            'grid-cols-4',
-            'xl:grid-cols-3',
-            'md:grid-cols-2 md:gap-4',
-            'sm:grid-cols-1'
-          )}
-        >
-          {dataset.map((item) => {
-            return (
-              <RepoCard
-                key={item.label}
-                label={item.label}
-                shortCode={item.shortCode}
-              />
-            );
-          })}
-        </div>
+        <DataSetPanel
+          fullWidth
+          modelId={modelId}
+          versionId={versionId}
+          dataSet={dataset}
+        />
       </Center>
     </div>
   );

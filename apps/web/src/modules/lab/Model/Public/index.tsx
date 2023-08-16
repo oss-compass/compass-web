@@ -3,6 +3,7 @@ import CreateGuide from './CreateGuide';
 import { useLabModelPublicOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import ModelItem from './ModelItem';
+import Loading from './Loading';
 
 const Model = () => {
   const { isLoading, data } = useLabModelPublicOverviewQuery(client, {
@@ -11,6 +12,10 @@ const Model = () => {
   });
 
   const list = data?.labModelPublicOverview?.items || [];
+
+  if (isLoading) {
+    return <Loading className="mx-auto w-[1280px] xl:w-full xl:px-2" />;
+  }
 
   return (
     <div className="mx-auto w-[1280px] xl:w-full xl:px-2">
@@ -24,7 +29,7 @@ const Model = () => {
           );
         }
 
-        return <ModelItem model={model} key={model.modelId} />;
+        return <ModelItem model={model} key={model.modelId} fullWidth />;
       })}
     </div>
   );

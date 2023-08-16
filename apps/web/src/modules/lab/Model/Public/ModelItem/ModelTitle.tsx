@@ -19,20 +19,8 @@ const ModeTitle: React.FC<{
         </span>
         <h3 className="text-sm text-[#000000]">Robustness</h3>
       </div>
-      <div className="mt-2 text-3xl">{model.modelName}</div>
       <div className="mt-2 flex w-full justify-between">
-        {/*<div className="line-clamp-2 max-w-5xl text-sm text-[#585858]">*/}
-        {/*  <a*/}
-        {/*    className="text-primary ml-1 hover:underline"*/}
-        {/*    data-html2canvas-ignore="true"*/}
-        {/*    href={*/}
-        {/*      'https://chaoss.community/kb/metrics-model-starter-project-health/'*/}
-        {/*    }*/}
-        {/*  >*/}
-        {/*    {t('common:know_more')}*/}
-        {/*  </a>*/}
-        {/*</div>*/}
-        <div></div>
+        <div className="mt-2 text-3xl">{model.modelName}</div>
         <Discuss />
       </div>
     </>

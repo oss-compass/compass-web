@@ -29,7 +29,8 @@ const AnalyzeChart = () => {
   const router = useRouter();
   const modelId = Number(router.query.model);
   const versionId = Number(router.query.version);
-  const shortCode = router.query.shortCode as string;
+  const shortCode = router.query.slugs as string;
+  console.log('----------router.query----------', router.query);
 
   const { data, isLoading } = useLabModelVersionReportDetailQuery(
     gqlClient,
