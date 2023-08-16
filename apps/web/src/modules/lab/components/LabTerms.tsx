@@ -226,9 +226,9 @@ const LabTerms = () => {
             className="underline underline-offset-2"
             target="_blank"
             rel="noopener noreferrer"
-            href=" mailto:compass-service@gitee.com"
+            href="contact@oss-compass.org"
           >
-            mailto:compass-service@gitee.com
+            contact@oss-compass.org
           </a>
           .
         </p>
@@ -345,9 +345,9 @@ const LabTerms = () => {
             className="underline underline-offset-2"
             target="_blank"
             rel="noopener noreferrer"
-            href=" mailto:compass-service@gitee.com"
+            href="contact@oss-compass.org"
           >
-            mailto:compass-service@gitee.com
+            contact@oss-compass.org
           </a>
           与我们联系。
         </p>

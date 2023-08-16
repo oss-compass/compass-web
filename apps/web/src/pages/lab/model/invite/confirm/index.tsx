@@ -58,8 +58,8 @@ const Content = ({ status }: { status: string }) => {
           </div>
           <CheckTerms
             select={select}
-            setSelect={() => {
-              setSelect(!select);
+            setSelect={(e) => {
+              setSelect(e);
             }}
           />
         </div>
