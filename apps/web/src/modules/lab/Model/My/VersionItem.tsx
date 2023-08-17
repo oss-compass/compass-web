@@ -11,7 +11,9 @@ import {
   useTriggerLabModelVersionMutation,
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
+import { toast } from 'react-hot-toast';
 import { ReFetch } from '@common/constant';
+import { formatToNow } from '@common/utils/time';
 import VersionItemMore from './VersionItemMore';
 
 export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
@@ -74,6 +76,16 @@ export const VersionCard = ({
               {t('lab:algorithm')}：Default
             </span>
           </div>
+          {version.triggerUpdatedAt ? (
+            <>
+              <div className="mb-2">
+                <span className="text-secondary block truncate text-xs">
+                  {t('lab:last_trigger')}：
+                  {formatToNow(version.triggerUpdatedAt)}
+                </span>
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
       <div className="flex h-8 border-t">
@@ -104,8 +116,15 @@ export const VersionCard = ({
                   triggerMutation.mutate(
                     { modelId, versionId: version.id },
                     {
-                      onSuccess: () => {
+                      onSuccess: (res) => {
+                        const msg = res?.triggerLabModelVersion?.message;
+                        if (msg) {
+                          toast.error(msg || 'Trigger analysis failed!');
+                        }
                         event$.emit(ReFetch);
+                      },
+                      onError: (err) => {
+                        toast.error('Trigger analysis failed!');
                       },
                     }
                   );

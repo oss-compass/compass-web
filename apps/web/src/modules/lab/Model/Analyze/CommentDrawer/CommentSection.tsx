@@ -73,18 +73,21 @@ const CommentSection = ({
   }, []);
 
   return (
-    <div className="px-4 pt-4 pb-10">
-      <div className="rounded border pb-4 hover:border-black" ref={cardRef}>
+    <div className="group px-4 pt-4 pb-10">
+      <div
+        className="rounded border pb-4 group-hover:border-black"
+        ref={cardRef}
+      >
         <div className="flex items-center justify-between py-3 px-4 ">
           <div className="font-semibold"># {name}</div>
           <div className="flex">
-            <div className="cursor-pointer px-1">
+            <div className="hidden cursor-pointer px-1 group-hover:block">
               <BsArrowDown />
             </div>
-            <div className="cursor-pointer px-1">
+            <div className="hidden cursor-pointer px-1 group-hover:block ">
               <BsArrowUp />
             </div>
-            <div className="cursor-pointer px-1">
+            <div className="hidden cursor-pointer px-1 group-hover:block ">
               <BsLink45Deg />
             </div>
           </div>

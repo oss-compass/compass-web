@@ -971,6 +971,7 @@ export type ModelVersion = {
   id: Scalars['Int'];
   metrics: Array<ModelMetric>;
   triggerStatus?: Maybe<Scalars['String']>;
+  triggerUpdatedAt?: Maybe<Scalars['ISO8601DateTime']>;
   version?: Maybe<Scalars['String']>;
 };
 
@@ -2113,6 +2114,7 @@ export type MyLabModelsQuery = {
         id: number;
         version?: string | null;
         triggerStatus?: string | null;
+        triggerUpdatedAt?: any | null;
         algorithm?: {
           __typename?: 'Algorithm';
           ident: string;
@@ -4194,6 +4196,7 @@ export const MyLabModelsDocument = /*#__PURE__*/ `
         id
         version
         triggerStatus
+        triggerUpdatedAt
         algorithm {
           ...algorithm
         }

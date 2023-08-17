@@ -6,6 +6,7 @@
   "datasets": "Datasets",
   "metrics": "Metrics",
   "algorithm": "Algorithm",
+  "last_trigger": "Last trigger time",
   "projects_in_datasets": "{{length}} projects in datasets are using this model",
   "create_your_own_model_in_5_minutes": "Create your own model in 5 minutes",
   "create_a_model_now": "Create a model now",

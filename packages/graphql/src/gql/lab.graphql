@@ -175,6 +175,7 @@ query myLabModels($page: Int!, $per: Int!) {
         id
         version
         triggerStatus
+        triggerUpdatedAt
         algorithm {
           ...algorithm
         }

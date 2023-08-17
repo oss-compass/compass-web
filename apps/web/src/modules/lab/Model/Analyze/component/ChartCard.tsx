@@ -78,7 +78,7 @@ const ChartCard = ({ metric }: { metric: ModelMetric }) => {
       id={`lab_metrics:${metric.category}.${metric.ident}`}
       description={t(`lab_metrics:${metric.category}.${metric.ident}_desc`)}
       headRight={(ref, fullScreen, setFullScreen) => <CardHeadButtons />}
-      bodyClass={'h-[400px]'}
+      bodyClass={'min-h-[400px]'}
       bodyRender={(ref, fullScreen) => {
         return (
           <>

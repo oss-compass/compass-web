@@ -5,8 +5,8 @@ import EChartX from '@common/components/EChartX';
 import CardHeadButtons from './CardHeadButtons';
 import { LabChartOption } from '../context/ChartOption';
 import useLabDataMainScore from '../hooks/useLabDataMainScore';
-import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
 import { useLabModelDetail } from '../../hooks';
+import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
 import { getLineBuilder } from '../builder';
 
 const ChartTotalCard = () => {
