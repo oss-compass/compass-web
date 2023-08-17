@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { toast } from 'react-hot-toast';
 import { useTranslation } from 'next-i18next';
 import client from '@common/gqlClient';
 import { useSignOutMutation } from '@oss-compass/graphql';
@@ -32,6 +33,9 @@ const LoginItems: React.FC = () => {
                 cookieSetCallbackUrl(redirectTo);
                 window.location.href = '/users/auth/github';
               },
+              onError: (e) => {
+                toast.error(t('auth:auth_failed'));
+              },
             }
           );
         }}
@@ -59,6 +63,9 @@ const LoginItems: React.FC = () => {
                 cookieSetAuthProvider('gitee');
                 cookieSetCallbackUrl(redirectTo);
                 window.location.href = '/users/auth/gitee';
+              },
+              onError: (e) => {
+                toast.error(t('auth:auth_failed'));
               },
             }
           );
