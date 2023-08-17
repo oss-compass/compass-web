@@ -1,6 +1,7 @@
 import { proxy, subscribe } from 'valtio';
 import cloneDeep from 'lodash/cloneDeep';
 import { percentRound } from '@common/utils/number';
+import { isDev } from '@common/constant';
 import { adjustmentArray } from './utils';
 
 interface State {
@@ -87,6 +88,8 @@ export const actions = {
   },
 };
 
-// subscribe(formState, () => {
-//   console.log(JSON.stringify(formState, null, 2));
-// });
+if (isDev) {
+  subscribe(formState, () => {
+    console.log(JSON.stringify(formState, null, 2));
+  });
+}

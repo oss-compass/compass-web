@@ -59,6 +59,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps & InputVariants>(
     const cls = classnames(
       inputVariants({ intent, size }),
       [error ? 'border-red-500' : ''],
+      [disabled ? 'text-secondary cursor-not-allowed' : ''],
       className
     );
 

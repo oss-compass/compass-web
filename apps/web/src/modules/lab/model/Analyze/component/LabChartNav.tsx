@@ -6,7 +6,7 @@ import StickyNav from '@common/components/Header/StickyNav';
 import LabelItems from './LabelItems';
 import NavDatePicker from '@modules/analyze/components/NavBar/NavDatePicker';
 
-const AnalyzeChartNav = () => {
+const LabChartNav = () => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -27,4 +27,4 @@ const AnalyzeChartNav = () => {
   );
 };
 
-export default AnalyzeChartNav;
+export default LabChartNav;

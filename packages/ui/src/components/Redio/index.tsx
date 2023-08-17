@@ -1,4 +1,3 @@
-import { styled } from '@mui/material/styles';
 import Radio, { RadioProps } from '@mui/material/Radio';
 
 export function CustomRadio(props: RadioProps) {
@@ -13,6 +12,7 @@ export function CustomRadio(props: RadioProps) {
         },
         '&.Mui-disabled': {
           cursor: 'not-allowed',
+          pointerEvents: 'auto',
           color: '#868690',
         },
       }}

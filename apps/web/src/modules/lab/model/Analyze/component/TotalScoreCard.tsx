@@ -3,26 +3,31 @@ import { useTranslation } from 'next-i18next';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import CardHeadButtons from './CardHeadButtons';
-import { LabChartOption } from '../context/ChartOption';
 import useLabDataMainScore from '../hooks/useLabDataMainScore';
-import { useLabModelDetail } from '../../hooks';
 import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
+import { LabChartOption } from '../context/LabChartOption';
 import { getLineBuilder } from '../builder';
+import { useLabModelDetail, useLabModelVersion } from '../../hooks';
 
-const ChartTotalCard = () => {
+const TotalScoreCard = ({ className }: { className: string }) => {
   const { t } = useTranslation();
-  const { data: detail, isLoading } = useLabModelDetail();
-  const modelDetail = detail?.labModelDetail;
+  const { data: detail } = useLabModelDetail();
+  const { data: versionDetail } = useLabModelVersion();
+  const modelDetail = detail.labModelDetail;
 
   const { data, loading } = useLabDataMainScore();
   const eChartBuilderFns = useEChartBuilderFns([getLineBuilder()]);
 
+  const id = `card_model_${detail.labModelDetail.id}`;
   return (
     <BaseCard
-      title={modelDetail?.name}
-      // id={mainScore.tabIdent}
-      description={''}
-      headRight={(ref, fullScreen, setFullScreen) => <CardHeadButtons />}
+      className={className}
+      id={id}
+      title={modelDetail.name}
+      description={versionDetail.labModelVersion.version}
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardHeadButtons id={id} />
+      )}
       // bodyClass={'h-[400px]'}
       bodyRender={(ref, fullScreen) => {
         return (
@@ -41,4 +46,4 @@ const ChartTotalCard = () => {
   );
 };
 
-export default ChartTotalCard;
+export default TotalScoreCard;

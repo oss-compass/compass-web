@@ -10,7 +10,7 @@
     "generate:collections": "esno script/gen_collections_file.ts",
     "start": "next start",
     "lint": "next lint",
-    "ts-lint": "tsc --noEmit",
+    "ts-lint": "tsc --noEmit --watch",
     "test": "jest --watch",
     "test:ci": "jest --ci"
   },
@@ -67,7 +67,8 @@
     "react-use": "^17.4.0",
     "sharp": "^0.31.3",
     "tailwind-merge": "^1.12.0",
-    "valtio": "^1.10.7"
+    "valtio": "^1.10.7",
+    "viewerjs": "^1.11.4"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",

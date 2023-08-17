@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
 import { useTranslation } from 'next-i18next';
-
 import VersionSelect from './VersionSelect';
 import CommentSection from './CommentSection';
 import { useLabModelDetail, useLabModelVersion } from '../../hooks';
+import { actions } from '../state';
 
 const CommentDrawer = ({
   open,
@@ -17,6 +17,13 @@ const CommentDrawer = ({
   const { t } = useTranslation();
   const { data: modelDetail } = useLabModelDetail();
   const { data: modelVersion } = useLabModelVersion();
+
+  useEffect(() => {
+    if (modelVersion?.labModelVersion) {
+      const { id, version } = modelVersion?.labModelVersion;
+      actions.onCurrentVersionChange({ id, version });
+    }
+  }, [modelVersion]);
 
   const name = modelDetail?.labModelDetail?.name || '';
   const metrics = modelVersion?.labModelVersion?.metrics || [];
@@ -46,19 +53,25 @@ const CommentDrawer = ({
         </div>
       </div>
 
-      {/* model comment */}
-      <CommentSection name={name} />
+      <div className="px-4">
+        {/* model comment */}
+        <CommentSection
+          name={name}
+          anchor={`card_model_${modelDetail?.labModelDetail?.id}`}
+        />
 
-      {/* metrics comment */}
-      {metrics.map((metric) => {
-        return (
-          <CommentSection
-            key={metric.id}
-            modelMetricId={metric.id}
-            name={metric.name}
-          />
-        );
-      })}
+        {/* metrics comment */}
+        {metrics.map((metric) => {
+          return (
+            <CommentSection
+              key={metric.id}
+              modelMetricId={metric.id}
+              anchor={`card_${metric.category}_${metric.ident}`}
+              name={metric.name}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

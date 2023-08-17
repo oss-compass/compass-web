@@ -6,11 +6,7 @@ import {
   LabModelDetailQuery,
 } from '@oss-compass/graphql';
 
-export const useLabModelDetail = ({
-  onSuccess,
-}: {
-  onSuccess?: (res: LabModelDetailQuery) => void;
-} = {}) => {
+export const useLabModelDetail = () => {
   const router = useRouter();
   const modelId = Number(router.query.model);
 
@@ -18,11 +14,10 @@ export const useLabModelDetail = ({
     gqlClient,
     { modelId },
     {
-      staleTime: 60 * 1000,
+      // todo
+      // staleTime: 60 * 1000,
+      staleTime: 30 * 60 * 1000,
       enabled: Boolean(modelId),
-      onSuccess(res) {
-        if (onSuccess) onSuccess(res);
-      },
     }
   );
 };

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { useSnapshot } from 'valtio';
+import { BadgeCount } from '@modules/lab/model/components/BadgeCount';
 import { formFiledState } from '../state';
-import { BadgeCount } from '../../Misc';
 
 const CategoryMenu = ({ category }: { category: string }) => {
   const snapshot = useSnapshot(formFiledState);

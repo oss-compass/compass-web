@@ -36,7 +36,7 @@ export const Select = forwardRef(function Select<
           const openCls = open ? 'after:content-["▴"]' : 'after:content-["▾"]';
           return {
             className: classnames(rootCls, focusCls, openCls, rootClassNames, [
-              disabled ? 'bg-smoke' : '',
+              disabled ? 'bg-smoke !text-secondary cursor-not-allowed' : '',
             ]),
           };
         },

@@ -10,7 +10,8 @@ import IconProductivity from '@public/images/analyze/topic/Productivity.svg';
 import IconRobustness from '@public/images/analyze/topic/Robustness.svg';
 import IconNicheCreation from '@public/images/analyze/topic/NicheCreation.svg';
 
-import { VersionCard, VersionCreate } from './VersionItem';
+import VersionCreate from './VersionCreate';
+import VersionCard from './VersionCard';
 
 const ModelItem = ({
   model,

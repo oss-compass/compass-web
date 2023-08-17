@@ -2,8 +2,8 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import uniq from 'lodash/uniq';
-import { AiOutlinePlus } from 'react-icons/ai';
-import { BiLoaderAlt } from 'react-icons/bi';
+import { BiLoaderAlt, BiDetail } from 'react-icons/bi';
+import { BsSend } from 'react-icons/bs';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import {
   ModelVersion,
@@ -16,18 +16,7 @@ import { ReFetch } from '@common/constant';
 import { formatToNow } from '@common/utils/time';
 import VersionItemMore from './VersionItemMore';
 
-export const VersionCreate = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <div
-      className="hover:bg-smoke flex min-h-[160px] cursor-pointer flex-col  items-center  justify-center border bg-[#FAFAFA] "
-      onClick={() => onClick()}
-    >
-      <AiOutlinePlus />
-    </div>
-  );
-};
-
-export const VersionCard = ({
+const VersionCard = ({
   version,
   modelId,
   event$,
@@ -76,6 +65,17 @@ export const VersionCard = ({
               {t('lab:algorithm')}：Default
             </span>
           </div>
+
+          {version.triggerStatus ? (
+            <>
+              <div className="mb-2">
+                <span className="text-secondary block truncate text-xs">
+                  {t('lab:last_trigger_status')}：{version.triggerStatus}
+                </span>
+              </div>
+            </>
+          ) : null}
+
           {version.triggerUpdatedAt ? (
             <>
               <div className="mb-2">
@@ -98,7 +98,8 @@ export const VersionCard = ({
               );
             }}
           >
-            <span className="block text-sm">{t('lab:view_report')}</span>
+            <BiDetail className="text-secondary" />
+            <span className="ml-2 block text-sm">{t('lab:view_report')}</span>
           </div>
         ) : null}
 
@@ -117,10 +118,6 @@ export const VersionCard = ({
                     { modelId, versionId: version.id },
                     {
                       onSuccess: (res) => {
-                        const msg = res?.triggerLabModelVersion?.message;
-                        if (msg) {
-                          toast.error(msg || 'Trigger analysis failed!');
-                        }
                         event$.emit(ReFetch);
                       },
                       onError: (err) => {
@@ -130,7 +127,8 @@ export const VersionCard = ({
                   );
                 }}
               >
-                <span className="block flex items-center text-sm">
+                <BsSend className="text-secondary" />
+                <span className="ml-2 block flex items-center text-sm">
                   {triggerMutation.isLoading ? (
                     <BiLoaderAlt className="text-silver mr-2 animate-spin cursor-pointer text-xl" />
                   ) : null}
@@ -144,3 +142,5 @@ export const VersionCard = ({
     </div>
   );
 };
+
+export default VersionCard;

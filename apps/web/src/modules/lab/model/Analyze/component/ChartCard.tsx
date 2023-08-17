@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import Tab from '@common/components/Tab';
 import { Level } from '@common/constant';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import first from 'lodash/first';
 import { ModelMetric, Diagram } from '@oss-compass/graphql';
 import useLabDataMetric from '../hooks/useLabDataMetric';
-import CardHeadButtons from './CardHeadButtons';
-import { LabChartOption } from '../context/ChartOption';
 import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
+import CardHeadButtons from './CardHeadButtons';
+import { LabChartOption } from '../context/LabChartOption';
 import { getLineBuilder } from '../builder';
 
 const pickTabs = (
@@ -66,27 +65,30 @@ const ChartCard = ({ metric }: { metric: ModelMetric }) => {
   const slugsData = pickDataByMetric(metric.ident);
 
   const tabs = pickTabs(slugsData);
-  const [tab, setTab] = useState<string>(first(tabs)?.value);
-  const showData = pickDataByTab(slugsData, tab);
+  // const [tab, setTab] = useState<string>(first(tabs)?.value);
+
+  const showData = pickDataByTab(slugsData, first(tabs)?.value);
   const eChartBuilderFns = useEChartBuilderFns([getLineBuilder()]);
 
-  console.log({ tab, tabs, slugsData, showData });
+  const id = `card_${metric.category}_${metric.ident}`;
 
   return (
     <BaseCard
+      id={id}
       title={t(`lab_metrics:${metric.category}.${metric.ident}`)}
-      id={`lab_metrics:${metric.category}.${metric.ident}`}
       description={t(`lab_metrics:${metric.category}.${metric.ident}_desc`)}
-      headRight={(ref, fullScreen, setFullScreen) => <CardHeadButtons />}
-      bodyClass={'min-h-[400px]'}
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <CardHeadButtons id={id} />
+      )}
+      bodyClass={'h-[360px]'}
       bodyRender={(ref, fullScreen) => {
         return (
           <>
-            {tabs.length > 1 ? (
-              <div className="mb-4">
-                <Tab options={tabs} value={tab} onChange={(v) => setTab(v)} />
-              </div>
-            ) : null}
+            {/*{tabs.length > 1 ? (*/}
+            {/*  <div className="mb-4">*/}
+            {/*    <Tab options={tabs} value={tab} onChange={(v) => setTab(v)} />*/}
+            {/*  </div>*/}
+            {/*) : null}*/}
 
             <LabChartOption
               data={showData}

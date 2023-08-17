@@ -1,6 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { useInViewport } from 'ahooks';
 import { useTranslation } from 'next-i18next';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import {
@@ -10,27 +9,29 @@ import {
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { useSnapshot } from 'valtio';
+import classnames from 'classnames';
+import { last } from 'lodash';
 import { BsArrowDown, BsArrowUp, BsLink45Deg } from 'react-icons/bs';
 import CommentInput, { InputRefProps } from './CommentInput';
 import CommentItem from './CommentItem';
-import { pageState } from '../state';
+import { pageState, actions } from '../state';
 
 const CommentSection = ({
   name,
+  anchor,
   modelMetricId,
 }: {
   name: string;
+  anchor: string;
   modelMetricId?: number;
 }) => {
   const { t } = useTranslation();
-  const cardRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<InputRefProps>(null);
   const router = useRouter();
   const snapshot = useSnapshot(pageState);
-  const [inViewport] = useInViewport(cardRef);
-
   const modelId = Number(router.query.model);
   const versionId = snapshot.commentVersion?.id;
+  const commentAnchor = `comment_${anchor}`;
 
   const params = {
     modelId,
@@ -51,9 +52,10 @@ const CommentSection = ({
         })();
       },
       {
-        enabled: inViewport,
         staleTime: 60 * 1000,
         getNextPageParam: (lastPage) => {
+          const count = lastPage?.labModelComments?.count! || 0;
+
           const page = lastPage?.labModelComments?.page! || 0;
           const totalPage = lastPage?.labModelComments?.totalPage! || 0;
           if (totalPage > page) {
@@ -72,12 +74,22 @@ const CommentSection = ({
     return acc.concat(cur.labModelComments.items);
   }, []);
 
+  const lastPage = last(data?.pages);
+  const totalCount = lastPage?.labModelComments?.count || 0;
+
+  const meta = snapshot.commentMeta[anchor];
+  useEffect(() => {
+    actions.onSyncCommentCount(anchor, totalCount);
+  }, [anchor, totalCount]);
+
   return (
-    <div className="group px-4 pt-4 pb-10">
-      <div
-        className="rounded border pb-4 group-hover:border-black"
-        ref={cardRef}
-      >
+    <div
+      id={commentAnchor}
+      className={classnames('group pt-12', [
+        totalCount === 0 && !meta?.show ? 'hidden' : '',
+      ])}
+    >
+      <div className="rounded border pb-4 group-hover:border-black">
         <div className="flex items-center justify-between py-3 px-4 ">
           <div className="font-semibold"># {name}</div>
           <div className="flex">

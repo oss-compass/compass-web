@@ -6,7 +6,8 @@
   "datasets": "Datasets",
   "metrics": "Metrics",
   "algorithm": "Algorithm",
-  "last_trigger": "Last trigger time",
+  "last_trigger_status": "Trigger status",
+  "last_trigger": "Trigger time",
   "projects_in_datasets": "{{length}} projects in datasets are using this model",
   "create_your_own_model_in_5_minutes": "Create your own model in 5 minutes",
   "create_a_model_now": "Create a model now",
@@ -56,7 +57,7 @@
   },
   "remaining_times_of_analysis_performed_this_week": "Remaining times of analysis performed this week: ",
   "view_report": "View report",
-  "trigger_analysis": "Trigger analysis",
+  "trigger_analysis": "Analysis",
   "click_on_the_left_menu_and_select_a_category": "Click on the left menu and select a category.",
   "cant_find_a_suitable_dataset": "Can't find a suitable dataset? ",
   "cant_find_a_suitable_metric": "Can't find a suitable metric? ",
@@ -70,7 +71,7 @@
     "label": "Is public",
     "public": "public",
     "public_desc": "This is an open evaluation model that allows display on the Compass LAB homepage for user participation in assessment evolution.",
-    "non_public": "Non public",
+    "non_public": "non public",
     "non_public_desc": "This is a confidential internal evaluation model. I only wish to conduct evaluations and iterations with my collaborative team members."
   },
   "weight_threshold_settings": {

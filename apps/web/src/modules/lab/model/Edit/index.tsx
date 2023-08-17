@@ -15,20 +15,21 @@ const ModelEdit = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const modelId = Number(router.query.model);
-  const { data: modelDetail, isLoading } = useLabModelDetail({
-    onSuccess: (res) => {
-      if (res.labModelDetail) {
-        const { name, dimension, isGeneral, isPublic } = res.labModelDetail;
-        formState.name = name;
-        formState.dimension = dimension;
-        formState.isGeneral = isGeneral;
-        formState.isPublic = isPublic;
-      }
-    },
-  });
+  const { data: modelDetail, isLoading } = useLabModelDetail();
+
   useEffect(() => {
     actions.resetForm();
-  }, []);
+
+    if (modelDetail?.labModelDetail) {
+      const { name, dimension, isGeneral, isPublic } =
+        modelDetail.labModelDetail;
+
+      formState.name = name;
+      formState.dimension = dimension;
+      formState.isGeneral = isGeneral;
+      formState.isPublic = isPublic;
+    }
+  }, [modelDetail]);
 
   const updateMutation = useUpdateLabModelMutation(gqlClient, {
     onSuccess(res) {

@@ -22,7 +22,7 @@ const ModelEdit = () => {
       <Header />
       <MyModelsBanner />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full">
-        <ModelDetailProvider loadingClassName="mx-auto w-[1200px] lg:w-full md:px-4">
+        <ModelDetailProvider loadingClassName="mx-auto w-[1200px] lg:w-full md:px-4 py-10">
           <ModelEditForm />
         </ModelDetailProvider>
       </AuthRequire>

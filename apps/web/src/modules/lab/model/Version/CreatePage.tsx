@@ -2,10 +2,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
 import gqlClient from '@common/gqlClient';
-import {
-  useLabModelDetailQuery,
-  useCreateLabModelVersionMutation,
-} from '@oss-compass/graphql';
+import { useCreateLabModelVersionMutation } from '@oss-compass/graphql';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import Center from '@common/components/Layout/Center';
@@ -18,21 +15,20 @@ const VersionCreate = () => {
   const { t } = useTranslation();
   const modelId = Number(router.query.model);
 
+  const { isLoading, data: modelDetail } = useLabModelDetail();
+
   useEffect(() => {
     actions.resetForm();
-  }, []);
 
-  const { isLoading, data: modelDetail } = useLabModelDetail({
-    onSuccess(res) {
-      if (res.labModelDetail) {
-        const { name, dimension, isGeneral, isPublic } = res.labModelDetail;
-        formState.name = name;
-        formState.dimension = dimension;
-        formState.isGeneral = isGeneral;
-        formState.isPublic = isPublic;
-      }
-    },
-  });
+    if (modelDetail?.labModelDetail) {
+      const { name, dimension, isGeneral, isPublic } =
+        modelDetail.labModelDetail;
+      formState.name = name;
+      formState.dimension = dimension;
+      formState.isGeneral = isGeneral;
+      formState.isPublic = isPublic;
+    }
+  }, [modelDetail]);
 
   const createMutation = useCreateLabModelVersionMutation(gqlClient, {
     onSuccess() {

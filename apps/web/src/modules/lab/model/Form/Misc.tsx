@@ -10,14 +10,6 @@ export const FormItemLabel: React.FC<
   );
 };
 
-export const BadgeCount = ({ count = 0 }: { count: number }) => {
-  return (
-    <span className="bg-primary h-4 min-w-[16px] shrink-0 rounded-full text-center text-xs leading-4 text-white">
-      {count}
-    </span>
-  );
-};
-
 export const MetricName = ({
   category,
   ident,

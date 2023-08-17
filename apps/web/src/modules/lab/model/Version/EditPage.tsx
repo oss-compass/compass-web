@@ -16,51 +16,51 @@ const ModelVersionEdit = () => {
   const modelId = Number(router.query.model);
   const versionId = Number(router.query.version);
 
+  const { isLoading, data: modelDetail } = useLabModelDetail();
+
   useEffect(() => {
     actions.resetForm();
-  }, []);
 
-  const { isLoading, data: modelDetail } = useLabModelDetail({
-    onSuccess(res) {
-      if (res.labModelDetail) {
-        const { name, dimension, isGeneral, isPublic } = res.labModelDetail;
-        formState.name = name;
-        formState.dimension = dimension;
-        formState.isGeneral = isGeneral;
-        formState.isPublic = isPublic;
-      }
-    },
-  });
+    if (modelDetail?.labModelDetail) {
+      const { name, dimension, isGeneral, isPublic } =
+        modelDetail.labModelDetail;
+      formState.name = name;
+      formState.dimension = dimension;
+      formState.isGeneral = isGeneral;
+      formState.isPublic = isPublic;
+    }
+  }, [modelDetail]);
 
-  const { isLoading: versionLoading, data: modelVersion } = useLabModelVersion({
-    onSuccess(res) {
-      if (res.labModelVersion) {
-        const { dataset, algorithm, metrics, version } = res.labModelVersion;
-        formState.version = version;
-        formState.algorithm = algorithm.ident;
-        formState.dataSet = dataset.items.map((i) => {
-          return {
-            label: i.label,
-            level: i.level,
-            firstIdent: i.firstIdent,
-            secondIdent: i.secondIdent,
-          };
-        });
-        formState.metricSet = metrics.map((i) => {
-          return {
-            defaultThreshold: i.defaultThreshold,
-            defaultWeight: i.defaultWeight,
-            id: i.id,
-            metricId: i.metricId,
-            ident: i.ident,
-            threshold: i.threshold,
-            weight: i.weight,
-            category: i.category,
-          };
-        });
-      }
-    },
-  });
+  const { isLoading: vLoading, data: modelVersion } = useLabModelVersion();
+
+  useEffect(() => {
+    if (modelVersion?.labModelVersion) {
+      const { dataset, algorithm, metrics, version } =
+        modelVersion.labModelVersion;
+      formState.version = version;
+      formState.algorithm = algorithm.ident;
+      formState.dataSet = dataset.items.map((i) => {
+        return {
+          label: i.label,
+          level: i.level,
+          firstIdent: i.firstIdent,
+          secondIdent: i.secondIdent,
+        };
+      });
+      formState.metricSet = metrics.map((i) => {
+        return {
+          defaultThreshold: i.defaultThreshold,
+          defaultWeight: i.defaultWeight,
+          id: i.id,
+          metricId: i.metricId,
+          ident: i.ident,
+          threshold: i.threshold,
+          weight: i.weight,
+          category: i.category,
+        };
+      });
+    }
+  }, [modelVersion]);
 
   const updateMutation = useUpdateLabModelVersionMutation(gqlClient, {
     onSuccess(res) {
@@ -91,7 +91,7 @@ const ModelVersionEdit = () => {
         </div>
 
         <Form
-          loading={isLoading || versionLoading}
+          loading={isLoading || vLoading}
           formType={'VersionEdit'}
           submitLoading={updateMutation.isLoading}
           onSubmit={() => {
