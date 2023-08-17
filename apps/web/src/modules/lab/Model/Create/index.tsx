@@ -8,6 +8,7 @@ import { useCreateLabModelMutation } from '@oss-compass/graphql';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import Form from '../Form';
+import getErrorMessage from '@common/utils/getErrorMessage';
 
 const ModelCreate = () => {
   const { t } = useTranslation();
@@ -18,16 +19,19 @@ const ModelCreate = () => {
   }, []);
 
   const mutation = useCreateLabModelMutation(gqlClient, {
-    onSuccess() {
-      toast.success((t) => <>创建成功</>, {
+    onSuccess(res) {
+      toast.success(() => <>{t('lab:create_succeed')}</>, {
         position: 'top-center',
       });
       router.push('/lab/model/my');
     },
-    onError(err) {
-      toast.error((t) => <>{'创建失败'}</>, {
-        position: 'top-center',
-      });
+    onError(res) {
+      toast.error(
+        getErrorMessage(res) || (() => <>{t('lab:create_failed')}</>),
+        {
+          position: 'top-center',
+        }
+      );
     },
   });
 
@@ -37,7 +41,7 @@ const ModelCreate = () => {
         <div className="mb-6 flex items-center justify-between">
           <div className="text-xl font-semibold">
             <Link href={'/lab/model/my'}>{t('lab:my_models')}</Link> /
-            <span className="ml-2">Create</span>
+            <span className="ml-2">{t('lab:create')}</span>
           </div>
         </div>
 
