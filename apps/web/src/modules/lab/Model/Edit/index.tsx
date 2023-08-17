@@ -9,13 +9,14 @@ import { useTranslation } from 'react-i18next';
 import Form from '../Form';
 import { formState, actions } from '../Form/state';
 import { useLabModelDetail } from '../hooks';
+import getErrorMessage from '@common/utils/getErrorMessage';
 
 const ModelEdit = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const modelId = Number(router.query.model);
   const { data: modelDetail, isLoading } = useLabModelDetail({
-    onSuccess(res) {
+    onSuccess: (res) => {
       if (res.labModelDetail) {
         const { name, dimension, isGeneral, isPublic } = res.labModelDetail;
         formState.name = name;
@@ -25,20 +26,19 @@ const ModelEdit = () => {
       }
     },
   });
-
   useEffect(() => {
     actions.resetForm();
   }, []);
 
   const updateMutation = useUpdateLabModelMutation(gqlClient, {
     onSuccess(res) {
-      toast.success((t) => <>更新成功</>, {
+      toast.success(() => <>{t('lab:edit_succeed')}</>, {
         position: 'top-center',
       });
       router.push('/lab/model/my');
     },
     onError(res) {
-      toast.error((t) => <>更新失败</>, {
+      toast.error(getErrorMessage(res) || (() => <>{t('lab:edit_failed')}</>), {
         position: 'top-center',
       });
     },
@@ -51,7 +51,7 @@ const ModelEdit = () => {
           <div className="text-xl font-semibold">
             <Link href={'/lab/model/my'}>{t('lab:my_models')}</Link> /
             <span className="ml-2">{modelDetail?.labModelDetail?.name}</span> /
-            <span className="ml-2">Edit</span>
+            <span className="ml-2">{t('lab:edit')}</span>
           </div>
         </div>
 

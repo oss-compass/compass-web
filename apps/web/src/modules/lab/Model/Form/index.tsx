@@ -67,8 +67,8 @@ const Form = ({
           {isModel && (
             <CheckTerms
               select={select}
-              setSelect={() => {
-                setSelect(!select);
+              setSelect={(e) => {
+                setSelect(e);
               }}
             />
           )}
@@ -88,7 +88,7 @@ const Form = ({
             }
           }}
         >
-          Save
+          {t('common:btn.save')}
         </Button>
         <Button
           intent="text"
@@ -96,7 +96,7 @@ const Form = ({
             router.back();
           }}
         >
-          Cancel
+          {t('common:btn.cancel')}
         </Button>
       </div>
     </>

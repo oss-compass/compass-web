@@ -81,6 +81,9 @@
     "cancel": "取消",
     "func_disabled": "该功能临时关闭"
   },
+  "prompt": {
+    "please_enter": "请输入"
+  },
   "confirm": {
     "delete": "确定删除吗？"
   },
