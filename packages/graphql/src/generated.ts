@@ -1062,7 +1062,7 @@ export type CreateProjectTaskMutation = {
 export type ModifyUserMutationVariables = Exact<{
   name: Scalars['String'];
   email: Scalars['String'];
-  language: Scalars['String'];
+  language?: InputMaybe<Scalars['String']>;
 }>;
 
 export type ModifyUserMutation = {
@@ -2001,7 +2001,7 @@ useCreateProjectTaskMutation.fetcher = (
     headers
   );
 export const ModifyUserDocument = /*#__PURE__*/ `
-    mutation modifyUser($name: String!, $email: String!, $language: String!) {
+    mutation modifyUser($name: String!, $email: String!, $language: String) {
   modifyUser(input: {name: $name, email: $email, language: $language}) {
     message
     status
