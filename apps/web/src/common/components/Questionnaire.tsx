@@ -18,7 +18,7 @@ const Questionnaire = () => {
           <Image
             src="/images/questionnaire/icon.png"
             width={124}
-            height={136}
+            height={144}
             alt={''}
             style={{
               maxWidth: '100%',
