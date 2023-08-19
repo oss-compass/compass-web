@@ -3,6 +3,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import { isDev } from '@common/constant';
 
 interface State {
+  commentDrawerOpen: boolean;
+  commentActiveId: string;
   chartMeta: Record<string, { top?: number; commentCount?: number }>;
   commentMeta: Record<string, { show?: boolean; top?: number }>;
   commentVersion: {
@@ -12,6 +14,8 @@ interface State {
 }
 
 const initialObj = {
+  commentDrawerOpen: false,
+  commentActiveId: '',
   chartMeta: {},
   commentMeta: {},
   commentVersion: null,
@@ -50,6 +54,12 @@ export const actions = {
   },
   onCurrentVersionChange: (v: { id: number; version: string }) => {
     pageState.commentVersion = v;
+  },
+  toggleCommentDrawer: (open: boolean) => {
+    pageState.commentDrawerOpen = open;
+  },
+  activeComment: (id: string) => {
+    pageState.commentActiveId = id;
   },
   reset: () => {
     const resetObj = cloneDeep(initialObj);

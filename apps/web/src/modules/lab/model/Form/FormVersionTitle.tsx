@@ -17,6 +17,9 @@ const FormVersionTitle = () => {
           placeholder={t('common:prompt.please_enter')}
           value={snapshot.version}
           onChange={(value) => {
+            if (value.length > 100) {
+              return;
+            }
             actions.onVersionNameChange(value);
           }}
         />

@@ -1,6 +1,11 @@
 import Radio, { RadioProps } from '@mui/material/Radio';
 
-export function CustomRadio(props: RadioProps) {
+export function CustomRadio(
+  props: RadioProps & {
+    checkedColor: string;
+  }
+) {
+  const { checkedColor = '#3A5BEF', ...restProps } = props;
   return (
     <Radio
       disableRipple
@@ -8,7 +13,7 @@ export function CustomRadio(props: RadioProps) {
         padding: 0,
         color: '#868690',
         '&.Mui-checked': {
-          color: '#3A5BEF',
+          color: checkedColor,
         },
         '&.Mui-disabled': {
           cursor: 'not-allowed',
@@ -16,7 +21,7 @@ export function CustomRadio(props: RadioProps) {
           color: '#868690',
         },
       }}
-      {...props}
+      {...restProps}
     />
   );
 }

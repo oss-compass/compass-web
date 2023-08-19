@@ -101,7 +101,9 @@ const ModelItemMore = ({
             </Button>
           </div>
         }
-        handleClose={() => {}}
+        handleClose={() => {
+          setOpenConfirm(false);
+        }}
       />
     </>
   );

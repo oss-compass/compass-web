@@ -48,6 +48,7 @@
     "lodash": "^4.17.21",
     "next": "~13.2.4",
     "next-i18next": "^13.0.0",
+    "next-usequerystate": "^1.7.3",
     "nextjs-progressbar": "^0.0.14",
     "proxy-agent": "^5.0.0",
     "qrcode": "^1.5.1",

@@ -12829,6 +12829,11 @@ next-i18next@^13.0.0:
     hoist-non-react-statics "^3.3.2"
     i18next-fs-backend "^2.0.0"
 
+next-usequerystate@^1.7.3:
+  version "1.7.3"
+  resolved "https://registry.npmmirror.com/next-usequerystate/-/next-usequerystate-1.7.3.tgz#724d9d75e488b47e0942ab9d3443dfcdcd5b65b0"
+  integrity sha512-U45N1KGL7e6Rp8kRmisbM26q/sV2JFPahuV1H0SgF0VgG6970CdtheqLicytYURzgpc4twdiQ+4QgZhuFmX3Tg==
+
 next@^13.4.12:
   version "13.4.12"
   resolved "https://registry.npmmirror.com/next/-/next-13.4.12.tgz#809b21ea0aabbe88ced53252c88c4a5bd5af95df"

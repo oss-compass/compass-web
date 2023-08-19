@@ -1,4 +1,9 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { FiImage } from 'react-icons/fi';
 import { BiLoaderAlt } from 'react-icons/bi';
 import { toast } from 'react-hot-toast';
@@ -24,11 +29,13 @@ interface Props {
 
 export interface InputRefProps {
   reset: () => void;
+  focus: () => void;
   backFill: (content: string, images: Image[]) => void;
 }
 
 const CommentInput = forwardRef<InputRefProps, Props>(
   ({ showFooter = false, placeholder, loading, onSubmit, onCancel }, ref) => {
+    const textAreaRef = useRef<HTMLTextAreaElement>();
     const [value, setValue] = useState('');
     const [images, setImages] = useState<Image[]>([]);
 
@@ -38,6 +45,9 @@ const CommentInput = forwardRef<InputRefProps, Props>(
       backFill: (content: string, images: Image[]) => {
         setValue(content);
         setImages(images);
+      },
+      focus: () => {
+        textAreaRef.current?.focus();
       },
       reset: () => {
         setValue('');
@@ -67,6 +77,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
       <div className="relative">
         <div className="border-silver min-h-8 relative rounded-sm border  text-sm">
           <TextareaAutosize
+            ref={textAreaRef}
             value={value}
             onChange={(event) => {
               setValue(event.target.value);

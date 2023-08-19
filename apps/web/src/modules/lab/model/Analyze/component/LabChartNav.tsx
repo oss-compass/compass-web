@@ -20,7 +20,7 @@ const LabChartNav = () => {
       >
         <LabelItems />
         <div className="flex items-center text-[#585858]">
-          <NavDatePicker />
+          <NavDatePicker disable />
         </div>
       </nav>
     </StickyNav>

@@ -22,7 +22,7 @@ const RepoCompareBar: React.FC<{
   const { t } = useTranslation();
 
   return (
-    <div className="mt-6 flex h-6 text-sm font-medium">
+    <div className="mt-4 flex items-center text-sm font-medium">
       <span className="line-clamp-1">
         {t('lab:projects_in_datasets', {
           length: total,

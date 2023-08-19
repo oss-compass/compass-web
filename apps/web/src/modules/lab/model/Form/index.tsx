@@ -12,6 +12,7 @@ import FormAlgorithm from './FormAlgorithm';
 import CheckTerms from '@modules/lab/model/components/CheckTerms';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { formState } from '../Form/state';
 
 const Form = ({
   formType,
@@ -81,11 +82,37 @@ const Form = ({
           size="md"
           loading={submitLoading}
           onClick={() => {
-            if (formType !== 'ModelEdit' && isModel && !select) {
-              toast.error(t('lab:please_check_the_terms'));
-            } else {
-              onSubmit();
+            if (!formState.name) {
+              toast.error(t('lab:form_tips.name_require'));
+              return;
             }
+
+            if (isVersion && !formState.version) {
+              toast.error(t('lab:form_tips.version_require'));
+              return;
+            }
+
+            const dataSetLen = formState.dataSet.length;
+            if ((isVersion || formType === 'ModelCreate') && dataSetLen === 0) {
+              toast.error(t('lab:form_tips.dataset_require'));
+              return;
+            }
+
+            const metricSetLen = formState.metricSet.length;
+            if (
+              (isVersion || formType === 'ModelCreate') &&
+              metricSetLen === 0
+            ) {
+              toast.error(t('lab:form_tips.metric_require'));
+              return;
+            }
+
+            if (formType === 'ModelCreate' && !select) {
+              toast.error(t('lab:please_check_the_terms'));
+              return;
+            }
+
+            onSubmit();
           }}
         >
           {t('common:btn.save')}

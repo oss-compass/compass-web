@@ -20,11 +20,23 @@ const CardHeadButtons = ({ id }: { id: string }) => {
     }
   };
 
+  const handleScrollToComment = () => {
+    const el = document.getElementById(`comment_${id}`);
+    if (el) {
+      el.scrollIntoView?.({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div
       className="flex cursor-pointer items-center"
       onClick={() => {
+        actions.toggleCommentDrawer(true);
         actions.onCommentPanelShow(id, true);
+        setTimeout(() => {
+          handleScrollToComment();
+          actions.activeComment(id);
+        }, 100);
       }}
       ref={(el) => registerPosition(el)}
     >

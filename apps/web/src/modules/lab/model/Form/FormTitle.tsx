@@ -38,6 +38,9 @@ const FormTitle = ({ disabled }: { disabled: boolean }) => {
           placeholder={t('common:prompt.please_enter')}
           value={snapshot.name}
           onChange={(value) => {
+            if (value.length > 100) {
+              return;
+            }
             actions.onNameChange(value);
           }}
         />

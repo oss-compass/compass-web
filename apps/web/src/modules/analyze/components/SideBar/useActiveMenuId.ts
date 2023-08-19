@@ -5,51 +5,13 @@ import {
   useCommunityActivity,
   useCommunityServiceAndSupport,
   useOrganizationsActivity,
-  Topic,
 } from './config';
 
-const useHashchangeEvent = () => {
+const useActiveMenuId = (activeId: string) => {
   const collaborationDevelopmentIndex = useCollaborationDevelopmentIndex();
   const communityActivity = useCommunityActivity();
   const communityServiceAndSupport = useCommunityServiceAndSupport();
   const organizationsActivity = useOrganizationsActivity();
-
-  const initialHash = window.location.hash ? window.location.hash.slice(1) : '';
-  const [activeId, setActiveId] = useState(initialHash);
-
-  useEffect(() => {
-    const hashChangeHandle = (e: HashChangeEvent) => {
-      const hash = window.location.hash;
-      if (!hash) return;
-      console.log('hashChangeHandle', hash);
-
-      const id = hash.replace('#', '');
-      setActiveId(id);
-    };
-    // hashChangeHandle();
-    window.addEventListener('hashchange', hashChangeHandle, false);
-    return () => {
-      window.removeEventListener('hashchange', hashChangeHandle, false);
-    };
-  }, []);
-
-  useDebounce(
-    () => {
-      if (!activeId) return;
-      const el = document.getElementById(activeId)?.parentElement;
-      if (!el) return;
-
-      const cards = document.querySelectorAll('.base-card');
-      cards.forEach((card) => {
-        card.setAttribute('style', 'border-color: transparent');
-      });
-      if (el.classList.contains?.('base-card')) {
-        el.setAttribute('style', 'border-color: #505050');
-      }
-    },
-    150,
-    [activeId]
-  );
 
   return useMemo(() => {
     return [
@@ -91,4 +53,4 @@ const useHashchangeEvent = () => {
   ]);
 };
 
-export default useHashchangeEvent;
+export default useActiveMenuId;

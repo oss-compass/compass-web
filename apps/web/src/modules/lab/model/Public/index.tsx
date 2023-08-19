@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import CreateGuide from './CreateGuide';
+import { useQueryState, queryTypes } from 'next-usequerystate';
 import { useLabModelPublicOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import Pagination from '@common/components/Pagination';
+import CreateGuide from './CreateGuide';
 import ModelItem from './ModelItem';
 import Loading from './Loading';
 
 const per = 5;
 
 const Model = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useQueryState(
+    'page',
+    queryTypes.integer.withDefault(1)
+  );
   const { isLoading, data } = useLabModelPublicOverviewQuery(client, {
     page: page,
     per,

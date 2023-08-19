@@ -186,6 +186,19 @@ query myLabModels($page: Int!, $per: Int!) {
           ...metrics
         }
       }
+      defaultVersion {
+        id
+        version
+        algorithm {
+          ...algorithm
+        }
+        dataset {
+          ...dataset
+        }
+        metrics {
+          ...metrics
+        }
+      }
       name
       userId
       permissions {
@@ -208,6 +221,10 @@ query labModelDetail($modelId: Int!) {
     isPublic
     triggerRemainingCount
     latestVersions {
+      id
+      version
+    }
+    defaultVersion {
       id
       version
     }
@@ -489,6 +506,7 @@ mutation createLabModelVersion(
 
 mutation updateLabModel(
   $dimension: Int
+  $defaultVersionId: Int
   $isGeneral: Boolean
   $isPublic: Boolean
   $modelId: Int!
@@ -496,6 +514,7 @@ mutation updateLabModel(
 ) {
   updateLabModel(
     input: {
+      defaultVersionId: $defaultVersionId
       dimension: $dimension
       isGeneral: $isGeneral
       isPublic: $isPublic

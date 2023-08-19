@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useCopyToClipboard } from 'react-use';
 import {
   useLabModelCommentsQuery,
   useCreateLabModelCommentMutation,
@@ -23,12 +24,17 @@ const CommentSection = ({
 }: {
   name: string;
   anchor: string;
+  // nextAnchor?: string;
+  // preAnchor?: string;
   modelMetricId?: number;
 }) => {
   const { t } = useTranslation();
   const inputRef = useRef<InputRefProps>(null);
   const router = useRouter();
+  const [_, copyToClipboard] = useCopyToClipboard();
   const snapshot = useSnapshot(pageState);
+  const [direction, setDirection] = useState('desc');
+
   const modelId = Number(router.query.model);
   const versionId = snapshot.commentVersion?.id;
   const commentAnchor = `comment_${anchor}`;
@@ -37,34 +43,41 @@ const CommentSection = ({
     modelId,
     versionId,
     modelMetricId,
+    direction,
     page: 1,
     per: 10,
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
-    useInfiniteQuery(
-      useLabModelCommentsQuery.getKey(params),
-      async (arg) => {
-        const { pageParam } = arg;
-        return await useLabModelCommentsQuery.fetcher(gqlClient, {
-          ...params,
-          ...pageParam,
-        })();
-      },
-      {
-        staleTime: 60 * 1000,
-        getNextPageParam: (lastPage) => {
-          const count = lastPage?.labModelComments?.count! || 0;
+  const {
+    data,
+    fetchNextPage,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    useLabModelCommentsQuery.getKey(params),
+    async (arg) => {
+      const { pageParam } = arg;
+      return await useLabModelCommentsQuery.fetcher(gqlClient, {
+        ...params,
+        ...pageParam,
+      })();
+    },
+    {
+      staleTime: 60 * 1000,
+      getNextPageParam: (lastPage) => {
+        const count = lastPage?.labModelComments?.count! || 0;
 
-          const page = lastPage?.labModelComments?.page! || 0;
-          const totalPage = lastPage?.labModelComments?.totalPage! || 0;
-          if (totalPage > page) {
-            return { page: page + 1 };
-          }
-          return null;
-        },
-      }
-    );
+        const page = lastPage?.labModelComments?.page! || 0;
+        const totalPage = lastPage?.labModelComments?.totalPage! || 0;
+        if (totalPage > page) {
+          return { page: page + 1 };
+        }
+        return null;
+      },
+    }
+  );
 
   const commentMutation = useCreateLabModelCommentMutation(gqlClient);
 
@@ -80,26 +93,76 @@ const CommentSection = ({
   const meta = snapshot.commentMeta[anchor];
   useEffect(() => {
     actions.onSyncCommentCount(anchor, totalCount);
+    if (totalCount > 0) {
+      actions.toggleCommentDrawer(true);
+    }
   }, [anchor, totalCount]);
+
+  const isActive = snapshot.commentActiveId === anchor;
+  useEffect(() => {
+    if (isActive) {
+      inputRef.current.focus();
+    }
+  }, [isActive]);
 
   return (
     <div
-      id={commentAnchor}
-      className={classnames('group pt-12', [
-        totalCount === 0 && !meta?.show ? 'hidden' : '',
+      className={classnames('pt-12', [
+        !isLoading && totalCount === 0 && !meta?.show ? 'hidden' : '',
       ])}
     >
-      <div className="rounded border pb-4 group-hover:border-black">
+      <div
+        id={commentAnchor}
+        className={classnames(
+          'base-card',
+          'group scroll-mt-[200px] rounded border pb-4',
+          [isActive ? 'border-black' : '']
+        )}
+      >
         <div className="flex items-center justify-between py-3 px-4 ">
-          <div className="font-semibold"># {name}</div>
-          <div className="flex">
-            <div className="hidden cursor-pointer px-1 group-hover:block">
-              <BsArrowDown />
-            </div>
-            <div className="hidden cursor-pointer px-1 group-hover:block ">
-              <BsArrowUp />
-            </div>
-            <div className="hidden cursor-pointer px-1 group-hover:block ">
+          <div className="group font-semibold">
+            # {name}
+            <a href={`#${commentAnchor}`}>
+              <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
+                #
+              </span>
+            </a>
+          </div>
+          <div className="flex shrink-0">
+            {direction === 'asc' ? (
+              <div
+                className={classnames('cursor-pointer px-1 group-hover:block', [
+                  isActive ? 'block' : 'hidden',
+                ])}
+                onClick={() => {
+                  setDirection('desc');
+                }}
+              >
+                <BsArrowDown />
+              </div>
+            ) : null}
+            {direction === 'desc' ? (
+              <div
+                className={classnames('cursor-pointer px-1 group-hover:block', [
+                  isActive ? 'block' : 'hidden',
+                ])}
+                onClick={() => {
+                  setDirection('asc');
+                }}
+              >
+                <BsArrowUp />
+              </div>
+            ) : null}
+            <div
+              onClick={() => {
+                const origin = window.location.origin;
+                const pathname = window.location.pathname;
+                copyToClipboard(origin + pathname + '#' + commentAnchor);
+              }}
+              className={classnames('cursor-pointer px-1 group-hover:block', [
+                isActive ? 'block' : 'hidden',
+              ])}
+            >
               <BsLink45Deg />
             </div>
           </div>

@@ -74,10 +74,11 @@ const ModelItem = ({
         {model.name}
         {model.isPublic ? (
           <span className="ml-2 rounded-2xl bg-[#cdf0ce] px-2 py-0.5  text-xs text-[#00B400]">
-            Public
+            {t('lab:is_public')}
           </span>
         ) : null}
       </div>
+
       <div className="mb-4 flex items-center justify-between">
         <div className="text-secondary text-sm font-semibold">
           {t('lab:versions')}
@@ -98,9 +99,11 @@ const ModelItem = ({
             <VersionCard
               key={item.id}
               modelId={model.id}
-              event$={event$}
+              modelIsPublic={model.isPublic}
               version={item}
               permissions={permissions}
+              event$={event$}
+              modelDefaultVersionId={model?.defaultVersion?.id}
             />
           );
         })}

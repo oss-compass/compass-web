@@ -88,6 +88,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const cls = classnames(
     className,
     'base-card',
+    'scroll-mt-[200px]',
     'rounded-lg relative bg-white p-5 drop-shadow-sm border-2 border-transparent min-w-0',
     'md:rounded-none',
     {
@@ -106,12 +107,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
   }
 
   return (
-    <div className={classnames(cls)} ref={cardRef}>
-      <h3
-        className="group mb-2 scroll-mt-[200px] text-lg font-semibold"
-        ref={titleRef}
-        id={id}
-      >
+    <div className={classnames(cls)} ref={cardRef} id={id}>
+      <h3 className="group mb-2 text-lg font-semibold" ref={titleRef}>
         {title}
         <a href={`#${id}`}>
           <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">

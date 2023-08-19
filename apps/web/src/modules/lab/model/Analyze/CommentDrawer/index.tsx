@@ -66,8 +66,8 @@ const CommentDrawer = ({
             <CommentSection
               key={metric.id}
               modelMetricId={metric.id}
+              name={t(`lab_metrics:${metric.category}.${metric.ident}`)}
               anchor={`card_${metric.category}_${metric.ident}`}
-              name={metric.name}
             />
           );
         })}

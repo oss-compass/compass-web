@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import usePageLoadHashScroll from '@common/hooks/usePageLoadHashScroll';
 import LabChartNav from './component/LabChartNav';
 import TotalScoreCard from './component/TotalScoreCard';
 import LayoutMetricCards from './component/LayoutMetricCards';
+import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import useLabData from './hooks/useLabData';
+import { actions } from './state';
 
 const LoadingUi = () => (
   <div className="rounded-lg bg-white  px-6 py-6 drop-shadow-sm">
@@ -22,6 +25,24 @@ const LoadingUi = () => (
   </div>
 );
 
+const Content = () => {
+  usePageLoadHashScroll(false);
+  const id = useHashchangeEvent();
+
+  useEffect(() => {
+    if (id && id.startsWith('comment')) {
+      actions.toggleCommentDrawer(true);
+    }
+  }, [id]);
+
+  return (
+    <>
+      <TotalScoreCard className="mb-6" />
+      <LayoutMetricCards />
+    </>
+  );
+};
+
 const ChartPanel = () => {
   const { loading } = useLabData();
 
@@ -29,15 +50,7 @@ const ChartPanel = () => {
     <>
       <LabChartNav />
       <div className="relative flex min-w-0 flex-1 flex-col px-8 pt-6 pb-10 md:p-0">
-        {loading ? (
-          <LoadingUi />
-        ) : (
-          <>
-            {/*<LabNotice />*/}
-            <TotalScoreCard className="mb-6" />
-            <LayoutMetricCards />
-          </>
-        )}
+        {loading ? <LoadingUi /> : <Content />}
       </div>
     </>
   );

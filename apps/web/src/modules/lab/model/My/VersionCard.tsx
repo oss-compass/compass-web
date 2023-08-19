@@ -2,41 +2,61 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import uniq from 'lodash/uniq';
-import { BiLoaderAlt, BiDetail } from 'react-icons/bi';
-import { BsSend } from 'react-icons/bs';
-import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import {
-  ModelVersion,
-  Permission,
-  useTriggerLabModelVersionMutation,
-} from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
+import { BiDetail } from 'react-icons/bi';
+import { useUpdateLabModelMutation } from '@oss-compass/graphql';
 import { toast } from 'react-hot-toast';
-import { ReFetch } from '@common/constant';
+import classnames from 'classnames';
+import { CgSpinner } from 'react-icons/cg';
+import { CustomRadio } from '@oss-compass/ui';
+import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
+import { ModelVersion, Permission } from '@oss-compass/graphql';
 import { formatToNow } from '@common/utils/time';
+import { ReFetch } from '@common/constant';
+import getErrorMessage from '@common/utils/getErrorMessage';
 import VersionItemMore from './VersionItemMore';
+import TriggerConfirmBtn from './TriggerConfirmBtn';
 
 const VersionCard = ({
-  version,
   modelId,
-  event$,
+  modelIsPublic,
+  modelDefaultVersionId,
+  version,
   permissions,
+  event$,
 }: {
   modelId: number;
+  modelDefaultVersionId: number;
+  modelIsPublic: boolean;
   version: ModelVersion;
   permissions: Permission;
   event$: EventEmitter<string>;
 }) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const triggerMutation = useTriggerLabModelVersionMutation(gqlClient);
+
+  const updateMutation = useUpdateLabModelMutation(gqlClient, {
+    onSuccess(res) {
+      toast.success(() => <>{t('lab:edit_succeed')}</>, {
+        position: 'top-center',
+      });
+      event$.emit(ReFetch);
+    },
+    onError(res) {
+      toast.error(getErrorMessage(res) || (() => <>{t('lab:edit_failed')}</>), {
+        position: 'top-center',
+      });
+    },
+  });
 
   const dataSetIdent = version?.dataset?.items?.map?.((i) => i.secondIdent);
   const dataSetNames = uniq(dataSetIdent).join(',');
   const metricsNames = version?.metrics?.map?.((i) => i.name).join(',');
 
+  const cardLoading = updateMutation.isLoading;
+
   return (
-    <div className="flex flex-col border bg-[#FAFAFA]">
+    <div className={classnames('flex flex-col border bg-[#FAFAFA] ')}>
       <div className="flex-1">
         <div className="flex justify-between px-3 py-2">
           <div className="flex-1 truncate font-bold">{version.version}</div>
@@ -50,6 +70,31 @@ const VersionCard = ({
           ) : null}
         </div>
         <div className="px-3 pb-2">
+          {modelIsPublic ? (
+            <div className="mb-2 flex items-center">
+              <span className="text-secondary block truncate text-xs">
+                {t('lab:versions_public')}：
+              </span>
+              {cardLoading ? (
+                <CgSpinner className="mr-1 animate-spin text-xl" />
+              ) : (
+                <CustomRadio
+                  size={'small'}
+                  checked={modelDefaultVersionId === version.id}
+                  checkedColor={'#00B400'}
+                  onChange={(e, v) => {
+                    if (v) {
+                      updateMutation.mutate({
+                        modelId: modelId,
+                        defaultVersionId: version.id,
+                      });
+                    }
+                  }}
+                />
+              )}
+            </div>
+          ) : null}
+
           <div className="mb-2">
             <span className="text-secondary block truncate text-xs">
               {t('lab:datasets')}: {dataSetNames}
@@ -70,7 +115,8 @@ const VersionCard = ({
             <>
               <div className="mb-2">
                 <span className="text-secondary block truncate text-xs">
-                  {t('lab:last_trigger_status')}：{version.triggerStatus}
+                  {t('lab:trigger_analysis.status')}
+                  {t(`lab:analysis_status.${version.triggerStatus}`)}
                 </span>
               </div>
             </>
@@ -80,7 +126,7 @@ const VersionCard = ({
             <>
               <div className="mb-2">
                 <span className="text-secondary block truncate text-xs">
-                  {t('lab:last_trigger')}：
+                  {t('lab:trigger_analysis.time')}
                   {formatToNow(version.triggerUpdatedAt)}
                 </span>
               </div>
@@ -89,9 +135,17 @@ const VersionCard = ({
         </div>
       </div>
       <div className="flex h-8 border-t">
+        {permissions?.canExecute ? (
+          <TriggerConfirmBtn
+            modelId={modelId}
+            version={version}
+            event$={event$}
+          />
+        ) : null}
+
         {permissions?.canRead ? (
           <div
-            className="hover:bg-smoke flex flex-1 basis-1/2 cursor-pointer items-center justify-center border-r last:border-r-0"
+            className="hover:bg-smoke flex flex-1 basis-1/2 cursor-pointer items-center justify-center"
             onClick={() => {
               router.push(
                 `/lab/model/${modelId}/version/${version.id}/dataset`
@@ -101,42 +155,6 @@ const VersionCard = ({
             <BiDetail className="text-secondary" />
             <span className="ml-2 block text-sm">{t('lab:view_report')}</span>
           </div>
-        ) : null}
-
-        {permissions?.canExecute ? (
-          <>
-            {version.triggerStatus === 'pending' ||
-            version.triggerStatus === 'progress' ? (
-              <div className="text-secondary flex basis-1/2 cursor-pointer items-center justify-center">
-                <span className="block text-sm">Analyzing...</span>
-              </div>
-            ) : (
-              <div
-                className="hover:bg-smoke flex basis-1/2 cursor-pointer items-center justify-center"
-                onClick={() => {
-                  triggerMutation.mutate(
-                    { modelId, versionId: version.id },
-                    {
-                      onSuccess: (res) => {
-                        event$.emit(ReFetch);
-                      },
-                      onError: (err) => {
-                        toast.error('Trigger analysis failed!');
-                      },
-                    }
-                  );
-                }}
-              >
-                <BsSend className="text-secondary" />
-                <span className="ml-2 block flex items-center text-sm">
-                  {triggerMutation.isLoading ? (
-                    <BiLoaderAlt className="text-silver mr-2 animate-spin cursor-pointer text-xl" />
-                  ) : null}
-                  {t('lab:trigger_analysis')}
-                </span>
-              </div>
-            )}
-          </>
         ) : null}
       </div>
     </div>

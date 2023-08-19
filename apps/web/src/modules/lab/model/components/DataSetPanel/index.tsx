@@ -38,7 +38,7 @@ const DataSetPanel: React.FC<{
 
   return (
     <>
-      <div className="mt-6 flex w-full md:hidden">
+      <div className="mt-4 flex w-full md:hidden">
         <div className="mr-3 flex h-5 w-[80px] items-center text-sm font-medium">
           <img
             className="mr-2 mb-0.5 inline-block align-text-top"

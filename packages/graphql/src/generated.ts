@@ -919,6 +919,7 @@ export type ModelCommentPage = {
 
 export type ModelDetail = {
   __typename?: 'ModelDetail';
+  defaultVersion?: Maybe<ModelVersion>;
   dimension: Scalars['Int'];
   id: Scalars['Int'];
   isGeneral: Scalars['Boolean'];
@@ -1706,6 +1707,8 @@ export type UpdateLabModelCommentPayload = {
 export type UpdateLabModelInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
+  /** update the default version with pass version id */
+  defaultVersionId?: InputMaybe<Scalars['Int']>;
   /** lab model dimension: `productivity => 0, robustness => 1, niche_creation => 2, default: 0` */
   dimension?: InputMaybe<Scalars['Int']>;
   /** whether or not a generic domain model, default: true */
@@ -2147,6 +2150,42 @@ export type MyLabModelsQuery = {
           weight?: number | null;
         }>;
       }> | null;
+      defaultVersion?: {
+        __typename?: 'ModelVersion';
+        id: number;
+        version?: string | null;
+        algorithm?: {
+          __typename?: 'Algorithm';
+          ident: string;
+          name: string;
+        } | null;
+        dataset: {
+          __typename?: 'Dataset';
+          ident?: string | null;
+          name?: string | null;
+          items?: Array<{
+            __typename?: 'DatasetCompletionRow';
+            firstIdent?: string | null;
+            label?: string | null;
+            shortCode?: string | null;
+            level?: string | null;
+            secondIdent?: string | null;
+          }> | null;
+        };
+        metrics: Array<{
+          __typename?: 'ModelMetric';
+          category?: string | null;
+          defaultThreshold?: number | null;
+          defaultWeight?: number | null;
+          from?: string | null;
+          id?: number | null;
+          metricId?: number | null;
+          ident?: string | null;
+          name?: string | null;
+          threshold?: number | null;
+          weight?: number | null;
+        }>;
+      } | null;
       permissions?: {
         __typename?: 'Permission';
         canDestroy: boolean;
@@ -2178,6 +2217,11 @@ export type LabModelDetailQuery = {
       id: number;
       version?: string | null;
     }> | null;
+    defaultVersion?: {
+      __typename?: 'ModelVersion';
+      id: number;
+      version?: string | null;
+    } | null;
   } | null;
 };
 
@@ -2839,6 +2883,7 @@ export type CreateLabModelVersionMutation = {
 
 export type UpdateLabModelMutationVariables = Exact<{
   dimension?: InputMaybe<Scalars['Int']>;
+  defaultVersionId?: InputMaybe<Scalars['Int']>;
   isGeneral?: InputMaybe<Scalars['Boolean']>;
   isPublic?: InputMaybe<Scalars['Boolean']>;
   modelId: Scalars['Int'];
@@ -4207,6 +4252,19 @@ export const MyLabModelsDocument = /*#__PURE__*/ `
           ...metrics
         }
       }
+      defaultVersion {
+        id
+        version
+        algorithm {
+          ...algorithm
+        }
+        dataset {
+          ...dataset
+        }
+        metrics {
+          ...metrics
+        }
+      }
       name
       userId
       permissions {
@@ -4264,6 +4322,10 @@ export const LabModelDetailDocument = /*#__PURE__*/ `
     isPublic
     triggerRemainingCount
     latestVersions {
+      id
+      version
+    }
+    defaultVersion {
       id
       version
     }
@@ -4951,9 +5013,9 @@ useCreateLabModelVersionMutation.fetcher = (
     CreateLabModelVersionMutationVariables
   >(client, CreateLabModelVersionDocument, variables, headers);
 export const UpdateLabModelDocument = /*#__PURE__*/ `
-    mutation updateLabModel($dimension: Int, $isGeneral: Boolean, $isPublic: Boolean, $modelId: Int!, $name: String) {
+    mutation updateLabModel($dimension: Int, $defaultVersionId: Int, $isGeneral: Boolean, $isPublic: Boolean, $modelId: Int!, $name: String) {
   updateLabModel(
-    input: {dimension: $dimension, isGeneral: $isGeneral, isPublic: $isPublic, modelId: $modelId, name: $name}
+    input: {defaultVersionId: $defaultVersionId, dimension: $dimension, isGeneral: $isGeneral, isPublic: $isPublic, modelId: $modelId, name: $name}
   ) {
     errors {
       message

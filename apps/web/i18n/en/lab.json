@@ -6,8 +6,6 @@
   "datasets": "Datasets",
   "metrics": "Metrics",
   "algorithm": "Algorithm",
-  "last_trigger_status": "Trigger status",
-  "last_trigger": "Trigger time",
   "projects_in_datasets": "{{length}} projects in datasets are using this model",
   "create_your_own_model_in_5_minutes": "Create your own model in 5 minutes",
   "create_a_model_now": "Create a model now",
@@ -24,6 +22,7 @@
   "my_models": "My Models",
   "new_model": "New Model",
   "versions": "Versions",
+  "versions_public": "Default version",
   "user_management": "Member",
   "model_name": "Model Name",
   "version_name": "Version Name",
@@ -57,7 +56,6 @@
   },
   "remaining_times_of_analysis_performed_this_week": "Remaining times of analysis performed this week: ",
   "view_report": "View report",
-  "trigger_analysis": "Analysis",
   "click_on_the_left_menu_and_select_a_category": "Click on the left menu and select a category.",
   "cant_find_a_suitable_dataset": "Can't find a suitable dataset? ",
   "cant_find_a_suitable_metric": "Can't find a suitable metric? ",
@@ -67,6 +65,7 @@
     "yes": "Yes",
     "not": "No, this is an industry specific model."
   },
+  "is_public": "Public",
   "is_public_options": {
     "label": "Is public",
     "public": "public",
@@ -86,6 +85,20 @@
     "default_desc": "Use the default value of Compass system to set the weight of measurement indicators.",
     "contact_us": "Have more ideas about model algorithms? Welcome to join the <s> official Slack community </s> and discuss with us."
   },
+  "trigger_analysis": {
+    "card_btn": "Analysis",
+    "title": "Confirm trigger analysis?",
+    "retry_title": "Confirm analysis again?",
+    "status": "Last time trigger status: ",
+    "time": "Last time trigger time: ",
+    "analyzing": "Analyzing..."
+  },
+  "analysis_status": {
+    "pending": "pending",
+    "progress": "progress",
+    "success": "success",
+    "unsumbit": "unsumbit"
+  },
   "create": "Create",
   "edit": "Edit",
   "create_failed": "Create failed",
@@ -97,5 +110,11 @@
   "i_have_understood_and_agreed_to_the": "I have understood and agreed to the",
   "experimental_model_terms_of_use": "Experimental Model Terms of Use",
   "please_check_the_terms": "Please check the Terms of Use",
-  "you_are_here_because_you_have_been_invited": "You are here because you have been invited by <s>{{invitee}}</s> to join the Compass Lab to collaborate in building the model <s>{{modelName}}</s>, do you agree to join?"
+  "you_are_here_because_you_have_been_invited": "You are here because you have been invited by <s>{{invitee}}</s> to join the Compass Lab to collaborate in building the model <s>{{modelName}}</s>, do you agree to join?",
+  "form_tips": {
+    "name_require": "Please enter model name",
+    "version_require": "Please enter version name",
+    "dataset_require": "Please select dataset",
+    "metric_require": "Please select metric"
+  }
 }

@@ -11,17 +11,43 @@ const ModeTitle: React.FC<{
 }> = ({ model }) => {
   const { t } = useTranslation();
 
-  return (
-    <>
-      <div className=" flex items-center">
+  const dimensionLogo = {
+    '0': (
+      <>
+        <span className="mr-2 h-4 w-4">
+          <IconProductivity />
+        </span>
+        <h3 className="text-sm text-[#000000]">
+          {t('common:topic.productivity')}
+        </h3>
+      </>
+    ),
+    '1': (
+      <>
         <span className="mr-2 h-4 w-4">
           <IconRobustness />
         </span>
-        <h3 className="text-sm text-[#000000]">Robustness</h3>
+        <h3 className="ml-2 text-sm">{t('common:topic.robustness')}</h3>
+      </>
+    ),
+    '2': (
+      <>
+        <span className="mr-2 h-4 w-4">
+          <IconNicheCreation />
+        </span>
+        <h3 className="ml-2 text-sm">{t('common:topic.niche_creation')}</h3>
+      </>
+    ),
+  };
+
+  return (
+    <>
+      <div className="flex items-center">
+        {dimensionLogo[`${model.dimension}`]}
       </div>
       <div className="mt-2 flex w-full justify-between">
         <div className="mt-2 text-3xl">{model.modelName}</div>
-        <Discuss />
+        <Discuss model={model} />
       </div>
     </>
   );

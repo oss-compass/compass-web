@@ -104,7 +104,9 @@ const VersionItemMore = ({
             </Button>
           </div>
         }
-        handleClose={() => {}}
+        handleClose={() => {
+          setOpenConfirm(false);
+        }}
       />
     </>
   );

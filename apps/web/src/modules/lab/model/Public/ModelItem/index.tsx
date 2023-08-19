@@ -8,6 +8,7 @@ const ModelItem: React.FC<{
   fullWidth?: boolean;
 }> = ({ fullWidth = false, model }) => {
   const { modelId, versionId, dataset } = model;
+
   return (
     <div className="flex-1">
       <ModelTitle model={model} />

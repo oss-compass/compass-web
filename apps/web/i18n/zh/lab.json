@@ -22,6 +22,7 @@
   "my_models": "我的模型",
   "new_model": "新建模型",
   "versions": "版本",
+  "versions_public": "模型默认版本",
   "user_management": "用户管理",
   "model_name": "模型名称",
   "version_name": "版本名称",
@@ -55,7 +56,6 @@
   },
   "remaining_times_of_analysis_performed_this_week": "本周剩余分析次数: ",
   "view_report": "查看报告",
-  "trigger_analysis": "触发分析",
   "click_on_the_left_menu_and_select_a_category": "点击左侧菜单，选择分类",
   "cant_find_a_suitable_dataset": "找不到合适的数据集？",
   "cant_find_a_suitable_metric": "找不到合适的度量指标？",
@@ -65,6 +65,7 @@
     "yes": "是的",
     "not": "不，这是一个特定行业的模型。"
   },
+  "is_public": "公开",
   "is_public_options": {
     "label": "是否公开",
     "public": "公开",
@@ -84,6 +85,20 @@
     "default_desc": "使用指南针系统的默认值来设置测量指标的权重。",
     "contact_us": "对模型算法有更多想法? 欢迎加入<s>官方 Slack 社区 </s>与我们一起讨论。"
   },
+  "trigger_analysis": {
+    "card_btn": "触发分析",
+    "title": "确认触发分析吗？",
+    "retry_title": "确认重新分析吗？",
+    "status": "上次触发状态：",
+    "time": "上次触发时间：",
+    "analyzing": "分析中..."
+  },
+  "analysis_status": {
+    "pending": "分析中...",
+    "progress": "分析中...",
+    "success": "成功",
+    "unsumbit": "未触发"
+  },
   "create": "创建",
   "edit": "编辑",
   "create_failed": "创建失败",
@@ -95,5 +110,11 @@
   "i_have_understood_and_agreed_to_the": "我了解并同意",
   "experimental_model_terms_of_use": "实验模型使用条款",
   "please_check_the_terms": "请勾选使用条款",
-  "you_are_here_because_you_have_been_invited": "<s>{{invitee}}</s> 邀请您加入 Compass 实验室，以合作构建模型 <s>{{modelName}}</s>, 您同意加入吗？"
+  "you_are_here_because_you_have_been_invited": "<s>{{invitee}}</s> 邀请您加入 Compass 实验室，以合作构建模型 <s>{{modelName}}</s>, 您同意加入吗？",
+  "form_tips": {
+    "name_require": "请输入模型名称",
+    "version_require": "请输入版本名称",
+    "dataset_require": "请选择数据集",
+    "metric_require": "请选择指标"
+  }
 }

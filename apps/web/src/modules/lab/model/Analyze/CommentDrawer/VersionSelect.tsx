@@ -25,7 +25,7 @@ const VersionSelect = () => {
               return (
                 <div
                   key={version.id}
-                  className="cursor-pointer border-b px-2 py-2 text-sm"
+                  className="cursor-pointer truncate border-b px-2 py-2 text-sm"
                   onClick={() => {
                     popperRef.current.toggle();
                     actions.onCurrentVersionChange({

@@ -5,6 +5,7 @@ import { Button } from '@oss-compass/ui';
 import { useMyLabModelsQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { useTranslation } from 'react-i18next';
+import { useQueryState, queryTypes } from 'next-usequerystate';
 import { ReFetch } from '@common/constant';
 import Pagination from '@common/components/Pagination';
 import { Center } from '@common/components/Layout';
@@ -15,9 +16,13 @@ const per = 5;
 const MyModal = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [page, setPage] = useState(1);
+
+  const [page, setPage] = useQueryState(
+    'page',
+    queryTypes.integer.withDefault(1)
+  );
   const { data, isLoading, refetch } = useMyLabModelsQuery(gqlClient, {
-    page: page,
+    page: page || 1,
     per,
   });
 

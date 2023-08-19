@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSnapshot } from 'valtio';
 import OpenCommentDrawerFixedButton from './component/FixedCommentButton';
 import CommentDrawer from './CommentDrawer';
 import { SlugsVerifyContextProvider } from './context/StatusContext';
@@ -6,6 +7,7 @@ import LabDataProvider from './context/LabDataProvider';
 import useLabelStatus from './hooks/useLabelStatus';
 import { Loading, NotFoundAnalysis } from './status';
 import ChartPanel from './ChartPanel';
+import { pageState, actions } from './state';
 
 const LeftPanelWithStatus = () => {
   const { notFound, isLoading } = useLabelStatus();
@@ -30,7 +32,7 @@ const LeftPanel = () => {
 };
 
 const LabAnalyzePage = () => {
-  const [open, setOpen] = useState(true);
+  const state = useSnapshot(pageState);
 
   return (
     <div className="relative flex flex-1">
@@ -39,19 +41,19 @@ const LabAnalyzePage = () => {
       </div>
 
       <CommentDrawer
-        open={open}
+        open={state.commentDrawerOpen}
         onClose={() => {
-          setOpen(false);
+          actions.toggleCommentDrawer(false);
         }}
       />
 
-      {open ? null : (
+      {!state.commentDrawerOpen ? (
         <OpenCommentDrawerFixedButton
           onClick={() => {
-            setOpen(true);
+            actions.toggleCommentDrawer(true);
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 };
