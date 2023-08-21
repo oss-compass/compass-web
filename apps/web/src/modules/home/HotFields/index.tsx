@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { getAnalyzeLink, getRepoLink } from '@common/utils';
 import FieldDl from './assets/field-dl.svg';
 import FieldBigData from './assets/field-bigdata.svg';
-
 import FieldDb from './assets/field-db.svg';
 import FieldWeb from './assets/field-web.svg';
-
+import HotProjects from './HotProjects';
+import HotCollection from './HotCollection';
 interface FieldItem {
   name: string;
   comingSoon: Boolean;
@@ -122,28 +122,12 @@ const HotFields = () => {
   return (
     <section
       className={classnames(
-        'relative mx-auto flex w-[1200px] flex-col justify-between pt-[40px] pb-[25px]',
-        'lg:w-full'
+        'relative mx-auto grid w-[1200px] grid-cols-2 gap-x-8 pt-[40px] pb-6',
+        'lg:w-full lg:grid-cols-1 lg:gap-y-6 lg:px-4'
       )}
     >
-      <div className="lg:px-4  lg:pb-10">
-        <div className="mb-6 flex justify-between text-2xl font-bold">
-          {t('home:hot_fields')}
-        </div>
-        <div className="flex w-full flex-wrap rounded border-t border-l lg:w-full">
-          {fieldList.map((item) => {
-            return (
-              <Field
-                key={item.name}
-                name={item.name}
-                comingSoon={item.comingSoon}
-                category={item.category}
-                svg={item.svg}
-              />
-            );
-          })}
-        </div>
-      </div>
+      <HotProjects />
+      <HotCollection />
     </section>
   );
 };
