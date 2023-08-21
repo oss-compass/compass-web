@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { EventEmitter } from 'ahooks/lib/useEventEmitter';
 
 const verifyEmail = (email: string) => {
-  let reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+  let reg = /^([a-zA-Z0-9_.%+-])+@([a-zA-Z0-9_-.])+(\.[a-zA-Z0-9_-])+/;
   if (email.includes(',')) {
     let emailList = email.trim().split(',');
     return emailList.every((i) => new RegExp(reg).test(i.trim()));
