@@ -7,30 +7,7 @@ import { useSendMemberInviteMutation } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'react-i18next';
 import { EventEmitter } from 'ahooks/lib/useEventEmitter';
-
-const verifyEmail = (email: string) => {
-  let reg = /^([a-zA-Z0-9_.%+-])+@([a-zA-Z0-9_-.])+(\.[a-zA-Z0-9_-])+/;
-  if (email.includes(',')) {
-    let emailList = email.trim().split(',');
-    return emailList.every((i) => new RegExp(reg).test(i.trim()));
-  } else if (email.includes('，')) {
-    let emailList = email.trim().split('，');
-    return emailList.every((i) => new RegExp(reg).test(i.trim()));
-  } else {
-    return new RegExp(reg).test(email.trim());
-  }
-};
-const getEmail = (email: string) => {
-  if (email.includes(',')) {
-    let emailList = email.trim().split(',');
-    return emailList;
-  } else if (email.includes('，')) {
-    let emailList = email.trim().split('，');
-    return emailList;
-  } else {
-    return [email.trim()];
-  }
-};
+import { getEmail, verifyEmail } from './utils';
 
 const FormInvite = (props: {
   modelId: number;
