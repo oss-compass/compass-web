@@ -2,7 +2,7 @@ import Radio, { RadioProps } from '@mui/material/Radio';
 
 export function CustomRadio(
   props: RadioProps & {
-    checkedColor: string;
+    checkedColor?: string;
   }
 ) {
   const { checkedColor = '#3A5BEF', ...restProps } = props;
