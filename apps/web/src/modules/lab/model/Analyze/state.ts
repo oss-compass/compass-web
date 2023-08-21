@@ -3,6 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { isDev } from '@common/constant';
 
 interface State {
+  imagePreview: string[];
   commentDrawerOpen: boolean;
   commentActiveId: string;
   chartMeta: Record<string, { top?: number; commentCount?: number }>;
@@ -14,6 +15,7 @@ interface State {
 }
 
 const initialObj = {
+  imagePreview: [],
   commentDrawerOpen: false,
   commentActiveId: '',
   chartMeta: {},

@@ -6,7 +6,7 @@ import CardHeadButtons from './CardHeadButtons';
 import useLabDataMainScore from '../hooks/useLabDataMainScore';
 import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
 import { LabChartOption } from '../context/LabChartOption';
-import { getLineBuilder } from '../builder';
+import { getChartBuilder } from '../builder';
 import { useLabModelDetail, useLabModelVersion } from '../../hooks';
 
 const TotalScoreCard = ({ className }: { className: string }) => {
@@ -16,7 +16,7 @@ const TotalScoreCard = ({ className }: { className: string }) => {
   const modelDetail = detail.labModelDetail;
 
   const { data, loading } = useLabDataMainScore();
-  const eChartBuilderFns = useEChartBuilderFns([getLineBuilder()]);
+  const eChartBuilderFns = useEChartBuilderFns([getChartBuilder()]);
 
   const id = `card_model_${detail.labModelDetail.id}`;
   return (

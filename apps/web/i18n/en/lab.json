@@ -101,6 +101,7 @@
   },
   "create": "Create",
   "edit": "Edit",
+  "edit_comment": "Edit comment",
   "create_failed": "Create failed",
   "create_succeed": "Create succeed",
   "edit_failed": "Edit failed",

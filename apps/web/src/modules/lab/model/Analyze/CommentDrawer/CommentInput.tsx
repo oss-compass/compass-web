@@ -1,6 +1,7 @@
 import React, {
   useState,
   useRef,
+  useEffect,
   forwardRef,
   useImperativeHandle,
 } from 'react';
@@ -9,6 +10,7 @@ import { BiLoaderAlt } from 'react-icons/bi';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'next-i18next';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import useImagePreview from '@common/hooks/useImagePreview';
 import ImageItem from './ImageItem';
 import { convertBase64 } from '@common/utils/file';
 import { randomFromInterval } from '@common/utils/number';
@@ -35,9 +37,11 @@ export interface InputRefProps {
 
 const CommentInput = forwardRef<InputRefProps, Props>(
   ({ showFooter = false, placeholder, loading, onSubmit, onCancel }, ref) => {
+    const boxRef = useRef<HTMLDivElement>();
     const textAreaRef = useRef<HTMLTextAreaElement>();
     const [value, setValue] = useState('');
     const [images, setImages] = useState<Image[]>([]);
+    const { ref: previewRef, open: openPreview, close } = useImagePreview();
 
     const { t } = useTranslation();
 
@@ -71,11 +75,31 @@ const CommentInput = forwardRef<InputRefProps, Props>(
       setImages((pre) => [...pre, ...filesBase64]);
     };
 
+    useEffect(() => {
+      if (boxRef && boxRef.current) {
+        const handlePaste = (e: ClipboardEvent) => {
+          e.preventDefault();
+          if (!e.clipboardData.files.length) {
+            return;
+          }
+          handleInputFile(e.clipboardData.files);
+        };
+
+        boxRef.current?.addEventListener('paste', handlePaste);
+        return () => {
+          boxRef.current?.removeEventListener('paste', handlePaste);
+        };
+      }
+    }, []);
+
     const inputId = `comment-image-upload-${randomFromInterval(0, 100000)}`;
 
     return (
       <div className="relative">
-        <div className="border-silver min-h-8 relative rounded-sm border  text-sm">
+        <div
+          className="border-silver min-h-8 relative rounded-sm border text-sm"
+          ref={boxRef}
+        >
           <TextareaAutosize
             ref={textAreaRef}
             value={value}
@@ -128,13 +152,19 @@ const CommentInput = forwardRef<InputRefProps, Props>(
           </div>
 
           {images.length > 0 ? (
-            <div className="grid grid-cols-4 gap-4 px-2 pt-4 pb-8">
+            <div
+              className="grid grid-cols-4 gap-4 px-2 pt-4 pb-8"
+              ref={previewRef}
+            >
               {images.map((image) => {
                 return (
                   <ImageItem
                     key={image.id}
                     id={image.id}
                     src={image.base64}
+                    onClick={() => {
+                      openPreview();
+                    }}
                     onDelete={(id) => {
                       setImages((pre) => {
                         return pre.filter((i) => i.id !== id);

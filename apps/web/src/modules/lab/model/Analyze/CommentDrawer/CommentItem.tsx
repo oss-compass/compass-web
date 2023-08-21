@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { CommentFragment, ReplyFragment } from '@oss-compass/graphql';
 import { formatToNow } from '@common/utils/time';
+import useImagePreview from '@common/hooks/useImagePreview';
 import CommentItemMore from './CommentItemMore';
 import CommentEdit from './CommentEdit';
 import CommentReply from './CommentReply';
@@ -22,6 +23,7 @@ const CommentItem = ({
 }) => {
   const [edit, setEdit] = useState(false);
   const [reply, setReply] = useState(false);
+  const { ref, open: openPreview, close } = useImagePreview();
 
   return (
     <div className={className}>
@@ -77,23 +79,25 @@ const CommentItem = ({
               }}
             />
           ) : (
-            <div>
+            <>
               <div className="text-sm">{comment?.content}</div>
               {comment.images.length > 0 ? (
-                <div className="flex pt-4 pb-4">
+                <div className="grid grid-cols-4 gap-4 pt-2" ref={ref}>
                   {comment.images.map((img) => {
                     return (
                       <ImageItem
-                        className="mr-2"
                         key={img.url}
                         id={img.id}
                         src={img.url}
+                        onClick={() => {
+                          openPreview();
+                        }}
                       />
                     );
                   })}
                 </div>
               ) : null}
-            </div>
+            </>
           )}
 
           {reply ? (

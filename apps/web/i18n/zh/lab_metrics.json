@@ -89,7 +89,7 @@
     "org_contribution_last_value": {
       "threshold": "介于0-160之间"
     },
-    "lines_of_code_frequency": "代码行数",
+    "lines_of_code_frequency": "代码变更行数",
     "lines_of_code_frequency_desc": "过去90天内平均每周提交的代码行数(增加行数加上删除行数)。",
     "lines_of_code_frequency_value": {
       "threshold": "介于0-300000之间"

@@ -5,6 +5,7 @@ import {
   useUpdateLabModelCommentMutation,
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
+import { useTranslation } from 'next-i18next';
 import CommentInput, { InputRefProps } from './CommentInput';
 
 const CommentEdit = ({
@@ -19,6 +20,7 @@ const CommentEdit = ({
   const modelId = comment.model?.id;
   const commentId = comment.id;
 
+  const { t } = useTranslation();
   const editInputRef = useRef<InputRefProps>(null);
   const updateCommentMutation = useUpdateLabModelCommentMutation(gqlClient);
 
@@ -35,7 +37,7 @@ const CommentEdit = ({
     <CommentInput
       showFooter
       ref={editInputRef}
-      placeholder="编辑"
+      placeholder={t('lab:edit_comment')}
       loading={updateCommentMutation.isLoading}
       onSubmit={(v, images) => {
         const img = images.map((i) => ({

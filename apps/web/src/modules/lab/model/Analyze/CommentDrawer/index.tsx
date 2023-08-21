@@ -53,7 +53,7 @@ const CommentDrawer = ({
         </div>
       </div>
 
-      <div className="px-4">
+      <div className="px-4 pb-10">
         {/* model comment */}
         <CommentSection
           name={name}

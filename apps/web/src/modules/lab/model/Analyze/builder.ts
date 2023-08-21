@@ -5,19 +5,28 @@ import {
   getTooltipsFormatter,
   legendFormat,
   line,
+  bar,
   summaryLine,
 } from '@common/options';
 import type { getBuilderOptionFn } from './hooks/useEChartBuilderFns';
 import { formatISO } from '@common/utils';
 
-export const getLineBuilder: getBuilderOptionFn<{}> = () => (pre, results) => {
+export const getChartBuilder: getBuilderOptionFn<{}> = () => (pre, results) => {
   const compareLabels = results.map((i) => i.label);
+  const lastItem = last(results);
+  const chartType = lastItem.chartType;
 
   // todo  merge date  不相同的时间线
-  const lastItem = last(results);
   const dates = lastItem?.dates || [];
 
   const series = results.map(({ label, level, dates, values }) => {
+    if (chartType === 'bar') {
+      return bar({
+        name: label,
+        data: values,
+      });
+    }
+
     return line({
       name: label,
       data: values,

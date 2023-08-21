@@ -8,14 +8,17 @@ const ImageItem = ({
   id,
   src,
   onDelete,
+  onClick,
 }: {
   className?: string;
   id: number;
   src: string;
   onDelete?: (id: number) => void;
+  onClick?: () => void;
 }) => {
   return (
     <div
+      onClick={() => onClick()}
       className={classnames(
         'bg-silver border-silver relative h-14 w-14 cursor-pointer overflow-hidden rounded shadow-2xl',
         className

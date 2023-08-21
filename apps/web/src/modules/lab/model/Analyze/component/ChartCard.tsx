@@ -9,7 +9,7 @@ import useLabDataMetric from '../hooks/useLabDataMetric';
 import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
 import CardHeadButtons from './CardHeadButtons';
 import { LabChartOption } from '../context/LabChartOption';
-import { getLineBuilder } from '../builder';
+import { getChartBuilder } from '../builder';
 
 const pickTabs = (
   slugsData: {
@@ -68,7 +68,7 @@ const ChartCard = ({ metric }: { metric: ModelMetric }) => {
   // const [tab, setTab] = useState<string>(first(tabs)?.value);
 
   const showData = pickDataByTab(slugsData, first(tabs)?.value);
-  const eChartBuilderFns = useEChartBuilderFns([getLineBuilder()]);
+  const eChartBuilderFns = useEChartBuilderFns([getChartBuilder()]);
 
   const id = `card_${metric.category}_${metric.ident}`;
 
