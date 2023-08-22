@@ -18,6 +18,7 @@ const CheckTerms = ({
     <>
       <div className="my-6  text-sm text-black">
         <input
+          id="agreed_to_the_term"
           className="mr-2"
           checked={select}
           type="checkbox"
@@ -25,9 +26,11 @@ const CheckTerms = ({
             setSelect(!select);
           }}
         />
-        {t('lab:i_have_understood_and_agreed_to_the')}{' '}
+        <label htmlFor="agreed_to_the_term">
+          {t('lab:i_have_understood_and_agreed_to_the')}
+        </label>
         <span
-          className="text-primary cursor-pointer "
+          className="text-primary ml-2 cursor-pointer "
           onClick={() => {
             setOpen(true);
           }}

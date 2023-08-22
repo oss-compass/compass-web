@@ -25,7 +25,11 @@ const TriggerConfirmBtn = ({
 }) => {
   const { t } = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
-  const triggerMutation = useTriggerLabModelVersionMutation(gqlClient);
+  const triggerMutation = useTriggerLabModelVersionMutation(gqlClient, {
+    onSuccess() {
+      setOpenConfirm(false);
+    },
+  });
 
   if (
     version.triggerStatus === 'pending' ||

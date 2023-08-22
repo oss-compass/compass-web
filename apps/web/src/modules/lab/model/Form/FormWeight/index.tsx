@@ -46,14 +46,14 @@ const FormMetric = () => {
                   <td className={classnames(bodyCell, 'w-1/2')}>
                     <div className="flex items-center">
                       <input
-                        className="w-20 border px-1 outline-0"
+                        className="w-16 border pl-1 outline-0"
                         type="number"
                         value={item.weight}
                         max={100}
                         onChange={(e) => {
                           const value = Number(e.target.value);
                           if (countDecimalPlaces(value) > 2) return;
-                          if (isNaN(value) || value > 100 || value < 0) return;
+                          if (value > 100 || value < 0) return;
                           actions.adjustMetricWeightHandle(value, index);
                         }}
                       />
@@ -69,17 +69,22 @@ const FormMetric = () => {
                   <td className={classnames(bodyCell, ' w-3/12 ')}>
                     <div className="flex items-center">
                       <input
-                        className="w-20 border outline-0"
+                        className="w-16 border pl-1 outline-0"
                         type="number"
                         value={item.threshold}
                         onChange={(e) => {
                           const value = Number(e.target.value);
                           if (countDecimalPlaces(value) > 2) return;
+                          if (value < 0 || value > item.defaultThreshold) {
+                            return;
+                          }
                           actions.adjustThresholdHandle(value, index);
                         }}
                       />
                       <span className="text-steel ml-2 text-xs">
-                        <MetricThresholdRanges threshold={item.threshold} />
+                        <MetricThresholdRanges
+                          threshold={item.defaultThreshold}
+                        />
                       </span>
                     </div>
                   </td>

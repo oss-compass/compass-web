@@ -63,6 +63,7 @@ const ChartCard = ({ metric }: { metric: ModelMetric }) => {
   const { t } = useTranslation();
   const { pickDataByMetric, loading } = useLabDataMetric();
   const slugsData = pickDataByMetric(metric.ident);
+  console.log(slugsData);
 
   const tabs = pickTabs(slugsData);
   // const [tab, setTab] = useState<string>(first(tabs)?.value);

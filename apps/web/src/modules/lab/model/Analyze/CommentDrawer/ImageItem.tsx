@@ -20,7 +20,7 @@ const ImageItem = ({
     <div
       onClick={() => onClick()}
       className={classnames(
-        'bg-silver border-silver relative h-14 w-14 cursor-pointer overflow-hidden rounded shadow-2xl',
+        'bg-silver border-smoke relative h-14 w-14 cursor-pointer overflow-hidden rounded border shadow-2xl',
         className
       )}
     >

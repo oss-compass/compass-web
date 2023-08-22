@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { CommentFragment, ReplyFragment } from '@oss-compass/graphql';
 import { formatToNow } from '@common/utils/time';
@@ -21,6 +22,7 @@ const CommentItem = ({
   onDeleteSuccess: () => void;
   onUpdateSuccess: () => void;
 }) => {
+  const { t } = useTranslation();
   const [edit, setEdit] = useState(false);
   const [reply, setReply] = useState(false);
   const { ref, open: openPreview, close } = useImagePreview();
@@ -55,7 +57,7 @@ const CommentItem = ({
                   setReply(true);
                 }}
               >
-                reply
+                {t('lab:reply')}
               </div>
               <CommentItemMore
                 comment={comment}
@@ -80,7 +82,9 @@ const CommentItem = ({
             />
           ) : (
             <>
-              <div className="text-sm">{comment?.content}</div>
+              <div className="whitespace-pre-wrap text-sm">
+                {comment?.content}
+              </div>
               {comment.images.length > 0 ? (
                 <div className="grid grid-cols-4 gap-4 pt-2" ref={ref}>
                   {comment.images.map((img) => {

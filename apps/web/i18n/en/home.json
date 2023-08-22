@@ -38,5 +38,9 @@
   "trending": {
     "repository_weekly_activity_board": "Repository Weekly Activity Board",
     "community_weekly_activity_board": "Community Weekly Activity Board"
-  }
+  },
+  "hot_projects": "Hot Projects",
+  "hot_collection": "Hot Collection",
+  "more": "more",
+  "repositories": "{{length}} repositories"
 }
