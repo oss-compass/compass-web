@@ -80,28 +80,370 @@
     ]
   },
   {
+    "ident": "software-development-and-management",
+    "name": "Software Development and Management tools",
+    "name_cn": "软件开发和管理工具",
+    "items": [
+      "requirement-analysis-tools",
+      "modeling-tools",
+      "integrated-development-environment-IDE",
+      "user-interface-design-tools",
+      "code-management",
+      "document-management-and-tools",
+      "software-project-management",
+      "testing-tools",
+      "reverse-engineering-and-re-engineering-software",
+      "configuration-management-software",
+      "simulation-development-tools"
+    ],
+    "items_info": [
+      {
+        "ident": "requirement-analysis-tools",
+        "name": "Requirement Analysis Tools",
+        "name_cn": "需求分析工具",
+        "slug": "/requirement-analysis-tools"
+      },
+      {
+        "ident": "modeling-tools",
+        "name": "Modeling Tools",
+        "name_cn": "建模工具",
+        "slug": "/modeling-tools"
+      },
+      {
+        "ident": "integrated-development-environment-IDE",
+        "name": "Integrated Development Environment IDE",
+        "name_cn": "集成开发环境",
+        "slug": "/integrated-development-environment-IDE"
+      },
+      {
+        "ident": "user-interface-design-tools",
+        "name": "User Interface Design Tools",
+        "name_cn": "界面设计工具",
+        "slug": "/user-interface-design-tools"
+      },
+      {
+        "ident": "code-management",
+        "name": "Code Management",
+        "name_cn": "代码管理",
+        "slug": "/code-management"
+      },
+      {
+        "ident": "document-management-and-tools",
+        "name": "Document Management And Tools",
+        "name_cn": "文档管理软件及工具",
+        "slug": "/document-management-and-tools"
+      },
+      {
+        "ident": "software-project-management",
+        "name": "Software Project Management",
+        "name_cn": "软件项目管理",
+        "slug": "/software-project-management"
+      },
+      {
+        "ident": "testing-tools",
+        "name": "Testing Tools",
+        "name_cn": "测试工具",
+        "slug": "/testing-tools"
+      },
+      {
+        "ident": "reverse-engineering-and-re-engineering-software",
+        "name": "Reverse Engineering And Re Engineering Software",
+        "name_cn": "逆向工程软件和再工程软件",
+        "slug": "/reverse-engineering-and-re-engineering-software"
+      },
+      {
+        "ident": "configuration-management-software",
+        "name": "Configuration Management Software",
+        "name_cn": "配置管理软件",
+        "slug": "/configuration-management-software"
+      },
+      {
+        "ident": "simulation-development-tools",
+        "name": "Simulation Development Tools",
+        "name_cn": "仿真开发工具",
+        "slug": "/simulation-development-tools"
+      }
+    ]
+  },
+  {
+    "ident": "web-application-development",
+    "name": "Web Application Development",
+    "name_cn": "Web应用开发",
+    "items": [
+      "api-and-api-gateway",
+      "oauth-sso-unified-auth",
+      "rest-project",
+      "web-frontend-component-and-framework",
+      "data-visualization",
+      "desktop-cross-platform-application-development",
+      "crawler",
+      "web-backend-component-and-framework",
+      "rpc-development-framework",
+      "admin-template"
+    ],
+    "items_info": [
+      {
+        "ident": "api-and-api-gateway",
+        "name": "Api And Api Gateway",
+        "name_cn": "API 网关和接口",
+        "slug": "/api-and-api-gateway"
+      },
+      {
+        "ident": "oauth-sso-unified-auth",
+        "name": "Oauth Sso Unified Auth",
+        "name_cn": "OAuth-单点登录-统一认证",
+        "slug": "/oauth-sso-unified-auth"
+      },
+      {
+        "ident": "rest-project",
+        "name": "Rest Project",
+        "name_cn": "rest项目",
+        "slug": "/rest-project"
+      },
+      {
+        "ident": "web-frontend-component-and-framework",
+        "name": "Web Frontend Component And Framework",
+        "name_cn": "Web前端组件和框架",
+        "slug": "/web-frontend-component-and-framework"
+      },
+      {
+        "ident": "data-visualization",
+        "name": "Data Visualization",
+        "name_cn": "数据可视化",
+        "slug": "/data-visualization"
+      },
+      {
+        "ident": "desktop-cross-platform-application-development",
+        "name": "Desktop cross-platform application development",
+        "name_cn": "桌面跨平台应用开发",
+        "slug": "/desktop-cross-platform-application-development"
+      },
+      {
+        "ident": "crawler",
+        "name": "crawler",
+        "name_cn": "网络爬虫框架",
+        "slug": "/crawler"
+      },
+      {
+        "ident": "web-backend-component-and-framework",
+        "name": "Web Backend Component And Framework",
+        "name_cn": "后端组件和框架",
+        "slug": "/web-backend-component-and-framework"
+      },
+      {
+        "ident": "admin-template",
+        "name": "Admin Template",
+        "name_cn": "管理后台模板",
+        "slug": "/admin-template"
+      }
+    ]
+  },
+  {
+    "ident": "artificial-intelligence-ai",
+    "name": "Artificial Intelligence AI",
+    "name_cn": "AI人工智能软件",
+    "items": [
+      "mlops",
+      "deep-learning-framework",
+      "nlp",
+      "computer-vision-face-recognition",
+      "aigc",
+      "open-source-LLMs",
+      "open-source-LLMs-tools"
+    ],
+    "items_info": [
+      {
+        "ident": "mlops",
+        "name": "MLOps",
+        "name_cn": "自动化机器学习",
+        "slug": "/mlops"
+      },
+      {
+        "ident": "deep-learning-framework",
+        "name": "Deep Learning Framework",
+        "name_cn": "深度学习框架",
+        "slug": "/deep-learning-framework"
+      },
+      {
+        "ident": "nlp",
+        "name": "Natural Language Processing(NLP)",
+        "name_cn": "自然语言处理",
+        "slug": "/nlp"
+      },
+      {
+        "ident": "computer-vision-face-recognition",
+        "name": "Computer Vision Face Recognition",
+        "name_cn": "计算机视觉和人脸识别",
+        "slug": "/computer-vision-face-recognition"
+      },
+      {
+        "ident": "aigc",
+        "name": "AIGC",
+        "name_cn": "AI内容生成",
+        "slug": "/aigc"
+      },
+      {
+        "ident": "open-source-LLMs",
+        "name": "Open Source LLMs",
+        "name_cn": "开源LLMs",
+        "slug": "/open-source-LLMs"
+      },
+      {
+        "ident": "open-source-LLMs-tools",
+        "name": "Open Source LLMs Tools",
+        "name_cn": "开源LLMs工具",
+        "slug": "/open-source-LLMs-tools"
+      }
+    ]
+  },
+  {
+    "ident": "server-applications",
+    "name": "Server Applications",
+    "name_cn": "服务器应用",
+    "items": [
+      "distributed-service-framework-computing",
+      "message-queue",
+      "docker-related-apps",
+      "nginx-extended-modules",
+      "one-click-installation-kit",
+      "open-resty-extension",
+      "serverless",
+      "distributed-storage-system",
+      "web-servers"
+    ],
+    "items_info": [
+      {
+        "ident": "distributed-service-framework-computing",
+        "name": "Distributed Service Framework Computing",
+        "name_cn": "分布式服务-框架-计算",
+        "slug": "/distributed-service-framework-computing"
+      },
+      {
+        "ident": "message-queue",
+        "name": "Message Queue",
+        "name_cn": "消息队列",
+        "slug": "/message-queue"
+      },
+      {
+        "ident": "docker-related-apps",
+        "name": "Docker Related Apps",
+        "name_cn": "Docker相关应用",
+        "slug": "/docker-related-apps"
+      },
+      {
+        "ident": "nginx-extended-modules",
+        "name": "Nginx Extended Modules",
+        "name_cn": "Nginx扩展模块",
+        "slug": "/nginx-extended-modules"
+      },
+      {
+        "ident": "one-click-installation-kit",
+        "name": "One Click Installation Kit",
+        "name_cn": "服务器一键安装包",
+        "slug": "/one-click-installation-kit"
+      },
+      {
+        "ident": "open-resty-extension",
+        "name": "Open Resty Extension",
+        "name_cn": "Open Resty 扩展",
+        "slug": "/open-resty-extension"
+      },
+      {
+        "ident": "serverless",
+        "name": "Serverless",
+        "name_cn": "Serverless无服务器",
+        "slug": "/serverless-framework"
+      },
+      {
+        "ident": "distributed-storage-system",
+        "name": "Distributed Storage System",
+        "name_cn": "分布式存储系统",
+        "slug": "/distributed-storage-system"
+      },
+      {
+        "ident": "web-servers",
+        "name": "Web Servers",
+        "name_cn": "Web服务器",
+        "slug": "/web-servers"
+      }
+    ]
+  },
+  {
+    "ident": "blockchain",
+    "name": "blockchain",
+    "name_cn": "区块链技术和应用",
+    "items": ["blockchain", "digital-currency", "nft"],
+    "items_info": [
+      {
+        "ident": "blockchain",
+        "name": "Blockchain",
+        "name_cn": "区块链",
+        "slug": "/blockchain"
+      },
+      {
+        "ident": "digital-currency",
+        "name": "Digital Currency",
+        "name_cn": "数字货币",
+        "slug": "/digital-currency"
+      },
+      {
+        "ident": "nft",
+        "name": "NFT",
+        "name_cn": "NFT非同质化通证",
+        "slug": "/nft"
+      }
+    ]
+  },
+  {
+    "ident": "handset-and-mobile-application-development",
+    "name": "Handset and Mobile Application Development",
+    "name_cn": "手机和移动应用开发",
+    "items": [
+      "android-development-framework",
+      "ios-framework",
+      "mobile-cross-platform-application-development"
+    ],
+    "items_info": [
+      {
+        "ident": "android-development-framework",
+        "name": "Android Development Component and Framework",
+        "name_cn": "安卓开发组件和框架",
+        "slug": "/android-development-framework"
+      },
+      {
+        "ident": "ios-framework",
+        "name": "iOS development component and framework",
+        "name_cn": "iOS 开发组件和框架",
+        "slug": "/ios-framework"
+      },
+      {
+        "ident": "mobile-cross-platform-application-development",
+        "name": "Mobile cross-platform application development",
+        "name_cn": "移动跨平台应用开发",
+        "slug": "/mobile-cross-platform-application-development"
+      }
+    ]
+  },
+  {
     "ident": "development-framework",
     "name": "Development Framework",
     "name_cn": "开发框架",
     "items": [
       "android-development-framework",
       "authorization-framework",
-      "crawler",
       "css-framework",
-      "deep-learning-framework",
       "edge-computing-framework",
       "ios-framework",
       "node.js-web-framework",
       "privacy-computing-framework",
-      "serverless-framework",
       "unit-testing-framework",
       "web-frameworks"
     ],
     "items_info": [
       {
         "ident": "android-development-framework",
-        "name": "Android development framework",
-        "name_cn": "安卓开发框架",
+        "name": "Android Development Component and Framework",
+        "name_cn": "安卓开发组件和框架",
         "slug": "/android-development-framework"
       },
       {
@@ -111,22 +453,10 @@
         "slug": "/authorization-framework"
       },
       {
-        "ident": "crawler",
-        "name": "crawler",
-        "name_cn": "网络爬虫框架",
-        "slug": "/crawler"
-      },
-      {
         "ident": "css-framework",
         "name": "CSS Framework",
         "name_cn": "CSS 框架",
         "slug": "/css-framework"
-      },
-      {
-        "ident": "deep-learning-framework",
-        "name": "Deep Learning Framework",
-        "name_cn": "深度学习框架",
-        "slug": "/deep-learning-framework"
       },
       {
         "ident": "edge-computing-framework",
@@ -136,8 +466,8 @@
       },
       {
         "ident": "ios-framework",
-        "name": "iOS Framework",
-        "name_cn": "iOS 开发框架",
+        "name": "iOS development component and framework",
+        "name_cn": "iOS 开发组件和框架",
         "slug": "/ios-framework"
       },
       {
@@ -153,12 +483,6 @@
         "slug": "/privacy-computing-framework"
       },
       {
-        "ident": "serverless-framework",
-        "name": "Serverless Framework",
-        "name_cn": "Serverless 框架",
-        "slug": "/serverless-framework"
-      },
-      {
         "ident": "unit-testing-framework",
         "name": "Unit testing framework",
         "name_cn": "单元测试框架",
@@ -167,11 +491,35 @@
     ]
   },
   {
-    "ident": "devops",
-    "name": "DevOps",
-    "name_cn": "DevOps",
-    "items": ["continuous-deployment-tools", "continuous-integration-tools"],
+    "ident": "devops-network-manage-maintain",
+    "name": "DevOps and network management and maintaining",
+    "name_cn": "DevOps、网络管理和运维",
+    "items": [
+      "network-and-system-management",
+      "monitoring",
+      "devops-tools",
+      "continuous-deployment-tools",
+      "continuous-integration-tools"
+    ],
     "items_info": [
+      {
+        "ident": "network-and-system-management",
+        "name": "Network And System Management",
+        "name_cn": "网管工具和系统管理",
+        "slug": "/network-and-system-management"
+      },
+      {
+        "ident": "Monitoring",
+        "name": "Monitoring",
+        "name_cn": "系统监控",
+        "slug": "/monitoring"
+      },
+      {
+        "ident": "devops-tools",
+        "name": "Devops Tools",
+        "name_cn": "DevOps工具",
+        "slug": "/devops-tools"
+      },
       {
         "ident": "continuous-deployment-tools",
         "name": "Continuous Deployment Tools",
@@ -187,16 +535,46 @@
     ]
   },
   {
-    "ident": "emerging-technologie",
-    "name": "Emerging Technologie",
-    "name_cn": "新兴技术",
-    "items": ["chatgpt"],
+    "ident": "cutting-edge-technologies",
+    "name": "Cutting Edge Technologies",
+    "name_cn": "前沿技术",
+    "items": [
+      "automatic-drive",
+      "Quantum-Computing",
+      "Metaverse-web3",
+      "IOT-Edge-Computing",
+      "smart-home"
+    ],
     "items_info": [
       {
-        "ident": "chatgpt",
-        "name": "ChatGPT",
-        "name_cn": "ChatGPT",
-        "slug": "/chatgpt"
+        "ident": "automatic-drive",
+        "name": "Automatic drive",
+        "name_cn": "自动驾驶",
+        "slug": "/automatic-drive"
+      },
+      {
+        "ident": "Quantum-Computing",
+        "name": "Quantum Computing",
+        "name_cn": "量子计算",
+        "slug": "/Quantum-Computing"
+      },
+      {
+        "ident": "Metaverse-web3",
+        "name": "Metaverse web3",
+        "name_cn": "元宇宙和Web3",
+        "slug": "/Metaverse-web3"
+      },
+      {
+        "ident": "IOT-Edge-Computing",
+        "name": "IOT Edge Computing",
+        "name_cn": "物联网和边缘计算",
+        "slug": "/IOT-Edge-Computing"
+      },
+      {
+        "ident": "smart-home",
+        "name": "Smart home",
+        "name_cn": "智能家居",
+        "slug": "/smart-home"
       }
     ]
   },
@@ -205,31 +583,15 @@
     "name": "Database",
     "name_cn": "数据库",
     "items": [
-      "document-database",
-      "graph-database",
-      "key-value-database",
       "sql-database",
-      "time-series-database"
+      "no-SQL-database",
+      "time-series-database",
+      "embedded-database",
+      "database-development-kit",
+      "database-management-and-monitor-tools",
+      "database-engine-and-servers"
     ],
     "items_info": [
-      {
-        "ident": "document-database",
-        "name": "Document Database",
-        "name_cn": "文档数据库",
-        "slug": "/document-database"
-      },
-      {
-        "ident": "graph-database",
-        "name": "Graph Database",
-        "name_cn": "图数据库",
-        "slug": "/graph-database"
-      },
-      {
-        "ident": "key-value-database",
-        "name": "Key-Value Database",
-        "name_cn": "Key-Value 数据库",
-        "slug": "/key-value-database"
-      },
       {
         "ident": "sql-database",
         "name": "SQL Database",
@@ -237,10 +599,40 @@
         "slug": "/sql-database"
       },
       {
+        "ident": "no-SQL-database",
+        "name": "No SQL database",
+        "name_cn": "非关系型数据库",
+        "slug": "/no-SQL-database"
+      },
+      {
         "ident": "time-series-database",
         "name": "Time Series Database",
         "name_cn": "时序数据库",
         "slug": "/time-series-database"
+      },
+      {
+        "ident": "embedded-database",
+        "name": "Embedded database",
+        "name_cn": "嵌入式数据库",
+        "slug": "/embedded-database"
+      },
+      {
+        "ident": "database-development-kit",
+        "name": "Database development kit",
+        "name_cn": "数据库开发包",
+        "slug": "/database-development-kit"
+      },
+      {
+        "ident": "database-management-and-monitor-tools",
+        "name": "Database management and monitor tools",
+        "name_cn": "数据库管理监控工具",
+        "slug": "/database-management-and-monitor-tools"
+      },
+      {
+        "ident": "database-engine-and-servers",
+        "name": "Database engine and servers",
+        "name_cn": "数据库引擎和服务器",
+        "slug": "/database-engine-and-servers"
       }
     ]
   },
@@ -255,12 +647,13 @@
       "mini-program-ui-library",
       "responsive-ui-frameworks",
       "tailwindcss",
-      "data-visualization",
       "javascript-build-tool",
       "static-site-generator",
       "electron-packaging-tools",
+      "mobile-cross-platform-application-development",
       "desktop-cross-platform-application-development",
-      "mobile-cross-platform-application-development"
+      "data-visualization",
+      "web-frontend-component-and-framework"
     ],
     "items_info": [
       {
@@ -300,12 +693,6 @@
         "slug": "/tailwindcss"
       },
       {
-        "ident": "data-visualization",
-        "name": "Data Visualization",
-        "name_cn": "数据可视化",
-        "slug": "/data-visualization"
-      },
-      {
         "ident": "javascript-build-tool",
         "name": "Javascript Build Tool",
         "name_cn": "前端构建工具",
@@ -324,16 +711,28 @@
         "slug": "/electron-packaging-tools"
       },
       {
+        "ident": "mobile-cross-platform-application-development",
+        "name": "Mobile cross-platform application development",
+        "name_cn": "移动跨平台应用开发",
+        "slug": "/mobile-cross-platform-application-development"
+      },
+      {
         "ident": "desktop-cross-platform-application-development",
         "name": "Desktop cross-platform application development",
         "name_cn": "桌面跨平台应用开发",
         "slug": "/desktop-cross-platform-application-development"
       },
       {
-        "ident": "mobile-cross-platform-application-development",
-        "name": "Mobile cross-platform application development",
-        "name_cn": "移动跨平台应用开发",
-        "slug": "/mobile-cross-platform-application-development"
+        "ident": "data-visualization",
+        "name": "Data Visualization",
+        "name_cn": "数据可视化",
+        "slug": "/data-visualization"
+      },
+      {
+        "ident": "web-frontend-component-and-framework",
+        "name": "Web Frontend Component And Framework",
+        "name_cn": "Web前端组件和框架",
+        "slug": "/web-frontend-component-and-framework"
       }
     ]
   },
@@ -768,22 +1167,18 @@
   {
     "ident": "hardware",
     "name": "Hardware",
-    "name_cn": "硬件相关",
+    "name_cn": "硬件",
     "items": [
-      "3d-modeling-and-rendering",
       "3d-printer",
       "open-source-hardware",
       "arduino",
       "robotics",
-      "robotic-process-automation"
+      "robotic-process-automation",
+      "drone",
+      "circuit-breaker",
+      "raspberry-pi"
     ],
     "items_info": [
-      {
-        "ident": "3d-modeling-and-rendering",
-        "name": "3D modeling and rendering",
-        "name_cn": "3D建模和渲染软件",
-        "slug": "/3d-modeling-and-rendering"
-      },
       {
         "ident": "3d-printer",
         "name": "3D Printer",
@@ -813,6 +1208,24 @@
         "name": "Robotic Process Automation",
         "name_cn": "机器人流程自动化",
         "slug": "/robotic-process-automation"
+      },
+      {
+        "ident": "drone",
+        "name": "drone",
+        "name_cn": "无人机",
+        "slug": "/drone"
+      },
+      {
+        "ident": "circuit-breaker",
+        "name": "Circuit Breaker",
+        "name_cn": "断路器",
+        "slug": "/circuit-breaker"
+      },
+      {
+        "ident": "raspberry-pi",
+        "name": "Raspberry Pi",
+        "name_cn": "树莓派",
+        "slug": "/raspberry-pi"
       }
     ]
   },
@@ -925,7 +1338,7 @@
       "mlops",
       "Monitoring",
       "motion-graphics",
-      "nginx-related",
+      "nginx-extended-modules",
       "nlp",
       "note-application",
       "object-storage",
@@ -1288,10 +1701,10 @@
         "slug": "/motion-graphics"
       },
       {
-        "ident": "nginx-related",
-        "name": "Nginx Related",
-        "name_cn": "Nginx 相关",
-        "slug": "/nginx-related"
+        "ident": "nginx-extended-modules",
+        "name": "Nginx Extended Modules",
+        "name_cn": "Nginx扩展模块",
+        "slug": "/nginx-extended-modules"
       },
       {
         "ident": "nlp",
