@@ -31,7 +31,7 @@ const LoadingUi = () => (
   </div>
 );
 
-const VersionCreate = () => {
+const VersionAnalyze = () => {
   return (
     <NoSsr>
       <Header />
@@ -47,4 +47,4 @@ const VersionCreate = () => {
   );
 };
 
-export default VersionCreate;
+export default VersionAnalyze;

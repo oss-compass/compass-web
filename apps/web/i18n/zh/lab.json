@@ -26,7 +26,7 @@
   "user_management": "用户管理",
   "model_name": "模型名称",
   "version_name": "版本名称",
-  "commit_enter": "按Enter发送评论",
+  "commit_enter": "按 Enter 发送评论",
   "reply": "回复",
   "user": {
     "invite_users": "邀请用户",

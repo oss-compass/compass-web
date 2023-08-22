@@ -5,7 +5,6 @@ import { useTranslation } from 'next-i18next';
 import VersionSelect from './VersionSelect';
 import CommentSection from './CommentSection';
 import { useLabModelDetail, useLabModelVersion } from '../../hooks';
-import { actions } from '../state';
 
 const CommentDrawer = ({
   open,
@@ -18,24 +17,17 @@ const CommentDrawer = ({
   const { data: modelDetail } = useLabModelDetail();
   const { data: modelVersion } = useLabModelVersion();
 
-  useEffect(() => {
-    if (modelVersion?.labModelVersion) {
-      const { id, version } = modelVersion?.labModelVersion;
-      actions.onCurrentVersionChange({ id, version });
-    }
-  }, [modelVersion]);
-
   const name = modelDetail?.labModelDetail?.name || '';
   const metrics = modelVersion?.labModelVersion?.metrics || [];
 
   return (
     <div
       className={classnames(
-        'border-silver shrink-0 overflow-hidden  border-l transition-all',
+        'border-silver relative shrink-0 border-l transition-all',
         [open ? 'h-auto w-[400px] opacity-100' : 'h-0 w-0 opacity-0']
       )}
     >
-      <div className="flex h-14 items-center justify-between border-b border-[#EAEAEA] bg-[#FAFAFA] pl-4 pr-2">
+      <div className="z-header sticky top-0 flex h-14 items-center justify-between border-b border-[#EAEAEA] bg-[#FAFAFA] pl-4 pr-2">
         <div className="text-sm">
           {t('lab:discuss')}
           {/*（{lastItem?.labModelComments?.count || 0}）*/}

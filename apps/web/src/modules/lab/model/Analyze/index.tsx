@@ -7,6 +7,7 @@ import LabDataProvider from './context/LabDataProvider';
 import useLabelStatus from './hooks/useLabelStatus';
 import { Loading, NotFoundAnalysis } from './status';
 import ChartPanel from './ChartPanel';
+import { useLabModelVersion } from '../hooks';
 import { pageState, actions } from './state';
 
 const LeftPanelWithStatus = () => {
@@ -33,9 +34,15 @@ const LeftPanel = () => {
 
 const LabAnalyzePage = () => {
   const state = useSnapshot(pageState);
+  const { data: modelVersion } = useLabModelVersion();
+
   useEffect(() => {
     actions.reset();
-  }, []);
+    if (modelVersion?.labModelVersion) {
+      const { id, version } = modelVersion?.labModelVersion;
+      actions.onCurrentVersionChange({ id, version });
+    }
+  }, [modelVersion]);
 
   return (
     <div className="relative flex flex-1">
