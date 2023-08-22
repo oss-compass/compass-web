@@ -38,7 +38,12 @@ const SliderRange = ({
       track={isLast ? 'inverted' : 'normal'}
       onChange={(e, value) => {
         if (Array.isArray(value)) {
-          const result = value[1] - value[0];
+          const [startPre, endPre] = range as number[];
+          const [start, end] = value;
+          console.log({ startPre, endPre, start, end });
+          // only allow move left
+          if (start < startPre) return;
+          const result = end - start;
           actions.adjustMetricWeightHandle(result, index);
         } else {
           const result = isLast ? 100 - value : value;

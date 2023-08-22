@@ -88,8 +88,8 @@ export const actions = {
   },
 };
 
-if (isDev) {
-  subscribe(formState, () => {
-    console.log(JSON.stringify(formState, null, 2));
-  });
-}
+// if (isDev) {
+//   subscribe(formState, () => {
+//     console.log(JSON.stringify(formState, null, 2));
+//   });
+// }

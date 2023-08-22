@@ -1,9 +1,11 @@
+import Big from 'big.js';
+
 export const sumPre = (index: number, values: number[]): number => {
-  let sum = 0;
+  let sum = new Big(0);
   for (let i = 0; i < index; i++) {
-    sum += values[i];
+    sum = sum.plus(values[i]);
   }
-  return sum;
+  return sum.toNumber();
 };
 
 export const getItem = (
@@ -12,23 +14,23 @@ export const getItem = (
   diff: number
 ): { result: number; left?: number } => {
   const isLast = index === arr.length - 1;
-  let value = 0;
+  let value = new Big(0);
 
   const preSum = sumPre(index, arr);
   if (preSum >= 100) {
     return { result: 0 };
   }
 
-  value = arr[index] - diff;
+  value = new Big(arr[index]).minus(diff);
   if (value < 0) {
     return { result: 0, left: Math.abs(value) };
   }
 
   if (isLast) {
-    value = 100 - preSum;
+    value = new Big(100).minus(preSum);
   }
 
-  return { result: value };
+  return { result: value.toNumber() };
 };
 
 export const adjustmentArray = (
@@ -37,7 +39,7 @@ export const adjustmentArray = (
   value: number
 ): number[] => {
   const isLast = index === arr.length - 1;
-  let diff = value - arr[index];
+  let diff = new Big(value).minus(arr[index]).toNumber();
 
   if (isLast) {
     const newArr = [...arr].reverse();
