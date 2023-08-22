@@ -1,4 +1,50 @@
 {
+  "aigc": {
+    "ident": "aigc",
+    "name": "AIGC",
+    "name_cn": "AI内容生成",
+    "slug": "/aigc",
+    "items": [
+      "https://github.com/f/awesome-chatgpt-prompts",
+      "https://github.com/lencx/ChatGPT",
+      "https://github.com/PlexPt/awesome-chatgpt-prompts-zh",
+      "https://github.com/acheong08/ChatGPT",
+      "https://github.com/LAION-AI/Open-Assistant",
+      "https://github.com/yetone/openai-translator",
+      "https://github.com/transitive-bullshit/chatgpt-api",
+      "https://github.com/humanloop/awesome-chatgpt",
+      "https://github.com/binary-husky/chatgpt_academic",
+      "https://github.com/gd3kr/BlenderGPT",
+      "https://github.com/dice2o/BingGPT",
+      "https://github.com/Chanzhaoyu/chatgpt-web",
+      "https://github.com/fastfire/deepdarkCTI",
+      "https://github.com/AntonOsika/gpt-engineer",
+      "https://github.com/AI4Finance-Foundation/FinGPT",
+      "https://github.com/Licoy/ChatGPT-Midjourney",
+      "https://github.com/Lightning-AI/lit-gpt"
+    ]
+  },
+  "authority-management": {
+    "ident": "authority-management",
+    "name": "Authority Management",
+    "name_cn": "权限管理",
+    "slug": "/authority-management",
+    "items": [
+      "https://gitee.com/y_project/RuoYi-Cloud",
+      "https://gitee.com/renrenio/renren-security",
+      "https://gitee.com/dotnetchina/OpenAuth.Net",
+      "https://gitee.com/tomsun28/bootshiro",
+      "https://gitee.com/makunet/maku-cloud",
+      "https://gitee.com/wangzhixuan/spring-shiro-training",
+      "https://gitee.com/log4j/pig-ui",
+      "https://gitee.com/pear-admin/Pear-Admin-Boot",
+      "https://gitee.com/xiaonuobase/snowy-cloud",
+      "https://gitee.com/mallcloud/uni4mall",
+      "https://gitee.com/go-admin-team/go-admin",
+      "https://gitee.com/li_haodong/pre",
+      "https://gitee.com/liuge1988/kitty-ui"
+    ]
+  },
   "3d-modeling-and-rendering": {
     "ident": "3d-modeling-and-rendering",
     "name": "3D modeling and rendering",
@@ -50,6 +96,28 @@
       "https://github.com/tianocore/edk2"
     ]
   },
+  "excel-toolkits": {
+    "ident": "Excel-toolkits",
+    "name": "Excel Toolkits",
+    "name_cn": "Excel工具包",
+    "slug": "/Excel-toolkits",
+    "items": [
+      "https://github.com/PHPOffice/PhpSpreadsheet",
+      "https://github.com/SpartnerNL/Laravel-Excel",
+      "https://github.com/wireservice/csvkit",
+      "https://github.com/JoshClose/CsvHelper",
+      "https://github.com/adaltas/node-csv",
+      "https://github.com/thephpleague/csv",
+      "https://github.com/jmcnamara/XlsxWriter",
+      "https://github.com/randym/axlsx",
+      "https://github.com/xlwings/xlwings",
+      "https://github.com/dfinke/ImportExcel",
+      "https://github.com/weshatheleopard/rubyXL",
+      "https://github.com/tfussell/xlnt",
+      "https://github.com/pyexcel/pyexcel",
+      "https://github.com/jmcnamara/libxlsxwriter"
+    ]
+  },
   "iot-edge-computing": {
     "ident": "IOT-Edge-Computing",
     "name": "IOT Edge Computing",
@@ -73,7 +141,10 @@
     "name": "Metaverse web3",
     "name_cn": "元宇宙和Web3",
     "slug": "/Metaverse-web3",
-    "items": ["https://github.com/ChainSafe/web3.js"]
+    "items": [
+      "https://github.com/ChainSafe/web3.js",
+      "https://github.com/web3ui/web3uikit"
+    ]
   },
   "quantum-computing": {
     "ident": "Quantum-Computing",
@@ -135,16 +206,53 @@
       "https://github.com/yezihaohao/react-admin"
     ]
   },
+  "algogrithm-and-math-computing": {
+    "ident": "algogrithm-and-math-computing",
+    "name": "Algogrithm And Math Computing",
+    "name_cn": "算法及数学计算",
+    "slug": "/algogrithm-and-math-computing",
+    "items": [
+      "https://github.com/numpy/numpy",
+      "https://github.com/mathjax/MathJax",
+      "https://github.com/google/or-tools",
+      "https://github.com/numba/numba",
+      "https://github.com/pymc-devs/pymc",
+      "https://github.com/aidenybai/million",
+      "https://github.com/DEAP/deap",
+      "https://github.com/xianyi/OpenBLAS",
+      "https://github.com/cvxpy/cvxpy",
+      "https://github.com/arrayfire/arrayfire",
+      "https://github.com/billryan/algorithm-exercise",
+      "https://github.com/blaze/blaze",
+      "https://github.com/scipy-lectures/scipy-lecture-notes",
+      "https://github.com/mathnet/mathnet-numerics",
+      "https://github.com/dimforge/nalgebra",
+      "https://github.com/ceres-solver/ceres-solver"
+    ]
+  },
   "android-development-framework": {
     "ident": "android-development-framework",
-    "name": "Android development framework",
-    "name_cn": "安卓开发框架",
+    "name": "Android Development Component and Framework",
+    "name_cn": "安卓开发组件和框架",
     "slug": "/android-development-framework",
     "items": [
       "https://github.com/androidx/androidx",
       "https://github.com/flutter/flutter",
       "https://github.com/facebook/react-native",
-      "https://github.com/ionic-team/ionic-framework"
+      "https://github.com/ionic-team/ionic-framework",
+      "https://github.com/square/retrofit",
+      "https://github.com/PhilJay/MPAndroidChart",
+      "https://github.com/bumptech/glide",
+      "https://github.com/topjohnwu/Magisk",
+      "https://github.com/square/leakcanary",
+      "https://github.com/signalapp/Signal-Android",
+      "https://github.com/afollestad/material-dialogs",
+      "https://github.com/facebook/fresco",
+      "https://github.com/nostra13/Android-Universal-Image-Loader",
+      "https://github.com/iBotPeaches/Apktool",
+      "https://github.com/mikepenz/MaterialDrawer",
+      "https://github.com/android/compose-samples",
+      "https://github.com/coil-kt/coil"
     ]
   },
   "animation-library": {
@@ -157,7 +265,8 @@
       "https://github.com/aurelhubert/tween-engine",
       "https://github.com/daimajia/AndroidViewAnimations",
       "https://github.com/lgvalle/Material-Animations",
-      "https://github.com/andkulikov/Transitions-Everywhere"
+      "https://github.com/andkulikov/Transitions-Everywhere",
+      "https://github.com/pmndrs/react-spring"
     ]
   },
   "ansible-devtools": {
@@ -182,6 +291,27 @@
       "https://github.com/pycontribs/enrich",
       "https://github.com/pycontribs/selinux",
       "https://github.com/pycontribs/subprocess-tee"
+    ]
+  },
+  "api-and-api-gateway": {
+    "ident": "api-and-api-gateway",
+    "name": "Api And Api Gateway",
+    "name_cn": "API 网关和接口",
+    "slug": "/api-and-api-gateway",
+    "items": [
+      "https://github.com/Twitter4J/Twitter4J",
+      "https://github.com/trailblazer/roar",
+      "https://github.com/googleapis/google-api-ruby-client",
+      "https://github.com/KnpLabs/php-github-api",
+      "https://github.com/NREL/api-umbrella",
+      "https://github.com/OpenBankProject/OBP-API",
+      "https://github.com/Netflix/zuul",
+      "https://github.com/mulesoft/api-console",
+      "https://github.com/mulesoft/api-designer",
+      "https://github.com/apiman/apiman",
+      "https://github.com/csparpa/pyowm",
+      "https://github.com/ideal-postcodes/postcodes.io",
+      "https://github.com/vknet/vk"
     ]
   },
   "api-gateway": {
@@ -427,6 +557,28 @@
       "https://github.com/confluentinc/ksql"
     ]
   },
+  "blockchain": {
+    "ident": "blockchain",
+    "name": "Blockchain",
+    "name_cn": "区块链",
+    "slug": "/blockchain",
+    "items": [
+      "https://github.com/ethereum/go-ethereum",
+      "https://github.com/diem/diem",
+      "https://github.com/hyperledger/fabric",
+      "https://github.com/trufflesuite/truffle",
+      "https://github.com/Chia-Network/chia-blockchain",
+      "https://github.com/solana-labs/solana",
+      "https://github.com/paritytech/substrate",
+      "https://github.com/paritytech/polkadot",
+      "https://github.com/cosmos/cosmos-sdk",
+      "https://github.com/embarklabs/embark",
+      "https://github.com/neo-project/neo",
+      "https://github.com/smartcontractkit/chainlink",
+      "https://github.com/LiskHQ/lisk-sdk",
+      "https://github.com/stacks-network/stacks-blockchain"
+    ]
+  },
   "bootstrap-theme": {
     "ident": "bootstrap-theme",
     "name": "Bootstrap themes",
@@ -470,6 +622,31 @@
       "https://github.com/ghiscoding/Angular-Slickgrid"
     ]
   },
+  "browser-devtools": {
+    "ident": "browser-devtools",
+    "name": "Browser Devtools",
+    "name_cn": "浏览器开发工具",
+    "slug": "/browser-devtools",
+    "items": [
+      "https://github.com/topics/chrome-devtools",
+      "https://github.com/GoogleChrome/lighthouse",
+      "https://github.com/chromedp/chromedp",
+      "https://github.com/kdzwinel/betwixt",
+      "https://github.com/go-rod/rod",
+      "https://github.com/RemoteDebug/remotedebug-ios-webkit-adapter",
+      "https://github.com/ChromeDevTools/devtools-frontend",
+      "https://github.com/Qianlitp/crawlergo",
+      "https://github.com/rendora/rendora",
+      "https://github.com/bahmutov/code-snippets",
+      "https://github.com/addyosmani/puppeteer-webperf",
+      "https://github.com/NV/chrome-devtools-autosave",
+      "https://github.com/tenox7/wrp",
+      "https://github.com/ChromeDevTools/debugger-protocol-viewer",
+      "https://github.com/MiCottOn/DejaVue",
+      "https://github.com/binaryage/dirac",
+      "https://github.com/guigrpa/storyboard"
+    ]
+  },
   "browser-engine": {
     "ident": "browser-engine",
     "name": "Browser Engine",
@@ -483,6 +660,31 @@
       "https://github.com/servo/servo/",
       "https://github.com/mozilla/geckoview/",
       "https://github.com/OtterBrowser/otter-browser"
+    ]
+  },
+  "browser-plugins": {
+    "ident": "browser-plugins",
+    "name": "Browser Plugins",
+    "name_cn": "浏览器插件",
+    "slug": "/browser-plugins",
+    "items": [
+      "https://github.com/Kocal/vue-web-extension",
+      "https://github.com/lxieyang/chrome-extension-boilerplate-react",
+      "https://github.com/mozilla/webextension-polyfill",
+      "https://github.com/chibat/chrome-extension-typescript-starter",
+      "https://github.com/GoogleChrome/chrome-extensions-samples",
+      "https://github.com/webextension-toolbox/webextension-toolbox",
+      "https://github.com/puppeteer/puppeteer",
+      "https://github.com/gorhill/uBlock",
+      "https://github.com/darkreader/darkreader",
+      "https://github.com/StylishThemes/GitHub-Dark",
+      "https://github.com/MetaMask/metamask-extension",
+      "https://github.com/GoogleChromeLabs/ProjectVisBug",
+      "https://github.com/greatsuspender/thegreatsuspender",
+      "https://github.com/gildas-lormeau/SingleFile",
+      "https://github.com/iorate/ublacklist",
+      "https://github.com/honestbleeps/Reddit-Enhancement-Suite",
+      "https://github.com/violentmonkey/violentmonkey"
     ]
   },
   "browser": {
@@ -515,6 +717,22 @@
       "https://github.com/eclipse/birt"
     ]
   },
+  "caching-component": {
+    "ident": "caching-component",
+    "name": "Caching Component",
+    "name_cn": "缓存组件",
+    "slug": "/caching-component",
+    "items": [
+      "https://gitee.com/ld/J2Cache",
+      "https://gitee.com/jd-platform-opensource/hotkey",
+      "https://gitee.com/qiujiayu/AutoLoadCache",
+      "https://gitee.com/BYSRepo/shiro-redis",
+      "https://gitee.com/NewLifeX/NewLife.Redis",
+      "https://gitee.com/jd-platform-opensource/dtc",
+      "https://gitee.com/darkidiot/RedisCache",
+      "https://gitee.com/shenzhanwang/Spring-redis"
+    ]
+  },
   "chaos-engineering": {
     "ident": "chaos-engineering",
     "name": "Chaos Engineering",
@@ -532,6 +750,26 @@
       "https://github.com/grafana/k6",
       "https://github.com/asobti/kube-monkey",
       "https://github.com/powerfulseal/powerfulseal"
+    ]
+  },
+  "chart-component": {
+    "ident": "chart-component",
+    "name": "Chart Component",
+    "name_cn": "图表组件",
+    "slug": "/chart-component",
+    "items": [
+      "https://github.com/chartjs/Chart.js",
+      "https://github.com/apache/echarts",
+      "https://github.com/PhilJay/MPAndroidChart",
+      "https://github.com/FormidableLabs/victory",
+      "https://github.com/c3js/c3",
+      "https://github.com/leeoniya/uPlot",
+      "https://github.com/imaNNeoFighT/fl_chart",
+      "https://github.com/britecharts/britecharts",
+      "https://github.com/cnvs/canvas",
+      "https://github.com/core-plot/core-plot",
+      "https://github.com/ScottPlot/ScottPlot",
+      "https://github.com/knowm/XChart"
     ]
   },
   "chatgpt": {
@@ -635,6 +873,25 @@
       "https://github.com/polarismesh/femas"
     ]
   },
+  "cloud-computing": {
+    "ident": "cloud-computing",
+    "name": "Cloud Computing",
+    "name_cn": "云计算",
+    "slug": "/cloud-computing",
+    "items": [
+      "https://github.com/GoogleCloudPlatform/terraformer",
+      "https://github.com/cloudtools/troposphere",
+      "https://github.com/fog/fog",
+      "https://github.com/aws/karpenter",
+      "https://github.com/openstack/nova",
+      "https://github.com/aws-amplify/amplify-cli",
+      "https://github.com/GoogleCloudPlatform/PerfKitBenchmarker",
+      "https://github.com/cloudfoundry/cli",
+      "https://github.com/GoogleCloudPlatform/gcsfuse",
+      "https://github.com/yunionio/cloudpods",
+      "https://github.com/cloudtools/stacker"
+    ]
+  },
   "cloud-native-storage": {
     "ident": "cloud-native-storage",
     "name": "Cloud Native Storage",
@@ -653,6 +910,23 @@
       "https://github.com/heketi/heketi",
       "https://github.com/moosefs/moosefs",
       "https://github.com/dragonfly/dragonfly"
+    ]
+  },
+  "cloud-service": {
+    "ident": "cloud-service",
+    "name": "Cloud Service",
+    "name_cn": "云服务",
+    "slug": "/cloud-service",
+    "items": [
+      "https://github.com/localstack/localstack",
+      "https://github.com/cert-manager/cert-manager",
+      "https://github.com/haiwen/seafile",
+      "https://github.com/google/go-cloud",
+      "https://github.com/owncloud/core",
+      "https://github.com/crossplane/crossplane",
+      "https://github.com/abraunegg/onedrive",
+      "https://github.com/hashicorp/terraform-cdk",
+      "https://github.com/owncloud/client"
     ]
   },
   "cms": {
@@ -702,6 +976,43 @@
       "https://github.com/felixfbecker/php-language-server"
     ]
   },
+  "code-generator": {
+    "ident": "code-generator",
+    "name": "Code Generator",
+    "name_cn": "代码生成器",
+    "slug": "/code-generator",
+    "items": [
+      "https://github.com/OpenAPITools/openapi-generator",
+      "https://github.com/projectlombok/lombok",
+      "https://github.com/dotansimha/graphql-code-generator",
+      "https://github.com/microsoft/TemplateStudio",
+      "https://github.com/lalrpop/lalrpop",
+      "https://github.com/csmith-project/creduce",
+      "https://github.com/bjorn3/rustc_codegen_cranelift"
+    ]
+  },
+  "code-management": {
+    "ident": "code-management",
+    "name": "Code Management",
+    "name_cn": "代码管理",
+    "slug": "/code-management",
+    "items": [
+      "https://github.com/boyter/scc",
+      "https://github.com/psf/black",
+      "https://github.com/troessner/reek",
+      "https://github.com/PyCQA/pycodestyle",
+      "https://github.com/flyerhzm/rails_best_practices",
+      "https://github.com/universal-ctags/ctags",
+      "https://github.com/pdepend/pdepend",
+      "https://github.com/hhatto/autopep8",
+      "https://github.com/prettydiff/prettydiff",
+      "https://github.com/javaparser/javaparser",
+      "https://github.com/ggreer/the_silver_searcher",
+      "https://github.com/SirVer/ultisnips",
+      "https://github.com/jonase/eastwood",
+      "https://github.com/rubocop/rubocop"
+    ]
+  },
   "code-search": {
     "ident": "code-search",
     "name": "Code Search",
@@ -717,6 +1028,28 @@
       "https://github.com/OpenGenus/quark",
       "https://github.com/boyter/searchcode-server",
       "https://github.com/oschina/kooder"
+    ]
+  },
+  "common-toolkit": {
+    "ident": "common-toolkit",
+    "name": "Common Toolkit",
+    "name_cn": "常用工具包",
+    "slug": "/common-toolkit",
+    "items": [
+      "https://github.com/ai/nanoid",
+      "https://gitee.com/dromara/hutool",
+      "https://github.com/casey/just",
+      "https://github.com/FluentValidation/FluentValidation",
+      "https://github.com/Humanizr/Humanizer",
+      "https://github.com/AdrienTorris/awesome-blazor",
+      "https://github.com/golang/tools",
+      "https://github.com/FirebaseExtended/flutterfire",
+      "https://github.com/mahmoud/boltons",
+      "https://github.com/CommunityToolkit/WindowsCommunityToolkit",
+      "https://github.com/JodaOrg/joda-time",
+      "https://github.com/googlecodelabs/tools",
+      "https://github.com/twitter/util",
+      "https://github.com/util-linux/util-linux"
     ]
   },
   "compression-and-decompression": {
@@ -761,6 +1094,50 @@
       "https://github.com/DualSPHysics/DualSPHysics",
       "https://github.com/FreeFem/FreeFem-sources",
       "https://github.com/OpenQBMM/OpenQBMM"
+    ]
+  },
+  "computer-vision-face-recognition": {
+    "ident": "computer-vision-face-recognition",
+    "name": "Computer Vision Face Recognition",
+    "name_cn": "计算机视觉和人脸识别",
+    "slug": "/computer-vision-face-recognition",
+    "items": [
+      "https://github.com/opencv/opencv",
+      "https://github.com/deepfakes/faceswap",
+      "https://github.com/ultralytics/yolov5",
+      "https://github.com/facebookresearch/detectron2",
+      "https://github.com/aleju/imgaug",
+      "https://github.com/opencv/cvat",
+      "https://github.com/opencv/opencv_contrib",
+      "https://github.com/PointCloudLibrary/pcl",
+      "https://github.com/kornia/kornia",
+      "https://github.com/PaddlePaddle/PaddleDetection",
+      "https://github.com/hybridgroup/gocv",
+      "https://github.com/PaddlePaddle/PaddleClas",
+      "https://github.com/colmap/colmap",
+      "https://github.com/openMVG/openMVG",
+      "https://github.com/shimat/opencvsharp",
+      "https://github.com/alicevision/AliceVision",
+      "https://github.com/opendatacam/opendatacam"
+    ]
+  },
+  "configuration-management-software": {
+    "ident": "configuration-management-software",
+    "name": "Configuration Management Software",
+    "name_cn": "配置管理软件",
+    "slug": "/configuration-management-software",
+    "items": [
+      "https://github.com/rvm/rvm",
+      "https://github.com/miyagawa/cpanminus",
+      "https://github.com/luarocks/luarocks",
+      "https://github.com/gitextensions/gitextensions",
+      "https://github.com/jordansissel/fpm",
+      "https://github.com/nim-lang/nimble",
+      "https://github.com/composer/composer",
+      "https://github.com/gitblit/gitblit",
+      "https://github.com/NuGet/NuGetGallery",
+      "https://github.com/chocolatey/ChocolateyGUI",
+      "https://github.com/lightbend/config"
     ]
   },
   "container-registry": {
@@ -972,7 +1349,8 @@
       "https://github.com/ElemeFE/element",
       "https://github.com/vuetifyjs/vuetify",
       "https://github.com/chakra-ui/chakra-ui",
-      "https://github.com/carbon-design-system/carbon"
+      "https://github.com/carbon-design-system/carbon",
+      "https://github.com/unocss/unocss"
     ]
   },
   "cve-scanning": {
@@ -1096,7 +1474,23 @@
       "https://github.com/microsoft/CNTK",
       "https://github.com/keras-team/keras",
       "https://github.com/apache/mxnet",
-      "https://github.com/onnx/onnx"
+      "https://github.com/onnx/onnx",
+      "https://github.com/fastmachinelearning/hls4ml",
+      "https://github.com/google/deepvariant",
+      "https://github.com/albermax/innvestigate",
+      "https://github.com/PaddlePaddle/VisualDL",
+      "https://github.com/NVIDIA-Merlin/HugeCTR",
+      "https://github.com/KevinMusgrave/pytorch-metric-learning",
+      "https://github.com/deepjavalibrary/djl",
+      "https://github.com/yoshitomo-matsubara/torchdistill",
+      "https://github.com/google/flax",
+      "https://github.com/mindspore-ai/mindspore",
+      "https://github.com/facebookresearch/fairo",
+      "https://github.com/eclipse/deeplearning4j",
+      "https://github.com/google/jax",
+      "https://github.com/huggingface/transformers",
+      "https://github.com/huggingface/peft",
+      "https://github.com/microsoft/DeepSpeed"
     ]
   },
   "dependency-analysis": {
@@ -1208,6 +1602,66 @@
     "slug": "/desktop-operation-system",
     "items": ["https://github.com/SerenityOS/serenity"]
   },
+  "devops-tools": {
+    "ident": "devops-tools",
+    "name": "Devops Tools",
+    "name_cn": "DevOps工具",
+    "slug": "/devops-tools",
+    "items": [
+      "https://github.com/spinnaker/spinnaker",
+      "https://github.com/jenkins-x/jx",
+      "https://github.com/screwdriver-cd/screwdriver",
+      "https://github.com/argoproj/argo-cd",
+      "https://github.com/deployphp/deployer",
+      "https://github.com/aws/aws-codedeploy-agent",
+      "https://github.com/jenkinsci/jenkins",
+      "https://github.com/ortelius/ortelius",
+      "https://github.com/pyrsia/pyrsia",
+      "https://github.com/circleci/circleci-docs",
+      "https://github.com/gocd/gocd",
+      "https://github.com/harness/drone",
+      "https://github.com/buildbot/buildbot",
+      "https://github.com/Strider-CD/strider",
+      "https://github.com/concourse/concourse",
+      "https://github.com/argoproj/gitops-engine",
+      "https://github.com/tektoncd/pipeline",
+      "https://github.com/rundeck/rundeck",
+      "https://github.com/jenkinsci/jenkinsfile-runner",
+      "https://github.com/ansible/ansible",
+      "https://github.com/hashicorp/consul",
+      "https://github.com/GoogleContainerTools/skaffold",
+      "https://github.com/GoogleContainerTools/kaniko",
+      "https://github.com/chef/chef",
+      "https://github.com/ansible-semaphore/semaphore",
+      "https://github.com/StackStorm/st2",
+      "https://github.com/Tencent/bk-cmdb",
+      "https://github.com/runatlantis/atlantis",
+      "https://github.com/hygieia/hygieia"
+    ]
+  },
+  "digital-currency": {
+    "ident": "digital-currency",
+    "name": "Digital Currency",
+    "name_cn": "数字货币",
+    "slug": "/digital-currency",
+    "items": [
+      "https://github.com/bitcoin/bitcoin",
+      "https://github.com/ccxt/ccxt",
+      "https://github.com/bitcoinbook/bitcoinbook",
+      "https://github.com/dogecoin/dogecoino",
+      "https://github.com/monero-project/monero",
+      "https://github.com/lightningnetwork/lnd",
+      "https://github.com/spesmilo/electrum",
+      "https://github.com/hummingbot/hummingbot",
+      "https://github.com/btcsuite/btcd",
+      "https://github.com/zcash/zcash",
+      "https://github.com/bitcoinjs/bitcoinjs-lib",
+      "https://github.com/bitpay/bitcore",
+      "https://github.com/bisq-network/bisq",
+      "https://github.com/fireice-uk/xmr-stak",
+      "https://github.com/btcpayserver/btcpayserver"
+    ]
+  },
   "discord-bot": {
     "ident": "discord-bot",
     "name": "Discord bot",
@@ -1240,6 +1694,43 @@
       "https://github.com/qeled/discordie"
     ]
   },
+  "distributed-service-framework-computing": {
+    "ident": "distributed-service-framework-computing",
+    "name": "Distributed Service Framework Computing",
+    "name_cn": "分布式服务-框架-计算",
+    "slug": "/distributed-service-framework-computing",
+    "items": [
+      "https://github.com/Netflix/Hystrix",
+      "https://github.com/asim/go-micro",
+      "https://github.com/celery/celery",
+      "https://github.com/dotnet/orleans",
+      "https://github.com/jepsen-io/jepsen",
+      "https://github.com/knightliao/disconf",
+      "https://github.com/akkadotnet/akka.net",
+      "https://github.com/codingapi/tx-lcn",
+      "https://github.com/gluster/glusterfs",
+      "https://github.com/distribworks/dkron",
+      "https://github.com/atomix/atomix",
+      "https://github.com/discoproject/disco"
+    ]
+  },
+  "distributed-storage-system": {
+    "ident": "distributed-storage-system",
+    "name": "Distributed Storage System",
+    "name_cn": "分布式存储系统",
+    "slug": "/distributed-storage-system",
+    "items": [
+      "https://github.com/minio/minio",
+      "https://github.com/chrislusf/seaweedfs",
+      "https://github.com/ceph/ceph",
+      "https://github.com/thanos-io/thanos",
+      "https://github.com/Alluxio/alluxio",
+      "https://github.com/juicedata/juicefs",
+      "https://github.com/baidu/bfs",
+      "https://github.com/storj/storj",
+      "https://github.com/linkedin/ambry"
+    ]
+  },
   "distributed-tracing-platform": {
     "ident": "distributed-tracing-platform",
     "name": "Distributed Tracing Platform",
@@ -1251,6 +1742,23 @@
       "https://github.com/open-telemetry/opentelemetry-java",
       "https://github.com/newrelic",
       "https://github.com/Dynatrace"
+    ]
+  },
+  "docker-related-apps": {
+    "ident": "docker-related-apps",
+    "name": "Docker Related Apps",
+    "name_cn": "Docker相关应用",
+    "slug": "/docker-related-apps",
+    "items": [
+      "https://github.com/moby/moby",
+      "https://github.com/veggiemonk/awesome-docker",
+      "https://github.com/yeasy/docker_practice",
+      "https://github.com/google/cadvisor",
+      "https://github.com/caprover/caprover",
+      "https://github.com/sameersbn/docker-gitlab",
+      "https://github.com/fabric8io/docker-maven-plugin",
+      "https://github.com/sous-chefs/docker",
+      "https://gitee.com/taoes_admin/SimpleDocker"
     ]
   },
   "document-database": {
@@ -1269,6 +1777,20 @@
       "https://github.com/rethinkdb/rethinkdb",
       "https://github.com/terminusdb/terminusdb",
       "https://github.com/pingcap/tidb"
+    ]
+  },
+  "document-management-and-tools": {
+    "ident": "document-management-and-tools",
+    "name": "Document Management And Tools",
+    "name_cn": "文档管理软件及工具",
+    "slug": "/document-management-and-tools",
+    "items": [
+      "https://github.com/tomaz/appledoc",
+      "https://github.com/theseer/phpdox",
+      "https://github.com/ruby/rdoc",
+      "https://github.com/ysc/word",
+      "https://github.com/OpenKM/document-management-system",
+      "https://github.com/ciur/papermerge"
     ]
   },
   "domain-specific-language": {
@@ -1910,6 +2432,27 @@
       "https://github.com/apache/incubator-hugegraph"
     ]
   },
+  "graph-process-tech-and-toolkit": {
+    "ident": "graph-process-tech-and-toolkit",
+    "name": "Graph Process Tech And Toolkit",
+    "name_cn": "图像处理技术和工具包",
+    "slug": "/graph-process-tech-and-toolkit",
+    "items": [
+      "https://github.com/tesseract-ocr/tesseract",
+      "https://github.com/bumptech/glide",
+      "https://github.com/SDWebImage/SDWebImage",
+      "https://github.com/lovell/sharp",
+      "https://github.com/GoogleChromeLabs/squoosh",
+      "https://github.com/oliver-moran/jimp",
+      "https://github.com/python-pillow/Pillow",
+      "https://github.com/coil-kt/coil",
+      "https://github.com/libvips/libvips",
+      "https://github.com/php-imagine/Imagine",
+      "https://github.com/imazen/imageflow",
+      "https://github.com/canvg/canvg",
+      "https://github.com/image-rs/image"
+    ]
+  },
   "graphql-client": {
     "ident": "graphql-client",
     "name": "GraphQL Client",
@@ -2175,10 +2718,29 @@
       "https://github.com/savoirfairelinux/jami-client-gnome"
     ]
   },
+  "integrated-development-environment-ide": {
+    "ident": "integrated-development-environment-IDE",
+    "name": "Integrated Development Environment IDE",
+    "name_cn": "集成开发环境",
+    "slug": "/integrated-development-environment-IDE",
+    "items": [
+      "https://github.com/clojure-lsp/clojure-lsp",
+      "https://github.com/gbdev/rgbds",
+      "https://github.com/aptana/studio3",
+      "https://github.com/realgud/realgud",
+      "https://github.com/kschiess/parslet",
+      "https://github.com/rstudio/rstudio",
+      "https://github.com/lamdu/lamdu",
+      "https://github.com/ninja-ide/ninja-ide",
+      "https://github.com/JetBrains/intellij-scala",
+      "https://github.com/pkulchenko/ZeroBraneStudio",
+      "https://github.com/visualfc/liteide"
+    ]
+  },
   "ios-framework": {
     "ident": "ios-framework",
-    "name": "iOS Framework",
-    "name_cn": "iOS 开发框架",
+    "name": "iOS development component and framework",
+    "name_cn": "iOS 开发组件和框架",
     "slug": "/ios-framework",
     "items": [
       "https://github.com/Alamofire/Alamofire",
@@ -2195,7 +2757,12 @@
       "https://github.com/HeroTransitions/Hero",
       "https://github.com/ninjaprox/NVActivityIndicatorView",
       "https://github.com/WenchaoD/FSCalendar",
-      "https://github.com/ibireme/YYKit"
+      "https://github.com/facebook/facebook-ios-sdk",
+      "https://github.com/jverkoey/nimbus",
+      "https://github.com/Cocoanetics/DTCoreText",
+      "https://github.com/facebook/componentkit",
+      "https://github.com/theos/theos",
+      "https://github.com/ionic-team/ionic-framework"
     ]
   },
   "irc-client": {
@@ -2266,6 +2833,25 @@
       "https://github.com/wendux/fly",
       "https://github.com/broccolijs/broccoli",
       "https://github.com/FredKSchott/snowpack"
+    ]
+  },
+  "jobs-and-task-scheduling": {
+    "ident": "jobs-and-task-scheduling",
+    "name": "Jobs And Task Scheduling",
+    "name_cn": "作业或任务调度",
+    "slug": "/jobs-and-task-scheduling",
+    "items": [
+      "https://github.com/xuxueli/xxl-job",
+      "https://github.com/KFCFans/PowerJob",
+      "https://github.com/arkhipenko/TaskScheduler",
+      "https://github.com/dask/dask",
+      "https://github.com/agenda/agenda",
+      "https://github.com/agronholm/apscheduler",
+      "https://github.com/yigit/android-priority-jobqueue",
+      "https://github.com/kiegroup/optaplanner",
+      "https://github.com/moby/swarmkit",
+      "https://github.com/lukas-krecan/ShedLock",
+      "https://github.com/breejs/bree"
     ]
   },
   "jquery-and-plugins": {
@@ -2339,6 +2925,29 @@
       "https://github.com/alibaba/fastjson2",
       "https://github.com/alibaba/fastjson",
       "https://github.com/bytedance/sonic-cpp"
+    ]
+  },
+  "json-tools": {
+    "ident": "json-tools",
+    "name": "Json Tools",
+    "name_cn": "JSON工具",
+    "slug": "/json-tools",
+    "items": [
+      "https://github.com/nlohmann/json",
+      "https://github.com/alibaba/fastjson",
+      "https://github.com/stedolan/jq",
+      "https://github.com/Tencent/rapidjson",
+      "https://github.com/josdejong/jsoneditor",
+      "https://github.com/JamesNK/Newtonsoft.Json",
+      "https://github.com/json-api/json-api",
+      "https://github.com/SBJson/SBJson",
+      "https://github.com/Julian/jsonschema",
+      "https://github.com/json-editor/json-editor",
+      "https://github.com/json-schema-faker/json-schema-faker",
+      "https://github.com/json-schema-org/json-schema-spec",
+      "https://github.com/akheron/jansson",
+      "https://github.com/json-c/json-c",
+      "https://github.com/json4s/json4s"
     ]
   },
   "kanban": {
@@ -2492,6 +3101,33 @@
       "https://github.com/mollie/laravel-mollie"
     ]
   },
+  "logging-toolkit": {
+    "ident": "logging-toolkit",
+    "name": "Logging Toolkit",
+    "name_cn": "日志工具包",
+    "slug": "/logging-toolkit",
+    "items": [
+      "https://github.com/Seldaek/monolog",
+      "https://github.com/winstonjs/winston",
+      "https://github.com/gabime/spdlog",
+      "https://github.com/allinurl/goaccess",
+      "https://github.com/elastic/logstash",
+      "https://github.com/CocoaLumberjack/CocoaLumberjack",
+      "https://github.com/fluent/fluentd",
+      "https://github.com/conventional-changelog/conventional-changelog",
+      "https://github.com/NLog/NLog",
+      "https://github.com/serilog/serilog",
+      "https://github.com/tstack/lnav",
+      "https://gitee.com/plumeorg/plumelog",
+      "https://github.com/google/mtail",
+      "https://github.com/amrayn/easyloggingpp",
+      "https://github.com/apache/logging-log4j2",
+      "https://github.com/qos-ch/logback",
+      "https://github.com/wvanbergen/request-log-analyzer",
+      "https://github.com/subsurface/subsurface",
+      "https://github.com/hynek/structlog"
+    ]
+  },
   "logging": {
     "ident": "logging",
     "name": "Logging",
@@ -2590,6 +3226,28 @@
       "https://github.com/sj26/mailcatcher"
     ]
   },
+  "markdown-toolkit": {
+    "ident": "markdown-toolkit",
+    "name": "Markdown Toolkit",
+    "name_cn": "Markdown工具包",
+    "slug": "/markdown-toolkit",
+    "items": [
+      "https://github.com/adam-p/markdown-here",
+      "https://github.com/markedjs/marked",
+      "https://github.com/erusev/parsedown",
+      "https://github.com/markdown-it/markdown-it",
+      "https://github.com/mdx-js/mdx",
+      "https://github.com/MacDownApp/macdown",
+      "https://github.com/joemccann/dillinger",
+      "https://github.com/remarkjs/remark",
+      "https://github.com/commonmark/commonmark-spec",
+      "https://github.com/Vanessa219/vditor",
+      "https://github.com/DavidAnson/markdownlint",
+      "https://github.com/bytedance/bytemd",
+      "https://github.com/raphlinus/pulldown-cmark",
+      "https://github.com/commonmark/cmark"
+    ]
+  },
   "media-players": {
     "ident": "media-players",
     "name": "Media Players",
@@ -2618,7 +3276,40 @@
       "https://github.com/apache/inlong",
       "https://github.com/apache/kafka",
       "https://github.com/rabbitmq/rabbitmq-server",
-      "https://github.com/apache/activemq"
+      "https://github.com/apache/activemq",
+      "https://github.com/EasyNetQ/EasyNetQ",
+      "https://github.com/liftbridge-io/liftbridge",
+      "https://github.com/softwaremill/elasticmq",
+      "https://github.com/rabbitmq/rabbitmq-dotnet-client",
+      "https://github.com/ruby-amqp/bunny",
+      "https://github.com/bernardphp/bernard",
+      "https://github.com/spring-cloud/spring-cloud-stream",
+      "https://github.com/apache/activemq-artemis",
+      "https://github.com/spring-projects/spring-amqp",
+      "https://github.com/youzan/nsq"
+    ]
+  },
+  "microservice": {
+    "ident": "microservice",
+    "name": "Microservice",
+    "name_cn": "微服务",
+    "slug": "/microservice",
+    "items": [
+      "https://github.com/go-kit/kit",
+      "https://github.com/go-kratos/kratos",
+      "https://github.com/alibaba/ice",
+      "https://github.com/micro/micro",
+      "https://gitee.com/owenwangwen/open-capacity-platform",
+      "https://github.com/nameko/nameko",
+      "https://github.com/zuihou/lamp-cloud",
+      "https://gitee.com/zuihou111/lamp-cloud",
+      "https://github.com/senecajs/seneca",
+      "https://gitee.com/JbootProjects/jboot",
+      "https://github.com/AxonFramework/AxonFramework",
+      "https://github.com/go-chassis/go-chassis",
+      "https://gitee.com/matevip/matecloud",
+      "https://gitee.com/596392912/mica",
+      "https://gitee.com/nepxion/Discovery"
     ]
   },
   "mind-map": {
@@ -2689,7 +3380,10 @@
       "https://github.com/flyteorg/flyte",
       "https://github.com/SchedMD/slurm",
       "https://github.com/ray-project/ray",
-      "https://github.com/tensorflow/tensorboard"
+      "https://github.com/tensorflow/tensorboard",
+      "https://github.com/Unity-Technologies/ml-agents",
+      "https://github.com/ml5js/ml5-library",
+      "https://github.com/keras-team/autokeras"
     ]
   },
   "mobile-cross-platform-application-development": {
@@ -2710,6 +3404,21 @@
       "https://github.com/qt/qt5",
       "https://github.com/cocos2d/cocos2d-x",
       "https://github.com/HaxeFoundation/haxe"
+    ]
+  },
+  "modeling-tools": {
+    "ident": "modeling-tools",
+    "name": "Modeling Tools",
+    "name_cn": "建模工具",
+    "slug": "/modeling-tools",
+    "items": [
+      "https://github.com/archimatetool/archi",
+      "https://github.com/statsmodels/statsmodels",
+      "https://github.com/toadstorm/MOPS",
+      "https://github.com/assimp/assimp",
+      "https://github.com/RodZill4/material-maker",
+      "https://github.com/python-control/python-control",
+      "https://github.com/sicmutils/sicmutils"
     ]
   },
   "monitoring": {
@@ -2748,6 +3457,76 @@
       "https://github.com/pencil2d/pencil"
     ]
   },
+  "net-util-tools": {
+    "ident": "net-util-tools",
+    "name": "Net Util Tools",
+    "name_cn": "网络应用工具",
+    "slug": "/net-util-tools",
+    "items": [
+      "https://github.com/shadowsocks/shadowsocks-windows",
+      "https://github.com/shadowsocks/shadowsocks-android",
+      "https://github.com/matomo-org/matomo",
+      "https://github.com/vernesong/OpenClash",
+      "https://github.com/shadowsocks/shadowsocks-rust",
+      "https://github.com/cydrobolt/polr",
+      "https://github.com/ivre/ivre",
+      "https://github.com/nmap/npcap",
+      "https://github.com/FreeRDP/Remmina",
+      "https://github.com/phpipam/phpipam",
+      "https://github.com/PowerDNS-Admin/PowerDNS-Admin",
+      "https://github.com/coderaiser/cloudcmd",
+      "https://github.com/magma/magma"
+    ]
+  },
+  "network-and-system-management": {
+    "ident": "network-and-system-management",
+    "name": "Network And System Management",
+    "name_cn": "网管工具和系统管理",
+    "slug": "/network-and-system-management",
+    "items": [
+      "https://github.com/microsoft/terminal",
+      "https://github.com/nvbn/thefuck",
+      "https://github.com/vercel/hyper",
+      "https://github.com/ventoy/Ventoy",
+      "https://github.com/cli/cli",
+      "https://github.com/tmux/tmux",
+      "https://github.com/cmderdev/cmder",
+      "https://github.com/fish-shell/fish-shell",
+      "https://github.com/kovidgoyal/kitty",
+      "https://github.com/iovisor/bcc",
+      "https://github.com/wtfutil/wtf",
+      "https://github.com/saltstack/salt",
+      "https://github.com/mobile-shell/mosh",
+      "https://github.com/symless/synergy-core",
+      "https://github.com/borgbackup/borg",
+      "https://github.com/Maximus5/ConEmu",
+      "https://github.com/mRemoteNG/mRemoteNG"
+    ]
+  },
+  "network-development-toolkit": {
+    "ident": "network-development-toolkit",
+    "name": "Network Development Toolkit",
+    "name_cn": "网络开发包",
+    "slug": "/network-development-toolkit",
+    "items": [
+      "https://github.com/psf/requests",
+      "https://github.com/curl/curl",
+      "https://github.com/swoole/swoole-src",
+      "https://github.com/chenshuo/muduo",
+      "https://github.com/SecureAuthCorp/impacket",
+      "https://github.com/apple/swift-nio",
+      "https://github.com/google/gopacket",
+      "https://github.com/aaugustin/websockets",
+      "https://gitee.com/smartboot/smart-socket",
+      "https://github.com/boostorg/beast",
+      "https://github.com/kerryjiang/SuperSocket",
+      "https://github.com/golang/net",
+      "https://github.com/clj-commons/aleph",
+      "https://github.com/crossbario/autobahn-python",
+      "https://github.com/quinn-rs/quinn",
+      "https://github.com/Corvusoft/restbed"
+    ]
+  },
   "network-protocol-analysis": {
     "ident": "network-protocol-analysis",
     "name": "Network Protocol Analysis",
@@ -2774,11 +3553,23 @@
     "slug": "/network-terminal-OS",
     "items": ["https://github.com/Thinstation/thinstation"]
   },
-  "nginx-related": {
-    "ident": "nginx-related",
-    "name": "Nginx Related",
-    "name_cn": "Nginx 相关",
-    "slug": "/nginx-related",
+  "nft": {
+    "ident": "nft",
+    "name": "NFT",
+    "name_cn": "NFT非同质化通证",
+    "slug": "/nft",
+    "items": [
+      "https://github.com/codeSTACKr/create-10k-nft-collection",
+      "https://github.com/ProjectOpenSea/seaport",
+      "https://github.com/fingerchar/fingernft",
+      "https://github.com/NotLuksus/nft-art-generator"
+    ]
+  },
+  "nginx-extended-modules": {
+    "ident": "nginx-extended-modules",
+    "name": "Nginx Extended Modules",
+    "name_cn": "Nginx扩展模块",
+    "slug": "/nginx-extended-modules",
     "items": [
       "https://github.com/NginxProxyManager/nginx-proxy-manager",
       "https://github.com/nginx-proxy/acme-companion",
@@ -2794,7 +3585,11 @@
       "https://github.com/caddyserver/nginx-adapter",
       "https://github.com/nginxinc/crossplane",
       "https://github.com/nginx-proxy/nginx-proxy",
-      "https://github.com/allinurl/goaccess"
+      "https://github.com/allinurl/goaccess",
+      "https://github.com/alibaba/tengine",
+      "https://github.com/openresty/lua-nginx-module",
+      "https://github.com/matsumotory/ngx_mruby",
+      "https://gitee.com/winshining/nginx-http-flv-module"
     ]
   },
   "nlp": {
@@ -2819,7 +3614,11 @@
       "https://github.com/sloria/textblob",
       "https://github.com/openai/gpt-2",
       "https://github.com/RasaHQ/rasa",
-      "https://github.com/facebookresearch/pytext"
+      "https://github.com/facebookresearch/pytext",
+      "https://github.com/kpu/kenlm",
+      "https://github.com/yanyiwu/cppjieba",
+      "https://github.com/spencermountain/compromise",
+      "https://github.com/doccano/doccano"
     ]
   },
   "no-sql-database": {
@@ -2909,6 +3708,27 @@
       "https://github.com/Automattic/simplenote-electron",
       "https://github.com/zadam/trilium",
       "https://github.com/notable/notable"
+    ]
+  },
+  "oauth-sso-unified-auth": {
+    "ident": "oauth-sso-unified-auth",
+    "name": "Oauth Sso Unified Auth",
+    "name_cn": "OAuth-单点登录-统一认证",
+    "slug": "/oauth-sso-unified-auth",
+    "items": [
+      "https://github.com/mitreid-connect/OpenID-Connect-Java-Spring-Server",
+      "https://github.com/OpenIDC/pyoidc",
+      "https://github.com/hybridauth/hybridauth",
+      "https://github.com/oauthlib/oauthlib",
+      "https://github.com/cloudfoundry/uaa",
+      "https://github.com/hwi/HWIOAuthBundle",
+      "https://github.com/thephpleague/oauth2-server",
+      "https://github.com/xamarin/Xamarin.Auth",
+      "https://github.com/authomatic/authomatic",
+      "https://github.com/simplabs/ember-simple-auth",
+      "https://github.com/Yubico/yubioath-desktop",
+      "https://github.com/CanCanCommunity/cancancan",
+      "https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet"
     ]
   },
   "object-storage": {
@@ -3049,6 +3869,26 @@
       "https://github.com/bestaone/HiAuth"
     ]
   },
+  "one-click-installation-kit": {
+    "ident": "one-click-installation-kit",
+    "name": "One Click Installation Kit",
+    "name_cn": "服务器一键安装包",
+    "slug": "/one-click-installation-kit",
+    "items": [
+      "https://gitee.com/cunkai/HomebrewCN",
+      "https://gitee.com/yeszao/dnmp",
+      "https://gitee.com/q7104475/kubeode",
+      "https://gitee.com/Tinywan/dnmp",
+      "https://gitee.com/ibisheng/deploy",
+      "https://gitee.com/licess/lnmp",
+      "https://gitee.com/inrgihc/greenplum_installer",
+      "https://gitee.com/linuxeye/oneinstack",
+      "https://gitee.com/hrpzcf/AwesomePyKit",
+      "https://gitee.com/openeuler/pyporter",
+      "https://gitee.com/xiaoyucc521/dnmp",
+      "https://gitee.com/RubyKids/rbenv-cn"
+    ]
+  },
   "one-time-password-client": {
     "ident": "one-time-password-client",
     "name": "One Time Password Client",
@@ -3123,6 +3963,61 @@
       "https://github.com/gfx-rs/wgpu",
       "https://github.com/olive-editor/olive",
       "https://github.com/fschutt/azul"
+    ]
+  },
+  "open-resty-extension": {
+    "ident": "open-resty-extension",
+    "name": "Open Resty Extension",
+    "name_cn": "Open Resty 扩展",
+    "slug": "/open-resty-extension",
+    "items": [
+      "https://github.com/openresty/openresty",
+      "https://github.com/openresty/lua-nginx-module",
+      "https://github.com/openresty/stream-lua-nginx-module",
+      "https://github.com/moonbingbing/openresty-best-practices",
+      "https://github.com/leafo/lapis",
+      "https://github.com/orlabs/orange",
+      "https://gitee.com/iresty/lua-resty-etcd"
+    ]
+  },
+  "open-source-llms-tools": {
+    "ident": "open-source-LLMs-tools",
+    "name": "Open Source LLMs Tools",
+    "name_cn": "开源LLMs工具",
+    "slug": "/open-source-LLMs-tools",
+    "items": [
+      "https://github.com/langchain-ai/langchain",
+      "https://github.com/Significant-Gravitas/Auto-GPT",
+      "https://github.com/jerryjliu/llama_index",
+      "https://github.com/chroma-core/chroma",
+      "https://github.com/ggerganov/llama.cpp",
+      "https://github.com/milvus-io/milvus",
+      "https://github.com/mindsdb/mindsdb",
+      "https://github.com/microsoft/prompt-engine",
+      "https://github.com/ShishirPatil/gorilla",
+      "https://github.com/FlowiseAI/Flowise",
+      "https://github.com/langgenius/dify",
+      "https://github.com/StanGirard/quivr",
+      "https://github.com/ray-project/ray"
+    ]
+  },
+  "open-source-llms": {
+    "ident": "open-source-LLMs",
+    "name": "Open Source LLMs",
+    "name_cn": "开源LLMs",
+    "slug": "/open-source-LLMs",
+    "items": [
+      "https://github.com/facebookresearch/llama",
+      "https://github.com/tatsu-lab/stanford_alpaca",
+      "https://github.com/lm-sys/FastChat",
+      "https://github.com/clue-ai/ChatYuan",
+      "https://github.com/facebookresearch/metaseq",
+      "https://github.com/openai/gpt-2",
+      "https://github.com/THUDM/CodeGeeX",
+      "https://github.com/THUDM/ChatGLM-6B",
+      "https://github.com/THUDM/ChatGLM2-6B",
+      "https://github.com/OpenLMLab/MOSS",
+      "https://github.com/conceptofmind/PaLM"
     ]
   },
   "open-source-hardware": {
@@ -3297,6 +4192,27 @@
       "https://github.com/Lyndir/MasterPassword"
     ]
   },
+  "payment-sdk": {
+    "ident": "payment-SDK",
+    "name": "Payment SDK",
+    "name_cn": "支付开发包",
+    "slug": "/payment-SDK",
+    "items": [
+      "https://github.com/activemerchant/active_merchant",
+      "https://github.com/stripe/stripe-php",
+      "https://github.com/stripe/stripe-node",
+      "https://gitee.com/yansongda/pay",
+      "https://github.com/Payum/Payum",
+      "https://github.com/stripe/stripe-ruby",
+      "https://github.com/stripe/stripe-ios",
+      "https://github.com/stripe/stripe",
+      "https://github.com/pay-rails/pay",
+      "https://github.com/stripe/stripe-python",
+      "https://github.com/stripe/stripe-dotnet",
+      "https://gitee.com/essensoft/paylink",
+      "https://github.com/Payum/PayumBundle"
+    ]
+  },
   "penetration-testing": {
     "ident": "penetration-testing",
     "name": "Penetration testing",
@@ -3421,6 +4337,39 @@
       "https://github.com/v2ex/launcher",
       "https://github.com/eggjs/egg-cluster",
       "https://github.com/ionrock/procs"
+    ]
+  },
+  "program-and-script-language": {
+    "ident": "program-and-script-language",
+    "name": "Program And Script Language",
+    "name_cn": "编程语言和脚本语言",
+    "slug": "/program-and-script-language",
+    "items": [
+      "https://github.com/microsoft/TypeScript",
+      "https://github.com/JuliaLang/julia",
+      "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "https://github.com/php/php-src",
+      "https://github.com/vlang/v",
+      "https://github.com/elixir-lang/elixir",
+      "https://github.com/ruby/ruby",
+      "https://github.com/ethereum/solidity",
+      "https://github.com/ziglang/zig",
+      "https://github.com/nikic/PHP-Parser",
+      "https://github.com/scala/scala",
+      "https://github.com/AssemblyScript/assemblyscript",
+      "https://github.com/tc39/ecma262",
+      "https://github.com/nim-lang/Nim",
+      "https://github.com/RustPython/RustPython",
+      "https://github.com/clojure/clojure",
+      "https://github.com/clojure/clojurescript",
+      "https://github.com/purescript/purescript",
+      "https://github.com/imba/imba",
+      "https://github.com/lua/lua",
+      "https://github.com/wren-lang/wren",
+      "https://github.com/Lexikos/AutoHotkey_L",
+      "https://github.com/alda-lang/alda",
+      "https://github.com/ponylang/ponyc",
+      "https://github.com/HaxeFoundation/haxe"
     ]
   },
   "pwa-library": {
@@ -3566,6 +4515,25 @@
       "https://github.com/trusktr/regexr"
     ]
   },
+  "regulation-engine": {
+    "ident": "regulation-engine",
+    "name": "Regulation Engine",
+    "name_cn": "规则引擎",
+    "slug": "/regulation-engine",
+    "items": [
+      "https://github.com/kiegroup/drools",
+      "https://github.com/NRules/NRules",
+      "https://github.com/jruizgit/rules",
+      "https://github.com/microsoft/RulesEngine",
+      "https://github.com/j-easy/easy-rules",
+      "https://github.com/CacheControl/json-rules-engine",
+      "https://github.com/secbr/drools",
+      "https://github.com/hyperjumptech/grule-rule-engine",
+      "https://gitee.com/waitmoon/ice",
+      "https://gitee.com/xnat/grule",
+      "https://gitee.com/rulego/rulego"
+    ]
+  },
   "remote-procedure-call": {
     "ident": "remote-procedure-call",
     "name": "Remote Procedure Call (RPC)",
@@ -3587,7 +4555,13 @@
       "https://github.com/hprose/hprose-golang",
       "https://github.com/rsocket/rsocket-go",
       "https://github.com/tiangolo/fastapi",
-      "https://github.com/micronaut-projects/micronaut-core"
+      "https://github.com/micronaut-projects/micronaut-core",
+      "https://github.com/apache/incubator-brpc",
+      "https://github.com/grpc-ecosystem/grpc-gateway",
+      "https://github.com/andeya/erpc",
+      "https://github.com/elixir-grpc/grpc",
+      "https://github.com/twitchtv/twirp",
+      "https://github.com/grpc/grpc-dotnet"
     ]
   },
   "repl-toolkit": {
@@ -3609,6 +4583,30 @@
       "https://github.com/python/cpython"
     ]
   },
+  "reporting-tool": {
+    "ident": "reporting-tool",
+    "name": "Reporting Tool",
+    "name_cn": "报表工具",
+    "slug": "/reporting-tool",
+    "items": [
+      "https://gitee.com/anji-plus/report",
+      "https://github.com/jsreport/jsreport",
+      "https://gitee.com/jeecg/JimuReport",
+      "https://gitee.com/youseries_admin/ureport",
+      "https://gitee.com/ureport/ReportPlus",
+      "https://gitee.com/xianrendzw/EasyReport",
+      "https://gitee.com/NoneDay/CellReport",
+      "https://gitee.com/ureport/ReportPro",
+      "https://gitee.com/doc_wei01/skyeye-report"
+    ]
+  },
+  "requirement-analysis-tools": {
+    "ident": "requirement-analysis-tools",
+    "name": "Requirement Analysis Tools",
+    "name_cn": "需求分析工具",
+    "slug": "/requirement-analysis-tools",
+    "items": ["https://github.com/jgraph/drawio"]
+  },
   "responsive-ui-frameworks": {
     "ident": "responsive-ui-frameworks",
     "name": "Responsive UI frameworks",
@@ -3629,6 +4627,44 @@
       "https://github.com/chakra-ui/chakra-ui",
       "https://github.com/grommet/grommet",
       "https://github.com/primefaces/primeng"
+    ]
+  },
+  "rest-project": {
+    "ident": "rest-project",
+    "name": "Rest Project",
+    "name_cn": "rest项目",
+    "slug": "/rest-project",
+    "items": [
+      "https://github.com/activescaffold/active_scaffold",
+      "https://github.com/FriendsOfSymfony/FOSRestBundle",
+      "https://github.com/feathersjs/feathers",
+      "https://github.com/OAI/OpenAPI-Specification",
+      "https://github.com/Suwayomi/Tachidesk-Server",
+      "https://github.com/Luracast/Restler",
+      "https://github.com/OData/odata.net",
+      "https://github.com/juxt/yada",
+      "https://github.com/fossasia/open-event-wsgen",
+      "https://github.com/bustoutsolutions/siesta"
+    ]
+  },
+  "reverse-engineering-and-re-engineering-software": {
+    "ident": "reverse-engineering-and-re-engineering-software",
+    "name": "Reverse Engineering And Re Engineering Software",
+    "name_cn": "逆向工程软件和再工程软件",
+    "slug": "/reverse-engineering-and-re-engineering-software",
+    "items": [
+      "https://github.com/cython/cython",
+      "https://github.com/icsharpcode/ILSpy",
+      "https://github.com/yasm/yasm",
+      "https://github.com/ldc-developers/ldc",
+      "https://github.com/ingokegel/jclasslib",
+      "https://github.com/mxe/mxe",
+      "https://github.com/serge-sans-paille/pythran",
+      "https://github.com/benjamn/recast",
+      "https://github.com/JesusFreke/smali",
+      "https://github.com/Nuitka/Nuitka",
+      "https://github.com/real-logic/simple-binary-encoding",
+      "https://github.com/konsoletyper/teavm"
     ]
   },
   "roadmap": {
@@ -3767,6 +4803,26 @@
       "https://github.com/shutter-project/shutter"
     ]
   },
+  "search-engine": {
+    "ident": "search-engine",
+    "name": "Search Engine",
+    "name_cn": "搜索引擎",
+    "slug": "/search-engine",
+    "items": [
+      "https://github.com/elasticsearch/elasticsearch",
+      "https://github.com/meilisearch/meilisearch",
+      "https://github.com/searx/searx",
+      "https://github.com/blevesearch/bleve",
+      "https://github.com/NLPchina/elasticsearch-sql",
+      "https://github.com/opensearch-project/OpenSearch",
+      "https://github.com/elastic/elasticsearch-dsl-py",
+      "https://github.com/qdrant/qdrant",
+      "https://github.com/yacy/yacy_search_server",
+      "https://github.com/apache/lucenenet",
+      "https://github.com/DEgITx/rats-search",
+      "https://github.com/10up/ElasticPress"
+    ]
+  },
   "security-and-compliance": {
     "ident": "security-and-compliance",
     "name": "Security & Compliance",
@@ -3823,10 +4879,10 @@
       "https://github.com/HelenOS/helenos"
     ]
   },
-  "serverless-framework": {
-    "ident": "serverless-framework",
-    "name": "Serverless Framework",
-    "name_cn": "Serverless 框架",
+  "serverless": {
+    "ident": "serverless",
+    "name": "Serverless",
+    "name_cn": "Serverless无服务器",
     "slug": "/serverless-framework",
     "items": [
       "https://github.com/AnomalyInnovations/serverless-stack-com",
@@ -3897,6 +4953,30 @@
       "https://github.com/unvented/shortic",
       "https://github.com/nokonoko/Uguu",
       "https://github.com/barats/ohUrlShortener"
+    ]
+  },
+  "simulation-development-tools": {
+    "ident": "simulation-development-tools",
+    "name": "Simulation Development Tools",
+    "name_cn": "仿真开发工具",
+    "slug": "/simulation-development-tools",
+    "items": [
+      "https://github.com/EKA2L1/EKA2L1",
+      "https://github.com/jbush001/NyuziProcessor",
+      "https://github.com/buserror/simavr",
+      "https://github.com/brian-team/brian2",
+      "https://github.com/cocotb/cocotb",
+      "https://github.com/GNS3/gns3-server",
+      "https://github.com/GNS3/gns3-gui",
+      "https://github.com/RobotLocomotion/drake",
+      "https://github.com/NanoComp/meep",
+      "https://github.com/floooh/chips",
+      "https://github.com/foxglove/studio",
+      "https://github.com/NREL/EnergyPlus",
+      "https://github.com/gpgpu-sim/gpgpu-sim_distribution",
+      "https://github.com/gem5/gem5",
+      "https://github.com/OpenModelica/OpenModelica",
+      "https://github.com/KratosMultiphysics/Kratos"
     ]
   },
   "slack-alternative": {
@@ -4040,6 +5120,24 @@
       "https://github.com/fredrik-johansson/arb",
       "https://github.com/markusschanta/awesome-jupyter",
       "https://github.com/broadinstitute/picard"
+    ]
+  },
+  "software-project-management": {
+    "ident": "software-project-management",
+    "name": "Software Project Management",
+    "name_cn": "软件项目管理",
+    "slug": "/software-project-management",
+    "items": [
+      "https://github.com/edavis10/redmine",
+      "https://github.com/taigaio/taiga-back",
+      "https://github.com/erengy/taiga",
+      "https://github.com/mattermost/focalboard",
+      "https://github.com/mantisbt/mantisbt",
+      "https://github.com/redmine/redmine",
+      "https://github.com/taigaio/taiga-front",
+      "https://github.com/kiswa/TaskBoard",
+      "https://github.com/ParabolInc/parabol",
+      "https://github.com/nextcloud/deck"
     ]
   },
   "sql-database": {
@@ -4320,6 +5418,30 @@
       "https://github.com/wix/Detox"
     ]
   },
+  "testing-tools": {
+    "ident": "testing-tools",
+    "name": "Testing Tools",
+    "name_cn": "测试工具",
+    "slug": "/testing-tools",
+    "items": [
+      "https://github.com/vitest-dev/vitest",
+      "https://github.com/cucumber/cucumber-ruby",
+      "https://github.com/freerange/mocha",
+      "https://github.com/aosp-mirror/platform_development",
+      "https://github.com/jasmine/jasmine",
+      "https://github.com/unclebob/fitnesse",
+      "https://github.com/junit-team/junit4",
+      "https://github.com/jquery/testswarm",
+      "https://github.com/seattlerb/minitest",
+      "https://github.com/mockery/mockery",
+      "https://github.com/DatabaseCleaner/database_cleaner",
+      "https://github.com/theory/pgtap",
+      "https://github.com/grosser/parallel_tests",
+      "https://github.com/sebastianbergmann/php-code-coverage",
+      "https://github.com/rspec/rspec-core",
+      "https://github.com/testng-team/testng"
+    ]
+  },
   "time-series-database": {
     "ident": "time-series-database",
     "name": "Time Series Database",
@@ -4425,7 +5547,12 @@
       "https://github.com/3lang3/react-vant",
       "https://github.com/lewkamtao/lew-ui",
       "https://github.com/steinbergmedia/vstgui",
-      "https://github.com/mallfoundry/taroify"
+      "https://github.com/mallfoundry/taroify",
+      "https://github.com/arrowtype/recursive",
+      "https://github.com/ngxs/store",
+      "https://github.com/pinterest/gestalt",
+      "https://github.com/coreui/coreui",
+      "https://github.com/Shopify/quilt"
     ]
   },
   "unified-modeling-language-tookit": {
@@ -4460,6 +5587,32 @@
       "https://github.com/pytest-dev/pytest",
       "https://github.com/nunit/nunit",
       "https://github.com/junit-team/junit5"
+    ]
+  },
+  "user-interface-design-tools": {
+    "ident": "user-interface-design-tools",
+    "name": "User Interface Design Tools",
+    "name_cn": "界面设计工具",
+    "slug": "/user-interface-design-tools",
+    "items": ["https://github.com/sketch-hq/SketchAPI"]
+  },
+  "verification-code": {
+    "ident": "verification-code",
+    "name": "Verification Code",
+    "name_cn": "验证码",
+    "slug": "/verification-code",
+    "items": [
+      "https://github.com/kerlomz/captcha_trainer",
+      "https://github.com/wenlng/go-captcha",
+      "https://github.com/huaiyukeji/verification_code",
+      "https://gitee.com/anji-plus/captcha",
+      "https://gitee.com/LongbowEnterprise/SliderCaptcha",
+      "https://gitee.com/ele-admin/EasyCaptcha",
+      "https://gitee.com/tianai/tianai-captcha",
+      "https://gitee.com/monoplasty/vue-monoplasty-slide-verify",
+      "https://gitee.com/ramostear/Happy-Captcha",
+      "https://github.com/kerlomz/captcha_platform",
+      "https://github.com/LeeeSe/MessAuto"
     ]
   },
   "version-control-system": {
@@ -4652,6 +5805,25 @@
       "https://github.com/pjsip/pjproject"
     ]
   },
+  "web-backend-component-and-framework": {
+    "ident": "web-backend-component-and-framework",
+    "name": "Web Backend Component And Framework",
+    "name_cn": "后端组件和框架",
+    "slug": "/web-backend-component-and-framework",
+    "items": [
+      "https://github.com/rails/rails",
+      "https://github.com/spring/spring",
+      "https://github.com/django-haystack/django-haystack",
+      "https://github.com/django-extensions/django-extensions",
+      "https://github.com/scalatra/scalatra",
+      "https://github.com/yesodweb/yesod",
+      "https://github.com/assaf/vanity",
+      "https://github.com/padrino/padrino-framework",
+      "https://github.com/lostisland/faraday",
+      "https://github.com/symfony/symfony",
+      "https://github.com/pallets/flask"
+    ]
+  },
   "web-framework": {
     "ident": "web-framework",
     "name": "Web Framework",
@@ -4681,6 +5853,27 @@
       "https://github.com/dotnet/aspnetcore",
       "https://github.com/beego/beego",
       "https://gitee.com/bboss/bboss"
+    ]
+  },
+  "web-frontend-component-and-framework": {
+    "ident": "web-frontend-component-and-framework",
+    "name": "Web Frontend Component And Framework",
+    "name_cn": "Web前端组件和框架",
+    "slug": "/web-frontend-component-and-framework",
+    "items": [
+      "https://github.com/xaboy/form-create",
+      "https://github.com/arrowtype/recursive",
+      "https://github.com/ngxs/store",
+      "https://github.com/aurelia/aurelia",
+      "https://github.com/pinterest/gestalt",
+      "https://github.com/effector/effector",
+      "https://github.com/pmndrs/react-spring",
+      "https://github.com/mint-lang/mint",
+      "https://github.com/coreui/coreui",
+      "https://github.com/Shopify/quilt",
+      "https://github.com/NervJS/taro",
+      "https://github.com/unocss/unocss",
+      "https://github.com/web3ui/web3uikit"
     ]
   },
   "web-popup-component": {
@@ -4776,6 +5969,22 @@
       "https://github.com/tryton/tryton"
     ]
   },
+  "workflow-engine-and-tools": {
+    "ident": "workflow-engine-and-tools",
+    "name": "Workflow Engine And Tools",
+    "name_cn": "流程引擎及工具",
+    "slug": "/workflow-engine-and-tools",
+    "items": [
+      "https://gitee.com/dromara/liteFlow",
+      "https://gitee.com/lwj/flow",
+      "https://gitee.com/mirrors/drawio",
+      "https://gitee.com/mcg-helper/mcg-helper",
+      "https://gitee.com/tianya_studio/ESTDesigner",
+      "https://gitee.com/smartboot/smart-flow",
+      "https://gitee.com/zhuzl002/bpm-web",
+      "https://gitee.com/zengfr/stepchain"
+    ]
+  },
   "workflow-scheduler": {
     "ident": "workflow-scheduler",
     "name": "Workflow Scheduler",
@@ -4794,6 +6003,27 @@
       "https://github.com/kubeflow/pipelines",
       "https://github.com/apache/falcon",
       "https://github.com/backstage/backstage"
+    ]
+  },
+  "workflow": {
+    "ident": "workflow",
+    "name": "Workflow",
+    "name_cn": "工作流",
+    "slug": "/workflow",
+    "items": [
+      "https://github.com/apache/airflow",
+      "https://github.com/apache/nifi",
+      "https://github.com/spotify/luigi",
+      "https://github.com/azkaban/azkaban",
+      "https://github.com/apache/oozie",
+      "https://github.com/Netflix/conductor",
+      "https://github.com/dagster-io/dagster",
+      "https://github.com/PrefectHQ/prefect",
+      "https://github.com/kubeflow/pipelines",
+      "https://github.com/backstage/backstage",
+      "https://github.com/PipedreamHQ/pipedream",
+      "https://github.com/camunda/camunda-bpm-platform",
+      "https://github.com/sartography/SpiffWorkflow"
     ]
   },
   "wysiwyg-editor": {
