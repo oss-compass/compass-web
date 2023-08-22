@@ -73,7 +73,7 @@ const VersionCard = ({
           {modelIsPublic ? (
             <div className="mb-2 flex items-center">
               <span className="text-secondary block truncate text-xs">
-                {t('lab:versions_public')}：
+                {t('lab:default_display_version')}：
               </span>
               {cardLoading ? (
                 <CgSpinner className="mr-1 animate-spin text-xl" />

@@ -41,13 +41,8 @@ const FormAlgorithm = () => {
           <Image
             width={520}
             height={80}
-            src={'/images/lab/algorithm.png'}
-            unoptimized
+            src={'/images/lab/algorithm.jpeg'}
             alt={''}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-            }}
           />
         </div>
       </div>

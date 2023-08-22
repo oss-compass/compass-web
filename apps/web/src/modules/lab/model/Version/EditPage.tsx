@@ -86,7 +86,7 @@ const ModelVersionEdit = () => {
             <span className="ml-2">
               {modelVersion?.labModelVersion?.version}
             </span>
-            /<span className="ml-2">Edit</span>
+            /<span className="ml-2">{t('lab:edit')}</span>
           </div>
         </div>
 

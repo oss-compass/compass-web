@@ -6,6 +6,7 @@ import { useCreateLabModelVersionMutation } from '@oss-compass/graphql';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import Center from '@common/components/Layout/Center';
+import getErrorMessage from '@common/utils/getErrorMessage';
 import { formState, actions } from '../Form/state';
 import Form from '../Form';
 import { useLabModelDetail } from '../hooks';
@@ -35,9 +36,12 @@ const VersionCreate = () => {
       router.push('/lab/model/my');
     },
     onError(res) {
-      toast.error((t) => <>创建失败</>, {
-        position: 'top-center',
-      });
+      toast.error(
+        getErrorMessage(res) || (() => <>{t('lab:create_failed')}</>),
+        {
+          position: 'top-center',
+        }
+      );
     },
   });
 
@@ -48,7 +52,7 @@ const VersionCreate = () => {
           <div className="text-xl font-semibold">
             <Link href={'/lab/model/my'}>{t('lab:my_models')}</Link> /
             <span className="ml-2">{modelDetail?.labModelDetail?.name}</span> /
-            <span className="ml-2">NewVersion</span>
+            <span className="ml-2">{t('lab:new_version')}</span>
           </div>
         </div>
         <Form
