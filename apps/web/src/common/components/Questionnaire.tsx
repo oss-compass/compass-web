@@ -11,14 +11,14 @@ const Questionnaire = () => {
     return (
       <div className="z-modal fixed bottom-[100px] right-10 ">
         <Link
-          href="https://wj.qq.com/s2/12430808/ef24/"
+          href="https://mp.weixin.qq.com/s?__biz=MzkxMDQzNjc2MQ==&mid=2247484166&idx=1&sn=8744720b2b60b5c353aa468fe91d85f0&chksm=c12a33f0f65dbae6a4dc38ec08ab9594545cd2ec3427ae32e4c4523e787ae787f3b270c91ec0&token=1781014651&lang=zh_CN#rd"
           target="_blank"
           className="h-[124px] w-[136px]"
         >
           <Image
             src="/images/questionnaire/icon.png"
             width={124}
-            height={136}
+            height={144}
             alt={''}
             style={{
               maxWidth: '100%',
