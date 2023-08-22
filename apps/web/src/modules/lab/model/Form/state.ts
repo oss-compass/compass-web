@@ -37,7 +37,7 @@ const initialObj = {
   name: '',
   dimension: 0,
   isPublic: false,
-  isGeneral: false,
+  isGeneral: true,
 
   version: '',
   dataSet: [],

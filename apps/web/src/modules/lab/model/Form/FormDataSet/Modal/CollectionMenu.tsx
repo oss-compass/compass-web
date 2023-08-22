@@ -1,12 +1,15 @@
 import React, { useState, useEffect, PropsWithChildren } from 'react';
 import classnames from 'classnames';
-import { useSnapshot, subscribe } from 'valtio';
+import { useSnapshot } from 'valtio';
+import { useTranslation } from 'next-i18next';
 import { useDataSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { BadgeCount } from '@modules/lab/model/components/BadgeCount';
 import { formFiledState, actions, useSelectedCount, getKey } from '../state';
+import { getFirstIdentName, getSecondIdentName } from '../../../i18n';
 
-const CategoryMenu = ({ ident }: { ident: string }) => {
+const CollectionMenu = ({ ident }: { ident: string }) => {
+  const { t, i18n } = useTranslation();
   const [collapse, setCollapse] = useState(false);
   const snapshot = useSnapshot(formFiledState);
   const { data, isLoading } = useDataSetListQuery(
@@ -37,7 +40,9 @@ const CategoryMenu = ({ ident }: { ident: string }) => {
           setCollapse((p) => !p);
         }}
       >
-        <div className="truncate">{ident}</div>
+        <div className="truncate text-sm">
+          {getFirstIdentName(ident, i18n.language)}
+        </div>
         {count ? <BadgeCount count={count} /> : null}
       </div>
       <div
@@ -66,7 +71,7 @@ const CategoryMenu = ({ ident }: { ident: string }) => {
         {data?.datasetOverview?.map((item) => {
           const isSubMenuActive = snapshot.levelSecond === item;
           return (
-            <CategorySubMenu
+            <CollectionSubMenu
               key={item}
               active={isSubMenuActive}
               ident={ident}
@@ -85,7 +90,7 @@ const CategoryMenu = ({ ident }: { ident: string }) => {
   );
 };
 
-const CategorySubMenu = ({
+const CollectionSubMenu = ({
   active,
   ident,
   subIdent,
@@ -96,6 +101,7 @@ const CategorySubMenu = ({
   active?: boolean;
   onSelectItem: (sub: string) => void;
 }) => {
+  const { t, i18n } = useTranslation();
   const count = useSelectedCount({ firstIdent: ident, secondIdent: subIdent });
 
   return (
@@ -105,12 +111,16 @@ const CategorySubMenu = ({
         onSelectItem(subIdent);
       }}
     >
-      <div className={classnames('truncate', [active ? 'text-primary' : ''])}>
-        {subIdent}
+      <div
+        className={classnames('truncate text-sm', [
+          active ? 'text-primary' : '',
+        ])}
+      >
+        {getSecondIdentName(subIdent, i18n.language)}
       </div>
       {count ? <BadgeCount count={count} /> : null}
     </div>
   );
 };
 
-export default CategoryMenu;
+export default CollectionMenu;

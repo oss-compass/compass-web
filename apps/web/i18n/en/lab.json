@@ -1,4 +1,5 @@
 {
+  "back_my_lab": "Back to My Lab",
   "the_locale_names_are_used_for": "Compass Lab is a sandbox that helps people quickly create and validate metrics models of their interest, which can be used for proprietary domain evaluations or as general models. It provides over 20,000 open-source project datasets from over 200 categories, 100+ CHAOSS metrics, and custom algorithms to promote continuous innovation in modeling.",
   "discuss": "Discuss",
   "create_a_model": "Create a model",
@@ -26,6 +27,9 @@
   "user_management": "Member",
   "model_name": "Model Name",
   "version_name": "Version Name",
+  "selected_count": "Selected {{value}} items",
+  "search_dataset_placeholder": "Search repository",
+  "search_metric_placeholder": "Search metrics",
   "commit_enter": "Press Enter to send a comment",
   "reply": "reply",
   "user": {
@@ -95,15 +99,18 @@
     "retry_title": "Confirm analysis again?",
     "status": "Last time trigger status: ",
     "time": "Last time trigger time: ",
-    "analyzing": "Analyzing..."
+    "analyzing": "Analyzing...",
+    "times_limit": "Not enough times"
   },
   "analysis_status": {
+    "tips": "Report analysis not completed: ",
     "pending": "pending",
     "progress": "progress",
     "success": "success",
     "unsumbit": "unsumbit"
   },
   "threshold_range": "Between 0 and {{value}}",
+  "select_over_tips": "Cannot exceed 10 items",
   "create": "Create",
   "edit": "Edit",
   "new_version": "New Version",
@@ -123,5 +130,6 @@
     "version_require": "Please enter version name",
     "dataset_require": "Please select dataset",
     "metric_require": "Please select metric"
-  }
+  },
+  "projects_selected": "{{count}} repository selected"
 }

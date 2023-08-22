@@ -16,10 +16,12 @@ import { formatToNow } from '@common/utils/time';
 
 const TriggerConfirmBtn = ({
   modelId,
+  triggerRemainingCount,
   version,
   event$,
 }: {
   modelId: number;
+  triggerRemainingCount: number;
   version: ModelVersion;
   event$: EventEmitter<string>;
 }) => {
@@ -39,6 +41,16 @@ const TriggerConfirmBtn = ({
       <div className="text-secondary flex basis-1/2 cursor-pointer items-center justify-center border-r last:border-r-0">
         <span className="block text-sm">
           {t('lab:trigger_analysis.analyzing')}
+        </span>
+      </div>
+    );
+  }
+
+  if (triggerRemainingCount === 0) {
+    return (
+      <div className="text-secondary flex basis-1/2 cursor-pointer items-center justify-center border-r last:border-r-0">
+        <span className="block text-sm">
+          {t('lab:trigger_analysis.times_limit')}
         </span>
       </div>
     );

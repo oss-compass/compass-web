@@ -100,6 +100,7 @@ const ModelItem = ({
               key={item.id}
               modelId={model.id}
               modelIsPublic={model.isPublic}
+              triggerRemainingCount={model.triggerRemainingCount}
               version={item}
               permissions={permissions}
               event$={event$}

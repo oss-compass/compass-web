@@ -1,4 +1,5 @@
 {
+  "back_my_lab": "返回我的模型",
   "the_locale_names_are_used_for": "Compass Lab is a sandbox that helps people quickly create and validate metrics models of their interest, which can be used for proprietary domain evaluations or as general models. It provides over 20,000 open-source project datasets from over 200 categories, 100+ CHAOSS metrics, and custom algorithms to promote continuous innovation in modeling.",
   "discuss": "讨论",
   "create_a_model": "创建一个模型",
@@ -26,6 +27,9 @@
   "user_management": "用户管理",
   "model_name": "模型名称",
   "version_name": "版本名称",
+  "selected_count": "已选 {{value}} 条",
+  "search_dataset_placeholder": "搜索仓库",
+  "search_metric_placeholder": "搜索指标",
   "commit_enter": "按 Enter 发送评论",
   "reply": "回复",
   "user": {
@@ -57,8 +61,8 @@
   "remaining_times_of_analysis_performed_this_week": "本周剩余分析次数: ",
   "view_report": "查看报告",
   "click_on_the_left_menu_and_select_a_category": "点击左侧菜单，选择分类",
-  "cant_find_a_suitable_dataset": "找不到合适的数据集？",
-  "cant_find_a_suitable_metric": "找不到合适的度量指标？",
+  "cant_find_a_suitable_dataset": "找不到合适的数据集 ？",
+  "cant_find_a_suitable_metric": "找不到合适的度量指标 ？",
   "ecological_dimension": "生态维度",
   "industry_options": {
     "is_it_applicable_to_general_industries_fields": "适用于一般行业/领域吗？",
@@ -95,15 +99,18 @@
     "retry_title": "确认重新分析吗？",
     "status": "上次触发状态：",
     "time": "上次触发时间：",
-    "analyzing": "分析中..."
+    "analyzing": "分析中...",
+    "times_limit": "次数已用完"
   },
   "analysis_status": {
+    "tips": "报告还未生成：",
     "pending": "分析中...",
     "progress": "分析中...",
     "success": "成功",
     "unsumbit": "未触发"
   },
   "threshold_range": "介于 0 - {{value}} 之间",
+  "select_over_tips": "不能超过 10 条",
   "create": "创建",
   "edit": "编辑",
   "new_version": "创建版本",
@@ -122,5 +129,6 @@
     "version_require": "请输入版本名称",
     "dataset_require": "请选择数据集",
     "metric_require": "请选择指标"
-  }
+  },
+  "projects_selected": "已选中 {{count}} 个仓库"
 }

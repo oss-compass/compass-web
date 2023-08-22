@@ -14,7 +14,7 @@ import { formatISO } from '@common/utils';
 export const getChartBuilder: getBuilderOptionFn<{}> = () => (pre, results) => {
   const compareLabels = results.map((i) => i.label);
   const lastItem = last(results);
-  const chartType = lastItem.chartType;
+  const chartType = lastItem?.chartType;
 
   // todo  merge date  不相同的时间线
   const dates = lastItem?.dates || [];

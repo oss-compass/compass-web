@@ -2236,6 +2236,8 @@ export type LabModelVersionQuery = {
     __typename?: 'ModelVersion';
     id: number;
     version?: string | null;
+    triggerStatus?: string | null;
+    triggerUpdatedAt?: any | null;
     algorithm?: {
       __typename?: 'Algorithm';
       ident: string;
@@ -4383,6 +4385,8 @@ export const LabModelVersionDocument = /*#__PURE__*/ `
     metrics {
       ...metrics
     }
+    triggerStatus
+    triggerUpdatedAt
   }
 }
     ${AlgorithmFragmentDoc}

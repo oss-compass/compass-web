@@ -91,11 +91,13 @@
     "modification_successful": "修改成功",
     "modification_failed": "修改失败"
   },
-  "loading_more": "加载中...",
+  "loading": "加载中...",
+  "loading_more": "加载更多...",
   "load_more": "点击加载更多",
   "nothing_more_to_load": "无更多数据了",
   "copy": {
     "click_to_copy": "点击复制",
     "copy_successfully": "复制成功"
-  }
+  },
+  "contact_us": "通过<s>社区</s>联系我们。"
 }

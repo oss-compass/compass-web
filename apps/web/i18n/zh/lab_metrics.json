@@ -1,6 +1,6 @@
 {
-  "contributor_title": "贡献者",
   "contributor": {
+    "title": "贡献者",
     "contributor_count": "贡献者数量",
     "contributor_count_desc": "过去 90 天中活跃的代码提交者、Pull Request 作者、代码审查者、Issue 作者和 Issue 评论者的数量。",
     "contributor_count_value": {
@@ -48,6 +48,7 @@
     }
   },
   "git": {
+    "title": "代码",
     "commit_frequency": "代码提交频率",
     "commit_frequency_desc": "过去90天内平均每周有组织归属的代码提交次数。",
     "commit_frequency_value": {
@@ -134,6 +135,7 @@
     "lines_remove_of_code_frequency_desc": "过去90天内平均每周删除的代码行数。"
   },
   "issue": {
+    "title": "Issue",
     "issue_first_reponse": "Issue 首次响应时间",
     "issue_first_reponse_desc": "过去 90 天新建 Issue 首次响应时间的均值和中位数（天）。这不包括机器人响应、创建者自己的评论或 Issue 的分配动作（action）。如果 Issue 一直未被响应，该 Issue 不被算入统计。",
     "bug_issue_open_time": "Bug 类 Issue 处理时间",
@@ -146,6 +148,7 @@
     "closed_issues_count_desc": "过去90天关闭 Issue 的数量。"
   },
   "pr": {
+    "title": "PR",
     "pr_issue_linked_ratio": "PR 关联 Issue 的比率",
     "pr_issue_linked_ratio_desc": "过去90天内新建 PR 关联 Issue 的百分比。",
     "pr_issue_linked_ratio_value": {
@@ -209,6 +212,7 @@
     "pr_issue_linked_count_desc": "过去90天内新建 PR 关联 Issue 的数量。"
   },
   "repo": {
+    "title": "仓库",
     "recent_releases_count": "最近版本发布次数",
     "recent_releases_count_desc": "过去12个月版本发布的数量。",
     "recent_releases_count_value": {

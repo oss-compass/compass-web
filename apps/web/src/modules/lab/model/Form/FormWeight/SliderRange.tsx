@@ -1,7 +1,7 @@
 import React from 'react';
 import Slider from '@common/components/Slider';
 import { actions } from '../state';
-import { sumPre } from '../utils';
+import { sumPre, minus } from '../utils';
 
 const SliderRange = ({
   index,
@@ -40,13 +40,12 @@ const SliderRange = ({
         if (Array.isArray(value)) {
           const [startPre, endPre] = range as number[];
           const [start, end] = value;
-          console.log({ startPre, endPre, start, end });
           // only allow move left
           if (start < startPre) return;
-          const result = end - start;
+          const result = minus(end, start);
           actions.adjustMetricWeightHandle(result, index);
         } else {
-          const result = isLast ? 100 - value : value;
+          const result = isLast ? minus(100, value) : value;
           actions.adjustMetricWeightHandle(result, index);
         }
       }}

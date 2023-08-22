@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { useSnapshot } from 'valtio';
+import { useTranslation } from 'next-i18next';
 import { BadgeCount } from '@modules/lab/model/components/BadgeCount';
 import { formFiledState } from '../state';
 
 const CategoryMenu = ({ category }: { category: string }) => {
+  const { t } = useTranslation();
   const snapshot = useSnapshot(formFiledState);
   const categorySelected = snapshot.selected[category];
   const count = categorySelected?.length || 0;
@@ -26,7 +28,7 @@ const CategoryMenu = ({ category }: { category: string }) => {
           formFiledState.activeCategory = category;
         }}
       >
-        <div>{category}</div>
+        <div>{t(`lab_metrics:${category}.title`)}</div>
         {count ? <BadgeCount count={count} /> : null}
       </div>
     </div>

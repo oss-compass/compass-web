@@ -10,6 +10,7 @@ const FormMetric = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const snapshot = useSnapshot(formState);
+  const metricSetLength = snapshot.metricSet.length;
 
   return (
     <div className="mb-6">
@@ -27,11 +28,13 @@ const FormMetric = () => {
             />
           );
         })}
-        <ItemCardPlus
-          onHandleAdd={() => {
-            setOpen(true);
-          }}
-        />
+        {metricSetLength < 10 ? (
+          <ItemCardPlus
+            onHandleAdd={() => {
+              setOpen(true);
+            }}
+          />
+        ) : null}
       </div>
 
       <ModalSelect

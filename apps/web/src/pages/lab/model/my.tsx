@@ -10,7 +10,7 @@ import MyModel from '@modules/lab/model/My';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['lab'])),
+      ...(await getLocalesFile(req.cookies, ['lab', 'lab_metrics'])),
     },
   };
 };

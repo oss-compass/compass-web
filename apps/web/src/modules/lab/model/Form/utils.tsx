@@ -8,6 +8,10 @@ export const sumPre = (index: number, values: number[]): number => {
   return sum.toNumber();
 };
 
+export const minus = (a: number, b: number): number => {
+  return new Big(a).minus(b).toNumber();
+};
+
 export const getItem = (
   arr: number[],
   index: number,

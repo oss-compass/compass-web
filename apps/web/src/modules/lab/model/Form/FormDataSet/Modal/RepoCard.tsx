@@ -48,21 +48,15 @@ const RepoCard = ({
       onClick={() => onSelect(label)}
     >
       <div className="py-2.5 px-4">
-        <div className="absolute bottom-4 right-4">
+        <div className="absolute bottom-1.5 right-4">
           <input checked={selected} type="checkbox" onChange={() => {}} />
         </div>
 
         <div>
-          <div className="h-20">
-            <p
-              className={classnames(
-                'mb-1 truncate break-words text-xl font-bold '
-              )}
-            >
-              {repo}
-            </p>
-            <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
-          </div>
+          <p className={classnames('mb-1 truncate break-words font-bold ')}>
+            {repo}
+          </p>
+          <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
         </div>
 
         <div className="flex w-full items-center">

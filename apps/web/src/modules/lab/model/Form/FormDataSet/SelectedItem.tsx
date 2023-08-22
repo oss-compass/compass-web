@@ -6,6 +6,7 @@ import { FiEdit } from 'react-icons/fi';
 import { AiOutlinePlus } from 'react-icons/ai';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
+import { getSecondIdentName } from '../../i18n';
 
 export const ItemCard = ({
   ident,
@@ -18,16 +19,18 @@ export const ItemCard = ({
   onHandleEdit: () => void;
   onHandleDelete: () => void;
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
 
   return (
     <>
       <div className="flex h-24 flex-col border border-[#CCCCCC] bg-[#FAFAFA] p-3">
         <div className="flex-1">
-          <div className="text-sm font-medium">{ident}</div>
+          <div className="text-sm font-medium">
+            {getSecondIdentName(ident, i18n.language)}
+          </div>
           <div className="text-xs text-[#585858]">
-            {count} projects selected
+            {t('lab:projects_selected', { count: count })}
           </div>
         </div>
         <div className="flex justify-end text-[#585858]">

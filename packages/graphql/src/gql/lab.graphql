@@ -246,6 +246,8 @@ query labModelVersion($modelId: Int!, $versionId: Int!) {
     metrics {
       ...metrics
     }
+    triggerStatus
+    triggerUpdatedAt
   }
 }
 

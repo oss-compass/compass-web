@@ -78,7 +78,9 @@ const ModalSelect = ({
 
     if (isLoading) {
       return (
-        <div className="text-secondary w-full text-center ">loading...</div>
+        <div className="text-secondary w-full text-center ">
+          {t('common:loading_more')}
+        </div>
       );
     }
     const repos = searchData?.datasetFuzzySearch || [];
@@ -133,10 +135,12 @@ const ModalSelect = ({
           <div className="mb-3 text-2xl font-medium">
             {t('lab:add_dataset')}
           </div>
-          <div className="mb-4 text-sm">Selected {count} items</div>
+          <div className="mb-4 text-sm">
+            {t('lab:selected_count', { value: count })}
+          </div>
           <Input
             value={search}
-            placeholder="search..."
+            placeholder={t('lab:search_dataset_placeholder')}
             className="mb-4 border-2"
             onChange={(v) => {
               setSearch(v);
@@ -158,11 +162,15 @@ const ModalSelect = ({
             </div>
             <div>
               <Button
+                disabled={count > 10}
+                className="min-w-[100px]"
                 onClick={() => {
                   handleSave();
                 }}
               >
-                Save
+                {count > 10
+                  ? t('lab:select_over_tips')
+                  : t('common:btn.confirm')}
               </Button>
             </div>
           </div>

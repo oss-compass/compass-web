@@ -1,6 +1,6 @@
 {
-  "contributor_title": "Contributor",
   "contributor": {
+    "title": "Contributor",
     "contributor_count": "Contributor Count",
     "contributor_count_desc": "Determine how many active code commit authors, pr authors, review participants, issue authors, and issue comments participants there are in the past 90 days.",
     "contributor_count_value": {
@@ -48,6 +48,7 @@
     }
   },
   "git": {
+    "title": "Git",
     "commit_frequency": "Commit Frequency",
     "commit_frequency_desc": "Determine the average number of commits per week in the past 90 days.",
     "commit_frequency_value": {
@@ -134,6 +135,7 @@
     "lines_remove_of_code_frequency_desc": "Determine the average number of lines touched (lines removed) per week in the past 90."
   },
   "issue": {
+    "title": "Issue",
     "issue_first_reponse": "Issue First Response",
     "issue_first_reponse_desc": "Average/Median first comments response (in days) for new issues created in the last 90 days. This excludes bot responses, the creator's own comment, or an action assigned by the issue. If the issue has been unanswered, the first response time is not counted.",
     "bug_issue_open_time": "Bug Issue Open Time",
@@ -146,6 +148,7 @@
     "closed_issues_count_desc": "Determine the number of issues closed in the last 90 days."
   },
   "pr": {
+    "title": "PR",
     "pr_issue_linked_ratio": "PR Issue Linked Ratio",
     "pr_issue_linked_ratio_desc": "Determine the percentage of new pull request link issues in the last 90 days.",
     "pr_issue_linked_ratio_value": {
@@ -209,6 +212,7 @@
     "pr_issue_linked_count_desc": "Determine the Numbers of new pull request link issues in the last 90 days."
   },
   "repo": {
+    "title": "Repository",
     "recent_releases_count": "Recent Releases Count",
     "recent_releases_count_desc": "Determine the number of releases in the last year.",
     "recent_releases_count_value": {

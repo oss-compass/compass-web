@@ -92,6 +92,7 @@
     "modification_successful": "Modification Successful",
     "modification_failed": "Modification Failed"
   },
+  "loading": "Loading...",
   "loading_more": "Loading more...",
   "load_more": "Load More",
   "nothing_more_to_load": "Nothing more to load",

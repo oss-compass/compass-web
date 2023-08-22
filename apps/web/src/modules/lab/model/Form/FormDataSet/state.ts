@@ -33,7 +33,6 @@ export const actions = {
 
     if (formFiledState.selected[key]) {
       const old = formFiledState.selected[key];
-      console.log(uniq([...old, label]));
       formFiledState.selected[key] = uniq([...old, label]);
     } else {
       formFiledState.selected[key] = [label];

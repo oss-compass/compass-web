@@ -167,10 +167,12 @@ const ModalSelect = ({
 
         <div className="px-10 pt-8">
           <div className="mb-3 text-2xl font-medium">{t('lab:add_metric')}</div>
-          <div className="mb-4 text-sm">Selected {count} items</div>
+          <div className="mb-4 text-sm">
+            {t('lab:selected_count', { value: count })}
+          </div>
           <Input
             value={search}
-            placeholder="search..."
+            placeholder={t('lab:search_metric_placeholder')}
             className="mb-4 border-2"
             onChange={(v) => {
               setSearch(v);
@@ -192,11 +194,15 @@ const ModalSelect = ({
             </div>
             <div>
               <Button
+                disabled={count > 10}
+                className="min-w-[100px]"
                 onClick={() => {
                   handleSave();
                 }}
               >
-                Save
+                {count > 10
+                  ? t('lab:select_over_tips')
+                  : t('common:btn.confirm')}
               </Button>
             </div>
           </div>

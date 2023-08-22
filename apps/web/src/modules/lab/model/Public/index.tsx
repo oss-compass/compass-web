@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQueryState, queryTypes } from 'next-usequerystate';
 import { useLabModelPublicOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
+import { useTranslation } from 'next-i18next';
 import Pagination from '@common/components/Pagination';
 import CreateGuide from './CreateGuide';
 import ModelItem from './ModelItem';
@@ -10,6 +11,7 @@ import Loading from './Loading';
 const per = 5;
 
 const Model = () => {
+  const { t } = useTranslation();
   const [page, setPage] = useQueryState(
     'page',
     queryTypes.integer.withDefault(1)
@@ -26,6 +28,12 @@ const Model = () => {
 
   if (isLoading) {
     return <Loading className="mx-auto w-[1280px] xl:w-full xl:px-2" />;
+  }
+
+  if (count === 0) {
+    return (
+      <div className="text-secondary text-center">{t('common:no_data')}</div>
+    );
   }
 
   return (

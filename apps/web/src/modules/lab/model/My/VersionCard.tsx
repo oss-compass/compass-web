@@ -16,11 +16,13 @@ import { ReFetch } from '@common/constant';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import VersionItemMore from './VersionItemMore';
 import TriggerConfirmBtn from './TriggerConfirmBtn';
+import { getSecondIdentName } from '../i18n';
 
 const VersionCard = ({
   modelId,
   modelIsPublic,
   modelDefaultVersionId,
+  triggerRemainingCount,
   version,
   permissions,
   event$,
@@ -28,11 +30,12 @@ const VersionCard = ({
   modelId: number;
   modelDefaultVersionId: number;
   modelIsPublic: boolean;
+  triggerRemainingCount: number;
   version: ModelVersion;
   permissions: Permission;
   event$: EventEmitter<string>;
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
 
   const updateMutation = useUpdateLabModelMutation(gqlClient, {
@@ -50,8 +53,15 @@ const VersionCard = ({
   });
 
   const dataSetIdent = version?.dataset?.items?.map?.((i) => i.secondIdent);
-  const dataSetNames = uniq(dataSetIdent).join(',');
-  const metricsNames = version?.metrics?.map?.((i) => i.name).join(',');
+  const dataSetNames = uniq(dataSetIdent)
+    .map((i) => getSecondIdentName(i, i18n.language))
+    .join(', ');
+
+  const metricsNames = version?.metrics
+    ?.map(({ ident, category }) => {
+      return t(`lab_metrics:${category}.${ident}`);
+    })
+    .join(', ');
 
   const cardLoading = updateMutation.isLoading;
 
@@ -96,18 +106,18 @@ const VersionCard = ({
           ) : null}
 
           <div className="mb-2">
-            <span className="text-secondary block truncate text-xs">
+            <span className="text-secondary block  truncate text-xs">
               {t('lab:datasets')}: {dataSetNames}
             </span>
           </div>
           <div className="mb-2">
             <span className="text-secondary block truncate  text-xs">
-              {t('lab:metrics')}：{metricsNames}
+              {t('lab:metrics')}: {metricsNames}
             </span>
           </div>
           <div className="mb-2">
             <span className="text-secondary block truncate text-xs">
-              {t('lab:algorithm')}：Default
+              {t('lab:algorithm')}: {t('lab:algorithm_selection.default')}
             </span>
           </div>
 
@@ -139,6 +149,7 @@ const VersionCard = ({
           <TriggerConfirmBtn
             modelId={modelId}
             version={version}
+            triggerRemainingCount={triggerRemainingCount}
             event$={event$}
           />
         ) : null}

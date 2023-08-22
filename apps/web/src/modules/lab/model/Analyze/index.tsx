@@ -8,16 +8,25 @@ import useLabelStatus from './hooks/useLabelStatus';
 import { Loading, NotFoundAnalysis } from './status';
 import ChartPanel from './ChartPanel';
 import { useLabModelVersion } from '../hooks';
+import { NotSuccess } from './status';
 import { pageState, actions } from './state';
 
 const LeftPanelWithStatus = () => {
   const { notFound, isLoading } = useLabelStatus();
+  const { data: modelVersion } = useLabModelVersion();
+
   if (isLoading) {
     return <Loading />;
   }
   if (notFound) {
     return <NotFoundAnalysis />;
   }
+
+  const versionStatus = modelVersion.labModelVersion?.triggerStatus;
+  if (versionStatus !== 'success') {
+    return <NotSuccess status={versionStatus} />;
+  }
+
   return <ChartPanel />;
 };
 
@@ -46,7 +55,7 @@ const LabAnalyzePage = () => {
 
   return (
     <div className="relative flex flex-1">
-      <div className="bg-smoke relative min-w-0 flex-1">
+      <div className="relative min-w-0 flex-1 bg-[#f9f9f9]">
         <LeftPanel />
       </div>
 

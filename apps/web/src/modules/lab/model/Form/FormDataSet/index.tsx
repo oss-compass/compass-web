@@ -15,6 +15,7 @@ const FormDataSet = () => {
   const snapshot = useSnapshot(formState);
   const item = groupBy(snapshot.dataSet, 'secondIdent');
   const subIdents = Object.keys(item);
+  const dateSetSelectedLength = snapshot.dataSet.length;
 
   return (
     <div className="mb-6">
@@ -43,11 +44,14 @@ const FormDataSet = () => {
             />
           );
         })}
-        <ItemCardPlus
-          onHandleAdd={() => {
-            setOpen(true);
-          }}
-        />
+
+        {dateSetSelectedLength < 10 ? (
+          <ItemCardPlus
+            onHandleAdd={() => {
+              setOpen(true);
+            }}
+          />
+        ) : null}
       </div>
 
       <ModalSelect

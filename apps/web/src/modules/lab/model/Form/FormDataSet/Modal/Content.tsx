@@ -6,13 +6,11 @@ import { useTranslation, Trans } from 'react-i18next';
 import { formFiledState, actions } from '../state';
 import { formState } from '../../state';
 import RepoCard from './RepoCard';
-import CategoryMenu from './CategoryMenu';
+import CollectionMenu from './CollectionMenu';
 
 const Content = () => {
   const { t } = useTranslation();
-  const formSnapshot = useSnapshot(formState);
   const fieldSnapshot = useSnapshot(formFiledState);
-  const [search, setSearch] = useState('');
 
   const isMenuSelect =
     Boolean(fieldSnapshot.levelFirst) && Boolean(fieldSnapshot.levelSecond);
@@ -40,7 +38,7 @@ const Content = () => {
       <div className="thin-scrollbar overflow-auto pr-1">
         <div className="border-silver flex flex-col border-l border-r border-t ">
           {data?.datasetOverview?.map((item) => {
-            return <CategoryMenu key={item} ident={item} />;
+            return <CollectionMenu key={item} ident={item} />;
           })}
         </div>
       </div>

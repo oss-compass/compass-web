@@ -3,10 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 
-const UnderAnalysis = () => {
+const NotSuccess = ({ status }: { status: string }) => {
   const { t } = useTranslation();
   return (
-    <div className="flex flex-1 flex-col items-center justify-center md:px-4 md:py-20">
+    <div className="flex h-full flex-1 flex-col items-center justify-center md:px-4 md:py-20">
       <div className="mb-4">
         <Image
           src="/images/analyze/padding.gif"
@@ -19,14 +19,15 @@ const UnderAnalysis = () => {
           }}
         />
       </div>
-      <p className="mb-2">
-        {t('analyze:the_current_project_is_under_analysis_please_visit')}
+      <p className="mb-10">
+        {t(`lab:analysis_status.tips`)}
+        {t(`lab:analysis_status.${status}`)}
       </p>
-      <Link href={'/'} className="text-blue-600">
-        {t('analyze:explore_other_projects')}
+      <Link href={'/lab/my'} className="text-blue-600">
+        {t('lab:back_my_lab')}
       </Link>
     </div>
   );
 };
 
-export default UnderAnalysis;
+export default NotSuccess;
