@@ -6,6 +6,31 @@
     "contributor_count_value": {
       "threshold": "Between 0 and 2000"
     },
+    "commit_contributor_count": "Commit Contributor Count",
+    "commit_contributor_count_desc": "Determine how many active code commit authors participants there are in the past 90 days.",
+    "commit_contributor_count_value": {
+      "threshold": "Between 0 and 1000"
+    },
+    "pr_authors_contributor_count": "Pr Authors Contributor Count",
+    "pr_authors_contributor_count_desc": "Determine how many active pr authors participants there are in the past 90 days.",
+    "pr_authors_contributor_count_value": {
+      "threshold": "Between 0 and 1000"
+    },
+    "pr_review_contributor_count": "Pr Review Contributor Count",
+    "pr_review_contributor_count_desc": "Determine how many active pr review participants there are in the past 90 days.",
+    "pr_review_contributor_count_value": {
+      "threshold": "Between 0 and 1000"
+    },
+    "issue_authors_contributor_count": "Issue Authors Contributor Count",
+    "issue_authors_contributor_count_desc": "Determine how many active issue authors participants there are in the past 90 days.",
+    "issue_authors_contributor_count_value": {
+      "threshold": "Between 0 and 1000"
+    },
+    "issue_comments_contributor_count": "Issue Comments Contributor Count",
+    "issue_comments_contributor_count_desc": " Determine how many active issue comments participants there are in the past 90 days.",
+    "issue_comments_contributor_count_value": {
+      "threshold": "Between 0 and 1000"
+    },
     "code_contributor_count": "Code Contributor Count",
     "code_contributor_count_desc": "Determine how many active pr creators, code reviewers, commit authors there are in the past 90 days.",
     "code_contributor_count_value": {
@@ -54,6 +79,10 @@
       "threshold": "100%",
       "detail": "This indicator is used to determine whether the code submission has gone through the PR process. To determine whether a project is open source, perhaps we can verify the License it declares. But whether open source projects use open community collaboration model to develop, and whether the community is willing to build community with open source contributors and organizational partners, it is not enough to rely on License alone. Here we examine the project's willingness to collaborate by informing contributors in an open and transparent manner about the purpose of the code submission, whether it is a PR or not, and by being reviewed."
     },
+    "commit_count": "Commit Count",
+    "commit_count_desc": "Determine the number of commits in the past 90 days.",
+    "commit_pr_linked_count": "Commit Pr Linked Count",
+    "commit_pr_linked_count_desc": "Determine the numbers of new code commit link pull request in the last 90 days.",
     "created_since": "Created Since",
     "created_since_desc": "Determine how long a repository has existed since it was created (in months).",
     "created_since_value": {
@@ -98,9 +127,25 @@
       "weight": "5.640%",
       "threshold": "300000",
       "detail": "The number of lines of source code is indeed strongly correlated with the amount of work, but it is less correlated with the value created. What forms of code can be counted in the LOC, are uncertain factors. We do not care so much about the code form(program language, configuration files etc), only use it as the description of the workload, so its weight in the overall metrics model is low."
-    }
+    },
+    "lines_add_of_code_frequency": "Lines Add of Code Frequency",
+    "lines_add_of_code_frequency_desc": "Determine the average number of lines touched (lines added) per week in the past 90.",
+    "lines_remove_of_code_frequency": "Lines Remove of Code Frequency",
+    "lines_remove_of_code_frequency_desc": "Determine the average number of lines touched (lines removed) per week in the past 90."
   },
   "issue": {
+    "issue_first_reponse": "Issue First Response",
+    "issue_first_reponse_desc": "Average/Median first comments response (in days) for new issues created in the last 90 days. This excludes bot responses, the creator's own comment, or an action assigned by the issue. If the issue has been unanswered, the first response time is not counted.",
+    "bug_issue_open_time": "Bug Issue Open Time",
+    "bug_issue_open_time_desc": "Average/Median time (days) that bug issues have been opened for issues created in the last 90 days.",
+    "comment_frequency": "Comment Frequency",
+    "comment_frequency_desc": "Determine the average number of comments per issue created in the last 90 days.",
+    "updated_issues_count": "Updated Issues Count",
+    "updated_issues_count_desc": "Determine the number of issues updated in the last 90 days.",
+    "closed_issues_count": "Closed Issues Count",
+    "closed_issues_count_desc": "Determine the number of issues closed in the last 90 days."
+  },
+  "pr": {
     "pr_issue_linked_ratio": "PR Issue Linked Ratio",
     "pr_issue_linked_ratio_desc": "Determine the percentage of new pull request link issues in the last 90 days.",
     "pr_issue_linked_ratio_value": {
@@ -145,7 +190,23 @@
     "code_merge_ratio_desc": "Determine the percentage of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
     "code_merge_ratio_value": {
       "threshold": "Between 0 and 1"
-    }
+    },
+    "pr_count": "Pr Count",
+    "pr_count_desc": "Determine the number of PR created in the last 90 days.",
+    "pr_count_with_review": "Pr Count With Review",
+    "pr_count_with_review_desc": "Determine the Number of pr with review in the last 90 days.",
+    "total_create_close_pr_count": "Total Create Close Pr Count",
+    "total_create_close_pr_count_desc": "Determine the number of pr created from the beginning to now and it has been accepted and declined.",
+    "total_pr_count": "Total Pr Count",
+    "total_pr_count_desc": "Determine the number of PR created from the beginning to now.",
+    "create_close_pr_count": "Create Close Pr Count",
+    "create_close_pr_count_desc": "Determine the number of pr created in the last 90 days and it has been accepted and declined.",
+    "code_merge_count_with_non_author": "Code Merge Count With non Author",
+    "code_merge_count_with_non_author_desc": "Determine the Numbers of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
+    "code_merge_count": "Code Merge Count",
+    "code_merge_count_desc": "Determine the Numbers of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
+    "pr_issue_linked_count": "Pr Issue linked Count",
+    "pr_issue_linked_count_desc": "Determine the Numbers of new pull request link issues in the last 90 days."
   },
   "repo": {
     "recent_releases_count": "Recent Releases Count",

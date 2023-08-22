@@ -77,12 +77,13 @@
     "label": "权重和阈值设置",
     "metrics": "指标",
     "weight_percentage": "权重百分比",
-    "threshold": "阈值"
+    "threshold": "阈值",
+    "between": "介于0-{{end}}之间"
   },
   "algorithm_selection": {
     "label": "算法选择",
     "default": "系统默认算法",
-    "default_desc": "使用指南针系统的默认值来设置测量指标的权重。",
+    "default_desc": "基于 Criticality Score 和 AHP 层次分析法 (<s>了解算法详情</s>)，计算公式:",
     "contact_us": "对模型算法有更多想法? 欢迎加入<s>官方 Slack 社区 </s>与我们一起讨论。"
   },
   "trigger_analysis": {

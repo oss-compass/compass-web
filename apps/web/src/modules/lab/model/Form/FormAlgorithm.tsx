@@ -3,6 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import LinkA from '@common/components/LinkA';
 import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 import { FormItemLabel } from './Misc';
+import Image from 'next/image';
 
 const FormAlgorithm = () => {
   const { t } = useTranslation();
@@ -22,15 +23,32 @@ const FormAlgorithm = () => {
   return (
     <div className="mb-6">
       <FormItemLabel>{t('lab:algorithm_selection.label')}</FormItemLabel>
-      <div className="mb-3 flex items-center">
-        <div className="flex w-80 items-center">
+      <div className="mb-3 flex flex-col">
+        <div className="mb-2 flex w-80 items-center">
           <CustomRadio id="modal-public" {...controlProps('a')} />
           <label htmlFor={'modal-public'} className="ml-2">
             {t('lab:algorithm_selection.default')}
           </label>
         </div>
-        <div className=" text-secondary">
-          {t('lab:algorithm_selection.default_desc')}
+        <div className="text-secondary pl-8">
+          <Trans
+            i18nKey="algorithm_selection.default_desc"
+            ns="lab"
+            components={{
+              s: <LinkA href={'/docs/community/'} />,
+            }}
+          />
+          <Image
+            width={520}
+            height={80}
+            src={'/images/lab/algorithm.png'}
+            unoptimized
+            alt={''}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          />
         </div>
       </div>
 

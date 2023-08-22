@@ -36,15 +36,13 @@ export const MetricDesc = ({
   return <>{name}</>;
 };
 
-export const MetricThresholdRanges = ({
-  category,
-  ident,
-}: {
-  category: string;
-  ident: string;
-}) => {
+export const MetricThresholdRanges = ({ threshold }: { threshold: number }) => {
   const { t } = useTranslation();
-  const nameKey = `lab_metrics:${category}.${ident}_value.threshold`;
-  const name = t(nameKey);
-  return <>{name}</>;
+  return (
+    <>
+      {t('lab:weight_threshold_settings.between', {
+        end: threshold,
+      })}
+    </>
+  );
 };
