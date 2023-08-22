@@ -80,7 +80,9 @@ const CommentItem = ({
             />
           ) : (
             <>
-              <div className="text-sm">{comment?.content}</div>
+              <div className="whitespace-pre-wrap text-sm">
+                {comment?.content}
+              </div>
               {comment.images.length > 0 ? (
                 <div className="grid grid-cols-4 gap-4 pt-2" ref={ref}>
                   {comment.images.map((img) => {

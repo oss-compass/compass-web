@@ -35,7 +35,7 @@ const CommentDrawer = ({
         [open ? 'h-auto w-[400px] opacity-100' : 'h-0 w-0 opacity-0']
       )}
     >
-      <div className="flex h-10 items-center justify-between border-b border-[#EAEAEA] bg-[#FAFAFA] pl-4 pr-2">
+      <div className="flex h-14 items-center justify-between border-b border-[#EAEAEA] bg-[#FAFAFA] pl-4 pr-2">
         <div className="text-sm">
           {t('lab:discuss')}
           {/*（{lastItem?.labModelComments?.count || 0}）*/}

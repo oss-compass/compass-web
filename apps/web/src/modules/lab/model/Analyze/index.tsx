@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import OpenCommentDrawerFixedButton from './component/FixedCommentButton';
 import CommentDrawer from './CommentDrawer';
@@ -33,6 +33,9 @@ const LeftPanel = () => {
 
 const LabAnalyzePage = () => {
   const state = useSnapshot(pageState);
+  useEffect(() => {
+    actions.reset();
+  }, []);
 
   return (
     <div className="relative flex flex-1">

@@ -42,6 +42,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
     const [value, setValue] = useState('');
     const [images, setImages] = useState<Image[]>([]);
     const { ref: previewRef, open: openPreview, close } = useImagePreview();
+    const imagesLength = images.length;
 
     const { t } = useTranslation();
 
@@ -78,10 +79,13 @@ const CommentInput = forwardRef<InputRefProps, Props>(
     useEffect(() => {
       if (boxRef && boxRef.current) {
         const handlePaste = (e: ClipboardEvent) => {
-          e.preventDefault();
-          if (!e.clipboardData.files.length) {
+          const len = e.clipboardData.files.length;
+          if (len === 0) return;
+          if (imagesLength + len > 6) {
+            toast.error('up to six pictures');
             return;
           }
+
           handleInputFile(e.clipboardData.files);
         };
 
@@ -90,7 +94,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
           boxRef.current?.removeEventListener('paste', handlePaste);
         };
       }
-    }, []);
+    }, [imagesLength]);
 
     const inputId = `comment-image-upload-${randomFromInterval(0, 100000)}`;
 
@@ -139,9 +143,8 @@ const CommentInput = forwardRef<InputRefProps, Props>(
               style={{ display: 'none' }}
               onChange={(e) => {
                 const files = e.target.files;
-                const hasLen = images.length;
                 const len = files.length;
-                if (hasLen + len > 6) {
+                if (imagesLength + len > 6) {
                   toast.error('up to six pictures');
                   return;
                 }

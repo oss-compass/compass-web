@@ -33,7 +33,7 @@ const CommentSection = ({
   const router = useRouter();
   const [_, copyToClipboard] = useCopyToClipboard();
   const snapshot = useSnapshot(pageState);
-  const [direction, setDirection] = useState('desc');
+  const [direction, setDirection] = useState<'asc' | 'desc'>('asc');
 
   const modelId = Number(router.query.model);
   const versionId = snapshot.commentVersion?.id;
@@ -107,7 +107,7 @@ const CommentSection = ({
 
   return (
     <div
-      className={classnames('pt-12', [
+      className={classnames('pt-6', [
         !isLoading && totalCount === 0 && !meta?.show ? 'hidden' : '',
       ])}
     >
@@ -120,14 +120,7 @@ const CommentSection = ({
         )}
       >
         <div className="flex items-center justify-between py-3 px-4 ">
-          <div className="group font-semibold">
-            # {name}
-            <a href={`#${commentAnchor}`}>
-              <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
-                #
-              </span>
-            </a>
-          </div>
+          <div className="group font-semibold">{name}</div>
           <div className="flex shrink-0">
             {direction === 'asc' ? (
               <div
@@ -153,18 +146,21 @@ const CommentSection = ({
                 <BsArrowUp />
               </div>
             ) : null}
-            <div
+
+            <a
+              href={`#${commentAnchor}`}
               onClick={() => {
                 const origin = window.location.origin;
                 const pathname = window.location.pathname;
                 copyToClipboard(origin + pathname + '#' + commentAnchor);
+                actions.activeComment(anchor);
               }}
               className={classnames('cursor-pointer px-1 group-hover:block', [
                 isActive ? 'block' : 'hidden',
               ])}
             >
               <BsLink45Deg />
-            </div>
+            </a>
           </div>
         </div>
 
