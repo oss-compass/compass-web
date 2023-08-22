@@ -83,7 +83,7 @@
   "algorithm_selection": {
     "label": "Algorithm selection",
     "default": "System default algorithm",
-    "default_desc": "Use the default value of Compass system to set the weight of measurement indicators.",
+    "default_desc": "Base Criticality Score and AHP (<s>Learn more about algorithms</s>), calculation formula :",
     "contact_us": "Have more ideas about model algorithms? Welcome to join the <s> official Slack community </s> and discuss with us."
   },
   "trigger_analysis": {
