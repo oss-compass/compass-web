@@ -77,7 +77,8 @@
     "label": "Weight & Threshold Settings",
     "metrics": "Metrics",
     "weight_percentage": "Weight percentage",
-    "threshold": "Threshold"
+    "threshold": "Threshold",
+    "between": "Between 0 and {{end}}"
   },
   "algorithm_selection": {
     "label": "Algorithm selection",

@@ -6,6 +6,31 @@
     "contributor_count_value": {
       "threshold": "介于0-2000之间"
     },
+    "commit_contributor_count": "代码提交者数量",
+    "commit_contributor_count_desc": "过去 90 天中活跃的代码提交者的数量。",
+    "commit_contributor_count_value": {
+      "threshold": "介于0-1000之间"
+    },
+    "pr_authors_contributor_count": "Pull Request 作者数量",
+    "pr_authors_contributor_count_desc": "过去 90 天中活跃的Pull Request 作者的数量。",
+    "pr_authors_contributor_count_value": {
+      "threshold": "介于0-1000之间"
+    },
+    "pr_review_contributor_count": "代码审查者数量",
+    "pr_review_contributor_count_desc": "过去 90 天中活跃的代码审查者的数量。",
+    "pr_review_contributor_count_value": {
+      "threshold": "介于0-1000之间"
+    },
+    "issue_authors_contributor_count": "Issue 作者数量",
+    "issue_authors_contributor_count_desc": "过去 90 天中活跃的Issue 作者的数量。",
+    "issue_authors_contributor_count_value": {
+      "threshold": "介于0-1000之间"
+    },
+    "issue_comments_contributor_count": "Issue 评论者数量",
+    "issue_comments_contributor_count_desc": "过去 90 天中活跃的Issue 评论者的数量。",
+    "issue_comments_contributor_count_value": {
+      "threshold": "介于0-1000之间"
+    },
     "code_contributor_count": "代码参与者数量",
     "code_contributor_count_desc": "在过去 90 天内有多少活跃的代码提交者、代码审核者和 PR 提交者。",
     "code_contributor_count_value": {
@@ -54,6 +79,10 @@
       "threshold": "100%",
       "detail": "这个指标用来考察是码提交是否经过了PR的审核流程。判断一个项目是否开源，可能我们通过查验它声明的License即可。但开源项目是否使用开放式的社区协作模式来开展开发工作，社区是否与开源贡献者、组织合作伙伴共建社区的意愿，仅仅靠License是不够的。这里我们通过代码提交是否通过PR，用公开、透明的方式，告知贡献者此次代码提交的目的，并接受评审，来考察项目的协作意愿程度。"
     },
+    "commit_count": "代码提交量",
+    "commit_count_desc": "在过去90天内提交的代码次数。",
+    "commit_pr_linked_count": "代码链接PR量",
+    "commit_pr_linked_count_desc": "过去90天内提交的代码链接PR的次数。",
     "created_since": "创建于",
     "created_since_desc": "代码仓自创建以来存在了多长时间(月份)。",
     "created_since_value": {
@@ -98,9 +127,25 @@
       "weight": "5.640%",
       "threshold": "300000",
       "detail": "源代码行数与工作量确实是强相关的，但它与创造的价值相关性较差。另外什么形式的代码可以算入LOC，都是不确定因素。我们不关注代码形式，只用其描述工作量，其权重在整个度量模型较低。"
-    }
+    },
+    "lines_add_of_code_frequency": "增加行数",
+    "lines_add_of_code_frequency_desc": "过去90天内平均每周增加的代码行数。",
+    "lines_remove_of_code_frequency": "删除行数",
+    "lines_remove_of_code_frequency_desc": "过去90天内平均每周删除的代码行数。"
   },
   "issue": {
+    "issue_first_reponse": "Issue 首次响应时间",
+    "issue_first_reponse_desc": "过去 90 天新建 Issue 首次响应时间的均值和中位数（天）。这不包括机器人响应、创建者自己的评论或 Issue 的分配动作（action）。如果 Issue 一直未被响应，该 Issue 不被算入统计。",
+    "bug_issue_open_time": "Bug 类 Issue 处理时间",
+    "bug_issue_open_time_desc": "过去 90 天新建的 Bug 类 Issue 处理时间的均值和中位数（天），包含已经关闭的 Issue 以及未解决的 Issue。",
+    "comment_frequency": "Issue 评论频率",
+    "comment_frequency_desc": "过去90天内新建 Issue 的评论平均数（不包含机器人和 Issue 作者本人评论）。",
+    "updated_issues_count": "更新 Issue 数量",
+    "updated_issues_count_desc": "过去90天 Issue 更新的数量。",
+    "closed_issues_count": "关闭 Issue 数量",
+    "closed_issues_count_desc": "过去90天关闭 Issue 的数量。"
+  },
+  "pr": {
     "pr_issue_linked_ratio": "PR 关联 Issue 的比率",
     "pr_issue_linked_ratio_desc": "过去90天内新建 PR 关联 Issue 的百分比。",
     "pr_issue_linked_ratio_value": {
@@ -126,13 +171,13 @@
     "pr_time_to_first_response_value": {
       "threshold": "介于0-15之间"
     },
-    "change_request_closure_ratio": "Change Request Closure Ratio",
-    "change_request_closure_ratio_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests from the beginning to now.",
+    "change_request_closure_ratio": "Pr 闭环总比率",
+    "change_request_closure_ratio_desc": "从开始到现在 PR 总数与关闭的 PR 数之间的比率。",
     "change_request_closure_ratio_value": {
       "threshold": "介于0-1之间"
     },
-    "change_request_closure_ratio_recently_period": "Change Request Closure Ratio Recently Period",
-    "change_request_closure_ratio_recently_period_desc": "Measures the ratio between the total number of open change requests and the total number of closed change requests in the last 90 days.",
+    "change_request_closure_ratio_recently_period": "Pr 闭环比率",
+    "change_request_closure_ratio_recently_period_desc": "过去 90 天内新建的 PR 总数与关闭的 PR 数之间的比率。",
     "change_request_closure_ratio_recently_period_value": {
       "threshold": "介于0-1之间"
     },
@@ -145,7 +190,23 @@
     "code_merge_ratio_desc": "过去90天提交代码中，PR合并者和PR 作者不属于同一人的百分比。",
     "code_merge_ratio_value": {
       "threshold": "介于0-1之间"
-    }
+    },
+    "pr_count": "PR 数量",
+    "pr_count_desc": "过去90天内创建的PR的数量。",
+    "pr_count_with_review": "审查的pr数量",
+    "pr_count_with_review_desc": "在过去90天内审查的pr数量。",
+    "total_create_close_pr_count": "已接受或拒绝P总数",
+    "total_create_close_pr_count_desc": "从开始到现在创建的 PR 并且被接受或拒绝的数量。",
+    "total_pr_count": "Pr总数",
+    "total_pr_count_desc": "从开始到现在新建 PR 数量。",
+    "create_close_pr_count": "已接受或拒绝PR数量",
+    "create_close_pr_count_desc": "过去 90 天内创建的 PR 并且被接受或拒绝的数量。",
+    "code_merge_count_with_non_author": "PR合并数量(非pr作者合并)",
+    "code_merge_count_with_non_author_desc": "过去 90 天内 PR 合并数量（不包含 PR 作者本人合并）。",
+    "code_merge_count": "PR合并数量",
+    "code_merge_count_desc": "过去 90 天内 PR 合并数量。",
+    "pr_issue_linked_count": "PR关联Issue数量",
+    "pr_issue_linked_count_desc": "过去90天内新建 PR 关联 Issue 的数量。"
   },
   "repo": {
     "recent_releases_count": "最近版本发布次数",

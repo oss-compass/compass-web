@@ -79,10 +79,7 @@ const FormMetric = () => {
                         }}
                       />
                       <span className="text-steel ml-2 text-xs">
-                        <MetricThresholdRanges
-                          ident={item.ident}
-                          category={item.category}
-                        />
+                        <MetricThresholdRanges threshold={item.threshold} />
                       </span>
                     </div>
                   </td>
