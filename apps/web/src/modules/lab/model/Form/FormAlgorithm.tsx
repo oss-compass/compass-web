@@ -35,15 +35,53 @@ const FormAlgorithm = () => {
             i18nKey="algorithm_selection.default_desc"
             ns="lab"
             components={{
-              s: <LinkA href={'/docs/community/'} />,
+              s: (
+                <LinkA
+                  href={
+                    'https://github.com/oss-compass/compass-metrics-model/blob/main/quantifying_criticality_algorithm.pdf'
+                  }
+                />
+              ),
+              b: <LinkA href={'https://en.wikipedia.org/wiki/Rob_Pike'} />,
+              c: <LinkA href={'https://github.com/ossf/criticality_score'} />,
+              d: (
+                <LinkA
+                  href={
+                    'https://github.com/oss-compass/compass-metrics-model/blob/main/compass_common/algorithm_utils.py'
+                  }
+                />
+              ),
+              e: <LinkA href={'/docs/community/'} />,
             }}
           />
-          <Image
-            width={520}
-            height={80}
-            src={'/images/lab/algorithm.jpeg'}
-            alt={''}
-          />
+          <div className="flex items-center">
+            <Image
+              width={520}
+              height={80}
+              src={'/images/lab/algorithm.jpeg'}
+              unoptimized
+              alt={''}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
+            <p className="ml-6 text-xl  italic text-black">
+              (
+              <i className="font-medium">
+                S<sub>𝑖 </sub>
+              </i>
+              : {t('lab:algorithm_selection.metrics_value')};{'   '}
+              <i className="font-medium">
+                T<sub>𝑖 </sub>
+              </i>
+              :{t('lab:algorithm_selection.metrics_threshold')};{'   '}
+              <i className="font-medium">
+                α<sub>𝑖 </sub>
+              </i>
+              :{t('lab:algorithm_selection.metrics_weight')};)
+            </p>
+          </div>
         </div>
       </div>
 

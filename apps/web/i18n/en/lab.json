@@ -83,8 +83,11 @@
   "algorithm_selection": {
     "label": "Algorithm selection",
     "default": "System default algorithm",
-    "default_desc": "Base Criticality Score and AHP (<s>Learn more about algorithms</s>), calculation formula :",
-    "contact_us": "Have more ideas about model algorithms? Welcome to join the <s> official Slack community </s> and discuss with us."
+    "default_desc": "The default <s> algorithm </s> used in our models is derived from <b>Rob Pike</b>, and it was initially employed by the openSSF <c> criticality score </c> (a big thank you to Rob and the criticality score!). Taking into account considerations of time series and value ranges, we have made improvements to this algorithm in its implementation. For more details, please refer to the <d> source code </d> and <e>article</e>.",
+    "contact_us": "Have more ideas about model algorithms? Welcome to join the <s> official Slack community </s> and discuss with us.",
+    "metrics_value": "Metrics Value",
+    "metrics_threshold": "Metrics Threshold",
+    "metrics_weight": "Metrics Weight"
   },
   "trigger_analysis": {
     "card_btn": "Analysis",
