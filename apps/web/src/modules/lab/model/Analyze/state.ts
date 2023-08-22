@@ -71,8 +71,8 @@ export const actions = {
   },
 };
 
-if (isDev) {
-  subscribe(pageState, () => {
-    console.log(JSON.stringify(pageState, null, 2));
-  });
-}
+// if (isDev) {
+//   subscribe(pageState, () => {
+//     console.log(JSON.stringify(pageState, null, 2));
+//   });
+// }

@@ -13,7 +13,7 @@ const useLabDataMetric = () => {
   });
 
   const pickDataByMetric = (ident: string) => {
-    return panelsResults.map(({ label, level, panels }) => {
+    const panelResult = panelsResults.map(({ label, level, panels }) => {
       const item = panels.find((i) => i.metric.ident === ident);
       return {
         label,
@@ -21,6 +21,9 @@ const useLabDataMetric = () => {
         ...item,
       };
     });
+    // align with date
+
+    return panelResult;
   };
 
   const pickTabsByMetric = (ident: string) => {
