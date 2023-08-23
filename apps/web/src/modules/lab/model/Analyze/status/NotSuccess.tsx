@@ -23,7 +23,7 @@ const NotSuccess = ({ status }: { status: string }) => {
         {t(`lab:analysis_status.tips`)}
         {t(`lab:analysis_status.${status}`)}
       </p>
-      <Link href={'/lab/my'} className="text-blue-600">
+      <Link href={'/lab/model/my'} className="text-blue-600">
         {t('lab:back_my_lab')}
       </Link>
     </div>

@@ -69,7 +69,7 @@ const Content = ({ status }: { status: string }) => {
           size="lg"
           onClick={() => {
             if (select) {
-              router.push(acceptUrl);
+              window.location.href = acceptUrl;
             } else {
               toast.error(t('lab:please_check_the_terms'));
             }
