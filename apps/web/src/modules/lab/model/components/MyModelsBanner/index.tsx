@@ -21,7 +21,11 @@ const Banner = () => {
       />
 
       <Center>
-        <div className={classnames('mt-14 text-4xl font-bold text-[#886F36] ')}>
+        <div
+          className={classnames(
+            'mt-14 text-4xl font-bold text-[#886F36] md:pl-2'
+          )}
+        >
           My Models
         </div>
       </Center>

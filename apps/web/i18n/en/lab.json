@@ -107,7 +107,8 @@
     "pending": "pending",
     "progress": "progress",
     "success": "success",
-    "unsumbit": "unsumbit"
+    "unsumbit": "unsumbit",
+    "error": "error"
   },
   "threshold_range": "Between 0 and {{value}}",
   "select_over_tips": "Cannot exceed 10 items",

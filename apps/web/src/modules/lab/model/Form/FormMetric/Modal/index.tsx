@@ -165,7 +165,7 @@ const ModalSelect = ({
           <GrClose />
         </div>
 
-        <div className="px-10 pt-8">
+        <div className="px-10 pt-8 md:px-2">
           <div className="mb-3 text-2xl font-medium">{t('lab:add_metric')}</div>
           <div className="mb-4 text-sm">
             {t('lab:selected_count', { value: count })}
@@ -181,7 +181,7 @@ const ModalSelect = ({
 
           <div className="flex h-[440px]">{content()}</div>
 
-          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9">
+          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9 text-sm">
             <div>
               {t('lab:cant_find_a_suitable_metric')}
               <Trans

@@ -46,9 +46,12 @@ const RepoCard = ({
         </div>
         <div className="mb-2">
           <p
-            className={classnames('mb-1 truncate break-words font-bold ', {
-              'hover:underline': !compareMode,
-            })}
+            className={classnames(
+              'mb-1 truncate break-words text-base font-bold ',
+              {
+                'hover:underline': !compareMode,
+              }
+            )}
           >
             {repo}
           </p>

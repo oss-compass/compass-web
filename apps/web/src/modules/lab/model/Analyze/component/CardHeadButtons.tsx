@@ -29,7 +29,7 @@ const CardHeadButtons = ({ id }: { id: string }) => {
 
   return (
     <div
-      className="flex cursor-pointer items-center"
+      className="flex cursor-pointer items-center md:hidden"
       onClick={() => {
         actions.toggleCommentDrawer(true);
         actions.onCommentPanelShow(id, true);

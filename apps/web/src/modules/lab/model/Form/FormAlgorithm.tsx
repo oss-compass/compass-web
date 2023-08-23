@@ -54,7 +54,7 @@ const FormAlgorithm = () => {
               e: <LinkA href={'/blog/scoring-system-switch'} />,
             }}
           />
-          <div className="flex items-center">
+          <div className="flex items-center md:my-6 md:flex-col">
             <Image
               width={520}
               height={80}
@@ -66,7 +66,7 @@ const FormAlgorithm = () => {
                 height: 'auto',
               }}
             />
-            <p className="ml-6 text-xl  italic text-black">
+            <p className="ml-6 text-xl  italic text-black md:mt-4 md:ml-0 md:text-base">
               (
               <i className="font-medium">
                 S<sub>𝑖 </sub>

@@ -28,20 +28,20 @@ const RepoCompareBar: React.FC<{
           length: total,
         })}
       </span>
-      <div className="md:hidden">
+      <div className="">
         {compareMode ? (
           <div className="flex text-xs">
             <div
               onClick={() => {
                 onCompareCancel();
               }}
-              className="ml-5 h-6 cursor-pointer border border-gray-500 px-2 py-1 text-center text-xs text-black "
+              className="ml-5  cursor-pointer border border-gray-500 px-2 py-1 text-center text-xs text-black "
             >
               {t('collection:cancel')}
             </div>
             <div
               className={classnames(
-                'ml-5 h-6 cursor-pointer border-0 border-gray-500 bg-blue-600 px-2 py-1 text-center text-xs text-gray-50',
+                '-6 ml-5 cursor-pointer border-0 border-gray-500 bg-blue-600 px-2 py-1 text-center text-xs text-gray-50',
                 { 'bg-gray-300': compareCount < 2 }
               )}
               onClick={() => {
@@ -55,7 +55,7 @@ const RepoCompareBar: React.FC<{
         ) : (
           <div
             onClick={() => onCompareToggle()}
-            className="ml-4 h-6 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-6"
+            className="ml-4  w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-6"
           >
             <div className="mr-2 inline-block align-text-bottom">
               <IconCompare />

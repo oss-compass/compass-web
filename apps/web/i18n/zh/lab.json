@@ -107,7 +107,8 @@
     "pending": "分析中...",
     "progress": "分析中...",
     "success": "成功",
-    "unsumbit": "未触发"
+    "unsumbit": "未触发",
+    "error": "出错了"
   },
   "threshold_range": "介于 0 - {{value}} 之间",
   "select_over_tips": "不能超过 10 条",

@@ -62,7 +62,7 @@ const Content = () => {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-4 pr-2">
+              <div className="grid grid-cols-2 gap-4 pr-2  md:grid-cols-1">
                 {repoList?.datasetOverview?.map((repo) => {
                   return (
                     <RepoCard

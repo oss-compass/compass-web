@@ -25,13 +25,13 @@ const FormMetric = () => {
         <table className="w-full table-fixed">
           <thead>
             <tr className="border-silver border-t border-b">
-              <th className={classnames(headCell, 'w-3/12')}>
+              <th className={classnames(headCell, 'w-3/12 md:w-1/4')}>
                 {t('lab:weight_threshold_settings.metrics')}
               </th>
-              <th className={classnames(headCell, 'w-1/2')}>
+              <th className={classnames(headCell, 'w-1/2 md:w-1/4')}>
                 {t('lab:weight_threshold_settings.weight_percentage')}
               </th>
-              <th className={classnames(headCell, 'w-3/12')}>
+              <th className={classnames(headCell, 'w-3/12 md:w-1/2')}>
                 {t('lab:weight_threshold_settings.threshold')}
               </th>
             </tr>
@@ -57,7 +57,7 @@ const FormMetric = () => {
                           actions.adjustMetricWeightHandle(value, index);
                         }}
                       />
-                      <div className="flex-1 px-6">
+                      <div className="flex-1 px-6 md:hidden">
                         <SliderRange
                           value={item.weight}
                           index={index}

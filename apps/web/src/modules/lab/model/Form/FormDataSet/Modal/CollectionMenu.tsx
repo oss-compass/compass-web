@@ -29,7 +29,7 @@ const CollectionMenu = ({ ident }: { ident: string }) => {
   const count = useSelectedCount({ firstIdent: ident });
 
   return (
-    <div className="w-60">
+    <div className="w-60 md:w-auto">
       <div
         className={classnames(
           'border-silver hover:bg-smoke flex h-10  cursor-pointer cursor-pointer items-center justify-between border-b pl-4 pr-4 font-medium',

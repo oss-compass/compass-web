@@ -75,8 +75,8 @@ const FormInvite = (props: {
       <div className="flex items-center justify-between py-2">
         <div className="text-sm font-medium">{t('lab:user.invite_users')}</div>
       </div>
-      <div className="flex justify-between">
-        <div className="mr-2 flex-1">
+      <div className="flex flex-wrap justify-between">
+        <div className="mr-2 flex-1 md:mr-0 md:mb-4 md:basis-full">
           <Input
             value={email}
             intent={'secondary'}
@@ -86,6 +86,7 @@ const FormInvite = (props: {
             }}
           />
         </div>
+
         <SelectDrowBox
           options={optionList}
           roles={roles}
@@ -109,7 +110,7 @@ const FormInvite = (props: {
           loading={mutation.isLoading}
           disabled={!email}
           onClick={() => sendMemberInvite()}
-          className="ml-2 h-10 w-28 border border-[black] bg-white text-sm text-black"
+          className="min-w-28 ml-2 h-10 border border-[black] bg-white text-sm text-black md:flex-1"
         >
           {t('lab:user.send_email')}
         </Button>

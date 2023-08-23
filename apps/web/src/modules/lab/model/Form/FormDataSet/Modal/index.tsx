@@ -96,7 +96,7 @@ const ModalSelect = ({
 
     return (
       <div className="thin-scrollbar flex-1 overflow-auto ">
-        <div className="grid grid-cols-3 gap-4 pr-2">
+        <div className="grid grid-cols-3 gap-4 pr-2 md:grid-cols-1">
           {repos?.map?.((item) => {
             return (
               <RepoCard
@@ -121,7 +121,7 @@ const ModalSelect = ({
 
   return (
     <Modal open={open} onClose={() => onClose()}>
-      <div className="relative h-[700px] w-[900px] border-2 border-black bg-white shadow outline-0">
+      <div className="relative h-[700px] w-[900px] border-2 border-black bg-white shadow outline-0 md:w-full">
         <div
           className="absolute top-10 right-10 cursor-pointer p-2 "
           onClick={() => {
@@ -131,7 +131,7 @@ const ModalSelect = ({
           <GrClose />
         </div>
 
-        <div className="px-10 pt-8">
+        <div className="px-10 pt-8 md:px-2">
           <div className="mb-3 text-2xl font-medium">
             {t('lab:add_dataset')}
           </div>
@@ -149,7 +149,7 @@ const ModalSelect = ({
 
           <div className="flex h-[440px]">{modalContent()}</div>
 
-          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9">
+          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9 text-sm">
             <div>
               {t('lab:cant_find_a_suitable_dataset')}
               <Trans

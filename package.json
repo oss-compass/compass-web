@@ -11,8 +11,7 @@
     "dev": "yarn workspace @oss-compass/web dev",
     "build": "yarn workspace @oss-compass/web build",
     "test:ci": "yarn workspace @oss-compass/web test:ci",
-    "docker:web": "./.github/deployment/web/local_build.sh",
-    "generate:collections": "esno script/gen_collections_file.ts"
+    "docker:web": "./.github/deployment/web/local_build.sh"
   },
   "devDependencies": {
     "eslint": "^8.45.0",

@@ -16,7 +16,7 @@ const Discuss = ({ model }: { model: ModelPublicOverview }) => {
 
   return (
     <Link
-      className="flex shrink-0 cursor-pointer items-center"
+      className="flex shrink-0 cursor-pointer items-center md:hidden"
       href={`/lab/model/${modelId}/version/${versionId}/analyze/${firstRepo.shortCode}`}
     >
       <TbMessage2 className="text-steel" />

@@ -18,7 +18,7 @@ const CategoryMenu = ({ category }: { category: string }) => {
   }, [count, category, snapshot.activeCategory]);
 
   return (
-    <div className="w-60">
+    <div className="w-60 md:w-auto">
       <div
         className={classnames(
           ' border-silver flex h-10 cursor-pointer  cursor-pointer items-center justify-between border-b pl-4 pr-4 font-medium ',
