@@ -41,14 +41,16 @@ const FromBox = (props: {
             <div className="line-clamp-3 mt-2 h-[46px] text-2xl font-bold">
               {i18n.language === 'en' ? title : titleCn}
             </div>
-            <DatePicker />
+            <div className="flex justify-center">
+              <DatePicker />
+            </div>
           </>
         ) : (
           <>
             <div className="line-clamp-3 mt-2 h-[96px] text-2xl font-bold">
               {i18n.language === 'en' ? title : titleCn}
             </div>
-            <div className="mt-4 mb-6">
+            <div className="mt-4 mb-6 flex justify-center">
               <Image
                 width={336}
                 height={190}
@@ -85,7 +87,7 @@ const LatestFrom = () => {
       )}
     >
       <div className="mb-6 text-2xl font-bold">{t('home:the_latest_from')}</div>
-      <div className="mb-10 grid h-[430px] grid-cols-3 gap-5">
+      <div className="mb-10 grid grid-cols-3 gap-5 lg:w-full lg:grid-cols-1 lg:gap-y-6 lg:px-4">
         {data.map(({ type, title, title_cn, img, url }) => {
           return (
             <FromBox

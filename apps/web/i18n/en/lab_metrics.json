@@ -11,12 +11,12 @@
     "commit_contributor_count_value": {
       "threshold": "Between 0 and 1000"
     },
-    "pr_authors_contributor_count": "Pr Authors Contributor Count",
+    "pr_authors_contributor_count": "PR Authors Contributor Count",
     "pr_authors_contributor_count_desc": "Determine how many active pr authors participants there are in the past 90 days.",
     "pr_authors_contributor_count_value": {
       "threshold": "Between 0 and 1000"
     },
-    "pr_review_contributor_count": "Pr Review Contributor Count",
+    "pr_review_contributor_count": "PR Review Contributor Count",
     "pr_review_contributor_count_desc": "Determine how many active pr review participants there are in the past 90 days.",
     "pr_review_contributor_count_value": {
       "threshold": "Between 0 and 1000"
@@ -82,7 +82,7 @@
     },
     "commit_count": "Commit Count",
     "commit_count_desc": "Determine the number of commits in the past 90 days.",
-    "commit_pr_linked_count": "Commit Pr Linked Count",
+    "commit_pr_linked_count": "Commit PR Linked Count",
     "commit_pr_linked_count_desc": "Determine the numbers of new code commit link pull request in the last 90 days.",
     "created_since": "Created Since",
     "created_since_desc": "Determine how long a repository has existed since it was created (in months).",
@@ -194,21 +194,21 @@
     "code_merge_ratio_value": {
       "threshold": "Between 0 and 1"
     },
-    "pr_count": "Pr Count",
+    "pr_count": "PR Count",
     "pr_count_desc": "Determine the number of PR created in the last 90 days.",
-    "pr_count_with_review": "Pr Count With Review",
+    "pr_count_with_review": "PR Count With Review",
     "pr_count_with_review_desc": "Determine the Number of pr with review in the last 90 days.",
-    "total_create_close_pr_count": "Total Create Close Pr Count",
+    "total_create_close_pr_count": "Total Create Close PR Count",
     "total_create_close_pr_count_desc": "Determine the number of pr created from the beginning to now and it has been accepted and declined.",
-    "total_pr_count": "Total Pr Count",
+    "total_pr_count": "Total PR Count",
     "total_pr_count_desc": "Determine the number of PR created from the beginning to now.",
-    "create_close_pr_count": "Create Close Pr Count",
+    "create_close_pr_count": "Create Close PR Count",
     "create_close_pr_count_desc": "Determine the number of pr created in the last 90 days and it has been accepted and declined.",
     "code_merge_count_with_non_author": "Code Merge Count With non Author",
     "code_merge_count_with_non_author_desc": "Determine the Numbers of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
     "code_merge_count": "Code Merge Count",
     "code_merge_count_desc": "Determine the Numbers of PR Mergers and PR authors who are not the same person in the last 90 days of commits.",
-    "pr_issue_linked_count": "Pr Issue linked Count",
+    "pr_issue_linked_count": "PR Issue linked Count",
     "pr_issue_linked_count_desc": "Determine the Numbers of new pull request link issues in the last 90 days."
   },
   "repo": {
