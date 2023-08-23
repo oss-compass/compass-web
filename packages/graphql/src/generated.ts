@@ -2769,20 +2769,6 @@ export type LabModelPublicOverviewQuery = {
           secondIdent?: string | null;
         }> | null;
       } | null;
-      reports?: Array<{
-        __typename?: 'SimpleReport';
-        label?: string | null;
-        level?: string | null;
-        shortCode?: string | null;
-        type?: string | null;
-        mainScore?: {
-          __typename?: 'Diagram';
-          dates?: Array<any | null> | null;
-          tabIdent?: string | null;
-          type?: string | null;
-          values?: Array<number | null> | null;
-        } | null;
-      }> | null;
     }> | null;
   } | null;
 };
@@ -4802,16 +4788,12 @@ export const LabModelPublicOverviewDocument = /*#__PURE__*/ `
       dataset {
         ...dataset
       }
-      reports {
-        ...simpleReport
-      }
       version
       versionId
     }
   }
 }
-    ${DatasetFragmentDoc}
-${SimpleReportFragmentDoc}`;
+    ${DatasetFragmentDoc}`;
 export const useLabModelPublicOverviewQuery = <
   TData = LabModelPublicOverviewQuery,
   TError = unknown

@@ -403,9 +403,9 @@ query labModelPublicOverview(
       dataset {
         ...dataset
       }
-      reports {
-        ...simpleReport
-      }
+      #      reports {
+      #        ...simpleReport
+      #      }
       version
       versionId
     }
