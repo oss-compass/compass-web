@@ -1,75 +1,34 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { Level } from '@common/constant';
 import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import first from 'lodash/first';
 import { ModelMetric, Diagram } from '@oss-compass/graphql';
 import useLabDataMetric from '../hooks/useLabDataMetric';
-import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
+import { useDataBuilder, useEChartBuilder } from '../hooks/useBuilderFns';
 import CardHeadButtons from './CardHeadButtons';
 import { LabChartOption } from '../context/LabChartOption';
-import { getChartBuilder } from '../builder';
+import {
+  getChartBuilder,
+  getAlignValuesBuilder,
+  getDataFormatBuilder,
+} from '../builder';
+import { pickTabs, pickDataByTab } from '../context/dataHandle';
 
-const pickTabs = (
-  slugsData: {
-    label: string;
-    level: Level;
-    metric?: ModelMetric | null;
-    __typename?: 'Panel';
-    diagrams?: Array<Diagram> | null;
-  }[]
-): { label: string; value: string }[] => {
-  const firstSlugItem = first(slugsData);
-  const diagrams = firstSlugItem?.diagrams;
-
-  return diagrams?.map?.((i) => ({
-    label: i.tabIdent,
-    value: i.tabIdent,
-  }));
-};
-
-const pickDataByTab = (
-  slugsData: {
-    label: string;
-    level: Level;
-    metric?: ModelMetric | null;
-    __typename?: 'Panel';
-    diagrams?: Array<Diagram> | null;
-  }[],
-  tab: string
-): {
-  label: string;
-  level: Level;
-  chartType: string;
-  tab: string;
-  dates: string[];
-  values: number[];
-}[] => {
-  return slugsData.map(({ diagrams, level, label }) => {
-    const diagram = diagrams?.find((i) => i.tabIdent === tab);
-    return {
-      label,
-      level,
-      chartType: diagram?.type,
-      tab: diagram?.tabIdent,
-      dates: diagram?.dates as string[],
-      values: diagram?.values,
-    };
-  });
-};
-
-const ChartCard = ({ metric }: { metric: ModelMetric }) => {
+const CardMetric = ({ metric }: { metric: ModelMetric }) => {
   const { t } = useTranslation();
   const { pickDataByMetric, loading } = useLabDataMetric();
   const slugsData = pickDataByMetric(metric.ident);
-  console.log(slugsData);
-
   const tabs = pickTabs(slugsData);
+  const showData = pickDataByTab(slugsData, first(tabs)?.value);
+
   // const [tab, setTab] = useState<string>(first(tabs)?.value);
 
-  const showData = pickDataByTab(slugsData, first(tabs)?.value);
-  const eChartBuilderFns = useEChartBuilderFns([getChartBuilder()]);
+  const eChartBuilderFns = useEChartBuilder([getChartBuilder()]);
+  const dataBuilder = useDataBuilder([
+    getAlignValuesBuilder(),
+    getDataFormatBuilder(),
+  ]);
 
   const id = `card_${metric.category}_${metric.ident}`;
 
@@ -92,7 +51,8 @@ const ChartCard = ({ metric }: { metric: ModelMetric }) => {
             {/*) : null}*/}
 
             <LabChartOption
-              data={showData}
+              originData={showData}
+              dataFormatFn={dataBuilder}
               optionFn={eChartBuilderFns}
               render={({ option }) => {
                 return (
@@ -111,4 +71,4 @@ const ChartCard = ({ metric }: { metric: ModelMetric }) => {
   );
 };
 
-export default ChartCard;
+export default CardMetric;

@@ -4,19 +4,27 @@ import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import CardHeadButtons from './CardHeadButtons';
 import useLabDataMainScore from '../hooks/useLabDataMainScore';
-import useEChartBuilderFns from '../hooks/useEChartBuilderFns';
+import { useEChartBuilder, useDataBuilder } from '../hooks/useBuilderFns';
 import { LabChartOption } from '../context/LabChartOption';
-import { getChartBuilder } from '../builder';
+import {
+  getChartBuilder,
+  getDataFormatBuilder,
+  getAlignValuesBuilder,
+} from '../builder';
 import { useLabModelDetail, useLabModelVersion } from '../../hooks';
 
-const TotalScoreCard = ({ className }: { className: string }) => {
+const CardTotalScore = ({ className }: { className: string }) => {
   const { t } = useTranslation();
   const { data: detail } = useLabModelDetail();
   const { data: versionDetail } = useLabModelVersion();
   const modelDetail = detail.labModelDetail;
 
   const { data, loading } = useLabDataMainScore();
-  const eChartBuilderFns = useEChartBuilderFns([getChartBuilder()]);
+  const dataBuilderFn = useDataBuilder([
+    getAlignValuesBuilder(),
+    getDataFormatBuilder(),
+  ]);
+  const eChartBuilderFns = useEChartBuilder([getChartBuilder()]);
 
   const id = `card_model_${detail.labModelDetail.id}`;
   return (
@@ -32,7 +40,8 @@ const TotalScoreCard = ({ className }: { className: string }) => {
       bodyRender={(ref, fullScreen) => {
         return (
           <LabChartOption
-            data={data}
+            originData={data}
+            dataFormatFn={dataBuilderFn}
             optionFn={eChartBuilderFns}
             render={({ option }) => {
               return (
@@ -46,4 +55,4 @@ const TotalScoreCard = ({ className }: { className: string }) => {
   );
 };
 
-export default TotalScoreCard;
+export default CardTotalScore;

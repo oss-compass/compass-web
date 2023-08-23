@@ -26,16 +26,16 @@ const useLabDataMetric = () => {
     return panelResult;
   };
 
-  const pickTabsByMetric = (ident: string) => {
-    return panelsResults.map(({ label, level, panels }) => {
-      const item = panels.find((i) => i.metric.ident === ident);
-      return {
-        label,
-        level,
-        ...item,
-      };
-    });
-  };
+  // const pickTabsByMetric = (ident: string) => {
+  //   return panelsResults.map(({ label, level, panels }) => {
+  //     const item = panels.find((i) => i.metric.ident === ident);
+  //     return {
+  //       label,
+  //       level,
+  //       ...item,
+  //     };
+  //   });
+  // };
 
   return { data: panelsResults, loading, pickDataByMetric };
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import last from 'lodash/last';
 import useLabDataMetric from '../hooks/useLabDataMetric';
-import ChartCard from './ChartCard';
+import CardMetric from './CardMetric';
 
 const LayoutMetricCards = () => {
   const { data } = useLabDataMetric();
@@ -11,7 +11,7 @@ const LayoutMetricCards = () => {
   return (
     <div className="relative mb-12 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
       {panels?.map((panel) => {
-        return <ChartCard key={panel.metric.id} metric={panel.metric} />;
+        return <CardMetric key={panel.metric.id} metric={panel.metric} />;
       })}
     </div>
   );

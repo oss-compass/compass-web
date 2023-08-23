@@ -130,5 +130,6 @@
     "dataset_require": "请选择数据集",
     "metric_require": "请选择指标"
   },
-  "projects_selected": "已选中 {{count}} 个仓库"
+  "projects_selected": "已选中 {{count}} 个仓库",
+  "no_comment_data": "暂无评论数据"
 }

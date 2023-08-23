@@ -131,5 +131,6 @@
     "dataset_require": "Please select dataset",
     "metric_require": "Please select metric"
   },
-  "projects_selected": "{{count}} repository selected"
+  "projects_selected": "{{count}} repository selected",
+  "no_comment_data": "No comments yet"
 }

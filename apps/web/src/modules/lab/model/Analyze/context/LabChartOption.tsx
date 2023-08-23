@@ -3,14 +3,17 @@ import { EChartsOption } from 'echarts';
 import { DataResults } from '../type';
 
 export const LabChartOption = ({
-  data,
+  originData,
+  dataFormatFn,
   optionFn,
   render,
 }: {
-  data: DataResults;
+  originData: DataResults;
+  dataFormatFn: (data: DataResults) => DataResults;
   optionFn: (data: DataResults) => EChartsOption;
   render: ((args: { option: EChartsOption }) => ReactNode) | ReactNode;
 }) => {
+  const data = dataFormatFn(originData);
   const echartsOpts = optionFn(data);
 
   return (

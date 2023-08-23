@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import usePageLoadHashScroll from '@common/hooks/usePageLoadHashScroll';
 import LabChartNav from './component/LabChartNav';
-import TotalScoreCard from './component/TotalScoreCard';
+import CardTotalScore from './component/CardTotalScore';
 import LayoutMetricCards from './component/LayoutMetricCards';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import useLabData from './hooks/useLabData';
@@ -37,7 +37,7 @@ const Content = () => {
 
   return (
     <>
-      <TotalScoreCard className="mb-6" />
+      <CardTotalScore className="mb-6" />
       <LayoutMetricCards />
     </>
   );

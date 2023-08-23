@@ -46,6 +46,8 @@ const CommentDrawer = ({
       </div>
 
       <div className="px-4 pb-10">
+        {/*{t('lab:no_comment_data')}*/}
+
         {/* model comment */}
         <CommentSection
           name={name}
