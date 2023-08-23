@@ -1,4 +1,5 @@
 import { proxy, subscribe, useSnapshot } from 'valtio';
+import { isDev } from '@common/constant';
 
 export interface MetricItem {
   defaultThreshold: number;
@@ -17,7 +18,7 @@ export interface FormFiledState {
 
 export const formFiledState = proxy<FormFiledState>({
   selected: {},
-  activeCategory: '',
+  activeCategory: 'git',
 });
 
 export const getKey = (levelFirst: string, levelSecond: string) => {
@@ -53,10 +54,6 @@ export const actions = {
   },
 };
 
-// subscribe(formFiledState, () => {
-//   console.log(JSON.stringify(formFiledState, null, 2));
-// });
-
 export const useSelectedCount = ({
   ident,
 }: {
@@ -78,3 +75,9 @@ export const useSelectedCount = ({
     return acc;
   }, 0);
 };
+
+if (isDev) {
+  subscribe(formFiledState, () => {
+    console.log(JSON.stringify(formFiledState, null, 2));
+  });
+}

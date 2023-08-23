@@ -75,7 +75,7 @@ const MyModal = () => {
   };
 
   return (
-    <div className="flex-1 bg-[#FAFAFA] pb-10">
+    <div className="flex-1 bg-[#FAFAFA] pb-10 md:px-4">
       <Center>
         <div className="flex items-center justify-between pt-10 pb-4">
           <div className="font-semibold">{t('lab:my_models')}</div>

@@ -99,5 +99,6 @@
     "click_to_copy": "点击复制",
     "copy_successfully": "复制成功"
   },
-  "contact_us": "通过<s>社区</s>联系我们。"
+  "contact_us": "通过<s>社区</s>联系我们。",
+  "powered_by_chaoss": "Powered by CHAOSS"
 }
