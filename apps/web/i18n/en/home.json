@@ -42,5 +42,10 @@
   "hot_projects": "Hot Projects",
   "hot_collection": "Hot Collection",
   "more": "more",
-  "repositories": "{{length}} repositories"
+  "repositories": "{{length}} repositories",
+  "the_latest_from": "The Latest from OSS Compass",
+  "announcement": "Announcement",
+  "report": "Report",
+  "event": "Event",
+  "read_more": "Read more"
 }
