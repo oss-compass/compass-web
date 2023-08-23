@@ -174,12 +174,12 @@
     "pr_time_to_first_response_value": {
       "threshold": "介于0-15之间"
     },
-    "change_request_closure_ratio": "Pr 闭环总比率",
+    "change_request_closure_ratio": "PR 闭环总比率",
     "change_request_closure_ratio_desc": "从开始到现在 PR 总数与关闭的 PR 数之间的比率。",
     "change_request_closure_ratio_value": {
       "threshold": "介于0-1之间"
     },
-    "change_request_closure_ratio_recently_period": "Pr 闭环比率",
+    "change_request_closure_ratio_recently_period": "PR 闭环比率",
     "change_request_closure_ratio_recently_period_desc": "过去 90 天内新建的 PR 总数与关闭的 PR 数之间的比率。",
     "change_request_closure_ratio_recently_period_value": {
       "threshold": "介于0-1之间"
@@ -196,15 +196,15 @@
     },
     "pr_count": "PR 数量",
     "pr_count_desc": "过去90天内创建的PR的数量。",
-    "pr_count_with_review": "审查的pr数量",
-    "pr_count_with_review_desc": "在过去90天内审查的pr数量。",
-    "total_create_close_pr_count": "已接受或拒绝P总数",
+    "pr_count_with_review": "审查的PR数量",
+    "pr_count_with_review_desc": "在过去90天内审查的PR数量。",
+    "total_create_close_pr_count": "已接受或拒绝PR总数",
     "total_create_close_pr_count_desc": "从开始到现在创建的 PR 并且被接受或拒绝的数量。",
-    "total_pr_count": "Pr总数",
+    "total_pr_count": "PR总数",
     "total_pr_count_desc": "从开始到现在新建 PR 数量。",
     "create_close_pr_count": "已接受或拒绝PR数量",
     "create_close_pr_count_desc": "过去 90 天内创建的 PR 并且被接受或拒绝的数量。",
-    "code_merge_count_with_non_author": "PR合并数量(非pr作者合并)",
+    "code_merge_count_with_non_author": "PR合并数量(非PR作者合并)",
     "code_merge_count_with_non_author_desc": "过去 90 天内 PR 合并数量（不包含 PR 作者本人合并）。",
     "code_merge_count": "PR合并数量",
     "code_merge_count_desc": "过去 90 天内 PR 合并数量。",
