@@ -11,6 +11,15 @@
     "about": "About",
     "submit_your_project": "Submit your project"
   },
+  "range": {
+    "3M": "Last 3 months",
+    "6M": "Last 6 months",
+    "1Y": "Last year",
+    "2Y": "Last 2 years",
+    "3Y": "Last 3 years",
+    "5Y": "Last 5 years",
+    "Since2000": "Since inception"
+  },
   "community": {
     "code_base": "Repository",
     "discussion": "Discussion",
@@ -49,6 +58,11 @@
   "search": {
     "no_result": "No result"
   },
+  "topic": {
+    "productivity": "Productivity",
+    "robustness": "Robustness",
+    "niche_creation": "Niche Creation"
+  },
   "no_data": "No data available",
   "next": "Next",
   "know_more": "more",
@@ -56,23 +70,35 @@
   "signin": "Sign In",
   "subscribe": "My Subscriptions",
   "profile_setting": "Account Setting",
+  "my_models": "My Models",
   "signout": "Sign Out",
   "btn": {
+    "create": "Create",
     "back": "Back",
     "confirm": "Confirm",
     "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
     "cancel": "Cancel",
     "func_disabled": "The feature is temporarily disabled"
+  },
+  "prompt": {
+    "please_enter": "Please enter"
+  },
+  "confirm": {
+    "delete": "Are you sure you want to delete?"
   },
   "toast": {
     "modification_successful": "Modification Successful",
     "modification_failed": "Modification Failed"
   },
+  "loading": "Loading...",
   "loading_more": "Loading more...",
   "load_more": "Load More",
   "nothing_more_to_load": "Nothing more to load",
   "copy": {
     "click_to_copy": "click to copy",
     "copy_successfully": "copy successfully"
-  }
+  },
+  "contact_us": "Contact us through <s> the community </s>. "
 }

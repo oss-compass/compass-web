@@ -1,0 +1,732 @@
+fragment comment on ModelComment {
+  content
+  createdAt
+  id
+  metric {
+    ...metrics
+  }
+  images {
+    filename
+    url
+    id
+  }
+  model {
+    ...modelDetail
+  }
+  parent {
+    ...parentComment
+  }
+  replies {
+    ...reply
+  }
+  updatedAt
+  user {
+    avatarUrl
+    id
+    name
+  }
+}
+
+fragment reply on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+    id
+  }
+  updatedAt
+  user {
+    avatarUrl
+    id
+    name
+  }
+  replies {
+    content
+    createdAt
+    id
+    images {
+      id
+      filename
+      url
+    }
+    updatedAt
+  }
+  model {
+    dimension
+    id
+    isGeneral
+    isPublic
+    #latestVersions
+    name
+    triggerRemainingCount
+    userId
+  }
+}
+
+fragment parentComment on ModelComment {
+  content
+  createdAt
+  id
+  images {
+    filename
+    url
+    id
+  }
+  updatedAt
+  #  user {
+  #    ...user
+  #  }
+}
+
+fragment modelDetail on ModelDetail {
+  dimension
+  id
+  isGeneral
+  isPublic
+  #latestVersions
+  name
+  triggerRemainingCount
+  userId
+}
+
+fragment user on SimpleUser {
+  avatarUrl
+  id
+  name
+}
+
+fragment algorithm on Algorithm {
+  ident
+  name
+}
+
+fragment dataset on Dataset {
+  ident
+  items {
+    firstIdent
+    label
+    shortCode
+    level
+    secondIdent
+  }
+  name
+}
+
+fragment metrics on ModelMetric {
+  category
+  defaultThreshold
+  defaultWeight
+  from
+  id
+  metricId
+  ident
+  name
+  threshold
+  weight
+}
+
+fragment modelVersion on ModelVersion {
+  id
+  version
+  algorithm {
+    ...algorithm
+  }
+  dataset {
+    ...dataset
+  }
+  metrics {
+    ...metrics
+  }
+}
+
+fragment labMember on LabMember {
+  avatarUrl
+  canExecute
+  canRead
+  canUpdate
+  id
+  isOwner
+  joinedAt
+  name
+}
+
+query datasetFuzzySearch($keyword: String!) {
+  datasetFuzzySearch(keyword: $keyword) {
+    firstIdent
+    label
+    level
+    secondIdent
+    shortCode
+  }
+}
+
+query myLabModels($page: Int!, $per: Int!) {
+  myModels(page: $page, per: $per) {
+    count
+    items {
+      dimension
+      id
+      isGeneral
+      isPublic
+      triggerRemainingCount
+      latestVersions {
+        id
+        version
+        triggerStatus
+        triggerUpdatedAt
+        algorithm {
+          ...algorithm
+        }
+        dataset {
+          ...dataset
+        }
+        metrics {
+          ...metrics
+        }
+      }
+      defaultVersion {
+        id
+        version
+        algorithm {
+          ...algorithm
+        }
+        dataset {
+          ...dataset
+        }
+        metrics {
+          ...metrics
+        }
+      }
+      name
+      userId
+      permissions {
+        canDestroy
+        canExecute
+        canRead
+        canUpdate
+      }
+    }
+    page
+    totalPage
+  }
+}
+
+query labModelDetail($modelId: Int!) {
+  labModelDetail(modelId: $modelId) {
+    dimension
+    id
+    isGeneral
+    isPublic
+    triggerRemainingCount
+    latestVersions {
+      id
+      version
+    }
+    defaultVersion {
+      id
+      version
+    }
+    name
+    userId
+  }
+}
+
+query labModelVersion($modelId: Int!, $versionId: Int!) {
+  labModelVersion(modelId: $modelId, versionId: $versionId) {
+    id
+    version
+    algorithm {
+      ...algorithm
+    }
+    dataset {
+      ...dataset
+    }
+    metrics {
+      ...metrics
+    }
+    triggerStatus
+    triggerUpdatedAt
+  }
+}
+
+query dataSetList($type: String, $firstIdent: String, $secondIdent: String) {
+  datasetOverview(
+    type: $type
+    firstIdent: $firstIdent
+    secondIdent: $secondIdent
+  )
+}
+
+query metricSetList {
+  metricSetOverview {
+    category
+    defaultThreshold
+    defaultWeight
+    from
+    id
+    ident
+    name
+    threshold
+    weight
+  }
+}
+
+query labModelComments(
+  $direction: String
+  $modelId: Int!
+  $modelMetricId: Int
+  $page: Int
+  $parentId: Int
+  $per: Int
+  $sort: String
+  $versionId: Int
+) {
+  labModelComments(
+    direction: $direction
+    modelId: $modelId
+    modelMetricId: $modelMetricId
+    page: $page
+    parentId: $parentId
+    per: $per
+    sort: $sort
+    versionId: $versionId
+  ) {
+    count
+    items {
+      ...comment
+    }
+    page
+    totalPage
+  }
+}
+
+query labModelCommentDetail($modelId: Int!, $commentId: Int!) {
+  labModelCommentDetail(modelId: $modelId, commentId: $commentId) {
+    content
+    createdAt
+    id
+    images {
+      filename
+      url
+      id
+    }
+    model {
+      ...modelDetail
+    }
+    parent {
+      ...comment
+    }
+    replies {
+      ...comment
+    }
+    updatedAt
+    user {
+      ...user
+    }
+  }
+}
+
+query memberOverview($modelId: Int, $page: Int, $per: Int) {
+  memberOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      ...labMember
+    }
+    model {
+      name
+    }
+    page
+    totalPage
+  }
+}
+
+query myMemberPermission($modelId: Int) {
+  myMemberPermission(modelId: $modelId) {
+    canDestroy
+    canExecute
+    canRead
+    canUpdate
+  }
+}
+
+query invitationOverview($modelId: Int, $page: Int, $per: Int) {
+  invitationOverview(modelId: $modelId, page: $page, per: $per) {
+    count
+    items {
+      canExecute
+      canRead
+      canUpdate
+      email
+      id
+      sentAt
+      status
+    }
+    page
+    totalPage
+  }
+}
+
+fragment simpleReport on SimpleReport {
+  label
+  level
+  mainScore {
+    dates
+    tabIdent
+    type
+    values
+  }
+  shortCode
+  type
+}
+
+query labModelPublicOverview(
+  $sort: String
+  $direction: String
+  $page: Int
+  $per: Int
+) {
+  labModelPublicOverview(
+    sort: $sort
+    direction: $direction
+    page: $page
+    per: $per
+  ) {
+    page
+    totalPage
+    count
+    items {
+      dimension
+      modelId
+      modelName
+      dataset {
+        ...dataset
+      }
+      reports {
+        ...simpleReport
+      }
+      version
+      versionId
+    }
+  }
+}
+
+query labModelVersionReportDetail(
+  $modelId: Int!
+  $versionId: Int!
+  $label: String
+  $shortCode: String
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  labModelVersionReportDetail(
+    modelId: $modelId
+    versionId: $versionId
+    label: $label
+    shortCode: $shortCode
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    label
+    level
+    mainScore {
+      dates
+      tabIdent
+      type
+      values
+    }
+    panels {
+      diagrams {
+        dates
+        tabIdent
+        type
+        values
+      }
+      metric {
+        ...metrics
+      }
+    }
+    shortCode
+    type
+  }
+}
+
+mutation createLabModel(
+  $algorithm: String
+  $datasets: [DatasetRowTypeInput!]!
+  $dimension: Int!
+  $isGeneral: Boolean!
+  $isPublic: Boolean!
+  $metrics: [LabModelMetricInput!]!
+  $name: String!
+) {
+  createLabModel(
+    input: {
+      algorithm: $algorithm
+      datasets: $datasets
+      dimension: $dimension
+      isGeneral: $isGeneral
+      isPublic: $isPublic
+      metrics: $metrics
+      name: $name
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation createLabModelVersion(
+  $algorithm: String
+  $datasets: [DatasetRowTypeInput!]!
+  $metrics: [LabModelMetricInput!]!
+  $modelId: Int!
+  $version: String!
+) {
+  createLabModelVersion(
+    input: {
+      algorithm: $algorithm
+      datasets: $datasets
+      metrics: $metrics
+      modelId: $modelId
+      version: $version
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation updateLabModel(
+  $dimension: Int
+  $defaultVersionId: Int
+  $isGeneral: Boolean
+  $isPublic: Boolean
+  $modelId: Int!
+  $name: String
+) {
+  updateLabModel(
+    input: {
+      defaultVersionId: $defaultVersionId
+      dimension: $dimension
+      isGeneral: $isGeneral
+      isPublic: $isPublic
+      modelId: $modelId
+      name: $name
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation updateLabModelVersion(
+  $modelId: Int!
+  $versionId: Int!
+  $version: String
+  $algorithm: String
+  $datasets: [DatasetRowTypeInput!]!
+  $metrics: [LabModelMetricInput!]!
+) {
+  updateLabModelVersion(
+    input: {
+      algorithm: $algorithm
+      datasets: $datasets
+      metrics: $metrics
+      modelId: $modelId
+      versionId: $versionId
+      version: $version
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation deleteLabModel($id: Int!) {
+  deleteLabModel(input: { id: $id }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation deleteLabModelVersion($modelId: Int!, $versionId: Int!) {
+  deleteLabModelVersion(input: { modelId: $modelId, versionId: $versionId }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation deleteLabMember($modelId: Int!, $memberId: Int!) {
+  deleteLabMember(input: { modelId: $modelId, memberId: $memberId }) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation sendMemberInvite(
+  $modelId: Int!
+  $emails: [String!]!
+  $canUpdate: Boolean
+  $canExecute: Boolean
+) {
+  sendMemberInvite(
+    input: {
+      modelId: $modelId
+      emails: $emails
+      canUpdate: $canUpdate
+      canExecute: $canExecute
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation updateMemberPermission(
+  $modelId: Int!
+  $memberId: Int!
+  $canUpdate: Boolean
+  $canExecute: Boolean
+) {
+  updateMemberPermission(
+    input: {
+      modelId: $modelId
+      memberId: $memberId
+      canUpdate: $canUpdate
+      canExecute: $canExecute
+    }
+  ) {
+    clientMutationId
+    data {
+      ...labMember
+    }
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation cancelMemberInvite($modelId: Int!, $invitationId: Int!) {
+  cancelMemberInvite(
+    input: { modelId: $modelId, invitationId: $invitationId }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation deleteLabModelComment($modelId: Int!, $commentId: Int!) {
+  deleteLabModelComment(input: { modelId: $modelId, commentId: $commentId }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation createLabModelComment(
+  $modelId: Int!
+  $versionId: Int!
+  $modelMetricId: Int
+  $replyTo: Int
+  $content: String!
+  $images: [Base64ImageInput!]
+) {
+  createLabModelComment(
+    input: {
+      modelId: $modelId
+      versionId: $versionId
+      modelMetricId: $modelMetricId
+      replyTo: $replyTo
+      content: $content
+      images: $images
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation updateLabModelComment(
+  $commentId: Int!
+  $content: String!
+  $modelId: Int!
+  $images: [Base64ImageInput!]
+) {
+  updateLabModelComment(
+    input: {
+      modelId: $modelId
+      content: $content
+      commentId: $commentId
+      images: $images
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+
+mutation triggerLabModelVersion($modelId: Int!, $versionId: Int!) {
+  triggerLabModelVersion(input: { modelId: $modelId, versionId: $versionId }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}

@@ -4,12 +4,13 @@ import { withErrorBoundary } from 'react-error-boundary';
 import { usePrevious, useWindowScroll } from 'react-use';
 import { useStatusContext } from '@modules/analyze/context';
 import { checkIsPending } from '@modules/analyze/constant';
+import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import MenuLoading from '@modules/analyze/components/SideBar/Menu/MenuLoading';
 import TopicOverview from '@modules/analyze/components/SideBar/TopicOverview';
 import TopicProductivity from '@modules/analyze/components/SideBar/TopicProductivity';
 import TopicRobustness from '@modules/analyze/components/SideBar/TopicRobustness';
 import TopicNicheCreation from '@modules/analyze/components/SideBar/TopicNicheCreation';
-import useHashchangeEvent from '@modules/analyze/components/SideBar/useHashchangeEvent';
+import useActiveMenuId from '@modules/analyze/components/SideBar/useActiveMenuId';
 import NoSsr from '@common/components/NoSsr';
 import { SideBarContextProvider } from '@modules/analyze/context/SideBarContext';
 import ErrorFallback from '@common/components/ErrorFallback';
@@ -19,7 +20,8 @@ const Divider = () => (
 );
 
 const SideBarMenuContent = () => {
-  const active = useHashchangeEvent();
+  const activeId = useHashchangeEvent();
+  const active = useActiveMenuId(activeId);
   return (
     <SideBarContextProvider value={active}>
       <TopicOverview />

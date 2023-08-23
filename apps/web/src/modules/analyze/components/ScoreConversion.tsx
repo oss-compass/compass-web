@@ -39,14 +39,14 @@ const ScoreConversion: React.FC<{
         {onePoint ? (
           <div className="flex items-center">
             <Svg1 />
-            <span className="text-gray58 ml-2 text-xs">
+            <span className="text-steel ml-2 text-xs">
               {t('analyze:mark.point')}
             </span>
           </div>
         ) : (
           <div className="flex items-center">
             <Svg100 />
-            <span className="text-gray58 ml-2 text-xs">
+            <span className="text-steel ml-2 text-xs">
               {t('analyze:mark.percentage')}
             </span>
           </div>

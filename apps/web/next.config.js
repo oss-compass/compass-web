@@ -27,6 +27,7 @@ const nextConfig = {
       'portrait.gitee.com',
       'foruda.gitee.com',
       'avatars.githubusercontent.com',
+      'compass.gitee.co',
     ],
   },
   async rewrites() {
@@ -34,6 +35,15 @@ const nextConfig = {
       {
         source: '/compare/:path*',
         destination: '/analyze/:path*',
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/lab/model',
+        destination: '/lab/model/my',
+        permanent: false,
       },
     ];
   },
@@ -51,6 +61,9 @@ const nextConfig = {
       return process.env.NEXT_PUBLIC_GIT_COMMIT;
     }
     return execSync('git rev-parse HEAD').toString().trim();
+  },
+  experimental: {
+    scrollRestoration: true,
   },
 };
 

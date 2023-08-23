@@ -12,9 +12,9 @@ export const config = {
 };
 
 const proxy = httpProxy.createProxyServer({
-  autoRewrite: true,
+  autoRewrite: false,
   changeOrigin: true,
-  proxyTimeout: 100 * 1000,
+  // proxyTimeout: 100 * 1000,
 });
 
 export default async function handler(
@@ -22,9 +22,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   console.log(`proxy - source: ${req.url}  ->  target: ${API_URL}${req.url}`);
-  await sleep(500);
+  // await sleep(100);
   return new Promise((resolve, reject) => {
     proxy.once('error', reject);
-    proxy.web(req, res, { target: API_URL });
+    proxy.web(req, res, { target: API_URL }, (err, req, res, target) => {
+      console.log(err, req, res, target);
+    });
   });
 }

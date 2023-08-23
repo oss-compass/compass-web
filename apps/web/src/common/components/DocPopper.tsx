@@ -24,18 +24,22 @@ const DocLink: React.FC<
   return (
     <div>
       {description}
-      <div className="absolute right-0 bottom-0 h-4 w-24 bg-gradient-to-r from-white/30 to-white">
-        <a
-          className="text-primary float-right ml-1 cursor-pointer hover:underline"
-          data-html2canvas-ignore="true"
-          onClick={(event) => {
-            setAnchorEl(event.currentTarget);
-            setPopoverVisible(true);
-          }}
-        >
-          {t('common:know_more')}
-        </a>
-      </div>
+
+      {weight && detail ? (
+        <div className="absolute right-0 bottom-0 h-4 w-24 bg-gradient-to-r from-white/30 to-white">
+          <a
+            className="text-primary float-right ml-1 cursor-pointer hover:underline"
+            data-html2canvas-ignore="true"
+            onClick={(event) => {
+              setAnchorEl(event.currentTarget);
+              setPopoverVisible(true);
+            }}
+          >
+            {t('common:know_more')}
+          </a>
+        </div>
+      ) : null}
+
       <Popper
         open={popoverVisible}
         anchorEl={anchorEl}

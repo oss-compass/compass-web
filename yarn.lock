@@ -3824,17 +3824,17 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/base@^5.0.0-beta.8":
-  version "5.0.0-beta.8"
-  resolved "https://registry.npmmirror.com/@mui/base/-/base-5.0.0-beta.8.tgz#a0a9531ae9147be92d17e4f0e3b9accc57916841"
-  integrity sha512-b4vVjMZx5KzzEMf4arXKoeV5ZegAMOoPwoy1vfUBwhvXc2QtaaAyBp50U7OA2L06Leubc1A+lEp3eqwZoFn87g==
+"@mui/base@^5.0.0-beta.10":
+  version "5.0.0-beta.10"
+  resolved "https://registry.npmmirror.com/@mui/base/-/base-5.0.0-beta.10.tgz#b9a2de21c7de45aa4275c7ecf5aa803ecc236ba6"
+  integrity sha512-moTAhGwFfQffj7hsu61FnqcGqVcd53A1CrOhnskM9TF0Uh2rnLDMCuar4JRUWWpaJofAfQEbQBBFPadFQLI4PA==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@emotion/is-prop-valid" "^1.2.1"
     "@mui/types" "^7.2.4"
-    "@mui/utils" "^5.14.1"
+    "@mui/utils" "^5.14.4"
     "@popperjs/core" "^2.11.8"
-    clsx "^1.2.1"
+    clsx "^2.0.0"
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
@@ -3922,10 +3922,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/utils@^5.14.1":
-  version "5.14.1"
-  resolved "https://registry.npmmirror.com/@mui/utils/-/utils-5.14.1.tgz#29696371016552a6eb3af975bc7af429ec88b29a"
-  integrity sha512-39KHKK2JeqRmuUcLDLwM+c2XfVC136C5/yUyQXmO2PVbOb2Bol4KxtkssEqCbTwg87PSCG3f1Tb0keRsK7cVGw==
+"@mui/utils@^5.14.4":
+  version "5.14.4"
+  resolved "https://registry.npmmirror.com/@mui/utils/-/utils-5.14.4.tgz#498cc2b08e46776c1e4327bfd8c23ad2f5890bc6"
+  integrity sha512-4ANV0txPD3x0IcTCSEHKDWnsutg1K3m6Vz5IckkbLXVYu17oOZCVUdOKsb/txUmaCd0v0PmSRe5PW+Mlvns5dQ==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@types/prop-types" "^15.7.5"
@@ -7284,6 +7284,11 @@ big.js@^5.2.2:
   resolved "https://registry.npmmirror.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
+big.js@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.npmmirror.com/big.js/-/big.js-6.2.1.tgz#7205ce763efb17c2e41f26f121c420c6a7c2744f"
+  integrity sha512-bCtHMwL9LeDIozFn+oNhhFoq+yQ3BNdnsLSASUxLciOb1vgvpHsIO1dsENiGMgbb4SkP5TrzWzRiLddn8ahVOQ==
+
 binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.npmmirror.com/binary-extensions/-/binary-extensions-2.2.0.tgz"
@@ -7862,6 +7867,11 @@ clsx@1.2.1, clsx@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmmirror.com/clsx/-/clsx-1.2.1.tgz"
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
+clsx@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/clsx/-/clsx-2.0.0.tgz#12658f3fd98fafe62075595a5c30e43d18f3d00b"
+  integrity sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==
 
 co@^4.6.0:
   version "4.6.0"
@@ -9464,10 +9474,10 @@ eslint-plugin-testing-library@^5.6.4:
   dependencies:
     "@typescript-eslint/utils" "^5.13.0"
 
-eslint-plugin-valtio@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.npmmirror.com/eslint-plugin-valtio/-/eslint-plugin-valtio-0.6.1.tgz"
-  integrity sha512-oFfE++Eix1lsW2DmmmQyJrwkjbA2QC3PYj8u82c4IuxtG90Qq9zx2rwrZVjWEL2xba+7oE/GGuujz2/nA1Bmlg==
+eslint-plugin-valtio@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.npmmirror.com/eslint-plugin-valtio/-/eslint-plugin-valtio-0.6.2.tgz#b66791b3b6c5964a1736c6a75106355e8cfb63be"
+  integrity sha512-7U870y+gjL6xsiwPyMcUFHFbrMPk2t02X6V4VF5rSDi0f3A/uQDqAVvsY7m035plKW0Ke2i1aRch4tNWtnRqLA==
 
 eslint-scope@5.1.1, eslint-scope@^5.1.1:
   version "5.1.1"
@@ -12824,6 +12834,11 @@ next-i18next@^13.0.0:
     hoist-non-react-statics "^3.3.2"
     i18next-fs-backend "^2.0.0"
 
+next-usequerystate@^1.7.3:
+  version "1.7.3"
+  resolved "https://registry.npmmirror.com/next-usequerystate/-/next-usequerystate-1.7.3.tgz#724d9d75e488b47e0942ab9d3443dfcdcd5b65b0"
+  integrity sha512-U45N1KGL7e6Rp8kRmisbM26q/sV2JFPahuV1H0SgF0VgG6970CdtheqLicytYURzgpc4twdiQ+4QgZhuFmX3Tg==
+
 next@^13.4.12:
   version "13.4.12"
   resolved "https://registry.npmmirror.com/next/-/next-13.4.12.tgz#809b21ea0aabbe88ced53252c88c4a5bd5af95df"
@@ -14362,6 +14377,11 @@ react-datepicker@^4.11.0:
     prop-types "^15.7.2"
     react-onclickoutside "^6.12.2"
     react-popper "^2.3.0"
+
+react-day-picker@^8.8.1:
+  version "8.8.1"
+  resolved "https://registry.npmmirror.com/react-day-picker/-/react-day-picker-8.8.1.tgz#44474c6f7f346ea28796974d7a065d5572f4cd38"
+  integrity sha512-U7RsRoRI5pyMXhKq54hS9yM11WEGkPf8hIdrxIM/sefgmQjuxazqgwcZFMiPZW/K9vtmzLZFf9bLW0wVsGYd5w==
 
 react-docgen-typescript@^2.2.2:
   version "2.2.2"
@@ -16692,6 +16712,11 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmmirror.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
+
+viewerjs@^1.11.4:
+  version "1.11.4"
+  resolved "https://registry.npmmirror.com/viewerjs/-/viewerjs-1.11.4.tgz#3f8f10ca14f72d2ad16249ee239ebfa1ed3e736f"
+  integrity sha512-/mnqMIwt5Bi9j59+48OqQtqgOx8oh186Xshdr/dqqBrakMSMlLt/jmeNHBod0PvOkesZf66ivQbWmtWYBlKetg==
 
 vm-browserify@^1.1.2:
   version "1.1.2"

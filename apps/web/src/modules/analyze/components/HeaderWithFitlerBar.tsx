@@ -1,29 +1,13 @@
-import React, { PropsWithChildren } from 'react';
-import { usePrevious, useWindowScroll } from 'react-use';
-import classnames from 'classnames';
+import React from 'react';
 import Header from '@common/components/Header';
+import StickyNav from '@common/components/Header/StickyNav';
 import { SideBarMenu } from '@modules/analyze/components/SideBar';
 import NavBar from '@modules/analyze/components/NavBar';
 import TopicNavbar from '@modules/analyze/components/TopicNavbar';
 
-const HeaderBarWrap: React.FC<PropsWithChildren> = ({ children }) => {
-  const { y } = useWindowScroll();
-  const preY = usePrevious(y) as number;
-
-  return (
-    <div
-      className={classnames('z-header sticky flex-shrink-0 transition-all', [
-        y < preY ? 'top-0' : ' >md:-top-[80px] md:-top-[48px]',
-      ])}
-    >
-      {children}
-    </div>
-  );
-};
-
 const HeaderWithFilterBar = () => {
   return (
-    <HeaderBarWrap>
+    <StickyNav className=">md:-top-[80px] md:-top-[48px]">
       {/* Head Black Including language switch, login  */}
       <Header
         mobileMenu={
@@ -37,7 +21,7 @@ const HeaderWithFilterBar = () => {
       <NavBar />
 
       <TopicNavbar />
-    </HeaderBarWrap>
+    </StickyNav>
   );
 };
 

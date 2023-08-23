@@ -3,7 +3,7 @@ import ChartDisplaySetting from '@modules/analyze/components/NavBar/ChartDisplay
 import RepoFilter from '@modules/analyze/components/NavBar/RepoFilter';
 import { AiOutlineSetting } from 'react-icons/ai';
 import Popper from '@mui/material/Popper';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import useLevel from '@modules/analyze/hooks/useLevel';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import Badge from '../Badge';

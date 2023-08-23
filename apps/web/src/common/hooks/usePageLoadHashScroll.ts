@@ -12,12 +12,10 @@ const usePageLoadHashScroll = (isLoading: boolean) => {
     if (runOnce.current) return;
     runOnce.current = true;
 
+    console.log('--------------scrollToElement------------------');
     elementToScroll.scrollIntoView?.({ behavior: 'smooth' });
     // set border style
-    elementToScroll.parentElement?.setAttribute(
-      'style',
-      'border-color: #505050'
-    );
+    elementToScroll?.classList.add('card-hash-active-border');
   };
 
   useDebounce(

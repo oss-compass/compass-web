@@ -47,9 +47,10 @@ export const useUserInfo = () => {
     provider: provider,
     loginBinds: user?.loginBinds,
   });
-  return { providerUser, loginBinds: user?.loginBinds };
+  return { currentUser: user, providerUser, loginBinds: user?.loginBinds };
 };
 
+// for submit you project
 export const useSubmitUser = () => {
   const { currentUser, submitProvider } = useSnapshot(userInfoStore);
   const provider = cookieGetAuthProvider();
@@ -64,8 +65,6 @@ export const useSubmitUser = () => {
     }
     return acc;
   }, 0);
-
-  console.log({ repoProviderCount: count });
 
   return {
     submitUser,

@@ -11,6 +11,15 @@
     "about": "关于",
     "submit_your_project": "提交项目"
   },
+  "range": {
+    "3M": "最近3个月",
+    "6M": "最近6个月",
+    "1Y": "最近1年",
+    "2Y": "最近2年",
+    "3Y": "最近3年",
+    "5Y": "最近5年",
+    "Since2000": "创立以来"
+  },
   "community": {
     "code_base": "代码仓库",
     "discussion": "讨论",
@@ -49,6 +58,11 @@
   "search": {
     "no_result": "未找到相关内容"
   },
+  "topic": {
+    "productivity": "生产力",
+    "robustness": "稳健性",
+    "niche_creation": "创新力"
+  },
   "no_data": "暂无数据",
   "next": "下一个",
   "know_more": "了解更多",
@@ -56,23 +70,34 @@
   "signin": "登录",
   "subscribe": "我的订阅",
   "profile_setting": "账号设置",
+  "my_models": "我的模型",
   "signout": "退出",
   "btn": {
     "back": "返回",
     "confirm": "确认",
     "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
     "cancel": "取消",
     "func_disabled": "该功能临时关闭"
+  },
+  "prompt": {
+    "please_enter": "请输入"
+  },
+  "confirm": {
+    "delete": "确定删除吗？"
   },
   "toast": {
     "modification_successful": "修改成功",
     "modification_failed": "修改失败"
   },
-  "loading_more": "加载中...",
+  "loading": "加载中...",
+  "loading_more": "加载更多...",
   "load_more": "点击加载更多",
   "nothing_more_to_load": "无更多数据了",
   "copy": {
     "click_to_copy": "点击复制",
     "copy_successfully": "复制成功"
-  }
+  },
+  "contact_us": "通过<s>社区</s>联系我们。"
 }

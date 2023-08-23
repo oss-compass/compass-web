@@ -8,7 +8,7 @@ import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'next-i18next';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import DateRangePicker from './DateRangePicker';
 import Popper from '@mui/material/Popper';
 
@@ -88,7 +88,7 @@ const DateTagPanel = ({
   );
 };
 
-const NavDatePicker = () => {
+const NavDatePicker = ({ disable }: { disable?: boolean }) => {
   const i18RangeTag = useI18RangeTag();
   const { range } = useQueryDateRange();
 
@@ -96,6 +96,7 @@ const NavDatePicker = () => {
   const [pickerPanelOpen, togglePickerPanel] = React.useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (disable) return;
     setAnchorEl(event.currentTarget);
     togglePickerPanel((pre) => !pre);
   };
@@ -109,12 +110,14 @@ const NavDatePicker = () => {
     >
       <div>
         <div
-          className="flex h-10 cursor-pointer items-center"
+          className={classnames('flex h-10 items-center', [
+            disable ? 'cursor-not-allowed' : 'cursor-pointer',
+          ])}
           onClick={(e) => handleClick(e)}
         >
           <BiCalendar className="mr-2.5 text-xl" />
           <span className="text-sm">{i18RangeTag[range] || range}</span>
-          <BiCaretDown className="ml-1 text-sm" />
+          {disable ? null : <BiCaretDown className="ml-1 text-sm" />}
         </div>
         <Popper
           open={pickerPanelOpen}

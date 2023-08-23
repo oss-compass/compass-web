@@ -61,8 +61,7 @@ const useTopicNavbarScroll = () => {
         const rect = cardEl.getBoundingClientRect();
 
         if (isCardInView(rect)) {
-          const h3 = cardEl.firstChild as HTMLElement;
-          if (h3?.id) setInViewCardId(h3?.id);
+          if (cardEl?.id) setInViewCardId(cardEl?.id);
           return;
         }
       }

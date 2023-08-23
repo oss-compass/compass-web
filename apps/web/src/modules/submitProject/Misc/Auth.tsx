@@ -21,17 +21,16 @@ const Auth: React.FC = () => {
       <div className="flex items-center justify-between ">
         <div className="flex">
           <div className="daisy-avatar">
-            <div className="h-12 w-12 rounded-full bg-slate-100">
+            <div className="relative h-12 w-12  overflow-hidden rounded-full bg-slate-100">
               <Image
-                width={48}
-                height={48}
                 src={user?.avatarUrl!}
                 unoptimized
-                alt={''}
+                fill
+                sizes="64px"
                 style={{
-                  maxWidth: '100%',
-                  height: 'auto',
+                  objectFit: 'cover',
                 }}
+                alt={''}
               />
             </div>
           </div>
