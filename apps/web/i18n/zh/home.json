@@ -42,5 +42,10 @@
   "hot_projects": "热门项目",
   "hot_collection": "热门分类",
   "more": "更多",
-  "repositories": "{{length}} 个仓库"
+  "repositories": "{{length}} 个仓库",
+  "the_latest_from": "最近热点",
+  "announcement": "公告",
+  "report": "新闻",
+  "event": "事件",
+  "read_more": "阅读更多"
 }

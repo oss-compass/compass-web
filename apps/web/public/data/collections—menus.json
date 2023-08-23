@@ -247,7 +247,9 @@
       "deep-learning-framework",
       "nlp",
       "computer-vision-face-recognition",
-      "aigc"
+      "aigc",
+      "open-source-LLMs",
+      "open-source-LLMs-tools"
     ],
     "items_info": [
       {
@@ -279,6 +281,18 @@
         "name": "AIGC",
         "name_cn": "AI内容生成",
         "slug": "/aigc"
+      },
+      {
+        "ident": "open-source-LLMs",
+        "name": "Open Source LLMs",
+        "name_cn": "开源LLMs",
+        "slug": "/open-source-LLMs"
+      },
+      {
+        "ident": "open-source-LLMs-tools",
+        "name": "Open Source LLMs Tools",
+        "name_cn": "开源LLMs工具",
+        "slug": "/open-source-LLMs-tools"
       }
     ]
   },
@@ -418,7 +432,6 @@
       "android-development-framework",
       "authorization-framework",
       "css-framework",
-      "deep-learning-framework",
       "edge-computing-framework",
       "ios-framework",
       "node.js-web-framework",
@@ -444,12 +457,6 @@
         "name": "CSS Framework",
         "name_cn": "CSS 框架",
         "slug": "/css-framework"
-      },
-      {
-        "ident": "deep-learning-framework",
-        "name": "Deep Learning Framework",
-        "name_cn": "深度学习框架",
-        "slug": "/deep-learning-framework"
       },
       {
         "ident": "edge-computing-framework",

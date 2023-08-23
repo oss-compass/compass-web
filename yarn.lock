@@ -14378,6 +14378,11 @@ react-datepicker@^4.11.0:
     react-onclickoutside "^6.12.2"
     react-popper "^2.3.0"
 
+react-day-picker@^8.8.1:
+  version "8.8.1"
+  resolved "https://registry.npmmirror.com/react-day-picker/-/react-day-picker-8.8.1.tgz#44474c6f7f346ea28796974d7a065d5572f4cd38"
+  integrity sha512-U7RsRoRI5pyMXhKq54hS9yM11WEGkPf8hIdrxIM/sefgmQjuxazqgwcZFMiPZW/K9vtmzLZFf9bLW0wVsGYd5w==
+
 react-docgen-typescript@^2.2.2:
   version "2.2.2"
   resolved "https://registry.npmmirror.com/react-docgen-typescript/-/react-docgen-typescript-2.2.2.tgz#4611055e569edc071204aadb20e1c93e1ab1659c"
