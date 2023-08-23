@@ -36,7 +36,6 @@ const UserManage = () => {
   const myPermisssion = useMyMemberPermissionQuery(gqlClient, {
     modelId,
   });
-  console.log(myPermisssion);
   const permission = myPermisssion.data?.myMemberPermission;
 
   const inviteUsers = useRef(null);
@@ -75,7 +74,7 @@ const UserManage = () => {
     );
   }
   return (
-    <div className="flex-1 bg-[#FFFFFF] pb-10">
+    <div className="flex-1 bg-[#FFFFFF] pb-10 md:px-4">
       <Center>
         <div className="flex items-center justify-between pt-10 pb-4">
           <div className="text-xl font-semibold">

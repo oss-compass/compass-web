@@ -1,4 +1,5 @@
 import last from 'lodash/last';
+import { formatNegativeNumber, shortenAxisLabel } from '@common/utils/format';
 import {
   getLineOption,
   getTooltipsFormatter,
@@ -35,7 +36,15 @@ export const getChartBuilder: getChartBuilderFn<{}> = () => (pre, results) => {
   const opts = getLineOption({
     xAxisData: dates,
     series,
-    yAxis: { type: 'value', scale: true },
+    yAxis: {
+      type: 'value',
+      scale: true,
+      axisLabel: {
+        formatter: (value: any) => {
+          return shortenAxisLabel(value) as string;
+        },
+      },
+    },
     legend: legendFormat(compareLabels),
     tooltip: {
       formatter: getTooltipsFormatter({ compareLabels }),

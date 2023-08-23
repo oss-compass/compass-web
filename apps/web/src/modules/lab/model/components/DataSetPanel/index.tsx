@@ -6,6 +6,7 @@ import groupBy from 'lodash/groupBy';
 import { useTranslation } from 'next-i18next';
 import RepoCard from '../../components/RepoCard';
 import RepoCompareBar from './RepoCompareBar';
+import { getSecondIdentName } from '../../i18n';
 
 const DataSetPanel: React.FC<{
   modelId: number;
@@ -70,7 +71,7 @@ const DataSetPanel: React.FC<{
                 }
               }}
             >
-              {ident}
+              {getSecondIdentName(ident, i18n.language)}
             </div>
           );
         })}
@@ -96,7 +97,7 @@ const DataSetPanel: React.FC<{
       />
 
       <div
-        className={classnames('grid gap-4 pt-4 pb-20', [
+        className={classnames('grid gap-4 pt-4 pb-20 md:grid-cols-2', [
           fullWidth ? 'grid-cols-6' : 'grid-cols-4',
         ])}
       >

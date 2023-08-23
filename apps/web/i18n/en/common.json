@@ -100,5 +100,6 @@
     "click_to_copy": "click to copy",
     "copy_successfully": "copy successfully"
   },
-  "contact_us": "Contact us through <s> the community </s>. "
+  "contact_us": "Contact us through <s> the community </s>. ",
+  "powered_by_chaoss": "Powered by CHAOSS"
 }

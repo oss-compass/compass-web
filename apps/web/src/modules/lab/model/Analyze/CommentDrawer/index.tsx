@@ -23,8 +23,12 @@ const CommentDrawer = ({
   return (
     <div
       className={classnames(
-        'border-silver relative shrink-0 border-l transition-all',
-        [open ? 'h-auto w-[400px] opacity-100' : 'h-0 w-0 opacity-0']
+        'border-silver relative shrink-0 transform-gpu border-l transition-all md:hidden',
+        [
+          open
+            ? 'h-auto w-[400px] opacity-100'
+            : 'absolute hidden w-0 translate-x-full',
+        ]
       )}
     >
       <div className="z-header sticky top-0 flex h-14 items-center justify-between border-b border-[#EAEAEA] bg-[#FAFAFA] pl-4 pr-2">

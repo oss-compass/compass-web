@@ -2,9 +2,9 @@ import React, { PropsWithChildren } from 'react';
 import classname from 'classnames';
 import { useSnapshot } from 'valtio';
 import { MetricSetListQuery } from '@oss-compass/graphql';
+import Chaoss from '@common/components/PoweredBy/Chaoss';
 import { formFiledState, actions, MetricItem, FormFiledState } from '../state';
 import { MetricName, MetricDesc } from '../../Misc';
-import Chaoss from '@public/images/logos/chaoss.svg';
 
 const checkIsSelect = (
   ident: string,
@@ -25,7 +25,7 @@ export const MetricItemsCard = ({
   const { ident, category } = item;
   const snapshot = useSnapshot(formFiledState);
   const select = checkIsSelect(ident, snapshot.selected[category]);
-  console.log(item.from);
+
   return (
     <div
       className={classname(
@@ -45,9 +45,7 @@ export const MetricItemsCard = ({
           <span className="text-sm font-medium">
             <MetricName ident={ident} category={category} />
           </span>
-          <span className="text-secondary ml-2 text-xs">
-            {item.from ? <Chaoss /> : ''}
-          </span>
+          {item.from ? <Chaoss /> : ''}
         </div>
         <div className="text-xs text-[#585858]">
           <MetricDesc ident={ident} category={category} />
