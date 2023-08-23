@@ -68,7 +68,7 @@ const HotCollection = () => {
   const length = keys.length;
   const randomKey1 = keys[Math.floor(Math.random() * length)];
   let randomKey2 = keys[Math.floor(Math.random() * length)];
-  if (randomKey2 === randomKey1) {
+  while (randomKey2 === randomKey1) {
     randomKey2 = keys[Math.floor(Math.random() * length)];
   }
   return (
