@@ -1,15 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import jsonData from './FromData.json';
-import Link from 'next/link';
+import jsonData from './NewsData.json';
 import Image from 'next/image';
 import { BsArrowRight } from 'react-icons/bs';
 import DatePicker from './DatePicker';
-import getLocale from '@common/utils/getLocale';
 import LinkX from '@common/components/LinkX';
 
-const FromBox = (props: {
+const NewsBox = (props: {
   type: string;
   title: string;
   titleCn: string;
@@ -76,7 +74,7 @@ const FromBox = (props: {
   );
 };
 
-const LatestFrom = () => {
+const LatestNews = () => {
   const { t } = useTranslation();
   const data = jsonData['formData'];
   return (
@@ -90,7 +88,7 @@ const LatestFrom = () => {
       <div className="mb-10 grid grid-cols-3 gap-5 lg:w-full lg:grid-cols-1 lg:gap-y-6 lg:px-4">
         {data.map(({ type, title, title_cn, img, url }) => {
           return (
-            <FromBox
+            <NewsBox
               type={type}
               title={title}
               titleCn={title_cn}
@@ -105,4 +103,4 @@ const LatestFrom = () => {
   );
 };
 
-export default LatestFrom;
+export default LatestNews;
