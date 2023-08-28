@@ -10,7 +10,7 @@ import Banner from '@modules/home/Banner';
 import HotFields from '@modules/home/HotFields';
 import Trending from '@modules/home/Trending';
 import Explain from '@modules/home/Explain';
-import LatestFrom from '@modules/home/LatestFrom';
+import LatestNews from '@modules/home/LatestNews';
 
 import ExplainMobile from '@modules/home/Explain/Mobile';
 import SpecialThank from '@modules/home/SpecialThank';
@@ -36,7 +36,7 @@ const Home: React.FC = (props) => {
         <Banner />
         <HotFields />
         <Trending />
-        <LatestFrom />
+        <LatestNews />
         <NoSsr>
           <Explain />
           <ExplainMobile />

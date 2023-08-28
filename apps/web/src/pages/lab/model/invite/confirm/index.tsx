@@ -21,7 +21,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-const Content = ({ status }: { status: string }) => {
+const Content = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const acceptUrl = router.query.accept_url as string;
@@ -85,8 +85,6 @@ const Content = ({ status }: { status: string }) => {
 const Confirm: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const status = router.query.status as string;
-
   return (
     <div>
       <LogoHeader />
@@ -97,8 +95,8 @@ const Confirm: React.FC = () => {
             'md:mx-6 md:w-full md:px-6'
           )}
         >
-          <AuthRequire className="p-6">
-            <Content status={status} />
+          <AuthRequire redirectTo={router.asPath} className="p-6">
+            <Content />
           </AuthRequire>
         </div>
       </div>

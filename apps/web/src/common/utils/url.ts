@@ -115,3 +115,7 @@ export function getRouteAsPath(
 export function removeTrailingSlash(path: string) {
   return path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
 }
+
+export function getGithubPng(url: string) {
+  return 'https://github.com/' + getNameSpace(url) + '.png';
+}

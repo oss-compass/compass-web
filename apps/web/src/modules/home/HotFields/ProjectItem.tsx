@@ -4,9 +4,11 @@ import {
   getProvider,
   getLastPathSegment,
   getShortAnalyzeLink,
+  getGithubPng,
 } from '@common/utils';
 import Link from 'next/link';
-import ProviderIcon from '@common/components/ProviderIcon';
+import { SiGitee } from 'react-icons/si';
+import Image from 'next/image';
 
 const ProjectItem = ({ shortCode, url }) => {
   const name = getLastPathSegment(url);
@@ -18,8 +20,23 @@ const ProjectItem = ({ shortCode, url }) => {
       className="flex cursor-pointer justify-between py-1"
     >
       <div className="text-sm text-black">
-        <div className="flex items-center">
-          <ProviderIcon className="text-2xl" provider={origin || ''} />
+        <div className="flex items-center ">
+          {origin === 'github' ? (
+            <div className="boder h-6 w-6 overflow-hidden rounded-full">
+              <Image
+                src={getGithubPng(url) || ''}
+                unoptimized
+                width={24}
+                height={24}
+                style={{
+                  objectFit: 'cover',
+                }}
+                alt="icon"
+              />
+            </div>
+          ) : (
+            <SiGitee className="text-2xl text-[#c71c27]" />
+          )}
           <div className="line-clamp-1 ml-2 max-w-[200px] font-bold">
             {name}
           </div>
