@@ -11,6 +11,7 @@ import { FiMoreHorizontal } from 'react-icons/fi';
 import Dialog from '@common/components/Dialog';
 import { Button, PopperRefProps } from '@oss-compass/ui';
 import { useUserInfo } from '@modules/auth/useUserInfo';
+import { useTranslation } from 'react-i18next';
 
 const CommentItemMore = ({
   comment,
@@ -21,6 +22,8 @@ const CommentItemMore = ({
   onDeleteSuccess: () => void;
   onDeleteEdit: () => void;
 }) => {
+  const { t } = useTranslation();
+
   const popperRef = useRef<PopperRefProps>();
   const router = useRouter();
   const { currentUser } = useUserInfo();
@@ -55,7 +58,7 @@ const CommentItemMore = ({
                 popperRef.current?.toggle();
               }}
             >
-              编辑
+              {t('common:btn.edit')}
             </div>
             <div
               className="cursor-pointer border-b px-2 py-2 text-sm"
@@ -63,7 +66,7 @@ const CommentItemMore = ({
                 setOpenConfirm(true);
               }}
             >
-              删除
+              {t('common:btn.delete')}
             </div>
           </div>
         }
@@ -80,8 +83,10 @@ const CommentItemMore = ({
 
       <Dialog
         open={openConfirm}
-        dialogTitle={<>确定</>}
-        dialogContent={<div className="w-96">确认删除?</div>}
+        dialogTitle={<>{t('common:btn.confirm')}</>}
+        dialogContent={
+          <div className="w-96">{t('lab:user.confirm_delete')}?</div>
+        }
         dialogActions={
           <div className="flex">
             <Button
@@ -91,7 +96,7 @@ const CommentItemMore = ({
                 setOpenConfirm(false);
               }}
             >
-              取消
+              {t('common:btn.cancel')}
             </Button>
             <Button
               intent="primary"
@@ -102,7 +107,7 @@ const CommentItemMore = ({
                 deleteMutation.mutate({ modelId, commentId });
               }}
             >
-              确定
+              {t('common:btn.confirm')}
             </Button>
           </div>
         }
