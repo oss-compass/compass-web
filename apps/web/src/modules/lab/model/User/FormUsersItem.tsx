@@ -20,6 +20,7 @@ import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { myPermisssion } from './type';
 import { useRouter } from 'next/router';
+import { useUserInfo } from '@modules/auth';
 
 const CancelInvitation = ({ modelId, invitationId, event$ }) => {
   const { t } = useTranslation();
@@ -142,6 +143,7 @@ const FormUsersItem = (props: {
   permission: myPermisssion;
   event$: EventEmitter<string>;
 }) => {
+  const { providerUser: loginUser } = useUserInfo();
   const { t } = useTranslation();
   const { user, modelId, permission, event$ } = props;
 
@@ -294,7 +296,9 @@ const FormUsersItem = (props: {
               </div>
             </div>
           ) : (
-            <QuitModel modelId={modelId} memberId={user.id} />
+            loginUser.nickname === user.name && (
+              <QuitModel modelId={modelId} memberId={user.id} />
+            )
           )
         ) : (
           permission?.canDestroy && (

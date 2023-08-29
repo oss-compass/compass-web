@@ -221,16 +221,7 @@ const LabTerms = () => {
         <h2 className="my-4 text-xl font-semibold">9. Contact Information</h2>
         <p className="mb-6">
           If you have any questions or concerns about these Terms of Use, please
-          contact us at{' '}
-          <a
-            className="underline underline-offset-2"
-            target="_blank"
-            rel="noopener noreferrer"
-            href="contact@oss-compass.org"
-          >
-            contact@oss-compass.org
-          </a>
-          .
+          contact us at contact@oss-compass.org .
         </p>
       </div>
     );
@@ -340,15 +331,7 @@ const LabTerms = () => {
         </p>
         <h2 className="my-4 text-xl font-semibold">9. 联系信息</h2>
         <p className="mb-6">
-          如果您对这些使用条款有任何疑问或关注，请通过
-          <a
-            className="underline underline-offset-2"
-            target="_blank"
-            rel="noopener noreferrer"
-            href="contact@oss-compass.org"
-          >
-            contact@oss-compass.org
-          </a>
+          如果您对这些使用条款有任何疑问或关注，请通过 contact@oss-compass.org
           与我们联系。
         </p>
       </div>
