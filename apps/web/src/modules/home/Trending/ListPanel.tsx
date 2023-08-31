@@ -2,9 +2,12 @@ import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import { BsCodeSquare } from 'react-icons/bs';
+import { SiGitee } from 'react-icons/si';
+import Image from 'next/image';
 import { TrendingQuery } from '@oss-compass/graphql';
 import { formatLabel } from '@common/utils/format';
-import { getShortAnalyzeLink, getAnalyzeLink } from '@common/utils/links';
+import { getShortAnalyzeLink } from '@common/utils/links';
+import { getGithubPng } from '@common/utils/url';
 import ProviderIcon from '@common/components/ProviderIcon';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Level } from '@modules/analyze/constant';
@@ -60,6 +63,35 @@ const Loading = () => (
   </div>
 );
 
+const Avatar = ({ item }: { item: TrendingQuery['trending'][number] }) => {
+  return (
+    <>
+      {item.origin === 'github' ? (
+        <div className="h-10 w-10 overflow-hidden rounded-full border">
+          <Image
+            src={getGithubPng(item.label) || ''}
+            unoptimized
+            width={40}
+            height={40}
+            style={{
+              objectFit: 'cover',
+            }}
+            alt="icon"
+          />
+        </div>
+      ) : (
+        <SiGitee className="h-10 w-10 text-[#c71c27]" />
+      )}
+
+      {item.origin === 'github' ? (
+        <div className="absolute -bottom-0.5 -right-0.5 z-10 rounded-full bg-white p-0.5">
+          <ProviderIcon provider={item.origin || ''} />
+        </div>
+      ) : null}
+    </>
+  );
+};
+
 const ListPanel = (props: {
   loading: boolean;
   trending: TrendingQuery['trending'];
@@ -85,27 +117,32 @@ const ListPanel = (props: {
             {/*  href={getAnalyzeLink({ label: item.label, level: item.level })}*/}
             {/*>*/}
 
-            <div className="">
-              <div className="mb-1 font-bold">{info.name}</div>
-              <div className="flex items-center">
-                <ProviderIcon provider={item.origin || ''} />
+            <div className="flex">
+              <div className="relative h-10 w-10">
+                <Avatar item={item} />
+              </div>
 
-                {info.namespace ? (
-                  <span className="text-secondary ml-2 text-xs">
-                    {info.namespace}
-                  </span>
-                ) : null}
-
-                {item?.level === Level.COMMUNITY ? (
-                  <div className="text-steel ml-2 flex items-center text-xs">
-                    <BsCodeSquare />
-                    <span className="ml-1">
-                      {`${item?.reposCount} ${t('analyze:repos')}`}
+              <div className="ml-4">
+                <div className="mb-1 font-bold">{info.name}</div>
+                <div className="flex items-center">
+                  {info.namespace ? (
+                    <span className="text-secondary text-xs">
+                      {info.namespace}
                     </span>
-                  </div>
-                ) : null}
+                  ) : null}
+
+                  {item?.level === Level.COMMUNITY ? (
+                    <div className="text-steel flex items-center text-xs">
+                      <BsCodeSquare />
+                      <span className="ml-1">
+                        {`${item?.reposCount} ${t('analyze:repos')}`}
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
+
             <div>
               <div className="mb-1 text-right font-medium italic">
                 {transHundredMarkSystem(item.activityScore || 0)}
