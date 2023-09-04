@@ -10,7 +10,7 @@ import { BiCopy } from 'react-icons/bi';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { toast } from 'react-hot-toast';
-import { Transition } from '@common//components/Dialog';
+import { Transition } from '@common/components/Dialog';
 import Tooltip from '@common//components/Tooltip';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 

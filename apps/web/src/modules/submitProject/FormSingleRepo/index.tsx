@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import client from '@common/gqlClient';
 import { useCreateRepoTaskMutation } from '@oss-compass/graphql';
-import Modal from '@common/components/Modal';
+import Dialog from '@mui/material/Dialog';
+import { Transition } from '@common/components/Dialog';
 import SelectLike from '@common/components/SelectLike';
 import Input from '@common/components/Input';
 import { Button } from '@oss-compass/ui';
@@ -171,12 +172,13 @@ const FormSingleRepo = () => {
         <SwitchToCommunity />
       </div>
 
-      <Modal
-        visible={repoSelectVisible}
-        bodyClass={
-          'w-[640px] md:w-full h-[600px] bg-white border-2 border-black drop-shadow-2xl'
-        }
-        destroyOnClose
+      <Dialog
+        TransitionComponent={Transition}
+        open={repoSelectVisible}
+        classes={{
+          paper:
+            'w-[640px] md:w-full md:!m-0 h-[600px] bg-white border-2 border-black drop-shadow-2xl',
+        }}
         onClose={() => {
           setRepoSelectVisible(false);
         }}
@@ -187,7 +189,7 @@ const FormSingleRepo = () => {
             setRepoSelectVisible(false);
           }}
         />
-      </Modal>
+      </Dialog>
     </>
   );
 };
