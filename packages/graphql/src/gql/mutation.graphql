@@ -11,12 +11,16 @@ mutation createProjectTask(
   $projectName: String!
   $projectTypes: [ProjectTypeInput!]!
   $origin: String!
+  $projectUrl: String
+  $projectLogoUrl: String
 ) {
   createProjectTask(
     input: {
       projectName: $projectName
       projectTypes: $projectTypes
       origin: $origin
+      projectUrl: $projectUrl
+      projectLogoUrl: $projectLogoUrl
     }
   ) {
     message

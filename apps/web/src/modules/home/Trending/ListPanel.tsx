@@ -2,13 +2,13 @@ import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import { BsCodeSquare } from 'react-icons/bs';
-import { SiGitee } from 'react-icons/si';
 import Image from 'next/image';
 import { TrendingQuery } from '@oss-compass/graphql';
 import { formatLabel } from '@common/utils/format';
 import { getShortAnalyzeLink } from '@common/utils/links';
-import { getGithubPng } from '@common/utils/url';
+import { getNameSpacePng } from '@common/utils/url';
 import ProviderIcon from '@common/components/ProviderIcon';
+import ImageFallback from '@common/components/ImageFallback';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Level } from '@modules/analyze/constant';
 
@@ -66,28 +66,22 @@ const Loading = () => (
 const Avatar = ({ item }: { item: TrendingQuery['trending'][number] }) => {
   return (
     <>
-      {item.origin === 'github' ? (
-        <div className="h-10 w-10 overflow-hidden rounded-full border">
-          <Image
-            src={getGithubPng(item.label) || ''}
-            unoptimized
-            width={40}
-            height={40}
-            style={{
-              objectFit: 'cover',
-            }}
-            alt="icon"
-          />
-        </div>
-      ) : (
-        <SiGitee className="h-10 w-10 text-[#c71c27]" />
-      )}
-
-      {item.origin === 'github' ? (
-        <div className="absolute -bottom-0.5 -right-0.5 z-10 rounded-full bg-white p-0.5">
-          <ProviderIcon provider={item.origin || ''} />
-        </div>
-      ) : null}
+      <div className="h-10 w-10 overflow-hidden rounded-full border">
+        <ImageFallback
+          src={item.logoUrl || '/images/default-avatar.png'}
+          unoptimized
+          width={40}
+          height={40}
+          style={{
+            objectFit: 'cover',
+          }}
+          fallbackSrc={'/images/default-avatar.png'}
+          alt="logo"
+        />
+      </div>
+      <div className="absolute -bottom-0.5 -right-0.5 z-10 rounded-full bg-white p-0.5">
+        <ProviderIcon provider={item.origin || ''} />
+      </div>
     </>
   );
 };
@@ -112,11 +106,6 @@ const ListPanel = (props: {
             href={getShortAnalyzeLink(item.shortCode)}
             className="flex cursor-pointer justify-between border-b py-3 last:border-0"
           >
-            {/*<Link*/}
-            {/*  key={item.label}*/}
-            {/*  href={getAnalyzeLink({ label: item.label, level: item.level })}*/}
-            {/*>*/}
-
             <div className="flex">
               <div className="relative h-10 w-10">
                 <Avatar item={item} />
