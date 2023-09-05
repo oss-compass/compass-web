@@ -152,7 +152,7 @@ describe('utils url ', () => {
       },
       {
         input: undefined,
-        result: '/images/default-avatar.png',
+        result: '/images/default.png',
       },
     ];
 

@@ -16,7 +16,7 @@ import { ReFetch } from '@common/constant';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import VersionItemMore from './VersionItemMore';
 import TriggerConfirmBtn from './TriggerConfirmBtn';
-import { getSecondIdentName } from '../i18n';
+import { getSecondIdentName } from '@common/collectionsI18n';
 
 const VersionCard = ({
   modelId,

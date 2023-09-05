@@ -118,6 +118,6 @@ export function removeTrailingSlash(path: string) {
 }
 
 export function getNameSpacePng(url: string) {
-  if (!url) return '/images/default-avatar.png';
+  if (!url) return '/images/default.png';
   return url.replace(/\/[^\/]+$/, '.png');
 }
