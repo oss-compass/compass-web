@@ -121,3 +121,8 @@ export function getNameSpacePng(url: string) {
   if (!url) return '/images/default.png';
   return url.replace(/\/[^\/]+$/, '.png');
 }
+
+export const isValidUrl = (url: string) => {
+  const urlRegex = /^(http|https):\/\/[^ "]+$/;
+  return urlRegex.test(url);
+};
