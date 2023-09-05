@@ -50,7 +50,7 @@
   "git": {
     "title": "代码",
     "commit_frequency": "代码提交频率",
-    "commit_frequency_desc": "过去90天内平均每周有组织归属的代码提交次数。",
+    "commit_frequency_desc": "过去 90 天内平均每周代码提交次数。",
     "commit_frequency_value": {
       "threshold": "介于0-1000之间"
     },
@@ -60,7 +60,7 @@
       "detail": "该项指标与贡献者数量类似，是从代码贡献数量来考察组织对社区的投入情况。"
     },
     "is_maintained": "是否维护",
-    "is_maintained_desc": "过去90天内至少提交了一次代码的周百分比",
+    "is_maintained_desc": "在过去 90 天内至少提交了一次代码的周百分比 (单仓场景)。在过去 30 天内至少有一次代码提交记录的的代码仓百分比 (多仓场景)。",
     "is_maintained_value": {
       "threshold": "介于0-1之间"
     },
@@ -109,12 +109,12 @@
       "threshold": "30",
       "detail": "我们这里统计的是参与代码贡献的组织。之所有仅统计代码贡献，是因为代码贡献相较于其他类型社区贡献，它的技术门槛是最高的，同时也是组织参与社区贡献的最直接表现。同时通过分析组织的类别，也可以进行更深入的洞察，例如了解项目的南北向生态构建情况等。"
     },
-    "org_commit_frequency": "代码提交频率",
+    "org_commit_frequency": "组织代码提交频率",
     "org_commit_frequency_desc": "过去90天内平均每周有组织归属的代码提交次数。",
     "org_commit_frequency_value": {
       "threshold": "介于0-800之间"
     },
-    "org_contribution_last": "持续贡献",
+    "org_contribution_last": "组织持续贡献",
     "org_contribution_last_desc": "在过去90天所有组织向社区有代码贡献的累计时间（周）。",
     "org_contribution_last_value": {
       "threshold": "介于0-160之间"
@@ -129,10 +129,10 @@
       "threshold": "300000",
       "detail": "源代码行数与工作量确实是强相关的，但它与创造的价值相关性较差。另外什么形式的代码可以算入LOC，都是不确定因素。我们不关注代码形式，只用其描述工作量，其权重在整个度量模型较低。"
     },
-    "lines_add_of_code_frequency": "增加行数",
-    "lines_add_of_code_frequency_desc": "过去90天内平均每周增加的代码行数。",
-    "lines_remove_of_code_frequency": "删除行数",
-    "lines_remove_of_code_frequency_desc": "过去90天内平均每周删除的代码行数。"
+    "lines_add_of_code_frequency": "代码增加行数",
+    "lines_add_of_code_frequency_desc": "确定在过去 90 天内平均每周提交的代码行数 (增加行数)",
+    "lines_remove_of_code_frequency": "代码减少行数",
+    "lines_remove_of_code_frequency_desc": "确定在过去 90 天内平均每周提交的代码行数 (删除行数)"
   },
   "issue": {
     "title": "Issue",
