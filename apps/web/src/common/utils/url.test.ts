@@ -5,6 +5,8 @@ import {
   getRepoName,
   getLastPathSegment,
   removeExtname,
+  removeTrailingSlash,
+  getNameSpacePng,
 } from './url';
 
 describe('utils url ', () => {
@@ -114,6 +116,48 @@ describe('utils url ', () => {
 
     testCases.map((item) => {
       expect(removeExtname(item.input, '.git')).toEqual(item.result);
+    });
+  });
+
+  it('removeTrailingSlash', function () {
+    const testCases = [
+      {
+        input: 'EdmondFrank/.emacs.d/',
+        result: 'EdmondFrank/.emacs.d',
+      },
+      {
+        input: 'ant-design/ant-design/',
+        result: 'ant-design/ant-design',
+      },
+      {
+        input: undefined,
+        result: '',
+      },
+    ];
+
+    testCases.map((item) => {
+      expect(removeTrailingSlash(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('getNameSpacePng', function () {
+    const testCases = [
+      {
+        input: 'https://github.com/EdmondFrank/.emacs.d',
+        result: 'https://github.com/EdmondFrank.png',
+      },
+      {
+        input: 'https://github.com/ant-design/ant-design.git',
+        result: 'https://github.com/ant-design.png',
+      },
+      {
+        input: undefined,
+        result: '/images/default.png',
+      },
+    ];
+
+    testCases.map((item) => {
+      expect(getNameSpacePng(item.input)).toEqual(item.result);
     });
   });
 });

@@ -6,7 +6,7 @@ import groupBy from 'lodash/groupBy';
 import { useTranslation } from 'next-i18next';
 import RepoCard from '../../components/RepoCard';
 import RepoCompareBar from './RepoCompareBar';
-import { getSecondIdentName } from '../../i18n';
+import { getSecondIdentName } from '@common/collectionsI18n';
 
 const DataSetPanel: React.FC<{
   modelId: number;

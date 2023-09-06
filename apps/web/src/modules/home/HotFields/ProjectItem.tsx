@@ -4,7 +4,7 @@ import {
   getProvider,
   getLastPathSegment,
   getShortAnalyzeLink,
-  getGithubPng,
+  getNameSpacePng,
 } from '@common/utils';
 import Link from 'next/link';
 import { SiGitee } from 'react-icons/si';
@@ -22,9 +22,9 @@ const ProjectItem = ({ shortCode, url }) => {
       <div className="text-sm text-black">
         <div className="flex items-center ">
           {origin === 'github' ? (
-            <div className="boder h-6 w-6 overflow-hidden rounded-full">
+            <div className="h-6 w-6 overflow-hidden rounded-full border">
               <Image
-                src={getGithubPng(url) || ''}
+                src={getNameSpacePng(url) || ''}
                 unoptimized
                 width={24}
                 height={24}

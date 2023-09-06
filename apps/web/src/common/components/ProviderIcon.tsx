@@ -15,10 +15,14 @@ const ProviderIcon: React.FC<{ provider: string; className?: string }> = ({
 
   if (provider === 'combine') {
     return (
-      <div className="flex">
-        <SiGitee className={classnames('mr-2 text-[#c71c27]', className)} />
-        <SiGithub className={classnames(className)} />
-      </div>
+      <>
+        <div className="absolute -bottom-0.5 right-2 z-10 rounded-full bg-white p-0.5">
+          <SiGitee className={classnames('text-[#c71c27]', className)} />
+        </div>
+        <div className="absolute -bottom-0.5 -right-0.5 z-10 rounded-full bg-white p-0.5">
+          <SiGithub className={classnames('', className)} />
+        </div>
+      </>
     );
   }
 

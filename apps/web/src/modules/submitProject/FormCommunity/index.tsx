@@ -14,7 +14,10 @@ import {
   getPathname,
   getFirstPathSegment,
 } from '@common/utils';
+import { getNameSpacePng, isValidUrl } from '@common/utils/url';
 import { useSubmitUser } from '@modules/auth';
+import LogoUrlsSelect from './LogoUrlsSelect';
+import OrgUrlInput from './OrgUrlInput';
 import Message from '@modules/submitProject/Misc/Message';
 import { useTranslation } from 'react-i18next';
 
@@ -33,10 +36,17 @@ const FormCommunity = () => {
     `${account}_governance_repository`,
     []
   );
+  const [orgLogoUrl, setOrgLogoUrl] = useState('');
+
+  const [orgUrl, setOrgUrl] = useState('');
+  const isOrgUrlValid = isValidUrl(orgUrl);
+
   const firstName = uniq(
     [...sarUrls, ...grUrls].map((v) => getFirstPathSegment(getPathname(v)))
   );
   const lastName = uniq([...sarUrls, ...grUrls].map((v) => getRepoName(v)));
+  const logoUrls = uniq([...sarUrls, ...grUrls].map((v) => getNameSpacePng(v)));
+
   const options = uniq([...firstName, ...lastName]);
   const { isLoading, isError, mutate, data } = useCreateProjectTaskMutation(
     client,
@@ -45,6 +55,8 @@ const FormCommunity = () => {
         setCommunityName('');
         setSarUrls([]);
         setGrUrls([]);
+        setOrgUrl('');
+        setOrgLogoUrl('');
       },
     }
   );
@@ -63,6 +75,8 @@ const FormCommunity = () => {
     mutate({
       ...common,
       projectName,
+      projectUrl: orgUrl,
+      projectLogoUrl: orgLogoUrl,
       projectTypes: [
         { type: 'software-artifact-repositories', repoList: sarUrls },
         { type: 'governance-repositories', repoList: grUrls },
@@ -106,15 +120,42 @@ const FormCommunity = () => {
               }}
               options={options}
               placeholder={t('submit_project:select_or_type')}
-            ></SelectAndInput>
+            />
           </div>
         )}
+
+        <div className="mt-10">
+          <div className=" mb-4 block text-xl font-medium">社区主页</div>
+          <div className="max-w-[500px] flex-1">
+            <OrgUrlInput
+              error={!isOrgUrlValid}
+              value={orgUrl}
+              onChange={(v) => {
+                setOrgUrl(v);
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <div className=" mb-4 block text-xl font-medium">社区头像</div>
+          <LogoUrlsSelect
+            logoUrls={logoUrls}
+            value={orgLogoUrl}
+            onChange={(v) => {
+              setOrgLogoUrl(v);
+            }}
+          />
+        </div>
 
         <Button
           loading={isLoading}
           className="mt-10 min-w-[130px]"
           disabled={sarUrls.length === 0}
-          onClick={() => handleSubmit()}
+          onClick={() => {
+            if (orgUrl && !isOrgUrlValid) return;
+            handleSubmit();
+          }}
         >
           {t('submit_project:submit')}
         </Button>

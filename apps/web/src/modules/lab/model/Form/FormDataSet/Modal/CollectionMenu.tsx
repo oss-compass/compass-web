@@ -6,7 +6,7 @@ import { useDataSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { BadgeCount } from '@modules/lab/model/components/BadgeCount';
 import { formFiledState, actions, useSelectedCount, getKey } from '../state';
-import { getFirstIdentName, getSecondIdentName } from '../../../i18n';
+import { getFirstIdentName, getSecondIdentName } from '@common/collectionsI18n';
 
 const CollectionMenu = ({ ident }: { ident: string }) => {
   const { t, i18n } = useTranslation();
