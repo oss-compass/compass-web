@@ -8,6 +8,11 @@ const CommunityMembers = () => {
   const { t } = useTranslation();
   const data = [
     {
+      avatar: '/images/about/秦一帆.jpg',
+      name: '秦一帆',
+      intro: '奇科厚德数据工程师，负责开源数据收集整理归档',
+    },
+    {
       avatar: '/images/about/邱睿桥.jpeg',
       name: '邱睿桥',
       intro: '北京大学计算机学院软件研究所在读博士研究生',
