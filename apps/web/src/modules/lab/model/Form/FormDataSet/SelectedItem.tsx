@@ -6,7 +6,7 @@ import { FiEdit } from 'react-icons/fi';
 import { AiOutlinePlus } from 'react-icons/ai';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
-import { getSecondIdentName } from '../../i18n';
+import { getSecondIdentName } from '@common/collectionsI18n';
 
 export const ItemCard = ({
   ident,

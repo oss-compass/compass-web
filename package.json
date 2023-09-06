@@ -10,6 +10,7 @@
     "postinstall": "husky install && patch-package",
     "dev": "yarn workspace @oss-compass/web dev",
     "build": "yarn workspace @oss-compass/web build",
+    "test": "yarn workspace @oss-compass/web test",
     "test:ci": "yarn workspace @oss-compass/web test:ci",
     "docker:web": "./.github/deployment/web/local_build.sh"
   },

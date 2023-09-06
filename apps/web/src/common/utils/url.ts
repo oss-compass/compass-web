@@ -113,9 +113,16 @@ export function getRouteAsPath(
 }
 
 export function removeTrailingSlash(path: string) {
+  if (!path) return '';
   return path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
 }
 
-export function getGithubPng(url: string) {
-  return 'https://github.com/' + getNameSpace(url) + '.png';
+export function getNameSpacePng(url: string) {
+  if (!url) return '/images/default.png';
+  return url.replace(/\/[^\/]+$/, '.png');
 }
+
+export const isValidUrl = (url: string) => {
+  const urlRegex = /^(http|https):\/\/[^ "]+$/;
+  return urlRegex.test(url);
+};

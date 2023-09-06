@@ -403,7 +403,7 @@ export type CommunityMetric = {
 
 export type CommunityOverview = {
   __typename?: 'CommunityOverview';
-  communityUrl?: Maybe<Scalars['String']>;
+  communityOrgUrl?: Maybe<Scalars['String']>;
   projectsCount?: Maybe<Scalars['Int']>;
   trends?: Maybe<Array<Repo>>;
 };
@@ -533,6 +533,8 @@ export type CreateProjectTaskInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** user's origin (gitee/github) */
   origin: Scalars['String'];
+  /** project logo url */
+  projectLogoUrl?: InputMaybe<Scalars['String']>;
   /** project label for following repositories */
   projectName: Scalars['String'];
   /** project detail information */
@@ -1641,12 +1643,16 @@ export type Trending = {
   __typename?: 'Trending';
   /** repo or community latest activity avg */
   activityScore?: Maybe<Scalars['Float']>;
+  /** second collections of this label */
+  collections?: Maybe<Array<Scalars['String']>>;
   /** repo or community full_path, if community: equals name */
   fullPath?: Maybe<Scalars['String']>;
   /** repo or community label */
   label?: Maybe<Scalars['String']>;
   /** repo or community level */
   level?: Maybe<Scalars['String']>;
+  /** repo or community logo_url */
+  logoUrl?: Maybe<Scalars['String']>;
   /** repo or community name */
   name?: Maybe<Scalars['String']>;
   /** repo or community origin (gitee/github/combine) */
@@ -3149,6 +3155,8 @@ export type CreateProjectTaskMutationVariables = Exact<{
   projectName: Scalars['String'];
   projectTypes: Array<ProjectTypeInput> | ProjectTypeInput;
   origin: Scalars['String'];
+  projectUrl?: InputMaybe<Scalars['String']>;
+  projectLogoUrl?: InputMaybe<Scalars['String']>;
 }>;
 
 export type CreateProjectTaskMutation = {
@@ -3918,14 +3926,16 @@ export type TrendingQuery = {
   __typename?: 'Query';
   trending: Array<{
     __typename?: 'Trending';
-    shortCode?: string | null;
     activityScore?: number | null;
+    collections?: Array<string> | null;
     fullPath?: string | null;
     label?: string | null;
     level?: string | null;
+    logoUrl?: string | null;
     name?: string | null;
     origin?: string | null;
     reposCount?: number | null;
+    shortCode?: string | null;
   }>;
 };
 
@@ -5655,9 +5665,9 @@ useCreateRepoTaskMutation.fetcher = (
     headers
   );
 export const CreateProjectTaskDocument = /*#__PURE__*/ `
-    mutation createProjectTask($projectName: String!, $projectTypes: [ProjectTypeInput!]!, $origin: String!) {
+    mutation createProjectTask($projectName: String!, $projectTypes: [ProjectTypeInput!]!, $origin: String!, $projectUrl: String, $projectLogoUrl: String) {
   createProjectTask(
-    input: {projectName: $projectName, projectTypes: $projectTypes, origin: $origin}
+    input: {projectName: $projectName, projectTypes: $projectTypes, origin: $origin, projectUrl: $projectUrl, projectLogoUrl: $projectLogoUrl}
   ) {
     message
     status
@@ -6991,14 +7001,16 @@ useBulkOverviewQuery.fetcher = (
 export const TrendingDocument = /*#__PURE__*/ `
     query trending($level: String = "repo") {
   trending(level: $level) {
-    shortCode
     activityScore
+    collections
     fullPath
     label
     level
+    logoUrl
     name
     origin
     reposCount
+    shortCode
   }
 }
     `;

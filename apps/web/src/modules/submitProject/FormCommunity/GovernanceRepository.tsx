@@ -5,8 +5,9 @@ import React, {
   useImperativeHandle,
 } from 'react';
 import uniq from 'lodash/uniq';
+import Dialog from '@mui/material/Dialog';
 import RepoSelect from '@modules/submitProject/RepoSelect';
-import Modal from '@common/components/Modal';
+import { Transition } from '@common/components/Dialog';
 import InputUrlField, { InputRef } from '../Misc/InputUrlField';
 import AddSelectPopover from '../Misc/AddSelectPopover';
 import FillItem from '../Misc/FillItem';
@@ -16,6 +17,7 @@ export interface Props {
   value: string[];
   onChange: (v: string[]) => void;
 }
+
 export interface Ref {
   getValues: () => string[];
 }
@@ -94,11 +96,13 @@ const GovernanceRepository = forwardRef<Ref, Props>(
           }}
         />
 
-        <Modal
-          visible={modalVisible}
-          bodyClass={
-            'w-[640px] md:w-full h-[600px] bg-white border-2 border-black drop-shadow-2xl'
-          }
+        <Dialog
+          TransitionComponent={Transition}
+          open={modalVisible}
+          classes={{
+            paper:
+              'w-[640px] md:w-full md:!m-0 h-[600px] bg-white border-2 border-black drop-shadow-2xl',
+          }}
           onClose={() => {
             setModalVisible(false);
           }}
@@ -109,7 +113,7 @@ const GovernanceRepository = forwardRef<Ref, Props>(
               setModalVisible(false);
             }}
           />
-        </Modal>
+        </Dialog>
       </>
     );
   }
