@@ -84,7 +84,7 @@ export default ListPanel;
 const Avatar = ({ item }: { item: TrendingQuery['trending'][number] }) => {
   return (
     <>
-      <div className="h-10 w-10 overflow-hidden rounded-full border">
+      <div className="h-10 w-10 overflow-hidden rounded-full border border-gray-100">
         <ImageFallback
           src={item.logoUrl || '/images/default.png'}
           unoptimized

@@ -22,7 +22,7 @@ const ProjectItem = ({ shortCode, url }) => {
       <div className="text-sm text-black">
         <div className="flex items-center ">
           {origin === 'github' ? (
-            <div className="h-6 w-6 overflow-hidden rounded-full border">
+            <div className="h-6 w-6 overflow-hidden rounded-full border border-gray-100">
               <Image
                 src={getNameSpacePng(url) || ''}
                 unoptimized
