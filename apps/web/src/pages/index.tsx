@@ -40,7 +40,7 @@ const Home: React.FC = (props) => {
         <NoSsr>
           <Explain />
           <ExplainMobile />
-          <Questionnaire />
+          {/* <Questionnaire /> */}
         </NoSsr>
         <SpecialThank />
       </main>

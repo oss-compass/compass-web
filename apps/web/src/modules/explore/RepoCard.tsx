@@ -51,14 +51,24 @@ const RepoCard = (props: {
                 { 'hover:underline': !compareMode }
               )}
             >
-              {repo}
+              {compareMode ? (
+                repo
+              ) : (
+                <Link href={getShortAnalyzeLink(shortCode)}>{repo}</Link>
+              )}
             </p>
             <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
           </div>
         </div>
 
         <div className="flex w-full items-center">
-          <div className="mr-auto flex-1">
+          <div
+            className="mr-auto w-6 cursor-pointer"
+            title={compareMode ? '' : label}
+            onClick={() => {
+              !compareMode && window.open(label);
+            }}
+          >
             {provider ? (
               provider === 'gitee' ? (
                 <SiGitee className="inline-block h-5 w-5 text-[#c71c27]" />
@@ -93,13 +103,6 @@ const RepoCard = (props: {
     );
   }
 
-  return (
-    <Link
-      href={getShortAnalyzeLink(shortCode)}
-      className="relative block cursor-pointer border bg-white p-px"
-    >
-      {item}
-    </Link>
-  );
+  return <div className="relative block border bg-white p-px">{item}</div>;
 };
 export default RepoCard;
