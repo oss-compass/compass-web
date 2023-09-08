@@ -1,0 +1,3 @@
+[submodule "apps/web/i18n"]
+	path = apps/web/i18n
+	url = https://github.com/oss-compass/i18n.git
