@@ -37,8 +37,6 @@ ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 
 COPY . .
 
-RUN git submodule update --init --recursive
-
 RUN yarn build
 
 # If using npm comment out above and use below instead
