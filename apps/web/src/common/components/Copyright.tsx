@@ -49,7 +49,7 @@ const Copyright = ({ dark = false }: CopyrightProps) => {
                     unoptimized
                     alt={''}
                   />
-                  <div className="mb-1 text-center text-sm text-black">
+                  <div className="mb-1 w-48 text-center text-sm text-black">
                     {t('home:scan_the_code_to_follow')}
                   </div>
                 </>
