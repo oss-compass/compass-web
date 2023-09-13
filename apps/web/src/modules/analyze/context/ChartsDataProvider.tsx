@@ -54,7 +54,7 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
         level,
         start: timeStart,
         end: timeEnd,
-        repoType: snap.repoType,
+        repoType: repoType,
       };
       return {
         queryKey: useMetricQuery.getKey(variables),
