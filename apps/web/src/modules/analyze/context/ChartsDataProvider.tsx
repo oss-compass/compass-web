@@ -4,7 +4,7 @@ import React, {
   useRef,
   createContext,
 } from 'react';
-import { proxy } from 'valtio';
+import { proxy, useSnapshot } from 'valtio';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import usePageLoadHashScroll from '@common/hooks/usePageLoadHashScroll';
@@ -17,7 +17,7 @@ import {
 } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Level } from '@modules/analyze/constant';
-
+import { chartUserSettingState } from '@modules/analyze/store';
 interface Store {
   loading: boolean;
   items: {
@@ -41,14 +41,21 @@ export const ChartsDataContext = createContext<typeof dataState>(dataState);
 
 const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const proxyState = useRef(dataState).current;
-
+  const snap = useSnapshot(chartUserSettingState);
+  const repoType = snap.repoType;
   const queryClient = useQueryClient();
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
 
   useQueries({
     queries: compareItems.map(({ label, level }) => {
-      const variables = { label, level, start: timeStart, end: timeEnd };
+      const variables = {
+        label,
+        level,
+        start: timeStart,
+        end: timeEnd,
+        repoType: repoType,
+      };
       return {
         queryKey: useMetricQuery.getKey(variables),
         queryFn: useMetricQuery.fetcher(client, variables),
@@ -68,7 +75,13 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const items = compareItems
     .map(({ label, level }) => {
-      const variables = { label, level, start: timeStart, end: timeEnd };
+      const variables = {
+        label,
+        level,
+        start: timeStart,
+        end: timeEnd,
+        repoType: repoType,
+      };
       const key = useMetricQuery.getKey(variables);
       return {
         label,
@@ -90,6 +103,10 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
       proxyState.items = items;
     }
   }, [isLoading, items, proxyState]);
+
+  // useEffect(() => {
+  //   rType = ;
+  // }, [snap.repoType]);
 
   return (
     <ChartsDataContext.Provider value={proxyState}>

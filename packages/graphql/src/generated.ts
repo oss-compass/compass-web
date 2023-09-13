@@ -1408,6 +1408,7 @@ export type QueryMetricActivityArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryMetricCodequalityArgs = {
@@ -1415,6 +1416,7 @@ export type QueryMetricCodequalityArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryMetricCommunityArgs = {
@@ -1422,6 +1424,7 @@ export type QueryMetricCommunityArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryMetricGroupActivityArgs = {
@@ -1429,6 +1432,7 @@ export type QueryMetricGroupActivityArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryMetricStarterProjectHealthArgs = {
@@ -3421,6 +3425,7 @@ export type MetricQueryVariables = Exact<{
   level?: InputMaybe<Scalars['String']>;
   start?: InputMaybe<Scalars['ISO8601DateTime']>;
   end?: InputMaybe<Scalars['ISO8601DateTime']>;
+  repoType?: InputMaybe<Scalars['String']>;
 }>;
 
 export type MetricQuery = {
@@ -6448,12 +6453,13 @@ useCommunityReposQuery.fetcher = (
     headers
   );
 export const MetricDocument = /*#__PURE__*/ `
-    query metric($label: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
+    query metric($label: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime, $repoType: String) {
   metricCodequality(
     label: $label
     level: $level
     beginDate: $start
     endDate: $end
+    repoType: $repoType
   ) {
     activeC1PrCommentsContributorCount
     activeC1PrCreateContributorCount
@@ -6482,7 +6488,13 @@ export const MetricDocument = /*#__PURE__*/ `
     prIssueLinkedCount
     prIssueLinkedRatio
   }
-  metricCommunity(label: $label, level: $level, beginDate: $start, endDate: $end) {
+  metricCommunity(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
     bugIssueOpenTimeAvg
     bugIssueOpenTimeMid
     closedPrsCount
@@ -6502,7 +6514,13 @@ export const MetricDocument = /*#__PURE__*/ `
     prOpenTimeMid
     updatedIssuesCount
   }
-  metricActivity(label: $label, level: $level, beginDate: $start, endDate: $end) {
+  metricActivity(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
     activeC1IssueCommentsContributorCount
     activeC1IssueCreateContributorCount
     activeC1PrCommentsContributorCount
@@ -6529,6 +6547,7 @@ export const MetricDocument = /*#__PURE__*/ `
     level: $level
     beginDate: $start
     endDate: $end
+    repoType: $repoType
   ) {
     commitFrequency
     contributionLast

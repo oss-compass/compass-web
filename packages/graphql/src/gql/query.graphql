@@ -102,12 +102,14 @@ query metric(
   $level: String = "repo"
   $start: ISO8601DateTime
   $end: ISO8601DateTime
+  $repoType: String
 ) {
   metricCodequality(
     label: $label
     level: $level
     beginDate: $start
     endDate: $end
+    repoType: $repoType
   ) {
     activeC1PrCommentsContributorCount
     activeC1PrCreateContributorCount
@@ -141,6 +143,7 @@ query metric(
     level: $level
     beginDate: $start
     endDate: $end
+    repoType: $repoType
   ) {
     bugIssueOpenTimeAvg
     bugIssueOpenTimeMid
@@ -166,6 +169,7 @@ query metric(
     level: $level
     beginDate: $start
     endDate: $end
+    repoType: $repoType
   ) {
     activeC1IssueCommentsContributorCount
     activeC1IssueCreateContributorCount
@@ -193,6 +197,7 @@ query metric(
     level: $level
     beginDate: $start
     endDate: $end
+    repoType: $repoType
   ) {
     commitFrequency
     # commitFrequencyOrg
