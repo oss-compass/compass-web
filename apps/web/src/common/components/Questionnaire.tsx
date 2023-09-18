@@ -11,12 +11,12 @@ const Questionnaire = () => {
     return (
       <div className="z-modal fixed bottom-[100px] right-10 ">
         <Link
-          href="https://mp.weixin.qq.com/s?__biz=MzkxMDQzNjc2MQ==&mid=2247484166&idx=1&sn=8744720b2b60b5c353aa468fe91d85f0&chksm=c12a33f0f65dbae6a4dc38ec08ab9594545cd2ec3427ae32e4c4523e787ae787f3b270c91ec0&token=1781014651&lang=zh_CN#rd"
+          href="https://www.youtube.com/watch?v=FNK3--dtR_4"
           target="_blank"
           className="h-[124px] w-[136px]"
         >
           <Image
-            src="/images/questionnaire/icon.png"
+            src="/images/questionnaire/OSSUMMIT@zh.png"
             width={124}
             height={144}
             alt={''}
@@ -27,7 +27,7 @@ const Questionnaire = () => {
           />
         </Link>
         <span
-          className="absolute top-0 right-0 cursor-pointer p-1"
+          className="absolute top-0 right-0 cursor-pointer"
           onClick={() => {
             setClose(true);
           }}
@@ -46,7 +46,43 @@ const Questionnaire = () => {
       </div>
     );
   }
-  return null;
+  return (
+    <div className="z-modal fixed bottom-[100px] right-10 ">
+      <Link
+        href="https://www.youtube.com/watch?v=FNK3--dtR_4"
+        target="_blank"
+        className="h-[124px] w-[136px]"
+      >
+        <Image
+          src="/images/questionnaire/OSSUMMIT@en.png"
+          width={124}
+          height={144}
+          alt={''}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
+        />
+      </Link>
+      <span
+        className="absolute top-0 right-0 cursor-pointer"
+        onClick={() => {
+          setClose(true);
+        }}
+      >
+        <Image
+          src="/images/questionnaire/close@2x.png"
+          width={22}
+          height={22}
+          alt={''}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
+        />
+      </span>
+    </div>
+  );
 };
 
 export default Questionnaire;

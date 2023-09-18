@@ -9,10 +9,10 @@
     },
     {
       "type": "Report",
-      "title": "Explore Compass Lab, take you easy to create the open source LLMs project evaluation model!",
-      "title_cn": "探秘Compass实验室，带你轻松玩转开源LLMs项目评估模型！",
+      "title": "OSS Compass at OSS EU 2023",
+      "title_cn": "OSS Compass参加2023欧洲开源峰会",
       "img": "/images/home/report1.png",
-      "url": "/blog/explore-compass-lab"
+      "url": "/blog/compass-at-oss-eu"
     },
     {
       "type": "Event",
