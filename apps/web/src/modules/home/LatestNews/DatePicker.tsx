@@ -13,7 +13,7 @@ const DatePicker = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  const bookedDays = [new Date(2023, 7, 23)];
+  const bookedDays = [new Date(2023, 8, 21)];
   const bookedStyle = { border: '2px solid #3A5BEF', borderRadius: 'none' };
 
   useClickAway(popoverRef, () => {
@@ -44,8 +44,10 @@ const DatePicker = () => {
         >
           <div className="mt-1.5 h-2 w-2 rounded-full bg-[#00B400]"></div>
           <div className="w-[200px] text-xs">
-            Compass围炉夜话——“开源”LLMs是不是真开源
-            <div className="mt-1 text-xs text-[#727272]">19:30 (UTC-8)</div>
+            Compass Talk——Open Source Summit Europe 2023
+            <div className="mt-1 text-xs text-[#727272]">
+              11:00 - 11:40 (UTC+2)
+            </div>
           </div>
         </div>
       </Popper>

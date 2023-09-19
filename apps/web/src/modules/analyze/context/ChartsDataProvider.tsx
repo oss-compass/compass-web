@@ -54,7 +54,7 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
         level,
         start: timeStart,
         end: timeEnd,
-        repoType: repoType,
+        repoType: level === Level.COMMUNITY ? repoType : '',
       };
       return {
         queryKey: useMetricQuery.getKey(variables),
@@ -80,7 +80,7 @@ const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
         level,
         start: timeStart,
         end: timeEnd,
-        repoType: repoType,
+        repoType: level === Level.COMMUNITY ? repoType : '',
       };
       const key = useMetricQuery.getKey(variables);
       return {

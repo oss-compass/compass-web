@@ -1167,6 +1167,8 @@ export type Permission = {
 
 export type ProjectCompletionRow = {
   __typename?: 'ProjectCompletionRow';
+  /** second collections of this label */
+  collections?: Maybe<Array<Scalars['String']>>;
   /** metric model object identification */
   label?: Maybe<Scalars['String']>;
   /** metric model object level (project or repo) */
@@ -3349,6 +3351,7 @@ export type StatusVerifyQuery = {
     level?: string | null;
     shortCode?: string | null;
     status?: string | null;
+    collections?: Array<string> | null;
   };
 };
 
@@ -3365,6 +3368,7 @@ export type SearchQuery = {
     label?: string | null;
     status?: string | null;
     shortCode?: string | null;
+    collections?: Array<string> | null;
   }>;
 };
 
@@ -6268,6 +6272,7 @@ export const StatusVerifyDocument = /*#__PURE__*/ `
     level
     shortCode
     status
+    collections
   }
 }
     `;
@@ -6311,6 +6316,7 @@ export const SearchDocument = /*#__PURE__*/ `
     label
     status
     shortCode
+    collections
   }
 }
     `;

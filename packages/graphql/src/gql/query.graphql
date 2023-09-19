@@ -51,6 +51,7 @@ query statusVerify($label: String, $shortCode: String) {
     level
     shortCode
     status
+    collections
   }
 }
 
@@ -60,6 +61,7 @@ query search($keyword: String!, $level: String) {
     label
     status
     shortCode
+    collections
   }
 }
 

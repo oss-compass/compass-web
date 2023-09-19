@@ -1,18 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import cls from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { BsCodeSquare } from 'react-icons/bs';
 import { TrendingQuery } from '@oss-compass/graphql';
 import { formatLabel } from '@common/utils/format';
-import Tooltip from '@common/components/Tooltip';
 import { getShortAnalyzeLink } from '@common/utils/links';
 import ProviderIcon from '@common/components/ProviderIcon';
 import ImageFallback from '@common/components/ImageFallback';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Level } from '@modules/analyze/constant';
-import { getSecondIdentName } from '@common/collectionsI18n';
+import CollectionTag from '@common/components/CollectionTag';
 
 const ListPanel = (props: {
   loading: boolean;
@@ -101,55 +98,6 @@ const Avatar = ({ item }: { item: TrendingQuery['trending'][number] }) => {
         <ProviderIcon provider={item.origin || ''} />
       </div>
     </>
-  );
-};
-
-const CollectionTag = ({
-  collections,
-  className,
-}: {
-  collections: string[];
-  className: string;
-}) => {
-  const { t, i18n } = useTranslation();
-  const router = useRouter();
-  const first = collections?.[0];
-
-  let restCollections: string[] = [];
-  if (collections?.length > 1) {
-    restCollections = collections?.slice(1).map((item) => {
-      return getSecondIdentName(item, i18n.language);
-    });
-  }
-
-  return (
-    <div className={cls('text-secondary flex items-center text-xs', className)}>
-      {first ? (
-        <>
-          <div
-            className="bg-smoke rounded px-2 py-1.5"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(`/collection/${first}`);
-            }}
-          >
-            {getSecondIdentName(first, i18n.language)}
-          </div>
-          {collections?.length > 1 ? (
-            <Tooltip
-              title={
-                <div className="p-2 text-white">
-                  {restCollections?.join(', ')}
-                </div>
-              }
-            >
-              <div className="ml-1">+{collections.length - 1}</div>
-            </Tooltip>
-          ) : null}
-        </>
-      ) : null}
-    </div>
   );
 };
 

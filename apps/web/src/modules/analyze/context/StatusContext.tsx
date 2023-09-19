@@ -4,7 +4,7 @@ import { Level } from '../constant';
 
 type Item = Pick<
   StatusVerifyQuery['analysisStatusVerify'],
-  'label' | 'status' | 'shortCode'
+  'label' | 'status' | 'shortCode' | 'collections'
 >;
 
 export type VerifiedLabelItem = {
