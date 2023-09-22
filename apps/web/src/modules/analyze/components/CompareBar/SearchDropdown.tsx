@@ -4,6 +4,7 @@ import Empty from '@common/components/Empty';
 import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@oss-compass/graphql';
 import { removeHttps } from '@common/utils';
+import CollectionTag from '@common/components/CollectionTag';
 
 const DropDownList: React.FC<{
   result: SearchQuery['fuzzySearch'];
@@ -26,15 +27,20 @@ const DropDownList: React.FC<{
             onClick={() => {
               onConfirm(item);
             }}
+            className="flex w-max"
           >
             <a
               className={classnames(
                 { 'bg-gray-100': active === index },
-                'line-clamp-1 my-1 py-1 px-4 text-base text-black hover:bg-gray-100'
+                'line-clamp-1 my-1 flex-shrink-0 whitespace-nowrap py-1 px-4 text-base text-black hover:bg-gray-100'
               )}
             >
               {removeHttps(item.label!)}
             </a>
+            <CollectionTag
+              className={'mx-2 flex-shrink-0'}
+              collections={item.collections}
+            />
           </div>
         );
       })}

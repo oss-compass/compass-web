@@ -93,7 +93,7 @@ const AddInput = () => {
         id="search-input"
         className="relative left-[60px] flex hidden h-full w-full items-center justify-center"
       >
-        <div className="relative">
+        <div className="relative ">
           <div className="flex items-center rounded  border ">
             <input
               ref={inputRef}
@@ -126,8 +126,8 @@ const AddInput = () => {
             </button>
           </div>
           {!confirmItem && throttledKeyword && (
-            <div className="border-1 z-dropdown absolute left-0 right-0 top-[44px] rounded  bg-white drop-shadow">
-              <div className="w-full">
+            <div className="border-1 z-dropdown absolute right-0 top-[44px] min-w-[400px] rounded bg-white drop-shadow">
+              <div className="">
                 <SearchDropdown
                   result={data?.fuzzySearch!}
                   onConfirm={(item) => {
