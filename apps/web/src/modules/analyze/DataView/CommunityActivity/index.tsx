@@ -9,7 +9,6 @@ import ContributorCount from './ContributorCount';
 import CommitFrequency from './CommitFrequency';
 import UpdatedSince from './UpdatedSince';
 import OrgCount from './OrgCount';
-import CreatedSince from './CreatedSince';
 import CommentFrequency from './CommentFrequency';
 import CodeReviewCount from './CodeReviewCount';
 import UpdatedIssuesCount from './UpdatedIssuesCount';
@@ -36,7 +35,6 @@ const CommunityActivity = () => {
         <CommitFrequency />
         <UpdatedSince />
         <OrgCount />
-        {/* <CreatedSince /> */}
         <CommentFrequency />
         <CodeReviewCount />
         <UpdatedIssuesCount />

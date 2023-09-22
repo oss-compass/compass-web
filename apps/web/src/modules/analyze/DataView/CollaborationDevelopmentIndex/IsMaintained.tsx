@@ -79,6 +79,7 @@ const IsMaintained = () => {
             setFullScreen(b);
           }}
           cardRef={ref}
+          yKey={tansOpt['yKey']}
         />
       )}
     >

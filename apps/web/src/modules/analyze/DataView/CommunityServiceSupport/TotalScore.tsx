@@ -62,6 +62,8 @@ const TotalScore = () => {
             onMedianChange={(b) => setShowMedian(b)}
             yAxisScale={yAxisScale}
             onYAxisScaleChange={(b) => setYAxisScale(b)}
+            onePointSys={onePointSys}
+            yKey={tansOpts['yKey']}
           />
         </>
       )}

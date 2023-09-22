@@ -82,6 +82,7 @@ const CommitFrequency = () => {
           onMedianChange={(b) => setShowMedian(b)}
           yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
+          yKey={tansOpts['yKey']}
         />
       )}
     >

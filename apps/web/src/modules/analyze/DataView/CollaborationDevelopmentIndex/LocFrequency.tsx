@@ -105,6 +105,7 @@ const LocFrequency = () => {
             setFullScreen(b);
           }}
           cardRef={ref}
+          yKey={tansOpts['yKey']}
         />
       )}
       bodyClass={'h-[400px]'}

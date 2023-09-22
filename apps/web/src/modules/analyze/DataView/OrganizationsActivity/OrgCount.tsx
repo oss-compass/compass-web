@@ -57,6 +57,7 @@ const OrgCount = () => {
           onMedianChange={(b) => setShowMedian(b)}
           yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
+          yKey={tansOpts['yKey']}
         />
       )}
     >
