@@ -60,6 +60,7 @@ const getSvgUrl = (slug, id, yAxisScale, onePointSys, yKey) => {
   }
   return url;
 };
+
 const DownloadAndShare = (props: {
   cardRef: RefObject<HTMLElement>;
   downloadImageSize?: 'middle' | 'full';
@@ -152,7 +153,7 @@ const DownloadAndShare = (props: {
                 <label className="flex cursor-pointer pl-[15px] text-[15px] leading-none text-black">
                   PNG
                 </label>
-                {/* <RadioGroup.Item
+                <RadioGroup.Item
                   value="SVG"
                   id="SVG"
                   className={cn(
@@ -168,7 +169,7 @@ const DownloadAndShare = (props: {
                 </RadioGroup.Item>
                 <label className="flex cursor-pointer pl-[15px] text-[15px] leading-none text-black">
                   SVG
-                </label> */}
+                </label>
               </div>
             </RadioGroup.Root>
             <div

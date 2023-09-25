@@ -36,6 +36,7 @@
     "daisyui": "^2.31.0",
     "date-fns": "^2.29.2",
     "debug": "^4.3.4",
+    "dom-to-svg": "^0.12.2",
     "echarts": "^5.4.1",
     "file-saver": "^2.0.5",
     "framer-motion": "^7.2.1",

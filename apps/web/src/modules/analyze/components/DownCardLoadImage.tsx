@@ -10,6 +10,7 @@ import ProviderIcon from '@modules/analyze/components/ProviderIcon';
 import CompassSquareLogo from '@public/images/logos/compass-square.svg';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
+import { elementToSVG, inlineResources } from 'dom-to-svg';
 
 const genQrcode = (text: string): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -68,19 +69,34 @@ const DownLoadImage = (props: DownLoadImageProps) => {
       cardImgRef.current!.src = dataURL;
       cardDownRef.current!.src = dataURL;
       cardRef.current!.style.removeProperty('width');
-      await sleep(100);
+      await sleep(300);
       if (loadingDownLoadImg) {
         // download img
-        const downloadImgCanvas = await html2canvas(downloadDivRef.current!, {
-          backgroundColor: 'rgba(0,0,0,0)',
-        });
-        // trigger download
-        downloadImgCanvas.toBlob(function (blob) {
-          if (blob) {
-            saveAs(blob!, `${Date.now()}.png`);
-          }
+        if (fileFormat === 'PNG') {
+          const downloadImgCanvas = await html2canvas(downloadDivRef.current!, {
+            backgroundColor: 'rgba(0,0,0,0)',
+          });
+          // trigger download
+          downloadImgCanvas.toBlob(function (blob) {
+            if (blob) {
+              saveAs(blob!, `${Date.now()}.png`);
+            }
+            onComplete();
+          });
+        } else {
+          // Capture specific element
+          const svgDocument = elementToSVG(downloadDivRef.current!);
+          // Inline external resources (fonts, images, etc) as data: URIs
+          await inlineResources(svgDocument.documentElement);
+          // Get SVG string
+          const svgString = new XMLSerializer().serializeToString(svgDocument);
+          var link = document.createElement('a');
+          link.download = `${Date.now()}.svg`;
+          link.href =
+            'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+          link.click();
           onComplete();
-        });
+        }
       }
     };
 
@@ -174,8 +190,8 @@ const DownLoadImage = (props: DownLoadImageProps) => {
         <div
           ref={downloadDivRef}
           className={classnames(
-            'z-modal fixed -top-[10000px] left-1/2 -ml-[600px]  w-[1200px]',
-            "bg-[url('/images/analyze/share-card-bg.jpg')]",
+            'z-modal fixed -top-[10000px] w-[1200px]',
+            "bg-[url('/images/analyze/share-card-bg(1).jpg')]",
             { '!top-0 ': false }
           )}
         >
