@@ -64,6 +64,7 @@ const LineChart: React.FC<ChartSummaryProps> = ({
             onYAxisScaleChange={(v) => {
               setYAxisScale(v);
             }}
+            onePointSys={onePointSys}
           />
         </>
       )}

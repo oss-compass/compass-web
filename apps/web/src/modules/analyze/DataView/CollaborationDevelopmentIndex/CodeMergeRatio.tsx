@@ -105,6 +105,7 @@ const CodeMergeRatio = () => {
           onMedianChange={(b) => setShowMedian(b)}
           yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
+          yKey={tansOpts['yKey']}
         />
       )}
       bodyClass={'h-[400px]'}

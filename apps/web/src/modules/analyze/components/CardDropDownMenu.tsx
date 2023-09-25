@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsThreeDots } from 'react-icons/bs';
-import { AiOutlineDownload, AiOutlineLoading } from 'react-icons/ai';
+import { AiOutlineLoading } from 'react-icons/ai';
 import Popper from '@mui/material/Popper';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import Average from 'public/images/analyze/average.svg';
@@ -10,6 +10,7 @@ import YScale from 'public/images/analyze/y-scale.svg';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import DownCardLoadImage from './DownCardLoadImage';
+import DownloadAndShare from './DownloadAndShare';
 import { subscribeKey } from 'valtio/utils';
 import { chartUserSettingState } from '@modules/analyze/store';
 
@@ -28,6 +29,9 @@ interface CardDropDownMenuProps {
   enableLineSettingSwitch?: boolean;
   yAxisScale?: boolean;
   onYAxisScaleChange?: (v: boolean) => void;
+
+  onePointSys?: boolean;
+  yKey?: string;
 }
 
 const CardDropDownMenu = (props: CardDropDownMenuProps) => {
@@ -42,12 +46,13 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     enableLineSettingSwitch = true,
     yAxisScale,
     onYAxisScaleChange,
+    onePointSys = false,
+    yKey = '',
   } = props;
 
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [loadingDownLoadImg, setLoadingDownLoadImg] = React.useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -117,24 +122,6 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
     </div>
   ) : null;
 
-  const DownLoadNode = (
-    <div
-      className="flex  h-8 cursor-pointer items-center border-b  px-4"
-      onClick={() => {
-        setLoadingDownLoadImg(true);
-      }}
-    >
-      {loadingDownLoadImg ? (
-        <AiOutlineLoading className="t animate-spin" />
-      ) : (
-        <AiOutlineDownload className="text-[#585858]" />
-      )}
-      <span className="ml-2 text-xs text-[#585858]">
-        {t('analyze:download_chart_img')}
-      </span>
-    </div>
-  );
-
   const FullScreen = (
     <div
       className={classnames(
@@ -190,12 +177,18 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
             <div className="rounded bg-white py-2 shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
               {ReferenceNode}
               {LineSetting}
-              {DownLoadNode}
+              <DownloadAndShare
+                cardRef={cardRef}
+                downloadImageSize={downloadImageSize}
+                yAxisScale={yAxisScale}
+                onePointSys={onePointSys}
+                yKey={yKey}
+              />
               {FullScreen}
             </div>
           </Popper>
 
-          {loadingDownLoadImg && (
+          {/* {loadingDownLoadImg && (
             <DownCardLoadImage
               size={downloadImageSize}
               cardRef={cardRef}
@@ -203,7 +196,7 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
                 setLoadingDownLoadImg(false);
               }}
             />
-          )}
+          )} */}
         </div>
       </ClickAwayListener>
     </>

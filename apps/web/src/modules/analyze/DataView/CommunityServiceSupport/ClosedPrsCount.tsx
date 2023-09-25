@@ -62,6 +62,7 @@ const ClosedPrsCount = () => {
           onMedianChange={(b) => setShowMedian(b)}
           yAxisScale={yAxisScale}
           onYAxisScaleChange={(b) => setYAxisScale(b)}
+          yKey={tansOpts['yKey']}
         />
       )}
     >

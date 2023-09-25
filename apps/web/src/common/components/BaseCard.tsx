@@ -116,7 +116,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h3>
-      <div className="line-clamp-2 relative mb-4 text-xs text-[#585858] ">
+      <div className="relative mb-4 text-xs text-[#585858] ">
         <DocPopper
           description={description}
           weight={weight}
