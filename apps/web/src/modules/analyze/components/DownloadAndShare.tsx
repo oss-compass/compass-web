@@ -83,6 +83,7 @@ const DownloadAndShare = (props: {
   const [open, setOpen] = useState(false);
   const [fileFormat, setFileFormat] = useState('PNG');
   const [loadingDownLoadImg, setLoadingDownLoadImg] = React.useState(false);
+  const [loadingPrviewImg, setLoadingPrviewImg] = React.useState(false);
 
   return (
     <>
@@ -172,24 +173,29 @@ const DownloadAndShare = (props: {
                 </label>
               </div>
             </RadioGroup.Root>
-            <div
-              onClick={() => {
-                setLoadingDownLoadImg(true);
-              }}
-              className="absolute right-10 top-24 flex  h-7 w-20 cursor-pointer items-center justify-center rounded-sm border border-[#3A5BEF] text-xs text-[#3A5BEF]"
-            >
-              {loadingDownLoadImg ? (
-                <AiOutlineLoading className="t animate-spin" />
-              ) : (
-                t('analyze:download')
-              )}
-            </div>
+            {loadingPrviewImg && (
+              <div
+                onClick={() => {
+                  setLoadingDownLoadImg(true);
+                }}
+                className="absolute right-10 top-24 flex  h-7 w-20 cursor-pointer items-center justify-center rounded-sm border border-[#3A5BEF] text-xs text-[#3A5BEF]"
+              >
+                {loadingDownLoadImg ? (
+                  <AiOutlineLoading className="t animate-spin" />
+                ) : (
+                  t('analyze:download')
+                )}
+              </div>
+            )}
           </div>
           <DownCardLoadImage
             size={downloadImageSize}
             cardRef={cardRef}
             loadingDownLoadImg={loadingDownLoadImg}
             fileFormat={fileFormat}
+            onCompleteLoad={() => {
+              setLoadingPrviewImg(true);
+            }}
             onComplete={() => {
               setLoadingDownLoadImg(false);
             }}
