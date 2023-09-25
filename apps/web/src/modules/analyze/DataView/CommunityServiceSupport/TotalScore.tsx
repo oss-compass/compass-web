@@ -50,7 +50,7 @@ const TotalScore = () => {
             }}
           />
           <CardDropDownMenu
-            downloadImageSize={'full'}
+            // downloadImageSize={'full'}
             cardRef={ref}
             fullScreen={fullScreen}
             onFullScreen={(b) => {
