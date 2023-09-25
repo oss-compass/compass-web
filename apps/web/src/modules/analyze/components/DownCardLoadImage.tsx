@@ -28,6 +28,7 @@ interface DownLoadImageProps {
   qrcodeLink?: string;
   fileFormat: string;
   onComplete: () => void;
+  onCompleteLoad: () => void;
 }
 
 const DownLoadImage = (props: DownLoadImageProps) => {
@@ -37,6 +38,7 @@ const DownLoadImage = (props: DownLoadImageProps) => {
     loadingDownLoadImg,
     fileFormat,
     onComplete,
+    onCompleteLoad,
   } = props;
 
   const { t } = useTranslation();
@@ -70,6 +72,20 @@ const DownLoadImage = (props: DownLoadImageProps) => {
       cardDownRef.current!.src = dataURL;
       cardRef.current!.style.removeProperty('width');
       await sleep(300);
+      onCompleteLoad();
+    };
+    const timer = setTimeout(() => {
+      fetchData().catch((e) => {
+        console.log('error:', e);
+      });
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [downloadDivRef, cardRef, cardImgRef, size]);
+
+  useEffect(() => {
+    const downLoadImg = async () => {
       if (loadingDownLoadImg) {
         // download img
         if (fileFormat === 'PNG') {
@@ -99,24 +115,10 @@ const DownLoadImage = (props: DownLoadImageProps) => {
         }
       }
     };
-
-    const timer = setTimeout(() => {
-      fetchData().catch((e) => {
-        console.log('error:', e);
-      });
-    }, 300);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [
-    downloadDivRef,
-    cardRef,
-    cardImgRef,
-    onComplete,
-    size,
-    loadingDownLoadImg,
-  ]);
-
+    downLoadImg().catch((e) => {
+      console.log('error:', e);
+    });
+  }, [loadingDownLoadImg]);
   return (
     <div
       className={classnames(
