@@ -16,6 +16,7 @@ import Tooltip from '@common//components/Tooltip';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import DownCardLoadImage from './DownCardLoadImage';
 import { AiOutlineLoading } from 'react-icons/ai';
+import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 // import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 // import { format } from 'date-fns';
 
@@ -32,11 +33,6 @@ const toUnderline = (str) => {
 
 const getSvgUrl = (slug, id, yAxisScale, onePointSys, yKey) => {
   let url = `/chart/${slug}.svg`;
-  // const { timeStart, timeEnd } = useQueryDateRange();
-  // let url = `/chart/${slug}.svg?begin_date=${format(
-  //   timeStart!,
-  //   'yyyy-MM-dd'
-  // )}&end_date=${format(timeEnd!, 'yyyy-MM-dd')}`;
   let metrc = '';
   let field = '';
   if (id === 'topic_overview') {
@@ -72,7 +68,8 @@ const DownloadAndShare = (props: {
   const { t } = useTranslation();
   const router = useRouter();
   const slug = router.query.slugs as string;
-
+  const { compareItems } = useCompareItems();
+  const len = compareItems.length;
   const svgUrl = getSvgUrl(
     slug,
     cardRef.current.id,
@@ -81,9 +78,9 @@ const DownloadAndShare = (props: {
     yKey
   );
   const [open, setOpen] = useState(false);
-  const [fileFormat, setFileFormat] = useState('PNG');
-  const [loadingDownLoadImg, setLoadingDownLoadImg] = React.useState(false);
-  const [loadingPrviewImg, setLoadingPrviewImg] = React.useState(false);
+  const [fileFormat, setFileFormat] = useState('SVG');
+  const [loadingDownLoadImg, setLoadingDownLoadImg] = useState(false);
+  const [loadingPrviewImg, setLoadingPrviewImg] = useState(false);
 
   return (
     <>
@@ -138,39 +135,47 @@ const DownloadAndShare = (props: {
             >
               <div className="flex items-center">
                 <RadioGroup.Item
-                  value="PNG"
-                  id="PNG"
-                  className={cn(
-                    'ml-10 h-[20px] w-[20px]  rounded-full border-2 bg-white outline-none ',
-                    [
-                      fileFormat === 'PNG'
-                        ? 'border-primary'
-                        : 'border-secondary',
-                    ]
-                  )}
-                >
-                  <RadioGroup.Indicator className="after:bg-primary relative flex h-full w-full items-center justify-center after:block after:h-[12px] after:w-[12px] after:rounded-[50%] after:content-['']" />
-                </RadioGroup.Item>
-                <label className="flex cursor-pointer pl-[15px] text-[15px] leading-none text-black">
-                  PNG
-                </label>
-                <RadioGroup.Item
                   value="SVG"
                   id="SVG"
-                  className={cn(
-                    'ml-10 h-[20px]  w-[20px] rounded-full border-2 bg-white outline-none',
-                    [
-                      fileFormat === 'SVG'
-                        ? 'border-primary'
-                        : 'border-secondary',
-                    ]
-                  )}
+                  className="flex items-center"
                 >
-                  <RadioGroup.Indicator className="after:bg-primary relative flex h-full w-full items-center justify-center after:block after:h-[12px] after:w-[12px] after:rounded-[50%] after:content-['']" />
+                  <div
+                    className={cn(
+                      'ml-10 h-[20px]  w-[20px] rounded-full border-2 bg-white outline-none',
+                      [
+                        fileFormat === 'SVG'
+                          ? 'border-primary'
+                          : 'border-secondary',
+                      ]
+                    )}
+                  >
+                    <RadioGroup.Indicator className="after:bg-primary relative flex h-full w-full items-center justify-center after:block after:h-[12px] after:w-[12px] after:rounded-[50%] after:content-['']" />
+                  </div>
+                  <label className="flex cursor-pointer pl-[15px] text-[15px] leading-none text-black">
+                    SVG
+                  </label>
                 </RadioGroup.Item>
-                <label className="flex cursor-pointer pl-[15px] text-[15px] leading-none text-black">
-                  SVG
-                </label>
+                <RadioGroup.Item
+                  value="PNG"
+                  id="PNG"
+                  className="flex items-center"
+                >
+                  <div
+                    className={cn(
+                      'ml-10 flex h-[20px] w-[20px] rounded-full border-2 bg-white outline-none ',
+                      [
+                        fileFormat === 'PNG'
+                          ? 'border-primary'
+                          : 'border-secondary',
+                      ]
+                    )}
+                  >
+                    <RadioGroup.Indicator className="after:bg-primary relative flex h-full w-full items-center justify-center after:block after:h-[12px] after:w-[12px] after:rounded-[50%] after:content-['']"></RadioGroup.Indicator>
+                  </div>
+                  <label className="float-right mx-[15px] flex cursor-pointer text-[15px] leading-none text-black">
+                    PNG
+                  </label>
+                </RadioGroup.Item>
               </div>
             </RadioGroup.Root>
             {loadingPrviewImg && (
@@ -200,20 +205,17 @@ const DownloadAndShare = (props: {
               setLoadingDownLoadImg(false);
             }}
           />
-          {/* <div className="mt-2 text-[#868690]">
-            or copy the code below to share
-          </div> */}
-          <TabPanel badgeSrc={svgUrl} id={cardRef.current.id} />
+          {fileFormat === 'SVG'
+            ? len === 1 && (
+                <TabPanel badgeSrc={svgUrl} id={cardRef.current.id} />
+              )
+            : ''}
         </div>
       </Dialog>
     </>
   );
 };
 
-const getMarkdownAnchorLink = (id: string) => {
-  const url = window.origin + window.location.pathname;
-  return `${url}#${id}`;
-};
 const TabPanel = ({ badgeSrc, id }: { badgeSrc: string; id: string }) => {
   const { t } = useTranslation();
   const [tab, setTab] = React.useState('Markdown');
