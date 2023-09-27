@@ -53,8 +53,6 @@ const DownLoadImage = (props: DownLoadImageProps) => {
     const fetchData = async () => {
       const qrcodeUrl = await genQrcode(window.location.href);
       setQrcodeUrl(qrcodeUrl);
-      // qrcodeImgRef.current!.src = qrcodeUrl;
-      // qrcodeDownRef.current!.src = qrcodeUrl;
       if (size === 'middle') {
         cardRef.current!.style.width = '1200px';
       }
@@ -67,8 +65,6 @@ const DownLoadImage = (props: DownLoadImageProps) => {
       });
       const dataURL = canvas.toDataURL('image/png');
       setDataUrl(dataURL);
-      // cardImgRef.current!.src = dataURL;
-      // cardDownRef.current!.src = dataURL;
       cardRef.current!.style.removeProperty('width');
       await sleep(300);
       onCompleteLoad();
@@ -84,7 +80,6 @@ const DownLoadImage = (props: DownLoadImageProps) => {
   }, [cardRef]);
 
   useEffect(() => {
-    console.log(1);
     const downLoadImg = async () => {
       if (loadingDownLoadImg) {
         // download img
