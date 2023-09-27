@@ -125,7 +125,9 @@ const FormCommunity = () => {
         )}
 
         <div className="mt-10">
-          <div className=" mb-4 block text-xl font-medium">社区主页</div>
+          <div className=" mb-4 block text-xl font-medium">
+            {t('submit_project:community_home_page')}
+          </div>
           <div className="max-w-[500px] flex-1">
             <OrgUrlInput
               error={!isOrgUrlValid}
@@ -138,7 +140,9 @@ const FormCommunity = () => {
         </div>
 
         <div className="mt-10">
-          <div className=" mb-4 block text-xl font-medium">社区头像</div>
+          <div className=" mb-4 block text-xl font-medium">
+            {t('submit_project:community_avatar')}
+          </div>
           <LogoUrlsSelect
             logoUrls={logoUrls}
             value={orgLogoUrl}

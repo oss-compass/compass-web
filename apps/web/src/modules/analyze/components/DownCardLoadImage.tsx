@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useRef } from 'react';
+import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
 import { Portal } from '@mui/base/Portal';
@@ -42,21 +42,19 @@ const DownLoadImage = (props: DownLoadImageProps) => {
   } = props;
 
   const { t } = useTranslation();
+  const [qrcodeUrl, setQrcodeUrl] = useState(null);
+  const [dataURL, setDataUrl] = useState(null);
   const downloadDivRef = useRef<HTMLDivElement>(null);
-  const cardImgRef = useRef<HTMLImageElement>(null);
-  const qrcodeImgRef = useRef<HTMLImageElement>(null);
-  const cardDownRef = useRef<HTMLImageElement>(null);
-  const qrcodeDownRef = useRef<HTMLImageElement>(null);
+  const downloadDivSvg = useRef<HTMLDivElement>(null);
 
   const { compareItems } = useCompareItems();
 
   useEffect(() => {
     const fetchData = async () => {
-      //  qrcode img
       const qrcodeUrl = await genQrcode(window.location.href);
-      qrcodeImgRef.current!.src = qrcodeUrl;
-      qrcodeDownRef.current!.src = qrcodeUrl;
-      // chart img
+      setQrcodeUrl(qrcodeUrl);
+      // qrcodeImgRef.current!.src = qrcodeUrl;
+      // qrcodeDownRef.current!.src = qrcodeUrl;
       if (size === 'middle') {
         cardRef.current!.style.width = '1200px';
       }
@@ -68,8 +66,9 @@ const DownLoadImage = (props: DownLoadImageProps) => {
         },
       });
       const dataURL = canvas.toDataURL('image/png');
-      cardImgRef.current!.src = dataURL;
-      cardDownRef.current!.src = dataURL;
+      setDataUrl(dataURL);
+      // cardImgRef.current!.src = dataURL;
+      // cardDownRef.current!.src = dataURL;
       cardRef.current!.style.removeProperty('width');
       await sleep(300);
       onCompleteLoad();
@@ -82,9 +81,10 @@ const DownLoadImage = (props: DownLoadImageProps) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [downloadDivRef, cardRef, cardImgRef, size]);
+  }, [cardRef]);
 
   useEffect(() => {
+    console.log(1);
     const downLoadImg = async () => {
       if (loadingDownLoadImg) {
         // download img
@@ -101,7 +101,7 @@ const DownLoadImage = (props: DownLoadImageProps) => {
           });
         } else {
           // Capture specific element
-          const svgDocument = elementToSVG(downloadDivRef.current!);
+          const svgDocument = elementToSVG(downloadDivSvg.current!);
           // Inline external resources (fonts, images, etc) as data: URIs
           await inlineResources(svgDocument.documentElement);
           // Get SVG string
@@ -119,151 +119,177 @@ const DownLoadImage = (props: DownLoadImageProps) => {
       console.log('error:', e);
     });
   }, [loadingDownLoadImg]);
-  return (
-    <div
-      className={classnames(
-        "flex flex-col bg-[url('/images/analyze/share-card-bg.jpg')]"
-      )}
-    >
-      <div className="my-4 flex flex-wrap items-center justify-center leading-8">
-        {compareItems.map(({ name, label, level }, index) => {
-          const host = getProvider(label);
 
-          let labelNode = (
-            <span className={'ml-2 mr-1 text-xs font-semibold text-black'}>
-              {name}
-            </span>
-          );
-
-          if (level === Level.REPO) {
-            labelNode = (
-              <a
-                className="ml-2 mr-1 whitespace-nowrap text-xs font-semibold text-black hover:underline"
-                href={label}
-                target="_blank"
-                rel={'noreferrer'}
-              >
-                {name}
-              </a>
-            );
-          }
-          return (
-            <div key={label} className={classnames('flex items-center')}>
-              <ProviderIcon provider={host} className="text-sm" />
-              {labelNode}
-              {level === Level.COMMUNITY && (
-                <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
-                  {t('home:community')}
-                </div>
-              )}
-              {index < compareItems.length - 1 ? (
-                <span className="px-2 text-xs text-gray-600">vs</span>
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
-      <div
-        className={classnames('mx-auto mb-4 min-h-[200px] shadow-2xl', {
-          'w-[520px]': true,
-        })}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img ref={cardImgRef} className="w-full" alt="" />
-      </div>
-      <div className="mb-2 flex justify-end px-12">
-        <div className="mr-2 h-7 w-7 bg-slate-100">
-          <CompassSquareLogo />
-        </div>
-        <div className="h-7 w-7 bg-slate-100">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img ref={qrcodeImgRef} className="w-full" alt="" />
-        </div>
-      </div>
-      <div className="mx-12 mb-2 origin-right scale-50">
-        <p className="text-right text-xs  text-white">
-          Powered by oss-compass.org
-        </p>
-        <p className="text-right text-xs  text-white ">
-          Scan the QR code above to read full report
-        </p>
-      </div>
-      <Portal>
+  if (fileFormat === 'SVG') {
+    return (
+      <div ref={downloadDivSvg}>
         <div
-          ref={downloadDivRef}
-          className={classnames(
-            'z-modal fixed -top-[10000px] w-[1200px]',
-            "bg-[url('/images/analyze/share-card-bg(1).jpg')]",
-            { '!top-0 ': false }
-          )}
+          className={classnames('mx-auto mb-2 min-h-[240px] rounded border', {
+            'w-[556px]': true,
+          })}
         >
-          <div className="mt-8 mb-8 flex flex-wrap items-center justify-center leading-8">
-            {compareItems.map(({ name, label, level }, index) => {
-              const host = getProvider(label);
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={dataURL} className="w-full" alt="" />
+          {dataURL && (
+            <div className="mb-2 ml-4 origin-left scale-50 text-xs text-[#585858]">
+              Powered by oss-compass.org
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        className={classnames(
+          "flex flex-col bg-[url('/images/analyze/share-card-bg.jpg')]"
+        )}
+      >
+        <div className="my-4 flex flex-wrap items-center justify-center leading-8">
+          {compareItems.map(({ name, label, level }, index) => {
+            const host = getProvider(label);
 
-              let labelNode = (
-                <span className={'ml-2 mr-1 text-2xl font-semibold text-black'}>
+            let labelNode = (
+              <span className={'ml-2 mr-1 text-xs font-semibold text-black'}>
+                {name}
+              </span>
+            );
+
+            if (level === Level.REPO) {
+              labelNode = (
+                <a
+                  className="ml-2 mr-1 whitespace-nowrap text-xs font-semibold text-black hover:underline"
+                  href={label}
+                  target="_blank"
+                  rel={'noreferrer'}
+                >
                   {name}
-                </span>
+                </a>
               );
+            }
+            return (
+              <div key={label} className={classnames('flex items-center')}>
+                <ProviderIcon provider={host} className="text-sm" />
+                {labelNode}
+                {level === Level.COMMUNITY && (
+                  <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
+                    {t('home:community')}
+                  </div>
+                )}
+                {index < compareItems.length - 1 ? (
+                  <span className="px-2 text-xs text-gray-600">vs</span>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+        <div
+          className={classnames('mx-auto mb-4 min-h-[200px] shadow-2xl', {
+            'w-[520px]': true,
+          })}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={dataURL} className="w-full" alt="" />
+        </div>
+        <div className="mb-2 flex justify-end px-12">
+          <div className="mr-2 h-7 w-7 bg-slate-100">
+            <CompassSquareLogo />
+          </div>
+          <div className="h-7 w-7 bg-slate-100">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={qrcodeUrl} className="w-full" alt="" />
+          </div>
+        </div>
+        <div className="mx-12 mb-2 origin-right scale-50">
+          <p className="text-right text-xs  text-white">
+            Powered by oss-compass.org
+          </p>
+          <p className="text-right text-xs  text-white ">
+            Scan the QR code above to read full report
+          </p>
+        </div>
+        <Portal>
+          <div
+            ref={downloadDivRef}
+            className={classnames(
+              'z-modal fixed -top-[10000px] w-[1200px]',
+              "bg-[url('/images/analyze/share-card-bg(1).jpg')]",
+              { '!top-0 ': false }
+            )}
+          >
+            <div className="mt-8 mb-8 flex flex-wrap items-center justify-center leading-8">
+              {compareItems.map(({ name, label, level }, index) => {
+                const host = getProvider(label);
 
-              if (level === Level.REPO) {
-                labelNode = (
-                  <a
-                    className="ml-2 mr-1 whitespace-nowrap text-2xl font-semibold text-black hover:underline"
-                    href={label}
-                    target="_blank"
-                    rel={'noreferrer'}
+                let labelNode = (
+                  <span
+                    className={'ml-2 mr-1 text-2xl font-semibold text-black'}
                   >
                     {name}
-                  </a>
+                  </span>
                 );
-              }
-              return (
-                <div key={label} className={classnames('flex items-center')}>
-                  <ProviderIcon provider={host} className="text-3xl" />
-                  {labelNode}
-                  {level === Level.COMMUNITY && (
-                    <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
-                      {t('home:community')}
-                    </div>
-                  )}
-                  {index < compareItems.length - 1 ? (
-                    <span className="px-2 text-2xl text-gray-600">vs</span>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-          <div
-            className={classnames('mx-auto mb-8 shadow-2xl', {
-              'w-[1100px]': true,
-            })}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img ref={cardDownRef} className="w-full" alt="" />
-          </div>
-          <div className="mb-2 flex justify-end px-12">
-            <div className="mr-4 h-14 w-14 bg-slate-100">
-              <CompassSquareLogo />
+
+                if (level === Level.REPO) {
+                  labelNode = (
+                    <a
+                      className="ml-2 mr-1 whitespace-nowrap text-2xl font-semibold text-black hover:underline"
+                      href={label}
+                      target="_blank"
+                      rel={'noreferrer'}
+                    >
+                      {name}
+                    </a>
+                  );
+                }
+                return (
+                  <div key={label} className={classnames('')}>
+                    <ProviderIcon
+                      provider={host}
+                      className="inline-block text-3xl"
+                    />
+                    {labelNode}
+                    {level === Level.COMMUNITY && (
+                      <div className="ml-2 inline-block  rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
+                        {t('home:community')}
+                      </div>
+                    )}
+                    {index < compareItems.length - 1 ? (
+                      <span className="px-2 text-2xl text-gray-600">vs</span>
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
-            <div className="h-14 w-14 bg-slate-100">
+            <div
+              className={classnames('mx-auto mb-8 shadow-2xl', {
+                'w-[1100px]': true,
+              })}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img ref={qrcodeDownRef} className="w-full" alt="" />
+              <img src={dataURL} className="w-full" alt="" />
+            </div>
+            <div className="mb-2 flex justify-end px-12">
+              <div className="mr-4 h-14 w-14 bg-slate-100">
+                <CompassSquareLogo />
+              </div>
+              <div className="h-14 w-14 bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={qrcodeUrl} className="w-full" alt="" />
+              </div>
+            </div>
+            <div className="mb-4 px-12">
+              <p className="text-right text-sm text-white">
+                Powered by oss-compass.org
+              </p>
+              <p className="text-right text-sm text-white">
+                Scan the QR code above to read full report
+              </p>
             </div>
           </div>
-          <div className="mb-8 px-12">
-            <p className="text-right text-sm text-white">
-              Powered by oss-compass.org
-            </p>
-            <p className="text-right text-sm text-white">
-              Scan the QR code above to read full report
-            </p>
-          </div>
-        </div>
-      </Portal>
-    </div>
-  );
+        </Portal>
+      </div>
+    );
+  }
 };
 
 export default DownLoadImage;

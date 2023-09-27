@@ -97,7 +97,12 @@ const InputUrlField = forwardRef<InputRef, Props>(
               onChange={(e) => {
                 setValue(e.target.value);
               }}
-              onBlur={() => {}}
+              onBlur={() => {
+                if (!value) return;
+                if (error) return;
+                onPressEnter?.(value);
+                setValue('');
+              }}
             />
           </div>
           <div
