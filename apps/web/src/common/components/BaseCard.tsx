@@ -108,7 +108,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   return (
     <div className={classnames(cls)} ref={cardRef} id={id}>
-      <h3 className="group mb-2 text-lg font-semibold" ref={titleRef}>
+      <h3
+        className="group mb-2 text-lg font-semibold text-[#000000]"
+        ref={titleRef}
+      >
         {title}
         <a href={`#${id}`}>
           <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
