@@ -77,7 +77,7 @@ const DownLoadImage = (props: DownLoadImageProps) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [cardRef]);
+  }, [cardRef, onCompleteLoad, size]);
 
   useEffect(() => {
     const downLoadImg = async () => {
@@ -113,7 +113,7 @@ const DownLoadImage = (props: DownLoadImageProps) => {
     downLoadImg().catch((e) => {
       console.log('error:', e);
     });
-  }, [loadingDownLoadImg]);
+  }, [loadingDownLoadImg, fileFormat, onComplete]);
 
   if (fileFormat === 'SVG') {
     return (
@@ -126,7 +126,7 @@ const DownLoadImage = (props: DownLoadImageProps) => {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={dataURL} className="w-full" alt="" />
           {dataURL && (
-            <div className="mb-2 ml-4 origin-left scale-50 text-xs text-[#585858]">
+            <div className="mb-2 ml-4 origin-left scale-75 text-xs text-[#b4adbe]">
               Powered by oss-compass.org
             </div>
           )}
@@ -226,14 +226,9 @@ const DownLoadImage = (props: DownLoadImageProps) => {
 
                 if (level === Level.REPO) {
                   labelNode = (
-                    <a
-                      className="ml-2 mr-1 whitespace-nowrap text-2xl font-semibold text-black hover:underline"
-                      href={label}
-                      target="_blank"
-                      rel={'noreferrer'}
-                    >
+                    <span className="ml-2 text-2xl font-semibold text-black">
                       {name}
-                    </a>
+                    </span>
                   );
                 }
                 return (
@@ -244,8 +239,10 @@ const DownLoadImage = (props: DownLoadImageProps) => {
                     />
                     {labelNode}
                     {level === Level.COMMUNITY && (
-                      <div className="ml-2 inline-block  rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
-                        {t('home:community')}
+                      <div className="ml-2 inline-block h-5 rounded-[10px] bg-[#FFF9F2] px-2 align-bottom text-xs text-[#D98523]">
+                        <span className="relative -top-1">
+                          {t('home:community')}
+                        </span>
                       </div>
                     )}
                     {index < compareItems.length - 1 ? (

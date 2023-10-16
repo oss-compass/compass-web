@@ -17,8 +17,9 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import DownCardLoadImage from './DownCardLoadImage';
 import { AiOutlineLoading } from 'react-icons/ai';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-// import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-// import { format } from 'date-fns';
+import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+import { rangeTags } from '../constant';
+import { format } from 'date-fns';
 
 const queryMap = {
   metricCodequality: 'collab_dev_index',
@@ -27,11 +28,18 @@ const queryMap = {
   metricGroupActivity: 'organizations_activity',
 };
 
-const toUnderline = (str) => {
+const toUnderline = (str: string) => {
   return str.replace(/([A-Z])/g, '_$1').toLowerCase();
 };
 
-const getSvgUrl = (slug, id, yAxisScale, onePointSys, yKey) => {
+const useGetSvgUrl = (
+  slug: string,
+  id: string,
+  yAxisScale: boolean,
+  onePointSys: boolean,
+  yKey: string
+) => {
+  const { range, timeStart, timeEnd } = useQueryDateRange();
   let url = `/chart/${slug}.svg`;
   let metrc = '';
   let field = '';
@@ -54,9 +62,15 @@ const getSvgUrl = (slug, id, yAxisScale, onePointSys, yKey) => {
   ) {
     url += `&chart=bar`;
   }
+  if (rangeTags.includes(range)) {
+    url += `&range=${range}`;
+  } else {
+    const begin_date = format(timeStart!, 'yyyy-MM-dd');
+    const end_date = format(timeEnd!, 'yyyy-MM-dd');
+    url += `&begin_date=${begin_date}&end_date=${end_date}`;
+  }
   return url;
 };
-
 const DownloadAndShare = (props: {
   cardRef: RefObject<HTMLElement>;
   downloadImageSize?: 'middle' | 'full';
@@ -70,7 +84,7 @@ const DownloadAndShare = (props: {
   const slug = router.query.slugs as string;
   const { compareItems } = useCompareItems();
   const len = compareItems.length;
-  const svgUrl = getSvgUrl(
+  const svgUrl = useGetSvgUrl(
     slug,
     cardRef.current.id,
     yAxisScale,
@@ -278,7 +292,7 @@ const TabPanel = ({ badgeSrc, id }: { badgeSrc: string; id: string }) => {
           value="Link"
         />
       </Tabs>
-      <div className="mt-4 flex  h-[60px] items-center justify-between rounded border bg-[#fafafa] px-3">
+      <div className="mt-4 flex h-[70px] items-center justify-between rounded border bg-[#fafafa] px-3">
         <div className="break-all text-xs">{source}</div>
         <Tooltip
           title={
