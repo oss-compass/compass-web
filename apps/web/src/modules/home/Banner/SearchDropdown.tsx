@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import classnames from 'classnames';
-import { useRouter } from 'next/router';
 import { useTranslation, Trans } from 'next-i18next';
 import { AiOutlineRightCircle } from 'react-icons/ai';
 import useDropDown from '@common/hooks/useDropDown';
@@ -94,6 +93,7 @@ const LinkItem: React.FC<{
     <Link
       key={item.label}
       href={getShortAnalyzeLink(item)}
+      target="_blank"
       className={classnames(
         'flex min-h-[66px] cursor-pointer items-center justify-between px-4 py-3 text-xl hover:bg-gray-100',
         'md:py-2 md:px-2 md:text-base',
@@ -115,12 +115,11 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
   result,
 }) => {
   const { t } = useTranslation();
-  const router = useRouter();
   const { active } = useDropDown({
     totalLength: result.length,
     onPressEnter: () => {
       const activeItem = result[active];
-      router.push(getShortAnalyzeLink(activeItem));
+      window.open(getShortAnalyzeLink(activeItem), '_blank');
     },
   });
 

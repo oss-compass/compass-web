@@ -147,7 +147,10 @@ const TrendsList: React.FC = () => {
                 return (
                   <tr className="group" key={item!.label}>
                     <td className="flex flex-col px-1 py-2 ">
-                      <Link href={getShortAnalyzeLink(item!.shortCode)}>
+                      <Link
+                        href={getShortAnalyzeLink(item!.shortCode)}
+                        target="_blank"
+                      >
                         <p className="break-words text-sm font-bold md:w-[140px]">
                           {r.name}
                           {item?.level === Level.COMMUNITY ? (
