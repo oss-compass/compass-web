@@ -54,7 +54,9 @@ const RepoCard = (props: {
               {compareMode ? (
                 repo
               ) : (
-                <Link href={getShortAnalyzeLink(shortCode)}>{repo}</Link>
+                <Link href={getShortAnalyzeLink(shortCode)} target="_blank">
+                  {repo}
+                </Link>
               )}
             </p>
             <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
