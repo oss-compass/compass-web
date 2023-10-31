@@ -51,7 +51,13 @@ const FormAlgorithm = () => {
                   }
                 />
               ),
-              e: <LinkA href={'/blog/scoring-system-switch'} />,
+              e: (
+                <LinkA
+                  href={
+                    '/blog/2023/08/05/scoring-system-switch/scoring-system-switch/'
+                  }
+                />
+              ),
             }}
           />
           <div className="flex items-center md:my-6 md:flex-col">
