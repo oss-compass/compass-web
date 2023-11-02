@@ -17,7 +17,6 @@ const ProjectItem = ({ shortCode, url }) => {
     <Link
       key={name}
       href={getShortAnalyzeLink(shortCode)}
-      target="_blank"
       className="flex cursor-pointer justify-between py-1"
     >
       <div className="text-sm text-black">

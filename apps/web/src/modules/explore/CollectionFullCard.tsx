@@ -74,7 +74,6 @@ const CollectionFullCard = (props: { collection: Collection }) => {
                     <Link
                       key={label}
                       href={getShortAnalyzeLink(shortCode)}
-                      target="_blank"
                       className="flex w-full items-center text-sm hover:underline"
                     >
                       <span className="mr-1 h-1 w-1 flex-shrink-0 bg-black" />
