@@ -63,7 +63,7 @@ const MainHeader = ({
             <div
               onClick={async () => {
                 if (compareIds.length > 1) {
-                  await router.push(getShortCompareLink(compareIds));
+                  await window.open(getShortCompareLink(compareIds), '_blank');
                 }
                 // setSelect(false);
               }}

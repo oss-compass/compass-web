@@ -30,7 +30,6 @@ const ListPanel = (props: {
             key={item.label}
             href={getShortAnalyzeLink(item.shortCode)}
             className="grid cursor-pointer grid-cols-6 gap-2 border-b py-3 last:border-0"
-            target="_blank"
           >
             <div className="col-span-3 flex">
               <div className="relative h-10 w-10">
