@@ -556,3 +556,276 @@ query bulkShortenedLabel($labels: [LabelRowInput!]!) {
     shortCode
   }
 }
+query metricDashboard(
+  $label: String!
+  $level: String = "repo"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  contributorsDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    contributorAllCount
+    highestContributionContributor {
+      name
+      origin
+      type
+      value
+    }
+    highestContributionOrganization {
+      name
+      origin
+      type
+      value
+    }
+    orgAllCount
+  }
+  issuesDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    issueCommentFrequencyMean
+    issueCompletionCount
+    issueCompletionRatio
+    issueCount
+    issueUnresponsiveCount
+    issueUnresponsiveRatio
+  }
+  pullsDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    commitCount
+    pullCompletionCount
+    pullCompletionRatio
+    pullCount
+    pullUnresponsiveCount
+    pullUnresponsiveRatio
+  }
+}
+query contributorsDetailList(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  contributorsDetailList(
+    label: $label
+    level: $level
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      contribution
+      contributionTypeList {
+        contribution
+        contributionType
+      }
+      contributionWithoutObserve
+      contributor
+      ecologicalType
+      isBot
+      mileageType
+      organization
+    }
+    page
+    totalPage
+  }
+}
+query contributorsOrganization(
+  $label: String!
+  $level: String = "repo"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  contributorsDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    ecologicalDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+    }
+  }
+}
+query issuesDetailList(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  issuesDetailList(
+    label: $label
+    level: $level
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      assigneeLogin
+      closedAt
+      createdAt
+      idInRepo
+      labels
+      numOfCommentsWithoutBot
+      repository
+      state
+      timeToCloseDays
+      timeToFirstAttentionWithoutBot
+      title
+      url
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+query issueCompletion(
+  $label: String!
+  $level: String = "repo"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  issuesDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    issueStateDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+    }
+  }
+}
+query issueComment(
+  $label: String!
+  $level: String = "repo"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  issuesDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    issueCommentDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+    }
+  }
+}
+query pullsDetailList(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  pullsDetailList(
+    label: $label
+    level: $level
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      closedAt
+      createdAt
+      idInRepo
+      labels
+      mergeAuthorLogin
+      numReviewComments
+      repository
+      reviewersLogin
+      state
+      timeToCloseDays
+      timeToFirstAttentionWithoutBot
+      title
+      url
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+query pullsCompletion(
+  $label: String!
+  $level: String = "repo"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  pullsDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    pullStateDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+    }
+  }
+}
+query pullsComment(
+  $label: String!
+  $level: String = "repo"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  pullsDetailOverview(
+    label: $label
+    level: $level
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    pullCommentDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+    }
+  }
+}
