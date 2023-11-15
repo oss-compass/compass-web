@@ -31,10 +31,7 @@ const Main = () => {
   const { t } = useTranslation();
   const { compareItems } = useCompareItems();
   const { timeStart, timeEnd } = useQueryDateRange();
-  // if (props.loading) {
-  //  <div className="rounded border px-6 py-1 shadow">123</div>;
-  //   return <Loading />;
-  // }
+
   const { label, level } = compareItems[0];
   const { data, isLoading } = useMetricDashboardQuery(client, {
     label: label,
@@ -42,7 +39,9 @@ const Main = () => {
     beginDate: timeStart,
     endDate: timeEnd,
   });
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div>
       <div className="mt-4 grid grid-cols-3 gap-4">
@@ -340,7 +339,7 @@ const getIcons = (type: string) => {
     case 'github':
       return <AiFillGithub className="mr-2" />;
     case 'gitee':
-      return <SiGitee color="#c71c27" className="mr-2" />;
+      return <SiGitee color="#c71c27" className="mr-0" />;
     default:
       return <IoPeopleCircle />;
   }

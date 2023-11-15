@@ -115,7 +115,7 @@ const MetricTable: React.FC<{
       width: '5%',
       filters: stateOption,
       render: (text) => {
-        return stateOption.find((i) => i.value === text).text;
+        return stateOption.find((i) => i.value === text)?.text || text;
       },
     },
     {
