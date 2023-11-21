@@ -3,6 +3,7 @@ import { usePullsCompletionQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
 import MetricChart from '@modules/analyze/components/MetricDetail/MetricChart';
+import { useStateType } from '@modules/analyze/components/MetricDetail/MetricPr/PR';
 import type { EChartsOption } from 'echarts';
 
 const PrCompletion: React.FC<{
@@ -12,6 +13,7 @@ const PrCompletion: React.FC<{
   endDate: Date;
 }> = ({ label, level, beginDate, endDate }) => {
   const { t } = useTranslation();
+  const stateOption = useStateType();
   const chartRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = usePullsCompletionQuery(client, {
     label: label,
@@ -19,12 +21,14 @@ const PrCompletion: React.FC<{
     beginDate: beginDate,
     endDate: endDate,
   });
-
+  const getStateText = (text) => {
+    return stateOption.find((i) => i.value === text)?.text || text;
+  };
   const getSeries = useMemo(() => {
     const distribution = data?.pullsDetailOverview?.pullStateDistribution;
     if (data && distribution?.length > 0) {
       return distribution.map(({ subCount, subName }) => {
-        return { name: subName, value: subCount, count: subCount };
+        return { name: getStateText(subName), value: subCount };
       });
     } else {
       return [];
@@ -34,7 +38,7 @@ const PrCompletion: React.FC<{
   const option: EChartsOption = {
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)',
+      formatter: '{b} : {c} ({d}%)',
     },
     color: [
       // '#5470c6',
@@ -76,7 +80,7 @@ const PrCompletion: React.FC<{
           position: 'inner',
           fontSize: 14,
           color: '#333',
-          formatter: '{b}: {c} ({d}%)',
+          formatter: '{b} : {c} ({d}%)',
         },
         data: getSeries,
       },

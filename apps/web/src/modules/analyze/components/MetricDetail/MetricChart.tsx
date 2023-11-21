@@ -13,7 +13,7 @@ export interface ReactEChartsProps {
   loading?: boolean;
   theme?: 'light' | 'dark';
   containerRef?: React.RefObject<HTMLElement>;
-  legendselectchanged?: any;
+  filterData?: any;
 }
 
 const MetricChart: React.FC<ReactEChartsProps> = ({
@@ -23,7 +23,7 @@ const MetricChart: React.FC<ReactEChartsProps> = ({
   loading,
   theme,
   containerRef,
-  legendselectchanged,
+  filterData,
 }) => {
   const inView = useInViewportDebounce(containerRef);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -54,18 +54,17 @@ const MetricChart: React.FC<ReactEChartsProps> = ({
     if (inView && chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current)!;
       chart.setOption(option, settings);
-      if (legendselectchanged) {
-        const chart = getInstanceByDom(chartRef.current)!;
+      if (filterData) {
         chart.on('legendselectchanged', function (params: any) {
-          let selected = params.selected!;
-          let options = chart.getOption();
-          let selectedList = Object.keys(selected).filter(
+          const selected = params.selected!;
+          const options = chart.getOption();
+          const selectedList = Object.keys(selected).filter(
             (item) => selected[item]
           );
-          options.series[1].data = legendselectchanged.filter((item) =>
-            selectedList.includes(item.org)
+          options.series[1].data = filterData.filter((item) =>
+            selectedList.includes(item.parentName)
           );
-          this.setOption(options);
+          chart.setOption(options);
         });
       }
     }

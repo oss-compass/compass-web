@@ -24,7 +24,11 @@ const IssueCompletion: React.FC<{
     const distribution = data?.issuesDetailOverview?.issueCommentDistribution;
     if (data && distribution?.length > 0) {
       return distribution.map(({ subCount, subName }) => {
-        return { name: subName, value: subCount, count: subCount };
+        return {
+          name: subName + t('analyze:metric_detail:comments'),
+          value: subCount,
+          count: subCount,
+        };
       });
     } else {
       return [];
@@ -34,7 +38,7 @@ const IssueCompletion: React.FC<{
   const option: EChartsOption = {
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)',
+      formatter: '{b} : {c} ({d}%)',
     },
     color: [
       // '#5470c6',
@@ -76,7 +80,7 @@ const IssueCompletion: React.FC<{
           position: 'inner',
           fontSize: 14,
           color: '#333',
-          formatter: '{b}: {c} ({d}%)',
+          formatter: '{b} : {c} ({d}%)',
         },
         data: getSeries,
       },

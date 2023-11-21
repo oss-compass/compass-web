@@ -28,10 +28,6 @@ const MetricTable: React.FC<{
 }> = ({ label, level, beginDate, endDate }) => {
   const { t } = useTranslation();
   const stateOption = useStateType();
-  const filterMap = {
-    ecologicalType: 'ecological_type',
-    contributionTypeList: 'contribution_type',
-  };
   const [tableData, setData] = useState<IssueDetail[]>();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -104,19 +100,21 @@ const MetricTable: React.FC<{
       title: t('analyze:metric_detail:issue_title'),
       dataIndex: 'title',
       align: 'center',
-      width: '15%',
+      width: '200px',
+      sorter: true,
     },
     {
       title: 'URL',
       dataIndex: 'url',
       align: 'center',
-      width: '15%',
+      width: '250px',
     },
     {
       title: t('analyze:metric_detail:state'),
       dataIndex: 'state',
       align: 'center',
-      width: '6%',
+      width: '100px',
+      sorter: true,
       filters: stateOption,
       render: (text) => {
         return stateOption.find((i) => i.value === text)?.text || text;
@@ -126,51 +124,59 @@ const MetricTable: React.FC<{
       title: t('analyze:metric_detail:created_time'),
       dataIndex: 'createdAt',
       align: 'center',
-      width: '8%',
+      sorter: true,
+      width: '120px',
       render: (time) => format(parseJSON(time)!, 'yyyy-MM-dd'),
     },
     {
       title: t('analyze:metric_detail:close_time'),
       dataIndex: 'closedAt',
       align: 'center',
-      width: '8%',
+      sorter: true,
+      width: '120px',
       render: (time) => (time ? format(parseJSON(time)!, 'yyyy-MM-dd') : ''),
     },
     {
       title: t('analyze:metric_detail:processing_time'),
       dataIndex: 'timeToCloseDays',
       align: 'center',
-      width: '8%',
+      sorter: true,
+      width: '140px',
     },
     {
       title: t('analyze:metric_detail:first_response_time'),
       dataIndex: 'timeToFirstAttentionWithoutBot',
       align: 'center',
-      width: '8%',
+      sorter: true,
+      width: '170px',
     },
     {
       title: t('analyze:metric_detail:comments_count'),
       dataIndex: 'numOfCommentsWithoutBot',
       align: 'center',
-      width: '6%',
+      sorter: true,
+      width: '120px',
     },
     {
       title: t('analyze:metric_detail:tags'),
       dataIndex: 'labels',
       align: 'center',
-      width: '12%',
+      render: (list) => list?.join(', ') || '',
+      width: '100px',
     },
     {
       title: t('analyze:metric_detail:creator'),
       dataIndex: 'userLogin',
       align: 'center',
-      width: '8%',
+      sorter: true,
+      width: '100px',
     },
     {
       title: t('analyze:metric_detail:assignee'),
       dataIndex: 'assigneeLogin',
       align: 'center',
-      width: '12%',
+      sorter: true,
+      width: '100px',
     },
   ];
   return (

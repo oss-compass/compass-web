@@ -19,12 +19,14 @@ const PrComments: React.FC<{
     beginDate: beginDate,
     endDate: endDate,
   });
-
   const getSeries = useMemo(() => {
     const distribution = data?.pullsDetailOverview?.pullCommentDistribution;
     if (data && distribution?.length > 0) {
       return distribution.map(({ subCount, subName }) => {
-        return { name: subName, value: subCount, count: subCount };
+        return {
+          name: subName + t('analyze:metric_detail:comments'),
+          value: subCount,
+        };
       });
     } else {
       return [];
@@ -34,7 +36,7 @@ const PrComments: React.FC<{
   const option: EChartsOption = {
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)',
+      formatter: `{b} : {c} ({d}%)`,
     },
     color: [
       // '#5470c6',
@@ -76,7 +78,7 @@ const PrComments: React.FC<{
           position: 'inner',
           fontSize: 14,
           color: '#333',
-          formatter: '{b}: {c} ({d}%)',
+          formatter: '{b} : {c} ({d}%)',
         },
         data: getSeries,
       },

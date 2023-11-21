@@ -30,22 +30,29 @@ const Header: React.FC<{
               <Logo color="white" />
             </Link>
 
-            <Link
-              href="/explore"
-              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
-            >
-              {t('common:header.explore')}
-            </Link>
-
             <LinkX href="/docs/dimensions-define" legacyBehavior>
               <a
                 className={
                   'mx-6 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
                 }
               >
-                {t('common:header.metrics_models')}
+                {t('common:header.docs')}
               </a>
             </LinkX>
+
+            <Link
+              href="/explore"
+              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+            >
+              {t('common:header.projects')}
+            </Link>
+
+            <Link
+              href="/lab"
+              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+            >
+              {t('common:header.lab')}
+            </Link>
 
             <CommunityDropdown />
 
@@ -58,13 +65,6 @@ const Header: React.FC<{
                 {t('common:header.news')}
               </a>
             </LinkX>
-
-            <Link
-              href="/lab"
-              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
-            >
-              {t('common:header.lab')}
-            </Link>
 
             <Link
               href="/about"

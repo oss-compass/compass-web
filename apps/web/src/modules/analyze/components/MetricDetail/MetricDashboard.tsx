@@ -44,10 +44,15 @@ const Main = () => {
   }
   return (
     <div>
-      <div className="mt-4 grid grid-cols-3 gap-4">
+      <div className="mt-6 mb-2 text-xl font-semibold text-[#000000]">
+        {t('analyze:metric_detail:project_deep_dive_insight')}
+      </div>
+      <div className="base-card rounded-lg border-2 border-transparent drop-shadow-sm md:rounded-none">
         <MetricBoxContributors data={data?.contributorsDetailOverview} />
-        <MetricBoxIssues data={data?.issuesDetailOverview} />
-        <MetricBoxPr data={data?.pullsDetailOverview} />
+        <div className="grid grid-cols-2">
+          <MetricBoxIssues data={data?.issuesDetailOverview} />
+          <MetricBoxPr data={data?.pullsDetailOverview} />
+        </div>
       </div>
     </div>
   );
@@ -63,21 +68,23 @@ const MetricBoxContributors: React.FC<{
   const slugs = router.query.slugs;
 
   return (
-    <div className="base-card relative min-w-0 scroll-mt-[200px] rounded-lg border-2 border-transparent bg-white p-5 drop-shadow-sm md:rounded-none">
+    <div className="relative min-w-0 scroll-mt-[200px] border-b bg-white p-5">
       <div className="flex justify-between">
-        <div className="text-xl font-bold">
-          {t('analyze:metric_detail:contributors_persona')}
+        <div className="text-lg font-bold">
+          {t('analyze:metric_detail:contributor')}
         </div>
         <div
           className="cursor-pointer pt-1 text-sm text-[#585858]"
           onClick={() => {
-            router.push('/analyze/metric/' + slugs);
+            router.push(
+              '/analyze/metric/' + slugs + '?range=1M&type=contributor'
+            );
           }}
         >
           {t('analyze:metric_detail:details')}
         </div>
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-4">
+      <div className="mt-4 mb-2 grid grid-cols-4 gap-4 pl-12">
         <div>
           <div className="flex text-xl font-medium">
             <div className="mt-1 mr-2 text-[#ccc]">
@@ -138,21 +145,21 @@ const MetricBoxIssues: React.FC<{
   const slugs = router.query.slugs;
 
   return (
-    <div className="base-card relative min-w-0 scroll-mt-[200px] rounded-lg border-2 border-transparent bg-white p-5 drop-shadow-sm md:rounded-none">
+    <div className="relative min-w-0 scroll-mt-[200px] border-r bg-white p-5">
       <div className="flex justify-between">
-        <div className="text-xl font-bold">
+        <div className="text-lg font-bold">
           {t('analyze:metric_detail:issues')}
         </div>
         <div
           className="cursor-pointer pt-1 text-sm text-[#585858]"
           onClick={() => {
-            router.push('/analyze/metric/' + slugs);
+            router.push('/analyze/metric/' + slugs + '?range=1M&type=issue');
           }}
         >
           {t('analyze:metric_detail:details')}
         </div>
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-4">
+      <div className="mt-4 mb-2 grid grid-cols-2 gap-4 pl-12">
         <div>
           <div className="flex text-xl font-medium">
             <div className="mt-1 mr-2 text-[#ccc]">
@@ -216,21 +223,21 @@ const MetricBoxPr: React.FC<{
   const router = useRouter();
   const slugs = router.query.slugs;
   return (
-    <div className="base-card relative min-w-0 scroll-mt-[200px] rounded-lg border-2 border-transparent bg-white p-5 drop-shadow-sm md:rounded-none">
+    <div className="relative min-w-0 scroll-mt-[200px] bg-white p-5">
       <div className="flex justify-between">
-        <div className="line-clamp-1 text-xl font-bold">
+        <div className="line-clamp-1 text-lg font-bold">
           {t('analyze:metric_detail:pull_requests')}
         </div>
         <div
           onClick={() => {
-            router.push('/analyze/metric/' + slugs);
+            router.push('/analyze/metric/' + slugs + '?range=1M&type=pr');
           }}
           className="cursor-pointer pt-1 text-sm text-[#585858]"
         >
           {t('analyze:metric_detail:details')}
         </div>
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-4">
+      <div className="mt-4 mb-2 grid grid-cols-2 gap-4 pl-12">
         <div>
           <div className="flex text-xl font-medium">
             <div className="line-clamp-1 mt-1 mr-2 text-[#ccc]">

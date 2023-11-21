@@ -648,24 +648,74 @@ query contributorsDetailList(
     totalPage
   }
 }
-query contributorsOrganization(
+query ecoContributorsOverview(
   $label: String!
   $level: String = "repo"
+  $filterOpts: [FilterOptionInput!]
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
-  contributorsDetailOverview(
+  ecoContributorsOverview(
     label: $label
     level: $level
+    filterOpts: $filterOpts
     beginDate: $beginDate
     endDate: $endDate
   ) {
-    ecologicalDistribution {
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
       subCount
       subName
       subRatio
       totalCount
     }
+  }
+}
+query orgContributorsOverview(
+  $label: String!
+  $level: String = "repo"
+  $filterOpts: [FilterOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  orgContributorsOverview(
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+    }
+  }
+}
+query contributorsOverview(
+  $label: String!
+  $level: String = "repo"
+  $filterOpts: [FilterOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  ecoDistributionOverview(
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    subCount
+    subName
+    subRatio
+    totalCount
   }
 }
 query issuesDetailList(

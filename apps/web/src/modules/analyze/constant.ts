@@ -1,6 +1,10 @@
 import { subMonths, subYears } from 'date-fns';
 
 export const timeRange = {
+  '1M': {
+    start: subMonths(new Date(), 1),
+    end: new Date(),
+  },
   '3M': {
     start: subMonths(new Date(), 3),
     end: new Date(),
@@ -13,10 +17,10 @@ export const timeRange = {
     start: subYears(new Date(), 1),
     end: new Date(),
   },
-  '2Y': {
-    start: subYears(new Date(), 2),
-    end: new Date(),
-  },
+  // '2Y': {
+  //   start: subYears(new Date(), 2),
+  //   end: new Date(),
+  // },
   '3Y': {
     start: subYears(new Date(), 3),
     end: new Date(),
