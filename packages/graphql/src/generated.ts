@@ -469,7 +469,6 @@ export type ContributorDetail = {
 export type ContributorDetailOverview = {
   __typename?: 'ContributorDetailOverview';
   contributorAllCount?: Maybe<Scalars['Float']>;
-  ecologicalDistribution?: Maybe<Array<Distribution>>;
   highestContributionContributor?: Maybe<Contributor>;
   highestContributionOrganization?: Maybe<Contributor>;
   orgAllCount?: Maybe<Scalars['Float']>;
@@ -1364,6 +1363,8 @@ export type Query = {
   datasetOverview?: Maybe<Array<Scalars['String']>>;
   /** Get contributors overview by ecological type */
   ecoContributorsOverview: Array<ContributorTopOverview>;
+  /** Get contributors overview by ecological type */
+  ecoDistributionOverview: Array<Distribution>;
   /** Fuzzy search project by keyword */
   fuzzySearch: Array<ProjectCompletionRow>;
   /** Get invitations data of a lab model */
@@ -1513,6 +1514,14 @@ export type QueryDatasetOverviewArgs = {
 };
 
 export type QueryEcoContributorsOverviewArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryEcoDistributionOverviewArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   filterOpts?: InputMaybe<Array<FilterOptionInput>>;
@@ -4323,25 +4332,73 @@ export type ContributorsDetailListQuery = {
   };
 };
 
-export type ContributorsOrganizationQueryVariables = Exact<{
+export type EcoContributorsOverviewQueryVariables = Exact<{
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
 }>;
 
-export type ContributorsOrganizationQuery = {
+export type EcoContributorsOverviewQuery = {
   __typename?: 'Query';
-  contributorsDetailOverview: {
-    __typename?: 'ContributorDetailOverview';
-    ecologicalDistribution?: Array<{
+  ecoContributorsOverview: Array<{
+    __typename?: 'ContributorTopOverview';
+    overviewName?: string | null;
+    subTypeName?: string | null;
+    subTypePercentage?: number | null;
+    topContributorDistribution?: Array<{
       __typename?: 'Distribution';
       subCount?: number | null;
       subName?: string | null;
       subRatio?: number | null;
       totalCount?: number | null;
     }> | null;
-  };
+  }>;
+};
+
+export type OrgContributorsOverviewQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type OrgContributorsOverviewQuery = {
+  __typename?: 'Query';
+  orgContributorsOverview: Array<{
+    __typename?: 'ContributorTopOverview';
+    overviewName?: string | null;
+    subTypeName?: string | null;
+    subTypePercentage?: number | null;
+    topContributorDistribution?: Array<{
+      __typename?: 'Distribution';
+      subCount?: number | null;
+      subName?: string | null;
+      subRatio?: number | null;
+      totalCount?: number | null;
+    }> | null;
+  }>;
+};
+
+export type ContributorsOverviewQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type ContributorsOverviewQuery = {
+  __typename?: 'Query';
+  ecoDistributionOverview: Array<{
+    __typename?: 'Distribution';
+    subCount?: number | null;
+    subName?: string | null;
+    subRatio?: number | null;
+    totalCount?: number | null;
+  }>;
 };
 
 export type IssuesDetailListQueryVariables = Exact<{
@@ -7863,15 +7920,19 @@ useContributorsDetailListQuery.fetcher = (
     variables,
     headers
   );
-export const ContributorsOrganizationDocument = /*#__PURE__*/ `
-    query contributorsOrganization($label: String!, $level: String = "repo", $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  contributorsDetailOverview(
+export const EcoContributorsOverviewDocument = /*#__PURE__*/ `
+    query ecoContributorsOverview($label: String!, $level: String = "repo", $filterOpts: [FilterOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  ecoContributorsOverview(
     label: $label
     level: $level
+    filterOpts: $filterOpts
     beginDate: $beginDate
     endDate: $endDate
   ) {
-    ecologicalDistribution {
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
       subCount
       subName
       subRatio
@@ -7880,36 +7941,141 @@ export const ContributorsOrganizationDocument = /*#__PURE__*/ `
   }
 }
     `;
-export const useContributorsOrganizationQuery = <
-  TData = ContributorsOrganizationQuery,
+export const useEcoContributorsOverviewQuery = <
+  TData = EcoContributorsOverviewQuery,
   TError = unknown
 >(
   client: GraphQLClient,
-  variables: ContributorsOrganizationQueryVariables,
-  options?: UseQueryOptions<ContributorsOrganizationQuery, TError, TData>,
+  variables: EcoContributorsOverviewQueryVariables,
+  options?: UseQueryOptions<EcoContributorsOverviewQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<ContributorsOrganizationQuery, TError, TData>(
-    ['contributorsOrganization', variables],
+  useQuery<EcoContributorsOverviewQuery, TError, TData>(
+    ['ecoContributorsOverview', variables],
     fetcher<
-      ContributorsOrganizationQuery,
-      ContributorsOrganizationQueryVariables
-    >(client, ContributorsOrganizationDocument, variables, headers),
+      EcoContributorsOverviewQuery,
+      EcoContributorsOverviewQueryVariables
+    >(client, EcoContributorsOverviewDocument, variables, headers),
     options
   );
 
-useContributorsOrganizationQuery.getKey = (
-  variables: ContributorsOrganizationQueryVariables
-) => ['contributorsOrganization', variables];
-useContributorsOrganizationQuery.fetcher = (
+useEcoContributorsOverviewQuery.getKey = (
+  variables: EcoContributorsOverviewQueryVariables
+) => ['ecoContributorsOverview', variables];
+useEcoContributorsOverviewQuery.fetcher = (
   client: GraphQLClient,
-  variables: ContributorsOrganizationQueryVariables,
+  variables: EcoContributorsOverviewQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<
-    ContributorsOrganizationQuery,
-    ContributorsOrganizationQueryVariables
-  >(client, ContributorsOrganizationDocument, variables, headers);
+  fetcher<EcoContributorsOverviewQuery, EcoContributorsOverviewQueryVariables>(
+    client,
+    EcoContributorsOverviewDocument,
+    variables,
+    headers
+  );
+export const OrgContributorsOverviewDocument = /*#__PURE__*/ `
+    query orgContributorsOverview($label: String!, $level: String = "repo", $filterOpts: [FilterOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  orgContributorsOverview(
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+    }
+  }
+}
+    `;
+export const useOrgContributorsOverviewQuery = <
+  TData = OrgContributorsOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: OrgContributorsOverviewQueryVariables,
+  options?: UseQueryOptions<OrgContributorsOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<OrgContributorsOverviewQuery, TError, TData>(
+    ['orgContributorsOverview', variables],
+    fetcher<
+      OrgContributorsOverviewQuery,
+      OrgContributorsOverviewQueryVariables
+    >(client, OrgContributorsOverviewDocument, variables, headers),
+    options
+  );
+
+useOrgContributorsOverviewQuery.getKey = (
+  variables: OrgContributorsOverviewQueryVariables
+) => ['orgContributorsOverview', variables];
+useOrgContributorsOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: OrgContributorsOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<OrgContributorsOverviewQuery, OrgContributorsOverviewQueryVariables>(
+    client,
+    OrgContributorsOverviewDocument,
+    variables,
+    headers
+  );
+export const ContributorsOverviewDocument = /*#__PURE__*/ `
+    query contributorsOverview($label: String!, $level: String = "repo", $filterOpts: [FilterOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  ecoDistributionOverview(
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    subCount
+    subName
+    subRatio
+    totalCount
+  }
+}
+    `;
+export const useContributorsOverviewQuery = <
+  TData = ContributorsOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: ContributorsOverviewQueryVariables,
+  options?: UseQueryOptions<ContributorsOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<ContributorsOverviewQuery, TError, TData>(
+    ['contributorsOverview', variables],
+    fetcher<ContributorsOverviewQuery, ContributorsOverviewQueryVariables>(
+      client,
+      ContributorsOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useContributorsOverviewQuery.getKey = (
+  variables: ContributorsOverviewQueryVariables
+) => ['contributorsOverview', variables];
+useContributorsOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: ContributorsOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<ContributorsOverviewQuery, ContributorsOverviewQueryVariables>(
+    client,
+    ContributorsOverviewDocument,
+    variables,
+    headers
+  );
 export const IssuesDetailListDocument = /*#__PURE__*/ `
     query issuesDetailList($label: String!, $level: String = "repo", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
   issuesDetailList(

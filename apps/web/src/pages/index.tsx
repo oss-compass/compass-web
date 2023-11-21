@@ -11,6 +11,7 @@ import HotFields from '@modules/home/HotFields';
 import Trending from '@modules/home/Trending';
 import Explain from '@modules/home/Explain';
 import LatestNews from '@modules/home/LatestNews';
+import Purpose from '@modules/home/Purpose';
 
 import ExplainMobile from '@modules/home/Explain/Mobile';
 import SpecialThank from '@modules/home/SpecialThank';
@@ -34,6 +35,7 @@ const Home: React.FC = (props) => {
       <Header />
       <main>
         <Banner />
+        <Purpose />
         <HotFields />
         <Trending />
         <LatestNews />

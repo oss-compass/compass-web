@@ -13,12 +13,8 @@ export const useStateType = () => {
       value: 'closed',
     },
     {
-      text: t('analyze:metric_detail:progressing'),
-      value: 'progressing',
-    },
-    {
-      text: t('analyze:metric_detail:rejected'),
-      value: 'rejected',
+      text: t('analyze:metric_detail:merged'),
+      value: 'merged',
     },
   ];
 };

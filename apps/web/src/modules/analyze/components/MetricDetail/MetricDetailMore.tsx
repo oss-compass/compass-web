@@ -13,30 +13,34 @@ const MetricDetailPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const slugs = router.query.slugs;
+  const type = (router.query.type as string) || 'contributor';
   const { isLoading, verifiedItems } = useLabelStatus();
-  const [tab, setTab] = useState('1');
+  const [tab, setTab] = useState<string>(type);
   if (isLoading || verifiedItems.length > 1) {
     return null;
   }
   const { label, level } = verifiedItems[0];
 
   const tabOptions = [
-    { label: t('analyze:metric_detail:contributors_persona'), value: '1' },
-    { label: t('analyze:metric_detail:issues'), value: '2' },
-    { label: t('analyze:metric_detail:pull_requests'), value: '3' },
+    {
+      label: t('analyze:metric_detail:contributors_persona'),
+      value: 'contributor',
+    },
+    { label: t('analyze:metric_detail:issues'), value: 'issue' },
+    { label: t('analyze:metric_detail:pull_requests'), value: 'pr' },
   ];
 
   let source;
   switch (tab) {
-    case '1': {
+    case 'contributor': {
       source = <MetricContributor label={label} level={level} />;
       break;
     }
-    case '2': {
+    case 'issue': {
       source = <MetricIssue label={label} level={level} />;
       break;
     }
-    case '3': {
+    case 'pr': {
       source = <MetricPr label={label} level={level} />;
       break;
     }

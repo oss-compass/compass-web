@@ -4,6 +4,7 @@ import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
 import MetricChart from '@modules/analyze/components/MetricDetail/MetricChart';
 import type { EChartsOption } from 'echarts';
+import { useStateType } from './issue';
 
 const IssueCompletion: React.FC<{
   label: string;
@@ -12,6 +13,7 @@ const IssueCompletion: React.FC<{
   endDate: Date;
 }> = ({ label, level, beginDate, endDate }) => {
   const { t } = useTranslation();
+  const stateOption = useStateType();
   const chartRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = useIssueCompletionQuery(client, {
     label: label,
@@ -19,12 +21,17 @@ const IssueCompletion: React.FC<{
     beginDate: beginDate,
     endDate: endDate,
   });
-
+  const getStateText = (text) => {
+    return stateOption.find((i) => i.value === text)?.text || text;
+  };
   const getSeries = useMemo(() => {
     const distribution = data?.issuesDetailOverview?.issueStateDistribution;
     if (data && distribution?.length > 0) {
       return distribution.map(({ subCount, subName }) => {
-        return { name: subName, value: subCount, count: subCount };
+        return {
+          name: getStateText(subName),
+          value: subCount,
+        };
       });
     } else {
       return [];

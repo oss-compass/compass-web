@@ -1,8 +1,9 @@
 import React, { useRef, useMemo } from 'react';
-import { useContributorsOrganizationQuery } from '@oss-compass/graphql';
+import { useContributorsOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
 import MetricChart from '@modules/analyze/components/MetricDetail/MetricChart';
+import { useEcologicalType } from './contribution';
 import type { EChartsOption } from 'echarts';
 
 const ContributorContributors: React.FC<{
@@ -13,24 +14,25 @@ const ContributorContributors: React.FC<{
   mileage: string[];
 }> = ({ label, level, beginDate, endDate, mileage }) => {
   const { t } = useTranslation();
+  const ecologicalOptions = useEcologicalType();
   const chartRef = useRef<HTMLDivElement>(null);
-  const { data, isLoading } = useContributorsOrganizationQuery(client, {
+  const { data, isLoading } = useContributorsOverviewQuery(client, {
     label: label,
     level: level,
     beginDate: beginDate,
     endDate: endDate,
+    filterOpts: [{ type: 'mileage_type', values: mileage }],
   });
-
+  const getEcologicalText = (text) => {
+    return ecologicalOptions.find((i) => i.value === text)?.text || text;
+  };
   const getSeries = useMemo(() => {
-    const distribution =
-      data?.contributorsDetailOverview?.ecologicalDistribution;
-    if (data && distribution?.length > 0) {
-      return distribution.map(({ subCount, subName }) => {
-        return { name: subName, value: subCount, count: subCount };
-      });
-    } else {
-      return [];
-    }
+    return data?.ecoDistributionOverview?.map(({ subCount, subName }) => {
+      return {
+        name: getEcologicalText(subName),
+        value: subCount,
+      };
+    });
   }, [data]);
 
   const option: EChartsOption = {

@@ -9,6 +9,8 @@ import MetricTable from './ContributorTable';
 import ContributorContribution from './ContributorContribution';
 import ContributorOrganizations from './ContributorOrganizations';
 import ContributorContributors from './ContributorContributors';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import Tooltip from '@common/components/Tooltip';
 
 const MetricContributor: React.FC<{
   label: string;
@@ -121,11 +123,38 @@ const MetricContributor: React.FC<{
           value="4"
         />
       </Tabs>
-      <div className="absolute right-2 top-2">
-        <span className="mr-4">
+      <div className="absolute right-2 top-2 flex">
+        {/* <span className="mr-4">
           {t('analyze:metric_detail:milestone_persona_filter')}:
+        </span> */}
+        <span className="mr-4 flex items-center font-medium">
+          {t('analyze:metric_detail:milestone_persona_filter')}
+          <Tooltip
+            arrow
+            title={
+              <>
+                <div>
+                  <span className="font-xs font-semibold">
+                    {t('analyze:metric_detail:core')} :
+                  </span>
+                  {t('analyze:metric_detail:core_desc')}
+                </div>
+                <div>
+                  <span className="font-xs font-semibold">
+                    {t('analyze:metric_detail:regular')} :
+                  </span>
+                  {t('analyze:metric_detail:regular_desc')}
+                </div>
+              </>
+            }
+            placement="right"
+          >
+            <span className="ml-1 text-gray-400">
+              <AiOutlineQuestionCircle />
+            </span>
+          </Tooltip>
         </span>
-
+        <span className="mr-4"> :</span>
         <Checkbox.Group
           options={options}
           defaultValue={['core', 'guest']}

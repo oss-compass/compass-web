@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="140px" viewBox="0 0 120 140" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon1</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="HOME-202311" transform="translate(-252.000000, -726.000000)">
+            <g id="Group-10" transform="translate(0.000000, 693.000000)">
+                <g id="Group-5-Copy" transform="translate(120.000000, 0.000000)">
+                    <g id="icon1" transform="translate(132.000000, 33.000000)">
+                        <polyline id="Path-16" stroke="#979797" stroke-width="0.5" points="115.018868 102.516129 115.018868 36.5806452 60.2264151 4.96774194 4.98113208 36.5806452 4.98113208 102.516129"></polyline>
+                        <polygon id="Rectangle" fill="#E2E2E2" points="28 52 59 68.2484848 59 103.248485 28 87"></polygon>
+                        <polygon id="Rectangle" fill="#D8D8D8" transform="translate(76.900000, 77.624242) scale(-1, 1) translate(-76.900000, -77.624242) " points="61.4 52 92.4 68.2484848 92.4 103.248485 61.4 87"></polygon>
+                        <polygon id="Rectangle" fill="#F2F2F2" points="30 50 60 33 90 50 60 66"></polygon>
+                        <polyline id="Path-17" stroke="#979797" stroke-width="0.5" points="4.98113208 36.5806452 60.2264151 65.9354839 115.018868 36.5806452"></polyline>
+                        <path d="M4.98113208,102.516129 L60.2264151,135.032258 L115.018868,102.516129" id="Path-18" stroke-opacity="0.25" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1,4"></path>
+                        <line x1="60.2264151" y1="135.032258" x2="60.2264151" y2="65.9354839" id="Path-19" stroke-opacity="0.25" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1,4"></line>
+                        <ellipse id="Oval" fill="#484848" cx="60.2264151" cy="4.96774194" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-22" fill="#484848" cx="60.2264151" cy="65.9354839" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-18" fill="#484848" cx="4.98113208" cy="36.5806452" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-20" fill="#484848" cx="115.018868" cy="36.5806452" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-19" fill="#484848" cx="4.98113208" cy="102.516129" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-21" fill="#484848" cx="115.018868" cy="102.516129" rx="4.98113208" ry="4.96774194"></ellipse>
+                        <ellipse id="Oval-Copy-17" fill="#484848" cx="60.2264151" cy="135.032258" rx="4.98113208" ry="4.96774194"></ellipse>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

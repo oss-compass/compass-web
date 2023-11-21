@@ -11,7 +11,7 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
 import { format, parseJSON } from 'date-fns';
-import { useStateType } from '@modules/analyze/components/MetricDetail/MetricIssue/issue';
+import { useStateType } from '@modules/analyze/components/MetricDetail/MetricPr/PR';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -28,10 +28,6 @@ const MetricTable: React.FC<{
 }> = ({ label, level, beginDate, endDate }) => {
   const { t } = useTranslation();
   const stateOption = useStateType();
-  const filterMap = {
-    ecologicalType: 'ecological_type',
-    contributionTypeList: 'contribution_type',
-  };
   const [tableData, setData] = useState<PullDetail[]>();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -43,6 +39,10 @@ const MetricTable: React.FC<{
       },
     },
     filterOpts: [],
+    sortOpts: {
+      type: 'state',
+      direction: 'desc',
+    },
   });
   const query = {
     page: tableParams.pagination.current,
@@ -100,20 +100,22 @@ const MetricTable: React.FC<{
       title: t('analyze:metric_detail:pr_title'),
       dataIndex: 'title',
       align: 'center',
-      width: '12%',
+      width: '200px',
+      sorter: true,
     },
     {
       title: 'URL',
       dataIndex: 'url',
       align: 'center',
-      width: '12%',
+      width: '250px',
     },
     {
       title: t('analyze:metric_detail:state'),
       dataIndex: 'state',
       align: 'center',
-      width: '5%',
+      width: '100px',
       filters: stateOption,
+      sorter: true,
       render: (text) => {
         return stateOption.find((i) => i.value === text)?.text || text;
       },
@@ -122,58 +124,66 @@ const MetricTable: React.FC<{
       title: t('analyze:metric_detail:created_time'),
       dataIndex: 'createdAt',
       align: 'center',
-      width: '8%',
-      render: (time) => format(parseJSON(time)!, 'yyyy-MM-dd'),
+      width: '120px',
+      sorter: true,
+      render: (time) => (time ? format(parseJSON(time)!, 'yyyy-MM-dd') : ''),
     },
     {
       title: t('analyze:metric_detail:close_time'),
       dataIndex: 'closedAt',
       align: 'center',
-      width: '8%',
+      width: '120px',
+      sorter: true,
       render: (time) => (time ? format(parseJSON(time)!, 'yyyy-MM-dd') : ''),
     },
     {
       title: t('analyze:metric_detail:processing_time'),
       dataIndex: 'timeToCloseDays',
       align: 'center',
-      width: '8%',
+      width: '140px',
+      sorter: true,
     },
     {
       title: t('analyze:metric_detail:first_response_time'),
       dataIndex: 'timeToFirstAttentionWithoutBot',
       align: 'center',
-      width: '8%',
+      width: '160px',
+      sorter: true,
     },
     {
       title: t('analyze:metric_detail:comments_count'),
       dataIndex: 'numReviewComments',
       align: 'center',
-      width: '8%',
+      width: '120px',
+      sorter: true,
     },
     {
       title: t('analyze:metric_detail:tags'),
       dataIndex: 'labels',
       align: 'center',
-      width: '10%',
+      width: '100px',
+      render: (list) => list?.join(', ') || '',
     },
     {
       title: t('analyze:metric_detail:creator'),
       dataIndex: 'userLogin',
       align: 'center',
-      width: '10%',
+      width: '100px',
+      sorter: true,
     },
     {
       title: t('analyze:metric_detail:reviewer'),
       dataIndex: 'reviewersLogin',
       align: 'center',
-      width: '8%',
-      render: (list) => list.join(','),
+      width: '100px',
+      render: (list) => list?.join(',') || '',
     },
     {
       title: t('analyze:metric_detail:merge_author'),
       dataIndex: 'mergeAuthorLogin',
       align: 'center',
-      width: '10%',
+      width: '100px',
+      sorter: true,
     },
   ];
   return (

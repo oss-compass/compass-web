@@ -95,6 +95,14 @@ const MetricTable: React.FC<{
         },
       });
     },
+    onError(res: any) {
+      // toast.error(
+      //   getErrorMessage(res) || (() => <>{t('lab:create_failed')}</>),
+      //   {
+      //     position: 'top-center',
+      //   }
+      // );
+    },
   });
   const handleTableChange = (
     pagination: TablePaginationConfig,
@@ -133,14 +141,14 @@ const MetricTable: React.FC<{
       title: t('analyze:metric_detail:contributor'),
       dataIndex: 'contributor',
       align: 'center',
-      width: '15%',
+      width: '200px',
       sorter: true,
     },
     {
       title: t('analyze:metric_detail:role_persona'),
       dataIndex: 'ecologicalType',
       align: 'center',
-      width: '15%',
+      width: '200px',
       filters: ecologicalOptions,
       render: (text) => {
         return ecologicalOptions.find((i) => i.value === text).text;
@@ -154,7 +162,7 @@ const MetricTable: React.FC<{
         return mileageOptions.find((i) => i.value === text).label;
       },
       align: 'center',
-      width: '10%',
+      width: '200px',
     },
     {
       title: t('analyze:metric_detail:domain_persona'),
@@ -186,13 +194,13 @@ const MetricTable: React.FC<{
       filters: useContributionTypeLsit(),
       filterMode: 'tree',
       align: 'center',
-      width: '20%',
+      width: '220px',
     },
     {
       title: t('analyze:metric_detail:organization'),
       dataIndex: 'organization',
       align: 'center',
-      width: '20%',
+      width: '160px',
     },
     {
       title: t('analyze:metric_detail:contribution'),
@@ -210,7 +218,7 @@ const MetricTable: React.FC<{
         }
       },
       align: 'center',
-      width: '10%',
+      width: '100px',
       sorter: true,
     },
   ];
