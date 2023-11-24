@@ -119,15 +119,17 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </span>
         </a>
       </h3>
-      <div className="relative mb-4 text-xs text-[#585858] ">
-        <DocPopper
-          description={description}
-          weight={weight}
-          threshold={threshold}
-          detail={detail}
-          notes={notes}
-        />
-      </div>
+      {description && (
+        <div className="relative mb-4 text-xs text-[#585858] ">
+          <DocPopper
+            description={description}
+            weight={weight}
+            threshold={threshold}
+            detail={detail}
+            notes={notes}
+          />
+        </div>
+      )}
       <div className="absolute right-4 top-4 flex items-center md:hidden">
         {typeof headRight === 'function'
           ? headRight(cardRef, fullScreen, setFullScreen)

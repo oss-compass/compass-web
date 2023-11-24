@@ -19,7 +19,6 @@ const Overview: React.FC<{
       <>
         {data[0].level === Level.COMMUNITY && <CommunityRepos />}
         <LineChart />
-        <MetricDashboard />
       </>
     );
   }

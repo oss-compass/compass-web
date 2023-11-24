@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { BiCalendar, BiCaretDown, BiCheck } from 'react-icons/bi';
 import { rangeTags } from '@modules/analyze/constant';
 import classnames from 'classnames';
-import { useClickAway, useToggle } from 'react-use';
+import { useToggle } from 'react-use';
 import useI18RangeTag from './useI18RangeTag';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
@@ -11,6 +11,9 @@ import { useTranslation } from 'next-i18next';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import DateRangePicker from './DateRangePicker';
 import Popper from '@mui/material/Popper';
+import { useTopicType } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
+import ContributorDateTagPanel from './ContributorDateTagPanel';
 
 const DateTagPanel = ({
   togglePickerPanel,
@@ -20,7 +23,6 @@ const DateTagPanel = ({
   const { t } = useTranslation();
   const i18RangeTag = useI18RangeTag();
   const [showRangePicker, setShowRangePicker] = useToggle(false);
-
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
 
@@ -91,7 +93,7 @@ const DateTagPanel = ({
 const NavDatePicker = ({ disable }: { disable?: boolean }) => {
   const i18RangeTag = useI18RangeTag();
   const { range } = useQueryDateRange();
-
+  const { topicType } = useSnapshot(useTopicType);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [pickerPanelOpen, togglePickerPanel] = React.useState(false);
 
@@ -135,11 +137,19 @@ const NavDatePicker = ({ disable }: { disable?: boolean }) => {
             },
           ]}
         >
-          <DateTagPanel
-            togglePickerPanel={(v) => {
-              togglePickerPanel(v);
-            }}
-          />
+          {topicType === 'contributor' ? (
+            <ContributorDateTagPanel
+              togglePickerPanel={(v) => {
+                togglePickerPanel(v);
+              }}
+            />
+          ) : (
+            <DateTagPanel
+              togglePickerPanel={(v) => {
+                togglePickerPanel(v);
+              }}
+            />
+          )}
         </Popper>
       </div>
     </ClickAwayListener>

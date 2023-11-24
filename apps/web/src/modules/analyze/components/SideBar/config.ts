@@ -46,7 +46,12 @@ export enum Organizations {
   // MeetingFrequency= 'MeetingFrequency',
   // MeetingAttendeeCount = "MeetingAttendeeCount"
 }
-
+export enum ContributorsPersona {
+  Overview = 'contributors_persona_overview',
+  Contributor = 'contributors_persona_contributor',
+  Issue = 'contributors_persona_issue',
+  Pr = 'contributors_persona_pr',
+}
 export enum Topic {
   Overview = 'topic_overview',
   Productivity = 'topic_productivity',
@@ -59,7 +64,7 @@ export enum Section {
   CommunityServiceAndSupport = 'community_service_support',
   CommunityActivity = 'community_activity',
   OrganizationsActivity = 'organizations_activity',
-  StarterProjectHealth = 'starter_project_health',
+  ContributorsPersona = 'contributors_persona',
 }
 
 export const useCollaborationDevelopmentIndex = () => {
@@ -260,6 +265,28 @@ export const useOrganizationsActivity = () => {
       // { name: 'Maintainer Count', id: Organizations.MaintainerCount },
       // { name: 'MeetingFrequency', id: Organizations.MeetingFrequency },
       // { name: 'Meeting Attendee Count', id: Organizations.MeetingAttendeeCount },
+    ],
+  };
+};
+export const useContributorsPersona = () => {
+  const { t } = useTranslation();
+  return {
+    topic: Topic.NicheCreation,
+    name: t('metrics_models:contributors_persona.title'),
+    id: Organizations.Overview,
+    groups: [
+      {
+        name: t('metrics_models:contributors_persona.metrics.contributor'),
+        id: ContributorsPersona.Contributor,
+      },
+      {
+        name: t('metrics_models:contributors_persona.metrics.issue'),
+        id: ContributorsPersona.Issue,
+      },
+      {
+        name: t('metrics_models:contributors_persona.metrics.pr'),
+        id: ContributorsPersona.Pr,
+      },
     ],
   };
 };

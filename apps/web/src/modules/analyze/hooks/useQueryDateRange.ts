@@ -1,11 +1,19 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
+import { useTopicType } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
+import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
 
 const defaultVal = {
   range: '6M' as RangeTag,
   timeStart: timeRange['6M'].start,
   timeEnd: timeRange['6M'].end,
+};
+const contributorDefaultVal = {
+  range: '1M' as RangeTag,
+  timeStart: timeRange['1M'].start,
+  timeEnd: timeRange['1M'].end,
 };
 export const isDateRange = (range: string) => {
   if (range.includes(' ~ ')) {
@@ -23,7 +31,13 @@ export const isDateRange = (range: string) => {
 const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
+  const { topicType } = useSnapshot(useTopicType);
+  const { isLoading, data } = useVerifyDetailRange();
+
   return useMemo(() => {
+    if (topicType === 'contributor' && !data?.verifyDetailDataRange?.status) {
+      return contributorDefaultVal;
+    }
     if (!range) {
       return defaultVal;
     } else if (rangeTags.includes(range)) {
@@ -42,7 +56,7 @@ const useQueryDateRange = () => {
     } else {
       return defaultVal;
     }
-  }, [range]);
+  }, [range, topicType, data]);
 };
 
 export default useQueryDateRange;

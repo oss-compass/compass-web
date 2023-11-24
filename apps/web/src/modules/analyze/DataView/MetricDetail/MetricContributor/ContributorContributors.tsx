@@ -1,44 +1,44 @@
 import React, { useRef, useMemo } from 'react';
-import { usePullsCompletionQuery } from '@oss-compass/graphql';
+import { useContributorsOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
-import MetricChart from '@modules/analyze/components/MetricDetail/MetricChart';
-import { useStateType } from '@modules/analyze/components/MetricDetail/MetricPr/PR';
+import MetricChart from '@modules/analyze/DataView/MetricDetail/MetricChart';
+import { useEcologicalType } from './contribution';
 import type { EChartsOption } from 'echarts';
 
-const PrCompletion: React.FC<{
+const ContributorContributors: React.FC<{
   label: string;
   level: string;
   beginDate: Date;
   endDate: Date;
-}> = ({ label, level, beginDate, endDate }) => {
+  mileage: string[];
+}> = ({ label, level, beginDate, endDate, mileage }) => {
   const { t } = useTranslation();
-  const stateOption = useStateType();
+  const ecologicalOptions = useEcologicalType();
   const chartRef = useRef<HTMLDivElement>(null);
-  const { data, isLoading } = usePullsCompletionQuery(client, {
+  const { data, isLoading } = useContributorsOverviewQuery(client, {
     label: label,
     level: level,
     beginDate: beginDate,
     endDate: endDate,
+    filterOpts: [{ type: 'mileage_type', values: mileage }],
   });
-  const getStateText = (text) => {
-    return stateOption.find((i) => i.value === text)?.text || text;
+  const getEcologicalText = (text) => {
+    return ecologicalOptions.find((i) => i.value === text)?.text || text;
   };
   const getSeries = useMemo(() => {
-    const distribution = data?.pullsDetailOverview?.pullStateDistribution;
-    if (data && distribution?.length > 0) {
-      return distribution.map(({ subCount, subName }) => {
-        return { name: getStateText(subName), value: subCount };
-      });
-    } else {
-      return [];
-    }
+    return data?.ecoDistributionOverview?.map(({ subCount, subName }) => {
+      return {
+        name: getEcologicalText(subName),
+        value: subCount,
+      };
+    });
   }, [data]);
 
   const option: EChartsOption = {
     tooltip: {
       trigger: 'item',
-      formatter: '{b} : {c} ({d}%)',
+      formatter: '{b}: {c} ({d}%)',
     },
     color: [
       // '#5470c6',
@@ -80,7 +80,7 @@ const PrCompletion: React.FC<{
           position: 'inner',
           fontSize: 14,
           color: '#333',
-          formatter: '{b} : {c} ({d}%)',
+          formatter: '{b}: {c} ({d}%)',
         },
         data: getSeries,
       },
@@ -90,6 +90,7 @@ const PrCompletion: React.FC<{
   return (
     <div className="flex-1 pt-4" ref={chartRef}>
       <MetricChart
+        style={{ height: '100%' }}
         loading={isLoading}
         option={option}
         containerRef={chartRef}
@@ -97,4 +98,4 @@ const PrCompletion: React.FC<{
     </div>
   );
 };
-export default PrCompletion;
+export default ContributorContributors;

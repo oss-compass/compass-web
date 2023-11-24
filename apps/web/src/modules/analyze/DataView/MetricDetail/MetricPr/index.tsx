@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-import MetricTable from './IssueTable';
-import IssueCompletion from './IssueCompletion';
-import IssueComments from './IssueComments';
+import MetricTable from './PrTable';
+import PrCompletion from './PrCompletion';
+import PrComments from './PrComments';
 import { useTranslation } from 'next-i18next';
+import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
+import { ContributorsPersona } from '@modules/analyze/components/SideBar/config';
+import BaseCard from '@common/components/BaseCard';
 
-const MetricIssue: React.FC<{
-  label: string;
-  level: string;
-}> = ({ label, level }) => {
+const MetricPr = () => {
+  const { verifiedItems } = useLabelStatus();
+  const { label, level } = verifiedItems[0];
   const { t } = useTranslation();
   const [tab, setTab] = useState('1');
   const { timeStart, timeEnd } = useQueryDateRange();
@@ -29,7 +31,7 @@ const MetricIssue: React.FC<{
     }
     case '2': {
       source = (
-        <IssueCompletion
+        <PrCompletion
           label={label}
           level={level}
           beginDate={timeStart}
@@ -40,7 +42,7 @@ const MetricIssue: React.FC<{
     }
     case '3': {
       source = (
-        <IssueComments
+        <PrComments
           label={label}
           level={level}
           beginDate={timeStart}
@@ -54,7 +56,11 @@ const MetricIssue: React.FC<{
     }
   }
   return (
-    <div className="relative flex h-full flex-col">
+    <BaseCard
+      title={t('metrics_models:contributors_persona.metrics.pr')}
+      id={ContributorsPersona.Pr}
+      bodyClass="h-[650px]"
+    >
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}
@@ -67,7 +73,7 @@ const MetricIssue: React.FC<{
         <Tab
           disableRipple
           classes={{ root: '!normal-case', selected: '!text-black ' }}
-          label={t('analyze:metric_detail:issue_detail')}
+          label={t('analyze:metric_detail:pr_detail')}
           value="1"
         ></Tab>
         <Tab
@@ -76,7 +82,7 @@ const MetricIssue: React.FC<{
             root: '!normal-case',
             selected: '!text-black !normal-case',
           }}
-          label={t('analyze:metric_detail:issue_completion')}
+          label={t('analyze:metric_detail:pr_completion')}
           value="2"
         />
         <Tab
@@ -85,14 +91,13 @@ const MetricIssue: React.FC<{
             root: '!normal-case',
             selected: '!text-black !normal-case',
           }}
-          label={t('analyze:metric_detail:issues_comments')}
+          label={t('analyze:metric_detail:pr_comments')}
           value="3"
         />
       </Tabs>
-
-      <div className="mt-1 flex flex-1 flex-col">{source}</div>
-    </div>
+      <div className="mt-2 flex h-[600px] flex-1 flex-col">{source}</div>
+    </BaseCard>
   );
 };
 
-export default MetricIssue;
+export default MetricPr;

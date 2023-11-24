@@ -2,7 +2,7 @@ import React, { useRef, useMemo } from 'react';
 import { useIssueCompletionQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
-import MetricChart from '@modules/analyze/components/MetricDetail/MetricChart';
+import MetricChart from '@modules/analyze/DataView/MetricDetail/MetricChart';
 import type { EChartsOption } from 'echarts';
 import { useStateType } from './issue';
 
