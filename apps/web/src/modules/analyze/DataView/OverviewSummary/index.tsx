@@ -7,7 +7,6 @@ import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import { Level } from '@modules/analyze/constant';
-import MetricDashboard from '@modules/analyze/components/MetricDetail/MetricDashboard';
 
 const Overview: React.FC<{
   data: DeepReadonly<
