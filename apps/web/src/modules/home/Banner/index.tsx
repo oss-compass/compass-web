@@ -1,40 +1,28 @@
 import React, { memo, useMemo } from 'react';
 import { Center } from '@common/components/Layout';
-import useBreakpoint from '@common/hooks/useBreakpoint';
-import NoSsr from '@common/components/NoSsr';
-import {
-  SvgBlock,
-  SvgPositionConfig,
-  SvgPositionMobileConfig,
-} from './SvgGroup';
 import Search from './Search';
 import styles from './index.module.scss';
+import NoSsr from '@common/components/NoSsr';
+import Image from 'next/image';
 
-const SvgGroup: React.FC<{ breakpoint: string }> = memo(({ breakpoint }) => {
-  const svgConfig = useMemo(() => {
-    if (breakpoint === 'sm') return SvgPositionMobileConfig;
-    return SvgPositionConfig;
-  }, [breakpoint]);
-
+const Carousel = () => {
   return (
-    <>
-      {svgConfig.map((item) => {
-        return <SvgBlock key={item.id} {...item} />;
-      })}
-    </>
+    <div className="absolute top-[100px] -right-16">
+      <Image
+        width={680}
+        height={540}
+        src={'/images/home/hero.png'}
+        // unoptimized
+        alt={''}
+      />
+    </div>
   );
-});
-SvgGroup.displayName = 'SvgGroup';
-
+};
 const SectionBanner = () => {
-  const breakpoint = useBreakpoint();
-
   return (
     <section className={`${styles.bg}`}>
       <Center className="relative z-10 mx-auto h-[620px] md:h-[500px]">
-        <NoSsr>
-          <SvgGroup breakpoint={breakpoint} />
-        </NoSsr>
+        <Carousel />
         <Search />
       </Center>
     </section>
