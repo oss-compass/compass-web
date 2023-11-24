@@ -7,13 +7,15 @@ import { checkIsPending } from '@modules/analyze/constant';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import MenuLoading from '@modules/analyze/components/SideBar/Menu/MenuLoading';
 import TopicOverview from '@modules/analyze/components/SideBar/TopicOverview';
-import TopicProductivity from '@modules/analyze/components/SideBar/TopicProductivity';
-import TopicRobustness from '@modules/analyze/components/SideBar/TopicRobustness';
-import TopicNicheCreation from '@modules/analyze/components/SideBar/TopicNicheCreation';
+import TopicTab from '@modules/analyze/components/SideBar/TopicTab';
+import Collaboration from '@modules/analyze/components/SideBar/Collaboration';
+import Contributor from '@modules/analyze/components/SideBar/Contributor';
 import useActiveMenuId from '@modules/analyze/components/SideBar/useActiveMenuId';
 import NoSsr from '@common/components/NoSsr';
 import { SideBarContextProvider } from '@modules/analyze/context/SideBarContext';
 import ErrorFallback from '@common/components/ErrorFallback';
+import { useTopicType } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
 
 const Divider = () => (
   <div className="mx-6 mb-4 mt-2 border-b border-gray-200"></div>
@@ -22,15 +24,19 @@ const Divider = () => (
 const SideBarMenuContent = () => {
   const activeId = useHashchangeEvent();
   const active = useActiveMenuId(activeId);
+  const { topicType } = useSnapshot(useTopicType);
+
+  let source;
+  if (topicType === 'collaboration') {
+    source = <Collaboration />;
+  } else {
+    source = <Contributor />;
+  }
   return (
     <SideBarContextProvider value={active}>
+      <TopicTab />
       <TopicOverview />
-      <Divider />
-      <TopicProductivity />
-      <Divider />
-      <TopicRobustness />
-      <Divider />
-      <TopicNicheCreation />
+      {source}
     </SideBarContextProvider>
   );
 };

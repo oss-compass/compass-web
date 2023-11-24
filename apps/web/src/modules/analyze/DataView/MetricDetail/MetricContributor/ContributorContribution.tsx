@@ -2,7 +2,7 @@ import React, { useRef, useMemo } from 'react';
 import { useEcoContributorsOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
-import MetricChart from '@modules/analyze/components/MetricDetail/MetricChart';
+import MetricChart from '@modules/analyze/DataView/MetricDetail/MetricChart';
 import { useEcologicalType } from './contribution';
 import { gradientRamp } from '@common/options';
 import type { EChartsOption } from 'echarts';

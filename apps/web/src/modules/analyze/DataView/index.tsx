@@ -6,9 +6,15 @@ import UnderAnalysis from './Status/UnderAnalysis';
 import NotFoundAnalysis from './Status/NotFoundAnalysis';
 import LoadingAnalysis from './Status/LoadingAnalysis';
 import Charts from './Charts';
+import ContributorDetail from './ContributorDetail';
+import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+import AuthRequire from '@modules/auth/AuthRequire';
+import { useTopicType } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
 
 const DataView = () => {
   const { notFound, isLoading, status, verifiedItems } = useStatusContext();
+  const { topicType } = useSnapshot(useTopicType);
 
   if (isLoading) {
     return <LoadingAnalysis />;
@@ -22,11 +28,36 @@ const DataView = () => {
     return <NotFoundAnalysis />;
   }
 
+  let source;
+  if (topicType === 'collaboration') {
+    source = <CollaborationDataView />;
+  } else {
+    source = <ContributorDataView />;
+  }
+  return <div className="mx-auto w-full flex-1">{source}</div>;
+};
+const CollaborationDataView = () => {
   return (
-    <div className="mx-auto w-full flex-1">
+    <>
       <CompareBar />
       <Charts />
-    </div>
+    </>
+  );
+};
+const ContributorDataView = () => {
+  const { isLoading } = useVerifyDetailRange();
+  // const statusFalse = !data?.verifyDetailDataRange?.status;
+  // const { switchRange } = useSwitchRange();
+
+  if (isLoading) {
+    return <LoadingAnalysis />;
+  }
+  return (
+    <>
+      <AuthRequire>
+        <ContributorDetail />
+      </AuthRequire>
+    </>
   );
 };
 

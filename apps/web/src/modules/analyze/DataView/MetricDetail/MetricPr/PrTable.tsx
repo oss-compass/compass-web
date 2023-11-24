@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  useIssuesDetailListQuery,
-  IssueDetail,
+  usePullsDetailListQuery,
+  PullDetail,
   FilterOptionInput,
   SortOptionInput,
 } from '@oss-compass/graphql';
@@ -11,7 +11,7 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
 import { format, parseJSON } from 'date-fns';
-import { useStateType } from './issue';
+import { useStateType } from '@modules/analyze/DataView/MetricDetail/MetricPr/PR';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -28,11 +28,12 @@ const MetricTable: React.FC<{
 }> = ({ label, level, beginDate, endDate }) => {
   const { t } = useTranslation();
   const stateOption = useStateType();
-  const [tableData, setData] = useState<IssueDetail[]>();
+  const [tableData, setData] = useState<PullDetail[]>();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
       pageSize: 10,
+      showSizeChanger: false,
       position: ['bottomCenter'],
       showTotal: (total) => {
         return `Total ${total} items`;
@@ -54,16 +55,16 @@ const MetricTable: React.FC<{
     beginDate,
     endDate,
   };
-  const { isLoading } = useIssuesDetailListQuery(client, query, {
+  const { isLoading } = usePullsDetailListQuery(client, query, {
     // enabled: false,
     onSuccess: (data) => {
-      const items = data.issuesDetailList.items;
+      const items = data.pullsDetailList.items;
       setData(items);
       setTableParams({
         ...tableParams,
         pagination: {
           ...tableParams.pagination,
-          total: data.issuesDetailList.count,
+          total: data.pullsDetailList.count,
         },
       });
     },
@@ -71,7 +72,7 @@ const MetricTable: React.FC<{
   const handleTableChange = (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue>,
-    sorter: SorterResult<IssueDetail>
+    sorter: SorterResult<PullDetail>
   ) => {
     let sortOpts = null;
     let filterOpts = [];
@@ -95,9 +96,9 @@ const MetricTable: React.FC<{
     });
   };
 
-  const columns: ColumnsType<IssueDetail> = [
+  const columns: ColumnsType<PullDetail> = [
     {
-      title: t('analyze:metric_detail:issue_title'),
+      title: t('analyze:metric_detail:pr_title'),
       dataIndex: 'title',
       align: 'center',
       width: '200px',
@@ -107,15 +108,15 @@ const MetricTable: React.FC<{
       title: 'URL',
       dataIndex: 'url',
       align: 'center',
-      width: '250px',
+      width: '220px',
     },
     {
       title: t('analyze:metric_detail:state'),
       dataIndex: 'state',
       align: 'center',
       width: '100px',
-      sorter: true,
       filters: stateOption,
+      sorter: true,
       render: (text) => {
         return stateOption.find((i) => i.value === text)?.text || text;
       },
@@ -124,72 +125,79 @@ const MetricTable: React.FC<{
       title: t('analyze:metric_detail:created_time'),
       dataIndex: 'createdAt',
       align: 'center',
+      width: '140px',
       sorter: true,
-      width: '120px',
-      render: (time) => format(parseJSON(time)!, 'yyyy-MM-dd'),
+      render: (time) => (time ? format(parseJSON(time)!, 'yyyy-MM-dd') : ''),
     },
     {
       title: t('analyze:metric_detail:close_time'),
       dataIndex: 'closedAt',
       align: 'center',
-      sorter: true,
       width: '120px',
+      sorter: true,
       render: (time) => (time ? format(parseJSON(time)!, 'yyyy-MM-dd') : ''),
     },
     {
       title: t('analyze:metric_detail:processing_time'),
       dataIndex: 'timeToCloseDays',
       align: 'center',
+      width: '200px',
       sorter: true,
-      width: '140px',
     },
     {
       title: t('analyze:metric_detail:first_response_time'),
       dataIndex: 'timeToFirstAttentionWithoutBot',
       align: 'center',
+      width: '220px',
       sorter: true,
-      width: '170px',
     },
     {
       title: t('analyze:metric_detail:comments_count'),
-      dataIndex: 'numOfCommentsWithoutBot',
+      dataIndex: 'numReviewComments',
       align: 'center',
+      width: '160px',
       sorter: true,
-      width: '120px',
     },
     {
       title: t('analyze:metric_detail:tags'),
       dataIndex: 'labels',
       align: 'center',
-      render: (list) => list?.join(', ') || '',
       width: '100px',
+      render: (list) => list?.join(', ') || '',
     },
     {
       title: t('analyze:metric_detail:creator'),
       dataIndex: 'userLogin',
       align: 'center',
-      sorter: true,
       width: '100px',
+      sorter: true,
     },
     {
-      title: t('analyze:metric_detail:assignee'),
-      dataIndex: 'assigneeLogin',
+      title: t('analyze:metric_detail:reviewer'),
+      dataIndex: 'reviewersLogin',
       align: 'center',
-      sorter: true,
       width: '100px',
+      render: (list) => list?.join(',') || '',
+    },
+    {
+      title: t('analyze:metric_detail:merge_author'),
+      dataIndex: 'mergeAuthorLogin',
+      align: 'center',
+      width: '140px',
+      sorter: true,
     },
   ];
   return (
-    <div className="flex-1 pt-4">
-      <MyTable
-        columns={columns}
-        dataSource={tableData}
-        loading={isLoading}
-        onChange={handleTableChange}
-        pagination={tableParams.pagination}
-        rowKey={'url'}
-      />
-    </div>
+    <MyTable
+      columns={columns}
+      dataSource={tableData}
+      loading={isLoading}
+      onChange={handleTableChange}
+      pagination={tableParams.pagination}
+      rowKey={'url'}
+      scroll={{ x: 'max-content', y: '100%' }}
+      className="h-[600px]"
+    />
   );
 };
 export default MetricTable;

@@ -1,44 +1,42 @@
 import React, { useRef, useMemo } from 'react';
-import { useContributorsOverviewQuery } from '@oss-compass/graphql';
+import { usePullsCommentQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
-import MetricChart from '@modules/analyze/components/MetricDetail/MetricChart';
-import { useEcologicalType } from './contribution';
+import MetricChart from '@modules/analyze/DataView/MetricDetail/MetricChart';
 import type { EChartsOption } from 'echarts';
 
-const ContributorContributors: React.FC<{
+const PrComments: React.FC<{
   label: string;
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
+}> = ({ label, level, beginDate, endDate }) => {
   const { t } = useTranslation();
-  const ecologicalOptions = useEcologicalType();
   const chartRef = useRef<HTMLDivElement>(null);
-  const { data, isLoading } = useContributorsOverviewQuery(client, {
+  const { data, isLoading } = usePullsCommentQuery(client, {
     label: label,
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: [{ type: 'mileage_type', values: mileage }],
   });
-  const getEcologicalText = (text) => {
-    return ecologicalOptions.find((i) => i.value === text)?.text || text;
-  };
   const getSeries = useMemo(() => {
-    return data?.ecoDistributionOverview?.map(({ subCount, subName }) => {
-      return {
-        name: getEcologicalText(subName),
-        value: subCount,
-      };
-    });
+    const distribution = data?.pullsDetailOverview?.pullCommentDistribution;
+    if (data && distribution?.length > 0) {
+      return distribution.map(({ subCount, subName }) => {
+        return {
+          name: subName + t('analyze:metric_detail:comments'),
+          value: subCount,
+        };
+      });
+    } else {
+      return [];
+    }
   }, [data]);
 
   const option: EChartsOption = {
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)',
+      formatter: `{b} : {c} ({d}%)`,
     },
     color: [
       // '#5470c6',
@@ -80,7 +78,7 @@ const ContributorContributors: React.FC<{
           position: 'inner',
           fontSize: 14,
           color: '#333',
-          formatter: '{b}: {c} ({d}%)',
+          formatter: '{b} : {c} ({d}%)',
         },
         data: getSeries,
       },
@@ -90,7 +88,6 @@ const ContributorContributors: React.FC<{
   return (
     <div className="flex-1 pt-4" ref={chartRef}>
       <MetricChart
-        style={{ height: '100%' }}
         loading={isLoading}
         option={option}
         containerRef={chartRef}
@@ -98,4 +95,4 @@ const ContributorContributors: React.FC<{
     </div>
   );
 };
-export default ContributorContributors;
+export default PrComments;

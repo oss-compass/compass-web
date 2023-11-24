@@ -1401,8 +1401,6 @@ export type Query = {
   metricGroupActivity: Array<GroupActivityMetric>;
   /** Get overview data of metrics set on compass lab */
   metricSetOverview?: Maybe<Array<ModelMetric>>;
-  /** Get starter project health metrics data of compass */
-  metricStarterProjectHealth: Array<StarterProjectHealthMetric>;
   /** Get my member permissions of a lab model */
   myMemberPermission?: Maybe<Permission>;
   /** Get detail data of my lab models */
@@ -1424,6 +1422,8 @@ export type Query = {
   summaryGroupActivity: Array<GroupActivitySummary>;
   /** Get trending data of compass */
   trending: Array<Trending>;
+  /** Check if the data range is valid */
+  verifyDetailDataRange: ValidDataRange;
 };
 
 export type QueryAnalysisStatusArgs = {
@@ -1647,13 +1647,6 @@ export type QueryMetricGroupActivityArgs = {
   repoType?: InputMaybe<Scalars['String']>;
 };
 
-export type QueryMetricStarterProjectHealthArgs = {
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-};
-
 export type QueryMyMemberPermissionArgs = {
   modelId?: InputMaybe<Scalars['Int']>;
 };
@@ -1716,6 +1709,13 @@ export type QuerySummaryGroupActivityArgs = {
 
 export type QueryTrendingArgs = {
   level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryVerifyDetailDataRangeArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label?: InputMaybe<Scalars['String']>;
+  shortCode?: InputMaybe<Scalars['String']>;
 };
 
 export type Repo = {
@@ -1820,46 +1820,6 @@ export type SortOptionInput = {
   direction: Scalars['String'];
   /** sort type value */
   type: Scalars['String'];
-};
-
-export type StarterProjectHealthMetric = {
-  __typename?: 'StarterProjectHealthMetric';
-  /** the smallest number of people that make 50% of contributions */
-  busFactor?: Maybe<Scalars['Float']>;
-  /** the change request closure ratio same period */
-  changeRequestClosedCountAllPeriod?: Maybe<Scalars['Float']>;
-  /** the change request closed count recently */
-  changeRequestClosedCountRecently?: Maybe<Scalars['Float']>;
-  /** the change request closure ratio all period */
-  changeRequestClosureRatioAllPeriod?: Maybe<Scalars['Float']>;
-  /** the change request closure ratio recently */
-  changeRequestClosureRatioRecently?: Maybe<Scalars['Float']>;
-  /** the change request created count all period */
-  changeRequestCreatedCountAllPeriod?: Maybe<Scalars['Float']>;
-  /** the change request created count recently */
-  changeRequestCreatedCountRecently?: Maybe<Scalars['Float']>;
-  /** metric model creatiton time */
-  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
-  /** metric model object identification */
-  label?: Maybe<Scalars['String']>;
-  /** metric model object level */
-  level?: Maybe<Scalars['String']>;
-  /** mean of pull request time to close */
-  prTimeToCloseAvg?: Maybe<Scalars['Float']>;
-  /** middle of pull request time to close */
-  prTimeToCloseMid?: Maybe<Scalars['Float']>;
-  /** mean of pull request time to first response */
-  prTimeToFirstResponseAvg?: Maybe<Scalars['Float']>;
-  /** middle of pull request time to first response */
-  prTimeToFirstResponseMid?: Maybe<Scalars['Float']>;
-  /** the frequency of project releases (including point releases with bug fixes) */
-  releaseFrequency?: Maybe<Scalars['Float']>;
-  /** metric model object short code */
-  shortCode?: Maybe<Scalars['String']>;
-  /** score of starter project health model */
-  starterProjectHealth?: Maybe<Scalars['Float']>;
-  /** metric scores for repositories type, only for community (software-artifact/governance) */
-  type?: Maybe<Scalars['String']>;
 };
 
 export type SubjectSubscriptionCount = {
@@ -2076,6 +2036,22 @@ export type UserUnbindPayload = {
   errors?: Maybe<Array<Error>>;
   message?: Maybe<Scalars['String']>;
   status: Scalars['String'];
+};
+
+export type ValidDataRange = {
+  __typename?: 'ValidDataRange';
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level (project or repo) */
+  level?: Maybe<Scalars['String']>;
+  /** max valid date */
+  max?: Maybe<Scalars['ISO8601DateTime']>;
+  /** min valid date */
+  min?: Maybe<Scalars['ISO8601DateTime']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
+  /** whether it is a valid data range */
+  status?: Maybe<Scalars['Boolean']>;
 };
 
 export type CommentFragment = {
@@ -4060,38 +4036,6 @@ export type SummaryQuery = {
   }>;
 };
 
-export type LabMetricQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  start?: InputMaybe<Scalars['ISO8601DateTime']>;
-  end?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type LabMetricQuery = {
-  __typename?: 'Query';
-  metricStarterProjectHealth: Array<{
-    __typename?: 'StarterProjectHealthMetric';
-    busFactor?: number | null;
-    changeRequestClosedCountAllPeriod?: number | null;
-    changeRequestClosedCountRecently?: number | null;
-    changeRequestClosureRatioAllPeriod?: number | null;
-    changeRequestClosureRatioRecently?: number | null;
-    changeRequestCreatedCountAllPeriod?: number | null;
-    changeRequestCreatedCountRecently?: number | null;
-    grimoireCreationDate?: any | null;
-    label?: string | null;
-    level?: string | null;
-    shortCode?: string | null;
-    prTimeToCloseAvg?: number | null;
-    prTimeToCloseMid?: number | null;
-    prTimeToFirstResponseAvg?: number | null;
-    prTimeToFirstResponseMid?: number | null;
-    releaseFrequency?: number | null;
-    starterProjectHealth?: number | null;
-    type?: string | null;
-  }>;
-};
-
 export type MetricStatFragment = {
   __typename?: 'MetricStat';
   mean?: number | null;
@@ -4557,6 +4501,23 @@ export type PullsCommentQuery = {
       subRatio?: number | null;
       totalCount?: number | null;
     }> | null;
+  };
+};
+
+export type VerifyDetailDataRangeQueryVariables = Exact<{
+  label?: InputMaybe<Scalars['String']>;
+  shortCode?: InputMaybe<Scalars['String']>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type VerifyDetailDataRangeQuery = {
+  __typename?: 'Query';
+  verifyDetailDataRange: {
+    __typename?: 'ValidDataRange';
+    status?: boolean | null;
+    max?: any | null;
+    min?: any | null;
   };
 };
 
@@ -7363,67 +7324,6 @@ useSummaryQuery.fetcher = (
     variables,
     headers
   );
-export const LabMetricDocument = /*#__PURE__*/ `
-    query labMetric($label: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime) {
-  metricStarterProjectHealth(
-    label: $label
-    level: $level
-    beginDate: $start
-    endDate: $end
-  ) {
-    busFactor
-    changeRequestClosedCountAllPeriod
-    changeRequestClosedCountRecently
-    changeRequestClosureRatioAllPeriod
-    changeRequestClosureRatioRecently
-    changeRequestCreatedCountAllPeriod
-    changeRequestCreatedCountRecently
-    grimoireCreationDate
-    label
-    level
-    shortCode
-    prTimeToCloseAvg
-    prTimeToCloseMid
-    prTimeToFirstResponseAvg
-    prTimeToFirstResponseMid
-    releaseFrequency
-    starterProjectHealth
-    type
-  }
-}
-    `;
-export const useLabMetricQuery = <TData = LabMetricQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables: LabMetricQueryVariables,
-  options?: UseQueryOptions<LabMetricQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<LabMetricQuery, TError, TData>(
-    ['labMetric', variables],
-    fetcher<LabMetricQuery, LabMetricQueryVariables>(
-      client,
-      LabMetricDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useLabMetricQuery.getKey = (variables: LabMetricQueryVariables) => [
-  'labMetric',
-  variables,
-];
-useLabMetricQuery.fetcher = (
-  client: GraphQLClient,
-  variables: LabMetricQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<LabMetricQuery, LabMetricQueryVariables>(
-    client,
-    LabMetricDocument,
-    variables,
-    headers
-  );
 export const CollectionHottestDocument = /*#__PURE__*/ `
     query collectionHottest($ident: String!, $limit: Int) {
   collectionHottest(ident: $ident, limit: $limit) {
@@ -8417,6 +8317,59 @@ usePullsCommentQuery.fetcher = (
   fetcher<PullsCommentQuery, PullsCommentQueryVariables>(
     client,
     PullsCommentDocument,
+    variables,
+    headers
+  );
+export const VerifyDetailDataRangeDocument = /*#__PURE__*/ `
+    query verifyDetailDataRange($label: String, $shortCode: String, $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  verifyDetailDataRange(
+    label: $label
+    shortCode: $shortCode
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    status
+    max
+    min
+  }
+}
+    `;
+export const useVerifyDetailDataRangeQuery = <
+  TData = VerifyDetailDataRangeQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: VerifyDetailDataRangeQueryVariables,
+  options?: UseQueryOptions<VerifyDetailDataRangeQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<VerifyDetailDataRangeQuery, TError, TData>(
+    variables === undefined
+      ? ['verifyDetailDataRange']
+      : ['verifyDetailDataRange', variables],
+    fetcher<VerifyDetailDataRangeQuery, VerifyDetailDataRangeQueryVariables>(
+      client,
+      VerifyDetailDataRangeDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useVerifyDetailDataRangeQuery.getKey = (
+  variables?: VerifyDetailDataRangeQueryVariables
+) =>
+  variables === undefined
+    ? ['verifyDetailDataRange']
+    : ['verifyDetailDataRange', variables];
+useVerifyDetailDataRangeQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: VerifyDetailDataRangeQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<VerifyDetailDataRangeQuery, VerifyDetailDataRangeQueryVariables>(
+    client,
+    VerifyDetailDataRangeDocument,
     variables,
     headers
   );

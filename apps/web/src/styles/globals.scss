@@ -1,4 +1,5 @@
 @import 'tailwind.css';
+@import 'antd.scss';
 
 html,
 body {
@@ -76,7 +77,4 @@ input[type='submit'] {
 
 .viewer-backdrop {
   background-color: rgba(0, 0, 0, 70%);
-}
-:where(.css-dev-only-do-not-override-pr0fja).ant-btn-primary {
-  background-color: #1677ff !important;
 }

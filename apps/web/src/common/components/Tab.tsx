@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 const Tab: React.FC<{
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; disable?: boolean }[];
   value: string;
   onChange: (v: string) => void;
 }> = ({ options, value, onChange }) => (
@@ -13,10 +13,11 @@ const Tab: React.FC<{
           <div
             key={option.label}
             className={classnames(
-              'text-steel cursor-pointer px-4 py-1 text-sm ',
-              { 'rounded bg-white text-black shadow': option.value === value }
+              'text-steel cursor-pointer  px-3 py-1 text-sm ',
+              { 'rounded bg-white text-black shadow': option.value === value },
+              { 'cursor-not-allowed text-[#ABABAB]': option.disable === true }
             )}
-            onClick={() => onChange(option.value)}
+            onClick={() => !option.disable && onChange(option.value)}
           >
             {option.label}
           </div>

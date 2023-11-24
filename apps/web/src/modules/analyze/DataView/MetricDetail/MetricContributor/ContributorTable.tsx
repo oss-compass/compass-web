@@ -53,6 +53,7 @@ const MetricTable: React.FC<{
     pagination: {
       current: 1,
       pageSize: 10,
+      showSizeChanger: false,
       position: ['bottomCenter'],
       showTotal: (total) => {
         return `Total ${total} items`;
@@ -218,21 +219,21 @@ const MetricTable: React.FC<{
         }
       },
       align: 'center',
-      width: '100px',
+      width: '200px',
       sorter: true,
     },
   ];
   return (
-    <div className="flex-1 pt-4">
-      <MyTable
-        columns={columns}
-        dataSource={tableData}
-        loading={isLoading}
-        onChange={handleTableChange}
-        pagination={tableParams.pagination}
-        rowKey={'contributor'}
-      />
-    </div>
+    <MyTable
+      columns={columns}
+      dataSource={tableData}
+      loading={isLoading}
+      onChange={handleTableChange}
+      pagination={tableParams.pagination}
+      rowKey={'contributor'}
+      scroll={{ x: 'max-content', y: '100%' }}
+      className="h-[600px]"
+    />
   );
 };
 export default MetricTable;
