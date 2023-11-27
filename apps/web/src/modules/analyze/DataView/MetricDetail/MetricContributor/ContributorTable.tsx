@@ -141,18 +141,18 @@ const MetricTable: React.FC<{
     {
       title: t('analyze:metric_detail:contributor'),
       dataIndex: 'contributor',
-      align: 'center',
+      align: 'left',
       width: '200px',
       sorter: true,
     },
     {
       title: t('analyze:metric_detail:role_persona'),
       dataIndex: 'ecologicalType',
-      align: 'center',
+      align: 'left',
       width: '200px',
       filters: ecologicalOptions,
       render: (text) => {
-        return ecologicalOptions.find((i) => i.value === text).text;
+        return ecologicalOptions.find((i) => i.value === text)?.text || text;
       },
     },
 
@@ -160,9 +160,9 @@ const MetricTable: React.FC<{
       title: t('analyze:metric_detail:milestone_persona'),
       dataIndex: 'mileageType',
       render: (text) => {
-        return mileageOptions.find((i) => i.value === text).label;
+        return mileageOptions.find((i) => i.value === text)?.label || text;
       },
-      align: 'center',
+      align: 'left',
       width: '200px',
     },
     {
@@ -194,13 +194,13 @@ const MetricTable: React.FC<{
       },
       filters: useContributionTypeLsit(),
       filterMode: 'tree',
-      align: 'center',
+      align: 'left',
       width: '220px',
     },
     {
       title: t('analyze:metric_detail:organization'),
       dataIndex: 'organization',
-      align: 'center',
+      align: 'left',
       width: '160px',
     },
     {
@@ -218,7 +218,7 @@ const MetricTable: React.FC<{
           return contribution;
         }
       },
-      align: 'center',
+      align: 'left',
       width: '200px',
       sorter: true,
     },
@@ -231,8 +231,7 @@ const MetricTable: React.FC<{
       onChange={handleTableChange}
       pagination={tableParams.pagination}
       rowKey={'contributor'}
-      scroll={{ x: 'max-content', y: '100%' }}
-      className="h-[600px]"
+      scroll={{ x: 'max-content' }}
     />
   );
 };

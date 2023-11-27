@@ -1,8 +1,15 @@
 import React from 'react';
 import classnames from 'classnames';
+import Tooltip from '@common/components/Tooltip';
 
 const Tab: React.FC<{
-  options: { value: string; label: string; disable?: boolean }[];
+  options: {
+    value: string;
+    label: string;
+    disable?: boolean;
+    tabCls?: string;
+    tooltip?: string;
+  }[];
   value: string;
   onChange: (v: string) => void;
 }> = ({ options, value, onChange }) => (
@@ -14,12 +21,15 @@ const Tab: React.FC<{
             key={option.label}
             className={classnames(
               'text-steel cursor-pointer  px-3 py-1 text-sm ',
+              option?.tabCls,
               { 'rounded bg-white text-black shadow': option.value === value },
               { 'cursor-not-allowed text-[#ABABAB]': option.disable === true }
             )}
             onClick={() => !option.disable && onChange(option.value)}
           >
-            {option.label}
+            <Tooltip arrow title={option.tooltip} placement="right">
+              <div>{option.label}</div>
+            </Tooltip>
           </div>
         );
       })}

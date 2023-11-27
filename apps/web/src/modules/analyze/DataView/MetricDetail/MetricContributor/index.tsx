@@ -7,8 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { useMileageOptions } from './contribution';
 import MetricTable from './ContributorTable';
 import ContributorContribution from './ContributorContribution';
-import ContributorOrganizations from './ContributorOrganizations';
-import ContributorContributors from './ContributorContributors';
+import ContributionCount from './ContributionCount';
+import ContributorContributors from './Contributors';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import Tooltip from '@common/components/Tooltip';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
@@ -22,7 +22,7 @@ const MetricContributor = () => {
   const [tab, setTab] = useState('1');
   const { timeStart, timeEnd } = useQueryDateRange();
   const options = useMileageOptions();
-  const [mileage, setMileage] = useState<string[]>(['core', 'guest']);
+  const [mileage, setMileage] = useState<string[]>(['core', 'regular']);
   const onChange = (checkedValues: string[]) => {
     setMileage(checkedValues);
   };
@@ -42,7 +42,7 @@ const MetricContributor = () => {
     }
     case '2': {
       source = (
-        <ContributorContribution
+        <ContributionCount
           label={label}
           level={level}
           beginDate={timeStart}
@@ -53,18 +53,6 @@ const MetricContributor = () => {
       break;
     }
     case '3': {
-      source = (
-        <ContributorOrganizations
-          label={label}
-          level={level}
-          beginDate={timeStart}
-          endDate={timeEnd}
-          mileage={mileage}
-        />
-      );
-      break;
-    }
-    case '4': {
       source = (
         <ContributorContributors
           label={label}
@@ -84,7 +72,7 @@ const MetricContributor = () => {
     <BaseCard
       title={t('metrics_models:contributors_persona.metrics.contributor')}
       id={ContributorsPersona.Contributor}
-      bodyClass="h-[650px]"
+      bodyClass="h-[full]"
     >
       <div>
         <Tabs
@@ -108,7 +96,7 @@ const MetricContributor = () => {
               root: '!normal-case',
               selected: '!text-black !normal-case',
             }}
-            label={t('analyze:metric_detail:contribution')}
+            label={t('analyze:metric_detail:contribution_distribution')}
             value="2"
           />
           <Tab
@@ -117,20 +105,11 @@ const MetricContributor = () => {
               root: '!normal-case',
               selected: '!text-black !normal-case',
             }}
-            label={t('analyze:metric_detail:organization')}
+            label={t('analyze:metric_detail:contributor_distribution')}
             value="3"
           />
-          <Tab
-            disableRipple
-            classes={{
-              root: '!normal-case',
-              selected: '!text-black !normal-case',
-            }}
-            label={t('analyze:metric_detail:contributor')}
-            value="4"
-          />
         </Tabs>
-        <div className="absolute right-1 top-2.5 flex lg:hidden">
+        <div className="absolute right-1 top-2.5 flex md:hidden xl:-top-2.5">
           <span className="mr-2 flex items-center font-medium">
             {t('analyze:metric_detail:milestone_persona_filter')}
             <Tooltip
@@ -149,6 +128,12 @@ const MetricContributor = () => {
                     </span>
                     {t('analyze:metric_detail:regular_desc')}
                   </div>
+                  <div>
+                    <span className="font-xs font-semibold">
+                      {t('analyze:metric_detail:guest')} :
+                    </span>
+                    {t('analyze:metric_detail:guest_desc')}
+                  </div>
                 </>
               }
               placement="right"
@@ -161,12 +146,12 @@ const MetricContributor = () => {
           <span className="mr-2">:</span>
           <Checkbox.Group
             options={options}
-            defaultValue={['core', 'guest']}
+            defaultValue={['core', 'regular']}
             onChange={onChange}
           />
         </div>
 
-        <div className="mt-2 flex h-[600px] flex-1 flex-col">{source}</div>
+        <div className="mt-2 flex-1">{source}</div>
       </div>
     </BaseCard>
   );

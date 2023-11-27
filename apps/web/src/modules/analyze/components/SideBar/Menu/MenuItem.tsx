@@ -1,6 +1,8 @@
 import React, { PropsWithChildren, useRef, useState } from 'react';
 import classnames from 'classnames';
 import Popper from '@mui/material/Popper';
+import { useTranslation } from 'next-i18next';
+import Tooltip from '@common/components/Tooltip';
 
 const MenuItem: React.FC<
   PropsWithChildren<{
@@ -20,6 +22,7 @@ const MenuItem: React.FC<
 }) => {
   const popoverAnchor = useRef<HTMLDivElement>(null);
   const [openedPopover, setOpenedPopover] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="group mb-0.5 px-4">
@@ -43,7 +46,13 @@ const MenuItem: React.FC<
             { 'group-hover:bg-gray-100 group-hover:text-black': !disabled }
           )}
         >
-          <span className="truncate">{children}</span>
+          {disabled ? (
+            <Tooltip arrow title={t('analyze:coming_soon')} placement="right">
+              <span className="truncate">{children}</span>
+            </Tooltip>
+          ) : (
+            <span className="truncate">{children}</span>
+          )}
           {leftIcons}
         </a>
       </div>
