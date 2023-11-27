@@ -28,29 +28,31 @@ const ContributorContribution: React.FC<{
     const contributorsData = [];
     if (data?.orgContributorsOverview?.length > 0) {
       const ecoContributorsOverview = data.orgContributorsOverview;
-      ecoContributorsOverview.forEach((item, i) => {
-        const { subTypeName, topContributorDistribution } = item;
-        const colorList = gradientRamp[i];
-        let count = 0;
-        topContributorDistribution.forEach(({ subCount, subName }, index) => {
-          count += subCount;
-          contributorsData.push({
-            parentName: subTypeName,
-            name: subName,
-            value: subCount,
-            itemStyle: { color: colorList[index + 1] },
+      ecoContributorsOverview
+        .filter((item) => item.subTypeName)
+        .forEach((item, i) => {
+          const { subTypeName, topContributorDistribution } = item;
+          const colorList = gradientRamp[i];
+          let count = 0;
+          topContributorDistribution.forEach(({ subCount, subName }, index) => {
+            count += subCount;
+            contributorsData.push({
+              parentName: subTypeName,
+              name: subName,
+              value: subCount,
+              itemStyle: { color: colorList[index + 1] },
+            });
+          });
+          legend.push({
+            name: subTypeName,
+            itemStyle: { color: colorList[0] },
+          });
+          ecoData.push({
+            name: subTypeName,
+            value: count,
+            itemStyle: { color: colorList[0] },
           });
         });
-        legend.push({
-          name: subTypeName,
-          itemStyle: { color: colorList[0] },
-        });
-        ecoData.push({
-          name: subTypeName,
-          value: count,
-          itemStyle: { color: colorList[0] },
-        });
-      });
     }
     return {
       legend,
