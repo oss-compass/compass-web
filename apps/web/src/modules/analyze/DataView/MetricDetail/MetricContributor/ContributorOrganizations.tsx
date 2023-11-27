@@ -28,29 +28,31 @@ const ContributorContribution: React.FC<{
     const contributorsData = [];
     if (data?.orgContributorsOverview?.length > 0) {
       const ecoContributorsOverview = data.orgContributorsOverview;
-      ecoContributorsOverview.forEach((item, i) => {
-        const { subTypeName, topContributorDistribution } = item;
-        const colorList = gradientRamp[i];
-        let count = 0;
-        topContributorDistribution.forEach(({ subCount, subName }, index) => {
-          count += subCount;
-          contributorsData.push({
-            parentName: subTypeName,
-            name: subName,
-            value: subCount,
-            itemStyle: { color: colorList[index + 1] },
+      ecoContributorsOverview
+        .filter((item) => item.subTypeName)
+        .forEach((item, i) => {
+          const { subTypeName, topContributorDistribution } = item;
+          const colorList = gradientRamp[i];
+          let count = 0;
+          topContributorDistribution.forEach(({ subCount, subName }, index) => {
+            count += subCount;
+            contributorsData.push({
+              parentName: subTypeName,
+              name: subName,
+              value: subCount,
+              itemStyle: { color: colorList[index + 1] },
+            });
+          });
+          legend.push({
+            name: subTypeName,
+            itemStyle: { color: colorList[0] },
+          });
+          ecoData.push({
+            name: subTypeName,
+            value: count,
+            itemStyle: { color: colorList[0] },
           });
         });
-        legend.push({
-          name: subTypeName,
-          itemStyle: { color: colorList[0] },
-        });
-        ecoData.push({
-          name: subTypeName,
-          value: count,
-          itemStyle: { color: colorList[0] },
-        });
-      });
     }
     return {
       legend,
@@ -58,28 +60,34 @@ const ContributorContribution: React.FC<{
       contributorsData,
     };
   }, [data]);
-
+  const unit: string = t('analyze:metric_detail:contribution_unit');
+  const formatter = '{b} : {c}' + unit + ' ({d}%)';
   const option: EChartsOption = {
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)',
+      formatter: formatter,
     },
     legend: {
-      top: '2%',
+      top: 40,
       left: 'center',
       data: getSeries.legend,
     },
+    title: {
+      text: t('analyze:metric_detail:organization_contribution_distribution'),
+      left: 'center',
+    },
     series: [
       {
+        top: 15,
         name: '生态类型',
         type: 'pie',
         selectedMode: 'single',
-        radius: [0, '45%'],
+        radius: [0, '40%'],
         label: {
           position: 'inner',
           fontSize: 12,
           color: '#333',
-          formatter: '{b}: {c} ({d}%)',
+          formatter: formatter,
         },
         labelLine: {
           show: false,
@@ -91,14 +99,15 @@ const ContributorContribution: React.FC<{
         data: getSeries.ecoData,
       },
       {
+        top: 15,
         name: '贡献者',
         type: 'pie',
-        radius: ['55%', '67%'],
+        radius: ['50%', '62%'],
         labelLine: {
           length: 30,
         },
         label: {
-          formatter: '{b}: {c} ({d}%)',
+          formatter: formatter,
           color: '#333',
         },
         data: getSeries.contributorsData,
@@ -107,7 +116,7 @@ const ContributorContribution: React.FC<{
   };
 
   return (
-    <div className="flex-1 pt-4" ref={chartRef}>
+    <div className="h-[600px] w-[50%] flex-1 pt-4" ref={chartRef}>
       <MetricChart
         style={{ height: '100%' }}
         loading={isLoading}

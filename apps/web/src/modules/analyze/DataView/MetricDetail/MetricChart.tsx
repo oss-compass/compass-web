@@ -74,10 +74,7 @@ const MetricChart: React.FC<ReactEChartsProps> = ({
   const onResize = useCallback((width?: number, height?: number) => {
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current)!;
-      chart?.resize({
-        width: 'auto',
-        height: Number(height) > 650 ? 650 : 350,
-      });
+      chart?.resize();
     }
   }, []);
 

@@ -155,7 +155,8 @@ export const useMileageOptions = () => {
 
   return [
     { label: t('analyze:metric_detail:core'), value: 'core' },
-    { label: t('analyze:metric_detail:regular'), value: 'guest' },
+    { label: t('analyze:metric_detail:regular'), value: 'regular' },
+    { label: t('analyze:metric_detail:guest'), value: 'guest' },
   ];
 };
 export const useEcologicalType = () => {

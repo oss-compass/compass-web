@@ -11,9 +11,20 @@ const TopicTab = () => {
     {
       label: t('analyze:collaboration'),
       value: 'collaboration',
+      tabCls: 'min-w-[66px] text-center',
     },
-    { label: t('analyze:contributor'), value: 'contributor' },
-    { label: t('analyze:software'), value: 'software', disable: true },
+    {
+      label: t('analyze:contributor'),
+      value: 'contributor',
+      tabCls: 'min-w-[80px] text-center',
+    },
+    {
+      label: t('analyze:software'),
+      value: 'software',
+      disable: true,
+      tooltip: t('analyze:coming_soon'),
+      tabCls: 'min-w-[60px] text-center',
+    },
   ];
 
   return (

@@ -100,20 +100,20 @@ const MetricTable: React.FC<{
     {
       title: t('analyze:metric_detail:issue_title'),
       dataIndex: 'title',
-      align: 'center',
+      align: 'left',
       width: '200px',
       sorter: true,
     },
     {
       title: 'URL',
       dataIndex: 'url',
-      align: 'center',
+      align: 'left',
       width: '220px',
     },
     {
       title: t('analyze:metric_detail:state'),
       dataIndex: 'state',
-      align: 'center',
+      align: 'left',
       width: '100px',
       sorter: true,
       filters: stateOption,
@@ -124,7 +124,7 @@ const MetricTable: React.FC<{
     {
       title: t('analyze:metric_detail:created_time'),
       dataIndex: 'createdAt',
-      align: 'center',
+      align: 'left',
       sorter: true,
       width: '140px',
       render: (time) => format(parseJSON(time)!, 'yyyy-MM-dd'),
@@ -132,7 +132,7 @@ const MetricTable: React.FC<{
     {
       title: t('analyze:metric_detail:close_time'),
       dataIndex: 'closedAt',
-      align: 'center',
+      align: 'left',
       sorter: true,
       width: '120px',
       render: (time) => (time ? format(parseJSON(time)!, 'yyyy-MM-dd') : ''),
@@ -140,42 +140,42 @@ const MetricTable: React.FC<{
     {
       title: t('analyze:metric_detail:processing_time'),
       dataIndex: 'timeToCloseDays',
-      align: 'center',
+      align: 'left',
       sorter: true,
       width: '200px',
     },
     {
       title: t('analyze:metric_detail:first_response_time'),
       dataIndex: 'timeToFirstAttentionWithoutBot',
-      align: 'center',
+      align: 'left',
       sorter: true,
       width: '220px',
     },
     {
       title: t('analyze:metric_detail:comments_count'),
       dataIndex: 'numOfCommentsWithoutBot',
-      align: 'center',
+      align: 'left',
       sorter: true,
       width: '160px',
     },
     {
       title: t('analyze:metric_detail:tags'),
       dataIndex: 'labels',
-      align: 'center',
+      align: 'left',
       render: (list) => list?.join(', ') || '',
       width: '100px',
     },
     {
       title: t('analyze:metric_detail:creator'),
       dataIndex: 'userLogin',
-      align: 'center',
+      align: 'left',
       sorter: true,
       width: '100px',
     },
     {
       title: t('analyze:metric_detail:assignee'),
       dataIndex: 'assigneeLogin',
-      align: 'center',
+      align: 'left',
       sorter: true,
       width: '100px',
     },
@@ -188,8 +188,7 @@ const MetricTable: React.FC<{
       onChange={handleTableChange}
       pagination={tableParams.pagination}
       rowKey={'url'}
-      scroll={{ x: 'max-content', y: '100%' }}
-      className="h-[600px]"
+      scroll={{ x: 'max-content' }}
     />
   );
 };

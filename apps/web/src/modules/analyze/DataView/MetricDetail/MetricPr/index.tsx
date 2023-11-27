@@ -59,7 +59,7 @@ const MetricPr = () => {
     <BaseCard
       title={t('metrics_models:contributors_persona.metrics.pr')}
       id={ContributorsPersona.Pr}
-      bodyClass="h-[650px]"
+      bodyClass="h-full"
     >
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
@@ -95,7 +95,7 @@ const MetricPr = () => {
           value="3"
         />
       </Tabs>
-      <div className="mt-2 flex h-[600px] flex-1 flex-col">{source}</div>
+      <div className="mt-2 flex flex-1 flex-col">{source}</div>
     </BaseCard>
   );
 };
