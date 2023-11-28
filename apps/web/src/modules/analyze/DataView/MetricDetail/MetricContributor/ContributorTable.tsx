@@ -16,6 +16,7 @@ import {
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
+import Tooltip from '@common/components/Tooltip';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -112,10 +113,7 @@ const MetricTable: React.FC<{
   ) => {
     let sortOpts = null;
     let filterOpts = [];
-    sortOpts = sorter.field && {
-      type: sorter.field,
-      direction: sorter.order === 'ascend' ? 'asc' : 'desc',
-    };
+
     for (const key in filters) {
       if (filters.hasOwnProperty(key)) {
         const transformedObj = {
@@ -127,8 +125,19 @@ const MetricTable: React.FC<{
     }
     if (filterOpts.find((i) => i.type === 'contribution_type')) {
       setFilterContributionType(true);
+      sortOpts = sorter.field && {
+        type:
+          sorter.field === 'contribution'
+            ? 'contribution_filterd'
+            : sorter.field,
+        direction: sorter.order === 'ascend' ? 'asc' : 'desc',
+      };
     } else {
       setFilterContributionType(false);
+      sortOpts = sorter.field && {
+        type: sorter.field,
+        direction: sorter.order === 'ascend' ? 'asc' : 'desc',
+      };
     }
     setTableParams({
       pagination,
@@ -144,6 +153,7 @@ const MetricTable: React.FC<{
       align: 'left',
       width: '200px',
       sorter: true,
+      fixed: 'left',
     },
     {
       title: t('analyze:metric_detail:role_persona'),
@@ -172,30 +182,20 @@ const MetricTable: React.FC<{
         let arr = list.map(
           (item) => contributionTypeMap[item.contributionType]
         );
-        let br = <br></br>;
-        let result = null;
-        if (arr.length < 1) {
-          return arr[0];
-        }
-        for (let i = 0; i < arr.length; i++) {
-          if (i == 0) {
-            result = arr[i];
-          } else {
-            result = (
-              <span>
-                {result}
-                {br}
-                {arr[i]}
-              </span>
-            );
-          }
-        }
-        return <div>{result}</div>;
+        const str = arr.join(', ');
+        return (
+          <Tooltip arrow title={str.length > 20 ? str : ''} placement="right">
+            <div className="line-clamp-1 w-[200px] !whitespace-normal">
+              {str}
+            </div>
+          </Tooltip>
+        );
       },
       filters: useContributionTypeLsit(),
       filterMode: 'tree',
+      ellipsis: true,
       align: 'left',
-      width: '220px',
+      width: '250px',
     },
     {
       title: t('analyze:metric_detail:organization'),
@@ -213,7 +213,7 @@ const MetricTable: React.FC<{
             (total, obj) => total + obj.contribution,
             0
           );
-          return contribution + ` (${filterCount})`;
+          return filterCount;
         } else {
           return contribution;
         }

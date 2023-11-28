@@ -6,7 +6,6 @@ import { Checkbox } from 'antd';
 import { useTranslation } from 'next-i18next';
 import { useMileageOptions } from './contribution';
 import MetricTable from './ContributorTable';
-import ContributorContribution from './ContributorContribution';
 import ContributionCount from './ContributionCount';
 import ContributorContributors from './Contributors';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';

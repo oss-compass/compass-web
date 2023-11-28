@@ -39,6 +39,7 @@ const ContributorContribution: React.FC<{
         let count = 0;
         topContributorDistribution.forEach(({ subCount, subName }, index) => {
           count += subCount;
+          // const color = `rgba(74, 144, 226, ${1-index * 0.1})`;
           contributorsData.push({
             parentName: getEcologicalText(subTypeName),
             name: subName,
