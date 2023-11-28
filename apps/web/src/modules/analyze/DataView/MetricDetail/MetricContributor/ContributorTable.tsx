@@ -113,10 +113,7 @@ const MetricTable: React.FC<{
   ) => {
     let sortOpts = null;
     let filterOpts = [];
-    sortOpts = sorter.field && {
-      type: sorter.field,
-      direction: sorter.order === 'ascend' ? 'asc' : 'desc',
-    };
+
     for (const key in filters) {
       if (filters.hasOwnProperty(key)) {
         const transformedObj = {
@@ -128,8 +125,19 @@ const MetricTable: React.FC<{
     }
     if (filterOpts.find((i) => i.type === 'contribution_type')) {
       setFilterContributionType(true);
+      sortOpts = sorter.field && {
+        type:
+          sorter.field === 'contribution'
+            ? 'contribution_filterd'
+            : sorter.field,
+        direction: sorter.order === 'ascend' ? 'asc' : 'desc',
+      };
     } else {
       setFilterContributionType(false);
+      sortOpts = sorter.field && {
+        type: sorter.field,
+        direction: sorter.order === 'ascend' ? 'asc' : 'desc',
+      };
     }
     setTableParams({
       pagination,
@@ -145,6 +153,7 @@ const MetricTable: React.FC<{
       align: 'left',
       width: '200px',
       sorter: true,
+      fixed: 'left',
     },
     {
       title: t('analyze:metric_detail:role_persona'),
@@ -204,7 +213,7 @@ const MetricTable: React.FC<{
             (total, obj) => total + obj.contribution,
             0
           );
-          return contribution + ` (${filterCount})`;
+          return filterCount;
         } else {
           return contribution;
         }

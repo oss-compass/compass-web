@@ -103,6 +103,7 @@ const MetricTable: React.FC<{
       align: 'left',
       width: '200px',
       sorter: true,
+      fixed: 'left',
     },
     {
       title: 'URL',
