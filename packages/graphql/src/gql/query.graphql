@@ -648,6 +648,7 @@ query contributorsDetailList(
     totalPage
   }
 }
+
 query ecoContributorsOverview(
   $label: String!
   $level: String = "repo"
@@ -670,6 +671,33 @@ query ecoContributorsOverview(
       subName
       subRatio
       totalCount
+      subBelong
+    }
+  }
+}
+query orgContributionDistribution(
+  $label: String!
+  $level: String = "repo"
+  $filterOpts: [FilterOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  orgContributionDistribution(
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+      subBelong
     }
   }
 }
@@ -705,19 +733,26 @@ query contributorsOverview(
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
-  ecoDistributionOverview(
+  orgContributorsDistribution(
     label: $label
     level: $level
     filterOpts: $filterOpts
     beginDate: $beginDate
     endDate: $endDate
   ) {
-    subCount
-    subName
-    subRatio
-    totalCount
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+      subBelong
+    }
   }
 }
+
 query issuesDetailList(
   $label: String!
   $level: String = "repo"

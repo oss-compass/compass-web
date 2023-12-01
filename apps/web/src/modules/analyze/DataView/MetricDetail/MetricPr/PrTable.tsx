@@ -12,7 +12,7 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
 import { format, parseJSON } from 'date-fns';
 import { useStateType } from '@modules/analyze/DataView/MetricDetail/MetricPr/PR';
-
+import { toUnderline } from '@common/utils/format';
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -77,7 +77,7 @@ const MetricTable: React.FC<{
     let sortOpts = null;
     let filterOpts = [];
     sortOpts = sorter.field && {
-      type: sorter.field,
+      type: toUnderline(sorter.field as string),
       direction: sorter.order === 'ascend' ? 'asc' : 'desc',
     };
     for (const key in filters) {
@@ -171,7 +171,6 @@ const MetricTable: React.FC<{
       dataIndex: 'userLogin',
       align: 'left',
       width: '100px',
-      sorter: true,
     },
     {
       title: t('analyze:metric_detail:reviewer'),
@@ -185,7 +184,6 @@ const MetricTable: React.FC<{
       dataIndex: 'mergeAuthorLogin',
       align: 'left',
       width: '140px',
-      sorter: true,
     },
   ];
   return (

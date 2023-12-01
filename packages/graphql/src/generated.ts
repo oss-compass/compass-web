@@ -778,6 +778,7 @@ export type Diagram = {
 
 export type Distribution = {
   __typename?: 'Distribution';
+  subBelong?: Maybe<Scalars['String']>;
   subCount?: Maybe<Scalars['Int']>;
   subName?: Maybe<Scalars['String']>;
   subRatio?: Maybe<Scalars['Float']>;
@@ -997,6 +998,30 @@ export type MetricStat = {
   mean?: Maybe<Scalars['Float']>;
   /** 50 percentile */
   median?: Maybe<Scalars['Float']>;
+};
+
+export type Model = {
+  __typename?: 'Model';
+  /** dimension of metric model */
+  dimension?: Maybe<Scalars['String']>;
+  /** metric model create or update time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** metric model ident */
+  ident: Scalars['String'];
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** metric model main score */
+  mainScore?: Maybe<Scalars['Float']>;
+  /** scope of metric model */
+  scope?: Maybe<Scalars['String']>;
+  /** metric model transformed score */
+  transformedScore?: Maybe<Scalars['Float']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
+  /** metric model update time */
+  updatedAt?: Maybe<Scalars['ISO8601DateTime']>;
 };
 
 export type ModelComment = {
@@ -1363,8 +1388,6 @@ export type Query = {
   datasetOverview?: Maybe<Array<Scalars['String']>>;
   /** Get contributors overview by ecological type */
   ecoContributorsOverview: Array<ContributorTopOverview>;
-  /** Get contributors overview by ecological type */
-  ecoDistributionOverview: Array<Distribution>;
   /** Fuzzy search project by keyword */
   fuzzySearch: Array<ProjectCompletionRow>;
   /** Get invitations data of a lab model */
@@ -1399,18 +1422,26 @@ export type Query = {
   metricCommunity: Array<CommunityMetric>;
   /** Get group activity metrics data of compass */
   metricGroupActivity: Array<GroupActivityMetric>;
+  /** Metric models graph */
+  metricModelsOverview: Array<Model>;
   /** Get overview data of metrics set on compass lab */
   metricSetOverview?: Maybe<Array<ModelMetric>>;
   /** Get my member permissions of a lab model */
   myMemberPermission?: Maybe<Permission>;
   /** Get detail data of my lab models */
   myModels?: Maybe<MyModels>;
+  /** Get organization contributors distribution */
+  orgContributionDistribution: Array<ContributorTopOverview>;
+  /** Get organization contributors distribution */
+  orgContributorsDistribution: Array<ContributorTopOverview>;
   /** Get organization contributors overview */
   orgContributorsOverview: Array<ContributorTopOverview>;
   /** Get overview data of a repo */
   pullsDetailList: PullDetailPage;
   /** Get overview data of a pull detail */
   pullsDetailOverview: PullDetailOverview;
+  /** Search for community where specifical repos are included */
+  repoBelongsTo: Array<ProjectCompletionRow>;
   subjectSubscriptionCount: SubjectSubscriptionCount;
   /** Get activity summary data of compass */
   summaryActivity: Array<ActivitySummary>;
@@ -1514,14 +1545,6 @@ export type QueryDatasetOverviewArgs = {
 };
 
 export type QueryEcoContributorsOverviewArgs = {
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-};
-
-export type QueryEcoDistributionOverviewArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   filterOpts?: InputMaybe<Array<FilterOptionInput>>;
@@ -1647,6 +1670,12 @@ export type QueryMetricGroupActivityArgs = {
   repoType?: InputMaybe<Scalars['String']>;
 };
 
+export type QueryMetricModelsOverviewArgs = {
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryMyMemberPermissionArgs = {
   modelId?: InputMaybe<Scalars['Int']>;
 };
@@ -1654,6 +1683,22 @@ export type QueryMyMemberPermissionArgs = {
 export type QueryMyModelsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryOrgContributionDistributionArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryOrgContributorsDistributionArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryOrgContributorsOverviewArgs = {
@@ -1678,6 +1723,11 @@ export type QueryPullsDetailListArgs = {
 export type QueryPullsDetailOverviewArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryRepoBelongsToArgs = {
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
 };
@@ -4297,6 +4347,33 @@ export type EcoContributorsOverviewQuery = {
       subName?: string | null;
       subRatio?: number | null;
       totalCount?: number | null;
+      subBelong?: string | null;
+    }> | null;
+  }>;
+};
+
+export type OrgContributionDistributionQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type OrgContributionDistributionQuery = {
+  __typename?: 'Query';
+  orgContributionDistribution: Array<{
+    __typename?: 'ContributorTopOverview';
+    overviewName?: string | null;
+    subTypeName?: string | null;
+    subTypePercentage?: number | null;
+    topContributorDistribution?: Array<{
+      __typename?: 'Distribution';
+      subCount?: number | null;
+      subName?: string | null;
+      subRatio?: number | null;
+      totalCount?: number | null;
+      subBelong?: string | null;
     }> | null;
   }>;
 };
@@ -4336,12 +4413,19 @@ export type ContributorsOverviewQueryVariables = Exact<{
 
 export type ContributorsOverviewQuery = {
   __typename?: 'Query';
-  ecoDistributionOverview: Array<{
-    __typename?: 'Distribution';
-    subCount?: number | null;
-    subName?: string | null;
-    subRatio?: number | null;
-    totalCount?: number | null;
+  orgContributorsDistribution: Array<{
+    __typename?: 'ContributorTopOverview';
+    overviewName?: string | null;
+    subTypeName?: string | null;
+    subTypePercentage?: number | null;
+    topContributorDistribution?: Array<{
+      __typename?: 'Distribution';
+      subCount?: number | null;
+      subName?: string | null;
+      subRatio?: number | null;
+      totalCount?: number | null;
+      subBelong?: string | null;
+    }> | null;
   }>;
 };
 
@@ -7837,6 +7921,7 @@ export const EcoContributorsOverviewDocument = /*#__PURE__*/ `
       subName
       subRatio
       totalCount
+      subBelong
     }
   }
 }
@@ -7873,6 +7958,58 @@ useEcoContributorsOverviewQuery.fetcher = (
     variables,
     headers
   );
+export const OrgContributionDistributionDocument = /*#__PURE__*/ `
+    query orgContributionDistribution($label: String!, $level: String = "repo", $filterOpts: [FilterOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  orgContributionDistribution(
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+      subBelong
+    }
+  }
+}
+    `;
+export const useOrgContributionDistributionQuery = <
+  TData = OrgContributionDistributionQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: OrgContributionDistributionQueryVariables,
+  options?: UseQueryOptions<OrgContributionDistributionQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<OrgContributionDistributionQuery, TError, TData>(
+    ['orgContributionDistribution', variables],
+    fetcher<
+      OrgContributionDistributionQuery,
+      OrgContributionDistributionQueryVariables
+    >(client, OrgContributionDistributionDocument, variables, headers),
+    options
+  );
+
+useOrgContributionDistributionQuery.getKey = (
+  variables: OrgContributionDistributionQueryVariables
+) => ['orgContributionDistribution', variables];
+useOrgContributionDistributionQuery.fetcher = (
+  client: GraphQLClient,
+  variables: OrgContributionDistributionQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    OrgContributionDistributionQuery,
+    OrgContributionDistributionQueryVariables
+  >(client, OrgContributionDistributionDocument, variables, headers);
 export const OrgContributorsOverviewDocument = /*#__PURE__*/ `
     query orgContributorsOverview($label: String!, $level: String = "repo", $filterOpts: [FilterOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
   orgContributorsOverview(
@@ -7928,17 +8065,23 @@ useOrgContributorsOverviewQuery.fetcher = (
   );
 export const ContributorsOverviewDocument = /*#__PURE__*/ `
     query contributorsOverview($label: String!, $level: String = "repo", $filterOpts: [FilterOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  ecoDistributionOverview(
+  orgContributorsDistribution(
     label: $label
     level: $level
     filterOpts: $filterOpts
     beginDate: $beginDate
     endDate: $endDate
   ) {
-    subCount
-    subName
-    subRatio
-    totalCount
+    overviewName
+    subTypeName
+    subTypePercentage
+    topContributorDistribution {
+      subCount
+      subName
+      subRatio
+      totalCount
+      subBelong
+    }
   }
 }
     `;

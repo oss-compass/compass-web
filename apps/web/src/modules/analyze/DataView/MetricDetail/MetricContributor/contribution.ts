@@ -181,3 +181,10 @@ export const useEcologicalType = () => {
     },
   ];
 };
+
+export const useGetEcologicalText = () => {
+  const ecologicalOptions = useEcologicalType();
+  return (text) => {
+    return ecologicalOptions.find((i) => i.value === text)?.text || text;
+  };
+};

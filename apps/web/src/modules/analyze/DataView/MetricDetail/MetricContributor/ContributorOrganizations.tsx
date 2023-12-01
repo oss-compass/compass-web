@@ -118,7 +118,7 @@ const ContributorContribution: React.FC<{
   return (
     <div className="h-[600px] w-[50%] flex-1 pt-4" ref={chartRef}>
       <MetricChart
-        style={{ height: '100%' }}
+        style={{ height: '100%', zIndex: 1, marginTop: '20px' }}
         loading={isLoading}
         option={option}
         containerRef={chartRef}

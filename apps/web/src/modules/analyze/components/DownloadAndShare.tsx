@@ -20,16 +20,13 @@ import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
 import { rangeTags } from '../constant';
 import { format } from 'date-fns';
+import { toUnderline } from '@common/utils/format';
 
 const queryMap = {
   metricCodequality: 'collab_dev_index',
   metricCommunity: 'community',
   metricActivity: 'activity',
   metricGroupActivity: 'organizations_activity',
-};
-
-const toUnderline = (str: string) => {
-  return str.replace(/([A-Z])/g, '_$1').toLowerCase();
 };
 
 const useGetSvgUrl = (
