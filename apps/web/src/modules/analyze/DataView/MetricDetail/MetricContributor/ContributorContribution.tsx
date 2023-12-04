@@ -19,13 +19,16 @@ const ContributorContribution: React.FC<{
   mileage: string[];
 }> = ({ label, level, beginDate, endDate, mileage }) => {
   const [orgModel, setOrgModel] = useState<boolean>(true);
+  const { t } = useTranslation();
   const onChange = (checked: boolean) => {
     setOrgModel(checked);
   };
   return (
     <div className="relative h-[600px] w-[50%] flex-1 pt-4">
       <div className="absolute z-10 h-4 bg-transparent pl-4 text-xs">
-        展示组织：
+        <span className="mr-2">
+          {t('analyze:metric_detail:show_organization')}
+        </span>
         <Switch
           onChange={onChange}
           defaultChecked

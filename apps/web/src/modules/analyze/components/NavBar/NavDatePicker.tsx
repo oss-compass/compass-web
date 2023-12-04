@@ -11,9 +11,6 @@ import { useTranslation } from 'next-i18next';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import DateRangePicker from './DateRangePicker';
 import Popper from '@mui/material/Popper';
-import { useTopicType } from '@modules/analyze/store';
-import { useSnapshot } from 'valtio';
-import ContributorDateTagPanel from './ContributorDateTagPanel';
 
 const DateTagPanel = ({
   togglePickerPanel,
@@ -93,7 +90,6 @@ const DateTagPanel = ({
 const NavDatePicker = ({ disable }: { disable?: boolean }) => {
   const i18RangeTag = useI18RangeTag();
   const { range } = useQueryDateRange();
-  const { topicType } = useSnapshot(useTopicType);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [pickerPanelOpen, togglePickerPanel] = React.useState(false);
 
@@ -137,19 +133,11 @@ const NavDatePicker = ({ disable }: { disable?: boolean }) => {
             },
           ]}
         >
-          {topicType === 'contributor' ? (
-            <ContributorDateTagPanel
-              togglePickerPanel={(v) => {
-                togglePickerPanel(v);
-              }}
-            />
-          ) : (
-            <DateTagPanel
-              togglePickerPanel={(v) => {
-                togglePickerPanel(v);
-              }}
-            />
-          )}
+          <DateTagPanel
+            togglePickerPanel={(v) => {
+              togglePickerPanel(v);
+            }}
+          />
         </Popper>
       </div>
     </ClickAwayListener>

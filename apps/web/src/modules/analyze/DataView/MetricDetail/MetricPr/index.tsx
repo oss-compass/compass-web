@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+import useVerifyDateRange from '../useVerifyDateRange';
 import MetricTable from './PrTable';
 import PrCompletion from './PrCompletion';
 import PrComments from './PrComments';
@@ -15,7 +15,7 @@ const MetricPr = () => {
   const { label, level } = verifiedItems[0];
   const { t } = useTranslation();
   const [tab, setTab] = useState('1');
-  const { timeStart, timeEnd } = useQueryDateRange();
+  const { timeStart, timeEnd } = useVerifyDateRange();
   let source;
   switch (tab) {
     case '1': {

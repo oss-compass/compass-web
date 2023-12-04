@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { BiCheck } from 'react-icons/bi';
 import { rangeTags } from '@modules/analyze/constant';
 import classnames from 'classnames';
 import { useToggle } from 'react-use';
 import useI18RangeTag from './useI18RangeTag';
-import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+import useQueryDateRange from '@modules/analyze/DataView/MetricDetail/useVerifyDateRange';
 import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'next-i18next';
@@ -47,6 +47,32 @@ const ContributorDateTagPanel = ({
       >
         <div className="flex flex-wrap justify-between px-4 pt-4">
           {rangeTags.map((time, index) => {
+            if (index === 0) {
+              return (
+                <div
+                  className={classnames(
+                    {
+                      'bg-primary text-white':
+                        range === time && !showRangePicker,
+                    },
+                    'mb-2 flex h-8 w-[120px] cursor-pointer justify-between border py-2 pl-3 pr-2 text-xs'
+                  )}
+                  key={time}
+                  onClick={async () => {
+                    await switchRange(time);
+                    togglePickerPanel(false);
+                    setShowRangePicker(false);
+                  }}
+                >
+                  {i18RangeTag[time]}
+                  {range === time && !showRangePicker && (
+                    <div className="h-3.5 w-3.5 rounded-full bg-white">
+                      <BiCheck className="text-primary text-sm" />
+                    </div>
+                  )}
+                </div>
+              );
+            }
             return (
               <Tooltip
                 arrow

@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import ChartsDataProvider from '../context/ChartsDataProvider';
 import OverviewSummary from './OverviewSummary';
+import MetricDashboard from '@modules/analyze/DataView/MetricDetail/MetricDashboard';
 import CollaborationDevelopmentIndex from './CollaborationDevelopmentIndex';
 import CommunityServiceSupport from './CommunityServiceSupport';
 import CommunityActivity from './CommunityActivity';
@@ -12,9 +13,12 @@ import { CiGrid41 } from 'react-icons/ci';
 import ProductivityIcon from '@modules/analyze/components/SideBar/assets/Productivity.svg';
 import RobustnessIcon from '@modules/analyze/components/SideBar/assets/Robustness.svg';
 import NicheCreationIcon from '@modules/analyze/components/SideBar/assets/NicheCreation.svg';
+import { useTopicType } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
 
 const Charts = () => {
   const { t } = useTranslation();
+  const { topicType } = useSnapshot(useTopicType);
 
   return (
     <ChartsDataProvider>
@@ -32,7 +36,19 @@ const Charts = () => {
         </a>
       </h1>
       <OverviewSummary />
-
+      <MetricDashboard />
+      {topicType === 'collaboration' ? (
+        <CollaborationDataView />
+      ) : (
+        <ContributorDataView />
+      )}
+    </ChartsDataProvider>
+  );
+};
+const CollaborationDataView = () => {
+  const { t } = useTranslation();
+  return (
+    <>
       <TopicTitle
         icon={<ProductivityIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
         id={Topic.Productivity}
@@ -57,7 +73,36 @@ const Charts = () => {
         {t('analyze:topic.niche_creation')}
       </TopicTitle>
       <OrganizationsActivity />
-    </ChartsDataProvider>
+    </>
+  );
+};
+
+const ContributorDataView = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <TopicTitle
+        icon={<ProductivityIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
+        id={Topic.Productivity}
+      >
+        {t('analyze:topic.productivity')}
+      </TopicTitle>
+      <CollaborationDevelopmentIndex />
+
+      {/* <TopicTitle
+        icon={<RobustnessIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
+        id={Topic.Robustness}
+      >
+        {t('analyze:topic.robustness')}
+      </TopicTitle>
+
+      <TopicTitle
+        icon={<NicheCreationIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
+        id={Topic.NicheCreation}
+      >
+        {t('analyze:topic.niche_creation')}
+      </TopicTitle> */}
+    </>
   );
 };
 
