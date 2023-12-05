@@ -12,17 +12,12 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
 import LoadingAnalysis from '@modules/analyze/DataView/Status/LoadingAnalysis';
-import useSwitchRange from '@modules/analyze/components/NavBar/useSwitchRange';
 
 const VerifyMetricDetail = () => {
-  const { isLoading, data } = useVerifyDetailRange();
+  const { isLoading } = useVerifyDetailRange();
   if (isLoading) {
     return <LoadingAnalysis />;
   }
-  // if (!data?.verifyDetailDataRange?.status) {
-  //   const { switchRange } = useSwitchRange();
-  //   switchRange('1M');
-  // }
   return <MetricDetail />;
 };
 const MetricDetail = () => {
@@ -34,7 +29,6 @@ const MetricDetail = () => {
   if (isLoading || verifiedItems.length > 1) {
     return null;
   }
-  const { label, level } = verifiedItems[0];
 
   const tabOptions = [
     {
@@ -84,7 +78,7 @@ const MetricDetail = () => {
           <MerticDatePicker />
         </div>
       </div>
-      <div className="relative m-4 min-w-0 flex-1 overflow-hidden rounded-lg border-2 border-transparent bg-white p-5 drop-shadow-sm md:rounded-none">
+      <div className="relative m-4 min-w-0 flex-1 overflow-hidden rounded-lg border-2 border-transparent bg-white drop-shadow-sm md:rounded-none">
         {source}
       </div>
     </div>

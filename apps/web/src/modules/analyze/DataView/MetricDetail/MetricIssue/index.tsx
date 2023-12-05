@@ -60,6 +60,7 @@ const MetricIssue = () => {
       title={t('metrics_models:contributors_persona.metrics.issue')}
       id={ContributorsPersona.Issue}
       bodyClass="h-full"
+      className="h-full"
     >
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}

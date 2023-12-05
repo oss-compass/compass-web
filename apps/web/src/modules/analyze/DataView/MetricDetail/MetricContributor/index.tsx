@@ -71,7 +71,8 @@ const MetricContributor = () => {
     <BaseCard
       title={t('metrics_models:contributors_persona.metrics.contributor')}
       id={ContributorsPersona.Contributor}
-      bodyClass="h-[full]"
+      bodyClass="h-full"
+      className="h-full"
     >
       <div>
         <Tabs

@@ -7,6 +7,7 @@ import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import { Level } from '@modules/analyze/constant';
+import DistributionMap from '@modules/analyze/components/DistributionMap';
 
 const Overview: React.FC<{
   data: DeepReadonly<
@@ -17,7 +18,14 @@ const Overview: React.FC<{
     return (
       <>
         {data[0].level === Level.COMMUNITY && <CommunityRepos />}
-        <LineChart />
+        <div className="flex gap-4 md:flex-col">
+          <div className="flex-1">
+            <LineChart />
+          </div>
+          <div className="w-[332px] flex-shrink-0">
+            <DistributionMap />
+          </div>
+        </div>
       </>
     );
   }

@@ -4605,6 +4605,29 @@ export type VerifyDetailDataRangeQuery = {
   };
 };
 
+export type MetricModelsOverviewQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
+}>;
+
+export type MetricModelsOverviewQuery = {
+  __typename?: 'Query';
+  metricModelsOverview: Array<{
+    __typename?: 'Model';
+    dimension?: string | null;
+    grimoireCreationDate?: any | null;
+    ident: string;
+    label?: string | null;
+    level?: string | null;
+    mainScore?: number | null;
+    scope?: string | null;
+    transformedScore?: number | null;
+    type?: string | null;
+    updatedAt?: any | null;
+  }>;
+};
+
 export const MetricsFragmentDoc = /*#__PURE__*/ `
     fragment metrics on ModelMetric {
   category
@@ -8513,6 +8536,56 @@ useVerifyDetailDataRangeQuery.fetcher = (
   fetcher<VerifyDetailDataRangeQuery, VerifyDetailDataRangeQueryVariables>(
     client,
     VerifyDetailDataRangeDocument,
+    variables,
+    headers
+  );
+export const MetricModelsOverviewDocument = /*#__PURE__*/ `
+    query metricModelsOverview($label: String!, $level: String = "repo", $repoType: String) {
+  metricModelsOverview(label: $label, level: $level, repoType: $repoType) {
+    dimension
+    grimoireCreationDate
+    ident
+    label
+    level
+    mainScore
+    scope
+    transformedScore
+    type
+    updatedAt
+  }
+}
+    `;
+export const useMetricModelsOverviewQuery = <
+  TData = MetricModelsOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: MetricModelsOverviewQueryVariables,
+  options?: UseQueryOptions<MetricModelsOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<MetricModelsOverviewQuery, TError, TData>(
+    ['metricModelsOverview', variables],
+    fetcher<MetricModelsOverviewQuery, MetricModelsOverviewQueryVariables>(
+      client,
+      MetricModelsOverviewDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useMetricModelsOverviewQuery.getKey = (
+  variables: MetricModelsOverviewQueryVariables
+) => ['metricModelsOverview', variables];
+useMetricModelsOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: MetricModelsOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<MetricModelsOverviewQuery, MetricModelsOverviewQueryVariables>(
+    client,
+    MetricModelsOverviewDocument,
     variables,
     headers
   );

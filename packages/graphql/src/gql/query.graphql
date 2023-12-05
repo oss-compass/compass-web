@@ -931,3 +931,22 @@ query verifyDetailDataRange(
     min
   }
 }
+
+query metricModelsOverview(
+  $label: String!
+  $level: String = "repo"
+  $repoType: String
+) {
+  metricModelsOverview(label: $label, level: $level, repoType: $repoType) {
+    dimension
+    grimoireCreationDate
+    ident
+    label
+    level
+    mainScore
+    scope
+    transformedScore
+    type
+    updatedAt
+  }
+}

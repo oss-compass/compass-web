@@ -80,7 +80,7 @@ const MetricBoxContributors: React.FC<{
 }> = ({ data }) => {
   const { t } = useTranslation();
   return (
-    <div className="relative min-w-0 scroll-mt-[200px] p-5">
+    <div className="relative min-w-0 scroll-mt-[200px] border-b p-5">
       <div className="flex justify-between">
         <div className="text-lg font-bold">
           {t('analyze:metric_detail:contributor')}
