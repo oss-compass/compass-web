@@ -14,6 +14,10 @@ export const getPieOption = (
   const { series, seriesData, title, formatter, ...restOpts } = opts;
   return {
     color: [
+      '#6474d2',
+      '#a3e683',
+      '#fed95f',
+      '#ee6666',
       '#2ec7c9',
       '#b6a2de',
       '#5ab1ef',

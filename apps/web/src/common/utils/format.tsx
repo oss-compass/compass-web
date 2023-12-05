@@ -151,3 +151,8 @@ export const convertMonthsToDays = (value: number | string) => {
   }
   return value;
 };
+
+export const toUnderline = (str: string) => {
+  //驼峰命名法转换为下划线命名
+  return str.replace(/([A-Z])/g, '_$1').toLowerCase();
+};

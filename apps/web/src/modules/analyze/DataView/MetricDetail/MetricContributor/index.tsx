@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+import useVerifyDateRange from '../useVerifyDateRange';
 import { Checkbox } from 'antd';
 import { useTranslation } from 'next-i18next';
 import { useMileageOptions } from './contribution';
@@ -19,7 +19,7 @@ const MetricContributor = () => {
   const { verifiedItems } = useLabelStatus();
   const { label, level } = verifiedItems[0];
   const [tab, setTab] = useState('1');
-  const { timeStart, timeEnd } = useQueryDateRange();
+  const { timeStart, timeEnd } = useVerifyDateRange();
   const options = useMileageOptions();
   const [mileage, setMileage] = useState<string[]>(['core', 'regular']);
   const onChange = (checkedValues: string[]) => {
@@ -71,7 +71,8 @@ const MetricContributor = () => {
     <BaseCard
       title={t('metrics_models:contributors_persona.metrics.contributor')}
       id={ContributorsPersona.Contributor}
-      bodyClass="h-[full]"
+      bodyClass="h-full"
+      className="h-full"
     >
       <div>
         <Tabs
@@ -109,7 +110,7 @@ const MetricContributor = () => {
           />
         </Tabs>
         <div className="absolute right-1 top-2.5 flex md:hidden xl:-top-2.5">
-          <span className="mr-2 flex items-center font-medium">
+          <span className="mr-2 flex cursor-pointer items-center font-medium">
             {t('analyze:metric_detail:milestone_persona_filter')}
             <Tooltip
               arrow

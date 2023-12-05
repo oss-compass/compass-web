@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { RangeTag, rangeTags, timeRange } from '../constant';
+import { RangeTag, rangeTags, timeRange } from '@modules/analyze/constant';
+import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
 
-const defaultVal = {
-  range: '6M' as RangeTag,
-  timeStart: timeRange['6M'].start,
-  timeEnd: timeRange['6M'].end,
+const contributorDefaultVal = {
+  range: '1M' as RangeTag,
+  timeStart: timeRange['1M'].start,
+  timeEnd: timeRange['1M'].end,
 };
-
 export const isDateRange = (range: string) => {
   if (range.includes(' ~ ')) {
     const start = range.split(' ~ ')[0];
@@ -21,12 +21,14 @@ export const isDateRange = (range: string) => {
   }
   return false;
 };
-const useQueryDateRange = () => {
+const useVerifyDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
+  const { isLoading, data } = useVerifyDetailRange();
+  console.log(!data?.verifyDetailDataRange?.status);
   return useMemo(() => {
-    if (!range) {
-      return defaultVal;
+    if (!range || !data?.verifyDetailDataRange?.status) {
+      return contributorDefaultVal;
     } else if (rangeTags.includes(range)) {
       return {
         range,
@@ -41,9 +43,9 @@ const useQueryDateRange = () => {
         timeEnd: end,
       };
     } else {
-      return defaultVal;
+      return contributorDefaultVal;
     }
-  }, [range]);
+  }, [range, isLoading, data]);
 };
 
-export default useQueryDateRange;
+export default useVerifyDateRange;

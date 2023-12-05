@@ -2,7 +2,11 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { IoPeopleCircle, IoPersonCircle } from 'react-icons/io5';
 import { GoIssueOpened, GoGitPullRequestClosed } from 'react-icons/go';
-import { AiFillClockCircle, AiOutlineIssuesClose } from 'react-icons/ai';
+import {
+  AiFillClockCircle,
+  AiOutlineIssuesClose,
+  AiOutlineArrowRight,
+} from 'react-icons/ai';
 import { BiChat, BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
@@ -16,6 +20,7 @@ import client from '@common/gqlClient';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
 import { toFixed } from '@common/utils';
+import { useRouter } from 'next/router';
 
 const MetricDashboard = () => {
   const { compareItems } = useCompareItems();
@@ -30,7 +35,8 @@ const Main = () => {
   const { t } = useTranslation();
   const { compareItems } = useCompareItems();
   const { timeStart, timeEnd } = useQueryDateRange();
-
+  const router = useRouter();
+  const slugs = router.query.slugs;
   const { label, level } = compareItems[0];
   const { data, isLoading } = useMetricDashboardQuery(client, {
     label: label,
@@ -38,12 +44,27 @@ const Main = () => {
     beginDate: timeStart,
     endDate: timeEnd,
   });
+
   if (isLoading) {
     return <Loading />;
   }
   return (
     <div>
-      <div className="base-card rounded-lg border-2 border-transparent drop-shadow-sm md:rounded-none">
+      <div className="mt-6 mb-2 flex justify-between">
+        <div className="text-xl font-semibold text-[#000000]">
+          {t('analyze:metric_detail:project_deep_dive_insight')}
+        </div>
+        <div
+          className="flex cursor-pointer items-center gap-2 rounded border border-[#3A5BEF] py-1.5 px-3 text-xs text-[#3A5BEF]"
+          onClick={() => {
+            router.push('/analyze/insight/' + slugs + '?range=1M');
+          }}
+        >
+          {t('analyze:metric_detail:details')}
+          <AiOutlineArrowRight />
+        </div>
+      </div>
+      <div className="base-card rounded-lg border-2 border-b border-transparent bg-white drop-shadow-sm md:rounded-none">
         <MetricBoxContributors data={data?.contributorsDetailOverview} />
         <div className="grid grid-cols-2">
           <MetricBoxIssues data={data?.issuesDetailOverview} />
@@ -54,15 +75,12 @@ const Main = () => {
   );
 };
 
-export default MetricDashboard;
-
 const MetricBoxContributors: React.FC<{
   data: ContributorDetailOverview;
 }> = ({ data }) => {
   const { t } = useTranslation();
-
   return (
-    <div className="relative min-w-0 scroll-mt-[200px] border-b bg-white p-5">
+    <div className="relative min-w-0 scroll-mt-[200px] border-b p-5">
       <div className="flex justify-between">
         <div className="text-lg font-bold">
           {t('analyze:metric_detail:contributor')}
@@ -196,7 +214,7 @@ const MetricBoxPr: React.FC<{
   const { t } = useTranslation();
 
   return (
-    <div className="relative min-w-0 scroll-mt-[200px] bg-white p-5">
+    <div className="relative min-w-0 scroll-mt-[200px] p-5">
       <div className="flex justify-between">
         <div className="line-clamp-1 text-lg font-bold">
           {t('analyze:metric_detail:pull_requests')}
@@ -283,3 +301,5 @@ const getIcons = (type: string) => {
       return <IoPeopleCircle />;
   }
 };
+
+export default MetricDashboard;

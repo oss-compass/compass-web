@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="17px" viewBox="0 0 14 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>cube-3</title>
+    <g id="Project" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Project-202311-贡献者" transform="translate(-1100.000000, -684.000000)" fill-rule="nonzero">
+            <g id="Group-7" transform="translate(1076.000000, 350.000000)">
+                <g id="Group-9" transform="translate(24.000000, 309.000000)">
+                    <g id="cube-3" transform="translate(0.000000, 25.000000)">
+                        <polygon id="Rectangle" fill="#B193FC" points="2.44781169e-06 12.6167824 7 17 7 8.95539378 2.44781131e-06 4.47769689"></polygon>
+                        <polygon id="Rectangle" fill="#8865E1" points="13.9999976 12.1479331 13.9999976 4.47769689 7 8.95539378 7 17"></polygon>
+                        <polygon id="Rectangle" fill="#CFBDFD" points="7 0 14 4.47769931 7 8.95539378 0 4.47769931"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

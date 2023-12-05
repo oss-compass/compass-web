@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
+import useVerifyDateRange from '../useVerifyDateRange';
 import MetricTable from './IssueTable';
 import IssueCompletion from './IssueCompletion';
 import IssueComments from './IssueComments';
@@ -15,7 +15,7 @@ const MetricIssue = () => {
   const { label, level } = verifiedItems[0];
   const { t } = useTranslation();
   const [tab, setTab] = useState('1');
-  const { timeStart, timeEnd } = useQueryDateRange();
+  const { timeStart, timeEnd } = useVerifyDateRange();
   let source;
   switch (tab) {
     case '1': {
@@ -60,6 +60,7 @@ const MetricIssue = () => {
       title={t('metrics_models:contributors_persona.metrics.issue')}
       id={ContributorsPersona.Issue}
       bodyClass="h-full"
+      className="h-full"
     >
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
