@@ -53,7 +53,12 @@ const Header: React.FC<{
             >
               {t('common:header.lab')}
             </Link>
-
+            <Link
+              href="/academe"
+              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+            >
+              {t('common:header.academe')}
+            </Link>
             <CommunityDropdown />
 
             <LinkX href="/blog" legacyBehavior>
