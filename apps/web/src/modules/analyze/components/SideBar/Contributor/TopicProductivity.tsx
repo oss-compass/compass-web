@@ -4,19 +4,28 @@ import ProductivityIcon from '@modules/analyze/components/SideBar/assets/Product
 import MenuTopicItem from '../Menu/MenuTopicItem';
 import MenuItem from '../Menu/MenuItem';
 import MenuSubItem from '../Menu/MenuSubItem';
-import { ContributorsPersona, useContributorsPersona, Topic } from '../config';
+import {
+  ContributorMilestonePersona,
+  ContributorDomainPersona,
+  ContributorRolePersona,
+  useContributorMilestonePersona,
+  useContributorDomainPersona,
+  useContributorRolePersona,
+  Topic,
+} from '../config';
 import { SideBarContext } from '@modules/analyze/context/SideBarContext';
 
 const Productivity = () => {
   const { t } = useTranslation();
   const { menuId, subMenuId } = useContext(SideBarContext);
-  const contributorsPersonaItems = useContributorsPersona();
-
+  const contributorsPersonaItems = useContributorMilestonePersona();
+  const contributorRolePersonaItems = useContributorRolePersona();
+  const contributorDomainPersonaItems = useContributorDomainPersona();
   const menu = (
     <>
       <MenuItem
-        active={menuId === ContributorsPersona.Overview}
-        id={ContributorsPersona.Overview}
+        active={menuId === ContributorMilestonePersona.Overview}
+        id={ContributorMilestonePersona.Overview}
         subMenu={
           <>
             {contributorsPersonaItems.groups.map((item) => {
@@ -33,7 +42,49 @@ const Productivity = () => {
           </>
         }
       >
-        {t('metrics_models:contributors_persona.title')}
+        {t('metrics_models:contributor_milestone_persona.title')}
+      </MenuItem>
+      <MenuItem
+        active={menuId === ContributorRolePersona.Overview}
+        id={ContributorRolePersona.Overview}
+        subMenu={
+          <>
+            {contributorRolePersonaItems.groups.map((item) => {
+              return (
+                <MenuSubItem
+                  key={item.id}
+                  active={item.id === subMenuId}
+                  id={item.id}
+                >
+                  {item.name}
+                </MenuSubItem>
+              );
+            })}
+          </>
+        }
+      >
+        {t('metrics_models:contributor_role_persona.title')}
+      </MenuItem>
+      <MenuItem
+        active={menuId === ContributorDomainPersona.Overview}
+        id={ContributorDomainPersona.Overview}
+        subMenu={
+          <>
+            {contributorDomainPersonaItems.groups.map((item) => {
+              return (
+                <MenuSubItem
+                  key={item.id}
+                  active={item.id === subMenuId}
+                  id={item.id}
+                >
+                  {item.name}
+                </MenuSubItem>
+              );
+            })}
+          </>
+        }
+      >
+        {t('metrics_models:contributor_domain_persona.title')}
       </MenuItem>
     </>
   );

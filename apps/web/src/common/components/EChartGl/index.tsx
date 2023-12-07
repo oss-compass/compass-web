@@ -21,7 +21,7 @@ export interface ReactEChartsProps {
   _tracing?: string;
 }
 
-const EChartX: React.FC<ReactEChartsProps> = ({
+const EChartGl: React.FC<ReactEChartsProps> = ({
   option,
   style,
   settings = { notMerge: true },
@@ -84,4 +84,4 @@ const EChartX: React.FC<ReactEChartsProps> = ({
   );
 };
 
-export default React.memo(EChartX);
+export default React.memo(EChartGl);

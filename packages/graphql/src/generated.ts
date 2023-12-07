@@ -785,6 +785,34 @@ export type Distribution = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type DomainPersonaMetric = {
+  __typename?: 'DomainPersonaMetric';
+  /** activity code contribution per person */
+  activityCodeContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** activity code contributor count */
+  activityCodeContributorCount?: Maybe<Scalars['Float']>;
+  /** activity issue contribution per person */
+  activityIssueContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** activity issue contributor count */
+  activityIssueContributorCount?: Maybe<Scalars['Float']>;
+  /** activity observation contribution per person */
+  activityObservationContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** activity observation contributor count */
+  activityObservationContributorCount?: Maybe<Scalars['Float']>;
+  /** role persona score */
+  domainPersonaScore?: Maybe<Scalars['Float']>;
+  /** metric model creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
+};
+
 export type Error = {
   __typename?: 'Error';
   /** 错误信息 */
@@ -998,6 +1026,34 @@ export type MetricStat = {
   mean?: Maybe<Scalars['Float']>;
   /** 50 percentile */
   median?: Maybe<Scalars['Float']>;
+};
+
+export type MilestonePersonaMetric = {
+  __typename?: 'MilestonePersonaMetric';
+  /** casual contributors per person */
+  activityCasualContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** number of casual contributors */
+  activityCasualContributorCount?: Maybe<Scalars['Float']>;
+  /** core contributors per person */
+  activityCoreContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** number of core contributors */
+  activityCoreContributorCount?: Maybe<Scalars['Float']>;
+  /** regular contributors per person */
+  activityRegularContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** number of regular contributors */
+  activityRegularContributorCount?: Maybe<Scalars['Float']>;
+  /** metric model creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** milestone persona score */
+  milestonePersonaScore?: Maybe<Scalars['Float']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
 };
 
 export type Model = {
@@ -1420,10 +1476,16 @@ export type Query = {
   metricCodequality: Array<CodequalityMetric>;
   /** Get community metrics data of compass */
   metricCommunity: Array<CommunityMetric>;
+  /** Get domain persona metrics */
+  metricDomainPersona: Array<DomainPersonaMetric>;
   /** Get group activity metrics data of compass */
   metricGroupActivity: Array<GroupActivityMetric>;
+  /** Get milestone persona metrics */
+  metricMilestonePersona: Array<MilestonePersonaMetric>;
   /** Metric models graph */
   metricModelsOverview: Array<Model>;
+  /** Get role persona metrics */
+  metricRolePersona: Array<RolePersonaMetric>;
   /** Get overview data of metrics set on compass lab */
   metricSetOverview?: Maybe<Array<ModelMetric>>;
   /** Get my member permissions of a lab model */
@@ -1662,6 +1724,14 @@ export type QueryMetricCommunityArgs = {
   repoType?: InputMaybe<Scalars['String']>;
 };
 
+export type QueryMetricDomainPersonaArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryMetricGroupActivityArgs = {
   beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
@@ -1670,7 +1740,23 @@ export type QueryMetricGroupActivityArgs = {
   repoType?: InputMaybe<Scalars['String']>;
 };
 
+export type QueryMetricMilestonePersonaArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryMetricModelsOverviewArgs = {
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  repoType?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryMetricRolePersonaArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
   repoType?: InputMaybe<Scalars['String']>;
@@ -1796,6 +1882,30 @@ export type Report = {
   mainScore?: Maybe<Diagram>;
   /** metric panels data of lab model */
   panels?: Maybe<Array<Panel>>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
+  /** metric scores for repositories type, only for community (software-artifact/governance) */
+  type?: Maybe<Scalars['String']>;
+};
+
+export type RolePersonaMetric = {
+  __typename?: 'RolePersonaMetric';
+  /** activity individual contribution per person */
+  activityIndividualContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** activity individual contributor count */
+  activityIndividualContributorCount?: Maybe<Scalars['Float']>;
+  /** activity organization contribution per person */
+  activityOrganizationContributionPerPerson?: Maybe<Scalars['Float']>;
+  /** activity organization contributor count */
+  activityOrganizationContributorCount?: Maybe<Scalars['Float']>;
+  /** metric model creatiton time */
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  /** metric model object identification */
+  label?: Maybe<Scalars['String']>;
+  /** metric model object level */
+  level?: Maybe<Scalars['String']>;
+  /** role persona score */
+  rolePersonaScore?: Maybe<Scalars['Float']>;
   /** metric model object short code */
   shortCode?: Maybe<Scalars['String']>;
   /** metric scores for repositories type, only for community (software-artifact/governance) */
@@ -4625,6 +4735,61 @@ export type MetricModelsOverviewQuery = {
     transformedScore?: number | null;
     type?: string | null;
     updatedAt?: any | null;
+  }>;
+};
+
+export type MetricContributorQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  start?: InputMaybe<Scalars['ISO8601DateTime']>;
+  end?: InputMaybe<Scalars['ISO8601DateTime']>;
+  repoType?: InputMaybe<Scalars['String']>;
+}>;
+
+export type MetricContributorQuery = {
+  __typename?: 'Query';
+  metricDomainPersona: Array<{
+    __typename?: 'DomainPersonaMetric';
+    activityCodeContributionPerPerson?: number | null;
+    activityCodeContributorCount?: number | null;
+    activityIssueContributionPerPerson?: number | null;
+    activityIssueContributorCount?: number | null;
+    activityObservationContributionPerPerson?: number | null;
+    activityObservationContributorCount?: number | null;
+    domainPersonaScore?: number | null;
+    grimoireCreationDate?: any | null;
+    label?: string | null;
+    level?: string | null;
+    shortCode?: string | null;
+    type?: string | null;
+  }>;
+  metricMilestonePersona: Array<{
+    __typename?: 'MilestonePersonaMetric';
+    activityCasualContributionPerPerson?: number | null;
+    activityCasualContributorCount?: number | null;
+    activityCoreContributionPerPerson?: number | null;
+    activityCoreContributorCount?: number | null;
+    activityRegularContributionPerPerson?: number | null;
+    activityRegularContributorCount?: number | null;
+    milestonePersonaScore?: number | null;
+    grimoireCreationDate?: any | null;
+    label?: string | null;
+    level?: string | null;
+    shortCode?: string | null;
+    type?: string | null;
+  }>;
+  metricRolePersona: Array<{
+    __typename?: 'RolePersonaMetric';
+    activityIndividualContributionPerPerson?: number | null;
+    activityIndividualContributorCount?: number | null;
+    activityOrganizationContributionPerPerson?: number | null;
+    activityOrganizationContributorCount?: number | null;
+    rolePersonaScore?: number | null;
+    grimoireCreationDate?: any | null;
+    label?: string | null;
+    level?: string | null;
+    shortCode?: string | null;
+    type?: string | null;
   }>;
 };
 
@@ -8586,6 +8751,102 @@ useMetricModelsOverviewQuery.fetcher = (
   fetcher<MetricModelsOverviewQuery, MetricModelsOverviewQueryVariables>(
     client,
     MetricModelsOverviewDocument,
+    variables,
+    headers
+  );
+export const MetricContributorDocument = /*#__PURE__*/ `
+    query metricContributor($label: String!, $level: String = "repo", $start: ISO8601DateTime, $end: ISO8601DateTime, $repoType: String) {
+  metricDomainPersona(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
+    activityCodeContributionPerPerson
+    activityCodeContributorCount
+    activityIssueContributionPerPerson
+    activityIssueContributorCount
+    activityObservationContributionPerPerson
+    activityObservationContributorCount
+    domainPersonaScore
+    grimoireCreationDate
+    label
+    level
+    shortCode
+    type
+  }
+  metricMilestonePersona(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
+    activityCasualContributionPerPerson
+    activityCasualContributorCount
+    activityCoreContributionPerPerson
+    activityCoreContributorCount
+    activityRegularContributionPerPerson
+    activityRegularContributorCount
+    milestonePersonaScore
+    grimoireCreationDate
+    label
+    level
+    shortCode
+    type
+  }
+  metricRolePersona(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
+    activityIndividualContributionPerPerson
+    activityIndividualContributorCount
+    activityOrganizationContributionPerPerson
+    activityOrganizationContributorCount
+    rolePersonaScore
+    grimoireCreationDate
+    label
+    level
+    shortCode
+    type
+  }
+}
+    `;
+export const useMetricContributorQuery = <
+  TData = MetricContributorQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: MetricContributorQueryVariables,
+  options?: UseQueryOptions<MetricContributorQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<MetricContributorQuery, TError, TData>(
+    ['metricContributor', variables],
+    fetcher<MetricContributorQuery, MetricContributorQueryVariables>(
+      client,
+      MetricContributorDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useMetricContributorQuery.getKey = (
+  variables: MetricContributorQueryVariables
+) => ['metricContributor', variables];
+useMetricContributorQuery.fetcher = (
+  client: GraphQLClient,
+  variables: MetricContributorQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<MetricContributorQuery, MetricContributorQueryVariables>(
+    client,
+    MetricContributorDocument,
     variables,
     headers
   );

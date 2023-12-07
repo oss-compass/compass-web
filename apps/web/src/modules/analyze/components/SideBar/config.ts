@@ -46,12 +46,32 @@ export enum Organizations {
   // MeetingFrequency= 'MeetingFrequency',
   // MeetingAttendeeCount = "MeetingAttendeeCount"
 }
-export enum ContributorsPersona {
-  Overview = 'contributors_persona_overview',
-  Contributor = 'contributors_persona_contributor',
-  Issue = 'contributors_persona_issue',
-  Pr = 'contributors_persona_pr',
+export enum ContributorMilestonePersona {
+  Overview = 'milestone_persona_overview',
+  ActivityCasualCount = 'activity_casual_contributor_count',
+  ActivityCasualContribution = 'activity_casual_contribution_per_person',
+  ActivityRegularCount = 'activity_regular_contributor_count',
+  ActivityRegularContribution = 'activity_regular_contribution_per_person',
+  ActivityCoreCount = 'activity_core_contributor_count',
+  ActivityCoreContribution = 'activity_core_contribution_per_person',
 }
+export enum ContributorRolePersona {
+  Overview = 'role_persona_overview',
+  ActivityOrganizationCount = 'activity_organization_contributor_count',
+  ActivityOrganizationContribution = 'activity_organization_contribution_per_person',
+  ActivityIndividualCount = 'activity_individual_contributor_count',
+  ActivityIndividualContribution = 'activity_individual_contribution_per_person',
+}
+export enum ContributorDomainPersona {
+  Overview = 'domain_persona_overview',
+  ActivityObservationCount = 'activity_observation_contributor_count',
+  ActivityObservationContribution = 'activity_observation_contribution_per_person',
+  ActivityCodeCount = 'activity_code_contributor_count',
+  ActivityCodeContribution = 'activity_code_contribution_per_person',
+  ActivityIssueCount = 'activity_issue_contributor_count',
+  ActivityIssueContribution = 'activity_issue_contribution_per_person',
+}
+
 export enum Topic {
   Overview = 'topic_overview',
   Productivity = 'topic_productivity',
@@ -64,7 +84,9 @@ export enum Section {
   CommunityServiceAndSupport = 'community_service_support',
   CommunityActivity = 'community_activity',
   OrganizationsActivity = 'organizations_activity',
-  ContributorsPersona = 'contributors_persona',
+  ContributorMilestonePersona = 'contributor_milestone_persona',
+  ContributorDomainPersona = 'contributor_domain_persona',
+  ContributorRolePersona = 'contributor_role_persona',
 }
 
 export const useCollaborationDevelopmentIndex = () => {
@@ -268,24 +290,129 @@ export const useOrganizationsActivity = () => {
     ],
   };
 };
-export const useContributorsPersona = () => {
+export const useContributorMilestonePersona = () => {
   const { t } = useTranslation();
   return {
-    topic: Topic.NicheCreation,
-    name: t('metrics_models:contributors_persona.title'),
-    id: Organizations.Overview,
+    topic: Topic.Productivity,
+    name: t('metrics_models:contributor_milestone_persona.title'),
+    id: ContributorMilestonePersona.Overview,
     groups: [
       {
-        name: t('metrics_models:contributors_persona.metrics.contributor'),
-        id: ContributorsPersona.Contributor,
+        name: t(
+          'metrics_models:contributor_milestone_persona.metrics.activity_core_contributor_count'
+        ),
+        id: ContributorMilestonePersona.ActivityCoreCount,
       },
       {
-        name: t('metrics_models:contributors_persona.metrics.issue'),
-        id: ContributorsPersona.Issue,
+        name: t(
+          'metrics_models:contributor_milestone_persona.metrics.activity_core_contribution_per_person'
+        ),
+        id: ContributorMilestonePersona.ActivityCoreContribution,
       },
       {
-        name: t('metrics_models:contributors_persona.metrics.pr'),
-        id: ContributorsPersona.Pr,
+        name: t(
+          'metrics_models:contributor_milestone_persona.metrics.activity_regular_contributor_count'
+        ),
+        id: ContributorMilestonePersona.ActivityRegularCount,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_milestone_persona.metrics.activity_regular_contribution_per_person'
+        ),
+        id: ContributorMilestonePersona.ActivityRegularContribution,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_milestone_persona.metrics.activity_casual_contributor_count'
+        ),
+        id: ContributorMilestonePersona.ActivityCasualCount,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_milestone_persona.metrics.activity_casual_contribution_per_person'
+        ),
+        id: ContributorMilestonePersona.ActivityCasualContribution,
+      },
+    ],
+  };
+};
+export const useContributorRolePersona = () => {
+  const { t } = useTranslation();
+  return {
+    topic: Topic.Productivity,
+    name: t('metrics_models:contributor_role_persona.title'),
+    id: ContributorRolePersona.Overview,
+    groups: [
+      {
+        name: t(
+          'metrics_models:contributor_role_persona.metrics.activity_organization_contributor_count'
+        ),
+        id: ContributorRolePersona.ActivityOrganizationCount,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_role_persona.metrics.activity_organization_contribution_per_person'
+        ),
+        id: ContributorRolePersona.ActivityOrganizationContribution,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_role_persona.metrics.activity_individual_contributor_count'
+        ),
+        id: ContributorRolePersona.ActivityIndividualCount,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_role_persona.metrics.activity_individual_contribution_per_person'
+        ),
+        id: ContributorRolePersona.ActivityIndividualContribution,
+      },
+    ],
+  };
+};
+
+export const useContributorDomainPersona = () => {
+  const { t } = useTranslation();
+  return {
+    topic: Topic.Productivity,
+    name: t('metrics_models:contributor_domain_persona.title'),
+    id: ContributorDomainPersona.Overview,
+    groups: [
+      {
+        name: t(
+          'metrics_models:contributor_domain_persona.metrics.activity_code_contributor_count'
+        ),
+        id: ContributorDomainPersona.ActivityCodeCount,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_domain_persona.metrics.activity_code_contribution_per_person'
+        ),
+        id: ContributorDomainPersona.ActivityCodeContribution,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_domain_persona.metrics.activity_issue_contributor_count'
+        ),
+        id: ContributorDomainPersona.ActivityIssueCount,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_domain_persona.metrics.activity_issue_contribution_per_person'
+        ),
+        id: ContributorDomainPersona.ActivityIssueContribution,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_domain_persona.metrics.activity_observation_contributor_count'
+        ),
+        id: ContributorDomainPersona.ActivityObservationCount,
+      },
+      {
+        name: t(
+          'metrics_models:contributor_domain_persona.metrics.activity_observation_contribution_per_person'
+        ),
+        id: ContributorDomainPersona.ActivityObservationContribution,
       },
     ],
   };

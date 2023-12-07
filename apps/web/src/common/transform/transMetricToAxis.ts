@@ -22,7 +22,7 @@ function getDateMap(
   const dateMap = new Map<string, Map<string, { y: number }>>();
 
   labelsData.forEach((item: any) => {
-    const metric = item.result[firstKey];
+    const metric = item?.result[firstKey] || [];
     metric.forEach((i: any) => {
       //  filter data
       if (i.type && i.type !== communityRepoType) {

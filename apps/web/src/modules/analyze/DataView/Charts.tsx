@@ -13,12 +13,12 @@ import { CiGrid41 } from 'react-icons/ci';
 import ProductivityIcon from '@modules/analyze/components/SideBar/assets/Productivity.svg';
 import RobustnessIcon from '@modules/analyze/components/SideBar/assets/Robustness.svg';
 import NicheCreationIcon from '@modules/analyze/components/SideBar/assets/NicheCreation.svg';
-import { useTopicType } from '@modules/analyze/store';
-import { useSnapshot } from 'valtio';
+import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
+import Contributor from '@modules/analyze/DataView/Contributor';
 
 const Charts = () => {
   const { t } = useTranslation();
-  const { topicType } = useSnapshot(useTopicType);
+  const topicType = useQueryMetricType();
 
   return (
     <ChartsDataProvider>
@@ -35,12 +35,10 @@ const Charts = () => {
           </span>
         </a>
       </h1>
-      <OverviewSummary />
-      <MetricDashboard />
       {topicType === 'collaboration' ? (
         <CollaborationDataView />
       ) : (
-        <ContributorDataView />
+        <Contributor />
       )}
     </ChartsDataProvider>
   );
@@ -49,6 +47,8 @@ const CollaborationDataView = () => {
   const { t } = useTranslation();
   return (
     <>
+      <OverviewSummary />
+      <MetricDashboard />
       <TopicTitle
         icon={<ProductivityIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
         id={Topic.Productivity}
@@ -73,35 +73,6 @@ const CollaborationDataView = () => {
         {t('analyze:topic.niche_creation')}
       </TopicTitle>
       <OrganizationsActivity />
-    </>
-  );
-};
-
-const ContributorDataView = () => {
-  const { t } = useTranslation();
-  return (
-    <>
-      <TopicTitle
-        icon={<ProductivityIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
-        id={Topic.Productivity}
-      >
-        {t('analyze:topic.productivity')}
-      </TopicTitle>
-      <CollaborationDevelopmentIndex />
-
-      {/* <TopicTitle
-        icon={<RobustnessIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
-        id={Topic.Robustness}
-      >
-        {t('analyze:topic.robustness')}
-      </TopicTitle>
-
-      <TopicTitle
-        icon={<NicheCreationIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
-        id={Topic.NicheCreation}
-      >
-        {t('analyze:topic.niche_creation')}
-      </TopicTitle> */}
     </>
   );
 };
