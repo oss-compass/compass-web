@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
-import { useTopicType } from '@modules/analyze/store';
-import { useSnapshot } from 'valtio';
+import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
 import { useMetricModelsOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 
 export const useEchartsGlOpts = () => {
   const { t } = useTranslation();
-  const { topicType } = useSnapshot(useTopicType);
+  const topicType = useQueryMetricType();
   const isContributor = topicType === 'contributor';
   const { verifiedItems } = useLabelStatus();
   const { label, level } = verifiedItems[0];
@@ -96,7 +95,7 @@ export const useEchartsGlOpts = () => {
     },
     {
       name: t('analyze:all_model:contributors_domain_persona'),
-      key: 'contributors_domain_persona',
+      key: 'domain_persona',
       value: [0, 4, 30],
       itemStyle: { color: color[0] },
       disable: false,
@@ -104,7 +103,7 @@ export const useEchartsGlOpts = () => {
     },
     {
       name: t('analyze:all_model:contributors_role_persona'),
-      key: 'contributors_role_persona',
+      key: 'role_persona',
       value: [1, 4, 30],
       itemStyle: { color: color[0] },
       disable: false,
@@ -112,7 +111,7 @@ export const useEchartsGlOpts = () => {
     },
     {
       name: t('analyze:all_model:contributors_milestone_persona'),
-      key: 'contributors_milestone_persona',
+      key: 'milestone_persona',
       value: [2, 4, 30],
       itemStyle: { color: color[0] },
       disable: false,
@@ -243,6 +242,7 @@ export const useEchartsGlOpts = () => {
         interval: 2,
         textStyle: {
           fontSize: 10,
+          color: '#aaa',
         },
         formatter: (index) => {
           return '              ' + index;
@@ -260,7 +260,7 @@ export const useEchartsGlOpts = () => {
     zAxis3D: {
       name: ' ',
       type: 'value',
-      max: 100,
+      splitNumber: 4,
       axisLine: {
         lineStyle: { width: 0.1, opacity: 0.5 },
       },
@@ -298,19 +298,9 @@ export const useEchartsGlOpts = () => {
         interval: 2,
         textStyle: {
           fontSize: 10,
+          color: '#aaa',
         },
-        // formatter: (index) => {
-        //   return '              ' + index;
-        // },
-        // formatter: (index, value) => {
-        //   if (value === 1 || value === 4 || value === 7) {
-        //     return index;
-        //   } else {
-        //     return "";
-        //   }
-        // },
       },
-      // splitArea: { show: true }
     },
     series: [
       {
@@ -330,9 +320,7 @@ export const useEchartsGlOpts = () => {
           fontSize: 12,
           fontWeight: 500,
           borderWidth: 1,
-          textStyle: {
-            color: '#333',
-          },
+          color: '#333',
           distance: -20,
           // formatter: function (params) {
           //   var value = params.name;
@@ -384,7 +372,8 @@ export const useEchartsGlOpts = () => {
         // autoRotateSpeed: 1,
         //禁用缩放
         zoomSensitivity: 0,
-        distance: 340,
+        rotateSensitivity: [2, 0],
+        distance: 290,
         alpha: 20,
         beta: 0,
       },

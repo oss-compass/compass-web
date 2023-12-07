@@ -3,7 +3,7 @@ import BaseCard from '@common/components/BaseCard';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
-import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import dynamic from 'next/dynamic';
 import Productivity from 'public/images/chart-legend/cube-1.svg';
 import Robustness from 'public/images/chart-legend/cube-2.svg';
@@ -15,10 +15,6 @@ const EChartGl = dynamic(() => import('@common/components/EChartGl'), {
 });
 const DistributionMap = () => {
   const { t } = useTranslation();
-  // const echartsOpts = useMemo(() => {
-  //   console.log(data);
-  //   return useEchartsOpts(data?.metricModelsOverview || [], topicType);
-  // }, [data, isLoading, topicType]);
   const { echartsOpts, isLoading } = useEchartsGlOpts();
   return (
     <BaseCard

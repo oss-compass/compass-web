@@ -101,7 +101,7 @@ query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
 
 query metric(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $start: ISO8601DateTime
   $end: ISO8601DateTime
   $repoType: String
@@ -424,7 +424,7 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
 
 # query labMetric(
 #   $label: String!
-#   $level: String = repo
+#   $level: String = "repo"
 #   $start: ISO8601DateTime
 #   $end: ISO8601DateTime
 # ) {
@@ -507,7 +507,7 @@ query bulkOverview($labels: [String!]!) {
   }
 }
 
-query trending($level: String = repo) {
+query trending($level: String = "repo") {
   trending(level: $level) {
     activityScore
     collections
@@ -558,7 +558,7 @@ query bulkShortenedLabel($labels: [LabelRowInput!]!) {
 }
 query metricDashboard(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
@@ -612,7 +612,7 @@ query metricDashboard(
 }
 query contributorsDetailList(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $page: Int
   $per: Int
   $filterOpts: [FilterOptionInput!]
@@ -651,7 +651,7 @@ query contributorsDetailList(
 
 query ecoContributorsOverview(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $filterOpts: [FilterOptionInput!]
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
@@ -677,7 +677,7 @@ query ecoContributorsOverview(
 }
 query orgContributionDistribution(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $filterOpts: [FilterOptionInput!]
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
@@ -703,7 +703,7 @@ query orgContributionDistribution(
 }
 query orgContributorsOverview(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $filterOpts: [FilterOptionInput!]
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
@@ -728,7 +728,7 @@ query orgContributorsOverview(
 }
 query contributorsOverview(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $filterOpts: [FilterOptionInput!]
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
@@ -755,7 +755,7 @@ query contributorsOverview(
 
 query issuesDetailList(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $page: Int
   $per: Int
   $filterOpts: [FilterOptionInput!]
@@ -795,7 +795,7 @@ query issuesDetailList(
 }
 query issueCompletion(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
@@ -815,7 +815,7 @@ query issueCompletion(
 }
 query issueComment(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
@@ -835,7 +835,7 @@ query issueComment(
 }
 query pullsDetailList(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $page: Int
   $per: Int
   $filterOpts: [FilterOptionInput!]
@@ -876,7 +876,7 @@ query pullsDetailList(
 }
 query pullsCompletion(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
@@ -896,7 +896,7 @@ query pullsCompletion(
 }
 query pullsComment(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
@@ -934,7 +934,7 @@ query verifyDetailDataRange(
 
 query metricModelsOverview(
   $label: String!
-  $level: String = repo
+  $level: String = "repo"
   $repoType: String
 ) {
   metricModelsOverview(label: $label, level: $level, repoType: $repoType) {
@@ -951,63 +951,70 @@ query metricModelsOverview(
   }
 }
 
-# metricDomainPersona(
-#     label: $label
-#     level: $level
-#     beginDate: $start
-#     endDate: $end
-#     repoType: $repoType
-# ) {
-#     activity_observation_contributor_count
-#     activity_observation_contribution_per_person
-#     activity_code_contributor_count
-#     activity_code_contribution_per_person
-#     activity_issue_contributor_count
-#     activity_issue_contribution_per_person
-#     domainPersonaScore
-#     grimoireCreationDate
-#     label
-#     level
-#     shortCode
-#     type
-# }
+query metricContributor(
+  $label: String!
+  $level: String = "repo"
+  $start: ISO8601DateTime
+  $end: ISO8601DateTime
+  $repoType: String
+) {
+  metricDomainPersona(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
+    activityCodeContributionPerPerson
+    activityCodeContributorCount
+    activityIssueContributionPerPerson
+    activityIssueContributorCount
+    activityObservationContributionPerPerson
+    activityObservationContributorCount
+    domainPersonaScore
+    grimoireCreationDate
+    label
+    level
+    shortCode
+    type
+  }
 
-# metricMilestonePersona(
-#     label: $label
-#     level: $level
-#     beginDate: $start
-#     endDate: $end
-#     repoType: $repoType
-# ) {
-#     activity_casual_contributor_count
-#     activity_casual_contribution_per_person
-#     activity_regular_contributor_count
-#     activity_regular_contribution_per_person
-#     activity_core_contributor_count
-#     activity_core_contribution_per_person
-#     MilestonePersonaScore
-#     grimoireCreationDate
-#     label
-#     level
-#     shortCode
-#     type
-# }
-
-# metricRolePersona(
-#     label: $label
-#     level: $level
-#     beginDate: $start
-#     endDate: $end
-#     repoType: $repoType
-# ) {
-#     activity_organization_contributor_count
-#     activity_organization_contribution_per_person
-#     activity_individual_contributor_count
-#     activity_individual_contribution_per_person
-#     RolePersonaScore
-#     grimoireCreationDate
-#     label
-#     level
-#     shortCode
-#     type
-# }
+  metricMilestonePersona(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
+    activityCasualContributionPerPerson
+    activityCasualContributorCount
+    activityCoreContributionPerPerson
+    activityCoreContributorCount
+    activityRegularContributionPerPerson
+    activityRegularContributorCount
+    milestonePersonaScore
+    grimoireCreationDate
+    label
+    level
+    shortCode
+    type
+  }
+  metricRolePersona(
+    label: $label
+    level: $level
+    beginDate: $start
+    endDate: $end
+    repoType: $repoType
+  ) {
+    activityIndividualContributionPerPerson
+    activityIndividualContributorCount
+    activityOrganizationContributionPerPerson
+    activityOrganizationContributorCount
+    rolePersonaScore
+    grimoireCreationDate
+    label
+    level
+    shortCode
+    type
+  }
+}

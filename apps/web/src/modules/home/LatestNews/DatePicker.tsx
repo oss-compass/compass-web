@@ -73,7 +73,7 @@ const DatePicker = () => {
         ]}
       >
         <div
-          className="w-[240px]overflow-hidden flex rounded bg-black px-2 pt-2 pb-2 text-[#fff] drop-shadow-2xl"
+          className="flex w-[240px] overflow-hidden rounded bg-black px-2 pt-2 pb-2 text-[#fff] drop-shadow-2xl"
           ref={popoverRef}
         >
           {selectEvent.map((item) => {

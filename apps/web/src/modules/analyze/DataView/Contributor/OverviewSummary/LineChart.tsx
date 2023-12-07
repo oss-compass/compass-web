@@ -86,33 +86,25 @@ const LineChartWithData = () => {
   const { t } = useTranslation();
   const opts = [
     {
-      type: 'metricCodequality',
-      key: 'codeQualityGuarantee',
-      legendName: t('metrics_models:collaboration_development_index.title'),
+      type: 'metricMilestonePersona',
+      key: 'milestonePersonaScore',
+      legendName: t('metrics_models:contributor_milestone_persona.title'),
     },
     {
-      type: 'metricCommunity',
-      key: 'communitySupportScore',
-      legendName: t('metrics_models:community_service_and_support.title'),
+      type: 'metricRolePersona',
+      key: 'rolePersonaScore',
+      legendName: t('metrics_models:contributor_role_persona.title'),
     },
     {
-      type: 'metricActivity',
-      key: 'activityScore',
-      legendName: t('metrics_models:activity.title'),
+      type: 'metricDomainPersona',
+      key: 'domainPersonaScore',
+      legendName: t('metrics_models:contributor_domain_persona.title'),
     },
   ];
 
-  const optsWithOrg = [
-    ...opts,
-    {
-      type: 'metricGroupActivity',
-      key: 'organizationsActivity',
-      legendName: t('metrics_models:organization_activity.title'),
-    },
-  ];
+  const optsWithOrg = [...opts];
 
   const data = useMetricQueryData();
-
   const isLoading = data.loading;
   const copyOpts = optsWithOrg;
   const snap = useSnapshot(chartUserSettingState);

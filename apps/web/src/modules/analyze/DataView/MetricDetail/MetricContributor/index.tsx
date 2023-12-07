@@ -11,7 +11,6 @@ import ContributorContributors from './Contributors';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import Tooltip from '@common/components/Tooltip';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import { ContributorsPersona } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 
 const MetricContributor = () => {
@@ -70,7 +69,6 @@ const MetricContributor = () => {
   return (
     <BaseCard
       title={t('metrics_models:contributors_persona.metrics.contributor')}
-      id={ContributorsPersona.Contributor}
       bodyClass="h-full"
       className="h-full"
     >

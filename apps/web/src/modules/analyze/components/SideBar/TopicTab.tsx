@@ -1,12 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import MyTab from '@common/components/Tab';
-import { useTopicType, setTopicType, TopicType } from '@modules/analyze/store';
-import { useSnapshot } from 'valtio';
+import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
+import useSwitchMetricType from '@modules/analyze/hooks/useSwitchMetricType';
 
 const TopicTab = () => {
   const { t } = useTranslation();
-  const { topicType } = useSnapshot(useTopicType);
+  const topicType = useQueryMetricType();
+  const { switchMetricType } = useSwitchMetricType();
+
   const tabOptions = [
     {
       label: t('analyze:collaboration'),
@@ -33,7 +35,7 @@ const TopicTab = () => {
         <MyTab
           options={tabOptions}
           value={topicType}
-          onChange={(v) => setTopicType(v as TopicType)}
+          onChange={(v) => switchMetricType(v)}
         />
       </div>
     </div>
