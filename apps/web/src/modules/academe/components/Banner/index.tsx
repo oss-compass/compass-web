@@ -31,20 +31,17 @@ const Banner = () => {
         </div>
         <div
           className={classnames(
-            'line-clamp-3 mt-4 mb-4 h-16 max-w-3xl md:-right-[300px]',
+            'line-clamp-3 mt-4 mb-4 h-16 max-w-3xl text-base md:-right-[300px]',
             style.headerdsc
           )}
         >
           {t('academe:academic_research_desc')}
         </div>
         <div className="flex">
-          <div
-            className="h-8 cursor-pointer bg-gradient-to-r from-[#72D74F] to-[#27AE65] px-4 text-center leading-8 text-[#fff]"
-            onClick={() => {
-              // router.push('/lab/model/create');
-            }}
-          >
-            {t('academe:submit_your_application_now')}
+          <div className="h-8 cursor-pointer bg-gradient-to-r from-[#72D74F] to-[#27AE65] px-4 text-center leading-8 text-[#fff]">
+            <a href="mailto:contact@oss-compass.org">
+              {t('academe:submit_your_application_now')}
+            </a>
           </div>
         </div>
       </div>

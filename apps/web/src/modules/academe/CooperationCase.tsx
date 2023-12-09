@@ -6,21 +6,55 @@ import { Progress } from 'antd';
 import Dialog, { Transition } from '@common/components/Dialog';
 import Input from '@common/components/Input';
 import { GrClose } from 'react-icons/gr';
+import axios from 'axios';
+import { isValidUrl } from '@common/utils/url';
+import { toFixed } from '@common/utils';
+import { AiOutlineLoading } from 'react-icons/ai';
+import { TbPoint } from 'react-icons/tb';
+
+async function getData({ repo }) {
+  return await axios.post(
+    '/api/beta/predict',
+    { repo },
+    {
+      headers: {
+        accept: 'application/json',
+      },
+    }
+  );
+}
 
 const p = () => {
   <Progress percent={100} size="small" />;
 };
-const CooperationProcess = () => {
+const CooperationCase = () => {
   const { t, i18n } = useTranslation();
   const caseList = [
     {
       name: 'nju',
       url: '/images/academe/logo-nju@2x.png',
       title: t('academe:nju_title'),
-      desc: t('academe:nju_desc'),
+      desc: (
+        <ul className="h-full w-full">
+          <li className="ml-4 list-disc">{t('academe:nju_author')}</li>
+          <li className="ml-4 list-disc">
+            {t('academe:nju_desc')}
+            <a
+              className="text-[#002fa7]"
+              href={
+                'https://compass.gitee.com/zh/blog/2023/12/07/compass-prediction-activity/compass-prediction-activity'
+              }
+            >
+              {t('academe:nju_title')}
+            </a>
+          </li>
+        </ul>
+      ),
+      desc2: t('academe:nju_desc2'),
       content: (
         <img className="h-full w-full" src={'/images/academe/case/nju.png'} />
       ),
+      experience: true,
     },
     {
       name: 'pku1',
@@ -28,8 +62,19 @@ const CooperationProcess = () => {
       title: t('academe:pku1_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:pku1_desc1')}</li>
-          <li className="ml-4 list-disc">{t('academe:pku1_desc2')}</li>
+          <li className="ml-4 list-disc">{t('academe:pku1_author')}</li>
+          <li className="ml-4 list-disc">
+            <div className="line-clamp-6">{t('academe:pku1_desc1')}</div>
+          </li>
+          <li className="ml-4 list-disc">
+            {t('academe:pku1_desc2')}
+            <a
+              className="text-[#002fa7]"
+              href={'https://github.com/osslab-pku/gfi-bot'}
+            >
+              https://github.com/osslab-pku/gfi-bot
+            </a>
+          </li>
         </ul>
       ),
       content:
@@ -49,7 +94,23 @@ const CooperationProcess = () => {
       name: 'openeuler',
       url: '/images/academe/openeuler.svg',
       title: t('academe:openeuler_title'),
-      desc: t('academe:openeuler_desc'),
+      desc: (
+        <ul className="h-full w-full">
+          <li className="ml-4 list-disc">{t('academe:openeuler_author')}</li>
+          <li className="ml-4 list-disc">
+            <div className="line-clamp-6">{t('academe:openeuler_desc1')}</div>
+          </li>
+          <li className="ml-4 list-disc">
+            {t('academe:openeuler_desc2')}
+            <a
+              className="text-[#002fa7]"
+              href={'https://gitee.com/openeuler/docs-accompany-reading'}
+            >
+              https://gitee.com/openeuler/docs-accompany-reading
+            </a>
+          </li>
+        </ul>
+      ),
       content: (
         <div className="flex h-full w-full justify-center">
           <video
@@ -62,6 +123,8 @@ const CooperationProcess = () => {
           ></video>
         </div>
       ),
+      experience: true,
+      experienceUrl: 'https://docs.openeuler.org/',
     },
     {
       name: 'pku2',
@@ -69,8 +132,31 @@ const CooperationProcess = () => {
       title: t('academe:pku2_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:pku2_desc1')}</li>
-          <li className="ml-4 list-disc">{t('academe:pku2_desc2')}</li>
+          <li className="ml-4 list-disc">{t('academe:author')}</li>
+          <div className="ml-8 flex list-disc">
+            <div className="mt-0.5 mr-2">
+              <TbPoint />
+            </div>
+            {t('academe:pku2_author')}
+          </div>
+          <div className="ml-8 flex list-disc">
+            <div className="mt-0.5 mr-2">
+              <TbPoint />
+            </div>
+            {t('academe:pku2_author2')}
+          </div>
+          <li className="ml-4 list-disc">
+            <div className="line-clamp-6">{t('academe:pku2_desc1')}</div>
+          </li>
+          <li className="ml-4 list-disc">
+            {t('academe:pku2_desc2')}
+            <a
+              className="text-[#002fa7]"
+              href={'https://github.com/hehao98/MigrationHelper'}
+            >
+              https://github.com/hehao98/MigrationHelper
+            </a>
+          </li>
         </ul>
       ),
       content:
@@ -92,8 +178,25 @@ const CooperationProcess = () => {
       title: t('academe:pku3_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:pku3_desc1')}</li>
-          <li className="ml-4 list-disc">{t('academe:pku3_desc2')}</li>
+          <li className="ml-4 list-disc">{t('academe:pku3_author')}</li>
+          <li className="ml-4 list-disc">
+            <div className="line-clamp-6">{t('academe:pku3_desc1')}</div>
+          </li>
+          <li className="ml-4 list-disc">
+            {t('academe:pku3_desc2')}
+            <a className="text-[#002fa7]" href={'https://licenserec.com'}>
+              https://licenserec.com
+            </a>
+          </li>
+          <li className="ml-4 list-disc">
+            {t('academe:pku3_desc3')}
+            <a
+              className="text-[#002fa7]"
+              href={'https://github.com/osslab-pku/RecLicense'}
+            >
+              https://github.com/osslab-pku/RecLicense
+            </a>
+          </li>
         </ul>
       ),
       content:
@@ -114,8 +217,35 @@ const CooperationProcess = () => {
   const [active, setActive] = useState('nju');
   const [open, setOpen] = useState(false);
   const activeCase = caseList.find((item) => item.name === active);
-  const [content, setContent] = useState('');
 
+  const [repoUrl, setRepoUrl] = useState<string>('');
+  const isUrlValid = isValidUrl(repoUrl);
+  const [predict, setPredict] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const calculate = () => {
+    setErrorMsg('');
+    setPredict(null);
+    const variables = { repo: repoUrl };
+    // @ts-ignore
+    getData(variables)
+      .then((res) => {
+        if (res.status === 200 && res?.data?.prediction?.active) {
+          setPredict(toFixed(res.data.prediction.active * 100, 1));
+        } else {
+          setErrorMsg(t('academe:failed_to_fetch_data'));
+        }
+      })
+      .catch((err) => {
+        setErrorMsg(
+          err?.response?.data?.message || t('academe:failed_to_fetch_data')
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
   const dialogContent = (
     <>
       <div
@@ -142,24 +272,50 @@ const CooperationProcess = () => {
         <div className="mb-4 text-xl font-semibold">{activeCase.title}</div>
         <div className="flex md:flex-col">
           <div className="mr-6 min-w-[300px] flex-1 text-sm">
-            <div>{activeCase.desc}</div>
-            <div className="h-[180px] w-full p-2">{activeCase.content}</div>
+            <div>{activeCase.desc2}</div>
           </div>
-          <div className="w-[330px] border-l pl-6 md:border-0">
-            <div className="font-semibold">效果体验</div>
-            <div className="mt-4 mb-2 text-sm">请输入内容</div>
-            <Input
-              value={content}
-              className={classnames(
-                'daisy-input-bordered daisy-input h-10 w-full flex-1 border-2  px-4 text-base outline-none'
-              )}
-            />
-            <div
-              onClick={() => {}}
-              className="mt-4 flex h-8 w-16 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
-            >
-              计算
+          <div className="w-[430px] border-l pl-6 md:border-0">
+            <div className="font-semibold">{t('academe:experience')}</div>
+            <div className="mt-2">
+              <Input
+                className="w-full"
+                placeholder={t('academe:type_address_of') as string}
+                error={false}
+                value={repoUrl}
+                onChange={(e) => {
+                  const url = e.target.value;
+                  setRepoUrl(url);
+                }}
+              />
+              {repoUrl && !isUrlValid ? (
+                <p className="p-1 text-red-500">
+                  {t('academe:please_enter_a_valid')}
+                </p>
+              ) : null}
+              {errorMsg ? <p className="p-1 text-red-500">{errorMsg}</p> : null}
             </div>
+            <div
+              onClick={() => {
+                setLoading(true);
+                calculate();
+              }}
+              className="mt-4 flex h-8 w-20 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
+            >
+              {loading ? (
+                <AiOutlineLoading className="t animate-spin" />
+              ) : (
+                t('academe:calculate')
+              )}
+            </div>
+
+            {predict && (
+              <>
+                <div className="mt-2">{t('academe:result')}</div>
+                <div>
+                  <Progress percent={predict} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -199,17 +355,23 @@ const CooperationProcess = () => {
         })}
       </div>
       <div className="mb-10 flex items-center border border-t-0 border-[#CFCFCF] p-8">
-        <div className="w-[424px] pl-2">
+        <div className="w-[550px] pl-2">
           <div className="text-xl font-semibold">{activeCase.title}</div>
-          <div className="mt-2 w-[424px] text-sm">{activeCase.desc}</div>
-          <div
-            onClick={() => {
-              setOpen(true);
-            }}
-            className="mt-4 flex h-8 w-48 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
-          >
-            {t('academe:experience_immediately')}
-          </div>
+          <div className="mt-2 w-[550px] text-sm">{activeCase.desc}</div>
+          {activeCase.experience && (
+            <div
+              onClick={() => {
+                if (activeCase.experienceUrl) {
+                  window.open(activeCase.experienceUrl);
+                } else {
+                  setOpen(true);
+                }
+              }}
+              className="mt-4 flex h-8 w-48 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
+            >
+              {t('academe:experience_immediately')}
+            </div>
+          )}
         </div>
         <div className="ml-16 h-[280px] flex-1 ">{activeCase.content}</div>
       </div>
@@ -231,4 +393,4 @@ const CooperationProcess = () => {
   );
 };
 
-export default CooperationProcess;
+export default CooperationCase;

@@ -16,7 +16,7 @@ const TotalScore = () => {
   const tansOpts: TransOpt = {
     legendName: t('metrics_models:contributor_role_persona.title'),
     xKey: 'grimoireCreationDate',
-    yKey: 'metricRolePersona.milestonePersonaScore',
+    yKey: 'metricRolePersona.rolePersonaScore',
     summaryKey: '',
   };
   const {

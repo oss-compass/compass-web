@@ -11,7 +11,47 @@ import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 import { chartUserSettingState } from '@modules/analyze/store';
 import { useSnapshot } from 'valtio';
+import { isNull, isUndefined } from 'lodash';
+import { Trans } from 'react-i18next';
+import LinkLegacy from '@common/components/LinkLegacy';
 
+const isEmptyData = (result) => {
+  return result.every((r) => {
+    return r.data.every((i) => {
+      return isNull(i) || isUndefined(i);
+    });
+  });
+};
+const Empty = () => {
+  const { t, i18n } = useTranslation();
+  return (
+    <div className="z-10 flex h-full w-full flex-col items-center justify-center bg-[rgba(255,255,255,.8)]">
+      <p className="text-xs text-gray-400">
+        {t('analyze:there_is_currently_no_data_in_the_chart')}
+      </p>
+      <p className="text-xs text-gray-400">
+        <Trans
+          i18nKey="please_contact_us_if_you_have"
+          ns="analyze"
+          values={{
+            e: t('analyze:contact_us'),
+          }}
+          components={{
+            l: (
+              <LinkLegacy
+                href={
+                  i18n.language === 'en'
+                    ? '/docs/community/'
+                    : '/zh/docs/community/'
+                }
+              />
+            ),
+          }}
+        />
+      </p>
+    </div>
+  );
+};
 const LineChart: React.FC<ChartSummaryProps> = ({
   loading = false,
   xAxis,
@@ -39,7 +79,10 @@ const LineChart: React.FC<ChartSummaryProps> = ({
       },
     });
   }, [xAxis, yAxis, yAxisScale, onePointSys]);
-
+  const isEmpty = isEmptyData(echartsOpts.series);
+  if (isEmpty && !loading) {
+    return <Empty />;
+  }
   return (
     <BaseCard
       title={t('analyze:overview')}

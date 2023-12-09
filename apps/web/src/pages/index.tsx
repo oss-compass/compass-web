@@ -41,7 +41,7 @@ const Home: React.FC = (props) => {
         <LatestNews />
         <NoSsr>
           <Explain />
-          <ExplainMobile />
+          {/* <ExplainMobile /> */}
           {/* <Questionnaire /> */}
         </NoSsr>
         <SpecialThank />

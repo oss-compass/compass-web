@@ -13,6 +13,7 @@ import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { removeHttps } from '@common/utils';
 import { compareIdsAdd } from '@common/utils/links';
 import { getRouteAsPath } from '@common/utils/url';
+import qs from 'query-string';
 
 const checkLevel = (shortId: string) => {
   if (shortId.startsWith('s')) {
@@ -112,8 +113,12 @@ const AddInput = () => {
                 if (confirmItem) {
                   const { shortCode } = confirmItem;
                   const slug = compareIdsAdd(compareSlugs, shortCode!);
+                  const searchResult = qs.parse(window.location.search) || {};
                   await router.push(
-                    getRouteAsPath(router.route, { slugs: slug })
+                    getRouteAsPath(router.route, {
+                      slugs: slug,
+                      ...searchResult,
+                    })
                   );
                   resetInput();
                 }

@@ -1,48 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'next-i18next';
-import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
-import { useMetricModelsOverviewQuery } from '@oss-compass/graphql';
-import client from '@common/gqlClient';
-import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import { chartUserSettingState } from '@modules/analyze/store';
-import { useSnapshot } from 'valtio';
-import { Level } from '@modules/analyze/constant';
 
-export const useEchartsGlOpts = () => {
+const useOptions = () => {
   const { t } = useTranslation();
-  const topicType = useQueryMetricType();
-  const isContributor = topicType === 'contributor';
-  const { verifiedItems } = useLabelStatus();
-  const { label, level } = verifiedItems[0];
-  const snap = useSnapshot(chartUserSettingState);
-  const repoType = snap.repoType;
-  const { data, isLoading } = useMetricModelsOverviewQuery(client, {
-    label: label,
-    level: level,
-    repoType: level === Level.COMMUNITY ? repoType : null,
-  });
-  const type = [
-    t('analyze:collaboration'),
-    t('analyze:collaboration'),
-    t('analyze:collaboration'),
-    t('analyze:contributor'),
-    t('analyze:contributor'),
-    t('analyze:contributor'),
-    t('analyze:software'),
-    t('analyze:software'),
-    t('analyze:software'),
-  ];
-  const contributorType = [
-    t('analyze:contributor'),
-    t('analyze:contributor'),
-    t('analyze:contributor'),
-    t('analyze:collaboration'),
-    t('analyze:collaboration'),
-    t('analyze:collaboration'),
-    t('analyze:software'),
-    t('analyze:software'),
-    t('analyze:software'),
-  ];
+
   const dimension = [
     t('analyze:topic:productivity'),
     t('analyze:topic:productivity'),
@@ -54,18 +15,18 @@ export const useEchartsGlOpts = () => {
     t('analyze:topic:niche_creation'),
     t('analyze:topic:niche_creation'),
   ];
+  const type = [
+    t('analyze:collaboration'),
+    t('analyze:collaboration'),
+    t('analyze:collaboration'),
+    t('analyze:contributor'),
+    t('analyze:contributor'),
+    t('analyze:contributor'),
+    t('analyze:software'),
+    t('analyze:software'),
+    t('analyze:software'),
+  ];
   const color = ['#93AAFC', '#87D8F8', '#B193FC'];
-  const disableColor = '#d4d4d4';
-  const areaColor = [
-    'rgba(255,247,207,0.5)',
-    'rgba(255,231,231,0.5)',
-    'rgba(226,226,226,0.5)',
-  ];
-  const contributorAreaColor = [
-    'rgba(255,231,231,0.5)',
-    'rgba(255,247,207,0.5)',
-    'rgba(226,226,226,0.5)',
-  ];
   const models = [
     {
       name: t('analyze:all_model:collaboration_development_index'),
@@ -204,26 +165,11 @@ export const useEchartsGlOpts = () => {
       scope: 'software',
     },
   ];
-  const yAxis3D = isContributor ? contributorType : type;
-  const areaStyle = isContributor ? contributorAreaColor : areaColor;
-  const seriesData = models.map(({ key, value, itemStyle, scope, name }) => {
-    if (isContributor) {
-      if (scope === 'collaboration') {
-        value = [value[0], value[1] + 3, value[2]];
-      } else if (scope === 'contributor') {
-        value = [value[0], value[1] - 3, value[2]];
-      }
-    }
-    const row = data?.metricModelsOverview.find((i) => i.ident === key);
-    if (row) {
-      value = [value[0], value[1], row.transformedScore];
-      return { name, value, itemStyle };
-    } else {
-      // value = [value[0], value[1], row.mainScore * 10];
-      itemStyle.color = disableColor;
-      return { name, value, itemStyle, disable: true };
-    }
-  });
+  const areaColor = [
+    'rgba(255,247,207,0.5)',
+    'rgba(255,231,231,0.5)',
+    'rgba(226,226,226,0.5)',
+  ];
   const echartsOpts = {
     tooltip: {
       textStyle: {
@@ -233,7 +179,7 @@ export const useEchartsGlOpts = () => {
         if (params.data.disable) {
           return params.name;
         } else {
-          return params.name + ': ' + params.data.value[2];
+          return params.name;
         }
       },
     },
@@ -247,7 +193,7 @@ export const useEchartsGlOpts = () => {
       axisLabel: {
         interval: 2,
         textStyle: {
-          fontSize: 10,
+          fontSize: 12,
           color: '#aaa',
         },
         formatter: (index) => {
@@ -286,7 +232,7 @@ export const useEchartsGlOpts = () => {
     yAxis3D: {
       name: ' ',
       type: 'category',
-      data: yAxis3D,
+      data: type,
       axisLine: {
         lineStyle: { width: 1 },
       },
@@ -297,13 +243,13 @@ export const useEchartsGlOpts = () => {
       splitArea: {
         show: true,
         areaStyle: {
-          color: areaStyle,
+          color: areaColor,
         },
       },
       axisLabel: {
         interval: 2,
         textStyle: {
-          fontSize: 10,
+          fontSize: 12,
           color: '#aaa',
         },
       },
@@ -311,7 +257,7 @@ export const useEchartsGlOpts = () => {
     series: [
       {
         type: 'bar3D',
-        data: seriesData,
+        data: models,
         shading: 'realistic',
         //金属质感，配合 ambientCubemap 使用
         // realisticMaterial: {
@@ -358,6 +304,7 @@ export const useEchartsGlOpts = () => {
       },
     ],
     grid3D: {
+      environment: '#f0f2f2',
       axisLine: {
         interval: 1,
       },
@@ -378,13 +325,12 @@ export const useEchartsGlOpts = () => {
         //禁用缩放
         zoomSensitivity: 0,
         rotateSensitivity: [2, 0],
-        distance: 290,
+        distance: 250,
         alpha: 20,
         beta: 0,
       },
       boxWidth: 200,
       boxDepth: 150,
-      environment: 'none',
       light: {
         //主光源
         main: {
@@ -404,5 +350,12 @@ export const useEchartsGlOpts = () => {
       },
     },
   };
-  return { echartsOpts, isLoading };
+  return {
+    dimension,
+    type,
+    models,
+    echartsOpts,
+  };
 };
+
+export default useOptions;

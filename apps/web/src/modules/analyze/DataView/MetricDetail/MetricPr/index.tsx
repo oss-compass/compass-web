@@ -7,7 +7,6 @@ import PrCompletion from './PrCompletion';
 import PrComments from './PrComments';
 import { useTranslation } from 'next-i18next';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import { ContributorsPersona } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 
 const MetricPr = () => {
@@ -57,8 +56,7 @@ const MetricPr = () => {
   }
   return (
     <BaseCard
-      title={t('metrics_models:contributors_persona.metrics.pr')}
-      id={ContributorsPersona.Pr}
+      title={t('analyze:metric_detail:pull_requests')}
       bodyClass="h-full"
       className="h-full"
     >

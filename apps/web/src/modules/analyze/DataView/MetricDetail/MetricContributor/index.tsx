@@ -68,7 +68,7 @@ const MetricContributor = () => {
   }
   return (
     <BaseCard
-      title={t('metrics_models:contributors_persona.metrics.contributor')}
+      title={t('analyze:metric_detail:contributor')}
       bodyClass="h-full"
       className="h-full"
     >

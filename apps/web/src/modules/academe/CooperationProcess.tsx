@@ -16,12 +16,6 @@ const CooperationProcess = () => {
         <li className="ml-4 list-disc">
           {t('academe:submit_application_desc4')}
         </li>
-        <li className="ml-4 list-disc">
-          {t('academe:submit_application_desc5')}
-        </li>
-        <li className="ml-4 list-disc">
-          {t('academe:submit_application_desc6')}
-        </li>
       </ul>
       <p>{t('academe:submit_application_desc7')}</p>
     </>
@@ -75,12 +69,11 @@ const CooperationProcess = () => {
         {t('academe:cooperation_process')}
       </div>
       <div className="mb-10 flex h-[345px] items-center border border-[#CFCFCF]">
-        <div className="h-full w-[248px] overflow-hidden border-r border-[#CFCFCF] p-8">
+        <div className="h-full w-[268px] overflow-hidden border-r border-[#CFCFCF] p-8">
           {processList.map((item, index) => {
             return (
-              <>
+              <div key={item.name}>
                 <div
-                  key={item.name}
                   onClick={() => {
                     setActive(item.name);
                   }}
@@ -101,7 +94,7 @@ const CooperationProcess = () => {
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             );
           })}
         </div>
@@ -120,7 +113,7 @@ const CooperationProcess = () => {
             />
             {activeProcess.title}
           </div>
-          <div className="z-10 mt-5 text-sm">{activeProcess.desc}</div>
+          <div className="z-10 mt-5 text-base">{activeProcess.desc}</div>
           <div className="absolute bottom-6 right-6">
             <Image
               src={'/images/academe/icon-steps.svg'}

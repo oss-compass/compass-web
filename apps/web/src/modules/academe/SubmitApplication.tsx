@@ -16,7 +16,7 @@ const SubmitApplication = () => {
           'flex h-[224px] flex-col items-center justify-center border p-8'
         )}
       >
-        <div className="mb-8 flex justify-center bg-gradient-to-r from-[#49B821] to-[#27AEAB] bg-clip-text text-2xl font-semibold text-transparent">
+        <div className="mb-8 flex justify-center bg-gradient-to-r from-[#49B821] to-[#27AEAB] bg-clip-text text-center text-2xl font-semibold text-transparent">
           {t('academe:discuss_the_evolution')}
         </div>
         <div
@@ -25,7 +25,9 @@ const SubmitApplication = () => {
             // router.push('/lab/model/create');
           }}
         >
-          {t('academe:submit_your_application_now')}
+          <a href="mailto:contact@oss-compass.org">
+            {t('academe:submit_your_application_now')}
+          </a>
         </div>
       </div>
     </>

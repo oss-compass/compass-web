@@ -8,6 +8,7 @@ import ColorSwitcher from '@modules/analyze/components/CompareBar/ColorSwitcher'
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
 import { useRouter } from 'next/router';
 import { AiOutlineClose } from 'react-icons/ai';
+import qs from 'query-string';
 
 type CompareItemProps = {
   label: string;
@@ -24,11 +25,16 @@ const CloseIcons: React.FC<CompareItemProps> = ({ shortCode }) => {
       className="absolute top-2 right-2 hidden cursor-pointer p-2 text-white group-hover:block"
       onClick={async () => {
         const p = compareIdsRemove(compareSlugs, shortCode);
+        const searchResult = qs.parse(window.location.search) || {};
         if (p.indexOf('..') > -1) {
-          await router.push(getRouteAsPath(router.route, { slugs: p }));
+          await router.push(
+            getRouteAsPath(router.route, { slugs: p, ...searchResult })
+          );
           return;
         }
-        await router.push(getRouteAsPath(router.route, { slugs: p }));
+        await router.push(
+          getRouteAsPath(router.route, { slugs: p, ...searchResult })
+        );
       }}
     >
       <AiOutlineClose className="text-base" />

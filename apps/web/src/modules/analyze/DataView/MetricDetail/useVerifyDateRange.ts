@@ -25,7 +25,7 @@ const useVerifyDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
   const { isLoading, data } = useVerifyDetailRange();
-  console.log(!data?.verifyDetailDataRange?.status);
+
   return useMemo(() => {
     if (!range || !data?.verifyDetailDataRange?.status) {
       return contributorDefaultVal;
