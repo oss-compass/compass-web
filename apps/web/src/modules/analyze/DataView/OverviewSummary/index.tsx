@@ -2,7 +2,7 @@ import React from 'react';
 import { MetricQuery, SummaryQuery } from '@oss-compass/graphql';
 import CommunityRepos from './CommunityRepos';
 import LineChart from './LineChart';
-import TableList from './TableList';
+import TableList from '@modules/analyze/components/TableList';
 import useMetricQueryData from '@modules//analyze/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';

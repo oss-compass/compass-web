@@ -4,19 +4,45 @@ import type { PropsWithChildren, ComponentProps } from 'react';
 import classnames from 'classnames';
 import { BsCodeSquare } from 'react-icons/bs';
 import BaseCard from '@common/components/BaseCard';
-import { useLatestMetricsQuery } from '@oss-compass/graphql';
+import { useMetricModelsOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import { useQueries, useQueryClient } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { formatISO, getShortAnalyzeLink, toFixed } from '@common/utils';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 import { Topic } from '@modules/analyze/components/SideBar/config';
 import { formatRepoName } from '@common/utils/format';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import { useTranslation } from 'next-i18next';
-import styles from './index.module.scss';
 import { Level } from '@modules/analyze/constant';
+import { chartUserSettingState } from '@modules/analyze/store';
+import { useSnapshot } from 'valtio';
+import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
 
+const getModelScore = (list, models) => {
+  return list.map((item) => {
+    const obj = {};
+    if (item.length > 0) {
+      obj['label'] = item[0].label;
+      obj['level'] = item[0].level;
+      obj['activityScoreUpdatedAt'] = item[0].grimoireCreationDate;
+    }
+    const tableData = models.map((z) => {
+      const s = item.find((y) => y.ident === z.key);
+      return { mainScore: s?.mainScore, key: z.key };
+    });
+    obj['tableData'] = tableData;
+    return obj;
+  });
+};
+
+const borderList = [
+  'border-t-[#90E6FF]',
+  'border-t-[#FFB290]',
+  'border-t-[#B990FF]',
+  'border-t-[#61a2ff]',
+];
+const bgList = ['bg-[#f2fcff]', 'bg-[#fff9f3]', 'bg-[#f8f3ff]', 'bg-[#ddebff]'];
 const TT: React.FC<PropsWithChildren<ComponentProps<'th'>>> = ({
   children,
   className,
@@ -73,28 +99,79 @@ const Td: React.FC<PropsWithChildren<ComponentProps<'td'>>> = ({
 
 const TrendsList: React.FC = () => {
   const { t } = useTranslation();
+  const models = [
+    {
+      name: t('analyze:all_model:collaboration_development_index'),
+      key: 'collab_dev_index',
+      value: null,
+      scope: 'collaboration',
+    },
+    {
+      name: t('analyze:all_model:community_service_and_support'),
+      key: 'community',
+      value: null,
+      scope: 'collaboration',
+    },
+    {
+      name: t('analyze:all_model:community_activity'),
+      key: 'activity',
+      value: null,
+      scope: 'collaboration',
+    },
+    {
+      name: t('analyze:all_model:organization_activity'),
+      key: 'organizations_activity',
+      value: null,
+      scope: 'collaboration',
+    },
+    {
+      name: t('analyze:all_model:contributors_milestone_persona'),
+      key: 'milestone_persona',
+      value: null,
+      scope: 'contributor',
+    },
+
+    {
+      name: t('analyze:all_model:contributors_role_persona'),
+      key: 'role_persona',
+      value: null,
+      scope: 'contributor',
+    },
+    {
+      name: t('analyze:all_model:contributors_domain_persona'),
+      key: 'domain_persona',
+      value: null,
+      scope: 'contributor',
+    },
+  ];
   const [onePointSys, setOnePointSys] = useState(false);
 
   const { compareItems } = useCompareItems();
+  const snap = useSnapshot(chartUserSettingState);
+  const rType = snap.repoType;
+  const topicType = useQueryMetricType();
+  const tHeader = models.filter((item) => item.scope === topicType);
   const data = useQueries({
     queries: compareItems.map(({ label, level }) => {
+      const repoType = level === Level.COMMUNITY ? rType : null;
       return {
-        queryKey: useLatestMetricsQuery.getKey({
+        queryKey: useMetricModelsOverviewQuery.getKey({
           label,
           level,
+          repoType,
         }),
-        queryFn: useLatestMetricsQuery.fetcher(client, {
+        queryFn: useMetricModelsOverviewQuery.fetcher(client, {
           label,
           level,
+          repoType,
         }),
       };
     }),
   });
-
   const loading = data.some((i) => i.isLoading);
-  const list = data.map((i) => i.data?.latestMetrics).filter(Boolean);
+  const AllList = data.map((i) => i.data?.metricModelsOverview).filter(Boolean);
+  const list = getModelScore(AllList, tHeader);
   const labels = list.map((item) => item?.label).filter(Boolean) as string[];
-
   const formatScore = (num: number | null | undefined) => {
     if (num === undefined || num === null) return '-';
     return onePointSys ? toFixed(num, 3) : transHundredMarkSystem(num);
@@ -118,22 +195,20 @@ const TrendsList: React.FC = () => {
       }
     >
       <div className="overflow-auto">
-        <table className={classnames(styles.table, 'w-full table-auto')}>
+        <table className={classnames('w-full table-auto')}>
           <thead>
             <tr className="">
               <th style={{ width: '15%' }} />
-              <TT className="border-t-[#90E6FF] bg-[#f2fcff]">
-                {t('metrics_models:collaboration_development_index.title')}
-              </TT>
-              <TT className="border-t-[#FFB290] bg-[#fff9f3]">
-                {t('metrics_models:community_service_and_support.title')}
-              </TT>
-              <TT className="border-t-[#B990FF] bg-[#f8f3ff]">
-                {t('metrics_models:community_activity.title')}
-              </TT>
-              <TT className="border-t-[#61a2ff] bg-[#ddebff]">
-                {t('metrics_models:organization_activity.title')}
-              </TT>
+              {tHeader.map((item, index) => {
+                return (
+                  <TT
+                    key={item.name}
+                    className={classnames(borderList[index], bgList[index])}
+                  >
+                    {item.name}
+                  </TT>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -164,11 +239,11 @@ const TrendsList: React.FC = () => {
                         </p>
                         {item?.level === Level.COMMUNITY ? (
                           <div className="text-steel mb-1 mt-1 flex items-center text-xs">
-                            <BsCodeSquare />
+                            {/* <BsCodeSquare />
                             <span className="ml-1">
                               {item?.reposCount}
                               {t('analyze:repos')}
-                            </span>
+                            </span> */}
                           </div>
                         ) : null}
                         <p className={'text-xs text-gray-400'}>
@@ -178,18 +253,16 @@ const TrendsList: React.FC = () => {
                         </p>
                       </Link>
                     </td>
-                    <Td className="bg-[#f2fcff] ">
-                      {formatScore(item!.codeQualityGuarantee)}
-                    </Td>
-                    <Td className="bg-[#fff9f3]">
-                      {formatScore(item!.communitySupportScore)}
-                    </Td>
-                    <Td className="bg-[#f8f3ff]">
-                      {formatScore(item!.activityScore)}
-                    </Td>
-                    <Td className="bg-[#ddebff] ">
-                      {formatScore(item!.organizationsActivity)}
-                    </Td>
+                    {tHeader.map((z, i) => {
+                      return (
+                        <Td
+                          key={z.name}
+                          className={classnames(borderList[i], bgList[i])}
+                        >
+                          {formatScore(item.tableData[index].mainScore)}
+                        </Td>
+                      );
+                    })}
                   </tr>
                 );
               })}

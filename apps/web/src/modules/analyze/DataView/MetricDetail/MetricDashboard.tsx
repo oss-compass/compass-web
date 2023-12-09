@@ -57,7 +57,8 @@ const Main = () => {
         <div
           className="flex cursor-pointer items-center gap-2 rounded border border-[#3A5BEF] py-1.5 px-3 text-xs text-[#3A5BEF]"
           onClick={() => {
-            router.push('/analyze/insight/' + slugs + '?range=1M');
+            const query = window.location.search;
+            router.push('/analyze/insight/' + slugs + query);
           }}
         >
           {t('analyze:metric_detail:details')}

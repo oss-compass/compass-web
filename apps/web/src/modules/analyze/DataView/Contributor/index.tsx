@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import ContributorDomainPersona from './ContributorDomainPersona';
 import ContributorMilestonePersona from './ContributorMilestonePersona';
 import ContributorRolePersona from './ContributorRolePersona';
+import AuthRequire from '@modules/auth/AuthRequire';
 
 import OverviewSummary from './OverviewSummary';
 import MetricDashboard from '@modules/analyze/DataView/MetricDetail/MetricDashboard';
@@ -44,5 +45,11 @@ const ContributorDataView = () => {
     </>
   );
 };
-
-export default ContributorDataView;
+const Contributor = () => {
+  return (
+    <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
+      <ContributorDataView />
+    </AuthRequire>
+  );
+};
+export default Contributor;

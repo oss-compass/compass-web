@@ -1,13 +1,19 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
+import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
 
 const defaultVal = {
   range: '6M' as RangeTag,
   timeStart: timeRange['6M'].start,
   timeEnd: timeRange['6M'].end,
 };
-
+const contributorDefaultVal = {
+  range: '1M' as RangeTag,
+  timeStart: timeRange['1M'].start,
+  timeEnd: timeRange['1M'].end,
+};
 export const isDateRange = (range: string) => {
   if (range.includes(' ~ ')) {
     const start = range.split(' ~ ')[0];
@@ -24,26 +30,36 @@ export const isDateRange = (range: string) => {
 const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
+  const { isLoading, data } = useVerifyDetailRange();
+  const topicType = useQueryMetricType();
+
   return useMemo(() => {
-    if (!range) {
-      return defaultVal;
-    } else if (rangeTags.includes(range)) {
-      return {
-        range,
-        timeStart: timeRange[range].start,
-        timeEnd: timeRange[range].end,
-      };
-    } else if (isDateRange(range)) {
-      const { start, end } = isDateRange(range) as { start: Date; end: Date };
-      return {
-        range,
-        timeStart: start,
-        timeEnd: end,
-      };
+    if (
+      topicType === 'contributor' &&
+      (!range || !data?.verifyDetailDataRange?.status)
+    ) {
+      return contributorDefaultVal;
     } else {
-      return defaultVal;
+      if (!range) {
+        return defaultVal;
+      } else if (rangeTags.includes(range)) {
+        return {
+          range,
+          timeStart: timeRange[range].start,
+          timeEnd: timeRange[range].end,
+        };
+      } else if (isDateRange(range)) {
+        const { start, end } = isDateRange(range) as { start: Date; end: Date };
+        return {
+          range,
+          timeStart: start,
+          timeEnd: end,
+        };
+      } else {
+        return defaultVal;
+      }
     }
-  }, [range]);
+  }, [range, topicType, isLoading, data]);
 };
 
 export default useQueryDateRange;

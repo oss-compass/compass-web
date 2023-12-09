@@ -17,5 +17,11 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/api/graphql', '/badge/:path*', '/files/:path*', '/users/:path*'],
+  matcher: [
+    '/api/graphql',
+    '/api/beta/predict',
+    '/badge/:path*',
+    '/files/:path*',
+    '/users/:path*',
+  ],
 };

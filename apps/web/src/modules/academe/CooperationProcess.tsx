@@ -16,12 +16,6 @@ const CooperationProcess = () => {
         <li className="ml-4 list-disc">
           {t('academe:submit_application_desc4')}
         </li>
-        <li className="ml-4 list-disc">
-          {t('academe:submit_application_desc5')}
-        </li>
-        <li className="ml-4 list-disc">
-          {t('academe:submit_application_desc6')}
-        </li>
       </ul>
       <p>{t('academe:submit_application_desc7')}</p>
     </>
@@ -74,13 +68,12 @@ const CooperationProcess = () => {
       <div className="mb-3 text-2xl font-medium">
         {t('academe:cooperation_process')}
       </div>
-      <div className="mb-10 flex h-[345px] items-center border border-[#CFCFCF]">
-        <div className="h-full w-[248px] overflow-hidden border-r border-[#CFCFCF] p-8">
+      <div className="mb-10 flex  items-center border border-[#CFCFCF] md:flex-col">
+        <div className="h-[345px] w-[268px] overflow-hidden border-r border-[#CFCFCF] p-8 md:border-0">
           {processList.map((item, index) => {
             return (
-              <>
+              <div key={item.name}>
                 <div
-                  key={item.name}
                   onClick={() => {
                     setActive(item.name);
                   }}
@@ -101,12 +94,12 @@ const CooperationProcess = () => {
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             );
           })}
         </div>
-        <div className="relative flex h-full flex-1 flex-col bg-[#fafff4] px-24">
-          <div className="mt-10 flex text-xl font-semibold">
+        <div className="relative flex h-[345px] flex-1 flex-col overflow-hidden bg-[#fafff4] px-24 py-2">
+          <div className="mt-6 flex text-xl font-semibold">
             <Image
               src={'/images/academe/icon-step-1.svg'}
               width={22}
@@ -120,7 +113,7 @@ const CooperationProcess = () => {
             />
             {activeProcess.title}
           </div>
-          <div className="z-10 mt-5 text-sm">{activeProcess.desc}</div>
+          <div className="z-10 mt-5 text-base">{activeProcess.desc}</div>
           <div className="absolute bottom-6 right-6">
             <Image
               src={'/images/academe/icon-steps.svg'}

@@ -7,7 +7,6 @@ import IssueCompletion from './IssueCompletion';
 import IssueComments from './IssueComments';
 import { useTranslation } from 'next-i18next';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import { ContributorsPersona } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 
 const MetricIssue = () => {
@@ -57,8 +56,7 @@ const MetricIssue = () => {
   }
   return (
     <BaseCard
-      title={t('metrics_models:contributors_persona.metrics.issue')}
-      id={ContributorsPersona.Issue}
+      title={t('analyze:metric_detail:issues')}
       bodyClass="h-full"
       className="h-full"
     >
