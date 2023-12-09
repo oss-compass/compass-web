@@ -354,8 +354,8 @@ const CooperationCase = () => {
           );
         })}
       </div>
-      <div className="mb-10 flex items-center border border-t-0 border-[#CFCFCF] p-8">
-        <div className="w-[550px] pl-2">
+      <div className="mb-10 flex items-center border border-t-0 border-[#CFCFCF] p-8 md:flex-col">
+        <div className="mb-4 w-[550px] pl-2 md:w-full">
           <div className="text-xl font-semibold">{activeCase.title}</div>
           <div className="mt-2 w-[550px] text-sm">{activeCase.desc}</div>
           {activeCase.experience && (

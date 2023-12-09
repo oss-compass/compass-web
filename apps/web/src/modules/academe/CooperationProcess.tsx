@@ -68,8 +68,8 @@ const CooperationProcess = () => {
       <div className="mb-3 text-2xl font-medium">
         {t('academe:cooperation_process')}
       </div>
-      <div className="mb-10 flex h-[345px] items-center border border-[#CFCFCF]">
-        <div className="h-full w-[268px] overflow-hidden border-r border-[#CFCFCF] p-8">
+      <div className="mb-10 flex  items-center border border-[#CFCFCF] md:flex-col">
+        <div className="h-[345px] w-[268px] overflow-hidden border-r border-[#CFCFCF] p-8 md:border-0">
           {processList.map((item, index) => {
             return (
               <div key={item.name}>
@@ -98,8 +98,8 @@ const CooperationProcess = () => {
             );
           })}
         </div>
-        <div className="relative flex h-full flex-1 flex-col bg-[#fafff4] px-24">
-          <div className="mt-10 flex text-xl font-semibold">
+        <div className="relative flex h-[345px] flex-1 flex-col overflow-hidden bg-[#fafff4] px-24 py-2">
+          <div className="mt-6 flex text-xl font-semibold">
             <Image
               src={'/images/academe/icon-step-1.svg'}
               width={22}

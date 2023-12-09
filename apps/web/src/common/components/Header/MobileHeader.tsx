@@ -44,13 +44,13 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
       icon: null,
     },
     {
-      title: t('common:header.lab'),
-      href: '/lab',
+      title: t('common:header.academe'),
+      href: '/academe',
       icon: null,
     },
     {
-      title: t('common:header.community'),
-      href: '/docs/community',
+      title: t('common:header.lab'),
+      href: '/lab',
       icon: null,
     },
     {
@@ -58,6 +58,12 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
       href: '/blog',
       icon: null,
     },
+    {
+      title: t('common:header.community'),
+      href: '/docs/community',
+      icon: null,
+    },
+
     {
       title: t('common:header.about'),
       href: '/about',
