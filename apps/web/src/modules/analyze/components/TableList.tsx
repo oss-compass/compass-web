@@ -259,7 +259,7 @@ const TrendsList: React.FC = () => {
                           key={z.name}
                           className={classnames(borderList[i], bgList[i])}
                         >
-                          {formatScore(item.tableData[index].mainScore)}
+                          {formatScore(item.tableData[i].mainScore)}
                         </Td>
                       );
                     })}
