@@ -52,9 +52,15 @@ const CooperationCase = () => {
         </ul>
       ),
       desc2: t('academe:nju_desc2'),
-      content: (
-        <img className="h-full w-full" src={'/images/academe/case/nju.png'} />
-      ),
+      content:
+        i18n.language === 'en' ? (
+          <img
+            className="h-full w-full"
+            src={'/images/academe/case/nju_en.png'}
+          />
+        ) : (
+          <img className="h-full w-full" src={'/images/academe/case/nju.png'} />
+        ),
       experience: true,
     },
     {
