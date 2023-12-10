@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
-import { useTranslation } from 'next-i18next';
+import { useTranslation, Trans } from 'next-i18next';
 import Image from 'next/image';
 import { Progress } from 'antd';
 import Dialog, { Transition } from '@common/components/Dialog';
@@ -36,7 +36,8 @@ const CooperationCase = () => {
       title: t('academe:nju_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:nju_author')}</li>
+          <li className="ml-4 mb-2 list-disc">{t('academe:nju_author')}</li>
+          <li className="ml-4 mb-2 list-disc">{t('academe:nju_author2')}</li>
           <li className="ml-4 list-disc">
             {t('academe:nju_desc')}
             <a
@@ -62,8 +63,9 @@ const CooperationCase = () => {
       title: t('academe:pku1_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:pku1_author')}</li>
-          <li className="ml-4 list-disc">
+          <li className="ml-4  mb-2 list-disc">{t('academe:pku1_author')}</li>
+          <li className="ml-4 mb-2 list-disc">{t('academe:pku1_author2')}</li>
+          <li className="ml-4  mb-2 list-disc">
             <div className="line-clamp-6">{t('academe:pku1_desc1')}</div>
           </li>
           <li className="ml-4 list-disc">
@@ -96,8 +98,10 @@ const CooperationCase = () => {
       title: t('academe:openeuler_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:openeuler_author')}</li>
-          <li className="ml-4 list-disc">
+          <li className="ml-4 mb-2 list-disc">
+            {t('academe:openeuler_author')}
+          </li>
+          <li className="ml-4 mb-2 list-disc">
             <div className="line-clamp-6">{t('academe:openeuler_desc1')}</div>
           </li>
           <li className="ml-4 list-disc">
@@ -132,20 +136,27 @@ const CooperationCase = () => {
       title: t('academe:pku2_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:author')}</li>
-          <div className="ml-8 flex list-disc">
-            <div className="mt-0.5 mr-2">
-              <TbPoint />
-            </div>
-            {t('academe:pku2_author')}
+          <li className="ml-4 mb-2 list-disc">{t('academe:pku2_author')}</li>
+          <li className="ml-4 mb-2 list-disc">{t('academe:pku2_author2')}</li>
+          {/* <div className="ml-8 flex list-disc">
+            <Trans
+              i18nKey="pku2_author"
+              ns="academe"
+              components={{
+                br: <br />,
+              }}
+            />
           </div>
-          <div className="ml-8 flex list-disc">
-            <div className="mt-0.5 mr-2">
-              <TbPoint />
-            </div>
-            {t('academe:pku2_author2')}
-          </div>
-          <li className="ml-4 list-disc">
+          <div className="ml-8 mb-2 flex list-disc">
+            <Trans
+              i18nKey="pku2_author2"
+              ns="academe"
+              components={{
+                br: <br />,
+              }}
+            />
+          </div> */}
+          <li className="ml-4 mb-2 list-disc">
             <div className="line-clamp-6">{t('academe:pku2_desc1')}</div>
           </li>
           <li className="ml-4 list-disc">
@@ -178,11 +189,13 @@ const CooperationCase = () => {
       title: t('academe:pku3_title'),
       desc: (
         <ul className="h-full w-full">
-          <li className="ml-4 list-disc">{t('academe:pku3_author')}</li>
-          <li className="ml-4 list-disc">
+          <li className="ml-4 mb-2 list-disc">{t('academe:pku3_author')}</li>
+          <li className="ml-4 mb-2 list-disc">{t('academe:pku3_author2')}</li>
+
+          <li className="ml-4 mb-2 list-disc">
             <div className="line-clamp-6">{t('academe:pku3_desc1')}</div>
           </li>
-          <li className="ml-4 list-disc">
+          <li className="ml-4 mb-2 list-disc">
             {t('academe:pku3_desc2')}
             <a className="text-[#002fa7]" href={'https://licenserec.com'}>
               https://licenserec.com
