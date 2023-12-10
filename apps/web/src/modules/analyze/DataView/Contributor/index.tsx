@@ -4,7 +4,7 @@ import ContributorDomainPersona from './ContributorDomainPersona';
 import ContributorMilestonePersona from './ContributorMilestonePersona';
 import ContributorRolePersona from './ContributorRolePersona';
 import AuthRequire from '@modules/auth/AuthRequire';
-
+import { useRouter } from 'next/router';
 import OverviewSummary from './OverviewSummary';
 import MetricDashboard from '@modules/analyze/DataView/MetricDetail/MetricDashboard';
 import TopicTitle from '@modules/analyze/components/TopicTitle';
@@ -46,8 +46,13 @@ const ContributorDataView = () => {
   );
 };
 const Contributor = () => {
+  const router = useRouter();
+
   return (
-    <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
+    <AuthRequire
+      redirectTo={router.asPath}
+      loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6"
+    >
       <ContributorDataView />
     </AuthRequire>
   );
