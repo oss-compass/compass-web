@@ -52,9 +52,15 @@ const CooperationCase = () => {
         </ul>
       ),
       desc2: t('academe:nju_desc2'),
-      content: (
-        <img className="h-full w-full" src={'/images/academe/case/nju.png'} />
-      ),
+      content:
+        i18n.language === 'en' ? (
+          <img
+            className="h-full w-full"
+            src={'/images/academe/case/nju_en.png'}
+          />
+        ) : (
+          <img className="h-full w-full" src={'/images/academe/case/nju.png'} />
+        ),
       experience: true,
     },
     {
@@ -66,7 +72,7 @@ const CooperationCase = () => {
           <li className="ml-4  mb-2 list-disc">{t('academe:pku1_author')}</li>
           <li className="ml-4 mb-2 list-disc">{t('academe:pku1_author2')}</li>
           <li className="ml-4  mb-2 list-disc">
-            <div className="line-clamp-6">{t('academe:pku1_desc1')}</div>
+            <div className="">{t('academe:pku1_desc1')}</div>
           </li>
           <li className="ml-4 list-disc">
             {t('academe:pku1_desc2')}
@@ -102,7 +108,7 @@ const CooperationCase = () => {
             {t('academe:openeuler_author')}
           </li>
           <li className="ml-4 mb-2 list-disc">
-            <div className="line-clamp-6">{t('academe:openeuler_desc1')}</div>
+            <div className="">{t('academe:openeuler_desc1')}</div>
           </li>
           <li className="ml-4 list-disc">
             {t('academe:openeuler_desc2')}
@@ -157,7 +163,7 @@ const CooperationCase = () => {
             />
           </div> */}
           <li className="ml-4 mb-2 list-disc">
-            <div className="line-clamp-6">{t('academe:pku2_desc1')}</div>
+            <div className="">{t('academe:pku2_desc1')}</div>
           </li>
           <li className="ml-4 list-disc">
             {t('academe:pku2_desc2')}
@@ -193,7 +199,7 @@ const CooperationCase = () => {
           <li className="ml-4 mb-2 list-disc">{t('academe:pku3_author2')}</li>
 
           <li className="ml-4 mb-2 list-disc">
-            <div className="line-clamp-6">{t('academe:pku3_desc1')}</div>
+            <div className="">{t('academe:pku3_desc1')}</div>
           </li>
           <li className="ml-4 mb-2 list-disc">
             {t('academe:pku3_desc2')}

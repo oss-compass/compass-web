@@ -18,6 +18,7 @@ const NewsBox = (props: {
   const typeMap = {
     Announcement: t('home:announcement'),
     Report: t('home:report'),
+    Blog: t('home:blog'),
     Event: t('home:event'),
   };
   const { type, title, titleCn, img, url } = props;
@@ -28,7 +29,8 @@ const NewsBox = (props: {
           className={classnames('h-6 max-w-[110px] px-2 py-1 text-sm', {
             'border-[#A3BDFF] bg-[#F1F5FF] text-[#6E89CD]':
               type === 'Announcement',
-            'border-[#A8E99B] bg-[#F1FFF4] text-[#5ECA66]': type === 'Report',
+            'border-[#A8E99B] bg-[#F1FFF4] text-[#5ECA66]':
+              type === 'Report' || type === 'Blog',
             'border-[#DDA3FF] bg-[#FBF1FF] text-[#B26ECD]': type === 'Event',
           })}
         >
