@@ -46,6 +46,7 @@ const Header: React.FC<{
             >
               {t('common:header.projects')}
             </Link>
+
             <Link
               href="/collaboration"
               className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
