@@ -96,7 +96,7 @@ const LatestNews = () => {
               titleCn={title_cn}
               img={img}
               url={url}
-              key={type}
+              key={title}
             />
           );
         })}

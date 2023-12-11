@@ -46,7 +46,26 @@ const Main = () => {
   });
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <>
+        <div className="mt-6 mb-2 flex justify-between">
+          <div className="text-xl font-semibold text-[#000000]">
+            {t('analyze:metric_detail:project_deep_dive_insight')}
+          </div>
+          <div
+            className="flex cursor-pointer items-center gap-2 rounded border border-[#3A5BEF] py-1.5 px-3 text-xs text-[#3A5BEF]"
+            onClick={() => {
+              const query = window.location.search;
+              router.push('/analyze/insight/' + slugs + query);
+            }}
+          >
+            {t('analyze:metric_detail:details')}
+            <AiOutlineArrowRight />
+          </div>
+        </div>
+        <Loading />
+      </>
+    );
   }
   return (
     <div>
@@ -105,7 +124,7 @@ const MetricBoxContributors: React.FC<{
               <IoPersonCircle />
             </div>
             <div className="line-clamp-1">
-              {data.highestContributionContributor.name}
+              {data.highestContributionContributor.name || '/'}
             </div>
           </div>
           <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
@@ -170,10 +189,12 @@ const MetricBoxIssues: React.FC<{
               <AiOutlineIssuesClose />
             </div>
             <div className="line-clamp-1">
-              {toFixed(data.issueCompletionRatio * 100, 1) +
-                '% (' +
-                data.issueCompletionCount +
-                ')'}
+              {data.issueCompletionRatio
+                ? toFixed(data.issueCompletionRatio * 100, 1) +
+                  '% (' +
+                  data.issueCompletionCount +
+                  ')'
+                : '/'}
             </div>
           </div>
           <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
@@ -239,10 +260,12 @@ const MetricBoxPr: React.FC<{
               <GoGitPullRequestClosed />
             </div>
             <div className="line-clamp-1">
-              {toFixed(data.pullCompletionRatio * 100, 1) +
-                '% (' +
-                data.pullCompletionCount +
-                ')'}
+              {data.pullCompletionRatio
+                ? toFixed(data.pullCompletionRatio * 100, 1) +
+                  '% (' +
+                  data.pullCompletionCount +
+                  ')'
+                : '/'}
             </div>
           </div>
           <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
@@ -276,7 +299,7 @@ const MetricBoxPr: React.FC<{
   );
 };
 const Loading = () => (
-  <div className="animate-pulse rounded border p-10 px-6 py-6 shadow">
+  <div className="h-[348px] animate-pulse rounded border bg-white p-10 px-6 py-6 shadow">
     <div className="flex-1 space-y-4">
       <div className="h-4 rounded bg-slate-200"></div>
       <div className="grid grid-cols-3 gap-4">

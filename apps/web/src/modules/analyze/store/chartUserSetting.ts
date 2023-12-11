@@ -13,7 +13,9 @@ const localGet = () => {
     if (!isBrowser()) return null;
 
     const str = localStorage.getItem(KEY);
-    return JSON.parse(str!);
+    const local = JSON.parse(str!);
+    local?.repoType && (local.repoType = 'software-artifact');
+    return local;
   } catch (e) {
     console.log(e);
     return null;

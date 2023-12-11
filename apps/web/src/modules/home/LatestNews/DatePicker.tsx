@@ -42,7 +42,13 @@ const DatePicker = () => {
     new Date(2023, 7, 23),
     new Date(2023, 11, 13),
   ];
-  const bookedStyle = { border: '2px solid #3A5BEF', borderRadius: 'none' };
+  const bookedStyle = {
+    border: '1px solid #3A5BEF',
+    borderRadius: 'none',
+    height: '30px',
+    width: '30px',
+    marginLeft: '5px',
+  };
   useClickAway(popoverRef, () => {
     setOpen(false);
   });

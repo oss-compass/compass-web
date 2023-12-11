@@ -23,9 +23,11 @@ const DocLink: React.FC<
 
   return (
     <div className="h-6 overflow-hidden text-ellipsis whitespace-nowrap">
-      <span className="">{description}</span>
+      <span className="" title={description}>
+        {description}
+      </span>
 
-      {weight && detail ? (
+      {weight || detail ? (
         <div className="absolute right-0 bottom-2 h-4 w-24 bg-gradient-to-r from-white/30 to-white">
           <a
             className="text-primary float-right ml-1 cursor-pointer hover:underline"
@@ -52,7 +54,7 @@ const DocLink: React.FC<
           className="flex w-[564px] flex-col overflow-hidden rounded bg-white p-4 text-xs drop-shadow-2xl md:w-[90%]"
           ref={popoverRef}
         >
-          {detail ? (
+          {weight || detail ? (
             <>
               <p className="mb-2 flex">
                 <span className="w-[78px] flex-shrink-0 font-semibold">
@@ -80,7 +82,7 @@ const DocLink: React.FC<
                   {notes}
                 </p>
               )}
-              <p className="mt-2 flex">{detail}</p>
+              {detail && <p className="mt-2 flex">{detail}</p>}
             </>
           ) : (
             <>

@@ -213,6 +213,7 @@ const useOptions = () => {
       name: ' ',
       type: 'value',
       splitNumber: 4,
+      max: 80,
       axisLine: {
         lineStyle: { width: 0.1, opacity: 0.5 },
       },
@@ -330,7 +331,6 @@ const useOptions = () => {
         beta: 0,
       },
       boxWidth: 200,
-      boxDepth: 150,
       light: {
         //主光源
         main: {

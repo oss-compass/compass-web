@@ -34,7 +34,6 @@ const Timer = ({
   setActiveFun: () => void;
 }) => {
   const [progress, setProgress] = useState(0);
-  // const [isCancelled, setIsCancelled] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prevProgress) => {

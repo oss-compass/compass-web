@@ -25,6 +25,7 @@ const getModelScore = (list, models) => {
     if (item.length > 0) {
       obj['label'] = item[0].label;
       obj['level'] = item[0].level;
+      obj['shortCode'] = item[0].shortCode;
       obj['activityScoreUpdatedAt'] = item[0].grimoireCreationDate;
     }
     const tableData = models.map((z) => {
@@ -169,8 +170,8 @@ const TrendsList: React.FC = () => {
     }),
   });
   const loading = data.some((i) => i.isLoading);
-  const AllList = data.map((i) => i.data?.metricModelsOverview).filter(Boolean);
-  const list = getModelScore(AllList, tHeader);
+  const allList = data.map((i) => i.data?.metricModelsOverview).filter(Boolean);
+  const list = getModelScore(allList, tHeader);
   const labels = list.map((item) => item?.label).filter(Boolean) as string[];
   const formatScore = (num: number | null | undefined) => {
     if (num === undefined || num === null) return '-';
