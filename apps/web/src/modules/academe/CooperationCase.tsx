@@ -13,6 +13,7 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { TbPoint } from 'react-icons/tb';
 import { gsap } from 'gsap';
 import { useInViewport } from 'ahooks';
+import LinkX from '@common/components/LinkX';
 
 async function getData({ repo }) {
   return await axios.post(
@@ -27,7 +28,7 @@ async function getData({ repo }) {
 }
 
 const Timer = ({
-  time = 20,
+  time = 15,
   setActiveFun,
 }: {
   time?: number;
@@ -76,14 +77,13 @@ const CooperationCase = () => {
           <li className="ml-4 mb-2 list-disc">{t('academe:nju_author2')}</li>
           <li className="ml-4 list-disc">
             {t('academe:nju_desc')}
-            <a
-              className="text-[#002fa7]"
+            <LinkX
               href={
-                'https://compass.gitee.com/zh/blog/2023/12/07/compass-prediction-activity/compass-prediction-activity'
+                '/blog/2023/12/07/compass-prediction-activity/compass-prediction-activity'
               }
             >
-              {t('academe:nju_title')}
-            </a>
+              <span className="text-[#002fa7]">{t('academe:nju_title')}</span>
+            </LinkX>
           </li>
         </ul>
       ),
