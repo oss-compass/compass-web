@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import { useTranslation, Trans } from 'next-i18next';
 import Image from 'next/image';
@@ -11,6 +11,8 @@ import { isValidUrl } from '@common/utils/url';
 import { toFixed } from '@common/utils';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { TbPoint } from 'react-icons/tb';
+import { gsap } from 'gsap';
+import { useInViewport } from 'ahooks';
 
 async function getData({ repo }) {
   return await axios.post(
@@ -24,8 +26,43 @@ async function getData({ repo }) {
   );
 }
 
-const p = () => {
-  <Progress percent={100} size="small" />;
+const Timer = ({
+  time = 20,
+  setActiveFun,
+}: {
+  time?: number;
+  setActiveFun: () => void;
+}) => {
+  const [progress, setProgress] = useState(0);
+  // const [isCancelled, setIsCancelled] = useState(false);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 101) {
+          setActiveFun();
+          return 0;
+        } else {
+          return prevProgress + 10 / time;
+        }
+      });
+    }, 100);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  return (
+    <div>
+      <Progress
+        className="p-0"
+        percent={progress}
+        size="small"
+        showInfo={false}
+        strokeColor={'#52c41a'}
+        trailColor={'transparent'}
+      />
+    </div>
+  );
 };
 const CooperationCase = () => {
   const { t, i18n } = useTranslation();
@@ -243,6 +280,24 @@ const CooperationCase = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const ref = useRef(null);
+  const [inViewport] = useInViewport(ref);
+  // useEffect(() => {
+  //   inViewport &&
+  //     gsap.fromTo(
+  //       ref.current,
+  //       {
+  //         opacity: '0',
+  //         // repeat: 2,
+  //         duration: 2,
+  //       },
+  //       {
+  //         opacity: '1',
+  //         // repeat: 2,
+  //         duration: 2,
+  //       }
+  //     );
+  // }, [inViewport, active]);
   const calculate = () => {
     setErrorMsg('');
     setPredict(null);
@@ -340,7 +395,10 @@ const CooperationCase = () => {
       </div>
     </>
   );
-
+  const setActiveFun = (index) => {
+    const next = caseList[index];
+    setActive(next['name']);
+  };
   return (
     <>
       <div className="mb-3 text-2xl font-medium">
@@ -355,7 +413,7 @@ const CooperationCase = () => {
                 setActive(item.name);
               }}
               className={classnames(
-                'flex h-[56px] w-[300px] cursor-pointer items-center justify-center border border-l-0 border-[#CFCFCF] bg-[#f7f7f7]',
+                'relative flex h-[56px] w-[300px] cursor-pointer items-center justify-center border border-l-0 border-[#CFCFCF] bg-[#f7f7f7]',
                 { '!border-l ': index === 0, '!bg-white': active === item.name }
               )}
             >
@@ -369,30 +427,43 @@ const CooperationCase = () => {
                   height: 'auto',
                 }}
               />
+              <div className="absolute -bottom-2 w-full">
+                {active === item.name && (
+                  <Timer
+                    setActiveFun={() => {
+                      setActiveFun(
+                        index === caseList.length - 1 ? 0 : index + 1
+                      );
+                    }}
+                  />
+                )}
+              </div>
             </div>
           );
         })}
       </div>
-      <div className="mb-10 flex items-center border border-t-0 border-[#CFCFCF] p-8 md:flex-col">
-        <div className="mb-4 w-[550px] pl-2 md:w-full">
-          <div className="text-xl font-semibold">{activeCase.title}</div>
-          <div className="mt-2 w-[550px] text-sm">{activeCase.desc}</div>
-          {activeCase.experience && (
-            <div
-              onClick={() => {
-                if (activeCase.experienceUrl) {
-                  window.open(activeCase.experienceUrl);
-                } else {
-                  setOpen(true);
-                }
-              }}
-              className="mt-4 flex h-8 w-48 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
-            >
-              {t('academe:experience_immediately')}
-            </div>
-          )}
+      <div className="mb-10  border border-t-0 border-[#CFCFCF] p-8 " ref={ref}>
+        <div ref={ref} className="flex items-center md:flex-col">
+          <div className="mb-4 w-[550px] pl-2 md:w-full">
+            <div className="text-xl font-semibold">{activeCase.title}</div>
+            <div className="mt-2 w-[550px] text-sm">{activeCase.desc}</div>
+            {activeCase.experience && (
+              <div
+                onClick={() => {
+                  if (activeCase.experienceUrl) {
+                    window.open(activeCase.experienceUrl);
+                  } else {
+                    setOpen(true);
+                  }
+                }}
+                className="mt-4 flex h-8 w-48 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
+              >
+                {t('academe:experience_immediately')}
+              </div>
+            )}
+          </div>
+          <div className="ml-16 h-[280px] flex-1 ">{activeCase.content}</div>
         </div>
-        <div className="ml-16 h-[280px] flex-1 ">{activeCase.content}</div>
       </div>
       <Dialog
         TransitionComponent={Transition}
