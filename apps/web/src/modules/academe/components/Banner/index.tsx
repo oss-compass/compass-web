@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import classnames from 'classnames';
 import { useTranslation } from 'next-i18next';
-
+import Coutact from '../../Coutact';
 import style from './index.module.css';
 
 const Banner = () => {
@@ -38,11 +38,7 @@ const Banner = () => {
           {t('academe:academic_research_desc')}
         </div>
         <div className="flex">
-          <div className="h-8 cursor-pointer bg-gradient-to-r from-[#72D74F] to-[#27AE65] px-4 text-center leading-8 text-[#fff]">
-            <a href="mailto:contact@oss-compass.org">
-              {t('academe:submit_your_application_now')}
-            </a>
-          </div>
+          <Coutact />
         </div>
       </div>
     </div>

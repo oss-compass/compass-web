@@ -1070,8 +1070,12 @@ export type Model = {
   level?: Maybe<Scalars['String']>;
   /** metric model main score */
   mainScore?: Maybe<Scalars['Float']>;
+  /** repositories count */
+  reposCount?: Maybe<Scalars['Float']>;
   /** scope of metric model */
   scope?: Maybe<Scalars['String']>;
+  /** metric model object short code */
+  shortCode?: Maybe<Scalars['String']>;
   /** metric model transformed score */
   transformedScore?: Maybe<Scalars['Float']>;
   /** metric scores for repositories type, only for community (software-artifact/governance) */
@@ -4735,6 +4739,8 @@ export type MetricModelsOverviewQuery = {
     transformedScore?: number | null;
     type?: string | null;
     updatedAt?: any | null;
+    reposCount?: number | null;
+    shortCode?: string | null;
   }>;
 };
 
@@ -8717,6 +8723,8 @@ export const MetricModelsOverviewDocument = /*#__PURE__*/ `
     transformedScore
     type
     updatedAt
+    reposCount
+    shortCode
   }
 }
     `;

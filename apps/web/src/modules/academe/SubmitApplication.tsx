@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
+import Coutact from './Coutact';
 
 const SubmitApplication = () => {
   const { t } = useTranslation();
@@ -19,16 +20,7 @@ const SubmitApplication = () => {
         <div className="mb-8 flex justify-center bg-gradient-to-r from-[#49B821] to-[#27AEAB] bg-clip-text text-center text-2xl font-semibold text-transparent">
           {t('academe:discuss_the_evolution')}
         </div>
-        <div
-          className="h-10 cursor-pointer bg-gradient-to-r from-[#72D74F] to-[#27AE65] px-4 text-center text-sm leading-10 text-[#fff]"
-          onClick={() => {
-            // router.push('/lab/model/create');
-          }}
-        >
-          <a href="mailto:contact@oss-compass.org">
-            {t('academe:submit_your_application_now')}
-          </a>
-        </div>
+        <Coutact />
       </div>
     </>
   );

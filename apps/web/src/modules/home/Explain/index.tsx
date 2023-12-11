@@ -39,7 +39,7 @@ const Legend = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="h-full w-[440px] bg-[#eff1f1] py-6 pl-4 text-xs">
+    <div className="h-full w-[440px] bg-[#eff1f1] py-6 px-4 text-xs">
       <div className="my-4">
         <div className="flex w-[155px] items-center gap-1 font-semibold">
           <Productivity />

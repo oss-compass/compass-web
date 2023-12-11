@@ -948,6 +948,8 @@ query metricModelsOverview(
     transformedScore
     type
     updatedAt
+    reposCount
+    shortCode
   }
 }
 

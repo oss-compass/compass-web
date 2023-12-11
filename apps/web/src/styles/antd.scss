@@ -3,6 +3,17 @@
     background-color: #1677ff !important;
   }
 }
+.ant-progress-bg {
+  height: 2px !important;
+  border-radius: 0px !important;
+}
+.ant-progress-line {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.ant-progress-inner {
+  border-radius: 0px !important;
+}
 // .ant-spin-nested-loading {
 //   height: 100%;
 //   .ant-spin-container {
