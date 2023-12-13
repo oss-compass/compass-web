@@ -1,5 +1,4 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import classnames from 'classnames';
 import { useTranslation } from 'next-i18next';
 import Coutact from '../../Coutact';
@@ -7,7 +6,6 @@ import style from './index.module.css';
 
 const Banner = () => {
   const { t } = useTranslation();
-  const router = useRouter();
   return (
     <div
       className={classnames(
@@ -17,7 +15,7 @@ const Banner = () => {
     >
       <div
         className={classnames(
-          'absolute right-28 bottom-0 h-60 w-[376px] md:-right-[300px]',
+          'absolute right-28 bottom-0 h-[213px] w-[359px] md:-right-[300px]',
           style.headerBgGraph
         )}
       ></div>

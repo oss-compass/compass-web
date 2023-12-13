@@ -4,6 +4,7 @@ import Banner from '@modules/academe/components/Banner';
 import CooperationCase from './CooperationCase';
 import CooperationProcess from './CooperationProcess';
 import SubmitApplication from './SubmitApplication';
+import Footer from '@common/components/Footer';
 
 const Explore = () => {
   return (
@@ -17,6 +18,7 @@ const Explore = () => {
           <SubmitApplication />
         </div>
       </div>
+      <Footer />
     </>
   );
 };
