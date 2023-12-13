@@ -30,26 +30,30 @@ async function getData({ repo }) {
 const Timer = ({
   time = 15,
   setActiveFun,
+  open,
 }: {
   time?: number;
   setActiveFun: () => void;
+  open: boolean;
 }) => {
   const [progress, setProgress] = useState(0);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setProgress((prevProgress) => {
-        if (prevProgress >= 101) {
-          setActiveFun();
-          return 0;
-        } else {
-          return prevProgress + 10 / time;
-        }
-      });
+      !open &&
+        setProgress((prevProgress) => {
+          if (prevProgress >= 101) {
+            setActiveFun();
+            return 0;
+          } else {
+            return prevProgress + 10 / time;
+          }
+        });
     }, 100);
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [open]);
 
   return (
     <div>
@@ -79,7 +83,7 @@ const CooperationCase = () => {
             {t('academe:nju_desc')}
             <LinkX
               href={
-                '/blog/2023/12/07/compass-prediction-activity/compass-prediction-activity'
+                '/blog/2023/12/06/compass-prediction-activity/compass-prediction-activity'
               }
             >
               <span className="text-[#002fa7]">{t('academe:nju_title')}</span>
@@ -434,6 +438,7 @@ const CooperationCase = () => {
                         index === caseList.length - 1 ? 0 : index + 1
                       );
                     }}
+                    open={open}
                   />
                 )}
               </div>
