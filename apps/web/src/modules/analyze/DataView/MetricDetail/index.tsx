@@ -12,6 +12,7 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
 import LoadingAnalysis from '@modules/analyze/DataView/Status/LoadingAnalysis';
+import LabelItems from '@modules/analyze/components/NavBar/LabelItems';
 
 const VerifyMetricDetail = () => {
   const { isLoading } = useVerifyDetailRange();
@@ -60,15 +61,18 @@ const MetricDetail = () => {
   return (
     <div className="flex w-full flex-col bg-[#fafafa]">
       <div className="relative flex h-14 w-full flex-shrink-0 items-center bg-[#ffffff] px-6 shadow">
-        <div className="flex text-lg font-medium">
+        <div className="flex items-center text-lg font-medium">
           <AiOutlineLeftCircle
             onClick={() => {
               const query = window.location.search;
               router.push('/analyze/' + slugs + query);
             }}
-            className="mt-1 mr-4 cursor-pointer text-[#3f60ef]"
+            className="mr-4 cursor-pointer text-[#3f60ef]"
           />
-          <span className="md:hidden">
+          <div className="md:hidden">
+            <LabelItems />
+          </div>
+          <span className="lg:hidden">
             {t('analyze:metric_detail:project_deep_dive_insight')}
           </span>
         </div>
