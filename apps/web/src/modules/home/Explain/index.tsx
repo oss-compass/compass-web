@@ -1,22 +1,13 @@
 import React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { useCounter } from 'react-use';
+import { useTranslation } from 'react-i18next';
 import LinkX from '@common/components/LinkX';
-import { usePlantList, useModelList } from './plantConfig';
 import Chart from './Chart';
 import Productivity from 'public/images/chart-legend/cube-1.svg';
 import Robustness from 'public/images/chart-legend/cube-2.svg';
 import NicheCreation from 'public/images/chart-legend/cube-3.svg';
 
 const SectionExplain = () => {
-  const { t, i18n } = useTranslation();
-  const plantList = usePlantList();
-  const modelList = useModelList();
-  const [value, { inc, reset, set }] = useCounter(
-    plantList.length,
-    plantList.length,
-    0
-  );
+  const { t } = useTranslation();
 
   return (
     <section>
@@ -49,18 +40,18 @@ const Legend = () => {
           {t('metrics_models:dimensionality:productivity')}
         </div>
         <div className="mt-3 flex w-[155px] items-center gap-1 font-semibold">
-          <Robustness />
-          {t('metrics_models:dimensionality:topic:robustness')}
-        </div>
-        <div className="ml-5 mt-2">
-          {t('metrics_models:dimensionality:robustness')}
-        </div>
-        <div className="mt-3 flex w-[155px] items-center gap-1 font-semibold">
           <NicheCreation />
           {t('metrics_models:dimensionality:topic:niche_creation')}
         </div>
         <div className="ml-5 mt-2">
           {t('metrics_models:dimensionality:niche_creation')}
+        </div>
+        <div className="mt-3 flex w-[155px] items-center gap-1 font-semibold">
+          <Robustness />
+          {t('metrics_models:dimensionality:topic:robustness')}
+        </div>
+        <div className="ml-5 mt-2">
+          {t('metrics_models:dimensionality:robustness')}
         </div>
       </div>
       <div className="mt-3 border-t py-4 ">

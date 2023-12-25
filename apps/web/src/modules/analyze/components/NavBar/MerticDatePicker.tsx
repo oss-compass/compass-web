@@ -35,7 +35,9 @@ const NavDatePicker = ({ disable }: { disable?: boolean }) => {
           onClick={(e) => handleClick(e)}
         >
           <BiCalendar className="mr-2.5 text-xl" />
-          <span className="text-sm">{i18RangeTag[range] || range}</span>
+          <span className="text-sm md:hidden">
+            {i18RangeTag[range] || range}
+          </span>
           {disable ? null : <BiCaretDown className="ml-1 text-sm" />}
         </div>
         <Popper

@@ -2,74 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import { useTranslation, Trans } from 'next-i18next';
 import Image from 'next/image';
-import { Progress } from 'antd';
-import Dialog, { Transition } from '@common/components/Dialog';
-import Input from '@common/components/Input';
-import { GrClose } from 'react-icons/gr';
-import axios from 'axios';
-import { isValidUrl } from '@common/utils/url';
-import { toFixed } from '@common/utils';
-import { AiOutlineLoading } from 'react-icons/ai';
-import { TbPoint } from 'react-icons/tb';
-import { gsap } from 'gsap';
-import { useInViewport } from 'ahooks';
 import LinkX from '@common/components/LinkX';
+import Timer from './Timer';
+import Experience from './Experience';
 
-async function getData({ repo }) {
-  return await axios.post(
-    '/api/beta/predict',
-    { repo },
-    {
-      headers: {
-        accept: 'application/json',
-      },
-    }
-  );
-}
-
-const Timer = ({
-  time = 15,
-  setActiveFun,
-  open,
-}: {
-  time?: number;
-  setActiveFun: () => void;
-  open: boolean;
-}) => {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      !open &&
-        setProgress((prevProgress) => {
-          if (prevProgress >= 101) {
-            setActiveFun();
-            return 0;
-          } else {
-            return prevProgress + 10 / time;
-          }
-        });
-    }, 100);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [open]);
-
-  return (
-    <div>
-      <Progress
-        className="p-0"
-        percent={progress}
-        size="small"
-        showInfo={false}
-        strokeColor={'#52c41a'}
-        trailColor={'transparent'}
-      />
-    </div>
-  );
-};
 const CooperationCase = () => {
   const { t, i18n } = useTranslation();
+  const [open, setOpen] = useState(false);
   const caseList = [
     {
       name: 'nju',
@@ -101,7 +40,7 @@ const CooperationCase = () => {
         ) : (
           <img className="h-full w-full" src={'/images/academe/case/nju.png'} />
         ),
-      experience: true,
+      experience: <Experience open={open} setOpen={setOpen} />,
     },
     {
       name: 'pku1',
@@ -173,7 +112,6 @@ const CooperationCase = () => {
           ></video>
         </div>
       ),
-      experience: true,
       experienceUrl: 'https://docs.openeuler.org/',
     },
     {
@@ -274,130 +212,8 @@ const CooperationCase = () => {
   ];
 
   const [active, setActive] = useState('nju');
-  const [open, setOpen] = useState(false);
   const activeCase = caseList.find((item) => item.name === active);
 
-  const [repoUrl, setRepoUrl] = useState<string>('');
-  const isUrlValid = isValidUrl(repoUrl);
-  const [predict, setPredict] = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const ref = useRef(null);
-  const [inViewport] = useInViewport(ref);
-  // useEffect(() => {
-  //   inViewport &&
-  //     gsap.fromTo(
-  //       ref.current,
-  //       {
-  //         opacity: '0',
-  //         // repeat: 2,
-  //         duration: 2,
-  //       },
-  //       {
-  //         opacity: '1',
-  //         // repeat: 2,
-  //         duration: 2,
-  //       }
-  //     );
-  // }, [inViewport, active]);
-  const calculate = () => {
-    setErrorMsg('');
-    setPredict(null);
-    const variables = { repo: repoUrl };
-    // @ts-ignore
-    getData(variables)
-      .then((res) => {
-        if (res.status === 200 && res?.data?.prediction?.active) {
-          setPredict(toFixed(res.data.prediction.active * 100, 1));
-        } else {
-          setErrorMsg(t('academe:failed_to_fetch_data'));
-        }
-      })
-      .catch((err) => {
-        setErrorMsg(
-          err?.response?.data?.message || t('academe:failed_to_fetch_data')
-        );
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-  const dialogContent = (
-    <>
-      <div
-        className="absolute right-10 top-8 cursor-pointer p-2"
-        onClick={() => {
-          setOpen(false);
-        }}
-      >
-        <GrClose className="text-base" />
-      </div>
-      <div className="mb-10">
-        <Image
-          src={activeCase.url}
-          width={100}
-          height={56}
-          alt={''}
-          style={{
-            maxWidth: '100%',
-            height: 'auto',
-          }}
-        />
-      </div>
-      <div className="pl-2">
-        <div className="mb-4 text-xl font-semibold">{activeCase.title}</div>
-        <div className="flex md:flex-col">
-          <div className="mr-6 min-w-[300px] flex-1 text-sm">
-            <div>{activeCase.desc2}</div>
-          </div>
-          <div className="w-[430px] border-l pl-6 md:border-0">
-            <div className="font-semibold">{t('academe:experience')}</div>
-            <div className="mt-2">
-              <Input
-                className="w-full"
-                placeholder={t('academe:type_address_of') as string}
-                error={false}
-                value={repoUrl}
-                onChange={(e) => {
-                  const url = e.target.value;
-                  setRepoUrl(url);
-                }}
-              />
-              {repoUrl && !isUrlValid ? (
-                <p className="p-1 text-red-500">
-                  {t('academe:please_enter_a_valid')}
-                </p>
-              ) : null}
-              {errorMsg ? <p className="p-1 text-red-500">{errorMsg}</p> : null}
-            </div>
-            <div
-              onClick={() => {
-                setLoading(true);
-                calculate();
-              }}
-              className="mt-4 flex h-8 w-20 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
-            >
-              {loading ? (
-                <AiOutlineLoading className="t animate-spin" />
-              ) : (
-                t('academe:calculate')
-              )}
-            </div>
-
-            {predict && (
-              <>
-                <div className="mt-2">{t('academe:result')}</div>
-                <div>
-                  <Progress percent={predict} />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </>
-  );
   const setActiveFun = (index) => {
     const next = caseList[index];
     setActive(next['name']);
@@ -420,16 +236,25 @@ const CooperationCase = () => {
                 { '!border-l ': index === 0, '!bg-white': active === item.name }
               )}
             >
-              <Image
-                src={item.url}
-                width={100}
-                height={56}
-                alt={''}
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                }}
-              />
+              <div className="max-w-[100px] overflow-hidden xl:w-[28px]">
+                <div
+                  className={classnames('w-[100px] ', {
+                    'xl:pl-2': !item.name.includes('pku'),
+                  })}
+                >
+                  <Image
+                    src={item.url}
+                    width={100}
+                    height={32}
+                    alt={''}
+                    style={{
+                      height: '32px',
+                      width: '100px',
+                      objectFit: 'contain',
+                    }}
+                  />
+                </div>
+              </div>
               <div className="absolute -bottom-2 w-full">
                 {active === item.name && (
                   <Timer
@@ -438,7 +263,7 @@ const CooperationCase = () => {
                         index === caseList.length - 1 ? 0 : index + 1
                       );
                     }}
-                    open={open}
+                    stop={open}
                   />
                 )}
               </div>
@@ -446,43 +271,28 @@ const CooperationCase = () => {
           );
         })}
       </div>
-      <div className="mb-10  border border-t-0 border-[#CFCFCF] p-8 " ref={ref}>
-        <div ref={ref} className="flex items-center md:flex-col">
+      <div className="mb-10  border border-t-0 border-[#CFCFCF] p-8 ">
+        <div className="flex items-center md:flex-col">
           <div className="mb-4 w-[550px] pl-2 md:w-full">
             <div className="text-xl font-semibold">{activeCase.title}</div>
-            <div className="mt-2 w-[550px] text-sm">{activeCase.desc}</div>
-            {activeCase.experience && (
+            <div className="mt-2 w-[550px] text-sm md:w-full">
+              {activeCase.desc}
+            </div>
+            {activeCase.experienceUrl && (
               <div
                 onClick={() => {
-                  if (activeCase.experienceUrl) {
-                    window.open(activeCase.experienceUrl);
-                  } else {
-                    setOpen(true);
-                  }
+                  window.open(activeCase.experienceUrl);
                 }}
                 className="mt-4 flex h-8 w-48 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90"
               >
                 {t('academe:experience_immediately')}
               </div>
             )}
+            {activeCase.experience && activeCase.experience}
           </div>
           <div className="ml-16 h-[280px] flex-1 ">{activeCase.content}</div>
         </div>
       </div>
-      <Dialog
-        TransitionComponent={Transition}
-        open={open}
-        classes={{
-          paper: classnames(
-            'border-2 border-black w-[640px] !max-w-[640px] !rounded-none !m-0',
-            'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
-          ),
-        }}
-        dialogContent={dialogContent}
-        handleClose={() => {
-          setOpen(false);
-        }}
-      />
     </>
   );
 };

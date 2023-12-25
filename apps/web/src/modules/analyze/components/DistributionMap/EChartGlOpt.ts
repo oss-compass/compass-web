@@ -47,12 +47,12 @@ export const useEchartsGlOpts = () => {
     t('analyze:topic:productivity'),
     t('analyze:topic:productivity'),
     t('analyze:topic:productivity'),
-    t('analyze:topic:robustness'),
-    t('analyze:topic:robustness'),
-    t('analyze:topic:robustness'),
     t('analyze:topic:niche_creation'),
     t('analyze:topic:niche_creation'),
     t('analyze:topic:niche_creation'),
+    t('analyze:topic:robustness'),
+    t('analyze:topic:robustness'),
+    t('analyze:topic:robustness'),
   ];
   const color = ['#93AAFC', '#87D8F8', '#B193FC'];
   const disableColor = '#d4d4d4';
@@ -70,7 +70,7 @@ export const useEchartsGlOpts = () => {
     {
       name: t('analyze:all_model:collaboration_development_index'),
       key: 'collab_dev_index',
-      value: [0, 1, 30],
+      value: [0, 1, 0],
       itemStyle: { color: color[0] },
       disable: false,
       scope: 'collaboration',
@@ -78,7 +78,7 @@ export const useEchartsGlOpts = () => {
     {
       name: t('analyze:all_model:community_service_and_support'),
       key: 'community',
-      value: [2, 1, 30],
+      value: [2, 1, 0],
       itemStyle: { color: color[0] },
       disable: false,
       scope: 'collaboration',
@@ -86,7 +86,7 @@ export const useEchartsGlOpts = () => {
     {
       name: t('analyze:all_model:community_activity'),
       key: 'activity',
-      value: [4, 1, 20],
+      value: [7, 1, 0],
       itemStyle: { color: color[1] },
       disable: false,
       scope: 'collaboration',
@@ -94,7 +94,7 @@ export const useEchartsGlOpts = () => {
     {
       name: t('analyze:all_model:organization_activity'),
       key: 'organizations_activity',
-      value: [7, 1, 30],
+      value: [4, 1, 0],
       itemStyle: { color: color[2] },
       disable: false,
       scope: 'collaboration',
@@ -102,7 +102,7 @@ export const useEchartsGlOpts = () => {
     {
       name: t('analyze:all_model:contributors_domain_persona'),
       key: 'domain_persona',
-      value: [0, 4, 30],
+      value: [0, 4, 0],
       itemStyle: { color: color[0] },
       disable: false,
       scope: 'contributor',
@@ -110,7 +110,7 @@ export const useEchartsGlOpts = () => {
     {
       name: t('analyze:all_model:contributors_role_persona'),
       key: 'role_persona',
-      value: [1, 4, 30],
+      value: [1, 4, 0],
       itemStyle: { color: color[0] },
       disable: false,
       scope: 'contributor',
@@ -118,7 +118,7 @@ export const useEchartsGlOpts = () => {
     {
       name: t('analyze:all_model:contributors_milestone_persona'),
       key: 'milestone_persona',
-      value: [2, 4, 30],
+      value: [2, 4, 0],
       itemStyle: { color: color[0] },
       disable: false,
       scope: 'contributor',
@@ -128,7 +128,7 @@ export const useEchartsGlOpts = () => {
       key: 'contributor_route',
       value: [4, 4, 30],
       itemStyle: { color: color[1] },
-      disable: false,
+      disable: true,
       scope: 'contributor',
     },
     {
@@ -136,7 +136,7 @@ export const useEchartsGlOpts = () => {
       key: 'contributor_reputation',
       value: [6, 4, 30],
       itemStyle: { color: color[2] },
-      disable: false,
+      disable: true,
       scope: 'contributor',
     },
     {
@@ -144,7 +144,7 @@ export const useEchartsGlOpts = () => {
       key: 'user_reputation',
       value: [8, 4, 40],
       itemStyle: { color: color[2] },
-      disable: false,
+      disable: true,
       scope: 'contributor',
     },
     {
@@ -152,7 +152,7 @@ export const useEchartsGlOpts = () => {
       key: 'software_quality',
       value: [0, 7, 50],
       itemStyle: { color: color[0] },
-      disable: false,
+      disable: true,
       scope: 'software',
     },
     {
@@ -160,7 +160,7 @@ export const useEchartsGlOpts = () => {
       key: 'software_usage_quality',
       value: [1, 7, 40],
       itemStyle: { color: color[0] },
-      disable: false,
+      disable: true,
       scope: 'software',
     },
     {
@@ -168,7 +168,7 @@ export const useEchartsGlOpts = () => {
       key: 'document_quality',
       value: [2, 7, 60],
       itemStyle: { color: color[0] },
-      disable: false,
+      disable: true,
       scope: 'software',
     },
     {
@@ -176,7 +176,7 @@ export const useEchartsGlOpts = () => {
       key: 'northbound_adoption',
       value: [3, 7, 30],
       itemStyle: { color: color[1] },
-      disable: false,
+      disable: true,
       scope: 'software',
     },
     {
@@ -184,7 +184,7 @@ export const useEchartsGlOpts = () => {
       key: 'south_fit',
       value: [5, 7, 30],
       itemStyle: { color: color[1] },
-      disable: false,
+      disable: true,
       scope: 'software',
     },
     {
@@ -192,7 +192,7 @@ export const useEchartsGlOpts = () => {
       key: 'security',
       value: [6, 7, 60],
       itemStyle: { color: color[2] },
-      disable: false,
+      disable: true,
       scope: 'software',
     },
     {
@@ -200,38 +200,45 @@ export const useEchartsGlOpts = () => {
       key: 'compliance',
       value: [8, 7, 40],
       itemStyle: { color: color[2] },
-      disable: false,
+      disable: true,
       scope: 'software',
     },
   ];
   const yAxis3D = isContributor ? contributorType : type;
   const areaStyle = isContributor ? contributorAreaColor : areaColor;
-  const seriesData = models.map(({ key, value, itemStyle, scope, name }) => {
-    if (isContributor) {
-      if (scope === 'collaboration') {
-        value = [value[0], value[1] + 3, value[2]];
-      } else if (scope === 'contributor') {
-        value = [value[0], value[1] - 3, value[2]];
+  const seriesData = models.map(
+    ({ key, value, itemStyle, scope, name, disable }) => {
+      if (isContributor) {
+        if (scope === 'collaboration') {
+          value = [value[0], value[1] + 3, value[2]];
+        } else if (scope === 'contributor') {
+          value = [value[0], value[1] - 3, value[2]];
+        }
+      }
+      const row = data?.metricModelsOverview.find((i) => i.ident === key);
+      if (row) {
+        value = [value[0], value[1], row.transformedScore];
+        return { name, value, itemStyle };
+      } else {
+        // value = [value[0], value[1], row.mainScore * 10];
+        if (disable) {
+          itemStyle.color = disableColor;
+          return { name, value, itemStyle, disable: true };
+        }
+        return { name, value, itemStyle, calc: true };
       }
     }
-    const row = data?.metricModelsOverview.find((i) => i.ident === key);
-    if (row) {
-      value = [value[0], value[1], row.transformedScore];
-      return { name, value, itemStyle };
-    } else {
-      // value = [value[0], value[1], row.mainScore * 10];
-      itemStyle.color = disableColor;
-      return { name, value, itemStyle, disable: true };
-    }
-  });
+  );
   const echartsOpts = {
     tooltip: {
       textStyle: {
         fontWeight: 'bolder',
       },
       formatter: (params) => {
-        if (params.data.disable) {
-          return params.name;
+        if (params.data.calc) {
+          return params.name + ': ' + t('analyze:statistics');
+        } else if (params.data.disable) {
+          return params.name + ': ' + t('analyze:coming_soon');
         } else {
           return params.name + ': ' + params.data.value[2];
         }

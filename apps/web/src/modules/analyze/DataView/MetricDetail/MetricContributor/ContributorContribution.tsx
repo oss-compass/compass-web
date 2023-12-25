@@ -78,6 +78,7 @@ const EcoContributorContribution: React.FC<{
     const legend = [];
     const ecoData = [];
     const contributorsData = [];
+    let allCount = 0;
     if (data?.ecoContributorsOverview?.length > 0) {
       const ecoContributorsOverview = data.ecoContributorsOverview;
       ecoContributorsOverview.forEach((item, i) => {
@@ -99,6 +100,7 @@ const EcoContributorContribution: React.FC<{
           name: name,
           itemStyle: { color: colorList[0] },
         });
+        allCount += count;
         ecoData.push({
           name: name,
           value: count,
@@ -108,6 +110,7 @@ const EcoContributorContribution: React.FC<{
     }
     return {
       legend,
+      allCount,
       ecoData,
       contributorsData,
     };
@@ -125,7 +128,12 @@ const EcoContributorContribution: React.FC<{
       data: getSeries.legend,
     },
     title: {
-      text: t('analyze:metric_detail:global_contribution_distribution'),
+      text:
+        t('analyze:metric_detail:global_contribution_distribution') +
+        '(' +
+        getSeries.allCount +
+        unit +
+        ')',
       left: 'center',
     },
     series: [
@@ -201,6 +209,7 @@ const OrgContributorContribution: React.FC<{
     const legend = [];
     const ecoData = [];
     const contributorsData = [];
+    let allCount = 0;
     if (data?.orgContributionDistribution?.length > 0) {
       const orgContributionDistribution = data.orgContributionDistribution;
       orgContributionDistribution.forEach((item, i) => {
@@ -222,6 +231,7 @@ const OrgContributorContribution: React.FC<{
           name: name,
           itemStyle: { color: colorList[0] },
         });
+        allCount += count;
         ecoData.push({
           name: name,
           value: count,
@@ -231,6 +241,7 @@ const OrgContributorContribution: React.FC<{
     }
     return {
       legend,
+      allCount,
       ecoData,
       contributorsData,
     };
@@ -248,7 +259,12 @@ const OrgContributorContribution: React.FC<{
       data: getSeries.legend,
     },
     title: {
-      text: t('analyze:metric_detail:global_contribution_distribution'),
+      text:
+        t('analyze:metric_detail:global_contribution_distribution') +
+        '(' +
+        getSeries.allCount +
+        unit +
+        ')',
       left: 'center',
     },
     series: [

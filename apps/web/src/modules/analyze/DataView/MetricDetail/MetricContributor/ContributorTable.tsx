@@ -57,7 +57,7 @@ const MetricTable: React.FC<{
       showSizeChanger: false,
       position: ['bottomCenter'],
       showTotal: (total) => {
-        return `Total ${total} items`;
+        return `${t('analyze:total_people', { total })} `;
       },
     },
     filterOpts: [],
