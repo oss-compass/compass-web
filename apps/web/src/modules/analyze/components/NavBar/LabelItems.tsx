@@ -5,7 +5,6 @@ import { getProvider } from '@common/utils';
 import { Level } from '@modules/analyze/constant';
 import classnames from 'classnames';
 import ProviderIcon from '../ProviderIcon';
-import CollectionTag from '@common/components/CollectionTag';
 
 const LabelItems = () => {
   const { t } = useTranslation();
@@ -15,7 +14,7 @@ const LabelItems = () => {
   return (
     <>
       <div className="relative flex h-6 flex-1 items-center overflow-hidden">
-        {item.map(({ name, label, level, collections }) => {
+        {item.map(({ name, label, level }) => {
           const host = getProvider(label);
           let labelNode = (
             <span className={'ml-1 mr-1 font-semibold'}>{name}</span>
@@ -43,10 +42,6 @@ const LabelItems = () => {
                   {t('home:community')}
                 </div>
               )}
-              <CollectionTag
-                className={'col-span-2 mx-2'}
-                collections={collections}
-              />
             </div>
           );
         })}

@@ -26,6 +26,7 @@ const ContributorContribution: React.FC<{
     const legend = [];
     const ecoData = [];
     const contributorsData = [];
+    let allCount = 0;
     if (data?.orgContributorsOverview?.length > 0) {
       const ecoContributorsOverview = data.orgContributorsOverview;
       ecoContributorsOverview
@@ -47,6 +48,7 @@ const ContributorContribution: React.FC<{
             name: subTypeName,
             itemStyle: { color: colorList[0] },
           });
+          allCount += count;
           ecoData.push({
             name: subTypeName,
             value: count,
@@ -56,6 +58,7 @@ const ContributorContribution: React.FC<{
     }
     return {
       legend,
+      allCount,
       ecoData,
       contributorsData,
     };
@@ -73,7 +76,12 @@ const ContributorContribution: React.FC<{
       data: getSeries.legend,
     },
     title: {
-      text: t('analyze:metric_detail:organization_contribution_distribution'),
+      text:
+        t('analyze:metric_detail:organization_contribution_distribution') +
+        '(' +
+        getSeries.allCount +
+        unit +
+        ')',
       left: 'center',
     },
     series: [

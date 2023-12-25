@@ -27,9 +27,11 @@ const Tab: React.FC<{
             )}
             onClick={() => !option.disable && onChange(option.value)}
           >
-            <Tooltip arrow title={option.tooltip} placement="right">
-              <div>{option.label}</div>
-            </Tooltip>
+            <a>
+              <Tooltip arrow title={option.tooltip} placement="right">
+                <div>{option.label}</div>
+              </Tooltip>
+            </a>
           </div>
         );
       })}

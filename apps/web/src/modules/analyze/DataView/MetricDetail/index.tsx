@@ -72,7 +72,7 @@ const MetricDetail = () => {
           <div className="md:hidden">
             <LabelItems />
           </div>
-          <span className="lg:hidden">
+          <span className="ml-2 text-base lg:hidden">
             {t('analyze:metric_detail:project_deep_dive_insight')}
           </span>
         </div>

@@ -110,7 +110,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
           </div>
           <div
             className=""
-            onClickCapture={() => {
+            onClick={() => {
               toggle();
             }}
           >

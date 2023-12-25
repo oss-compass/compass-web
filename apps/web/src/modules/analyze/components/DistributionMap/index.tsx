@@ -57,12 +57,12 @@ const Legend = () => {
           {t('analyze:topic:productivity')}
         </div>
         <div className="mt-2 flex w-[105px] items-center gap-1">
-          <Robustness />
-          {t('analyze:topic:robustness')}
-        </div>
-        <div className="mt-2 flex w-[105px] items-center gap-1">
           <NicheCreation />
           {t('analyze:topic:niche_creation')}
+        </div>
+        <div className="mt-2 flex w-[105px] items-center gap-1">
+          <Robustness />
+          {t('analyze:topic:robustness')}
         </div>
       </div>
       <div className="ml-10">
