@@ -168,6 +168,39 @@ const CooperationCase = () => {
         ),
     },
     {
+      name: 'nju2',
+      url: '/images/academe/logo-nju@2x.png',
+      title: t('academe:nju2_title'),
+      desc: (
+        <ul className="h-full w-full">
+          <li className="ml-4 mb-2 list-disc">{t('academe:nju2_author')}</li>
+          <li className="ml-4 mb-2 list-disc">{t('academe:nju2_author2')}</li>
+          <li className="ml-4 list-disc">
+            {t('academe:nju2_desc')}
+            <LinkX
+              href={
+                '/blog/2023/12/06/an-Information-entropy/an-Information-entropy'
+              }
+            >
+              <span className="text-[#002fa7]">{t('academe:nju2_title')}</span>
+            </LinkX>
+          </li>
+        </ul>
+      ),
+      content:
+        i18n.language === 'en' ? (
+          <img
+            className="h-[50%] w-full"
+            src={'/images/academe/case/nju2.png'}
+          />
+        ) : (
+          <img
+            className="h-[50%] w-full"
+            src={'/images/academe/case/nju2.png'}
+          />
+        ),
+    },
+    {
       name: 'pku3',
       url: '/images/academe/logo-pku@2x.png',
       title: t('academe:pku3_title'),
@@ -206,6 +239,39 @@ const CooperationCase = () => {
           <img
             className="h-full w-full"
             src={'/images/academe/case/pku3_zh.png'}
+          />
+        ),
+    },
+    {
+      name: 'nju3',
+      url: '/images/academe/logo-nju@2x.png',
+      title: t('academe:nju3_title'),
+      desc: (
+        <ul className="h-full w-full">
+          <li className="ml-4 mb-2 list-disc">{t('academe:nju3_author')}</li>
+          <li className="ml-4 mb-2 list-disc">{t('academe:nju3_author2')}</li>
+          <li className="ml-4 list-disc">
+            {t('academe:nju3_desc')}
+            <LinkX
+              href={
+                '/blog/2023/12/06/an-Information-entropy/an-Information-entropy'
+              }
+            >
+              <span className="text-[#002fa7]">{t('academe:nju3_title')}</span>
+            </LinkX>
+          </li>
+        </ul>
+      ),
+      content:
+        i18n.language === 'en' ? (
+          <img
+            className="h-[65%] w-full"
+            src={'/images/academe/case/nju3.png'}
+          />
+        ) : (
+          <img
+            className="h-[65%] w-full"
+            src={'/images/academe/case/nju3.png'}
           />
         ),
     },
@@ -290,7 +356,9 @@ const CooperationCase = () => {
             )}
             {activeCase.experience && activeCase.experience}
           </div>
-          <div className="ml-16 h-[280px] flex-1 ">{activeCase.content}</div>
+          <div className="ml-16 flex h-[280px] flex-1 items-center">
+            {activeCase.content}
+          </div>
         </div>
       </div>
     </>
