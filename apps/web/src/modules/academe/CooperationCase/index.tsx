@@ -254,7 +254,7 @@ const CooperationCase = () => {
             {t('academe:nju3_desc')}
             <LinkX
               href={
-                '/blog/2023/12/06/an-Information-entropy/an-Information-entropy'
+                '/blog/2023/12/06/entropy-based-measurement/entropy-based-measurement'
               }
             >
               <span className="text-[#002fa7]">{t('academe:nju3_title')}</span>
