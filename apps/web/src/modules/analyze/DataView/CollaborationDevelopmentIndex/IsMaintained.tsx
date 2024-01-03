@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  getBarOption,
-  bar,
-  getTooltipsFormatter,
-  legendFormat,
-  getColorWithLabel,
-} from '@common/options';
+import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import { CollaborationDevelopment } from '@modules/analyze/components/SideBar/config';
 import BaseCard from '@common/components/BaseCard';
 import ChartWithData from '@modules/analyze/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
-import { GenChartOptions } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 
 const IsMaintained = () => {
@@ -23,29 +16,15 @@ const IsMaintained = () => {
     yKey: 'metricCodequality.isMaintained',
     summaryKey: 'summaryCodequality.isMaintained',
   };
-  const getOptions: GenChartOptions = (
-    { xAxis, compareLabels, yResults },
-    theme
-  ) => {
-    const series = yResults.map(({ label, level, data }) => {
-      const color = getColorWithLabel(theme, label);
-      return bar({
-        name: label,
-        data: data,
-        color,
-      });
-    });
-
-    return getBarOption({
-      xAxisData: xAxis,
-      series,
-      legend: legendFormat(compareLabels),
-      tooltip: {
-        formatter: getTooltipsFormatter({ compareLabels }),
-      },
-    });
-  };
-
+  const {
+    getOptions,
+    showAvg,
+    showMedian,
+    setShowAvg,
+    setShowMedian,
+    yAxisScale,
+    setYAxisScale,
+  } = useGetLineOption();
   return (
     <BaseCard
       title={t(
@@ -72,12 +51,16 @@ const IsMaintained = () => {
       }
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu
-          enableLineSettingSwitch={false}
-          enableReferenceLineSwitch={false}
           fullScreen={fullScreen}
           onFullScreen={(b) => {
             setFullScreen(b);
           }}
+          showAvg={showAvg}
+          onAvgChange={(b) => setShowAvg(b)}
+          showMedian={showMedian}
+          onMedianChange={(b) => setShowMedian(b)}
+          yAxisScale={yAxisScale}
+          onYAxisScaleChange={(b) => setYAxisScale(b)}
           cardRef={ref}
           yKey={tansOpt['yKey']}
         />
