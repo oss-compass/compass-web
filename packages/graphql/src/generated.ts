@@ -3791,6 +3791,7 @@ export type CommunityReposQuery = {
   communityOverview: {
     __typename?: 'CommunityOverview';
     projectsCount?: number | null;
+    communityOrgUrl?: string | null;
     trends?: Array<{
       __typename?: 'Repo';
       backend?: string | null;
@@ -7203,6 +7204,7 @@ export const CommunityReposDocument = /*#__PURE__*/ `
     query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
   communityOverview(label: $label, page: $page, per: $per, type: $type) {
     projectsCount
+    communityOrgUrl
     trends {
       backend
       name

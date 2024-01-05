@@ -5,7 +5,29 @@ import { getProvider } from '@common/utils';
 import { Level } from '@modules/analyze/constant';
 import classnames from 'classnames';
 import ProviderIcon from '../ProviderIcon';
+import client from '@common/gqlClient';
+import { useCommunityReposQuery } from '@oss-compass/graphql';
 
+const CommunityItem = ({ label, name }) => {
+  const { data } = useCommunityReposQuery(client, {
+    label,
+  });
+  const communityOrgUrl =
+    data?.communityOverview?.communityOrgUrl || 'https://gitee.com/mindspore';
+  console.log(communityOrgUrl);
+  return communityOrgUrl ? (
+    <a
+      className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline"
+      href={communityOrgUrl}
+      target="_blank"
+      rel={'noreferrer'}
+    >
+      {name}
+    </a>
+  ) : (
+    <span className={'ml-1 mr-1 font-semibold'}>{name}</span>
+  );
+};
 const LabelItems = () => {
   const { t } = useTranslation();
   const { compareItems } = useCompareItems();
@@ -31,6 +53,8 @@ const LabelItems = () => {
                 {name}
               </a>
             );
+          } else {
+            labelNode = <CommunityItem label={label} name={name} />;
           }
 
           return (

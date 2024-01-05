@@ -72,40 +72,44 @@ const MetricTable: React.FC<{
     beginDate,
     endDate,
   };
-  const { isLoading } = useContributorsDetailListQuery(client, query, {
-    // enabled: false,
-    onSuccess: (data) => {
-      const items = data.contributorsDetailList.items;
-      const hasTypeFilter = tableParams.filterOpts.find(
-        (i) => i.type === 'contribution_type'
-      );
-      if (hasTypeFilter) {
-        let value = hasTypeFilter.values;
-        items.map((item) => {
-          let list = item.contributionTypeList;
-          item.contributionTypeList = list.filter((i) =>
-            value.includes(i.contributionType)
-          );
+  const { isLoading, isFetching } = useContributorsDetailListQuery(
+    client,
+    query,
+    {
+      onSuccess: (data) => {
+        const items = data.contributorsDetailList.items;
+        const hasTypeFilter = tableParams.filterOpts.find(
+          (i) => i.type === 'contribution_type'
+        );
+        if (hasTypeFilter) {
+          let value = hasTypeFilter.values;
+          items.map((item) => {
+            let list = item.contributionTypeList;
+            item.contributionTypeList = list.filter((i) =>
+              value.includes(i.contributionType)
+            );
+          });
+        }
+        setData(items);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.contributorsDetailList.count,
+          },
         });
-      }
-      setData(items);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: data.contributorsDetailList.count,
-        },
-      });
-    },
-    onError(res: any) {
-      // toast.error(
-      //   getErrorMessage(res) || (() => <>{t('lab:create_failed')}</>),
-      //   {
-      //     position: 'top-center',
-      //   }
-      // );
-    },
-  });
+      },
+      // keepPreviousData: true,
+      // onError(res: any) {
+      //   toast.error(
+      //     getErrorMessage(res) || (() => <>{t('lab:create_failed')}</>),
+      //     {
+      //       position: 'top-center',
+      //     }
+      //   );
+      // },
+    }
+  );
   const handleTableChange = (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue>,
@@ -227,7 +231,7 @@ const MetricTable: React.FC<{
     <MyTable
       columns={columns}
       dataSource={tableData}
-      loading={isLoading}
+      loading={isLoading || isFetching}
       onChange={handleTableChange}
       pagination={tableParams.pagination}
       rowKey={'contributor'}
