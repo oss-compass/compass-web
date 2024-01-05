@@ -56,7 +56,7 @@ const MetricTable: React.FC<{
     beginDate,
     endDate,
   };
-  const { isLoading } = useIssuesDetailListQuery(client, query, {
+  const { isLoading, isFetching } = useIssuesDetailListQuery(client, query, {
     // enabled: false,
     onSuccess: (data) => {
       const items = data.issuesDetailList.items;
@@ -184,7 +184,7 @@ const MetricTable: React.FC<{
     <MyTable
       columns={columns}
       dataSource={tableData}
-      loading={isLoading}
+      loading={isLoading || isFetching}
       onChange={handleTableChange}
       pagination={tableParams.pagination}
       rowKey={'url'}

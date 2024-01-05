@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import MetricChart from '@modules/analyze/DataView/MetricDetail/MetricChart';
 import { useGetEcologicalText } from './contribution';
 import { gradientRamp } from '@common/options';
-import { Switch } from 'antd';
+import PieDropDownMenu from '../PieDropDownMenu';
 import type { EChartsOption } from 'echarts';
 
 const ContributorContribution: React.FC<{
@@ -19,21 +19,38 @@ const ContributorContribution: React.FC<{
   mileage: string[];
 }> = ({ label, level, beginDate, endDate, mileage }) => {
   const [orgModel, setOrgModel] = useState<boolean>(true);
-  const { t } = useTranslation();
-  const onChange = (checked: boolean) => {
-    setOrgModel(checked);
-  };
+  const [onlyIdentity, setOnlyIdentity] = useState<boolean>(false);
+  const [onlyOrg, setOnlyOrg] = useState<boolean>(false);
+
   return (
-    <div className="relative h-[600px] w-[50%] flex-1 pt-4">
-      <div className="absolute z-10 h-4 bg-transparent pl-4 text-xs">
-        <span className="mr-2">
-          {t('analyze:metric_detail:show_organization')}
-        </span>
-        <Switch
-          onChange={onChange}
-          defaultChecked
-          size="small"
-          className="bg-[#bfbfbf]"
+    <div className="relative w-[50%] flex-shrink-0 pt-4 ">
+      <div className="absolute right-6 z-10 h-4 bg-transparent pl-4 text-xs">
+        <PieDropDownMenu
+          showOrgModel={true}
+          orgModel={orgModel}
+          onOrgModelChange={(b) => {
+            setOrgModel(b);
+            if (b) {
+              setOnlyIdentity(false);
+              setOnlyOrg(false);
+            }
+          }}
+          onlyIdentity={onlyIdentity}
+          onOnlyIdentityChange={(b) => {
+            setOnlyIdentity(b);
+            if (b) {
+              setOrgModel(false);
+              setOnlyOrg(false);
+            }
+          }}
+          onlyOrg={onlyOrg}
+          onOnlyOrgChange={(b) => {
+            setOnlyOrg(b);
+            if (b) {
+              setOnlyIdentity(false);
+              setOrgModel(false);
+            }
+          }}
         />
       </div>
       {orgModel ? (
@@ -51,34 +68,89 @@ const ContributorContribution: React.FC<{
           beginDate={beginDate}
           endDate={endDate}
           mileage={mileage}
+          orgModel={orgModel}
+          onlyIdentity={onlyIdentity}
+          onlyOrg={onlyOrg}
         />
       )}
     </div>
   );
 };
 
-const EcoContributorContribution: React.FC<{
-  label: string;
-  level: string;
-  beginDate: Date;
-  endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
-  const { t } = useTranslation();
-  const chartRef = useRef<HTMLDivElement>(null);
-  const { data, isLoading } = useEcoContributorsOverviewQuery(client, {
-    label: label,
-    level: level,
-    beginDate: beginDate,
-    endDate: endDate,
-    filterOpts: [{ type: 'mileage_type', values: mileage }],
-  });
-  const getEcologicalText = useGetEcologicalText();
-  const getSeries = useMemo(() => {
-    const legend = [];
-    const ecoData = [];
-    const contributorsData = [];
-    let allCount = 0;
+const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
+  const legend = [];
+  const ecoData = [];
+  const contributorsData = [];
+  let allCount = 0;
+
+  if (onlyIdentity || onlyOrg) {
+    if (data?.ecoContributorsOverview?.length > 0) {
+      const ecoContributorsOverview = data.ecoContributorsOverview;
+      const map = onlyIdentity
+        ? ['manager', 'participant']
+        : ['individual', 'organization'];
+
+      map.forEach((item, i) => {
+        let list = ecoContributorsOverview.filter((i) =>
+          i?.subTypeName?.includes(item)
+        );
+        let distribution = list.flatMap((i) => i.topContributorDistribution);
+        distribution.sort((a, b) => b.subCount - a.subCount);
+        const name = getEcologicalText(item);
+
+        const colorList = gradientRamp[i];
+        let count = 0;
+        let otherCount = 0;
+        if (item === 'organization') {
+          distribution = distribution.reduce((acc, curr) => {
+            const found = acc.find((item) => item.subBelong === curr.subBelong);
+            if (found) {
+              found.subCount += curr.subCount;
+            } else {
+              acc.push({
+                subBelong: curr.subBelong,
+                subName: curr.subBelong,
+                subCount: curr.subCount,
+              });
+            }
+            return acc;
+          }, []);
+        }
+
+        distribution.forEach((z, index) => {
+          const { subCount, subName } = z;
+          count += subCount;
+          if (subName == 'other' || index > 10) {
+            otherCount += subCount;
+          } else {
+            contributorsData.push({
+              parentName: name,
+              name: subName,
+              value: subCount,
+              itemStyle: { color: colorList[index + 1] },
+            });
+          }
+        });
+        otherCount &&
+          contributorsData.push({
+            parentName: name,
+            name: 'other',
+            value: otherCount,
+            itemStyle: { color: colorList[0] },
+          });
+        legend.push({
+          name: name,
+          itemStyle: { color: colorList[0] },
+        });
+        allCount += count;
+        ecoData.push({
+          name: name,
+          value: count,
+          itemStyle: { color: colorList[0] },
+        });
+      });
+    }
+  } else {
     if (data?.ecoContributorsOverview?.length > 0) {
       const ecoContributorsOverview = data.ecoContributorsOverview;
       ecoContributorsOverview.forEach((item, i) => {
@@ -88,7 +160,6 @@ const EcoContributorContribution: React.FC<{
         let count = 0;
         topContributorDistribution.forEach(({ subCount, subName }, index) => {
           count += subCount;
-          // const color = `rgba(74, 144, 226, ${1-index * 0.1})`;
           contributorsData.push({
             parentName: name,
             name: subName,
@@ -108,13 +179,48 @@ const EcoContributorContribution: React.FC<{
         });
       });
     }
-    return {
-      legend,
-      allCount,
-      ecoData,
-      contributorsData,
-    };
-  }, [data]);
+  }
+
+  return {
+    legend,
+    allCount,
+    ecoData,
+    contributorsData,
+  };
+};
+
+const EcoContributorContribution: React.FC<{
+  label: string;
+  level: string;
+  beginDate: Date;
+  endDate: Date;
+  mileage: string[];
+  orgModel: boolean;
+  onlyIdentity: boolean;
+  onlyOrg: boolean;
+}> = ({
+  label,
+  level,
+  beginDate,
+  endDate,
+  mileage,
+  orgModel,
+  onlyIdentity,
+  onlyOrg,
+}) => {
+  const { t } = useTranslation();
+  const chartRef = useRef<HTMLDivElement>(null);
+  const { data, isLoading } = useEcoContributorsOverviewQuery(client, {
+    label: label,
+    level: level,
+    beginDate: beginDate,
+    endDate: endDate,
+    filterOpts: [{ type: 'mileage_type', values: mileage }],
+  });
+  const getEcologicalText = useGetEcologicalText();
+  const getSeries = useMemo(() => {
+    return getSeriesFun(data, onlyIdentity, onlyOrg, getEcologicalText);
+  }, [data, onlyIdentity, onlyOrg, getEcologicalText]);
   const unit: string = t('analyze:metric_detail:contribution_unit');
   const formatter = '{b} : {c}' + unit + ' ({d}%)';
   const option: EChartsOption = {
@@ -148,6 +254,7 @@ const EcoContributorContribution: React.FC<{
           fontSize: 12,
           color: '#333',
           formatter: formatter,
+          show: false,
         },
         labelLine: {
           show: false,
@@ -178,7 +285,7 @@ const EcoContributorContribution: React.FC<{
   return (
     <div className="h-full w-full" ref={chartRef}>
       <MetricChart
-        style={{ height: '100%', zIndex: 1, marginTop: '20px' }}
+        style={{ height: '100%', zIndex: 1 }}
         loading={isLoading}
         option={option}
         containerRef={chartRef}
@@ -279,6 +386,7 @@ const OrgContributorContribution: React.FC<{
           fontSize: 12,
           color: '#333',
           formatter: formatter,
+          show: false,
         },
         labelLine: {
           show: false,
@@ -308,7 +416,7 @@ const OrgContributorContribution: React.FC<{
   return (
     <div className="h-full w-full" ref={chartRef}>
       <MetricChart
-        style={{ height: '100%', zIndex: 1, marginTop: '20px' }}
+        style={{ height: '100%', zIndex: 1 }}
         loading={isLoading}
         option={option}
         containerRef={chartRef}

@@ -69,45 +69,48 @@ const MetricContributor = () => {
   return (
     <BaseCard
       title={t('analyze:metric_detail:contributor')}
-      bodyClass="h-full"
-      className="h-full"
+      bodyClass="flex-1"
+      className="flex h-full flex-col overflow-hidden"
     >
-      <div>
-        <Tabs
-          classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
-          value={tab}
-          onChange={(e, v) => {
-            setTab(v);
-          }}
-          aria-label="Tabs where selection follows focus"
-          selectionFollowsFocus
-        >
-          <Tab
-            disableRipple
-            classes={{ root: '!normal-case', selected: '!text-black ' }}
-            label={t('analyze:metric_detail:persona_detail')}
-            value="1"
-          ></Tab>
-          <Tab
-            disableRipple
-            classes={{
-              root: '!normal-case',
-              selected: '!text-black !normal-case',
+      <div className="flex h-full flex-col">
+        <div>
+          <Tabs
+            classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
+            value={tab}
+            onChange={(e, v) => {
+              setTab(v);
             }}
-            label={t('analyze:metric_detail:contribution_distribution')}
-            value="2"
-          />
-          <Tab
-            disableRipple
-            classes={{
-              root: '!normal-case',
-              selected: '!text-black !normal-case',
-            }}
-            label={t('analyze:metric_detail:contributor_distribution')}
-            value="3"
-          />
-        </Tabs>
-        <div className="absolute right-1 top-2.5 flex md:hidden xl:-top-2.5">
+            aria-label="Tabs where selection follows focus"
+            selectionFollowsFocus
+          >
+            <Tab
+              disableRipple
+              classes={{ root: '!normal-case', selected: '!text-black ' }}
+              label={t('analyze:metric_detail:persona_detail')}
+              value="1"
+            ></Tab>
+            <Tab
+              disableRipple
+              classes={{
+                root: '!normal-case',
+                selected: '!text-black !normal-case',
+              }}
+              label={t('analyze:metric_detail:contribution_distribution')}
+              value="2"
+            />
+            <Tab
+              disableRipple
+              classes={{
+                root: '!normal-case',
+                selected: '!text-black !normal-case',
+              }}
+              label={t('analyze:metric_detail:contributor_distribution')}
+              value="3"
+            />
+          </Tabs>
+        </div>
+
+        {/* <div className="absolute right-1 top-2.5 flex md:hidden xl:-top-2.5">
           <span className="mr-2 flex cursor-pointer items-center font-medium">
             {t('analyze:metric_detail:milestone_persona_filter')}
             <Tooltip
@@ -147,9 +150,9 @@ const MetricContributor = () => {
             defaultValue={['core', 'regular']}
             onChange={onChange}
           />
-        </div>
+        </div> */}
 
-        <div className="mt-2 flex-1">{source}</div>
+        <div className="flex-1">{source}</div>
       </div>
     </BaseCard>
   );

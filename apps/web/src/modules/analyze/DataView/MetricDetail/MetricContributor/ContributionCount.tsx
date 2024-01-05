@@ -10,7 +10,7 @@ const ContributionCount: React.FC<{
   mileage: string[];
 }> = ({ label, level, beginDate, endDate, mileage }) => {
   return (
-    <div className="flex lg:flex-col">
+    <div className="flex h-full lg:flex-col">
       <ContributorContribution
         label={label}
         level={level}

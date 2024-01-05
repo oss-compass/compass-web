@@ -96,6 +96,7 @@ const ContributorContribution: React.FC<{
           fontSize: 12,
           color: '#333',
           formatter: formatter,
+          show: false,
         },
         labelLine: {
           show: false,
@@ -124,9 +125,9 @@ const ContributorContribution: React.FC<{
   };
 
   return (
-    <div className="h-[600px] w-[50%] flex-1 pt-4" ref={chartRef}>
+    <div className="w-[50%] flex-shrink-0 pt-4" ref={chartRef}>
       <MetricChart
-        style={{ height: '100%', zIndex: 1, marginTop: '20px' }}
+        style={{ height: '100%', zIndex: 1 }}
         loading={isLoading}
         option={option}
         containerRef={chartRef}

@@ -183,8 +183,31 @@ export const useEcologicalType = () => {
 };
 
 export const useGetEcologicalText = () => {
+  const { t } = useTranslation();
   const ecologicalOptions = useEcologicalType();
+  const otherOptions = [
+    {
+      text: t('analyze:metric_detail:organization'),
+      value: 'organization',
+    },
+    {
+      text: t('analyze:metric_detail:individual'),
+      value: 'individual',
+    },
+    {
+      text: t('analyze:metric_detail:participant'),
+      value: 'participant',
+    },
+    {
+      text: t('analyze:metric_detail:manager'),
+      value: 'manager',
+    },
+  ];
   return (text) => {
-    return ecologicalOptions.find((i) => i.value === text)?.text || text;
+    return (
+      ecologicalOptions.find((i) => i.value === text)?.text ||
+      otherOptions.find((i) => i.value === text)?.text ||
+      text
+    );
   };
 };
