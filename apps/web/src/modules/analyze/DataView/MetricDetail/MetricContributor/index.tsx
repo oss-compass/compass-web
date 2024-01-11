@@ -110,7 +110,7 @@ const MetricContributor = () => {
           </Tabs>
         </div>
 
-        {/* <div className="absolute right-1 top-2.5 flex md:hidden xl:-top-2.5">
+        <div className="absolute right-1 top-2.5 flex md:hidden xl:-top-2.5">
           <span className="mr-2 flex cursor-pointer items-center font-medium">
             {t('analyze:metric_detail:milestone_persona_filter')}
             <Tooltip
@@ -150,7 +150,7 @@ const MetricContributor = () => {
             defaultValue={['core', 'regular']}
             onChange={onChange}
           />
-        </div> */}
+        </div>
 
         <div className="flex-1">{source}</div>
       </div>
