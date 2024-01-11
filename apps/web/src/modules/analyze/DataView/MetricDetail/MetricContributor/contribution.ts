@@ -3,15 +3,15 @@ import { useTranslation } from 'next-i18next';
 const useContributionTypeMap = () => {
   const { t } = useTranslation();
   return {
-    observe: {
+    Observe: {
       fork: t('analyze:metric_detail:observe:fork'),
       star: t('analyze:metric_detail:observe:star'),
     },
-    issue: {
+    Issue: {
       issue_creation: t('analyze:metric_detail:issue:issue_creation'),
       issue_comments: t('analyze:metric_detail:issue:issue_comments'),
     },
-    'issue admin': {
+    'Issue Admin': {
       issue_labeled: t('analyze:metric_detail:issue_admin:issue_labeled'),
       issue_unlabeled: t('analyze:metric_detail:issue_admin:issue_unlabeled'),
       issue_closed: t('analyze:metric_detail:issue_admin:issue_closed'),
@@ -65,12 +65,12 @@ const useContributionTypeMap = () => {
         'analyze:metric_detail:issue_admin:issue_change_branch'
       ),
     },
-    code: {
+    Code: {
       pr_creation: t('analyze:metric_detail:code:pr_creation'),
       pr_comments: t('analyze:metric_detail:code:pr_comments'),
       code_commit: t('analyze:metric_detail:code:code_commit'),
     },
-    'code admin': {
+    'Code Admin': {
       pr_labeled: t('analyze:metric_detail:code_admin:pr_labeled'),
       pr_unlabeled: t('analyze:metric_detail:code_admin:pr_unlabeled'),
       pr_closed: t('analyze:metric_detail:code_admin:pr_closed'),
