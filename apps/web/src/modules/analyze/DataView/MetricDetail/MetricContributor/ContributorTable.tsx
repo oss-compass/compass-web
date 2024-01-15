@@ -17,7 +17,10 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
 import Tooltip from '@common/components/Tooltip';
-
+import Download from '@common/components/Table/Download';
+import { contributorDownload } from '../tableDownload';
+import { useRouter } from 'next/router';
+import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -32,7 +35,7 @@ const MetricTable: React.FC<{
   endDate: Date;
   mileage: string[];
 }> = ({ label, level, beginDate, endDate, mileage }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const ecologicalOptions = useEcologicalType();
   const mileageOptions = useMileageOptions();
   const filterMap = {
@@ -40,6 +43,9 @@ const MetricTable: React.FC<{
     contributionTypeList: 'contribution_type',
   };
   const contributionTypeMap = useGetContributionTypeI18n();
+  const router = useRouter();
+  const { handleQueryParams } = useHandleQueryParams();
+
   const mileageFilter = useMemo(() => {
     if (mileage.length > 0) {
       return { type: 'mileage_type', values: mileage };
@@ -48,7 +54,16 @@ const MetricTable: React.FC<{
     }
   }, [mileage]);
 
-  const [filterContributionType, setFilterContributionType] = useState(false);
+  const queryFilterOpts = router.query?.filterOpts as string;
+  const defaultFilterOpts = queryFilterOpts ? JSON.parse(queryFilterOpts) : [];
+  const defaultSortOpts = router.query?.sortOpts
+    ? JSON.parse(router.query?.sortOpts as string)
+    : [];
+  console.log(1);
+  const [filterOpts, setFilterOpts] = useState(defaultFilterOpts || []);
+  const filterContributionType = useMemo(() => {
+    return filterOpts.find((i) => i.type === 'contribution_type');
+  }, [filterOpts]);
   const [tableData, setData] = useState<ContributorDetail[]>();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -60,7 +75,8 @@ const MetricTable: React.FC<{
         return `${t('analyze:total_people', { total })} `;
       },
     },
-    filterOpts: [],
+    filterOpts: filterOpts,
+    sortOpts: defaultSortOpts,
   });
   const query = {
     page: tableParams.pagination.current,
@@ -117,7 +133,7 @@ const MetricTable: React.FC<{
   ) => {
     let sortOpts = null;
     let filterOpts = [];
-
+    console.log(filters);
     for (const key in filters) {
       if (filters.hasOwnProperty(key)) {
         const transformedObj = {
@@ -128,7 +144,6 @@ const MetricTable: React.FC<{
       }
     }
     if (filterOpts.find((i) => i.type === 'contribution_type')) {
-      setFilterContributionType(true);
       sortOpts = sorter.field && {
         type:
           sorter.field === 'contribution'
@@ -137,12 +152,16 @@ const MetricTable: React.FC<{
         direction: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
     } else {
-      setFilterContributionType(false);
       sortOpts = sorter.field && {
         type: sorter.field,
         direction: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
     }
+    handleQueryParams({
+      filterOpts: JSON.stringify(filterOpts),
+      sortOpts: JSON.stringify(sortOpts),
+    });
+    setFilterOpts(filterOpts);
     setTableParams({
       pagination,
       sortOpts,
@@ -165,6 +184,9 @@ const MetricTable: React.FC<{
       align: 'left',
       width: '200px',
       filters: ecologicalOptions,
+      defaultFilteredValue:
+        defaultFilterOpts.find((i) => i.type === 'ecological_type')?.values ||
+        null,
       render: (text) => {
         return ecologicalOptions.find((i) => i.value === text)?.text || text;
       },
@@ -186,16 +208,24 @@ const MetricTable: React.FC<{
         let arr = list.map(
           (item) => contributionTypeMap[item.contributionType]
         );
-        const str = arr.join(', ');
+        const length = arr.join(', ')?.length;
+        const str = arr.map((obj, index) => (
+          <span key={index} style={{ color: obj.color }}>
+            {arr.length - 1 == index ? obj.text : obj.text + ', '}
+          </span>
+        ));
         return (
-          <Tooltip arrow title={str.length > 20 ? str : ''} placement="right">
-            <div className="line-clamp-1 w-[200px] !whitespace-normal">
+          <Tooltip arrow title={length > 27 ? str : ''} placement="right">
+            <div className="line-clamp-1 w-[218px] !whitespace-normal">
               {str}
             </div>
           </Tooltip>
         );
       },
       filters: useContributionTypeLsit(),
+      defaultFilteredValue:
+        defaultFilterOpts.find((i) => i.type === 'contribution_type')?.values ||
+        null,
       filterMode: 'tree',
       ellipsis: true,
       align: 'left',
@@ -228,15 +258,27 @@ const MetricTable: React.FC<{
     },
   ];
   return (
-    <MyTable
-      columns={columns}
-      dataSource={tableData}
-      loading={isLoading || isFetching}
-      onChange={handleTableChange}
-      pagination={tableParams.pagination}
-      rowKey={'contributor'}
-      scroll={{ x: 'max-content' }}
-    />
+    <>
+      <div className="absolute right-0 top-2">
+        <Download
+          downloadFun={() =>
+            contributorDownload(
+              query,
+              t('analyze:metric_detail:contributor_data_table')
+            )
+          }
+        />
+      </div>
+      <MyTable
+        columns={columns}
+        dataSource={tableData}
+        loading={isLoading || isFetching}
+        onChange={handleTableChange}
+        pagination={tableParams.pagination}
+        rowKey={'contributor'}
+        scroll={{ x: 'max-content' }}
+      />
+    </>
   );
 };
 export default MetricTable;

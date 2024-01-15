@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next';
 
+// 领域画像 option
 const useContributionTypeMap = () => {
   const { t } = useTranslation();
   return {
@@ -113,6 +114,7 @@ const useContributionTypeMap = () => {
     },
   };
 };
+// 领域画像 filter
 export const useContributionTypeLsit = () => {
   const obj = useContributionTypeMap();
   const result = [];
@@ -133,23 +135,32 @@ export const useContributionTypeLsit = () => {
   }
   return result;
 };
+// 领域画像 i18n(表格字段翻译)
 export const useGetContributionTypeI18n = () => {
   const obj = useContributionTypeMap();
   const result = {};
-
-  function traverseObject(obj) {
+  const colors = [
+    '#007ACC', // 蓝色
+    '#008000', // 绿色
+    '#FFA500', // 橙色
+    '#FF1493', // 粉红
+    '#800080', // 紫色
+  ];
+  function traverseObject(obj, color) {
     for (const key in obj) {
       if (typeof obj[key] === 'object') {
-        traverseObject(obj[key]);
+        const c = colors.shift() || '#ccc';
+        traverseObject(obj[key], c);
       } else {
-        result[key] = obj[key];
+        result[key] = { text: obj[key], color };
       }
     }
   }
-
-  traverseObject(obj);
+  traverseObject(obj, '#ccc');
   return result;
 };
+
+// 里程画像 i18n(表格字段翻译)
 export const useMileageOptions = () => {
   const { t } = useTranslation();
 
@@ -159,6 +170,8 @@ export const useMileageOptions = () => {
     { label: t('analyze:metric_detail:guest'), value: 'guest' },
   ];
 };
+
+//角色画像 option
 export const useEcologicalType = () => {
   const { t } = useTranslation();
 
@@ -181,7 +194,7 @@ export const useEcologicalType = () => {
     },
   ];
 };
-
+//角色画像 i18n
 export const useGetEcologicalText = () => {
   const { t } = useTranslation();
   const ecologicalOptions = useEcologicalType();

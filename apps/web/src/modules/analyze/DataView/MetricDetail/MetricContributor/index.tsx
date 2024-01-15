@@ -12,17 +12,27 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import Tooltip from '@common/components/Tooltip';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import BaseCard from '@common/components/BaseCard';
+import { useRouter } from 'next/router';
+import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 
 const MetricContributor = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { handleQueryParams } = useHandleQueryParams();
   const { verifiedItems } = useLabelStatus();
   const { label, level } = verifiedItems[0];
-  const [tab, setTab] = useState('1');
+  const queryCard = router.query?.card as string;
+  const [tab, setTab] = useState(queryCard || '1');
   const { timeStart, timeEnd } = useVerifyDateRange();
   const options = useMileageOptions();
-  const [mileage, setMileage] = useState<string[]>(['core', 'regular']);
+  const queryMileage = router.query?.mileage as string;
+  const defaultMileage = queryMileage
+    ? JSON.parse(queryMileage)
+    : ['core', 'regular'];
+  const [mileage, setMileage] = useState<string[]>(defaultMileage);
   const onChange = (checkedValues: string[]) => {
     setMileage(checkedValues);
+    handleQueryParams({ mileage: JSON.stringify(checkedValues) });
   };
   let source;
   switch (tab) {
@@ -63,6 +73,15 @@ const MetricContributor = () => {
       break;
     }
     default: {
+      source = (
+        <MetricTable
+          label={label}
+          level={level}
+          beginDate={timeStart}
+          endDate={timeEnd}
+          mileage={mileage}
+        />
+      );
       break;
     }
   }
@@ -79,6 +98,7 @@ const MetricContributor = () => {
             value={tab}
             onChange={(e, v) => {
               setTab(v);
+              handleQueryParams({ card: v });
             }}
             aria-label="Tabs where selection follows focus"
             selectionFollowsFocus
@@ -110,7 +130,7 @@ const MetricContributor = () => {
           </Tabs>
         </div>
 
-        <div className="absolute right-1 top-2.5 flex md:hidden xl:-top-2.5">
+        <div className="absolute right-14 top-2.5 flex md:hidden xl:right-0 xl:-top-4">
           <span className="mr-2 flex cursor-pointer items-center font-medium">
             {t('analyze:metric_detail:milestone_persona_filter')}
             <Tooltip
@@ -147,7 +167,7 @@ const MetricContributor = () => {
           <span className="mr-2">:</span>
           <Checkbox.Group
             options={options}
-            defaultValue={['core', 'regular']}
+            defaultValue={defaultMileage}
             onChange={onChange}
           />
         </div>
