@@ -13,7 +13,8 @@ import { useTranslation } from 'next-i18next';
 import { format, parseJSON } from 'date-fns';
 import { useStateType } from './issue';
 import { toUnderline } from '@common/utils/format';
-
+import Download from '@common/components/Table/Download';
+import { issueDownload } from '../tableDownload';
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -181,15 +182,24 @@ const MetricTable: React.FC<{
     },
   ];
   return (
-    <MyTable
-      columns={columns}
-      dataSource={tableData}
-      loading={isLoading || isFetching}
-      onChange={handleTableChange}
-      pagination={tableParams.pagination}
-      rowKey={'url'}
-      scroll={{ x: 'max-content' }}
-    />
+    <>
+      <div className="absolute right-0 top-2 hidden">
+        <Download
+          downloadFun={() =>
+            issueDownload(query, t('analyze:metric_detail:issue_data_table'))
+          }
+        />
+      </div>
+      <MyTable
+        columns={columns}
+        dataSource={tableData}
+        loading={isLoading || isFetching}
+        onChange={handleTableChange}
+        pagination={tableParams.pagination}
+        rowKey={'url'}
+        scroll={{ x: 'max-content' }}
+      />
+    </>
   );
 };
 export default MetricTable;

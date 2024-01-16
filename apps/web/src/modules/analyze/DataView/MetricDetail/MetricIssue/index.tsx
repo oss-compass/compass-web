@@ -8,13 +8,18 @@ import IssueComments from './IssueComments';
 import { useTranslation } from 'next-i18next';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import BaseCard from '@common/components/BaseCard';
+import { useRouter } from 'next/router';
+import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 
 const MetricIssue = () => {
+  const router = useRouter();
+  const { handleQueryParams } = useHandleQueryParams();
   const { verifiedItems } = useLabelStatus();
+  const { timeStart, timeEnd } = useVerifyDateRange();
   const { label, level } = verifiedItems[0];
   const { t } = useTranslation();
-  const [tab, setTab] = useState('1');
-  const { timeStart, timeEnd } = useVerifyDateRange();
+  const queryCard = router.query?.card as string;
+  const [tab, setTab] = useState(queryCard || '1');
   let source;
   switch (tab) {
     case '1': {
@@ -51,20 +56,29 @@ const MetricIssue = () => {
       break;
     }
     default: {
+      source = (
+        <MetricTable
+          label={label}
+          level={level}
+          beginDate={timeStart}
+          endDate={timeEnd}
+        />
+      );
       break;
     }
   }
   return (
     <BaseCard
       title={t('analyze:metric_detail:issues')}
-      bodyClass="h-full"
-      className="h-full"
+      bodyClass="flex-1 flex flex-col"
+      className="flex h-full flex-col overflow-hidden"
     >
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}
         onChange={(e, v) => {
           setTab(v);
+          handleQueryParams({ card: v });
         }}
         aria-label="Tabs where selection follows focus"
         selectionFollowsFocus
@@ -95,7 +109,7 @@ const MetricIssue = () => {
         />
       </Tabs>
 
-      <div className="mt-2 flex flex-1 flex-col">{source}</div>
+      <div className="mt-2 flex-1">{source}</div>
     </BaseCard>
   );
 };

@@ -42,7 +42,7 @@ const IssueCompletion: React.FC<{
   const option = getPieOption({ seriesData: getSeries });
 
   return (
-    <div className="h-[600px] pt-4" ref={chartRef}>
+    <div className="relative flex h-full pt-4" ref={chartRef}>
       <MetricChart
         loading={isLoading}
         option={option}

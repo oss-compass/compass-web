@@ -20,6 +20,7 @@ export const config = {
   matcher: [
     '/api/graphql',
     '/api/beta/predict',
+    '/api/v1/:path*',
     '/badge/:path*',
     '/files/:path*',
     '/users/:path*',

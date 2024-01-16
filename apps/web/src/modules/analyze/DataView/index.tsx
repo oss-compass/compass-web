@@ -29,28 +29,5 @@ const DataView = () => {
     </div>
   );
 };
-// const CollaborationDataView = () => {
-//   return (
-//     <>
-//       <CompareBar />
-//       <Charts />
-//     </>
-//   );
-// };
-// const ContributorDataView = () => {
-//   const { isLoading } = useVerifyDetailRange();
-
-//   if (isLoading) {
-//     return <LoadingAnalysis />;
-//   }
-//   return (
-//     <>
-//       <CompareBar />
-//       <AuthRequire>
-//         <ContributorDetail />
-//       </AuthRequire>
-//     </>
-//   );
-// };
 
 export default DataView;

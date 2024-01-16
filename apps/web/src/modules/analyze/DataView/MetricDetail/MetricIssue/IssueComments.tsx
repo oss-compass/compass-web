@@ -3,7 +3,6 @@ import { useIssueCommentQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
 import MetricChart from '@modules/analyze/DataView/MetricDetail/MetricChart';
-import type { EChartsOption } from 'echarts';
 import { getPieOption } from '@modules/analyze/DataView/MetricDetail/metricChartOption';
 
 const IssueCompletion: React.FC<{
@@ -39,7 +38,7 @@ const IssueCompletion: React.FC<{
   const option = getPieOption({ seriesData: getSeries });
 
   return (
-    <div className="h-[600px] pt-4" ref={chartRef}>
+    <div className="relative flex h-full pt-4" ref={chartRef}>
       <MetricChart
         loading={isLoading}
         option={option}

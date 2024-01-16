@@ -5,7 +5,6 @@ import MetricContributor from './MetricContributor';
 import MetricIssue from './MetricIssue';
 import MetricPr from './MetricPr';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { useRouter } from 'next/router';
 import MerticDatePicker from '@modules/analyze/components/NavBar/MerticDatePicker';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import { withErrorBoundary } from 'react-error-boundary';
@@ -13,6 +12,8 @@ import ErrorFallback from '@common/components/ErrorFallback';
 import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
 import LoadingAnalysis from '@modules/analyze/DataView/Status/LoadingAnalysis';
 import LabelItems from '@modules/analyze/components/NavBar/LabelItems';
+import { useRouter } from 'next/router';
+import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 
 const VerifyMetricDetail = () => {
   const { isLoading } = useVerifyDetailRange();
@@ -24,9 +25,11 @@ const VerifyMetricDetail = () => {
 const MetricDetail = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { handleQueryParams } = useHandleQueryParams();
   const slugs = router.query.slugs;
+  const queryTab = router.query?.tab as string;
   const { isLoading, verifiedItems } = useLabelStatus();
-  const [tab, setTab] = useState<string>('contributor');
+  const [tab, setTab] = useState<string>(queryTab || 'contributor');
   if (isLoading || verifiedItems.length > 1) {
     return null;
   }
@@ -77,7 +80,14 @@ const MetricDetail = () => {
           </span>
         </div>
         <div className="absolute right-1/2 flex translate-x-1/2 justify-center">
-          <MyTab options={tabOptions} value={tab} onChange={(v) => setTab(v)} />
+          <MyTab
+            options={tabOptions}
+            value={tab}
+            onChange={(v) => {
+              setTab(v);
+              handleQueryParams({ tab: v });
+            }}
+          />
         </div>
         <div className="absolute right-6">
           <MerticDatePicker />
