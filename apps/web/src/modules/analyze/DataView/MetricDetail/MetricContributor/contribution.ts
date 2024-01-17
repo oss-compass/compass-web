@@ -139,24 +139,19 @@ export const useContributionTypeLsit = () => {
 export const useGetContributionTypeI18n = () => {
   const obj = useContributionTypeMap();
   const result = {};
-  const colors = [
-    '#007ACC', // 蓝色
-    '#008000', // 绿色
-    '#FFA500', // 橙色
-    '#FF1493', // 粉红
-    '#800080', // 紫色
-  ];
+  const colors = ['cyan', 'green', 'geekblue', 'purple', 'orange'];
+  const defaultColors = 'volcano';
   function traverseObject(obj, color) {
     for (const key in obj) {
       if (typeof obj[key] === 'object') {
-        const c = colors.shift() || '#ccc';
+        const c = colors.shift() || defaultColors;
         traverseObject(obj[key], c);
       } else {
         result[key] = { text: obj[key], color };
       }
     }
   }
-  traverseObject(obj, '#ccc');
+  traverseObject(obj, defaultColors);
   return result;
 };
 

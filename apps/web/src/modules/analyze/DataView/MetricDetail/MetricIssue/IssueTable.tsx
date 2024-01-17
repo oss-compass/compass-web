@@ -14,7 +14,8 @@ import { format, parseJSON } from 'date-fns';
 import { useStateType } from './issue';
 import { toUnderline } from '@common/utils/format';
 import Download from '@common/components/Table/Download';
-import { issueDownload } from '../tableDownload';
+import { getIssuePolling, getIssueExport } from '../tableDownload';
+
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -183,11 +184,12 @@ const MetricTable: React.FC<{
   ];
   return (
     <>
-      <div className="absolute right-0 top-2 hidden">
+      <div className="absolute right-0 top-2">
         <Download
-          downloadFun={() =>
-            issueDownload(query, t('analyze:metric_detail:issue_data_table'))
-          }
+          beginFun={getIssueExport}
+          pollingFun={getIssuePolling}
+          query={query}
+          fileName={t('analyze:metric_detail:issue_data_table')}
         />
       </div>
       <MyTable
