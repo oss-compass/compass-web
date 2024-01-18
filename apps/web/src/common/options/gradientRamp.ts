@@ -115,7 +115,6 @@ export const gradientRamp = [
     '#f8a8d3',
     '#fccfea',
   ],
-
   [
     '#8c90a1',
     '#787a8c',

@@ -96,9 +96,8 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
         );
         let distribution = list.flatMap((i) => i.topContributorDistribution);
         distribution.sort((a, b) => b.subCount - a.subCount);
-        const name = getEcologicalText(item);
-
-        const colorList = gradientRamp[i];
+        const { name, index } = getEcologicalText(item);
+        const colorList = gradientRamp[index];
         let count = 0;
         let otherCount = 0;
         if (item === 'organization') {
@@ -155,8 +154,8 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
       const ecoContributorsOverview = data.ecoContributorsOverview;
       ecoContributorsOverview.forEach((item, i) => {
         const { subTypeName, topContributorDistribution } = item;
-        const name = getEcologicalText(subTypeName);
-        const colorList = gradientRamp[i];
+        const { name, index } = getEcologicalText(subTypeName);
+        const colorList = gradientRamp[index];
         let count = 0;
         topContributorDistribution.forEach(({ subCount, subName }, index) => {
           count += subCount;
@@ -321,8 +320,8 @@ const OrgContributorContribution: React.FC<{
       const orgContributionDistribution = data.orgContributionDistribution;
       orgContributionDistribution.forEach((item, i) => {
         const { subTypeName, topContributorDistribution } = item;
-        const name = getEcologicalText(subTypeName);
-        const colorList = gradientRamp[i];
+        const { name, index } = getEcologicalText(subTypeName);
+        const colorList = gradientRamp[index];
         let count = 0;
         topContributorDistribution.forEach(({ subCount, subName }, index) => {
           count += subCount;

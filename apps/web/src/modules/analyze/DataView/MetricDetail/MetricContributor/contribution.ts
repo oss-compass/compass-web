@@ -172,12 +172,12 @@ export const useEcologicalType = () => {
 
   return [
     {
-      text: t('analyze:metric_detail:organization_participant'),
-      value: 'organization participant',
-    },
-    {
       text: t('analyze:metric_detail:organization_manager'),
       value: 'organization manager',
+    },
+    {
+      text: t('analyze:metric_detail:organization_participant'),
+      value: 'organization participant',
     },
     {
       text: t('analyze:metric_detail:individual_manager'),
@@ -202,20 +202,22 @@ export const useGetEcologicalText = () => {
       text: t('analyze:metric_detail:individual'),
       value: 'individual',
     },
-    {
-      text: t('analyze:metric_detail:participant'),
-      value: 'participant',
-    },
+
     {
       text: t('analyze:metric_detail:manager'),
       value: 'manager',
     },
+    {
+      text: t('analyze:metric_detail:participant'),
+      value: 'participant',
+    },
   ];
+  const options = [...ecologicalOptions, ...otherOptions];
   return (text) => {
-    return (
-      ecologicalOptions.find((i) => i.value === text)?.text ||
-      otherOptions.find((i) => i.value === text)?.text ||
-      text
-    );
+    const index = options.findIndex((i) => i.value === text);
+    return {
+      name: options[index]?.text || text,
+      index,
+    };
   };
 };
