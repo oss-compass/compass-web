@@ -67,8 +67,8 @@ const MetricDetail = () => {
         <div className="flex items-center text-lg font-medium">
           <AiOutlineLeftCircle
             onClick={() => {
-              const query = window.location.search;
-              router.push('/analyze/' + slugs + query);
+              // const query = window.location.search;
+              router.push('/analyze/' + slugs);
             }}
             className="mr-4 cursor-pointer text-[#3f60ef]"
           />

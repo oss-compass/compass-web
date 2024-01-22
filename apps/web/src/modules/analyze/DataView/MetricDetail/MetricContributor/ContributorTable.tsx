@@ -13,12 +13,13 @@ import {
   useEcologicalType,
   useMileageOptions,
 } from './contribution';
+import { Tag } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
 import Tooltip from '@common/components/Tooltip';
 import Download from '@common/components/Table/Download';
-import { contributorDownload } from '../tableDownload';
+import { getContributorPolling, getContributorExport } from '../tableDownload';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 interface TableParams {
@@ -58,8 +59,7 @@ const MetricTable: React.FC<{
   const defaultFilterOpts = queryFilterOpts ? JSON.parse(queryFilterOpts) : [];
   const defaultSortOpts = router.query?.sortOpts
     ? JSON.parse(router.query?.sortOpts as string)
-    : [];
-  console.log(1);
+    : null;
   const [filterOpts, setFilterOpts] = useState(defaultFilterOpts || []);
   const filterContributionType = useMemo(() => {
     return filterOpts.find((i) => i.type === 'contribution_type');
@@ -133,7 +133,6 @@ const MetricTable: React.FC<{
   ) => {
     let sortOpts = null;
     let filterOpts = [];
-    console.log(filters);
     for (const key in filters) {
       if (filters.hasOwnProperty(key)) {
         const transformedObj = {
@@ -208,28 +207,32 @@ const MetricTable: React.FC<{
         let arr = list.map(
           (item) => contributionTypeMap[item.contributionType]
         );
-        const length = arr.join(', ')?.length;
-        const str = arr.map((obj, index) => (
-          <span key={index} style={{ color: obj.color }}>
-            {arr.length - 1 == index ? obj.text : obj.text + ', '}
-          </span>
-        ));
-        return (
-          <Tooltip arrow title={length > 27 ? str : ''} placement="right">
-            <div className="line-clamp-1 w-[218px] !whitespace-normal">
-              {str}
+        let sortObj = arr.reduce((result, item) => {
+          (result[item.color] = result[item.color] || []).push(item);
+          return result;
+        }, {});
+        let newArr = Object.keys(sortObj).sort();
+        const str = newArr.map((item) => {
+          return (
+            <div key={item} className="line-clamp-1 my-1">
+              {sortObj[item]?.map((obj, index) => (
+                <Tag key={index} color={obj.color}>
+                  {obj.text}
+                </Tag>
+              ))}
             </div>
-          </Tooltip>
-        );
+          );
+        });
+        return str;
       },
       filters: useContributionTypeLsit(),
       defaultFilteredValue:
         defaultFilterOpts.find((i) => i.type === 'contribution_type')?.values ||
         null,
       filterMode: 'tree',
-      ellipsis: true,
+      // ellipsis: { showTitle: true },
       align: 'left',
-      width: '250px',
+      width: '590px',
     },
     {
       title: t('analyze:metric_detail:organization'),
@@ -253,7 +256,7 @@ const MetricTable: React.FC<{
         }
       },
       align: 'left',
-      width: '200px',
+      width: '120px',
       sorter: true,
     },
   ];
@@ -261,12 +264,10 @@ const MetricTable: React.FC<{
     <>
       <div className="absolute right-0 top-2">
         <Download
-          downloadFun={() =>
-            contributorDownload(
-              query,
-              t('analyze:metric_detail:contributor_data_table')
-            )
-          }
+          beginFun={getContributorExport}
+          pollingFun={getContributorPolling}
+          query={query}
+          fileName={t('analyze:metric_detail:contributor_data_table')}
         />
       </div>
       <MyTable

@@ -14,7 +14,7 @@ import { format, parseJSON } from 'date-fns';
 import { useStateType } from '@modules/analyze/DataView/MetricDetail/MetricPr/PR';
 import { toUnderline } from '@common/utils/format';
 import Download from '@common/components/Table/Download';
-import { prDownload } from '../tableDownload';
+import { getPrPolling, getPrExport } from '../tableDownload';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -191,11 +191,12 @@ const MetricTable: React.FC<{
   ];
   return (
     <>
-      <div className="absolute right-0 top-2 hidden">
+      <div className="absolute right-0 top-2">
         <Download
-          downloadFun={() =>
-            prDownload(query, t('analyze:metric_detail:pr_data_table'))
-          }
+          beginFun={getPrExport}
+          pollingFun={getPrPolling}
+          query={query}
+          fileName={t('analyze:metric_detail:pr_data_table')}
         />
       </div>
       <MyTable

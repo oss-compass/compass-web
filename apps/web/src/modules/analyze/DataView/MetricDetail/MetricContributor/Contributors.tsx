@@ -27,9 +27,8 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
         );
         let distribution = list.flatMap((i) => i.topContributorDistribution);
         distribution.sort((a, b) => b.subCount - a.subCount);
-        const name = getEcologicalText(item);
-
-        const colorList = gradientRamp[i];
+        const { name, index } = getEcologicalText(item);
+        const colorList = gradientRamp[index];
         let count = 0;
         let otherCount = 0;
         if (item === 'organization') {
@@ -48,17 +47,17 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
           }, []);
         }
 
-        distribution.forEach((z, index) => {
+        distribution.forEach((z, y) => {
           const { subCount, subName } = z;
           count += subCount;
-          if (subName == 'other' || index > 10) {
+          if (subName == 'other' || y > 10) {
             otherCount += subCount;
           } else {
             contributorsData.push({
               parentName: name,
               name: subName,
               value: subCount,
-              itemStyle: { color: colorList[index + 1] },
+              itemStyle: { color: colorList[y + 1] },
             });
           }
         });
@@ -86,8 +85,8 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
       const orgContributorsDistribution = data.orgContributorsDistribution;
       orgContributorsDistribution.forEach((item, i) => {
         const { subTypeName, topContributorDistribution } = item;
-        const name = getEcologicalText(subTypeName);
-        const colorList = gradientRamp[i];
+        const { name, index } = getEcologicalText(subTypeName);
+        const colorList = gradientRamp[index];
         let count = 0;
         topContributorDistribution.forEach(({ subCount, subName }, index) => {
           count += subCount;
@@ -140,40 +139,6 @@ const ContributorContributors: React.FC<{
   });
 
   const getSeries = useMemo(() => {
-    // if (data?.orgContributorsDistribution?.length > 0) {
-    //   const orgContributorsDistribution = data.orgContributorsDistribution;
-    //   orgContributorsDistribution.forEach((item, i) => {
-    //     const { subTypeName, topContributorDistribution } = item;
-    //     const name = getEcologicalText(subTypeName);
-    //     const colorList = gradientRamp[i];
-    //     let count = 0;
-    //     topContributorDistribution.forEach(({ subCount, subName }, index) => {
-    //       count += subCount;
-    //       contributorsData.push({
-    //         parentName: name,
-    //         name: subName,
-    //         value: subCount,
-    //         itemStyle: { color: colorList[index + 1] },
-    //       });
-    //     });
-    //     legend.push({
-    //       name: name,
-    //       itemStyle: { color: colorList[0] },
-    //     });
-    //     allCount += count;
-    //     ecoData.push({
-    //       name: name,
-    //       value: count,
-    //       itemStyle: { color: colorList[0] },
-    //     });
-    //   });
-    // }
-    // return {
-    //   legend,
-    //   allCount,
-    //   ecoData,
-    //   contributorsData,
-    // };
     return getSeriesFun(data, onlyIdentity, onlyOrg, getEcologicalText);
   }, [data, onlyIdentity, onlyOrg, getEcologicalText]);
   const unit: string = t('analyze:metric_detail:contributor_unit');

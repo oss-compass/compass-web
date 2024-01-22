@@ -163,7 +163,7 @@ const ProfileForm = () => {
           </div>
 
           <div className="mb-10">
-            <div className="mb-4 flex items-center font-medium font-medium">
+            <div className="mb-4 flex items-center font-medium">
               {t('setting:profile.language_preferences')}
               <Tooltip
                 arrow

@@ -22,7 +22,7 @@ const MyTable = (props) => {
       <ConfigProvider locale={local}>
         <Table
           {...props}
-          rowClassName={(_record, i) => (i % 2 === 1 ? '!bg-[#fafafa]' : '')}
+          // rowClassName={(_record, i) => (i % 2 === 1 ? '!bg-[#fafafa]' : '')}
           // bordered
         />
       </ConfigProvider>

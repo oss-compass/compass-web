@@ -139,24 +139,19 @@ export const useContributionTypeLsit = () => {
 export const useGetContributionTypeI18n = () => {
   const obj = useContributionTypeMap();
   const result = {};
-  const colors = [
-    '#007ACC', // 蓝色
-    '#008000', // 绿色
-    '#FFA500', // 橙色
-    '#FF1493', // 粉红
-    '#800080', // 紫色
-  ];
+  const colors = ['cyan', 'green', 'geekblue', 'purple', 'orange'];
+  const defaultColors = 'volcano';
   function traverseObject(obj, color) {
     for (const key in obj) {
       if (typeof obj[key] === 'object') {
-        const c = colors.shift() || '#ccc';
+        const c = colors.shift() || defaultColors;
         traverseObject(obj[key], c);
       } else {
         result[key] = { text: obj[key], color };
       }
     }
   }
-  traverseObject(obj, '#ccc');
+  traverseObject(obj, defaultColors);
   return result;
 };
 
@@ -177,12 +172,12 @@ export const useEcologicalType = () => {
 
   return [
     {
-      text: t('analyze:metric_detail:organization_participant'),
-      value: 'organization participant',
-    },
-    {
       text: t('analyze:metric_detail:organization_manager'),
       value: 'organization manager',
+    },
+    {
+      text: t('analyze:metric_detail:organization_participant'),
+      value: 'organization participant',
     },
     {
       text: t('analyze:metric_detail:individual_manager'),
@@ -207,20 +202,22 @@ export const useGetEcologicalText = () => {
       text: t('analyze:metric_detail:individual'),
       value: 'individual',
     },
-    {
-      text: t('analyze:metric_detail:participant'),
-      value: 'participant',
-    },
+
     {
       text: t('analyze:metric_detail:manager'),
       value: 'manager',
     },
+    {
+      text: t('analyze:metric_detail:participant'),
+      value: 'participant',
+    },
   ];
+  const options = [...ecologicalOptions, ...otherOptions];
   return (text) => {
-    return (
-      ecologicalOptions.find((i) => i.value === text)?.text ||
-      otherOptions.find((i) => i.value === text)?.text ||
-      text
-    );
+    const index = options.findIndex((i) => i.value === text);
+    return {
+      name: options[index]?.text || text,
+      index,
+    };
   };
 };

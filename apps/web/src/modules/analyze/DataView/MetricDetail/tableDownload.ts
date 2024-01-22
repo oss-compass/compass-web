@@ -1,54 +1,48 @@
 import axios from 'axios';
 
-const apiDownloadFiles = (res, fileName) => {
-  if (res.data.type === 'application/json') {
-    // this.$message({
-    //   type: 'error',
-    //   message: '下载失败，文件不存在或权限不足',
-    // });
-  } else {
-    let blob = new Blob([res.data]);
-    let link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = fileName + '.csv';
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    window.URL.revokeObjectURL(link.href);
-    document.body.removeChild(link);
-  }
+export enum Status {
+  PENDING = 'pending',
+  PROGRESS = 'progress',
+  COMPLETE = 'complete',
+  UNKNOWN = 'unknown',
+}
+export const apiDownloadFiles = (path, fileName, onFinish) => {
+  let link = document.createElement('a');
+  link.href = path;
+  link.download = fileName + '.csv';
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  onFinish && onFinish();
+  document.body.removeChild(link);
 };
-
-export const contributorDownload = (query, fileName) => {
-  return axios
-    .post('/api/v1/contributor/export', query, {
-      headers: {
-        accept: 'application/json',
-      },
-    })
-    .then((res) => {
-      apiDownloadFiles(res, fileName);
-    });
+export const getContributorPolling = (uuid) => {
+  return axios.get('/api/v1/contributor/export_state/' + uuid);
 };
-export const issueDownload = (query, fileName) => {
-  return axios
-    .post('/api/v1/contributor/export', query, {
-      headers: {
-        accept: 'application/json',
-      },
-    })
-    .then((res) => {
-      apiDownloadFiles(res, fileName);
-    });
+export const getContributorExport = (query) => {
+  return axios.post('/api/v1/contributor/export', query, {
+    headers: {
+      accept: 'application/json',
+    },
+  });
 };
-export const prDownload = (query, fileName) => {
-  return axios
-    .post('/api/v1/contributor/export', query, {
-      headers: {
-        accept: 'application/json',
-      },
-    })
-    .then((res) => {
-      apiDownloadFiles(res, fileName);
-    });
+export const getIssuePolling = (uuid) => {
+  return axios.get('/api/v1/issue/export_state/' + uuid);
+};
+export const getIssueExport = (query) => {
+  return axios.post('/api/v1/issue/export', query, {
+    headers: {
+      accept: 'application/json',
+    },
+  });
+};
+export const getPrPolling = (uuid) => {
+  return axios.get('/api/v1/pull/export_state/' + uuid);
+};
+export const getPrExport = (query) => {
+  return axios.post('/api/v1/pull/export', query, {
+    headers: {
+      accept: 'application/json',
+    },
+  });
 };
