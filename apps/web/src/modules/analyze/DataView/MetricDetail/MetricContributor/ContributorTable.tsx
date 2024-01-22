@@ -106,7 +106,6 @@ const MetricTable: React.FC<{
             );
           });
         }
-        setData(items);
         setTableParams({
           ...tableParams,
           pagination: {
@@ -114,6 +113,7 @@ const MetricTable: React.FC<{
             total: data.contributorsDetailList.count,
           },
         });
+        setData(items);
       },
       // keepPreviousData: true,
       // onError(res: any) {
@@ -162,7 +162,10 @@ const MetricTable: React.FC<{
     });
     setFilterOpts(filterOpts);
     setTableParams({
-      pagination,
+      pagination: {
+        showTotal: tableParams.pagination.showTotal,
+        ...pagination,
+      },
       sortOpts,
       filterOpts,
     });

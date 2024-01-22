@@ -71,6 +71,7 @@ const ContributorContribution: React.FC<{
       formatter: formatter,
     },
     legend: {
+      type: 'scroll',
       top: 40,
       left: 'center',
       data: getSeries.legend,
