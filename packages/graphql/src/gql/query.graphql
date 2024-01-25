@@ -11,6 +11,12 @@ query userinfo {
       nickname
       provider
     }
+    contributingOrgs {
+      firstDate
+      lastDate
+      orgName
+      platformType
+    }
   }
 }
 
@@ -423,6 +429,11 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
   # }
 }
 
+query orgSearch($keyword: String!) {
+  orgFuzzySearch(keyword: $keyword) {
+    orgName
+  }
+}
 # query labMetric(
 #   $label: String!
 #   $level: String = "repo"
@@ -930,6 +941,7 @@ query verifyDetailDataRange(
     status
     max
     min
+    labelAdmin
   }
 }
 

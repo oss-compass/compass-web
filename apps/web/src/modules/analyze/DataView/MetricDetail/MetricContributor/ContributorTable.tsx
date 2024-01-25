@@ -7,6 +7,7 @@ import {
 } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import MyTable from '@common/components/Table';
+import classnames from 'classnames';
 import {
   useContributionTypeLsit,
   useGetContributionTypeI18n,
@@ -17,11 +18,16 @@ import { Tag } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
-import Tooltip from '@common/components/Tooltip';
 import Download from '@common/components/Table/Download';
 import { getContributorPolling, getContributorExport } from '../tableDownload';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
+import Dialog from '@common/components/Dialog';
+import { FiEdit } from 'react-icons/fi';
+import { GrClose } from 'react-icons/gr';
+import ManageOrgEdit from '@common/components/OrgEdit/ManageOrgEdit';
+import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -37,6 +43,11 @@ const MetricTable: React.FC<{
   mileage: string[];
 }> = ({ label, level, beginDate, endDate, mileage }) => {
   const { t } = useTranslation();
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [currentName, setCurrentName] = useState('');
+  const [currentOrgName, setCurrentOrgName] = useState('');
+  const { data } = useVerifyDetailRange();
+
   const ecologicalOptions = useEcologicalType();
   const mileageOptions = useMileageOptions();
   const filterMap = {
@@ -242,6 +253,25 @@ const MetricTable: React.FC<{
       dataIndex: 'organization',
       align: 'left',
       width: '160px',
+      render: (text, col) => {
+        return (
+          <div className="flex">
+            <span>{text || '-'}</span>
+            <span className="text-primary ml-2 mt-1">
+              {data?.verifyDetailDataRange?.labelAdmin && (
+                <FiEdit
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setCurrentName(col.contributor);
+                    col.organization && setCurrentOrgName(col.organization);
+                    setOpenConfirm(true);
+                  }}
+                />
+              )}
+            </span>
+          </div>
+        );
+      },
     },
     {
       title: t('analyze:metric_detail:contribution'),
@@ -281,6 +311,48 @@ const MetricTable: React.FC<{
         pagination={tableParams.pagination}
         rowKey={'contributor'}
         scroll={{ x: 'max-content' }}
+      />
+      <Dialog
+        open={openConfirm}
+        classes={{
+          paper: classnames(
+            'border-2 border-black w-[460px] !max-w-[660px] !rounded-none !m-0',
+            'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
+          ),
+        }}
+        dialogTitle={
+          <>
+            <p className="mb-4">
+              {currentName +
+                ' ' +
+                t('analyze:organization_information_modification')}
+            </p>
+            <div
+              className="absolute right-6 top-4 cursor-pointer p-2"
+              onClick={() => {
+                setOpenConfirm(false);
+              }}
+            >
+              <GrClose className="text-base" />
+            </div>
+          </>
+        }
+        dialogContent={
+          <div className="w-full">
+            <ManageOrgEdit
+              label={label}
+              level={level}
+              contributor={currentName}
+              name={currentOrgName}
+              setShowEdit={() => {
+                setOpenConfirm(false);
+              }}
+            />
+          </div>
+        }
+        handleClose={() => {
+          setOpenConfirm(false);
+        }}
       />
     </>
   );

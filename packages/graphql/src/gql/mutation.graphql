@@ -79,3 +79,45 @@ mutation cancelSubscription($label: String!, $level: String!) {
     status
   }
 }
+mutation modifyUserOrgs(
+  $platform: String!
+  $organizations: [ContributorOrgInput!]!
+) {
+  modifyUserOrgs(
+    input: { platform: $platform, organizations: $organizations }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation manageUserOrgs(
+  $platform: String!
+  $organizations: [ContributorOrgInput!]!
+  $contributor: String!
+  $label: String!
+  $level: String!
+) {
+  manageUserOrgs(
+    input: {
+      platform: $platform
+      contributor: $contributor
+      label: $label
+      level: $level
+      organizations: $organizations
+    }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    prUrl
+    status
+  }
+}

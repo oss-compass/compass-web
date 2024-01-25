@@ -69,6 +69,7 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
             itemStyle: { color: colorList[0] },
           });
         legend.push({
+          index: index,
           name: name,
           itemStyle: { color: colorList[0] },
         });
@@ -99,6 +100,7 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
         });
         legend.push({
           name: name,
+          index: index,
           itemStyle: { color: colorList[0] },
         });
         allCount += count;
@@ -110,7 +112,7 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
       });
     }
   }
-
+  legend.sort((a, b) => a?.index - b?.index);
   return {
     legend,
     allCount,

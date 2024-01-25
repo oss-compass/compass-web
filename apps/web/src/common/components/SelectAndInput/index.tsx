@@ -46,7 +46,7 @@ const Select: React.FC<
         }}
         placeholder={placeholder}
         className={classnames(
-          'daisy-select h-12 w-full flex-1  border-2 border-black text-base outline-none'
+          'daisy-select !h-full w-full flex-1  border-2 border-black text-base outline-none'
         )}
         autoComplete={'off'}
       />
