@@ -14,6 +14,42 @@
 .ant-progress-inner {
   border-radius: 0px !important;
 }
+.ant-range-picker {
+  border-radius: 0px !important;
+  height: 26px;
+  width: 250px;
+}
+.ant-org-input {
+  border-radius: 0px !important;
+  height: 26px;
+  // width: 160px;
+}
+.ant-form-item-control-input {
+  min-height: 24px !important;
+}
+.ant-form-item-required {
+  font-size: 16px !important;
+}
+.ant-picker-dropdown {
+  z-index: 99999;
+}
+.ant-input:focus-within {
+  border-color: unset;
+  box-shadow: none;
+}
+.ant-input:hover {
+  border-color: unset;
+}
+.ant-picker-focused.ant-picker {
+  border-color: unset;
+  box-shadow: none;
+}
+.ant-picker:hover {
+  border-color: unset;
+}
+.ant-picker-clear {
+  // inset-inline-end: 16px !important;
+}
 // .ant-spin-nested-loading {
 //   height: 100%;
 //   .ant-spin-container {

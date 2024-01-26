@@ -93,7 +93,10 @@ const MetricTable: React.FC<{
       }
     }
     setTableParams({
-      pagination,
+      pagination: {
+        showTotal: tableParams.pagination.showTotal,
+        ...pagination,
+      },
       sortOpts,
       filterOpts,
     });
