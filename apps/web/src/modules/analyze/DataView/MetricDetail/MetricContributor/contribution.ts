@@ -4,9 +4,51 @@ import { useTranslation } from 'next-i18next';
 const useContributionTypeMap = () => {
   const { t } = useTranslation();
   return {
-    Observe: {
-      fork: t('analyze:metric_detail:observe:fork'),
-      star: t('analyze:metric_detail:observe:star'),
+    Code: {
+      pr_creation: t('analyze:metric_detail:code:pr_creation'),
+      pr_comments: t('analyze:metric_detail:code:pr_comments'),
+      code_commit: t('analyze:metric_detail:code:code_commit'),
+    },
+    'Code Admin': {
+      pr_labeled: t('analyze:metric_detail:code_admin:pr_labeled'),
+      pr_unlabeled: t('analyze:metric_detail:code_admin:pr_unlabeled'),
+      pr_closed: t('analyze:metric_detail:code_admin:pr_closed'),
+      pr_assigned: t('analyze:metric_detail:code_admin:pr_assigned'),
+      pr_unassigned: t('analyze:metric_detail:code_admin:pr_unassigned'),
+      pr_reopened: t('analyze:metric_detail:code_admin:pr_reopened'),
+      pr_milestoned: t('analyze:metric_detail:code_admin:pr_milestoned'),
+      pr_demilestoned: t('analyze:metric_detail:code_admin:pr_demilestoned'),
+      pr_marked_as_duplicate: t(
+        'analyze:metric_detail:code_admin:pr_marked_as_duplicate'
+      ),
+      pr_transferred: t('analyze:metric_detail:code_admin:pr_transferred'),
+      pr_renamed_title: t('analyze:metric_detail:code_admin:pr_renamed_title'),
+      pr_change_description: t(
+        'analyze:metric_detail:code_admin:pr_change_description'
+      ),
+      pr_setting_priority: t(
+        'analyze:metric_detail:code_admin:pr_setting_priority'
+      ),
+      pr_change_priority: t(
+        'analyze:metric_detail:code_admin:pr_change_priority'
+      ),
+      pr_merged: t('analyze:metric_detail:code_admin:pr_merged'),
+      pr_review: t('analyze:metric_detail:code_admin:pr_review'),
+      pr_set_tester: t('analyze:metric_detail:code_admin:pr_set_tester'),
+      pr_unset_tester: t('analyze:metric_detail:code_admin:pr_unset_tester'),
+      pr_check_pass: t('analyze:metric_detail:code_admin:pr_check_pass'),
+      pr_test_pass: t('analyze:metric_detail:code_admin:pr_test_pass'),
+      pr_reset_assign_result: t(
+        'analyze:metric_detail:code_admin:pr_reset_assign_result'
+      ),
+      pr_reset_test_result: t(
+        'analyze:metric_detail:code_admin:pr_reset_test_result'
+      ),
+      pr_link_issue: t('analyze:metric_detail:code_admin:pr_link_issue'),
+      pr_unlink_issue: t('analyze:metric_detail:code_admin:pr_unlink_issue'),
+      code_direct_commit: t(
+        'analyze:metric_detail:code_admin:code_direct_commit'
+      ),
     },
     Issue: {
       issue_creation: t('analyze:metric_detail:issue:issue_creation'),
@@ -66,51 +108,9 @@ const useContributionTypeMap = () => {
         'analyze:metric_detail:issue_admin:issue_change_branch'
       ),
     },
-    Code: {
-      pr_creation: t('analyze:metric_detail:code:pr_creation'),
-      pr_comments: t('analyze:metric_detail:code:pr_comments'),
-      code_commit: t('analyze:metric_detail:code:code_commit'),
-    },
-    'Code Admin': {
-      pr_labeled: t('analyze:metric_detail:code_admin:pr_labeled'),
-      pr_unlabeled: t('analyze:metric_detail:code_admin:pr_unlabeled'),
-      pr_closed: t('analyze:metric_detail:code_admin:pr_closed'),
-      pr_assigned: t('analyze:metric_detail:code_admin:pr_assigned'),
-      pr_unassigned: t('analyze:metric_detail:code_admin:pr_unassigned'),
-      pr_reopened: t('analyze:metric_detail:code_admin:pr_reopened'),
-      pr_milestoned: t('analyze:metric_detail:code_admin:pr_milestoned'),
-      pr_demilestoned: t('analyze:metric_detail:code_admin:pr_demilestoned'),
-      pr_marked_as_duplicate: t(
-        'analyze:metric_detail:code_admin:pr_marked_as_duplicate'
-      ),
-      pr_transferred: t('analyze:metric_detail:code_admin:pr_transferred'),
-      pr_renamed_title: t('analyze:metric_detail:code_admin:pr_renamed_title'),
-      pr_change_description: t(
-        'analyze:metric_detail:code_admin:pr_change_description'
-      ),
-      pr_setting_priority: t(
-        'analyze:metric_detail:code_admin:pr_setting_priority'
-      ),
-      pr_change_priority: t(
-        'analyze:metric_detail:code_admin:pr_change_priority'
-      ),
-      pr_merged: t('analyze:metric_detail:code_admin:pr_merged'),
-      pr_review: t('analyze:metric_detail:code_admin:pr_review'),
-      pr_set_tester: t('analyze:metric_detail:code_admin:pr_set_tester'),
-      pr_unset_tester: t('analyze:metric_detail:code_admin:pr_unset_tester'),
-      pr_check_pass: t('analyze:metric_detail:code_admin:pr_check_pass'),
-      pr_test_pass: t('analyze:metric_detail:code_admin:pr_test_pass'),
-      pr_reset_assign_result: t(
-        'analyze:metric_detail:code_admin:pr_reset_assign_result'
-      ),
-      pr_reset_test_result: t(
-        'analyze:metric_detail:code_admin:pr_reset_test_result'
-      ),
-      pr_link_issue: t('analyze:metric_detail:code_admin:pr_link_issue'),
-      pr_unlink_issue: t('analyze:metric_detail:code_admin:pr_unlink_issue'),
-      code_direct_commit: t(
-        'analyze:metric_detail:code_admin:code_direct_commit'
-      ),
+    Observe: {
+      fork: t('analyze:metric_detail:observe:fork'),
+      star: t('analyze:metric_detail:observe:star'),
     },
   };
 };
@@ -139,19 +139,19 @@ export const useContributionTypeLsit = () => {
 export const useGetContributionTypeI18n = () => {
   const obj = useContributionTypeMap();
   const result = {};
-  const colors = ['cyan', 'green', 'geekblue', 'purple', 'orange'];
-  const defaultColors = 'volcano';
-  function traverseObject(obj, color) {
+  const colors = ['#4A90E2', '#9ECDF2', '#EAB308', '#FDE047', '#D1D5DB'];
+  const defaultColors = '#D1D5DB';
+  function traverseObject(obj, color, type) {
     for (const key in obj) {
       if (typeof obj[key] === 'object') {
         const c = colors.shift() || defaultColors;
-        traverseObject(obj[key], c);
+        traverseObject(obj[key], c, key);
       } else {
-        result[key] = { text: obj[key], color };
+        result[key] = { text: obj[key], color, type };
       }
     }
   }
-  traverseObject(obj, defaultColors);
+  traverseObject(obj, defaultColors, null);
   return result;
 };
 

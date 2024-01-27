@@ -10,11 +10,11 @@ import MyTable from '@common/components/Table';
 import classnames from 'classnames';
 import {
   useContributionTypeLsit,
-  useGetContributionTypeI18n,
   useEcologicalType,
   useMileageOptions,
 } from './contribution';
-import { Tag } from 'antd';
+import { getMaxDomain } from './utils';
+import DomainPersona from './DomainPersona';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
@@ -54,7 +54,6 @@ const MetricTable: React.FC<{
     ecologicalType: 'ecological_type',
     contributionTypeList: 'contribution_type',
   };
-  const contributionTypeMap = useGetContributionTypeI18n();
   const router = useRouter();
   const { handleQueryParams } = useHandleQueryParams();
 
@@ -99,6 +98,10 @@ const MetricTable: React.FC<{
     beginDate,
     endDate,
   };
+
+  const maxDomain = useMemo(() => {
+    return getMaxDomain(tableData);
+  }, [tableData]);
   const { isLoading, isFetching } = useContributorsDetailListQuery(
     client,
     query,
@@ -112,9 +115,11 @@ const MetricTable: React.FC<{
           let value = hasTypeFilter.values;
           items.map((item) => {
             let list = item.contributionTypeList;
-            item.contributionTypeList = list.filter((i) =>
-              value.includes(i.contributionType)
-            );
+            item.contributionTypeList = list.filter((i) => {
+              if (value.includes(i.contributionType)) {
+                return true;
+              }
+            });
           });
         }
         setTableParams({
@@ -217,27 +222,14 @@ const MetricTable: React.FC<{
     {
       title: t('analyze:metric_detail:domain_persona'),
       dataIndex: 'contributionTypeList',
-      render: (list) => {
-        let arr = list.map(
-          (item) => contributionTypeMap[item.contributionType]
+      render: (dataList, col) => {
+        return (
+          <DomainPersona
+            maxDomain={maxDomain}
+            dataList={dataList}
+            name={col.contributor}
+          />
         );
-        let sortObj = arr.reduce((result, item) => {
-          (result[item.color] = result[item.color] || []).push(item);
-          return result;
-        }, {});
-        let newArr = Object.keys(sortObj).sort();
-        const str = newArr.map((item) => {
-          return (
-            <div key={item} className="line-clamp-1 my-1">
-              {sortObj[item]?.map((obj, index) => (
-                <Tag key={index} color={obj.color}>
-                  {obj.text}
-                </Tag>
-              ))}
-            </div>
-          );
-        });
-        return str;
       },
       filters: useContributionTypeLsit(),
       defaultFilteredValue:
@@ -246,7 +238,7 @@ const MetricTable: React.FC<{
       filterMode: 'tree',
       // ellipsis: { showTitle: true },
       align: 'left',
-      width: '590px',
+      width: '300px',
     },
     {
       title: t('analyze:metric_detail:organization'),
