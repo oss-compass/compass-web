@@ -116,7 +116,7 @@ const OrgEdit = ({
               onChange={(e) => {
                 setOrgName(e);
               }}
-              placeholder={''}
+              placeholder={t('common:org_name')}
             />
           </Form.Item>
           <Form.Item

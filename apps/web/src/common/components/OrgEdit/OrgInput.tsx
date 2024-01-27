@@ -83,7 +83,8 @@ const Select: React.FC<
       )}
       <div
         className={classnames(
-          'absolute top-1.5 right-2 cursor-pointer text-[#CCCCCC]'
+          'absolute top-1.5 right-2 cursor-pointer text-[#CCCCCC]',
+          inputClass ? 'top-5' : ''
         )}
       >
         {showLoading ? (

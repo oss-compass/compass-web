@@ -96,7 +96,7 @@ const ManageOrgEdit = ({
             <OrgInput
               className="h-full w-full"
               inputClass="daisy-input-bordered daisy-input h-12 w-full flex-1 border-2  px-4 text-base outline-none border-black"
-              dropClass="top-[50px]  border-2"
+              dropClass="top-[50px] border-2"
               value={orgName}
               onChange={(e) => {
                 setOrgName(e);
