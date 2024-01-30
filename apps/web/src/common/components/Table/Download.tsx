@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BsDownload } from 'react-icons/bs';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { useRequest } from 'ahooks';
+import Tooltip from '@common/components/Tooltip';
 import {
   apiDownloadFiles,
   Status,
@@ -69,15 +70,17 @@ const Download = ({
         {loadingDownLoad ? (
           <AiOutlineLoading className="t animate-spin" />
         ) : (
-          <div
-            className="flex h-full w-full items-center justify-center"
-            onClick={async () => {
-              setLoadingDownLoad(true);
-              await downloadFun();
-            }}
-          >
-            <BsDownload />
-          </div>
+          <Tooltip arrow title={fileName} placement="top">
+            <div
+              className="flex h-full w-full items-center justify-center"
+              onClick={async () => {
+                setLoadingDownLoad(true);
+                await downloadFun();
+              }}
+            >
+              <BsDownload />
+            </div>
+          </Tooltip>
         )}
       </div>
     </>
