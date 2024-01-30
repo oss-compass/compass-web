@@ -19,7 +19,7 @@ const Overview: React.FC<{
       <>
         {data[0].level === Level.COMMUNITY && <CommunityRepos />}
         <div className="flex gap-4 md:flex-col">
-          <div className="flex-1">
+          <div className="min-w-0 flex-1 ">
             <LineChart />
           </div>
           <div className="w-[332px] flex-shrink-0">

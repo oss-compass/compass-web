@@ -8,6 +8,7 @@ import Popper from '@mui/material/Popper';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
 const PopperContent = ({ dataList, name, active, setActive }) => {
+  const { t } = useTranslation();
   const activeItem = dataList
     .find((item) => item.type === active)
     ?.childern.sort((a, b) => b.contribution - a.contribution);
@@ -16,7 +17,7 @@ const PopperContent = ({ dataList, name, active, setActive }) => {
   return (
     <div className="right-0 rounded bg-[#fcfcfc] text-xs drop-shadow-md">
       <div className="flex h-10 items-center pl-3 text-sm font-semibold">
-        {name}
+        {name + ' ' + t('analyze:metric_detail:domain_persona_details')}
       </div>
       <div className="flex h-[300px]">
         <div className="flex h-full w-40 flex-shrink-0 flex-col border-t">

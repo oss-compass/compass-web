@@ -99,6 +99,17 @@ const OrgEdit = ({
       }
     },
   });
+
+  const checkData = (rule, value, callback) => {
+    if (value) {
+      if (/[\u4E00-\u9FA5]/g.test(value)) {
+        callback(new Error(t('common:not_in_chinese')));
+      } else {
+        callback();
+      }
+    }
+    callback();
+  };
   return (
     <div className="border-b border-[#E7E7E7] py-4">
       <div className="flex items-center justify-between">
@@ -106,7 +117,10 @@ const OrgEdit = ({
           <Form.Item
             name="orgName"
             className="mr-2 !mb-0 h-6 w-[160px]"
-            rules={[{ required: true, message: '' }]}
+            rules={[
+              { required: true, message: '' },
+              { validator: checkData, message: t('common:not_in_chinese') },
+            ]}
             initialValue={orgName}
           >
             <OrgInput
