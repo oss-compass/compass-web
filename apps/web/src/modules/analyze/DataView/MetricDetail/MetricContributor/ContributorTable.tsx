@@ -15,19 +15,21 @@ import {
 } from './contribution';
 import { getMaxDomain } from './utils';
 import DomainPersona from './DomainPersona';
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
-import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'next-i18next';
 import Download from '@common/components/Table/Download';
 import { getContributorPolling, getContributorExport } from '../tableDownload';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 import Dialog from '@common/components/Dialog';
+import Tooltip from '@common/components/Tooltip';
 import { FiEdit } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import ManageOrgEdit from '@common/components/OrgEdit/ManageOrgEdit';
 import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+import { useIsCurrentUser } from '@modules/analyze/hooks/useIsCurrentUser';
 
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -47,7 +49,7 @@ const MetricTable: React.FC<{
   const [currentName, setCurrentName] = useState('');
   const [currentOrgName, setCurrentOrgName] = useState('');
   const { data } = useVerifyDetailRange();
-
+  const { isCurrentUser } = useIsCurrentUser();
   const ecologicalOptions = useEcologicalType();
   const mileageOptions = useMileageOptions();
   const filterMap = {
@@ -131,15 +133,6 @@ const MetricTable: React.FC<{
         });
         setData(items);
       },
-      // keepPreviousData: true,
-      // onError(res: any) {
-      //   toast.error(
-      //     getErrorMessage(res) || (() => <>{t('lab:create_failed')}</>),
-      //     {
-      //       position: 'top-center',
-      //     }
-      //   );
-      // },
     }
   );
   const handleTableChange = (
@@ -246,21 +239,44 @@ const MetricTable: React.FC<{
       align: 'left',
       width: '160px',
       render: (text, col) => {
+        let edit = null;
+        if (isCurrentUser(col.contributor)) {
+          edit = (
+            <FiEdit
+              className="cursor-pointer"
+              onClick={() => {
+                window.open('/settings/profile');
+              }}
+            />
+          );
+        } else if (data?.verifyDetailDataRange?.labelAdmin) {
+          edit = (
+            <FiEdit
+              className="cursor-pointer"
+              onClick={() => {
+                setCurrentName(col.contributor);
+                col.organization && setCurrentOrgName(col.organization);
+                setOpenConfirm(true);
+              }}
+            />
+          );
+        } else {
+          edit = (
+            <Tooltip
+              arrow
+              title={<div>{t('analyze:no_role_desc')}</div>}
+              placement="top"
+            >
+              <div>
+                <FiEdit className="cursor-not-allowed text-[#868690]" />
+              </div>
+            </Tooltip>
+          );
+        }
         return (
           <div className="flex">
             <span>{text || '-'}</span>
-            <span className="text-primary ml-2 mt-1">
-              {data?.verifyDetailDataRange?.labelAdmin && (
-                <FiEdit
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setCurrentName(col.contributor);
-                    col.organization && setCurrentOrgName(col.organization);
-                    setOpenConfirm(true);
-                  }}
-                />
-              )}
-            </span>
+            <span className="text-primary ml-2 mt-1">{}</span>
           </div>
         );
       },

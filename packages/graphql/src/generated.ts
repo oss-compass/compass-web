@@ -4876,8 +4876,6 @@ export type VerifyDetailDataRangeQuery = {
   verifyDetailDataRange: {
     __typename?: 'ValidDataRange';
     status?: boolean | null;
-    max?: any | null;
-    min?: any | null;
     labelAdmin?: boolean | null;
   };
 };
@@ -8978,8 +8976,6 @@ export const VerifyDetailDataRangeDocument = /*#__PURE__*/ `
     endDate: $endDate
   ) {
     status
-    max
-    min
     labelAdmin
   }
 }
