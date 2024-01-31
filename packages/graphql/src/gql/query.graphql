@@ -939,8 +939,6 @@ query verifyDetailDataRange(
     endDate: $endDate
   ) {
     status
-    max
-    min
     labelAdmin
   }
 }
