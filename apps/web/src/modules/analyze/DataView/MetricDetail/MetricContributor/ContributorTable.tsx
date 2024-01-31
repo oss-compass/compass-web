@@ -276,7 +276,7 @@ const MetricTable: React.FC<{
         return (
           <div className="flex">
             <span>{text || '-'}</span>
-            <span className="text-primary ml-2 mt-1">{edit}</span>
+            <span className="text-primary ml-2 mt-1">{}</span>
           </div>
         );
       },
