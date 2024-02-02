@@ -249,7 +249,7 @@ const MetricTable: React.FC<{
               }}
             />
           );
-        } else if (data?.verifyDetailDataRange?.labelAdmin) {
+        } else if (data?.verifyDetailDataRange?.status) {
           edit = (
             <FiEdit
               className="cursor-pointer"
