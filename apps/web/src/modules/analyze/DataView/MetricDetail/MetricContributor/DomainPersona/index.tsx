@@ -47,7 +47,7 @@ const PopperContent = ({ dataList, name, active, setActive }) => {
           <div className="flex-1 border-r bg-[#F6F6F6]"></div>
         </div>
         <div className="h-full w-[216px] flex-shrink-0 overflow-auto border-t px-4 py-2 text-xs">
-          {activeItem.map(({ text, contribution }) => {
+          {activeItem?.map(({ text, contribution }) => {
             return (
               <div
                 key={text}
@@ -80,69 +80,77 @@ const DomainPersona = ({ maxDomain, dataList, name }) => {
   };
 
   return (
-    <ClickAwayListener
-      onClickAway={() => {
+    // <ClickAwayListener
+    //   onClickAway={() => {
+    //     setActive('');
+    //     popperOpen && togglePopperOpen(() => false);
+    //   }}
+    // >
+    <div
+      onMouseLeave={() => {
         setActive('');
         popperOpen && togglePopperOpen(() => false);
       }}
     >
-      <div>
-        <div className="flex items-center">
-          {domainData.map(({ type, color, contribution }) => {
-            const width = toFixed((contribution / maxDomain) * 100, 2);
-            const bg = {
-              backgroundColor: color,
-              width: `${width}%`,
-            };
-            return active === type ? (
-              <div
-                key={type}
-                className="cursor-pointer border"
-                style={{
-                  width: `${width}%`,
-                  borderColor: color,
-                  padding: '1px',
-                }}
-              >
-                <div className="h-2" style={{ backgroundColor: color }}></div>
-              </div>
-            ) : (
-              <div
-                onClick={(e) => {
-                  handleClick(e, type);
-                }}
-                key={type}
-                style={{ backgroundColor: color, width: `${width}%` }}
-                className="h-2 cursor-pointer"
-              ></div>
-            );
-          })}
-        </div>
-        <Popper
-          open={popperOpen}
-          style={{
-            zIndex: 1000,
-          }}
-          placement={'bottom'}
-          anchorEl={anchorEl}
-          modifiers={[
-            {
-              name: 'offset',
-              options: {
-                offset: [0, 5],
-              },
-            },
-          ]}
-        >
-          <PopperContent
-            dataList={domainData}
-            name={name}
-            active={active}
-            setActive={setActive}
-          />
-        </Popper>
+      <div className="flex items-center">
+        {domainData.map(({ type, color, contribution }) => {
+          const width = toFixed((contribution / maxDomain) * 100, 2);
+          const bg = {
+            backgroundColor: color,
+            width: `${width}%`,
+          };
+          return active === type ? (
+            <div
+              key={type}
+              className="cursor-pointer border"
+              style={{
+                width: `${width}%`,
+                borderColor: color,
+                padding: '1px',
+              }}
+            >
+              <div className="h-2" style={{ backgroundColor: color }}></div>
+            </div>
+          ) : (
+            <div
+              // onClick={(e) => {
+              //   handleClick(e, type);
+              // }}
+              key={type}
+              onMouseEnter={(e) => {
+                handleClick(e, type);
+              }}
+              style={{ backgroundColor: color, width: `${width}%` }}
+              className="h-2 cursor-pointer"
+            ></div>
+          );
+        })}
       </div>
-    </ClickAwayListener>
+      <Popper
+        open={popperOpen}
+        style={{
+          zIndex: 1000,
+        }}
+        placement={'bottom'}
+        anchorEl={anchorEl}
+        modifiers={[
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 0],
+            },
+          },
+        ]}
+      >
+        <PopperContent
+          dataList={domainData}
+          name={name}
+          active={active}
+          setActive={setActive}
+        />
+      </Popper>
+    </div>
+    // </ClickAwayListener
   );
 };
 

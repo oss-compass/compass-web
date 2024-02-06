@@ -9,6 +9,7 @@ import Productivity from 'public/images/chart-legend/cube-1.svg';
 import Robustness from 'public/images/chart-legend/cube-2.svg';
 import NicheCreation from 'public/images/chart-legend/cube-3.svg';
 import { useEchartsGlOpts } from '@modules/analyze/components/DistributionMap/EChartGlOpt';
+import Legend from '@common/components/EChartGl/Legend';
 
 const EChartGl = dynamic(() => import('@common/components/EChartGl'), {
   ssr: false,
@@ -31,22 +32,37 @@ const DistributionMap = () => {
         </>
       )}
     >
-      {(containerRef) => (
-        <div className="h-full">
-          <div className="h-[280px]">
-            <EChartGl
-              option={echartsOpts as EChartsOption}
-              loading={isLoading}
-              containerRef={containerRef}
-            />
+      {(containerRef, fullScreen) =>
+        fullScreen ? (
+          <div
+            style={{ height: 'calc(100vh - 80px)' }}
+            className="flex w-full items-center overflow-hidden rounded-lg bg-[#eff1f1]"
+          >
+            <div className="mr-4 h-full flex-1">
+              <EChartGl
+                option={echartsOpts as EChartsOption}
+                containerRef={containerRef}
+              />
+            </div>
+            <Legend />
           </div>
-          <Legend />
-        </div>
-      )}
+        ) : (
+          <div className="h-full">
+            <div className="h-[280px]">
+              <EChartGl
+                option={echartsOpts as EChartsOption}
+                loading={isLoading}
+                containerRef={containerRef}
+              />
+            </div>
+            <MiniLegend />
+          </div>
+        )
+      }
     </BaseCard>
   );
 };
-const Legend = () => {
+const MiniLegend = () => {
   const { t } = useTranslation();
 
   return (
