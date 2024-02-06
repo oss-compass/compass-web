@@ -11,7 +11,7 @@ const Chart = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { echartsOpts } = useOptions();
   return (
-    <div className="h-full flex-1 xl:hidden" ref={containerRef}>
+    <div className="h-full flex-1" ref={containerRef}>
       <EChartGl
         option={echartsOpts as EChartsOption}
         containerRef={containerRef}

@@ -68,7 +68,7 @@ const EChartGl: React.FC<ReactEChartsProps> = ({
       const chart = getInstanceByDom(chartRef.current)!;
       chart?.resize({
         width: 'auto',
-        height: Number(height) > 520 ? 520 : 280,
+        height: Number(height) > 520 ? height - 80 : 280,
       });
     }
   }, []);
