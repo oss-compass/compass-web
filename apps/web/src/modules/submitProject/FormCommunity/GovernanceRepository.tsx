@@ -12,6 +12,8 @@ import InputUrlField, { InputRef } from '../Misc/InputUrlField';
 import AddSelectPopover from '../Misc/AddSelectPopover';
 import FillItem from '../Misc/FillItem';
 import { useTranslation } from 'react-i18next';
+import Tooltip from '@common/components/Tooltip';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
 
 export interface Props {
   value: string[];
@@ -38,8 +40,23 @@ const GovernanceRepository = forwardRef<Ref, Props>(
 
     return (
       <>
-        <label className="mt-10 mb-4 block text-xl font-medium">
+        <label className="mt-10 mb-4 flex items-center text-xl font-medium">
           {t('submit_project:governance_repository')}
+          <Tooltip
+            arrow
+            title={
+              <>
+                <span className="text-sm">
+                  {t('submit_project:governance_repository_desc')}
+                </span>
+              </>
+            }
+            placement="right"
+          >
+            <span className="ml-2 cursor-pointer">
+              <AiOutlineQuestionCircle />
+            </span>
+          </Tooltip>
           <span className="ml-2 text-base font-normal text-gray-400">
             ({t('submit_project:optional')})
           </span>
