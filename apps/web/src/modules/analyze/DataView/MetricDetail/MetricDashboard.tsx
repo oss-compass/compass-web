@@ -17,10 +17,10 @@ import {
   PullDetailOverview,
 } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import { AiFillGithub } from 'react-icons/ai';
-import { SiGitee } from 'react-icons/si';
+import { SiGitee, SiGithub } from 'react-icons/si';
 import { toFixed } from '@common/utils';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 const MetricDashboard = () => {
   const { compareItems } = useCompareItems();
@@ -121,7 +121,10 @@ const MetricBoxContributors: React.FC<{
         <div>
           <div className="flex text-xl font-medium">
             <div className="mt-1 mr-2 text-[#ccc]">
-              <IoPersonCircle />
+              {getUserIcons(
+                data.highestContributionContributor.origin,
+                data.highestContributionContributor.name
+              )}
             </div>
             <div className="line-clamp-1">
               {data.highestContributionContributor.name || '/'}
@@ -318,12 +321,51 @@ const Loading = () => (
 const getIcons = (type: string) => {
   switch (type) {
     case 'github':
-      return <AiFillGithub className="mr-2" />;
+      return <SiGithub color="#171516" />;
     case 'gitee':
       return <SiGitee color="#c71c27" className="mr-0" />;
     default:
       return <IoPeopleCircle />;
   }
 };
-
+const getUserIcons = (type, name) => {
+  switch (type) {
+    case 'github':
+      return (
+        <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100 p-0">
+          <Image
+            src={'https://github.com/' + name + '.png'}
+            onError={(e) => (e.currentTarget.src = '/images/github.png')}
+            unoptimized
+            fill={true}
+            style={{
+              objectFit: 'cover',
+            }}
+            alt="icon"
+            placeholder="blur"
+            blurDataURL="/images/github.png"
+          />
+        </div>
+      );
+    case 'gitee':
+      return (
+        <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
+          <Image
+            src={'https://gitee.com/' + name + '.png'}
+            onError={(e) =>
+              (e.currentTarget.src = '/images/logos/gitee-red.svg')
+            }
+            unoptimized
+            fill={true}
+            alt="icon"
+            placeholder="blur"
+            blurDataURL="/images/logos/gitee-red.svg"
+          />
+        </div>
+      );
+    // return <SiGitee color="#c71c27" className="mr-0" />;
+    default:
+      return <IoPersonCircle />;
+  }
+};
 export default MetricDashboard;
