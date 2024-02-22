@@ -12,12 +12,13 @@ import {
   useContributionTypeLsit,
   useEcologicalType,
   useMileageOptions,
-} from './contribution';
-import { getMaxDomain } from './utils';
+} from '../contribution';
+import { getMaxDomain } from '../utils';
+import { getContributorPolling, getContributorExport } from './tableDownload';
 import DomainPersona from './DomainPersona';
+import ContributorName from './ContributorName';
 import { useTranslation } from 'next-i18next';
 import Download from '@common/components/Table/Download';
-import { getContributorPolling, getContributorExport } from '../tableDownload';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 import Dialog from '@common/components/Dialog';
@@ -48,6 +49,8 @@ const MetricTable: React.FC<{
   const [openConfirm, setOpenConfirm] = useState(false);
   const [currentName, setCurrentName] = useState('');
   const [currentOrgName, setCurrentOrgName] = useState('');
+  const [origin, setOrigin] = useState('');
+
   const { data } = useVerifyDetailRange();
   const { isCurrentUser } = useIsCurrentUser();
   const ecologicalOptions = useEcologicalType();
@@ -132,6 +135,7 @@ const MetricTable: React.FC<{
           },
         });
         setData(items);
+        setOrigin(data.contributorsDetailList.origin);
       },
     }
   );
@@ -188,6 +192,9 @@ const MetricTable: React.FC<{
       width: '200px',
       sorter: true,
       fixed: 'left',
+      render: (name) => {
+        return <ContributorName name={name} origin={origin} />;
+      },
     },
     {
       title: t('analyze:metric_detail:role_persona'),
@@ -229,7 +236,6 @@ const MetricTable: React.FC<{
         defaultFilterOpts.find((i) => i.type === 'contribution_type')?.values ||
         null,
       filterMode: 'tree',
-      // ellipsis: { showTitle: true },
       align: 'left',
       width: '300px',
     },

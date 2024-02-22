@@ -12,9 +12,8 @@ const CommunityItem = ({ label, name }) => {
   const { data } = useCommunityReposQuery(client, {
     label,
   });
-  const communityOrgUrl =
-    data?.communityOverview?.communityOrgUrl || 'https://gitee.com/mindspore';
-  console.log(communityOrgUrl);
+  const communityOrgUrl = data?.communityOverview?.communityOrgUrl || '';
+
   return communityOrgUrl ? (
     <a
       className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline"

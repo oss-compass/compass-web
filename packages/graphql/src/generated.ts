@@ -479,6 +479,8 @@ export type ContributorDetailPage = {
   __typename?: 'ContributorDetailPage';
   count?: Maybe<Scalars['Int']>;
   items: Array<ContributorDetail>;
+  /** contributors origin */
+  origin: Scalars['String'];
   page?: Maybe<Scalars['Int']>;
   totalPage?: Maybe<Scalars['Int']>;
 };
@@ -4582,6 +4584,7 @@ export type ContributorsDetailListQuery = {
   contributorsDetailList: {
     __typename?: 'ContributorDetailPage';
     count?: number | null;
+    origin: string;
     page?: number | null;
     totalPage?: number | null;
     items: Array<{
@@ -8369,6 +8372,7 @@ export const ContributorsDetailListDocument = /*#__PURE__*/ `
       mileageType
       organization
     }
+    origin
     page
     totalPage
   }

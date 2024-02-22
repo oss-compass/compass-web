@@ -21,7 +21,7 @@ const eventList = [
     key: '2023-08-23',
   },
   {
-    titleCn: 'OSS Compass社区2023年会及晚宴',
+    titleCn: 'OSS Compass 社区 2023 年会及晚宴',
     titleEn: 'OSS Compass Community 2023 Annual Meeting and Dinner',
     time: '13:00 - 18:00 (UTC+8)',
     key: '2023-12-13',
@@ -37,7 +37,7 @@ const DatePicker = () => {
 
   const bookedDays = [
     (date) => {
-      return date.getDay() === 2 || date.getDay() === 4;
+      return date.getDay() === 2; //每周二社区例会
     },
     new Date(2023, 7, 23),
     new Date(2023, 11, 13),
@@ -60,7 +60,7 @@ const DatePicker = () => {
   };
   const selectEvent = eventList.filter(({ key }, index) => {
     if (index === 0) {
-      return selected?.getDay() === 2 || selected?.getDay() === 4;
+      return selected?.getDay() === 2;
     } else {
       return selected && format(selected, 'yyyy-MM-dd') === key;
     }

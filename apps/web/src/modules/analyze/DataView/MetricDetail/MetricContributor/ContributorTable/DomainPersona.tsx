@@ -5,7 +5,6 @@ import { getDomainData } from '../utils';
 import { toFixed } from '@common/utils';
 import classnames from 'classnames';
 import Popper from '@mui/material/Popper';
-import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
 const PopperContent = ({ dataList, name, active, setActive }) => {
   const { t } = useTranslation();
@@ -65,7 +64,6 @@ const PopperContent = ({ dataList, name, active, setActive }) => {
 };
 
 const DomainPersona = ({ maxDomain, dataList, name }) => {
-  const { t } = useTranslation();
   const contributionTypeMap = useGetContributionTypeI18n();
   const domainData = useMemo(() => {
     return getDomainData(dataList, contributionTypeMap);
@@ -80,12 +78,6 @@ const DomainPersona = ({ maxDomain, dataList, name }) => {
   };
 
   return (
-    // <ClickAwayListener
-    //   onClickAway={() => {
-    //     setActive('');
-    //     popperOpen && togglePopperOpen(() => false);
-    //   }}
-    // >
     <div
       onMouseLeave={() => {
         setActive('');
@@ -95,10 +87,6 @@ const DomainPersona = ({ maxDomain, dataList, name }) => {
       <div className="flex items-center">
         {domainData.map(({ type, color, contribution }) => {
           const width = toFixed((contribution / maxDomain) * 100, 2);
-          const bg = {
-            backgroundColor: color,
-            width: `${width}%`,
-          };
           return active === type ? (
             <div
               key={type}
@@ -113,9 +101,6 @@ const DomainPersona = ({ maxDomain, dataList, name }) => {
             </div>
           ) : (
             <div
-              // onClick={(e) => {
-              //   handleClick(e, type);
-              // }}
               key={type}
               onMouseEnter={(e) => {
                 handleClick(e, type);
@@ -150,7 +135,6 @@ const DomainPersona = ({ maxDomain, dataList, name }) => {
         />
       </Popper>
     </div>
-    // </ClickAwayListener
   );
 };
 
