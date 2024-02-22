@@ -37,8 +37,8 @@ const Download = ({
     pollingWhenHidden: false,
     manual: true,
     onSuccess: ({ data }, params) => {
-      if (data.status === Status.COMPLETE && data.downdload_path) {
-        apiDownloadFiles(data.downdload_path, fileName, downloadFinish);
+      if (data.status === Status.COMPLETE && data.download_path) {
+        apiDownloadFiles(data.download_path, fileName, downloadFinish);
         cancel();
       } else if (data.status === Status.UNKNOWN) {
         downloadFinish();
@@ -54,8 +54,8 @@ const Download = ({
         setTimeout(() => {
           run(data.uuid);
         }, 2000);
-      } else if (data.status === Status.COMPLETE && data.downdload_path) {
-        apiDownloadFiles(data.downdload_path, fileName, downloadFinish);
+      } else if (data.status === Status.COMPLETE && data.download_path) {
+        apiDownloadFiles(data.download_path, fileName, downloadFinish);
       } else {
         throw new Error('Download Error');
       }
