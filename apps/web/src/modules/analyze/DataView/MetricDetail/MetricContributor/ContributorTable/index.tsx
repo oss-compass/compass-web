@@ -17,17 +17,19 @@ import { getMaxDomain } from '../utils';
 import { getContributorPolling, getContributorExport } from './tableDownload';
 import DomainPersona from './DomainPersona';
 import ContributorName from './ContributorName';
+import ContributorDropdown from './ContributorDropdown';
 import { useTranslation } from 'next-i18next';
 import Download from '@common/components/Table/Download';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 import Dialog from '@common/components/Dialog';
 import Tooltip from '@common/components/Tooltip';
-import { FiEdit } from 'react-icons/fi';
-import { GrClose } from 'react-icons/gr';
 import ManageOrgEdit from '@common/components/OrgEdit/ManageOrgEdit';
 import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
 import { useIsCurrentUser } from '@modules/analyze/hooks/useIsCurrentUser';
+import { FiEdit } from 'react-icons/fi';
+import { GrClose } from 'react-icons/gr';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
@@ -90,13 +92,12 @@ const MetricTable: React.FC<{
         return `${t('analyze:total_people', { total })} `;
       },
     },
-    filterOpts: filterOpts,
     sortOpts: defaultSortOpts,
   });
   const query = {
     page: tableParams.pagination.current,
     per: tableParams.pagination.pageSize,
-    filterOpts: [...tableParams.filterOpts, mileageFilter],
+    filterOpts: [...filterOpts, mileageFilter],
     sortOpts: tableParams.sortOpts,
     label,
     level,
@@ -113,7 +114,7 @@ const MetricTable: React.FC<{
     {
       onSuccess: (data) => {
         const items = data.contributorsDetailList.items;
-        const hasTypeFilter = tableParams.filterOpts.find(
+        const hasTypeFilter = filterOpts.find(
           (i) => i.type === 'contribution_type'
         );
         if (hasTypeFilter) {
@@ -149,14 +150,14 @@ const MetricTable: React.FC<{
     for (const key in filters) {
       if (filters.hasOwnProperty(key)) {
         const transformedObj = {
-          type: filterMap[key],
+          type: filterMap[key] || key,
           values: filters[key] as string[],
         };
         filters[key] && filterOpts.push(transformedObj);
       }
     }
     if (filterOpts.find((i) => i.type === 'contribution_type')) {
-      sortOpts = sorter.field && {
+      sortOpts = sorter.order && {
         type:
           sorter.field === 'contribution'
             ? 'contribution_filterd'
@@ -164,14 +165,14 @@ const MetricTable: React.FC<{
         direction: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
     } else {
-      sortOpts = sorter.field && {
+      sortOpts = sorter.order && {
         type: sorter.field,
         direction: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
     }
     handleQueryParams({
-      filterOpts: JSON.stringify(filterOpts),
-      sortOpts: JSON.stringify(sortOpts),
+      filterOpts: filterOpts.length > 0 ? JSON.stringify(filterOpts) : null,
+      sortOpts: sortOpts && JSON.stringify(sortOpts),
     });
     setFilterOpts(filterOpts);
     setTableParams({
@@ -180,7 +181,6 @@ const MetricTable: React.FC<{
         ...pagination,
       },
       sortOpts,
-      filterOpts,
     });
   };
 
@@ -190,10 +190,26 @@ const MetricTable: React.FC<{
       dataIndex: 'contributor',
       align: 'left',
       width: '200px',
-      sorter: true,
       fixed: 'left',
       render: (name) => {
         return <ContributorName name={name} origin={origin} />;
+      },
+      filterIcon: (filtered: boolean) => (
+        <AiOutlineSearch
+          className="text-lg"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      defaultFilteredValue:
+        defaultFilterOpts.find((i) => i.type === 'contributor')?.values || null,
+      filterDropdown: ({ selectedKeys, setSelectedKeys, confirm }) => {
+        return (
+          <ContributorDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+          />
+        );
       },
     },
     {
