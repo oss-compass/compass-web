@@ -120,15 +120,10 @@ const MetricBoxContributors: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
-              {getUserIcons(
-                data.highestContributionContributor.origin,
-                data.highestContributionContributor.name
-              )}
-            </div>
-            <div className="line-clamp-1">
-              {data.highestContributionContributor.name || '/'}
-            </div>
+            {getTopUser(
+              data.highestContributionContributor.origin,
+              data.highestContributionContributor.name
+            )}
           </div>
           <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
             {t('analyze:metric_detail:top_contributor')}
@@ -328,44 +323,74 @@ const getIcons = (type: string) => {
       return <IoPeopleCircle />;
   }
 };
-const getUserIcons = (type, name) => {
-  switch (type) {
-    case 'github':
-      return (
-        <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100 p-0">
-          <Image
-            src={'https://github.com/' + name + '.png'}
-            onError={(e) => (e.currentTarget.src = '/images/github.png')}
-            unoptimized
-            fill={true}
-            style={{
-              objectFit: 'cover',
-            }}
-            alt="icon"
-            placeholder="blur"
-            blurDataURL="/images/github.png"
-          />
-        </div>
-      );
-    case 'gitee':
-      return (
-        <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
-          <Image
-            src={'https://gitee.com/' + name + '.png'}
-            onError={(e) =>
-              (e.currentTarget.src = '/images/logos/gitee-red.svg')
-            }
-            unoptimized
-            fill={true}
-            alt="icon"
-            placeholder="blur"
-            blurDataURL="/images/logos/gitee-red.svg"
-          />
-        </div>
-      );
-    // return <SiGitee color="#c71c27" className="mr-0" />;
-    default:
-      return <IoPersonCircle />;
+const getTopUser = (type, name) => {
+  let url = null;
+  let userIcon = null;
+  if (!name) {
+    userIcon = <IoPersonCircle />;
+  } else {
+    switch (type) {
+      case 'github':
+        url = 'https://github.com/' + name;
+        userIcon = (
+          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100 p-0">
+            <Image
+              src={'https://github.com/' + name + '.png'}
+              onError={(e) => (e.currentTarget.src = '/images/github.png')}
+              unoptimized
+              fill={true}
+              style={{
+                objectFit: 'cover',
+              }}
+              alt="icon"
+              placeholder="blur"
+              blurDataURL="/images/github.png"
+            />
+          </div>
+        );
+        break;
+      case 'gitee':
+        url = 'https://gitee.com/' + name;
+        userIcon = (
+          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
+            <Image
+              src={'https://gitee.com/' + name + '.png'}
+              onError={(e) =>
+                (e.currentTarget.src = '/images/logos/gitee-red.svg')
+              }
+              unoptimized
+              fill={true}
+              alt="icon"
+              placeholder="blur"
+              blurDataURL="/images/logos/gitee-red.svg"
+            />
+          </div>
+        );
+        break;
+      default:
+        userIcon = <IoPersonCircle />;
+        break;
+    }
   }
+
+  return (
+    <>
+      <div className="mt-1 mr-2 text-[#ccc]">{userIcon}</div>
+      <div className="line-clamp-1">
+        {url ? (
+          <a
+            className="whitespace-nowrap hover:text-[black] hover:underline"
+            href={url}
+            target="_blank"
+            rel={'noreferrer'}
+          >
+            {name}
+          </a>
+        ) : (
+          name || '/'
+        )}
+      </div>
+    </>
+  );
 };
 export default MetricDashboard;

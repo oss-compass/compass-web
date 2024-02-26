@@ -157,7 +157,7 @@ const MetricTable: React.FC<{
       }
     }
     if (filterOpts.find((i) => i.type === 'contribution_type')) {
-      sortOpts = sorter.field && {
+      sortOpts = sorter.order && {
         type:
           sorter.field === 'contribution'
             ? 'contribution_filterd'
@@ -165,14 +165,14 @@ const MetricTable: React.FC<{
         direction: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
     } else {
-      sortOpts = sorter.field && {
+      sortOpts = sorter.order && {
         type: sorter.field,
         direction: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
     }
     handleQueryParams({
-      filterOpts: JSON.stringify(filterOpts),
-      sortOpts: JSON.stringify(sortOpts),
+      filterOpts: filterOpts.length > 0 ? JSON.stringify(filterOpts) : null,
+      sortOpts: sortOpts && JSON.stringify(sortOpts),
     });
     setFilterOpts(filterOpts);
     setTableParams({
