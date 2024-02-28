@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import jsonData from './NewsData.json';
@@ -12,6 +12,7 @@ const NewsBox = (props: {
   title: string;
   titleCn: string;
   img?: string;
+  imgCn?: string;
   url?: string;
 }) => {
   const { t, i18n } = useTranslation();
@@ -21,7 +22,7 @@ const NewsBox = (props: {
     Blog: t('home:blog'),
     Event: t('home:event'),
   };
-  const { type, title, titleCn, img, url } = props;
+  const { type, title, titleCn, img, imgCn, url } = props;
   return (
     <div>
       <div className="h-[430px] rounded border p-6 shadow">
@@ -54,7 +55,7 @@ const NewsBox = (props: {
               <Image
                 width={336}
                 height={190}
-                src={img}
+                src={i18n.language === 'en' ? img : imgCn}
                 unoptimized
                 alt={''}
                 style={{
@@ -88,13 +89,14 @@ const LatestNews = () => {
     >
       <div className="mb-6 text-2xl font-bold">{t('home:the_latest_from')}</div>
       <div className="mb-10 grid grid-cols-3 gap-5 lg:w-full lg:grid-cols-1 lg:gap-y-6 lg:px-4">
-        {data.map(({ type, title, title_cn, img, url }) => {
+        {data.map(({ type, title, title_cn, img, img_cn, url }) => {
           return (
             <NewsBox
               type={type}
               title={title}
               titleCn={title_cn}
               img={img}
+              imgCn={img_cn}
               url={url}
               key={title}
             />

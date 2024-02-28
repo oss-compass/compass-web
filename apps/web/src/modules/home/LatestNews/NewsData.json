@@ -4,20 +4,22 @@
       "type": "Blog",
       "title": "Reflections on the Evaluation and Measurement of Open Source Ecosystem (3) - Dynamics and Statics of Contributors",
       "title_cn": "开源生态评估与度量的思考（三）——贡献者的动与静",
-      "img": "/images/home/news/8.png",
+      "img": "/images/home/news/8en.png",
+      "img_cn": "/images/home/news/8.png",
       "url": "/blog/2023/12/09/open-source-eco3/open-source-eco3"
     },
     {
       "type": "Blog",
       "title": "Reflections on the Evaluation and Measurement of Open Source Ecosystem (2) - The Multidimensional Space of Evaluation Systems",
       "title_cn": "开源生态评估与度量的思考（二）——评估体系的多维空间",
-      "img": "/images/home/news/9.png",
+      "img": "/images/home/news/9en.png",
+      "img_cn": "/images/home/news/9.png",
       "url": "/blog/2023/12/08/open-source-eco2/open-source-eco2"
     },
     {
       "type": "Event",
       "title": "OSS Compass Events",
-      "title_cn": "OSS Compass事件"
+      "title_cn": "OSS Compass 事件"
     }
   ]
 }
