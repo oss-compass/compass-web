@@ -8,7 +8,7 @@ const Legend = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex h-full w-[440px] flex-col justify-center bg-[#eff1f1] py-6 px-4 text-xs md:hidden">
+    <div className="flex h-full w-[440px] flex-col justify-center bg-[#eff1f1] py-6 px-4 text-xs lg:hidden">
       <div className="my-4">
         <div className="flex w-[155px] items-center gap-1 font-semibold">
           <Productivity />

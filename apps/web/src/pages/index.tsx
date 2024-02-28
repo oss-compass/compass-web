@@ -6,6 +6,7 @@ import { Center } from '@common/components/Layout';
 import FooterLinks from '@common/components/FooterLinks';
 import Copyright from '@common/components/Copyright';
 import Questionnaire from '@common/components/Questionnaire';
+import LatestUpdate from '@modules/home/LatestUpdate';
 import Banner from '@modules/home/Banner';
 import HotFields from '@modules/home/HotFields';
 import Trending from '@modules/home/Trending';
@@ -13,7 +14,7 @@ import Explain from '@modules/home/Explain';
 import LatestNews from '@modules/home/LatestNews';
 import Purpose from '@modules/home/Purpose';
 
-import ExplainMobile from '@modules/home/Explain/Mobile';
+// import ExplainMobile from '@modules/home/Explain/Mobile';
 import SpecialThank from '@modules/home/SpecialThank';
 import getLocalesFile from '@common/utils/getLocalesFile';
 
@@ -34,6 +35,7 @@ const Home: React.FC = (props) => {
     <>
       <Header />
       <main>
+        <LatestUpdate />
         <Banner />
         <Purpose />
         <HotFields />

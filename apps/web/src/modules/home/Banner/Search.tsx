@@ -29,7 +29,7 @@ const Search = () => {
   return (
     <div
       className={classnames(
-        'absolute -left-6 w-[600px] p-6',
+        'absolute -left-6 w-[600px] p-4',
         'md:w-[380px] lg:left-0',
         [
           i18n.language === 'en'
@@ -42,7 +42,7 @@ const Search = () => {
       <h1
         id="test"
         className={classnames(
-          'mb-6 text-[64px] leading-[80px] tracking-tight md:text-4xl',
+          'mb-6 text-[60px] leading-[80px] tracking-tight md:text-4xl',
           { 'font-black': i18n.language === 'zh' }
         )}
       >
