@@ -179,7 +179,8 @@
       "crawler",
       "web-backend-component-and-framework",
       "rpc-development-framework",
-      "admin-template"
+      "admin-template",
+      "remote-procedure-call"
     ],
     "items_info": [
       {
@@ -235,6 +236,12 @@
         "name": "Admin Template",
         "name_cn": "管理后台模板",
         "slug": "/admin-template"
+      },
+      {
+        "ident": "remote-procedure-call",
+        "name": "Remote Procedure Call (RPC)",
+        "name_cn": "远程过程调用（RPC）",
+        "slug": "/remote-procedure-call"
       }
     ]
   },
@@ -743,8 +750,9 @@
     "items": [
       "browser-engine",
       "browser",
-      "chrome-devtools",
-      "chrome-extension-development"
+      "headless-browser",
+      "browser-devtools",
+      "browser-plugins"
     ],
     "items_info": [
       {
@@ -760,32 +768,65 @@
         "slug": "/browser"
       },
       {
-        "ident": "chrome-devtools",
-        "name": "chrome-devtools",
-        "name_cn": "Chrome 开发者工具",
-        "slug": "/chrome-devtools"
+        "ident": "headless-browser",
+        "name": "Headless browser",
+        "name_cn": "无头浏览器",
+        "slug": "/headless-browser"
       },
       {
-        "ident": "chrome-extension-development",
-        "name": "Chrome extension development",
-        "name_cn": "Chrome 拓展开发",
-        "slug": "/chrome-extension-development"
+        "ident": "browser-devtools",
+        "name": "Browser Devtools",
+        "name_cn": "浏览器开发工具",
+        "slug": "/browser-devtools"
+      },
+      {
+        "ident": "browser-plugins",
+        "name": "Browser Plugins",
+        "name_cn": "浏览器插件",
+        "slug": "/browser-plugins"
       }
     ]
   },
   {
-    "ident": "cloud-native",
-    "name": "Cloud native",
-    "name_cn": "云原生",
+    "ident": "search-engine",
+    "name": "Search Engine",
+    "name_cn": "搜索引擎",
+    "items": ["search-engine", "full-text-search-engine", "code-search"],
+    "items_info": [
+      {
+        "ident": "search-engine",
+        "name": "Search Engine",
+        "name_cn": "搜索引擎",
+        "slug": "/search-engine"
+      },
+      {
+        "ident": "full-text-search-engine",
+        "name": "Full text search engine",
+        "name_cn": "全文搜索引擎",
+        "slug": "/full-text-search-engine"
+      },
+      {
+        "ident": "code-search",
+        "name": "Code Search",
+        "name_cn": "代码搜索",
+        "slug": "/code-search"
+      }
+    ]
+  },
+  {
+    "ident": "virtualization-and-cloud-computing",
+    "name": "Virtualization and Cloud Computing",
+    "name_cn": "云原生、云计算和虚拟化",
     "items": [
       "cloud-native-storage",
+      "cloud-computing",
+      "cloud-service",
       "container-registry",
       "container-runtime",
       "container-technology",
       "coordination-and-service-discovery",
       "service-mesh",
-      "service-proxy",
-      "remote-procedure-call"
+      "service-proxy"
     ],
     "items_info": [
       {
@@ -793,6 +834,18 @@
         "name": "Cloud Native Storage",
         "name_cn": "云原生存储",
         "slug": "/cloud-native-storage"
+      },
+      {
+        "ident": "cloud-computing",
+        "name": "Cloud Computing",
+        "name_cn": "云计算",
+        "slug": "/cloud-computing"
+      },
+      {
+        "ident": "cloud-service",
+        "name": "Cloud Service",
+        "name_cn": "云服务",
+        "slug": "/cloud-service"
       },
       {
         "ident": "container-registry",
@@ -829,12 +882,6 @@
         "name": "Service Proxy",
         "name_cn": "服务代理",
         "slug": "/service-proxy"
-      },
-      {
-        "ident": "remote-procedure-call",
-        "name": "Remote Procedure Call (RPC)",
-        "name_cn": "远程过程调用（RPC）",
-        "slug": "/remote-procedure-call"
       }
     ]
   },
@@ -843,17 +890,48 @@
     "name": "Development toolkit",
     "name_cn": "开发工具",
     "items": [
+      "Excel-toolkits",
+      "json-tools",
+      "code-generator",
+      "jobs-and-task-scheduling",
+      "graph-process-tech-and-toolkit",
+      "chart-component",
+      "workflow",
+      "common-toolkit",
+      "microservice",
+      "reporting-tool",
+      "payment-SDK",
+      "logging-toolkit",
+      "workflow-engine-and-tools",
+      "net-util-tools",
+      "network-development-toolkit",
+      "verification-code",
+      "algogrithm-and-math-computing",
+      "regulation-engine",
+      "authority-management",
+      "markdown-toolkit",
+      "caching-component",
+      "program-and-script-language",
+      "data-mining-and-analysis",
+      "network-service",
+      "network-tool",
+      "voice-processing",
+      "bar-code-and-qr-code",
+      "template-engine",
+      "text-segmentation",
+      "security-dev-tool",
+      "development-plugins",
+      "building-tool",
+      "internationalization-and-localization",
       "low-code-framework",
       "code-analysis",
       "code-search",
       "low-code-tools",
       "openapi-code-generation",
-      "encryption-tools",
       "expression-engine",
       "fake-data-generator",
       "graphql-client",
       "graphql-server",
-      "headless-browser",
       "headless-cms",
       "honeypot",
       "ides-and-editors",
@@ -872,6 +950,204 @@
       "zsh-plugin"
     ],
     "items_info": [
+      {
+        "ident": "Excel-toolkits",
+        "name": "Excel Toolkits",
+        "name_cn": "Excel工具包",
+        "slug": "/Excel-toolkits"
+      },
+      {
+        "ident": "json-tools",
+        "name": "Json Tools",
+        "name_cn": "JSON工具",
+        "slug": "/json-tools"
+      },
+      {
+        "ident": "code-generator",
+        "name": "Code Generator",
+        "name_cn": "代码生成器",
+        "slug": "/code-generator"
+      },
+      {
+        "ident": "jobs-and-task-scheduling",
+        "name": "Jobs And Task Scheduling",
+        "name_cn": "作业或任务调度",
+        "slug": "/jobs-and-task-scheduling"
+      },
+      {
+        "ident": "graph-process-tech-and-toolkit",
+        "name": "Graph Process Tech And Toolkit",
+        "name_cn": "图像处理技术和工具包",
+        "slug": "/graph-process-tech-and-toolkit"
+      },
+      {
+        "ident": "chart-component",
+        "name": "Chart Component",
+        "name_cn": "图表组件",
+        "slug": "/chart-component"
+      },
+      {
+        "ident": "workflow",
+        "name": "Workflow",
+        "name_cn": "工作流",
+        "slug": "/workflow"
+      },
+      {
+        "ident": "common-toolkit",
+        "name": "Common Toolkit",
+        "name_cn": "常用工具包",
+        "slug": "/common-toolkit"
+      },
+      {
+        "ident": "microservice",
+        "name": "Microservice",
+        "name_cn": "微服务",
+        "slug": "/microservice"
+      },
+      {
+        "ident": "reporting-tool",
+        "name": "Reporting Tool",
+        "name_cn": "报表工具",
+        "slug": "/reporting-tool"
+      },
+      {
+        "ident": "payment-SDK",
+        "name": "Payment SDK",
+        "name_cn": "支付开发包",
+        "slug": "/payment-SDK"
+      },
+      {
+        "ident": "logging-toolkit",
+        "name": "Logging Toolkit",
+        "name_cn": "日志工具包",
+        "slug": "/logging-toolkit"
+      },
+      {
+        "ident": "workflow-engine-and-tools",
+        "name": "Workflow Engine And Tools",
+        "name_cn": "流程引擎及工具",
+        "slug": "/workflow-engine-and-tools"
+      },
+      {
+        "ident": "net-util-tools",
+        "name": "Net Util Tools",
+        "name_cn": "网络应用工具",
+        "slug": "/net-util-tools"
+      },
+      {
+        "ident": "network-development-toolkit",
+        "name": "Network Development Toolkit",
+        "name_cn": "网络开发包",
+        "slug": "/network-development-toolkit"
+      },
+      {
+        "ident": "verification-code",
+        "name": "Verification Code",
+        "name_cn": "验证码",
+        "slug": "/verification-code"
+      },
+      {
+        "ident": "algogrithm-and-math-computing",
+        "name": "Algogrithm And Math Computing",
+        "name_cn": "算法及数学计算",
+        "slug": "/algogrithm-and-math-computing"
+      },
+      {
+        "ident": "regulation-engine",
+        "name": "Regulation Engine",
+        "name_cn": "规则引擎",
+        "slug": "/regulation-engine"
+      },
+      {
+        "ident": "authority-management",
+        "name": "Authority Management",
+        "name_cn": "权限管理",
+        "slug": "/authority-management"
+      },
+      {
+        "ident": "markdown-toolkit",
+        "name": "Markdown Toolkit",
+        "name_cn": "Markdown工具包",
+        "slug": "/markdown-toolkit"
+      },
+      {
+        "ident": "caching-component",
+        "name": "Caching Component",
+        "name_cn": "缓存组件",
+        "slug": "/caching-component"
+      },
+      {
+        "ident": "program-and-script-language",
+        "name": "Program And Script Language",
+        "name_cn": "编程语言和脚本语言",
+        "slug": "/program-and-script-language"
+      },
+      {
+        "ident": "data-mining-and-analysis",
+        "name": "Data Mining And Analysis",
+        "name_cn": "数据挖掘或分析",
+        "slug": "/data-mining-and-analysis"
+      },
+      {
+        "ident": "network-service",
+        "name": "Network Service",
+        "name_cn": "网络服务",
+        "slug": "/network-service"
+      },
+      {
+        "ident": "network-tool",
+        "name": "Network Tool",
+        "name_cn": "网络工具",
+        "slug": "/network-tool"
+      },
+      {
+        "ident": "voice-processing",
+        "name": "Voice Processing",
+        "name_cn": "语音处理",
+        "slug": "/voice-processing"
+      },
+      {
+        "ident": "bar-code-and-qr-code",
+        "name": "Bar Code And Qr Code",
+        "name_cn": "条形码和二维码",
+        "slug": "/bar-code-and-qr-code"
+      },
+      {
+        "ident": "template-engine",
+        "name": "Template engine",
+        "name_cn": "模板引擎",
+        "slug": "/template-engine"
+      },
+      {
+        "ident": "text-segmentation",
+        "name": "Text Segmentation",
+        "name_cn": "中英文分词",
+        "slug": "/text-segmentation"
+      },
+      {
+        "ident": "security-dev-tool",
+        "name": "Security Dev Tool",
+        "name_cn": "安全开发相关工具",
+        "slug": "/security-dev-tool"
+      },
+      {
+        "ident": "development-plugins",
+        "name": "Development Plugins",
+        "name_cn": "开发插件",
+        "slug": "/development-plugins"
+      },
+      {
+        "ident": "building-tool",
+        "name": "Building Tool",
+        "name_cn": "构建工具",
+        "slug": "/building-tool"
+      },
+      {
+        "ident": "internationalization-and-localization",
+        "name": "Internationalization And Localization",
+        "name_cn": "国际化和本地化",
+        "slug": "/internationalization-and-localization"
+      },
       {
         "ident": "low-code-framework",
         "name": "Low-Code Framework",
@@ -903,12 +1179,6 @@
         "slug": "/openapi-code-generation"
       },
       {
-        "ident": "encryption-tools",
-        "name": "Encryption tools",
-        "name_cn": "加密工具",
-        "slug": "/encryption-tools"
-      },
-      {
         "ident": "expression-engine",
         "name": "Expression Engine",
         "name_cn": "表达式引擎",
@@ -931,12 +1201,6 @@
         "name": "GraphQL Server",
         "name_cn": "GraphQL 服务端",
         "slug": "/graphql-server"
-      },
-      {
-        "ident": "headless-browser",
-        "name": "Headless browser",
-        "name_cn": "无头浏览器",
-        "slug": "/headless-browser"
       },
       {
         "ident": "headless-cms",
@@ -1232,16 +1496,85 @@
   {
     "ident": "security",
     "name": "Security",
-    "name_cn": "安全相关",
+    "name_cn": "信息安全相关软件",
     "items": [
+      "basic-security-products",
+      "network-and-border-security-products",
+      "dedicated-security-products",
+      "security-evaluation-and-service-products",
+      "security-management-product",
+      "privacy-computing",
+      "cryptography",
+      "security-audit",
+      "steganography",
+      "software-composition-analysis",
       "application-definition-and-image-build",
       "cve-scanning",
       "dependency-analysis",
       "dependency-management",
-      "security-and-compliance",
-      "security-audit"
+      "security-and-compliance"
     ],
     "items_info": [
+      {
+        "ident": "basic-security-products",
+        "name": "Basic Security Products",
+        "name_cn": "基础类安全产品",
+        "slug": "/basic-security-products"
+      },
+      {
+        "ident": "network-and-border-security-products",
+        "name": "Network And Border Security Products",
+        "name_cn": "网络与边界安全产品",
+        "slug": "/network-and-border-security-products"
+      },
+      {
+        "ident": "dedicated-security-products",
+        "name": "Dedicated Security Products",
+        "name_cn": "专用安全产品",
+        "slug": "/dedicated-security-products"
+      },
+      {
+        "ident": "security-evaluation-and-service-products",
+        "name": "Security Evaluation And Service Products",
+        "name_cn": "安全测试评估与服务类产品",
+        "slug": "/security-evaluation-and-service-products"
+      },
+      {
+        "ident": "security-management-product",
+        "name": "Security Management Product",
+        "name_cn": "安全管理产品",
+        "slug": "/security-management-product"
+      },
+      {
+        "ident": "privacy-computing",
+        "name": "Privacy Computing",
+        "name_cn": "隐私计算",
+        "slug": "/privacy-computing"
+      },
+      {
+        "ident": "cryptography",
+        "name": "Cryptography",
+        "name_cn": "密码学",
+        "slug": "/cryptography"
+      },
+      {
+        "ident": "security-audit",
+        "name": "Security Audit",
+        "name_cn": "安全审计",
+        "slug": "/security-audit"
+      },
+      {
+        "ident": "steganography",
+        "name": "Stegano Graphy",
+        "name_cn": "隐写术",
+        "slug": "/steganography"
+      },
+      {
+        "ident": "software-composition-analysis",
+        "name": "Software Composition Analysis (SCA)",
+        "name_cn": "软件成分分析（SCA）",
+        "slug": "/software-composition-analysis"
+      },
       {
         "ident": "application-definition-and-image-build",
         "name": "Application Definition & Image Build",
@@ -1271,12 +1604,6 @@
         "name": "Security & Compliance",
         "name_cn": "安全与合规工具",
         "slug": "/security-and-compliance"
-      },
-      {
-        "ident": "security-audit",
-        "name": "Security Audit",
-        "name_cn": "安全审计",
-        "slug": "/security-audit"
       }
     ]
   },
@@ -1360,6 +1687,7 @@
       "rate-limiting",
       "roadmap",
       "rss-feed-tool",
+      "rust-picks",
       "sandbox",
       "scheduling-and-orchestration",
       "screenshots",
@@ -1826,6 +2154,12 @@
         "name": "RSS Feed Tool",
         "name_cn": "RSS 订阅工具",
         "slug": "/rss-feed-tool"
+      },
+      {
+        "ident": "rust-picks",
+        "name": "Rust Picks",
+        "name_cn": "Rust 精选项目",
+        "slug": "/rust-picks"
       },
       {
         "ident": "sandbox",
