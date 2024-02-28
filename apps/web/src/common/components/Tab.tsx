@@ -20,7 +20,7 @@ const Tab: React.FC<{
           <div
             key={option.label}
             className={classnames(
-              'text-steel cursor-pointer px-3 py-1 text-sm md:px-2',
+              'text-steel cursor-pointer px-2 py-1 text-sm md:px-2',
               option?.tabCls,
               { 'rounded bg-white text-black shadow': option.value === value },
               { 'cursor-not-allowed text-[#ABABAB]': option.disable === true }

@@ -31,7 +31,7 @@ const TopicTab = () => {
 
   return (
     <div>
-      <div className="mb-3 flex w-full flex-col items-center  pl-2">
+      <div className="mb-3 flex w-full flex-col items-center pl-2">
         <MyTab
           options={tabOptions}
           value={topicType}
