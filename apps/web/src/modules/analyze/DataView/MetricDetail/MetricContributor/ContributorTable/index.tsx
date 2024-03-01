@@ -25,7 +25,7 @@ import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParam
 import Dialog from '@common/components/Dialog';
 import Tooltip from '@common/components/Tooltip';
 import ManageOrgEdit from '@common/components/OrgEdit/ManageOrgEdit';
-import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
 import { useIsCurrentUser } from '@modules/analyze/hooks/useIsCurrentUser';
 import { FiEdit } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
@@ -53,7 +53,7 @@ const MetricTable: React.FC<{
   const [currentOrgName, setCurrentOrgName] = useState('');
   const [origin, setOrigin] = useState('');
 
-  const { data } = useVerifyDetailRange();
+  const { data } = useVerifyDetailRangeQuery();
   const { isCurrentUser } = useIsCurrentUser();
   const ecologicalOptions = useEcologicalType();
   const mileageOptions = useMileageOptions();
@@ -244,6 +244,7 @@ const MetricTable: React.FC<{
             maxDomain={maxDomain}
             dataList={dataList}
             name={col.contributor}
+            origin={origin}
           />
         );
       },

@@ -10,7 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'next-i18next';
 import DateRangePicker from './DateRangePicker';
 import Tooltip from '@common/components/Tooltip';
-import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
 import { AiOutlineLoading } from 'react-icons/ai';
 
 const ContributorDateTagPanel = ({
@@ -23,7 +23,7 @@ const ContributorDateTagPanel = ({
   const [showRangePicker, setShowRangePicker] = useToggle(false);
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
-  const { isLoading, data } = useVerifyDetailRange();
+  const { isLoading, data } = useVerifyDetailRangeQuery();
   if (isLoading) {
     return (
       <div
@@ -47,7 +47,7 @@ const ContributorDateTagPanel = ({
       >
         <div className="flex flex-wrap justify-between px-4 pt-4">
           {rangeTags.map((time, index) => {
-            if (index === 0) {
+            if (index < 3) {
               return (
                 <div
                   className={classnames(

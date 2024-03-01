@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
-import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
 import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
 
 const defaultVal = {
@@ -10,9 +10,9 @@ const defaultVal = {
   timeEnd: timeRange['6M'].end,
 };
 const contributorDefaultVal = {
-  range: '1M' as RangeTag,
-  timeStart: timeRange['1M'].start,
-  timeEnd: timeRange['1M'].end,
+  range: '6M' as RangeTag,
+  timeStart: timeRange['6M'].start,
+  timeEnd: timeRange['6M'].end,
 };
 export const isDateRange = (range: string) => {
   if (range.includes(' ~ ')) {
@@ -30,7 +30,7 @@ export const isDateRange = (range: string) => {
 const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
-  const { isLoading, data } = useVerifyDetailRange();
+  const { isLoading, data } = useVerifyDetailRangeQuery();
   const topicType = useQueryMetricType();
 
   return useMemo(() => {

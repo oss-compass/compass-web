@@ -126,3 +126,15 @@ export const isValidUrl = (url: string) => {
   const urlRegex = /^(http|https):\/\/[^ "]+$/;
   return urlRegex.test(url);
 };
+
+export const getHubUrl = (origin, name) => {
+  switch (origin) {
+    case 'github':
+      return 'https://github.com/' + name;
+    case 'gitee':
+      return 'https://gitee.com/' + name;
+    // return <SiGitee color="#c71c27" className="mr-0" />;
+    default:
+      return null;
+  }
+};
