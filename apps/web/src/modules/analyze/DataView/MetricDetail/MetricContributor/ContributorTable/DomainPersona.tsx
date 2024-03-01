@@ -1,21 +1,21 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useGetContributionTypeI18n } from '../contribution';
-import { getDomainData } from '../utils';
+import { getDomainData, getIcons } from '../utils';
 import { toFixed } from '@common/utils';
 import classnames from 'classnames';
 import Popper from '@mui/material/Popper';
 
-const PopperContent = ({ dataList, name, active, setActive }) => {
+const PopperContent = ({ dataList, name, active, setActive, origin }) => {
   const { t } = useTranslation();
   const activeItem = dataList
     .find((item) => item.type === active)
     ?.childern.sort((a, b) => b.contribution - a.contribution);
-
   // const allType = ['Code', 'Code Admin', 'Issue', 'Issue Admin', 'Observe'];
   return (
     <div className="right-0 rounded bg-[#fcfcfc] text-xs drop-shadow-md">
       <div className="flex h-10 items-center pl-3 text-sm font-semibold">
+        {getIcons(origin, name)}
         {name + ' ' + t('analyze:metric_detail:domain_persona_details')}
       </div>
       <div className="flex h-[300px]">
@@ -63,7 +63,7 @@ const PopperContent = ({ dataList, name, active, setActive }) => {
   );
 };
 
-const DomainPersona = ({ maxDomain, dataList, name }) => {
+const DomainPersona = ({ maxDomain, dataList, name, origin }) => {
   const contributionTypeMap = useGetContributionTypeI18n();
   const domainData = useMemo(() => {
     return getDomainData(dataList, contributionTypeMap);
@@ -132,6 +132,7 @@ const DomainPersona = ({ maxDomain, dataList, name }) => {
           name={name}
           active={active}
           setActive={setActive}
+          origin={origin}
         />
       </Popper>
     </div>

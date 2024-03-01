@@ -9,14 +9,14 @@ import MerticDatePicker from '@modules/analyze/components/NavBar/MerticDatePicke
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
-import useVerifyDetailRange from '@modules/analyze/hooks/useVerifyDetailRange';
+import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
 import LoadingAnalysis from '@modules/analyze/DataView/Status/LoadingAnalysis';
 import LabelItems from '@modules/analyze/components/NavBar/LabelItems';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 
 const VerifyMetricDetail = () => {
-  const { isLoading } = useVerifyDetailRange();
+  const { isLoading } = useVerifyDetailRangeQuery();
   if (isLoading) {
     return <LoadingAnalysis />;
   }
