@@ -14,7 +14,10 @@ import {
   useMileageOptions,
 } from '../contribution';
 import { getMaxDomain } from '../utils';
-import { getContributorPolling, getContributorExport } from './tableDownload';
+import {
+  getContributorPolling,
+  getContributorExport,
+} from '../../tableDownload';
 import DomainPersona from './DomainPersona';
 import ContributorName from './ContributorName';
 import ContributorDropdown from './ContributorDropdown';
