@@ -17,7 +17,9 @@ export const apiDownloadFiles = (path, fileName, onFinish) => {
   document.body.removeChild(link);
 };
 export const getContributorPolling = (uuid) => {
-  return axios.get('/api/v1/contributor/export_state/' + uuid);
+  return axios.get(
+    '/api/v1/contributor/export_state/' + uuid + '?t=' + new Date().getTime()
+  );
 };
 export const getContributorExport = (query) => {
   return axios.post('/api/v1/contributor/export', query, {
@@ -27,7 +29,9 @@ export const getContributorExport = (query) => {
   });
 };
 export const getIssuePolling = (uuid) => {
-  return axios.get('/api/v1/issue/export_state/' + uuid);
+  return axios.get(
+    '/api/v1/issue/export_state/' + uuid + '?t=' + new Date().getTime()
+  );
 };
 export const getIssueExport = (query) => {
   return axios.post('/api/v1/issue/export', query, {
@@ -37,7 +41,9 @@ export const getIssueExport = (query) => {
   });
 };
 export const getPrPolling = (uuid) => {
-  return axios.get('/api/v1/pull/export_state/' + uuid);
+  return axios.get(
+    '/api/v1/pull/export_state/' + uuid + '?t=' + new Date().getTime()
+  );
 };
 export const getPrExport = (query) => {
   return axios.post('/api/v1/pull/export', query, {
