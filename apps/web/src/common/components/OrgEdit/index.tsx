@@ -20,12 +20,14 @@ const OrgEdit = ({
   organizations = [],
   type = 'add',
   index,
+  provider,
   setShowEdit,
   onSuccess,
 }: {
   organizations?: ContributorOrgInput[];
   type?: 'add' | 'edit';
   index?: number;
+  provider: string;
   setShowEdit: (b: boolean) => void;
   onSuccess?: () => void;
 }) => {
@@ -51,12 +53,12 @@ const OrgEdit = ({
       if (type === 'edit') {
         organizations[index] = { orgName, firstDate, lastDate };
         mutation.mutate({
-          platform: 'github',
+          platform: provider,
           organizations: [...organizations],
         });
       } else {
         mutation.mutate({
-          platform: 'github',
+          platform: provider,
           organizations: [{ orgName, firstDate, lastDate }, ...organizations],
         });
       }

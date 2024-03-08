@@ -12,8 +12,9 @@ import {
   useModifyUserOrgsMutation,
   ContributorOrgInput,
 } from '@oss-compass/graphql';
+import { cookieGetAuthProvider } from '@common/utils/cookie';
 
-const OrgItem = ({ provider, index, organizations, onSuccess }) => {
+const OrgItem = ({ org, index, organizations, onSuccess, provider }) => {
   const customFormat = (date) => {
     if (date.startsWith('2099')) {
       return t('common:up_to_now');
@@ -41,7 +42,7 @@ const OrgItem = ({ provider, index, organizations, onSuccess }) => {
     const arr = [...organizations];
     arr.splice(index, 1);
     mutation.mutate({
-      platform: 'github',
+      platform: provider,
       organizations: [...arr],
     });
   };
@@ -52,6 +53,7 @@ const OrgItem = ({ provider, index, organizations, onSuccess }) => {
           setShowEdit={setShowEdit}
           organizations={organizations as ContributorOrgInput[]}
           onSuccess={onSuccess}
+          provider={provider}
           type={'edit'}
           index={index}
         />
@@ -59,14 +61,13 @@ const OrgItem = ({ provider, index, organizations, onSuccess }) => {
         <div className="flex items-center justify-between border-b border-[#E7E7E7] py-4">
           <div className="flex">
             <div className="mr-2 w-[120px] font-bold">
-              <span className="line-clamp-1" title={provider.orgName}>
-                {provider.orgName}
+              <span className="line-clamp-1" title={org.orgName}>
+                {org.orgName}
               </span>
             </div>
             <div className="flex text-[#868690]">
-              <div className="mr-2">{customFormat(provider?.firstDate)}</div>
-              {'-'}{' '}
-              <div className="ml-2">{customFormat(provider?.lastDate)}</div>
+              <div className="mr-2">{customFormat(org?.firstDate)}</div>
+              {'-'} <div className="ml-2">{customFormat(org?.lastDate)}</div>
             </div>
           </div>
           <div className="flex">
@@ -88,6 +89,8 @@ const OrgItem = ({ provider, index, organizations, onSuccess }) => {
 const Organizations = () => {
   const { t } = useTranslation();
   const { currentUser } = useSnapshot(userInfoStore);
+  const provider = cookieGetAuthProvider();
+
   const contributingOrgs = currentUser.contributingOrgs.map((item) => {
     return {
       orgName: item.orgName,
@@ -112,10 +115,11 @@ const Organizations = () => {
           return (
             <OrgItem
               key={item.orgName + index}
-              provider={item}
+              org={item}
               index={index}
               organizations={contributingOrgs as ContributorOrgInput[]}
               onSuccess={onSuccess}
+              provider={provider}
             />
           );
         })}
@@ -125,6 +129,7 @@ const Organizations = () => {
           setShowEdit={setShowEdit}
           organizations={contributingOrgs as ContributorOrgInput[]}
           onSuccess={onSuccess}
+          provider={provider}
         />
       )}
       <div className="mt-4">

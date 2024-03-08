@@ -17,18 +17,21 @@ const ManageOrgEdit = ({
   level,
   contributor,
   name,
+  provider,
   setShowEdit,
 }: {
   label?: string;
   level?: string;
   contributor?: string;
   name?: string;
+  provider?: string;
   setShowEdit: (b: boolean) => void;
 }) => {
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState(name || '');
   const [date, setDate] = useState<RangeValue>(null);
   const [form] = Form.useForm();
+
   const onCheck = async () => {
     try {
       const values = await form.validateFields();
@@ -39,7 +42,7 @@ const ManageOrgEdit = ({
         label,
         level,
         contributor,
-        platform: 'github',
+        platform: provider,
         organizations: [{ orgName, firstDate, lastDate }],
       });
     } catch (errorInfo) {

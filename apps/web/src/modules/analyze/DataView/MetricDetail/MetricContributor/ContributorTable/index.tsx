@@ -378,6 +378,7 @@ const MetricTable: React.FC<{
               level={level}
               contributor={currentName}
               name={currentOrgName}
+              provider={origin}
               setShowEdit={() => {
                 setOpenConfirm(false);
               }}

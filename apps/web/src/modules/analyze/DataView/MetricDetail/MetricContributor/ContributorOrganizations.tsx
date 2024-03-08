@@ -126,7 +126,10 @@ const ContributorContribution: React.FC<{
   };
 
   return (
-    <div className="w-[50%] flex-shrink-0 pt-4" ref={chartRef}>
+    <div
+      className="w-[50%] flex-shrink-0 pt-4 lg:h-[50%] lg:w-full"
+      ref={chartRef}
+    >
       <MetricChart
         style={{ height: '100%', zIndex: 1 }}
         loading={isLoading}

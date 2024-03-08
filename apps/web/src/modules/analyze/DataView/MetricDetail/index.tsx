@@ -14,6 +14,7 @@ import LoadingAnalysis from '@modules/analyze/DataView/Status/LoadingAnalysis';
 import LabelItems from '@modules/analyze/components/NavBar/LabelItems';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
+import { Select } from 'antd';
 
 const VerifyMetricDetail = () => {
   const { isLoading } = useVerifyDetailRangeQuery();
@@ -79,7 +80,7 @@ const MetricDetail = () => {
             {t('analyze:metric_detail:project_deep_dive_insight')}
           </span>
         </div>
-        <div className="absolute right-1/2 flex translate-x-1/2 justify-center">
+        <div className="absolute right-1/2 flex translate-x-1/2 justify-center lg:hidden">
           <MyTab
             options={tabOptions}
             value={tab}
@@ -87,6 +88,17 @@ const MetricDetail = () => {
               setTab(v);
               handleQueryParams({ tab: v });
             }}
+          />
+        </div>
+        <div className=">lg:hidden absolute right-1/2 flex translate-x-1/2 justify-center">
+          <Select
+            style={{ width: 120 }}
+            onChange={(v) => {
+              setTab(v);
+              handleQueryParams({ tab: v });
+            }}
+            value={tab}
+            options={tabOptions}
           />
         </div>
         <div className="absolute right-6">

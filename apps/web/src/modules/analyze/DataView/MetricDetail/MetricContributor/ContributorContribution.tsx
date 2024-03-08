@@ -23,7 +23,7 @@ const ContributorContribution: React.FC<{
   const [onlyOrg, setOnlyOrg] = useState<boolean>(false);
 
   return (
-    <div className="relative w-[50%] flex-shrink-0 pt-4 ">
+    <div className="relative w-[50%] flex-shrink-0 pt-4 lg:h-[50%] lg:w-full">
       <div className="absolute right-6 z-10 h-4 bg-transparent pl-4 text-xs">
         <PieDropDownMenu
           showOrgModel={true}
