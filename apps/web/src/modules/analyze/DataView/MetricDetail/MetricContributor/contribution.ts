@@ -5,9 +5,14 @@ const useContributionTypeMap = () => {
   const { t } = useTranslation();
   return {
     Code: {
+      // code_author #code 编写
+      // code_review  #代码审查
+      code_author: t('analyze:metric_detail:code:code_creation'),
+      code_committer: t('analyze:metric_detail:code:code_committer'),
+      code_review: t('analyze:metric_detail:code:code_review'), //delete
+      code_commit: t('analyze:metric_detail:code:code_commit'), //delete
       pr_creation: t('analyze:metric_detail:code:pr_creation'),
       pr_comments: t('analyze:metric_detail:code:pr_comments'),
-      code_commit: t('analyze:metric_detail:code:code_commit'),
     },
     'Code Admin': {
       pr_labeled: t('analyze:metric_detail:code_admin:pr_labeled'),
@@ -48,7 +53,7 @@ const useContributionTypeMap = () => {
       pr_unlink_issue: t('analyze:metric_detail:code_admin:pr_unlink_issue'),
       code_direct_commit: t(
         'analyze:metric_detail:code_admin:code_direct_commit'
-      ),
+      ), //delete
     },
     Issue: {
       issue_creation: t('analyze:metric_detail:issue:issue_creation'),
@@ -122,10 +127,16 @@ export const useContributionTypeLsit = () => {
   for (const key in obj) {
     const children = [];
     for (const childKey in obj[key]) {
-      children.push({
-        text: obj[key][childKey],
-        value: childKey,
-      });
+      if (
+        childKey !== 'code_commit' &&
+        childKey !== 'code_direct_commit' &&
+        childKey !== 'code_review'
+      ) {
+        children.push({
+          text: obj[key][childKey],
+          value: childKey,
+        });
+      }
     }
     result.push({
       text: key,

@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'next-i18next';
 import Coutact from '../../Coutact';
+import DataUsageProcess from '../../DataUsageProcess';
 import style from './index.module.css';
 
 const Banner = () => {
@@ -21,10 +22,7 @@ const Banner = () => {
       ></div>
 
       <div className="relative mx-auto w-[1200px] pt-10 text-sm  md:w-full md:px-2">
-        <div
-          className="h-[40px] text-4xl font-semibold
-         md:-right-[300px]"
-        >
+        <div className="h-[40px] text-4xl font-semibold md:-right-[300px]">
           {t('academe:academic_research_cooperation')}
         </div>
         <div
@@ -35,8 +33,9 @@ const Banner = () => {
         >
           {t('academe:academic_research_desc')}
         </div>
-        <div className="flex">
+        <div className="flex gap-4">
           <Coutact />
+          <DataUsageProcess />
         </div>
       </div>
     </div>
