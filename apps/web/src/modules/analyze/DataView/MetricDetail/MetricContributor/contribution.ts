@@ -8,13 +8,13 @@ const useContributionTypeMap = () => {
       // code_author #code 编写
       // code_review  #代码审查
       code_author: t('analyze:metric_detail:code:code_creation'),
-      code_committer: t('analyze:metric_detail:code:code_committer'),
       code_review: t('analyze:metric_detail:code:code_review'), //delete
       code_commit: t('analyze:metric_detail:code:code_commit'), //delete
       pr_creation: t('analyze:metric_detail:code:pr_creation'),
       pr_comments: t('analyze:metric_detail:code:pr_comments'),
     },
     'Code Admin': {
+      code_committer: t('analyze:metric_detail:code:code_committer'),
       pr_labeled: t('analyze:metric_detail:code_admin:pr_labeled'),
       pr_unlabeled: t('analyze:metric_detail:code_admin:pr_unlabeled'),
       pr_closed: t('analyze:metric_detail:code_admin:pr_closed'),

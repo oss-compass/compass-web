@@ -1,5 +1,5 @@
 ---
-name: Issue:Saas Bug Report
+name: Saas Bug Report
 about: Creat a report to help us improve.
 title: '[Saas Bug Report]'
 labels: Saas Bug Report

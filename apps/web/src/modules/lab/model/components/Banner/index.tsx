@@ -47,12 +47,6 @@ const Banner = () => {
           >
             {t('lab:create_a_model')}
           </div>
-          {/*<div className="ml-6 h-8 text-center leading-8">*/}
-          {/*  <a className="hover:underline" href="">*/}
-          {/*    {t('common:know_more')}*/}
-          {/*  </a>*/}
-          {/*  <BsArrowRight className="ml-2 inline-block text-xs" />*/}
-          {/*</div>*/}
         </div>
       </div>
     </div>

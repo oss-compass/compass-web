@@ -6,7 +6,7 @@ const DataTerms = () => {
   const zhTerms = (
     <div className="max-w-[920px] p-4">
       <h1 className="mb-10 text-center text-2xl font-semibold">
-        OSS Compass 数据使用流程
+        OSS Compass 数据使用申请
       </h1>
       <h2 className="my-4 text-xl font-semibold">提交申请</h2>
       <p className="mb-6">
@@ -46,8 +46,8 @@ const DataTerms = () => {
         <br />
         3. 项目信息可以公开的可以通过项目合作形式进行，这种情况需要同意 OSS
         Compass 使用该项目进行宣传推广以及可以免费使用该项目成果。 <br />
-        4. 需要在项目公开文档中注明数据来源为 OSS Compass。5. 5.
-        具体细节请查看底部协议附件。
+        4. 需要在项目公开文档中注明数据来源为 OSS Compass。
+        <br /> 5. 具体细节请查看底部协议附件。
       </p>
       <h2 className="my-4 text-xl font-semibold">开源项目</h2>
       <p className="mb-6">
