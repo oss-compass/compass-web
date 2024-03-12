@@ -34,7 +34,7 @@ const Banner = () => {
           {t('academe:academic_research_desc')}
         </div>
         <div className="flex gap-4">
-          <Coutact />
+          {/* <Coutact /> */}
           <DataUsageProcess />
         </div>
       </div>

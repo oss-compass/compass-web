@@ -20,6 +20,7 @@ import {
 } from '../../tableDownload';
 import DomainPersona from './DomainPersona';
 import ContributorName from './ContributorName';
+import RolePersona from './RolePersona';
 import ContributorDropdown from './ContributorDropdown';
 import { useTranslation } from 'next-i18next';
 import Download from '@common/components/Table/Download';
@@ -32,7 +33,7 @@ import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRan
 import { useIsCurrentUser } from '@modules/analyze/hooks/useIsCurrentUser';
 import { FiEdit } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { AiOutlineSearch, AiFillFilter } from 'react-icons/ai';
 
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
@@ -198,8 +199,8 @@ const MetricTable: React.FC<{
         return <ContributorName name={name} origin={origin} />;
       },
       filterIcon: (filtered: boolean) => (
-        <AiOutlineSearch
-          className="text-lg"
+        <AiFillFilter
+          className="text-sm"
           style={{ color: filtered ? '#1677ff' : undefined }}
         />
       ),
@@ -216,7 +217,7 @@ const MetricTable: React.FC<{
       },
     },
     {
-      title: t('analyze:metric_detail:role_persona'),
+      title: <RolePersona />,
       dataIndex: 'ecologicalType',
       align: 'left',
       width: '200px',
