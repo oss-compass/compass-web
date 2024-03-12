@@ -72,7 +72,12 @@ const DataTerms = () => {
       </p>
       <h3 className="my-4 text-lg font-semibold">
         附：
-        <a download target="" href="/pdf/OSS Compass 项目合作框架协议书.pdf">
+        <a
+          className="underline"
+          download
+          target=""
+          href="/pdf/OSS Compass 项目合作框架协议书.pdf"
+        >
           OSS Compass 项目合作框架协议书.pdf
         </a>
       </h3>

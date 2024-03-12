@@ -48,7 +48,7 @@ const DataUsageProcess = () => {
           // href="mailto:contact@oss-compass.org"
           title="contact@oss-compass.org"
         >
-          {t('academe:submit_your_application_now')}
+          {t('academe:data_usage_process')}
         </a>
       </div>
     </>
