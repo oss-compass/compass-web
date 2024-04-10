@@ -1658,9 +1658,11 @@ export type QueryCollectionHottestArgs = {
 
 export type QueryCollectionListArgs = {
   ident: Scalars['String'];
+  keyword?: InputMaybe<Scalars['String']>;
   level?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
 };
 
 export type QueryCommunityOverviewArgs = {
@@ -4392,6 +4394,8 @@ export type CollectionListQueryVariables = Exact<{
   level?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+  keyword?: InputMaybe<Scalars['String']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
 }>;
 
 export type CollectionListQuery = {
@@ -7961,8 +7965,15 @@ useCollectionHottestQuery.fetcher = (
     headers
   );
 export const CollectionListDocument = /*#__PURE__*/ `
-    query collectionList($ident: String!, $level: String, $page: Int, $per: Int) {
-  collectionList(ident: $ident, level: $level, page: $page, per: $per) {
+    query collectionList($ident: String!, $level: String, $page: Int, $per: Int, $keyword: String, $sortOpts: [SortOptionInput!]) {
+  collectionList(
+    ident: $ident
+    level: $level
+    page: $page
+    per: $per
+    keyword: $keyword
+    sortOpts: $sortOpts
+  ) {
     page
     totalPage
     count
