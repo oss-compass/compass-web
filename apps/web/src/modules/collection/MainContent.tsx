@@ -121,16 +121,20 @@ const MainContent = ({
   const [compareIds, setCompareIds] = useState<string[]>([]);
 
   const [keyword, setKeyword] = useState('');
-  const [sort, setSort] = useState('');
+  const [sort, setSort] = useState({
+    type: 'activity_score',
+    direction: 'desc',
+  });
   useEffect(() => {
     setKeyword('');
+    setSort({ type: 'activity_score', direction: 'desc' });
   }, [slug, router]);
   const params = {
     ident: slug,
     page: 1,
     per: 30,
     keyword,
-    sortOpts: [{ type: 'activity_score', direction: 'asc' }],
+    sortOpts: sort, //desc  updated_at/activity_score
   };
   const {
     data,
@@ -174,8 +178,10 @@ const MainContent = ({
           onCompareModeChange={(v) => setCompareMode(v)}
           keyword={keyword}
           setKeyword={(v) => {
-            console.log(v);
             setKeyword(v);
+          }}
+          setSort={(v) => {
+            setSort(v);
           }}
         />
 
