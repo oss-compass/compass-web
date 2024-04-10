@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { Collection } from '@modules/explore/type';
 import jsonData from '@public/data/collections.json';
 import classnames from 'classnames';
 import { getShortCompareLink } from '@common/utils';
-
+import { AiOutlineSearch } from 'react-icons/ai';
+import { useHotkeys } from 'react-hotkeys-hook';
 import Compare from './assets/compare.svg';
 
 const collectionsMap = jsonData as unknown as Record<string, Collection>;
@@ -17,6 +18,8 @@ const MainHeader = ({
   compareIds,
   compareMode,
   onCompareModeChange,
+  keyword,
+  setKeyword,
 }: {
   slug: string;
   nameKey: 'name_cn' | 'name';
@@ -24,6 +27,8 @@ const MainHeader = ({
   compareIds: string[];
   compareMode: boolean;
   onCompareModeChange: (v: boolean) => void;
+  keyword: string;
+  setKeyword: (v: string) => void;
 }) => {
   const router = useRouter();
 
@@ -33,6 +38,20 @@ const MainHeader = ({
     return collectionsMap[ident].slug === `/${slug}`;
   });
   const collection = ident ? collectionsMap[ident] : null;
+  const [value, setValue] = useState(keyword);
+
+  useHotkeys(
+    'enter',
+    (e, he) => {
+      e.preventDefault();
+      const press = he.key;
+      if (press === 'enter') {
+        if (!value) return;
+        setKeyword?.(value);
+      }
+    },
+    { enableOnTags: ['INPUT'] }
+  );
 
   return (
     <div className="flex px-8 pt-4 pb-5 md:hidden">
@@ -80,7 +99,7 @@ const MainHeader = ({
             onClick={() => {
               onCompareModeChange(true);
             }}
-            className="h-8 w-36 flex-none cursor-pointer border border-gray-500 text-center text-xs font-semibold leading-8"
+            className="h-8 flex-none cursor-pointer border border-gray-500 px-2 text-center text-xs font-semibold leading-8"
           >
             <div className="mr-2 inline-block align-text-bottom">
               <Compare />
@@ -89,6 +108,32 @@ const MainHeader = ({
             {t('collection:pick_for_compare')}
           </div>
         )}
+      </div>
+      <div className="ml-4 pt-1">
+        <div className="flex items-center border border-gray-500 px-2 md:px-2">
+          <input
+            value={value}
+            type="text"
+            className={classnames(
+              'h-[30px] w-full appearance-none bg-transparent text-sm outline-0',
+              'md:h-[30px] md:text-sm'
+            )}
+            placeholder={t('collection:search_repository')}
+            onChange={(event) => {
+              const val = event.target.value;
+              setValue(val);
+            }}
+            alt={'Type the name to insight into your project'}
+          />
+          <div
+            onClick={() => {
+              setKeyword(value);
+            }}
+            className="h-6 w-8 cursor-pointer select-none pl-2"
+          >
+            <AiOutlineSearch className="h-full w-full" />
+          </div>
+        </div>
       </div>
     </div>
   );

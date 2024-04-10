@@ -481,9 +481,22 @@ query collectionHottest($ident: String!, $limit: Int) {
     updatedAt
   }
 }
-
-query collectionList($ident: String!, $level: String, $page: Int, $per: Int) {
-  collectionList(ident: $ident, level: $level, page: $page, per: $per) {
+query collectionList(
+  $ident: String!
+  $level: String
+  $page: Int
+  $per: Int
+  $keyword: String
+  $sortOpts: [SortOptionInput!]
+) {
+  collectionList(
+    ident: $ident
+    level: $level
+    page: $page
+    per: $per
+    keyword: $keyword
+    sortOpts: $sortOpts
+  ) {
     page
     totalPage
     count

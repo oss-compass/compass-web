@@ -120,7 +120,16 @@ const MainContent = ({
   const [compareMode, setCompareMode] = useState(false);
   const [compareIds, setCompareIds] = useState<string[]>([]);
 
-  const params = { ident: slug, page: 1, per: 30 };
+  const [keyword, setKeyword] = useState('');
+  const [sort, setSort] = useState('');
+
+  const params = {
+    ident: slug,
+    page: 1,
+    per: 30,
+    keyword,
+    sortOpts: [{ type: 'activity_score', direction: 'asc' }],
+  };
   const {
     data,
     status,
@@ -150,7 +159,7 @@ const MainContent = ({
 
   const lastItem = last(data?.pages);
   const total = lastItem?.collectionList.count || 0;
-
+  console.log(data, lastItem, total, hasNextPage);
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="w-full">
@@ -161,6 +170,11 @@ const MainContent = ({
           total={total}
           compareMode={compareMode}
           onCompareModeChange={(v) => setCompareMode(v)}
+          keyword={keyword}
+          setKeyword={(v) => {
+            console.log(v);
+            setKeyword(v);
+          }}
         />
 
         <MainMobileHeader
