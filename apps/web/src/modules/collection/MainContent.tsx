@@ -122,7 +122,9 @@ const MainContent = ({
 
   const [keyword, setKeyword] = useState('');
   const [sort, setSort] = useState('');
-
+  useEffect(() => {
+    setKeyword('');
+  }, [slug, router]);
   const params = {
     ident: slug,
     page: 1,

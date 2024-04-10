@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { Collection } from '@modules/explore/type';
@@ -39,7 +39,9 @@ const MainHeader = ({
   });
   const collection = ident ? collectionsMap[ident] : null;
   const [value, setValue] = useState(keyword);
-
+  useEffect(() => {
+    setValue('');
+  }, [ident]);
   useHotkeys(
     'enter',
     (e, he) => {
