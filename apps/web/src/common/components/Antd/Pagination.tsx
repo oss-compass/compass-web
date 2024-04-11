@@ -4,7 +4,7 @@ import getLocale from '@common/utils/getLocale';
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 
-const MyTable = (props) => {
+const MyPagination = (props) => {
   const [local, setLocale] = useState(enUS);
   useEffect(() => {
     const l = getLocale();
@@ -18,4 +18,4 @@ const MyTable = (props) => {
     </div>
   );
 };
-export default MyTable;
+export default MyPagination;

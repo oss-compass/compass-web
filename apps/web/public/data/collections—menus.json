@@ -1608,6 +1608,108 @@
     ]
   },
   {
+    "ident": "general-management-software",
+    "name": "General Management Software",
+    "name_cn": "通用管理软件",
+    "items": [
+      "office-automation-OA",
+      "enterprise-resource-planning-ERP",
+      "human-resource-management-HRM",
+      "customer-relationship-management-CRM",
+      "supply-chain-management-SCM",
+      "task-and-project-management"
+    ],
+    "items_info": [
+      {
+        "ident": "office-automation-OA",
+        "name": "Office Automation OA",
+        "name_cn": "办公自动化",
+        "slug": "/office-automation-OA"
+      },
+      {
+        "ident": "enterprise-resource-planning-ERP",
+        "name": "Enterprise Resource Planning ERP",
+        "name_cn": "ERP系统",
+        "slug": "/enterprise-resource-planning-ERP"
+      },
+      {
+        "ident": "human-resource-management-HRM",
+        "name": "Human Resource Management HRM",
+        "name_cn": "人力资源管理",
+        "slug": "/human-resource-management-HRM"
+      },
+      {
+        "ident": "customer-relationship-management-CRM",
+        "name": "Customer Relationship Management CRM",
+        "name_cn": "客户关系管理（CRM）",
+        "slug": "/customer-relationship-management-CRM"
+      },
+      {
+        "ident": "supply-chain-management-SCM",
+        "name": "Supply Chain Management SCM",
+        "name_cn": "供应链管理(SCM)",
+        "slug": "/supply-chain-management-SCM"
+      },
+      {
+        "ident": "task-and-project-management",
+        "name": "Task And Project Management",
+        "name_cn": "任务和项目管理",
+        "slug": "/task-and-project-management"
+      }
+    ]
+  },
+  {
+    "ident": "multi-media-software",
+    "name": "Multi Media Software",
+    "name_cn": "多媒体软件",
+    "items": [
+      "graph-processing",
+      "image-processing",
+      "audio-processing",
+      "video-processing",
+      "3d-modeling-and-rendering",
+      "other-multimedia-software"
+    ],
+    "items_info": [
+      {
+        "ident": "graph-processing",
+        "name": "Graph Processing",
+        "name_cn": "图形处理",
+        "slug": "/graph-processing"
+      },
+      {
+        "ident": "image-processing",
+        "name": "Image Processing",
+        "name_cn": "图像处理库",
+        "slug": "/image-processing"
+      },
+      {
+        "ident": "audio-processing",
+        "name": "Audio Processing",
+        "name_cn": "音频处理",
+        "slug": "/audio-processing"
+      },
+      {
+        "ident": "video-processing",
+        "name": "Video Processing",
+        "name_cn": "视频处理",
+        "slug": "/video-processing"
+      },
+      {
+        "ident": "3d-modeling-and-rendering",
+        "name": "3D modeling and rendering",
+        "name_cn": "3D建模和渲染软件",
+        "slug": "/3d-modeling-and-rendering"
+      },
+      {
+        "ident": "other-multimedia-software",
+        "name": "Other Multimedia Software",
+        "name_cn": "其他多媒体软件",
+        "slug": "/other-multimedia-software"
+      }
+    ]
+  },
+  {
     "ident": "others",
     "name": "Others",
     "name_cn": "其他",
@@ -1698,6 +1800,7 @@
       "software-composition-analysis",
       "software-defined-networking",
       "software-in-science",
+      "frontend-picks",
       "status-page-publishing-tools",
       "steganography",
       "streaming",
@@ -2220,6 +2323,12 @@
         "name": "Software in science",
         "name_cn": "科研软件",
         "slug": "/software-in-science"
+      },
+      {
+        "ident": "frontend-picks",
+        "name": "Frontend Picks",
+        "name_cn": "前端精选项目",
+        "slug": "/frontend-picks"
       },
       {
         "ident": "status-page-publishing-tools",

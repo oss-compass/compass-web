@@ -3,7 +3,7 @@ import { useQueryState, queryTypes } from 'next-usequerystate';
 import { useLabModelPublicOverviewQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
-import Pagination from '@common/components/Pagination';
+import Pagination from '@common/components/Antd/Pagination';
 import CreateGuide from './CreateGuide';
 import ModelItem from './ModelItem';
 import Loading from './Loading';
@@ -51,11 +51,11 @@ const Model = () => {
         return <ModelItem model={model} key={model.modelId} fullWidth />;
       })}
 
-      <div className="py-6">
+      <div className="flex justify-center py-6">
         {pageTotal > 1 ? (
           <Pagination
-            page={page}
-            pageTotal={pageTotal}
+            current={page}
+            total={count}
             onChange={(p) => {
               setPage(p);
             }}

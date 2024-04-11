@@ -36,7 +36,7 @@ const MetricTable: React.FC<{
     pagination: {
       current: 1,
       pageSize: 10,
-      showSizeChanger: false,
+      showSizeChanger: true,
       position: ['bottomCenter'],
       showTotal: (total) => {
         return `${t('analyze:total_prs', { total })} `;
