@@ -6,8 +6,10 @@ import jsonData from '@public/data/collections.json';
 import classnames from 'classnames';
 import { getShortCompareLink } from '@common/utils';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { MdOutlineSort } from 'react-icons/md';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Compare from './assets/compare.svg';
+import { Dropdown } from 'antd';
 
 const collectionsMap = jsonData as unknown as Record<string, Collection>;
 
@@ -20,6 +22,7 @@ const MainHeader = ({
   onCompareModeChange,
   keyword,
   setKeyword,
+  setSort,
 }: {
   slug: string;
   nameKey: 'name_cn' | 'name';
@@ -29,6 +32,7 @@ const MainHeader = ({
   onCompareModeChange: (v: boolean) => void;
   keyword: string;
   setKeyword: (v: string) => void;
+  setSort: (v: any) => void;
 }) => {
   const router = useRouter();
 
@@ -38,9 +42,11 @@ const MainHeader = ({
     return collectionsMap[ident].slug === `/${slug}`;
   });
   const collection = ident ? collectionsMap[ident] : null;
+
   const [value, setValue] = useState(keyword);
   useEffect(() => {
     setValue('');
+    setActive('1');
   }, [ident]);
   useHotkeys(
     'enter',
@@ -54,9 +60,43 @@ const MainHeader = ({
     },
     { enableOnTags: ['INPUT'] }
   );
-
+  const onClick = ({ key }) => {
+    setActive(key);
+    let item = sortList.find((z) => {
+      return z.key === key;
+    });
+    let type = item.type;
+    let direction = item.direction;
+    console.log(type, direction);
+    setSort({ type, direction });
+  };
+  const [active, setActive] = useState('1');
+  const sortList = [
+    {
+      type: 'activity_score',
+      direction: 'desc',
+      key: '1',
+      name: t('collection:descending_order_of_activity'),
+    },
+    {
+      type: 'activity_score',
+      direction: 'asc',
+      key: '2',
+      name: t('collection:ascending_order_of_activity'),
+    },
+  ];
+  const items = sortList.map((item) => {
+    return {
+      label: (
+        <span className={classnames({ 'text-[#1677ff]': active === item.key })}>
+          {item.name}
+        </span>
+      ),
+      key: item.key,
+    };
+  });
   return (
-    <div className="flex px-8 pt-4 pb-5 md:hidden">
+    <div className="flex justify-between px-8 pt-4 pb-5 md:hidden">
       <div className="mr-8">
         <div className="text-xl font-bold">
           {collection && collection[nameKey]}
@@ -136,6 +176,16 @@ const MainHeader = ({
             <AiOutlineSearch className="h-full w-full" />
           </div>
         </div>
+      </div>
+      <div className="ml-auto mt-2 cursor-pointer text-2xl">
+        <Dropdown menu={{ items, onClick }}>
+          <a
+            className="hover:text-[#1677ff]"
+            onClick={(e) => e.preventDefault()}
+          >
+            <MdOutlineSort />
+          </a>
+        </Dropdown>
       </div>
     </div>
   );
