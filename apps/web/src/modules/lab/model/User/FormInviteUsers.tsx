@@ -2,7 +2,7 @@ import React, { forwardRef, useState, useImperativeHandle } from 'react';
 import FormUsersItem from './FormUsersItem';
 import { useInvitationOverviewQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
-import Pagination from '@common/components/Pagination';
+import Pagination from '@common/components/Antd/Pagination';
 import useEventEmitter from 'ahooks/lib/useEventEmitter';
 import { ReFetch } from '@common/constant';
 import { useTranslation } from 'react-i18next';
@@ -51,10 +51,10 @@ const FormInviteUsers = forwardRef(
           })}
         </div>
         {pageTotal > 1 ? (
-          <div className="py-6">
+          <div className="flex justify-center py-6">
             <Pagination
-              page={page}
-              pageTotal={pageTotal}
+              current={page}
+              total={count}
               onChange={(p) => {
                 setPage(p);
               }}

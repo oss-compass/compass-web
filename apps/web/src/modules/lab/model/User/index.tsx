@@ -5,7 +5,7 @@ import { Center } from '@common/components/Layout';
 import FormInvite from './FormInvite';
 import FormUsers from './FormUsers';
 import FormInviteUsers from './FormInviteUsers';
-import Pagination from '@common/components/Pagination';
+import Pagination from '@common/components/Antd/Pagination';
 import {
   useMemberOverviewQuery,
   useMyMemberPermissionQuery,
@@ -91,10 +91,10 @@ const UserManage = () => {
           event$={event$}
         />
         {pageTotal > 1 ? (
-          <div className="py-6">
+          <div className="flex justify-center py-6">
             <Pagination
-              page={page}
-              pageTotal={pageTotal}
+              current={page}
+              total={count}
               onChange={(p) => {
                 setPage(p);
               }}

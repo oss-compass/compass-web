@@ -7,7 +7,7 @@ import gqlClient from '@common/gqlClient';
 import { useTranslation } from 'react-i18next';
 import { useQueryState, queryTypes } from 'next-usequerystate';
 import { ReFetch } from '@common/constant';
-import Pagination from '@common/components/Pagination';
+import Pagination from '@common/components/Antd/Pagination';
 import { Center } from '@common/components/Layout';
 import ModelItem from './ModelItem';
 
@@ -93,11 +93,11 @@ const MyModal = () => {
 
         {getContent()}
 
-        <div className="py-6">
+        <div className="flex justify-center py-6">
           {pageTotal > 1 ? (
             <Pagination
-              page={page}
-              pageTotal={pageTotal}
+              current={page}
+              total={count}
               onChange={(p) => {
                 setPage(p);
               }}

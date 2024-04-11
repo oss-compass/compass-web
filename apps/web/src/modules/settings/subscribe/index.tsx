@@ -5,7 +5,7 @@ import client from '@common/gqlClient';
 import { useSubscriptionsQuery } from '@oss-compass/graphql';
 import Center from '@common/components/Layout/Center';
 import { Button } from '@oss-compass/ui';
-import Pagination from '@common/components/Pagination';
+import Pagination from '@common/components/Antd/Pagination';
 import SubscribeItem from './SubscribeItem';
 
 const per = 10;
@@ -92,11 +92,11 @@ const Subscribe = () => {
 
       {getContent()}
 
-      <div className="py-6">
+      <div className="flex justify-center pt-6">
         {pageTotal > 1 ? (
           <Pagination
-            page={page}
-            pageTotal={pageTotal}
+            current={page}
+            total={count}
             onChange={(p) => {
               setPage(p);
             }}

@@ -12,7 +12,7 @@ import {
   getFirstPathSegment,
   toFixed,
 } from '@common/utils';
-import Pagination from '@common/components/Pagination';
+import Pagination from '@common/components/Antd/Pagination';
 
 const RepoItem: React.FC<{
   name: string;
@@ -57,7 +57,7 @@ const CommunityRepos = () => {
   const { t } = useTranslation();
   const [firstItem] = compareItems;
   const [type, setType] = useState('all');
-
+  console.log(page);
   const { data, isLoading } = useCommunityReposQuery(
     client,
     {
@@ -107,10 +107,10 @@ const CommunityRepos = () => {
           })}
         </div>
         {totalPage > 1 && (
-          <div className="pt-6">
+          <div className="flex justify-center pt-6">
             <Pagination
-              page={page}
-              pageTotal={totalPage}
+              current={page}
+              total={count}
               onChange={(p) => {
                 setPage(p);
               }}
