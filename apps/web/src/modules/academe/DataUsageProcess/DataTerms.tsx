@@ -68,9 +68,9 @@ const DataTerms = () => {
         4. 如果该学术研究成果可进行工程化部署，在不侵犯知识产权的情况下，请同意
         OSS Compass 享有此成果的使用权。
         <br />
-        5. 具体细节请查看底部协议附件。
+        {/* 5. 具体细节请查看底部协议附件。 */}
       </p>
-      <h3 className="my-4 text-lg font-semibold">
+      {/* <h3 className="my-4 text-lg font-semibold">
         附：
         <a
           className="underline"
@@ -80,7 +80,7 @@ const DataTerms = () => {
         >
           OSS Compass 项目合作框架协议书.pdf
         </a>
-      </h3>
+      </h3> */}
     </div>
   );
   const enTerms = (
@@ -178,9 +178,9 @@ const DataTerms = () => {
         engineering without infringing intellectual property rights, please
         agree to OSS Compass having the right to use these results.
         <br />
-        5. For specific details, please see the agreement below.
+        {/* 5. For specific details, please see the agreement below. */}
       </p>
-      <h3 className="my-4 text-lg font-semibold">
+      {/* <h3 className="my-4 text-lg font-semibold">
         <a
           className="underline"
           download
@@ -189,7 +189,7 @@ const DataTerms = () => {
         >
           OSS Compass Project Cooperation Framework Agreement.pdf
         </a>
-      </h3>
+      </h3> */}
     </div>
   );
   if (i18n.language === 'en') {
