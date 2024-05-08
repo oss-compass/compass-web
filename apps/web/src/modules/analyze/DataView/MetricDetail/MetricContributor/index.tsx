@@ -31,6 +31,8 @@ const MetricContributor = () => {
     : ['core', 'regular'];
   const [mileage, setMileage] = useState<string[]>(defaultMileage);
   const [isBot, setIsBot] = useState(true);
+  const [repoList, setRepoList] = useState([]);
+
   const onMileageChange = (checkedValues: string[]) => {
     setMileage(checkedValues);
     handleQueryParams({ mileage: JSON.stringify(checkedValues) });
@@ -43,8 +45,11 @@ const MetricContributor = () => {
     if (!isBot) {
       opts.push({ type: 'is_bot', values: [String(isBot)] });
     }
+    if (repoList.length > 0) {
+      opts.push({ type: 'repo_urls', values: repoList });
+    }
     return opts;
-  }, [mileage, isBot]);
+  }, [mileage, isBot, repoList]);
   let source;
   switch (tab) {
     case '1': {
@@ -104,8 +109,11 @@ const MetricContributor = () => {
       <div className="">
         <DetailHeaderFilter
           type={'contributor'}
+          level={level}
+          label={label}
           isBot={isBot}
           onBotChange={(v) => setIsBot(v)}
+          onRepoChange={(v) => setRepoList(v)}
         />
         <div className="absolute right-0 top-5 flex md:hidden">
           <span className="mr-2 flex cursor-pointer items-center font-medium">

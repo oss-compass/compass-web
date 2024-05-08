@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import { useTranslation } from 'next-i18next';
+import CommunityFilter from './CommunityFilter';
 
 const DetailHeaderFilter: React.FC<{
   type: string;
+  level: string;
+  label: string;
   isBot?: boolean;
   onBotChange?: (v) => void;
-}> = ({ type, isBot, onBotChange }) => {
+  onRepoChange?: (v) => void;
+}> = ({ type, label, isBot, onBotChange, onRepoChange }) => {
   const { t } = useTranslation();
 
   const isBotOptions = [
@@ -37,9 +41,10 @@ const DetailHeaderFilter: React.FC<{
     );
   }
   return (
-    <>
+    <div className="flex gap-2">
+      <CommunityFilter label={label} onRepoChange={(v) => onRepoChange(v)} />
       <Select
-        style={{ width: 120 }}
+        style={{ width: 130 }}
         onChange={(v) => {
           onBotChange(v);
           //   handleQueryParams({ tab: v });
@@ -47,7 +52,7 @@ const DetailHeaderFilter: React.FC<{
         value={isBot}
         options={isBotOptions}
       />
-    </>
+    </div>
   );
 };
 

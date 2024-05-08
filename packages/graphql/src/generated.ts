@@ -1526,6 +1526,8 @@ export type Query = {
   collectionList: CollectionPage;
   /** Get overview data of a community */
   communityOverview: CommunityOverview;
+  /** Get repos list of a community */
+  communityRepos: RepoPage;
   /** Get contributors detail list of a repo or community */
   contributorsDetailList: ContributorDetailPage;
   /** Get overview data of a contributor detail */
@@ -1666,6 +1668,13 @@ export type QueryCollectionListArgs = {
 };
 
 export type QueryCommunityOverviewArgs = {
+  label: Scalars['String'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  type?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryCommunityReposArgs = {
   label: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
@@ -1975,6 +1984,14 @@ export type Repo = {
   watchersCount?: Maybe<Scalars['Int']>;
 };
 
+export type RepoPage = {
+  __typename?: 'RepoPage';
+  count?: Maybe<Scalars['Int']>;
+  items?: Maybe<Array<SubRepo>>;
+  page?: Maybe<Scalars['Int']>;
+  totalPage?: Maybe<Scalars['Int']>;
+};
+
 export type Report = {
   __typename?: 'Report';
   /** metric model object identification */
@@ -2083,6 +2100,11 @@ export type SortOptionInput = {
   direction: Scalars['String'];
   /** sort type value */
   type: Scalars['String'];
+};
+
+export type SubRepo = {
+  __typename?: 'SubRepo';
+  label?: Maybe<Scalars['String']>;
 };
 
 export type SubjectSubscriptionCount = {
@@ -3958,6 +3980,24 @@ export type CommunityReposQuery = {
         grimoireCreationDate?: any | null;
       }>;
     }> | null;
+  };
+};
+
+export type CommunityReposSearchQueryVariables = Exact<{
+  label: Scalars['String'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  type?: InputMaybe<Scalars['String']>;
+}>;
+
+export type CommunityReposSearchQuery = {
+  __typename?: 'Query';
+  communityRepos: {
+    __typename?: 'RepoPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{ __typename?: 'SubRepo'; label?: string | null }> | null;
   };
 };
 
@@ -7527,6 +7567,52 @@ useCommunityReposQuery.fetcher = (
   fetcher<CommunityReposQuery, CommunityReposQueryVariables>(
     client,
     CommunityReposDocument,
+    variables,
+    headers
+  );
+export const CommunityReposSearchDocument = /*#__PURE__*/ `
+    query communityReposSearch($label: String!, $page: Int, $per: Int, $type: String) {
+  communityRepos(label: $label, page: $page, per: $per, type: $type) {
+    count
+    items {
+      label
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommunityReposSearchQuery = <
+  TData = CommunityReposSearchQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommunityReposSearchQueryVariables,
+  options?: UseQueryOptions<CommunityReposSearchQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommunityReposSearchQuery, TError, TData>(
+    ['communityReposSearch', variables],
+    fetcher<CommunityReposSearchQuery, CommunityReposSearchQueryVariables>(
+      client,
+      CommunityReposSearchDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommunityReposSearchQuery.getKey = (
+  variables: CommunityReposSearchQueryVariables
+) => ['communityReposSearch', variables];
+useCommunityReposSearchQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommunityReposSearchQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommunityReposSearchQuery, CommunityReposSearchQueryVariables>(
+    client,
+    CommunityReposSearchDocument,
     variables,
     headers
   );

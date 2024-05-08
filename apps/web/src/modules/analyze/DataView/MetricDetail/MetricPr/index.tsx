@@ -20,10 +20,14 @@ const MetricPr = () => {
   const queryCard = router.query?.card as string;
   const [tab, setTab] = useState(queryCard || '1');
   const { timeStart, timeEnd } = useVerifyDateRange();
+  const [repoList, setRepoList] = useState([]);
   const commonFilterOpts = useMemo(() => {
     let opts = [];
+    if (repoList.length > 0) {
+      opts.push({ type: 'repo_urls', values: repoList });
+    }
     return opts;
-  }, []);
+  }, [repoList]);
   let source;
   switch (tab) {
     case '1': {
@@ -76,7 +80,7 @@ const MetricPr = () => {
       // title={t('analyze:metric_detail:contributor')}
       className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-lg border-2 border-transparent bg-white p-4 drop-shadow-sm md:rounded-none"
     >
-      <DetailHeaderFilter type={'pr'} />
+      <DetailHeaderFilter level={level} label={label} type={'pr'} />
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}

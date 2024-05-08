@@ -77,7 +77,7 @@ const MetricIssue = () => {
       // title={t('analyze:metric_detail:contributor')}
       className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-lg border-2 border-transparent bg-white p-4 drop-shadow-sm md:rounded-none"
     >
-      <DetailHeaderFilter type={'issue'} />
+      <DetailHeaderFilter level={level} label={label} type={'issue'} />
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}
