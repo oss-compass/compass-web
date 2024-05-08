@@ -49,8 +49,8 @@ const MetricTable: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
+  commonFilterOpts: any[];
+}> = ({ label, level, beginDate, endDate, commonFilterOpts }) => {
   const { t } = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [currentName, setCurrentName] = useState('');
@@ -67,14 +67,6 @@ const MetricTable: React.FC<{
   };
   const router = useRouter();
   const { handleQueryParams } = useHandleQueryParams();
-
-  const mileageFilter = useMemo(() => {
-    if (mileage.length > 0) {
-      return { type: 'mileage_type', values: mileage };
-    } else {
-      return null;
-    }
-  }, [mileage]);
 
   const queryFilterOpts = router.query?.filterOpts as string;
   const defaultFilterOpts = queryFilterOpts ? JSON.parse(queryFilterOpts) : [];
@@ -101,7 +93,7 @@ const MetricTable: React.FC<{
   const query = {
     page: tableParams.pagination.current,
     per: tableParams.pagination.pageSize,
-    filterOpts: [...filterOpts, mileageFilter],
+    filterOpts: [...filterOpts, ...commonFilterOpts],
     sortOpts: tableParams.sortOpts,
     label,
     level,
@@ -330,7 +322,7 @@ const MetricTable: React.FC<{
   ];
   return (
     <>
-      <div className="absolute right-0 top-2">
+      <div className="absolute right-4 top-16">
         <Download
           beginFun={getContributorExport}
           pollingFun={getContributorPolling}

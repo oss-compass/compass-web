@@ -6,9 +6,9 @@ import {
 import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
 import MetricChart from '@modules/analyze/DataView/MetricDetail/MetricChart';
-import { useGetEcologicalText } from './contribution';
+import { useGetEcologicalText } from '../contribution';
 import { gradientRamp } from '@common/options';
-import PieDropDownMenu from '../PieDropDownMenu';
+import PieDropDownMenu from '../../PieDropDownMenu';
 import type { EChartsOption } from 'echarts';
 
 const ContributorContribution: React.FC<{
@@ -16,8 +16,8 @@ const ContributorContribution: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
+  commonFilterOpts: any[];
+}> = ({ label, level, beginDate, endDate, commonFilterOpts }) => {
   const [orgModel, setOrgModel] = useState<boolean>(true);
   const [onlyIdentity, setOnlyIdentity] = useState<boolean>(false);
   const [onlyOrg, setOnlyOrg] = useState<boolean>(false);
@@ -59,7 +59,7 @@ const ContributorContribution: React.FC<{
           level={level}
           beginDate={beginDate}
           endDate={endDate}
-          mileage={mileage}
+          commonFilterOpts={commonFilterOpts}
         />
       ) : (
         <EcoContributorContribution
@@ -67,7 +67,7 @@ const ContributorContribution: React.FC<{
           level={level}
           beginDate={beginDate}
           endDate={endDate}
-          mileage={mileage}
+          commonFilterOpts={commonFilterOpts}
           orgModel={orgModel}
           onlyIdentity={onlyIdentity}
           onlyOrg={onlyOrg}
@@ -195,7 +195,7 @@ const EcoContributorContribution: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
+  commonFilterOpts: any[];
   orgModel: boolean;
   onlyIdentity: boolean;
   onlyOrg: boolean;
@@ -204,7 +204,7 @@ const EcoContributorContribution: React.FC<{
   level,
   beginDate,
   endDate,
-  mileage,
+  commonFilterOpts,
   orgModel,
   onlyIdentity,
   onlyOrg,
@@ -216,7 +216,7 @@ const EcoContributorContribution: React.FC<{
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: [{ type: 'mileage_type', values: mileage }],
+    filterOpts: commonFilterOpts,
   });
   const getEcologicalText = useGetEcologicalText();
   const getSeries = useMemo(() => {
@@ -301,8 +301,8 @@ const OrgContributorContribution: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
+  commonFilterOpts: any[];
+}> = ({ label, level, beginDate, endDate, commonFilterOpts }) => {
   const { t } = useTranslation();
   const chartRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = useOrgContributionDistributionQuery(client, {
@@ -310,7 +310,7 @@ const OrgContributorContribution: React.FC<{
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: [{ type: 'mileage_type', values: mileage }],
+    filterOpts: commonFilterOpts,
   });
   const getEcologicalText = useGetEcologicalText();
   const getSeries = useMemo(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import useVerifyDateRange from '../useVerifyDateRange';
@@ -7,9 +7,9 @@ import IssueCompletion from './IssueCompletion';
 import IssueComments from './IssueComments';
 import { useTranslation } from 'next-i18next';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import BaseCard from '@common/components/BaseCard';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
+import DetailHeaderFilter from '@modules/analyze/components/MetricDetail/DetailHeaderFilter';
 
 const MetricIssue = () => {
   const router = useRouter();
@@ -19,7 +19,12 @@ const MetricIssue = () => {
   const { label, level } = verifiedItems[0];
   const { t } = useTranslation();
   const queryCard = router.query?.card as string;
+  const [isBot, setIsBot] = useState(true);
   const [tab, setTab] = useState(queryCard || '1');
+  const commonFilterOpts = useMemo(() => {
+    let opts = [];
+    return opts;
+  }, [isBot]);
   let source;
   switch (tab) {
     case '1': {
@@ -68,11 +73,11 @@ const MetricIssue = () => {
     }
   }
   return (
-    <BaseCard
-      title={t('analyze:metric_detail:issues')}
-      bodyClass="flex-1 flex flex-col"
-      className="flex h-full flex-col overflow-hidden"
+    <div
+      // title={t('analyze:metric_detail:contributor')}
+      className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-lg border-2 border-transparent bg-white p-4 drop-shadow-sm md:rounded-none"
     >
+      <DetailHeaderFilter type={'issue'} />
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}
@@ -110,7 +115,7 @@ const MetricIssue = () => {
       </Tabs>
 
       <div className="mt-2 flex-1">{source}</div>
-    </BaseCard>
+    </div>
   );
 };
 

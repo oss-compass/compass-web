@@ -11,8 +11,8 @@ const ContributorContribution: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
+  commonFilterOpts: any[];
+}> = ({ label, level, beginDate, endDate, commonFilterOpts }) => {
   const { t } = useTranslation();
   const chartRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = useOrgContributorsOverviewQuery(client, {
@@ -20,7 +20,7 @@ const ContributorContribution: React.FC<{
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: [{ type: 'mileage_type', values: mileage }],
+    filterOpts: commonFilterOpts,
   });
   const getSeries = useMemo(() => {
     const legend = [];

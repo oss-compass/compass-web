@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import useVerifyDateRange from '../useVerifyDateRange';
@@ -11,9 +11,9 @@ import ContributorContributors from './Contributors';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import Tooltip from '@common/components/Tooltip';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import BaseCard from '@common/components/BaseCard';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
+import DetailHeaderFilter from '@modules/analyze/components/MetricDetail/DetailHeaderFilter';
 
 const MetricContributor = () => {
   const { t } = useTranslation();
@@ -30,10 +30,21 @@ const MetricContributor = () => {
     ? JSON.parse(queryMileage)
     : ['core', 'regular'];
   const [mileage, setMileage] = useState<string[]>(defaultMileage);
-  const onChange = (checkedValues: string[]) => {
+  const [isBot, setIsBot] = useState(true);
+  const onMileageChange = (checkedValues: string[]) => {
     setMileage(checkedValues);
     handleQueryParams({ mileage: JSON.stringify(checkedValues) });
   };
+  const commonFilterOpts = useMemo(() => {
+    let opts = [];
+    if (mileage.length > 0) {
+      opts.push({ type: 'mileage_type', values: mileage });
+    }
+    if (!isBot) {
+      opts.push({ type: 'is_bot', values: [String(isBot)] });
+    }
+    return opts;
+  }, [mileage, isBot]);
   let source;
   switch (tab) {
     case '1': {
@@ -43,7 +54,7 @@ const MetricContributor = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
-          mileage={mileage}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
@@ -55,7 +66,7 @@ const MetricContributor = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
-          mileage={mileage}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
@@ -67,7 +78,7 @@ const MetricContributor = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
-          mileage={mileage}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
@@ -79,18 +90,65 @@ const MetricContributor = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
-          mileage={mileage}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
     }
   }
   return (
-    <BaseCard
-      title={t('analyze:metric_detail:contributor')}
-      bodyClass="flex-1"
-      className="flex h-full flex-col overflow-hidden"
+    <div
+      // title={t('analyze:metric_detail:contributor')}
+      className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-lg border-2 border-transparent bg-white p-4 drop-shadow-sm md:rounded-none"
     >
+      <div className="">
+        <DetailHeaderFilter
+          type={'contributor'}
+          isBot={isBot}
+          onBotChange={(v) => setIsBot(v)}
+        />
+        <div className="absolute right-0 top-5 flex md:hidden">
+          <span className="mr-2 flex cursor-pointer items-center font-medium">
+            {t('analyze:metric_detail:milestone_persona_filter')}
+            <Tooltip
+              arrow
+              title={
+                <>
+                  <div>
+                    <span className="font-xs font-semibold">
+                      {t('analyze:metric_detail:core')} :
+                    </span>
+                    {t('analyze:metric_detail:core_desc')}
+                  </div>
+                  <div>
+                    <span className="font-xs font-semibold">
+                      {t('analyze:metric_detail:regular')} :
+                    </span>
+                    {t('analyze:metric_detail:regular_desc')}
+                  </div>
+                  <div>
+                    <span className="font-xs font-semibold">
+                      {t('analyze:metric_detail:guest')} :
+                    </span>
+                    {t('analyze:metric_detail:guest_desc')}
+                  </div>
+                </>
+              }
+              placement="right"
+            >
+              <span className="ml-1 text-gray-400">
+                <AiOutlineQuestionCircle />
+              </span>
+            </Tooltip>
+          </span>
+          <span className="mr-2">:</span>
+          <Checkbox.Group
+            options={options}
+            defaultValue={defaultMileage}
+            onChange={onMileageChange}
+          />
+        </div>
+      </div>
       <div className="flex h-full flex-col">
         <div>
           <Tabs
@@ -130,51 +188,9 @@ const MetricContributor = () => {
           </Tabs>
         </div>
 
-        <div className="absolute right-14 top-2.5 flex md:hidden xl:right-0 xl:-top-4">
-          <span className="mr-2 flex cursor-pointer items-center font-medium">
-            {t('analyze:metric_detail:milestone_persona_filter')}
-            <Tooltip
-              arrow
-              title={
-                <>
-                  <div>
-                    <span className="font-xs font-semibold">
-                      {t('analyze:metric_detail:core')} :
-                    </span>
-                    {t('analyze:metric_detail:core_desc')}
-                  </div>
-                  <div>
-                    <span className="font-xs font-semibold">
-                      {t('analyze:metric_detail:regular')} :
-                    </span>
-                    {t('analyze:metric_detail:regular_desc')}
-                  </div>
-                  <div>
-                    <span className="font-xs font-semibold">
-                      {t('analyze:metric_detail:guest')} :
-                    </span>
-                    {t('analyze:metric_detail:guest_desc')}
-                  </div>
-                </>
-              }
-              placement="right"
-            >
-              <span className="ml-1 text-gray-400">
-                <AiOutlineQuestionCircle />
-              </span>
-            </Tooltip>
-          </span>
-          <span className="mr-2">:</span>
-          <Checkbox.Group
-            options={options}
-            defaultValue={defaultMileage}
-            onChange={onChange}
-          />
-        </div>
-
         <div className="flex-1">{source}</div>
       </div>
-    </BaseCard>
+    </div>
   );
 };
 

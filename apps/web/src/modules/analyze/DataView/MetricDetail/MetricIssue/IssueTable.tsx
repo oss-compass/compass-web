@@ -187,7 +187,7 @@ const MetricTable: React.FC<{
   ];
   return (
     <>
-      <div className="absolute right-0 top-2">
+      <div className="absolute right-4 top-16">
         <Download
           beginFun={getIssueExport}
           pollingFun={getIssuePolling}
