@@ -105,7 +105,21 @@ query communityRepos($label: String!, $page: Int, $per: Int, $type: String) {
     }
   }
 }
-
+query communityReposSearch(
+  $label: String!
+  $page: Int
+  $per: Int
+  $type: String
+) {
+  communityRepos(label: $label, page: $page, per: $per, type: $type) {
+    count
+    items {
+      label
+    }
+    page
+    totalPage
+  }
+}
 query metric(
   $label: String!
   $level: String = "repo"

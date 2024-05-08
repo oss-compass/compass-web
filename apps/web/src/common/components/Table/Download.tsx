@@ -7,6 +7,7 @@ import {
   apiDownloadFiles,
   Status,
 } from '@modules/analyze/DataView/MetricDetail/tableDownload';
+import { useTranslation } from 'react-i18next';
 
 // 对象驼峰转下划线
 const objectHumpToLine = (obj) => {
@@ -27,6 +28,7 @@ const Download = ({
   query: any;
   fileName: string;
 }) => {
+  const { t } = useTranslation();
   const newQuery = objectHumpToLine(query);
   newQuery['sort_opts'] && (newQuery['sort_opts'] = [newQuery['sort_opts']]);
 
@@ -66,9 +68,12 @@ const Download = ({
   };
   return (
     <>
-      <div className="flex h-7 w-10 cursor-pointer items-center justify-center rounded-sm border border-[#3f60ef] text-xs text-[#3f60ef]">
+      <div className="flex h-7 cursor-pointer items-center justify-center rounded-sm border py-2 px-3 text-sm hover:text-[#3f60ef]">
         {loadingDownLoad ? (
-          <AiOutlineLoading className="t animate-spin" />
+          <>
+            <AiOutlineLoading className="t mr-1 animate-spin" />
+            {t('analyze:metric_detail.download_data')}
+          </>
         ) : (
           <Tooltip arrow title={fileName} placement="top">
             <div
@@ -78,7 +83,8 @@ const Download = ({
                 await downloadFun();
               }}
             >
-              <BsDownload />
+              <BsDownload className="mr-1" />
+              {t('analyze:metric_detail.download_data')}
             </div>
           </Tooltip>
         )}

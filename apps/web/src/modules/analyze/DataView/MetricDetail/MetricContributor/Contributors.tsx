@@ -125,8 +125,8 @@ const ContributorContributors: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
+  commonFilterOpts: any[];
+}> = ({ label, level, beginDate, endDate, commonFilterOpts }) => {
   const { t } = useTranslation();
   const getEcologicalText = useGetEcologicalText();
   const chartRef = useRef<HTMLDivElement>(null);
@@ -137,7 +137,7 @@ const ContributorContributors: React.FC<{
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: [{ type: 'mileage_type', values: mileage }],
+    filterOpts: commonFilterOpts,
   });
 
   const getSeries = useMemo(() => {

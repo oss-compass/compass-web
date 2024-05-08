@@ -7,8 +7,8 @@ const ContributionCount: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-  mileage: string[];
-}> = ({ label, level, beginDate, endDate, mileage }) => {
+  commonFilterOpts: any[];
+}> = ({ label, level, beginDate, endDate, commonFilterOpts }) => {
   return (
     <div className="flex h-full lg:flex-col">
       <ContributorContribution
@@ -16,14 +16,14 @@ const ContributionCount: React.FC<{
         level={level}
         beginDate={beginDate}
         endDate={endDate}
-        mileage={mileage}
+        commonFilterOpts={commonFilterOpts}
       />
       <ContributorOrganizations
         label={label}
         level={level}
         beginDate={beginDate}
         endDate={endDate}
-        mileage={mileage}
+        commonFilterOpts={commonFilterOpts}
       />
     </div>
   );

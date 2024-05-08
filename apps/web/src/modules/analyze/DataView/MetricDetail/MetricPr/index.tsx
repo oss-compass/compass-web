@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import useVerifyDateRange from '../useVerifyDateRange';
@@ -7,9 +7,9 @@ import PrCompletion from './PrCompletion';
 import PrComments from './PrComments';
 import { useTranslation } from 'next-i18next';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
-import BaseCard from '@common/components/BaseCard';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
+import DetailHeaderFilter from '@modules/analyze/components/MetricDetail/DetailHeaderFilter';
 
 const MetricPr = () => {
   const { t } = useTranslation();
@@ -20,6 +20,14 @@ const MetricPr = () => {
   const queryCard = router.query?.card as string;
   const [tab, setTab] = useState(queryCard || '1');
   const { timeStart, timeEnd } = useVerifyDateRange();
+  const [repoList, setRepoList] = useState([]);
+  const commonFilterOpts = useMemo(() => {
+    let opts = [];
+    if (repoList.length > 0) {
+      opts.push({ type: 'repo_urls', values: repoList });
+    }
+    return opts;
+  }, [repoList]);
   let source;
   switch (tab) {
     case '1': {
@@ -68,11 +76,11 @@ const MetricPr = () => {
     }
   }
   return (
-    <BaseCard
-      title={t('analyze:metric_detail:pull_requests')}
-      bodyClass="flex-1 flex flex-col"
-      className="flex h-full flex-col overflow-hidden"
+    <div
+      // title={t('analyze:metric_detail:contributor')}
+      className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-lg border-2 border-transparent bg-white p-4 drop-shadow-sm md:rounded-none"
     >
+      <DetailHeaderFilter level={level} label={label} type={'pr'} />
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}
@@ -109,7 +117,7 @@ const MetricPr = () => {
         />
       </Tabs>
       <div className="mt-2 flex-1">{source}</div>
-    </BaseCard>
+    </div>
   );
 };
 
