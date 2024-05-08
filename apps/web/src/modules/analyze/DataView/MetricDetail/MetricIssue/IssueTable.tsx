@@ -48,6 +48,7 @@ const MetricTable: React.FC<{
       direction: 'desc',
     },
   });
+
   const query = {
     page: tableParams.pagination.current,
     per: tableParams.pagination.pageSize,
