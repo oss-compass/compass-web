@@ -37,6 +37,7 @@ const MetricPr = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
@@ -70,6 +71,7 @@ const MetricPr = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
@@ -80,7 +82,12 @@ const MetricPr = () => {
       // title={t('analyze:metric_detail:contributor')}
       className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-lg border-2 border-transparent bg-white p-4 drop-shadow-sm md:rounded-none"
     >
-      <DetailHeaderFilter level={level} label={label} type={'pr'} />
+      <DetailHeaderFilter
+        level={level}
+        label={label}
+        onRepoChange={(v) => setRepoList(v)}
+        type={'pr'}
+      />
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}

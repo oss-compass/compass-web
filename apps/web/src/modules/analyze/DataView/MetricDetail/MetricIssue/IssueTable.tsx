@@ -28,7 +28,8 @@ const MetricTable: React.FC<{
   level: string;
   beginDate: Date;
   endDate: Date;
-}> = ({ label, level, beginDate, endDate }) => {
+  commonFilterOpts: any[];
+}> = ({ label, level, beginDate, endDate, commonFilterOpts }) => {
   const { t } = useTranslation();
   const stateOption = useStateType();
   const [tableData, setData] = useState<IssueDetail[]>();
@@ -52,7 +53,7 @@ const MetricTable: React.FC<{
   const query = {
     page: tableParams.pagination.current,
     per: tableParams.pagination.pageSize,
-    filterOpts: tableParams.filterOpts,
+    filterOpts: [...tableParams.filterOpts, ...commonFilterOpts],
     sortOpts: tableParams.sortOpts,
     label,
     level,

@@ -10,7 +10,7 @@ const DetailHeaderFilter: React.FC<{
   isBot?: boolean;
   onBotChange?: (v) => void;
   onRepoChange?: (v) => void;
-}> = ({ type, label, isBot, onBotChange, onRepoChange }) => {
+}> = ({ type, level, label, isBot, onBotChange, onRepoChange }) => {
   const { t } = useTranslation();
 
   const isBotOptions = [
@@ -26,34 +26,55 @@ const DetailHeaderFilter: React.FC<{
   if (type == 'issue') {
     return (
       <>
-        <div className="mb-1 text-lg font-semibold text-[#000000]">
-          {t('analyze:metric_detail:issues')}
-        </div>
+        {level === 'community' ? (
+          <CommunityFilter
+            label={label}
+            onRepoChange={(v) => onRepoChange(v)}
+          />
+        ) : (
+          <div className="mb-1 text-lg font-semibold text-[#000000]">
+            {t('analyze:metric_detail:issues')}
+          </div>
+        )}
       </>
     );
   } else if (type == 'pr') {
     return (
       <>
-        <div className="mb-1 text-lg font-semibold text-[#000000]">
-          {t('analyze:metric_detail:pull_requests')}
-        </div>
+        {level === 'community' ? (
+          <CommunityFilter
+            label={label}
+            onRepoChange={(v) => onRepoChange(v)}
+          />
+        ) : (
+          <div className="mb-1 text-lg font-semibold text-[#000000]">
+            {t('analyze:metric_detail:pull_requests')}
+          </div>
+        )}
       </>
     );
+  } else {
+    return (
+      <div className="flex gap-2">
+        {level === 'community' ? (
+          <CommunityFilter
+            label={label}
+            onRepoChange={(v) => onRepoChange(v)}
+          />
+        ) : (
+          <Select
+            style={{ width: 130 }}
+            onChange={(v) => {
+              onBotChange(v);
+              //   handleQueryParams({ tab: v });
+            }}
+            value={isBot}
+            options={isBotOptions}
+          />
+        )}
+      </div>
+    );
   }
-  return (
-    <div className="flex gap-2">
-      <CommunityFilter label={label} onRepoChange={(v) => onRepoChange(v)} />
-      <Select
-        style={{ width: 130 }}
-        onChange={(v) => {
-          onBotChange(v);
-          //   handleQueryParams({ tab: v });
-        }}
-        value={isBot}
-        options={isBotOptions}
-      />
-    </div>
-  );
 };
 
 export default DetailHeaderFilter;

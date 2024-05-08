@@ -19,12 +19,17 @@ const MetricIssue = () => {
   const { label, level } = verifiedItems[0];
   const { t } = useTranslation();
   const queryCard = router.query?.card as string;
-  const [isBot, setIsBot] = useState(true);
+  const [repoList, setRepoList] = useState([]);
+
   const [tab, setTab] = useState(queryCard || '1');
+
   const commonFilterOpts = useMemo(() => {
     let opts = [];
+    if (repoList.length > 0) {
+      opts.push({ type: 'repo_urls', values: repoList });
+    }
     return opts;
-  }, [isBot]);
+  }, [repoList]);
   let source;
   switch (tab) {
     case '1': {
@@ -34,6 +39,7 @@ const MetricIssue = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
@@ -67,6 +73,7 @@ const MetricIssue = () => {
           level={level}
           beginDate={timeStart}
           endDate={timeEnd}
+          commonFilterOpts={commonFilterOpts}
         />
       );
       break;
@@ -77,7 +84,12 @@ const MetricIssue = () => {
       // title={t('analyze:metric_detail:contributor')}
       className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-lg border-2 border-transparent bg-white p-4 drop-shadow-sm md:rounded-none"
     >
-      <DetailHeaderFilter level={level} label={label} type={'issue'} />
+      <DetailHeaderFilter
+        onRepoChange={(v) => setRepoList(v)}
+        level={level}
+        label={label}
+        type={'issue'}
+      />
       <Tabs
         classes={{ flexContainer: 'border-b', indicator: '!bg-black' }}
         value={tab}
