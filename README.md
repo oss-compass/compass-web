@@ -11,7 +11,7 @@
 
 ## About Compass web
 
-This is a frontend project for the oss compass, including official website and metric chart page.
+This is a frontend project for the oss compass, including official website and metric chart page .
 Built using the popular front-end framework Next.js, and connected to the backend with graphql for data integration.
 
 ## Features
