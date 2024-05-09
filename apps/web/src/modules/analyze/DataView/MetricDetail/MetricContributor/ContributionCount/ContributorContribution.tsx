@@ -216,7 +216,7 @@ const EcoContributorContribution: React.FC<{
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: commonFilterOpts,
+    // filterOpts: commonFilterOpts,
   });
   const getEcologicalText = useGetEcologicalText();
   const getSeries = useMemo(() => {
@@ -310,7 +310,7 @@ const OrgContributorContribution: React.FC<{
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: commonFilterOpts,
+    // filterOpts: commonFilterOpts,
   });
   const getEcologicalText = useGetEcologicalText();
   const getSeries = useMemo(() => {

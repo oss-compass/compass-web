@@ -38,7 +38,7 @@ const CommunityFilter = ({ label, onRepoChange }) => {
     <Select
       mode="multiple"
       value={value}
-      maxTagCount={'responsive'}
+      maxTagCount={selectState ? 0 : 'responsive'}
       maxTagPlaceholder={() =>
         selectState ? (
           <span>{t('analyze:metric_detail:all_repos')}</span>
@@ -60,7 +60,7 @@ const CommunityFilter = ({ label, onRepoChange }) => {
           onRepoChange(newValue);
         }
       }}
-      style={{ width: 130 }}
+      style={{ width: 200 }}
       //   allowClear
       dropdownRender={(menu) => (
         <div>

@@ -137,7 +137,7 @@ const ContributorContributors: React.FC<{
     level: level,
     beginDate: beginDate,
     endDate: endDate,
-    filterOpts: commonFilterOpts,
+    // filterOpts: commonFilterOpts,
   });
 
   const getSeries = useMemo(() => {

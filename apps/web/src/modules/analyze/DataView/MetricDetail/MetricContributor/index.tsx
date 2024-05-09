@@ -30,7 +30,7 @@ const MetricContributor = () => {
     ? JSON.parse(queryMileage)
     : ['core', 'regular'];
   const [mileage, setMileage] = useState<string[]>(defaultMileage);
-  const [isBot, setIsBot] = useState(true);
+  const [isBot, setIsBot] = useState(false);
   const [repoList, setRepoList] = useState([]);
 
   const onMileageChange = (checkedValues: string[]) => {

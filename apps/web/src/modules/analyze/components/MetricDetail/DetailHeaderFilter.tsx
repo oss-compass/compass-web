@@ -26,7 +26,7 @@ const DetailHeaderFilter: React.FC<{
   if (type == 'issue') {
     return (
       <>
-        {level === 'community' ? (
+        {level === 'community1' ? (
           <CommunityFilter
             label={label}
             onRepoChange={(v) => onRepoChange(v)}
@@ -41,7 +41,7 @@ const DetailHeaderFilter: React.FC<{
   } else if (type == 'pr') {
     return (
       <>
-        {level === 'community' ? (
+        {level === 'community1' ? (
           <CommunityFilter
             label={label}
             onRepoChange={(v) => onRepoChange(v)}
@@ -57,10 +57,21 @@ const DetailHeaderFilter: React.FC<{
     return (
       <div className="flex gap-2">
         {level === 'community' ? (
-          <CommunityFilter
-            label={label}
-            onRepoChange={(v) => onRepoChange(v)}
-          />
+          <>
+            <CommunityFilter
+              label={label}
+              onRepoChange={(v) => onRepoChange(v)}
+            />
+            <Select
+              style={{ width: 130 }}
+              onChange={(v) => {
+                onBotChange(v);
+                //   handleQueryParams({ tab: v });
+              }}
+              value={isBot}
+              options={isBotOptions}
+            />
+          </>
         ) : (
           <Select
             style={{ width: 130 }}
