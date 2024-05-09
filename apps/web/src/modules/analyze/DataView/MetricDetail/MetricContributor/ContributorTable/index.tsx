@@ -204,6 +204,7 @@ const MetricTable: React.FC<{
             selectedKeys={selectedKeys}
             setSelectedKeys={setSelectedKeys}
             confirm={confirm}
+            placeholder={t('analyze:metric_detail:search_contributor')}
           />
         );
       },
@@ -297,6 +298,25 @@ const MetricTable: React.FC<{
             <span>{text || '-'}</span>
             <span className="text-primary ml-2 mt-1">{edit}</span>
           </div>
+        );
+      },
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      defaultFilteredValue:
+        defaultFilterOpts.find((i) => i.type === 'organization')?.values ||
+        null,
+      filterDropdown: ({ selectedKeys, setSelectedKeys, confirm }) => {
+        return (
+          <ContributorDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            placeholder={t('analyze:metric_detail:search_organization')}
+          />
         );
       },
     },
