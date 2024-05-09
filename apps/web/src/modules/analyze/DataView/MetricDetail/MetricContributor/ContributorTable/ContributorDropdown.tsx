@@ -3,7 +3,12 @@ import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import { useTranslation } from 'next-i18next';
 
-const ContributorDropdown = ({ selectedKeys, setSelectedKeys, confirm }) => {
+const ContributorDropdown = ({
+  selectedKeys,
+  setSelectedKeys,
+  confirm,
+  placeholder,
+}) => {
   const { t } = useTranslation();
   const [contributor, setContributor] = useState(selectedKeys);
 
@@ -17,7 +22,7 @@ const ContributorDropdown = ({ selectedKeys, setSelectedKeys, confirm }) => {
   return (
     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
       <Input
-        placeholder={t('analyze:metric_detail:search_contributor')}
+        placeholder={placeholder}
         value={contributor[0]}
         onChange={(e) => setContributor([e.target.value])}
         onPressEnter={() => handleSearch()}
