@@ -2295,6 +2295,7 @@ export type User = {
   language: Scalars['String'];
   loginBinds?: Maybe<Array<LoginBind>>;
   name: Scalars['String'];
+  roleLevel: Scalars['Int'];
   subscriptions: SubscriptionPage;
 };
 
@@ -3827,6 +3828,7 @@ export type UserinfoQuery = {
     __typename?: 'User';
     id: number;
     name: string;
+    roleLevel: number;
     email: string;
     language: string;
     emailVerified: boolean;
@@ -7193,6 +7195,7 @@ export const UserinfoDocument = /*#__PURE__*/ `
   currentUser {
     id
     name
+    roleLevel
     email
     language
     emailVerified

@@ -2,6 +2,7 @@ query userinfo {
   currentUser {
     id
     name
+    roleLevel
     email
     language
     emailVerified

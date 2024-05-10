@@ -47,7 +47,12 @@ export const useUserInfo = () => {
     provider: provider,
     loginBinds: user?.loginBinds,
   });
-  return { currentUser: user, providerUser, loginBinds: user?.loginBinds };
+  return {
+    currentUser: user,
+    providerUser,
+    loginBinds: user?.loginBinds,
+    roleLevel: user?.roleLevel,
+  };
 };
 
 // for submit you project
