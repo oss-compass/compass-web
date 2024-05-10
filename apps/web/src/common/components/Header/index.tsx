@@ -10,12 +10,15 @@ import CommunityDropdown from './CommunityDropdown';
 import ChangeLanguage from './ChangeLanguage';
 import SubmitYouProject from './SubmitYouProject';
 import User from './User';
+import { useUserInfo } from '@modules/auth';
 
 const Header: React.FC<{
   sticky?: boolean;
   mobileMenu?: React.ReactNode;
 }> = ({ sticky = true, mobileMenu }) => {
   const { t } = useTranslation();
+  const { roleLevel } = useUserInfo();
+
   return (
     <header>
       <div className={classnames('bg-black lg:hidden')}>
@@ -61,6 +64,17 @@ const Header: React.FC<{
               {t('common:header.lab')}
             </Link>
 
+            {roleLevel && roleLevel > 0 && (
+              <LinkX href="/oh" legacyBehavior>
+                <a
+                  className={
+                    'mx-6 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
+                  }
+                >
+                  OpenHarmony
+                </a>
+              </LinkX>
+            )}
             <LinkX href="/blog" legacyBehavior>
               <a
                 className={
@@ -70,7 +84,6 @@ const Header: React.FC<{
                 {t('common:header.news')}
               </a>
             </LinkX>
-
             <CommunityDropdown />
 
             <Link
