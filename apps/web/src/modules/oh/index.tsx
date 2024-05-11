@@ -11,10 +11,11 @@ const HasRole: React.FC<PropsWithChildren> = ({ children }) => {
   const { roleLevel } = useUserInfo();
   const router = useRouter();
 
-  if (roleLevel > 0) {
+  if (roleLevel >= 2) {
     return <>{children}</>;
   } else {
     router.push('/');
+    return <></>;
   }
 };
 
@@ -26,15 +27,15 @@ const Oh = () => {
       redirectTo={router.asPath}
       loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6"
     >
-      <NavBar />
-      <Main>
-        <SideBar />
-        <div className="relative flex min-w-0 flex-1 flex-col bg-gray-50 px-4 pt-4 md:p-0">
-          <HasRole>
+      <HasRole>
+        <NavBar />
+        <Main>
+          <SideBar />
+          <div className="relative flex min-w-0 flex-1 flex-col bg-gray-50 px-4 pt-4 md:p-0">
             <DataView />
-          </HasRole>
-        </div>
-      </Main>
+          </div>
+        </Main>
+      </HasRole>
     </AuthRequire>
   );
 };
