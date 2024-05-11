@@ -24,7 +24,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            registry.cn-hongkong.aliyuncs.com/oss-compass/compass-web
+            registry.cn-hongkong.aliyuncs.com/oss-compass/compass-web-new
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'release') }}
             type=raw,value=nightly,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
