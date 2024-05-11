@@ -37,7 +37,7 @@ const IssueCompletion: React.FC<{
     } else {
       return [];
     }
-  }, [data]);
+  }, [data, getStateText]);
 
   const option = getPieOption({ seriesData: getSeries });
 

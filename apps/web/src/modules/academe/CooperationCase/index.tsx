@@ -312,7 +312,7 @@ const CooperationCase = () => {
                     src={item.url}
                     width={100}
                     height={32}
-                    alt={''}
+                    alt={item.title}
                     style={{
                       height: '32px',
                       width: '100px',
