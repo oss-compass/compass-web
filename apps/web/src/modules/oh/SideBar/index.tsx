@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-
+import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
@@ -15,47 +10,34 @@ const items: MenuItem[] = [
     label: '总览',
     children: [
       {
-        key: 'g1',
-        label: 'TPC main 分支总览',
+        key: 'code',
+        label: '代码量统计',
       },
-      //   {
-      //     key: 'g2',
-      //     label: 'Item 2',
-      //     type: 'group',
-      //   },
+      {
+        key: 'committer',
+        label: 'Committer 贡献统计',
+      },
+      {
+        key: 'communityContributions',
+        label: '社区贡献统计',
+      },
     ],
   },
-  //   {
-  //     key: 'sub2',
-  //     label: 'Navigation Two',
-  //     children: [
-  //       { key: '5', label: 'Option 5' },
-  //       { key: '6', label: 'Option 6' },
-  //       {
-  //         key: 'sub3',
-  //         label: 'Submenu',
-  //         children: [
-  //           { key: '7', label: 'Option 7' },
-  //           { key: '8', label: 'Option 8' },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     type: 'divider',
-  //   },
 ];
 
-const App: React.FC = () => {
+const SideMenu: React.FC = () => {
+  const id = useHashchangeEvent();
   const onClick: MenuProps['onClick'] = (e) => {
     console.log('click ', e);
+    window.location.hash = e.key;
+    // href={`#${hash}`}
   };
-
+  //
   return (
     <Menu
+      defaultSelectedKeys={[id || 'code']}
       onClick={onClick}
       style={{ width: 256 }}
-      defaultSelectedKeys={['1']}
       defaultOpenKeys={['sub1']}
       mode="inline"
       items={items}
@@ -63,4 +45,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default SideMenu;

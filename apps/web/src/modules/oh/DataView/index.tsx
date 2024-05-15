@@ -1,16 +1,31 @@
 import React from 'react';
-import TopCode from './TopCode';
-import TopCodeChange from './TopCodeChange';
-import TopCodeContributor from './TopCodeContributor';
+import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
+import CodeStatistics from './CodeStatistics';
+import CommitterStatistics from './CommitterStatistics';
+import CommunityContributions from './CommunityContributions';
 
 const OhDataView = () => {
-  return (
-    <>
-      <TopCode />
-      <TopCodeChange />
-      <TopCodeContributor />
-    </>
-  );
+  const id = useHashchangeEvent();
+  let source;
+  switch (id) {
+    case 'code': {
+      source = <CodeStatistics />;
+      break;
+    }
+    case 'committer': {
+      source = <CommitterStatistics />;
+      break;
+    }
+    case 'communityContributions': {
+      source = <CommunityContributions />;
+      break;
+    }
+    default: {
+      source = <CodeStatistics />;
+      break;
+    }
+  }
+  return <>{source}</>;
 };
 
 export default OhDataView;

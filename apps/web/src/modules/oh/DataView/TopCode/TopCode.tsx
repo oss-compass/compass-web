@@ -1,8 +1,6 @@
 import React from 'react';
 import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
-import classnames from 'classnames';
 
 const TopCode = () => {
   const dataSource = [
