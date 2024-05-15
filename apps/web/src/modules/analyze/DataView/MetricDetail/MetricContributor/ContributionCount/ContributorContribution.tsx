@@ -355,7 +355,7 @@ const OrgContributorContribution: React.FC<{
       ecoData,
       contributorsData,
     };
-  }, [data]);
+  }, [data, getEcologicalText]);
   const unit: string = t('analyze:metric_detail:contribution_unit');
   const formatter = '{b} : {c}' + unit + ' ({d}%)';
   const option: EChartsOption = {

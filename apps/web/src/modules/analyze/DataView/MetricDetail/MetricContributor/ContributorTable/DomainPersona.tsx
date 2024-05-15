@@ -67,7 +67,7 @@ const DomainPersona = ({ maxDomain, dataList, name, origin }) => {
   const contributionTypeMap = useGetContributionTypeI18n();
   const domainData = useMemo(() => {
     return getDomainData(dataList, contributionTypeMap);
-  }, [dataList]);
+  }, [dataList, contributionTypeMap]);
   const [active, setActive] = useState('');
   const [popperOpen, togglePopperOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
