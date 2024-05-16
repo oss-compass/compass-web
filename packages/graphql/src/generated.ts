@@ -362,6 +362,74 @@ export type CollectionPage = {
   totalPage?: Maybe<Scalars['Int']>;
 };
 
+export type CommitContributor = {
+  __typename?: 'CommitContributor';
+  authorEmail?: Maybe<Scalars['String']>;
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  linesAdded?: Maybe<Scalars['Int']>;
+  linesChanged?: Maybe<Scalars['Int']>;
+  linesRemoved?: Maybe<Scalars['Int']>;
+  orgName?: Maybe<Scalars['String']>;
+};
+
+export type CommitDetail = {
+  __typename?: 'CommitDetail';
+  authorEmail?: Maybe<Scalars['String']>;
+  commitHash?: Maybe<Scalars['String']>;
+  grimoireCreationDate?: Maybe<Scalars['ISO8601DateTime']>;
+  linesAdded?: Maybe<Scalars['Int']>;
+  linesChanged?: Maybe<Scalars['Int']>;
+  linesRemoved?: Maybe<Scalars['Int']>;
+  mergedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  orgName?: Maybe<Scalars['String']>;
+  prUrl?: Maybe<Scalars['String']>;
+  repoName?: Maybe<Scalars['String']>;
+};
+
+export type CommitDetailPage = {
+  __typename?: 'CommitDetailPage';
+  count?: Maybe<Scalars['Int']>;
+  items?: Maybe<Array<CommitDetail>>;
+  page?: Maybe<Scalars['Int']>;
+  totalPage?: Maybe<Scalars['Int']>;
+};
+
+export type CommitOrganization = {
+  __typename?: 'CommitOrganization';
+  linesAdded?: Maybe<Scalars['Int']>;
+  linesChanged?: Maybe<Scalars['Int']>;
+  linesChangedRatio?: Maybe<Scalars['Float']>;
+  linesRemoved?: Maybe<Scalars['Int']>;
+  orgName?: Maybe<Scalars['String']>;
+  totalLinesChanged?: Maybe<Scalars['Int']>;
+};
+
+export type CommitOrganizationPage = {
+  __typename?: 'CommitOrganizationPage';
+  count?: Maybe<Scalars['Int']>;
+  items?: Maybe<Array<CommitOrganization>>;
+  page?: Maybe<Scalars['Int']>;
+  totalPage?: Maybe<Scalars['Int']>;
+};
+
+export type CommitRepo = {
+  __typename?: 'CommitRepo';
+  linesAdded?: Maybe<Scalars['Int']>;
+  linesChanged?: Maybe<Scalars['Int']>;
+  linesRemoved?: Maybe<Scalars['Int']>;
+  repoName?: Maybe<Scalars['String']>;
+  sig?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+};
+
+export type CommitRepoPage = {
+  __typename?: 'CommitRepoPage';
+  count?: Maybe<Scalars['Int']>;
+  items?: Maybe<Array<CommitRepo>>;
+  page?: Maybe<Scalars['Int']>;
+  totalPage?: Maybe<Scalars['Int']>;
+};
+
 export type CommunityMetric = {
   __typename?: 'CommunityMetric';
   /** mean of bug issues open time (days) */
@@ -1524,6 +1592,14 @@ export type Query = {
   collectionHottest: Array<ProjectCompletionRow>;
   /** Get collection list by a ident */
   collectionList: CollectionPage;
+  /** Get Top20 commits Contributor list of a repo or community */
+  commitsContributorList: Array<CommitContributor>;
+  /** Get commits detail list of a repo or community */
+  commitsDetailPage: CommitDetailPage;
+  /** Get commits Organization list of a repo or community */
+  commitsOrganizationPage: CommitOrganizationPage;
+  /** Get commits list of a repo or community */
+  commitsRepoPage: CommitRepoPage;
   /** Get overview data of a community */
   communityOverview: CommunityOverview;
   /** Get repos list of a community */
@@ -1661,6 +1737,50 @@ export type QueryCollectionHottestArgs = {
 export type QueryCollectionListArgs = {
   ident: Scalars['String'];
   keyword?: InputMaybe<Scalars['String']>;
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
+};
+
+export type QueryCommitsContributorListArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  branch?: InputMaybe<Scalars['String']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryCommitsDetailPageArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  branch?: InputMaybe<Scalars['String']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
+};
+
+export type QueryCommitsOrganizationPageArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  branch?: InputMaybe<Scalars['String']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
+};
+
+export type QueryCommitsRepoPageArgs = {
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  branch?: InputMaybe<Scalars['String']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
@@ -5007,6 +5127,103 @@ export type MetricContributorQuery = {
     shortCode?: string | null;
     type?: string | null;
   }>;
+};
+
+export type CommitsRepoDataListQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsRepoDataListQuery = {
+  __typename?: 'Query';
+  commitsRepoPage: {
+    __typename?: 'CommitRepoPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitRepo';
+      linesAdded?: number | null;
+      linesChanged?: number | null;
+      linesRemoved?: number | null;
+      repoName?: string | null;
+      sig?: string | null;
+      type?: string | null;
+    }> | null;
+  };
+};
+
+export type CommitsDetailDataListQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsDetailDataListQuery = {
+  __typename?: 'Query';
+  commitsDetailPage: {
+    __typename?: 'CommitDetailPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitDetail';
+      authorEmail?: string | null;
+      commitHash?: string | null;
+      grimoireCreationDate?: any | null;
+      linesAdded?: number | null;
+      linesChanged?: number | null;
+      linesRemoved?: number | null;
+      mergedAt?: any | null;
+      orgName?: string | null;
+      prUrl?: string | null;
+      repoName?: string | null;
+    }> | null;
+  };
+};
+
+export type CommitsOrganizationDataListQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsOrganizationDataListQuery = {
+  __typename?: 'Query';
+  commitsOrganizationPage: {
+    __typename?: 'CommitOrganizationPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitOrganization';
+      linesAdded?: number | null;
+      linesChanged?: number | null;
+      linesChangedRatio?: number | null;
+      linesRemoved?: number | null;
+      orgName?: string | null;
+      totalLinesChanged?: number | null;
+    }> | null;
+  };
 };
 
 export const MetricsFragmentDoc = /*#__PURE__*/ `
@@ -9271,3 +9488,186 @@ useMetricContributorQuery.fetcher = (
     variables,
     headers
   );
+export const CommitsRepoDataListDocument = /*#__PURE__*/ `
+    query commitsRepoDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsRepoPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesRemoved
+      repoName
+      sig
+      type
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitsRepoDataListQuery = <
+  TData = CommitsRepoDataListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsRepoDataListQueryVariables,
+  options?: UseQueryOptions<CommitsRepoDataListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsRepoDataListQuery, TError, TData>(
+    ['commitsRepoDataList', variables],
+    fetcher<CommitsRepoDataListQuery, CommitsRepoDataListQueryVariables>(
+      client,
+      CommitsRepoDataListDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommitsRepoDataListQuery.getKey = (
+  variables: CommitsRepoDataListQueryVariables
+) => ['commitsRepoDataList', variables];
+useCommitsRepoDataListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsRepoDataListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommitsRepoDataListQuery, CommitsRepoDataListQueryVariables>(
+    client,
+    CommitsRepoDataListDocument,
+    variables,
+    headers
+  );
+export const CommitsDetailDataListDocument = /*#__PURE__*/ `
+    query commitsDetailDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsDetailPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      authorEmail
+      commitHash
+      grimoireCreationDate
+      linesAdded
+      linesChanged
+      linesRemoved
+      mergedAt
+      orgName
+      prUrl
+      repoName
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitsDetailDataListQuery = <
+  TData = CommitsDetailDataListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsDetailDataListQueryVariables,
+  options?: UseQueryOptions<CommitsDetailDataListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsDetailDataListQuery, TError, TData>(
+    ['commitsDetailDataList', variables],
+    fetcher<CommitsDetailDataListQuery, CommitsDetailDataListQueryVariables>(
+      client,
+      CommitsDetailDataListDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommitsDetailDataListQuery.getKey = (
+  variables: CommitsDetailDataListQueryVariables
+) => ['commitsDetailDataList', variables];
+useCommitsDetailDataListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsDetailDataListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommitsDetailDataListQuery, CommitsDetailDataListQueryVariables>(
+    client,
+    CommitsDetailDataListDocument,
+    variables,
+    headers
+  );
+export const CommitsOrganizationDataListDocument = /*#__PURE__*/ `
+    query commitsOrganizationDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsOrganizationPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesChangedRatio
+      linesRemoved
+      orgName
+      totalLinesChanged
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitsOrganizationDataListQuery = <
+  TData = CommitsOrganizationDataListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsOrganizationDataListQueryVariables,
+  options?: UseQueryOptions<CommitsOrganizationDataListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsOrganizationDataListQuery, TError, TData>(
+    ['commitsOrganizationDataList', variables],
+    fetcher<
+      CommitsOrganizationDataListQuery,
+      CommitsOrganizationDataListQueryVariables
+    >(client, CommitsOrganizationDataListDocument, variables, headers),
+    options
+  );
+
+useCommitsOrganizationDataListQuery.getKey = (
+  variables: CommitsOrganizationDataListQueryVariables
+) => ['commitsOrganizationDataList', variables];
+useCommitsOrganizationDataListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsOrganizationDataListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    CommitsOrganizationDataListQuery,
+    CommitsOrganizationDataListQueryVariables
+  >(client, CommitsOrganizationDataListDocument, variables, headers);

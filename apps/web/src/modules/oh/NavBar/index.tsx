@@ -1,6 +1,6 @@
 import React from 'react';
 import StickyNav from '@common/components/Header/StickyNav';
-import NavDatePicker from '@modules/analyze/components/NavBar/NavDatePicker';
+import NavDatePicker from '@modules/oh/components/NavDatePicker';
 
 const NavBarContent = () => {
   return (

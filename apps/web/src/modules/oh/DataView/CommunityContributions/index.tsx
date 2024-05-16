@@ -7,7 +7,7 @@ const CommunityContributions = () => {
   return (
     <>
       <RepoTable />
-      <SigTable />
+      {/* <SigTable /> */}
       <EmployerTable />
     </>
   );

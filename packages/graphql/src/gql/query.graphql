@@ -1060,3 +1060,113 @@ query metricContributor(
     type
   }
 }
+
+query commitsRepoDataList(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  commitsRepoPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesRemoved
+      repoName
+      sig
+      type
+    }
+    page
+    totalPage
+  }
+}
+query commitsDetailDataList(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  commitsDetailPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      authorEmail
+      commitHash
+      grimoireCreationDate
+      linesAdded
+      linesChanged
+      linesRemoved
+      mergedAt
+      orgName
+      prUrl
+      repoName
+    }
+    page
+    totalPage
+  }
+}
+query commitsOrganizationDataList(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  commitsOrganizationPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesChangedRatio
+      linesRemoved
+      orgName
+      totalLinesChanged
+    }
+    page
+    totalPage
+  }
+}

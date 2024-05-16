@@ -5,186 +5,46 @@ import Dialog from '@common/components/Dialog';
 import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
 import EmployerDetail from './EmployerDetail';
+import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+import {
+  useCommitsOrganizationDataListQuery,
+  CommitOrganization,
+  FilterOptionInput,
+  SortOptionInput,
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
+import ContributorDropdown from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/ContributorDropdown';
+import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
 
+interface TableQuery {
+  label: string;
+  level?: string;
+  branch?: string;
+  page?: number;
+  per?: number;
+  filterOpts?: FilterOptionInput | FilterOptionInput[];
+  sortOpts?: SortOptionInput | SortOptionInput[];
+  beginDate?: any;
+  endDate?: any;
+}
 const EmployerTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [orgName, setOrgName] = useState(false);
+  const { timeStart, timeEnd } = useQueryDateRange();
 
-  const dataSource = [
-    {
-      project: 'openharmony',
-      repo: 'graphic_graphic_2d',
-      branch: 'master',
-      additions: 24018431,
-      deletions: 15415662,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_graphics',
-      isThird: 0,
-      mailSuffix: '@huawei.com,@qq.com',
-      committer: null,
-      committerEmail: 'changleipeng4@huawei.com',
-      authorEmail: '1049829758@qq.com',
-      employer: '华为',
-    },
-    {
-      project: 'openharmony',
-      repo: 'xts_acts',
-      branch: 'master',
-      additions: 12088031,
-      deletions: 604580,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_test',
-      isThird: 0,
-      mailSuffix: '@kaihong.com,@kaihong.com',
-      committer: null,
-      committerEmail: 'bayanxing@kaihong.com',
-      authorEmail: 'bayanxing@kaihong.com',
-      employer: '深开鸿',
-    },
-    {
-      project: 'openharmony',
-      repo: 'applications_app_samples',
-      branch: 'master',
-      additions: 2738028,
-      deletions: 1545798,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_systemapplications',
-      isThird: 0,
-      mailSuffix: '@qq.com,@qq.com',
-      committer: null,
-      committerEmail: '1003746358@qq.com',
-      authorEmail: '1003746358@qq.com',
-      employer: '未知',
-    },
-    {
-      project: 'openharmony',
-      repo: 'startup_init',
-      branch: 'master',
-      additions: 446586,
-      deletions: 353880,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_basicsoftwareservice',
-      isThird: 0,
-      mailSuffix: '@hoperun.com,@hoperun.com',
-      committer: null,
-      committerEmail: 'liu_zhiwei2@hoperun.com',
-      authorEmail: 'liu_zhiwei2@hoperun.com',
-      employer: '润和',
-    },
-    {
-      project: 'openharmony',
-      repo: 'applications_app_samples',
-      branch: 'master',
-      additions: 304890,
-      deletions: 185228,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_systemapplications',
-      isThird: 0,
-      mailSuffix: '@openvalley.net,@openvalley.net',
-      committer: null,
-      committerEmail: 'aibin@openvalley.net',
-      authorEmail: 'aibin@openvalley.net',
-      employer: '开鸿智谷',
-    },
-    {
-      project: 'openharmony',
-      repo: 'xts_acts',
-      branch: 'master',
-      additions: 253020,
-      deletions: 15362,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_test',
-      isThird: 0,
-      mailSuffix: '@i-soft.com.cn,@i-soft.com.cn',
-      committer: null,
-      committerEmail: 'developer.huanglei@i-soft.com.cn',
-      authorEmail: 'developer.huanglei@i-soft.com.cn',
-      employer: '普华基础软件',
-    },
-    {
-      project: 'openharmony',
-      repo: 'telephony_ril_adapter',
-      branch: 'master',
-      additions: 41481,
-      deletions: 39941,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_telephony',
-      isThird: 0,
-      mailSuffix: '@thundersoft.com,@thundersoft.com',
-      committer: null,
-      committerEmail: 'xieyh0509@thundersoft.com',
-      authorEmail: 'cheng.wang_c@thundersoft.com',
-      employer: '中科创达',
-    },
-    {
-      project: 'openharmony',
-      repo: 'vendor_unionman',
-      branch: 'master',
-      additions: 10402,
-      deletions: 14881,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_devboard',
-      isThird: 0,
-      mailSuffix: '@unionman.com.cn,@unionman.com.cn',
-      committer: null,
-      committerEmail: 'dongmin.wang@unionman.com.cn',
-      authorEmail: 'dongmin.wang@unionman.com.cn',
-      employer: '九联开鸿',
-    },
-    {
-      project: 'openharmony',
-      repo: 'applications_launcher',
-      branch: 'master',
-      additions: 3181,
-      deletions: 2337,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_systemapplications',
-      isThird: 0,
-      mailSuffix: '@archermind.com,@archermind.com',
-      committer: null,
-      committerEmail: 'dao.lu@archermind.com',
-      authorEmail: 'dao.lu@archermind.com',
-      employer: '诚迈科技',
-    },
-    {
-      project: 'openharmony',
-      repo: 'hiviewdfx_faultloggerd',
-      branch: 'master',
-      additions: 704,
-      deletions: 73,
-      totalAdditions: 39905571,
-      totalDeletions: 18178189,
-      tagCodeLines: null,
-      sig: 'sig_basicsoftwareservice',
-      isThird: 0,
-      mailSuffix: '@iscas.ac.cn,@iscas.ac.cn',
-      committer: null,
-      committerEmail: 'polyos@iscas.ac.cn',
-      authorEmail: 'polyos@iscas.ac.cn',
-      employer: '中国科学院软件研究所',
-    },
-  ];
-  const total = dataSource.reduce(
-    (acc, cur) => acc + cur.additions + cur.deletions,
-    0
-  );
+  const {
+    tableData,
+    setData,
+    tableParams,
+    setTableParams,
+    query,
+    handleTableChange,
+  } = useGetTableOption<CommitOrganization>({
+    beginDate: timeStart,
+    endDate: timeEnd,
+    label: 'openharmony-tpc',
+    level: 'community',
+  });
   const columns = [
     {
       title: '序号',
@@ -195,14 +55,14 @@ const EmployerTable = () => {
     },
     {
       title: '雇主 (企业)',
-      dataIndex: 'employer',
-      key: 'employer',
+      dataIndex: 'orgName',
+      key: 'orgName',
       render: (text: string, record: any) => {
         return (
           <div className="flex">
             <span
               onClick={() => {
-                // setCurrentName(col.contributor);
+                setOrgName(record.orgName);
                 // col.organization && setCurrentOrgName(col.organization);
                 setOpenConfirm(true);
               }}
@@ -216,45 +76,50 @@ const EmployerTable = () => {
     },
     {
       title: 'PR 新增代码量',
-      dataIndex: 'additions',
-      key: 'additions',
+      dataIndex: 'linesAdded',
+      key: 'linesAdded',
     },
     {
       title: 'PR 删除代码量',
-      dataIndex: 'deletions',
-      key: 'deletions',
+      dataIndex: 'linesRemoved',
+      key: 'linesRemoved',
     },
     {
       title: '修改代码总量 (增 + 删)',
-      key: 'totalAdditions',
-      render: (text: string, record: any, index: number) => {
-        return record.additions + record.deletions;
-      },
+      key: 'linesChanged',
+      dataIndex: 'linesChanged',
     },
     {
       title: '修改量占比',
-      dataIndex: 'tagCodeLines',
-      key: 'tagCodeLines',
-      render: (text: string, record: any, index: number) => {
-        return (
-          (((record.additions + record.deletions) / total) * 100).toFixed(2) +
-          '%'
-        );
-      },
+      dataIndex: 'linesChangedRatio',
+      key: 'linesChangedRatio',
     },
   ];
-  const pagination = {
-    hideOnSinglePage: true,
-  };
+  const { isLoading, isFetching } = useCommitsOrganizationDataListQuery(
+    client,
+    query as TableQuery,
+    {
+      onSuccess: (data) => {
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.commitsOrganizationPage.count as number,
+          },
+        });
+        setData(data.commitsOrganizationPage.items);
+      },
+    }
+  );
   return (
     <>
       <TableCard id={'employerTable'} title={'雇主维度'}>
         <MyTable
           columns={columns}
-          dataSource={dataSource}
-          //   loading={isLoading || isFetching}
-          //   onChange={handleTableChange}
-          pagination={pagination}
+          dataSource={tableData}
+          loading={isLoading || isFetching}
+          onChange={handleTableChange}
+          pagination={tableParams.pagination}
           rowKey={'key'}
           scroll={{ x: 'max-content' }}
         />
@@ -281,7 +146,7 @@ const EmployerTable = () => {
           }
           dialogContent={
             <div className="w-full">
-              <EmployerDetail />
+              <EmployerDetail orgName={orgName} />
             </div>
           }
           handleClose={() => {
