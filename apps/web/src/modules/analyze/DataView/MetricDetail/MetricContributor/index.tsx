@@ -42,9 +42,11 @@ const MetricContributor = () => {
     if (mileage.length > 0) {
       opts.push({ type: 'mileage_type', values: mileage });
     }
-    // if (!isBot) {
-    opts.push({ type: 'is_bot', values: [String(isBot)] });
-    // }
+    let botValues = ['false'];
+    if (isBot) {
+      botValues.push('true');
+    }
+    opts.push({ type: 'is_bot', values: botValues });
     if (repoList.length > 0) {
       opts.push({ type: 'repo_urls', values: repoList });
     }
