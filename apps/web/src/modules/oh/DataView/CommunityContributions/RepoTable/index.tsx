@@ -29,7 +29,7 @@ interface TableQuery {
 }
 const RepoTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [curLabel, setCurLabel] = useState(false);
+  const [curLabel, setCurLabel] = useState('');
   const { timeStart, timeEnd } = useQueryDateRange();
 
   const {
@@ -146,7 +146,7 @@ const RepoTable = () => {
           }}
           dialogTitle={
             <>
-              <p className="">仓库维度详情</p>
+              <p className="">{getRepoName(curLabel)} 仓库详情</p>
               <div
                 className="absolute right-6 top-4 cursor-pointer p-2"
                 onClick={() => {
