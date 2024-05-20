@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Dialog from '@common/components/Dialog';
 import { GrClose } from 'react-icons/gr';
-import RepoTable from './RepoTable';
+import RepoTable from './RepoTable/index';
 import SigTable from './SigTable';
 import EmployerTable from './EmployerTable';
 import EmployerOverView from './OverView';

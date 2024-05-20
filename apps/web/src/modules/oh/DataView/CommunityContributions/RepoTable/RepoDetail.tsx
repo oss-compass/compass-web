@@ -13,7 +13,7 @@ import {
 import client from '@common/gqlClient';
 import ContributorDropdown from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/ContributorDropdown';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
-import CommitDetails from './commitDetails';
+import CommitDetails from './CommitDetails';
 
 interface TableQuery {
   label: string;
