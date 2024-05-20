@@ -1,7 +1,10 @@
 import React from 'react';
+import classnames from 'classnames';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import { usePrevious, useWindowScroll } from 'react-use';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
+
 type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
@@ -32,16 +35,25 @@ const SideMenu: React.FC = () => {
     window.location.hash = e.key;
     // href={`#${hash}`}
   };
-  //
+  const { y } = useWindowScroll();
+  const preY = usePrevious(y) as number;
   return (
-    <Menu
-      defaultSelectedKeys={[id || 'code']}
-      onClick={onClick}
-      style={{ width: 256 }}
-      defaultOpenKeys={['sub1']}
-      mode="inline"
-      items={items}
-    />
+    <div
+      className={classnames('sticky overflow-auto', [
+        y < preY
+          ? 'top-[136px] h-[calc(100vh-136px)]'
+          : 'top-[56px] h-[calc(100vh-56px)]',
+      ])}
+    >
+      <Menu
+        defaultSelectedKeys={[id || 'code']}
+        onClick={onClick}
+        style={{ width: 256 }}
+        defaultOpenKeys={['sub1']}
+        mode="inline"
+        items={items}
+      />
+    </div>
   );
 };
 

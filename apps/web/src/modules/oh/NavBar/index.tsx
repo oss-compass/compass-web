@@ -1,6 +1,7 @@
 import React from 'react';
 import StickyNav from '@common/components/Header/StickyNav';
 import NavDatePicker from '@modules/oh/components/NavDatePicker';
+import Header from '@common/components/Header';
 
 const NavBarContent = () => {
   return (
@@ -16,6 +17,7 @@ const NavBarContent = () => {
 const NavBar = () => {
   return (
     <StickyNav className=">md:-top-[80px] md:-top-[48px]">
+      <Header />
       <NavBarContent />
     </StickyNav>
   );

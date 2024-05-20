@@ -164,6 +164,11 @@ const CodeTable = () => {
 
   const columns = [
     {
+      title: '仓库',
+      dataIndex: 'repoNameEn',
+      key: 'repoNameEn',
+    },
+    {
       title: '厂家',
       dataIndex: 'manufacturer',
       key: 'manufacturer',
@@ -175,11 +180,6 @@ const CodeTable = () => {
     },
     {
       title: '模块/子系统',
-      dataIndex: 'repoNameEn',
-      key: 'repoNameEn',
-    },
-    {
-      title: '仓库',
       dataIndex: 'repoNameEn',
       key: 'repoNameEn',
     },
