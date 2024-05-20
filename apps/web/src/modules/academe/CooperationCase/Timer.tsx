@@ -27,7 +27,7 @@ const Timer = ({
     return () => {
       clearInterval(interval);
     };
-  }, [stop]);
+  }, [stop, time, setActiveFun]);
 
   return (
     <div>
