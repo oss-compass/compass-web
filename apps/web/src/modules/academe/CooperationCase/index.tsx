@@ -35,10 +35,15 @@ const CooperationCase = () => {
         i18n.language === 'en' ? (
           <img
             className="h-full w-full"
+            alt="png"
             src={'/images/academe/case/nju_en.png'}
           />
         ) : (
-          <img className="h-full w-full" src={'/images/academe/case/nju.png'} />
+          <img
+            className="h-full w-full"
+            alt="png"
+            src={'/images/academe/case/nju.png'}
+          />
         ),
       experience: <Experience open={open} setOpen={setOpen} />,
     },
@@ -68,11 +73,13 @@ const CooperationCase = () => {
         i18n.language === 'en' ? (
           <img
             className="h-full w-full"
+            alt="png"
             src={'/images/academe/case/pku1_en.png'}
           />
         ) : (
           <img
             className="h-full w-full"
+            alt="png"
             src={'/images/academe/case/pku1_zh.png'}
           />
         ),
@@ -157,11 +164,13 @@ const CooperationCase = () => {
       content:
         i18n.language === 'en' ? (
           <img
+            alt="png"
             className="h-full w-full"
             src={'/images/academe/case/pku2_en.png'}
           />
         ) : (
           <img
+            alt="png"
             className="h-full w-full"
             src={'/images/academe/case/pku2_zh.png'}
           />
@@ -190,11 +199,13 @@ const CooperationCase = () => {
       content:
         i18n.language === 'en' ? (
           <img
+            alt="png"
             className="h-[50%] w-full"
             src={'/images/academe/case/nju2.png'}
           />
         ) : (
           <img
+            alt="png"
             className="h-[50%] w-full"
             src={'/images/academe/case/nju2.png'}
           />
@@ -232,11 +243,13 @@ const CooperationCase = () => {
       content:
         i18n.language === 'en' ? (
           <img
+            alt="png"
             className="h-full w-full"
             src={'/images/academe/case/pku3_en.png'}
           />
         ) : (
           <img
+            alt="png"
             className="h-full w-full"
             src={'/images/academe/case/pku3_zh.png'}
           />
@@ -265,11 +278,13 @@ const CooperationCase = () => {
       content:
         i18n.language === 'en' ? (
           <img
+            alt="png"
             className="h-[65%] w-full"
             src={'/images/academe/case/nju3.png'}
           />
         ) : (
           <img
+            alt="png"
             className="h-[65%] w-full"
             src={'/images/academe/case/nju3.png'}
           />
