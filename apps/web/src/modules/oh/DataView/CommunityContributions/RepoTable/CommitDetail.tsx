@@ -71,7 +71,7 @@ const CommitDetails = ({ commitInfo }) => {
   const onFinishFailed: FormProps<CommitDetail>['onFinishFailed'] = (
     errorInfo
   ) => {
-    console.log('Failed:', errorInfo);
+    // console.log('Failed:', errorInfo);
   };
   const [form] = Form.useForm();
   form.setFieldsValue(commitInfo);
