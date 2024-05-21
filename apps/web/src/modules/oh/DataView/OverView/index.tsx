@@ -49,7 +49,7 @@ const SigDetail = () => {
       <div className="mt-4 mb-4 text-base font-semibold text-[#191919]">
         项目活跃度量
       </div>
-      <div className=" p-4">
+      <div className="p-4">
         <Row gutter={16}>
           <Col span={6}>
             <Card bordered={false}>

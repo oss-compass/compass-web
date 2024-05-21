@@ -9,22 +9,20 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
   {
-    key: 'sub1',
+    key: 'index',
     label: '总览',
-    children: [
-      {
-        key: 'code',
-        label: '代码量统计',
-      },
-      {
-        key: 'committer',
-        label: 'Committer 贡献统计',
-      },
-      {
-        key: 'communityContributions',
-        label: '社区贡献统计',
-      },
-    ],
+  },
+  {
+    key: 'code',
+    label: '代码量统计',
+  },
+  {
+    key: 'committer',
+    label: 'Committer 贡献统计',
+  },
+  {
+    key: 'communityContributions',
+    label: '社区贡献统计',
   },
 ];
 
@@ -46,10 +44,10 @@ const SideMenu: React.FC = () => {
       ])}
     >
       <Menu
-        defaultSelectedKeys={[id || 'code']}
+        defaultSelectedKeys={[id || 'index']}
         onClick={onClick}
         style={{ width: 256 }}
-        defaultOpenKeys={['sub1']}
+        defaultOpenKeys={['index']}
         mode="inline"
         items={items}
       />

@@ -4,10 +4,10 @@ import { GrClose } from 'react-icons/gr';
 import RepoTable from './RepoTable/index';
 import SigTable from './SigTable';
 import EmployerTable from './EmployerTable';
-import EmployerOverView from './OverView';
+// import EmployerOverView from './OverView';
 
 const CommunityContributions = () => {
-  const [openConfirm, setOpenConfirm] = useState(true);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   return (
     <>
@@ -34,9 +34,7 @@ const CommunityContributions = () => {
           </>
         }
         dialogContent={
-          <div className="w-full">
-            <EmployerOverView />
-          </div>
+          <div className="w-full">{/* <EmployerOverView /> */}</div>
         }
         handleClose={() => {
           setOpenConfirm(false);
