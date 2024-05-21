@@ -25,10 +25,12 @@ const ChangeLanguage = () => {
   const language = languages.find((i) => i.id === local);
 
   return (
-    <div className="group relative mx-5 flex h-full items-center transition">
+    <div className="group relative mx-2 flex h-full items-center transition">
       <div className="flex h-[32px] cursor-pointer items-center justify-center px-3 group-hover:bg-[#333333]">
         <MdLanguage className="mr-1 text-white" />
-        <span className="mr-1 text-sm text-white">{language?.value}</span>
+        <span className="mr-1 whitespace-nowrap text-sm text-white">
+          {language?.value}
+        </span>
         <AiFillCaretDown className="text-white" />
       </div>
 

@@ -26,14 +26,14 @@ const Header: React.FC<{
           )}
         >
           <div className="flex h-full flex-shrink-0 items-center">
-            <Link href="/" className="mr-6 2xl:mr-2">
+            <Link href="/" className="mr-4 2xl:mx-1 2xl:mr-2">
               <Logo color="white" />
             </Link>
 
             <LinkX href="/docs/dimensions-define" legacyBehavior>
               <a
                 className={
-                  'mx-6 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
+                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
                 }
               >
                 {t('common:header.docs')}
@@ -42,21 +42,21 @@ const Header: React.FC<{
 
             <Link
               href="/explore"
-              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.projects')}
             </Link>
 
             <Link
               href="/collaboration"
-              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.academe')}
             </Link>
 
             <Link
               href="/lab"
-              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.lab')}
             </Link>
@@ -64,7 +64,7 @@ const Header: React.FC<{
             <LinkX href="/blog" legacyBehavior>
               <a
                 className={
-                  'mx-6 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
+                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
                 }
               >
                 {t('common:header.news')}
@@ -75,7 +75,7 @@ const Header: React.FC<{
 
             <Link
               href="/about"
-              className={'mx-6 px-2.5 font-medium text-white 2xl:mx-2'}
+              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.about')}
             </Link>
