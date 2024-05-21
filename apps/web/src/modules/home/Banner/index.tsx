@@ -21,7 +21,7 @@ const Carousel = () => {
 const SectionBanner = () => {
   return (
     <section className={`${styles.bg}`}>
-      <Center className="relative z-10 mx-auto h-[620px] md:h-[500px] ">
+      <Center className="relative z-10 mx-auto h-[620px] md:h-[500px]">
         <Carousel />
         <Search />
       </Center>
