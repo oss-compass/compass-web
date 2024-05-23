@@ -54,7 +54,7 @@ const EmployerTable = () => {
       },
     },
     {
-      title: '雇主 (企业)',
+      title: '组织',
       dataIndex: 'orgName',
       key: 'orgName',
       render: (text: string, record: any) => {
@@ -113,7 +113,7 @@ const EmployerTable = () => {
   );
   return (
     <>
-      <TableCard id={'employerTable'} title={'雇主维度'}>
+      <TableCard id={'employerTable'} title={'组织维度'}>
         <MyTable
           columns={columns}
           dataSource={tableData}
@@ -133,7 +133,7 @@ const EmployerTable = () => {
           }}
           dialogTitle={
             <>
-              <p className="">雇主维度详情</p>
+              <p className="">组织维度详情</p>
               <div
                 className="absolute right-6 top-4 cursor-pointer p-2"
                 onClick={() => {

@@ -11,12 +11,6 @@ const CodeChart = () => {
 
   const rowData = [
     {
-      date: '2024-02-14 00:00:00',
-      l0l1: 0,
-      l2: 0,
-      noType: 0,
-    },
-    {
       date: '2024-02-20',
       l0l1: 0,
       l2: 0,
@@ -92,7 +86,7 @@ const CodeChart = () => {
       date: '2024-05-14 00:00:00',
       l0l1: 0,
       l2: 0,
-      noType: 0,
+      noType: 11136940,
     },
   ];
   const option: EChartsOption = {
@@ -123,7 +117,7 @@ const CodeChart = () => {
     },
     series: [
       {
-        name: type,
+        name: '代码量',
         type: 'line',
         smooth: true,
         data: rowData.map((item) => item.noType),
@@ -135,15 +129,7 @@ const CodeChart = () => {
   };
   return (
     <>
-      <TableCard id={'codeChart'} title={'代码量趋势图'}>
-        <div>
-          分类：
-          <Select onChange={onChange} style={{ width: 120 }} value={type}>
-            <Select.Option value="UI">UI</Select.Option>
-            <Select.Option value="动画">动画</Select.Option>
-          </Select>
-        </div>
-
+      <TableCard id={'codeChart'} title={'代码总量趋势图'}>
         <div ref={cardRef}>
           <EChartX loading={false} option={option} containerRef={cardRef} />
         </div>

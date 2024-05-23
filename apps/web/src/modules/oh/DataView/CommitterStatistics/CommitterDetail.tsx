@@ -64,39 +64,29 @@ const CommitDetail = () => {
       key: 'reviewTime',
     },
     {
-      title: '检视 PR 新增代码量 (行)',
+      title: 'PR 新增代码量 (行)',
       dataIndex: 'changedAdditions',
       key: 'changedAdditions',
     },
     {
-      title: '检视 PR 删除代码量 (行)',
+      title: 'PR 删除代码量 (行)',
       dataIndex: 'changedDeletions',
       key: 'changedDeletions',
     },
     {
-      title: '检视评论数',
+      title: 'PR 评论数',
       dataIndex: 'diffCommentCount',
       key: 'diffCommentCount',
     },
     {
-      title: '检视缺陷数',
+      title: 'PR 响应时间',
       dataIndex: 'prBugCount',
       key: 'prBugCount',
     },
     {
-      title: 'PR 缺陷总数',
+      title: 'PR 关闭时间',
       dataIndex: 'prSumBugCount',
       key: 'prSumBugCount',
-    },
-    {
-      title: '检视缺陷占比 (%)',
-      dataIndex: 'prDefectDensity',
-      key: 'prDefectDensity',
-    },
-    {
-      title: '检视时长 (小时)',
-      dataIndex: 'prReviewTime',
-      key: 'prReviewTime',
     },
   ];
   const pagination = {

@@ -53,15 +53,14 @@
 .ant-form-item-explain-error {
   font-size: 12px !important;
 }
-.ant-select-selector {
-  border-radius: 0 !important;
-  // border-color: #cccccc !important;
+.ant-btn-primary {
+  background-color: #1677ff !important;
 }
 .ant-select-dropdown {
-  border-radius: 0 !important;
-  .ant-select-item {
-    border-radius: 0 !important;
-  }
+  z-index: 1400 !important;
+}
+.ant-tabs-top > .ant-tabs-nav {
+  margin-bottom: 0 !important;
 }
 // .ant-spin-nested-loading {
 //   height: 100%;

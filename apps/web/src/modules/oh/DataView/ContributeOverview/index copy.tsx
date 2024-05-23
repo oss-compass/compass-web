@@ -3,8 +3,9 @@ import { Descriptions } from 'antd';
 import type { DescriptionsProps } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { Card, Col, Row, Statistic } from 'antd';
+import TableCard from '@modules/oh/components/TableCard';
 
-const SigDetail = () => {
+const ContributeOverview = () => {
   const items: DescriptionsProps['items'] = [
     {
       key: '1',
@@ -45,14 +46,13 @@ const SigDetail = () => {
   ];
   return (
     <>
-      <Descriptions title="总览" bordered items={items} />
-      <div className="mt-4 mb-4 text-base font-semibold text-[#191919]">
-        项目活跃度量
-      </div>
-      <div className="p-4">
+      <TableCard title={'总览'} id={'contributeOverview1'}>
+        <Descriptions title="" bordered items={items} />
+      </TableCard>
+      <TableCard title={'项目活跃度量'} id={'contributeActive'}>
         <Row gutter={16}>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={
                   <div className="!text-base text-black">commit : 234583</div>
@@ -66,7 +66,7 @@ const SigDetail = () => {
             </Card>
           </Col>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={<div className="!text-base text-black">PR : 149286</div>}
                 value={46.39}
@@ -78,7 +78,7 @@ const SigDetail = () => {
             </Card>
           </Col>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={
                   <div className="!text-base text-black">
@@ -94,7 +94,7 @@ const SigDetail = () => {
             </Card>
           </Col>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={
                   <div className="!text-base text-black">Issue : 119665</div>
@@ -108,14 +108,11 @@ const SigDetail = () => {
             </Card>
           </Col>
         </Row>
-      </div>
-      <div className="mt-4 mb-4 text-base font-semibold text-[#191919]">
-        项目影响力度量
-      </div>
-      <div className="p-4">
+      </TableCard>
+      <TableCard title={'项目影响力度量'} id={'contributeImpact'}>
         <Row gutter={16}>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={
                   <div className="!text-base text-black">
@@ -131,7 +128,7 @@ const SigDetail = () => {
             </Card>
           </Col>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={
                   <div className="!text-base text-black">关注人数 : 39304</div>
@@ -145,7 +142,7 @@ const SigDetail = () => {
             </Card>
           </Col>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={
                   <div className="!text-base text-black">Star : 24312</div>
@@ -159,7 +156,7 @@ const SigDetail = () => {
             </Card>
           </Col>
           <Col span={6}>
-            <Card bordered={false}>
+            <Card>
               <Statistic
                 title={
                   <div className="!text-base text-black">Fork : 67765</div>
@@ -173,9 +170,9 @@ const SigDetail = () => {
             </Card>
           </Col>
         </Row>
-      </div>
+      </TableCard>
     </>
   );
 };
 
-export default SigDetail;
+export default ContributeOverview;
