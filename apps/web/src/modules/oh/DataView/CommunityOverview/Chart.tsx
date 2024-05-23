@@ -3,6 +3,7 @@ import { connect, init, getInstanceByDom } from 'echarts';
 import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
 import { Select } from 'antd';
+import router from 'next/router';
 
 let TPC = {
   加解密算法: [
@@ -240,8 +241,31 @@ let TPC = {
     'mips',
   ],
 };
-let yList = Object.keys(TPC);
-console.log(yList.length);
+let yList = [
+  '网络协议通信',
+  '数据压缩算法',
+  'UI',
+  '图片',
+  '工具',
+  '数据存储',
+  '其他',
+  '框架类',
+  '图像图形处理',
+  '字体字幕处理',
+  '视频编解码',
+  '日志打印',
+  '文本解析器',
+  '深度学习',
+  '安全',
+  '数据结构存储',
+  '音视频',
+  '加解密算法',
+  '搜索',
+  '动画',
+  '多媒体',
+  '数据与传输',
+];
+console.log(yList);
 // prettier-ignore
 function getRecentYearMonths() {
     var monthsArray: any = [];
@@ -358,8 +382,13 @@ const Chart = () => {
       ],
     };
     option && myChart.setOption(option);
-    myChart.on('click', () => {
-      window.open('https://compass.gitee.com/analyze/ck8eobrl');
+    myChart.on('click', (e) => {
+      let name = yList[e.data[1]];
+      console.log(name);
+      //   router.push('/oh');
+      window.location.hash = '#sigCenter' + '?sigName=' + name;
+      //   window.location.query = '?sigName=' + name;
+      //   window.open('https://compass.gitee.com/analyze/ck8eobrl');
     });
   };
   useEffect(() => {

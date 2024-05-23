@@ -11,8 +11,12 @@ const useHashchangeEvent = (
 
   useEffect(() => {
     const hashChangeHandle = (e: HashChangeEvent) => {
-      const hash = window.location.hash;
+      let hash = window.location.hash;
       if (!hash) return;
+      if (hash.includes('?')) {
+        let parts = hash.split('?');
+        hash = parts[0];
+      }
       console.log('hashChangeHandle', hash);
 
       const id = hash.replace('#', '');

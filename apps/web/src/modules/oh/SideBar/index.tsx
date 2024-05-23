@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classnames from 'classnames';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -59,7 +59,10 @@ const SideMenu: React.FC = () => {
   };
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
-  console.log(y, preY);
+  const defaultSelectedKeys = useMemo(() => {
+    console.log(123);
+    return [id || 'index'];
+  }, [id]);
   return (
     <div
       className={classnames('sticky overflow-auto', [
@@ -75,6 +78,7 @@ const SideMenu: React.FC = () => {
         defaultOpenKeys={['sub1', 'sub2']}
         mode="inline"
         items={items}
+        selectedKeys={defaultSelectedKeys}
       />
     </div>
   );

@@ -6,6 +6,7 @@ import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
 import { getPathname, getRepoName } from '@common/utils';
 import SigDetail from './SigDetail';
+import { useRouter } from 'next/router';
 
 const typeLit = [
   {
@@ -715,7 +716,7 @@ const typeLit = [
   },
   {
     URL: 'https://gitee.com/openharmony-tpc/node-csv',
-    type: '文件数据与传输',
+    type: '数据与传输',
   },
   {
     URL: 'https://gitee.com/openharmony-tpc/ohos-CoverflowJS',
@@ -735,11 +736,11 @@ const typeLit = [
   },
   {
     URL: 'https://gitee.com/openharmony-tpc/okio',
-    type: '文件数据与传输',
+    type: '数据与传输',
   },
   {
     URL: 'https://gitee.com/openharmony-tpc/opencsv',
-    type: '文件数据与传输',
+    type: '数据与传输',
   },
   {
     URL: 'https://gitee.com/openharmony-tpc/openharmony_tpc_samples',
@@ -810,8 +811,11 @@ const typeLit = [
     type: '图像图形处理',
   },
 ];
-
 const MemberTable = () => {
+  let hash = window.location.hash;
+  let typeName = '';
+  console.log(hash);
+
   let result = [];
   typeLit.forEach((item) => {
     if (result.find((z) => z.type === item.type)) {
@@ -824,6 +828,8 @@ const MemberTable = () => {
       });
     }
   });
+  console.log(result.map((z) => z.type));
+
   result = result.map((x) => {
     return {
       key: x.type,
@@ -836,9 +842,16 @@ const MemberTable = () => {
       mail: 'tpc@openharmony.com',
     };
   });
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const [sigName, setSigName] = useState('');
 
+  if (hash && hash.includes('?')) {
+    let parts = hash.split('?');
+    let hashQuery = parts[1];
+    let searchParams = new URLSearchParams(hashQuery);
+    let sigName = searchParams.get('sigName');
+    typeName = result.find((i) => i.ID === sigName);
+  }
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [sigName, setSigName] = useState(typeName);
   const dataSource = result;
 
   const columns = [
