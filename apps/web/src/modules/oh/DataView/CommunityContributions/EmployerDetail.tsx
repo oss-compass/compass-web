@@ -1,8 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
-import { GrClose } from 'react-icons/gr';
-import Dialog from '@common/components/Dialog';
-import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import {
@@ -12,8 +8,9 @@ import {
   SortOptionInput,
 } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import ContributorDropdown from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/ContributorDropdown';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
+
+import ContributorDropdown from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/ContributorDropdown';
 interface TableQuery {
   label: string;
   level?: string;

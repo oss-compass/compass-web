@@ -5,188 +5,76 @@ import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
 import Dialog from '@common/components/Dialog';
 import CodeDetail from './CodeDetail';
-
+import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+import {
+  useCodesRepoPageQuery,
+  CodeRepo,
+  FilterOptionInput,
+  SortOptionInput,
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
+import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
+interface TableQuery {
+  label: string;
+  level?: string;
+  branch?: string;
+  page?: number;
+  per?: number;
+  filterOpts?: FilterOptionInput | FilterOptionInput[];
+  sortOpts?: SortOptionInput | SortOptionInput[];
+  beginDate?: any;
+  endDate?: any;
+}
 const CodeTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [name, setName] = useState('');
+  const { timeStart, timeEnd } = useQueryDateRange();
 
-  const dataSource = [
+  const {
+    tableData,
+    setData,
+    tableParams,
+    setTableParams,
+    query,
+    handleTableChange,
+  } = useGetTableOption<CodeRepo>({
+    beginDate: timeStart,
+    endDate: timeEnd,
+    label: 'openharmony-tpc',
+    level: 'community',
+  });
+  const { isLoading, isFetching } = useCodesRepoPageQuery(
+    client,
+    query as TableQuery,
     {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'distributed_camera',
-      gitBranch: 'master',
-      codeLine: 0,
-      codeLineTotal: 0,
-      repoAttrs: ['未分类'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: '华为',
-      changLine: 0,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'third_party_rust_http',
-      gitBranch: 'master',
-      codeLine: 0,
-      codeLineTotal: 0,
-      repoAttrs: ['网络'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: 'thirdParty',
-      changLine: 0,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'third_party_lame',
-      gitBranch: 'master',
-      codeLine: 94.005,
-      codeLineTotal: 126.258,
-      repoAttrs: null,
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: 'thirdParty',
-      changLine: 0.299,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'vendor_kaihong',
-      gitBranch: 'master',
-      codeLine: 5.165,
-      codeLineTotal: 6.805,
-      repoAttrs: ['网络'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: '华为',
-      changLine: 0.393,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'third_party_rust_heck',
-      gitBranch: 'master',
-      codeLine: 0.639,
-      codeLineTotal: 1.075,
-      repoAttrs: ['UI'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: 'thirdParty',
-      changLine: 0,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'global_resource_tool',
-      gitBranch: 'master',
-      codeLine: 0,
-      codeLineTotal: 0,
-      repoAttrs: ['未分类'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: '华为',
-      changLine: 0,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'third_party_pyyaml',
-      gitBranch: 'master',
-      codeLine: 9.283,
-      codeLineTotal: 12.141,
-      repoAttrs: ['网络'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: 'thirdParty',
-      changLine: 0.045,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'third_party_vulkan-loader',
-      gitBranch: 'master',
-      codeLine: 82.453,
-      codeLineTotal: 99.892,
-      repoAttrs: ['网络'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: 'thirdParty',
-      changLine: 0.015,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'third_party_libjpeg-turbo',
-      gitBranch: 'master',
-      codeLine: 0.998,
-      codeLineTotal: 1.398,
-      repoAttrs: ['网络'],
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: 'thirdParty',
-      changLine: 0.013,
-    },
-    {
-      date: '2024-05-14',
-      projectName: 'openharmony',
-      sigNameEn: null,
-      repoNameEn: 'applications_dlp_manager',
-      gitBranch: 'master',
-      codeLine: 2.508,
-      codeLineTotal: 2.804,
-      repoAttrs: null,
-      attrs: null,
-      committers: null,
-      manger: null,
-      manufacturer: '华为',
-      changLine: 1.406,
-    },
-  ];
+      onSuccess: (data) => {
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.codesRepoPage.count as number,
+          },
+        });
+        setData(data.codesRepoPage.items);
+      },
+    }
+  );
 
   const columns = [
     {
       title: '仓库',
-      dataIndex: 'repoNameEn',
-      key: 'repoNameEn',
-    },
-    {
-      title: '厂家',
-      dataIndex: 'manufacturer',
-      key: 'manufacturer',
-    },
-    {
-      title: '分支',
-      dataIndex: 'gitBranch',
-      key: 'gitBranch',
-    },
-    {
-      title: '模块/子系统',
-      dataIndex: 'repoNameEn',
-      key: 'repoNameEn',
+      dataIndex: 'repoName',
+      key: 'repoName',
     },
     {
       title: '仓库类型',
-      dataIndex: 'repoAttrs',
-      key: 'repoAttrs',
+      dataIndex: 'repoAttributeType',
+      key: 'repoAttributeType',
+    },
+    {
+      title: '技术垂域分类',
+      dataIndex: 'repoTechnologyType',
+      key: 'repoTechnologyType',
     },
     {
       title: '责任人',
@@ -195,25 +83,24 @@ const CodeTable = () => {
     },
     {
       title: '有效代码量（千行）',
-      dataIndex: 'codeLine',
-      key: 'codeLine',
+      dataIndex: 'lines',
+      key: 'lines',
     },
     {
       title: '总代码量（千行）',
-      dataIndex: 'codeLineTotal',
-      key: 'codeLineTotal',
+      dataIndex: 'linesTotal',
+      key: 'linesTotal',
     },
     {
       title: '变化量（千行）',
-      dataIndex: 'changLine',
-      key: 'changLine',
+      dataIndex: 'linesChang',
+      key: 'linesChang',
       render: (text: string, record: any) => {
         return (
           <div className="flex">
             <span
               onClick={() => {
-                // setCurrentName(col.contributor);
-                // col.organization && setCurrentOrgName(col.organization);
+                setName(record.repoName);
                 setOpenConfirm(true);
               }}
               className="text-primary ml-2 mt-1 cursor-pointer"
@@ -225,18 +112,16 @@ const CodeTable = () => {
       },
     },
   ];
-  const pagination = {
-    hideOnSinglePage: true,
-  };
+
   return (
     <>
       <TableCard id={'topCode'} title={'代码量统计'}>
         <MyTable
           columns={columns}
-          dataSource={dataSource}
-          //   loading={isLoading || isFetching}
-          //   onChange={handleTableChange}
-          pagination={pagination}
+          dataSource={tableData}
+          loading={isLoading || isFetching}
+          onChange={handleTableChange}
+          pagination={tableParams.pagination}
           rowKey={'key'}
           scroll={{ x: 'max-content' }}
         />
@@ -244,13 +129,13 @@ const CodeTable = () => {
           open={openConfirm}
           classes={{
             paper: classnames(
-              'border w-[70%] !max-w-[80%] min-h-[400px] !m-0',
+              'border w-[90%] !max-w-[80%] min-h-[400px] !m-0',
               'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
             ),
           }}
           dialogTitle={
             <>
-              <p className=""></p>
+              <p className="">仓库 Commit 详情</p>
               <div
                 className="absolute right-6 top-4 cursor-pointer p-2"
                 onClick={() => {
@@ -263,7 +148,7 @@ const CodeTable = () => {
           }
           dialogContent={
             <div className="w-full">
-              <CodeDetail />
+              <CodeDetail name={name} />
             </div>
           }
           handleClose={() => {

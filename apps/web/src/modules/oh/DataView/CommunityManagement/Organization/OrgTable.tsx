@@ -4,33 +4,63 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
+import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+import {
+  useOrganizationPageQuery,
+  Organization,
+  FilterOptionInput,
+  SortOptionInput,
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
 
+interface TableQuery {
+  page?: number;
+  per?: number;
+  filterOpts?: FilterOptionInput | FilterOptionInput[];
+  sortOpts?: SortOptionInput | SortOptionInput[];
+}
 const OrgTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [orgName, setOrgName] = useState('');
 
-  const dataSource = [
-    { ID: 1, company: '中软国际', subSystem: '@chinasoft.com' },
-  ];
+  const {
+    tableData,
+    setData,
+    tableParams,
+    setTableParams,
+    query,
+    handleTableChange,
+  } = useGetTableOption<Organization>({
+    label: 'openharmony-tpc',
+    level: 'community',
+  });
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'ID',
-      key: 'ID',
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'ID',
+    //   key: 'ID',
+    // },
+
     {
       title: '组织',
-      dataIndex: 'company',
-      key: 'company',
+      dataIndex: 'orgName',
+      key: 'orgName',
+      width: 200,
     },
     {
       title: '邮箱后缀',
-      dataIndex: 'subSystem',
-      key: 'subSystem',
+      dataIndex: 'domain',
+      key: 'domain',
+      width: 700,
+      render: (text: string, record: any, index: number) => {
+        return record.domain.join(', ');
+      },
     },
     {
       title: '操作',
       key: 'action',
+      width: 100,
       render: (_, record) => (
         <div className="text-primary flex gap-2">
           <a>修改</a>
@@ -42,6 +72,22 @@ const OrgTable = () => {
   const pagination = {
     hideOnSinglePage: true,
   };
+  const { isLoading, isFetching } = useOrganizationPageQuery(
+    client,
+    query as TableQuery,
+    {
+      onSuccess: (data) => {
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.organizationPage.count as number,
+          },
+        });
+        setData(data.organizationPage.items);
+      },
+    }
+  );
   return (
     <>
       <TableCard
@@ -51,10 +97,10 @@ const OrgTable = () => {
       >
         <MyTable
           columns={columns}
-          dataSource={dataSource}
-          //   loading={isLoading || isFetching}
-          //   onChange={handleTableChange}
-          pagination={pagination}
+          dataSource={tableData}
+          loading={isLoading || isFetching}
+          onChange={handleTableChange}
+          pagination={tableParams.pagination}
           rowKey={'key'}
           scroll={{ x: 'max-content' }}
         />

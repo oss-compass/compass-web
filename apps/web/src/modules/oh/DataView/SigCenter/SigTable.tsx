@@ -4,7 +4,7 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
-import { getPathname, getRepoName } from '@common/utils';
+import { getRepoName } from '@common/utils';
 import SigDetail from './SigDetail';
 import { useRouter } from 'next/router';
 
@@ -811,11 +811,19 @@ const typeLit = [
     type: '图像图形处理',
   },
 ];
-const MemberTable = () => {
+const getOhQuery = (result) => {
   let hash = window.location.hash;
   let typeName = '';
-  console.log(hash);
-
+  if (hash && hash.includes('?')) {
+    let parts = hash.split('?');
+    let hashQuery = parts[1];
+    let searchParams = new URLSearchParams(hashQuery);
+    let sigName = searchParams.get('sigName');
+    typeName = result.find((i) => i.ID === sigName);
+  }
+  return typeName;
+};
+const MemberTable = () => {
   let result = [];
   typeLit.forEach((item) => {
     if (result.find((z) => z.type === item.type)) {
@@ -828,7 +836,6 @@ const MemberTable = () => {
       });
     }
   });
-  console.log(result.map((z) => z.type));
 
   result = result.map((x) => {
     return {
@@ -842,16 +849,8 @@ const MemberTable = () => {
       mail: 'tpc@openharmony.com',
     };
   });
-
-  if (hash && hash.includes('?')) {
-    let parts = hash.split('?');
-    let hashQuery = parts[1];
-    let searchParams = new URLSearchParams(hashQuery);
-    let sigName = searchParams.get('sigName');
-    typeName = result.find((i) => i.ID === sigName);
-  }
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [sigName, setSigName] = useState(typeName);
+  const [sigItem, setSigItem] = useState(getOhQuery(result));
   const dataSource = result;
 
   const columns = [
@@ -863,7 +862,7 @@ const MemberTable = () => {
         return (
           <a
             onClick={() => {
-              setSigName(record);
+              setSigItem(record);
             }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
@@ -896,8 +895,8 @@ const MemberTable = () => {
   };
   return (
     <>
-      {sigName ? (
-        <SigDetail sigInfo={sigName} setSigName={setSigName} />
+      {sigItem ? (
+        <SigDetail sigInfo={sigItem} setSigName={setSigItem} />
       ) : (
         <TableCard
           className={'mb-0'}

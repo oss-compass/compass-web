@@ -24,7 +24,7 @@ const useGetLineOption = <T extends Record<string, any>>(
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       showSizeChanger: false,
       position: ['bottomCenter'],
       showTotal: (total) => {

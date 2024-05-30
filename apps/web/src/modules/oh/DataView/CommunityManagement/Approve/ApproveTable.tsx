@@ -5,96 +5,44 @@ import Dialog from '@common/components/Dialog';
 import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
 import ApproveDetail from './ApproveDetail';
-
+import {
+  useCommitFeedbackPageQuery,
+  CommitFeedback,
+  FilterOptionInput,
+  SortOptionInput,
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
+import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
+import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+interface TableQuery {
+  label: string;
+  level?: string;
+  branch?: string;
+  page?: number;
+  per?: number;
+  filterOpts?: FilterOptionInput | FilterOptionInput[];
+  sortOpts?: SortOptionInput | SortOptionInput[];
+  beginDate?: any;
+  endDate?: any;
+}
 const ApproveTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [orgName, setOrgName] = useState('');
+  const { timeStart, timeEnd } = useQueryDateRange();
 
-  const dataSource = [
-    {
-      authorEmail: 'zhanghuan165@h-partners.com',
-      commitHash: '51ba011c34b6a20777331b39cc571df35f8b96bc',
-      grimoireCreationDate: '2024-05-13T17:21:46+08:00',
-      linesAdded: 29,
-      linesChanged: 30,
-      linesRemoved: 1,
-      mergedAt: null,
-      orgName: 'Huawei',
-      prUrl: null,
-      repoName: 'https://gitee.com/openharmony-tpc/MMKV',
-    },
-    {
-      authorEmail: 'zhanghuan165@h-partners.com',
-      commitHash: '23c61e047e530626c26e6c37841fd36d8f14982d',
-      grimoireCreationDate: '2024-04-11T16:51:20+08:00',
-      linesAdded: 163,
-      linesChanged: 175,
-      linesRemoved: 12,
-      mergedAt: '2024-04-17T12:04:45+08:00',
-      orgName: 'Huawei',
-      prUrl: 'https://gitee.com/openharmony-tpc/MMKV/pulls/63',
-      repoName: 'https://gitee.com/openharmony-tpc/MMKV',
-    },
-    {
-      authorEmail: 'longfeng20@huawei.com',
-      commitHash: 'd09d96887f08437a67a81c564539481f0c932481',
-      grimoireCreationDate: '2024-04-01T10:58:58+08:00',
-      linesAdded: 9,
-      linesChanged: 14,
-      linesRemoved: 5,
-      mergedAt: '2024-04-01T17:31:36+08:00',
-      orgName: 'Huawei',
-      prUrl: 'https://gitee.com/openharmony-tpc/MMKV/pulls/62',
-      repoName: 'https://gitee.com/openharmony-tpc/MMKV',
-    },
-    {
-      authorEmail: 'renheng6@h-partners.com',
-      commitHash: '2f1c7aff0426c80992fb5ca9d216b9977dd9e1ca',
-      grimoireCreationDate: '2024-01-18T15:35:50+08:00',
-      linesAdded: 229,
-      linesChanged: 230,
-      linesRemoved: 1,
-      mergedAt: '2024-01-19T14:26:08+08:00',
-      orgName: 'Huawei',
-      prUrl: 'https://gitee.com/openharmony-tpc/MMKV/pulls/61',
-      repoName: 'https://gitee.com/openharmony-tpc/MMKV',
-    },
-    {
-      authorEmail: 'longfeng20@huawei.com',
-      commitHash: 'b8755f5b6d3e229c46fe6b5f7524be564240e610',
-      grimoireCreationDate: '2023-12-04T16:00:47+08:00',
-      linesAdded: 33,
-      linesChanged: 46,
-      linesRemoved: 13,
-      mergedAt: '2023-12-05T16:11:19+08:00',
-      orgName: 'Huawei',
-      prUrl: 'https://gitee.com/openharmony-tpc/MMKV/pulls/58',
-      repoName: 'https://gitee.com/openharmony-tpc/MMKV',
-    },
-    {
-      authorEmail: 'liuyaoming3@h-partners.com',
-      commitHash: 'cdb4e7357db7f1c066b4c603bf36df40d1043f11',
-      grimoireCreationDate: '2023-12-04T10:07:22+08:00',
-      linesAdded: 8,
-      linesChanged: 13,
-      linesRemoved: 5,
-      mergedAt: '2023-12-04T14:33:00+08:00',
-      orgName: 'Huawei',
-      prUrl: 'https://gitee.com/openharmony-tpc/MMKV/pulls/57',
-      repoName: 'https://gitee.com/openharmony-tpc/MMKV',
-    },
-    {
-      authorEmail: 'liuyaoming3@h-partners.com',
-      commitHash: '0eed100bcc4d23f6c36f88fe5d334ee04ba7933d',
-      grimoireCreationDate: '2023-11-22T10:24:47+08:00',
-      linesAdded: 12,
-      linesChanged: 20,
-      linesRemoved: 8,
-      mergedAt: '2023-11-22T17:31:42+08:00',
-      orgName: 'Huawei',
-      prUrl: 'https://gitee.com/openharmony-tpc/MMKV/pulls/56',
-      repoName: 'https://gitee.com/openharmony-tpc/MMKV',
-    },
-  ];
+  const {
+    tableData,
+    setData,
+    tableParams,
+    setTableParams,
+    query,
+    handleTableChange,
+  } = useGetTableOption<CommitFeedback>({
+    beginDate: timeStart,
+    endDate: timeEnd,
+    label: 'openharmony-tpc',
+    level: 'community',
+  });
   const columns = [
     {
       title: 'Commit Hash',
@@ -106,7 +54,7 @@ const ApproveTable = () => {
       },
     },
     {
-      title: '关联 PR',
+      title: 'PR 链接',
       dataIndex: 'prUrl',
       key: 'prUrl',
       width: 140,
@@ -125,52 +73,52 @@ const ApproveTable = () => {
     },
     {
       title: '发起时间',
-      dataIndex: 'grimoireCreationDate',
-      key: 'startingTime',
+      dataIndex: 'createAtDate',
+      key: 'createAtDate',
       render: (text) => {
         return text ? text.slice(0, 10) : '';
       },
     },
     {
       title: '提交人',
-      dataIndex: 'authorEmail',
-      key: 'authorEmail',
+      dataIndex: 'submitUserEmail',
+      key: 'submitUserEmail',
     },
-    // {
-    //   title: 'commit 新增代码量',
-    //   dataIndex: 'linesAdded',
-    //   key: 'linesAdded',
-    // },
-    // {
-    //   title: 'commit 删除代码量',
-    //   dataIndex: 'linesRemoved',
-    //   key: 'linesRemoved',
-    // },
-    // {
-    //   title: '修改代码量 (增 + 删)',
-    //   dataIndex: 'linesChanged',
-    //   key: 'linesChanged',
-    // },
+    {
+      title: 'commit 新增代码量',
+      dataIndex: 'newLinesAdded',
+      key: 'newLinesAdded',
+    },
+    {
+      title: 'commit 删除代码量',
+      dataIndex: 'newLinesRemoved',
+      key: 'newLinesRemoved',
+    },
+    {
+      title: '修改代码量 (增 + 删)',
+      dataIndex: 'newLinesChanged',
+      key: 'newLinesChanged',
+    },
     {
       title: '申诉原因',
-      dataIndex: 'cause',
-      key: 'cause',
+      dataIndex: 'submitReason',
+      key: 'submitReason',
     },
 
     {
       title: '处理人',
-      dataIndex: 'handler',
-      key: 'handler',
+      dataIndex: 'reviewerEmail',
+      key: 'reviewerEmail',
     },
     {
       title: '当前状态',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'state',
+      key: 'state',
     },
     {
       title: '结论',
-      dataIndex: 'conclusion',
-      key: 'conclusion',
+      dataIndex: 'reviewMsg',
+      key: 'reviewMsg',
     },
     {
       title: '操作',
@@ -189,9 +137,22 @@ const ApproveTable = () => {
       ),
     },
   ];
-  const pagination = {
-    hideOnSinglePage: true,
-  };
+  const { isLoading, isFetching } = useCommitFeedbackPageQuery(
+    client,
+    query as TableQuery,
+    {
+      onSuccess: (data) => {
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.commitFeedbackPage.count as number,
+          },
+        });
+        setData(data.commitFeedbackPage.items);
+      },
+    }
+  );
   return (
     <>
       <TableCard
@@ -201,10 +162,10 @@ const ApproveTable = () => {
       >
         <MyTable
           columns={columns}
-          dataSource={dataSource}
-          //   loading={isLoading || isFetching}
-          //   onChange={handleTableChange}
-          pagination={pagination}
+          dataSource={tableData}
+          loading={isLoading || isFetching}
+          onChange={handleTableChange}
+          pagination={tableParams.pagination}
           rowKey={'key'}
           scroll={{ x: 'max-content' }}
         />

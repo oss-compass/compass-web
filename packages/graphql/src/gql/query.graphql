@@ -1089,8 +1089,8 @@ query commitsRepoDataList(
       linesChanged
       linesRemoved
       repoName
-      sig
-      type
+      repoAttributeType
+      repoTechnologyType
     }
     page
     totalPage
@@ -1164,7 +1164,299 @@ query commitsOrganizationDataList(
       linesChangedRatio
       linesRemoved
       orgName
-      totalLinesChanged
+    }
+    page
+    totalPage
+  }
+}
+query commitsContributorList(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  commitsContributorList(
+    label: $label
+    level: $level
+    branch: $branch
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    authorEmail
+    grimoireCreationDate
+    linesAdded
+    linesChanged
+    linesRemoved
+    orgName
+  }
+}
+query codesRepoPage(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  codesRepoPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      lines
+      linesChang
+      linesTotal
+      manager
+      repoAttributeType
+      repoName
+      repoTechnologyType
+    }
+    page
+    totalPage
+  }
+}
+query codesDetailPage(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  codesDetailPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commitUrls
+      createdAt
+      issueNum
+      linesTotal
+      mergedAt
+      tag
+      title
+      url
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+query codesTrend(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  codesTrend(
+    label: $label
+    level: $level
+    branch: $branch
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    detailList {
+      count
+      date
+    }
+    type
+  }
+}
+query commitsTechTypePage(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  commitsTechTypePage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesRemoved
+      repoTechnologyType
+    }
+    page
+    totalPage
+  }
+}
+query codesCheckDetailPage(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  codesCheckDetailPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commentCreatedAt
+      commentNum
+      issueNum
+      linesAdded
+      linesRemoved
+      prState
+      prUrl
+      prUserLogin
+      timeCheckHours
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+
+query codesCheckPage(
+  $label: String!
+  $level: String = "repo"
+  $branch: String = "master"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  codesCheckPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commentNum
+      linesAdded
+      linesRemoved
+      timeCheckHours
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+query commitFeedbackPage(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+  $beginDate: ISO8601DateTime
+  $endDate: ISO8601DateTime
+) {
+  commitFeedbackPage(
+    label: $label
+    level: $level
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commitHash
+      contactWay
+      createAtDate
+      id
+      newLinesAdded
+      newLinesChanged
+      newLinesRemoved
+      oldLinesAdded
+      oldLinesChanged
+      oldLinesRemoved
+      prUrl
+      repoName
+      requestReviewerEmail
+      reviewMsg
+      reviewerEmail
+      reviewerId
+      state
+      submitReason
+      submitUserEmail
+      submitUserId
+      updateAtDate
+    }
+    page
+    totalPage
+  }
+}
+query organizationPage(
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+) {
+  organizationPage(
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      domain
+      orgName
     }
     page
     totalPage

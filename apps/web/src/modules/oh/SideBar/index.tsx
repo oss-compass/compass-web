@@ -1,9 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 import classnames from 'classnames';
 import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+import { Layout, Menu, Button } from 'antd';
 import { usePrevious, useWindowScroll } from 'react-use';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  DownloadOutlined,
+} from '@ant-design/icons';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -11,6 +19,7 @@ const items: MenuItem[] = [
   {
     key: 'sub1',
     label: '社区总览',
+    icon: <TeamOutlined rev={undefined} />,
     children: [
       {
         key: 'communityOverview',
@@ -29,6 +38,7 @@ const items: MenuItem[] = [
   {
     key: 'sub2',
     label: '贡献价值',
+    icon: <PieChartOutlined rev={undefined} />,
     children: [
       {
         key: 'contributeOverview',
@@ -48,38 +58,90 @@ const items: MenuItem[] = [
       },
     ],
   },
+  {
+    key: 'sub3',
+    label: '软件入库管理',
+    icon: <DownloadOutlined rev={undefined} />,
+    children: [
+      // {
+      //   key: 'workbench',
+      //   label: '工作台',
+      // },
+      {
+        key: 'process',
+        label: '选型引入流程',
+      },
+    ],
+  },
 ];
 
 const SideMenu: React.FC = () => {
   const id = useHashchangeEvent();
+  const router = useRouter();
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
-    window.location.hash = e.key;
-    // href={`#${hash}`}
+    console.log(e);
+    if (e.keyPath[1] === 'sub3') {
+      router.push('/oh/' + e.key);
+    } else {
+      window.location.hash = e.key;
+    }
   };
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
   const defaultSelectedKeys = useMemo(() => {
-    console.log(123);
     return [id || 'index'];
   }, [id]);
+
+  const { Sider } = Layout;
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
     <div
       className={classnames('sticky overflow-auto', [
-        y <= preY
+        y < preY
           ? 'top-[136px] h-[calc(100vh-136px)]'
           : 'top-[56px] h-[calc(100vh-56px)]',
       ])}
     >
-      <Menu
-        defaultSelectedKeys={[id || 'index']}
-        onClick={onClick}
-        style={{ width: 256 }}
-        defaultOpenKeys={['sub1', 'sub2']}
-        mode="inline"
-        items={items}
-        selectedKeys={defaultSelectedKeys}
-      />
+      <Layout>
+        <Sider
+          breakpoint="lg"
+          theme="light"
+          // trigger={null}
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
+          {/* <div className="flex w-full justify-center">
+            <Button
+              type="text"
+              className="w-full"
+              icon={
+                collapsed ? (
+                  <MenuUnfoldOutlined rev={undefined} />
+                ) : (
+                  <MenuFoldOutlined rev={undefined} />
+                )
+              }
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                width: 64,
+                fontSize: '16px',
+                height: 64,
+              }}
+            />
+          </div> */}
+          <Menu
+            defaultSelectedKeys={[id || 'index']}
+            onClick={onClick}
+            // style={{ width: 256 }}
+            defaultOpenKeys={['sub1', 'sub2', 'sub3']}
+            mode="inline"
+            items={items}
+            selectedKeys={defaultSelectedKeys}
+          />
+        </Sider>
+      </Layout>
     </div>
   );
 };

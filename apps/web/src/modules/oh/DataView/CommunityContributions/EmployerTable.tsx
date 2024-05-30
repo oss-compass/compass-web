@@ -13,8 +13,8 @@ import {
   SortOptionInput,
 } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import ContributorDropdown from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/ContributorDropdown';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
+import ContributorDropdown from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/ContributorDropdown';
 
 interface TableQuery {
   label: string;
@@ -29,7 +29,7 @@ interface TableQuery {
 }
 const EmployerTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [orgName, setOrgName] = useState(false);
+  const [orgName, setOrgName] = useState('');
   const { timeStart, timeEnd } = useQueryDateRange();
 
   const {

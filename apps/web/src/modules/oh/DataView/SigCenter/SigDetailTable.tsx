@@ -53,7 +53,7 @@ const SigDetailTable = ({ sigInfo }) => {
   return (
     <TableCard
       className={'mb-0 min-h-[calc(100vh-164px)]'}
-      id={'committerStatistics'}
+      id={'SigDetailTable'}
       title={sigInfo['ID'] + ' SIG 洞察详情'}
     >
       <div className="absolute -top-12 left-[40%]">

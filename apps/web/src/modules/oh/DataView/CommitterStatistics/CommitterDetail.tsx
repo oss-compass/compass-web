@@ -1,111 +1,114 @@
 import React from 'react';
 import MyTable from '@common/components/Table';
-
-const CommitDetail = () => {
-  const dataSource = [
+import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+import {
+  useCommitsDetailDataListQuery,
+  CommitDetail,
+  FilterOptionInput,
+  SortOptionInput,
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
+import ContributorDropdown from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/ContributorDropdown';
+import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
+interface TableQuery {
+  label: string;
+  level?: string;
+  branch?: string;
+  page?: number;
+  per?: number;
+  filterOpts?: FilterOptionInput | FilterOptionInput[];
+  sortOpts?: SortOptionInput | SortOptionInput[];
+  beginDate?: any;
+  endDate?: any;
+}
+const CommitDetailTable = ({ authorEmail }) => {
+  const { timeStart, timeEnd } = useQueryDateRange();
+  const {
+    tableData,
+    setData,
+    tableParams,
+    setTableParams,
+    query,
+    handleTableChange,
+  } = useGetTableOption<CommitDetail>(
     {
-      committerName: 'yangzk',
-      prId: 10910351,
-      pr: 7728,
-      prLink:
-        'https://gitee.com/openharmony/ability_ability_runtime/pulls/7728',
-      prState: 'merged',
-      issueNo: 'I94I4J',
-      issueLink:
-        'https://gitee.com/openharmony/ability_ability_runtime/issues/I94I4J',
-      reviewTime: '2024-05-15 10:21:53',
-      changedAdditions: 578,
-      changedDeletions: 77,
-      prBugCount: 0,
-      prNoteCount: 1,
-      prSumBugCount: 0,
-      prDefectDensity: '0%',
-      prReviewTime: 26.46,
-      prOwnerName: 'yangzk',
-      prOwnerLogin: 'yzkp',
-      prOwnerEmail: null,
-      diffCommentCount: null,
+      beginDate: timeStart,
+      endDate: timeEnd,
+      label: 'openharmony-tpc',
+      level: 'community',
     },
-  ];
+    {
+      filterOpts: [
+        {
+          type: 'author_email',
+          values: [authorEmail],
+        },
+      ],
+    }
+  );
+  const { isLoading, isFetching } = useCommitsDetailDataListQuery(
+    client,
+    query as TableQuery,
+    {
+      onSuccess: (data) => {
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.commitsDetailPage.count as number,
+          },
+        });
+        setData(data.commitsDetailPage.items);
+      },
+    }
+  );
   const columns = [
     {
-      title: '名称',
-      dataIndex: 'committerName',
-      key: 'committerName',
+      title: '提交人',
+      dataIndex: 'authorEmail',
+      key: 'authorEmail',
     },
     {
-      title: 'PR 创建人',
-      dataIndex: 'prOwnerName',
-      key: 'prOwnerName',
+      title: 'commit 新增代码量',
+      dataIndex: 'linesAdded',
+      key: 'linesAdded',
     },
     {
-      title: 'PrID',
-      dataIndex: 'prId',
-      key: 'prId',
+      title: 'commit 删除代码量',
+      dataIndex: 'linesRemoved',
+      key: 'linesRemoved',
     },
     {
-      title: 'PR 仓库内编号',
-      dataIndex: 'pr',
-      key: 'pr',
+      title: '修改代码量 (增 + 删)',
+      dataIndex: 'linesChanged',
+      key: 'linesChanged',
     },
     {
-      title: 'PR 状态',
-      dataIndex: 'prState',
-      key: 'prState',
+      title: '提交时间',
+      dataIndex: 'grimoireCreationDate',
+      key: 'grimoireCreationDate',
     },
     {
-      title: 'IssueNo',
-      dataIndex: 'issueNo',
-      key: 'issueNo',
-    },
-    {
-      title: '检视时间',
-      dataIndex: 'reviewTime',
-      key: 'reviewTime',
-    },
-    {
-      title: 'PR 新增代码量 (行)',
-      dataIndex: 'changedAdditions',
-      key: 'changedAdditions',
-    },
-    {
-      title: 'PR 删除代码量 (行)',
-      dataIndex: 'changedDeletions',
-      key: 'changedDeletions',
-    },
-    {
-      title: 'PR 评论数',
-      dataIndex: 'diffCommentCount',
-      key: 'diffCommentCount',
-    },
-    {
-      title: 'PR 响应时间',
-      dataIndex: 'prBugCount',
-      key: 'prBugCount',
-    },
-    {
-      title: 'PR 关闭时间',
-      dataIndex: 'prSumBugCount',
-      key: 'prSumBugCount',
+      title: '合入时间',
+      dataIndex: 'mergedAt',
+      key: 'mergedAt',
     },
   ];
-  const pagination = {
-    hideOnSinglePage: true,
-  };
+
   return (
     <>
       <MyTable
         columns={columns}
-        dataSource={dataSource}
-        //   loading={isLoading || isFetching}
-        //   onChange={handleTableChange}
-        pagination={pagination}
+        dataSource={tableData}
+        loading={isLoading || isFetching}
+        onChange={handleTableChange}
+        pagination={tableParams.pagination}
         rowKey={'key'}
         scroll={{ x: 'max-content' }}
-        style={{ height: '300px' }}
+        style={{ minHeight: '300px' }}
       />
     </>
   );
 };
 
-export default CommitDetail;
+export default CommitDetailTable;

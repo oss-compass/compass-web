@@ -49,7 +49,7 @@ const SigDetail = ({ sigInfo, setSigName }) => {
   return (
     <>
       <div className="flex gap-4">
-        <div className="h-full w-80 flex-shrink-0 rounded-lg border-2 border-transparent bg-white p-5 drop-shadow-sm">
+        <div className="h-full w-72 flex-shrink-0 rounded-lg border-2 border-transparent bg-white p-5 drop-shadow-sm">
           <div className="flex items-center text-2xl font-medium text-[#333]">
             <AiOutlineLeftCircle
               onClick={() => {
