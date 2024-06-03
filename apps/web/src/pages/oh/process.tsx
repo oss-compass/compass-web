@@ -2,9 +2,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import NoSsr from '@common/components/NoSsr';
 import getLocalesFile from '@common/utils/getLocalesFile';
-import { Main } from '@common/components/Layout';
 import OhRole from '@modules/oh/components/OhRole';
-import NavBar from '@modules/oh/NavBar';
 import Process from '@modules/oh/Process';
 import Header from '@common/components/Header';
 
@@ -20,9 +18,7 @@ const ProcessPage = () => {
     <NoSsr>
       <OhRole>
         <Header />
-        <Main>
-          <Process />
-        </Main>
+        <Process />
       </OhRole>
     </NoSsr>
   );

@@ -166,7 +166,7 @@ const SideMenu: React.FC = () => {
               }
             )}
           >
-            {collapsed ? '' : <div>流程图</div>}
+            {collapsed ? '' : <div>筛选</div>}
             <div
               className="hover:text-primary cursor-pointer"
               onClick={() => setCollapsed(!collapsed)}
@@ -182,30 +182,9 @@ const SideMenu: React.FC = () => {
             {collapsed ? (
               ''
             ) : (
-              <Timeline
-                items={menuItems.map(({ name, color, icon, id, textColor }) => {
-                  return {
-                    icon,
-                    color: active === id ? 'blue' : color,
-                    children: (
-                      <div
-                        className={classnames(
-                          'w-[20] cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap',
-                          [active === id ? '!text-[#1677ff]' : textColor]
-                        )}
-                        onClick={() => {
-                          if (id.includes('孵化')) {
-                            setActive(id);
-                            handleQueryParams({ type: id });
-                          }
-                        }}
-                      >
-                        {name}
-                      </div>
-                    ),
-                  };
-                })}
-              />
+              <div>
+                <div className="text-base font-semibold">类型</div>
+              </div>
             )}
           </div>
         </Sider>

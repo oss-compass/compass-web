@@ -65,11 +65,15 @@ const items: MenuItem[] = [
     children: [
       // {
       //   key: 'workbench',
-      //   label: '工作台',
+      //   label: '孵化治理看板',
       // },
       {
         key: 'process',
-        label: '选型引入流程',
+        label: 'TPC 软件孵化选型',
+      },
+      {
+        key: 'outProcess',
+        label: 'TPC 软件孵化准出',
       },
     ],
   },

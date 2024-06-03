@@ -29,7 +29,6 @@ let yList = [
   '多媒体',
   '文件数据与传输',
 ];
-console.log(yList);
 // prettier-ignore
 function getRecentYearMonths() {
     var monthsArray: any = [];

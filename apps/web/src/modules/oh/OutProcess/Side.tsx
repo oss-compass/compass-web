@@ -26,34 +26,42 @@ const SideMenu: React.FC = () => {
 
   //   const menuItems = useMemo(() => {
   //   }, [id]);
-  const [active, setActive] = useState('孵化选型申请');
+  const [active, setActive] = useState('孵化准出申请');
   const menuItems = [
     {
-      name: '孵化选型申请',
-      id: '孵化选型申请',
+      name: '孵化准出申请',
+      id: '孵化准出申请',
       color: 'green',
       icon: null,
       textColor: '!text-[#333]',
     },
     {
-      name: '孵化选型评审',
-      id: '孵化选型评审',
-      color: 'gray',
-      icon: null,
-      active: false,
-      textColor: '!text-[#333]',
-    },
-    {
-      name: '建仓门禁评审',
-      id: '建仓门禁评审',
+      name: '孵化准出 TPC 预审',
+      id: '孵化准出 TPC 预审',
       color: 'gray',
       icon: null,
       active: false,
       textColor: '!text-[#bfbfbf]',
     },
     {
-      name: '入库自动化处理',
-      id: '入库自动化处理',
+      name: '孵化准出架构预审',
+      id: '孵化准出架构预审',
+      color: 'gray',
+      icon: null,
+      active: false,
+      textColor: '!text-[#bfbfbf]',
+    },
+    {
+      name: '孵化准出 QA 预审',
+      id: '孵化准出 QA 预审',
+      color: 'gray',
+      icon: null,
+      active: false,
+      textColor: '!text-[#bfbfbf]',
+    },
+    {
+      name: '准出电子流自动化处理 (TPC 建仓)',
+      id: '准出电子流自动化处理 (TPC 建仓)',
       color: 'gray',
       icon: null,
       active: false,
@@ -68,80 +76,7 @@ const SideMenu: React.FC = () => {
       textColor: '!text-[#bfbfbf]',
     },
   ];
-  const items = [
-    {
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          选型申请
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          指定软件 Owner/版本 Committer
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          Owner/Committer 审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          CTMG 审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          二级 BU 代表审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          产品线开源代表审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          入库自动化处理
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          结束
-        </div>
-      ),
-    },
-    // {
-    //   dot: (
-    //     <ClockCircleOutlined rev={undefined} className="timeline-clock-icon" />
-    //   ),
-    //   color: 'red',
-    //   children: 'Technical testing 2015-09-01',
-    // },
-  ];
   const { handleQueryParams } = useHandleQueryParams();
-
   return (
     <div
       className={classnames(
@@ -194,7 +129,7 @@ const SideMenu: React.FC = () => {
                           [active === id ? '!text-[#1677ff]' : textColor]
                         )}
                         onClick={() => {
-                          if (id.includes('孵化')) {
+                          if (id.includes('孵化准出申请')) {
                             setActive(id);
                             handleQueryParams({ type: id });
                           }

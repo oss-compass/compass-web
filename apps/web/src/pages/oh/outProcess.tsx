@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import NoSsr from '@common/components/NoSsr';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import OhRole from '@modules/oh/components/OhRole';
-import Workbench from '@modules/oh/Workbench';
+import OutProcess from '@modules/oh/OutProcess';
 import Header from '@common/components/Header';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -13,14 +13,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     },
   };
 };
-const WorkbenchPage = () => {
+const OutProcessPage = () => {
   return (
     <NoSsr>
       <OhRole>
-        <Workbench />
+        <Header />
+        <OutProcess />
       </OhRole>
     </NoSsr>
   );
 };
 
-export default WorkbenchPage;
+export default OutProcessPage;

@@ -122,7 +122,9 @@ const SelectionEvaluation = () => {
             </Col>
           </Row>
           <div className="mb-6 text-base font-semibold">选型评估信息</div>
-          <EvaluationDetail />
+          <div className="my-2">
+            <EvaluationDetail />
+          </div>
           {/* <Row gutter={24}>
             <Col span={12}>
               <Form.Item

@@ -15,31 +15,8 @@ import {
 import type { FormProps } from 'antd';
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import { useRouter } from 'next/router';
+import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 
-let yList = [
-  '数据压缩算法',
-  'UI',
-  '图片',
-  '工具',
-  '数据存储',
-  '其他',
-  '框架类',
-  '图像图形处理',
-  '字体字幕处理',
-  '网络协议通信',
-  '视频编解码',
-  '日志打印',
-  '文本解析器',
-  '深度学习',
-  '安全',
-  '数据结构存储',
-  '音视频',
-  '加解密算法',
-  '搜索',
-  '动画',
-  '多媒体',
-  '文件数据与传输',
-];
 const SelectionApplication = () => {
   const router = useRouter();
   const queryType = router.query?.type as string;
@@ -101,82 +78,27 @@ const SelectionApplication = () => {
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
-                label="所属领域"
+                label="项目名称"
                 name="commitHash"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Select>
-                  {yList.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
-                    </Select.Option>
-                  ))}
-                </Select>
+                <div className="mt-1.5">VUE</div>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="编程语言"
+                label="仓库地址"
                 name="commitHash1"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="软件名称"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="软件版本"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="相关APP"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="软件性质"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  <Select.Option value="组织项目">组织项目</Select.Option>
-                  <Select.Option value="个人项目">个人项目</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{
-                  span: 3,
-                  style: { fontWeight: 'bold' },
-                }}
-                label="选型原因"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input.TextArea />
+                <div className="mt-1.5">https://gitee.com/vuejs/vue</div>
               </Form.Item>
             </Col>
           </Row>
         </Form>
+        {/* <div className="my-2">
+          <EvaluationDetail />
+        </div> */}
         {queryType === '孵化选型评审' && (
           <>
             <div className="mb-6 text-base font-semibold">审核信息</div>
