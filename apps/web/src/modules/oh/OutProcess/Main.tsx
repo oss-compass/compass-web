@@ -23,7 +23,7 @@ const Main = () => {
   const queryType = router.query?.type as string;
   return (
     <>
-      <div className="relative m-4 ml-1 flex h-[calc(100vh-112px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
+      <div className="relative ml-1 flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
         <div className="border-b px-5 py-3 font-semibold">
           TPC 软件孵化准出流程
         </div>

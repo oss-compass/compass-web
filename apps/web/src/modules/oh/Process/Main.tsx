@@ -18,31 +18,29 @@ const Main = () => {
       label: <div className="mx-4 text-lg">选型评估</div>,
       children: <SelectionEvaluation />,
     },
-    {
-      key: '3',
-      label: <div className="mx-4 text-lg">仓库信息维护</div>,
-      children: <RepoInformationMaintenance />,
-    },
-    {
-      key: '4',
-      label: <div className="mx-4 text-lg">依赖关系解析</div>,
-      children: '依赖关系解析',
-      disabled: true,
-    },
-    {
-      key: '5',
-      label: <div className="mx-4 text-lg">完整性信息维护</div>,
-      children: '完整性信息维护',
-      disabled: true,
-    },
+    // {
+    //   key: '3',
+    //   label: <div className="mx-4 text-lg">仓库信息维护</div>,
+    //   children: <RepoInformationMaintenance />,
+    // },
+    // {
+    //   key: '4',
+    //   label: <div className="mx-4 text-lg">依赖关系解析</div>,
+    //   children: '依赖关系解析',
+    //   disabled: true,
+    // },
+    // {
+    //   key: '5',
+    //   label: <div className="mx-4 text-lg">完整性信息维护</div>,
+    //   children: '完整性信息维护',
+    //   disabled: true,
+    // },
   ];
   const router = useRouter();
   const queryType = router.query?.type as string;
-  if (queryType === '孵化选型评审') {
-  }
   return (
     <>
-      <div className="relative m-4 ml-1 flex h-[calc(100vh-112px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
+      <div className="relative ml-1 flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
         <div className="border-b px-5 py-3 font-semibold">
           TPC 软件孵化选型流程
         </div>

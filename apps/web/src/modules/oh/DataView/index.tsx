@@ -7,6 +7,8 @@ import CommunityContributions from './CommunityContributions';
 import CommunityOverview from './CommunityOverview';
 import CommunityManagement from './CommunityManagement';
 import SigCenter from './SigCenter';
+import Process from '@modules/oh/Process';
+import OutProcess from '@modules/oh/OutProcess';
 
 const OhDataView = () => {
   const id = useHashchangeEvent();
@@ -38,6 +40,14 @@ const OhDataView = () => {
     }
     case 'communityManagement': {
       source = <CommunityManagement />;
+      break;
+    }
+    case 'process': {
+      source = <Process />;
+      break;
+    }
+    case 'outProcess': {
+      source = <OutProcess />;
       break;
     }
     default: {

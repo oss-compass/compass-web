@@ -145,7 +145,7 @@ const SideMenu: React.FC = () => {
   return (
     <div
       className={classnames(
-        'sticky top-[56px] m-4 mr-0 h-[calc(100vh-112px)]  overflow-auto border bg-white drop-shadow-sm'
+        'mr-0 h-[calc(100vh-170px)] overflow-auto border bg-white drop-shadow-sm'
       )}
     >
       <Layout>
@@ -160,7 +160,7 @@ const SideMenu: React.FC = () => {
         >
           <div
             className={classnames(
-              'flex w-full justify-between border-b p-5 py-3 pb-3.5',
+              'flex w-full justify-between border-b p-5 py-3 pb-[15px]',
               {
                 '!justify-center': collapsed,
               }

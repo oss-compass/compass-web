@@ -11,7 +11,7 @@ const Oh = () => {
       <NavBar />
       <Main>
         <SideBar />
-        <div className="relative flex min-w-0 flex-1 flex-col bg-gray-50 px-4 pt-4 md:p-0">
+        <div className="relative flex min-w-0 flex-1 flex-col bg-[#f2f2f2] px-4 pt-4 md:p-0">
           <DataView />
         </div>
       </Main>

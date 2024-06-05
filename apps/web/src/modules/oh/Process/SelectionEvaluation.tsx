@@ -12,6 +12,7 @@ import {
   Row,
   Col,
   Upload,
+  Tabs,
 } from 'antd';
 import type { FormProps } from 'antd';
 import { PlusOutlined, ExclamationCircleTwoTone } from '@ant-design/icons';
@@ -72,21 +73,55 @@ const SelectionEvaluation = () => {
       children: '此版本优化了性能和用户体验',
     },
   ];
+  let tabItems = [
+    {
+      key: '2',
+      label: <div className="mx-2">选型评估信息</div>,
+      children: (
+        <div className="pt-4">
+          <Form
+            form={form}
+            labelCol={{ span: 6, style: { fontWeight: 'bold' } }}
+            style={{
+              width: '100%',
+            }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <EvaluationDetail />
+          </Form>
+        </div>
+      ),
+    },
+    {
+      key: '4',
+      label: <div className="mx-2">依赖关系解析</div>,
+      children: '依赖关系解析',
+      disabled: true,
+    },
+    {
+      key: '5',
+      label: <div className="mx-2">完整性信息维护</div>,
+      children: '完整性信息维护',
+      disabled: true,
+    },
+  ];
   return (
     <>
       <div className="flex flex-col justify-center py-4 px-5">
-        <div className="mb-5 flex items-start gap-2 border border-[#91d5ff] bg-[#e6f7ff] px-3 py-2 text-xs leading-5">
+        {/* <div className="mb-5 flex items-start gap-2 border border-[#91d5ff] bg-[#e6f7ff] px-3 py-2 text-xs leading-5">
           <ExclamationCircleTwoTone rev={undefined} className="mt-1" />
           <div>
             数据补全说明：若字段左侧出现符号，表示该字段信息为系统自动带出；若字段值左上角标示蓝色角标，表示该字段信息当前与版本火车或社区信息不一致，建议关注；
             “发布日期、“代码量”、“Copyright”已取消必填，若选型申请环节未填写，软件上车后数据治理团队/工具会自动补齐，并可在软件商城软件详情页进行查询
           </div>
-        </div>
+        </div> */}
 
         {queryType === '孵化选型评审' ? (
           <>
             <Descriptions className="oh" bordered items={listItem} />
-            <div className="my-6 text-base font-semibold">选型评估信息</div>
+            {/* <div className="my-6 text-base font-semibold">选型评估信息</div> */}
             <EvaluationDetail />
             <div className="my-6 text-base font-semibold">审核信息</div>
             <Form
@@ -134,86 +169,9 @@ const SelectionEvaluation = () => {
             </Form>
           </>
         ) : (
-          <Form
-            form={form}
-            labelCol={{ span: 6, style: { fontWeight: 'bold' } }}
-            style={{
-              width: '100%',
-            }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <div className="mb-6 text-base font-semibold">软件基础信息</div>
-            <Row gutter={24}>
-              <Col span={12}>
-                <Form.Item
-                  label="官网地址"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="源码地址"
-                  name="commitHash1"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="开发商"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="代码量"
-                  name="commitHash1"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="主语言类型"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="版本发布日期"
-                  name="commitHash1"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item
-                  labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                  label="版本描述"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input.TextArea />
-                </Form.Item>
-              </Col>
-            </Row>
-            {/* <div className="mb-6 text-base font-semibold">选型评估信息</div>
-            <EvaluationDetail /> */}
-          </Form>
+          <>
+            <Tabs className="oh-antd" size={'small'} items={tabItems} />
+          </>
         )}
       </div>
     </>

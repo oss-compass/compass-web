@@ -2,16 +2,7 @@ import React, { useState } from 'react';
 import { Descriptions } from 'antd';
 import type { DescriptionsProps } from 'antd';
 import type { CommitDetail } from '@oss-compass/graphql';
-import {
-  Button,
-  Radio,
-  InputNumber,
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-} from 'antd';
+import { Button, Radio, DatePicker, Form, Input, Select, Row, Col } from 'antd';
 import type { FormProps } from 'antd';
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import { useRouter } from 'next/router';
@@ -186,6 +177,7 @@ const SelectionApplication = () => {
             onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
+            <div className="mb-6 text-base font-semibold">软件基础信息</div>
             <Row gutter={24}>
               <Col span={12}>
                 <Form.Item
@@ -261,6 +253,132 @@ const SelectionApplication = () => {
                   rules={[{ required: true, message: '请输入!' }]}
                 >
                   <Input.TextArea />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  label="官网地址"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="源码地址"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="开发商"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="代码量"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="版本发布日期"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                  label="版本描述"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input.TextArea />
+                </Form.Item>
+              </Col>
+            </Row>
+            <div className="mb-6 text-base font-semibold">仓库信息维护</div>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  label="SIG名称"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <div className="mt-1.5">数据压缩算法</div>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="SIG描述"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <div className="mt-1.5">数据压缩算法 SIG 描述</div>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="新建仓路径"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Commiters"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="仓描述"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="引入方式"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Select>
+                    <Select.Option value="适配">适配</Select.Option>
+                    <Select.Option value="重写">重写</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="孵化时间"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请选择!' }]}
+                >
+                  <DatePicker placeholder="请选择日期" />
                 </Form.Item>
               </Col>
             </Row>

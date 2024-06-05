@@ -4,7 +4,7 @@ import Mian from '@modules/oh/OutProcess/Main';
 
 const OutProcess = () => {
   return (
-    <div className="flex flex-1 bg-[#f2f2f2]">
+    <div className="flex flex-1 overflow-hidden bg-[#f2f2f2]">
       <Side />
       <Mian />
     </div>

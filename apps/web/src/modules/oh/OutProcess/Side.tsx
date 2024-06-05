@@ -79,7 +79,7 @@ const SideMenu: React.FC = () => {
   return (
     <div
       className={classnames(
-        'sticky top-[56px] m-4 mr-0 h-[calc(100vh-112px)]  overflow-auto border bg-white drop-shadow-sm'
+        'mr-0 h-[calc(100vh-170px)]  overflow-auto border bg-white drop-shadow-sm'
       )}
     >
       <Layout>

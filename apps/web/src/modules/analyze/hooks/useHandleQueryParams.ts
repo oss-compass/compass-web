@@ -19,5 +19,11 @@ export const useHandleQueryParams = () => {
       query: newQueryParams,
     });
   };
-  return { handleQueryParams };
+  const clearAllQueryParams = () => {
+    const { pathname } = router;
+    router.push({
+      pathname,
+    });
+  };
+  return { handleQueryParams, clearAllQueryParams };
 };

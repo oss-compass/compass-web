@@ -12,6 +12,7 @@ import {
   TeamOutlined,
   DownloadOutlined,
 } from '@ant-design/icons';
+import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -60,7 +61,7 @@ const items: MenuItem[] = [
   },
   {
     key: 'sub3',
-    label: '软件入库管理',
+    label: '孵化治理',
     icon: <DownloadOutlined rev={undefined} />,
     children: [
       // {
@@ -81,14 +82,16 @@ const items: MenuItem[] = [
 
 const SideMenu: React.FC = () => {
   const id = useHashchangeEvent();
+  const { clearAllQueryParams } = useHandleQueryParams();
   const router = useRouter();
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log(e);
-    if (e.keyPath[1] === 'sub3') {
-      router.push('/oh/' + e.key);
-    } else {
-      window.location.hash = e.key;
-    }
+    // console.log(e);
+    // if (e.keyPath[1] === 'sub3') {
+    //   router.push('/oh/' + e.key);
+    // } else {
+    clearAllQueryParams();
+    window.location.hash = e.key;
+    // }
   };
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
@@ -102,12 +105,12 @@ const SideMenu: React.FC = () => {
   return (
     <div
       className={classnames('sticky overflow-auto', [
-        y >= preY
+        y > preY
           ? 'top-[56px] h-[calc(100vh-56px)]'
           : 'top-[136px] h-[calc(100vh-136px)]',
       ])}
     >
-      <Layout>
+      <Layout className="oh">
         <Sider
           breakpoint="lg"
           theme="light"
