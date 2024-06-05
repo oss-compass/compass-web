@@ -49,7 +49,7 @@ const OrgTable = () => {
       key: 'domain',
       width: 700,
       render: (text, record: any, index: number) => {
-        let dom = text.map((i) => <Tag>{i}</Tag>);
+        let dom = text.map((i) => <Tag key={i}>{i}</Tag>);
         return <div className="flex flex-wrap gap-y-2">{dom}</div>;
       },
     },

@@ -892,7 +892,7 @@ const MemberTable = () => {
       dataIndex: 'linkSig',
       key: 'linkSig',
       render: (text) => {
-        let dom = text?.repos?.map((i) => <Tag>{i}</Tag>);
+        let dom = text?.repos?.map((i) => <Tag key={i}>{i}</Tag>);
         return <div className="flex flex-wrap gap-y-2">{dom}</div>;
       },
     },
@@ -901,7 +901,7 @@ const MemberTable = () => {
       dataIndex: 'maintainers',
       key: 'maintainers',
       render: (text) => {
-        let dom = text?.map((i) => <Tag>{i}</Tag>);
+        let dom = text?.map((i) => <Tag key={i}>{i}</Tag>);
         return <div className="flex flex-wrap gap-y-2">{dom}</div>;
       },
     },
