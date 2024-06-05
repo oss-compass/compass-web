@@ -115,6 +115,12 @@
   border-radius: 5px;
   background: #bfbfbf;
 }
+.oh {
+  .ant-descriptions-item-label {
+    color: black !important;
+    font-weight: 600;
+  }
+}
 // .ant-spin-nested-loading {
 //   height: 100%;
 //   .ant-spin-container {

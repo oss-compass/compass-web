@@ -61,6 +61,96 @@ const RepoInformationMaintenance = () => {
     },
   ];
   const tableData = [];
+  let listItem1 = [
+    {
+      label: 'SIG 名称',
+      span: 2,
+      children: '数据压缩算法',
+    },
+    {
+      label: 'SIG 描述',
+      span: 2,
+      children: '测试 SIG 描述',
+    },
+    {
+      label: '新建仓路径',
+      span: 2,
+      children: 'https://github.com/example/project',
+    },
+    {
+      label: 'Commiters',
+      span: 2,
+      children: 'John Doe, Jane Smith',
+    },
+    {
+      label: '仓描述',
+      span: 2,
+      children: '测试仓描述',
+    },
+    {
+      label: '引入方式',
+      span: 2,
+      children: '适配',
+    },
+    {
+      label: '孵化时间',
+      span: 2,
+      children: '2023-06-01',
+    },
+  ];
+  let listItem2 = [
+    {
+      label: 'SIG Manifest 分支',
+      span: 2,
+      children: 'main',
+    },
+    {
+      label: 'SIG Manifestfile',
+      span: 2,
+      children: 'sig-manifest.yaml',
+    },
+    {
+      label: '编译形态名',
+      span: 2,
+      children: 'release',
+    },
+    {
+      label: '后编译命令',
+      span: 2,
+      children: 'npm run build',
+    },
+    {
+      label: '是否打 patch',
+      span: 4,
+      children: '是',
+    },
+    {
+      label: '预编译命令',
+      span: 4,
+      children: 'npm install',
+    },
+    {
+      label: '编译命令',
+      span: 4,
+      children: 'npm run compile',
+    },
+    {
+      label: '产物路径',
+      span: 4,
+      children: 'dist/',
+    },
+    {
+      label: '代码下载命令',
+      span: 4,
+      children: 'git clone https://github.com/example/project.git',
+    },
+    {
+      label: '是否关联下载代码',
+      span: 4,
+      children: '是',
+    },
+  ];
+
   return (
     <>
       <div className="flex flex-col justify-center py-4 px-5">
@@ -79,210 +169,12 @@ const RepoInformationMaintenance = () => {
             <div>3、已经初始化的源码仓会自动导入社区 Tag；</div>
           </div>
         </div>
-        <Form
-          form={form}
-          labelCol={{
-            span: 6,
-            style: { fontWeight: 'bold' },
-          }}
-          style={{
-            width: '100%',
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="SIG名称"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <div className="mt-1.5">数据压缩算法</div>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="SIG描述"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="新建仓路径"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Commiters"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="仓描述"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="引入方式"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  <Select.Option value="适配">适配</Select.Option>
-                  <Select.Option value="重写">重写</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="孵化时间"
-                name="commitHash"
-                rules={[{ required: true, message: '请选择!' }]}
-              >
-                <DatePicker placeholder="请选择日期" />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-        <div className="mb-6 text-base font-semibold">仓库信息维护</div>
-        <Form
-          form={form}
-          labelCol={{
-            span: 6,
-            style: { fontWeight: 'bold' },
-          }}
-          style={{
-            width: '100%',
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="SIG Manifest分支"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="SIG Manifestfile"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="编译形态名"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="后编译命令"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                label="是否打patch"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Radio.Group>
-                  <Radio value="是"> 是 </Radio>
-                  <Radio value="否"> 否 </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                label="预编译命令"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                label="编译命令"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                label="产物路径"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                label="代码下载命令"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                label="是否关联下载代码"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Radio.Group>
-                  <Radio value="是"> 是 </Radio>
-                  <Radio value="否"> 否 </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-        {queryType === '孵化选型评审' && (
+        {queryType === '孵化选型评审' ? (
           <>
-            <div className="mb-6 text-base font-semibold">审核信息</div>
+            <Descriptions className="oh" bordered items={listItem1} />
+            <div className="my-6 text-base font-semibold">仓库信息维护</div>
+            <Descriptions className="oh" bordered items={listItem2} />
+            <div className="my-6 text-base font-semibold">审核信息</div>
             <Form
               form={form}
               labelCol={{
@@ -325,6 +217,210 @@ const RepoInformationMaintenance = () => {
                   <Input.TextArea />
                 </Form.Item>
               </Col>
+            </Form>
+          </>
+        ) : (
+          <>
+            <Form
+              form={form}
+              labelCol={{
+                span: 6,
+                style: { fontWeight: 'bold' },
+              }}
+              style={{
+                width: '100%',
+              }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Row gutter={24}>
+                <Col span={12}>
+                  <Form.Item
+                    label="SIG名称"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <div className="mt-1.5">数据压缩算法</div>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="SIG描述"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="新建仓路径"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="Commiters"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="仓描述"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="引入方式"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Select>
+                      <Select.Option value="适配">适配</Select.Option>
+                      <Select.Option value="重写">重写</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="孵化时间"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请选择!' }]}
+                  >
+                    <DatePicker placeholder="请选择日期" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+            <div className="mb-6 text-base font-semibold">仓库信息维护</div>
+            <Form
+              form={form}
+              labelCol={{
+                span: 6,
+                style: { fontWeight: 'bold' },
+              }}
+              style={{
+                width: '100%',
+              }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Row gutter={24}>
+                <Col span={12}>
+                  <Form.Item
+                    label="SIG Manifest分支"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="SIG Manifestfile"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="编译形态名"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="后编译命令"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                    label="是否打patch"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Radio.Group>
+                      <Radio value="是"> 是 </Radio>
+                      <Radio value="否"> 否 </Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                    label="预编译命令"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                    label="编译命令"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                    label="产物路径"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                    label="代码下载命令"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                    label="是否关联下载代码"
+                    name="commitHash"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Radio.Group>
+                      <Radio value="是"> 是 </Radio>
+                      <Radio value="否"> 否 </Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
+              </Row>
             </Form>
           </>
         )}

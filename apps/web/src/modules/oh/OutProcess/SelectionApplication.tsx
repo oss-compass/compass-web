@@ -33,6 +33,73 @@ const SelectionApplication = () => {
   };
   const [form] = Form.useForm();
   form.setFieldsValue(commitInfo);
+  let listItem = [
+    {
+      label: '所属领域',
+      span: 2,
+      children: 'CI/CD',
+    },
+    {
+      label: '编程语言',
+      span: 2,
+      children: 'Java',
+    },
+    {
+      label: '软件名称',
+      span: 2,
+      children: '自动化工具',
+    },
+    {
+      label: '软件版本',
+      span: 2,
+      children: 'V2.0',
+    },
+    {
+      label: '相关 APP',
+      span: 2,
+      children: '公司内部使用',
+    },
+    {
+      label: '软件性质',
+      span: 2,
+      children: '组织项目',
+    },
+    {
+      label: '选型原因',
+      span: 4,
+      children: '提高生产效率',
+    },
+    {
+      label: '官网地址',
+      span: 2,
+      children: '192.168.1.100',
+    },
+    {
+      label: '源码地址',
+      span: 2,
+      children: 'https://github.com/example/project',
+    },
+    {
+      label: '开发商',
+      span: 2,
+      children: '某公司',
+    },
+    {
+      label: '代码量',
+      span: 2,
+      children: '10000 行',
+    },
+    {
+      label: '版本发布日期',
+      span: 2,
+      children: '2023-05-01',
+    },
+    {
+      label: '版本描述',
+      span: 4,
+      children: '此版本优化了性能和用户体验',
+    },
+  ];
   return (
     <>
       <div className="flex flex-col justify-center py-4 px-5">
@@ -62,7 +129,11 @@ const SelectionApplication = () => {
             </div>
           </div>
         </div>
-        <Form
+        <div className="mb-6 text-base font-semibold">软件基础信息</div>
+        <Descriptions className="oh" bordered items={listItem} />
+        <div className="my-6 text-base font-semibold">软件评估信息</div>
+        <EvaluationDetail />
+        {/* <Form
           form={form}
           labelCol={{
             span: 6,
@@ -95,7 +166,7 @@ const SelectionApplication = () => {
               </Form.Item>
             </Col>
           </Row>
-        </Form>
+        </Form> */}
         {/* <div className="my-2">
           <EvaluationDetail />
         </div> */}

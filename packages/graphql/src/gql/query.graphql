@@ -1090,7 +1090,7 @@ query commitsRepoDataList(
       linesRemoved
       repoName
       repoAttributeType
-      repoTechnologyType
+      sigName
     }
     page
     totalPage
@@ -1221,7 +1221,7 @@ query codesRepoPage(
       manager
       repoAttributeType
       repoName
-      repoTechnologyType
+      sigName
     }
     page
     totalPage
@@ -1283,10 +1283,10 @@ query codesTrend(
       count
       date
     }
-    type
+    sigName
   }
 }
-query commitsTechTypePage(
+query commitsSigPage(
   $label: String!
   $level: String = "repo"
   $branch: String = "master"
@@ -1297,7 +1297,7 @@ query commitsTechTypePage(
   $beginDate: ISO8601DateTime
   $endDate: ISO8601DateTime
 ) {
-  commitsTechTypePage(
+  commitsSigPage(
     label: $label
     level: $level
     branch: $branch
@@ -1313,7 +1313,7 @@ query commitsTechTypePage(
       linesAdded
       linesChanged
       linesRemoved
-      repoTechnologyType
+      sigName
     }
     page
     totalPage
@@ -1457,6 +1457,77 @@ query organizationPage(
     items {
       domain
       orgName
+    }
+    page
+    totalPage
+  }
+}
+
+query subjectAccessLevelPage(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+  $accessLevel: Int
+) {
+  subjectAccessLevelPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    accessLevel: $accessLevel
+  ) {
+    count
+    items {
+      accessLevel
+      id
+      subjectId
+      user {
+        id
+        name
+        roleLevel
+        email
+        language
+        emailVerified
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+        contributingOrgs {
+          firstDate
+          lastDate
+          orgName
+          platformType
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+
+query subjectSigPage(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+) {
+  subjectSigPage(page: $page, per: $per, label: $label, level: $level) {
+    count
+    items {
+      description
+      emails
+      id
+      linkSig {
+        label
+        level
+        repos
+      }
+      maintainers
+      name
     }
     page
     totalPage

@@ -5,7 +5,6 @@ import type { MenuProps } from 'antd';
 import { Layout } from 'antd';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { ClockCircleOutlined } from '@ant-design/icons';
 import { Timeline } from 'antd';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 

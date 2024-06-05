@@ -34,6 +34,44 @@ const SelectionEvaluation = () => {
   };
   const [form] = Form.useForm();
   form.setFieldsValue(commitInfo);
+
+  let listItem = [
+    {
+      label: '官网地址',
+      span: 2,
+      children: '192.168.1.100',
+    },
+    {
+      label: '源码地址',
+      span: 2,
+      children: 'https://github.com/example/project',
+    },
+    {
+      label: '开发商',
+      span: 2,
+      children: '某公司',
+    },
+    {
+      label: '代码量',
+      span: 2,
+      children: '10000 行',
+    },
+    {
+      label: '主语言类型',
+      span: 2,
+      children: 'Java',
+    },
+    {
+      label: '版本发布日期',
+      span: 2,
+      children: '2023-05-01',
+    },
+    {
+      label: '版本描述',
+      span: 4,
+      children: '此版本优化了性能和用户体验',
+    },
+  ];
   return (
     <>
       <div className="flex flex-col justify-center py-4 px-5">
@@ -44,270 +82,13 @@ const SelectionEvaluation = () => {
             “发布日期、“代码量”、“Copyright”已取消必填，若选型申请环节未填写，软件上车后数据治理团队/工具会自动补齐，并可在软件商城软件详情页进行查询
           </div>
         </div>
-        <Form
-          form={form}
-          labelCol={{ span: 6, style: { fontWeight: 'bold' } }}
-          style={{
-            width: '100%',
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <div className="mb-6 text-base font-semibold">软件基础信息</div>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="管网地址"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="源码地址"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="开发商"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="代码量"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="主语言类型"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="版本发布日期"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
-                label="版本描述"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input.TextArea />
-              </Form.Item>
-            </Col>
-          </Row>
-          <div className="mb-6 text-base font-semibold">选型评估信息</div>
-          <EvaluationDetail />
-          {/* <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="官网地址"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Radio.Group>
-                  <Radio value="apple"> 是 </Radio>
-                  <Radio value="pear"> 否 </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="软件生命力"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="社区版本发布节奏"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="社区 EOL 日期"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="社区 EOL 披露地址"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="官网漏洞披露地址"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="外部漏洞源的软件名称"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="是否涉及用户登录"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Radio.Group>
-                  <Radio value="apple"> 是 </Radio>
-                  <Radio value="pear"> 否 </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="是否是安卓类 APP 组件"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Radio.Group>
-                  <Radio value="apple"> 是 </Radio>
-                  <Radio value="pear"> 否 </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="C-TMG CBB 技术决策附近"
-                valuePropName="fileList"
-                getValueFromEvent={null}
-              >
-                <Upload action="/upload.do" listType="picture-card">
-                  <button
-                    style={{ border: 0, background: 'none' }}
-                    type="button"
-                  >
-                    <PlusOutlined rev={undefined} />
-                    <div style={{ marginTop: 8 }}>上传</div>
-                  </button>
-                </Upload>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Col span={24}>
-            <Form.Item
-              labelCol={{ span: 4 }}
-              label="社区安全问题求助渠道"
-              name="commitHash"
-              rules={[{ required: true, message: '请输入!' }]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              labelCol={{ span: 4 }}
-              label="开源主 License"
-              name="commitHash"
-              rules={[{ required: true, message: '请输入!' }]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              labelCol={{ span: 4 }}
-              label="License 分析报告"
-              name="commitHash"
-              rules={[{ required: true, message: '请输入!' }]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
 
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="Copyright"
-                valuePropName="fileList"
-                getValueFromEvent={null}
-              >
-                <Upload action="/upload.do" listType="picture-card">
-                  <button
-                    style={{ border: 0, background: 'none' }}
-                    type="button"
-                  >
-                    <PlusOutlined rev={undefined} />
-                    <div style={{ marginTop: 8 }}>上传</div>
-                  </button>
-                </Upload>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Col span={24}>
-            <Form.Item
-              labelCol={{ span: 4 }}
-              label="备注"
-              name="commitHash"
-              rules={[{ message: '请输入!' }]}
-            >
-              <Input.TextArea />
-            </Form.Item>
-          </Col> */}
-        </Form>
-        {queryType === '孵化选型评审' && (
+        {queryType === '孵化选型评审' ? (
           <>
-            <div className="mb-6 text-base font-semibold">审核信息</div>
+            <Descriptions className="oh" bordered items={listItem} />
+            <div className="my-6 text-base font-semibold">选型评估信息</div>
+            <EvaluationDetail />
+            <div className="my-6 text-base font-semibold">审核信息</div>
             <Form
               form={form}
               labelCol={{
@@ -352,6 +133,87 @@ const SelectionEvaluation = () => {
               </Col>
             </Form>
           </>
+        ) : (
+          <Form
+            form={form}
+            labelCol={{ span: 6, style: { fontWeight: 'bold' } }}
+            style={{
+              width: '100%',
+            }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <div className="mb-6 text-base font-semibold">软件基础信息</div>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  label="官网地址"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="源码地址"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="开发商"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="代码量"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="主语言类型"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="版本发布日期"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  labelCol={{ span: 3, style: { fontWeight: 'bold' } }}
+                  label="版本描述"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input.TextArea />
+                </Form.Item>
+              </Col>
+            </Row>
+            {/* <div className="mb-6 text-base font-semibold">选型评估信息</div>
+            <EvaluationDetail /> */}
+          </Form>
         )}
       </div>
     </>

@@ -4,47 +4,66 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
+import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+import {
+  useSubjectAccessLevelPageQuery,
+  SubjectAccessLevel,
+  FilterOptionInput,
+  SortOptionInput,
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
+
+interface TableQuery {
+  label: string;
+  level: string;
+  page: number;
+  per: number;
+  accessLevel: number;
+}
 
 const MemberTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const dataSource = [
-    {
-      ID: 'coder',
-      company: '中软国际',
-      role: '社区管理员',
-      permission: '反馈审核，SIG 管理',
-      subSystem: 'coder@chinasoft.com',
-    },
-    {
-      ID: 'xinxin',
-      company: '华为',
-      role: '社区管理员',
-      permission: '反馈审核，SIG 管理',
-      subSystem: 'xinxin@huawei.com',
-    },
-  ];
+  const {
+    tableData,
+    setData,
+    tableParams,
+    setTableParams,
+    query,
+    handleTableChange,
+  } = useGetTableOption({
+    label: 'openharmony-tpc',
+    level: 'community',
+  });
 
   const columns = [
     {
       title: '用户名',
       dataIndex: 'ID',
       key: 'ID',
+      render: (_, record) => {
+        return record.user.name;
+      },
     },
     {
       title: '组织',
-      dataIndex: 'company',
-      key: 'company',
+      render: (_, record) => {
+        return record.user?.contributingOrgs?.[0]?.orgName;
+      },
     },
     {
       title: '邮箱',
-      dataIndex: 'subSystem',
-      key: 'subSystem',
+      render: (_, record) => {
+        return record.user.email;
+      },
     },
     {
       title: '角色',
       dataIndex: 'role',
       key: 'role',
+      render: (_, record) => {
+        return record.user.subjectId === 1 ? '管理员' : '成员';
+      },
     },
     {
       title: '权限',
@@ -62,9 +81,28 @@ const MemberTable = () => {
       ),
     },
   ];
-  const pagination = {
-    hideOnSinglePage: true,
+  const myQuery = {
+    page: query.page,
+    per: query.per,
+    label: 'openharmony-tpc',
+    level: 'community',
   };
+  const { isLoading, isFetching } = useSubjectAccessLevelPageQuery(
+    client,
+    myQuery,
+    {
+      onSuccess: (data) => {
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.subjectAccessLevelPage.count as number,
+          },
+        });
+        setData(data.subjectAccessLevelPage.items);
+      },
+    }
+  );
   return (
     <>
       <TableCard
@@ -74,10 +112,10 @@ const MemberTable = () => {
       >
         <MyTable
           columns={columns}
-          dataSource={dataSource}
-          //   loading={isLoading || isFetching}
-          //   onChange={handleTableChange}
-          pagination={pagination}
+          dataSource={tableData}
+          loading={isLoading || isFetching}
+          onChange={handleTableChange}
+          pagination={tableParams.pagination}
           rowKey={'key'}
           scroll={{ x: 'max-content' }}
         />

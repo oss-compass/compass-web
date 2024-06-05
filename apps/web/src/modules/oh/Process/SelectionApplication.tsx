@@ -56,6 +56,44 @@ const SelectionApplication = () => {
   };
   const [form] = Form.useForm();
   form.setFieldsValue(commitInfo);
+
+  let listItem = [
+    {
+      label: '所属领域',
+      span: 2,
+      children: 'CI/CD',
+    },
+    {
+      label: '编程语言',
+      span: 2,
+      children: 'Python',
+    },
+    {
+      label: '软件名称',
+      span: 2,
+      children: '自动化工具',
+    },
+    {
+      label: '软件版本',
+      span: 2,
+      children: 'V2.0',
+    },
+    {
+      label: '相关 APP',
+      span: 2,
+      children: '公司内部使用',
+    },
+    {
+      label: '软件性质',
+      span: 2,
+      children: '组织项目',
+    },
+    {
+      label: '选型原因',
+      span: 4,
+      children: '提高生产效率',
+    },
+  ];
   return (
     <>
       <div className="flex flex-col justify-center py-4 px-5">
@@ -85,101 +123,11 @@ const SelectionApplication = () => {
             </div>
           </div>
         </div>
-        <Form
-          form={form}
-          labelCol={{
-            span: 6,
-            style: { fontWeight: 'bold' },
-          }}
-          style={{
-            width: '100%',
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="所属领域"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  {yList.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="编程语言"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="软件名称"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="软件版本"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="相关APP"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="软件性质"
-                name="commitHash1"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  <Select.Option value="组织项目">组织项目</Select.Option>
-                  <Select.Option value="个人项目">个人项目</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{
-                  span: 3,
-                  style: { fontWeight: 'bold' },
-                }}
-                label="选型原因"
-                name="commitHash"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input.TextArea />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-        {queryType === '孵化选型评审' && (
+
+        {queryType === '孵化选型评审' ? (
           <>
-            <div className="mb-6 text-base font-semibold">审核信息</div>
+            <Descriptions className="oh" bordered items={listItem} />
+            <div className="my-6 text-base font-semibold">审核信息</div>
             <Form
               form={form}
               labelCol={{
@@ -224,6 +172,99 @@ const SelectionApplication = () => {
               </Col>
             </Form>
           </>
+        ) : (
+          <Form
+            form={form}
+            labelCol={{
+              span: 6,
+              style: { fontWeight: 'bold' },
+            }}
+            style={{
+              width: '100%',
+            }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  label="所属领域"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Select>
+                    {yList.map((item) => (
+                      <Select.Option key={item} value={item}>
+                        {item}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="编程语言"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="软件名称"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="软件版本"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="相关APP"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="软件性质"
+                  name="commitHash1"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Select>
+                    <Select.Option value="组织项目">组织项目</Select.Option>
+                    <Select.Option value="个人项目">个人项目</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  labelCol={{
+                    span: 3,
+                    style: { fontWeight: 'bold' },
+                  }}
+                  label="选型原因"
+                  name="commitHash"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input.TextArea />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
         )}
       </div>
     </>

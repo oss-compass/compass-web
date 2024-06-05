@@ -4,6 +4,7 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
+import { Tag } from 'antd';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import {
   useOrganizationPageQuery,
@@ -36,12 +37,6 @@ const OrgTable = () => {
   });
 
   const columns = [
-    // {
-    //   title: 'ID',
-    //   dataIndex: 'ID',
-    //   key: 'ID',
-    // },
-
     {
       title: '组织',
       dataIndex: 'orgName',
@@ -53,8 +48,9 @@ const OrgTable = () => {
       dataIndex: 'domain',
       key: 'domain',
       width: 700,
-      render: (text: string, record: any, index: number) => {
-        return record.domain.join(', ');
+      render: (text, record: any, index: number) => {
+        let dom = text.map((i) => <Tag>{i}</Tag>);
+        return <div className="flex flex-wrap gap-y-2">{dom}</div>;
       },
     },
     {
@@ -69,9 +65,7 @@ const OrgTable = () => {
       ),
     },
   ];
-  const pagination = {
-    hideOnSinglePage: true,
-  };
+
   const { isLoading, isFetching } = useOrganizationPageQuery(
     client,
     query as TableQuery,

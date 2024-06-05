@@ -92,9 +92,9 @@ const RepoTable = () => {
       },
     },
     {
-      title: '技术垂域分类',
-      dataIndex: 'repoTechnologyType',
-      key: 'repoTechnologyType',
+      title: 'SIG',
+      dataIndex: 'sigName',
+      key: 'sigName',
     },
     {
       title: 'PR 新增代码量',

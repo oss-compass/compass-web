@@ -10,14 +10,14 @@ const Main = () => {
   const items = [
     {
       key: '1',
-      label: <div className="mx-4 text-lg">准出申请</div>,
+      label: <div className="mx-4 text-lg">准出申请详情</div>,
       children: <SelectionApplication />,
     },
-    {
-      key: '2',
-      label: <div className="mx-4 text-lg">准出评估</div>,
-      children: <SelectionEvaluation />,
-    },
+    // {
+    //   key: '2',
+    //   label: <div className="mx-4 text-lg">准出评估</div>,
+    //   children: <SelectionEvaluation />,
+    // },
   ];
   const router = useRouter();
   const queryType = router.query?.type as string;
