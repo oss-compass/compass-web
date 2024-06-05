@@ -133,9 +133,9 @@ const CodeChart = () => {
   };
   const { isLoading, isFetching, data } = useCodesTrendQuery(client, query, {});
   const option = useMemo(() => {
-    console.log(data?.codesTrend.map((item) => item.type));
+    console.log(data?.codesTrend.map((item) => item.sigName));
     const typeData =
-      data?.codesTrend?.find((item) => item.type === type)?.detailList || [];
+      data?.codesTrend?.find((item) => item.sigName === type)?.detailList || [];
     const echartsOpts: EChartsOption = {
       tooltip: {
         trigger: 'axis',

@@ -58,7 +58,7 @@ const SelectionEvaluation = () => {
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
-                label="管网地址"
+                label="官网地址"
                 name="commitHash"
                 rules={[{ required: true, message: '请输入!' }]}
               >
@@ -122,9 +122,7 @@ const SelectionEvaluation = () => {
             </Col>
           </Row>
           <div className="mb-6 text-base font-semibold">选型评估信息</div>
-          <div className="my-2">
-            <EvaluationDetail />
-          </div>
+
           {/* <Row gutter={24}>
             <Col span={12}>
               <Form.Item
@@ -307,6 +305,9 @@ const SelectionEvaluation = () => {
             </Form.Item>
           </Col> */}
         </Form>
+        {/* <div className="my-2">
+          <EvaluationDetail />
+        </div> */}
         {queryType === '孵化选型评审' && (
           <>
             <div className="mb-6 text-base font-semibold">审核信息</div>

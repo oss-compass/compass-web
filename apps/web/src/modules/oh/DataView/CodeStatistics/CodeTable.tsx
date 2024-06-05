@@ -73,8 +73,8 @@ const CodeTable = () => {
     },
     {
       title: '技术垂域分类',
-      dataIndex: 'repoTechnologyType',
-      key: 'repoTechnologyType',
+      dataIndex: 'sigName',
+      key: 'sigName',
     },
     {
       title: '责任人',

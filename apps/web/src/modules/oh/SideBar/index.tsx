@@ -102,9 +102,9 @@ const SideMenu: React.FC = () => {
   return (
     <div
       className={classnames('sticky overflow-auto', [
-        y < preY
-          ? 'top-[136px] h-[calc(100vh-136px)]'
-          : 'top-[56px] h-[calc(100vh-56px)]',
+        y >= preY
+          ? 'top-[56px] h-[calc(100vh-56px)]'
+          : 'top-[136px] h-[calc(100vh-136px)]',
       ])}
     >
       <Layout>

@@ -7,7 +7,22 @@ import MyTable from '@common/components/Table';
 import { getRepoName } from '@common/utils';
 import SigDetail from './SigDetail';
 import { useRouter } from 'next/router';
-
+import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+import {
+  useSubjectSigPageQuery,
+  SubjectSigPage,
+  FilterOptionInput,
+  SortOptionInput,
+} from '@oss-compass/graphql';
+import client from '@common/gqlClient';
+import { Tag } from 'antd';
+import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
+interface TableQuery {
+  label: string;
+  level?: string;
+  page?: number;
+  per?: number;
+}
 const typeLit = [
   {
     URL: 'https://gitee.com/openharmony-tpc/ohos_mail',
@@ -852,12 +867,13 @@ const MemberTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [sigItem, setSigItem] = useState(getOhQuery(result));
   const dataSource = result;
+  const { timeStart, timeEnd } = useQueryDateRange();
 
   const columns = [
     {
       title: 'SIG 名称',
-      dataIndex: 'ID',
-      key: 'ID',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) => {
         return (
           <a
@@ -873,26 +889,57 @@ const MemberTable = () => {
     },
     {
       title: '仓库',
-      dataIndex: 'company',
-      key: 'company',
-      render: (text: string) => {
-        return text.slice(0, -1);
+      dataIndex: 'linkSig',
+      key: 'linkSig',
+      render: (text) => {
+        let dom = text?.repos?.map((i) => <Tag>{i}</Tag>);
+        return <div className="flex flex-wrap gap-y-2">{dom}</div>;
       },
     },
     {
       title: 'Maintainer',
-      dataIndex: 'maintainer',
-      key: 'maintainer',
+      dataIndex: 'maintainers',
+      key: 'maintainers',
+      render: (text) => {
+        let dom = text?.map((i) => <Tag>{i}</Tag>);
+        return <div className="flex flex-wrap gap-y-2">{dom}</div>;
+      },
     },
     {
       title: '邮件',
-      dataIndex: 'mail',
-      key: 'mail',
+      dataIndex: 'emails',
+      key: 'emails',
     },
   ];
-  const pagination = {
-    hideOnSinglePage: true,
+  const {
+    tableData,
+    setData,
+    tableParams,
+    setTableParams,
+    query,
+    handleTableChange,
+  } = useGetTableOption({
+    label: 'openharmony-tpc',
+    level: 'community',
+  });
+  const myQuery = {
+    page: query.page,
+    per: query.per,
+    label: 'openharmony-tpc',
+    level: 'community',
   };
+  const { isLoading, isFetching } = useSubjectSigPageQuery(client, myQuery, {
+    onSuccess: (data) => {
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: data.subjectSigPage.count as number,
+        },
+      });
+      setData(data.subjectSigPage.items);
+    },
+  });
   return (
     <>
       {sigItem ? (
@@ -905,10 +952,10 @@ const MemberTable = () => {
         >
           <MyTable
             columns={columns}
-            dataSource={dataSource}
-            //   loading={isLoading || isFetching}
-            //   onChange={handleTableChange}
-            pagination={pagination}
+            dataSource={tableData}
+            loading={isLoading || isFetching}
+            onChange={handleTableChange}
+            pagination={tableParams.pagination}
             rowKey={'key'}
             scroll={{ x: 'max-content' }}
           />
