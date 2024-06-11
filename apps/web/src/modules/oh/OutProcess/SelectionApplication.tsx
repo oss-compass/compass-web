@@ -1,38 +1,15 @@
 import React, { useState } from 'react';
-import { Descriptions } from 'antd';
-import type { DescriptionsProps } from 'antd';
-import type { CommitDetail } from '@oss-compass/graphql';
-import {
-  Button,
-  Radio,
-  InputNumber,
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-} from 'antd';
-import type { FormProps } from 'antd';
+import { Button, message, Form, Input, Radio, Row, Col } from 'antd';
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
-import { useRouter } from 'next/router';
+import {
+  procseeState,
+  procseeActions,
+} from '@modules/oh/OutProcess/OutProcseeState';
+import { useSnapshot } from 'valtio';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 
 const SelectionApplication = () => {
-  const router = useRouter();
-  const queryType = router.query?.type as string;
-
-  const [commitInfo, setOpenConfirm] = useState({});
-  const onFinish: FormProps<CommitDetail>['onFinish'] = (values) => {
-    console.log('Success:', values);
-  };
-
-  const onFinishFailed: FormProps<CommitDetail>['onFinishFailed'] = (
-    errorInfo
-  ) => {
-    // console.log('Failed:', errorInfo);
-  };
-  const [form] = Form.useForm();
-  form.setFieldsValue(commitInfo);
+  const processesID = '孵化准出申请';
   let listItem = [
     {
       label: '所属领域',
@@ -100,8 +77,41 @@ const SelectionApplication = () => {
       children: '此版本优化了性能和用户体验',
     },
   ];
+
+  const snap = useSnapshot(procseeState);
+  const { allProcesses } = snap;
+  let proceedingProcesses = allProcesses.find(
+    (item) => item.state === 'proceeding'
+  );
+  let isProceedingProcesses = proceedingProcesses.id === processesID;
+  console.log(proceedingProcesses.id);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    softwareName: 'Sample Software',
+    domain: 'https://github.com/example/project',
+  });
+  const submit = () => {
+    form.validateFields().then((values) => {
+      setSubmitLoading(true);
+      setTimeout(() => {
+        messageApi.open({
+          type: 'success',
+          content: '提交成功',
+        });
+        setSubmitLoading(false);
+        procseeActions.setNextProcsee(processesID);
+      }, 1000);
+      console.log(values);
+    });
+  };
+  const recall = () => {
+    // form.resetFields();
+  };
   return (
     <>
+      {contextHolder}
       <div className="flex flex-col justify-center py-4 px-5">
         <div className="mb-5 flex items-start gap-2 border border-[#91d5ff] bg-[#e6f7ff] px-3 py-2 text-xs leading-5">
           <ExclamationCircleTwoTone rev={undefined} className="mt-1" />
@@ -130,10 +140,8 @@ const SelectionApplication = () => {
           </div>
         </div>
         <div className="mb-6 text-base font-semibold">软件基础信息</div>
-        <Descriptions className="oh" bordered items={listItem} />
-        <div className="my-6 text-base font-semibold">软件评估信息</div>
-        <EvaluationDetail />
-        {/* <Form
+        {/* <Descriptions className="oh" bordered items={listItem} /> */}
+        <Form
           form={form}
           labelCol={{
             span: 6,
@@ -142,83 +150,89 @@ const SelectionApplication = () => {
           style={{
             width: '100%',
           }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          disabled={true}
+          // onFinish={onFinish}
+          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
-                label="项目名称"
-                name="commitHash"
+                label="软件名称"
+                name="softwareName"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <div className="mt-1.5">VUE</div>
+                <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="仓库地址"
-                name="commitHash1"
+                name="domain"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <div className="mt-1.5">https://gitee.com/vuejs/vue</div>
+                <Input />
               </Form.Item>
             </Col>
           </Row>
-        </Form> */}
-        {/* <div className="my-2">
-          <EvaluationDetail />
-        </div> */}
-        {queryType === '孵化选型评审' && (
-          <>
-            <div className="mb-6 text-base font-semibold">审核信息</div>
-            <Form
-              form={form}
-              labelCol={{
-                span: 6,
-                style: { fontWeight: 'bold' },
-              }}
-              style={{
-                width: '100%',
-              }}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
-              <Col span={24}>
-                <Form.Item
-                  labelCol={{
-                    span: 3,
-                    style: { fontWeight: 'bold' },
-                  }}
-                  label="审核结论"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Radio.Group>
-                    <Radio value="apple"> 通过 </Radio>
-                    <Radio value="pear"> 驳回 </Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item
-                  labelCol={{
-                    span: 3,
-                    style: { fontWeight: 'bold' },
-                  }}
-                  label="审核意见"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input.TextArea />
-                </Form.Item>
-              </Col>
-            </Form>
-          </>
-        )}
+        </Form>
+        <div className="my-6 text-base font-semibold">软件评估信息</div>
+        <EvaluationDetail />
+        {/* <div className="my-6 text-base font-semibold">审核信息</div>
+        <Col span={24}>
+          <Form.Item
+            labelCol={{
+              span: 3,
+              style: { fontWeight: 'bold' },
+            }}
+            label="审核结论"
+            name="conclusion"
+            rules={[{ required: true, message: '请输入!' }]}
+          >
+            <Radio.Group>
+              <Radio value="apple"> 通过 </Radio>
+              <Radio value="pear"> 驳回 </Radio>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item
+            labelCol={{
+              span: 3,
+              style: { fontWeight: 'bold' },
+            }}
+            label="审核意见"
+            name="comment"
+            rules={[{ required: true, message: '请输入!' }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+        </Col> */}
       </div>
+      {isProceedingProcesses && (
+        <div className="fixed bottom-2 flex w-[99%] justify-center gap-2">
+          <Button
+            className="rounded-none"
+            type="primary"
+            loading={submitLoading}
+            onClick={() => {
+              submit();
+            }}
+          >
+            提交
+          </Button>
+          {/* <Button className="rounded-none">保存</Button> */}
+          <Button
+            className="rounded-none"
+            htmlType="submit"
+            onClick={() => {
+              recall();
+            }}
+          >
+            撤回
+          </Button>
+        </div>
+      )}
     </>
   );
 };

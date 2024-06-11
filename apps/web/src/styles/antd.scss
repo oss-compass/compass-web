@@ -27,7 +27,8 @@
   height: 26px;
   // width: 160px;
 }
-.ant-input {
+.ant-input,
+.ant-input-affix-wrapper {
   border-radius: 0px !important;
 }
 .ant-form-item-control-input {
@@ -125,7 +126,12 @@
     font-size: 20px;
   }
 }
-
+.oh-title-select {
+  .ant-select-selection-item {
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
 // .ant-spin-nested-loading {
 //   height: 100%;
 //   .ant-spin-container {

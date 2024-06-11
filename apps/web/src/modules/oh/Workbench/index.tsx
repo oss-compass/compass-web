@@ -28,9 +28,8 @@ const NavBar = () => {
 const Process = () => {
   return (
     <>
-      <NavBar />
       <div className="flex flex-1 bg-[#f2f2f2]">
-        <Side />
+        {/* <Side /> */}
         <Mian />
       </div>
     </>

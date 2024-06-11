@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { EChartsOption, init, LineSeriesOption } from 'echarts';
 import EChartX from '@common/components/EChartX';
 import { CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { Tag } from 'antd';
+import { Tag, Select } from 'antd';
 
 const Pie = () => {
   var colorList = ['#998CEF', '#D9D8EB'];
@@ -73,13 +73,13 @@ const EvaluationScore = () => {
       color: '#4ade80',
     },
     {
-      name: '生命周期',
-      score: 77,
+      name: '技术生态',
+      score: 65,
       color: '#4ade80',
     },
     {
-      name: '技术生态',
-      score: 65,
+      name: '生命周期',
+      score: 77,
       color: '#4ade80',
     },
     {
@@ -122,59 +122,175 @@ const EvaluationScore = () => {
   );
 };
 const EvaluationMertic = () => {
-  let items = [
+  let allData = [
     {
       维度: '合法合规',
-      名称: '许可头与版权声明',
-      优先级: '高',
-      含义: '孵化软件源文件许可头与版权声明检查：项目的所有源码必须包含许可头与版权声明',
+      指标名称: '许可证包含',
+      风险重要性: '高',
+      指标意义:
+        '引入软件许可证合规性检查\n\n【规则】\n1. 禁止选用无许可证、许可证不在准入清单的软件；\n【建议】\n1. 项目的所有源码包含许可头与版权声明；',
     },
     {
       维度: '合法合规',
-      名称: '三方来源声明',
-      优先级: '高',
-      含义: '孵化软件代码提交者原创性声明签署检查：新开发代码为独立自主开发，当提交第三方贡献时，提交备注中要包含可靠的代码来源信息',
+      指标名称: 'DCO',
+      风险重要性: '中',
+      指标意义:
+        '引入软件代码提交者原创性声明签署检查\n\n【建议】\n1. 项目的提交者签署 DCO;',
     },
     {
       维度: '合法合规',
-      名称: 'DCO',
-      优先级: '中',
-      含义: '孵化项目代码提交者原创性声明签署检查：所有代码提交者都应签署 DCO',
+      指标名称: '软件包签名',
+      风险重要性: '中',
+      指标意义:
+        '引入软件软件包数据签名校验检查\n\n【建议】\n1. 优先选取有官方数字签名校验的软件包入库；',
     },
     {
-      维度: '合法合规',
-      名称: '许可证包含',
-      优先级: '高',
-      含义: '孵化软件许可证合规性检查',
+      维度: '合规合规',
+      指标名称: '许可证兼容性',
+      风险重要性: '高',
+      指标意义:
+        '引入软件许可证兼容性检查\n\n【规则】\n1. 禁止引入项目级、文件级 License 存在兼容性问题的软件及版本；',
     },
     {
-      维度: '合法合规',
-      名称: '许可证与版权声明防篡改',
-      优先级: '高',
-      含义: '孵化软件涉及第三方开源软件的许可证和版权声明篡改检查：项目中不能篡改第三方开源软件的许可证和版权声明',
+      维度: '基本信息',
+      指标名称: '仓库命名',
+      风险重要性: '低',
+      指标意义:
+        '仓库名需满足社区要求以便统一管理\n\n【规则】\n1. 仓库命名统一为 ohos_软件名称，其中软件名称和其官网保持一致；\n2. 禁止以软件的子模块作为软件名；',
     },
     {
-      维度: '合法合规',
-      名称: '软件包签名',
-      优先级: '中',
-      含义: '孵化项目软件包数据签名校验检查：项目发布的版本需要进行数字签名或带有哈希摘要，以校验下载包的完整可靠',
+      维度: '基本信息',
+      指标名称: '官方网址',
+      风险重要性: '低',
+      指标意义:
+        '引入软件官方网址\n\n【规则】\n1. 提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee 等）对应项目托管地址；',
+    },
+    {
+      维度: '基本信息',
+      指标名称: '源码地址',
+      风险重要性: '低',
+      指标意义:
+        '引入软件官方源码下载地址\n\n【规则】\n1. 提供引入软件版本的官方源代码包下载地址，保证可溯源；',
     },
     {
       维度: '技术生态',
-      名称: 'README',
-      优先级: '高',
-      含义: '仓库是否在特定位置包含 README 文档，且命名、内容符合规范 (简明扼要地描述本项目的功能，显示项目的孵化状态) 检查',
+      指标名称: '依赖可获得',
+      风险重要性: '高',
+      指标意义:
+        '引入软件依赖源码可获得检查\n\n【规则】\n1. 项目依赖的库必须是开源软件，可公开获得。保留原开源软件的提交记录',
     },
     {
       维度: '技术生态',
-      名称: '构建文档',
-      优先级: '高',
-      含义: '仓库是否包括构建文档，应在特定位置或 README 中检查',
+      指标名称: '代码维护',
+      风险重要性: '高',
+      指标意义:
+        '社区活跃度及是否活跃维护检查\n\n【规则】\n1. 选用成熟期（代码更新活跃，定期发布）或成长期（代码更新活跃，频繁发布）的软件，禁止选用处于衰退期（代码无更新或无新版本发布）的软件；',
+    },
+    {
+      维度: '技术生态',
+      指标名称: '社区支撑',
+      风险重要性: '高',
+      指标意义:
+        '社区服务与支撑检查\n\n【建议】\n1. 社区无明确版本计划，有效 bug、PR 半年以上未响应不建议选用；',
+    },
+    {
+      维度: '技术生态',
+      指标名称: '采用度分析',
+      风险重要性: '中',
+      指标意义:
+        '引入软件采用度分析，优选在业界广泛应用软件\n\n【建议】\n1. 优选主流的供应商/社区或社区项目；\n2. 优选在业界成熟应用或产品实际使用效果好的软件；',
+    },
+    {
+      维度: '技术生态',
+      指标名称: '软件质量',
+      风险重要性: '中',
+      指标意义:
+        '引入软件质量分析，包含代码规范，圈复杂度，代码复用度，测试用例覆盖度\n\n【规则】\n1. 不符合技术架构与技术演进淘汰的软件禁止引入；\n【建议】\n1. 技术架构优选更安全、灵活度高、支持组件化、插件化的软件；\n2. 优选代码质量高的软件，如使用不安全函数数量/密度少、代码结构规范（圈复杂度低）、重复度低、代码调试功能可关闭、有自动化构建能力、自动化测试充分；',
+    },
+    {
+      维度: '技术生态',
+      指标名称: '专利风险',
+      风险重要性: '中',
+      指标意义:
+        '引入软件专利风险分析\n\n【建议】\n1. 优先选择全球专利保护社区 OIN（Open Invention Network）认证软件，未认证软件需单独审视专利风险',
+    },
+    {
+      维度: '生命周期',
+      指标名称: '版本归一化',
+      风险重要性: '高',
+      指标意义:
+        '一款软件只在 OpenHarmony 及 TPC 中引入一次\n\n【规则】\n1. 主动选型开源软件与被动依赖开源软件只有一个社区版本；',
+    },
+    {
+      维度: '生命周期',
+      指标名称: '版本号',
+      风险重要性: '中',
+      指标意义:
+        '引入软件版本规范检查\n\n【规则】\n1. master 是分支，不是版本号，不能用 master 作为版本号引入；\n2. 引入官方发布版本（Release 版本），非正式版本（beta 等）未经过全面测试，不允许入库；',
+    },
+    {
+      维度: '生命周期',
+      指标名称: '版本生命周期',
+      风险重要性: '高',
+      指标意义:
+        '检查引入软件版本社区维护生命周期是否结束\n\n【建议】\n1. 优先选择 2 年以内发布的版本（以评审节点计算）；\n2. 社区已经 EOL 的版本，不建议引入；',
+    },
+    {
+      维度: '网络安全',
+      指标名称: '二进制制品',
+      风险重要性: '高',
+      指标意义:
+        '引入软件源码仓库是否包含二进制制品\n\n【建议】\n不建议二进制引入，应从源码构建。如必要引入须在 TPC SIG 决策，并提供构建指导；',
+    },
+    {
+      维度: '网络安全',
+      指标名称: '安全漏洞',
+      风险重要性: '高',
+      指标意义:
+        '检查引入软件及依赖源码是否有公开未修复漏洞\n\n【规则】\n1. 禁止选用含非误报病毒告警的软件（含被动依赖软件）；\n2. 禁止选用含已知未修复漏洞软件；',
+    },
+    {
+      维度: '网络安全',
+      指标名称: '漏洞响应机制',
+      风险重要性: '高',
+      指标意义:
+        '引入软件漏洞响应机制检查\n\n【规则】\n1. 选用开源软件必须有漏洞反馈与修复跟踪管理机制；',
+    },
+    {
+      维度: '网络安全',
+      指标名称: '漏洞披露机制',
+      风险重要性: '中',
+      指标意义:
+        '引入软件漏洞披露机制检查\n\n【建议】\n1. 优先选择有漏洞披露源的开源软件;',
+    },
+    {
+      维度: '网络安全',
+      指标名称: '历史漏洞',
+      风险重要性: '中',
+      指标意义: '引入软件历史漏洞检查\n\n【建议】\n1. 优选漏洞较少的版本',
     },
   ];
+  let yList = ['合法合规', '技术生态', '生命周期', '网络安全'];
+  const [mertic, setMertic] = useState('合法合规');
+  const items = allData.filter((item) => item.维度 === mertic);
   return (
     <div className="flex flex-col border bg-[#f9f9f9] p-6">
-      <div className="mb-4 text-lg font-semibold">合法合规</div>
+      <div className="mb-4 text-lg font-semibold">
+        <Select
+          className="oh-title-select"
+          style={{ width: '150px' }}
+          value={mertic}
+          onChange={(value) => {
+            setMertic(value);
+          }}
+        >
+          {yList.map((item) => (
+            <Select.Option key={item} value={item}>
+              {item}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
       <div className="flex h-6 items-center justify-start">
         <div className="h-1.5 w-[600px] bg-[#e5e5e5]">
           <div
@@ -191,24 +307,24 @@ const EvaluationMertic = () => {
         {items.map((item) => {
           return (
             <div
-              key={item.名称}
+              key={item.指标名称}
               className="flex h-[70px] border border-b-0 bg-white px-4 py-3"
             >
-              <div className="flex w-12 items-center justify-start pl-2 text-lg text-green-600">
+              <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
                 <CheckCircleOutlined rev={undefined} />
               </div>
               <div className="">
                 <div className="flex text-base font-semibold">
-                  {item.名称}
+                  {item.指标名称}
                   <div className="ml-4">
-                    {item.优先级 === '高' ? (
-                      <Tag color="orange">优先级： {item.优先级}</Tag>
+                    {item.风险重要性 === '高' ? (
+                      <Tag color="orange">风险重要性： {item.风险重要性}</Tag>
                     ) : (
-                      <Tag color="cyan">优先级： {item.优先级}</Tag>
+                      <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
                     )}
                   </div>
                 </div>
-                <div className="mt-1 text-xs">{item.含义}</div>
+                <div className="line-clamp-1 mt-1 text-xs">{item.指标意义}</div>
               </div>
             </div>
           );
@@ -220,6 +336,13 @@ const EvaluationMertic = () => {
 const EvaluationDetail = () => {
   return (
     <>
+      <div className="mb-6 flex flex-col border bg-[#f9f9f9] py-4 px-6">
+        <div className="text-lg font-semibold">
+          Sample Software 选型评估报告
+        </div>
+        <div className="">报告版本：v2</div>
+        <div className="">更新于：2024-06-01</div>
+      </div>
       <EvaluationScore />
       <div className="mt-6">
         <EvaluationMertic />

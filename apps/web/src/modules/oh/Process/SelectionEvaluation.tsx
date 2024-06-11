@@ -1,95 +1,89 @@
 import React, { useState } from 'react';
-import { Descriptions } from 'antd';
-import type { DescriptionsProps } from 'antd';
-import type { CommitDetail } from '@oss-compass/graphql';
-import {
-  Button,
-  InputNumber,
-  Radio,
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-  Upload,
-  Tabs,
-} from 'antd';
-import type { FormProps } from 'antd';
-import { PlusOutlined, ExclamationCircleTwoTone } from '@ant-design/icons';
-import { useRouter } from 'next/router';
+import { Button, Radio, Form, Input, Col, message, Tabs } from 'antd';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import { procseeState, procseeActions } from '@modules/oh/Process/procseeState';
+import { useSnapshot } from 'valtio';
 
 const SelectionEvaluation = () => {
-  const router = useRouter();
-  const queryType = router.query?.type as string;
+  const processesID = '孵化选型评审';
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const [commitInfo, setOpenConfirm] = useState({});
-  const onFinish: FormProps<CommitDetail>['onFinish'] = (values) => {
-    console.log('Success:', values);
-  };
+  const snap = useSnapshot(procseeState);
+  const { allProcesses } = snap;
+  let proceedingProcesses = allProcesses.find(
+    (item) => item.state === 'proceeding'
+  );
+  let isProceedingProcesses = proceedingProcesses.id === processesID;
 
-  const onFinishFailed: FormProps<CommitDetail>['onFinishFailed'] = (
-    errorInfo
-  ) => {
-    // console.log('Failed:', errorInfo);
-  };
   const [form] = Form.useForm();
-  form.setFieldsValue(commitInfo);
+  const submit = () => {
+    form.validateFields().then((values) => {
+      setSubmitLoading(true);
+      setTimeout(() => {
+        messageApi.open({
+          type: 'success',
+          content: '提交成功',
+        });
+        setSubmitLoading(false);
+        procseeActions.setNextProcsee(processesID);
+      }, 1000);
+      console.log(values);
+    });
+  };
+  const onReset = () => {
+    form.resetFields();
+  };
 
-  let listItem = [
-    {
-      label: '官网地址',
-      span: 2,
-      children: '192.168.1.100',
-    },
-    {
-      label: '源码地址',
-      span: 2,
-      children: 'https://github.com/example/project',
-    },
-    {
-      label: '开发商',
-      span: 2,
-      children: '某公司',
-    },
-    {
-      label: '代码量',
-      span: 2,
-      children: '10000 行',
-    },
-    {
-      label: '主语言类型',
-      span: 2,
-      children: 'Java',
-    },
-    {
-      label: '版本发布日期',
-      span: 2,
-      children: '2023-05-01',
-    },
-    {
-      label: '版本描述',
-      span: 4,
-      children: '此版本优化了性能和用户体验',
-    },
-  ];
   let tabItems = [
     {
       key: '2',
       label: <div className="mx-2">选型评估信息</div>,
       children: (
         <div className="pt-4">
+          <EvaluationDetail />
+          <div className="my-6 text-base font-semibold">审核信息</div>
           <Form
             form={form}
-            labelCol={{ span: 6, style: { fontWeight: 'bold' } }}
+            labelCol={{
+              span: 6,
+              style: { fontWeight: 'bold' },
+            }}
             style={{
               width: '100%',
             }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
+            disabled={!isProceedingProcesses}
             autoComplete="off"
           >
-            <EvaluationDetail />
+            <Col span={24}>
+              <Form.Item
+                labelCol={{
+                  span: 3,
+                  style: { fontWeight: 'bold' },
+                }}
+                label="审核结论"
+                name="conclusion"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Radio.Group>
+                  <Radio value="apple"> 通过 </Radio>
+                  <Radio value="pear"> 驳回 </Radio>
+                </Radio.Group>
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                labelCol={{
+                  span: 3,
+                  style: { fontWeight: 'bold' },
+                }}
+                label="审核意见"
+                name="comment"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Input.TextArea />
+              </Form.Item>
+            </Col>
           </Form>
         </div>
       ),
@@ -109,6 +103,7 @@ const SelectionEvaluation = () => {
   ];
   return (
     <>
+      {contextHolder}
       <div className="flex flex-col justify-center py-4 px-5">
         {/* <div className="mb-5 flex items-start gap-2 border border-[#91d5ff] bg-[#e6f7ff] px-3 py-2 text-xs leading-5">
           <ExclamationCircleTwoTone rev={undefined} className="mt-1" />
@@ -118,62 +113,26 @@ const SelectionEvaluation = () => {
           </div>
         </div> */}
 
-        {queryType === '孵化选型评审' ? (
-          <>
-            <Descriptions className="oh" bordered items={listItem} />
-            {/* <div className="my-6 text-base font-semibold">选型评估信息</div> */}
-            <EvaluationDetail />
-            <div className="my-6 text-base font-semibold">审核信息</div>
-            <Form
-              form={form}
-              labelCol={{
-                span: 6,
-                style: { fontWeight: 'bold' },
-              }}
-              style={{
-                width: '100%',
-              }}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
-              <Col span={24}>
-                <Form.Item
-                  labelCol={{
-                    span: 3,
-                    style: { fontWeight: 'bold' },
-                  }}
-                  label="审核结论"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Radio.Group>
-                    <Radio value="apple"> 通过 </Radio>
-                    <Radio value="pear"> 驳回 </Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item
-                  labelCol={{
-                    span: 3,
-                    style: { fontWeight: 'bold' },
-                  }}
-                  label="审核意见"
-                  name="commitHash"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input.TextArea />
-                </Form.Item>
-              </Col>
-            </Form>
-          </>
-        ) : (
-          <>
-            <Tabs className="oh-antd" size={'small'} items={tabItems} />
-          </>
-        )}
+        <Tabs className="oh-antd" size={'small'} items={tabItems} />
       </div>
+      {isProceedingProcesses && (
+        <div className="fixed bottom-2 flex w-[99%] justify-center gap-2">
+          <Button
+            className="rounded-none"
+            type="primary"
+            loading={submitLoading}
+            onClick={() => {
+              submit();
+            }}
+          >
+            提交
+          </Button>
+          <Button className="rounded-none">转其他人</Button>
+          <Button className="rounded-none" htmlType="button" onClick={onReset}>
+            重置
+          </Button>
+        </div>
+      )}
     </>
   );
 };

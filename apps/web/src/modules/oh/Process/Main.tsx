@@ -1,79 +1,98 @@
-import React, { useMemo } from 'react';
-import TableCard from '@modules/oh/components/TableCard';
-import { Tabs, Button } from 'antd';
+import React, { useState } from 'react';
+import { Tabs } from 'antd';
+import { CheckCircleTwoTone } from '@ant-design/icons';
+import { useSnapshot } from 'valtio';
+import { subscribeKey } from 'valtio/utils';
+import { procseeState } from '@modules/oh/Process/procseeState';
 import SelectionApplication from './SelectionApplication';
 import SelectionEvaluation from './SelectionEvaluation';
 import RepoInformationMaintenance from './RepoInformationMaintenance';
-import { useRouter } from 'next/router';
+import AutomaticStorage from './AutomaticStorage';
+import Finish from './Finish';
 
 const Main = () => {
-  const items = [
+  // const snap = useSnapshot(procseeState);
+  const allProcesses = procseeState.allProcesses;
+  const { active } = procseeState;
+
+  let activeProcesses = allProcesses.find((item) => item.id === active);
+  // switch (active) {
+  //   case '孵化选型申请':
+  //     view = <SelectionApplication />;
+  //     break;
+  //   case '孵化选型评审':
+  //     view = <SelectionEvaluation />;
+  //     break;
+  //   case '建仓门禁评审':
+  //     view = <RepoInformationMaintenance />;
+  //     break;
+  //   default:
+  //     view = <SelectionEvaluation />;
+  //     break;
+  // }
+  const allItems = [
     {
-      key: '1',
-      label: <div className="mx-4 text-lg">孵化申请</div>,
+      key: '孵化选型申请',
+      label: <div className="mx-2 text-lg">孵化选型申请</div>,
       children: <SelectionApplication />,
     },
     {
-      key: '2',
-      label: <div className="mx-4 text-lg">选型评估</div>,
+      key: '孵化选型评审',
+      label: <div className="mx-2 text-lg">孵化选型评审</div>,
       children: <SelectionEvaluation />,
     },
-    // {
-    //   key: '3',
-    //   label: <div className="mx-4 text-lg">仓库信息维护</div>,
-    //   children: <RepoInformationMaintenance />,
-    // },
-    // {
-    //   key: '4',
-    //   label: <div className="mx-4 text-lg">依赖关系解析</div>,
-    //   children: '依赖关系解析',
-    //   disabled: true,
-    // },
-    // {
-    //   key: '5',
-    //   label: <div className="mx-4 text-lg">完整性信息维护</div>,
-    //   children: '完整性信息维护',
-    //   disabled: true,
-    // },
+    {
+      key: '建仓门禁评审',
+      label: <div className="mx-2 text-lg">建仓门禁评审</div>,
+      children: <RepoInformationMaintenance />,
+    },
+    {
+      key: '入库自动化处理',
+      label: <div className="mx-2 text-lg">入库自动化处理</div>,
+      children: <AutomaticStorage />,
+    },
+    {
+      key: '结束',
+      label: <div className="mx-2 text-lg">结束</div>,
+      children: <Finish />,
+    },
   ];
-  const router = useRouter();
-  const queryType = router.query?.type as string;
+  const items = allItems.slice(0, activeProcesses.index + 1).map((item) => {
+    let proces = allProcesses.find((i) => i.id === item.key);
+    if (proces.state === 'finish') {
+      item.label = (
+        <div className="flex">
+          {item.label}
+          <CheckCircleTwoTone twoToneColor="#52c41a" rev={undefined} />
+        </div>
+      );
+    }
+
+    return item;
+  });
+
+  const [activeKey, setActiveKey] = useState('孵化选型申请');
+  const onChange = (key: string) => {
+    setActiveKey(key);
+  };
+  subscribeKey(procseeState, 'active', (v) => {
+    setActiveKey(v);
+  });
   return (
     <>
       <div className="relative ml-1 flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
         <div className="border-b px-5 py-3 font-semibold">
           TPC 软件孵化选型流程
         </div>
-        <div className="mx-5 my-3 mb-2 h-[calc(100%-110px)] border">
+        <div className="relative mx-5 my-3 mb-2 h-[calc(100%-110px)] border">
           <Tabs
+            activeKey={activeKey}
             className="oh-tabs h-full"
-            // onChange={onChange}
+            onChange={onChange}
             type="card"
             items={items}
           />
         </div>
-        {queryType === '孵化选型评审' ? (
-          <div className="flex justify-center gap-2">
-            <Button className="rounded-none" type="primary" htmlType="submit">
-              提交
-            </Button>
-            <Button className="rounded-none" htmlType="submit">
-              转其他人
-            </Button>
-            <Button className="rounded-none" htmlType="submit">
-              撤回
-            </Button>
-          </div>
-        ) : (
-          <div className="flex justify-center gap-2">
-            <Button className="rounded-none" type="primary" htmlType="submit">
-              提交
-            </Button>
-            <Button className="rounded-none" htmlType="submit">
-              保存
-            </Button>
-          </div>
-        )}
       </div>
     </>
   );

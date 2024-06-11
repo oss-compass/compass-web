@@ -64,10 +64,6 @@ const items: MenuItem[] = [
     label: '孵化治理',
     icon: <DownloadOutlined rev={undefined} />,
     children: [
-      // {
-      //   key: 'workbench',
-      //   label: '孵化治理看板',
-      // },
       {
         key: 'process',
         label: 'TPC 软件孵化选型',
@@ -75,6 +71,10 @@ const items: MenuItem[] = [
       {
         key: 'outProcess',
         label: 'TPC 软件孵化准出',
+      },
+      {
+        key: 'workbench',
+        label: '孵化治理看板',
       },
     ],
   },

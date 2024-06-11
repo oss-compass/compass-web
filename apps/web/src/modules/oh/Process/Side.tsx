@@ -1,151 +1,30 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import classnames from 'classnames';
-import type { MenuProps } from 'antd';
 import { Layout } from 'antd';
-import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { ClockCircleOutlined } from '@ant-design/icons';
 import { Timeline } from 'antd';
-import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
+import {
+  procseeState,
+  procseeActions,
+  pointColorMap,
+  textColorMap,
+} from '@modules/oh/Process/procseeState';
+import { useSnapshot } from 'valtio';
 
 const SideMenu: React.FC = () => {
-  const id = useHashchangeEvent();
-  const router = useRouter();
-  const onClick: MenuProps['onClick'] = (e) => {
-    console.log(e);
-    if (e.keyPath[1] === 'sub3') {
-      router.push('/oh/' + e.key);
-    } else {
-      window.location.hash = e.key;
-    }
-  };
-
   const { Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
 
-  //   const menuItems = useMemo(() => {
-  //   }, [id]);
-  const [active, setActive] = useState('孵化选型申请');
-  const menuItems = [
-    {
-      name: '孵化选型申请',
-      id: '孵化选型申请',
-      color: 'green',
-      icon: null,
-      textColor: '!text-[#333]',
-    },
-    {
-      name: '孵化选型评审',
-      id: '孵化选型评审',
-      color: 'gray',
-      icon: null,
-      active: false,
-      textColor: '!text-[#333]',
-    },
-    {
-      name: '建仓门禁评审',
-      id: '建仓门禁评审',
-      color: 'gray',
-      icon: null,
-      active: false,
-      textColor: '!text-[#bfbfbf]',
-    },
-    {
-      name: '入库自动化处理',
-      id: '入库自动化处理',
-      color: 'gray',
-      icon: null,
-      active: false,
-      textColor: '!text-[#bfbfbf]',
-    },
-    {
-      name: '结束',
-      id: '结束',
-      color: 'gray',
-      icon: null,
-      active: false,
-      textColor: '!text-[#bfbfbf]',
-    },
-  ];
-  const items = [
-    {
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          选型申请
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          指定软件 Owner/版本 Committer
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          Owner/Committer 审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          CTMG 审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          二级 BU 代表审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          产品线开源代表审核
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          入库自动化处理
-        </div>
-      ),
-    },
-    {
-      color: 'gray',
-      children: (
-        <div className="w-[20] overflow-hidden text-ellipsis whitespace-nowrap">
-          结束
-        </div>
-      ),
-    },
-    // {
-    //   dot: (
-    //     <ClockCircleOutlined rev={undefined} className="timeline-clock-icon" />
-    //   ),
-    //   color: 'red',
-    //   children: 'Technical testing 2015-09-01',
-    // },
-  ];
-  const { handleQueryParams } = useHandleQueryParams();
+  const snap = useSnapshot(procseeState);
+  const { active, allProcesses } = snap;
 
+  const menuClick = (id: string) => {
+    procseeActions.setActive(id);
+  };
   return (
     <div
       className={classnames(
-        'mr-0 h-[calc(100vh-170px)] overflow-auto border bg-white drop-shadow-sm'
+        'mr-0 h-[calc(100vh-170px)] flex-shrink-0 overflow-auto border bg-white drop-shadow-sm'
       )}
     >
       <Layout>
@@ -183,20 +62,29 @@ const SideMenu: React.FC = () => {
               ''
             ) : (
               <Timeline
-                items={menuItems.map(({ name, color, icon, id, textColor }) => {
+                items={allProcesses.map(({ name, icon, id, state }) => {
                   return {
                     icon,
-                    color: active === id ? 'blue' : color,
+                    color:
+                      id === active
+                        ? pointColorMap['active']
+                        : pointColorMap[state],
                     children: (
                       <div
                         className={classnames(
-                          'w-[20] cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap',
-                          [active === id ? '!text-[#1677ff]' : textColor]
+                          'w-[20] overflow-hidden text-ellipsis whitespace-nowrap',
+                          [
+                            id === active
+                              ? textColorMap['active']
+                              : textColorMap[state],
+                            state == 'wait'
+                              ? 'cursor-not-allowed'
+                              : ' cursor-pointer',
+                          ]
                         )}
                         onClick={() => {
-                          if (id.includes('孵化')) {
-                            setActive(id);
-                            handleQueryParams({ type: id });
+                          if (state !== 'wait') {
+                            menuClick(id);
                           }
                         }}
                       >
