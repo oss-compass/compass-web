@@ -12,8 +12,7 @@ import { procseeState } from '@modules/oh/OutProcess/OutProcseeState';
 
 const Main = () => {
   // const snap = useSnapshot(procseeState);
-  const allProcesses = procseeState.allProcesses;
-  const { active } = procseeState;
+  const { active, allProcesses } = procseeState;
 
   let activeProcesses = allProcesses.find((item) => item.id === active);
 

@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { EChartsOption, init, LineSeriesOption } from 'echarts';
+import { EChartsOption, init } from 'echarts';
 import { Tabs, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import Detail from '@modules/oh/Workbench/Detail';
 
 const Pie = ({ score }) => {
   var colorList = ['#998CEF', '#D9D8EB'];
@@ -262,41 +263,51 @@ const Main = () => {
       ],
     },
   ];
+  let [activeItem, setActiveItem] = useState(null);
+
   return (
     <>
-      <div className="relative ml-1 flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
-        <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
-          TPC 软件孵化治理看板
-          <div>
-            <Input prefix={<SearchOutlined rev={undefined} />} />
+      {activeItem ? (
+        <Detail setActiveItem={setActiveItem} />
+      ) : (
+        <div className="relative ml-1 flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
+          <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
+            TPC 软件孵化治理看板
+            <div>
+              <Input prefix={<SearchOutlined rev={undefined} />} />
+            </div>
+          </div>
+          <div className="relative m-6 flex h-[calc(100%-110px)] justify-center">
+            <div className="flex flex-wrap items-center gap-6 overflow-auto">
+              {items.map((item) => {
+                return (
+                  <div
+                    onClick={() => {
+                      setActiveItem(item);
+                    }}
+                    key={item.name}
+                    className="h-[320px] w-[360px] cursor-pointer border p-5"
+                  >
+                    <div className="flex w-full justify-start text-xl font-semibold">
+                      {item.name}
+                    </div>
+                    <div className="line-clamp-2 my-3 flex items-center text-sm font-medium">
+                      {item.description}
+                    </div>
+                    <MiniEvaluationDetail
+                      score={item.score}
+                      evaluationDetail={item.evaluationDetail}
+                    />
+                    <div className="mt-4 flex justify-end text-xs">
+                      更新于： {item.updated}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-        <div className="relative m-5 flex h-[calc(100%-110px)] flex-wrap gap-7 overflow-auto">
-          {items.map((item) => {
-            return (
-              <div
-                key={item.name}
-                className="h-[320px] w-[360px] cursor-pointer border p-4"
-              >
-                <div className="flex w-full justify-start text-xl font-semibold">
-                  {item.name}
-                </div>
-                <div className="line-clamp-2 my-3 flex items-center text-sm font-medium">
-                  {item.description}
-                </div>
-                <MiniEvaluationDetail
-                  score={item.score}
-                  evaluationDetail={item.evaluationDetail}
-                />
-                <div className="mt-4 flex justify-between text-sm ">
-                  <div className="">报告版本： {item.reportVersion}</div>
-                  更新于： {item.updated}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      )}
     </>
   );
 };

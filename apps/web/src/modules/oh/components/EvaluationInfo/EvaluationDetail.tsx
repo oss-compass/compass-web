@@ -97,8 +97,10 @@ const EvaluationScore = () => {
         {items.map(({ name, score, color }) => {
           return (
             <div key={name} className="mb-2 flex h-9 w-full  border bg-white">
-              <div className="flex min-w-[128px] items-center justify-start px-3 font-semibold">
-                {name}
+              <div className="flex min-w-[128px] cursor-pointer items-center justify-start px-3 font-semibold">
+                <a className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline">
+                  {name}
+                </a>
               </div>
               <div className="flex w-[50px] items-center justify-center bg-[#e5e5e5] px-2 font-semibold">
                 {score}
@@ -113,6 +115,69 @@ const EvaluationScore = () => {
                     }}
                   ></div>
                 </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+const EvaluationMerticItem = ({ mertic, items }) => {
+  return (
+    <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
+      <div className="mb-4 text-lg font-semibold">
+        {mertic}
+        <a href={`#${mertic}`}></a>
+        {/* <Select
+      className="oh-title-select"
+      style={{ width: '150px' }}
+      value={mertic}
+      onChange={(value) => {
+        setMertic(value);
+      }}
+    >
+      {yList.map((item) => (
+        <Select.Option key={item} value={item}>
+          {item}
+        </Select.Option>
+      ))}
+    </Select> */}
+      </div>
+      <div className="flex h-6 items-center justify-start">
+        <div className="h-1.5 w-[600px] bg-[#e5e5e5]">
+          <div
+            className="h-1.5 w-[75%] bg-green-400"
+            // style={{
+            //   width: `${score}%`,
+            //   backgroundColor: color,
+            // }}
+          ></div>
+        </div>
+        <div className="ml-4 text-base font-semibold">73%</div>
+      </div>
+      <div className="mt-6 w-full border-b">
+        {items.map((item) => {
+          return (
+            <div
+              key={item.指标名称}
+              className="flex h-[70px] border border-b-0 bg-white px-4 py-3"
+            >
+              <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
+                <CheckCircleOutlined rev={undefined} />
+              </div>
+              <div className="">
+                <div className="flex text-base font-semibold">
+                  {item.指标名称}
+                  <div className="ml-4">
+                    {item.风险重要性 === '高' ? (
+                      <Tag color="orange">风险重要性： {item.风险重要性}</Tag>
+                    ) : (
+                      <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
+                    )}
+                  </div>
+                </div>
+                <div className="line-clamp-1 mt-1 text-xs">{item.指标意义}</div>
               </div>
             </div>
           );
@@ -272,82 +337,35 @@ const EvaluationMertic = () => {
   ];
   let yList = ['合法合规', '技术生态', '生命周期', '网络安全'];
   const [mertic, setMertic] = useState('合法合规');
-  const items = allData.filter((item) => item.维度 === mertic);
+  // const items = allData.filter((item) => item.维度 === mertic);
+  let res = yList.map((z) => {
+    return allData.filter((item) => item.维度 === z);
+  });
   return (
-    <div className="flex flex-col border bg-[#f9f9f9] p-6">
-      <div className="mb-4 text-lg font-semibold">
-        <Select
-          className="oh-title-select"
-          style={{ width: '150px' }}
-          value={mertic}
-          onChange={(value) => {
-            setMertic(value);
-          }}
-        >
-          {yList.map((item) => (
-            <Select.Option key={item} value={item}>
-              {item}
-            </Select.Option>
-          ))}
-        </Select>
-      </div>
-      <div className="flex h-6 items-center justify-start">
-        <div className="h-1.5 w-[600px] bg-[#e5e5e5]">
-          <div
-            className="h-1.5 w-[75%] bg-green-400"
-            // style={{
-            //   width: `${score}%`,
-            //   backgroundColor: color,
-            // }}
-          ></div>
-        </div>
-        <div className="ml-4 text-base font-semibold">73%</div>
-      </div>
-      <div className="mt-6 w-full border-b">
-        {items.map((item) => {
-          return (
-            <div
-              key={item.指标名称}
-              className="flex h-[70px] border border-b-0 bg-white px-4 py-3"
-            >
-              <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-                <CheckCircleOutlined rev={undefined} />
-              </div>
-              <div className="">
-                <div className="flex text-base font-semibold">
-                  {item.指标名称}
-                  <div className="ml-4">
-                    {item.风险重要性 === '高' ? (
-                      <Tag color="orange">风险重要性： {item.风险重要性}</Tag>
-                    ) : (
-                      <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
-                    )}
-                  </div>
-                </div>
-                <div className="line-clamp-1 mt-1 text-xs">{item.指标意义}</div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    <>
+      {yList.map((mertic) => {
+        const items = allData.filter((item) => item.维度 === mertic);
+        return (
+          <EvaluationMerticItem key={mertic} mertic={mertic} items={items} />
+        );
+      })}
+    </>
   );
 };
 const EvaluationDetail = () => {
   return (
-    <>
-      <div className="mb-6 flex flex-col border bg-[#f9f9f9] py-4 px-6">
+    <div>
+      <div className="mb-6 flex border bg-[#f9f9f9] py-4 px-6">
         <div className="text-lg font-semibold">
           Sample Software 选型评估报告
         </div>
-        <div className="">报告版本：v2</div>
-        <div className="">更新于：2024-06-01</div>
+        <div className="mt-2 ml-4 text-xs">更新于：2024-06-01</div>
       </div>
       <EvaluationScore />
       <div className="mt-6">
         <EvaluationMertic />
       </div>
-    </>
+    </div>
   );
 };
 

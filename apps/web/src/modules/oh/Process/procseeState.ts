@@ -14,14 +14,24 @@ interface State {
 }
 
 const initialObj = {
-  active: '孵化选型申请',
+  active: '孵化评估申请',
   //   curProcesses: '',
   allProcesses: [
     {
       index: 0,
+      name: '孵化评估申请',
+      id: '孵化评估申请',
+      state: 'proceeding',
+      color: 'green',
+      icon: null,
+      //   textColor: '!text-[#333]',
+      //   textColor: '!text-[#bfbfbf]',
+    },
+    {
+      index: 0,
       name: '孵化选型申请',
       id: '孵化选型申请',
-      state: 'proceeding',
+      state: 'wait',
       color: 'green',
       icon: null,
       //   textColor: '!text-[#333]',
