@@ -37,9 +37,13 @@
 .ant-picker-dropdown {
   z-index: 99999;
 }
+.ant-input-affix-wrapper:focus-within,
 .ant-input:focus-within {
   border-color: unset;
   box-shadow: none;
+}
+.ant-input-affix-wrapper:hover {
+  border-color: unset;
 }
 .ant-input:hover {
   border-color: unset;
@@ -50,6 +54,16 @@
 }
 .ant-picker:hover {
   border-color: unset;
+}
+.ant-select-focused .ant-select-selector {
+  border-color: unset !important;
+  box-shadow: none !important;
+}
+.ant-select:hover {
+  border-color: #191919 !important;
+}
+.ant-select-selector:hover {
+  border-color: #191919 !important;
 }
 .ant-form-item-explain-error {
   font-size: 12px !important;

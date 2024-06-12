@@ -69,12 +69,16 @@ const items: MenuItem[] = [
         label: '工作台',
       },
       {
+        key: 'evaluationApplication',
+        label: '评估报告生成',
+      },
+      {
         key: 'process',
-        label: 'TPC 软件孵化选型',
+        label: '软件孵化选型',
       },
       {
         key: 'outProcess',
-        label: 'TPC 软件孵化准出',
+        label: '软件孵化准出',
       },
       {
         key: 'workbench',
