@@ -65,6 +65,10 @@ const items: MenuItem[] = [
     icon: <DownloadOutlined rev={undefined} />,
     children: [
       {
+        key: 'work',
+        label: '工作台',
+      },
+      {
         key: 'process',
         label: 'TPC 软件孵化选型',
       },

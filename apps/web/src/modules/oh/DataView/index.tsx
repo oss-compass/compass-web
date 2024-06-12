@@ -10,6 +10,7 @@ import SigCenter from './SigCenter';
 import Process from '@modules/oh/Process';
 import OutProcess from '@modules/oh/OutProcess';
 import Workbench from '@modules/oh/Workbench';
+import Work from '@modules/oh/Work';
 
 const OhDataView = () => {
   const id = useHashchangeEvent();
@@ -41,6 +42,10 @@ const OhDataView = () => {
     }
     case 'communityManagement': {
       source = <CommunityManagement />;
+      break;
+    }
+    case 'work': {
+      source = <Work />;
       break;
     }
     case 'process': {
