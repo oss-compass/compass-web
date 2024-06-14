@@ -12,9 +12,7 @@ import { procseeState } from '@modules/oh/DataView/HatchingTreatment/OutProcess/
 
 const Main = () => {
   // const snap = useSnapshot(procseeState);
-  const { active, allProcesses } = procseeState;
-
-  let activeProcesses = allProcesses.find((item) => item.id === active);
+  const { active } = procseeState;
 
   const allItems = [
     {
@@ -48,19 +46,7 @@ const Main = () => {
       children: <Finish />,
     },
   ];
-  const items = allItems.slice(0, activeProcesses.index + 1).map((item) => {
-    let proces = allProcesses.find((i) => i.id === item.key);
-    if (proces.state === 'finish') {
-      item.label = (
-        <div className="flex">
-          {item.label}
-          <CheckCircleTwoTone twoToneColor="#52c41a" rev={undefined} />
-        </div>
-      );
-    }
-
-    return item;
-  });
+  const item = allItems.find((item) => item.key === active);
 
   const [activeKey, setActiveKey] = useState('孵化选型申请');
   const onChange = (key: string) => {
@@ -72,16 +58,9 @@ const Main = () => {
   return (
     <>
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
-        <div className="border-b px-5 py-3 font-semibold">
-          TPC 软件孵化准出流程
-        </div>
-        <div className="mx-5 my-3 mb-2 h-[calc(100%-110px)] border">
-          <Tabs
-            className="oh-tabs h-full"
-            onChange={onChange}
-            type="card"
-            items={items}
-          />
+        <div className="border-b px-5 py-3 font-semibold">{item.key}</div>
+        <div className="oh-tabs relative h-[calc(100%-100px)] overflow-auto py-3 px-5 ">
+          {item.children}
         </div>
       </div>
     </>

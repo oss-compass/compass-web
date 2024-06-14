@@ -8,8 +8,12 @@ import SelectionEvaluation from './SelectionEvaluation';
 import RepoInformationMaintenance from './RepoInformationMaintenance';
 import AutomaticStorage from './AutomaticStorage';
 import Finish from './Finish';
+import { useBoolean, useUnmount } from 'ahooks';
 
 const Main = () => {
+  useUnmount(() => {
+    console.log('useUnmount');
+  });
   const { active } = procseeState;
   const [activeKey, setActiveKey] = useState('孵化选型申请');
   const allItems = [

@@ -97,7 +97,7 @@ const SideMenu: React.FC = () => {
     // if (e.keyPath[1] === 'sub3') {
     //   router.push('/oh/' + e.key);
     // } else {
-    clearAllQueryParams();
+    // clearAllQueryParams();
     window.location.hash = e.key;
     // }
   };

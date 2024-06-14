@@ -124,7 +124,11 @@ const Report = ({
         <Detail setActiveItem={setActiveItem} />
       ) : (
         <div className="relative h-full">
-          <div className="h-[calc(100vh-252px)] overflow-auto border">
+          <div
+            className={classnames('h-[calc(100vh-252px)] overflow-auto ', {
+              border: selectFun,
+            })}
+          >
             <div className="flex  flex-wrap content-start gap-6 overflow-auto p-6">
               {items.map((item) => {
                 return (
@@ -173,18 +177,20 @@ const Report = ({
               })}
             </div>
           </div>
-          <div className="flex w-[100%] justify-center pt-4">
-            <Button
-              className="rounded-none"
-              type="primary"
-              //   loading={submitLoading}
-              onClick={() => {
-                submit();
-              }}
-            >
-              确定
-            </Button>
-          </div>
+          {selectFun && (
+            <div className="flex w-[100%] justify-center pt-4">
+              <Button
+                className="rounded-none"
+                type="primary"
+                //   loading={submitLoading}
+                onClick={() => {
+                  submit();
+                }}
+              >
+                确定
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </>

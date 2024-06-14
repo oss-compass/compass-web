@@ -119,7 +119,7 @@ const SelectionEvaluation = () => {
         <Tabs className="oh-antd" size={'small'} items={tabItems} />
       </div>
       {isProceedingProcesses && (
-        <div className="fixed bottom-2 flex w-[99%] justify-center gap-2">
+        <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
           <Button
             className="rounded-none"
             type="primary"
