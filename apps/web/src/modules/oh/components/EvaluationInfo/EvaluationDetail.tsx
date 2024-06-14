@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { EChartsOption, init, LineSeriesOption } from 'echarts';
-import EChartX from '@common/components/EChartX';
 import { CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { Tag, Select } from 'antd';
+import { AiOutlineLeftCircle } from 'react-icons/ai';
+import { Tag } from 'antd';
 
 const Pie = () => {
   var colorList = ['#998CEF', '#D9D8EB'];
@@ -128,7 +128,6 @@ const EvaluationMerticItem = ({ mertic, items }) => {
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
       <div className="mb-4 text-lg font-semibold">
         {mertic}
-        <a href={`#${mertic}`}></a>
         {/* <Select
       className="oh-title-select"
       style={{ width: '150px' }}
@@ -161,7 +160,7 @@ const EvaluationMerticItem = ({ mertic, items }) => {
           return (
             <div
               key={item.指标名称}
-              className="flex h-[70px] border border-b-0 bg-white px-4 py-3"
+              className="flex h-[82px] border border-b-0 bg-white px-4 py-3"
             >
               <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
                 <CheckCircleOutlined rev={undefined} />
@@ -177,7 +176,14 @@ const EvaluationMerticItem = ({ mertic, items }) => {
                     )}
                   </div>
                 </div>
-                <div className="line-clamp-1 mt-1 text-xs">{item.指标意义}</div>
+                <div className="line-clamp-2 mt-1 text-xs">
+                  {item.指标意义.split('\n\n').map((line, index) => (
+                    <React.Fragment key={index}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
             </div>
           );
@@ -192,8 +198,7 @@ const EvaluationMertic = () => {
       维度: '合法合规',
       指标名称: '许可证包含',
       风险重要性: '高',
-      指标意义:
-        '引入软件许可证合规性检查\n\n【规则】\n1. 禁止选用无许可证、许可证不在准入清单的软件；\n【建议】\n1. 项目的所有源码包含许可头与版权声明；',
+      指标意义: `引入软件许可证合规性检查\n\n【规则】\n1. 禁止选用无许可证、许可证不在准入清单的软件；\n【建议】\n1. 项目的所有源码包含许可头与版权声明；`,
     },
     {
       维度: '合法合规',
@@ -352,10 +357,18 @@ const EvaluationMertic = () => {
     </>
   );
 };
-const EvaluationDetail = () => {
+const EvaluationDetail = ({ back }: { back?: () => void }) => {
   return (
     <div>
-      <div className="mb-6 flex border bg-[#f9f9f9] py-4 px-6">
+      <div className="mb-6 flex border bg-[#f9f9f9] py-3 px-6">
+        {back && (
+          <AiOutlineLeftCircle
+            onClick={() => {
+              back();
+            }}
+            className="mr-2  cursor-pointer text-2xl text-[#3f60ef]"
+          />
+        )}
         <div className="text-lg font-semibold">
           Sample Software 选型评估报告
         </div>

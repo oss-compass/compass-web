@@ -39,7 +39,10 @@ const SelectionApplication = () => {
       setTimeout(() => {
         messageApi.open({
           type: 'success',
-          content: '提交成功',
+          style: {
+            marginTop: '200px',
+          },
+          content: '提交成功，报告生成后将会邮件通知您！',
         });
         setSubmitLoading(false);
       }, 1000);
@@ -150,7 +153,7 @@ const SelectionApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={24}>
+            {/* <Col span={24}>
               <Form.Item
                 labelCol={{
                   span: 3,
@@ -162,9 +165,9 @@ const SelectionApplication = () => {
               >
                 <Input.TextArea />
               </Form.Item>
-            </Col>
+            </Col> */}
           </Row>
-          <div className="mb-6 text-base font-semibold">软件源码信息</div>
+          {/* <div className="mb-6 text-base font-semibold">软件源码信息</div> */}
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
@@ -184,7 +187,7 @@ const SelectionApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Form.Item
                 label="代码量"
                 name="codeSize"
@@ -204,7 +207,7 @@ const SelectionApplication = () => {
                   <Select.Option value="重写">重写</Select.Option>
                 </Select>
               </Form.Item>
-            </Col>
+            </Col> */}
           </Row>
           {/* <div className="mb-6 text-base font-semibold">仓库信息维护</div>
           <Row gutter={24}>
@@ -266,7 +269,7 @@ const SelectionApplication = () => {
         </Form>
       </div>
       {/* {isProceedingProcesses && ( */}
-      <div className="fixed bottom-2 flex w-[99%] justify-center gap-2">
+      <div className="fixed bottom-2 flex w-[100%] justify-center gap-2 border-t pt-2">
         <Button
           className="rounded-none"
           type="primary"
@@ -277,7 +280,6 @@ const SelectionApplication = () => {
         >
           提交
         </Button>
-        <Button className="rounded-none">保存</Button>
         <Button
           className="rounded-none"
           htmlType="submit"

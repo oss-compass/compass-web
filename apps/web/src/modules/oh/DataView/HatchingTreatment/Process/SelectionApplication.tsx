@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
+import classnames from 'classnames';
+import { GrClose } from 'react-icons/gr';
 import { Button, message, Form, Input, Select, Row, Col } from 'antd';
+import Dialog from '@common/components/Dialog';
 import DatePicker from '@common/components/Form';
-import { ExclamationCircleTwoTone } from '@ant-design/icons';
+import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import {
   procseeState,
   procseeActions,
+  getProceedingState,
 } from '@modules/oh/DataView/HatchingTreatment/Process/procseeState';
 import { useSnapshot } from 'valtio';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import Report from '@modules/oh/DataView/HatchingTreatment/Workbench/Report';
 
 let yList = [
   '数据压缩算法',
@@ -34,16 +39,212 @@ let yList = [
   '多媒体',
   '文件数据与传输',
 ];
+const SelectReport = ({ getReport }) => {
+  let items = [
+    {
+      name: 'vue3',
+      description:
+        'Vue.js 是构建 Web 界面的 JavaScript 库，提供数据驱动的组件，还有简单灵活的 API，使得 MVVM 更简单。',
+      reportVersion: 'v2',
+      updated: '2024-06-01',
+      score: '88',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 73,
+        },
+        {
+          name: '技术生态',
+          score: 65,
+        },
+        {
+          name: '生命周期',
+          score: 77,
+        },
+        {
+          name: '网络安全',
+          score: 44,
+        },
+      ],
+    },
+    {
+      name: 'vue',
+      description:
+        'Vue.js 是构建 Web 界面的 JavaScript 库，提供数据驱动的组件，还有简单灵活的 API，使得 MVVM 更简单。',
+      reportVersion: 'v2',
+      updated: '2024-06-01',
+      score: '88',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 73,
+        },
+        {
+          name: '技术生态',
+          score: 65,
+        },
+        {
+          name: '生命周期',
+          score: 77,
+        },
+        {
+          name: '网络安全',
+          score: 44,
+        },
+      ],
+    },
+    {
+      name: 'react',
+      description:
+        'React 是一个用于建构用户界面的 JavaScript 库。它被划分为声明式和组件化的概念，提供了多样的工具和库来支持复杂的用户界面开发。',
+      reportVersion: 'v3',
+      updated: '2024-05-15',
+      score: '93',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 85,
+        },
+        {
+          name: '技术生态',
+          score: 92,
+        },
+        {
+          name: '生命周期',
+          score: 82,
+        },
+        {
+          name: '网络安全',
+          score: 77,
+        },
+      ],
+    },
+    {
+      name: 'angular',
+      description:
+        'Angular 是一个基于 TypeScript 的 Web 应用程序框架。它提供了完整的解决方案，涵盖了路由、表单管理、状态管理等常见需求，是企业级 Web 应用的理想选择。',
+      reportVersion: 'v1',
+      updated: '2024-07-01',
+      score: '86',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 78,
+        },
+        {
+          name: '技术生态',
+          score: 72,
+        },
+        {
+          name: '生命周期',
+          score: 68,
+        },
+        {
+          name: '网络安全',
+          score: 64,
+        },
+      ],
+    },
+    {
+      name: 'node.js',
+      description:
+        'Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行时环境。它使用事件驱动、非阻塞 I/O 模型，非常适合构建高性能、实时的网络应用。',
+      reportVersion: 'v2',
+      updated: '2024-04-20',
+      score: '91',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 82,
+        },
+        {
+          name: '技术生态',
+          score: 88,
+        },
+        {
+          name: '生命周期',
+          score: 79,
+        },
+        {
+          name: '网络安全',
+          score: 72,
+        },
+      ],
+    },
+    {
+      name: 'django',
+      description:
+        'Django 是一个基于 Python 的 Web 框架，它强调快速开发、安全性和灵活性。它提供了很多开箱即用的功能，如 ORM、Admin 后台、模板引擎等。',
+      reportVersion: 'v1',
+      updated: '2024-08-01',
+      score: '87',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 75,
+        },
+        {
+          name: '技术生态',
+          score: 81,
+        },
+        {
+          name: '生命周期',
+          score: 73,
+        },
+        {
+          name: '网络安全',
+          score: 69,
+        },
+      ],
+    },
+    {
+      name: 'flask',
+      description:
+        'Flask 是一个轻量级的 Python Web 框架，它专注于构建 API 和微服务。它具有简单、优雅、灵活的特点，非常适合快速开发小型到中型的 Web 应用。',
+      reportVersion: 'v2',
+      updated: '2024-03-01',
+      score: '84',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 71,
+        },
+        {
+          name: '技术生态',
+          score: 75,
+        },
+        {
+          name: '生命周期',
+          score: 68,
+        },
+        {
+          name: '网络安全',
+          score: 62,
+        },
+      ],
+    },
+  ];
+  const [selected, setSelected] = useState<string>('');
+  return (
+    <>
+      <Report
+        items={items}
+        selected={selected}
+        selectFun={(name) => {
+          setSelected(name);
+          getReport(name);
+        }}
+      />
+    </>
+  );
+};
+
 const SelectionApplication = () => {
   const processesID = '孵化选型申请';
+  let isProceedingProcesses = getProceedingState.id === processesID;
 
-  const snap = useSnapshot(procseeState);
-  const { allProcesses } = snap;
-  let proceedingProcesses = allProcesses.find(
-    (item) => item.state === 'proceeding'
-  );
-  let isProceedingProcesses = proceedingProcesses.id === processesID;
-
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [report, setReport] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
@@ -64,9 +265,9 @@ const SelectionApplication = () => {
   const onReset = () => {
     form.resetFields();
   };
-  const autoFill = () => {
+  const autoFill = (report) => {
     form.setFieldsValue({
-      softwareName: 'Sample Software',
+      softwareName: report || 'Sample Software',
       domain: '数据压缩',
       softwareVersion: '1.0.0',
       releaseDate: dayjs('2020-01-01'),
@@ -149,32 +350,6 @@ const SelectionApplication = () => {
     <>
       {contextHolder}
       <div className="flex flex-col justify-center py-4 px-5">
-        {/* <div className="mb-5 flex items-start gap-2 border border-[#91d5ff] bg-[#e6f7ff] px-3 py-2 text-xs leading-5">
-          <ExclamationCircleTwoTone rev={undefined} className="mt-1" />
-          <div>
-            <div>
-              <strong>已入库：</strong>
-              软件/软件版本信息已经过选型流程正式入库；若选择“已入库”软件/软件版本，点击“补全数据”按钮可以自动带出其属性、依赖解析关系等信息，以减少人工填写/修改；
-            </div>
-            <div>
-              <strong> 预入库：</strong>
-              软件/软件版本信息已提前采集治理；若选择“预入库”软件/软件版本，点击“补全数据”按钮可以自动带出其已采集治理的属性、依赖解析关系等信息，以减少人工填写/修改；
-            </div>
-            <div>
-              <strong> 补全数据：</strong>
-              请在选择“所属领域/产业”、“版本火车名称”、“软件名称”、“软件版本”4
-              个字段后点击页面下方“补全数据”按钮自动带出软件/软件版本信息或引入数据采集服务。
-            </div>
-            <div>
-              <strong> 软件/版本选型说明：</strong>
-              针对版本继承场景，推荐联系产品线开源代表批量导入，以快速完成选型；针对新软件或版本升级场景，
-              推荐通过页面右上角联系数据治理服务提前采集选型信息，以快速补全数据；目前系统采集功能暂只支持
-              GitHub/Gitee 类网站，依赖关系只支持 Java/Js/Python/Go/Rust/ArkTS
-              高级语言解析，不支持 Ubuntu-center
-              等其他场景，其他场景可手工处理或咨询
-            </div>
-          </div>
-        </div> */}
         <Form
           form={form}
           labelCol={{
@@ -184,7 +359,7 @@ const SelectionApplication = () => {
           style={{
             width: '100%',
           }}
-          disabled={!isProceedingProcesses}
+          disabled={!report || isProceedingProcesses}
           // onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -193,11 +368,34 @@ const SelectionApplication = () => {
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
-                label="软件名称"
+                label="选择软件"
                 name="softwareName"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
+                {!isProceedingProcesses ? (
+                  <Input
+                    suffix={
+                      <DownOutlined
+                        className="text-[#d9d9d9]"
+                        rev={undefined}
+                      />
+                    }
+                  />
+                ) : (
+                  <Input
+                    suffix={
+                      <DownOutlined
+                        className="text-[#d9d9d9]"
+                        rev={undefined}
+                      />
+                    }
+                    disabled={false}
+                    onClick={() => {
+                      setOpenConfirm(true);
+                    }}
+                    readOnly
+                  ></Input>
+                )}
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -251,21 +449,8 @@ const SelectionApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{
-                  span: 3,
-                  style: { fontWeight: 'bold' },
-                }}
-                label="选型原因"
-                name="selectionReason"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input.TextArea />
-              </Form.Item>
-            </Col>
           </Row>
-          <div className="mb-6 text-base font-semibold">软件源码信息</div>
+          {/* <div className="mb-6 text-base font-semibold">软件源码信息</div> */}
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
@@ -294,18 +479,6 @@ const SelectionApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                label="引入方式"
-                name="integrationMethod"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  <Select.Option value="适配">适配</Select.Option>
-                  <Select.Option value="重写">重写</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
           </Row>
           <div className="mb-6 text-base font-semibold">仓库信息维护</div>
           <Row gutter={24}>
@@ -318,22 +491,25 @@ const SelectionApplication = () => {
                 <div className="mt-1.5">数据压缩算法</div>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Form.Item
-                label="SIG描述"
+                label="SIG 描述"
                 name="sigDescription"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <div className="mt-1.5">数据压缩算法 SIG 描述</div>
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={12}>
               <Form.Item
                 label="新建仓路径"
                 name="newRepositoryPath"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input addonBefore="https://gitee.com/openharmony-tpc/" />
+                <Input
+                  disabled={!isProceedingProcesses}
+                  addonBefore="https://gitee.com/openharmony-tpc/"
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -342,7 +518,7 @@ const SelectionApplication = () => {
                 name="committers"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
+                <Input disabled={!isProceedingProcesses} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -351,7 +527,7 @@ const SelectionApplication = () => {
                 name="repositoryDescription"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
+                <Input disabled={!isProceedingProcesses} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -360,7 +536,35 @@ const SelectionApplication = () => {
                 name="incubationTime"
                 rules={[{ required: true, message: '请选择!' }]}
               >
-                <DatePicker placeholder="请选择日期" />
+                <DatePicker
+                  disabled={!isProceedingProcesses}
+                  placeholder="请选择日期"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="引入方式"
+                name="integrationMethod"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Select disabled={!isProceedingProcesses}>
+                  <Select.Option value="适配">适配</Select.Option>
+                  <Select.Option value="重写">重写</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                labelCol={{
+                  span: 3,
+                  style: { fontWeight: 'bold' },
+                }}
+                label="选型原因"
+                name="selectionReason"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Input.TextArea disabled={!isProceedingProcesses} />
               </Form.Item>
             </Col>
           </Row>
@@ -368,8 +572,44 @@ const SelectionApplication = () => {
           <EvaluationDetail />
         </Form>
       </div>
+      <Dialog
+        open={openConfirm}
+        classes={{
+          paper: classnames(
+            'border w-[95%] !max-w-[95%] min-h-[400px] !m-0',
+            'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
+          ),
+        }}
+        dialogTitle={
+          <>
+            <p className="">选择软件</p>
+            <div
+              className="absolute right-6 top-4 cursor-pointer p-2"
+              onClick={() => {
+                setOpenConfirm(false);
+              }}
+            >
+              <GrClose className="text-base" />
+            </div>
+          </>
+        }
+        dialogContent={
+          <div className="w-full">
+            <SelectReport
+              getReport={(name) => {
+                setOpenConfirm(false);
+                setReport(name);
+                autoFill(name);
+              }}
+            />
+          </div>
+        }
+        handleClose={() => {
+          setOpenConfirm(false);
+        }}
+      />
       {isProceedingProcesses && (
-        <div className="fixed bottom-2 flex w-[99%] justify-center gap-2">
+        <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
           <Button
             className="rounded-none"
             type="primary"
@@ -378,14 +618,14 @@ const SelectionApplication = () => {
               submit();
             }}
           >
-            提交
+            提交申请
           </Button>
           <Button className="rounded-none">保存</Button>
           <Button
             className="rounded-none"
             htmlType="submit"
             onClick={() => {
-              autoFill();
+              autoFill('');
             }}
           >
             自动填充

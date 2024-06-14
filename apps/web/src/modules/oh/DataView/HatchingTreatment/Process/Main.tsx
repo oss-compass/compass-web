@@ -62,17 +62,9 @@ const Main = () => {
   return (
     <>
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm md:p-0">
-        <div className="border-b px-5 py-3 font-semibold">
-          TPC 软件孵化选型流程
-        </div>
-        <div className="relative mx-5 my-3 mb-2 h-[calc(100%-110px)] border">
-          <Tabs
-            activeKey={activeKey}
-            className="oh-tabs h-full"
-            onChange={onChange}
-            type="card"
-            items={[item]}
-          />
+        <div className="border-b px-5 py-3 font-semibold">{item.key}</div>
+        <div className="oh-tabs relative h-[calc(100%-100px)] overflow-auto py-3 px-5 ">
+          {item.children}
         </div>
       </div>
     </>

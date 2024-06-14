@@ -1,108 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { EChartsOption, init } from 'echarts';
-import { Tabs, Input } from 'antd';
+import React, { useState } from 'react';
+import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 import Detail from '@modules/oh/DataView/HatchingTreatment/Workbench/Detail';
-
-const Pie = ({ score }) => {
-  var colorList = ['#998CEF', '#D9D8EB'];
-  let option: EChartsOption = {
-    title: {
-      text: score,
-      left: 'center',
-      top: 'center',
-      textStyle: {
-        fontSize: 24,
-        color: '#2A3A77',
-      },
-    },
-    tooltip: {
-      trigger: 'item',
-      show: false,
-    },
-    series: [
-      {
-        type: 'pie',
-        center: ['50%', '50%'],
-        radius: ['64%', '72%'],
-        clockwise: false,
-        avoidLabelOverlap: false,
-        itemStyle: {
-          color: function (params) {
-            return colorList[params.dataIndex];
-          },
-        },
-        label: {
-          show: false,
-        },
-        labelLine: {
-          length: 20,
-          length2: 30,
-          lineStyle: {
-            width: 1,
-          },
-        },
-        data: [
-          {
-            name: '一月',
-            value: score,
-          },
-          {
-            name: '一月',
-            value: 100 - score,
-          },
-        ],
-      },
-    ],
-  };
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let chart = init(cardRef.current);
-    chart.setOption(option);
-  }, [option]);
-
-  return <div className="h-32 w-full" ref={cardRef}></div>;
-};
-
-const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
-  return (
-    <div className="flex h-40  bg-[#f9f9f9]">
-      <div className="flex h-full w-28 items-center ">
-        <Pie score={score} />
-      </div>
-      <div className="flex-1 pr-3 pt-3">
-        {evaluationDetail.map(({ name, score, color }) => {
-          return (
-            <div
-              key={name}
-              className="mb-2 flex h-7 w-full border bg-white text-sm"
-            >
-              <div className="flex min-w-[90px] items-center justify-start px-3 font-semibold">
-                {name}
-              </div>
-              <div className="flex w-[40px] items-center justify-center bg-[#e5e5e5] px-2 font-semibold">
-                {score}
-              </div>
-              <div className="flex flex-1 items-center justify-center px-3">
-                <div className="h-1 w-full bg-[#e5e5e5]">
-                  <div
-                    className="h-1"
-                    style={{
-                      width: `${score}%`,
-                      backgroundColor: '#4ade80',
-                    }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+import Report from '@modules/oh/DataView/HatchingTreatment/Workbench/Report';
 
 const Main = () => {
   let items = [
@@ -263,51 +163,20 @@ const Main = () => {
       ],
     },
   ];
-  let [activeItem, setActiveItem] = useState(null);
 
   return (
     <>
-      {activeItem ? (
-        <Detail setActiveItem={setActiveItem} />
-      ) : (
-        <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
-          <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
-            TPC 软件孵化治理看板
-            <div>
-              <Input prefix={<SearchOutlined rev={undefined} />} />
-            </div>
-          </div>
-          <div className="relative m-6 flex h-[calc(100%-110px)] justify-center">
-            <div className="mr-auto flex flex-wrap content-start gap-6 overflow-auto">
-              {items.map((item) => {
-                return (
-                  <div
-                    onClick={() => {
-                      setActiveItem(item);
-                    }}
-                    key={item.name}
-                    className="h-[320px] w-[380px] cursor-pointer border p-5"
-                  >
-                    <div className="flex w-full justify-start text-xl font-semibold">
-                      {item.name}
-                    </div>
-                    <div className="line-clamp-2 my-3 flex items-center text-sm font-medium">
-                      {item.description}
-                    </div>
-                    <MiniEvaluationDetail
-                      score={item.score}
-                      evaluationDetail={item.evaluationDetail}
-                    />
-                    <div className="mt-4 flex justify-end text-xs">
-                      更新于： {item.updated}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+      <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
+        <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
+          TPC 软件孵化治理看板
+          <div>
+            <Input prefix={<SearchOutlined rev={undefined} />} />
           </div>
         </div>
-      )}
+        <div className="relative flex h-[calc(100%-60px)] justify-center">
+          <Report items={items} />
+        </div>
+      </div>
     </>
   );
 };
