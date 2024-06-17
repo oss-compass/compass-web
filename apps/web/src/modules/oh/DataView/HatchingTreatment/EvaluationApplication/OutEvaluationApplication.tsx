@@ -48,6 +48,7 @@ const SelectionApplication = () => {
   };
   const autoFill = () => {
     form.setFieldsValue({
+      incubationNumber: '201774327908007936',
       softwareName: 'Sample Software',
       domain: '数据压缩',
       softwareVersion: '1.0.0',
@@ -61,12 +62,14 @@ const SelectionApplication = () => {
       integrationMethod: '适配',
       sigName: '数据压缩算法',
       sigDescription: '数据压缩算法 SIG 描述',
-      newRepositoryPath: '/data-compression-algorithm',
+      newRepositoryPath: 'data-compression-algorithm',
       committers: 'John Doe, Jane Smith',
       repositoryDescription: '该仓库用于存储数据压缩算法相关代码',
       incubationTime: dayjs('2022-01-01'),
     });
   };
+  const incubationNumberList = ['201774327908007936'];
+
   return (
     <>
       {contextHolder}
@@ -113,153 +116,45 @@ const SelectionApplication = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="软件版本"
-                name="softwareVersion"
+                label="孵化单号"
+                name="incubationNumber"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
+                <Select>
+                  {incubationNumberList.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="版本发布日期"
-                name="releaseDate"
+                label="仓库路径"
+                name="newRepositoryPath"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <DatePicker placeholder="请选择日期" />
+                <Input
+                  // disabled={!isProceedingProcesses}
+                  addonBefore="https://gitee.com/openharmony-tpc/"
+                />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                label="开发商"
-                name="developer"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="官网地址"
-                name="websiteUrl"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            {/* <Col span={24}>
+            <Col span={24}>
               <Form.Item
                 labelCol={{
                   span: 3,
                   style: { fontWeight: 'bold' },
                 }}
-                label="选型原因"
+                label="申请背景"
                 name="selectionReason"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input.TextArea />
               </Form.Item>
-            </Col> */}
+            </Col>
           </Row>
-          {/* <div className="mb-6 text-base font-semibold">软件源码信息</div> */}
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="源码地址"
-                name="codeRepositoryUrl"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="编程语言"
-                name="programmingLanguage"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            {/* <Col span={12}>
-              <Form.Item
-                label="代码量"
-                name="codeSize"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="引入方式"
-                name="integrationMethod"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  <Select.Option value="适配">适配</Select.Option>
-                  <Select.Option value="重写">重写</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col> */}
-          </Row>
-          {/* <div className="mb-6 text-base font-semibold">仓库信息维护</div>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="SIG 名称"
-                name="sigName"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <div className="mt-1.5">数据压缩算法</div>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="SIG 描述"
-                name="sigDescription"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <div className="mt-1.5">数据压缩算法 SIG 描述</div>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="新建仓路径"
-                name="newRepositoryPath"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input addonBefore="https://gitee.com/openharmony-tpc/" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Commiters"
-                name="committers"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="仓描述"
-                name="repositoryDescription"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="孵化时间"
-                name="incubationTime"
-                rules={[{ required: true, message: '请选择!' }]}
-              >
-                <DatePicker placeholder="请选择日期" />
-              </Form.Item>
-            </Col>
-          </Row> */}
         </Form>
       </div>
       {/* {isProceedingProcesses && ( */}

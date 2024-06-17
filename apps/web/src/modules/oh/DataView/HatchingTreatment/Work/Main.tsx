@@ -6,6 +6,7 @@ import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDe
 import Detail from '@modules/oh/DataView/HatchingTreatment/Workbench/Detail';
 import ProcessTable from '@modules/oh/DataView/HatchingTreatment/Work/ProcessTable';
 import OutProcessTable from '@modules/oh/DataView/HatchingTreatment/Work/OutProcessTable';
+import HatchingReport from '@modules/oh/DataView/HatchingTreatment/Work/HatchingReport';
 
 const Main = () => {
   let items = [
@@ -169,13 +170,18 @@ const Main = () => {
   let [activeItem, setActiveItem] = useState(null);
   let tabItems = [
     {
+      key: '1',
+      label: <div className="mx-2">孵化报告</div>,
+      children: <HatchingReport />,
+    },
+    {
       key: '2',
       label: <div className="mx-2">孵化选型申请</div>,
       children: <ProcessTable />,
     },
     {
       key: '4',
-      label: <div className="mx-2">孵化准出</div>,
+      label: <div className="mx-2">孵化准出申请</div>,
       children: <OutProcessTable />,
     },
   ];

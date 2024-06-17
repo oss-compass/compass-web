@@ -88,6 +88,13 @@ const EvaluationScore = () => {
       color: '#f8961e',
     },
   ];
+  const clickAnchor = (e: any, id: string) => {
+    e.preventDefault();
+    let anchorElement = document.getElementById(id);
+    if (anchorElement) {
+      anchorElement.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  };
   return (
     <div className="flex h-52 border bg-[#f9f9f9]">
       <div className="flex h-full w-40 items-center ">
@@ -97,7 +104,10 @@ const EvaluationScore = () => {
         {items.map(({ name, score, color }) => {
           return (
             <div key={name} className="mb-2 flex h-9 w-full  border bg-white">
-              <div className="flex min-w-[128px] cursor-pointer items-center justify-start px-3 font-semibold">
+              <div
+                onClick={(e) => clickAnchor(e, name)}
+                className="flex min-w-[128px] cursor-pointer items-center justify-start px-3 font-semibold"
+              >
                 <a className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline">
                   {name}
                 </a>
@@ -126,7 +136,7 @@ const EvaluationScore = () => {
 const EvaluationMerticItem = ({ mertic, items }) => {
   return (
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
-      <div className="mb-4 text-lg font-semibold">
+      <div id={mertic} className="mb-4 text-lg font-semibold">
         {mertic}
         {/* <Select
       className="oh-title-select"

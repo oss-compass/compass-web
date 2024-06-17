@@ -1,4 +1,5 @@
 import { proxy, subscribe } from 'valtio';
+import cloneDeep from 'lodash/cloneDeep';
 
 interface State {
   // model
@@ -37,8 +38,8 @@ const initialObj = {
     },
     {
       index: 2,
-      name: '建仓门禁评审',
-      id: '建仓门禁评审',
+      name: '建仓门禁申请',
+      id: '建仓门禁申请',
       state: 'wait',
       color: 'gray',
       icon: null,
@@ -67,6 +68,12 @@ export const getProceedingState = procseeState.allProcesses.find(
 );
 
 export const procseeActions = {
+  reset: () => {
+    const resetObj = cloneDeep(initialObj);
+    Object.keys(resetObj).forEach((key) => {
+      procseeState[key] = resetObj[key];
+    });
+  },
   setActive: (v: string) => {
     console.log(v);
     procseeState.active = v;

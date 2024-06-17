@@ -70,7 +70,7 @@ const items: MenuItem[] = [
       },
       {
         key: 'evaluationApplication',
-        label: '评估报告生成',
+        label: '孵化报告生成',
       },
       {
         key: 'process',

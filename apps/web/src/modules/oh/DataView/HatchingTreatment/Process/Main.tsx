@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Tabs } from 'antd';
+import { useUnmount } from 'ahooks';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 import { subscribeKey } from 'valtio/utils';
-import { procseeState } from '@modules/oh/DataView/HatchingTreatment/Process/procseeState';
+import {
+  procseeState,
+  procseeActions,
+} from '@modules/oh/DataView/HatchingTreatment/Process/procseeState';
 import SelectionApplication from './SelectionApplication';
 import SelectionEvaluation from './SelectionEvaluation';
 import RepoInformationMaintenance from './RepoInformationMaintenance';
 import AutomaticStorage from './AutomaticStorage';
 import Finish from './Finish';
-import { useBoolean, useUnmount } from 'ahooks';
 
 const Main = () => {
   useUnmount(() => {
-    console.log('useUnmount');
+    procseeActions.reset();
   });
   const { active } = procseeState;
   const [activeKey, setActiveKey] = useState('孵化选型申请');
@@ -28,8 +30,8 @@ const Main = () => {
       children: <SelectionEvaluation />,
     },
     {
-      key: '建仓门禁评审',
-      label: <div className="mx-2 text-lg">建仓门禁评审</div>,
+      key: '建仓门禁申请',
+      label: <div className="mx-2 text-lg">建仓门禁申请</div>,
       children: <RepoInformationMaintenance />,
     },
     {

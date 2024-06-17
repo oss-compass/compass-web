@@ -4,7 +4,7 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import {
   procseeState,
   procseeActions,
-} from '@modules/oh/DataView/HatchingTreatment/OutProcess/OutProcseeState';
+} from '@modules/oh/DataView/HatchingTreatment/OutProcess/outProcseeState';
 import { useSnapshot } from 'valtio';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 

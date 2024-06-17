@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Button } from 'antd';
+import { useUnmount } from 'ahooks';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 import SelectionApplication from './SelectionApplication';
 import SelectionEvaluation from './SelectionEvaluation';
@@ -8,9 +8,15 @@ import AutomaticStorage from './AutomaticStorage';
 import Finish from './Finish';
 import { useSnapshot } from 'valtio';
 import { subscribeKey } from 'valtio/utils';
-import { procseeState } from '@modules/oh/DataView/HatchingTreatment/OutProcess/OutProcseeState';
+import {
+  procseeState,
+  procseeActions,
+} from '@modules/oh/DataView/HatchingTreatment/OutProcess/outProcseeState';
 
 const Main = () => {
+  useUnmount(() => {
+    procseeActions.reset();
+  });
   // const snap = useSnapshot(procseeState);
   const { active } = procseeState;
 

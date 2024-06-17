@@ -17,7 +17,7 @@ import {
 import { useSnapshot } from 'valtio';
 
 const RepoInformationMaintenance = () => {
-  const processesID = '建仓门禁评审';
+  const processesID = '建仓门禁申请';
   const snap = useSnapshot(procseeState);
   const { allProcesses } = snap;
   let proceedingProcesses = allProcesses.find(
@@ -134,36 +134,6 @@ const RepoInformationMaintenance = () => {
               </Form.Item>
             </Col>
           </Row>
-          <div className="my-6 text-base font-semibold">审核信息</div>
-          <Col span={24}>
-            <Form.Item
-              labelCol={{
-                span: 3,
-                style: { fontWeight: 'bold' },
-              }}
-              label="审核结论"
-              name="conclusion"
-              rules={[{ required: true, message: '请输入!' }]}
-            >
-              <Radio.Group>
-                <Radio value="apple"> 通过 </Radio>
-                <Radio value="pear"> 驳回 </Radio>
-              </Radio.Group>
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              labelCol={{
-                span: 3,
-                style: { fontWeight: 'bold' },
-              }}
-              label="审核意见"
-              name="comment"
-              rules={[{ required: true, message: '请输入!' }]}
-            >
-              <Input.TextArea />
-            </Form.Item>
-          </Col>
         </Form>
       </div>
       {isProceedingProcesses && (
@@ -176,7 +146,7 @@ const RepoInformationMaintenance = () => {
               submit();
             }}
           >
-            提交
+            提交申请
           </Button>
           <Button className="rounded-none">转其他人</Button>
         </div>

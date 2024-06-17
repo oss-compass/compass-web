@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
-import TableCard from '@modules/oh/components/TableCard';
 import MyTable from '@common/components/Table';
-import { getRepoName } from '@common/utils';
-import { useRouter } from 'next/router';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import {
   useSubjectSigPageQuery,
@@ -23,13 +20,18 @@ interface TableQuery {
   per?: number;
 }
 
-const ProcessTable = () => {
+const HatchingReport = () => {
   let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
   const dataSource = result;
   const { timeStart, timeEnd } = useQueryDateRange();
 
   const columns = [
+    {
+      title: '申请单号',
+      dataIndex: 'id',
+      key: 'id',
+    },
     {
       title: '软件名称',
       dataIndex: 'name',
@@ -61,21 +63,6 @@ const ProcessTable = () => {
       },
     },
     {
-      title: '选型原因',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text, record) => {
-        return (
-          <a
-            onClick={() => {}}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {text}
-          </a>
-        );
-      },
-    },
-    {
       title: '申请人',
       dataIndex: 'linkSig',
       key: 'linkSig',
@@ -83,6 +70,11 @@ const ProcessTable = () => {
         let dom = text?.repos?.map((i) => <Tag key={i}>{i}</Tag>);
         return <div className="flex flex-wrap gap-y-2">{dom}</div>;
       },
+    },
+    {
+      title: '申请时间',
+      dataIndex: 'time',
+      key: 'time',
     },
     {
       title: '当前状态',
@@ -166,4 +158,4 @@ const ProcessTable = () => {
   );
 };
 
-export default ProcessTable;
+export default HatchingReport;

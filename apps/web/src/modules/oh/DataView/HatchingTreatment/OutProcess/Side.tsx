@@ -8,7 +8,7 @@ import {
   procseeActions,
   pointColorMap,
   textColorMap,
-} from '@modules/oh/DataView/HatchingTreatment/OutProcess/OutProcseeState';
+} from '@modules/oh/DataView/HatchingTreatment/OutProcess/outProcseeState';
 import { useSnapshot } from 'valtio';
 
 const SideMenu: React.FC = () => {

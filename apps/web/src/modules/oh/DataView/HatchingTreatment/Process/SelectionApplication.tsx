@@ -16,28 +16,22 @@ import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDe
 import Report from '@modules/oh/DataView/HatchingTreatment/Workbench/Report';
 
 let yList = [
-  '数据压缩算法',
-  'UI',
-  '图片',
-  '工具',
-  '数据存储',
-  '其他',
-  '框架类',
-  '图像图形处理',
-  '字体字幕处理',
-  '网络协议通信',
-  '视频编解码',
-  '日志打印',
-  '文本解析器',
-  '深度学习',
-  '安全',
-  '数据结构存储',
-  '音视频',
-  '加解密算法',
-  '搜索',
-  '动画',
-  '多媒体',
-  '文件数据与传输',
+  'RN 框架 (React Native)',
+  'Flutter 框架 (Flutter)',
+  '动画 (Animation)',
+  '网络及协议 (Networking&Protocol)',
+  '加解密 (Encryption)',
+  '数据库 (Database)',
+  '文件及解析 (Files&Parsing)',
+  '多媒体 (Media)',
+  '图片 (Image)',
+  '图形 (Graphics)',
+  '人工智能 (AI)',
+  '工具 (Tools)',
+  '数学及算法 (Math&Algorithm)',
+  '架构及模式 (Architecture&Patterns)',
+  '日志及调试 (Logging&Debugging)',
+  '辅助实用 (Utility)',
 ];
 const SelectReport = ({ getReport }) => {
   let items = [
@@ -400,7 +394,7 @@ const SelectionApplication = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="所属领域"
+                label="所属SIG"
                 name="domain"
                 rules={[{ required: true, message: '请输入!' }]}
               >

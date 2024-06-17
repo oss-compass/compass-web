@@ -887,7 +887,7 @@ const ProcessTable = () => {
       },
     },
     {
-      title: '管网地址',
+      title: '官网地址',
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => {
