@@ -1,97 +1,34 @@
 import React, { useState } from 'react';
-import { Button, message, Form, Input, Radio, Row, Col } from 'antd';
-import { ExclamationCircleTwoTone } from '@ant-design/icons';
+import classnames from 'classnames';
 import {
-  procseeState,
+  Button,
+  message,
+  Form,
+  Input,
+  Collapse,
+  Row,
+  Col,
+  DatePicker,
+} from 'antd';
+import { GrClose } from 'react-icons/gr';
+import { DownOutlined, ExclamationCircleTwoTone } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import {
   procseeActions,
+  getProceedingState,
 } from '@modules/oh/DataView/HatchingTreatment/OutProcess/OutProcessState';
-import { useSnapshot } from 'valtio';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import Dialog from '@common/components/Dialog';
+import SelectReport from '@modules/oh/components/SelectReport';
 
 const SelectionApplication = () => {
   const processesID = '孵化准出申请';
-  let listItem = [
-    {
-      label: '所属领域',
-      span: 2,
-      children: 'CI/CD',
-    },
-    {
-      label: '编程语言',
-      span: 2,
-      children: 'Java',
-    },
-    {
-      label: '软件名称',
-      span: 2,
-      children: '自动化工具',
-    },
-    {
-      label: '软件版本',
-      span: 2,
-      children: 'V2.0',
-    },
-    {
-      label: '相关 APP',
-      span: 2,
-      children: '公司内部使用',
-    },
-    {
-      label: '软件性质',
-      span: 2,
-      children: '组织项目',
-    },
-    {
-      label: '选型原因',
-      span: 4,
-      children: '提高生产效率',
-    },
-    {
-      label: '官网地址',
-      span: 2,
-      children: '192.168.1.100',
-    },
-    {
-      label: '源码地址',
-      span: 2,
-      children: 'https://github.com/example/project',
-    },
-    {
-      label: '开发商',
-      span: 2,
-      children: '某公司',
-    },
-    {
-      label: '代码量',
-      span: 2,
-      children: '10000 行',
-    },
-    {
-      label: '版本发布日期',
-      span: 2,
-      children: '2023-05-01',
-    },
-    {
-      label: '版本描述',
-      span: 4,
-      children: '此版本优化了性能和用户体验',
-    },
-  ];
+  let isProceedingProcesses = getProceedingState().id === processesID;
 
-  const snap = useSnapshot(procseeState);
-  const { allProcesses } = snap;
-  let proceedingProcesses = allProcesses.find(
-    (item) => item.state === 'proceeding'
-  );
-  let isProceedingProcesses = proceedingProcesses.id === processesID;
-  console.log(proceedingProcesses.id);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
-  form.setFieldsValue({
-    softwareName: 'Sample Software',
-    domain: 'https://github.com/example/project',
-  });
   const submit = () => {
     form.validateFields().then((values) => {
       setSubmitLoading(true);
@@ -109,11 +46,34 @@ const SelectionApplication = () => {
   const recall = () => {
     // form.resetFields();
   };
+  const [report, setReport] = useState(null);
+  const autoFill = (report) => {
+    form.setFieldsValue({
+      softwareName: report || 'Sample Software',
+      domain: '数据压缩',
+      softwareVersion: '1.0.0',
+      releaseDate: dayjs('2020-01-01'),
+      developer: 'ABC Company',
+      websiteUrl: 'https://example.com',
+      selectionReason: '该软件具有优秀的性能表现和易用性',
+      codeRepositoryUrl: 'https://github.com/example/project',
+      programmingLanguage: 'Python',
+      codeSize: '10000 行',
+      integrationMethod: '适配',
+      sigName: '数据压缩算法',
+      sigDescription: '数据压缩算法 SIG 描述',
+      newRepositoryPath: '/data-compression-algorithm',
+      committers: 'John Doe, Jane Smith',
+      repositoryDescription: '该仓库用于存储数据压缩算法相关代码',
+      incubationTime: dayjs('2022-01-01'),
+    });
+  };
+  const [label, setLabel] = useState(true);
   return (
     <>
       {contextHolder}
-      <div className="flex flex-col justify-center py-4 px-5">
-        <div className="mb-5 flex items-start gap-2 border border-[#91d5ff] bg-[#e6f7ff] px-3 py-2 text-xs leading-5">
+      <div className="oh flex flex-col justify-center py-4 px-5">
+        {/* <div className="mb-5 flex items-start gap-2 border border-[#91d5ff] bg-[#e6f7ff] px-3 py-2 text-xs leading-5">
           <ExclamationCircleTwoTone rev={undefined} className="mt-1" />
           <div>
             <div>
@@ -138,7 +98,7 @@ const SelectionApplication = () => {
               等其他场景，其他场景可手工处理或咨询
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="mb-6 text-base font-semibold">软件基础信息</div>
         {/* <Descriptions className="oh" bordered items={listItem} /> */}
         <Form
@@ -150,7 +110,7 @@ const SelectionApplication = () => {
           style={{
             width: '100%',
           }}
-          disabled={true}
+          disabled={!report || isProceedingProcesses}
           // onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -162,53 +122,126 @@ const SelectionApplication = () => {
                 name="softwareName"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
+                {!isProceedingProcesses ? (
+                  <Input
+                    suffix={
+                      <DownOutlined
+                        className="text-[#d9d9d9]"
+                        rev={undefined}
+                      />
+                    }
+                  />
+                ) : (
+                  <Input
+                    suffix={
+                      <DownOutlined
+                        className="text-[#d9d9d9]"
+                        rev={undefined}
+                      />
+                    }
+                    disabled={false}
+                    onClick={() => {
+                      setOpenConfirm(true);
+                    }}
+                    readOnly
+                  ></Input>
+                )}
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="仓库地址"
+                label="SIG名称"
                 name="domain"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input />
               </Form.Item>
             </Col>
+            <Col span={12}>
+              <Form.Item
+                label="仓库地址"
+                name="codeRepositoryUrl"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="孵化时长"
+                name="incubationTime"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <DatePicker placeholder="" />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                labelCol={{
+                  span: 3,
+                  style: { fontWeight: 'bold' },
+                }}
+                label="申请背景"
+                name="selectionReason"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Input.TextArea disabled={false} />
+              </Form.Item>
+            </Col>
           </Row>
         </Form>
         <div className="my-6 text-base font-semibold">软件评估信息</div>
-        <EvaluationDetail />
-        {/* <div className="my-6 text-base font-semibold">审核信息</div>
-        <Col span={24}>
-          <Form.Item
-            labelCol={{
-              span: 3,
-              style: { fontWeight: 'bold' },
-            }}
-            label="审核结论"
-            name="conclusion"
-            rules={[{ required: true, message: '请输入!' }]}
-          >
-            <Radio.Group>
-              <Radio value="apple"> 通过 </Radio>
-              <Radio value="pear"> 驳回 </Radio>
-            </Radio.Group>
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item
-            labelCol={{
-              span: 3,
-              style: { fontWeight: 'bold' },
-            }}
-            label="审核意见"
-            name="comment"
-            rules={[{ required: true, message: '请输入!' }]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-        </Col> */}
+        <Collapse
+          defaultActiveKey={['1']}
+          ghost
+          onChange={(key) => {
+            setLabel(false);
+          }}
+          items={[
+            {
+              key: '1',
+              label: label ? '点击收起软件评估报告' : '点击展开软件评估报告',
+              children: <EvaluationDetail />,
+            },
+          ]}
+        />
       </div>
+      <Dialog
+        open={openConfirm}
+        classes={{
+          paper: classnames(
+            'border w-[95%] !max-w-[95%] min-h-[400px] !m-0',
+            'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
+          ),
+        }}
+        dialogTitle={
+          <>
+            <p className="">选择软件</p>
+            <div
+              className="absolute right-6 top-4 cursor-pointer p-2"
+              onClick={() => {
+                setOpenConfirm(false);
+              }}
+            >
+              <GrClose className="text-base" />
+            </div>
+          </>
+        }
+        dialogContent={
+          <div className="w-full">
+            <SelectReport
+              getReport={(name) => {
+                setOpenConfirm(false);
+                setReport(name);
+                autoFill(name);
+              }}
+            />
+          </div>
+        }
+        handleClose={() => {
+          setOpenConfirm(false);
+        }}
+      />
       {isProceedingProcesses && (
         <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
           <Button
@@ -221,7 +254,7 @@ const SelectionApplication = () => {
           >
             提交
           </Button>
-          <Button
+          {/* <Button
             className="rounded-none"
             htmlType="submit"
             onClick={() => {
@@ -229,7 +262,7 @@ const SelectionApplication = () => {
             }}
           >
             撤回
-          </Button>
+          </Button> */}
         </div>
       )}
     </>

@@ -1,11 +1,34 @@
 import React, { useState } from 'react';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import Detail from '@modules/oh/DataView/HatchingTreatment/Workbench/Detail';
 import Report from '@modules/oh/components/SelectReport/Report';
 
-const Main = () => {
+const SelectReport = ({ getReport }) => {
   let items = [
+    {
+      name: 'vue3',
+      description:
+        'Vue.js 是构建 Web 界面的 JavaScript 库，提供数据驱动的组件，还有简单灵活的 API，使得 MVVM 更简单。',
+      reportVersion: 'v2',
+      updated: '2024-06-01',
+      score: '88',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 73,
+        },
+        {
+          name: '技术生态',
+          score: 65,
+        },
+        {
+          name: '生命周期',
+          score: 77,
+        },
+        {
+          name: '网络安全',
+          score: 44,
+        },
+      ],
+    },
     {
       name: 'vue',
       description:
@@ -163,22 +186,18 @@ const Main = () => {
       ],
     },
   ];
-
+  const [selected, setSelected] = useState<string>('');
   return (
     <>
-      <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
-        <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
-          TPC 软件孵化治理看板
-          <div>
-            <Input prefix={<SearchOutlined rev={undefined} />} />
-          </div>
-        </div>
-        <div className="relative flex h-[calc(100%-60px)] justify-center">
-          <Report items={items} />
-        </div>
-      </div>
+      <Report
+        items={items}
+        selected={selected}
+        selectFun={(name) => {
+          setSelected(name);
+          getReport(name);
+        }}
+      />
     </>
   );
 };
-
-export default Main;
+export default SelectReport;

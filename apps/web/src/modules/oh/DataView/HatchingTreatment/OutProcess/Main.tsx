@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useUnmount } from 'ahooks';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 import SelectionApplication from './SelectionApplication';
-import SelectionEvaluation from './SelectionEvaluation';
-import RepoInformationMaintenance from './RepoInformationMaintenance';
+import TpcPreliminaryHearing from './TpcPreliminaryHearing';
+import StructurePrequalification from './StructurePrequalification';
+import QAPreliminaryHearing from './QAPreliminaryHearing';
 import AutomaticStorage from './AutomaticStorage';
 import Finish from './Finish';
-import { useSnapshot } from 'valtio';
 import { subscribeKey } from 'valtio/utils';
 import {
   procseeState,
@@ -29,17 +29,17 @@ const Main = () => {
     {
       key: '孵化准出 TPC 预审',
       label: <div className="mx-2 text-lg">孵化准出 TPC 预审</div>,
-      children: <SelectionApplication />,
+      children: <TpcPreliminaryHearing />,
     },
     {
       key: '孵化准出架构预审',
       label: <div className="mx-2 text-lg">孵化准出架构预审</div>,
-      children: <RepoInformationMaintenance />,
+      children: <StructurePrequalification />,
     },
     {
       key: '孵化准出 QA 预审',
       label: <div className="mx-2 text-lg">孵化准出 QA 预审</div>,
-      children: <AutomaticStorage />,
+      children: <QAPreliminaryHearing />,
     },
     {
       key: '准出电子流自动化处理 (TPC 建仓)',

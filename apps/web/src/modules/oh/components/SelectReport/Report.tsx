@@ -139,7 +139,10 @@ const Report = ({
                       'border-primary': checked === item.name,
                     })}
                     onClick={() => {
-                      selectFun && setChecked(item.name);
+                      if (selectFun)
+                        checked === item.name
+                          ? setChecked('')
+                          : setChecked(item.name);
                     }}
                   >
                     <div className="flex w-full justify-between text-xl font-semibold">

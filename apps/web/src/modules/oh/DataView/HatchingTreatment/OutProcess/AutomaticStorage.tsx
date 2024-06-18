@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Radio, Form, Input, Col, message, Tabs, Result } from 'antd';
+import { useSnapshot } from 'valtio';
+import { LoadingOutlined } from '@ant-design/icons';
 import {
   procseeState,
   procseeActions,
-} from '@modules/oh/DataView/HatchingTreatment/Process/procseeState';
-import { useSnapshot } from 'valtio';
-import { LoadingOutlined } from '@ant-design/icons';
+} from '@modules/oh/DataView/HatchingTreatment/OutProcess/OutProcessState';
 
 const AutomaticStorage = () => {
-  const processesID = '入库自动化处理';
+  const processesID = '准出电子流自动化处理 (TPC 建仓)';
   const [submitLoading, setSubmitLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -22,15 +22,9 @@ const AutomaticStorage = () => {
   const [form] = Form.useForm();
   const submit = () => {
     form.validateFields().then((values) => {
-      setSubmitLoading(true);
       setTimeout(() => {
-        messageApi.open({
-          type: 'success',
-          content: '提交成功',
-        });
-        setSubmitLoading(false);
         procseeActions.setNextProcsee(processesID);
-      }, 1000);
+      }, 2000);
       console.log(values);
     });
   };
@@ -40,6 +34,7 @@ const AutomaticStorage = () => {
   const [loading, setLoading] = useState(isProceedingProcesses);
   setTimeout(() => {
     setLoading(false);
+    submit();
   }, 3000);
   return (
     <>
@@ -56,7 +51,7 @@ const AutomaticStorage = () => {
           <Result status="success" title="入库自动化处理成功!" />
         )}
       </div>
-      {isProceedingProcesses && (
+      {/* {isProceedingProcesses && (
         <div className="fixed bottom-2 flex w-[99%] justify-center gap-2">
           {!loading && (
             <Button
@@ -70,12 +65,8 @@ const AutomaticStorage = () => {
               结束
             </Button>
           )}
-          {/* <Button className="rounded-none">转其他人</Button>
-          <Button className="rounded-none" htmlType="button" onClick={onReset}>
-            重置
-          </Button> */}
         </div>
-      )}
+      )} */}
     </>
   );
 };

@@ -63,9 +63,9 @@ const initialObj = {
   ],
 };
 export const procseeState = proxy<State>(initialObj);
-export const getProceedingState = procseeState.allProcesses.find(
-  (item) => item.state === 'proceeding'
-);
+export const getProceedingState = () => {
+  return procseeState.allProcesses.find((item) => item.state === 'proceeding');
+};
 
 export const procseeActions = {
   reset: () => {

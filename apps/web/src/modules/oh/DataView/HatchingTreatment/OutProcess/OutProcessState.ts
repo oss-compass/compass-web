@@ -70,9 +70,9 @@ const initialObj = {
   ],
 };
 export const procseeState = proxy<State>(initialObj);
-export const getProceedingState = procseeState.allProcesses.find(
-  (item) => item.state === 'proceeding'
-);
+export const getProceedingState = () => {
+  return procseeState.allProcesses.find((item) => item.state === 'proceeding');
+};
 
 export const procseeActions = {
   reset: () => {
@@ -94,6 +94,7 @@ export const procseeActions = {
     current.state = 'finish';
     // current.icon = '';
     next.state = 'proceeding';
+    console.log(next);
     procseeState.active = next.id;
   },
 };
