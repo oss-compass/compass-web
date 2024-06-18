@@ -11,7 +11,7 @@ import { subscribeKey } from 'valtio/utils';
 import {
   procseeState,
   procseeActions,
-} from '@modules/oh/DataView/HatchingTreatment/OutProcess/outProcseeState';
+} from '@modules/oh/DataView/HatchingTreatment/OutProcess/OutProcessState';
 
 const Main = () => {
   useUnmount(() => {
