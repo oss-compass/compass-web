@@ -48,7 +48,7 @@ const SelectionApplication = () => {
   };
   const autoFill = () => {
     form.setFieldsValue({
-      incubationNumber: '201774327908007936',
+      incubationNumber: '2017743279080097936',
       softwareName: 'Sample Software',
       domain: '数据压缩',
       softwareVersion: '1.0.0',
@@ -68,7 +68,7 @@ const SelectionApplication = () => {
       incubationTime: dayjs('2022-01-01'),
     });
   };
-  const incubationNumberList = ['201774327908007936'];
+  const incubationNumberList = ['201774327908007936', '201974327908007936'];
 
   return (
     <>
