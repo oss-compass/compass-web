@@ -17,7 +17,7 @@ const Main = () => {
   useUnmount(() => {
     procseeActions.reset();
   });
-  // const snap = useSnapshot(procseeState);
+
   const { active } = procseeState;
 
   const allItems = [
