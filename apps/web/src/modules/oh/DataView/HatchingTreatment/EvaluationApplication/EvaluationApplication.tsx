@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, message, Form, Input, Select, Row, Col } from 'antd';
+import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
 import DatePicker from '@common/components/Form';
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -67,6 +67,35 @@ const SelectionApplication = () => {
       incubationTime: dayjs('2022-01-01'),
     });
   };
+  const websiteValidator = (_, value) => {
+    if (
+      !value ||
+      /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/.test(
+        value
+      )
+    ) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error('请输入一个有效的网站 URL'));
+  };
+  const versionValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('请输入版本号'));
+    }
+
+    // 检查是否为 master 分支
+    if (value.toLowerCase() === 'master') {
+      return Promise.reject(new Error('版本号不能使用 "master"'));
+    }
+
+    // 检查是否为正式发布版本 (Release)
+    const regex = /^\d+\.\d+\.\d+$/; // 仅允许 x.x.x 格式的版本号
+    if (!regex.test(value)) {
+      return Promise.reject(new Error('版本号必须为官方发布版本 (x.x.x)'));
+    }
+
+    return Promise.resolve();
+  };
   return (
     <>
       {contextHolder}
@@ -112,13 +141,31 @@ const SelectionApplication = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                label="软件版本"
-                name="softwareVersion"
-                rules={[{ required: true, message: '请输入!' }]}
+              <Popover
+                placement="topRight"
+                content={
+                  <>
+                    <div>
+                      1. master 是分支，不是版本号，不能用 master
+                      作为版本号引入；
+                    </div>
+                    <div>
+                      2. 引入官方发布版本（Release 版本），非正式版本（beta
+                      等）未经过全面测试，不允许入库；
+                    </div>
+                  </>
+                }
+                title="规则"
+                trigger="click"
               >
-                <Input />
-              </Form.Item>
+                <Form.Item
+                  label="软件版本号"
+                  name="softwareVersion"
+                  rules={[{ validator: versionValidator }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Popover>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -139,13 +186,33 @@ const SelectionApplication = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                label="官网地址"
-                name="websiteUrl"
-                rules={[{ required: true, message: '请输入!' }]}
+              <Popover
+                placement="topRight"
+                content={
+                  <>
+                    <div>
+                      提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee
+                      等）对应项目托管地址
+                    </div>
+                  </>
+                }
+                title="规则"
+                trigger="click"
               >
-                <Input />
-              </Form.Item>
+                <Form.Item
+                  label="官网地址"
+                  name="websiteUrl"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入!',
+                    },
+                    { type: 'url', message: '请输入有效的官网地址!' },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Popover>
             </Col>
             {/* <Col span={24}>
               <Form.Item
@@ -229,7 +296,7 @@ const SelectionApplication = () => {
                 name="newRepositoryPath"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input addonBefore="https://gitee.com/openharmony-tpc/" />
+                <Input addonBefore="https://gitee.com/openharmony-tpc/ohos_" />
               </Form.Item>
             </Col>
             <Col span={12}>

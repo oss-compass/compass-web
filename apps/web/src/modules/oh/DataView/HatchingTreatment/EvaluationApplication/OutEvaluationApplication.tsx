@@ -137,7 +137,7 @@ const SelectionApplication = () => {
               >
                 <Input
                   // disabled={!isProceedingProcesses}
-                  addonBefore="https://gitee.com/openharmony-tpc/"
+                  addonBefore="https://gitee.com/openharmony-tpc/ohos_"
                 />
               </Form.Item>
             </Col>

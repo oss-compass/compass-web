@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
-import { Button, message, Form, Input, Select, Row, Col } from 'antd';
+import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
 import Dialog from '@common/components/Dialog';
 import DatePicker from '@common/components/Form';
 import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
@@ -294,16 +294,29 @@ const SelectionApplication = () => {
               </Form.Item>
             </Col> */}
             <Col span={12}>
-              <Form.Item
-                label="新建仓路径"
-                name="newRepositoryPath"
-                rules={[{ required: true, message: '请输入!' }]}
+              <Popover
+                placement="topRight"
+                content={
+                  <>
+                    <div>1.软件名称和其官网保持一致;</div>
+                    <div>1.禁止以软件的子模块作为软件名;</div>
+                  </>
+                }
+                title="规则"
+                trigger="click"
               >
-                <Input
-                  disabled={!isProceedingProcesses}
-                  addonBefore="https://gitee.com/openharmony-tpc/"
-                />
-              </Form.Item>
+                <Form.Item
+                  label="新建仓路径"
+                  name="newRepositoryPath"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input
+                    disabled={!isProceedingProcesses}
+                    onFocus={() => {}}
+                    addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                  />
+                </Form.Item>
+              </Popover>
             </Col>
             <Col span={12}>
               <Form.Item

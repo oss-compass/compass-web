@@ -123,13 +123,17 @@ const Report = ({
       {activeItem ? (
         <Detail setActiveItem={setActiveItem} />
       ) : (
-        <div className="relative h-full">
+        <div className="relative h-full w-full">
           <div
-            className={classnames('h-[calc(100vh-252px)] overflow-auto ', {
-              border: selectFun,
-            })}
+            className={classnames(
+              'h-[calc(100vh-252px)] w-full overflow-auto ',
+              {
+                border: selectFun,
+              }
+            )}
           >
-            <div className="flex  flex-wrap content-start gap-6 overflow-auto p-6">
+            <div className=">2xl:max-w-[1640px] mx-auto flex flex-wrap gap-6 p-6 xl:max-w-[900px] 2xl:w-[1079px]">
+              {/* <div className="flex flex-wrap gap-6 overflow-auto p-6"> */}
               {items.map((item) => {
                 return (
                   <div
@@ -178,6 +182,7 @@ const Report = ({
                   </div>
                 );
               })}
+              {/* </div> */}
             </div>
           </div>
           {selectFun && (

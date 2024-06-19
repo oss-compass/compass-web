@@ -103,7 +103,7 @@ const RepoInformationMaintenance = () => {
                 name="newRepositoryPath"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input addonBefore="https://gitee.com/openharmony-tpc/" />
+                <Input addonBefore="https://gitee.com/openharmony-tpc/ohos_" />
               </Form.Item>
             </Col>
             <Col span={12}>
