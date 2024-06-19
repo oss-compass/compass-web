@@ -87,11 +87,11 @@ const SelectionApplication = () => {
     if (value.toLowerCase() === 'master') {
       return Promise.reject(new Error('版本号不能使用 "master"'));
     }
-
-    // 检查是否为正式发布版本 (Release)
-    const regex = /^\d+\.\d+\.\d+$/; // 仅允许 x.x.x 格式的版本号
-    if (!regex.test(value)) {
-      return Promise.reject(new Error('版本号必须为官方发布版本 (x.x.x)'));
+    if (
+      /beta/i.test(value.toLowerCase()) ||
+      /alpha/i.test(value.toLowerCase())
+    ) {
+      return Promise.reject(new Error('版本号不能使用非正式版本 "beta" 等'));
     }
 
     return Promise.resolve();
