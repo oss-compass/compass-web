@@ -50,21 +50,24 @@ const SelectionApplication = () => {
     form.setFieldsValue({
       softwareName: 'luajava',
       domain: '工具 (Tools)',
-      softwareVersion: '1.0.0',
+      softwareVersion: 'v1.0.0',
       releaseDate: dayjs('2020-01-01'),
       developer: 'jasonsantos',
-      websiteUrl: 'https://github.com/jasonsantos/luajava',
-      selectionReason: '该软件具有优秀的性能表现和易用性',
+      websiteUrl: 'www.keplerproject.org/luajava/',
+      selectionReason:
+        '游戏中心使用 LuaJava 进行 lua 与 java 间的调用。该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。OH 目前没有支持 lua 层到 arkTS 之间的调用。需要将该开源库进行 OpenHarmony 移植适配',
       codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
-      programmingLanguage: 'Python',
+      programmingLanguage: 'Java',
       codeSize: '10000 行',
       integrationMethod: '适配',
       sigName: '工具 (Tools)',
-      sigDescription: '数据压缩算法 SIG 描述',
-      newRepositoryPath: '/data-compression-algorithm',
-      committers: 'John Doe, Jane Smith',
-      repositoryDescription: '该仓库用于存储数据压缩算法相关代码',
-      incubationTime: dayjs('2022-01-01'),
+      sigDescription: '开发相关工具',
+      newRepositoryPath: 'luajava',
+      committers: 'jasonsantos,talklittle,hishamhm',
+      repositoryDescription:
+        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
+      incubationTime: dayjs('2024-06-18'),
+      bugPublish: 'https://github.com/jasonsantos/luajava/issues',
     });
   };
   const websiteValidator = (_, value) => {
@@ -210,19 +213,6 @@ const SelectionApplication = () => {
                 </Form.Item>
               </Popover>
             </Col>
-            {/* <Col span={24}>
-              <Form.Item
-                labelCol={{
-                  span: 3,
-                  style: { fontWeight: 'bold' },
-                }}
-                label="选型原因"
-                name="selectionReason"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input.TextArea />
-              </Form.Item>
-            </Col> */}
           </Row>
           {/* <div className="mb-6 text-base font-semibold">软件源码信息</div> */}
           <Row gutter={24}>
@@ -240,6 +230,21 @@ const SelectionApplication = () => {
                 label="编程语言"
                 name="programmingLanguage"
                 rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="漏洞披露机制"
+                name="bugPublish"
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入!',
+                  },
+                  { type: 'url', message: '请输入有效的漏洞披露地址!' },
+                ]}
               >
                 <Input />
               </Form.Item>

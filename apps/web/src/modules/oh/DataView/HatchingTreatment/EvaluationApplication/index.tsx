@@ -17,7 +17,7 @@ const Main = () => {
     },
     {
       key: '5',
-      label: <div className="mx-2">孵化评估报告</div>,
+      label: <div className="mx-2">毕业评估报告</div>,
       children: <OutEvaluationApplication />,
     },
   ];

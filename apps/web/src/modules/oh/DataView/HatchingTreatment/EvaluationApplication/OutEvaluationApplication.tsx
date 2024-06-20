@@ -57,7 +57,7 @@ const SelectionApplication = () => {
       websiteUrl: 'https://example.com',
       selectionReason: '该软件具有优秀的性能表现和易用性',
       codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
-      programmingLanguage: 'Python',
+      programmingLanguage: 'Java',
       codeSize: '10000 行',
       integrationMethod: '适配',
       sigName: '数据压缩算法',

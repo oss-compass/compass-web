@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { EChartsOption, init, LineSeriesOption } from 'echarts';
-import { CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import {
+  CloseCircleOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { Tag } from 'antd';
+import { Tag, Input, Button } from 'antd';
 
 const Pie = () => {
   var colorList = ['#998CEF', '#D9D8EB'];
@@ -133,7 +137,9 @@ const EvaluationScore = () => {
     </div>
   );
 };
-const EvaluationMerticItem = ({ mertic, items }) => {
+const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
+  const { score, color } = scoreObj;
+  const [showInput, setShowInput] = useState(false);
   return (
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
@@ -156,35 +162,73 @@ const EvaluationMerticItem = ({ mertic, items }) => {
       <div className="flex h-6 items-center justify-start">
         <div className="h-1.5 w-[600px] bg-[#e5e5e5]">
           <div
-            className="h-1.5 w-[75%] bg-green-400"
-            // style={{
-            //   width: `${score}%`,
-            //   backgroundColor: color,
-            // }}
+            className="h-1.5"
+            style={{
+              width: `${score}%`,
+              backgroundColor: color,
+            }}
           ></div>
         </div>
-        <div className="ml-4 text-base font-semibold">73%</div>
+        <div className="ml-4 text-base font-semibold">{score}%</div>
       </div>
       <div className="mt-6 w-full border-b">
         {items.map((item) => {
           return (
             <div
               key={item.指标名称}
-              className="flex h-[82px] border border-b-0 bg-white px-4 py-3"
+              className="flex h-[88px] border border-b-0 bg-white px-4 py-3"
             >
               <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-                <CheckCircleOutlined rev={undefined} />
+                {item.error ? (
+                  <CloseCircleOutlined
+                    rev={undefined}
+                    className="text-[#ff4d4f]"
+                  />
+                ) : (
+                  <CheckCircleOutlined rev={undefined} />
+                )}
               </div>
               <div className="">
-                <div className="flex text-base font-semibold">
-                  {item.指标名称}
-                  <div className="ml-4">
+                <div className="flex h-[29px] text-base font-semibold">
+                  <div className="flex-shrink-0"> {item.指标名称}</div>
+                  <div className="ml-4 mr-4">
                     {item.风险重要性 === '高' ? (
                       <Tag color="orange">风险重要性： {item.风险重要性}</Tag>
                     ) : (
                       <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
                     )}
                   </div>
+                  {item.error &&
+                    type === 'edit' &&
+                    (showInput ? (
+                      <>
+                        <Input
+                          className="mr-4 h-full"
+                          placeholder="请输入漏洞响应地址"
+                        />
+                        <Button
+                          className="h-[29px] rounded-none"
+                          onClick={() => {
+                            setShowInput(false);
+                          }}
+                        >
+                          录入
+                        </Button>
+                      </>
+                    ) : (
+                      <div
+                        onClick={() => {
+                          setShowInput(true);
+                        }}
+                        className="cursor-pointer text-base text-[#ff4d4f]"
+                      >
+                        <ExclamationCircleOutlined
+                          rev={undefined}
+                          className="mr-2 text-[#ff4d4f] "
+                        />
+                        未识别到漏洞响应机制，请点击此处录入
+                      </div>
+                    ))}
                 </div>
                 <div className="line-clamp-2 mt-1 text-xs">
                   {item.指标意义.split('\n\n').map((line, index) => (
@@ -202,7 +246,57 @@ const EvaluationMerticItem = ({ mertic, items }) => {
     </div>
   );
 };
-const EvaluationMertic = () => {
+const EvaluationMertic = ({ allData, scoreList, type }) => {
+  let yList = ['合法合规', '技术生态', '生命周期', '网络安全'];
+  const [mertic, setMertic] = useState('合法合规');
+  // const items = allData.filter((item) => item.维度 === mertic);
+  return (
+    <>
+      {yList.map((mertic) => {
+        const items = allData.filter((item) => item.维度 === mertic);
+        const scoreObj = scoreList.find((item) => item.name === mertic);
+        return (
+          <EvaluationMerticItem
+            key={mertic}
+            mertic={mertic}
+            items={items}
+            scoreObj={scoreObj}
+            type={type}
+          />
+        );
+      })}
+    </>
+  );
+};
+const EvaluationDetail = ({
+  back,
+  type,
+}: {
+  back?: () => void;
+  type?: string;
+}) => {
+  const items = [
+    {
+      name: '合法合规',
+      score: 73,
+      color: '#4ade80',
+    },
+    {
+      name: '技术生态',
+      score: 65,
+      color: '#4ade80',
+    },
+    {
+      name: '生命周期',
+      score: 77,
+      color: '#4ade80',
+    },
+    {
+      name: '网络安全',
+      score: 44,
+      color: '#f8961e',
+    },
+  ];
   let allData = [
     {
       维度: '合法合规',
@@ -332,6 +426,7 @@ const EvaluationMertic = () => {
     {
       维度: '网络安全',
       指标名称: '漏洞响应机制',
+      error: true,
       风险重要性: '高',
       指标意义:
         '引入软件漏洞响应机制检查\n\n【规则】\n1. 选用开源软件必须有漏洞反馈与修复跟踪管理机制；',
@@ -350,24 +445,6 @@ const EvaluationMertic = () => {
       指标意义: '引入软件历史漏洞检查\n\n【建议】\n1. 优选漏洞较少的版本',
     },
   ];
-  let yList = ['合法合规', '技术生态', '生命周期', '网络安全'];
-  const [mertic, setMertic] = useState('合法合规');
-  // const items = allData.filter((item) => item.维度 === mertic);
-  let res = yList.map((z) => {
-    return allData.filter((item) => item.维度 === z);
-  });
-  return (
-    <>
-      {yList.map((mertic) => {
-        const items = allData.filter((item) => item.维度 === mertic);
-        return (
-          <EvaluationMerticItem key={mertic} mertic={mertic} items={items} />
-        );
-      })}
-    </>
-  );
-};
-const EvaluationDetail = ({ back }: { back?: () => void }) => {
   return (
     <div>
       <div className="mb-6 flex border bg-[#f9f9f9] py-3 px-6">
@@ -384,7 +461,7 @@ const EvaluationDetail = ({ back }: { back?: () => void }) => {
       </div>
       <EvaluationScore />
       <div className="mt-6">
-        <EvaluationMertic />
+        <EvaluationMertic allData={allData} scoreList={items} type={type} />
       </div>
     </div>
   );

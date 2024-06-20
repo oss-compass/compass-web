@@ -37,7 +37,7 @@ const RepoInformationMaintenance = () => {
     websiteUrl: 'https://example.com',
     selectionReason: '该软件具有优秀的性能表现和易用性',
     codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
-    programmingLanguage: 'Python',
+    programmingLanguage: 'Java',
     codeSize: '10000 行',
     integrationMethod: '适配',
     sigName: '数据压缩算法',
@@ -46,6 +46,7 @@ const RepoInformationMaintenance = () => {
     committers: 'John Doe, Jane Smith',
     repositoryDescription: '该仓库用于存储数据压缩算法相关代码',
     incubationTime: dayjs('2022-01-01'),
+    bugPublish: 'https://github.com/jasonsantos/luajava/issues',
   });
   const submit = () => {
     form.validateFields().then((values) => {

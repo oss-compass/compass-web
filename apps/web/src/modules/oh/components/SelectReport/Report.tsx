@@ -169,7 +169,10 @@ const Report = ({
                         )}
                       </div>
                     </div>
-                    <div className="line-clamp-2 my-3 flex items-center text-sm font-medium">
+                    <div
+                      title={item.description}
+                      className="line-clamp-2 my-3 flex items-center text-sm font-medium"
+                    >
                       {item.description}
                     </div>
                     <MiniEvaluationDetail
