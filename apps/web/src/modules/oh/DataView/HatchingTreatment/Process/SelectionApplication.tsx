@@ -46,11 +46,26 @@ const SelectionApplication = () => {
       setSubmitLoading(true);
       setTimeout(() => {
         messageApi.open({
+          style: {
+            marginTop: '200px',
+          },
           type: 'success',
-          content: '提交成功',
+          content: (
+            <>
+              提交成功，已在 Gitee 建立 issue 跟踪，可点击
+              <a
+                className="text-[#1677ff]"
+                href="https://gitee.com/openharmony-tpc/ImageKnife/issues"
+                // _blank={true}
+              >
+                https://gitee.com/openharmony-tpc/ImageKnife/issues
+              </a>
+              查看 issue,
+            </>
+          ),
         });
         setSubmitLoading(false);
-        procseeActions.setNextProcsee(processesID);
+        // procseeActions.setNextProcsee(processesID);
       }, 1000);
       console.log(values);
     });
@@ -60,7 +75,7 @@ const SelectionApplication = () => {
   };
   const autoFill = (report) => {
     form.setFieldsValue({
-      softwareName: report || 'luajava',
+      softwareName: report || 'jasonsantos/luajava',
       domain: '工具 (Tools)',
       softwareVersion: 'v1.0.0',
       releaseDate: dayjs('2020-01-01'),

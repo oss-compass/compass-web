@@ -150,6 +150,9 @@
     font-weight: 600;
   }
 }
+.ant-popover {
+  z-index: 9100 !important;
+}
 // .report-container {
 //   display: grid;
 //   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));

@@ -38,6 +38,14 @@ const SelectionApplication = () => {
           },
           content: '提交成功，报告生成后将会邮件通知您！',
         });
+        values.time = new Date().toLocaleString();
+        window.sessionStorage.setItem(
+          values.softwareName,
+          JSON.stringify(values)
+        );
+        setTimeout(() => {
+          window.location.hash = 'work?key=2&name=' + values.softwareName;
+        }, 1000);
         setSubmitLoading(false);
       }, 1000);
       console.log(values);

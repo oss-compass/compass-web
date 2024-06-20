@@ -6,7 +6,7 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { Tag, Input, Button } from 'antd';
+import { Tag, Input, Button, Popover } from 'antd';
 
 const Pie = ({ score }) => {
   var colorList = ['#998CEF', '#D9D8EB'];
@@ -138,6 +138,40 @@ const EvaluationScore = ({ items }) => {
     </div>
   );
 };
+const getConent1 = (name) => {
+  switch (name) {
+    case 'DCO':
+      return '未检测到项目的提交者签署 DCO';
+    case '软件包签名':
+      return '软件包分发不包含数字校验';
+    case '软件质量':
+      return '引入软件仓库未包含 Static Application Security Testing (SAST)';
+    case '漏洞披露机制':
+      return '软件未检测到漏洞披露机制';
+    case '社区支撑':
+      return '有效 bug、PR 平均 1 月以内响应';
+  }
+};
+const getConent2 = (name) => {
+  switch (name) {
+    case '采用度分析':
+      return '包管理平台下载数据量较低';
+    case '专利风险':
+      return '非全球专利保护社区 OIN（Open Invention Network）认证软件';
+    case '代码维护':
+      return '项目未有正式版本发布';
+    case '社区支撑':
+      return '有效 bug、PR 平均 1 月以上响应';
+    case '版本号':
+      return '未检测到版本号或版本号不规范';
+    case '版本生命周期':
+      return '版本处于 EOL 阶段';
+    case '二进制制品':
+      return '引入软件源码仓库包含二进制制品';
+    case '漏洞响应机制':
+      return '软件无漏洞响应机制';
+  }
+};
 const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
   const { score, color } = scoreObj;
   const [showInput, setShowInput] = useState(false);
@@ -146,20 +180,6 @@ const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
         {mertic}
-        {/* <Select
-      className="oh-title-select"
-      style={{ width: '150px' }}
-      value={mertic}
-      onChange={(value) => {
-        setMertic(value);
-      }}
-    >
-      {yList.map((item) => (
-        <Select.Option key={item} value={item}>
-          {item}
-        </Select.Option>
-      ))}
-    </Select> */}
       </div>
       <div className="flex h-6 items-center justify-start">
         <div className="h-1.5 w-[600px] bg-[#e5e5e5]">
@@ -175,30 +195,28 @@ const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
       </div>
       <div className="mt-6 w-full border-b">
         {items.map((item) => {
-          console.log(item);
           return (
             <div
               key={item.指标名称}
               className="flex h-[88px] border border-b-0 bg-white px-4 py-3"
             >
               <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-                {item.指标名称 === '漏洞响应机制' ? (
-                  <CloseCircleOutlined
-                    rev={undefined}
-                    className="text-[#ff4d4f]"
-                  />
-                ) : item.score >= 8 ? (
+                {item.score >= 8 ? (
                   <CheckCircleOutlined rev={undefined} />
                 ) : item.score >= 6 ? (
-                  <ExclamationCircleOutlined
-                    rev={undefined}
-                    className="text-[#f8961e]"
-                  />
+                  <Popover content={getConent1(item.指标名称)} title="">
+                    <ExclamationCircleOutlined
+                      rev={undefined}
+                      className="cursor-pointer text-[#f8961e]"
+                    />
+                  </Popover>
                 ) : (
-                  <CloseCircleOutlined
-                    rev={undefined}
-                    className="text-[#ff4d4f]"
-                  />
+                  <Popover content={getConent2(item.指标名称)} title="">
+                    <CloseCircleOutlined
+                      rev={undefined}
+                      className="cursor-pointer text-[#ff4d4f]"
+                    />
+                  </Popover>
                 )}
               </div>
               {/* <div className="mr-4 flex items-center justify-center">
@@ -214,7 +232,7 @@ const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
                       <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
                     )}
                   </div>
-                  {item.指标名称 === '漏洞响应机制' &&
+                  {item.指标名称 === '漏洞响应机制 1' &&
                     item.score === 0 &&
                     type === 'edit' &&
                     (showInput ? (
@@ -296,7 +314,7 @@ const EvaluationMertic = ({ allData, scoreList, type }) => {
 const EvaluationDetail = ({
   back,
   type,
-  name,
+  name = 'jasonsantos/luajava',
 }: {
   name?: string;
   back?: () => void;
@@ -326,8 +344,8 @@ const EvaluationDetail = ({
 
       security_binary_artifact: 0,
       security_vulnerability: 10,
-      security_vulnerability_response: 6,
-      security_vulnerability_disclosure: 0,
+      security_vulnerability_response: 0,
+      security_vulnerability_disclosure: 6,
       security_history_vulnerability: 10,
     },
     'gudzpoz/luajava': {
@@ -358,8 +376,12 @@ const EvaluationDetail = ({
       security_history_vulnerability: 10,
     },
   };
-  const scoreOj = obj[name];
-  console.log(scoreOj);
+  let scoreOj = null;
+  if (obj[name]) {
+    scoreOj = obj[name];
+  } else {
+    scoreOj = obj['jasonsantos/luajava'];
+  }
   const typeItems = [
     {
       name: 'jasonsantos/luajava',
@@ -581,7 +603,7 @@ const EvaluationDetail = ({
             className="mr-2  cursor-pointer text-2xl text-[#3f60ef]"
           />
         )}
-        <div className="text-lg font-semibold">luajava 选型评估报告</div>
+        <div className="text-lg font-semibold">{name} 选型评估报告</div>
         <div className="mt-2 ml-4 text-xs">更新于：2024-06-01</div>
       </div>
       <EvaluationScore items={items} />

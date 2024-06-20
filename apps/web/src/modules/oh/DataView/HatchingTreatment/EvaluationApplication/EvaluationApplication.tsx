@@ -38,9 +38,16 @@ const SelectionApplication = () => {
           },
           content: '提交成功，报告生成后将会邮件通知您！',
         });
+        values.time = new Date().toLocaleString();
+        window.sessionStorage.setItem(
+          values.softwareName,
+          JSON.stringify(values)
+        );
+        setTimeout(() => {
+          window.location.hash = 'work?key=1&name=' + values.softwareName;
+        }, 1000);
         setSubmitLoading(false);
       }, 1000);
-      console.log(values);
     });
   };
   const onReset = () => {
@@ -68,6 +75,7 @@ const SelectionApplication = () => {
         '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
       incubationTime: dayjs('2024-06-18'),
       bugPublish: 'https://github.com/jasonsantos/luajava/issues',
+      time: new Date().toLocaleString(),
     });
   };
   const websiteValidator = (_, value) => {

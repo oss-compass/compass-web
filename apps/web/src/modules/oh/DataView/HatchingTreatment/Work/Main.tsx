@@ -9,6 +9,15 @@ import OutProcessTable from '@modules/oh/DataView/HatchingTreatment/Work/OutProc
 import HatchingReport from '@modules/oh/DataView/HatchingTreatment/Work/HatchingReport';
 
 const Main = () => {
+  const url = new URL(window.location.href.replace('#', ''));
+  const key = url.searchParams.get('key') || '1'; // '1'
+  const name = url.searchParams.get('name'); // 'luajava'
+  // const url = window.location.hash.substring(1); // 'John'
+  // console.log(url);
+  // const urlParams = new URLSearchParams(new URL(url));
+  // const key = urlParams.get('key'); // 'John'
+  console.log(key);
+
   let items = [
     {
       name: 'vue',
@@ -195,7 +204,12 @@ const Main = () => {
             TPC 软件孵化工作台
           </div>
           <div className="flex flex-col justify-center py-4 px-5">
-            <Tabs className="oh-antd" size={'small'} items={tabItems} />
+            <Tabs
+              className="oh-antd"
+              defaultActiveKey={key}
+              size={'small'}
+              items={tabItems}
+            />
           </div>
         </div>
       )}

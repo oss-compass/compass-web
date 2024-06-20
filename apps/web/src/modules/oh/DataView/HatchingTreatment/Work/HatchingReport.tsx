@@ -13,6 +13,8 @@ import {
 import client from '@common/gqlClient';
 import { Tag } from 'antd';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
+import { useUserInfo } from '@modules/auth';
+
 interface TableQuery {
   label: string;
   level?: string;
@@ -21,21 +23,26 @@ interface TableQuery {
 }
 
 const HatchingReport = () => {
+  const { currentUser } = useUserInfo();
+
+  const url = new URL(window.location.href.replace('#', ''));
+  const name = url.searchParams.get('name'); // 'luajava'
+  // if(name)
   let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
   const dataSource = result;
   const { timeStart, timeEnd } = useQueryDateRange();
 
   const columns = [
-    {
-      title: '申请单号',
-      dataIndex: 'id',
-      key: 'id',
-    },
+    // {
+    //   title: '申请单号',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    // },
     {
       title: '软件名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'softwareName',
+      key: 'softwareName',
       render: (text, record) => {
         return (
           <a
@@ -49,8 +56,8 @@ const HatchingReport = () => {
     },
     {
       title: '官网地址',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'websiteUrl',
+      key: 'websiteUrl',
       render: (text, record) => {
         return (
           <a
@@ -64,11 +71,10 @@ const HatchingReport = () => {
     },
     {
       title: '申请人',
-      dataIndex: 'linkSig',
       key: 'linkSig',
       render: (text) => {
-        let dom = text?.repos?.map((i) => <Tag key={i}>{i}</Tag>);
-        return <div className="flex flex-wrap gap-y-2">{dom}</div>;
+        // let dom = text?.repos?.map((i) => <Tag key={i}>{i}</Tag>);
+        return <div className="flex flex-wrap gap-y-2">{currentUser.name}</div>;
       },
     },
     {
@@ -78,11 +84,10 @@ const HatchingReport = () => {
     },
     {
       title: '当前状态',
-      dataIndex: 'maintainers',
-      key: 'maintainers',
+      dataIndex: 'state',
+      key: 'state',
       render: (text) => {
-        let dom = text?.map((i) => <Tag key={i}>{i}</Tag>);
-        return <div className="flex flex-wrap gap-y-2">{dom}</div>;
+        return '生成报告中';
       },
     },
   ];
@@ -105,6 +110,11 @@ const HatchingReport = () => {
   };
   const { isLoading, isFetching } = useSubjectSigPageQuery(client, myQuery, {
     onSuccess: (data) => {
+      if (name) {
+        let data = window.sessionStorage.getItem(name);
+        console.log(JSON.parse(data));
+        setData([JSON.parse(data)]);
+      }
       // setTableParams({
       //   ...tableParams,
       //   pagination: {
