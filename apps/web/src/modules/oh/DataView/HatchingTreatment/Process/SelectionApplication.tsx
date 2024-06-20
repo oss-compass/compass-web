@@ -60,14 +60,14 @@ const SelectionApplication = () => {
   };
   const autoFill = (report) => {
     form.setFieldsValue({
-      softwareName: report || 'Sample Software',
-      domain: '数据压缩',
-      softwareVersion: '1.0.0',
-      releaseDate: dayjs('2020-01-01'),
-      developer: 'ABC Company',
-      websiteUrl: 'https://example.com',
+      softwareName: report || 'luajava',
+      domain: '工具 (Tools)',
+      softwareVersion: '',
+      releaseDate: null,
+      developer: 'jasonsantos',
+      websiteUrl: 'https://github.com/jasonsantos/luajava',
       selectionReason: '该软件具有优秀的性能表现和易用性',
-      codeRepositoryUrl: 'https://github.com/example/project',
+      codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
       programmingLanguage: 'Python',
       codeSize: '10000 行',
       integrationMethod: '适配',
@@ -210,7 +210,7 @@ const SelectionApplication = () => {
               <Form.Item
                 label="软件版本"
                 name="softwareVersion"
-                rules={[{ required: true, message: '请输入!' }]}
+                // rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input />
               </Form.Item>
@@ -219,7 +219,7 @@ const SelectionApplication = () => {
               <Form.Item
                 label="版本发布日期"
                 name="releaseDate"
-                rules={[{ required: true, message: '请输入!' }]}
+                // rules={[{ required: true, message: '请输入!' }]}
               >
                 <DatePicker placeholder="请选择日期" />
               </Form.Item>
@@ -374,8 +374,12 @@ const SelectionApplication = () => {
               </Form.Item>
             </Col>
           </Row>
-          <div className="mb-6 text-base font-semibold">评估报告</div>
-          <EvaluationDetail />
+          {report && (
+            <>
+              <div className="mb-6 text-base font-semibold">评估报告</div>
+              <EvaluationDetail />
+            </>
+          )}
         </Form>
       </div>
       <Dialog

@@ -48,14 +48,14 @@ const SelectionEvaluation = () => {
   const [form] = Form.useForm();
   const autoFill = (report) => {
     form.setFieldsValue({
-      softwareName: report || 'Sample Software',
-      domain: '数据压缩',
+      softwareName: report || 'luajava',
+      domain: '工具 (Tools)',
       softwareVersion: '1.0.0',
       releaseDate: dayjs('2020-01-01'),
       developer: 'ABC Company',
       websiteUrl: 'https://example.com',
       selectionReason: '该软件具有优秀的性能表现和易用性',
-      codeRepositoryUrl: 'https://github.com/example/project',
+      codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
       programmingLanguage: 'Python',
       codeSize: '10000 行',
       integrationMethod: '适配',

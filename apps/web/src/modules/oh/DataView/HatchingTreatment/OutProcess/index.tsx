@@ -5,7 +5,7 @@ import Main from '@modules/oh/DataView/HatchingTreatment/OutProcess/Main';
 const OutProcess = () => {
   return (
     <div className="flex flex-1 bg-[#f2f2f2]">
-      <Side />
+      {/* <Side /> */}
       <Main />
     </div>
   );

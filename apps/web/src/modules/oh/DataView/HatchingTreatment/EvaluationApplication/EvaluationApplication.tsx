@@ -48,18 +48,18 @@ const SelectionApplication = () => {
   };
   const autoFill = () => {
     form.setFieldsValue({
-      softwareName: 'Sample Software',
-      domain: '数据压缩',
+      softwareName: 'luajava',
+      domain: '工具 (Tools)',
       softwareVersion: '1.0.0',
       releaseDate: dayjs('2020-01-01'),
-      developer: 'ABC Company',
-      websiteUrl: 'https://example.com',
+      developer: 'jasonsantos',
+      websiteUrl: 'https://github.com/jasonsantos/luajava',
       selectionReason: '该软件具有优秀的性能表现和易用性',
-      codeRepositoryUrl: 'https://github.com/example/project',
+      codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
       programmingLanguage: 'Python',
       codeSize: '10000 行',
       integrationMethod: '适配',
-      sigName: '数据压缩算法',
+      sigName: '工具 (Tools)',
       sigDescription: '数据压缩算法 SIG 描述',
       newRepositoryPath: '/data-compression-algorithm',
       committers: 'John Doe, Jane Smith',
@@ -168,11 +168,7 @@ const SelectionApplication = () => {
               </Popover>
             </Col>
             <Col span={12}>
-              <Form.Item
-                label="版本发布日期"
-                name="releaseDate"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
+              <Form.Item label="版本发布日期" name="releaseDate">
                 <DatePicker placeholder="请选择日期" />
               </Form.Item>
             </Col>

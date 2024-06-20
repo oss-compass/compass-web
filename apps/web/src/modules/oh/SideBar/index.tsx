@@ -70,15 +70,19 @@ const items: MenuItem[] = [
       },
       {
         key: 'evaluationApplication',
-        label: '孵化报告生成',
+        label: '报告生成',
       },
       {
         key: 'process',
-        label: '软件孵化选型',
+        label: '软件选型申请',
       },
       {
         key: 'outProcess',
-        label: '软件孵化准出',
+        label: '软件孵化申请',
+      },
+      {
+        key: 'outProcess1',
+        label: '软件毕业申请',
       },
       {
         key: 'workbench',
@@ -150,7 +154,7 @@ const SideMenu: React.FC = () => {
             defaultSelectedKeys={[id || 'index']}
             onClick={onClick}
             // style={{ width: 256 }}
-            defaultOpenKeys={['sub1', 'sub2', 'sub3']}
+            defaultOpenKeys={['sub3']}
             mode="inline"
             items={items}
             selectedKeys={defaultSelectedKeys}

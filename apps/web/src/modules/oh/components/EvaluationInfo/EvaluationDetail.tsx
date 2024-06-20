@@ -379,9 +379,7 @@ const EvaluationDetail = ({ back }: { back?: () => void }) => {
             className="mr-2  cursor-pointer text-2xl text-[#3f60ef]"
           />
         )}
-        <div className="text-lg font-semibold">
-          Sample Software 选型评估报告
-        </div>
+        <div className="text-lg font-semibold">luajava 选型评估报告</div>
         <div className="mt-2 ml-4 text-xs">更新于：2024-06-01</div>
       </div>
       <EvaluationScore />

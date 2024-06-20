@@ -12,7 +12,12 @@ const Main = () => {
     },
     {
       key: '4',
-      label: <div className="mx-2">准出评估报告</div>,
+      label: <div className="mx-2">孵化评估报告</div>,
+      children: <OutEvaluationApplication />,
+    },
+    {
+      key: '5',
+      label: <div className="mx-2">孵化评估报告</div>,
       children: <OutEvaluationApplication />,
     },
   ];
