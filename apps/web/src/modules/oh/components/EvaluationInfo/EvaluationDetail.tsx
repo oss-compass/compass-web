@@ -8,11 +8,11 @@ import {
 import { AiOutlineLeftCircle } from 'react-icons/ai';
 import { Tag, Input, Button } from 'antd';
 
-const Pie = () => {
+const Pie = ({ score }) => {
   var colorList = ['#998CEF', '#D9D8EB'];
   let option: EChartsOption = {
     title: {
-      text: '80',
+      text: score,
       left: 'center',
       top: 'center',
       textStyle: {
@@ -49,11 +49,11 @@ const Pie = () => {
         data: [
           {
             name: '一月',
-            value: 80,
+            value: score,
           },
           {
             name: '一月',
-            value: 20,
+            value: 100 - score,
           },
         ],
       },
@@ -69,29 +69,29 @@ const Pie = () => {
   return <div className="h-32 w-full" ref={cardRef}></div>;
 };
 
-const EvaluationScore = () => {
-  const items = [
-    {
-      name: '合法合规',
-      score: 73,
-      color: '#4ade80',
-    },
-    {
-      name: '技术生态',
-      score: 65,
-      color: '#4ade80',
-    },
-    {
-      name: '生命周期',
-      score: 77,
-      color: '#4ade80',
-    },
-    {
-      name: '网络安全',
-      score: 44,
-      color: '#f8961e',
-    },
-  ];
+const EvaluationScore = ({ items }) => {
+  // const items = [
+  //   {
+  //     name: '合法合规',
+  //     score: 73,
+  //     color: '#4ade80',
+  //   },
+  //   {
+  //     name: '技术生态',
+  //     score: 65,
+  //     color: '#4ade80',
+  //   },
+  //   {
+  //     name: '生命周期',
+  //     score: 77,
+  //     color: '#4ade80',
+  //   },
+  //   {
+  //     name: '网络安全',
+  //     score: 44,
+  //     color: '#f8961e',
+  //   },
+  // ];
   const clickAnchor = (e: any, id: string) => {
     e.preventDefault();
     let anchorElement = document.getElementById(id);
@@ -99,10 +99,11 @@ const EvaluationScore = () => {
       anchorElement.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
   };
+  const score = items.reduce((acc, curr) => acc + curr.score, 0) / 4;
   return (
     <div className="flex h-52 border bg-[#f9f9f9]">
       <div className="flex h-full w-40 items-center ">
-        <Pie />
+        <Pie score={score} />
       </div>
       <div className="flex-1 px-6 pt-5">
         {items.map(({ name, score, color }) => {
@@ -125,7 +126,7 @@ const EvaluationScore = () => {
                     className="h-1"
                     style={{
                       width: `${score}%`,
-                      backgroundColor: color,
+                      backgroundColor: score > 60 ? '#4ade80' : '#f8961e',
                     }}
                   ></div>
                 </div>
@@ -140,6 +141,7 @@ const EvaluationScore = () => {
 const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
   const { score, color } = scoreObj;
   const [showInput, setShowInput] = useState(false);
+  const [inputValue, setInputValue] = useState(null);
   return (
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
@@ -165,7 +167,7 @@ const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
             className="h-1.5"
             style={{
               width: `${score}%`,
-              backgroundColor: color,
+              backgroundColor: score > 60 ? '#4ade80' : '#f8961e',
             }}
           ></div>
         </div>
@@ -173,21 +175,35 @@ const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
       </div>
       <div className="mt-6 w-full border-b">
         {items.map((item) => {
+          console.log(item);
           return (
             <div
               key={item.指标名称}
               className="flex h-[88px] border border-b-0 bg-white px-4 py-3"
             >
               <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-                {item.error ? (
+                {item.指标名称 === '漏洞响应机制' ? (
                   <CloseCircleOutlined
                     rev={undefined}
                     className="text-[#ff4d4f]"
                   />
-                ) : (
+                ) : item.score >= 8 ? (
                   <CheckCircleOutlined rev={undefined} />
+                ) : item.score >= 6 ? (
+                  <ExclamationCircleOutlined
+                    rev={undefined}
+                    className="text-[#f8961e]"
+                  />
+                ) : (
+                  <CloseCircleOutlined
+                    rev={undefined}
+                    className="text-[#ff4d4f]"
+                  />
                 )}
               </div>
+              {/* <div className="mr-4 flex items-center justify-center">
+                {item.score}
+              </div> */}
               <div className="">
                 <div className="flex h-[29px] text-base font-semibold">
                   <div className="flex-shrink-0"> {item.指标名称}</div>
@@ -198,11 +214,16 @@ const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
                       <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
                     )}
                   </div>
-                  {item.error &&
+                  {item.指标名称 === '漏洞响应机制' &&
+                    item.score === 0 &&
                     type === 'edit' &&
                     (showInput ? (
                       <>
                         <Input
+                          value={inputValue}
+                          onChange={(e) => {
+                            setInputValue(e.target.value);
+                          }}
                           className="mr-4 h-full"
                           placeholder="请输入漏洞响应地址"
                         />
@@ -222,11 +243,15 @@ const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
                         }}
                         className="cursor-pointer text-base text-[#ff4d4f]"
                       >
-                        <ExclamationCircleOutlined
-                          rev={undefined}
-                          className="mr-2 text-[#ff4d4f] "
-                        />
-                        未识别到漏洞响应机制，请点击此处录入
+                        {!inputValue && (
+                          <>
+                            <ExclamationCircleOutlined
+                              rev={undefined}
+                              className="mr-2 text-[#ff4d4f] "
+                            />
+                            未识别到漏洞响应机制，请点击此处录入
+                          </>
+                        )}
                       </div>
                     ))}
                 </div>
@@ -271,37 +296,134 @@ const EvaluationMertic = ({ allData, scoreList, type }) => {
 const EvaluationDetail = ({
   back,
   type,
+  name,
 }: {
+  name?: string;
   back?: () => void;
   type?: string;
 }) => {
-  const items = [
+  const obj = {
+    'jasonsantos/luajava': {
+      // base_repo_name: 10,
+      // base_website_url: 10,
+      // base_code_url: 10,
+
+      compliance_license: 10,
+      compliance_dco: 6,
+      compliance_package_sig: 6,
+      compliance_license_compatibility: 10,
+
+      ecology_dependency_acquisition: 10,
+      ecology_code_maintenance: 0,
+      ecology_community_support: 0,
+      ecology_adoption_analysis: 0,
+      ecology_software_quality: 6,
+      ecology_patent_risk: 0,
+
+      lifecycle_version_normalization: 10,
+      lifecycle_version_number: 0,
+      lifecycle_version_lifecycle: 0,
+
+      security_binary_artifact: 0,
+      security_vulnerability: 10,
+      security_vulnerability_response: 6,
+      security_vulnerability_disclosure: 0,
+      security_history_vulnerability: 10,
+    },
+    'gudzpoz/luajava': {
+      // base_repo_name: 10,
+      // base_website_url: 10,
+      // base_code_url: 10,
+
+      compliance_license: 10,
+      compliance_dco: 6,
+      compliance_package_sig: 6,
+      compliance_license_compatibility: 10,
+
+      ecology_dependency_acquisition: 10,
+      ecology_code_maintenance: 10,
+      ecology_community_support: 6,
+      ecology_adoption_analysis: 0,
+      ecology_software_quality: 6,
+      ecology_patent_risk: 0,
+
+      lifecycle_version_normalization: 10,
+      lifecycle_version_number: 10,
+      lifecycle_version_lifecycle: 10,
+
+      security_binary_artifact: 10,
+      security_vulnerability: 10,
+      security_vulnerability_response: 10,
+      security_vulnerability_disclosure: 0,
+      security_history_vulnerability: 10,
+    },
+  };
+  const scoreOj = obj[name];
+  console.log(scoreOj);
+  const typeItems = [
     {
-      name: '合法合规',
-      score: 73,
-      color: '#4ade80',
+      name: 'jasonsantos/luajava',
+      description:
+        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
+      reportVersion: 'v1',
+      updated: '2024-06-20',
+      score: '49.25',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 80,
+        },
+        {
+          name: '技术生态',
+          score: 32,
+        },
+        {
+          name: '生命周期',
+          score: 33,
+        },
+        {
+          name: '网络安全',
+          score: 52,
+        },
+      ],
     },
     {
-      name: '技术生态',
-      score: 65,
-      color: '#4ade80',
-    },
-    {
-      name: '生命周期',
-      score: 77,
-      color: '#4ade80',
-    },
-    {
-      name: '网络安全',
-      score: 44,
-      color: '#f8961e',
+      name: 'gudzpoz/luajava',
+      description:
+        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
+      reportVersion: 'v1',
+      updated: '2024-06-20',
+      score: '86',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 80,
+        },
+        {
+          name: '技术生态',
+          score: 84,
+        },
+        {
+          name: '生命周期',
+          score: 100,
+        },
+        {
+          name: '网络安全',
+          score: 80,
+        },
+      ],
     },
   ];
+  const items =
+    typeItems.find((item) => item.name === name)?.evaluationDetail ||
+    typeItems[0].evaluationDetail;
+  const itemScore = Object.values(scoreOj);
   let allData = [
     {
       维度: '合法合规',
       指标名称: '许可证包含',
       风险重要性: '高',
+      score: 0,
       指标意义: `引入软件许可证合规性检查\n\n【规则】\n1. 禁止选用无许可证、许可证不在准入清单的软件；\n【建议】\n1. 项目的所有源码包含许可头与版权声明；`,
     },
     {
@@ -325,27 +447,27 @@ const EvaluationDetail = ({
       指标意义:
         '引入软件许可证兼容性检查\n\n【规则】\n1. 禁止引入项目级、文件级 License 存在兼容性问题的软件及版本；',
     },
-    {
-      维度: '基本信息',
-      指标名称: '仓库命名',
-      风险重要性: '低',
-      指标意义:
-        '仓库名需满足社区要求以便统一管理\n\n【规则】\n1. 仓库命名统一为 ohos_软件名称，其中软件名称和其官网保持一致；\n2. 禁止以软件的子模块作为软件名；',
-    },
-    {
-      维度: '基本信息',
-      指标名称: '官方网址',
-      风险重要性: '低',
-      指标意义:
-        '引入软件官方网址\n\n【规则】\n1. 提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee 等）对应项目托管地址；',
-    },
-    {
-      维度: '基本信息',
-      指标名称: '源码地址',
-      风险重要性: '低',
-      指标意义:
-        '引入软件官方源码下载地址\n\n【规则】\n1. 提供引入软件版本的官方源代码包下载地址，保证可溯源；',
-    },
+    // {
+    //   维度：'基本信息',
+    //   指标名称：'仓库命名',
+    //   风险重要性：'低',
+    //   指标意义：
+    //     '仓库名需满足社区要求以便统一管理\n\n【规则】\n1. 仓库命名统一为 ohos_软件名称，其中软件名称和其官网保持一致；\n2. 禁止以软件的子模块作为软件名；',
+    // },
+    // {
+    //   维度：'基本信息',
+    //   指标名称：'官方网址',
+    //   风险重要性：'低',
+    //   指标意义：
+    //     '引入软件官方网址\n\n【规则】\n1. 提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee 等）对应项目托管地址；',
+    // },
+    // {
+    //   维度：'基本信息',
+    //   指标名称：'源码地址',
+    //   风险重要性：'低',
+    //   指标意义：
+    //     '引入软件官方源码下载地址\n\n【规则】\n1. 提供引入软件版本的官方源代码包下载地址，保证可溯源；',
+    // },
     {
       维度: '技术生态',
       指标名称: '依赖可获得',
@@ -426,7 +548,6 @@ const EvaluationDetail = ({
     {
       维度: '网络安全',
       指标名称: '漏洞响应机制',
-      error: true,
       风险重要性: '高',
       指标意义:
         '引入软件漏洞响应机制检查\n\n【规则】\n1. 选用开源软件必须有漏洞反馈与修复跟踪管理机制；',
@@ -445,6 +566,10 @@ const EvaluationDetail = ({
       指标意义: '引入软件历史漏洞检查\n\n【建议】\n1. 优选漏洞较少的版本',
     },
   ];
+  allData = allData.map((item, index) => {
+    item.score = itemScore[index] as number;
+    return item;
+  });
   return (
     <div>
       <div className="mb-6 flex border bg-[#f9f9f9] py-3 px-6">
@@ -459,7 +584,7 @@ const EvaluationDetail = ({
         <div className="text-lg font-semibold">luajava 选型评估报告</div>
         <div className="mt-2 ml-4 text-xs">更新于：2024-06-01</div>
       </div>
-      <EvaluationScore />
+      <EvaluationScore items={items} />
       <div className="mt-6">
         <EvaluationMertic allData={allData} scoreList={items} type={type} />
       </div>

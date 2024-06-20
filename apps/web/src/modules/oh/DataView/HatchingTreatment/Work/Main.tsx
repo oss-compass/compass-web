@@ -188,7 +188,7 @@ const Main = () => {
   return (
     <>
       {activeItem ? (
-        <Detail setActiveItem={setActiveItem} />
+        <Detail name={activeItem.name} setActiveItem={setActiveItem} />
       ) : (
         <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
           <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">

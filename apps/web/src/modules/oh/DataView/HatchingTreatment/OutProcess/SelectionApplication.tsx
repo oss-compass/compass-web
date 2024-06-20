@@ -190,21 +190,27 @@ const SelectionApplication = () => {
             </Col>
           </Row>
         </Form>
-        <div className="my-6 text-base font-semibold">软件评估信息</div>
-        <Collapse
-          defaultActiveKey={['1']}
-          ghost
-          onChange={(key) => {
-            setLabel(false);
-          }}
-          items={[
-            {
-              key: '1',
-              label: label ? '点击收起软件评估报告' : '点击展开软件评估报告',
-              children: <EvaluationDetail />,
-            },
-          ]}
-        />
+        {report && (
+          <>
+            <div className="my-6 text-base font-semibold">软件评估信息</div>
+            <Collapse
+              defaultActiveKey={['1']}
+              ghost
+              onChange={(key) => {
+                setLabel(false);
+              }}
+              items={[
+                {
+                  key: '1',
+                  label: label
+                    ? '点击收起软件评估报告'
+                    : '点击展开软件评估报告',
+                  children: <EvaluationDetail name={report} />,
+                },
+              ]}
+            />
+          </>
+        )}
       </div>
       <Dialog
         open={openConfirm}

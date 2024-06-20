@@ -413,7 +413,7 @@ const SelectionApplication = () => {
         {report && (
           <>
             <div className="mb-6 text-base font-semibold">评估报告</div>
-            <EvaluationDetail type={'edit'} />
+            <EvaluationDetail name={report} type={'edit'} />
           </>
         )}
       </div>

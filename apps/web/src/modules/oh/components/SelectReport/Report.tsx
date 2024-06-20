@@ -121,7 +121,7 @@ const Report = ({
   return (
     <>
       {activeItem ? (
-        <Detail setActiveItem={setActiveItem} />
+        <Detail name={activeItem.name} setActiveItem={setActiveItem} />
       ) : (
         <div className="relative h-full w-full">
           <div
