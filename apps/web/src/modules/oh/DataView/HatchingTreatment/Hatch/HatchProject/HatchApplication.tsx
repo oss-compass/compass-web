@@ -6,36 +6,11 @@ import Dialog from '@common/components/Dialog';
 import DatePicker from '@common/components/Form';
 import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import {
-  procseeActions,
-  getProceedingState,
-} from '@modules/oh/DataView/HatchingTreatment/Process/procseeState';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 import SelectReport from '@modules/oh/components/SelectReport';
+import { domainList } from '@modules/oh/constant';
 
-let yList = [
-  'RN 框架 (React Native)',
-  'Flutter 框架 (Flutter)',
-  '动画 (Animation)',
-  '网络及协议 (Networking&Protocol)',
-  '加解密 (Encryption)',
-  '数据库 (Database)',
-  '文件及解析 (Files&Parsing)',
-  '多媒体 (Media)',
-  '图片 (Image)',
-  '图形 (Graphics)',
-  '人工智能 (AI)',
-  '工具 (Tools)',
-  '数学及算法 (Math&Algorithm)',
-  '架构及模式 (Architecture&Patterns)',
-  '日志及调试 (Logging&Debugging)',
-  '辅助实用 (Utility)',
-];
-
-const SelectionApplication = () => {
-  const processesID = '孵化选型申请';
-  let isProceedingProcesses = getProceedingState().id === processesID;
-
+const HatchApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [report, setReport] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -52,7 +27,7 @@ const SelectionApplication = () => {
           type: 'success',
           content: (
             <>
-              提交成功，已在 Gitee 建立 issue 跟踪，可点击
+              提交成功，已在 Gitee 建立 Issue 跟踪，可点击
               <a
                 className="text-[#1677ff]"
                 href="https://gitee.com/openharmony-tpc/ImageKnife/issues"
@@ -60,7 +35,7 @@ const SelectionApplication = () => {
               >
                 https://gitee.com/openharmony-tpc/ImageKnife/issues
               </a>
-              查看 issue,
+              查看 Issue,
             </>
           ),
         });
@@ -99,66 +74,6 @@ const SelectionApplication = () => {
       bugPublish: 'https://github.com/jasonsantos/luajava/issues',
     });
   };
-  // let tabItems = [
-  //   {
-  //     key: '2',
-  //     label: <div className="mx-2">选型评估信息</div>,
-  //     children: (
-  //       <div className="pt-4">
-  //         <EvaluationDetail />
-  //         <div className="my-6 text-base font-semibold">审核信息</div>
-  //         <Form
-  //           form={form}
-  //           labelCol={{
-  //             span: 6,
-  //             style: { fontWeight: 'bold' },
-  //           }}
-  //           style={{
-  //             width: '100%',
-  //           }}
-  //           disabled={!isProceedingProcesses}
-  //           autoComplete="off"
-  //         >
-  //           <Col span={24}>
-  //             <Form.Item
-  //               labelCol={{
-  //                 span: 3,
-  //                 style: { fontWeight: 'bold' },
-  //               }}
-  //               label="审核结论"
-  //               name="conclusion"
-  //               rules={[{ required: true, message: '请输入!' }]}
-  //             >
-  //               <Radio.Group>
-  //                 <Radio value="apple"> 通过 </Radio>
-  //                 <Radio value="pear"> 驳回 </Radio>
-  //               </Radio.Group>
-  //             </Form.Item>
-  //           </Col>
-  //           <Col span={24}>
-  //             <Form.Item
-  //               labelCol={{
-  //                 span: 3,
-  //                 style: { fontWeight: 'bold' },
-  //               }}
-  //               label="审核意见"
-  //               name="comment"
-  //               rules={[{ required: true, message: '请输入!' }]}
-  //             >
-  //               <Input.TextArea />
-  //             </Form.Item>
-  //           </Col>
-  //         </Form>
-  //       </div>
-  //     ),
-  //   },
-  //   {
-  //     key: '4',
-  //     label: <div className="mx-2">依赖关系解析</div>,
-  //     children: '依赖关系解析',
-  //     disabled: true,
-  //   },
-  // ];
   return (
     <>
       {contextHolder}
@@ -172,7 +87,7 @@ const SelectionApplication = () => {
           style={{
             width: '100%',
           }}
-          disabled={!report || isProceedingProcesses}
+          disabled={!report}
           // onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -185,16 +100,7 @@ const SelectionApplication = () => {
                 name="softwareName"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                {!isProceedingProcesses ? (
-                  <Input
-                    suffix={
-                      <DownOutlined
-                        className="text-[#d9d9d9]"
-                        rev={undefined}
-                      />
-                    }
-                  />
-                ) : (
+                {
                   <Input
                     suffix={
                       <DownOutlined
@@ -208,7 +114,7 @@ const SelectionApplication = () => {
                     }}
                     readOnly
                   ></Input>
-                )}
+                }
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -218,7 +124,7 @@ const SelectionApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {yList.map((item) => (
+                  {domainList.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
                     </Select.Option>
@@ -263,7 +169,6 @@ const SelectionApplication = () => {
               </Form.Item>
             </Col>
           </Row>
-          {/* <div className="mb-6 text-base font-semibold">软件源码信息</div> */}
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
@@ -283,6 +188,7 @@ const SelectionApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
+
             <Col span={12}>
               <Form.Item
                 label="代码量"
@@ -301,18 +207,19 @@ const SelectionApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-          </Row>
-          <div className="mb-6 text-base font-semibold">仓库信息维护</div>
-          <Row gutter={24}>
-            {/* <Col span={12}>
-              <Form.Item
-                label="SIG 描述"
-                name="sigDescription"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <div className="mt-1.5">数据压缩算法 SIG 描述</div>
+            <Col span={12}>
+              <Form.Item label="漏洞披露机制" name="bugPublish">
+                <Input disabled={false} />
               </Form.Item>
-            </Col> */}
+            </Col>
+            <Col span={12}>
+              <Form.Item label="漏洞响应机制" name="bugPublish">
+                <Input disabled={false} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <div className="mb-6 text-base font-semibold">仓库信息</div>
+          <Row gutter={24}>
             <Col span={12}>
               <Popover
                 placement="topRight"
@@ -331,7 +238,7 @@ const SelectionApplication = () => {
                   rules={[{ required: true, message: '请输入!' }]}
                 >
                   <Input
-                    disabled={!isProceedingProcesses}
+                    disabled={false}
                     onFocus={() => {}}
                     addonBefore="https://gitee.com/openharmony-tpc/ohos_"
                   />
@@ -344,7 +251,7 @@ const SelectionApplication = () => {
                 name="committers"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input disabled={!isProceedingProcesses} />
+                <Input disabled={false} />
               </Form.Item>
             </Col>
             {/* <Col span={12}>
@@ -353,7 +260,7 @@ const SelectionApplication = () => {
                 name="repositoryDescription"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input disabled={!isProceedingProcesses} />
+                <Input  />
               </Form.Item>
             </Col> */}
             <Col span={12}>
@@ -362,10 +269,7 @@ const SelectionApplication = () => {
                 name="incubationTime"
                 rules={[{ required: true, message: '请选择!' }]}
               >
-                <DatePicker
-                  disabled={!isProceedingProcesses}
-                  placeholder="请选择日期"
-                />
+                <DatePicker disabled={false} placeholder="请选择日期" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -374,53 +278,24 @@ const SelectionApplication = () => {
                 name="integrationMethod"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Select disabled={!isProceedingProcesses}>
+                <Select disabled={false}>
                   <Select.Option value="适配">适配</Select.Option>
                   <Select.Option value="重写">重写</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                label="漏洞披露机制"
-                name="bugPublish"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入!',
-                  },
-                  { type: 'url', message: '请输入有效的漏洞披露地址!' },
-                ]}
-              >
-                <Input disabled={!isProceedingProcesses} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="漏洞响应机制"
-                name="bugPublish"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入!',
-                  },
-                  { type: 'url', message: '请输入有效的漏洞响应地址!' },
-                ]}
-              >
-                <Input disabled={!isProceedingProcesses} />
-              </Form.Item>
-            </Col>
+
             <Col span={24}>
               <Form.Item
                 labelCol={{
                   span: 3,
                   style: { fontWeight: 'bold' },
                 }}
-                label="选型原因"
+                label="需求背景"
                 name="selectionReason"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input.TextArea disabled={!isProceedingProcesses} />
+                <Input.TextArea disabled={false} />
               </Form.Item>
             </Col>
           </Row>
@@ -468,35 +343,32 @@ const SelectionApplication = () => {
           setOpenConfirm(false);
         }}
       />
-      {isProceedingProcesses && (
-        <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
-          <Button
-            className="rounded-none"
-            type="primary"
-            loading={submitLoading}
-            onClick={() => {
-              submit();
-            }}
-          >
-            提交申请
-          </Button>
-          <Button className="rounded-none">保存</Button>
-          <Button
-            className="rounded-none"
-            htmlType="submit"
-            onClick={() => {
-              autoFill('');
-            }}
-          >
-            自动填充
-          </Button>
-          <Button className="rounded-none" htmlType="button" onClick={onReset}>
-            重置
-          </Button>
-        </div>
-      )}
+      <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
+        <Button
+          className="rounded-none"
+          type="primary"
+          loading={submitLoading}
+          onClick={() => {
+            submit();
+          }}
+        >
+          提交申请
+        </Button>
+        <Button className="rounded-none">保存</Button>
+        <Button
+          className="rounded-none"
+          htmlType="submit"
+          onClick={() => {
+            autoFill('');
+          }}
+        >
+          自动填充
+        </Button>
+        <Button className="rounded-none" htmlType="button" onClick={onReset}>
+          重置
+        </Button>
+      </div>
     </>
   );
 };
-
-export default SelectionApplication;
+export default HatchApplication;

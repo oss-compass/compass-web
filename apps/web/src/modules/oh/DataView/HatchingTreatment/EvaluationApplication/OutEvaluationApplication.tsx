@@ -109,7 +109,7 @@ const SelectionApplication = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="所属SIG"
+                label="所属领域"
                 name="domain"
                 rules={[{ required: true, message: '请输入!' }]}
               >

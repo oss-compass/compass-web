@@ -1,51 +1,10 @@
 import React, { useState } from 'react';
 import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
-import DatePicker from '@common/components/Form';
-import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { useSnapshot } from 'valtio';
+import DatePicker from '@common/components/Form';
+import { LanguagesList, domainList } from '@modules/oh/constant';
 
-let yList = [
-  'RN 框架 (React Native)',
-  'Flutter 框架 (Flutter)',
-  '动画 (Animation)',
-  '网络及协议 (Networking&Protocol)',
-  '加解密 (Encryption)',
-  '数据库 (Database)',
-  '文件及解析 (Files&Parsing)',
-  '多媒体 (Media)',
-  '图片 (Image)',
-  '图形 (Graphics)',
-  '人工智能 (AI)',
-  '工具 (Tools)',
-  '数学及算法 (Math&Algorithm)',
-  '架构及模式 (Architecture&Patterns)',
-  '日志及调试 (Logging&Debugging)',
-  '辅助实用 (Utility)',
-];
-let Languages = [
-  'Python',
-  'Java',
-  'JavaScript',
-  'C++',
-  'C#',
-  'PHP',
-  'Ruby',
-  'Go',
-  'Swift',
-  'Rust',
-  'Kotlin',
-  'Scala',
-  'TypeScript',
-  'Perl',
-  'Bash',
-  'R',
-  'Objective-C',
-  'Dart',
-  'Groovy',
-  'Elixir',
-];
-const SelectionApplication = () => {
+const RepoReportApplication = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
@@ -58,7 +17,7 @@ const SelectionApplication = () => {
           style: {
             marginTop: '200px',
           },
-          content: '提交成功，报告生成后将会邮件通知您！',
+          content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
         });
         values.time = new Date().toLocaleString();
         window.sessionStorage.setItem(
@@ -66,7 +25,7 @@ const SelectionApplication = () => {
           JSON.stringify(values)
         );
         setTimeout(() => {
-          window.location.hash = 'work?key=1&name=' + values.softwareName;
+          // window.location.hash = 'work?key=1&name=' + values.softwareName;
         }, 1000);
         setSubmitLoading(false);
       }, 1000);
@@ -96,7 +55,8 @@ const SelectionApplication = () => {
       repositoryDescription:
         '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
       incubationTime: dayjs('2024-06-18'),
-      bugPublish: 'https://github.com/jasonsantos/luajava/issues',
+      bugPublish1: 'https://github.com/jasonsantos/luajava/issues',
+      bugPublish2: 'https://github.com/jasonsantos/luajava/issues',
       time: new Date().toLocaleString(),
     });
   };
@@ -132,7 +92,7 @@ const SelectionApplication = () => {
   return (
     <>
       {contextHolder}
-      <div className="oh-tabs flex flex-col justify-center py-4 px-5">
+      <div className="oh-tabs flex flex-col justify-center p-5">
         <Form
           form={form}
           labelCol={{
@@ -165,7 +125,7 @@ const SelectionApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {yList.map((item) => (
+                  {domainList.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
                     </Select.Option>
@@ -244,7 +204,6 @@ const SelectionApplication = () => {
               </Popover>
             </Col>
           </Row>
-          {/* <div className="mb-6 text-base font-semibold">软件源码信息</div> */}
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
@@ -261,106 +220,28 @@ const SelectionApplication = () => {
                 name="programmingLanguage"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="漏洞披露机制"
-                name="bugPublish"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入!',
-                  },
-                  { type: 'url', message: '请输入有效的漏洞披露地址!' },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            {/* <Col span={12}>
-              <Form.Item
-                label="代码量"
-                name="codeSize"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="引入方式"
-                name="integrationMethod"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
                 <Select>
-                  <Select.Option value="适配">适配</Select.Option>
-                  <Select.Option value="重写">重写</Select.Option>
+                  {LanguagesList.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
-            </Col> */}
+            </Col>
+            <Col span={12}>
+              <Form.Item label="漏洞响应机制" name="bugPublish2">
+                <Input placeholder="非必填" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="漏洞披露机制" name="bugPublish1">
+                <Input placeholder="非必填" />
+              </Form.Item>
+            </Col>
           </Row>
-          {/* <div className="mb-6 text-base font-semibold">仓库信息维护</div>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="SIG 名称"
-                name="sigName"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <div className="mt-1.5">数据压缩算法</div>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="SIG 描述"
-                name="sigDescription"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <div className="mt-1.5">数据压缩算法 SIG 描述</div>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="新建仓路径"
-                name="newRepositoryPath"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input addonBefore="https://gitee.com/openharmony-tpc/ohos_" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Commiters"
-                name="committers"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="仓描述"
-                name="repositoryDescription"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="孵化时间"
-                name="incubationTime"
-                rules={[{ required: true, message: '请选择!' }]}
-              >
-                <DatePicker placeholder="请选择日期" />
-              </Form.Item>
-            </Col>
-          </Row> */}
         </Form>
       </div>
-      {/* {isProceedingProcesses && ( */}
       <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
         <Button
           className="rounded-none"
@@ -390,4 +271,4 @@ const SelectionApplication = () => {
   );
 };
 
-export default SelectionApplication;
+export default RepoReportApplication;
