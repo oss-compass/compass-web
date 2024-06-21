@@ -124,9 +124,9 @@ const SelectionApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {domainList.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
+                  {domainList.map(({ name, id }) => (
+                    <Select.Option key={id} value={id}>
+                      {name}
                     </Select.Option>
                   ))}
                 </Select>
