@@ -17,7 +17,7 @@ const WorkbenchPage = () => {
   return (
     <NoSsr>
       <OhRole>
-        <Workbench />
+        <Workbench name={'TPC'} />
       </OhRole>
     </NoSsr>
   );
