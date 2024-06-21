@@ -22,7 +22,18 @@ const SelectionReportApplication = () => {
         window.location.hash = 'sandboxTable?tab=1';
       }, 2000);
     },
-    onError(res) {},
+    onError(res) {
+      messageApi.open({
+        type: 'success',
+        style: {
+          marginTop: '200px',
+        },
+        content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
+      });
+      setTimeout(() => {
+        window.location.hash = 'sandboxTable?tab=1';
+      }, 2000);
+    },
   });
 
   const submit = () => {
