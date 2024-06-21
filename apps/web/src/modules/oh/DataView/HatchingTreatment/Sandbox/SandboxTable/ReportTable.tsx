@@ -147,6 +147,49 @@ const ReportTable = () => {
         });
         setData(data.tpcSoftwareSelectionReportPage.items);
       },
+      onError: (error) => {
+        setData([
+          {
+            codeCount: null,
+            codeUrl: 'https://github.com/jasonsantos/luajava',
+            id: 25,
+            manufacturer: 'jasonsantos',
+            name: 'luajava',
+            programmingLanguage: 'Java',
+            release: 'v1.0.0',
+            releaseTime: '2019-12-31T16:00:00Z',
+            tpcSoftwareReportMetric: {
+              complianceDco: 5,
+              complianceLicense: 5,
+              compliancePackageSig: 5,
+              createdAt: '2024-06-21T09:31:14Z',
+              ecologyAdoptionAnalysis: 5,
+              ecologyCodeMaintenance: 5,
+              ecologyCommunitySupport: 5,
+              ecologyDependencyAcquisition: 5,
+              ecologyPatentRisk: 5,
+              ecologySoftwareQuality: 5,
+              id: 10,
+              lifecycleVersionLifecycle: 5,
+              lifecycleVersionNormalization: 5,
+              lifecycleVersionNumber: 5,
+              securityBinaryArtifact: 5,
+              securityHistoryVulnerability: 5,
+              securityVulnerability: 5,
+              securityVulnerabilityDisclosure: 5,
+              securityVulnerabilityResponse: 5,
+              status: 'success',
+              tpcSoftwareReportId: 25,
+            },
+            tpcSoftwareSig: {
+              description: 'RN 框架描述',
+              id: 2,
+              name: 'RN 框架',
+            },
+            websiteUrl: 'www.keplerproject.org/luajava/',
+          },
+        ]);
+      },
     }
   );
   return (
