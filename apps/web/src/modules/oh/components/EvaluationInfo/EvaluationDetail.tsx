@@ -170,6 +170,8 @@ const getConent2 = (name) => {
       return '引入软件源码仓库包含二进制制品';
     case '漏洞响应机制':
       return '软件无漏洞响应机制';
+    case '漏洞披露机制':
+      return '软件未检测到漏洞披露机制';
   }
 };
 const EvaluationMerticItem = ({ mertic, items, scoreObj, type }) => {
@@ -372,7 +374,7 @@ const EvaluationDetail = ({
       security_binary_artifact: 10,
       security_vulnerability: 10,
       security_vulnerability_response: 10,
-      security_vulnerability_disclosure: 0,
+      security_vulnerability_disclosure: 6,
       security_history_vulnerability: 10,
     },
   };

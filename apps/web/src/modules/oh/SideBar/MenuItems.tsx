@@ -22,6 +22,7 @@ import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProj
 import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
 import Graduate from '@modules/oh/DataView/HatchingTreatment/Graduate';
 import Workbench from '@modules/oh/DataView/HatchingTreatment/Workbench';
+import DetailPage from '@modules/oh/DataView/HatchingTreatment/Workbench/DetailPage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -152,4 +153,5 @@ export const componentMap = {
   boardSandbox: <Workbench name={'沙箱项目'} />,
   boardHatch: <Workbench name={'孵化项目'} />,
   boardGraduateBoard: <Workbench name={'毕业项目'} />,
+  reportDetailPage: <DetailPage />,
 };

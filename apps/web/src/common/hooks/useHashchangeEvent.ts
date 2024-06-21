@@ -6,7 +6,11 @@ const useHashchangeEvent = (
     cardClassName: 'base-card',
   }
 ) => {
-  const initialHash = window.location.hash ? window.location.hash.slice(1) : '';
+  let initialHash = window.location.hash ? window.location.hash.slice(1) : '';
+  if (initialHash.includes('?')) {
+    let parts = initialHash.split('?');
+    initialHash = parts[0];
+  }
   const [activeId, setActiveId] = useState(initialHash);
 
   useEffect(() => {
