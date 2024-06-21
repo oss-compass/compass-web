@@ -5,7 +5,7 @@ import Dialog from '@common/components/Dialog';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import {
-  useSubjectSigPageQuery,
+  useTpcSoftwareSelectionReportPageQuery,
   SubjectSigPage,
   FilterOptionInput,
   SortOptionInput,
@@ -23,16 +23,13 @@ interface TableQuery {
 }
 
 const ReportTable = () => {
-  const { currentUser } = useUserInfo();
-
-  const url = new URL(window.location.href.replace('#', ''));
-  const name = url.searchParams.get('name'); // 'luajava'
-  // if(name)
+  // const { currentUser } = useUserInfo();
+  // const url = new URL(window.location.href.replace('#', ''));
+  // const name = url.searchParams.get('name'); // 'luajava'
   let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
   const dataSource = result;
-  const { timeStart, timeEnd } = useQueryDateRange();
-
+  // const { timeStart, timeEnd } = useQueryDateRange();
   const columns = [
     // {
     //   title: '申请单号',
@@ -41,12 +38,34 @@ const ReportTable = () => {
     // },
     {
       title: '软件名称',
-      dataIndex: 'softwareName',
-      key: 'softwareName',
+      dataIndex: 'name',
+      key: 'name',
+      // render: (text, record) => {
+      //   return (
+      //     <a
+      //       onClick={() => {}}
+      //       className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+      //     >
+      //       {text}
+      //     </a>
+      //   );
+      // },
+    },
+    // {
+    //   title: '报告类别',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    // },
+    {
+      title: '源码地址',
+      dataIndex: 'codeUrl',
+      key: 'codeUrl',
       render: (text, record) => {
         return (
           <a
-            onClick={() => {}}
+            onClick={() => {
+              window.open(text, '_blank');
+            }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {text}
@@ -61,7 +80,9 @@ const ReportTable = () => {
       render: (text, record) => {
         return (
           <a
-            onClick={() => {}}
+            onClick={() => {
+              window.open(text, '_blank');
+            }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {text}
@@ -70,30 +91,37 @@ const ReportTable = () => {
       },
     },
     {
-      title: '申请人',
-      key: 'linkSig',
-      render: (text) => {
-        // let dom = text?.repos?.map((i) => <Tag key={i}>{i}</Tag>);
-        return <div className="flex flex-wrap gap-y-2">{currentUser.name}</div>;
-      },
+      title: '编程语言',
+      dataIndex: 'programmingLanguage',
+      key: 'programmingLanguage',
+      // render: (text) => {
+      // },
     },
     {
-      title: '申请时间',
-      dataIndex: 'time',
+      title: '开发商',
+      dataIndex: 'manufacturer',
       key: 'time',
     },
+    // {
+    //   title: '申请人',
+    //   key: 'linkSig',
+    //   // render: (text) => {
+    //   // },
+    // },
+    // {
+    //   title: '申请时间',
+    //   dataIndex: 'time',
+    //   key: 'time',
+    // },
     {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
-      render: (text) => {
-        return '生成报告中';
+      render: (text, record) => {
+        return record?.tpcSoftwareReportMetric.state === 'success'
+          ? '生成成功'
+          : '生成中';
       },
-    },
-    {
-      title: 'Issue 地址',
-      dataIndex: 'url',
-      key: 'url',
     },
   ];
   const {
@@ -103,33 +131,24 @@ const ReportTable = () => {
     setTableParams,
     query,
     handleTableChange,
-  } = useGetTableOption({
-    label: 'openharmony-tpc',
-    level: 'community',
-  });
-  const myQuery = {
-    page: query.page,
-    per: query.per,
-    label: 'openharmony-tpc',
-    level: 'community',
-  };
-  const { isLoading, isFetching } = useSubjectSigPageQuery(client, myQuery, {
-    onSuccess: (data) => {
-      if (name) {
-        let data = window.sessionStorage.getItem(name);
-        console.log(JSON.parse(data));
-        setData([JSON.parse(data)]);
-      }
-      // setTableParams({
-      //   ...tableParams,
-      //   pagination: {
-      //     ...tableParams.pagination,
-      //     total: data.subjectSigPage.count as number,
-      //   },
-      // });
-      // setData([]);
-    },
-  });
+  } = useGetTableOption();
+  const { isLoading, isFetching } = useTpcSoftwareSelectionReportPageQuery(
+    client,
+    query,
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.tpcSoftwareSelectionReportPage.count as number,
+          },
+        });
+        setData(data.tpcSoftwareSelectionReportPage.items);
+      },
+    }
+  );
   return (
     <>
       <div className="p-4">

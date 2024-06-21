@@ -121,3 +121,26 @@ mutation manageUserOrgs(
     status
   }
 }
+
+# fragment tpcSoftwareSelectionReportInput on TpcSoftwareSelectionReportInput {
+#   name
+#   tpcSoftwareSigId
+#   release
+#   releaseTime
+#   manufacturer
+#   websiteUrl
+#   codeUrl
+#   programmingLanguage
+# }
+mutation createTpcSoftwareSelectionReport(
+  $label: String!
+  $level: String
+  $softwareReport: TpcSoftwareSelectionReportInput!
+) {
+  createTpcSoftwareSelectionReport(
+    input: { label: $label, level: $level, softwareReport: $softwareReport }
+  ) {
+    message
+    status
+  }
+}

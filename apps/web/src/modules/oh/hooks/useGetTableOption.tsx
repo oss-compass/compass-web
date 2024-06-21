@@ -4,6 +4,7 @@ import type { TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { FilterOptionInput, SortOptionInput } from '@oss-compass/graphql';
 import { toUnderline } from '@common/utils/format';
+import { queryKey } from '@modules/oh/constant';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -40,6 +41,7 @@ const useGetLineOption = <T extends Record<string, any>>(
     filterOpts: [...filterOpts],
     sortOpts: tableParams.sortOpts,
     ...queryOpt,
+    ...queryKey,
   };
   const handleTableChange = (
     pagination: TablePaginationConfig,

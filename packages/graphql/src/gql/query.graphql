@@ -1533,3 +1533,66 @@ query subjectSigPage(
     totalPage
   }
 }
+
+fragment tpcSoftwareSig on TpcSoftwareSig {
+  description
+  id
+  name
+}
+fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {
+  complianceDco
+  complianceLicense
+  compliancePackageSig
+  createdAt
+  ecologyAdoptionAnalysis
+  ecologyCodeMaintenance
+  ecologyCommunitySupport
+  ecologyDependencyAcquisition
+  ecologyPatentRisk
+  ecologySoftwareQuality
+  id
+  lifecycleVersionLifecycle
+  lifecycleVersionNormalization
+  lifecycleVersionNumber
+  securityBinaryArtifact
+  securityHistoryVulnerability
+  securityVulnerability
+  securityVulnerabilityDisclosure
+  securityVulnerabilityResponse
+  status
+  tpcSoftwareReportId
+}
+query tpcSoftwareSelectionReportPage(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+) {
+  tpcSoftwareSelectionReportPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+  ) {
+    count
+    items {
+      codeCount
+      codeUrl
+      id
+      manufacturer
+      name
+      programmingLanguage
+      release
+      releaseTime
+      tpcSoftwareReportMetric {
+        ...tpcSoftwareReportMetric
+      }
+      tpcSoftwareSig {
+        ...tpcSoftwareSig
+      }
+      websiteUrl
+    }
+    page
+    totalPage
+  }
+}

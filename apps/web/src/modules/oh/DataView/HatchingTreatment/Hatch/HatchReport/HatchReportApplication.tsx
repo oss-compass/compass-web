@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
 import dayjs from 'dayjs';
 import DatePicker from '@common/components/Form';
-import { LanguagesList, domainList } from '@modules/oh/constant';
+import { languagesList, domainList } from '@modules/oh/constant';
 
 const SelectionReportApplication = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -28,7 +28,7 @@ const SelectionReportApplication = () => {
           // window.location.hash = 'work?key=1&name=' + values.softwareName;
         }, 1000);
         setSubmitLoading(false);
-      }, 1000);
+      }, 2000);
     });
   };
   const onReset = () => {
@@ -125,9 +125,9 @@ const SelectionReportApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {domainList.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
+                  {domainList.map(({ name, id }) => (
+                    <Select.Option key={id} value={id}>
+                      {name}
                     </Select.Option>
                   ))}
                 </Select>
@@ -221,7 +221,7 @@ const SelectionReportApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {LanguagesList.map((item) => (
+                  {languagesList.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
                     </Select.Option>

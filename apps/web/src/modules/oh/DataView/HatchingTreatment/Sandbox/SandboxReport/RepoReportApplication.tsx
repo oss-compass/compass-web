@@ -2,33 +2,34 @@ import React, { useState } from 'react';
 import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
 import dayjs from 'dayjs';
 import DatePicker from '@common/components/Form';
-import { LanguagesList, domainList } from '@modules/oh/constant';
-
-const RepoReportApplication = () => {
-  const [submitLoading, setSubmitLoading] = useState(false);
+import { languagesList, domainList, queryKey } from '@modules/oh/constant';
+import client from '@common/gqlClient';
+import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
+const SelectionReportApplication = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
+  const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
+    onSuccess() {
+      messageApi.open({
+        type: 'success',
+        style: {
+          marginTop: '200px',
+        },
+        content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
+      });
+      setTimeout(() => {
+        window.location.hash = 'sandboxTable?tab=1';
+      }, 2000);
+    },
+    onError(res) {},
+  });
+
   const submit = () => {
     form.validateFields().then((values) => {
-      setSubmitLoading(true);
-      setTimeout(() => {
-        messageApi.open({
-          type: 'success',
-          style: {
-            marginTop: '200px',
-          },
-          content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
-        });
-        values.time = new Date().toLocaleString();
-        window.sessionStorage.setItem(
-          values.softwareName,
-          JSON.stringify(values)
-        );
-        setTimeout(() => {
-          // window.location.hash = 'work?key=1&name=' + values.softwareName;
-        }, 1000);
-        setSubmitLoading(false);
-      }, 1000);
+      mutation.mutate({
+        ...queryKey,
+        softwareReport: { ...values },
+      });
     });
   };
   const onReset = () => {
@@ -36,28 +37,14 @@ const RepoReportApplication = () => {
   };
   const autoFill = () => {
     form.setFieldsValue({
-      softwareName: 'luajava',
-      domain: '工具 (Tools)',
-      softwareVersion: 'v1.0.0',
-      releaseDate: dayjs('2020-01-01'),
-      developer: 'jasonsantos',
+      name: 'luajava',
+      tpcSoftwareSigId: 2,
+      release: 'v1.0.0',
+      releaseTime: dayjs('2020-01-01'),
+      manufacturer: 'jasonsantos',
       websiteUrl: 'www.keplerproject.org/luajava/',
-      selectionReason:
-        '游戏中心使用 LuaJava 进行 lua 与 java 间的调用。该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。OH 目前没有支持 lua 层到 arkTS 之间的调用。需要将该开源库进行 OpenHarmony 移植适配',
-      codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
+      codeUrl: 'https://github.com/jasonsantos/luajava',
       programmingLanguage: 'Java',
-      codeSize: '10000 行',
-      integrationMethod: '适配',
-      sigName: '工具 (Tools)',
-      sigDescription: '开发相关工具',
-      newRepositoryPath: 'luajava',
-      committers: 'jasonsantos,talklittle,hishamhm',
-      repositoryDescription:
-        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
-      incubationTime: dayjs('2024-06-18'),
-      bugPublish1: 'https://github.com/jasonsantos/luajava/issues',
-      bugPublish2: 'https://github.com/jasonsantos/luajava/issues',
-      time: new Date().toLocaleString(),
     });
   };
   const websiteValidator = (_, value) => {
@@ -112,7 +99,7 @@ const RepoReportApplication = () => {
             <Col span={12}>
               <Form.Item
                 label="软件名称"
-                name="softwareName"
+                name="name"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input />
@@ -121,11 +108,11 @@ const RepoReportApplication = () => {
             <Col span={12}>
               <Form.Item
                 label="所属领域"
-                name="domain"
+                name="tpcSoftwareSigId"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {domainList.map((item) => (
+                  {languagesList.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
                     </Select.Option>
@@ -153,7 +140,7 @@ const RepoReportApplication = () => {
               >
                 <Form.Item
                   label="软件版本号"
-                  name="softwareVersion"
+                  name="release"
                   rules={[{ validator: versionValidator }]}
                 >
                   <Input />
@@ -161,14 +148,14 @@ const RepoReportApplication = () => {
               </Popover>
             </Col>
             <Col span={12}>
-              <Form.Item label="版本发布日期" name="releaseDate">
+              <Form.Item label="版本发布日期" name="releaseTime">
                 <DatePicker placeholder="请选择日期" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="开发商"
-                name="developer"
+                name="manufacturer"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input />
@@ -208,7 +195,7 @@ const RepoReportApplication = () => {
             <Col span={12}>
               <Form.Item
                 label="源码地址"
-                name="codeRepositoryUrl"
+                name="codeUrl"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input />
@@ -221,9 +208,9 @@ const RepoReportApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {LanguagesList.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
+                  {domainList.map(({ name, id }) => (
+                    <Select.Option key={id} value={id}>
+                      {name}
                     </Select.Option>
                   ))}
                 </Select>
@@ -246,7 +233,7 @@ const RepoReportApplication = () => {
         <Button
           className="rounded-none"
           type="primary"
-          loading={submitLoading}
+          loading={mutation.isLoading}
           onClick={() => {
             submit();
           }}
@@ -271,4 +258,4 @@ const RepoReportApplication = () => {
   );
 };
 
-export default RepoReportApplication;
+export default SelectionReportApplication;

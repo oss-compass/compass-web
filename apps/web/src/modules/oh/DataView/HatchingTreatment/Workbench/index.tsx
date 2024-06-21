@@ -3,9 +3,66 @@ import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Detail from '@modules/oh/DataView/HatchingTreatment/Workbench/Detail';
 import Report from '@modules/oh/components/SelectReport/Report';
+import { id } from 'date-fns/locale';
 
 const Main = ({ name }) => {
+  const url = new URL(window.location.href.replace('#', ''));
+  const tabKey = url.searchParams.get('tab'); // 'luajava'
   let items = [
+    {
+      id: 'jasonsantos',
+      name: 'jasonsantos/luajava',
+      description:
+        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
+      reportVersion: 'v1',
+      updated: '2024-06-20',
+      score: '49.25',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 80,
+        },
+        {
+          name: '技术生态',
+          score: 32,
+        },
+        {
+          name: '生命周期',
+          score: 33,
+        },
+        {
+          name: '网络安全',
+          score: 52,
+        },
+      ],
+    },
+    {
+      id: 'gudzpoz',
+      name: 'gudzpoz/luajava',
+      description:
+        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
+      reportVersion: 'v1',
+      updated: '2024-06-20',
+      score: '86',
+      evaluationDetail: [
+        {
+          name: '合法合规',
+          score: 80,
+        },
+        {
+          name: '技术生态',
+          score: 84,
+        },
+        {
+          name: '生命周期',
+          score: 100,
+        },
+        {
+          name: '网络安全',
+          score: 80,
+        },
+      ],
+    },
     {
       name: 'vue',
       description:
@@ -29,32 +86,6 @@ const Main = ({ name }) => {
         {
           name: '网络安全',
           score: 44,
-        },
-      ],
-    },
-    {
-      name: 'react',
-      description:
-        'React 是一个用于建构用户界面的 JavaScript 库。它被划分为声明式和组件化的概念，提供了多样的工具和库来支持复杂的用户界面开发。',
-      reportVersion: 'v3',
-      updated: '2024-05-15',
-      score: '93',
-      evaluationDetail: [
-        {
-          name: '合法合规',
-          score: 85,
-        },
-        {
-          name: '技术生态',
-          score: 92,
-        },
-        {
-          name: '生命周期',
-          score: 82,
-        },
-        {
-          name: '网络安全',
-          score: 77,
         },
       ],
     },
