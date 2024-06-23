@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import Detail from '@modules/oh/DataView/HatchingTreatment/Workbench/Detail';
-import Report from '@modules/oh/components/SelectReport/Report';
+import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+
+import NotFoundOh from '@modules/oh/components/NotFoundOh';
 
 const DetailPage = () => {
   const url = new URL(window.location.href.replace('#', ''));
   const projectId = url.searchParams.get('projectId');
   let items = [
     {
-      id: 'jasonsantos',
+      id: 's21t926o',
       name: 'jasonsantos/luajava',
       description:
         '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
@@ -36,7 +37,7 @@ const DetailPage = () => {
       ],
     },
     {
-      id: 'gudzpoz',
+      id: 'sazgg2nh',
       name: 'gudzpoz/luajava',
       description:
         '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
@@ -197,7 +198,10 @@ const DetailPage = () => {
   if (projectId) {
     actItem = items.find((item) => item.id === projectId);
   }
-  const [activeItem, setActiveItem] = useState(actItem || items[0]);
+  const [activeItem, setActiveItem] = useState(actItem);
+  if (!activeItem) {
+    return <NotFoundOh />;
+  }
   return (
     <div className="div">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
@@ -207,8 +211,8 @@ const DetailPage = () => {
             <Input prefix={<SearchOutlined rev={undefined} />} />
           </div>
         </div>
-        <div className="relative flex h-[calc(100%-60px)] justify-center">
-          <Detail name={activeItem.name} setActiveItem={setActiveItem} />
+        <div className="relative mb-6 flex h-[calc(100%-60px)] justify-center overflow-auto p-5">
+          <EvaluationDetail name={activeItem.name} />
         </div>
       </div>
     </div>
