@@ -7,6 +7,7 @@ import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareSelectionPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Radio } from 'antd';
+import { setUrlHost } from '@modules/oh/utils';
 
 const ReportTable = () => {
   let result = [];
@@ -36,7 +37,9 @@ const ReportTable = () => {
       render: (text) => {
         return (
           <a
-            target="_blank"
+            onClick={() => {
+              window.open(setUrlHost(text), '_blank');
+            }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {text}
@@ -48,7 +51,7 @@ const ReportTable = () => {
       title: '引入方式',
       key: 'adaptationMethod',
       render: (text) => {
-        return text === 1 ? '1重写' : '适配';
+        return text === 1 ? '重写' : '适配';
       },
     },
     {
@@ -56,7 +59,7 @@ const ReportTable = () => {
       key: 'user',
       dataIndex: 'user',
       render: (_, record) => {
-        return record.user.name;
+        return record?.user?.name;
       },
     },
     {

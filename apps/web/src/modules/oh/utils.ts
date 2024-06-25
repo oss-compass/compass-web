@@ -240,3 +240,11 @@ export const getErrorConent = (name) => {
       return '软件无漏洞响应机制';
   }
 };
+
+export const setUrlHost = (url) => {
+  if (url.startsWith('http') || url.startsWith('https')) {
+    return url;
+  } else {
+    return `//${url}`;
+  }
+};

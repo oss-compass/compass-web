@@ -7,6 +7,7 @@ import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Radio } from 'antd';
+import { setUrlHost } from '@modules/oh/utils';
 
 const ReportTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -22,31 +23,16 @@ const ReportTable = () => {
       title: '软件名称',
       dataIndex: 'name',
       key: 'name',
-      // render: (text, record) => {
-      //   return (
-      //     <a
-      //       onClick={() => {}}
-      //       className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-      //     >
-      //       {text}
-      //     </a>
-      //   );
-      // },
     },
-    // {
-    //   title: '报告类别',
-    //   dataIndex: 'id',
-    //   key: 'id',
-    // },
     {
       title: '源码地址',
       dataIndex: 'codeUrl',
       key: 'codeUrl',
-      render: (text, record) => {
+      render: (text) => {
         return (
           <a
             onClick={() => {
-              window.open(text, '_blank');
+              window.open(setUrlHost(text), '_blank');
             }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
@@ -59,11 +45,11 @@ const ReportTable = () => {
       title: '官网地址',
       dataIndex: 'websiteUrl',
       key: 'websiteUrl',
-      render: (text, record) => {
+      render: (text) => {
         return (
           <a
             onClick={() => {
-              window.open(text, '_blank');
+              window.open(setUrlHost(text), '_blank');
             }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
@@ -95,22 +81,27 @@ const ReportTable = () => {
     //   dataIndex: 'time',
     //   key: 'time',
     // },
-    // {
-    //   title: '是否建仓',
-    //   dataIndex: 'reportType',
-    //   key: 'reportType',
-    //   render: (text, record) => {
-    //     return text === 1 ? '已建仓' : '未建仓';
-    //   },
-    // },
     {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
       render: (text, record) => {
-        return record?.tpcSoftwareReportMetric?.status === 'success'
-          ? '生成成功'
-          : '生成中';
+        return record?.tpcSoftwareReportMetric?.status === 'success' ? (
+          <>
+            <a
+              target="_blank"
+              onClick={() => {
+                window.location.hash =
+                  'reportDetailPage?projectId=' + record.shortCode;
+              }}
+              className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+            >
+              生成成功
+            </a>
+          </>
+        ) : (
+          '生成中'
+        );
       },
     },
   ];
@@ -142,47 +133,47 @@ const ReportTable = () => {
         setData(data.tpcSoftwareSelectionReportPage.items);
       },
       onError: (error) => {
-        setData([
-          {
-            codeCount: null,
-            codeUrl: 'https://github.com/jasonsantos/luajava',
-            id: 25,
-            manufacturer: 'jasonsantos',
-            name: 'luajava',
-            programmingLanguage: 'Java',
-            release: 'v1.0.0',
-            releaseTime: '2019-12-31T16:00:00Z',
-            tpcSoftwareReportMetric: {
-              complianceDco: 5,
-              complianceLicense: 5,
-              compliancePackageSig: 5,
-              createdAt: '2024-06-21T09:31:14Z',
-              ecologyAdoptionAnalysis: 5,
-              ecologyCodeMaintenance: 5,
-              ecologyCommunitySupport: 5,
-              ecologyDependencyAcquisition: 5,
-              ecologyPatentRisk: 5,
-              ecologySoftwareQuality: 5,
-              id: 10,
-              lifecycleVersionLifecycle: 5,
-              lifecycleVersionNormalization: 5,
-              lifecycleVersionNumber: 5,
-              securityBinaryArtifact: 5,
-              securityHistoryVulnerability: 5,
-              securityVulnerability: 5,
-              securityVulnerabilityDisclosure: 5,
-              securityVulnerabilityResponse: 5,
-              status: 'success',
-              tpcSoftwareReportId: 25,
-            },
-            tpcSoftwareSig: {
-              description: 'RN 框架描述',
-              id: 2,
-              name: 'RN 框架',
-            },
-            websiteUrl: 'www.keplerproject.org/luajava/',
-          },
-        ]);
+        // setData([
+        //   {
+        //     codeCount: null,
+        //     codeUrl: 'https://github.com/jasonsantos/luajava',
+        //     id: 25,
+        //     manufacturer: 'jasonsantos',
+        //     name: 'luajava',
+        //     programmingLanguage: 'Java',
+        //     release: 'v1.0.0',
+        //     releaseTime: '2019-12-31T16:00:00Z',
+        //     tpcSoftwareReportMetric: {
+        //       complianceDco: 5,
+        //       complianceLicense: 5,
+        //       compliancePackageSig: 5,
+        //       createdAt: '2024-06-21T09:31:14Z',
+        //       ecologyAdoptionAnalysis: 5,
+        //       ecologyCodeMaintenance: 5,
+        //       ecologyCommunitySupport: 5,
+        //       ecologyDependencyAcquisition: 5,
+        //       ecologyPatentRisk: 5,
+        //       ecologySoftwareQuality: 5,
+        //       id: 10,
+        //       lifecycleVersionLifecycle: 5,
+        //       lifecycleVersionNormalization: 5,
+        //       lifecycleVersionNumber: 5,
+        //       securityBinaryArtifact: 5,
+        //       securityHistoryVulnerability: 5,
+        //       securityVulnerability: 5,
+        //       securityVulnerabilityDisclosure: 5,
+        //       securityVulnerabilityResponse: 5,
+        //       status: 'success',
+        //       tpcSoftwareReportId: 25,
+        //     },
+        //     tpcSoftwareSig: {
+        //       description: 'RN 框架描述',
+        //       id: 2,
+        //       name: 'RN 框架',
+        //     },
+        //     websiteUrl: 'www.keplerproject.org/luajava/',
+        //   },
+        // ]);
       },
     }
   );

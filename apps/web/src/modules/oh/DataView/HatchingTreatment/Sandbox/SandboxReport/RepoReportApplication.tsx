@@ -252,7 +252,7 @@ const SelectionReportApplication = () => {
         >
           提交
         </Button>
-        <Button
+        {/* <Button
           className="rounded-none"
           htmlType="submit"
           onClick={() => {
@@ -260,7 +260,7 @@ const SelectionReportApplication = () => {
           }}
         >
           自动填充
-        </Button>
+        </Button> */}
         <Button className="rounded-none" htmlType="button" onClick={onReset}>
           重置
         </Button>
