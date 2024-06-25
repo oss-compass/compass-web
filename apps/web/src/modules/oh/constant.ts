@@ -118,6 +118,6 @@ export const adaptationMethodList = [
   },
 ];
 export const queryKey = {
-  label: 'openharmony-tpc',
+  label: 'OpenHarmony-TPC',
   level: 'community',
 };
