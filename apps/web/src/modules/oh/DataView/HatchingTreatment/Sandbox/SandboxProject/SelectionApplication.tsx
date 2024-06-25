@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
-import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
+import {
+  Button,
+  message,
+  Form,
+  Input,
+  Select,
+  Row,
+  Col,
+  Popover,
+  Tabs,
+} from 'antd';
 import Dialog from '@common/components/Dialog';
 import DatePicker from '@common/components/Form';
 import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import ReportInfo from '@modules/oh/components/ReportInfo';
 import SelectReport from '@modules/oh/components/SelectReport';
 import {
   domainList,
@@ -18,30 +28,41 @@ import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 
 const SelectionApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [report, setReport] = useState(null);
+  const [report, setReport] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
+
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionMutation(client, {
-    onSuccess() {
-      messageApi.open({
-        type: 'success',
-        style: {
-          marginTop: '200px',
-        },
-        content: (
-          <>
-            提交成功，已在 Gitee 建立 Issue 跟踪，可点击
-            <a
-              className="text-[#1677ff]"
-              href="https://gitee.com/openharmony-tpc/ImageKnife/issues"
-              // _blank={true}
-            >
-              https://gitee.com/openharmony-tpc/ImageKnife/issues
-            </a>
-            查看 Issue,
-          </>
-        ),
-      });
+    onSuccess(data) {
+      if (
+        data.createTpcSoftwareSelection.status == 'true' &&
+        data.createTpcSoftwareSelection.issueUrl
+      ) {
+        let issueUrl = data.createTpcSoftwareSelection.issueUrl;
+        messageApi.open({
+          type: 'success',
+          style: {
+            marginTop: '200px',
+          },
+          content: (
+            <>
+              提交成功，已在 Gitee 建立 Issue 跟踪，可点击
+              <a className="text-[#1677ff]" href={issueUrl} target="_blank">
+                {issueUrl}
+              </a>
+              查看 Issue,
+            </>
+          ),
+        });
+      } else {
+        messageApi.open({
+          type: 'error',
+          style: {
+            marginTop: '200px',
+          },
+          content: data.createTpcSoftwareSelection.message,
+        });
+      }
     },
     onError(res) {},
   });
@@ -53,37 +74,15 @@ const SelectionApplication = () => {
           ...queryKey,
           ...values,
           selectionType: 0,
-          tpcSoftwareSelectionReportIds: [
-            report.tpcSoftwareReportMetric.tpcSoftwareReportId,
-          ],
+          tpcSoftwareSelectionReportIds: report.map(
+            (r) => r.tpcSoftwareReportMetric.tpcSoftwareReportId
+          ),
         });
-      // setTimeout(() => {
-      //   messageApi.open({
-      //     style: {
-      //       marginTop: '200px',
-      //     },
-      //     type: 'success',
-      //     content: (
-      //       <>
-      //         提交成功，已在 Gitee 建立 Issue 跟踪，可点击
-      //         <a
-      //           className="text-[#1677ff]"
-      //           href="https://gitee.com/openharmony-tpc/ImageKnife/issues"
-      //           // _blank={true}
-      //         >
-      //           https://gitee.com/openharmony-tpc/ImageKnife/issues
-      //         </a>
-      //         查看 Issue,
-      //       </>
-      //     ),
-      //   });
-      //   setSubmitLoading(false);
-      //   // procseeActions.setNextProcsee(processesID);
-      // }, 1000);
     });
   };
   const onReset = () => {
     form.resetFields();
+    setReport([]);
   };
   const autoFill = (report) => {
     console.log(report);
@@ -110,248 +109,148 @@ const SelectionApplication = () => {
       incubationTime: dayjs('2022-01-01'),
     });
   };
+  let main = (
+    <div className="flex flex-col justify-center py-4 px-5">
+      <Form
+        form={form}
+        labelCol={{
+          span: 6,
+          style: { fontWeight: 'bold' },
+        }}
+        style={{
+          width: '100%',
+        }}
+        disabled={!report}
+        // onFinish={onFinish}
+        // onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <>
+          <Col span={12} className="mt-4">
+            <Form.Item
+              label="选择软件"
+              name="name"
+              rules={[{ required: true, message: '请输入!' }]}
+            >
+              <Input
+                suffix={
+                  <DownOutlined className="text-[#d9d9d9]" rev={undefined} />
+                }
+                disabled={false}
+                onClick={() => {
+                  setOpenConfirm(true);
+                }}
+                readOnly
+              ></Input>
+            </Form.Item>
+          </Col>
+          {report.length > 0 && (
+            <>
+              <div className="mb-6 text-base font-semibold">仓库信息</div>
+              <Row gutter={24}>
+                <Col span={12}>
+                  <Popover
+                    placement="topRight"
+                    content={
+                      <>
+                        <div>1.软件名称和其官网保持一致;</div>
+                        <div>1.禁止以软件的子模块作为软件名;</div>
+                      </>
+                    }
+                    title="规则"
+                    trigger="click"
+                  >
+                    <Form.Item
+                      label="新建仓路径"
+                      name="repoUrl"
+                      rules={[{ required: true, message: '请输入!' }]}
+                    >
+                      <Input
+                        disabled={false}
+                        onFocus={() => {}}
+                        addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                      />
+                    </Form.Item>
+                  </Popover>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="Commiters"
+                    name="committers"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input disabled={false} />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item
+                    label="孵化时间"
+                    name="incubationTime"
+                    rules={[{ required: true, message: '请选择!' }]}
+                  >
+                    <DatePicker disabled={false} placeholder="请选择日期" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="引入方式"
+                    name="adaptationMethod"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Select disabled={false}>
+                      {adaptationMethodList.map((item) => {
+                        return (
+                          <Select.Option key={item.id} value={item.id}>
+                            {item.name}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    label="需求背景"
+                    name="reason"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input.TextArea disabled={false} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              {report.length > 1 ? (
+                <>
+                  <div className="mb-4 text-base font-semibold">报告信息</div>
+                  <Tabs
+                    className="oh-antd"
+                    size={'small'}
+                    items={report.map((r) => {
+                      return {
+                        label: r.name,
+                        key: r.id,
+                        children: <ReportInfo report={r} />,
+                      };
+                    })}
+                  />
+                </>
+              ) : (
+                <ReportInfo report={report[0]} />
+              )}
+            </>
+          )}
+        </>
+      </Form>
+    </div>
+  );
   return (
     <>
       {contextHolder}
-      <div className="flex flex-col justify-center py-4 px-5">
-        <Form
-          form={form}
-          labelCol={{
-            span: 6,
-            style: { fontWeight: 'bold' },
-          }}
-          style={{
-            width: '100%',
-          }}
-          disabled={!report}
-          // onFinish={onFinish}
-          // onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <div className="mb-6 text-base font-semibold">软件基础信息</div>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="选择软件"
-                name="name"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                {
-                  <Input
-                    suffix={
-                      <DownOutlined
-                        className="text-[#d9d9d9]"
-                        rev={undefined}
-                      />
-                    }
-                    disabled={false}
-                    onClick={() => {
-                      setOpenConfirm(true);
-                    }}
-                    readOnly
-                  ></Input>
-                }
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="所属领域"
-                name="domain"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  {domainList.map(({ name, id }) => (
-                    <Select.Option key={id} value={id}>
-                      {name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="软件版本"
-                name="release"
-                // rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="版本发布日期"
-                name="releaseTime"
-                // rules={[{ required: true, message: '请输入!' }]}
-              >
-                <DatePicker placeholder="请选择日期" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="开发商"
-                name="manufacturer"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="官网地址"
-                name="websiteUrl"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                label="源码地址"
-                name="codeUrl"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="编程语言"
-                name="programmingLanguage"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label="代码量"
-                name="codeCount"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            {/* <Col span={12}>
-              <Form.Item
-                label="License"
-                name="license"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col> */}
-            {/* <Col span={12}>
-              <Form.Item label="漏洞披露机制" name="bugPublish">
-                <Input disabled={false} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="漏洞响应机制" name="bugPublish">
-                <Input disabled={false} />
-              </Form.Item>
-            </Col> */}
-          </Row>
-          <div className="mb-6 text-base font-semibold">仓库信息</div>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Popover
-                placement="topRight"
-                content={
-                  <>
-                    <div>1.软件名称和其官网保持一致;</div>
-                    <div>1.禁止以软件的子模块作为软件名;</div>
-                  </>
-                }
-                title="规则"
-                trigger="click"
-              >
-                <Form.Item
-                  label="新建仓路径"
-                  name="repoUrl"
-                  rules={[{ required: true, message: '请输入!' }]}
-                >
-                  <Input
-                    disabled={false}
-                    onFocus={() => {}}
-                    addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                  />
-                </Form.Item>
-              </Popover>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Commiters"
-                name="committers"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input disabled={false} />
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label="孵化时间"
-                name="incubationTime"
-                rules={[{ required: true, message: '请选择!' }]}
-              >
-                <DatePicker disabled={false} placeholder="请选择日期" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="引入方式"
-                name="adaptationMethod"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select disabled={false}>
-                  {adaptationMethodList.map((item) => {
-                    return (
-                      <Select.Option key={item.id} value={item.id}>
-                        {item.name}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            {/* <Col span={24}>
-              <Form.Item
-                labelCol={{
-                  span: 3,
-                  style: { fontWeight: 'bold' },
-                }}
-                label="仓描述"
-                name="repoDescription"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input.TextArea disabled={false} />
-              </Form.Item>
-            </Col> */}
-            <Col span={24}>
-              <Form.Item
-                labelCol={{
-                  span: 3,
-                  style: { fontWeight: 'bold' },
-                }}
-                label="需求背景"
-                name="reason"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input.TextArea disabled={false} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-        {report && (
-          <>
-            <div className="mb-6 text-base font-semibold">评估报告</div>
-            <EvaluationDetail item={report} />
-          </>
-        )}
-      </div>
+      {main}
       <Dialog
         open={openConfirm}
         classes={{
@@ -379,7 +278,9 @@ const SelectionApplication = () => {
               getReport={(item) => {
                 setOpenConfirm(false);
                 setReport(item);
-                autoFill(item);
+                form.setFieldsValue({
+                  name: item.map((item) => item.name).join(', '),
+                });
               }}
             />
           </div>
@@ -389,29 +290,37 @@ const SelectionApplication = () => {
         }}
       />
       <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
-        <Button
-          className="rounded-none"
-          type="primary"
-          loading={mutation.isLoading}
-          onClick={() => {
-            submit();
-          }}
-        >
-          提交申请
-        </Button>
-        <Button className="rounded-none">保存</Button>
-        <Button
-          className="rounded-none"
-          htmlType="submit"
-          onClick={() => {
-            autoFill('');
-          }}
-        >
-          自动填充
-        </Button>
-        <Button className="rounded-none" htmlType="button" onClick={onReset}>
-          重置
-        </Button>
+        {report.length > 0 && (
+          <>
+            <Button
+              className="rounded-none"
+              type="primary"
+              loading={mutation.isLoading}
+              onClick={() => {
+                submit();
+              }}
+            >
+              提交申请
+            </Button>
+            {/* <Button className="rounded-none">保存</Button> */}
+            {/* <Button
+              className="rounded-none"
+              htmlType="submit"
+              onClick={() => {
+                autoFill('');
+              }}
+            >
+              自动填充
+            </Button> */}
+            <Button
+              className="rounded-none"
+              htmlType="button"
+              onClick={onReset}
+            >
+              重置
+            </Button>
+          </>
+        )}
       </div>
     </>
   );

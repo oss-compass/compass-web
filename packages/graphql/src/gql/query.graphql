@@ -1590,6 +1590,10 @@ query tpcSoftwareSelectionReportPage(
       release
       releaseTime
       reportType
+      shortCode
+      user {
+        name
+      }
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
       }
@@ -1624,8 +1628,15 @@ query tpcSoftwareSelectionPage(
       id
       incubationTime
       reason
-      # repoDescription
+      issueUrl
+      selectionType
+      user {
+        name
+      }
       tpcSoftwareSelectionReportIds
+      tpcSoftwareSelectionReports {
+        name
+      }
       # codeCount
       # codeUrl
       # manufacturer
@@ -1633,9 +1644,6 @@ query tpcSoftwareSelectionPage(
       # programmingLanguage
       # release
       # releaseTime
-      # tpcSoftwareReportMetric {
-      #   ...tpcSoftwareReportMetric
-      # }
       # tpcSoftwareSig {
       #   ...tpcSoftwareSig
       # }

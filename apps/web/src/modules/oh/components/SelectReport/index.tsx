@@ -3,7 +3,6 @@ import Report from '@modules/oh/components/SelectReport/Report';
 import { queryKey } from '@modules/oh/constant';
 
 const SelectReport = ({ getReport }) => {
-  const [selected, setSelected] = useState(null);
   let query = {
     ...queryKey,
     reportTypeList: [0, 1],
@@ -15,9 +14,7 @@ const SelectReport = ({ getReport }) => {
     <>
       <Report
         query={query}
-        selected={selected}
         selectFun={(item) => {
-          setSelected(item);
           getReport(item);
         }}
       />

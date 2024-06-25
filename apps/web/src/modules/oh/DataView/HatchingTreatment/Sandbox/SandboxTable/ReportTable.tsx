@@ -7,13 +7,8 @@ import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Radio } from 'antd';
-import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
-import { useUserInfo } from '@modules/auth';
 
 const ReportTable = () => {
-  // const { currentUser } = useUserInfo();
-  // const url = new URL(window.location.href.replace('#', ''));
-  // const name = url.searchParams.get('name'); // 'luajava'
   const [openConfirm, setOpenConfirm] = useState(false);
   const [reportType, setReportType] = useState(0);
 
@@ -113,7 +108,7 @@ const ReportTable = () => {
       dataIndex: 'state',
       key: 'state',
       render: (text, record) => {
-        return record?.tpcSoftwareReportMetric.status === 'success'
+        return record?.tpcSoftwareReportMetric?.status === 'success'
           ? '生成成功'
           : '生成中';
       },
@@ -194,7 +189,7 @@ const ReportTable = () => {
   return (
     <>
       <div className="p-4">
-        <div className="mb-2">
+        <div className="mb-2 ml-2">
           <Radio.Group
             onChange={(e) => {
               setReportType(e.target.value);

@@ -109,11 +109,11 @@ export const languagesList = [
 ];
 export const adaptationMethodList = [
   {
-    id: 1,
+    id: 0,
     name: '适配',
   },
   {
-    id: 2,
+    id: 1,
     name: '重写',
   },
 ];

@@ -10,17 +10,27 @@ const SelectionReportApplication = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
-    onSuccess() {
-      messageApi.open({
-        type: 'success',
-        style: {
-          marginTop: '200px',
-        },
-        content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
-      });
-      setTimeout(() => {
-        window.location.hash = 'sandboxTable?tab=1';
-      }, 2000);
+    onSuccess(data) {
+      if (data.createTpcSoftwareSelectionReport.status == 'true') {
+        messageApi.open({
+          type: 'success',
+          style: {
+            marginTop: '200px',
+          },
+          content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
+        });
+        setTimeout(() => {
+          window.location.hash = 'sandboxTable?tab=1';
+        }, 2000);
+      } else {
+        messageApi.open({
+          type: 'error',
+          style: {
+            marginTop: '200px',
+          },
+          content: data.createTpcSoftwareSelectionReport.message,
+        });
+      }
     },
     onError(res) {
       messageApi.open({

@@ -3264,11 +3264,14 @@ export type TpcSoftwareSelection = {
   createdAt?: Maybe<Scalars['ISO8601DateTime']>;
   id: Scalars['Int'];
   incubationTime?: Maybe<Scalars['ISO8601DateTime']>;
+  issueUrl?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
   /** selection: 0, create_repo: 1, incubation: 2 */
   selectionType?: Maybe<Scalars['Int']>;
   tpcSoftwareSelectionReportIds?: Maybe<Array<Scalars['String']>>;
   tpcSoftwareSelectionReports?: Maybe<Array<TpcSoftwareSelectionReport>>;
+  user?: Maybe<User>;
+  userId: Scalars['Int'];
 };
 
 export type TpcSoftwareSelectionPage = {
@@ -3295,6 +3298,8 @@ export type TpcSoftwareSelectionReport = {
   tpcSoftwareReportMetric?: Maybe<TpcSoftwareReportMetric>;
   tpcSoftwareSig?: Maybe<TpcSoftwareSig>;
   tpcSoftwareSigId?: Maybe<Scalars['Int']>;
+  user?: Maybe<User>;
+  userId: Scalars['Int'];
   vulnerabilityDisclosure?: Maybe<Scalars['String']>;
   vulnerabilityResponse?: Maybe<Scalars['String']>;
   websiteUrl?: Maybe<Scalars['String']>;
@@ -5099,7 +5104,7 @@ export type CreateTpcSoftwareSelectionMutationVariables = Exact<{
   level: Scalars['String'];
   tpcSoftwareSelectionReportIds: Array<Scalars['Int']> | Scalars['Int'];
   selectionType: Scalars['Int'];
-  repoUrl: Scalars['String'];
+  repoUrl?: InputMaybe<Scalars['String']>;
   committers: Array<Scalars['String']> | Scalars['String'];
   incubationTime: Scalars['ISO8601DateTime'];
   reason: Scalars['String'];
@@ -5112,6 +5117,7 @@ export type CreateTpcSoftwareSelectionMutation = {
     __typename?: 'CreateTpcSoftwareSelectionPayload';
     message?: string | null;
     status: string;
+    issueUrl?: string | null;
     errors?: Array<{
       __typename?: 'Error';
       message?: string | null;
@@ -6813,7 +6819,9 @@ export type TpcSoftwareSelectionReportPageQuery = {
       release?: string | null;
       releaseTime?: any | null;
       reportType: number;
+      shortCode: string;
       websiteUrl?: string | null;
+      user?: { __typename?: 'User'; name: string } | null;
       tpcSoftwareReportMetric?: {
         __typename?: 'TpcSoftwareReportMetric';
         complianceDco?: number | null;
@@ -6872,7 +6880,14 @@ export type TpcSoftwareSelectionPageQuery = {
       id: number;
       incubationTime?: any | null;
       reason?: string | null;
+      issueUrl?: string | null;
+      selectionType?: number | null;
       tpcSoftwareSelectionReportIds?: Array<string> | null;
+      user?: { __typename?: 'User'; name: string } | null;
+      tpcSoftwareSelectionReports?: Array<{
+        __typename?: 'TpcSoftwareSelectionReport';
+        name?: string | null;
+      }> | null;
     }> | null;
   } | null;
 };
@@ -9193,7 +9208,7 @@ useCreateTpcSoftwareSelectionReportMutation.fetcher = (
     CreateTpcSoftwareSelectionReportMutationVariables
   >(client, CreateTpcSoftwareSelectionReportDocument, variables, headers);
 export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: String!, $committers: [String!]!, $incubationTime: ISO8601DateTime!, $reason: String!, $adaptationMethod: Int!) {
+    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: String, $committers: [String!]!, $incubationTime: ISO8601DateTime!, $reason: String!, $adaptationMethod: Int!) {
   createTpcSoftwareSelection(
     input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, incubationTime: $incubationTime, reason: $reason, adaptationMethod: $adaptationMethod}
   ) {
@@ -9203,6 +9218,7 @@ export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
     }
     message
     status
+    issueUrl
   }
 }
     `;
@@ -12204,6 +12220,10 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
       release
       releaseTime
       reportType
+      shortCode
+      user {
+        name
+      }
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
       }
@@ -12265,7 +12285,15 @@ export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
       id
       incubationTime
       reason
+      issueUrl
+      selectionType
+      user {
+        name
+      }
       tpcSoftwareSelectionReportIds
+      tpcSoftwareSelectionReports {
+        name
+      }
     }
     page
     totalPage

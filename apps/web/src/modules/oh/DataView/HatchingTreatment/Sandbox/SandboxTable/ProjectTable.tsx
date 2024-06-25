@@ -4,25 +4,15 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
-import {
-  useTpcSoftwareSelectionReportPageQuery,
-  SubjectSigPage,
-  FilterOptionInput,
-  SortOptionInput,
-} from '@oss-compass/graphql';
+import { useTpcSoftwareSelectionPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import { Tag } from 'antd';
-import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
-import { useUserInfo } from '@modules/auth';
+import { Radio } from 'antd';
 
 const ReportTable = () => {
-  // const { currentUser } = useUserInfo();
-  // const url = new URL(window.location.href.replace('#', ''));
-  // const name = url.searchParams.get('name'); // 'luajava'
   let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
-  const dataSource = result;
-  // const { timeStart, timeEnd } = useQueryDateRange();
+  const [reportType, setReportType] = useState(0);
+
   const columns = [
     // {
     //   title: '申请单号',
@@ -33,32 +23,20 @@ const ReportTable = () => {
       title: '软件名称',
       dataIndex: 'name',
       key: 'name',
-      // render: (text, record) => {
-      //   return (
-      //     <a
-      //       onClick={() => {}}
-      //       className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-      //     >
-      //       {text}
-      //     </a>
-      //   );
-      // },
+      render: (_, record) => {
+        return record?.tpcSoftwareSelectionReports
+          ?.map((item) => item.name)
+          .join(', ');
+      },
     },
-    // {
-    //   title: '报告类别',
-    //   dataIndex: 'id',
-    //   key: 'id',
-    // },
     {
-      title: '源码地址',
-      dataIndex: 'codeUrl',
-      key: 'codeUrl',
-      render: (text, record) => {
+      title: 'Issue 地址',
+      dataIndex: 'issueUrl',
+      key: 'issueUrl',
+      render: (text) => {
         return (
           <a
-            onClick={() => {
-              window.open(text, '_blank');
-            }}
+            target="_blank"
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {text}
@@ -67,54 +45,33 @@ const ReportTable = () => {
       },
     },
     {
-      title: '官网地址',
-      dataIndex: 'websiteUrl',
-      key: 'websiteUrl',
-      render: (text, record) => {
-        return (
-          <a
-            onClick={() => {
-              window.open(text, '_blank');
-            }}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {text}
-          </a>
-        );
+      title: '引入方式',
+      key: 'adaptationMethod',
+      render: (text) => {
+        return text === 1 ? '1重写' : '适配';
       },
     },
     {
-      title: '编程语言',
-      dataIndex: 'programmingLanguage',
-      key: 'programmingLanguage',
-      // render: (text) => {
-      // },
-    },
-    {
-      title: '开发商',
-      dataIndex: 'manufacturer',
-      key: 'time',
-    },
-    // {
-    //   title: '申请人',
-    //   key: 'linkSig',
-    //   // render: (text) => {
-    //   // },
-    // },
-    // {
-    //   title: '申请时间',
-    //   dataIndex: 'time',
-    //   key: 'time',
-    // },
-    {
-      title: '当前状态',
-      dataIndex: 'state',
-      key: 'state',
-      render: (text, record) => {
-        return record?.tpcSoftwareReportMetric.status === 'success'
-          ? '生成成功'
-          : '生成中';
+      title: '申请人',
+      key: 'user',
+      dataIndex: 'user',
+      render: (_, record) => {
+        return record.user.name;
       },
+    },
+    {
+      title: '申请时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text) => {
+        return text.slice(0, 10);
+      },
+    },
+    {
+      title: '申请背景',
+      dataIndex: 'reason',
+      width: '300px',
+      key: 'reason',
     },
   ];
   const {
@@ -127,9 +84,9 @@ const ReportTable = () => {
   } = useGetTableOption();
   const myQuery = {
     ...query,
-    reportTypeList: [0, 1],
+    selectionType: reportType,
   };
-  const { isLoading, isFetching } = useTpcSoftwareSelectionReportPageQuery(
+  const { isLoading, isFetching } = useTpcSoftwareSelectionPageQuery(
     client,
     myQuery,
     {
@@ -139,16 +96,27 @@ const ReportTable = () => {
           ...tableParams,
           pagination: {
             ...tableParams.pagination,
-            total: data.tpcSoftwareSelectionReportPage.count as number,
+            total: data.tpcSoftwareSelectionPage.count as number,
           },
         });
-        setData(data.tpcSoftwareSelectionReportPage.items);
+        setData(data.tpcSoftwareSelectionPage.items);
       },
     }
   );
   return (
     <>
       <div className="p-4">
+        <div className="mb-2 ml-2">
+          <Radio.Group
+            onChange={(e) => {
+              setReportType(e.target.value);
+            }}
+            value={reportType}
+          >
+            <Radio value={0}>选型申请</Radio>
+            <Radio value={1}>已建仓申请</Radio>
+          </Radio.Group>
+        </div>
         <MyTable
           columns={columns}
           dataSource={tableData}

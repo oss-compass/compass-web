@@ -9,9 +9,8 @@ import { componentMap } from '@modules/oh/SideBar/MenuItems';
 
 const OhDataView = () => {
   const id = useHashchangeEvent();
-
   const source = componentMap[id] || componentMap['sandboxReport'];
-  console.log(id);
+
   return <>{source}</>;
 };
 

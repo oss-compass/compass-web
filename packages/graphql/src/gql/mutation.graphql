@@ -159,7 +159,7 @@ mutation createTpcSoftwareSelection(
   $level: String!
   $tpcSoftwareSelectionReportIds: [Int!]!
   $selectionType: Int!
-  $repoUrl: String!
+  $repoUrl: String
   $committers: [String!]!
   # $repoDescription: String!
   $incubationTime: ISO8601DateTime!
@@ -186,5 +186,6 @@ mutation createTpcSoftwareSelection(
     }
     message
     status
+    issueUrl
   }
 }

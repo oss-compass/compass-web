@@ -145,32 +145,36 @@ export const allMetricData = [
   },
 ];
 const metric = ['合法合规', '技术生态', '生命周期', '网络安全'];
+
+export const getEvaluationDetail = (row) => {
+  const evaluationDetail = metric.map((item) => {
+    //计算每个维度的总分
+    const d = allMetricData.filter((i) => i.维度 === item);
+    //   const score = d.reduce((acc, cur) => {
+    //     console.log(cur.key, row?.tpcSoftwareReportMetric?.[cur.key]);
+    //     return row?.tpcSoftwareReportMetric?.[cur.key] || 0 + acc;
+    //   }, 0);
+    let scoreTotal = 0;
+    d.forEach((i) => {
+      scoreTotal += row?.tpcSoftwareReportMetric?.[i.key] || 0;
+    });
+    const score: number = toFixed(scoreTotal / d.length, 0) * 10;
+    return {
+      name: item,
+      score,
+    };
+  });
+  //计算总分
+  const scoreTotal = evaluationDetail.reduce((acc, cur) => {
+    return cur.score + acc;
+  }, 0);
+  const score: number = toFixed(scoreTotal / metric.length, 0);
+  console.log(evaluationDetail);
+  return { ...row, evaluationDetail, score };
+};
 export const getMetricScore = (rowData) => {
   const res = rowData.map((row) => {
-    const evaluationDetail = metric.map((item) => {
-      //计算每个维度的总分
-      const d = allMetricData.filter((i) => i.维度 === item);
-      //   const score = d.reduce((acc, cur) => {
-      //     console.log(cur.key, row?.tpcSoftwareReportMetric?.[cur.key]);
-      //     return row?.tpcSoftwareReportMetric?.[cur.key] || 0 + acc;
-      //   }, 0);
-      let scoreTotal = 0;
-      d.forEach((i) => {
-        scoreTotal += row?.tpcSoftwareReportMetric?.[i.key] || 0;
-      });
-      const score: number = toFixed(scoreTotal / d.length, 0) * 10;
-      return {
-        name: item,
-        score,
-      };
-    });
-    //计算总分
-    const scoreTotal = evaluationDetail.reduce((acc, cur) => {
-      return cur.score + acc;
-    }, 0);
-    const score: number = toFixed(scoreTotal / metric.length, 0);
-    console.log(evaluationDetail);
-    return { ...row, evaluationDetail, score };
+    return getEvaluationDetail(row);
   });
   return res;
 };
@@ -181,4 +185,58 @@ export const getMetricItemScore = (rowData) => {
       score: rowData?.[item.key] || 0,
     };
   });
+};
+//6 分
+export const getWarningConent = (name) => {
+  switch (name) {
+    case '许可证包含':
+      return '许可证不在准入清单';
+    case 'DCO':
+      return '未检测到项目的提交者签署 DCO';
+    case '依赖可获得':
+      return '未检测到项目依赖的开源软件的提交记录';
+    case '代码维护':
+      return '过去 90 天平均每周少于 1 次代码提交';
+    case '社区支撑':
+      return '有效 bug、PR 平均 1 月以内响应';
+    case '安全漏洞':
+      return '引入软件及依赖源码有公开未修复漏洞';
+    case '历史漏洞':
+      return '引入开源软件年漏洞 5 个以上';
+    case '采用度分析':
+      return '包管理平台下载数据量较低';
+    case '软件质量':
+      return '引入软件仓库未包含 Static Application Security Testing (SAST)';
+    case '软件包签名':
+      return '软件包分发不包含数字校验';
+    case '漏洞披露机制':
+      return '软件未检测到漏洞披露机制';
+    case '社区支撑':
+      return '有效 bug、PR 平均 1 月以内响应';
+  }
+};
+//0 分
+export const getErrorConent = (name) => {
+  switch (name) {
+    case '二进制制品':
+      return '引入软件源码仓库包含二进制制品';
+    case '版本归一化':
+      return '该软件已在 OpenHarmony 及 TPC 中引入';
+    case '版本号':
+      return '未检测到版本号或版本号不规范';
+    case '许可证包含':
+      return '未检测到许可证';
+    case '许可证兼容性':
+      return '引入软件项目级、文件级许可证存在兼容性问题';
+    case '专利风险':
+      return '非全球专利保护社区 OIN（Open Invention Network）认证软件';
+    case '代码维护':
+      return '项目未有正式版本发布';
+    case '社区支撑':
+      return '有效 bug、PR 平均 1 月以上响应';
+    case '版本生命周期':
+      return '版本处于 EOL 阶段';
+    case '漏洞响应机制':
+      return '软件无漏洞响应机制';
+  }
 };

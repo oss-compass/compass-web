@@ -24,8 +24,6 @@ const RepoCard = (props: {
   ) => void;
 }) => {
   const { label, shortCode, chartData, compareMode, onSelectChange } = props;
-
-  const router = useRouter();
   const repo = getRepoName(label);
   const nameSpace = getNameSpace(label);
   const provider = getProvider(label);
