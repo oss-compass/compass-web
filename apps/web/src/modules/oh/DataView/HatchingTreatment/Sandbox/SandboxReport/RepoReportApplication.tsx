@@ -153,14 +153,21 @@ const SelectionReportApplication = () => {
                 <Form.Item
                   label="软件版本号"
                   name="release"
-                  rules={[{ validator: versionValidator }]}
+                  rules={[
+                    { required: true, message: '请输入!' },
+                    { validator: versionValidator },
+                  ]}
                 >
                   <Input />
                 </Form.Item>
               </Popover>
             </Col>
             <Col span={12}>
-              <Form.Item label="版本发布日期" name="releaseTime">
+              <Form.Item
+                label="版本发布日期"
+                name="releaseTime"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
                 <DatePicker placeholder="请选择日期" />
               </Form.Item>
             </Col>
