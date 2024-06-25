@@ -113,7 +113,7 @@ const ReportTable = () => {
       dataIndex: 'state',
       key: 'state',
       render: (text, record) => {
-        return record?.tpcSoftwareReportMetric.state === 'success'
+        return record?.tpcSoftwareReportMetric.status === 'success'
           ? '生成成功'
           : '生成中';
       },
