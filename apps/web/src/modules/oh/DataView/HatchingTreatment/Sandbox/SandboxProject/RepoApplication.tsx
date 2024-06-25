@@ -291,7 +291,7 @@ const SelectionApplication = () => {
       />
       <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
         {report.length > 0 && (
-          <>
+          <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
             <Button
               className="rounded-none"
               type="primary"
@@ -304,14 +304,14 @@ const SelectionApplication = () => {
             </Button>
             {/* <Button className="rounded-none">保存</Button> */}
             {/* <Button
-              className="rounded-none"
-              htmlType="submit"
-              onClick={() => {
-                autoFill('');
-              }}
-            >
-              自动填充
-            </Button> */}
+             className="rounded-none"
+             htmlType="submit"
+             onClick={() => {
+               autoFill('');
+             }}
+           >
+             自动填充
+           </Button> */}
             <Button
               className="rounded-none"
               htmlType="button"
@@ -319,7 +319,7 @@ const SelectionApplication = () => {
             >
               重置
             </Button>
-          </>
+          </div>
         )}
       </div>
     </>

@@ -289,21 +289,20 @@ const SelectionApplication = () => {
           setOpenConfirm(false);
         }}
       />
-      <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
-        {report.length > 0 && (
-          <>
-            <Button
-              className="rounded-none"
-              type="primary"
-              loading={mutation.isLoading}
-              onClick={() => {
-                submit();
-              }}
-            >
-              提交申请
-            </Button>
-            {/* <Button className="rounded-none">保存</Button> */}
-            {/* <Button
+      {report.length > 0 && (
+        <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
+          <Button
+            className="rounded-none"
+            type="primary"
+            loading={mutation.isLoading}
+            onClick={() => {
+              submit();
+            }}
+          >
+            提交申请
+          </Button>
+          {/* <Button className="rounded-none">保存</Button> */}
+          {/* <Button
               className="rounded-none"
               htmlType="submit"
               onClick={() => {
@@ -312,16 +311,11 @@ const SelectionApplication = () => {
             >
               自动填充
             </Button> */}
-            <Button
-              className="rounded-none"
-              htmlType="button"
-              onClick={onReset}
-            >
-              重置
-            </Button>
-          </>
-        )}
-      </div>
+          <Button className="rounded-none" htmlType="button" onClick={onReset}>
+            重置
+          </Button>
+        </div>
+      )}
     </>
   );
 };
