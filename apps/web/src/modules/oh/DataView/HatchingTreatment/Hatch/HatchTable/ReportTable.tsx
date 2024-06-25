@@ -4,12 +4,7 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
-import {
-  useSubjectSigPageQuery,
-  SubjectSigPage,
-  FilterOptionInput,
-  SortOptionInput,
-} from '@oss-compass/graphql';
+import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Tag } from 'antd';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
@@ -23,16 +18,13 @@ interface TableQuery {
 }
 
 const ReportTable = () => {
-  const { currentUser } = useUserInfo();
-
-  const url = new URL(window.location.href.replace('#', ''));
-  const name = url.searchParams.get('name'); // 'luajava'
-  // if(name)
+  // const { currentUser } = useUserInfo();
+  // const url = new URL(window.location.href.replace('#', ''));
+  // const name = url.searchParams.get('name'); // 'luajava'
   let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
   const dataSource = result;
-  const { timeStart, timeEnd } = useQueryDateRange();
-
+  // const { timeStart, timeEnd } = useQueryDateRange();
   const columns = [
     // {
     //   title: '申请单号',
@@ -41,23 +33,40 @@ const ReportTable = () => {
     // },
     {
       title: '软件名称',
-      dataIndex: 'softwareName',
-      key: 'softwareName',
+      dataIndex: 'name',
+      key: 'name',
+      // render: (text, record) => {
+      //   return (
+      //     <a
+      //       onClick={() => {}}
+      //       className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+      //     >
+      //       {text}
+      //     </a>
+      //   );
+      // },
+    },
+    // {
+    //   title: '报告类别',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    // },
+    {
+      title: '源码地址',
+      dataIndex: 'codeUrl',
+      key: 'codeUrl',
       render: (text, record) => {
         return (
           <a
-            onClick={() => {}}
+            onClick={() => {
+              window.open(text, '_blank');
+            }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {text}
           </a>
         );
       },
-    },
-    {
-      title: '报告类别',
-      dataIndex: 'id',
-      key: 'id',
     },
     {
       title: '官网地址',
@@ -66,7 +75,9 @@ const ReportTable = () => {
       render: (text, record) => {
         return (
           <a
-            onClick={() => {}}
+            onClick={() => {
+              window.open(text, '_blank');
+            }}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {text}
@@ -75,24 +86,36 @@ const ReportTable = () => {
       },
     },
     {
-      title: '申请人',
-      key: 'linkSig',
-      render: (text) => {
-        // let dom = text?.repos?.map((i) => <Tag key={i}>{i}</Tag>);
-        return <div className="flex flex-wrap gap-y-2">{currentUser.name}</div>;
-      },
+      title: '编程语言',
+      dataIndex: 'programmingLanguage',
+      key: 'programmingLanguage',
+      // render: (text) => {
+      // },
     },
     {
-      title: '申请时间',
-      dataIndex: 'time',
+      title: '开发商',
+      dataIndex: 'manufacturer',
       key: 'time',
     },
+    // {
+    //   title: '申请人',
+    //   key: 'linkSig',
+    //   // render: (text) => {
+    //   // },
+    // },
+    // {
+    //   title: '申请时间',
+    //   dataIndex: 'time',
+    //   key: 'time',
+    // },
     {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
-      render: (text) => {
-        return '生成报告中';
+      render: (text, record) => {
+        return record?.tpcSoftwareReportMetric.state === 'success'
+          ? '生成成功'
+          : '生成中';
       },
     },
   ];
@@ -103,40 +126,74 @@ const ReportTable = () => {
     setTableParams,
     query,
     handleTableChange,
-  } = useGetTableOption({
-    label: 'openharmony-tpc',
-    level: 'community',
-  });
-  const myQuery = {
-    page: query.page,
-    per: query.per,
-    label: 'openharmony-tpc',
-    level: 'community',
-  };
-  const { isLoading, isFetching } = useSubjectSigPageQuery(client, myQuery, {
-    onSuccess: (data) => {
-      if (name) {
-        let data = window.sessionStorage.getItem(name);
-        console.log(JSON.parse(data));
-        setData([JSON.parse(data)]);
-      }
-      // setTableParams({
-      //   ...tableParams,
-      //   pagination: {
-      //     ...tableParams.pagination,
-      //     total: data.subjectSigPage.count as number,
-      //   },
-      // });
-      // setData([]);
-    },
-  });
+  } = useGetTableOption();
+  // const { isLoading, isFetching } = useTpcSoftwareSelectionReportPageQuery(
+  //   client,
+  //   query,
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //       setTableParams({
+  //         ...tableParams,
+  //         pagination: {
+  //           ...tableParams.pagination,
+  //           total: data.tpcSoftwareSelectionReportPage.count as number,
+  //         },
+  //       });
+  //       setData(data.tpcSoftwareSelectionReportPage.items);
+  //     },
+  //     onError: (error) => {
+  //       setData([
+  //         {
+  //           codeCount: null,
+  //           codeUrl: 'https://github.com/jasonsantos/luajava',
+  //           id: 25,
+  //           manufacturer: 'jasonsantos',
+  //           name: 'luajava',
+  //           programmingLanguage: 'Java',
+  //           release: 'v1.0.0',
+  //           releaseTime: '2019-12-31T16:00:00Z',
+  //           tpcSoftwareReportMetric: {
+  //             complianceDco: 5,
+  //             complianceLicense: 5,
+  //             compliancePackageSig: 5,
+  //             createdAt: '2024-06-21T09:31:14Z',
+  //             ecologyAdoptionAnalysis: 5,
+  //             ecologyCodeMaintenance: 5,
+  //             ecologyCommunitySupport: 5,
+  //             ecologyDependencyAcquisition: 5,
+  //             ecologyPatentRisk: 5,
+  //             ecologySoftwareQuality: 5,
+  //             id: 10,
+  //             lifecycleVersionLifecycle: 5,
+  //             lifecycleVersionNormalization: 5,
+  //             lifecycleVersionNumber: 5,
+  //             securityBinaryArtifact: 5,
+  //             securityHistoryVulnerability: 5,
+  //             securityVulnerability: 5,
+  //             securityVulnerabilityDisclosure: 5,
+  //             securityVulnerabilityResponse: 5,
+  //             status: 'success',
+  //             tpcSoftwareReportId: 25,
+  //           },
+  //           tpcSoftwareSig: {
+  //             description: 'RN 框架描述',
+  //             id: 2,
+  //             name: 'RN 框架',
+  //           },
+  //           websiteUrl: 'www.keplerproject.org/luajava/',
+  //         },
+  //       ]);
+  //     },
+  //   }
+  // );
   return (
     <>
       <div className="p-4">
         <MyTable
           columns={columns}
           dataSource={tableData}
-          loading={isLoading || isFetching}
+          // loading={isLoading || isFetching}
           onChange={handleTableChange}
           pagination={tableParams.pagination}
           rowKey={'key'}

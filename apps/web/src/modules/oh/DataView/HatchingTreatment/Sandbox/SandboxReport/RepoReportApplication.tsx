@@ -5,6 +5,7 @@ import DatePicker from '@common/components/Form';
 import { languagesList, domainList, queryKey } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
+
 const SelectionReportApplication = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
@@ -28,6 +29,7 @@ const SelectionReportApplication = () => {
     form.validateFields().then((values) => {
       mutation.mutate({
         ...queryKey,
+        reportType: 1,
         softwareReport: { ...values },
       });
     });
@@ -112,9 +114,9 @@ const SelectionReportApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {languagesList.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
+                  {domainList.map(({ name, id }) => (
+                    <Select.Option key={id} value={id}>
+                      {name}
                     </Select.Option>
                   ))}
                 </Select>
@@ -208,9 +210,9 @@ const SelectionReportApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {domainList.map(({ name, id }) => (
-                    <Select.Option key={id} value={id}>
-                      {name}
+                  {languagesList.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
                     </Select.Option>
                   ))}
                 </Select>

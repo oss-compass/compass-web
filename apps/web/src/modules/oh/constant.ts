@@ -107,6 +107,16 @@ export const languagesList = [
   'Groovy',
   'Elixir',
 ];
+export const adaptationMethodList = [
+  {
+    id: 1,
+    name: '适配',
+  },
+  {
+    id: 2,
+    name: '重写',
+  },
+];
 export const queryKey = {
   label: 'openharmony-tpc',
   level: 'community',

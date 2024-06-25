@@ -5,28 +5,19 @@ import Detail from '@modules/oh/DataView/HatchingTreatment/Workbench/Detail';
 import Report from '@modules/oh/components/SelectReport/Report';
 import { queryKey } from '@modules/oh/constant';
 
-const Main = ({ name }) => {
-  // boardSandbox: <Workbench name={'沙箱项目'} />,
-  // boardHatch: <Workbench name={'孵化项目'} />,
-  // boardGraduateBoard: <Workbench name={'毕业项目'} />,
+const Main = () => {
   let query = {
     ...queryKey,
-    reportTypeList: [],
+    reportTypeList: [2],
     page: 1,
     per: 100,
     status: 'success',
   };
-  if ((name = '沙箱项目')) {
-    query.reportTypeList = [0, 1];
-  } else {
-    query.reportTypeList = [2];
-  }
-  console.log(name, query);
   return (
     <div className="div">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
         <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
-          {name || 'TPC 软件治理看板'}
+          孵化项目
           <div>
             {/* <Input prefix={<SearchOutlined rev={undefined} />} /> */}
           </div>

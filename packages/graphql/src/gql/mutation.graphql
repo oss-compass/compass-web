@@ -134,12 +134,56 @@ mutation manageUserOrgs(
 # }
 mutation createTpcSoftwareSelectionReport(
   $label: String!
-  $level: String
+  $level: String!
+  $reportType: Int!
   $softwareReport: TpcSoftwareSelectionReportInput!
 ) {
   createTpcSoftwareSelectionReport(
-    input: { label: $label, level: $level, softwareReport: $softwareReport }
+    input: {
+      label: $label
+      level: $level
+      reportType: $reportType
+      softwareReport: $softwareReport
+    }
   ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation createTpcSoftwareSelection(
+  $label: String!
+  $level: String!
+  $tpcSoftwareSelectionReportIds: [Int!]!
+  $selectionType: Int!
+  $repoUrl: String!
+  $committers: [String!]!
+  # $repoDescription: String!
+  $incubationTime: ISO8601DateTime!
+  $reason: String!
+  $adaptationMethod: Int!
+) {
+  createTpcSoftwareSelection(
+    input: {
+      label: $label
+      level: $level
+      selectionType: $selectionType
+      tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds
+      repoUrl: $repoUrl
+      committers: $committers
+      # repoDescription: $repoDescription
+      incubationTime: $incubationTime
+      reason: $reason
+      adaptationMethod: $adaptationMethod
+    }
+  ) {
+    errors {
+      message
+      path
+    }
     message
     status
   }

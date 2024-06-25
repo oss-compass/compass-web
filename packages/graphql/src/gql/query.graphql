@@ -1561,18 +1561,23 @@ fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {
   securityVulnerabilityResponse
   status
   tpcSoftwareReportId
+  updatedAt
 }
 query tpcSoftwareSelectionReportPage(
   $label: String!
   $level: String = "repo"
+  $reportTypeList: [Int!]!
   $page: Int
   $per: Int
+  $status: String
 ) {
   tpcSoftwareSelectionReportPage(
     page: $page
     per: $per
+    reportTypeList: $reportTypeList
     label: $label
     level: $level
+    status: $status
   ) {
     count
     items {
@@ -1584,6 +1589,7 @@ query tpcSoftwareSelectionReportPage(
       programmingLanguage
       release
       releaseTime
+      reportType
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
       }
@@ -1594,5 +1600,68 @@ query tpcSoftwareSelectionReportPage(
     }
     page
     totalPage
+  }
+}
+query tpcSoftwareSelectionPage(
+  $label: String!
+  $level: String = "repo"
+  $selectionType: Int!
+  $page: Int
+  $per: Int
+) {
+  tpcSoftwareSelectionPage(
+    page: $page
+    per: $per
+    selectionType: $selectionType
+    label: $label
+    level: $level
+  ) {
+    count
+    items {
+      adaptationMethod
+      committers
+      createdAt
+      id
+      incubationTime
+      reason
+      # repoDescription
+      tpcSoftwareSelectionReportIds
+      # codeCount
+      # codeUrl
+      # manufacturer
+      # name
+      # programmingLanguage
+      # release
+      # releaseTime
+      # tpcSoftwareReportMetric {
+      #   ...tpcSoftwareReportMetric
+      # }
+      # tpcSoftwareSig {
+      #   ...tpcSoftwareSig
+      # }
+      # websiteUrl
+    }
+    page
+    totalPage
+  }
+}
+
+query tpcSoftwareSelectionReport($shortCode: String!) {
+  tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    codeCount
+    codeUrl
+    id
+    manufacturer
+    name
+    programmingLanguage
+    release
+    releaseTime
+    tpcSoftwareReportMetric {
+      ...tpcSoftwareReportMetric
+    }
+    tpcSoftwareSig {
+      ...tpcSoftwareSig
+    }
+    websiteUrl
   }
 }

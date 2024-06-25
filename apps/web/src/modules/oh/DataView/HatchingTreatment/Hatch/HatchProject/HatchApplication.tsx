@@ -8,41 +8,50 @@ import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 import SelectReport from '@modules/oh/components/SelectReport';
-import { domainList } from '@modules/oh/constant';
+import {
+  domainList,
+  queryKey,
+  adaptationMethodList,
+} from '@modules/oh/constant';
+import client from '@common/gqlClient';
+import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 
 const HatchApplication = () => {
-  const [openConfirm, setOpenConfirm] = useState(false);
   const [report, setReport] = useState(null);
-  const [submitLoading, setSubmitLoading] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
+  const mutation = useCreateTpcSoftwareSelectionMutation(client, {
+    onSuccess() {
+      messageApi.open({
+        type: 'success',
+        style: {
+          marginTop: '200px',
+        },
+        content: (
+          <>
+            提交成功，已在 Gitee 建立 Issue 跟踪，可点击
+            <a
+              className="text-[#1677ff]"
+              href="https://gitee.com/openharmony-tpc/ImageKnife/issues"
+              // _blank={true}
+            >
+              https://gitee.com/openharmony-tpc/ImageKnife/issues
+            </a>
+            查看 Issue
+          </>
+        ),
+      });
+    },
+    onError(res) {},
+  });
   const submit = () => {
     form.validateFields().then((values) => {
-      setSubmitLoading(true);
-      setTimeout(() => {
-        messageApi.open({
-          style: {
-            marginTop: '200px',
-          },
-          type: 'success',
-          content: (
-            <>
-              提交成功，已在 Gitee 建立 Issue 跟踪，可点击
-              <a
-                className="text-[#1677ff]"
-                href="https://gitee.com/openharmony-tpc/ImageKnife/issues"
-                // _blank={true}
-              >
-                https://gitee.com/openharmony-tpc/ImageKnife/issues
-              </a>
-              查看 Issue,
-            </>
-          ),
-        });
-        setSubmitLoading(false);
-        // procseeActions.setNextProcsee(processesID);
-      }, 1000);
-      console.log(values);
+      mutation.mutate({
+        ...queryKey,
+        ...values,
+        tpcSoftwareSelectionReportId: 123,
+      });
     });
   };
   const onReset = () => {
@@ -56,20 +65,19 @@ const HatchApplication = () => {
       releaseDate: dayjs('2020-01-01'),
       developer: 'jasonsantos',
       websiteUrl: 'www.keplerproject.org/luajava/',
-      selectionReason:
+      reason:
         '游戏中心使用 LuaJava 进行 lua 与 java 间的调用。该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。OH 目前没有支持 lua 层到 arkTS 之间的调用。需要将该开源库进行 OpenHarmony 移植适配',
-      codeRepositoryUrl: 'https://github.com/jasonsantos/luajava',
+      repoUrl: 'https://github.com/jasonsantos/luajava',
       programmingLanguage: 'Java',
       codeSize: '10000 行',
       license: 'MIT',
-      integrationMethod: '适配',
+      adaptationMethod: 1,
       sigName: '工具 (Tools)',
       sigDescription: '开发相关工具',
       newRepositoryPath: 'luajava',
       committers: 'jasonsantos,talklittle,hishamhm',
-      repositoryDescription:
+      repoDescription:
         '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
-
       incubationTime: dayjs('2022-01-01'),
       bugPublish: 'https://github.com/jasonsantos/luajava/issues',
     });
@@ -124,7 +132,7 @@ const HatchApplication = () => {
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select>
-                  {domainList.map(({ id, name }) => (
+                  {domainList.map(({ name, id }) => (
                     <Select.Option key={id} value={id}>
                       {name}
                     </Select.Option>
@@ -173,7 +181,7 @@ const HatchApplication = () => {
             <Col span={12}>
               <Form.Item
                 label="源码地址"
-                name="codeRepositoryUrl"
+                name="repoUrl"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input />
@@ -254,15 +262,7 @@ const HatchApplication = () => {
                 <Input disabled={false} />
               </Form.Item>
             </Col>
-            {/* <Col span={12}>
-              <Form.Item
-                label="仓描述"
-                name="repositoryDescription"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input  />
-              </Form.Item>
-            </Col> */}
+
             <Col span={12}>
               <Form.Item
                 label="孵化时间"
@@ -275,16 +275,33 @@ const HatchApplication = () => {
             <Col span={12}>
               <Form.Item
                 label="引入方式"
-                name="integrationMethod"
+                name="adaptationMethod"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Select disabled={false}>
-                  <Select.Option value="适配">适配</Select.Option>
-                  <Select.Option value="重写">重写</Select.Option>
+                  {adaptationMethodList.map((item) => {
+                    return (
+                      <Select.Option key={item.id} value={item.id}>
+                        {item.name}
+                      </Select.Option>
+                    );
+                  })}
                 </Select>
               </Form.Item>
             </Col>
-
+            <Col span={24}>
+              <Form.Item
+                labelCol={{
+                  span: 3,
+                  style: { fontWeight: 'bold' },
+                }}
+                label="仓描述"
+                name="repoDescription"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Input.TextArea disabled={false} />
+              </Form.Item>
+            </Col>
             <Col span={24}>
               <Form.Item
                 labelCol={{
@@ -292,7 +309,7 @@ const HatchApplication = () => {
                   style: { fontWeight: 'bold' },
                 }}
                 label="需求背景"
-                name="selectionReason"
+                name="reason"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input.TextArea disabled={false} />
@@ -303,7 +320,7 @@ const HatchApplication = () => {
         {report && (
           <>
             <div className="mb-6 text-base font-semibold">评估报告</div>
-            <EvaluationDetail name={report} type={'edit'} />
+            {/* <EvaluationDetail name={report} type={'edit'} /> */}
           </>
         )}
       </div>
@@ -347,7 +364,7 @@ const HatchApplication = () => {
         <Button
           className="rounded-none"
           type="primary"
-          loading={submitLoading}
+          loading={mutation.isLoading}
           onClick={() => {
             submit();
           }}

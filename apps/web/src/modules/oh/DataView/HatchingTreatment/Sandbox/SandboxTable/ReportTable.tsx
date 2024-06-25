@@ -4,32 +4,19 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
-import {
-  useTpcSoftwareSelectionReportPageQuery,
-  SubjectSigPage,
-  FilterOptionInput,
-  SortOptionInput,
-} from '@oss-compass/graphql';
+import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import { Tag } from 'antd';
+import { Radio } from 'antd';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
 import { useUserInfo } from '@modules/auth';
-
-interface TableQuery {
-  label: string;
-  level?: string;
-  page?: number;
-  per?: number;
-}
 
 const ReportTable = () => {
   // const { currentUser } = useUserInfo();
   // const url = new URL(window.location.href.replace('#', ''));
   // const name = url.searchParams.get('name'); // 'luajava'
-  let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
-  const dataSource = result;
-  // const { timeStart, timeEnd } = useQueryDateRange();
+  const [reportType, setReportType] = useState(0);
+
   const columns = [
     // {
     //   title: '申请单号',
@@ -113,6 +100,14 @@ const ReportTable = () => {
     //   dataIndex: 'time',
     //   key: 'time',
     // },
+    // {
+    //   title: '是否建仓',
+    //   dataIndex: 'reportType',
+    //   key: 'reportType',
+    //   render: (text, record) => {
+    //     return text === 1 ? '已建仓' : '未建仓';
+    //   },
+    // },
     {
       title: '当前状态',
       dataIndex: 'state',
@@ -132,9 +127,13 @@ const ReportTable = () => {
     query,
     handleTableChange,
   } = useGetTableOption();
+  const myQuery = {
+    ...query,
+    reportTypeList: [reportType],
+  };
   const { isLoading, isFetching } = useTpcSoftwareSelectionReportPageQuery(
     client,
-    query,
+    myQuery,
     {
       onSuccess: (data) => {
         console.log(data);
@@ -195,6 +194,18 @@ const ReportTable = () => {
   return (
     <>
       <div className="p-4">
+        <div className="mb-2">
+          <Radio.Group
+            onChange={(e) => {
+              setReportType(e.target.value);
+            }}
+            value={reportType}
+          >
+            <Radio value={0}>选型申请</Radio>
+            <Radio value={1}>已建仓申请</Radio>
+          </Radio.Group>
+        </div>
+
         <MyTable
           columns={columns}
           dataSource={tableData}

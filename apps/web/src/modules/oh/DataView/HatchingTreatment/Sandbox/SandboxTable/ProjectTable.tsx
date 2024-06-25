@@ -15,13 +15,6 @@ import { Tag } from 'antd';
 import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
 import { useUserInfo } from '@modules/auth';
 
-interface TableQuery {
-  label: string;
-  level?: string;
-  page?: number;
-  per?: number;
-}
-
 const ReportTable = () => {
   // const { currentUser } = useUserInfo();
   // const url = new URL(window.location.href.replace('#', ''));
@@ -132,9 +125,13 @@ const ReportTable = () => {
     query,
     handleTableChange,
   } = useGetTableOption();
+  const myQuery = {
+    ...query,
+    reportTypeList: [0, 1],
+  };
   const { isLoading, isFetching } = useTpcSoftwareSelectionReportPageQuery(
     client,
-    query,
+    myQuery,
     {
       onSuccess: (data) => {
         console.log(data);

@@ -2,7 +2,7 @@ import React from 'react';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
 
-const Detail = ({ setActiveItem, name }) => {
+const Detail = ({ setActiveItem, item }) => {
   return (
     <>
       {/* <div className="relative flex  h-[calc(100vh-170px)] flex-1  flex-col border bg-white  drop-shadow-sm"> */}
@@ -17,7 +17,7 @@ const Detail = ({ setActiveItem, name }) => {
         </div> */}
       <div className="mb-6 h-[calc(100%-24px)] overflow-auto p-5">
         <EvaluationDetail
-          name={name}
+          item={item}
           back={() => {
             setActiveItem(null);
           }}

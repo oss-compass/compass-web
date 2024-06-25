@@ -40,6 +40,7 @@ const SelectionReportApplication = () => {
     form.validateFields().then((values) => {
       mutation.mutate({
         ...queryKey,
+        reportType: 0,
         softwareReport: { ...values },
       });
     });
