@@ -281,8 +281,8 @@ const HatchApplication = () => {
                 <Select disabled={false}>
                   {adaptationMethodList.map((item) => {
                     return (
-                      <Select.Option key={item.id} value={item.id}>
-                        {item.name}
+                      <Select.Option key={item} value={item}>
+                        {item}
                       </Select.Option>
                     );
                   })}
