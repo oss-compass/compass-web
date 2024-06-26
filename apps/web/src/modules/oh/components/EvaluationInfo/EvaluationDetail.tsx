@@ -11,8 +11,8 @@ import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import {
   getEvaluationDetail,
   getMetricItemScore,
-  getWarningConent,
-  getErrorConent,
+  getWarningContent,
+  getErrorContent,
 } from '@modules/oh/utils';
 
 const EvaluationTopScore = ({ items, score }) => {
@@ -61,6 +61,26 @@ const EvaluationTopScore = ({ items, score }) => {
     </div>
   );
 };
+
+export const getContent = (item) => {
+  if (item.score >= 8) {
+    return <div>得分：{item.score}</div>;
+  } else if (item.score >= 6) {
+    return (
+      <>
+        <div>得分：{item.score}</div>
+        <div>风险：{getWarningContent(item.指标名称)}</div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <div>得分：{item.score}</div>
+        <div>风险：{getErrorContent(item.指标名称)}</div>
+      </>
+    );
+  }
+};
 const EvaluationMerticItem = ({ mertic, items, score }) => {
   return (
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
@@ -88,22 +108,29 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
             >
               <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
                 {item.score >= 8 ? (
-                  <CheckCircleOutlined rev={undefined} />
+                  <Popover content={getContent(item)} title="">
+                    <CheckCircleOutlined
+                      rev={undefined}
+                      className="cursor-pointer text-lg "
+                    />
+                  </Popover>
                 ) : item.score >= 6 ? (
-                  <Popover content={getWarningConent(item.指标名称)} title="">
+                  <Popover content={getContent(item)} title="">
                     <Badge dot>
                       <ExclamationCircleOutlined
                         rev={undefined}
-                        className="cursor-pointer text-base text-[#f8961e]"
+                        className="cursor-pointer text-lg text-[#f8961e]"
                       />
                     </Badge>
                   </Popover>
                 ) : (
-                  <Popover content={getErrorConent(item.指标名称)} title="">
-                    <CloseCircleOutlined
-                      rev={undefined}
-                      className="cursor-pointer text-[#ff4d4f]"
-                    />
+                  <Popover content={getContent(item)} title="">
+                    <Badge dot>
+                      <CloseCircleOutlined
+                        rev={undefined}
+                        className="cursor-pointer text-lg text-[#ff4d4f]"
+                      />
+                    </Badge>
                   </Popover>
                 )}
               </div>
@@ -179,7 +206,7 @@ const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
         )}
         <div className="text-lg font-semibold">{item.name} 选型评估报告</div>
         <div className="mt-2 ml-4 text-xs">
-          更新于：{' '}
+          更新于：
           {item?.tpcSoftwareReportMetric?.updatedAt?.slice(0, 10) || ''}
         </div>
       </div>

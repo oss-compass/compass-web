@@ -185,7 +185,7 @@ export const getMetricItemScore = (rowData) => {
   });
 };
 //6 分
-export const getWarningConent = (name) => {
+export const getWarningContent = (name) => {
   switch (name) {
     case '许可证包含':
       return '许可证不在准入清单';
@@ -197,8 +197,6 @@ export const getWarningConent = (name) => {
       return '过去 90 天平均每周少于 1 次代码提交';
     case '社区支撑':
       return '有效 bug、PR 平均 1 月以内响应';
-    case '安全漏洞':
-      return '引入软件及依赖源码有公开未修复漏洞';
     case '历史漏洞':
       return '引入开源软件年漏洞 5 个以上';
     case '采用度分析':
@@ -211,10 +209,12 @@ export const getWarningConent = (name) => {
       return '软件未检测到漏洞披露机制';
     case '社区支撑':
       return '有效 bug、PR 平均 1 月以内响应';
+    case '版本生命周期':
+      return '无明确声明周期声明软件及版本 2 年以上发布';
   }
 };
 //0 分
-export const getErrorConent = (name) => {
+export const getErrorContent = (name) => {
   switch (name) {
     case '二进制制品':
       return '引入软件源码仓库包含二进制制品';
@@ -236,6 +236,8 @@ export const getErrorConent = (name) => {
       return '版本处于 EOL 阶段';
     case '漏洞响应机制':
       return '软件无漏洞响应机制';
+    case '安全漏洞':
+      return '引入软件及依赖源码有公开未修复漏洞';
   }
 };
 
