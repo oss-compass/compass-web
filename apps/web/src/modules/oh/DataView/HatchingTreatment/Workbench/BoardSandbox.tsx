@@ -25,7 +25,8 @@ const Main = () => {
           </div>
         </div>
         <div className="relative flex h-[calc(100%-60px)] justify-center">
-          <Report query={query} />
+          {/* <Report query={query} /> */}
+          <div className="py-10 text-center text-gray-400">暂无数据</div>
         </div>
       </div>
     </div>

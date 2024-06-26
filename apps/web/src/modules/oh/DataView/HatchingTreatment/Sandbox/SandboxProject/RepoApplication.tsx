@@ -25,6 +25,7 @@ import {
 } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
+import { openGiteeIssue } from '@modules/oh/utils';
 
 const SelectionApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -34,26 +35,28 @@ const SelectionApplication = () => {
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionMutation(client, {
     onSuccess(data) {
-      if (
-        data.createTpcSoftwareSelection.status == 'true' &&
-        data.createTpcSoftwareSelection.issueUrl
-      ) {
-        let issueUrl = data.createTpcSoftwareSelection.issueUrl;
+      if (data.createTpcSoftwareSelection.status == 'true') {
+        // let issueUrl = data.createTpcSoftwareSelection.issueUrl;
         messageApi.open({
           type: 'success',
           style: {
-            marginTop: '200px',
+            marginTop: '150px',
           },
           content: (
             <>
-              提交成功，已在 Gitee 建立 Issue 跟踪，可点击
+              提交成功，即将跳转 Gitee，会自动生成 Issue
+              模板，您只需点击按钮创建 Issue 即可
+              {/* 提交成功，已在 Gitee 建立 Issue 跟踪，可点击
               <a className="text-[#1677ff]" href={issueUrl} target="_blank">
                 {issueUrl}
               </a>
-              查看 Issue,
+              查看 Issue, */}
             </>
           ),
         });
+        setTimeout(() => {
+          openGiteeIssue(report, form.getFieldsValue(true));
+        }, 3000);
       } else {
         messageApi.open({
           type: 'error',
@@ -185,7 +188,7 @@ const SelectionApplication = () => {
 
                 <Col span={12}>
                   <Form.Item
-                    label="孵化时间"
+                    label="沙箱孵化周期"
                     name="incubationTime"
                     rules={[{ required: true, message: '请选择!' }]}
                   >
