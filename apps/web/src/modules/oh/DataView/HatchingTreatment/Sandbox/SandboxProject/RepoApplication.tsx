@@ -19,7 +19,7 @@ import dayjs from 'dayjs';
 import ReportInfo from '@modules/oh/components/ReportInfo';
 import SelectReport from '@modules/oh/components/SelectReport';
 import {
-  domainList,
+  incubationTimeList,
   adaptationMethodList,
   queryKey,
 } from '@modules/oh/constant';
@@ -192,7 +192,15 @@ const SelectionApplication = () => {
                     name="incubationTime"
                     rules={[{ required: true, message: '请选择!' }]}
                   >
-                    <DatePicker disabled={false} placeholder="请选择日期" />
+                    <Select disabled={false}>
+                      {incubationTimeList.map((item) => {
+                        return (
+                          <Select.Option key={item} value={item}>
+                            {item}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -204,8 +212,8 @@ const SelectionApplication = () => {
                     <Select disabled={false}>
                       {adaptationMethodList.map((item) => {
                         return (
-                          <Select.Option key={item.id} value={item.id}>
-                            {item.name}
+                          <Select.Option key={item} value={item}>
+                            {item}
                           </Select.Option>
                         );
                       })}
@@ -292,21 +300,20 @@ const SelectionApplication = () => {
           setOpenConfirm(false);
         }}
       />
-      <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
-        {report.length > 0 && (
-          <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
-            <Button
-              className="rounded-none"
-              type="primary"
-              loading={mutation.isLoading}
-              onClick={() => {
-                submit();
-              }}
-            >
-              提交申请
-            </Button>
-            {/* <Button className="rounded-none">保存</Button> */}
-            {/* <Button
+      {report.length > 0 && (
+        <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
+          <Button
+            className="rounded-none"
+            type="primary"
+            loading={mutation.isLoading}
+            onClick={() => {
+              submit();
+            }}
+          >
+            提交申请
+          </Button>
+          {/* <Button className="rounded-none">保存</Button> */}
+          {/* <Button
              className="rounded-none"
              htmlType="submit"
              onClick={() => {
@@ -315,16 +322,11 @@ const SelectionApplication = () => {
            >
              自动填充
            </Button> */}
-            <Button
-              className="rounded-none"
-              htmlType="button"
-              onClick={onReset}
-            >
-              重置
-            </Button>
-          </div>
-        )}
-      </div>
+          <Button className="rounded-none" htmlType="button" onClick={onReset}>
+            重置
+          </Button>
+        </div>
+      )}
     </>
   );
 };

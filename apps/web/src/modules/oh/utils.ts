@@ -151,7 +151,6 @@ export const getEvaluationDetail = (row) => {
     //计算每个维度的总分
     const d = allMetricData.filter((i) => i.维度 === item);
     //   const score = d.reduce((acc, cur) => {
-    //     console.log(cur.key, row?.tpcSoftwareReportMetric?.[cur.key]);
     //     return row?.tpcSoftwareReportMetric?.[cur.key] || 0 + acc;
     //   }, 0);
     let scoreTotal = 0;
@@ -169,7 +168,6 @@ export const getEvaluationDetail = (row) => {
     return cur.score + acc;
   }, 0);
   const score: number = toFixed(scoreTotal / metric.length, 0);
-  console.log(evaluationDetail);
   return { ...row, evaluationDetail, score };
 };
 export const getMetricScore = (rowData) => {
@@ -255,7 +253,6 @@ export const openGiteeIssue = (report, values) => {
       return getPathname(item.codeUrl);
     })
     .join('、');
-  console.log(name);
   let upstream = report
     .map((item) => {
       return item.codeUrl;
@@ -268,7 +265,6 @@ export const openGiteeIssue = (report, values) => {
     .join('..');
   let reportLink = `https://oss-compass.org/oh#reportDetailPage?projectId=${projectId}`;
   let title = `【TPC】【沙箱选型申请】${name} 申请进入 OpenHarmony TPC 沙箱选型项目`;
-  console.log(report, values);
 
   let body = `
   1. 【需求背景】

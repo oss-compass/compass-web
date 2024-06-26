@@ -30,29 +30,30 @@ const ReportTable = () => {
           .join(', ');
       },
     },
-    {
-      title: 'Issue 地址',
-      dataIndex: 'issueUrl',
-      key: 'issueUrl',
-      render: (text) => {
-        return (
-          <a
-            onClick={() => {
-              window.open(setUrlHost(text), '_blank');
-            }}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {text}
-          </a>
-        );
-      },
-    },
+    // {
+    //   title: 'Issue 地址',
+    //   dataIndex: 'issueUrl',
+    //   key: 'issueUrl',
+    //   render: (text) => {
+    //     return (
+    //       <a
+    //         onClick={() => {
+    //           window.open(setUrlHost(text), '_blank');
+    //         }}
+    //         className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+    //       >
+    //         {text}
+    //       </a>
+    //     );
+    //   },
+    // },
     {
       title: '引入方式',
       key: 'adaptationMethod',
-      render: (text) => {
-        return text === 1 ? '重写' : '适配';
-      },
+      dataIndex: 'adaptationMethod',
+      // render: (text) => {
+      //   return text === 1 ? '重写' : '适配';
+      // },
     },
     {
       title: '申请人',

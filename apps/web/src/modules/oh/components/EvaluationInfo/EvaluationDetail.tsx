@@ -6,7 +6,7 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { Tag, Input, Button, Popover } from 'antd';
+import { Tag, Badge, Button, Popover } from 'antd';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import {
   getEvaluationDetail,
@@ -91,10 +91,12 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
                   <CheckCircleOutlined rev={undefined} />
                 ) : item.score >= 6 ? (
                   <Popover content={getWarningConent(item.指标名称)} title="">
-                    <ExclamationCircleOutlined
-                      rev={undefined}
-                      className="cursor-pointer text-[#f8961e]"
-                    />
+                    <Badge dot>
+                      <ExclamationCircleOutlined
+                        rev={undefined}
+                        className="cursor-pointer text-base text-[#f8961e]"
+                      />
+                    </Badge>
                   </Popover>
                 ) : (
                   <Popover content={getErrorConent(item.指标名称)} title="">

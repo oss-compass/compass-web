@@ -7,6 +7,7 @@ import { getMetricScore } from '@modules/oh/utils';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import Loading from '@modules/oh/components/Loading';
 
 const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
   return (
@@ -57,6 +58,7 @@ const Report = ({
     client,
     query
   );
+
   const dataList = data?.tpcSoftwareSelectionReportPage?.items;
   const items = getMetricScore(dataList || []);
 
@@ -82,6 +84,13 @@ const Report = ({
       selectFun(checked);
     }
   };
+  if (isLoading) {
+    return (
+      <div className=" h-[calc(100vh-222px)] w-full">
+        <Loading />
+      </div>
+    );
+  }
   return (
     <>
       {activeItem ? (

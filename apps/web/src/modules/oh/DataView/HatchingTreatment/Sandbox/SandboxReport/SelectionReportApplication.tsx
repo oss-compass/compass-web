@@ -143,7 +143,7 @@ const SelectionReportApplication = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Popover
                 placement="topRight"
                 content={
@@ -181,7 +181,7 @@ const SelectionReportApplication = () => {
               >
                 <DatePicker placeholder="请选择日期" />
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={12}>
               <Form.Item
                 label="开发商"

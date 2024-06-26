@@ -19,7 +19,7 @@ import dayjs from 'dayjs';
 import ReportInfo from '@modules/oh/components/ReportInfo';
 import SelectReport from '@modules/oh/components/SelectReport';
 import {
-  domainList,
+  incubationTimeList,
   adaptationMethodList,
   queryKey,
 } from '@modules/oh/constant';
@@ -177,13 +177,27 @@ const SelectionApplication = () => {
                   </Popover>
                 </Col>
                 <Col span={12}>
-                  <Form.Item
-                    label="Commiters"
-                    name="committers"
-                    rules={[{ required: true, message: '请输入!' }]}
+                  <Popover
+                    placement="topRight"
+                    content={
+                      <>
+                        <div>
+                          需填写 Commiters 的 Gitee/Github 用户名，多个
+                          Commiters 用逗号分开
+                        </div>
+                      </>
+                    }
+                    title="注意"
+                    trigger="click"
                   >
-                    <Input disabled={false} />
-                  </Form.Item>
+                    <Form.Item
+                      label="Commiters"
+                      name="committers"
+                      rules={[{ required: true, message: '请输入!' }]}
+                    >
+                      <Input disabled={false} />
+                    </Form.Item>
+                  </Popover>
                 </Col>
 
                 <Col span={12}>
@@ -192,7 +206,15 @@ const SelectionApplication = () => {
                     name="incubationTime"
                     rules={[{ required: true, message: '请选择!' }]}
                   >
-                    <DatePicker disabled={false} placeholder="请选择日期" />
+                    <Select disabled={false}>
+                      {incubationTimeList.map((item) => {
+                        return (
+                          <Select.Option key={item} value={item}>
+                            {item}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -204,8 +226,8 @@ const SelectionApplication = () => {
                     <Select disabled={false}>
                       {adaptationMethodList.map((item) => {
                         return (
-                          <Select.Option key={item.id} value={item.id}>
-                            {item.name}
+                          <Select.Option key={item} value={item}>
+                            {item}
                           </Select.Option>
                         );
                       })}

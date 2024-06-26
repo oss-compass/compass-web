@@ -162,9 +162,9 @@ mutation createTpcSoftwareSelection(
   $repoUrl: String
   $committers: [String!]!
   # $repoDescription: String!
-  $incubationTime: ISO8601DateTime!
+  $incubationTime: String!
   $reason: String!
-  $adaptationMethod: Int!
+  $adaptationMethod: String!
 ) {
   createTpcSoftwareSelection(
     input: {
@@ -186,6 +186,5 @@ mutation createTpcSoftwareSelection(
     }
     message
     status
-    issueUrl
   }
 }

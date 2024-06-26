@@ -107,15 +107,21 @@ export const languagesList = [
   'Groovy',
   'Elixir',
 ];
+export const incubationTimeList = ['一个月', '三个月', '六个月'];
 export const adaptationMethodList = [
-  {
-    id: 0,
-    name: '适配',
-  },
-  {
-    id: 1,
-    name: '重写',
-  },
+  // autocorrect: false
+  'Java库重写',
+  'JS/TS适配',
+  'C/C++库移植',
+  '参考',
+  // {
+  //   id: 0,
+  //   name: '适配',
+  // },
+  // {
+  //   id: 1,
+  //   name: '重写',
+  // },
 ];
 export const queryKey = {
   label: 'OpenHarmony-TPC',

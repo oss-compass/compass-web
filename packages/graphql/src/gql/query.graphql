@@ -1587,8 +1587,6 @@ query tpcSoftwareSelectionReportPage(
       manufacturer
       name
       programmingLanguage
-      release
-      releaseTime
       reportType
       shortCode
       user {
@@ -1628,7 +1626,6 @@ query tpcSoftwareSelectionPage(
       id
       incubationTime
       reason
-      issueUrl
       selectionType
       user {
         name
@@ -1642,8 +1639,6 @@ query tpcSoftwareSelectionPage(
       # manufacturer
       # name
       # programmingLanguage
-      # release
-      # releaseTime
       # tpcSoftwareSig {
       #   ...tpcSoftwareSig
       # }
@@ -1662,8 +1657,6 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     manufacturer
     name
     programmingLanguage
-    release
-    releaseTime
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
     }
