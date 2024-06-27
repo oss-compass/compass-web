@@ -70,16 +70,21 @@ const ReportTable = () => {
       dataIndex: 'manufacturer',
       key: 'time',
     },
-    // {
-    //   title: '申请人',
-    //   key: 'linkSig',
-    //   // render: (text) => {
-    //   // },
-    // },
+    {
+      title: '申请人',
+      key: 'user',
+      dataIndex: 'user',
+      render: (_, record) => {
+        return record?.user?.name;
+      },
+    },
     // {
     //   title: '申请时间',
-    //   dataIndex: 'time',
-    //   key: 'time',
+    //   dataIndex: 'createdAt',
+    //   key: 'createdAt',
+    //   render: (text) => {
+    //     return text.slice(0, 10);
+    //   },
     // },
     {
       title: '当前状态',
