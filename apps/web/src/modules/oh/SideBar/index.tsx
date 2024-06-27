@@ -46,6 +46,7 @@ const SideMenu: React.FC = () => {
           breakpoint="lg"
           theme="light"
           // trigger={null}
+          width={220}
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
@@ -72,7 +73,7 @@ const SideMenu: React.FC = () => {
           <Menu
             defaultSelectedKeys={[id || 'index']}
             onClick={onClick}
-            // style={{ width: 256 }}
+            style={{ width: 220 }}
             defaultOpenKeys={['sub3']}
             mode="inline"
             items={items}

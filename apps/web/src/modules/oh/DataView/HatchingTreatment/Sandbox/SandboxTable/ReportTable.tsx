@@ -109,6 +109,13 @@ const ReportTable = () => {
         );
       },
     },
+    {
+      title: '报告生成时间',
+      key: 'createdAt',
+      render: (_, record) => {
+        return record?.tpcSoftwareReportMetric?.createdAt?.slice(0, 10);
+      },
+    },
   ];
   const {
     tableData,

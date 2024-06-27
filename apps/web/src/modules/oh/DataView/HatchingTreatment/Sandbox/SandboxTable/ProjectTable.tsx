@@ -68,7 +68,7 @@ const ReportTable = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (text) => {
-        return text.slice(0, 10);
+        return text?.slice(0, 10);
       },
     },
     {

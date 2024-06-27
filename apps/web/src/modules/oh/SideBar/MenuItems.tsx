@@ -1,10 +1,8 @@
 import type { MenuProps } from 'antd';
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   PieChartOutlined,
   TeamOutlined,
-  DownloadOutlined,
+  ProjectOutlined,
 } from '@ant-design/icons';
 
 import ContributeOverview from '@modules/oh/DataView/Contribute/ContributeOverview';
@@ -74,19 +72,19 @@ export const menuItems: MenuItem[] = [
   {
     key: 'sub3',
     label: 'TPC 治理',
-    icon: <DownloadOutlined rev={undefined} />,
+    icon: <ProjectOutlined rev={undefined} />,
     children: [
       {
         key: 'sandbox',
-        label: '沙箱项目',
+        label: '沙箱项目 (孵化准备)',
         children: [
           {
             key: 'sandboxReport',
-            label: '沙箱报告申请',
+            label: '报告申请',
           },
           {
             key: 'sandboxProject',
-            label: '沙箱项目申请',
+            label: '项目申请',
           },
           {
             key: 'sandboxTable',
@@ -100,11 +98,11 @@ export const menuItems: MenuItem[] = [
         children: [
           {
             key: 'hatchReport',
-            label: '孵化报告申请',
+            label: '报告申请',
           },
           {
             key: 'hatchProject',
-            label: '孵化项目申请',
+            label: '项目申请',
           },
           {
             key: 'hatchTable',
