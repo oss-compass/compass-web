@@ -7,6 +7,7 @@ import {
 } from '@ant-design/icons';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
 import { Tag, Badge, Button, Popover } from 'antd';
+import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import {
   getEvaluationDetail,
@@ -204,7 +205,14 @@ const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
             className="mr-2  cursor-pointer text-2xl text-[#3f60ef]"
           />
         )}
-        <div className="text-lg font-semibold">{item.name} 选型评估报告</div>
+        <div className="text-lg font-semibold">
+          <a
+            className="hover:underline"
+            href={item.codeUrl}
+            target="_blank"
+          >{`${getPathname(item.codeUrl) || item.name}`}</a>{' '}
+          选型评估报告
+        </div>
         <div className="mt-2 ml-4 text-xs">
           更新于：
           {item?.tpcSoftwareReportMetric?.updatedAt?.slice(0, 10) || ''}

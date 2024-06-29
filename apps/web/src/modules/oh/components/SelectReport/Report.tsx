@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
-import { EChartsOption, init } from 'echarts';
 import { Button } from 'antd';
-import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import { getMetricScore } from '@modules/oh/utils';
+import { getPathname } from '@common/utils';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 import Loading from '@modules/oh/components/Loading';
+import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 
 const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
   return (
@@ -86,7 +86,7 @@ const Report = ({
   };
   if (isLoading) {
     return (
-      <div className=" h-[calc(100vh-222px)] w-full">
+      <div className="h-[calc(100vh-222px)] w-full">
         <Loading />
       </div>
     );
@@ -128,17 +128,20 @@ const Report = ({
                     }}
                   >
                     <div className="flex w-full justify-between text-xl font-semibold">
-                      <a
-                        className="cursor-pointer  hover:underline"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveItem(item);
-                        }}
-                      >
-                        {item.name}
-                      </a>
+                      <div className="mr-2 w-[300px] overflow-hidden text-ellipsis">
+                        <a
+                          className="cursor-pointer hover:underline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveItem(item);
+                          }}
+                          title={item.name}
+                        >
+                          {item.name}
+                        </a>
+                      </div>
 
-                      <div className="">
+                      <div className="flex flex-shrink-0">
                         {selectFun && (
                           <input
                             type="checkbox"
@@ -148,11 +151,12 @@ const Report = ({
                         )}
                       </div>
                     </div>
-                    <div className="mt-4 flex text-sm font-normal text-[#3e8eff] hover:text-[#3e8eff] hover:underline">
+                    <div className="line-clamp-1 mt-4 flex text-sm font-normal text-[#3e8eff] hover:text-[#3e8eff] hover:underline">
                       <a
                         onClick={() => {
                           window.open(item.codeUrl, '_blank');
                         }}
+                        title={item.codeUrl}
                       >
                         {item.codeUrl}
                       </a>
