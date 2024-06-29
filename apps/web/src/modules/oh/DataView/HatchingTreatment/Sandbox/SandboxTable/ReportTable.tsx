@@ -191,7 +191,7 @@ const ReportTable = () => {
   );
   return (
     <>
-      <div className="p-4">
+      <div className="h-[calc(100vh-240px)] p-4">
         <div className="mb-2 ml-2">
           <Radio.Group
             onChange={(e) => {
@@ -203,7 +203,6 @@ const ReportTable = () => {
             <Radio value={1}>已建仓申请</Radio>
           </Radio.Group>
         </div>
-
         <MyTable
           columns={columns}
           dataSource={tableData}
@@ -211,8 +210,10 @@ const ReportTable = () => {
           onChange={handleTableChange}
           pagination={tableParams.pagination}
           rowKey={'key'}
-          scroll={{ x: 'max-content' }}
+          tableLayout={'fixed'}
+          // scroll={{ x: 'max-content' }}
         />
+
         <Dialog
           open={openConfirm}
           classes={{

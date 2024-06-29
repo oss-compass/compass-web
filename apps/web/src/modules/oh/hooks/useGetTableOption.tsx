@@ -26,7 +26,7 @@ const useGetLineOption = <T extends Record<string, any>>(
     pagination: {
       current: 1,
       pageSize: 20,
-      showSizeChanger: false,
+      showSizeChanger: true,
       position: ['bottomCenter'],
       showTotal: (total) => {
         return `${t('analyze:total_people', { total })} `;

@@ -24,7 +24,7 @@ const Main = () => {
   return (
     <div className="flex flex-1 bg-[#f2f2f2]">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col bg-white drop-shadow-sm md:p-0">
-        <div className="oh-tabs relative h-full overflow-auto py-3">
+        <div className="oh-tabs relative my-3 h-full overflow-auto">
           <Tabs
             defaultActiveKey={activeKey}
             className="oh-antd"
