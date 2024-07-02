@@ -1543,6 +1543,7 @@ fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {
   complianceDco
   complianceLicense
   compliancePackageSig
+  complianceLicenseCompatibility
   createdAt
   ecologyAdoptionAnalysis
   ecologyCodeMaintenance
@@ -1591,6 +1592,11 @@ query tpcSoftwareSelectionReportPage(
       shortCode
       user {
         name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
       }
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
@@ -1629,6 +1635,11 @@ query tpcSoftwareSelectionPage(
       selectionType
       user {
         name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
       }
       tpcSoftwareSelectionReportIds
       tpcSoftwareSelectionReports {
@@ -1648,7 +1659,54 @@ query tpcSoftwareSelectionPage(
     totalPage
   }
 }
-
+fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
+  baseCodeUrlDetail
+  baseRepoNameDetail
+  baseWebsiteUrlDetail
+  complianceDcoDetail {
+    commitCount
+    commitDcoCount
+  }
+  complianceLicenseCompatibilityDetail {
+    license
+    licenseConflictList
+  }
+  complianceLicenseDetail {
+    licenseAccessList
+    licenseNonAccessList
+  }
+  compliancePackageSigDetail
+  ecologyAdoptionAnalysisDetail
+  ecologyCodeMaintenanceDetail
+  ecologyCommunitySupportDetail
+  ecologyDependencyAcquisitionDetail
+  ecologyPatentRiskDetail
+  ecologySoftwareQualityDetail {
+    coverageRatio
+    coverageScore
+    duplicationRatio
+    duplicationScore
+  }
+  lifecycleVersionLifecycleDetail {
+    archived
+    latestVersionCreatedAt
+    latestVersionName
+  }
+  lifecycleVersionNormalizationDetail
+  lifecycleVersionNumberDetail
+  securityBinaryArtifactDetail
+  securityHistoryVulnerabilityDetail {
+    summary
+    vulnerability
+  }
+  securityVulnerabilityDetail {
+    packageName
+    packageVersion
+    vulnerabilities
+  }
+  securityVulnerabilityDisclosureDetail
+  securityVulnerabilityResponseDetail
+}
 query tpcSoftwareSelectionReport($shortCode: String!) {
   tpcSoftwareSelectionReport(shortCode: $shortCode) {
     codeCount
@@ -1659,6 +1717,7 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     programmingLanguage
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
+      ...tpcSoftwareReportMetricDetail
     }
     tpcSoftwareSig {
       ...tpcSoftwareSig

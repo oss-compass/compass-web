@@ -7,10 +7,9 @@ import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareSelectionPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Radio } from 'antd';
-import { setUrlHost } from '@modules/oh/utils';
+import { getHubUrl } from '@common/utils';
 
 const ReportTable = () => {
-  let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
   const [reportType, setReportType] = useState(0);
 
@@ -60,7 +59,17 @@ const ReportTable = () => {
       key: 'user',
       dataIndex: 'user',
       render: (_, record) => {
-        return record?.user?.name;
+        const { provider, nickname } = record?.user?.loginBinds[0];
+        return (
+          <a
+            onClick={() => {
+              window.open(getHubUrl(provider, nickname), '_blank');
+            }}
+            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+          >
+            {record?.user?.name}
+          </a>
+        );
       },
     },
     {

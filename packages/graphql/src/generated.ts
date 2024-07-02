@@ -3226,32 +3226,105 @@ export type TpcSoftwareOutputReportPage = {
 export type TpcSoftwareReportMetric = {
   __typename?: 'TpcSoftwareReportMetric';
   baseCodeUrl?: Maybe<Scalars['Int']>;
+  baseCodeUrlDetail?: Maybe<Scalars['String']>;
   baseRepoName?: Maybe<Scalars['Int']>;
+  baseRepoNameDetail?: Maybe<Scalars['String']>;
   baseWebsiteUrl?: Maybe<Scalars['Int']>;
+  baseWebsiteUrlDetail?: Maybe<Scalars['String']>;
   complianceDco?: Maybe<Scalars['Int']>;
+  complianceDcoDetail?: Maybe<TpcSoftwareReportMetricComplianceDco>;
   complianceLicense?: Maybe<Scalars['Int']>;
   complianceLicenseCompatibility?: Maybe<Scalars['Int']>;
+  complianceLicenseCompatibilityDetail?: Maybe<
+    Array<TpcSoftwareReportMetricComplianceLicenseCompatibility>
+  >;
+  complianceLicenseDetail?: Maybe<TpcSoftwareReportMetricComplianceLicense>;
   compliancePackageSig?: Maybe<Scalars['Int']>;
+  compliancePackageSigDetail?: Maybe<Array<Scalars['String']>>;
   createdAt?: Maybe<Scalars['ISO8601DateTime']>;
   ecologyAdoptionAnalysis?: Maybe<Scalars['Int']>;
+  ecologyAdoptionAnalysisDetail?: Maybe<Scalars['String']>;
   ecologyCodeMaintenance?: Maybe<Scalars['Int']>;
+  ecologyCodeMaintenanceDetail?: Maybe<Scalars['String']>;
   ecologyCommunitySupport?: Maybe<Scalars['Int']>;
+  ecologyCommunitySupportDetail?: Maybe<Scalars['String']>;
   ecologyDependencyAcquisition?: Maybe<Scalars['Int']>;
+  ecologyDependencyAcquisitionDetail?: Maybe<Scalars['String']>;
   ecologyPatentRisk?: Maybe<Scalars['Int']>;
+  ecologyPatentRiskDetail?: Maybe<Scalars['String']>;
   ecologySoftwareQuality?: Maybe<Scalars['Int']>;
+  ecologySoftwareQualityDetail?: Maybe<TpcSoftwareReportMetricEcologySoftwareQuality>;
   id: Scalars['Int'];
   lifecycleVersionLifecycle?: Maybe<Scalars['Int']>;
+  lifecycleVersionLifecycleDetail?: Maybe<TpcSoftwareReportMetricLifecycleVersionLifecycle>;
   lifecycleVersionNormalization?: Maybe<Scalars['Int']>;
+  lifecycleVersionNormalizationDetail?: Maybe<Scalars['String']>;
   lifecycleVersionNumber?: Maybe<Scalars['Int']>;
+  lifecycleVersionNumberDetail?: Maybe<Scalars['String']>;
   securityBinaryArtifact?: Maybe<Scalars['Int']>;
+  securityBinaryArtifactDetail?: Maybe<Array<Scalars['String']>>;
   securityHistoryVulnerability?: Maybe<Scalars['Int']>;
+  securityHistoryVulnerabilityDetail?: Maybe<
+    Array<TpcSoftwareReportMetricSecurityHistoryVulnerability>
+  >;
   securityVulnerability?: Maybe<Scalars['Int']>;
+  securityVulnerabilityDetail?: Maybe<
+    Array<TpcSoftwareReportMetricSecurityVulnerability>
+  >;
   securityVulnerabilityDisclosure?: Maybe<Scalars['Int']>;
+  securityVulnerabilityDisclosureDetail?: Maybe<Scalars['String']>;
   securityVulnerabilityResponse?: Maybe<Scalars['Int']>;
+  securityVulnerabilityResponseDetail?: Maybe<Scalars['String']>;
   /** progress/success */
   status?: Maybe<Scalars['String']>;
   tpcSoftwareReportId?: Maybe<Scalars['Int']>;
   updatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+};
+
+export type TpcSoftwareReportMetricComplianceDco = {
+  __typename?: 'TpcSoftwareReportMetricComplianceDco';
+  commitCount?: Maybe<Scalars['Int']>;
+  commitDcoCount?: Maybe<Scalars['Int']>;
+};
+
+export type TpcSoftwareReportMetricComplianceLicense = {
+  __typename?: 'TpcSoftwareReportMetricComplianceLicense';
+  licenseAccessList?: Maybe<Array<Scalars['String']>>;
+  licenseNonAccessList?: Maybe<Array<Scalars['String']>>;
+};
+
+export type TpcSoftwareReportMetricComplianceLicenseCompatibility = {
+  __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+  license?: Maybe<Scalars['String']>;
+  licenseConflictList?: Maybe<Array<Scalars['String']>>;
+};
+
+export type TpcSoftwareReportMetricEcologySoftwareQuality = {
+  __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+  coverageRatio?: Maybe<Scalars['Float']>;
+  coverageScore?: Maybe<Scalars['Int']>;
+  duplicationRatio?: Maybe<Scalars['Float']>;
+  duplicationScore?: Maybe<Scalars['Int']>;
+};
+
+export type TpcSoftwareReportMetricLifecycleVersionLifecycle = {
+  __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
+  archived?: Maybe<Scalars['Boolean']>;
+  latestVersionCreatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  latestVersionName?: Maybe<Scalars['String']>;
+};
+
+export type TpcSoftwareReportMetricSecurityHistoryVulnerability = {
+  __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
+  summary?: Maybe<Scalars['String']>;
+  vulnerability?: Maybe<Scalars['String']>;
+};
+
+export type TpcSoftwareReportMetricSecurityVulnerability = {
+  __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+  packageName?: Maybe<Scalars['String']>;
+  packageVersion?: Maybe<Scalars['String']>;
+  vulnerabilities?: Maybe<Array<Scalars['String']>>;
 };
 
 export type TpcSoftwareSelection = {
@@ -6763,6 +6836,7 @@ export type TpcSoftwareReportMetricFragment = {
   complianceDco?: number | null;
   complianceLicense?: number | null;
   compliancePackageSig?: number | null;
+  complianceLicenseCompatibility?: number | null;
   createdAt?: any | null;
   ecologyAdoptionAnalysis?: number | null;
   ecologyCodeMaintenance?: number | null;
@@ -6811,12 +6885,22 @@ export type TpcSoftwareSelectionReportPageQuery = {
       reportType: number;
       shortCode: string;
       websiteUrl?: string | null;
-      user?: { __typename?: 'User'; name: string } | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
       tpcSoftwareReportMetric?: {
         __typename?: 'TpcSoftwareReportMetric';
         complianceDco?: number | null;
         complianceLicense?: number | null;
         compliancePackageSig?: number | null;
+        complianceLicenseCompatibility?: number | null;
         createdAt?: any | null;
         ecologyAdoptionAnalysis?: number | null;
         ecologyCodeMaintenance?: number | null;
@@ -6872,13 +6956,79 @@ export type TpcSoftwareSelectionPageQuery = {
       reason?: string | null;
       selectionType?: number | null;
       tpcSoftwareSelectionReportIds?: Array<string> | null;
-      user?: { __typename?: 'User'; name: string } | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
       tpcSoftwareSelectionReports?: Array<{
         __typename?: 'TpcSoftwareSelectionReport';
         name?: string | null;
       }> | null;
     }> | null;
   } | null;
+};
+
+export type TpcSoftwareReportMetricDetailFragment = {
+  __typename?: 'TpcSoftwareReportMetric';
+  baseCodeUrlDetail?: string | null;
+  baseRepoNameDetail?: string | null;
+  baseWebsiteUrlDetail?: string | null;
+  compliancePackageSigDetail?: Array<string> | null;
+  ecologyAdoptionAnalysisDetail?: string | null;
+  ecologyCodeMaintenanceDetail?: string | null;
+  ecologyCommunitySupportDetail?: string | null;
+  ecologyDependencyAcquisitionDetail?: string | null;
+  ecologyPatentRiskDetail?: string | null;
+  lifecycleVersionNormalizationDetail?: string | null;
+  lifecycleVersionNumberDetail?: string | null;
+  securityBinaryArtifactDetail?: Array<string> | null;
+  securityVulnerabilityDisclosureDetail?: string | null;
+  securityVulnerabilityResponseDetail?: string | null;
+  complianceDcoDetail?: {
+    __typename?: 'TpcSoftwareReportMetricComplianceDco';
+    commitCount?: number | null;
+    commitDcoCount?: number | null;
+  } | null;
+  complianceLicenseCompatibilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+    license?: string | null;
+    licenseConflictList?: Array<string> | null;
+  }> | null;
+  complianceLicenseDetail?: {
+    __typename?: 'TpcSoftwareReportMetricComplianceLicense';
+    licenseAccessList?: Array<string> | null;
+    licenseNonAccessList?: Array<string> | null;
+  } | null;
+  ecologySoftwareQualityDetail?: {
+    __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+    coverageRatio?: number | null;
+    coverageScore?: number | null;
+    duplicationRatio?: number | null;
+    duplicationScore?: number | null;
+  } | null;
+  lifecycleVersionLifecycleDetail?: {
+    __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
+    archived?: boolean | null;
+    latestVersionCreatedAt?: any | null;
+    latestVersionName?: string | null;
+  } | null;
+  securityHistoryVulnerabilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
+    summary?: string | null;
+    vulnerability?: string | null;
+  }> | null;
+  securityVulnerabilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+    packageName?: string | null;
+    packageVersion?: string | null;
+    vulnerabilities?: Array<string> | null;
+  }> | null;
 };
 
 export type TpcSoftwareSelectionReportQueryVariables = Exact<{
@@ -6901,6 +7051,7 @@ export type TpcSoftwareSelectionReportQuery = {
       complianceDco?: number | null;
       complianceLicense?: number | null;
       compliancePackageSig?: number | null;
+      complianceLicenseCompatibility?: number | null;
       createdAt?: any | null;
       ecologyAdoptionAnalysis?: number | null;
       ecologyCodeMaintenance?: number | null;
@@ -6920,6 +7071,59 @@ export type TpcSoftwareSelectionReportQuery = {
       status?: string | null;
       tpcSoftwareReportId?: number | null;
       updatedAt?: any | null;
+      baseCodeUrlDetail?: string | null;
+      baseRepoNameDetail?: string | null;
+      baseWebsiteUrlDetail?: string | null;
+      compliancePackageSigDetail?: Array<string> | null;
+      ecologyAdoptionAnalysisDetail?: string | null;
+      ecologyCodeMaintenanceDetail?: string | null;
+      ecologyCommunitySupportDetail?: string | null;
+      ecologyDependencyAcquisitionDetail?: string | null;
+      ecologyPatentRiskDetail?: string | null;
+      lifecycleVersionNormalizationDetail?: string | null;
+      lifecycleVersionNumberDetail?: string | null;
+      securityBinaryArtifactDetail?: Array<string> | null;
+      securityVulnerabilityDisclosureDetail?: string | null;
+      securityVulnerabilityResponseDetail?: string | null;
+      complianceDcoDetail?: {
+        __typename?: 'TpcSoftwareReportMetricComplianceDco';
+        commitCount?: number | null;
+        commitDcoCount?: number | null;
+      } | null;
+      complianceLicenseCompatibilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+        license?: string | null;
+        licenseConflictList?: Array<string> | null;
+      }> | null;
+      complianceLicenseDetail?: {
+        __typename?: 'TpcSoftwareReportMetricComplianceLicense';
+        licenseAccessList?: Array<string> | null;
+        licenseNonAccessList?: Array<string> | null;
+      } | null;
+      ecologySoftwareQualityDetail?: {
+        __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+        coverageRatio?: number | null;
+        coverageScore?: number | null;
+        duplicationRatio?: number | null;
+        duplicationScore?: number | null;
+      } | null;
+      lifecycleVersionLifecycleDetail?: {
+        __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
+        archived?: boolean | null;
+        latestVersionCreatedAt?: any | null;
+        latestVersionName?: string | null;
+      } | null;
+      securityHistoryVulnerabilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
+        summary?: string | null;
+        vulnerability?: string | null;
+      }> | null;
+      securityVulnerabilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+        packageName?: string | null;
+        packageVersion?: string | null;
+        vulnerabilities?: Array<string> | null;
+      }> | null;
     } | null;
     tpcSoftwareSig?: {
       __typename?: 'TpcSoftwareSig';
@@ -7126,6 +7330,7 @@ export const TpcSoftwareReportMetricFragmentDoc = /*#__PURE__*/ `
   complianceDco
   complianceLicense
   compliancePackageSig
+  complianceLicenseCompatibility
   createdAt
   ecologyAdoptionAnalysis
   ecologyCodeMaintenance
@@ -7145,6 +7350,56 @@ export const TpcSoftwareReportMetricFragmentDoc = /*#__PURE__*/ `
   status
   tpcSoftwareReportId
   updatedAt
+}
+    `;
+export const TpcSoftwareReportMetricDetailFragmentDoc = /*#__PURE__*/ `
+    fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
+  baseCodeUrlDetail
+  baseRepoNameDetail
+  baseWebsiteUrlDetail
+  complianceDcoDetail {
+    commitCount
+    commitDcoCount
+  }
+  complianceLicenseCompatibilityDetail {
+    license
+    licenseConflictList
+  }
+  complianceLicenseDetail {
+    licenseAccessList
+    licenseNonAccessList
+  }
+  compliancePackageSigDetail
+  ecologyAdoptionAnalysisDetail
+  ecologyCodeMaintenanceDetail
+  ecologyCommunitySupportDetail
+  ecologyDependencyAcquisitionDetail
+  ecologyPatentRiskDetail
+  ecologySoftwareQualityDetail {
+    coverageRatio
+    coverageScore
+    duplicationRatio
+    duplicationScore
+  }
+  lifecycleVersionLifecycleDetail {
+    archived
+    latestVersionCreatedAt
+    latestVersionName
+  }
+  lifecycleVersionNormalizationDetail
+  lifecycleVersionNumberDetail
+  securityBinaryArtifactDetail
+  securityHistoryVulnerabilityDetail {
+    summary
+    vulnerability
+  }
+  securityVulnerabilityDetail {
+    packageName
+    packageVersion
+    vulnerabilities
+  }
+  securityVulnerabilityDisclosureDetail
+  securityVulnerabilityResponseDetail
 }
     `;
 export const DatasetFuzzySearchDocument = /*#__PURE__*/ `
@@ -12207,6 +12462,11 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
       shortCode
       user {
         name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
       }
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
@@ -12272,6 +12532,11 @@ export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
       selectionType
       user {
         name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
       }
       tpcSoftwareSelectionReportIds
       tpcSoftwareSelectionReports {
@@ -12324,6 +12589,7 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     programmingLanguage
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
+      ...tpcSoftwareReportMetricDetail
     }
     tpcSoftwareSig {
       ...tpcSoftwareSig
@@ -12332,6 +12598,7 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
   }
 }
     ${TpcSoftwareReportMetricFragmentDoc}
+${TpcSoftwareReportMetricDetailFragmentDoc}
 ${TpcSoftwareSigFragmentDoc}`;
 export const useTpcSoftwareSelectionReportQuery = <
   TData = TpcSoftwareSelectionReportQuery,
