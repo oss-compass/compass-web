@@ -117,6 +117,7 @@ export const getErrorContent = (name) => {
   }
 };
 const getDeital = (item) => {
+  if (!item) return '';
   const { detailRender, detail } = item;
   if (Array.isArray(detail) && detail?.length == 0) {
     return '';
@@ -285,6 +286,6 @@ export const downloadReport = (item) => {
     return row;
   });
   saveCSV(title, head, tableData).then(() => {
-    console.log('success');
+    // console.log('success');
   });
 };
