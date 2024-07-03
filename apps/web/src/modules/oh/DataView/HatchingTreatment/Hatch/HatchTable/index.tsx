@@ -13,7 +13,7 @@ const Main = () => {
     },
     {
       key: '项目申请列表',
-      label: <div className="mx-2 text-lg">项目申请列表</div>,
+      label: <div className="mx-2 text-lg">选型申请列表</div>,
       children: <ProjectTable />,
     },
   ];

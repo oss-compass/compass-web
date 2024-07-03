@@ -84,7 +84,7 @@ export const menuItems: MenuItem[] = [
           },
           {
             key: 'sandboxProject',
-            label: '项目申请',
+            label: '选型申请',
           },
           {
             key: 'sandboxTable',
@@ -102,7 +102,7 @@ export const menuItems: MenuItem[] = [
           },
           {
             key: 'hatchProject',
-            label: '项目申请',
+            label: '选型申请',
           },
           {
             key: 'hatchTable',
@@ -146,12 +146,12 @@ export const componentMap = {
   sandboxReport: <SandboxReport />,
   sandboxProject: <SandboxProject />,
   sandboxTable: <SandboxTable />,
-  // hatchReport: <HatchReport />,
-  // hatchProject: <HatchProject />,
-  // hatchTable: <HatchTable />,
-  hatchReport: <Graduate />,
-  hatchProject: <Graduate />,
-  hatchTable: <Graduate />,
+  hatchReport: <HatchReport />,
+  hatchProject: <HatchProject />,
+  hatchTable: <HatchTable />,
+  // hatchReport: <Graduate />,
+  // hatchProject: <Graduate />,
+  // hatchTable: <Graduate />,
   graduate: <Graduate />,
   boardSandbox: <BoardSandbox />,
   boardHatch: <BoardHatch />,

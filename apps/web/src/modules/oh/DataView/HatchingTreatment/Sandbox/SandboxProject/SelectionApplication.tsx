@@ -26,6 +26,7 @@ import {
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 import { openGiteeIssue } from '@modules/oh/utils';
+import getErrorMessage from '@common/utils/getErrorMessage';
 
 const SelectionApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -67,7 +68,15 @@ const SelectionApplication = () => {
         });
       }
     },
-    onError(res) {},
+    onError(res) {
+      messageApi.open({
+        type: 'error',
+        style: {
+          marginTop: '200px',
+        },
+        content: getErrorMessage(res),
+      });
+    },
   });
 
   const submit = () => {
@@ -153,7 +162,7 @@ const SelectionApplication = () => {
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
-                    label="沙箱孵化周期"
+                    label="选型验证时长"
                     name="incubationTime"
                     rules={[{ required: true, message: '请选择!' }]}
                   >

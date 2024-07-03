@@ -1,30 +1,61 @@
 import React, { useState } from 'react';
-import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
+import {
+  Button,
+  message,
+  Form,
+  Input,
+  Select,
+  Radio,
+  Row,
+  Col,
+  Popover,
+} from 'antd';
 import dayjs from 'dayjs';
 import DatePicker from '@common/components/Form';
 import { languagesList, domainList, queryKey } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
+import getErrorMessage from '@common/utils/getErrorMessage';
 
 const SelectionReportApplication = () => {
   const [messageApi, contextHolder] = message.useMessage();
+  const [sameCheck, setSameCheck] = useState(false);
   const [form] = Form.useForm();
-
   const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
-    onSuccess() {
+    onSuccess(data) {
+      if (data.createTpcSoftwareSelectionReport.status == 'true') {
+        messageApi.open({
+          type: 'success',
+          style: {
+            marginTop: '200px',
+          },
+          content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
+        });
+        setTimeout(() => {
+          window.location.hash = 'sandboxTable?tab=1';
+        }, 2000);
+      } else {
+        messageApi.open({
+          type: 'error',
+          style: {
+            marginTop: '200px',
+          },
+          content: data.createTpcSoftwareSelectionReport.message,
+        });
+      }
+    },
+    onError(res) {
+      console.log(res);
       messageApi.open({
-        type: 'success',
+        type: 'error',
         style: {
           marginTop: '200px',
         },
-        content: '提交成功，可在孵化项目申请列表中查看报告状态！',
+        content: getErrorMessage(res),
       });
-      // setTimeout(() => {
-      //   window.location.hash = 'sandboxTable?tab=1';
-      // }, 2000);
     },
-    onError(res) {},
   });
+
   const submit = () => {
     form.validateFields().then((values) => {
       mutation.mutate({
@@ -96,16 +127,28 @@ const SelectionReportApplication = () => {
           // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <div className="mb-6 text-base font-semibold">软件基础信息</div>
+          <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
           <Row gutter={24}>
             <Col span={12}>
-              <Form.Item
-                label="软件名称"
-                name="name"
-                rules={[{ required: true, message: '请输入!' }]}
+              <Popover
+                placement="topRight"
+                content={
+                  <>
+                    <div>1.软件名称和其官网保持一致;</div>
+                    <div>1.禁止以软件的子模块作为软件名;</div>
+                  </>
+                }
+                title="规则"
+                trigger="click"
               >
-                <Input />
-              </Form.Item>
+                <Form.Item
+                  label="软件名称"
+                  name="name"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Popover>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -122,7 +165,7 @@ const SelectionReportApplication = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Popover
                 placement="topRight"
                 content={
@@ -143,17 +186,24 @@ const SelectionReportApplication = () => {
                 <Form.Item
                   label="软件版本号"
                   name="release"
-                  rules={[{ validator: versionValidator }]}
+                  rules={[
+                    { required: true, message: '请输入!' },
+                    { validator: versionValidator },
+                  ]}
                 >
                   <Input />
                 </Form.Item>
               </Popover>
             </Col>
             <Col span={12}>
-              <Form.Item label="版本发布日期" name="releaseTime">
+              <Form.Item
+                label="版本发布日期"
+                name="releaseTime"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
                 <DatePicker placeholder="请选择日期" />
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={12}>
               <Form.Item
                 label="开发商"
@@ -200,7 +250,16 @@ const SelectionReportApplication = () => {
                 name="codeUrl"
                 rules={[{ required: true, message: '请输入!' }]}
               >
-                <Input />
+                <Input
+                  onBlur={(e) => {
+                    if (e.target.value) {
+                      form.setFieldValue(
+                        'vulnerabilityResponse',
+                        e.target.value + '/issues'
+                      );
+                    }
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -219,15 +278,43 @@ const SelectionReportApplication = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="漏洞响应机制" name="bugPublish2">
-                <Input placeholder="非必填" />
+              <Form.Item
+                rules={[{ required: true, message: '请输入!' }]}
+                label="漏洞响应机制"
+                name="vulnerabilityResponse"
+              >
+                <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="漏洞披露机制" name="bugPublish1">
-                <Input placeholder="非必填" />
+              <Form.Item
+                label="是否存在同类型"
+                rules={[{ required: true, message: '请输入!' }]}
+                name="isSameTypeCheck"
+                initialValue={'否'}
+              >
+                <Radio.Group
+                  // value={value.xxx || number}
+                  onChange={(e) => {
+                    if (e.target.value === 1) {
+                      setSameCheck(true);
+                    } else {
+                      setSameCheck(false);
+                    }
+                  }}
+                >
+                  <Radio value={1}>是</Radio>
+                  <Radio value={0}>否</Radio>
+                </Radio.Group>
               </Form.Item>
             </Col>
+            {sameCheck && (
+              <Col span={12}>
+                <Form.Item label="同类型软件名称" name="sameTypeSoftwareName">
+                  <Input />
+                </Form.Item>
+              </Col>
+            )}
           </Row>
         </Form>
       </div>
@@ -242,7 +329,7 @@ const SelectionReportApplication = () => {
         >
           提交
         </Button>
-        <Button
+        {/* <Button
           className="rounded-none"
           htmlType="submit"
           onClick={() => {
@@ -250,7 +337,7 @@ const SelectionReportApplication = () => {
           }}
         >
           自动填充
-        </Button>
+        </Button> */}
         <Button className="rounded-none" htmlType="button" onClick={onReset}>
           重置
         </Button>

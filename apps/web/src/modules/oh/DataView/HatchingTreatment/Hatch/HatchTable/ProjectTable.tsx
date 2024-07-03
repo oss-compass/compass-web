@@ -4,28 +4,15 @@ import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
-import {
-  useTpcSoftwareSelectionReportPageQuery,
-  SubjectSigPage,
-  FilterOptionInput,
-  SortOptionInput,
-} from '@oss-compass/graphql';
+import { useTpcSoftwareSelectionPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import { Tag } from 'antd';
-import useQueryDateRange from '@modules/oh/hooks/useQueryDateRange';
-import { useUserInfo } from '@modules/auth';
-
-interface TableQuery {
-  label: string;
-  level?: string;
-  page?: number;
-  per?: number;
-}
+import { Radio } from 'antd';
+import { getHubUrl } from '@common/utils';
 
 const ReportTable = () => {
-  let result = [];
   const [openConfirm, setOpenConfirm] = useState(false);
-  const dataSource = result;
+  // const [reportType, setReportType] = useState(0);
+
   const columns = [
     // {
     //   title: '申请单号',
@@ -36,88 +23,67 @@ const ReportTable = () => {
       title: '软件名称',
       dataIndex: 'name',
       key: 'name',
-      // render: (text, record) => {
-      //   return (
-      //     <a
-      //       onClick={() => {}}
-      //       className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-      //     >
-      //       {text}
-      //     </a>
-      //   );
-      // },
+      render: (_, record) => {
+        return record?.tpcSoftwareSelectionReports
+          ?.map((item) => item.name)
+          .join(', ');
+      },
     },
     // {
-    //   title: '报告类别',
-    //   dataIndex: 'id',
-    //   key: 'id',
+    //   title: 'Issue 地址',
+    //   dataIndex: 'issueUrl',
+    //   key: 'issueUrl',
+    //   render: (text) => {
+    //     return (
+    //       <a
+    //         onClick={() => {
+    //           window.open(setUrlHost(text), '_blank');
+    //         }}
+    //         className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+    //       >
+    //         {text}
+    //       </a>
+    //     );
+    //   },
     // },
     {
-      title: '源码地址',
-      dataIndex: 'codeUrl',
-      key: 'codeUrl',
-      render: (text, record) => {
-        return (
-          <a
-            onClick={() => {
-              window.open(text, '_blank');
-            }}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {text}
-          </a>
-        );
-      },
-    },
-    {
-      title: '官网地址',
-      dataIndex: 'websiteUrl',
-      key: 'websiteUrl',
-      render: (text, record) => {
-        return (
-          <a
-            onClick={() => {
-              window.open(text, '_blank');
-            }}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {text}
-          </a>
-        );
-      },
-    },
-    {
-      title: '编程语言',
-      dataIndex: 'programmingLanguage',
-      key: 'programmingLanguage',
+      title: '引入方式',
+      key: 'adaptationMethod',
+      dataIndex: 'adaptationMethod',
       // render: (text) => {
+      //   return text === 1 ? '重写' : '适配';
       // },
     },
     {
-      title: '开发商',
-      dataIndex: 'manufacturer',
-      key: 'time',
-    },
-    // {
-    //   title: '申请人',
-    //   key: 'linkSig',
-    //   // render: (text) => {
-    //   // },
-    // },
-    // {
-    //   title: '申请时间',
-    //   dataIndex: 'time',
-    //   key: 'time',
-    // },
-    {
-      title: '当前状态',
-      dataIndex: 'state',
-      key: 'state',
-      render: (text, record) => {
-        return record?.tpcSoftwareReportMetric.state === 'success'
-          ? '生成成功'
-          : '生成中';
+      title: '申请人',
+      key: 'user',
+      dataIndex: 'user',
+      render: (_, record) => {
+        const { provider, nickname } = record?.user?.loginBinds[0];
+        return (
+          <a
+            target="_blank"
+            href={getHubUrl(provider, nickname)}
+            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+          >
+            {record?.user?.name}
+          </a>
+        );
       },
+    },
+    {
+      title: '申请时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text) => {
+        return text?.slice(0, 10);
+      },
+    },
+    {
+      title: '申请背景',
+      dataIndex: 'reason',
+      width: '300px',
+      key: 'reason',
     },
   ];
   const {
@@ -128,34 +94,38 @@ const ReportTable = () => {
     query,
     handleTableChange,
   } = useGetTableOption();
-  // const { isLoading, isFetching } = useTpcSoftwareSelectionReportPageQuery(
-  //   client,
-  //   query,
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //       setTableParams({
-  //         ...tableParams,
-  //         pagination: {
-  //           ...tableParams.pagination,
-  //           total: data.tpcSoftwareSelectionReportPage.count as number,
-  //         },
-  //       });
-  //       // setData(data.tpcSoftwareSelectionReportPage.items);
-  //     },
-  //   }
-  // );
+  const myQuery = {
+    ...query,
+    selectionType: 2,
+  };
+  const { isLoading, isFetching } = useTpcSoftwareSelectionPageQuery(
+    client,
+    myQuery,
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: data.tpcSoftwareSelectionPage.count as number,
+          },
+        });
+        setData(data.tpcSoftwareSelectionPage.items);
+      },
+    }
+  );
   return (
     <>
-      <div className="p-4">
+      <div className="h-[calc(100vh-240px)]  p-4">
         <MyTable
           columns={columns}
           dataSource={tableData}
-          // loading={isLoading || isFetching}
+          loading={isLoading || isFetching}
           onChange={handleTableChange}
           pagination={tableParams.pagination}
           rowKey={'key'}
-          scroll={{ x: 'max-content' }}
+          tableLayout={'fixed'}
         />
         <Dialog
           open={openConfirm}

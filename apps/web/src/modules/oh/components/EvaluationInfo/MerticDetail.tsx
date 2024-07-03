@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { toFixed } from '@common/utils';
 import { allMetricData } from '@modules/oh/components/EvaluationInfo/AllMetricData';
 import { Tag, Badge, Button, Popover } from 'antd';
@@ -68,14 +67,14 @@ export const getWarningContent = (name) => {
       return '有效 bug、PR 平均 1 月以内响应';
     case '历史漏洞':
       return '引入开源软件年漏洞 5 个以上';
-    case '采用度分析':
-      return '包管理平台下载数据量较低';
+    // case '采用度分析':
+    //   return '包管理平台下载数据量较低';
     case '软件质量':
-      return '引入软件仓库未包含 Static Application Security Testing (SAST)';
+      return '软件质量分析未达标';
     case '软件包签名':
       return '软件包分发不包含数字校验';
-    case '漏洞披露机制':
-      return '软件未检测到漏洞披露机制';
+    // case '漏洞披露机制':
+    //   return '软件未检测到漏洞披露机制';
     case '社区支撑':
       return '有效 bug、PR 平均 1 月以内响应';
     case '版本生命周期':
@@ -85,6 +84,14 @@ export const getWarningContent = (name) => {
 //0 分
 export const getErrorContent = (name) => {
   switch (name) {
+    case '依赖可获得':
+      return '未检测到项目依赖的开源软件的 License';
+    case '软件质量':
+      return '软件质量分析未达标';
+    case 'DCO':
+      return '未检测到项目的提交者签署 DCO';
+    case '软件包签名':
+      return '软件包分发不包含数字校验';
     case '二进制制品':
       return '引入软件源码仓库包含二进制制品';
     case '版本归一化':
@@ -95,16 +102,16 @@ export const getErrorContent = (name) => {
       return '未检测到许可证';
     case '许可证兼容性':
       return '引入软件项目级、文件级许可证存在兼容性问题';
-    case '专利风险':
-      return '非全球专利保护社区 OIN（Open Invention Network）认证软件';
+    // case '专利风险':
+    //   return '非全球专利保护社区 OIN（Open Invention Network）认证软件';
     case '代码维护':
       return '项目已归档或从未有版本发布';
     case '社区支撑':
       return '有效 bug、PR 平均 1 月以上响应';
     case '版本生命周期':
-      return '版本处于 EOL 阶段';
-    case '漏洞响应机制':
-      return '软件无漏洞响应机制';
+      return '版本没有 release 或处于 EOL 阶段';
+    // case '漏洞响应机制':
+    //   return '软件无漏洞响应机制';
     case '安全漏洞':
       return '引入软件及依赖源码有公开未修复漏洞';
   }

@@ -31,7 +31,7 @@ export const allMetricData = [
   {
     key: 'complianceDco',
     detailRender: ({ commitCount, commitDcoCount }) => {
-      let res = `引入软件代码提交者共有${commitCount}人，其中${commitDcoCount}人已签署 DCO。`;
+      let res = `引入软件代码提交共有${commitCount}次，其中${commitDcoCount}次已签署 DCO。`;
       return res;
     },
     维度: '合法合规',
@@ -140,9 +140,9 @@ export const allMetricData = [
       duplicationRatio,
       duplicationScore,
     }) => {
-      let res = `项目内代码重复率为${duplicationRatio || 0}，得分${
+      let res = `项目内代码重复率为${duplicationRatio || 0}%，得分${
         duplicationScore || 0
-      }；\n 项目内测试覆盖率为${coverageRatio || 0}，得分${
+      }；\n 项目内测试覆盖率为${coverageRatio || 0}%，得分${
         coverageScore || 0
       }。`;
       return res;
@@ -171,15 +171,15 @@ export const allMetricData = [
   //     指标意义：
   //       '一款软件只在 OpenHarmony 及 TPC 中引入一次\n\n【规则】\n1. 主动选型开源软件与被动依赖开源软件只有一个社区版本；',
   //   },
-  {
-    key: 'lifecycleVersionNumber',
-    detailRender: null,
-    维度: '生命周期',
-    指标名称: '版本号',
-    风险重要性: '中',
-    指标意义:
-      '引入软件版本规范检查\n\n【规则】\n1. master 是分支，不是版本号，不能用 master 作为版本号引入；\n2. 引入官方发布版本（Release 版本），非正式版本（beta 等）未经过全面测试，不允许入库；',
-  },
+  // {
+  //   key: 'lifecycleVersionNumber',
+  //   detailRender: null,
+  //   维度：'生命周期',
+  //   指标名称：'版本号',
+  //   风险重要性：'中',
+  //   指标意义：
+  //     '引入软件版本规范检查\n\n【规则】\n1. master 是分支，不是版本号，不能用 master 作为版本号引入；\n2. 引入官方发布版本（Release 版本），非正式版本（beta 等）未经过全面测试，不允许入库；',
+  // },
   {
     key: 'lifecycleVersionLifecycle',
     detailRender: (item) => {
@@ -187,14 +187,13 @@ export const allMetricData = [
         return '';
       }
       const { archived, latestVersionCreatedAt, latestVersionName } = item;
-      if (!latestVersionName) return '';
       let res = ``;
       if (archived) {
-        res = `引入软件最新版本为${latestVersionName},属于 archived 版本，发布于${latestVersionCreatedAt?.slice(
-          0,
-          10
-        )}。`;
+        res = `引入软件已归档`;
       } else {
+        if (!latestVersionName) {
+          return `引入软件无 release 版本`;
+        }
         res = `引入软件最新版本为${latestVersionName},发布于${latestVersionCreatedAt?.slice(
           0,
           10
@@ -206,7 +205,7 @@ export const allMetricData = [
     指标名称: '版本生命周期',
     风险重要性: '高',
     指标意义:
-      '检查引入软件版本社区维护生命周期是否结束\n\n【建议】\n1. 优先选择 2 年以内发布的版本（以评审节点计算）；\n2. 社区已经 EOL 的版本，不建议引入；',
+      '检查引入软件版本社区维护生命周期是否结束\n\n【建议】\n1. 优先选择 2 年以内有正式版本发布的软件（以评审节点计算）；\n2. 社区已经 EOL(归档) 的软件，不建议引入；',
   },
   {
     key: 'securityBinaryArtifact',
