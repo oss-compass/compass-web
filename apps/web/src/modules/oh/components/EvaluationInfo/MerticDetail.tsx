@@ -117,12 +117,11 @@ export const getErrorContent = (name) => {
   }
 };
 const getDeital = (item) => {
-  if (!item) return '';
   const { detailRender, detail } = item;
   if (Array.isArray(detail) && detail?.length == 0) {
     return '';
   }
-  if (detailRender) {
+  if (detailRender && detail !== null) {
     return <>{detailRender(detail)}</>;
   } else if (detail) {
     return <>{detail}</>;
