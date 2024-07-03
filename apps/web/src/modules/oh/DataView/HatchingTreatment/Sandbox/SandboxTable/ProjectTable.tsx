@@ -11,7 +11,7 @@ import { getHubUrl } from '@common/utils';
 
 const ReportTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [reportType, setReportType] = useState(0);
+  // const [reportType, setReportType] = useState(0);
 
   const columns = [
     // {
@@ -62,9 +62,8 @@ const ReportTable = () => {
         const { provider, nickname } = record?.user?.loginBinds[0];
         return (
           <a
-            onClick={() => {
-              window.open(getHubUrl(provider, nickname), '_blank');
-            }}
+            target="_blank"
+            href={getHubUrl(provider, nickname)}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {record?.user?.name}
@@ -97,7 +96,7 @@ const ReportTable = () => {
   } = useGetTableOption();
   const myQuery = {
     ...query,
-    selectionType: reportType,
+    selectionType: 0,
   };
   const { isLoading, isFetching } = useTpcSoftwareSelectionPageQuery(
     client,
@@ -119,17 +118,6 @@ const ReportTable = () => {
   return (
     <>
       <div className="h-[calc(100vh-240px)]  p-4">
-        <div className="mb-2 ml-2">
-          <Radio.Group
-            onChange={(e) => {
-              setReportType(e.target.value);
-            }}
-            value={reportType}
-          >
-            <Radio value={0}>选型申请</Radio>
-            <Radio value={1}>已建仓申请</Radio>
-          </Radio.Group>
-        </div>
         <MyTable
           columns={columns}
           dataSource={tableData}

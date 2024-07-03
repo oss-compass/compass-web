@@ -1074,6 +1074,7 @@ export type CreateTpcSoftwareSelectionInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
   committers: Array<Scalars['String']>;
+  demandSource?: InputMaybe<Scalars['String']>;
   incubationTime: Scalars['String'];
   /** repo or project label */
   label: Scalars['String'];
@@ -3249,7 +3250,7 @@ export type TpcSoftwareReportMetric = {
   ecologyCommunitySupport?: Maybe<Scalars['Int']>;
   ecologyCommunitySupportDetail?: Maybe<Scalars['String']>;
   ecologyDependencyAcquisition?: Maybe<Scalars['Int']>;
-  ecologyDependencyAcquisitionDetail?: Maybe<Scalars['String']>;
+  ecologyDependencyAcquisitionDetail?: Maybe<Array<Scalars['String']>>;
   ecologyPatentRisk?: Maybe<Scalars['Int']>;
   ecologyPatentRiskDetail?: Maybe<Scalars['String']>;
   ecologySoftwareQuality?: Maybe<Scalars['Int']>;
@@ -3332,6 +3333,7 @@ export type TpcSoftwareSelection = {
   adaptationMethod?: Maybe<Scalars['String']>;
   committers?: Maybe<Array<Scalars['String']>>;
   createdAt?: Maybe<Scalars['ISO8601DateTime']>;
+  demandSource?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   incubationTime?: Maybe<Scalars['String']>;
   issueUrl?: Maybe<Scalars['String']>;
@@ -3362,6 +3364,7 @@ export type TpcSoftwareSelectionReport = {
   name?: Maybe<Scalars['String']>;
   programmingLanguage?: Maybe<Scalars['String']>;
   reportType: Scalars['Int'];
+  sameTypeCheck?: Maybe<Scalars['String']>;
   shortCode: Scalars['String'];
   tpcSoftwareReportMetric?: Maybe<TpcSoftwareReportMetric>;
   tpcSoftwareSig?: Maybe<TpcSoftwareSig>;
@@ -3378,6 +3381,7 @@ export type TpcSoftwareSelectionReportInput = {
   manufacturer: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
+  sameTypeCheck?: InputMaybe<Scalars['String']>;
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityDisclosure?: InputMaybe<Scalars['String']>;
   vulnerabilityResponse?: InputMaybe<Scalars['String']>;
@@ -5173,6 +5177,7 @@ export type CreateTpcSoftwareSelectionMutationVariables = Exact<{
   repoUrl?: InputMaybe<Scalars['String']>;
   committers: Array<Scalars['String']> | Scalars['String'];
   incubationTime: Scalars['String'];
+  demandSource?: InputMaybe<Scalars['String']>;
   reason: Scalars['String'];
   adaptationMethod: Scalars['String'];
 }>;
@@ -6920,6 +6925,59 @@ export type TpcSoftwareSelectionReportPageQuery = {
         status?: string | null;
         tpcSoftwareReportId?: number | null;
         updatedAt?: any | null;
+        baseCodeUrlDetail?: string | null;
+        baseRepoNameDetail?: string | null;
+        baseWebsiteUrlDetail?: string | null;
+        compliancePackageSigDetail?: Array<string> | null;
+        ecologyAdoptionAnalysisDetail?: string | null;
+        ecologyCodeMaintenanceDetail?: string | null;
+        ecologyCommunitySupportDetail?: string | null;
+        ecologyDependencyAcquisitionDetail?: Array<string> | null;
+        ecologyPatentRiskDetail?: string | null;
+        lifecycleVersionNormalizationDetail?: string | null;
+        lifecycleVersionNumberDetail?: string | null;
+        securityBinaryArtifactDetail?: Array<string> | null;
+        securityVulnerabilityDisclosureDetail?: string | null;
+        securityVulnerabilityResponseDetail?: string | null;
+        complianceDcoDetail?: {
+          __typename?: 'TpcSoftwareReportMetricComplianceDco';
+          commitCount?: number | null;
+          commitDcoCount?: number | null;
+        } | null;
+        complianceLicenseCompatibilityDetail?: Array<{
+          __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+          license?: string | null;
+          licenseConflictList?: Array<string> | null;
+        }> | null;
+        complianceLicenseDetail?: {
+          __typename?: 'TpcSoftwareReportMetricComplianceLicense';
+          licenseAccessList?: Array<string> | null;
+          licenseNonAccessList?: Array<string> | null;
+        } | null;
+        ecologySoftwareQualityDetail?: {
+          __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+          coverageRatio?: number | null;
+          coverageScore?: number | null;
+          duplicationRatio?: number | null;
+          duplicationScore?: number | null;
+        } | null;
+        lifecycleVersionLifecycleDetail?: {
+          __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
+          archived?: boolean | null;
+          latestVersionCreatedAt?: any | null;
+          latestVersionName?: string | null;
+        } | null;
+        securityHistoryVulnerabilityDetail?: Array<{
+          __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
+          summary?: string | null;
+          vulnerability?: string | null;
+        }> | null;
+        securityVulnerabilityDetail?: Array<{
+          __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+          packageName?: string | null;
+          packageVersion?: string | null;
+          vulnerabilities?: Array<string> | null;
+        }> | null;
       } | null;
       tpcSoftwareSig?: {
         __typename?: 'TpcSoftwareSig';
@@ -6983,7 +7041,7 @@ export type TpcSoftwareReportMetricDetailFragment = {
   ecologyAdoptionAnalysisDetail?: string | null;
   ecologyCodeMaintenanceDetail?: string | null;
   ecologyCommunitySupportDetail?: string | null;
-  ecologyDependencyAcquisitionDetail?: string | null;
+  ecologyDependencyAcquisitionDetail?: Array<string> | null;
   ecologyPatentRiskDetail?: string | null;
   lifecycleVersionNormalizationDetail?: string | null;
   lifecycleVersionNumberDetail?: string | null;
@@ -7078,7 +7136,7 @@ export type TpcSoftwareSelectionReportQuery = {
       ecologyAdoptionAnalysisDetail?: string | null;
       ecologyCodeMaintenanceDetail?: string | null;
       ecologyCommunitySupportDetail?: string | null;
-      ecologyDependencyAcquisitionDetail?: string | null;
+      ecologyDependencyAcquisitionDetail?: Array<string> | null;
       ecologyPatentRiskDetail?: string | null;
       lifecycleVersionNormalizationDetail?: string | null;
       lifecycleVersionNumberDetail?: string | null;
@@ -9450,9 +9508,9 @@ useCreateTpcSoftwareSelectionReportMutation.fetcher = (
     CreateTpcSoftwareSelectionReportMutationVariables
   >(client, CreateTpcSoftwareSelectionReportDocument, variables, headers);
 export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: String, $committers: [String!]!, $incubationTime: String!, $reason: String!, $adaptationMethod: String!) {
+    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: String, $committers: [String!]!, $incubationTime: String!, $demandSource: String, $reason: String!, $adaptationMethod: String!) {
   createTpcSoftwareSelection(
-    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, incubationTime: $incubationTime, reason: $reason, adaptationMethod: $adaptationMethod}
+    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, adaptationMethod: $adaptationMethod}
   ) {
     errors {
       message
@@ -12470,6 +12528,7 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
       }
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
+        ...tpcSoftwareReportMetricDetail
       }
       tpcSoftwareSig {
         ...tpcSoftwareSig
@@ -12481,6 +12540,7 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
   }
 }
     ${TpcSoftwareReportMetricFragmentDoc}
+${TpcSoftwareReportMetricDetailFragmentDoc}
 ${TpcSoftwareSigFragmentDoc}`;
 export const useTpcSoftwareSelectionReportPageQuery = <
   TData = TpcSoftwareSelectionReportPageQuery,

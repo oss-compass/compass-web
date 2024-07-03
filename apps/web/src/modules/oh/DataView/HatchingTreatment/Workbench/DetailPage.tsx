@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Input, Tabs } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
-import { getMetricScore } from '@modules/oh/utils';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import Loading from '@modules/oh/components/Loading';
 import Analyzing from '@modules/oh/components/Analyzing';

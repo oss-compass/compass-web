@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { Button } from 'antd';
-import { getMetricScore } from '@modules/oh/utils';
-import { getPathname } from '@common/utils';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import { getMetricScore } from '@modules/oh/components/EvaluationInfo/MerticDetail';
 import Loading from '@modules/oh/components/Loading';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 

@@ -1600,6 +1600,7 @@ query tpcSoftwareSelectionReportPage(
       }
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
+        ...tpcSoftwareReportMetricDetail
       }
       tpcSoftwareSig {
         ...tpcSoftwareSig

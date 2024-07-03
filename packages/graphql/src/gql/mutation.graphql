@@ -163,6 +163,7 @@ mutation createTpcSoftwareSelection(
   $committers: [String!]!
   # $repoDescription: String!
   $incubationTime: String!
+  $demandSource: String
   $reason: String!
   $adaptationMethod: String!
 ) {
@@ -175,6 +176,7 @@ mutation createTpcSoftwareSelection(
       repoUrl: $repoUrl
       committers: $committers
       # repoDescription: $repoDescription
+      demandSource: $demandSource
       incubationTime: $incubationTime
       reason: $reason
       adaptationMethod: $adaptationMethod

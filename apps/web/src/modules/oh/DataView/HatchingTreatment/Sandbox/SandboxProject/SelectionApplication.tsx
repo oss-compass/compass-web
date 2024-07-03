@@ -152,55 +152,6 @@ const SelectionApplication = () => {
               <div className="mb-6 text-base font-semibold">仓库信息</div>
               <Row gutter={24}>
                 <Col span={12}>
-                  <Popover
-                    placement="topRight"
-                    content={
-                      <>
-                        <div>1.软件名称和其官网保持一致;</div>
-                        <div>1.禁止以软件的子模块作为软件名;</div>
-                      </>
-                    }
-                    title="规则"
-                    trigger="click"
-                  >
-                    <Form.Item
-                      label="新建仓路径"
-                      name="repoUrl"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input
-                        disabled={false}
-                        onFocus={() => {}}
-                        addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                      />
-                    </Form.Item>
-                  </Popover>
-                </Col>
-                <Col span={12}>
-                  <Popover
-                    placement="topRight"
-                    content={
-                      <>
-                        <div>
-                          需填写 Commiters 的 Gitee/Github 用户名，多个
-                          Commiters 用逗号分开
-                        </div>
-                      </>
-                    }
-                    title="注意"
-                    trigger="click"
-                  >
-                    <Form.Item
-                      label="Commiters"
-                      name="committers"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input disabled={false} />
-                    </Form.Item>
-                  </Popover>
-                </Col>
-
-                <Col span={12}>
                   <Form.Item
                     label="沙箱孵化周期"
                     name="incubationTime"
@@ -234,6 +185,84 @@ const SelectionApplication = () => {
                     </Select>
                   </Form.Item>
                 </Col>
+                <Col span={12}>
+                  <Popover
+                    placement="topRight"
+                    content={
+                      <>
+                        <div>
+                          填写完成 OH 适配后的仓库路径，如暂不确定可不填
+                        </div>
+                      </>
+                    }
+                    title="规则"
+                    trigger="click"
+                  >
+                    <Form.Item
+                      label="适配仓路径"
+                      name="repoUrl"
+                      // rules={[{ required: true, message: '请输入!' }]}
+                    >
+                      <Input
+                        disabled={false}
+                        onFocus={() => {}}
+                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                      />
+                    </Form.Item>
+                  </Popover>
+                </Col>
+                <Col span={12}>
+                  <Popover
+                    placement="topRight"
+                    content={
+                      <>
+                        <div>
+                          需填写 Commiters 的 Gitee/Github 用户名，多个
+                          Commiters 用逗号分开
+                        </div>
+                      </>
+                    }
+                    title="注意"
+                    trigger="click"
+                  >
+                    <Form.Item
+                      label="Commiters"
+                      name="committers"
+                      rules={[{ required: true, message: '请输入!' }]}
+                    >
+                      <Input disabled={false} />
+                    </Form.Item>
+                  </Popover>
+                </Col>
+                <Col span={24}>
+                  <Popover
+                    placement="top"
+                    content={
+                      <>
+                        <div>填写初始需求来源 APP，如无可不填</div>
+                      </>
+                    }
+                    title="规则"
+                    trigger="click"
+                  >
+                    <Form.Item
+                      label="需求来源APP"
+                      name="demandSource"
+                      labelCol={{
+                        span: 3,
+                        style: { fontWeight: 'bold' },
+                      }}
+                      // rules={[{ required: true, message: '请输入!' }]}
+                    >
+                      <Input
+                        disabled={false}
+                        onFocus={() => {}}
+                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                      />
+                    </Form.Item>
+                  </Popover>
+                </Col>
+
                 <Col span={24}>
                   <Form.Item
                     labelCol={{

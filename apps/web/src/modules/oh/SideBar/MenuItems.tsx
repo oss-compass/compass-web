@@ -76,7 +76,7 @@ export const menuItems: MenuItem[] = [
     children: [
       {
         key: 'sandbox',
-        label: '沙箱项目 (孵化准备)',
+        label: '沙箱项目 (孵化选型)',
         children: [
           {
             key: 'sandboxReport',

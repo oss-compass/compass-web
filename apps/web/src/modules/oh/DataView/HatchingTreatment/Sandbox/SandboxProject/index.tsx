@@ -11,11 +11,11 @@ const Main = () => {
       label: <div className="mx-2 text-lg">选型申请</div>,
       children: <SelectionApplication />,
     },
-    {
-      key: '已建仓申请',
-      label: <div className="mx-2 text-lg">已建仓申请</div>,
-      children: <RepoApplication />,
-    },
+    // {
+    //   key: '已建仓申请',
+    //   label: <div className="mx-2 text-lg">已建仓申请</div>,
+    //   children: <RepoApplication />,
+    // },
   ];
 
   return (

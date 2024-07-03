@@ -1,20 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { EChartsOption, init, LineSeriesOption } from 'echarts';
-import {
-  CloseCircleOutlined,
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons';
+import React from 'react';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { Tag, Badge, Button, Popover } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { Tag, Descriptions, Dropdown, Popover } from 'antd';
+import type { MenuProps } from 'antd';
 import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import {
+  downloadReport,
   getEvaluationDetail,
   getMetricItemScore,
-  getWarningContent,
-  getErrorContent,
-} from '@modules/oh/utils';
+  setMetricIcon,
+} from '@modules/oh/components/EvaluationInfo/MerticDetail';
 
 const EvaluationTopScore = ({ items, score }) => {
   const clickAnchor = (e: any, id: string) => {
@@ -25,7 +21,7 @@ const EvaluationTopScore = ({ items, score }) => {
     }
   };
   return (
-    <div className="flex h-52 border bg-[#f9f9f9]">
+    <div className="mt-6 flex h-52 border bg-[#f9f9f9]">
       <div className="flex h-full w-40 items-center ">
         <Pie score={score} />
       </div>
@@ -63,25 +59,6 @@ const EvaluationTopScore = ({ items, score }) => {
   );
 };
 
-export const getContent = (item) => {
-  if (item.score >= 8) {
-    return <div>得分：{item.score}</div>;
-  } else if (item.score >= 6) {
-    return (
-      <>
-        <div>得分：{item.score}</div>
-        <div>风险：{getWarningContent(item.指标名称)}</div>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <div>得分：{item.score}</div>
-        <div>风险：{getErrorContent(item.指标名称)}</div>
-      </>
-    );
-  }
-};
 const EvaluationMerticItem = ({ mertic, items, score }) => {
   return (
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
@@ -108,32 +85,7 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
               className="flex h-[88px] border border-b-0 bg-white px-4 py-3"
             >
               <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-                {item.score >= 8 ? (
-                  <Popover content={getContent(item)} title="">
-                    <CheckCircleOutlined
-                      rev={undefined}
-                      className="cursor-pointer text-lg "
-                    />
-                  </Popover>
-                ) : item.score >= 6 ? (
-                  <Popover content={getContent(item)} title="">
-                    <Badge dot>
-                      <ExclamationCircleOutlined
-                        rev={undefined}
-                        className="cursor-pointer text-lg text-[#f8961e]"
-                      />
-                    </Badge>
-                  </Popover>
-                ) : (
-                  <Popover content={getContent(item)} title="">
-                    <Badge dot>
-                      <CloseCircleOutlined
-                        rev={undefined}
-                        className="cursor-pointer text-lg text-[#ff4d4f]"
-                      />
-                    </Badge>
-                  </Popover>
-                )}
+                {setMetricIcon(item)}
               </div>
               {/* <div className="mr-4 flex items-center justify-center">
                 {item.score}
@@ -149,7 +101,10 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
                     )}
                   </div>
                 </div>
-                <div className="line-clamp-2 mt-1 text-xs">
+                <div
+                  title={item.指标意义.split('\n\n')}
+                  className="line-clamp-2 mt-1 text-xs"
+                >
                   {item.指标意义.split('\n\n').map((line, index) => (
                     <React.Fragment key={index}>
                       {line}
@@ -166,13 +121,11 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
   );
 };
 const EvaluationMertic = ({ allData }) => {
-  let yList = ['合法合规', '技术生态', '生命周期', '网络安全'];
-  const [mertic, setMertic] = useState('合法合规');
+  let metricList = ['合法合规', '技术生态', '生命周期', '网络安全'];
   const data = getMetricItemScore(allData.tpcSoftwareReportMetric);
-  // const items = allData.filter((item) => item.维度 === mertic);
   return (
-    <>
-      {yList.map((mertic) => {
+    <div className="mt-6">
+      {metricList.map((mertic) => {
         const items = data.filter((item) => item.维度 === mertic);
         const score = allData.evaluationDetail.find(
           (item) => item.name === mertic
@@ -186,42 +139,125 @@ const EvaluationMertic = ({ allData }) => {
           />
         );
       })}
-    </>
+    </div>
+  );
+};
+const EvaluationBaseInfo = ({ item }) => {
+  const baseItems = [
+    {
+      key: '1',
+      label: '软件名称',
+      children: item.name,
+    },
+    {
+      key: '2',
+      label: '所属领域',
+      children: item?.tpcSoftwareSig?.name,
+    },
+    {
+      key: '3',
+      label: '开发商',
+      children: item.manufacturer,
+    },
+    {
+      key: '4',
+      label: '编程语言',
+      children: item.programmingLanguage,
+    },
+    {
+      key: '5',
+      label: '代码量',
+      children: item.codeCount,
+    },
+    {
+      key: '6',
+      label: '官网地址',
+      children: (
+        <>
+          <a
+            className="line-clamp-1 text-[#69b1ff]"
+            target="_blank"
+            href={item.websiteUrl}
+          >
+            {item.websiteUrl}
+          </a>
+        </>
+      ),
+    },
+    {
+      key: '7',
+      label: '源码地址',
+      children: (
+        <>
+          <a className="text-[#69b1ff]" target="_blank" href={item.codeUrl}>
+            {item.codeUrl}
+          </a>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <div className="mt-6 border bg-[#f9f9f9] p-6 pb-3">
+      <div className="mb-4 text-lg font-semibold">基础信息</div>
+      <div className="oh">
+        <Descriptions items={baseItems} />
+      </div>
+    </div>
   );
 };
 const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
   if (!item.evaluationDetail) {
     item = getEvaluationDetail(item);
   }
-  console.log(item);
+  const dropdownItem: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <a
+          onClick={() => {
+            downloadReport(item);
+          }}
+        >
+          下载 CSV
+        </a>
+      ),
+    },
+  ];
   return (
     <div>
-      <div className="mb-6 flex border bg-[#f9f9f9] py-3 px-6">
-        {back && (
-          <AiOutlineLeftCircle
-            onClick={() => {
-              back();
-            }}
-            className="mr-2  cursor-pointer text-2xl text-[#3f60ef]"
-          />
-        )}
-        <div className="text-lg font-semibold">
-          <a
-            className="hover:underline"
-            href={item.codeUrl}
-            target="_blank"
-          >{`${getPathname(item.codeUrl) || item.name}`}</a>{' '}
-          选型评估报告
+      <div className="flex justify-between border bg-[#f9f9f9] py-3 px-6">
+        <div className="flex">
+          {back && (
+            <AiOutlineLeftCircle
+              onClick={() => {
+                back();
+              }}
+              className="mr-2  cursor-pointer text-2xl text-[#3f60ef]"
+            />
+          )}
+          <div className="text-lg font-semibold">
+            <a
+              className="hover:underline"
+              href={item.codeUrl}
+              target="_blank"
+            >{`${getPathname(item.codeUrl) || item.name}`}</a>{' '}
+            选型评估报告
+          </div>
+          <div className="mt-2 ml-4 text-xs">
+            更新于：
+            {item?.tpcSoftwareReportMetric?.updatedAt?.slice(0, 10) || ''}
+          </div>
         </div>
-        <div className="mt-2 ml-4 text-xs">
-          更新于：
-          {item?.tpcSoftwareReportMetric?.updatedAt?.slice(0, 10) || ''}
+        <div className="float-right cursor-pointer text-lg">
+          <Dropdown placement="bottom" menu={{ items: dropdownItem }}>
+            <DownloadOutlined rev={undefined} />
+          </Dropdown>
         </div>
       </div>
+      <EvaluationBaseInfo item={item} />
       <EvaluationTopScore items={item.evaluationDetail} score={item.score} />
-      <div className="mt-6">
-        <EvaluationMertic allData={item} />
-      </div>
+      <EvaluationMertic allData={item} />
     </div>
   );
 };
