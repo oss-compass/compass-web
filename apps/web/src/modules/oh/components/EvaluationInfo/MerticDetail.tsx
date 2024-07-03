@@ -121,7 +121,7 @@ const getDeital = (item) => {
   if (Array.isArray(detail) && detail?.length == 0) {
     return '';
   }
-  if (detailRender && detail !== null) {
+  if (detailRender && detail) {
     return <>{detailRender(detail)}</>;
   } else if (detail) {
     return <>{detail}</>;
