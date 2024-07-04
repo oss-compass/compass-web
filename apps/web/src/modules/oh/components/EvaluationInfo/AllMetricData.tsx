@@ -79,14 +79,14 @@ export const allMetricData = [
   },
   {
     key: 'ecologyCodeMaintenance',
-    detailRender: (item) => {
+    detailRender: (codeUrl) => {
       return (
         <>
           可
           <a
             className="text-[#69b1ff]"
             target="_blank"
-            href={'./analyze?label=' + item.codeUrl}
+            href={'./analyze?label=' + codeUrl}
           >
             点击此处
           </a>
@@ -102,14 +102,14 @@ export const allMetricData = [
   },
   {
     key: 'ecologyCommunitySupport',
-    detailRender: (item) => {
+    detailRender: (codeUrl) => {
       return (
         <>
           可
           <a
             className="text-[#69b1ff]"
             target="_blank"
-            href={'./analyze?label=' + item.codeUrl}
+            href={'./analyze?label=' + codeUrl}
           >
             点击此处
           </a>

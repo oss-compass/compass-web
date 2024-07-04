@@ -53,68 +53,43 @@ export const getMetricItemScore = (rowData) => {
   });
 };
 //6 分
-export const getWarningContent = (name) => {
-  switch (name) {
-    case '许可证包含':
-      return '许可证不在准入清单';
-    case 'DCO':
-      return '未检测到项目的提交者签署 DCO';
-    case '依赖可获得':
-      return '未检测到项目依赖的开源软件的 License';
-    case '代码维护':
-      return '过去 90 天平均每周少于 1 次代码提交';
-    case '社区支撑':
-      return '有效 bug、PR 平均 1 月以内响应';
-    case '历史漏洞':
-      return '引入开源软件年漏洞 5 个以上';
-    // case '采用度分析':
-    //   return '包管理平台下载数据量较低';
-    case '软件质量':
-      return '软件质量分析未达标';
-    case '软件包签名':
-      return '软件包分发不包含数字校验';
-    // case '漏洞披露机制':
-    //   return '软件未检测到漏洞披露机制';
-    case '社区支撑':
-      return '有效 bug、PR 平均 1 月以内响应';
-    case '版本生命周期':
-      return '无明确声明周期声明软件及版本 2 年以上发布';
-  }
+export const getWarningContent = (item) => {
+  const { key } = item;
+  const statusMessages = {
+    complianceLicense: '许可证不在准入清单',
+    complianceDco: '未检测到项目的提交者签署 DCO',
+    compliancePackageSig: '软件包分发不包含数字校验',
+    ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
+    ecologyCommunitySupport: '有效 bug、PR 平均 1 月以内响应',
+    ecologySoftwareQuality: '软件质量分析未达标',
+    lifecycleVersionLifecycle: '无明确声明周期声明软件及版本 2 年以上发布',
+    ecologyCodeMaintenance: '过去 90 天平均每周少于 1 次代码提交',
+  };
+  return statusMessages[key];
 };
 //0 分
-export const getErrorContent = (name) => {
-  switch (name) {
-    case '依赖可获得':
-      return '未检测到项目依赖的开源软件的 License';
-    case '软件质量':
-      return '软件质量分析未达标';
-    case 'DCO':
-      return '未检测到项目的提交者签署 DCO';
-    case '软件包签名':
-      return '软件包分发不包含数字校验';
-    case '二进制制品':
-      return '引入软件源码仓库包含二进制制品';
-    case '版本归一化':
-      return '该软件已在 OpenHarmony 及 TPC 中引入';
-    case '版本号':
-      return '未检测到版本号或版本号不规范';
-    case '许可证包含':
-      return '未检测到许可证';
-    case '许可证兼容性':
-      return '引入软件项目级、文件级许可证存在兼容性问题';
-    // case '专利风险':
-    //   return '非全球专利保护社区 OIN（Open Invention Network）认证软件';
-    case '代码维护':
-      return '项目已归档或从未有版本发布';
-    case '社区支撑':
-      return '有效 bug、PR 平均 1 月以上响应';
-    case '版本生命周期':
-      return '版本没有 release 或处于 EOL 阶段';
-    // case '漏洞响应机制':
-    //   return '软件无漏洞响应机制';
-    case '安全漏洞':
-      return '引入软件及依赖源码有公开未修复漏洞';
-  }
+export const getErrorContent = (item) => {
+  const { key } = item;
+  const statusMessages = {
+    complianceLicense: '未检测到许可证',
+    complianceLicenseCompatibility:
+      '引入软件项目级、文件级许可证存在兼容性问题',
+    complianceDco: '未检测到项目的提交者签署 DCO',
+    compliancePackageSig: '软件包分发不包含数字校验',
+    ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
+    ecologyCommunitySupport: '有效 bug、PR 平均 1 月以上响应',
+    ecologySoftwareQuality: '软件质量分析未达标',
+    ecologyPatentRisk:
+      '非全球专利保护社区 OIN（Open Invention Network）认证软件',
+    lifecycleVersionLifecycle: '版本没有 release 或处于 EOL 阶段',
+    securityBinaryArtifact: '引入软件源码仓库包含二进制制品',
+    securityVulnerability: '引入软件及依赖源码有公开未修复漏洞',
+    securityVulnerabilityResponse: '软件无漏洞响应机制',
+    ecologyCodeMaintenance: '项目已归档或从未有版本发布',
+    // 版本归一化：'该软件已在 OpenHarmony 及 TPC 中引入',
+    // 版本号：'未检测到版本号或版本号不规范',
+  };
+  return statusMessages[key];
 };
 const getDeital = (item) => {
   const { detailRender, detail } = item;
@@ -139,9 +114,7 @@ export const getContent = (item) => {
         <div>得分：{item.score}</div>
         <div>
           风险：
-          {item.score >= 6
-            ? getWarningContent(item.指标名称)
-            : getErrorContent(item.指标名称)}
+          {item.score >= 6 ? getWarningContent(item) : getErrorContent(item)}
         </div>
         <div>{deital ? <>风险详情：{getDeital(item)}</> : ''}</div>
       </>
@@ -266,9 +239,9 @@ export const downloadReport = (item) => {
         if (item.score >= 8 || item.score === null) {
           return '无';
         } else if (item.score >= 6) {
-          return getWarningContent(item.指标名称);
+          return getWarningContent(item);
         } else {
-          return getErrorContent(item.指标名称);
+          return getErrorContent(item);
         }
       } else if (z == '风险详情') {
         if (item.score >= 8 || item.score === null) {
