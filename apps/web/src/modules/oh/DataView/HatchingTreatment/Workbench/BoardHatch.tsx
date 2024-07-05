@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import Report from '@modules/oh/components/SelectReport/Report';
+import Report from '@modules/oh/components/Report/ReportList';
 import { queryKey } from '@modules/oh/constant';
 
 const Main = () => {

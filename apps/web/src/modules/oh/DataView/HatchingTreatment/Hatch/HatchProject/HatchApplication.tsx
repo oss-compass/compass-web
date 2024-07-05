@@ -17,7 +17,7 @@ import DatePicker from '@common/components/Form';
 import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import ReportInfo from '@modules/oh/components/ReportInfo';
-import SelectReport from '@modules/oh/components/SelectReport';
+import SelectReport from '@modules/oh/components/Report/SelectReport';
 import {
   incubationTimeList,
   adaptationMethodList,

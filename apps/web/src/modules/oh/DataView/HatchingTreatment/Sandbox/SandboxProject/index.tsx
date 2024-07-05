@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Tabs } from 'antd';
 import SelectionApplication from './SelectionApplication';
-import RepoApplication from './RepoApplication';
 
 const Main = () => {
   // const [activeKey, setActiveKey] = useState('孵化选型申请');

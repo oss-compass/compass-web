@@ -16,8 +16,7 @@ import Dialog from '@common/components/Dialog';
 import DatePicker from '@common/components/Form';
 import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import ReportInfo from '@modules/oh/components/ReportInfo';
-import SelectReport from '@modules/oh/components/SelectReport';
+import SelectReport from '@modules/oh/components/Report/SelectReport';
 import {
   incubationTimeList,
   adaptationMethodList,
@@ -27,6 +26,7 @@ import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 import { openGiteeIssue } from '@modules/oh/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
+import ReportPageItem from '@modules/oh/components/Report/ReportPageItem';
 
 const SelectionApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -284,9 +284,14 @@ const SelectionApplication = () => {
                   </Form.Item>
                 </Col>
               </Row>
-              {report.length > 1 ? (
+              {report.length > 0 && (
                 <>
                   <div className="mb-4 text-base font-semibold">报告信息</div>
+                  <ReportPageItem reportItems={report} />
+                </>
+              )}
+              {/* {report.length > 1 ? (
+                <>
                   <Tabs
                     className="oh-antd"
                     size={'small'}
@@ -301,7 +306,7 @@ const SelectionApplication = () => {
                 </>
               ) : (
                 <ReportInfo report={report[0]} />
-              )}
+              )} */}
             </>
           )}
         </>

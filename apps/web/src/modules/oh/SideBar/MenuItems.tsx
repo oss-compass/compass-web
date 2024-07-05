@@ -22,7 +22,7 @@ import Graduate from '@modules/oh/DataView/HatchingTreatment/Graduate';
 import BoardSandbox from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardSandbox';
 import BoardHatch from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardHatch';
 import BoardGraduateBoard from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardGraduateBoard';
-import DetailPage from '@modules/oh/DataView/HatchingTreatment/Workbench/DetailPage';
+import ReportPage from '@modules/oh/components/Report/ReportPage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -156,5 +156,5 @@ export const componentMap = {
   boardSandbox: <BoardSandbox />,
   boardHatch: <BoardHatch />,
   boardGraduateBoard: <BoardGraduateBoard />,
-  reportDetailPage: <DetailPage />,
+  reportDetailPage: <ReportPage />,
 };
