@@ -25,7 +25,7 @@ export const openGiteeIssue = (report, values) => {
     })
     .join('..');
   let reportLink = `https://oss-compass.org/oh#reportDetailPage?projectId=${projectId}`;
-  let title = `【TPC】【沙箱项目孵化选型申请】${name} 申请进入 OpenHarmony TPC 沙箱选型项目`;
+  let title = `【TPC】【孵化选型申请】${name} 申请进入 OpenHarmony TPC 沙箱选型项目`;
 
   let body = `
   1. 【需求背景】

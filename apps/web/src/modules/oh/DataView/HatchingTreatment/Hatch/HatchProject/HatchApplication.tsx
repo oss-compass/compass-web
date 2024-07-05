@@ -199,9 +199,7 @@ const SelectionApplication = () => {
                     placement="topRight"
                     content={
                       <>
-                        <div>
-                          填写完成 OH 适配后的仓库路径，如暂不确定可不填
-                        </div>
+                        <div>填写完成 OH 适配后的仓库路径</div>
                       </>
                     }
                     title="规则"
@@ -210,7 +208,7 @@ const SelectionApplication = () => {
                     <Form.Item
                       label="适配仓路径"
                       name="repoUrl"
-                      // rules={[{ required: true, message: '请输入!' }]}
+                      rules={[{ required: true, message: '请输入!' }]}
                     >
                       <Input
                         disabled={false}

@@ -1,6 +1,10 @@
 import React from 'react';
 import { toFixed } from '@common/utils';
-import { allMetricData } from '@modules/oh/components/EvaluationInfo/AllMetricData';
+import {
+  allMetricData,
+  getWarningContent,
+  getErrorContent,
+} from '@modules/oh/components/EvaluationInfo/AllMetricData';
 import { Tag, Badge, Button, Popover } from 'antd';
 import {
   CloseCircleOutlined,
@@ -52,45 +56,7 @@ export const getMetricItemScore = (rowData) => {
     };
   });
 };
-//6 分
-export const getWarningContent = (item) => {
-  const { key } = item;
-  const statusMessages = {
-    complianceLicense: '许可证不在准入清单',
-    complianceDco: '未检测到项目的提交者签署 DCO',
-    compliancePackageSig: '软件包分发不包含数字校验',
-    ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
-    ecologyCommunitySupport: '有效 bug、PR 平均 1 月以内响应',
-    ecologySoftwareQuality: '软件质量分析未达标',
-    lifecycleVersionLifecycle: '无明确声明周期声明软件及版本 2 年以上发布',
-    ecologyCodeMaintenance: '过去 90 天平均每周少于 1 次代码提交',
-  };
-  return statusMessages[key];
-};
-//0 分
-export const getErrorContent = (item) => {
-  const { key } = item;
-  const statusMessages = {
-    complianceLicense: '未检测到许可证',
-    complianceLicenseCompatibility:
-      '引入软件项目级、文件级许可证存在兼容性问题',
-    complianceDco: '未检测到项目的提交者签署 DCO',
-    compliancePackageSig: '软件包分发不包含数字校验',
-    ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
-    ecologyCommunitySupport: '有效 bug、PR 平均 1 月以上响应',
-    ecologySoftwareQuality: '软件质量分析未达标',
-    ecologyPatentRisk:
-      '非全球专利保护社区 OIN（Open Invention Network）认证软件',
-    lifecycleVersionLifecycle: '版本没有 release 或处于 EOL 阶段',
-    securityBinaryArtifact: '引入软件源码仓库包含二进制制品',
-    securityVulnerability: '引入软件及依赖源码有公开未修复漏洞',
-    securityVulnerabilityResponse: '软件无漏洞响应机制',
-    ecologyCodeMaintenance: '项目已归档或从未有版本发布',
-    // 版本归一化：'该软件已在 OpenHarmony 及 TPC 中引入',
-    // 版本号：'未检测到版本号或版本号不规范',
-  };
-  return statusMessages[key];
-};
+
 const getDeital = (item) => {
   const { detailRender, detail } = item;
   if (Array.isArray(detail) && detail?.length == 0) {
@@ -125,6 +91,15 @@ export const setMetricIcon = (item) => {
   if (item.score === null) {
     return (
       <Popover content={'功能开发中，敬请期待'} title="">
+        <ClockCircleOutlined
+          rev={undefined}
+          className="cursor-pointer text-lg text-[#ABABAB]"
+        />
+      </Popover>
+    );
+  } else if (item.score === -1) {
+    return (
+      <Popover content={'未检测到该指标'} title="">
         <ClockCircleOutlined
           rev={undefined}
           className="cursor-pointer text-lg text-[#ABABAB]"

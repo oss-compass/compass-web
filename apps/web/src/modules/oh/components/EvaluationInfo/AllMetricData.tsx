@@ -82,15 +82,15 @@ export const allMetricData = [
     detailRender: (codeUrl) => {
       return (
         <>
-          可
+          可点击链接
           <a
             className="text-[#69b1ff]"
             target="_blank"
             href={'./analyze?label=' + codeUrl}
           >
-            点击此处
+            {' ' + window.location.origin + '/analyze?label=' + codeUrl + ' '}
           </a>
-          前往该软件的 Oss-Compass 评估报告查看技术生态详情
+          前往该软件的 Oss-Compass 评估报告查看社区活跃度详情
         </>
       );
     },
@@ -98,22 +98,22 @@ export const allMetricData = [
     指标名称: '代码维护',
     风险重要性: '高',
     指标意义:
-      '社区活跃度及是否活跃维护检查\n\n【规则】\n1. 选用成熟期（代码更新活跃，定期发布）或成长期（代码更新活跃，频繁发布）的软件，禁止选用处于衰退期（代码无更新或无新版本发布）的软件；',
+      '社区活跃度及是否活跃维护检查\n\n【规则】\n1.根据社区贡献者数量、代码提交频率、组织数量、Issue 数量、版本发布次数等指标进行综合评分；',
   },
   {
     key: 'ecologyCommunitySupport',
     detailRender: (codeUrl) => {
       return (
         <>
-          可
+          可点击链接
           <a
             className="text-[#69b1ff]"
             target="_blank"
             href={'./analyze?label=' + codeUrl}
           >
-            点击此处
+            {' ' + window.location.origin + '/analyze?label=' + codeUrl + ' '}
           </a>
-          前往该软件的 Oss-Compass 评估报告查看技术生态详情
+          前往该软件的 Oss-Compass 评估报告查看社区服务与支撑详情
         </>
       );
     },
@@ -121,7 +121,7 @@ export const allMetricData = [
     指标名称: '社区支撑',
     风险重要性: '高',
     指标意义:
-      '社区服务与支撑检查\n\n【建议】\n1. 社区无明确版本计划，有效 bug、PR 半年以上未响应不建议选用；',
+      '社区服务与支撑检查\n\n【建议】\n1. 根据更新 Issue 数量、关闭 PR 数量、Issue 首次响应时间、PR 处理时间、Issue 评论频率、代码审查评论频率等指标进行综合评分；',
   },
   {
     key: 'ecologyAdoptionAnalysis',
@@ -266,3 +266,42 @@ export const allMetricData = [
   //     指标意义：'引入软件历史漏洞检查\n\n【建议】\n1. 优选漏洞较少的版本',
   //   },
 ];
+//6 分 -8 分
+export const getWarningContent = (item) => {
+  const { key } = item;
+  const statusMessages = {
+    complianceLicense: '许可证不在准入清单',
+    complianceDco: '未检测到项目的提交者签署 DCO',
+    compliancePackageSig: '软件包分发不包含数字校验',
+    ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
+    ecologyCommunitySupport: '软件的社区服务与支撑综合评分有提升空间',
+    ecologyCodeMaintenance: '软件的社区活跃度综合评分有提升空间',
+    ecologySoftwareQuality: '软件质量分析未达标',
+    lifecycleVersionLifecycle: '无明确声明周期声明软件及版本 2 年以上发布',
+  };
+  return statusMessages[key];
+};
+//6 分以下
+export const getErrorContent = (item) => {
+  const { key } = item;
+  const statusMessages = {
+    complianceLicense: '未检测到许可证',
+    complianceLicenseCompatibility:
+      '引入软件项目级、文件级许可证存在兼容性问题',
+    complianceDco: '未检测到项目的提交者签署 DCO',
+    compliancePackageSig: '软件包分发不包含数字校验',
+    ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
+    ecologyCommunitySupport: '软件的社区服务与支撑综合评分偏低',
+    ecologyCodeMaintenance: '软件的社区活跃度综合评分偏低',
+    ecologySoftwareQuality: '软件质量分析未达标',
+    ecologyPatentRisk:
+      '非全球专利保护社区 OIN（Open Invention Network）认证软件',
+    lifecycleVersionLifecycle: '版本没有 release 或处于 EOL 阶段',
+    securityBinaryArtifact: '引入软件源码仓库包含二进制制品',
+    securityVulnerability: '引入软件及依赖源码有公开未修复漏洞',
+    securityVulnerabilityResponse: '软件无漏洞响应机制',
+    // 版本归一化：'该软件已在 OpenHarmony 及 TPC 中引入',
+    // 版本号：'未检测到版本号或版本号不规范',
+  };
+  return statusMessages[key];
+};
