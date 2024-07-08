@@ -1708,6 +1708,29 @@ fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
   securityVulnerabilityDisclosureDetail
   securityVulnerabilityResponseDetail
 }
+
+fragment tpcSoftwareReportMetricRaw on TpcSoftwareReportMetricRaw {
+  codeUrl
+  complianceDcoRaw
+  complianceLicenseCompatibilityRaw
+  complianceLicenseRaw
+  compliancePackageSigRaw
+  ecologyAdoptionAnalysisRaw
+  ecologyCodeMaintenanceRaw
+  ecologyCommunitySupportRaw
+  ecologyDependencyAcquisitionRaw
+  ecologyPatentRiskRaw
+  ecologySoftwareQualityRaw
+  id
+  lifecycleVersionLifecycleRaw
+  lifecycleVersionNormalizationRaw
+  lifecycleVersionNumberRaw
+  securityBinaryArtifactRaw
+  securityHistoryVulnerabilityRaw
+  securityVulnerabilityDisclosureRaw
+  securityVulnerabilityRaw
+  securityVulnerabilityResponseRaw
+}
 query tpcSoftwareSelectionReport($shortCode: String!) {
   tpcSoftwareSelectionReport(shortCode: $shortCode) {
     codeCount
@@ -1716,6 +1739,7 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     manufacturer
     name
     programmingLanguage
+    shortCode
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
       ...tpcSoftwareReportMetricDetail
@@ -1724,5 +1748,14 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
       ...tpcSoftwareSig
     }
     websiteUrl
+  }
+}
+
+query tpcSoftwareSelectionReportRow($shortCode: String!) {
+  tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    id
+    tpcSoftwareReportMetricRaw {
+      ...tpcSoftwareReportMetricRaw
+    }
   }
 }

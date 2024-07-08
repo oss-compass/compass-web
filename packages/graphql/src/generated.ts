@@ -3232,6 +3232,7 @@ export type TpcSoftwareReportMetric = {
   baseRepoNameDetail?: Maybe<Scalars['String']>;
   baseWebsiteUrl?: Maybe<Scalars['Int']>;
   baseWebsiteUrlDetail?: Maybe<Scalars['String']>;
+  codeUrl?: Maybe<Scalars['String']>;
   complianceDco?: Maybe<Scalars['Int']>;
   complianceDcoDetail?: Maybe<TpcSoftwareReportMetricComplianceDco>;
   complianceLicense?: Maybe<Scalars['Int']>;
@@ -3315,6 +3316,30 @@ export type TpcSoftwareReportMetricLifecycleVersionLifecycle = {
   latestVersionName?: Maybe<Scalars['String']>;
 };
 
+export type TpcSoftwareReportMetricRaw = {
+  __typename?: 'TpcSoftwareReportMetricRaw';
+  codeUrl?: Maybe<Scalars['String']>;
+  complianceDcoRaw?: Maybe<Scalars['String']>;
+  complianceLicenseCompatibilityRaw?: Maybe<Scalars['String']>;
+  complianceLicenseRaw?: Maybe<Scalars['String']>;
+  compliancePackageSigRaw?: Maybe<Scalars['String']>;
+  ecologyAdoptionAnalysisRaw?: Maybe<Scalars['String']>;
+  ecologyCodeMaintenanceRaw?: Maybe<Scalars['String']>;
+  ecologyCommunitySupportRaw?: Maybe<Scalars['String']>;
+  ecologyDependencyAcquisitionRaw?: Maybe<Scalars['String']>;
+  ecologyPatentRiskRaw?: Maybe<Scalars['String']>;
+  ecologySoftwareQualityRaw?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  lifecycleVersionLifecycleRaw?: Maybe<Scalars['String']>;
+  lifecycleVersionNormalizationRaw?: Maybe<Scalars['String']>;
+  lifecycleVersionNumberRaw?: Maybe<Scalars['String']>;
+  securityBinaryArtifactRaw?: Maybe<Scalars['String']>;
+  securityHistoryVulnerabilityRaw?: Maybe<Scalars['String']>;
+  securityVulnerabilityDisclosureRaw?: Maybe<Scalars['String']>;
+  securityVulnerabilityRaw?: Maybe<Scalars['String']>;
+  securityVulnerabilityResponseRaw?: Maybe<Scalars['String']>;
+};
+
 export type TpcSoftwareReportMetricSecurityHistoryVulnerability = {
   __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
   summary?: Maybe<Scalars['String']>;
@@ -3359,14 +3384,16 @@ export type TpcSoftwareSelectionReport = {
   codeCount?: Maybe<Scalars['Int']>;
   codeUrl?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
+  isSameTypeCheck?: Maybe<Scalars['Int']>;
   license?: Maybe<Scalars['String']>;
   manufacturer?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   programmingLanguage?: Maybe<Scalars['String']>;
   reportType: Scalars['Int'];
-  sameTypeCheck?: Maybe<Scalars['String']>;
+  sameTypeSoftwareName?: Maybe<Scalars['String']>;
   shortCode: Scalars['String'];
   tpcSoftwareReportMetric?: Maybe<TpcSoftwareReportMetric>;
+  tpcSoftwareReportMetricRaw?: Maybe<TpcSoftwareReportMetricRaw>;
   tpcSoftwareSig?: Maybe<TpcSoftwareSig>;
   tpcSoftwareSigId?: Maybe<Scalars['Int']>;
   user?: Maybe<User>;
@@ -3378,13 +3405,14 @@ export type TpcSoftwareSelectionReport = {
 
 export type TpcSoftwareSelectionReportInput = {
   codeUrl: Scalars['String'];
+  isSameTypeCheck: Scalars['Int'];
   manufacturer: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
-  sameTypeCheck?: InputMaybe<Scalars['String']>;
+  sameTypeSoftwareName?: InputMaybe<Scalars['String']>;
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityDisclosure?: InputMaybe<Scalars['String']>;
-  vulnerabilityResponse?: InputMaybe<Scalars['String']>;
+  vulnerabilityResponse: Scalars['String'];
   websiteUrl: Scalars['String'];
 };
 
@@ -7089,6 +7117,30 @@ export type TpcSoftwareReportMetricDetailFragment = {
   }> | null;
 };
 
+export type TpcSoftwareReportMetricRawFragment = {
+  __typename?: 'TpcSoftwareReportMetricRaw';
+  codeUrl?: string | null;
+  complianceDcoRaw?: string | null;
+  complianceLicenseCompatibilityRaw?: string | null;
+  complianceLicenseRaw?: string | null;
+  compliancePackageSigRaw?: string | null;
+  ecologyAdoptionAnalysisRaw?: string | null;
+  ecologyCodeMaintenanceRaw?: string | null;
+  ecologyCommunitySupportRaw?: string | null;
+  ecologyDependencyAcquisitionRaw?: string | null;
+  ecologyPatentRiskRaw?: string | null;
+  ecologySoftwareQualityRaw?: string | null;
+  id: number;
+  lifecycleVersionLifecycleRaw?: string | null;
+  lifecycleVersionNormalizationRaw?: string | null;
+  lifecycleVersionNumberRaw?: string | null;
+  securityBinaryArtifactRaw?: string | null;
+  securityHistoryVulnerabilityRaw?: string | null;
+  securityVulnerabilityDisclosureRaw?: string | null;
+  securityVulnerabilityRaw?: string | null;
+  securityVulnerabilityResponseRaw?: string | null;
+};
+
 export type TpcSoftwareSelectionReportQueryVariables = Exact<{
   shortCode: Scalars['String'];
 }>;
@@ -7103,6 +7155,7 @@ export type TpcSoftwareSelectionReportQuery = {
     manufacturer?: string | null;
     name?: string | null;
     programmingLanguage?: string | null;
+    shortCode: string;
     websiteUrl?: string | null;
     tpcSoftwareReportMetric?: {
       __typename?: 'TpcSoftwareReportMetric';
@@ -7188,6 +7241,41 @@ export type TpcSoftwareSelectionReportQuery = {
       description: string;
       id: number;
       name: string;
+    } | null;
+  } | null;
+};
+
+export type TpcSoftwareSelectionReportRowQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+}>;
+
+export type TpcSoftwareSelectionReportRowQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionReport?: {
+    __typename?: 'TpcSoftwareSelectionReport';
+    id: number;
+    tpcSoftwareReportMetricRaw?: {
+      __typename?: 'TpcSoftwareReportMetricRaw';
+      codeUrl?: string | null;
+      complianceDcoRaw?: string | null;
+      complianceLicenseCompatibilityRaw?: string | null;
+      complianceLicenseRaw?: string | null;
+      compliancePackageSigRaw?: string | null;
+      ecologyAdoptionAnalysisRaw?: string | null;
+      ecologyCodeMaintenanceRaw?: string | null;
+      ecologyCommunitySupportRaw?: string | null;
+      ecologyDependencyAcquisitionRaw?: string | null;
+      ecologyPatentRiskRaw?: string | null;
+      ecologySoftwareQualityRaw?: string | null;
+      id: number;
+      lifecycleVersionLifecycleRaw?: string | null;
+      lifecycleVersionNormalizationRaw?: string | null;
+      lifecycleVersionNumberRaw?: string | null;
+      securityBinaryArtifactRaw?: string | null;
+      securityHistoryVulnerabilityRaw?: string | null;
+      securityVulnerabilityDisclosureRaw?: string | null;
+      securityVulnerabilityRaw?: string | null;
+      securityVulnerabilityResponseRaw?: string | null;
     } | null;
   } | null;
 };
@@ -7458,6 +7546,30 @@ export const TpcSoftwareReportMetricDetailFragmentDoc = /*#__PURE__*/ `
   }
   securityVulnerabilityDisclosureDetail
   securityVulnerabilityResponseDetail
+}
+    `;
+export const TpcSoftwareReportMetricRawFragmentDoc = /*#__PURE__*/ `
+    fragment tpcSoftwareReportMetricRaw on TpcSoftwareReportMetricRaw {
+  codeUrl
+  complianceDcoRaw
+  complianceLicenseCompatibilityRaw
+  complianceLicenseRaw
+  compliancePackageSigRaw
+  ecologyAdoptionAnalysisRaw
+  ecologyCodeMaintenanceRaw
+  ecologyCommunitySupportRaw
+  ecologyDependencyAcquisitionRaw
+  ecologyPatentRiskRaw
+  ecologySoftwareQualityRaw
+  id
+  lifecycleVersionLifecycleRaw
+  lifecycleVersionNormalizationRaw
+  lifecycleVersionNumberRaw
+  securityBinaryArtifactRaw
+  securityHistoryVulnerabilityRaw
+  securityVulnerabilityDisclosureRaw
+  securityVulnerabilityRaw
+  securityVulnerabilityResponseRaw
 }
     `;
 export const DatasetFuzzySearchDocument = /*#__PURE__*/ `
@@ -12647,6 +12759,7 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     manufacturer
     name
     programmingLanguage
+    shortCode
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
       ...tpcSoftwareReportMetricDetail
@@ -12690,3 +12803,43 @@ useTpcSoftwareSelectionReportQuery.fetcher = (
     TpcSoftwareSelectionReportQuery,
     TpcSoftwareSelectionReportQueryVariables
   >(client, TpcSoftwareSelectionReportDocument, variables, headers);
+export const TpcSoftwareSelectionReportRowDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionReportRow($shortCode: String!) {
+  tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    id
+    tpcSoftwareReportMetricRaw {
+      ...tpcSoftwareReportMetricRaw
+    }
+  }
+}
+    ${TpcSoftwareReportMetricRawFragmentDoc}`;
+export const useTpcSoftwareSelectionReportRowQuery = <
+  TData = TpcSoftwareSelectionReportRowQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportRowQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionReportRowQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionReportRowQuery, TError, TData>(
+    ['tpcSoftwareSelectionReportRow', variables],
+    fetcher<
+      TpcSoftwareSelectionReportRowQuery,
+      TpcSoftwareSelectionReportRowQueryVariables
+    >(client, TpcSoftwareSelectionReportRowDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionReportRowQuery.getKey = (
+  variables: TpcSoftwareSelectionReportRowQueryVariables
+) => ['tpcSoftwareSelectionReportRow', variables];
+useTpcSoftwareSelectionReportRowQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportRowQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionReportRowQuery,
+    TpcSoftwareSelectionReportRowQueryVariables
+  >(client, TpcSoftwareSelectionReportRowDocument, variables, headers);

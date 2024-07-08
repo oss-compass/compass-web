@@ -1,12 +1,11 @@
 import React from 'react';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { DownloadOutlined } from '@ant-design/icons';
-import { Tag, Descriptions, Dropdown, Popover } from 'antd';
-import type { MenuProps } from 'antd';
+import { RightOutlined } from '@ant-design/icons';
+import { Tag, Descriptions } from 'antd';
 import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
+import EvaluationDownLoad from '@modules/oh/components/EvaluationInfo/EvaluationDownLoad';
 import {
-  downloadReport,
   getEvaluationDetail,
   getMetricItemScore,
   setMetricIcon,
@@ -113,6 +112,9 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
                   ))}
                 </div>
               </div>
+              {/* <div>
+                <RightOutlined rev={undefined} />
+              </div> */}
             </div>
           );
         })}
@@ -210,20 +212,6 @@ const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
   if (!item.evaluationDetail) {
     item = getEvaluationDetail(item);
   }
-  const dropdownItem: MenuProps['items'] = [
-    {
-      key: '1',
-      label: (
-        <a
-          onClick={() => {
-            downloadReport(item);
-          }}
-        >
-          下载 CSV
-        </a>
-      ),
-    },
-  ];
   return (
     <div>
       <div className="flex justify-between border bg-[#f9f9f9] py-3 px-6">
@@ -250,9 +238,7 @@ const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
           </div>
         </div>
         <div className="float-right cursor-pointer text-lg">
-          <Dropdown placement="bottom" menu={{ items: dropdownItem }}>
-            <DownloadOutlined rev={undefined} />
-          </Dropdown>
+          <EvaluationDownLoad item={item} />
         </div>
       </div>
       <EvaluationBaseInfo item={item} />

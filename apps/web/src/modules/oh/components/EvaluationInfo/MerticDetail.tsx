@@ -192,8 +192,12 @@ const getAllText = (children) => {
   traverseChildren(children);
   return allText;
 };
+const getDeitalRow = (item, tpcSoftwareReportMetricRaw) => {
+  let row = tpcSoftwareReportMetricRaw[item.key + 'Raw'];
+  return row;
+};
 export const downloadReport = (item) => {
-  const { tpcSoftwareReportMetric, name } = item;
+  const { tpcSoftwareReportMetric, name, tpcSoftwareReportMetricRaw } = item;
   const metricScore = getMetricItemScore(tpcSoftwareReportMetric);
   let title = name + '选型评估报告';
   let head = [
@@ -202,11 +206,11 @@ export const downloadReport = (item) => {
     '得分',
     '风险',
     '风险详情',
+    '风险详情原数据',
     '风险重要性',
     '指标意义',
   ];
   let tableData = metricScore.map((item) => {
-    console.log(item.指标名称);
     const row = head.map((z) => {
       if (z == '得分') {
         return item.score;
@@ -226,6 +230,8 @@ export const downloadReport = (item) => {
           const text = getAllText(element);
           return text;
         }
+      } else if (z == '风险详情原数据') {
+        return getDeitalRow(item, tpcSoftwareReportMetricRaw) || '';
       } else {
         return item[z];
       }
