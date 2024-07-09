@@ -2,8 +2,7 @@ import React from 'react';
 import { toFixed } from '@common/utils';
 import {
   allMetricData,
-  getWarningContent,
-  getErrorContent,
+  getRishContent,
 } from '@modules/oh/components/EvaluationInfo/AllMetricData';
 import { Tag, Badge, Button, Popover } from 'antd';
 import {
@@ -13,7 +12,7 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons';
 
-const metricList = ['合法合规', '技术生态', '生命周期', '网络安全'];
+export const metricList = ['合法合规', '技术生态', '生命周期', '网络安全'];
 // 计算单个报告四个维度得分和总分
 export const getEvaluationDetail = (row) => {
   const evaluationDetail = metricList.map((item) => {
@@ -80,7 +79,7 @@ export const getContent = (item) => {
         <div>得分：{item.score}</div>
         <div>
           风险：
-          {item.score >= 6 ? getWarningContent(item) : getErrorContent(item)}
+          {getRishContent(item)}
         </div>
         <div>{deital ? <>风险详情：{getDeital(item)}</> : ''}</div>
       </>
@@ -139,7 +138,24 @@ export const setMetricIcon = (item) => {
     );
   }
 };
-
+export const setRiskTag = (item) => {
+  const { score } = item;
+  if (score >= 8 || score === -1 || score === null) {
+    return '';
+  } else if (score >= 6) {
+    return (
+      <>
+        <Tag color="orange">风险： {getRishContent(item)}</Tag>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Tag color="red">风险： {getRishContent(item)}</Tag>
+      </>
+    );
+  }
+};
 function format(data) {
   return String(data)
     .replace(/"/g, '""')
@@ -194,7 +210,7 @@ const getAllText = (children) => {
 };
 const getDeitalRow = (item, tpcSoftwareReportMetricRaw) => {
   let row = tpcSoftwareReportMetricRaw[item.key + 'Raw'];
-  return row;
+  return row || '';
 };
 export const downloadReport = (item) => {
   const { tpcSoftwareReportMetric, name, tpcSoftwareReportMetricRaw } = item;
@@ -215,13 +231,7 @@ export const downloadReport = (item) => {
       if (z == '得分') {
         return item.score;
       } else if (z == '风险') {
-        if (item.score >= 8 || item.score === null) {
-          return '无';
-        } else if (item.score >= 6) {
-          return getWarningContent(item);
-        } else {
-          return getErrorContent(item);
-        }
+        return getRishContent(item);
       } else if (z == '风险详情') {
         if (item.score >= 8 || item.score === null) {
           return '无';
@@ -231,7 +241,7 @@ export const downloadReport = (item) => {
           return text;
         }
       } else if (z == '风险详情原数据') {
-        return getDeitalRow(item, tpcSoftwareReportMetricRaw) || '';
+        return getDeitalRow(item, tpcSoftwareReportMetricRaw);
       } else {
         return item[z];
       }

@@ -43,16 +43,34 @@ const EvaluationDownLoad = ({ item }) => {
     },
   ];
   return (
-    <Dropdown placement="bottom" menu={{ items: dropdownItem }}>
+    <>
       {loadingDownLoad ? (
         <DownloadReportRow
           item={item}
           setLoadingDownLoad={setLoadingDownLoad}
         />
       ) : (
-        <DownloadOutlined rev={undefined} />
+        <div
+          title="下载 CSV"
+          onClick={() => {
+            setLoadingDownLoad(true);
+          }}
+          className=""
+        >
+          <DownloadOutlined rev={undefined} />
+        </div>
       )}
-    </Dropdown>
+    </>
+    // <Dropdown placement="bottom" menu={{ items: dropdownItem }}>
+    //   {loadingDownLoad ? (
+    //     <DownloadReportRow
+    //       item={item}
+    //       setLoadingDownLoad={setLoadingDownLoad}
+    //     />
+    //   ) : (
+    //     <DownloadOutlined rev={undefined} />
+    //   )}
+    // </Dropdown>
   );
 };
 export default EvaluationDownLoad;

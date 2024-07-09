@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
 import { RightOutlined } from '@ant-design/icons';
-import { Tag, Descriptions } from 'antd';
+import { Tag, Descriptions, Drawer } from 'antd';
 import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import EvaluationDownLoad from '@modules/oh/components/EvaluationInfo/EvaluationDownLoad';
+import MetricDrawer from '@modules/oh/components/EvaluationInfo/MetricDrawer';
 import {
+  metricList,
   getEvaluationDetail,
   getMetricItemScore,
   setMetricIcon,
+  setRiskTag,
 } from '@modules/oh/components/EvaluationInfo/MerticDetail';
 
 const EvaluationTopScore = ({ items, score }) => {
@@ -58,7 +61,7 @@ const EvaluationTopScore = ({ items, score }) => {
   );
 };
 
-const EvaluationMerticItem = ({ mertic, items, score }) => {
+const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
   return (
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
@@ -81,7 +84,10 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
           return (
             <div
               key={item.指标名称}
-              className="flex h-[88px] border border-b-0 bg-white px-4 py-3"
+              onClick={() => {
+                showDrawer(item);
+              }}
+              className="flex h-[90px] cursor-pointer border border-b-0 bg-white px-4 py-3 hover:bg-[#f5f6fd]"
             >
               <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
                 {setMetricIcon(item)}
@@ -89,16 +95,17 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
               {/* <div className="mr-4 flex items-center justify-center">
                 {item.score}
               </div> */}
-              <div className="">
+              <div className="flex-1 pr-3">
                 <div className="flex h-[29px] text-base font-semibold">
                   <div className="flex-shrink-0"> {item.指标名称}</div>
-                  <div className="ml-4 mr-4">
+                  {/* <div className="ml-4 mr-2">
                     {item.风险重要性 === '高' ? (
-                      <Tag color="orange">风险重要性： {item.风险重要性}</Tag>
+                      <Tag color="red">风险重要性： {item.风险重要性}</Tag>
                     ) : (
                       <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
                     )}
-                  </div>
+                  </div> */}
+                  <div className="ml-4">{setRiskTag(item)}</div>
                 </div>
                 <div
                   title={item.指标意义.split('\n\n')}
@@ -112,9 +119,10 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
                   ))}
                 </div>
               </div>
-              {/* <div>
-                <RightOutlined rev={undefined} />
-              </div> */}
+              <div className="flex w-8 flex-shrink-0 items-center justify-center">
+                {/* <span className="text-base font-bold">{item.score * 10}</span> */}
+                <RightOutlined className="text-sm" rev={undefined} />
+              </div>
             </div>
           );
         })}
@@ -123,8 +131,29 @@ const EvaluationMerticItem = ({ mertic, items, score }) => {
   );
 };
 const EvaluationMertic = ({ allData }) => {
-  let metricList = ['合法合规', '技术生态', '生命周期', '网络安全'];
   const data = getMetricItemScore(allData.tpcSoftwareReportMetric);
+  const [metric, setMetric] = useState(null);
+  const [open, setOpen] = useState(false);
+  const showDrawer = (item) => {
+    setOpen(true);
+    setMetric(item);
+  };
+  const nextAndPre = (type) => {
+    const index = data.findIndex((z) => z.key === metric.key);
+    if (type === 'next') {
+      if (index < data.length - 1) {
+        setMetric(data[index + 1]);
+      } else {
+        setMetric(data[0]);
+      }
+    } else {
+      if (index > 0) {
+        setMetric(data[index - 1]);
+      } else {
+        setMetric(data[data.length - 1]);
+      }
+    }
+  };
   return (
     <div className="mt-6">
       {metricList.map((mertic) => {
@@ -134,6 +163,7 @@ const EvaluationMertic = ({ allData }) => {
         ).score;
         return (
           <EvaluationMerticItem
+            showDrawer={showDrawer}
             key={mertic}
             mertic={mertic}
             items={items}
@@ -141,6 +171,13 @@ const EvaluationMertic = ({ allData }) => {
           />
         );
       })}
+      <MetricDrawer
+        name={getPathname(allData.codeUrl)}
+        metric={metric}
+        open={open}
+        onClose={() => setOpen(false)}
+        nextAndPre={nextAndPre}
+      />
     </div>
   );
 };

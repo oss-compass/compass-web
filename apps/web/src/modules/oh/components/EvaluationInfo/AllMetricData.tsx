@@ -38,7 +38,7 @@ export const allMetricData = [
     指标名称: 'DCO',
     风险重要性: '中',
     指标意义:
-      '引入软件代码提交者原创性声明签署检查\n\n【建议】\n1. 项目的提交者签署 DCO;',
+      '引入软件代码提交者原创性声明签署检查\n\n【建议】\n1. 项目的提交者签署 DCO；',
   },
   {
     key: 'compliancePackageSig',
@@ -76,7 +76,7 @@ export const allMetricData = [
     指标名称: '依赖可获得',
     风险重要性: '高',
     指标意义:
-      '引入软件依赖源码可获得检查\n\n【规则】\n1. 项目依赖的库必须是开源软件，可公开获得。保留原开源软件的提交记录',
+      '引入软件依赖源码可获得检查\n\n【规则】\n1. 项目依赖的库必须是开源软件，可公开获得。保留原开源软件的提交记录；',
   },
   {
     key: 'ecologyCodeMaintenance',
@@ -141,6 +141,7 @@ export const allMetricData = [
       duplicationRatio,
       duplicationScore,
     }) => {
+      if (coverageRatio === null || coverageScore === null) return '无';
       let res = `项目内代码重复率为${duplicationRatio || 0}%，得分${
         duplicationScore || 0
       }；\n 项目内测试覆盖率为${coverageRatio || 0}%，得分${
@@ -195,7 +196,7 @@ export const allMetricData = [
         if (!latestVersionName) {
           return `引入软件无 release 版本`;
         }
-        res = `引入软件最新版本为${latestVersionName},发布于${latestVersionCreatedAt?.slice(
+        res = `引入软件最新版本为${latestVersionName}，发布于${latestVersionCreatedAt?.slice(
           0,
           10
         )}。`;
@@ -268,7 +269,7 @@ export const allMetricData = [
   //   },
 ];
 //6 分 -8 分
-export const getWarningContent = (item) => {
+const getWarningContent = (item) => {
   const { key } = item;
   const statusMessages = {
     complianceLicense: '许可证不在准入清单',
@@ -283,7 +284,7 @@ export const getWarningContent = (item) => {
   return statusMessages[key];
 };
 //6 分以下
-export const getErrorContent = (item) => {
+const getErrorContent = (item) => {
   const { key } = item;
   const statusMessages = {
     complianceLicense: '未检测到许可证',
@@ -305,4 +306,27 @@ export const getErrorContent = (item) => {
     // 版本号：'未检测到版本号或版本号不规范',
   };
   return statusMessages[key];
+};
+export const getRishContent = (item) => {
+  const { score } = item;
+  if (score >= 8 || score === -1 || score === null) {
+    return '无';
+  } else if (score >= 6) {
+    return getWarningContent(item);
+  } else {
+    return getErrorContent(item);
+  }
+};
+export const getRishDeitalContent = (item) => {
+  const { detailRender, detail } = item;
+  if (Array.isArray(detail) && detail?.length == 0) {
+    return '无';
+  }
+  if (detailRender && detail) {
+    return <>{detailRender(detail)}</>;
+  } else if (detail) {
+    return <>{detail}</>;
+  } else {
+    return '无';
+  }
 };
