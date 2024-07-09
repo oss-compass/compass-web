@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Avatar, List, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import CommentInput, { InputRefProps } from './CommentInput';
+import RiskContent from './RiskContent';
+
 import {
   useTpcSoftwareReportMetricClarificationPageQuery,
   useCreateTpcSoftwareReportMetricClarificationMutation,
@@ -90,11 +92,6 @@ const RiskClarification = ({ metric, shortCode }) => {
               placeholder={'按Enter发送风险澄清'}
               onSubmit={(content) => {
                 console.log(content);
-                // const img = images.map((i) => ({
-                //   id: i.id,
-                //   base64: i.base64,
-                //   filename: i.name,
-                // }));
                 commentMutation.mutate(
                   {
                     shortCode,
@@ -117,13 +114,11 @@ const RiskClarification = ({ metric, shortCode }) => {
         loading={isLoading || isFetchingNextPage}
         dataSource={listData}
         renderItem={(item) => (
-          <List.Item key={item.id}>
-            <List.Item.Meta
-              avatar={<Avatar src={item?.user?.loginBinds[0]?.avatarUrl} />}
-              title={<a>{item?.user?.name}</a>}
-              description={item.updatedAt.slice(0, 10)}
-            />
-            {item.content}
+          <List.Item
+            key={item.id}
+            className="relative flex flex-col !items-start"
+          >
+            <RiskContent item={item} refetch={() => refetch()} />
           </List.Item>
         )}
       />

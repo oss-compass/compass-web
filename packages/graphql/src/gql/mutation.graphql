@@ -159,7 +159,7 @@ mutation createTpcSoftwareSelection(
   $level: String!
   $tpcSoftwareSelectionReportIds: [Int!]!
   $selectionType: Int!
-  $repoUrl: String!
+  $repoUrl: [String!]!
   $committers: [String!]!
   $functionalDescription: String!
   $incubationTime: String!
@@ -206,3 +206,31 @@ mutation createTpcSoftwareReportMetricClarification(
     status
   }
 }
+mutation deleteReportMetricClarification($clarificationId: Int!) {
+  deleteTpcSoftwareReportMetricClarification(
+    input: { clarificationId: $clarificationId }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation updateReportMetricClarification(
+  $clarificationId: Int!
+  $content: String!
+) {
+  updateTpcSoftwareReportMetricClarification(
+    input: { clarificationId: $clarificationId, content: $content }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+#  deleteTpcSoftwareReportMetricClarification

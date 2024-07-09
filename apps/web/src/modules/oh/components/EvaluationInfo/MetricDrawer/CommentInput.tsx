@@ -25,7 +25,8 @@ interface Props {
   showFooter?: boolean;
   placeholder?: string;
   loading: boolean;
-  onSubmit: (content: string, images: Image[]) => void;
+  content?: string;
+  onSubmit: (content: string, images?: Image[]) => void;
   onCancel?: () => void;
 }
 
@@ -36,15 +37,17 @@ export interface InputRefProps {
 }
 
 const CommentInput = forwardRef<InputRefProps, Props>(
-  ({ showFooter = false, placeholder, loading, onSubmit, onCancel }, ref) => {
+  (
+    { showFooter = false, placeholder, loading, onSubmit, onCancel, content },
+    ref
+  ) => {
+    const { t } = useTranslation();
     const boxRef = useRef<HTMLDivElement>();
     const textAreaRef = useRef<HTMLTextAreaElement>();
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState(content);
     const [images, setImages] = useState<Image[]>([]);
     // const { ref: previewRef, open: openPreview, close } = useImagePreview();
     const imagesLength = images.length;
-
-    const { t } = useTranslation();
 
     useImperativeHandle(ref, () => ({
       backFill: (content: string, images: Image[]) => {
@@ -76,30 +79,29 @@ const CommentInput = forwardRef<InputRefProps, Props>(
       setImages((pre) => [...pre, ...filesBase64]);
     };
 
-    useEffect(() => {
-      if (boxRef && boxRef.current) {
-        const handlePaste = (e: ClipboardEvent) => {
-          const len = e.clipboardData.files.length;
-          if (len === 0) return;
-          if (imagesLength + len > 6) {
-            toast.error('up to six pictures');
-            return;
-          }
+    // useEffect(() => {
+    //   if (boxRef && boxRef.current) {
+    //     const handlePaste = (e: ClipboardEvent) => {
+    //       const len = e.clipboardData.files.length;
+    //       if (len === 0) return;
+    //       if (imagesLength + len > 6) {
+    //         toast.error('up to six pictures');
+    //         return;
+    //       }
+    //       handleInputFile(e.clipboardData.files);
+    //     };
 
-          handleInputFile(e.clipboardData.files);
-        };
-
-        boxRef.current?.addEventListener('paste', handlePaste);
-        return () => {
-          boxRef.current?.removeEventListener('paste', handlePaste);
-        };
-      }
-    }, [imagesLength]);
+    //     boxRef.current?.addEventListener('paste', handlePaste);
+    //     return () => {
+    //       boxRef.current?.removeEventListener('paste', handlePaste);
+    //     };
+    //   }
+    // }, [imagesLength]);
 
     const inputId = `comment-image-upload-${randomFromInterval(0, 100000)}`;
 
     return (
-      <div className="relative">
+      <>
         <div
           className="border-silver min-h-8 relative rounded-sm border text-sm"
           ref={boxRef}
@@ -110,7 +112,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
             onChange={(event) => {
               setValue(event.target.value);
             }}
-            className="w-full resize-none  pt-1 pl-2 outline-0"
+            className="w-full resize-none pt-1 pl-2 outline-0"
             placeholder={placeholder ? placeholder : t('lab:commit_enter')}
             onKeyDown={(event) => {
               if (loading) return;
@@ -130,10 +132,10 @@ const CommentInput = forwardRef<InputRefProps, Props>(
           />
           {loading && !showFooter && (
             <div className="absolute bottom-1 right-2">
-              {' '}
               <BiLoaderAlt className="text-silver animate-spin cursor-pointer text-xl" />{' '}
             </div>
           )}
+
           {/* <div className="absolute bottom-1 right-2">
             {loading && !showFooter ? (
               <BiLoaderAlt className="text-silver animate-spin cursor-pointer text-xl" />
@@ -185,7 +187,6 @@ const CommentInput = forwardRef<InputRefProps, Props>(
             </div>
           ) : null} */}
         </div>
-
         {showFooter ? (
           <div className="mt-2 flex justify-end">
             <div
@@ -193,7 +194,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
               onClick={() => {
                 if (loading) return;
                 if (value) {
-                  onSubmit(value, images);
+                  onSubmit(value);
                 } else {
                   toast.error('澄清内容不能为空');
                 }
@@ -215,7 +216,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
             </div>
           </div>
         ) : null}
-      </div>
+      </>
     );
   }
 );

@@ -40,7 +40,7 @@ export const openGiteeIssue = (report, values) => {
 
   > ${reportLink}
 
-  4. 【需求来源 APP】
+  4. 【需求来源】
 
   > ${values.demandSource || '无'}
   `;

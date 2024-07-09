@@ -1,19 +1,8 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
-import {
-  Button,
-  message,
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-  Popover,
-  Tabs,
-} from 'antd';
+import { Button, message, Form, Input, Select, Row, Col, Space } from 'antd';
 import Dialog from '@common/components/Dialog';
-import DatePicker from '@common/components/Form';
 import {
   MinusCircleOutlined,
   PlusOutlined,
@@ -85,10 +74,13 @@ const SelectionApplication = () => {
 
   const submit = () => {
     form.validateFields().then((values) => {
+      console.log(values);
+      const repoUrl = values.repoUrl.map((z) => z['repoUrl']);
       report &&
         mutation.mutate({
           ...queryKey,
           ...values,
+          repoUrl,
           selectionType: 0,
           tpcSoftwareSelectionReportIds: report.map(
             (r) => r.tpcSoftwareReportMetric.tpcSoftwareReportId
@@ -116,7 +108,6 @@ const SelectionApplication = () => {
       bugPublish: 'https://github.com/jasonsantos/luajava/issues',
 
       adaptationMethod: 1,
-      repoUrl: 'luajava',
       committers: 'jasonsantos,talklittle,hishamhm', //'jasonsantos,talklittle,hishamhm',
       reason:
         '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
@@ -199,56 +190,40 @@ const SelectionApplication = () => {
                   </Form.Item>
                 </Col>
 
-                <Col span={12}>
-                  <Popover
-                    placement="topRight"
-                    content={
-                      <>
-                        <div>
-                          需填写 Commiters 的 Gitee/Github 用户名，多个
-                          Commiters 用逗号分开
-                        </div>
-                      </>
-                    }
-                    title="注意"
-                    trigger="click"
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    label="Commiters"
+                    name="committers"
+                    rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Form.Item
-                      label="Commiters"
-                      name="committers"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input disabled={false} />
-                    </Form.Item>
-                  </Popover>
+                    <Input
+                      placeholder="需填写 Commiters 的 Gitee/Github 用户名，多个
+                          Commiters 用逗号分开"
+                      disabled={false}
+                    />
+                  </Form.Item>
                 </Col>
-                <Col span={12}>
-                  <Popover
-                    placement="top"
-                    content={
-                      <>
-                        <div>填写初始需求来源 APP，如无可不填</div>
-                      </>
-                    }
-                    title="规则"
-                    trigger="click"
+                <Col span={24}>
+                  <Form.Item
+                    label="需求来源"
+                    name="demandSource"
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Form.Item
-                      label="需求来源APP"
-                      name="demandSource"
-                      // labelCol={{
-                      //   span: 3,
-                      //   style: { fontWeight: 'bold' },
-                      // }}
-                      // rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input
-                        disabled={false}
-                        onFocus={() => {}}
-                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                      />
-                    </Form.Item>
-                  </Popover>
+                    <Input
+                      placeholder="请列出您需要使用三方软件的需求来源"
+                      disabled={false}
+                      onFocus={() => {}}
+                      // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                    />
+                  </Form.Item>
                 </Col>
 
                 <Col span={24}>
@@ -257,11 +232,14 @@ const SelectionApplication = () => {
                       span: 3,
                       style: { fontWeight: 'bold' },
                     }}
-                    label="原始述求"
+                    label="需求描述"
                     name="reason"
                     rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Input disabled={false} />
+                    <Input
+                      placeholder="请列出您需要使用三方软件的主要场景"
+                      disabled={false}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={24}>
@@ -274,106 +252,73 @@ const SelectionApplication = () => {
                     name="functionalDescription"
                     rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Input disabled={false} />
+                    <Input
+                      placeholder="请列出您需要使用三方软件的主要功能"
+                      disabled={false}
+                    />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
-                  <Popover
-                    placement="topRight"
-                    content={
-                      <>
-                        <div>填写完成 OH 适配后的仓库路径</div>
-                      </>
-                    }
-                    title="规则"
-                    trigger="click"
-                  >
-                    {/* <Form.Item
-                      label="适配仓路径"
-                      name="repoUrl"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input
-                        disabled={false}
-                        onFocus={() => {}}
-                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                      />
-                    </Form.Item> */}
-                    <Form.Item
-                      label="适配仓路径"
-                      name="repoUrl"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input
-                        disabled={false}
-                        onFocus={() => {}}
-                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                      />
-                    </Form.Item>
-                    {/* <Form.List
-                      name="names"
-                      rules={[
-                        {
-                          validator: async (_, names) => {
-                            if (!names || names.length < 2) {
-                              return Promise.reject(
-                                new Error('At least 2 passengers')
-                              );
-                            }
-                          },
-                        },
-                      ]}
-                    >
-                      {(fields, { add, remove }, { errors }) => (
-                        <>
-                          {fields.map((field, index) => (
-                            <Form.Item
-                              label={index === 0 ? 'Passengers' : ''}
-                              required={false}
-                              key={field.key}
-                            >
-                              <Form.Item
-                                {...field}
-                                validateTrigger={['onChange', 'onBlur']}
-                                rules={[
-                                  {
-                                    required: true,
-                                    whitespace: true,
-                                    message:
-                                      "Please input passenger's name or delete this field.",
-                                  },
-                                ]}
-                                noStyle
-                              >
-                                <Input placeholder="passenger name" />
-                              </Form.Item>
-                              {fields.length > 1 ? (
-                                <MinusCircleOutlined
-                                  className="dynamic-delete-button"
-                                  onClick={() => remove(field.name)}
-                                  rev={undefined}
-                                />
-                              ) : null}
-                            </Form.Item>
-                          ))}
-                          <Form.Item>
+
+                <Form.List name="repoUrl" initialValue={[{ repoUrl: '' }]}>
+                  {(fields, { add, remove }, { errors }) => (
+                    <>
+                      {/* <Col span={12}>
+                        <Form.Item
+                          label="适配仓路径"
+                          name={['repoUrl', 'repoUrl']}
+                          rules={[{ required: true, message: '请输入!' }]}
+                        >
+                          <Space.Compact style={{ width: '100%' }}>
+                            <Input
+                              placeholder="填写完成 OH 适配后的仓库路径"
+                              disabled={false}
+                            />
                             <Button
-                              type="dashed"
+                              className="rounded-none pt-0"
+                              type="primary"
                               onClick={() => add()}
-                              style={{
-                                width: '60%',
-                              }}
-                              icon={<PlusOutlined rev={undefined} />}
                             >
-                              Add field
+                              <PlusOutlined rev={undefined} />
                             </Button>
-                            <Form.ErrorList errors={errors} />
+                          </Space.Compact>
+                        </Form.Item>
+                      </Col> */}
+                      {fields.map((field, index) => (
+                        <Col span={12} key={field.key}>
+                          <Form.Item
+                            label={`适配仓路径${index ? index + 1 : ''}`}
+                            key={field.key}
+                            name={[field.name, 'repoUrl']}
+                            rules={[{ required: true, message: '请输入!' }]}
+                          >
+                            <Space.Compact style={{ width: '100%' }}>
+                              <Input
+                                placeholder="填写完成 OH 适配后的仓库路径"
+                                disabled={false}
+                              />
+                              {index === 0 ? (
+                                <Button
+                                  className="rounded-none pt-0"
+                                  type="primary"
+                                  onClick={() => add()}
+                                >
+                                  <PlusOutlined rev={undefined} />
+                                </Button>
+                              ) : (
+                                <Button
+                                  className="dynamic-delete-button rounded-none pt-0"
+                                  onClick={() => remove(field.name)}
+                                >
+                                  <MinusCircleOutlined rev={undefined} />
+                                </Button>
+                              )}
+                            </Space.Compact>
                           </Form.Item>
-                        </>
-                      )}
-                    </Form.List> */}
-                  </Popover>
-                </Col>
+                        </Col>
+                      ))}
+                    </>
+                  )}
+                </Form.List>
               </Row>
               {report.length > 0 && (
                 <>
