@@ -121,7 +121,10 @@ const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
                   ))}
                 </div>
               </div>
-              <div className="flex w-8 flex-shrink-0 items-center justify-center">
+              <div
+                title="风险澄清"
+                className="flex w-8 flex-shrink-0 items-center justify-center"
+              >
                 {/* <span className="text-base font-bold">{item.score * 10}</span> */}
                 <TbMessage2 className="text-lg" />
               </div>
