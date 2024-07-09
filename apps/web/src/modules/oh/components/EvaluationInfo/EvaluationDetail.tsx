@@ -98,14 +98,14 @@ const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
               <div className="flex-1 pr-3">
                 <div className="flex h-[29px] text-base font-semibold">
                   <div className="flex-shrink-0"> {item.指标名称}</div>
-                  {/* <div className="ml-4 mr-2">
+                  <div className="ml-4">
                     {item.风险重要性 === '高' ? (
-                      <Tag color="red">风险重要性： {item.风险重要性}</Tag>
+                      <Tag color="red">重要性： {item.风险重要性}</Tag>
                     ) : (
-                      <Tag color="cyan">风险重要性： {item.风险重要性}</Tag>
+                      <Tag color="cyan">重要性： {item.风险重要性}</Tag>
                     )}
-                  </div> */}
-                  <div className="ml-4">{setRiskTag(item)}</div>
+                  </div>
+                  <div className="ml-2">{setRiskTag(item)}</div>
                 </div>
                 <div
                   title={item.指标意义.split('\n\n')}
@@ -172,7 +172,8 @@ const EvaluationMertic = ({ allData }) => {
         );
       })}
       <MetricDrawer
-        name={getPathname(allData.codeUrl)}
+        // report={getPathname(allData.codeUrl)}
+        report={allData}
         metric={metric}
         open={open}
         onClose={() => setOpen(false)}

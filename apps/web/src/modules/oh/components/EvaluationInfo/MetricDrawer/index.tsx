@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Popover, Descriptions, Drawer, Button } from 'antd';
+import { getPathname } from '@common/utils';
 import {
   getRishContent,
   getRishDeitalContent,
@@ -68,7 +69,9 @@ const useGetDefinition = (metric) => {
   });
   return baseItems;
 };
-const MetricDrawer = ({ name, metric, open, onClose, nextAndPre }) => {
+const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
+  const { codeUrl, shortCode } = report;
+  const name = getPathname(codeUrl);
   const baseItems = useGetDefinition(metric);
   if (!metric) {
     return <></>;
@@ -158,7 +161,7 @@ const MetricDrawer = ({ name, metric, open, onClose, nextAndPre }) => {
           </div>
         </div>
         <div className="pt-6">
-          {/* <RiskClarification metric={metric} /> */}
+          <RiskClarification metric={metric} shortCode={shortCode} />
         </div>
       </Drawer>
     </>

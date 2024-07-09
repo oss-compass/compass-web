@@ -36,7 +36,7 @@ export interface InputRefProps {
 }
 
 const CommentInput = forwardRef<InputRefProps, Props>(
-  ({ showFooter = false, placeholder, loading, onSubmit, onCancel }) => {
+  ({ showFooter = false, placeholder, loading, onSubmit, onCancel }, ref) => {
     const boxRef = useRef<HTMLDivElement>();
     const textAreaRef = useRef<HTMLTextAreaElement>();
     const [value, setValue] = useState('');
@@ -46,19 +46,19 @@ const CommentInput = forwardRef<InputRefProps, Props>(
 
     const { t } = useTranslation();
 
-    // useImperativeHandle(ref, () => ({
-    //   backFill: (content: string, images: Image[]) => {
-    //     setValue(content);
-    //     setImages(images);
-    //   },
-    //   focus: () => {
-    //     textAreaRef.current?.focus();
-    //   },
-    //   reset: () => {
-    //     setValue('');
-    //     setImages([]);
-    //   },
-    // }));
+    useImperativeHandle(ref, () => ({
+      backFill: (content: string, images: Image[]) => {
+        setValue(content);
+        setImages(images);
+      },
+      focus: () => {
+        textAreaRef.current?.focus();
+      },
+      reset: () => {
+        setValue('');
+        setImages([]);
+      },
+    }));
 
     const handleInputFile = async (files: FileList) => {
       const filesBase64 = [];
@@ -128,6 +128,12 @@ const CommentInput = forwardRef<InputRefProps, Props>(
               }
             }}
           />
+          {loading && !showFooter && (
+            <div className="absolute bottom-1 right-2">
+              {' '}
+              <BiLoaderAlt className="text-silver animate-spin cursor-pointer text-xl" />{' '}
+            </div>
+          )}
           {/* <div className="absolute bottom-1 right-2">
             {loading && !showFooter ? (
               <BiLoaderAlt className="text-silver animate-spin cursor-pointer text-xl" />

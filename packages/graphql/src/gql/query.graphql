@@ -1759,3 +1759,37 @@ query tpcSoftwareSelectionReportRow($shortCode: String!) {
     }
   }
 }
+query tpcSoftwareReportMetricClarificationPage(
+  $shortCode: String!
+  $metricName: String!
+  $page: Int
+  $per: Int
+) {
+  tpcSoftwareReportMetricClarificationPage(
+    shortCode: $shortCode
+    page: $page
+    per: $per
+    metricName: $metricName
+  ) {
+    count
+    items {
+      content
+      createdAt
+      id
+      metricName
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}

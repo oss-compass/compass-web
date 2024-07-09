@@ -3,24 +3,64 @@ import { Avatar, List, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import CommentInput, { InputRefProps } from './CommentInput';
 import {
-  useLabModelCommentsQuery,
-  useCreateLabModelCommentMutation,
+  useTpcSoftwareReportMetricClarificationPageQuery,
+  useCreateTpcSoftwareReportMetricClarificationMutation,
   LabModelCommentsQuery,
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
-const RiskClarification = ({ metric }) => {
+const RiskClarification = ({ metric, shortCode }) => {
   const inputRef = useRef<InputRefProps>(null);
-  console.log(metric);
-  const data = Array.from({ length: 3 }).map((_, i) => ({
-    href: 'https://ant.design',
-    title: `ant design part ${i}`,
-    avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
-    description: '2024/07/01',
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  }));
-  const commentMutation = useCreateLabModelCommentMutation(gqlClient);
+  const metricName = metric.key;
+  //   const [listData, setListData] = useState([]);
+  const params = {
+    shortCode,
+    metricName,
+    page: 1,
+    per: 20,
+  };
+  const {
+    data,
+    fetchNextPage,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    useTpcSoftwareReportMetricClarificationPageQuery.getKey(params),
+    async (arg) => {
+      const { pageParam } = arg;
+      return await useTpcSoftwareReportMetricClarificationPageQuery.fetcher(
+        gqlClient,
+        {
+          ...params,
+          ...pageParam,
+        }
+      )();
+    },
+    {
+      onSuccess(data) {
+        console.log(data.pages[0]);
+        // setListData(data.)
+      },
+      staleTime: 60 * 1000,
+      getNextPageParam: (lastPage) => {
+        // const count = lastPage?.labModelComments?.count! || 0;
+        // const page = lastPage?.labModelComments?.page! || 0;
+        // const totalPage = lastPage?.labModelComments?.totalPage! || 0;
+        // if (totalPage > page) {
+        //   return { page: page + 1 };
+        // }
+        // return null;
+      },
+    }
+  );
+  const listData = data?.pages?.reduce((acc, cur) => {
+    return acc.concat(cur.tpcSoftwareReportMetricClarificationPage.items);
+  }, []);
+  const commentMutation =
+    useCreateTpcSoftwareReportMetricClarificationMutation(gqlClient);
 
   return (
     <>
@@ -54,33 +94,33 @@ const RiskClarification = ({ metric }) => {
                 //   base64: i.base64,
                 //   filename: i.name,
                 // }));
-                // commentMutation.mutate(
-                //   {
-                //     modelId,
-                //     versionId,
-                //     modelMetricId,
-                //     content,
-                //     images: img,
-                //   },
-                //   {
-                //     onSuccess: () => {
-                //       refetch();
-                //       inputRef.current?.reset();
-                //     },
-                //   }
-                // );
+                commentMutation.mutate(
+                  {
+                    shortCode,
+                    metricName,
+                    content,
+                  },
+                  {
+                    onSuccess: () => {
+                      refetch();
+                      console.log(123);
+                      inputRef.current?.reset();
+                    },
+                  }
+                );
               }}
             />
           </div>
         }
         bordered
-        dataSource={data}
+        loading={isLoading || isFetchingNextPage}
+        dataSource={listData}
         renderItem={(item) => (
-          <List.Item key={item.title}>
+          <List.Item key={item.id}>
             <List.Item.Meta
-              avatar={<Avatar src={item.avatar} />}
-              title={<a href={item.href}>{item.title}</a>}
-              description={item.description}
+              avatar={<Avatar src={item?.user?.loginBinds[0]?.avatarUrl} />}
+              title={<a>{item?.user?.name}</a>}
+              description={item.updatedAt.slice(0, 10)}
             />
             {item.content}
           </List.Item>

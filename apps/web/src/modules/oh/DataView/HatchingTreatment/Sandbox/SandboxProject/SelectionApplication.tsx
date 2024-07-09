@@ -14,7 +14,11 @@ import {
 } from 'antd';
 import Dialog from '@common/components/Dialog';
 import DatePicker from '@common/components/Form';
-import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
+import {
+  MinusCircleOutlined,
+  PlusOutlined,
+  DownOutlined,
+} from '@ant-design/icons';
 import dayjs from 'dayjs';
 import SelectReport from '@modules/oh/components/Report/SelectReport';
 import {
@@ -194,30 +198,7 @@ const SelectionApplication = () => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={12}>
-                  <Popover
-                    placement="topRight"
-                    content={
-                      <>
-                        <div>填写完成 OH 适配后的仓库路径</div>
-                      </>
-                    }
-                    title="规则"
-                    trigger="click"
-                  >
-                    <Form.Item
-                      label="适配仓路径"
-                      name="repoUrl"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input
-                        disabled={false}
-                        onFocus={() => {}}
-                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                      />
-                    </Form.Item>
-                  </Popover>
-                </Col>
+
                 <Col span={12}>
                   <Popover
                     placement="topRight"
@@ -241,7 +222,7 @@ const SelectionApplication = () => {
                     </Form.Item>
                   </Popover>
                 </Col>
-                <Col span={24}>
+                <Col span={12}>
                   <Popover
                     placement="top"
                     content={
@@ -255,10 +236,10 @@ const SelectionApplication = () => {
                     <Form.Item
                       label="需求来源APP"
                       name="demandSource"
-                      labelCol={{
-                        span: 3,
-                        style: { fontWeight: 'bold' },
-                      }}
+                      // labelCol={{
+                      //   span: 3,
+                      //   style: { fontWeight: 'bold' },
+                      // }}
                       // rules={[{ required: true, message: '请输入!' }]}
                     >
                       <Input
@@ -276,12 +257,122 @@ const SelectionApplication = () => {
                       span: 3,
                       style: { fontWeight: 'bold' },
                     }}
-                    label="需求背景"
+                    label="原始述求"
                     name="reason"
                     rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Input.TextArea disabled={false} />
+                    <Input disabled={false} />
                   </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    label="功能描述"
+                    name="functionalDescription"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input disabled={false} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Popover
+                    placement="topRight"
+                    content={
+                      <>
+                        <div>填写完成 OH 适配后的仓库路径</div>
+                      </>
+                    }
+                    title="规则"
+                    trigger="click"
+                  >
+                    {/* <Form.Item
+                      label="适配仓路径"
+                      name="repoUrl"
+                      rules={[{ required: true, message: '请输入!' }]}
+                    >
+                      <Input
+                        disabled={false}
+                        onFocus={() => {}}
+                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                      />
+                    </Form.Item> */}
+                    <Form.Item
+                      label="适配仓路径"
+                      name="repoUrl"
+                      rules={[{ required: true, message: '请输入!' }]}
+                    >
+                      <Input
+                        disabled={false}
+                        onFocus={() => {}}
+                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                      />
+                    </Form.Item>
+                    {/* <Form.List
+                      name="names"
+                      rules={[
+                        {
+                          validator: async (_, names) => {
+                            if (!names || names.length < 2) {
+                              return Promise.reject(
+                                new Error('At least 2 passengers')
+                              );
+                            }
+                          },
+                        },
+                      ]}
+                    >
+                      {(fields, { add, remove }, { errors }) => (
+                        <>
+                          {fields.map((field, index) => (
+                            <Form.Item
+                              label={index === 0 ? 'Passengers' : ''}
+                              required={false}
+                              key={field.key}
+                            >
+                              <Form.Item
+                                {...field}
+                                validateTrigger={['onChange', 'onBlur']}
+                                rules={[
+                                  {
+                                    required: true,
+                                    whitespace: true,
+                                    message:
+                                      "Please input passenger's name or delete this field.",
+                                  },
+                                ]}
+                                noStyle
+                              >
+                                <Input placeholder="passenger name" />
+                              </Form.Item>
+                              {fields.length > 1 ? (
+                                <MinusCircleOutlined
+                                  className="dynamic-delete-button"
+                                  onClick={() => remove(field.name)}
+                                  rev={undefined}
+                                />
+                              ) : null}
+                            </Form.Item>
+                          ))}
+                          <Form.Item>
+                            <Button
+                              type="dashed"
+                              onClick={() => add()}
+                              style={{
+                                width: '60%',
+                              }}
+                              icon={<PlusOutlined rev={undefined} />}
+                            >
+                              Add field
+                            </Button>
+                            <Form.ErrorList errors={errors} />
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List> */}
+                  </Popover>
                 </Col>
               </Row>
               {report.length > 0 && (

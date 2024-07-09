@@ -159,9 +159,9 @@ mutation createTpcSoftwareSelection(
   $level: String!
   $tpcSoftwareSelectionReportIds: [Int!]!
   $selectionType: Int!
-  $repoUrl: String
+  $repoUrl: String!
   $committers: [String!]!
-  # $repoDescription: String!
+  $functionalDescription: String!
   $incubationTime: String!
   $demandSource: String
   $reason: String!
@@ -175,12 +175,28 @@ mutation createTpcSoftwareSelection(
       tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds
       repoUrl: $repoUrl
       committers: $committers
-      # repoDescription: $repoDescription
+      functionalDescription: $functionalDescription
       demandSource: $demandSource
       incubationTime: $incubationTime
       reason: $reason
       adaptationMethod: $adaptationMethod
     }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation createTpcSoftwareReportMetricClarification(
+  $shortCode: String!
+  $metricName: String!
+  $content: String!
+) {
+  createTpcSoftwareReportMetricClarification(
+    input: { shortCode: $shortCode, metricName: $metricName, content: $content }
   ) {
     errors {
       message
