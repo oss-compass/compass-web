@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { RightOutlined } from '@ant-design/icons';
+// import { RightOutlined } from '@ant-design/icons';
+import { TbMessage2 } from 'react-icons/tb';
+
 import { Tag, Descriptions, Drawer } from 'antd';
 import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
@@ -100,7 +102,7 @@ const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
                   <div className="flex-shrink-0"> {item.指标名称}</div>
                   <div className="ml-4">
                     {item.风险重要性 === '高' ? (
-                      <Tag color="red">重要性： {item.风险重要性}</Tag>
+                      <Tag color="geekblue">重要性： {item.风险重要性}</Tag>
                     ) : (
                       <Tag color="cyan">重要性： {item.风险重要性}</Tag>
                     )}
@@ -121,7 +123,7 @@ const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
               </div>
               <div className="flex w-8 flex-shrink-0 items-center justify-center">
                 {/* <span className="text-base font-bold">{item.score * 10}</span> */}
-                <RightOutlined className="text-sm" rev={undefined} />
+                <TbMessage2 className="text-lg" />
               </div>
             </div>
           );
