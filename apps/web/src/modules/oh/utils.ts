@@ -39,6 +39,10 @@ export const openGiteeIssue = (report, values) => {
   3. 【报告链接】
 
   > ${reportLink}
+
+  4. 【需求来源 APP】
+
+  > ${values.demandSource || '无'}
   `;
 
   try {

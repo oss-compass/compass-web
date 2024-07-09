@@ -9,6 +9,7 @@ import {
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 const RiskClarification = ({ metric, shortCode }) => {
   const inputRef = useRef<InputRefProps>(null);
@@ -18,7 +19,7 @@ const RiskClarification = ({ metric, shortCode }) => {
     shortCode,
     metricName,
     page: 1,
-    per: 20,
+    per: 50,
   };
   const {
     data,
@@ -102,8 +103,8 @@ const RiskClarification = ({ metric, shortCode }) => {
                   },
                   {
                     onSuccess: () => {
+                      toast.success('发送成功');
                       refetch();
-                      console.log(123);
                       inputRef.current?.reset();
                     },
                   }
