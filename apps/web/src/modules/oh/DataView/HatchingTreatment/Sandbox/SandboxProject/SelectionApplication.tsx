@@ -3,11 +3,7 @@ import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
 import { Button, message, Form, Input, Select, Row, Col, Space } from 'antd';
 import Dialog from '@common/components/Dialog';
-import {
-  MinusCircleOutlined,
-  PlusOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
+import { MinusOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import SelectReport from '@modules/oh/components/Report/SelectReport';
 import {
@@ -20,6 +16,7 @@ import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 import { openGiteeIssue } from '@modules/oh/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import ReportPageItem from '@modules/oh/components/Report/ReportPageItem';
+import { getPathname } from '@common/utils';
 
 const SelectionApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -117,8 +114,9 @@ const SelectionApplication = () => {
     });
   };
   let main = (
-    <div className="flex flex-col justify-center py-4 px-5">
+    <div className="flex w-full flex-col justify-center py-4 px-5">
       <Form
+        className="w-full"
         form={form}
         labelCol={{
           span: 6,
@@ -189,22 +187,24 @@ const SelectionApplication = () => {
                     </Select>
                   </Form.Item>
                 </Col>
-
-                <Col span={24}>
+                <Col span={12}>
                   <Form.Item
-                    labelCol={{
-                      span: 3,
-                      style: { fontWeight: 'bold' },
-                    }}
-                    label="Commiters"
-                    name="committers"
+                    label="目标选型软件"
+                    name="targetSoftware"
                     rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Input
-                      placeholder="需填写 Commiters 的 Gitee/Github 用户名，多个
-                          Commiters 用逗号分开"
-                      disabled={false}
-                    />
+                    <Select disabled={false}>
+                      {report.map((item) => {
+                        return (
+                          <Select.Option
+                            key={item.id}
+                            value={getPathname(item.codeUrl)}
+                          >
+                            {getPathname(item.codeUrl)}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={24}>
@@ -258,6 +258,23 @@ const SelectionApplication = () => {
                     />
                   </Form.Item>
                 </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    label="Commiters"
+                    name="committers"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input
+                      placeholder="需填写 Commiters 的 Gitee/Github 用户名，多个
+                          Commiters 用逗号分开"
+                      disabled={false}
+                    />
+                  </Form.Item>
+                </Col>
 
                 <Form.List name="repoUrl" initialValue={[{ repoUrl: '' }]}>
                   {(fields, { add, remove }, { errors }) => (
@@ -284,37 +301,40 @@ const SelectionApplication = () => {
                         </Form.Item>
                       </Col> */}
                       {fields.map((field, index) => (
-                        <Col span={12} key={field.key}>
-                          <Form.Item
-                            label={`适配仓路径${index ? index + 1 : ''}`}
-                            key={field.key}
-                            name={[field.name, 'repoUrl']}
-                            rules={[{ required: true, message: '请输入!' }]}
-                          >
-                            <Space.Compact style={{ width: '100%' }}>
-                              <Input
-                                placeholder="填写完成 OH 适配后的仓库路径"
-                                disabled={false}
-                              />
-                              {index === 0 ? (
-                                <Button
-                                  className="rounded-none pt-0"
-                                  type="primary"
-                                  onClick={() => add()}
-                                >
-                                  <PlusOutlined rev={undefined} />
-                                </Button>
-                              ) : (
-                                <Button
-                                  className="dynamic-delete-button rounded-none pt-0"
-                                  onClick={() => remove(field.name)}
-                                >
-                                  <MinusCircleOutlined rev={undefined} />
-                                </Button>
-                              )}
-                            </Space.Compact>
-                          </Form.Item>
-                        </Col>
+                        <>
+                          <Col span={12} key={field.key}>
+                            <Form.Item
+                              label={`适配仓路径${index ? index + 1 : ''}`}
+                              key={field.key}
+                              name={[field.name, 'repoUrl']}
+                              rules={[{ required: true, message: '请输入!' }]}
+                            >
+                              <Space.Compact style={{ width: '100%' }}>
+                                <Input
+                                  placeholder="填写完成 OH 适配后的仓库路径"
+                                  disabled={false}
+                                />
+                                {index === 0 ? (
+                                  <Button
+                                    className="rounded-none pt-0"
+                                    type="primary"
+                                    onClick={() => add()}
+                                  >
+                                    <PlusOutlined rev={undefined} />
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    className="dynamic-delete-button rounded-none pt-0"
+                                    onClick={() => remove(field.name)}
+                                  >
+                                    <MinusOutlined rev={undefined} />
+                                  </Button>
+                                )}
+                              </Space.Compact>
+                            </Form.Item>
+                          </Col>
+                          <Col span={1}></Col>
+                        </>
                       ))}
                     </>
                   )}
@@ -378,10 +398,13 @@ const SelectionApplication = () => {
           <div className="w-full">
             <SelectReport
               getReport={(item) => {
+                form.resetFields();
                 setOpenConfirm(false);
                 setReport(item);
                 form.setFieldsValue({
                   name: item.map((item) => item.name).join(', '),
+                  targetSoftware:
+                    item.length > 1 ? '' : getPathname(item[0].codeUrl),
                 });
               }}
             />

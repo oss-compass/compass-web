@@ -166,6 +166,7 @@ mutation createTpcSoftwareSelection(
   $demandSource: String
   $reason: String!
   $adaptationMethod: String!
+  $targetSoftware: String!
 ) {
   createTpcSoftwareSelection(
     input: {
@@ -180,6 +181,7 @@ mutation createTpcSoftwareSelection(
       incubationTime: $incubationTime
       reason: $reason
       adaptationMethod: $adaptationMethod
+      targetSoftware: $targetSoftware
     }
   ) {
     errors {

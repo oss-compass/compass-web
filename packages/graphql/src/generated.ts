@@ -1105,6 +1105,7 @@ export type CreateTpcSoftwareSelectionInput = {
   repoUrl?: InputMaybe<Array<Scalars['String']>>;
   /** selection: 0, create_repo: 1, incubation: 2 */
   selectionType: Scalars['Int'];
+  targetSoftware: Scalars['String'];
   tpcSoftwareSelectionReportIds: Array<Scalars['Int']>;
 };
 
@@ -3452,6 +3453,7 @@ export type TpcSoftwareSelection = {
   repoUrl?: Maybe<Array<Scalars['String']>>;
   /** selection: 0, create_repo: 1, incubation: 2 */
   selectionType?: Maybe<Scalars['Int']>;
+  targetSoftware?: Maybe<Scalars['String']>;
   tpcSoftwareSelectionReportIds?: Maybe<Array<Scalars['String']>>;
   tpcSoftwareSelectionReports?: Maybe<Array<TpcSoftwareSelectionReport>>;
   user?: Maybe<User>;
@@ -5315,6 +5317,7 @@ export type CreateTpcSoftwareSelectionMutationVariables = Exact<{
   demandSource?: InputMaybe<Scalars['String']>;
   reason: Scalars['String'];
   adaptationMethod: Scalars['String'];
+  targetSoftware: Scalars['String'];
 }>;
 
 export type CreateTpcSoftwareSelectionMutation = {
@@ -9822,9 +9825,9 @@ useCreateTpcSoftwareSelectionReportMutation.fetcher = (
     CreateTpcSoftwareSelectionReportMutationVariables
   >(client, CreateTpcSoftwareSelectionReportDocument, variables, headers);
 export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String, $reason: String!, $adaptationMethod: String!) {
+    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String, $reason: String!, $adaptationMethod: String!, $targetSoftware: String!) {
   createTpcSoftwareSelection(
-    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, adaptationMethod: $adaptationMethod}
+    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, adaptationMethod: $adaptationMethod, targetSoftware: $targetSoftware}
   ) {
     errors {
       message
