@@ -38,6 +38,7 @@ const CommentItemMore = ({
     onSuccess: () => {
       setOpenConfirm(false);
       onDeleteSuccess();
+      // userRiskStore.event$[shortCode]?.emit(userEvent.REFRESH);
       userRiskStore.event$?.emit(userEvent.REFRESH);
     },
   });

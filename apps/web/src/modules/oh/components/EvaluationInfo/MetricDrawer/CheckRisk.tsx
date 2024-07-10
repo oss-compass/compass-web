@@ -25,7 +25,7 @@ const CheckRisk = ({ shortCode, metricName }) => {
             },
             {
               onSuccess: () => {
-                userRiskStore.event$?.emit(userEvent.REFRESH);
+                userRiskStore.event$[shortCode]?.emit(userEvent.REFRESH);
                 toast.success('批准成功');
                 // refetch();
                 // inputRef.current?.reset();

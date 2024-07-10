@@ -96,7 +96,8 @@ const RiskClarification = ({ metric, shortCode }) => {
                       toast.success('发送成功');
                       refetch();
                       console.log(userRiskStore.event$);
-                      userRiskStore.event$?.emit(userEvent.REFRESH);
+                      //   userRiskStore.event$?.emit(userEvent.REFRESH);
+                      userRiskStore.event$[shortCode]?.emit(userEvent.REFRESH);
 
                       inputRef.current?.reset();
                     },

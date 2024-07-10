@@ -25,7 +25,7 @@ const UserRiskFetcher = ({ shortCode }) => {
     }
   });
   useEffect(() => {
-    userRiskStore.event$ = event$;
+    userRiskStore.event$ = { ...userRiskStore.event$, [shortCode]: event$ };
   }, [event$]);
 
   useEffect(() => {
