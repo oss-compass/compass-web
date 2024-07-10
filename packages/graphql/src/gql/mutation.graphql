@@ -235,4 +235,20 @@ mutation updateReportMetricClarification(
     status
   }
 }
+
+mutation acceptTpcSoftwareReportMetricClarification(
+  $shortCode: String!
+  $metricName: String!
+) {
+  acceptTpcSoftwareReportMetricClarification(
+    input: { shortCode: $shortCode, metricName: $metricName }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
 #  deleteTpcSoftwareReportMetricClarification

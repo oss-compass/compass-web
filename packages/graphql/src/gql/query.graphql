@@ -1793,3 +1793,58 @@ query tpcSoftwareReportMetricClarificationPage(
     totalPage
   }
 }
+query tpcSoftwareSelectionReportRisk($shortCode: String!) {
+  tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    codeCount
+    codeUrl
+    id
+    manufacturer
+    name
+    programmingLanguage
+    shortCode
+    metricClarificationCount {
+      complianceDco
+      complianceLicense
+      complianceLicenseCompatibility
+      compliancePackageSig
+      ecologyAdoptionAnalysis
+      ecologyCodeMaintenance
+      ecologyCommunitySupport
+      ecologyDependencyAcquisition
+      ecologyPatentRisk
+      ecologySoftwareQuality
+      lifecycleVersionLifecycle
+      lifecycleVersionNormalization
+      lifecycleVersionNumber
+      securityBinaryArtifact
+      securityHistoryVulnerability
+      securityVulnerability
+      securityVulnerabilityDisclosure
+      securityVulnerabilityResponse
+    }
+    metricClarificationState {
+      complianceDco
+      complianceLicense
+      complianceLicenseCompatibility
+      compliancePackageSig
+      ecologyAdoptionAnalysis
+      ecologyCodeMaintenance
+      ecologyCommunitySupport
+      ecologyDependencyAcquisition
+      ecologyPatentRisk
+      ecologySoftwareQuality
+      lifecycleVersionLifecycle
+      lifecycleVersionNormalization
+      lifecycleVersionNumber
+      securityBinaryArtifact
+      securityHistoryVulnerability
+      securityVulnerability
+      securityVulnerabilityDisclosure
+      securityVulnerabilityResponse
+    }
+    tpcSoftwareSig {
+      ...tpcSoftwareSig
+    }
+    websiteUrl
+  }
+}

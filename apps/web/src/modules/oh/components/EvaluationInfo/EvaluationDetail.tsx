@@ -8,6 +8,7 @@ import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import EvaluationDownLoad from '@modules/oh/components/EvaluationInfo/EvaluationDownLoad';
 import MetricDrawer from '@modules/oh/components/EvaluationInfo/MetricDrawer';
 import RiskBadge from '@modules/oh/components/EvaluationInfo/RiskBadge';
+import UserRiskFetcher from '@modules/oh/store/UserRiskFetcher';
 import {
   metricList,
   getEvaluationDetail,
@@ -121,7 +122,7 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
                   ))}
                 </div>
               </div>
-              <RiskBadge key={item.key} />
+              <RiskBadge shortCode={report.shortCode} keyId={item.key} />
               {/* <div
                 title="风险澄清"
                 className="flex w-8 flex-shrink-0 items-center justify-center"
@@ -260,6 +261,7 @@ const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
   }
   return (
     <div>
+      <UserRiskFetcher shortCode={item.shortCode} />
       <div className="flex justify-between border bg-[#f9f9f9] py-3 px-6">
         <div className="flex">
           {back && (

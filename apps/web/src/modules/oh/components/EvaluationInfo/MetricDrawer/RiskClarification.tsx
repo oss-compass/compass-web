@@ -3,7 +3,7 @@ import { Avatar, List, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import CommentInput, { InputRefProps } from './CommentInput';
 import RiskContent from './RiskContent';
-
+import CheckRisk from './CheckRisk';
 import {
   useTpcSoftwareReportMetricClarificationPageQuery,
   useCreateTpcSoftwareReportMetricClarificationMutation,
@@ -12,6 +12,7 @@ import {
 import gqlClient from '@common/gqlClient';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { userRiskStore, userEvent } from '@modules/oh/store/UserRiskStore';
 
 const RiskClarification = ({ metric, shortCode }) => {
   const inputRef = useRef<InputRefProps>(null);
@@ -73,15 +74,7 @@ const RiskClarification = ({ metric, shortCode }) => {
         header={
           <div className="flex justify-between">
             <div className="text-base font-bold">风险澄清</div>
-            {/* <Button
-              title="新增风险澄清"
-              className="flex items-center !rounded-none"
-              size="small"
-              type="primary"
-              //   onClick={onClose}
-            >
-              <PlusOutlined rev={undefined} />
-            </Button> */}
+            <CheckRisk shortCode={shortCode} metricName={metricName} />
           </div>
         }
         footer={
@@ -102,6 +95,9 @@ const RiskClarification = ({ metric, shortCode }) => {
                     onSuccess: () => {
                       toast.success('发送成功');
                       refetch();
+                      console.log(userRiskStore.event$);
+                      userRiskStore.event$?.emit(userEvent.REFRESH);
+
                       inputRef.current?.reset();
                     },
                   }

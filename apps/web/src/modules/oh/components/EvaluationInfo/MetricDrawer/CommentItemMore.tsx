@@ -12,6 +12,7 @@ import Dialog from '@common/components/Dialog';
 import { Button, PopperRefProps } from '@oss-compass/ui';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import { useTranslation } from 'react-i18next';
+import { userRiskStore, userEvent } from '@modules/oh/store/UserRiskStore';
 
 const CommentItemMore = ({
   userId,
@@ -37,6 +38,7 @@ const CommentItemMore = ({
     onSuccess: () => {
       setOpenConfirm(false);
       onDeleteSuccess();
+      userRiskStore.event$?.emit(userEvent.REFRESH);
     },
   });
 
