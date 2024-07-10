@@ -13,7 +13,7 @@ const CheckRisk = ({ shortCode, metricName }) => {
   return (
     <>
       <Button
-        title="新增风险澄清"
+        title="批准风险澄清"
         className="flex items-center !rounded-none"
         size="small"
         type="primary"
