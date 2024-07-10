@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
 // import { RightOutlined } from '@ant-design/icons';
 import { TbMessage2 } from 'react-icons/tb';
-
-import { Tag, Descriptions, Drawer } from 'antd';
+import { Tag, Descriptions } from 'antd';
 import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import EvaluationDownLoad from '@modules/oh/components/EvaluationInfo/EvaluationDownLoad';
 import MetricDrawer from '@modules/oh/components/EvaluationInfo/MetricDrawer';
+import RiskBadge from '@modules/oh/components/EvaluationInfo/RiskBadge';
 import {
   metricList,
   getEvaluationDetail,
@@ -63,7 +63,7 @@ const EvaluationTopScore = ({ items, score }) => {
   );
 };
 
-const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
+const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
   return (
     <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
@@ -79,7 +79,7 @@ const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
             }}
           ></div>
         </div>
-        <div className="ml-4 text-base font-semibold">{score}%</div>
+        <div className="ml-4 text-base font-semibold">{score}</div>
       </div>
       <div className="mt-6 w-full border-b">
         {items.map((item) => {
@@ -121,13 +121,15 @@ const EvaluationMerticItem = ({ mertic, items, score, showDrawer }) => {
                   ))}
                 </div>
               </div>
-              <div
+              <RiskBadge key={item.key} />
+              {/* <div
                 title="风险澄清"
                 className="flex w-8 flex-shrink-0 items-center justify-center"
               >
-                {/* <span className="text-base font-bold">{item.score * 10}</span> */}
-                <TbMessage2 className="text-lg" />
-              </div>
+                <Badge count={0} size="small">
+                  <TbMessage2 className="text-xl" />
+                </Badge>
+              </div> */}
             </div>
           );
         })}
@@ -168,6 +170,7 @@ const EvaluationMertic = ({ allData }) => {
         ).score;
         return (
           <EvaluationMerticItem
+            report={allData}
             showDrawer={showDrawer}
             key={mertic}
             mertic={mertic}
