@@ -76,7 +76,7 @@ export const menuItems: MenuItem[] = [
     children: [
       {
         key: 'sandbox',
-        label: '沙箱项目 (孵化选型)',
+        label: '沙箱项目',
         children: [
           {
             key: 'sandboxReport',
@@ -143,12 +143,12 @@ export const componentMap = {
   code: <CodeStatistics />,
   committer: <CommitterStatistics />,
   communityContributions: <CommunityContributions />,
-  sandboxReport: <SandboxReport />,
-  sandboxProject: <SandboxProject />,
-  sandboxTable: <SandboxTable />,
-  hatchReport: <HatchReport />,
-  hatchProject: <HatchProject />,
-  hatchTable: <HatchTable />,
+  sandboxReport: <HatchReport />,
+  sandboxProject: <HatchProject />,
+  sandboxTable: <HatchTable />,
+  hatchReport: <SandboxReport />,
+  hatchProject: <SandboxProject />,
+  hatchTable: <SandboxTable />,
   // hatchReport: <Graduate />,
   // hatchProject: <Graduate />,
   // hatchTable: <Graduate />,

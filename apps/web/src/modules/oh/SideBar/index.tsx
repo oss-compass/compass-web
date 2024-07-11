@@ -27,7 +27,7 @@ const SideMenu: React.FC = () => {
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
   const defaultSelectedKeys = useMemo(() => {
-    return [id || 'index'];
+    return [id || 'hatchTable'];
   }, [id, window.location.href]);
 
   const { Sider } = Layout;
@@ -71,10 +71,10 @@ const SideMenu: React.FC = () => {
             />
           </div> */}
           <Menu
-            defaultSelectedKeys={[id || 'index']}
+            defaultSelectedKeys={[id || 'hatchTable']}
             onClick={onClick}
             style={{ width: 220 }}
-            defaultOpenKeys={['sub3']}
+            defaultOpenKeys={['sub3', 'hatch']}
             mode="inline"
             items={items}
             selectedKeys={defaultSelectedKeys}

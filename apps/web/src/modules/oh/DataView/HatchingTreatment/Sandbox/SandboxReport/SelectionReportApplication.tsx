@@ -19,7 +19,6 @@ import getErrorMessage from '@common/utils/getErrorMessage';
 
 const SelectionReportApplication = () => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [sameCheck, setSameCheck] = useState(false);
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
     onSuccess(data) {
@@ -29,10 +28,10 @@ const SelectionReportApplication = () => {
           style: {
             marginTop: '200px',
           },
-          content: '提交成功，可在沙箱项目申请列表中查看报告状态！',
+          content: '提交成功，可在孵化项目申请列表中查看报告状态！',
         });
         setTimeout(() => {
-          window.location.hash = 'sandboxTable?tab=1';
+          window.location.hash = 'hatchTable?tab=1';
         }, 2000);
       } else {
         messageApi.open({
@@ -285,47 +284,6 @@ const SelectionReportApplication = () => {
               >
                 <Input />
               </Form.Item>
-            </Col>
-            <Col span={12} className="relative">
-              <Popover
-                placement="topLeft"
-                arrow={false}
-                content={
-                  <>
-                    <div>存在已完成适配的同类型三方库</div>
-                  </>
-                }
-                trigger="hover"
-              >
-                <Form.Item
-                  label="存在同类型三方库"
-                  rules={[{ required: true, message: '请输入!' }]}
-                  name="isSameTypeCheck"
-                  initialValue={0}
-                >
-                  <Radio.Group
-                    // value={value.xxx || number}
-                    onChange={(e) => {
-                      if (e.target.value === 1) {
-                        setSameCheck(true);
-                      } else {
-                        setSameCheck(false);
-                      }
-                    }}
-                  >
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Popover>
-              {sameCheck && (
-                <Form.Item
-                  className="absolute -top-1 right-3 w-[50%]"
-                  name="sameTypeSoftwareName"
-                >
-                  <Input placeholder="请输入同类型三方库链接" />
-                </Form.Item>
-              )}
             </Col>
           </Row>
         </Form>

@@ -167,6 +167,7 @@ mutation createTpcSoftwareSelection(
   $reason: String!
   $adaptationMethod: String!
   $targetSoftware: String!
+  $isSameTypeCheck: Int!
 ) {
   createTpcSoftwareSelection(
     input: {
@@ -182,6 +183,7 @@ mutation createTpcSoftwareSelection(
       reason: $reason
       adaptationMethod: $adaptationMethod
       targetSoftware: $targetSoftware
+      isSameTypeCheck: $isSameTypeCheck
     }
   ) {
     errors {

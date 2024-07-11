@@ -161,7 +161,7 @@ const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
           </div>
         </div>
         <div className="pt-6">
-          <RiskClarification metric={metric} shortCode={shortCode} />
+          <RiskClarification metric={metric} report={report} />
         </div>
       </Drawer>
     </>

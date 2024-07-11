@@ -9,7 +9,7 @@ import { componentMap } from '@modules/oh/SideBar/MenuItems';
 
 const OhDataView = () => {
   const id = useHashchangeEvent();
-  const source = componentMap[id] || componentMap['sandboxReport'];
+  const source = componentMap[id] || componentMap['hatchTable'];
 
   return <>{source}</>;
 };

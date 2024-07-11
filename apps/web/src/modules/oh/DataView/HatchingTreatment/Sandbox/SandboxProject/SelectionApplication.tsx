@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
-import { Button, message, Form, Input, Select, Row, Col, Space } from 'antd';
+import {
+  Button,
+  message,
+  Form,
+  Input,
+  Select,
+  Row,
+  Col,
+  Space,
+  Popover,
+  Radio,
+} from 'antd';
 import Dialog from '@common/components/Dialog';
 import { MinusOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -15,13 +26,14 @@ import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 import { openGiteeIssue } from '@modules/oh/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
-import ReportPageItem from '@modules/oh/components/Report/ReportPageItem';
+import ReportPageItems from '@modules/oh/components/Report/ReportPageItems';
 import { getPathname } from '@common/utils';
 
 const SelectionApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [report, setReport] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
+  const [sameCheck, setSameCheck] = useState(false);
 
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionMutation(client, {
@@ -89,30 +101,7 @@ const SelectionApplication = () => {
     form.resetFields();
     setReport([]);
   };
-  const autoFill = (report) => {
-    console.log(report);
-    form.setFieldsValue({
-      name: report?.name || 'jasonsantos/luajava',
-      domain: report?.tpcSoftwareSig?.id || 1,
-      release: report?.release || 'v1.0.0',
-      releaseTime: dayjs(report?.releaseTime || '2020-01-01'),
-      manufacturer: report?.manufacturer || 'jasonsantos',
-      websiteUrl: report?.websiteUrl || 'www.keplerproject.org/luajava/',
-      // '游戏中心使用 LuaJava 进行 lua 与 java 间的调用。该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。OH 目前没有支持 lua 层到 arkTS 之间的调用。需要将该开源库进行 OpenHarmony 移植适配',
-      codeUrl: report?.codeUrl || 'https://github.com/jasonsantos/luajava',
-      programmingLanguage: report?.programmingLanguage || 'Java',
-      codeCount: report?.codeCount || '10000 行',
-      bugPublish: 'https://github.com/jasonsantos/luajava/issues',
 
-      adaptationMethod: 1,
-      committers: 'jasonsantos,talklittle,hishamhm', //'jasonsantos,talklittle,hishamhm',
-      reason:
-        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
-      repoDescription:
-        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
-      incubationTime: dayjs('2022-01-01'),
-    });
-  };
   let main = (
     <div className="flex w-full flex-col justify-center py-4 px-5">
       <Form
@@ -275,31 +264,54 @@ const SelectionApplication = () => {
                     />
                   </Form.Item>
                 </Col>
+                <Col span={12} className="relative">
+                  <Popover
+                    placement="topLeft"
+                    arrow={false}
+                    content={
+                      <>
+                        <div>存在已完成适配的同类型三方库</div>
+                      </>
+                    }
+                    trigger="hover"
+                  >
+                    <Form.Item
+                      label="存在同类型三方库"
+                      rules={[{ required: true, message: '请输入!' }]}
+                      name="isSameTypeCheck"
+                      initialValue={0}
+                    >
+                      <Radio.Group
+                        // value={value.xxx || number}
+                        onChange={(e) => {
+                          if (e.target.value === 1) {
+                            setSameCheck(true);
+                          } else {
+                            setSameCheck(false);
+                          }
+                        }}
+                      >
+                        <Radio value={1}>是</Radio>
+                        <Radio value={0}>否</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Popover>
+                </Col>
+                <Col span={12} className="relative">
+                  {sameCheck && (
+                    <Form.Item
+                      // className="absolute -top-1 right-3 w-[50%]"
+                      label="同类型三方库链接"
+                      name="sameTypeSoftwareName"
+                    >
+                      <Input placeholder="请输入同类型三方库链接" />
+                    </Form.Item>
+                  )}
+                </Col>
 
                 <Form.List name="repoUrl" initialValue={[{ repoUrl: '' }]}>
                   {(fields, { add, remove }, { errors }) => (
                     <>
-                      {/* <Col span={12}>
-                        <Form.Item
-                          label="适配仓路径"
-                          name={['repoUrl', 'repoUrl']}
-                          rules={[{ required: true, message: '请输入!' }]}
-                        >
-                          <Space.Compact style={{ width: '100%' }}>
-                            <Input
-                              placeholder="填写完成 OH 适配后的仓库路径"
-                              disabled={false}
-                            />
-                            <Button
-                              className="rounded-none pt-0"
-                              type="primary"
-                              onClick={() => add()}
-                            >
-                              <PlusOutlined rev={undefined} />
-                            </Button>
-                          </Space.Compact>
-                        </Form.Item>
-                      </Col> */}
                       {fields.map((field, index) => (
                         <>
                           <Col span={12} key={field.key}>
@@ -343,26 +355,9 @@ const SelectionApplication = () => {
               {report.length > 0 && (
                 <>
                   <div className="mb-4 text-base font-semibold">报告信息</div>
-                  <ReportPageItem reportItems={report} />
+                  <ReportPageItems reportItems={report} />
                 </>
               )}
-              {/* {report.length > 1 ? (
-                <>
-                  <Tabs
-                    className="oh-antd"
-                    size={'small'}
-                    items={report.map((r) => {
-                      return {
-                        label: r.name,
-                        key: r.id,
-                        children: <ReportInfo report={r} />,
-                      };
-                    })}
-                  />
-                </>
-              ) : (
-                <ReportInfo report={report[0]} />
-              )} */}
             </>
           )}
         </>

@@ -4,9 +4,18 @@ import CommentItemMore from './CommentItemMore';
 import Image from 'next/image';
 import { formatToNow } from '@common/utils/time';
 
-const RiskContent = ({ item, refetch }: { item: any; refetch: () => void }) => {
+const RiskContent = ({
+  item,
+  shortCode,
+  refetch,
+}: {
+  item: any;
+  shortCode: string;
+  refetch: () => void;
+}) => {
   const { content, userId, id } = item;
   const [edit, setEdit] = useState(false);
+
   return (
     <>
       <div className="flex pb-4">
@@ -57,6 +66,7 @@ const RiskContent = ({ item, refetch }: { item: any; refetch: () => void }) => {
       </div>
       <div className="absolute top-4 right-4">
         <CommentItemMore
+          shortCode={shortCode}
           userId={userId}
           clarificationId={item.id}
           onDeleteEdit={() => {

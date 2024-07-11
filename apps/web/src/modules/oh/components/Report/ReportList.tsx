@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { Button } from 'antd';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
+import GetReportData from '@modules/oh/components/Report/GetReportData';
 import { getMetricScore } from '@modules/oh/components/EvaluationInfo/MerticDetail';
 import Loading from '@modules/oh/components/Loading';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
@@ -94,8 +94,8 @@ const Report = ({
     <>
       {activeItem ? (
         <div className="mb-6 h-[calc(100%-24px)] overflow-auto p-5">
-          <EvaluationDetail
-            item={activeItem}
+          <GetReportData
+            shortCode={activeItem.shortCode}
             back={() => {
               setActiveItem(null);
             }}

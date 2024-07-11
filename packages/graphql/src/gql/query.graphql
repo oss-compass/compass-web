@@ -1740,6 +1740,7 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     name
     programmingLanguage
     shortCode
+    clarificationPermission
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
       ...tpcSoftwareReportMetricDetail
@@ -1795,12 +1796,8 @@ query tpcSoftwareReportMetricClarificationPage(
 }
 query tpcSoftwareSelectionReportRisk($shortCode: String!) {
   tpcSoftwareSelectionReport(shortCode: $shortCode) {
-    codeCount
     codeUrl
     id
-    manufacturer
-    name
-    programmingLanguage
     shortCode
     metricClarificationCount {
       complianceDco
@@ -1823,28 +1820,14 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
       securityVulnerabilityResponse
     }
     metricClarificationState {
-      complianceDco
-      complianceLicense
-      complianceLicenseCompatibility
-      compliancePackageSig
-      ecologyAdoptionAnalysis
-      ecologyCodeMaintenance
-      ecologyCommunitySupport
-      ecologyDependencyAcquisition
-      ecologyPatentRisk
-      ecologySoftwareQuality
-      lifecycleVersionLifecycle
-      lifecycleVersionNormalization
-      lifecycleVersionNumber
-      securityBinaryArtifact
-      securityHistoryVulnerability
-      securityVulnerability
-      securityVulnerabilityDisclosure
-      securityVulnerabilityResponse
+      createdAt
+      id
+      metricName
+      state
+      updatedAt
+      user {
+        name
+      }
     }
-    tpcSoftwareSig {
-      ...tpcSoftwareSig
-    }
-    websiteUrl
   }
 }

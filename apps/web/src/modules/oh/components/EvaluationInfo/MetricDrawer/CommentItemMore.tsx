@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Popper } from '@oss-compass/ui';
 import { useRouter } from 'next/router';
-import { CommentFragment, ReplyFragment } from '@oss-compass/graphql';
 import {
   ModelDetail,
   useDeleteReportMetricClarificationMutation,
@@ -12,14 +11,16 @@ import Dialog from '@common/components/Dialog';
 import { Button, PopperRefProps } from '@oss-compass/ui';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import { useTranslation } from 'react-i18next';
-import { userRiskStore, userEvent } from '@modules/oh/store/UserRiskStore';
+import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
 
 const CommentItemMore = ({
+  shortCode,
   userId,
   clarificationId,
   onDeleteSuccess,
   onDeleteEdit,
 }: {
+  shortCode: string;
   userId: number;
   clarificationId: number;
   onDeleteSuccess: () => void;
@@ -38,8 +39,8 @@ const CommentItemMore = ({
     onSuccess: () => {
       setOpenConfirm(false);
       onDeleteSuccess();
-      // userRiskStore.event$[shortCode]?.emit(userEvent.REFRESH);
-      userRiskStore.event$?.emit(userEvent.REFRESH);
+      RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
+      // RiskStore.event$?.emit(userEvent.REFRESH);
     },
   });
 

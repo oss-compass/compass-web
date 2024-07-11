@@ -12,9 +12,10 @@ import {
 import gqlClient from '@common/gqlClient';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { userRiskStore, userEvent } from '@modules/oh/store/UserRiskStore';
+import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
 
-const RiskClarification = ({ metric, shortCode }) => {
+const RiskClarification = ({ metric, report }) => {
+  const { shortCode } = report;
   const inputRef = useRef<InputRefProps>(null);
   const metricName = metric.key;
   //   const [listData, setListData] = useState([]);
@@ -74,7 +75,7 @@ const RiskClarification = ({ metric, shortCode }) => {
         header={
           <div className="flex justify-between">
             <div className="text-base font-bold">风险澄清</div>
-            <CheckRisk shortCode={shortCode} metricName={metricName} />
+            <CheckRisk report={report} metricName={metricName} />
           </div>
         }
         footer={
@@ -95,10 +96,8 @@ const RiskClarification = ({ metric, shortCode }) => {
                     onSuccess: () => {
                       toast.success('发送成功');
                       refetch();
-                      console.log(userRiskStore.event$);
-                      //   userRiskStore.event$?.emit(userEvent.REFRESH);
-                      userRiskStore.event$[shortCode]?.emit(userEvent.REFRESH);
-
+                      console.log(RiskStore.event$);
+                      RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
                       inputRef.current?.reset();
                     },
                   }
@@ -115,7 +114,11 @@ const RiskClarification = ({ metric, shortCode }) => {
             key={item.id}
             className="relative flex flex-col !items-start"
           >
-            <RiskContent item={item} refetch={() => refetch()} />
+            <RiskContent
+              shortCode={shortCode}
+              item={item}
+              refetch={() => refetch()}
+            />
           </List.Item>
         )}
       />

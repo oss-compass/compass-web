@@ -286,35 +286,6 @@ const SelectionReportApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                label="是否存在同类型"
-                rules={[{ required: true, message: '请输入!' }]}
-                name="isSameTypeCheck"
-                initialValue={'否'}
-              >
-                <Radio.Group
-                  // value={value.xxx || number}
-                  onChange={(e) => {
-                    if (e.target.value === 1) {
-                      setSameCheck(true);
-                    } else {
-                      setSameCheck(false);
-                    }
-                  }}
-                >
-                  <Radio value={1}>是</Radio>
-                  <Radio value={0}>否</Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-            {sameCheck && (
-              <Col span={12}>
-                <Form.Item label="同类型软件名称" name="sameTypeSoftwareName">
-                  <Input />
-                </Form.Item>
-              </Col>
-            )}
           </Row>
         </Form>
       </div>

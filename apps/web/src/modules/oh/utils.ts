@@ -27,26 +27,35 @@ export const openGiteeIssue = (report, values) => {
   let reportLink = `https://oss-compass.org/oh#reportDetailPage?projectId=${projectId}`;
   let title = `【TPC】【孵化选型申请】${
     values?.targetSoftware || name
-  } 申请进入 OpenHarmony TPC 孵化选型项目`;
+  } 申请进入 OpenHarmony TPC 孵化项目`;
 
   let body = `
-  1. 【需求来源】
 
-  > ${values.demandSource || '无'}
-
-  2. 【需求背景】
+  1. 【需求背景】
 
   > ${values.reason}
 
-  3. 【功能描述】
+  2. 【功能描述】
 
   > ${values.functionalDescription}
+
+  3. 【选型验证时长】
+
+  > ${values.incubationTime}
+
+  4. 【引入方式】
+
+  > ${values.adaptationMethod}
+
+  5. 【Commiters】
+
+  > ${values.committers}
   
-  4. 【上游地址】
+  6. 【上游地址】
   
   > ${upstream}
   
-  5. 【报告链接】
+  7. 【报告链接】
 
   > ${reportLink}
 

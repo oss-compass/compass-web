@@ -1116,12 +1116,14 @@ export type CreateTpcSoftwareSelectionInput = {
   demandSource?: InputMaybe<Scalars['String']>;
   functionalDescription: Scalars['String'];
   incubationTime: Scalars['String'];
+  isSameTypeCheck: Scalars['Int'];
   /** repo or project label */
   label: Scalars['String'];
   /** repo or comunity */
   level?: InputMaybe<Scalars['String']>;
   reason: Scalars['String'];
   repoUrl?: InputMaybe<Array<Scalars['String']>>;
+  sameTypeSoftwareName?: InputMaybe<Scalars['String']>;
   /** selection: 0, create_repo: 1, incubation: 2 */
   selectionType: Scalars['Int'];
   targetSoftware: Scalars['String'];
@@ -3418,24 +3420,14 @@ export type TpcSoftwareReportMetricClarificationPage = {
 
 export type TpcSoftwareReportMetricClarificationState = {
   __typename?: 'TpcSoftwareReportMetricClarificationState';
-  complianceDco?: Maybe<Scalars['Int']>;
-  complianceLicense?: Maybe<Scalars['Int']>;
-  complianceLicenseCompatibility?: Maybe<Scalars['Int']>;
-  compliancePackageSig?: Maybe<Scalars['Int']>;
-  ecologyAdoptionAnalysis?: Maybe<Scalars['Int']>;
-  ecologyCodeMaintenance?: Maybe<Scalars['Int']>;
-  ecologyCommunitySupport?: Maybe<Scalars['Int']>;
-  ecologyDependencyAcquisition?: Maybe<Scalars['Int']>;
-  ecologyPatentRisk?: Maybe<Scalars['Int']>;
-  ecologySoftwareQuality?: Maybe<Scalars['Int']>;
-  lifecycleVersionLifecycle?: Maybe<Scalars['Int']>;
-  lifecycleVersionNormalization?: Maybe<Scalars['Int']>;
-  lifecycleVersionNumber?: Maybe<Scalars['Int']>;
-  securityBinaryArtifact?: Maybe<Scalars['Int']>;
-  securityHistoryVulnerability?: Maybe<Scalars['Int']>;
-  securityVulnerability?: Maybe<Scalars['Int']>;
-  securityVulnerabilityDisclosure?: Maybe<Scalars['Int']>;
-  securityVulnerabilityResponse?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['ISO8601DateTime'];
+  id: Scalars['Int'];
+  metricName?: Maybe<Scalars['String']>;
+  /** 1: accept, 0: reject */
+  state?: Maybe<Scalars['Int']>;
+  updatedAt: Scalars['ISO8601DateTime'];
+  user?: Maybe<User>;
+  userId: Scalars['Int'];
 };
 
 export type TpcSoftwareReportMetricComplianceDco = {
@@ -3512,19 +3504,22 @@ export type TpcSoftwareSelection = {
   __typename?: 'TpcSoftwareSelection';
   adaptationMethod?: Maybe<Scalars['String']>;
   committers?: Maybe<Array<Scalars['String']>>;
-  createdAt?: Maybe<Scalars['ISO8601DateTime']>;
+  createdAt: Scalars['ISO8601DateTime'];
   demandSource?: Maybe<Scalars['String']>;
   functionalDescription?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   incubationTime?: Maybe<Scalars['String']>;
+  isSameTypeCheck?: Maybe<Scalars['Int']>;
   issueUrl?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
   repoUrl?: Maybe<Array<Scalars['String']>>;
+  sameTypeSoftwareName?: Maybe<Scalars['String']>;
   /** selection: 0, create_repo: 1, incubation: 2 */
   selectionType?: Maybe<Scalars['Int']>;
   targetSoftware?: Maybe<Scalars['String']>;
   tpcSoftwareSelectionReportIds?: Maybe<Array<Scalars['String']>>;
   tpcSoftwareSelectionReports?: Maybe<Array<TpcSoftwareSelectionReport>>;
+  updatedAt: Scalars['ISO8601DateTime'];
   user?: Maybe<User>;
   userId: Scalars['Int'];
 };
@@ -3539,23 +3534,27 @@ export type TpcSoftwareSelectionPage = {
 
 export type TpcSoftwareSelectionReport = {
   __typename?: 'TpcSoftwareSelectionReport';
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationPermission?: Maybe<Scalars['Int']>;
   codeCount?: Maybe<Scalars['Int']>;
   codeUrl?: Maybe<Scalars['String']>;
+  createdAt: Scalars['ISO8601DateTime'];
   id: Scalars['Int'];
-  isSameTypeCheck?: Maybe<Scalars['Int']>;
   license?: Maybe<Scalars['String']>;
   manufacturer?: Maybe<Scalars['String']>;
   metricClarificationCount?: Maybe<TpcSoftwareReportMetricClarificationCount>;
-  metricClarificationState?: Maybe<TpcSoftwareReportMetricClarificationState>;
+  metricClarificationState?: Maybe<
+    Array<TpcSoftwareReportMetricClarificationState>
+  >;
   name?: Maybe<Scalars['String']>;
   programmingLanguage?: Maybe<Scalars['String']>;
   reportType: Scalars['Int'];
-  sameTypeSoftwareName?: Maybe<Scalars['String']>;
   shortCode: Scalars['String'];
   tpcSoftwareReportMetric?: Maybe<TpcSoftwareReportMetric>;
   tpcSoftwareReportMetricRaw?: Maybe<TpcSoftwareReportMetricRaw>;
   tpcSoftwareSig?: Maybe<TpcSoftwareSig>;
   tpcSoftwareSigId?: Maybe<Scalars['Int']>;
+  updatedAt: Scalars['ISO8601DateTime'];
   user?: Maybe<User>;
   userId: Scalars['Int'];
   vulnerabilityDisclosure?: Maybe<Scalars['String']>;
@@ -3565,11 +3564,9 @@ export type TpcSoftwareSelectionReport = {
 
 export type TpcSoftwareSelectionReportInput = {
   codeUrl: Scalars['String'];
-  isSameTypeCheck: Scalars['Int'];
   manufacturer: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
-  sameTypeSoftwareName?: InputMaybe<Scalars['String']>;
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityDisclosure?: InputMaybe<Scalars['String']>;
   vulnerabilityResponse: Scalars['String'];
@@ -5389,6 +5386,7 @@ export type CreateTpcSoftwareSelectionMutationVariables = Exact<{
   reason: Scalars['String'];
   adaptationMethod: Scalars['String'];
   targetSoftware: Scalars['String'];
+  isSameTypeCheck: Scalars['Int'];
 }>;
 
 export type CreateTpcSoftwareSelectionMutation = {
@@ -7295,7 +7293,7 @@ export type TpcSoftwareSelectionPageQuery = {
       __typename?: 'TpcSoftwareSelection';
       adaptationMethod?: string | null;
       committers?: Array<string> | null;
-      createdAt?: any | null;
+      createdAt: any;
       id: number;
       incubationTime?: string | null;
       reason?: string | null;
@@ -7415,6 +7413,7 @@ export type TpcSoftwareSelectionReportQuery = {
     name?: string | null;
     programmingLanguage?: string | null;
     shortCode: string;
+    clarificationPermission?: number | null;
     websiteUrl?: string | null;
     tpcSoftwareReportMetric?: {
       __typename?: 'TpcSoftwareReportMetric';
@@ -7584,14 +7583,9 @@ export type TpcSoftwareSelectionReportRiskQuery = {
   __typename?: 'Query';
   tpcSoftwareSelectionReport?: {
     __typename?: 'TpcSoftwareSelectionReport';
-    codeCount?: number | null;
     codeUrl?: string | null;
     id: number;
-    manufacturer?: string | null;
-    name?: string | null;
-    programmingLanguage?: string | null;
     shortCode: string;
-    websiteUrl?: string | null;
     metricClarificationCount?: {
       __typename?: 'TpcSoftwareReportMetricClarificationCount';
       complianceDco?: number | null;
@@ -7613,33 +7607,15 @@ export type TpcSoftwareSelectionReportRiskQuery = {
       securityVulnerabilityDisclosure?: number | null;
       securityVulnerabilityResponse?: number | null;
     } | null;
-    metricClarificationState?: {
+    metricClarificationState?: Array<{
       __typename?: 'TpcSoftwareReportMetricClarificationState';
-      complianceDco?: number | null;
-      complianceLicense?: number | null;
-      complianceLicenseCompatibility?: number | null;
-      compliancePackageSig?: number | null;
-      ecologyAdoptionAnalysis?: number | null;
-      ecologyCodeMaintenance?: number | null;
-      ecologyCommunitySupport?: number | null;
-      ecologyDependencyAcquisition?: number | null;
-      ecologyPatentRisk?: number | null;
-      ecologySoftwareQuality?: number | null;
-      lifecycleVersionLifecycle?: number | null;
-      lifecycleVersionNormalization?: number | null;
-      lifecycleVersionNumber?: number | null;
-      securityBinaryArtifact?: number | null;
-      securityHistoryVulnerability?: number | null;
-      securityVulnerability?: number | null;
-      securityVulnerabilityDisclosure?: number | null;
-      securityVulnerabilityResponse?: number | null;
-    } | null;
-    tpcSoftwareSig?: {
-      __typename?: 'TpcSoftwareSig';
-      description: string;
+      createdAt: any;
       id: number;
-      name: string;
-    } | null;
+      metricName?: string | null;
+      state?: number | null;
+      updatedAt: any;
+      user?: { __typename?: 'User'; name: string } | null;
+    }> | null;
   } | null;
 };
 
@@ -9983,9 +9959,9 @@ useCreateTpcSoftwareSelectionReportMutation.fetcher = (
     CreateTpcSoftwareSelectionReportMutationVariables
   >(client, CreateTpcSoftwareSelectionReportDocument, variables, headers);
 export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String, $reason: String!, $adaptationMethod: String!, $targetSoftware: String!) {
+    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String, $reason: String!, $adaptationMethod: String!, $targetSoftware: String!, $isSameTypeCheck: Int!) {
   createTpcSoftwareSelection(
-    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, adaptationMethod: $adaptationMethod, targetSoftware: $targetSoftware}
+    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, adaptationMethod: $adaptationMethod, targetSoftware: $targetSoftware, isSameTypeCheck: $isSameTypeCheck}
   ) {
     errors {
       message
@@ -13343,6 +13319,7 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     name
     programmingLanguage
     shortCode
+    clarificationPermission
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
       ...tpcSoftwareReportMetricDetail
@@ -13504,12 +13481,8 @@ useTpcSoftwareReportMetricClarificationPageQuery.fetcher = (
 export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
     query tpcSoftwareSelectionReportRisk($shortCode: String!) {
   tpcSoftwareSelectionReport(shortCode: $shortCode) {
-    codeCount
     codeUrl
     id
-    manufacturer
-    name
-    programmingLanguage
     shortCode
     metricClarificationCount {
       complianceDco
@@ -13532,32 +13505,18 @@ export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
       securityVulnerabilityResponse
     }
     metricClarificationState {
-      complianceDco
-      complianceLicense
-      complianceLicenseCompatibility
-      compliancePackageSig
-      ecologyAdoptionAnalysis
-      ecologyCodeMaintenance
-      ecologyCommunitySupport
-      ecologyDependencyAcquisition
-      ecologyPatentRisk
-      ecologySoftwareQuality
-      lifecycleVersionLifecycle
-      lifecycleVersionNormalization
-      lifecycleVersionNumber
-      securityBinaryArtifact
-      securityHistoryVulnerability
-      securityVulnerability
-      securityVulnerabilityDisclosure
-      securityVulnerabilityResponse
+      createdAt
+      id
+      metricName
+      state
+      updatedAt
+      user {
+        name
+      }
     }
-    tpcSoftwareSig {
-      ...tpcSoftwareSig
-    }
-    websiteUrl
   }
 }
-    ${TpcSoftwareSigFragmentDoc}`;
+    `;
 export const useTpcSoftwareSelectionReportRiskQuery = <
   TData = TpcSoftwareSelectionReportRiskQuery,
   TError = unknown

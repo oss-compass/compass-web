@@ -9,7 +9,7 @@ const NavBarContent = () => {
       <div className="relative flex h-6 flex-1 items-center overflow-hidden text-xl font-semibold text-black">
         OpenHarmony TPC 治理
       </div>
-      <NavDatePicker />
+      {/* <NavDatePicker /> */}
     </nav>
   );
 };

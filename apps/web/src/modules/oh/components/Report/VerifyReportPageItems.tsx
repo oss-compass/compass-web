@@ -4,32 +4,13 @@ import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDe
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import StickyNav from '@common/components/Header/StickyNav';
 
-const PeportPageItem = ({ reportItems }) => {
+const ReportPageItem = ({ reportItems }) => {
   if (!reportItems && reportItems === 0) {
     return <NotFoundOh />;
   }
   if (reportItems.length === 1) {
     return <EvaluationDetail item={reportItems[0]} />;
   }
-  // const others = reportItems.map((r) => {
-  //   return {
-  //     key: r.id + '',
-  //     label: r.name,
-  //     children: (
-  //       <div className="pt-4">
-  //         <EvaluationDetail item={r} />
-  //       </div>
-  //     ),
-  //   };
-  // });
-  // const items = [
-  //   {
-  //     key: '0',
-  //     label: '对比报告',
-  //     children: <ReportCompare reportItems={reportItems} />,
-  //   },
-  //   ...others,
-  // ];
   return (
     <>
       {/* <div className="fixed top-40 z-50">123</div> */}
@@ -46,4 +27,4 @@ const PeportPageItem = ({ reportItems }) => {
   );
 };
 
-export default PeportPageItem;
+export default ReportPageItem;

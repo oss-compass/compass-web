@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Input, Tabs } from 'antd';
-import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import Loading from '@modules/oh/components/Loading';
 import Analyzing from '@modules/oh/components/Analyzing';
 import useLabelData from '@modules/oh/hooks/useLabelData';
-import ReportPageItem from '@modules/oh/components/Report/ReportPageItem';
+import ReportPageItem from '@modules/oh/components/Report/VerifyReportPageItems';
 
 const ReportPage = () => {
   const { isLoading, status, reportItems, notFound } = useLabelData();
