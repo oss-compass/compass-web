@@ -40,7 +40,7 @@ export const Popper = forwardRef<PopperRefProps, PopperProps>(
           <PopperBase
             open={showPopper}
             style={{
-              zIndex: 1000,
+              zIndex: 1300,
             }}
             placement={placement}
             anchorEl={anchorEl}

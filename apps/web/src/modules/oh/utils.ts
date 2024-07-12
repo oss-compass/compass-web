@@ -30,7 +30,6 @@ export const openGiteeIssue = (report, values) => {
   } 申请进入 OpenHarmony TPC 孵化项目`;
 
   let body = `
-
   1. 【需求背景】
 
   > ${values.reason}
@@ -39,7 +38,7 @@ export const openGiteeIssue = (report, values) => {
 
   > ${values.functionalDescription}
 
-  3. 【选型验证时长】
+  3. 【孵化周期】
 
   > ${values.incubationTime}
 

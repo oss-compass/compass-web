@@ -150,9 +150,9 @@
     border-bottom: 1px solid #e5e7eb !important;
   }
 }
-// .ant-drawer {
-//   z-index: 9990 !important;
-// }
+.ant-drawer {
+  z-index: 1300 !important;
+}
 .oh-title-select {
   .ant-select-selection-item {
     font-size: 18px;

@@ -144,7 +144,7 @@ const SelectionApplication = () => {
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
-                    label="选型验证时长"
+                    label="孵化周期"
                     name="incubationTime"
                     rules={[{ required: true, message: '请选择!' }]}
                   >
@@ -178,7 +178,7 @@ const SelectionApplication = () => {
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    label="目标选型软件"
+                    label="目标孵化软件"
                     name="targetSoftware"
                     rules={[{ required: true, message: '请输入!' }]}
                   >

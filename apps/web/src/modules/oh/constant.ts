@@ -107,7 +107,7 @@ export const languagesList = [
   'Groovy',
   'Elixir',
 ];
-export const incubationTimeList = ['一个月', '三个月', '六个月'];
+export const incubationTimeList = ['三个月', '六个月', '九个月'];
 export const adaptationMethodList = [
   // autocorrect: false
   'Java库重写',
