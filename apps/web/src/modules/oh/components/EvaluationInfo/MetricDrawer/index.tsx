@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Popover, Descriptions, Drawer, Button } from 'antd';
+import { Divider, Descriptions, Drawer, Button } from 'antd';
 import { getPathname } from '@common/utils';
 import {
   getRishContent,
@@ -140,24 +140,10 @@ const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
       >
         <div className="">
           <div className="text-lg font-bold">{metric.指标名称}</div>
-          {/* <div className="ml-3">
-            <Popover
-              content={
-                <>
-                  对数据有异议？<a className="text-[#69b1ff]">点此反馈</a>
-                </>
-              }
-              title=""
-            >
-              <QuestionCircleOutlined
-                rev={undefined}
-                className="cursor-pointer text-lg text-[#69b1ff]"
-              />
-            </Popover>
-          </div> */}
           <div className="oh border-b pt-4 pb-1">
-            <Descriptions items={baseItems} />
             <Descriptions items={scoreItems} />
+            <div className="mb-4 border-b" />
+            <Descriptions items={baseItems} />
           </div>
         </div>
         <div className="pt-6">
