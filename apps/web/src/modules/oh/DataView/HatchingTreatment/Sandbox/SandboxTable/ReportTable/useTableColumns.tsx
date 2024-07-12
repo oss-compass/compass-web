@@ -4,7 +4,7 @@ import { EditOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 
-export const useTableColumns = () => {
+export const useTableColumns = (anction) => {
   const { currentUser } = useUserInfo();
   const columns = [
     {
@@ -109,10 +109,11 @@ export const useTableColumns = () => {
         return (
           <div className="flex cursor-pointer justify-center text-[#3e8eff]">
             {currentUser.id === record.userId && (
-              <Popover content={'编辑报告信息'}>
+              <Popover content={'编辑基础信息'}>
                 <EditOutlined
                   rev={undefined}
                   onClick={() => {
+                    anction(record);
                     // setOpenConfirm(true);
                   }}
                 />

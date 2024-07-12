@@ -5549,6 +5549,25 @@ export type AcceptTpcSoftwareReportMetricClarificationMutation = {
   } | null;
 };
 
+export type UpdateTpcSoftwareSelectionReportMutationVariables = Exact<{
+  reportId: Scalars['Int'];
+  softwareReport: TpcSoftwareSelectionReportUpdateInput;
+}>;
+
+export type UpdateTpcSoftwareSelectionReportMutation = {
+  __typename?: 'Mutation';
+  updateTpcSoftwareSelectionReport?: {
+    __typename?: 'UpdateTpcSoftwareSelectionReportPayload';
+    message?: string | null;
+    status: string;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
 export type UserinfoQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserinfoQuery = {
@@ -7243,6 +7262,7 @@ export type TpcSoftwareSelectionReportPageQuery = {
       reportType: number;
       shortCode: string;
       userId: number;
+      vulnerabilityResponse?: string | null;
       websiteUrl?: string | null;
       user?: {
         __typename?: 'User';
@@ -7310,10 +7330,18 @@ export type TpcSoftwareSelectionPageQuery = {
       adaptationMethod?: string | null;
       committers?: Array<string> | null;
       createdAt: any;
+      demandSource?: string | null;
+      functionalDescription?: string | null;
       id: number;
       incubationTime?: string | null;
+      isSameTypeCheck?: number | null;
+      repoUrl?: Array<string> | null;
       reason?: string | null;
+      sameTypeSoftwareName?: string | null;
       selectionType?: number | null;
+      targetSoftware?: string | null;
+      updatedAt: any;
+      userId: number;
       tpcSoftwareSelectionReportIds?: Array<string> | null;
       user?: {
         __typename?: 'User';
@@ -7430,6 +7458,7 @@ export type TpcSoftwareSelectionReportQuery = {
     programmingLanguage?: string | null;
     shortCode: string;
     clarificationPermission?: number | null;
+    vulnerabilityResponse?: string | null;
     websiteUrl?: string | null;
     tpcSoftwareReportMetric?: {
       __typename?: 'TpcSoftwareReportMetric';
@@ -10244,6 +10273,56 @@ useAcceptTpcSoftwareReportMetricClarificationMutation.fetcher = (
     variables,
     headers
   );
+export const UpdateTpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
+    mutation updateTpcSoftwareSelectionReport($reportId: Int!, $softwareReport: TpcSoftwareSelectionReportUpdateInput!) {
+  updateTpcSoftwareSelectionReport(
+    input: {reportId: $reportId, softwareReport: $softwareReport}
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+    `;
+export const useUpdateTpcSoftwareSelectionReportMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    UpdateTpcSoftwareSelectionReportMutation,
+    TError,
+    UpdateTpcSoftwareSelectionReportMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    UpdateTpcSoftwareSelectionReportMutation,
+    TError,
+    UpdateTpcSoftwareSelectionReportMutationVariables,
+    TContext
+  >(
+    ['updateTpcSoftwareSelectionReport'],
+    (variables?: UpdateTpcSoftwareSelectionReportMutationVariables) =>
+      fetcher<
+        UpdateTpcSoftwareSelectionReportMutation,
+        UpdateTpcSoftwareSelectionReportMutationVariables
+      >(client, UpdateTpcSoftwareSelectionReportDocument, variables, headers)(),
+    options
+  );
+useUpdateTpcSoftwareSelectionReportMutation.fetcher = (
+  client: GraphQLClient,
+  variables: UpdateTpcSoftwareSelectionReportMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    UpdateTpcSoftwareSelectionReportMutation,
+    UpdateTpcSoftwareSelectionReportMutationVariables
+  >(client, UpdateTpcSoftwareSelectionReportDocument, variables, headers);
 export const UserinfoDocument = /*#__PURE__*/ `
     query userinfo {
   currentUser {
@@ -13214,6 +13293,7 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
         }
       }
       userId
+      vulnerabilityResponse
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
       }
@@ -13272,10 +13352,17 @@ export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
       adaptationMethod
       committers
       createdAt
+      demandSource
+      functionalDescription
       id
       incubationTime
+      isSameTypeCheck
+      repoUrl
       reason
+      sameTypeSoftwareName
       selectionType
+      targetSoftware
+      updatedAt
       user {
         name
         loginBinds {
@@ -13284,6 +13371,7 @@ export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
           provider
         }
       }
+      userId
       tpcSoftwareSelectionReportIds
       tpcSoftwareSelectionReports {
         name
@@ -13335,6 +13423,7 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     programmingLanguage
     shortCode
     clarificationPermission
+    vulnerabilityResponse
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
       ...tpcSoftwareReportMetricDetail

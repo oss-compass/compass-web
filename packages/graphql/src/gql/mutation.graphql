@@ -253,4 +253,18 @@ mutation acceptTpcSoftwareReportMetricClarification(
     status
   }
 }
-#  deleteTpcSoftwareReportMetricClarification
+mutation updateTpcSoftwareSelectionReport(
+  $reportId: Int!
+  $softwareReport: TpcSoftwareSelectionReportUpdateInput!
+) {
+  updateTpcSoftwareSelectionReport(
+    input: { reportId: $reportId, softwareReport: $softwareReport }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}

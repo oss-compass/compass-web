@@ -1599,6 +1599,7 @@ query tpcSoftwareSelectionReportPage(
         }
       }
       userId
+      vulnerabilityResponse
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
       }
@@ -1630,10 +1631,17 @@ query tpcSoftwareSelectionPage(
       adaptationMethod
       committers
       createdAt
+      demandSource
+      functionalDescription
       id
       incubationTime
+      isSameTypeCheck
+      repoUrl
       reason
+      sameTypeSoftwareName
       selectionType
+      targetSoftware
+      updatedAt
       user {
         name
         loginBinds {
@@ -1642,19 +1650,11 @@ query tpcSoftwareSelectionPage(
           provider
         }
       }
+      userId
       tpcSoftwareSelectionReportIds
       tpcSoftwareSelectionReports {
         name
       }
-      # codeCount
-      # codeUrl
-      # manufacturer
-      # name
-      # programmingLanguage
-      # tpcSoftwareSig {
-      #   ...tpcSoftwareSig
-      # }
-      # websiteUrl
     }
     page
     totalPage
@@ -1741,6 +1741,7 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     programmingLanguage
     shortCode
     clarificationPermission
+    vulnerabilityResponse
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
       ...tpcSoftwareReportMetricDetail

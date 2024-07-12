@@ -6,11 +6,16 @@ import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
+import EditReport from './EditReport';
 import { useTableColumns } from './useTableColumns';
 
 const ReportTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
-
+  const [report, setReport] = useState(null);
+  const editAction = (report) => {
+    setOpenConfirm(true);
+    setReport(report);
+  };
   // const columns = [
   //   {
   //     title: '软件名称',
@@ -128,7 +133,7 @@ const ReportTable = () => {
   //     },
   //   },
   // ];
-  const { columns } = useTableColumns();
+  const { columns } = useTableColumns(editAction);
   const {
     tableData,
     setData,
@@ -141,10 +146,8 @@ const ReportTable = () => {
     ...query,
     reportTypeList: [0],
   };
-  const { isLoading, isFetching } = useTpcSoftwareSelectionReportPageQuery(
-    client,
-    myQuery,
-    {
+  const { isLoading, isFetching, refetch } =
+    useTpcSoftwareSelectionReportPageQuery(client, myQuery, {
       onSuccess: (data) => {
         console.log(data);
         setTableParams({
@@ -157,8 +160,11 @@ const ReportTable = () => {
         setData(data.tpcSoftwareSelectionReportPage.items);
       },
       onError: (error) => {},
-    }
-  );
+    });
+  const editSuccess = () => {
+    setOpenConfirm(false);
+    refetch();
+  };
   return (
     <>
       <div className="h-[calc(100vh-240px)] p-4">
@@ -183,7 +189,7 @@ const ReportTable = () => {
           }}
           dialogTitle={
             <>
-              <p className="">Committer 详情 (total：1)</p>
+              <p className="">{report?.name} 基础信息</p>
               <div
                 className="absolute right-6 top-4 cursor-pointer p-2"
                 onClick={() => {
@@ -194,7 +200,11 @@ const ReportTable = () => {
               </div>
             </>
           }
-          dialogContent={<div className="w-full"></div>}
+          dialogContent={
+            <div className="w-full">
+              <EditReport report={report} refetch={editSuccess} />
+            </div>
+          }
           handleClose={() => {
             setOpenConfirm(false);
           }}

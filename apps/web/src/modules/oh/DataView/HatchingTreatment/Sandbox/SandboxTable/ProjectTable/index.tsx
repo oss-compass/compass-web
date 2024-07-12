@@ -6,86 +6,17 @@ import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareSelectionPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import { Radio } from 'antd';
 import { getHubUrl } from '@common/utils';
+import { useTableColumns } from './useTableColumns';
 
 const ReportTable = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
-  // const [reportType, setReportType] = useState(0);
+  const editAction = (report) => {
+    setOpenConfirm(true);
+    // setReport(report);
+  };
+  const { columns } = useTableColumns(editAction);
 
-  const columns = [
-    // {
-    //   title: '申请单号',
-    //   dataIndex: 'id',
-    //   key: 'id',
-    // },
-    {
-      title: '软件名称',
-      dataIndex: 'name',
-      key: 'name',
-      render: (_, record) => {
-        return record?.tpcSoftwareSelectionReports
-          ?.map((item) => item.name)
-          .join(', ');
-      },
-    },
-    // {
-    //   title: 'Issue 地址',
-    //   dataIndex: 'issueUrl',
-    //   key: 'issueUrl',
-    //   render: (text) => {
-    //     return (
-    //       <a
-    //         onClick={() => {
-    //           window.open(setUrlHost(text), '_blank');
-    //         }}
-    //         className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-    //       >
-    //         {text}
-    //       </a>
-    //     );
-    //   },
-    // },
-    {
-      title: '引入方式',
-      key: 'adaptationMethod',
-      dataIndex: 'adaptationMethod',
-      // render: (text) => {
-      //   return text === 1 ? '重写' : '适配';
-      // },
-    },
-    {
-      title: '申请人',
-      key: 'user',
-      dataIndex: 'user',
-      render: (_, record) => {
-        const { provider, nickname } = record?.user?.loginBinds[0];
-        return (
-          <a
-            target="_blank"
-            href={getHubUrl(provider, nickname)}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {record?.user?.name}
-          </a>
-        );
-      },
-    },
-    {
-      title: '申请时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (text) => {
-        return text?.slice(0, 10);
-      },
-    },
-    {
-      title: '申请背景',
-      dataIndex: 'reason',
-      width: '300px',
-      key: 'reason',
-    },
-  ];
   const {
     tableData,
     setData,

@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  message,
-  Form,
-  Input,
-  Select,
-  Radio,
-  Row,
-  Col,
-  Popover,
-} from 'antd';
+import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
 import dayjs from 'dayjs';
-import DatePicker from '@common/components/Form';
 import { languagesList, domainList, queryKey } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
