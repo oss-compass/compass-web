@@ -1598,9 +1598,9 @@ query tpcSoftwareSelectionReportPage(
           provider
         }
       }
+      userId
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
-        ...tpcSoftwareReportMetricDetail
       }
       tpcSoftwareSig {
         ...tpcSoftwareSig

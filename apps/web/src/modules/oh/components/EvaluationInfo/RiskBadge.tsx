@@ -6,8 +6,8 @@ import { TbMessage2 } from 'react-icons/tb';
 
 const RiskBadge = ({ shortCode, keyId }) => {
   const { count, metricState } = useGetRisk(shortCode, keyId);
-  console.log(keyId, count, metricState);
   let BadgeContent = null;
+
   if (metricState?.state === 1) {
     BadgeContent = (
       <Popover content={`风险澄清已确认；确认人：${metricState.user.name}123`}>
