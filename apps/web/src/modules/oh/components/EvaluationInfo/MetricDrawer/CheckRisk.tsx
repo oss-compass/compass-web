@@ -13,7 +13,7 @@ const CheckRisk = ({ report, metricName }) => {
 
   return (
     <>
-      {clarificationPermission && (
+      {clarificationPermission === 1 && (
         <Popover>
           <Button
             title="确认风险澄清"
