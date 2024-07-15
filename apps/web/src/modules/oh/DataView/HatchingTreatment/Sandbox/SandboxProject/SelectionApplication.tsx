@@ -103,7 +103,7 @@ const SelectionApplication = () => {
   };
 
   let main = (
-    <div className="flex w-full flex-col justify-center py-4 px-5">
+    <div className="flex w-full flex-col justify-center px-5 pt-4">
       <Form
         className="w-full"
         form={form}
