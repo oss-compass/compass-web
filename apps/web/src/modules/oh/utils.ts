@@ -32,12 +32,12 @@ const getUpstream = (report, target) => {
     return codeUrls.join(' 、 ');
   } else {
     let targetReport = report.find((r) => getPathname(r.codeUrl) === target);
-    let sortCodeUrls = moveToFirst(codeUrls, targetReport.codeUrls);
+    let sortCodeUrls = moveToFirst(codeUrls, targetReport.codeUrl);
     let targetUrl = sortCodeUrls[0];
     sortCodeUrls.shift();
     // return sortCodeUrls.join(' 、 ');
-    return `目标上游地址：${targetUrl}
-    对比上游地址：${sortCodeUrls.join(' 、 ')}`;
+    return `目标软件上游地址：${targetUrl}
+    对比软件上游地址：${sortCodeUrls.join(' 、 ')}`;
   }
 };
 export const openGiteeIssue = (report, values) => {
@@ -63,31 +63,35 @@ export const openGiteeIssue = (report, values) => {
   } 申请进入 OpenHarmony TPC 孵化项目`;
 
   let body = `
-  1. 【需求描述】
+  1. 【目标孵化软件】
+
+  > ${values.targetSoftware}
+
+  2. 【需求描述】
 
   > ${values.reason}
 
-  2. 【功能描述】
+  3. 【功能描述】
 
   > ${values.functionalDescription}
 
-  3. 【孵化周期】
+  4. 【孵化周期】
 
   > ${values.incubationTime}
 
-  4. 【引入方式】
+  5. 【引入方式】
 
   > ${values.adaptationMethod}
 
-  5. 【Commiters】
+  6. 【Commiters】
 
   > ${values.committers}
   
-  6. 【上游地址】
+  7. 【上游地址】
   
   > ${upstream}
   
-  7. 【报告链接】
+  8. 【报告链接】
 
   > ${reportLink}
   `;
