@@ -3,7 +3,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 const Loading = () => {
   return (
-    <div className="flex h-full flex-col items-center justify-center">
+    <div className="flex h-full w-full flex-col items-center justify-center">
       <Spin
         indicator={
           <LoadingOutlined style={{ fontSize: 48 }} spin rev={undefined} />

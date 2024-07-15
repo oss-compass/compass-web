@@ -16,13 +16,16 @@ const GetReportData = ({
   shortCode: any;
   back?: () => void;
 }) => {
-  const { isLoading, data } = useTpcSoftwareSelectionReportQuery(client, {
-    shortCode,
-  });
+  const { isLoading, data, refetch } = useTpcSoftwareSelectionReportQuery(
+    client,
+    {
+      shortCode,
+    }
+  );
   if (isLoading) {
     return (
-      <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col bg-white drop-shadow-sm">
-        <Loading />;
+      <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm">
+        <Loading />
       </div>
     );
   }
@@ -30,9 +33,8 @@ const GetReportData = ({
     <>
       <EvaluationDetail
         item={data.tpcSoftwareSelectionReport}
-        back={() => {
-          back();
-        }}
+        back={back && back}
+        refetch={refetch}
       />
     </>
   );

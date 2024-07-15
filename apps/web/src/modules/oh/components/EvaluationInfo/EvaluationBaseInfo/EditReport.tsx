@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import classnames from 'classnames';
 import { Form, Input, Select, Row, Col, Popover, Button } from 'antd';
 import { languagesList, domainList } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useUpdateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
 import { toast } from 'react-hot-toast';
+import Dialog from '@common/components/Dialog';
+import { EditOutlined } from '@ant-design/icons';
+import { GrClose } from 'react-icons/gr';
+import { useUserInfo } from '@modules/auth/useUserInfo';
 
-const EditReport = ({ report, refetch }) => {
+const EditReportForm = ({ report, refetch }) => {
   const [form] = Form.useForm();
   const tpcSoftwareSigId = report?.tpcSoftwareSig?.id;
-  form.setFieldsValue({ ...report, tpcSoftwareSigId });
-
+  // form.setFieldsValue({ ...report, tpcSoftwareSigId });
+  useEffect(() => {
+    form.setFieldsValue({ ...report, tpcSoftwareSigId });
+  }, []);
   const mutation = useUpdateTpcSoftwareSelectionReportMutation(client, {
     onSuccess(data) {
       if (data.updateTpcSoftwareSelectionReport.status == 'true') {
@@ -25,10 +32,11 @@ const EditReport = ({ report, refetch }) => {
   });
   const submit = () => {
     form.validateFields().then((values) => {
-      delete values.codeUrl;
+      const softwareReport = { ...values };
+      delete softwareReport.codeUrl;
       mutation.mutate({
         reportId: report.id,
-        softwareReport: values,
+        softwareReport,
       });
     });
   };
@@ -123,15 +131,6 @@ const EditReport = ({ report, refetch }) => {
           </Col>
         </Row>
         <Row gutter={24}>
-          {/* <Col span={12}>
-            <Form.Item
-              label="源码地址"
-              name="codeUrl"
-              rules={[{ required: true, message: '请输入!' }]}
-            >
-              <Input disabled={true} />
-            </Form.Item>
-          </Col> */}
           <Col span={12}>
             <Form.Item
               label="编程语言"
@@ -182,6 +181,63 @@ const EditReport = ({ report, refetch }) => {
           </Col>
         </Row>
       </Form>
+    </div>
+  );
+};
+
+const EditReport = ({ report, editSuccess }) => {
+  const { currentUser } = useUserInfo();
+  const [openConfirm, setOpenConfirm] = useState(false);
+
+  return (
+    <div>
+      {currentUser.id === report.userId && (
+        <Popover content={'编辑基础信息'}>
+          <EditOutlined
+            rev={undefined}
+            onClick={() => {
+              //   anction(record);
+              setOpenConfirm(true);
+            }}
+          />
+        </Popover>
+      )}
+      <Dialog
+        open={openConfirm}
+        classes={{
+          paper: classnames(
+            'border w-[95%] !max-w-[95%] min-h-[400px] !m-0',
+            'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
+          ),
+        }}
+        dialogTitle={
+          <>
+            <p className="">{report?.name} 基础信息</p>
+            <div
+              className="absolute right-6 top-4 cursor-pointer p-2"
+              onClick={() => {
+                setOpenConfirm(false);
+              }}
+            >
+              <GrClose className="text-base" />
+            </div>
+          </>
+        }
+        dialogContent={
+          <div className="w-full">
+            <EditReportForm
+              report={report}
+              refetch={() => {
+                setOpenConfirm(false);
+                editSuccess();
+              }}
+            />
+          </div>
+        }
+        handleClose={() => {
+          setOpenConfirm(false);
+        }}
+      />
     </div>
   );
 };

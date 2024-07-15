@@ -1,21 +1,11 @@
-import React, { useState } from 'react';
-import classnames from 'classnames';
-import { GrClose } from 'react-icons/gr';
-import Dialog from '@common/components/Dialog';
+import React from 'react';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import EditReport from './EditReport';
 import { useTableColumns } from './useTableColumns';
 
 const ReportTable = () => {
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const [report, setReport] = useState(null);
-  const editAction = (report) => {
-    setOpenConfirm(true);
-    setReport(report);
-  };
   // const columns = [
   //   {
   //     title: '软件名称',
@@ -133,7 +123,6 @@ const ReportTable = () => {
   //     },
   //   },
   // ];
-  const { columns } = useTableColumns(editAction);
   const {
     tableData,
     setData,
@@ -161,10 +150,7 @@ const ReportTable = () => {
       },
       onError: (error) => {},
     });
-  const editSuccess = () => {
-    setOpenConfirm(false);
-    refetch();
-  };
+  const { columns } = useTableColumns(refetch);
   return (
     <>
       <div className="h-[calc(100vh-240px)] p-4">
@@ -177,37 +163,6 @@ const ReportTable = () => {
           rowKey={'key'}
           tableLayout={'fixed'}
           // scroll={{ x: 'max-content' }}
-        />
-
-        <Dialog
-          open={openConfirm}
-          classes={{
-            paper: classnames(
-              'border w-[95%] !max-w-[95%] min-h-[400px] !m-0',
-              'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
-            ),
-          }}
-          dialogTitle={
-            <>
-              <p className="">{report?.name} 基础信息</p>
-              <div
-                className="absolute right-6 top-4 cursor-pointer p-2"
-                onClick={() => {
-                  setOpenConfirm(false);
-                }}
-              >
-                <GrClose className="text-base" />
-              </div>
-            </>
-          }
-          dialogContent={
-            <div className="w-full">
-              <EditReport report={report} refetch={editSuccess} />
-            </div>
-          }
-          handleClose={() => {
-            setOpenConfirm(false);
-          }}
         />
       </div>
     </>

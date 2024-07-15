@@ -1752,6 +1752,7 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
       ...tpcSoftwareSig
     }
     websiteUrl
+    userId
   }
 }
 
@@ -1832,5 +1833,6 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
         name
       }
     }
+    userId
   }
 }

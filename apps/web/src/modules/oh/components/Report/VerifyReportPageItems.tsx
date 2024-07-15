@@ -2,9 +2,8 @@ import React from 'react';
 import { Tabs } from 'antd';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
-import StickyNav from '@common/components/Header/StickyNav';
 
-const ReportPageItem = ({ reportItems }) => {
+const VerifyReportPageItems = ({ reportItems }) => {
   if (!reportItems && reportItems === 0) {
     return <NotFoundOh />;
   }
@@ -27,4 +26,4 @@ const ReportPageItem = ({ reportItems }) => {
   );
 };
 
-export default ReportPageItem;
+export default VerifyReportPageItems;

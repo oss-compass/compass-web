@@ -1,8 +1,7 @@
 import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
-import { EditOutlined } from '@ant-design/icons';
-import { Popover } from 'antd';
 import { useUserInfo } from '@modules/auth/useUserInfo';
+import EditReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/EditReport';
 
 export const useTableColumns = (anction) => {
   const { currentUser } = useUserInfo();
@@ -108,17 +107,7 @@ export const useTableColumns = (anction) => {
       render: (_, record) => {
         return (
           <div className="flex cursor-pointer justify-center text-[#3e8eff]">
-            {currentUser.id === record.userId && (
-              <Popover content={'编辑基础信息'}>
-                <EditOutlined
-                  rev={undefined}
-                  onClick={() => {
-                    anction(record);
-                    // setOpenConfirm(true);
-                  }}
-                />
-              </Popover>
-            )}
+            <EditReport report={record} editSuccess={anction} />
           </div>
         );
       },

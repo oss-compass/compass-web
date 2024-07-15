@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTpcSoftwareSelectionReportRowQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import { Dropdown } from 'antd';
+import { Popover, Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import { DownloadOutlined, LoadingOutlined } from '@ant-design/icons';
 import { downloadReport } from '@modules/oh/components/EvaluationInfo/MerticDetail';
@@ -50,15 +50,16 @@ const EvaluationDownLoad = ({ item }) => {
           setLoadingDownLoad={setLoadingDownLoad}
         />
       ) : (
-        <div
-          title="下载 CSV"
-          onClick={() => {
-            setLoadingDownLoad(true);
-          }}
-          className=""
-        >
-          <DownloadOutlined rev={undefined} />
-        </div>
+        <Popover content="下载 CSV">
+          <div
+            onClick={() => {
+              setLoadingDownLoad(true);
+            }}
+            className=""
+          >
+            <DownloadOutlined rev={undefined} />
+          </div>
+        </Popover>
       )}
     </>
     // <Dropdown placement="bottom" menu={{ items: dropdownItem }}>

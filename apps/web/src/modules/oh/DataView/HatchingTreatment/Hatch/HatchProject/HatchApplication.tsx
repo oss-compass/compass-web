@@ -9,14 +9,13 @@ import {
   Select,
   Row,
   Col,
+  Space,
   Popover,
-  Tabs,
+  Radio,
 } from 'antd';
 import Dialog from '@common/components/Dialog';
-import DatePicker from '@common/components/Form';
-import { ExclamationCircleTwoTone, DownOutlined } from '@ant-design/icons';
+import { MinusOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import ReportInfo from '@modules/oh/components/ReportInfo';
 import SelectReport from '@modules/oh/components/Report/SelectReport';
 import {
   incubationTimeList,
@@ -27,11 +26,14 @@ import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 import { openGiteeIssue } from '@modules/oh/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
+import ReportPageItems from '@modules/oh/components/Report/ReportPageItems';
+import { getPathname } from '@common/utils';
 
 const SelectionApplication = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [report, setReport] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
+  const [sameCheck, setSameCheck] = useState(false);
 
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionMutation(client, {
@@ -81,10 +83,13 @@ const SelectionApplication = () => {
 
   const submit = () => {
     form.validateFields().then((values) => {
+      console.log(values);
+      const repoUrl = values.repoUrl.map((z) => z['repoUrl']);
       report &&
         mutation.mutate({
           ...queryKey,
           ...values,
+          repoUrl,
           selectionType: 0,
           tpcSoftwareSelectionReportIds: report.map(
             (r) => r.tpcSoftwareReportMetric.tpcSoftwareReportId
@@ -96,34 +101,11 @@ const SelectionApplication = () => {
     form.resetFields();
     setReport([]);
   };
-  const autoFill = (report) => {
-    console.log(report);
-    form.setFieldsValue({
-      name: report?.name || 'jasonsantos/luajava',
-      domain: report?.tpcSoftwareSig?.id || 1,
-      release: report?.release || 'v1.0.0',
-      releaseTime: dayjs(report?.releaseTime || '2020-01-01'),
-      manufacturer: report?.manufacturer || 'jasonsantos',
-      websiteUrl: report?.websiteUrl || 'www.keplerproject.org/luajava/',
-      // '游戏中心使用 LuaJava 进行 lua 与 java 间的调用。该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。OH 目前没有支持 lua 层到 arkTS 之间的调用。需要将该开源库进行 OpenHarmony 移植适配',
-      codeUrl: report?.codeUrl || 'https://github.com/jasonsantos/luajava',
-      programmingLanguage: report?.programmingLanguage || 'Java',
-      codeCount: report?.codeCount || '10000 行',
-      bugPublish: 'https://github.com/jasonsantos/luajava/issues',
 
-      adaptationMethod: 1,
-      repoUrl: 'luajava',
-      committers: 'jasonsantos,talklittle,hishamhm', //'jasonsantos,talklittle,hishamhm',
-      reason:
-        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
-      repoDescription:
-        '该工具的目标是允许用 Lua 编写的脚本操作用 Java 开发的组件。LuaJava 允许使用与访问 Lua 原生对象相同的语法从 Lua 访问 Java 组件，而无需任何声明或任何形式的预处理。',
-      incubationTime: dayjs('2022-01-01'),
-    });
-  };
   let main = (
-    <div className="flex flex-col justify-center py-4 px-5">
+    <div className="flex w-full flex-col justify-center px-5 pt-4">
       <Form
+        className="w-full"
         form={form}
         labelCol={{
           span: 6,
@@ -162,7 +144,7 @@ const SelectionApplication = () => {
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
-                    label="沙箱孵化周期"
+                    label="孵化周期"
                     name="incubationTime"
                     rules={[{ required: true, message: '请选择!' }]}
                   >
@@ -195,79 +177,42 @@ const SelectionApplication = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Popover
-                    placement="topRight"
-                    content={
-                      <>
-                        <div>填写完成 OH 适配后的仓库路径</div>
-                      </>
-                    }
-                    title="规则"
-                    trigger="click"
+                  <Form.Item
+                    label="目标孵化软件"
+                    name="targetSoftware"
+                    rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Form.Item
-                      label="适配仓路径"
-                      name="repoUrl"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input
-                        disabled={false}
-                        onFocus={() => {}}
-                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                      />
-                    </Form.Item>
-                  </Popover>
-                </Col>
-                <Col span={12}>
-                  <Popover
-                    placement="topRight"
-                    content={
-                      <>
-                        <div>
-                          需填写 Commiters 的 Gitee/Github 用户名，多个
-                          Commiters 用逗号分开
-                        </div>
-                      </>
-                    }
-                    title="注意"
-                    trigger="click"
-                  >
-                    <Form.Item
-                      label="Commiters"
-                      name="committers"
-                      rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input disabled={false} />
-                    </Form.Item>
-                  </Popover>
+                    <Select disabled={false}>
+                      {report.map((item) => {
+                        return (
+                          <Select.Option
+                            key={item.id}
+                            value={getPathname(item.codeUrl)}
+                          >
+                            {getPathname(item.codeUrl)}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <Popover
-                    placement="top"
-                    content={
-                      <>
-                        <div>填写初始需求来源 APP，如无可不填</div>
-                      </>
-                    }
-                    title="规则"
-                    trigger="click"
+                  <Form.Item
+                    label="需求来源"
+                    name="demandSource"
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Form.Item
-                      label="需求来源APP"
-                      name="demandSource"
-                      labelCol={{
-                        span: 3,
-                        style: { fontWeight: 'bold' },
-                      }}
-                      // rules={[{ required: true, message: '请输入!' }]}
-                    >
-                      <Input
-                        disabled={false}
-                        onFocus={() => {}}
-                        // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
-                      />
-                    </Form.Item>
-                  </Popover>
+                    <Input
+                      placeholder="请列出您需要使用三方软件的需求来源"
+                      disabled={false}
+                      onFocus={() => {}}
+                      // addonBefore="https://gitee.com/openharmony-tpc/ohos_"
+                    />
+                  </Form.Item>
                 </Col>
 
                 <Col span={24}>
@@ -276,31 +221,142 @@ const SelectionApplication = () => {
                       span: 3,
                       style: { fontWeight: 'bold' },
                     }}
-                    label="需求背景"
+                    label="需求描述"
                     name="reason"
                     rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Input.TextArea disabled={false} />
+                    <Input
+                      placeholder="请列出您需要使用三方软件的主要场景"
+                      disabled={false}
+                    />
                   </Form.Item>
                 </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    label="功能描述"
+                    name="functionalDescription"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input
+                      placeholder="请列出您需要使用三方软件的主要功能"
+                      disabled={false}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    labelCol={{
+                      span: 3,
+                      style: { fontWeight: 'bold' },
+                    }}
+                    label="Commiters"
+                    name="committers"
+                    rules={[{ required: true, message: '请输入!' }]}
+                  >
+                    <Input
+                      placeholder="需填写 Commiters 的 Gitee/Github 用户名，多个
+                          Commiters 用逗号分开"
+                      disabled={false}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12} className="relative">
+                  <Popover
+                    placement="topLeft"
+                    arrow={false}
+                    content={
+                      <>
+                        <div>存在已完成适配的同类型三方库</div>
+                      </>
+                    }
+                    trigger="hover"
+                  >
+                    <Form.Item
+                      label="存在同类型三方库"
+                      rules={[{ required: true, message: '请输入!' }]}
+                      name="isSameTypeCheck"
+                      initialValue={0}
+                    >
+                      <Radio.Group
+                        // value={value.xxx || number}
+                        onChange={(e) => {
+                          if (e.target.value === 1) {
+                            setSameCheck(true);
+                          } else {
+                            setSameCheck(false);
+                          }
+                        }}
+                      >
+                        <Radio value={1}>是</Radio>
+                        <Radio value={0}>否</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Popover>
+                </Col>
+                <Col span={12} className="relative">
+                  {sameCheck && (
+                    <Form.Item
+                      // className="absolute -top-1 right-3 w-[50%]"
+                      label="同类型三方库链接"
+                      name="sameTypeSoftwareName"
+                    >
+                      <Input placeholder="请输入同类型三方库链接" />
+                    </Form.Item>
+                  )}
+                </Col>
+
+                <Form.List name="repoUrl" initialValue={[{ repoUrl: '' }]}>
+                  {(fields, { add, remove }, { errors }) => (
+                    <>
+                      {fields.map((field, index) => (
+                        <>
+                          <Col span={12} key={field.key}>
+                            <Form.Item
+                              label={`适配仓路径${index ? index + 1 : ''}`}
+                              key={field.key}
+                              name={[field.name, 'repoUrl']}
+                              rules={[{ required: true, message: '请输入!' }]}
+                            >
+                              <Space.Compact style={{ width: '100%' }}>
+                                <Input
+                                  placeholder="填写完成 OH 适配后的仓库路径"
+                                  disabled={false}
+                                />
+                                {index === 0 ? (
+                                  <Button
+                                    className="rounded-none pt-0"
+                                    type="primary"
+                                    onClick={() => add()}
+                                  >
+                                    <PlusOutlined rev={undefined} />
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    className="dynamic-delete-button rounded-none pt-0"
+                                    onClick={() => remove(field.name)}
+                                  >
+                                    <MinusOutlined rev={undefined} />
+                                  </Button>
+                                )}
+                              </Space.Compact>
+                            </Form.Item>
+                          </Col>
+                          <Col span={1}></Col>
+                        </>
+                      ))}
+                    </>
+                  )}
+                </Form.List>
               </Row>
-              {report.length > 1 ? (
+              {report.length > 0 && (
                 <>
                   <div className="mb-4 text-base font-semibold">报告信息</div>
-                  <Tabs
-                    className="oh-antd"
-                    size={'small'}
-                    items={report.map((r) => {
-                      return {
-                        label: r.name,
-                        key: r.id,
-                        children: <ReportInfo report={r} />,
-                      };
-                    })}
-                  />
+                  <ReportPageItems reportItems={report} />
                 </>
-              ) : (
-                <ReportInfo report={report[0]} />
               )}
             </>
           )}
@@ -337,10 +393,13 @@ const SelectionApplication = () => {
           <div className="w-full">
             <SelectReport
               getReport={(item) => {
+                form.resetFields();
                 setOpenConfirm(false);
                 setReport(item);
                 form.setFieldsValue({
                   name: item.map((item) => item.name).join(', '),
+                  targetSoftware:
+                    item.length > 1 ? '' : getPathname(item[0].codeUrl),
                 });
               }}
             />

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
-// import { RightOutlined } from '@ant-design/icons';
-import { TbMessage2 } from 'react-icons/tb';
-import { Tag, Descriptions } from 'antd';
+import { Tag } from 'antd';
 import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import EvaluationDownLoad from '@modules/oh/components/EvaluationInfo/EvaluationDownLoad';
 import MetricDrawer from '@modules/oh/components/EvaluationInfo/MetricDrawer';
 import RiskBadge from '@modules/oh/components/EvaluationInfo/RiskBadge';
+import EvaluationBaseInfo from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo';
 import RiskFetcher from '@modules/oh/store/RiskFetcher';
 import {
   metricList,
@@ -191,71 +190,15 @@ const EvaluationMertic = ({ allData }) => {
     </div>
   );
 };
-const EvaluationBaseInfo = ({ item }) => {
-  const baseItems = [
-    {
-      key: '1',
-      label: '软件名称',
-      children: item.name,
-    },
-    {
-      key: '2',
-      label: '所属领域',
-      children: item?.tpcSoftwareSig?.name,
-    },
-    {
-      key: '3',
-      label: '开发商',
-      children: item.manufacturer,
-    },
-    {
-      key: '4',
-      label: '编程语言',
-      children: item.programmingLanguage,
-    },
-    {
-      key: '5',
-      label: '代码量',
-      children: item.codeCount,
-    },
-    {
-      key: '6',
-      label: '官网地址',
-      children: (
-        <>
-          <a
-            className="line-clamp-1 text-[#69b1ff]"
-            target="_blank"
-            href={item.websiteUrl}
-          >
-            {item.websiteUrl}
-          </a>
-        </>
-      ),
-    },
-    {
-      key: '7',
-      label: '源码地址',
-      children: (
-        <>
-          <a className="text-[#69b1ff]" target="_blank" href={item.codeUrl}>
-            {item.codeUrl}
-          </a>
-        </>
-      ),
-    },
-  ];
-
-  return (
-    <div className="mt-6 border bg-[#f9f9f9] p-6 pb-3">
-      <div className="mb-4 text-lg font-semibold">基础信息</div>
-      <div className="oh">
-        <Descriptions items={baseItems} />
-      </div>
-    </div>
-  );
-};
-const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
+const EvaluationDetail = ({
+  item,
+  back,
+  refetch,
+}: {
+  item: any;
+  back?: () => void;
+  refetch?: () => void;
+}) => {
   if (!item.evaluationDetail) {
     item = getEvaluationDetail(item);
   }
@@ -289,7 +232,7 @@ const EvaluationDetail = ({ back, item }: { item: any; back?: () => void }) => {
           <EvaluationDownLoad item={item} />
         </div>
       </div>
-      <EvaluationBaseInfo item={item} />
+      <EvaluationBaseInfo item={item} refetch={refetch} />
       <EvaluationTopScore items={item.evaluationDetail} score={item.score} />
       <EvaluationMertic allData={item} />
     </div>

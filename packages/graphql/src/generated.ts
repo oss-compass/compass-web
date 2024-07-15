@@ -7462,6 +7462,7 @@ export type TpcSoftwareSelectionReportQuery = {
     clarificationPermission?: number | null;
     vulnerabilityResponse?: string | null;
     websiteUrl?: string | null;
+    userId: number;
     tpcSoftwareReportMetric?: {
       __typename?: 'TpcSoftwareReportMetric';
       complianceDco?: number | null;
@@ -7633,6 +7634,7 @@ export type TpcSoftwareSelectionReportRiskQuery = {
     codeUrl?: string | null;
     id: number;
     shortCode: string;
+    userId: number;
     metricClarificationCount?: {
       __typename?: 'TpcSoftwareReportMetricClarificationCount';
       complianceDco?: number | null;
@@ -13436,6 +13438,7 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
       ...tpcSoftwareSig
     }
     websiteUrl
+    userId
   }
 }
     ${TpcSoftwareReportMetricFragmentDoc}
@@ -13622,6 +13625,7 @@ export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
         name
       }
     }
+    userId
   }
 }
     `;
