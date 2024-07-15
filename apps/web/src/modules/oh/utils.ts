@@ -21,9 +21,24 @@ export const getProjectId = (report, target) => {
   let projectIds = report.map((item) => {
     return item.shortCode;
   });
-  // .join('..');
   const res = moveToFirst(projectIds, targetReport.shortCode).join('..');
   return res;
+};
+const getUpstream = (report, target) => {
+  let codeUrls = report.map((item) => {
+    return item.codeUrl;
+  });
+  if (codeUrls.length === 1) {
+    return codeUrls.join(' 、 ');
+  } else {
+    let targetReport = report.find((r) => getPathname(r.codeUrl) === target);
+    let sortCodeUrls = moveToFirst(codeUrls, targetReport.codeUrls);
+    let targetUrl = sortCodeUrls[0];
+    sortCodeUrls.shift();
+    // return sortCodeUrls.join(' 、 ');
+    return `目标上游地址：${targetUrl}
+    对比上游地址：${sortCodeUrls.join(' 、 ')}`;
+  }
 };
 export const openGiteeIssue = (report, values) => {
   let name = report
@@ -31,16 +46,17 @@ export const openGiteeIssue = (report, values) => {
       return getPathname(item.codeUrl);
     })
     .join('、');
-  let upstream = report
-    .map((item) => {
-      return item.codeUrl;
-    })
-    .join(' 、 ');
-  let projectId = report
-    .map((item) => {
-      return item.shortCode;
-    })
-    .join('..');
+  let upstream = getUpstream(report, values.targetSoftware);
+  // report
+  //   .map((item) => {
+  //     return item.codeUrl;
+  //   })
+  //   .join(' 、 ');
+  let projectId = getProjectId(report, values.targetSoftware);
+  // .map((item) => {
+  //   return item.shortCode;
+  // })
+  // .join('..');
   let reportLink = `https://oss-compass.org/oh#reportDetailPage?projectId=${projectId}`;
   let title = `【TPC】【孵化选型申请】${
     values?.targetSoftware || name
@@ -74,7 +90,6 @@ export const openGiteeIssue = (report, values) => {
   7. 【报告链接】
 
   > ${reportLink}
-
   `;
 
   try {

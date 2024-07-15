@@ -45,7 +45,6 @@ const CommentItemMore = ({
   });
 
   const isMySelf = currentUser?.id == userId;
-  console.log(userId, currentUser, isMySelf);
   if (!isMySelf) {
     return null;
   }
