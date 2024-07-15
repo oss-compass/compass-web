@@ -10,7 +10,7 @@ const RiskBadge = ({ shortCode, keyId }) => {
 
   if (metricState?.state === 1) {
     BadgeContent = (
-      <Popover content={`风险澄清已确认；确认人：${metricState.user.name}123`}>
+      <Popover content={`风险澄清已确认；确认人：${metricState.user.name}`}>
         <Badge
           count={
             <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
