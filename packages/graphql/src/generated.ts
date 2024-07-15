@@ -7356,6 +7356,8 @@ export type TpcSoftwareSelectionPageQuery = {
       tpcSoftwareSelectionReports?: Array<{
         __typename?: 'TpcSoftwareSelectionReport';
         name?: string | null;
+        shortCode: string;
+        codeUrl?: string | null;
       }> | null;
     }> | null;
   } | null;
@@ -13375,6 +13377,8 @@ export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
       tpcSoftwareSelectionReportIds
       tpcSoftwareSelectionReports {
         name
+        shortCode
+        codeUrl
       }
     }
     page

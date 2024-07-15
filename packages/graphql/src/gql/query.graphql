@@ -1654,6 +1654,8 @@ query tpcSoftwareSelectionPage(
       tpcSoftwareSelectionReportIds
       tpcSoftwareSelectionReports {
         name
+        shortCode
+        codeUrl
       }
     }
     page

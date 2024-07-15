@@ -26,6 +26,9 @@ const Main = () => {
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col bg-white drop-shadow-sm md:p-0">
         <div className="oh-tabs relative my-3 h-full overflow-auto">
           <Tabs
+            onChange={(activeKey) => {
+              window.location.hash = '#hatchTable' + '?tab=' + activeKey;
+            }}
             defaultActiveKey={activeKey}
             className="oh-antd"
             size={'small'}

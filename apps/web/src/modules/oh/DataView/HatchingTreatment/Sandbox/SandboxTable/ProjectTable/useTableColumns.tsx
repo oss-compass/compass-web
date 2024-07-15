@@ -1,26 +1,15 @@
-import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
-import { EditOutlined } from '@ant-design/icons';
+import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { useUserInfo } from '@modules/auth/useUserInfo';
+import { getProjectId } from '@modules/oh/utils';
 
 export const useTableColumns = (anction) => {
-  const { currentUser } = useUserInfo();
   const columns = [
-    // {
-    //   title: '软件名称',
-    //   dataIndex: 'name',
-    //   key: 'name',
-    //   render: (_, record) => {
-    //     return record?.tpcSoftwareSelectionReports
-    //       ?.map((item) => item.name)
-    //       .join(', ');
-    //   },
-    // },
     {
-      title: '目标选型软件',
+      title: '目标孵化软件',
       dataIndex: 'targetSoftware',
       key: 'targetSoftware',
+      width: 120,
     },
     {
       title: '引入方式',
@@ -52,7 +41,6 @@ export const useTableColumns = (anction) => {
         return text?.slice(0, 10);
       },
     },
-
     {
       title: '孵化周期',
       dataIndex: 'incubationTime',
@@ -67,16 +55,19 @@ export const useTableColumns = (anction) => {
       title: '需求描述',
       dataIndex: 'reason',
       key: 'reason',
+      ellipsis: true,
     },
     {
       title: '功能描述',
       dataIndex: 'functionalDescription',
       key: 'functionalDescription',
+      ellipsis: true,
     },
     {
       title: 'Committers',
       dataIndex: 'committers',
       key: 'committers',
+      ellipsis: true,
       render: (_, record) => {
         return record?.committers?.join('; ');
       },
@@ -87,6 +78,31 @@ export const useTableColumns = (anction) => {
       key: 'repoUrl',
       render: (_, record) => {
         return record?.repoUrl?.join('; ');
+      },
+    },
+    {
+      title: '操作',
+      width: 70,
+      render: (_, record) => {
+        return (
+          <div className="flex cursor-pointer justify-center text-[#3e8eff]">
+            {record?.targetSoftware && (
+              <Popover content={'查看报告'}>
+                <FileTextOutlined
+                  rev={undefined}
+                  onClick={() => {
+                    window.location.hash =
+                      'reportDetailPage?projectId=' +
+                      getProjectId(
+                        record?.tpcSoftwareSelectionReports,
+                        record?.targetSoftware
+                      );
+                  }}
+                />
+              </Popover>
+            )}
+          </div>
+        );
       },
     },
   ];

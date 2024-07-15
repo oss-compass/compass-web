@@ -7,7 +7,24 @@ export const setUrlHost = (url) => {
     return `//${url}`;
   }
 };
+function moveToFirst(arr, target) {
+  const index = arr.indexOf(target);
+  if (index !== -1) {
+    arr.splice(index, 1);
+    arr.unshift(target);
+  }
+  return arr;
+}
 
+export const getProjectId = (report, target) => {
+  let targetReport = report.find((r) => getPathname(r.codeUrl) === target);
+  let projectIds = report.map((item) => {
+    return item.shortCode;
+  });
+  // .join('..');
+  const res = moveToFirst(projectIds, targetReport.shortCode).join('..');
+  return res;
+};
 export const openGiteeIssue = (report, values) => {
   let name = report
     .map((item) => {
