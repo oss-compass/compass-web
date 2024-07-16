@@ -190,6 +190,7 @@ mutation createTpcSoftwareSelection(
       message
       path
     }
+    id
     message
     status
   }

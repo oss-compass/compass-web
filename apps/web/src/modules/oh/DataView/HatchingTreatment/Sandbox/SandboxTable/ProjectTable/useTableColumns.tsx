@@ -91,12 +91,12 @@ export const useTableColumns = (anction) => {
                 <FileTextOutlined
                   rev={undefined}
                   onClick={() => {
-                    window.location.hash =
-                      'reportDetailPage?projectId=' +
-                      getProjectId(
-                        record?.tpcSoftwareSelectionReports,
-                        record?.targetSoftware
-                      );
+                    window.location.hash = `reportDetailPage?taskId=${
+                      record.id
+                    }&projectId=${getProjectId(
+                      record?.tpcSoftwareSelectionReports,
+                      record?.targetSoftware
+                    )}`;
                   }}
                 />
               </Popover>

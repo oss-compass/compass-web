@@ -39,6 +39,7 @@ const SelectionApplication = () => {
   const mutation = useCreateTpcSoftwareSelectionMutation(client, {
     onSuccess(data) {
       if (data.createTpcSoftwareSelection.status == 'true') {
+        const id = data.createTpcSoftwareSelection.id;
         // let issueUrl = data.createTpcSoftwareSelection.issueUrl;
         messageApi.open({
           type: 'success',
@@ -58,7 +59,7 @@ const SelectionApplication = () => {
           ),
         });
         setTimeout(() => {
-          openGiteeIssue(report, form.getFieldsValue(true));
+          openGiteeIssue(report, form.getFieldsValue(true), id);
         }, 3000);
       } else {
         messageApi.open({

@@ -40,7 +40,7 @@ const getUpstream = (report, target) => {
     对比软件上游地址：${sortCodeUrls.join(' 、 ')}`;
   }
 };
-export const openGiteeIssue = (report, values) => {
+export const openGiteeIssue = (report, values, id) => {
   let name = report
     .map((item) => {
       return getPathname(item.codeUrl);
@@ -57,7 +57,7 @@ export const openGiteeIssue = (report, values) => {
   //   return item.shortCode;
   // })
   // .join('..');
-  let reportLink = `https://oss-compass.org/oh#reportDetailPage?projectId=${projectId}`;
+  let reportLink = `${window.location.origin}/oh#reportDetailPage?taskId=${id}&projectId=${projectId}`;
   let title = `【TPC】【孵化选型申请】${
     values?.targetSoftware || name
   } 申请进入 OpenHarmony TPC 孵化项目`;

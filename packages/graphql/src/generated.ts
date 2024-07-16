@@ -1124,7 +1124,7 @@ export type CreateTpcSoftwareSelectionInput = {
   reason: Scalars['String'];
   repoUrl?: InputMaybe<Array<Scalars['String']>>;
   sameTypeSoftwareName?: InputMaybe<Scalars['String']>;
-  /** selection: 0, create_repo: 1, incubation: 2 */
+  /** incubation: 0, sandbox: 1, graduation: 2 */
   selectionType: Scalars['Int'];
   targetSoftware: Scalars['String'];
   tpcSoftwareSelectionReportIds: Array<Scalars['Int']>;
@@ -1137,6 +1137,7 @@ export type CreateTpcSoftwareSelectionPayload = {
   clientMutationId?: Maybe<Scalars['String']>;
   /** Errors encountered during execution of the mutation. */
   errors?: Maybe<Array<Error>>;
+  id: Scalars['Int'];
   message?: Maybe<Scalars['String']>;
   status: Scalars['String'];
 };
@@ -1149,7 +1150,7 @@ export type CreateTpcSoftwareSelectionReportInput = {
   label: Scalars['String'];
   /** repo or comunity */
   level?: InputMaybe<Scalars['String']>;
-  /** selection: 0, create_repo: 1, incubation: 2 */
+  /** incubation: 0, sandbox: 1, graduation: 2 */
   reportType: Scalars['Int'];
   softwareReport: TpcSoftwareSelectionReportInput;
 };
@@ -3526,7 +3527,7 @@ export type TpcSoftwareSelection = {
   reason?: Maybe<Scalars['String']>;
   repoUrl?: Maybe<Array<Scalars['String']>>;
   sameTypeSoftwareName?: Maybe<Scalars['String']>;
-  /** selection: 0, create_repo: 1, incubation: 2 */
+  /** incubation: 0, sandbox: 1, graduation: 2 */
   selectionType?: Maybe<Scalars['Int']>;
   targetSoftware?: Maybe<Scalars['String']>;
   tpcSoftwareSelectionReportIds?: Maybe<Array<Scalars['String']>>;
@@ -5461,6 +5462,7 @@ export type CreateTpcSoftwareSelectionMutation = {
   __typename?: 'Mutation';
   createTpcSoftwareSelection?: {
     __typename?: 'CreateTpcSoftwareSelectionPayload';
+    id: number;
     message?: string | null;
     status: string;
     errors?: Array<{
@@ -10016,6 +10018,7 @@ export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
       message
       path
     }
+    id
     message
     status
   }
