@@ -1582,6 +1582,7 @@ query tpcSoftwareSelectionReportPage(
   ) {
     count
     items {
+      # adaptationMethod
       codeCount
       codeUrl
       id
@@ -1628,7 +1629,6 @@ query tpcSoftwareSelectionPage(
   ) {
     count
     items {
-      adaptationMethod
       committers
       createdAt
       demandSource
@@ -1799,7 +1799,7 @@ query tpcSoftwareReportMetricClarificationPage(
     totalPage
   }
 }
-fragment tpcClarificationStateDetail on TpcSoftwareReportMetricClarificationStateDetail {
+fragment tpcClarificationStateDetail on TpcSoftwareCommentState {
   createdAt
   id
   memberType
@@ -1895,5 +1895,61 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
       }
     }
     userId
+  }
+}
+query tpcSoftwareSelectionCommentPage(
+  $selectionId: Int!
+  $page: Int!
+  $per: Int!
+) {
+  tpcSoftwareSelectionCommentPage(
+    page: $page
+    per: $per
+    selectionId: $selectionId
+  ) {
+    count
+    items {
+      content
+      createdAt
+      id
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+
+query tpcSoftwareSelection($selectionId: Int!) {
+  tpcSoftwareSelection(selectionId: $selectionId) {
+    commentCommitterPermission
+    commentCount
+    commentSigLeadPermission
+    commentState {
+      createdAt
+      id
+      memberType
+      state
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
   }
 }

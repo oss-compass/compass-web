@@ -49,6 +49,11 @@ export const useTableColumns = (anction) => {
       key: 'programmingLanguage',
     },
     {
+      title: '引入方式',
+      key: 'adaptationMethod',
+      dataIndex: 'adaptationMethod',
+    },
+    {
       title: '开发商',
       dataIndex: 'manufacturer',
       key: 'time',

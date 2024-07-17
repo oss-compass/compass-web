@@ -12,17 +12,18 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 }
 
 const useExtractShortIds = () => {
-  const shortIds = useMemo(() => {
+  const searchParams = useMemo(() => {
     const url = new URL(window.location.href.replace('#', ''));
     const projectId = url.searchParams.get('projectId');
-    return compareIdsSplit(projectId);
+    const taskId = url.searchParams.get('taskId');
+    return { shortIds: compareIdsSplit(projectId), taskId };
   }, [window.location.href]);
-  return { shortIds };
+  return searchParams;
 };
 
 const useLabelData = () => {
   const queryClient = useQueryClient();
-  const { shortIds } = useExtractShortIds();
+  const { shortIds, taskId } = useExtractShortIds();
 
   // const queries = useQueries({
   //   queries: shortIds.map((shortCode) => {
@@ -77,7 +78,7 @@ const useLabelData = () => {
   const reportItems = shortIds.map((shortCode) => {
     return { shortCode };
   });
-  return { reportItems: reportItems };
+  return { reportItems: reportItems, taskId };
 };
 
 export default useLabelData;

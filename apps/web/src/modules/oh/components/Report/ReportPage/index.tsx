@@ -1,14 +1,18 @@
 import React from 'react';
 import useLabelData from '@modules/oh/hooks/useLabelData';
+import ReportPageItems from '@modules/oh/components/Report/ReportPageItems';
+import ReportIdFetcher from '@modules/oh/components/Report/ReportPage/store/ReportIdFetcher';
+import Comment from '@modules/oh/components/Report/ReportPage/Comment';
+import Approve from '@modules/oh/components/Report/ReportPage/Approve';
+
 // import { Input, Tabs } from 'antd';
 // import NotFoundOh from '@modules/oh/components/NotFoundOh';
 // import Loading from '@modules/oh/components/Loading';
 // import Analyzing from '@modules/oh/components/Analyzing';
 // import ReportPageItem from '@modules/oh/components/Report/VerifyReportPageItems';
-import ReportPageItems from '@modules/oh/components/Report/ReportPageItems';
 
 const ReportPage = () => {
-  const { reportItems } = useLabelData();
+  const { reportItems, taskId } = useLabelData();
   // const { isLoading, status, reportItems, notFound } = useLabelData();
   // if (isLoading) {
   //   return (
@@ -29,8 +33,15 @@ const ReportPage = () => {
         <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
           {'TPC 软件报告详情'}
         </div>
-        <div className="relative mb-6 flex h-[calc(100%-60px)] justify-center overflow-auto p-5">
+        <div className="relative flex h-[calc(100%-40px)] flex-col justify-center overflow-auto p-5">
           <ReportPageItems reportItems={reportItems} />
+          {taskId && (
+            <>
+              <ReportIdFetcher selectionId={Number(taskId)} />
+              <Comment />
+              <Approve />
+            </>
+          )}
         </div>
       </div>
     </div>

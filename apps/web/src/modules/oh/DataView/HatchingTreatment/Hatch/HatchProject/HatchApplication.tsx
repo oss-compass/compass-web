@@ -164,23 +164,6 @@ const SelectionApplication = () => {
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    label="引入方式"
-                    name="adaptationMethod"
-                    rules={[{ required: true, message: '请输入!' }]}
-                  >
-                    <Select disabled={false}>
-                      {adaptationMethodList.map((item) => {
-                        return (
-                          <Select.Option key={item} value={item}>
-                            {item}
-                          </Select.Option>
-                        );
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
                     label="目标孵化软件"
                     name="targetSoftware"
                     rules={[{ required: true, message: '请输入!' }]}

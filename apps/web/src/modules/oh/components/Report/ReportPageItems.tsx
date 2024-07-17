@@ -12,13 +12,9 @@ const ReportPageItem = ({ reportItems }) => {
   return (
     <>
       {/* <div className="fixed top-40 z-50">123</div> */}
-      <div className="flex w-full gap-4 overflow-auto">
+      <div className="flex h-full w-full flex-shrink-0 gap-4 overflow-auto">
         {reportItems.map((z) => {
-          return (
-            <div key={z.id}>
-              <GetReportData shortCode={z.shortCode} />
-            </div>
-          );
+          return <GetReportData key={z.id} shortCode={z.shortCode} />;
         })}
       </div>
     </>

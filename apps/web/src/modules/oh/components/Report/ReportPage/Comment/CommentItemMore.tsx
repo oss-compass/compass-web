@@ -3,7 +3,7 @@ import { Popper } from '@oss-compass/ui';
 import { useRouter } from 'next/router';
 import {
   ModelDetail,
-  useDeleteReportMetricClarificationMutation,
+  useDeleteTpcSoftwareSelectionCommentMutation,
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import { FiMoreHorizontal } from 'react-icons/fi';
@@ -14,12 +14,12 @@ import { useTranslation } from 'react-i18next';
 
 const CommentItemMore = ({
   userId,
-  clarificationId,
+  commentId,
   onDeleteSuccess,
   onDeleteEdit,
 }: {
   userId: number;
-  clarificationId: number;
+  commentId: number;
   onDeleteSuccess: () => void;
   onDeleteEdit: () => void;
 }) => {
@@ -32,12 +32,15 @@ const CommentItemMore = ({
   const modelId = Number(router.query.model);
 
   const [openConfirm, setOpenConfirm] = useState(false);
-  const deleteMutation = useDeleteReportMetricClarificationMutation(gqlClient, {
-    onSuccess: () => {
-      setOpenConfirm(false);
-      onDeleteSuccess();
-    },
-  });
+  const deleteMutation = useDeleteTpcSoftwareSelectionCommentMutation(
+    gqlClient,
+    {
+      onSuccess: () => {
+        setOpenConfirm(false);
+        onDeleteSuccess();
+      },
+    }
+  );
 
   const isMySelf = currentUser?.id == userId;
   if (!isMySelf) {
@@ -102,7 +105,7 @@ const CommentItemMore = ({
               className="ml-4"
               loading={deleteMutation.isLoading}
               onClick={() => {
-                deleteMutation.mutate({ clarificationId });
+                deleteMutation.mutate({ commentId });
               }}
             >
               {t('common:btn.confirm')}

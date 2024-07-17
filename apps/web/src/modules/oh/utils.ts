@@ -79,19 +79,15 @@ export const openGiteeIssue = (report, values, id) => {
 
   > ${values.incubationTime}
 
-  5. 【引入方式】
-
-  > ${values.adaptationMethod}
-
-  6. 【Commiters】
+  5. 【Commiters】
 
   > ${values.committers}
   
-  7. 【上游地址】
+  6. 【上游地址】
   
   > ${upstream}
   
-  8. 【报告链接】
+  7. 【报告链接】
 
   > ${reportLink}
   `;

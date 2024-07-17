@@ -11,11 +11,7 @@ export const useTableColumns = (anction) => {
       key: 'targetSoftware',
       width: 120,
     },
-    {
-      title: '引入方式',
-      key: 'adaptationMethod',
-      dataIndex: 'adaptationMethod',
-    },
+
     {
       title: '申请人',
       key: 'user',

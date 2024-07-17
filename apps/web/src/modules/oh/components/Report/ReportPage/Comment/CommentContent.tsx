@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import CommentEdit from './CommentEdit';
-import CommentItemMore from './CommentItemMore';
+import CommentEdit from '@modules/oh/components/Report/ReportPage/Comment/CommentEdit';
+import CommentItemMore from '@modules/oh/components/Report/ReportPage/Comment/CommentItemMore';
 import Image from 'next/image';
 import { formatToNow } from '@common/utils/time';
-import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
+import {
+  ReportStore,
+  ReportEvent,
+} from '@modules/oh/components/Report/ReportPage/store/useReportStore';
 
-const RiskContent = ({
+const CommentContent = ({
   item,
-  shortCode,
+  selectionId,
   refetch,
 }: {
   item: any;
-  shortCode: string;
+  selectionId: number;
   refetch: () => void;
 }) => {
   const { content, userId, id } = item;
@@ -50,7 +53,7 @@ const RiskContent = ({
         {edit ? (
           <CommentEdit
             content={content}
-            clarificationId={id}
+            commentId={id}
             onUpdateSuccess={() => {
               refetch();
               setTimeout(() => {
@@ -68,13 +71,13 @@ const RiskContent = ({
       <div className="absolute top-4 right-4">
         <CommentItemMore
           userId={userId}
-          clarificationId={item.id}
+          commentId={item.id}
           onDeleteEdit={() => {
             setEdit(true);
           }}
           onDeleteSuccess={() => {
             refetch();
-            RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
+            ReportStore.event$?.emit(ReportEvent.REFRESH);
           }}
         />
       </div>
@@ -82,4 +85,4 @@ const RiskContent = ({
   );
 };
 
-export default RiskContent;
+export default CommentContent;

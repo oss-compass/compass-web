@@ -165,7 +165,7 @@ mutation createTpcSoftwareSelection(
   $incubationTime: String!
   $demandSource: String
   $reason: String!
-  $adaptationMethod: String!
+  # $adaptationMethod: String!
   $targetSoftware: String!
   $isSameTypeCheck: Int!
 ) {
@@ -181,7 +181,7 @@ mutation createTpcSoftwareSelection(
       demandSource: $demandSource
       incubationTime: $incubationTime
       reason: $reason
-      adaptationMethod: $adaptationMethod
+      # adaptationMethod: $adaptationMethod
       targetSoftware: $targetSoftware
       isSameTypeCheck: $isSameTypeCheck
     }
@@ -267,6 +267,64 @@ mutation updateTpcSoftwareSelectionReport(
 ) {
   updateTpcSoftwareSelectionReport(
     input: { reportId: $reportId, softwareReport: $softwareReport }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation createTpcSoftwareSelectionComment(
+  $selectionId: Int!
+  $content: String!
+) {
+  createTpcSoftwareSelectionComment(
+    input: { selectionId: $selectionId, content: $content }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation deleteTpcSoftwareSelectionComment($commentId: Int!) {
+  deleteTpcSoftwareSelectionComment(input: { commentId: $commentId }) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation updateTpcSoftwareSelectionComment(
+  $commentId: Int!
+  $content: String!
+) {
+  updateTpcSoftwareSelectionComment(
+    input: { commentId: $commentId, content: $content }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation acceptTpcSoftwareSelection(
+  $selectionId: Int!
+  $state: Int!
+  $memberType: Int!
+) {
+  acceptTpcSoftwareSelection(
+    input: { selectionId: $selectionId, state: $state, memberType: $memberType }
   ) {
     errors {
       message

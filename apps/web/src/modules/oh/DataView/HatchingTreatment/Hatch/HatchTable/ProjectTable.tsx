@@ -46,14 +46,11 @@ const ReportTable = () => {
     //     );
     //   },
     // },
-    {
-      title: '引入方式',
-      key: 'adaptationMethod',
-      dataIndex: 'adaptationMethod',
-      // render: (text) => {
-      //   return text === 1 ? '重写' : '适配';
-      // },
-    },
+    // {
+    //   title: '引入方式',
+    //   key: 'adaptationMethod',
+    //   dataIndex: 'adaptationMethod',
+    // },
     {
       title: '申请人',
       key: 'user',

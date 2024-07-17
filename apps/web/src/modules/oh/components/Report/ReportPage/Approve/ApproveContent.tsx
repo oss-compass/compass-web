@@ -1,21 +1,10 @@
 import React, { useState } from 'react';
-import CommentEdit from './CommentEdit';
-import CommentItemMore from './CommentItemMore';
 import Image from 'next/image';
 import { formatToNow } from '@common/utils/time';
 import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
 
-const RiskContent = ({
-  item,
-  shortCode,
-  refetch,
-}: {
-  item: any;
-  shortCode: string;
-  refetch: () => void;
-}) => {
-  const { content, userId, id } = item;
-  const [edit, setEdit] = useState(false);
+const ApproveContent = ({ item }: { item: any }) => {
+  const { state, memberType } = item;
 
   return (
     <>
@@ -47,39 +36,11 @@ const RiskContent = ({
         </div>
       </div>
       <div className="w-full">
-        {edit ? (
-          <CommentEdit
-            content={content}
-            clarificationId={id}
-            onUpdateSuccess={() => {
-              refetch();
-              setTimeout(() => {
-                setEdit(false);
-              }, 1000);
-            }}
-            onCancel={() => {
-              setEdit(false);
-            }}
-          />
-        ) : (
-          content
-        )}
-      </div>
-      <div className="absolute top-4 right-4">
-        <CommentItemMore
-          userId={userId}
-          clarificationId={item.id}
-          onDeleteEdit={() => {
-            setEdit(true);
-          }}
-          onDeleteSuccess={() => {
-            refetch();
-            RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
-          }}
-        />
+        {memberType === 1 ? 'TPC SIG Leader' : 'Committer'}
+        {state === 1 ? ' 审批通过' : ' 驳回'}
       </div>
     </>
   );
 };
 
-export default RiskContent;
+export default ApproveContent;
