@@ -1742,7 +1742,8 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     name
     programmingLanguage
     shortCode
-    clarificationPermission
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
     vulnerabilityResponse
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
@@ -1798,6 +1799,20 @@ query tpcSoftwareReportMetricClarificationPage(
     totalPage
   }
 }
+fragment tpcClarificationStateDetail on TpcSoftwareReportMetricClarificationStateDetail {
+  createdAt
+  id
+  memberType
+  # committer: 0, sig lead: 1
+  metricName
+  state
+  # reject: -1, accept: 1
+  updatedAt
+  user {
+    name
+  }
+  userId
+}
 query tpcSoftwareSelectionReportRisk($shortCode: String!) {
   tpcSoftwareSelectionReport(shortCode: $shortCode) {
     codeUrl
@@ -1824,13 +1839,59 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
       securityVulnerabilityResponse
     }
     metricClarificationState {
-      createdAt
-      id
-      metricName
-      state
-      updatedAt
-      user {
-        name
+      complianceDco {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicense {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicenseCompatibility {
+        ...tpcClarificationStateDetail
+      }
+      compliancePackageSig {
+        ...tpcClarificationStateDetail
+      }
+      ecologyAdoptionAnalysis {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCodeMaintenance {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCommunitySupport {
+        ...tpcClarificationStateDetail
+      }
+      ecologyDependencyAcquisition {
+        ...tpcClarificationStateDetail
+      }
+      ecologyPatentRisk {
+        ...tpcClarificationStateDetail
+      }
+      ecologySoftwareQuality {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleVersionLifecycle {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleVersionNormalization {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleVersionNumber {
+        ...tpcClarificationStateDetail
+      }
+      securityBinaryArtifact {
+        ...tpcClarificationStateDetail
+      }
+      securityHistoryVulnerability {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerability {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerabilityDisclosure {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerabilityResponse {
+        ...tpcClarificationStateDetail
       }
     }
     userId

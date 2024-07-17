@@ -13,7 +13,6 @@ const SideMenu: React.FC = () => {
   const id = useHashchangeEvent();
   const router = useRouter();
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log(e);
     if (e.keyPath[1] === 'sub3') {
       router.push('/oh/' + e.key);
     } else {

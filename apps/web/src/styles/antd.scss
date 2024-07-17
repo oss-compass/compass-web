@@ -93,6 +93,7 @@
   .ant-tabs-nav-wrap {
     padding-left: 20px;
   }
+
   // .ant-tabs-nav {
   //   background: #f2f2f2;
   //   .ant-tabs-tab {
@@ -137,6 +138,9 @@
 }
 .ant-collapse-header-text {
   font-weight: 700;
+}
+.ant-dropdown-menu {
+  border-radius: 0px !important;
 }
 .oh {
   .ant-descriptions-item-label {

@@ -34,7 +34,6 @@ const ReportTable = () => {
     myQuery,
     {
       onSuccess: (data) => {
-        console.log(data);
         setTableParams({
           ...tableParams,
           pagination: {

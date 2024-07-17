@@ -248,7 +248,5 @@ export const downloadReport = (item) => {
     });
     return row;
   });
-  saveCSV(title, head, tableData).then(() => {
-    // console.log('success');
-  });
+  saveCSV(title, head, tableData).then(() => {});
 };

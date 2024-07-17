@@ -45,7 +45,6 @@ const SelectionReportApplication = () => {
       }
     },
     onError(res) {
-      console.log(res);
       messageApi.open({
         type: 'error',
         style: {

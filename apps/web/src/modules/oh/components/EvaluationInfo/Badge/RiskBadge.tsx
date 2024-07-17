@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Badge, Popover } from 'antd';
 import { useGetRisk } from '@modules/oh/store/useRiskStore';
 import { CheckOutlined } from '@ant-design/icons';
@@ -7,10 +7,30 @@ import { TbMessage2 } from 'react-icons/tb';
 const RiskBadge = ({ shortCode, keyId }) => {
   const { count, metricState } = useGetRisk(shortCode, keyId);
   let BadgeContent = null;
+  const hasReject = useMemo(() => {
+    return metricState?.some((z) => z.state === -1);
+  }, metricState);
 
-  if (metricState?.state === 1) {
+  if (metricState?.length > 0 && !hasReject) {
+    let content = '';
+    const leaderState = metricState.filter((item) => item.memberType === 1);
+    const leaderApprove = leaderState
+      .filter((item) => item.state === 1)
+      ?.map((item) => item?.user?.name);
+    leaderApprove.length > 0 &&
+      (content += `${
+        leaderApprove.length
+      }名 SIG Leader 已赞同风险澄清：${leaderApprove.join(',')}\n`);
+    const commiterState = metricState.filter((item) => item.memberType === 0);
+    const commiterApprove = commiterState
+      .filter((item) => item.state === 1)
+      ?.map((item) => item?.user?.name);
+    commiterApprove.length > 0 &&
+      (content += `${
+        commiterApprove.length
+      }名 Commiter 已赞同风险澄清：${commiterApprove.join(',')}`);
     BadgeContent = (
-      <Popover content={`风险澄清已确认；确认人：${metricState.user.name}`}>
+      <Popover content={content}>
         <Badge
           count={
             <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
@@ -31,7 +51,7 @@ const RiskBadge = ({ shortCode, keyId }) => {
     );
   } else {
     BadgeContent = (
-      <Popover content={'查看风险澄清'}>
+      <Popover content={''}>
         <Badge
           count={count}
           size="small"

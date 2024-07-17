@@ -13,6 +13,7 @@ import gqlClient from '@common/gqlClient';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
+import RiskBadgeInner from '@modules/oh/components/EvaluationInfo/Badge/RiskBadgeInner';
 
 const RiskClarification = ({ metric, report }) => {
   const { shortCode } = report;
@@ -46,7 +47,6 @@ const RiskClarification = ({ metric, report }) => {
     },
     {
       onSuccess(data) {
-        console.log(data.pages[0]);
         // setListData(data.)
       },
       staleTime: 60 * 1000,
@@ -74,7 +74,10 @@ const RiskClarification = ({ metric, report }) => {
         size="large"
         header={
           <div className="flex justify-between">
-            <div className="text-base font-bold">风险澄清</div>
+            <div className="flex items-center text-base font-bold">
+              <span className="mr-4">风险澄清</span>
+              <RiskBadgeInner report={report} keyId={metricName} />
+            </div>
             <CheckRisk report={report} metricName={metricName} />
           </div>
         }
@@ -85,7 +88,6 @@ const RiskClarification = ({ metric, report }) => {
               loading={commentMutation.isLoading}
               placeholder={'按Enter发送风险澄清'}
               onSubmit={(content) => {
-                console.log(content);
                 commentMutation.mutate(
                   {
                     shortCode,
@@ -96,7 +98,6 @@ const RiskClarification = ({ metric, report }) => {
                     onSuccess: () => {
                       toast.success('发送成功');
                       refetch();
-                      console.log(RiskStore.event$);
                       RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
                       inputRef.current?.reset();
                     },

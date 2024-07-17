@@ -58,7 +58,11 @@ const SelectionApplication = () => {
           ),
         });
         setTimeout(() => {
-          openGiteeIssue(report, form.getFieldsValue(true));
+          openGiteeIssue(
+            report,
+            form.getFieldsValue(true),
+            data.createTpcSoftwareSelection.id
+          );
         }, 3000);
       } else {
         messageApi.open({
@@ -83,7 +87,6 @@ const SelectionApplication = () => {
 
   const submit = () => {
     form.validateFields().then((values) => {
-      console.log(values);
       const repoUrl = values.repoUrl.map((z) => z['repoUrl']);
       report &&
         mutation.mutate({

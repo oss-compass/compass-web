@@ -7,9 +7,7 @@ import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 
 const CommunityManagement = () => {
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const onChange = (key: string) => {};
   const items: TabsProps['items'] = [
     {
       key: '1',

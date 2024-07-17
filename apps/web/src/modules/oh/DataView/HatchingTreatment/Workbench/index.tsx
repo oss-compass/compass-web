@@ -20,7 +20,6 @@ const Main = ({ name }) => {
   } else {
     query.reportTypeList = [2];
   }
-  console.log(name, query);
   return (
     <div className="div">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">

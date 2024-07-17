@@ -56,7 +56,6 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       ),
     },
   ];
-  console.log('item', item);
   return (
     <div className="mt-6 border bg-[#f9f9f9] p-6 pb-3">
       <div className="mb-4 text-lg font-semibold">

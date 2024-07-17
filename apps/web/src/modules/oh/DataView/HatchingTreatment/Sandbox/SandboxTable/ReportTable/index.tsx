@@ -138,7 +138,6 @@ const ReportTable = () => {
   const { isLoading, isFetching, refetch } =
     useTpcSoftwareSelectionReportPageQuery(client, myQuery, {
       onSuccess: (data) => {
-        console.log(data);
         setTableParams({
           ...tableParams,
           pagination: {

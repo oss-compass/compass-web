@@ -18,7 +18,6 @@ const DownloadReportRow = ({ item, setLoadingDownLoad }) => {
         setLoadingDownLoad(false);
       },
       onError: (error) => {
-        console.log(error);
         setLoadingDownLoad(false);
       },
     }

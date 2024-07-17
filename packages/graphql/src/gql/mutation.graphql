@@ -242,9 +242,16 @@ mutation updateReportMetricClarification(
 mutation acceptTpcSoftwareReportMetricClarification(
   $shortCode: String!
   $metricName: String!
+  $state: Int!
+  $memberType: Int!
 ) {
   acceptTpcSoftwareReportMetricClarification(
-    input: { shortCode: $shortCode, metricName: $metricName }
+    input: {
+      shortCode: $shortCode
+      metricName: $metricName
+      state: $state
+      memberType: $memberType
+    }
   ) {
     errors {
       message

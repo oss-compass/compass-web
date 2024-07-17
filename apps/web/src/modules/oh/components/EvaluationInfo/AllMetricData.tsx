@@ -59,7 +59,6 @@ export const allMetricData = [
     detailRender: (list) => {
       let res = `引入软件中有 License 存在兼容性问题`;
       list.map(({ license, licenseConflictList }) => {
-        console.log(licenseConflictList);
         res += `${license}License 与 ${
           licenseConflictList && licenseConflictList.join(',')
         } 存在兼容性问题; `;

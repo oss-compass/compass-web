@@ -64,15 +64,11 @@ const CommitDetails = ({ commitInfo }) => {
   ];
 
   const [openConfirm, setOpenConfirm] = useState(false);
-  const onFinish: FormProps<CommitDetail>['onFinish'] = (values) => {
-    console.log('Success:', values);
-  };
+  const onFinish: FormProps<CommitDetail>['onFinish'] = (values) => {};
 
   const onFinishFailed: FormProps<CommitDetail>['onFinishFailed'] = (
     errorInfo
-  ) => {
-    // console.log('Failed:', errorInfo);
-  };
+  ) => {};
   const [form] = Form.useForm();
   form.setFieldsValue(commitInfo);
   return (

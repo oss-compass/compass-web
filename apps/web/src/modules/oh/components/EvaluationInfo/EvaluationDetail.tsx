@@ -5,7 +5,7 @@ import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import EvaluationDownLoad from '@modules/oh/components/EvaluationInfo/EvaluationDownLoad';
 import MetricDrawer from '@modules/oh/components/EvaluationInfo/MetricDrawer';
-import RiskBadge from '@modules/oh/components/EvaluationInfo/RiskBadge';
+import RiskBadge from '@modules/oh/components/EvaluationInfo/Badge/RiskBadge';
 import EvaluationBaseInfo from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo';
 import RiskFetcher from '@modules/oh/store/RiskFetcher';
 import {

@@ -30,9 +30,7 @@ export const useGetRisk = (shortCode, key) => {
   }
   const report = data[shortCode];
   const count = report?.metricClarificationCount[key];
-  const metricState = report?.metricClarificationState.find(
-    (item) => item.metricName === key
-  );
+  const metricState = report?.metricClarificationState[key];
   return { count, metricState };
 };
 // export const resetRiskData = () => {

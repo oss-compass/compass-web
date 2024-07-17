@@ -1,25 +1,184 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button, Popover } from 'antd';
-import { CheckOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  CheckCircleOutlined,
+  TeamOutlined,
+} from '@ant-design/icons';
 import { useAcceptTpcSoftwareReportMetricClarificationMutation } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import toast from 'react-hot-toast';
-import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
+import {
+  RiskStore,
+  riskEvent,
+  useGetRisk,
+} from '@modules/oh/store/useRiskStore';
+import { Dropdown } from 'antd';
+import { useUserInfo } from '@modules/auth/useUserInfo';
 
 const CheckRisk = ({ report, metricName }) => {
-  const { shortCode, clarificationPermission } = report;
+  const {
+    shortCode,
+    clarificationCommitterPermission,
+    clarificationSigLeadPermission,
+  } = report;
+  const { currentUser } = useUserInfo();
+  const { count, metricState } = useGetRisk(shortCode, metricName);
   const mutation =
     useAcceptTpcSoftwareReportMetricClarificationMutation(gqlClient);
+  const userState = metricState?.filter((z) => z.userId === currentUser.id);
+  const handleApprove = (memberType, state) => {
+    mutation.mutate(
+      {
+        shortCode,
+        metricName,
+        memberType,
+        state,
+      },
+      {
+        onSuccess: () => {
+          RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
+          toast.success(`${state === 0 ? '取消' : '操作'}成功`);
+        },
+      }
+    );
+  };
+  const getApproveItems = () => {
+    if (!clarificationCommitterPermission && !clarificationSigLeadPermission) {
+      return [
+        {
+          key: '1',
+          label: '您不是该软件的 Committer 或 SIG Leader，暂无权限审批',
+        },
+      ];
+    } else {
+      let res = [];
+      if (clarificationSigLeadPermission) {
+        const state = Boolean(
+          userState?.find((z) => z.memberType === 1 && z.state === 1)
+        );
+        res.push({
+          label: (
+            <a
+              onClick={() => {
+                handleApprove(1, Number(!state));
+              }}
+            >
+              以 SIG Leader 赞同
+              <span className="ml-2 text-[#3a5bef]">
+                {state && <CheckCircleOutlined rev={undefined} />}
+              </span>
+            </a>
+          ),
+          key: '1',
+        });
+      }
+      if (clarificationCommitterPermission) {
+        const state = Boolean(
+          userState?.find((z) => z.memberType === 0 && z.state === 1)
+        );
+        res.push({
+          label: (
+            <a
+              onClick={() => {
+                handleApprove(0, Number(!state));
+              }}
+            >
+              以 Committer 赞同
+              <span className="ml-2 text-[#3a5bef]">
+                {state && <CheckCircleOutlined rev={undefined} />}
+              </span>
+            </a>
+          ),
+          key: '2',
+        });
+      }
+      return res;
+    }
+  };
+  const getRejectItems = () => {
+    if (!clarificationCommitterPermission && !clarificationSigLeadPermission) {
+      return [
+        {
+          key: '1',
+          label: '您不是该软件的 Committer 或 SIG Leader，暂无权限审批',
+        },
+      ];
+    } else {
+      let res = [];
+      if (clarificationSigLeadPermission) {
+        const state = Boolean(
+          userState?.find((z) => z.memberType === 1 && z.state === -1)
+        );
+        res.push({
+          label: (
+            <a
+              onClick={() => {
+                handleApprove(1, state ? 0 : -1);
+              }}
+            >
+              以 SIG Leader 拒绝
+              <span className="ml-2 text-[#3a5bef]">
+                {state && <CheckCircleOutlined rev={undefined} />}
+              </span>
+            </a>
+          ),
+          key: '1',
+        });
+      }
+      if (clarificationCommitterPermission) {
+        const state = Boolean(
+          userState?.find((z) => z.memberType === 0 && z.state === -1)
+        );
+        res.push({
+          label: (
+            <a
+              onClick={() => {
+                handleApprove(0, state ? 0 : -1);
+              }}
+            >
+              以 Committer 拒绝
+              <span className="ml-2 text-[#3a5bef]">
+                {state && <CheckCircleOutlined rev={undefined} />}
+              </span>
+            </a>
+          ),
+          key: '2',
+        });
+      }
+      return res;
+    }
+  };
+  const approveitems = getApproveItems();
+  const rejectitems = getRejectItems();
 
   return (
-    <>
-      {clarificationPermission === 1 && (
-        <Popover>
+    <div className="oh flex gap-2">
+      {/* <Popover
+        style={{ width: 500 }}
+        content={hoverContent}
+        title="Hover title"
+        trigger="hover"
+        open={hovered}
+        onOpenChange={handleHoverChange}
+      >
+        <Popover
+          content={
+            <div>
+              {clickContent}
+              <a onClick={hide}>Close</a>
+            </div>
+          }
+          title="Click title"
+          trigger="click"
+          open={clicked}
+          onOpenChange={handleClickChange}
+        >
           <Button
-            title="确认风险澄清"
+            // title="确认风险澄清"
             className="flex items-center !rounded-none"
-            size="small"
-            type="primary"
+            // type="primary"
             onClick={() => {
               mutation.mutate(
                 {
@@ -38,10 +197,55 @@ const CheckRisk = ({ report, metricName }) => {
             }}
           >
             <CheckOutlined rev={undefined} />
+            赞同
           </Button>
         </Popover>
-      )}
-    </>
+      </Popover> */}
+      <Popover>
+        <Dropdown
+          menu={{ items: approveitems }}
+          placement="bottom"
+          arrow={{ pointAtCenter: true }}
+          trigger={['click']}
+        >
+          <Button
+            // title="确认风险澄清"
+            className="flex items-center !rounded-none"
+            type="primary"
+            // onClick={() => {
+            //   mutation.mutate(
+            //     {
+            //       shortCode,
+            //       metricName,
+            //     },
+            //     {
+            //       onSuccess: () => {
+            //         RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
+            //         toast.success('确认成功');
+            //       },
+            //     }
+            //   );
+            // }}
+          >
+            <CheckOutlined rev={undefined} />
+            赞同
+          </Button>
+        </Dropdown>
+      </Popover>
+      <Popover>
+        <Dropdown
+          menu={{ items: rejectitems }}
+          placement="bottom"
+          arrow={{ pointAtCenter: true }}
+          trigger={['click']}
+        >
+          <Button className="flex items-center !rounded-none" type="primary">
+            <CloseOutlined rev={undefined} />
+            拒绝
+          </Button>
+        </Dropdown>
+      </Popover>
+    </div>
   );
 };
 
