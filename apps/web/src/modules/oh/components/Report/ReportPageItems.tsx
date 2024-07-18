@@ -10,7 +10,12 @@ const ReportPageItems = ({ reportItems, targetSoftware = null }) => {
     return <NotFoundOh />;
   }
   if (reportItems.length === 1) {
-    return <GetReportData shortCode={reportItems[0].shortCode} />;
+    return (
+      <GetReportData
+        shortCode={reportItems[0].shortCode}
+        targetSoftware={targetSoftware}
+      />
+    );
   }
   return (
     <div className="overflow-auto">

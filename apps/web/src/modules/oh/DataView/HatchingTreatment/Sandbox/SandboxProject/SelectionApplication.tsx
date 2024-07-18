@@ -377,14 +377,16 @@ const SelectionApplication = () => {
           <div className="w-full">
             <SelectReport
               getReport={(item) => {
-                form.resetFields();
+                if (item.length > 0) {
+                  form.resetFields();
+                  setReport(item);
+                  form.setFieldsValue({
+                    name: item.map((item) => item.name).join(', '),
+                    targetSoftware:
+                      item.length > 1 ? '' : getPathname(item[0].codeUrl),
+                  });
+                }
                 setOpenConfirm(false);
-                setReport(item);
-                form.setFieldsValue({
-                  name: item.map((item) => item.name).join(', '),
-                  targetSoftware:
-                    item.length > 1 ? '' : getPathname(item[0].codeUrl),
-                });
               }}
             />
           </div>

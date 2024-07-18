@@ -3645,7 +3645,6 @@ export type TpcSoftwareReportMetricSecurityVulnerability = {
 
 export type TpcSoftwareSelection = {
   __typename?: 'TpcSoftwareSelection';
-  adaptationMethod?: Maybe<Scalars['String']>;
   /** 1: permissioned, 0: unpermissioned */
   commentCommitterPermission?: Maybe<Scalars['Int']>;
   commentCount?: Maybe<Scalars['Int']>;
@@ -3683,6 +3682,7 @@ export type TpcSoftwareSelectionPage = {
 
 export type TpcSoftwareSelectionReport = {
   __typename?: 'TpcSoftwareSelectionReport';
+  adaptationMethod?: Maybe<Scalars['String']>;
   /** 1: permissioned, 0: unpermissioned */
   clarificationCommitterPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
@@ -7489,6 +7489,7 @@ export type TpcSoftwareSelectionReportPageQuery = {
     totalPage?: number | null;
     items?: Array<{
       __typename?: 'TpcSoftwareSelectionReport';
+      adaptationMethod?: string | null;
       codeCount?: number | null;
       codeUrl?: string | null;
       id: number;
@@ -14039,6 +14040,7 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
   ) {
     count
     items {
+      adaptationMethod
       codeCount
       codeUrl
       id

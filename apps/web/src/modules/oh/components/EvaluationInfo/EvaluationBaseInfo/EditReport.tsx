@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { Form, Input, Select, Row, Col, Popover, Button } from 'antd';
-import { languagesList, domainList } from '@modules/oh/constant';
+import {
+  languagesList,
+  adaptationMethodList,
+  domainList,
+} from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useUpdateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
 import { toast } from 'react-hot-toast';
@@ -53,7 +57,6 @@ const EditReportForm = ({ report, refetch }) => {
         }}
         autoComplete="off"
       >
-        <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
         <Row gutter={24}>
           <Col span={12}>
             <Popover
@@ -129,8 +132,23 @@ const EditReportForm = ({ report, refetch }) => {
               </Form.Item>
             </Popover>
           </Col>
-        </Row>
-        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item
+              label="引入方式"
+              name="adaptationMethod"
+              rules={[{ required: true, message: '请输入!' }]}
+            >
+              <Select disabled={false}>
+                {adaptationMethodList.map((item) => {
+                  return (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
           <Col span={12}>
             <Form.Item
               label="编程语言"

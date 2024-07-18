@@ -238,6 +238,21 @@ const SelectionReportApplication = () => {
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
+                label="编程语言"
+                name="programmingLanguage"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Select>
+                  {languagesList.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
                 label="源码地址"
                 name="codeUrl"
                 rules={[{ required: true, message: '请输入!' }]}
@@ -252,21 +267,6 @@ const SelectionReportApplication = () => {
                     }
                   }}
                 />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="编程语言"
-                name="programmingLanguage"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Select>
-                  {languagesList.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
-                    </Select.Option>
-                  ))}
-                </Select>
               </Form.Item>
             </Col>
             <Col span={12}>

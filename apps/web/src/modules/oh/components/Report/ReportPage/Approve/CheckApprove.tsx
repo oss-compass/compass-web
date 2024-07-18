@@ -27,7 +27,7 @@ const CheckApprove = ({ selectionId }) => {
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
   console.log(metricItemScoreList, metricClarificationState);
   const canApprove = useMemo(() => {
-    if (metricItemScoreList?.length > 0 && metricClarificationState) {
+    if (metricItemScoreList?.length > 0) {
       let notMetricList = [];
       let clarificationList = metricItemScoreList.filter((m) => {
         return m.是否必须澄清 === '是' && m.score !== 10;
