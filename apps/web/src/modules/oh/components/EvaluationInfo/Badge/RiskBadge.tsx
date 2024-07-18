@@ -20,7 +20,7 @@ const RiskBadge = ({ shortCode, keyId }) => {
     leaderApprove.length > 0 &&
       (content += `${
         leaderApprove.length
-      }名 SIG Leader 已赞同风险澄清：${leaderApprove.join(',')}\n`);
+      }名 SIG Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
     const commiterState = metricState.filter((item) => item.memberType === 0);
     const commiterApprove = commiterState
       .filter((item) => item.state === 1)

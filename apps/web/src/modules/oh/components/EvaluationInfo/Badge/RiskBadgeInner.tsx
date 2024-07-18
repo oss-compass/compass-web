@@ -24,7 +24,7 @@ const RiskBadgeInner = ({ report, keyId }) => {
     leaderApprove.length > 0 &&
       (leaderContent += `${
         leaderApprove.length
-      }名 SIG Leader 已赞同风险澄清：${leaderApprove.join(',')}\n`);
+      }名 SIG Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
     leaderReject.length > 0 &&
       (leaderContent += `${
         leaderReject.length
