@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import client from '@common/gqlClient';
 import { useEventEmitter } from 'ahooks';
 import { useTpcSoftwareSelectionQuery } from '@oss-compass/graphql';
+import { useUnmount } from 'ahooks';
 import {
   setReportLoading,
   setReportData,
   ReportStore,
   ReportEventType,
   ReportEvent,
+  resetReportData,
 } from './useReportStore';
 
 const ReportFetcher = ({ selectionId }) => {
@@ -28,9 +30,14 @@ const ReportFetcher = ({ selectionId }) => {
   useEffect(() => {
     setReportData(data?.tpcSoftwareSelection);
   }, [data]);
+
   useEffect(() => {
     setReportLoading(isLoading);
   }, [isLoading]);
+
+  useUnmount(() => {
+    resetReportData();
+  });
   return null;
 };
 

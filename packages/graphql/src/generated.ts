@@ -7456,6 +7456,7 @@ export type TpcSoftwareReportMetricFragment = {
   ecologyDependencyAcquisition?: number | null;
   ecologyPatentRisk?: number | null;
   ecologySoftwareQuality?: number | null;
+  ecologyAdaptationMethod?: number | null;
   id: number;
   lifecycleVersionLifecycle?: number | null;
   lifecycleVersionNormalization?: number | null;
@@ -7522,6 +7523,7 @@ export type TpcSoftwareSelectionReportPageQuery = {
         ecologyDependencyAcquisition?: number | null;
         ecologyPatentRisk?: number | null;
         ecologySoftwareQuality?: number | null;
+        ecologyAdaptationMethod?: number | null;
         id: number;
         lifecycleVersionLifecycle?: number | null;
         lifecycleVersionNormalization?: number | null;
@@ -7608,6 +7610,7 @@ export type TpcSoftwareReportMetricDetailFragment = {
   ecologyCommunitySupportDetail?: string | null;
   ecologyDependencyAcquisitionDetail?: Array<string> | null;
   ecologyPatentRiskDetail?: string | null;
+  ecologyAdaptationMethodDetail?: string | null;
   lifecycleVersionNormalizationDetail?: string | null;
   lifecycleVersionNumberDetail?: string | null;
   securityBinaryArtifactDetail?: Array<string> | null;
@@ -7667,6 +7670,7 @@ export type TpcSoftwareReportMetricRawFragment = {
   ecologyDependencyAcquisitionRaw?: string | null;
   ecologyPatentRiskRaw?: string | null;
   ecologySoftwareQualityRaw?: string | null;
+  ecologyAdaptationMethodRaw?: string | null;
   id: number;
   lifecycleVersionLifecycleRaw?: string | null;
   lifecycleVersionNormalizationRaw?: string | null;
@@ -7711,6 +7715,7 @@ export type TpcSoftwareSelectionReportQuery = {
       ecologyDependencyAcquisition?: number | null;
       ecologyPatentRisk?: number | null;
       ecologySoftwareQuality?: number | null;
+      ecologyAdaptationMethod?: number | null;
       id: number;
       lifecycleVersionLifecycle?: number | null;
       lifecycleVersionNormalization?: number | null;
@@ -7732,6 +7737,7 @@ export type TpcSoftwareSelectionReportQuery = {
       ecologyCommunitySupportDetail?: string | null;
       ecologyDependencyAcquisitionDetail?: Array<string> | null;
       ecologyPatentRiskDetail?: string | null;
+      ecologyAdaptationMethodDetail?: string | null;
       lifecycleVersionNormalizationDetail?: string | null;
       lifecycleVersionNumberDetail?: string | null;
       securityBinaryArtifactDetail?: Array<string> | null;
@@ -7808,6 +7814,7 @@ export type TpcSoftwareSelectionReportRowQuery = {
       ecologyDependencyAcquisitionRaw?: string | null;
       ecologyPatentRiskRaw?: string | null;
       ecologySoftwareQualityRaw?: string | null;
+      ecologyAdaptationMethodRaw?: string | null;
       id: number;
       lifecycleVersionLifecycleRaw?: string | null;
       lifecycleVersionNormalizationRaw?: string | null;
@@ -7894,6 +7901,7 @@ export type TpcSoftwareSelectionReportRiskQuery = {
       ecologyDependencyAcquisition?: number | null;
       ecologyPatentRisk?: number | null;
       ecologySoftwareQuality?: number | null;
+      ecologyAdaptationMethod?: number | null;
       lifecycleVersionLifecycle?: number | null;
       lifecycleVersionNormalization?: number | null;
       lifecycleVersionNumber?: number | null;
@@ -8005,6 +8013,17 @@ export type TpcSoftwareSelectionReportRiskQuery = {
         user?: { __typename?: 'User'; name: string } | null;
       }> | null;
       ecologySoftwareQuality?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyAdaptationMethod?: Array<{
         __typename?: 'TpcSoftwareCommentState';
         createdAt: any;
         id: number;
@@ -8153,6 +8172,7 @@ export type TpcSoftwareSelectionQuery = {
     commentCommitterPermission?: number | null;
     commentCount?: number | null;
     commentSigLeadPermission?: number | null;
+    targetSoftware?: string | null;
     commentState?: Array<{
       __typename?: 'TpcSoftwareCommentState';
       createdAt: any;
@@ -8380,6 +8400,7 @@ export const TpcSoftwareReportMetricFragmentDoc = /*#__PURE__*/ `
   ecologyDependencyAcquisition
   ecologyPatentRisk
   ecologySoftwareQuality
+  ecologyAdaptationMethod
   id
   lifecycleVersionLifecycle
   lifecycleVersionNormalization
@@ -8417,6 +8438,7 @@ export const TpcSoftwareReportMetricDetailFragmentDoc = /*#__PURE__*/ `
   ecologyCommunitySupportDetail
   ecologyDependencyAcquisitionDetail
   ecologyPatentRiskDetail
+  ecologyAdaptationMethodDetail
   ecologySoftwareQualityDetail {
     coverageRatio
     coverageScore
@@ -8457,6 +8479,7 @@ export const TpcSoftwareReportMetricRawFragmentDoc = /*#__PURE__*/ `
   ecologyDependencyAcquisitionRaw
   ecologyPatentRiskRaw
   ecologySoftwareQualityRaw
+  ecologyAdaptationMethodRaw
   id
   lifecycleVersionLifecycleRaw
   lifecycleVersionNormalizationRaw
@@ -14342,6 +14365,7 @@ export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
       ecologyDependencyAcquisition
       ecologyPatentRisk
       ecologySoftwareQuality
+      ecologyAdaptationMethod
       lifecycleVersionLifecycle
       lifecycleVersionNormalization
       lifecycleVersionNumber
@@ -14380,6 +14404,9 @@ export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
         ...tpcClarificationStateDetail
       }
       ecologySoftwareQuality {
+        ...tpcClarificationStateDetail
+      }
+      ecologyAdaptationMethod {
         ...tpcClarificationStateDetail
       }
       lifecycleVersionLifecycle {
@@ -14527,6 +14554,7 @@ export const TpcSoftwareSelectionDocument = /*#__PURE__*/ `
       }
       userId
     }
+    targetSoftware
   }
 }
     `;

@@ -34,6 +34,7 @@ export const useGetReportData = () => {
     commentState,
     commentCommitterPermission,
     commentSigLeadPermission,
+    targetSoftware,
   } = data || {};
 
   return {
@@ -41,5 +42,10 @@ export const useGetReportData = () => {
     commentState,
     commentCommitterPermission,
     commentSigLeadPermission,
+    targetSoftware,
   };
+};
+export const resetReportData = () => {
+  ReportStore.loading = false;
+  ReportStore.data = null;
 };

@@ -4,7 +4,7 @@ import ReportPageItems from '@modules/oh/components/Report/ReportPageItems';
 import ReportIdFetcher from '@modules/oh/components/Report/ReportPage/store/ReportIdFetcher';
 import Comment from '@modules/oh/components/Report/ReportPage/Comment';
 import Approve from '@modules/oh/components/Report/ReportPage/Approve';
-
+import { useGetReportData } from '@modules/oh/components/Report/ReportPage/store/useReportStore';
 // import { Input, Tabs } from 'antd';
 // import NotFoundOh from '@modules/oh/components/NotFoundOh';
 // import Loading from '@modules/oh/components/Loading';
@@ -13,6 +13,8 @@ import Approve from '@modules/oh/components/Report/ReportPage/Approve';
 
 const ReportPage = () => {
   const { reportItems, taskId } = useLabelData();
+  const { targetSoftware } = useGetReportData();
+  console.log(targetSoftware);
   // const { isLoading, status, reportItems, notFound } = useLabelData();
   // if (isLoading) {
   //   return (
@@ -33,8 +35,7 @@ const ReportPage = () => {
         <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
           {'TPC 软件报告详情'}
         </div>
-        <div className="relative flex h-[calc(100%-40px)] flex-col justify-center overflow-auto p-5">
-          <ReportPageItems reportItems={reportItems} />
+        <div className="relative flex h-[calc(100%-40px)] justify-center overflow-auto p-5">
           {taskId && (
             <>
               <ReportIdFetcher selectionId={Number(taskId)} />
@@ -42,6 +43,10 @@ const ReportPage = () => {
               <Approve />
             </>
           )}
+          <ReportPageItems
+            reportItems={reportItems}
+            targetSoftware={targetSoftware}
+          />
         </div>
       </div>
     </div>

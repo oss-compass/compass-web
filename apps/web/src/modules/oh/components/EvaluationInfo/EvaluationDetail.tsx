@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { AiOutlineLeftCircle } from 'react-icons/ai';
-import { Tag } from 'antd';
+import { LeftCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Tag, Popover } from 'antd';
 import { getPathname } from '@common/utils';
 import Pie from '@modules/oh/components/EvaluationInfo/Pie';
 import EvaluationDownLoad from '@modules/oh/components/EvaluationInfo/EvaluationDownLoad';
@@ -194,10 +194,12 @@ const EvaluationDetail = ({
   item,
   back,
   refetch,
+  targetSoftware = null,
 }: {
   item: any;
   back?: () => void;
   refetch?: () => void;
+  targetSoftware?: string;
 }) => {
   if (!item.evaluationDetail) {
     item = getEvaluationDetail(item);
@@ -205,15 +207,25 @@ const EvaluationDetail = ({
   return (
     <div>
       <RiskFetcher shortCode={item.shortCode} />
+      {/* <Badge.Ribbon text="目标选型软件"> */}
       <div className="flex justify-between border bg-[#f9f9f9] py-3 px-6">
         <div className="flex">
           {back && (
-            <AiOutlineLeftCircle
+            <LeftCircleOutlined
               onClick={() => {
                 back();
               }}
-              className="mr-2  cursor-pointer text-2xl text-[#3f60ef]"
+              className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]"
+              rev={undefined}
             />
+          )}
+          {targetSoftware === getPathname(item.codeUrl) && (
+            <Popover content="目标选型软件">
+              <CheckCircleOutlined
+                className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]"
+                rev={undefined}
+              />
+            </Popover>
           )}
           <div className="text-lg font-semibold">
             <a
@@ -232,6 +244,7 @@ const EvaluationDetail = ({
           <EvaluationDownLoad item={item} />
         </div>
       </div>
+      {/* </Badge.Ribbon> */}
       <EvaluationBaseInfo item={item} refetch={refetch} />
       <EvaluationTopScore items={item.evaluationDetail} score={item.score} />
       <EvaluationMertic allData={item} />

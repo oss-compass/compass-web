@@ -12,9 +12,11 @@ import client from '@common/gqlClient';
 const GetReportData = ({
   shortCode,
   back,
+  targetSoftware = null,
 }: {
   shortCode: any;
   back?: () => void;
+  targetSoftware?: string;
 }) => {
   const { isLoading, data, refetch } = useTpcSoftwareSelectionReportQuery(
     client,
@@ -35,6 +37,7 @@ const GetReportData = ({
         item={data.tpcSoftwareSelectionReport}
         back={back && back}
         refetch={refetch}
+        targetSoftware={targetSoftware}
       />
     </>
   );

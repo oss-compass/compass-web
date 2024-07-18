@@ -1551,6 +1551,7 @@ fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {
   ecologyDependencyAcquisition
   ecologyPatentRisk
   ecologySoftwareQuality
+  ecologyAdaptationMethod
   id
   lifecycleVersionLifecycle
   lifecycleVersionNormalization
@@ -1684,6 +1685,7 @@ fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
   ecologyCommunitySupportDetail
   ecologyDependencyAcquisitionDetail
   ecologyPatentRiskDetail
+  ecologyAdaptationMethodDetail
   ecologySoftwareQualityDetail {
     coverageRatio
     coverageScore
@@ -1723,6 +1725,7 @@ fragment tpcSoftwareReportMetricRaw on TpcSoftwareReportMetricRaw {
   ecologyDependencyAcquisitionRaw
   ecologyPatentRiskRaw
   ecologySoftwareQualityRaw
+  ecologyAdaptationMethodRaw
   id
   lifecycleVersionLifecycleRaw
   lifecycleVersionNormalizationRaw
@@ -1829,6 +1832,7 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
       ecologyDependencyAcquisition
       ecologyPatentRisk
       ecologySoftwareQuality
+      ecologyAdaptationMethod
       lifecycleVersionLifecycle
       lifecycleVersionNormalization
       lifecycleVersionNumber
@@ -1867,6 +1871,9 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
         ...tpcClarificationStateDetail
       }
       ecologySoftwareQuality {
+        ...tpcClarificationStateDetail
+      }
+      ecologyAdaptationMethod {
         ...tpcClarificationStateDetail
       }
       lifecycleVersionLifecycle {
@@ -1951,5 +1958,6 @@ query tpcSoftwareSelection($selectionId: Int!) {
       }
       userId
     }
+    targetSoftware
   }
 }
