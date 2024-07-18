@@ -161,7 +161,7 @@ const CheckRisk = ({ report, metricName }) => {
             <Dropdown
               menu={{ items: approveitems }}
               placement="bottom"
-              arrow={{ pointAtCenter: true }}
+              // arrow={{ pointAtCenter: true }}
             >
               <Button
                 className="flex items-center !rounded-none"
@@ -190,7 +190,7 @@ const CheckRisk = ({ report, metricName }) => {
             <Dropdown
               menu={{ items: rejectitems }}
               placement="bottom"
-              arrow={{ pointAtCenter: true }}
+              // arrow={{ pointAtCenter: true }}
             >
               <Button
                 className="flex items-center !rounded-none"

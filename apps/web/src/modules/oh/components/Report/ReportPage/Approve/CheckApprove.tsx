@@ -154,7 +154,7 @@ const CheckApprove = ({ selectionId }) => {
         <Dropdown
           menu={{ items: approveitems }}
           placement="bottom"
-          arrow={{ pointAtCenter: true }}
+          // arrow={{ pointAtCenter: true }}
         >
           <Button className="flex items-center !rounded-none" type="primary">
             <CheckOutlined rev={undefined} />
@@ -166,7 +166,7 @@ const CheckApprove = ({ selectionId }) => {
         <Dropdown
           menu={{ items: rejectitems }}
           placement="bottom"
-          arrow={{ pointAtCenter: true }}
+          // arrow={{ pointAtCenter: true }}
         >
           <Button className="flex items-center !rounded-none" type="primary">
             <CloseOutlined rev={undefined} />

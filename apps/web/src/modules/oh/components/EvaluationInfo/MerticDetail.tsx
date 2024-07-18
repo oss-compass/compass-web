@@ -70,7 +70,7 @@ const getDeital = (item) => {
   }
 };
 export const getContent = (item) => {
-  if (item.score >= 8) {
+  if (item.score === 10) {
     return <div>得分：{item.score}</div>;
   } else {
     const deital = getDeital(item);
@@ -105,7 +105,7 @@ export const setMetricIcon = (item) => {
         />
       </Popover>
     );
-  } else if (item.score >= 8) {
+  } else if (item.score == 10) {
     return (
       <Popover content={getContent(item)} title="">
         <CheckCircleOutlined
@@ -140,7 +140,7 @@ export const setMetricIcon = (item) => {
 };
 export const setRiskTag = (item) => {
   const { score } = item;
-  if (score >= 8 || score === -1 || score === null) {
+  if (score === 10 || score === -1 || score === null) {
     return '';
   } else if (score >= 6) {
     return (
@@ -233,7 +233,7 @@ export const downloadReport = (item) => {
       } else if (z == '风险') {
         return getRishContent(item);
       } else if (z == '风险详情') {
-        if (item.score >= 8 || item.score === null) {
+        if (item.score == 10 || item.score === null) {
           return '无';
         } else {
           const element = getDeital({ ...item });
