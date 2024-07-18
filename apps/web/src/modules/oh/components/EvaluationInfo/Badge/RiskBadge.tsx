@@ -11,7 +11,12 @@ const RiskBadge = ({ shortCode, mertic }) => {
     return metricState?.some((z) => z.state === -1);
   }, [metricState]);
   const needClarification = useMemo(() => {
-    return mertic.是否必须澄清 === '是' && mertic.score !== 10;
+    return (
+      mertic.是否必须澄清 === '是' &&
+      mertic.指标名称 !== '专利风险' &&
+      mertic.指标名称 !== '采用度分析' &&
+      mertic.score !== 10
+    );
   }, [mertic]);
 
   let BadgeContent = null;

@@ -30,7 +30,12 @@ const CheckApprove = ({ selectionId }) => {
     if (metricItemScoreList?.length > 0) {
       let notMetricList = [];
       let clarificationList = metricItemScoreList.filter((m) => {
-        return m.是否必须澄清 === '是' && m.score !== 10;
+        return (
+          m.是否必须澄清 === '是' &&
+          m.指标名称 !== '专利风险' &&
+          m.指标名称 !== '采用度分析' &&
+          m.score !== 10
+        );
       });
       clarificationList.forEach((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
