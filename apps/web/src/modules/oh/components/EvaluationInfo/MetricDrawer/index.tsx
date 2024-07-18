@@ -24,6 +24,7 @@ const useGetDefinition = (metric) => {
   const suggestionMatch = content.match(suggestionRegex);
   const rule = ruleMatch ? ruleMatch[1].trim() : '';
   const suggestion = suggestionMatch ? suggestionMatch[1].trim() : '';
+  // const scoreRule = metric.指标检查项及评分项;
   const baseItems = [
     {
       key: '1',
@@ -65,6 +66,12 @@ const useGetDefinition = (metric) => {
     key: '4',
     label: '风险重要性',
     children: <>{metric.风险重要性}</>,
+    span: 3,
+  });
+  baseItems.push({
+    key: '4',
+    label: '评分规则',
+    children: <>{metric.指标检查项及评分项}</>,
     span: 3,
   });
   return baseItems;
