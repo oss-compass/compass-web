@@ -98,14 +98,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       BadgeContent = (
         <Popover content={'需要确认风险澄清！'}>
           <Badge
-            count={
-              <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
-                <ExclamationOutlined
-                  rev={undefined}
-                  className="rounded-full text-xs text-white"
-                />
-              </div>
-            }
+            count={count}
             size="small"
             style={{
               backgroundColor: 'red',
