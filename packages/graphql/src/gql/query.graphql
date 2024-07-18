@@ -1738,6 +1738,7 @@ fragment tpcSoftwareReportMetricRaw on TpcSoftwareReportMetricRaw {
 }
 query tpcSoftwareSelectionReport($shortCode: String!) {
   tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    adaptationMethod
     codeCount
     codeUrl
     id

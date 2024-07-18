@@ -30,6 +30,11 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       children: item.codeCount,
     },
     {
+      key: '8',
+      label: '引入方式',
+      children: item.adaptationMethod,
+    },
+    {
       key: '6',
       label: '官网地址',
       children: (
