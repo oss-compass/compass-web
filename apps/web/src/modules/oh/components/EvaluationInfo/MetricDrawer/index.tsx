@@ -64,8 +64,8 @@ const useGetDefinition = (metric) => {
     });
   baseItems.push({
     key: '4',
-    label: '风险重要性',
-    children: <>{metric.风险重要性}</>,
+    label: '必须澄清',
+    children: <>{metric.是否必须澄清}</>,
     span: 3,
   });
   baseItems.push({

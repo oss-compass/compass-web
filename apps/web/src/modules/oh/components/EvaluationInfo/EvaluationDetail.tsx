@@ -8,6 +8,7 @@ import MetricDrawer from '@modules/oh/components/EvaluationInfo/MetricDrawer';
 import RiskBadge from '@modules/oh/components/EvaluationInfo/Badge/RiskBadge';
 import EvaluationBaseInfo from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo';
 import RiskFetcher from '@modules/oh/store/RiskFetcher';
+import TargetSoftwareFetcher from '@modules/oh/store/TargetSoftwareFetcher';
 import {
   metricList,
   getEvaluationDetail,
@@ -101,10 +102,10 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
                 <div className="flex h-[29px] text-base font-semibold">
                   <div className="flex-shrink-0"> {item.指标名称}</div>
                   <div className="ml-4">
-                    {item.风险重要性 === '高' ? (
-                      <Tag color="geekblue">重要性： {item.风险重要性}</Tag>
+                    {item.是否必须澄清 === '是' ? (
+                      <Tag color="geekblue">必须澄清： {item.是否必须澄清}</Tag>
                     ) : (
-                      <Tag color="cyan">重要性： {item.风险重要性}</Tag>
+                      <Tag color="cyan">必须澄清： {item.是否必须澄清}</Tag>
                     )}
                   </div>
                   <div className="ml-2">{setRiskTag(item)}</div>
@@ -121,7 +122,7 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
                   ))}
                 </div>
               </div>
-              <RiskBadge shortCode={report.shortCode} keyId={item.key} />
+              <RiskBadge shortCode={report.shortCode} mertic={item} />
               {/* <div
                 title="风险澄清"
                 className="flex w-8 flex-shrink-0 items-center justify-center"
@@ -137,8 +138,8 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
     </div>
   );
 };
-const EvaluationMertic = ({ allData }) => {
-  const data = getMetricItemScore(allData.tpcSoftwareReportMetric);
+const EvaluationMertic = ({ allData, metricItemScoreList }) => {
+  const data = metricItemScoreList;
   const [metric, setMetric] = useState(null);
   const [open, setOpen] = useState(false);
   const showDrawer = (item) => {
@@ -204,6 +205,8 @@ const EvaluationDetail = ({
   if (!item.evaluationDetail) {
     item = getEvaluationDetail(item);
   }
+  const metricItemScoreList = getMetricItemScore(item.tpcSoftwareReportMetric);
+
   return (
     <div>
       <RiskFetcher shortCode={item.shortCode} />
@@ -220,12 +223,18 @@ const EvaluationDetail = ({
             />
           )}
           {targetSoftware === getPathname(item.codeUrl) && (
-            <Popover content="目标选型软件">
-              <CheckCircleOutlined
-                className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]"
-                rev={undefined}
+            <>
+              <TargetSoftwareFetcher
+                data={item}
+                metricItemScoreList={metricItemScoreList}
               />
-            </Popover>
+              <Popover content="目标选型软件">
+                <CheckCircleOutlined
+                  className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]"
+                  rev={undefined}
+                />
+              </Popover>
+            </>
           )}
           <div className="text-lg font-semibold">
             <a
@@ -247,7 +256,10 @@ const EvaluationDetail = ({
       {/* </Badge.Ribbon> */}
       <EvaluationBaseInfo item={item} refetch={refetch} />
       <EvaluationTopScore items={item.evaluationDetail} score={item.score} />
-      <EvaluationMertic allData={item} />
+      <EvaluationMertic
+        allData={item}
+        metricItemScoreList={metricItemScoreList}
+      />
     </div>
   );
 };

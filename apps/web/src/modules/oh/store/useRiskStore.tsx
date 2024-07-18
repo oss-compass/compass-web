@@ -33,6 +33,15 @@ export const useGetRisk = (shortCode, key) => {
   const metricState = report?.metricClarificationState[key];
   return { count, metricState };
 };
+export const useGetAllRisk = (shortCode) => {
+  const { data, loading } = useSnapshot(RiskStore);
+  if (loading) {
+    return { count: 0, state: null };
+  }
+  const report = data[shortCode];
+  const metricClarificationState = report?.metricClarificationState;
+  return { metricClarificationState };
+};
 // export const resetRiskData = () => {
 //   RiskStore.loading = false;
 // };

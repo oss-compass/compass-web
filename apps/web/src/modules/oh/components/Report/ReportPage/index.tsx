@@ -14,28 +14,18 @@ import { useGetReportData } from '@modules/oh/components/Report/ReportPage/store
 const ReportPage = () => {
   const { reportItems, taskId } = useLabelData();
   const { targetSoftware } = useGetReportData();
-  console.log(targetSoftware);
-  // const { isLoading, status, reportItems, notFound } = useLabelData();
-  // if (isLoading) {
-  //   return (
-  //     <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
-  //       <Loading />;
-  //     </div>
-  //   );
-  // }
-  // if (notFound) {
-  //   return <NotFoundOh />;
-  // }
-  // if (status != 'success') {
-  //   return <Analyzing />;
-  // }
+
   return (
     <div className="div">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
         <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
           {'TPC 软件报告详情'}
         </div>
-        <div className="relative flex h-[calc(100%-40px)] justify-center overflow-auto p-5">
+        <div className="relative h-[calc(100%-60px)] overflow-auto p-5">
+          <ReportPageItems
+            reportItems={reportItems}
+            targetSoftware={targetSoftware}
+          />
           {taskId && (
             <>
               <ReportIdFetcher selectionId={Number(taskId)} />
@@ -43,11 +33,6 @@ const ReportPage = () => {
               <Approve />
             </>
           )}
-          <ReportPageItems
-            reportItems={reportItems}
-            targetSoftware={targetSoftware}
-          />
-          {/* {2341} */}
         </div>
       </div>
     </div>

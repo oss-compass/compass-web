@@ -26,6 +26,11 @@ const Comment = () => {
     <>
       {taskId && (
         <>
+          <div className="oh-tabs mt-3 items-center justify-between py-3 font-semibold">
+            <div className="w-[full]">
+              <ApproveBox selectionId={Number(taskId)} />
+            </div>
+          </div>
           {!open && (
             <Popover content="审批">
               <FloatButton

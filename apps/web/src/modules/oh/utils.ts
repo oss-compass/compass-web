@@ -21,7 +21,7 @@ export const getProjectId = (report, target) => {
   let projectIds = report.map((item) => {
     return item.shortCode;
   });
-  const res = moveToFirst(projectIds, targetReport.shortCode).join('..');
+  const res = moveToFirst(projectIds, targetReport?.shortCode).join('..');
   return res;
 };
 const getUpstream = (report, target) => {

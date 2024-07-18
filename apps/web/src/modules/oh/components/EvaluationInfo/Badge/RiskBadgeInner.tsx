@@ -8,7 +8,7 @@ const RiskBadgeInner = ({ report, keyId }) => {
   const { shortCode } = report;
   const { count, metricState } = useGetRisk(shortCode, keyId);
   let BadgeContent = null;
-  console.log(metricState);
+
   if (metricState?.length > 0) {
     const leaderState = metricState.filter((item) => item.memberType === 1);
     const leaderApprove = leaderState

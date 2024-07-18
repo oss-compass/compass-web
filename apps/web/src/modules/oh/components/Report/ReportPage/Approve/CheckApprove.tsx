@@ -16,11 +16,36 @@ import {
 } from '@modules/oh/components/Report/ReportPage/store/useReportStore';
 import { Dropdown } from 'antd';
 import { useUserInfo } from '@modules/auth/useUserInfo';
+import { useGetAllRisk } from '@modules/oh/store/useRiskStore';
+import { useGetTargetSoftwareData } from '@modules/oh/store/useTargetSoftwareStore';
 
 const CheckApprove = ({ selectionId }) => {
   const { currentUser } = useUserInfo();
   const { commentCommitterPermission, commentSigLeadPermission, commentState } =
     useGetReportData();
+  const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
+  const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
+  console.log(metricItemScoreList, metricClarificationState);
+  const canApprove = useMemo(() => {
+    if (metricItemScoreList?.length > 0 && metricClarificationState) {
+      let notMetricList = [];
+      let clarificationList = metricItemScoreList.filter((m) => {
+        return m.是否必须澄清 === '是' && m.score !== 10;
+      });
+      clarificationList.forEach((metric) => {
+        let clarificationState = metricClarificationState?.[metric.key];
+        if (
+          !clarificationState ||
+          clarificationState.find((s) => s.state === -1)
+        ) {
+          notMetricList.push(metric.指标名称);
+        }
+      });
+      return notMetricList;
+    }
+    return false;
+  }, [metricItemScoreList, metricClarificationState]);
+  console.log(canApprove);
   const mutation = useAcceptTpcSoftwareSelectionMutation(gqlClient);
   const userState = commentState?.filter((z) => z.userId === currentUser.id);
   const handleApprove = (memberType, state) => {
@@ -31,14 +56,28 @@ const CheckApprove = ({ selectionId }) => {
         state,
       },
       {
-        onSuccess: () => {
-          ReportStore.event$?.emit(ReportEvent.REFRESH);
-          toast.success(`${state === 0 ? '取消' : '操作'}成功`);
+        onSuccess: (res) => {
+          if (res.acceptTpcSoftwareSelection.status === 'true') {
+            ReportStore.event$?.emit(ReportEvent.REFRESH);
+            toast.success(`${state === 0 ? '取消' : '操作'}成功`);
+          } else {
+            toast.error(res.acceptTpcSoftwareSelection.message);
+          }
         },
       }
     );
   };
   const getApproveItems = () => {
+    if (canApprove && canApprove.length > 0) {
+      return [
+        {
+          key: '0',
+          label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
+            '、'
+          )}`,
+        },
+      ];
+    }
     if (!commentCommitterPermission && !commentSigLeadPermission) {
       return [
         {
@@ -92,6 +131,16 @@ const CheckApprove = ({ selectionId }) => {
     }
   };
   const getRejectItems = () => {
+    if (canApprove && canApprove.length > 0) {
+      return [
+        {
+          key: '0',
+          label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
+            '、'
+          )}`,
+        },
+      ];
+    }
     if (!commentCommitterPermission && !commentSigLeadPermission) {
       return [
         {
