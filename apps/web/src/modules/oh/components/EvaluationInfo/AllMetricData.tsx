@@ -330,6 +330,7 @@ const getWarningContent = (item) => {
     ecologyCodeMaintenance: '软件的社区活跃度综合评分有提升空间',
     ecologySoftwareQuality: '软件质量分析未达标',
     lifecycleVersionLifecycle: '无明确声明周期声明软件及版本 2 年以上发布',
+    ecologyAdaptationMethod: '未采用“JS/TS 适配”、“C/C++ 库移植”方式引入',
   };
   return statusMessages[key];
 };
