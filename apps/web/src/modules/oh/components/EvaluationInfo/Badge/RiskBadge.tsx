@@ -32,7 +32,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       leaderApprove.length > 0 &&
         (content += `${
           leaderApprove.length
-        }名 SIG Leader 已拒绝风险澄清：${leaderApprove.join(',')};\n`);
+        }名 TPC Leader 已拒绝风险澄清：${leaderApprove.join(',')};\n`);
       const commiterApprove = commiterState
         .filter((item) => item.state === -1)
         ?.map((item) => item?.user?.name);
@@ -68,7 +68,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       leaderApprove.length > 0 &&
         (content += `${
           leaderApprove.length
-        }名 SIG Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
+        }名 TPC Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
       const commiterState = metricState.filter((item) => item.memberType === 0);
       const commiterApprove = commiterState
         .filter((item) => item.state === 1)

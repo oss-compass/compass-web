@@ -24,11 +24,11 @@ const RiskBadgeInner = ({ report, keyId }) => {
     leaderApprove.length > 0 &&
       (leaderContent += `${
         leaderApprove.length
-      }名 SIG Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
+      }名 TPC Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
     leaderReject.length > 0 &&
       (leaderContent += `${
         leaderReject.length
-      }名 SIG Leader 已拒绝风险澄清：${leaderReject.join(',')}`);
+      }名 TPC Leader 已拒绝风险澄清：${leaderReject.join(',')}`);
 
     const commiterState = metricState.filter((item) => item.memberType === 0);
     const commiterApprove = commiterState

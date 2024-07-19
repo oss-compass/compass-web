@@ -49,7 +49,7 @@ const CheckRisk = ({ report, metricName }) => {
       return [
         {
           key: '1',
-          label: '您不是该软件的 Committer 或 SIG Leader，暂无权限操作',
+          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限操作',
         },
       ];
     } else {
@@ -65,7 +65,7 @@ const CheckRisk = ({ report, metricName }) => {
                 handleApprove(1, Number(!state));
               }}
             >
-              以 SIG Leader 赞同
+              以 TPC Leader 赞同
               <span className="ml-2 text-[#3a5bef]">
                 {state && <CheckCircleOutlined rev={undefined} />}
               </span>
@@ -102,7 +102,7 @@ const CheckRisk = ({ report, metricName }) => {
       return [
         {
           key: '1',
-          label: '您不是该软件的 Committer 或 SIG Leader，暂无权限操作',
+          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限操作',
         },
       ];
     } else {
@@ -118,7 +118,7 @@ const CheckRisk = ({ report, metricName }) => {
                 handleApprove(1, state ? 0 : -1);
               }}
             >
-              以 SIG Leader 拒绝
+              以 TPC Leader 拒绝
               <span className="ml-2 text-[#3a5bef]">
                 {state && <CheckCircleOutlined rev={undefined} />}
               </span>

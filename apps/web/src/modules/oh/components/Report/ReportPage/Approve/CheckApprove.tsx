@@ -87,7 +87,7 @@ const CheckApprove = ({ selectionId }) => {
       return [
         {
           key: '1',
-          label: '您不是该软件的 Committer 或 SIG Leader，暂无权限审批',
+          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限审批',
         },
       ];
     } else {
@@ -103,7 +103,7 @@ const CheckApprove = ({ selectionId }) => {
                 handleApprove(1, Number(!state));
               }}
             >
-              以 SIG Leader 通过
+              以 TPC Leader 通过
               <span className="ml-2 text-[#3a5bef]">
                 {state && <CheckCircleOutlined rev={undefined} />}
               </span>
@@ -150,7 +150,7 @@ const CheckApprove = ({ selectionId }) => {
       return [
         {
           key: '1',
-          label: '您不是该软件的 Committer 或 SIG Leader，暂无权限审批',
+          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限审批',
         },
       ];
     } else {
@@ -166,7 +166,7 @@ const CheckApprove = ({ selectionId }) => {
                 handleApprove(1, state ? 0 : -1);
               }}
             >
-              以 SIG Leader 驳回
+              以 TPC Leader 驳回
               <span className="ml-2 text-[#3a5bef]">
                 {state && <CheckCircleOutlined rev={undefined} />}
               </span>
