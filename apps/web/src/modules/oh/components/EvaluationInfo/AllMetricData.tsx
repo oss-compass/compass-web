@@ -18,6 +18,8 @@ export const allMetricData = [
             不在{url}的许可证:{licenseNonAccessList.join('、')}
           </span>
         );
+      } else if (licenseAccessList?.length > 0) {
+        res = `无`;
       } else {
         res = `引入软件未检测到许可证`;
       }
@@ -31,7 +33,6 @@ export const allMetricData = [
       '设置评分。许可证是 OSI 批准的，且宽松型许可证 10 分，弱宽松型许可证 8 分，非宽松型许可证 6 分；无项目级许可证或许可证不是 OSI 批准的开源许可证 0 分；',
     指标意义: `引入软件许可证合规性检查\n\n【规则】\n1. 禁止选用无许可证、许可证不在准入清单的软件；\n【建议】\n1. 项目的所有源码包含许可头与版权声明；`,
   },
-
   // {
   //   key: 'compliancePackageSig',
   //   detailRender: null,
@@ -166,7 +167,6 @@ export const allMetricData = [
     指标意义:
       '引入软件采用度分析，优选在业界广泛应用软件\n\n【建议】\n1. 优选主流的供应商/社区或社区项目；\n2. 优选在业界成熟应用或产品实际使用效果好的软件；',
   },
-
   {
     key: 'ecologyPatentRisk',
     detailRender: null,
