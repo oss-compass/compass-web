@@ -15,7 +15,14 @@ function moveToFirst(arr, target) {
   }
   return arr;
 }
-
+export const getProjectId = (report, target) => {
+  let targetReport = report.find((r) => getPathname(r.codeUrl) === target);
+  let projectIds = report.map((item) => {
+    return item.shortCode;
+  });
+  const res = moveToFirst(projectIds, targetReport?.shortCode).join('..');
+  return res;
+};
 const getTargetReportInfo = (report, target) => {
   let targetReport = report.find((r) => getPathname(r.codeUrl) === target);
   let projectIds = report.map((item) => {

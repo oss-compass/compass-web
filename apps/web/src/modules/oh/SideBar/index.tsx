@@ -46,34 +46,15 @@ const SideMenu: React.FC = () => {
           breakpoint="lg"
           theme="light"
           // trigger={null}
-          width={220}
+          // width={220}
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
         >
-          {/* <div className="flex w-full justify-center">
-            <Button
-              type="text"
-              className="w-full"
-              icon={
-                collapsed ? (
-                  <MenuUnfoldOutlined rev={undefined} />
-                ) : (
-                  <MenuFoldOutlined rev={undefined} />
-                )
-              }
-              onClick={() => setCollapsed(!collapsed)}
-              style={{
-                width: 64,
-                fontSize: '16px',
-                height: 64,
-              }}
-            />
-          </div> */}
           <Menu
             defaultSelectedKeys={[id || 'hatchTable']}
             onClick={onClick}
-            style={{ width: 220 }}
+            // style={{ width: 220 }}
             defaultOpenKeys={['sub3', 'hatch']}
             mode="inline"
             items={items}
