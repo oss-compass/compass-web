@@ -318,7 +318,19 @@ export const allMetricData = [
   //     指标意义:'引入软件历史漏洞检查\n\n【建议】\n1. 优选漏洞较少的版本',
   //   },
 ];
-//6 分 -8 分
+//8 分
+const getContent8 = (item) => {
+  const { key } = item;
+  const statusMessages = {
+    complianceLicense: '许可证为弱宽松型许可证',
+    complianceDco: '部分项目的提交者签署 DCO',
+    ecologyCommunitySupport: '软件的社区服务与支撑综合评分有提升空间',
+    ecologyCodeMaintenance: '软件的社区活跃度综合评分有提升空间',
+    ecologySoftwareQuality: '软件质量分析未达标',
+  };
+  return statusMessages[key];
+};
+//6 分
 const getWarningContent = (item) => {
   const { key } = item;
   const statusMessages = {
@@ -360,8 +372,10 @@ const getErrorContent = (item) => {
 };
 export const getRishContent = (item) => {
   const { score } = item;
-  if (score >= 8 || score === -1 || score === null) {
+  if (score >= 10 || score === -1 || score === null) {
     return '无';
+  } else if (score >= 8) {
+    return getContent8(item);
   } else if (score >= 6) {
     return getWarningContent(item);
   } else {
