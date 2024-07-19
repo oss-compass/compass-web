@@ -16,29 +16,32 @@ function moveToFirst(arr, target) {
   return arr;
 }
 
-export const getProjectId = (report, target) => {
+const getTargetReportInfo = (report, target) => {
   let targetReport = report.find((r) => getPathname(r.codeUrl) === target);
   let projectIds = report.map((item) => {
     return item.shortCode;
   });
-  const res = moveToFirst(projectIds, targetReport?.shortCode).join('..');
-  return res;
-};
-const getUpstream = (report, target) => {
+  const projectId = moveToFirst(projectIds, targetReport?.shortCode).join('..');
+
+  let upstream = '';
   let codeUrls = report.map((item) => {
     return item.codeUrl;
   });
   if (codeUrls.length === 1) {
-    return codeUrls.join(' 、 ');
+    upstream = codeUrls.join(' 、 ');
   } else {
-    let targetReport = report.find((r) => getPathname(r.codeUrl) === target);
     let sortCodeUrls = moveToFirst(codeUrls, targetReport.codeUrl);
     let targetUrl = sortCodeUrls[0];
     sortCodeUrls.shift();
-    // return sortCodeUrls.join(' 、 ');
-    return `目标软件上游地址：${targetUrl}
+    upstream = `目标软件上游地址：${targetUrl}
     对比软件上游地址：${sortCodeUrls.join(' 、 ')}`;
   }
+  let tpcSoftwareSigId = targetReport?.tpcSoftwareSig?.name || '';
+  return {
+    upstream,
+    projectId,
+    tpcSoftwareSigId,
+  };
 };
 export const openGiteeIssue = (report, values, id) => {
   let name = report
@@ -46,17 +49,10 @@ export const openGiteeIssue = (report, values, id) => {
       return getPathname(item.codeUrl);
     })
     .join('、');
-  let upstream = getUpstream(report, values.targetSoftware);
-  // report
-  //   .map((item) => {
-  //     return item.codeUrl;
-  //   })
-  //   .join(' 、 ');
-  let projectId = getProjectId(report, values.targetSoftware);
-  // .map((item) => {
-  //   return item.shortCode;
-  // })
-  // .join('..');
+  const { upstream, projectId, tpcSoftwareSigId } = getTargetReportInfo(
+    report,
+    values.targetSoftware
+  );
   let reportLink = `${window.location.origin}/oh#reportDetailPage?taskId=${id}&projectId=${projectId}`;
   let title = `【TPC】【孵化选型申请】${
     values?.targetSoftware || name
@@ -82,12 +78,16 @@ export const openGiteeIssue = (report, values, id) => {
   5. 【Commiters】
 
   > ${values.committers}
+
+  6. 【所属领域】
+
+  > ${tpcSoftwareSigId}
   
-  6. 【上游地址】
+  7. 【上游地址】
   
   > ${upstream}
   
-  7. 【报告链接】
+  8. 【报告链接】
 
   > ${reportLink}
   `;
