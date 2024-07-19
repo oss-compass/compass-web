@@ -61,9 +61,9 @@ export const openGiteeIssue = (report, values, id) => {
     values.targetSoftware
   );
   let reportLink = `${window.location.origin}/oh#reportDetailPage?taskId=${id}&projectId=${projectId}`;
-  let title = `【TPC】【孵化选型申请】${
+  let title = `【孵化选型申请】【${tpcSoftwareSigId}】【待 TPC 评审】${
     values?.targetSoftware || name
-  } 申请进入 OpenHarmony TPC 孵化项目`;
+  } 申请进入孵化项目`;
 
   let body = `
   1. 【目标孵化软件】
