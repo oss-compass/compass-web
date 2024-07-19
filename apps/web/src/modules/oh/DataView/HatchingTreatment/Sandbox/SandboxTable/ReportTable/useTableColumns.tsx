@@ -2,10 +2,36 @@ import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import EditReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/EditReport';
+import { FileTextOutlined } from '@ant-design/icons';
+import { Popover } from 'antd';
+import { getProjectId } from '@modules/oh/utils';
 
 export const useTableColumns = (anction) => {
   const { currentUser } = useUserInfo();
   const columns = [
+    {
+      title: '操作',
+      key: 'createdAt',
+      width: 70,
+      render: (_, record) => {
+        return (
+          <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
+            <EditReport report={record} editSuccess={anction} />
+            {record?.tpcSoftwareReportMetric?.status === 'success' && (
+              <Popover content={'查看报告'}>
+                <FileTextOutlined
+                  rev={undefined}
+                  onClick={() => {
+                    window.location.hash =
+                      'reportDetailPage?projectId=' + record.shortCode;
+                  }}
+                />
+              </Popover>
+            )}
+          </div>
+        );
+      },
+    },
     {
       title: '软件名称',
       dataIndex: 'name',
@@ -31,6 +57,22 @@ export const useTableColumns = (anction) => {
       title: '官网地址',
       dataIndex: 'websiteUrl',
       key: 'websiteUrl',
+      render: (text) => {
+        return (
+          <a
+            target="_blank"
+            href={setUrlHost(text)}
+            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+          >
+            {text}
+          </a>
+        );
+      },
+    },
+    {
+      title: '漏洞响应机制',
+      dataIndex: 'vulnerabilityResponse',
+      key: 'vulnerabilityResponse',
       render: (text) => {
         return (
           <a
@@ -103,18 +145,6 @@ export const useTableColumns = (anction) => {
       key: 'createdAt',
       render: (_, record) => {
         return record?.tpcSoftwareReportMetric?.createdAt?.slice(0, 10);
-      },
-    },
-    {
-      title: '操作',
-      key: 'createdAt',
-      width: 70,
-      render: (_, record) => {
-        return (
-          <div className="flex cursor-pointer justify-center text-[#3e8eff]">
-            <EditReport report={record} editSuccess={anction} />
-          </div>
-        );
       },
     },
   ];

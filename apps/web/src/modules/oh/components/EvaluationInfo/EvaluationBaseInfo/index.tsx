@@ -60,6 +60,17 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
         </>
       ),
     },
+    {
+      key: '9',
+      label: '漏洞响应机制',
+      children: (
+        <>
+          <a className="text-[#69b1ff]" target="_blank" href={item.codeUrl}>
+            {item.vulnerabilityResponse || ''}
+          </a>
+        </>
+      ),
+    },
   ];
   return (
     <div className="mt-6 border bg-[#f9f9f9] p-6 pb-3">

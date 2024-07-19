@@ -6,6 +6,31 @@ import { getProjectId } from '@modules/oh/utils';
 export const useTableColumns = (anction) => {
   const columns = [
     {
+      title: '操作',
+      width: 70,
+      render: (_, record) => {
+        return (
+          <div className="flex cursor-pointer justify-center text-[#3e8eff]">
+            {record?.targetSoftware && (
+              <Popover content={'查看报告'}>
+                <FileTextOutlined
+                  rev={undefined}
+                  onClick={() => {
+                    window.location.hash = `reportDetailPage?taskId=${
+                      record.id
+                    }&projectId=${getProjectId(
+                      record?.tpcSoftwareSelectionReports,
+                      record?.targetSoftware
+                    )}`;
+                  }}
+                />
+              </Popover>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       title: '目标孵化软件',
       dataIndex: 'targetSoftware',
       key: 'targetSoftware',
@@ -74,31 +99,6 @@ export const useTableColumns = (anction) => {
       key: 'repoUrl',
       render: (_, record) => {
         return record?.repoUrl?.join('; ');
-      },
-    },
-    {
-      title: '操作',
-      width: 70,
-      render: (_, record) => {
-        return (
-          <div className="flex cursor-pointer justify-center text-[#3e8eff]">
-            {record?.targetSoftware && (
-              <Popover content={'查看报告'}>
-                <FileTextOutlined
-                  rev={undefined}
-                  onClick={() => {
-                    window.location.hash = `reportDetailPage?taskId=${
-                      record.id
-                    }&projectId=${getProjectId(
-                      record?.tpcSoftwareSelectionReports,
-                      record?.targetSoftware
-                    )}`;
-                  }}
-                />
-              </Popover>
-            )}
-          </div>
-        );
       },
     },
   ];
