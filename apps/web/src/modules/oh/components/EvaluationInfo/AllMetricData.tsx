@@ -327,6 +327,7 @@ const getContent8 = (item) => {
     ecologyCommunitySupport: '软件的社区服务与支撑综合评分有提升空间',
     ecologyCodeMaintenance: '软件的社区活跃度综合评分有提升空间',
     ecologySoftwareQuality: '软件质量分析未达标',
+    ecologyAdaptationMethod: '未采用“JS/TS 适配”、“C/C++ 库移植”方式引入',
   };
   return statusMessages[key];
 };
