@@ -51,6 +51,7 @@ const getTargetReportInfo = (report, target) => {
     tpcSoftwareSigId,
   };
 };
+// autocorrect: false
 export const openGiteeIssue = (report, values, id) => {
   let name = report
     .map((item) => {
@@ -62,7 +63,7 @@ export const openGiteeIssue = (report, values, id) => {
     values.targetSoftware
   );
   let reportLink = `${window.location.origin}/oh#reportDetailPage?taskId=${id}&projectId=${projectId}`;
-  let title = `【孵化选型申请】【${tpcSoftwareSigId}】【待 TPC 评审】${
+  let title = `【孵化选型申请】【${tpcSoftwareSigId}】【待TPC SIG评审】${
     values?.targetSoftware || name
   } 申请进入孵化项目`;
 
