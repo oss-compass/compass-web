@@ -1,7 +1,8 @@
 import { getPathname } from '@common/utils';
 
 export const setUrlHost = (url) => {
-  if (url.startsWith('http') || url.startsWith('https')) {
+  if (!url) return url;
+  if (url?.startsWith('http') || url?.startsWith('https')) {
     return url;
   } else {
     return `//${url}`;
