@@ -31,7 +31,7 @@ const GetReportData = ({
       </div>
     );
   }
-  if (!data.tpcSoftwareSelectionReport) {
+  if (!data?.tpcSoftwareSelectionReport) {
     return (
       <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm">
         <NotFoundOh />

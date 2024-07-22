@@ -3580,8 +3580,10 @@ export type TpcSoftwareReportMetricComplianceDco = {
 
 export type TpcSoftwareReportMetricComplianceLicense = {
   __typename?: 'TpcSoftwareReportMetricComplianceLicense';
-  licenseAccessList?: Maybe<Array<Scalars['String']>>;
-  licenseNonAccessList?: Maybe<Array<Scalars['String']>>;
+  nonOsiLicenses?: Maybe<Array<Scalars['String']>>;
+  osiCopyleftLimitedLicenses?: Maybe<Array<Scalars['String']>>;
+  osiFreeRestrictedLicenses?: Maybe<Array<Scalars['String']>>;
+  osiPermissiveLicenses?: Maybe<Array<Scalars['String']>>;
 };
 
 export type TpcSoftwareReportMetricComplianceLicenseCompatibility = {
@@ -7629,8 +7631,10 @@ export type TpcSoftwareReportMetricDetailFragment = {
   }> | null;
   complianceLicenseDetail?: {
     __typename?: 'TpcSoftwareReportMetricComplianceLicense';
-    licenseAccessList?: Array<string> | null;
-    licenseNonAccessList?: Array<string> | null;
+    nonOsiLicenses?: Array<string> | null;
+    osiCopyleftLimitedLicenses?: Array<string> | null;
+    osiFreeRestrictedLicenses?: Array<string> | null;
+    osiPermissiveLicenses?: Array<string> | null;
   } | null;
   ecologySoftwareQualityDetail?: {
     __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
@@ -7757,8 +7761,10 @@ export type TpcSoftwareSelectionReportQuery = {
       }> | null;
       complianceLicenseDetail?: {
         __typename?: 'TpcSoftwareReportMetricComplianceLicense';
-        licenseAccessList?: Array<string> | null;
-        licenseNonAccessList?: Array<string> | null;
+        nonOsiLicenses?: Array<string> | null;
+        osiCopyleftLimitedLicenses?: Array<string> | null;
+        osiFreeRestrictedLicenses?: Array<string> | null;
+        osiPermissiveLicenses?: Array<string> | null;
       } | null;
       ecologySoftwareQualityDetail?: {
         __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
@@ -8431,8 +8437,10 @@ export const TpcSoftwareReportMetricDetailFragmentDoc = /*#__PURE__*/ `
     licenseConflictList
   }
   complianceLicenseDetail {
-    licenseAccessList
-    licenseNonAccessList
+    nonOsiLicenses
+    osiCopyleftLimitedLicenses
+    osiFreeRestrictedLicenses
+    osiPermissiveLicenses
   }
   compliancePackageSigDetail
   ecologyAdoptionAnalysisDetail

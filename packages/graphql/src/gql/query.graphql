@@ -1676,8 +1676,10 @@ fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
     licenseConflictList
   }
   complianceLicenseDetail {
-    licenseAccessList
-    licenseNonAccessList
+    nonOsiLicenses
+    osiCopyleftLimitedLicenses
+    osiFreeRestrictedLicenses
+    osiPermissiveLicenses
   }
   compliancePackageSigDetail
   ecologyAdoptionAnalysisDetail

@@ -1,27 +1,62 @@
 export const allMetricData = [
   {
     key: 'complianceLicense',
-    detailRender: ({ licenseAccessList, licenseNonAccessList }) => {
-      const url = (
-        <a
-          className="text-[#69b1ff]"
-          target="_blank"
-          href="https://gitee.com/openharmony/docs/blob/master/zh-cn/contribute/%E8%AE%B8%E5%8F%AF%E8%AF%81%E4%B8%8E%E7%89%B9%E6%AE%8A%E8%AE%B8%E5%8F%AF%E8%AF%81%E8%AF%84%E5%AE%A1%E6%8C%87%E5%AF%BC.md"
-        >
-          准入清单
-        </a>
-      );
+    detailRender: ({
+      nonOsiLicenses,
+      osiCopyleftLimitedLicenses,
+      osiFreeRestrictedLicenses,
+      osiPermissiveLicenses,
+    }) => {
       let res = null;
-      if (licenseNonAccessList?.length > 0) {
+      if (nonOsiLicenses?.length > 0) {
+        const url = (
+          <a
+            className="text-[#69b1ff]"
+            target="_blank"
+            href="https://spdx.org/licenses/"
+          >
+            OSI 批准的开源许可证
+          </a>
+        );
         return (
           <span>
-            不在{url}的许可证:{licenseNonAccessList.join('、')}
+            不是 {url} ：{nonOsiLicenses?.join('、')}
           </span>
         );
-      } else if (licenseAccessList?.length > 0) {
+      } else if (osiFreeRestrictedLicenses?.length > 0) {
+        const url = (
+          <a
+            className="text-[#69b1ff]"
+            target="_blank"
+            href="https://scancode-licensedb.aboutcode.org/"
+          >
+            宽松型许可证
+          </a>
+        );
+        return (
+          <span>
+            非{url}：{osiFreeRestrictedLicenses?.join('、')}
+          </span>
+        );
+      } else if (osiCopyleftLimitedLicenses?.length > 0) {
+        const url = (
+          <a
+            className="text-[#69b1ff]"
+            target="_blank"
+            href="https://scancode-licensedb.aboutcode.org/"
+          >
+            弱宽松型许可证
+          </a>
+        );
+        return (
+          <span>
+            {url}：{osiCopyleftLimitedLicenses?.join('、')}
+          </span>
+        );
+      } else if (osiPermissiveLicenses?.length > 0) {
         res = `无`;
       } else {
-        res = `引入软件未检测到许可证`;
+        res = `未检测到项目级许可证`;
       }
       return res;
     },
@@ -31,7 +66,8 @@ export const allMetricData = [
     是否必须澄清: '是',
     指标检查项及评分项:
       '设置评分。许可证是 OSI 批准的，且宽松型许可证 10 分，弱宽松型许可证 8 分，非宽松型许可证 6 分；无项目级许可证或许可证不是 OSI 批准的开源许可证 0 分；',
-    指标意义: `引入软件许可证合规性检查\n\n【规则】\n1. 禁止选用无许可证、许可证不在准入清单的软件；\n【建议】\n1. 项目的所有源码包含许可头与版权声明；`,
+    指标意义: `引入软件许可证合规性检查\n\n【规则】\n1.禁止选用无许可证、许可证不是开源促进会 OSI 批准的开源许可证的软件；；\n【建议】\n1.选择软件本身许可证（含项目级和文件级）及其依赖软件许可证均为宽松类型许可证的软件；
+    2. 项目的所有源码包含许可头与版权声明；`,
   },
   // {
   //   key: 'compliancePackageSig',
@@ -76,7 +112,7 @@ export const allMetricData = [
     指标检查项及评分项:
       '设置评分。项目所有贡献者签署 DCO 10 分，部分签署 8 分，无人签署 6 分',
     指标意义:
-      '引入软件代码提交者原创性声明签署检查\n\n【建议】\n1. 项目的提交者签署 DCO；',
+      '引入软件代码提交者原创性声明签署检查\n\n【建议】\n1. 项目的提交者应签署 DCO；',
   },
   {
     key: 'ecologyDependencyAcquisition',
@@ -90,7 +126,7 @@ export const allMetricData = [
     指标检查项及评分项:
       '设置评分。引入软件依赖的库是开源软件 10 分；依赖软件非开源软件 0 分；',
     指标意义:
-      '引入软件依赖源码可获得检查\n\n【规则】\n1. 项目依赖的库必须是开源软件，可公开获得。保留原开源软件的提交记录；',
+      '引入软件依赖源码可获得检查\n\n【规则】\n1. 项目依赖的库必须是开源软件，可公开获得；',
   },
   {
     key: 'ecologyCodeMaintenance',
@@ -116,7 +152,7 @@ export const allMetricData = [
     指标检查项及评分项:
       '设置评分，采用 OSS-Compass 最近一年活跃度模型平均得分，得分范围 0-10 分',
     指标意义:
-      '社区活跃度及是否活跃维护检查\n\n【规则】\n1.根据社区贡献者数量、代码提交频率、组织数量、Issue 数量、版本发布次数等指标进行综合评分；',
+      '社区活跃度及是否活跃维护检查\n\n【规则】\n1.选用成熟期（代码更新活跃，定期发布）或成长期（代码更新活跃，频繁发布）的软件，禁止选用处于衰退期（代码无更新或无新版本发布）的软件；',
   },
   {
     key: 'ecologyCommunitySupport',
@@ -142,7 +178,7 @@ export const allMetricData = [
     指标检查项及评分项:
       '设置评分，采用 OSS-Compass 最近一年社区服务与支撑模型平均得分，得分范围 0-10 分',
     指标意义:
-      '社区服务与支撑检查\n\n【建议】\n1. 根据更新 Issue 数量、关闭 PR 数量、Issue 首次响应时间、PR 处理时间、Issue 评论频率、代码审查评论频率等指标进行综合评分；',
+      '社区服务与支撑检查\n\n【建议】\n社区无明确版本计划，有效 bug、PR 半年以上未响应不建议选用；',
   },
   {
     key: 'ecologyAdaptationMethod',
@@ -154,7 +190,7 @@ export const allMetricData = [
     指标检查项及评分项:
       '设置评分。JS/TS 适配 10 分；C/C++ 库移植 10 分；仅作为实现参考 8 分；Java 库重写 6 分',
     指标意义:
-      'OH TPC 适配方式及引入成本评估\n\n【建议】\n优先采用“JS/TS 适配”、“C/C++ 库移植”方式引入 TPC 软件；不建议采用“仅作为实现参考”、“Java 库重写”方式引入',
+      'OH TPC 适配方式及引入成本评估\n\n【建议】\n优先采用“JS/TS 适配”、“C/C++ 库移植”方式引入 TPC 软件；不建议采用“仅作为实现参考”、“Java 库重写”方式引入；',
   },
   {
     key: 'ecologyAdoptionAnalysis',
@@ -286,7 +322,7 @@ export const allMetricData = [
     指标检查项及评分项:
       '设置评分。无公开未修复漏洞 10 分，有公开未修复漏洞 0 分；',
     指标意义:
-      '检查引入软件及依赖源码是否有公开未修复漏洞\n\n【规则】\n1. 禁止选用含非误报病毒告警的软件（含被动依赖软件）；\n2. 禁止选用含已知未修复漏洞软件；',
+      '检查引入软件及依赖源码是否有公开未修复漏洞\n\n【规则】\n1. 禁止选用含非误报病毒告警的软件（含被动依赖软件）\n2. 禁止选用含已知未修复漏洞软件；',
   },
   {
     key: 'securityVulnerabilityResponse',
@@ -335,7 +371,7 @@ const getContent8 = (item) => {
 const getWarningContent = (item) => {
   const { key } = item;
   const statusMessages = {
-    complianceLicense: '许可证不在准入清单',
+    complianceLicense: '许可证为非宽松型许可证',
     complianceDco: '未检测到项目的提交者签署 DCO',
     compliancePackageSig: '软件包分发不包含数字校验',
     ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
@@ -351,7 +387,7 @@ const getWarningContent = (item) => {
 const getErrorContent = (item) => {
   const { key } = item;
   const statusMessages = {
-    complianceLicense: '未检测到许可证',
+    complianceLicense: '无项目级许可证或许可证不是 OSI 批准的开源许可证',
     complianceLicenseCompatibility:
       '引入软件项目级、文件级许可证存在兼容性问题',
     complianceDco: '未检测到项目的提交者签署 DCO',
