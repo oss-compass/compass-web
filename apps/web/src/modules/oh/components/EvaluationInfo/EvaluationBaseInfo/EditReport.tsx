@@ -208,7 +208,7 @@ const EditReport = ({ report, editSuccess }) => {
   const [openConfirm, setOpenConfirm] = useState(false);
 
   return (
-    <div>
+    <>
       {currentUser.id === report.userId && (
         <Popover content={'编辑基础信息'}>
           <EditOutlined
@@ -256,7 +256,7 @@ const EditReport = ({ report, editSuccess }) => {
           setOpenConfirm(false);
         }}
       />
-    </div>
+    </>
   );
 };
 export default EditReport;

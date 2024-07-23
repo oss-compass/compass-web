@@ -82,7 +82,7 @@ export const allMetricData = [
   {
     key: 'complianceLicenseCompatibility',
     detailRender: (list) => {
-      let res = `引入软件中有 License 存在兼容性问题`;
+      let res = `引入软件中有 License 存在兼容性问题:`;
       list.map(({ license, licenseConflictList }) => {
         res += `${license}License 与 ${
           licenseConflictList && licenseConflictList.join(',')
