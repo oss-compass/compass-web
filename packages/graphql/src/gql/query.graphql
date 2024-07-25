@@ -1571,7 +1571,8 @@ query tpcSoftwareSelectionReportPage(
   $reportTypeList: [Int!]!
   $page: Int
   $per: Int
-  $status: String
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
 ) {
   tpcSoftwareSelectionReportPage(
     page: $page
@@ -1579,7 +1580,8 @@ query tpcSoftwareSelectionReportPage(
     reportTypeList: $reportTypeList
     label: $label
     level: $level
-    status: $status
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
   ) {
     count
     items {
@@ -1620,6 +1622,8 @@ query tpcSoftwareSelectionPage(
   $selectionType: Int!
   $page: Int
   $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
 ) {
   tpcSoftwareSelectionPage(
     page: $page
@@ -1627,6 +1631,8 @@ query tpcSoftwareSelectionPage(
     selectionType: $selectionType
     label: $label
     level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
   ) {
     count
     items {

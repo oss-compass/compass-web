@@ -135,6 +135,7 @@ const ReportTable = () => {
     ...query,
     reportTypeList: [0],
   };
+
   const { isLoading, isFetching, refetch } =
     useTpcSoftwareSelectionReportPageQuery(client, myQuery, {
       onSuccess: (data) => {

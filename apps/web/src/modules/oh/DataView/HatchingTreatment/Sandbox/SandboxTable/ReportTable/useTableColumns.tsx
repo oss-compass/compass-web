@@ -1,13 +1,13 @@
 import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
-import { useUserInfo } from '@modules/auth/useUserInfo';
 import EditReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/EditReport';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
 import { getProjectId } from '@modules/oh/utils';
+import { AiFillFilter } from 'react-icons/ai';
+import TableDropdown from '@modules/oh/components/TableDropdown';
 
 export const useTableColumns = (anction) => {
-  const { currentUser } = useUserInfo();
   const columns = [
     {
       title: '操作',
@@ -36,6 +36,28 @@ export const useTableColumns = (anction) => {
       title: '软件名称',
       dataIndex: 'name',
       key: 'name',
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        return (
+          <TableDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            placeholder={''}
+          />
+        );
+      },
     },
     {
       title: '源码地址',
@@ -52,6 +74,28 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        return (
+          <TableDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            placeholder={''}
+          />
+        );
+      },
     },
     {
       title: '官网地址',
@@ -66,6 +110,28 @@ export const useTableColumns = (anction) => {
           >
             {text}
           </a>
+        );
+      },
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        return (
+          <TableDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            placeholder={''}
+          />
         );
       },
     },
@@ -98,7 +164,29 @@ export const useTableColumns = (anction) => {
     {
       title: '开发商',
       dataIndex: 'manufacturer',
-      key: 'time',
+      key: 'manufacturer',
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        return (
+          <TableDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            placeholder={''}
+          />
+        );
+      },
     },
     {
       title: '申请人',
@@ -114,6 +202,28 @@ export const useTableColumns = (anction) => {
           >
             {record?.user?.name}
           </a>
+        );
+      },
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        return (
+          <TableDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            placeholder={''}
+          />
         );
       },
     },
@@ -143,6 +253,8 @@ export const useTableColumns = (anction) => {
     {
       title: '报告更新时间',
       key: 'createdAt',
+      dataIndex: 'createdAt',
+      sorter: true,
       render: (_, record) => {
         return record?.tpcSoftwareReportMetric?.createdAt?.slice(0, 10);
       },

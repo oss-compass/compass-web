@@ -2,6 +2,8 @@ import { getHubUrl } from '@common/utils';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
 import { getProjectId } from '@modules/oh/utils';
+import { AiFillFilter } from 'react-icons/ai';
+import TableDropdown from '@modules/oh/components/TableDropdown';
 
 export const useTableColumns = (anction) => {
   const columns = [
@@ -35,6 +37,28 @@ export const useTableColumns = (anction) => {
       dataIndex: 'targetSoftware',
       key: 'targetSoftware',
       width: 120,
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        return (
+          <TableDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            placeholder={''}
+          />
+        );
+      },
     },
 
     {
@@ -53,11 +77,34 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
+      filterIcon: (filtered: boolean) => (
+        <AiFillFilter
+          className="text-sm"
+          style={{ color: filtered ? '#1677ff' : undefined }}
+        />
+      ),
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        return (
+          <TableDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            placeholder={''}
+          />
+        );
+      },
     },
     {
       title: '申请时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      sorter: true,
       render: (text) => {
         return text?.slice(0, 10);
       },

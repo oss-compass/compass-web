@@ -3059,11 +3059,13 @@ export type QueryTpcSoftwareSelectionCommentPageArgs = {
 };
 
 export type QueryTpcSoftwareSelectionPageArgs = {
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
   label?: InputMaybe<Scalars['String']>;
   level?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
   selectionType: Scalars['Int'];
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
 };
 
 export type QueryTpcSoftwareSelectionReportArgs = {
@@ -3071,12 +3073,13 @@ export type QueryTpcSoftwareSelectionReportArgs = {
 };
 
 export type QueryTpcSoftwareSelectionReportPageArgs = {
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
   label?: InputMaybe<Scalars['String']>;
   level?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
   reportTypeList: Array<Scalars['Int']>;
-  status?: InputMaybe<Scalars['String']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
 };
 
 export type QueryTpcSoftwareSigListArgs = {
@@ -3691,7 +3694,6 @@ export type TpcSoftwareSelectionReport = {
   clarificationSigLeadPermission?: Maybe<Scalars['Int']>;
   codeCount?: Maybe<Scalars['Int']>;
   codeUrl?: Maybe<Scalars['String']>;
-  createdAt: Scalars['ISO8601DateTime'];
   id: Scalars['Int'];
   license?: Maybe<Scalars['String']>;
   manufacturer?: Maybe<Scalars['String']>;
@@ -3705,7 +3707,6 @@ export type TpcSoftwareSelectionReport = {
   tpcSoftwareReportMetricRaw?: Maybe<TpcSoftwareReportMetricRaw>;
   tpcSoftwareSig?: Maybe<TpcSoftwareSig>;
   tpcSoftwareSigId?: Maybe<Scalars['Int']>;
-  updatedAt: Scalars['ISO8601DateTime'];
   user?: Maybe<User>;
   userId: Scalars['Int'];
   vulnerabilityDisclosure?: Maybe<Scalars['String']>;
@@ -7479,7 +7480,8 @@ export type TpcSoftwareSelectionReportPageQueryVariables = Exact<{
   reportTypeList: Array<Scalars['Int']> | Scalars['Int'];
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
-  status?: InputMaybe<Scalars['String']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
 }>;
 
 export type TpcSoftwareSelectionReportPageQuery = {
@@ -7556,6 +7558,8 @@ export type TpcSoftwareSelectionPageQueryVariables = Exact<{
   selectionType: Scalars['Int'];
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
 }>;
 
 export type TpcSoftwareSelectionPageQuery = {
@@ -14038,14 +14042,15 @@ useSubjectSigPageQuery.fetcher = (
     headers
   );
 export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionReportPage($label: String!, $level: String = "repo", $reportTypeList: [Int!]!, $page: Int, $per: Int, $status: String) {
+    query tpcSoftwareSelectionReportPage($label: String!, $level: String = "repo", $reportTypeList: [Int!]!, $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
   tpcSoftwareSelectionReportPage(
     page: $page
     per: $per
     reportTypeList: $reportTypeList
     label: $label
     level: $level
-    status: $status
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
   ) {
     count
     items {
@@ -14113,13 +14118,15 @@ useTpcSoftwareSelectionReportPageQuery.fetcher = (
     TpcSoftwareSelectionReportPageQueryVariables
   >(client, TpcSoftwareSelectionReportPageDocument, variables, headers);
 export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionPage($label: String!, $level: String = "repo", $selectionType: Int!, $page: Int, $per: Int) {
+    query tpcSoftwareSelectionPage($label: String!, $level: String = "repo", $selectionType: Int!, $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
   tpcSoftwareSelectionPage(
     page: $page
     per: $per
     selectionType: $selectionType
     label: $label
     level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
   ) {
     count
     items {
