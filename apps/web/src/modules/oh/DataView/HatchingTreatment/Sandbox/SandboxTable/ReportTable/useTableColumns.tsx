@@ -252,11 +252,11 @@ export const useTableColumns = (anction) => {
     },
     {
       title: '报告更新时间',
-      key: 'createdAt',
-      dataIndex: 'createdAt',
+      key: 'updatedAt',
+      dataIndex: 'updatedAt',
       sorter: true,
       render: (_, record) => {
-        return record?.tpcSoftwareReportMetric?.createdAt?.slice(0, 10);
+        return record?.tpcSoftwareReportMetric?.updatedAt?.slice(0, 10);
       },
     },
   ];
