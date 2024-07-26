@@ -158,28 +158,10 @@ const CheckRisk = ({ report, metricName }) => {
       {count > 0 && (
         <div className="oh flex gap-2">
           <Popover>
-            <Dropdown
-              menu={{ items: approveitems }}
-              placement="bottom"
-              // arrow={{ pointAtCenter: true }}
-            >
+            <Dropdown menu={{ items: approveitems }} placement="bottom">
               <Button
                 className="flex items-center !rounded-none"
                 type="primary"
-                // onClick={() => {
-                //   mutation.mutate(
-                //     {
-                //       shortCode,
-                //       metricName,
-                //     },
-                //     {
-                //       onSuccess: () => {
-                //         RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
-                //         toast.success('确认成功');
-                //       },
-                //     }
-                //   );
-                // }}
               >
                 <CheckOutlined rev={undefined} />
                 赞同
@@ -187,11 +169,7 @@ const CheckRisk = ({ report, metricName }) => {
             </Dropdown>
           </Popover>
           <Popover>
-            <Dropdown
-              menu={{ items: rejectitems }}
-              placement="bottom"
-              // arrow={{ pointAtCenter: true }}
-            >
+            <Dropdown menu={{ items: rejectitems }} placement="bottom">
               <Button
                 className="flex items-center !rounded-none"
                 type="primary"

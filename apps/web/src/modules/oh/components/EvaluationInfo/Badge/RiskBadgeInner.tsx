@@ -1,8 +1,6 @@
 import React from 'react';
 import { Badge, Popover, Avatar } from 'antd';
 import { useGetRisk } from '@modules/oh/store/useRiskStore';
-import { TeamOutlined } from '@ant-design/icons';
-import { TbMessage2 } from 'react-icons/tb';
 
 const RiskBadgeInner = ({ report, keyId }) => {
   const { shortCode } = report;

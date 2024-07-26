@@ -27,7 +27,7 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
     {
       key: '5',
       label: '代码量',
-      children: item.codeCount,
+      children: item.codeCount + '行',
     },
     {
       key: '8',
@@ -54,7 +54,11 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       label: '源码地址',
       children: (
         <>
-          <a className="text-[#69b1ff]" target="_blank" href={item.codeUrl}>
+          <a
+            className="line-clamp-1 text-[#69b1ff]"
+            target="_blank"
+            href={item.codeUrl}
+          >
             {item.codeUrl}
           </a>
         </>
@@ -65,7 +69,11 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       label: '漏洞响应机制',
       children: (
         <>
-          <a className="text-[#69b1ff]" target="_blank" href={item.codeUrl}>
+          <a
+            className="line-clamp-1 text-[#69b1ff]"
+            target="_blank"
+            href={item.codeUrl}
+          >
             {item.vulnerabilityResponse || ''}
           </a>
         </>
