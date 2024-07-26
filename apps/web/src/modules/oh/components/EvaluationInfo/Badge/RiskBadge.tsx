@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Badge, Popover } from 'antd';
 import { useGetRisk } from '@modules/oh/store/useRiskStore';
-import { CheckOutlined, ExclamationOutlined } from '@ant-design/icons';
+import { CloseOutlined, ExclamationOutlined } from '@ant-design/icons';
 import { TbMessage2 } from 'react-icons/tb';
 
 const RiskBadge = ({ shortCode, mertic }) => {
@@ -25,7 +25,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
     const leaderState = metricState.filter((item) => item.memberType === 1);
     const commiterState = metricState.filter((item) => item.memberType === 0);
     if (hasReject) {
-      content += '需要重新澄清！';
+      content = '需要重新澄清！';
       const leaderApprove = leaderState
         .filter((item) => item.state === -1)
         ?.map((item) => item?.user?.name);
@@ -45,12 +45,13 @@ const RiskBadge = ({ shortCode, mertic }) => {
           <Badge
             count={
               <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
-                <ExclamationOutlined
+                <CloseOutlined
                   rev={undefined}
                   className="rounded-full text-xs text-white"
                 />
               </div>
             }
+            title=""
             size="small"
             style={{
               backgroundColor: '#ff0000',
@@ -77,17 +78,20 @@ const RiskBadge = ({ shortCode, mertic }) => {
         (content += `${
           commiterApprove.length
         }名 Commiter 已赞同风险澄清：${commiterApprove.join(',')}`);
+      const approveCount = leaderApprove.length + commiterApprove.length;
       BadgeContent = (
         <Popover content={content}>
           <Badge
             count={
-              <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
-                <CheckOutlined
-                  rev={undefined}
-                  className="rounded-full text-xs text-white"
-                />
-              </div>
+              approveCount
+              // <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
+              //   <CheckOutlined
+              //     rev={undefined}
+              //     className="rounded-full text-xs text-white"
+              //   />
+              // </div>
             }
+            title=""
             size="small"
             style={{
               backgroundColor: '#52c41a',
@@ -103,6 +107,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       BadgeContent = (
         <Popover content={'需要确认风险澄清！'}>
           <Badge
+            title=""
             count={count}
             size="small"
             style={{
