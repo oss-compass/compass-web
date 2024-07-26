@@ -54,20 +54,27 @@ const CheckRisk = ({ report, metricName }) => {
       ];
     } else {
       let res = [];
+      const leaderState = Boolean(
+        userState?.find((z) => z.memberType === 1 && z.state === 1)
+      );
+      const committerState = Boolean(
+        userState?.find((z) => z.memberType === 0 && z.state === 1)
+      );
       if (clarificationSigLeadPermission) {
-        const state = Boolean(
-          userState?.find((z) => z.memberType === 1 && z.state === 1)
-        );
         res.push({
-          label: (
+          label: committerState ? (
+            <div className="cursor-not-allowed text-[#d9d9d9]">
+              以 TPC Leader 赞同
+            </div>
+          ) : (
             <a
               onClick={() => {
-                handleApprove(1, Number(!state));
+                handleApprove(1, Number(!leaderState));
               }}
             >
               以 TPC Leader 赞同
               <span className="ml-2 text-[#3a5bef]">
-                {state && <CheckCircleOutlined rev={undefined} />}
+                {leaderState && <CheckCircleOutlined rev={undefined} />}
               </span>
             </a>
           ),
@@ -75,19 +82,20 @@ const CheckRisk = ({ report, metricName }) => {
         });
       }
       if (clarificationCommitterPermission) {
-        const state = Boolean(
-          userState?.find((z) => z.memberType === 0 && z.state === 1)
-        );
         res.push({
-          label: (
+          label: leaderState ? (
+            <div className="cursor-not-allowed text-[#d9d9d9]">
+              以 Committer 赞同
+            </div>
+          ) : (
             <a
               onClick={() => {
-                handleApprove(0, Number(!state));
+                handleApprove(0, Number(!committerState));
               }}
             >
               以 Committer 赞同
               <span className="ml-2 text-[#3a5bef]">
-                {state && <CheckCircleOutlined rev={undefined} />}
+                {committerState && <CheckCircleOutlined rev={undefined} />}
               </span>
             </a>
           ),
@@ -107,20 +115,27 @@ const CheckRisk = ({ report, metricName }) => {
       ];
     } else {
       let res = [];
+      const leaderState = Boolean(
+        userState?.find((z) => z.memberType === 1 && z.state === -1)
+      );
+      const committerState = Boolean(
+        userState?.find((z) => z.memberType === 0 && z.state === -1)
+      );
       if (clarificationSigLeadPermission) {
-        const state = Boolean(
-          userState?.find((z) => z.memberType === 1 && z.state === -1)
-        );
         res.push({
-          label: (
+          label: committerState ? (
+            <div className="cursor-not-allowed text-[#d9d9d9]">
+              以 TPC Leader 拒绝
+            </div>
+          ) : (
             <a
               onClick={() => {
-                handleApprove(1, state ? 0 : -1);
+                handleApprove(1, leaderState ? 0 : -1);
               }}
             >
               以 TPC Leader 拒绝
               <span className="ml-2 text-[#3a5bef]">
-                {state && <CheckCircleOutlined rev={undefined} />}
+                {leaderState && <CheckCircleOutlined rev={undefined} />}
               </span>
             </a>
           ),
@@ -128,19 +143,20 @@ const CheckRisk = ({ report, metricName }) => {
         });
       }
       if (clarificationCommitterPermission) {
-        const state = Boolean(
-          userState?.find((z) => z.memberType === 0 && z.state === -1)
-        );
         res.push({
-          label: (
+          label: leaderState ? (
+            <div className="cursor-not-allowed text-[#d9d9d9]">
+              以 Committer 拒绝
+            </div>
+          ) : (
             <a
               onClick={() => {
-                handleApprove(0, state ? 0 : -1);
+                handleApprove(0, committerState ? 0 : -1);
               }}
             >
               以 Committer 拒绝
               <span className="ml-2 text-[#3a5bef]">
-                {state && <CheckCircleOutlined rev={undefined} />}
+                {committerState && <CheckCircleOutlined rev={undefined} />}
               </span>
             </a>
           ),
