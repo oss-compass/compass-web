@@ -36,8 +36,8 @@ const ApproveContent = ({ item }: { item: any }) => {
         </div>
       </div>
       <div className="w-full">
-        {memberType === 1 ? 'TPC TPC Leader' : 'Committer'}
-        {state === 1 ? ' 审批通过' : ' 驳回'}
+        {memberType === 1 ? 'TPC Leader' : 'TPC Committer'}
+        {state === 1 ? ' 评审通过' : ' 驳回'}
       </div>
     </>
   );

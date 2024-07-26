@@ -32,7 +32,7 @@ const Comment = () => {
             </div>
           </div>
           {!open && (
-            <Popover content="审批">
+            <Popover content="评审">
               <FloatButton
                 onClick={() => {
                   setOpen(true);
@@ -66,7 +66,7 @@ const Comment = () => {
               setOpen(false);
             }}
             open={open}
-            title={<div className="flex justify-between">审批</div>}
+            title={<div className="flex justify-between">评审</div>}
           >
             <ApproveBox selectionId={Number(taskId)} />
           </Drawer>

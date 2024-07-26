@@ -17,7 +17,7 @@ const ApproveBox = ({ selectionId }) => {
         header={
           <div className="flex justify-between">
             <div className="flex items-center text-base font-bold">
-              <span className="mr-4">审批记录</span>
+              <span className="mr-4">评审记录</span>
             </div>
           </div>
         }
