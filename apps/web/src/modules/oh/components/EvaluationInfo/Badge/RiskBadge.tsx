@@ -1,8 +1,14 @@
 import React, { useMemo } from 'react';
 import { Badge, Popover } from 'antd';
 import { useGetRisk } from '@modules/oh/store/useRiskStore';
-import { CloseOutlined, ExclamationOutlined } from '@ant-design/icons';
+import {
+  CloseOutlined,
+  CheckOutlined,
+  ExclamationOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons';
 import { TbMessage2 } from 'react-icons/tb';
+import { BsFillClockFill } from 'react-icons/bs';
 
 const RiskBadge = ({ shortCode, mertic }) => {
   const { key } = mertic;
@@ -69,7 +75,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       leaderApprove.length > 0 &&
         (content += `${
           leaderApprove.length
-        }名 TPC Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
+        }名 TPC Leader 已赞同风险澄清：${leaderApprove.join(',')}；\n`);
       const commiterState = metricState.filter((item) => item.memberType === 0);
       const commiterApprove = commiterState
         .filter((item) => item.state === 1)
@@ -77,30 +83,54 @@ const RiskBadge = ({ shortCode, mertic }) => {
       commiterApprove.length > 0 &&
         (content += `${
           commiterApprove.length
-        }名 Commiter 已赞同风险澄清：${commiterApprove.join(',')}`);
+        }名 Commiter 已赞同风险澄清：${commiterApprove.join(',')}；`);
       const approveCount = leaderApprove.length + commiterApprove.length;
-      BadgeContent = (
-        <Popover content={content}>
-          <Badge
-            count={
-              approveCount
-              // <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
-              //   <CheckOutlined
-              //     rev={undefined}
-              //     className="rounded-full text-xs text-white"
-              //   />
-              // </div>
-            }
-            title=""
-            size="small"
-            style={{
-              backgroundColor: '#52c41a',
-            }}
-          >
-            <TbMessage2 className="text-xl" />
-          </Badge>
-        </Popover>
-      );
+      if (leaderApprove.length > 0 && commiterApprove.length > 0) {
+        BadgeContent = (
+          <Popover content={content}>
+            <Badge
+              count={
+                <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
+                  <CheckOutlined
+                    rev={undefined}
+                    className="rounded-full text-xs text-white"
+                  />
+                </div>
+              }
+              title=""
+              size="small"
+              style={{
+                backgroundColor: '#52c41a',
+              }}
+            >
+              <TbMessage2 className="text-xl" />
+            </Badge>
+          </Popover>
+        );
+      } else {
+        leaderApprove.length > 0
+          ? (content += `还需至少一名 Commiter 赞同风险澄清`)
+          : (content += `还需至少一名 TPC Leader 赞同风险澄清`);
+        BadgeContent = (
+          <Popover content={content}>
+            <Badge
+              count={
+                // approveCount
+                <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
+                  <BsFillClockFill className="rounded-full text-sm text-[red]" />
+                </div>
+              }
+              title=""
+              size="small"
+              style={{
+                backgroundColor: '#fff',
+              }}
+            >
+              <TbMessage2 className="text-xl" />
+            </Badge>
+          </Popover>
+        );
+      }
     }
   } else {
     if (count > 0) {

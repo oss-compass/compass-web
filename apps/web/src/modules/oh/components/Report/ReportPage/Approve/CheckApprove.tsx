@@ -25,8 +25,22 @@ const CheckApprove = ({ selectionId }) => {
     useGetReportData();
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
-  console.log(metricItemScoreList, metricClarificationState);
   const canApprove = useMemo(() => {
+    const checkClarification = (clarificationState) => {
+      if (
+        !clarificationState ||
+        clarificationState.find((s) => s.state === -1)
+      ) {
+        return true;
+      }
+      let leaderState = clarificationState.filter((s) => s.memberType === 1);
+      let commiterState = clarificationState.filter((s) => s.memberType === 0);
+      if (leaderState.length > 0 && commiterState.length > 0) {
+        //至少一名 commiter 和一名 Leader 都通过
+        return false;
+      }
+      return true;
+    };
     if (metricItemScoreList?.length > 0) {
       let notMetricList = [];
       let clarificationList = metricItemScoreList.filter((m) => {
@@ -39,10 +53,7 @@ const CheckApprove = ({ selectionId }) => {
       });
       clarificationList.forEach((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
-        if (
-          !clarificationState ||
-          clarificationState.find((s) => s.state === -1)
-        ) {
+        if (checkClarification(clarificationState)) {
           notMetricList.push(metric.指标名称);
         }
       });
@@ -73,6 +84,9 @@ const CheckApprove = ({ selectionId }) => {
     );
   };
   const getApproveItems = () => {
+    if (!canApprove) {
+      return [];
+    }
     if (canApprove && canApprove.length > 0) {
       return [
         {
