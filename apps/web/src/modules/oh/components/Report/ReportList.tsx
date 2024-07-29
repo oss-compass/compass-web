@@ -85,7 +85,7 @@ const Report = ({
   };
   if (isLoading) {
     return (
-      <div className="h-[calc(100vh-222px)] w-full">
+      <div className="h-[calc(100vh-218px)] w-full">
         <Loading />
       </div>
     );
@@ -105,7 +105,7 @@ const Report = ({
         <div className="relative h-full w-full">
           <div
             className={classnames(
-              'h-[calc(100vh-252px)] w-full overflow-auto ',
+              'h-[calc(100vh-266px)] w-full overflow-auto ',
               {
                 border: selectFun,
               }

@@ -32,6 +32,10 @@
 .ant-input-affix-wrapper {
   border-radius: 0px !important;
 }
+.ant-input-search-button {
+  border-start-end-radius: 0px !important;
+  border-end-end-radius: 0px !important;
+}
 .ant-form-item-control-input {
   min-height: 24px !important;
 }

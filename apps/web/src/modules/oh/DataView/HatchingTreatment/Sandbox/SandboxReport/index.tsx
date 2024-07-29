@@ -8,7 +8,7 @@ const Main = () => {
   const allItems = [
     {
       key: '选型报告申请',
-      label: <div className="mx-2 text-lg">选型报告申请</div>,
+      label: <div className="mx-2 text-lg">孵化报告申请</div>,
       children: <SelectionReportApplication />,
     },
     // {

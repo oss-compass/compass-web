@@ -102,7 +102,7 @@ export const menuItems: MenuItem[] = [
           },
           {
             key: 'hatchProject',
-            label: '选型申请',
+            label: '孵化申请',
           },
           {
             key: 'hatchTable',
