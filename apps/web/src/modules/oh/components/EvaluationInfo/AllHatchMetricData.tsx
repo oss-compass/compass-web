@@ -100,6 +100,17 @@ export const allMetricData = [
       '引入软件许可证兼容性检查\n\n【规则】\n1. 禁止引入项目级、文件级 License 存在兼容性问题的软件及版本；',
   },
   {
+    key: 'ecologyPatentRisk',
+    detailRender: null,
+    维度: '合法合规',
+    指标名称: '专利风险',
+    风险重要性: '中',
+    是否必须澄清: '是',
+    指标检查项及评分项: '设置评分，待定',
+    指标意义:
+      '引入软件专利风险分析\n\n【建议】\n1. 优先选择全球专利保护社区 OIN（Open Invention Network）认证软件，未认证软件需单独审视专利风险',
+  },
+  {
     key: 'complianceDco',
     detailRender: ({ commitCount, commitDcoCount }) => {
       let res = `引入软件代码提交共有${commitCount}次，其中${commitDcoCount}次已签署 DCO。`;
@@ -203,17 +214,7 @@ export const allMetricData = [
     指标意义:
       '引入软件采用度分析，优选在业界广泛应用软件\n\n【建议】\n1. 优选主流的供应商/社区或社区项目；\n2. 优选在业界成熟应用或产品实际使用效果好的软件；',
   },
-  {
-    key: 'ecologyPatentRisk',
-    detailRender: null,
-    维度: '技术生态',
-    指标名称: '专利风险',
-    风险重要性: '中',
-    是否必须澄清: '是',
-    指标检查项及评分项: '设置评分，待定',
-    指标意义:
-      '引入软件专利风险分析\n\n【建议】\n1. 优先选择全球专利保护社区 OIN（Open Invention Network）认证软件，未认证软件需单独审视专利风险',
-  },
+
   {
     key: 'ecologySoftwareQuality',
     detailRender: ({

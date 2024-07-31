@@ -40,7 +40,6 @@ const SelectReport = ({ getReport }) => {
                 event.preventDefault();
               }
             }}
-            prefix={<SearchOutlined rev={undefined} />}
           />
         </div>
       </div>

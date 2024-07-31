@@ -237,13 +237,13 @@ const SelectionApplication = () => {
                       span: 3,
                       style: { fontWeight: 'bold' },
                     }}
-                    label="Commiters"
+                    label="Committers"
                     name="committers"
                     rules={[{ required: true, message: '请输入!' }]}
                   >
                     <Input
-                      placeholder="需填写 Commiters 的 Gitee/Github 用户名，多个
-                          Commiters 用逗号分开"
+                      placeholder="需填写 Committers 的 Gitee/Github 用户名，多个
+                      Committers 用逗号分开"
                       disabled={false}
                     />
                   </Form.Item>

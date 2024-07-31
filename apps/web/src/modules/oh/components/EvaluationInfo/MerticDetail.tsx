@@ -3,7 +3,7 @@ import { toFixed } from '@common/utils';
 import {
   allMetricData,
   getRishContent,
-} from '@modules/oh/components/EvaluationInfo/AllMetricData';
+} from '@modules/oh/components/EvaluationInfo/AllHatchMetricData';
 import { Tag, Badge, Button, Popover } from 'antd';
 import {
   CloseCircleOutlined,
@@ -215,7 +215,7 @@ const getDeitalRow = (item, tpcSoftwareReportMetricRaw) => {
 export const downloadReport = (item) => {
   const { tpcSoftwareReportMetric, name, tpcSoftwareReportMetricRaw } = item;
   const metricScore = getMetricItemScore(tpcSoftwareReportMetric);
-  let title = name + '选型评估报告';
+  let title = name + '评估报告';
   let head = [
     '指标名称',
     '维度',

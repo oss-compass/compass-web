@@ -84,7 +84,7 @@ export const openGiteeIssue = (report, values, id) => {
 
   > ${values.incubationTime}
 
-  5. 【Commiters】
+  5. 【Committers】
 
   > ${values.committers}
 

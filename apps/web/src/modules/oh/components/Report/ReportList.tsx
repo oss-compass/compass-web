@@ -6,7 +6,7 @@ import client from '@common/gqlClient';
 import GetReportData from '@modules/oh/components/Report/GetReportData';
 import { getMetricScore } from '@modules/oh/components/EvaluationInfo/MerticDetail';
 import Loading from '@modules/oh/components/Loading';
-import Pie from '@modules/oh/components/EvaluationInfo/Pie';
+import Pie from '@modules/oh/components/EvaluationInfo/EvaluationTopScore/Pie';
 
 const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
   return (

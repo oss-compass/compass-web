@@ -4,7 +4,7 @@ import { getPathname } from '@common/utils';
 import {
   getRishContent,
   getRishDeitalContent,
-} from '@modules/oh/components/EvaluationInfo/AllMetricData';
+} from '@modules/oh/components/EvaluationInfo/AllHatchMetricData';
 import {
   QuestionCircleOutlined,
   LeftOutlined,

@@ -1,0 +1,188 @@
+import React, { useState } from 'react';
+import { Form, Input, Select, Row, Col, Popover, Button } from 'antd';
+import { languagesList, domainList } from '@modules/oh/constant';
+import client from '@common/gqlClient';
+import { useUpdateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
+import { toast } from 'react-hot-toast';
+
+const EditReport = ({ report, refetch }) => {
+  const [form] = Form.useForm();
+  const tpcSoftwareSigId = report?.tpcSoftwareSig?.id;
+  form.setFieldsValue({ ...report, tpcSoftwareSigId });
+
+  const mutation = useUpdateTpcSoftwareSelectionReportMutation(client, {
+    onSuccess(data) {
+      if (data.updateTpcSoftwareSelectionReport.status == 'true') {
+        toast.success('修改成功');
+        refetch && refetch();
+      } else {
+        toast.error(data.updateTpcSoftwareSelectionReport.message);
+      }
+    },
+    onError(res) {
+      //   toast.error(res?.message);
+    },
+  });
+  const submit = () => {
+    form.validateFields().then((values) => {
+      delete values.codeUrl;
+      mutation.mutate({
+        reportId: report.id,
+        softwareReport: values,
+      });
+    });
+  };
+  return (
+    <div className="px-6">
+      <Form
+        form={form}
+        labelCol={{
+          span: 6,
+          style: { fontWeight: 'bold' },
+        }}
+        style={{
+          width: '100%',
+        }}
+        autoComplete="off"
+      >
+        <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Popover
+              placement="topRight"
+              content={
+                <>
+                  <div>1.软件名称和其官网保持一致;</div>
+                  <div>1.禁止以软件的子模块作为软件名;</div>
+                </>
+              }
+              title="规则"
+              trigger="click"
+            >
+              <Form.Item
+                label="软件名称"
+                name="name"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Popover>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="所属领域"
+              name="tpcSoftwareSigId"
+              rules={[{ required: true, message: '请输入!' }]}
+            >
+              <Select>
+                {domainList.map(({ name, id }) => (
+                  <Select.Option key={id} value={id}>
+                    {name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="开发商"
+              name="manufacturer"
+              rules={[{ required: true, message: '请输入!' }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Popover
+              placement="topRight"
+              content={
+                <>
+                  <div>
+                    提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee
+                    等）对应项目托管地址
+                  </div>
+                </>
+              }
+              title="规则"
+              trigger="click"
+            >
+              <Form.Item
+                label="官网地址"
+                name="websiteUrl"
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入!',
+                  },
+                  { type: 'url', message: '请输入有效的官网地址!' },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Popover>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          {/* <Col span={12}>
+            <Form.Item
+              label="源码地址"
+              name="codeUrl"
+              rules={[{ required: true, message: '请输入!' }]}
+            >
+              <Input disabled={true} />
+            </Form.Item>
+          </Col> */}
+          <Col span={12}>
+            <Form.Item
+              label="编程语言"
+              name="programmingLanguage"
+              rules={[{ required: true, message: '请输入!' }]}
+            >
+              <Select>
+                {languagesList.map((item) => (
+                  <Select.Option key={item} value={item}>
+                    {item}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              rules={[{ required: true, message: '请输入!' }]}
+              label="漏洞响应机制"
+              name="vulnerabilityResponse"
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="源码地址"
+              name="codeUrl"
+              rules={[{ required: true, message: '请输入!' }]}
+            >
+              <Input disabled />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <div className="flex justify-center">
+              <Button
+                className="rounded-none"
+                type="primary"
+                loading={mutation.isLoading}
+                onClick={() => {
+                  submit();
+                }}
+              >
+                提交
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </Form>
+    </div>
+  );
+};
+export default EditReport;
