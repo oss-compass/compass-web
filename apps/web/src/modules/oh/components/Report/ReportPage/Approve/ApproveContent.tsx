@@ -6,6 +6,12 @@ import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
 const ApproveContent = ({ item }: { item: any }) => {
   const { state, memberType } = item;
 
+  const memberMap = {
+    '1': 'TPC Leader',
+    '0': 'TPC Committer',
+    '2': '法务专家',
+    '3': '合规专家',
+  };
   return (
     <>
       <div className="flex pb-4">
@@ -36,7 +42,7 @@ const ApproveContent = ({ item }: { item: any }) => {
         </div>
       </div>
       <div className="w-full">
-        {memberType === 1 ? 'TPC Leader' : 'TPC Committer'}
+        {memberMap[memberType]}
         {state === 1 ? ' 评审通过' : ' 驳回'}
       </div>
     </>

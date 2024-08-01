@@ -1756,6 +1756,8 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     shortCode
     clarificationCommitterPermission
     clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
     vulnerabilityResponse
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
@@ -1947,6 +1949,8 @@ query tpcSoftwareSelectionCommentPage(
 
 query tpcSoftwareSelection($selectionId: Int!) {
   tpcSoftwareSelection(selectionId: $selectionId) {
+    commentCompliancePermission
+    commentLegalPermission
     commentCommitterPermission
     commentCount
     commentSigLeadPermission

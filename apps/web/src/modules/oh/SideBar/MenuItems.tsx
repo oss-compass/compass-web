@@ -169,7 +169,6 @@ export const componentMap = {
   graduateReport: <Graduate />,
   graduateProject: <Graduate />,
   graduateTable: <Graduate />,
-  graduate: <Graduate />,
   boardSandbox: <BoardSandbox />,
   boardHatch: <BoardHatch />,
   boardGraduateBoard: <BoardGraduateBoard />,

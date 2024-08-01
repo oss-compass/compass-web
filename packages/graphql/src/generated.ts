@@ -47,7 +47,7 @@ export type Scalars = {
 export type AcceptTpcSoftwareReportMetricClarificationInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** committer: 0, sig lead: 1 */
+  /** committer: 0, sig lead: 1, legal: 2, compliance: 3 */
   memberType?: Scalars['Int'];
   metricName: Scalars['String'];
   shortCode: Scalars['String'];
@@ -70,7 +70,7 @@ export type AcceptTpcSoftwareReportMetricClarificationPayload = {
 export type AcceptTpcSoftwareSelectionInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** committer: 0, sig lead: 1 */
+  /** committer: 0, sig lead: 1, legal: 2, compliance: 3 */
   memberType?: Scalars['Int'];
   selectionId: Scalars['Int'];
   /** reject: -1, cancel: 0, accept: 1 */
@@ -3652,7 +3652,11 @@ export type TpcSoftwareSelection = {
   __typename?: 'TpcSoftwareSelection';
   /** 1: permissioned, 0: unpermissioned */
   commentCommitterPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  commentCompliancePermission?: Maybe<Scalars['Int']>;
   commentCount?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  commentLegalPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
   commentSigLeadPermission?: Maybe<Scalars['Int']>;
   commentState?: Maybe<Array<TpcSoftwareCommentState>>;
@@ -3690,6 +3694,10 @@ export type TpcSoftwareSelectionReport = {
   adaptationMethod?: Maybe<Scalars['String']>;
   /** 1: permissioned, 0: unpermissioned */
   clarificationCommitterPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationCompliancePermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationLegalPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
   clarificationSigLeadPermission?: Maybe<Scalars['Int']>;
   codeCount?: Maybe<Scalars['Int']>;
@@ -7709,6 +7717,8 @@ export type TpcSoftwareSelectionReportQuery = {
     shortCode: string;
     clarificationCommitterPermission?: number | null;
     clarificationSigLeadPermission?: number | null;
+    clarificationCompliancePermission?: number | null;
+    clarificationLegalPermission?: number | null;
     vulnerabilityResponse?: string | null;
     websiteUrl?: string | null;
     userId: number;
@@ -8181,6 +8191,8 @@ export type TpcSoftwareSelectionQuery = {
   __typename?: 'Query';
   tpcSoftwareSelection?: {
     __typename?: 'TpcSoftwareSelection';
+    commentCompliancePermission?: number | null;
+    commentLegalPermission?: number | null;
     commentCommitterPermission?: number | null;
     commentCount?: number | null;
     commentSigLeadPermission?: number | null;
@@ -14207,6 +14219,8 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     shortCode
     clarificationCommitterPermission
     clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
     vulnerabilityResponse
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
@@ -14553,6 +14567,8 @@ useTpcSoftwareSelectionCommentPageQuery.fetcher = (
 export const TpcSoftwareSelectionDocument = /*#__PURE__*/ `
     query tpcSoftwareSelection($selectionId: Int!) {
   tpcSoftwareSelection(selectionId: $selectionId) {
+    commentCompliancePermission
+    commentLegalPermission
     commentCommitterPermission
     commentCount
     commentSigLeadPermission

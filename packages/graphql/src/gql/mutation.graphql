@@ -317,7 +317,6 @@ mutation updateTpcSoftwareSelectionComment(
     status
   }
 }
-
 mutation acceptTpcSoftwareSelection(
   $selectionId: Int!
   $state: Int!
@@ -334,3 +333,111 @@ mutation acceptTpcSoftwareSelection(
     status
   }
 }
+
+# mutation createTpcSoftwareGraduationReport(
+#   $label: String!
+#   $level: String!
+#   $softwareReport: TpcSoftwareGraduationReportInput!
+# ) {
+#   createTpcSoftwareGraduationReport(
+#     input: { label: $label, level: $level, softwareReport: $softwareReport }
+#   ) {
+#     errors {
+#       message
+#       path
+#     }
+#     message
+#     status
+#   }
+# }
+# mutation updateTpcSoftwareGraduationReport(
+#   $reportId: Int!
+#   $softwareReport: TpcSoftwareGraduationReportUpdateInput!
+# ) {
+#   updateTpcSoftwareGraduationReport(
+#     input: { reportId: $reportId, softwareReport: $softwareReport }
+#   ) {
+#     errors {
+#       message
+#       path
+#     }
+#     message
+#     status
+#   }
+# }
+# mutation createTpcSoftwareGraduation(
+#   $label: String!
+#   $level: String!
+#   $tpcSoftwareGraduationReportIds: [Int!]!
+#   $committers: [String!]!
+#   $demandSource: String
+#   $incubationTime: String!
+#   $incubationStartTime: ISO8601DateTime
+# ) {
+#   createTpcSoftwareGraduation(
+#     input: {
+#       label: $label
+#       level: $level
+#       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
+#       committers: $committers
+#       demandSource: $demandSource
+#       incubationTime: $incubationTime
+#       incubationStartTime: $incubationStartTime
+#     }
+#   ) {
+#     errors {
+#       message
+#       path
+#     }
+#     id
+#     message
+#     status
+#   }
+# }
+# mutation updateTpcSoftwareGraduation(
+#   $graduationId: Int!
+#   $tpcSoftwareGraduationReportIds: [Int!]!
+#   $committers: [String!]!
+#   $demandSource: String
+#   $incubationTime: String!
+#   $incubationStartTime: ISO8601DateTime
+# ) {
+#   updateTpcSoftwareGraduation(
+#     input: {
+#       graduationId: $graduationId
+#       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
+#       committers: $committers
+#       demandSource: $demandSource
+#       incubationTime: $incubationTime
+#       incubationStartTime: $incubationStartTime
+#     }
+#   ) {
+#     errors {
+#       message
+#       path
+#     }
+#     id
+#     message
+#     status
+#   }
+# }
+# mutation acceptTpcSoftwareGraduation(
+#   $graduationId: Int!
+#   $state: Int!
+#   $memberType: Int!
+# ) {
+#   acceptTpcSoftwareGraduation(
+#     input: {
+#       graduationId: $graduationId
+#       state: $state
+#       memberType: $memberType
+#     }
+#   ) {
+#     errors {
+#       message
+#       path
+#     }
+#     message
+#     status
+#   }
+# }

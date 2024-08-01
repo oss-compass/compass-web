@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ReportList from '@modules/oh/components/Report/ReportList';
 import { queryKey } from '@modules/oh/constant';
 import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 
 const SelectReport = ({ getReport }) => {
   const { Search } = Input;
@@ -15,11 +14,14 @@ const SelectReport = ({ getReport }) => {
         type: 'code_url',
         values: [value],
       },
+      {
+        type: 'status',
+        values: ['success'],
+      },
     ],
     reportTypeList: [0, 1],
     page: 1,
     per: 100,
-    status: 'success',
   };
 
   return (

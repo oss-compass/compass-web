@@ -17,11 +17,13 @@ import {
 import { Dropdown } from 'antd';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 
-const CheckRisk = ({ report, metricName }) => {
+const CheckRisk = ({ report, metricName, dimension }) => {
   const {
     shortCode,
     clarificationCommitterPermission,
     clarificationSigLeadPermission,
+    clarificationCompliancePermission,
+    clarificationLegalPermission,
   } = report;
   const { currentUser } = useUserInfo();
   const { count, metricState } = useGetRisk(shortCode, metricName);
@@ -45,125 +47,223 @@ const CheckRisk = ({ report, metricName }) => {
     );
   };
   const getApproveItems = () => {
-    if (!clarificationCommitterPermission && !clarificationSigLeadPermission) {
-      return [
-        {
-          key: '1',
-          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限操作',
-        },
-      ];
+    if (dimension === '合法合规') {
+      if (!clarificationCompliancePermission && !clarificationLegalPermission) {
+        return [
+          {
+            key: '1',
+            label: '您不是该软件的法务专家或合规专家，暂无权限操作',
+          },
+        ];
+      } else {
+        let res = [];
+        const complianceState = Boolean(
+          userState?.find((z) => z.memberType === 3 && z.state === 1)
+        );
+        const legalState = Boolean(
+          userState?.find((z) => z.memberType === 2 && z.state === 1)
+        );
+        if (clarificationLegalPermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(2, Number(!legalState));
+                }}
+              >
+                以法务专家赞同
+                <span className="ml-2 text-[#3a5bef]">
+                  {legalState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '1',
+          });
+        }
+        if (clarificationCompliancePermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(3, Number(!complianceState));
+                }}
+              >
+                以合规专家赞同
+                <span className="ml-2 text-[#3a5bef]">
+                  {complianceState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '2',
+          });
+        }
+        return res;
+      }
     } else {
-      let res = [];
-      const leaderState = Boolean(
-        userState?.find((z) => z.memberType === 1 && z.state === 1)
-      );
-      const committerState = Boolean(
-        userState?.find((z) => z.memberType === 0 && z.state === 1)
-      );
-      if (clarificationSigLeadPermission) {
-        res.push({
-          label: committerState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 TPC Leader 赞同
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(1, Number(!leaderState));
-              }}
-            >
-              以 TPC Leader 赞同
-              <span className="ml-2 text-[#3a5bef]">
-                {leaderState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '1',
-        });
+      if (
+        !clarificationCommitterPermission &&
+        !clarificationSigLeadPermission
+      ) {
+        return [
+          {
+            key: '1',
+            label: '您不是该软件的 Committer 或 TPC Leader，暂无权限操作',
+          },
+        ];
+      } else {
+        let res = [];
+        const leaderState = Boolean(
+          userState?.find((z) => z.memberType === 1 && z.state === 1)
+        );
+        const committerState = Boolean(
+          userState?.find((z) => z.memberType === 0 && z.state === 1)
+        );
+        if (clarificationSigLeadPermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(1, Number(!leaderState));
+                }}
+              >
+                以 TPC Leader 赞同
+                <span className="ml-2 text-[#3a5bef]">
+                  {leaderState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '1',
+          });
+        }
+        if (clarificationCommitterPermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(0, Number(!committerState));
+                }}
+              >
+                以 Committer 赞同
+                <span className="ml-2 text-[#3a5bef]">
+                  {committerState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '2',
+          });
+        }
+        return res;
       }
-      if (clarificationCommitterPermission) {
-        res.push({
-          label: leaderState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 Committer 赞同
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(0, Number(!committerState));
-              }}
-            >
-              以 Committer 赞同
-              <span className="ml-2 text-[#3a5bef]">
-                {committerState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '2',
-        });
-      }
-      return res;
     }
   };
   const getRejectItems = () => {
-    if (!clarificationCommitterPermission && !clarificationSigLeadPermission) {
-      return [
-        {
-          key: '1',
-          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限操作',
-        },
-      ];
+    if (dimension === '合法合规') {
+      if (!clarificationCompliancePermission && !clarificationLegalPermission) {
+        return [
+          {
+            key: '1',
+            label: '您不是该软件的法务专家或合规专家，暂无权限操作',
+          },
+        ];
+      } else {
+        let res = [];
+        const complianceState = Boolean(
+          userState?.find((z) => z.memberType === 3 && z.state === -1)
+        );
+        const legalState = Boolean(
+          userState?.find((z) => z.memberType === 2 && z.state === -1)
+        );
+        if (clarificationLegalPermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(2, legalState ? 0 : -1);
+                }}
+              >
+                以法务专家拒绝
+                <span className="ml-2 text-[#3a5bef]">
+                  {legalState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '1',
+          });
+        }
+        if (clarificationCompliancePermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(3, complianceState ? 0 : -1);
+                }}
+              >
+                以合规专家拒绝
+                <span className="ml-2 text-[#3a5bef]">
+                  {complianceState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '2',
+          });
+        }
+        return res;
+      }
     } else {
-      let res = [];
-      const leaderState = Boolean(
-        userState?.find((z) => z.memberType === 1 && z.state === -1)
-      );
-      const committerState = Boolean(
-        userState?.find((z) => z.memberType === 0 && z.state === -1)
-      );
-      if (clarificationSigLeadPermission) {
-        res.push({
-          label: committerState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 TPC Leader 拒绝
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(1, leaderState ? 0 : -1);
-              }}
-            >
-              以 TPC Leader 拒绝
-              <span className="ml-2 text-[#3a5bef]">
-                {leaderState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '1',
-        });
+      if (
+        !clarificationCommitterPermission &&
+        !clarificationSigLeadPermission
+      ) {
+        return [
+          {
+            key: '1',
+            label: '您不是该软件的 Committer 或 TPC Leader，暂无权限操作',
+          },
+        ];
+      } else {
+        let res = [];
+        const leaderState = Boolean(
+          userState?.find((z) => z.memberType === 1 && z.state === -1)
+        );
+        const committerState = Boolean(
+          userState?.find((z) => z.memberType === 0 && z.state === -1)
+        );
+        if (clarificationSigLeadPermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(1, leaderState ? 0 : -1);
+                }}
+              >
+                以 TPC Leader 拒绝
+                <span className="ml-2 text-[#3a5bef]">
+                  {leaderState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '1',
+          });
+        }
+        if (clarificationCommitterPermission) {
+          res.push({
+            label: (
+              <a
+                onClick={() => {
+                  handleApprove(0, committerState ? 0 : -1);
+                }}
+              >
+                以 Committer 拒绝
+                <span className="ml-2 text-[#3a5bef]">
+                  {committerState && <CheckCircleOutlined rev={undefined} />}
+                </span>
+              </a>
+            ),
+            key: '2',
+          });
+        }
+        return res;
       }
-      if (clarificationCommitterPermission) {
-        res.push({
-          label: leaderState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 Committer 拒绝
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(0, committerState ? 0 : -1);
-              }}
-            >
-              以 Committer 拒绝
-              <span className="ml-2 text-[#3a5bef]">
-                {committerState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '2',
-        });
-      }
-      return res;
     }
   };
   const approveitems = getApproveItems();

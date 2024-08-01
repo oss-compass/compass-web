@@ -21,23 +21,41 @@ import { useGetTargetSoftwareData } from '@modules/oh/store/useTargetSoftwareSto
 
 const CheckApprove = ({ selectionId }) => {
   const { currentUser } = useUserInfo();
-  const { commentCommitterPermission, commentSigLeadPermission, commentState } =
-    useGetReportData();
+  const {
+    commentCommitterPermission,
+    commentSigLeadPermission,
+    commentCompliancePermission,
+    commentLegalPermission,
+    commentState,
+  } = useGetReportData();
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
   const canApprove = useMemo(() => {
-    const checkClarification = (clarificationState) => {
+    const checkClarification = (clarificationState, dimension) => {
       if (
         !clarificationState ||
         clarificationState.find((s) => s.state === -1)
       ) {
         return true;
       }
-      let leaderState = clarificationState.filter((s) => s.memberType === 1);
-      let commiterState = clarificationState.filter((s) => s.memberType === 0);
-      if (leaderState.length > 0 && commiterState.length > 0) {
-        //至少一名 commiter 和一名 Leader 都通过
-        return false;
+      if (dimension === '合法合规') {
+        let complianceState = clarificationState.filter(
+          (s) => s.memberType === 3
+        );
+        let legalState = clarificationState.filter((s) => s.memberType === 2);
+        if (legalState.length > 0 && complianceState.length > 0) {
+          //至少一名法务专家和一名合规专家都通过
+          return false;
+        }
+      } else {
+        let leaderState = clarificationState.filter((s) => s.memberType === 1);
+        let commiterState = clarificationState.filter(
+          (s) => s.memberType === 0
+        );
+        if (leaderState.length > 0 && commiterState.length > 0) {
+          //至少一名 commiter 和一名 Leader 都通过
+          return false;
+        }
       }
       return true;
     };
@@ -53,7 +71,7 @@ const CheckApprove = ({ selectionId }) => {
       });
       clarificationList.forEach((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
-        if (checkClarification(clarificationState)) {
+        if (checkClarification(clarificationState, metric.维度)) {
           notMetricList.push(metric.指标名称);
         }
       });
@@ -61,7 +79,6 @@ const CheckApprove = ({ selectionId }) => {
     }
     return false;
   }, [metricItemScoreList, metricClarificationState]);
-  console.log(canApprove);
   const mutation = useAcceptTpcSoftwareSelectionMutation(gqlClient);
   const userState = commentState?.filter((z) => z.userId === currentUser.id);
   const handleApprove = (memberType, state) => {
@@ -83,11 +100,131 @@ const CheckApprove = ({ selectionId }) => {
       }
     );
   };
+  // const getApproveItems = () => {
+  //   if (!canApprove) {
+  //     return [];
+  //   }
+  //   if (canApprove && canApprove.length > 0) {
+  //     return [
+  //       {
+  //         key: '0',
+  //         label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
+  //           '、'
+  //         )}`,
+  //       },
+  //     ];
+  //   }
+  //   if (
+  //     !commentCommitterPermission &&
+  //     !commentSigLeadPermission &&
+  //     !commentCompliancePermission &&
+  //     !commentLegalPermission
+  //   ) {
+  //     return [
+  //       {
+  //         key: '1',
+  //         label:
+  //           '您不是该软件的 Committer 或 TPC Leader 或法务合规专家，暂无权限审批',
+  //       },
+  //     ];
+  //   } else {
+  //     let res = [];
+  //     const leaderState = Boolean(
+  //       userState?.find((z) => z.memberType === 1 && z.state === 1)
+  //     );
+  //     const committerState = Boolean(
+  //       userState?.find((z) => z.memberType === 0 && z.state === 1)
+  //     );
+  //     const legalState = Boolean(
+  //       userState?.find((z) => z.memberType === 2 && z.state === 1)
+  //     );
+  //     const complianceState = Boolean(
+  //       userState?.find((z) => z.memberType === 3 && z.state === 1)
+  //     );
+  //     if (commentSigLeadPermission) {
+  //       // const state = Boolean(
+  //       //   userState?.find((z) => z.memberType === 1 && z.state === 1)
+  //       // );
+  //       res.push({
+  //         label: (
+  //           <a
+  //             onClick={() => {
+  //               handleApprove(1, Number(!leaderState));
+  //             }}
+  //           >
+  //             以 TPC Leader 通过
+  //             <span className="ml-2 text-[#3a5bef]">
+  //               {leaderState && <CheckCircleOutlined rev={undefined} />}
+  //             </span>
+  //           </a>
+  //         ),
+  //         key: '1',
+  //       });
+  //     }
+  //     if (commentCommitterPermission) {
+  //       // const state = Boolean(
+  //       //   userState?.find((z) => z.memberType === 0 && z.state === 1)
+  //       // );
+  //       res.push({
+  //         label: (
+  //           <a
+  //             onClick={() => {
+  //               handleApprove(0, Number(!committerState));
+  //             }}
+  //           >
+  //             以 Committer 通过
+  //             <span className="ml-2 text-[#3a5bef]">
+  //               {committerState && <CheckCircleOutlined rev={undefined} />}
+  //             </span>
+  //           </a>
+  //         ),
+  //         key: '2',
+  //       });
+  //     }
+  //     if (commentLegalPermission) {
+  //       res.push({
+  //         label: (
+  //           <a
+  //             onClick={() => {
+  //               handleApprove(2, Number(!legalState));
+  //             }}
+  //           >
+  //             以法务专家通过
+  //             <span className="ml-2 text-[#3a5bef]">
+  //               {legalState && <CheckCircleOutlined rev={undefined} />}
+  //             </span>
+  //           </a>
+  //         ),
+  //         key: '3',
+  //       });
+  //     }
+  //     if (commentCompliancePermission) {
+  //       res.push({
+  //         label: (
+  //           <a
+  //             onClick={() => {
+  //               handleApprove(3, Number(!complianceState));
+  //             }}
+  //           >
+  //             以合规专家通过
+  //             <span className="ml-2 text-[#3a5bef]">
+  //               {complianceState && <CheckCircleOutlined rev={undefined} />}
+  //             </span>
+  //           </a>
+  //         ),
+  //         key: '4',
+  //       });
+  //     }
+  //     return res;
+  //   }
+  // };
+
   const getApproveItems = () => {
     if (!canApprove) {
       return [];
     }
-    if (canApprove && canApprove.length > 0) {
+
+    if (canApprove.length > 0) {
       return [
         {
           key: '0',
@@ -97,72 +234,72 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-    if (!commentCommitterPermission && !commentSigLeadPermission) {
+
+    if (!hasCommentPermissions()) {
       return [
         {
           key: '1',
-          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限审批',
+          label:
+            '您不是该软件的 Committer 或 TPC Leader 或法务合规专家，暂无权限审批',
         },
       ];
-    } else {
-      let res = [];
-      const leaderState = Boolean(
-        userState?.find((z) => z.memberType === 1 && z.state === 1)
-      );
-      const committerState = Boolean(
-        userState?.find((z) => z.memberType === 0 && z.state === 1)
-      );
-      if (commentSigLeadPermission) {
-        // const state = Boolean(
-        //   userState?.find((z) => z.memberType === 1 && z.state === 1)
-        // );
-        res.push({
-          label: committerState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 TPC Leader 通过
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(1, Number(!leaderState));
-              }}
-            >
-              以 TPC Leader 通过
-              <span className="ml-2 text-[#3a5bef]">
-                {leaderState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '1',
-        });
-      }
-      if (commentCommitterPermission) {
-        // const state = Boolean(
-        //   userState?.find((z) => z.memberType === 0 && z.state === 1)
-        // );
-        res.push({
-          label: leaderState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 Committer 通过
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(0, Number(!committerState));
-              }}
-            >
-              以 Committer 通过
-              <span className="ml-2 text-[#3a5bef]">
-                {committerState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '2',
-        });
-      }
-      return res;
     }
+
+    return getApprovalOptions();
   };
+
+  const hasCommentPermissions = () => {
+    return (
+      commentCommitterPermission ||
+      commentSigLeadPermission ||
+      commentCompliancePermission ||
+      commentLegalPermission
+    );
+  };
+
+  const getApprovalOptions = () => {
+    const res = [];
+    const leaderState = isUserStateValid(1);
+    const committerState = isUserStateValid(0);
+    const legalState = isUserStateValid(2);
+    const complianceState = isUserStateValid(3);
+
+    if (commentSigLeadPermission) {
+      res.push(createApprovalOption(1, leaderState, '以 TPC Leader 通过'));
+    }
+    if (commentCommitterPermission) {
+      res.push(createApprovalOption(0, committerState, '以 Committer 通过'));
+    }
+    if (commentLegalPermission) {
+      res.push(createApprovalOption(2, legalState, '以法务专家通过'));
+    }
+    if (commentCompliancePermission) {
+      res.push(createApprovalOption(3, complianceState, '以合规专家通过'));
+    }
+
+    return res;
+  };
+
+  const isUserStateValid = (memberType) => {
+    return Boolean(
+      userState?.find((z) => z.memberType === memberType && z.state === 1)
+    );
+  };
+
+  const createApprovalOption = (type, state, label) => {
+    return {
+      label: (
+        <a onClick={() => handleApprove(type, Number(!state))}>
+          {label}
+          <span className="ml-2 text-[#3a5bef]">
+            {state && <CheckCircleOutlined rev={undefined} />}
+          </span>
+        </a>
+      ),
+      key: String(type + 1),
+    };
+  };
+
   const getRejectItems = () => {
     if (canApprove && canApprove.length > 0) {
       return [
@@ -174,72 +311,63 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-    if (!commentCommitterPermission && !commentSigLeadPermission) {
+
+    if (!hasCommentPermissions()) {
       return [
         {
           key: '1',
-          label: '您不是该软件的 Committer 或 TPC Leader，暂无权限审批',
+          label:
+            '您不是该软件的 Committer 或 TPC Leader 或法务合规专家，暂无权限审批',
         },
       ];
-    } else {
-      let res = [];
-      const leaderState = Boolean(
-        userState?.find((z) => z.memberType === 1 && z.state === -1)
-      );
-      const committerState = Boolean(
-        userState?.find((z) => z.memberType === 0 && z.state === -1)
-      );
-      if (commentSigLeadPermission) {
-        // const state = Boolean(
-        //   userState?.find((z) => z.memberType === 1 && z.state === -1)
-        // );
-        res.push({
-          label: committerState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 Committer 驳回
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(1, leaderState ? 0 : -1);
-              }}
-            >
-              以 TPC Leader 驳回
-              <span className="ml-2 text-[#3a5bef]">
-                {leaderState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '1',
-        });
-      }
-      if (commentCommitterPermission) {
-        // const state = Boolean(
-        //   userState?.find((z) => z.memberType === 0 && z.state === -1)
-        // );
-        res.push({
-          label: leaderState ? (
-            <div className="cursor-not-allowed text-[#d9d9d9]">
-              以 Committer 拒绝
-            </div>
-          ) : (
-            <a
-              onClick={() => {
-                handleApprove(0, committerState ? 0 : -1);
-              }}
-            >
-              以 Committer 驳回
-              <span className="ml-2 text-[#3a5bef]">
-                {committerState && <CheckCircleOutlined rev={undefined} />}
-              </span>
-            </a>
-          ),
-          key: '2',
-        });
-      }
-      return res;
     }
+
+    return getRejectionOptions();
   };
+
+  const getRejectionOptions = () => {
+    const res = [];
+    const leaderState = isUserStateState(-1, 1);
+    const committerState = isUserStateState(-1, 0);
+    const legalState = isUserStateState(-1, 2);
+    const complianceState = isUserStateState(-1, 3);
+
+    if (commentSigLeadPermission) {
+      res.push(createRejectionOption(1, leaderState, '以 TPC Leader 驳回'));
+    }
+    if (commentCommitterPermission) {
+      res.push(createRejectionOption(0, committerState, '以 Committer 驳回'));
+    }
+    if (commentLegalPermission) {
+      res.push(createRejectionOption(2, legalState, '以法务专家驳回'));
+    }
+    if (commentCompliancePermission) {
+      res.push(createRejectionOption(3, complianceState, '以合规专家驳回'));
+    }
+
+    return res;
+  };
+
+  const isUserStateState = (state, memberType) => {
+    return Boolean(
+      userState?.find((z) => z.memberType === memberType && z.state === state)
+    );
+  };
+
+  const createRejectionOption = (type, state, label) => {
+    return {
+      label: (
+        <a onClick={() => handleApprove(type, state ? 0 : -1)}>
+          {label}
+          <span className="ml-2 text-[#3a5bef]">
+            {state && <CheckCircleOutlined rev={undefined} />}
+          </span>
+        </a>
+      ),
+      key: String(type + 1),
+    };
+  };
+
   const approveitems = getApproveItems();
   const rejectitems = getRejectItems();
 

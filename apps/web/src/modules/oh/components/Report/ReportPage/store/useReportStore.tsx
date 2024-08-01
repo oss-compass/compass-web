@@ -34,6 +34,8 @@ export const useGetReportData = () => {
     commentState,
     commentCommitterPermission,
     commentSigLeadPermission,
+    commentCompliancePermission,
+    commentLegalPermission,
     targetSoftware,
   } = data || {};
 
@@ -42,6 +44,8 @@ export const useGetReportData = () => {
     commentState,
     commentCommitterPermission,
     commentSigLeadPermission,
+    commentCompliancePermission,
+    commentLegalPermission,
     targetSoftware,
   };
 };

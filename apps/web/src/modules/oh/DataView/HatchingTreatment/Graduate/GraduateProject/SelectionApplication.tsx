@@ -208,19 +208,6 @@ const SelectionApplication = () => {
             'md:w-full md:h-full md:!m-0 md:!min-h-full md:border-none'
           ),
         }}
-        // dialogTitle={
-        //   <>
-        //     <p className="">选择软件</p>
-        //     <div
-        //       className="absolute right-6 top-4 cursor-pointer p-2"
-        //       onClick={() => {
-        //         setOpenConfirm(false);
-        //       }}
-        //     >
-        //       <GrClose className="text-base" />
-        //     </div>
-        //   </>
-        // }
         dialogContent={
           <div className="w-full">
             <div

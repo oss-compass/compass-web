@@ -17,8 +17,9 @@ import RiskBadgeInner from '@modules/oh/components/EvaluationInfo/Badge/RiskBadg
 
 const RiskClarification = ({ metric, report }) => {
   const { shortCode } = report;
-  const inputRef = useRef<InputRefProps>(null);
   const metricName = metric.key;
+  const dimension = metric.维度;
+  const inputRef = useRef<InputRefProps>(null);
   //   const [listData, setListData] = useState([]);
   const params = {
     shortCode,
@@ -78,7 +79,11 @@ const RiskClarification = ({ metric, report }) => {
               <span className="mr-4">风险澄清</span>
               <RiskBadgeInner report={report} keyId={metricName} />
             </div>
-            <CheckRisk report={report} metricName={metricName} />
+            <CheckRisk
+              dimension={dimension}
+              report={report}
+              metricName={metricName}
+            />
           </div>
         }
         footer={
