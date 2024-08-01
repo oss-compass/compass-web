@@ -1589,7 +1589,6 @@ query tpcSoftwareSelectionReportPage(
       codeCount
       codeUrl
       id
-      manufacturer
       name
       programmingLanguage
       reportType
@@ -1610,7 +1609,6 @@ query tpcSoftwareSelectionReportPage(
       tpcSoftwareSig {
         ...tpcSoftwareSig
       }
-      websiteUrl
     }
     page
     totalPage
@@ -1750,7 +1748,6 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     codeCount
     codeUrl
     id
-    manufacturer
     name
     programmingLanguage
     shortCode
@@ -1766,7 +1763,6 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     tpcSoftwareSig {
       ...tpcSoftwareSig
     }
-    websiteUrl
     userId
   }
 }

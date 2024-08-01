@@ -40,33 +40,28 @@ const ReportTable = () => {
         );
       },
     },
-    {
-      title: '官网地址',
-      dataIndex: 'websiteUrl',
-      key: 'websiteUrl',
-      render: (text) => {
-        return (
-          <a
-            target="_blank"
-            href={setUrlHost(text)}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {text}
-          </a>
-        );
-      },
-    },
+    // {
+    //   title: '官网 1 地址',
+    //   dataIndex: 'websiteUrl',
+    //   key: 'websiteUrl',
+    //   render: (text) => {
+    //     return (
+    //       <a
+    //         target="_blank"
+    //         href={setUrlHost(text)}
+    //         className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+    //       >
+    //         {text}
+    //       </a>
+    //     );
+    //   },
+    // },
     {
       title: '编程语言',
       dataIndex: 'programmingLanguage',
       key: 'programmingLanguage',
       // render: (text) => {
       // },
-    },
-    {
-      title: '开发商',
-      dataIndex: 'manufacturer',
-      key: 'time',
     },
     {
       title: '申请人',

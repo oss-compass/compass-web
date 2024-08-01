@@ -94,7 +94,7 @@ const EditReportForm = ({ report, refetch }) => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Form.Item
               label="开发商"
               name="manufacturer"
@@ -102,8 +102,8 @@ const EditReportForm = ({ report, refetch }) => {
             >
               <Input />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </Col> */}
+          {/* <Col span={12}>
             <Popover
               placement="topRight"
               content={
@@ -131,7 +131,7 @@ const EditReportForm = ({ report, refetch }) => {
                 <Input />
               </Form.Item>
             </Popover>
-          </Col>
+          </Col> */}
           <Col span={12}>
             <Form.Item
               label="引入方式"
@@ -184,7 +184,7 @@ const EditReportForm = ({ report, refetch }) => {
           </Col>
 
           <Col span={24}>
-            <div className="flex justify-center">
+            <div className="mt-20 flex justify-center">
               <Button
                 className="rounded-none"
                 type="primary"

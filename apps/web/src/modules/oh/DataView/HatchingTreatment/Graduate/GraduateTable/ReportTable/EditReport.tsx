@@ -83,7 +83,7 @@ const EditReport = ({ report, refetch }) => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Form.Item
               label="开发商"
               name="manufacturer"
@@ -91,8 +91,8 @@ const EditReport = ({ report, refetch }) => {
             >
               <Input />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </Col> */}
+          {/* <Col span={12}>
             <Popover
               placement="topRight"
               content={
@@ -120,7 +120,7 @@ const EditReport = ({ report, refetch }) => {
                 <Input />
               </Form.Item>
             </Popover>
-          </Col>
+          </Col> */}
         </Row>
         <Row gutter={24}>
           {/* <Col span={12}>

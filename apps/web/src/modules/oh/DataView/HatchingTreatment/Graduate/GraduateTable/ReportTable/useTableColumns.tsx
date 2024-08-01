@@ -97,44 +97,44 @@ export const useTableColumns = (anction) => {
         );
       },
     },
-    {
-      title: '官网地址',
-      dataIndex: 'websiteUrl',
-      key: 'websiteUrl',
-      render: (text) => {
-        return (
-          <a
-            target="_blank"
-            href={setUrlHost(text)}
-            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {text}
-          </a>
-        );
-      },
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
-    },
+    // {
+    //   title: '官网 1 地址',
+    //   dataIndex: 'websiteUrl',
+    //   key: 'websiteUrl',
+    //   render: (text) => {
+    //     return (
+    //       <a
+    //         target="_blank"
+    //         href={setUrlHost(text)}
+    //         className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+    //       >
+    //         {text}
+    //       </a>
+    //     );
+    //   },
+    //   filterIcon: (filtered: boolean) => (
+    //     <AiFillFilter
+    //       className="text-sm"
+    //       style={{ color: filtered ? '#1677ff' : undefined }}
+    //     />
+    //   ),
+    //   filterDropdown: ({
+    //     selectedKeys,
+    //     setSelectedKeys,
+    //     confirm,
+    //     clearFilters,
+    //   }) => {
+    //     return (
+    //       <TableDropdown
+    //         selectedKeys={selectedKeys}
+    //         setSelectedKeys={setSelectedKeys}
+    //         confirm={confirm}
+    //         clearFilters={clearFilters}
+    //         placeholder={''}
+    //       />
+    //     );
+    //   },
+    // },
     {
       title: '漏洞响应机制',
       dataIndex: 'vulnerabilityResponse',
@@ -161,33 +161,33 @@ export const useTableColumns = (anction) => {
       key: 'adaptationMethod',
       dataIndex: 'adaptationMethod',
     },
-    {
-      title: '开发商',
-      dataIndex: 'manufacturer',
-      key: 'manufacturer',
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
-    },
+    // {
+    //   title: '开发商',
+    //   dataIndex: 'manufacturer',
+    //   key: 'manufacturer',
+    //   filterIcon: (filtered: boolean) => (
+    //     <AiFillFilter
+    //       className="text-sm"
+    //       style={{ color: filtered ? '#1677ff' : undefined }}
+    //     />
+    //   ),
+    //   filterDropdown: ({
+    //     selectedKeys,
+    //     setSelectedKeys,
+    //     confirm,
+    //     clearFilters,
+    //   }) => {
+    //     return (
+    //       <TableDropdown
+    //         selectedKeys={selectedKeys}
+    //         setSelectedKeys={setSelectedKeys}
+    //         confirm={confirm}
+    //         clearFilters={clearFilters}
+    //         placeholder={''}
+    //       />
+    //     );
+    //   },
+    // },
     {
       title: '申请人',
       key: 'user',

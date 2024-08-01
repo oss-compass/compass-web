@@ -127,8 +127,6 @@ mutation manageUserOrgs(
 #   tpcSoftwareSigId
 #   release
 #   releaseTime
-#   manufacturer
-#   websiteUrl
 #   codeUrl
 #   programmingLanguage
 # }

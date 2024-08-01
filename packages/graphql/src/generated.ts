@@ -3725,12 +3725,10 @@ export type TpcSoftwareSelectionReport = {
 export type TpcSoftwareSelectionReportInput = {
   adaptationMethod: Scalars['String'];
   codeUrl: Scalars['String'];
-  manufacturer: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityResponse: Scalars['String'];
-  websiteUrl: Scalars['String'];
 };
 
 export type TpcSoftwareSelectionReportPage = {
@@ -3743,12 +3741,10 @@ export type TpcSoftwareSelectionReportPage = {
 
 export type TpcSoftwareSelectionReportUpdateInput = {
   adaptationMethod: Scalars['String'];
-  manufacturer: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityResponse: Scalars['String'];
-  websiteUrl: Scalars['String'];
 };
 
 export type TpcSoftwareSig = {
@@ -7505,14 +7501,12 @@ export type TpcSoftwareSelectionReportPageQuery = {
       codeCount?: number | null;
       codeUrl?: string | null;
       id: number;
-      manufacturer?: string | null;
       name?: string | null;
       programmingLanguage?: string | null;
       reportType: number;
       shortCode: string;
       userId: number;
       vulnerabilityResponse?: string | null;
-      websiteUrl?: string | null;
       user?: {
         __typename?: 'User';
         name: string;
@@ -7711,7 +7705,6 @@ export type TpcSoftwareSelectionReportQuery = {
     codeCount?: number | null;
     codeUrl?: string | null;
     id: number;
-    manufacturer?: string | null;
     name?: string | null;
     programmingLanguage?: string | null;
     shortCode: string;
@@ -7720,7 +7713,6 @@ export type TpcSoftwareSelectionReportQuery = {
     clarificationCompliancePermission?: number | null;
     clarificationLegalPermission?: number | null;
     vulnerabilityResponse?: string | null;
-    websiteUrl?: string | null;
     userId: number;
     tpcSoftwareReportMetric?: {
       __typename?: 'TpcSoftwareReportMetric';
@@ -14070,7 +14062,6 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
       codeCount
       codeUrl
       id
-      manufacturer
       name
       programmingLanguage
       reportType
@@ -14091,7 +14082,6 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
       tpcSoftwareSig {
         ...tpcSoftwareSig
       }
-      websiteUrl
     }
     page
     totalPage
@@ -14213,7 +14203,6 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     codeCount
     codeUrl
     id
-    manufacturer
     name
     programmingLanguage
     shortCode
@@ -14229,7 +14218,6 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     tpcSoftwareSig {
       ...tpcSoftwareSig
     }
-    websiteUrl
     userId
   }
 }

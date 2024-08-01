@@ -15,11 +15,6 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       children: item?.tpcSoftwareSig?.name,
     },
     {
-      key: '3',
-      label: '开发商',
-      children: item.manufacturer,
-    },
-    {
       key: '4',
       label: '编程语言',
       children: item.programmingLanguage,
@@ -34,21 +29,21 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       label: '引入方式',
       children: item.adaptationMethod,
     },
-    {
-      key: '6',
-      label: '官网地址',
-      children: (
-        <>
-          <a
-            className="line-clamp-1 text-[#69b1ff]"
-            target="_blank"
-            href={item.websiteUrl}
-          >
-            {item.websiteUrl}
-          </a>
-        </>
-      ),
-    },
+    // {
+    //   key: '6',
+    //   label: '官网地址',
+    //   children: (
+    //     <>
+    //       <a
+    //         className="line-clamp-1 text-[#69b1ff]"
+    //         target="_blank"
+    //         href={item.websiteUrl}
+    //       >
+    //         {item.websiteUrl}
+    //       </a>
+    //     </>
+    //   ),
+    // },
     {
       key: '7',
       label: '源码地址',
