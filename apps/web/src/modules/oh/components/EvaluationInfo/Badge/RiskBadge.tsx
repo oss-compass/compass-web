@@ -284,13 +284,17 @@ const RiskBadge = ({ shortCode, mertic }) => {
         )}；\n`
       : '';
   };
-  const createBadge = (content, backgroundColor, icon) => (
+  const createBadge = (content, backgroundColor, icon, count = 0) => (
     <Popover content={content}>
       <Badge
         count={
-          <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
-            {icon}
-          </div>
+          icon ? (
+            <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full">
+              {icon}
+            </div>
+          ) : (
+            count
+          )
         }
         title=""
         size="small"
@@ -305,14 +309,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
 
   if (!metricState || metricState.length === 0) {
     if (count > 0) {
-      BadgeContent = createBadge(
-        '需要确认风险澄清！',
-        'red',
-        <CloseOutlined
-          rev={undefined}
-          className="rounded-full text-xs text-white"
-        />
-      );
+      BadgeContent = createBadge('需要确认风险澄清！', 'red', null, count);
     } else if (needClarification) {
       BadgeContent = createBadge(
         '该项指标需要进行风险澄清！',
