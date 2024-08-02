@@ -64,8 +64,58 @@ const CheckApprove = ({ selectionId }) => {
       let clarificationList = metricItemScoreList.filter((m) => {
         return (
           m.是否必须澄清 === '是' &&
-          m.指标名称 !== '专利风险' &&
+          m.维度 !== '合法合规' &&
           m.指标名称 !== '采用度分析' &&
+          m.score !== 10
+        );
+      });
+      clarificationList.forEach((metric) => {
+        let clarificationState = metricClarificationState?.[metric.key];
+        if (checkClarification(clarificationState, metric.维度)) {
+          notMetricList.push(metric.指标名称);
+        }
+      });
+      return notMetricList;
+    }
+    return false; //未获取指标数据
+  }, [metricItemScoreList, metricClarificationState]);
+
+  const canLegalApprove = useMemo(() => {
+    const checkClarification = (clarificationState, dimension) => {
+      if (
+        !clarificationState ||
+        clarificationState.find((s) => s.state === -1)
+      ) {
+        return true;
+      }
+      if (dimension === '合法合规') {
+        let complianceState = clarificationState.filter(
+          (s) => s.memberType === 3
+        );
+        let legalState = clarificationState.filter((s) => s.memberType === 2);
+        if (legalState.length > 0 && complianceState.length > 0) {
+          //至少一名法务专家和一名合规专家都通过
+          return false;
+        }
+      } else {
+        let leaderState = clarificationState.filter((s) => s.memberType === 1);
+        let commiterState = clarificationState.filter(
+          (s) => s.memberType === 0
+        );
+        if (leaderState.length > 0 && commiterState.length > 0) {
+          //至少一名 commiter 和一名 Leader 都通过
+          return false;
+        }
+      }
+      return true;
+    };
+    if (metricItemScoreList?.length > 0) {
+      let notMetricList = [];
+      let clarificationList = metricItemScoreList.filter((m) => {
+        return (
+          m.是否必须澄清 === '是' &&
+          m.指标名称 !== '专利风险' &&
+          m.维度 === '合法合规' &&
           m.score !== 10
         );
       });
@@ -220,21 +270,6 @@ const CheckApprove = ({ selectionId }) => {
   // };
 
   const getApproveItems = () => {
-    if (!canApprove) {
-      return [];
-    }
-
-    if (canApprove.length > 0) {
-      return [
-        {
-          key: '0',
-          label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
-            '、'
-          )}`,
-        },
-      ];
-    }
-
     if (!hasCommentPermissions()) {
       return [
         {
@@ -245,9 +280,40 @@ const CheckApprove = ({ selectionId }) => {
       ];
     }
 
+    if (hasLegalPermissions) {
+      if (!canLegalApprove) {
+        return [];
+      }
+      if (canLegalApprove.length > 0) {
+        return [
+          {
+            key: '0',
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${canLegalApprove.join(
+              '、'
+            )}`,
+          },
+        ];
+      }
+    } else {
+      if (!canApprove) {
+        return [];
+      }
+      if (canApprove.length > 0) {
+        return [
+          {
+            key: '0',
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
+              '、'
+            )}`,
+          },
+        ];
+      }
+    }
     return getApprovalOptions();
   };
-
+  const hasLegalPermissions = () => {
+    return commentCompliancePermission || commentLegalPermission;
+  };
   const hasCommentPermissions = () => {
     return (
       commentCommitterPermission ||
@@ -301,17 +367,6 @@ const CheckApprove = ({ selectionId }) => {
   };
 
   const getRejectItems = () => {
-    if (canApprove && canApprove.length > 0) {
-      return [
-        {
-          key: '0',
-          label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
-            '、'
-          )}`,
-        },
-      ];
-    }
-
     if (!hasCommentPermissions()) {
       return [
         {
@@ -321,7 +376,45 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-
+    // if (canApprove && canApprove.length > 0) {
+    //   return [
+    //     {
+    //       key: '0',
+    //       label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
+    //         '、'
+    //       )}`,
+    //     },
+    //   ];
+    // }
+    if (hasLegalPermissions) {
+      if (!canLegalApprove) {
+        return [];
+      }
+      if (canLegalApprove.length > 0) {
+        return [
+          {
+            key: '0',
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${canLegalApprove.join(
+              '、'
+            )}`,
+          },
+        ];
+      }
+    } else {
+      if (!canApprove) {
+        return [];
+      }
+      if (canApprove.length > 0) {
+        return [
+          {
+            key: '0',
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
+              '、'
+            )}`,
+          },
+        ];
+      }
+    }
     return getRejectionOptions();
   };
 
