@@ -28,6 +28,12 @@ const CheckApprove = ({ selectionId }) => {
     commentLegalPermission,
     commentState,
   } = useGetReportData();
+  console.log(
+    commentCommitterPermission,
+    commentSigLeadPermission,
+    commentCompliancePermission,
+    commentLegalPermission
+  );
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
   const canApprove = useMemo(() => {
@@ -77,7 +83,7 @@ const CheckApprove = ({ selectionId }) => {
       });
       return notMetricList;
     }
-    return false; //未获取指标数据
+    return []; //未获取指标数据
   }, [metricItemScoreList, metricClarificationState]);
 
   const canLegalApprove = useMemo(() => {
@@ -127,7 +133,7 @@ const CheckApprove = ({ selectionId }) => {
       });
       return notMetricList;
     }
-    return false;
+    return [];
   }, [metricItemScoreList, metricClarificationState]);
   const mutation = useAcceptTpcSoftwareSelectionMutation(gqlClient);
   const userState = commentState?.filter((z) => z.userId === currentUser.id);
@@ -150,125 +156,6 @@ const CheckApprove = ({ selectionId }) => {
       }
     );
   };
-  // const getApproveItems = () => {
-  //   if (!canApprove) {
-  //     return [];
-  //   }
-  //   if (canApprove && canApprove.length > 0) {
-  //     return [
-  //       {
-  //         key: '0',
-  //         label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
-  //           '、'
-  //         )}`,
-  //       },
-  //     ];
-  //   }
-  //   if (
-  //     !commentCommitterPermission &&
-  //     !commentSigLeadPermission &&
-  //     !commentCompliancePermission &&
-  //     !commentLegalPermission
-  //   ) {
-  //     return [
-  //       {
-  //         key: '1',
-  //         label:
-  //           '您不是该软件的 Committer 或 TPC Leader 或法务合规专家，暂无权限审批',
-  //       },
-  //     ];
-  //   } else {
-  //     let res = [];
-  //     const leaderState = Boolean(
-  //       userState?.find((z) => z.memberType === 1 && z.state === 1)
-  //     );
-  //     const committerState = Boolean(
-  //       userState?.find((z) => z.memberType === 0 && z.state === 1)
-  //     );
-  //     const legalState = Boolean(
-  //       userState?.find((z) => z.memberType === 2 && z.state === 1)
-  //     );
-  //     const complianceState = Boolean(
-  //       userState?.find((z) => z.memberType === 3 && z.state === 1)
-  //     );
-  //     if (commentSigLeadPermission) {
-  //       // const state = Boolean(
-  //       //   userState?.find((z) => z.memberType === 1 && z.state === 1)
-  //       // );
-  //       res.push({
-  //         label: (
-  //           <a
-  //             onClick={() => {
-  //               handleApprove(1, Number(!leaderState));
-  //             }}
-  //           >
-  //             以 TPC Leader 通过
-  //             <span className="ml-2 text-[#3a5bef]">
-  //               {leaderState && <CheckCircleOutlined rev={undefined} />}
-  //             </span>
-  //           </a>
-  //         ),
-  //         key: '1',
-  //       });
-  //     }
-  //     if (commentCommitterPermission) {
-  //       // const state = Boolean(
-  //       //   userState?.find((z) => z.memberType === 0 && z.state === 1)
-  //       // );
-  //       res.push({
-  //         label: (
-  //           <a
-  //             onClick={() => {
-  //               handleApprove(0, Number(!committerState));
-  //             }}
-  //           >
-  //             以 Committer 通过
-  //             <span className="ml-2 text-[#3a5bef]">
-  //               {committerState && <CheckCircleOutlined rev={undefined} />}
-  //             </span>
-  //           </a>
-  //         ),
-  //         key: '2',
-  //       });
-  //     }
-  //     if (commentLegalPermission) {
-  //       res.push({
-  //         label: (
-  //           <a
-  //             onClick={() => {
-  //               handleApprove(2, Number(!legalState));
-  //             }}
-  //           >
-  //             以法务专家通过
-  //             <span className="ml-2 text-[#3a5bef]">
-  //               {legalState && <CheckCircleOutlined rev={undefined} />}
-  //             </span>
-  //           </a>
-  //         ),
-  //         key: '3',
-  //       });
-  //     }
-  //     if (commentCompliancePermission) {
-  //       res.push({
-  //         label: (
-  //           <a
-  //             onClick={() => {
-  //               handleApprove(3, Number(!complianceState));
-  //             }}
-  //           >
-  //             以合规专家通过
-  //             <span className="ml-2 text-[#3a5bef]">
-  //               {complianceState && <CheckCircleOutlined rev={undefined} />}
-  //             </span>
-  //           </a>
-  //         ),
-  //         key: '4',
-  //       });
-  //     }
-  //     return res;
-  //   }
-  // };
-
   const getApproveItems = () => {
     if (!hasCommentPermissions()) {
       return [
@@ -279,11 +166,19 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-
-    if (hasLegalPermissions) {
-      if (!canLegalApprove) {
-        return [];
+    if (commentCompliancePermission) {
+      if (canLegalApprove.length > 0 || canApprove.length > 0) {
+        return [
+          {
+            key: '0',
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
+              ...canLegalApprove,
+              ...canApprove,
+            ]?.join('、')}`,
+          },
+        ];
       }
+    } else if (commentLegalPermission) {
       if (canLegalApprove.length > 0) {
         return [
           {
@@ -294,10 +189,7 @@ const CheckApprove = ({ selectionId }) => {
           },
         ];
       }
-    } else {
-      if (!canApprove) {
-        return [];
-      }
+    } else if (commentCommitterPermission || commentSigLeadPermission) {
       if (canApprove.length > 0) {
         return [
           {
@@ -310,9 +202,6 @@ const CheckApprove = ({ selectionId }) => {
       }
     }
     return getApprovalOptions();
-  };
-  const hasLegalPermissions = () => {
-    return commentCompliancePermission || commentLegalPermission;
   };
   const hasCommentPermissions = () => {
     return (
@@ -376,20 +265,19 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-    // if (canApprove && canApprove.length > 0) {
-    //   return [
-    //     {
-    //       key: '0',
-    //       label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
-    //         '、'
-    //       )}`,
-    //     },
-    //   ];
-    // }
-    if (hasLegalPermissions) {
-      if (!canLegalApprove) {
-        return [];
+    if (commentCompliancePermission) {
+      if (canLegalApprove.length > 0 || canApprove.length > 0) {
+        return [
+          {
+            key: '0',
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
+              ...canLegalApprove,
+              ...canApprove,
+            ]?.join('、')}`,
+          },
+        ];
       }
+    } else if (commentLegalPermission) {
       if (canLegalApprove.length > 0) {
         return [
           {
@@ -400,10 +288,7 @@ const CheckApprove = ({ selectionId }) => {
           },
         ];
       }
-    } else {
-      if (!canApprove) {
-        return [];
-      }
+    } else if (commentCommitterPermission || commentSigLeadPermission) {
       if (canApprove.length > 0) {
         return [
           {
