@@ -108,6 +108,13 @@ export const languagesList = [
   'Elixir',
 ];
 export const incubationTimeList = ['三个月', '六个月', '九个月'];
+export const lifecyclePolicyList = [
+  ' 六个月社区支持',
+  '一年社区支持',
+  '两年社区支持',
+  '不提供社区支持',
+];
+
 export const adaptationMethodList = [
   // autocorrect: false
   'Java库重写',

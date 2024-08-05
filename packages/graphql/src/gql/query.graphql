@@ -1968,5 +1968,188 @@ query tpcSoftwareSelection($selectionId: Int!) {
       userId
     }
     targetSoftware
+    reason
+    demandSource
+    functionalDescription
+    incubationTime
+    committers
+    isSameTypeCheck
+    sameTypeSoftwareName
+    repoUrl
+    tpcSoftwareSelectionReports {
+      adaptationMethod
+      license
+      codeUrl
+    }
   }
 }
+
+# fragment tpcSoftwareGraduationReportMetric on TpcSoftwareGraduationReportMetric {
+#   complianceCopyrightStatement
+#   complianceCopyrightStatementAntiTamper
+#   complianceDco
+#   complianceLicense
+#   complianceLicenseCompatibility
+#   ecologyBuild
+#   ecologyBuildDoc
+#   ecologyCi
+#   ecologyCodeReview
+#   ecologyCodeUpstream
+#   ecologyInterfaceDoc
+#   ecologyIssueManagement
+#   ecologyIssueResponseRatio
+#   ecologyIssueResponseTime
+#   ecologyMaintainerDoc
+#   ecologyReadme
+#   ecologyTestCoverage
+#   lifecycleReleaseNote
+#   lifecycleStatement
+#   securityBinaryArtifact
+#   securityPackageSig
+#   securityVulnerability
+#   createdAt
+#   id
+#   status
+#   tpcSoftwareGraduationReportId
+#   updatedAt
+#   codeUrl
+# }
+# fragment tpcSoftwareGraduationReportMetricDetail on TpcSoftwareGraduationReportMetric {
+#   complianceCopyrightStatementAntiTamperDetail
+#   # complianceCopyrightStatementDetail
+#   # complianceDcoDetail
+#   # complianceLicenseCompatibilityDetail
+#   # complianceLicenseDetail
+#   # ecologyBuildDetail
+#   # ecologyBuildDocDetail
+#   # ecologyCiDetail
+#   # ecologyCodeReviewDetail
+#   # ecologyCodeUpstreamDetail
+#   # ecologyInterfaceDocDetail
+#   # ecologyIssueManagementDetail
+#   # ecologyIssueResponseRatioDetail
+#   # ecologyIssueResponseTimeDetail
+#   # ecologyMaintainerDocDetail
+#   # ecologyReadmeDetail
+#   # ecologyTestCoverageDetail
+#   # lifecycleReleaseNoteDetail
+#   # lifecycleStatementDetail
+#   # securityBinaryArtifactDetail
+#   # securityPackageSigDetail
+#   # securityVulnerabilityDetail
+# }
+# query tpcSoftwareGraduationReportPage(
+#   $label: String!
+#   $level: String = "repo"
+#   $page: Int
+#   $per: Int
+#   $filterOpts: [FilterOptionInput!]
+#   $sortOpts: [SortOptionInput!]
+# ) {
+#   tpcSoftwareGraduationReportPage(
+#     page: $page
+#     per: $per
+#     label: $label
+#     level: $level
+#     filterOpts: $filterOpts
+#     sortOpts: $sortOpts
+#   ) {
+#     count
+#     items {
+#       adaptationMethod
+#       # codeCount
+#       codeUrl
+#       id
+#       name
+#       upstreamCodeUrl
+#       shortCode
+#       programmingLanguage
+#       user {
+#         name
+#         loginBinds {
+#           account
+#           nickname
+#           provider
+#         }
+#       }
+#       userId
+#       graduationReportMetric {
+#         ...tpcSoftwareGraduationReportMetric
+#       }
+#       tpcSoftwareSig {
+#         ...tpcSoftwareSig
+#       }
+#     }
+#     page
+#     totalPage
+#   }
+# }
+# query tpcSoftwareGraduationPage(
+#   $label: String!
+#   $level: String = "repo"
+#   $page: Int
+#   $per: Int
+#   $filterOpts: [FilterOptionInput!]
+#   $sortOpts: [SortOptionInput!]
+# ) {
+#   tpcSoftwareGraduationPage(
+#     page: $page
+#     per: $per
+#     label: $label
+#     level: $level
+#     filterOpts: $filterOpts
+#     sortOpts: $sortOpts
+#   ) {
+#     count
+#     items {
+#       createdAt
+#       updatedAt
+#       demandSource
+#       committers
+#       incubationStartTime
+#       incubationTime
+#       tpcSoftwareGraduationReportIds
+#       tpcSoftwareGraduationReports {
+#         name
+#         shortCode
+#         codeUrl
+#       }
+#       user {
+#         name
+#         loginBinds {
+#           account
+#           nickname
+#           provider
+#         }
+#       }
+#       userId
+#       # functionalDescription
+#       # id
+#       # incubationTime
+#       # isSameTypeCheck
+#       # repoUrl
+#       # reason
+#       # sameTypeSoftwareName
+#       # selectionType
+#       # targetSoftware
+#       # updatedAt
+#       # user {
+#       #   name
+#       #   loginBinds {
+#       #     account
+#       #     nickname
+#       #     provider
+#       #   }
+#       # }
+#       # userId
+#       # tpcSoftwareSelectionReportIds
+#       # tpcSoftwareSelectionReports {
+#       #   name
+#       #   shortCode
+#       #   codeUrl
+#       # }
+#     }
+#     page
+#     totalPage
+#   }
+# }

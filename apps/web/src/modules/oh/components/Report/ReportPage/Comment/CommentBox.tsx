@@ -15,8 +15,11 @@ import {
   ReportStore,
   ReportEvent,
 } from '@modules/oh/components/Report/ReportPage/store/useReportStore';
+import HasOhRole from '@modules/oh/components/HasOhRole';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
 const CommentBox = ({ taskId: selectionId }) => {
+  const { hasOhRole } = useHasOhRole();
   const inputRef = useRef<InputRefProps>(null);
   //   const [listData, setListData] = useState([]);
   const params = {
@@ -68,11 +71,13 @@ const CommentBox = ({ taskId: selectionId }) => {
         className="oh !rounded-none"
         size="large"
         footer={
-          <div>
+          <HasOhRole>
+            <div></div>
             <CommentInput
               ref={inputRef}
               loading={commentMutation.isLoading}
               placeholder={'按Enter发送评论'}
+              disabled={!hasOhRole}
               onSubmit={(content) => {
                 commentMutation.mutate(
                   {
@@ -90,7 +95,7 @@ const CommentBox = ({ taskId: selectionId }) => {
                 );
               }}
             />
-          </div>
+          </HasOhRole>
         }
         bordered
         loading={isLoading || isFetchingNextPage}

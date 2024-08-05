@@ -14,8 +14,11 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
 import RiskBadgeInner from '@modules/oh/components/EvaluationInfo/Badge/RiskBadgeInner';
+import HasOhRole from '@modules/oh/components/HasOhRole';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
 const RiskClarification = ({ metric, report }) => {
+  const { hasOhRole } = useHasOhRole();
   const { shortCode } = report;
   const metricName = metric.key;
   const dimension = metric.维度;
@@ -87,10 +90,12 @@ const RiskClarification = ({ metric, report }) => {
           </div>
         }
         footer={
-          <div>
+          <HasOhRole>
+            <div></div>
             <CommentInput
               ref={inputRef}
               loading={commentMutation.isLoading}
+              disabled={!hasOhRole}
               placeholder={'按Enter发送风险澄清'}
               onSubmit={(content) => {
                 commentMutation.mutate(
@@ -110,7 +115,7 @@ const RiskClarification = ({ metric, report }) => {
                 );
               }}
             />
-          </div>
+          </HasOhRole>
         }
         bordered
         loading={isLoading || isFetchingNextPage}

@@ -28,8 +28,11 @@ import { openGiteeIssue } from '@modules/oh/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import ReportPageItems from '@modules/oh/components/Report/ReportPageItems';
 import { getPathname } from '@common/utils';
+import HasOhRole from '@modules/oh/components/HasOhRole';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
 const SelectionApplication = () => {
+  const { hasOhRole } = useHasOhRole();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [report, setReport] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
@@ -405,16 +408,19 @@ const SelectionApplication = () => {
       />
       {report.length > 0 && (
         <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
-          <Button
-            className="rounded-none"
-            type="primary"
-            loading={mutation.isLoading}
-            onClick={() => {
-              submit();
-            }}
-          >
-            提交申请
-          </Button>
+          <HasOhRole>
+            <Button
+              disabled={!hasOhRole}
+              className="rounded-none"
+              type="primary"
+              loading={mutation.isLoading}
+              onClick={() => {
+                submit();
+              }}
+            >
+              提交申请
+            </Button>
+          </HasOhRole>
           {/* <Button className="rounded-none">保存</Button> */}
           {/* <Button
             className="rounded-none"

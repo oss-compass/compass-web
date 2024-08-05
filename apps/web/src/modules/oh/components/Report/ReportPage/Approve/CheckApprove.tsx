@@ -18,9 +18,14 @@ import { Dropdown } from 'antd';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import { useGetAllRisk } from '@modules/oh/store/useRiskStore';
 import { useGetTargetSoftwareData } from '@modules/oh/store/useTargetSoftwareStore';
+import HasOhRole from '@modules/oh/components/HasOhRole';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
+import { Divider } from '@mui/material';
 
 const CheckApprove = ({ selectionId }) => {
+  const { hasOhRole } = useHasOhRole();
   const { currentUser } = useUserInfo();
+  const userId = currentUser?.id;
   const {
     commentCommitterPermission,
     commentSigLeadPermission,
@@ -36,7 +41,7 @@ const CheckApprove = ({ selectionId }) => {
   );
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
-  const userState = commentState?.filter((z) => z.userId === currentUser.id);
+  const userState = commentState?.filter((z) => z.userId === userId);
 
   const canApprove = useMemo(() => {
     const checkClarification = (clarificationState, dimension) => {
@@ -45,7 +50,7 @@ const CheckApprove = ({ selectionId }) => {
       }
       //查找当前用户是否通过澄清
       let userState = clarificationState.filter(
-        (s) => s.userId === currentUser.id && s.state === 1
+        (s) => s.userId === userId && s.state === 1
       );
       if (userState.length > 0) {
         return false;
@@ -99,7 +104,7 @@ const CheckApprove = ({ selectionId }) => {
       }
       //查找当前用户是否通过澄清
       let userState = clarificationState.filter(
-        (s) => s.userId === currentUser.id && s.state === 1
+        (s) => s.userId === userId && s.state === 1
       );
       if (userState.length > 0) {
         return false;
@@ -327,34 +332,58 @@ const CheckApprove = ({ selectionId }) => {
   return (
     <div className="oh mb-4 flex items-center gap-2">
       <div className="oh text-base font-semibold">评审意见：</div>
-      <Popover>
-        <Dropdown
-          menu={{ items: approveitems }}
-          placement="bottom"
-          // arrow={{ pointAtCenter: true }}
-        >
-          <Button className="flex items-center !rounded-none" type="primary">
-            <CheckOutlined rev={undefined} />
-            通过
-          </Button>
-        </Dropdown>
-      </Popover>
-      <Popover>
-        <Dropdown
-          menu={{ items: rejectitems }}
-          placement="bottom"
-          // arrow={{ pointAtCenter: true }}
-        >
-          <Button
-            onClick={() => {}}
-            className="flex items-center !rounded-none"
-            type="primary"
-          >
-            <CloseOutlined rev={undefined} />
-            驳回
-          </Button>
-        </Dropdown>
-      </Popover>
+      {hasOhRole ? (
+        <>
+          <Popover>
+            <Dropdown
+              menu={{ items: approveitems }}
+              placement="bottom"
+              // arrow={{ pointAtCenter: true }}
+            >
+              <Button
+                className="flex items-center !rounded-none"
+                type="primary"
+              >
+                <CheckOutlined rev={undefined} />
+                通过
+              </Button>
+            </Dropdown>
+          </Popover>
+          <Popover>
+            <Dropdown
+              menu={{ items: rejectitems }}
+              placement="bottom"
+              // arrow={{ pointAtCenter: true }}
+            >
+              <Button
+                onClick={() => {}}
+                className="flex items-center !rounded-none"
+                type="primary"
+              >
+                <CloseOutlined rev={undefined} />
+                驳回
+              </Button>
+            </Dropdown>
+          </Popover>
+        </>
+      ) : (
+        <HasOhRole>
+          <div className="flex gap-2">
+            <Button className="flex items-center !rounded-none" type="primary">
+              <CheckOutlined rev={undefined} />
+              通过
+            </Button>
+            <Button
+              onClick={() => {}}
+              className="flex items-center !rounded-none"
+              type="primary"
+            >
+              <CloseOutlined rev={undefined} />
+              驳回
+            </Button>
+          </div>
+        </HasOhRole>
+      )}
     </div>
   );
 };

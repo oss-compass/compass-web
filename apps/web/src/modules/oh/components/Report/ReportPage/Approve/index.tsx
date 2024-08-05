@@ -13,7 +13,7 @@ import ApproveBox from './ApproveBox';
 const Comment = () => {
   const { taskId } = useLabelData();
   const { currentUser } = useUserInfo();
-  const userId = currentUser.id;
+  const userId = currentUser?.id;
   const [open, setOpen] = useState(false);
   const { commentState, commentCommitterPermission, commentSigLeadPermission } =
     useGetReportData();

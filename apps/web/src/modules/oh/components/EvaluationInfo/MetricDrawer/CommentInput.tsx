@@ -25,6 +25,7 @@ interface Props {
   showFooter?: boolean;
   placeholder?: string;
   loading: boolean;
+  disabled?: boolean;
   content?: string;
   onSubmit: (content: string, images?: Image[]) => void;
   onCancel?: () => void;
@@ -38,7 +39,15 @@ export interface InputRefProps {
 
 const CommentInput = forwardRef<InputRefProps, Props>(
   (
-    { showFooter = false, placeholder, loading, onSubmit, onCancel, content },
+    {
+      showFooter = false,
+      placeholder,
+      loading,
+      onSubmit,
+      onCancel,
+      content,
+      disabled,
+    },
     ref
   ) => {
     const { t } = useTranslation();
@@ -112,6 +121,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
             onChange={(event) => {
               setValue(event.target.value);
             }}
+            disabled={disabled}
             className="w-full resize-none pt-1 pl-2 outline-0"
             placeholder={placeholder ? placeholder : t('lab:commit_enter')}
             onKeyDown={(event) => {

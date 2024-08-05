@@ -24,7 +24,7 @@ const ReportPageItems = ({ reportItems, targetSoftware = null }) => {
         {reportItems.map((z, index) => {
           return (
             <GetReportData
-              key={z.id}
+              key={index}
               shortCode={z.shortCode}
               targetSoftware={targetSoftware}
             />

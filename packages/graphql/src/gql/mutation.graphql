@@ -161,7 +161,7 @@ mutation createTpcSoftwareSelection(
   $committers: [String!]!
   $functionalDescription: String!
   $incubationTime: String!
-  $demandSource: String
+  $demandSource: String!
   $reason: String!
   # $adaptationMethod: String!
   $targetSoftware: String!
@@ -368,7 +368,7 @@ mutation acceptTpcSoftwareSelection(
 #   $level: String!
 #   $tpcSoftwareGraduationReportIds: [Int!]!
 #   $committers: [String!]!
-#   $demandSource: String
+#   $demandSource: String!
 #   $incubationTime: String!
 #   $incubationStartTime: ISO8601DateTime
 # ) {
@@ -396,7 +396,7 @@ mutation acceptTpcSoftwareSelection(
 #   $graduationId: Int!
 #   $tpcSoftwareGraduationReportIds: [Int!]!
 #   $committers: [String!]!
-#   $demandSource: String
+#   $demandSource: String!
 #   $incubationTime: String!
 #   $incubationStartTime: ISO8601DateTime
 # ) {
@@ -414,7 +414,6 @@ mutation acceptTpcSoftwareSelection(
 #       message
 #       path
 #     }
-#     id
 #     message
 #     status
 #   }

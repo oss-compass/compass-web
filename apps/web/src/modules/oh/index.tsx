@@ -7,7 +7,7 @@ import { Main } from '@common/components/Layout';
 
 const Oh = () => {
   return (
-    <OhRole>
+    <>
       <NavBar />
       <Main>
         <SideBar />
@@ -15,7 +15,7 @@ const Oh = () => {
           <DataView />
         </div>
       </Main>
-    </OhRole>
+    </>
   );
 };
 

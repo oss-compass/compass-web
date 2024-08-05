@@ -134,7 +134,7 @@ const EditReportForm = ({ report, refetch }) => {
           </Col> */}
           <Col span={12}>
             <Form.Item
-              label="引入方式"
+              label="适配方式"
               name="adaptationMethod"
               rules={[{ required: true, message: '请输入!' }]}
             >
@@ -206,10 +206,11 @@ const EditReportForm = ({ report, refetch }) => {
 const EditReport = ({ report, editSuccess }) => {
   const { currentUser } = useUserInfo();
   const [openConfirm, setOpenConfirm] = useState(false);
+  const userId = currentUser?.id;
 
   return (
     <>
-      {currentUser.id === report.userId && (
+      {userId === report.userId && (
         <Popover content={'编辑基础信息'}>
           <EditOutlined
             rev={undefined}

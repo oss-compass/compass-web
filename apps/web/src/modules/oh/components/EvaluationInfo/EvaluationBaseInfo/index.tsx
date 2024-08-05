@@ -26,7 +26,7 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
     },
     {
       key: '8',
-      label: '引入方式',
+      label: '适配方式',
       children: item.adaptationMethod,
     },
     // {

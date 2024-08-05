@@ -5614,7 +5614,7 @@ export type CreateTpcSoftwareSelectionMutationVariables = Exact<{
   committers: Array<Scalars['String']> | Scalars['String'];
   functionalDescription: Scalars['String'];
   incubationTime: Scalars['String'];
-  demandSource?: InputMaybe<Scalars['String']>;
+  demandSource: Scalars['String'];
   reason: Scalars['String'];
   targetSoftware: Scalars['String'];
   isSameTypeCheck: Scalars['Int'];
@@ -8189,6 +8189,14 @@ export type TpcSoftwareSelectionQuery = {
     commentCount?: number | null;
     commentSigLeadPermission?: number | null;
     targetSoftware?: string | null;
+    reason?: string | null;
+    demandSource?: string | null;
+    functionalDescription?: string | null;
+    incubationTime?: string | null;
+    committers?: Array<string> | null;
+    isSameTypeCheck?: number | null;
+    sameTypeSoftwareName?: string | null;
+    repoUrl?: Array<string> | null;
     commentState?: Array<{
       __typename?: 'TpcSoftwareCommentState';
       createdAt: any;
@@ -8208,6 +8216,12 @@ export type TpcSoftwareSelectionQuery = {
           provider?: string | null;
         }> | null;
       } | null;
+    }> | null;
+    tpcSoftwareSelectionReports?: Array<{
+      __typename?: 'TpcSoftwareSelectionReport';
+      adaptationMethod?: string | null;
+      license?: string | null;
+      codeUrl?: string | null;
     }> | null;
   } | null;
 };
@@ -10571,7 +10585,7 @@ useCreateTpcSoftwareSelectionReportMutation.fetcher = (
     CreateTpcSoftwareSelectionReportMutationVariables
   >(client, CreateTpcSoftwareSelectionReportDocument, variables, headers);
 export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String, $reason: String!, $targetSoftware: String!, $isSameTypeCheck: Int!) {
+    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String!, $reason: String!, $targetSoftware: String!, $isSameTypeCheck: Int!) {
   createTpcSoftwareSelection(
     input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, targetSoftware: $targetSoftware, isSameTypeCheck: $isSameTypeCheck}
   ) {
@@ -14578,6 +14592,19 @@ export const TpcSoftwareSelectionDocument = /*#__PURE__*/ `
       userId
     }
     targetSoftware
+    reason
+    demandSource
+    functionalDescription
+    incubationTime
+    committers
+    isSameTypeCheck
+    sameTypeSoftwareName
+    repoUrl
+    tpcSoftwareSelectionReports {
+      adaptationMethod
+      license
+      codeUrl
+    }
   }
 }
     `;

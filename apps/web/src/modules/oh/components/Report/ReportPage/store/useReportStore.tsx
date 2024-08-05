@@ -37,8 +37,17 @@ export const useGetReportData = () => {
     commentCompliancePermission,
     commentLegalPermission,
     targetSoftware,
+    reason,
+    demandSource,
+    functionalDescription,
+    incubationTime,
+    committers,
+    isSameTypeCheck,
+    sameTypeSoftwareName,
+    repoUrl,
+    tpcSoftwareSelectionReports,
   } = data || {};
-
+  // const baseInfo =
   return {
     count,
     commentState,
@@ -47,6 +56,15 @@ export const useGetReportData = () => {
     commentCompliancePermission,
     commentLegalPermission,
     targetSoftware,
+    reason,
+    demandSource,
+    functionalDescription,
+    incubationTime,
+    committers,
+    isSameTypeCheck,
+    sameTypeSoftwareName,
+    repoUrl,
+    tpcSoftwareSelectionReports,
   };
 };
 export const resetReportData = () => {

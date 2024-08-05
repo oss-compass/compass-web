@@ -10,8 +10,11 @@ import {
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
 import getErrorMessage from '@common/utils/getErrorMessage';
+import HasOhRole from '@modules/oh/components/HasOhRole';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
 const SelectionReportApplication = () => {
+  const { hasOhRole } = useHasOhRole();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
@@ -271,7 +274,7 @@ const SelectionReportApplication = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="引入方式"
+                label="适配方式"
                 name="adaptationMethod"
                 rules={[{ required: true, message: '请输入!' }]}
               >
@@ -299,16 +302,20 @@ const SelectionReportApplication = () => {
         </Form>
       </div>
       <div className="fixed bottom-2 left-0 flex w-[100%] justify-center gap-2 border-t pt-2">
-        <Button
-          className="rounded-none"
-          type="primary"
-          loading={mutation.isLoading}
-          onClick={() => {
-            submit();
-          }}
-        >
-          提交
-        </Button>
+        <HasOhRole>
+          <Button
+            className="rounded-none"
+            type="primary"
+            loading={mutation.isLoading}
+            disabled={!hasOhRole}
+            onClick={() => {
+              submit();
+            }}
+          >
+            提交
+          </Button>
+        </HasOhRole>
+
         {/* <Button
           className="rounded-none"
           htmlType="submit"

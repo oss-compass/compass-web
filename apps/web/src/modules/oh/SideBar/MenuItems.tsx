@@ -15,17 +15,19 @@ import SigCenter from '@modules/oh/DataView/Community/SigCenter';
 import SandboxReport from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxReport';
 import SandboxProject from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxProject';
 import SandboxTable from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxTable';
-import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
-import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
-import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
+// import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
+// import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
+// import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
 import Graduate from '@modules/oh/DataView/HatchingTreatment/Graduate';
-import GraduateReport from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateReport';
-import GraduateProject from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateProject';
-import GraduateTable from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateTable';
+
 import BoardSandbox from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardSandbox';
 import BoardHatch from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardHatch';
 import BoardGraduateBoard from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardGraduateBoard';
 import ReportPage from '@modules/oh/components/Report/ReportPage';
+// import GraduateReport from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateReport';
+// import GraduateProject from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateProject';
+// import GraduateTable from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateTable';
+// import GraduationReport from '@modules/oh/components/GraduationReport/ReportPage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -173,4 +175,5 @@ export const componentMap = {
   boardHatch: <BoardHatch />,
   boardGraduateBoard: <BoardGraduateBoard />,
   reportDetailPage: <ReportPage />,
+  // graduationReportPage: <GraduationReport />,
 };

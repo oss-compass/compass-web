@@ -36,7 +36,7 @@ export const useTableColumns = (anction) => {
       title: '目标孵化软件',
       dataIndex: 'targetSoftware',
       key: 'targetSoftware',
-      width: 120,
+      width: 140,
       filterIcon: (filtered: boolean) => (
         <AiFillFilter
           className="text-sm"

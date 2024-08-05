@@ -16,6 +16,8 @@ import {
 } from '@modules/oh/store/useRiskStore';
 import { Dropdown } from 'antd';
 import { useUserInfo } from '@modules/auth/useUserInfo';
+import HasOhRole from '@modules/oh/components/HasOhRole';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
 const CheckRisk = ({ report, metricName, dimension }) => {
   const {
@@ -25,11 +27,12 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     clarificationCompliancePermission,
     clarificationLegalPermission,
   } = report;
+  const { hasOhRole } = useHasOhRole();
   const { currentUser } = useUserInfo();
   const { count, metricState } = useGetRisk(shortCode, metricName);
   const mutation =
     useAcceptTpcSoftwareReportMetricClarificationMutation(gqlClient);
-  const userState = metricState?.filter((z) => z.userId === currentUser.id);
+  const userState = metricState?.filter((z) => z.userId === currentUser?.id);
   const handleApprove = (memberType, state) => {
     mutation.mutate(
       {
@@ -192,28 +195,52 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     <>
       {count > 0 && (
         <div className="oh flex gap-2">
-          <Popover>
-            <Dropdown menu={{ items: approveitems }} placement="bottom">
-              <Button
-                className="flex items-center !rounded-none"
-                type="primary"
-              >
-                <CheckOutlined rev={undefined} />
-                赞同
-              </Button>
-            </Dropdown>
-          </Popover>
-          <Popover>
-            <Dropdown menu={{ items: rejectitems }} placement="bottom">
-              <Button
-                className="flex items-center !rounded-none"
-                type="primary"
-              >
-                <CloseOutlined rev={undefined} />
-                拒绝
-              </Button>
-            </Dropdown>
-          </Popover>
+          {hasOhRole ? (
+            <>
+              <Popover>
+                <Dropdown menu={{ items: approveitems }} placement="bottom">
+                  <Button
+                    className="flex items-center !rounded-none"
+                    type="primary"
+                  >
+                    <CheckOutlined rev={undefined} />
+                    赞同
+                  </Button>
+                </Dropdown>
+              </Popover>
+              <Popover>
+                <Dropdown menu={{ items: rejectitems }} placement="bottom">
+                  <Button
+                    className="flex items-center !rounded-none"
+                    type="primary"
+                  >
+                    <CloseOutlined rev={undefined} />
+                    拒绝
+                  </Button>
+                </Dropdown>
+              </Popover>
+            </>
+          ) : (
+            <HasOhRole>
+              <div className="flex gap-2">
+                <Button
+                  className="flex items-center !rounded-none"
+                  type="primary"
+                >
+                  <CheckOutlined rev={undefined} />
+                  赞同
+                </Button>
+                <Button
+                  onClick={() => {}}
+                  className="flex items-center !rounded-none"
+                  type="primary"
+                >
+                  <CloseOutlined rev={undefined} />
+                  拒绝
+                </Button>
+              </div>
+            </HasOhRole>
+          )}
         </div>
       )}
     </>
