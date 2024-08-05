@@ -32,7 +32,11 @@ const EvaluationBaseInfo = () => {
           {
             key: '2',
             label: '需求来源',
-            children: <div className="line-clamp-1">{demandSource}</div>,
+            children: (
+              <div title={demandSource} className="line-clamp-1">
+                {demandSource}
+              </div>
+            ),
             span: 2,
           },
         ]
@@ -40,25 +44,33 @@ const EvaluationBaseInfo = () => {
     {
       key: '5',
       label: '需求描述',
-      children: <div className="line-clamp-1">{reason}</div>,
+      children: <div>{reason}</div>,
       span: 4,
     },
     {
       key: '6',
       label: '功能描述',
-      children: <div className="line-clamp-1">{functionalDescription}</div>,
+      children: <div>{functionalDescription}</div>,
       span: 4,
     },
     {
       key: '7',
       label: 'Committers',
-      children: <div className="line-clamp-1">{committers}</div>,
+      children: (
+        <div title={committers} className="line-clamp-1">
+          {committers}
+        </div>
+      ),
       span: 4,
     },
     {
       key: '9',
       label: '适配仓路径',
-      children: repoUrl,
+      children: (
+        <div title={repoUrl} className="line-clamp-1">
+          {repoUrl}
+        </div>
+      ),
       span: 4,
     },
     {
@@ -151,7 +163,12 @@ const EvaluationBaseInfo = () => {
   ];
   return (
     <div className="oh">
-      <Descriptions bordered items={baseItems} column={4} />
+      <Descriptions
+        labelStyle={{ width: '150px' }}
+        bordered
+        items={baseItems}
+        column={4}
+      />
     </div>
   );
 };
