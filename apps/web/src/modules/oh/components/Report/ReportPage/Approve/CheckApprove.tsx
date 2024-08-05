@@ -36,33 +36,39 @@ const CheckApprove = ({ selectionId }) => {
   );
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
+  const userState = commentState?.filter((z) => z.userId === currentUser.id);
+
   const canApprove = useMemo(() => {
     const checkClarification = (clarificationState, dimension) => {
-      if (
-        !clarificationState ||
-        clarificationState.find((s) => s.state === -1)
-      ) {
+      if (!clarificationState) {
         return true;
       }
-      if (dimension === '合法合规') {
-        let complianceState = clarificationState.filter(
-          (s) => s.memberType === 3
-        );
-        let legalState = clarificationState.filter((s) => s.memberType === 2);
-        if (legalState.length > 0 && complianceState.length > 0) {
-          //至少一名法务专家和一名合规专家都通过
-          return false;
-        }
-      } else {
-        let leaderState = clarificationState.filter((s) => s.memberType === 1);
-        let commiterState = clarificationState.filter(
-          (s) => s.memberType === 0
-        );
-        if (leaderState.length > 0 && commiterState.length > 0) {
-          //至少一名 commiter 和一名 Leader 都通过
-          return false;
-        }
+      //查找当前用户是否通过澄清
+      let userState = clarificationState.filter(
+        (s) => s.userId === currentUser.id && s.state === 1
+      );
+      if (userState.length > 0) {
+        return false;
       }
+      // if (dimension === '合法合规') {
+      //   // let complianceState = clarificationState.filter(
+      //   //   (s) => s.memberType === 3
+      //   // );
+      //   // let legalState = clarificationState.filter((s) => s.memberType === 2);
+      //   // if (legalState.length > 0 && complianceState.length > 0) {
+      //   //   //至少一名法务专家和一名合规专家都通过
+      //   //   return false;
+      //   // }
+      // } else {
+      //   // let leaderState = clarificationState.filter((s) => s.memberType === 1);
+      //   // let commiterState = clarificationState.filter(
+      //   //   (s) => s.memberType === 0
+      //   // );
+      //   // if (leaderState.length > 0 && commiterState.length > 0) {
+      //   //   //至少一名 commiter 和一名 Leader 都通过
+      //   //   return false;
+      //   // }
+      // }
       return true;
     };
     if (metricItemScoreList?.length > 0) {
@@ -84,35 +90,39 @@ const CheckApprove = ({ selectionId }) => {
       return notMetricList;
     }
     return []; //未获取指标数据
-  }, [metricItemScoreList, metricClarificationState]);
+  }, [metricItemScoreList, metricClarificationState, currentUser]);
 
   const canLegalApprove = useMemo(() => {
     const checkClarification = (clarificationState, dimension) => {
-      if (
-        !clarificationState ||
-        clarificationState.find((s) => s.state === -1)
-      ) {
+      if (!clarificationState) {
         return true;
       }
-      if (dimension === '合法合规') {
-        let complianceState = clarificationState.filter(
-          (s) => s.memberType === 3
-        );
-        let legalState = clarificationState.filter((s) => s.memberType === 2);
-        if (legalState.length > 0 && complianceState.length > 0) {
-          //至少一名法务专家和一名合规专家都通过
-          return false;
-        }
-      } else {
-        let leaderState = clarificationState.filter((s) => s.memberType === 1);
-        let commiterState = clarificationState.filter(
-          (s) => s.memberType === 0
-        );
-        if (leaderState.length > 0 && commiterState.length > 0) {
-          //至少一名 commiter 和一名 Leader 都通过
-          return false;
-        }
+      //查找当前用户是否通过澄清
+      let userState = clarificationState.filter(
+        (s) => s.userId === currentUser.id && s.state === 1
+      );
+      if (userState.length > 0) {
+        return false;
       }
+      // if (dimension === '合法合规') {
+      //   let complianceState = clarificationState.filter(
+      //     (s) => s.memberType === 3
+      //   );
+      //   let legalState = clarificationState.filter((s) => s.memberType === 2);
+      //   if (legalState.length > 0 && complianceState.length > 0) {
+      //     //至少一名法务专家和一名合规专家都通过
+      //     return false;
+      //   }
+      // } else {
+      //   let leaderState = clarificationState.filter((s) => s.memberType === 1);
+      //   let commiterState = clarificationState.filter(
+      //     (s) => s.memberType === 0
+      //   );
+      //   if (leaderState.length > 0 && commiterState.length > 0) {
+      //     //至少一名 commiter 和一名 Leader 都通过
+      //     return false;
+      //   }
+      // }
       return true;
     };
     if (metricItemScoreList?.length > 0) {
@@ -134,9 +144,9 @@ const CheckApprove = ({ selectionId }) => {
       return notMetricList;
     }
     return [];
-  }, [metricItemScoreList, metricClarificationState]);
+  }, [metricItemScoreList, metricClarificationState, currentUser]);
+
   const mutation = useAcceptTpcSoftwareSelectionMutation(gqlClient);
-  const userState = commentState?.filter((z) => z.userId === currentUser.id);
   const handleApprove = (memberType, state) => {
     mutation.mutate(
       {
@@ -335,7 +345,11 @@ const CheckApprove = ({ selectionId }) => {
           placement="bottom"
           // arrow={{ pointAtCenter: true }}
         >
-          <Button className="flex items-center !rounded-none" type="primary">
+          <Button
+            onClick={() => {}}
+            className="flex items-center !rounded-none"
+            type="primary"
+          >
             <CloseOutlined rev={undefined} />
             驳回
           </Button>
