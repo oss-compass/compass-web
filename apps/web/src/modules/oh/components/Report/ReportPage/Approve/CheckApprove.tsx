@@ -265,41 +265,6 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-    if (commentCompliancePermission) {
-      if (canLegalApprove.length > 0 || canApprove.length > 0) {
-        return [
-          {
-            key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
-              ...canLegalApprove,
-              ...canApprove,
-            ]?.join('、')}`,
-          },
-        ];
-      }
-    } else if (commentLegalPermission) {
-      if (canLegalApprove.length > 0) {
-        return [
-          {
-            key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${canLegalApprove.join(
-              '、'
-            )}`,
-          },
-        ];
-      }
-    } else if (commentCommitterPermission || commentSigLeadPermission) {
-      if (canApprove.length > 0) {
-        return [
-          {
-            key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
-              '、'
-            )}`,
-          },
-        ];
-      }
-    }
     return getRejectionOptions();
   };
 
