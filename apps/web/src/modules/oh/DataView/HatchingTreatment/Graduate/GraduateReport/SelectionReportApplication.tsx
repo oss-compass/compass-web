@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
 import dayjs from 'dayjs';
 import {
   languagesList,
   adaptationMethodList,
+  lifecyclePolicyList,
   domainList,
   queryKey,
 } from '@modules/oh/constant';
 import client from '@common/gqlClient';
-import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
+import { useCreateTpcSoftwareGraduationReportMutation } from '@oss-compass/graphql';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import HasOhRole from '@modules/oh/components/HasOhRole';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
@@ -17,18 +18,18 @@ const SelectionReportApplication = () => {
   const { hasOhRole } = useHasOhRole();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
-  const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
+  const mutation = useCreateTpcSoftwareGraduationReportMutation(client, {
     onSuccess(data) {
-      if (data.createTpcSoftwareSelectionReport.status == 'true') {
+      if (data.createTpcSoftwareGraduationReport.status == 'true') {
         messageApi.open({
           type: 'success',
           style: {
             marginTop: '200px',
           },
-          content: '提交成功，可在孵化项目申请列表中查看报告状态！',
+          content: '提交成功，可在毕业项目申请列表中查看报告状态！',
         });
         setTimeout(() => {
-          window.location.hash = 'hatchTable?tab=1';
+          window.location.hash = 'graduateTable?tab=1';
         }, 2000);
       } else {
         messageApi.open({
@@ -36,7 +37,7 @@ const SelectionReportApplication = () => {
           style: {
             marginTop: '200px',
           },
-          content: data.createTpcSoftwareSelectionReport.message,
+          content: data.createTpcSoftwareGraduationReport.message,
         });
       }
     },
@@ -55,7 +56,6 @@ const SelectionReportApplication = () => {
     form.validateFields().then((values) => {
       mutation.mutate({
         ...queryKey,
-        reportType: 0,
         softwareReport: { ...values },
       });
     });
@@ -65,44 +65,18 @@ const SelectionReportApplication = () => {
   };
   const autoFill = () => {
     form.setFieldsValue({
-      name: 'luajava',
+      name: 'aeraki',
       tpcSoftwareSigId: 2,
       release: 'v1.0.0',
       releaseTime: dayjs('2020-01-01'),
       manufacturer: 'jasonsantos',
       websiteUrl: 'www.keplerproject.org/luajava/',
-      codeUrl: 'https://github.com/jasonsantos/luajava',
+      codeUrl: 'https://github.com/aeraki-mesh/aeraki',
+      upstreamCodeUrl: 'https://github.com/aeraki-mesh/aeraki',
       programmingLanguage: 'Java',
+      lifecyclePolicy: 'asfdf',
+      adaptationMethod: 'Java 库重写',
     });
-  };
-  const websiteValidator = (_, value) => {
-    if (
-      !value ||
-      /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/.test(
-        value
-      )
-    ) {
-      return Promise.resolve();
-    }
-    return Promise.reject(new Error('请输入一个有效的网站 URL'));
-  };
-  const versionValidator = (_, value) => {
-    if (!value) {
-      return Promise.reject(new Error('请输入版本号'));
-    }
-
-    // 检查是否为 master 分支
-    if (value.toLowerCase() === 'master') {
-      return Promise.reject(new Error('版本号不能使用 "master"'));
-    }
-    if (
-      /beta/i.test(value.toLowerCase()) ||
-      /alpha/i.test(value.toLowerCase())
-    ) {
-      return Promise.reject(new Error('版本号不能使用非正式版本 "beta" 等'));
-    }
-
-    return Promise.resolve();
   };
   return (
     <>
@@ -117,9 +91,6 @@ const SelectionReportApplication = () => {
           style={{
             width: '100%',
           }}
-          // disabled={!isProceedingProcesses}
-          // onFinish={onFinish}
-          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
@@ -160,85 +131,24 @@ const SelectionReportApplication = () => {
                 </Select>
               </Form.Item>
             </Col>
-            {/* <Col span={12}>
-              <Popover
-                placement="topRight"
-                content={
-                  <>
-                    <div>
-                      1. master 是分支，不是版本号，不能用 master
-                      作为版本号引入；
-                    </div>
-                    <div>
-                      2. 引入官方发布版本（Release 版本），非正式版本（beta
-                      等）未经过全面测试，不允许入库；
-                    </div>
-                  </>
-                }
-                title="规则"
-                trigger="click"
-              >
-                <Form.Item
-                  label="软件版本号"
-                  name="release"
-                  rules={[
-                    { required: true, message: '请输入!' },
-                    { validator: versionValidator },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Popover>
-            </Col>
             <Col span={12}>
               <Form.Item
-                label="版本发布日期"
-                name="releaseTime"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <DatePicker placeholder="请选择日期" />
-              </Form.Item>
-            </Col> */}
-            {/* <Col span={12}>
-              <Form.Item
-                label="开发商"
-                name="manufacturer"
+                label="源码地址"
+                name="codeUrl"
                 rules={[{ required: true, message: '请输入!' }]}
               >
                 <Input />
               </Form.Item>
-            </Col> */}
-            {/* <Col span={12}>
-              <Popover
-                placement="topRight"
-                content={
-                  <>
-                    <div>
-                      提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee
-                      等）对应项目托管地址
-                    </div>
-                  </>
-                }
-                title="规则"
-                trigger="click"
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="上游源码地址"
+                name="upstreamCodeUrl"
+                rules={[{ required: true, message: '请输入!' }]}
               >
-                <Form.Item
-                  label="官网地址"
-                  name="websiteUrl"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入!',
-                    },
-                    { type: 'url', message: '请输入有效的官网地址!' },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Popover>
-            </Col> */}
-          </Row>
-          <Row gutter={24}>
+                <Input />
+              </Form.Item>
+            </Col>
             <Col span={12}>
               <Form.Item
                 label="编程语言"
@@ -252,24 +162,6 @@ const SelectionReportApplication = () => {
                     </Select.Option>
                   ))}
                 </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="源码地址"
-                name="codeUrl"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input
-                  onBlur={(e) => {
-                    if (e.target.value) {
-                      form.setFieldValue(
-                        'vulnerabilityResponse',
-                        e.target.value + '/issues'
-                      );
-                    }
-                  }}
-                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -290,13 +182,34 @@ const SelectionReportApplication = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                rules={[{ required: true, message: '请输入!' }]}
-                label="漏洞响应机制"
-                name="vulnerabilityResponse"
-              >
-                <Input />
+              <Form.Item label="发布版本生命周期" name="lifecyclePolicy">
+                <Select disabled={false}>
+                  {lifecyclePolicyList.map((item) => {
+                    return (
+                      <Select.Option key={item} value={item}>
+                        {item}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
               </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Popover
+                placement="topRight"
+                content={
+                  <>
+                    孵化软件适配、新增特性推荐回合上游社区，请提供在上游社区发起特性回合的
+                    Issue/PR 链接。
+                  </>
+                }
+                title="说明"
+                trigger="click"
+              >
+                <Form.Item label="回合上游链接" name="roundUpstream">
+                  <Input placeholder="提供在上游社区发起特性回合的Issue/PR链接" />
+                </Form.Item>
+              </Popover>
             </Col>
           </Row>
         </Form>
@@ -315,7 +228,6 @@ const SelectionReportApplication = () => {
             提交
           </Button>
         </HasOhRole>
-
         {/* <Button
           className="rounded-none"
           htmlType="submit"

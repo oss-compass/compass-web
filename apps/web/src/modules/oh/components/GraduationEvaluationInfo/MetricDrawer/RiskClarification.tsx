@@ -10,8 +10,11 @@ import {
 import gqlClient from '@common/gqlClient';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
-import RiskBadgeInner from '@modules/oh/components/EvaluationInfo/Badge/RiskBadgeInner';
+import {
+  RiskStore,
+  riskEvent,
+} from '@modules/oh/components/GraduationEvaluationInfo/store/useRiskStore';
+import RiskBadgeInner from '@modules/oh/components/GraduationEvaluationInfo/Badge/RiskBadgeInner';
 import HasOhRole from '@modules/oh/components/HasOhRole';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
@@ -25,6 +28,7 @@ const RiskClarification = ({ metric, report }) => {
   const params = {
     shortCode,
     metricName,
+    reportType: 1,
     page: 1,
     per: 50,
   };
@@ -101,13 +105,24 @@ const RiskClarification = ({ metric, report }) => {
                     shortCode,
                     metricName,
                     content,
+                    reportType: 1,
                   },
                   {
-                    onSuccess: () => {
-                      toast.success('发送成功');
-                      refetch();
-                      RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
-                      inputRef.current?.reset();
+                    onSuccess: (res) => {
+                      if (
+                        res?.createTpcSoftwareReportMetricClarification
+                          ?.status === 'true'
+                      ) {
+                        toast.success('发送成功');
+                        refetch();
+                        RiskStore.event$[shortCode]?.emit(riskEvent.REFRESH);
+                        inputRef.current?.reset();
+                      } else {
+                        toast.error(
+                          res?.createTpcSoftwareReportMetricClarification
+                            ?.message
+                        );
+                      }
                     },
                   }
                 );

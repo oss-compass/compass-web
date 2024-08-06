@@ -2,11 +2,8 @@ import React from 'react';
 import { Input, Tabs } from 'antd';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import Loading from '@modules/oh/components/Loading';
-import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
-import {
-  TpcSoftwareSelectionReportQuery,
-  useTpcSoftwareSelectionReportQuery,
-} from '@oss-compass/graphql';
+import EvaluationDetail from '@modules/oh/components/GraduationEvaluationInfo/EvaluationDetail';
+import { useTpcSoftwareGraduationReportQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 
 const GetReportData = ({
@@ -18,7 +15,7 @@ const GetReportData = ({
   back?: () => void;
   targetSoftware?: string;
 }) => {
-  const { isLoading, data, refetch } = useTpcSoftwareSelectionReportQuery(
+  const { isLoading, data, refetch } = useTpcSoftwareGraduationReportQuery(
     client,
     {
       shortCode,
@@ -31,7 +28,7 @@ const GetReportData = ({
       </div>
     );
   }
-  if (!data?.tpcSoftwareSelectionReport) {
+  if (!data?.tpcSoftwareGraduationReport) {
     return (
       <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm">
         <NotFoundOh />
@@ -41,7 +38,7 @@ const GetReportData = ({
   return (
     <>
       <EvaluationDetail
-        item={data.tpcSoftwareSelectionReport}
+        item={data.tpcSoftwareGraduationReport}
         back={back}
         refetch={refetch}
         targetSoftware={targetSoftware}

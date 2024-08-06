@@ -197,9 +197,15 @@ mutation createTpcSoftwareReportMetricClarification(
   $shortCode: String!
   $metricName: String!
   $content: String!
+  $reportType: Int = 0
 ) {
   createTpcSoftwareReportMetricClarification(
-    input: { shortCode: $shortCode, metricName: $metricName, content: $content }
+    input: {
+      shortCode: $shortCode
+      metricName: $metricName
+      content: $content
+      reportType: $reportType
+    }
   ) {
     errors {
       message
@@ -242,6 +248,7 @@ mutation acceptTpcSoftwareReportMetricClarification(
   $metricName: String!
   $state: Int!
   $memberType: Int!
+  $reportType: Int = 0
 ) {
   acceptTpcSoftwareReportMetricClarification(
     input: {
@@ -249,6 +256,7 @@ mutation acceptTpcSoftwareReportMetricClarification(
       metricName: $metricName
       state: $state
       memberType: $memberType
+      reportType: $reportType
     }
   ) {
     errors {
@@ -278,9 +286,14 @@ mutation updateTpcSoftwareSelectionReport(
 mutation createTpcSoftwareSelectionComment(
   $selectionId: Int!
   $content: String!
+  $reportType: Int = 0
 ) {
   createTpcSoftwareSelectionComment(
-    input: { selectionId: $selectionId, content: $content }
+    input: {
+      selectionId: $selectionId
+      content: $content
+      reportType: $reportType
+    }
   ) {
     errors {
       message
@@ -332,109 +345,109 @@ mutation acceptTpcSoftwareSelection(
   }
 }
 
-# mutation createTpcSoftwareGraduationReport(
-#   $label: String!
-#   $level: String!
-#   $softwareReport: TpcSoftwareGraduationReportInput!
-# ) {
-#   createTpcSoftwareGraduationReport(
-#     input: { label: $label, level: $level, softwareReport: $softwareReport }
-#   ) {
-#     errors {
-#       message
-#       path
-#     }
-#     message
-#     status
-#   }
-# }
-# mutation updateTpcSoftwareGraduationReport(
-#   $reportId: Int!
-#   $softwareReport: TpcSoftwareGraduationReportUpdateInput!
-# ) {
-#   updateTpcSoftwareGraduationReport(
-#     input: { reportId: $reportId, softwareReport: $softwareReport }
-#   ) {
-#     errors {
-#       message
-#       path
-#     }
-#     message
-#     status
-#   }
-# }
-# mutation createTpcSoftwareGraduation(
-#   $label: String!
-#   $level: String!
-#   $tpcSoftwareGraduationReportIds: [Int!]!
-#   $committers: [String!]!
-#   $demandSource: String!
-#   $incubationTime: String!
-#   $incubationStartTime: ISO8601DateTime
-# ) {
-#   createTpcSoftwareGraduation(
-#     input: {
-#       label: $label
-#       level: $level
-#       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
-#       committers: $committers
-#       demandSource: $demandSource
-#       incubationTime: $incubationTime
-#       incubationStartTime: $incubationStartTime
-#     }
-#   ) {
-#     errors {
-#       message
-#       path
-#     }
-#     id
-#     message
-#     status
-#   }
-# }
-# mutation updateTpcSoftwareGraduation(
-#   $graduationId: Int!
-#   $tpcSoftwareGraduationReportIds: [Int!]!
-#   $committers: [String!]!
-#   $demandSource: String!
-#   $incubationTime: String!
-#   $incubationStartTime: ISO8601DateTime
-# ) {
-#   updateTpcSoftwareGraduation(
-#     input: {
-#       graduationId: $graduationId
-#       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
-#       committers: $committers
-#       demandSource: $demandSource
-#       incubationTime: $incubationTime
-#       incubationStartTime: $incubationStartTime
-#     }
-#   ) {
-#     errors {
-#       message
-#       path
-#     }
-#     message
-#     status
-#   }
-# }
-# mutation acceptTpcSoftwareGraduation(
-#   $graduationId: Int!
-#   $state: Int!
-#   $memberType: Int!
-# ) {
-#   acceptTpcSoftwareGraduation(
-#     input: {
-#       graduationId: $graduationId
-#       state: $state
-#       memberType: $memberType
-#     }
-#   ) {
-#     errors {
-#       message
-#       path
-#     }
-#     message
-#     status
-#   }
-# }
+mutation createTpcSoftwareGraduationReport(
+  $label: String!
+  $level: String!
+  $softwareReport: TpcSoftwareGraduationReportInput!
+) {
+  createTpcSoftwareGraduationReport(
+    input: { label: $label, level: $level, softwareReport: $softwareReport }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation updateTpcSoftwareGraduationReport(
+  $reportId: Int!
+  $softwareReport: TpcSoftwareGraduationReportUpdateInput!
+) {
+  updateTpcSoftwareGraduationReport(
+    input: { reportId: $reportId, softwareReport: $softwareReport }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation createTpcSoftwareGraduation(
+  $label: String!
+  $level: String!
+  $tpcSoftwareGraduationReportIds: [Int!]!
+  $committers: [String!]!
+  $demandSource: String!
+  $incubationTime: String!
+  $incubationStartTime: ISO8601DateTime
+) {
+  createTpcSoftwareGraduation(
+    input: {
+      label: $label
+      level: $level
+      tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
+      committers: $committers
+      demandSource: $demandSource
+      incubationTime: $incubationTime
+      incubationStartTime: $incubationStartTime
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    id
+    message
+    status
+  }
+}
+mutation updateTpcSoftwareGraduation(
+  $graduationId: Int!
+  $tpcSoftwareGraduationReportIds: [Int!]!
+  $committers: [String!]!
+  $demandSource: String!
+  $incubationTime: String!
+  $incubationStartTime: ISO8601DateTime
+) {
+  updateTpcSoftwareGraduation(
+    input: {
+      graduationId: $graduationId
+      tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
+      committers: $committers
+      demandSource: $demandSource
+      incubationTime: $incubationTime
+      incubationStartTime: $incubationStartTime
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation acceptTpcSoftwareGraduation(
+  $graduationId: Int!
+  $state: Int!
+  $memberType: Int!
+) {
+  acceptTpcSoftwareGraduation(
+    input: {
+      graduationId: $graduationId
+      state: $state
+      memberType: $memberType
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}

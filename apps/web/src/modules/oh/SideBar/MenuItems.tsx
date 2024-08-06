@@ -24,10 +24,10 @@ import BoardSandbox from '@modules/oh/DataView/HatchingTreatment/Workbench/Board
 import BoardHatch from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardHatch';
 import BoardGraduateBoard from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardGraduateBoard';
 import ReportPage from '@modules/oh/components/Report/ReportPage';
-// import GraduateReport from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateReport';
-// import GraduateProject from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateProject';
-// import GraduateTable from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateTable';
-// import GraduationReport from '@modules/oh/components/GraduationReport/ReportPage';
+import GraduateReport from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateReport';
+import GraduateProject from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateProject';
+import GraduateTable from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateTable';
+import GraduationReport from '@modules/oh/components/GraduationReport/ReportPage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -168,12 +168,12 @@ export const componentMap = {
   hatchReport: <SandboxReport />,
   hatchProject: <SandboxProject />,
   hatchTable: <SandboxTable />,
-  graduateReport: <Graduate />,
-  graduateProject: <Graduate />,
-  graduateTable: <Graduate />,
+  graduateReport: <GraduateReport />,
+  graduateProject: <GraduateProject />,
+  graduateTable: <GraduateTable />,
   boardSandbox: <BoardSandbox />,
   boardHatch: <BoardHatch />,
   boardGraduateBoard: <BoardGraduateBoard />,
   reportDetailPage: <ReportPage />,
-  // graduationReportPage: <GraduationReport />,
+  graduationReportPage: <GraduationReport />,
 };

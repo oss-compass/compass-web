@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { Button } from 'antd';
-import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
+import { useTpcSoftwareGraduationReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import GetReportData from '@modules/oh/components/Report/GetReportData';
-import { getMetricScore } from '@modules/oh/components/EvaluationInfo/MerticDetail';
-import Loading from '@modules/oh/components/Loading';
+import GetReportData from '@modules/oh/components/GraduationReport/GetReportData';
+import { getMetricScore } from '@modules/oh/components/GraduationEvaluationInfo/MerticDetail';
 import Pie from '@modules/oh/components/Pie';
+import Loading from '@modules/oh/components/Loading';
 
 const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
   return (
@@ -50,15 +50,14 @@ const Report = ({
   selectFun,
 }: {
   query: any;
-  selected?: string;
   selectFun?: (name) => void;
 }) => {
-  const { isLoading, data } = useTpcSoftwareSelectionReportPageQuery(
+  const { isLoading, data } = useTpcSoftwareGraduationReportPageQuery(
     client,
     query
   );
 
-  const dataList = data?.tpcSoftwareSelectionReportPage?.items;
+  const dataList = data?.tpcSoftwareGraduationReportPage?.items;
   const items = getMetricScore(dataList || []);
 
   const [activeItem, setActiveItem] = useState(null);
@@ -172,7 +171,7 @@ const Report = ({
                     />
                     <div className="mt-4 flex justify-end text-xs">
                       更新于：
-                      {item?.tpcSoftwareReportMetric?.updatedAt?.slice(0, 10) ||
+                      {item?.graduationReportMetric?.updatedAt?.slice(0, 10) ||
                         ''}
                     </div>
                   </div>

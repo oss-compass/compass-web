@@ -1,6 +1,6 @@
 import React from 'react';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
-import GetReportData from '@modules/oh/components/Report/GetReportData';
+import GetReportData from '@modules/oh/components/GraduationReport/GetReportData';
 
 const ReportPageItems = ({ reportItems, targetSoftware = null }) => {
   if (!reportItems && reportItems === 0) {
@@ -20,7 +20,7 @@ const ReportPageItems = ({ reportItems, targetSoftware = null }) => {
         {reportItems.map((z, index) => {
           return (
             <GetReportData
-              key={index}
+              key={z.id}
               shortCode={z.shortCode}
               targetSoftware={targetSoftware}
             />

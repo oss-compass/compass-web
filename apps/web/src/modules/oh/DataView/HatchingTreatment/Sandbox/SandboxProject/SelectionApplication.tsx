@@ -15,13 +15,8 @@ import {
 } from 'antd';
 import Dialog from '@common/components/Dialog';
 import { MinusOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
 import SelectReport from '@modules/oh/components/Report/SelectReport';
-import {
-  incubationTimeList,
-  adaptationMethodList,
-  queryKey,
-} from '@modules/oh/constant';
+import { incubationTimeList, queryKey } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 import { openGiteeIssue } from '@modules/oh/utils';

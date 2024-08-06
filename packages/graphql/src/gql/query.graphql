@@ -1780,12 +1780,14 @@ query tpcSoftwareReportMetricClarificationPage(
   $metricName: String!
   $page: Int
   $per: Int
+  $reportType: Int = 0
 ) {
   tpcSoftwareReportMetricClarificationPage(
     shortCode: $shortCode
     page: $page
     per: $per
     metricName: $metricName
+    reportType: $reportType
   ) {
     count
     items {
@@ -1915,11 +1917,13 @@ query tpcSoftwareSelectionCommentPage(
   $selectionId: Int!
   $page: Int!
   $per: Int!
+  $reportType: Int = 0
 ) {
   tpcSoftwareSelectionCommentPage(
     page: $page
     per: $per
     selectionId: $selectionId
+    reportType: $reportType
   ) {
     count
     items {
@@ -1984,172 +1988,414 @@ query tpcSoftwareSelection($selectionId: Int!) {
   }
 }
 
-# fragment tpcSoftwareGraduationReportMetric on TpcSoftwareGraduationReportMetric {
-#   complianceCopyrightStatement
-#   complianceCopyrightStatementAntiTamper
-#   complianceDco
-#   complianceLicense
-#   complianceLicenseCompatibility
-#   ecologyBuild
-#   ecologyBuildDoc
-#   ecologyCi
-#   ecologyCodeReview
-#   ecologyCodeUpstream
-#   ecologyInterfaceDoc
-#   ecologyIssueManagement
-#   ecologyIssueResponseRatio
-#   ecologyIssueResponseTime
-#   ecologyMaintainerDoc
-#   ecologyReadme
-#   ecologyTestCoverage
-#   lifecycleReleaseNote
-#   lifecycleStatement
-#   securityBinaryArtifact
-#   securityPackageSig
-#   securityVulnerability
-#   createdAt
-#   id
-#   status
-#   tpcSoftwareGraduationReportId
-#   updatedAt
-#   codeUrl
-# }
-# fragment tpcSoftwareGraduationReportMetricDetail on TpcSoftwareGraduationReportMetric {
-#   complianceCopyrightStatementAntiTamperDetail
-#   # complianceCopyrightStatementDetail
-#   # complianceDcoDetail
-#   # complianceLicenseCompatibilityDetail
-#   # complianceLicenseDetail
-#   # ecologyBuildDetail
-#   # ecologyBuildDocDetail
-#   # ecologyCiDetail
-#   # ecologyCodeReviewDetail
-#   # ecologyCodeUpstreamDetail
-#   # ecologyInterfaceDocDetail
-#   # ecologyIssueManagementDetail
-#   # ecologyIssueResponseRatioDetail
-#   # ecologyIssueResponseTimeDetail
-#   # ecologyMaintainerDocDetail
-#   # ecologyReadmeDetail
-#   # ecologyTestCoverageDetail
-#   # lifecycleReleaseNoteDetail
-#   # lifecycleStatementDetail
-#   # securityBinaryArtifactDetail
-#   # securityPackageSigDetail
-#   # securityVulnerabilityDetail
-# }
-# query tpcSoftwareGraduationReportPage(
-#   $label: String!
-#   $level: String = "repo"
-#   $page: Int
-#   $per: Int
-#   $filterOpts: [FilterOptionInput!]
-#   $sortOpts: [SortOptionInput!]
-# ) {
-#   tpcSoftwareGraduationReportPage(
-#     page: $page
-#     per: $per
-#     label: $label
-#     level: $level
-#     filterOpts: $filterOpts
-#     sortOpts: $sortOpts
-#   ) {
-#     count
-#     items {
-#       adaptationMethod
-#       # codeCount
-#       codeUrl
-#       id
-#       name
-#       upstreamCodeUrl
-#       shortCode
-#       programmingLanguage
-#       user {
-#         name
-#         loginBinds {
-#           account
-#           nickname
-#           provider
-#         }
-#       }
-#       userId
-#       graduationReportMetric {
-#         ...tpcSoftwareGraduationReportMetric
-#       }
-#       tpcSoftwareSig {
-#         ...tpcSoftwareSig
-#       }
-#     }
-#     page
-#     totalPage
-#   }
-# }
-# query tpcSoftwareGraduationPage(
-#   $label: String!
-#   $level: String = "repo"
-#   $page: Int
-#   $per: Int
-#   $filterOpts: [FilterOptionInput!]
-#   $sortOpts: [SortOptionInput!]
-# ) {
-#   tpcSoftwareGraduationPage(
-#     page: $page
-#     per: $per
-#     label: $label
-#     level: $level
-#     filterOpts: $filterOpts
-#     sortOpts: $sortOpts
-#   ) {
-#     count
-#     items {
-#       createdAt
-#       updatedAt
-#       demandSource
-#       committers
-#       incubationStartTime
-#       incubationTime
-#       tpcSoftwareGraduationReportIds
-#       tpcSoftwareGraduationReports {
-#         name
-#         shortCode
-#         codeUrl
-#       }
-#       user {
-#         name
-#         loginBinds {
-#           account
-#           nickname
-#           provider
-#         }
-#       }
-#       userId
-#       # functionalDescription
-#       # id
-#       # incubationTime
-#       # isSameTypeCheck
-#       # repoUrl
-#       # reason
-#       # sameTypeSoftwareName
-#       # selectionType
-#       # targetSoftware
-#       # updatedAt
-#       # user {
-#       #   name
-#       #   loginBinds {
-#       #     account
-#       #     nickname
-#       #     provider
-#       #   }
-#       # }
-#       # userId
-#       # tpcSoftwareSelectionReportIds
-#       # tpcSoftwareSelectionReports {
-#       #   name
-#       #   shortCode
-#       #   codeUrl
-#       # }
-#     }
-#     page
-#     totalPage
-#   }
-# }
+fragment tpcSoftwareGraduationReportMetric on TpcSoftwareGraduationReportMetric {
+  complianceCopyrightStatement
+  complianceCopyrightStatementAntiTamper
+  complianceDco
+  complianceLicense
+  complianceLicenseCompatibility
+  ecologyBuild
+  ecologyBuildDoc
+  ecologyCi
+  ecologyCodeReview
+  ecologyCodeUpstream
+  ecologyInterfaceDoc
+  ecologyIssueManagement
+  ecologyIssueResponseRatio
+  ecologyIssueResponseTime
+  ecologyMaintainerDoc
+  ecologyReadme
+  ecologyTestCoverage
+  lifecycleReleaseNote
+  lifecycleStatement
+  securityBinaryArtifact
+  securityPackageSig
+  securityVulnerability
+  createdAt
+  id
+  status
+  tpcSoftwareGraduationReportId
+  updatedAt
+  codeUrl
+}
+fragment tpcSoftwareGraduationReportMetricDetail on TpcSoftwareGraduationReportMetric {
+  complianceCopyrightStatementAntiTamperDetail
+  complianceCopyrightStatementDetail {
+    includeCopyrights
+    notIncludedCopyrights
+  }
+  complianceDcoDetail {
+    commitCount
+    commitDcoCount
+  }
+  complianceLicenseCompatibilityDetail {
+    license
+    licenseConflictList
+  }
+  complianceLicenseDetail {
+    nonOsiLicenses
+    osiPermissiveLicenses
+  }
+  ecologyBuildDetail
+  ecologyBuildDocDetail
+  ecologyCiDetail
+  ecologyCodeReviewDetail {
+    pullCount
+    pullReviewCount
+    pullReviewRatio
+  }
+  ecologyCodeUpstreamDetail
+  ecologyInterfaceDocDetail
+  ecologyIssueManagementDetail {
+    issueCount
+    issueTypeList
+  }
+  ecologyIssueResponseRatioDetail {
+    issueCount
+    issueResponseCount
+    issueResponseRatio
+  }
+  ecologyIssueResponseTimeDetail {
+    issueResponseCount
+    issueResponseTime
+  }
+  ecologyMaintainerDocDetail
+  ecologyReadmeDetail
+  ecologyTestCoverageDetail {
+    coverageRatio
+    coverageScore
+    duplicationRatio
+    duplicationScore
+  }
+  lifecycleReleaseNoteDetail
+  lifecycleStatementDetail
+  securityBinaryArtifactDetail
+  securityPackageSigDetail
+  securityVulnerabilityDetail {
+    packageName
+    packageVersion
+    vulnerabilities
+  }
+}
+fragment tpcSoftwareGraduationReportMetricRaw on TpcSoftwareGraduationReportMetricRaw {
+  codeUrl
+  complianceCopyrightStatementAntiTamperRaw
+  complianceCopyrightStatementRaw
+  complianceDcoRaw
+  complianceLicenseCompatibilityRaw
+  complianceLicenseRaw
+  ecologyBuildDocRaw
+  ecologyBuildRaw
+  ecologyCiRaw
+  ecologyCodeReviewRaw
+  ecologyCodeUpstreamRaw
+  ecologyInterfaceDocRaw
+  ecologyIssueManagementRaw
+  ecologyIssueResponseRatioRaw
+  ecologyIssueResponseTimeRaw
+  ecologyMaintainerDocRaw
+  ecologyReadmeRaw
+  ecologyTestCoverageRaw
+  id
+  lifecycleReleaseNoteRaw
+  lifecycleStatementRaw
+  securityBinaryArtifactRaw
+  securityPackageSigRaw
+  securityVulnerabilityRaw
+}
+query tpcSoftwareGraduationReportPage(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+) {
+  tpcSoftwareGraduationReportPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      adaptationMethod
+      # codeCount
+      codeUrl
+      id
+      name
+      upstreamCodeUrl
+      lifecyclePolicy
+      shortCode
+      programmingLanguage
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+      graduationReportMetric {
+        ...tpcSoftwareGraduationReportMetric
+      }
+      tpcSoftwareSig {
+        ...tpcSoftwareSig
+      }
+    }
+    page
+    totalPage
+  }
+}
+query tpcSoftwareGraduationReport($shortCode: String!) {
+  tpcSoftwareGraduationReport(shortCode: $shortCode) {
+    adaptationMethod
+    codeCount
+    license
+    codeUrl
+    id
+    name
+    upstreamCodeUrl
+    shortCode
+    programmingLanguage
+    user {
+      name
+      loginBinds {
+        account
+        nickname
+        provider
+      }
+    }
+    userId
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
+    graduationReportMetric {
+      ...tpcSoftwareGraduationReportMetric
+      ...tpcSoftwareGraduationReportMetricDetail
+    }
+    tpcSoftwareSig {
+      ...tpcSoftwareSig
+    }
+  }
+}
+query tpcSoftwareGraduationPage(
+  $label: String!
+  $level: String = "repo"
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+) {
+  tpcSoftwareGraduationPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      id
+      createdAt
+      updatedAt
+      demandSource
+      committers
+      incubationStartTime
+      incubationTime
+      tpcSoftwareGraduationReportIds
+      tpcSoftwareGraduationReports {
+        name
+        shortCode
+        codeUrl
+        license
+        codeCount
+      }
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+      # functionalDescription
+      # id
+      # incubationTime
+      # isSameTypeCheck
+      # repoUrl
+      # reason
+      # sameTypeSoftwareName
+      # selectionType
+      # targetSoftware
+      # updatedAt
+      # user {
+      #   name
+      #   loginBinds {
+      #     account
+      #     nickname
+      #     provider
+      #   }
+      # }
+      # userId
+      # tpcSoftwareSelectionReportIds
+      # tpcSoftwareSelectionReports {
+      #   name
+      #   shortCode
+      #   codeUrl
+      # }
+    }
+    page
+    totalPage
+  }
+}
+query tpcSoftwareGraduation($graduationId: Int!) {
+  tpcSoftwareGraduation(graduationId: $graduationId) {
+    commentCompliancePermission
+    commentLegalPermission
+    commentCommitterPermission
+    commentCount
+    commentSigLeadPermission
+    commentState {
+      createdAt
+      id
+      memberType
+      state
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    demandSource
+    incubationTime
+    committers
+    tpcSoftwareGraduationReports {
+      adaptationMethod
+      license
+      codeUrl
+      name
+      codeCount
+    }
+  }
+}
+query tpcSoftwareGraduationReportRisk($shortCode: String!) {
+  tpcSoftwareGraduationReport(shortCode: $shortCode) {
+    codeUrl
+    id
+    shortCode
+    metricClarificationCount {
+      complianceCopyrightStatement
+      complianceCopyrightStatementAntiTamper
+      complianceDco
+      complianceLicense
+      complianceLicenseCompatibility
+      ecologyBuild
+      ecologyBuildDoc
+      ecologyCi
+      ecologyCodeReview
+      ecologyCodeUpstream
+      ecologyInterfaceDoc
+      ecologyIssueManagement
+      ecologyIssueResponseRatio
+      ecologyIssueResponseTime
+      ecologyMaintainerDoc
+      ecologyReadme
+      ecologyTestCoverage
+      lifecycleReleaseNote
+      lifecycleStatement
+      securityBinaryArtifact
+      securityPackageSig
+      securityVulnerability
+    }
+    metricClarificationState {
+      complianceCopyrightStatement {
+        ...tpcClarificationStateDetail
+      }
+      complianceCopyrightStatementAntiTamper {
+        ...tpcClarificationStateDetail
+      }
+      complianceDco {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicense {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicenseCompatibility {
+        ...tpcClarificationStateDetail
+      }
+      ecologyBuild {
+        ...tpcClarificationStateDetail
+      }
+      ecologyBuildDoc {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCi {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCodeReview {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCodeUpstream {
+        ...tpcClarificationStateDetail
+      }
+      ecologyInterfaceDoc {
+        ...tpcClarificationStateDetail
+      }
+      ecologyIssueManagement {
+        ...tpcClarificationStateDetail
+      }
+      ecologyIssueResponseRatio {
+        ...tpcClarificationStateDetail
+      }
+      ecologyIssueResponseTime {
+        ...tpcClarificationStateDetail
+      }
+      ecologyMaintainerDoc {
+        ...tpcClarificationStateDetail
+      }
+      ecologyReadme {
+        ...tpcClarificationStateDetail
+      }
+      ecologyTestCoverage {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleReleaseNote {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleStatement {
+        ...tpcClarificationStateDetail
+      }
+      securityBinaryArtifact {
+        ...tpcClarificationStateDetail
+      }
+      securityPackageSig {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerability {
+        ...tpcClarificationStateDetail
+      }
+    }
+    userId
+  }
+}
+query tpcSoftwareGraduationReportRow($shortCode: String!) {
+  tpcSoftwareGraduationReport(shortCode: $shortCode) {
+    id
+    graduationReportMetricRaw {
+      ...tpcSoftwareGraduationReportMetricRaw
+    }
+  }
+}

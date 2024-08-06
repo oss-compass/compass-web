@@ -4,7 +4,6 @@ import {
   CheckOutlined,
   CloseOutlined,
   CheckCircleOutlined,
-  TeamOutlined,
 } from '@ant-design/icons';
 import { useAcceptTpcSoftwareReportMetricClarificationMutation } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
@@ -13,14 +12,13 @@ import {
   RiskStore,
   riskEvent,
   useGetRisk,
-} from '@modules/oh/store/useRiskStore';
+} from '@modules/oh/components/GraduationEvaluationInfo/store/useRiskStore';
 import { Dropdown } from 'antd';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import HasOhRole from '@modules/oh/components/HasOhRole';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
 const CheckRisk = ({ report, metricName, dimension }) => {
-  const { hasOhRole } = useHasOhRole();
   const {
     shortCode,
     clarificationCommitterPermission,
@@ -28,7 +26,12 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     clarificationCompliancePermission,
     clarificationLegalPermission,
   } = report;
-
+  console.log(
+    shortCode,
+    clarificationCommitterPermission,
+    clarificationLegalPermission
+  );
+  const { hasOhRole } = useHasOhRole();
   const { currentUser } = useUserInfo();
   const { count, metricState } = useGetRisk(shortCode, metricName);
   const mutation =
