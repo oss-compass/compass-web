@@ -40,34 +40,37 @@ export const useTableColumns = (anction) => {
         );
       },
     },
-    // {
-    //   title: '目标孵化软件',
-    //   dataIndex: 'targetSoftware',
-    //   key: 'targetSoftware',
-    //   width: 140,
-    //   filterIcon: (filtered: boolean) => (
-    //     <AiFillFilter
-    //       className="text-sm"
-    //       style={{ color: filtered ? '#1677ff' : undefined }}
-    //     />
-    //   ),
-    //   filterDropdown: ({
-    //     selectedKeys,
-    //     setSelectedKeys,
-    //     confirm,
-    //     clearFilters,
-    //   }) => {
-    //     return (
-    //       <TableDropdown
-    //         selectedKeys={selectedKeys}
-    //         setSelectedKeys={setSelectedKeys}
-    //         confirm={confirm}
-    //         clearFilters={clearFilters}
-    //         placeholder={''}
-    //       />
-    //     );
-    //   },
-    // },
+    {
+      title: '毕业软件',
+      dataIndex: 'targetSoftware',
+      key: 'targetSoftware',
+      width: 140,
+      render: (_, record) => {
+        return record?.tpcSoftwareGraduationReports?.[0].name;
+      },
+      // filterIcon: (filtered: boolean) => (
+      //   <AiFillFilter
+      //     className="text-sm"
+      //     style={{ color: filtered ? '#1677ff' : undefined }}
+      //   />
+      // ),
+      // filterDropdown: ({
+      //   selectedKeys,
+      //   setSelectedKeys,
+      //   confirm,
+      //   clearFilters,
+      // }) => {
+      //   return (
+      //     <TableDropdown
+      //       selectedKeys={selectedKeys}
+      //       setSelectedKeys={setSelectedKeys}
+      //       confirm={confirm}
+      //       clearFilters={clearFilters}
+      //       placeholder={''}
+      //     />
+      //   );
+      // },
+    },
     {
       title: '申请人',
       key: 'user',
