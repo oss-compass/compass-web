@@ -6180,7 +6180,7 @@ export type CreateTpcSoftwareGraduationMutationVariables = Exact<{
   tpcSoftwareGraduationReportIds: Array<Scalars['Int']> | Scalars['Int'];
   committers: Array<Scalars['String']> | Scalars['String'];
   demandSource: Scalars['String'];
-  incubationTime: Scalars['String'];
+  incubationTime?: InputMaybe<Scalars['String']>;
   incubationStartTime?: InputMaybe<Scalars['ISO8601DateTime']>;
 }>;
 
@@ -8814,6 +8814,7 @@ export type TpcSoftwareGraduationReportPageQuery = {
       id: number;
       name?: string | null;
       upstreamCodeUrl?: string | null;
+      lifecyclePolicy?: string | null;
       shortCode: string;
       programmingLanguage?: string | null;
       userId: number;
@@ -12551,7 +12552,7 @@ useUpdateTpcSoftwareGraduationReportMutation.fetcher = (
     UpdateTpcSoftwareGraduationReportMutationVariables
   >(client, UpdateTpcSoftwareGraduationReportDocument, variables, headers);
 export const CreateTpcSoftwareGraduationDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareGraduation($label: String!, $level: String!, $tpcSoftwareGraduationReportIds: [Int!]!, $committers: [String!]!, $demandSource: String!, $incubationTime: String!, $incubationStartTime: ISO8601DateTime) {
+    mutation createTpcSoftwareGraduation($label: String!, $level: String!, $tpcSoftwareGraduationReportIds: [Int!]!, $committers: [String!]!, $demandSource: String!, $incubationTime: String, $incubationStartTime: ISO8601DateTime) {
   createTpcSoftwareGraduation(
     input: {label: $label, level: $level, tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds, committers: $committers, demandSource: $demandSource, incubationTime: $incubationTime, incubationStartTime: $incubationStartTime}
   ) {
@@ -16244,6 +16245,7 @@ export const TpcSoftwareGraduationReportPageDocument = /*#__PURE__*/ `
       id
       name
       upstreamCodeUrl
+      lifecyclePolicy
       shortCode
       programmingLanguage
       user {

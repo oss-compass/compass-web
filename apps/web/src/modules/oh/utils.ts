@@ -111,3 +111,54 @@ export const openGiteeIssue = (report, values, id) => {
     console.error(error);
   }
 };
+export const openGraduationIssue = (report, values, id) => {
+  let name = report
+    .map((item) => {
+      return getPathname(item.codeUrl);
+    })
+    .join('、');
+  values.targetSoftware = report[0];
+  const { upstream, projectId, tpcSoftwareSigId } = getTargetReportInfo(
+    report,
+    getPathname(values.targetSoftware.codeUrl)
+  );
+  let targetName = getPathname(values.targetSoftware.codeUrl);
+  let reportLink = `${window.location.origin}/oh#graduationReportPage?taskId=${id}&projectId=${projectId}`;
+  let title = `【毕业申请】【${tpcSoftwareSigId}】【待TPC SIG评审】${targetName} 申请进入毕业项目`;
+
+  let body = `
+  1. 【毕业软件】
+
+  > ${targetName}
+
+  2. 【需求来源】
+
+  > ${values.demandSource}
+
+  3. 【Committers】
+
+  > ${values.committers}
+
+  4. 【所属领域】
+  
+  > ${tpcSoftwareSigId}
+
+  5. 【仓库地址】
+
+  > ${upstream}
+
+  6. 【报告链接】
+
+  > ${reportLink}
+  `;
+
+  try {
+    window.open(
+      `https://gitee.com/openharmony-tpc/docs/issues/new?title=${title}&description=${encodeURIComponent(
+        body
+      )}`
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};

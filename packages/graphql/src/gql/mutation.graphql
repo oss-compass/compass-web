@@ -382,7 +382,7 @@ mutation createTpcSoftwareGraduation(
   $tpcSoftwareGraduationReportIds: [Int!]!
   $committers: [String!]!
   $demandSource: String!
-  $incubationTime: String!
+  $incubationTime: String
   $incubationStartTime: ISO8601DateTime
 ) {
   createTpcSoftwareGraduation(

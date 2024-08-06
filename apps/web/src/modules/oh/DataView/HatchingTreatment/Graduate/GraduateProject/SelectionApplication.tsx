@@ -9,7 +9,7 @@ import SelectReport from '@modules/oh/components/GraduationReport/SelectReport';
 import { incubationTimeList, queryKey } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareGraduationMutation } from '@oss-compass/graphql';
-import { openGiteeIssue } from '@modules/oh/utils';
+import { openGraduationIssue } from '@modules/oh/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import ReportPageItems from '@modules/oh/components/GraduationReport/ReportPageItems';
 import { getPathname } from '@common/utils';
@@ -45,7 +45,7 @@ const SelectionApplication = () => {
           ),
         });
         setTimeout(() => {
-          // openGiteeIssue(report, form.getFieldsValue(true), id);
+          openGraduationIssue(report, form.getFieldsValue(true), id);
         }, 3000);
       } else {
         messageApi.open({
