@@ -42,7 +42,7 @@ const EvaluationBaseInfo = () => {
     {
       key: '1',
       label: 'License 信息',
-      children: targetReport?.license ? targetReport?.license + '行' : '--',
+      children: targetReport?.license ? targetReport?.license : '--',
       span: 2,
     },
     {
