@@ -41,7 +41,6 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         metricName,
         memberType,
         state,
-        reportType: 1,
       },
       {
         onSuccess: () => {
