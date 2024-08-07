@@ -2427,6 +2427,7 @@ query tpcSoftwareSelectionSearch(
     # selectionType
     # incubation
     # targetSoftware
+    repoUrl
     tpcSoftwareSelectionReport {
       name
       codeUrl

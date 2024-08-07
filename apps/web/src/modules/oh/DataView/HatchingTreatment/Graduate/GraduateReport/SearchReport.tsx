@@ -63,7 +63,7 @@ const SearchInput: React.FC<{
       />
       {reportList.length > 0 && showDropdown && (
         <div className="z-dropdown absolute left-0 right-0 top-[36px] max-h-[200px] w-full overflow-auto bg-white p-1 drop-shadow-xl">
-          {reportList.map(({ tpcSoftwareSelectionReport }, index) => {
+          {reportList.map(({ repoUrl, tpcSoftwareSelectionReport }, index) => {
             return (
               <div
                 key={index}
@@ -72,7 +72,13 @@ const SearchInput: React.FC<{
                   [false && 'bg-[#e6f4ff] font-semibold']
                 )}
                 onClick={(e) => {
-                  setReport(tpcSoftwareSelectionReport);
+                  const newReport = {
+                    repoUrl,
+                    ...tpcSoftwareSelectionReport,
+                    upstreamCodeUrl: tpcSoftwareSelectionReport.codeUrl,
+                    codeUrl: repoUrl?.[0] || '',
+                  };
+                  setReport(newReport);
                   setValue(getPathname(tpcSoftwareSelectionReport.codeUrl));
                   setShowDropdown(false);
                 }}

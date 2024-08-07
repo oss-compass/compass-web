@@ -9501,6 +9501,7 @@ export type TpcSoftwareSelectionSearchQuery = {
   __typename?: 'Query';
   tpcSoftwareSelectionSearch?: Array<{
     __typename?: 'TpcSoftwareSelectionSearch';
+    repoUrl?: Array<string> | null;
     tpcSoftwareSelectionReport?: {
       __typename?: 'TpcSoftwareSelectionReportSearch';
       name?: string | null;
@@ -16790,6 +16791,7 @@ export const TpcSoftwareSelectionSearchDocument = /*#__PURE__*/ `
     keyword: $keyword
     selectionType: $selectionType
   ) {
+    repoUrl
     tpcSoftwareSelectionReport {
       name
       codeUrl
