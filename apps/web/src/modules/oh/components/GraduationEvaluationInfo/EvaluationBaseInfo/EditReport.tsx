@@ -5,6 +5,7 @@ import {
   languagesList,
   adaptationMethodList,
   domainList,
+  lifecyclePolicyList,
 } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useUpdateTpcSoftwareGraduationReportMutation } from '@oss-compass/graphql';
@@ -96,21 +97,14 @@ const EditReportForm = ({ report, refetch }) => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="适配方式"
-              name="adaptationMethod"
+              label="源码地址"
+              name="codeUrl"
               rules={[{ required: true, message: '请输入!' }]}
             >
-              <Select disabled={false}>
-                {adaptationMethodList.map((item) => {
-                  return (
-                    <Select.Option key={item} value={item}>
-                      {item}
-                    </Select.Option>
-                  );
-                })}
-              </Select>
+              <Input disabled />
             </Form.Item>
           </Col>
+
           <Col span={12}>
             <Form.Item
               label="编程语言"
@@ -128,23 +122,60 @@ const EditReportForm = ({ report, refetch }) => {
           </Col>
           <Col span={12}>
             <Form.Item
+              label="适配方式"
+              name="adaptationMethod"
               rules={[{ required: true, message: '请输入!' }]}
-              label="上游源码地址"
-              name="upstreamCodeUrl"
             >
-              <Input />
+              <Select disabled={false}>
+                {adaptationMethodList.map((item) => {
+                  return (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="源码地址"
-              name="codeUrl"
+              label="发布版本生命周期"
+              name="lifecyclePolicy"
               rules={[{ required: true, message: '请输入!' }]}
             >
-              <Input disabled />
+              <Select disabled={false}>
+                {lifecyclePolicyList.map((item) => {
+                  return (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
           </Col>
-
+          <Col span={12}>
+            <Form.Item label="上游源码地址" name="upstreamCodeUrl">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Popover
+              placement="topRight"
+              content={
+                <>
+                  孵化软件适配、新增特性推荐回合上游社区，请提供在上游社区发起特性回合的
+                  Issue/PR 链接。
+                </>
+              }
+              title="说明"
+              trigger="click"
+            >
+              <Form.Item label="回合上游链接" name="roundUpstream">
+                <Input placeholder="提供在上游社区发起特性回合的Issue/PR链接" />
+              </Form.Item>
+            </Popover>
+          </Col>
           <Col span={24}>
             <div className="mt-20 flex justify-center">
               <Button

@@ -140,15 +140,7 @@ const SelectionReportApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                label="上游源码地址"
-                name="upstreamCodeUrl"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
+
             <Col span={12}>
               <Form.Item
                 label="编程语言"
@@ -182,7 +174,11 @@ const SelectionReportApplication = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="发布版本生命周期" name="lifecyclePolicy">
+              <Form.Item
+                label="发布版本生命周期"
+                name="lifecyclePolicy"
+                rules={[{ required: true, message: '请输入!' }]}
+              >
                 <Select disabled={false}>
                   {lifecyclePolicyList.map((item) => {
                     return (
@@ -192,6 +188,11 @@ const SelectionReportApplication = () => {
                     );
                   })}
                 </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="上游源码地址" name="upstreamCodeUrl">
+                <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
