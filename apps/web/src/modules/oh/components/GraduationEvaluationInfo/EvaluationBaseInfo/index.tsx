@@ -68,7 +68,19 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       key: '10',
       label: '回合上游链接',
       children: (
-        <div className="line-clamp-1 ">{item.upstreamCodeUrl || '无'}</div>
+        <>
+          {item.upstreamCodeUrl ? (
+            <a
+              className="line-clamp-1 text-[#69b1ff]"
+              target="_blank"
+              href={item.upstreamCodeUrl || ''}
+            >
+              {item.upstreamCodeUrl}
+            </a>
+          ) : (
+            '无'
+          )}
+        </>
       ),
     },
   ];

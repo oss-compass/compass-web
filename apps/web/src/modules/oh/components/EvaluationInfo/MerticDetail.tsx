@@ -17,7 +17,12 @@ export const metricList = ['合法合规', '技术生态', '生命周期', '网�
 export const getEvaluationDetail = (row) => {
   const evaluationDetail = metricList.map((item) => {
     //计算每个维度的总分
-    const d = allMetricData.filter((i) => i.维度 === item);
+    const d = allMetricData.filter((i) => {
+      let hasScore =
+        row?.graduationReportMetric?.[i.key] !== null &&
+        row?.graduationReportMetric?.[i.key] >= 0;
+      return i.维度 === item && hasScore;
+    });
     //   const score = d.reduce((acc, cur) => {
     //     return row?.tpcSoftwareReportMetric?.[cur.key] || 0 + acc;
     //   }, 0);
