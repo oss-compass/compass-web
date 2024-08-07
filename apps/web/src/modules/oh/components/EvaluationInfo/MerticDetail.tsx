@@ -19,13 +19,10 @@ export const getEvaluationDetail = (row) => {
     //计算每个维度的总分
     const d = allMetricData.filter((i) => {
       let hasScore =
-        row?.graduationReportMetric?.[i.key] !== null &&
-        row?.graduationReportMetric?.[i.key] >= 0;
+        row?.tpcSoftwareReportMetric?.[i.key] !== null &&
+        row?.tpcSoftwareReportMetric?.[i.key] >= 0;
       return i.维度 === item && hasScore;
     });
-    //   const score = d.reduce((acc, cur) => {
-    //     return row?.tpcSoftwareReportMetric?.[cur.key] || 0 + acc;
-    //   }, 0);
     let scoreTotal = 0;
     d.forEach((i) => {
       scoreTotal += row?.tpcSoftwareReportMetric?.[i.key] || 0;
