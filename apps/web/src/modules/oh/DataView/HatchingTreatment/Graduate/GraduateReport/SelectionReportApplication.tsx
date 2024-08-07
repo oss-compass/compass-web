@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
+import {
+  Button,
+  message,
+  Form,
+  Input,
+  Select,
+  Radio,
+  Row,
+  Col,
+  Popover,
+} from 'antd';
+import toast from 'react-hot-toast';
+import SearchReport from './SearchReport';
 import dayjs from 'dayjs';
 import {
   languagesList,
@@ -18,6 +30,7 @@ const SelectionReportApplication = () => {
   const { hasOhRole } = useHasOhRole();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
+  const [report, setReport] = useState(null);
   const mutation = useCreateTpcSoftwareGraduationReportMutation(client, {
     onSuccess(data) {
       if (data.createTpcSoftwareGraduationReport.status == 'true') {
@@ -96,7 +109,7 @@ const SelectionReportApplication = () => {
           <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
           <Row gutter={24}>
             <Col span={12}>
-              <Popover
+              {/* <Popover
                 placement="topRight"
                 content={
                   <>
@@ -106,15 +119,47 @@ const SelectionReportApplication = () => {
                 }
                 title="规则"
                 trigger="click"
+              > */}
+              <Form.Item
+                label="软件名称"
+                name="name"
+                rules={[{ required: true, message: '请输入!' }]}
               >
-                <Form.Item
-                  label="软件名称"
-                  name="name"
-                  rules={[{ required: true, message: '请输入!' }]}
+                <SearchReport
+                  placeholder="输入软件仓库名称"
+                  setReport={(item) => {
+                    item.isIncubation = 1;
+                    setReport(item);
+                    form.setFieldsValue(item);
+                  }}
+                />
+              </Form.Item>
+              {/* </Popover> */}
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="是否孵化项目"
+                rules={[{ required: true, message: '请输入!' }]}
+                name="isIncubation"
+                initialValue={0}
+              >
+                <Radio.Group
+                  className="mt-1"
+                  // onChange={(e) => {
+                  //   if (e.target.value === 1) {
+                  //     if (!report) {
+                  //       toast.error('未检测到该孵化项目');
+                  //       return false;
+                  //     }
+                  //   }
+                  // }}
                 >
-                  <Input />
-                </Form.Item>
-              </Popover>
+                  <Radio title={report ? '' : '未检测到该孵化项目'} value={1}>
+                    是
+                  </Radio>
+                  <Radio value={0}>否</Radio>
+                </Radio.Group>
+              </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item

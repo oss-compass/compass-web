@@ -1994,6 +1994,7 @@ fragment tpcSoftwareGraduationReportMetric on TpcSoftwareGraduationReportMetric 
   complianceDco
   complianceLicense
   complianceLicenseCompatibility
+  complianceSnippetReference
   ecologyBuild
   ecologyBuildDoc
   ecologyCi
@@ -2036,6 +2037,7 @@ fragment tpcSoftwareGraduationReportMetricDetail on TpcSoftwareGraduationReportM
     nonOsiLicenses
     osiPermissiveLicenses
   }
+  complianceSnippetReferenceDetail
   ecologyBuildDetail
   ecologyBuildDocDetail
   ecologyCiDetail
@@ -2084,6 +2086,7 @@ fragment tpcSoftwareGraduationReportMetricRaw on TpcSoftwareGraduationReportMetr
   complianceDcoRaw
   complianceLicenseCompatibilityRaw
   complianceLicenseRaw
+  complianceSnippetReferenceRaw
   ecologyBuildDocRaw
   ecologyBuildRaw
   ecologyCiRaw
@@ -2302,6 +2305,7 @@ query tpcSoftwareGraduationReportRisk($shortCode: String!) {
       complianceDco
       complianceLicense
       complianceLicenseCompatibility
+      complianceSnippetReference
       ecologyBuild
       ecologyBuildDoc
       ecologyCi
@@ -2334,6 +2338,9 @@ query tpcSoftwareGraduationReportRisk($shortCode: String!) {
         ...tpcClarificationStateDetail
       }
       complianceLicenseCompatibility {
+        ...tpcClarificationStateDetail
+      }
+      complianceSnippetReference {
         ...tpcClarificationStateDetail
       }
       ecologyBuild {
@@ -2397,5 +2404,36 @@ query tpcSoftwareGraduationReportRow($shortCode: String!) {
     graduationReportMetricRaw {
       ...tpcSoftwareGraduationReportMetricRaw
     }
+  }
+}
+query tpcSoftwareSelectionSearch(
+  $label: String!
+  $level: String = "repo"
+  $keyword: String!
+  $selectionType: Int!
+) {
+  tpcSoftwareSelectionSearch(
+    label: $label
+    level: $level
+    keyword: $keyword
+    selectionType: $selectionType
+  ) {
+    # committers
+    # createdAt
+    # demandSource
+    # id
+    # incubationTime
+    # repoUrl
+    # selectionType
+    # incubation
+    # targetSoftware
+    tpcSoftwareSelectionReport {
+      name
+      codeUrl
+      tpcSoftwareSigId
+      programmingLanguage
+      adaptationMethod
+    }
+    # tpcSoftwareSelectionReportIds
   }
 }

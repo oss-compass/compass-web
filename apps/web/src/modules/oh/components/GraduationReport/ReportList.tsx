@@ -64,16 +64,12 @@ const Report = ({
 
   const [checked, setChecked] = useState([]);
   const onSelectChange = (isChecked, item) => {
+    console.log(isChecked, item);
     if (selectFun) {
       if (!isChecked) {
-        setChecked([...checked, item]);
+        setChecked([item]);
       } else {
-        const pre = [...checked];
-        pre.splice(
-          pre.findIndex((c) => c.id === item.id),
-          1
-        );
-        setChecked([...pre]);
+        setChecked([]);
       }
     }
   };
@@ -126,9 +122,9 @@ const Report = ({
                     }}
                   >
                     <div className="flex w-full justify-between text-xl font-semibold">
-                      <div className="mr-2 w-[310px] overflow-hidden text-ellipsis">
+                      <div className="line-clamp-1 mr-2 w-[310px] overflow-hidden text-ellipsis">
                         <a
-                          className="line-clamp-1 cursor-pointer hover:underline"
+                          className="cursor-pointer hover:underline"
                           onClick={(e) => {
                             e.stopPropagation();
                             setActiveItem(item);

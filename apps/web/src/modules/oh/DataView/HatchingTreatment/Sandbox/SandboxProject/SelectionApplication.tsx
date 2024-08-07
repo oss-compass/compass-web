@@ -264,7 +264,7 @@ const SelectionApplication = () => {
                       initialValue={0}
                     >
                       <Radio.Group
-                        // value={value.xxx || number}
+                        className="mt-1 ml-2"
                         onChange={(e) => {
                           if (e.target.value === 1) {
                             setSameCheck(true);

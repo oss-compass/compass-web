@@ -2555,6 +2555,8 @@ export type Query = {
   tpcSoftwareSelectionReport?: Maybe<TpcSoftwareSelectionReport>;
   /** Get tpc software selection report apply page */
   tpcSoftwareSelectionReportPage?: Maybe<TpcSoftwareSelectionReportPage>;
+  /** Get tpc software selection search */
+  tpcSoftwareSelectionSearch?: Maybe<Array<TpcSoftwareSelectionSearch>>;
   /** Get tpc software sig list */
   tpcSoftwareSigList?: Maybe<Array<TpcSoftwareSig>>;
   /** Get trending data of compass */
@@ -3151,6 +3153,13 @@ export type QueryTpcSoftwareSelectionReportPageArgs = {
   sortOpts?: InputMaybe<Array<SortOptionInput>>;
 };
 
+export type QueryTpcSoftwareSelectionSearchArgs = {
+  keyword: Scalars['String'];
+  label?: InputMaybe<Scalars['String']>;
+  level?: InputMaybe<Scalars['String']>;
+  selectionType: Scalars['Int'];
+};
+
 export type QueryTpcSoftwareSigListArgs = {
   label?: InputMaybe<Scalars['String']>;
   level?: InputMaybe<Scalars['String']>;
@@ -3550,6 +3559,7 @@ export type TpcSoftwareGraduationReport = {
   graduationReportMetric?: Maybe<TpcSoftwareGraduationReportMetric>;
   graduationReportMetricRaw?: Maybe<TpcSoftwareGraduationReportMetricRaw>;
   id: Scalars['Int'];
+  isIncubation?: Maybe<Scalars['Int']>;
   license?: Maybe<Scalars['String']>;
   lifecyclePolicy?: Maybe<Scalars['String']>;
   metricClarificationCount?: Maybe<TpcSoftwareGraduationReportMetricClarificationCount>;
@@ -3568,12 +3578,13 @@ export type TpcSoftwareGraduationReport = {
 export type TpcSoftwareGraduationReportInput = {
   adaptationMethod: Scalars['String'];
   codeUrl: Scalars['String'];
-  lifecyclePolicy?: InputMaybe<Scalars['String']>;
+  isIncubation: Scalars['Int'];
+  lifecyclePolicy: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
   roundUpstream?: InputMaybe<Scalars['String']>;
   tpcSoftwareSigId: Scalars['Int'];
-  upstreamCodeUrl: Scalars['String'];
+  upstreamCodeUrl?: InputMaybe<Scalars['String']>;
 };
 
 export type TpcSoftwareGraduationReportMetric = {
@@ -3591,6 +3602,8 @@ export type TpcSoftwareGraduationReportMetric = {
     Array<TpcSoftwareReportMetricComplianceLicenseCompatibility>
   >;
   complianceLicenseDetail?: Maybe<TpcSoftwareGraduationReportMetricComplianceLicense>;
+  complianceSnippetReference?: Maybe<Scalars['Int']>;
+  complianceSnippetReferenceDetail?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['ISO8601DateTime']>;
   ecologyBuild?: Maybe<Scalars['Int']>;
   ecologyBuildDetail?: Maybe<Scalars['String']>;
@@ -3642,6 +3655,7 @@ export type TpcSoftwareGraduationReportMetricClarificationCount = {
   complianceDco?: Maybe<Scalars['Int']>;
   complianceLicense?: Maybe<Scalars['Int']>;
   complianceLicenseCompatibility?: Maybe<Scalars['Int']>;
+  complianceSnippetReference?: Maybe<Scalars['Int']>;
   ecologyBuild?: Maybe<Scalars['Int']>;
   ecologyBuildDoc?: Maybe<Scalars['Int']>;
   ecologyCi?: Maybe<Scalars['Int']>;
@@ -3670,6 +3684,7 @@ export type TpcSoftwareGraduationReportMetricClarificationState = {
   complianceDco?: Maybe<Array<TpcSoftwareCommentState>>;
   complianceLicense?: Maybe<Array<TpcSoftwareCommentState>>;
   complianceLicenseCompatibility?: Maybe<Array<TpcSoftwareCommentState>>;
+  complianceSnippetReference?: Maybe<Array<TpcSoftwareCommentState>>;
   ecologyBuild?: Maybe<Array<TpcSoftwareCommentState>>;
   ecologyBuildDoc?: Maybe<Array<TpcSoftwareCommentState>>;
   ecologyCi?: Maybe<Array<TpcSoftwareCommentState>>;
@@ -3703,6 +3718,7 @@ export type TpcSoftwareGraduationReportMetricRaw = {
   complianceDcoRaw?: Maybe<Scalars['String']>;
   complianceLicenseCompatibilityRaw?: Maybe<Scalars['String']>;
   complianceLicenseRaw?: Maybe<Scalars['String']>;
+  complianceSnippetReferenceRaw?: Maybe<Scalars['String']>;
   ecologyBuildDocRaw?: Maybe<Scalars['String']>;
   ecologyBuildRaw?: Maybe<Scalars['String']>;
   ecologyCiRaw?: Maybe<Scalars['String']>;
@@ -3733,12 +3749,13 @@ export type TpcSoftwareGraduationReportPage = {
 
 export type TpcSoftwareGraduationReportUpdateInput = {
   adaptationMethod: Scalars['String'];
-  lifecyclePolicy?: InputMaybe<Scalars['String']>;
+  isIncubation: Scalars['Int'];
+  lifecyclePolicy: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
   roundUpstream?: InputMaybe<Scalars['String']>;
   tpcSoftwareSigId: Scalars['Int'];
-  upstreamCodeUrl: Scalars['String'];
+  upstreamCodeUrl?: InputMaybe<Scalars['String']>;
 };
 
 export type TpcSoftwareReportMetric = {
@@ -4019,12 +4036,38 @@ export type TpcSoftwareSelectionReportPage = {
   totalPage?: Maybe<Scalars['Int']>;
 };
 
+export type TpcSoftwareSelectionReportSearch = {
+  __typename?: 'TpcSoftwareSelectionReportSearch';
+  adaptationMethod?: Maybe<Scalars['String']>;
+  codeUrl?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  name?: Maybe<Scalars['String']>;
+  programmingLanguage?: Maybe<Scalars['String']>;
+  reportType: Scalars['Int'];
+  tpcSoftwareSigId?: Maybe<Scalars['Int']>;
+};
+
 export type TpcSoftwareSelectionReportUpdateInput = {
   adaptationMethod: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityResponse: Scalars['String'];
+};
+
+export type TpcSoftwareSelectionSearch = {
+  __typename?: 'TpcSoftwareSelectionSearch';
+  committers?: Maybe<Array<Scalars['String']>>;
+  createdAt: Scalars['ISO8601DateTime'];
+  demandSource?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  incubationTime?: Maybe<Scalars['String']>;
+  repoUrl?: Maybe<Array<Scalars['String']>>;
+  /** incubation: 0, sandbox: 1, graduation: 2 */
+  selectionType?: Maybe<Scalars['Int']>;
+  targetSoftware?: Maybe<Scalars['String']>;
+  tpcSoftwareSelectionReport?: Maybe<TpcSoftwareSelectionReportSearch>;
+  tpcSoftwareSelectionReportIds?: Maybe<Array<Scalars['String']>>;
 };
 
 export type TpcSoftwareSig = {
@@ -8667,6 +8710,7 @@ export type TpcSoftwareGraduationReportMetricFragment = {
   complianceDco?: number | null;
   complianceLicense?: number | null;
   complianceLicenseCompatibility?: number | null;
+  complianceSnippetReference?: number | null;
   ecologyBuild?: number | null;
   ecologyBuildDoc?: number | null;
   ecologyCi?: number | null;
@@ -8695,6 +8739,7 @@ export type TpcSoftwareGraduationReportMetricFragment = {
 export type TpcSoftwareGraduationReportMetricDetailFragment = {
   __typename?: 'TpcSoftwareGraduationReportMetric';
   complianceCopyrightStatementAntiTamperDetail?: string | null;
+  complianceSnippetReferenceDetail?: string | null;
   ecologyBuildDetail?: string | null;
   ecologyBuildDocDetail?: string | null;
   ecologyCiDetail?: string | null;
@@ -8771,6 +8816,7 @@ export type TpcSoftwareGraduationReportMetricRawFragment = {
   complianceDcoRaw?: string | null;
   complianceLicenseCompatibilityRaw?: string | null;
   complianceLicenseRaw?: string | null;
+  complianceSnippetReferenceRaw?: string | null;
   ecologyBuildDocRaw?: string | null;
   ecologyBuildRaw?: string | null;
   ecologyCiRaw?: string | null;
@@ -8835,6 +8881,7 @@ export type TpcSoftwareGraduationReportPageQuery = {
         complianceDco?: number | null;
         complianceLicense?: number | null;
         complianceLicenseCompatibility?: number | null;
+        complianceSnippetReference?: number | null;
         ecologyBuild?: number | null;
         ecologyBuildDoc?: number | null;
         ecologyCi?: number | null;
@@ -8908,6 +8955,7 @@ export type TpcSoftwareGraduationReportQuery = {
       complianceDco?: number | null;
       complianceLicense?: number | null;
       complianceLicenseCompatibility?: number | null;
+      complianceSnippetReference?: number | null;
       ecologyBuild?: number | null;
       ecologyBuildDoc?: number | null;
       ecologyCi?: number | null;
@@ -8932,6 +8980,7 @@ export type TpcSoftwareGraduationReportQuery = {
       updatedAt?: any | null;
       codeUrl?: string | null;
       complianceCopyrightStatementAntiTamperDetail?: string | null;
+      complianceSnippetReferenceDetail?: string | null;
       ecologyBuildDetail?: string | null;
       ecologyBuildDocDetail?: string | null;
       ecologyCiDetail?: string | null;
@@ -9123,6 +9172,7 @@ export type TpcSoftwareGraduationReportRiskQuery = {
       complianceDco?: number | null;
       complianceLicense?: number | null;
       complianceLicenseCompatibility?: number | null;
+      complianceSnippetReference?: number | null;
       ecologyBuild?: number | null;
       ecologyBuildDoc?: number | null;
       ecologyCi?: number | null;
@@ -9188,6 +9238,17 @@ export type TpcSoftwareGraduationReportRiskQuery = {
         user?: { __typename?: 'User'; name: string } | null;
       }> | null;
       complianceLicenseCompatibility?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceSnippetReference?: Array<{
         __typename?: 'TpcSoftwareCommentState';
         createdAt: any;
         id: number;
@@ -9406,6 +9467,7 @@ export type TpcSoftwareGraduationReportRowQuery = {
       complianceDcoRaw?: string | null;
       complianceLicenseCompatibilityRaw?: string | null;
       complianceLicenseRaw?: string | null;
+      complianceSnippetReferenceRaw?: string | null;
       ecologyBuildDocRaw?: string | null;
       ecologyBuildRaw?: string | null;
       ecologyCiRaw?: string | null;
@@ -9426,6 +9488,28 @@ export type TpcSoftwareGraduationReportRowQuery = {
       securityVulnerabilityRaw?: string | null;
     } | null;
   } | null;
+};
+
+export type TpcSoftwareSelectionSearchQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  keyword: Scalars['String'];
+  selectionType: Scalars['Int'];
+}>;
+
+export type TpcSoftwareSelectionSearchQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionSearch?: Array<{
+    __typename?: 'TpcSoftwareSelectionSearch';
+    tpcSoftwareSelectionReport?: {
+      __typename?: 'TpcSoftwareSelectionReportSearch';
+      name?: string | null;
+      codeUrl?: string | null;
+      tpcSoftwareSigId?: number | null;
+      programmingLanguage?: string | null;
+      adaptationMethod?: string | null;
+    } | null;
+  }> | null;
 };
 
 export const MetricsFragmentDoc = /*#__PURE__*/ `
@@ -9746,6 +9830,7 @@ export const TpcSoftwareGraduationReportMetricFragmentDoc = /*#__PURE__*/ `
   complianceDco
   complianceLicense
   complianceLicenseCompatibility
+  complianceSnippetReference
   ecologyBuild
   ecologyBuildDoc
   ecologyCi
@@ -9790,6 +9875,7 @@ export const TpcSoftwareGraduationReportMetricDetailFragmentDoc = /*#__PURE__*/ 
     nonOsiLicenses
     osiPermissiveLicenses
   }
+  complianceSnippetReferenceDetail
   ecologyBuildDetail
   ecologyBuildDocDetail
   ecologyCiDetail
@@ -9840,6 +9926,7 @@ export const TpcSoftwareGraduationReportMetricRawFragmentDoc = /*#__PURE__*/ `
   complianceDcoRaw
   complianceLicenseCompatibilityRaw
   complianceLicenseRaw
+  complianceSnippetReferenceRaw
   ecologyBuildDocRaw
   ecologyBuildRaw
   ecologyCiRaw
@@ -16527,6 +16614,7 @@ export const TpcSoftwareGraduationReportRiskDocument = /*#__PURE__*/ `
       complianceDco
       complianceLicense
       complianceLicenseCompatibility
+      complianceSnippetReference
       ecologyBuild
       ecologyBuildDoc
       ecologyCi
@@ -16559,6 +16647,9 @@ export const TpcSoftwareGraduationReportRiskDocument = /*#__PURE__*/ `
         ...tpcClarificationStateDetail
       }
       complianceLicenseCompatibility {
+        ...tpcClarificationStateDetail
+      }
+      complianceSnippetReference {
         ...tpcClarificationStateDetail
       }
       ecologyBuild {
@@ -16691,3 +16782,51 @@ useTpcSoftwareGraduationReportRowQuery.fetcher = (
     TpcSoftwareGraduationReportRowQuery,
     TpcSoftwareGraduationReportRowQueryVariables
   >(client, TpcSoftwareGraduationReportRowDocument, variables, headers);
+export const TpcSoftwareSelectionSearchDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionSearch($label: String!, $level: String = "repo", $keyword: String!, $selectionType: Int!) {
+  tpcSoftwareSelectionSearch(
+    label: $label
+    level: $level
+    keyword: $keyword
+    selectionType: $selectionType
+  ) {
+    tpcSoftwareSelectionReport {
+      name
+      codeUrl
+      tpcSoftwareSigId
+      programmingLanguage
+      adaptationMethod
+    }
+  }
+}
+    `;
+export const useTpcSoftwareSelectionSearchQuery = <
+  TData = TpcSoftwareSelectionSearchQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionSearchQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionSearchQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionSearchQuery, TError, TData>(
+    ['tpcSoftwareSelectionSearch', variables],
+    fetcher<
+      TpcSoftwareSelectionSearchQuery,
+      TpcSoftwareSelectionSearchQueryVariables
+    >(client, TpcSoftwareSelectionSearchDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionSearchQuery.getKey = (
+  variables: TpcSoftwareSelectionSearchQueryVariables
+) => ['tpcSoftwareSelectionSearch', variables];
+useTpcSoftwareSelectionSearchQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionSearchQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionSearchQuery,
+    TpcSoftwareSelectionSearchQueryVariables
+  >(client, TpcSoftwareSelectionSearchDocument, variables, headers);
