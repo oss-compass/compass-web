@@ -127,9 +127,9 @@ const Report = ({
                     }}
                   >
                     <div className="flex w-full justify-between text-xl font-semibold">
-                      <div className="mr-2 w-[300px] overflow-hidden text-ellipsis">
+                      <div className="mr-2 w-[310px] overflow-hidden text-ellipsis">
                         <a
-                          className="cursor-pointer hover:underline"
+                          className="line-clamp-1 cursor-pointer hover:underline"
                           onClick={(e) => {
                             e.stopPropagation();
                             setActiveItem(item);
