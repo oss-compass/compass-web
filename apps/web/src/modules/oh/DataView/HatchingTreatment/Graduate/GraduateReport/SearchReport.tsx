@@ -21,6 +21,7 @@ const SearchInput: React.FC<{
     client,
     { keyword: throttledKeyword, selectionType: 0, ...queryKey },
     {
+      enabled: Boolean(throttledKeyword),
       onSuccess: () => {
         let result = data?.tpcSoftwareSelectionSearch!;
         console.log(data, result);
