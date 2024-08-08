@@ -22,9 +22,9 @@ const SearchInput: React.FC<{
     { keyword: throttledKeyword, selectionType: 0, ...queryKey },
     {
       enabled: Boolean(throttledKeyword),
-      onSuccess: () => {
-        let result = data?.tpcSoftwareSelectionSearch!;
-        console.log(data, result);
+      onSuccess: (res) => {
+        let result = res?.tpcSoftwareSelectionSearch!;
+        console.log(res, result);
         if (Array.isArray(result) && result.length > 0) {
           setShowDropdown(true);
         } else {
