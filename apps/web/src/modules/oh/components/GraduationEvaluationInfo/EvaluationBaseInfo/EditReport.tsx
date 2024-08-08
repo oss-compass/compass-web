@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import { Form, Input, Select, Row, Col, Popover, Button } from 'antd';
+import { Form, Input, Select, Row, Col, Popover, Button, Radio } from 'antd';
 import {
   languagesList,
   adaptationMethodList,
@@ -80,6 +80,22 @@ const EditReportForm = ({ report, refetch }) => {
               </Form.Item>
             </Popover>
           </Col>
+          <Col span={12}>
+            <Form.Item
+              label="是否孵化项目"
+              rules={[{ required: true, message: '请输入!' }]}
+              name="isIncubation"
+              initialValue={0}
+            >
+              <Radio.Group className="mt-1">
+                <Radio title={report ? '' : '未检测到该孵化项目'} value={1}>
+                  是
+                </Radio>
+                <Radio value={0}>否</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+
           <Col span={12}>
             <Form.Item
               label="所属领域"

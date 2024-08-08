@@ -147,17 +147,7 @@ const SelectionReportApplication = () => {
                 name="isIncubation"
                 initialValue={0}
               >
-                <Radio.Group
-                  className="mt-1"
-                  // onChange={(e) => {
-                  //   if (e.target.value === 1) {
-                  //     if (!report) {
-                  //       toast.error('未检测到该孵化项目');
-                  //       return false;
-                  //     }
-                  //   }
-                  // }}
-                >
+                <Radio.Group className="mt-1">
                   <Radio title={report ? '' : '未检测到该孵化项目'} value={1}>
                     是
                   </Radio>
