@@ -51,12 +51,12 @@ const EvaluationBaseInfo = () => {
       children: targetReport?.adaptationMethod,
       span: 2,
     },
-    {
-      key: '2',
-      label: '孵化周期',
-      children: incubationTime,
-      span: 2,
-    },
+    // {
+    //   key: '2',
+    //   label: '孵化周期',
+    //   children: incubationTime,
+    //   span: 2,
+    // },
     {
       key: '7',
       label: 'Committers',
@@ -65,10 +65,10 @@ const EvaluationBaseInfo = () => {
           {committers}
         </div>
       ),
-      span: 4,
+      span: 2,
     },
     // {
-    //   key: '4',
+    //   key: '4',s
     //   label: '编程语言',
     //   children: item.programmingLanguage,
     // },

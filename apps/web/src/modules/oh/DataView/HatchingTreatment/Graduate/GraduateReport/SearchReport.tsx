@@ -10,7 +10,7 @@ import { getPathname } from '@common/utils';
 
 const SearchInput: React.FC<{
   placeholder: string;
-  setReport: (item: any) => void;
+  setReport: (item: any, value) => void;
 }> = ({ placeholder, setReport }) => {
   const [value, setValue] = useState<string>();
   const [keyword, setKeyword] = useState<string>();
@@ -21,10 +21,9 @@ const SearchInput: React.FC<{
     client,
     { keyword: throttledKeyword, selectionType: 0, ...queryKey },
     {
-      enabled: Boolean(throttledKeyword),
       onSuccess: () => {
         let result = data?.tpcSoftwareSelectionSearch!;
-        console.log(result);
+        console.log(data, result);
         if (Array.isArray(result) && result.length > 0) {
           setShowDropdown(true);
         } else {
@@ -53,6 +52,7 @@ const SearchInput: React.FC<{
           const val = event.target.value;
           setKeyword(val);
           setValue(val);
+          setReport(null, value);
         }}
         // suffix={suffix}
         onBlur={() => {
@@ -78,7 +78,7 @@ const SearchInput: React.FC<{
                     upstreamCodeUrl: tpcSoftwareSelectionReport.codeUrl,
                     codeUrl: repoUrl?.[0] || '',
                   };
-                  setReport(newReport);
+                  setReport(newReport, value);
                   setValue(getPathname(tpcSoftwareSelectionReport.codeUrl));
                   setShowDropdown(false);
                 }}

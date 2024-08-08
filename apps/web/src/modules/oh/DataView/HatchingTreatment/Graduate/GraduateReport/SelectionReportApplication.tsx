@@ -127,10 +127,14 @@ const SelectionReportApplication = () => {
               >
                 <SearchReport
                   placeholder="输入软件仓库名称"
-                  setReport={(item) => {
-                    item.isIncubation = 1;
-                    setReport(item);
-                    form.setFieldsValue(item);
+                  setReport={(item, value) => {
+                    if (item) {
+                      item.isIncubation = 1;
+                      setReport(item);
+                      form.setFieldsValue(item);
+                    } else {
+                      form.setFieldsValue({ name: value });
+                    }
                   }}
                 />
               </Form.Item>
