@@ -8856,6 +8856,8 @@ export type TpcSoftwareGraduationReportPageQuery = {
     items?: Array<{
       __typename?: 'TpcSoftwareGraduationReport';
       adaptationMethod?: string | null;
+      isIncubation?: number | null;
+      roundUpstream?: string | null;
       codeUrl?: string | null;
       id: number;
       name?: string | null;
@@ -16329,6 +16331,8 @@ export const TpcSoftwareGraduationReportPageDocument = /*#__PURE__*/ `
     count
     items {
       adaptationMethod
+      isIncubation
+      roundUpstream
       codeUrl
       id
       name

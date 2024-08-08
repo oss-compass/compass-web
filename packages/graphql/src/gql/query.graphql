@@ -2126,6 +2126,8 @@ query tpcSoftwareGraduationReportPage(
     items {
       adaptationMethod
       # codeCount
+      isIncubation
+      roundUpstream
       codeUrl
       id
       name
