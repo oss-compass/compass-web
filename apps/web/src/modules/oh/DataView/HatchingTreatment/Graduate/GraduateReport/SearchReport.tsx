@@ -53,7 +53,7 @@ const SearchInput: React.FC<{
           const val = event.target.value;
           setKeyword(val);
           setValue(val);
-          setReport(null, value);
+          setReport(null, val);
         }}
         // suffix={suffix}
         onBlur={() => {
