@@ -55,7 +55,7 @@ const SideMenu: React.FC = () => {
             defaultSelectedKeys={[id || 'hatchTable']}
             onClick={onClick}
             // style={{ width: 220 }}
-            defaultOpenKeys={['sub3', 'hatch']}
+            defaultOpenKeys={['sub3', 'hatch', 'graduate']}
             mode="inline"
             items={items}
             selectedKeys={defaultSelectedKeys}
