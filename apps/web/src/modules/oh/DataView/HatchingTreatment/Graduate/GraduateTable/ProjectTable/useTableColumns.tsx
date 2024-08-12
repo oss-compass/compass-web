@@ -8,7 +8,7 @@ import TableDropdown from '@modules/oh/components/TableDropdown';
 export const useTableColumns = (anction) => {
   const columns = [
     {
-      title: '操作',
+      title: '报告',
       width: 70,
       render: (_, record) => {
         return (
