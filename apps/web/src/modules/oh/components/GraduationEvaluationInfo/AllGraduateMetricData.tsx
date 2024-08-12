@@ -332,10 +332,10 @@ export const allMetricData = [
     key: 'ecologyMaintainerDoc',
     detailRender: null,
     维度: '技术生态',
-    指标名称: 'Maintainers 文件',
+    指标名称: 'Committers 文件',
     '风险重要性\n(去除)': '中',
     指标意义:
-      '孵化项目 Maintainers 文件检查：维护一个具备决策权的贡献者的公开列表。',
+      '孵化项目 Committers 文件检查：维护一个具备决策权的贡献者的公开列表。',
     指标检查项及评分项: '设置评分，满足 10 分，不满足 0 分',
     修复建议: '',
     指标业界实践: 'CLOMonitor',
@@ -629,7 +629,7 @@ const getErrorContent = (item) => {
     ecologyIssueManagement: '未实现问题管理机制',
     ecologyIssueResponseTime:
       '过去 6 个月收到的本项目涉及的三方软件的任何漏洞报告未响应',
-    ecologyMaintainerDoc: '未在仓库检测到 Maintainers 文件',
+    ecologyMaintainerDoc: '未在仓库检测到 Committers 文件',
     ecologyBuild: '项目可构建出可工作的系统检查未通过',
     ecologyCi: '项目 CI 集成检查未通过',
     ecologyTestCoverage: '测试覆盖度最终得分不合格',
