@@ -76,16 +76,16 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const complianceState = isUserStateValid(3);
 
     if (clarificationSigLeadPermission && !dimension) {
-      res.push(createApprovalOption(1, leaderState, '以 TPC Leader 通过'));
+      res.push(createApprovalOption(1, leaderState, '以 TPC Leader 赞同'));
     }
     if (clarificationCommitterPermission && !dimension) {
-      res.push(createApprovalOption(0, committerState, '以 Committer 通过'));
+      res.push(createApprovalOption(0, committerState, '以 Committer 赞同'));
     }
     if (clarificationLegalPermission && dimension) {
-      res.push(createApprovalOption(2, legalState, '以法务专家通过'));
+      res.push(createApprovalOption(2, legalState, '以法务专家赞同'));
     }
     if (clarificationCompliancePermission) {
-      res.push(createApprovalOption(3, complianceState, '以合规专家通过'));
+      res.push(createApprovalOption(3, complianceState, '以合规专家赞同'));
     }
 
     return res;
@@ -116,16 +116,16 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const complianceState = isUserStateState(-1, 3);
 
     if (clarificationSigLeadPermission && !dimension) {
-      res.push(createRejectionOption(1, leaderState, '以 TPC Leader 驳回'));
+      res.push(createRejectionOption(1, leaderState, '以 TPC Leader 拒绝'));
     }
     if (clarificationCommitterPermission && !dimension) {
-      res.push(createRejectionOption(0, committerState, '以 Committer 驳回'));
+      res.push(createRejectionOption(0, committerState, '以 Committer 拒绝'));
     }
     if (clarificationLegalPermission && dimension) {
-      res.push(createRejectionOption(2, legalState, '以法务专家驳回'));
+      res.push(createRejectionOption(2, legalState, '以法务专家拒绝'));
     }
     if (clarificationCompliancePermission) {
-      res.push(createRejectionOption(3, complianceState, '以合规专家驳回'));
+      res.push(createRejectionOption(3, complianceState, '以合规专家拒绝'));
     }
 
     return res;

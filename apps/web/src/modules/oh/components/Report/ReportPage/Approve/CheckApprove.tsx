@@ -33,12 +33,7 @@ const CheckApprove = ({ selectionId }) => {
     commentLegalPermission,
     commentState,
   } = useGetReportData();
-  console.log(
-    commentCommitterPermission,
-    commentSigLeadPermission,
-    commentCompliancePermission,
-    commentLegalPermission
-  );
+
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
   const userState = commentState?.filter((z) => z.userId === userId);
@@ -95,10 +90,25 @@ const CheckApprove = ({ selectionId }) => {
       return notMetricList;
     }
     return []; //未获取指标数据
-  }, [metricItemScoreList, metricClarificationState, currentUser]);
+  }, [metricItemScoreList, metricClarificationState, userId]);
+
+  const canReject = useMemo(() => {
+    if (metricItemScoreList?.length > 0) {
+      let clarificationList = metricItemScoreList.filter((m) => {
+        return m.score !== 10 && m.score !== null;
+      });
+      return clarificationList?.some((metric) => {
+        let clarificationState = metricClarificationState?.[metric.key];
+        return clarificationState?.some(
+          (s) => s.userId === userId && s.state === -1
+        );
+      });
+    }
+    return false;
+  }, [metricItemScoreList, metricClarificationState, userId]);
 
   const canLegalApprove = useMemo(() => {
-    const checkClarification = (clarificationState, dimension) => {
+    const checkClarification = (clarificationState) => {
       if (!clarificationState) {
         return true;
       }
@@ -142,14 +152,14 @@ const CheckApprove = ({ selectionId }) => {
       });
       clarificationList.forEach((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
-        if (checkClarification(clarificationState, metric.维度)) {
+        if (checkClarification(clarificationState)) {
           notMetricList.push(metric.指标名称);
         }
       });
       return notMetricList;
     }
     return [];
-  }, [metricItemScoreList, metricClarificationState, currentUser]);
+  }, [metricItemScoreList, metricClarificationState, userId]);
 
   const mutation = useAcceptTpcSoftwareSelectionMutation(gqlClient);
   const handleApprove = (memberType, state) => {
@@ -277,6 +287,14 @@ const CheckApprove = ({ selectionId }) => {
           key: '1',
           label:
             '您不是该软件的 Committer 或 TPC Leader 或法务合规专家，暂无权限审批',
+        },
+      ];
+    }
+    if (!canReject) {
+      return [
+        {
+          key: '1',
+          label: '需要至少拒绝一项指标风险澄清才可以驳回申请',
         },
       ];
     }
