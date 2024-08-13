@@ -451,3 +451,45 @@ mutation acceptTpcSoftwareGraduation(
     status
   }
 }
+
+mutation acceptTpcSoftwareGraduation(
+  $graduationId: Int!
+  $state: Int!
+  $memberType: Int!
+) {
+  acceptTpcSoftwareGraduation(
+    input: {
+      graduationId: $graduationId
+      state: $state
+      memberType: $memberType
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation triggerTpcSoftwareSelectionReport($reportId: Int!) {
+  triggerTpcSoftwareSelectionReport(input: { reportId: $reportId }) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation triggerTpcSoftwareGraduationReport($reportId: Int!) {
+  triggerTpcSoftwareGraduationReport(input: { reportId: $reportId }) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}

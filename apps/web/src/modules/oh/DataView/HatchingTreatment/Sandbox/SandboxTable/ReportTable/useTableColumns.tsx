@@ -1,6 +1,7 @@
 import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
 import EditReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/EditReport';
+import RefreshReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/RefreshReport';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
 import { getProjectId } from '@modules/oh/utils';
@@ -17,6 +18,7 @@ export const useTableColumns = (anction) => {
         return (
           <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
             <EditReport report={record} editSuccess={anction} />
+            <RefreshReport report={record} editSuccess={anction} />
             {record?.tpcSoftwareReportMetric?.status === 'success' && (
               <Popover content={'查看报告'}>
                 <FileTextOutlined
@@ -232,22 +234,24 @@ export const useTableColumns = (anction) => {
       dataIndex: 'state',
       key: 'state',
       render: (text, record) => {
-        return record?.tpcSoftwareReportMetric?.status === 'success' ? (
-          <>
-            <a
-              target="_blank"
-              onClick={() => {
-                window.location.hash =
-                  'reportDetailPage?projectId=' + record.shortCode;
-              }}
-              className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-            >
-              生成成功
-            </a>
-          </>
-        ) : (
-          '生成中'
-        );
+        const status = record?.tpcSoftwareReportMetric?.status;
+        if (status === 'success') {
+          return (
+            <>
+              <a
+                target="_blank"
+                onClick={() => {
+                  window.location.hash =
+                    'reportDetailPage?projectId=' + record.shortCode;
+                }}
+                className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+              >
+                生成成功
+              </a>
+            </>
+          );
+        }
+        return status === 'again_progress' ? '重跑中' : '生成中';
       },
     },
     {

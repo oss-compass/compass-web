@@ -1,9 +1,9 @@
 import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
 import EditReport from '@modules/oh/components/GraduationEvaluationInfo/EvaluationBaseInfo/EditReport';
+import RefreshReport from '@modules/oh/components/GraduationEvaluationInfo/EvaluationBaseInfo/RefreshReport';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { getProjectId } from '@modules/oh/utils';
 import { AiFillFilter } from 'react-icons/ai';
 import TableDropdown from '@modules/oh/components/TableDropdown';
 
@@ -17,6 +17,7 @@ export const useTableColumns = (anction) => {
         return (
           <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
             <EditReport report={record} editSuccess={anction} />
+            <RefreshReport report={record} editSuccess={anction} />
             {record?.graduationReportMetric?.status === 'success' && (
               <Popover content={'查看报告'}>
                 <FileTextOutlined
@@ -197,8 +198,9 @@ export const useTableColumns = (anction) => {
       dataIndex: 'state',
       key: 'state',
       render: (text, record) => {
-        return record?.graduationReportMetric?.status === 'success' ? (
-          <>
+        const status = record?.graduationReportMetric?.status;
+        if (status === 'success') {
+          return (
             <a
               target="_blank"
               onClick={() => {
@@ -209,10 +211,10 @@ export const useTableColumns = (anction) => {
             >
               生成成功
             </a>
-          </>
-        ) : (
-          '生成中'
-        );
+          );
+        }
+
+        return status === 'again_progress' ? '重跑中' : '生成中';
       },
     },
     {
