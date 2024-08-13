@@ -121,14 +121,7 @@ export const adaptationMethodList = [
   'JS/TS适配',
   'C/C++库移植',
   '参考',
-  // {
-  //   id: 0,
-  //   name: '适配',
-  // },
-  // {
-  //   id: 1,
-  //   name: '重写',
-  // },
+  'OpenHarmony原创',
 ];
 export const queryKey = {
   label: 'OpenHarmony-TPC',
