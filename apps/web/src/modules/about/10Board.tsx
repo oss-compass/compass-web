@@ -4,7 +4,7 @@ import { FiUsers } from 'react-icons/fi';
 import Tooltip from '@common/components/Tooltip';
 import { useTranslation } from 'next-i18next';
 import { Title } from './components';
-
+// autocorrect: false
 const data = [
   {
     avatar: '/images/about/陶先平@2x.png',
@@ -24,9 +24,11 @@ const data = [
     intro: '开源中国创始人',
   },
   {
-    avatar: '/images/about/高琨@2x.png',
-    name: '高琨',
-    intro: '华为工程师， 8 年开源软件治理相关工作经验',
+    avatar: '/images/about/马全一.png',
+    name: '马全一',
+    intro:
+      '华为技术有限公司2012实验室开源管理中心开源运营总监，负责Rust编程语言生态发展。Web3 Infrastructure Foundation董事会独立董事，开放原子开源基金会开源项目导师，2020 - 2022 年负责华为 openEuler 开源操作系统、openGauss 数据库和 openLooKeng 大数据三个开源社区运营。曾任职腾讯CSIG ，腾讯云T4专家级产品经理，负责容器产品和 DevOps 产品，期间任腾讯内部开源联盟主委会成员，负责开源项目的商业战略规划设计、开源项目社区运作以及竞合分析。作为腾讯的代表参与开放原子开源基金会的筹建。',
+    tooltip: true,
   },
   {
     avatar: '/images/about/马红伟@2x.png',
