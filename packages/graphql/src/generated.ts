@@ -8289,6 +8289,12 @@ export type TpcSoftwareSelectionReportQuery = {
     shortCode: string;
     vulnerabilityResponse?: string | null;
     userId: number;
+    architectureDiagrams?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      id: number;
+      url: string;
+    }> | null;
     tpcSoftwareReportMetric?: {
       __typename?: 'TpcSoftwareReportMetric';
       complianceDco?: number | null;
@@ -9049,6 +9055,12 @@ export type TpcSoftwareGraduationReportQuery = {
     shortCode: string;
     programmingLanguage?: string | null;
     userId: number;
+    architectureDiagrams?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      id: number;
+      url: string;
+    }> | null;
     user?: {
       __typename?: 'User';
       name: string;
@@ -16117,6 +16129,11 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     query tpcSoftwareSelectionReport($shortCode: String!) {
   tpcSoftwareSelectionReport(shortCode: $shortCode) {
     adaptationMethod
+    architectureDiagrams {
+      filename
+      id
+      url
+    }
     codeCount
     codeUrl
     id
@@ -16639,6 +16656,11 @@ export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
     query tpcSoftwareGraduationReport($shortCode: String!) {
   tpcSoftwareGraduationReport(shortCode: $shortCode) {
     adaptationMethod
+    architectureDiagrams {
+      filename
+      id
+      url
+    }
     codeCount
     license
     codeUrl

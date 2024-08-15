@@ -1,6 +1,7 @@
 import React from 'react';
 import { Descriptions } from 'antd';
 import EditReport from '@modules/oh/components/GraduationEvaluationInfo/EvaluationBaseInfo/EditReport';
+import PreviewImage from '@modules/oh/components/PreviewImage';
 
 const EvaluationBaseInfo = ({ item, refetch }) => {
   const baseItems = [
@@ -19,11 +20,6 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       label: '编程语言',
       children: item?.programmingLanguage,
     },
-    // {
-    //   key: '5',
-    //   label: '代码量',
-    //   children: item.codeCount ? item.codeCount + '行' : '--',
-    // },
     {
       key: '6',
       label: '适配方式',
@@ -62,7 +58,7 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
     {
       key: '9',
       label: '发布版本生命周期',
-      children: item.lifecyclePolicy || '无',
+      children: item.lifecyclePolicy || '--',
     },
     {
       key: '10',
@@ -78,9 +74,22 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
               {item.upstreamCodeUrl}
             </a>
           ) : (
-            '无'
+            '--'
           )}
         </>
+      ),
+    },
+    {
+      key: '11',
+      label: '架构图',
+      children: (
+        <div className="text-[#3e8eff]">
+          {item.architectureDiagrams.length > 0 ? (
+            <PreviewImage report={item} />
+          ) : (
+            '--'
+          )}
+        </div>
       ),
     },
   ];

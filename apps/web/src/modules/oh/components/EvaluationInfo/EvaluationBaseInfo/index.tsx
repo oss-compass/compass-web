@@ -1,6 +1,7 @@
 import React from 'react';
 import { Descriptions } from 'antd';
 import EditReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/EditReport';
+import PreviewImage from '@modules/oh/components/PreviewImage';
 
 const EvaluationBaseInfo = ({ item, refetch }) => {
   const baseItems = [
@@ -72,6 +73,19 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
             {item.vulnerabilityResponse || ''}
           </a>
         </>
+      ),
+    },
+    {
+      key: '11',
+      label: '架构图',
+      children: (
+        <div className="text-[#3e8eff]">
+          {item.architectureDiagrams.length > 0 ? (
+            <PreviewImage report={item} />
+          ) : (
+            '--'
+          )}
+        </div>
       ),
     },
   ];
