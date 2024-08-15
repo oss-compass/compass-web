@@ -7,6 +7,7 @@ import {
   domainList,
   queryKey,
 } from '@modules/oh/constant';
+import Upload from '@modules/oh/components/Upload';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
 import getErrorMessage from '@common/utils/getErrorMessage';
@@ -75,35 +76,6 @@ const SelectionReportApplication = () => {
       programmingLanguage: 'Java',
     });
   };
-  const websiteValidator = (_, value) => {
-    if (
-      !value ||
-      /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/.test(
-        value
-      )
-    ) {
-      return Promise.resolve();
-    }
-    return Promise.reject(new Error('请输入一个有效的网站 URL'));
-  };
-  const versionValidator = (_, value) => {
-    if (!value) {
-      return Promise.reject(new Error('请输入版本号'));
-    }
-
-    // 检查是否为 master 分支
-    if (value.toLowerCase() === 'master') {
-      return Promise.reject(new Error('版本号不能使用 "master"'));
-    }
-    if (
-      /beta/i.test(value.toLowerCase()) ||
-      /alpha/i.test(value.toLowerCase())
-    ) {
-      return Promise.reject(new Error('版本号不能使用非正式版本 "beta" 等'));
-    }
-
-    return Promise.resolve();
-  };
   return (
     <>
       {contextHolder}
@@ -160,85 +132,6 @@ const SelectionReportApplication = () => {
                 </Select>
               </Form.Item>
             </Col>
-            {/* <Col span={12}>
-              <Popover
-                placement="topRight"
-                content={
-                  <>
-                    <div>
-                      1. master 是分支，不是版本号，不能用 master
-                      作为版本号引入；
-                    </div>
-                    <div>
-                      2. 引入官方发布版本（Release 版本），非正式版本（beta
-                      等）未经过全面测试，不允许入库；
-                    </div>
-                  </>
-                }
-                title="规则"
-                trigger="click"
-              >
-                <Form.Item
-                  label="软件版本号"
-                  name="release"
-                  rules={[
-                    { required: true, message: '请输入!' },
-                    { validator: versionValidator },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Popover>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="版本发布日期"
-                name="releaseTime"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <DatePicker placeholder="请选择日期" />
-              </Form.Item>
-            </Col> */}
-            {/* <Col span={12}>
-              <Form.Item
-                label="开发商"
-                name="manufacturer"
-                rules={[{ required: true, message: '请输入!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col> */}
-            {/* <Col span={12}>
-              <Popover
-                placement="topRight"
-                content={
-                  <>
-                    <div>
-                      提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee
-                      等）对应项目托管地址
-                    </div>
-                  </>
-                }
-                title="规则"
-                trigger="click"
-              >
-                <Form.Item
-                  label="官网地址"
-                  name="websiteUrl"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入!',
-                    },
-                    { type: 'url', message: '请输入有效的官网地址!' },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Popover>
-            </Col> */}
-          </Row>
-          <Row gutter={24}>
             <Col span={12}>
               <Form.Item
                 label="编程语言"
@@ -296,6 +189,24 @@ const SelectionReportApplication = () => {
                 name="vulnerabilityResponse"
               >
                 <Input />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                labelCol={{
+                  span: 3,
+                  style: { fontWeight: 'bold' },
+                }}
+                label="架构图"
+                name="architectureDiagrams"
+              >
+                <Upload
+                  onFileChange={(images) => {
+                    form.setFieldsValue({
+                      architectureDiagrams: images,
+                    });
+                  }}
+                />
               </Form.Item>
             </Col>
           </Row>

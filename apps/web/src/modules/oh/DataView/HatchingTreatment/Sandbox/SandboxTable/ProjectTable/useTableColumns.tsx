@@ -4,8 +4,10 @@ import { Popover } from 'antd';
 import { getProjectId } from '@modules/oh/utils';
 import { AiFillFilter } from 'react-icons/ai';
 import TableDropdown from '@modules/oh/components/TableDropdown';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 
 export const useTableColumns = (anction) => {
+  const { hasOhRole } = useHasOhRole();
   const columns = [
     {
       title: '报告',
@@ -114,11 +116,15 @@ export const useTableColumns = (anction) => {
       dataIndex: 'incubationTime',
       key: 'incubationTime',
     },
-    {
-      title: '需求来源',
-      dataIndex: 'demandSource',
-      key: 'demandSource',
-    },
+    ...(hasOhRole
+      ? [
+          {
+            title: '需求来源',
+            dataIndex: 'demandSource',
+            key: 'demandSource',
+          },
+        ]
+      : []),
     {
       title: '需求描述',
       dataIndex: 'reason',

@@ -1,10 +1,10 @@
 import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
+import PreviewImage from '@modules/oh/components/PreviewImage';
 import EditReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/EditReport';
 import RefreshReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/RefreshReport';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { getProjectId } from '@modules/oh/utils';
 import { AiFillFilter } from 'react-icons/ai';
 import TableDropdown from '@modules/oh/components/TableDropdown';
 
@@ -13,12 +13,13 @@ export const useTableColumns = (anction) => {
     {
       title: '操作',
       key: 'createdAt',
-      width: 70,
+      width: 100,
       render: (_, record) => {
         return (
           <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
             <EditReport report={record} editSuccess={anction} />
             <RefreshReport report={record} editSuccess={anction} />
+            <PreviewImage report={record} />
             {record?.tpcSoftwareReportMetric?.status === 'success' && (
               <Popover content={'查看报告'}>
                 <FileTextOutlined

@@ -1099,6 +1099,7 @@ export type CreateTpcSoftwareGraduationInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   committers: Array<Scalars['String']>;
   demandSource: Scalars['String'];
+  functionalDescription: Scalars['String'];
   incubationStartTime?: InputMaybe<Scalars['ISO8601DateTime']>;
   incubationTime?: InputMaybe<Scalars['String']>;
   /** repo or project label */
@@ -2557,6 +2558,8 @@ export type Query = {
   tpcSoftwareGraduationReportPage?: Maybe<TpcSoftwareGraduationReportPage>;
   /** Get tpc software report metric clarification page */
   tpcSoftwareReportMetricClarificationPage?: Maybe<TpcSoftwareCommentPage>;
+  /** Get tpc software report metric clarification permission */
+  tpcSoftwareReportMetricClarificationPermission?: Maybe<TpcSoftwareReportMetricClarificationPermission>;
   /** Get tpc software selection */
   tpcSoftwareSelection?: Maybe<TpcSoftwareSelection>;
   /** Get tpc software selection comment page */
@@ -3130,6 +3133,11 @@ export type QueryTpcSoftwareReportMetricClarificationPageArgs = {
   shortCode: Scalars['String'];
 };
 
+export type QueryTpcSoftwareReportMetricClarificationPermissionArgs = {
+  reportType?: InputMaybe<Scalars['Int']>;
+  shortCode: Scalars['String'];
+};
+
 export type QueryTpcSoftwareSelectionArgs = {
   selectionId: Scalars['Int'];
 };
@@ -3511,6 +3519,7 @@ export type TpcSoftwareGraduation = {
   committers?: Maybe<Array<Scalars['String']>>;
   createdAt: Scalars['ISO8601DateTime'];
   demandSource?: Maybe<Scalars['String']>;
+  functionalDescription?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   incubationStartTime?: Maybe<Scalars['ISO8601DateTime']>;
   incubationTime?: Maybe<Scalars['String']>;
@@ -3558,14 +3567,7 @@ export type TpcSoftwareGraduationPage = {
 export type TpcSoftwareGraduationReport = {
   __typename?: 'TpcSoftwareGraduationReport';
   adaptationMethod?: Maybe<Scalars['String']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationCommitterPermission?: Maybe<Scalars['Int']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationCompliancePermission?: Maybe<Scalars['Int']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationLegalPermission?: Maybe<Scalars['Int']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationSigLeadPermission?: Maybe<Scalars['Int']>;
+  architectureDiagrams?: Maybe<Array<Image>>;
   codeCount?: Maybe<Scalars['Int']>;
   codeUrl?: Maybe<Scalars['String']>;
   graduationReportMetric?: Maybe<TpcSoftwareGraduationReportMetric>;
@@ -3589,6 +3591,7 @@ export type TpcSoftwareGraduationReport = {
 
 export type TpcSoftwareGraduationReportInput = {
   adaptationMethod: Scalars['String'];
+  architectureDiagrams?: InputMaybe<Array<Base64ImageInput>>;
   codeUrl: Scalars['String'];
   isIncubation: Scalars['Int'];
   lifecyclePolicy: Scalars['String'];
@@ -3761,6 +3764,7 @@ export type TpcSoftwareGraduationReportPage = {
 
 export type TpcSoftwareGraduationReportUpdateInput = {
   adaptationMethod: Scalars['String'];
+  architectureDiagrams?: InputMaybe<Array<Base64ImageInput>>;
   isIncubation: Scalars['Int'];
   lifecyclePolicy: Scalars['String'];
   name: Scalars['String'];
@@ -3853,6 +3857,18 @@ export type TpcSoftwareReportMetricClarificationCount = {
   securityVulnerability?: Maybe<Scalars['Int']>;
   securityVulnerabilityDisclosure?: Maybe<Scalars['Int']>;
   securityVulnerabilityResponse?: Maybe<Scalars['Int']>;
+};
+
+export type TpcSoftwareReportMetricClarificationPermission = {
+  __typename?: 'TpcSoftwareReportMetricClarificationPermission';
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationCommitterPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationCompliancePermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationLegalPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationSigLeadPermission?: Maybe<Scalars['Int']>;
 };
 
 export type TpcSoftwareReportMetricClarificationState = {
@@ -4001,14 +4017,7 @@ export type TpcSoftwareSelectionPage = {
 export type TpcSoftwareSelectionReport = {
   __typename?: 'TpcSoftwareSelectionReport';
   adaptationMethod?: Maybe<Scalars['String']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationCommitterPermission?: Maybe<Scalars['Int']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationCompliancePermission?: Maybe<Scalars['Int']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationLegalPermission?: Maybe<Scalars['Int']>;
-  /** 1: permissioned, 0: unpermissioned */
-  clarificationSigLeadPermission?: Maybe<Scalars['Int']>;
+  architectureDiagrams?: Maybe<Array<Image>>;
   codeCount?: Maybe<Scalars['Int']>;
   codeUrl?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
@@ -4033,6 +4042,7 @@ export type TpcSoftwareSelectionReport = {
 
 export type TpcSoftwareSelectionReportInput = {
   adaptationMethod: Scalars['String'];
+  architectureDiagrams?: InputMaybe<Array<Base64ImageInput>>;
   codeUrl: Scalars['String'];
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
@@ -4061,6 +4071,7 @@ export type TpcSoftwareSelectionReportSearch = {
 
 export type TpcSoftwareSelectionReportUpdateInput = {
   adaptationMethod: Scalars['String'];
+  architectureDiagrams?: InputMaybe<Array<Base64ImageInput>>;
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
   tpcSoftwareSigId: Scalars['Int'];
@@ -4342,6 +4353,7 @@ export type UpdateTpcSoftwareGraduationInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   committers: Array<Scalars['String']>;
   demandSource: Scalars['String'];
+  functionalDescription: Scalars['String'];
   graduationId: Scalars['Int'];
   incubationStartTime?: InputMaybe<Scalars['ISO8601DateTime']>;
   incubationTime?: InputMaybe<Scalars['String']>;
@@ -6271,6 +6283,7 @@ export type CreateTpcSoftwareGraduationMutationVariables = Exact<{
   tpcSoftwareGraduationReportIds: Array<Scalars['Int']> | Scalars['Int'];
   committers: Array<Scalars['String']> | Scalars['String'];
   demandSource: Scalars['String'];
+  functionalDescription: Scalars['String'];
   incubationTime?: InputMaybe<Scalars['String']>;
   incubationStartTime?: InputMaybe<Scalars['ISO8601DateTime']>;
 }>;
@@ -6295,6 +6308,7 @@ export type UpdateTpcSoftwareGraduationMutationVariables = Exact<{
   tpcSoftwareGraduationReportIds: Array<Scalars['Int']> | Scalars['Int'];
   committers: Array<Scalars['String']> | Scalars['String'];
   demandSource: Scalars['String'];
+  functionalDescription: Scalars['String'];
   incubationTime: Scalars['String'];
   incubationStartTime?: InputMaybe<Scalars['ISO8601DateTime']>;
 }>;
@@ -8066,6 +8080,12 @@ export type TpcSoftwareSelectionReportPageQuery = {
       shortCode: string;
       userId: number;
       vulnerabilityResponse?: string | null;
+      architectureDiagrams?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        id: number;
+        url: string;
+      }> | null;
       user?: {
         __typename?: 'User';
         name: string;
@@ -8267,10 +8287,6 @@ export type TpcSoftwareSelectionReportQuery = {
     name?: string | null;
     programmingLanguage?: string | null;
     shortCode: string;
-    clarificationCommitterPermission?: number | null;
-    clarificationSigLeadPermission?: number | null;
-    clarificationCompliancePermission?: number | null;
-    clarificationLegalPermission?: number | null;
     vulnerabilityResponse?: string | null;
     userId: number;
     tpcSoftwareReportMetric?: {
@@ -8362,6 +8378,13 @@ export type TpcSoftwareSelectionReportQuery = {
       id: number;
       name: string;
     } | null;
+  } | null;
+  tpcSoftwareReportMetricClarificationPermission?: {
+    __typename?: 'TpcSoftwareReportMetricClarificationPermission';
+    clarificationCommitterPermission?: number | null;
+    clarificationSigLeadPermission?: number | null;
+    clarificationCompliancePermission?: number | null;
+    clarificationLegalPermission?: number | null;
   } | null;
 };
 
@@ -8950,6 +8973,12 @@ export type TpcSoftwareGraduationReportPageQuery = {
       shortCode: string;
       programmingLanguage?: string | null;
       userId: number;
+      architectureDiagrams?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        id: number;
+        url: string;
+      }> | null;
       user?: {
         __typename?: 'User';
         name: string;
@@ -9020,10 +9049,6 @@ export type TpcSoftwareGraduationReportQuery = {
     shortCode: string;
     programmingLanguage?: string | null;
     userId: number;
-    clarificationCommitterPermission?: number | null;
-    clarificationSigLeadPermission?: number | null;
-    clarificationCompliancePermission?: number | null;
-    clarificationLegalPermission?: number | null;
     user?: {
       __typename?: 'User';
       name: string;
@@ -9141,6 +9166,13 @@ export type TpcSoftwareGraduationReportQuery = {
       name: string;
     } | null;
   } | null;
+  tpcSoftwareReportMetricClarificationPermission?: {
+    __typename?: 'TpcSoftwareReportMetricClarificationPermission';
+    clarificationCommitterPermission?: number | null;
+    clarificationSigLeadPermission?: number | null;
+    clarificationCompliancePermission?: number | null;
+    clarificationLegalPermission?: number | null;
+  } | null;
 };
 
 export type TpcSoftwareGraduationPageQueryVariables = Exact<{
@@ -9169,6 +9201,7 @@ export type TpcSoftwareGraduationPageQuery = {
       incubationStartTime?: any | null;
       incubationTime?: string | null;
       tpcSoftwareGraduationReportIds?: Array<number> | null;
+      functionalDescription?: string | null;
       userId: number;
       tpcSoftwareGraduationReports?: Array<{
         __typename?: 'TpcSoftwareGraduationReport';
@@ -9208,6 +9241,7 @@ export type TpcSoftwareGraduationQuery = {
     demandSource?: string | null;
     incubationTime?: string | null;
     committers?: Array<string> | null;
+    functionalDescription?: string | null;
     commentState?: Array<{
       __typename?: 'TpcSoftwareCommentState';
       createdAt: any;
@@ -12726,9 +12760,9 @@ useUpdateTpcSoftwareGraduationReportMutation.fetcher = (
     UpdateTpcSoftwareGraduationReportMutationVariables
   >(client, UpdateTpcSoftwareGraduationReportDocument, variables, headers);
 export const CreateTpcSoftwareGraduationDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareGraduation($label: String!, $level: String!, $tpcSoftwareGraduationReportIds: [Int!]!, $committers: [String!]!, $demandSource: String!, $incubationTime: String, $incubationStartTime: ISO8601DateTime) {
+    mutation createTpcSoftwareGraduation($label: String!, $level: String!, $tpcSoftwareGraduationReportIds: [Int!]!, $committers: [String!]!, $demandSource: String!, $functionalDescription: String!, $incubationTime: String, $incubationStartTime: ISO8601DateTime) {
   createTpcSoftwareGraduation(
-    input: {label: $label, level: $level, tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds, committers: $committers, demandSource: $demandSource, incubationTime: $incubationTime, incubationStartTime: $incubationStartTime}
+    input: {label: $label, level: $level, tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds, committers: $committers, demandSource: $demandSource, functionalDescription: $functionalDescription, incubationTime: $incubationTime, incubationStartTime: $incubationStartTime}
   ) {
     errors {
       message
@@ -12777,9 +12811,9 @@ useCreateTpcSoftwareGraduationMutation.fetcher = (
     CreateTpcSoftwareGraduationMutationVariables
   >(client, CreateTpcSoftwareGraduationDocument, variables, headers);
 export const UpdateTpcSoftwareGraduationDocument = /*#__PURE__*/ `
-    mutation updateTpcSoftwareGraduation($graduationId: Int!, $tpcSoftwareGraduationReportIds: [Int!]!, $committers: [String!]!, $demandSource: String!, $incubationTime: String!, $incubationStartTime: ISO8601DateTime) {
+    mutation updateTpcSoftwareGraduation($graduationId: Int!, $tpcSoftwareGraduationReportIds: [Int!]!, $committers: [String!]!, $demandSource: String!, $functionalDescription: String!, $incubationTime: String!, $incubationStartTime: ISO8601DateTime) {
   updateTpcSoftwareGraduation(
-    input: {graduationId: $graduationId, tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds, committers: $committers, demandSource: $demandSource, incubationTime: $incubationTime, incubationStartTime: $incubationStartTime}
+    input: {graduationId: $graduationId, tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds, committers: $committers, demandSource: $demandSource, functionalDescription: $functionalDescription, incubationTime: $incubationTime, incubationStartTime: $incubationStartTime}
   ) {
     errors {
       message
@@ -15937,6 +15971,11 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
     count
     items {
       adaptationMethod
+      architectureDiagrams {
+        filename
+        id
+        url
+      }
       codeCount
       codeUrl
       id
@@ -16084,10 +16123,6 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     name
     programmingLanguage
     shortCode
-    clarificationCommitterPermission
-    clarificationSigLeadPermission
-    clarificationCompliancePermission
-    clarificationLegalPermission
     vulnerabilityResponse
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
@@ -16097,6 +16132,15 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
       ...tpcSoftwareSig
     }
     userId
+  }
+  tpcSoftwareReportMetricClarificationPermission(
+    shortCode: $shortCode
+    reportType: 0
+  ) {
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
   }
 }
     ${TpcSoftwareReportMetricFragmentDoc}
@@ -16521,6 +16565,11 @@ export const TpcSoftwareGraduationReportPageDocument = /*#__PURE__*/ `
     count
     items {
       adaptationMethod
+      architectureDiagrams {
+        filename
+        id
+        url
+      }
       isIncubation
       roundUpstream
       codeUrl
@@ -16607,10 +16656,6 @@ export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
       }
     }
     userId
-    clarificationCommitterPermission
-    clarificationSigLeadPermission
-    clarificationCompliancePermission
-    clarificationLegalPermission
     graduationReportMetric {
       ...tpcSoftwareGraduationReportMetric
       ...tpcSoftwareGraduationReportMetricDetail
@@ -16618,6 +16663,15 @@ export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
     tpcSoftwareSig {
       ...tpcSoftwareSig
     }
+  }
+  tpcSoftwareReportMetricClarificationPermission(
+    shortCode: $shortCode
+    reportType: 1
+  ) {
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
   }
 }
     ${TpcSoftwareGraduationReportMetricFragmentDoc}
@@ -16673,6 +16727,7 @@ export const TpcSoftwareGraduationPageDocument = /*#__PURE__*/ `
       incubationStartTime
       incubationTime
       tpcSoftwareGraduationReportIds
+      functionalDescription
       tpcSoftwareGraduationReports {
         name
         shortCode
@@ -16753,6 +16808,7 @@ export const TpcSoftwareGraduationDocument = /*#__PURE__*/ `
     demandSource
     incubationTime
     committers
+    functionalDescription
     tpcSoftwareGraduationReports {
       adaptationMethod
       license

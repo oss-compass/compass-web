@@ -40,6 +40,7 @@ export const useGetReportData = () => {
     incubationTime,
     demandSource,
     committers,
+    functionalDescription,
     tpcSoftwareGraduationReports,
   } = data || {};
 
@@ -54,6 +55,7 @@ export const useGetReportData = () => {
     incubationTime,
     demandSource,
     committers,
+    functionalDescription,
     tpcSoftwareGraduationReports,
   };
 };

@@ -7,10 +7,9 @@ import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 const EvaluationBaseInfo = () => {
   const { hasOhRole } = useHasOhRole();
   const {
-    targetSoftware,
-    incubationTime,
     demandSource,
     committers,
+    functionalDescription,
     tpcSoftwareGraduationReports,
   } = useGetReportData();
   // const targetReport = tpcSoftwareGraduationReports?.find(
@@ -36,9 +35,18 @@ const EvaluationBaseInfo = () => {
             ),
             span: 2,
           },
+          {
+            key: '4',
+            label: '功能描述',
+            children: (
+              <div title={functionalDescription} className="line-clamp-1">
+                {functionalDescription || '--'}
+              </div>
+            ),
+            span: 4,
+          },
         ]
       : []),
-
     {
       key: '1',
       label: 'License 信息',

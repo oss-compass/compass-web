@@ -1,5 +1,4 @@
 import React from 'react';
-import { Input, Tabs } from 'antd';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import Loading from '@modules/oh/components/Loading';
 import EvaluationDetail from '@modules/oh/components/GraduationEvaluationInfo/EvaluationDetail';
@@ -35,10 +34,16 @@ const GetReportData = ({
       </div>
     );
   }
+  const reportPermission = (report, permission) => {
+    return { ...report, ...permission };
+  };
   return (
     <>
       <EvaluationDetail
-        item={data.tpcSoftwareGraduationReport}
+        item={reportPermission(
+          data.tpcSoftwareGraduationReport,
+          data.tpcSoftwareReportMetricClarificationPermission
+        )}
         back={back}
         refetch={refetch}
         targetSoftware={targetSoftware}

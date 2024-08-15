@@ -1,12 +1,8 @@
 import React from 'react';
-import { Input, Tabs } from 'antd';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import Loading from '@modules/oh/components/Loading';
 import EvaluationDetail from '@modules/oh/components/EvaluationInfo/EvaluationDetail';
-import {
-  TpcSoftwareSelectionReportQuery,
-  useTpcSoftwareSelectionReportQuery,
-} from '@oss-compass/graphql';
+import { useTpcSoftwareSelectionReportQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 
 const GetReportData = ({
@@ -38,10 +34,16 @@ const GetReportData = ({
       </div>
     );
   }
+  const reportPermission = (report, permission) => {
+    return { ...report, ...permission };
+  };
   return (
     <>
       <EvaluationDetail
-        item={data.tpcSoftwareSelectionReport}
+        item={reportPermission(
+          data?.tpcSoftwareSelectionReport,
+          data?.tpcSoftwareReportMetricClarificationPermission
+        )}
         back={back}
         refetch={refetch}
         targetSoftware={targetSoftware}

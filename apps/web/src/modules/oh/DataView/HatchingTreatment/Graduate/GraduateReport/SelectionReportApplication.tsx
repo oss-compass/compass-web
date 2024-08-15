@@ -10,7 +10,7 @@ import {
   Col,
   Popover,
 } from 'antd';
-import toast from 'react-hot-toast';
+import Upload from '@modules/oh/components/Upload';
 import SearchReport from './SearchReport';
 import dayjs from 'dayjs';
 import {
@@ -250,6 +250,24 @@ const SelectionReportApplication = () => {
                   <Input placeholder="提供在上游社区发起特性回合的Issue/PR链接" />
                 </Form.Item>
               </Popover>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                labelCol={{
+                  span: 3,
+                  style: { fontWeight: 'bold' },
+                }}
+                label="架构图"
+                name="architectureDiagrams"
+              >
+                <Upload
+                  onFileChange={(images) => {
+                    form.setFieldsValue({
+                      architectureDiagrams: images,
+                    });
+                  }}
+                />
+              </Form.Item>
             </Col>
           </Row>
         </Form>

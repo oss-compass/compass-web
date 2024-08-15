@@ -382,6 +382,7 @@ mutation createTpcSoftwareGraduation(
   $tpcSoftwareGraduationReportIds: [Int!]!
   $committers: [String!]!
   $demandSource: String!
+  $functionalDescription: String!
   $incubationTime: String
   $incubationStartTime: ISO8601DateTime
 ) {
@@ -392,6 +393,7 @@ mutation createTpcSoftwareGraduation(
       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
       committers: $committers
       demandSource: $demandSource
+      functionalDescription: $functionalDescription
       incubationTime: $incubationTime
       incubationStartTime: $incubationStartTime
     }
@@ -410,6 +412,7 @@ mutation updateTpcSoftwareGraduation(
   $tpcSoftwareGraduationReportIds: [Int!]!
   $committers: [String!]!
   $demandSource: String!
+  $functionalDescription: String!
   $incubationTime: String!
   $incubationStartTime: ISO8601DateTime
 ) {
@@ -419,6 +422,7 @@ mutation updateTpcSoftwareGraduation(
       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
       committers: $committers
       demandSource: $demandSource
+      functionalDescription: $functionalDescription
       incubationTime: $incubationTime
       incubationStartTime: $incubationStartTime
     }

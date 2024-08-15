@@ -146,7 +146,19 @@
 .ant-dropdown-menu {
   border-radius: 0px !important;
 }
+.ant-image-preview-operations-wrapper,
+.ant-image-preview-root {
+  z-index: 1302 !important;
+}
+.ant-image-preview-mask,
+.ant-image-preview-wrap {
+  z-index: 1301 !important;
+}
 .oh {
+  .ant-upload,
+  .ant-upload-list-item {
+    border-radius: 0px !important;
+  }
   .ant-descriptions-bordered {
     .ant-descriptions-view {
       border-color: #e5e7eb !important;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { Form, Input, Select, Row, Col, Popover, Button, Radio } from 'antd';
+import Upload from '@modules/oh/components/Upload';
 import {
   languagesList,
   adaptationMethodList,
@@ -37,7 +38,14 @@ const EditReportForm = ({ report, refetch }) => {
   });
   const submit = () => {
     form.validateFields().then((values) => {
-      const softwareReport = { ...values };
+      const softwareReport = {
+        ...values,
+        architectureDiagrams: values.architectureDiagrams.map((item) => ({
+          id: item.id,
+          filename: item.filename,
+          base64: item.base64 || item.url,
+        })),
+      };
       delete softwareReport.codeUrl;
       mutation.mutate({
         reportId: report.id,
@@ -45,6 +53,52 @@ const EditReportForm = ({ report, refetch }) => {
       });
     });
   };
+  // const imageUrlToBase64 = async (url) => {
+  //   const response = await fetch(url);
+  //   const blob = await response.blob();
+  //   const reader = new FileReader();
+
+  //   return new Promise((resolve, reject) => {
+  //     reader.onloadend = () => {
+  //       resolve(reader.result);
+  //     };
+  //     reader.onerror = reject;
+  //     reader.readAsDataURL(blob);
+  //   });
+  // };
+  // const [imageList, setImageList] = useState([]);
+  // useEffect(() => {
+  //   const fetchImages = async () => {
+  //     if (report?.architectureDiagrams) {
+  //       const images = await Promise.all(
+  //         report.architectureDiagrams.map(async (item) => {
+  //           const base64 = await imageUrlToBase64(item?.url);
+  //           console.log(base64);
+  //           return {
+  //             uid: item.id,
+  //             name: item.filename,
+  //             status: 'done',
+  //             url: item.url,
+  //             base64: base64, // 如果需要将 base64 加入返回对象
+  //           };
+  //         })
+  //       );
+  //       setImageList(images);
+  //     }
+  //   };
+  //   fetchImages();
+  // }, [report]);
+  const imageList = report.architectureDiagrams.map((item) => {
+    // const base64 = await imageUrlToBase64(item?.url);
+    // console.log(base64);
+    return {
+      uid: item.id,
+      name: item.filename,
+      status: 'done',
+      url: item.url,
+      // base64: base64, // 如果需要将 base64 加入返回对象
+    };
+  });
   return (
     <div className="px-6">
       <Form
@@ -191,6 +245,26 @@ const EditReportForm = ({ report, refetch }) => {
                 <Input placeholder="提供在上游社区发起特性回合的Issue/PR链接" />
               </Form.Item>
             </Popover>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              labelCol={{
+                span: 3,
+                style: { fontWeight: 'bold' },
+              }}
+              label="架构图"
+              name="architectureDiagrams"
+            >
+              <Upload
+                imageList={imageList}
+                onFileChange={(images) => {
+                  console.log(images);
+                  form.setFieldsValue({
+                    architectureDiagrams: images,
+                  });
+                }}
+              />
+            </Form.Item>
           </Col>
           <Col span={24}>
             <div className="mt-20 flex justify-center">

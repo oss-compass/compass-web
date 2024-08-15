@@ -1586,6 +1586,11 @@ query tpcSoftwareSelectionReportPage(
     count
     items {
       adaptationMethod
+      architectureDiagrams {
+        filename
+        id
+        url
+      }
       codeCount
       codeUrl
       id
@@ -1751,10 +1756,6 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     name
     programmingLanguage
     shortCode
-    clarificationCommitterPermission
-    clarificationSigLeadPermission
-    clarificationCompliancePermission
-    clarificationLegalPermission
     vulnerabilityResponse
     tpcSoftwareReportMetric {
       ...tpcSoftwareReportMetric
@@ -1764,6 +1765,15 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
       ...tpcSoftwareSig
     }
     userId
+  }
+  tpcSoftwareReportMetricClarificationPermission(
+    shortCode: $shortCode
+    reportType: 0
+  ) {
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
   }
 }
 
@@ -2125,7 +2135,11 @@ query tpcSoftwareGraduationReportPage(
     count
     items {
       adaptationMethod
-      # codeCount
+      architectureDiagrams {
+        filename
+        id
+        url
+      }
       isIncubation
       roundUpstream
       codeUrl
@@ -2175,10 +2189,6 @@ query tpcSoftwareGraduationReport($shortCode: String!) {
       }
     }
     userId
-    clarificationCommitterPermission
-    clarificationSigLeadPermission
-    clarificationCompliancePermission
-    clarificationLegalPermission
     graduationReportMetric {
       ...tpcSoftwareGraduationReportMetric
       ...tpcSoftwareGraduationReportMetricDetail
@@ -2186,6 +2196,15 @@ query tpcSoftwareGraduationReport($shortCode: String!) {
     tpcSoftwareSig {
       ...tpcSoftwareSig
     }
+  }
+  tpcSoftwareReportMetricClarificationPermission(
+    shortCode: $shortCode
+    reportType: 1
+  ) {
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
   }
 }
 query tpcSoftwareGraduationPage(
@@ -2214,6 +2233,7 @@ query tpcSoftwareGraduationPage(
       incubationStartTime
       incubationTime
       tpcSoftwareGraduationReportIds
+      functionalDescription
       tpcSoftwareGraduationReports {
         name
         shortCode
@@ -2287,6 +2307,7 @@ query tpcSoftwareGraduation($graduationId: Int!) {
     demandSource
     incubationTime
     committers
+    functionalDescription
     tpcSoftwareGraduationReports {
       adaptationMethod
       license

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { Form, Input, Select, Row, Col, Popover, Button } from 'antd';
+import Upload from '@modules/oh/components/Upload';
 import {
   languagesList,
   adaptationMethodList,
@@ -36,7 +37,14 @@ const EditReportForm = ({ report, refetch }) => {
   });
   const submit = () => {
     form.validateFields().then((values) => {
-      const softwareReport = { ...values };
+      const softwareReport = {
+        ...values,
+        architectureDiagrams: values.architectureDiagrams.map((item) => ({
+          id: item.id,
+          filename: item.filename,
+          base64: item.base64 || item.url,
+        })),
+      };
       delete softwareReport.codeUrl;
       mutation.mutate({
         reportId: report.id,
@@ -44,6 +52,15 @@ const EditReportForm = ({ report, refetch }) => {
       });
     });
   };
+  const imageList = report?.architectureDiagrams.map((item) => {
+    return {
+      uid: item.id,
+      name: item.filename,
+      status: 'done',
+      url: item.url,
+      // base64 = await convertBase64(file);
+    };
+  });
   return (
     <div className="px-6">
       <Form
@@ -94,44 +111,6 @@ const EditReportForm = ({ report, refetch }) => {
               </Select>
             </Form.Item>
           </Col>
-          {/* <Col span={12}>
-            <Form.Item
-              label="开发商"
-              name="manufacturer"
-              rules={[{ required: true, message: '请输入!' }]}
-            >
-              <Input />
-            </Form.Item>
-          </Col> */}
-          {/* <Col span={12}>
-            <Popover
-              placement="topRight"
-              content={
-                <>
-                  <div>
-                    提供引入软件官方网址，无正式官网则提供主流代码托管商（github、gitee
-                    等）对应项目托管地址
-                  </div>
-                </>
-              }
-              title="规则"
-              trigger="click"
-            >
-              <Form.Item
-                label="官网地址"
-                name="websiteUrl"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入!',
-                  },
-                  { type: 'url', message: '请输入有效的官网地址!' },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Popover>
-          </Col> */}
           <Col span={12}>
             <Form.Item
               label="适配方式"
@@ -182,7 +161,26 @@ const EditReportForm = ({ report, refetch }) => {
               <Input disabled />
             </Form.Item>
           </Col>
-
+          <Col span={24}>
+            <Form.Item
+              labelCol={{
+                span: 3,
+                style: { fontWeight: 'bold' },
+              }}
+              label="架构图"
+              name="architectureDiagrams"
+            >
+              <Upload
+                imageList={imageList}
+                onFileChange={(images) => {
+                  console.log(images);
+                  form.setFieldsValue({
+                    architectureDiagrams: images,
+                  });
+                }}
+              />
+            </Form.Item>
+          </Col>
           <Col span={24}>
             <div className="mt-20 flex justify-center">
               <Button
