@@ -79,13 +79,15 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       key: '11',
       label: '架构图',
       children: (
-        <div className="text-[#3e8eff]">
+        <>
           {item.architectureDiagrams.length > 0 ? (
-            <PreviewImage report={item} />
+            <div className="text-[#3e8eff]">
+              <PreviewImage report={item} />{' '}
+            </div>
           ) : (
             '--'
           )}
-        </div>
+        </>
       ),
     },
   ];
