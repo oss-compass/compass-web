@@ -61,27 +61,13 @@ const MyUpload: React.FC<{
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
-  const imageUrlToBase64 = async (url) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const reader = new FileReader();
-
-    return new Promise((resolve, reject) => {
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+  const handleChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
     if (onFileChange) {
       setTimeout(() => {
         const images = newFileList.map((item) => {
-          console.log(item, item.thumbUrl);
           return {
-            id: randomFromInterval(0, 10000),
+            id: item?.id || randomFromInterval(0, 10000),
             filename: item.name,
             base64: item.thumbUrl || item?.url,
           };
@@ -110,7 +96,7 @@ const MyUpload: React.FC<{
           showRemoveIcon: !readonly,
         }}
       >
-        {fileList.length >= 1 || readonly ? null : uploadButton}
+        {fileList.length >= 5 || readonly ? null : uploadButton}
       </Upload>
       {previewImage && (
         <Image

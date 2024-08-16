@@ -19,7 +19,6 @@ import { useUserInfo } from '@modules/auth/useUserInfo';
 const EditReportForm = ({ report, refetch }) => {
   const [form] = Form.useForm();
   const tpcSoftwareSigId = report?.tpcSoftwareSig?.id;
-  // form.setFieldsValue({ ...report, tpcSoftwareSigId });
   useEffect(() => {
     form.setFieldsValue({ ...report, tpcSoftwareSigId });
   }, []);
@@ -53,50 +52,13 @@ const EditReportForm = ({ report, refetch }) => {
       });
     });
   };
-  // const imageUrlToBase64 = async (url) => {
-  //   const response = await fetch(url);
-  //   const blob = await response.blob();
-  //   const reader = new FileReader();
-
-  //   return new Promise((resolve, reject) => {
-  //     reader.onloadend = () => {
-  //       resolve(reader.result);
-  //     };
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(blob);
-  //   });
-  // };
-  // const [imageList, setImageList] = useState([]);
-  // useEffect(() => {
-  //   const fetchImages = async () => {
-  //     if (report?.architectureDiagrams) {
-  //       const images = await Promise.all(
-  //         report.architectureDiagrams.map(async (item) => {
-  //           const base64 = await imageUrlToBase64(item?.url);
-  //           console.log(base64);
-  //           return {
-  //             uid: item.id,
-  //             name: item.filename,
-  //             status: 'done',
-  //             url: item.url,
-  //             base64: base64, // 如果需要将 base64 加入返回对象
-  //           };
-  //         })
-  //       );
-  //       setImageList(images);
-  //     }
-  //   };
-  //   fetchImages();
-  // }, [report]);
   const imageList = report.architectureDiagrams.map((item) => {
-    // const base64 = await imageUrlToBase64(item?.url);
-    // console.log(base64);
     return {
+      id: item.id,
       uid: item.id,
       name: item.filename,
       status: 'done',
       url: item.url,
-      // base64: base64, // 如果需要将 base64 加入返回对象
     };
   });
   return (
@@ -258,7 +220,6 @@ const EditReportForm = ({ report, refetch }) => {
               <Upload
                 imageList={imageList}
                 onFileChange={(images) => {
-                  console.log(images);
                   form.setFieldsValue({
                     architectureDiagrams: images,
                   });

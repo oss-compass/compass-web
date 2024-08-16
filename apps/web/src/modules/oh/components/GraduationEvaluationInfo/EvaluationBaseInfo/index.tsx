@@ -86,7 +86,7 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
         <>
           {item.architectureDiagrams.length > 0 ? (
             <div className="text-[#3e8eff]">
-              <PreviewImage report={item} />{' '}
+              <PreviewImage report={item} />
             </div>
           ) : (
             '--'

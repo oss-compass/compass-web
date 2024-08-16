@@ -18,7 +18,6 @@ import { useUserInfo } from '@modules/auth/useUserInfo';
 const EditReportForm = ({ report, refetch }) => {
   const [form] = Form.useForm();
   const tpcSoftwareSigId = report?.tpcSoftwareSig?.id;
-  // form.setFieldsValue({ ...report, tpcSoftwareSigId });
   useEffect(() => {
     form.setFieldsValue({ ...report, tpcSoftwareSigId });
   }, []);
@@ -54,11 +53,11 @@ const EditReportForm = ({ report, refetch }) => {
   };
   const imageList = report?.architectureDiagrams.map((item) => {
     return {
+      id: item.id,
       uid: item.id,
       name: item.filename,
       status: 'done',
       url: item.url,
-      // base64 = await convertBase64(file);
     };
   });
   return (
@@ -173,7 +172,6 @@ const EditReportForm = ({ report, refetch }) => {
               <Upload
                 imageList={imageList}
                 onFileChange={(images) => {
-                  console.log(images);
                   form.setFieldsValue({
                     architectureDiagrams: images,
                   });

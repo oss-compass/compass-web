@@ -30,21 +30,6 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
       label: '适配方式',
       children: item.adaptationMethod,
     },
-    // {
-    //   key: '6',
-    //   label: '官网地址',
-    //   children: (
-    //     <>
-    //       <a
-    //         className="line-clamp-1 text-[#69b1ff]"
-    //         target="_blank"
-    //         href={item.websiteUrl}
-    //       >
-    //         {item.websiteUrl}
-    //       </a>
-    //     </>
-    //   ),
-    // },
     {
       key: '7',
       label: '源码地址',
@@ -82,7 +67,7 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
         <>
           {item.architectureDiagrams.length > 0 ? (
             <div className="text-[#3e8eff]">
-              <PreviewImage report={item} />{' '}
+              <PreviewImage report={item} />
             </div>
           ) : (
             '--'
