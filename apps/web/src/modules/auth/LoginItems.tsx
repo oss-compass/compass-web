@@ -17,7 +17,7 @@ const LoginItems: React.FC = () => {
 
   const redirectTo = React.useMemo(() => {
     const rt = router.query.redirect_to;
-    return typeof rt === 'string' ? rt : '/settings/profile';
+    return typeof rt === 'string' ? rt : '/';
   }, [router.query.redirect_to]);
 
   return (
