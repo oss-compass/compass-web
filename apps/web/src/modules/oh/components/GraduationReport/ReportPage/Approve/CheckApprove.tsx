@@ -31,6 +31,12 @@ const CheckApprove = ({ selectionId }) => {
     commentLegalPermission,
     commentState,
   } = useGetReportData();
+  console.log(
+    commentCommitterPermission,
+    commentSigLeadPermission,
+    commentCompliancePermission,
+    commentLegalPermission
+  );
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
   const userState = commentState?.filter((z) => z.userId === userId);
@@ -52,7 +58,7 @@ const CheckApprove = ({ selectionId }) => {
     if (metricItemScoreList?.length > 0) {
       let notMetricList = [];
       let clarificationList = metricItemScoreList.filter((m) => {
-        return m.score !== 10 && m.score !== null;
+        return m.维度 !== '合法合规' && m.score !== 10 && m.score !== null;
       });
       clarificationList.forEach((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
@@ -140,7 +146,7 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-    if (false) {
+    if (commentCompliancePermission) {
       if (canLegalApprove.length > 0 || canApprove.length > 0) {
         return [
           {
