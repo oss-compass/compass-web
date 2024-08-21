@@ -176,10 +176,10 @@ const RiskBadge = ({ shortCode, mertic }) => {
       }
     }
   }
-
+  let countGreen = createBadge('', '#52c41a', '', count);
   return (
     <div className="flex w-8 flex-shrink-0 items-center justify-center">
-      {BadgeContent}
+      {needClarification ? BadgeContent : ''}
     </div>
   );
 };
