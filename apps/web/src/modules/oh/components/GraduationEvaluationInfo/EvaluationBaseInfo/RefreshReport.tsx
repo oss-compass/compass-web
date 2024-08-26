@@ -21,6 +21,9 @@ const RefreshReport = ({ report, editSuccess }) => {
       //   toast.error(res?.message);
     },
   });
+  if (report?.graduationReportMetric?.status === 'again_progress') {
+    return null;
+  }
   return (
     <>
       {currentUser?.id === report.userId && (
