@@ -12,15 +12,11 @@ export const useTableColumns = (anction) => {
   const columns = [
     {
       title: '操作',
-      key: 'createdAt',
       width: 100,
       render: (_, record) => {
         return (
           <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
-            <EditReport report={record} editSuccess={anction} />
-            <RefreshReport report={record} editSuccess={anction} />
-            <PreviewImage report={record} />
-            {record?.graduationReportMetric?.status === 'success' && (
+            {record?.graduationReportMetric?.status === 'success' ? (
               <Popover content={'查看报告'}>
                 <FileTextOutlined
                   rev={undefined}
@@ -30,7 +26,17 @@ export const useTableColumns = (anction) => {
                   }}
                 />
               </Popover>
+            ) : (
+              <Popover content={'报告生成中'}>
+                <FileTextOutlined
+                  rev={undefined}
+                  className="cursor-not-allowed text-[#ABABAB]"
+                />
+              </Popover>
             )}
+            <EditReport report={record} editSuccess={anction} />
+            <RefreshReport report={record} editSuccess={anction} />
+            <PreviewImage report={record} />
           </div>
         );
       },
