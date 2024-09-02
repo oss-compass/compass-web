@@ -7,6 +7,11 @@ import { useTranslation } from 'next-i18next';
 
 const data = [
   {
+    avatar: '/images/about/李春敏.jpg',
+    name: '李春敏',
+    intro: '开源指南针社区经理',
+  },
+  {
     avatar: '/images/about/龚宇华@2x.png',
     name: '龚宇华',
     intro: '华为开源运营专家',
@@ -29,7 +34,7 @@ const data = [
   {
     avatar: '/images/about/周冉.jpeg',
     name: '周冉',
-    intro: '开源指南针社区经理',
+    intro: '华为开源管理中心',
   },
 ];
 
