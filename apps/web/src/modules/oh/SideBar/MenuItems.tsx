@@ -79,24 +79,24 @@ export const menuItems: MenuItem[] = [
     label: 'TPC 治理',
     icon: <ProjectOutlined rev={undefined} />,
     children: [
-      {
-        key: 'sandbox',
-        label: '沙箱项目',
-        children: [
-          {
-            key: 'sandboxReport',
-            label: '报告申请',
-          },
-          {
-            key: 'sandboxProject',
-            label: '选型申请',
-          },
-          {
-            key: 'sandboxTable',
-            label: '申请列表',
-          },
-        ],
-      },
+      // {
+      //   key: 'sandbox',
+      //   label: '沙箱项目',
+      //   children: [
+      //     {
+      //       key: 'sandboxReport',
+      //       label: '报告申请',
+      //     },
+      //     {
+      //       key: 'sandboxProject',
+      //       label: '选型申请',
+      //     },
+      //     {
+      //       key: 'sandboxTable',
+      //       label: '申请列表',
+      //     },
+      //   ],
+      // },
       {
         key: 'hatch',
         label: '孵化项目',
@@ -162,9 +162,9 @@ export const componentMap = {
   code: <CodeStatistics />,
   committer: <CommitterStatistics />,
   communityContributions: <CommunityContributions />,
-  sandboxReport: <Graduate />,
-  sandboxProject: <Graduate />,
-  sandboxTable: <Graduate />,
+  // sandboxReport: <Graduate />,
+  // sandboxProject: <Graduate />,
+  // sandboxTable: <Graduate />,
   hatchReport: <SandboxReport />,
   hatchProject: <SandboxProject />,
   hatchTable: <SandboxTable />,

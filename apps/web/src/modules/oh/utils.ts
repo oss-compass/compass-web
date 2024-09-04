@@ -62,7 +62,7 @@ export const openGiteeIssue = (report, values, id) => {
     report,
     values.targetSoftware
   );
-  let reportLink = `${window.location.origin}/oh#reportDetailPage?taskId=${id}&projectId=${projectId}`;
+  let reportLink = `https://oss-compass.org/oh#reportDetailPage?taskId=${id}&projectId=${projectId}`;
   let title = `【孵化选型申请】【${tpcSoftwareSigId}】【待TPC SIG评审】${
     values?.targetSoftware || name
   } 申请进入孵化项目`;
@@ -123,7 +123,7 @@ export const openGraduationIssue = (report, values, id) => {
     getPathname(values.targetSoftware.codeUrl)
   );
   let targetName = getPathname(values.targetSoftware.codeUrl);
-  let reportLink = `${window.location.origin}/oh#graduationReportPage?taskId=${id}&projectId=${projectId}`;
+  let reportLink = `https://oss-compass.org/oh#graduationReportPage?taskId=${id}&projectId=${projectId}`;
   let title = `【毕业申请】【${tpcSoftwareSigId}】【待TPC SIG评审】${targetName} 申请进入毕业项目`;
 
   let body = `
