@@ -164,7 +164,17 @@ const SelectionApplication = () => {
                     name="targetSoftware"
                     rules={[{ required: true, message: '请输入!' }]}
                   >
-                    <Select disabled={false}>
+                    <Select
+                      onChange={(value) => {
+                        form.setFieldsValue({
+                          committers: report
+                            .find((item) => item.codeUrl.includes(value))
+                            ?.tpcSoftwareSig?.sigCommitter?.map((i) => i.name)
+                            .join(', '),
+                        });
+                      }}
+                      disabled={false}
+                    >
                       {report.map((item) => {
                         return (
                           <Select.Option
@@ -240,9 +250,9 @@ const SelectionApplication = () => {
                     rules={[{ required: true, message: '请输入!' }]}
                   >
                     <Input
-                      placeholder="需填写 Committers 的 Gitee/Github 用户名，多个
-                      Committers 用逗号分开"
-                      disabled={false}
+                      // placeholder="需填写 Committers 的 Gitee/Github 用户名，多个
+                      // Committers 用逗号分开"
+                      disabled={true}
                     />
                   </Form.Item>
                 </Col>
@@ -390,6 +400,12 @@ const SelectionApplication = () => {
                     name: item.map((item) => item.name).join(', '),
                     targetSoftware:
                       item.length > 1 ? '' : getPathname(item[0].codeUrl),
+                    committers:
+                      item.length > 1
+                        ? ''
+                        : item[0].tpcSoftwareSig?.sigCommitter
+                            ?.map((i) => i.name)
+                            .join(', '),
                   });
                 }
                 setOpenConfirm(false);

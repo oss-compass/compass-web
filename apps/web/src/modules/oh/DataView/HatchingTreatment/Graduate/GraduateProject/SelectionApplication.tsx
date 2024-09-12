@@ -118,6 +118,12 @@ const SelectionApplication = () => {
                     name: item.map((item) => item.name).join(', '),
                     targetSoftware:
                       item.length > 1 ? '' : getPathname(item[0].codeUrl),
+                    committers:
+                      item.length > 1
+                        ? ''
+                        : item[0].tpcSoftwareSig?.sigCommitter
+                            ?.map((i) => i.name)
+                            .join(', '),
                   });
                 }
                 setOpenConfirm(false);

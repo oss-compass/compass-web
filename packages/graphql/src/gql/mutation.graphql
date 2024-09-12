@@ -407,34 +407,34 @@ mutation createTpcSoftwareGraduation(
     status
   }
 }
-mutation updateTpcSoftwareGraduation(
-  $graduationId: Int!
-  $tpcSoftwareGraduationReportIds: [Int!]!
-  $committers: [String!]!
-  $demandSource: String!
-  $functionalDescription: String!
-  $incubationTime: String!
-  $incubationStartTime: ISO8601DateTime
-) {
-  updateTpcSoftwareGraduation(
-    input: {
-      graduationId: $graduationId
-      tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
-      committers: $committers
-      demandSource: $demandSource
-      functionalDescription: $functionalDescription
-      incubationTime: $incubationTime
-      incubationStartTime: $incubationStartTime
-    }
-  ) {
-    errors {
-      message
-      path
-    }
-    message
-    status
-  }
-}
+# mutation updateTpcSoftwareGraduation(
+#   $graduationId: Int!
+#   $tpcSoftwareGraduationReportIds: [Int!]!
+#   $committers: [String!]!
+#   $demandSource: String!
+#   $functionalDescription: String!
+#   $incubationTime: String!
+#   $incubationStartTime: ISO8601DateTime
+# ) {
+#   updateTpcSoftwareGraduation(
+#     input: {
+#       graduationId: $graduationId
+#       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
+#       committers: $committers
+#       demandSource: $demandSource
+#       functionalDescription: $functionalDescription
+#       incubationTime: $incubationTime
+#       incubationStartTime: $incubationStartTime
+#     }
+#   ) {
+#     errors {
+#       message
+#       path
+#     }
+#     message
+#     status
+#   }
+# }
 mutation acceptTpcSoftwareGraduation(
   $graduationId: Int!
   $state: Int!

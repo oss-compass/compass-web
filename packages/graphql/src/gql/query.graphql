@@ -1538,6 +1538,14 @@ fragment tpcSoftwareSig on TpcSoftwareSig {
   description
   id
   name
+  sigCommitter {
+    # company
+    # email
+    # giteeAccount
+    # githubAccount
+    id
+    name
+  }
 }
 fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {
   complianceDco
