@@ -169,7 +169,9 @@ const SelectionApplication = () => {
                         form.setFieldsValue({
                           committers: report
                             .find((item) => item.codeUrl.includes(value))
-                            ?.tpcSoftwareSig?.sigCommitter?.map((i) => i.name)
+                            ?.tpcSoftwareSig?.sigCommitter?.map(
+                              (i) => i.giteeAccount
+                            )
                             .join(', '),
                         });
                       }}
@@ -250,9 +252,9 @@ const SelectionApplication = () => {
                     rules={[{ required: true, message: '请输入!' }]}
                   >
                     <Input
-                      // placeholder="需填写 Committers 的 Gitee/Github 用户名，多个
-                      // Committers 用逗号分开"
-                      disabled={true}
+                      placeholder="需填写 Committers 的 Gitee/Github 用户名，多个
+                      Committers 用逗号分开"
+                      disabled={false}
                     />
                   </Form.Item>
                 </Col>
@@ -404,7 +406,7 @@ const SelectionApplication = () => {
                       item.length > 1
                         ? ''
                         : item[0].tpcSoftwareSig?.sigCommitter
-                            ?.map((i) => i.name)
+                            ?.map((i) => i.giteeAccount)
                             .join(', '),
                   });
                 }

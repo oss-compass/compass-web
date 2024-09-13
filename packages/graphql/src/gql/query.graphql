@@ -1541,10 +1541,10 @@ fragment tpcSoftwareSig on TpcSoftwareSig {
   sigCommitter {
     # company
     # email
-    # giteeAccount
+    giteeAccount
     # githubAccount
     id
-    name
+    # name
   }
 }
 fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {

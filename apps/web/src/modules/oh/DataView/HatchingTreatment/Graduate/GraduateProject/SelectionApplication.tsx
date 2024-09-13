@@ -122,7 +122,7 @@ const SelectionApplication = () => {
                       item.length > 1
                         ? ''
                         : item[0].tpcSoftwareSig?.sigCommitter
-                            ?.map((i) => i.name)
+                            ?.map((i) => i.giteeAccount)
                             .join(', '),
                   });
                 }

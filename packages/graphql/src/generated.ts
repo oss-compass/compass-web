@@ -8007,8 +8007,8 @@ export type TpcSoftwareSigFragment = {
   name: string;
   sigCommitter?: Array<{
     __typename?: 'TpcSoftwareMember';
+    giteeAccount?: string | null;
     id?: number | null;
-    name?: string | null;
   }> | null;
 };
 
@@ -8119,8 +8119,8 @@ export type TpcSoftwareSelectionReportPageQuery = {
         name: string;
         sigCommitter?: Array<{
           __typename?: 'TpcSoftwareMember';
+          giteeAccount?: string | null;
           id?: number | null;
-          name?: string | null;
         }> | null;
       } | null;
     }> | null;
@@ -8379,8 +8379,8 @@ export type TpcSoftwareSelectionReportQuery = {
       name: string;
       sigCommitter?: Array<{
         __typename?: 'TpcSoftwareMember';
+        giteeAccount?: string | null;
         id?: number | null;
-        name?: string | null;
       }> | null;
     } | null;
   } | null;
@@ -9033,8 +9033,8 @@ export type TpcSoftwareGraduationReportPageQuery = {
         name: string;
         sigCommitter?: Array<{
           __typename?: 'TpcSoftwareMember';
+          giteeAccount?: string | null;
           id?: number | null;
-          name?: string | null;
         }> | null;
       } | null;
     }> | null;
@@ -9182,8 +9182,8 @@ export type TpcSoftwareGraduationReportQuery = {
       name: string;
       sigCommitter?: Array<{
         __typename?: 'TpcSoftwareMember';
+        giteeAccount?: string | null;
         id?: number | null;
-        name?: string | null;
       }> | null;
     } | null;
   } | null;
@@ -9844,8 +9844,8 @@ export const TpcSoftwareSigFragmentDoc = /*#__PURE__*/ `
   id
   name
   sigCommitter {
+    giteeAccount
     id
-    name
   }
 }
     `;
