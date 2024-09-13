@@ -103,7 +103,7 @@ export const openGiteeIssue = (report, values, id) => {
 
   try {
     window.open(
-      `https://gitee.com/openharmony-tpc/docs/issues/new?title=${title}&description=${encodeURIComponent(
+      `https://gitee.com/openharmony-tpc-test/test/issues/new?title=${title}&description=${encodeURIComponent(
         body
       )}`
     );
@@ -154,7 +154,7 @@ export const openGraduationIssue = (report, values, id) => {
 
   try {
     window.open(
-      `https://gitee.com/openharmony-tpc/docs/issues/new?title=${title}&description=${encodeURIComponent(
+      `https://gitee.com/openharmony-tpc-test/test/issues/new?title=${title}&description=${encodeURIComponent(
         body
       )}`
     );

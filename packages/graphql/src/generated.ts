@@ -3523,6 +3523,7 @@ export type TpcSoftwareGraduation = {
   id: Scalars['Int'];
   incubationStartTime?: Maybe<Scalars['ISO8601DateTime']>;
   incubationTime?: Maybe<Scalars['String']>;
+  issueUrl?: Maybe<Scalars['String']>;
   tpcSoftwareGraduationReportIds?: Maybe<Array<Scalars['Int']>>;
   tpcSoftwareGraduationReports?: Maybe<Array<TpcSoftwareGraduationReport>>;
   updatedAt: Scalars['ISO8601DateTime'];
@@ -6049,6 +6050,7 @@ export type CreateTpcSoftwareSelectionMutationVariables = Exact<{
   incubationTime: Scalars['String'];
   demandSource: Scalars['String'];
   reason: Scalars['String'];
+  sameTypeSoftwareName?: InputMaybe<Scalars['String']>;
   targetSoftware: Scalars['String'];
   isSameTypeCheck: Scalars['Int'];
 }>;
@@ -6159,6 +6161,32 @@ export type UpdateTpcSoftwareSelectionReportMutation = {
   __typename?: 'Mutation';
   updateTpcSoftwareSelectionReport?: {
     __typename?: 'UpdateTpcSoftwareSelectionReportPayload';
+    message?: string | null;
+    status: string;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type UpdateTpcSoftwareSelectionMutationVariables = Exact<{
+  selectionId: Scalars['Int'];
+  repoUrl: Array<Scalars['String']> | Scalars['String'];
+  committers: Array<Scalars['String']> | Scalars['String'];
+  functionalDescription: Scalars['String'];
+  incubationTime: Scalars['String'];
+  demandSource: Scalars['String'];
+  reason: Scalars['String'];
+  sameTypeSoftwareName?: InputMaybe<Scalars['String']>;
+  isSameTypeCheck: Scalars['Int'];
+}>;
+
+export type UpdateTpcSoftwareSelectionMutation = {
+  __typename?: 'Mutation';
+  updateTpcSoftwareSelection?: {
+    __typename?: 'UpdateTpcSoftwareSelectionPayload';
     message?: string | null;
     status: string;
     errors?: Array<{
@@ -6301,6 +6329,29 @@ export type CreateTpcSoftwareGraduationMutation = {
   createTpcSoftwareGraduation?: {
     __typename?: 'CreateTpcSoftwareGraduationPayload';
     id: number;
+    message?: string | null;
+    status: string;
+    errors?: Array<{
+      __typename?: 'Error';
+      message?: string | null;
+      path?: Array<string> | null;
+    }> | null;
+  } | null;
+};
+
+export type UpdateTpcSoftwareGraduationMutationVariables = Exact<{
+  graduationId: Scalars['Int'];
+  committers: Array<Scalars['String']> | Scalars['String'];
+  demandSource: Scalars['String'];
+  functionalDescription: Scalars['String'];
+  incubationTime: Scalars['String'];
+  incubationStartTime?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type UpdateTpcSoftwareGraduationMutation = {
+  __typename?: 'Mutation';
+  updateTpcSoftwareGraduation?: {
+    __typename?: 'UpdateTpcSoftwareGraduationPayload';
     message?: string | null;
     status: string;
     errors?: Array<{
@@ -8153,6 +8204,7 @@ export type TpcSoftwareSelectionPageQuery = {
       id: number;
       incubationTime?: string | null;
       isSameTypeCheck?: number | null;
+      issueUrl?: string | null;
       repoUrl?: Array<string> | null;
       reason?: string | null;
       sameTypeSoftwareName?: string | null;
@@ -9221,6 +9273,7 @@ export type TpcSoftwareGraduationPageQuery = {
       committers?: Array<string> | null;
       incubationStartTime?: any | null;
       incubationTime?: string | null;
+      issueUrl?: string | null;
       tpcSoftwareGraduationReportIds?: Array<number> | null;
       functionalDescription?: string | null;
       userId: number;
@@ -12141,9 +12194,9 @@ useCreateTpcSoftwareSelectionReportMutation.fetcher = (
     CreateTpcSoftwareSelectionReportMutationVariables
   >(client, CreateTpcSoftwareSelectionReportDocument, variables, headers);
 export const CreateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
-    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String!, $reason: String!, $targetSoftware: String!, $isSameTypeCheck: Int!) {
+    mutation createTpcSoftwareSelection($label: String!, $level: String!, $tpcSoftwareSelectionReportIds: [Int!]!, $selectionType: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String!, $reason: String!, $sameTypeSoftwareName: String, $targetSoftware: String!, $isSameTypeCheck: Int!) {
   createTpcSoftwareSelection(
-    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, targetSoftware: $targetSoftware, isSameTypeCheck: $isSameTypeCheck}
+    input: {label: $label, level: $level, selectionType: $selectionType, tpcSoftwareSelectionReportIds: $tpcSoftwareSelectionReportIds, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, sameTypeSoftwareName: $sameTypeSoftwareName, targetSoftware: $targetSoftware, isSameTypeCheck: $isSameTypeCheck}
   ) {
     errors {
       message
@@ -12461,6 +12514,56 @@ useUpdateTpcSoftwareSelectionReportMutation.fetcher = (
     UpdateTpcSoftwareSelectionReportMutation,
     UpdateTpcSoftwareSelectionReportMutationVariables
   >(client, UpdateTpcSoftwareSelectionReportDocument, variables, headers);
+export const UpdateTpcSoftwareSelectionDocument = /*#__PURE__*/ `
+    mutation updateTpcSoftwareSelection($selectionId: Int!, $repoUrl: [String!]!, $committers: [String!]!, $functionalDescription: String!, $incubationTime: String!, $demandSource: String!, $reason: String!, $sameTypeSoftwareName: String, $isSameTypeCheck: Int!) {
+  updateTpcSoftwareSelection(
+    input: {selectionId: $selectionId, repoUrl: $repoUrl, committers: $committers, functionalDescription: $functionalDescription, demandSource: $demandSource, incubationTime: $incubationTime, reason: $reason, sameTypeSoftwareName: $sameTypeSoftwareName, isSameTypeCheck: $isSameTypeCheck}
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+    `;
+export const useUpdateTpcSoftwareSelectionMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    UpdateTpcSoftwareSelectionMutation,
+    TError,
+    UpdateTpcSoftwareSelectionMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    UpdateTpcSoftwareSelectionMutation,
+    TError,
+    UpdateTpcSoftwareSelectionMutationVariables,
+    TContext
+  >(
+    ['updateTpcSoftwareSelection'],
+    (variables?: UpdateTpcSoftwareSelectionMutationVariables) =>
+      fetcher<
+        UpdateTpcSoftwareSelectionMutation,
+        UpdateTpcSoftwareSelectionMutationVariables
+      >(client, UpdateTpcSoftwareSelectionDocument, variables, headers)(),
+    options
+  );
+useUpdateTpcSoftwareSelectionMutation.fetcher = (
+  client: GraphQLClient,
+  variables: UpdateTpcSoftwareSelectionMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    UpdateTpcSoftwareSelectionMutation,
+    UpdateTpcSoftwareSelectionMutationVariables
+  >(client, UpdateTpcSoftwareSelectionDocument, variables, headers);
 export const CreateTpcSoftwareSelectionCommentDocument = /*#__PURE__*/ `
     mutation createTpcSoftwareSelectionComment($selectionId: Int!, $content: String!, $reportType: Int = 0) {
   createTpcSoftwareSelectionComment(
@@ -12835,6 +12938,56 @@ useCreateTpcSoftwareGraduationMutation.fetcher = (
     CreateTpcSoftwareGraduationMutation,
     CreateTpcSoftwareGraduationMutationVariables
   >(client, CreateTpcSoftwareGraduationDocument, variables, headers);
+export const UpdateTpcSoftwareGraduationDocument = /*#__PURE__*/ `
+    mutation updateTpcSoftwareGraduation($graduationId: Int!, $committers: [String!]!, $demandSource: String!, $functionalDescription: String!, $incubationTime: String!, $incubationStartTime: ISO8601DateTime) {
+  updateTpcSoftwareGraduation(
+    input: {graduationId: $graduationId, committers: $committers, demandSource: $demandSource, functionalDescription: $functionalDescription, incubationTime: $incubationTime, incubationStartTime: $incubationStartTime}
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+    `;
+export const useUpdateTpcSoftwareGraduationMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    UpdateTpcSoftwareGraduationMutation,
+    TError,
+    UpdateTpcSoftwareGraduationMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    UpdateTpcSoftwareGraduationMutation,
+    TError,
+    UpdateTpcSoftwareGraduationMutationVariables,
+    TContext
+  >(
+    ['updateTpcSoftwareGraduation'],
+    (variables?: UpdateTpcSoftwareGraduationMutationVariables) =>
+      fetcher<
+        UpdateTpcSoftwareGraduationMutation,
+        UpdateTpcSoftwareGraduationMutationVariables
+      >(client, UpdateTpcSoftwareGraduationDocument, variables, headers)(),
+    options
+  );
+useUpdateTpcSoftwareGraduationMutation.fetcher = (
+  client: GraphQLClient,
+  variables: UpdateTpcSoftwareGraduationMutationVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    UpdateTpcSoftwareGraduationMutation,
+    UpdateTpcSoftwareGraduationMutationVariables
+  >(client, UpdateTpcSoftwareGraduationDocument, variables, headers);
 export const AcceptTpcSoftwareGraduationDocument = /*#__PURE__*/ `
     mutation acceptTpcSoftwareGraduation($graduationId: Int!, $state: Int!, $memberType: Int!) {
   acceptTpcSoftwareGraduation(
@@ -16031,6 +16184,7 @@ export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
       id
       incubationTime
       isSameTypeCheck
+      issueUrl
       repoUrl
       reason
       sameTypeSoftwareName
@@ -16711,6 +16865,7 @@ export const TpcSoftwareGraduationPageDocument = /*#__PURE__*/ `
       committers
       incubationStartTime
       incubationTime
+      issueUrl
       tpcSoftwareGraduationReportIds
       functionalDescription
       tpcSoftwareGraduationReports {

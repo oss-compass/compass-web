@@ -1,36 +1,21 @@
 import { getHubUrl } from '@common/utils';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { getProjectId } from '@modules/oh/utils';
 import { AiFillFilter } from 'react-icons/ai';
 import TableDropdown from '@modules/oh/components/TableDropdown';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
+import EditApply from './EditApply';
 
 export const useTableColumns = (anction) => {
   const { hasOhRole } = useHasOhRole();
   const columns = [
     {
-      title: '报告',
+      title: '操作',
       width: 100,
       render: (_, record) => {
         return (
-          <div className="flex cursor-pointer justify-center text-[#3e8eff]">
-            {/* {record?.targetSoftware && (
-              <Popover content={'查看报告'}>
-                <FileTextOutlined
-                  rev={undefined}
-                  onClick={() => {
-                    window.location.hash = `reportDetailPage?taskId=${
-                      record.id
-                    }&projectId=${getProjectId(
-                      record?.tpcSoftwareSelectionReports,
-                      record?.targetSoftware
-                    )}`;
-                  }}
-                />
-              </Popover>
-            )} */}
-            <Popover content={'查看报告'}>
+          <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
+            <Popover content={'查看申请详情'}>
               <FileTextOutlined
                 rev={undefined}
                 onClick={() => {
@@ -38,6 +23,7 @@ export const useTableColumns = (anction) => {
                 }}
               />
             </Popover>
+            <EditApply report={record} editSuccess={anction} />
           </div>
         );
       },
@@ -161,14 +147,22 @@ export const useTableColumns = (anction) => {
         return record?.committers?.join('; ');
       },
     },
-    // {
-    //   title: '适配仓路径',
-    //   dataIndex: 'repoUrl',
-    //   key: 'repoUrl',
-    //   render: (_, record) => {
-    //     return record?.repoUrl?.join('; ');
-    //   },
-    // },
+    {
+      title: 'Issue 链接',
+      key: 'issueUrl',
+      dataIndex: 'issueUrl',
+      render: (issueUrl) => {
+        return (
+          <a
+            target="_blank"
+            href={issueUrl}
+            className="line-clamp-1 whitespace-nowrap text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+          >
+            {issueUrl}
+          </a>
+        );
+      },
+    },
   ];
   return { columns };
 };

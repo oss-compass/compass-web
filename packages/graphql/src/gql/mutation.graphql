@@ -164,6 +164,7 @@ mutation createTpcSoftwareSelection(
   $demandSource: String!
   $reason: String!
   # $adaptationMethod: String!
+  $sameTypeSoftwareName: String
   $targetSoftware: String!
   $isSameTypeCheck: Int!
 ) {
@@ -179,7 +180,7 @@ mutation createTpcSoftwareSelection(
       demandSource: $demandSource
       incubationTime: $incubationTime
       reason: $reason
-      # adaptationMethod: $adaptationMethod
+      sameTypeSoftwareName: $sameTypeSoftwareName
       targetSoftware: $targetSoftware
       isSameTypeCheck: $isSameTypeCheck
     }
@@ -282,7 +283,39 @@ mutation updateTpcSoftwareSelectionReport(
     status
   }
 }
-
+mutation updateTpcSoftwareSelection(
+  $selectionId: Int!
+  $repoUrl: [String!]!
+  $committers: [String!]!
+  $functionalDescription: String!
+  $incubationTime: String!
+  $demandSource: String!
+  $reason: String!
+  # $adaptationMethod: String!
+  $sameTypeSoftwareName: String
+  $isSameTypeCheck: Int!
+) {
+  updateTpcSoftwareSelection(
+    input: {
+      selectionId: $selectionId
+      repoUrl: $repoUrl
+      committers: $committers
+      functionalDescription: $functionalDescription
+      demandSource: $demandSource
+      incubationTime: $incubationTime
+      reason: $reason
+      sameTypeSoftwareName: $sameTypeSoftwareName
+      isSameTypeCheck: $isSameTypeCheck
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
 mutation createTpcSoftwareSelectionComment(
   $selectionId: Int!
   $content: String!
@@ -407,34 +440,32 @@ mutation createTpcSoftwareGraduation(
     status
   }
 }
-# mutation updateTpcSoftwareGraduation(
-#   $graduationId: Int!
-#   $tpcSoftwareGraduationReportIds: [Int!]!
-#   $committers: [String!]!
-#   $demandSource: String!
-#   $functionalDescription: String!
-#   $incubationTime: String!
-#   $incubationStartTime: ISO8601DateTime
-# ) {
-#   updateTpcSoftwareGraduation(
-#     input: {
-#       graduationId: $graduationId
-#       tpcSoftwareGraduationReportIds: $tpcSoftwareGraduationReportIds
-#       committers: $committers
-#       demandSource: $demandSource
-#       functionalDescription: $functionalDescription
-#       incubationTime: $incubationTime
-#       incubationStartTime: $incubationStartTime
-#     }
-#   ) {
-#     errors {
-#       message
-#       path
-#     }
-#     message
-#     status
-#   }
-# }
+mutation updateTpcSoftwareGraduation(
+  $graduationId: Int!
+  $committers: [String!]!
+  $demandSource: String!
+  $functionalDescription: String!
+  $incubationTime: String!
+  $incubationStartTime: ISO8601DateTime
+) {
+  updateTpcSoftwareGraduation(
+    input: {
+      graduationId: $graduationId
+      committers: $committers
+      demandSource: $demandSource
+      functionalDescription: $functionalDescription
+      incubationTime: $incubationTime
+      incubationStartTime: $incubationStartTime
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
 mutation acceptTpcSoftwareGraduation(
   $graduationId: Int!
   $state: Int!

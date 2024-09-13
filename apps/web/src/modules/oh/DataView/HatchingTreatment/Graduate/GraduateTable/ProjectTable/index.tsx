@@ -6,11 +6,6 @@ import client from '@common/gqlClient';
 import { useTableColumns } from './useTableColumns';
 
 const ReportTable = () => {
-  const editAction = (report) => {
-    // setReport(report);
-  };
-  const { columns } = useTableColumns(editAction);
-
   const {
     tableData,
     setData,
@@ -24,7 +19,7 @@ const ReportTable = () => {
     ...query,
     selectionType: 0,
   };
-  const { isLoading, isFetching } = useTpcSoftwareGraduationPageQuery(
+  const { isLoading, isFetching, refetch } = useTpcSoftwareGraduationPageQuery(
     client,
     myQuery,
     {
@@ -40,6 +35,7 @@ const ReportTable = () => {
       },
     }
   );
+  const { columns } = useTableColumns(refetch);
   return (
     <>
       <div className="h-[calc(100vh-240px)] p-4">

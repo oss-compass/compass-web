@@ -1654,6 +1654,7 @@ query tpcSoftwareSelectionPage(
       id
       incubationTime
       isSameTypeCheck
+      issueUrl
       repoUrl
       reason
       sameTypeSoftwareName
@@ -2250,6 +2251,7 @@ query tpcSoftwareGraduationPage(
       committers
       incubationStartTime
       incubationTime
+      issueUrl
       tpcSoftwareGraduationReportIds
       functionalDescription
       tpcSoftwareGraduationReports {

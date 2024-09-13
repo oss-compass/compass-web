@@ -70,6 +70,7 @@ const SelectionApplication = () => {
 
   const submit = () => {
     form.validateFields().then((values) => {
+      console.log(values);
       const repoUrl = values.repoUrl.map((z) => z['repoUrl']);
       report &&
         mutation.mutate({
