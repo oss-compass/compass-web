@@ -114,7 +114,7 @@ const EditReportForm = ({ report, refetch }) => {
                 span: 3,
                 style: { fontWeight: 'bold' },
               }}
-              label="Committers"
+              label="垂域Committers"
               name="committers"
               rules={[{ required: true, message: '请输入!' }]}
             >

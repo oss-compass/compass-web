@@ -140,7 +140,7 @@ export const useTableColumns = (anction) => {
       ellipsis: true,
     },
     {
-      title: 'Committers',
+      title: '垂域 Committers',
       dataIndex: 'committers',
       key: 'committers',
       ellipsis: true,

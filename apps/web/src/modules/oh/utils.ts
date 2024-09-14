@@ -84,7 +84,7 @@ export const openGiteeIssue = (report, values, id) => {
 
   > ${values.incubationTime}
 
-  5. 【Committers】
+  5. 【垂域 Committers】
 
   > ${values.committers}
 
@@ -103,7 +103,7 @@ export const openGiteeIssue = (report, values, id) => {
 
   try {
     window.open(
-      `https://gitee.com/openharmony-tpc-test/test/issues/new?title=${title}&description=${encodeURIComponent(
+      `https://gitee.com/openharmony-tpc/docs/issues/new?title=${title}&description=${encodeURIComponent(
         body
       )}`
     );
@@ -135,7 +135,7 @@ export const openGraduationIssue = (report, values, id) => {
 
   > ${values.demandSource}
 
-  3. 【Committers】
+  3. 【垂域 Committers】
 
   > ${values.committers}
 
@@ -154,7 +154,7 @@ export const openGraduationIssue = (report, values, id) => {
 
   try {
     window.open(
-      `https://gitee.com/openharmony-tpc-test/test/issues/new?title=${title}&description=${encodeURIComponent(
+      `https://gitee.com/openharmony-tpc/docs/issues/new?title=${title}&description=${encodeURIComponent(
         body
       )}`
     );

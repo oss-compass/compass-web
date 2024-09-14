@@ -67,7 +67,7 @@ const EvaluationBaseInfo = () => {
     // },
     {
       key: '7',
-      label: 'Committers',
+      label: '垂域 Committers',
       children: (
         <div title={committers} className="line-clamp-1">
           {committers}
@@ -89,7 +89,7 @@ const EvaluationBaseInfo = () => {
   return (
     <div className="oh">
       <Descriptions
-        labelStyle={{ width: '150px' }}
+        labelStyle={{ width: '160px' }}
         bordered
         items={baseItems}
         column={4}
