@@ -207,21 +207,7 @@ const RiskBadgeInner = ({ report, keyId }) => {
       </div>
     );
   }
-  // else {
-  //   BadgeContent = (
-  //     <Popover content={''}>
-  //       <Badge
-  //         count={count}
-  //         size="small"
-  //         style={{
-  //           backgroundColor: 'red',
-  //         }}
-  //       >
-  //         <TbMessage2 className="text-xl" />
-  //       </Badge>
-  //     </Popover>
-  //   );
-  // }
+
   return (
     <div className="flex flex-shrink-0 items-center justify-center">
       {BadgeContent}
