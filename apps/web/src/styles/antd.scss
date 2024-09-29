@@ -92,6 +92,23 @@
 .ant-tabs-top > .ant-tabs-nav {
   margin-bottom: 0 !important;
 }
+.work-bench {
+  .ant-table-wrapper {
+    height: 100%;
+    .ant-spin-nested-loading {
+      height: 100%;
+      .ant-spin-container {
+        height: 100%;
+        .ant-table {
+          height: 100%;
+          .ant-table-container {
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
+}
 
 .oh-tabs {
   .ant-tabs-nav-wrap {

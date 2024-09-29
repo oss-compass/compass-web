@@ -1,0 +1,25 @@
+.menu {
+  transition: background 0.2s cubic-bezier(0.08, 0.52, 0.52, 1);
+
+  &:hover {
+    background: #0000000d;
+  }
+}
+
+.menuActive {
+  background: #0000000d;
+}
+
+.Box {
+  &:hover {
+    box-shadow: 0 4px 16px #252b3a33;
+  }
+}
+.Active {
+  background: #518fff !important;
+}
+.BoxArrow {
+  border-top-width: 10px;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+}

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import client from '@common/gqlClient';
+import { useUnmount } from 'ahooks';
 import { useEventEmitter } from 'ahooks';
 import { useTpcSoftwareSelectionReportRiskQuery } from '@oss-compass/graphql';
 import {
@@ -8,6 +9,7 @@ import {
   RiskStore,
   RiskEventType,
   riskEvent,
+  resetRiskStore,
 } from './useRiskStore';
 
 const RiskFetcher = ({ shortCode }) => {
@@ -34,6 +36,9 @@ const RiskFetcher = ({ shortCode }) => {
   useEffect(() => {
     setRiskLoading(isLoading);
   }, [isLoading]);
+  useUnmount(() => {
+    resetRiskStore();
+  });
   return null;
 };
 

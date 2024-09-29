@@ -11,7 +11,7 @@ import {
   ReportEvent,
   resetReportData,
 } from './useReportStore';
-
+//根据任务 id 获取申请信息
 const ReportFetcher = ({ selectionId }) => {
   const { data, isLoading, refetch } = useTpcSoftwareSelectionQuery(client, {
     selectionId,

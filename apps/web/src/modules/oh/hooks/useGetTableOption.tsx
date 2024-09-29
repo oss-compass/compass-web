@@ -58,7 +58,7 @@ const useGetLineOption = <T extends Record<string, any>>(
       if (filters.hasOwnProperty(key)) {
         const transformedObj = {
           type: toUnderline(key),
-          values: filters[key] as string[],
+          values: filters[key]?.map((i) => String(i)) as string[],
         };
         filters[key] && filterOpts.push(transformedObj);
       }

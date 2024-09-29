@@ -2,6 +2,7 @@ import { getHubUrl } from '@common/utils';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
 import { AiFillFilter } from 'react-icons/ai';
+import { taskState } from '@modules/oh/constant';
 import TableDropdown from '@modules/oh/components/TableDropdown';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 import EditApply from './EditApply';
@@ -105,6 +106,16 @@ export const useTableColumns = (anction) => {
       sorter: true,
       render: (text) => {
         return text?.slice(0, 10);
+      },
+    },
+    {
+      title: '当前状态',
+      dataIndex: 'state',
+      key: 'state',
+      width: 120,
+      filters: taskState,
+      render: (text) => {
+        return taskState.find((i) => i.value === text)?.text || text;
       },
     },
     {

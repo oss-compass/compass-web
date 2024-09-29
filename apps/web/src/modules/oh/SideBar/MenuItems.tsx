@@ -3,6 +3,7 @@ import {
   PieChartOutlined,
   TeamOutlined,
   ProjectOutlined,
+  FundOutlined,
 } from '@ant-design/icons';
 
 import ContributeOverview from '@modules/oh/DataView/Contribute/ContributeOverview';
@@ -18,8 +19,8 @@ import SandboxTable from '@modules/oh/DataView/HatchingTreatment/Sandbox/Sandbox
 // import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
 // import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
 // import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
-import Graduate from '@modules/oh/DataView/HatchingTreatment/Graduate';
-
+// import Graduate from '@modules/oh/DataView/HatchingTreatment/Graduate';
+import UserWorkbench from '@modules/oh/DataView/HatchingTreatment/UserWorkbench';
 import BoardSandbox from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardSandbox';
 import BoardHatch from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardHatch';
 import BoardGraduateBoard from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardGraduateBoard';
@@ -79,24 +80,6 @@ export const menuItems: MenuItem[] = [
     label: 'TPC 治理',
     icon: <ProjectOutlined rev={undefined} />,
     children: [
-      // {
-      //   key: 'sandbox',
-      //   label: '沙箱项目',
-      //   children: [
-      //     {
-      //       key: 'sandboxReport',
-      //       label: '报告申请',
-      //     },
-      //     {
-      //       key: 'sandboxProject',
-      //       label: '选型申请',
-      //     },
-      //     {
-      //       key: 'sandboxTable',
-      //       label: '申请列表',
-      //     },
-      //   ],
-      // },
       {
         key: 'hatch',
         label: '孵化项目',
@@ -153,6 +136,11 @@ export const menuItems: MenuItem[] = [
       },
     ],
   },
+  {
+    key: 'userWorkbench',
+    label: '工作台',
+    icon: <FundOutlined rev={undefined} />,
+  },
 ];
 export const componentMap = {
   communityOverview: <CommunityOverview />,
@@ -176,4 +164,5 @@ export const componentMap = {
   boardGraduateBoard: <BoardGraduateBoard />,
   reportDetailPage: <ReportPage />,
   graduationReportPage: <GraduationReport />,
+  userWorkbench: <UserWorkbench />,
 };

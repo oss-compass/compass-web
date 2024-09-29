@@ -42,6 +42,10 @@ export const useGetAllRisk = (shortCode) => {
   const metricClarificationState = report?.metricClarificationState;
   return { metricClarificationState };
 };
+export const resetRiskStore = () => {
+  RiskStore.data = {};
+  RiskStore.event$ = {};
+};
 // export const resetRiskData = () => {
 //   RiskStore.loading = false;
 // };

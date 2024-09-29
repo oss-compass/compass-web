@@ -2556,6 +2556,14 @@ export type Query = {
   tpcSoftwareGraduationReport?: Maybe<TpcSoftwareGraduationReport>;
   /** Get tpc software graduation report apply page */
   tpcSoftwareGraduationReportPage?: Maybe<TpcSoftwareGraduationReportPage>;
+  /** Get tpc software my creation overview */
+  tpcSoftwareMyCreationOverview?: Maybe<TpcSoftwareMyCreationAndReviewOverview>;
+  /** Get tpc software my creation page */
+  tpcSoftwareMyCreationPage?: Maybe<TpcSoftwareMyCreationAndReviewPage>;
+  /** Get tpc software my review overview */
+  tpcSoftwareMyReviewOverview?: Maybe<TpcSoftwareMyCreationAndReviewOverview>;
+  /** Get tpc software my review page */
+  tpcSoftwareMyReviewPage?: Maybe<TpcSoftwareMyCreationAndReviewPage>;
   /** Get tpc software report metric clarification page */
   tpcSoftwareReportMetricClarificationPage?: Maybe<TpcSoftwareCommentPage>;
   /** Get tpc software report metric clarification permission */
@@ -3125,6 +3133,36 @@ export type QueryTpcSoftwareGraduationReportPageArgs = {
   sortOpts?: InputMaybe<Array<SortOptionInput>>;
 };
 
+export type QueryTpcSoftwareMyCreationOverviewArgs = {
+  label: Scalars['String'];
+  level: Scalars['String'];
+};
+
+export type QueryTpcSoftwareMyCreationPageArgs = {
+  applicationType: Scalars['Int'];
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
+  level: Scalars['String'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
+};
+
+export type QueryTpcSoftwareMyReviewOverviewArgs = {
+  label?: InputMaybe<Scalars['String']>;
+  level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryTpcSoftwareMyReviewPageArgs = {
+  applicationType: Scalars['Int'];
+  filterOpts?: InputMaybe<Array<FilterOptionInput>>;
+  label: Scalars['String'];
+  level: Scalars['String'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  sortOpts?: InputMaybe<Array<SortOptionInput>>;
+};
+
 export type QueryTpcSoftwareReportMetricClarificationPageArgs = {
   metricName: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
@@ -3506,6 +3544,9 @@ export type TpcSoftwareCommentState = {
 
 export type TpcSoftwareGraduation = {
   __typename?: 'TpcSoftwareGraduation';
+  awaitingClarificationCount?: Maybe<Scalars['Int']>;
+  awaitingConfirmationCount?: Maybe<Scalars['Int']>;
+  clarifiedCount?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
   commentCommitterPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
@@ -3516,7 +3557,10 @@ export type TpcSoftwareGraduation = {
   /** 1: permissioned, 0: unpermissioned */
   commentSigLeadPermission?: Maybe<Scalars['Int']>;
   commentState?: Maybe<Array<TpcSoftwareCommentState>>;
+  committerCount?: Maybe<Scalars['Int']>;
   committers?: Maybe<Array<Scalars['String']>>;
+  complianceCount?: Maybe<Scalars['Int']>;
+  confirmedCount?: Maybe<Scalars['Int']>;
   createdAt: Scalars['ISO8601DateTime'];
   demandSource?: Maybe<Scalars['String']>;
   functionalDescription?: Maybe<Scalars['String']>;
@@ -3524,6 +3568,11 @@ export type TpcSoftwareGraduation = {
   incubationStartTime?: Maybe<Scalars['ISO8601DateTime']>;
   incubationTime?: Maybe<Scalars['String']>;
   issueUrl?: Maybe<Scalars['String']>;
+  legalCount?: Maybe<Scalars['Int']>;
+  riskCount?: Maybe<Scalars['Int']>;
+  sigLeadCount?: Maybe<Scalars['Int']>;
+  /** 0: awaiting_clarification 1: awaiting_confirmation 2: awaiting_review 3: completed -1:rejected */
+  state?: Maybe<Scalars['Int']>;
   tpcSoftwareGraduationReportIds?: Maybe<Array<Scalars['Int']>>;
   tpcSoftwareGraduationReports?: Maybe<Array<TpcSoftwareGraduationReport>>;
   updatedAt: Scalars['ISO8601DateTime'];
@@ -3785,6 +3834,52 @@ export type TpcSoftwareMember = {
   name?: Maybe<Scalars['String']>;
 };
 
+export type TpcSoftwareMyCreationAndReview = {
+  __typename?: 'TpcSoftwareMyCreationAndReview';
+  /** 0: incubation 1: graduation */
+  applicationType?: Maybe<Scalars['Int']>;
+  awaitingClarificationCount?: Maybe<Scalars['Int']>;
+  awaitingConfirmationCount?: Maybe<Scalars['Int']>;
+  clarifiedCount?: Maybe<Scalars['Int']>;
+  committerCount?: Maybe<Scalars['Int']>;
+  complianceCount?: Maybe<Scalars['Int']>;
+  confirmedCount?: Maybe<Scalars['Int']>;
+  createdAt?: Maybe<Scalars['ISO8601DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  issueUrl?: Maybe<Scalars['String']>;
+  legalCount?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  riskCount?: Maybe<Scalars['Int']>;
+  sigLeadCount?: Maybe<Scalars['Int']>;
+  softwareReportShortCodes?: Maybe<Array<Scalars['String']>>;
+  /** 0: awaiting_clarification 1: awaiting_confirmation 2: awaiting_review 3: completed -1:rejected */
+  state?: Maybe<Scalars['Int']>;
+  targetSoftwareReportId?: Maybe<Scalars['Int']>;
+  updatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  user?: Maybe<User>;
+  userId?: Maybe<Scalars['Int']>;
+};
+
+export type TpcSoftwareMyCreationAndReviewOverview = {
+  __typename?: 'TpcSoftwareMyCreationAndReviewOverview';
+  awaitingClarificationCount?: Maybe<Scalars['Int']>;
+  awaitingConfirmationCount?: Maybe<Scalars['Int']>;
+  awaitingReviewCount?: Maybe<Scalars['Int']>;
+  completedCount?: Maybe<Scalars['Int']>;
+  graduationCount?: Maybe<Scalars['Int']>;
+  incubationCount?: Maybe<Scalars['Int']>;
+  rejectedCount?: Maybe<Scalars['Int']>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type TpcSoftwareMyCreationAndReviewPage = {
+  __typename?: 'TpcSoftwareMyCreationAndReviewPage';
+  count?: Maybe<Scalars['Int']>;
+  items?: Maybe<Array<TpcSoftwareMyCreationAndReview>>;
+  page?: Maybe<Scalars['Int']>;
+  totalPage?: Maybe<Scalars['Int']>;
+};
+
 export type TpcSoftwareReportMetric = {
   __typename?: 'TpcSoftwareReportMetric';
   baseCodeUrl?: Maybe<Scalars['Int']>;
@@ -3986,6 +4081,9 @@ export type TpcSoftwareReportMetricSecurityVulnerability = {
 
 export type TpcSoftwareSelection = {
   __typename?: 'TpcSoftwareSelection';
+  awaitingClarificationCount?: Maybe<Scalars['Int']>;
+  awaitingConfirmationCount?: Maybe<Scalars['Int']>;
+  clarifiedCount?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
   commentCommitterPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
@@ -3996,7 +4094,10 @@ export type TpcSoftwareSelection = {
   /** 1: permissioned, 0: unpermissioned */
   commentSigLeadPermission?: Maybe<Scalars['Int']>;
   commentState?: Maybe<Array<TpcSoftwareCommentState>>;
+  committerCount?: Maybe<Scalars['Int']>;
   committers?: Maybe<Array<Scalars['String']>>;
+  complianceCount?: Maybe<Scalars['Int']>;
+  confirmedCount?: Maybe<Scalars['Int']>;
   createdAt: Scalars['ISO8601DateTime'];
   demandSource?: Maybe<Scalars['String']>;
   functionalDescription?: Maybe<Scalars['String']>;
@@ -4004,11 +4105,16 @@ export type TpcSoftwareSelection = {
   incubationTime?: Maybe<Scalars['String']>;
   isSameTypeCheck?: Maybe<Scalars['Int']>;
   issueUrl?: Maybe<Scalars['String']>;
+  legalCount?: Maybe<Scalars['Int']>;
   reason?: Maybe<Scalars['String']>;
   repoUrl?: Maybe<Array<Scalars['String']>>;
+  riskCount?: Maybe<Scalars['Int']>;
   sameTypeSoftwareName?: Maybe<Scalars['String']>;
   /** incubation: 0, sandbox: 1, graduation: 2 */
   selectionType?: Maybe<Scalars['Int']>;
+  sigLeadCount?: Maybe<Scalars['Int']>;
+  /** 0: awaiting_clarification 1: awaiting_confirmation 2: awaiting_review 3: completed -1:rejected */
+  state?: Maybe<Scalars['Int']>;
   targetSoftware?: Maybe<Scalars['String']>;
   tpcSoftwareSelectionReportIds?: Maybe<Array<Scalars['String']>>;
   tpcSoftwareSelectionReports?: Maybe<Array<TpcSoftwareSelectionReport>>;
@@ -6418,6 +6524,2272 @@ export type TriggerTpcSoftwareGraduationReportMutation = {
   } | null;
 };
 
+export type CommitsRepoDataListQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsRepoDataListQuery = {
+  __typename?: 'Query';
+  commitsRepoPage: {
+    __typename?: 'CommitRepoPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitRepo';
+      linesAdded?: number | null;
+      linesChanged?: number | null;
+      linesRemoved?: number | null;
+      repoName?: string | null;
+      repoAttributeType?: string | null;
+      sigName?: string | null;
+    }> | null;
+  };
+};
+
+export type CommitsDetailDataListQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsDetailDataListQuery = {
+  __typename?: 'Query';
+  commitsDetailPage: {
+    __typename?: 'CommitDetailPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitDetail';
+      authorEmail?: string | null;
+      commitHash?: string | null;
+      grimoireCreationDate?: any | null;
+      linesAdded?: number | null;
+      linesChanged?: number | null;
+      linesRemoved?: number | null;
+      mergedAt?: any | null;
+      orgName?: string | null;
+      prUrl?: string | null;
+      repoName?: string | null;
+    }> | null;
+  };
+};
+
+export type CommitsOrganizationDataListQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsOrganizationDataListQuery = {
+  __typename?: 'Query';
+  commitsOrganizationPage: {
+    __typename?: 'CommitOrganizationPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitOrganization';
+      linesAdded?: number | null;
+      linesChanged?: number | null;
+      linesChangedRatio?: number | null;
+      linesRemoved?: number | null;
+      orgName?: string | null;
+    }> | null;
+  };
+};
+
+export type CommitsContributorListQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsContributorListQuery = {
+  __typename?: 'Query';
+  commitsContributorList: Array<{
+    __typename?: 'CommitContributor';
+    authorEmail?: string | null;
+    grimoireCreationDate?: any | null;
+    linesAdded?: number | null;
+    linesChanged?: number | null;
+    linesRemoved?: number | null;
+    orgName?: string | null;
+  }>;
+};
+
+export type CodesRepoPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CodesRepoPageQuery = {
+  __typename?: 'Query';
+  codesRepoPage: {
+    __typename?: 'CodeRepoPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CodeRepo';
+      lines?: number | null;
+      linesChang?: number | null;
+      linesTotal?: number | null;
+      manager?: string | null;
+      repoAttributeType?: string | null;
+      repoName?: string | null;
+      sigName?: string | null;
+    }> | null;
+  };
+};
+
+export type CodesDetailPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CodesDetailPageQuery = {
+  __typename?: 'Query';
+  codesDetailPage: {
+    __typename?: 'CodeDetailPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CodeDetail';
+      commitUrls?: Array<string> | null;
+      createdAt?: any | null;
+      issueNum?: string | null;
+      linesTotal?: number | null;
+      mergedAt?: any | null;
+      tag?: string | null;
+      title?: string | null;
+      url?: string | null;
+      userLogin?: string | null;
+    }> | null;
+  };
+};
+
+export type CodesTrendQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CodesTrendQuery = {
+  __typename?: 'Query';
+  codesTrend: Array<{
+    __typename?: 'CodeTrend';
+    sigName?: string | null;
+    detailList?: Array<{
+      __typename?: 'CodeTrendDetail';
+      count?: number | null;
+      date?: any | null;
+    }> | null;
+  }>;
+};
+
+export type CommitsSigPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitsSigPageQuery = {
+  __typename?: 'Query';
+  commitsSigPage: {
+    __typename?: 'CommitSigPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitSig';
+      linesAdded?: number | null;
+      linesChanged?: number | null;
+      linesRemoved?: number | null;
+      sigName?: string | null;
+    }> | null;
+  };
+};
+
+export type CodesCheckDetailPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CodesCheckDetailPageQuery = {
+  __typename?: 'Query';
+  codesCheckDetailPage: {
+    __typename?: 'CodeCheckDetailPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CodeCheckDetail';
+      commentCreatedAt?: any | null;
+      commentNum?: number | null;
+      issueNum?: string | null;
+      linesAdded?: number | null;
+      linesRemoved?: number | null;
+      prState?: string | null;
+      prUrl?: string | null;
+      prUserLogin?: string | null;
+      timeCheckHours?: number | null;
+      userLogin?: string | null;
+    }> | null;
+  };
+};
+
+export type CodesCheckPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  branch?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CodesCheckPageQuery = {
+  __typename?: 'Query';
+  codesCheckPage: {
+    __typename?: 'CodeCheckPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CodeCheck';
+      commentNum?: number | null;
+      linesAdded?: number | null;
+      linesRemoved?: number | null;
+      timeCheckHours?: number | null;
+      userLogin?: string | null;
+    }> | null;
+  };
+};
+
+export type CommitFeedbackPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
+}>;
+
+export type CommitFeedbackPageQuery = {
+  __typename?: 'Query';
+  commitFeedbackPage: {
+    __typename?: 'CommitFeedbackPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'CommitFeedback';
+      commitHash?: string | null;
+      contactWay?: string | null;
+      createAtDate?: any | null;
+      id?: string | null;
+      newLinesAdded?: number | null;
+      newLinesChanged?: number | null;
+      newLinesRemoved?: number | null;
+      oldLinesAdded?: number | null;
+      oldLinesChanged?: number | null;
+      oldLinesRemoved?: number | null;
+      prUrl?: string | null;
+      repoName?: string | null;
+      requestReviewerEmail?: string | null;
+      reviewMsg?: string | null;
+      reviewerEmail?: string | null;
+      reviewerId?: string | null;
+      state?: string | null;
+      submitReason?: string | null;
+      submitUserEmail?: string | null;
+      submitUserId?: string | null;
+      updateAtDate?: any | null;
+    }> | null;
+  };
+};
+
+export type OrganizationPageQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+}>;
+
+export type OrganizationPageQuery = {
+  __typename?: 'Query';
+  organizationPage: {
+    __typename?: 'OrganizationPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'Organization';
+      domain?: Array<string> | null;
+      orgName?: string | null;
+    }> | null;
+  };
+};
+
+export type SubjectAccessLevelPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  accessLevel?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type SubjectAccessLevelPageQuery = {
+  __typename?: 'Query';
+  subjectAccessLevelPage?: {
+    __typename?: 'SubjectAccessLevelPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'SubjectAccessLevel';
+      accessLevel: number;
+      id: number;
+      subjectId: number;
+      userId: number;
+      user?: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        roleLevel: number;
+        email: string;
+        language: string;
+        emailVerified: boolean;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          avatarUrl?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+        contributingOrgs?: Array<{
+          __typename?: 'ContributorOrg';
+          firstDate?: any | null;
+          lastDate?: any | null;
+          orgName?: string | null;
+          platformType?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type SubjectSigPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type SubjectSigPageQuery = {
+  __typename?: 'Query';
+  subjectSigPage?: {
+    __typename?: 'SubjectSigPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'SubjectSig';
+      description: string;
+      emails: Array<string>;
+      id: number;
+      maintainers: Array<string>;
+      name: string;
+      linkSig?: {
+        __typename?: 'SubjectLinkSig';
+        label?: string | null;
+        level?: string | null;
+        repos?: Array<string> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareSigFragment = {
+  __typename?: 'TpcSoftwareSig';
+  description: string;
+  id: number;
+  name: string;
+  sigCommitter?: Array<{
+    __typename?: 'TpcSoftwareMember';
+    giteeAccount?: string | null;
+    id?: number | null;
+  }> | null;
+};
+
+export type TpcSoftwareReportMetricFragment = {
+  __typename?: 'TpcSoftwareReportMetric';
+  complianceDco?: number | null;
+  complianceLicense?: number | null;
+  compliancePackageSig?: number | null;
+  complianceLicenseCompatibility?: number | null;
+  createdAt?: any | null;
+  ecologyAdoptionAnalysis?: number | null;
+  ecologyCodeMaintenance?: number | null;
+  ecologyCommunitySupport?: number | null;
+  ecologyDependencyAcquisition?: number | null;
+  ecologyPatentRisk?: number | null;
+  ecologySoftwareQuality?: number | null;
+  ecologyAdaptationMethod?: number | null;
+  id: number;
+  lifecycleVersionLifecycle?: number | null;
+  lifecycleVersionNormalization?: number | null;
+  lifecycleVersionNumber?: number | null;
+  securityBinaryArtifact?: number | null;
+  securityHistoryVulnerability?: number | null;
+  securityVulnerability?: number | null;
+  securityVulnerabilityDisclosure?: number | null;
+  securityVulnerabilityResponse?: number | null;
+  status?: string | null;
+  tpcSoftwareReportId?: number | null;
+  updatedAt?: any | null;
+};
+
+export type TpcSoftwareSelectionReportPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  reportTypeList: Array<Scalars['Int']> | Scalars['Int'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+}>;
+
+export type TpcSoftwareSelectionReportPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionReportPage?: {
+    __typename?: 'TpcSoftwareSelectionReportPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareSelectionReport';
+      adaptationMethod?: string | null;
+      codeCount?: number | null;
+      codeUrl?: string | null;
+      id: number;
+      name?: string | null;
+      programmingLanguage?: string | null;
+      reportType: number;
+      shortCode: string;
+      userId: number;
+      vulnerabilityResponse?: string | null;
+      architectureDiagrams?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        id: number;
+        url: string;
+      }> | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+      tpcSoftwareReportMetric?: {
+        __typename?: 'TpcSoftwareReportMetric';
+        complianceDco?: number | null;
+        complianceLicense?: number | null;
+        compliancePackageSig?: number | null;
+        complianceLicenseCompatibility?: number | null;
+        createdAt?: any | null;
+        ecologyAdoptionAnalysis?: number | null;
+        ecologyCodeMaintenance?: number | null;
+        ecologyCommunitySupport?: number | null;
+        ecologyDependencyAcquisition?: number | null;
+        ecologyPatentRisk?: number | null;
+        ecologySoftwareQuality?: number | null;
+        ecologyAdaptationMethod?: number | null;
+        id: number;
+        lifecycleVersionLifecycle?: number | null;
+        lifecycleVersionNormalization?: number | null;
+        lifecycleVersionNumber?: number | null;
+        securityBinaryArtifact?: number | null;
+        securityHistoryVulnerability?: number | null;
+        securityVulnerability?: number | null;
+        securityVulnerabilityDisclosure?: number | null;
+        securityVulnerabilityResponse?: number | null;
+        status?: string | null;
+        tpcSoftwareReportId?: number | null;
+        updatedAt?: any | null;
+      } | null;
+      tpcSoftwareSig?: {
+        __typename?: 'TpcSoftwareSig';
+        description: string;
+        id: number;
+        name: string;
+        sigCommitter?: Array<{
+          __typename?: 'TpcSoftwareMember';
+          giteeAccount?: string | null;
+          id?: number | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareSelectionPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  selectionType: Scalars['Int'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+}>;
+
+export type TpcSoftwareSelectionPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionPage?: {
+    __typename?: 'TpcSoftwareSelectionPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareSelection';
+      committers?: Array<string> | null;
+      createdAt: any;
+      demandSource?: string | null;
+      functionalDescription?: string | null;
+      id: number;
+      incubationTime?: string | null;
+      isSameTypeCheck?: number | null;
+      issueUrl?: string | null;
+      repoUrl?: Array<string> | null;
+      reason?: string | null;
+      sameTypeSoftwareName?: string | null;
+      selectionType?: number | null;
+      state?: number | null;
+      targetSoftware?: string | null;
+      updatedAt: any;
+      userId: number;
+      tpcSoftwareSelectionReportIds?: Array<string> | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+      tpcSoftwareSelectionReports?: Array<{
+        __typename?: 'TpcSoftwareSelectionReport';
+        name?: string | null;
+        shortCode: string;
+        codeUrl?: string | null;
+      }> | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareReportMetricDetailFragment = {
+  __typename?: 'TpcSoftwareReportMetric';
+  baseCodeUrlDetail?: string | null;
+  baseRepoNameDetail?: string | null;
+  baseWebsiteUrlDetail?: string | null;
+  compliancePackageSigDetail?: Array<string> | null;
+  ecologyAdoptionAnalysisDetail?: string | null;
+  ecologyCodeMaintenanceDetail?: string | null;
+  ecologyCommunitySupportDetail?: string | null;
+  ecologyDependencyAcquisitionDetail?: Array<string> | null;
+  ecologyPatentRiskDetail?: string | null;
+  ecologyAdaptationMethodDetail?: string | null;
+  lifecycleVersionNormalizationDetail?: string | null;
+  lifecycleVersionNumberDetail?: string | null;
+  securityBinaryArtifactDetail?: Array<string> | null;
+  securityVulnerabilityDisclosureDetail?: string | null;
+  securityVulnerabilityResponseDetail?: string | null;
+  complianceDcoDetail?: {
+    __typename?: 'TpcSoftwareReportMetricComplianceDco';
+    commitCount?: number | null;
+    commitDcoCount?: number | null;
+  } | null;
+  complianceLicenseCompatibilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+    license?: string | null;
+    licenseConflictList?: Array<string> | null;
+  }> | null;
+  complianceLicenseDetail?: {
+    __typename?: 'TpcSoftwareReportMetricComplianceLicense';
+    nonOsiLicenses?: Array<string> | null;
+    osiCopyleftLimitedLicenses?: Array<string> | null;
+    osiFreeRestrictedLicenses?: Array<string> | null;
+    osiPermissiveLicenses?: Array<string> | null;
+  } | null;
+  ecologySoftwareQualityDetail?: {
+    __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+    coverageRatio?: number | null;
+    coverageScore?: number | null;
+    duplicationRatio?: number | null;
+    duplicationScore?: number | null;
+  } | null;
+  lifecycleVersionLifecycleDetail?: {
+    __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
+    archived?: boolean | null;
+    latestVersionCreatedAt?: any | null;
+    latestVersionName?: string | null;
+  } | null;
+  securityHistoryVulnerabilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
+    summary?: string | null;
+    vulnerability?: string | null;
+  }> | null;
+  securityVulnerabilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+    packageName?: string | null;
+    packageVersion?: string | null;
+    vulnerabilities?: Array<string> | null;
+  }> | null;
+};
+
+export type TpcSoftwareReportMetricRawFragment = {
+  __typename?: 'TpcSoftwareReportMetricRaw';
+  codeUrl?: string | null;
+  complianceDcoRaw?: string | null;
+  complianceLicenseCompatibilityRaw?: string | null;
+  complianceLicenseRaw?: string | null;
+  compliancePackageSigRaw?: string | null;
+  ecologyAdoptionAnalysisRaw?: string | null;
+  ecologyCodeMaintenanceRaw?: string | null;
+  ecologyCommunitySupportRaw?: string | null;
+  ecologyDependencyAcquisitionRaw?: string | null;
+  ecologyPatentRiskRaw?: string | null;
+  ecologySoftwareQualityRaw?: string | null;
+  ecologyAdaptationMethodRaw?: string | null;
+  id: number;
+  lifecycleVersionLifecycleRaw?: string | null;
+  lifecycleVersionNormalizationRaw?: string | null;
+  lifecycleVersionNumberRaw?: string | null;
+  securityBinaryArtifactRaw?: string | null;
+  securityHistoryVulnerabilityRaw?: string | null;
+  securityVulnerabilityDisclosureRaw?: string | null;
+  securityVulnerabilityRaw?: string | null;
+  securityVulnerabilityResponseRaw?: string | null;
+};
+
+export type TpcSoftwareSelectionReportQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+}>;
+
+export type TpcSoftwareSelectionReportQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionReport?: {
+    __typename?: 'TpcSoftwareSelectionReport';
+    adaptationMethod?: string | null;
+    codeCount?: number | null;
+    codeUrl?: string | null;
+    id: number;
+    name?: string | null;
+    programmingLanguage?: string | null;
+    shortCode: string;
+    vulnerabilityResponse?: string | null;
+    userId: number;
+    architectureDiagrams?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      id: number;
+      url: string;
+    }> | null;
+    tpcSoftwareReportMetric?: {
+      __typename?: 'TpcSoftwareReportMetric';
+      complianceDco?: number | null;
+      complianceLicense?: number | null;
+      compliancePackageSig?: number | null;
+      complianceLicenseCompatibility?: number | null;
+      createdAt?: any | null;
+      ecologyAdoptionAnalysis?: number | null;
+      ecologyCodeMaintenance?: number | null;
+      ecologyCommunitySupport?: number | null;
+      ecologyDependencyAcquisition?: number | null;
+      ecologyPatentRisk?: number | null;
+      ecologySoftwareQuality?: number | null;
+      ecologyAdaptationMethod?: number | null;
+      id: number;
+      lifecycleVersionLifecycle?: number | null;
+      lifecycleVersionNormalization?: number | null;
+      lifecycleVersionNumber?: number | null;
+      securityBinaryArtifact?: number | null;
+      securityHistoryVulnerability?: number | null;
+      securityVulnerability?: number | null;
+      securityVulnerabilityDisclosure?: number | null;
+      securityVulnerabilityResponse?: number | null;
+      status?: string | null;
+      tpcSoftwareReportId?: number | null;
+      updatedAt?: any | null;
+      baseCodeUrlDetail?: string | null;
+      baseRepoNameDetail?: string | null;
+      baseWebsiteUrlDetail?: string | null;
+      compliancePackageSigDetail?: Array<string> | null;
+      ecologyAdoptionAnalysisDetail?: string | null;
+      ecologyCodeMaintenanceDetail?: string | null;
+      ecologyCommunitySupportDetail?: string | null;
+      ecologyDependencyAcquisitionDetail?: Array<string> | null;
+      ecologyPatentRiskDetail?: string | null;
+      ecologyAdaptationMethodDetail?: string | null;
+      lifecycleVersionNormalizationDetail?: string | null;
+      lifecycleVersionNumberDetail?: string | null;
+      securityBinaryArtifactDetail?: Array<string> | null;
+      securityVulnerabilityDisclosureDetail?: string | null;
+      securityVulnerabilityResponseDetail?: string | null;
+      complianceDcoDetail?: {
+        __typename?: 'TpcSoftwareReportMetricComplianceDco';
+        commitCount?: number | null;
+        commitDcoCount?: number | null;
+      } | null;
+      complianceLicenseCompatibilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+        license?: string | null;
+        licenseConflictList?: Array<string> | null;
+      }> | null;
+      complianceLicenseDetail?: {
+        __typename?: 'TpcSoftwareReportMetricComplianceLicense';
+        nonOsiLicenses?: Array<string> | null;
+        osiCopyleftLimitedLicenses?: Array<string> | null;
+        osiFreeRestrictedLicenses?: Array<string> | null;
+        osiPermissiveLicenses?: Array<string> | null;
+      } | null;
+      ecologySoftwareQualityDetail?: {
+        __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+        coverageRatio?: number | null;
+        coverageScore?: number | null;
+        duplicationRatio?: number | null;
+        duplicationScore?: number | null;
+      } | null;
+      lifecycleVersionLifecycleDetail?: {
+        __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
+        archived?: boolean | null;
+        latestVersionCreatedAt?: any | null;
+        latestVersionName?: string | null;
+      } | null;
+      securityHistoryVulnerabilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
+        summary?: string | null;
+        vulnerability?: string | null;
+      }> | null;
+      securityVulnerabilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+        packageName?: string | null;
+        packageVersion?: string | null;
+        vulnerabilities?: Array<string> | null;
+      }> | null;
+    } | null;
+    tpcSoftwareSig?: {
+      __typename?: 'TpcSoftwareSig';
+      description: string;
+      id: number;
+      name: string;
+      sigCommitter?: Array<{
+        __typename?: 'TpcSoftwareMember';
+        giteeAccount?: string | null;
+        id?: number | null;
+      }> | null;
+    } | null;
+  } | null;
+  tpcSoftwareReportMetricClarificationPermission?: {
+    __typename?: 'TpcSoftwareReportMetricClarificationPermission';
+    clarificationCommitterPermission?: number | null;
+    clarificationSigLeadPermission?: number | null;
+    clarificationCompliancePermission?: number | null;
+    clarificationLegalPermission?: number | null;
+  } | null;
+};
+
+export type TpcSoftwareSelectionReportRowQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+}>;
+
+export type TpcSoftwareSelectionReportRowQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionReport?: {
+    __typename?: 'TpcSoftwareSelectionReport';
+    id: number;
+    tpcSoftwareReportMetricRaw?: {
+      __typename?: 'TpcSoftwareReportMetricRaw';
+      codeUrl?: string | null;
+      complianceDcoRaw?: string | null;
+      complianceLicenseCompatibilityRaw?: string | null;
+      complianceLicenseRaw?: string | null;
+      compliancePackageSigRaw?: string | null;
+      ecologyAdoptionAnalysisRaw?: string | null;
+      ecologyCodeMaintenanceRaw?: string | null;
+      ecologyCommunitySupportRaw?: string | null;
+      ecologyDependencyAcquisitionRaw?: string | null;
+      ecologyPatentRiskRaw?: string | null;
+      ecologySoftwareQualityRaw?: string | null;
+      ecologyAdaptationMethodRaw?: string | null;
+      id: number;
+      lifecycleVersionLifecycleRaw?: string | null;
+      lifecycleVersionNormalizationRaw?: string | null;
+      lifecycleVersionNumberRaw?: string | null;
+      securityBinaryArtifactRaw?: string | null;
+      securityHistoryVulnerabilityRaw?: string | null;
+      securityVulnerabilityDisclosureRaw?: string | null;
+      securityVulnerabilityRaw?: string | null;
+      securityVulnerabilityResponseRaw?: string | null;
+    } | null;
+  } | null;
+};
+
+export type TpcSoftwareReportMetricClarificationPageQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+  metricName: Scalars['String'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  reportType?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type TpcSoftwareReportMetricClarificationPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareReportMetricClarificationPage?: {
+    __typename?: 'TpcSoftwareCommentPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareComment';
+      content?: string | null;
+      createdAt?: any | null;
+      id: number;
+      metricName?: string | null;
+      updatedAt?: any | null;
+      userId?: string | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          avatarUrl?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcClarificationStateDetailFragment = {
+  __typename?: 'TpcSoftwareCommentState';
+  createdAt: any;
+  id: number;
+  memberType?: number | null;
+  metricName?: string | null;
+  state?: number | null;
+  updatedAt: any;
+  userId: number;
+  user?: { __typename?: 'User'; name: string } | null;
+};
+
+export type TpcSoftwareSelectionReportRiskQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+}>;
+
+export type TpcSoftwareSelectionReportRiskQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionReport?: {
+    __typename?: 'TpcSoftwareSelectionReport';
+    codeUrl?: string | null;
+    id: number;
+    shortCode: string;
+    userId: number;
+    metricClarificationCount?: {
+      __typename?: 'TpcSoftwareReportMetricClarificationCount';
+      complianceDco?: number | null;
+      complianceLicense?: number | null;
+      complianceLicenseCompatibility?: number | null;
+      compliancePackageSig?: number | null;
+      ecologyAdoptionAnalysis?: number | null;
+      ecologyCodeMaintenance?: number | null;
+      ecologyCommunitySupport?: number | null;
+      ecologyDependencyAcquisition?: number | null;
+      ecologyPatentRisk?: number | null;
+      ecologySoftwareQuality?: number | null;
+      ecologyAdaptationMethod?: number | null;
+      lifecycleVersionLifecycle?: number | null;
+      lifecycleVersionNormalization?: number | null;
+      lifecycleVersionNumber?: number | null;
+      securityBinaryArtifact?: number | null;
+      securityHistoryVulnerability?: number | null;
+      securityVulnerability?: number | null;
+      securityVulnerabilityDisclosure?: number | null;
+      securityVulnerabilityResponse?: number | null;
+    } | null;
+    metricClarificationState?: {
+      __typename?: 'TpcSoftwareReportMetricClarificationState';
+      complianceDco?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceLicense?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceLicenseCompatibility?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      compliancePackageSig?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyAdoptionAnalysis?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyCodeMaintenance?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyCommunitySupport?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyDependencyAcquisition?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyPatentRisk?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologySoftwareQuality?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyAdaptationMethod?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      lifecycleVersionLifecycle?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      lifecycleVersionNormalization?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      lifecycleVersionNumber?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityBinaryArtifact?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityHistoryVulnerability?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityVulnerability?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityVulnerabilityDisclosure?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityVulnerabilityResponse?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+    } | null;
+  } | null;
+};
+
+export type TpcSoftwareSelectionCommentPageQueryVariables = Exact<{
+  selectionId: Scalars['Int'];
+  page: Scalars['Int'];
+  per: Scalars['Int'];
+  reportType?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type TpcSoftwareSelectionCommentPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionCommentPage?: {
+    __typename?: 'TpcSoftwareCommentPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareComment';
+      content?: string | null;
+      createdAt?: any | null;
+      id: number;
+      updatedAt?: any | null;
+      userId?: string | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          avatarUrl?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareSelectionQueryVariables = Exact<{
+  selectionId: Scalars['Int'];
+}>;
+
+export type TpcSoftwareSelectionQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelection?: {
+    __typename?: 'TpcSoftwareSelection';
+    commentCompliancePermission?: number | null;
+    commentLegalPermission?: number | null;
+    commentCommitterPermission?: number | null;
+    commentCount?: number | null;
+    commentSigLeadPermission?: number | null;
+    targetSoftware?: string | null;
+    reason?: string | null;
+    demandSource?: string | null;
+    functionalDescription?: string | null;
+    incubationTime?: string | null;
+    committers?: Array<string> | null;
+    isSameTypeCheck?: number | null;
+    sameTypeSoftwareName?: string | null;
+    sigLeadCount?: number | null;
+    state?: number | null;
+    riskCount?: number | null;
+    legalCount?: number | null;
+    complianceCount?: number | null;
+    confirmedCount?: number | null;
+    committerCount?: number | null;
+    awaitingClarificationCount?: number | null;
+    awaitingConfirmationCount?: number | null;
+    clarifiedCount?: number | null;
+    repoUrl?: Array<string> | null;
+    commentState?: Array<{
+      __typename?: 'TpcSoftwareCommentState';
+      createdAt: any;
+      id: number;
+      memberType?: number | null;
+      state?: number | null;
+      updatedAt: any;
+      userId: number;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          avatarUrl?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+    tpcSoftwareSelectionReports?: Array<{
+      __typename?: 'TpcSoftwareSelectionReport';
+      adaptationMethod?: string | null;
+      license?: string | null;
+      codeUrl?: string | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareGraduationReportMetricFragment = {
+  __typename?: 'TpcSoftwareGraduationReportMetric';
+  complianceCopyrightStatement?: number | null;
+  complianceCopyrightStatementAntiTamper?: number | null;
+  complianceDco?: number | null;
+  complianceLicense?: number | null;
+  complianceLicenseCompatibility?: number | null;
+  complianceSnippetReference?: number | null;
+  ecologyBuild?: number | null;
+  ecologyBuildDoc?: number | null;
+  ecologyCi?: number | null;
+  ecologyCodeReview?: number | null;
+  ecologyCodeUpstream?: number | null;
+  ecologyInterfaceDoc?: number | null;
+  ecologyIssueManagement?: number | null;
+  ecologyIssueResponseRatio?: number | null;
+  ecologyIssueResponseTime?: number | null;
+  ecologyMaintainerDoc?: number | null;
+  ecologyReadme?: number | null;
+  ecologyTestCoverage?: number | null;
+  lifecycleReleaseNote?: number | null;
+  lifecycleStatement?: number | null;
+  securityBinaryArtifact?: number | null;
+  securityPackageSig?: number | null;
+  securityVulnerability?: number | null;
+  createdAt?: any | null;
+  id: number;
+  status?: string | null;
+  tpcSoftwareGraduationReportId?: number | null;
+  updatedAt?: any | null;
+  codeUrl?: string | null;
+};
+
+export type TpcSoftwareGraduationReportMetricDetailFragment = {
+  __typename?: 'TpcSoftwareGraduationReportMetric';
+  complianceCopyrightStatementAntiTamperDetail?: string | null;
+  complianceSnippetReferenceDetail?: string | null;
+  ecologyBuildDetail?: string | null;
+  ecologyBuildDocDetail?: string | null;
+  ecologyCiDetail?: string | null;
+  ecologyCodeUpstreamDetail?: string | null;
+  ecologyInterfaceDocDetail?: string | null;
+  ecologyMaintainerDocDetail?: string | null;
+  ecologyReadmeDetail?: string | null;
+  lifecycleReleaseNoteDetail?: Array<string> | null;
+  lifecycleStatementDetail?: string | null;
+  securityBinaryArtifactDetail?: Array<string> | null;
+  securityPackageSigDetail?: Array<string> | null;
+  complianceCopyrightStatementDetail?: {
+    __typename?: 'TpcSoftwareReportMetricComplianceCopyrightStatement';
+    includeCopyrights?: Array<string> | null;
+    notIncludedCopyrights?: Array<string> | null;
+  } | null;
+  complianceDcoDetail?: {
+    __typename?: 'TpcSoftwareReportMetricComplianceDco';
+    commitCount?: number | null;
+    commitDcoCount?: number | null;
+  } | null;
+  complianceLicenseCompatibilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+    license?: string | null;
+    licenseConflictList?: Array<string> | null;
+  }> | null;
+  complianceLicenseDetail?: {
+    __typename?: 'TpcSoftwareGraduationReportMetricComplianceLicense';
+    nonOsiLicenses?: Array<string> | null;
+    osiPermissiveLicenses?: Array<string> | null;
+  } | null;
+  ecologyCodeReviewDetail?: {
+    __typename?: 'TpcSoftwareGraduationMetricEcologyCodeReview';
+    pullCount?: number | null;
+    pullReviewCount?: number | null;
+    pullReviewRatio?: number | null;
+  } | null;
+  ecologyIssueManagementDetail?: {
+    __typename?: 'TpcSoftwareGraduationMetricEcologyIssueManagement';
+    issueCount?: number | null;
+    issueTypeList?: Array<string> | null;
+  } | null;
+  ecologyIssueResponseRatioDetail?: {
+    __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseRatio';
+    issueCount?: number | null;
+    issueResponseCount?: number | null;
+    issueResponseRatio?: number | null;
+  } | null;
+  ecologyIssueResponseTimeDetail?: {
+    __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseTime';
+    issueResponseCount?: number | null;
+    issueResponseTime?: number | null;
+  } | null;
+  ecologyTestCoverageDetail?: {
+    __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+    coverageRatio?: number | null;
+    coverageScore?: number | null;
+    duplicationRatio?: number | null;
+    duplicationScore?: number | null;
+  } | null;
+  securityVulnerabilityDetail?: Array<{
+    __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+    packageName?: string | null;
+    packageVersion?: string | null;
+    vulnerabilities?: Array<string> | null;
+  }> | null;
+};
+
+export type TpcSoftwareGraduationReportMetricRawFragment = {
+  __typename?: 'TpcSoftwareGraduationReportMetricRaw';
+  codeUrl?: string | null;
+  complianceCopyrightStatementAntiTamperRaw?: string | null;
+  complianceCopyrightStatementRaw?: string | null;
+  complianceDcoRaw?: string | null;
+  complianceLicenseCompatibilityRaw?: string | null;
+  complianceLicenseRaw?: string | null;
+  complianceSnippetReferenceRaw?: string | null;
+  ecologyBuildDocRaw?: string | null;
+  ecologyBuildRaw?: string | null;
+  ecologyCiRaw?: string | null;
+  ecologyCodeReviewRaw?: string | null;
+  ecologyCodeUpstreamRaw?: string | null;
+  ecologyInterfaceDocRaw?: string | null;
+  ecologyIssueManagementRaw?: string | null;
+  ecologyIssueResponseRatioRaw?: string | null;
+  ecologyIssueResponseTimeRaw?: string | null;
+  ecologyMaintainerDocRaw?: string | null;
+  ecologyReadmeRaw?: string | null;
+  ecologyTestCoverageRaw?: string | null;
+  id: number;
+  lifecycleReleaseNoteRaw?: string | null;
+  lifecycleStatementRaw?: string | null;
+  securityBinaryArtifactRaw?: string | null;
+  securityPackageSigRaw?: string | null;
+  securityVulnerabilityRaw?: string | null;
+};
+
+export type TpcSoftwareGraduationReportPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+}>;
+
+export type TpcSoftwareGraduationReportPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareGraduationReportPage?: {
+    __typename?: 'TpcSoftwareGraduationReportPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareGraduationReport';
+      adaptationMethod?: string | null;
+      isIncubation?: number | null;
+      roundUpstream?: string | null;
+      codeUrl?: string | null;
+      id: number;
+      name?: string | null;
+      upstreamCodeUrl?: string | null;
+      lifecyclePolicy?: string | null;
+      shortCode: string;
+      programmingLanguage?: string | null;
+      userId: number;
+      architectureDiagrams?: Array<{
+        __typename?: 'Image';
+        filename: string;
+        id: number;
+        url: string;
+      }> | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+      graduationReportMetric?: {
+        __typename?: 'TpcSoftwareGraduationReportMetric';
+        complianceCopyrightStatement?: number | null;
+        complianceCopyrightStatementAntiTamper?: number | null;
+        complianceDco?: number | null;
+        complianceLicense?: number | null;
+        complianceLicenseCompatibility?: number | null;
+        complianceSnippetReference?: number | null;
+        ecologyBuild?: number | null;
+        ecologyBuildDoc?: number | null;
+        ecologyCi?: number | null;
+        ecologyCodeReview?: number | null;
+        ecologyCodeUpstream?: number | null;
+        ecologyInterfaceDoc?: number | null;
+        ecologyIssueManagement?: number | null;
+        ecologyIssueResponseRatio?: number | null;
+        ecologyIssueResponseTime?: number | null;
+        ecologyMaintainerDoc?: number | null;
+        ecologyReadme?: number | null;
+        ecologyTestCoverage?: number | null;
+        lifecycleReleaseNote?: number | null;
+        lifecycleStatement?: number | null;
+        securityBinaryArtifact?: number | null;
+        securityPackageSig?: number | null;
+        securityVulnerability?: number | null;
+        createdAt?: any | null;
+        id: number;
+        status?: string | null;
+        tpcSoftwareGraduationReportId?: number | null;
+        updatedAt?: any | null;
+        codeUrl?: string | null;
+      } | null;
+      tpcSoftwareSig?: {
+        __typename?: 'TpcSoftwareSig';
+        description: string;
+        id: number;
+        name: string;
+        sigCommitter?: Array<{
+          __typename?: 'TpcSoftwareMember';
+          giteeAccount?: string | null;
+          id?: number | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareGraduationReportQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+}>;
+
+export type TpcSoftwareGraduationReportQuery = {
+  __typename?: 'Query';
+  tpcSoftwareGraduationReport?: {
+    __typename?: 'TpcSoftwareGraduationReport';
+    adaptationMethod?: string | null;
+    codeCount?: number | null;
+    license?: string | null;
+    codeUrl?: string | null;
+    id: number;
+    name?: string | null;
+    upstreamCodeUrl?: string | null;
+    shortCode: string;
+    programmingLanguage?: string | null;
+    userId: number;
+    architectureDiagrams?: Array<{
+      __typename?: 'Image';
+      filename: string;
+      id: number;
+      url: string;
+    }> | null;
+    user?: {
+      __typename?: 'User';
+      name: string;
+      loginBinds?: Array<{
+        __typename?: 'LoginBind';
+        account?: string | null;
+        nickname?: string | null;
+        provider?: string | null;
+      }> | null;
+    } | null;
+    graduationReportMetric?: {
+      __typename?: 'TpcSoftwareGraduationReportMetric';
+      complianceCopyrightStatement?: number | null;
+      complianceCopyrightStatementAntiTamper?: number | null;
+      complianceDco?: number | null;
+      complianceLicense?: number | null;
+      complianceLicenseCompatibility?: number | null;
+      complianceSnippetReference?: number | null;
+      ecologyBuild?: number | null;
+      ecologyBuildDoc?: number | null;
+      ecologyCi?: number | null;
+      ecologyCodeReview?: number | null;
+      ecologyCodeUpstream?: number | null;
+      ecologyInterfaceDoc?: number | null;
+      ecologyIssueManagement?: number | null;
+      ecologyIssueResponseRatio?: number | null;
+      ecologyIssueResponseTime?: number | null;
+      ecologyMaintainerDoc?: number | null;
+      ecologyReadme?: number | null;
+      ecologyTestCoverage?: number | null;
+      lifecycleReleaseNote?: number | null;
+      lifecycleStatement?: number | null;
+      securityBinaryArtifact?: number | null;
+      securityPackageSig?: number | null;
+      securityVulnerability?: number | null;
+      createdAt?: any | null;
+      id: number;
+      status?: string | null;
+      tpcSoftwareGraduationReportId?: number | null;
+      updatedAt?: any | null;
+      codeUrl?: string | null;
+      complianceCopyrightStatementAntiTamperDetail?: string | null;
+      complianceSnippetReferenceDetail?: string | null;
+      ecologyBuildDetail?: string | null;
+      ecologyBuildDocDetail?: string | null;
+      ecologyCiDetail?: string | null;
+      ecologyCodeUpstreamDetail?: string | null;
+      ecologyInterfaceDocDetail?: string | null;
+      ecologyMaintainerDocDetail?: string | null;
+      ecologyReadmeDetail?: string | null;
+      lifecycleReleaseNoteDetail?: Array<string> | null;
+      lifecycleStatementDetail?: string | null;
+      securityBinaryArtifactDetail?: Array<string> | null;
+      securityPackageSigDetail?: Array<string> | null;
+      complianceCopyrightStatementDetail?: {
+        __typename?: 'TpcSoftwareReportMetricComplianceCopyrightStatement';
+        includeCopyrights?: Array<string> | null;
+        notIncludedCopyrights?: Array<string> | null;
+      } | null;
+      complianceDcoDetail?: {
+        __typename?: 'TpcSoftwareReportMetricComplianceDco';
+        commitCount?: number | null;
+        commitDcoCount?: number | null;
+      } | null;
+      complianceLicenseCompatibilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+        license?: string | null;
+        licenseConflictList?: Array<string> | null;
+      }> | null;
+      complianceLicenseDetail?: {
+        __typename?: 'TpcSoftwareGraduationReportMetricComplianceLicense';
+        nonOsiLicenses?: Array<string> | null;
+        osiPermissiveLicenses?: Array<string> | null;
+      } | null;
+      ecologyCodeReviewDetail?: {
+        __typename?: 'TpcSoftwareGraduationMetricEcologyCodeReview';
+        pullCount?: number | null;
+        pullReviewCount?: number | null;
+        pullReviewRatio?: number | null;
+      } | null;
+      ecologyIssueManagementDetail?: {
+        __typename?: 'TpcSoftwareGraduationMetricEcologyIssueManagement';
+        issueCount?: number | null;
+        issueTypeList?: Array<string> | null;
+      } | null;
+      ecologyIssueResponseRatioDetail?: {
+        __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseRatio';
+        issueCount?: number | null;
+        issueResponseCount?: number | null;
+        issueResponseRatio?: number | null;
+      } | null;
+      ecologyIssueResponseTimeDetail?: {
+        __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseTime';
+        issueResponseCount?: number | null;
+        issueResponseTime?: number | null;
+      } | null;
+      ecologyTestCoverageDetail?: {
+        __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
+        coverageRatio?: number | null;
+        coverageScore?: number | null;
+        duplicationRatio?: number | null;
+        duplicationScore?: number | null;
+      } | null;
+      securityVulnerabilityDetail?: Array<{
+        __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
+        packageName?: string | null;
+        packageVersion?: string | null;
+        vulnerabilities?: Array<string> | null;
+      }> | null;
+    } | null;
+    tpcSoftwareSig?: {
+      __typename?: 'TpcSoftwareSig';
+      description: string;
+      id: number;
+      name: string;
+      sigCommitter?: Array<{
+        __typename?: 'TpcSoftwareMember';
+        giteeAccount?: string | null;
+        id?: number | null;
+      }> | null;
+    } | null;
+  } | null;
+  tpcSoftwareReportMetricClarificationPermission?: {
+    __typename?: 'TpcSoftwareReportMetricClarificationPermission';
+    clarificationCommitterPermission?: number | null;
+    clarificationSigLeadPermission?: number | null;
+    clarificationCompliancePermission?: number | null;
+    clarificationLegalPermission?: number | null;
+  } | null;
+};
+
+export type TpcSoftwareGraduationPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+}>;
+
+export type TpcSoftwareGraduationPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareGraduationPage?: {
+    __typename?: 'TpcSoftwareGraduationPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareGraduation';
+      id: number;
+      createdAt: any;
+      updatedAt: any;
+      demandSource?: string | null;
+      committers?: Array<string> | null;
+      incubationStartTime?: any | null;
+      incubationTime?: string | null;
+      issueUrl?: string | null;
+      state?: number | null;
+      tpcSoftwareGraduationReportIds?: Array<number> | null;
+      functionalDescription?: string | null;
+      userId: number;
+      tpcSoftwareGraduationReports?: Array<{
+        __typename?: 'TpcSoftwareGraduationReport';
+        name?: string | null;
+        shortCode: string;
+        codeUrl?: string | null;
+        license?: string | null;
+        codeCount?: number | null;
+      }> | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareGraduationQueryVariables = Exact<{
+  graduationId: Scalars['Int'];
+}>;
+
+export type TpcSoftwareGraduationQuery = {
+  __typename?: 'Query';
+  tpcSoftwareGraduation?: {
+    __typename?: 'TpcSoftwareGraduation';
+    commentCompliancePermission?: number | null;
+    commentLegalPermission?: number | null;
+    commentCommitterPermission?: number | null;
+    commentCount?: number | null;
+    commentSigLeadPermission?: number | null;
+    demandSource?: string | null;
+    incubationTime?: string | null;
+    committers?: Array<string> | null;
+    functionalDescription?: string | null;
+    sigLeadCount?: number | null;
+    state?: number | null;
+    riskCount?: number | null;
+    legalCount?: number | null;
+    complianceCount?: number | null;
+    confirmedCount?: number | null;
+    committerCount?: number | null;
+    awaitingClarificationCount?: number | null;
+    awaitingConfirmationCount?: number | null;
+    clarifiedCount?: number | null;
+    commentState?: Array<{
+      __typename?: 'TpcSoftwareCommentState';
+      createdAt: any;
+      id: number;
+      memberType?: number | null;
+      state?: number | null;
+      updatedAt: any;
+      userId: number;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          avatarUrl?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+    tpcSoftwareGraduationReports?: Array<{
+      __typename?: 'TpcSoftwareGraduationReport';
+      adaptationMethod?: string | null;
+      license?: string | null;
+      codeUrl?: string | null;
+      name?: string | null;
+      codeCount?: number | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareGraduationReportRiskQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+}>;
+
+export type TpcSoftwareGraduationReportRiskQuery = {
+  __typename?: 'Query';
+  tpcSoftwareGraduationReport?: {
+    __typename?: 'TpcSoftwareGraduationReport';
+    codeUrl?: string | null;
+    id: number;
+    shortCode: string;
+    userId: number;
+    metricClarificationCount?: {
+      __typename?: 'TpcSoftwareGraduationReportMetricClarificationCount';
+      complianceCopyrightStatement?: number | null;
+      complianceCopyrightStatementAntiTamper?: number | null;
+      complianceDco?: number | null;
+      complianceLicense?: number | null;
+      complianceLicenseCompatibility?: number | null;
+      complianceSnippetReference?: number | null;
+      ecologyBuild?: number | null;
+      ecologyBuildDoc?: number | null;
+      ecologyCi?: number | null;
+      ecologyCodeReview?: number | null;
+      ecologyCodeUpstream?: number | null;
+      ecologyInterfaceDoc?: number | null;
+      ecologyIssueManagement?: number | null;
+      ecologyIssueResponseRatio?: number | null;
+      ecologyIssueResponseTime?: number | null;
+      ecologyMaintainerDoc?: number | null;
+      ecologyReadme?: number | null;
+      ecologyTestCoverage?: number | null;
+      lifecycleReleaseNote?: number | null;
+      lifecycleStatement?: number | null;
+      securityBinaryArtifact?: number | null;
+      securityPackageSig?: number | null;
+      securityVulnerability?: number | null;
+    } | null;
+    metricClarificationState?: {
+      __typename?: 'TpcSoftwareGraduationReportMetricClarificationState';
+      complianceCopyrightStatement?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceCopyrightStatementAntiTamper?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceDco?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceLicense?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceLicenseCompatibility?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      complianceSnippetReference?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyBuild?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyBuildDoc?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyCi?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyCodeReview?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyCodeUpstream?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyInterfaceDoc?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyIssueManagement?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyIssueResponseRatio?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyIssueResponseTime?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyMaintainerDoc?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyReadme?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      ecologyTestCoverage?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      lifecycleReleaseNote?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      lifecycleStatement?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityBinaryArtifact?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityPackageSig?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+      securityVulnerability?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
+    } | null;
+  } | null;
+};
+
+export type TpcSoftwareGraduationReportRowQueryVariables = Exact<{
+  shortCode: Scalars['String'];
+}>;
+
+export type TpcSoftwareGraduationReportRowQuery = {
+  __typename?: 'Query';
+  tpcSoftwareGraduationReport?: {
+    __typename?: 'TpcSoftwareGraduationReport';
+    id: number;
+    graduationReportMetricRaw?: {
+      __typename?: 'TpcSoftwareGraduationReportMetricRaw';
+      codeUrl?: string | null;
+      complianceCopyrightStatementAntiTamperRaw?: string | null;
+      complianceCopyrightStatementRaw?: string | null;
+      complianceDcoRaw?: string | null;
+      complianceLicenseCompatibilityRaw?: string | null;
+      complianceLicenseRaw?: string | null;
+      complianceSnippetReferenceRaw?: string | null;
+      ecologyBuildDocRaw?: string | null;
+      ecologyBuildRaw?: string | null;
+      ecologyCiRaw?: string | null;
+      ecologyCodeReviewRaw?: string | null;
+      ecologyCodeUpstreamRaw?: string | null;
+      ecologyInterfaceDocRaw?: string | null;
+      ecologyIssueManagementRaw?: string | null;
+      ecologyIssueResponseRatioRaw?: string | null;
+      ecologyIssueResponseTimeRaw?: string | null;
+      ecologyMaintainerDocRaw?: string | null;
+      ecologyReadmeRaw?: string | null;
+      ecologyTestCoverageRaw?: string | null;
+      id: number;
+      lifecycleReleaseNoteRaw?: string | null;
+      lifecycleStatementRaw?: string | null;
+      securityBinaryArtifactRaw?: string | null;
+      securityPackageSigRaw?: string | null;
+      securityVulnerabilityRaw?: string | null;
+    } | null;
+  } | null;
+};
+
+export type TpcSoftwareSelectionSearchQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  keyword: Scalars['String'];
+  selectionType: Scalars['Int'];
+}>;
+
+export type TpcSoftwareSelectionSearchQuery = {
+  __typename?: 'Query';
+  tpcSoftwareSelectionSearch?: Array<{
+    __typename?: 'TpcSoftwareSelectionSearch';
+    repoUrl?: Array<string> | null;
+    tpcSoftwareSelectionReport?: {
+      __typename?: 'TpcSoftwareSelectionReportSearch';
+      name?: string | null;
+      codeUrl?: string | null;
+      tpcSoftwareSigId?: number | null;
+      programmingLanguage?: string | null;
+      adaptationMethod?: string | null;
+    } | null;
+  }> | null;
+};
+
+export type TpcSoftwareMyCreationOverviewQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+}>;
+
+export type TpcSoftwareMyCreationOverviewQuery = {
+  __typename?: 'Query';
+  tpcSoftwareMyCreationOverview?: {
+    __typename?: 'TpcSoftwareMyCreationAndReviewOverview';
+    awaitingClarificationCount?: number | null;
+    awaitingConfirmationCount?: number | null;
+    awaitingReviewCount?: number | null;
+    completedCount?: number | null;
+    graduationCount?: number | null;
+    incubationCount?: number | null;
+    rejectedCount?: number | null;
+    totalCount?: number | null;
+  } | null;
+};
+
+export type TpcSoftwareMyReviewOverviewQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+}>;
+
+export type TpcSoftwareMyReviewOverviewQuery = {
+  __typename?: 'Query';
+  tpcSoftwareMyReviewOverview?: {
+    __typename?: 'TpcSoftwareMyCreationAndReviewOverview';
+    awaitingClarificationCount?: number | null;
+    awaitingConfirmationCount?: number | null;
+    awaitingReviewCount?: number | null;
+    completedCount?: number | null;
+    graduationCount?: number | null;
+    incubationCount?: number | null;
+    rejectedCount?: number | null;
+    totalCount?: number | null;
+  } | null;
+};
+
+export type TpcSoftwareMyCreationPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  applicationType: Scalars['Int'];
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+}>;
+
+export type TpcSoftwareMyCreationPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareMyCreationPage?: {
+    __typename?: 'TpcSoftwareMyCreationAndReviewPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareMyCreationAndReview';
+      applicationType?: number | null;
+      awaitingClarificationCount?: number | null;
+      awaitingConfirmationCount?: number | null;
+      clarifiedCount?: number | null;
+      committerCount?: number | null;
+      complianceCount?: number | null;
+      confirmedCount?: number | null;
+      createdAt?: any | null;
+      id?: number | null;
+      issueUrl?: string | null;
+      legalCount?: number | null;
+      name?: string | null;
+      riskCount?: number | null;
+      sigLeadCount?: number | null;
+      state?: number | null;
+      softwareReportShortCodes?: Array<string> | null;
+      targetSoftwareReportId?: number | null;
+      updatedAt?: any | null;
+      userId?: number | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
+export type TpcSoftwareMyReviewPageQueryVariables = Exact<{
+  label: Scalars['String'];
+  level?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  applicationType: Scalars['Int'];
+  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
+  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
+}>;
+
+export type TpcSoftwareMyReviewPageQuery = {
+  __typename?: 'Query';
+  tpcSoftwareMyReviewPage?: {
+    __typename?: 'TpcSoftwareMyCreationAndReviewPage';
+    count?: number | null;
+    page?: number | null;
+    totalPage?: number | null;
+    items?: Array<{
+      __typename?: 'TpcSoftwareMyCreationAndReview';
+      applicationType?: number | null;
+      awaitingClarificationCount?: number | null;
+      awaitingConfirmationCount?: number | null;
+      clarifiedCount?: number | null;
+      committerCount?: number | null;
+      complianceCount?: number | null;
+      confirmedCount?: number | null;
+      createdAt?: any | null;
+      id?: number | null;
+      issueUrl?: string | null;
+      legalCount?: number | null;
+      name?: string | null;
+      riskCount?: number | null;
+      sigLeadCount?: number | null;
+      state?: number | null;
+      softwareReportShortCodes?: Array<string> | null;
+      targetSoftwareReportId?: number | null;
+      updatedAt?: any | null;
+      userId?: number | null;
+      user?: {
+        __typename?: 'User';
+        name: string;
+        loginBinds?: Array<{
+          __typename?: 'LoginBind';
+          account?: string | null;
+          nickname?: string | null;
+          provider?: string | null;
+        }> | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
 export type UserinfoQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserinfoQuery = {
@@ -7607,2106 +9979,6 @@ export type MetricContributorQuery = {
   }>;
 };
 
-export type CommitsRepoDataListQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CommitsRepoDataListQuery = {
-  __typename?: 'Query';
-  commitsRepoPage: {
-    __typename?: 'CommitRepoPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CommitRepo';
-      linesAdded?: number | null;
-      linesChanged?: number | null;
-      linesRemoved?: number | null;
-      repoName?: string | null;
-      repoAttributeType?: string | null;
-      sigName?: string | null;
-    }> | null;
-  };
-};
-
-export type CommitsDetailDataListQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CommitsDetailDataListQuery = {
-  __typename?: 'Query';
-  commitsDetailPage: {
-    __typename?: 'CommitDetailPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CommitDetail';
-      authorEmail?: string | null;
-      commitHash?: string | null;
-      grimoireCreationDate?: any | null;
-      linesAdded?: number | null;
-      linesChanged?: number | null;
-      linesRemoved?: number | null;
-      mergedAt?: any | null;
-      orgName?: string | null;
-      prUrl?: string | null;
-      repoName?: string | null;
-    }> | null;
-  };
-};
-
-export type CommitsOrganizationDataListQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CommitsOrganizationDataListQuery = {
-  __typename?: 'Query';
-  commitsOrganizationPage: {
-    __typename?: 'CommitOrganizationPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CommitOrganization';
-      linesAdded?: number | null;
-      linesChanged?: number | null;
-      linesChangedRatio?: number | null;
-      linesRemoved?: number | null;
-      orgName?: string | null;
-    }> | null;
-  };
-};
-
-export type CommitsContributorListQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CommitsContributorListQuery = {
-  __typename?: 'Query';
-  commitsContributorList: Array<{
-    __typename?: 'CommitContributor';
-    authorEmail?: string | null;
-    grimoireCreationDate?: any | null;
-    linesAdded?: number | null;
-    linesChanged?: number | null;
-    linesRemoved?: number | null;
-    orgName?: string | null;
-  }>;
-};
-
-export type CodesRepoPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CodesRepoPageQuery = {
-  __typename?: 'Query';
-  codesRepoPage: {
-    __typename?: 'CodeRepoPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CodeRepo';
-      lines?: number | null;
-      linesChang?: number | null;
-      linesTotal?: number | null;
-      manager?: string | null;
-      repoAttributeType?: string | null;
-      repoName?: string | null;
-      sigName?: string | null;
-    }> | null;
-  };
-};
-
-export type CodesDetailPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CodesDetailPageQuery = {
-  __typename?: 'Query';
-  codesDetailPage: {
-    __typename?: 'CodeDetailPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CodeDetail';
-      commitUrls?: Array<string> | null;
-      createdAt?: any | null;
-      issueNum?: string | null;
-      linesTotal?: number | null;
-      mergedAt?: any | null;
-      tag?: string | null;
-      title?: string | null;
-      url?: string | null;
-      userLogin?: string | null;
-    }> | null;
-  };
-};
-
-export type CodesTrendQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CodesTrendQuery = {
-  __typename?: 'Query';
-  codesTrend: Array<{
-    __typename?: 'CodeTrend';
-    sigName?: string | null;
-    detailList?: Array<{
-      __typename?: 'CodeTrendDetail';
-      count?: number | null;
-      date?: any | null;
-    }> | null;
-  }>;
-};
-
-export type CommitsSigPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CommitsSigPageQuery = {
-  __typename?: 'Query';
-  commitsSigPage: {
-    __typename?: 'CommitSigPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CommitSig';
-      linesAdded?: number | null;
-      linesChanged?: number | null;
-      linesRemoved?: number | null;
-      sigName?: string | null;
-    }> | null;
-  };
-};
-
-export type CodesCheckDetailPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CodesCheckDetailPageQuery = {
-  __typename?: 'Query';
-  codesCheckDetailPage: {
-    __typename?: 'CodeCheckDetailPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CodeCheckDetail';
-      commentCreatedAt?: any | null;
-      commentNum?: number | null;
-      issueNum?: string | null;
-      linesAdded?: number | null;
-      linesRemoved?: number | null;
-      prState?: string | null;
-      prUrl?: string | null;
-      prUserLogin?: string | null;
-      timeCheckHours?: number | null;
-      userLogin?: string | null;
-    }> | null;
-  };
-};
-
-export type CodesCheckPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  branch?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CodesCheckPageQuery = {
-  __typename?: 'Query';
-  codesCheckPage: {
-    __typename?: 'CodeCheckPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CodeCheck';
-      commentNum?: number | null;
-      linesAdded?: number | null;
-      linesRemoved?: number | null;
-      timeCheckHours?: number | null;
-      userLogin?: string | null;
-    }> | null;
-  };
-};
-
-export type CommitFeedbackPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-  beginDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-  endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
-}>;
-
-export type CommitFeedbackPageQuery = {
-  __typename?: 'Query';
-  commitFeedbackPage: {
-    __typename?: 'CommitFeedbackPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'CommitFeedback';
-      commitHash?: string | null;
-      contactWay?: string | null;
-      createAtDate?: any | null;
-      id?: string | null;
-      newLinesAdded?: number | null;
-      newLinesChanged?: number | null;
-      newLinesRemoved?: number | null;
-      oldLinesAdded?: number | null;
-      oldLinesChanged?: number | null;
-      oldLinesRemoved?: number | null;
-      prUrl?: string | null;
-      repoName?: string | null;
-      requestReviewerEmail?: string | null;
-      reviewMsg?: string | null;
-      reviewerEmail?: string | null;
-      reviewerId?: string | null;
-      state?: string | null;
-      submitReason?: string | null;
-      submitUserEmail?: string | null;
-      submitUserId?: string | null;
-      updateAtDate?: any | null;
-    }> | null;
-  };
-};
-
-export type OrganizationPageQueryVariables = Exact<{
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-}>;
-
-export type OrganizationPageQuery = {
-  __typename?: 'Query';
-  organizationPage: {
-    __typename?: 'OrganizationPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'Organization';
-      domain?: Array<string> | null;
-      orgName?: string | null;
-    }> | null;
-  };
-};
-
-export type SubjectAccessLevelPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  accessLevel?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type SubjectAccessLevelPageQuery = {
-  __typename?: 'Query';
-  subjectAccessLevelPage?: {
-    __typename?: 'SubjectAccessLevelPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'SubjectAccessLevel';
-      accessLevel: number;
-      id: number;
-      subjectId: number;
-      userId: number;
-      user?: {
-        __typename?: 'User';
-        id: number;
-        name: string;
-        roleLevel: number;
-        email: string;
-        language: string;
-        emailVerified: boolean;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          avatarUrl?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-        contributingOrgs?: Array<{
-          __typename?: 'ContributorOrg';
-          firstDate?: any | null;
-          lastDate?: any | null;
-          orgName?: string | null;
-          platformType?: string | null;
-        }> | null;
-      } | null;
-    }> | null;
-  } | null;
-};
-
-export type SubjectSigPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type SubjectSigPageQuery = {
-  __typename?: 'Query';
-  subjectSigPage?: {
-    __typename?: 'SubjectSigPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'SubjectSig';
-      description: string;
-      emails: Array<string>;
-      id: number;
-      maintainers: Array<string>;
-      name: string;
-      linkSig?: {
-        __typename?: 'SubjectLinkSig';
-        label?: string | null;
-        level?: string | null;
-        repos?: Array<string> | null;
-      } | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareSigFragment = {
-  __typename?: 'TpcSoftwareSig';
-  description: string;
-  id: number;
-  name: string;
-  sigCommitter?: Array<{
-    __typename?: 'TpcSoftwareMember';
-    giteeAccount?: string | null;
-    id?: number | null;
-  }> | null;
-};
-
-export type TpcSoftwareReportMetricFragment = {
-  __typename?: 'TpcSoftwareReportMetric';
-  complianceDco?: number | null;
-  complianceLicense?: number | null;
-  compliancePackageSig?: number | null;
-  complianceLicenseCompatibility?: number | null;
-  createdAt?: any | null;
-  ecologyAdoptionAnalysis?: number | null;
-  ecologyCodeMaintenance?: number | null;
-  ecologyCommunitySupport?: number | null;
-  ecologyDependencyAcquisition?: number | null;
-  ecologyPatentRisk?: number | null;
-  ecologySoftwareQuality?: number | null;
-  ecologyAdaptationMethod?: number | null;
-  id: number;
-  lifecycleVersionLifecycle?: number | null;
-  lifecycleVersionNormalization?: number | null;
-  lifecycleVersionNumber?: number | null;
-  securityBinaryArtifact?: number | null;
-  securityHistoryVulnerability?: number | null;
-  securityVulnerability?: number | null;
-  securityVulnerabilityDisclosure?: number | null;
-  securityVulnerabilityResponse?: number | null;
-  status?: string | null;
-  tpcSoftwareReportId?: number | null;
-  updatedAt?: any | null;
-};
-
-export type TpcSoftwareSelectionReportPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  reportTypeList: Array<Scalars['Int']> | Scalars['Int'];
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-}>;
-
-export type TpcSoftwareSelectionReportPageQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelectionReportPage?: {
-    __typename?: 'TpcSoftwareSelectionReportPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'TpcSoftwareSelectionReport';
-      adaptationMethod?: string | null;
-      codeCount?: number | null;
-      codeUrl?: string | null;
-      id: number;
-      name?: string | null;
-      programmingLanguage?: string | null;
-      reportType: number;
-      shortCode: string;
-      userId: number;
-      vulnerabilityResponse?: string | null;
-      architectureDiagrams?: Array<{
-        __typename?: 'Image';
-        filename: string;
-        id: number;
-        url: string;
-      }> | null;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-      tpcSoftwareReportMetric?: {
-        __typename?: 'TpcSoftwareReportMetric';
-        complianceDco?: number | null;
-        complianceLicense?: number | null;
-        compliancePackageSig?: number | null;
-        complianceLicenseCompatibility?: number | null;
-        createdAt?: any | null;
-        ecologyAdoptionAnalysis?: number | null;
-        ecologyCodeMaintenance?: number | null;
-        ecologyCommunitySupport?: number | null;
-        ecologyDependencyAcquisition?: number | null;
-        ecologyPatentRisk?: number | null;
-        ecologySoftwareQuality?: number | null;
-        ecologyAdaptationMethod?: number | null;
-        id: number;
-        lifecycleVersionLifecycle?: number | null;
-        lifecycleVersionNormalization?: number | null;
-        lifecycleVersionNumber?: number | null;
-        securityBinaryArtifact?: number | null;
-        securityHistoryVulnerability?: number | null;
-        securityVulnerability?: number | null;
-        securityVulnerabilityDisclosure?: number | null;
-        securityVulnerabilityResponse?: number | null;
-        status?: string | null;
-        tpcSoftwareReportId?: number | null;
-        updatedAt?: any | null;
-      } | null;
-      tpcSoftwareSig?: {
-        __typename?: 'TpcSoftwareSig';
-        description: string;
-        id: number;
-        name: string;
-        sigCommitter?: Array<{
-          __typename?: 'TpcSoftwareMember';
-          giteeAccount?: string | null;
-          id?: number | null;
-        }> | null;
-      } | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareSelectionPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  selectionType: Scalars['Int'];
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-}>;
-
-export type TpcSoftwareSelectionPageQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelectionPage?: {
-    __typename?: 'TpcSoftwareSelectionPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'TpcSoftwareSelection';
-      committers?: Array<string> | null;
-      createdAt: any;
-      demandSource?: string | null;
-      functionalDescription?: string | null;
-      id: number;
-      incubationTime?: string | null;
-      isSameTypeCheck?: number | null;
-      issueUrl?: string | null;
-      repoUrl?: Array<string> | null;
-      reason?: string | null;
-      sameTypeSoftwareName?: string | null;
-      selectionType?: number | null;
-      targetSoftware?: string | null;
-      updatedAt: any;
-      userId: number;
-      tpcSoftwareSelectionReportIds?: Array<string> | null;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-      tpcSoftwareSelectionReports?: Array<{
-        __typename?: 'TpcSoftwareSelectionReport';
-        name?: string | null;
-        shortCode: string;
-        codeUrl?: string | null;
-      }> | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareReportMetricDetailFragment = {
-  __typename?: 'TpcSoftwareReportMetric';
-  baseCodeUrlDetail?: string | null;
-  baseRepoNameDetail?: string | null;
-  baseWebsiteUrlDetail?: string | null;
-  compliancePackageSigDetail?: Array<string> | null;
-  ecologyAdoptionAnalysisDetail?: string | null;
-  ecologyCodeMaintenanceDetail?: string | null;
-  ecologyCommunitySupportDetail?: string | null;
-  ecologyDependencyAcquisitionDetail?: Array<string> | null;
-  ecologyPatentRiskDetail?: string | null;
-  ecologyAdaptationMethodDetail?: string | null;
-  lifecycleVersionNormalizationDetail?: string | null;
-  lifecycleVersionNumberDetail?: string | null;
-  securityBinaryArtifactDetail?: Array<string> | null;
-  securityVulnerabilityDisclosureDetail?: string | null;
-  securityVulnerabilityResponseDetail?: string | null;
-  complianceDcoDetail?: {
-    __typename?: 'TpcSoftwareReportMetricComplianceDco';
-    commitCount?: number | null;
-    commitDcoCount?: number | null;
-  } | null;
-  complianceLicenseCompatibilityDetail?: Array<{
-    __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-    license?: string | null;
-    licenseConflictList?: Array<string> | null;
-  }> | null;
-  complianceLicenseDetail?: {
-    __typename?: 'TpcSoftwareReportMetricComplianceLicense';
-    nonOsiLicenses?: Array<string> | null;
-    osiCopyleftLimitedLicenses?: Array<string> | null;
-    osiFreeRestrictedLicenses?: Array<string> | null;
-    osiPermissiveLicenses?: Array<string> | null;
-  } | null;
-  ecologySoftwareQualityDetail?: {
-    __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
-    coverageRatio?: number | null;
-    coverageScore?: number | null;
-    duplicationRatio?: number | null;
-    duplicationScore?: number | null;
-  } | null;
-  lifecycleVersionLifecycleDetail?: {
-    __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
-    archived?: boolean | null;
-    latestVersionCreatedAt?: any | null;
-    latestVersionName?: string | null;
-  } | null;
-  securityHistoryVulnerabilityDetail?: Array<{
-    __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
-    summary?: string | null;
-    vulnerability?: string | null;
-  }> | null;
-  securityVulnerabilityDetail?: Array<{
-    __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
-    packageName?: string | null;
-    packageVersion?: string | null;
-    vulnerabilities?: Array<string> | null;
-  }> | null;
-};
-
-export type TpcSoftwareReportMetricRawFragment = {
-  __typename?: 'TpcSoftwareReportMetricRaw';
-  codeUrl?: string | null;
-  complianceDcoRaw?: string | null;
-  complianceLicenseCompatibilityRaw?: string | null;
-  complianceLicenseRaw?: string | null;
-  compliancePackageSigRaw?: string | null;
-  ecologyAdoptionAnalysisRaw?: string | null;
-  ecologyCodeMaintenanceRaw?: string | null;
-  ecologyCommunitySupportRaw?: string | null;
-  ecologyDependencyAcquisitionRaw?: string | null;
-  ecologyPatentRiskRaw?: string | null;
-  ecologySoftwareQualityRaw?: string | null;
-  ecologyAdaptationMethodRaw?: string | null;
-  id: number;
-  lifecycleVersionLifecycleRaw?: string | null;
-  lifecycleVersionNormalizationRaw?: string | null;
-  lifecycleVersionNumberRaw?: string | null;
-  securityBinaryArtifactRaw?: string | null;
-  securityHistoryVulnerabilityRaw?: string | null;
-  securityVulnerabilityDisclosureRaw?: string | null;
-  securityVulnerabilityRaw?: string | null;
-  securityVulnerabilityResponseRaw?: string | null;
-};
-
-export type TpcSoftwareSelectionReportQueryVariables = Exact<{
-  shortCode: Scalars['String'];
-}>;
-
-export type TpcSoftwareSelectionReportQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelectionReport?: {
-    __typename?: 'TpcSoftwareSelectionReport';
-    adaptationMethod?: string | null;
-    codeCount?: number | null;
-    codeUrl?: string | null;
-    id: number;
-    name?: string | null;
-    programmingLanguage?: string | null;
-    shortCode: string;
-    vulnerabilityResponse?: string | null;
-    userId: number;
-    architectureDiagrams?: Array<{
-      __typename?: 'Image';
-      filename: string;
-      id: number;
-      url: string;
-    }> | null;
-    tpcSoftwareReportMetric?: {
-      __typename?: 'TpcSoftwareReportMetric';
-      complianceDco?: number | null;
-      complianceLicense?: number | null;
-      compliancePackageSig?: number | null;
-      complianceLicenseCompatibility?: number | null;
-      createdAt?: any | null;
-      ecologyAdoptionAnalysis?: number | null;
-      ecologyCodeMaintenance?: number | null;
-      ecologyCommunitySupport?: number | null;
-      ecologyDependencyAcquisition?: number | null;
-      ecologyPatentRisk?: number | null;
-      ecologySoftwareQuality?: number | null;
-      ecologyAdaptationMethod?: number | null;
-      id: number;
-      lifecycleVersionLifecycle?: number | null;
-      lifecycleVersionNormalization?: number | null;
-      lifecycleVersionNumber?: number | null;
-      securityBinaryArtifact?: number | null;
-      securityHistoryVulnerability?: number | null;
-      securityVulnerability?: number | null;
-      securityVulnerabilityDisclosure?: number | null;
-      securityVulnerabilityResponse?: number | null;
-      status?: string | null;
-      tpcSoftwareReportId?: number | null;
-      updatedAt?: any | null;
-      baseCodeUrlDetail?: string | null;
-      baseRepoNameDetail?: string | null;
-      baseWebsiteUrlDetail?: string | null;
-      compliancePackageSigDetail?: Array<string> | null;
-      ecologyAdoptionAnalysisDetail?: string | null;
-      ecologyCodeMaintenanceDetail?: string | null;
-      ecologyCommunitySupportDetail?: string | null;
-      ecologyDependencyAcquisitionDetail?: Array<string> | null;
-      ecologyPatentRiskDetail?: string | null;
-      ecologyAdaptationMethodDetail?: string | null;
-      lifecycleVersionNormalizationDetail?: string | null;
-      lifecycleVersionNumberDetail?: string | null;
-      securityBinaryArtifactDetail?: Array<string> | null;
-      securityVulnerabilityDisclosureDetail?: string | null;
-      securityVulnerabilityResponseDetail?: string | null;
-      complianceDcoDetail?: {
-        __typename?: 'TpcSoftwareReportMetricComplianceDco';
-        commitCount?: number | null;
-        commitDcoCount?: number | null;
-      } | null;
-      complianceLicenseCompatibilityDetail?: Array<{
-        __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-        license?: string | null;
-        licenseConflictList?: Array<string> | null;
-      }> | null;
-      complianceLicenseDetail?: {
-        __typename?: 'TpcSoftwareReportMetricComplianceLicense';
-        nonOsiLicenses?: Array<string> | null;
-        osiCopyleftLimitedLicenses?: Array<string> | null;
-        osiFreeRestrictedLicenses?: Array<string> | null;
-        osiPermissiveLicenses?: Array<string> | null;
-      } | null;
-      ecologySoftwareQualityDetail?: {
-        __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
-        coverageRatio?: number | null;
-        coverageScore?: number | null;
-        duplicationRatio?: number | null;
-        duplicationScore?: number | null;
-      } | null;
-      lifecycleVersionLifecycleDetail?: {
-        __typename?: 'TpcSoftwareReportMetricLifecycleVersionLifecycle';
-        archived?: boolean | null;
-        latestVersionCreatedAt?: any | null;
-        latestVersionName?: string | null;
-      } | null;
-      securityHistoryVulnerabilityDetail?: Array<{
-        __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
-        summary?: string | null;
-        vulnerability?: string | null;
-      }> | null;
-      securityVulnerabilityDetail?: Array<{
-        __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
-        packageName?: string | null;
-        packageVersion?: string | null;
-        vulnerabilities?: Array<string> | null;
-      }> | null;
-    } | null;
-    tpcSoftwareSig?: {
-      __typename?: 'TpcSoftwareSig';
-      description: string;
-      id: number;
-      name: string;
-      sigCommitter?: Array<{
-        __typename?: 'TpcSoftwareMember';
-        giteeAccount?: string | null;
-        id?: number | null;
-      }> | null;
-    } | null;
-  } | null;
-  tpcSoftwareReportMetricClarificationPermission?: {
-    __typename?: 'TpcSoftwareReportMetricClarificationPermission';
-    clarificationCommitterPermission?: number | null;
-    clarificationSigLeadPermission?: number | null;
-    clarificationCompliancePermission?: number | null;
-    clarificationLegalPermission?: number | null;
-  } | null;
-};
-
-export type TpcSoftwareSelectionReportRowQueryVariables = Exact<{
-  shortCode: Scalars['String'];
-}>;
-
-export type TpcSoftwareSelectionReportRowQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelectionReport?: {
-    __typename?: 'TpcSoftwareSelectionReport';
-    id: number;
-    tpcSoftwareReportMetricRaw?: {
-      __typename?: 'TpcSoftwareReportMetricRaw';
-      codeUrl?: string | null;
-      complianceDcoRaw?: string | null;
-      complianceLicenseCompatibilityRaw?: string | null;
-      complianceLicenseRaw?: string | null;
-      compliancePackageSigRaw?: string | null;
-      ecologyAdoptionAnalysisRaw?: string | null;
-      ecologyCodeMaintenanceRaw?: string | null;
-      ecologyCommunitySupportRaw?: string | null;
-      ecologyDependencyAcquisitionRaw?: string | null;
-      ecologyPatentRiskRaw?: string | null;
-      ecologySoftwareQualityRaw?: string | null;
-      ecologyAdaptationMethodRaw?: string | null;
-      id: number;
-      lifecycleVersionLifecycleRaw?: string | null;
-      lifecycleVersionNormalizationRaw?: string | null;
-      lifecycleVersionNumberRaw?: string | null;
-      securityBinaryArtifactRaw?: string | null;
-      securityHistoryVulnerabilityRaw?: string | null;
-      securityVulnerabilityDisclosureRaw?: string | null;
-      securityVulnerabilityRaw?: string | null;
-      securityVulnerabilityResponseRaw?: string | null;
-    } | null;
-  } | null;
-};
-
-export type TpcSoftwareReportMetricClarificationPageQueryVariables = Exact<{
-  shortCode: Scalars['String'];
-  metricName: Scalars['String'];
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  reportType?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type TpcSoftwareReportMetricClarificationPageQuery = {
-  __typename?: 'Query';
-  tpcSoftwareReportMetricClarificationPage?: {
-    __typename?: 'TpcSoftwareCommentPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'TpcSoftwareComment';
-      content?: string | null;
-      createdAt?: any | null;
-      id: number;
-      metricName?: string | null;
-      updatedAt?: any | null;
-      userId?: string | null;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          avatarUrl?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcClarificationStateDetailFragment = {
-  __typename?: 'TpcSoftwareCommentState';
-  createdAt: any;
-  id: number;
-  memberType?: number | null;
-  metricName?: string | null;
-  state?: number | null;
-  updatedAt: any;
-  userId: number;
-  user?: { __typename?: 'User'; name: string } | null;
-};
-
-export type TpcSoftwareSelectionReportRiskQueryVariables = Exact<{
-  shortCode: Scalars['String'];
-}>;
-
-export type TpcSoftwareSelectionReportRiskQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelectionReport?: {
-    __typename?: 'TpcSoftwareSelectionReport';
-    codeUrl?: string | null;
-    id: number;
-    shortCode: string;
-    userId: number;
-    metricClarificationCount?: {
-      __typename?: 'TpcSoftwareReportMetricClarificationCount';
-      complianceDco?: number | null;
-      complianceLicense?: number | null;
-      complianceLicenseCompatibility?: number | null;
-      compliancePackageSig?: number | null;
-      ecologyAdoptionAnalysis?: number | null;
-      ecologyCodeMaintenance?: number | null;
-      ecologyCommunitySupport?: number | null;
-      ecologyDependencyAcquisition?: number | null;
-      ecologyPatentRisk?: number | null;
-      ecologySoftwareQuality?: number | null;
-      ecologyAdaptationMethod?: number | null;
-      lifecycleVersionLifecycle?: number | null;
-      lifecycleVersionNormalization?: number | null;
-      lifecycleVersionNumber?: number | null;
-      securityBinaryArtifact?: number | null;
-      securityHistoryVulnerability?: number | null;
-      securityVulnerability?: number | null;
-      securityVulnerabilityDisclosure?: number | null;
-      securityVulnerabilityResponse?: number | null;
-    } | null;
-    metricClarificationState?: {
-      __typename?: 'TpcSoftwareReportMetricClarificationState';
-      complianceDco?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      complianceLicense?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      complianceLicenseCompatibility?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      compliancePackageSig?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyAdoptionAnalysis?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyCodeMaintenance?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyCommunitySupport?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyDependencyAcquisition?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyPatentRisk?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologySoftwareQuality?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyAdaptationMethod?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      lifecycleVersionLifecycle?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      lifecycleVersionNormalization?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      lifecycleVersionNumber?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityBinaryArtifact?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityHistoryVulnerability?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityVulnerability?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityVulnerabilityDisclosure?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityVulnerabilityResponse?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-    } | null;
-  } | null;
-};
-
-export type TpcSoftwareSelectionCommentPageQueryVariables = Exact<{
-  selectionId: Scalars['Int'];
-  page: Scalars['Int'];
-  per: Scalars['Int'];
-  reportType?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type TpcSoftwareSelectionCommentPageQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelectionCommentPage?: {
-    __typename?: 'TpcSoftwareCommentPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'TpcSoftwareComment';
-      content?: string | null;
-      createdAt?: any | null;
-      id: number;
-      updatedAt?: any | null;
-      userId?: string | null;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          avatarUrl?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareSelectionQueryVariables = Exact<{
-  selectionId: Scalars['Int'];
-}>;
-
-export type TpcSoftwareSelectionQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelection?: {
-    __typename?: 'TpcSoftwareSelection';
-    commentCompliancePermission?: number | null;
-    commentLegalPermission?: number | null;
-    commentCommitterPermission?: number | null;
-    commentCount?: number | null;
-    commentSigLeadPermission?: number | null;
-    targetSoftware?: string | null;
-    reason?: string | null;
-    demandSource?: string | null;
-    functionalDescription?: string | null;
-    incubationTime?: string | null;
-    committers?: Array<string> | null;
-    isSameTypeCheck?: number | null;
-    sameTypeSoftwareName?: string | null;
-    repoUrl?: Array<string> | null;
-    commentState?: Array<{
-      __typename?: 'TpcSoftwareCommentState';
-      createdAt: any;
-      id: number;
-      memberType?: number | null;
-      state?: number | null;
-      updatedAt: any;
-      userId: number;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          avatarUrl?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-    }> | null;
-    tpcSoftwareSelectionReports?: Array<{
-      __typename?: 'TpcSoftwareSelectionReport';
-      adaptationMethod?: string | null;
-      license?: string | null;
-      codeUrl?: string | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareGraduationReportMetricFragment = {
-  __typename?: 'TpcSoftwareGraduationReportMetric';
-  complianceCopyrightStatement?: number | null;
-  complianceCopyrightStatementAntiTamper?: number | null;
-  complianceDco?: number | null;
-  complianceLicense?: number | null;
-  complianceLicenseCompatibility?: number | null;
-  complianceSnippetReference?: number | null;
-  ecologyBuild?: number | null;
-  ecologyBuildDoc?: number | null;
-  ecologyCi?: number | null;
-  ecologyCodeReview?: number | null;
-  ecologyCodeUpstream?: number | null;
-  ecologyInterfaceDoc?: number | null;
-  ecologyIssueManagement?: number | null;
-  ecologyIssueResponseRatio?: number | null;
-  ecologyIssueResponseTime?: number | null;
-  ecologyMaintainerDoc?: number | null;
-  ecologyReadme?: number | null;
-  ecologyTestCoverage?: number | null;
-  lifecycleReleaseNote?: number | null;
-  lifecycleStatement?: number | null;
-  securityBinaryArtifact?: number | null;
-  securityPackageSig?: number | null;
-  securityVulnerability?: number | null;
-  createdAt?: any | null;
-  id: number;
-  status?: string | null;
-  tpcSoftwareGraduationReportId?: number | null;
-  updatedAt?: any | null;
-  codeUrl?: string | null;
-};
-
-export type TpcSoftwareGraduationReportMetricDetailFragment = {
-  __typename?: 'TpcSoftwareGraduationReportMetric';
-  complianceCopyrightStatementAntiTamperDetail?: string | null;
-  complianceSnippetReferenceDetail?: string | null;
-  ecologyBuildDetail?: string | null;
-  ecologyBuildDocDetail?: string | null;
-  ecologyCiDetail?: string | null;
-  ecologyCodeUpstreamDetail?: string | null;
-  ecologyInterfaceDocDetail?: string | null;
-  ecologyMaintainerDocDetail?: string | null;
-  ecologyReadmeDetail?: string | null;
-  lifecycleReleaseNoteDetail?: Array<string> | null;
-  lifecycleStatementDetail?: string | null;
-  securityBinaryArtifactDetail?: Array<string> | null;
-  securityPackageSigDetail?: Array<string> | null;
-  complianceCopyrightStatementDetail?: {
-    __typename?: 'TpcSoftwareReportMetricComplianceCopyrightStatement';
-    includeCopyrights?: Array<string> | null;
-    notIncludedCopyrights?: Array<string> | null;
-  } | null;
-  complianceDcoDetail?: {
-    __typename?: 'TpcSoftwareReportMetricComplianceDco';
-    commitCount?: number | null;
-    commitDcoCount?: number | null;
-  } | null;
-  complianceLicenseCompatibilityDetail?: Array<{
-    __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-    license?: string | null;
-    licenseConflictList?: Array<string> | null;
-  }> | null;
-  complianceLicenseDetail?: {
-    __typename?: 'TpcSoftwareGraduationReportMetricComplianceLicense';
-    nonOsiLicenses?: Array<string> | null;
-    osiPermissiveLicenses?: Array<string> | null;
-  } | null;
-  ecologyCodeReviewDetail?: {
-    __typename?: 'TpcSoftwareGraduationMetricEcologyCodeReview';
-    pullCount?: number | null;
-    pullReviewCount?: number | null;
-    pullReviewRatio?: number | null;
-  } | null;
-  ecologyIssueManagementDetail?: {
-    __typename?: 'TpcSoftwareGraduationMetricEcologyIssueManagement';
-    issueCount?: number | null;
-    issueTypeList?: Array<string> | null;
-  } | null;
-  ecologyIssueResponseRatioDetail?: {
-    __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseRatio';
-    issueCount?: number | null;
-    issueResponseCount?: number | null;
-    issueResponseRatio?: number | null;
-  } | null;
-  ecologyIssueResponseTimeDetail?: {
-    __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseTime';
-    issueResponseCount?: number | null;
-    issueResponseTime?: number | null;
-  } | null;
-  ecologyTestCoverageDetail?: {
-    __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
-    coverageRatio?: number | null;
-    coverageScore?: number | null;
-    duplicationRatio?: number | null;
-    duplicationScore?: number | null;
-  } | null;
-  securityVulnerabilityDetail?: Array<{
-    __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
-    packageName?: string | null;
-    packageVersion?: string | null;
-    vulnerabilities?: Array<string> | null;
-  }> | null;
-};
-
-export type TpcSoftwareGraduationReportMetricRawFragment = {
-  __typename?: 'TpcSoftwareGraduationReportMetricRaw';
-  codeUrl?: string | null;
-  complianceCopyrightStatementAntiTamperRaw?: string | null;
-  complianceCopyrightStatementRaw?: string | null;
-  complianceDcoRaw?: string | null;
-  complianceLicenseCompatibilityRaw?: string | null;
-  complianceLicenseRaw?: string | null;
-  complianceSnippetReferenceRaw?: string | null;
-  ecologyBuildDocRaw?: string | null;
-  ecologyBuildRaw?: string | null;
-  ecologyCiRaw?: string | null;
-  ecologyCodeReviewRaw?: string | null;
-  ecologyCodeUpstreamRaw?: string | null;
-  ecologyInterfaceDocRaw?: string | null;
-  ecologyIssueManagementRaw?: string | null;
-  ecologyIssueResponseRatioRaw?: string | null;
-  ecologyIssueResponseTimeRaw?: string | null;
-  ecologyMaintainerDocRaw?: string | null;
-  ecologyReadmeRaw?: string | null;
-  ecologyTestCoverageRaw?: string | null;
-  id: number;
-  lifecycleReleaseNoteRaw?: string | null;
-  lifecycleStatementRaw?: string | null;
-  securityBinaryArtifactRaw?: string | null;
-  securityPackageSigRaw?: string | null;
-  securityVulnerabilityRaw?: string | null;
-};
-
-export type TpcSoftwareGraduationReportPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-}>;
-
-export type TpcSoftwareGraduationReportPageQuery = {
-  __typename?: 'Query';
-  tpcSoftwareGraduationReportPage?: {
-    __typename?: 'TpcSoftwareGraduationReportPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'TpcSoftwareGraduationReport';
-      adaptationMethod?: string | null;
-      isIncubation?: number | null;
-      roundUpstream?: string | null;
-      codeUrl?: string | null;
-      id: number;
-      name?: string | null;
-      upstreamCodeUrl?: string | null;
-      lifecyclePolicy?: string | null;
-      shortCode: string;
-      programmingLanguage?: string | null;
-      userId: number;
-      architectureDiagrams?: Array<{
-        __typename?: 'Image';
-        filename: string;
-        id: number;
-        url: string;
-      }> | null;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-      graduationReportMetric?: {
-        __typename?: 'TpcSoftwareGraduationReportMetric';
-        complianceCopyrightStatement?: number | null;
-        complianceCopyrightStatementAntiTamper?: number | null;
-        complianceDco?: number | null;
-        complianceLicense?: number | null;
-        complianceLicenseCompatibility?: number | null;
-        complianceSnippetReference?: number | null;
-        ecologyBuild?: number | null;
-        ecologyBuildDoc?: number | null;
-        ecologyCi?: number | null;
-        ecologyCodeReview?: number | null;
-        ecologyCodeUpstream?: number | null;
-        ecologyInterfaceDoc?: number | null;
-        ecologyIssueManagement?: number | null;
-        ecologyIssueResponseRatio?: number | null;
-        ecologyIssueResponseTime?: number | null;
-        ecologyMaintainerDoc?: number | null;
-        ecologyReadme?: number | null;
-        ecologyTestCoverage?: number | null;
-        lifecycleReleaseNote?: number | null;
-        lifecycleStatement?: number | null;
-        securityBinaryArtifact?: number | null;
-        securityPackageSig?: number | null;
-        securityVulnerability?: number | null;
-        createdAt?: any | null;
-        id: number;
-        status?: string | null;
-        tpcSoftwareGraduationReportId?: number | null;
-        updatedAt?: any | null;
-        codeUrl?: string | null;
-      } | null;
-      tpcSoftwareSig?: {
-        __typename?: 'TpcSoftwareSig';
-        description: string;
-        id: number;
-        name: string;
-        sigCommitter?: Array<{
-          __typename?: 'TpcSoftwareMember';
-          giteeAccount?: string | null;
-          id?: number | null;
-        }> | null;
-      } | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareGraduationReportQueryVariables = Exact<{
-  shortCode: Scalars['String'];
-}>;
-
-export type TpcSoftwareGraduationReportQuery = {
-  __typename?: 'Query';
-  tpcSoftwareGraduationReport?: {
-    __typename?: 'TpcSoftwareGraduationReport';
-    adaptationMethod?: string | null;
-    codeCount?: number | null;
-    license?: string | null;
-    codeUrl?: string | null;
-    id: number;
-    name?: string | null;
-    upstreamCodeUrl?: string | null;
-    shortCode: string;
-    programmingLanguage?: string | null;
-    userId: number;
-    architectureDiagrams?: Array<{
-      __typename?: 'Image';
-      filename: string;
-      id: number;
-      url: string;
-    }> | null;
-    user?: {
-      __typename?: 'User';
-      name: string;
-      loginBinds?: Array<{
-        __typename?: 'LoginBind';
-        account?: string | null;
-        nickname?: string | null;
-        provider?: string | null;
-      }> | null;
-    } | null;
-    graduationReportMetric?: {
-      __typename?: 'TpcSoftwareGraduationReportMetric';
-      complianceCopyrightStatement?: number | null;
-      complianceCopyrightStatementAntiTamper?: number | null;
-      complianceDco?: number | null;
-      complianceLicense?: number | null;
-      complianceLicenseCompatibility?: number | null;
-      complianceSnippetReference?: number | null;
-      ecologyBuild?: number | null;
-      ecologyBuildDoc?: number | null;
-      ecologyCi?: number | null;
-      ecologyCodeReview?: number | null;
-      ecologyCodeUpstream?: number | null;
-      ecologyInterfaceDoc?: number | null;
-      ecologyIssueManagement?: number | null;
-      ecologyIssueResponseRatio?: number | null;
-      ecologyIssueResponseTime?: number | null;
-      ecologyMaintainerDoc?: number | null;
-      ecologyReadme?: number | null;
-      ecologyTestCoverage?: number | null;
-      lifecycleReleaseNote?: number | null;
-      lifecycleStatement?: number | null;
-      securityBinaryArtifact?: number | null;
-      securityPackageSig?: number | null;
-      securityVulnerability?: number | null;
-      createdAt?: any | null;
-      id: number;
-      status?: string | null;
-      tpcSoftwareGraduationReportId?: number | null;
-      updatedAt?: any | null;
-      codeUrl?: string | null;
-      complianceCopyrightStatementAntiTamperDetail?: string | null;
-      complianceSnippetReferenceDetail?: string | null;
-      ecologyBuildDetail?: string | null;
-      ecologyBuildDocDetail?: string | null;
-      ecologyCiDetail?: string | null;
-      ecologyCodeUpstreamDetail?: string | null;
-      ecologyInterfaceDocDetail?: string | null;
-      ecologyMaintainerDocDetail?: string | null;
-      ecologyReadmeDetail?: string | null;
-      lifecycleReleaseNoteDetail?: Array<string> | null;
-      lifecycleStatementDetail?: string | null;
-      securityBinaryArtifactDetail?: Array<string> | null;
-      securityPackageSigDetail?: Array<string> | null;
-      complianceCopyrightStatementDetail?: {
-        __typename?: 'TpcSoftwareReportMetricComplianceCopyrightStatement';
-        includeCopyrights?: Array<string> | null;
-        notIncludedCopyrights?: Array<string> | null;
-      } | null;
-      complianceDcoDetail?: {
-        __typename?: 'TpcSoftwareReportMetricComplianceDco';
-        commitCount?: number | null;
-        commitDcoCount?: number | null;
-      } | null;
-      complianceLicenseCompatibilityDetail?: Array<{
-        __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-        license?: string | null;
-        licenseConflictList?: Array<string> | null;
-      }> | null;
-      complianceLicenseDetail?: {
-        __typename?: 'TpcSoftwareGraduationReportMetricComplianceLicense';
-        nonOsiLicenses?: Array<string> | null;
-        osiPermissiveLicenses?: Array<string> | null;
-      } | null;
-      ecologyCodeReviewDetail?: {
-        __typename?: 'TpcSoftwareGraduationMetricEcologyCodeReview';
-        pullCount?: number | null;
-        pullReviewCount?: number | null;
-        pullReviewRatio?: number | null;
-      } | null;
-      ecologyIssueManagementDetail?: {
-        __typename?: 'TpcSoftwareGraduationMetricEcologyIssueManagement';
-        issueCount?: number | null;
-        issueTypeList?: Array<string> | null;
-      } | null;
-      ecologyIssueResponseRatioDetail?: {
-        __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseRatio';
-        issueCount?: number | null;
-        issueResponseCount?: number | null;
-        issueResponseRatio?: number | null;
-      } | null;
-      ecologyIssueResponseTimeDetail?: {
-        __typename?: 'TpcSoftwareGraduationMetricEcologyIssueResponseTime';
-        issueResponseCount?: number | null;
-        issueResponseTime?: number | null;
-      } | null;
-      ecologyTestCoverageDetail?: {
-        __typename?: 'TpcSoftwareReportMetricEcologySoftwareQuality';
-        coverageRatio?: number | null;
-        coverageScore?: number | null;
-        duplicationRatio?: number | null;
-        duplicationScore?: number | null;
-      } | null;
-      securityVulnerabilityDetail?: Array<{
-        __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
-        packageName?: string | null;
-        packageVersion?: string | null;
-        vulnerabilities?: Array<string> | null;
-      }> | null;
-    } | null;
-    tpcSoftwareSig?: {
-      __typename?: 'TpcSoftwareSig';
-      description: string;
-      id: number;
-      name: string;
-      sigCommitter?: Array<{
-        __typename?: 'TpcSoftwareMember';
-        giteeAccount?: string | null;
-        id?: number | null;
-      }> | null;
-    } | null;
-  } | null;
-  tpcSoftwareReportMetricClarificationPermission?: {
-    __typename?: 'TpcSoftwareReportMetricClarificationPermission';
-    clarificationCommitterPermission?: number | null;
-    clarificationSigLeadPermission?: number | null;
-    clarificationCompliancePermission?: number | null;
-    clarificationLegalPermission?: number | null;
-  } | null;
-};
-
-export type TpcSoftwareGraduationPageQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  page?: InputMaybe<Scalars['Int']>;
-  per?: InputMaybe<Scalars['Int']>;
-  filterOpts?: InputMaybe<Array<FilterOptionInput> | FilterOptionInput>;
-  sortOpts?: InputMaybe<Array<SortOptionInput> | SortOptionInput>;
-}>;
-
-export type TpcSoftwareGraduationPageQuery = {
-  __typename?: 'Query';
-  tpcSoftwareGraduationPage?: {
-    __typename?: 'TpcSoftwareGraduationPage';
-    count?: number | null;
-    page?: number | null;
-    totalPage?: number | null;
-    items?: Array<{
-      __typename?: 'TpcSoftwareGraduation';
-      id: number;
-      createdAt: any;
-      updatedAt: any;
-      demandSource?: string | null;
-      committers?: Array<string> | null;
-      incubationStartTime?: any | null;
-      incubationTime?: string | null;
-      issueUrl?: string | null;
-      tpcSoftwareGraduationReportIds?: Array<number> | null;
-      functionalDescription?: string | null;
-      userId: number;
-      tpcSoftwareGraduationReports?: Array<{
-        __typename?: 'TpcSoftwareGraduationReport';
-        name?: string | null;
-        shortCode: string;
-        codeUrl?: string | null;
-        license?: string | null;
-        codeCount?: number | null;
-      }> | null;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareGraduationQueryVariables = Exact<{
-  graduationId: Scalars['Int'];
-}>;
-
-export type TpcSoftwareGraduationQuery = {
-  __typename?: 'Query';
-  tpcSoftwareGraduation?: {
-    __typename?: 'TpcSoftwareGraduation';
-    commentCompliancePermission?: number | null;
-    commentLegalPermission?: number | null;
-    commentCommitterPermission?: number | null;
-    commentCount?: number | null;
-    commentSigLeadPermission?: number | null;
-    demandSource?: string | null;
-    incubationTime?: string | null;
-    committers?: Array<string> | null;
-    functionalDescription?: string | null;
-    commentState?: Array<{
-      __typename?: 'TpcSoftwareCommentState';
-      createdAt: any;
-      id: number;
-      memberType?: number | null;
-      state?: number | null;
-      updatedAt: any;
-      userId: number;
-      user?: {
-        __typename?: 'User';
-        name: string;
-        loginBinds?: Array<{
-          __typename?: 'LoginBind';
-          account?: string | null;
-          avatarUrl?: string | null;
-          nickname?: string | null;
-          provider?: string | null;
-        }> | null;
-      } | null;
-    }> | null;
-    tpcSoftwareGraduationReports?: Array<{
-      __typename?: 'TpcSoftwareGraduationReport';
-      adaptationMethod?: string | null;
-      license?: string | null;
-      codeUrl?: string | null;
-      name?: string | null;
-      codeCount?: number | null;
-    }> | null;
-  } | null;
-};
-
-export type TpcSoftwareGraduationReportRiskQueryVariables = Exact<{
-  shortCode: Scalars['String'];
-}>;
-
-export type TpcSoftwareGraduationReportRiskQuery = {
-  __typename?: 'Query';
-  tpcSoftwareGraduationReport?: {
-    __typename?: 'TpcSoftwareGraduationReport';
-    codeUrl?: string | null;
-    id: number;
-    shortCode: string;
-    userId: number;
-    metricClarificationCount?: {
-      __typename?: 'TpcSoftwareGraduationReportMetricClarificationCount';
-      complianceCopyrightStatement?: number | null;
-      complianceCopyrightStatementAntiTamper?: number | null;
-      complianceDco?: number | null;
-      complianceLicense?: number | null;
-      complianceLicenseCompatibility?: number | null;
-      complianceSnippetReference?: number | null;
-      ecologyBuild?: number | null;
-      ecologyBuildDoc?: number | null;
-      ecologyCi?: number | null;
-      ecologyCodeReview?: number | null;
-      ecologyCodeUpstream?: number | null;
-      ecologyInterfaceDoc?: number | null;
-      ecologyIssueManagement?: number | null;
-      ecologyIssueResponseRatio?: number | null;
-      ecologyIssueResponseTime?: number | null;
-      ecologyMaintainerDoc?: number | null;
-      ecologyReadme?: number | null;
-      ecologyTestCoverage?: number | null;
-      lifecycleReleaseNote?: number | null;
-      lifecycleStatement?: number | null;
-      securityBinaryArtifact?: number | null;
-      securityPackageSig?: number | null;
-      securityVulnerability?: number | null;
-    } | null;
-    metricClarificationState?: {
-      __typename?: 'TpcSoftwareGraduationReportMetricClarificationState';
-      complianceCopyrightStatement?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      complianceCopyrightStatementAntiTamper?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      complianceDco?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      complianceLicense?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      complianceLicenseCompatibility?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      complianceSnippetReference?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyBuild?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyBuildDoc?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyCi?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyCodeReview?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyCodeUpstream?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyInterfaceDoc?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyIssueManagement?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyIssueResponseRatio?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyIssueResponseTime?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyMaintainerDoc?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyReadme?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      ecologyTestCoverage?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      lifecycleReleaseNote?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      lifecycleStatement?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityBinaryArtifact?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityPackageSig?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-      securityVulnerability?: Array<{
-        __typename?: 'TpcSoftwareCommentState';
-        createdAt: any;
-        id: number;
-        memberType?: number | null;
-        metricName?: string | null;
-        state?: number | null;
-        updatedAt: any;
-        userId: number;
-        user?: { __typename?: 'User'; name: string } | null;
-      }> | null;
-    } | null;
-  } | null;
-};
-
-export type TpcSoftwareGraduationReportRowQueryVariables = Exact<{
-  shortCode: Scalars['String'];
-}>;
-
-export type TpcSoftwareGraduationReportRowQuery = {
-  __typename?: 'Query';
-  tpcSoftwareGraduationReport?: {
-    __typename?: 'TpcSoftwareGraduationReport';
-    id: number;
-    graduationReportMetricRaw?: {
-      __typename?: 'TpcSoftwareGraduationReportMetricRaw';
-      codeUrl?: string | null;
-      complianceCopyrightStatementAntiTamperRaw?: string | null;
-      complianceCopyrightStatementRaw?: string | null;
-      complianceDcoRaw?: string | null;
-      complianceLicenseCompatibilityRaw?: string | null;
-      complianceLicenseRaw?: string | null;
-      complianceSnippetReferenceRaw?: string | null;
-      ecologyBuildDocRaw?: string | null;
-      ecologyBuildRaw?: string | null;
-      ecologyCiRaw?: string | null;
-      ecologyCodeReviewRaw?: string | null;
-      ecologyCodeUpstreamRaw?: string | null;
-      ecologyInterfaceDocRaw?: string | null;
-      ecologyIssueManagementRaw?: string | null;
-      ecologyIssueResponseRatioRaw?: string | null;
-      ecologyIssueResponseTimeRaw?: string | null;
-      ecologyMaintainerDocRaw?: string | null;
-      ecologyReadmeRaw?: string | null;
-      ecologyTestCoverageRaw?: string | null;
-      id: number;
-      lifecycleReleaseNoteRaw?: string | null;
-      lifecycleStatementRaw?: string | null;
-      securityBinaryArtifactRaw?: string | null;
-      securityPackageSigRaw?: string | null;
-      securityVulnerabilityRaw?: string | null;
-    } | null;
-  } | null;
-};
-
-export type TpcSoftwareSelectionSearchQueryVariables = Exact<{
-  label: Scalars['String'];
-  level?: InputMaybe<Scalars['String']>;
-  keyword: Scalars['String'];
-  selectionType: Scalars['Int'];
-}>;
-
-export type TpcSoftwareSelectionSearchQuery = {
-  __typename?: 'Query';
-  tpcSoftwareSelectionSearch?: Array<{
-    __typename?: 'TpcSoftwareSelectionSearch';
-    repoUrl?: Array<string> | null;
-    tpcSoftwareSelectionReport?: {
-      __typename?: 'TpcSoftwareSelectionReportSearch';
-      name?: string | null;
-      codeUrl?: string | null;
-      tpcSoftwareSigId?: number | null;
-      programmingLanguage?: string | null;
-      adaptationMethod?: string | null;
-    } | null;
-  }> | null;
-};
-
 export const MetricsFragmentDoc = /*#__PURE__*/ `
     fragment metrics on ModelMetric {
   category
@@ -9883,12 +10155,6 @@ export const SimpleReportFragmentDoc = /*#__PURE__*/ `
   }
   shortCode
   type
-}
-    `;
-export const MetricStatFragmentDoc = /*#__PURE__*/ `
-    fragment metricStat on MetricStat {
-  mean
-  median
 }
     `;
 export const TpcSoftwareSigFragmentDoc = /*#__PURE__*/ `
@@ -10144,6 +10410,12 @@ export const TpcSoftwareGraduationReportMetricRawFragmentDoc = /*#__PURE__*/ `
   securityBinaryArtifactRaw
   securityPackageSigRaw
   securityVulnerabilityRaw
+}
+    `;
+export const MetricStatFragmentDoc = /*#__PURE__*/ `
+    fragment metricStat on MetricStat {
+  mean
+  median
 }
     `;
 export const DatasetFuzzySearchDocument = /*#__PURE__*/ `
@@ -13144,6 +13416,2267 @@ useTriggerTpcSoftwareGraduationReportMutation.fetcher = (
     TriggerTpcSoftwareGraduationReportMutation,
     TriggerTpcSoftwareGraduationReportMutationVariables
   >(client, TriggerTpcSoftwareGraduationReportDocument, variables, headers);
+export const CommitsRepoDataListDocument = /*#__PURE__*/ `
+    query commitsRepoDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsRepoPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesRemoved
+      repoName
+      repoAttributeType
+      sigName
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitsRepoDataListQuery = <
+  TData = CommitsRepoDataListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsRepoDataListQueryVariables,
+  options?: UseQueryOptions<CommitsRepoDataListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsRepoDataListQuery, TError, TData>(
+    ['commitsRepoDataList', variables],
+    fetcher<CommitsRepoDataListQuery, CommitsRepoDataListQueryVariables>(
+      client,
+      CommitsRepoDataListDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommitsRepoDataListQuery.getKey = (
+  variables: CommitsRepoDataListQueryVariables
+) => ['commitsRepoDataList', variables];
+useCommitsRepoDataListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsRepoDataListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommitsRepoDataListQuery, CommitsRepoDataListQueryVariables>(
+    client,
+    CommitsRepoDataListDocument,
+    variables,
+    headers
+  );
+export const CommitsDetailDataListDocument = /*#__PURE__*/ `
+    query commitsDetailDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsDetailPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      authorEmail
+      commitHash
+      grimoireCreationDate
+      linesAdded
+      linesChanged
+      linesRemoved
+      mergedAt
+      orgName
+      prUrl
+      repoName
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitsDetailDataListQuery = <
+  TData = CommitsDetailDataListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsDetailDataListQueryVariables,
+  options?: UseQueryOptions<CommitsDetailDataListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsDetailDataListQuery, TError, TData>(
+    ['commitsDetailDataList', variables],
+    fetcher<CommitsDetailDataListQuery, CommitsDetailDataListQueryVariables>(
+      client,
+      CommitsDetailDataListDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommitsDetailDataListQuery.getKey = (
+  variables: CommitsDetailDataListQueryVariables
+) => ['commitsDetailDataList', variables];
+useCommitsDetailDataListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsDetailDataListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommitsDetailDataListQuery, CommitsDetailDataListQueryVariables>(
+    client,
+    CommitsDetailDataListDocument,
+    variables,
+    headers
+  );
+export const CommitsOrganizationDataListDocument = /*#__PURE__*/ `
+    query commitsOrganizationDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsOrganizationPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesChangedRatio
+      linesRemoved
+      orgName
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitsOrganizationDataListQuery = <
+  TData = CommitsOrganizationDataListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsOrganizationDataListQueryVariables,
+  options?: UseQueryOptions<CommitsOrganizationDataListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsOrganizationDataListQuery, TError, TData>(
+    ['commitsOrganizationDataList', variables],
+    fetcher<
+      CommitsOrganizationDataListQuery,
+      CommitsOrganizationDataListQueryVariables
+    >(client, CommitsOrganizationDataListDocument, variables, headers),
+    options
+  );
+
+useCommitsOrganizationDataListQuery.getKey = (
+  variables: CommitsOrganizationDataListQueryVariables
+) => ['commitsOrganizationDataList', variables];
+useCommitsOrganizationDataListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsOrganizationDataListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    CommitsOrganizationDataListQuery,
+    CommitsOrganizationDataListQueryVariables
+  >(client, CommitsOrganizationDataListDocument, variables, headers);
+export const CommitsContributorListDocument = /*#__PURE__*/ `
+    query commitsContributorList($label: String!, $level: String = "repo", $branch: String = "master", $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsContributorList(
+    label: $label
+    level: $level
+    branch: $branch
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    authorEmail
+    grimoireCreationDate
+    linesAdded
+    linesChanged
+    linesRemoved
+    orgName
+  }
+}
+    `;
+export const useCommitsContributorListQuery = <
+  TData = CommitsContributorListQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsContributorListQueryVariables,
+  options?: UseQueryOptions<CommitsContributorListQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsContributorListQuery, TError, TData>(
+    ['commitsContributorList', variables],
+    fetcher<CommitsContributorListQuery, CommitsContributorListQueryVariables>(
+      client,
+      CommitsContributorListDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommitsContributorListQuery.getKey = (
+  variables: CommitsContributorListQueryVariables
+) => ['commitsContributorList', variables];
+useCommitsContributorListQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsContributorListQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommitsContributorListQuery, CommitsContributorListQueryVariables>(
+    client,
+    CommitsContributorListDocument,
+    variables,
+    headers
+  );
+export const CodesRepoPageDocument = /*#__PURE__*/ `
+    query codesRepoPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  codesRepoPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      lines
+      linesChang
+      linesTotal
+      manager
+      repoAttributeType
+      repoName
+      sigName
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCodesRepoPageQuery = <
+  TData = CodesRepoPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CodesRepoPageQueryVariables,
+  options?: UseQueryOptions<CodesRepoPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CodesRepoPageQuery, TError, TData>(
+    ['codesRepoPage', variables],
+    fetcher<CodesRepoPageQuery, CodesRepoPageQueryVariables>(
+      client,
+      CodesRepoPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCodesRepoPageQuery.getKey = (variables: CodesRepoPageQueryVariables) => [
+  'codesRepoPage',
+  variables,
+];
+useCodesRepoPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CodesRepoPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CodesRepoPageQuery, CodesRepoPageQueryVariables>(
+    client,
+    CodesRepoPageDocument,
+    variables,
+    headers
+  );
+export const CodesDetailPageDocument = /*#__PURE__*/ `
+    query codesDetailPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  codesDetailPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commitUrls
+      createdAt
+      issueNum
+      linesTotal
+      mergedAt
+      tag
+      title
+      url
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCodesDetailPageQuery = <
+  TData = CodesDetailPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CodesDetailPageQueryVariables,
+  options?: UseQueryOptions<CodesDetailPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CodesDetailPageQuery, TError, TData>(
+    ['codesDetailPage', variables],
+    fetcher<CodesDetailPageQuery, CodesDetailPageQueryVariables>(
+      client,
+      CodesDetailPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCodesDetailPageQuery.getKey = (variables: CodesDetailPageQueryVariables) => [
+  'codesDetailPage',
+  variables,
+];
+useCodesDetailPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CodesDetailPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CodesDetailPageQuery, CodesDetailPageQueryVariables>(
+    client,
+    CodesDetailPageDocument,
+    variables,
+    headers
+  );
+export const CodesTrendDocument = /*#__PURE__*/ `
+    query codesTrend($label: String!, $level: String = "repo", $branch: String = "master", $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  codesTrend(
+    label: $label
+    level: $level
+    branch: $branch
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    detailList {
+      count
+      date
+    }
+    sigName
+  }
+}
+    `;
+export const useCodesTrendQuery = <TData = CodesTrendQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables: CodesTrendQueryVariables,
+  options?: UseQueryOptions<CodesTrendQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CodesTrendQuery, TError, TData>(
+    ['codesTrend', variables],
+    fetcher<CodesTrendQuery, CodesTrendQueryVariables>(
+      client,
+      CodesTrendDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCodesTrendQuery.getKey = (variables: CodesTrendQueryVariables) => [
+  'codesTrend',
+  variables,
+];
+useCodesTrendQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CodesTrendQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CodesTrendQuery, CodesTrendQueryVariables>(
+    client,
+    CodesTrendDocument,
+    variables,
+    headers
+  );
+export const CommitsSigPageDocument = /*#__PURE__*/ `
+    query commitsSigPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitsSigPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      linesAdded
+      linesChanged
+      linesRemoved
+      sigName
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitsSigPageQuery = <
+  TData = CommitsSigPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitsSigPageQueryVariables,
+  options?: UseQueryOptions<CommitsSigPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitsSigPageQuery, TError, TData>(
+    ['commitsSigPage', variables],
+    fetcher<CommitsSigPageQuery, CommitsSigPageQueryVariables>(
+      client,
+      CommitsSigPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommitsSigPageQuery.getKey = (variables: CommitsSigPageQueryVariables) => [
+  'commitsSigPage',
+  variables,
+];
+useCommitsSigPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitsSigPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommitsSigPageQuery, CommitsSigPageQueryVariables>(
+    client,
+    CommitsSigPageDocument,
+    variables,
+    headers
+  );
+export const CodesCheckDetailPageDocument = /*#__PURE__*/ `
+    query codesCheckDetailPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  codesCheckDetailPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commentCreatedAt
+      commentNum
+      issueNum
+      linesAdded
+      linesRemoved
+      prState
+      prUrl
+      prUserLogin
+      timeCheckHours
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCodesCheckDetailPageQuery = <
+  TData = CodesCheckDetailPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CodesCheckDetailPageQueryVariables,
+  options?: UseQueryOptions<CodesCheckDetailPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CodesCheckDetailPageQuery, TError, TData>(
+    ['codesCheckDetailPage', variables],
+    fetcher<CodesCheckDetailPageQuery, CodesCheckDetailPageQueryVariables>(
+      client,
+      CodesCheckDetailPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCodesCheckDetailPageQuery.getKey = (
+  variables: CodesCheckDetailPageQueryVariables
+) => ['codesCheckDetailPage', variables];
+useCodesCheckDetailPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CodesCheckDetailPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CodesCheckDetailPageQuery, CodesCheckDetailPageQueryVariables>(
+    client,
+    CodesCheckDetailPageDocument,
+    variables,
+    headers
+  );
+export const CodesCheckPageDocument = /*#__PURE__*/ `
+    query codesCheckPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  codesCheckPage(
+    label: $label
+    level: $level
+    branch: $branch
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commentNum
+      linesAdded
+      linesRemoved
+      timeCheckHours
+      userLogin
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCodesCheckPageQuery = <
+  TData = CodesCheckPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CodesCheckPageQueryVariables,
+  options?: UseQueryOptions<CodesCheckPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CodesCheckPageQuery, TError, TData>(
+    ['codesCheckPage', variables],
+    fetcher<CodesCheckPageQuery, CodesCheckPageQueryVariables>(
+      client,
+      CodesCheckPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCodesCheckPageQuery.getKey = (variables: CodesCheckPageQueryVariables) => [
+  'codesCheckPage',
+  variables,
+];
+useCodesCheckPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CodesCheckPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CodesCheckPageQuery, CodesCheckPageQueryVariables>(
+    client,
+    CodesCheckPageDocument,
+    variables,
+    headers
+  );
+export const CommitFeedbackPageDocument = /*#__PURE__*/ `
+    query commitFeedbackPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+  commitFeedbackPage(
+    label: $label
+    level: $level
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+    beginDate: $beginDate
+    endDate: $endDate
+  ) {
+    count
+    items {
+      commitHash
+      contactWay
+      createAtDate
+      id
+      newLinesAdded
+      newLinesChanged
+      newLinesRemoved
+      oldLinesAdded
+      oldLinesChanged
+      oldLinesRemoved
+      prUrl
+      repoName
+      requestReviewerEmail
+      reviewMsg
+      reviewerEmail
+      reviewerId
+      state
+      submitReason
+      submitUserEmail
+      submitUserId
+      updateAtDate
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useCommitFeedbackPageQuery = <
+  TData = CommitFeedbackPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: CommitFeedbackPageQueryVariables,
+  options?: UseQueryOptions<CommitFeedbackPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<CommitFeedbackPageQuery, TError, TData>(
+    ['commitFeedbackPage', variables],
+    fetcher<CommitFeedbackPageQuery, CommitFeedbackPageQueryVariables>(
+      client,
+      CommitFeedbackPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useCommitFeedbackPageQuery.getKey = (
+  variables: CommitFeedbackPageQueryVariables
+) => ['commitFeedbackPage', variables];
+useCommitFeedbackPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: CommitFeedbackPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<CommitFeedbackPageQuery, CommitFeedbackPageQueryVariables>(
+    client,
+    CommitFeedbackPageDocument,
+    variables,
+    headers
+  );
+export const OrganizationPageDocument = /*#__PURE__*/ `
+    query organizationPage($page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
+  organizationPage(
+    page: $page
+    per: $per
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      domain
+      orgName
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useOrganizationPageQuery = <
+  TData = OrganizationPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables?: OrganizationPageQueryVariables,
+  options?: UseQueryOptions<OrganizationPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<OrganizationPageQuery, TError, TData>(
+    variables === undefined
+      ? ['organizationPage']
+      : ['organizationPage', variables],
+    fetcher<OrganizationPageQuery, OrganizationPageQueryVariables>(
+      client,
+      OrganizationPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useOrganizationPageQuery.getKey = (
+  variables?: OrganizationPageQueryVariables
+) =>
+  variables === undefined
+    ? ['organizationPage']
+    : ['organizationPage', variables];
+useOrganizationPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: OrganizationPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<OrganizationPageQuery, OrganizationPageQueryVariables>(
+    client,
+    OrganizationPageDocument,
+    variables,
+    headers
+  );
+export const SubjectAccessLevelPageDocument = /*#__PURE__*/ `
+    query subjectAccessLevelPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $accessLevel: Int) {
+  subjectAccessLevelPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    accessLevel: $accessLevel
+  ) {
+    count
+    items {
+      accessLevel
+      id
+      subjectId
+      user {
+        id
+        name
+        roleLevel
+        email
+        language
+        emailVerified
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+        contributingOrgs {
+          firstDate
+          lastDate
+          orgName
+          platformType
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useSubjectAccessLevelPageQuery = <
+  TData = SubjectAccessLevelPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: SubjectAccessLevelPageQueryVariables,
+  options?: UseQueryOptions<SubjectAccessLevelPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<SubjectAccessLevelPageQuery, TError, TData>(
+    ['subjectAccessLevelPage', variables],
+    fetcher<SubjectAccessLevelPageQuery, SubjectAccessLevelPageQueryVariables>(
+      client,
+      SubjectAccessLevelPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useSubjectAccessLevelPageQuery.getKey = (
+  variables: SubjectAccessLevelPageQueryVariables
+) => ['subjectAccessLevelPage', variables];
+useSubjectAccessLevelPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: SubjectAccessLevelPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<SubjectAccessLevelPageQuery, SubjectAccessLevelPageQueryVariables>(
+    client,
+    SubjectAccessLevelPageDocument,
+    variables,
+    headers
+  );
+export const SubjectSigPageDocument = /*#__PURE__*/ `
+    query subjectSigPage($label: String!, $level: String = "repo", $page: Int, $per: Int) {
+  subjectSigPage(page: $page, per: $per, label: $label, level: $level) {
+    count
+    items {
+      description
+      emails
+      id
+      linkSig {
+        label
+        level
+        repos
+      }
+      maintainers
+      name
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useSubjectSigPageQuery = <
+  TData = SubjectSigPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: SubjectSigPageQueryVariables,
+  options?: UseQueryOptions<SubjectSigPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<SubjectSigPageQuery, TError, TData>(
+    ['subjectSigPage', variables],
+    fetcher<SubjectSigPageQuery, SubjectSigPageQueryVariables>(
+      client,
+      SubjectSigPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useSubjectSigPageQuery.getKey = (variables: SubjectSigPageQueryVariables) => [
+  'subjectSigPage',
+  variables,
+];
+useSubjectSigPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: SubjectSigPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<SubjectSigPageQuery, SubjectSigPageQueryVariables>(
+    client,
+    SubjectSigPageDocument,
+    variables,
+    headers
+  );
+export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionReportPage($label: String!, $level: String = "repo", $reportTypeList: [Int!]!, $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
+  tpcSoftwareSelectionReportPage(
+    page: $page
+    per: $per
+    reportTypeList: $reportTypeList
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      adaptationMethod
+      architectureDiagrams {
+        filename
+        id
+        url
+      }
+      codeCount
+      codeUrl
+      id
+      name
+      programmingLanguage
+      reportType
+      shortCode
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+      vulnerabilityResponse
+      tpcSoftwareReportMetric {
+        ...tpcSoftwareReportMetric
+      }
+      tpcSoftwareSig {
+        ...tpcSoftwareSig
+      }
+    }
+    page
+    totalPage
+  }
+}
+    ${TpcSoftwareReportMetricFragmentDoc}
+${TpcSoftwareSigFragmentDoc}`;
+export const useTpcSoftwareSelectionReportPageQuery = <
+  TData = TpcSoftwareSelectionReportPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportPageQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionReportPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionReportPageQuery, TError, TData>(
+    ['tpcSoftwareSelectionReportPage', variables],
+    fetcher<
+      TpcSoftwareSelectionReportPageQuery,
+      TpcSoftwareSelectionReportPageQueryVariables
+    >(client, TpcSoftwareSelectionReportPageDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionReportPageQuery.getKey = (
+  variables: TpcSoftwareSelectionReportPageQueryVariables
+) => ['tpcSoftwareSelectionReportPage', variables];
+useTpcSoftwareSelectionReportPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionReportPageQuery,
+    TpcSoftwareSelectionReportPageQueryVariables
+  >(client, TpcSoftwareSelectionReportPageDocument, variables, headers);
+export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionPage($label: String!, $level: String = "repo", $selectionType: Int!, $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
+  tpcSoftwareSelectionPage(
+    page: $page
+    per: $per
+    selectionType: $selectionType
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      committers
+      createdAt
+      demandSource
+      functionalDescription
+      id
+      incubationTime
+      isSameTypeCheck
+      issueUrl
+      repoUrl
+      reason
+      sameTypeSoftwareName
+      selectionType
+      state
+      targetSoftware
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+      tpcSoftwareSelectionReportIds
+      tpcSoftwareSelectionReports {
+        name
+        shortCode
+        codeUrl
+      }
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useTpcSoftwareSelectionPageQuery = <
+  TData = TpcSoftwareSelectionPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionPageQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionPageQuery, TError, TData>(
+    ['tpcSoftwareSelectionPage', variables],
+    fetcher<
+      TpcSoftwareSelectionPageQuery,
+      TpcSoftwareSelectionPageQueryVariables
+    >(client, TpcSoftwareSelectionPageDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionPageQuery.getKey = (
+  variables: TpcSoftwareSelectionPageQueryVariables
+) => ['tpcSoftwareSelectionPage', variables];
+useTpcSoftwareSelectionPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionPageQuery,
+    TpcSoftwareSelectionPageQueryVariables
+  >(client, TpcSoftwareSelectionPageDocument, variables, headers);
+export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionReport($shortCode: String!) {
+  tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    adaptationMethod
+    architectureDiagrams {
+      filename
+      id
+      url
+    }
+    codeCount
+    codeUrl
+    id
+    name
+    programmingLanguage
+    shortCode
+    vulnerabilityResponse
+    tpcSoftwareReportMetric {
+      ...tpcSoftwareReportMetric
+      ...tpcSoftwareReportMetricDetail
+    }
+    tpcSoftwareSig {
+      ...tpcSoftwareSig
+    }
+    userId
+  }
+  tpcSoftwareReportMetricClarificationPermission(
+    shortCode: $shortCode
+    reportType: 0
+  ) {
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
+  }
+}
+    ${TpcSoftwareReportMetricFragmentDoc}
+${TpcSoftwareReportMetricDetailFragmentDoc}
+${TpcSoftwareSigFragmentDoc}`;
+export const useTpcSoftwareSelectionReportQuery = <
+  TData = TpcSoftwareSelectionReportQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionReportQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionReportQuery, TError, TData>(
+    ['tpcSoftwareSelectionReport', variables],
+    fetcher<
+      TpcSoftwareSelectionReportQuery,
+      TpcSoftwareSelectionReportQueryVariables
+    >(client, TpcSoftwareSelectionReportDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionReportQuery.getKey = (
+  variables: TpcSoftwareSelectionReportQueryVariables
+) => ['tpcSoftwareSelectionReport', variables];
+useTpcSoftwareSelectionReportQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionReportQuery,
+    TpcSoftwareSelectionReportQueryVariables
+  >(client, TpcSoftwareSelectionReportDocument, variables, headers);
+export const TpcSoftwareSelectionReportRowDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionReportRow($shortCode: String!) {
+  tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    id
+    tpcSoftwareReportMetricRaw {
+      ...tpcSoftwareReportMetricRaw
+    }
+  }
+}
+    ${TpcSoftwareReportMetricRawFragmentDoc}`;
+export const useTpcSoftwareSelectionReportRowQuery = <
+  TData = TpcSoftwareSelectionReportRowQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportRowQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionReportRowQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionReportRowQuery, TError, TData>(
+    ['tpcSoftwareSelectionReportRow', variables],
+    fetcher<
+      TpcSoftwareSelectionReportRowQuery,
+      TpcSoftwareSelectionReportRowQueryVariables
+    >(client, TpcSoftwareSelectionReportRowDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionReportRowQuery.getKey = (
+  variables: TpcSoftwareSelectionReportRowQueryVariables
+) => ['tpcSoftwareSelectionReportRow', variables];
+useTpcSoftwareSelectionReportRowQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportRowQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionReportRowQuery,
+    TpcSoftwareSelectionReportRowQueryVariables
+  >(client, TpcSoftwareSelectionReportRowDocument, variables, headers);
+export const TpcSoftwareReportMetricClarificationPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareReportMetricClarificationPage($shortCode: String!, $metricName: String!, $page: Int, $per: Int, $reportType: Int = 0) {
+  tpcSoftwareReportMetricClarificationPage(
+    shortCode: $shortCode
+    page: $page
+    per: $per
+    metricName: $metricName
+    reportType: $reportType
+  ) {
+    count
+    items {
+      content
+      createdAt
+      id
+      metricName
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useTpcSoftwareReportMetricClarificationPageQuery = <
+  TData = TpcSoftwareReportMetricClarificationPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareReportMetricClarificationPageQueryVariables,
+  options?: UseQueryOptions<
+    TpcSoftwareReportMetricClarificationPageQuery,
+    TError,
+    TData
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareReportMetricClarificationPageQuery, TError, TData>(
+    ['tpcSoftwareReportMetricClarificationPage', variables],
+    fetcher<
+      TpcSoftwareReportMetricClarificationPageQuery,
+      TpcSoftwareReportMetricClarificationPageQueryVariables
+    >(
+      client,
+      TpcSoftwareReportMetricClarificationPageDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useTpcSoftwareReportMetricClarificationPageQuery.getKey = (
+  variables: TpcSoftwareReportMetricClarificationPageQueryVariables
+) => ['tpcSoftwareReportMetricClarificationPage', variables];
+useTpcSoftwareReportMetricClarificationPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareReportMetricClarificationPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareReportMetricClarificationPageQuery,
+    TpcSoftwareReportMetricClarificationPageQueryVariables
+  >(
+    client,
+    TpcSoftwareReportMetricClarificationPageDocument,
+    variables,
+    headers
+  );
+export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionReportRisk($shortCode: String!) {
+  tpcSoftwareSelectionReport(shortCode: $shortCode) {
+    codeUrl
+    id
+    shortCode
+    metricClarificationCount {
+      complianceDco
+      complianceLicense
+      complianceLicenseCompatibility
+      compliancePackageSig
+      ecologyAdoptionAnalysis
+      ecologyCodeMaintenance
+      ecologyCommunitySupport
+      ecologyDependencyAcquisition
+      ecologyPatentRisk
+      ecologySoftwareQuality
+      ecologyAdaptationMethod
+      lifecycleVersionLifecycle
+      lifecycleVersionNormalization
+      lifecycleVersionNumber
+      securityBinaryArtifact
+      securityHistoryVulnerability
+      securityVulnerability
+      securityVulnerabilityDisclosure
+      securityVulnerabilityResponse
+    }
+    metricClarificationState {
+      complianceDco {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicense {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicenseCompatibility {
+        ...tpcClarificationStateDetail
+      }
+      compliancePackageSig {
+        ...tpcClarificationStateDetail
+      }
+      ecologyAdoptionAnalysis {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCodeMaintenance {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCommunitySupport {
+        ...tpcClarificationStateDetail
+      }
+      ecologyDependencyAcquisition {
+        ...tpcClarificationStateDetail
+      }
+      ecologyPatentRisk {
+        ...tpcClarificationStateDetail
+      }
+      ecologySoftwareQuality {
+        ...tpcClarificationStateDetail
+      }
+      ecologyAdaptationMethod {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleVersionLifecycle {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleVersionNormalization {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleVersionNumber {
+        ...tpcClarificationStateDetail
+      }
+      securityBinaryArtifact {
+        ...tpcClarificationStateDetail
+      }
+      securityHistoryVulnerability {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerability {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerabilityDisclosure {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerabilityResponse {
+        ...tpcClarificationStateDetail
+      }
+    }
+    userId
+  }
+}
+    ${TpcClarificationStateDetailFragmentDoc}`;
+export const useTpcSoftwareSelectionReportRiskQuery = <
+  TData = TpcSoftwareSelectionReportRiskQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportRiskQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionReportRiskQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionReportRiskQuery, TError, TData>(
+    ['tpcSoftwareSelectionReportRisk', variables],
+    fetcher<
+      TpcSoftwareSelectionReportRiskQuery,
+      TpcSoftwareSelectionReportRiskQueryVariables
+    >(client, TpcSoftwareSelectionReportRiskDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionReportRiskQuery.getKey = (
+  variables: TpcSoftwareSelectionReportRiskQueryVariables
+) => ['tpcSoftwareSelectionReportRisk', variables];
+useTpcSoftwareSelectionReportRiskQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionReportRiskQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionReportRiskQuery,
+    TpcSoftwareSelectionReportRiskQueryVariables
+  >(client, TpcSoftwareSelectionReportRiskDocument, variables, headers);
+export const TpcSoftwareSelectionCommentPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionCommentPage($selectionId: Int!, $page: Int!, $per: Int!, $reportType: Int = 0) {
+  tpcSoftwareSelectionCommentPage(
+    page: $page
+    per: $per
+    selectionId: $selectionId
+    reportType: $reportType
+  ) {
+    count
+    items {
+      content
+      createdAt
+      id
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useTpcSoftwareSelectionCommentPageQuery = <
+  TData = TpcSoftwareSelectionCommentPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionCommentPageQueryVariables,
+  options?: UseQueryOptions<
+    TpcSoftwareSelectionCommentPageQuery,
+    TError,
+    TData
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionCommentPageQuery, TError, TData>(
+    ['tpcSoftwareSelectionCommentPage', variables],
+    fetcher<
+      TpcSoftwareSelectionCommentPageQuery,
+      TpcSoftwareSelectionCommentPageQueryVariables
+    >(client, TpcSoftwareSelectionCommentPageDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionCommentPageQuery.getKey = (
+  variables: TpcSoftwareSelectionCommentPageQueryVariables
+) => ['tpcSoftwareSelectionCommentPage', variables];
+useTpcSoftwareSelectionCommentPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionCommentPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionCommentPageQuery,
+    TpcSoftwareSelectionCommentPageQueryVariables
+  >(client, TpcSoftwareSelectionCommentPageDocument, variables, headers);
+export const TpcSoftwareSelectionDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelection($selectionId: Int!) {
+  tpcSoftwareSelection(selectionId: $selectionId) {
+    commentCompliancePermission
+    commentLegalPermission
+    commentCommitterPermission
+    commentCount
+    commentSigLeadPermission
+    commentState {
+      createdAt
+      id
+      memberType
+      state
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    targetSoftware
+    reason
+    demandSource
+    functionalDescription
+    incubationTime
+    committers
+    isSameTypeCheck
+    sameTypeSoftwareName
+    sigLeadCount
+    state
+    riskCount
+    legalCount
+    complianceCount
+    confirmedCount
+    committerCount
+    awaitingClarificationCount
+    awaitingConfirmationCount
+    clarifiedCount
+    repoUrl
+    tpcSoftwareSelectionReports {
+      adaptationMethod
+      license
+      codeUrl
+    }
+  }
+}
+    `;
+export const useTpcSoftwareSelectionQuery = <
+  TData = TpcSoftwareSelectionQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionQuery, TError, TData>(
+    ['tpcSoftwareSelection', variables],
+    fetcher<TpcSoftwareSelectionQuery, TpcSoftwareSelectionQueryVariables>(
+      client,
+      TpcSoftwareSelectionDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useTpcSoftwareSelectionQuery.getKey = (
+  variables: TpcSoftwareSelectionQueryVariables
+) => ['tpcSoftwareSelection', variables];
+useTpcSoftwareSelectionQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<TpcSoftwareSelectionQuery, TpcSoftwareSelectionQueryVariables>(
+    client,
+    TpcSoftwareSelectionDocument,
+    variables,
+    headers
+  );
+export const TpcSoftwareGraduationReportPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareGraduationReportPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
+  tpcSoftwareGraduationReportPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      adaptationMethod
+      architectureDiagrams {
+        filename
+        id
+        url
+      }
+      isIncubation
+      roundUpstream
+      codeUrl
+      id
+      name
+      upstreamCodeUrl
+      lifecyclePolicy
+      shortCode
+      programmingLanguage
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+      graduationReportMetric {
+        ...tpcSoftwareGraduationReportMetric
+      }
+      tpcSoftwareSig {
+        ...tpcSoftwareSig
+      }
+    }
+    page
+    totalPage
+  }
+}
+    ${TpcSoftwareGraduationReportMetricFragmentDoc}
+${TpcSoftwareSigFragmentDoc}`;
+export const useTpcSoftwareGraduationReportPageQuery = <
+  TData = TpcSoftwareGraduationReportPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportPageQueryVariables,
+  options?: UseQueryOptions<
+    TpcSoftwareGraduationReportPageQuery,
+    TError,
+    TData
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareGraduationReportPageQuery, TError, TData>(
+    ['tpcSoftwareGraduationReportPage', variables],
+    fetcher<
+      TpcSoftwareGraduationReportPageQuery,
+      TpcSoftwareGraduationReportPageQueryVariables
+    >(client, TpcSoftwareGraduationReportPageDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareGraduationReportPageQuery.getKey = (
+  variables: TpcSoftwareGraduationReportPageQueryVariables
+) => ['tpcSoftwareGraduationReportPage', variables];
+useTpcSoftwareGraduationReportPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareGraduationReportPageQuery,
+    TpcSoftwareGraduationReportPageQueryVariables
+  >(client, TpcSoftwareGraduationReportPageDocument, variables, headers);
+export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
+    query tpcSoftwareGraduationReport($shortCode: String!) {
+  tpcSoftwareGraduationReport(shortCode: $shortCode) {
+    adaptationMethod
+    architectureDiagrams {
+      filename
+      id
+      url
+    }
+    codeCount
+    license
+    codeUrl
+    id
+    name
+    upstreamCodeUrl
+    shortCode
+    programmingLanguage
+    user {
+      name
+      loginBinds {
+        account
+        nickname
+        provider
+      }
+    }
+    userId
+    graduationReportMetric {
+      ...tpcSoftwareGraduationReportMetric
+      ...tpcSoftwareGraduationReportMetricDetail
+    }
+    tpcSoftwareSig {
+      ...tpcSoftwareSig
+    }
+  }
+  tpcSoftwareReportMetricClarificationPermission(
+    shortCode: $shortCode
+    reportType: 1
+  ) {
+    clarificationCommitterPermission
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
+  }
+}
+    ${TpcSoftwareGraduationReportMetricFragmentDoc}
+${TpcSoftwareGraduationReportMetricDetailFragmentDoc}
+${TpcSoftwareSigFragmentDoc}`;
+export const useTpcSoftwareGraduationReportQuery = <
+  TData = TpcSoftwareGraduationReportQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareGraduationReportQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareGraduationReportQuery, TError, TData>(
+    ['tpcSoftwareGraduationReport', variables],
+    fetcher<
+      TpcSoftwareGraduationReportQuery,
+      TpcSoftwareGraduationReportQueryVariables
+    >(client, TpcSoftwareGraduationReportDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareGraduationReportQuery.getKey = (
+  variables: TpcSoftwareGraduationReportQueryVariables
+) => ['tpcSoftwareGraduationReport', variables];
+useTpcSoftwareGraduationReportQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareGraduationReportQuery,
+    TpcSoftwareGraduationReportQueryVariables
+  >(client, TpcSoftwareGraduationReportDocument, variables, headers);
+export const TpcSoftwareGraduationPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareGraduationPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
+  tpcSoftwareGraduationPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      id
+      createdAt
+      updatedAt
+      demandSource
+      committers
+      incubationStartTime
+      incubationTime
+      issueUrl
+      state
+      tpcSoftwareGraduationReportIds
+      functionalDescription
+      tpcSoftwareGraduationReports {
+        name
+        shortCode
+        codeUrl
+        license
+        codeCount
+      }
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useTpcSoftwareGraduationPageQuery = <
+  TData = TpcSoftwareGraduationPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationPageQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareGraduationPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareGraduationPageQuery, TError, TData>(
+    ['tpcSoftwareGraduationPage', variables],
+    fetcher<
+      TpcSoftwareGraduationPageQuery,
+      TpcSoftwareGraduationPageQueryVariables
+    >(client, TpcSoftwareGraduationPageDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareGraduationPageQuery.getKey = (
+  variables: TpcSoftwareGraduationPageQueryVariables
+) => ['tpcSoftwareGraduationPage', variables];
+useTpcSoftwareGraduationPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareGraduationPageQuery,
+    TpcSoftwareGraduationPageQueryVariables
+  >(client, TpcSoftwareGraduationPageDocument, variables, headers);
+export const TpcSoftwareGraduationDocument = /*#__PURE__*/ `
+    query tpcSoftwareGraduation($graduationId: Int!) {
+  tpcSoftwareGraduation(graduationId: $graduationId) {
+    commentCompliancePermission
+    commentLegalPermission
+    commentCommitterPermission
+    commentCount
+    commentSigLeadPermission
+    commentState {
+      createdAt
+      id
+      memberType
+      state
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    demandSource
+    incubationTime
+    committers
+    functionalDescription
+    sigLeadCount
+    state
+    riskCount
+    legalCount
+    complianceCount
+    confirmedCount
+    committerCount
+    awaitingClarificationCount
+    awaitingConfirmationCount
+    clarifiedCount
+    tpcSoftwareGraduationReports {
+      adaptationMethod
+      license
+      codeUrl
+      name
+      codeCount
+    }
+  }
+}
+    `;
+export const useTpcSoftwareGraduationQuery = <
+  TData = TpcSoftwareGraduationQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareGraduationQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareGraduationQuery, TError, TData>(
+    ['tpcSoftwareGraduation', variables],
+    fetcher<TpcSoftwareGraduationQuery, TpcSoftwareGraduationQueryVariables>(
+      client,
+      TpcSoftwareGraduationDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useTpcSoftwareGraduationQuery.getKey = (
+  variables: TpcSoftwareGraduationQueryVariables
+) => ['tpcSoftwareGraduation', variables];
+useTpcSoftwareGraduationQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<TpcSoftwareGraduationQuery, TpcSoftwareGraduationQueryVariables>(
+    client,
+    TpcSoftwareGraduationDocument,
+    variables,
+    headers
+  );
+export const TpcSoftwareGraduationReportRiskDocument = /*#__PURE__*/ `
+    query tpcSoftwareGraduationReportRisk($shortCode: String!) {
+  tpcSoftwareGraduationReport(shortCode: $shortCode) {
+    codeUrl
+    id
+    shortCode
+    metricClarificationCount {
+      complianceCopyrightStatement
+      complianceCopyrightStatementAntiTamper
+      complianceDco
+      complianceLicense
+      complianceLicenseCompatibility
+      complianceSnippetReference
+      ecologyBuild
+      ecologyBuildDoc
+      ecologyCi
+      ecologyCodeReview
+      ecologyCodeUpstream
+      ecologyInterfaceDoc
+      ecologyIssueManagement
+      ecologyIssueResponseRatio
+      ecologyIssueResponseTime
+      ecologyMaintainerDoc
+      ecologyReadme
+      ecologyTestCoverage
+      lifecycleReleaseNote
+      lifecycleStatement
+      securityBinaryArtifact
+      securityPackageSig
+      securityVulnerability
+    }
+    metricClarificationState {
+      complianceCopyrightStatement {
+        ...tpcClarificationStateDetail
+      }
+      complianceCopyrightStatementAntiTamper {
+        ...tpcClarificationStateDetail
+      }
+      complianceDco {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicense {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicenseCompatibility {
+        ...tpcClarificationStateDetail
+      }
+      complianceSnippetReference {
+        ...tpcClarificationStateDetail
+      }
+      ecologyBuild {
+        ...tpcClarificationStateDetail
+      }
+      ecologyBuildDoc {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCi {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCodeReview {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCodeUpstream {
+        ...tpcClarificationStateDetail
+      }
+      ecologyInterfaceDoc {
+        ...tpcClarificationStateDetail
+      }
+      ecologyIssueManagement {
+        ...tpcClarificationStateDetail
+      }
+      ecologyIssueResponseRatio {
+        ...tpcClarificationStateDetail
+      }
+      ecologyIssueResponseTime {
+        ...tpcClarificationStateDetail
+      }
+      ecologyMaintainerDoc {
+        ...tpcClarificationStateDetail
+      }
+      ecologyReadme {
+        ...tpcClarificationStateDetail
+      }
+      ecologyTestCoverage {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleReleaseNote {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleStatement {
+        ...tpcClarificationStateDetail
+      }
+      securityBinaryArtifact {
+        ...tpcClarificationStateDetail
+      }
+      securityPackageSig {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerability {
+        ...tpcClarificationStateDetail
+      }
+    }
+    userId
+  }
+}
+    ${TpcClarificationStateDetailFragmentDoc}`;
+export const useTpcSoftwareGraduationReportRiskQuery = <
+  TData = TpcSoftwareGraduationReportRiskQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportRiskQueryVariables,
+  options?: UseQueryOptions<
+    TpcSoftwareGraduationReportRiskQuery,
+    TError,
+    TData
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareGraduationReportRiskQuery, TError, TData>(
+    ['tpcSoftwareGraduationReportRisk', variables],
+    fetcher<
+      TpcSoftwareGraduationReportRiskQuery,
+      TpcSoftwareGraduationReportRiskQueryVariables
+    >(client, TpcSoftwareGraduationReportRiskDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareGraduationReportRiskQuery.getKey = (
+  variables: TpcSoftwareGraduationReportRiskQueryVariables
+) => ['tpcSoftwareGraduationReportRisk', variables];
+useTpcSoftwareGraduationReportRiskQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportRiskQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareGraduationReportRiskQuery,
+    TpcSoftwareGraduationReportRiskQueryVariables
+  >(client, TpcSoftwareGraduationReportRiskDocument, variables, headers);
+export const TpcSoftwareGraduationReportRowDocument = /*#__PURE__*/ `
+    query tpcSoftwareGraduationReportRow($shortCode: String!) {
+  tpcSoftwareGraduationReport(shortCode: $shortCode) {
+    id
+    graduationReportMetricRaw {
+      ...tpcSoftwareGraduationReportMetricRaw
+    }
+  }
+}
+    ${TpcSoftwareGraduationReportMetricRawFragmentDoc}`;
+export const useTpcSoftwareGraduationReportRowQuery = <
+  TData = TpcSoftwareGraduationReportRowQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportRowQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareGraduationReportRowQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareGraduationReportRowQuery, TError, TData>(
+    ['tpcSoftwareGraduationReportRow', variables],
+    fetcher<
+      TpcSoftwareGraduationReportRowQuery,
+      TpcSoftwareGraduationReportRowQueryVariables
+    >(client, TpcSoftwareGraduationReportRowDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareGraduationReportRowQuery.getKey = (
+  variables: TpcSoftwareGraduationReportRowQueryVariables
+) => ['tpcSoftwareGraduationReportRow', variables];
+useTpcSoftwareGraduationReportRowQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareGraduationReportRowQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareGraduationReportRowQuery,
+    TpcSoftwareGraduationReportRowQueryVariables
+  >(client, TpcSoftwareGraduationReportRowDocument, variables, headers);
+export const TpcSoftwareSelectionSearchDocument = /*#__PURE__*/ `
+    query tpcSoftwareSelectionSearch($label: String!, $level: String = "repo", $keyword: String!, $selectionType: Int!) {
+  tpcSoftwareSelectionSearch(
+    label: $label
+    level: $level
+    keyword: $keyword
+    selectionType: $selectionType
+  ) {
+    repoUrl
+    tpcSoftwareSelectionReport {
+      name
+      codeUrl
+      tpcSoftwareSigId
+      programmingLanguage
+      adaptationMethod
+    }
+  }
+}
+    `;
+export const useTpcSoftwareSelectionSearchQuery = <
+  TData = TpcSoftwareSelectionSearchQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionSearchQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareSelectionSearchQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareSelectionSearchQuery, TError, TData>(
+    ['tpcSoftwareSelectionSearch', variables],
+    fetcher<
+      TpcSoftwareSelectionSearchQuery,
+      TpcSoftwareSelectionSearchQueryVariables
+    >(client, TpcSoftwareSelectionSearchDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareSelectionSearchQuery.getKey = (
+  variables: TpcSoftwareSelectionSearchQueryVariables
+) => ['tpcSoftwareSelectionSearch', variables];
+useTpcSoftwareSelectionSearchQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareSelectionSearchQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareSelectionSearchQuery,
+    TpcSoftwareSelectionSearchQueryVariables
+  >(client, TpcSoftwareSelectionSearchDocument, variables, headers);
+export const TpcSoftwareMyCreationOverviewDocument = /*#__PURE__*/ `
+    query tpcSoftwareMyCreationOverview($label: String!, $level: String = "repo") {
+  tpcSoftwareMyCreationOverview(label: $label, level: $level) {
+    awaitingClarificationCount
+    awaitingConfirmationCount
+    awaitingReviewCount
+    completedCount
+    graduationCount
+    incubationCount
+    rejectedCount
+    totalCount
+  }
+}
+    `;
+export const useTpcSoftwareMyCreationOverviewQuery = <
+  TData = TpcSoftwareMyCreationOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareMyCreationOverviewQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareMyCreationOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareMyCreationOverviewQuery, TError, TData>(
+    ['tpcSoftwareMyCreationOverview', variables],
+    fetcher<
+      TpcSoftwareMyCreationOverviewQuery,
+      TpcSoftwareMyCreationOverviewQueryVariables
+    >(client, TpcSoftwareMyCreationOverviewDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareMyCreationOverviewQuery.getKey = (
+  variables: TpcSoftwareMyCreationOverviewQueryVariables
+) => ['tpcSoftwareMyCreationOverview', variables];
+useTpcSoftwareMyCreationOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareMyCreationOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareMyCreationOverviewQuery,
+    TpcSoftwareMyCreationOverviewQueryVariables
+  >(client, TpcSoftwareMyCreationOverviewDocument, variables, headers);
+export const TpcSoftwareMyReviewOverviewDocument = /*#__PURE__*/ `
+    query tpcSoftwareMyReviewOverview($label: String!, $level: String = "repo") {
+  tpcSoftwareMyReviewOverview(label: $label, level: $level) {
+    awaitingClarificationCount
+    awaitingConfirmationCount
+    awaitingReviewCount
+    completedCount
+    graduationCount
+    incubationCount
+    rejectedCount
+    totalCount
+  }
+}
+    `;
+export const useTpcSoftwareMyReviewOverviewQuery = <
+  TData = TpcSoftwareMyReviewOverviewQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareMyReviewOverviewQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareMyReviewOverviewQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareMyReviewOverviewQuery, TError, TData>(
+    ['tpcSoftwareMyReviewOverview', variables],
+    fetcher<
+      TpcSoftwareMyReviewOverviewQuery,
+      TpcSoftwareMyReviewOverviewQueryVariables
+    >(client, TpcSoftwareMyReviewOverviewDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareMyReviewOverviewQuery.getKey = (
+  variables: TpcSoftwareMyReviewOverviewQueryVariables
+) => ['tpcSoftwareMyReviewOverview', variables];
+useTpcSoftwareMyReviewOverviewQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareMyReviewOverviewQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareMyReviewOverviewQuery,
+    TpcSoftwareMyReviewOverviewQueryVariables
+  >(client, TpcSoftwareMyReviewOverviewDocument, variables, headers);
+export const TpcSoftwareMyCreationPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareMyCreationPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $applicationType: Int!, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
+  tpcSoftwareMyCreationPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    applicationType: $applicationType
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      applicationType
+      awaitingClarificationCount
+      awaitingConfirmationCount
+      clarifiedCount
+      committerCount
+      complianceCount
+      confirmedCount
+      createdAt
+      id
+      issueUrl
+      legalCount
+      name
+      riskCount
+      sigLeadCount
+      state
+      softwareReportShortCodes
+      targetSoftwareReportId
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useTpcSoftwareMyCreationPageQuery = <
+  TData = TpcSoftwareMyCreationPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareMyCreationPageQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareMyCreationPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareMyCreationPageQuery, TError, TData>(
+    ['tpcSoftwareMyCreationPage', variables],
+    fetcher<
+      TpcSoftwareMyCreationPageQuery,
+      TpcSoftwareMyCreationPageQueryVariables
+    >(client, TpcSoftwareMyCreationPageDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareMyCreationPageQuery.getKey = (
+  variables: TpcSoftwareMyCreationPageQueryVariables
+) => ['tpcSoftwareMyCreationPage', variables];
+useTpcSoftwareMyCreationPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareMyCreationPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<
+    TpcSoftwareMyCreationPageQuery,
+    TpcSoftwareMyCreationPageQueryVariables
+  >(client, TpcSoftwareMyCreationPageDocument, variables, headers);
+export const TpcSoftwareMyReviewPageDocument = /*#__PURE__*/ `
+    query tpcSoftwareMyReviewPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $applicationType: Int!, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
+  tpcSoftwareMyReviewPage(
+    page: $page
+    per: $per
+    label: $label
+    level: $level
+    applicationType: $applicationType
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      applicationType
+      awaitingClarificationCount
+      awaitingConfirmationCount
+      clarifiedCount
+      committerCount
+      complianceCount
+      confirmedCount
+      createdAt
+      id
+      issueUrl
+      legalCount
+      name
+      riskCount
+      sigLeadCount
+      state
+      softwareReportShortCodes
+      targetSoftwareReportId
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    page
+    totalPage
+  }
+}
+    `;
+export const useTpcSoftwareMyReviewPageQuery = <
+  TData = TpcSoftwareMyReviewPageQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: TpcSoftwareMyReviewPageQueryVariables,
+  options?: UseQueryOptions<TpcSoftwareMyReviewPageQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<TpcSoftwareMyReviewPageQuery, TError, TData>(
+    ['tpcSoftwareMyReviewPage', variables],
+    fetcher<
+      TpcSoftwareMyReviewPageQuery,
+      TpcSoftwareMyReviewPageQueryVariables
+    >(client, TpcSoftwareMyReviewPageDocument, variables, headers),
+    options
+  );
+
+useTpcSoftwareMyReviewPageQuery.getKey = (
+  variables: TpcSoftwareMyReviewPageQueryVariables
+) => ['tpcSoftwareMyReviewPage', variables];
+useTpcSoftwareMyReviewPageQuery.fetcher = (
+  client: GraphQLClient,
+  variables: TpcSoftwareMyReviewPageQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<TpcSoftwareMyReviewPageQuery, TpcSoftwareMyReviewPageQueryVariables>(
+    client,
+    TpcSoftwareMyReviewPageDocument,
+    variables,
+    headers
+  );
 export const UserinfoDocument = /*#__PURE__*/ `
     query userinfo {
   currentUser {
@@ -15225,2000 +17758,3 @@ useMetricContributorQuery.fetcher = (
     variables,
     headers
   );
-export const CommitsRepoDataListDocument = /*#__PURE__*/ `
-    query commitsRepoDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  commitsRepoPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      linesAdded
-      linesChanged
-      linesRemoved
-      repoName
-      repoAttributeType
-      sigName
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCommitsRepoDataListQuery = <
-  TData = CommitsRepoDataListQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CommitsRepoDataListQueryVariables,
-  options?: UseQueryOptions<CommitsRepoDataListQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CommitsRepoDataListQuery, TError, TData>(
-    ['commitsRepoDataList', variables],
-    fetcher<CommitsRepoDataListQuery, CommitsRepoDataListQueryVariables>(
-      client,
-      CommitsRepoDataListDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCommitsRepoDataListQuery.getKey = (
-  variables: CommitsRepoDataListQueryVariables
-) => ['commitsRepoDataList', variables];
-useCommitsRepoDataListQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CommitsRepoDataListQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CommitsRepoDataListQuery, CommitsRepoDataListQueryVariables>(
-    client,
-    CommitsRepoDataListDocument,
-    variables,
-    headers
-  );
-export const CommitsDetailDataListDocument = /*#__PURE__*/ `
-    query commitsDetailDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  commitsDetailPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      authorEmail
-      commitHash
-      grimoireCreationDate
-      linesAdded
-      linesChanged
-      linesRemoved
-      mergedAt
-      orgName
-      prUrl
-      repoName
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCommitsDetailDataListQuery = <
-  TData = CommitsDetailDataListQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CommitsDetailDataListQueryVariables,
-  options?: UseQueryOptions<CommitsDetailDataListQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CommitsDetailDataListQuery, TError, TData>(
-    ['commitsDetailDataList', variables],
-    fetcher<CommitsDetailDataListQuery, CommitsDetailDataListQueryVariables>(
-      client,
-      CommitsDetailDataListDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCommitsDetailDataListQuery.getKey = (
-  variables: CommitsDetailDataListQueryVariables
-) => ['commitsDetailDataList', variables];
-useCommitsDetailDataListQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CommitsDetailDataListQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CommitsDetailDataListQuery, CommitsDetailDataListQueryVariables>(
-    client,
-    CommitsDetailDataListDocument,
-    variables,
-    headers
-  );
-export const CommitsOrganizationDataListDocument = /*#__PURE__*/ `
-    query commitsOrganizationDataList($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  commitsOrganizationPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      linesAdded
-      linesChanged
-      linesChangedRatio
-      linesRemoved
-      orgName
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCommitsOrganizationDataListQuery = <
-  TData = CommitsOrganizationDataListQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CommitsOrganizationDataListQueryVariables,
-  options?: UseQueryOptions<CommitsOrganizationDataListQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CommitsOrganizationDataListQuery, TError, TData>(
-    ['commitsOrganizationDataList', variables],
-    fetcher<
-      CommitsOrganizationDataListQuery,
-      CommitsOrganizationDataListQueryVariables
-    >(client, CommitsOrganizationDataListDocument, variables, headers),
-    options
-  );
-
-useCommitsOrganizationDataListQuery.getKey = (
-  variables: CommitsOrganizationDataListQueryVariables
-) => ['commitsOrganizationDataList', variables];
-useCommitsOrganizationDataListQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CommitsOrganizationDataListQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    CommitsOrganizationDataListQuery,
-    CommitsOrganizationDataListQueryVariables
-  >(client, CommitsOrganizationDataListDocument, variables, headers);
-export const CommitsContributorListDocument = /*#__PURE__*/ `
-    query commitsContributorList($label: String!, $level: String = "repo", $branch: String = "master", $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  commitsContributorList(
-    label: $label
-    level: $level
-    branch: $branch
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    authorEmail
-    grimoireCreationDate
-    linesAdded
-    linesChanged
-    linesRemoved
-    orgName
-  }
-}
-    `;
-export const useCommitsContributorListQuery = <
-  TData = CommitsContributorListQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CommitsContributorListQueryVariables,
-  options?: UseQueryOptions<CommitsContributorListQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CommitsContributorListQuery, TError, TData>(
-    ['commitsContributorList', variables],
-    fetcher<CommitsContributorListQuery, CommitsContributorListQueryVariables>(
-      client,
-      CommitsContributorListDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCommitsContributorListQuery.getKey = (
-  variables: CommitsContributorListQueryVariables
-) => ['commitsContributorList', variables];
-useCommitsContributorListQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CommitsContributorListQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CommitsContributorListQuery, CommitsContributorListQueryVariables>(
-    client,
-    CommitsContributorListDocument,
-    variables,
-    headers
-  );
-export const CodesRepoPageDocument = /*#__PURE__*/ `
-    query codesRepoPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  codesRepoPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      lines
-      linesChang
-      linesTotal
-      manager
-      repoAttributeType
-      repoName
-      sigName
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCodesRepoPageQuery = <
-  TData = CodesRepoPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CodesRepoPageQueryVariables,
-  options?: UseQueryOptions<CodesRepoPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CodesRepoPageQuery, TError, TData>(
-    ['codesRepoPage', variables],
-    fetcher<CodesRepoPageQuery, CodesRepoPageQueryVariables>(
-      client,
-      CodesRepoPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCodesRepoPageQuery.getKey = (variables: CodesRepoPageQueryVariables) => [
-  'codesRepoPage',
-  variables,
-];
-useCodesRepoPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CodesRepoPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CodesRepoPageQuery, CodesRepoPageQueryVariables>(
-    client,
-    CodesRepoPageDocument,
-    variables,
-    headers
-  );
-export const CodesDetailPageDocument = /*#__PURE__*/ `
-    query codesDetailPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  codesDetailPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      commitUrls
-      createdAt
-      issueNum
-      linesTotal
-      mergedAt
-      tag
-      title
-      url
-      userLogin
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCodesDetailPageQuery = <
-  TData = CodesDetailPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CodesDetailPageQueryVariables,
-  options?: UseQueryOptions<CodesDetailPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CodesDetailPageQuery, TError, TData>(
-    ['codesDetailPage', variables],
-    fetcher<CodesDetailPageQuery, CodesDetailPageQueryVariables>(
-      client,
-      CodesDetailPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCodesDetailPageQuery.getKey = (variables: CodesDetailPageQueryVariables) => [
-  'codesDetailPage',
-  variables,
-];
-useCodesDetailPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CodesDetailPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CodesDetailPageQuery, CodesDetailPageQueryVariables>(
-    client,
-    CodesDetailPageDocument,
-    variables,
-    headers
-  );
-export const CodesTrendDocument = /*#__PURE__*/ `
-    query codesTrend($label: String!, $level: String = "repo", $branch: String = "master", $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  codesTrend(
-    label: $label
-    level: $level
-    branch: $branch
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    detailList {
-      count
-      date
-    }
-    sigName
-  }
-}
-    `;
-export const useCodesTrendQuery = <TData = CodesTrendQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables: CodesTrendQueryVariables,
-  options?: UseQueryOptions<CodesTrendQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CodesTrendQuery, TError, TData>(
-    ['codesTrend', variables],
-    fetcher<CodesTrendQuery, CodesTrendQueryVariables>(
-      client,
-      CodesTrendDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCodesTrendQuery.getKey = (variables: CodesTrendQueryVariables) => [
-  'codesTrend',
-  variables,
-];
-useCodesTrendQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CodesTrendQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CodesTrendQuery, CodesTrendQueryVariables>(
-    client,
-    CodesTrendDocument,
-    variables,
-    headers
-  );
-export const CommitsSigPageDocument = /*#__PURE__*/ `
-    query commitsSigPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  commitsSigPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      linesAdded
-      linesChanged
-      linesRemoved
-      sigName
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCommitsSigPageQuery = <
-  TData = CommitsSigPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CommitsSigPageQueryVariables,
-  options?: UseQueryOptions<CommitsSigPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CommitsSigPageQuery, TError, TData>(
-    ['commitsSigPage', variables],
-    fetcher<CommitsSigPageQuery, CommitsSigPageQueryVariables>(
-      client,
-      CommitsSigPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCommitsSigPageQuery.getKey = (variables: CommitsSigPageQueryVariables) => [
-  'commitsSigPage',
-  variables,
-];
-useCommitsSigPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CommitsSigPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CommitsSigPageQuery, CommitsSigPageQueryVariables>(
-    client,
-    CommitsSigPageDocument,
-    variables,
-    headers
-  );
-export const CodesCheckDetailPageDocument = /*#__PURE__*/ `
-    query codesCheckDetailPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  codesCheckDetailPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      commentCreatedAt
-      commentNum
-      issueNum
-      linesAdded
-      linesRemoved
-      prState
-      prUrl
-      prUserLogin
-      timeCheckHours
-      userLogin
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCodesCheckDetailPageQuery = <
-  TData = CodesCheckDetailPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CodesCheckDetailPageQueryVariables,
-  options?: UseQueryOptions<CodesCheckDetailPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CodesCheckDetailPageQuery, TError, TData>(
-    ['codesCheckDetailPage', variables],
-    fetcher<CodesCheckDetailPageQuery, CodesCheckDetailPageQueryVariables>(
-      client,
-      CodesCheckDetailPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCodesCheckDetailPageQuery.getKey = (
-  variables: CodesCheckDetailPageQueryVariables
-) => ['codesCheckDetailPage', variables];
-useCodesCheckDetailPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CodesCheckDetailPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CodesCheckDetailPageQuery, CodesCheckDetailPageQueryVariables>(
-    client,
-    CodesCheckDetailPageDocument,
-    variables,
-    headers
-  );
-export const CodesCheckPageDocument = /*#__PURE__*/ `
-    query codesCheckPage($label: String!, $level: String = "repo", $branch: String = "master", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  codesCheckPage(
-    label: $label
-    level: $level
-    branch: $branch
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      commentNum
-      linesAdded
-      linesRemoved
-      timeCheckHours
-      userLogin
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCodesCheckPageQuery = <
-  TData = CodesCheckPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CodesCheckPageQueryVariables,
-  options?: UseQueryOptions<CodesCheckPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CodesCheckPageQuery, TError, TData>(
-    ['codesCheckPage', variables],
-    fetcher<CodesCheckPageQuery, CodesCheckPageQueryVariables>(
-      client,
-      CodesCheckPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCodesCheckPageQuery.getKey = (variables: CodesCheckPageQueryVariables) => [
-  'codesCheckPage',
-  variables,
-];
-useCodesCheckPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CodesCheckPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CodesCheckPageQuery, CodesCheckPageQueryVariables>(
-    client,
-    CodesCheckPageDocument,
-    variables,
-    headers
-  );
-export const CommitFeedbackPageDocument = /*#__PURE__*/ `
-    query commitFeedbackPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!], $beginDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-  commitFeedbackPage(
-    label: $label
-    level: $level
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-    beginDate: $beginDate
-    endDate: $endDate
-  ) {
-    count
-    items {
-      commitHash
-      contactWay
-      createAtDate
-      id
-      newLinesAdded
-      newLinesChanged
-      newLinesRemoved
-      oldLinesAdded
-      oldLinesChanged
-      oldLinesRemoved
-      prUrl
-      repoName
-      requestReviewerEmail
-      reviewMsg
-      reviewerEmail
-      reviewerId
-      state
-      submitReason
-      submitUserEmail
-      submitUserId
-      updateAtDate
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useCommitFeedbackPageQuery = <
-  TData = CommitFeedbackPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: CommitFeedbackPageQueryVariables,
-  options?: UseQueryOptions<CommitFeedbackPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<CommitFeedbackPageQuery, TError, TData>(
-    ['commitFeedbackPage', variables],
-    fetcher<CommitFeedbackPageQuery, CommitFeedbackPageQueryVariables>(
-      client,
-      CommitFeedbackPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useCommitFeedbackPageQuery.getKey = (
-  variables: CommitFeedbackPageQueryVariables
-) => ['commitFeedbackPage', variables];
-useCommitFeedbackPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: CommitFeedbackPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<CommitFeedbackPageQuery, CommitFeedbackPageQueryVariables>(
-    client,
-    CommitFeedbackPageDocument,
-    variables,
-    headers
-  );
-export const OrganizationPageDocument = /*#__PURE__*/ `
-    query organizationPage($page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
-  organizationPage(
-    page: $page
-    per: $per
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-  ) {
-    count
-    items {
-      domain
-      orgName
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useOrganizationPageQuery = <
-  TData = OrganizationPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables?: OrganizationPageQueryVariables,
-  options?: UseQueryOptions<OrganizationPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<OrganizationPageQuery, TError, TData>(
-    variables === undefined
-      ? ['organizationPage']
-      : ['organizationPage', variables],
-    fetcher<OrganizationPageQuery, OrganizationPageQueryVariables>(
-      client,
-      OrganizationPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useOrganizationPageQuery.getKey = (
-  variables?: OrganizationPageQueryVariables
-) =>
-  variables === undefined
-    ? ['organizationPage']
-    : ['organizationPage', variables];
-useOrganizationPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables?: OrganizationPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<OrganizationPageQuery, OrganizationPageQueryVariables>(
-    client,
-    OrganizationPageDocument,
-    variables,
-    headers
-  );
-export const SubjectAccessLevelPageDocument = /*#__PURE__*/ `
-    query subjectAccessLevelPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $accessLevel: Int) {
-  subjectAccessLevelPage(
-    page: $page
-    per: $per
-    label: $label
-    level: $level
-    accessLevel: $accessLevel
-  ) {
-    count
-    items {
-      accessLevel
-      id
-      subjectId
-      user {
-        id
-        name
-        roleLevel
-        email
-        language
-        emailVerified
-        loginBinds {
-          account
-          avatarUrl
-          nickname
-          provider
-        }
-        contributingOrgs {
-          firstDate
-          lastDate
-          orgName
-          platformType
-        }
-      }
-      userId
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useSubjectAccessLevelPageQuery = <
-  TData = SubjectAccessLevelPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: SubjectAccessLevelPageQueryVariables,
-  options?: UseQueryOptions<SubjectAccessLevelPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<SubjectAccessLevelPageQuery, TError, TData>(
-    ['subjectAccessLevelPage', variables],
-    fetcher<SubjectAccessLevelPageQuery, SubjectAccessLevelPageQueryVariables>(
-      client,
-      SubjectAccessLevelPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useSubjectAccessLevelPageQuery.getKey = (
-  variables: SubjectAccessLevelPageQueryVariables
-) => ['subjectAccessLevelPage', variables];
-useSubjectAccessLevelPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: SubjectAccessLevelPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<SubjectAccessLevelPageQuery, SubjectAccessLevelPageQueryVariables>(
-    client,
-    SubjectAccessLevelPageDocument,
-    variables,
-    headers
-  );
-export const SubjectSigPageDocument = /*#__PURE__*/ `
-    query subjectSigPage($label: String!, $level: String = "repo", $page: Int, $per: Int) {
-  subjectSigPage(page: $page, per: $per, label: $label, level: $level) {
-    count
-    items {
-      description
-      emails
-      id
-      linkSig {
-        label
-        level
-        repos
-      }
-      maintainers
-      name
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useSubjectSigPageQuery = <
-  TData = SubjectSigPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: SubjectSigPageQueryVariables,
-  options?: UseQueryOptions<SubjectSigPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<SubjectSigPageQuery, TError, TData>(
-    ['subjectSigPage', variables],
-    fetcher<SubjectSigPageQuery, SubjectSigPageQueryVariables>(
-      client,
-      SubjectSigPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useSubjectSigPageQuery.getKey = (variables: SubjectSigPageQueryVariables) => [
-  'subjectSigPage',
-  variables,
-];
-useSubjectSigPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: SubjectSigPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<SubjectSigPageQuery, SubjectSigPageQueryVariables>(
-    client,
-    SubjectSigPageDocument,
-    variables,
-    headers
-  );
-export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionReportPage($label: String!, $level: String = "repo", $reportTypeList: [Int!]!, $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
-  tpcSoftwareSelectionReportPage(
-    page: $page
-    per: $per
-    reportTypeList: $reportTypeList
-    label: $label
-    level: $level
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-  ) {
-    count
-    items {
-      adaptationMethod
-      architectureDiagrams {
-        filename
-        id
-        url
-      }
-      codeCount
-      codeUrl
-      id
-      name
-      programmingLanguage
-      reportType
-      shortCode
-      user {
-        name
-        loginBinds {
-          account
-          nickname
-          provider
-        }
-      }
-      userId
-      vulnerabilityResponse
-      tpcSoftwareReportMetric {
-        ...tpcSoftwareReportMetric
-      }
-      tpcSoftwareSig {
-        ...tpcSoftwareSig
-      }
-    }
-    page
-    totalPage
-  }
-}
-    ${TpcSoftwareReportMetricFragmentDoc}
-${TpcSoftwareSigFragmentDoc}`;
-export const useTpcSoftwareSelectionReportPageQuery = <
-  TData = TpcSoftwareSelectionReportPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportPageQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareSelectionReportPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionReportPageQuery, TError, TData>(
-    ['tpcSoftwareSelectionReportPage', variables],
-    fetcher<
-      TpcSoftwareSelectionReportPageQuery,
-      TpcSoftwareSelectionReportPageQueryVariables
-    >(client, TpcSoftwareSelectionReportPageDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareSelectionReportPageQuery.getKey = (
-  variables: TpcSoftwareSelectionReportPageQueryVariables
-) => ['tpcSoftwareSelectionReportPage', variables];
-useTpcSoftwareSelectionReportPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareSelectionReportPageQuery,
-    TpcSoftwareSelectionReportPageQueryVariables
-  >(client, TpcSoftwareSelectionReportPageDocument, variables, headers);
-export const TpcSoftwareSelectionPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionPage($label: String!, $level: String = "repo", $selectionType: Int!, $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
-  tpcSoftwareSelectionPage(
-    page: $page
-    per: $per
-    selectionType: $selectionType
-    label: $label
-    level: $level
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-  ) {
-    count
-    items {
-      committers
-      createdAt
-      demandSource
-      functionalDescription
-      id
-      incubationTime
-      isSameTypeCheck
-      issueUrl
-      repoUrl
-      reason
-      sameTypeSoftwareName
-      selectionType
-      targetSoftware
-      updatedAt
-      user {
-        name
-        loginBinds {
-          account
-          nickname
-          provider
-        }
-      }
-      userId
-      tpcSoftwareSelectionReportIds
-      tpcSoftwareSelectionReports {
-        name
-        shortCode
-        codeUrl
-      }
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useTpcSoftwareSelectionPageQuery = <
-  TData = TpcSoftwareSelectionPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionPageQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareSelectionPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionPageQuery, TError, TData>(
-    ['tpcSoftwareSelectionPage', variables],
-    fetcher<
-      TpcSoftwareSelectionPageQuery,
-      TpcSoftwareSelectionPageQueryVariables
-    >(client, TpcSoftwareSelectionPageDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareSelectionPageQuery.getKey = (
-  variables: TpcSoftwareSelectionPageQueryVariables
-) => ['tpcSoftwareSelectionPage', variables];
-useTpcSoftwareSelectionPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareSelectionPageQuery,
-    TpcSoftwareSelectionPageQueryVariables
-  >(client, TpcSoftwareSelectionPageDocument, variables, headers);
-export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionReport($shortCode: String!) {
-  tpcSoftwareSelectionReport(shortCode: $shortCode) {
-    adaptationMethod
-    architectureDiagrams {
-      filename
-      id
-      url
-    }
-    codeCount
-    codeUrl
-    id
-    name
-    programmingLanguage
-    shortCode
-    vulnerabilityResponse
-    tpcSoftwareReportMetric {
-      ...tpcSoftwareReportMetric
-      ...tpcSoftwareReportMetricDetail
-    }
-    tpcSoftwareSig {
-      ...tpcSoftwareSig
-    }
-    userId
-  }
-  tpcSoftwareReportMetricClarificationPermission(
-    shortCode: $shortCode
-    reportType: 0
-  ) {
-    clarificationCommitterPermission
-    clarificationSigLeadPermission
-    clarificationCompliancePermission
-    clarificationLegalPermission
-  }
-}
-    ${TpcSoftwareReportMetricFragmentDoc}
-${TpcSoftwareReportMetricDetailFragmentDoc}
-${TpcSoftwareSigFragmentDoc}`;
-export const useTpcSoftwareSelectionReportQuery = <
-  TData = TpcSoftwareSelectionReportQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareSelectionReportQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionReportQuery, TError, TData>(
-    ['tpcSoftwareSelectionReport', variables],
-    fetcher<
-      TpcSoftwareSelectionReportQuery,
-      TpcSoftwareSelectionReportQueryVariables
-    >(client, TpcSoftwareSelectionReportDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareSelectionReportQuery.getKey = (
-  variables: TpcSoftwareSelectionReportQueryVariables
-) => ['tpcSoftwareSelectionReport', variables];
-useTpcSoftwareSelectionReportQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareSelectionReportQuery,
-    TpcSoftwareSelectionReportQueryVariables
-  >(client, TpcSoftwareSelectionReportDocument, variables, headers);
-export const TpcSoftwareSelectionReportRowDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionReportRow($shortCode: String!) {
-  tpcSoftwareSelectionReport(shortCode: $shortCode) {
-    id
-    tpcSoftwareReportMetricRaw {
-      ...tpcSoftwareReportMetricRaw
-    }
-  }
-}
-    ${TpcSoftwareReportMetricRawFragmentDoc}`;
-export const useTpcSoftwareSelectionReportRowQuery = <
-  TData = TpcSoftwareSelectionReportRowQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportRowQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareSelectionReportRowQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionReportRowQuery, TError, TData>(
-    ['tpcSoftwareSelectionReportRow', variables],
-    fetcher<
-      TpcSoftwareSelectionReportRowQuery,
-      TpcSoftwareSelectionReportRowQueryVariables
-    >(client, TpcSoftwareSelectionReportRowDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareSelectionReportRowQuery.getKey = (
-  variables: TpcSoftwareSelectionReportRowQueryVariables
-) => ['tpcSoftwareSelectionReportRow', variables];
-useTpcSoftwareSelectionReportRowQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportRowQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareSelectionReportRowQuery,
-    TpcSoftwareSelectionReportRowQueryVariables
-  >(client, TpcSoftwareSelectionReportRowDocument, variables, headers);
-export const TpcSoftwareReportMetricClarificationPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareReportMetricClarificationPage($shortCode: String!, $metricName: String!, $page: Int, $per: Int, $reportType: Int = 0) {
-  tpcSoftwareReportMetricClarificationPage(
-    shortCode: $shortCode
-    page: $page
-    per: $per
-    metricName: $metricName
-    reportType: $reportType
-  ) {
-    count
-    items {
-      content
-      createdAt
-      id
-      metricName
-      updatedAt
-      user {
-        name
-        loginBinds {
-          account
-          avatarUrl
-          nickname
-          provider
-        }
-      }
-      userId
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useTpcSoftwareReportMetricClarificationPageQuery = <
-  TData = TpcSoftwareReportMetricClarificationPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareReportMetricClarificationPageQueryVariables,
-  options?: UseQueryOptions<
-    TpcSoftwareReportMetricClarificationPageQuery,
-    TError,
-    TData
-  >,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareReportMetricClarificationPageQuery, TError, TData>(
-    ['tpcSoftwareReportMetricClarificationPage', variables],
-    fetcher<
-      TpcSoftwareReportMetricClarificationPageQuery,
-      TpcSoftwareReportMetricClarificationPageQueryVariables
-    >(
-      client,
-      TpcSoftwareReportMetricClarificationPageDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useTpcSoftwareReportMetricClarificationPageQuery.getKey = (
-  variables: TpcSoftwareReportMetricClarificationPageQueryVariables
-) => ['tpcSoftwareReportMetricClarificationPage', variables];
-useTpcSoftwareReportMetricClarificationPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareReportMetricClarificationPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareReportMetricClarificationPageQuery,
-    TpcSoftwareReportMetricClarificationPageQueryVariables
-  >(
-    client,
-    TpcSoftwareReportMetricClarificationPageDocument,
-    variables,
-    headers
-  );
-export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionReportRisk($shortCode: String!) {
-  tpcSoftwareSelectionReport(shortCode: $shortCode) {
-    codeUrl
-    id
-    shortCode
-    metricClarificationCount {
-      complianceDco
-      complianceLicense
-      complianceLicenseCompatibility
-      compliancePackageSig
-      ecologyAdoptionAnalysis
-      ecologyCodeMaintenance
-      ecologyCommunitySupport
-      ecologyDependencyAcquisition
-      ecologyPatentRisk
-      ecologySoftwareQuality
-      ecologyAdaptationMethod
-      lifecycleVersionLifecycle
-      lifecycleVersionNormalization
-      lifecycleVersionNumber
-      securityBinaryArtifact
-      securityHistoryVulnerability
-      securityVulnerability
-      securityVulnerabilityDisclosure
-      securityVulnerabilityResponse
-    }
-    metricClarificationState {
-      complianceDco {
-        ...tpcClarificationStateDetail
-      }
-      complianceLicense {
-        ...tpcClarificationStateDetail
-      }
-      complianceLicenseCompatibility {
-        ...tpcClarificationStateDetail
-      }
-      compliancePackageSig {
-        ...tpcClarificationStateDetail
-      }
-      ecologyAdoptionAnalysis {
-        ...tpcClarificationStateDetail
-      }
-      ecologyCodeMaintenance {
-        ...tpcClarificationStateDetail
-      }
-      ecologyCommunitySupport {
-        ...tpcClarificationStateDetail
-      }
-      ecologyDependencyAcquisition {
-        ...tpcClarificationStateDetail
-      }
-      ecologyPatentRisk {
-        ...tpcClarificationStateDetail
-      }
-      ecologySoftwareQuality {
-        ...tpcClarificationStateDetail
-      }
-      ecologyAdaptationMethod {
-        ...tpcClarificationStateDetail
-      }
-      lifecycleVersionLifecycle {
-        ...tpcClarificationStateDetail
-      }
-      lifecycleVersionNormalization {
-        ...tpcClarificationStateDetail
-      }
-      lifecycleVersionNumber {
-        ...tpcClarificationStateDetail
-      }
-      securityBinaryArtifact {
-        ...tpcClarificationStateDetail
-      }
-      securityHistoryVulnerability {
-        ...tpcClarificationStateDetail
-      }
-      securityVulnerability {
-        ...tpcClarificationStateDetail
-      }
-      securityVulnerabilityDisclosure {
-        ...tpcClarificationStateDetail
-      }
-      securityVulnerabilityResponse {
-        ...tpcClarificationStateDetail
-      }
-    }
-    userId
-  }
-}
-    ${TpcClarificationStateDetailFragmentDoc}`;
-export const useTpcSoftwareSelectionReportRiskQuery = <
-  TData = TpcSoftwareSelectionReportRiskQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportRiskQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareSelectionReportRiskQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionReportRiskQuery, TError, TData>(
-    ['tpcSoftwareSelectionReportRisk', variables],
-    fetcher<
-      TpcSoftwareSelectionReportRiskQuery,
-      TpcSoftwareSelectionReportRiskQueryVariables
-    >(client, TpcSoftwareSelectionReportRiskDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareSelectionReportRiskQuery.getKey = (
-  variables: TpcSoftwareSelectionReportRiskQueryVariables
-) => ['tpcSoftwareSelectionReportRisk', variables];
-useTpcSoftwareSelectionReportRiskQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionReportRiskQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareSelectionReportRiskQuery,
-    TpcSoftwareSelectionReportRiskQueryVariables
-  >(client, TpcSoftwareSelectionReportRiskDocument, variables, headers);
-export const TpcSoftwareSelectionCommentPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionCommentPage($selectionId: Int!, $page: Int!, $per: Int!, $reportType: Int = 0) {
-  tpcSoftwareSelectionCommentPage(
-    page: $page
-    per: $per
-    selectionId: $selectionId
-    reportType: $reportType
-  ) {
-    count
-    items {
-      content
-      createdAt
-      id
-      updatedAt
-      user {
-        name
-        loginBinds {
-          account
-          avatarUrl
-          nickname
-          provider
-        }
-      }
-      userId
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useTpcSoftwareSelectionCommentPageQuery = <
-  TData = TpcSoftwareSelectionCommentPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionCommentPageQueryVariables,
-  options?: UseQueryOptions<
-    TpcSoftwareSelectionCommentPageQuery,
-    TError,
-    TData
-  >,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionCommentPageQuery, TError, TData>(
-    ['tpcSoftwareSelectionCommentPage', variables],
-    fetcher<
-      TpcSoftwareSelectionCommentPageQuery,
-      TpcSoftwareSelectionCommentPageQueryVariables
-    >(client, TpcSoftwareSelectionCommentPageDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareSelectionCommentPageQuery.getKey = (
-  variables: TpcSoftwareSelectionCommentPageQueryVariables
-) => ['tpcSoftwareSelectionCommentPage', variables];
-useTpcSoftwareSelectionCommentPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionCommentPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareSelectionCommentPageQuery,
-    TpcSoftwareSelectionCommentPageQueryVariables
-  >(client, TpcSoftwareSelectionCommentPageDocument, variables, headers);
-export const TpcSoftwareSelectionDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelection($selectionId: Int!) {
-  tpcSoftwareSelection(selectionId: $selectionId) {
-    commentCompliancePermission
-    commentLegalPermission
-    commentCommitterPermission
-    commentCount
-    commentSigLeadPermission
-    commentState {
-      createdAt
-      id
-      memberType
-      state
-      updatedAt
-      user {
-        name
-        loginBinds {
-          account
-          avatarUrl
-          nickname
-          provider
-        }
-      }
-      userId
-    }
-    targetSoftware
-    reason
-    demandSource
-    functionalDescription
-    incubationTime
-    committers
-    isSameTypeCheck
-    sameTypeSoftwareName
-    repoUrl
-    tpcSoftwareSelectionReports {
-      adaptationMethod
-      license
-      codeUrl
-    }
-  }
-}
-    `;
-export const useTpcSoftwareSelectionQuery = <
-  TData = TpcSoftwareSelectionQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareSelectionQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionQuery, TError, TData>(
-    ['tpcSoftwareSelection', variables],
-    fetcher<TpcSoftwareSelectionQuery, TpcSoftwareSelectionQueryVariables>(
-      client,
-      TpcSoftwareSelectionDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useTpcSoftwareSelectionQuery.getKey = (
-  variables: TpcSoftwareSelectionQueryVariables
-) => ['tpcSoftwareSelection', variables];
-useTpcSoftwareSelectionQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<TpcSoftwareSelectionQuery, TpcSoftwareSelectionQueryVariables>(
-    client,
-    TpcSoftwareSelectionDocument,
-    variables,
-    headers
-  );
-export const TpcSoftwareGraduationReportPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareGraduationReportPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
-  tpcSoftwareGraduationReportPage(
-    page: $page
-    per: $per
-    label: $label
-    level: $level
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-  ) {
-    count
-    items {
-      adaptationMethod
-      architectureDiagrams {
-        filename
-        id
-        url
-      }
-      isIncubation
-      roundUpstream
-      codeUrl
-      id
-      name
-      upstreamCodeUrl
-      lifecyclePolicy
-      shortCode
-      programmingLanguage
-      user {
-        name
-        loginBinds {
-          account
-          nickname
-          provider
-        }
-      }
-      userId
-      graduationReportMetric {
-        ...tpcSoftwareGraduationReportMetric
-      }
-      tpcSoftwareSig {
-        ...tpcSoftwareSig
-      }
-    }
-    page
-    totalPage
-  }
-}
-    ${TpcSoftwareGraduationReportMetricFragmentDoc}
-${TpcSoftwareSigFragmentDoc}`;
-export const useTpcSoftwareGraduationReportPageQuery = <
-  TData = TpcSoftwareGraduationReportPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportPageQueryVariables,
-  options?: UseQueryOptions<
-    TpcSoftwareGraduationReportPageQuery,
-    TError,
-    TData
-  >,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareGraduationReportPageQuery, TError, TData>(
-    ['tpcSoftwareGraduationReportPage', variables],
-    fetcher<
-      TpcSoftwareGraduationReportPageQuery,
-      TpcSoftwareGraduationReportPageQueryVariables
-    >(client, TpcSoftwareGraduationReportPageDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareGraduationReportPageQuery.getKey = (
-  variables: TpcSoftwareGraduationReportPageQueryVariables
-) => ['tpcSoftwareGraduationReportPage', variables];
-useTpcSoftwareGraduationReportPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareGraduationReportPageQuery,
-    TpcSoftwareGraduationReportPageQueryVariables
-  >(client, TpcSoftwareGraduationReportPageDocument, variables, headers);
-export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
-    query tpcSoftwareGraduationReport($shortCode: String!) {
-  tpcSoftwareGraduationReport(shortCode: $shortCode) {
-    adaptationMethod
-    architectureDiagrams {
-      filename
-      id
-      url
-    }
-    codeCount
-    license
-    codeUrl
-    id
-    name
-    upstreamCodeUrl
-    shortCode
-    programmingLanguage
-    user {
-      name
-      loginBinds {
-        account
-        nickname
-        provider
-      }
-    }
-    userId
-    graduationReportMetric {
-      ...tpcSoftwareGraduationReportMetric
-      ...tpcSoftwareGraduationReportMetricDetail
-    }
-    tpcSoftwareSig {
-      ...tpcSoftwareSig
-    }
-  }
-  tpcSoftwareReportMetricClarificationPermission(
-    shortCode: $shortCode
-    reportType: 1
-  ) {
-    clarificationCommitterPermission
-    clarificationSigLeadPermission
-    clarificationCompliancePermission
-    clarificationLegalPermission
-  }
-}
-    ${TpcSoftwareGraduationReportMetricFragmentDoc}
-${TpcSoftwareGraduationReportMetricDetailFragmentDoc}
-${TpcSoftwareSigFragmentDoc}`;
-export const useTpcSoftwareGraduationReportQuery = <
-  TData = TpcSoftwareGraduationReportQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareGraduationReportQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareGraduationReportQuery, TError, TData>(
-    ['tpcSoftwareGraduationReport', variables],
-    fetcher<
-      TpcSoftwareGraduationReportQuery,
-      TpcSoftwareGraduationReportQueryVariables
-    >(client, TpcSoftwareGraduationReportDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareGraduationReportQuery.getKey = (
-  variables: TpcSoftwareGraduationReportQueryVariables
-) => ['tpcSoftwareGraduationReport', variables];
-useTpcSoftwareGraduationReportQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareGraduationReportQuery,
-    TpcSoftwareGraduationReportQueryVariables
-  >(client, TpcSoftwareGraduationReportDocument, variables, headers);
-export const TpcSoftwareGraduationPageDocument = /*#__PURE__*/ `
-    query tpcSoftwareGraduationPage($label: String!, $level: String = "repo", $page: Int, $per: Int, $filterOpts: [FilterOptionInput!], $sortOpts: [SortOptionInput!]) {
-  tpcSoftwareGraduationPage(
-    page: $page
-    per: $per
-    label: $label
-    level: $level
-    filterOpts: $filterOpts
-    sortOpts: $sortOpts
-  ) {
-    count
-    items {
-      id
-      createdAt
-      updatedAt
-      demandSource
-      committers
-      incubationStartTime
-      incubationTime
-      issueUrl
-      tpcSoftwareGraduationReportIds
-      functionalDescription
-      tpcSoftwareGraduationReports {
-        name
-        shortCode
-        codeUrl
-        license
-        codeCount
-      }
-      user {
-        name
-        loginBinds {
-          account
-          nickname
-          provider
-        }
-      }
-      userId
-    }
-    page
-    totalPage
-  }
-}
-    `;
-export const useTpcSoftwareGraduationPageQuery = <
-  TData = TpcSoftwareGraduationPageQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationPageQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareGraduationPageQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareGraduationPageQuery, TError, TData>(
-    ['tpcSoftwareGraduationPage', variables],
-    fetcher<
-      TpcSoftwareGraduationPageQuery,
-      TpcSoftwareGraduationPageQueryVariables
-    >(client, TpcSoftwareGraduationPageDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareGraduationPageQuery.getKey = (
-  variables: TpcSoftwareGraduationPageQueryVariables
-) => ['tpcSoftwareGraduationPage', variables];
-useTpcSoftwareGraduationPageQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationPageQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareGraduationPageQuery,
-    TpcSoftwareGraduationPageQueryVariables
-  >(client, TpcSoftwareGraduationPageDocument, variables, headers);
-export const TpcSoftwareGraduationDocument = /*#__PURE__*/ `
-    query tpcSoftwareGraduation($graduationId: Int!) {
-  tpcSoftwareGraduation(graduationId: $graduationId) {
-    commentCompliancePermission
-    commentLegalPermission
-    commentCommitterPermission
-    commentCount
-    commentSigLeadPermission
-    commentState {
-      createdAt
-      id
-      memberType
-      state
-      updatedAt
-      user {
-        name
-        loginBinds {
-          account
-          avatarUrl
-          nickname
-          provider
-        }
-      }
-      userId
-    }
-    demandSource
-    incubationTime
-    committers
-    functionalDescription
-    tpcSoftwareGraduationReports {
-      adaptationMethod
-      license
-      codeUrl
-      name
-      codeCount
-    }
-  }
-}
-    `;
-export const useTpcSoftwareGraduationQuery = <
-  TData = TpcSoftwareGraduationQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareGraduationQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareGraduationQuery, TError, TData>(
-    ['tpcSoftwareGraduation', variables],
-    fetcher<TpcSoftwareGraduationQuery, TpcSoftwareGraduationQueryVariables>(
-      client,
-      TpcSoftwareGraduationDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useTpcSoftwareGraduationQuery.getKey = (
-  variables: TpcSoftwareGraduationQueryVariables
-) => ['tpcSoftwareGraduation', variables];
-useTpcSoftwareGraduationQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<TpcSoftwareGraduationQuery, TpcSoftwareGraduationQueryVariables>(
-    client,
-    TpcSoftwareGraduationDocument,
-    variables,
-    headers
-  );
-export const TpcSoftwareGraduationReportRiskDocument = /*#__PURE__*/ `
-    query tpcSoftwareGraduationReportRisk($shortCode: String!) {
-  tpcSoftwareGraduationReport(shortCode: $shortCode) {
-    codeUrl
-    id
-    shortCode
-    metricClarificationCount {
-      complianceCopyrightStatement
-      complianceCopyrightStatementAntiTamper
-      complianceDco
-      complianceLicense
-      complianceLicenseCompatibility
-      complianceSnippetReference
-      ecologyBuild
-      ecologyBuildDoc
-      ecologyCi
-      ecologyCodeReview
-      ecologyCodeUpstream
-      ecologyInterfaceDoc
-      ecologyIssueManagement
-      ecologyIssueResponseRatio
-      ecologyIssueResponseTime
-      ecologyMaintainerDoc
-      ecologyReadme
-      ecologyTestCoverage
-      lifecycleReleaseNote
-      lifecycleStatement
-      securityBinaryArtifact
-      securityPackageSig
-      securityVulnerability
-    }
-    metricClarificationState {
-      complianceCopyrightStatement {
-        ...tpcClarificationStateDetail
-      }
-      complianceCopyrightStatementAntiTamper {
-        ...tpcClarificationStateDetail
-      }
-      complianceDco {
-        ...tpcClarificationStateDetail
-      }
-      complianceLicense {
-        ...tpcClarificationStateDetail
-      }
-      complianceLicenseCompatibility {
-        ...tpcClarificationStateDetail
-      }
-      complianceSnippetReference {
-        ...tpcClarificationStateDetail
-      }
-      ecologyBuild {
-        ...tpcClarificationStateDetail
-      }
-      ecologyBuildDoc {
-        ...tpcClarificationStateDetail
-      }
-      ecologyCi {
-        ...tpcClarificationStateDetail
-      }
-      ecologyCodeReview {
-        ...tpcClarificationStateDetail
-      }
-      ecologyCodeUpstream {
-        ...tpcClarificationStateDetail
-      }
-      ecologyInterfaceDoc {
-        ...tpcClarificationStateDetail
-      }
-      ecologyIssueManagement {
-        ...tpcClarificationStateDetail
-      }
-      ecologyIssueResponseRatio {
-        ...tpcClarificationStateDetail
-      }
-      ecologyIssueResponseTime {
-        ...tpcClarificationStateDetail
-      }
-      ecologyMaintainerDoc {
-        ...tpcClarificationStateDetail
-      }
-      ecologyReadme {
-        ...tpcClarificationStateDetail
-      }
-      ecologyTestCoverage {
-        ...tpcClarificationStateDetail
-      }
-      lifecycleReleaseNote {
-        ...tpcClarificationStateDetail
-      }
-      lifecycleStatement {
-        ...tpcClarificationStateDetail
-      }
-      securityBinaryArtifact {
-        ...tpcClarificationStateDetail
-      }
-      securityPackageSig {
-        ...tpcClarificationStateDetail
-      }
-      securityVulnerability {
-        ...tpcClarificationStateDetail
-      }
-    }
-    userId
-  }
-}
-    ${TpcClarificationStateDetailFragmentDoc}`;
-export const useTpcSoftwareGraduationReportRiskQuery = <
-  TData = TpcSoftwareGraduationReportRiskQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportRiskQueryVariables,
-  options?: UseQueryOptions<
-    TpcSoftwareGraduationReportRiskQuery,
-    TError,
-    TData
-  >,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareGraduationReportRiskQuery, TError, TData>(
-    ['tpcSoftwareGraduationReportRisk', variables],
-    fetcher<
-      TpcSoftwareGraduationReportRiskQuery,
-      TpcSoftwareGraduationReportRiskQueryVariables
-    >(client, TpcSoftwareGraduationReportRiskDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareGraduationReportRiskQuery.getKey = (
-  variables: TpcSoftwareGraduationReportRiskQueryVariables
-) => ['tpcSoftwareGraduationReportRisk', variables];
-useTpcSoftwareGraduationReportRiskQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportRiskQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareGraduationReportRiskQuery,
-    TpcSoftwareGraduationReportRiskQueryVariables
-  >(client, TpcSoftwareGraduationReportRiskDocument, variables, headers);
-export const TpcSoftwareGraduationReportRowDocument = /*#__PURE__*/ `
-    query tpcSoftwareGraduationReportRow($shortCode: String!) {
-  tpcSoftwareGraduationReport(shortCode: $shortCode) {
-    id
-    graduationReportMetricRaw {
-      ...tpcSoftwareGraduationReportMetricRaw
-    }
-  }
-}
-    ${TpcSoftwareGraduationReportMetricRawFragmentDoc}`;
-export const useTpcSoftwareGraduationReportRowQuery = <
-  TData = TpcSoftwareGraduationReportRowQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportRowQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareGraduationReportRowQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareGraduationReportRowQuery, TError, TData>(
-    ['tpcSoftwareGraduationReportRow', variables],
-    fetcher<
-      TpcSoftwareGraduationReportRowQuery,
-      TpcSoftwareGraduationReportRowQueryVariables
-    >(client, TpcSoftwareGraduationReportRowDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareGraduationReportRowQuery.getKey = (
-  variables: TpcSoftwareGraduationReportRowQueryVariables
-) => ['tpcSoftwareGraduationReportRow', variables];
-useTpcSoftwareGraduationReportRowQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareGraduationReportRowQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareGraduationReportRowQuery,
-    TpcSoftwareGraduationReportRowQueryVariables
-  >(client, TpcSoftwareGraduationReportRowDocument, variables, headers);
-export const TpcSoftwareSelectionSearchDocument = /*#__PURE__*/ `
-    query tpcSoftwareSelectionSearch($label: String!, $level: String = "repo", $keyword: String!, $selectionType: Int!) {
-  tpcSoftwareSelectionSearch(
-    label: $label
-    level: $level
-    keyword: $keyword
-    selectionType: $selectionType
-  ) {
-    repoUrl
-    tpcSoftwareSelectionReport {
-      name
-      codeUrl
-      tpcSoftwareSigId
-      programmingLanguage
-      adaptationMethod
-    }
-  }
-}
-    `;
-export const useTpcSoftwareSelectionSearchQuery = <
-  TData = TpcSoftwareSelectionSearchQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionSearchQueryVariables,
-  options?: UseQueryOptions<TpcSoftwareSelectionSearchQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<TpcSoftwareSelectionSearchQuery, TError, TData>(
-    ['tpcSoftwareSelectionSearch', variables],
-    fetcher<
-      TpcSoftwareSelectionSearchQuery,
-      TpcSoftwareSelectionSearchQueryVariables
-    >(client, TpcSoftwareSelectionSearchDocument, variables, headers),
-    options
-  );
-
-useTpcSoftwareSelectionSearchQuery.getKey = (
-  variables: TpcSoftwareSelectionSearchQueryVariables
-) => ['tpcSoftwareSelectionSearch', variables];
-useTpcSoftwareSelectionSearchQuery.fetcher = (
-  client: GraphQLClient,
-  variables: TpcSoftwareSelectionSearchQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<
-    TpcSoftwareSelectionSearchQuery,
-    TpcSoftwareSelectionSearchQueryVariables
-  >(client, TpcSoftwareSelectionSearchDocument, variables, headers);

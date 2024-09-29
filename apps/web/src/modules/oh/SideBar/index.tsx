@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd';
 import { Layout, Menu, Button } from 'antd';
 import { usePrevious, useWindowScroll } from 'react-use';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
-import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
+// import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 import { useUserInfo } from '@modules/auth';
 import { menuItems } from '@modules/oh/SideBar/MenuItems';
 
@@ -17,6 +17,7 @@ const SideMenu: React.FC = () => {
     items = menuItems;
   } else {
     items.push(menuItems[2]);
+    items.push(menuItems[3]);
   }
   const id = useHashchangeEvent();
   // const { clearAllQueryParams } = useHandleQueryParams();

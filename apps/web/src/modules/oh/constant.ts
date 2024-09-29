@@ -127,3 +127,25 @@ export const queryKey = {
   label: 'OpenHarmony-TPC',
   level: 'community',
 };
+export const taskState = [
+  {
+    text: '待澄清',
+    value: 0,
+  },
+  {
+    text: '待确认',
+    value: 1,
+  },
+  {
+    text: '待审批',
+    value: 2,
+  },
+  {
+    text: '已通过',
+    value: 3,
+  },
+  {
+    text: '已拒绝',
+    value: -1,
+  },
+];

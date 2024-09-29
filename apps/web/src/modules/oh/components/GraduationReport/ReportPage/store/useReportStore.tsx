@@ -59,6 +59,37 @@ export const useGetReportData = () => {
     tpcSoftwareGraduationReports,
   };
 };
+export const useGetTaskTimelineData = () => {
+  const { data, loading } = useSnapshot(ReportStore);
+  if (loading) {
+    return { state: null };
+  }
+  const {
+    sigLeadCount,
+    state,
+    riskCount,
+    legalCount,
+    complianceCount,
+    confirmedCount,
+    committerCount,
+    awaitingClarificationCount,
+    awaitingConfirmationCount,
+    clarifiedCount,
+  } = data || {};
+  // const baseInfo =
+  return {
+    sigLeadCount,
+    state,
+    riskCount,
+    legalCount,
+    complianceCount,
+    confirmedCount,
+    committerCount,
+    awaitingClarificationCount,
+    awaitingConfirmationCount,
+    clarifiedCount,
+  };
+};
 export const resetReportData = () => {
   ReportStore.loading = false;
   ReportStore.data = null;
