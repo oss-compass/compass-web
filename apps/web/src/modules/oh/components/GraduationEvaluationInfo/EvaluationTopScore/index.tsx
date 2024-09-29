@@ -10,7 +10,7 @@ const EvaluationTopScore = ({ items, score }) => {
     }
   };
   return (
-    <div className="mt-6 flex h-52 border bg-[#f9f9f9]">
+    <div className="mt-6 flex h-52 border bg-[#fafafa]">
       <div className="flex h-full w-40 items-center ">
         <Pie score={score} />
       </div>

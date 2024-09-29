@@ -18,15 +18,9 @@ const MyTable = (props) => {
     setLocale(l === 'zh' ? zhCN : enUS);
   }, []);
   return (
-    <div>
-      <ConfigProvider locale={local}>
-        <Table
-          {...props}
-          // rowClassName={(_record, i) => (i % 2 === 1 ? '!bg-[#fafafa]' : '')}
-          // bordered
-        />
-      </ConfigProvider>
-    </div>
+    <ConfigProvider locale={local}>
+      <Table {...props} />
+    </ConfigProvider>
   );
 };
 export default MyTable;

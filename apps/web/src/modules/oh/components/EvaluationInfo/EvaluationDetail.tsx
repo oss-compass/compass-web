@@ -32,7 +32,7 @@ const EvaluationDetail = ({
   return (
     <div>
       <RiskFetcher shortCode={item.shortCode} />
-      <div className="flex justify-between border bg-[#f9f9f9] py-3 px-6">
+      <div className="flex justify-between border bg-[#fafafa] py-3 px-6">
         <div className="flex">
           {back && (
             <LeftCircleOutlined

@@ -10,7 +10,7 @@ import {
 
 const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
   return (
-    <div className="mb-4 flex flex-col border bg-[#f9f9f9] p-6">
+    <div className="mb-4 flex flex-col border bg-[#fafafa] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
         {mertic}
       </div>

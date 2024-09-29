@@ -36,7 +36,7 @@ const EvaluationDetail = ({
         data={item}
         metricItemScoreList={metricItemScoreList}
       />
-      <div className="flex justify-between border bg-[#f9f9f9] py-3 px-6">
+      <div className="flex justify-between border bg-[#fafafa] py-3 px-6">
         <div className="flex">
           {back && (
             <LeftCircleOutlined

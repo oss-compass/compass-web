@@ -96,7 +96,7 @@ const EvaluationBaseInfo = ({ item, refetch }) => {
     },
   ];
   return (
-    <div className="mt-6 border bg-[#f9f9f9] p-6 pb-3">
+    <div className="mt-6 border bg-[#fafafa] p-6 pb-3">
       <div className="mb-4 text-lg font-semibold">
         基础信息
         <div className="float-right cursor-pointer text-lg">

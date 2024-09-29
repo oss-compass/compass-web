@@ -10,7 +10,7 @@ import Pie from '@modules/oh/components/Pie';
 
 const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
   return (
-    <div className="flex h-40  bg-[#f9f9f9]">
+    <div className="flex h-40  bg-[#fafafa]">
       <div className="flex h-full w-28 items-center ">
         <Pie score={score} />
       </div>
