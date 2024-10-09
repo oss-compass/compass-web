@@ -42,7 +42,7 @@ export const useTableColumns = (anction) => {
       title: 'Issue 链接',
       key: 'issueUrl',
       dataIndex: 'issueUrl',
-      width: 120,
+      width: 100,
       render: (issueUrl) => {
         return (
           <a
@@ -50,7 +50,7 @@ export const useTableColumns = (anction) => {
             href={issueUrl}
             className="block w-28 overflow-hidden truncate  whitespace-nowrap text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
-            {issueUrl}
+            {issueUrl?.slice(-6)}
           </a>
         );
       },

@@ -13,9 +13,9 @@ import CommunityContributions from '@modules/oh/DataView/Contribute/CommunityCon
 import CommunityOverview from '@modules/oh/DataView/Community/CommunityOverview';
 import CommunityManagement from '@modules/oh/DataView/Community/CommunityManagement';
 import SigCenter from '@modules/oh/DataView/Community/SigCenter';
-import SandboxReport from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxReport';
-import SandboxProject from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxProject';
-import SandboxTable from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxTable';
+import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
+import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
+import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
 // import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
 // import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
 // import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
@@ -150,12 +150,9 @@ export const componentMap = {
   code: <CodeStatistics />,
   committer: <CommitterStatistics />,
   communityContributions: <CommunityContributions />,
-  // sandboxReport: <Graduate />,
-  // sandboxProject: <Graduate />,
-  // sandboxTable: <Graduate />,
-  hatchReport: <SandboxReport />,
-  hatchProject: <SandboxProject />,
-  hatchTable: <SandboxTable />,
+  hatchReport: <HatchReport />,
+  hatchProject: <HatchProject />,
+  hatchTable: <HatchTable />,
   graduateReport: <GraduateReport />,
   graduateProject: <GraduateProject />,
   graduateTable: <GraduateTable />,
