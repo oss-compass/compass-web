@@ -21,7 +21,6 @@ import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable'
 // import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
 // import Graduate from '@modules/oh/DataView/HatchingTreatment/Graduate';
 import UserWorkbench from '@modules/oh/DataView/HatchingTreatment/UserWorkbench';
-import BoardSandbox from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardSandbox';
 import BoardHatch from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardHatch';
 import BoardGraduateBoard from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardGraduateBoard';
 import ReportPage from '@modules/oh/components/Report/ReportPage';
@@ -121,10 +120,6 @@ export const menuItems: MenuItem[] = [
         label: '治理看板',
         children: [
           {
-            key: 'boardSandbox',
-            label: '沙箱项目',
-          },
-          {
             key: 'boardHatch',
             label: '孵化项目',
           },
@@ -156,7 +151,6 @@ export const componentMap = {
   graduateReport: <GraduateReport />,
   graduateProject: <GraduateProject />,
   graduateTable: <GraduateTable />,
-  boardSandbox: <BoardSandbox />,
   boardHatch: <BoardHatch />,
   boardGraduateBoard: <BoardGraduateBoard />,
   reportDetailPage: <ReportPage />,
