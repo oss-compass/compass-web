@@ -16,7 +16,7 @@ const ProjectPageDetail = () => {
     <div className="div">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
         <div className="oh-tabs flex items-center  border-b px-5 py-2 text-lg font-semibold">
-          {'孵化申请详情'}
+          {'毕业申请详情'}
           <GraduationTimeline />
         </div>
         <div className="relative h-[calc(100%-60px)] overflow-auto p-5">
