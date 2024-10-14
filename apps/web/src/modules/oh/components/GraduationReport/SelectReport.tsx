@@ -20,8 +20,6 @@ const SelectReport = ({ getReport }) => {
       },
     ],
     reportTypeList: [0],
-    page: 1,
-    per: 100,
   };
 
   return (

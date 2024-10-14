@@ -7,6 +7,7 @@ import GetReportData from '@modules/oh/components/GraduationReport/GetReportData
 import { getMetricScore } from '@modules/oh/components/GraduationEvaluationInfo/MerticDetail';
 import Pie from '@modules/oh/components/Pie';
 import Loading from '@modules/oh/components/Loading';
+import Pagination from '@common/components/Antd/Pagination';
 
 const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
   return (
@@ -52,10 +53,14 @@ const Report = ({
   query: any;
   selectFun?: (name) => void;
 }) => {
-  const { isLoading, data } = useTpcSoftwareGraduationReportPageQuery(
-    client,
-    query
-  );
+  const [page, setPage] = useState(1);
+
+  const { isLoading, isFetching, data } =
+    useTpcSoftwareGraduationReportPageQuery(client, {
+      ...query,
+      page,
+      per: 30,
+    });
 
   const dataList = data?.tpcSoftwareGraduationReportPage?.items;
   const items = getMetricScore(dataList || []);
@@ -64,7 +69,6 @@ const Report = ({
 
   const [checked, setChecked] = useState([]);
   const onSelectChange = (isChecked, item) => {
-    console.log(isChecked, item);
     if (selectFun) {
       if (!isChecked) {
         setChecked([item]);
@@ -78,7 +82,7 @@ const Report = ({
       selectFun(checked);
     }
   };
-  if (isLoading) {
+  if (isFetching) {
     return (
       <div className="h-[calc(100vh-218px)] w-full">
         <Loading />
@@ -175,21 +179,33 @@ const Report = ({
               })}
               {/* </div> */}
             </div>
+            {isLoading ? null : (
+              <div className="flex justify-center py-6">
+                <Pagination
+                  total={data?.tpcSoftwareGraduationReportPage.count}
+                  showQuickJumper
+                  showSizeChanger={false}
+                  current={data?.tpcSoftwareGraduationReportPage?.page}
+                  pageSize={30}
+                  onChange={(page) => {
+                    setPage(page);
+                  }}
+                />
+              </div>
+            )}
           </div>
-          {selectFun && (
-            <div className="flex w-[100%] justify-center pt-4">
-              <Button
-                className="rounded-none"
-                type="primary"
-                //   loading={submitLoading}
-                onClick={() => {
-                  submit();
-                }}
-              >
-                确定
-              </Button>
-            </div>
-          )}
+          <div className="flex w-[100%] justify-center pt-4">
+            <Button
+              className="rounded-none"
+              type="primary"
+              //   loading={submitLoading}
+              onClick={() => {
+                submit();
+              }}
+            >
+              确定
+            </Button>
+          </div>
         </div>
       )}
     </>

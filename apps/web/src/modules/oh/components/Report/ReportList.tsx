@@ -7,6 +7,7 @@ import GetReportData from '@modules/oh/components/Report/GetReportData';
 import { getMetricScore } from '@modules/oh/components/EvaluationInfo/MerticDetail';
 import Loading from '@modules/oh/components/Loading';
 import Pie from '@modules/oh/components/Pie';
+import Pagination from '@common/components/Antd/Pagination';
 
 const MiniEvaluationDetail = ({ score, evaluationDetail }) => {
   return (
@@ -53,10 +54,13 @@ const Report = ({
   selected?: string;
   selectFun?: (name) => void;
 }) => {
-  const { isLoading, data } = useTpcSoftwareSelectionReportPageQuery(
-    client,
-    query
-  );
+  const [page, setPage] = useState(1);
+
+  const { isLoading, data } = useTpcSoftwareSelectionReportPageQuery(client, {
+    ...query,
+    page,
+    per: 30,
+  });
 
   const dataList = data?.tpcSoftwareSelectionReportPage?.items;
   const items = getMetricScore(dataList || []);
@@ -180,21 +184,35 @@ const Report = ({
               })}
               {/* </div> */}
             </div>
+            {isLoading ? null : (
+              <div className="flex justify-center py-6">
+                <Pagination
+                  total={data?.tpcSoftwareSelectionReportPage.count}
+                  showQuickJumper
+                  showSizeChanger={false}
+                  current={data?.tpcSoftwareSelectionReportPage?.page}
+                  pageSize={30}
+                  onChange={(page) => {
+                    setPage(page);
+                  }}
+                />
+              </div>
+            )}
           </div>
-          {selectFun && (
-            <div className="flex w-[100%] justify-center pt-4">
-              <Button
-                className="rounded-none"
-                type="primary"
-                //   loading={submitLoading}
-                onClick={() => {
-                  submit();
-                }}
-              >
-                确定
-              </Button>
-            </div>
-          )}
+          {/* {selectFun && ( */}
+          <div className="flex w-[100%] justify-center pt-4">
+            <Button
+              className="rounded-none"
+              type="primary"
+              //   loading={submitLoading}
+              onClick={() => {
+                submit();
+              }}
+            >
+              确定
+            </Button>
+          </div>
+          {/* )} */}
         </div>
       )}
     </>
