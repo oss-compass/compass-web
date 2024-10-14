@@ -15,7 +15,7 @@ const Main = () => {
 
   return (
     <div className="div">
-      <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm">
+      <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
         <div className="oh-tabs flex items-center justify-between border-b px-5 py-3 font-semibold">
           {'毕业项目'}
           <div>

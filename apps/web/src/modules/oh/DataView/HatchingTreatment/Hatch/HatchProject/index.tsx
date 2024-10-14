@@ -19,7 +19,7 @@ const Main = () => {
 
   return (
     <div className="flex flex-1 bg-[#f2f2f2]">
-      <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col overflow-auto bg-white drop-shadow-sm md:p-0">
+      <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col overflow-auto bg-white drop-shadow-sm md:p-0 lg:h-[calc(100vh-138px)]">
         <div className="oh-tabs w-fulll relative h-[calc(100%-50px)] overflow-auto pt-3">
           <Tabs className="oh-antd" size={'small'} items={allItems} />
           <div className="absolute top-[26px] right-6 text-sm">

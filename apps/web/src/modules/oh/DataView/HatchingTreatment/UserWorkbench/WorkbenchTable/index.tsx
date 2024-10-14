@@ -22,7 +22,7 @@ const WorkbenchTable = ({ active }) => {
     },
   ];
   return (
-    <div className="work-bench h-[calc(100%-230px)] min-h-[350px] px-6">
+    <div className="work-bench h-[calc(100%-230px)] min-h-[350px] w-full px-6">
       <Tabs defaultActiveKey="0" items={items} onChange={onChange} />
       {active === 'apply' ? (
         <TableApply applicationType={applicationType} />

@@ -21,7 +21,7 @@ const OhRole: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <AuthRequire
       redirectTo={router.asPath}
-      loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6"
+      loadingClassName="mx-auto p-6 flex h-[calc(100vh-170px)] lg:h-[calc(100vh-138px)] w-full flex-1 flex-col border bg-white drop-shadow-sm md:w-full md:px-6"
     >
       <HasOhRole>{children}</HasOhRole>
     </AuthRequire>

@@ -22,14 +22,14 @@ const GetReportData = ({
   );
   if (isLoading) {
     return (
-      <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm">
+      <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
         <Loading />
       </div>
     );
   }
   if (!data?.tpcSoftwareGraduationReport) {
     return (
-      <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm">
+      <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
         <NotFoundOh />
       </div>
     );

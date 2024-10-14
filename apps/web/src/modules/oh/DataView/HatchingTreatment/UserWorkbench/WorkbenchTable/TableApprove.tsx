@@ -42,7 +42,7 @@ const TableApprove = ({ applicationType }) => {
       <div
         className="h-[calc(100%-84px)] py-2"
         style={
-          { '--scroll-height': 'calc(100% - 80px)' } as React.CSSProperties
+          { '--scroll-height': 'calc(100% - 50px)' } as React.CSSProperties
         }
       >
         <MyTable
