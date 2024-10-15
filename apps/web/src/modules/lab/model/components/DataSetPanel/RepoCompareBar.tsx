@@ -41,7 +41,7 @@ const RepoCompareBar: React.FC<{
             </div>
             <div
               className={classnames(
-                '-6 ml-5 cursor-pointer border-0 border-gray-500 bg-blue-600 px-2 py-1 text-center text-xs text-gray-50',
+                'ml-5 cursor-pointer border-0 border-gray-500 bg-blue-600 px-2 py-1 text-center text-xs text-gray-50',
                 { 'bg-gray-300': compareCount < 2 }
               )}
               onClick={() => {

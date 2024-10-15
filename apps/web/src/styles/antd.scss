@@ -114,18 +114,6 @@
   .ant-tabs-nav-wrap {
     padding-left: 20px;
   }
-
-  // .ant-tabs-nav {
-  //   background: #f2f2f2;
-  //   .ant-tabs-tab {
-  //     border: 0;
-  //     border-radius: 0 !important;
-  //     background: #f2f2f2;
-  //   }
-  //   .ant-tabs-tab-active {
-  //     background: #ffffff !important;
-  //   }
-  // }
   .ant-tabs-content-holder {
     overflow: auto;
   }
@@ -133,15 +121,9 @@
     border-radius: 0 !important;
     width: 100%;
   }
-  // .oh-antd {
-  //   .ant-tabs-nav {
-  //     background: #ffffff;
-  //     .ant-tabs-tab {
-  //       border-bottom: 1px solid #f2f2f2;
-  //       background: #ffffff;
-  //     }
-  //   }
-  // }
+  .ant-radio-button-wrapper {
+    border-radius: 0px;
+  }
 }
 .ant-col-24 {
   padding-left: 9px !important;
