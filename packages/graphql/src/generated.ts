@@ -8255,6 +8255,7 @@ export type TpcSoftwareGraduationQuery = {
     awaitingClarificationCount?: number | null;
     awaitingConfirmationCount?: number | null;
     clarifiedCount?: number | null;
+    userId: number;
     commentState?: Array<{
       __typename?: 'TpcSoftwareCommentState';
       createdAt: any;
@@ -15169,6 +15170,7 @@ export const TpcSoftwareGraduationDocument = /*#__PURE__*/ `
       name
       codeCount
     }
+    userId
   }
 }
     `;

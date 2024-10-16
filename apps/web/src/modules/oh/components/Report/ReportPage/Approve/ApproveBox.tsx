@@ -7,7 +7,7 @@ import CheckApprove from './CheckApprove';
 const ApproveBox = ({ selectionId }) => {
   const { commentState, commentCommitterPermission, commentSigLeadPermission } =
     useGetReportData();
-  console.log(commentState);
+  // console.log(commentState);
   return (
     <>
       <CheckApprove selectionId={selectionId} />

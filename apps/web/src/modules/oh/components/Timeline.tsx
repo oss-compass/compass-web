@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Popover } from 'antd';
+import { message } from 'antd';
+import { useUserInfo } from '@modules/auth';
 
-const Timeline = ({ state, content }) => {
+const Timeline = ({ state, content, userId }) => {
+  const [messageApi, contextHolder] = message.useMessage();
+  const { id } = useUserInfo().currentUser || {};
   // const steps = ['提交申请', '待澄清', '待确认', '待评审', '已通过'];
   const stepsList = [
     { text: '提交申请', value: 99 },
@@ -29,10 +33,22 @@ const Timeline = ({ state, content }) => {
   } else if (state === 3) {
     currentStep = 5; //已通过
   }
+  useEffect(() => {
+    if (currentStep === 5 && id === userId)
+      messageApi.open({
+        type: 'warning',
+        content: '当前申请已完成线上平台审批，请启动 TPC SIG 汇报流程！',
+        style: {
+          marginTop: '150px',
+        },
+        duration: 3,
+      });
+  }, [currentStep]);
   return (
     <div className="mb-2 flex items-center justify-between">
+      {contextHolder}
       {stepsList.map((step, index) => (
-        <div key={index} className="flex w-28 items-center">
+        <div key={index} className="flex w-24 items-center">
           <Popover content={index === currentStep ? content : ''}>
             <div className="relative flex w-2 flex-col items-center justify-center">
               <div

@@ -31,12 +31,6 @@ const CheckApprove = ({ selectionId }) => {
     commentLegalPermission,
     commentState,
   } = useGetReportData();
-  console.log(
-    commentCommitterPermission,
-    commentSigLeadPermission,
-    commentCompliancePermission,
-    commentLegalPermission
-  );
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
   const userState = commentState?.filter((z) => z.userId === userId);

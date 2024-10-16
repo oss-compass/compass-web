@@ -1294,6 +1294,7 @@ query tpcSoftwareGraduation($graduationId: Int!) {
       name
       codeCount
     }
+    userId
   }
 }
 query tpcSoftwareGraduationReportRisk($shortCode: String!) {
@@ -1554,7 +1555,7 @@ query tpcSoftwareMyReviewPage(
       sigLeadCount
       state
       softwareReportShortCodes
-      targetSoftware
+      # targetSoftware
       targetSoftwareReportId
       updatedAt
       user {

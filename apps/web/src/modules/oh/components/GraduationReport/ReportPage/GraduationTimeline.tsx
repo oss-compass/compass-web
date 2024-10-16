@@ -13,6 +13,7 @@ const HatchTimeline = () => {
     sigLeadCount,
     complianceCount,
     legalCount,
+    userId,
   } = useGetTaskTimelineData();
   let content = null;
   if (state === 0) {
@@ -42,7 +43,7 @@ const HatchTimeline = () => {
 
   return (
     <div className="flex h-10 w-full flex-1 justify-center">
-      <Timeline state={state} content={content} />
+      <Timeline state={state} content={content} userId={userId} />
     </div>
   );
 };
