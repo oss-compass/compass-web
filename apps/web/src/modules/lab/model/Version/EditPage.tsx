@@ -22,11 +22,7 @@ const ModelVersionEdit = () => {
     actions.resetForm();
 
     if (modelDetail?.labModelDetail) {
-      const {
-        name,
-        // isGeneral,
-        isPublic,
-      } = modelDetail.labModelDetail;
+      const { name, isPublic } = modelDetail.labModelDetail;
       formState.name = name;
       // formState.dimension = dimension;
       // formState.isGeneral = isGeneral;

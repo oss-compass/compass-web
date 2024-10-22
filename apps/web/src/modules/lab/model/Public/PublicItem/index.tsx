@@ -4,13 +4,14 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { ModelPublicOverview } from '@oss-compass/graphql';
 import ProductivityIcon from '@modules/analyze/components/SideBar/assets/Productivity.svg';
+import { formatToNow } from '@common/utils/time';
 
 const PublicItem: React.FC<{
   model: ModelPublicOverview;
   fullWidth?: boolean;
 }> = ({ fullWidth = false, model }) => {
   const { t } = useTranslation();
-  const { modelName, modelId, metrics, loginBinds } = model;
+  const { modelName, modelId, metrics, loginBinds,createdAt } = model;
   const router = useRouter();
 
   return (
@@ -62,7 +63,7 @@ const PublicItem: React.FC<{
           </div>
         </div>
         <div className="whitespace-nowrap text-sm leading-[normal] text-[#585858]">
-          <time>5 个月前</time>
+          <time>{formatToNow(createdAt)}</time>
         </div>
       </div>
     </div>
