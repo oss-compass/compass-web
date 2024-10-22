@@ -5003,6 +5003,7 @@ export type MyLabModelsQuery = {
       latestVersions?: Array<{
         __typename?: 'ModelVersion';
         id: number;
+        isScore?: boolean | null;
         version?: string | null;
         triggerStatus?: string | null;
         triggerUpdatedAt?: any | null;
@@ -5028,6 +5029,7 @@ export type MyLabModelsQuery = {
       defaultVersion?: {
         __typename?: 'ModelVersion';
         id: number;
+        isScore?: boolean | null;
         version?: string | null;
         algorithm?: {
           __typename?: 'Algorithm';
@@ -5075,6 +5077,7 @@ export type LabModelDetailQuery = {
     latestVersions?: Array<{
       __typename?: 'ModelVersion';
       id: number;
+      isScore?: boolean | null;
       version?: string | null;
       triggerStatus?: string | null;
       triggerUpdatedAt?: any | null;
@@ -5100,6 +5103,7 @@ export type LabModelDetailQuery = {
     defaultVersion?: {
       __typename?: 'ModelVersion';
       id: number;
+      isScore?: boolean | null;
       version?: string | null;
       algorithm?: {
         __typename?: 'Algorithm';
@@ -10595,6 +10599,7 @@ export const MyLabModelsDocument = /*#__PURE__*/ `
       triggerRemainingCount
       latestVersions {
         id
+        isScore
         version
         triggerStatus
         triggerUpdatedAt
@@ -10607,6 +10612,7 @@ export const MyLabModelsDocument = /*#__PURE__*/ `
       }
       defaultVersion {
         id
+        isScore
         version
         algorithm {
           ...algorithm
@@ -10670,6 +10676,7 @@ export const LabModelDetailDocument = /*#__PURE__*/ `
     triggerRemainingCount
     latestVersions {
       id
+      isScore
       version
       triggerStatus
       triggerUpdatedAt
@@ -10682,6 +10689,7 @@ export const LabModelDetailDocument = /*#__PURE__*/ `
     }
     defaultVersion {
       id
+      isScore
       version
       algorithm {
         ...algorithm

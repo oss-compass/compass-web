@@ -170,6 +170,7 @@ query myLabModels($page: Int!, $per: Int!) {
       triggerRemainingCount
       latestVersions {
         id
+        isScore
         version
         triggerStatus
         triggerUpdatedAt
@@ -185,6 +186,7 @@ query myLabModels($page: Int!, $per: Int!) {
       }
       defaultVersion {
         id
+        isScore
         version
         algorithm {
           ...algorithm
@@ -219,6 +221,7 @@ query labModelDetail($modelId: Int!) {
     triggerRemainingCount
     latestVersions {
       id
+      isScore
       version
       triggerStatus
       triggerUpdatedAt
@@ -231,6 +234,7 @@ query labModelDetail($modelId: Int!) {
     }
     defaultVersion {
       id
+      isScore
       version
       algorithm {
         ...algorithm
