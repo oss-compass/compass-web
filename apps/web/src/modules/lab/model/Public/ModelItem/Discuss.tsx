@@ -10,10 +10,6 @@ const Discuss = ({ model }: { model: ModelPublicOverview }) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const modelId = model?.modelId;
-  const versionId = model?.versionId;
-  const firstRepo = first(model?.dataset?.items);
-
   return (
     <a
       className="flex shrink-0 cursor-pointer items-center md:hidden"
