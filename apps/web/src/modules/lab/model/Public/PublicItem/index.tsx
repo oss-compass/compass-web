@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { ModelPublicOverview } from '@oss-compass/graphql';
@@ -9,10 +10,16 @@ const PublicItem: React.FC<{
   fullWidth?: boolean;
 }> = ({ fullWidth = false, model }) => {
   const { t } = useTranslation();
-  const { modelName, metrics, loginBinds } = model;
+  const { modelName, modelId, metrics, loginBinds } = model;
+  const router = useRouter();
 
   return (
-    <div className="flex cursor-pointer flex-col items-start gap-1 overflow-hidden border p-[15px] hover:shadow-[0px_4px_6px_0px_rgba(0,0,0,0.09)]">
+    <div
+      onClick={() => {
+        router.push(`/lab/model/${modelId}/detail`);
+      }}
+      className="flex cursor-pointer flex-col items-start gap-1 overflow-hidden border p-[15px] hover:shadow-[0px_4px_6px_0px_rgba(0,0,0,0.09)]"
+    >
       <div className="flex items-center gap-2 self-stretch">
         <span className="mr-1 h-4 w-4 flex-shrink-0">
           <ProductivityIcon />
@@ -29,9 +36,8 @@ const PublicItem: React.FC<{
           return (
             <div
               key={item.id}
-              className="text-slate-auto-700 box-border inline-block h-6 max-w-[50%] truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
+              className="text-slate-auto-700 mr-2 box-border inline-block h-6 max-w-[50%] truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
             >
-              {' '}
               {t(`lab_metrics:${item.category}.${item.ident}`)}
             </div>
           );

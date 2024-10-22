@@ -8,7 +8,7 @@ import CreateGuide from './CreateGuide';
 import PublicItem from './PublicItem';
 import Loading from './Loading';
 
-const per = 5;
+const per = 8;
 
 const Model = () => {
   const { t } = useTranslation();
