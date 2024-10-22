@@ -64,7 +64,7 @@ const Header: React.FC<{
               {t('common:header.lab')}
             </Link>
 
-            {roleLevel && roleLevel >= 2 && (
+            {roleLevel && roleLevel >= 1 && (
               <LinkX href="/oh" legacyBehavior>
                 <a
                   className={
