@@ -5,7 +5,7 @@ import client from '@common/gqlClient';
 import { useTranslation } from 'next-i18next';
 import Pagination from '@common/components/Antd/Pagination';
 import CreateGuide from './CreateGuide';
-import ModelItem from './ModelItem';
+import PublicItem from './PublicItem';
 import Loading from './Loading';
 
 const per = 5;
@@ -38,18 +38,20 @@ const Model = () => {
 
   return (
     <div className="mx-auto w-[1280px] xl:w-full xl:px-2">
-      {list.map((model, index) => {
-        if (index === 0) {
-          return (
-            <div className="flex  md:flex-wrap " key={model.modelId}>
-              <ModelItem model={model} />
-              <CreateGuide />
-            </div>
-          );
-        }
-
-        return <ModelItem model={model} key={model.modelId} fullWidth />;
-      })}
+      <div className="mb-5 flex items-center text-xl font-medium">公开模型</div>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-1 lg:gap-5 xl:gap-6">
+        {list.map((model, index) => {
+          // if (index === 0) {
+          //   return (
+          //     <div className="flex md:flex-wrap " key={model.modelId}>
+          //       <ModelItem model={model} />
+          //       <CreateGuide />
+          //     </div>
+          //   );
+          // }
+          return <PublicItem model={model} key={model.modelId} fullWidth />;
+        })}
+      </div>
 
       <div className="flex justify-center py-6">
         {pageTotal > 1 ? (

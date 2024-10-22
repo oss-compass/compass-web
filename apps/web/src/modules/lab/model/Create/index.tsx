@@ -49,23 +49,13 @@ const ModelCreate = () => {
           formType="ModelCreate"
           submitLoading={mutation.isLoading}
           onSubmit={() => {
-            const {
-              isPublic,
-              isGeneral,
-              dimension,
-              name,
-              dataSet,
-              metricSet,
-              algorithm,
-            } = formState;
+            const { isPublic, name, metricSet, isScore, algorithm } = formState;
 
             mutation.mutate({
               isPublic,
-              isGeneral,
-              dimension,
               name,
+              isScore,
               algorithm,
-              datasets: dataSet,
               metrics: metricSet.map((i) => ({
                 id: i.metricId,
                 threshold: i.threshold,

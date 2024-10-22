@@ -9,7 +9,11 @@ import PublicModel from '@modules/lab/model/Public';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['lab', 'collection'])),
+      ...(await getLocalesFile(req.cookies, [
+        'lab',
+        'lab_metrics',
+        'collection',
+      ])),
     },
   };
 };

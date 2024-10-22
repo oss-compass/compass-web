@@ -9,6 +9,7 @@ import { useQueryState, queryTypes } from 'next-usequerystate';
 import { ReFetch } from '@common/constant';
 import Pagination from '@common/components/Antd/Pagination';
 import { Center } from '@common/components/Layout';
+import LabDataRadio from '../components/LabDataRadio';
 import ModelItem from './ModelItem';
 
 const per = 5;
@@ -73,12 +74,12 @@ const MyModal = () => {
       </>
     );
   };
-
   return (
     <div className="flex-1 bg-[#FAFAFA] pb-10 md:px-4">
       <Center>
         <div className="flex items-center justify-between pt-10 pb-4">
-          <div className="font-semibold">{t('lab:my_models')}</div>
+          {/* <div className="font-semibold">{t('lab:my_models')}</div> */}
+          <LabDataRadio defaultValue={'myModels'} />
           <div>
             <Button
               size="sm"

@@ -12,7 +12,6 @@ const ModelVersionDataSet = () => {
 
   const modelId = modelDetail?.labModelDetail?.id;
   const versionId = versionData?.labModelVersion?.id;
-  const dataset = versionData?.labModelVersion?.dataset?.items || [];
 
   return (
     <div className="flex-1 bg-[#FAFAFA] pt-12 pb-10 text-sm">
@@ -25,12 +24,12 @@ const ModelVersionDataSet = () => {
           </div>
         </div>
 
-        <DataSetPanel
+        {/* <DataSetPanel
           fullWidth
           modelId={modelId}
           versionId={versionId}
           dataSet={dataset}
-        />
+        /> */}
       </Center>
     </div>
   );

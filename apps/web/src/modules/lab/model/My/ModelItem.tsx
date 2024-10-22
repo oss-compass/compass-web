@@ -49,8 +49,24 @@ const ModelItem = ({
   return (
     <div className="mb-8 bg-white p-4 shadow">
       <div className="flex items-center justify-between">
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           {dimensionLogo[`${model.dimension}`]}
+        </div> */}
+        <div className="mb-2 flex items-center text-lg font-semibold">
+          <a
+            className="cursor-pointer"
+            onClick={() => {
+              router.push(`/lab/model/${model.id}/detail`);
+            }}
+          >
+            {model.name}
+          </a>
+
+          {model.isPublic ? (
+            <span className="ml-2 rounded-2xl bg-[#cdf0ce] px-2 py-0.5  text-xs text-[#00B400]">
+              {t('lab:is_public')}
+            </span>
+          ) : null}
         </div>
         <div className="flex items-center">
           <div
@@ -70,37 +86,26 @@ const ModelItem = ({
         </div>
       </div>
 
-      <div className="mb-2 flex items-center text-lg font-semibold">
-        {model.name}
-        {model.isPublic ? (
-          <span className="ml-2 rounded-2xl bg-[#cdf0ce] px-2 py-0.5  text-xs text-[#00B400]">
-            {t('lab:is_public')}
-          </span>
-        ) : null}
-      </div>
-
       <div className="mb-4 flex items-center justify-between">
         <div className="text-secondary text-sm font-semibold">
           {t('lab:versions')}
         </div>
-        <div className="text-sm">
+        {/* <div className="text-sm">
           <span className="text-secondary">
             {t('lab:remaining_times_of_analysis_performed_this_week')}
           </span>
           <span className="ml-1 font-semibold text-black">
             {model.triggerRemainingCount}
           </span>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-4 gap-4 md:grid-cols-1">
         {model.latestVersions?.map?.((item) => {
           return (
             <VersionCard
+              model={model}
               key={item.id}
-              modelId={model.id}
-              modelIsPublic={model.isPublic}
-              triggerRemainingCount={model.triggerRemainingCount}
               version={item}
               permissions={permissions}
               event$={event$}

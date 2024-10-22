@@ -65,7 +65,7 @@ const TriggerConfirmBtn = ({
         }}
       >
         <BsSend className="text-secondary" />
-        <span className="ml-2 block flex items-center text-sm">
+        <span className="ml-2 flex items-center text-sm">
           {triggerMutation.isLoading ? (
             <BiLoaderAlt className="text-silver mr-2 animate-spin cursor-pointer text-xl" />
           ) : null}
@@ -123,17 +123,17 @@ const TriggerConfirmBtn = ({
               className="ml-4"
               loading={triggerMutation.isLoading}
               onClick={() => {
-                triggerMutation.mutate(
-                  { modelId, versionId: version.id },
-                  {
-                    onSuccess: (res) => {
-                      event$.emit(ReFetch);
-                    },
-                    onError: (err) => {
-                      toast.error('Trigger analysis failed!');
-                    },
-                  }
-                );
+                // triggerMutation.mutate(
+                //   { modelId, versionId: version.id },
+                //   {
+                //     onSuccess: (res) => {
+                //       event$.emit(ReFetch);
+                //     },
+                //     onError: (err) => {
+                //       toast.error('Trigger analysis failed!');
+                //     },
+                //   }
+                // );
               }}
             >
               {t('common:btn.confirm')}

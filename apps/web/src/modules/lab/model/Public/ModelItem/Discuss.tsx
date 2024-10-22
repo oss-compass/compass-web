@@ -15,13 +15,13 @@ const Discuss = ({ model }: { model: ModelPublicOverview }) => {
   const firstRepo = first(model?.dataset?.items);
 
   return (
-    <Link
+    <a
       className="flex shrink-0 cursor-pointer items-center md:hidden"
-      href={`/lab/model/${modelId}/version/${versionId}/analyze/${firstRepo.shortCode}`}
+      // href={`/lab/model/${modelId}/version/${versionId}/analyze/${firstRepo.shortCode}`}
     >
       <TbMessage2 className="text-steel" />
       <span className="ml-1 text-xs">{t('lab:discuss')}</span>
-    </Link>
+    </a>
   );
 };
 

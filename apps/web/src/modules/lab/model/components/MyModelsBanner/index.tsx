@@ -4,7 +4,7 @@ import style from './index.module.css';
 import Center from '@common/components/Layout/Center';
 import { useTranslation } from 'next-i18next';
 
-const Banner = () => {
+const Banner = ({ text = '' }) => {
   const { t } = useTranslation();
   return (
     <div
@@ -26,7 +26,7 @@ const Banner = () => {
             'mt-14 text-4xl font-bold text-[#886F36] md:pl-2'
           )}
         >
-          My Models
+          {text || t('lab:my_models')}
         </div>
       </Center>
     </div>

@@ -15,7 +15,7 @@ export const useLabModelVersion = () => {
       versionId,
     },
     {
-      staleTime: 60 * 1000,
+      staleTime: 3 * 1000,
       enabled: Boolean(modelId) && Boolean(versionId),
     }
   );

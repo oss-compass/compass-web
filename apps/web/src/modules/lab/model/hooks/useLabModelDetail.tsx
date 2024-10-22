@@ -14,7 +14,7 @@ export const useLabModelDetail = () => {
     gqlClient,
     { modelId },
     {
-      staleTime: 60 * 1000,
+      staleTime: 2 * 1000,
       enabled: Boolean(modelId),
     }
   );

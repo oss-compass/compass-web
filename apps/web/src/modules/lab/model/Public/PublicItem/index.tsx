@@ -1,0 +1,66 @@
+import React from 'react';
+import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import { ModelPublicOverview } from '@oss-compass/graphql';
+import ProductivityIcon from '@modules/analyze/components/SideBar/assets/Productivity.svg';
+
+const PublicItem: React.FC<{
+  model: ModelPublicOverview;
+  fullWidth?: boolean;
+}> = ({ fullWidth = false, model }) => {
+  const { t } = useTranslation();
+  const { modelName, metrics, loginBinds } = model;
+
+  return (
+    <div className="flex cursor-pointer flex-col items-start gap-1 overflow-hidden border p-[15px] hover:shadow-[0px_4px_6px_0px_rgba(0,0,0,0.09)]">
+      <div className="flex items-center gap-2 self-stretch">
+        <span className="mr-1 h-4 w-4 flex-shrink-0">
+          <ProductivityIcon />
+        </span>
+        <div
+          className="line-clamp-1 text-slate-auto-900 break-all text-lg font-medium leading-7"
+          title={modelName}
+        >
+          {modelName}
+        </div>
+      </div>
+      <div className="line-clamp-1 my-1 h-[24px] w-full break-all px-0">
+        {metrics.map((item) => {
+          return (
+            <div
+              key={item.id}
+              className="text-slate-auto-700 box-border inline-block h-6 max-w-[50%] truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
+            >
+              {' '}
+              {t(`lab_metrics:${item.category}.${item.ident}`)}
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-center gap-2 self-stretch pt-2 md:gap-3">
+        <div className="mr-auto flex min-w-0 items-center gap-2">
+          <span className="border-secondary relative flex h-[24px] w-[24px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-hover:bg-[#333333]">
+            <Image
+              src={loginBinds?.avatarUrl!}
+              unoptimized
+              fill
+              sizes="24px"
+              style={{
+                objectFit: 'cover',
+              }}
+              alt=""
+            />
+          </span>
+          <div className="text-slate-auto-700 overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-6">
+            {loginBinds?.nickname}
+          </div>
+        </div>
+        <div className="whitespace-nowrap text-sm leading-[normal] text-[#585858]">
+          <time>5 个月前</time>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PublicItem;

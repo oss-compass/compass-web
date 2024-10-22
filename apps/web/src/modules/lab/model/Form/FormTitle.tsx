@@ -10,7 +10,7 @@ const FormTitle = ({ disabled }: { disabled: boolean }) => {
   const snapshot = useSnapshot(formState, { sync: true });
   return (
     <div className="mb-6 flex">
-      <div className="w-36">
+      {/* <div className="w-36">
         <FormItemLabel>{t('lab:ecological_dimension')}</FormItemLabel>
         <Select
           disabled={disabled}
@@ -29,8 +29,8 @@ const FormTitle = ({ disabled }: { disabled: boolean }) => {
             {t('common:topic.niche_creation')}
           </SelectOption>
         </Select>
-      </div>
-      <div className="max-w-[600px] flex-1 pl-2">
+      </div> */}
+      <div className="max-w-[600px] flex-1">
         <FormItemLabel>{t('lab:model_name')}</FormItemLabel>
         <Input
           disabled={disabled}

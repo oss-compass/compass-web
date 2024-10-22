@@ -7,10 +7,9 @@ import { adjustmentArray } from './utils';
 interface State {
   // model
   name: string;
-  dimension: number;
+  // dimension: number;
   isPublic: boolean;
-  isGeneral: boolean;
-
+  isScore: boolean;
   // version
   version: string;
   dataSet: {
@@ -35,9 +34,9 @@ interface State {
 
 const initialObj = {
   name: '',
-  dimension: 0,
-  isPublic: false,
-  isGeneral: true,
+  // dimension: 0,
+  isScore: true,
+  isPublic: true,
 
   version: '',
   dataSet: [],
@@ -54,8 +53,8 @@ export const actions = {
   onVersionNameChange: (v: string) => {
     formState.version = v;
   },
-  onDimensionChange: (v: number) => {
-    formState.dimension = v;
+  onIsGeneralChange: (v: boolean) => {
+    formState.isScore = v;
   },
   onDeleteDataSetItem: (levelSecond: string) => {
     formState.dataSet = formState.dataSet.filter(

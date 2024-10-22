@@ -22,11 +22,14 @@ const ModelVersionEdit = () => {
     actions.resetForm();
 
     if (modelDetail?.labModelDetail) {
-      const { name, dimension, isGeneral, isPublic } =
-        modelDetail.labModelDetail;
+      const {
+        name,
+        // isGeneral,
+        isPublic,
+      } = modelDetail.labModelDetail;
       formState.name = name;
-      formState.dimension = dimension;
-      formState.isGeneral = isGeneral;
+      // formState.dimension = dimension;
+      // formState.isGeneral = isGeneral;
       formState.isPublic = isPublic;
     }
   }, [modelDetail]);
@@ -35,18 +38,19 @@ const ModelVersionEdit = () => {
 
   useEffect(() => {
     if (modelVersion?.labModelVersion) {
-      const { dataset, algorithm, metrics, version } =
+      const { algorithm, metrics, version, isScore } =
         modelVersion.labModelVersion;
       formState.version = version;
+      formState.isScore = isScore;
       formState.algorithm = algorithm.ident;
-      formState.dataSet = dataset.items.map((i) => {
-        return {
-          label: i.label,
-          level: i.level,
-          firstIdent: i.firstIdent,
-          secondIdent: i.secondIdent,
-        };
-      });
+      // formState.dataSet = dataset.items.map((i) => {
+      //   return {
+      //     label: i.label,
+      //     level: i.level,
+      //     firstIdent: i.firstIdent,
+      //     secondIdent: i.secondIdent,
+      //   };
+      // });
       formState.metricSet = metrics.map((i) => {
         return {
           defaultThreshold: i.defaultThreshold,
@@ -95,13 +99,13 @@ const ModelVersionEdit = () => {
           formType={'VersionEdit'}
           submitLoading={updateMutation.isLoading}
           onSubmit={() => {
-            const { version, dataSet, metricSet, algorithm } = formState;
+            const { version, isScore, metricSet, algorithm } = formState;
             updateMutation.mutate({
               modelId,
               versionId,
               version,
               algorithm,
-              datasets: dataSet,
+              isScore,
               metrics: metricSet.map((i) => ({
                 id: i.metricId,
                 versionId,

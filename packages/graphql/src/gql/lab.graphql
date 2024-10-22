@@ -54,9 +54,9 @@ fragment reply on ModelComment {
     updatedAt
   }
   model {
-    dimension
+    # dimension
     id
-    isGeneral
+    # isScore
     isPublic
     #latestVersions
     name
@@ -81,9 +81,9 @@ fragment parentComment on ModelComment {
 }
 
 fragment modelDetail on ModelDetail {
-  dimension
+  # dimension
   id
-  isGeneral
+  # isScore
   isPublic
   #latestVersions
   name
@@ -133,9 +133,7 @@ fragment modelVersion on ModelVersion {
   algorithm {
     ...algorithm
   }
-  dataset {
-    ...dataset
-  }
+  isScore
   metrics {
     ...metrics
   }
@@ -166,9 +164,8 @@ query myLabModels($page: Int!, $per: Int!) {
   myModels(page: $page, per: $per) {
     count
     items {
-      dimension
       id
-      isGeneral
+      # isScore
       isPublic
       triggerRemainingCount
       latestVersions {
@@ -179,9 +176,9 @@ query myLabModels($page: Int!, $per: Int!) {
         algorithm {
           ...algorithm
         }
-        dataset {
-          ...dataset
-        }
+        # dataset {
+        #   ...dataset
+        # }
         metrics {
           ...metrics
         }
@@ -192,9 +189,9 @@ query myLabModels($page: Int!, $per: Int!) {
         algorithm {
           ...algorithm
         }
-        dataset {
-          ...dataset
-        }
+        # dataset {
+        #   ...dataset
+        # }
         metrics {
           ...metrics
         }
@@ -215,21 +212,41 @@ query myLabModels($page: Int!, $per: Int!) {
 
 query labModelDetail($modelId: Int!) {
   labModelDetail(modelId: $modelId) {
-    dimension
+    # dimension
     id
-    isGeneral
+    # isScore
     isPublic
     triggerRemainingCount
     latestVersions {
       id
       version
+      triggerStatus
+      triggerUpdatedAt
+      algorithm {
+        ...algorithm
+      }
+      metrics {
+        ...metrics
+      }
     }
     defaultVersion {
       id
       version
+      algorithm {
+        ...algorithm
+      }
+      metrics {
+        ...metrics
+      }
     }
     name
     userId
+    permissions {
+      canDestroy
+      canExecute
+      canRead
+      canUpdate
+    }
   }
 }
 
@@ -240,12 +257,10 @@ query labModelVersion($modelId: Int!, $versionId: Int!) {
     algorithm {
       ...algorithm
     }
-    dataset {
-      ...dataset
-    }
     metrics {
       ...metrics
     }
+    isScore
     triggerStatus
     triggerUpdatedAt
   }
@@ -397,12 +412,19 @@ query labModelPublicOverview(
     totalPage
     count
     items {
-      dimension
+      # dimension
+      createdAt
+      loginBinds {
+        account
+        avatarUrl
+        nickname
+        provider
+      }
+      metrics {
+        ...metrics
+      }
       modelId
       modelName
-      dataset {
-        ...dataset
-      }
       #      reports {
       #        ...simpleReport
       #      }
@@ -454,9 +476,8 @@ query labModelVersionReportDetail(
 
 mutation createLabModel(
   $algorithm: String
-  $datasets: [DatasetRowTypeInput!]!
-  $dimension: Int!
-  $isGeneral: Boolean!
+  # $datasets: [DatasetRowTypeInput!]!
+  $isScore: Boolean!
   $isPublic: Boolean!
   $metrics: [LabModelMetricInput!]!
   $name: String!
@@ -464,9 +485,8 @@ mutation createLabModel(
   createLabModel(
     input: {
       algorithm: $algorithm
-      datasets: $datasets
-      dimension: $dimension
-      isGeneral: $isGeneral
+      # datasets: $datasets
+      isScore: $isScore
       isPublic: $isPublic
       metrics: $metrics
       name: $name
@@ -483,7 +503,7 @@ mutation createLabModel(
 
 mutation createLabModelVersion(
   $algorithm: String
-  $datasets: [DatasetRowTypeInput!]!
+  $isScore: Boolean!
   $metrics: [LabModelMetricInput!]!
   $modelId: Int!
   $version: String!
@@ -491,7 +511,7 @@ mutation createLabModelVersion(
   createLabModelVersion(
     input: {
       algorithm: $algorithm
-      datasets: $datasets
+      isScore: $isScore
       metrics: $metrics
       modelId: $modelId
       version: $version
@@ -507,18 +527,16 @@ mutation createLabModelVersion(
 }
 
 mutation updateLabModel(
-  $dimension: Int
-  $defaultVersionId: Int
-  $isGeneral: Boolean
+  # $defaultVersionId: Int
+  # $isScore: Boolean
   $isPublic: Boolean
   $modelId: Int!
   $name: String
 ) {
   updateLabModel(
     input: {
-      defaultVersionId: $defaultVersionId
-      dimension: $dimension
-      isGeneral: $isGeneral
+      # defaultVersionId: $defaultVersionId
+      # isScore: $isScore
       isPublic: $isPublic
       modelId: $modelId
       name: $name
@@ -537,13 +555,15 @@ mutation updateLabModelVersion(
   $versionId: Int!
   $version: String
   $algorithm: String
-  $datasets: [DatasetRowTypeInput!]!
+  $isScore: Boolean!
+  # $datasets: [DatasetRowTypeInput!]!
   $metrics: [LabModelMetricInput!]!
 ) {
   updateLabModelVersion(
     input: {
       algorithm: $algorithm
-      datasets: $datasets
+      isScore: $isScore
+      # datasets: $datasets
       metrics: $metrics
       modelId: $modelId
       versionId: $versionId
@@ -719,8 +739,8 @@ mutation updateLabModelComment(
   }
 }
 
-mutation triggerLabModelVersion($modelId: Int!, $versionId: Int!) {
-  triggerLabModelVersion(input: { modelId: $modelId, versionId: $versionId }) {
+mutation triggerLabModelVersion($reportId: Int!) {
+  triggerLabModelVersion(input: { reportId: $reportId }) {
     clientMutationId
     errors {
       message
@@ -728,5 +748,50 @@ mutation triggerLabModelVersion($modelId: Int!, $versionId: Int!) {
     }
     message
     status
+  }
+}
+
+mutation createLabDataset(
+  $datasets: [DatasetRowTypeInput!]!
+  $modelId: Int!
+  $versionId: Int!
+) {
+  createLabDataset(
+    input: { datasets: $datasets, modelId: $modelId, versionId: $versionId }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+  }
+}
+query myModelReports($page: Int, $per: Int) {
+  myModelReports(page: $page, per: $per) {
+    page
+    totalPage
+    count
+    items {
+      # dimension
+      id
+      reportId
+      modelId
+      modelName
+      dataset {
+        ...dataset
+      }
+      metrics {
+        ...metrics
+      }
+      version
+      versionId
+      triggerStatus
+      triggerUpdatedAt
+      #      reports {
+      #        ...simpleReport
+      #      }
+      # versionId
+    }
   }
 }

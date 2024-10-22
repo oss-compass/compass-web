@@ -10,16 +10,15 @@ import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 const FormDomain = ({ disabled }: { disabled: boolean }) => {
   const { t } = useTranslation();
   const snapshot = useSnapshot(formState);
-  const isGeneral = snapshot.isGeneral;
+  const isScore = snapshot.isScore;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
-    formState.isGeneral = val === 'general';
+    formState.isScore = val === 'general';
   };
 
   const controlProps = (item: string) => ({
-    checked:
-      (isGeneral && item == 'general') || (!isGeneral && item == 'other'),
+    checked: (isScore && item == 'general') || (!isScore && item == 'other'),
     onChange: handleChange,
     value: item,
     name: 'radio-button-domain',

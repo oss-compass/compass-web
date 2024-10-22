@@ -21,12 +21,15 @@ const ModelEdit = () => {
     actions.resetForm();
 
     if (modelDetail?.labModelDetail) {
-      const { name, dimension, isGeneral, isPublic } =
-        modelDetail.labModelDetail;
+      const {
+        name,
+        // isGeneral,
+        isPublic,
+      } = modelDetail.labModelDetail;
 
       formState.name = name;
-      formState.dimension = dimension;
-      formState.isGeneral = isGeneral;
+      // formState.dimension = dimension;
+      // formState.isGeneral = isGeneral;
       formState.isPublic = isPublic;
     }
   }, [modelDetail]);
@@ -61,11 +64,9 @@ const ModelEdit = () => {
           loading={isLoading}
           submitLoading={updateMutation.isLoading}
           onSubmit={() => {
-            const { isPublic, isGeneral, dimension, name } = formState;
+            const { isPublic, name } = formState;
             updateMutation.mutate({
               isPublic,
-              isGeneral,
-              dimension,
               name,
               modelId: modelId,
             });

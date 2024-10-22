@@ -22,11 +22,13 @@ const VersionCreate = () => {
     actions.resetForm();
 
     if (modelDetail?.labModelDetail) {
-      const { name, dimension, isGeneral, isPublic } =
-        modelDetail.labModelDetail;
+      const {
+        name,
+        // isGeneral,
+        isPublic,
+      } = modelDetail.labModelDetail;
       formState.name = name;
-      formState.dimension = dimension;
-      formState.isGeneral = isGeneral;
+      // formState.isGeneral = isGeneral;
       formState.isPublic = isPublic;
     }
   }, [modelDetail]);
@@ -60,12 +62,12 @@ const VersionCreate = () => {
           formType={'VersionCreate'}
           submitLoading={createMutation.isLoading}
           onSubmit={() => {
-            const { version, dataSet, metricSet, algorithm } = formState;
+            const { version, isScore, metricSet, algorithm } = formState;
             createMutation.mutate({
               modelId: modelId,
               version,
               algorithm,
-              datasets: dataSet,
+              isScore,
               metrics: metricSet.map((i) => ({
                 id: i.id,
                 threshold: i.threshold,

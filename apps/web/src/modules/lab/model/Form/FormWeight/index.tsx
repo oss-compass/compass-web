@@ -24,7 +24,7 @@ const FormMetric = () => {
       <div>
         <table className="w-full table-fixed">
           <thead>
-            <tr className="border-silver border-t border-b">
+            <tr className="border-silver border-t border-b border-l">
               <th className={classnames(headCell, 'w-3/12 md:w-1/4')}>
                 {t('lab:weight_threshold_settings.metrics')}
               </th>
@@ -39,7 +39,10 @@ const FormMetric = () => {
           <tbody>
             {snapshot.metricSet.map((item, index) => {
               return (
-                <tr key={item.ident} className={'border-silver h-10 border-b'}>
+                <tr
+                  key={item.ident}
+                  className={'border-silver h-10 border-b border-l'}
+                >
                   <td className={classnames(bodyCell, 'w-3/12')}>
                     <MetricName ident={item.ident} category={item.category} />
                   </td>

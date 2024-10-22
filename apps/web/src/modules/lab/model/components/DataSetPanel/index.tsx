@@ -97,7 +97,7 @@ const DataSetPanel: React.FC<{
       />
 
       <div
-        className={classnames('grid gap-4 pt-4 pb-20 md:grid-cols-2', [
+        className={classnames('grid gap-4 pt-4 pb-4 md:grid-cols-2', [
           fullWidth ? 'grid-cols-6' : 'grid-cols-4',
         ])}
       >

@@ -5,7 +5,7 @@ import FormIsPublic from './FormIsPublic';
 import FormVersionTitle from './FormVersionTitle';
 import FormDomain from './FormDomain';
 import FormTitle from './FormTitle';
-import FormDataSet from './FormDataSet';
+import FormIsTotalScore from './FormIsTotalScore';
 import FormMetric from './FormMetric';
 import FormWeight from './FormWeight';
 import FormAlgorithm from './FormAlgorithm';
@@ -13,6 +13,7 @@ import CheckTerms from '@modules/lab/model/components/CheckTerms';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { formState } from '../Form/state';
+import { useSnapshot } from 'valtio';
 
 const Form = ({
   formType,
@@ -31,6 +32,8 @@ const Form = ({
   const isVersion = formType === 'VersionCreate' || formType === 'VersionEdit';
   const isModel = formType === 'ModelCreate' || formType === 'ModelEdit';
   const [select, setSelect] = useState(false);
+  const snapshot = useSnapshot(formState);
+  const isScore = snapshot.isScore;
 
   if (loading) {
     return (
@@ -55,16 +58,21 @@ const Form = ({
   return (
     <>
       <FormTitle disabled={isVersion} />
-      <FormDomain disabled={isVersion} />
+      {/* <FormDomain disabled={isVersion} /> */}
       <FormIsPublic disabled={isVersion} />
 
       {formType === 'ModelEdit' ? null : (
         <>
           {isModel ? null : <FormVersionTitle />}
-          <FormDataSet />
+          {/* <FormDataSet /> */}
           <FormMetric />
-          <FormWeight />
-          <FormAlgorithm />
+          <FormIsTotalScore />
+          {isScore && (
+            <>
+              <FormWeight />
+              <FormAlgorithm />
+            </>
+          )}
           {isModel && (
             <CheckTerms
               select={select}
@@ -93,10 +101,10 @@ const Form = ({
             }
 
             const dataSetLen = formState.dataSet.length;
-            if ((isVersion || formType === 'ModelCreate') && dataSetLen === 0) {
-              toast.error(t('lab:form_tips.dataset_require'));
-              return;
-            }
+            // if ((isVersion || formType === 'ModelCreate') && dataSetLen === 0) {
+            //   toast.error(t('lab:form_tips.dataset_require'));
+            //   return;
+            // }
 
             const metricSetLen = formState.metricSet.length;
             if (
