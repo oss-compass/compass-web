@@ -7,7 +7,7 @@ import { adjustmentArray } from './utils';
 interface State {
   // model
   name: string;
-  // dimension: number;
+  description: string;
   isPublic: boolean;
   isScore: boolean;
   // version
@@ -34,6 +34,7 @@ interface State {
 
 const initialObj = {
   name: '',
+  description: '',
   // dimension: 0,
   isScore: true,
   isPublic: true,
@@ -49,6 +50,9 @@ export const formState = proxy<State>(initialObj);
 export const actions = {
   onNameChange: (v: string) => {
     formState.name = v;
+  },
+  onDescriptionChange: (v: string) => {
+    formState.description = v;
   },
   onVersionNameChange: (v: string) => {
     formState.version = v;

@@ -92,14 +92,14 @@ const VersionCard = ({
                   size={'small'}
                   checked={modelDefaultVersionId === version.id}
                   checkedColor={'#00B400'}
-                  onChange={(e, v) => {
-                    if (v) {
-                      updateMutation.mutate({
-                        modelId: modelId,
-                        // defaultVersionId: version.id,
-                      });
-                    }
-                  }}
+                  // onChange={(e, v) => {
+                  //   if (v) {
+                  //     updateMutation.mutate({
+                  //       modelId: modelId,
+                  //       // defaultVersionId: version.id,
+                  //     });
+                  //   }
+                  // }}
                 />
               )}
             </div>

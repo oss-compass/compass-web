@@ -26,7 +26,7 @@ const Report = () => {
   return (
     <NoSsr>
       <Header />
-      <MyModelsBanner text="我的模型报告" />
+      <MyModelsBanner text={t('lab:my_model_reports')} />
       <FlashToast />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
         <MyReport />

@@ -958,6 +958,8 @@ export type CreateLabModelInput = {
   algorithm?: InputMaybe<Scalars['String']>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
+  /** lab model description */
+  description?: InputMaybe<Scalars['String']>;
   /** whether or not a public model, default: false */
   isPublic: Scalars['Boolean'];
   /** whether or not calculate the score, default: false */
@@ -1885,13 +1887,18 @@ export type ModelDataset = {
 
 export type ModelDetail = {
   __typename?: 'ModelDetail';
+  createdAt?: Maybe<Scalars['ISO8601DateTime']>;
   defaultVersion?: Maybe<ModelVersion>;
+  description?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   isPublic: Scalars['Boolean'];
   /** Details of the 1000 latest updates */
   latestVersions?: Maybe<Array<ModelVersion>>;
+  loginBinds?: Maybe<LoginBind>;
   name: Scalars['String'];
   permissions?: Maybe<Permission>;
+  /** Reference count of the model */
+  referenceCount?: Maybe<Scalars['Int']>;
   triggerRemainingCount: Scalars['Int'];
   userId: Scalars['Int'];
 };
@@ -4418,6 +4425,8 @@ export type UpdateLabModelCommentPayload = {
 export type UpdateLabModelInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
+  /** lab model description */
+  description?: InputMaybe<Scalars['String']>;
   /** whether or not a public model, default: false */
   isPublic?: InputMaybe<Scalars['Boolean']>;
   /** lab model id */
@@ -4763,6 +4772,7 @@ export type CommentFragment = {
     id: number;
     isPublic: boolean;
     name: string;
+    description?: string | null;
     triggerRemainingCount: number;
     userId: number;
   };
@@ -4815,6 +4825,7 @@ export type CommentFragment = {
       id: number;
       isPublic: boolean;
       name: string;
+      description?: string | null;
       triggerRemainingCount: number;
       userId: number;
     };
@@ -4863,6 +4874,7 @@ export type ReplyFragment = {
     id: number;
     isPublic: boolean;
     name: string;
+    description?: string | null;
     triggerRemainingCount: number;
     userId: number;
   };
@@ -4887,6 +4899,7 @@ export type ModelDetailFragment = {
   id: number;
   isPublic: boolean;
   name: string;
+  description?: string | null;
   triggerRemainingCount: number;
   userId: number;
 };
@@ -4996,6 +5009,7 @@ export type MyLabModelsQuery = {
     items?: Array<{
       __typename?: 'ModelDetail';
       id: number;
+      description?: string | null;
       isPublic: boolean;
       triggerRemainingCount: number;
       name: string;
@@ -5069,11 +5083,21 @@ export type LabModelDetailQuery = {
   __typename?: 'Query';
   labModelDetail?: {
     __typename?: 'ModelDetail';
+    createdAt?: any | null;
     id: number;
+    description?: string | null;
     isPublic: boolean;
     triggerRemainingCount: number;
     name: string;
     userId: number;
+    referenceCount?: number | null;
+    loginBinds?: {
+      __typename?: 'LoginBind';
+      account?: string | null;
+      avatarUrl?: string | null;
+      nickname?: string | null;
+      provider?: string | null;
+    } | null;
     latestVersions?: Array<{
       __typename?: 'ModelVersion';
       id: number;
@@ -5246,6 +5270,7 @@ export type LabModelCommentsQuery = {
         id: number;
         isPublic: boolean;
         name: string;
+        description?: string | null;
         triggerRemainingCount: number;
         userId: number;
       };
@@ -5298,6 +5323,7 @@ export type LabModelCommentsQuery = {
           id: number;
           isPublic: boolean;
           name: string;
+          description?: string | null;
           triggerRemainingCount: number;
           userId: number;
         };
@@ -5336,6 +5362,7 @@ export type LabModelCommentDetailQuery = {
       id: number;
       isPublic: boolean;
       name: string;
+      description?: string | null;
       triggerRemainingCount: number;
       userId: number;
     };
@@ -5369,6 +5396,7 @@ export type LabModelCommentDetailQuery = {
         id: number;
         isPublic: boolean;
         name: string;
+        description?: string | null;
         triggerRemainingCount: number;
         userId: number;
       };
@@ -5421,6 +5449,7 @@ export type LabModelCommentDetailQuery = {
           id: number;
           isPublic: boolean;
           name: string;
+          description?: string | null;
           triggerRemainingCount: number;
           userId: number;
         };
@@ -5462,6 +5491,7 @@ export type LabModelCommentDetailQuery = {
         id: number;
         isPublic: boolean;
         name: string;
+        description?: string | null;
         triggerRemainingCount: number;
         userId: number;
       };
@@ -5514,6 +5544,7 @@ export type LabModelCommentDetailQuery = {
           id: number;
           isPublic: boolean;
           name: string;
+          description?: string | null;
           triggerRemainingCount: number;
           userId: number;
         };
@@ -5719,6 +5750,7 @@ export type CreateLabModelMutationVariables = Exact<{
   isPublic: Scalars['Boolean'];
   metrics: Array<LabModelMetricInput> | LabModelMetricInput;
   name: Scalars['String'];
+  description: Scalars['String'];
 }>;
 
 export type CreateLabModelMutation = {
@@ -5761,6 +5793,7 @@ export type UpdateLabModelMutationVariables = Exact<{
   isPublic?: InputMaybe<Scalars['Boolean']>;
   modelId: Scalars['Int'];
   name?: InputMaybe<Scalars['String']>;
+  description: Scalars['String'];
 }>;
 
 export type UpdateLabModelMutation = {
@@ -10131,6 +10164,7 @@ export const ModelDetailFragmentDoc = /*#__PURE__*/ `
   id
   isPublic
   name
+  description
   triggerRemainingCount
   userId
 }
@@ -10179,6 +10213,7 @@ export const ReplyFragmentDoc = /*#__PURE__*/ `
     id
     isPublic
     name
+    description
     triggerRemainingCount
     userId
   }
@@ -10595,6 +10630,7 @@ export const MyLabModelsDocument = /*#__PURE__*/ `
     count
     items {
       id
+      description
       isPublic
       triggerRemainingCount
       latestVersions {
@@ -10671,9 +10707,17 @@ useMyLabModelsQuery.fetcher = (
 export const LabModelDetailDocument = /*#__PURE__*/ `
     query labModelDetail($modelId: Int!) {
   labModelDetail(modelId: $modelId) {
+    createdAt
     id
+    description
     isPublic
     triggerRemainingCount
+    loginBinds {
+      account
+      avatarUrl
+      nickname
+      provider
+    }
     latestVersions {
       id
       isScore
@@ -10706,6 +10750,7 @@ export const LabModelDetailDocument = /*#__PURE__*/ `
       canRead
       canUpdate
     }
+    referenceCount
   }
 }
     ${AlgorithmFragmentDoc}
@@ -11289,9 +11334,9 @@ useLabModelVersionReportDetailQuery.fetcher = (
     LabModelVersionReportDetailQueryVariables
   >(client, LabModelVersionReportDetailDocument, variables, headers);
 export const CreateLabModelDocument = /*#__PURE__*/ `
-    mutation createLabModel($algorithm: String, $isScore: Boolean!, $isPublic: Boolean!, $metrics: [LabModelMetricInput!]!, $name: String!) {
+    mutation createLabModel($algorithm: String, $isScore: Boolean!, $isPublic: Boolean!, $metrics: [LabModelMetricInput!]!, $name: String!, $description: String!) {
   createLabModel(
-    input: {algorithm: $algorithm, isScore: $isScore, isPublic: $isPublic, metrics: $metrics, name: $name}
+    input: {algorithm: $algorithm, isScore: $isScore, isPublic: $isPublic, metrics: $metrics, name: $name, description: $description}
   ) {
     clientMutationId
     errors {
@@ -11390,8 +11435,10 @@ useCreateLabModelVersionMutation.fetcher = (
     CreateLabModelVersionMutationVariables
   >(client, CreateLabModelVersionDocument, variables, headers);
 export const UpdateLabModelDocument = /*#__PURE__*/ `
-    mutation updateLabModel($isPublic: Boolean, $modelId: Int!, $name: String) {
-  updateLabModel(input: {isPublic: $isPublic, modelId: $modelId, name: $name}) {
+    mutation updateLabModel($isPublic: Boolean, $modelId: Int!, $name: String, $description: String!) {
+  updateLabModel(
+    input: {isPublic: $isPublic, modelId: $modelId, name: $name, description: $description}
+  ) {
     errors {
       message
       path

@@ -26,15 +26,15 @@ const ReportForm = ({ name, version }) => {
       />
       <div className="pt-8 md:px-2">
         <FormItemLabel className="text-secondary mb-3  text-sm font-semibold">
-          模型名
+          {t('lab:model_name')}
         </FormItemLabel>
         <div className="mb-3 text-xl font-medium">{name}</div>
         <FormItemLabel className="text-secondary mb-3  text-sm font-semibold">
-          版本
+          {t('lab:versions')}
         </FormItemLabel>
         <div className="mb-3 text-xl font-medium"> {version.version}</div>
         <FormItemLabel className="text-secondary mb-3  text-sm font-semibold">
-          选择数据集
+          {t('lab:select_dataset')}
         </FormItemLabel>
         <div className="grid grid-cols-4 gap-4 md:grid-cols-2">
           {subIdents.map((subIdent) => {

@@ -25,17 +25,17 @@ const FormIsTotalScore = () => {
 
   return (
     <div className="mb-6">
-      {/* <FormItemLabel>{t('lab:is_public_options.label')}</FormItemLabel> */}
-      <FormItemLabel>是否计算模型总分</FormItemLabel>
+      {/* <FormItemLabel>{t('lab:is_score_options.label')}</FormItemLabel> */}
+      <FormItemLabel>{t('lab:is_score_options.label')}</FormItemLabel>
       <div className="mb-3 flex items-center">
         <div className="flex w-40 items-center">
           <CustomRadio id="modal-public" {...controlProps('totalScore')} />
           <label htmlFor={'modal-public'} className="ml-2 cursor-pointer">
-            计算总分
+            {t('lab:is_score_options.score')}
           </label>
         </div>
-        <div className=" text-secondary">
-          计算总分需要设置每个指标的权重和阈值，选择模型算法，从而计算出模型总得分。
+        <div className="line-clamp-1 text-secondary">
+          {t('lab:is_score_options.score_desc')}
           {/* {t('lab:is_public_options.public_desc')} */}
         </div>
       </div>
@@ -47,11 +47,11 @@ const FormIsTotalScore = () => {
             color="secondary"
           />
           <label htmlFor="modal-private" className="ml-2 cursor-pointer">
-            不计算总分
+            {t('lab:is_score_options.non_score')}
           </label>
         </div>
-        <div className=" text-secondary">
-          无需设置每个指标的权重和阈值，不计算模型总得分。
+        <div className="line-clamp-1 text-secondary">
+          {t('lab:is_score_options.non_score_desc')}
           {/* {t('lab:is_public_options.non_public_desc')} */}
         </div>
       </div>

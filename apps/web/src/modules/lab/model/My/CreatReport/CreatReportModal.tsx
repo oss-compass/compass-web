@@ -51,7 +51,9 @@ const CreatReport = ({
             <GrClose />
           </div>
           <div className="px-10 pt-8 md:px-2">
-            <div className="mb-3 text-2xl font-medium">生成模型评估报告</div>
+            <div className="mb-3 text-2xl font-medium">
+              {t('lab:generate_model_evaluation_reports')}
+            </div>
 
             <ReportForm version={version} name={model.name} />
             <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-end border-t bg-white px-9 text-sm">

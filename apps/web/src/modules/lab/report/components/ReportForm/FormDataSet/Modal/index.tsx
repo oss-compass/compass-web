@@ -73,7 +73,24 @@ const ModalSelect = ({
 
   const modalContent = () => {
     if (!throttleSearch) {
-      return <Content />;
+      return (
+        <>
+          <div className="text-secondary mb-2 text-sm">
+            {t('lab:dataset_desc')}
+            {/* {t('lab:cant_find_a_suitable_dataset')}
+            <Trans
+              i18nKey="contact_us"
+              ns="common"
+              components={{
+                s: <LinkA href={'/docs/community/'} />,
+              }}
+            /> */}
+          </div>
+          <div className="flex h-[405px]">
+            <Content />
+          </div>
+        </>
+      );
     }
 
     if (isLoading) {
@@ -151,13 +168,13 @@ const ModalSelect = ({
           <Input
             value={search}
             placeholder={t('lab:search_dataset_placeholder')}
-            className="mb-4 border-2"
+            className="mb-2 border-2"
             onChange={(v) => {
               setSearch(v);
             }}
           />
 
-          <div className="flex h-[440px]">{modalContent()}</div>
+          <div className="flex h-[440px] flex-col">{modalContent()}</div>
 
           <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-end border-t bg-white px-9 text-sm">
             {/* <div>

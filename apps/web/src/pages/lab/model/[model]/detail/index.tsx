@@ -12,7 +12,11 @@ import ModelDetailProvider from '@modules/lab/model/Provider/ModelDetailProvider
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['lab', 'lab_metrics'])),
+      ...(await getLocalesFile(req.cookies, [
+        'lab',
+        'lab_metrics',
+        'lab_models',
+      ])),
     },
   };
 };

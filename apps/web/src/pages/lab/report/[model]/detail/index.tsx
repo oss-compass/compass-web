@@ -23,7 +23,7 @@ const Deatil = () => {
     <NoSsr>
       <Header />
       {/* <MyModelsBanner text={t('lab:model_detail')} /> */}
-      <MyModelsBanner text={'我的模型报告'} />
+      <MyModelsBanner text={t('lab:my_model_reports')} />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full">
         <ModelDetailProvider loadingClassName="mx-auto w-[1200px] lg:w-full md:px-4 py-10">
           <ModelDetail />

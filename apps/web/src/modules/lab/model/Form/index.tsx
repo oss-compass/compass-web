@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Button } from '@oss-compass/ui';
 import FormIsPublic from './FormIsPublic';
 import FormVersionTitle from './FormVersionTitle';
-import FormDomain from './FormDomain';
+import FormDescription from './FormDescription';
 import FormTitle from './FormTitle';
 import FormIsTotalScore from './FormIsTotalScore';
 import FormMetric from './FormMetric';
@@ -58,7 +58,7 @@ const Form = ({
   return (
     <>
       <FormTitle disabled={isVersion} />
-      {/* <FormDomain disabled={isVersion} /> */}
+      <FormDescription disabled={isVersion} />
       <FormIsPublic disabled={isVersion} />
 
       {formType === 'ModelEdit' ? null : (

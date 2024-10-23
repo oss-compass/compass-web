@@ -8,7 +8,7 @@ const LabDataRadio = ({ defaultValue }) => {
   const router = useRouter();
   const radioOptions = [
     { label: t('lab:my_models'), value: 'myModels' },
-    { label: '我的模型报告', value: 'myReports' },
+    { label: t('lab:my_model_reports'), value: 'myReports' },
     // { label: '我的数据集', value: '3' },
   ];
   const routeMap = {

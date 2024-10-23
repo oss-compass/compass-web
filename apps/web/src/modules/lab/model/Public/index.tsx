@@ -38,7 +38,9 @@ const Model = () => {
 
   return (
     <div className="mx-auto w-[1280px] xl:w-full xl:px-2">
-      <div className="mb-5 flex items-center text-xl font-medium">公开模型</div>
+      <div className="mb-5 flex items-center text-xl font-medium">
+        {t('lab:public_model')}
+      </div>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-1 lg:gap-5 xl:gap-6">
         {list.map((model, index) => {
           // if (index === 0) {

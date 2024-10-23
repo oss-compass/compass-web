@@ -26,7 +26,7 @@ export const ItemCard = ({
     <>
       <div className="flex h-24 flex-col border border-[#CCCCCC] bg-[#FAFAFA] p-3">
         <div className="flex-1">
-          <div className="text-sm font-medium">
+          <div className="line-clamp-1 text-sm font-medium">
             {getSecondIdentName(ident, i18n.language)}
           </div>
           <div className="text-xs text-[#585858]">

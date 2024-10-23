@@ -6,7 +6,7 @@ import { formState, actions } from '../Form/state';
 import { useLabModelDetail } from '../hooks';
 import { useEventEmitter } from 'ahooks';
 import { ReFetch } from '@common/constant';
-import ModelItem from '../My/ModelItem';
+import DetailPage from './DetailPage';
 
 const ModelDetail = () => {
   const router = useRouter();
@@ -20,17 +20,17 @@ const ModelDetail = () => {
       refetch();
     }
   });
-  useEffect(() => {
-    // actions.resetForm();
-    // if (modelDetail?.labModelDetail) {
-    //   const { name, dimension, isGeneral, isPublic } =
-    //     modelDetail.labModelDetail;
-    //   formState.name = name;
-    //   formState.dimension = dimension;
-    //   formState.isGeneral = isGeneral;
-    //   formState.isPublic = isPublic;
-    // }
-  }, [modelDetail]);
+  // useEffect(() => {
+  //   actions.resetForm();
+  //   if (modelDetail?.labModelDetail) {
+  //     const { name, dimension, isGeneral, isPublic } =
+  //       modelDetail.labModelDetail;
+  //     formState.name = name;
+  //     formState.dimension = dimension;
+  //     formState.isGeneral = isGeneral;
+  //     formState.isPublic = isPublic;
+  //   }
+  // }, [modelDetail]);
 
   const getContent = () => {
     if (isLoading) {
@@ -52,10 +52,12 @@ const ModelDetail = () => {
         </div>
       );
     }
-
+    if (!modelDetail) {
+      return <>{t('lab:lab_models.forbidden')}</>;
+    }
     return (
       <>
-        <ModelItem model={modelDetail.labModelDetail} event$={event$} />
+        <DetailPage model={modelDetail.labModelDetail} event$={event$} />
       </>
     );
   };

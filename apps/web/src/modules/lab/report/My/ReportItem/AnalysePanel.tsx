@@ -32,7 +32,7 @@ const AnalysePanel = ({ model }: { model: MyModelVersion }) => {
             {t(`lab:analysis_status.${triggerStatus}`)}
           </span>
         ) : (
-          <span className="text-secondary ml-2 text-sm">
+          <span className="ml-3 rounded-2xl bg-[#fff2f0] px-2 py-0.5 text-xs text-[#ff4d4f]">
             {t(`lab:analysis_status.${triggerStatus}`)}
           </span>
         )}

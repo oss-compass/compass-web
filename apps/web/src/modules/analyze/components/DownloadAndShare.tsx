@@ -310,10 +310,10 @@ const TabPanel = ({ badgeSrc, id }: { badgeSrc: string; id: string }) => {
                     setTargetDate(Date.now() + 800);
                   })
                   .catch((err) => {
-                    toast.error('Failed！No copy permission');
+                    toast.error('Failed! No copy permission');
                   });
               } else {
-                toast.error('Failed！ Not Supported clipboard');
+                toast.error('Failed! Not Supported clipboard');
               }
             }}
           >

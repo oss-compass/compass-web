@@ -60,6 +60,7 @@ fragment reply on ModelComment {
     isPublic
     #latestVersions
     name
+    description
     triggerRemainingCount
     userId
   }
@@ -87,6 +88,7 @@ fragment modelDetail on ModelDetail {
   isPublic
   #latestVersions
   name
+  description
   triggerRemainingCount
   userId
 }
@@ -165,7 +167,7 @@ query myLabModels($page: Int!, $per: Int!) {
     count
     items {
       id
-      # isScore
+      description
       isPublic
       triggerRemainingCount
       latestVersions {
@@ -215,10 +217,17 @@ query myLabModels($page: Int!, $per: Int!) {
 query labModelDetail($modelId: Int!) {
   labModelDetail(modelId: $modelId) {
     # dimension
+    createdAt
     id
-    # isScore
+    description
     isPublic
     triggerRemainingCount
+    loginBinds {
+      account
+      avatarUrl
+      nickname
+      provider
+    }
     latestVersions {
       id
       isScore
@@ -251,6 +260,7 @@ query labModelDetail($modelId: Int!) {
       canRead
       canUpdate
     }
+    referenceCount
   }
 }
 
@@ -485,6 +495,7 @@ mutation createLabModel(
   $isPublic: Boolean!
   $metrics: [LabModelMetricInput!]!
   $name: String!
+  $description: String!
 ) {
   createLabModel(
     input: {
@@ -494,6 +505,7 @@ mutation createLabModel(
       isPublic: $isPublic
       metrics: $metrics
       name: $name
+      description: $description
     }
   ) {
     clientMutationId
@@ -536,6 +548,7 @@ mutation updateLabModel(
   $isPublic: Boolean
   $modelId: Int!
   $name: String
+  $description: String!
 ) {
   updateLabModel(
     input: {
@@ -544,6 +557,7 @@ mutation updateLabModel(
       isPublic: $isPublic
       modelId: $modelId
       name: $name
+      description: $description
     }
   ) {
     errors {

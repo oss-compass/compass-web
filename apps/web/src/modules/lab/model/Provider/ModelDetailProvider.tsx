@@ -6,7 +6,6 @@ const ModelDetailProvider: React.FC<
   PropsWithChildren<{ loadingClassName?: string; loadingUi?: React.ReactNode }>
 > = ({ children, loadingClassName, loadingUi }) => {
   const { isLoading, data: modelData, error: modelError } = useLabModelDetail();
-
   if (isLoading) {
     if (loadingUi) {
       return <div className={classnames(loadingClassName)}>{loadingUi}</div>;
@@ -36,11 +35,9 @@ const ModelDetailProvider: React.FC<
   }
 
   if (modelError) {
-    return (
-      <div className="py-10 text-center text-lg text-gray-600">
-        404 not found
-      </div>
-    );
+    // @ts-ignore
+    const err = modelError?.response?.errors?.[0]?.message || '404 not found';
+    return <div className="py-10 text-center text-lg text-gray-600">{err}</div>;
   }
 
   if (!modelData?.labModelDetail?.id) {
