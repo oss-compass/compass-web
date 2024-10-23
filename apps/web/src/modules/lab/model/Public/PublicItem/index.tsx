@@ -11,7 +11,7 @@ const PublicItem: React.FC<{
   fullWidth?: boolean;
 }> = ({ fullWidth = false, model }) => {
   const { t } = useTranslation();
-  const { modelName, modelId, metrics, loginBinds,createdAt } = model;
+  const { modelName, modelId, metrics, loginBinds, createdAt } = model;
   const router = useRouter();
 
   return (
