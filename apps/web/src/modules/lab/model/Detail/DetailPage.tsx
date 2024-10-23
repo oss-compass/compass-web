@@ -30,14 +30,7 @@ const ModelItem = ({
           {dimensionLogo[`${model.dimension}`]}
         </div> */}
         <div className="mb-2 flex items-center text-3xl font-bold">
-          <a
-            className="cursor-pointer"
-            onClick={() => {
-              router.push(`/lab/model/${id}/detail`);
-            }}
-          >
-            {name}
-          </a>
+          <a className="cursor-default">{name}</a>
 
           {model.isPublic ? (
             <span className="ml-2 rounded-2xl bg-[#cdf0ce] px-2 py-0.5  text-xs text-[#00B400]">

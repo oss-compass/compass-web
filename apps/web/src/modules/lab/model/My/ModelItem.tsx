@@ -89,7 +89,16 @@ const ModelItem = ({
           />
         </div>
       </div>
-
+      {model?.description ? (
+        <div className="text-secondary my-3 text-sm font-semibold">
+          {/* {t('lab:description')} */}
+          <span className="text-base font-normal text-black">
+            {model.description}
+          </span>
+        </div>
+      ) : (
+        ''
+      )}
       <div className="mb-4 flex items-center justify-between">
         <div className="text-secondary text-sm font-semibold">
           {t('lab:versions')}

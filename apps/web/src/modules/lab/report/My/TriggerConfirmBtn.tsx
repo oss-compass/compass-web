@@ -41,7 +41,7 @@ const TriggerConfirmBtn = ({
 
   if (triggerStatus === 'pending' || triggerStatus === 'progress') {
     return (
-      <div className="text-secondary flex basis-1/2 cursor-pointer items-center justify-center border-r last:border-r-0">
+      <div className="text-secondary flex basis-1/2 cursor-pointer items-center justify-center last:border-r-0">
         <span className="block text-sm">
           {t('lab:trigger_analysis.analyzing')}
         </span>
