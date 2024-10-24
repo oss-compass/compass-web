@@ -2,13 +2,12 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineUser } from 'react-icons/ai';
-import { PiShareFatLight } from 'react-icons/pi';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import { ModelDetail, useDeleteLabModelMutation } from '@oss-compass/graphql';
+import { ModelDetail } from '@oss-compass/graphql';
 import ModelItemMore from './ModelItemMore';
 import VersionCreate from './VersionCreate';
 import VersionCard from './VersionCard';
-import toast from 'react-hot-toast';
+import ShareBtn from '@modules/lab/model/components/ShareBtn';
 
 const ModelItem = ({
   model,
@@ -25,9 +24,6 @@ const ModelItem = ({
   return (
     <div className="mb-8 bg-white p-4 shadow">
       <div className="flex items-center justify-between">
-        {/* <div className="flex items-center">
-          {dimensionLogo[`${model.dimension}`]}
-        </div> */}
         <div className="mb-2 flex items-center text-lg font-semibold">
           <a
             className="cursor-pointer"
@@ -45,29 +41,7 @@ const ModelItem = ({
           ) : null}
         </div>
         <div className="flex items-center">
-          {model.isPublic ? (
-            <div
-              className="mr-2 flex cursor-pointer items-center"
-              onClick={() => {
-                if (navigator.clipboard?.writeText) {
-                  let source = `https://oss-compass.org/lab/model/${model.id}/detail`;
-                  navigator.clipboard
-                    .writeText(source)
-                    .then((value) => {
-                      toast.success(t('lab:copy_successfully'));
-                    })
-                    .catch((err) => {
-                      toast.error('Failed! No copy permission');
-                    });
-                } else {
-                  toast.error('Failed! Not Supported clipboard');
-                }
-              }}
-            >
-              <PiShareFatLight />
-              <div className="ml-1 text-sm">{t('lab:share')}</div>
-            </div>
-          ) : null}
+          {model.isPublic ? <ShareBtn id={model.id} /> : null}
           <div
             className="flex cursor-pointer items-center"
             onClick={() => {
