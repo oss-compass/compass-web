@@ -35,6 +35,7 @@ const VersionCard = ({
   event$: EventEmitter<string>;
 }) => {
   const { id: modelId, isPublic: modelIsPublic, triggerRemainingCount } = model;
+  const { isScore } = version;
   const { t, i18n } = useTranslation();
   const router = useRouter();
 
@@ -116,9 +117,15 @@ const VersionCard = ({
             </span>
           </div>
           <div className="mb-2">
-            <span className="text-secondary block truncate text-sm">
-              {t('lab:algorithm')}: {t('lab:algorithm_selection.default')}
-            </span>
+            {isScore ? (
+              <span className="text-secondary block truncate text-sm">
+                {t('lab:algorithm')}: {t('lab:algorithm_selection.default')}
+              </span>
+            ) : (
+              <span className="text-secondary block truncate text-sm">
+                {t('lab:non_score_text')}
+              </span>
+            )}
           </div>
 
           {/* {version.triggerStatus ? (

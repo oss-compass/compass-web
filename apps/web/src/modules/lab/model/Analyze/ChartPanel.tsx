@@ -6,6 +6,7 @@ import LayoutMetricCards from './component/LayoutMetricCards';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import useLabData from './hooks/useLabData';
 import { actions } from './state';
+import { useLabModelVersion } from '../hooks';
 
 const LoadingUi = () => (
   <div className="rounded-lg bg-white  px-6 py-6 drop-shadow-sm">
@@ -27,8 +28,9 @@ const LoadingUi = () => (
 
 const Content = () => {
   usePageLoadHashScroll(false);
+  const { data } = useLabModelVersion();
+  const isScore = data?.labModelVersion?.isScore;
   const id = useHashchangeEvent();
-
   useEffect(() => {
     if (id && id.startsWith('comment')) {
       actions.toggleCommentDrawer(true);
@@ -37,7 +39,7 @@ const Content = () => {
 
   return (
     <>
-      <CardTotalScore className="mb-6" />
+      {isScore && <CardTotalScore className="mb-6" />}
       <LayoutMetricCards />
     </>
   );
