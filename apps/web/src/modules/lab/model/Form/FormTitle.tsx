@@ -36,7 +36,7 @@ const FormTitle = ({ disabled }: { disabled: boolean }) => {
           disabled={disabled}
           intent={'secondary'}
           placeholder={t('common:prompt.please_enter')}
-          value={snapshot.name}
+          value={snapshot.name || ''}
           onChange={(value) => {
             if (value.length > 100) {
               return;
