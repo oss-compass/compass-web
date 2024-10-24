@@ -2,6 +2,8 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineUser } from 'react-icons/ai';
+import { PiShareFatLight } from 'react-icons/pi';
+import toast from 'react-hot-toast';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import { ModelDetail, useDeleteLabModelMutation } from '@oss-compass/graphql';
 import ModelItemMore from '../My/ModelItemMore';
@@ -39,6 +41,29 @@ const ModelItem = ({
           ) : null}
         </div>
         <div className="flex items-center">
+          {model.isPublic ? (
+            <div
+              className="mr-2 flex cursor-pointer items-center"
+              onClick={() => {
+                if (navigator.clipboard?.writeText) {
+                  let source = `https://oss-compass.org/lab/model/${model.id}/detail`;
+                  navigator.clipboard
+                    .writeText(source)
+                    .then((value) => {
+                      toast.success(t('lab:copy_successfully'));
+                    })
+                    .catch((err) => {
+                      toast.error('Failed! No copy permission');
+                    });
+                } else {
+                  toast.error('Failed! Not Supported clipboard');
+                }
+              }}
+            >
+              <PiShareFatLight />
+              <div className="ml-1 text-sm">{t('lab:share')}</div>
+            </div>
+          ) : null}
           {permissions?.canUpdate ? (
             <div
               className="flex cursor-pointer items-center"

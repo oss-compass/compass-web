@@ -6,11 +6,6 @@ import { PiShareFatLight } from 'react-icons/pi';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import { ModelDetail, useDeleteLabModelMutation } from '@oss-compass/graphql';
 import ModelItemMore from './ModelItemMore';
-
-import IconProductivity from '@public/images/analyze/topic/Productivity.svg';
-import IconRobustness from '@public/images/analyze/topic/Robustness.svg';
-import IconNicheCreation from '@public/images/analyze/topic/NicheCreation.svg';
-
 import VersionCreate from './VersionCreate';
 import VersionCard from './VersionCard';
 import toast from 'react-hot-toast';
@@ -92,7 +87,7 @@ const ModelItem = ({
       {model?.description ? (
         <div className="text-secondary my-3 text-sm font-semibold">
           {/* {t('lab:description')} */}
-          <span className="text-base font-normal text-black">
+          <span className="line-clamp-3 text-base font-normal text-black">
             {model.description}
           </span>
         </div>
