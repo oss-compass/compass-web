@@ -34,9 +34,10 @@ import { useIsCurrentUser } from '@modules/analyze/hooks/useIsCurrentUser';
 import { FiEdit } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { AiOutlineSearch, AiFillFilter } from 'react-icons/ai';
-
+import getErrorMessage from '@common/utils/getErrorMessage';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
+import toast from 'react-hot-toast';
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -133,6 +134,9 @@ const MetricTable: React.FC<{
         });
         setData(items);
         setOrigin(data.contributorsDetailList.origin);
+      },
+      onError: (e) => {
+        toast.error(getErrorMessage(e) || 'failed');
       },
     }
   );

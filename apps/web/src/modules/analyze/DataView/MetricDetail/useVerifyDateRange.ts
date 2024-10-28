@@ -27,7 +27,7 @@ const useVerifyDateRange = () => {
   const { isLoading, data } = useVerifyDetailRangeQuery();
 
   return useMemo(() => {
-    if (!range || !data?.verifyDetailDataRange?.status) {
+    if (!range || !data) {
       return contributorDefaultVal;
     } else if (rangeTags.includes(range)) {
       return {
