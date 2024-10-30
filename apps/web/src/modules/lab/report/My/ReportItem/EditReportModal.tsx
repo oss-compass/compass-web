@@ -6,38 +6,38 @@ import { useTranslation } from 'react-i18next';
 import ReportForm from '@modules/lab/report/components/ReportForm';
 import { formState } from '@modules/lab/report/components/ReportForm/state';
 import toast from 'react-hot-toast';
-import { useCreateLabDatasetMutation } from '@oss-compass/graphql';
+import { useUpdateLabModelReportMutation } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import getErrorMessage from '@common/utils/getErrorMessage';
+import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
+import { ReFetch } from '@common/constant';
 
-const CreatReportModal = ({
-  model,
+const EditReportModal = ({
+  modelName,
   version,
   open,
+  event$,
   onClose,
 }: {
-  model: any;
+  modelName: string;
   version?: any;
   open: boolean;
+  event$: EventEmitter<string>;
   onClose: () => void;
 }) => {
-  const router = useRouter();
   const { t } = useTranslation();
-  const { id, name, isPublic } = model;
-  const createMutation = useCreateLabDatasetMutation(gqlClient, {
+  const updateMutation = useUpdateLabModelReportMutation(gqlClient, {
     onSuccess(res) {
-      toast.success(() => <>{t('lab:create_succeed')}</>, {
+      toast.success(() => <>{t('lab:edit_succeed')}</>, {
         position: 'top-center',
       });
-      router.push('/lab/report/my');
+      onClose();
+      event$.emit(ReFetch);
     },
     onError(res) {
-      toast.error(
-        getErrorMessage(res) || (() => <>{t('lab:create_failed')}</>),
-        {
-          position: 'top-center',
-        }
-      );
+      toast.error(getErrorMessage(res) || (() => <>{t('lab:edit_failed')}</>), {
+        position: 'top-center',
+      });
     },
   });
 
@@ -55,28 +55,23 @@ const CreatReportModal = ({
           </div>
           <div className="px-10 pt-8 md:px-2">
             <div className="mb-3 text-2xl font-medium">
-              {t('lab:generate_model_evaluation_reports')}
+              {t('lab:edit_model_evaluation_reports')}
             </div>
 
-            <ReportForm
-              version={version}
-              name={name}
-              modelIsPublic={isPublic}
-            />
+            <ReportForm version={version} name={modelName} edit={true} />
             <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-end border-t bg-white px-9 text-sm">
               <div>
                 <Button
                   className="min-w-[100px]"
                   onClick={() => {
-                    const { isPublic, dataSet } = formState;
+                    const { isPublic, name, dataSet } = formState;
                     const dataSetLen = formState.dataSet.length;
                     if (dataSetLen === 0) {
                       toast.error(t('lab:form_tips.dataset_require'));
                       return;
                     }
-                    createMutation.mutate({
-                      modelId: id,
-                      versionId: version.id,
+                    updateMutation.mutate({
+                      reportId: version.id,
                       datasets: dataSet,
                       isPublic,
                     });
@@ -93,4 +88,4 @@ const CreatReportModal = ({
   );
 };
 
-export default CreatReportModal;
+export default EditReportModal;

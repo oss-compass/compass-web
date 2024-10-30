@@ -10,18 +10,21 @@ import VersionCreate from '../My/VersionCreate';
 import VersionCard from '../My/VersionCard';
 import { formatToNow } from '@common/utils/time';
 import ShareBtn from '@modules/lab/model/components/ShareBtn';
+import ForkFrom from '@modules/lab/model/components/ForkFrom';
 
 const ModelItem = ({
   model,
   event$,
 }: {
-  model: ModelDetail;
+  model: any;
   event$: EventEmitter<string>;
 }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { description, name, id, createdAt, loginBinds } = model;
+
   const permissions = model?.permissions;
+  const parentLabModel = model?.parentLabModel;
 
   return (
     <div className="mb-8 w-full p-4">
@@ -37,6 +40,14 @@ const ModelItem = ({
               {t('lab:is_public')}
             </span>
           ) : null}
+          {parentLabModel?.id ? (
+            <ForkFrom
+              id={parentLabModel?.id}
+              name={parentLabModel?.name}
+            ></ForkFrom>
+          ) : (
+            ''
+          )}
         </div>
         <div className="flex items-center">
           {model.isPublic ? <ShareBtn id={model.id} /> : null}

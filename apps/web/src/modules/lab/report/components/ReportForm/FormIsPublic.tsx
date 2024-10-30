@@ -2,59 +2,60 @@ import React, { PropsWithChildren } from 'react';
 import { useSnapshot } from 'valtio';
 import { useTranslation } from 'react-i18next';
 import { formState } from './state';
-import { FormItemLabel } from './Misc';
+import { FormItemLabel } from '@modules/lab/model/Form/Misc';
 import { CustomRadio, Select, SelectOption, Input } from '@oss-compass/ui';
 
-const FormIsTotalScore = () => {
+const FormIsPublic = ({ disabled }: { disabled: boolean }) => {
   const { t } = useTranslation();
   const snapshot = useSnapshot(formState);
-  const isScore = snapshot.isScore;
+  const isPublic = snapshot.isPublic;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, v) => {
     const val = event.target.value;
-    formState.isScore = val === 'totalScore';
+    formState.isPublic = val === 'public';
   };
 
   const controlProps = (item: string) => ({
-    checked:
-      (isScore && item == 'totalScore') || (!isScore && item == 'noTotalScore'),
+    checked: (isPublic && item == 'public') || (!isPublic && item == 'private'),
     onChange: handleChange,
     value: item,
     name: 'radio-button-is-public',
+    disabled,
   });
 
   return (
     <div className="mb-6">
-      {/* <FormItemLabel>{t('lab:is_score_options.label')}</FormItemLabel> */}
-      <FormItemLabel>{t('lab:is_score_options.label')}</FormItemLabel>
+      <FormItemLabel className="text-secondary mb-3  text-sm font-semibold">
+        {t('lab:is_public_options.label')}
+      </FormItemLabel>
       <div className="mb-3 flex items-center">
         <div className="flex w-40 items-center">
-          <CustomRadio id="modal-public" {...controlProps('totalScore')} />
+          <CustomRadio id="modal-public" {...controlProps('public')} />
           <label htmlFor={'modal-public'} className="ml-2 cursor-pointer">
-            {t('lab:is_score_options.score')}
+            {t('lab:is_public_options.public')}
           </label>
         </div>
-        <div className="line-clamp-1 text-secondary">
-          {t('lab:is_score_options.score_desc')}
-        </div>
+        {/* <div className=" text-secondary">
+          {t('lab:is_public_options.public_desc')}
+        </div> */}
       </div>
       <div className="flex items-center">
         <div className="flex w-40 items-center">
           <CustomRadio
             id="modal-private"
-            {...controlProps('noTotalScore')}
+            {...controlProps('private')}
             color="secondary"
           />
           <label htmlFor="modal-private" className="ml-2 cursor-pointer">
-            {t('lab:is_score_options.non_score')}
+            {t('lab:is_public_options.non_public')}
           </label>
         </div>
-        <div className="line-clamp-1 text-secondary">
-          {t('lab:is_score_options.non_score_desc')}
-        </div>
+        {/* <div className=" text-secondary">
+          {t('lab:is_public_options.non_public_desc')}
+        </div> */}
       </div>
     </div>
   );
 };
 
-export default FormIsTotalScore;
+export default FormIsPublic;

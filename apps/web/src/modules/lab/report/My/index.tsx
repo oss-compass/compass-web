@@ -71,7 +71,7 @@ const MyModal = () => {
         {list.map((model) => {
           return (
             <div className="mb-8 flex-1 bg-white p-4 shadow" key={model.id}>
-              <ReportItem model={model} fullWidth />
+              <ReportItem model={model} event$={event$} fullWidth />
             </div>
           );
         })}

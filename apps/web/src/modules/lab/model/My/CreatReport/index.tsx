@@ -27,7 +27,6 @@ const CreatReport = ({ version, model }) => {
       >
         <AiOutlineSelect className="text-secondary" />
         <span className="ml-2 block text-sm">
-          {' '}
           {t('lab:use_the_model_for_evaluation')}
         </span>
       </div>

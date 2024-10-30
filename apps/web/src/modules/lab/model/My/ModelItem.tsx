@@ -8,18 +8,20 @@ import ModelItemMore from './ModelItemMore';
 import VersionCreate from './VersionCreate';
 import VersionCard from './VersionCard';
 import ShareBtn from '@modules/lab/model/components/ShareBtn';
+import ForkFrom from '@modules/lab/model/components/ForkFrom';
 
 const ModelItem = ({
   model,
   event$,
 }: {
-  model: ModelDetail;
+  model: any;
   event$: EventEmitter<string>;
 }) => {
   const router = useRouter();
   const { t } = useTranslation();
 
   const permissions = model?.permissions;
+  const parentLabModel = model?.parentLabModel;
 
   return (
     <div className="mb-8 bg-white p-4 shadow">
@@ -39,6 +41,14 @@ const ModelItem = ({
               {t('lab:is_public')}
             </span>
           ) : null}
+          {parentLabModel?.id ? (
+            <ForkFrom
+              id={parentLabModel?.id}
+              name={parentLabModel?.name}
+            ></ForkFrom>
+          ) : (
+            ''
+          )}
         </div>
         <div className="flex items-center">
           {model.isPublic ? <ShareBtn id={model.id} /> : null}

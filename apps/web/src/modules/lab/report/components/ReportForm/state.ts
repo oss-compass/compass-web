@@ -34,10 +34,7 @@ interface State {
 
 const initialObj = {
   name: '',
-  // dimension: 0,
-  // isGeneral: true,
-  isPublic: false,
-
+  isPublic: true,
   version: '',
   dataSet: [],
   metricSet: [],

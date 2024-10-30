@@ -1,12 +1,11 @@
 import React from 'react';
-import { MyModelVersion } from '@oss-compass/graphql';
 import ModelTitle from './ModelTitle';
 import AnalysePanel from './AnalysePanel';
 import DataSetPanel from '@modules/lab/model/components/DataSetPanel';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 
 const ModelItem: React.FC<{
-  model: MyModelVersion;
+  model: any;
   event$?: EventEmitter<string>;
   fullWidth?: boolean;
 }> = ({ event$ = null, fullWidth = false, model }) => {

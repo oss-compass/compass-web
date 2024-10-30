@@ -208,6 +208,15 @@ query myLabModels($page: Int!, $per: Int!) {
         canRead
         canUpdate
       }
+      parentLabModel {
+        name
+        id
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+        }
+      }
     }
     page
     totalPage
@@ -259,6 +268,15 @@ query labModelDetail($modelId: Int!) {
       canExecute
       canRead
       canUpdate
+    }
+    parentLabModel {
+      id
+      name
+      loginBinds {
+        account
+        avatarUrl
+        nickname
+      }
     }
     referenceCount
   }
@@ -773,9 +791,15 @@ mutation createLabDataset(
   $datasets: [DatasetRowTypeInput!]!
   $modelId: Int!
   $versionId: Int!
+  $isPublic: Boolean!
 ) {
   createLabDataset(
-    input: { datasets: $datasets, modelId: $modelId, versionId: $versionId }
+    input: {
+      datasets: $datasets
+      modelId: $modelId
+      versionId: $versionId
+      isPublic: $isPublic
+    }
   ) {
     clientMutationId
     errors {
@@ -793,6 +817,7 @@ query myModelReports($page: Int, $per: Int) {
     items {
       # dimension
       id
+      isPublic
       reportId
       modelId
       modelName
@@ -806,10 +831,46 @@ query myModelReports($page: Int, $per: Int) {
       versionId
       triggerStatus
       triggerUpdatedAt
+      parentLabModel {
+        name
+        id
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+        }
+      }
       #      reports {
       #        ...simpleReport
       #      }
       # versionId
     }
+  }
+}
+mutation deleteLabModelReport($id: Int!) {
+  deleteLabModelReport(input: { id: $id }) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation updateLabModelReport(
+  $datasets: [DatasetRowTypeInput!]!
+  $reportId: Int!
+  $isPublic: Boolean
+) {
+  updateLabModelReport(
+    input: { datasets: $datasets, reportId: $reportId, isPublic: $isPublic }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
   }
 }

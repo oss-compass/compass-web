@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { useTranslation } from 'react-i18next';
 import groupBy from 'lodash/groupBy';
@@ -6,15 +6,32 @@ import { FormItemLabel } from '@modules/lab/model/Form/Misc';
 import { ItemCard, ItemCardPlus } from './FormDataSet/SelectedItem';
 import { formState, actions } from './state';
 import { formFiledState } from '@modules/lab/model/Form/FormDataSet/state';
+import FormIsPublic from './FormIsPublic';
 import ModalSelect from './FormDataSet/Modal';
 
-const ReportForm = ({ name, version }) => {
+const ReportForm = ({ name, version, modelIsPublic = false, edit = false }) => {
   const { t } = useTranslation();
   const [openModalSelect, setOpenModalSelect] = useState(false);
+
   const snapshot = useSnapshot(formState);
   const item = groupBy(snapshot.dataSet, 'secondIdent');
   const subIdents = Object.keys(item);
   const dateSetSelectedLength = snapshot.dataSet.length;
+  useEffect(() => {
+    actions.resetForm();
+    if (edit && version) {
+      const { isPublic, dataset } = version;
+      formState.isPublic = isPublic;
+      formState.dataSet = dataset.items.map((i) => {
+        return {
+          label: i.label,
+          level: i.level,
+          firstIdent: i.firstIdent,
+          secondIdent: i.secondIdent,
+        };
+      });
+    }
+  }, [version]);
 
   return (
     <>
@@ -33,6 +50,7 @@ const ReportForm = ({ name, version }) => {
           {t('lab:versions')}
         </FormItemLabel>
         <div className="mb-3 text-xl font-medium"> {version.version}</div>
+        <FormIsPublic disabled={false} />
         <FormItemLabel className="text-secondary mb-3  text-sm font-semibold">
           {t('lab:select_dataset')}
         </FormItemLabel>

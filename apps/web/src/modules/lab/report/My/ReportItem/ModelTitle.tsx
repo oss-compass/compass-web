@@ -8,6 +8,7 @@ import Discuss from './Discuss';
 import ModelItemMore from './ModelItemMore';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import TriggerConfirmBtn from '../TriggerConfirmBtn';
+import ForkFrom from '@modules/lab/model/components/ForkFrom';
 
 const ModeTitle: React.FC<{
   model: MyModelVersion;
@@ -16,6 +17,7 @@ const ModeTitle: React.FC<{
   const { t } = useTranslation();
   // const permissions = model?.permissions;
   const { triggerUpdatedAt, triggerStatus, modelId, versionId, id } = model;
+  const parentLabModel = model?.parentLabModel;
 
   return (
     <>
@@ -24,6 +26,13 @@ const ModeTitle: React.FC<{
           <div onClick={() => {}} className="mt-2 cursor-pointer text-3xl">
             {model.modelName + ` (${model.version})`}
           </div>
+          {parentLabModel?.id ? (
+            <div className="pt-5">
+              <ForkFrom id={parentLabModel?.id} name={parentLabModel?.name} />
+            </div>
+          ) : (
+            ''
+          )}
         </div>
         <div className="flex gap-1">
           <TriggerConfirmBtn
@@ -36,11 +45,7 @@ const ModeTitle: React.FC<{
           />
           <Discuss model={model} />
 
-          {/* <ModelItemMore
-            modelId={modelId}
-            event$={event$}
-            permissions={permissions}
-          /> */}
+          <ModelItemMore model={model} event$={event$} />
         </div>
       </div>
     </>
