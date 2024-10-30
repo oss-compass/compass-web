@@ -433,12 +433,14 @@ query labModelPublicOverview(
   $direction: String
   $page: Int
   $per: Int
+  $metricId: Int
 ) {
   labModelPublicOverview(
     sort: $sort
     direction: $direction
     page: $page
     per: $per
+    metricId: $metricId
   ) {
     page
     totalPage

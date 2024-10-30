@@ -6,19 +6,20 @@ import { useTranslation } from 'next-i18next';
 
 import style from './index.module.css';
 
-const Banner = () => {
+const Banner = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
   const router = useRouter();
   return (
     <div
       className={classnames(
         'relative mb-12 h-60 overflow-hidden bg-[#ffebbf]',
-        style.headerBgLine
+        style.headerBgLine,
+        className
       )}
     >
       <div
         className={classnames(
-          'absolute  right-28 bottom-0 h-60 w-[376px] md:-right-[300px]',
+          'absolute right-28 bottom-0 h-60 w-[376px] md:-right-[300px]',
           style.headerBgGraph
         )}
       ></div>

@@ -22,7 +22,7 @@ const LabPage = () => {
   return (
     <NoSsr>
       <Header />
-      <Banner />
+      <Banner className={'!mb-0'} />
       <PublicModel />
     </NoSsr>
   );

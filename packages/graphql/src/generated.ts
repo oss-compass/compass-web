@@ -2666,6 +2666,8 @@ export type Query = {
   pullsDetailList: PullDetailPage;
   /** Get overview data of a pull detail */
   pullsDetailOverview: PullDetailOverview;
+  /** Get report data of the lab model */
+  referenceModelReports?: Maybe<MyReport>;
   /** Search for community where specifical repos are included */
   repoBelongsTo: Array<ProjectCompletionRow>;
   /** Get detail data of my lab models */
@@ -3023,6 +3025,7 @@ export type QueryLabModelDetailArgs = {
 
 export type QueryLabModelPublicOverviewArgs = {
   direction?: InputMaybe<Scalars['String']>;
+  metricId?: InputMaybe<Scalars['Int']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
   sort?: InputMaybe<Scalars['String']>;
@@ -3185,6 +3188,12 @@ export type QueryPullsDetailOverviewArgs = {
   endDate?: InputMaybe<Scalars['ISO8601DateTime']>;
   label: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryReferenceModelReportsArgs = {
+  modelId: Scalars['Int'];
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryRepoBelongsToArgs = {
@@ -5746,6 +5755,7 @@ export type LabModelPublicOverviewQueryVariables = Exact<{
   direction?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
+  metricId?: InputMaybe<Scalars['Int']>;
 }>;
 
 export type LabModelPublicOverviewQuery = {
@@ -11363,12 +11373,13 @@ useInvitationOverviewQuery.fetcher = (
     headers
   );
 export const LabModelPublicOverviewDocument = /*#__PURE__*/ `
-    query labModelPublicOverview($sort: String, $direction: String, $page: Int, $per: Int) {
+    query labModelPublicOverview($sort: String, $direction: String, $page: Int, $per: Int, $metricId: Int) {
   labModelPublicOverview(
     sort: $sort
     direction: $direction
     page: $page
     per: $per
+    metricId: $metricId
   ) {
     page
     totalPage
