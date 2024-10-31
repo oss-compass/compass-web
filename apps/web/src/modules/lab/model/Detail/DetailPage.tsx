@@ -11,6 +11,7 @@ import VersionCard from '../My/VersionCard';
 import { formatToNow } from '@common/utils/time';
 import ShareBtn from '@modules/lab/model/components/ShareBtn';
 import ForkFrom from '@modules/lab/model/components/ForkFrom';
+import ModelReport from './ModelReport';
 
 const ModelItem = ({
   model,
@@ -137,6 +138,7 @@ const ModelItem = ({
           />
         ) : null}
       </div>
+      <ModelReport modelId={id} />
     </div>
   );
 };

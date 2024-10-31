@@ -62,7 +62,7 @@ const ModelDetail = () => {
     );
   };
   return (
-    <div className="flex-1 bg-[#fafafa] py-12 text-sm">
+    <div className="flex-1 bg-[#ffffff] py-12 text-sm">
       <Center className="my-auto md:px-4">
         <div className="mb-6 flex items-center justify-between">
           {/* <div className="text-xl font-semibold"></div> */}

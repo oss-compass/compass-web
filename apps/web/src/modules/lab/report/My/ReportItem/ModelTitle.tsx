@@ -13,7 +13,8 @@ import ForkFrom from '@modules/lab/model/components/ForkFrom';
 const ModeTitle: React.FC<{
   model: MyModelVersion;
   event$?: EventEmitter<string>;
-}> = ({ model, event$ }) => {
+  simple?: boolean;
+}> = ({ model, event$, simple = false }) => {
   const { t } = useTranslation();
   // const permissions = model?.permissions;
   const { triggerUpdatedAt, triggerStatus, modelId, versionId, id } = model;
@@ -26,7 +27,7 @@ const ModeTitle: React.FC<{
           <div onClick={() => {}} className="mt-2 cursor-pointer text-3xl">
             {model.modelName + ` (${model.version})`}
           </div>
-          {parentLabModel?.id ? (
+          {parentLabModel?.id && !simple ? (
             <div className="pt-5">
               <ForkFrom id={parentLabModel?.id} name={parentLabModel?.name} />
             </div>
@@ -34,19 +35,21 @@ const ModeTitle: React.FC<{
             ''
           )}
         </div>
-        <div className="flex gap-1">
-          <TriggerConfirmBtn
-            reportId={id}
-            modelId={modelId}
-            versionId={versionId}
-            triggerStatus={triggerStatus}
-            triggerUpdatedAt={triggerUpdatedAt}
-            event$={event$}
-          />
-          <Discuss model={model} />
+        {!simple && (
+          <div className="flex gap-1">
+            <TriggerConfirmBtn
+              reportId={id}
+              modelId={modelId}
+              versionId={versionId}
+              triggerStatus={triggerStatus}
+              triggerUpdatedAt={triggerUpdatedAt}
+              event$={event$}
+            />
+            <Discuss model={model} />
 
-          <ModelItemMore model={model} event$={event$} />
-        </div>
+            <ModelItemMore model={model} event$={event$} />
+          </div>
+        )}
       </div>
     </>
   );

@@ -876,3 +876,41 @@ mutation updateLabModelReport(
     message
   }
 }
+query referenceModelReports($page: Int, $per: Int, $modelId: Int!) {
+  referenceModelReports(page: $page, per: $per, modelId: $modelId) {
+    page
+    totalPage
+    count
+    items {
+      # dimension
+      id
+      isPublic
+      reportId
+      modelId
+      modelName
+      dataset {
+        ...dataset
+      }
+      metrics {
+        ...metrics
+      }
+      version
+      versionId
+      triggerStatus
+      triggerUpdatedAt
+      parentLabModel {
+        name
+        id
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+        }
+      }
+      #      reports {
+      #        ...simpleReport
+      #      }
+      # versionId
+    }
+  }
+}

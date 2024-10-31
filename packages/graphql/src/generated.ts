@@ -6272,6 +6272,71 @@ export type UpdateLabModelReportMutation = {
   } | null;
 };
 
+export type ReferenceModelReportsQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  per?: InputMaybe<Scalars['Int']>;
+  modelId: Scalars['Int'];
+}>;
+
+export type ReferenceModelReportsQuery = {
+  __typename?: 'Query';
+  referenceModelReports?: {
+    __typename?: 'MyReport';
+    page?: number | null;
+    totalPage?: number | null;
+    count?: number | null;
+    items?: Array<{
+      __typename?: 'MyModelVersion';
+      id: number;
+      isPublic?: boolean | null;
+      reportId: number;
+      modelId: number;
+      modelName?: string | null;
+      version?: string | null;
+      versionId: number;
+      triggerStatus?: string | null;
+      triggerUpdatedAt?: any | null;
+      dataset?: {
+        __typename?: 'Dataset';
+        ident?: string | null;
+        name?: string | null;
+        items?: Array<{
+          __typename?: 'DatasetCompletionRow';
+          firstIdent?: string | null;
+          label?: string | null;
+          shortCode?: string | null;
+          level?: string | null;
+          secondIdent?: string | null;
+        }> | null;
+      } | null;
+      metrics?: Array<{
+        __typename?: 'ModelMetric';
+        category?: string | null;
+        defaultThreshold?: number | null;
+        defaultWeight?: number | null;
+        from?: string | null;
+        id?: number | null;
+        metricId?: number | null;
+        ident?: string | null;
+        name?: string | null;
+        threshold?: number | null;
+        weight?: number | null;
+      }> | null;
+      parentLabModel?: {
+        __typename?: 'ModelDetail';
+        name: string;
+        id: number;
+        loginBinds?: {
+          __typename?: 'LoginBind';
+          account?: string | null;
+          avatarUrl?: string | null;
+          nickname?: string | null;
+        } | null;
+      } | null;
+    }> | null;
+  } | null;
+};
+
 export type CreateRepoTaskMutationVariables = Exact<{
   repoUrls: Array<Scalars['String']> | Scalars['String'];
   origin: Scalars['String'];
@@ -12441,6 +12506,76 @@ useUpdateLabModelReportMutation.fetcher = (
   fetcher<UpdateLabModelReportMutation, UpdateLabModelReportMutationVariables>(
     client,
     UpdateLabModelReportDocument,
+    variables,
+    headers
+  );
+export const ReferenceModelReportsDocument = /*#__PURE__*/ `
+    query referenceModelReports($page: Int, $per: Int, $modelId: Int!) {
+  referenceModelReports(page: $page, per: $per, modelId: $modelId) {
+    page
+    totalPage
+    count
+    items {
+      id
+      isPublic
+      reportId
+      modelId
+      modelName
+      dataset {
+        ...dataset
+      }
+      metrics {
+        ...metrics
+      }
+      version
+      versionId
+      triggerStatus
+      triggerUpdatedAt
+      parentLabModel {
+        name
+        id
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+        }
+      }
+    }
+  }
+}
+    ${DatasetFragmentDoc}
+${MetricsFragmentDoc}`;
+export const useReferenceModelReportsQuery = <
+  TData = ReferenceModelReportsQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: ReferenceModelReportsQueryVariables,
+  options?: UseQueryOptions<ReferenceModelReportsQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<ReferenceModelReportsQuery, TError, TData>(
+    ['referenceModelReports', variables],
+    fetcher<ReferenceModelReportsQuery, ReferenceModelReportsQueryVariables>(
+      client,
+      ReferenceModelReportsDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useReferenceModelReportsQuery.getKey = (
+  variables: ReferenceModelReportsQueryVariables
+) => ['referenceModelReports', variables];
+useReferenceModelReportsQuery.fetcher = (
+  client: GraphQLClient,
+  variables: ReferenceModelReportsQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<ReferenceModelReportsQuery, ReferenceModelReportsQueryVariables>(
+    client,
+    ReferenceModelReportsDocument,
     variables,
     headers
   );

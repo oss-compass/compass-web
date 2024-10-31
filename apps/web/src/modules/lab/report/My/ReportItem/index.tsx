@@ -8,12 +8,13 @@ const ModelItem: React.FC<{
   model: any;
   event$?: EventEmitter<string>;
   fullWidth?: boolean;
-}> = ({ event$ = null, fullWidth = false, model }) => {
+  simple?: boolean;
+}> = ({ model, event$ = null, fullWidth = false, simple = false }) => {
   const { modelId, version, versionId, dataset } = model;
 
   return (
     <>
-      <ModelTitle model={model} event$={event$} />
+      <ModelTitle model={model} event$={event$} simple={simple} />
       <AnalysePanel model={model} />
       <DataSetPanel
         dataSet={dataset?.items}
