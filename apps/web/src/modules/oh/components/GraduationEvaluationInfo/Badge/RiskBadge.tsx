@@ -16,7 +16,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
     return metricState?.some((z) => z.state === -1);
   }, [metricState]);
   const needClarification = useMemo(() => {
-    return mertic.score !== null && mertic.score !== 10;
+    return mertic.score !== null && mertic.score !== 10 && mertic.score !== -1;
   }, [mertic]);
 
   let BadgeContent = null;

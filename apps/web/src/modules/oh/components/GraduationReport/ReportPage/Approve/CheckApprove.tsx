@@ -52,7 +52,12 @@ const CheckApprove = ({ selectionId }) => {
     if (metricItemScoreList?.length > 0) {
       let notMetricList = [];
       let clarificationList = metricItemScoreList.filter((m) => {
-        return m.维度 !== '合法合规' && m.score !== 10 && m.score !== null;
+        return (
+          m.维度 !== '合法合规' &&
+          m.score !== 10 &&
+          m.score !== null &&
+          m.score !== -1
+        );
       });
       clarificationList.forEach((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
@@ -68,7 +73,7 @@ const CheckApprove = ({ selectionId }) => {
   const canReject = useMemo(() => {
     if (metricItemScoreList?.length > 0) {
       let clarificationList = metricItemScoreList.filter((m) => {
-        return m.score !== 10 && m.score !== null;
+        return m.score !== 10 && m.score !== null && m.score !== -1;
       });
       return clarificationList?.some((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
@@ -97,7 +102,12 @@ const CheckApprove = ({ selectionId }) => {
     if (metricItemScoreList?.length > 0) {
       let notMetricList = [];
       let clarificationList = metricItemScoreList.filter((m) => {
-        return m.维度 === '合法合规' && m.score !== 10 && m.score !== null;
+        return (
+          m.维度 === '合法合规' &&
+          m.score !== 10 &&
+          m.score !== null &&
+          m.score !== -1
+        );
       });
       clarificationList.forEach((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];

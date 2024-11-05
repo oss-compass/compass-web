@@ -78,7 +78,8 @@ const CheckApprove = ({ selectionId }) => {
           m.是否必须澄清 === '是' &&
           m.维度 !== '合法合规' &&
           m.指标名称 !== '采用度分析' &&
-          m.score !== 10
+          m.score !== 10 &&
+          m.score !== -1
         );
       });
       clarificationList.forEach((metric) => {
@@ -95,7 +96,7 @@ const CheckApprove = ({ selectionId }) => {
   const canReject = useMemo(() => {
     if (metricItemScoreList?.length > 0) {
       let clarificationList = metricItemScoreList.filter((m) => {
-        return m.score !== 10 && m.score !== null;
+        return m.score !== 10 && m.score !== null && m.score !== -1;
       });
       return clarificationList?.some((metric) => {
         let clarificationState = metricClarificationState?.[metric.key];
@@ -147,7 +148,8 @@ const CheckApprove = ({ selectionId }) => {
           m.是否必须澄清 === '是' &&
           m.指标名称 !== '专利风险' &&
           m.维度 === '合法合规' &&
-          m.score !== 10
+          m.score !== 10 &&
+          m.score !== -1
         );
       });
       clarificationList.forEach((metric) => {

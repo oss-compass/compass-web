@@ -21,7 +21,8 @@ const RiskBadge = ({ shortCode, mertic }) => {
       mertic.是否必须澄清 === '是' &&
       mertic.指标名称 !== '专利风险' &&
       mertic.指标名称 !== '采用度分析' &&
-      mertic.score !== 10
+      mertic.score !== 10 &&
+      mertic.score !== -1
     );
   }, [mertic]);
   let BadgeContent = null;
