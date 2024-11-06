@@ -5,41 +5,44 @@ import gqlClient from '@common/gqlClient';
 import Loading from './Loading';
 import groupBy from 'lodash/groupBy';
 import { useTranslation } from 'next-i18next';
+import { Popover } from 'antd';
 
 const MerticList = ({ mertics, activeList, setActiveList }) => {
   const { t } = useTranslation();
 
-  console.log(mertics);
   return (
     <div className="flex flex-wrap">
       {mertics.map(({ category, ident, id }) => {
         const nameKey = `lab_metrics:${category}.${ident}`;
         const name = t(nameKey);
+        const descKey = `lab_metrics:${category}.${ident}_desc`;
+        const desc = t(descKey);
         const active = activeList === id;
         return (
-          <a
-            key={id}
-            className={cls(
-              'mb-2 mr-2 box-border inline-block cursor-pointer items-center border px-2 py-1 text-sm font-normal leading-[normal] transition-colors hover:text-blue-600 focus:outline-none',
-              active && 'border-blue-200 bg-blue-50 text-blue-600'
-            )}
-            onClick={() => {
-              if (active) {
-                setActiveList(0);
-              } else {
-                setActiveList(id);
-              }
-              //   if (active) {
-              //     setActiveList((prevList) =>
-              //       prevList.filter((item) => item !== ident)
-              //     );
-              //   } else {
-              //     setActiveList((prevList) => [...prevList, ident]);
-              //   }
-            }}
-          >
-            {name}
-          </a>
+          <Popover key={id} content={desc}>
+            <a
+              className={cls(
+                'mb-2 mr-2 box-border inline-block cursor-pointer items-center border px-2 py-1 text-sm font-normal leading-[normal] transition-colors hover:text-blue-600 focus:outline-none',
+                active && 'border-blue-200 bg-blue-50 text-blue-600'
+              )}
+              onClick={() => {
+                if (active) {
+                  setActiveList(0);
+                } else {
+                  setActiveList(id);
+                }
+                //   if (active) {
+                //     setActiveList((prevList) =>
+                //       prevList.filter((item) => item !== ident)
+                //     );
+                //   } else {
+                //     setActiveList((prevList) => [...prevList, ident]);
+                //   }
+              }}
+            >
+              {name}
+            </a>
+          </Popover>
         );
       })}
     </div>
@@ -71,6 +74,7 @@ const MerticAside = ({
 
   return (
     <div className="grid gap-y-4">
+      <div className="text-xl font-medium">{t('lab:filter_by_metrics')}</div>
       {categoryKeys?.map((category) => {
         return (
           <div className="grid gap-y-2" key={category}>
