@@ -67,6 +67,7 @@ const CreatReportModal = ({
               <div>
                 <Button
                   className="min-w-[100px]"
+                  loading={createMutation.isLoading}
                   onClick={() => {
                     const { isPublic, dataSet } = formState;
                     const dataSetLen = formState.dataSet.length;

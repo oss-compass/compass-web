@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import classnames from 'classnames';
-import { DatasetCompletionRow } from '@oss-compass/graphql';
+import { DatasetCompletionRowStatus } from '@oss-compass/graphql';
 import groupBy from 'lodash/groupBy';
 import { useTranslation } from 'next-i18next';
 import RepoCard from '../../components/RepoCard';
@@ -11,9 +11,10 @@ import { getSecondIdentName } from '@common/collectionsI18n';
 const DataSetPanel: React.FC<{
   modelId: number;
   versionId: number;
-  dataSet: DatasetCompletionRow[];
+  dataSet: DatasetCompletionRowStatus[];
   fullWidth: boolean;
-}> = ({ modelId, versionId, dataSet = [], fullWidth }) => {
+  reportId: number;
+}> = ({ modelId, versionId, dataSet = [], fullWidth, reportId }) => {
   const { t, i18n } = useTranslation();
   const router = useRouter();
 
@@ -107,9 +108,13 @@ const DataSetPanel: React.FC<{
             <RepoCard
               key={repo.label}
               modelId={modelId}
+              reportId={reportId}
               versionId={versionId}
               label={repo.label}
               shortCode={repo.shortCode}
+              triggerStatus={repo.triggerStatus}
+              triggerUpdatedAt={repo.triggerUpdatedAt}
+              logoUrl={repo.logoUrl}
               selected={selected}
               compareMode={compareMode}
               onSelectChange={(checked, { label, shortCode }) => {

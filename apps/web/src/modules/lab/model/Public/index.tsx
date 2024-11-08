@@ -50,14 +50,6 @@ const Model = () => {
           </div>
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-1 lg:gap-5 xl:gap-6">
             {list.map((model, index) => {
-              // if (index === 0) {
-              //   return (
-              //     <div className="flex md:flex-wrap " key={model.modelId}>
-              //       <ModelItem model={model} />
-              //       <CreateGuide />
-              //     </div>
-              //   );
-              // }
               return <PublicItem model={model} key={model.modelId} fullWidth />;
             })}
           </div>

@@ -44,12 +44,11 @@ const ModelReport = ({ modelId }) => {
         },
       }
     );
-  console.log(data);
   const list = data?.pages?.reduce((acc, cur) => {
     return acc.concat(cur.referenceModelReports.items);
   }, []);
   const getContent = () => {
-    if (isLoading || list?.length === 0) {
+    if (isLoading || !list || list?.length === 0) {
       return null;
     }
 

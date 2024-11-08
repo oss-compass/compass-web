@@ -115,7 +115,20 @@ fragment dataset on Dataset {
   }
   name
 }
-
+fragment datasetStatus on DatasetStatus {
+  ident
+  items {
+    firstIdent
+    label
+    shortCode
+    level
+    logoUrl
+    secondIdent
+    triggerStatus
+    triggerUpdatedAt
+  }
+  name
+}
 fragment metrics on ModelMetric {
   category
   defaultThreshold
@@ -823,8 +836,8 @@ query myModelReports($page: Int, $per: Int) {
       reportId
       modelId
       modelName
-      dataset {
-        ...dataset
+      datasetStatus {
+        ...datasetStatus
       }
       metrics {
         ...metrics
@@ -888,8 +901,8 @@ query referenceModelReports($page: Int, $per: Int, $modelId: Int!) {
       reportId
       modelId
       modelName
-      dataset {
-        ...dataset
+      datasetStatus {
+        ...datasetStatus
       }
       metrics {
         ...metrics
@@ -912,5 +925,18 @@ query referenceModelReports($page: Int, $per: Int, $modelId: Int!) {
       #      }
       # versionId
     }
+  }
+}
+mutation triggerSingleProject($reportId: Int!, $projectUrl: String!) {
+  triggerSingleProject(
+    input: { reportId: $reportId, projectUrl: $projectUrl }
+  ) {
+    clientMutationId
+    errors {
+      message
+      path
+    }
+    message
+    status
   }
 }

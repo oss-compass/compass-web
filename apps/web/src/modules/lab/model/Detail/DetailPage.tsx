@@ -13,7 +13,7 @@ import ShareBtn from '@modules/lab/model/components/ShareBtn';
 import ForkFrom from '@modules/lab/model/components/ForkFrom';
 import ModelReport from './ModelReport';
 
-const ModelItem = ({
+const DetailPage = ({
   model,
   event$,
 }: {
@@ -143,4 +143,4 @@ const ModelItem = ({
   );
 };
 
-export default ModelItem;
+export default DetailPage;

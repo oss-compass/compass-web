@@ -4,7 +4,6 @@ import Center from '@common/components/Layout/Center';
 import { useTranslation } from 'react-i18next';
 import { useEventEmitter } from 'ahooks';
 import { ReFetch } from '@common/constant';
-import ReportItem from '../My/ReportItem';
 import {
   useLabModelVersion,
   useLabModelDetail,
@@ -56,9 +55,7 @@ const ReportDetail = () => {
       );
     }
 
-    return (
-      <>{/* <ReportItem model={modelDetail.labModelVersion} fullWidth /> */}</>
-    );
+    return <>{/* < model={modelDetail.labModelVersion} fullWidth /> */}</>;
   };
   return (
     <div className="flex-1 bg-[#fafafa] py-12 text-sm">

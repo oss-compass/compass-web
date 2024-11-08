@@ -3,10 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { BiLoaderAlt, BiDetail } from 'react-icons/bi';
 import { BsSend } from 'react-icons/bs';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import {
-  ModelVersion,
-  useTriggerLabModelVersionMutation,
-} from '@oss-compass/graphql';
+import { useTriggerSingleProjectMutation } from '@oss-compass/graphql';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
 import gqlClient from '@common/gqlClient';
@@ -15,26 +12,24 @@ import { ReFetch } from '@common/constant';
 import { formatToNow } from '@common/utils/time';
 import getErrorMessage from '@common/utils/getErrorMessage';
 
-const TriggerConfirmBtn = ({
-  modelId,
-  versionId,
+const TriggerSingleBtn = ({
+  projectUrl,
   reportId,
   triggerStatus,
   triggerUpdatedAt,
   event$,
 }: {
-  modelId: number;
-  versionId: number;
+  projectUrl: string;
   reportId: number;
   triggerStatus: string;
   triggerUpdatedAt: string;
-  event$: EventEmitter<string>;
+  event$?: EventEmitter<string>;
 }) => {
   const { t } = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
-  const triggerMutation = useTriggerLabModelVersionMutation(gqlClient, {
+  const triggerMutation = useTriggerSingleProjectMutation(gqlClient, {
     onSuccess(res) {
-      toast.success(res.triggerLabModelVersion?.message);
+      toast.success(res.triggerSingleProject?.message);
       setOpenConfirm(false);
     },
   });
@@ -49,16 +44,6 @@ const TriggerConfirmBtn = ({
     );
   }
 
-  // if (triggerRemainingCount === 0) {
-  //   return (
-  //     <div className="text-secondary flex basis-1/2 cursor-pointer items-center justify-center border-r last:border-r-0">
-  //       <span className="block text-sm">
-  //         {t('lab:trigger_analysis.times_limit')}
-  //       </span>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <div
@@ -67,13 +52,13 @@ const TriggerConfirmBtn = ({
           setOpenConfirm(true);
         }}
       >
-        <span className="ml-2 flex items-center text-xs">
+        <span className="ml-2 flex items-center py-1 text-sm">
           {triggerMutation.isLoading ? (
             <BiLoaderAlt className="text-silver mr-2 animate-spin cursor-pointer text-xl" />
           ) : (
             <BsSend className="text-secondary mr-2" />
           )}
-          {t('lab:trigger_analysis.card_btn')}
+          {/* {t('lab:trigger_analysis.card_btn')} */}
         </span>
       </div>
 
@@ -128,23 +113,22 @@ const TriggerConfirmBtn = ({
               loading={triggerMutation.isLoading}
               onClick={() => {
                 triggerMutation.mutate(
-                  { reportId },
+                  { reportId, projectUrl },
                   {
                     onSuccess: (res) => {
-                      event$.emit(ReFetch);
+                      event$ && event$.emit(ReFetch);
                     },
-                    // onError: (err) => {
-                    //   // @ts-ignore
-                    //   toast.error(err);
-                    //   if (err?.response?.errors) {
-                    //     toast.error(
-                    //       getErrorMessage(err) || 'Trigger analysis failed!'
-                    //     );
-                    //   } else {
-                    //     // @ts-ignore
-                    //     toast.error(err?.response?.message);
-                    //   }
-                    // },
+                    onError: (err) => {
+                      // @ts-ignore
+                      if (err?.response?.errors) {
+                        toast.error(
+                          getErrorMessage(err) || 'Trigger analysis failed!'
+                        );
+                      } else {
+                        // @ts-ignore
+                        toast.error(err?.response?.message);
+                      }
+                    },
                   }
                 );
               }}
@@ -161,4 +145,4 @@ const TriggerConfirmBtn = ({
   );
 };
 
-export default TriggerConfirmBtn;
+export default TriggerSingleBtn;
