@@ -12,7 +12,7 @@ const eventList = [
     titleCn: 'OSS-Compass 技术研讨周会; 腾讯会议号：513-5733-3878',
     titleEn:
       'OSS-Compass Technical Seminar Weekly Meeting; Tencent Conference No.:513-5733-3878  ',
-    time: '14:15 - 15:15 (UTC+8)',
+    time: '20:00 - 21:00 (UTC+8)',
   },
   {
     titleCn: 'Compass Talk——Open Source Summit Europe 2023',

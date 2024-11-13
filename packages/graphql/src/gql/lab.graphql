@@ -459,7 +459,7 @@ query labModelPublicOverview(
     totalPage
     count
     items {
-      # dimension
+      description
       createdAt
       loginBinds {
         account

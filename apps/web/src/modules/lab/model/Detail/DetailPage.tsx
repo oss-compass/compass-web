@@ -116,7 +116,7 @@ const DetailPage = ({
         </div> */}
       </div>
 
-      <div className="grid grid-cols-4 gap-4 md:grid-cols-1">
+      <div className="grid grid-cols-3 gap-4 md:grid-cols-1">
         {model.latestVersions?.map?.((item) => {
           return (
             <VersionCard

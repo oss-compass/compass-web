@@ -1,10 +1,6 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import uniq from 'lodash/uniq';
 import gqlClient from '@common/gqlClient';
-import { BiDetail } from 'react-icons/bi';
-import { AiOutlineSelect } from 'react-icons/ai';
 import { useUpdateLabModelMutation } from '@oss-compass/graphql';
 import { ModelDetail } from '@oss-compass/graphql';
 import { toast } from 'react-hot-toast';
@@ -13,13 +9,11 @@ import { CgSpinner } from 'react-icons/cg';
 import { CustomRadio } from '@oss-compass/ui';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import { ModelVersion, Permission } from '@oss-compass/graphql';
-import { formatToNow } from '@common/utils/time';
 import { ReFetch } from '@common/constant';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import VersionItemMore from './VersionItemMore';
-import TriggerConfirmBtn from './TriggerConfirmBtn';
-import { getSecondIdentName } from '@common/collectionsI18n';
 import CreatReport from './CreatReport';
+import Weight from './Weight';
 
 const VersionCard = ({
   model,
@@ -36,9 +30,7 @@ const VersionCard = ({
 }) => {
   const { id: modelId, isPublic: modelIsPublic, triggerRemainingCount } = model;
   const { isScore } = version;
-  const { t, i18n } = useTranslation();
-  const router = useRouter();
-
+  const { t } = useTranslation();
   const updateMutation = useUpdateLabModelMutation(gqlClient, {
     onSuccess(res) {
       toast.success(() => <>{t('lab:edit_succeed')}</>, {
@@ -52,11 +44,6 @@ const VersionCard = ({
       });
     },
   });
-
-  // const dataSetIdent = version?.dataset?.items?.map?.((i) => i.secondIdent);
-  // const dataSetNames = uniq(dataSetIdent)
-  //   .map((i) => getSecondIdentName(i, i18n.language))
-  //   .join(', ');
 
   const metricsNames = version?.metrics
     ?.map(({ ident, category }) => {
@@ -112,10 +99,12 @@ const VersionCard = ({
             </span>
           </div> */}
           <div className="mb-2">
-            <span className="text-secondary block truncate text-sm">
-              {t('lab:metrics')}: {metricsNames}
-            </span>
+            <div className="text-secondary flex gap-1 text-sm">
+              <div className="flex-shrink-0">{t('lab:metrics')}: </div>{' '}
+              <div className="break-words">{metricsNames}</div>
+            </div>
           </div>
+
           <div className="mb-2">
             {isScore ? (
               <span className="text-secondary block truncate text-sm">
@@ -127,69 +116,18 @@ const VersionCard = ({
               </span>
             )}
           </div>
-
-          {/* {version.triggerStatus ? (
-            <>
-              <div className="mb-2">
-                <span className="text-secondary block truncate text-sm">
-                  {t('lab:trigger_analysis.status')}
-                  {t(`lab:analysis_status.${version.triggerStatus}`)}
-                </span>
+          {isScore && (
+            <div className="mb-2">
+              <div className="text-secondary  gap-1 text-sm">
+                <div>{t('lab:weight_and_threshold')}: </div>
+                <Weight metrics={version?.metrics} />
               </div>
-            </>
-          ) : null}
-
-          {version.triggerUpdatedAt ? (
-            <>
-              <div className="mb-2">
-                <span className="text-secondary block truncate text-sm">
-                  {t('lab:trigger_analysis.time')}
-                  {formatToNow(version.triggerUpdatedAt)}
-                </span>
-              </div>
-            </>
-          ) : null} */}
+            </div>
+          )}
         </div>
       </div>
       <div className="flex h-8 border-t">
         <CreatReport version={version} model={model} />
-        {/* <div
-          className="hover:bg-smoke flex flex-1 basis-1/2 cursor-pointer items-center justify-center"
-          onClick={() => {
-            router.push(`/lab/model/${modelId}/version/${version.id}/detail`);
-          }}
-        >
-          <AiOutlineSelect className="text-secondary" />
-          <span className="ml-2 block text-sm">{'选择数据集'}</span>
-        </div> */}
-
-        {/* {permissions?.canExecute ? (
-          <TriggerConfirmBtn
-            modelId={modelId}
-            version={version}
-            triggerRemainingCount={triggerRemainingCount}
-            event$={event$}
-          />
-        ) : null}
-
-        {permissions?.canRead ? (
-          <div
-            className="hover:bg-smoke flex flex-1 basis-1/2 cursor-pointer items-center justify-center"
-            onClick={() => {
-              router.push(
-                `/lab/model/${modelId}/version/${version.id}/dataset`
-              );
-            }}
-          >
-            <BiDetail className="text-secondary" />
-            <span className="ml-2 block text-sm">{t('lab:view_report')}</span>
-          </div>
-        ) : (
-          <div className="flex flex-1 basis-1/2 cursor-not-allowed items-center justify-center">
-            <BiDetail className="text-secondary" />
-            <span className="ml-2 block text-sm">{t('lab:view_report')}</span>
-          </div>
-        )} */}
       </div>
     </div>
   );

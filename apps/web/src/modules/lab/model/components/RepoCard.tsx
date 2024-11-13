@@ -11,7 +11,7 @@ import ProviderIcon from '@common/components/ProviderIcon';
 const Avatar = ({ logoUrl, origin }: { logoUrl: string; origin: string }) => {
   return (
     <div className="relative">
-      <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-100">
+      <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-300">
         <ImageFallback
           src={logoUrl || '/images/default.png'}
           unoptimized

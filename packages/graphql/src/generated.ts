@@ -1969,6 +1969,7 @@ export type ModelMetric = {
 export type ModelPublicOverview = {
   __typename?: 'ModelPublicOverview';
   createdAt?: Maybe<Scalars['ISO8601DateTime']>;
+  description?: Maybe<Scalars['String']>;
   dimension?: Maybe<Scalars['Int']>;
   loginBinds?: Maybe<LoginBind>;
   metrics?: Maybe<Array<ModelMetric>>;
@@ -2446,6 +2447,7 @@ export type MyModelVersion = {
   algorithm?: Maybe<Algorithm>;
   dataset?: Maybe<Dataset>;
   datasetStatus?: Maybe<DatasetStatus>;
+  description?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   isPublic?: Maybe<Scalars['Boolean']>;
   metrics?: Maybe<Array<ModelMetric>>;
@@ -5839,6 +5841,7 @@ export type LabModelPublicOverviewQuery = {
     count?: number | null;
     items?: Array<{
       __typename?: 'ModelPublicOverview';
+      description?: string | null;
       createdAt?: any | null;
       modelId?: number | null;
       modelName?: string | null;
@@ -11564,6 +11567,7 @@ export const LabModelPublicOverviewDocument = /*#__PURE__*/ `
     totalPage
     count
     items {
+      description
       createdAt
       loginBinds {
         account

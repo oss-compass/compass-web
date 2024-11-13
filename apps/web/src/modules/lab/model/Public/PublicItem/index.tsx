@@ -11,7 +11,8 @@ const PublicItem: React.FC<{
   fullWidth?: boolean;
 }> = ({ fullWidth = false, model }) => {
   const { t } = useTranslation();
-  const { modelName, modelId, metrics, loginBinds, createdAt } = model;
+  const { modelName, modelId, description, metrics, loginBinds, createdAt } =
+    model;
   const router = useRouter();
 
   return (
@@ -44,6 +45,9 @@ const PublicItem: React.FC<{
           );
         })}
       </div>
+      <div className="line-clamp-2 my-1 h-8 text-xs leading-4 text-[#585858]">
+        {description}
+      </div>
       <div className="flex items-center gap-2 self-stretch pt-2 md:gap-3">
         <div className="mr-auto flex min-w-0 items-center gap-2">
           <span className="border-secondary relative flex h-[24px] w-[24px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-hover:bg-[#333333]">
@@ -62,7 +66,7 @@ const PublicItem: React.FC<{
             {loginBinds?.nickname}
           </div>
         </div>
-        <div className="whitespace-nowrap text-sm leading-[normal] text-[#585858]">
+        <div className="whitespace-nowrap text-sm leading-[normal]">
           <time>{formatToNow(createdAt)}</time>
         </div>
       </div>

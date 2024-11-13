@@ -9,7 +9,7 @@ import PublicItem from './PublicItem';
 import Loading from './Loading';
 import MerticAside from './MerticAside';
 
-const per = 10;
+const per = 12;
 
 const Model = () => {
   const { t } = useTranslation();
