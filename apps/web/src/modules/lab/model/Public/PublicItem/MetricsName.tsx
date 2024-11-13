@@ -36,18 +36,18 @@ const MetricsName: React.FC<{
     <Popover
       key={2234}
       content={
-        <>
-          {overflowedItems.map((item, index) => {
-            return (
-              <div
-                key={item.id}
-                className="text-slate-auto-700 mr-2 box-border inline-block h-6 truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
-              >
-                {t(`lab_metrics:${item.category}.${item.ident}`)}
-              </div>
-            );
-          })}
-        </>
+        overflowedItems.length > 0
+          ? overflowedItems.map((item, index) => {
+              return (
+                <div
+                  key={item.id}
+                  className="text-slate-auto-700 mr-2 box-border inline-block h-6 truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
+                >
+                  {t(`lab_metrics:${item.category}.${item.ident}`)}
+                </div>
+              );
+            })
+          : ''
       }
     >
       <div
