@@ -1,16 +1,15 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { ModelPublicOverview } from '@oss-compass/graphql';
 import ProductivityIcon from '@modules/analyze/components/SideBar/assets/Productivity.svg';
 import { formatToNow } from '@common/utils/time';
+import MetricsName from './MetricsName';
 
 const PublicItem: React.FC<{
   model: ModelPublicOverview;
   fullWidth?: boolean;
 }> = ({ fullWidth = false, model }) => {
-  const { t } = useTranslation();
   const { modelName, modelId, description, metrics, loginBinds, createdAt } =
     model;
   const router = useRouter();
@@ -33,18 +32,8 @@ const PublicItem: React.FC<{
           {modelName}
         </div>
       </div>
-      <div className="line-clamp-1 my-1 h-[24px] w-full break-all px-0">
-        {metrics.map((item) => {
-          return (
-            <div
-              key={item.id}
-              className="text-slate-auto-700 mr-2 box-border inline-block h-6 max-w-[50%] truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
-            >
-              {t(`lab_metrics:${item.category}.${item.ident}`)}
-            </div>
-          );
-        })}
-      </div>
+      <MetricsName metrics={metrics} modelId={modelId} />
+
       <div className="line-clamp-2 my-1 h-8 text-xs leading-4 text-[#585858]">
         {description}
       </div>
