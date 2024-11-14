@@ -30,18 +30,17 @@ const MetricsName: React.FC<{
     return () => {
       window.removeEventListener('resize', checkOverflow); // 清理事件监听器
     };
-  }, []);
+  }, [metrics, modelId]);
 
   return (
     <Popover
-      key={2234}
       content={
         overflowedItems.length > 0
           ? overflowedItems.map((item, index) => {
               return (
                 <div
                   key={item.id}
-                  className="text-slate-auto-700 mr-2 box-border inline-block h-6 truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
+                  className="text-slate-auto-700 mr-2 mt-1 box-border inline-block h-6 truncate rounded bg-slate-100 px-2 py-0 text-xs leading-6 dark:bg-gray-800"
                 >
                   {t(`lab_metrics:${item.category}.${item.ident}`)}
                 </div>

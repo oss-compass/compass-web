@@ -14,6 +14,7 @@ import getErrorMessage from '@common/utils/getErrorMessage';
 import VersionItemMore from './VersionItemMore';
 import CreatReport from './CreatReport';
 import Weight from './Weight';
+import { Popover } from 'antd';
 
 const VersionCard = ({
   model,
@@ -45,12 +46,7 @@ const VersionCard = ({
     },
   });
 
-  const metricsNames = version?.metrics
-    ?.map(({ ident, category }) => {
-      return t(`lab_metrics:${category}.${ident}`);
-    })
-    .join(', ');
-
+  const metricsList = version?.metrics;
   const cardLoading = updateMutation.isLoading;
 
   return (
@@ -101,14 +97,28 @@ const VersionCard = ({
           <div className="mb-2">
             <div className="text-secondary flex gap-1 text-sm">
               <div className="flex-shrink-0">{t('lab:metrics')}: </div>{' '}
-              <div className="break-words">{metricsNames}</div>
+              <div className="flex flex-shrink-0 flex-wrap">
+                {metricsList.map(({ ident, category }) => (
+                  <Popover
+                    key={ident}
+                    content={t(`lab_metrics:${category}.${ident}_desc`)}
+                  >
+                    <div className="mr-2 flex h-5 flex-shrink-0 cursor-pointer rounded-full border bg-[#F1F1F1] px-2.5 pt-0.5  text-xs text-[#585858]">
+                      {t(`lab_metrics:${category}.${ident}`)}
+                    </div>
+                  </Popover>
+                ))}
+              </div>
             </div>
           </div>
 
           <div className="mb-2">
             {isScore ? (
               <span className="text-secondary block truncate text-sm">
-                {t('lab:algorithm')}: {t('lab:algorithm_selection.default')}
+                {t('lab:algorithm')}:
+                <span className="ml-2 h-5 rounded-full border bg-[#F1F1F1] px-2.5 text-xs text-[#585858]">
+                  {t('lab:algorithm_selection.default')}
+                </span>
               </span>
             ) : (
               <span className="text-secondary block truncate text-sm">
