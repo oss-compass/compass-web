@@ -40,7 +40,11 @@ const ModelItem = ({
             <span className="ml-2 rounded-2xl bg-[#cdf0ce] px-2 py-0.5  text-xs text-[#00B400]">
               {t('lab:is_public')}
             </span>
-          ) : null}
+          ) : (
+            <span className="0] ml-2 rounded-2xl bg-[#e5e5e5] px-2  py-0.5 text-xs text-[#616161]">
+              {t('lab:is_public_options.non_public')}
+            </span>
+          )}
           {parentLabModel?.id ? (
             <ForkFrom
               id={parentLabModel?.id}
