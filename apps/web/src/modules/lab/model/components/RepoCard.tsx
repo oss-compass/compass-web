@@ -87,7 +87,7 @@ const RepoCard = ({
           onClick={() => {
             !compareMode &&
               router.push(
-                `/lab/model/${modelId}/version/${versionId}/analyze/${shortCode}`
+                `/lab/model/${modelId}/version/${versionId}/analyze/${shortCode}?range=1Y`
               );
           }}
         >

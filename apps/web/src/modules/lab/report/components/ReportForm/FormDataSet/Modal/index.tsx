@@ -106,9 +106,6 @@ const ModalSelect = ({
     if (len === 0) {
       return (
         <div className="text-secondary w-full text-center ">
-          {/* {t('common:no_data')} */}
-          {/* <div> */}
-          {/* {t('lab:cant_find_a_suitable_dataset')} */}
           <Trans
             i18nKey="cant_find_a_suitable_dataset"
             ns="lab"
@@ -116,7 +113,6 @@ const ModalSelect = ({
               s: <LinkA href={'/submit-your-project'} />,
             }}
           />
-          {/* </div> */}
         </div>
       );
     }
@@ -176,7 +172,7 @@ const ModalSelect = ({
 
           <div className="flex h-[440px] flex-col">{modalContent()}</div>
 
-          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-end border-t bg-white px-9 text-sm">
+          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9 text-sm">
             {/* <div>
               {t('lab:cant_find_a_suitable_dataset')}
               <Trans
@@ -187,6 +183,15 @@ const ModalSelect = ({
                 }}
               />
             </div> */}
+            <div className="text-center ">
+              <Trans
+                i18nKey="cant_find_a_suitable_dataset"
+                ns="lab"
+                components={{
+                  s: <LinkA href={'/submit-your-project'} />,
+                }}
+              />
+            </div>
             <div>
               <Button
                 disabled={count > 10}

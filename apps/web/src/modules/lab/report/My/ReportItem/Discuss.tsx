@@ -18,7 +18,7 @@ const Discuss = ({ model }: { model: MyModelVersion }) => {
     <div className="flex gap-1">
       <Link
         className="hover:bg-smoke flex shrink-0 cursor-pointer items-center p-2 md:hidden"
-        href={`/lab/model/${modelId}/version/${versionId}/analyze/${firstRepo?.shortCode}`}
+        href={`/lab/model/${modelId}/version/${versionId}/analyze/${firstRepo?.shortCode}?range=1Y`}
       >
         <TbMessage2 className="text-steel" />
         <span className="ml-1 text-xs">{t('lab:discuss')}</span>

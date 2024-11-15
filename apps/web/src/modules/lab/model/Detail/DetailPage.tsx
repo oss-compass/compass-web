@@ -41,7 +41,7 @@ const DetailPage = ({
               {t('lab:is_public')}
             </span>
           ) : (
-            <span className="0] ml-2 rounded-2xl bg-[#e5e5e5] px-2  py-0.5 text-xs text-[#616161]">
+            <span className="ml-2 rounded-2xl bg-[#e5e5e5] px-2  py-0.5 text-xs text-[#616161]">
               {t('lab:is_public_options.non_public')}
             </span>
           )}

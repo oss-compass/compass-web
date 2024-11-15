@@ -22,7 +22,6 @@ const CreatReport = ({ version, model }) => {
         className="hover:bg-smoke flex flex-1 basis-1/2 cursor-pointer items-center justify-center"
         onClick={() => {
           setOpen(true);
-          // router.push(`/lab/model/${modelId}/version/${version.id}/detail`);
         }}
       >
         <AiOutlineSelect className="text-secondary" />

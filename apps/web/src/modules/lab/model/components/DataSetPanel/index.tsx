@@ -88,7 +88,7 @@ const DataSetPanel: React.FC<{
         onCompareConfirm={() => {
           const slugs = compareList.join('..');
           router.push(
-            `/lab/model/${modelId}/version/${versionId}/analyze/${slugs}`
+            `/lab/model/${modelId}/version/${versionId}/analyze/${slugs}?range=1Y`
           );
         }}
         onCompareCancel={() => {
