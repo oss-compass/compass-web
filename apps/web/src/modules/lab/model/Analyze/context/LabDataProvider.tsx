@@ -41,8 +41,8 @@ const LabDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
         modelId,
         versionId,
         shortCode,
-        start: timeStart,
-        end: timeEnd,
+        beginDate: timeStart,
+        endDate: timeEnd,
       };
       return {
         queryKey: useLabModelVersionReportDetailQuery.getKey(variables),
@@ -57,8 +57,8 @@ const LabDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
         modelId,
         versionId,
         shortCode,
-        start: timeStart,
-        end: timeEnd,
+        beginDate: timeStart,
+        endDate: timeEnd,
       };
       const key = useLabModelVersionReportDetailQuery.getKey(variables);
       return {

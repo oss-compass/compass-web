@@ -67,8 +67,8 @@ export function alignValuesWithDates(data: DataResults) {
 
   return data.map(({ dates, values, ...rest }) => {
     alignDates.forEach((date, index) => {
-      if (dates.indexOf(date) === -1) {
-        dates.splice(index, 0, date);
+      if (dates?.indexOf(date) === -1) {
+        dates?.splice(index, 0, date);
         values.splice(index, 0, null);
       }
     });
@@ -84,8 +84,8 @@ export function formatData(data: DataResults) {
   return data.map((item) => {
     return {
       ...item,
-      values: item.values.map((i) => toFixed(i, 2)),
-      dates: item.dates.map((i) => formatISO(i)),
+      values: item.values?.map((i) => toFixed(i, 2)),
+      dates: item.dates?.map((i) => formatISO(i)),
     };
   });
 }

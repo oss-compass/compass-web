@@ -9,8 +9,8 @@ const useLabDataMainScore = () => {
       label: i.label,
       level: i.level,
       chartType: 'line',
-      dates: detail.mainScore.dates,
-      values: detail.mainScore.values,
+      dates: detail?.mainScore.dates,
+      values: detail?.mainScore.values,
     };
   });
 

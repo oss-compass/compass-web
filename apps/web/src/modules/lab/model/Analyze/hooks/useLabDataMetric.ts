@@ -8,7 +8,7 @@ const useLabDataMetric = () => {
     return {
       label: i.label,
       level: i.level,
-      panels: detail.panels,
+      panels: detail?.panels,
     };
   });
 
