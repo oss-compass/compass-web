@@ -97,7 +97,7 @@ const VersionCard = ({
           <div className="mb-2">
             <div className="text-secondary flex gap-1 text-sm">
               <div className="flex-shrink-0">{t('lab:metrics')}: </div>
-              <div className="ml-1 flex flex-wrap">
+              <div className="ml-1 flex flex-wrap gap-1">
                 {metricsList.map(({ ident, category }) => (
                   <Popover
                     key={ident}
