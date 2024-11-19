@@ -50,7 +50,7 @@ const ReportForm = ({ name, version, modelIsPublic = false, edit = false }) => {
           {t('lab:versions')}
         </FormItemLabel>
         <div className="mb-3 text-xl font-medium"> {version.version}</div>
-        <FormIsPublic disabled={false} />
+        {/* <FormIsPublic disabled={false} /> */}
         <FormItemLabel className="text-secondary mb-3  text-sm font-semibold">
           {t('lab:select_dataset')}
         </FormItemLabel>

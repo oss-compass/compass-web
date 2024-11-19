@@ -11,6 +11,7 @@ import VersionCard from '../My/VersionCard';
 import { formatToNow } from '@common/utils/time';
 import ShareBtn from '@modules/lab/model/components/ShareBtn';
 import ForkFrom from '@modules/lab/model/components/ForkFrom';
+import IsPublic from '@modules/lab/model/components/IsPublic';
 import ModelReport from './ModelReport';
 
 const DetailPage = ({
@@ -30,13 +31,10 @@ const DetailPage = ({
   return (
     <div className="mb-8 w-full p-4">
       <div className="flex items-center justify-between">
-        {/* <div className="flex items-center">
-          {dimensionLogo[`${model.dimension}`]}
-        </div> */}
         <div className="mb-2 flex items-center text-3xl font-bold">
           <a className="cursor-default">{name}</a>
 
-          {model.isPublic ? (
+          {/* {model.isPublic ? (
             <span className="ml-2 rounded-2xl bg-[#cdf0ce] px-2 py-0.5  text-xs text-[#00B400]">
               {t('lab:is_public')}
             </span>
@@ -44,7 +42,8 @@ const DetailPage = ({
             <span className="ml-2 rounded-2xl bg-[#e5e5e5] px-2  py-0.5 text-xs text-[#616161]">
               {t('lab:is_public_options.non_public')}
             </span>
-          )}
+          )} */}
+          <IsPublic model={model} />
           {parentLabModel?.id ? (
             <ForkFrom
               id={parentLabModel?.id}
