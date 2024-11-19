@@ -96,14 +96,14 @@ const VersionCard = ({
           </div> */}
           <div className="mb-2">
             <div className="text-secondary flex gap-1 text-sm">
-              <div className="flex-shrink-0">{t('lab:metrics')}: </div>{' '}
-              <div className="flex flex-wrap gap-1">
+              <div className="flex-shrink-0">{t('lab:metrics')}: </div>
+              <div className="ml-1 flex flex-wrap">
                 {metricsList.map(({ ident, category }) => (
                   <Popover
                     key={ident}
                     content={t(`lab_metrics:${category}.${ident}_desc`)}
                   >
-                    <div className="mr-2 flex  h-5 flex-shrink-0 cursor-pointer rounded-full border bg-[#F1F1F1] px-2.5 pt-0.5  text-xs text-[#585858]">
+                    <div className="mr-2 flex h-5 flex-shrink-0 cursor-pointer rounded-full border bg-[#F1F1F1] px-2.5 pt-[1px] text-xs text-[#585858]">
                       {t(`lab_metrics:${category}.${ident}`)}
                     </div>
                   </Popover>
@@ -116,7 +116,7 @@ const VersionCard = ({
             {isScore ? (
               <span className="text-secondary block truncate text-sm">
                 {t('lab:algorithm')}:
-                <span className="ml-2 h-5 rounded-full border bg-[#F1F1F1] px-2.5 text-xs text-[#585858]">
+                <span className="ml-2 h-5 rounded-full border bg-[#F1F1F1] px-2.5 pt-[1px] text-xs text-[#585858]">
                   {t('lab:algorithm_selection.default')}
                 </span>
               </span>
