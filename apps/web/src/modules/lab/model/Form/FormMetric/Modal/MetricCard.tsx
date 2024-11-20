@@ -7,10 +7,8 @@ import Chaoss from '@common/components/PoweredBy/Chaoss';
 import { formFiledState, actions, MetricItem, FormFiledState } from '../state';
 import { MetricName, MetricDesc } from '../../Misc';
 import { Popover } from 'antd';
+import { isYearCheck } from '@modules/lab/utils';
 
-const isYearCheck = (ident) => {
-  return ident.includes('_year');
-};
 const checkIsSelect = (
   ident: string,
   list: Readonly<FormFiledState['selected'][string]>

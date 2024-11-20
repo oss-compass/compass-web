@@ -6,7 +6,7 @@ import { AiFillGithub } from 'react-icons/ai';
 import classnames from 'classnames';
 import TriggerSingleBtn from './TriggerSingleBtn';
 import ImageFallback from '@common/components/ImageFallback';
-import ProviderIcon from '@common/components/ProviderIcon';
+import { getLabRange } from '@modules/lab/utils';
 
 const Avatar = ({ logoUrl, origin }: { logoUrl: string; origin: string }) => {
   return (
@@ -40,9 +40,7 @@ const Avatar = ({ logoUrl, origin }: { logoUrl: string; origin: string }) => {
 };
 
 const RepoCard = ({
-  modelId,
-  versionId,
-  reportId,
+  model,
   label,
   shortCode,
   selected,
@@ -52,9 +50,7 @@ const RepoCard = ({
   compareMode,
   onSelectChange,
 }: {
-  modelId: number;
-  versionId: number;
-  reportId: number;
+  model: any;
   label: string;
   shortCode: string;
   selected: boolean;
@@ -71,6 +67,7 @@ const RepoCard = ({
   const repo = getRepoName(label);
   const nameSpace = getNameSpace(label);
   const provider = getProvider(label);
+  const { modelId, reportId, versionId } = model;
 
   const content = (
     <>
@@ -87,7 +84,9 @@ const RepoCard = ({
           onClick={() => {
             !compareMode &&
               router.push(
-                `/lab/model/${modelId}/version/${versionId}/analyze/${shortCode}?range=1Y`
+                `/lab/model/${modelId}/version/${versionId}/analyze/${shortCode}?range=${getLabRange(
+                  model.metrics
+                )}`
               );
           }}
         >

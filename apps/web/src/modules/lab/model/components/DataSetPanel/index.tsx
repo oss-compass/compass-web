@@ -7,14 +7,15 @@ import { useTranslation } from 'next-i18next';
 import RepoCard from '../../components/RepoCard';
 import RepoCompareBar from './RepoCompareBar';
 import { getSecondIdentName } from '@common/collectionsI18n';
+import { getLabRange } from '@modules/lab/utils';
 
 const DataSetPanel: React.FC<{
-  modelId: number;
-  versionId: number;
+  model: any;
   dataSet: DatasetCompletionRowStatus[];
   fullWidth: boolean;
-  reportId: number;
-}> = ({ modelId, versionId, dataSet = [], fullWidth, reportId }) => {
+}> = ({ model, dataSet = [], fullWidth }) => {
+  const { modelId, reportId, versionId } = model;
+
   const { t, i18n } = useTranslation();
   const router = useRouter();
 
@@ -88,7 +89,9 @@ const DataSetPanel: React.FC<{
         onCompareConfirm={() => {
           const slugs = compareList.join('..');
           router.push(
-            `/lab/model/${modelId}/version/${versionId}/analyze/${slugs}?range=1Y`
+            `/lab/model/${modelId}/version/${versionId}/analyze/${slugs}?range=${getLabRange(
+              model.metrics
+            )}`
           );
         }}
         onCompareCancel={() => {
@@ -106,10 +109,8 @@ const DataSetPanel: React.FC<{
           const selected = compareList.indexOf(repo.shortCode) > -1;
           return (
             <RepoCard
+              model={model}
               key={repo.label}
-              modelId={modelId}
-              reportId={reportId}
-              versionId={versionId}
               label={repo.label}
               shortCode={repo.shortCode}
               triggerStatus={repo.triggerStatus}

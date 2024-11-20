@@ -10,18 +10,16 @@ const ReportItem: React.FC<{
   fullWidth?: boolean;
   simple?: boolean;
 }> = ({ model, event$ = null, fullWidth = false, simple = false }) => {
-  const { modelId, reportId, versionId, datasetStatus } = model;
+  const { datasetStatus } = model;
 
   return (
     <>
       <ModelTitle model={model} event$={event$} simple={simple} />
       <AnalysePanel model={model} />
       <DataSetPanel
+        model={model}
         dataSet={datasetStatus?.items}
-        modelId={modelId}
-        versionId={versionId}
         fullWidth={fullWidth}
-        reportId={reportId}
       />
     </>
   );
