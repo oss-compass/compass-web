@@ -39,7 +39,7 @@ const Banner = ({ className }: { className?: string }) => {
         >
           {t('lab:the_locale_names_are_used_for')}
         </div>
-        <div className="flex">
+        <div className="flex gap-4">
           <div
             className="h-8 w-32 cursor-pointer bg-gradient-to-r from-[#F1B600] to-[#854700] text-center leading-8 text-[#fff]"
             onClick={() => {
@@ -47,6 +47,14 @@ const Banner = ({ className }: { className?: string }) => {
             }}
           >
             {t('lab:create_a_model')}
+          </div>
+          <div
+            className="h-8 w-24 cursor-pointer bg-gradient-to-r from-[#F1B600] to-[#854700] text-center leading-8 text-[#fff]"
+            onClick={() => {
+              router.push('/lab/model/my');
+            }}
+          >
+            {t('lab:my_models')}
           </div>
         </div>
       </div>

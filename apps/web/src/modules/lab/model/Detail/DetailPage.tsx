@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineUser } from 'react-icons/ai';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
-import { ModelDetail } from '@oss-compass/graphql';
 import ModelItemMore from '../My/ModelItemMore';
 import Image from 'next/image';
 import VersionCreate from '../My/VersionCreate';

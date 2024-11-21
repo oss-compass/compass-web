@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import IconProductivity from '@public/images/analyze/topic/Productivity.svg';
-import IconRobustness from '@public/images/analyze/topic/Robustness.svg';
-import IconNicheCreation from '@public/images/analyze/topic/NicheCreation.svg';
+import { useTranslation } from 'react-i18next';
 import { MyModelVersion } from '@oss-compass/graphql';
-import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import Discuss from './Discuss';
 import ModelItemMore from './ModelItemMore';
 import type { EventEmitter } from 'ahooks/lib/useEventEmitter';
@@ -15,16 +13,20 @@ const ModeTitle: React.FC<{
   event$?: EventEmitter<string>;
   simple?: boolean;
 }> = ({ model, event$, simple = false }) => {
-  const { t } = useTranslation();
-  // const permissions = model?.permissions;
   const { triggerUpdatedAt, triggerStatus, modelId, versionId, id } = model;
   const parentLabModel = model?.parentLabModel;
+  const router = useRouter();
 
   return (
     <>
       <div className="flex items-center justify-between">
         <div className="flex justify-between">
-          <div onClick={() => {}} className="mt-2 cursor-pointer text-3xl">
+          <div
+            onClick={() => {
+              router.push(`/lab/model/${model.id}/detail`);
+            }}
+            className="mt-2 cursor-pointer text-3xl hover:underline"
+          >
             {model.modelName + ` (${model.version})`}
           </div>
           {parentLabModel?.id && !simple ? (
