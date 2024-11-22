@@ -8517,6 +8517,7 @@ export type TpcSoftwareGraduationReportQuery = {
     adaptationMethod?: string | null;
     codeCount?: number | null;
     license?: string | null;
+    lifecyclePolicy?: string | null;
     codeUrl?: string | null;
     id: number;
     name?: string | null;
@@ -15875,6 +15876,7 @@ export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
     }
     codeCount
     license
+    lifecyclePolicy
     codeUrl
     id
     name

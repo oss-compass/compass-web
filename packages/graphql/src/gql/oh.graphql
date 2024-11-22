@@ -1141,6 +1141,7 @@ query tpcSoftwareGraduationReport($shortCode: String!) {
     }
     codeCount
     license
+    lifecyclePolicy
     codeUrl
     id
     name
