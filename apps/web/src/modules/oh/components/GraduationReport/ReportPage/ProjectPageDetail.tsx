@@ -6,6 +6,7 @@ import { useGetReportData } from '@modules/oh/components/GraduationReport/Report
 import ReportIdFetcher from '@modules/oh/components/GraduationReport/ReportPage/store/ReportIdFetcher';
 import Comment from '@modules/oh/components/GraduationReport/ReportPage/Comment';
 import Approve from '@modules/oh/components/GraduationReport/ReportPage/Approve';
+import QAsubmit from '@modules/oh/components/GraduationReport/ReportPage/QAsubmit';
 import ProjectInfo from '@modules/oh/components/GraduationReport/ReportPage/ProjectInfo';
 
 const ProjectPageDetail = () => {
@@ -29,6 +30,7 @@ const ProjectPageDetail = () => {
           />
           <ReportIdFetcher selectionId={Number(taskId)} />
           <Comment />
+          {/* <QAsubmit /> */}
           <Approve />
         </div>
       </div>

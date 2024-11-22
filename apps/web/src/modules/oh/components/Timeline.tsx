@@ -6,7 +6,6 @@ import { useUserInfo } from '@modules/auth';
 const Timeline = ({ state, content, userId }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const { id } = useUserInfo().currentUser || {};
-  // const steps = ['提交申请', '待澄清', '待确认', '待评审', '已通过'];
   const stepsList = [
     { text: '提交申请', value: 99 },
     {
