@@ -23,7 +23,7 @@ const ModeTitle: React.FC<{
         <div className="flex justify-between">
           <div
             onClick={() => {
-              router.push(`/lab/model/${model.id}/detail`);
+              router.push(`/lab/model/${modelId}/detail`);
             }}
             className="mt-2 cursor-pointer text-3xl hover:underline"
           >
