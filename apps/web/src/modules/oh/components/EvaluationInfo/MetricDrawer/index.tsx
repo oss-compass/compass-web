@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import { Divider, Descriptions, Drawer, Button } from 'antd';
+import React from 'react';
+import { Descriptions, Drawer, Button } from 'antd';
 import { getPathname } from '@common/utils';
 import {
   getRishContent,
   getRishDeitalContent,
 } from '@modules/oh/components/EvaluationInfo/AllHatchMetricData';
-import {
-  QuestionCircleOutlined,
-  LeftOutlined,
-  RightOutlined,
-} from '@ant-design/icons';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import RiskClarification from './RiskClarification';
+import useCheckRiskState from '@modules/oh/hooks/useCheckRiskState';
+import { getRiskFillScore } from '@modules/oh/utils';
 
 const useGetDefinition = (metric) => {
   if (!metric) {
@@ -24,7 +22,7 @@ const useGetDefinition = (metric) => {
   const suggestionMatch = content.match(suggestionRegex);
   const rule = ruleMatch ? ruleMatch[1].trim() : '';
   const suggestion = suggestionMatch ? suggestionMatch[1].trim() : '';
-  // const scoreRule = metric.指标检查项及评分项;
+
   const baseItems = [
     {
       key: '1',
@@ -32,21 +30,6 @@ const useGetDefinition = (metric) => {
       children: <>{list[0]}</>,
       span: 3,
     },
-    // {
-    //   key: '2',
-    //   label: '规则建议',
-    //   children: (
-    //     <>
-    //       {rule.split('\n').map((line, index) => (
-    //         <React.Fragment key={index}>
-    //           {line}
-    //           {index < rule.split('\n').length - 1 && <br />}
-    //         </React.Fragment>
-    //       ))}
-    //     </>
-    //   ),
-    //   span: 3,
-    // },
   ];
   rule &&
     baseItems.push({
@@ -78,6 +61,7 @@ const useGetDefinition = (metric) => {
 };
 const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
   const { codeUrl, shortCode } = report;
+  const { riskFill } = useCheckRiskState(shortCode, metric);
   const name = getPathname(codeUrl);
   const baseItems = useGetDefinition(metric);
   if (!metric) {
@@ -88,12 +72,7 @@ const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
     {
       key: '3',
       label: '得分',
-      children:
-        metric.score == -1
-          ? '未检测到该指标'
-          : metric.score === null
-          ? '功能开发中，敬请期待'
-          : metric.score,
+      children: getRiskFillScore(metric.score, riskFill),
       span: 3,
     },
     {

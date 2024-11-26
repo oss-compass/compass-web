@@ -1,5 +1,18 @@
 import { getPathname } from '@common/utils';
 
+export const getRiskFillScore = (
+  score: number | null,
+  riskFill: boolean
+): string | number => {
+  if (score === null) {
+    return '功能开发中，敬请期待';
+  }
+  if (score === -1) {
+    return '未检测到该指标';
+  }
+  return riskFill ? `10（澄清前：${score}）` : score;
+};
+
 export const setUrlHost = (url) => {
   if (!url) return url;
   if (url?.startsWith('http') || url?.startsWith('https')) {

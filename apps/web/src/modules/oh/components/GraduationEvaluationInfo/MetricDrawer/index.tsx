@@ -7,6 +7,8 @@ import {
 } from '@modules/oh/components/GraduationEvaluationInfo/AllGraduateMetricData';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import RiskClarification from './RiskClarification';
+import useCheckGraduateRiskState from '@modules/oh/hooks/useCheckGraduateRiskState';
+import { getRiskFillScore } from '@modules/oh/utils';
 
 const useGetDefinition = (metric) => {
   if (!metric) {
@@ -32,6 +34,7 @@ const useGetDefinition = (metric) => {
 };
 const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
   const { codeUrl, shortCode } = report;
+  const { riskFill } = useCheckGraduateRiskState(shortCode, metric);
   const name = getPathname(codeUrl);
   const baseItems = useGetDefinition(metric);
   if (!metric) {
@@ -42,12 +45,7 @@ const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
     {
       key: '3',
       label: '得分',
-      children:
-        metric.score == -1
-          ? '未检测到该指标'
-          : metric.score === null
-          ? '功能开发中，敬请期待'
-          : metric.score,
+      children: getRiskFillScore(metric.score, riskFill),
       span: 3,
     },
     {

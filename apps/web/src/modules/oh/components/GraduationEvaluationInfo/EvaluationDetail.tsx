@@ -1,6 +1,5 @@
 import React from 'react';
-import { LeftCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { Popover } from 'antd';
+import { LeftCircleOutlined } from '@ant-design/icons';
 import { getPathname } from '@common/utils';
 import EvaluationDownLoad from '@modules/oh/components/GraduationEvaluationInfo/EvaluationDownLoad';
 import EvaluationBaseInfo from '@modules/oh/components/GraduationEvaluationInfo/EvaluationBaseInfo';

@@ -71,14 +71,20 @@ const getDeital = (item) => {
     return '';
   }
 };
-export const getContent = (item) => {
+export const getContent = (item, riskFill = false) => {
+  let scoreContent = null;
+  if (riskFill) {
+    scoreContent = <div>得分：10 (澄清前：{item.score})</div>;
+  } else {
+    scoreContent = <div>得分：{item.score}</div>;
+  }
   if (item.score === 10) {
-    return <div>得分：{item.score}</div>;
+    return scoreContent;
   } else {
     const deital = getDeital(item);
     return (
       <>
-        <div>得分：{item.score}</div>
+        {scoreContent}
         <div>
           风险：
           {getRishContent(item)}
@@ -88,7 +94,17 @@ export const getContent = (item) => {
     );
   }
 };
-export const setMetricIcon = (item) => {
+export const useGetMetricIcon = (item, riskFill) => {
+  if (riskFill) {
+    return (
+      <Popover content={getContent(item, true)} title="">
+        <CheckCircleOutlined
+          rev={undefined}
+          className="cursor-pointer text-lg "
+        />
+      </Popover>
+    );
+  }
   if (item.score === null) {
     return (
       <Popover content={'功能开发中，敬请期待'} title="">

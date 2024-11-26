@@ -4,9 +4,19 @@ import RiskBadge from '@modules/oh/components/GraduationEvaluationInfo/Badge/Ris
 import MetricDrawer from '@modules/oh/components/GraduationEvaluationInfo/MetricDrawer';
 import {
   metricList,
-  setMetricIcon,
+  useGetMetricIcon,
   setRiskTag,
 } from '@modules/oh/components/GraduationEvaluationInfo/MerticDetail';
+import useCheckGraduateRiskState from '@modules/oh/hooks/useCheckGraduateRiskState';
+
+const MetricIcon = ({ shortCode, item }) => {
+  const { riskFill } = useCheckGraduateRiskState(shortCode, item);
+  return (
+    <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
+      {useGetMetricIcon(item, riskFill)}
+    </div>
+  );
+};
 
 const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
   return (
@@ -36,9 +46,7 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
               }}
               className="flex h-[90px] cursor-pointer border border-b-0 bg-white px-4 py-3 hover:bg-[#f5f6fd]"
             >
-              <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-                {setMetricIcon(item)}
-              </div>
+              <MetricIcon shortCode={report.shortCode} item={item} />
               {/* <div className="mr-4 flex items-center justify-center">
                 {item.score}
               </div> */}
@@ -118,13 +126,15 @@ const EvaluationMerticList = ({ allData, metricItemScoreList }) => {
           />
         );
       })}
-      <MetricDrawer
-        report={allData}
-        metric={metric}
-        open={open}
-        onClose={() => setOpen(false)}
-        nextAndPre={nextAndPre}
-      />
+      {open && (
+        <MetricDrawer
+          report={allData}
+          metric={metric}
+          open={open}
+          onClose={() => setOpen(false)}
+          nextAndPre={nextAndPre}
+        />
+      )}
     </div>
   );
 };

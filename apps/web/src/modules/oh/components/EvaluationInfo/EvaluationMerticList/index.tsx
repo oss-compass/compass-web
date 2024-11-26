@@ -4,9 +4,19 @@ import RiskBadge from '@modules/oh/components/EvaluationInfo/Badge/RiskBadge';
 import MetricDrawer from '@modules/oh/components/EvaluationInfo/MetricDrawer';
 import {
   metricList,
-  setMetricIcon,
+  useGetMetricIcon,
   setRiskTag,
 } from '@modules/oh/components/EvaluationInfo/MerticDetail';
+import useCheckRiskState from '@modules/oh/hooks/useCheckRiskState';
+
+const MetricIcon = ({ shortCode, item }) => {
+  const { riskFill } = useCheckRiskState(shortCode, item);
+  return (
+    <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
+      {useGetMetricIcon(item, riskFill)}
+    </div>
+  );
+};
 
 const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
   return (
@@ -36,12 +46,7 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
               }}
               className="flex h-[90px] cursor-pointer border border-b-0 bg-white px-4 py-3 hover:bg-[#f5f6fd]"
             >
-              <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-                {setMetricIcon(item)}
-              </div>
-              {/* <div className="mr-4 flex items-center justify-center">
-                {item.score}
-              </div> */}
+              <MetricIcon shortCode={report.shortCode} item={item} />
               <div className="flex-1 pr-3">
                 <div className="flex h-[29px] text-base font-semibold">
                   <div className="flex-shrink-0"> {item.指标名称}</div>
@@ -125,13 +130,15 @@ const EvaluationMerticList = ({ allData, metricItemScoreList }) => {
           />
         );
       })}
-      <MetricDrawer
-        report={allData}
-        metric={metric}
-        open={open}
-        onClose={() => setOpen(false)}
-        nextAndPre={nextAndPre}
-      />
+      {open && (
+        <MetricDrawer
+          report={allData}
+          metric={metric}
+          open={open}
+          onClose={() => setOpen(false)}
+          nextAndPre={nextAndPre}
+        />
+      )}
     </div>
   );
 };
