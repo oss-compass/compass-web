@@ -76,21 +76,6 @@ const SelectionReportApplication = () => {
   const onReset = () => {
     form.resetFields();
   };
-  const autoFill = () => {
-    form.setFieldsValue({
-      name: 'aeraki',
-      tpcSoftwareSigId: 2,
-      release: 'v1.0.0',
-      releaseTime: dayjs('2020-01-01'),
-      manufacturer: 'jasonsantos',
-      websiteUrl: 'www.keplerproject.org/luajava/',
-      codeUrl: 'https://github.com/aeraki-mesh/aeraki',
-      upstreamCodeUrl: 'https://github.com/aeraki-mesh/aeraki',
-      programmingLanguage: 'Java',
-      lifecyclePolicy: 'asfdf',
-      adaptationMethod: 'Java 库重写',
-    });
-  };
   return (
     <>
       {contextHolder}
@@ -109,17 +94,6 @@ const SelectionReportApplication = () => {
           <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
           <Row gutter={24}>
             <Col span={12}>
-              {/* <Popover
-                placement="topRight"
-                content={
-                  <>
-                    <div>1.软件名称和其官网保持一致;</div>
-                    <div>1.禁止以软件的子模块作为软件名;</div>
-                  </>
-                }
-                title="规则"
-                trigger="click"
-              > */}
               <Form.Item
                 label="软件名称"
                 name="name"
@@ -228,6 +202,30 @@ const SelectionReportApplication = () => {
                   })}
                 </Select>
               </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Popover
+                placement="topRight"
+                content={
+                  <>
+                    <div>
+                      请填写该软件上游社区最后一次提交的 Commit
+                      SHA（鸿蒙化适配前上一次提交的 Commit SHA）
+                    </div>
+                    <div>示例：ce45963962ed7b528937b113dc2782076d563075</div>
+                  </>
+                }
+                title="规则"
+                trigger="click"
+              >
+                <Form.Item
+                  label="Commit SHA"
+                  name="ohCommitSha"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input placeholder="提供该软件上游社区最后一次提交的CommitSha" />
+                </Form.Item>
+              </Popover>
             </Col>
             <Col span={12}>
               <Form.Item label="上游源码地址" name="upstreamCodeUrl">

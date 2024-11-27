@@ -3820,6 +3820,7 @@ export type TpcSoftwareGraduationReport = {
   metricClarificationCount?: Maybe<TpcSoftwareGraduationReportMetricClarificationCount>;
   metricClarificationState?: Maybe<TpcSoftwareGraduationReportMetricClarificationState>;
   name?: Maybe<Scalars['String']>;
+  ohCommitSha?: Maybe<Scalars['String']>;
   programmingLanguage?: Maybe<Scalars['String']>;
   roundUpstream?: Maybe<Scalars['String']>;
   shortCode: Scalars['String'];
@@ -3837,6 +3838,7 @@ export type TpcSoftwareGraduationReportInput = {
   isIncubation: Scalars['Int'];
   lifecyclePolicy: Scalars['String'];
   name: Scalars['String'];
+  ohCommitSha: Scalars['String'];
   programmingLanguage: Scalars['String'];
   roundUpstream?: InputMaybe<Scalars['String']>;
   tpcSoftwareSigId: Scalars['Int'];
@@ -4353,6 +4355,7 @@ export type TpcSoftwareSelectionReportInput = {
   architectureDiagrams?: InputMaybe<Array<Base64ImageInput>>;
   codeUrl: Scalars['String'];
   name: Scalars['String'];
+  ohCommitSha: Scalars['String'];
   programmingLanguage: Scalars['String'];
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityResponse: Scalars['String'];

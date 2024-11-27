@@ -64,18 +64,7 @@ const SelectionReportApplication = () => {
   const onReset = () => {
     form.resetFields();
   };
-  const autoFill = () => {
-    form.setFieldsValue({
-      name: 'luajava',
-      tpcSoftwareSigId: 2,
-      release: 'v1.0.0',
-      releaseTime: dayjs('2020-01-01'),
-      manufacturer: 'jasonsantos',
-      websiteUrl: 'www.keplerproject.org/luajava/',
-      codeUrl: 'https://github.com/jasonsantos/luajava',
-      programmingLanguage: 'Java',
-    });
-  };
+
   return (
     <>
       {contextHolder}
@@ -190,6 +179,30 @@ const SelectionReportApplication = () => {
               >
                 <Input />
               </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Popover
+                placement="topRight"
+                content={
+                  <>
+                    <div>
+                      请填写该软件上游社区最后一次提交的 Commit
+                      SHA（鸿蒙化适配前上一次提交的 Commit SHA）
+                    </div>
+                    <div>示例：ce45963962ed7b528937b113dc2782076d563075</div>
+                  </>
+                }
+                title="规则"
+                trigger="click"
+              >
+                <Form.Item
+                  label="Commit SHA"
+                  name="ohCommitSha"
+                  rules={[{ required: true, message: '请输入!' }]}
+                >
+                  <Input placeholder="提供该软件上游社区最后一次提交的CommitSha" />
+                </Form.Item>
+              </Popover>
             </Col>
             <Col span={24}>
               <Form.Item
