@@ -64,7 +64,13 @@ const SelectionReportApplication = () => {
   const onReset = () => {
     form.resetFields();
   };
-
+  const validateCommitSHA = (_, value) => {
+    const commitSHARegex = /^[0-9a-f]{40}$/;
+    if (!value || commitSHARegex.test(value)) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error('请输入有效的 commit SHA'));
+  };
   return (
     <>
       {contextHolder}
@@ -187,7 +193,7 @@ const SelectionReportApplication = () => {
                   <>
                     <div>
                       请填写该软件上游社区最后一次提交的 Commit
-                      SHA（鸿蒙化适配前上一次提交的 Commit SHA）
+                      SHA（鸿蒙化适配前一次提交的 Commit SHA）
                     </div>
                     <div>示例：ce45963962ed7b528937b113dc2782076d563075</div>
                   </>
@@ -198,7 +204,13 @@ const SelectionReportApplication = () => {
                 <Form.Item
                   label="Commit SHA"
                   name="ohCommitSha"
-                  rules={[{ required: true, message: '请输入!' }]}
+                  rules={[
+                    { required: true, message: '请输入!' },
+                    {
+                      validator: validateCommitSHA,
+                      message: '请输入有效的Commit SHA',
+                    },
+                  ]}
                 >
                   <Input placeholder="提供该软件上游社区最后一次提交的CommitSha" />
                 </Form.Item>
