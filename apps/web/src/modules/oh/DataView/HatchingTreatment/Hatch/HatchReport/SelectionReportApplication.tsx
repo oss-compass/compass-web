@@ -91,7 +91,7 @@ const SelectionReportApplication = () => {
         >
           <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
           <Row gutter={24}>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Popover
                 placement="topRight"
                 content={
@@ -112,7 +112,7 @@ const SelectionReportApplication = () => {
                 </Form.Item>
               </Popover>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item
                 label="所属领域"
                 name="tpcSoftwareSigId"
@@ -127,7 +127,7 @@ const SelectionReportApplication = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item
                 label="编程语言"
                 name="programmingLanguage"
@@ -142,7 +142,7 @@ const SelectionReportApplication = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item
                 label="源码地址"
                 name="codeUrl"
@@ -160,7 +160,7 @@ const SelectionReportApplication = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item
                 label="适配方式"
                 name="adaptationMethod"
@@ -177,7 +177,7 @@ const SelectionReportApplication = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item
                 rules={[{ required: true, message: '请输入!' }]}
                 label="漏洞响应机制"
@@ -186,7 +186,7 @@ const SelectionReportApplication = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Popover
                 placement="topRight"
                 content={
@@ -216,15 +216,8 @@ const SelectionReportApplication = () => {
                 </Form.Item>
               </Popover>
             </Col>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{
-                  span: 3,
-                  style: { fontWeight: 'bold' },
-                }}
-                label="架构图"
-                name="architectureDiagrams"
-              >
+            <Col xs={24} sm={24} md={24} lg={12}>
+              <Form.Item label="架构图" name="architectureDiagrams">
                 <Upload
                   onFileChange={(images) => {
                     form.setFieldsValue({
