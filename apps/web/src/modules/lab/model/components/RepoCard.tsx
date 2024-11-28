@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 import { getNameSpace, getProvider, getRepoName } from '@common/utils';
 import { SiGitee } from 'react-icons/si';
 import { AiFillGithub } from 'react-icons/ai';
@@ -63,8 +64,9 @@ const RepoCard = ({
     value: { label: string; shortCode: string }
   ) => void;
 }) => {
+  const { t } = useTranslation();
   const router = useRouter();
-  const repo = getRepoName(label);
+  const repo = getRepoName(label) || label;
   const nameSpace = getNameSpace(label);
   const provider = getProvider(label);
   const { modelId, reportId, versionId } = model;
@@ -100,7 +102,15 @@ const RepoCard = ({
           >
             {repo}
           </p>
-          <p className="truncate text-sm text-gray-400">{nameSpace}</p>
+          {nameSpace ? (
+            <p className="h-6 truncate text-sm text-gray-400">{nameSpace}</p>
+          ) : (
+            <div className="">
+              <span className="h-5 rounded-[10px] bg-[#FFF9F2] px-1 py-0.5 text-xs text-[#D98523]">
+                {t('lab:community')}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="flex w-full items-center justify-between">

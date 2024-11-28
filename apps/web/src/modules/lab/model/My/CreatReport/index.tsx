@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSelect } from 'react-icons/ai';
-import ModalSelect from '@modules/lab/model/Form/FormDataSet/Modal';
 import CreatReportModal from './CreatReportModal';
 
 const CreatReport = ({ version, model }) => {

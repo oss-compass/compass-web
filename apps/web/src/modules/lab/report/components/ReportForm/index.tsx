@@ -6,7 +6,6 @@ import { FormItemLabel } from '@modules/lab/model/Form/Misc';
 import { ItemCard, ItemCardPlus } from './FormDataSet/SelectedItem';
 import { formState, actions } from './state';
 import { formFiledState } from '@modules/lab/model/Form/FormDataSet/state';
-import FormIsPublic from './FormIsPublic';
 import ModalSelect from './FormDataSet/Modal';
 
 const ReportForm = ({ name, version, modelIsPublic = false, edit = false }) => {
