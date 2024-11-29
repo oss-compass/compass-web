@@ -3,8 +3,8 @@ import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import GetReportData from '@modules/oh/components/GraduationReport/GetReportData';
 
 const ReportPageItems = ({
-  canClarify,
   reportItems,
+  canClarify = false,
   targetSoftware = null,
 }) => {
   if (!reportItems && reportItems === 0) {
