@@ -7,12 +7,12 @@ import client from '@common/gqlClient';
 
 const GetReportData = ({
   shortCode,
-  canClarify,
+  canClarify = false,
   targetSoftware = null,
   back,
 }: {
   shortCode: any;
-  canClarify: boolean;
+  canClarify?: boolean;
   targetSoftware?: string;
   back?: () => void;
 }) => {

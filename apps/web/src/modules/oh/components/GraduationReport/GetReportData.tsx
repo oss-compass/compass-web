@@ -6,12 +6,12 @@ import { useTpcSoftwareGraduationReportQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 
 const GetReportData = ({
-  canClarify,
+  canClarify = false,
   shortCode,
   back,
   targetSoftware = null,
 }: {
-  canClarify: boolean;
+  canClarify?: boolean;
   shortCode: any;
   back?: () => void;
   targetSoftware?: string;

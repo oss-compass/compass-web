@@ -99,6 +99,7 @@ const Report = ({
       {activeItem ? (
         <div className="mb-6 h-[calc(100%-24px)] overflow-auto p-5">
           <GetReportData
+            canClarify={false}
             shortCode={activeItem.shortCode}
             back={() => {
               setActiveItem(null);
