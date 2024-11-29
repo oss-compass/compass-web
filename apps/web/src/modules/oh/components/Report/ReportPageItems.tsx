@@ -4,7 +4,7 @@ import GetReportData from '@modules/oh/components/Report/GetReportData';
 
 const ReportPageItems = ({
   reportItems,
-  canClarify,
+  canClarify = false,
   targetSoftware = null,
 }) => {
   if (!reportItems && reportItems === 0) {
