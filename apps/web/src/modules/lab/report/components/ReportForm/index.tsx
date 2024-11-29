@@ -15,13 +15,13 @@ const ReportForm = ({ name, version, modelIsPublic = false, edit = false }) => {
   const snapshot = useSnapshot(formState);
   const item = groupBy(snapshot.dataSet, 'secondIdent');
   const subIdents = Object.keys(item);
-  const dateSetSelectedLength = snapshot.dataSet.length;
+  const dateSetSelectedLength = snapshot.dataSet?.length;
   useEffect(() => {
     actions.resetForm();
     if (edit && version) {
-      const { isPublic, dataset } = version;
+      const { isPublic, datasetStatus } = version;
       formState.isPublic = isPublic;
-      formState.dataSet = dataset.items.map((i) => {
+      formState.dataSet = datasetStatus?.items?.map((i) => {
         return {
           label: i.label,
           level: i.level,

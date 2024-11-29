@@ -16,6 +16,7 @@ import {
 import { formState } from '../../state';
 import RepoCard from './RepoCard';
 import Content from './Content';
+import { getRepoName } from '@common/utils';
 
 const ModalSelect = ({
   open,
@@ -59,7 +60,7 @@ const ModalSelect = ({
       const labels = formFiledState.selected[cur];
       const items = labels.map((i) => ({
         label: i,
-        level: 'repo',
+        level: getRepoName(i) ? 'repo' : 'community',
         firstIdent: first,
         secondIdent: second,
       }));
