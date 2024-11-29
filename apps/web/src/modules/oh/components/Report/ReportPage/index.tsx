@@ -16,6 +16,7 @@ const ReportPageDetail = () => {
         </div>
         <div className="relative h-[calc(100%-60px)] overflow-auto p-5">
           <ReportPageItems
+            canClarify={false}
             reportItems={reportItems}
             targetSoftware={targetSoftware}
           />

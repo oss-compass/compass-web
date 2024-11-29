@@ -7,12 +7,14 @@ import client from '@common/gqlClient';
 
 const GetReportData = ({
   shortCode,
-  back,
+  canClarify,
   targetSoftware = null,
+  back,
 }: {
   shortCode: any;
-  back?: () => void;
+  canClarify: boolean;
   targetSoftware?: string;
+  back?: () => void;
 }) => {
   const { isLoading, data, refetch } = useTpcSoftwareSelectionReportQuery(
     client,
@@ -44,6 +46,7 @@ const GetReportData = ({
           data?.tpcSoftwareSelectionReport,
           data?.tpcSoftwareReportMetricClarificationPermission
         )}
+        canClarify={canClarify}
         back={back}
         refetch={refetch}
         targetSoftware={targetSoftware}

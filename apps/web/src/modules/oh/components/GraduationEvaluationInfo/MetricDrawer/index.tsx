@@ -32,7 +32,14 @@ const useGetDefinition = (metric) => {
   });
   return baseItems;
 };
-const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
+const MetricDrawer = ({
+  canClarify,
+  report,
+  metric,
+  open,
+  onClose,
+  nextAndPre,
+}) => {
   const { codeUrl, shortCode } = report;
   const { riskFill } = useCheckGraduateRiskState(shortCode, metric);
   const name = getPathname(codeUrl);
@@ -105,9 +112,11 @@ const MetricDrawer = ({ report, metric, open, onClose, nextAndPre }) => {
             <Descriptions items={baseItems} />
           </div>
         </div>
-        <div className="pt-6">
-          <RiskClarification metric={metric} report={report} />
-        </div>
+        {canClarify && (
+          <div className="pt-6">
+            <RiskClarification metric={metric} report={report} />
+          </div>
+        )}
       </Drawer>
     </>
   );

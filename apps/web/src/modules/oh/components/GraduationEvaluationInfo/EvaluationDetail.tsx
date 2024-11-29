@@ -13,15 +13,15 @@ import {
 } from '@modules/oh/components/GraduationEvaluationInfo/MerticDetail';
 
 const EvaluationDetail = ({
+  canClarify,
   item,
   back,
   refetch,
-  targetSoftware = null,
 }: {
+  canClarify: boolean;
   item: any;
   back?: () => void;
   refetch?: () => void;
-  targetSoftware?: string;
 }) => {
   if (!item.evaluationDetail) {
     item = getEvaluationDetail(item);
@@ -67,6 +67,7 @@ const EvaluationDetail = ({
       <EvaluationBaseInfo item={item} refetch={refetch} />
       <EvaluationTopScore items={item.evaluationDetail} score={item.score} />
       <EvaluationMerticList
+        canClarify={canClarify}
         allData={item}
         metricItemScoreList={metricItemScoreList}
       />

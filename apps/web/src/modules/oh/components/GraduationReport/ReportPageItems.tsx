@@ -2,13 +2,18 @@ import React from 'react';
 import NotFoundOh from '@modules/oh/components/NotFoundOh';
 import GetReportData from '@modules/oh/components/GraduationReport/GetReportData';
 
-const ReportPageItems = ({ reportItems, targetSoftware = null }) => {
+const ReportPageItems = ({
+  canClarify,
+  reportItems,
+  targetSoftware = null,
+}) => {
   if (!reportItems && reportItems === 0) {
     return <NotFoundOh />;
   }
   if (reportItems.length === 1) {
     return (
       <GetReportData
+        canClarify={canClarify}
         shortCode={reportItems[0].shortCode}
         targetSoftware={targetSoftware}
       />
@@ -20,6 +25,7 @@ const ReportPageItems = ({ reportItems, targetSoftware = null }) => {
         {reportItems.map((z, index) => {
           return (
             <GetReportData
+              canClarify={canClarify}
               key={z.id}
               shortCode={z.shortCode}
               targetSoftware={targetSoftware}

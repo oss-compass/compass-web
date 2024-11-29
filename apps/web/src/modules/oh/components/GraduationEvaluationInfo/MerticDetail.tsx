@@ -156,20 +156,24 @@ export const useGetMetricIcon = (item, riskFill) => {
     );
   }
 };
-export const setRiskTag = (item) => {
+export const setRiskTag = (item, riskFill) => {
   const { score } = item;
   if (score === 10 || score === -1 || score === null) {
     return '';
   } else if (score >= 6) {
     return (
       <>
-        <Tag color="orange">风险： {getRishContent(item)}</Tag>
+        <Tag color={riskFill ? 'green' : 'orange'}>
+          风险： {getRishContent(item)}
+        </Tag>
       </>
     );
   } else {
     return (
       <>
-        <Tag color="red">风险： {getRishContent(item)}</Tag>
+        <Tag color={riskFill ? 'green' : 'red'}>
+          风险： {getRishContent(item)}
+        </Tag>
       </>
     );
   }

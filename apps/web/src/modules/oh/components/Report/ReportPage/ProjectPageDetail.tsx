@@ -24,6 +24,7 @@ const ProjectPageDetail = () => {
           <ProjectInfo />
           <div className="mb-6 mt-4 pl-2 text-base font-semibold">报告信息</div>
           <ReportPageItems
+            canClarify={true}
             reportItems={reportItems}
             targetSoftware={targetSoftware}
           />

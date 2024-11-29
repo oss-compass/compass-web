@@ -6,13 +6,13 @@ import { useTpcSoftwareGraduationReportQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 
 const GetReportData = ({
+  canClarify,
   shortCode,
   back,
-  targetSoftware = null,
 }: {
+  canClarify: boolean;
   shortCode: any;
   back?: () => void;
-  targetSoftware?: string;
 }) => {
   const { isLoading, data, refetch } = useTpcSoftwareGraduationReportQuery(
     client,
@@ -40,13 +40,13 @@ const GetReportData = ({
   return (
     <>
       <EvaluationDetail
+        canClarify={canClarify}
         item={reportPermission(
           data.tpcSoftwareGraduationReport,
           data.tpcSoftwareReportMetricClarificationPermission
         )}
         back={back}
         refetch={refetch}
-        targetSoftware={targetSoftware}
       />
     </>
   );

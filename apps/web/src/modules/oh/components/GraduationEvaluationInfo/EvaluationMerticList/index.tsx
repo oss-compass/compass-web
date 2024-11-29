@@ -9,16 +9,30 @@ import {
 } from '@modules/oh/components/GraduationEvaluationInfo/MerticDetail';
 import useCheckGraduateRiskState from '@modules/oh/hooks/useCheckGraduateRiskState';
 
-const MetricIcon = ({ shortCode, item }) => {
+const MetricIcon = ({ canClarify, shortCode, item }) => {
   const { riskFill } = useCheckGraduateRiskState(shortCode, item);
   return (
     <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-      {useGetMetricIcon(item, riskFill)}
+      {useGetMetricIcon(item, canClarify ? riskFill : false)}
     </div>
   );
 };
-
-const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
+const RiskTag = ({ canClarify, shortCode, item }) => {
+  const { riskFill } = useCheckGraduateRiskState(shortCode, item);
+  return (
+    <div className="ml-2">
+      {setRiskTag(item, canClarify ? riskFill : false)}
+    </div>
+  );
+};
+const EvaluationMerticItem = ({
+  canClarify,
+  report,
+  mertic,
+  items,
+  score,
+  showDrawer,
+}) => {
   return (
     <div className="mb-4 flex flex-col border bg-[#fafafa] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
@@ -46,14 +60,22 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
               }}
               className="flex h-[90px] cursor-pointer border border-b-0 bg-white px-4 py-3 hover:bg-[#f5f6fd]"
             >
-              <MetricIcon shortCode={report.shortCode} item={item} />
+              <MetricIcon
+                canClarify={canClarify}
+                shortCode={report.shortCode}
+                item={item}
+              />
               {/* <div className="mr-4 flex items-center justify-center">
                 {item.score}
               </div> */}
               <div className="flex-1 pr-3">
                 <div className="flex h-[29px] text-base font-semibold">
                   <div className="flex-shrink-0"> {item.指标名称}</div>
-                  <div className="ml-2">{setRiskTag(item)}</div>
+                  <RiskTag
+                    canClarify={canClarify}
+                    shortCode={report.shortCode}
+                    item={item}
+                  />
                 </div>
                 <div
                   title={item.指标意义.split('\n\n')}
@@ -67,7 +89,9 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
                   ))}
                 </div>
               </div>
-              <RiskBadge shortCode={report.shortCode} mertic={item} />
+              {canClarify && (
+                <RiskBadge shortCode={report.shortCode} mertic={item} />
+              )}
               {/* <div
                 title="风险澄清"
                 className="flex w-8 flex-shrink-0 items-center justify-center"
@@ -83,7 +107,7 @@ const EvaluationMerticItem = ({ report, mertic, items, score, showDrawer }) => {
     </div>
   );
 };
-const EvaluationMerticList = ({ allData, metricItemScoreList }) => {
+const EvaluationMerticList = ({ canClarify, allData, metricItemScoreList }) => {
   const [metric, setMetric] = useState(null);
   const [open, setOpen] = useState(false);
   const showDrawer = (item) => {
@@ -117,6 +141,7 @@ const EvaluationMerticList = ({ allData, metricItemScoreList }) => {
         ).score;
         return (
           <EvaluationMerticItem
+            canClarify={canClarify}
             report={allData}
             showDrawer={showDrawer}
             key={mertic}
@@ -128,6 +153,7 @@ const EvaluationMerticList = ({ allData, metricItemScoreList }) => {
       })}
       {open && (
         <MetricDrawer
+          canClarify={canClarify}
           report={allData}
           metric={metric}
           open={open}
