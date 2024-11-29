@@ -9,10 +9,12 @@ const GetReportData = ({
   canClarify,
   shortCode,
   back,
+  targetSoftware = null,
 }: {
   canClarify: boolean;
   shortCode: any;
   back?: () => void;
+  targetSoftware?: string;
 }) => {
   const { isLoading, data, refetch } = useTpcSoftwareGraduationReportQuery(
     client,
