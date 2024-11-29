@@ -11,6 +11,7 @@ import { toast } from 'react-hot-toast';
 import { ReFetch } from '@common/constant';
 import { formatToNow } from '@common/utils/time';
 import getErrorMessage from '@common/utils/getErrorMessage';
+import { getRepoName } from '@common/utils';
 
 const TriggerSingleBtn = ({
   projectUrl,
@@ -113,7 +114,11 @@ const TriggerSingleBtn = ({
               loading={triggerMutation.isLoading}
               onClick={() => {
                 triggerMutation.mutate(
-                  { reportId, projectUrl },
+                  {
+                    reportId,
+                    projectUrl,
+                    level: getRepoName(projectUrl) ? 'repo' : 'community',
+                  },
                   {
                     onSuccess: (res) => {
                       event$ && event$.emit(ReFetch);

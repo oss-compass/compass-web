@@ -927,9 +927,13 @@ query referenceModelReports($page: Int, $per: Int, $modelId: Int!) {
     }
   }
 }
-mutation triggerSingleProject($reportId: Int!, $projectUrl: String!) {
+mutation triggerSingleProject(
+  $reportId: Int!
+  $projectUrl: String!
+  $level: String!
+) {
   triggerSingleProject(
-    input: { reportId: $reportId, projectUrl: $projectUrl }
+    input: { reportId: $reportId, projectUrl: $projectUrl, level: $level }
   ) {
     clientMutationId
     errors {

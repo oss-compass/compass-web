@@ -4459,7 +4459,9 @@ export type TriggerLabModelVersionPayload = {
 export type TriggerSingleProjectInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** project url */
+  /** level */
+  level: Scalars['String'];
+  /** project url or community name */
   projectUrl: Scalars['String'];
   /** lab model report id */
   reportId: Scalars['Int'];
@@ -6424,6 +6426,7 @@ export type ReferenceModelReportsQuery = {
 export type TriggerSingleProjectMutationVariables = Exact<{
   reportId: Scalars['Int'];
   projectUrl: Scalars['String'];
+  level: Scalars['String'];
 }>;
 
 export type TriggerSingleProjectMutation = {
@@ -12702,8 +12705,10 @@ useReferenceModelReportsQuery.fetcher = (
     headers
   );
 export const TriggerSingleProjectDocument = /*#__PURE__*/ `
-    mutation triggerSingleProject($reportId: Int!, $projectUrl: String!) {
-  triggerSingleProject(input: {reportId: $reportId, projectUrl: $projectUrl}) {
+    mutation triggerSingleProject($reportId: Int!, $projectUrl: String!, $level: String!) {
+  triggerSingleProject(
+    input: {reportId: $reportId, projectUrl: $projectUrl, level: $level}
+  ) {
     clientMutationId
     errors {
       message
