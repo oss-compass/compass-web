@@ -4011,6 +4011,7 @@ export type TpcSoftwareGraduationReportUpdateInput = {
   isIncubation: Scalars['Int'];
   lifecyclePolicy: Scalars['String'];
   name: Scalars['String'];
+  ohCommitSha?: InputMaybe<Scalars['String']>;
   programmingLanguage: Scalars['String'];
   roundUpstream?: InputMaybe<Scalars['String']>;
   tpcSoftwareSigId: Scalars['Int'];
@@ -8446,6 +8447,7 @@ export type TpcSoftwareGraduationReportPageQuery = {
       name?: string | null;
       upstreamCodeUrl?: string | null;
       lifecyclePolicy?: string | null;
+      ohCommitSha?: string | null;
       shortCode: string;
       programmingLanguage?: string | null;
       userId: number;
@@ -8527,6 +8529,7 @@ export type TpcSoftwareGraduationReportQuery = {
     codeUrl?: string | null;
     id: number;
     name?: string | null;
+    ohCommitSha?: string | null;
     upstreamCodeUrl?: string | null;
     shortCode: string;
     programmingLanguage?: string | null;
@@ -15815,6 +15818,7 @@ export const TpcSoftwareGraduationReportPageDocument = /*#__PURE__*/ `
       name
       upstreamCodeUrl
       lifecyclePolicy
+      ohCommitSha
       shortCode
       programmingLanguage
       user {
@@ -15888,6 +15892,7 @@ export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
     codeUrl
     id
     name
+    ohCommitSha
     upstreamCodeUrl
     shortCode
     programmingLanguage

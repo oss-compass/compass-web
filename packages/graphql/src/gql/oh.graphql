@@ -1109,6 +1109,7 @@ query tpcSoftwareGraduationReportPage(
       name
       upstreamCodeUrl
       lifecyclePolicy
+      ohCommitSha
       shortCode
       programmingLanguage
       user {
@@ -1145,6 +1146,7 @@ query tpcSoftwareGraduationReport($shortCode: String!) {
     codeUrl
     id
     name
+    ohCommitSha
     upstreamCodeUrl
     shortCode
     programmingLanguage

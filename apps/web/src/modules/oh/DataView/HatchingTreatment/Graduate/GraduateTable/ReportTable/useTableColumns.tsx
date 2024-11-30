@@ -163,6 +163,11 @@ export const useTableColumns = (anction) => {
       dataIndex: 'lifecyclePolicy',
     },
     {
+      title: 'Commit SHA',
+      key: 'ohCommitSha',
+      dataIndex: 'ohCommitSha',
+    },
+    {
       title: '申请人',
       key: 'user',
       dataIndex: 'user',
