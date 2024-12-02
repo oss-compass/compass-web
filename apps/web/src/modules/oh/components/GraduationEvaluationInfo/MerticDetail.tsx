@@ -11,6 +11,7 @@ import {
   ExclamationCircleOutlined,
   ClockCircleOutlined,
 } from '@ant-design/icons';
+import { getRiskFillScore } from '@modules/oh/utils';
 
 export const metricList = ['合法合规', '技术生态', '生命周期', '网络安全'];
 // 计算单个报告四个维度得分和总分
@@ -72,12 +73,19 @@ const getDeital = (item) => {
   }
 };
 export const getContent = (item, riskFill = false) => {
-  let scoreContent = null;
-  if (riskFill) {
-    scoreContent = <div>得分：10 (澄清前：{item.score})</div>;
-  } else {
-    scoreContent = <div>得分：{item.score}</div>;
+  if (item.score === null) {
+    return '功能开发中，敬请期待';
   }
+  if (item.score === -1) {
+    return '未检测到该指标';
+  }
+  if (item.score === -2) {
+    return '此报告不涉及该指标';
+  }
+  const scoreText = riskFill
+    ? `得分：10 (澄清前：${item.score})`
+    : `得分：${item.score}`;
+  const scoreContent = <div>{scoreText}</div>;
   if (item.score === 10) {
     return scoreContent;
   } else {
@@ -95,70 +103,53 @@ export const getContent = (item, riskFill = false) => {
   }
 };
 export const useGetMetricIcon = (item, riskFill) => {
-  if (riskFill) {
-    return (
-      <Popover content={getContent(item, true)} title="">
-        <CheckCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg "
-        />
-      </Popover>
+  let icon = null;
+  if (item.score === null || item.score === -1 || item.score === -2) {
+    icon = (
+      <ClockCircleOutlined
+        rev={undefined}
+        className="cursor-pointer text-lg text-[#ABABAB]"
+      />
     );
-  }
-  if (item.score === null) {
-    return (
-      <Popover content={'功能开发中，敬请期待'} title="">
-        <ClockCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg text-[#ABABAB]"
-        />
-      </Popover>
-    );
-  } else if (item.score === -1) {
-    return (
-      <Popover content={'未检测到该指标'} title="">
-        <ClockCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg text-[#ABABAB]"
-        />
-      </Popover>
+  } else if (riskFill) {
+    icon = (
+      <CheckCircleOutlined
+        rev={undefined}
+        className="cursor-pointer text-lg "
+      />
     );
   } else if (item.score == 10) {
-    return (
-      <Popover content={getContent(item)} title="">
-        <CheckCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg "
-        />
-      </Popover>
+    icon = (
+      <CheckCircleOutlined rev={undefined} className="cursor-pointer text-lg" />
     );
   } else if (item.score >= 6) {
-    return (
-      <Popover content={getContent(item)} title="">
-        <Badge dot>
-          <ExclamationCircleOutlined
-            rev={undefined}
-            className="cursor-pointer text-lg text-[#f8961e]"
-          />
-        </Badge>
-      </Popover>
+    icon = (
+      <Badge dot>
+        <ExclamationCircleOutlined
+          rev={undefined}
+          className="cursor-pointer text-lg text-[#f8961e]"
+        />
+      </Badge>
     );
   } else {
-    return (
-      <Popover content={getContent(item)} title="">
-        <Badge dot>
-          <CloseCircleOutlined
-            rev={undefined}
-            className="cursor-pointer text-lg text-[#ff4d4f]"
-          />
-        </Badge>
-      </Popover>
+    icon = (
+      <Badge dot>
+        <CloseCircleOutlined
+          rev={undefined}
+          className="cursor-pointer text-lg text-[#ff4d4f]"
+        />
+      </Badge>
     );
   }
+  return (
+    <Popover content={getContent(item, riskFill)} title="">
+      {icon}
+    </Popover>
+  );
 };
 export const setRiskTag = (item, riskFill) => {
   const { score } = item;
-  if (score === 10 || score === -1 || score === null) {
+  if (score === 10 || score === -1 || score === -2 || score === null) {
     return '';
   } else if (score >= 6) {
     return (

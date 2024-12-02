@@ -10,6 +10,9 @@ export const getRiskFillScore = (
   if (score === -1) {
     return '未检测到该指标';
   }
+  if (score === -2) {
+    return '此报告不涉及该指标';
+  }
   return riskFill ? `10（澄清前：${score}）` : score;
 };
 

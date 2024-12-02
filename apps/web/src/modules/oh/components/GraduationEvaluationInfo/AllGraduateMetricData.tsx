@@ -644,7 +644,7 @@ const getErrorContent = (item) => {
 };
 export const getRishContent = (item) => {
   const { score } = item;
-  if (score >= 10 || score === -1 || score === null) {
+  if (score >= 10 || score === -1 || score === -2 || score === null) {
     return '无';
   } else if (score >= 8) {
     return getContent8(item);
