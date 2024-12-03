@@ -10,6 +10,7 @@ import ImageFallback from '@common/components/ImageFallback';
 import { getLabRange } from '@modules/lab/utils';
 
 const Avatar = ({ logoUrl, origin }: { logoUrl: string; origin: string }) => {
+  const hasOrigin = ['gitee', 'github'].includes(origin);
   return (
     <div className="relative">
       <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-300">
@@ -25,17 +26,19 @@ const Avatar = ({ logoUrl, origin }: { logoUrl: string; origin: string }) => {
           alt="logo"
         />
       </div>
-      <div className="absolute -bottom-0 -right-0 z-10 h-4 rounded-full bg-white">
-        {origin ? (
-          origin === 'gitee' ? (
+      {hasOrigin ? (
+        origin === 'gitee' ? (
+          <div className="absolute -bottom-0 -right-0 z-10 h-4 rounded-full bg-white">
             <SiGitee className="h-4 w-4 text-[#c71c27]" />
-          ) : (
-            <AiFillGithub className="h-4 w-4 text-[#000000]" />
-          )
+          </div>
         ) : (
-          ''
-        )}
-      </div>
+          <div className="absolute -bottom-0 -right-0 z-10 h-4 rounded-full bg-white">
+            <AiFillGithub className="h-4 w-4 text-[#000000]" />
+          </div>
+        )
+      ) : (
+        ''
+      )}
     </div>
   );
 };
@@ -115,17 +118,6 @@ const RepoCard = ({
 
         <div className="flex w-full items-center justify-between">
           <Avatar logoUrl={logoUrl} origin={provider} />
-          {/* <div className="mr-auto flex-1">
-            {provider ? (
-              provider === 'gitee' ? (
-                <SiGitee className="inline-block h-5 w-5 text-[#c71c27]" />
-              ) : (
-                <AiFillGithub className="inline-block h-5 w-5 text-[#000000]" />
-              )
-            ) : (
-              ''
-            )}
-          </div> */}
           <TriggerSingleBtn
             projectUrl={label}
             reportId={reportId}
