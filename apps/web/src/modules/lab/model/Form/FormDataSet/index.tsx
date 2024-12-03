@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import groupBy from 'lodash/groupBy';
 import { FormItemLabel } from '../Misc';
 import { ItemCard, ItemCardPlus } from './SelectedItem';
-import ModalSelect from './Modal';
 import { formState, actions } from '../state';
 import { formFiledState } from './state';
 
@@ -53,13 +52,6 @@ const FormDataSet = () => {
           />
         ) : null}
       </div>
-
-      <ModalSelect
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-      />
     </div>
   );
 };
