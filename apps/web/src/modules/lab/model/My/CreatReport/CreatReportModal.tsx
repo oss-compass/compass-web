@@ -79,7 +79,7 @@ const CreatReportModal = ({
                       modelId: id,
                       versionId: version.id,
                       datasets: dataSet,
-                      isPublic,
+                      isPublic: true,
                     });
                   }}
                 >
