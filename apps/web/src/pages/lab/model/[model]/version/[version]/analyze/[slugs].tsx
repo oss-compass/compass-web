@@ -10,7 +10,7 @@ import ModelVersionProvider from '@modules/lab/model/Provider/ModelVersionProvid
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['lab', 'lab_metrics'])),
+      ...(await getLocalesFile(req.cookies, ['lab', 'analyze', 'lab_metrics'])),
     },
   };
 };

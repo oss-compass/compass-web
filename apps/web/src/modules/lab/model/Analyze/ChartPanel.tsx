@@ -5,8 +5,11 @@ import CardTotalScore from './component/CardTotalScore';
 import LayoutMetricCards from './component/LayoutMetricCards';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import useLabData from './hooks/useLabData';
+import CommunityRepos from './CommunityRepos';
 import { actions } from './state';
 import { useLabModelVersion } from '../hooks';
+import useVerifiedItems from './hooks/useVerifiedItems';
+import { Level } from '@modules/analyze/constant';
 
 const LoadingUi = () => (
   <div className="rounded-lg bg-white  px-6 py-6 drop-shadow-sm">
@@ -28,6 +31,7 @@ const LoadingUi = () => (
 
 const Content = () => {
   usePageLoadHashScroll(false);
+  const { compareItems } = useVerifiedItems();
   const { data } = useLabModelVersion();
   const isScore = data?.labModelVersion?.isScore;
   const id = useHashchangeEvent();
@@ -36,9 +40,10 @@ const Content = () => {
       actions.toggleCommentDrawer(true);
     }
   }, [id]);
-
   return (
     <>
+      {compareItems.length == 1 &&
+        compareItems[0].level === Level.COMMUNITY && <CommunityRepos />}
       {isScore && <CardTotalScore className="mb-6" />}
       <LayoutMetricCards />
     </>
