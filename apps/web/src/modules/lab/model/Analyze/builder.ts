@@ -61,7 +61,8 @@ export const getAlignValuesBuilder: getDataBuilderFn<{}> = () => {
 };
 
 export const getDataFormatBuilder: getDataBuilderFn<{}> = () => {
-  return (data) => {
-    return formatData(data);
+  return (data, layout) => {
+    console.log(layout);
+    return formatData(data, layout);
   };
 };

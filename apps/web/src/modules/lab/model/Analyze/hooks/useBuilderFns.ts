@@ -3,12 +3,12 @@ import { DataResults } from '../type';
 
 export type getDataBuilderFn<T> = (option?: T) => DataBuilderFn;
 
-type DataBuilderFn = (data: DataResults) => DataResults;
+type DataBuilderFn = (data: DataResults, layout?: string | null) => DataResults;
 
 export const useDataBuilder = (fns: DataBuilderFn[]) => {
-  return (data: DataResults) => {
+  return (data: DataResults, layout?: string | null) => {
     return fns.reduce<DataResults>((pre, current) => {
-      return current(pre);
+      return current(pre, layout);
     }, data);
   };
 };

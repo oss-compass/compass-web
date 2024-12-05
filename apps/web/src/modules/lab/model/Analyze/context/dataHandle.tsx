@@ -6,6 +6,7 @@ import parseISO from 'date-fns/parseISO';
 import { formatISO, toFixed } from '@common/utils';
 import getUnixTime from 'date-fns/getUnixTime';
 import { DataResults } from '../type';
+import { isYearCheck } from '@modules/lab/utils';
 
 export const pickTabs = (
   slugsData: {
@@ -42,12 +43,13 @@ export const pickDataByTab = (
   dates: string[];
   values: number[];
 }[] => {
-  return slugsData.map(({ diagrams, level, label }) => {
+  return slugsData.map(({ metric, diagrams, level, label }) => {
     const diagram = diagrams?.find((i) => i.tabIdent === tab);
+    const hasYear = isYearCheck(metric.ident);
     return {
       label,
       level,
-      chartType: diagram?.type,
+      chartType: hasYear ? 'bar' : diagram?.type,
       tab: diagram?.tabIdent,
       dates: diagram?.dates as string[],
       values: diagram?.values,
@@ -80,12 +82,12 @@ export function alignValuesWithDates(data: DataResults) {
   });
 }
 
-export function formatData(data: DataResults) {
+export function formatData(data: DataResults, layout: string) {
   return data.map((item) => {
     return {
       ...item,
       values: item.values?.map((i) => toFixed(i, 2)),
-      dates: item.dates?.map((i) => formatISO(i)),
+      dates: item.dates?.map((i) => formatISO(i, layout)),
     };
   });
 }
