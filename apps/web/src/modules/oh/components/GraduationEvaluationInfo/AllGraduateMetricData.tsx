@@ -622,7 +622,7 @@ const getErrorContent = (item) => {
     securityBinaryArtifact: '软件源码仓库包含二进制制品',
     complianceDco: '未检测到项目孵化期所有贡献者签署 DCO',
     complianceLicense:
-      '未检测到 README.OpenSource 文件或 README.OpenSource 文件不规范',
+      '含有非 OSI 批准的开源许可证或未检测到 README.OpenSource 文件或 README.OpenSource 文件不规范',
     complianceLicenseCompatibility: '软件项目级、文件级许可证存在兼容性问题',
     complianceCopyrightStatementAntiTamper:
       '第三方开源软件的许可证和版权声明篡改检查未通过',
