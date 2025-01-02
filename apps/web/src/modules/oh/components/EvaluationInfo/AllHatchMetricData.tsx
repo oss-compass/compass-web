@@ -421,7 +421,10 @@ export const getRishContent = (item) => {
   }
 };
 export const getRishDeitalContent = (item) => {
-  const { detailRender, detail } = item;
+  const { detailRender, detail, score } = item;
+  if (score === 10) {
+    return '无';
+  }
   if (Array.isArray(detail) && detail?.length == 0) {
     return '无';
   }
