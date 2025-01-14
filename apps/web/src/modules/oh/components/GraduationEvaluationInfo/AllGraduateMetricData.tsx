@@ -649,8 +649,9 @@ const getErrorContent = (item) => {
     ecologyReadme: '未在仓库特定位置检测到 README 文档',
     ecologyBuildDoc: '未在仓库特定位置或 README 中检测到构建文档',
     ecologyInterfaceDoc: '未在仓库须在特定位置检测到接口文档',
-    complianceCopyrightStatement: '项目有源码未检测到许可头与版权声明',
-    securityBinaryArtifact: '软件源码仓库包含二进制制品',
+    complianceCopyrightStatement:
+      '项目有源码未检测到许可头与版权声明或存在 oat 告警',
+    securityBinaryArtifact: '软件源码仓库包含二进制制品或或存在 oat 告警',
     complianceDco: '未检测到项目孵化期所有贡献者签署 DCO',
     complianceLicense: (
       <div className="inline-block">
@@ -664,10 +665,12 @@ const getErrorContent = (item) => {
             OSI 批准的开源许可证
           </a>
         }
-        或未检测到 README.OpenSource 文件或 README.OpenSource 文件不规范
+        或未检测到 README.OpenSource 文件或 README.OpenSource 文件不规范或存在
+        oat 告警
       </div>
     ),
-    complianceLicenseCompatibility: '软件项目级、文件级许可证存在兼容性问题',
+    complianceLicenseCompatibility:
+      '软件项目级、文件级许可证存在兼容性问题或存在 oat 告警',
     complianceCopyrightStatementAntiTamper:
       '第三方开源软件的许可证和版权声明篡改检查未通过',
     ecologyIssueManagement: '未实现问题管理机制',

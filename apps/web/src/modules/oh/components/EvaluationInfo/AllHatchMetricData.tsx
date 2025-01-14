@@ -403,7 +403,7 @@ const getErrorContent = (item) => {
   const statusMessages = {
     complianceLicense: '无项目级许可证或许可证不是 OSI 批准的开源许可证',
     complianceLicenseCompatibility:
-      '引入软件项目级、文件级许可证存在兼容性问题',
+      '引入软件项目级、文件级许可证存在兼容性问题或存在 oat 告警',
     complianceDco: '未检测到项目的提交者签署 DCO',
     compliancePackageSig: '软件包分发不包含数字校验',
     ecologyDependencyAcquisition: '未检测到项目依赖的开源软件的 License',
@@ -413,7 +413,7 @@ const getErrorContent = (item) => {
     ecologyPatentRisk:
       '非全球专利保护社区 OIN（Open Invention Network）认证软件',
     lifecycleVersionLifecycle: '版本没有 release 或处于 EOL 阶段',
-    securityBinaryArtifact: '引入软件源码仓库包含二进制制品',
+    securityBinaryArtifact: '引入软件源码仓库包含二进制制品或存在 oat 告警',
     securityVulnerability: '引入软件及依赖源码有公开未修复漏洞',
     securityVulnerabilityResponse: '软件无漏洞响应机制',
     // 版本归一化:'该软件已在 OpenHarmony 及 TPC 中引入',
