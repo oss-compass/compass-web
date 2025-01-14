@@ -3856,9 +3856,7 @@ export type TpcSoftwareGraduationReportMetric = {
   complianceDcoDetail?: Maybe<TpcSoftwareReportMetricComplianceDco>;
   complianceLicense?: Maybe<Scalars['Int']>;
   complianceLicenseCompatibility?: Maybe<Scalars['Int']>;
-  complianceLicenseCompatibilityDetail?: Maybe<
-    Array<TpcSoftwareReportMetricComplianceLicenseCompatibility>
-  >;
+  complianceLicenseCompatibilityDetail?: Maybe<TpcSoftwareReportMetricComplianceLicenseCompatibility>;
   complianceLicenseDetail?: Maybe<TpcSoftwareGraduationReportMetricComplianceLicense>;
   complianceSnippetReference?: Maybe<Scalars['Int']>;
   complianceSnippetReferenceDetail?: Maybe<Scalars['String']>;
@@ -3888,12 +3886,14 @@ export type TpcSoftwareGraduationReportMetric = {
   ecologyTestCoverage?: Maybe<Scalars['Int']>;
   ecologyTestCoverageDetail?: Maybe<TpcSoftwareReportMetricEcologySoftwareQuality>;
   id: Scalars['Int'];
+  importValid?: Maybe<Scalars['Int']>;
+  importValidDetail?: Maybe<Array<Scalars['String']>>;
   lifecycleReleaseNote?: Maybe<Scalars['Int']>;
   lifecycleReleaseNoteDetail?: Maybe<Array<Scalars['String']>>;
   lifecycleStatement?: Maybe<Scalars['Int']>;
   lifecycleStatementDetail?: Maybe<Scalars['String']>;
   securityBinaryArtifact?: Maybe<Scalars['Int']>;
-  securityBinaryArtifactDetail?: Maybe<Array<Scalars['String']>>;
+  securityBinaryArtifactDetail?: Maybe<TpcSoftwareReportMetricSecurityBinaryArtifact>;
   securityPackageSig?: Maybe<Scalars['Int']>;
   securityPackageSigDetail?: Maybe<Array<Scalars['String']>>;
   securityVulnerability?: Maybe<Scalars['Int']>;
@@ -3965,7 +3965,9 @@ export type TpcSoftwareGraduationReportMetricClarificationState = {
 export type TpcSoftwareGraduationReportMetricComplianceLicense = {
   __typename?: 'TpcSoftwareGraduationReportMetricComplianceLicense';
   nonOsiLicenses?: Maybe<Array<Scalars['String']>>;
+  oatDetail?: Maybe<Array<Scalars['String']>>;
   osiPermissiveLicenses?: Maybe<Array<Scalars['String']>>;
+  readmeOpensource?: Maybe<Scalars['Int']>;
 };
 
 export type TpcSoftwareGraduationReportMetricRaw = {
@@ -4116,7 +4118,7 @@ export type TpcSoftwareReportMetric = {
   lifecycleVersionNumber?: Maybe<Scalars['Int']>;
   lifecycleVersionNumberDetail?: Maybe<Scalars['String']>;
   securityBinaryArtifact?: Maybe<Scalars['Int']>;
-  securityBinaryArtifactDetail?: Maybe<Array<Scalars['String']>>;
+  securityBinaryArtifactDetail?: Maybe<TpcSoftwareReportMetricSecurityBinaryArtifact>;
   securityHistoryVulnerability?: Maybe<Scalars['Int']>;
   securityHistoryVulnerabilityDetail?: Maybe<
     Array<TpcSoftwareReportMetricSecurityHistoryVulnerability>
@@ -4198,6 +4200,7 @@ export type TpcSoftwareReportMetricComplianceCopyrightStatement = {
   __typename?: 'TpcSoftwareReportMetricComplianceCopyrightStatement';
   includeCopyrights?: Maybe<Array<Scalars['String']>>;
   notIncludedCopyrights?: Maybe<Array<Scalars['String']>>;
+  oatDetail?: Maybe<Array<Scalars['String']>>;
 };
 
 export type TpcSoftwareReportMetricComplianceDco = {
@@ -4216,6 +4219,14 @@ export type TpcSoftwareReportMetricComplianceLicense = {
 
 export type TpcSoftwareReportMetricComplianceLicenseCompatibility = {
   __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
+  oatDetail?: Maybe<Array<Scalars['String']>>;
+  tpcDetail?: Maybe<
+    Array<TpcSoftwareReportMetricComplianceLicenseCompatibilityTpc>
+  >;
+};
+
+export type TpcSoftwareReportMetricComplianceLicenseCompatibilityTpc = {
+  __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibilityTpc';
   license?: Maybe<Scalars['String']>;
   licenseConflictList?: Maybe<Array<Scalars['String']>>;
 };
@@ -4258,6 +4269,12 @@ export type TpcSoftwareReportMetricRaw = {
   securityVulnerabilityDisclosureRaw?: Maybe<Scalars['String']>;
   securityVulnerabilityRaw?: Maybe<Scalars['String']>;
   securityVulnerabilityResponseRaw?: Maybe<Scalars['String']>;
+};
+
+export type TpcSoftwareReportMetricSecurityBinaryArtifact = {
+  __typename?: 'TpcSoftwareReportMetricSecurityBinaryArtifact';
+  oatDetail?: Maybe<Array<Scalars['String']>>;
+  tpcDetail?: Maybe<Array<Scalars['String']>>;
 };
 
 export type TpcSoftwareReportMetricSecurityHistoryVulnerability = {
@@ -7657,7 +7674,6 @@ export type TpcSoftwareReportMetricDetailFragment = {
   ecologyAdaptationMethodDetail?: string | null;
   lifecycleVersionNormalizationDetail?: string | null;
   lifecycleVersionNumberDetail?: string | null;
-  securityBinaryArtifactDetail?: Array<string> | null;
   securityVulnerabilityDisclosureDetail?: string | null;
   securityVulnerabilityResponseDetail?: string | null;
   complianceDcoDetail?: {
@@ -7667,8 +7683,12 @@ export type TpcSoftwareReportMetricDetailFragment = {
   } | null;
   complianceLicenseCompatibilityDetail?: Array<{
     __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-    license?: string | null;
-    licenseConflictList?: Array<string> | null;
+    oatDetail?: Array<string> | null;
+    tpcDetail?: Array<{
+      __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibilityTpc';
+      license?: string | null;
+      licenseConflictList?: Array<string> | null;
+    }> | null;
   }> | null;
   complianceLicenseDetail?: {
     __typename?: 'TpcSoftwareReportMetricComplianceLicense';
@@ -7689,6 +7709,11 @@ export type TpcSoftwareReportMetricDetailFragment = {
     archived?: boolean | null;
     latestVersionCreatedAt?: any | null;
     latestVersionName?: string | null;
+  } | null;
+  securityBinaryArtifactDetail?: {
+    __typename?: 'TpcSoftwareReportMetricSecurityBinaryArtifact';
+    oatDetail?: Array<string> | null;
+    tpcDetail?: Array<string> | null;
   } | null;
   securityHistoryVulnerabilityDetail?: Array<{
     __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
@@ -7789,7 +7814,6 @@ export type TpcSoftwareSelectionReportQuery = {
       ecologyAdaptationMethodDetail?: string | null;
       lifecycleVersionNormalizationDetail?: string | null;
       lifecycleVersionNumberDetail?: string | null;
-      securityBinaryArtifactDetail?: Array<string> | null;
       securityVulnerabilityDisclosureDetail?: string | null;
       securityVulnerabilityResponseDetail?: string | null;
       complianceDcoDetail?: {
@@ -7799,8 +7823,12 @@ export type TpcSoftwareSelectionReportQuery = {
       } | null;
       complianceLicenseCompatibilityDetail?: Array<{
         __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-        license?: string | null;
-        licenseConflictList?: Array<string> | null;
+        oatDetail?: Array<string> | null;
+        tpcDetail?: Array<{
+          __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibilityTpc';
+          license?: string | null;
+          licenseConflictList?: Array<string> | null;
+        }> | null;
       }> | null;
       complianceLicenseDetail?: {
         __typename?: 'TpcSoftwareReportMetricComplianceLicense';
@@ -7821,6 +7849,11 @@ export type TpcSoftwareSelectionReportQuery = {
         archived?: boolean | null;
         latestVersionCreatedAt?: any | null;
         latestVersionName?: string | null;
+      } | null;
+      securityBinaryArtifactDetail?: {
+        __typename?: 'TpcSoftwareReportMetricSecurityBinaryArtifact';
+        oatDetail?: Array<string> | null;
+        tpcDetail?: Array<string> | null;
       } | null;
       securityHistoryVulnerabilityDetail?: Array<{
         __typename?: 'TpcSoftwareReportMetricSecurityHistoryVulnerability';
@@ -8333,25 +8366,31 @@ export type TpcSoftwareGraduationReportMetricDetailFragment = {
   ecologyReadmeDetail?: string | null;
   lifecycleReleaseNoteDetail?: Array<string> | null;
   lifecycleStatementDetail?: string | null;
-  securityBinaryArtifactDetail?: Array<string> | null;
   securityPackageSigDetail?: Array<string> | null;
   complianceCopyrightStatementDetail?: {
     __typename?: 'TpcSoftwareReportMetricComplianceCopyrightStatement';
     includeCopyrights?: Array<string> | null;
     notIncludedCopyrights?: Array<string> | null;
+    oatDetail?: Array<string> | null;
   } | null;
   complianceDcoDetail?: {
     __typename?: 'TpcSoftwareReportMetricComplianceDco';
     commitCount?: number | null;
     commitDcoCount?: number | null;
   } | null;
-  complianceLicenseCompatibilityDetail?: Array<{
+  complianceLicenseCompatibilityDetail?: {
     __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-    license?: string | null;
-    licenseConflictList?: Array<string> | null;
-  }> | null;
+    oatDetail?: Array<string> | null;
+    tpcDetail?: Array<{
+      __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibilityTpc';
+      license?: string | null;
+      licenseConflictList?: Array<string> | null;
+    }> | null;
+  } | null;
   complianceLicenseDetail?: {
     __typename?: 'TpcSoftwareGraduationReportMetricComplianceLicense';
+    readmeOpensource?: number | null;
+    oatDetail?: Array<string> | null;
     nonOsiLicenses?: Array<string> | null;
     osiPermissiveLicenses?: Array<string> | null;
   } | null;
@@ -8383,6 +8422,11 @@ export type TpcSoftwareGraduationReportMetricDetailFragment = {
     coverageScore?: number | null;
     duplicationRatio?: number | null;
     duplicationScore?: number | null;
+  } | null;
+  securityBinaryArtifactDetail?: {
+    __typename?: 'TpcSoftwareReportMetricSecurityBinaryArtifact';
+    oatDetail?: Array<string> | null;
+    tpcDetail?: Array<string> | null;
   } | null;
   securityVulnerabilityDetail?: Array<{
     __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
@@ -8592,25 +8636,31 @@ export type TpcSoftwareGraduationReportQuery = {
       ecologyReadmeDetail?: string | null;
       lifecycleReleaseNoteDetail?: Array<string> | null;
       lifecycleStatementDetail?: string | null;
-      securityBinaryArtifactDetail?: Array<string> | null;
       securityPackageSigDetail?: Array<string> | null;
       complianceCopyrightStatementDetail?: {
         __typename?: 'TpcSoftwareReportMetricComplianceCopyrightStatement';
         includeCopyrights?: Array<string> | null;
         notIncludedCopyrights?: Array<string> | null;
+        oatDetail?: Array<string> | null;
       } | null;
       complianceDcoDetail?: {
         __typename?: 'TpcSoftwareReportMetricComplianceDco';
         commitCount?: number | null;
         commitDcoCount?: number | null;
       } | null;
-      complianceLicenseCompatibilityDetail?: Array<{
+      complianceLicenseCompatibilityDetail?: {
         __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
-        license?: string | null;
-        licenseConflictList?: Array<string> | null;
-      }> | null;
+        oatDetail?: Array<string> | null;
+        tpcDetail?: Array<{
+          __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibilityTpc';
+          license?: string | null;
+          licenseConflictList?: Array<string> | null;
+        }> | null;
+      } | null;
       complianceLicenseDetail?: {
         __typename?: 'TpcSoftwareGraduationReportMetricComplianceLicense';
+        readmeOpensource?: number | null;
+        oatDetail?: Array<string> | null;
         nonOsiLicenses?: Array<string> | null;
         osiPermissiveLicenses?: Array<string> | null;
       } | null;
@@ -8642,6 +8692,11 @@ export type TpcSoftwareGraduationReportQuery = {
         coverageScore?: number | null;
         duplicationRatio?: number | null;
         duplicationScore?: number | null;
+      } | null;
+      securityBinaryArtifactDetail?: {
+        __typename?: 'TpcSoftwareReportMetricSecurityBinaryArtifact';
+        oatDetail?: Array<string> | null;
+        tpcDetail?: Array<string> | null;
       } | null;
       securityVulnerabilityDetail?: Array<{
         __typename?: 'TpcSoftwareReportMetricSecurityVulnerability';
@@ -10713,8 +10768,11 @@ export const TpcSoftwareReportMetricDetailFragmentDoc = /*#__PURE__*/ `
     commitDcoCount
   }
   complianceLicenseCompatibilityDetail {
-    license
-    licenseConflictList
+    oatDetail
+    tpcDetail {
+      license
+      licenseConflictList
+    }
   }
   complianceLicenseDetail {
     nonOsiLicenses
@@ -10742,7 +10800,10 @@ export const TpcSoftwareReportMetricDetailFragmentDoc = /*#__PURE__*/ `
   }
   lifecycleVersionNormalizationDetail
   lifecycleVersionNumberDetail
-  securityBinaryArtifactDetail
+  securityBinaryArtifactDetail {
+    oatDetail
+    tpcDetail
+  }
   securityHistoryVulnerabilityDetail {
     summary
     vulnerability
@@ -10834,16 +10895,22 @@ export const TpcSoftwareGraduationReportMetricDetailFragmentDoc = /*#__PURE__*/ 
   complianceCopyrightStatementDetail {
     includeCopyrights
     notIncludedCopyrights
+    oatDetail
   }
   complianceDcoDetail {
     commitCount
     commitDcoCount
   }
   complianceLicenseCompatibilityDetail {
-    license
-    licenseConflictList
+    oatDetail
+    tpcDetail {
+      license
+      licenseConflictList
+    }
   }
   complianceLicenseDetail {
+    readmeOpensource
+    oatDetail
     nonOsiLicenses
     osiPermissiveLicenses
   }
@@ -10881,7 +10948,10 @@ export const TpcSoftwareGraduationReportMetricDetailFragmentDoc = /*#__PURE__*/ 
   }
   lifecycleReleaseNoteDetail
   lifecycleStatementDetail
-  securityBinaryArtifactDetail
+  securityBinaryArtifactDetail {
+    oatDetail
+    tpcDetail
+  }
   securityPackageSigDetail
   securityVulnerabilityDetail {
     packageName

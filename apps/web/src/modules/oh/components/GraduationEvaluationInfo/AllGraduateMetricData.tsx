@@ -60,14 +60,17 @@ export const allMetricData = [
   },
   {
     key: 'complianceCopyrightStatement',
-    detailRender: ({ includeCopyrights, notIncludedCopyrights }) => {
-      let res = null;
+    detailRender: ({ oatDetail, includeCopyrights, notIncludedCopyrights }) => {
+      let res = '';
       if (notIncludedCopyrights?.length > 0) {
-        res = `不包含的许可证的源码文件：${notIncludedCopyrights?.join('、')}`;
+        res = `不包含的许可证的源码文件：${notIncludedCopyrights?.join(
+          '、'
+        )}; `;
       } else if (includeCopyrights?.length > 0) {
-        return <span>包含的许可证：{includeCopyrights?.join('、')}</span>;
-      } else {
-        res = `无`;
+        return `包含的许可证：${includeCopyrights?.join('、')}; `;
+      }
+      if (oatDetail?.length > 0) {
+        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
       }
       return res;
     },
@@ -90,7 +93,16 @@ export const allMetricData = [
   },
   {
     key: 'securityBinaryArtifact',
-    detailRender: null,
+    detailRender: ({ tpcDetail, oatDetail }) => {
+      let res = '';
+      if (tpcDetail?.length > 0) {
+        res += `软件存在以下二进制制品:\n${tpcDetail?.join('、')}; `;
+      }
+      if (oatDetail?.length > 0) {
+        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
+      }
+      return res || '无';
+    },
     维度: '网络安全',
     指标名称: '二进制制品',
     '风险重要性\n(去除)': '高',
@@ -133,27 +145,40 @@ export const allMetricData = [
   },
   {
     key: 'complianceLicense',
-    detailRender: ({ nonOsiLicenses, osiPermissiveLicenses }) => {
-      let res = null;
+    detailRender: ({
+      readmeOpensource,
+      oatDetail,
+      nonOsiLicenses,
+      osiPermissiveLicenses,
+    }) => {
+      let res = '';
+      // 未检测到 README.OpenSource 文件或 README.OpenSource 文件不规范
+      if (readmeOpensource === 0) {
+        res += `未检测到 README.OpenSource 文件; `;
+      } else if (readmeOpensource === 2) {
+        res += `README.OpenSource 文件不规范; `;
+      }
       if (nonOsiLicenses?.length > 0) {
-        const url = (
-          <a
-            className="text-[#69b1ff]"
-            target="_blank"
-            href="https://spdx.org/licenses/"
-          >
-            OSI 批准的开源许可证
-          </a>
-        );
-        return (
-          <span>
-            不是 {url} ：{nonOsiLicenses?.join('、')}
-          </span>
-        );
-      } else if (osiPermissiveLicenses?.length > 0) {
-        res = `无`;
-      } else {
-        res = `未检测到项目级许可证`;
+        res += `以下许可证不是 OSI 批准的开源许可证\n：${nonOsiLicenses?.join(
+          '、'
+        )}; `;
+        // const url = (
+        //   <a
+        //     className="text-[#69b1ff]"
+        //     target="_blank"
+        //     href="https://spdx.org/licenses/"
+        //   >
+        //     OSI 批准的开源许可证
+        //   </a>
+        // );
+        // return (
+        //   <span>
+        //     不是 {url} ：{nonOsiLicenses?.join('、')}
+        //   </span>
+        // );
+      }
+      if (oatDetail?.length > 0) {
+        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
       }
       return res;
     },
@@ -176,14 +201,20 @@ export const allMetricData = [
   },
   {
     key: 'complianceLicenseCompatibility',
-    detailRender: (list) => {
-      let res = `引入软件中有 License 存在兼容性问题:`;
-      list.map(({ license, licenseConflictList }) => {
-        res += `${license}License 与 ${
-          licenseConflictList && licenseConflictList.join(',')
-        } 存在兼容性问题; `;
-      });
-      return res;
+    detailRender: ({ tpcDetail, oatDetail }) => {
+      let res = '';
+      if (tpcDetail?.length > 0) {
+        res += `引入软件中有 License 存在兼容性问题:`;
+        tpcDetail.map(({ license, licenseConflictList }) => {
+          res += `${license}License 与 ${
+            licenseConflictList && licenseConflictList.join(',')
+          } 存在兼容性问题; `;
+        });
+      }
+      if (oatDetail?.length > 0) {
+        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
+      }
+      return res || '无';
     },
     维度: '合法合规',
     指标名称: '许可证兼容性',
@@ -621,8 +652,21 @@ const getErrorContent = (item) => {
     complianceCopyrightStatement: '项目有源码未检测到许可头与版权声明',
     securityBinaryArtifact: '软件源码仓库包含二进制制品',
     complianceDco: '未检测到项目孵化期所有贡献者签署 DCO',
-    complianceLicense:
-      '含有非 OSI 批准的开源许可证或未检测到 README.OpenSource 文件或 README.OpenSource 文件不规范',
+    complianceLicense: (
+      <div className="inline-block">
+        含有非
+        {
+          <a
+            className="text-[#69b1ff]"
+            target="_blank"
+            href="https://spdx.org/licenses/"
+          >
+            OSI 批准的开源许可证
+          </a>
+        }
+        或未检测到 README.OpenSource 文件或 README.OpenSource 文件不规范
+      </div>
+    ),
     complianceLicenseCompatibility: '软件项目级、文件级许可证存在兼容性问题',
     complianceCopyrightStatementAntiTamper:
       '第三方开源软件的许可证和版权声明篡改检查未通过',

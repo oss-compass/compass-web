@@ -81,14 +81,20 @@ export const allMetricData = [
   // },
   {
     key: 'complianceLicenseCompatibility',
-    detailRender: (list) => {
-      let res = `引入软件中有 License 存在兼容性问题:`;
-      list.map(({ license, licenseConflictList }) => {
-        res += `${license}License 与 ${
-          licenseConflictList && licenseConflictList.join(',')
-        } 存在兼容性问题; `;
-      });
-      return res;
+    detailRender: ({ tpcDetail, oatDetail }) => {
+      let res = '';
+      if (tpcDetail?.length > 0) {
+        res += `引入软件中有 License 存在兼容性问题:`;
+        tpcDetail.map(({ license, licenseConflictList }) => {
+          res += `${license}License 与 ${
+            licenseConflictList && licenseConflictList.join(',')
+          } 存在兼容性问题; `;
+        });
+      }
+      if (oatDetail?.length > 0) {
+        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
+      }
+      return res || '无';
     },
     维度: '合法合规',
     指标名称: '许可证兼容性',
@@ -290,8 +296,15 @@ export const allMetricData = [
   },
   {
     key: 'securityBinaryArtifact',
-    detailRender: (item) => {
-      return `软件存在以下二进制制品:\n${item?.join('、')}`;
+    detailRender: ({ tpcDetail, oatDetail }) => {
+      let res = '';
+      if (tpcDetail?.length > 0) {
+        res += `软件存在以下二进制制品:\n${tpcDetail?.join('、')}; `;
+      }
+      if (oatDetail?.length > 0) {
+        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
+      }
+      return res || '无';
     },
     维度: '网络安全',
     指标名称: '二进制制品',

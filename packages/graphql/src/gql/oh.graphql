@@ -628,8 +628,11 @@ fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
     commitDcoCount
   }
   complianceLicenseCompatibilityDetail {
-    license
-    licenseConflictList
+    oatDetail
+    tpcDetail {
+      license
+      licenseConflictList
+    }
   }
   complianceLicenseDetail {
     nonOsiLicenses
@@ -657,7 +660,10 @@ fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
   }
   lifecycleVersionNormalizationDetail
   lifecycleVersionNumberDetail
-  securityBinaryArtifactDetail
+  securityBinaryArtifactDetail {
+    oatDetail
+    tpcDetail
+  }
   securityHistoryVulnerabilityDetail {
     summary
     vulnerability
@@ -996,16 +1002,24 @@ fragment tpcSoftwareGraduationReportMetricDetail on TpcSoftwareGraduationReportM
   complianceCopyrightStatementDetail {
     includeCopyrights
     notIncludedCopyrights
+    oatDetail
   }
   complianceDcoDetail {
     commitCount
     commitDcoCount
   }
   complianceLicenseCompatibilityDetail {
-    license
-    licenseConflictList
+    # license
+    # licenseConflictList
+    oatDetail
+    tpcDetail {
+      license
+      licenseConflictList
+    }
   }
   complianceLicenseDetail {
+    readmeOpensource
+    oatDetail
     nonOsiLicenses
     osiPermissiveLicenses
   }
@@ -1043,7 +1057,10 @@ fragment tpcSoftwareGraduationReportMetricDetail on TpcSoftwareGraduationReportM
   }
   lifecycleReleaseNoteDetail
   lifecycleStatementDetail
-  securityBinaryArtifactDetail
+  securityBinaryArtifactDetail {
+    oatDetail
+    tpcDetail
+  }
   securityPackageSigDetail
   securityVulnerabilityDetail {
     packageName
