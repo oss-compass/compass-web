@@ -1,3 +1,15 @@
+const OATRender = (oatDetail) => {
+  if (oatDetail?.length > 0) {
+    if (oatDetail.length > 3) {
+      `以下告警来自 oat 扫描：${oatDetail
+        .slice(0, 3)
+        ?.join('、')}; 更多告警信息请下载报告 csv 查看 `;
+    } else {
+      return `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
+    }
+  }
+  return '';
+};
 export const allMetricData = [
   {
     key: 'complianceLicense',
@@ -91,10 +103,14 @@ export const allMetricData = [
           } 存在兼容性问题; `;
         });
       }
-      if (oatDetail?.length > 0) {
-        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
-      }
-      return res || '无';
+      return (
+        <>
+          {res?.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+          <span>{OATRender(oatDetail)}</span>
+        </>
+      );
     },
     维度: '合法合规',
     指标名称: '许可证兼容性',
@@ -304,7 +320,14 @@ export const allMetricData = [
       if (oatDetail?.length > 0) {
         res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
       }
-      return res || '无';
+      return (
+        <>
+          {res?.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+          <span>{OATRender(oatDetail)}</span>
+        </>
+      );
     },
     维度: '网络安全',
     指标名称: '二进制制品',
@@ -442,7 +465,7 @@ export const getRishDeitalContent = (item) => {
     return '无';
   }
   if (detailRender && detail) {
-    return <>{detailRender(detail)}</>;
+    return detailRender(detail);
   } else if (detail) {
     return <>{detail}</>;
   } else {

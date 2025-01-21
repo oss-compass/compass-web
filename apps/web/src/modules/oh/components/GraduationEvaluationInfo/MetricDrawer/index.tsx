@@ -65,7 +65,7 @@ const MetricDrawer = ({
       key: '5',
       label: '详情',
       children: (
-        <div className="line-clamp-5 whitespace-normal break-all">
+        <div className="line-clamp-6 whitespace-normal break-all">
           {getRishDeitalContent(metric)}
         </div>
       ),

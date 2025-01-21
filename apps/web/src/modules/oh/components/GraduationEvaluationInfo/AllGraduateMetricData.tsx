@@ -1,5 +1,18 @@
 import { toFixed } from '@common/utils';
 
+const OATRender = (oatDetail) => {
+  if (oatDetail?.length > 0) {
+    if (oatDetail.length > 3) {
+      `以下告警来自 oat 扫描：${oatDetail
+        .slice(0, 3)
+        ?.join('、')}; 更多告警信息请下载报告 csv 查看 `;
+    } else {
+      return `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
+    }
+  }
+  return '';
+};
+
 export const allMetricData = [
   {
     key: 'ecologyReadme',
@@ -65,14 +78,18 @@ export const allMetricData = [
       if (notIncludedCopyrights?.length > 0) {
         res = `不包含的许可证的源码文件：${notIncludedCopyrights?.join(
           '、'
-        )}; `;
+        )}；\n `;
       } else if (includeCopyrights?.length > 0) {
-        return `包含的许可证：${includeCopyrights?.join('、')}; `;
+        res = `包含的许可证：${includeCopyrights?.join('、')}；\n`;
       }
-      if (oatDetail?.length > 0) {
-        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
-      }
-      return res;
+      return (
+        <>
+          {res?.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+          <span>{OATRender(oatDetail)}</span>
+        </>
+      );
     },
     维度: '合法合规',
     指标名称: '许可头与版权声明',
@@ -98,10 +115,14 @@ export const allMetricData = [
       if (tpcDetail?.length > 0) {
         res += `软件存在以下二进制制品:\n${tpcDetail?.join('、')}; `;
       }
-      if (oatDetail?.length > 0) {
-        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
-      }
-      return res || '无';
+      return (
+        <>
+          {res?.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+          <span>{OATRender(oatDetail)}</span>
+        </>
+      );
     },
     维度: '网络安全',
     指标名称: '二进制制品',
@@ -159,9 +180,9 @@ export const allMetricData = [
         res += `README.OpenSource 文件不规范; `;
       }
       if (nonOsiLicenses?.length > 0) {
-        res += `以下许可证不是 OSI 批准的开源许可证\n：${nonOsiLicenses?.join(
+        res += `以下许可证不是 OSI 批准的开源许可证：${nonOsiLicenses?.join(
           '、'
-        )}; `;
+        )}; \n`;
         // const url = (
         //   <a
         //     className="text-[#69b1ff]"
@@ -177,10 +198,14 @@ export const allMetricData = [
         //   </span>
         // );
       }
-      if (oatDetail?.length > 0) {
-        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
-      }
-      return res;
+      return (
+        <>
+          {res?.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+          <span>{OATRender(oatDetail)}</span>
+        </>
+      );
     },
     维度: '合法合规',
     指标名称: '许可证包含',
@@ -211,10 +236,14 @@ export const allMetricData = [
           } 存在兼容性问题; `;
         });
       }
-      if (oatDetail?.length > 0) {
-        res += `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
-      }
-      return res || '无';
+      return (
+        <>
+          {res?.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+          <span>{OATRender(oatDetail)}</span>
+        </>
+      );
     },
     维度: '合法合规',
     指标名称: '许可证兼容性',
@@ -710,7 +739,7 @@ export const getRishDeitalContent = (item) => {
     return '无';
   }
   if (detailRender && detail) {
-    return <>{detailRender(detail)}</>;
+    return detailRender(detail);
   } else if (detail) {
     return <>{detail}</>;
   } else {
