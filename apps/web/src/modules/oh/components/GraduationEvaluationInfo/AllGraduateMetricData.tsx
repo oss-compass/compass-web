@@ -2,10 +2,13 @@ import { toFixed } from '@common/utils';
 
 const OATRender = (oatDetail) => {
   if (oatDetail?.length > 0) {
-    if (oatDetail.length > 3) {
-      `以下告警来自 oat 扫描：${oatDetail
-        .slice(0, 3)
-        ?.join('、')}; 更多告警信息请下载报告 csv 查看 `;
+    if (oatDetail.length > 2) {
+      return (
+        <span title="更多告警信息请下载报告 csv 查看">
+          以下告警来自 oat 扫描：${oatDetail.slice(0, 1)?.join('、')};
+          (更多告警信息请下载报告 csv 查看)
+        </span>
+      );
     } else {
       return `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
     }
@@ -82,6 +85,7 @@ export const allMetricData = [
       } else if (includeCopyrights?.length > 0) {
         res = `包含的许可证：${includeCopyrights?.join('、')}；\n`;
       }
+      console.log(oatDetail);
       return (
         <>
           {res?.split('\n').map((line, index) => (
