@@ -149,6 +149,10 @@ export const allMetricData = [
     key: 'complianceDco',
     detailRender: ({ commitCount, commitDcoCount }) => {
       let res = `软件代码提交共有${commitCount}次，其中${commitDcoCount}次已签署 DCO。`;
+      if (commitCount === 0) {
+        res +=
+          '(代码提交为 0 次，请检查 Commit SHA 是否正确，应提交该软件上游社区最后一次提交的 Commit SHA)';
+      }
       return res;
     },
     维度: '合法合规',
