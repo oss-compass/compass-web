@@ -71,7 +71,7 @@ const Approve = () => {
           <Modal
             width={'90vw'}
             style={{
-              maxWidth: '90vw',
+              maxWidth: '1000px',
               top: '10%',
             }}
             footer={null}
@@ -82,7 +82,7 @@ const Approve = () => {
             open={open}
             title={<div className="flex justify-between text-xl">全部评审</div>}
           >
-            <div className="h-[75vh] overflow-y-auto px-4">
+            <div className="max-h-[75vh] overflow-y-auto px-4">
               <MerticApprove />
               <ApproveBox selectionId={Number(taskId)} />
             </div>
