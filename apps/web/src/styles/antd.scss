@@ -154,6 +154,15 @@
   z-index: 1301 !important;
 }
 .oh {
+  .ant-collapse {
+    border-radius: 0px !important;
+  }
+  .ant-collapse-header {
+    border-radius: 0px !important;
+  }
+  .ant-collapse-item:last-child {
+    border-radius: 0px !important;
+  }
   .ant-upload,
   .ant-upload-list-item {
     border-radius: 0px !important;
@@ -188,34 +197,3 @@
 .ant-popover {
   z-index: 9100 !important;
 }
-// .report-container {
-//   display: grid;
-//   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-// }
-// .ant-spin-nested-loading {
-//   height: 100%;
-//   .ant-spin-container {
-//     height: 100%;
-//     display: flex;
-//     flex-direction: column;
-//   }
-//   .ant-table-container {
-//     height: 100%;
-//     display: flex;
-//     flex-direction: column;
-//     .ant-table-body {
-//       position: relative;
-//       flex: 1;
-//       table {
-//         position: absolute;
-//         left: 0;
-//         top: 0;
-//         right: 0;
-//         bottom: 0;
-//       }
-//     }
-//   }
-//   .ant-table {
-//     flex: 1;
-//   }
-// }

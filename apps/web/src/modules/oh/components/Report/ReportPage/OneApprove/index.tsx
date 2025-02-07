@@ -1,43 +1,52 @@
-import React, { useState, useMemo } from 'react';
-import { FloatButton, Drawer, Popover } from 'antd';
+import React, { useState, useEffect, useMemo } from 'react';
+import { FloatButton, Popover, Modal } from 'antd';
 import useLabelData from '@modules/oh/hooks/useLabelData';
-import {
-  ExclamationOutlined,
-  ClockCircleOutlined,
-  CheckOutlined,
-} from '@ant-design/icons';
+import { ExclamationOutlined, CheckOutlined } from '@ant-design/icons';
 import { useGetReportData } from '@modules/oh/components/Report/ReportPage/store/useReportStore';
 import { useUserInfo } from '@modules/auth/useUserInfo';
-import ApproveBox from './ApproveBox';
+import ApproveBox from '../Approve/ApproveBox';
+import MerticApprove from './MerticApprove';
 
 const Approve = () => {
   const { taskId } = useLabelData();
   const { currentUser } = useUserInfo();
   const userId = currentUser?.id;
-  const [open, setOpen] = useState(false);
-  const { commentState, commentCommitterPermission, commentSigLeadPermission } =
-    useGetReportData();
-  const hasRole = commentCommitterPermission || commentSigLeadPermission;
+
+  const {
+    commentState,
+    commentCommitterPermission,
+    commentSigLeadPermission,
+    commentCompliancePermission,
+    commentLegalPermission,
+  } = useGetReportData();
+
+  const hasRole =
+    commentCommitterPermission ||
+    commentSigLeadPermission ||
+    commentCompliancePermission ||
+    commentLegalPermission;
+
+  const [open, setOpen] = useState(hasRole);
+
+  useEffect(() => {
+    setOpen(hasRole);
+  }, [hasRole]);
 
   const userCommentState = useMemo(() => {
     return (commentState || []).some((item) => item.userId === userId);
   }, [commentState, userId]);
+
   return (
     <>
       {taskId && (
         <>
-          <div className="oh-tabs mt-3 items-center justify-between py-3 font-semibold">
-            <div className="w-[full]">
-              <ApproveBox selectionId={Number(taskId)} />
-            </div>
-          </div>
-          {!open && (
-            <Popover content="评审">
+          {hasRole && !open && (
+            <Popover content={'全部评审'}>
               <FloatButton
                 onClick={() => {
                   setOpen(true);
                 }}
-                style={{ bottom: 70, right: 20 }}
+                style={{ bottom: 20, right: 20 }}
                 badge={
                   hasRole && {
                     offset: [-6, 6],
@@ -59,17 +68,25 @@ const Approve = () => {
               />
             </Popover>
           )}
-          <Drawer
-            width={560}
-            placement="right"
-            onClose={() => {
+          <Modal
+            width={'90vw'}
+            style={{
+              maxWidth: '90vw',
+              top: '10%',
+            }}
+            footer={null}
+            onCancel={() => {
               setOpen(false);
             }}
+            destroyOnClose={true}
             open={open}
-            title={<div className="flex justify-between">评审</div>}
+            title={<div className="flex justify-between text-xl">全部评审</div>}
           >
-            <ApproveBox selectionId={Number(taskId)} />
-          </Drawer>
+            <div className="h-[75vh] overflow-y-auto px-4">
+              <MerticApprove />
+              <ApproveBox selectionId={Number(taskId)} />
+            </div>
+          </Modal>
         </>
       )}
     </>

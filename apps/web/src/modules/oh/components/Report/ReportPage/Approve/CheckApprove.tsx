@@ -351,7 +351,7 @@ const CheckApprove = ({ selectionId }) => {
 
   return (
     <div className="oh mb-4 flex items-center gap-2">
-      <div className="oh text-base font-semibold">评审意见：</div>
+      <div className="oh text-base font-semibold">报告评审：</div>
       {hasOhRole ? (
         <>
           <Popover>

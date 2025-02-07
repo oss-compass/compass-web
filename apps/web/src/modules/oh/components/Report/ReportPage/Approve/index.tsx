@@ -10,7 +10,7 @@ import { useGetReportData } from '@modules/oh/components/Report/ReportPage/store
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import ApproveBox from './ApproveBox';
 
-const Comment = () => {
+const Approve = () => {
   const { taskId } = useLabelData();
   const { currentUser } = useUserInfo();
   const userId = currentUser?.id;
@@ -75,4 +75,4 @@ const Comment = () => {
     </>
   );
 };
-export default Comment;
+export default Approve;

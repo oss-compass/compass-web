@@ -4,9 +4,7 @@ import ReportPageItems from '@modules/oh/components/GraduationReport/ReportPageI
 import GraduationTimeline from '@modules/oh/components/GraduationReport/ReportPage/GraduationTimeline';
 import { useGetReportData } from '@modules/oh/components/GraduationReport/ReportPage/store/useReportStore';
 import ReportIdFetcher from '@modules/oh/components/GraduationReport/ReportPage/store/ReportIdFetcher';
-import Comment from '@modules/oh/components/GraduationReport/ReportPage/Comment';
-import Approve from '@modules/oh/components/GraduationReport/ReportPage/Approve';
-import QAsubmit from '@modules/oh/components/GraduationReport/ReportPage/QAsubmit';
+import OneApprove from '@modules/oh/components/GraduationReport/ReportPage/OneApprove';
 import ProjectInfo from '@modules/oh/components/GraduationReport/ReportPage/ProjectInfo';
 
 const ProjectPageDetail = () => {
@@ -30,9 +28,7 @@ const ProjectPageDetail = () => {
             targetSoftware={targetSoftware}
           />
           <ReportIdFetcher selectionId={Number(taskId)} />
-          <Comment />
-          {/* <QAsubmit /> */}
-          <Approve />
+          <OneApprove />
         </div>
       </div>
     </div>
