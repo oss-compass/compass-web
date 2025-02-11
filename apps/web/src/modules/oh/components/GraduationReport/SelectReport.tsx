@@ -19,7 +19,6 @@ const SelectReport = ({ getReport }) => {
         values: ['success'],
       },
     ],
-    reportTypeList: [0],
   };
 
   return (

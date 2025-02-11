@@ -16,7 +16,6 @@ const ReportTable = () => {
   } = useGetTableOption();
   const myQuery = {
     ...query,
-    reportTypeList: [0],
   };
 
   const { isLoading, isFetching, refetch } =

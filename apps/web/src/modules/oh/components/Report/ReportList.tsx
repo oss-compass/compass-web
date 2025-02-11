@@ -94,6 +94,13 @@ const Report = ({
       </div>
     );
   }
+  if (data?.tpcSoftwareSelectionReportPage.count === 0) {
+    return (
+      <div className="h-[calc(100vh-218px)] w-full p-10 text-center">
+        暂无数据
+      </div>
+    );
+  }
   return (
     <>
       {activeItem ? (
@@ -185,7 +192,8 @@ const Report = ({
               })}
               {/* </div> */}
             </div>
-            {isLoading ? null : (
+            {isLoading ||
+            data?.tpcSoftwareSelectionReportPage.count === 0 ? null : (
               <div className="flex justify-center py-6">
                 <Pagination
                   total={data?.tpcSoftwareSelectionReportPage.count}

@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import Report from '@modules/oh/components/Report/ReportList';
-import { queryKey } from '@modules/oh/constant';
 
 const Main = () => {
-  let query = {
-    ...queryKey,
-    reportTypeList: [2],
-    page: 1,
-    per: 100,
-    status: 'success',
-  };
   return (
     <div className="div">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
@@ -22,7 +11,6 @@ const Main = () => {
           </div>
         </div>
         <div className="relative flex h-[calc(100%-60px)] justify-center">
-          {/* <Report query={query} /> */}
           <div className="py-10 text-center text-gray-400">暂无数据</div>
         </div>
       </div>
