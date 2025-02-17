@@ -51,12 +51,13 @@ const MetricApprove = () => {
       return [...legalList, ...otherList];
     }
     const res = [];
-    if (commentSigLeadPermission) {
+    if (commentLegalPermission) {
       res.push(...legalList);
     }
     if (commentCommitterPermission || commentSigLeadPermission) {
       res.push(...otherList);
     }
+    return res;
   }, [
     commentCommitterPermission,
     commentSigLeadPermission,
@@ -106,6 +107,9 @@ const MetricApprove = () => {
     };
     return metric;
   });
+  if (!metricList || metricList.length === 0) {
+    return <div className="my-4"></div>;
+  }
   return (
     <div className="oh">
       <div className="my-4 text-base font-semibold">指标评审：</div>
