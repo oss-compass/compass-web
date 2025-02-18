@@ -25,7 +25,7 @@ const useGetLineOption = <T extends Record<string, any>>(
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 20,
+      pageSize: 10,
       showSizeChanger: true,
       position: ['bottomCenter'],
       showTotal: (total) => {
@@ -35,6 +35,7 @@ const useGetLineOption = <T extends Record<string, any>>(
     },
     sortOpts: null,
   });
+
   const query = {
     page: tableParams.pagination.current,
     per: tableParams.pagination.pageSize,
