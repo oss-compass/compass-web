@@ -2,12 +2,11 @@ import React from 'react';
 import useLabelData from '@modules/oh/hooks/useLabelData';
 import ReportPageItems from '@modules/oh/components/Report/ReportPageItems';
 import ReportIdFetcher from '@modules/oh/components/Report/ReportPage/store/ReportIdFetcher';
-import Comment from '@modules/oh/components/Report/ReportPage/Comment';
-import Approve from '@modules/oh/components/Report/ReportPage/Approve';
 import ProjectInfo from '@modules/oh/components/Report/ReportPage/ProjectInfo';
 import HatchTimeline from '@modules/oh/components/Report/ReportPage/HatchTimeline';
 import { useGetReportData } from '@modules/oh/components/Report/ReportPage/store/useReportStore';
 import OneApprove from '@modules/oh/components/Report/ReportPage/OneApprove';
+import ApproveBox from './Approve/ApproveBox';
 
 const ProjectPageDetail = () => {
   const { reportItems, taskId } = useLabelData();
@@ -31,6 +30,7 @@ const ProjectPageDetail = () => {
           />
           <ReportIdFetcher selectionId={Number(taskId)} />
           <OneApprove />
+          <ApproveBox selectionId={Number(taskId)} />
         </div>
       </div>
     </div>

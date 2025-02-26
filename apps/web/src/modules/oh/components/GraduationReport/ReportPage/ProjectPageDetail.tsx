@@ -6,6 +6,7 @@ import { useGetReportData } from '@modules/oh/components/GraduationReport/Report
 import ReportIdFetcher from '@modules/oh/components/GraduationReport/ReportPage/store/ReportIdFetcher';
 import OneApprove from '@modules/oh/components/GraduationReport/ReportPage/OneApprove';
 import ProjectInfo from '@modules/oh/components/GraduationReport/ReportPage/ProjectInfo';
+import ApproveBox from './Approve/ApproveBox';
 
 const ProjectPageDetail = () => {
   const { reportItems, taskId } = useLabelData();
@@ -29,6 +30,7 @@ const ProjectPageDetail = () => {
           />
           <ReportIdFetcher selectionId={Number(taskId)} />
           <OneApprove />
+          <ApproveBox selectionId={Number(taskId)} />
         </div>
       </div>
     </div>
