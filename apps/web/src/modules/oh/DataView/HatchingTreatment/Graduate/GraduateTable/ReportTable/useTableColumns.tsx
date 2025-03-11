@@ -5,8 +5,7 @@ import EditReport from '@modules/oh/components/GraduationEvaluationInfo/Evaluati
 import RefreshReport from '@modules/oh/components/GraduationEvaluationInfo/EvaluationBaseInfo/RefreshReport';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { AiFillFilter } from 'react-icons/ai';
-import TableDropdown from '@modules/oh/components/TableDropdown';
+import { TableDropdown } from '@modules/oh/components/TableDropdown';
 
 export const useTableColumns = (anction) => {
   const columns = [
@@ -45,28 +44,7 @@ export const useTableColumns = (anction) => {
       title: '软件名称',
       dataIndex: 'name',
       key: 'name',
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入软件名称'),
     },
     {
       title: '所属领域',
@@ -91,28 +69,7 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入源码地址'),
     },
     {
       title: '上游源码地址',
@@ -129,28 +86,7 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入上游源码地址'),
     },
     {
       title: '适配方式',
@@ -183,28 +119,7 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入申请人'),
     },
     {
       title: '当前状态',

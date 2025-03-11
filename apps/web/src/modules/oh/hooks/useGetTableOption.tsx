@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import type { TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
@@ -20,7 +20,10 @@ const useGetLineOption = <T extends Record<string, any>>(
 ) => {
   const { t } = useTranslation();
   const [tableData, setData] = useState<T[]>();
-  const defaultfilterOpts = opt?.filterOpts || [];
+  const defaultfilterOpts = useMemo(
+    () => opt?.filterOpts || [],
+    [opt?.filterOpts]
+  );
   const [filterOpts, setFilterOpts] = useState(defaultfilterOpts || []);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -36,44 +39,52 @@ const useGetLineOption = <T extends Record<string, any>>(
     sortOpts: null,
   });
 
-  const query = {
-    page: tableParams.pagination.current,
-    per: tableParams.pagination.pageSize,
-    filterOpts: [...filterOpts],
-    sortOpts: tableParams.sortOpts,
-    ...queryOpt,
-    ...queryKey,
-  };
-  const handleTableChange = (
-    pagination: TablePaginationConfig,
-    filters: Record<string, FilterValue>,
-    sorter: SorterResult<T>
-  ) => {
-    let sortOpts = null;
-    let filterOpts = [...defaultfilterOpts];
-    sortOpts = sorter.field && {
-      type: toUnderline(sorter.field as string),
-      direction: sorter.order === 'ascend' ? 'asc' : 'desc',
-    };
-    for (const key in filters) {
-      if (filters.hasOwnProperty(key)) {
-        const transformedObj = {
-          type: toUnderline(key),
-          values: filters[key]?.map((i) => String(i)) as string[],
-        };
-        filters[key] && filterOpts.push(transformedObj);
+  const query = useMemo(
+    () => ({
+      page: tableParams.pagination.current,
+      per: tableParams.pagination.pageSize,
+      filterOpts: [...filterOpts],
+      sortOpts: tableParams.sortOpts,
+      ...queryOpt,
+      ...queryKey,
+    }),
+    [tableParams.pagination, filterOpts, tableParams.sortOpts, queryOpt]
+  );
+
+  const handleTableChange = useCallback(
+    (
+      pagination: TablePaginationConfig,
+      filters: Record<string, FilterValue>,
+      sorter: SorterResult<T>
+    ) => {
+      let sortOpts = null;
+      let filterOpts = [...defaultfilterOpts];
+      sortOpts = sorter.field && {
+        type: toUnderline(sorter.field as string),
+        direction: sorter.order === 'ascend' ? 'asc' : 'desc',
+      };
+      for (const key in filters) {
+        if (filters.hasOwnProperty(key)) {
+          const transformedObj = {
+            type: toUnderline(key),
+            values: filters[key]?.map((i) => String(i)) as string[],
+          };
+          filters[key] && filterOpts.push(transformedObj);
+        }
       }
-    }
-    setFilterOpts(filterOpts);
-    setTableParams({
-      pagination: {
-        showTotal: tableParams.pagination.showTotal,
-        ...pagination,
-      },
-      sortOpts,
-      filterOpts,
-    });
-  };
+      setFilterOpts(filterOpts);
+      setTableParams({
+        pagination: {
+          showTotal: tableParams.pagination.showTotal,
+          ...pagination,
+        },
+        sortOpts,
+        filterOpts,
+      });
+    },
+    [defaultfilterOpts, tableParams.pagination.showTotal]
+  );
+
   return {
     tableData,
     setData,

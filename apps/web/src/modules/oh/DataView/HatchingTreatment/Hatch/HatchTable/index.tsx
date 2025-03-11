@@ -5,7 +5,7 @@ import ProjectTable from './ProjectTable';
 
 const Main = () => {
   const url = new URL(window.location.href.replace('#', ''));
-  const tabKey = url.searchParams.get('tab'); // 'luajava'
+  const tabKey = url.searchParams.get('tab');
   const [activeKey, setActiveKey] = useState(tabKey || '1');
   const allItems = [
     {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareGraduationReportPageQuery } from '@oss-compass/graphql';
@@ -14,9 +14,12 @@ const ReportTable = () => {
     query,
     handleTableChange,
   } = useGetTableOption();
-  const myQuery = {
-    ...query,
-  };
+  const myQuery = useMemo(
+    () => ({
+      ...query,
+    }),
+    [query]
+  );
 
   const { isLoading, isFetching, refetch } =
     useTpcSoftwareGraduationReportPageQuery(client, myQuery, {
@@ -42,7 +45,7 @@ const ReportTable = () => {
           loading={isLoading || isFetching}
           onChange={handleTableChange}
           pagination={tableParams.pagination}
-          rowKey={'key'}
+          rowKey={'id'}
           tableLayout={'fixed'}
           // scroll={{ x: 'max-content' }}
         />

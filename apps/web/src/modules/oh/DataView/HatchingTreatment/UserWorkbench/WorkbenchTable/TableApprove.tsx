@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import MyTable from '@common/components/Table';
 import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
 import { useTpcSoftwareMyReviewPageQuery } from '@oss-compass/graphql';
@@ -15,10 +15,13 @@ const TableApprove = ({ applicationType }) => {
     handleTableChange,
   } = useGetTableOption();
 
-  const myQuery = {
-    ...query,
-    applicationType,
-  };
+  const myQuery = useMemo(
+    () => ({
+      ...query,
+      applicationType,
+    }),
+    [query, applicationType]
+  );
   const { isLoading, isFetching, refetch } = useTpcSoftwareMyReviewPageQuery(
     client,
     myQuery,
@@ -51,7 +54,7 @@ const TableApprove = ({ applicationType }) => {
           loading={isLoading || isFetching}
           onChange={handleTableChange}
           pagination={tableParams.pagination}
-          rowKey={'key'}
+          rowKey={'id'}
           tableLayout={'fixed'}
           scroll={{ y: 'var(--scroll-height)' }}
           // scroll={{ x: 'max-content' }}

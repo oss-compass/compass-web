@@ -1,3 +1,4 @@
+import react from 'react';
 import { setUrlHost } from '@modules/oh/utils';
 import { getHubUrl } from '@common/utils';
 import PreviewImage from '@modules/oh/components/PreviewImage';
@@ -5,9 +6,23 @@ import EditReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo
 import RefreshReport from '@modules/oh/components/EvaluationInfo/EvaluationBaseInfo/RefreshReport';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { AiFillFilter } from 'react-icons/ai';
-import TableDropdown from '@modules/oh/components/TableDropdown';
+import { TableDropdown } from '@modules/oh/components/TableDropdown';
+import Link from 'next/link';
+import { STATUS_MAP } from '@modules/oh/constant';
 
+const StatusIndicator: React.FC<{ status: string; record: any }> = react.memo(
+  ({ status, record }) => {
+    if (status === 'success') {
+      return (
+        <Link href={`#reportDetailPage?projectId=${record.shortCode}`}>
+          {STATUS_MAP[status]}
+        </Link>
+      );
+    }
+    return STATUS_MAP[status] || STATUS_MAP.default;
+  }
+);
+StatusIndicator.displayName = 'StatusIndicator';
 export const useTableColumns = (anction) => {
   const columns = [
     {
@@ -46,28 +61,7 @@ export const useTableColumns = (anction) => {
       title: '软件名称',
       dataIndex: 'name',
       key: 'name',
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入软件名称'),
     },
     {
       title: '源码地址',
@@ -84,67 +78,8 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入源码地址'),
     },
-    // {
-    //   title: '官网地址',
-    //   dataIndex: 'websiteUrl',
-    //   key: 'websiteUrl',
-    //   render: (text) => {
-    //     return (
-    //       <a
-    //         target="_blank"
-    //         href={setUrlHost(text)}
-    //         className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-    //       >
-    //         {text}
-    //       </a>
-    //     );
-    //   },
-    //   filterIcon: (filtered: boolean) => (
-    //     <AiFillFilter
-    //       className="text-sm"
-    //       style={{ color: filtered ? '#1677ff' : undefined }}
-    //     />
-    //   ),
-    //   filterDropdown: ({
-    //     selectedKeys,
-    //     setSelectedKeys,
-    //     confirm,
-    //     clearFilters,
-    //   }) => {
-    //     return (
-    //       <TableDropdown
-    //         selectedKeys={selectedKeys}
-    //         setSelectedKeys={setSelectedKeys}
-    //         confirm={confirm}
-    //         clearFilters={clearFilters}
-    //         placeholder={''}
-    //       />
-    //     );
-    //   },
-    // },
     {
       title: '漏洞响应机制',
       dataIndex: 'vulnerabilityResponse',
@@ -171,33 +106,6 @@ export const useTableColumns = (anction) => {
       key: 'adaptationMethod',
       dataIndex: 'adaptationMethod',
     },
-    // {
-    //   title: '开发商',
-    //   dataIndex: 'manufacturer',
-    //   key: 'manufacturer',
-    //   filterIcon: (filtered: boolean) => (
-    //     <AiFillFilter
-    //       className="text-sm"
-    //       style={{ color: filtered ? '#1677ff' : undefined }}
-    //     />
-    //   ),
-    //   filterDropdown: ({
-    //     selectedKeys,
-    //     setSelectedKeys,
-    //     confirm,
-    //     clearFilters,
-    //   }) => {
-    //     return (
-    //       <TableDropdown
-    //         selectedKeys={selectedKeys}
-    //         setSelectedKeys={setSelectedKeys}
-    //         confirm={confirm}
-    //         clearFilters={clearFilters}
-    //         placeholder={''}
-    //       />
-    //     );
-    //   },
-    // },
     {
       title: '申请人',
       key: 'user',
@@ -214,53 +122,18 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入申请人'),
     },
     {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
-      render: (text, record) => {
-        const status = record?.tpcSoftwareReportMetric?.status;
-        if (status === 'success') {
-          return (
-            <>
-              <a
-                target="_blank"
-                onClick={() => {
-                  window.location.hash =
-                    'reportDetailPage?projectId=' + record.shortCode;
-                }}
-                className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-              >
-                生成成功
-              </a>
-            </>
-          );
-        }
-        return status === 'again_progress' ? '重跑中' : '生成中';
-      },
+      render: (text, record) => (
+        <StatusIndicator
+          status={record?.tpcSoftwareReportMetric?.status}
+          record={record}
+        />
+      ),
     },
     {
       title: '报告更新时间',

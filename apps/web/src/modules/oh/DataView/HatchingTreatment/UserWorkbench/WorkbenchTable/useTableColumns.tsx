@@ -1,9 +1,7 @@
 import { taskState } from '@modules/oh/constant';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { AiFillFilter } from 'react-icons/ai';
-import TableDropdown from '@modules/oh/components/TableDropdown';
-import { getProjectId } from '@modules/oh/utils';
+import { TableDropdown } from '@modules/oh/components/TableDropdown';
 
 export const useTableColumns = (anction) => {
   const columns = [
@@ -24,13 +22,6 @@ export const useTableColumns = (anction) => {
                       record.id
                     }&projectId=${record?.softwareReportShortCodes.join('..')}`;
                   }
-                  // window.location.hash = `${
-                  //   record.applicationType === 1
-                  //     ? 'graduationReportPage'
-                  //     : 'reportDetailPage'
-                  // }?taskId=${record.id}&projectId=${
-                  //   record?.softwareReportShortCodes[0]
-                  // }`;
                 }}
               />
             </Popover>
@@ -60,28 +51,7 @@ export const useTableColumns = (anction) => {
       dataIndex: 'name',
       key: 'name',
       width: 120,
-      filterIcon: (filtered: boolean) => (
-        <AiFillFilter
-          className="text-sm"
-          style={{ color: filtered ? '#1677ff' : undefined }}
-        />
-      ),
-      filterDropdown: ({
-        selectedKeys,
-        setSelectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
-        return (
-          <TableDropdown
-            selectedKeys={selectedKeys}
-            setSelectedKeys={setSelectedKeys}
-            confirm={confirm}
-            clearFilters={clearFilters}
-            placeholder={''}
-          />
-        );
-      },
+      ...TableDropdown.createFilterConfig('输入申请人'),
     },
     {
       title: '申请人',
@@ -162,26 +132,12 @@ export const useTableColumns = (anction) => {
       width: 150,
       key: 'complianceCount',
       dataIndex: 'complianceCount',
-      // render: (_, record) => {
-      //   return (
-      //     <div>
-      //       {record.sigLeadCount + '/' + record.confirmedCount}
-      //     </div>
-      //   );
-      // },
     },
     {
       title: '法务专家审批人数',
       width: 150,
       key: 'legalCount',
       dataIndex: 'legalCount',
-      // render: (_, record) => {
-      //   return (
-      //     <div>
-      //       {record.sigLeadCount + '/' + record.confirmedCount}
-      //     </div>
-      //   );
-      // },
     },
   ];
   return { columns };

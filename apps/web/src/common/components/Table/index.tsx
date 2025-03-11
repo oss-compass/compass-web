@@ -5,13 +5,6 @@ import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 
 const MyTable = (props) => {
-  // const [scrollY, setScrollY] = useState<string | number>(400);
-  // let countRef = useRef(null);
-  // useEffect(() => {
-  //   let scrolly = getTableScroll({ ref: countRef });
-  //   if (countRef) setScrollY(scrolly);
-  // }, [countRef]);
-
   const [local, setLocale] = useState(enUS);
   useEffect(() => {
     const l = getLocale();
@@ -23,4 +16,4 @@ const MyTable = (props) => {
     </ConfigProvider>
   );
 };
-export default MyTable;
+export default React.memo(MyTable);
