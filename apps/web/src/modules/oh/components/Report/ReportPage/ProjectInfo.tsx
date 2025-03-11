@@ -99,67 +99,6 @@ const EvaluationBaseInfo = () => {
       children: incubationTime,
       span: 2,
     },
-
-    // {
-    //   key: '4',
-    //   label: '编程语言',
-    //   children: item.programmingLanguage,
-    // },
-    // {
-    //   key: '5',
-    //   label: '代码量',
-    //   children: item.codeCount + '行',
-    // },
-    // {
-    //   key: '8',
-    //   label: '适配方式',
-    //   children: item.adaptationMethod,
-    // },
-    // {
-    //   key: '6',
-    //   label: '官网地址',
-    //   children: (
-    //     <>
-    //       <a
-    //         className="line-clamp-1 text-[#69b1ff]"
-    //         target="_blank"
-    //         href={item.websiteUrl}
-    //       >
-    //         {item.websiteUrl}
-    //       </a>
-    //     </>
-    //   ),
-    // },
-    // {
-    //   key: '7',
-    //   label: '源码地址',
-    //   children: (
-    //     <>
-    //       <a
-    //         className="line-clamp-1 text-[#69b1ff]"
-    //         target="_blank"
-    //         href={item.codeUrl}
-    //       >
-    //         {item.codeUrl}
-    //       </a>
-    //     </>
-    //   ),
-    // },
-    // {
-    //   key: '9',
-    //   label: '漏洞响应机制',
-    //   children: (
-    //     <>
-    //       <a
-    //         className="line-clamp-1 text-[#69b1ff]"
-    //         target="_blank"
-    //         href={item.codeUrl}
-    //       >
-    //         {item.vulnerabilityResponse || ''}
-    //       </a>
-    //     </>
-    //   ),
-    // },
   ];
   return (
     <div className="oh">

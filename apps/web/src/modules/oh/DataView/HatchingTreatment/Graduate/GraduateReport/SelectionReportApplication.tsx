@@ -83,6 +83,14 @@ const SelectionReportApplication = () => {
     }
     return Promise.reject(new Error('请输入有效的 commit SHA'));
   };
+  const validateCoderUrl = (_, value) => {
+    if (value.includes('gitcode.com')) {
+      return Promise.reject(
+        new Error('Gitcode平台尚未支持！请选择Github或Gitee仓库')
+      );
+    }
+    return Promise.resolve();
+  };
   return (
     <>
       {contextHolder}
@@ -155,7 +163,12 @@ const SelectionReportApplication = () => {
               <Form.Item
                 label="源码地址"
                 name="codeUrl"
-                rules={[{ required: true, message: '请输入!' }]}
+                rules={[
+                  { required: true, message: '请输入!' },
+                  {
+                    validator: validateCoderUrl,
+                  },
+                ]}
               >
                 <Input />
               </Form.Item>
