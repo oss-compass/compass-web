@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { GrClose } from 'react-icons/gr';
-import { Button, message, Form, Input, Select, Row, Col } from 'antd';
+import { Button, Form } from 'antd';
 import Dialog from '@common/components/Dialog';
 import SelectReport from '@modules/oh/components/GraduationReport/SelectReport';
 import { queryKey } from '@modules/oh/constant';
@@ -13,56 +13,29 @@ import { getPathname } from '@common/utils';
 import HasOhRole from '@modules/oh/components/HasOhRole';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 import SelectionForm from './SelectionForm';
+import { toast } from 'react-hot-toast';
 
 const SelectionApplication = () => {
   const { hasOhRole } = useHasOhRole();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [report, setReport] = useState([]);
-  const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareGraduationMutation(client, {
     onSuccess(data) {
       if (data.createTpcSoftwareGraduation.status == 'true') {
         const id = data.createTpcSoftwareGraduation.id;
-        // let issueUrl = data.createTpcSoftwareSelection.issueUrl;
-        messageApi.open({
-          type: 'success',
-          style: {
-            marginTop: '150px',
-          },
-          content: (
-            <>
-              提交成功，即将跳转 Gitee，会自动生成 Issue
-              模板，您只需点击按钮创建 Issue 即可
-              {/* 提交成功，已在 Gitee 建立 Issue 跟踪，可点击
-              <a className="text-[#1677ff]" href={issueUrl} target="_blank">
-                {issueUrl}
-              </a>
-              查看 Issue, */}
-            </>
-          ),
-        });
+        toast.success(
+          `提交成功，即将跳转 Gitee，会自动生成 Issue模板，您只需点击按钮创建 Issue 即可`
+        );
         setTimeout(() => {
           openGraduationIssue(report, form.getFieldsValue(true), id);
         }, 3000);
       } else {
-        messageApi.open({
-          type: 'error',
-          style: {
-            marginTop: '200px',
-          },
-          content: data.createTpcSoftwareGraduation.message,
-        });
+        toast.error(data.createTpcSoftwareGraduation.message);
       }
     },
     onError(res) {
-      messageApi.open({
-        type: 'error',
-        style: {
-          marginTop: '200px',
-        },
-        content: getErrorMessage(res),
-      });
+      toast.error(getErrorMessage(res));
     },
   });
 
@@ -85,7 +58,6 @@ const SelectionApplication = () => {
 
   return (
     <>
-      {contextHolder}
       <SelectionForm
         form={form}
         report={report}
@@ -151,15 +123,6 @@ const SelectionApplication = () => {
             </Button>
           </HasOhRole>
 
-          {/* <Button
-            className="rounded-none"
-            htmlType="submit"
-            onClick={() => {
-              autoFill('');
-            }}
-          >
-            自动填充
-          </Button> */}
           <Button className="rounded-none" htmlType="button" onClick={onReset}>
             重置
           </Button>

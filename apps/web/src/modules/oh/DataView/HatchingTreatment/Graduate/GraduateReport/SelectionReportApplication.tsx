@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  message,
-  Form,
-  Input,
-  Select,
-  Radio,
-  Row,
-  Col,
-  Popover,
-} from 'antd';
+import { Button, Form, Input, Select, Radio, Row, Col, Popover } from 'antd';
 import Upload from '@modules/oh/components/Upload';
 import SearchReport from './SearchReport';
-import dayjs from 'dayjs';
 import {
   languagesList,
   adaptationMethodList,
@@ -25,43 +14,25 @@ import { useCreateTpcSoftwareGraduationReportMutation } from '@oss-compass/graph
 import getErrorMessage from '@common/utils/getErrorMessage';
 import HasOhRole from '@modules/oh/components/HasOhRole';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
+import { toast } from 'react-hot-toast';
 
 const SelectionReportApplication = () => {
   const { hasOhRole } = useHasOhRole();
-  const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const [report, setReport] = useState(null);
   const mutation = useCreateTpcSoftwareGraduationReportMutation(client, {
     onSuccess(data) {
       if (data.createTpcSoftwareGraduationReport.status == 'true') {
-        messageApi.open({
-          type: 'success',
-          style: {
-            marginTop: '200px',
-          },
-          content: '提交成功，可在毕业项目申请列表中查看报告状态！',
-        });
+        toast.success(`提交成功，可在毕业项目申请列表中查看报告状态！`);
         setTimeout(() => {
           window.location.hash = 'graduateTable?tab=1';
         }, 2000);
       } else {
-        messageApi.open({
-          type: 'error',
-          style: {
-            marginTop: '200px',
-          },
-          content: data.createTpcSoftwareGraduationReport.message,
-        });
+        toast.error(data.createTpcSoftwareGraduationReport.message);
       }
     },
     onError(res) {
-      messageApi.open({
-        type: 'error',
-        style: {
-          marginTop: '200px',
-        },
-        content: getErrorMessage(res),
-      });
+      toast.error(getErrorMessage(res));
     },
   });
 
@@ -93,7 +64,6 @@ const SelectionReportApplication = () => {
   };
   return (
     <>
-      {contextHolder}
       <div className="oh-tabs flex flex-col justify-center p-5">
         <Form
           form={form}
@@ -127,7 +97,6 @@ const SelectionReportApplication = () => {
                   }}
                 />
               </Form.Item>
-              {/* </Popover> */}
             </Col>
             <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item
@@ -276,14 +245,7 @@ const SelectionReportApplication = () => {
               </Popover>
             </Col>
             <Col xs={24} sm={24} md={24} lg={12}>
-              <Form.Item
-                // labelCol={{
-                //   span: 3,
-                //   style: { fontWeight: 'bold' },
-                // }}
-                label="架构图"
-                name="architectureDiagrams"
-              >
+              <Form.Item label="架构图" name="architectureDiagrams">
                 <Upload
                   onFileChange={(images) => {
                     form.setFieldsValue({
@@ -310,15 +272,6 @@ const SelectionReportApplication = () => {
             提交
           </Button>
         </HasOhRole>
-        {/* <Button
-          className="rounded-none"
-          htmlType="submit"
-          onClick={() => {
-            autoFill();
-          }}
-        >
-          自动填充
-        </Button> */}
         <Button className="rounded-none" htmlType="button" onClick={onReset}>
           重置
         </Button>

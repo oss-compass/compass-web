@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
-import dayjs from 'dayjs';
 import {
   languagesList,
   adaptationMethodList,
@@ -13,42 +12,24 @@ import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphq
 import getErrorMessage from '@common/utils/getErrorMessage';
 import HasOhRole from '@modules/oh/components/HasOhRole';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
+import { toast } from 'react-hot-toast';
 
 const SelectionReportApplication = () => {
   const { hasOhRole } = useHasOhRole();
-  const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
     onSuccess(data) {
       if (data.createTpcSoftwareSelectionReport.status == 'true') {
-        messageApi.open({
-          type: 'success',
-          style: {
-            marginTop: '200px',
-          },
-          content: '提交成功，可在孵化项目申请列表中查看报告状态！',
-        });
+        toast.success(`提交成功，可在孵化项目申请列表中查看报告状态！`);
         setTimeout(() => {
           window.location.hash = 'hatchTable?tab=1';
         }, 2000);
       } else {
-        messageApi.open({
-          type: 'error',
-          style: {
-            marginTop: '200px',
-          },
-          content: data.createTpcSoftwareSelectionReport.message,
-        });
+        toast.error(data.createTpcSoftwareSelectionReport.message);
       }
     },
     onError(res) {
-      messageApi.open({
-        type: 'error',
-        style: {
-          marginTop: '200px',
-        },
-        content: getErrorMessage(res),
-      });
+      toast.error(getErrorMessage(res));
     },
   });
 
@@ -81,7 +62,6 @@ const SelectionReportApplication = () => {
   };
   return (
     <>
-      {contextHolder}
       <div className="oh-tabs flex flex-col justify-center p-5">
         <Form
           form={form}
@@ -92,9 +72,6 @@ const SelectionReportApplication = () => {
           style={{
             width: '100%',
           }}
-          // disabled={!isProceedingProcesses}
-          // onFinish={onFinish}
-          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <div className="mb-6 pl-2 text-base font-semibold">软件基础信息</div>
@@ -258,15 +235,6 @@ const SelectionReportApplication = () => {
           </Button>
         </HasOhRole>
 
-        {/* <Button
-          className="rounded-none"
-          htmlType="submit"
-          onClick={() => {
-            autoFill();
-          }}
-        >
-          自动填充
-        </Button> */}
         <Button className="rounded-none" htmlType="button" onClick={onReset}>
           重置
         </Button>
