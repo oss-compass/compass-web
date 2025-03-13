@@ -1,4 +1,4 @@
-import { useGetRisk } from '@modules/oh/components/GraduationEvaluationInfo/store/useRiskStore';
+import { useGetRisk } from '@modules/oh/DataView/HatchingTreatment/Graduate/EvaluationInfo/store/useRiskStore';
 import { useMemo } from 'react';
 
 const useCheckGraduateRiskState = (shortCode, mertic) => {

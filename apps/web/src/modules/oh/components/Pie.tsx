@@ -61,4 +61,4 @@ const Pie = ({ score }) => {
 
   return <div className="h-32 w-full" ref={cardRef}></div>;
 };
-export default Pie;
+export default React.memo(Pie);

@@ -24,7 +24,7 @@ const HeadBoxApprove = ({ active, onClickFun }) => {
     awaitingReviewCount,
     completedCount,
     rejectedCount,
-  } = data.tpcSoftwareMyReviewOverview;
+  } = data?.tpcSoftwareMyReviewOverview || {};
   return (
     <div
       onClick={onClickFun}

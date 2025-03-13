@@ -23,11 +23,11 @@ import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable'
 import UserWorkbench from '@modules/oh/DataView/HatchingTreatment/UserWorkbench';
 import BoardHatch from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardHatch';
 import BoardGraduateBoard from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardGraduateBoard';
-import ReportPage from '@modules/oh/components/Report/ReportPage';
+import ReportPage from '@modules/oh/DataView/HatchingTreatment/Hatch/Report/ReportPage';
 import GraduateReport from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateReport';
 import GraduateProject from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateProject';
 import GraduateTable from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateTable';
-import GraduationReport from '@modules/oh/components/GraduationReport/ReportPage';
+import GraduationReport from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
