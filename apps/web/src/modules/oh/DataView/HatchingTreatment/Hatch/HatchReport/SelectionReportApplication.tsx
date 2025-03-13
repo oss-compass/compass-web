@@ -1,21 +1,20 @@
 import React from 'react';
-import { Button, message, Form, Input, Select, Row, Col, Popover } from 'antd';
+import { Button, Form, Input, Select, Row, Col, Popover } from 'antd';
 import {
   languagesList,
   adaptationMethodList,
   domainList,
   queryKey,
 } from '@modules/oh/constant';
+import { validateCommitSHA, validateCoderUrl } from '@modules/oh/utils/form';
 import Upload from '@modules/oh/components/Upload';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionReportMutation } from '@oss-compass/graphql';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import HasOhRole from '@modules/oh/components/HasOhRole';
-import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 import { toast } from 'react-hot-toast';
 
 const SelectionReportApplication = () => {
-  const { hasOhRole } = useHasOhRole();
   const [form] = Form.useForm();
   const mutation = useCreateTpcSoftwareSelectionReportMutation(client, {
     onSuccess(data) {
@@ -45,21 +44,7 @@ const SelectionReportApplication = () => {
   const onReset = () => {
     form.resetFields();
   };
-  const validateCommitSHA = (_, value) => {
-    const commitSHARegex = /^[0-9a-f]{40}$/;
-    if (!value || commitSHARegex.test(value)) {
-      return Promise.resolve();
-    }
-    return Promise.reject(new Error('请输入有效的 commit SHA'));
-  };
-  const validateCoderUrl = (_, value) => {
-    if (value.includes('gitcode.com')) {
-      return Promise.reject(
-        new Error('Gitcode平台尚未支持！请选择Github或Gitee仓库')
-      );
-    }
-    return Promise.resolve();
-  };
+
   return (
     <>
       <div className="oh-tabs flex flex-col justify-center p-5">
@@ -226,7 +211,6 @@ const SelectionReportApplication = () => {
             className="rounded-none"
             type="primary"
             loading={mutation.isLoading}
-            disabled={!hasOhRole}
             onClick={() => {
               submit();
             }}

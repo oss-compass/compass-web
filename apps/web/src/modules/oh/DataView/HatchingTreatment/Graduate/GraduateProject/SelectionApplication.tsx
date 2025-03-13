@@ -7,7 +7,7 @@ import SelectReport from '@modules/oh/components/GraduationReport/SelectReport';
 import { queryKey } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareGraduationMutation } from '@oss-compass/graphql';
-import { openGraduationIssue } from '@modules/oh/utils';
+import { openGraduationIssue } from '@modules/oh/utils/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import { getPathname } from '@common/utils';
 import HasOhRole from '@modules/oh/components/HasOhRole';

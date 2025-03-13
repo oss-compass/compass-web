@@ -1,7 +1,7 @@
 import { getHubUrl } from '@common/utils';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { getProjectId } from '@modules/oh/utils';
+import { getProjectId } from '@modules/oh/utils/utils';
 import { taskState } from '@modules/oh/constant';
 import { TableDropdown } from '@modules/oh/components/TableDropdown';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';

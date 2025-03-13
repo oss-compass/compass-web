@@ -29,8 +29,6 @@ const SelectionForm = ({ form, report, setOpenConfirm }) => {
           width: '100%',
         }}
         disabled={!report}
-        // onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <>

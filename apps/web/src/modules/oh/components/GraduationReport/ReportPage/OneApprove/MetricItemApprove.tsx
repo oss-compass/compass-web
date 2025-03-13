@@ -6,7 +6,7 @@ import {
 } from '@modules/oh/components/GraduationEvaluationInfo/AllGraduateMetricData';
 import RiskClarification from '@modules/oh/components/GraduationEvaluationInfo/MetricDrawer/RiskClarification';
 import useCheckGraduateRiskState from '@modules/oh/hooks/useCheckGraduateRiskState';
-import { getRiskFillScore } from '@modules/oh/utils';
+import { getRiskFillScore } from '@modules/oh/utils/utils';
 
 const useGetDefinition = (metric) => {
   if (!metric) {

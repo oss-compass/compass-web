@@ -1,4 +1,4 @@
-import { setUrlHost } from '@modules/oh/utils';
+import { setUrlHost } from '@modules/oh/utils/utils';
 import { getHubUrl } from '@common/utils';
 import PreviewImage from '@modules/oh/components/PreviewImage';
 import EditReport from '@modules/oh/components/GraduationEvaluationInfo/EvaluationBaseInfo/EditReport';

@@ -33,16 +33,7 @@ const SearchInput: React.FC<{
       },
     }
   );
-  const showLoading = isLoading && fetchStatus === 'fetching';
-  const suffix = (
-    <>
-      {showLoading ? (
-        <AiOutlineLoading className="h-full w-full animate-spin" />
-      ) : (
-        <span />
-      )}
-    </>
-  );
+
   const reportList = data?.tpcSoftwareSelectionSearch || [];
   return (
     <div className="relative flex">
@@ -55,7 +46,6 @@ const SearchInput: React.FC<{
           setValue(val);
           setReport(null, val);
         }}
-        // suffix={suffix}
         onBlur={() => {
           setTimeout(() => {
             setShowDropdown(false);

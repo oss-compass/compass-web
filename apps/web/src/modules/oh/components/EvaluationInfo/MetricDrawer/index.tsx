@@ -8,7 +8,7 @@ import {
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import RiskClarification from './RiskClarification';
 import useCheckRiskState from '@modules/oh/hooks/useCheckRiskState';
-import { getRiskFillScore } from '@modules/oh/utils';
+import { getRiskFillScore } from '@modules/oh/utils/utils';
 
 const useGetDefinition = (metric) => {
   if (!metric) {

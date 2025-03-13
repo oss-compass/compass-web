@@ -7,7 +7,7 @@ import SelectReport from '@modules/oh/components/Report/SelectReport';
 import { queryKey } from '@modules/oh/constant';
 import client from '@common/gqlClient';
 import { useCreateTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
-import { openGiteeIssue } from '@modules/oh/utils';
+import { openGiteeIssue } from '@modules/oh/utils/utils';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import { getPathname } from '@common/utils';
 import HasOhRole from '@modules/oh/components/HasOhRole';

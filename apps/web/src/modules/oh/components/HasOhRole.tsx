@@ -1,17 +1,19 @@
-import React, { PropsWithChildren } from 'react';
-import { useRouter } from 'next/router';
-import { useUserInfo } from '@modules/auth';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { Popover } from 'antd';
+import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
+import { toast } from 'react-hot-toast';
 
 const HasOhRole: React.FC<PropsWithChildren> = ({ children }) => {
-  const { roleLevel } = useUserInfo();
+  const { hasOhRole } = useHasOhRole();
 
-  if (roleLevel >= 2) {
-    return <>{children}</>;
-  } else {
-    return (
-      <Popover content={'请使用已授权的账号登录后方可操作'}>{children}</Popover>
-    );
-  }
+  useEffect(() => {
+    if (!hasOhRole) toast.error(`请使用已授权的账号登录后方可操作`);
+  }, [hasOhRole]);
+
+  return hasOhRole ? (
+    <>{children}</>
+  ) : (
+    <Popover content="请使用已授权的账号登录后方可操作">{children}</Popover>
+  );
 };
 export default HasOhRole;

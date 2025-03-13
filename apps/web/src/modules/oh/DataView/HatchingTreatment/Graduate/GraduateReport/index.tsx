@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Tabs } from 'antd';
 import SelectionReportApplication from './SelectionReportApplication';
-// import RepoReportApplication from './RepoReportApplication';
 
 const Main = () => {
-  // const [activeKey, setActiveKey] = useState('孵化选型申请');
   const allItems = [
     {
       key: '毕业报告申请',

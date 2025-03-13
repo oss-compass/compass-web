@@ -11,7 +11,7 @@ import {
   ExclamationCircleOutlined,
   ClockCircleOutlined,
 } from '@ant-design/icons';
-import { getRiskFillScore } from '@modules/oh/utils';
+import { getRiskFillScore } from '@modules/oh/utils/utils';
 
 export const metricList = ['合法合规', '技术生态', '生命周期', '网络安全'];
 // 计算单个报告四个维度得分和总分
