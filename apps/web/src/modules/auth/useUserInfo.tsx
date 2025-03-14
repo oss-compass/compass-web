@@ -41,13 +41,14 @@ function findSpecifyProvider({
 }
 
 export const useUserInfo = () => {
-  const { currentUser: user } = useSnapshot(userInfoStore);
+  const { currentUser: user, loading } = useSnapshot(userInfoStore);
   const provider = cookieGetAuthProvider();
   const providerUser = findSpecifyProvider({
     provider: provider,
     loginBinds: user?.loginBinds,
   });
   return {
+    loading,
     currentUser: user,
     providerUser,
     loginBinds: user?.loginBinds,

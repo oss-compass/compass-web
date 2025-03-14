@@ -20,7 +20,6 @@ import { useGetAllRisk } from '@modules/oh/store/useRiskStore';
 import { useGetTargetSoftwareData } from '@modules/oh/store/useTargetSoftwareStore';
 import HasOhRole from '@modules/oh/components/HasOhRole';
 import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
-import { Divider } from '@mui/material';
 
 const CheckApprove = ({ selectionId }) => {
   const { hasOhRole } = useHasOhRole();

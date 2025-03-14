@@ -34,7 +34,7 @@ export const useTableColumns = (anction) => {
       key: 'targetSoftware',
       width: 140,
       render: (_, record) => {
-        return record?.tpcSoftwareGraduationReports?.[0].name;
+        return record?.tpcSoftwareGraduationReports?.[0]?.name;
       },
     },
     {

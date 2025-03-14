@@ -4,11 +4,10 @@ import useHasOhRole from '@modules/oh/hooks/useHasOhRole';
 import { toast } from 'react-hot-toast';
 
 const HasOhRole: React.FC<PropsWithChildren> = ({ children }) => {
-  const { hasOhRole } = useHasOhRole();
-
+  const { hasOhRole, loading } = useHasOhRole();
   useEffect(() => {
-    if (!hasOhRole) toast.error(`请使用已授权的账号登录后方可操作`);
-  }, [hasOhRole]);
+    if (!loading && !hasOhRole) toast.error(`请使用已授权的账号登录后方可操作`);
+  }, [hasOhRole, loading]);
 
   return hasOhRole ? (
     <>{children}</>
