@@ -20,6 +20,10 @@ const Timeline = ({ state, content, userId }) => {
       value: 2,
     },
     {
+      text: '待QA确认',
+      value: 4,
+    },
+    {
       text: '已通过',
       value: 3,
     },

@@ -141,6 +141,10 @@ export const taskState = [
     value: 2,
   },
   {
+    text: '待QA确认',
+    value: 4,
+  },
+  {
     text: '已通过',
     value: 3,
   },
@@ -153,4 +157,11 @@ export const STATUS_MAP = {
   success: '生成成功',
   again_progress: '重跑中',
   default: '生成中',
+};
+export const MEMBER_MAP = {
+  '1': 'TPC Leader',
+  '0': 'TPC Committer',
+  '2': '法务专家',
+  '3': '合规专家',
+  '4': 'QA确认',
 };

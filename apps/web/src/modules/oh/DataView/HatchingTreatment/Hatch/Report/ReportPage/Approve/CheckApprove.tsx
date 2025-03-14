@@ -4,7 +4,6 @@ import {
   CheckOutlined,
   CloseOutlined,
   CheckCircleOutlined,
-  TeamOutlined,
 } from '@ant-design/icons';
 import { useAcceptTpcSoftwareSelectionMutation } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
@@ -49,25 +48,6 @@ const CheckApprove = ({ selectionId }) => {
       if (userState.length > 0) {
         return false;
       }
-      // if (dimension === '合法合规') {
-      //   // let complianceState = clarificationState.filter(
-      //   //   (s) => s.memberType === 3
-      //   // );
-      //   // let legalState = clarificationState.filter((s) => s.memberType === 2);
-      //   // if (legalState.length > 0 && complianceState.length > 0) {
-      //   //   //至少一名法务专家和一名合规专家都通过
-      //   //   return false;
-      //   // }
-      // } else {
-      //   // let leaderState = clarificationState.filter((s) => s.memberType === 1);
-      //   // let commiterState = clarificationState.filter(
-      //   //   (s) => s.memberType === 0
-      //   // );
-      //   // if (leaderState.length > 0 && commiterState.length > 0) {
-      //   //   //至少一名 commiter 和一名 Leader 都通过
-      //   //   return false;
-      //   // }
-      // }
       return true;
     };
     if (metricItemScoreList?.length > 0) {
@@ -119,25 +99,6 @@ const CheckApprove = ({ selectionId }) => {
       if (userState.length > 0) {
         return false;
       }
-      // if (dimension === '合法合规') {
-      //   let complianceState = clarificationState.filter(
-      //     (s) => s.memberType === 3
-      //   );
-      //   let legalState = clarificationState.filter((s) => s.memberType === 2);
-      //   if (legalState.length > 0 && complianceState.length > 0) {
-      //     //至少一名法务专家和一名合规专家都通过
-      //     return false;
-      //   }
-      // } else {
-      //   let leaderState = clarificationState.filter((s) => s.memberType === 1);
-      //   let commiterState = clarificationState.filter(
-      //     (s) => s.memberType === 0
-      //   );
-      //   if (leaderState.length > 0 && commiterState.length > 0) {
-      //     //至少一名 commiter 和一名 Leader 都通过
-      //     return false;
-      //   }
-      // }
       return true;
     };
     if (metricItemScoreList?.length > 0) {

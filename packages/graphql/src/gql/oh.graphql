@@ -922,6 +922,7 @@ query tpcSoftwareSelection($selectionId: Int!) {
     commentCommitterPermission
     commentCount
     commentSigLeadPermission
+    commentQaPermission
     commentState {
       createdAt
       id
@@ -1276,6 +1277,7 @@ query tpcSoftwareGraduation($graduationId: Int!) {
     commentCommitterPermission
     commentCount
     commentSigLeadPermission
+    commentQaPermission
     commentState {
       createdAt
       id

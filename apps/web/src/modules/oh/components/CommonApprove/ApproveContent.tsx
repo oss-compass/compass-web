@@ -1,16 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
 import { formatToNow } from '@common/utils/time';
+import { MEMBER_MAP } from '@modules/oh/constant';
 
 const ApproveContent = ({ item }: { item: any }) => {
   const { state, memberType } = item;
 
-  const memberMap = {
-    '1': 'TPC Leader',
-    '0': 'TPC Committer',
-    '2': '法务专家',
-    '3': '合规专家',
-  };
   return (
     <>
       <div className="flex pb-4">
@@ -41,7 +36,7 @@ const ApproveContent = ({ item }: { item: any }) => {
         </div>
       </div>
       <div className="w-full">
-        {memberMap[memberType]}
+        {MEMBER_MAP[memberType]}
         {state === 1 ? ' 评审通过' : ' 驳回'}
       </div>
     </>

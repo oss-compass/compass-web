@@ -48,7 +48,7 @@ export type AcceptTpcSoftwareGraduationInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
   graduationId: Scalars['Int'];
-  /** committer: 0, sig lead: 1, legal: 2, compliance: 3 */
+  /** committer: 0, sig lead: 1, legal: 2, compliance: 3, QA: 4 */
   memberType?: Scalars['Int'];
   /** reject: -1, cancel: 0, accept: 1 */
   state?: Scalars['Int'];
@@ -1247,6 +1247,8 @@ export type CreateTpcSoftwareSelectionInput = {
   level?: InputMaybe<Scalars['String']>;
   reason: Scalars['String'];
   repoUrl?: InputMaybe<Array<Scalars['String']>>;
+  /** incubation: 0, selection: 2 */
+  reportCategory?: InputMaybe<Scalars['Int']>;
   sameTypeSoftwareName?: InputMaybe<Scalars['String']>;
   /** incubation: 0, sandbox: 1, graduation: 2 */
   selectionType: Scalars['Int'];
@@ -3746,6 +3748,8 @@ export type TpcSoftwareGraduation = {
   /** 1: permissioned, 0: unpermissioned */
   commentLegalPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
+  commentQaPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
   commentSigLeadPermission?: Maybe<Scalars['Int']>;
   commentState?: Maybe<Array<TpcSoftwareCommentState>>;
   committerCount?: Maybe<Scalars['Int']>;
@@ -4089,9 +4093,7 @@ export type TpcSoftwareReportMetric = {
   complianceDcoDetail?: Maybe<TpcSoftwareReportMetricComplianceDco>;
   complianceLicense?: Maybe<Scalars['Int']>;
   complianceLicenseCompatibility?: Maybe<Scalars['Int']>;
-  complianceLicenseCompatibilityDetail?: Maybe<
-    Array<TpcSoftwareReportMetricComplianceLicenseCompatibility>
-  >;
+  complianceLicenseCompatibilityDetail?: Maybe<TpcSoftwareReportMetricComplianceLicenseCompatibility>;
   complianceLicenseDetail?: Maybe<TpcSoftwareReportMetricComplianceLicense>;
   compliancePackageSig?: Maybe<Scalars['Int']>;
   compliancePackageSigDetail?: Maybe<Array<Scalars['String']>>;
@@ -4303,6 +4305,8 @@ export type TpcSoftwareSelection = {
   /** 1: permissioned, 0: unpermissioned */
   commentLegalPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
+  commentQaPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
   commentSigLeadPermission?: Maybe<Scalars['Int']>;
   commentState?: Maybe<Array<TpcSoftwareCommentState>>;
   committerCount?: Maybe<Scalars['Int']>;
@@ -4355,6 +4359,7 @@ export type TpcSoftwareSelectionReport = {
   metricClarificationState?: Maybe<TpcSoftwareReportMetricClarificationState>;
   name?: Maybe<Scalars['String']>;
   programmingLanguage?: Maybe<Scalars['String']>;
+  reportCategory?: Maybe<Scalars['Int']>;
   reportType: Scalars['Int'];
   shortCode: Scalars['String'];
   tpcSoftwareReportMetric?: Maybe<TpcSoftwareReportMetric>;
@@ -4375,6 +4380,7 @@ export type TpcSoftwareSelectionReportInput = {
   name: Scalars['String'];
   ohCommitSha: Scalars['String'];
   programmingLanguage: Scalars['String'];
+  reportCategory?: InputMaybe<Scalars['Int']>;
   tpcSoftwareSigId: Scalars['Int'];
   vulnerabilityResponse: Scalars['String'];
 };
@@ -7681,7 +7687,7 @@ export type TpcSoftwareReportMetricDetailFragment = {
     commitCount?: number | null;
     commitDcoCount?: number | null;
   } | null;
-  complianceLicenseCompatibilityDetail?: Array<{
+  complianceLicenseCompatibilityDetail?: {
     __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
     oatDetail?: Array<string> | null;
     tpcDetail?: Array<{
@@ -7689,7 +7695,7 @@ export type TpcSoftwareReportMetricDetailFragment = {
       license?: string | null;
       licenseConflictList?: Array<string> | null;
     }> | null;
-  }> | null;
+  } | null;
   complianceLicenseDetail?: {
     __typename?: 'TpcSoftwareReportMetricComplianceLicense';
     nonOsiLicenses?: Array<string> | null;
@@ -7821,7 +7827,7 @@ export type TpcSoftwareSelectionReportQuery = {
         commitCount?: number | null;
         commitDcoCount?: number | null;
       } | null;
-      complianceLicenseCompatibilityDetail?: Array<{
+      complianceLicenseCompatibilityDetail?: {
         __typename?: 'TpcSoftwareReportMetricComplianceLicenseCompatibility';
         oatDetail?: Array<string> | null;
         tpcDetail?: Array<{
@@ -7829,7 +7835,7 @@ export type TpcSoftwareSelectionReportQuery = {
           license?: string | null;
           licenseConflictList?: Array<string> | null;
         }> | null;
-      }> | null;
+      } | null;
       complianceLicenseDetail?: {
         __typename?: 'TpcSoftwareReportMetricComplianceLicense';
         nonOsiLicenses?: Array<string> | null;
@@ -8272,6 +8278,7 @@ export type TpcSoftwareSelectionQuery = {
     commentCommitterPermission?: number | null;
     commentCount?: number | null;
     commentSigLeadPermission?: number | null;
+    commentQaPermission?: number | null;
     targetSoftware?: string | null;
     reason?: string | null;
     demandSource?: string | null;
@@ -8791,6 +8798,7 @@ export type TpcSoftwareGraduationQuery = {
     commentCommitterPermission?: number | null;
     commentCount?: number | null;
     commentSigLeadPermission?: number | null;
+    commentQaPermission?: number | null;
     demandSource?: string | null;
     incubationTime?: string | null;
     committers?: Array<string> | null;
@@ -15785,6 +15793,7 @@ export const TpcSoftwareSelectionDocument = /*#__PURE__*/ `
     commentCommitterPermission
     commentCount
     commentSigLeadPermission
+    commentQaPermission
     commentState {
       createdAt
       id
@@ -16109,6 +16118,7 @@ export const TpcSoftwareGraduationDocument = /*#__PURE__*/ `
     commentCommitterPermission
     commentCount
     commentSigLeadPermission
+    commentQaPermission
     commentState {
       createdAt
       id

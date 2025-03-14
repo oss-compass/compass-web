@@ -37,6 +37,7 @@ export const useGetReportData = () => {
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentQaPermission,
     targetSoftware,
     reason,
     demandSource,
@@ -48,7 +49,6 @@ export const useGetReportData = () => {
     repoUrl,
     tpcSoftwareSelectionReports,
   } = data || {};
-  // const baseInfo =
   return {
     state,
     count,
@@ -57,6 +57,7 @@ export const useGetReportData = () => {
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentQaPermission,
     targetSoftware,
     reason,
     demandSource,

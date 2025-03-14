@@ -30,12 +30,14 @@ export const useGetReportData = () => {
     return { count: 0, state: null };
   }
   const {
+    state,
     count,
     commentState,
     commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentQaPermission,
     targetSoftware,
     incubationTime,
     demandSource,
@@ -45,12 +47,14 @@ export const useGetReportData = () => {
   } = data || {};
 
   return {
+    state,
     count,
     commentState,
     commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentQaPermission,
     targetSoftware,
     incubationTime,
     demandSource,

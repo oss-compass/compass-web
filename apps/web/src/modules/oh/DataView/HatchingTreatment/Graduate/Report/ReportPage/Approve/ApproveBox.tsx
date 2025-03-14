@@ -1,15 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { List } from 'antd';
 import { useGetReportData } from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage/store/useReportStore';
-import ApproveContent from './ApproveContent';
+import ApproveContent from '@modules/oh/components/CommonApprove/ApproveContent';
 import CheckApprove from './CheckApprove';
+import QaSubmit from './QaSubmits';
 
 const ApproveBox = ({ selectionId }) => {
-  const { commentState, commentCommitterPermission, commentSigLeadPermission } =
-    useGetReportData();
+  const { commentState, state } = useGetReportData();
   return (
     <>
-      <CheckApprove selectionId={selectionId} />
+      {state === 4 ? (
+        <QaSubmit selectionId={selectionId} />
+      ) : (
+        <CheckApprove selectionId={selectionId} />
+      )}
       <List
         className="oh !rounded-none"
         size="large"
