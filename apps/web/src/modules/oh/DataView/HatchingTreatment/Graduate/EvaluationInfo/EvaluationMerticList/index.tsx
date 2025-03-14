@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Tag } from 'antd';
 import RiskBadge from '@modules/oh/DataView/HatchingTreatment/Graduate/EvaluationInfo/Badge/RiskBadge';
 import MetricDrawer from '@modules/oh/DataView/HatchingTreatment/Graduate/EvaluationInfo/MetricDrawer';
 import {

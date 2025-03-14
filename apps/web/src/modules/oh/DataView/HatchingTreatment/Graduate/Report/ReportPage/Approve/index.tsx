@@ -1,12 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { FloatButton, Drawer, Popover } from 'antd';
 import useLabelData from '@modules/oh/hooks/useLabelData';
-import {
-  ExclamationOutlined,
-  ClockCircleOutlined,
-  CheckOutlined,
-} from '@ant-design/icons';
-import { useGetReportData } from '@modules/oh/components/Report/ReportPage/store/useReportStore';
+import { ExclamationOutlined, CheckOutlined } from '@ant-design/icons';
+import { useGetReportData } from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage/store/useReportStore';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import ApproveBox from './ApproveBox';
 

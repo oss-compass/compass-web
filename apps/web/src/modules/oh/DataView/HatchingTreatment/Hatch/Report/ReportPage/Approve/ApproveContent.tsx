@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { formatToNow } from '@common/utils/time';
-import { RiskStore, riskEvent } from '@modules/oh/store/useRiskStore';
 
 const ApproveContent = ({ item }: { item: any }) => {
   const { state, memberType } = item;

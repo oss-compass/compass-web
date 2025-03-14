@@ -30,6 +30,7 @@ export const useGetReportData = () => {
     return { count: 0, state: null };
   }
   const {
+    state,
     count,
     commentState,
     commentCommitterPermission,
@@ -49,6 +50,7 @@ export const useGetReportData = () => {
   } = data || {};
   // const baseInfo =
   return {
+    state,
     count,
     commentState,
     commentCommitterPermission,

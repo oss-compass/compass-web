@@ -43,57 +43,55 @@ const Approve = () => {
   if (!taskId) return <></>;
   return (
     <>
-      <>
-        {showPopover ? (
-          <Popover content={'全部评审'}>
-            <FloatButton
-              onClick={() => {
-                setOpen(true);
-              }}
-              style={{ bottom: 20, right: 20 }}
-              badge={
-                hasRole && {
-                  offset: [-6, 6],
-                  count: userCommentState ? (
-                    <CheckOutlined
-                      className="rounded-full text-white"
-                      rev={undefined}
-                      style={{ backgroundColor: '#52c41a' }}
-                    />
-                  ) : (
-                    <ExclamationOutlined
-                      className="rounded-full text-white"
-                      style={{ backgroundColor: '#ff0000' }}
-                      rev={undefined}
-                    />
-                  ),
-                }
+      {showPopover ? (
+        <Popover content={'全部评审'}>
+          <FloatButton
+            onClick={() => {
+              setOpen(true);
+            }}
+            style={{ bottom: 20, right: 20 }}
+            badge={
+              hasRole && {
+                offset: [-6, 6],
+                count: userCommentState ? (
+                  <CheckOutlined
+                    className="rounded-full text-white"
+                    rev={undefined}
+                    style={{ backgroundColor: '#52c41a' }}
+                  />
+                ) : (
+                  <ExclamationOutlined
+                    className="rounded-full text-white"
+                    style={{ backgroundColor: '#ff0000' }}
+                    rev={undefined}
+                  />
+                ),
               }
-            />
-          </Popover>
-        ) : (
-          ''
-        )}
-        <Modal
-          width={'90vw'}
-          style={{
-            maxWidth: '1000px',
-            top: '10%',
-          }}
-          footer={null}
-          onCancel={() => {
-            setOpen(false);
-          }}
-          destroyOnClose={true}
-          open={open}
-          title={<div className="flex justify-between text-xl">全部评审</div>}
-        >
-          <div className="max-h-[75vh] overflow-y-auto px-4">
-            <MerticApprove />
-            <ApproveBox selectionId={Number(taskId)} />
-          </div>
-        </Modal>
-      </>
+            }
+          />
+        </Popover>
+      ) : (
+        ''
+      )}
+      <Modal
+        width={'90vw'}
+        style={{
+          maxWidth: '1000px',
+          top: '10%',
+        }}
+        footer={null}
+        onCancel={() => {
+          setOpen(false);
+        }}
+        destroyOnClose={true}
+        open={open}
+        title={<div className="flex justify-between text-xl">全部评审</div>}
+      >
+        <div className="max-h-[75vh] overflow-y-auto px-4">
+          <MerticApprove />
+          <ApproveBox selectionId={Number(taskId)} />
+        </div>
+      </Modal>
     </>
   );
 };

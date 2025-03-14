@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useUserInfo } from '@modules/auth/useUserInfo';
 import { Popover } from 'antd';
