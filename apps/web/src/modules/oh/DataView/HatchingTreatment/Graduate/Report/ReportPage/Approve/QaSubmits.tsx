@@ -9,7 +9,7 @@ import {
   useGetReportData,
   ReportStore,
   ReportEvent,
-} from '@modules/oh/DataView/HatchingTreatment/Hatch/Report/ReportPage/store/useReportStore';
+} from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage/store/useReportStore';
 
 const Qasubmit = ({ selectionId }) => {
   const { taskId } = useLabelData();
