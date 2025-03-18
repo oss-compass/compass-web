@@ -16,18 +16,16 @@ import SigCenter from '@modules/oh/DataView/Community/SigCenter';
 import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
 import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
 import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
-// import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
-// import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
-// import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
-// import Graduate from '@modules/oh/DataView/HatchingTreatment/Graduate';
 import UserWorkbench from '@modules/oh/DataView/HatchingTreatment/UserWorkbench';
-import BoardHatch from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardHatch';
-import BoardGraduateBoard from '@modules/oh/DataView/HatchingTreatment/Workbench/BoardGraduateBoard';
 import ReportPage from '@modules/oh/DataView/HatchingTreatment/Hatch/Report/ReportPage';
 import GraduateReport from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateReport';
 import GraduateProject from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateProject';
 import GraduateTable from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateTable';
 import GraduationReport from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage';
+// import SelectionReport from '@modules/oh/DataView/HatchingTreatment/Selection/SelectionReport';
+// import SelectionProject from '@modules/oh/DataView/HatchingTreatment/Selection/SelectionProject';
+// import SelectionTable from '@modules/oh/DataView/HatchingTreatment/Selection/SelectionTable';
+// import SelectionReportPage from '@modules/oh/DataView/HatchingTreatment/Selection/Report/ReportPage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -79,6 +77,24 @@ export const menuItems: MenuItem[] = [
     label: 'TPC 治理',
     icon: <ProjectOutlined rev={undefined} />,
     children: [
+      // {
+      //   key: 'selection',
+      //   label: '选型项目',
+      //   children: [
+      //     {
+      //       key: 'selectionReport',
+      //       label: '报告申请',
+      //     },
+      //     {
+      //       key: 'selectionProject',
+      //       label: '孵化申请',
+      //     },
+      //     {
+      //       key: 'selectionTable',
+      //       label: '申请列表',
+      //     },
+      //   ],
+      // },
       {
         key: 'hatch',
         label: '孵化项目',
@@ -115,20 +131,6 @@ export const menuItems: MenuItem[] = [
           },
         ],
       },
-      {
-        key: 'board',
-        label: '治理看板',
-        children: [
-          {
-            key: 'boardHatch',
-            label: '孵化项目',
-          },
-          {
-            key: 'boardGraduateBoard',
-            label: '毕业项目',
-          },
-        ],
-      },
     ],
   },
   {
@@ -145,15 +147,19 @@ export const componentMap = {
   code: <CodeStatistics />,
   committer: <CommitterStatistics />,
   communityContributions: <CommunityContributions />,
+
   hatchReport: <HatchReport />,
   hatchProject: <HatchProject />,
   hatchTable: <HatchTable />,
   graduateReport: <GraduateReport />,
   graduateProject: <GraduateProject />,
   graduateTable: <GraduateTable />,
-  boardHatch: <BoardHatch />,
-  boardGraduateBoard: <BoardGraduateBoard />,
+
   reportDetailPage: <ReportPage />,
   graduationReportPage: <GraduationReport />,
+  // selectionReport: <SelectionReport />,
+  // selectionProject: <SelectionProject />,
+  // selectionTable: <SelectionTable />,
+  // selectionReportPage: <SelectionReportPage />,
   userWorkbench: <UserWorkbench />,
 };

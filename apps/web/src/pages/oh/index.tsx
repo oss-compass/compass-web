@@ -7,7 +7,7 @@ import NoSsr from '@common/components/NoSsr';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['analyze', 'oh'])),
+      ...(await getLocalesFile(req.cookies, ['home'])),
     },
   };
 };
