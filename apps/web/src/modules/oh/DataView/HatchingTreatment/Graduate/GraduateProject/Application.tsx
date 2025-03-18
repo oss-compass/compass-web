@@ -29,6 +29,7 @@ const SelectionApplication = () => {
         );
         setTimeout(() => {
           openGraduationIssue(report, form.getFieldsValue(true), id);
+          window.location.hash = 'graduateTable?tab=2';
         }, 3000);
       } else {
         toast.error(data.createTpcSoftwareGraduation.message);

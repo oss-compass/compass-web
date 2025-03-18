@@ -31,6 +31,7 @@ const SelectionApplication = () => {
         );
         setTimeout(() => {
           openGiteeIssue(report, form.getFieldsValue(true), id);
+          window.location.hash = 'hatchTable?tab=2';
         }, 3000);
       } else {
         toast.error(data.createTpcSoftwareSelection.message);
