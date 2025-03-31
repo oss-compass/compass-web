@@ -6,10 +6,11 @@ export const validateCommitSHA = (_, value) => {
   return Promise.reject(new Error('请输入有效的 commit SHA'));
 };
 export const validateCoderUrl = (_, value) => {
-  if (value?.includes('gitcode.com')) {
-    return Promise.reject(
-      new Error('Gitcode平台尚未支持！请选择Github或Gitee仓库')
-    );
+  const validHosts = ['github.com', 'gitee.com', 'gitcode.com'];
+  for (let host of validHosts) {
+    if (value?.includes(host)) {
+      return Promise.resolve();
+    }
   }
-  return Promise.resolve();
+  return Promise.reject(new Error('请输入正确的Github、Gitee、Gitcode仓库'));
 };
