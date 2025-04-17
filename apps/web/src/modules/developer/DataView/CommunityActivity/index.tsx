@@ -15,21 +15,23 @@ import UpdatedIssuesCount from './UpdatedIssuesCount';
 import RecentReleasesCount from './RecentReleasesCount';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
-import ConnectLine from '@modules/developer/components/ConnectLine';
+import ConnectLineMini from '@modules/developer/components/ConnectLineMini';
+import TotalScoreRepo from './TotalScoreRepo';
 
 const CommunityActivity = () => {
   const { t } = useTranslation();
   return (
     <>
-      <SectionTitle id={Section.CommunityActivity}>
+      {/* <SectionTitle id={Section.CommunityActivity}>
         {t('metrics_models:activity.title')}
-      </SectionTitle>
+      </SectionTitle> */}
 
       <div className="mb-4">
         <TotalScore />
+        <ConnectLineMini />
+        <TotalScoreRepo />
       </div>
-
-      <div className="relative mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
+      {/* <div className="relative mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         <ConnectLine />
         <ContributorCount />
         <CommitFrequency />
@@ -39,7 +41,7 @@ const CommunityActivity = () => {
         <CodeReviewCount />
         <UpdatedIssuesCount />
         <RecentReleasesCount />
-      </div>
+      </div> */}
     </>
   );
 };

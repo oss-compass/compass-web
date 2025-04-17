@@ -1,22 +1,22 @@
 import React, { useMemo, useState } from 'react';
-import { Organizations } from '@modules/developer/components/SideBar/config';
-import BaseCard from '@common/components/BaseCard';
-import ChartWithData from '@modules/developer/components/ChartWithData';
-import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
-import ScoreConversion from '@modules/developer/components/ScoreConversion';
-import { TransOpt, GenChartOptions } from '@modules/developer/type';
+import BaseCard from '@common/components/BaseCard';
+import { CollaborationDevelopment } from '@modules/developer/components/SideBar/config';
+import { GenChartOptions, TransOpt } from '@modules/developer/type';
+import EChartX from '@common/components/EChartX';
+import ChartWithData from '@modules/developer/components/ChartWithData';
 import useGetLineOption from '@modules/developer/hooks/useGetLineOption';
-
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
+import ImageFallback from '@common/components/ImageFallback';
 
 const TotalScore = () => {
   const { t } = useTranslation();
+
   const tansOpts: TransOpt = {
-    legendName: t('metrics_models:organizations_activity.title'),
     xKey: 'grimoireCreationDate',
-    yKey: 'metricGroupActivity.organizationsActivity',
-    summaryKey: 'summaryGroupActivity.organizationsActivity',
+    yKey: 'metricCodequality.codeQualityGuarantee',
+    legendName: t('metrics_models:collaboration_development_index.title'),
+    summaryKey: 'summaryCodequality.codeQualityGuarantee',
   };
   const {
     getOptions,
@@ -34,18 +34,15 @@ const TotalScore = () => {
 
   return (
     <BaseCard
-      title={'代码提交趋势'}
-      id={Organizations.Overview}
+      className="h-[550px]"
+      title={'仓库贡献关系'}
+      id={CollaborationDevelopment.Overview}
       description={''}
-      docLink={'/docs/metrics-models/niche-creation/organization-activity/'}
+      docLink={
+        '/docs/metrics-models/productivity/collaboration-development-index/'
+      }
       headRight={(ref, fullScreen, setFullScreen) => (
         <>
-          <ScoreConversion
-            onePoint={onePointSys}
-            onChange={(v) => {
-              setOnePointSys(v);
-            }}
-          />
           <CardDropDownMenu
             // downloadImageSize={'full'}
             cardRef={ref}
@@ -70,7 +67,14 @@ const TotalScore = () => {
           <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
             {({ loading, option }) => {
               return (
-                <EChartX containerRef={ref} loading={loading} option={option} />
+                // <EChartX containerRef={ref} loading={loading} option={option} />
+                <ImageFallback
+                  src={'/images/test/test1.png'}
+                  width={1530}
+                  height={450}
+                  fallbackSrc={'/images/default.png'}
+                  alt="logo"
+                />
               );
             }}
           </ChartWithData>

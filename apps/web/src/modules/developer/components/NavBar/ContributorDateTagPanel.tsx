@@ -4,7 +4,7 @@ import { rangeTags } from '@modules/developer/constant';
 import classnames from 'classnames';
 import { useToggle } from 'react-use';
 import useI18RangeTag from './useI18RangeTag';
-import useQueryDateRange from '@modules/developer/DataView/MetricDetail/useVerifyDateRange';
+import useQueryDateRange from '@modules/developer/hooks/useVerifyDateRange';
 import useSwitchRange from '@modules/developer/components/NavBar/useSwitchRange';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'next-i18next';

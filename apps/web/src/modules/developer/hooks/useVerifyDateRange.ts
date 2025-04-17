@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { RangeTag, rangeTags, timeRange } from '@modules/analyze/constant';
-import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
+import { RangeTag, rangeTags, timeRange } from '@modules/developer/constant';
+import useVerifyDetailRangeQuery from '@modules/developer/hooks/useVerifyDetailRangeQuery';
 
 const contributorDefaultVal = {
   range: '6M' as RangeTag,

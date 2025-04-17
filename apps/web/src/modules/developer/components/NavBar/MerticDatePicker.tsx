@@ -2,7 +2,7 @@ import React from 'react';
 import { BiCalendar, BiCaretDown } from 'react-icons/bi';
 import classnames from 'classnames';
 import useI18RangeTag from './useI18RangeTag';
-import useVerifyDateRange from '@modules/developer/DataView/MetricDetail/useVerifyDateRange';
+import useVerifyDateRange from '@modules/developer/hooks/useVerifyDateRange';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import Popper from '@mui/material/Popper';

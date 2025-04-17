@@ -12,13 +12,53 @@ import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
 import { chartUserSettingState } from '@modules/developer/store';
 import { useSnapshot } from 'valtio';
 import ImageFallback from '@common/components/ImageFallback';
+import { TransOpt } from '@modules/developer/type';
+import Tab from '@common/components/Tab';
 
-const LineChart: React.FC<ChartSummaryProps> = ({
+const CalendarChart: React.FC<ChartSummaryProps> = ({
   loading = false,
   xAxis,
   yAxis,
 }) => {
   const { t } = useTranslation();
+  const [tab, setTab] = useState<TabValue>('1');
+
+  const chartTabs = {
+    '1': {
+      legendName: t('analyze:total'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.contributorCount',
+      summaryKey: 'summaryCodequality.contributorCount',
+    },
+    '2': {
+      legendName: t('analyze:code_reviewer'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.activeC1PrCommentsContributorCount',
+      summaryKey: 'summaryCodequality.activeC1PrCommentsContributorCount',
+    },
+    '3': {
+      legendName: t('analyze:pr_creator'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.activeC1PrCreateContributorCount',
+      summaryKey: 'summaryCodequality.activeC1PrCreateContributorCount',
+    },
+    '4': {
+      legendName: t('analyze:commit_author'),
+      xKey: 'grimoireCreationDate',
+      yKey: 'metricCodequality.activeC2ContributorCount',
+      summaryKey: 'summaryCodequality.activeC2ContributorCount',
+    },
+  };
+
+  const tansOpts: TransOpt = chartTabs[tab];
+  type TabValue = keyof typeof chartTabs;
+
+  const tabOptions = [
+    { label: t('analyze:total'), value: '1' },
+    { label: '代码', value: '2' },
+    { label: 'PR', value: '3' },
+    { label: 'Issues', value: '4' },
+  ];
   const [onePointSys, setOnePointSys] = useState(
     chartUserSettingState.onePointSys
   );
@@ -43,7 +83,7 @@ const LineChart: React.FC<ChartSummaryProps> = ({
 
   return (
     <BaseCard
-      title={'贡献分布'}
+      title={'贡献日历'}
       id={Topic.Overview}
       description=""
       headRight={(ref, fullScreen, setFullScreen) => (
@@ -65,13 +105,23 @@ const LineChart: React.FC<ChartSummaryProps> = ({
       )}
     >
       {(containerRef) => (
-        <ImageFallback
-          src={'/images/test/area-stack (2).png'}
-          width={1530}
-          height={350}
-          fallbackSrc={'/images/default.png'}
-          alt="logo"
-        />
+        <>
+          <div className="my-4">
+            <Tab
+              options={tabOptions}
+              value={tab}
+              onChange={(v) => setTab(v as TabValue)}
+            />
+          </div>
+          <ImageFallback
+            src={'/images/test/test.png'}
+            width={1530}
+            height={300}
+            fallbackSrc={'/images/default.png'}
+            alt="logo"
+          />
+        </>
+
         // <EChartX
         //   option={echartsOpts}
         //   loading={loading}
@@ -84,7 +134,7 @@ const LineChart: React.FC<ChartSummaryProps> = ({
 
 const dateKey = 'grimoireCreationDate';
 
-const LineChartWithData = () => {
+const CalendarChartWithData = () => {
   const { t } = useTranslation();
   const opts = [
     {
@@ -126,7 +176,9 @@ const LineChartWithData = () => {
     return transDataForOverview(result, copyOpts, dateKey, repoType);
   }, [copyOpts, data, repoType]);
 
-  return <LineChart loading={isLoading} xAxis={xAxis} yAxis={yAxisResult} />;
+  return (
+    <CalendarChart loading={isLoading} xAxis={xAxis} yAxis={yAxisResult} />
+  );
 };
 
-export default LineChartWithData;
+export default CalendarChartWithData;

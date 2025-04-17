@@ -74,11 +74,11 @@ const CommunityRepos = () => {
   const totalPage = Math.ceil(count / PRE_PAGE);
 
   return (
-    <div className="mb-10">
+    <div className="">
       <BaseCard
         loading={isLoading}
         id={''}
-        title={`${t('analyze:repositories', { count })} `}
+        title={`贡献${t('analyze:repositories', { count })} `}
         description=""
         bodyClass="h-auto"
         headRight={() => (

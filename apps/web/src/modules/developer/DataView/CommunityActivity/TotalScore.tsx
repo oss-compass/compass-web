@@ -9,6 +9,7 @@ import { TransOpt, GenChartOptions } from '@modules/developer/type';
 import useGetLineOption from '@modules/developer/hooks/useGetLineOption';
 
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
+import ImageFallback from '@common/components/ImageFallback';
 
 const TotalScore = () => {
   const { t } = useTranslation();
@@ -34,18 +35,13 @@ const TotalScore = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.title')}
+      className="h-[550px]"
+      title={'开发者协作关系总览'}
       id={Activity.Overview}
-      description={t('metrics_models:community_activity.desc')}
+      description={''}
       docLink={'/docs/metrics-models/robustness/activity/'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <>
-          <ScoreConversion
-            onePoint={onePointSys}
-            onChange={(v) => {
-              setOnePointSys(v);
-            }}
-          />
           <CardDropDownMenu
             // downloadImageSize={'full'}
             cardRef={ref}
@@ -70,7 +66,14 @@ const TotalScore = () => {
           <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
             {({ loading, option }) => {
               return (
-                <EChartX containerRef={ref} loading={loading} option={option} />
+                <ImageFallback
+                  src={'/images/test/test2.png'}
+                  width={1530}
+                  height={450}
+                  fallbackSrc={'/images/default.png'}
+                  alt="logo"
+                />
+                // <EChartX containerRef={ref} loading={loading} option={option} />
               );
             }}
           </ChartWithData>

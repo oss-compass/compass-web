@@ -32,7 +32,7 @@ const CommentFrequency = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:community_activity.metrics.comment_frequency')}
+      title={'Issue评论数量'}
       id={Activity.CommentFrequency}
       description={t(
         'metrics_models:community_activity.metrics.comment_frequency_desc'

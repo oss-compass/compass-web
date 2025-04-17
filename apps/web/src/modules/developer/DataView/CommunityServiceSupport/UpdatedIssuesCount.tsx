@@ -34,9 +34,7 @@ const UpdatedIssuesCount = () => {
         'metrics_models:community_service_and_support.metrics.updated_issues_count'
       )}
       id={Support.UpdatedIssuesCount}
-      description={t(
-        'metrics_models:community_service_and_support.metrics.updated_issues_count_desc'
-      )}
+      description={'每月更新 Issue 数量'}
       weight={t(
         'metrics_models:community_service_and_support.metrics.updated_issues_count_more.weight'
       )}

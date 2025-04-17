@@ -31,13 +31,9 @@ const CommentFrequency = () => {
 
   return (
     <BaseCard
-      title={t(
-        'metrics_models:community_service_and_support.metrics.comment_frequency'
-      )}
+      title={'Issue 评论数量'}
       id={Support.CommentFrequency}
-      description={t(
-        'metrics_models:community_service_and_support.metrics.comment_frequency_desc'
-      )}
+      description={'每月Issue 评论数量'}
       weight={t(
         'metrics_models:community_service_and_support.metrics.comment_frequency_more.weight'
       )}
