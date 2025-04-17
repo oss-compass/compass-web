@@ -31,9 +31,7 @@ const CommitFrequency = () => {
     <BaseCard
       title={t('metrics_models:organization_activity.metrics.commit_frequency')}
       id={Organizations.CommitFrequency}
-      description={t(
-        'metrics_models:organization_activity.metrics.commit_frequency_desc'
-      )}
+      description={'每月代码提交次数'}
       weight={t(
         'metrics_models:organization_activity.metrics.commit_frequency_more.weight'
       )}

@@ -13,6 +13,7 @@ import {
   Topic,
 } from '../config';
 import { SideBarContext } from '@modules/developer/context/SideBarContext';
+import { IoPeopleCircle } from 'react-icons/io5';
 
 const Productivity = () => {
   const { t } = useTranslation();
@@ -51,7 +52,7 @@ const Productivity = () => {
         hash={Topic.Productivity}
         icon={
           <span className="mr-1 h-4 w-4 flex-shrink-0">
-            <ProductivityIcon />
+            <IoPeopleCircle />
           </span>
         }
         menus={menu}

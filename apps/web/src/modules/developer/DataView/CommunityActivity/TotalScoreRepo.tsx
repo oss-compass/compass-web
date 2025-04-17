@@ -4,10 +4,10 @@ import BaseCard from '@common/components/BaseCard';
 import { CollaborationDevelopment } from '@modules/developer/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/developer/type';
 import EChartX from '@common/components/EChartX';
-import ScoreConversion from '@modules/developer/components/ScoreConversion';
 import ChartWithData from '@modules/developer/components/ChartWithData';
 import useGetLineOption from '@modules/developer/hooks/useGetLineOption';
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
+import ImageFallback from '@common/components/ImageFallback';
 
 const TotalScore = () => {
   const { t } = useTranslation();
@@ -34,20 +34,15 @@ const TotalScore = () => {
 
   return (
     <BaseCard
-      title={t('metrics_models:collaboration_development_index.title')}
+      className="h-[550px]"
+      title={'协作贡献分类'}
       id={CollaborationDevelopment.Overview}
-      description={t('metrics_models:collaboration_development_index.desc')}
+      description={''}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/'
       }
       headRight={(ref, fullScreen, setFullScreen) => (
         <>
-          <ScoreConversion
-            onePoint={onePointSys}
-            onChange={(v) => {
-              setOnePointSys(v);
-            }}
-          />
           <CardDropDownMenu
             // downloadImageSize={'full'}
             cardRef={ref}
@@ -72,7 +67,14 @@ const TotalScore = () => {
           <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
             {({ loading, option }) => {
               return (
-                <EChartX containerRef={ref} loading={loading} option={option} />
+                // <EChartX containerRef={ref} loading={loading} option={option} />
+                <ImageFallback
+                  src={'/images/test/test4.png'}
+                  width={1530}
+                  height={450}
+                  fallbackSrc={'/images/default.png'}
+                  alt="logo"
+                />
               );
             }}
           </ChartWithData>
