@@ -4,15 +4,7 @@ import useMetricQueryData from '@modules/developer/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import { Level } from '@modules/developer/constant';
-import DeveloperDashboard from './DeveloperDashboard';
-import Calendar from './Calendar';
-import Languages from './Languages';
-import LineChart from './LineChart';
-import TopRepo from './TopRepo';
-import Radar from './Radar';
-import Cloud from './Cloud';
-
-import ConnectLineMini from '@modules/developer/components/ConnectLineMini';
+import CalendarChart from './CalendarChart';
 
 const Overview: React.FC<{
   data: DeepReadonly<
@@ -24,7 +16,7 @@ const Overview: React.FC<{
       <>
         <div className="flex gap-4 md:flex-col">
           <div className="min-w-0 flex-1 ">
-            <LineChart />
+            <CalendarChart />
           </div>
         </div>
       </>
@@ -39,17 +31,7 @@ const OverviewSummary = () => {
   if (loading) {
     return <Loading />;
   }
-  return (
-    <div className="relative mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
-      <DeveloperDashboard />
-      <Languages />
-      <TopRepo />
-      {/* <ConnectLineMini /> */}
-      <Calendar />
-      <Radar />
-      <Cloud />
-    </div>
-  );
+  return <Overview data={items} />;
 };
 const Loading = () => (
   <div className="h-[430px] animate-pulse rounded border bg-white p-10 px-6 py-6 shadow">

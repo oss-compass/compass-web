@@ -83,11 +83,11 @@ const CalendarChart: React.FC<ChartSummaryProps> = ({
 
   return (
     <BaseCard
-      title={'贡献日历'}
+      title={'贡献类型占比'}
       id={Topic.Overview}
       description=""
-      className="h-[300px]"
-      bodyClass="h-[220px]"
+      className="h-[380px]"
+      bodyClass="h-[320px]"
       headRight={(ref, fullScreen, setFullScreen) => (
         <>
           <CardDropDownMenu
@@ -108,22 +108,11 @@ const CalendarChart: React.FC<ChartSummaryProps> = ({
     >
       {(containerRef) => (
         <>
-          <div className="my-4">
-            <Tab
-              options={tabOptions}
-              value={tab}
-              onChange={(v) => setTab(v as TabValue)}
-            />
-          </div>
           <ImageFallback
-            src={'/images/test/test.png'}
-            width={1530}
-            height={330}
+            src={'/images/test/test6.png'}
+            fill
             fallbackSrc={'/images/default.png'}
             alt="logo"
-            style={{
-              objectFit: 'cover',
-            }}
           />
         </>
 

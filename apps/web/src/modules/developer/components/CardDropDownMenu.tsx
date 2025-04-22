@@ -17,8 +17,8 @@ import { chartUserSettingState } from '@modules/developer/store';
 interface CardDropDownMenuProps {
   downloadImageSize?: 'middle' | 'full';
   cardRef: RefObject<HTMLElement>;
-  fullScreen: boolean;
-  onFullScreen: (v: boolean) => void;
+  fullScreen?: boolean;
+  onFullScreen?: (v: boolean) => void;
 
   enableReferenceLineSwitch?: boolean;
   showAvg?: boolean;

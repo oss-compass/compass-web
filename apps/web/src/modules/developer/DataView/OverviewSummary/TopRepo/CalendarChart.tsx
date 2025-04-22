@@ -13,7 +13,7 @@ import { chartUserSettingState } from '@modules/developer/store';
 import { useSnapshot } from 'valtio';
 import ImageFallback from '@common/components/ImageFallback';
 import { TransOpt } from '@modules/developer/type';
-import Tab from '@common/components/Tab';
+import Pie from './Pie';
 
 const CalendarChart: React.FC<ChartSummaryProps> = ({
   loading = false,
@@ -83,7 +83,7 @@ const CalendarChart: React.FC<ChartSummaryProps> = ({
 
   return (
     <BaseCard
-      title={'贡献日历'}
+      title={'贡献仓库排名'}
       id={Topic.Overview}
       description=""
       className="h-[300px]"
@@ -107,25 +107,9 @@ const CalendarChart: React.FC<ChartSummaryProps> = ({
       )}
     >
       {(containerRef) => (
-        <>
-          <div className="my-4">
-            <Tab
-              options={tabOptions}
-              value={tab}
-              onChange={(v) => setTab(v as TabValue)}
-            />
-          </div>
-          <ImageFallback
-            src={'/images/test/test.png'}
-            width={1530}
-            height={330}
-            fallbackSrc={'/images/default.png'}
-            alt="logo"
-            style={{
-              objectFit: 'cover',
-            }}
-          />
-        </>
+        <div className="flex h-full w-full justify-center">
+          <Pie />
+        </div>
 
         // <EChartX
         //   option={echartsOpts}

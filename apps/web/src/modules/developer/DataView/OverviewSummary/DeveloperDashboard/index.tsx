@@ -10,9 +10,17 @@ import {
 import client from '@common/gqlClient';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
-import Languages from './Languages';
+import { BiChat, BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
+import {
+  AiFillClockCircle,
+  AiOutlineIssuesClose,
+  AiOutlineArrowRight,
+} from 'react-icons/ai';
+import { GoIssueOpened, GoGitPullRequestClosed, GoRepo } from 'react-icons/go';
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
+import BaseCard from '@common/components/BaseCard';
+import { Topic } from '@modules/developer/components/SideBar/config';
+import Pie from '@modules/oh/components/Pie';
 
 const DeveloperDashboard = () => {
   const { compareItems } = useCompareItems();
@@ -30,104 +38,97 @@ const Main = () => {
   const router = useRouter();
   const slugs = router.query.slugs;
   const { label, level } = compareItems[0];
-  const { data, isLoading } = useMetricDashboardQuery(client, {
-    label: label,
-    level: level,
-    beginDate: timeStart,
-    endDate: timeEnd,
-  });
-
-  if (isLoading) {
-    return <Loading />;
-  }
   return (
-    <>
-      <div className="base-card rounded-lg border-2 border-b border-transparent bg-white drop-shadow-sm md:rounded-none">
-        <MetricBoxContributors data={data?.contributorsDetailOverview} />
-        <Languages />
-      </div>
-    </>
+    <BaseCard
+      title={'贡献概览'}
+      id={Topic.Overview}
+      description=""
+      className="h-[300px]"
+      headRight={(ref, fullScreen, setFullScreen) => (
+        <>
+          <CardDropDownMenu
+            cardRef={ref}
+            fullScreen={fullScreen}
+            onFullScreen={(b) => {
+              setFullScreen(b);
+            }}
+            enableReferenceLineSwitch={false}
+          />
+        </>
+      )}
+    >
+      {(containerRef) => (
+        <MetricBoxContributors />
+        // <EChartX
+        //   option={echartsOpts}
+        //   loading={loading}
+        //   containerRef={containerRef}
+        // />
+      )}
+    </BaseCard>
   );
+  // return (
+  //   <>
+  //     <div className="base-card rounded-lg border-2 border-b border-transparent bg-white drop-shadow-sm md:rounded-none">
+  //       <MetricBoxContributors data={data?.contributorsDetailOverview} />
+  //       <Languages />
+  //     </div>
+  //   </>
+  // );
 };
 
-const MetricBoxContributors: React.FC<{
-  data: ContributorDetailOverview;
-}> = ({ data }) => {
-  const { t } = useTranslation();
-  // const cardRef = useRef<HTMLDivElement>(null);
-  // const titleRef = useRef<HTMLDivElement>(null);
-  // const [fullScreen, setFullScreen] = useState(false);
+const MetricBoxContributors = () => {
   return (
-    <div className="relative min-w-0 scroll-mt-[200px] border-b p-5">
-      <div className="flex justify-between">
-        <div className="text-lg font-bold">概览</div>
-        {/* <CardDropDownMenu ={}/> */}
+    <div className="relative flex min-w-0 scroll-mt-[200px] justify-center p-5">
+      <div className="mr-12 grid max-w-[300px] flex-1">
+        <div className="mb-2 flex items-center font-medium">
+          <div className="flex flex-1 items-center">
+            <div className="mr-2 text-lg text-[#ff9d36]">
+              <BiGitCommit />
+            </div>
+            <div className="line-clamp-1 ">Commits</div>
+          </div>
+          <div className="line-clamp-1 w-16 font-semibold">{523}</div>
+        </div>
+        <div className="mb-2 flex items-center font-medium">
+          <div className="flex flex-1 items-center">
+            <div className="mr-2 text-lg text-[#ff9d36]">
+              <BiGitPullRequest />
+            </div>
+            <div className="line-clamp-1 ">PRs</div>
+          </div>
+          <div className="line-clamp-1 w-16 font-semibold">{56}</div>
+        </div>
+        <div className="mb-2 flex items-center font-medium">
+          <div className="flex flex-1 items-center">
+            <div className="mr-2 text-[#ff9d36]">
+              <GoIssueOpened />
+            </div>
+            <div className="line-clamp-1 ">Issues</div>
+          </div>
+          <div className="line-clamp-1 w-16 font-semibold">{129}</div>
+        </div>
+        <div className="mb-2 flex items-center font-medium">
+          <div className="flex flex-1 items-center">
+            <div className="mr-2 text-[#ff9d36]">
+              <BiChat />
+            </div>
+            <div className="line-clamp-1 ">Code Reviews</div>
+          </div>
+          <div className="line-clamp-1 w-16 font-semibold">{71}</div>
+        </div>
+        <div className="mb-2 flex items-center font-medium">
+          <div className="flex flex-1 items-center">
+            <div className="mr-2 text-[#ff9d36]">
+              <GoRepo />
+            </div>
+            <div className="line-clamp-1 ">Contributed to</div>
+          </div>
+          <div className="line-clamp-1 w-16 font-semibold">{236}</div>
+        </div>
       </div>
-      <div className="mt-4 mb-2 grid grid-cols-6 gap-4 pl-12">
-        <div>
-          <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
-              <IoPersonCircle />
-            </div>
-            <div className="line-clamp-1">{data.contributorAllCount}</div>
-          </div>
-          <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
-            总贡献量
-          </div>
-        </div>
-        <div>
-          <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
-              <IoPersonCircle />
-            </div>
-            <div className="line-clamp-1">211</div>
-          </div>
-          <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
-            总 Commit
-          </div>
-        </div>
-        <div>
-          <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
-              <IoPeopleCircle />
-            </div>
-            <div className="line-clamp-1">125</div>
-          </div>
-          <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
-            总 Issues
-          </div>
-        </div>
-        <div>
-          <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
-              <IoPeopleCircle />
-            </div>
-            <div className="line-clamp-1">25</div>
-          </div>
-          <div className="line-clamp-1 pl-7 text-sm text-[#585858]">总 PR</div>
-        </div>
-        <div>
-          <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">{getIcons('github')}</div>
-            <div className="line-clamp-1">flutter</div>
-          </div>
-          <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
-            Top 贡献仓库
-          </div>
-        </div>
-        <div>
-          <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
-              {getIcons(data.highestContributionOrganization.origin)}
-            </div>
-            <div className="line-clamp-1">
-              {data.highestContributionOrganization.name || '/'}
-            </div>
-          </div>
-          <div className="line-clamp-1 pl-7 text-sm text-[#585858]">
-            所属组织
-          </div>
-        </div>
+      <div className="flex w-40 items-center justify-center">
+        <Pie score={80} />
       </div>
     </div>
   );
@@ -159,74 +160,5 @@ const getIcons = (type: string) => {
       return <IoPeopleCircle />;
   }
 };
-const getTopUser = (type, name) => {
-  let url = null;
-  let userIcon = null;
-  if (!name) {
-    userIcon = <IoPersonCircle />;
-  } else {
-    switch (type) {
-      case 'github':
-        url = 'https://github.com/' + name;
-        userIcon = (
-          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100 p-0">
-            <Image
-              src={'https://github.com/' + name + '.png'}
-              onError={(e) => (e.currentTarget.src = '/images/github.png')}
-              unoptimized
-              fill={true}
-              style={{
-                objectFit: 'cover',
-              }}
-              alt="icon"
-              placeholder="blur"
-              blurDataURL="/images/github.png"
-            />
-          </div>
-        );
-        break;
-      case 'gitee':
-        url = 'https://gitee.com/' + name;
-        userIcon = (
-          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
-            <Image
-              src={'https://gitee.com/' + name + '.png'}
-              onError={(e) =>
-                (e.currentTarget.src = '/images/logos/gitee-red.svg')
-              }
-              unoptimized
-              fill={true}
-              alt="icon"
-              placeholder="blur"
-              blurDataURL="/images/logos/gitee-red.svg"
-            />
-          </div>
-        );
-        break;
-      default:
-        userIcon = <IoPersonCircle />;
-        break;
-    }
-  }
 
-  return (
-    <>
-      <div className="mt-1 mr-2 text-[#ccc]">{userIcon}</div>
-      <div className="line-clamp-1">
-        {url ? (
-          <a
-            className="whitespace-nowrap hover:text-[black] hover:underline"
-            href={url}
-            target="_blank"
-            rel={'noreferrer'}
-          >
-            {name}
-          </a>
-        ) : (
-          name || '/'
-        )}
-      </div>
-    </>
-  );
-};
 export default DeveloperDashboard;
