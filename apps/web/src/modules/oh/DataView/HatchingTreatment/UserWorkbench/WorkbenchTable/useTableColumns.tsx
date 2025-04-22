@@ -13,7 +13,6 @@ export const useTableColumns = (anction) => {
           <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
             <Popover content={'查看申请详情'}>
               <FileTextOutlined
-                rev={undefined}
                 onClick={() => {
                   if (record.applicationType === 1) {
                     window.location.hash = `graduationReportPage?taskId=${record.id}&projectId=${record?.softwareReportShortCodes[0]}`;

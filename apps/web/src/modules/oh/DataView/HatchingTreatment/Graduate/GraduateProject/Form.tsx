@@ -29,9 +29,7 @@ const SelectionForm = ({ form, report, setOpenConfirm }) => {
               rules={[{ required: true, message: '请输入!' }]}
             >
               <Input
-                suffix={
-                  <DownOutlined className="text-[#d9d9d9]" rev={undefined} />
-                }
+                suffix={<DownOutlined className="text-[#d9d9d9]" />}
                 disabled={false}
                 onClick={() => {
                   setOpenConfirm(true);

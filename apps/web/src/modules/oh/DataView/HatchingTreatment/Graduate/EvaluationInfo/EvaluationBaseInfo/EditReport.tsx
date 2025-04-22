@@ -293,7 +293,6 @@ const EditReport = ({ report, editSuccess }) => {
       {currentUser?.id === report.userId && (
         <Popover content={'编辑基础信息'}>
           <EditOutlined
-            rev={undefined}
             onClick={() => {
               //   anction(record);
               setOpenConfirm(true);

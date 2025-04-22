@@ -29,7 +29,6 @@ const RefreshReport = ({ report, editSuccess }) => {
       {currentUser?.id === report.userId && (
         <Popover content={'重跑报告'}>
           <ReloadOutlined
-            rev={undefined}
             onClick={() => {
               mutation.mutate({
                 reportId: report.id,

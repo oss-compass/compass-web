@@ -73,7 +73,7 @@ const MetricApprove = () => {
   const genExtra = (metric) => {
     let clarificationState = metricClarificationState?.[metric.key];
     const errorText = (
-      <Tag icon={<ExclamationCircleOutlined rev={undefined} />} color="error">
+      <Tag icon={<ExclamationCircleOutlined />} color="error">
         未审批
       </Tag>
     );
@@ -86,7 +86,7 @@ const MetricApprove = () => {
     );
     if (approvalState.length > 0) {
       return (
-        <Tag icon={<CheckCircleOutlined rev={undefined} />} color="success">
+        <Tag icon={<CheckCircleOutlined />} color="success">
           已赞同
         </Tag>
       );
@@ -96,7 +96,7 @@ const MetricApprove = () => {
     );
     if (rejectState.length > 0) {
       return (
-        <Tag icon={<CheckCircleOutlined rev={undefined} />} color="success">
+        <Tag icon={<CheckCircleOutlined />} color="success">
           已拒绝
         </Tag>
       );

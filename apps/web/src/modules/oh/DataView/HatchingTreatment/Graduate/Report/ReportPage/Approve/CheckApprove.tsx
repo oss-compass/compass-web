@@ -235,7 +235,7 @@ const CheckApprove = ({ selectionId }) => {
         <a onClick={() => handleApprove(type, Number(!state))}>
           {label}
           <span className="ml-2 text-[#3a5bef]">
-            {state && <CheckCircleOutlined rev={undefined} />}
+            {state && <CheckCircleOutlined />}
           </span>
         </a>
       ),
@@ -299,7 +299,7 @@ const CheckApprove = ({ selectionId }) => {
         <a onClick={() => handleApprove(type, state ? 0 : -1)}>
           {label}
           <span className="ml-2 text-[#3a5bef]">
-            {state && <CheckCircleOutlined rev={undefined} />}
+            {state && <CheckCircleOutlined />}
           </span>
         </a>
       ),
@@ -325,7 +325,7 @@ const CheckApprove = ({ selectionId }) => {
                 className="flex items-center !rounded-none"
                 type="primary"
               >
-                <CheckOutlined rev={undefined} />
+                <CheckOutlined />
                 通过
               </Button>
             </Dropdown>
@@ -341,7 +341,7 @@ const CheckApprove = ({ selectionId }) => {
                 className="flex items-center !rounded-none"
                 type="primary"
               >
-                <CloseOutlined rev={undefined} />
+                <CloseOutlined />
                 驳回
               </Button>
             </Dropdown>
@@ -351,7 +351,7 @@ const CheckApprove = ({ selectionId }) => {
         <HasOhRole>
           <div className="flex gap-2">
             <Button className="flex items-center !rounded-none" type="primary">
-              <CheckOutlined rev={undefined} />
+              <CheckOutlined />
               通过
             </Button>
             <Button
@@ -359,7 +359,7 @@ const CheckApprove = ({ selectionId }) => {
               className="flex items-center !rounded-none"
               type="primary"
             >
-              <CloseOutlined rev={undefined} />
+              <CloseOutlined />
               驳回
             </Button>
           </div>

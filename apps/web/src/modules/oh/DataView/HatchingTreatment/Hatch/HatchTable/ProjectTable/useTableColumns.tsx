@@ -19,7 +19,6 @@ export const useTableColumns = (anction) => {
             {record?.targetSoftware && (
               <Popover content={'查看申请详情'}>
                 <FileTextOutlined
-                  rev={undefined}
                   onClick={() => {
                     window.location.hash = `reportDetailPage?taskId=${
                       record.id

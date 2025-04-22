@@ -93,10 +93,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       BadgeContent = createBadge(
         '该项指标需要进行风险澄清！',
         'red',
-        <ExclamationOutlined
-          rev={undefined}
-          className="rounded-full text-xs text-white"
-        />
+        <ExclamationOutlined className="rounded-full text-xs text-white" />
       );
     } else {
       BadgeContent = <TbMessage2 className="text-xl" />;
@@ -118,10 +115,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       BadgeContent = createBadge(
         content,
         '#ff0000',
-        <CloseOutlined
-          rev={undefined}
-          className="rounded-full text-xs text-white"
-        />
+        <CloseOutlined className="rounded-full text-xs text-white" />
       );
     } else {
       if (dimension === '合法合规') {
@@ -132,10 +126,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
           BadgeContent = createBadge(
             content,
             '#52c41a',
-            <CheckOutlined
-              rev={undefined}
-              className="rounded-full text-xs text-white"
-            />
+            <CheckOutlined className="rounded-full text-xs text-white" />
           );
         } else {
           content +=
@@ -161,10 +152,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
           BadgeContent = createBadge(
             content,
             '#52c41a',
-            <CheckOutlined
-              rev={undefined}
-              className="rounded-full text-xs text-white"
-            />
+            <CheckOutlined className="rounded-full text-xs text-white" />
           );
         } else {
           content += getBadgeContent(

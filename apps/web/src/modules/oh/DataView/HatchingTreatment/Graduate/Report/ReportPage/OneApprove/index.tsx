@@ -53,14 +53,12 @@ const Approve = () => {
                 count: userCommentState ? (
                   <CheckOutlined
                     className="rounded-full text-white"
-                    rev={undefined}
                     style={{ backgroundColor: '#52c41a' }}
                   />
                 ) : (
                   <ExclamationOutlined
                     className="rounded-full text-white"
                     style={{ backgroundColor: '#ff0000' }}
-                    rev={undefined}
                   />
                 ),
               }
