@@ -106,38 +106,22 @@ export const useGetMetricIcon = (item, riskFill) => {
   let icon = null;
   if (item.score === null || item.score === -1 || item.score === -2) {
     icon = (
-      <ClockCircleOutlined
-        rev={undefined}
-        className="cursor-pointer text-lg text-[#ABABAB]"
-      />
+      <ClockCircleOutlined className="cursor-pointer text-lg text-[#ABABAB]" />
     );
   } else if (riskFill) {
-    icon = (
-      <CheckCircleOutlined
-        rev={undefined}
-        className="cursor-pointer text-lg "
-      />
-    );
+    icon = <CheckCircleOutlined className="cursor-pointer text-lg " />;
   } else if (item.score == 10) {
-    icon = (
-      <CheckCircleOutlined rev={undefined} className="cursor-pointer text-lg" />
-    );
+    icon = <CheckCircleOutlined className="cursor-pointer text-lg" />;
   } else if (item.score >= 6) {
     icon = (
       <Badge dot>
-        <ExclamationCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg text-[#f8961e]"
-        />
+        <ExclamationCircleOutlined className="cursor-pointer text-lg text-[#f8961e]" />
       </Badge>
     );
   } else {
     icon = (
       <Badge dot>
-        <CloseCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg text-[#ff4d4f]"
-        />
+        <CloseCircleOutlined className="cursor-pointer text-lg text-[#ff4d4f]" />
       </Badge>
     );
   }

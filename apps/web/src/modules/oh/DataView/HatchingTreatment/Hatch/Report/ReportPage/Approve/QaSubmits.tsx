@@ -53,7 +53,7 @@ const Qasubmit = ({ selectionId }) => {
               className="flex items-center !rounded-none"
               type="primary"
             >
-              <CheckOutlined rev={undefined} />
+              <CheckOutlined />
               通过
             </Button>
             <Button
@@ -62,7 +62,7 @@ const Qasubmit = ({ selectionId }) => {
               className="flex items-center !rounded-none"
               type="primary"
             >
-              <CloseOutlined rev={undefined} />
+              <CloseOutlined />
               驳回
             </Button>
           </div>

@@ -4,11 +4,7 @@ import { Spin } from 'antd';
 const Loading = () => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <Spin
-        indicator={
-          <LoadingOutlined style={{ fontSize: 48 }} spin rev={undefined} />
-        }
-      />
+      <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
     </div>
   );
 };

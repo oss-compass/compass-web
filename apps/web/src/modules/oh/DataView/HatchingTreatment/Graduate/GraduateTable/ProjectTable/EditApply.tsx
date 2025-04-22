@@ -172,7 +172,6 @@ const EditApply = ({ report, editSuccess }) => {
       {currentUser?.id === report.userId && (
         <Popover content={'修改毕业申请信息'}>
           <EditOutlined
-            rev={undefined}
             onClick={() => {
               //   anction(record);
               setOpenConfirm(true);

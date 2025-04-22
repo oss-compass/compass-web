@@ -39,9 +39,7 @@ const SelectionForm = ({ form, report, setOpenConfirm }) => {
               rules={[{ required: true, message: '请输入!' }]}
             >
               <Input
-                suffix={
-                  <DownOutlined className="text-[#d9d9d9]" rev={undefined} />
-                }
+                suffix={<DownOutlined className="text-[#d9d9d9]" />}
                 disabled={false}
                 onClick={() => {
                   setOpenConfirm(true);
@@ -240,14 +238,14 @@ const SelectionForm = ({ form, report, setOpenConfirm }) => {
                                     type="primary"
                                     onClick={() => add()}
                                   >
-                                    <PlusOutlined rev={undefined} />
+                                    <PlusOutlined />
                                   </Button>
                                 ) : (
                                   <Button
                                     className="dynamic-delete-button rounded-none pt-0"
                                     onClick={() => remove(field.name)}
                                   >
-                                    <MinusOutlined rev={undefined} />
+                                    <MinusOutlined />
                                   </Button>
                                 )}
                               </Space.Compact>

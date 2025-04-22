@@ -98,48 +98,33 @@ export const useGetMetricIcon = (item, riskFill) => {
   if (riskFill) {
     return (
       <Popover content={getContent(item, true)} title="">
-        <CheckCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg "
-        />
+        <CheckCircleOutlined className="cursor-pointer text-lg " />
       </Popover>
     );
   }
   if (item.score === null) {
     return (
       <Popover content={'功能开发中，敬请期待'} title="">
-        <ClockCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg text-[#ABABAB]"
-        />
+        <ClockCircleOutlined className="cursor-pointer text-lg text-[#ABABAB]" />
       </Popover>
     );
   } else if (item.score === -1) {
     return (
       <Popover content={'未检测到该指标'} title="">
-        <ClockCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg text-[#ABABAB]"
-        />
+        <ClockCircleOutlined className="cursor-pointer text-lg text-[#ABABAB]" />
       </Popover>
     );
   } else if (item.score == 10) {
     return (
       <Popover content={getContent(item)} title="">
-        <CheckCircleOutlined
-          rev={undefined}
-          className="cursor-pointer text-lg "
-        />
+        <CheckCircleOutlined className="cursor-pointer text-lg " />
       </Popover>
     );
   } else if (item.score >= 6) {
     return (
       <Popover content={getContent(item)} title="">
         <Badge dot>
-          <ExclamationCircleOutlined
-            rev={undefined}
-            className="cursor-pointer text-lg text-[#f8961e]"
-          />
+          <ExclamationCircleOutlined className="cursor-pointer text-lg text-[#f8961e]" />
         </Badge>
       </Popover>
     );
@@ -147,10 +132,7 @@ export const useGetMetricIcon = (item, riskFill) => {
     return (
       <Popover content={getContent(item)} title="">
         <Badge dot>
-          <CloseCircleOutlined
-            rev={undefined}
-            className="cursor-pointer text-lg text-[#ff4d4f]"
-          />
+          <CloseCircleOutlined className="cursor-pointer text-lg text-[#ff4d4f]" />
         </Badge>
       </Popover>
     );

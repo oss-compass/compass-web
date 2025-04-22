@@ -33,7 +33,7 @@ export const menuItems: MenuItem[] = [
   {
     key: 'sub1',
     label: '社区总览',
-    icon: <TeamOutlined rev={undefined} />,
+    icon: <TeamOutlined />,
     children: [
       {
         key: 'communityOverview',
@@ -52,7 +52,7 @@ export const menuItems: MenuItem[] = [
   {
     key: 'sub2',
     label: '贡献价值',
-    icon: <PieChartOutlined rev={undefined} />,
+    icon: <PieChartOutlined />,
     children: [
       {
         key: 'contributeOverview',
@@ -75,7 +75,7 @@ export const menuItems: MenuItem[] = [
   {
     key: 'sub3',
     label: 'TPC 治理',
-    icon: <ProjectOutlined rev={undefined} />,
+    icon: <ProjectOutlined />,
     children: [
       // {
       //   key: 'selection',
@@ -136,7 +136,7 @@ export const menuItems: MenuItem[] = [
   {
     key: 'userWorkbench',
     label: '工作台',
-    icon: <FundOutlined rev={undefined} />,
+    icon: <FundOutlined />,
   },
 ];
 export const componentMap = {

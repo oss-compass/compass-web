@@ -22,7 +22,6 @@ const PreviewImage = ({ report }) => {
       {report?.architectureDiagrams.length > 0 && (
         <Popover content={'查看架构图'}>
           <PictureOutlined
-            rev={undefined}
             onClick={() => {
               setOpenConfirm(true);
             }}

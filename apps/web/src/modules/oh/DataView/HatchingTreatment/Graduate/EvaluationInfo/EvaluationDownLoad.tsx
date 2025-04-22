@@ -22,7 +22,7 @@ const DownloadReportRow = ({ item, setLoadingDownLoad }) => {
       },
     }
   );
-  return <LoadingOutlined rev={undefined} />;
+  return <LoadingOutlined />;
 };
 
 const EvaluationDownLoad = ({ item }) => {
@@ -56,7 +56,7 @@ const EvaluationDownLoad = ({ item }) => {
             }}
             className=""
           >
-            <DownloadOutlined rev={undefined} />
+            <DownloadOutlined />
           </div>
         </Popover>
       )}
@@ -68,7 +68,7 @@ const EvaluationDownLoad = ({ item }) => {
     //       setLoadingDownLoad={setLoadingDownLoad}
     //     />
     //   ) : (
-    //     <DownloadOutlined rev={undefined} />
+    //     <DownloadOutlined   />
     //   )}
     // </Dropdown>
   );

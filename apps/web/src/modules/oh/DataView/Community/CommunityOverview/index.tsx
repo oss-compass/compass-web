@@ -64,7 +64,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -82,7 +82,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -100,7 +100,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -118,7 +118,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -136,7 +136,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -153,7 +153,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -175,7 +175,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -192,7 +192,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -212,7 +212,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
@@ -232,7 +232,7 @@ const ContributeOverview = () => {
                     fontSize: '30px',
                   }}
                   // prefix={}
-                  // suffix={<ArrowUpOutlined rev={undefined} />}
+                  // suffix={<ArrowUpOutlined   />}
                 />
               </Card>
             </Col>
