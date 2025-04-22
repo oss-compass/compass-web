@@ -65,7 +65,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         <a onClick={() => handleApprove(type, Number(!state))}>
           {label}
           <span className="ml-2 text-[#3a5bef]">
-            {state && <CheckCircleOutlined rev={undefined} />}
+            {state && <CheckCircleOutlined />}
           </span>
         </a>
       ),
@@ -105,7 +105,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         <a onClick={() => handleApprove(type, state ? 0 : -1)}>
           {label}
           <span className="ml-2 text-[#3a5bef]">
-            {state && <CheckCircleOutlined rev={undefined} />}
+            {state && <CheckCircleOutlined />}
           </span>
         </a>
       ),
@@ -208,7 +208,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
                     className="flex items-center !rounded-none"
                     type="primary"
                   >
-                    <CheckOutlined rev={undefined} />
+                    <CheckOutlined />
                     赞同
                   </Button>
                 </Dropdown>
@@ -219,7 +219,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
                     className="flex items-center !rounded-none"
                     type="primary"
                   >
-                    <CloseOutlined rev={undefined} />
+                    <CloseOutlined />
                     拒绝
                   </Button>
                 </Dropdown>
@@ -232,7 +232,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
                   className="flex items-center !rounded-none"
                   type="primary"
                 >
-                  <CheckOutlined rev={undefined} />
+                  <CheckOutlined />
                   赞同
                 </Button>
                 <Button
@@ -240,7 +240,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
                   className="flex items-center !rounded-none"
                   type="primary"
                 >
-                  <CloseOutlined rev={undefined} />
+                  <CloseOutlined />
                   拒绝
                 </Button>
               </div>

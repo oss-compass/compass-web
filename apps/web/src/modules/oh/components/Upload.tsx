@@ -79,7 +79,7 @@ const MyUpload: React.FC<{
 
   const uploadButton = (
     <button style={{ border: 0, background: 'none' }} type="button">
-      <PlusOutlined rev={undefined} />
+      <PlusOutlined />
       <div style={{ marginTop: 8 }}>上传图片</div>
     </button>
   );

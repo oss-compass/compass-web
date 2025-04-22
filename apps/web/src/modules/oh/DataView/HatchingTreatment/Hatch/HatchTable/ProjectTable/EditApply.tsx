@@ -244,14 +244,14 @@ const EditReportForm = ({ report, refetch }) => {
                           type="primary"
                           onClick={() => add()}
                         >
-                          <PlusOutlined rev={undefined} />
+                          <PlusOutlined />
                         </Button>
                       ) : (
                         <Button
                           className="dynamic-delete-button rounded-none pt-0"
                           onClick={() => remove(field.name)}
                         >
-                          <MinusOutlined rev={undefined} />
+                          <MinusOutlined />
                         </Button>
                       )}
                     </Col>
@@ -289,7 +289,6 @@ const EditApply = ({ report, editSuccess }) => {
       {currentUser?.id === report.userId && (
         <Popover content={'修改毕业申请信息'}>
           <EditOutlined
-            rev={undefined}
             onClick={() => {
               //   anction(record);
               setOpenConfirm(true);

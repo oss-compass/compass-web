@@ -42,7 +42,6 @@ const EvaluationDetail = ({
                 back();
               }}
               className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]"
-              rev={undefined}
             />
           )}
           {targetSoftware === getPathname(item.codeUrl) && (
@@ -52,10 +51,7 @@ const EvaluationDetail = ({
                 metricItemScoreList={metricItemScoreList}
               />
               <Popover content="目标选型软件">
-                <CheckCircleOutlined
-                  className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]"
-                  rev={undefined}
-                />
+                <CheckCircleOutlined className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]" />
               </Popover>
             </>
           )}

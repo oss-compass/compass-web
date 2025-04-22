@@ -35,7 +35,6 @@ export const useTableColumns = (anction) => {
             {record?.tpcSoftwareReportMetric?.status === 'success' ? (
               <Popover content={'查看报告'}>
                 <FileTextOutlined
-                  rev={undefined}
                   onClick={() => {
                     window.location.hash =
                       'reportDetailPage?projectId=' + record.shortCode;
@@ -44,10 +43,7 @@ export const useTableColumns = (anction) => {
               </Popover>
             ) : (
               <Popover content={'报告生成中'}>
-                <FileTextOutlined
-                  rev={undefined}
-                  className="cursor-not-allowed text-[#ABABAB]"
-                />
+                <FileTextOutlined className="cursor-not-allowed text-[#ABABAB]" />
               </Popover>
             )}
             <EditReport report={record} editSuccess={anction} />

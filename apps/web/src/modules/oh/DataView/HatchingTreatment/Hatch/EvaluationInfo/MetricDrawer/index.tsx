@@ -118,7 +118,7 @@ const MetricDrawer = ({
                 title="上一个"
                 onClick={() => nextAndPre('pre')}
               >
-                <LeftOutlined rev={undefined} />
+                <LeftOutlined />
               </Button>
               <Button
                 className="flex items-center !rounded-none"
@@ -127,7 +127,7 @@ const MetricDrawer = ({
                 title="下一个"
                 onClick={() => nextAndPre('next')}
               >
-                <RightOutlined rev={undefined} />
+                <RightOutlined />
               </Button>
             </div>
           </div>

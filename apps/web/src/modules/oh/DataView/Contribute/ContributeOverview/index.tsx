@@ -22,7 +22,7 @@ const ContributeOverview = () => {
                   value={40.69}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>
@@ -36,7 +36,7 @@ const ContributeOverview = () => {
                   value={46.39}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>
@@ -52,7 +52,7 @@ const ContributeOverview = () => {
                   value={18.23}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>
@@ -66,7 +66,7 @@ const ContributeOverview = () => {
                   value={63.28}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>
@@ -84,7 +84,7 @@ const ContributeOverview = () => {
                   value={90.69}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>
@@ -100,7 +100,7 @@ const ContributeOverview = () => {
                   value={10.51}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>
@@ -114,7 +114,7 @@ const ContributeOverview = () => {
                   value={18.23}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>
@@ -128,7 +128,7 @@ const ContributeOverview = () => {
                   value={53.28}
                   precision={2}
                   valueStyle={{ color: '#cf1322' }}
-                  prefix={<ArrowUpOutlined rev={undefined} />}
+                  prefix={<ArrowUpOutlined />}
                   suffix="%"
                 />
               </Card>

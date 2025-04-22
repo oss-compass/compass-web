@@ -43,7 +43,6 @@ const EvaluationDetail = ({
                 back();
               }}
               className="mr-2 mt-1 cursor-pointer text-2xl text-[#3f60ef]"
-              rev={undefined}
             />
           )}
           <div className="text-lg font-semibold">
