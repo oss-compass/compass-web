@@ -17,7 +17,7 @@ const SaaSWorkingGroup = () => {
       intro: '开源前端开发',
     },
     {
-      avatar: '/images/about/李升保@2x.png',
+      avatar: '/images/about/李升保.png',
       name: '李升保',
       intro: '开源软件工程师',
     },
