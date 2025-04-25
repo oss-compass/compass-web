@@ -57,10 +57,11 @@ export function getProvider(url: string) {
 //github.com/cli/cli  => https://github.com/cli/cli
 export function fillHttps(url?: string): string {
   if (!url) return '';
-  if (url.indexOf('https') === -1) {
-    return `https://${url}`;
+  const trimmedUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+  if (trimmedUrl.indexOf('https') === -1) {
+    return `https://${trimmedUrl}`;
   }
-  return url;
+  return trimmedUrl;
 }
 
 //https://github.com/cli/cli  => github.com/cli/cli

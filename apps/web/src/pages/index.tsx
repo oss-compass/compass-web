@@ -35,7 +35,7 @@ const Home: React.FC = (props) => {
     <>
       <Header />
       <main>
-        <LatestUpdate />
+        {/* <LatestUpdate /> */}
         <Banner />
         <Purpose />
         <HotFields />
