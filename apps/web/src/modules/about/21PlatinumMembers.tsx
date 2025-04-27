@@ -54,6 +54,12 @@ const PlatinumMembers = () => {
       width: 164,
       height: 46,
     },
+    {
+      name: '中国科学院软件研究所',
+      logo: '/images/about/软件所.jpg',
+      width: 164,
+      height: 48,
+    },
   ];
   return (
     <>
@@ -61,7 +67,11 @@ const PlatinumMembers = () => {
       <Grid className="mb-10 grid-cols-4 bg-[#fafafa] py-10 px-16">
         {data.map((item) => {
           return (
-            <div key={item.name} className="flex items-center justify-center">
+            <div
+              key={item.name}
+              title={item.name}
+              className="flex items-center justify-center"
+            >
               <Image
                 src={item.logo}
                 width={item.width}
