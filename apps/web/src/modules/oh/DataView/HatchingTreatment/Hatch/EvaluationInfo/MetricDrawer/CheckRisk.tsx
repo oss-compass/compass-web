@@ -4,7 +4,6 @@ import {
   CheckOutlined,
   CloseOutlined,
   CheckCircleOutlined,
-  TeamOutlined,
 } from '@ant-design/icons';
 import { useAcceptTpcSoftwareReportMetricClarificationMutation } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
@@ -191,7 +190,6 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   };
   const approveitems = getApproveItems();
   const rejectitems = getRejectItems();
-
   return (
     <>
       {count > 0 && (
@@ -199,7 +197,11 @@ const CheckRisk = ({ report, metricName, dimension }) => {
           {hasOhRole ? (
             <>
               <Popover>
-                <Dropdown menu={{ items: approveitems }} placement="bottom">
+                <Dropdown
+                  overlayStyle={{ zIndex: 9999 }}
+                  menu={{ items: approveitems }}
+                  placement="bottom"
+                >
                   <Button
                     className="flex items-center !rounded-none"
                     type="primary"
@@ -210,7 +212,11 @@ const CheckRisk = ({ report, metricName, dimension }) => {
                 </Dropdown>
               </Popover>
               <Popover>
-                <Dropdown menu={{ items: rejectitems }} placement="bottom">
+                <Dropdown
+                  overlayStyle={{ zIndex: 9999 }}
+                  menu={{ items: rejectitems }}
+                  placement="bottom"
+                >
                   <Button
                     className="flex items-center !rounded-none"
                     type="primary"

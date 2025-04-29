@@ -27,12 +27,12 @@ const Approve = () => {
     commentCompliancePermission ||
     commentLegalPermission;
 
-  const [open, setOpen] = useState(hasRole);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (state === 2) {
-      setOpen(hasRole);
-    }
+    // if (state === 2) {
+    setOpen(Boolean(hasRole));
+    // }
   }, [hasRole, state]);
   const userCommentState = useMemo(() => {
     return (commentState || []).some((item) => item.userId === userId);

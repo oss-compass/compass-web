@@ -203,7 +203,11 @@ const CheckRisk = ({ report, metricName, dimension }) => {
           {hasOhRole ? (
             <>
               <Popover>
-                <Dropdown menu={{ items: approveitems }} placement="bottom">
+                <Dropdown
+                  overlayStyle={{ zIndex: 9999 }}
+                  menu={{ items: approveitems }}
+                  placement="bottom"
+                >
                   <Button
                     className="flex items-center !rounded-none"
                     type="primary"
@@ -214,7 +218,11 @@ const CheckRisk = ({ report, metricName, dimension }) => {
                 </Dropdown>
               </Popover>
               <Popover>
-                <Dropdown menu={{ items: rejectitems }} placement="bottom">
+                <Dropdown
+                  overlayStyle={{ zIndex: 9999 }}
+                  menu={{ items: rejectitems }}
+                  placement="bottom"
+                >
                   <Button
                     className="flex items-center !rounded-none"
                     type="primary"
