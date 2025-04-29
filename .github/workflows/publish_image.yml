@@ -50,6 +50,7 @@ jobs:
           file: .github/deployment/web/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          no-cache: true # 强制不使用缓存构建镜像
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             SENTRY_DSN=${{secrets.SENTRY_DSN}}
