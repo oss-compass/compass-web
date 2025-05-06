@@ -8,9 +8,10 @@ const Divider = () => (
 );
 const SideBarContent = () => {
   const { result } = useMenuContent();
+
   return (
     <>
-      {result.map((item) => {
+      {result?.map((item) => {
         return (
           <div key={item.name}>
             <MenuTopicItem

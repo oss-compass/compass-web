@@ -15,7 +15,7 @@ const APIDocumentation = () => {
       <h1 className="mb-8 text-3xl font-bold">
         {t('open_api:api_documentation')}
       </h1>
-      {apiData.map((group) => (
+      {apiData?.map((group) => (
         <div
           id={group.name}
           className="scroll-mt-[100px] pb-4"

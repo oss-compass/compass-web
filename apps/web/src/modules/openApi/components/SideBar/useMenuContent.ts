@@ -16,7 +16,7 @@ const useMenuContent = () => {
     if (isLoading) {
       return { isLoading, result: null };
     }
-    let result = apiData.tags.map((tag) => {
+    let result = apiData?.tags.map((tag) => {
       const menuItems = [];
 
       // 遍历所有API路径
