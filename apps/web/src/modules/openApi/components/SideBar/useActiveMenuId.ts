@@ -5,6 +5,9 @@ const useActiveMenuId = (activeId: string) => {
   const { isLoading, result } = useMenuContent();
 
   return useMemo(() => {
+    if (isLoading) {
+      return { topicId: '', menuId: '', subMenuId: '' };
+    }
     for (const item of result) {
       if (item.name === activeId) {
         return { topicId: item.name, menuId: '', subMenuId: '' };
