@@ -22,7 +22,7 @@ const SideBarContent = () => {
                 </MenuItem>
               ))}
             >
-              {item.name}
+              {item.convertName}
             </MenuTopicItem>
             <Divider />
           </div>

@@ -22,7 +22,7 @@ const APIDocumentation = () => {
           key={group.name}
         >
           <h3 className="group mb-4 ml-4 text-2xl font-semibold">
-            {group.name}
+            {group.convertName}
             <a href={`#${group.name}`}>
               <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
                 #

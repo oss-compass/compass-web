@@ -17,10 +17,18 @@ const ParamsTable = ({ params }: { params: ApiParameter[] }) => {
         bordered
         size="small"
         columns={[
-          { title: 'Name', dataIndex: 'name' },
-          { title: 'Required', render: (_, r) => (r?.required ? 'Yes' : 'No') },
-          { title: 'Type', dataIndex: 'type' },
-          { title: 'Description', dataIndex: 'description' },
+          { title: 'Name', dataIndex: 'name', key: 'name' },
+          {
+            title: 'Required',
+            render: (_, r) => (r?.required ? 'Yes' : 'No'),
+            key: 'name',
+          },
+          { title: 'Type', dataIndex: 'type', key: 'type' },
+          {
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+          },
         ]}
         dataSource={params}
         pagination={false}

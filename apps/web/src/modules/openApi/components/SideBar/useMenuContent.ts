@@ -8,7 +8,12 @@ const convertPath = (path: string) => {
   }
   return res.replaceAll('/', '_');
 };
-
+const convertNameFun = (str: string) => {
+  return str
+    .replace(/_([a-z])/g, (match, letter) => ' ' + letter.toUpperCase())
+    .replace(/^./, (match) => match.toUpperCase())
+    .trim();
+};
 const useMenuContent = () => {
   const { data: apiData, isLoading } = useApiData();
 
@@ -18,7 +23,7 @@ const useMenuContent = () => {
     }
     let result = apiData?.tags.map((tag) => {
       const menuItems = [];
-
+      const convertName = convertNameFun(tag.name);
       // 遍历所有API路径
       Object.entries(apiData.paths).forEach(([path, methods]) => {
         Object.entries(methods).forEach(([httpMethod, methodInfo]) => {
@@ -45,6 +50,7 @@ const useMenuContent = () => {
 
       return {
         ...tag,
+        convertName,
         menus: menuItems,
       };
     });
