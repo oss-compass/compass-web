@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { EChartsOption } from 'echarts';
 import { Activity } from '@modules/developer/components/SideBar/config';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import useGetLineOption from '@modules/developer/hooks/useGetLineOption';
 import { ChartDataProvider } from '@modules/developer/options';
 import ChartOptionContainer from '@modules/developer/components/Container/ChartOptionContainer';

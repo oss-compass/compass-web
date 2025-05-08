@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from 'react';
-import { graphic, init } from 'echarts';
+import React from 'react';
+import EchartCommon from '@modules/developer/components/EchartCommon';
 
-const Pie = () => {
+const Pie = ({ containerRef }) => {
   let data = [
     { name: 'flutter', value: 97 },
     { name: 'react', value: 68 },
@@ -15,28 +15,27 @@ const Pie = () => {
   for (let i = 0; i < seriesData.length; i++) {
     maxSeriesData.push(MAX);
   }
-  maxSeriesData;
   let barLinearColors = [
-    '#ef6667',
-    '#fcb32c',
-    '#409eff',
-    '#76d275',
-    new graphic.LinearGradient(0, 1, 1, 1, [
-      { offset: 0, color: '#EB3B5A' },
-      { offset: 1, color: '#FE9C5A' },
-    ]),
-    new graphic.LinearGradient(0, 1, 1, 1, [
-      { offset: 0, color: '#FA8231' },
-      { offset: 1, color: '#FFD14C' },
-    ]),
-    new graphic.LinearGradient(0, 1, 1, 1, [
-      { offset: 0, color: '#F7B731' },
-      { offset: 1, color: '#FFEE96' },
-    ]),
-    new graphic.LinearGradient(0, 1, 1, 1, [
-      { offset: 0, color: '#0fe5e3' },
-      { offset: 1, color: '#2ca1d6' },
-    ]),
+    '#4791ff',
+    '#02bc77',
+    '#ffd950',
+    '#ff2366',
+    // new graphic.LinearGradient(0, 1, 1, 1, [
+    //   { offset: 0, color: '#EB3B5A' },
+    //   { offset: 1, color: '#FE9C5A' },
+    // ]),
+    // new graphic.LinearGradient(0, 1, 1, 1, [
+    //   { offset: 0, color: '#FA8231' },
+    //   { offset: 1, color: '#FFD14C' },
+    // ]),
+    // new graphic.LinearGradient(0, 1, 1, 1, [
+    //   { offset: 0, color: '#F7B731' },
+    //   { offset: 1, color: '#FFEE96' },
+    // ]),
+    // new graphic.LinearGradient(0, 1, 1, 1, [
+    //   { offset: 0, color: '#0fe5e3' },
+    //   { offset: 1, color: '#2ca1d6' },
+    // ]),
   ];
 
   function rankBarColor(cData) {
@@ -51,24 +50,29 @@ const Pie = () => {
     });
     return tempData;
   }
-  var option = {
-    tooltip: {
-      backgroundColor: 'rgba(50,50,50,.3)',
-      textStyle: {
-        color: '#222',
-      },
-    },
+  const option = {
+    // tooltip: {
+    //   backgroundColor: 'rgba(50,50,50,.3)',
+    //   textStyle: {
+    //     color: '#222',
+    //   },
+    // },
     grid: {
       top: 20,
       bottom: 20,
+      left: -10,
+      right: 30,
+      containLabel: true,
     },
-    xAxis: {
-      type: 'value',
-      splitLine: { show: false },
-      axisLabel: { show: false },
-      axisTick: { show: false },
-      axisLine: { show: false },
-    },
+    xAxis: [
+      {
+        type: 'value',
+        splitLine: { show: false },
+        axisLabel: { show: false },
+        axisTick: { show: false },
+        axisLine: { show: false },
+      },
+    ],
     yAxis: [
       {
         type: 'category',
@@ -78,7 +82,7 @@ const Pie = () => {
         data: xAxisData,
         axisLabel: {
           padding: [0, 8, 20, 0],
-          fontSize: 12,
+          // fontSize: 12,
           rich: {
             nt1: {
               fontSize: 0,
@@ -151,7 +155,8 @@ const Pie = () => {
           verticalAlign: 'bottom',
           lineHeight: 32,
           fontSize: 14,
-          padding: [-3, 4],
+          fontWeight: 600,
+          padding: [2, 4],
         },
         data: xAxisData.reverse(),
       },
@@ -160,35 +165,28 @@ const Pie = () => {
       {
         zlevel: 1,
         type: 'bar',
-        barWidth: 8,
+        barWidth: 6,
         data: rankBarColor(seriesData),
         itemStyle: {
-          normal: {
-            barBorderRadius: 30,
-          },
+          borderRadius: 30,
         },
       },
       {
         type: 'bar',
-        barWidth: 8,
+        barWidth: 6,
         barGap: '-100%',
         itemStyle: {
-          normal: {
-            barBorderRadius: 30,
-            color: 'rgba(0,0,0,0.04)',
-          },
+          borderRadius: 30,
+          color: '#f3f5f8',
         },
         label: {
-          normal: {
-            color: '#333',
-            show: true,
-            position: ['98%', '-15px'],
-            textStyle: {
-              fontSize: 14,
-            },
-            formatter: function (params) {
-              return rankBarColor(seriesData)[params.dataIndex]['value'];
-            },
+          color: '#333',
+          show: true,
+          position: ['96%', '-20px'],
+          fontSize: 14,
+          // fontWeight: 600,
+          formatter: function (params) {
+            return rankBarColor(seriesData)[params.dataIndex]['value'];
           },
         },
         data: maxSeriesData,
@@ -196,13 +194,17 @@ const Pie = () => {
     ],
   };
 
-  const cardRef = useRef<HTMLDivElement>(null);
+  // const cardRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    let chart = init(cardRef.current);
-    chart.setOption(option);
-  }, [option]);
+  // useEffect(() => {
+  //   let chart = init(cardRef.current);
+  //   chart.setOption(option);
+  // }, [option]);
 
-  return <div className="h-full w-[600px]" ref={cardRef}></div>;
+  return (
+    <>
+      <EchartCommon option={option} containerRef={containerRef} />
+    </>
+  );
 };
 export default React.memo(Pie);

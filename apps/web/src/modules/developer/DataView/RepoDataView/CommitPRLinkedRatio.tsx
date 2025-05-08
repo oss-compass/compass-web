@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/developer/components/SideBar/config';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import EChartX from '@common/components/EChartX';
 import { ChartDataProvider } from '@modules/developer/options';
 import ChartOptionContainer from '@modules/developer/components/Container/ChartOptionContainer';

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ChartSummaryProps, getLineOption, line } from '@common/options';
 import { useTranslation } from 'next-i18next';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/developer/hooks/useMetricQueryData';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
@@ -108,13 +108,13 @@ const CalendarChart: React.FC<ChartSummaryProps> = ({
     >
       {(containerRef) => (
         <>
-          <div className="my-4">
+          {/* <div className="my-4">
             <Tab
               options={tabOptions}
               value={tab}
               onChange={(v) => setTab(v as TabValue)}
             />
-          </div>
+          </div> */}
           <ImageFallback
             src={'/images/test/test.png'}
             width={1530}

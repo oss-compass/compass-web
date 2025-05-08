@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Organizations } from '@modules/developer/components/SideBar/config';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import ChartWithData from '@modules/developer/components/ChartWithData';
 import EChartX from '@common/components/EChartX';
 import { TransOpt, GenChartOptions } from '@modules/developer/type';

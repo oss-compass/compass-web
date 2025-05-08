@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import CommunityDropDownMenu from './CommunityDropDownMenu';
 import { useCommunityReposQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';

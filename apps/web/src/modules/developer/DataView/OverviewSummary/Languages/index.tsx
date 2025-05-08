@@ -6,7 +6,7 @@ import ErrorFallback from '@common/components/ErrorFallback';
 import { Level } from '@modules/developer/constant';
 import Languages from './Languages';
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 
 const Overview: React.FC<{
   data: DeepReadonly<

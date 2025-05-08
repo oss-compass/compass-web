@@ -13,7 +13,7 @@ const LinkX: React.FC<PropsWithChildren<DocLinkProps & { href: string }>> = ({
   ...restProps
 }) => {
   const { i18n } = useTranslation();
-  const isDocLink = href.includes('/docs/');
+  const isDocLink = href?.includes('/docs/');
   const localHref = addDocsLinkLocale(href, i18n.language);
 
   return (

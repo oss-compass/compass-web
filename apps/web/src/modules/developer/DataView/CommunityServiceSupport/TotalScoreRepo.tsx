@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import { CollaborationDevelopment } from '@modules/developer/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/developer/type';
 import EChartX from '@common/components/EChartX';

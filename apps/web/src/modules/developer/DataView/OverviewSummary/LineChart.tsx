@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ChartSummaryProps, getLineOption, line } from '@common/options';
 import { useTranslation } from 'next-i18next';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import EChartX from '@common/components/EChartX';
 import useMetricQueryData from '@modules/developer/hooks/useMetricQueryData';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';

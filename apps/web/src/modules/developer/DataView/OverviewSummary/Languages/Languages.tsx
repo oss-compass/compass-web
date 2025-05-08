@@ -10,13 +10,17 @@ const Languages = () => {
     { name: 'Others', percentage: 2 },
   ];
   const colorList = [
-    '#ef6667',
-    '#fcb32c',
-    '#409eff',
-    '#76d275',
-    '#5686a5',
+    '#4791ff',
+    '#02bc77',
+    '#ffd950',
+    '#ff2366',
+    // '#ef6667',
+    // '#fcb32c',
+    // '#409eff',
+    // '#76d275',
     '#505d96',
     '#ededed',
+    '#5686a5',
   ];
   return (
     <div className="relative flex h-full max-w-[870px] scroll-mt-[200px] flex-col items-center justify-center gap-8 p-5">

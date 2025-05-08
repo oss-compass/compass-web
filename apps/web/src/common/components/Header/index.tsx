@@ -11,6 +11,7 @@ import ChangeLanguage from './ChangeLanguage';
 import SubmitYouProject from './SubmitYouProject';
 import User from './User';
 import { useUserInfo } from '@modules/auth';
+import MoreDropdown from './MoreDropdown';
 
 const Header: React.FC<{
   sticky?: boolean;
@@ -78,7 +79,7 @@ const Header: React.FC<{
             <LinkX href="/blog" legacyBehavior>
               <a
                 className={
-                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
+                  '3xl:hidden mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
                 }
               >
                 {t('common:header.news')}
@@ -88,10 +89,13 @@ const Header: React.FC<{
 
             <Link
               href="/about"
-              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
+              className={
+                '3xl:hidden mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
+              }
             >
               {t('common:header.about')}
             </Link>
+            <MoreDropdown />
           </div>
 
           <div className="flex h-full items-center">

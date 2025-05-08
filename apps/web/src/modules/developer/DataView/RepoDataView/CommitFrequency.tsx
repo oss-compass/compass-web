@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CollaborationDevelopment } from '@modules/developer/components/SideBar/config';
 import { GenChartOptions, TransOpt } from '@modules/developer/type';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import EChartX from '@common/components/EChartX';
 import { useTranslation } from 'next-i18next';
 import useGetLineOption from '@modules/developer/hooks/useGetLineOption';

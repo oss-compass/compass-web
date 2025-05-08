@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { CollaborationDevelopment } from '@modules/developer/components/SideBar/config';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import { useTranslation } from 'next-i18next';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';

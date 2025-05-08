@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { CollaborationDevelopment } from '@modules/developer/components/SideBar/config';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import Tab from '@common/components/Tab';
 import EChartX from '@common/components/EChartX';
 import { ChartDataProvider } from '@modules/developer/options';

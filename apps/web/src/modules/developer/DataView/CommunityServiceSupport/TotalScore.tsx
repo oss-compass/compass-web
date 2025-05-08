@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Support } from '@modules/developer/components/SideBar/config';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import ChartWithData from '@modules/developer/components/ChartWithData';
 import ScoreConversion from '@modules/developer/components/ScoreConversion';
 import { TransOpt, GenChartOptions } from '@modules/developer/type';

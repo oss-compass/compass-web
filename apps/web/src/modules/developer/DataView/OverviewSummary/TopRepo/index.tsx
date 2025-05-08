@@ -4,19 +4,19 @@ import useMetricQueryData from '@modules/developer/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import { Level } from '@modules/developer/constant';
-import CalendarChart from './CalendarChart';
+import TopRepo from './TopRepo';
 
 const Overview: React.FC<{
   data: DeepReadonly<
     { label: string; level: Level; result: MetricQuery | undefined }[]
   >;
 }> = ({ data }) => {
-  if (data.length == 1) {
+  if (data.length !== 999) {
     return (
       <>
         <div className="flex gap-4 md:flex-col">
           <div className="min-w-0 flex-1 ">
-            <CalendarChart />
+            <TopRepo />
           </div>
         </div>
       </>

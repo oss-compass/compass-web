@@ -18,9 +18,9 @@ import {
 } from 'react-icons/ai';
 import { GoIssueOpened, GoGitPullRequestClosed, GoRepo } from 'react-icons/go';
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
-import BaseCard from '@common/components/BaseCard';
+import BaseCard from '@modules/developer/components/DeveloperCard';
 import { Topic } from '@modules/developer/components/SideBar/config';
-import Pie from '@modules/oh/components/Pie';
+import Pie from './Pie';
 
 const DeveloperDashboard = () => {
   const { compareItems } = useCompareItems();
@@ -80,7 +80,7 @@ const Main = () => {
 const MetricBoxContributors = () => {
   return (
     <div className="relative flex min-w-0 scroll-mt-[200px] justify-center p-5">
-      <div className="mr-12 grid max-w-[300px] flex-1">
+      <div className="mr-10 grid max-w-[300px] flex-1 sm:mr-0 xl:mr-2">
         <div className="mb-2 flex items-center font-medium">
           <div className="flex flex-1 items-center">
             <div className="mr-2 text-lg text-[#ff9d36]">
