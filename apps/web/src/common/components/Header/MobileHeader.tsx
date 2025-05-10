@@ -63,10 +63,14 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
       href: '/docs/community',
       icon: null,
     },
-
     {
       title: t('common:header.about'),
       href: '/about',
+      icon: null,
+    },
+    {
+      title: 'API',
+      href: '/openApi',
       icon: null,
     },
   ];
