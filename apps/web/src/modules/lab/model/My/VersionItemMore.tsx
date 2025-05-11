@@ -40,7 +40,7 @@ const VersionItemMore = ({
         placement="bottom-end"
         content={
           <div className="w-24 rounded bg-white shadow">
-            {permissions?.canUpdate ? (
+            {
               <div
                 className="cursor-pointer border-b px-2 py-2 text-sm"
                 onClick={() => {
@@ -51,7 +51,7 @@ const VersionItemMore = ({
               >
                 {t('common:btn.edit')}
               </div>
-            ) : null}
+            }
 
             {permissions?.canDestroy ? (
               <div

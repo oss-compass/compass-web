@@ -65,13 +65,17 @@ const ModelVersionEdit = () => {
 
   const updateMutation = useUpdateLabModelVersionMutation(gqlClient, {
     onSuccess(res) {
-      toast.success((t) => <>更新成功</>, {
-        position: 'top-center',
-      });
+      console.log(res);
+      toast.success(
+        () => <>{res.updateLabModelVersion.message || '更新成功'}</>,
+        {
+          position: 'top-center',
+        }
+      );
       router.push('/lab/model/my');
     },
     onError(res) {
-      toast.error((t) => <>更新失败</>, {
+      toast.error(() => <>更新失败</>, {
         position: 'top-center',
       });
     },

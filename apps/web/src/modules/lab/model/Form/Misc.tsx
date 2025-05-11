@@ -40,9 +40,11 @@ export const MetricThresholdRanges = ({ threshold }: { threshold: number }) => {
   const { t } = useTranslation();
   return (
     <>
-      {t('lab:weight_threshold_settings.between', {
-        end: threshold,
-      })}
+      {threshold === 0
+        ? ''
+        : t('lab:weight_threshold_settings.between', {
+            end: threshold,
+          })}
     </>
   );
 };

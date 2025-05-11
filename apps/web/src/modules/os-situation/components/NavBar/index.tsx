@@ -1,0 +1,30 @@
+import React from 'react';
+import classnames from 'classnames';
+// import LabelItems from './LabelItems';
+import useMetrics from '@modules/os-situation/hooks/useMetrics';
+import { Select } from 'antd';
+
+const NavBar = ({ defaultValue }) => {
+  const merticsList = useMetrics();
+  const handleChange = (value: string, option) => {};
+  console.log(defaultValue);
+  return (
+    <nav
+      className={classnames(
+        'flex h-14 items-center justify-between border-b border-t bg-white px-6',
+        'md:h-12 md:px-4'
+      )}
+    >
+      <Select
+        defaultValue={defaultValue}
+        style={{ width: 120, backgroundColor: '#e6f4ff', color: 'blue' }}
+        onChange={handleChange}
+        options={merticsList.map((item) => {
+          return { label: item.title, value: item.name, ...item };
+        })}
+      />
+    </nav>
+  );
+};
+
+export default NavBar;

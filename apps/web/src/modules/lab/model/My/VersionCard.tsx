@@ -54,14 +54,14 @@ const VersionCard = ({
       <div className="flex-1">
         <div className="flex justify-between px-3 py-2 pb-4">
           <div className="flex-1 truncate font-bold">{version.version}</div>
-          {permissions.canUpdate || permissions.canDestroy ? (
+          {
             <VersionItemMore
               permissions={permissions}
               modelId={modelId}
               versionId={version.id}
               event$={event$}
             />
-          ) : null}
+          }
         </div>
         <div className="px-3 pb-2">
           {modelIsPublic ? (

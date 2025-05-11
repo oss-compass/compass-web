@@ -3,6 +3,7 @@ import usePageLoadHashScroll from '@common/hooks/usePageLoadHashScroll';
 import LabChartNav from './component/LabChartNav';
 import CardTotalScore from './component/CardTotalScore';
 import LayoutMetricCards from './component/LayoutMetricCards';
+import LayoutMetricTable from './component/LayoutMetricTable';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import useLabData from './hooks/useLabData';
 import CommunityRepos from './CommunityRepos';
@@ -10,6 +11,7 @@ import { actions } from './state';
 import { useLabModelVersion } from '../hooks';
 import useVerifiedItems from './hooks/useVerifiedItems';
 import { Level } from '@modules/analyze/constant';
+import { getTableMetric } from './component/utils';
 
 const LoadingUi = () => (
   <div className="rounded-lg bg-white  px-6 py-6 drop-shadow-sm">
@@ -34,6 +36,7 @@ const Content = () => {
   const { compareItems } = useVerifiedItems();
   const { data } = useLabModelVersion();
   const isScore = data?.labModelVersion?.isScore;
+  const tableMetricList = getTableMetric(data);
   const id = useHashchangeEvent();
   useEffect(() => {
     if (id && id.startsWith('comment')) {
@@ -46,6 +49,12 @@ const Content = () => {
         compareItems[0].level === Level.COMMUNITY && <CommunityRepos />}
       {isScore && <CardTotalScore className="mb-6" />}
       <LayoutMetricCards />
+      {tableMetricList.length > 0 && (
+        <LayoutMetricTable
+          tableMetricList={tableMetricList}
+          compareItems={compareItems}
+        />
+      )}
     </>
   );
 };
