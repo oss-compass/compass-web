@@ -1,0 +1,67 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "前端",
+      "开发框架",
+      "数据库",
+      "人工智能",
+      "操作系统",
+      "云原生",
+      "区块链",
+      "大数据",
+      "移动应用",
+      "机器人",
+      "编程语言",
+      "富媒体",
+      "网络通信",
+      "芯片",
+      "IoT 物联网",
+      "智能汽车",
+      "工业软件"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    { "name": "前端", "type": "line", "smooth": true, "data": [150, 117, 67] },
+    {
+      "name": "开发框架",
+      "type": "line",
+      "smooth": true,
+      "data": [78, 43, 20]
+    },
+    { "name": "数据库", "type": "line", "smooth": true, "data": [49, 37, 22] },
+    {
+      "name": "人工智能",
+      "type": "line",
+      "smooth": true,
+      "data": [37, 33, 25]
+    },
+    {
+      "name": "操作系统",
+      "type": "line",
+      "smooth": true,
+      "data": [27, 29, 14]
+    },
+    { "name": "云原生", "type": "line", "smooth": true, "data": [20, 18, 10] },
+    { "name": "区块链", "type": "line", "smooth": true, "data": [17, 6, 6] },
+    { "name": "大数据", "type": "line", "smooth": true, "data": [16, 13, 9] },
+    { "name": "移动应用", "type": "line", "smooth": true, "data": [12, 5, 1] },
+    { "name": "机器人", "type": "line", "smooth": true, "data": [9, 2, 3] },
+    { "name": "编程语言", "type": "line", "smooth": true, "data": [8, 3, 5] },
+    { "name": "富媒体", "type": "line", "smooth": true, "data": [7, 2, 3] },
+    { "name": "网络通信", "type": "line", "smooth": true, "data": [6, 5, 6] },
+    { "name": "芯片", "type": "line", "smooth": true, "data": [5, 1, 3] },
+    { "name": "IoT 物联网", "type": "line", "smooth": true, "data": [4, 4, 1] },
+    { "name": "智能汽车", "type": "line", "smooth": true, "data": [1, 0, 0] },
+    { "name": "工业软件", "type": "line", "smooth": true, "data": [1, 2, 2] }
+  ]
+}

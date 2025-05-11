@@ -15,14 +15,17 @@ const NavBar = ({ defaultValue }) => {
         'md:h-12 md:px-4'
       )}
     >
-      <Select
-        defaultValue={defaultValue}
-        style={{ width: 120, backgroundColor: '#e6f4ff', color: 'blue' }}
-        onChange={handleChange}
-        options={merticsList.map((item) => {
-          return { label: item.title, value: item.name, ...item };
-        })}
-      />
+      <div className="flex items-center">
+        <div className="text-base font-semibold">指标：</div>
+        <Select
+          defaultValue={defaultValue}
+          style={{ width: 120, backgroundColor: '#e6f4ff', color: 'blue' }}
+          onChange={handleChange}
+          options={merticsList.map((item) => {
+            return { label: item.title, value: item.name, ...item };
+          })}
+        />
+      </div>
     </nav>
   );
 };

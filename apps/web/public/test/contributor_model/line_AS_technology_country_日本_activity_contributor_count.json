@@ -1,0 +1,127 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "前端",
+      "开发框架",
+      "操作系统",
+      "数据库",
+      "人工智能",
+      "云原生",
+      "移动应用",
+      "区块链",
+      "编程语言",
+      "网络通信",
+      "机器人",
+      "大数据",
+      "富媒体",
+      "芯片",
+      "IoT 物联网",
+      "智能汽车",
+      "工业软件"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "前端",
+      "type": "line",
+      "smooth": true,
+      "data": [4740, 4548, 3845]
+    },
+    {
+      "name": "开发框架",
+      "type": "line",
+      "smooth": true,
+      "data": [3327, 3387, 2718]
+    },
+    {
+      "name": "操作系统",
+      "type": "line",
+      "smooth": true,
+      "data": [1636, 1570, 1398]
+    },
+    {
+      "name": "数据库",
+      "type": "line",
+      "smooth": true,
+      "data": [1499, 1550, 1220]
+    },
+    {
+      "name": "人工智能",
+      "type": "line",
+      "smooth": true,
+      "data": [1261, 1287, 1138]
+    },
+    {
+      "name": "云原生",
+      "type": "line",
+      "smooth": true,
+      "data": [1176, 1177, 977]
+    },
+    {
+      "name": "移动应用",
+      "type": "line",
+      "smooth": true,
+      "data": [551, 557, 438]
+    },
+    {
+      "name": "区块链",
+      "type": "line",
+      "smooth": true,
+      "data": [383, 377, 333]
+    },
+    {
+      "name": "编程语言",
+      "type": "line",
+      "smooth": true,
+      "data": [348, 336, 327]
+    },
+    {
+      "name": "网络通信",
+      "type": "line",
+      "smooth": true,
+      "data": [317, 304, 296]
+    },
+    {
+      "name": "机器人",
+      "type": "line",
+      "smooth": true,
+      "data": [284, 362, 360]
+    },
+    {
+      "name": "大数据",
+      "type": "line",
+      "smooth": true,
+      "data": [200, 196, 160]
+    },
+    {
+      "name": "富媒体",
+      "type": "line",
+      "smooth": true,
+      "data": [158, 155, 117]
+    },
+    { "name": "芯片", "type": "line", "smooth": true, "data": [141, 151, 141] },
+    {
+      "name": "IoT 物联网",
+      "type": "line",
+      "smooth": true,
+      "data": [136, 126, 107]
+    },
+    {
+      "name": "智能汽车",
+      "type": "line",
+      "smooth": true,
+      "data": [73, 75, 98]
+    },
+    { "name": "工业软件", "type": "line", "smooth": true, "data": [31, 29, 32] }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "北京市",
+      "上海市",
+      "深圳市",
+      "杭州市",
+      "成都市",
+      "南京市",
+      "广州市",
+      "武汉市",
+      "西安市",
+      "重庆市",
+      "苏州市",
+      "天津市",
+      "长沙市",
+      "合肥市",
+      "哈尔滨市",
+      "大连市",
+      "厦门市",
+      "福州市",
+      "济南市",
+      "沈阳市",
+      "南昌市",
+      "太原市",
+      "昆明市",
+      "宁波市",
+      "佛山市",
+      "东莞市",
+      "兰州市",
+      "泉州市",
+      "南宁市",
+      "洛阳市"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "北京市",
+      "type": "line",
+      "smooth": true,
+      "data": [26516, 26486, 28340]
+    },
+    {
+      "name": "上海市",
+      "type": "line",
+      "smooth": true,
+      "data": [23999, 21550, 23398]
+    },
+    {
+      "name": "深圳市",
+      "type": "line",
+      "smooth": true,
+      "data": [9593, 7251, 9591]
+    },
+    {
+      "name": "杭州市",
+      "type": "line",
+      "smooth": true,
+      "data": [9033, 7523, 7217]
+    },
+    {
+      "name": "成都市",
+      "type": "line",
+      "smooth": true,
+      "data": [6712, 5820, 5958]
+    },
+    {
+      "name": "南京市",
+      "type": "line",
+      "smooth": true,
+      "data": [6208, 5583, 6151]
+    },
+    {
+      "name": "广州市",
+      "type": "line",
+      "smooth": true,
+      "data": [5929, 5820, 7121]
+    },
+    {
+      "name": "武汉市",
+      "type": "line",
+      "smooth": true,
+      "data": [5229, 5549, 4553]
+    },
+    {
+      "name": "西安市",
+      "type": "line",
+      "smooth": true,
+      "data": [3412, 3098, 3342]
+    },
+    {
+      "name": "重庆市",
+      "type": "line",
+      "smooth": true,
+      "data": [3075, 2892, 3342]
+    },
+    {
+      "name": "苏州市",
+      "type": "line",
+      "smooth": true,
+      "data": [2348, 2451, 1695]
+    },
+    {
+      "name": "天津市",
+      "type": "line",
+      "smooth": true,
+      "data": [2209, 2791, 3002]
+    },
+    {
+      "name": "长沙市",
+      "type": "line",
+      "smooth": true,
+      "data": [2153, 1939, 2082]
+    },
+    {
+      "name": "合肥市",
+      "type": "line",
+      "smooth": true,
+      "data": [1957, 2484, 2761]
+    },
+    {
+      "name": "哈尔滨市",
+      "type": "line",
+      "smooth": true,
+      "data": [1229, 1428, 1888]
+    },
+    {
+      "name": "大连市",
+      "type": "line",
+      "smooth": true,
+      "data": [1145, 1224, 725]
+    },
+    {
+      "name": "厦门市",
+      "type": "line",
+      "smooth": true,
+      "data": [1033, 817, 1161]
+    },
+    {
+      "name": "福州市",
+      "type": "line",
+      "smooth": true,
+      "data": [1006, 781, 1355]
+    },
+    {
+      "name": "济南市",
+      "type": "line",
+      "smooth": true,
+      "data": [922, 714, 725]
+    },
+    {
+      "name": "沈阳市",
+      "type": "line",
+      "smooth": true,
+      "data": [810, 714, 1500]
+    },
+    {
+      "name": "南昌市",
+      "type": "line",
+      "smooth": true,
+      "data": [587, 544, 1064]
+    },
+    {
+      "name": "太原市",
+      "type": "line",
+      "smooth": true,
+      "data": [558, 475, 193]
+    },
+    {
+      "name": "昆明市",
+      "type": "line",
+      "smooth": true,
+      "data": [531, 577, 386]
+    },
+    {
+      "name": "宁波市",
+      "type": "line",
+      "smooth": true,
+      "data": [475, 577, 386]
+    },
+    {
+      "name": "佛山市",
+      "type": "line",
+      "smooth": true,
+      "data": [446, 340, 289]
+    },
+    {
+      "name": "东莞市",
+      "type": "line",
+      "smooth": true,
+      "data": [419, 271, 193]
+    },
+    {
+      "name": "兰州市",
+      "type": "line",
+      "smooth": true,
+      "data": [362, 340, 435]
+    },
+    { "name": "泉州市", "type": "line", "smooth": true, "data": [306, 134, 0] },
+    {
+      "name": "南宁市",
+      "type": "line",
+      "smooth": true,
+      "data": [250, 203, 289]
+    },
+    {
+      "name": "洛阳市",
+      "type": "line",
+      "smooth": true,
+      "data": [250, 101, 193]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "title": { "text": "总贡献者: 640540 国家贡献者: 213111 比率: 0.33" },
+  "tooltip": { "trigger": "axis", "axisPointer": { "type": "shadow" } },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "xAxis": [
+    {
+      "type": "category",
+      "data": [
+        "德国",
+        "法国",
+        "美利坚合众国",
+        "西班牙",
+        "荷兰",
+        "波兰",
+        "意大利",
+        "瑞典",
+        "瑞士",
+        "南非"
+      ],
+      "axisTick": { "alignWithLabel": true }
+    }
+  ],
+  "yAxis": [{ "type": "value" }],
+  "series": [
+    {
+      "name": "Direct",
+      "type": "bar",
+      "barWidth": "60%",
+      "data": [
+        36130, 30333, 17586, 16336, 14232, 14041, 13702, 9307, 5510, 4959
+      ]
+    }
+  ]
+}

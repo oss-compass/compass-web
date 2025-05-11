@@ -1,0 +1,171 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "北京市",
+      "上海市",
+      "深圳市",
+      "杭州市",
+      "广州市",
+      "成都市",
+      "南京市",
+      "长沙市",
+      "武汉市",
+      "苏州市",
+      "天津市",
+      "哈尔滨市",
+      "西安市",
+      "重庆市",
+      "合肥市",
+      "厦门市",
+      "大连市",
+      "济南市",
+      "福州市",
+      "沈阳市"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": [
+      "2022 Q1",
+      "2022 Q2",
+      "2022 Q3",
+      "2022 Q4",
+      "2023 Q1",
+      "2023 Q2",
+      "2023 Q3",
+      "2023 Q4",
+      "2024 Q1",
+      "2024 Q2",
+      "2024 Q3",
+      "2024 Q4"
+    ]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "北京市",
+      "type": "line",
+      "smooth": true,
+      "data": [133, 146, 149, 140, 156, 152, 169, 168, 182, 198, 159, 150]
+    },
+    {
+      "name": "上海市",
+      "type": "line",
+      "smooth": true,
+      "data": [60, 72, 71, 88, 82, 71, 60, 76, 105, 111, 106, 123]
+    },
+    {
+      "name": "深圳市",
+      "type": "line",
+      "smooth": true,
+      "data": [32, 39, 39, 45, 49, 53, 40, 40, 49, 42, 44, 34]
+    },
+    {
+      "name": "杭州市",
+      "type": "line",
+      "smooth": true,
+      "data": [15, 15, 11, 15, 31, 29, 42, 47, 51, 66, 59, 43]
+    },
+    {
+      "name": "广州市",
+      "type": "line",
+      "smooth": true,
+      "data": [6, 4, 6, 11, 6, 4, 6, 6, 7, 4, 4, 4]
+    },
+    {
+      "name": "成都市",
+      "type": "line",
+      "smooth": true,
+      "data": [6, 4, 4, 4, 4, 6, 6, 9, 9, 7, 6, 6]
+    },
+    {
+      "name": "南京市",
+      "type": "line",
+      "smooth": true,
+      "data": [4, 4, 6, 4, 4, 4, 4, 11, 9, 7, 6, 6]
+    },
+    {
+      "name": "长沙市",
+      "type": "line",
+      "smooth": true,
+      "data": [4, 4, 4, 2, 2, 6, 2, 2, 4, 7, 4, 2]
+    },
+    {
+      "name": "武汉市",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 2, 2, 2, 2, 2, 4, 2, 2, 7, 6, 6]
+    },
+    {
+      "name": "苏州市",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 0, 0, 0, 4, 13, 6, 9, 7, 9, 6, 11]
+    },
+    {
+      "name": "天津市",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 4, 2, 4, 6, 4, 6, 4, 4, 4, 2, 0]
+    },
+    {
+      "name": "哈尔滨市",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 2, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2]
+    },
+    {
+      "name": "西安市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0]
+    },
+    {
+      "name": "重庆市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0]
+    },
+    {
+      "name": "合肥市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 0, 2, 2, 4, 4, 4, 4, 4]
+    },
+    {
+      "name": "厦门市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "name": "大连市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "name": "济南市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "name": "福州市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 0, 0]
+    },
+    {
+      "name": "沈阳市",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0]
+    }
+  ]
+}

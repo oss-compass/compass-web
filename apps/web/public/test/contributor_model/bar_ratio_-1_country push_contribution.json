@@ -1,0 +1,35 @@
+{
+  "title": { "text": "总贡献者: 329 国家贡献者: 79 比率: 0.24" },
+  "tooltip": { "trigger": "axis", "axisPointer": { "type": "shadow" } },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "xAxis": [
+    {
+      "type": "category",
+      "data": [
+        "佛得角",
+        "葡萄牙",
+        "格陵兰",
+        "美利坚合众国",
+        "印度",
+        "尼日利亚",
+        "瑞典",
+        "俄罗斯",
+        "加纳",
+        "匈牙利"
+      ],
+      "axisTick": { "alignWithLabel": true }
+    }
+  ],
+  "yAxis": [{ "type": "value" }],
+  "series": [
+    {
+      "name": "Direct",
+      "type": "bar",
+      "barWidth": "60%",
+      "data": [
+        0.5823, 0.1772, 0.0506, 0.038, 0.0253, 0.0253, 0.0253, 0.0127, 0.0127,
+        0.0127
+      ]
+    }
+  ]
+}

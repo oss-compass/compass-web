@@ -1,0 +1,242 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "美国",
+      "中国",
+      "中国-Github",
+      "印度",
+      "英国",
+      "巴西",
+      "德国",
+      "韩国",
+      "法国",
+      "加拿大",
+      "俄罗斯",
+      "日本",
+      "罗马尼亚",
+      "中国-Gitee",
+      "印度尼西亚",
+      "荷兰",
+      "澳大利亚",
+      "西班牙",
+      "波兰",
+      "尼日利亚",
+      "瑞典",
+      "肯尼亚",
+      "新加坡",
+      "土耳其",
+      "越南",
+      "加纳",
+      "台湾",
+      "葡萄牙",
+      "阿根廷",
+      "孟加拉国",
+      "哥伦比亚",
+      "巴基斯坦"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "美国",
+      "type": "line",
+      "smooth": true,
+      "data": [72820277, 78357531, 89564485]
+    },
+    {
+      "name": "中国",
+      "type": "line",
+      "smooth": true,
+      "data": [44314927, 37706023, 46772559]
+    },
+    {
+      "name": "中国-Github",
+      "type": "line",
+      "smooth": true,
+      "data": [35696196, 31009016, 37440580]
+    },
+    {
+      "name": "印度",
+      "type": "line",
+      "smooth": true,
+      "data": [30798215, 40580256, 54937213]
+    },
+    {
+      "name": "英国",
+      "type": "line",
+      "smooth": true,
+      "data": [25331053, 27772857, 33372887]
+    },
+    {
+      "name": "巴西",
+      "type": "line",
+      "smooth": true,
+      "data": [18904160, 22163411, 26921812]
+    },
+    {
+      "name": "德国",
+      "type": "line",
+      "smooth": true,
+      "data": [17618970, 17547255, 21089264]
+    },
+    {
+      "name": "韩国",
+      "type": "line",
+      "smooth": true,
+      "data": [14428365, 15685668, 17215416]
+    },
+    {
+      "name": "法国",
+      "type": "line",
+      "smooth": true,
+      "data": [13026700, 17054035, 20847647]
+    },
+    {
+      "name": "加拿大",
+      "type": "line",
+      "smooth": true,
+      "data": [12506270, 14377148, 18178692]
+    },
+    {
+      "name": "俄罗斯",
+      "type": "line",
+      "smooth": true,
+      "data": [10020150, 12319409, 16413245]
+    },
+    {
+      "name": "日本",
+      "type": "line",
+      "smooth": true,
+      "data": [8965521, 9544476, 11165053]
+    },
+    {
+      "name": "罗马尼亚",
+      "type": "line",
+      "smooth": true,
+      "data": [8823366, 11988756, 10945640]
+    },
+    {
+      "name": "中国-Gitee",
+      "type": "line",
+      "smooth": true,
+      "data": [8618731, 6697007, 9331979]
+    },
+    {
+      "name": "印度尼西亚",
+      "type": "line",
+      "smooth": true,
+      "data": [7681289, 8870120, 16581025]
+    },
+    {
+      "name": "荷兰",
+      "type": "line",
+      "smooth": true,
+      "data": [6632298, 7334239, 11423824]
+    },
+    {
+      "name": "澳大利亚",
+      "type": "line",
+      "smooth": true,
+      "data": [6326566, 6468387, 6775493]
+    },
+    {
+      "name": "西班牙",
+      "type": "line",
+      "smooth": true,
+      "data": [6291913, 7010160, 8290710]
+    },
+    {
+      "name": "波兰",
+      "type": "line",
+      "smooth": true,
+      "data": [5746723, 6655615, 6629907]
+    },
+    {
+      "name": "尼日利亚",
+      "type": "line",
+      "smooth": true,
+      "data": [5169139, 6040085, 4577758]
+    },
+    {
+      "name": "瑞典",
+      "type": "line",
+      "smooth": true,
+      "data": [4580518, 7245938, 7634618]
+    },
+    {
+      "name": "肯尼亚",
+      "type": "line",
+      "smooth": true,
+      "data": [4280795, 6256894, 6316067]
+    },
+    {
+      "name": "新加坡",
+      "type": "line",
+      "smooth": true,
+      "data": [3913112, 3051526, 3486844]
+    },
+    {
+      "name": "土耳其",
+      "type": "line",
+      "smooth": true,
+      "data": [3845804, 4781898, 7532458]
+    },
+    {
+      "name": "越南",
+      "type": "line",
+      "smooth": true,
+      "data": [3401137, 4595986, 7962221]
+    },
+    {
+      "name": "加纳",
+      "type": "line",
+      "smooth": true,
+      "data": [3394605, 5137946, 6904625]
+    },
+    {
+      "name": "台湾",
+      "type": "line",
+      "smooth": true,
+      "data": [3293613, 2742977, 3563546]
+    },
+    {
+      "name": "葡萄牙",
+      "type": "line",
+      "smooth": true,
+      "data": [3267051, 4283715, 5666932]
+    },
+    {
+      "name": "阿根廷",
+      "type": "line",
+      "smooth": true,
+      "data": [3228444, 3766329, 4072657]
+    },
+    {
+      "name": "孟加拉国",
+      "type": "line",
+      "smooth": true,
+      "data": [2937468, 3712320, 4845446]
+    },
+    {
+      "name": "哥伦比亚",
+      "type": "line",
+      "smooth": true,
+      "data": [2678363, 3083424, 4040268]
+    },
+    {
+      "name": "巴基斯坦",
+      "type": "line",
+      "smooth": true,
+      "data": [2595832, 3215847, 6022008]
+    }
+  ]
+}

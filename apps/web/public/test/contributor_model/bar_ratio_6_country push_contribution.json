@@ -1,0 +1,35 @@
+{
+  "title": { "text": "总贡献者: 65849 国家贡献者: 21942 比率: 0.33" },
+  "tooltip": { "trigger": "axis", "axisPointer": { "type": "shadow" } },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "xAxis": [
+    {
+      "type": "category",
+      "data": [
+        "孟加拉国",
+        "缅甸",
+        "吉尔吉斯斯坦",
+        "哈萨克斯坦",
+        "俄罗斯",
+        "美利坚合众国",
+        "印度",
+        "不丹",
+        "英国",
+        "加拿大"
+      ],
+      "axisTick": { "alignWithLabel": true }
+    }
+  ],
+  "yAxis": [{ "type": "value" }],
+  "series": [
+    {
+      "name": "Direct",
+      "type": "bar",
+      "barWidth": "60%",
+      "data": [
+        0.8659, 0.033, 0.0274, 0.0151, 0.0134, 0.0132, 0.0063, 0.0028, 0.0021,
+        0.0019
+      ]
+    }
+  ]
+}
