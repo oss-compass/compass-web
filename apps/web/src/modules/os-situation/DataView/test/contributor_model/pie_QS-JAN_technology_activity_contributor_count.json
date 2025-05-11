@@ -1,0 +1,54 @@
+{
+  "title": { "text": "", "left": "center" },
+  "tooltip": { "trigger": "item" },
+  "legend": { "orient": "vertical", "left": "left" },
+  "series": [
+    {
+      "name": "Access From",
+      "type": "pie",
+      "radius": "50%",
+      "data": [
+        { "value": 8249, "name": "Software Development and Management tools" },
+        { "value": 4048, "name": "Development toolkit" },
+        { "value": 3798, "name": "Development Framework" },
+        { "value": 3059, "name": "General Management Software" },
+        { "value": 2905, "name": "Frontend" },
+        { "value": 2750, "name": "Artificial Intelligence AI" },
+        { "value": 1930, "name": "Database" },
+        { "value": 1576, "name": "Web Application Development" },
+        { "value": 1244, "name": "Software development library" },
+        {
+          "value": 1123,
+          "name": "DevOps and network management and maintaining"
+        },
+        { "value": 968, "name": "Operation System" },
+        { "value": 707, "name": "Server Applications" },
+        { "value": 668, "name": "blockchain" },
+        { "value": 619, "name": "Handset and Mobile Application Development" },
+        { "value": 582, "name": "Multi Media Software" },
+        { "value": 466, "name": "Cutting Edge Technologies" },
+        { "value": 445, "name": "Security" },
+        { "value": 390, "name": "Browser related" },
+        { "value": 360, "name": "Hardware" },
+        { "value": 274, "name": "Virtualization and Cloud Computing" },
+        { "value": 248, "name": "Software Development Library" },
+        { "value": 188, "name": "Firmware" },
+        { "value": 175, "name": "Other" },
+        { "value": 163, "name": "Big Data" },
+        { "value": 151, "name": "Search Engine" },
+        { "value": 76, "name": "Office Software" },
+        { "value": 11, "name": "Testing Tools" },
+        { "value": 7, "name": "Software Development library" },
+        { "value": 6, "name": "Docker" },
+        { "value": 5, "name": "Data Visualization" }
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 10,
+          "shadowOffsetX": 0,
+          "shadowColor": "rgba(0, 0, 0, 0.5)"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "title": { "text": "总贡献者: 21914 国家贡献者: 5892 比率: 0.27" },
+  "tooltip": { "trigger": "axis", "axisPointer": { "type": "shadow" } },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "xAxis": [
+    {
+      "type": "category",
+      "data": [
+        "澳大利亚",
+        "美利坚合众国",
+        "法国",
+        "印度",
+        "俄罗斯",
+        "英国",
+        "紐西蘭",
+        "德国",
+        "Nouvelle-Calédonie (zone économique exclusive)",
+        "斯里兰卡"
+      ],
+      "axisTick": { "alignWithLabel": true }
+    }
+  ],
+  "yAxis": [{ "type": "value" }],
+  "series": [
+    {
+      "name": "Direct",
+      "type": "bar",
+      "barWidth": "60%",
+      "data": [
+        0.9134, 0.0178, 0.0073, 0.0068, 0.0059, 0.0059, 0.0049, 0.0031, 0.0027,
+        0.0024
+      ]
+    }
+  ]
+}

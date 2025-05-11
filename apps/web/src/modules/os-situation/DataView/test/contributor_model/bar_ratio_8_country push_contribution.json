@@ -1,0 +1,35 @@
+{
+  "title": { "text": "总贡献者: 463455 国家贡献者: 103154 比率: 0.22" },
+  "tooltip": { "trigger": "axis", "axisPointer": { "type": "shadow" } },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "xAxis": [
+    {
+      "type": "category",
+      "data": [
+        "中国",
+        "菲律宾",
+        "臺灣",
+        "新加坡",
+        "香港",
+        "美利坚合众国",
+        "马来西亚",
+        "印度尼西亚",
+        "澳大利亚",
+        "英国"
+      ],
+      "axisTick": { "alignWithLabel": true }
+    }
+  ],
+  "yAxis": [{ "type": "value" }],
+  "series": [
+    {
+      "name": "Direct",
+      "type": "bar",
+      "barWidth": "60%",
+      "data": [
+        0.6377, 0.0612, 0.0596, 0.0542, 0.0375, 0.0316, 0.0308, 0.0215, 0.0133,
+        0.007
+      ]
+    }
+  ]
+}

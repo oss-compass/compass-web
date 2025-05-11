@@ -1,0 +1,51 @@
+{
+  "title": { "text": "", "left": "center" },
+  "tooltip": { "trigger": "item" },
+  "legend": { "orient": "vertical", "left": "left" },
+  "series": [
+    {
+      "name": "Access From",
+      "type": "pie",
+      "radius": "50%",
+      "data": [
+        { "value": 919, "name": "Software Development and Management tools" },
+        { "value": 56, "name": "General Management Software" },
+        { "value": 34, "name": "Development toolkit" },
+        { "value": 32, "name": "Artificial Intelligence AI" },
+        { "value": 26, "name": "Development Framework" },
+        { "value": 23, "name": "Database" },
+        { "value": 19, "name": "Frontend" },
+        { "value": 15, "name": "blockchain" },
+        { "value": 12, "name": "Security" },
+        { "value": 10, "name": "Web Application Development" },
+        { "value": 8, "name": "Multi Media Software" },
+        { "value": 7, "name": "Browser related" },
+        { "value": 7, "name": "Operation System" },
+        { "value": 6, "name": "Software development library" },
+        { "value": 4, "name": "DevOps and network management and maintaining" },
+        { "value": 4, "name": "Handset and Mobile Application Development" },
+        { "value": 4, "name": "Other" },
+        { "value": 3, "name": "Cutting Edge Technologies" },
+        { "value": 2, "name": "Server Applications" },
+        { "value": 2, "name": "Search Engine" },
+        { "value": 1, "name": "Software Development Library" },
+        { "value": 1, "name": "Office Software" },
+        { "value": 1, "name": "Firmware" },
+        { "value": 1, "name": "Data Mining and Analysis" },
+        { "value": 1, "name": "new category" },
+        { "value": 0, "name": "Big Data" },
+        { "value": 0, "name": "Hardware" },
+        { "value": 0, "name": "Virtualization and Cloud Computing" },
+        { "value": 0, "name": "Docker" },
+        { "value": 0, "name": "Software Development library" }
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 10,
+          "shadowOffsetX": 0,
+          "shadowColor": "rgba(0, 0, 0, 0.5)"
+        }
+      }
+    }
+  ]
+}

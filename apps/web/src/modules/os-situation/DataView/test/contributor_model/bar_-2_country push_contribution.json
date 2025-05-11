@@ -1,0 +1,32 @@
+{
+  "title": { "text": "总贡献者: 1016 国家贡献者: 322 比率: 0.32" },
+  "tooltip": { "trigger": "axis", "axisPointer": { "type": "shadow" } },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "xAxis": [
+    {
+      "type": "category",
+      "data": [
+        "加拿大",
+        "安提瓜和巴布达",
+        "美利坚合众国",
+        "巴西",
+        "印度",
+        "乌克兰",
+        "加纳",
+        "卡塔尔",
+        "孟加拉国",
+        "丹麦"
+      ],
+      "axisTick": { "alignWithLabel": true }
+    }
+  ],
+  "yAxis": [{ "type": "value" }],
+  "series": [
+    {
+      "name": "Direct",
+      "type": "bar",
+      "barWidth": "60%",
+      "data": [242, 21, 18, 15, 4, 3, 2, 2, 2, 1]
+    }
+  ]
+}

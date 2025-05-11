@@ -1,0 +1,53 @@
+{
+  "title": { "text": "", "left": "center" },
+  "tooltip": { "trigger": "item" },
+  "legend": { "orient": "vertical", "left": "left" },
+  "series": [
+    {
+      "name": "Access From",
+      "type": "pie",
+      "radius": "50%",
+      "data": [
+        { "value": 1977883, "name": "印度" },
+        { "value": 1790538, "name": "美国" },
+        { "value": 1296933, "name": "欧盟" },
+        { "value": 1241799, "name": "中国" },
+        { "value": 797805, "name": "中国-Github" },
+        { "value": 738118, "name": "巴西" },
+        { "value": 737094, "name": "俄罗斯" },
+        { "value": 452967, "name": "印度尼西亚" },
+        { "value": 443994, "name": "中国-Gitee" },
+        { "value": 324370, "name": "日本" },
+        { "value": 324254, "name": "英国" },
+        { "value": 244661, "name": "墨西哥" },
+        { "value": 108505, "name": "孟加拉国" },
+        { "value": 105703, "name": "澳大利亚" },
+        { "value": 77840, "name": "加拿大" },
+        { "value": 68073, "name": "阿拉伯联合酋长国" },
+        { "value": 41059, "name": "韩国" },
+        { "value": 36471, "name": "土耳其" },
+        { "value": 35969, "name": "巴基斯坦" },
+        { "value": 33536, "name": "阿根廷" },
+        { "value": 31780, "name": "哥伦比亚" },
+        { "value": 28031, "name": "越南" },
+        { "value": 27165, "name": "乌克兰" },
+        { "value": 25277, "name": "新西兰" },
+        { "value": 24548, "name": "尼日利亚" },
+        { "value": 18122, "name": "埃及" },
+        { "value": 14441, "name": "伊朗" },
+        { "value": 14192, "name": "菲律宾" },
+        { "value": 14011, "name": "肯尼亚" },
+        { "value": 12403, "name": "斯里兰卡" },
+        { "value": 12398, "name": "新加坡" },
+        { "value": 12098, "name": "台湾" }
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 10,
+          "shadowOffsetX": 0,
+          "shadowColor": "rgba(0, 0, 0, 0.5)"
+        }
+      }
+    }
+  ]
+}

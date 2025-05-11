@@ -1,0 +1,3092 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>github-oss</title>
+    <!-- 引入 Echarts 库文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <style>
+      /* 整体页面布局样式 */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* 图表容器样式 */
+      #main {
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        /* border: 1px solid #ccc; */
+      }
+
+      #main > div {
+        width: 49%;
+        height: 48vh;
+      }
+
+      .pie-class {
+        width: 100% !important;
+        height: 96vh !important;
+      }
+
+      /* 下拉选择框样式 */
+      #jsonFileSelector {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .top {
+        padding-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 定义 Echarts 图表的容器 -->
+    <!-- 添加下拉选择框 -->
+    <div class="top">
+      <select id="jsonFileSelector">
+        <!-- <option
+        value="./contributor_model/merge_line_AS_china_city_activity_push_contribution.json"
+      >
+        &nbsp;&nbsp;1.3 Push 中国 年度
+      </option> -->
+      </select>
+      <label>
+        <input onchange="checkboxClick(this)" type="checkbox" checked />
+        显示中国gitee/github
+      </label>
+      <label>
+        <input onchange="checkboxShowName(this)" type="checkbox" checked />
+        展示图表名称
+      </label>
+    </div>
+
+    <!-- 加载提示信息，初始隐藏 -->
+    <!-- <p id="loading" style="display: none">数据加载中，请稍候...</p> -->
+    <div id="main"></div>
+    <script>
+      function formatNumber(num, decimals = 2) {
+        // 使用 toFixed() 方法保留指定的小数位数
+        let formatted = num.toFixed(decimals);
+        // 使用正则表达式去除小数点后多余的0
+        return formatted.replace(/\.?0+$/, '');
+      }
+      const formatterValue = (value, toFixed = 2) => {
+        if (value >= 100000000) {
+          return formatNumber(value / 100000000, toFixed) + '亿';
+        }
+        if (value >= 10000000) {
+          return formatNumber(value / 10000000, toFixed) + '千万';
+        }
+        if (value >= 10000) {
+          return formatNumber(value / 10000, toFixed) + '万';
+        }
+        return value;
+      };
+      const initPie = () => {
+        const data2024 = {
+          push量_欧盟拆开: 706780614,
+          push量_欧盟合并: 706780614,
+          活跃开发者数_欧盟拆开: 15094782,
+          活跃开发者数_欧盟合并: 15094782,
+          新增开发者数_欧盟拆开: 4082138,
+          新增开发者数_欧盟合并: 4082138,
+          活跃仓库数_欧盟拆开: 53755821,
+          活跃仓库数_欧盟合并: 53755821,
+          新增仓库数_欧盟拆开: 31717654,
+          新增仓库数_欧盟合并: 31717654,
+          top30push量_欧盟拆开: {
+            美国: 89564485,
+            印度: 54937213,
+            中国: 46772559,
+            英国: 33372887,
+            巴西: 26921812,
+            德国: 21089264,
+            法国: 20847647,
+            加拿大: 18178692,
+            韩国: 17215416,
+            印度尼西亚: 16581025,
+            俄罗斯: 16413245,
+            荷兰: 11423824,
+            日本: 11165053,
+            罗马尼亚: 10945640,
+            西班牙: 8290710,
+            越南: 7962221,
+            瑞典: 7634618,
+            土耳其: 7532458,
+            加纳: 6904625,
+            澳大利亚: 6775493,
+            波兰: 6629907,
+            肯尼亚: 6316067,
+            巴基斯坦: 6022008,
+            葡萄牙: 5666932,
+            孟加拉国: 4845446,
+            尼日利亚: 4577758,
+            阿根廷: 4072657,
+            哥伦比亚: 4040268,
+            台湾: 3563546,
+            新加坡: 3486844,
+          },
+          top30push量_欧盟合并: {
+            欧盟: 117441039,
+            美国: 89564485,
+            印度: 54937213,
+            中国: 46772559,
+            英国: 33372887,
+            巴西: 26921812,
+            加拿大: 18178692,
+            韩国: 17215416,
+            印度尼西亚: 16581025,
+            俄罗斯: 16413245,
+            日本: 11165053,
+            越南: 7962221,
+            土耳其: 7532458,
+            加纳: 6904625,
+            澳大利亚: 6775493,
+            肯尼亚: 6316067,
+            巴基斯坦: 6022008,
+            孟加拉国: 4845446,
+            尼日利亚: 4577758,
+            阿根廷: 4072657,
+            哥伦比亚: 4040268,
+            墨西哥: 3602850,
+            台湾: 3563546,
+            新加坡: 3486844,
+            菲律宾: 3031286,
+            泰国: 2634975,
+            埃塞俄比亚: 2147927,
+            白俄罗斯: 1884185,
+            南非: 1789819,
+            乌克兰: 673738,
+          },
+          top30活跃开发者数_欧盟拆开: {
+            中国: 2408736,
+            印度: 2354476,
+            美国: 2094808,
+            巴西: 863953,
+            俄罗斯: 862999,
+            印度尼西亚: 566741,
+            英国: 402501,
+            日本: 384123,
+            墨西哥: 305994,
+            孟加拉国: 132200,
+            澳大利亚: 123175,
+            德国: 95642,
+            加拿大: 86703,
+            阿拉伯联合酋长国: 81919,
+            法国: 81862,
+            西班牙: 53769,
+            韩国: 44771,
+            波兰: 41536,
+            土耳其: 41284,
+            巴基斯坦: 41155,
+            意大利: 39616,
+            阿根廷: 37056,
+            荷兰: 36595,
+            哥伦比亚: 35776,
+            越南: 31697,
+            乌克兰: 30453,
+            紐西蘭: 29044,
+            尼日利亚: 27539,
+            瑞典: 24513,
+            埃及: 20764,
+          },
+          top30活跃开发者数_欧盟合并: {
+            中国: 2208902,
+            印度: 1984948,
+            欧盟: 1863493,
+            美国: 1670299,
+            巴西: 769975,
+            英国: 522577,
+            俄罗斯: 373358,
+            印度尼西亚: 351690,
+            加拿大: 336909,
+            韩国: 219791,
+            巴基斯坦: 206436,
+            土耳其: 192437,
+            日本: 185302,
+            越南: 173532,
+            澳大利亚: 129301,
+            哥伦比亚: 124783,
+            墨西哥: 119962,
+            阿根廷: 119063,
+            孟加拉国: 116083,
+            尼日利亚: 109829,
+            伊朗: 100436,
+            肯尼亚: 94771,
+            斯里兰卡: 74217,
+            菲律宾: 70001,
+            台湾: 63953,
+            泰国: 63450,
+            新加坡: 58822,
+            南非: 48355,
+            白俄罗斯: 38277,
+            乌克兰: 34270,
+          },
+          top30新增开发者数_欧盟拆开: {
+            印度: 850494,
+            美国: 532504,
+            中国: 368332,
+            巴西: 298684,
+            俄罗斯: 256863,
+            印度尼西亚: 208675,
+            英国: 120475,
+            日本: 113837,
+            墨西哥: 105418,
+            孟加拉国: 44310,
+            阿拉伯联合酋长国: 26808,
+            澳大利亚: 25564,
+            巴基斯坦: 7718,
+            紐西蘭: 7070,
+            加拿大: 4841,
+            西班牙: 4627,
+            法国: 4552,
+            德国: 4348,
+            阿根廷: 2865,
+            土耳其: 2846,
+            越南: 2838,
+            哥伦比亚: 2781,
+            尼日利亚: 2775,
+            意大利: 2533,
+            埃及: 2128,
+            韩国: 2082,
+            斯里兰卡: 2014,
+            乌克兰: 1836,
+            伊朗: 1836,
+            波兰: 1835,
+          },
+          top30新增开发者数_欧盟合并: {
+            印度: 850494,
+            美国: 532504,
+            欧盟: 460133,
+            中国: 368332,
+            巴西: 298684,
+            俄罗斯: 256863,
+            印度尼西亚: 208675,
+            英国: 120475,
+            日本: 113837,
+            墨西哥: 105418,
+            孟加拉国: 44310,
+            阿拉伯联合酋长国: 26808,
+            澳大利亚: 25564,
+            巴基斯坦: 7718,
+            紐西蘭: 7070,
+            加拿大: 4841,
+            阿根廷: 2865,
+            土耳其: 2846,
+            越南: 2838,
+            哥伦比亚: 2781,
+            尼日利亚: 2775,
+            埃及: 2128,
+            韩国: 2082,
+            斯里兰卡: 2014,
+            乌克兰: 1836,
+            伊朗: 1836,
+            菲律宾: 1806,
+            肯尼亚: 1600,
+            南非: 1228,
+            智利: 1141,
+          },
+
+          top30活跃仓库数_欧盟拆开: {
+            印度: 7678292,
+            美国: 6203064,
+            中国: 3447641,
+            俄罗斯: 2728871,
+            巴西: 2629554,
+            印度尼西亚: 1612690,
+            日本: 1173897,
+            英国: 1162109,
+            墨西哥: 767579,
+            孟加拉国: 577490,
+            德国: 395278,
+            加拿大: 355735,
+            法国: 345046,
+            澳大利亚: 344831,
+            阿拉伯联合酋长国: 233421,
+            西班牙: 222287,
+            韩国: 217466,
+            巴基斯坦: 193722,
+            土耳其: 162335,
+            意大利: 161636,
+            波兰: 157070,
+            尼日利亚: 147210,
+            哥伦比亚: 144937,
+            荷兰: 142169,
+            阿根廷: 138821,
+            越南: 132179,
+            乌克兰: 130582,
+            肯尼亚: 120398,
+            埃及: 96624,
+            瑞典: 95731,
+          },
+          top30活跃仓库数_欧盟合并: {
+            印度: 6598038,
+            欧盟: 5600103,
+            美国: 4902663,
+            中国: 2865605,
+            巴西: 2400796,
+            英国: 1472009,
+            印度尼西亚: 1050434,
+            俄罗斯: 1050260,
+            加拿大: 987658,
+            韩国: 731239,
+            巴基斯坦: 673774,
+            日本: 600508,
+            土耳其: 598215,
+            肯尼亚: 584511,
+            孟加拉国: 530750,
+            越南: 494871,
+            尼日利亚: 413410,
+            哥伦比亚: 362317,
+            澳大利亚: 358933,
+            墨西哥: 327479,
+            阿根廷: 323190,
+            伊朗: 299050,
+            斯里兰卡: 276579,
+            加纳: 265906,
+            菲律宾: 196345,
+            泰国: 192090,
+            台湾: 188978,
+            新加坡: 160243,
+            白俄罗斯: 121015,
+            乌克兰: 67986,
+          },
+
+          top30新增仓库数_欧盟拆开: {
+            印度: 6977457,
+            美国: 4756250,
+            中国: 2778245,
+            俄罗斯: 2359856,
+            巴西: 2307007,
+            印度尼西亚: 1439635,
+            日本: 932810,
+            英国: 897232,
+            墨西哥: 670170,
+            孟加拉国: 515523,
+            澳大利亚: 250218,
+            加拿大: 234122,
+            德国: 222645,
+            法国: 219271,
+            阿拉伯联合酋长国: 203815,
+            巴基斯坦: 171049,
+            西班牙: 155662,
+            韩国: 153597,
+            土耳其: 126742,
+            尼日利亚: 120368,
+            哥伦比亚: 113997,
+            意大利: 110530,
+            阿根廷: 108451,
+            越南: 105458,
+            波兰: 103905,
+            肯尼亚: 103018,
+            乌克兰: 100373,
+            荷兰: 81478,
+            埃及: 79974,
+            斯里兰卡: 63344,
+          },
+          top30新增仓库数_欧盟合并: {
+            印度: 6977457,
+            美国: 4756250,
+            欧盟: 3339085,
+            中国: 2778245,
+            俄罗斯: 2359856,
+            巴西: 2307007,
+            印度尼西亚: 1439635,
+            日本: 932810,
+            英国: 897232,
+            墨西哥: 670170,
+            孟加拉国: 515523,
+            澳大利亚: 250218,
+            加拿大: 234122,
+            阿拉伯联合酋长国: 203815,
+            巴基斯坦: 171049,
+            韩国: 153597,
+            土耳其: 126742,
+            尼日利亚: 120368,
+            哥伦比亚: 113997,
+            阿根廷: 108451,
+            越南: 105458,
+            肯尼亚: 103018,
+            乌克兰: 100373,
+            埃及: 79974,
+            斯里兰卡: 63344,
+            紐西蘭: 58135,
+            菲律宾: 51332,
+            伊朗: 50054,
+            南非: 40651,
+            秘鲁: 39798,
+          },
+        };
+        // 清空 mainDom 的所有子 div
+        const pieList = [
+          '活跃开发者数_欧盟拆开',
+          '活跃开发者数_欧盟合并',
+          '新增开发者数_欧盟拆开',
+          '新增开发者数_欧盟合并',
+          '活跃仓库数_欧盟拆开',
+          '活跃仓库数_欧盟合并',
+          '新增仓库数_欧盟拆开',
+          '新增仓库数_欧盟合并',
+          'push量_欧盟拆开',
+          'push量_欧盟合并',
+        ];
+        const mainDom = document.getElementById('main');
+        // 清空 mainDom 的所有子 div
+        // const pieList = ['活跃开发者数', '新增开发者数', '活跃仓库数', '新增仓库数', 'push量_欧盟拆开', 'push量_欧盟合并']
+        mainDom.innerHTML = '';
+        pieList.forEach((obj) => {
+          const newDiv = document.createElement('div');
+          newDiv.classList.add('pie-class'); // 添加类
+          newDiv.id = obj;
+          mainDom.appendChild(newDiv); // 将新 div 添加到 mainDom
+        });
+        setTimeout(() => {
+          pieList.forEach((obj) => {
+            var chartDom = document.getElementById(obj);
+            var myChart = echarts.init(chartDom);
+            const all = data2024[obj];
+            const top30 = data2024[`top30${obj}`];
+            let other = all;
+            const data = Object.keys(top30).map((item) => {
+              let res = { name: item, value: top30[item] };
+              let index = contryList.indexOf(item);
+              if (index > -1) {
+                res.itemStyle = {
+                  color: colorList[index % 9],
+                };
+              }
+              other -= top30[item];
+              return res;
+            });
+            data.push({
+              name: 'Other',
+              value: other,
+              itemStyle: { color: '#34e2ec' },
+            });
+            const option = {
+              tooltip: {
+                trigger: 'item',
+                formatter: (params) => {
+                  let value = formatterValue(params.value, 2);
+                  return (
+                    params.name +
+                    ' : ' +
+                    value +
+                    '(' +
+                    params.percent.toFixed(2) +
+                    '%)'
+                  );
+                },
+              },
+              title: [
+                {
+                  text: `{titleIcon|}`,
+                  bottom: 15,
+                  right: '30%',
+                  textStyle: {
+                    color: '#333',
+                    fontSize: 12,
+                    fontStyle: 'normal',
+                    fontWeight: 600,
+                    rich: {
+                      titleIcon: {
+                        backgroundColor: {
+                          image:
+                            'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                        },
+                        height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                        width: 100,
+                      },
+                    },
+                  },
+                },
+                { text: showName ? obj : '', bottom: 15, left: 'center' },
+              ],
+              // legend: {
+              //   top: '5%',
+              //   left: 'center'
+              // },
+              series: [
+                {
+                  name: '',
+                  type: 'pie',
+                  radius: ['30%', '50%'],
+                  avoidLabelOverlap: true,
+                  label: {
+                    show: true,
+                    overflow: 'none',
+                    // formatter: "{b}: {c}({d}%)",
+                    formatter: (params) => {
+                      let value = formatterValue(params.value, 2);
+                      return (
+                        params.name +
+                        ' : ' +
+                        value +
+                        '(' +
+                        params.percent.toFixed(2) +
+                        '%)'
+                      );
+                    },
+                  },
+                  labelLayout: {
+                    hideOverlap: false,
+                  },
+                  // emphasis: {
+                  //   label: {
+                  //     show: true,
+                  //     fontSize: 20,
+                  //     fontWeight: 'bold'
+                  //   }
+                  // },
+                  data: data,
+                },
+              ],
+            };
+            myChart.setOption(option);
+          });
+        });
+      };
+    </script>
+
+    <script>
+      const initBar = () => {
+        const barData = {
+          top30ActiveDevelopers: {
+            中国: 2408736,
+            印度: 2354476,
+            美国: 2094808,
+            欧盟: 1605102,
+            巴西: 863953,
+            俄罗斯: 862999,
+            印度尼西亚: 566741,
+            英国: 402501,
+            日本: 384123,
+            墨西哥: 305994,
+            孟加拉国: 132200,
+            澳大利亚: 123175,
+            德国: 95642,
+            加拿大: 86703,
+            阿拉伯联合酋长国: 81919,
+            法国: 81862,
+            西班牙: 53769,
+            韩国: 44771,
+            波兰: 41536,
+            土耳其: 41284,
+            巴基斯坦: 41155,
+            意大利: 39616,
+            阿根廷: 37056,
+            荷兰: 36595,
+            哥伦比亚: 35776,
+            越南: 31697,
+            乌克兰: 30453,
+            新西兰: 29044,
+            尼日利亚: 27539,
+            瑞典: 24513,
+          },
+          top30NewDevelopers: {
+            印度: 850494,
+            美国: 532504,
+            欧盟: 460133,
+            中国: 368332,
+            巴西: 298684,
+            俄罗斯: 256863,
+            印度尼西亚: 208675,
+            英国: 120475,
+            日本: 113837,
+            墨西哥: 105418,
+            孟加拉国: 44310,
+            阿拉伯联合酋长国: 26808,
+            澳大利亚: 25564,
+            巴基斯坦: 7718,
+            新西兰: 7070,
+            加拿大: 4841,
+            西班牙: 4627,
+            法国: 4552,
+            德国: 4348,
+            阿根廷: 2865,
+            土耳其: 2846,
+            越南: 2838,
+            哥伦比亚: 2781,
+            尼日利亚: 2775,
+            意大利: 2533,
+            埃及: 2128,
+            韩国: 2082,
+            斯里兰卡: 2014,
+            乌克兰: 1836,
+            伊朗: 1836,
+          },
+          top30ActiveRepositories: {
+            印度: 7678292,
+            美国: 6203064,
+            欧盟: 4071134,
+            中国: 3447641,
+            俄罗斯: 2728871,
+            巴西: 2629554,
+            印度尼西亚: 1612690,
+            日本: 1173897,
+            英国: 1162109,
+            墨西哥: 767579,
+            孟加拉国: 577490,
+            德国: 395278,
+            加拿大: 355735,
+            法国: 345046,
+            澳大利亚: 344831,
+            阿拉伯联合酋长国: 233421,
+            西班牙: 222287,
+            韩国: 217466,
+            巴基斯坦: 193722,
+            土耳其: 162335,
+            意大利: 161636,
+            波兰: 157070,
+            尼日利亚: 147210,
+            哥伦比亚: 144937,
+            荷兰: 142169,
+            阿根廷: 138821,
+            越南: 132179,
+            乌克兰: 130582,
+            肯尼亚: 120398,
+            埃及: 96624,
+          },
+          top30NewRepositories: {
+            印度: 6977457,
+            美国: 4756250,
+            欧盟: 3339085,
+            中国: 2778245,
+            俄罗斯: 2359856,
+            巴西: 2307007,
+            印度尼西亚: 1439635,
+            日本: 932810,
+            英国: 897232,
+            墨西哥: 670170,
+            孟加拉国: 515523,
+            澳大利亚: 250218,
+            加拿大: 234122,
+            德国: 222645,
+            法国: 219271,
+            阿拉伯联合酋长国: 203815,
+            巴基斯坦: 171049,
+            西班牙: 155662,
+            韩国: 153597,
+            土耳其: 126742,
+            尼日利亚: 120368,
+            哥伦比亚: 113997,
+            意大利: 110530,
+            阿根廷: 108451,
+            越南: 105458,
+            波兰: 103905,
+            肯尼亚: 103018,
+            乌克兰: 100373,
+            埃及: 79974,
+          },
+        };
+        // 获取 mainDom 元素
+        const mainDom = document.getElementById('main');
+        // 清空 mainDom 的所有子 div
+        const pieList = [
+          '活跃开发者数',
+          '新增开发者数',
+          '活跃仓库数',
+          '新增仓库数',
+        ];
+        mainDom.innerHTML = '';
+        const newDiv = document.createElement('div');
+        newDiv.id = 'bar';
+        newDiv.style.width = '100%';
+        newDiv.style.height = '50vh';
+        mainDom.appendChild(newDiv);
+
+        const newDiv2 = document.createElement('div');
+        newDiv2.id = 'bar2';
+        newDiv2.style.width = '100%';
+        newDiv2.style.height = '50vh';
+        mainDom.appendChild(newDiv2);
+        setTimeout(() => {
+          var chartDom = document.getElementById('bar');
+          var myChart = echarts.init(chartDom);
+          const top10ActiveDevelopers = Object.keys(
+            barData['top30ActiveDevelopers']
+          ).slice(0, 10);
+          const data1 = top10ActiveDevelopers.map((item) => {
+            return {
+              name: item,
+              new: barData['top30NewDevelopers'][item],
+              act: barData['top30ActiveDevelopers'][item],
+              value: (
+                barData['top30NewDevelopers'][item] /
+                barData['top30ActiveDevelopers'][item]
+              ).toFixed(2),
+            };
+          });
+          data1.sort((a, b) => b.value - a.value);
+          const data2 = top10ActiveDevelopers.map((item) => {
+            return {
+              name: item,
+              new: barData['top30NewRepositories'][item],
+              act: barData['top30ActiveRepositories'][item],
+              value: (
+                barData['top30NewRepositories'][item] /
+                barData['top30ActiveRepositories'][item]
+              ).toFixed(2),
+            };
+          });
+          data2.sort((a, b) => b.value - a.value);
+          const option = {
+            tooltip: {
+              trigger: 'item',
+              formatter: (params) => {
+                console.log(params);
+                return (
+                  params['name'] +
+                  '<br/>' +
+                  '新增' +
+                  ' : ' +
+                  params['data']['new'] +
+                  '<br/>' +
+                  '活跃' +
+                  ' : ' +
+                  params['data']['act']
+                );
+              },
+            },
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              {
+                text: showName ? '开发者新增活跃比例柱状图' : '',
+                bottom: 15,
+                left: 'center',
+              },
+            ],
+            xAxis: [
+              {
+                type: 'category',
+                data: data1.map((i) => i.name),
+              },
+            ],
+            yAxis: {
+              type: 'value',
+            },
+            legend: {
+              top: '1%',
+              left: 'center',
+            },
+            series: [
+              {
+                name: '开发者新增/开发者活跃',
+                type: 'bar',
+                label: {
+                  show: true,
+                  position: 'top',
+                  formatter: '{c}',
+                },
+                data: data1,
+              },
+            ],
+          };
+          myChart.setOption(option);
+          var chartDom2 = document.getElementById('bar2');
+          var myChart2 = echarts.init(chartDom2);
+          const option2 = {
+            tooltip: {
+              trigger: 'item',
+              formatter: (params) => {
+                console.log(params);
+                return (
+                  params['name'] +
+                  '<br/>' +
+                  '新增' +
+                  ' : ' +
+                  params['data']['new'] +
+                  '<br/>' +
+                  '活跃' +
+                  ' : ' +
+                  params['data']['act']
+                );
+              },
+            },
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              {
+                text: showName ? '项目新增活跃比例柱状图' : '',
+                bottom: 15,
+                left: 'center',
+              },
+            ],
+            xAxis: [
+              {
+                type: 'category',
+                data: data2.map((i) => i.name),
+              },
+            ],
+            yAxis: {
+              type: 'value',
+            },
+            legend: {
+              top: '1%',
+              left: 'center',
+            },
+            series: [
+              {
+                name: '项目新增/项目活跃',
+                type: 'bar',
+                label: {
+                  show: true,
+                  position: 'top',
+                  formatter: '{c}',
+                },
+                itemStyle: {
+                  color: '#91cc75',
+                },
+                data: data2,
+              },
+            ],
+          };
+          myChart2.setOption(option2);
+        });
+      };
+    </script>
+    <script>
+      const colorList = [
+        '#5470c6',
+        '#91cc75',
+        '#fac858',
+        '#ee6666',
+        '#73c0de',
+        '#9cf3e6',
+        '#fc8452',
+        '#9a60b4',
+        '#ea7ccc',
+      ];
+      const contryList = [
+        '美国',
+        '欧盟',
+        '印度',
+        '中国',
+        '中国-Github',
+        '俄罗斯',
+        '中国-Gitee',
+        '巴西',
+        '印度尼西亚',
+        '日本',
+        '英国',
+        '墨西哥',
+        '澳大利亚',
+        '孟加拉国',
+        '加拿大',
+        '阿拉伯联合酋长国',
+        '韩国',
+        '土耳其',
+        '阿根廷',
+        '乌克兰',
+        '哥伦比亚',
+        '尼日利亚',
+      ];
+      const cityList = [
+        '上海市',
+        '深圳市',
+        '杭州市',
+        '北京市',
+        '广州市',
+        '成都市',
+        '武汉市',
+        '南京市',
+        '西安市',
+        '苏州市',
+        '重庆市',
+        '厦门市',
+        '长沙市',
+        '天津市',
+        '合肥市',
+        '大连市',
+        '福州市',
+        '昆明市',
+        '济南市',
+        '沈阳市',
+      ];
+      const technologyList = [
+        '前端',
+        '人工智能',
+        '开发框架',
+        '操作系统',
+        '数据库',
+        '云原生',
+        '区块链',
+        '网络通信',
+        '编程语言',
+        '移动应用',
+        '富媒体',
+        '机器人',
+        'IoT 物联网',
+        '大数据',
+        '工业软件',
+        '芯片',
+        '智能汽车',
+      ];
+      const languageList = [
+        'JavaScript',
+        'HTML',
+        'Python',
+        'Java',
+        'TypeScript',
+        'Jupyter Notebook',
+        'C++',
+        'Ruby',
+        'CSS',
+        'C#',
+        'Go',
+        'C',
+        'Shell',
+        'PHP',
+        'Kotlin',
+        'Swift',
+        'Vue',
+        'Rust',
+        'Dart',
+        'SCSS',
+      ];
+      const licenseList = [
+        'MIT',
+        'Apache-2.0',
+        'GPL-3.0',
+        'BSD-3-Clause',
+        'GPL-2.0',
+        'AGPL-3.0',
+        'CC-BY-4.0',
+        'BSD-2-Clause',
+        'CC0-1.0',
+        'MPL-2.0',
+        'LGPL-3.0',
+        'ISC',
+        'LGPL-2.1',
+        'CC-BY-SA-4.0',
+        '0BSD',
+        'MIT-0',
+        'EPL-2.0',
+        'WTFPL',
+        'EPL-1.0',
+        'Zlib',
+      ];
+      const getIndex = (name) => {
+        if (contryList.includes(name)) {
+          return contryList.indexOf(name);
+        } else if (technologyList.includes(name)) {
+          return technologyList.indexOf(name);
+        } else if (cityList.includes(name)) {
+          return cityList.indexOf(name);
+        } else if (languageList.includes(name)) {
+          return languageList.indexOf(name);
+        } else {
+          return licenseList.indexOf(name);
+        }
+      };
+      // 导入 Echarts 模块
+      const echarts = window.echarts;
+      const allOptions = {
+        Push年度: [
+          {
+            value:
+              './contributor_model/line_AS_country_activity_push_contribution.json',
+            text: 'Push 全球年度_欧盟合并',
+          },
+          {
+            value:
+              './contributor_model/line_AS_country_not_merge_eu_activity_push_contribution.json',
+            text: 'Push 全球年度_欧盟拆开',
+          },
+          {
+            value:
+              './contributor_model/line_AS_eu_country_activity_push_contribution.json',
+            text: 'Push 欧盟年度',
+          },
+          {
+            value:
+              './contributor_model/merge_line_AS_china_city_activity_push_contribution.json',
+            text: 'Push 中国年度',
+          },
+          {
+            value:
+              './contributor_model/line_AS_china_city_activity_push_contribution.json',
+            text: 'Push 中国 (Github) 年度',
+          },
+          {
+            value:
+              './contributor_model/gitee_line_AS_china_city_activity_push_contribution.json',
+            text: 'Push 中国 (Gitee) 年度',
+          },
+        ],
+        Push季度: [
+          {
+            value:
+              './contributor_model/line_QS-JAN_country_activity_push_contribution.json',
+            text: 'Push 全球季度_欧盟合并',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_country_not_merge_eu_activity_push_contribution.json',
+            text: 'Push 全球季度_欧盟拆开',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_eu_country_activity_push_contribution.json',
+            text: 'Push 欧盟季度',
+          },
+          {
+            value:
+              './contributor_model/merge_line_QS-JAN_china_city_activity_push_contribution.json',
+            text: 'Push 中国季度',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_china_city_activity_push_contribution.json',
+            text: 'Push 中国 (Github) 季度',
+          },
+          {
+            value:
+              './contributor_model/gitee_line_QS-JAN_china_city_activity_push_contribution.json',
+            text: 'Push 中国 (Gitee) 季度',
+          },
+        ],
+        开发者全球: [
+          {
+            value:
+              './contributor_model/line_AS_country_activity_contributor_count.json',
+            text: '开发者全球年度活跃_欧盟合并',
+          },
+          {
+            value:
+              './contributor_model/line_AS_country_not_merge_eu_activity_contributor_count.json',
+            text: '开发者全球年度活跃_欧盟拆开',
+          },
+          {
+            value:
+              './contributor_model/line_AS_country_add_contributor_count.json',
+            text: '开发者全球年度新增_欧盟合并',
+          },
+          {
+            value:
+              './contributor_model/line_AS_country_not_merge_eu_add_contributor_count.json',
+            text: '开发者全球年度新增_欧盟拆开',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_country_activity_contributor_count.json',
+            text: '开发者全球季度活跃_欧盟合并',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_country_not_merge_eu_activity_contributor_count.json',
+            text: '开发者全球季度活跃_欧盟拆开',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_country_add_contributor_count.json',
+            text: '开发者全球季度新增_欧盟合并',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_country_not_merge_eu_add_contributor_count.json',
+            text: '开发者全球季度新增_欧盟拆开',
+          },
+        ],
+        开发者中国年度: [
+          {
+            value:
+              './contributor_model/merge_line_AS_china_city_activity_contributor_count.json',
+            text: '开发者中国年度活跃',
+          },
+          {
+            value:
+              './contributor_model/merge_line_AS_china_city_add_contributor_count.json',
+            text: '开发者中国年度新增',
+          },
+          {
+            value:
+              './contributor_model/line_AS_china_city_activity_contributor_count.json',
+            text: '开发者中国 (Github) 年度活跃',
+          },
+          {
+            value:
+              './contributor_model/line_AS_china_city_add_contributor_count.json',
+            text: '开发者中国 (Github) 年度新增',
+          },
+          {
+            value:
+              './contributor_model/gitee_line_AS_china_city_activity_contributor_count.json',
+            text: '开发者中国 (Gitee) 年度活跃',
+          },
+          {
+            value:
+              './contributor_model/gitee_line_AS_china_city_add_contributor_count.json',
+            text: '开发者中国 (Gitee) 年度新增',
+          },
+        ],
+        开发者中国季度: [
+          {
+            value:
+              './contributor_model/merge_line_QS-JAN_china_city_activity_contributor_count.json',
+            text: '开发者中国季度活跃',
+          },
+          {
+            value:
+              './contributor_model/merge_line_QS-JAN_china_city_add_contributor_count.json',
+            text: '开发者中国季度新增',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_china_city_activity_contributor_count.json',
+            text: '开发者中国 (Github) 季度活跃',
+          },
+          {
+            value:
+              './contributor_model/line_QS-JAN_china_city_add_contributor_count.json',
+            text: '开发者中国 (Github) 季度新增',
+          },
+          {
+            value:
+              './contributor_model/gitee_line_QS-JAN_china_city_activity_contributor_count.json',
+            text: '开发者中国 (Gitee) 季度活跃',
+          },
+          {
+            value:
+              './contributor_model/gitee_line_QS-JAN_china_city_add_contributor_count.json',
+            text: '开发者中国 (Gitee) 季度新增',
+          },
+        ],
+        项目全球: [
+          {
+            value: './repo_model/line_AS_country_activity_repo_count.json',
+            text: '项目全球年度活跃_欧盟合并',
+          },
+          {
+            value:
+              './repo_model/line_AS_country_not_merge_eu_activity_repo_count.json',
+            text: '项目全球年度活跃_欧盟拆开',
+          },
+          {
+            value: './repo_model/line_AS_country_add_repo_count.json',
+            text: '项目全球年度新增_欧盟合并',
+          },
+          {
+            value:
+              './repo_model/line_AS_country_not_merge_eu_add_repo_count.json',
+            text: '项目全球年度新增_欧盟拆开',
+          },
+          {
+            value: './repo_model/line_QS-JAN_country_activity_repo_count.json',
+            text: '项目全球季度活跃_欧盟合并',
+          },
+          {
+            value:
+              './repo_model/line_QS-JAN_country_not_merge_eu_activity_repo_count.json',
+            text: '项目全球季度活跃_欧盟拆开',
+          },
+          {
+            value: './repo_model/line_QS-JAN_country_add_repo_count.json',
+            text: '项目全球季度新增_欧盟合并',
+          },
+          {
+            value:
+              './repo_model/line_QS-JAN_country_not_merge_eu_add_repo_count.json',
+            text: '项目全球季度新增_欧盟拆开',
+          },
+        ],
+        项目中国: [
+          {
+            value:
+              './repo_model/merge_line_AS_china_city_activity_repo_count.json',
+            text: '项目中国年度活跃',
+          },
+          {
+            value: './repo_model/merge_line_AS_china_city_add_repo_count.json',
+            text: '项目中国年度新增',
+          },
+          {
+            value:
+              './repo_model/merge_line_QS-JAN_china_city_activity_repo_count.json',
+            text: '项目中国季度活跃',
+          },
+          {
+            value:
+              './repo_model/merge_line_QS-JAN_china_city_add_repo_count.json',
+            text: '项目中国季度新增',
+          },
+          {
+            value: './repo_model/line_AS_china_city_activity_repo_count.json',
+            text: '项目中国 (Github) 年度活跃',
+          },
+          {
+            value: './repo_model/line_AS_china_city_add_repo_count.json',
+            text: '项目中国 (Github) 年度新增',
+          },
+          {
+            value:
+              './repo_model/line_QS-JAN_china_city_activity_repo_count.json',
+            text: '项目中国 (Github) 季度活跃',
+          },
+          {
+            value: './repo_model/line_QS-JAN_china_city_add_repo_count.json',
+            text: '项目中国 (Github) 季度新增',
+          },
+          {
+            value:
+              './repo_model/gitee_line_AS_china_city_activity_repo_count.json',
+            text: '项目中国 (Gitee) 年度活跃',
+          },
+          {
+            value: './repo_model/gitee_line_AS_china_city_add_repo_count.json',
+            text: '项目中国 (Gitee) 年度新增',
+          },
+          {
+            value:
+              './repo_model/gitee_line_QS-JAN_china_city_activity_repo_count.json',
+            text: '项目中国 (Gitee) 季度活跃',
+          },
+          {
+            value:
+              './repo_model/gitee_line_QS-JAN_china_city_add_repo_count.json',
+            text: '项目中国 (Gitee) 季度新增',
+          },
+        ],
+        // License年度: [
+        //   {
+        //     value: './repo_model/line_AS_license.json',
+        //     text: 'License 全球年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_美利坚合众国_license.json',
+        //     text: 'License 美国年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_欧盟_license.json',
+        //     text: 'License 欧盟年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_中国_license.json',
+        //     text: 'License 中国年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_印度_license.json',
+        //     text: 'License 印度年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_英国_license.json',
+        //     text: 'License 英国年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_日本_license.json',
+        //     text: 'License 日本年度',
+        //   },
+        // ],
+        License季度: [
+          {
+            value: './repo_model/line_QS-JAN_license.json',
+            text: 'License 全球季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_美利坚合众国_license.json',
+            text: 'License 美国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_欧盟_license.json',
+            text: 'License 欧盟季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_中国_license.json',
+            text: 'License 中国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_印度_license.json',
+            text: 'License 印度季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_英国_license.json',
+            text: 'License 英国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_日本_license.json',
+            text: 'License 日本季度',
+          },
+        ],
+        // 编程语言年度: [
+        //   {
+        //     value: './repo_model/line_AS_main_language_list.json',
+        //     text: '编程语言全球年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_美利坚合众国_main_language_list.json',
+        //     text: '编程语言美国年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_欧盟_main_language_list.json',
+        //     text: '编程语言欧盟年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_中国_main_language_list.json',
+        //     text: '编程语言中国年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_印度_main_language_list.json',
+        //     text: '编程语言印度年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_英国_main_language_list.json',
+        //     text: '编程语言英国年度',
+        //   },
+        //   {
+        //     value: './repo_model/line_AS_日本_main_language_list.json',
+        //     text: '编程语言日本年度',
+        //   },
+        // ],
+        编程语言季度: [
+          {
+            value: './repo_model/line_QS-JAN_main_language_list.json',
+            text: '编程语言全球季度',
+          },
+          {
+            value:
+              './repo_model/line_QS-JAN_美利坚合众国_main_language_list.json',
+            text: '编程语言美国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_欧盟_main_language_list.json',
+            text: '编程语言欧盟季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_中国_main_language_list.json',
+            text: '编程语言中国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_印度_main_language_list.json',
+            text: '编程语言印度季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_英国_main_language_list.json',
+            text: '编程语言英国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_日本_main_language_list.json',
+            text: '编程语言日本季度',
+          },
+        ],
+        技术领域年度Push: [
+          {
+            value:
+              './repo_model/line_AS_technology_global_activity_push_contribution.json',
+            text: '全球技术领域 Push 年度',
+          },
+          {
+            value:
+              './repo_model/line_AS_technology_country_美利坚合众国_activity_push_contribution.json',
+            text: '美国技术领域 Push 年度',
+          },
+          {
+            value:
+              './repo_model/line_AS_technology_country_欧盟_activity_push_contribution.json',
+            text: '欧盟技术领域 Push 年度',
+          },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_country_印度_activity_push_contribution.json',
+          //     text: '印度技术领域 Push 年度',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_country_俄罗斯_activity_push_contribution.json',
+          //     text: '俄罗斯技术领域 Push 年度',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_country_英国_activity_push_contribution.json',
+          //     text: '英国技术领域 Push 年度',
+          //   },
+          {
+            value:
+              './repo_model/line_AS_technology_country_中国_activity_push_contribution.json',
+            text: '中国技术领域 Push 年度',
+          },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_操作系统_activity_push_contribution.json',
+          //     text: '中国技术领域 操作系统 年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_数据库_activity_push_contribution.json',
+          //     text: '中国技术领域 数据库 年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_大数据_activity_push_contribution.json',
+          //     text: '中国技术领域 大数据 年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_人工智能_activity_push_contribution.json',
+          //     text: '中国技术领域 人工智能 年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_云原生_activity_push_contribution.json',
+          //     text: '中国技术领域 云原生 年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_编程语言_activity_push_contribution.json',
+          //     text: '中国技术领域 编程语言 年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_移动应用_activity_push_contribution.json',
+          //     text: '中国技术领域 移动应用 年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_technology_china_city_前端_activity_push_contribution.json',
+          //     text: '中国技术领域 前端 年度 Push',
+          //   },
+          {
+            value:
+              './repo_model/line_AS_北京市_activity_push_contribution.json',
+            text: '中国技术领域北京市年度 Push',
+          },
+          {
+            value:
+              './repo_model/line_AS_上海市_activity_push_contribution.json',
+            text: '中国技术领域上海市年度 Push',
+          },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_广州市_activity_push_contribution.json',
+          //     text: '中国技术领域广州市年度 Push',
+          //   },
+          //   {
+          //     value:
+          //       './repo_model/line_AS_深圳市_activity_push_contribution.json',
+          //     text: '中国技术领域深圳市年度 Push',
+          //   },
+          {
+            value:
+              './repo_model/line_AS_杭州市_activity_push_contribution.json',
+            text: '中国技术领域杭州市年度 Push',
+          },
+        ],
+        // 技术领域年度项目活跃: [
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_global_activity_repo_count.json',
+        //     text: '全球技术领域 活跃项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_美利坚合众国_activity_repo_count.json',
+        //     text: '美国技术领域 活跃项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_欧盟_activity_repo_count.json',
+        //     text: '欧盟技术领域 活跃项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_印度_activity_repo_count.json',
+        //     text: '印度技术领域 活跃项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_俄罗斯_activity_repo_count.json',
+        //     text: '俄罗斯技术领域 活跃项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_英国_activity_repo_count.json',
+        //     text: '英国技术领域 活跃项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_中国_activity_repo_count.json',
+        //     text: '中国技术领域 活跃项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_操作系统_activity_repo_count.json',
+        //     text: '中国技术领域 操作系统 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_数据库_activity_repo_count.json',
+        //     text: '中国技术领域 数据库 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_大数据_activity_repo_count.json',
+        //     text: '中国技术领域 大数据 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_人工智能_activity_repo_count.json',
+        //     text: '中国技术领域 人工智能 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_云原生_activity_repo_count.json',
+        //     text: '中国技术领域 云原生 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_编程语言_activity_repo_count.json',
+        //     text: '中国技术领域 编程语言 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_移动应用_activity_repo_count.json',
+        //     text: '中国技术领域 移动应用 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_前端_activity_repo_count.json',
+        //     text: '中国技术领域 前端 年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_北京市_activity_repo_count.json',
+        //     text: '中国技术领域北京市年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_上海市_activity_repo_count.json',
+        //     text: '中国技术领域上海市年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_广州市_activity_repo_count.json',
+        //     text: '中国技术领域广州市年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_深圳市_activity_repo_count.json',
+        //     text: '中国技术领域深圳市年度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_杭州市_activity_repo_count.json',
+        //     text: '中国技术领域杭州市年度 活跃项目',
+        //   },
+        // ],
+        // 技术领域年度项目新增: [
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_global_add_repo_count.json',
+        //     text: '全球技术领域 新增项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_美利坚合众国_add_repo_count.json',
+        //     text: '美国技术领域 新增项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_欧盟_add_repo_count.json',
+        //     text: '欧盟技术领域 新增项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_印度_add_repo_count.json',
+        //     text: '印度技术领域 新增项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_俄罗斯_add_repo_count.json',
+        //     text: '俄罗斯技术领域 新增项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_英国_add_repo_count.json',
+        //     text: '英国技术领域 新增项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_country_中国_add_repo_count.json',
+        //     text: '中国技术领域 新增项目 年度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_操作系统_add_repo_count.json',
+        //     text: '中国技术领域 操作系统 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_数据库_add_repo_count.json',
+        //     text: '中国技术领域 数据库 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_大数据_add_repo_count.json',
+        //     text: '中国技术领域 大数据 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_人工智能_add_repo_count.json',
+        //     text: '中国技术领域 人工智能 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_云原生_add_repo_count.json',
+        //     text: '中国技术领域 云原生 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_编程语言_add_repo_count.json',
+        //     text: '中国技术领域 编程语言 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_移动应用_add_repo_count.json',
+        //     text: '中国技术领域 移动应用 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_technology_china_city_前端_add_repo_count.json',
+        //     text: '中国技术领域 前端 年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_北京市_add_repo_count.json',
+        //     text: '中国技术领域北京市年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_上海市_add_repo_count.json',
+        //     text: '中国技术领域上海市年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_广州市_add_repo_count.json',
+        //     text: '中国技术领域广州市年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_深圳市_add_repo_count.json',
+        //     text: '中国技术领域深圳市年度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_AS_杭州市_add_repo_count.json',
+        //     text: '中国技术领域杭州市年度 新增项目',
+        //   },
+        // ],
+
+        技术领域年度开发者活跃: [
+          {
+            value:
+              './contributor_model/line_AS_technology_global_activity_contributor_count.json',
+            text: '全球技术领域 活跃开发者 年度',
+          },
+          {
+            value:
+              './contributor_model/line_AS_technology_country_美利坚合众国_activity_contributor_count.json',
+            text: '美国技术领域 活跃开发者 年度',
+          },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_欧盟_activity_contributor_count.json',
+          //   text: '欧盟技术领域 活跃开发者 年度',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_印度_activity_contributor_count.json',
+          //   text: '印度技术领域 活跃开发者 年度',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_俄罗斯_activity_contributor_count.json',
+          //   text: '俄罗斯技术领域 活跃开发者 年度',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_英国_activity_contributor_count.json',
+          //   text: '英国技术领域 活跃开发者 年度',
+          // },
+          {
+            value:
+              './contributor_model/line_AS_technology_country_中国_activity_contributor_count.json',
+            text: '中国技术领域 活跃开发者 年度',
+          },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_操作系统_activity_contributor_count.json',
+          //   text: '中国技术领域 操作系统 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_数据库_activity_contributor_count.json',
+          //   text: '中国技术领域 数据库 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_大数据_activity_contributor_count.json',
+          //   text: '中国技术领域 大数据 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_人工智能_activity_contributor_count.json',
+          //   text: '中国技术领域 人工智能 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_云原生_activity_contributor_count.json',
+          //   text: '中国技术领域 云原生 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_编程语言_activity_contributor_count.json',
+          //   text: '中国技术领域 编程语言 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_移动应用_activity_contributor_count.json',
+          //   text: '中国技术领域 移动应用 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_前端_activity_contributor_count.json',
+          //   text: '中国技术领域 前端 年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_北京市_activity_contributor_count.json',
+          //   text: '中国技术领域北京市年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_上海市_activity_contributor_count.json',
+          //   text: '中国技术领域上海市年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_广州市_activity_contributor_count.json',
+          //   text: '中国技术领域广州市年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_深圳市_activity_contributor_count.json',
+          //   text: '中国技术领域深圳市年度 活跃开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_杭州市_activity_contributor_count.json',
+          //   text: '中国技术领域杭州市年度 活跃开发者',
+          // },
+        ],
+        技术领域年度开发者新增: [
+          {
+            value:
+              './contributor_model/line_AS_technology_global_add_contributor_count.json',
+            text: '全球技术领域 新增开发者 年度',
+          },
+          {
+            value:
+              './contributor_model/line_AS_technology_country_美利坚合众国_add_contributor_count.json',
+            text: '美国技术领域 新增开发者 年度',
+          },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_欧盟_add_contributor_count.json',
+          //   text: '欧盟技术领域 新增开发者 年度',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_印度_add_contributor_count.json',
+          //   text: '印度技术领域 新增开发者 年度',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_俄罗斯_add_contributor_count.json',
+          //   text: '俄罗斯技术领域 新增开发者 年度',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_country_英国_add_contributor_count.json',
+          //   text: '英国技术领域 新增开发者 年度',
+          // },
+          {
+            value:
+              './contributor_model/line_AS_technology_country_中国_add_contributor_count.json',
+            text: '中国技术领域 新增开发者 年度',
+          },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_操作系统_add_contributor_count.json',
+          //   text: '中国技术领域 操作系统 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_数据库_add_contributor_count.json',
+          //   text: '中国技术领域 数据库 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_大数据_add_contributor_count.json',
+          //   text: '中国技术领域 大数据 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_人工智能_add_contributor_count.json',
+          //   text: '中国技术领域 人工智能 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_云原生_add_contributor_count.json',
+          //   text: '中国技术领域 云原生 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_编程语言_add_contributor_count.json',
+          //   text: '中国技术领域 编程语言 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_移动应用_add_contributor_count.json',
+          //   text: '中国技术领域 移动应用 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_technology_china_city_前端_add_contributor_count.json',
+          //   text: '中国技术领域 前端 年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_北京市_add_contributor_count.json',
+          //   text: '中国技术领域北京市年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_上海市_add_contributor_count.json',
+          //   text: '中国技术领域上海市年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_广州市_add_contributor_count.json',
+          //   text: '中国技术领域广州市年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_深圳市_add_contributor_count.json',
+          //   text: '中国技术领域深圳市年度 新增开发者',
+          // },
+          // {
+          //   value:
+          //     './contributor_model/line_AS_杭州市_add_contributor_count.json',
+          //   text: '中国技术领域杭州市年度 新增开发者',
+          // },
+        ],
+
+        // 技术领域季度Push: [
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_global_activity_push_contribution.json',
+        //     text: '全球技术领域 Push 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_美利坚合众国_activity_push_contribution.json',
+        //     text: '美国技术领域 Push 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_欧盟_activity_push_contribution.json',
+        //     text: '欧盟技术领域 Push 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_印度_activity_push_contribution.json',
+        //     text: '印度技术领域 Push 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_俄罗斯_activity_push_contribution.json',
+        //     text: '俄罗斯技术领域 Push 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_英国_activity_push_contribution.json',
+        //     text: '英国技术领域 Push 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_中国_activity_push_contribution.json',
+        //     text: '中国技术领域 Push 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_操作系统_activity_push_contribution.json',
+        //     text: '中国技术领域 操作系统 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_数据库_activity_push_contribution.json',
+        //     text: '中国技术领域 数据库 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_大数据_activity_push_contribution.json',
+        //     text: '中国技术领域 大数据 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_人工智能_activity_push_contribution.json',
+        //     text: '中国技术领域 人工智能 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_云原生_activity_push_contribution.json',
+        //     text: '中国技术领域 云原生 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_编程语言_activity_push_contribution.json',
+        //     text: '中国技术领域 编程语言 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_移动应用_activity_push_contribution.json',
+        //     text: '中国技术领域 移动应用 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_前端_activity_push_contribution.json',
+        //     text: '中国技术领域 前端 季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_北京市_activity_push_contribution.json',
+        //     text: '中国技术领域北京市季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_上海市_activity_push_contribution.json',
+        //     text: '中国技术领域上海市季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_广州市_activity_push_contribution.json',
+        //     text: '中国技术领域广州市季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_深圳市_activity_push_contribution.json',
+        //     text: '中国技术领域深圳市季度 Push',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_杭州市_activity_push_contribution.json',
+        //     text: '中国技术领域杭州市季度 Push',
+        //   },
+        // ],
+        // 技术领域季度项目活跃: [
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_global_activity_repo_count.json',
+        //     text: '全球技术领域 活跃项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_美利坚合众国_activity_repo_count.json',
+        //     text: '美国技术领域 活跃项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_欧盟_activity_repo_count.json',
+        //     text: '欧盟技术领域 活跃项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_印度_activity_repo_count.json',
+        //     text: '印度技术领域 活跃项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_俄罗斯_activity_repo_count.json',
+        //     text: '俄罗斯技术领域 活跃项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_英国_activity_repo_count.json',
+        //     text: '英国技术领域 活跃项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_中国_activity_repo_count.json',
+        //     text: '中国技术领域 活跃项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_操作系统_activity_repo_count.json',
+        //     text: '中国技术领域 操作系统 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_数据库_activity_repo_count.json',
+        //     text: '中国技术领域 数据库 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_大数据_activity_repo_count.json',
+        //     text: '中国技术领域 大数据 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_人工智能_activity_repo_count.json',
+        //     text: '中国技术领域 人工智能 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_云原生_activity_repo_count.json',
+        //     text: '中国技术领域 云原生 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_编程语言_activity_repo_count.json',
+        //     text: '中国技术领域 编程语言 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_移动应用_activity_repo_count.json',
+        //     text: '中国技术领域 移动应用 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_前端_activity_repo_count.json',
+        //     text: '中国技术领域 前端 季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_北京市_activity_repo_count.json',
+        //     text: '中国技术领域北京市季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_上海市_activity_repo_count.json',
+        //     text: '中国技术领域上海市季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_广州市_activity_repo_count.json',
+        //     text: '中国技术领域广州市季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_深圳市_activity_repo_count.json',
+        //     text: '中国技术领域深圳市季度 活跃项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_杭州市_activity_repo_count.json',
+        //     text: '中国技术领域杭州市季度 活跃项目',
+        //   },
+        // ],
+        // 技术领域季度项目新增: [
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_global_add_repo_count.json',
+        //     text: '全球技术领域 新增项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_美利坚合众国_add_repo_count.json',
+        //     text: '美国技术领域 新增项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_欧盟_add_repo_count.json',
+        //     text: '欧盟技术领域 新增项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_印度_add_repo_count.json',
+        //     text: '印度技术领域 新增项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_俄罗斯_add_repo_count.json',
+        //     text: '俄罗斯技术领域 新增项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_英国_add_repo_count.json',
+        //     text: '英国技术领域 新增项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_country_中国_add_repo_count.json',
+        //     text: '中国技术领域 新增项目 季度',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_操作系统_add_repo_count.json',
+        //     text: '中国技术领域 操作系统 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_数据库_add_repo_count.json',
+        //     text: '中国技术领域 数据库 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_大数据_add_repo_count.json',
+        //     text: '中国技术领域 大数据 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_人工智能_add_repo_count.json',
+        //     text: '中国技术领域 人工智能 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_云原生_add_repo_count.json',
+        //     text: '中国技术领域 云原生 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_编程语言_add_repo_count.json',
+        //     text: '中国技术领域 编程语言 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_移动应用_add_repo_count.json',
+        //     text: '中国技术领域 移动应用 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_technology_china_city_前端_add_repo_count.json',
+        //     text: '中国技术领域 前端 季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_北京市_add_repo_count.json',
+        //     text: '中国技术领域北京市季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_上海市_add_repo_count.json',
+        //     text: '中国技术领域上海市季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_广州市_add_repo_count.json',
+        //     text: '中国技术领域广州市季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_深圳市_add_repo_count.json',
+        //     text: '中国技术领域深圳市季度 新增项目',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/line_QS-JAN_杭州市_add_repo_count.json',
+        //     text: '中国技术领域杭州市季度 新增项目',
+        //   },
+        // ],
+
+        // 技术领域季度开发者活跃: [
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_global_activity_contributor_count.json',
+        //     text: '全球技术领域 活跃开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_美利坚合众国_activity_contributor_count.json',
+        //     text: '美国技术领域 活跃开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_欧盟_activity_contributor_count.json',
+        //     text: '欧盟技术领域 活跃开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_印度_activity_contributor_count.json',
+        //     text: '印度技术领域 活跃开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_俄罗斯_activity_contributor_count.json',
+        //     text: '俄罗斯技术领域 活跃开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_英国_activity_contributor_count.json',
+        //     text: '英国技术领域 活跃开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_中国_activity_contributor_count.json',
+        //     text: '中国技术领域 活跃开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_操作系统_activity_contributor_count.json',
+        //     text: '中国技术领域 操作系统 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_数据库_activity_contributor_count.json',
+        //     text: '中国技术领域 数据库 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_大数据_activity_contributor_count.json',
+        //     text: '中国技术领域 大数据 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_人工智能_activity_contributor_count.json',
+        //     text: '中国技术领域 人工智能 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_云原生_activity_contributor_count.json',
+        //     text: '中国技术领域 云原生 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_编程语言_activity_contributor_count.json',
+        //     text: '中国技术领域 编程语言 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_移动应用_activity_contributor_count.json',
+        //     text: '中国技术领域 移动应用 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_前端_activity_contributor_count.json',
+        //     text: '中国技术领域 前端 季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_北京市_activity_contributor_count.json',
+        //     text: '中国技术领域北京市季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_上海市_activity_contributor_count.json',
+        //     text: '中国技术领域上海市季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_广州市_activity_contributor_count.json',
+        //     text: '中国技术领域广州市季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_深圳市_activity_contributor_count.json',
+        //     text: '中国技术领域深圳市季度 活跃开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_杭州市_activity_contributor_count.json',
+        //     text: '中国技术领域杭州市季度 活跃开发者',
+        //   },
+        // ],
+        // 技术领域季度开发者新增: [
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_global_add_contributor_count.json',
+        //     text: '全球技术领域 新增开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_美利坚合众国_add_contributor_count.json',
+        //     text: '美国技术领域 新增开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_欧盟_add_contributor_count.json',
+        //     text: '欧盟技术领域 新增开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_印度_add_contributor_count.json',
+        //     text: '印度技术领域 新增开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_俄罗斯_add_contributor_count.json',
+        //     text: '俄罗斯技术领域 新增开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_英国_add_contributor_count.json',
+        //     text: '英国技术领域 新增开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_country_中国_add_contributor_count.json',
+        //     text: '中国技术领域 新增开发者 季度',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_操作系统_add_contributor_count.json',
+        //     text: '中国技术领域 操作系统 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_数据库_add_contributor_count.json',
+        //     text: '中国技术领域 数据库 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_大数据_add_contributor_count.json',
+        //     text: '中国技术领域 大数据 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_人工智能_add_contributor_count.json',
+        //     text: '中国技术领域 人工智能 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_云原生_add_contributor_count.json',
+        //     text: '中国技术领域 云原生 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_编程语言_add_contributor_count.json',
+        //     text: '中国技术领域 编程语言 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_移动应用_add_contributor_count.json',
+        //     text: '中国技术领域 移动应用 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_technology_china_city_前端_add_contributor_count.json',
+        //     text: '中国技术领域 前端 季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_北京市_add_contributor_count.json',
+        //     text: '中国技术领域北京市季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_上海市_add_contributor_count.json',
+        //     text: '中国技术领域上海市季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_广州市_add_contributor_count.json',
+        //     text: '中国技术领域广州市季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_深圳市_add_contributor_count.json',
+        //     text: '中国技术领域深圳市季度 新增开发者',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/line_QS-JAN_杭州市_add_contributor_count.json',
+        //     text: '中国技术领域杭州市季度 新增开发者',
+        //   },
+        // ],
+
+        // 'Push年度(堆叠)': [
+        //   {
+        //     value: './contributor_model/area_stack_AS_country_activity_push_contribution.json',
+        //     text: 'Push 全球年度',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_AS_country_include_eu_activity_push_contribution.json',
+        //     text: 'Push 全球(包含欧盟国家)年度',
+        //   },
+        //   {
+        //     value: './contributor_model/merge_area_stack_AS_china_city_activity_push_contribution.json',
+        //     text: 'Push 中国年度',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_AS_china_city_activity_push_contribution.json',
+        //     text: 'Push 中国 (Github) 年度',
+        //   },
+        //   {
+        //     value: './contributor_model/gitee_area_stack_AS_china_city_activity_push_contribution.json',
+        //     text: 'Push 中国 (Gitee) 年度',
+        //   },
+        // ],
+        // 'Push季度(堆叠)': [
+        //   {
+        //     value: './contributor_model/area_stack_QS-JAN_country_activity_push_contribution.json',
+        //     text: 'Push 全球季度',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_QS-JAN_country_include_eu_activity_push_contribution.json',
+        //     text: 'Push 全球(包含欧盟国家)季度',
+        //   },
+        //   {
+        //     value: './contributor_model/merge_area_stack_QS-JAN_china_city_activity_push_contribution.json',
+        //     text: 'Push 中国季度',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_QS-JAN_china_city_activity_push_contribution.json',
+        //     text: 'Push 中国 (Github) 季度',
+        //   },
+        //   {
+        //     value: './contributor_model/gitee_area_stack_QS-JAN_china_city_activity_push_contribution.json',
+        //     text: 'Push 中国 (Gitee) 季度',
+        //   },
+        // ],
+        // '开发者全球(堆叠)': [
+        //   {
+        //     value:
+        //       './contributor_model/area_stack_AS_country_activity_contributor_count.json',
+        //     text: '开发者全球年度活跃',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/area_stack_AS_country_add_contributor_count.json',
+        //     text: '开发者全球年度新增',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/area_stack_QS-JAN_country_activity_contributor_count.json',
+        //     text: '开发者全球季度活跃',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/area_stack_QS-JAN_country_add_contributor_count.json',
+        //     text: '开发者全球季度新增',
+        //   },
+        // ],
+        // '开发者中国年度(堆叠)': [
+        //   {
+        //     value: './contributor_model/merge_area_stack_AS_china_city_activity_contributor_count.json',
+        //     text: '开发者中国年度活跃',
+        //   },
+        //   {
+        //     value: './contributor_model/merge_area_stack_AS_china_city_add_contributor_count.json',
+        //     text: '开发者中国年度新增',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_AS_china_city_activity_contributor_count.json',
+        //     text: '开发者中国 (Github) 年度活跃',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_AS_china_city_add_contributor_count.json',
+        //     text: '开发者中国 (Github) 年度新增',
+        //   },
+        //   {
+        //     value: './contributor_model/gitee_area_stack_AS_china_city_activity_contributor_count.json',
+        //     text: '开发者中国 (Gitee) 年度活跃',
+        //   },
+        //   {
+        //     value: './contributor_model/gitee_area_stack_AS_china_city_add_contributor_count.json',
+        //     text: '开发者中国 (Gitee) 年度新增',
+        //   },
+        // ],
+        // '开发者中国季度(堆叠)': [
+        //   {
+        //     value: './contributor_model/merge_area_stack_QS-JAN_china_city_activity_contributor_count.json',
+        //     text: '开发者中国季度活跃',
+        //   },
+        //   {
+        //     value: './contributor_model/merge_area_stack_QS-JAN_china_city_add_contributor_count.json',
+        //     text: '开发者中国季度新增',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_QS-JAN_china_city_activity_contributor_count.json',
+        //     text: '开发者中国 (Github) 季度活跃',
+        //   },
+        //   {
+        //     value: './contributor_model/area_stack_QS-JAN_china_city_add_contributor_count.json',
+        //     text: '开发者中国 (Github) 季度新增',
+        //   },
+        //   {
+        //     value: './contributor_model/gitee_area_stack_QS-JAN_china_city_activity_contributor_count.json',
+        //     text: '开发者中国 (Gitee) 季度活跃',
+        //   },
+        //   {
+        //     value: './contributor_model/gitee_area_stack_QS-JAN_china_city_add_contributor_count.json',
+        //     text: '开发者中国 (Gitee) 季度新增',
+        //   },
+        // ],
+        // '项目全球(堆叠)': [
+        //   {
+        //     value: './repo_model/area_stack_AS_country_activity_repo_count.json',
+        //     text: '项目全球年度活跃',
+        //   },
+        //   {
+        //     value: './repo_model/area_stack_AS_country_add_repo_count.json',
+        //     text: '项目全球年度新增',
+        //   },
+        //   {
+        //     value: './repo_model/area_stack_QS-JAN_country_activity_repo_count.json',
+        //     text: '项目全球季度活跃',
+        //   },
+        //   {
+        //     value: './repo_model/area_stack_QS-JAN_country_add_repo_count.json',
+        //     text: '项目全球季度新增',
+        //   },
+        // ],
+        // '项目中国(堆叠)': [
+        //   {
+        //     value:
+        //       './repo_model/merge_area_stack_AS_china_city_activity_repo_count.json',
+        //     text: '项目中国年度活跃',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/merge_area_stack_AS_china_city_add_repo_count.json',
+        //     text: '项目中国年度新增',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/merge_area_stack_QS-JAN_china_city_activity_repo_count.json',
+        //     text: '项目中国季度活跃',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/merge_area_stack_QS-JAN_china_city_add_repo_count.json',
+        //     text: '项目中国季度新增',
+        //   },
+        //   {
+        //     value: './repo_model/area_stack_AS_china_city_activity_repo_count.json',
+        //     text: '项目中国 (Github) 年度活跃',
+        //   },
+        //   {
+        //     value: './repo_model/area_stack_AS_china_city_add_repo_count.json',
+        //     text: '项目中国 (Github) 年度新增',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/area_stack_QS-JAN_china_city_activity_repo_count.json',
+        //     text: '项目中国 (Github) 季度活跃',
+        //   },
+        //   {
+        //     value: './repo_model/area_stack_QS-JAN_china_city_add_repo_count.json',
+        //     text: '项目中国 (Github) 季度新增',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/gitee_area_stack_AS_china_city_activity_repo_count.json',
+        //     text: '项目中国 (Gitee) 年度活跃',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/gitee_area_stack_AS_china_city_add_repo_count.json',
+        //     text: '项目中国 (Gitee) 年度新增',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/gitee_area_stack_QS-JAN_china_city_activity_repo_count.json',
+        //     text: '项目中国 (Gitee) 季度活跃',
+        //   },
+        //   {
+        //     value:
+        //       './repo_model/gitee_area_stack_QS-JAN_china_city_add_repo_count.json',
+        //     text: '项目中国 (Gitee) 季度新增',
+        //   },
+        // ],
+        // '时区国家贡献者-柱状图': [
+        //   {
+        //     value:
+        //       './contributor_model/bar_-12_country push_contribution.json',
+        //     text: '-12时区 总贡献者: 1014 国家贡献者: 123 比率: 0.12',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-12_country push_contribution.json',
+        //     text: '-12时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-11_country push_contribution.json',
+        //     text: '-11时区 总贡献者: 392 国家贡献者: 45 比率: 0.11',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-11_country push_contribution.json',
+        //     text: '-11时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-10_country push_contribution.json',
+        //     text: '-10时区 总贡献者: 2477 国家贡献者: 622 比率: 0.25',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-10_country push_contribution.json',
+        //     text: '-10时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-9_country push_contribution.json',
+        //     text: '-9时区 总贡献者: 566 国家贡献者: 81 比率: 0.14',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-9_country push_contribution.json',
+        //     text: '-9时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-8_country push_contribution.json',
+        //     text: '-8时区 总贡献者: 52086 国家贡献者: 7475 比率: 0.14',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-8_country push_contribution.json',
+        //     text: '-8时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-7_country push_contribution.json',
+        //     text: '-7时区 总贡献者: 221359 国家贡献者: 67238 比率: 0.3',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-7_country push_contribution.json',
+        //     text: '-7时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-6_country push_contribution.json',
+        //     text: '-6时区 总贡献者: 155846 国家贡献者: 32147 比率: 0.21',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-6_country push_contribution.json',
+        //     text: '-6时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-5_country push_contribution.json',
+        //     text: '-5时区 总贡献者: 317602 国家贡献者: 67518 比率: 0.21',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-5_country push_contribution.json',
+        //     text: '-5时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-4_country push_contribution.json',
+        //     text: '-4时区 总贡献者: 382106 国家贡献者: 109105 比率: 0.29',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-4_country push_contribution.json',
+        //     text: '-4时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-3_country push_contribution.json',
+        //     text: '-3时区 总贡献者: 420197 国家贡献者: 128261 比率: 0.31',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-3_country push_contribution.json',
+        //     text: '-3时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-2_country push_contribution.json',
+        //     text: '-2时区 总贡献者: 1016 国家贡献者: 322 比率: 0.32',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-2_country push_contribution.json',
+        //     text: '-2时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_-1_country push_contribution.json',
+        //     text: '-1时区 总贡献者: 329 国家贡献者: 79 比率: 0.24',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_-1_country push_contribution.json',
+        //     text: '-1时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_0_country push_contribution.json',
+        //     text: '-0时区 总贡献者: 175897 国家贡献者: 39392 比率: 0.22',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_0_country push_contribution.json',
+        //     text: '-0时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_1_country push_contribution.json',
+        //     text: '1时区 总贡献者: 438841 国家贡献者: 114841 比率: 0.26',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_1_country push_contribution.json',
+        //     text: '1时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_2_country push_contribution.json',
+        //     text: '2时区 总贡献者: 640540 国家贡献者: 213111 比率: 0.33',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_2_country push_contribution.json',
+        //     text: '2时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_3_country push_contribution.json',
+        //     text: '3时区 总贡献者: 466350 国家贡献者: 110977 比率: 0.24',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_3_country push_contribution.json',
+        //     text: '3时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_4_country push_contribution.json',
+        //     text: '4时区 总贡献者: 41686 国家贡献者: 9361 比率: 0.22',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_4_country push_contribution.json',
+        //     text: '4时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_5_country push_contribution.json',
+        //     text: '5时区 总贡献者: 1032098 国家贡献者: 209237 比率: 0.2',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_5_country push_contribution.json',
+        //     text: '5时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_6_country push_contribution.json',
+        //     text: '6时区 总贡献者: 65849 国家贡献者: 21942 比率: 0.33',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_6_country push_contribution.json',
+        //     text: '6时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_7_country push_contribution.json',
+        //     text: '7时区 总贡献者: 287339 国家贡献者: 48401 比率: 0.17',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_7_country push_contribution.json',
+        //     text: '7时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_8_country push_contribution.json',
+        //     text: '8时区 总贡献者: 463455 国家贡献者: 103154 比率: 0.22',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_8_country push_contribution.json',
+        //     text: '8时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_9_country push_contribution.json',
+        //     text: '9时区 总贡献者: 202012 国家贡献者: 44001 比率: 0.22',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_9_country push_contribution.json',
+        //     text: '9时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_10_country push_contribution.json',
+        //     text: '10时区 总贡献者: 29672 国家贡献者: 10100 比率: 0.34',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_10_country push_contribution.json',
+        //     text: '10时区比率',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_11_country push_contribution.json',
+        //     text: '11时区 总贡献者: 21914 国家贡献者: 5892 比率: 0.27',
+        //   },
+        //   {
+        //     value:
+        //       './contributor_model/bar_ratio_11_country push_contribution.json',
+        //     text: '11时区比率',
+        //   }
+        // ],
+        'push/开发者/项目饼图': [],
+        // '开发者/项目新增活跃比例柱状图': []
+      };
+
+      const options = Object.keys(allOptions);
+      var jsonFileSelector = document.getElementById('jsonFileSelector');
+      // 批量新增 options
+      let includesGitee = true;
+      let urlValue = '';
+      let showName = true;
+      const checkboxClick = (checkbox) => {
+        console.log(checkbox.checked);
+        includesGitee = checkbox.checked;
+        change(urlValue);
+      };
+      const checkboxShowName = (checkbox) => {
+        console.log(checkbox.checked);
+        showName = checkbox.checked;
+        change(urlValue);
+      };
+      // 获取图表容器 DOM 元素
+      //   var chartDom = document.getElementById('main');
+      //   var myChart = echarts.init(chartDom);
+      // 获取加载提示元素
+      //   var loading = document.getElementById('loading');
+      const change = (value) => {
+        urlValue = value;
+        if (value === 'push/开发者/项目饼图') {
+          initPie();
+          return;
+        }
+        if (value === '开发者/项目新增活跃比例柱状图') {
+          initBar();
+          return;
+        }
+        const objList = allOptions[value];
+        // 获取 mainDom 元素
+        const mainDom = document.getElementById('main');
+        // 清空 mainDom 的所有子 div
+        mainDom.innerHTML = '';
+        objList.forEach((obj) => {
+          const newDiv = document.createElement('div');
+          newDiv.id = obj.text;
+          mainDom.appendChild(newDiv); // 将新 div 添加到 mainDom
+        });
+        setTimeout(() => {
+          objList.forEach((obj) => {
+            selectedFun(obj.value, obj.text);
+          });
+        });
+      };
+      // 为下拉选择框添加 change 事件监听，当选项改变时触发
+      jsonFileSelector.addEventListener('change', function () {
+        var selectedValue = this.value;
+        change(selectedValue);
+      });
+      const selectedFun = (selectedFile, id) => {
+        // 使用 fetch 从本地读取 JSON 文件，根据选择的不同文件地址读取
+        fetch(selectedFile)
+          .then((response) => response.json())
+          .then((data) => {
+            var chartDom = document.getElementById(id);
+            var myChart = echarts.init(chartDom);
+            // 拿到解析后的 JSON 数据，赋值给 option
+            var option = data;
+            // 先清空之前图表的配置
+            myChart.clear();
+            if (!includesGitee) {
+              option.series = option.series.filter(
+                (item) =>
+                  item.name !== '中国-Github' && item.name !== '中国-Gitee'
+              );
+              option.legend.data = option.legend.data.filter(
+                (item) => item !== '中国-Github' && item !== '中国-Gitee'
+              );
+            }
+
+            // option.series = option.series.filter(item => item.name !== "欧盟");
+            option.tooltip.position = ['96%', '2%'];
+            if (option.yAxis) {
+              if (option.yAxis[0]) {
+                let seriesLength = option.series.length;
+                let xLength = option.series[0].data.length;
+                option.series.forEach((item) => {
+                  item.label = {
+                    show: true,
+                    position: 'insideTopRight',
+                    distance: 15,
+                    fontSize: 11,
+                    formatter: (params) => {
+                      let value = params.value;
+                      let pre =
+                        params.seriesIndex > 0
+                          ? option.series[params.seriesIndex - 1]['data'][
+                              xLength - 1
+                            ]
+                          : 0;
+                      let canShow =
+                        params.seriesIndex < 4 ||
+                        (params.seriesIndex < 6 && pre * 0.5 < value);
+                      if (params.dataIndex === xLength - 1 && canShow) {
+                        return params.seriesName;
+                      }
+                      return '';
+                    },
+                  };
+                });
+                option.tooltip.order = 'seriesAsc';
+                option.tooltip.trigger = 'axis';
+
+                option.yAxis[0]['axisLabel'] = {
+                  formatter: (value) => formatterValue(value),
+                };
+              } else {
+                if (option.legend.data) {
+                  const get24 = (name) => {
+                    const sData = option.series.find(
+                      (z) => z.name === name
+                    )?.data;
+                    return sData[sData.length - 1];
+                  };
+                  option.legend.data.sort((a, b) => get24(b) - get24(a));
+                }
+                option.tooltip.order = 'valueDesc';
+                // option.tooltip.trigger = 'item';
+                option.yAxis['axisLabel'] = {
+                  formatter: (value) => formatterValue(value),
+                };
+              }
+            }
+            let names = [];
+            option.series.forEach((item) => {
+              cityList.includes(item);
+              let index = getIndex(item.name);
+              if (index > -1) {
+                item.itemStyle = {
+                  color: colorList[index % colorList.length],
+                };
+              }
+              if (item.name.includes('中国')) {
+                item.itemStyle = {
+                  color: colorList[3],
+                };
+              }
+              names.push(item.name);
+            });
+
+            console.log(names);
+            // 使用配置项并渲染图表
+            // option.title = { "text":showName? id:'', 'bottom': 15, left: 'center' }
+            option.title = [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              { text: showName ? id : '', bottom: 15, left: 'center' },
+            ];
+            (option.grid = {
+              left: '6%',
+              right: '6%',
+              bottom: 70,
+            }),
+              option.legend && (option.legend.left = 40);
+            option.toolbox && (option.toolbox.left = 10);
+            // option.tooltip.confine = true
+            option.tooltip.appendTo = true;
+
+            myChart.setOption(option);
+          })
+          .catch((error) => {
+            console.error('读取数据出现错误：', error);
+            // 隐藏加载提示，防止加载失败一直显示
+            // loading.style.display = 'none';
+          });
+      };
+      window.onload = () => {
+        options.forEach((option) => {
+          const newOption = document.createElement('option');
+          newOption.value = option;
+          newOption.textContent = option;
+          jsonFileSelector.appendChild(newOption);
+        });
+        change('Push年度');
+      };
+    </script>
+  </body>
+</html>
