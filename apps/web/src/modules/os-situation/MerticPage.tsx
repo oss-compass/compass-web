@@ -26,7 +26,7 @@ const MerticPage = () => {
               <div className="line-clamp-3 mt-4 h-[72px] text-base leading-6 text-[#7b7c86]">
                 {item.desc}
               </div>
-              <div className="mt-8 flex items-center gap-2 font-semibold text-[#5d5fef]">
+              <div className="text-primary mt-8 flex items-center gap-2 font-semibold">
                 View <IoIosArrowForward className="mt-[1px]" />
               </div>
             </div>

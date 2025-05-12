@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import useApiData from '../../hooks/useApiData';
+import { useApiDataContext } from '@modules/openApi/context';
 
 const convertPath = (path: string) => {
   let res = path;
@@ -15,12 +15,13 @@ const convertNameFun = (str: string) => {
     .trim();
 };
 const useMenuContent = () => {
-  const { data: apiData, isLoading } = useApiData();
+  const { data: apiData, isLoading } = useApiDataContext();
 
   return useMemo(() => {
     if (isLoading) {
       return { isLoading, result: null };
     }
+    const definitions = apiData?.definitions || {};
     let result = apiData?.tags.map((tag) => {
       const menuItems = [];
       const convertName = convertNameFun(tag.name);
@@ -29,20 +30,30 @@ const useMenuContent = () => {
         Object.entries(methods).forEach(([httpMethod, methodInfo]) => {
           // 检查当前方法是否属于当前tag
           if (methodInfo.tags?.includes(tag.name)) {
+            const properties =
+              definitions[methodInfo.operationId]?.properties || {};
+            const required =
+              definitions[methodInfo.operationId]?.required || [];
             menuItems.push({
               id: convertPath(path),
               path: path,
               method: httpMethod.toUpperCase(),
               operationId: methodInfo.operationId,
               description: methodInfo.description,
-              parameters:
-                methodInfo.parameters?.map((p) => ({
-                  name: p.name,
-                  in: p.in,
-                  required: p.required,
-                  type: p.type,
-                  description: p?.description || '',
-                })) || [],
+              parameters: Object.keys(properties).map((key) => {
+                return {
+                  ...properties[key],
+                  name: key,
+                  required: required.includes(key),
+                };
+              }),
+              // methodInfo.parameters?.map((p) => ({
+              //   name: p.name,
+              //   in: p.in,
+              //   required: p.required,
+              //   type: p.type,
+              //   description: p?.description || '',
+              // })) || [],
             });
           }
         });

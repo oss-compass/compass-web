@@ -55,7 +55,7 @@ const APITestForm = ({ method, path, params }) => {
       </Form>
 
       {testResult && (
-        <div className="mt-4 rounded bg-white p-4">
+        <div className="mt-4 overflow-auto rounded bg-white p-4">
           <pre>{JSON.stringify(testResult, null, 2)}</pre>
         </div>
       )}

@@ -12,7 +12,7 @@ const APIGroupPanel = ({ group }) => {
       // expandIcon={({ isActive }) => (
       //   <CaretRightOutlined rotate={isActive ? 90 : 0} />
       // )}
-      className="bg-white p-3"
+      className="bg-white"
       items={group.menus.map((endpoint) => {
         return {
           key: endpoint.id,
@@ -39,26 +39,3 @@ const APIGroupPanel = ({ group }) => {
   );
 };
 export default APIGroupPanel;
-{
-  /* <Panel
-key={endpoint.id}
-header={
-  <div className="flex items-center">
-    <Tag
-      className="mt-[1px]"
-      color={endpoint.method === 'GET' ? 'green' : 'blue'}
-    >
-      {endpoint.method}
-    </Tag>
-    <span
-      id={endpoint.id}
-      className="ml-2 scroll-mt-[100px] text-xl font-semibold"
-    >
-      {endpoint.description}
-    </span>
-  </div>
-}
->
-<EndpointTab endpoint={endpoint} />
-</Panel> */
-}

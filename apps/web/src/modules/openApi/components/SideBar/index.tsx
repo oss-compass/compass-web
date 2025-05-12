@@ -9,7 +9,7 @@ import useActiveMenuId from './useActiveMenuId';
 import NoSsr from '@common/components/NoSsr';
 import { SideBarContextProvider } from '../../context/SideBarContext';
 import ErrorFallback from '@common/components/ErrorFallback';
-import useApiData from '../../hooks/useApiData';
+import { useApiDataContext } from '@modules/openApi/context';
 
 const SideBarMenuContent = () => {
   const activeId = useHashchangeEvent();
@@ -22,7 +22,7 @@ const SideBarMenuContent = () => {
 };
 
 export const SideBarMenu: React.FC<PropsWithChildren> = ({ children }) => {
-  const { isLoading } = useApiData();
+  const { isLoading } = useApiDataContext();
 
   if (isLoading) {
     return <MenuLoading />;

@@ -7,13 +7,9 @@ const EndpointTab = ({ endpoint }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 py-4">
       <div className="rounded bg-gray-50 p-4">
         <h2 className="text-xl font-semibold">{endpoint.path}</h2>
-        {/* <div className="mt-2">
-        <Tag color="geekblue">Endpoint: {endpoint.path}</Tag>
-        <Tag color="purple">Method: {endpoint.method}</Tag>
-      </div> */}
       </div>
 
       <ParamsTable
