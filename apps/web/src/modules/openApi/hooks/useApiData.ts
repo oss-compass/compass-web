@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 // http://159.138.38.244:7000
 const getApiJson = async () => {
   console.log('getApiJson');
-  return await axios.get(`http://159.138.38.244:7000/api/v2/docs`, {
+  return await axios.get(`/api/v2/docs`, {
     headers: {
       accept: 'application/json',
     },
