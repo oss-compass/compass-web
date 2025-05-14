@@ -12,7 +12,7 @@ const APIDocumentation = () => {
   const [activeContent, setActiveContent] = useState(null);
   // 动态内容匹配逻辑
   useEffect(() => {
-    if (!id || !apiData) return;
+    if (!apiData) return;
 
     // 深度遍历查找匹配项
     function findApiById(data, targetId) {
