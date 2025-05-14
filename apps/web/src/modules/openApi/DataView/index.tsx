@@ -1,37 +1,52 @@
-import React from 'react';
-import APIGroupPanel from './APIGroupPanel';
+import React, { useEffect, useState } from 'react';
+import EndpointTab from './EndpointTab';
 import useMenuContent from '@modules/openApi/components/SideBar/useMenuContent';
 import Loading from './Loading';
 import { useTranslation } from 'next-i18next';
+import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 
 const APIDocumentation = () => {
   const { t } = useTranslation();
   const { isLoading, result: apiData } = useMenuContent();
-  if (isLoading) {
+  const id = useHashchangeEvent();
+  const [activeContent, setActiveContent] = useState(null);
+  // 动态内容匹配逻辑
+  useEffect(() => {
+    if (!id || !apiData) return;
+
+    // 深度遍历查找匹配项
+    function findApiById(data, targetId) {
+      for (const item of data) {
+        if (item.menus) {
+          for (const menu of item.menus) {
+            if (menu.id === targetId) {
+              return menu;
+            }
+            if (menu.subMenus) {
+              for (const subMenu of menu.subMenus) {
+                if (subMenu.id === targetId) {
+                  return subMenu;
+                }
+              }
+            }
+          }
+        }
+      }
+      return null; // 如果未找到
+    }
+
+    const target = findApiById(apiData, id);
+    setActiveContent(target || apiData[0]?.menus[0]); // 默认选中第一个菜单
+  }, [id, apiData]);
+
+  if (isLoading || activeContent === null) {
     return <Loading />;
   }
   return (
-    <div className="mx-auto w-full">
-      <h1 className="mb-8 text-3xl font-bold">
-        {t('open_api:api_documentation')}
-      </h1>
-      {apiData?.map((group) => (
-        <div
-          id={group.name}
-          className="scroll-mt-[100px] pb-4"
-          key={group.name}
-        >
-          <h3 className="group mb-4 ml-4 text-2xl font-semibold">
-            {group.convertName}
-            <a href={`#${group.name}`}>
-              <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
-                #
-              </span>
-            </a>
-          </h3>
-          <APIGroupPanel group={group} />
-        </div>
-      ))}
+    <div className="relative mx-auto flex h-[calc(100vh-80px)] min-w-0 flex-1 flex-col overflow-auto bg-[#f2f2f2] p-4">
+      <div className="relative flex flex-1 flex-col bg-white p-8 drop-shadow-sm md:p-2">
+        <EndpointTab endpoint={activeContent} />
+      </div>
     </div>
   );
 };

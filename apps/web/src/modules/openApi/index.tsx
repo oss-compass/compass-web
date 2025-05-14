@@ -15,10 +15,7 @@ const Analyze = () => {
       </StickyNav>
       <Main>
         <SideBar />
-        <Content>
-          <DataView />
-          <Footer />
-        </Content>
+        <DataView />
       </Main>
     </ApiContainer>
   );

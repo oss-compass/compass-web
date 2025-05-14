@@ -1,34 +1,41 @@
 import React from 'react';
 import useMenuContent from '../useMenuContent';
-import MenuTopicItem from '../Menu/MenuTopicItem';
-import MenuItem from '../Menu/MenuItem';
+import type { MenuProps } from 'antd';
+import { Menu } from 'antd';
 
-const Divider = () => (
-  <div className="mx-6 mb-4 mt-2 border-b border-gray-200"></div>
-);
-const SideBarContent = () => {
+const SideBarContent: React.FC = () => {
   const { result } = useMenuContent();
-
+  const onClick: MenuProps['onClick'] = (e) => {
+    console.log('click ', e);
+    window.location.hash = e.key;
+  };
+  const items = result.map((item) => {
+    return {
+      key: item.name,
+      label: item.convertName,
+      children: item.menus.map((menu) => {
+        return {
+          key: menu?.name || menu?.id,
+          label: menu?.convertName || menu?.description,
+          children: menu?.subMenus?.map((subMenu) => {
+            return {
+              key: subMenu.id,
+              label: subMenu.description,
+            };
+          }),
+        };
+      }),
+    };
+  });
   return (
-    <>
-      {result?.map((item) => {
-        return (
-          <div key={item.name}>
-            <MenuTopicItem
-              hash={item.name}
-              menus={item.menus.map((menu) => (
-                <MenuItem key={menu.id} id={menu.id}>
-                  {menu.description}
-                </MenuItem>
-              ))}
-            >
-              {item.convertName}
-            </MenuTopicItem>
-            <Divider />
-          </div>
-        );
-      })}
-    </>
+    <Menu
+      defaultOpenKeys={items.map((item) => item.key)}
+      onClick={onClick}
+      style={{ width: 255, border: 0 }}
+      mode="inline"
+      items={items}
+    />
   );
 };
+
 export default SideBarContent;
