@@ -203,3 +203,44 @@
 .ant-collapse-item {
   padding: 12px !important;
 }
+.responses {
+  .ant-collapse-item {
+    padding: 0 !important;
+    .ant-collapse-header {
+      padding: 0 !important;
+      .ant-collapse-expand-icon {
+        margin-top: 0 !important;
+      }
+    }
+  }
+}
+.responses-top {
+  .ant-collapse-content {
+    border-top: 0 !important;
+  }
+}
+.ant-btn {
+  border-radius: 0 !important;
+}
+// 覆盖全局样式文件
+// .ant-carousel {
+// 导航箭头系统
+// .slick-prev,
+// .slick-next {
+//   &::before {
+//     border-color: #1890ff !important; // 品牌蓝色
+//     border-width: 3px 3px 0 0; // 箭头锐度
+//   }
+
+//   &:hover::before {
+//     border-color: #096dd9 !important; // 加深交互色
+//     transform: scale(1.2); // 悬停放大
+//   }
+// }
+// }
+.slick-dots li button {
+  background: #1890ff !important; // 品牌蓝色
+}
+.slick-dots li::after {
+  background: #1890ff !important; // 激活态品牌色
+}

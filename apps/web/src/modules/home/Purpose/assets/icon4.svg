@@ -1,0 +1,44 @@
+<svg width="110" height="110" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <title>软件选型-树形选择（中心聚焦虚化）</title>
+    <defs>
+        <!-- 径向渐变：下方深色，上方浅色 -->
+        <radialGradient id="centerFade" cx="50%" cy="50%" r="80%" fx="50%" fy="50%">
+            <stop offset="0%" stop-color="#484848" stop-opacity="1"/>   <!-- 中心深色 -->
+            <stop offset="80%" stop-color="#979797" stop-opacity="0.3"/> <!-- 外圈虚化 -->
+            <stop offset="100%" stop-color="#979797" stop-opacity="0"/> <!-- 最外圈完全透明 -->
+        </radialGradient>
+    </defs>
+
+    <!-- 外圈圆形（径向渐变虚化） -->
+    <circle cx="50" cy="50" r="48" fill="none" stroke="url(#centerFade)" stroke-width="1"/>
+
+    <!-- 内层虚线圆 -->
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#D8D8D8" stroke-width="0.5" stroke-dasharray="2,2"/>
+    
+    <!-- 树形结构（中心实心，分支虚化） -->
+    <line x1="50" y1="30" x2="50" y2="70" stroke="#484848" stroke-width="1"/> <!-- 中心垂直线（实心） -->
+    <line x1="50" y1="45" x2="30" y2="60" stroke="#484848" stroke-width="0.8" opacity="0.8"/> <!-- 上部分支半透明 -->
+    <line x1="50" y1="45" x2="70" y2="60" stroke="#484848" stroke-width="0.8" opacity="0.8"/>
+    <line x1="50" y1="55" x2="30" y2="70" 
+          stroke="#484848" 
+          stroke-width="0.8" 
+          stroke-dasharray="3,2" 
+          opacity="0.5"/> <!-- 下部分支虚线+低透明度 -->
+    <line x1="50" y1="55" x2="70" y2="70" 
+          stroke="#484848" 
+          stroke-width="0.8" 
+          stroke-dasharray="3,2" 
+          opacity="0.5"/>
+    
+    <!-- 选择节点（中心节点实心，底部节点虚化） -->
+    <circle cx="50" cy="30" r="3" fill="#484848"/> <!-- 根节点 -->
+    <circle cx="50" cy="45" r="2.5" fill="#484848"/> <!-- 主节点 -->
+    <circle cx="50" cy="55" r="2.5" fill="#484848" opacity="0.7"/> <!-- 次级节点半透明 -->
+    <circle cx="30" cy="60" r="2.5" fill="#484848" opacity="0.6"/> <!-- 底部节点低透明度 -->
+    <circle cx="70" cy="60" r="2.5" fill="#484848" opacity="0.6"/>
+    <circle cx="30" cy="70" r="2.5" fill="#484848" opacity="0.4"/> <!-- 最底部节点强虚化 -->
+    <circle cx="70" cy="70" r="2.5" fill="#484848" opacity="0.4"/>
+    
+    <!-- 选择标记（中心实心箭头） -->
+    <polygon points="50,25 55,30 50,35 45,30" fill="#484848"/>
+</svg>

@@ -1,0 +1,92 @@
+import React, { useState } from 'react';
+import Breadcrumb from '../../components/Breadcrumb';
+import { Select } from 'antd';
+
+const ArchiveDownload = ({ category }: { category: string }) => {
+  const [baseUrl, setBaseUrl] = useState('http://49.0.253.31:7890');
+  // 模拟不同分类的描述和下载数据
+  const categoryData: Record<
+    string,
+    {
+      name: string;
+      description: string;
+      downloads: { name: string; link: string }[];
+    }
+  > = {
+    insight: {
+      name: '开源态势洞察',
+      description: '提供开源态势洞察的开源数据和模型资源。',
+      downloads: [
+        {
+          name: '开源态势洞察数据集',
+          link: baseUrl + '/download/os_situation_archive.tar.gz',
+        },
+      ],
+    },
+  };
+  // 获取当前分类数据
+  const currentCategory = categoryData[category] || categoryData.insight;
+
+  return (
+    <div className="space-y-6 bg-white">
+      {/* 标题区块 */}
+      <Breadcrumb
+        items={[{ label: '归档数据下载' }, { label: currentCategory?.name }]}
+      />
+
+      {/* 分类描述 */}
+      <div className="text-lg text-gray-700">{currentCategory.description}</div>
+      <div>
+        <span className="mr-4 text-lg font-semibold">数据源</span>
+        <Select
+          className="ml-2"
+          defaultValue="数据源1"
+          style={{ width: 140 }}
+          onChange={(value) => {
+            setBaseUrl(value);
+          }}
+          options={[
+            { value: 'http://49.0.253.31:7890', label: 'OSS Compass' },
+            { value: 'http://210.73.43.6:9310', label: '中科院镜像站' },
+          ]}
+        />
+      </div>
+      {/* 下载内容表格 */}
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+                名称
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+                下载链接
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentCategory.downloads.map((item, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="border border-gray-300 px-4 py-2 text-gray-700">
+                  {item.name}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <a
+                    href={item.link}
+                    className="text-blue-500 hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    下载
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default ArchiveDownload;

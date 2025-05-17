@@ -25,6 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         'home',
         'analyze',
         'metrics_models',
+        'academe',
       ])),
     },
   };
