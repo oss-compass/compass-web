@@ -528,3 +528,23 @@ mutation triggerTpcSoftwareGraduationReport($reportId: Int!) {
     status
   }
 }
+mutation createAuthToken($name: String!, $expiresAt: ISO8601DateTime!) {
+  createAuthToken(input: { name: $name, expiresAt: $expiresAt }) {
+    message
+    data {
+      token
+    }
+    errors {
+      message
+    }
+  }
+}
+mutation deleteAuthToken($id: Int!) {
+  deleteAuthToken(input: { id: $id }) {
+    message
+    status
+    errors {
+      message
+    }
+  }
+}

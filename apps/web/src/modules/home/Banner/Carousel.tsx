@@ -12,7 +12,7 @@ const contentStyle: React.CSSProperties = {
 const CarouselContent = () => {
   return (
     <div className="absolute top-[100px] -right-10 w-[680px] overflow-hidden">
-      <Carousel dots autoplaySpeed={15000} autoplay arrows>
+      <Carousel dots={false} autoplaySpeed={15000} autoplay arrows>
         <div className="relative h-[483px] w-[680px]">
           <Image
             width={680}

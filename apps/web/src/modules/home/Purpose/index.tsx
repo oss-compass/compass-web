@@ -24,11 +24,11 @@ const Purpose = () => {
       desc: t('home:academic_research_desc'),
       icon: <Svg3 className="h-full w-full object-contain" />,
     },
-    {
-      title: t('home:software_selection'),
-      desc: t('home:software_selection_desc'),
-      icon: <Svg4 className="h-full w-full object-contain" />,
-    },
+    // {
+    //   title: t('home:software_selection'),
+    //   desc: t('home:software_selection_desc'),
+    //   icon: <Svg4 className="h-full w-full object-contain" />,
+    // },
     {
       key: 'manage',
       title: t('home:open_source_manage'),
@@ -80,7 +80,7 @@ const Purpose = () => {
 
   return (
     <>
-      <section className="mx-auto grid w-[1200px] grid-cols-4 gap-x-6 pb-16 md:grid-cols-1 md:gap-y-6 lg:w-full lg:px-4">
+      <section className="mx-auto grid w-[1200px] grid-cols-3 gap-x-6 pb-16 md:grid-cols-1 md:gap-y-6 lg:w-full lg:px-4">
         {items.map((i, index) => (
           <div
             key={index}

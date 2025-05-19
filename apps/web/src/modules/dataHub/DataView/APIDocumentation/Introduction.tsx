@@ -1,11 +1,15 @@
 import React from 'react';
 import Breadcrumb from '../../components/Breadcrumb';
+import ApplyToken from '../../components/ApplyToken';
+import { useTranslation } from 'react-i18next';
 
 const ApiIntroduction = () => {
+  const { t } = useTranslation();
   const apiBaseUrl = `${window.location.origin}/api/v2/metadata/pullRequests`;
 
   return (
-    <div className="space-y-6 rounded-lg bg-white">
+    <div className="relative space-y-6 rounded-lg bg-white">
+      <ApplyToken />
       {/* 面包屑导航 */}
       <Breadcrumb items={[{ label: 'REST API' }, { label: 'Introduction' }]} />
 
@@ -26,7 +30,7 @@ const ApiIntroduction = () => {
           使用我们的 API 非常简单，您只需按照以下步骤操作：
           <ol className="list-decimal pl-6 pt-2">
             <li>注册并登录 OSS-Compass 平台。</li>
-            <li>在个人中心生成您的 API Token。</li>
+            <li>在账号设置生成您的 API 私人令牌。</li>
             <li>使用 API 文档中的接口说明，构建您的请求。</li>
           </ol>
         </div>
@@ -39,26 +43,18 @@ const ApiIntroduction = () => {
           所有 API 请求都需要通过 Token 进行认证。以下是使用 Token 的步骤：
           <ul className="list-disc pl-6 pt-2">
             <li>
-              在请求头中添加{' '}
+              在请求参数中添加{' '}
               <code className="rounded bg-gray-100 px-1 py-0.5">
-                Authorization
+                access_token
               </code>{' '}
               字段。
-            </li>
-            <li>
-              格式为：
-              <code className="rounded bg-gray-100 px-1 py-0.5">
-                Bearer &lt;Your-Token&gt;
-              </code>
-              。
             </li>
           </ul>
           示例：
           <pre className="mt-4 rounded bg-gray-100 p-4 text-sm text-gray-800">
             {`curl -X POST "${apiBaseUrl}" \\
-  -H "Authorization: Bearer YOUR_API_TOKEN" \\
   -H "Content-Type: application/json" \\
-  -d '{"label": "https://github.com/oss-compass/compass-web"}'`}
+  -d '{"access_token":YOUR_API_TOKEN, label": "https://github.com/oss-compass/compass-web"}'`}
           </pre>
         </div>
       </div>
@@ -72,10 +68,10 @@ const ApiIntroduction = () => {
             {`fetch('${apiBaseUrl}', {
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer YOUR_API_TOKEN',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
+    access_token: YOUR_API_TOKEN,
     label: 'https://github.com/oss-compass/compass-web'
   })
 })
