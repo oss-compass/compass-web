@@ -47,10 +47,11 @@ const Header: React.FC<{
             <ChangeLanguage />
             <div className="group relative flex h-full items-center transition">
               <a
-                href="/submit-your-project"
+                href="https://oss-compass.org/settings/profile"
                 className={
                   'ml-2 cursor-pointer truncate border-2 border-white bg-black px-4 py-2 font-medium text-white xl:px-1'
                 }
+                target="_blank"
               >
                 {t('common:header.apply_api_key')}
               </a>
