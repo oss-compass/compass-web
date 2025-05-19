@@ -3,14 +3,14 @@ import Breadcrumb from '../../components/Breadcrumb';
 import { Select } from 'antd';
 
 const ArchiveDownload = ({ category }: { category: string }) => {
-  const [baseUrl, setBaseUrl] = useState('http://49.0.253.31:7890');
+  const [baseUrl, setBaseUrl] = useState('https://oss-compass.org/');
   // 模拟不同分类的描述和下载数据
   const categoryData: Record<
     string,
     {
       name: string;
       description: string;
-      downloads: { name: string; link: string }[];
+      downloads: { name: string; link: string; description: string }[];
     }
   > = {
     insight: {
@@ -20,6 +20,8 @@ const ArchiveDownload = ({ category }: { category: string }) => {
         {
           name: '开源态势洞察数据集',
           link: baseUrl + '/download/os_situation_archive.tar.gz',
+          description:
+            '开源态势洞察数据集包括开源项目的基本信息、活跃度、社区规模等数据。',
         },
       ],
     },
@@ -40,14 +42,14 @@ const ArchiveDownload = ({ category }: { category: string }) => {
         <span className="mr-4 text-lg font-semibold">数据源</span>
         <Select
           className="ml-2"
-          defaultValue="数据源1"
+          defaultValue={baseUrl}
           style={{ width: 140 }}
           onChange={(value) => {
             setBaseUrl(value);
           }}
           options={[
-            { value: 'http://49.0.253.31:7890', label: 'OSS Compass' },
-            { value: 'http://210.73.43.6:9310', label: '中科院镜像站' },
+            { value: 'https://oss-compass.org/', label: 'OSS Compass' },
+            { value: 'https://oss-compass.isrc.ac.cn/', label: '中科院镜像站' },
           ]}
         />
       </div>
@@ -60,6 +62,9 @@ const ArchiveDownload = ({ category }: { category: string }) => {
                 名称
               </th>
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+                描述
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
                 下载链接
               </th>
             </tr>
@@ -69,6 +74,9 @@ const ArchiveDownload = ({ category }: { category: string }) => {
               <tr key={index} className="hover:bg-gray-50">
                 <td className="border border-gray-300 px-4 py-2 text-gray-700">
                   {item.name}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-gray-700">
+                  {item.description}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
                   <a

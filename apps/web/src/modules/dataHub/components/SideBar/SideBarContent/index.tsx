@@ -3,8 +3,10 @@ import useMenuContent from '../useMenuContent';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
+import { useTranslation } from 'react-i18next';
 
 const SideBarContent: React.FC = () => {
+  const { t } = useTranslation();
   const { result } = useMenuContent();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -81,15 +83,20 @@ const SideBarContent: React.FC = () => {
   };
 
   return (
-    <Menu
-      onClick={onClick}
-      style={{ width: 255, border: 0, fontWeight: 500 }}
-      mode="inline"
-      items={items}
-      selectedKeys={selectedKeys} // 当前选中的菜单项
-      openKeys={openKeys} // 当前展开的菜单项
-      onOpenChange={onOpenChange} // 菜单展开/收起时触发
-    />
+    <>
+      <div className="mb-4 pl-8 text-lg font-semibold">
+        {t('common:header.opensource_research_service')}
+      </div>
+      <Menu
+        onClick={onClick}
+        style={{ width: 255, border: 0, fontWeight: 500 }}
+        mode="inline"
+        items={items}
+        selectedKeys={selectedKeys} // 当前选中的菜单项
+        openKeys={openKeys} // 当前展开的菜单项
+        onOpenChange={onOpenChange} // 菜单展开/收起时触发
+      />
+    </>
   );
 };
 
