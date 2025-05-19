@@ -4,13 +4,18 @@ import { useTranslation } from 'react-i18next';
 
 const ApplyToken = () => {
   const { t } = useTranslation();
-
+  const baseUrl = window.location.origin;
+  const openUrl =
+    baseUrl === 'https://oss-compass.org' ||
+    baseUrl === 'https://compass.gitee.com'
+      ? baseUrl
+      : 'https://oss-compass.org';
   return (
     <div className="absolute right-6 ">
       <Button
         type="primary"
         onClick={() =>
-          window.open(`https://oss-compass.org/settings/profile#personalTokens`)
+          window.open(`${openUrl}/settings/profile#personalTokens`)
         }
       >
         {t('common:header.apply_api_key')}
