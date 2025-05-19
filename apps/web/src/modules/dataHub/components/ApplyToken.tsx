@@ -10,9 +10,7 @@ const ApplyToken = () => {
       <Button
         type="primary"
         onClick={() =>
-          window.open(
-            `${window.location.origin}/settings/profile#personalTokens`
-          )
+          window.open(`https://oss-compass.org/settings/profile#personalTokens`)
         }
       >
         {t('common:header.apply_api_key')}
