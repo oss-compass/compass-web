@@ -95,7 +95,7 @@ const Header: React.FC<{
             >
               {t('common:header.about')}
             </Link>
-            <MoreDropdown />
+            {/* <MoreDropdown /> */}
           </div>
 
           <div className="flex h-full items-center">

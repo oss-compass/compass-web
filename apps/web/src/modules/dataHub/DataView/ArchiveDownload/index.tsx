@@ -1,9 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumb';
 import { Select } from 'antd';
 
 const ArchiveDownload = ({ category }: { category: string }) => {
-  const [baseUrl, setBaseUrl] = useState('https://oss-compass.isrc.ac.cn/');
+  const apiBaseUrl = `${window.location.origin}`;
+  const [baseUrl, setBaseUrl] = useState(window.location.origin);
+  const [defaultValue, setDefaultValue] = useState('');
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    const isDefaultUrl =
+      apiBaseUrl === 'https://oss-compass.org' ||
+      apiBaseUrl === 'https://compass.gitee.com';
+    const defaultOptions = [
+      { value: 'https://oss-compass.org', label: 'OSS Compass' },
+      { value: 'https://oss-compass.isrc.ac.cn', label: '中科院镜像站' },
+    ];
+
+    const newOptions = isDefaultUrl
+      ? [{ value: baseUrl, label: 'OSS Compass' }, ...defaultOptions.slice(1)]
+      : defaultOptions;
+    setDefaultValue(newOptions[0].value);
+    setOptions(newOptions);
+  }, [apiBaseUrl]); // 依赖于 baseUrl 的变化
   // 模拟不同分类的描述和下载数据
   const categoryData: Record<
     string,
@@ -42,15 +61,12 @@ const ArchiveDownload = ({ category }: { category: string }) => {
         <span className="mr-4 text-lg font-semibold">数据源</span>
         <Select
           className="ml-2"
-          defaultValue={baseUrl}
+          defaultValue={defaultValue}
           style={{ width: 140 }}
           onChange={(value) => {
             setBaseUrl(value);
           }}
-          options={[
-            { value: 'https://oss-compass.org/', label: 'OSS Compass' },
-            { value: 'https://oss-compass.isrc.ac.cn/', label: '中科院镜像站' },
-          ]}
+          options={options}
         />
       </div>
       {/* 下载内容表格 */}

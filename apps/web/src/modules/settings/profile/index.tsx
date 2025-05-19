@@ -10,8 +10,8 @@ const ProfileSetting = () => {
   return (
     <Center widthClassName="w-[1000px] pb-20 lg:px-6">
       <ProfileForm />
-      <OAuthList />
       <PersonalTokens />
+      <OAuthList />
       <Organizations />
       <DeleteAccount />
     </Center>
