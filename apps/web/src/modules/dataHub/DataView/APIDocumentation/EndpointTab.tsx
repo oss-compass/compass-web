@@ -25,7 +25,6 @@ const EndpointTab = ({ endpoint }) => {
     const newOptions = isDefaultUrl
       ? [{ value: baseUrl, label: 'OSS Compass' }, ...defaultOptions.slice(1)]
       : defaultOptions;
-    setDefaultValue(newOptions[0].value);
     setOptions(newOptions);
   }, [apiBaseUrl]); // 依赖于 baseUrl 的变化
   return (

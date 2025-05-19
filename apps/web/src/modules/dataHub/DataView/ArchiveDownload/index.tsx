@@ -5,7 +5,7 @@ import { Select } from 'antd';
 const ArchiveDownload = ({ category }: { category: string }) => {
   const apiBaseUrl = `${window.location.origin}`;
   const [baseUrl, setBaseUrl] = useState(window.location.origin);
-  const [defaultValue, setDefaultValue] = useState('');
+  const [defaultValue, setDefaultValue] = useState(apiBaseUrl);
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,6 @@ const ArchiveDownload = ({ category }: { category: string }) => {
     const newOptions = isDefaultUrl
       ? [{ value: baseUrl, label: 'OSS Compass' }, ...defaultOptions.slice(1)]
       : defaultOptions;
-    setDefaultValue(newOptions[0].value);
     setOptions(newOptions);
   }, [apiBaseUrl]); // 依赖于 baseUrl 的变化
   // 模拟不同分类的描述和下载数据

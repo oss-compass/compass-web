@@ -84,7 +84,7 @@ const SideBarContent: React.FC = () => {
 
   return (
     <>
-      <div className="mb-4 pl-8 text-lg font-semibold">
+      <div className="line-clamp-1 mb-4 max-w-[255px] pl-8 text-lg font-semibold">
         {t('common:header.opensource_research_service')}
       </div>
       <Menu
