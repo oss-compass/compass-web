@@ -1,7 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import classnames from 'classnames';
 import { withErrorBoundary } from 'react-error-boundary';
-import { usePrevious, useWindowScroll } from 'react-use';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import SideBarContent from './SideBarContent';
 import useActiveMenuId from './useActiveMenuId';
@@ -82,9 +80,6 @@ const SideBar = () => {
     <aside className="relative min-w-[255px] flex-shrink-0 border-r bg-white lg:hidden">
       <div className="thin-scrollbar sticky top-[0px] h-[calc(100vh-80px)] overflow-auto">
         <div className="py-4">
-          <div className="mb-4 pl-8 text-lg font-semibold">
-            开源数据&模型研究服务
-          </div>
           <SideBarMenu />
         </div>
       </div>
