@@ -25,8 +25,8 @@ const Purpose = () => {
       icon: <Svg3 className="h-full w-full object-contain" />,
     },
     {
-      title: '软件选型',
-      desc: t('home:academic_research_desc'),
+      title: t('home:software_selection'),
+      desc: t('home:software_selection_desc'),
       icon: <Svg4 className="h-full w-full object-contain" />,
     },
     {
@@ -96,9 +96,9 @@ const Purpose = () => {
           </div>
         ))}
       </section>
-      {open && (
+      {/* {open && (
         <section className="mx-auto grid w-[1200px]  pb-16 lg:w-full lg:px-4">
-          {/* <div className="mb-10  border border-[#CFCFCF] p-8 ">
+          <div className="mb-10  border border-[#CFCFCF] p-8 ">
             <div className="flex items-center md:flex-col">
               <div className="mb-4 w-[550px] pl-2 md:w-full">
                 <div className="text-xl font-semibold">{activeCase.title}</div>
@@ -121,8 +121,8 @@ const Purpose = () => {
                 {activeCase.content}
               </div>
             </div>
-          </div> */}
-          {/* <Modal open={open} onClose={() => setOpen(false)}>
+          </div>
+          <Modal open={open} onClose={() => setOpen(false)}>
     <div className="relative h-[700px] w-[900px] border-2 border-black bg-white shadow outline-0">
       <div
         className="absolute top-10 right-10 cursor-pointer p-2 "
@@ -135,9 +135,9 @@ const Purpose = () => {
 
       <div className="px-10 pt-8 md:px-2"></div>
     </div>
-  </Modal> */}
+  </Modal>
         </section>
-      )}
+      )} */}
     </>
   );
 };
