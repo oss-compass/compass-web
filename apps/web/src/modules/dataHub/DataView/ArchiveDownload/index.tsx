@@ -3,7 +3,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import { Select } from 'antd';
 
 const ArchiveDownload = ({ category }: { category: string }) => {
-  const [baseUrl, setBaseUrl] = useState('https://oss-compass.org/');
+  const [baseUrl, setBaseUrl] = useState('https://oss-compass.isrc.ac.cn/');
   // 模拟不同分类的描述和下载数据
   const categoryData: Record<
     string,
