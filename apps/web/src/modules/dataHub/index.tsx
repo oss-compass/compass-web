@@ -1,6 +1,6 @@
 import React from 'react';
 import ApiContainer from './components/ApiContainer';
-import Header from '@common/components/Header';
+import Header from '@common/components/Header/ISCASHeader';
 import { Main, Content } from '@common/components/Layout';
 import SideBar from './components/SideBar';
 import DataView from './DataView';

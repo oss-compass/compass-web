@@ -6,6 +6,7 @@ on:
       - 'release'
       - 'main'
       - 'demo'
+      - 'compass-IACAS'
     paths-ignore:
       - README.md
       - docs/**
@@ -29,6 +30,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'release') }}
             type=raw,value=nightly,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=raw,value=demo,enable=${{ github.ref == format('refs/heads/{0}', 'demo') }}
+            type=raw,value=iacas,enable=${{ github.ref == format('refs/heads/{0}', 'compass-IACAS') }}
             type=sha,prefix={{branch}}-
 
       - name: Set up QEMU
