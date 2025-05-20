@@ -1,86 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumb';
-import { Select } from 'antd';
+import DataSourceSelector from '../../components/DataSourceSelector';
+import { useTranslation } from 'react-i18next';
+import DateSelect from './DateSelect';
 
-const ArchiveDownload = ({ category }: { category: string }) => {
+const ArchiveDownload = ({ category }) => {
+  const { t } = useTranslation();
   const apiBaseUrl = `${window.location.origin}`;
-  const [baseUrl, setBaseUrl] = useState(window.location.origin);
-  const [defaultValue, setDefaultValue] = useState(apiBaseUrl);
-  const [options, setOptions] = useState([]);
+  const [baseUrl, setBaseUrl] = useState(apiBaseUrl);
+  const [selectedDate, setSelectedDate] = useState('202503');
 
-  useEffect(() => {
-    const isDefaultUrl =
-      apiBaseUrl === 'https://oss-compass.org' ||
-      apiBaseUrl === 'https://compass.gitee.com';
-    const defaultOptions = [
-      { value: 'https://oss-compass.org', label: 'OSS Compass' },
-      { value: 'https://oss-compass.isrc.ac.cn', label: '中科院镜像站' },
-    ];
-
-    const newOptions = isDefaultUrl
-      ? [{ value: baseUrl, label: 'OSS Compass' }, ...defaultOptions.slice(1)]
-      : defaultOptions;
-    setOptions(newOptions);
-  }, [apiBaseUrl]); // 依赖于 baseUrl 的变化
-  // 模拟不同分类的描述和下载数据
-  const categoryData: Record<
-    string,
-    {
-      name: string;
-      description: string;
-      downloads: { name: string; link: string; description: string }[];
-    }
-  > = {
+  const categoryData = {
     insight: {
-      name: '开源态势洞察',
-      description: '提供开源态势洞察的开源数据和模型资源。',
+      name: t('open_api:opensource_insight'),
+      description: t('open_api:insight_description'),
       downloads: [
         {
-          name: '开源态势洞察数据集',
-          link: baseUrl + '/download/os_situation_archive.tar.gz',
-          description:
-            '开源态势洞察数据集包括开源项目的基本信息、活跃度、社区规模等数据。',
+          name: t('open_api:contribution_dataset'),
+          link: `${baseUrl}/download/contribution/${selectedDate}.tar.gz`,
+          description: t('open_api:contribution_dataset_description'),
+        },
+        {
+          name: t('open_api:contributor_dataset'),
+          link: `${baseUrl}/download/contributor/${selectedDate}.tar.gz`,
+          description: t('open_api:contributor_dataset_description'),
         },
       ],
     },
   };
-  // 获取当前分类数据
+
   const currentCategory = categoryData[category] || categoryData.insight;
 
   return (
     <div className="space-y-6 bg-white">
-      {/* 标题区块 */}
       <Breadcrumb
-        items={[{ label: '归档数据下载' }, { label: currentCategory?.name }]}
+        items={[
+          { label: t('open_api:archived_data') },
+          { label: currentCategory?.name },
+        ]}
       />
-
-      {/* 分类描述 */}
       <div className="text-lg text-gray-700">{currentCategory.description}</div>
-      <div>
-        <span className="mr-4 text-lg font-semibold">数据源</span>
-        <Select
-          className="ml-2"
-          defaultValue={defaultValue}
-          style={{ width: 140 }}
-          onChange={(value) => {
-            setBaseUrl(value);
-          }}
-          options={options}
-        />
-      </div>
-      {/* 下载内容表格 */}
+      <DataSourceSelector
+        defaultValue={apiBaseUrl}
+        onChange={(value) => setBaseUrl(value)}
+      />
+      <DateSelect onChange={setSelectedDate} />
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
-                名称
+                {t('open_api:name')}
               </th>
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
-                描述
+                {t('open_api:description')}
               </th>
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
-                下载链接
+                {t('open_api:download_link')}
               </th>
             </tr>
           </thead>
@@ -100,7 +76,7 @@ const ArchiveDownload = ({ category }: { category: string }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    下载
+                    {t('open_api:download')}
                   </a>
                 </td>
               </tr>

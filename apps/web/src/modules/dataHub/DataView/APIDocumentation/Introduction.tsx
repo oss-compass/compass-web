@@ -11,59 +11,70 @@ const ApiIntroduction = () => {
     <div className="relative space-y-6 rounded-lg bg-white">
       <ApplyToken />
       {/* 面包屑导航 */}
-      <Breadcrumb items={[{ label: 'REST API' }, { label: 'Introduction' }]} />
+      <Breadcrumb
+        items={[
+          { label: t('open_api:rest_api') },
+          { label: t('open_api:introduction') },
+        ]}
+      />
 
       {/* API 简介 */}
       <div className="px-6">
-        <h2 className="pb-4 text-xl font-bold text-gray-800">API 简介</h2>
+        <h2 className="pb-4 text-xl font-bold text-gray-800">
+          {t('open_api:api_introduction_title')}
+        </h2>
         <div className="text-lg leading-relaxed text-gray-700">
-          OSS-Compass 提供了一套强大的 REST
-          API，帮助开发者、研究人员和企业快速访问开源数据和模型资源。 通过我们的
-          API，您可以灵活地获取所需的数据，支持大规模数据访问和自动化处理。
+          {t('open_api:api_introduction_description')}
         </div>
       </div>
 
       {/* 使用说明 */}
       <div className="px-6">
-        <h2 className="pb-4 text-xl font-bold text-gray-800">使用说明</h2>
+        <h2 className="pb-4 text-xl font-bold text-gray-800">
+          {t('open_api:usage_instructions_title')}
+        </h2>
         <div className="text-lg leading-relaxed text-gray-700">
-          使用我们的 API 非常简单，您只需按照以下步骤操作：
+          {t('open_api:usage_instructions_description')}
           <ol className="list-decimal pl-6 pt-2">
-            <li>注册并登录 OSS-Compass 平台。</li>
-            <li>在账号设置生成您的 API 私人令牌。</li>
-            <li>使用 API 文档中的接口说明，构建您的请求。</li>
+            <li>{t('open_api:step_one')}</li>
+            <li>{t('open_api:step_two')}</li>
+            <li>{t('open_api:step_three')}</li>
           </ol>
         </div>
       </div>
 
       {/* Token 认证 */}
       <div className="px-6">
-        <h2 className="pb-4 text-xl font-bold text-gray-800">Token 认证</h2>
+        <h2 className="pb-4 text-xl font-bold text-gray-800">
+          {t('open_api:token_authentication_title')}
+        </h2>
         <div className="text-lg leading-relaxed text-gray-700">
-          所有 API 请求都需要通过 Token 进行认证。以下是使用 Token 的步骤：
+          {t('open_api:token_authentication_description')}
           <ul className="list-disc pl-6 pt-2">
             <li>
-              在请求参数中添加{' '}
+              {t('open_api:token_step')}
               <code className="rounded bg-gray-100 px-1 py-0.5">
                 access_token
-              </code>{' '}
-              字段。
+              </code>
+              {t('open_api:token_example')}
             </li>
           </ul>
-          示例：
+          {t('open_api:token_example_code')}
           <pre className="mt-4 rounded bg-gray-100 p-4 text-sm text-gray-800">
             {`curl -X POST "${apiBaseUrl}" \\
   -H "Content-Type: application/json" \\
-  -d '{"access_token":YOUR_API_TOKEN, label": "https://github.com/oss-compass/compass-web"}'`}
+  -d '{"access_token":YOUR_API_TOKEN, "label": "https://github.com/oss-compass/compass-web"}'`}
           </pre>
         </div>
       </div>
 
       {/* 示例代码 */}
       <div className="px-6">
-        <h2 className="pb-4 text-xl font-bold text-gray-800">示例代码</h2>
+        <h2 className="pb-4 text-xl font-bold text-gray-800">
+          {t('open_api:example_code_title')}
+        </h2>
         <div className="text-lg leading-relaxed text-gray-700">
-          以下是使用 JavaScript 调用 API 的示例代码：
+          {t('open_api:example_code_description')}
           <pre className="mt-4 rounded bg-gray-100 p-4 text-sm text-gray-800">
             {`fetch('${apiBaseUrl}', {
   method: 'POST',
