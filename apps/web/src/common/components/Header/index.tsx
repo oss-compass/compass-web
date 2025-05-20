@@ -79,7 +79,7 @@ const Header: React.FC<{
             <LinkX href="/blog" legacyBehavior>
               <a
                 className={
-                  '3xl:hidden mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
+                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
                 }
               >
                 {t('common:header.news')}
@@ -89,9 +89,7 @@ const Header: React.FC<{
 
             <Link
               href="/about"
-              className={
-                '3xl:hidden mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
-              }
+              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.about')}
             </Link>
