@@ -45,12 +45,14 @@ const SideBarContent: React.FC = () => {
   }, [result]);
 
   const items = [
-    { key: 'about', label: 'About' },
+    { key: 'about', label: t('common:header.about') },
     { key: 'restApi', label: 'REST API', children: ApiItems },
     {
       key: 'archive',
-      label: '归档数据下载',
-      children: [{ key: 'archive-insight', label: '开源态势洞察' }],
+      label: t('open_api:archived_data'),
+      children: [
+        { key: 'archive-insight', label: t('open_api:opensource_insight') },
+      ],
     },
   ];
   const findParentKeys = (key: string, menuItems: any[]): string[] => {
