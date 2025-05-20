@@ -9,6 +9,7 @@ export interface ApiParameter {
   required: boolean;
   type: string;
   description?: string;
+  default?: any;
 }
 
 const constructUrl = (path: string, values: any) => {
@@ -84,21 +85,22 @@ const ParamsTableWithForm = ({
                     placeholder={`${record.type}${
                       record.required ? ' (required)' : ''
                     }`}
+                    defaultValue={record?.default}
                   />
                 </Form.Item>
               ),
               width: 250,
             },
             {
-              title: 'Type',
-              dataIndex: 'type',
-              key: 'type',
-              width: 120,
-            },
-            {
               title: 'Description',
               dataIndex: 'description',
               key: 'description',
+              ellipsis: true,
+            },
+            {
+              title: 'Example',
+              dataIndex: 'example',
+              key: 'example',
               ellipsis: true,
             },
           ]}
