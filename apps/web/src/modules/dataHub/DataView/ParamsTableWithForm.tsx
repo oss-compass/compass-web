@@ -1,6 +1,5 @@
-// 修改后的 ParamsTableWithForm.tsx
-import React from 'react';
-import { Table, Form, Input, Button } from 'antd';
+import React, { useState } from 'react';
+import { Table, Form, Input, Button, Spin } from 'antd';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
@@ -27,9 +26,12 @@ const ParamsTableWithForm = ({
 }) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
-  const [testResult, setTestResult] = React.useState<any>(null);
+  const [testResult, setTestResult] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleTest = async (values: any) => {
+    setLoading(true);
+    setTestResult(null);
     try {
       const config = {
         method: method.toLowerCase(),
@@ -45,6 +47,8 @@ const ParamsTableWithForm = ({
         status: error.response?.status || 500,
         data: error.response?.data || { error: 'Request failed' },
       });
+    } finally {
+      setLoading(false); // 结束加载
     }
   };
 
@@ -110,14 +114,19 @@ const ParamsTableWithForm = ({
         />
 
         {/* 操作按钮和结果展示 */}
-        <div className="mt-4 flex flex-col gap-4">
+        <div className="mt-4 flex w-full flex-col gap-4">
           <div>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               {t('open_api:send_request')}
             </Button>
           </div>
+          {loading && (
+            <div className="flex flex-1 justify-center overflow-auto rounded bg-gray-50 p-8">
+              <Spin size="large" />
+            </div>
+          )}
           {testResult && (
-            <div className="flex-1 overflow-auto rounded bg-gray-50 p-4">
+            <div className="w-full flex-1 overflow-auto rounded bg-gray-50 p-4">
               <pre className="text-xs">
                 {JSON.stringify(testResult, null, 2)}
               </pre>
