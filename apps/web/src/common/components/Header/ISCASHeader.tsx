@@ -7,6 +7,7 @@ import NoSsr from '@common/components/NoSsr';
 import MobileHeader from './MobileHeader';
 import ChangeLanguage from './ChangeLanguage';
 import Image from 'next/image';
+import { Badge } from 'antd';
 
 const Header: React.FC<{
   sticky?: boolean;
@@ -26,17 +27,17 @@ const Header: React.FC<{
           <div className="flex h-full flex-shrink-0 items-center">
             <Link href="/" className="relative mr-4 2xl:mx-1 2xl:mr-2">
               <Logo color="white" />
-              <div className="absolute -top-2 right-2 translate-x-1/4 -translate-y-1/4 transform">
-                <span className="whitespace-nowrap  rounded-full bg-[#8a8b80] px-1.5 py-[1px] text-[12px] text-white transition-opacity duration-200">
+              <div className="absolute -top-[2px] -right-[36px] translate-x-1/4 -translate-y-1/4 transform">
+                <span className="whitespace-nowrap rounded-full bg-[#2eb263] px-1.5 py-[1px] text-[12px] text-white transition-opacity duration-200">
                   镜像站
                 </span>
               </div>
             </Link>
-            <div className="mx-3 h-8 w-1 bg-white"></div>
+            <div className="mx-7 h-8 w-1"></div>
             <Image
               src={'/images/about/北大.png'}
-              width={45}
-              height={45}
+              width={42}
+              height={42}
               alt={'北大'}
               style={{
                 maxWidth: '100%',
