@@ -34,17 +34,17 @@ const Header: React.FC<{
             </Link>
             <div className="mx-3 h-8 w-1 bg-white"></div>
             <Image
-              src={'/images/about/软件所.png'}
-              width={124}
-              height={38}
-              alt={'软件所'}
+              src={'/images/about/北大.png'}
+              width={45}
+              height={45}
+              alt={'北大'}
               style={{
                 maxWidth: '100%',
                 height: 'auto',
               }}
             />
             <div className="ml-2 text-xl font-bold text-white">
-              {t('common:header.mirror_site_of_iscas')}
+              {t('common:header.mirror_site_of_pku')}
             </div>
           </div>
 
