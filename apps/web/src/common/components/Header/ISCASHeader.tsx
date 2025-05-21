@@ -24,10 +24,15 @@ const Header: React.FC<{
           )}
         >
           <div className="flex h-full flex-shrink-0 items-center">
-            <Link href="/" className="mr-4 2xl:mx-1 2xl:mr-2">
+            <Link href="/" className="relative mr-4 2xl:mx-1 2xl:mr-2">
               <Logo color="white" />
+              <div className="absolute -top-2 right-2 translate-x-1/4 -translate-y-1/4 transform">
+                <span className="whitespace-nowrap  rounded-full bg-[#8a8b80] px-1.5 py-[1px] text-[12px] text-white transition-opacity duration-200">
+                  镜像站
+                </span>
+              </div>
             </Link>
-            <div className="mx-4 h-8 w-1 bg-white"></div>
+            <div className="mx-3 h-8 w-1 bg-white"></div>
             <Image
               src={'/images/about/软件所.png'}
               width={124}
@@ -39,7 +44,7 @@ const Header: React.FC<{
               }}
             />
             <div className="ml-2 text-xl font-bold text-white">
-              中科院软件所镜像站
+              {t('common:header.mirror_site_of_iscas')}
             </div>
           </div>
 
