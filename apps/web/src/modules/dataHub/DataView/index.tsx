@@ -35,7 +35,7 @@ const DataView = () => {
       content = id ? <APIDocumentation id={id} /> : <About />;
   }
   return (
-    <div className="relative flex h-[calc(100vh-80px)] flex-1 bg-[#f2f2f2] p-4">
+    <div className="relative flex h-[calc(100vh-80px)] flex-1 overflow-auto bg-[#f2f2f2] p-4">
       <div className="w-full overflow-auto bg-white p-8 drop-shadow-sm md:p-2">
         {content}
       </div>
