@@ -38,7 +38,7 @@ const SideBarContent: React.FC = () => {
     });
     res.unshift({
       key: 'introduction',
-      label: 'Introduction',
+      label: t('open_api:introduction'),
       children: undefined,
     });
     return res;
