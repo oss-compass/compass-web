@@ -7,7 +7,6 @@ import NoSsr from '@common/components/NoSsr';
 import MobileHeader from './MobileHeader';
 import ChangeLanguage from './ChangeLanguage';
 import Image from 'next/image';
-import { Badge } from 'antd';
 
 const Header: React.FC<{
   sticky?: boolean;
