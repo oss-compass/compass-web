@@ -12,10 +12,12 @@ const EndpointTab = ({ endpoint }) => {
   return (
     <div className="space-y-6 rounded-lg bg-white">
       <Breadcrumb
-        items={[{ label: 'REST API' }, { label: endpoint?.description }]}
+        items={[{ label: 'REST API' }, { label: endpoint?.summary }]}
       />
-      {endpoint?.summary && (
-        <p className="mt-2 leading-relaxed text-gray-600">{endpoint.summary}</p>
+      {endpoint?.description && (
+        <p className="mt-2 whitespace-pre leading-relaxed text-gray-600">
+          {endpoint.description}
+        </p>
       )}
       <DataSourceSelector
         defaultValue={apiBaseUrl}
@@ -34,7 +36,7 @@ const EndpointTab = ({ endpoint }) => {
         path={endpoint.path}
         params={endpoint.parameters.map((p) => ({
           ...p,
-          key: p.id,
+          key: p.name,
         }))}
       />
     </div>

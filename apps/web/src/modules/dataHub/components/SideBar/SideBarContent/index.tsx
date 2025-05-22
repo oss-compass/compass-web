@@ -25,11 +25,11 @@ const SideBarContent: React.FC = () => {
         children: item.menus.map((menu) => {
           return {
             key: menu?.name || menu?.id,
-            label: menu?.convertName || menu?.description,
+            label: menu?.convertName || menu?.summary,
             children: menu?.subMenus?.map((subMenu) => {
               return {
                 key: subMenu.id,
-                label: subMenu.description,
+                label: subMenu.summary,
               };
             }),
           };
