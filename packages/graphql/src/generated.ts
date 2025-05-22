@@ -2132,6 +2132,7 @@ export type ModelDetail = {
   /** Details of the 1000 latest updates */
   latestVersions?: Maybe<Array<ModelVersion>>;
   loginBinds?: Maybe<LoginBind>;
+  modelType?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   parentLabModel?: Maybe<ModelDetail>;
   permissions?: Maybe<Permission>;
@@ -2165,6 +2166,7 @@ export type ModelPublicOverview = {
   metrics?: Maybe<Array<ModelMetric>>;
   modelId?: Maybe<Scalars['Int']>;
   modelName?: Maybe<Scalars['String']>;
+  modelType?: Maybe<Scalars['Int']>;
   reports?: Maybe<Array<SimpleReport>>;
   version?: Maybe<Scalars['String']>;
   versionId?: Maybe<Scalars['Int']>;
@@ -3419,6 +3421,7 @@ export type QueryLabModelDetailArgs = {
 export type QueryLabModelPublicOverviewArgs = {
   direction?: InputMaybe<Scalars['String']>;
   metricId?: InputMaybe<Scalars['Int']>;
+  modelType?: InputMaybe<Scalars['Int']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
   sort?: InputMaybe<Scalars['String']>;
@@ -5952,6 +5955,7 @@ export type LabModelDetailQuery = {
     id: number;
     description?: string | null;
     isPublic: boolean;
+    modelType?: number | null;
     triggerRemainingCount: number;
     name: string;
     userId: number;
@@ -6527,6 +6531,7 @@ export type SimpleReportFragment = {
 
 export type LabModelPublicOverviewQueryVariables = Exact<{
   sort?: InputMaybe<Scalars['String']>;
+  modelType?: InputMaybe<Scalars['Int']>;
   direction?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   per?: InputMaybe<Scalars['Int']>;
@@ -11858,6 +11863,7 @@ export const LabModelDetailDocument = /*#__PURE__*/ `
     id
     description
     isPublic
+    modelType
     triggerRemainingCount
     loginBinds {
       account
@@ -12357,10 +12363,11 @@ useInvitationOverviewQuery.fetcher = (
     headers
   );
 export const LabModelPublicOverviewDocument = /*#__PURE__*/ `
-    query labModelPublicOverview($sort: String, $direction: String, $page: Int, $per: Int, $metricId: Int) {
+    query labModelPublicOverview($sort: String, $modelType: Int, $direction: String, $page: Int, $per: Int, $metricId: Int) {
   labModelPublicOverview(
     sort: $sort
     direction: $direction
+    modelType: $modelType
     page: $page
     per: $per
     metricId: $metricId

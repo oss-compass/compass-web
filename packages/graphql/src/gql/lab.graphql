@@ -243,6 +243,7 @@ query labModelDetail($modelId: Int!) {
     id
     description
     isPublic
+    modelType
     triggerRemainingCount
     loginBinds {
       account
@@ -443,6 +444,7 @@ fragment simpleReport on SimpleReport {
 
 query labModelPublicOverview(
   $sort: String
+  $modelType: Int
   $direction: String
   $page: Int
   $per: Int
@@ -451,6 +453,7 @@ query labModelPublicOverview(
   labModelPublicOverview(
     sort: $sort
     direction: $direction
+    modelType: $modelType
     page: $page
     per: $per
     metricId: $metricId

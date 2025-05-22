@@ -9,6 +9,7 @@ export interface ApiParameter {
   type: string;
   description?: string;
   default?: any;
+  example?: any;
 }
 
 const constructUrl = (path: string, values: any) => {
@@ -106,6 +107,11 @@ const ParamsTableWithForm = ({
               dataIndex: 'example',
               key: 'example',
               ellipsis: true,
+              render: (_, record) => (
+                <div className="flex items-center">
+                  <span className="mr-1">{JSON.stringify(record.example)}</span>
+                </div>
+              ),
             },
           ]}
           dataSource={params}
