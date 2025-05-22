@@ -7,32 +7,9 @@ import { Level } from '@modules/developer/constant';
 import DeveloperDashboard from './DeveloperDashboard';
 import Calendar from './Calendar';
 import Languages from './Languages';
-import LineChart from './LineChart';
 import TopRepo from './TopRepo';
 import Radar from './Radar';
 import Cloud from './Cloud';
-
-import ConnectLineMini from '@modules/developer/components/ConnectLineMini';
-
-const Overview: React.FC<{
-  data: DeepReadonly<
-    { label: string; level: Level; result: MetricQuery | undefined }[]
-  >;
-}> = ({ data }) => {
-  if (data.length == 1) {
-    return (
-      <>
-        <div className="flex gap-4 md:flex-col">
-          <div className="min-w-0 flex-1 ">
-            <LineChart />
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  return null;
-};
 
 const OverviewSummary = () => {
   const { items, loading } = useMetricQueryData();
