@@ -15,8 +15,10 @@ const Analyze = () => {
         <Main>
           <SideBar />
           <Content>
-            <DataView />
-            <Footer />
+            <div className="mx-auto  max-w-[1200px]">
+              <DataView />
+              <Footer />
+            </div>
           </Content>
         </Main>
       </AnalyzeContainer>

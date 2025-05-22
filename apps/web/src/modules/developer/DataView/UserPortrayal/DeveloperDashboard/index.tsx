@@ -4,11 +4,17 @@ import useMetricQueryData from '@modules/developer/hooks/useMetricQueryData';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import { Level } from '@modules/developer/constant';
-import Languages from './Languages';
+import LeftPan from './LeftPan';
+import RightPan from './RightPan1';
 import BaseCard from '@modules/developer/components/DeveloperCard';
 
 const OverviewSummary = () => {
-  return <Languages />;
+  return (
+    <div className="mb-8 flex gap-4">
+      <LeftPan />
+      <RightPan />
+    </div>
+  );
 };
 
 // const OverviewSummary = () => {
