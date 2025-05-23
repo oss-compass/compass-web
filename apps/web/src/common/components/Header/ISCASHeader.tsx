@@ -54,7 +54,7 @@ const Header: React.FC<{
               <a
                 href="https://oss-compass.org/settings/profile"
                 className={
-                  'ml-2 cursor-pointer truncate border-2 border-white bg-black px-4 py-2 font-medium text-white xl:px-1'
+                  'ml-2 cursor-pointer truncate bg-black px-4 py-2 font-medium text-white hover:bg-[#333333] xl:px-1'
                 }
                 target="_blank"
               >
@@ -62,7 +62,7 @@ const Header: React.FC<{
               </a>
               <div className="z-dropdown absolute top-[100%] -left-8 hidden w-[200px] group-hover:block">
                 <div className="mt-[2px] bg-black/90 p-2 text-sm text-white">
-                  点击前往 OSS Compass 官网个人中心申请 API Key
+                  {t('common:header.goto_apply_api_key')}
                 </div>
               </div>
             </div>
