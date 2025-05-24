@@ -22,9 +22,9 @@ const OverviewSummary = () => {
       <Languages />
       <TopRepo />
       {/* <ConnectLineMini /> */}
-      <Calendar />
+      {/* <Calendar /> */}
       <Radar />
-      <Cloud />
+      {/* <Cloud /> */}
     </div>
   );
 };

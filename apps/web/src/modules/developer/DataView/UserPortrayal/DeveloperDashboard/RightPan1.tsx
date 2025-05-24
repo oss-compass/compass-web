@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { BiChat, BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
+import { BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
+import { GoIssueOpened } from 'react-icons/go';
 
 const RightPan = () => {
   const userInfo = [
@@ -42,16 +43,16 @@ const RightPan = () => {
       <div className="flex flex-1 items-center justify-between rounded-lg border-2 border-transparent bg-white p-6 drop-shadow-sm">
         <div className="flex">
           <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#fffae5] text-[28px] text-[#ffd950]">
-            <BiGitCommit />
+            <BiGitPullRequest />
           </div>
           <div className="flex flex-col justify-between gap-1">
-            <div className="text-xs text-gray-500">Commits</div>
-            <div className="line-clamp-1 text-2xl">523</div>
+            <div className="text-xs text-gray-500">PRs 评论</div>
+            <div className="line-clamp-1 text-2xl">23</div>
           </div>
         </div>
         <div className="float-right text-sm text-gray-500">
           <div>
-            Top <span className="text-xl font-bold text-[#02bc77]">25%</span> in
+            Top <span className="text-xl font-bold text-[#ff2366]">25%</span> in
             China
           </div>
         </div>
@@ -59,11 +60,11 @@ const RightPan = () => {
       <div className="flex flex-1 items-center justify-between rounded-lg border-2 border-transparent bg-white p-6 drop-shadow-sm">
         <div className="flex">
           <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#d8f5ea] text-[28px] text-[#27c68b]">
-            <BiGitCommit />
+            <GoIssueOpened />
           </div>
           <div className="flex flex-col justify-between gap-1">
-            <div className="text-xs text-gray-500">Commits</div>
-            <div className="line-clamp-1 text-2xl">523</div>
+            <div className="text-xs text-gray-500">Issues 评论</div>
+            <div className="line-clamp-1 text-2xl">45</div>
           </div>
         </div>
         <div className="float-right text-sm text-gray-500">

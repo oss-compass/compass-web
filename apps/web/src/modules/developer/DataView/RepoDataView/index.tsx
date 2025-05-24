@@ -24,8 +24,8 @@ const CollaborationDevelopmentIndexOverview = () => {
       <div className="mb-4">
         <CommunityRepos />
         <ConnectLineMini />
-        <TotalScore />
-        <ConnectLineMini />
+        {/* <TotalScore />
+        <ConnectLineMini /> */}
         <TotalScoreRepo />
       </div>
       {/* 

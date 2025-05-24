@@ -27,8 +27,8 @@ const CommunityActivity = () => {
       </SectionTitle> */}
 
       <div className="mb-4">
-        <TotalScore />
-        <ConnectLineMini />
+        {/* <TotalScore />
+        <ConnectLineMini /> */}
         <TotalScoreRepo />
       </div>
       {/* <div className="relative mb-4 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">

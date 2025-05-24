@@ -175,8 +175,8 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
             anchorEl={anchorEl}
           >
             <div className="rounded bg-white py-2 shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
-              {ReferenceNode}
-              {LineSetting}
+              {/* {ReferenceNode} */}
+              {/* {LineSetting} */}
               <DownloadAndShare
                 cardRef={cardRef}
                 downloadImageSize={downloadImageSize}

@@ -57,7 +57,7 @@ const LeftPan = () => {
   return (
     <div className="relative w-full min-w-0 rounded-lg border-2 border-transparent bg-white p-8 drop-shadow-sm">
       {/* 头像区 - 修改图标引用 */}
-      <div className="mb-10 flex items-center gap-6 overflow-hidden ">
+      <div className="mb-12 flex items-center gap-6 overflow-hidden ">
         <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200">
           <ImageFallback
             src={'https://avatars.githubusercontent.com/u/53640896?v=4'}
@@ -73,7 +73,7 @@ const LeftPan = () => {
         </div>
 
         <div>
-          <h1 className="mb-2 text-2xl font-bold text-gray-800">
+          <h1 className="mb-2.5 text-2xl font-bold text-gray-800">
             {'lishengbao'}
           </h1>
           <div className="flex cursor-pointer items-center gap-2 rounded-full bg-gray-100 py-[5px] px-3 transition hover:bg-indigo-100">
