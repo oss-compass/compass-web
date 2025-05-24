@@ -143,8 +143,44 @@ const SearchDropdown: React.FC<{
   keyword: string;
   result: SearchQuery['fuzzySearch'];
 }> = ({ result, keyword }) => {
-  if (!result || (Array.isArray(result) && result.length === 0)) {
-    return (
+  const onChange = (key: string) => {
+    console.log(key);
+  };
+
+  const items = [
+    {
+      key: '1',
+      label: 'All',
+    },
+    {
+      key: '2',
+      label: 'Developer',
+    },
+    {
+      key: '3',
+      label: 'Repo',
+    },
+    {
+      key: '4',
+      label: 'Community ',
+    },
+  ];
+  let content = null;
+  if (keyword === '') {
+    content = (
+      <p
+        className={classnames(
+          'block flex items-center justify-between pl-4  pr-2.5 text-lg text-gray-500',
+          'min-h-[84px] md:px-2 md:text-sm'
+        )}
+      >
+        <span className="flex-wrap text-base leading-none">
+          未找到匹配的结果。
+        </span>
+      </p>
+    );
+  } else if (!result || (Array.isArray(result) && result.length === 0)) {
+    content = (
       <SubmitYourProject
         noResult
         content={
@@ -164,9 +200,44 @@ const SearchDropdown: React.FC<{
         }
       />
     );
+  } else {
+    content = <DropDownList result={result!} />;
   }
 
-  return <DropDownList result={result!} />;
+  return (
+    <>
+      <div>
+        <Tabs items={items} />
+      </div>
+      {content}
+    </>
+  );
 };
+const Tabs = ({ items }) => {
+  const [activeKey, setActiveKey] = useState(items[0].key);
 
+  const handleTabChange = (key) => {
+    setActiveKey(key);
+  };
+
+  return (
+    <div>
+      <div className="flex border-b">
+        {items.map((item) => (
+          <button
+            key={item.key}
+            className={`py-2 px-6 transition duration-150 ease-in-out focus:outline-none ${
+              item.key === activeKey
+                ? 'border-b-2 border-blue-500 text-blue-500'
+                : 'text-gray-600 hover:text-blue-500'
+            }`}
+            onClick={() => handleTabChange(item.key)}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 export default SearchDropdown;

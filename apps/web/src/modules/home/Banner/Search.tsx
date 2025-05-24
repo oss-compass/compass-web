@@ -14,6 +14,7 @@ const Search = () => {
   const { t, i18n } = useTranslation();
   const ref = useRef(null);
   const [keyword, setKeyword] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const throttledKeyword = useThrottle(keyword, { wait: 300 });
   const { isLoading, data, fetchStatus } = useSearchQuery(
     client,
@@ -24,6 +25,7 @@ const Search = () => {
 
   useClickAway(ref, () => {
     setKeyword('');
+    setIsFocused(false);
   });
 
   return (
@@ -57,7 +59,12 @@ const Search = () => {
       <p className="mb-10 text-lg md:text-sm">
         {t('home:we_help_open_source_projects_gain_insight_into_its')}
       </p>
-      <div className="relative w-[496px] md:w-full" ref={ref}>
+      <div
+        className="relative w-[496px] md:w-full"
+        ref={ref}
+        onFocus={() => setIsFocused(true)}
+        // onBlur={() => setIsFocused(false)}
+      >
         <div className="flex items-center border-2 border-black px-4 md:px-2">
           <input
             value={keyword}
@@ -84,7 +91,7 @@ const Search = () => {
         <p className="mt-3 text-gray-500 md:text-sm">
           {t('home:please_enter_repository_name_or_community')}
         </p>
-        {throttledKeyword && (
+        {isFocused && (
           <div
             className={classnames(
               'z-dropdown absolute left-0 right-0 top-[58px] border-2 border-black bg-white drop-shadow-xl',

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
 import useVerifyDetailRangeQuery from '@modules/developer/hooks/useVerifyDetailRangeQuery';
-import useQueryMetricType from '@modules/developer/hooks/useQueryMetricType';
 
 const defaultVal = {
   range: '6M' as RangeTag,
@@ -31,13 +30,9 @@ const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
   const { isLoading, data } = useVerifyDetailRangeQuery();
-  const topicType = useQueryMetricType();
 
   return useMemo(() => {
-    if (
-      topicType === 'contributor' &&
-      (!range || !data?.verifyDetailDataRange?.status)
-    ) {
+    if (!range || !data?.verifyDetailDataRange?.status) {
       return contributorDefaultVal;
     } else {
       if (!range) {
@@ -59,7 +54,7 @@ const useQueryDateRange = () => {
         return defaultVal;
       }
     }
-  }, [range, topicType, isLoading, data]);
+  }, [range, isLoading, data]);
 };
 
 export default useQueryDateRange;

@@ -7,6 +7,8 @@ import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
 import DocPopper from '@common/components/DocPopper';
 import { DebugLogger } from '@common/debug';
+import { Trans } from 'react-i18next';
+import LinkLegacy from '@common/components/LinkLegacy';
 
 const logger = new DebugLogger('BaseCard');
 
@@ -32,6 +34,7 @@ interface BaseCardProps {
   _tracing?: string;
   id?: string;
   loading?: boolean;
+  isEmpty?: boolean;
   className?: string;
   title?: string;
   description?: string;
@@ -58,12 +61,43 @@ interface BaseCardProps {
     | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
     | ReactNode;
 }
+const EmptyNode = () => {
+  const { t, i18n } = useTranslation();
 
+  return (
+    <div className="absolute left-0 right-0  bottom-0 z-10 flex h-[350px] w-full flex-col items-center justify-center bg-[rgba(255,255,255,.8)]">
+      <p className="text-xs text-gray-400">
+        {t('analyze:there_is_currently_no_data_in_the_chart')}
+      </p>
+      <p className="text-xs text-gray-400">
+        <Trans
+          i18nKey="please_contact_us_if_you_have"
+          ns="analyze"
+          components={{
+            l: (
+              <LinkLegacy
+                href={
+                  i18n.language === 'en'
+                    ? '/docs/community/'
+                    : '/zh/docs/community/'
+                }
+              />
+            ),
+          }}
+          values={{
+            e: t('analyze:contact_us'),
+          }}
+        />
+      </p>
+    </div>
+  );
+};
 const BaseCard: React.FC<BaseCardProps> = ({
   _tracing,
   id,
   className = '',
   loading = false,
+  isEmpty = false,
   title = '',
   description = '',
   docLink = '',
@@ -105,7 +139,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
   if (loading) {
     return <Loading className={cls} />;
   }
-
+  if (isEmpty && !loading) {
+    return <EmptyNode />;
+  }
   return (
     <div className={classnames(cls)} ref={cardRef} id={id}>
       <h3

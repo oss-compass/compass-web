@@ -11,7 +11,6 @@ import { useTranslation } from 'next-i18next';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import DateRangePicker from './DateRangePicker';
 import Popper from '@mui/material/Popper';
-import useQueryMetricType from '@modules/developer/hooks/useQueryMetricType';
 import ContributorDateTagPanel from '@modules/developer/components/NavBar/ContributorDateTagPanel';
 
 const DateTagPanel = ({
@@ -24,7 +23,6 @@ const DateTagPanel = ({
   const [showRangePicker, setShowRangePicker] = useToggle(false);
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
-  const topicType = useQueryMetricType();
 
   return (
     <div
@@ -95,7 +93,6 @@ const NavDatePicker = ({ disable }: { disable?: boolean }) => {
   const { range } = useQueryDateRange();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [pickerPanelOpen, togglePickerPanel] = React.useState(false);
-  const topicType = useQueryMetricType();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (disable) return;
@@ -137,19 +134,13 @@ const NavDatePicker = ({ disable }: { disable?: boolean }) => {
             },
           ]}
         >
-          {topicType === 'contributor' ? (
-            <ContributorDateTagPanel
-              togglePickerPanel={(v) => {
-                togglePickerPanel(v);
-              }}
-            />
-          ) : (
+          {
             <DateTagPanel
               togglePickerPanel={(v) => {
                 togglePickerPanel(v);
               }}
             />
-          )}
+          }
         </Popper>
       </div>
     </ClickAwayListener>

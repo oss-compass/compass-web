@@ -11,16 +11,13 @@ import usePageLoadHashScroll from '@common/hooks/usePageLoadHashScroll';
 import { QueryStatus, useQueries, useQueryClient } from '@tanstack/react-query';
 import {
   MetricQuery,
-  MetricContributorQuery,
   SummaryQuery,
   useMetricQuery,
-  useMetricContributorQuery,
   useSummaryQuery,
 } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Level } from '@modules/developer/constant';
 import { chartUserSettingState } from '@modules/developer/store';
-import useQueryMetricType from '@modules/developer/hooks/useQueryMetricType';
 
 interface Store {
   loading: boolean;
@@ -44,14 +41,7 @@ const dataState = proxy<Store>(defaultVal);
 export const ChartsDataContext = createContext<typeof dataState>(dataState);
 
 const ChartsDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const topicType = useQueryMetricType();
-  if (topicType === 'collaboration') {
-    return <ChartsDataProviderCollab> {children}</ChartsDataProviderCollab>;
-  } else {
-    return (
-      <ChartsDataProviderContributor> {children}</ChartsDataProviderContributor>
-    );
-  }
+  return <ChartsDataProviderCollab> {children}</ChartsDataProviderCollab>;
 };
 
 const ChartsDataProviderCollab: React.FC<PropsWithChildren> = ({
@@ -127,77 +117,5 @@ const ChartsDataProviderCollab: React.FC<PropsWithChildren> = ({
     </ChartsDataContext.Provider>
   );
 };
-const ChartsDataProviderContributor: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
-  const proxyState = useRef(dataState).current;
-  const snap = useSnapshot(chartUserSettingState);
-  const repoType = snap.repoType;
-  const queryClient = useQueryClient();
-  const { timeStart, timeEnd } = useQueryDateRange();
-  const { compareItems } = useCompareItems();
 
-  useQueries({
-    queries: compareItems.map(({ label, level }) => {
-      const variables = {
-        label,
-        level,
-        start: timeStart,
-        end: timeEnd,
-        repoType: level === Level.COMMUNITY ? repoType : '',
-      };
-      return {
-        queryKey: useMetricContributorQuery.getKey(variables),
-        queryFn: useMetricContributorQuery.fetcher(client, variables),
-      };
-    }),
-  });
-
-  // useSummaryQuery(
-  //   client,
-  //   { start: timeStart, end: timeEnd },
-  //   {
-  //     onSuccess(e) {
-  //       proxyState.summary = e;
-  //     },
-  //   }
-  // );
-
-  const items = compareItems
-    .map(({ label, level }) => {
-      const variables = {
-        label,
-        level,
-        start: timeStart,
-        end: timeEnd,
-        repoType: level === Level.COMMUNITY ? repoType : '',
-      };
-      const key = useMetricContributorQuery.getKey(variables);
-      return {
-        label,
-        level,
-        status: queryClient.getQueryState<MetricQuery>(key)?.status,
-        result: queryClient.getQueryData<MetricQuery>(key),
-      };
-    })
-    .filter((i) => i.status !== 'error');
-
-  const isLoading = items.some((i) => i.status === 'loading');
-
-  // scroll to url hash element
-  usePageLoadHashScroll(isLoading);
-
-  useEffect(() => {
-    proxyState.loading = isLoading;
-    if (!isLoading) {
-      proxyState.items = items;
-    }
-  }, [isLoading, items, proxyState]);
-
-  return (
-    <ChartsDataContext.Provider value={proxyState}>
-      {children}
-    </ChartsDataContext.Provider>
-  );
-};
 export default ChartsDataProvider;
