@@ -25,6 +25,31 @@ const ArchiveDownload = ({ category }) => {
           link: `${baseUrl}/download/contributor/${selectedDate}.tar.gz`,
           description: t('open_api:contributor_dataset_description'),
         },
+        {
+          name: t('open_api:import_export_dataset'),
+          link: `${baseUrl}/download/import_export/${selectedDate}.tar.gz`,
+          description: t('open_api:import_export_dataset_description'),
+        },
+        {
+          name: t('open_api:language_dataset'),
+          link: `${baseUrl}/download/language/${selectedDate}.tar.gz`,
+          description: t('open_api:language_dataset_description'),
+        },
+        {
+          name: t('open_api:license_dataset'),
+          link: `${baseUrl}/download/license/${selectedDate}.tar.gz`,
+          description: t('open_api:license_dataset_description'),
+        },
+        {
+          name: t('open_api:repo_dataset'),
+          link: `${baseUrl}/download/repo/${selectedDate}.tar.gz`,
+          description: t('open_api:repo_dataset_description'),
+        },
+        {
+          name: t('open_api:technology_dataset'),
+          link: `${baseUrl}/download/technology/${selectedDate}.tar.gz`,
+          description: t('open_api:technology_dataset_description'),
+        },
       ],
     },
   };
@@ -49,13 +74,13 @@ const ArchiveDownload = ({ category }) => {
         <table className="w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+              <th className="min-w-[160px] border border-gray-300 px-4 py-2 text-left text-gray-800">
                 {t('open_api:name')}
               </th>
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
                 {t('open_api:description')}
               </th>
-              <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+              <th className="min-w-[100px] border border-gray-300 px-4 py-2 text-left text-gray-800">
                 {t('open_api:download_link')}
               </th>
             </tr>

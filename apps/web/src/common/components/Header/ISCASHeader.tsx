@@ -54,7 +54,7 @@ const Header: React.FC<{
               <a
                 href="https://oss-compass.org/settings/profile"
                 className={
-                  'ml-2 cursor-pointer truncate bg-black px-4 py-2 font-medium text-white hover:bg-[#333333]  xl:px-1'
+                  'ml-2 cursor-pointer truncate bg-black px-4 py-2 font-medium text-white hover:bg-[#333333] xl:px-1'
                 }
                 target="_blank"
               >
