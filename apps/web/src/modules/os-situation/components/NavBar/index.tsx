@@ -6,7 +6,9 @@ import { Select } from 'antd';
 
 const NavBar = ({ defaultValue }) => {
   const merticsList = useMetrics();
-  const handleChange = (value: string, option) => {};
+  const handleChange = (value: string, option) => {
+    window.location.href = '/os-situation/metrics' + option.url;
+  };
   console.log(defaultValue);
   return (
     <nav

@@ -12,9 +12,6 @@ const Explore = () => {
         <Banner />
         <div className="mx-auto w-[1200px] pb-20 pt-10 md:pt-4 xl:w-full">
           <MerticPage />
-          {/* <MerticPage />
-          <CooperationProcess />
-          <SubmitApplication /> */}
         </div>
       </div>
       <Footer />

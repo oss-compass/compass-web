@@ -39,17 +39,19 @@ const EChartX: React.FC<ReactEChartsProps> = ({
   }, [theme]);
 
   useDeepCompareEffect(() => {
-    option.grid = {
-      left: '6%',
-      right: '6%',
-      top: 100,
-      bottom: 40,
-    };
-    option.toolbox && (option.toolbox.show = false);
-    // Update chart
-    if (inView && chartRef.current !== null) {
-      const chart = getInstanceByDom(chartRef.current)!;
-      chart.setOption(option, settings);
+    if (option) {
+      option.grid = {
+        left: '1%',
+        right: '5%',
+        top: 100,
+        bottom: 40,
+        containLabel: true,
+      };
+      option.toolbox && (option.toolbox.show = false);
+      if (inView && chartRef.current !== null) {
+        const chart = getInstanceByDom(chartRef.current)!;
+        chart.setOption(option, settings);
+      }
     }
   }, [option, settings, inView]);
 

@@ -1,0 +1,188 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "MIT",
+      "Apache-2.0",
+      "GPL-3.0",
+      "BSD-3-Clause",
+      "GPL-2.0",
+      "CC0-1.0",
+      "AGPL-3.0",
+      "CC-BY-4.0",
+      "BSD-2-Clause",
+      "MPL-2.0",
+      "LGPL-3.0",
+      "LGPL-2.1",
+      "0BSD",
+      "ISC",
+      "WTFPL",
+      "MIT-0",
+      "CC-BY-SA-4.0",
+      "BSL-1.0",
+      "Zlib",
+      "EPL-2.0",
+      "OFL-1.1",
+      "EPL-1.0",
+      "Vim",
+      "Artistic-2.0",
+      "OSL-3.0",
+      "BSD-3-Clause-Clear",
+      "MS-PL",
+      "NCSA",
+      "BSD-4-Clause",
+      "UPL-1.0"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "MIT",
+      "type": "line",
+      "smooth": true,
+      "data": [160026, 179379, 182969]
+    },
+    {
+      "name": "Apache-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [36679, 42649, 46127]
+    },
+    {
+      "name": "GPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [15454, 17549, 18143]
+    },
+    {
+      "name": "BSD-3-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [6473, 7072, 6907]
+    },
+    {
+      "name": "GPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [4401, 4591, 4628]
+    },
+    {
+      "name": "CC0-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [3332, 3648, 3964]
+    },
+    {
+      "name": "AGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [2819, 4504, 5334]
+    },
+    {
+      "name": "CC-BY-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [2647, 1881, 1769]
+    },
+    {
+      "name": "BSD-2-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [2300, 2570, 2498]
+    },
+    {
+      "name": "MPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [1551, 1863, 2040]
+    },
+    {
+      "name": "LGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [1104, 1224, 1356]
+    },
+    {
+      "name": "LGPL-2.1",
+      "type": "line",
+      "smooth": true,
+      "data": [978, 1027, 1068]
+    },
+    { "name": "0BSD", "type": "line", "smooth": true, "data": [959, 766, 566] },
+    { "name": "ISC", "type": "line", "smooth": true, "data": [673, 712, 746] },
+    {
+      "name": "WTFPL",
+      "type": "line",
+      "smooth": true,
+      "data": [564, 739, 736]
+    },
+    {
+      "name": "MIT-0",
+      "type": "line",
+      "smooth": true,
+      "data": [528, 578, 979]
+    },
+    {
+      "name": "CC-BY-SA-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [519, 533, 686]
+    },
+    {
+      "name": "BSL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [491, 474, 452]
+    },
+    { "name": "Zlib", "type": "line", "smooth": true, "data": [274, 325, 383] },
+    {
+      "name": "EPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [217, 201, 202]
+    },
+    {
+      "name": "OFL-1.1",
+      "type": "line",
+      "smooth": true,
+      "data": [109, 114, 121]
+    },
+    {
+      "name": "EPL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [103, 83, 83]
+    },
+    { "name": "Vim", "type": "line", "smooth": true, "data": [72, 61, 71] },
+    {
+      "name": "Artistic-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [64, 59, 61]
+    },
+    { "name": "OSL-3.0", "type": "line", "smooth": true, "data": [38, 24, 23] },
+    {
+      "name": "BSD-3-Clause-Clear",
+      "type": "line",
+      "smooth": true,
+      "data": [34, 57, 90]
+    },
+    { "name": "MS-PL", "type": "line", "smooth": true, "data": [30, 25, 24] },
+    { "name": "NCSA", "type": "line", "smooth": true, "data": [20, 17, 12] },
+    {
+      "name": "BSD-4-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [19, 31, 35]
+    },
+    { "name": "UPL-1.0", "type": "line", "smooth": true, "data": [19, 22, 18] }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "MIT",
+      "Apache-2.0",
+      "GPL-3.0",
+      "AGPL-3.0",
+      "BSD-3-Clause",
+      "GPL-2.0",
+      "LGPL-3.0",
+      "CC0-1.0",
+      "MPL-2.0",
+      "BSD-2-Clause",
+      "CC-BY-4.0",
+      "LGPL-2.1",
+      "CC-BY-SA-4.0",
+      "WTFPL",
+      "ISC",
+      "0BSD",
+      "EPL-2.0",
+      "Zlib",
+      "LPPL-1.3c",
+      "BSL-1.0",
+      "MIT-0",
+      "MulanPSL-2.0",
+      "EPL-1.0",
+      "AFL-3.0",
+      "OFL-1.1",
+      "OSL-3.0",
+      "Artistic-2.0",
+      "BSD-3-Clause-Clear",
+      "UPL-1.0",
+      "MS-PL"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "MIT",
+      "type": "line",
+      "smooth": true,
+      "data": [360407, 436423, 483358]
+    },
+    {
+      "name": "Apache-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [185399, 208476, 231092]
+    },
+    {
+      "name": "GPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [79298, 90874, 106948]
+    },
+    {
+      "name": "AGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [17776, 26781, 30376]
+    },
+    {
+      "name": "BSD-3-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [14887, 17403, 17289]
+    },
+    {
+      "name": "GPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [13798, 17612, 23648]
+    },
+    {
+      "name": "LGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [5222, 6261, 6906]
+    },
+    {
+      "name": "CC0-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [4562, 6775, 9074]
+    },
+    {
+      "name": "MPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [4504, 5841, 6307]
+    },
+    {
+      "name": "BSD-2-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [4444, 4974, 4951]
+    },
+    {
+      "name": "CC-BY-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [4144, 3752, 3943]
+    },
+    {
+      "name": "LGPL-2.1",
+      "type": "line",
+      "smooth": true,
+      "data": [2721, 3220, 3840]
+    },
+    {
+      "name": "CC-BY-SA-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [2332, 2832, 3144]
+    },
+    {
+      "name": "WTFPL",
+      "type": "line",
+      "smooth": true,
+      "data": [1402, 1408, 1479]
+    },
+    {
+      "name": "ISC",
+      "type": "line",
+      "smooth": true,
+      "data": [1146, 1404, 1417]
+    },
+    { "name": "0BSD", "type": "line", "smooth": true, "data": [681, 433, 419] },
+    {
+      "name": "EPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [430, 604, 846]
+    },
+    { "name": "Zlib", "type": "line", "smooth": true, "data": [420, 525, 564] },
+    {
+      "name": "LPPL-1.3c",
+      "type": "line",
+      "smooth": true,
+      "data": [398, 406, 490]
+    },
+    {
+      "name": "BSL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [380, 470, 688]
+    },
+    {
+      "name": "MIT-0",
+      "type": "line",
+      "smooth": true,
+      "data": [378, 520, 717]
+    },
+    {
+      "name": "MulanPSL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [367, 1528, 2048]
+    },
+    {
+      "name": "EPL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [208, 196, 187]
+    },
+    {
+      "name": "AFL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [122, 121, 115]
+    },
+    {
+      "name": "OFL-1.1",
+      "type": "line",
+      "smooth": true,
+      "data": [121, 211, 245]
+    },
+    {
+      "name": "OSL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [107, 98, 218]
+    },
+    {
+      "name": "Artistic-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [102, 84, 101]
+    },
+    {
+      "name": "BSD-3-Clause-Clear",
+      "type": "line",
+      "smooth": true,
+      "data": [97, 123, 165]
+    },
+    { "name": "UPL-1.0", "type": "line", "smooth": true, "data": [68, 69, 56] },
+    { "name": "MS-PL", "type": "line", "smooth": true, "data": [62, 57, 86] }
+  ]
+}

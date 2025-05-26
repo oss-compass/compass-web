@@ -1,0 +1,51 @@
+{
+  "title": { "text": "", "left": "center" },
+  "tooltip": { "trigger": "item" },
+  "legend": { "orient": "vertical", "left": "left" },
+  "series": [
+    {
+      "name": "Access From",
+      "type": "pie",
+      "radius": "50%",
+      "data": [
+        { "value": 33045, "name": "北京市" },
+        { "value": 29393, "name": "上海市" },
+        { "value": 15428, "name": "深圳市" },
+        { "value": 13476, "name": "杭州市" },
+        { "value": 8056, "name": "广州市" },
+        { "value": 7556, "name": "成都市" },
+        { "value": 5941, "name": "武汉市" },
+        { "value": 5535, "name": "南京市" },
+        { "value": 2718, "name": "西安市" },
+        { "value": 2706, "name": "重庆市" },
+        { "value": 2286, "name": "苏州市" },
+        { "value": 1889, "name": "天津市" },
+        { "value": 1815, "name": "长沙市" },
+        { "value": 1669, "name": "合肥市" },
+        { "value": 1310, "name": "厦门市" },
+        { "value": 997, "name": "大连市" },
+        { "value": 783, "name": "哈尔滨市" },
+        { "value": 701, "name": "福州市" },
+        { "value": 657, "name": "沈阳市" },
+        { "value": 605, "name": "济南市" },
+        { "value": 576, "name": "珠海市" },
+        { "value": 522, "name": "昆明市" },
+        { "value": 487, "name": "宁波市" },
+        { "value": 387, "name": "佛山市" },
+        { "value": 273, "name": "太原市" },
+        { "value": 268, "name": "东莞市" },
+        { "value": 256, "name": "南昌市" },
+        { "value": 231, "name": "桂林市" },
+        { "value": 221, "name": "温州市" },
+        { "value": 189, "name": "南宁市" }
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 10,
+          "shadowOffsetX": 0,
+          "shadowColor": "rgba(0, 0, 0, 0.5)"
+        }
+      }
+    }
+  ]
+}

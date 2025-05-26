@@ -1,0 +1,228 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "JavaScript",
+      "HTML",
+      "Python",
+      "Java",
+      "TypeScript",
+      "Jupyter Notebook",
+      "C#",
+      "CSS",
+      "C++",
+      "PHP",
+      "Shell",
+      "C",
+      "Go",
+      "Rust",
+      "Vue",
+      "Kotlin",
+      "R",
+      "SCSS",
+      "Ruby",
+      "Lua",
+      "Dart",
+      "Dockerfile",
+      "Swift",
+      "HCL",
+      "TeX",
+      "MATLAB",
+      "PowerShell",
+      "Makefile",
+      "Scala",
+      "Solidity"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "JavaScript",
+      "type": "line",
+      "smooth": true,
+      "data": [486512, 591511, 650857]
+    },
+    {
+      "name": "HTML",
+      "type": "line",
+      "smooth": true,
+      "data": [454569, 548542, 643019]
+    },
+    {
+      "name": "Python",
+      "type": "line",
+      "smooth": true,
+      "data": [370100, 484661, 605573]
+    },
+    {
+      "name": "Java",
+      "type": "line",
+      "smooth": true,
+      "data": [224092, 257111, 278563]
+    },
+    {
+      "name": "TypeScript",
+      "type": "line",
+      "smooth": true,
+      "data": [146119, 214039, 287444]
+    },
+    {
+      "name": "Jupyter Notebook",
+      "type": "line",
+      "smooth": true,
+      "data": [122383, 160630, 206466]
+    },
+    {
+      "name": "C#",
+      "type": "line",
+      "smooth": true,
+      "data": [118901, 138966, 160450]
+    },
+    {
+      "name": "CSS",
+      "type": "line",
+      "smooth": true,
+      "data": [115994, 141038, 160102]
+    },
+    {
+      "name": "C++",
+      "type": "line",
+      "smooth": true,
+      "data": [107045, 124545, 143443]
+    },
+    {
+      "name": "PHP",
+      "type": "line",
+      "smooth": true,
+      "data": [95325, 111774, 123207]
+    },
+    {
+      "name": "Shell",
+      "type": "line",
+      "smooth": true,
+      "data": [83291, 100617, 90617]
+    },
+    {
+      "name": "C",
+      "type": "line",
+      "smooth": true,
+      "data": [83273, 110848, 104560]
+    },
+    {
+      "name": "Go",
+      "type": "line",
+      "smooth": true,
+      "data": [39859, 46162, 56189]
+    },
+    {
+      "name": "Rust",
+      "type": "line",
+      "smooth": true,
+      "data": [28757, 42031, 53770]
+    },
+    {
+      "name": "Vue",
+      "type": "line",
+      "smooth": true,
+      "data": [26036, 30387, 33340]
+    },
+    {
+      "name": "Kotlin",
+      "type": "line",
+      "smooth": true,
+      "data": [25800, 31522, 36831]
+    },
+    {
+      "name": "R",
+      "type": "line",
+      "smooth": true,
+      "data": [23225, 26129, 29720]
+    },
+    {
+      "name": "SCSS",
+      "type": "line",
+      "smooth": true,
+      "data": [22450, 24883, 22922]
+    },
+    {
+      "name": "Ruby",
+      "type": "line",
+      "smooth": true,
+      "data": [22026, 21920, 21527]
+    },
+    {
+      "name": "Lua",
+      "type": "line",
+      "smooth": true,
+      "data": [20371, 28188, 40548]
+    },
+    {
+      "name": "Dart",
+      "type": "line",
+      "smooth": true,
+      "data": [19396, 22589, 26006]
+    },
+    {
+      "name": "Dockerfile",
+      "type": "line",
+      "smooth": true,
+      "data": [13323, 14780, 16857]
+    },
+    {
+      "name": "Swift",
+      "type": "line",
+      "smooth": true,
+      "data": [13192, 15316, 16297]
+    },
+    {
+      "name": "HCL",
+      "type": "line",
+      "smooth": true,
+      "data": [11135, 15235, 16643]
+    },
+    {
+      "name": "TeX",
+      "type": "line",
+      "smooth": true,
+      "data": [10095, 11544, 13569]
+    },
+    {
+      "name": "MATLAB",
+      "type": "line",
+      "smooth": true,
+      "data": [9019, 9485, 10080]
+    },
+    {
+      "name": "PowerShell",
+      "type": "line",
+      "smooth": true,
+      "data": [8758, 10778, 12991]
+    },
+    {
+      "name": "Makefile",
+      "type": "line",
+      "smooth": true,
+      "data": [6568, 7760, 8955]
+    },
+    {
+      "name": "Scala",
+      "type": "line",
+      "smooth": true,
+      "data": [6502, 6638, 6726]
+    },
+    {
+      "name": "Solidity",
+      "type": "line",
+      "smooth": true,
+      "data": [5566, 5542, 6573]
+    }
+  ]
+}

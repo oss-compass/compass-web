@@ -1,0 +1,60 @@
+{
+  "title": { "text": "", "left": "center" },
+  "tooltip": { "trigger": "item" },
+  "legend": { "orient": "vertical", "left": "left" },
+  "series": [
+    {
+      "name": "Access From",
+      "type": "pie",
+      "radius": "50%",
+      "data": [
+        {
+          "value": 100420,
+          "name": "Software Development and Management tools"
+        },
+        { "value": 92523, "name": "Development Framework" },
+        { "value": 86889, "name": "Artificial Intelligence AI" },
+        { "value": 85872, "name": "Development toolkit" },
+        { "value": 74615, "name": "General Management Software" },
+        {
+          "value": 63033,
+          "name": "DevOps and network management and maintaining"
+        },
+        { "value": 58700, "name": "Database" },
+        { "value": 58437, "name": "Frontend" },
+        { "value": 33178, "name": "Web Application Development" },
+        { "value": 25516, "name": "blockchain" },
+        { "value": 23946, "name": "Operation System" },
+        { "value": 23592, "name": "Software development library" },
+        { "value": 20369, "name": "Other" },
+        {
+          "value": 17796,
+          "name": "Handset and Mobile Application Development"
+        },
+        { "value": 15880, "name": "Server Applications" },
+        { "value": 12575, "name": "Search Engine" },
+        { "value": 11573, "name": "Security" },
+        { "value": 9753, "name": "Browser related" },
+        { "value": 8173, "name": "Multi Media Software" },
+        { "value": 7274, "name": "Cutting Edge Technologies" },
+        { "value": 6636, "name": "Virtualization and Cloud Computing" },
+        { "value": 5324, "name": "Hardware" },
+        { "value": 4895, "name": "Firmware" },
+        { "value": 4115, "name": "Software Development Library" },
+        { "value": 3132, "name": "Big Data" },
+        { "value": 904, "name": "Office Software" },
+        { "value": 239, "name": "Data Mining and Analysis" },
+        { "value": 171, "name": "Embedded Operation System" },
+        { "value": 84, "name": "Software Development library" },
+        { "value": 84, "name": "Testing Tools" }
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 10,
+          "shadowOffsetX": 0,
+          "shadowColor": "rgba(0, 0, 0, 0.5)"
+        }
+      }
+    }
+  ]
+}

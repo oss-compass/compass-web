@@ -1,0 +1,292 @@
+{
+  "title": { "text": "" },
+  "tooltip": {
+    "trigger": "item",
+    "axisPointer": {
+      "type": "cross",
+      "label": { "backgroundColor": "#6a7985" }
+    }
+  },
+  "legend": {
+    "data": [
+      "北京市",
+      "上海市",
+      "深圳市",
+      "杭州市",
+      "广州市",
+      "成都市",
+      "武汉市",
+      "南京市",
+      "西安市",
+      "苏州市",
+      "重庆市",
+      "厦门市",
+      "长沙市",
+      "天津市",
+      "合肥市",
+      "大连市",
+      "福州市",
+      "昆明市",
+      "济南市",
+      "沈阳市"
+    ]
+  },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "xAxis": [
+    {
+      "type": "category",
+      "boundaryGap": false,
+      "data": [
+        "2022 Q1",
+        "2022 Q2",
+        "2022 Q3",
+        "2022 Q4",
+        "2023 Q1",
+        "2023 Q2",
+        "2023 Q3",
+        "2023 Q4",
+        "2024 Q1",
+        "2024 Q2",
+        "2024 Q3",
+        "2024 Q4"
+      ]
+    }
+  ],
+  "yAxis": [{ "type": "value" }],
+  "series": [
+    {
+      "name": "北京市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        152386, 173853, 168991, 169035, 157593, 174930, 172016, 207243, 200665,
+        220512, 222588, 228839
+      ]
+    },
+    {
+      "name": "上海市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        127870, 147084, 142007, 144798, 138977, 153564, 150310, 180539, 187581,
+        208582, 196516, 203043
+      ]
+    },
+    {
+      "name": "深圳市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        66188, 78985, 76060, 76897, 71974, 78629, 75262, 93994, 92592, 98490,
+        105116, 102676
+      ]
+    },
+    {
+      "name": "杭州市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        64730, 76889, 73030, 74209, 67502, 75471, 74818, 90138, 90079, 96676,
+        93844, 94386
+      ]
+    },
+    {
+      "name": "广州市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        36893, 41784, 40120, 39070, 37345, 39574, 39842, 48608, 47298, 54481,
+        52194, 51916
+      ]
+    },
+    {
+      "name": "成都市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        31451, 37360, 35421, 37567, 35133, 40692, 38570, 46325, 46116, 51151,
+        49939, 50956
+      ]
+    },
+    {
+      "name": "武汉市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        19146, 22499, 22782, 23242, 21808, 24397, 25755, 33921, 30337, 35437,
+        35401, 39388
+      ]
+    },
+    {
+      "name": "南京市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        18973, 23303, 22220, 22705, 21808, 24611, 24759, 30118, 29716, 33145,
+        33446, 32782
+      ]
+    },
+    {
+      "name": "西安市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        11344, 12782, 12030, 13342, 12057, 13022, 12657, 15575, 15665, 17767,
+        16382, 17506
+      ]
+    },
+    {
+      "name": "苏州市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        9345, 11008, 10989, 11564, 10778, 11499, 12273, 15450, 14618, 16028,
+        17026, 17124
+      ]
+    },
+    {
+      "name": "重庆市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        8494, 10375, 9946, 10648, 10251, 12414, 11569, 14311, 14214, 16654,
+        16945, 16863
+      ]
+    },
+    {
+      "name": "厦门市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        6069, 6779, 6629, 6530, 6171, 6779, 6404, 7764, 7750, 8464, 8963, 9605
+      ]
+    },
+    {
+      "name": "长沙市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        5855, 7411, 6903, 6955, 6839, 7503, 7493, 8835, 10100, 11160, 11168,
+        11972
+      ]
+    },
+    {
+      "name": "天津市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        5498, 6468, 7147, 7491, 6719, 7584, 7639, 9810, 9148, 10547, 10310, 9693
+      ]
+    },
+    {
+      "name": "合肥市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        5262, 6928, 6327, 6995, 6171, 7196, 7514, 8921, 8521, 10808, 11035,
+        11122
+      ]
+    },
+    {
+      "name": "大连市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        3415, 3974, 3904, 4212, 3583, 4033, 3940, 5625, 5654, 6076, 6188, 6231
+      ]
+    },
+    {
+      "name": "福州市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        3026, 3468, 3702, 3737, 3844, 3693, 3973, 4453, 4218, 4851, 5140, 5850
+      ]
+    },
+    {
+      "name": "昆明市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        2281, 2715, 2580, 2758, 2367, 2739, 2326, 3026, 2961, 3754, 3690, 3556
+      ]
+    },
+    {
+      "name": "济南市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        2223, 2732, 2894, 2826, 2655, 2837, 2657, 3388, 3313, 3501, 3858, 3969
+      ]
+    },
+    {
+      "name": "沈阳市",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": { "focus": "series" },
+      "smooth": true,
+      "data": [
+        2150, 2610, 2285, 2580, 2247, 2570, 2290, 2993, 3065, 3589, 3279, 3818
+      ]
+    }
+  ]
+}

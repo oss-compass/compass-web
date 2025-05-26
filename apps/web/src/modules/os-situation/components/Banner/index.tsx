@@ -30,7 +30,7 @@ const Banner = () => {
             style.headerdsc
           )}
         >
-          开源态势洞察描述
+          通过分析全球开源项目，洞悉全球开源进出口、社区、技术领域、开发者、编程语言、许可证的发展态势。
           {/* {t('academe:academic_research_desc')} */}
         </div>
         <div className="flex gap-4">{/* <Coutact /> */}</div>

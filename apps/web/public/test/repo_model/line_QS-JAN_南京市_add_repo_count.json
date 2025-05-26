@@ -1,0 +1,150 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "前端",
+      "人工智能",
+      "操作系统",
+      "数据库",
+      "开发框架",
+      "编程语言",
+      "网络通信",
+      "大数据",
+      "芯片",
+      "富媒体",
+      "移动应用",
+      "云原生",
+      "智能汽车",
+      "机器人",
+      "工业软件",
+      "区块链",
+      "IoT 物联网"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": [
+      "2022 Q1",
+      "2022 Q2",
+      "2022 Q3",
+      "2022 Q4",
+      "2023 Q1",
+      "2023 Q2",
+      "2023 Q3",
+      "2023 Q4",
+      "2024 Q1",
+      "2024 Q2",
+      "2024 Q3",
+      "2024 Q4"
+    ]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "前端",
+      "type": "line",
+      "smooth": true,
+      "data": [18, 38, 53, 32, 23, 16, 9, 24, 13, 34, 32, 55]
+    },
+    {
+      "name": "人工智能",
+      "type": "line",
+      "smooth": true,
+      "data": [13, 12, 11, 6, 16, 24, 15, 8, 17, 10, 27, 19]
+    },
+    {
+      "name": "操作系统",
+      "type": "line",
+      "smooth": true,
+      "data": [10, 14, 21, 2, 11, 0, 6, 4, 0, 12, 0, 5]
+    },
+    {
+      "name": "数据库",
+      "type": "line",
+      "smooth": true,
+      "data": [10, 14, 4, 0, 17, 6, 0, 6, 4, 3, 6, 10]
+    },
+    {
+      "name": "开发框架",
+      "type": "line",
+      "smooth": true,
+      "data": [8, 24, 40, 23, 14, 20, 7, 14, 8, 16, 20, 31]
+    },
+    {
+      "name": "编程语言",
+      "type": "line",
+      "smooth": true,
+      "data": [3, 2, 7, 0, 3, 2, 2, 4, 5, 8, 0, 0]
+    },
+    {
+      "name": "网络通信",
+      "type": "line",
+      "smooth": true,
+      "data": [3, 9, 6, 2, 0, 0, 6, 7, 5, 1, 2, 2]
+    },
+    {
+      "name": "大数据",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 2, 0, 3, 0, 0, 0, 0, 2, 0, 0, 0]
+    },
+    {
+      "name": "芯片",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0]
+    },
+    {
+      "name": "富媒体",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3]
+    },
+    {
+      "name": "移动应用",
+      "type": "line",
+      "smooth": true,
+      "data": [1, 0, 2, 0, 0, 7, 8, 0, 0, 5, 0, 3]
+    },
+    {
+      "name": "云原生",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 1, 1, 0, 2, 2, 0, 0, 4, 5, 2, 2]
+    },
+    {
+      "name": "智能汽车",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "name": "机器人",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 2, 0]
+    },
+    {
+      "name": "工业软件",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0]
+    },
+    {
+      "name": "区块链",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 5, 3, 3, 0, 3, 4, 0, 0, 0, 0, 0]
+    },
+    {
+      "name": "IoT 物联网",
+      "type": "line",
+      "smooth": true,
+      "data": [0, 0, 0, 2, 2, 0, 0, 2, 2, 2, 2, 0]
+    }
+  ]
+}

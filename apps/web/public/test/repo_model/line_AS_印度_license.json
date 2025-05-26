@@ -1,0 +1,203 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "MIT",
+      "Apache-2.0",
+      "GPL-3.0",
+      "BSD-3-Clause",
+      "AGPL-3.0",
+      "GPL-2.0",
+      "CC0-1.0",
+      "CC-BY-4.0",
+      "MPL-2.0",
+      "BSD-2-Clause",
+      "0BSD",
+      "LGPL-3.0",
+      "LGPL-2.1",
+      "CC-BY-SA-4.0",
+      "EPL-2.0",
+      "ISC",
+      "MIT-0",
+      "BSL-1.0",
+      "UPL-1.0",
+      "OSL-3.0",
+      "WTFPL",
+      "Zlib",
+      "OFL-1.1",
+      "MS-PL",
+      "EPL-1.0",
+      "ODbL-1.0",
+      "AFL-3.0",
+      "BSD-4-Clause",
+      "PostgreSQL",
+      "Artistic-2.0"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "MIT",
+      "type": "line",
+      "smooth": true,
+      "data": [289660, 349676, 460522]
+    },
+    {
+      "name": "Apache-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [93395, 119076, 150756]
+    },
+    {
+      "name": "GPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [83503, 85312, 121952]
+    },
+    {
+      "name": "BSD-3-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [20987, 37766, 33486]
+    },
+    {
+      "name": "AGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [12792, 15771, 17399]
+    },
+    {
+      "name": "GPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [11323, 14276, 12628]
+    },
+    {
+      "name": "CC0-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [8357, 7726, 7654]
+    },
+    {
+      "name": "CC-BY-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [5970, 5138, 3822]
+    },
+    {
+      "name": "MPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [4331, 6050, 7622]
+    },
+    {
+      "name": "BSD-2-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [2004, 2454, 2721]
+    },
+    {
+      "name": "0BSD",
+      "type": "line",
+      "smooth": true,
+      "data": [1318, 767, 497]
+    },
+    {
+      "name": "LGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [1033, 1183, 1380]
+    },
+    {
+      "name": "LGPL-2.1",
+      "type": "line",
+      "smooth": true,
+      "data": [952, 1384, 2114]
+    },
+    {
+      "name": "CC-BY-SA-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [910, 1026, 974]
+    },
+    {
+      "name": "EPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [907, 1278, 1464]
+    },
+    { "name": "ISC", "type": "line", "smooth": true, "data": [695, 828, 825] },
+    {
+      "name": "MIT-0",
+      "type": "line",
+      "smooth": true,
+      "data": [564, 993, 1528]
+    },
+    {
+      "name": "BSL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [436, 713, 829]
+    },
+    {
+      "name": "UPL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [425, 407, 360]
+    },
+    {
+      "name": "OSL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [368, 425, 426]
+    },
+    {
+      "name": "WTFPL",
+      "type": "line",
+      "smooth": true,
+      "data": [326, 296, 393]
+    },
+    { "name": "Zlib", "type": "line", "smooth": true, "data": [154, 152, 192] },
+    {
+      "name": "OFL-1.1",
+      "type": "line",
+      "smooth": true,
+      "data": [145, 241, 323]
+    },
+    { "name": "MS-PL", "type": "line", "smooth": true, "data": [73, 90, 81] },
+    { "name": "EPL-1.0", "type": "line", "smooth": true, "data": [62, 66, 88] },
+    {
+      "name": "ODbL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [38, 29, 49]
+    },
+    { "name": "AFL-3.0", "type": "line", "smooth": true, "data": [33, 6, 1] },
+    {
+      "name": "BSD-4-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [33, 49, 110]
+    },
+    {
+      "name": "PostgreSQL",
+      "type": "line",
+      "smooth": true,
+      "data": [21, 20, 38]
+    },
+    {
+      "name": "Artistic-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [18, 14, 26]
+    }
+  ]
+}

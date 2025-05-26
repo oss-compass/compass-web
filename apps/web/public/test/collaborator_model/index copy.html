@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Highcharts Dependency Wheel</title>
+
+    <!-- 引入 Highcharts 相关脚本 -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/sankey.js"></script>
+    <script src="https://code.highcharts.com/modules/dependency-wheel.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <!-- 内联样式表 -->
+    <style>
+      .top {
+        padding-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+      }
+
+      #line {
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      #line > div {
+        width: 48%;
+        height: 48vh;
+      }
+
+      /* CSS 样式 */
+      .highcharts-figure,
+      .highcharts-data-table table {
+        min-width: 320px;
+        max-width: 800px;
+        margin: 1em auto;
+      }
+
+      #container {
+        width: 900px;
+        height: 900px;
+      }
+      #container > div {
+        width: 900px;
+        height: 90vh;
+        margin-bottom: 20px;
+      }
+      .highcharts-data-table table {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #ebebeb;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .highcharts-data-table caption {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: #555;
+      }
+
+      .highcharts-data-table th {
+        font-weight: 600;
+        padding: 0.5em;
+      }
+
+      .highcharts-data-table td,
+      .highcharts-data-table th,
+      .highcharts-data-table caption {
+        padding: 0.5em;
+      }
+
+      .highcharts-data-table thead tr,
+      .highcharts-data-table tr:nth-child(even) {
+        background: #f8f8f8;
+      }
+
+      .highcharts-data-table tr:hover {
+        background: #f1f7ff;
+      }
+
+      #csv {
+        display: none;
+      }
+
+      .highcharts-description {
+        margin: 0.3rem 10px;
+      }
+
+      .highcharts-credits {
+        display: none;
+      }
+
+      .highcharts-exporting-group {
+        display: none !important;
+      }
+
+      .highcharts-title {
+        margin-left: -100px !important;
+        margin-top: -75px !important;
+      }
+
+      /* 下拉框样式 */
+      #fileSelector {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body text-align: center;>
+    <div class="top">
+      <select id="fileSelector" text-align: center;>
+        <option value="line">进出口折线柱状图</option>
+        <option value="./dependency_wheel_2022 Q1_QS-JAN_country.json">
+          22 Q1 进出口
+        </option>
+        <option value="./dependency_wheel_2022 Q2_QS-JAN_country.json">
+          22 Q2 进出口
+        </option>
+        <option value="./dependency_wheel_2022 Q3_QS-JAN_country.json">
+          22 Q3 进出口
+        </option>
+        <option value="./dependency_wheel_2022 Q4_QS-JAN_country.json">
+          22 Q4 进出口
+        </option>
+        <option value="./dependency_wheel_2023 Q1_QS-JAN_country.json">
+          23 Q1 进出口
+        </option>
+        <option value="./dependency_wheel_2023 Q2_QS-JAN_country.json">
+          23 Q2 进出口
+        </option>
+        <option value="./dependency_wheel_2023 Q3_QS-JAN_country.json">
+          23 Q3 进出口
+        </option>
+        <option value="./dependency_wheel_2023 Q4_QS-JAN_country.json">
+          23 Q4 进出口
+        </option>
+        <option value="./dependency_wheel_2024 Q1_QS-JAN_country.json">
+          24 Q1 进出口
+        </option>
+        <option value="./dependency_wheel_2024 Q2_QS-JAN_country.json">
+          24 Q2 进出口
+        </option>
+        <option value="./dependency_wheel_2024 Q3_QS-JAN_country.json">
+          24 Q3 进出口
+        </option>
+        <option value="./dependency_wheel_2024 Q4_QS-JAN_country.json">
+          24 Q4 进出口
+        </option>
+        <option value="./dependency_wheel_2022_AS_country.json">
+          22 进出口
+        </option>
+        <option value="./dependency_wheel_2023_AS_country.json">
+          23 进出口
+        </option>
+        <option value="./dependency_wheel_2024_AS_country.json">
+          24 进出口
+        </option>
+        <option value="./dependency_wheel_not_merge_eu_2024_AS_country.json">
+          24 进出口(欧盟拆开)
+        </option>
+        <option value="pie">24 进出口饼图</option>
+        <option value="programming_rank">编程语言排名图</option>
+        <!-- 可以根据实际情况添加更多的选项 -->
+      </select>
+      <label>
+        <input onchange="checkboxShowName(this)" type="checkbox" checked />
+        展示图表名称
+      </label>
+    </div>
+    <div id="line">
+      <div id="进口"></div>
+      <div id="进口1"></div>
+      <div id="出口"></div>
+      <div id="出口1"></div>
+      <div id="进出口总和"></div>
+      <div id="进出口总和1"></div>
+      <div id="outRadioLine"></div>
+      <div id="outRadioLine1"></div>
+      <div id="Top30进出口push量"></div>
+      <div id="全球总push量"></div>
+      <div id="Top30进出口/全球总push量比例图"></div>
+    </div>
+    <figure id="highcharts" class="highcharts-figure">
+      <div id="container"></div>
+    </figure>
+    <!-- 添加下拉选择框 -->
+    <script>
+      const getRanK = (index, allSeriesData) => {
+        const target = allSeriesData[index];
+        const res = target.map((v, i) => {
+          const allValue = allSeriesData.map((s) => s[i]);
+          allValue.sort((a, b) => b - a);
+          const index = allValue.indexOf(v);
+          return index + 1;
+        });
+        console.log(res);
+        return res;
+      };
+      const ininRank = () => {
+        const languageQuarter = [
+          {
+            value: './repo_model/line_QS-JAN_main_language_list.json',
+            text: '编程语言全球季度',
+          },
+          {
+            value:
+              './repo_model/line_QS-JAN_美利坚合众国_main_language_list.json',
+            text: '编程语言美国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_欧盟_main_language_list.json',
+            text: '编程语言欧盟季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_中国_main_language_list.json',
+            text: '编程语言中国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_印度_main_language_list.json',
+            text: '编程语言印度季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_英国_main_language_list.json',
+            text: '编程语言英国季度',
+          },
+          {
+            value: './repo_model/line_QS-JAN_日本_main_language_list.json',
+            text: '编程语言日本季度',
+          },
+        ];
+        const mainDom = document.getElementById('container');
+        // 清空 mainDom 的所有子 div
+        mainDom.innerHTML = '';
+        languageQuarter.forEach((obj) => {
+          const newDiv = document.createElement('div');
+          newDiv.id = obj.text;
+          mainDom.appendChild(newDiv); // 将新 div 添加到 mainDom
+        });
+        setTimeout(() => {
+          languageQuarter.forEach((obj) => {
+            selectedRank(obj.value, obj.text);
+          });
+        });
+      };
+      const selectedRank = (selectedFile, id) => {
+        fetch('.' + selectedFile)
+          .then((response) => response.json())
+          .then((data) => {
+            var xData = data.xAxis.data;
+            const allSeriesData = data.series.map((item) => item.data);
+            const series = [];
+            data.series.forEach((item, index) => {
+              const arr = getRanK(index, allSeriesData);
+              const language = { name: item.name, data: arr };
+              series.push(language);
+            });
+            const option = {
+              // title: {
+              //   text: "<img style='width:100px;heigth:15px' src='https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg' />",
+              //   useHTML: true,
+              //   align: "right",
+              //   verticalAlign: "bottom",
+              // },
+              title: {
+                text: id,
+              },
+              tooltip: {
+                // headerFormat: "<b>{point.x}</b><br/>",
+                // pointFormat: "{series.name} : {point.y}",
+              },
+              legend: {
+                enabled: false,
+                top: 10,
+                data: data.legend.data,
+              },
+              chart: {
+                type: 'spline',
+                style: {
+                  spacingLeft: '40px',
+                  spacingRight: '40px',
+                },
+              },
+              xAxis: {
+                categories: xData,
+              },
+              yAxis: {
+                title: {
+                  text: '',
+                },
+                tickInterval: 1,
+                minPadding: 40,
+                min: 1,
+                max: 30,
+                reversed: true,
+              },
+              plotOptions: {
+                spline: {
+                  dataLabels: {
+                    enabled: true,
+                    format: '{series.name}',
+                  },
+                  enableMouseTracking: true,
+                },
+              },
+              series: series,
+            };
+            Highcharts.chart(id, option);
+          })
+          .catch((error) => {
+            console.error('读取数据出现错误：', error);
+            // 隐藏加载提示，防止加载失败一直显示
+            // loading.style.display = 'none';
+          });
+      };
+    </script>
+    <script>
+      function formatNumber(num, decimals = 2) {
+        // 使用 toFixed() 方法保留指定的小数位数
+        let formatted = num.toFixed(decimals);
+        // 使用正则表达式去除小数点后多余的0
+        return formatted.replace(/\.?0+$/, '');
+      }
+      const formatterValue = (value, toFixed = 1, other = '') => {
+        let res = value;
+        if (value >= 100000000) {
+          res = formatNumber(value / 100000000, toFixed) + '亿';
+        } else if (value >= 10000000) {
+          res = formatNumber(value / 10000000, toFixed) + '千万';
+        } else if (value >= 10000) {
+          res = formatNumber(value / 10000, toFixed) + '万';
+        }
+        if (other) {
+          res += other;
+        }
+        return res;
+      };
+      const country = ['美国', '中国', '欧盟', '印度'];
+      const years = ['2022', '2023', '2024'];
+      const QList = [
+        '22 Q1',
+        '22 Q2',
+        '22 Q3',
+        '22 Q4',
+        '23 Q1',
+        '23 Q2',
+        '23 Q3',
+        '23 Q4',
+        '24 Q1',
+        '24 Q2',
+        '24 Q3',
+        '24 Q4',
+      ];
+      const getData = (raw, country) => {
+        let out = 0;
+        let putIn = 0;
+        raw
+          .filter((item) => item[1] === country)
+          .forEach((element) => {
+            putIn += element[2];
+          });
+        raw
+          .filter((item) => item[0] === country)
+          .forEach((element) => {
+            out += element[2];
+          });
+        const all = out + putIn;
+        return [putIn, out, all];
+      };
+      const getChartDataYear = () => {
+        const fetchList = years.map((y) => {
+          return fetch('dependency_wheel_' + y + '_AS_country.json').then(
+            (response) => response.json()
+          );
+        });
+        Promise.all(fetchList).then((res) => {
+          const result = {};
+          res.map((year, index) => {
+            const resObj = {};
+            country.forEach((c) => {
+              resObj[c] = getData(year, c);
+            });
+            result[years[index]] = resObj;
+          });
+          console.log(result);
+        });
+      };
+      getChartDataYear();
+      const getChartDataQ = () => {
+        const fetchList = QList.map((y) => {
+          return fetch('dependency_wheel_20' + y + '_QS-JAN_country.json').then(
+            (response) => response.json()
+          );
+        });
+        Promise.all(fetchList).then((res) => {
+          const result = {};
+          res.map((year, index) => {
+            const resObj = {};
+            country.forEach((c) => {
+              resObj[c] = getData(year, c);
+            });
+            result[QList[index]] = resObj;
+          });
+          console.log(result);
+        });
+      };
+      getChartDataQ();
+    </script>
+    <script>
+      const colorList2 = [
+        '#5470c6',
+        '#91cc75',
+        '#fac858',
+        '#ee6666',
+        '#73c0de',
+        '#3ba272',
+        '#fc8452',
+        '#9a60b4',
+        '#ea7ccc',
+        '#afa3f5',
+      ];
+      const contryList = [
+        '美国',
+        '欧盟',
+        '印度',
+        '中国',
+        '日本',
+        '加拿大',
+        '俄罗斯',
+        '阿拉伯联合酋长国',
+        '巴西',
+        '英国',
+        '韩国',
+        '澳大利亚',
+        '印度尼西亚',
+        '哥伦比亚',
+        '阿根廷',
+        '瑞士',
+        '乌克兰',
+        '越南',
+        '新加坡',
+        '奧地利',
+        '新西兰',
+        '台湾',
+        '菲律宾',
+        '尼日利亚',
+        '土耳其',
+        '巴基斯坦',
+        '肯尼亚',
+        '孟加拉国',
+        '伊朗',
+      ];
+      const ininPieChart = (result) => {
+        console.log(result);
+        var pieChartDom = document.getElementById('container');
+        var pieChart = echarts.init(pieChartDom);
+        const legendList = Object.keys(result)
+          .sort((a, b) => result[b][2] - result[a][2])
+          .slice(0, 10);
+        const outPie = [];
+        console.log(legendList);
+        const totalPie = legendList.map((item) => {
+          let index = contryList.indexOf(item);
+          let color = colorList2[index % 10];
+          const total = result[item][2];
+          const pie1 = {
+            value: result[item][0],
+            name: item + '(进口)',
+            itemStyle: {
+              // color,
+              borderColor: '#fff',
+              borderWidth: 1,
+              color: '#7de6c0',
+            },
+            label: {
+              show: true,
+              overflow: 'none',
+              formatter: (parmas) => {
+                console.log(parmas);
+                let f = ((parmas['data']['value'] * 100) / total).toFixed(2);
+                return parmas['data']['name'] + ' : ' + f + '%';
+              },
+            },
+            avoidLabelOverlap: false,
+            tooltip: {
+              trigger: 'item',
+              formatter: (parmas) => {
+                console.log(parmas);
+                return (
+                  parmas['data']['name'] +
+                  ' : ' +
+                  parmas['data']['value'] +
+                  '(' +
+                  (parmas['data']['value'] / total).toFixed(4) * 100 +
+                  '%)'
+                );
+              },
+            },
+          };
+          outPie.push(pie1);
+          const pie2 = {
+            value: result[item][1],
+            name: item + '(出口)',
+            itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 1,
+              color: '#9ad4fc',
+              // opacity: 0.3,
+            },
+            label: {
+              show: true,
+              overflow: 'none',
+              formatter: (parmas) => {
+                console.log(parmas);
+                let f = ((parmas['data']['value'] * 100) / total).toFixed(2);
+                return parmas['data']['name'] + ' : ' + f + '%';
+              },
+            },
+            tooltip: {
+              trigger: 'item',
+              formatter: (parmas) => {
+                console.log(parmas);
+                let f = ((parmas['data']['value'] * 100) / total).toFixed(2);
+                return (
+                  parmas['data']['name'] +
+                  ' : ' +
+                  parmas['data']['value'] +
+                  '(' +
+                  f +
+                  '%)'
+                );
+              },
+            },
+          };
+          outPie.push(pie2);
+          const pie3 = {
+            value: result[item][2],
+            name: item,
+
+            itemStyle: {
+              color,
+              borderColor: '#fff',
+              borderWidth: 1,
+            },
+          };
+          return pie3;
+        });
+
+        const option = {
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c}',
+          },
+          legend: {
+            // orient: "vertical",
+            // x: "left",
+            data: legendList,
+          },
+          title: {
+            text: `{titleIcon|}`,
+            bottom: 115,
+            right: '6%',
+            textStyle: {
+              color: '#333',
+              fontSize: 12,
+              fontStyle: 'normal',
+              fontWeight: 600,
+              rich: {
+                titleIcon: {
+                  backgroundColor: {
+                    image:
+                      'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                  },
+                  height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                  width: 100,
+                },
+              },
+            },
+          },
+          series: [
+            {
+              name: '进出口总和',
+              type: 'pie',
+              radius: [0, '45%'],
+              label: {
+                position: 'inner',
+                fontSize: 11,
+                formatter: '{b}\n{d}%',
+              },
+              tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c}({d}%)',
+              },
+              labelLayout: {
+                hideOverlap: false,
+              },
+              data: totalPie,
+            },
+            {
+              name: '',
+              type: 'pie',
+              radius: ['55%', '65%'],
+
+              // labelLine: {
+              //   show: false,
+              // },
+
+              data: outPie,
+            },
+          ],
+        };
+        pieChart.setOption(option);
+      };
+      const ininPie = () => {
+        const country = [
+          '美国',
+          '英国',
+          '中国',
+          '加拿大',
+          '印度尼西亚',
+          '欧盟',
+          '墨西哥',
+          '澳大利亚',
+          '瑞士',
+          '新西兰',
+          '奧地利',
+          '印度',
+          '台湾',
+          '日本',
+          '俄罗斯',
+          '菲律宾',
+          '乌克兰',
+          '巴西',
+          '阿拉伯联合酋长国',
+          '哥伦比亚',
+          '尼日利亚',
+          '巴基斯坦',
+          '新加坡',
+          '孟加拉国',
+          '土耳其',
+          '肯尼亚',
+          '越南',
+          '阿根廷',
+          '韩国',
+          '伊朗',
+        ];
+        const years = ['2024'];
+        const getData = (raw, country) => {
+          let out = 0;
+          let putIn = 0;
+          raw
+            .filter((item) => item[1] === country)
+            .forEach((element) => {
+              putIn += element[2];
+            });
+          raw
+            .filter((item) => item[0] === country)
+            .forEach((element) => {
+              out += element[2];
+            });
+          const all = out + putIn;
+          return [putIn, out, all];
+        };
+        const getChartDataYear = () => {
+          const fetchList = years.map((y) => {
+            return fetch('dependency_wheel_' + y + '_AS_country.json').then(
+              (response) => response.json()
+            );
+          });
+          Promise.all(fetchList).then((res) => {
+            const result = {};
+            res.map((year, index) => {
+              const resObj = {};
+              country.forEach((c) => {
+                resObj[c] = getData(year, c);
+              });
+              result[years[index]] = resObj;
+            });
+            ininPieChart(result['2024']);
+          });
+        };
+        getChartDataYear();
+      };
+    </script>
+    <script>
+      const initBar2 = () => {
+        // const allData = [[10709079,12592109,17273939], [478840783 + 8618731,549930151 + 6697007,706780614] , [2.22,2.24,2.44]]
+        const allData = [
+          [10709079 * 2, 12592109 * 2, 17273939 * 2],
+          [478840783 + 8618731, 549930151 + 6697007, 706780614],
+          [2.22 * 2, 2.24 * 2, 2.44 * 2],
+        ];
+        const tyepList = [
+          'Top30进出口push量',
+          '全球总push量',
+          'Top30进出口/全球总push量比例图',
+        ];
+        tyepList.forEach((item, index) => {
+          var chartDom = document.getElementById(item);
+          var myChart = echarts.init(chartDom);
+          const option = {
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              { text: showName ? item : '', bottom: 15, left: 'center' },
+            ],
+            // tooltip: { trigger: "axis" },
+            legend: {
+              show: true,
+            },
+            grid: { left: '3%', right: '4%', bottom: 55, containLabel: true },
+            toolbox: { feature: { saveAsImage: {} } },
+            xAxis: [
+              {
+                type: 'category',
+                data: years,
+              },
+            ],
+            yAxis: {
+              type: 'value',
+              axisLabel: {
+                formatter: (value) =>
+                  formatterValue(value, 0, index == 2 ? '%' : ''),
+              },
+            },
+            series: [
+              {
+                name: '',
+                type: 'bar',
+                data: allData[index],
+                barMaxWidth: '46%',
+                label: {
+                  show: true,
+                  position: 'top',
+                  formatter: (params) =>
+                    formatterValue(params.value, 2, index == 2 ? '%' : ''),
+                },
+              },
+            ],
+          };
+          myChart.setOption(option);
+        });
+      };
+    </script>
+    <script>
+      const yearsData = {
+        2022: {
+          美国: [3658528, 2586639, 6245167],
+          中国: [336202, 386358, 722560],
+          欧盟: [888575, 1664476, 2553051],
+          印度: [348590, 380948, 729538],
+        },
+        2023: {
+          美国: [3935803, 3011660, 6947463],
+          中国: [472181, 508504, 980685],
+          欧盟: [1039053, 1977806, 3016859],
+          印度: [437144, 501947, 939091],
+        },
+        2024: {
+          美国: [6797731, 3604331, 10402062],
+          中国: [582776, 617019, 1199795],
+          欧盟: [1194954, 2479760, 3674714],
+          印度: [652834, 702830, 1355664],
+        },
+      };
+
+      const QData = {
+        '22 Q1': {
+          美国: [876634, 585868, 1462502],
+          中国: [69684, 82295, 151979],
+          欧盟: [215093, 389736, 604829],
+          印度: [65675, 86834, 152509],
+        },
+        '22 Q2': {
+          美国: [834749, 613669, 1448418],
+          中国: [76785, 96925, 173710],
+          欧盟: [204659, 384424, 589083],
+          印度: [84139, 84371, 168510],
+        },
+        '22 Q3': {
+          美国: [905070, 664413, 1569483],
+          中国: [79741, 99340, 179081],
+          欧盟: [219463, 408136, 627599],
+          印度: [105638, 99543, 205181],
+        },
+        '22 Q4': {
+          美国: [1037083, 716906, 1753989],
+          中国: [109968, 107811, 217779],
+          欧盟: [246871, 473394, 720265],
+          印度: [90906, 106818, 197724],
+        },
+        '23 Q1': {
+          美国: [972467, 751757, 1724224],
+          中国: [101436, 109362, 210798],
+          欧盟: [267297, 502320, 769617],
+          印度: [96553, 121151, 217704],
+        },
+        '23 Q2': {
+          美国: [965278, 783952, 1749230],
+          中国: [116902, 124074, 240976],
+          欧盟: [249902, 513991, 763893],
+          印度: [109277, 134635, 243912],
+        },
+        '23 Q3': {
+          美国: [975193, 734029, 1709222],
+          中国: [106205, 98306, 204511],
+          欧盟: [253810, 474263, 728073],
+          印度: [119177, 138438, 257615],
+        },
+        '23 Q4': {
+          美国: [1052339, 803420, 1855759],
+          中国: [138652, 156533, 295185],
+          欧盟: [279278, 545231, 824509],
+          印度: [129860, 130402, 260262],
+        },
+        '24 Q1': {
+          美国: [1328811, 859114, 2187925],
+          中国: [117595, 114567, 232162],
+          欧盟: [316817, 607555, 924372],
+          印度: [133966, 150488, 284454],
+        },
+        '24 Q2': {
+          美国: [1910125, 976713, 2886838],
+          中国: [169436, 171530, 340966],
+          欧盟: [307762, 642020, 949782],
+          印度: [161054, 175719, 336773],
+        },
+        '24 Q3': {
+          美国: [1870547, 880670, 2751217],
+          中国: [127753, 133052, 260805],
+          欧盟: [269404, 588823, 858227],
+          印度: [171816, 194418, 366234],
+        },
+        '24 Q4': {
+          美国: [1687591, 893234, 2580825],
+          中国: [154598, 172457, 327055],
+          欧盟: [309137, 673912, 983049],
+          印度: [185357, 189845, 375202],
+        },
+      };
+
+      const echarts = window.echarts;
+      const colorList = [
+        '84, 112, 198',
+        '238, 108, 108',
+        '174, 217, 153',
+        '250, 200, 88',
+      ];
+      const ininChart = () => {
+        ininOutRadio();
+        initBar2();
+        const typeList = ['进口', '出口', '进出口总和'];
+        typeList.forEach((type, index) => {
+          var chartDom = document.getElementById(type);
+          var myChart = echarts.init(chartDom);
+          var chartDom1 = document.getElementById(type + '1');
+          var myChart1 = echarts.init(chartDom1);
+          const barSeries = country.map((c, i) => {
+            const obj = {
+              name: c + '年度',
+              type: 'bar',
+              xAxisIndex: 1,
+              data: years.map((y) => yearsData[y][c][index]),
+              itemStyle: {
+                color: `rgba(${colorList[i]},.7)`,
+              },
+              barMaxWidth: '16%',
+            };
+            return obj;
+          });
+          const lineSeries = country.map((c, i) => {
+            const obj = {
+              name: c + '季度',
+              type: 'line',
+              smooth: true,
+              data: QList.map((y) => QData[y][c][index]),
+              itemStyle: {
+                color: `rgba(${colorList[i]},1)`,
+              },
+            };
+            return obj;
+          });
+          const option = {
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              { text: showName ? type : '', bottom: 15, left: 'center' },
+            ],
+            tooltip: { trigger: 'axis' },
+            legend: {
+              show: true,
+            },
+            grid: { left: '3%', right: '4%', bottom: 55, containLabel: true },
+            toolbox: { feature: { saveAsImage: {} } },
+            xAxis: [
+              {
+                type: 'category',
+                boundaryGap: false,
+                data: QList.map((i) => '20' + i),
+              },
+              {
+                type: 'category',
+                data: years,
+                show: false,
+              },
+            ],
+            yAxis: {
+              type: 'value',
+              axisLabel: {
+                formatter: (value) => formatterValue(value),
+              },
+            },
+            series: [...barSeries, ...lineSeries],
+          };
+          myChart.setOption({
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              {
+                text: showName ? type + '年度' : '',
+                bottom: 15,
+                left: 'center',
+              },
+            ],
+            tooltip: { trigger: 'axis' },
+            legend: {
+              show: true,
+            },
+            grid: { left: '3%', right: '4%', bottom: 55, containLabel: true },
+            toolbox: { feature: { saveAsImage: {} } },
+            xAxis: [
+              {
+                type: 'category',
+                data: years,
+              },
+              {
+                type: 'category',
+                data: years,
+                show: false,
+              },
+            ],
+            yAxis: {
+              type: 'value',
+              axisLabel: {
+                formatter: (value) => formatterValue(value),
+              },
+            },
+            series: [...barSeries],
+          });
+          myChart1.setOption({
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              {
+                text: showName ? type + '季度' : '',
+                bottom: 15,
+                left: 'center',
+              },
+            ],
+            tooltip: { trigger: 'axis' },
+            legend: {
+              show: true,
+            },
+            grid: { left: '3%', right: '4%', bottom: 55, containLabel: true },
+            toolbox: { feature: { saveAsImage: {} } },
+            xAxis: [
+              {
+                type: 'category',
+                boundaryGap: false,
+                data: QList.map((i) => '20' + i),
+              },
+              {
+                type: 'category',
+                data: years,
+                show: false,
+              },
+            ],
+            yAxis: {
+              type: 'value',
+              axisLabel: {
+                formatter: (value) => formatterValue(value),
+              },
+            },
+            series: [...lineSeries],
+          });
+        });
+      };
+
+      const ininOutRadio = () => {
+        Promise.all([
+          fetch('./line_AS_country_activity_push_contribution.json').then(
+            (response) => response.json()
+          ),
+          fetch('./line_QS-JAN_country_activity_push_contribution.json').then(
+            (response) => response.json()
+          ),
+        ]).then((res) => {
+          console.log(res);
+          const allCountryTotal = res.map((data) => {
+            countryTotal = country.map((c) => {
+              let ser = data.series.find((s) => s.name === c);
+              return ser.data;
+            });
+            return countryTotal;
+          });
+          var lineChartDom = document.getElementById('outRadioLine');
+          var lineChart = echarts.init(lineChartDom);
+          var lineChartDom1 = document.getElementById('outRadioLine1');
+          var lineChart1 = echarts.init(lineChartDom1);
+          const lineSeries = [];
+          const barSeries = country.map((c, i) => {
+            const obj = {
+              name: c + '年度',
+              type: 'bar',
+              xAxisIndex: 1,
+              data: years.map((y, zndey) => {
+                const out = yearsData[y][c][2];
+                const total = allCountryTotal[0][i][zndey];
+                return (out / total).toFixed(3);
+              }),
+              itemStyle: {
+                color: `rgba(${colorList[i]},.7)`,
+              },
+              barMaxWidth: '16%',
+            };
+            return obj;
+          });
+          country.forEach((c, i) => {
+            const line = {
+              name: c + '季度',
+              type: 'line',
+              smooth: true,
+              itemStyle: {
+                color: `rgba(${colorList[i]},1)`,
+              },
+              data: QList.map((y, zndey) => {
+                const out = QData[y][c][2];
+                const total = countryTotal[i][zndey];
+                return (out / total).toFixed(3);
+              }),
+            };
+            lineSeries.push(line);
+          });
+
+          const optionLine = {
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              {
+                text: showName ? '进出口贡献数占总贡献数比例图（年度）' : '',
+                bottom: 15,
+                left: 'center',
+              },
+            ],
+            tooltip: { trigger: 'axis' },
+            legend: {
+              show: true,
+            },
+            grid: { left: '3%', right: '4%', bottom: 55, containLabel: true },
+            toolbox: { feature: { saveAsImage: {} } },
+            xAxis: [
+              {
+                type: 'category',
+                data: years,
+              },
+              {
+                type: 'category',
+                data: years,
+                // show: false,
+              },
+            ],
+            yAxis: [
+              {
+                type: 'value',
+                axisLabel: {
+                  formatter: (value) => formatterValue(value),
+                },
+              },
+              {
+                type: 'value',
+              },
+            ],
+            series: [...barSeries],
+          };
+          const optionLine1 = {
+            title: [
+              {
+                text: `{titleIcon|}`,
+                bottom: 15,
+                right: '5%',
+                textStyle: {
+                  color: '#333',
+                  fontSize: 12,
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  rich: {
+                    titleIcon: {
+                      backgroundColor: {
+                        image:
+                          'https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg',
+                      },
+                      height: 16, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+                      width: 100,
+                    },
+                  },
+                },
+              },
+              {
+                text: showName ? '进出口贡献数占总贡献数比例图（季度）' : '',
+                bottom: 15,
+                left: 'center',
+              },
+            ],
+            tooltip: { trigger: 'axis' },
+            legend: {
+              show: true,
+            },
+            grid: { left: '3%', right: '4%', bottom: 55, containLabel: true },
+            toolbox: { feature: { saveAsImage: {} } },
+            xAxis: [
+              {
+                type: 'category',
+                data: QList.map((i) => '20' + i),
+              },
+              {
+                type: 'category',
+                data: years,
+                // show: false,
+              },
+            ],
+            yAxis: [
+              {
+                type: 'value',
+                axisLabel: {
+                  formatter: (value) => formatterValue(value),
+                },
+              },
+              {
+                type: 'value',
+              },
+            ],
+            series: [...lineSeries],
+          };
+          lineChart.setOption(optionLine);
+          lineChart1.setOption(optionLine1);
+        });
+      };
+    </script>
+    <!-- 内联 JavaScript -->
+    <script>
+      Highcharts.seriesTypes.dependencywheel.prototype.pointClass.prototype.getDataLabelPath =
+        function (a) {
+          var c = this.series.chart.renderer,
+            f = this.shapeArgs,
+            e = 0 > this.angle || this.angle > Math.PI,
+            g = f.start,
+            b = f.end;
+          // Create a dummy text element to get the bounding box width
+          let tmpText = c
+            .text(this.id)
+            // Set the appropriate text styles so that we get an accurate bounding box
+            .attr({
+              style:
+                'font-size: ' +
+                a.text.styles.fontSize +
+                '; font-weight: ' +
+                a.text.styles.fontWeight,
+            })
+            // We don't get the real box until it's been added
+            .add();
+          var width = tmpText.getBBox().width;
+          // Clean up the dummy text element
+          tmpText.destroy();
+          if (
+            width <
+            (f.r + (this.series.options.dataLabels.distance || 0)) * (b - g)
+          ) {
+            // safe for arc shapeArgs (enough space for labelling in the arc)
+            this.dataLabelPath = c.arc({ open: !0 }).add(a);
+            this.dataLabelPath.attr({
+              x: f.x,
+              y: f.y,
+              r: f.r + (this.series.options.dataLabels.distance || 0),
+              start: e ? g : b,
+              end: e ? b : g,
+              clockwise: +e,
+            });
+          } else {
+            // go for radial
+            var x =
+                (f.r + (this.series.options.dataLabels.distance / 2 || 0)) *
+                  Math.cos(this.angle) +
+                f.x,
+              y =
+                (f.r + (this.series.options.dataLabels.distance / 2 || 0)) *
+                  Math.sin(this.angle) +
+                f.y,
+              p1 = [Math.round(x), Math.round(y)],
+              p2 = [
+                Math.round(x + Math.cos(this.angle) * width),
+                Math.round(y + Math.sin(this.angle) * width),
+              ];
+            e = -Math.PI / 2 > this.angle || this.angle > Math.PI / 2;
+            var svg_path = e
+              ? ['M', p2[0], p2[1], 'L', p1[0], p1[1]]
+              : ['M', p1[0], p1[1], 'L', p2[0], p2[1]];
+            if (b - g === 0) {
+              a.options.enabled = false;
+              this.dataLabel.text = '';
+            }
+            if (!this.dataLabelPath) {
+              this.dataLabelPath = c.path(svg_path).add(a);
+            } else {
+              this.dataLabelPath.attr({
+                d: svg_path,
+              });
+            }
+          }
+          return this.dataLabelPath;
+        };
+      // 获取下拉选择框元素
+      var fileSelector = document.getElementById('fileSelector');
+      var lineSelector = document.getElementById('line');
+      var highchartsSelector = document.getElementById('highcharts');
+      let urlValue = '';
+      let showName = true;
+      const checkboxShowName = (checkbox) => {
+        console.log(checkbox.checked);
+        showName = checkbox.checked;
+        console.log(urlValue);
+        selectedFun(urlValue);
+      };
+      // 为下拉选择框添加 change 事件监听，当选项改变时触发
+      fileSelector.addEventListener('change', function () {
+        var selectedFile = this.value;
+        selectedFun(selectedFile);
+      });
+      const selectedFun = (selectedFile) => {
+        urlValue = selectedFile;
+        if (selectedFile === 'line') {
+          lineSelector.style.display = 'flex';
+          highchartsSelector.style.display = 'none';
+          ininChart();
+          return;
+        }
+        if (selectedFile === 'pie') {
+          lineSelector.style.display = 'none';
+          highchartsSelector.style.display = 'block';
+          ininPie();
+          return;
+        }
+        if (selectedFile === 'programming_rank') {
+          lineSelector.style.display = 'none';
+          highchartsSelector.style.display = 'block';
+          ininRank();
+          return;
+        }
+        lineSelector.style.display = 'none';
+        highchartsSelector.style.display = 'block';
+        // 使用 fetch 读取本地 JSON 文件
+        fetch(selectedFile)
+          .then((response) => response.json())
+          .then((data) => {
+            let sets = new Set();
+            data.forEach((item) => {
+              sets.add(item[0]);
+              console.log(item[0]);
+            });
+            console.log(Array.from(sets));
+            Highcharts.chart('container', {
+              title: {
+                text: "<img style='width:100px;heigth:15px' src='https://raw.githubusercontent.com/oss-compass/document-website/626c46cececc42e4a87c13c86ed1ea84d456f980/static/img/compass-gray.svg' />",
+                useHTML: true,
+                align: 'right',
+                verticalAlign: 'bottom',
+              },
+              accessibility: {
+                point: {
+                  valueDescriptionFormat:
+                    '{index}. From {point.from} to ' +
+                    '{point.to}: {point.weight}.',
+                },
+              },
+              series: [
+                {
+                  keys: ['from', 'to', 'weight'],
+                  data: data,
+                  type: 'dependencywheel',
+                  name: '进出口贡献总量',
+                  dataLabels: {
+                    color: '#333',
+                    style: {
+                      textOutline: 'none',
+                    },
+                    textPath: {
+                      enabled: true,
+                    },
+                    distance: 10,
+                  },
+                  size: '80%',
+                },
+              ],
+            });
+          })
+          .catch((error) => {
+            console.error('读取数据出现错误：', error);
+          });
+      };
+      window.onload = () => {
+        selectedFun('line');
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,184 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "Software Development and Management tools",
+      "",
+      "Development toolkit",
+      "Frontend",
+      "General Management Software",
+      "Development Framework",
+      "DevOps and network management and maintaining",
+      "Software development library",
+      "Web Application Development",
+      "Database",
+      "Server Applications",
+      "Handset and Mobile Application Development",
+      "Artificial Intelligence AI",
+      "blockchain",
+      "Multi Media Software",
+      "Security",
+      "Operation System",
+      "Documentation",
+      "Firmware",
+      "Browser related"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": [
+      "2022 Q1",
+      "2022 Q2",
+      "2022 Q3",
+      "2022 Q4",
+      "2023 Q1",
+      "2023 Q2",
+      "2023 Q3",
+      "2023 Q4",
+      "2024 Q1",
+      "2024 Q2",
+      "2024 Q3"
+    ]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "Software Development and Management tools",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        7689, 8025, 8345, 9174, 9043, 9627, 12601, 12426, 16678, 31839, 33231
+      ]
+    },
+    {
+      "name": "",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        6297, 3942, 5775, 4123, 5893, 4008, 5571, 7538, 12043, 29690, 14171
+      ]
+    },
+    {
+      "name": "Development toolkit",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        5998, 8453, 7503, 7821, 10662, 7904, 11605, 12011, 15041, 27077, 17864
+      ]
+    },
+    {
+      "name": "Frontend",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        5498, 5159, 5953, 5411, 6933, 6923, 8224, 7628, 11233, 13708, 13102
+      ]
+    },
+    {
+      "name": "General Management Software",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        5489, 5425, 6758, 4505, 7747, 5762, 6930, 8898, 12322, 16603, 23753
+      ]
+    },
+    {
+      "name": "Development Framework",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        5353, 4372, 6461, 4760, 6374, 7388, 8639, 11570, 12010, 13058, 10661
+      ]
+    },
+    {
+      "name": "DevOps and network management and maintaining",
+      "type": "line",
+      "smooth": true,
+      "data": [2778, 2629, 1987, 1811, 2254, 5011, 6174, 4302, 2588, 5727, 5217]
+    },
+    {
+      "name": "Software development library",
+      "type": "line",
+      "smooth": true,
+      "data": [1727, 2518, 1808, 2383, 2878, 2109, 1891, 2897, 3022, 5337, 5577]
+    },
+    {
+      "name": "Web Application Development",
+      "type": "line",
+      "smooth": true,
+      "data": [1706, 1613, 2863, 3863, 3201, 2214, 3680, 5894, 6402, 9278, 7691]
+    },
+    {
+      "name": "Database",
+      "type": "line",
+      "smooth": true,
+      "data": [1582, 2420, 2476, 1986, 1913, 3510, 2702, 3061, 4331, 5253, 5541]
+    },
+    {
+      "name": "Server Applications",
+      "type": "line",
+      "smooth": true,
+      "data": [1273, 845, 890, 1427, 740, 648, 1147, 1064, 1276, 3557, 1985]
+    },
+    {
+      "name": "Handset and Mobile Application Development",
+      "type": "line",
+      "smooth": true,
+      "data": [1139, 799, 577, 859, 809, 199, 1625, 940, 1948, 2558, 2620]
+    },
+    {
+      "name": "Artificial Intelligence AI",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        1076, 2192, 1992, 4079, 6208, 10103, 8751, 8573, 11075, 21616, 14268
+      ]
+    },
+    {
+      "name": "blockchain",
+      "type": "line",
+      "smooth": true,
+      "data": [1060, 689, 988, 586, 1409, 937, 516, 841, 1392, 1913, 3038]
+    },
+    {
+      "name": "Multi Media Software",
+      "type": "line",
+      "smooth": true,
+      "data": [827, 1008, 763, 2192, 1249, 1118, 1302, 1544, 2216, 4953, 4860]
+    },
+    {
+      "name": "Security",
+      "type": "line",
+      "smooth": true,
+      "data": [577, 552, 338, 543, 1613, 2432, 2852, 3518, 4970, 5027, 4521]
+    },
+    {
+      "name": "Operation System",
+      "type": "line",
+      "smooth": true,
+      "data": [497, 1069, 1045, 1092, 1569, 2476, 2028, 1860, 3738, 2417, 2144]
+    },
+    {
+      "name": "Documentation",
+      "type": "line",
+      "smooth": true,
+      "data": [493, 633, 96, 189, 0, 0, 0, 0, 0, 0, 163]
+    },
+    {
+      "name": "Firmware",
+      "type": "line",
+      "smooth": true,
+      "data": [341, 378, 185, 753, 462, 294, 355, 409, 365, 1071, 1575]
+    },
+    {
+      "name": "Browser related",
+      "type": "line",
+      "smooth": true,
+      "data": [338, 456, 328, 356, 1072, 686, 1752, 1060, 930, 984, 987]
+    }
+  ]
+}

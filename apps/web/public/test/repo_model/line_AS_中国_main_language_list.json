@@ -1,0 +1,223 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "HTML",
+      "Python",
+      "JavaScript",
+      "Java",
+      "TypeScript",
+      "C++",
+      "Go",
+      "Shell",
+      "Vue",
+      "C",
+      "Jupyter Notebook",
+      "CSS",
+      "C#",
+      "PHP",
+      "Rust",
+      "Kotlin",
+      "Dart",
+      "SCSS",
+      "Swift",
+      "Lua",
+      "Dockerfile",
+      "MATLAB",
+      "Objective-C",
+      "Ruby",
+      "R",
+      "TeX",
+      "Solidity",
+      "Makefile",
+      "Vim Script",
+      "Scala"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "HTML",
+      "type": "line",
+      "smooth": true,
+      "data": [274573, 312155, 366953]
+    },
+    {
+      "name": "Python",
+      "type": "line",
+      "smooth": true,
+      "data": [271390, 322996, 386688]
+    },
+    {
+      "name": "JavaScript",
+      "type": "line",
+      "smooth": true,
+      "data": [269561, 267561, 309903]
+    },
+    {
+      "name": "Java",
+      "type": "line",
+      "smooth": true,
+      "data": [196080, 191264, 181880]
+    },
+    {
+      "name": "TypeScript",
+      "type": "line",
+      "smooth": true,
+      "data": [101720, 150823, 185306]
+    },
+    {
+      "name": "C++",
+      "type": "line",
+      "smooth": true,
+      "data": [95112, 113272, 123532]
+    },
+    {
+      "name": "Go",
+      "type": "line",
+      "smooth": true,
+      "data": [93381, 101906, 95550]
+    },
+    {
+      "name": "Shell",
+      "type": "line",
+      "smooth": true,
+      "data": [61364, 64614, 68564]
+    },
+    {
+      "name": "Vue",
+      "type": "line",
+      "smooth": true,
+      "data": [60620, 65555, 66499]
+    },
+    {
+      "name": "C",
+      "type": "line",
+      "smooth": true,
+      "data": [57106, 64379, 66631]
+    },
+    {
+      "name": "Jupyter Notebook",
+      "type": "line",
+      "smooth": true,
+      "data": [49374, 64363, 78072]
+    },
+    {
+      "name": "CSS",
+      "type": "line",
+      "smooth": true,
+      "data": [47946, 58398, 71374]
+    },
+    {
+      "name": "C#",
+      "type": "line",
+      "smooth": true,
+      "data": [45792, 51947, 58351]
+    },
+    {
+      "name": "PHP",
+      "type": "line",
+      "smooth": true,
+      "data": [34881, 41029, 51416]
+    },
+    {
+      "name": "Rust",
+      "type": "line",
+      "smooth": true,
+      "data": [22377, 31868, 44826]
+    },
+    {
+      "name": "Kotlin",
+      "type": "line",
+      "smooth": true,
+      "data": [21064, 23457, 23822]
+    },
+    {
+      "name": "Dart",
+      "type": "line",
+      "smooth": true,
+      "data": [12835, 14832, 17590]
+    },
+    {
+      "name": "SCSS",
+      "type": "line",
+      "smooth": true,
+      "data": [12003, 13732, 15796]
+    },
+    {
+      "name": "Swift",
+      "type": "line",
+      "smooth": true,
+      "data": [11478, 11334, 11751]
+    },
+    {
+      "name": "Lua",
+      "type": "line",
+      "smooth": true,
+      "data": [10785, 16115, 20997]
+    },
+    {
+      "name": "Dockerfile",
+      "type": "line",
+      "smooth": true,
+      "data": [10607, 12118, 10801]
+    },
+    {
+      "name": "MATLAB",
+      "type": "line",
+      "smooth": true,
+      "data": [7859, 8612, 8315]
+    },
+    {
+      "name": "Objective-C",
+      "type": "line",
+      "smooth": true,
+      "data": [7828, 6210, 5038]
+    },
+    {
+      "name": "Ruby",
+      "type": "line",
+      "smooth": true,
+      "data": [7688, 7657, 7504]
+    },
+    { "name": "R", "type": "line", "smooth": true, "data": [6985, 7724, 8357] },
+    {
+      "name": "TeX",
+      "type": "line",
+      "smooth": true,
+      "data": [5460, 5961, 7230]
+    },
+    {
+      "name": "Solidity",
+      "type": "line",
+      "smooth": true,
+      "data": [5169, 4913, 6093]
+    },
+    {
+      "name": "Makefile",
+      "type": "line",
+      "smooth": true,
+      "data": [4952, 6151, 7486]
+    },
+    {
+      "name": "Vim Script",
+      "type": "line",
+      "smooth": true,
+      "data": [4268, 5052, 4162]
+    },
+    {
+      "name": "Scala",
+      "type": "line",
+      "smooth": true,
+      "data": [3291, 3420, 3024]
+    }
+  ]
+}

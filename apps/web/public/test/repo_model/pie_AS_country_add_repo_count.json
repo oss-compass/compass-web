@@ -1,0 +1,149 @@
+{
+  "title": {
+    "text": "",
+    "left": "center"
+  },
+  "tooltip": {
+    "trigger": "item"
+  },
+  "legend": {
+    "orient": "vertical",
+    "left": "left"
+  },
+  "series": [
+    {
+      "name": "Access From",
+      "type": "pie",
+      "radius": "50%",
+      "data": [
+        {
+          "value": 5243056,
+          "name": "印度"
+        },
+        {
+          "value": 3508789,
+          "name": "美国"
+        },
+        {
+          "value": 2368966,
+          "name": "欧盟"
+        },
+        {
+          "value": 1771598,
+          "name": "俄罗斯"
+        },
+        {
+          "value": 1710154,
+          "name": "巴西"
+        },
+        {
+          "value": 1300674,
+          "name": "中国"
+        },
+        {
+          "value": 1011782,
+          "name": "印度尼西亚"
+        },
+        {
+          "value": 692096,
+          "name": "日本"
+        },
+        {
+          "value": 640425,
+          "name": "英国"
+        },
+        {
+          "value": 479408,
+          "name": "墨西哥"
+        },
+        {
+          "value": 368287,
+          "name": "孟加拉国"
+        },
+        {
+          "value": 190011,
+          "name": "澳大利亚"
+        },
+        {
+          "value": 175197,
+          "name": "加拿大"
+        },
+        {
+          "value": 151074,
+          "name": "阿拉伯联合酋长国"
+        },
+        {
+          "value": 128703,
+          "name": "巴基斯坦"
+        },
+        {
+          "value": 115810,
+          "name": "韩国"
+        },
+        {
+          "value": 95231,
+          "name": "土耳其"
+        },
+        {
+          "value": 91578,
+          "name": "尼日利亚"
+        },
+        {
+          "value": 85466,
+          "name": "哥伦比亚"
+        },
+        {
+          "value": 83939,
+          "name": "肯尼亚"
+        },
+        {
+          "value": 82645,
+          "name": "阿根廷"
+        },
+        {
+          "value": 76597,
+          "name": "乌克兰"
+        },
+        {
+          "value": 75587,
+          "name": "越南"
+        },
+        {
+          "value": 59538,
+          "name": "埃及"
+        },
+        {
+          "value": 46695,
+          "name": "斯里兰卡"
+        },
+        {
+          "value": 44528,
+          "name": "新西兰"
+        },
+        {
+          "value": 37945,
+          "name": "菲律宾"
+        },
+        {
+          "value": 37079,
+          "name": "伊朗"
+        },
+        {
+          "value": 31336,
+          "name": "南非"
+        },
+        {
+          "value": 29987,
+          "name": "尼泊尔"
+        }
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 10,
+          "shadowOffsetX": 0,
+          "shadowColor": "rgba(0, 0, 0, 0.5)"
+        }
+      }
+    }
+  ]
+}

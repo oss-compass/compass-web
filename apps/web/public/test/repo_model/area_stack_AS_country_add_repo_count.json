@@ -1,0 +1,307 @@
+{
+  "title": {
+    "text": ""
+  },
+  "tooltip": {
+    "trigger": "item",
+    "axisPointer": {
+      "type": "cross",
+      "label": {
+        "backgroundColor": "#6a7985"
+      }
+    }
+  },
+  "legend": {
+    "data": [
+      "美国",
+      "印度",
+      "欧盟",
+      "中国",
+      "俄罗斯",
+      "巴西",
+      "中国-Github",
+      "印度尼西亚",
+      "日本",
+      "英国",
+      "中国-Gitee",
+      "墨西哥",
+      "孟加拉国",
+      "澳大利亚",
+      "加拿大",
+      "韩国",
+      "阿拉伯联合酋长国",
+      "尼日利亚",
+      "土耳其",
+      "肯尼亚",
+      "阿根廷",
+      "乌克兰"
+    ]
+  },
+  "toolbox": {
+    "feature": {
+      "saveAsImage": {}
+    }
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
+  "xAxis": [
+    {
+      "type": "category",
+      "boundaryGap": false,
+      "data": ["2022", "2023", "2024"]
+    }
+  ],
+  "yAxis": [
+    {
+      "type": "value"
+    }
+  ],
+  "series": [
+    {
+      "name": "美国",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [4006332, 4302883, 4756250]
+    },
+    {
+      "name": "印度",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [3272409, 4995666, 6977457]
+    },
+    {
+      "name": "欧盟",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [2268243, 2790130, 3339085]
+    },
+    {
+      "name": "中国",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [1911532, 2089397, 2778245]
+    },
+    {
+      "name": "俄罗斯",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [1567684, 2016145, 2359856]
+    },
+    {
+      "name": "巴西",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [1557318, 1812402, 2307007]
+    },
+    {
+      "name": "中国-Github",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [1340839, 1482613, 1811303]
+    },
+    {
+      "name": "印度尼西亚",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [808895, 1020245, 1439635]
+    },
+    {
+      "name": "日本",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [716043, 816409, 932810]
+    },
+    {
+      "name": "英国",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [703840, 762623, 897232]
+    },
+    {
+      "name": "中国-Gitee",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [570693, 606784, 966942]
+    },
+    {
+      "name": "墨西哥",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [503646, 586599, 670170]
+    },
+    {
+      "name": "孟加拉国",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [347689, 448974, 515523]
+    },
+    {
+      "name": "澳大利亚",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [217294, 225379, 250218]
+    },
+    {
+      "name": "加拿大",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [216763, 224829, 234122]
+    },
+    {
+      "name": "韩国",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [160142, 165531, 153597]
+    },
+    {
+      "name": "阿拉伯联合酋长国",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [155232, 179002, 203815]
+    },
+    {
+      "name": "尼日利亚",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [154358, 147500, 120368]
+    },
+    {
+      "name": "土耳其",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [126447, 136151, 126742]
+    },
+    {
+      "name": "肯尼亚",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [117692, 115510, 103018]
+    },
+    {
+      "name": "阿根廷",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [105586, 118148, 108451]
+    },
+    {
+      "name": "乌克兰",
+      "type": "line",
+      "stack": "Total",
+      "areaStyle": {},
+      "emphasis": {
+        "focus": "series"
+      },
+      "smooth": true,
+      "data": [102084, 118681, 100373]
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "JavaScript",
+      "HTML",
+      "Python",
+      "Java",
+      "TypeScript",
+      "Jupyter Notebook",
+      "C++",
+      "Ruby",
+      "CSS",
+      "C#",
+      "Go",
+      "C",
+      "Shell",
+      "PHP",
+      "Kotlin",
+      "Swift",
+      "Vue",
+      "Rust",
+      "Dart",
+      "SCSS",
+      "Dockerfile",
+      "Lua",
+      "Vim Script",
+      "HCL",
+      "R",
+      "Makefile",
+      "Scala",
+      "Emacs Lisp",
+      "TeX",
+      "PowerShell"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "JavaScript",
+      "type": "line",
+      "smooth": true,
+      "data": [146691, 153440, 155747]
+    },
+    {
+      "name": "HTML",
+      "type": "line",
+      "smooth": true,
+      "data": [141442, 156498, 173155]
+    },
+    {
+      "name": "Python",
+      "type": "line",
+      "smooth": true,
+      "data": [113002, 140950, 165875]
+    },
+    {
+      "name": "Java",
+      "type": "line",
+      "smooth": true,
+      "data": [101164, 131180, 148448]
+    },
+    {
+      "name": "TypeScript",
+      "type": "line",
+      "smooth": true,
+      "data": [72715, 97379, 124419]
+    },
+    {
+      "name": "Jupyter Notebook",
+      "type": "line",
+      "smooth": true,
+      "data": [43404, 49801, 54340]
+    },
+    {
+      "name": "C++",
+      "type": "line",
+      "smooth": true,
+      "data": [41051, 49313, 56390]
+    },
+    {
+      "name": "Ruby",
+      "type": "line",
+      "smooth": true,
+      "data": [32563, 30368, 24101]
+    },
+    {
+      "name": "CSS",
+      "type": "line",
+      "smooth": true,
+      "data": [29648, 34986, 36798]
+    },
+    {
+      "name": "C#",
+      "type": "line",
+      "smooth": true,
+      "data": [28682, 33899, 37858]
+    },
+    {
+      "name": "Go",
+      "type": "line",
+      "smooth": true,
+      "data": [24260, 25583, 25739]
+    },
+    {
+      "name": "C",
+      "type": "line",
+      "smooth": true,
+      "data": [21438, 24371, 26056]
+    },
+    {
+      "name": "Shell",
+      "type": "line",
+      "smooth": true,
+      "data": [20820, 21362, 23208]
+    },
+    {
+      "name": "PHP",
+      "type": "line",
+      "smooth": true,
+      "data": [19299, 20863, 21825]
+    },
+    {
+      "name": "Kotlin",
+      "type": "line",
+      "smooth": true,
+      "data": [16509, 17960, 19717]
+    },
+    {
+      "name": "Swift",
+      "type": "line",
+      "smooth": true,
+      "data": [14903, 15453, 14997]
+    },
+    {
+      "name": "Vue",
+      "type": "line",
+      "smooth": true,
+      "data": [14162, 13644, 12898]
+    },
+    {
+      "name": "Rust",
+      "type": "line",
+      "smooth": true,
+      "data": [13533, 16335, 18519]
+    },
+    {
+      "name": "Dart",
+      "type": "line",
+      "smooth": true,
+      "data": [8871, 11223, 11951]
+    },
+    {
+      "name": "SCSS",
+      "type": "line",
+      "smooth": true,
+      "data": [8170, 7577, 6742]
+    },
+    {
+      "name": "Dockerfile",
+      "type": "line",
+      "smooth": true,
+      "data": [6288, 7029, 7079]
+    },
+    {
+      "name": "Lua",
+      "type": "line",
+      "smooth": true,
+      "data": [4023, 5753, 7661]
+    },
+    {
+      "name": "Vim Script",
+      "type": "line",
+      "smooth": true,
+      "data": [3592, 3877, 3265]
+    },
+    {
+      "name": "HCL",
+      "type": "line",
+      "smooth": true,
+      "data": [2997, 3490, 3778]
+    },
+    { "name": "R", "type": "line", "smooth": true, "data": [2744, 2899, 2785] },
+    {
+      "name": "Makefile",
+      "type": "line",
+      "smooth": true,
+      "data": [2358, 2877, 3261]
+    },
+    {
+      "name": "Scala",
+      "type": "line",
+      "smooth": true,
+      "data": [2290, 2175, 1750]
+    },
+    {
+      "name": "Emacs Lisp",
+      "type": "line",
+      "smooth": true,
+      "data": [2181, 2195, 1982]
+    },
+    {
+      "name": "TeX",
+      "type": "line",
+      "smooth": true,
+      "data": [2053, 2135, 2404]
+    },
+    {
+      "name": "PowerShell",
+      "type": "line",
+      "smooth": true,
+      "data": [1542, 1566, 1678]
+    }
+  ]
+}

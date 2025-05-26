@@ -1,0 +1,251 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "MIT",
+      "Apache-2.0",
+      "GPL-3.0",
+      "BSD-3-Clause",
+      "GPL-2.0",
+      "CC0-1.0",
+      "AGPL-3.0",
+      "BSD-2-Clause",
+      "MPL-2.0",
+      "CC-BY-4.0",
+      "LGPL-2.1",
+      "LGPL-3.0",
+      "BSL-1.0",
+      "ISC",
+      "0BSD",
+      "WTFPL",
+      "CC-BY-SA-4.0",
+      "Zlib",
+      "MIT-0",
+      "EPL-2.0",
+      "EPL-1.0",
+      "Vim",
+      "OFL-1.1",
+      "Artistic-2.0",
+      "MS-PL",
+      "OSL-3.0",
+      "NCSA",
+      "UPL-1.0",
+      "BSD-3-Clause-Clear",
+      "GFDL-1.3"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": [
+      "2022 Q1",
+      "2022 Q2",
+      "2022 Q3",
+      "2022 Q4",
+      "2023 Q1",
+      "2023 Q2",
+      "2023 Q3",
+      "2023 Q4",
+      "2024 Q1",
+      "2024 Q2",
+      "2024 Q3",
+      "2024 Q4",
+      "2025 Q1"
+    ]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "MIT",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        19482, 20415, 20965, 21385, 21271, 21535, 20989, 21805, 19675, 20859,
+        20339, 19359, 19987
+      ]
+    },
+    {
+      "name": "Apache-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        4426, 4632, 5084, 5200, 5333, 5962, 5532, 5486, 5218, 5461, 5315, 5448,
+        5534
+      ]
+    },
+    {
+      "name": "GPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [
+        1546, 1539, 1690, 1704, 1733, 1733, 1846, 1889, 1687, 1824, 1691, 1637,
+        1691
+      ]
+    },
+    {
+      "name": "BSD-3-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [896, 846, 855, 931, 920, 1162, 852, 928, 869, 909, 834, 839, 923]
+    },
+    {
+      "name": "GPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [631, 613, 609, 597, 565, 578, 553, 584, 505, 530, 575, 580, 530]
+    },
+    {
+      "name": "CC0-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [436, 400, 430, 406, 405, 451, 427, 444, 415, 461, 489, 455, 463]
+    },
+    {
+      "name": "AGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [369, 393, 408, 456, 562, 537, 629, 588, 626, 583, 649, 622, 636]
+    },
+    {
+      "name": "BSD-2-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [325, 325, 349, 367, 347, 379, 360, 377, 326, 357, 355, 352, 380]
+    },
+    {
+      "name": "MPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [230, 233, 232, 278, 307, 311, 254, 293, 315, 274, 299, 275, 331]
+    },
+    {
+      "name": "CC-BY-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [199, 300, 246, 274, 221, 215, 186, 208, 172, 227, 204, 220, 219]
+    },
+    {
+      "name": "LGPL-2.1",
+      "type": "line",
+      "smooth": true,
+      "data": [122, 126, 157, 117, 122, 138, 129, 127, 106, 146, 122, 112, 120]
+    },
+    {
+      "name": "LGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [118, 129, 103, 119, 130, 173, 154, 137, 144, 127, 123, 144, 141]
+    },
+    {
+      "name": "BSL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [111, 111, 73, 113, 78, 92, 106, 120, 113, 106, 57, 105, 35]
+    },
+    {
+      "name": "ISC",
+      "type": "line",
+      "smooth": true,
+      "data": [90, 75, 100, 104, 77, 75, 78, 73, 83, 65, 80, 63, 80]
+    },
+    {
+      "name": "0BSD",
+      "type": "line",
+      "smooth": true,
+      "data": [82, 74, 73, 59, 68, 54, 61, 49, 42, 50, 42, 31, 41]
+    },
+    {
+      "name": "WTFPL",
+      "type": "line",
+      "smooth": true,
+      "data": [75, 85, 107, 69, 155, 118, 104, 111, 118, 146, 136, 105, 114]
+    },
+    {
+      "name": "CC-BY-SA-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [67, 69, 60, 74, 72, 80, 73, 84, 78, 82, 86, 90, 99]
+    },
+    {
+      "name": "Zlib",
+      "type": "line",
+      "smooth": true,
+      "data": [39, 40, 42, 35, 31, 41, 53, 67, 58, 57, 65, 50, 70]
+    },
+    {
+      "name": "MIT-0",
+      "type": "line",
+      "smooth": true,
+      "data": [38, 56, 59, 68, 65, 59, 74, 76, 65, 112, 94, 93, 104]
+    },
+    {
+      "name": "EPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [26, 54, 23, 25, 12, 19, 31, 24, 26, 28, 15, 14, 23]
+    },
+    {
+      "name": "EPL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [20, 22, 18, 23, 14, 13, 14, 14, 14, 8, 11, 9, 14]
+    },
+    {
+      "name": "Vim",
+      "type": "line",
+      "smooth": true,
+      "data": [14, 13, 14, 13, 10, 9, 16, 9, 13, 15, 14, 8, 9]
+    },
+    {
+      "name": "OFL-1.1",
+      "type": "line",
+      "smooth": true,
+      "data": [12, 16, 19, 17, 15, 16, 21, 18, 14, 22, 25, 10, 9]
+    },
+    {
+      "name": "Artistic-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [11, 8, 9, 8, 6, 7, 8, 14, 8, 6, 10, 5, 5]
+    },
+    {
+      "name": "MS-PL",
+      "type": "line",
+      "smooth": true,
+      "data": [9, 4, 4, 5, 5, 4, 4, 5, 5, 1, 4, 1, 3]
+    },
+    {
+      "name": "OSL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [8, 5, 7, 3, 4, 3, 0, 4, 3, 1, 2, 2, 1]
+    },
+    {
+      "name": "NCSA",
+      "type": "line",
+      "smooth": true,
+      "data": [5, 4, 4, 5, 3, 4, 3, 4, 3, 0, 1, 2, 4]
+    },
+    {
+      "name": "UPL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [4, 3, 0, 0, 2, 7, 3, 3, 4, 1, 2, 1, 3]
+    },
+    {
+      "name": "BSD-3-Clause-Clear",
+      "type": "line",
+      "smooth": true,
+      "data": [3, 2, 4, 5, 5, 3, 3, 15, 9, 6, 8, 6, 5]
+    },
+    {
+      "name": "GFDL-1.3",
+      "type": "line",
+      "smooth": true,
+      "data": [2, 2, 1, 1, 3, 3, 2, 2, 3, 3, 3, 11, 6]
+    }
+  ]
+}

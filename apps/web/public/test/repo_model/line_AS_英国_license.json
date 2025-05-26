@@ -1,0 +1,208 @@
+{
+  "title": { "text": "" },
+  "tooltip": { "trigger": "axis" },
+  "legend": {
+    "data": [
+      "MIT",
+      "Apache-2.0",
+      "GPL-3.0",
+      "BSD-3-Clause",
+      "GPL-2.0",
+      "AGPL-3.0",
+      "CC-BY-4.0",
+      "BSD-2-Clause",
+      "CC0-1.0",
+      "MPL-2.0",
+      "LGPL-3.0",
+      "ISC",
+      "LGPL-2.1",
+      "CC-BY-SA-4.0",
+      "0BSD",
+      "MIT-0",
+      "EPL-2.0",
+      "WTFPL",
+      "EPL-1.0",
+      "Zlib",
+      "BSL-1.0",
+      "OSL-3.0",
+      "Artistic-2.0",
+      "EUPL-1.2",
+      "UPL-1.0",
+      "OFL-1.1",
+      "LPPL-1.3c",
+      "BSD-3-Clause-Clear",
+      "MS-PL",
+      "Vim"
+    ]
+  },
+  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": { "feature": { "saveAsImage": {} } },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["2022", "2023", "2024"]
+  },
+  "yAxis": { "type": "value" },
+  "series": [
+    {
+      "name": "MIT",
+      "type": "line",
+      "smooth": true,
+      "data": [190569, 215300, 224241]
+    },
+    {
+      "name": "Apache-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [72471, 77922, 86479]
+    },
+    {
+      "name": "GPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [47274, 48176, 49621]
+    },
+    {
+      "name": "BSD-3-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [14319, 14017, 14187]
+    },
+    {
+      "name": "GPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [9227, 9610, 9007]
+    },
+    {
+      "name": "AGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [8259, 11140, 12555]
+    },
+    {
+      "name": "CC-BY-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [4472, 3905, 3247]
+    },
+    {
+      "name": "BSD-2-Clause",
+      "type": "line",
+      "smooth": true,
+      "data": [4213, 3915, 3620]
+    },
+    {
+      "name": "CC0-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [3997, 4971, 5369]
+    },
+    {
+      "name": "MPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [3585, 3951, 3812]
+    },
+    {
+      "name": "LGPL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [2719, 2709, 2709]
+    },
+    {
+      "name": "ISC",
+      "type": "line",
+      "smooth": true,
+      "data": [2045, 1869, 2172]
+    },
+    {
+      "name": "LGPL-2.1",
+      "type": "line",
+      "smooth": true,
+      "data": [1574, 1627, 1711]
+    },
+    {
+      "name": "CC-BY-SA-4.0",
+      "type": "line",
+      "smooth": true,
+      "data": [1082, 1210, 1296]
+    },
+    { "name": "0BSD", "type": "line", "smooth": true, "data": [979, 734, 535] },
+    {
+      "name": "MIT-0",
+      "type": "line",
+      "smooth": true,
+      "data": [789, 1184, 1203]
+    },
+    {
+      "name": "EPL-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [629, 770, 862]
+    },
+    {
+      "name": "WTFPL",
+      "type": "line",
+      "smooth": true,
+      "data": [427, 407, 408]
+    },
+    {
+      "name": "EPL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [329, 285, 237]
+    },
+    { "name": "Zlib", "type": "line", "smooth": true, "data": [319, 346, 349] },
+    {
+      "name": "BSL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [296, 350, 514]
+    },
+    {
+      "name": "OSL-3.0",
+      "type": "line",
+      "smooth": true,
+      "data": [241, 195, 158]
+    },
+    {
+      "name": "Artistic-2.0",
+      "type": "line",
+      "smooth": true,
+      "data": [226, 155, 168]
+    },
+    {
+      "name": "EUPL-1.2",
+      "type": "line",
+      "smooth": true,
+      "data": [141, 225, 242]
+    },
+    {
+      "name": "UPL-1.0",
+      "type": "line",
+      "smooth": true,
+      "data": [121, 103, 125]
+    },
+    {
+      "name": "OFL-1.1",
+      "type": "line",
+      "smooth": true,
+      "data": [96, 113, 95]
+    },
+    {
+      "name": "LPPL-1.3c",
+      "type": "line",
+      "smooth": true,
+      "data": [78, 92, 79]
+    },
+    {
+      "name": "BSD-3-Clause-Clear",
+      "type": "line",
+      "smooth": true,
+      "data": [52, 60, 111]
+    },
+    { "name": "MS-PL", "type": "line", "smooth": true, "data": [44, 37, 28] },
+    { "name": "Vim", "type": "line", "smooth": true, "data": [34, 29, 42] }
+  ]
+}
