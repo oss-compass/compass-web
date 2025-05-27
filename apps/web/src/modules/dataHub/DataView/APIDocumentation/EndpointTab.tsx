@@ -1,6 +1,6 @@
 // 修改后的 EndpointTab.tsx
 import React, { useState } from 'react';
-import ParamsTableWithForm from '../ParamsTableWithForm';
+import ParamsTableWithForm from './ParamsTableWithForm';
 import Breadcrumb from '../../components/Breadcrumb';
 import ResponsesViewer from './ResponsesViewer';
 import DataSourceSelector from '../../components/DataSourceSelector';
