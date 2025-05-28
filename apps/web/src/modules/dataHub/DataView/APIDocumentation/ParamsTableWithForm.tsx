@@ -131,7 +131,11 @@ const ParamsTableWithForm = ({
               ellipsis: true,
               render: (_, record) => (
                 <div className="flex items-center">
-                  <span className="mr-1">{JSON.stringify(record.example)}</span>
+                  <span className="mr-1">
+                    {record.name === 'datasets'
+                      ? JSON.stringify(record.example)
+                      : record.example}
+                  </span>
                 </div>
               ),
             },
