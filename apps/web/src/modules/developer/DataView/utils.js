@@ -33,7 +33,7 @@ const calculateValues = (count, max, min, valueMax, valueMin) => {
 const getMaxMin = (arr) => {
   let counts = arr.map((obj) => obj.contributor_count);
   let min = Math.min(...counts);
-  let max = Math.max(...counts);
+  let max = Math.max(...counts) + 1;
   let sum = counts.reduce((acc, val) => acc + val, 0);
   let average = sum / counts.length;
   return { min, max, average };
@@ -122,14 +122,12 @@ const formatData = (array, key) => {
   return result;
 };
 export const calcData = (data, user, contributionLimit, key) => {
-  console.log(formatData(data));
   let { links, nodes } = getNodesLinks(
     formatData(data, key),
     user,
     contributionLimit,
     key
   );
-  console.log(formatData(data), links, nodes);
   const repoNodes = nodes.filter((item) => item.type === 'repo');
   const nodeLimit = getMaxMin(repoNodes);
   const linkLimit = getMaxMin(links);

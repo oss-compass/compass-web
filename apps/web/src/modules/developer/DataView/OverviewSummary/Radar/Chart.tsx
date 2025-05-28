@@ -1,13 +1,42 @@
 import React from 'react';
 import EchartCommon from '@modules/developer/components/EchartCommon';
 
-const Chart = ({ containerRef }) => {
-  let data = [4202, 820, 2090, 3509, 4300, 1800];
+interface ContributionTypeData {
+  commit: number;
+  pr: number;
+  pr_comment: number;
+  issue: number;
+  issue_comment: number;
+  code_review: number;
+}
+
+interface ChartProps {
+  containerRef?: React.RefObject<HTMLElement>;
+  data?: ContributionTypeData;
+}
+
+const Chart: React.FC<ChartProps> = ({ containerRef, data }) => {
+  // 如果没有数据，使用默认值
+  const contributionData = data;
+
+  // 将数据转换为雷达图所需的数组格式
+  const radarData = [
+    contributionData.commit,
+    contributionData.issue,
+    contributionData.issue_comment,
+    contributionData.pr,
+    contributionData.pr_comment,
+    contributionData.code_review,
+  ];
+
+  // 计算最大值，用于设置雷达图的刻度
+  const maxValue = Math.max(...radarData);
+  const roundedMaxValue = ((maxValue / 10) * 10).toFixed(2); // 向上取整到最接近的10的倍数
 
   const option = {
     grid: {
-      top: 20,
-      bottom: 30,
+      top: 50,
+      bottom: 60,
       left: 10,
       right: 40,
       containLabel: true,
@@ -16,13 +45,10 @@ const Chart = ({ containerRef }) => {
       show: false,
     },
     radar: {
+      radius: 110,
+      center: ['50%', '50%'],
       splitArea: {
         show: false,
-      },
-      axisName: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: '#696d6e',
       },
       axisLine: {
         lineStyle: {
@@ -31,17 +57,66 @@ const Chart = ({ containerRef }) => {
       },
       // shape: 'circle',
       indicator: [
-        { name: 'Commits', max: 6500 },
-        { name: 'Issues', max: 1600 },
-        { name: 'Issue Commenters', max: 3000 },
-        { name: 'PR', max: 3800 },
-        { name: 'PR Commenters', max: 5200 },
-        { name: 'Reviews', max: 2500 },
+        {
+          name: contributionData.commit + '%' + '\n' + 'Commits',
+          max: roundedMaxValue,
+          min: 0,
+        },
+        {
+          name: contributionData.issue + '%' + '\n' + 'Issues',
+          max: roundedMaxValue,
+          min: 0,
+        },
+        {
+          name: contributionData.issue_comment + '%' + '\n' + 'Issue Comments',
+          max: roundedMaxValue,
+          min: 0,
+        },
+        {
+          name: contributionData.pr + '%' + '\n' + 'PRs',
+          max: roundedMaxValue,
+          min: 0,
+        },
+        {
+          name: contributionData.pr_comment + '%' + '\n' + 'PR Comments',
+          max: roundedMaxValue,
+          min: 0,
+        },
+        {
+          name: contributionData.code_review + '%' + '\n' + 'Code Reviews',
+          max: roundedMaxValue,
+          min: 0,
+        },
       ],
+      axisName: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#696d6e',
+        formatter: function (value, index) {
+          // 将百分比和名称分开
+          const parts = value.split('\n');
+          return `{percent|${parts[0]}}\n{name|${parts[1]}}`;
+        },
+        rich: {
+          percent: {
+            fontSize: 12,
+            fontWeight: 'bold',
+            color: '#696d6e',
+            align: 'center',
+            padding: [0, 0, 2, 0],
+          },
+          name: {
+            fontSize: 12,
+            fontWeight: 'bold',
+            color: '#696d6e',
+            align: 'center',
+          },
+        },
+      },
     },
     series: [
       {
-        name: 'Budget vs spending',
+        name: '贡献类型占比',
         type: 'radar',
         symbol: 'circle',
         symbolSize: 1,
@@ -53,21 +128,32 @@ const Chart = ({ containerRef }) => {
         },
         data: [
           {
-            value: data,
+            value: radarData,
             areaStyle: {
               color: '#e9f7fb',
             },
           },
         ],
+        label: {
+          show: false,
+          formatter: '{c}%', // 显示数据值并添加百分比符号
+          color: '#333',
+        },
       },
     ],
+    // tooltip: {
+    //   trigger: 'item',
+    //   formatter: function (params) {
+    //     const value = params.value;
+    //     const indicator = params.indicator;
+    //     let result = params.name + '<br/>';
+    //     for (let i = 0; i < indicator.length; i++) {
+    //       result += indicator[i].name + ': ' + value[i].toFixed(2) + '%<br/>';
+    //     }
+    //     return result;
+    //   }
+    // }
   };
-  // const cardRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   let chart = init(cardRef.current);
-  //   chart.setOption(option);
-  // }, [option]);
 
   return (
     <>
@@ -75,4 +161,5 @@ const Chart = ({ containerRef }) => {
     </>
   );
 };
+
 export default React.memo(Chart);

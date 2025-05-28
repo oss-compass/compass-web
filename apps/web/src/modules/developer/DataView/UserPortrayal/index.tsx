@@ -1,16 +1,13 @@
 import React from 'react';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
-import DeveloperDashboard from './DeveloperDashboard';
-
+import LeftPan from './LeftPan';
+import RightPan from './RightPan';
 const OverviewSummary = () => {
-  // const { items, loading } = useMetricQueryData();
-  // if (loading) {
-  //   return <Loading />;
-  // }
   return (
-    <div className="relative mb-8 grid min-w-0 grid-cols-1 gap-4">
-      <DeveloperDashboard />
+    <div className="relative mb-8  flex gap-4">
+      <LeftPan />
+      <RightPan />
     </div>
   );
 };

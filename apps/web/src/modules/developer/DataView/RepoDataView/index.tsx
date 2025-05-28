@@ -1,60 +1,30 @@
 import React from 'react';
 import { useTranslation } from 'next-i18next';
-import TotalScoreRepo from './TotalScoreRepo';
-import TotalScore from './TotalScore';
-import CommunityRepos from './CommunityRepos';
+import RepoGraph from './RepoGraph';
+import RepoRanks from './RepoRanks';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import ConnectLineMini from '@modules/developer/components/ConnectLineMini';
-import useExtractShortIds from '@modules/developer/hooks/useExtractShortIds';
-import useQueryDateRange from '@modules/developer/hooks/useQueryDateRange';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { useContributorApi } from '@modules/developer/hooks/useContributorApi';
 
-const Repo = () => {
-  const { shortIds } = useExtractShortIds();
-  const { timeStart, timeEnd } = useQueryDateRange();
+const RepoDataView = () => {
   const url = '/api/v2/contributor_portrait/repo_collaboration';
-  const params = {
-    access_token: '3753004aa8d8132b37b55b836a358ec47e625a92',
-    contributor: 'lishengbao',
-    begin_date: timeStart,
-    end_date: timeEnd,
-  };
-  const fetchData = async () => {
-    const response = await axios.post(url, {
-      ...params,
-    });
-    return response.data;
-  };
-
-  const { data, error, isLoading } = useQuery(
-    ['repoData', shortIds, timeStart, timeEnd],
-    fetchData
+  const { data, error, isLoading } = useContributorApi(
+    url,
+    'repo_collaboration'
   );
   return (
     <>
+      {/* <CommunityRepos data={data} />
+      <ConnectLineMini /> */}
+      <RepoGraph data={data} error={error} isLoading={isLoading} />
       <ConnectLineMini />
-      <TotalScore data={data} error={error} isLoading={isLoading} />
-      <ConnectLineMini />
-      <TotalScoreRepo />
+      <RepoRanks data={data} isLoading={isLoading} />
     </>
   );
 };
 
-const CollaborationDevelopmentIndexOverview = () => {
-  const { t } = useTranslation();
-  return (
-    <>
-      <div className="mb-4">
-        <CommunityRepos />
-        <Repo />
-      </div>
-    </>
-  );
-};
-
-export default withErrorBoundary(CollaborationDevelopmentIndexOverview, {
+export default withErrorBoundary(RepoDataView, {
   FallbackComponent: ErrorFallback,
   onError(error, info) {
     console.log(error, info);

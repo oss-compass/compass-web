@@ -2,7 +2,7 @@ import React from 'react';
 import { BiCalendar, BiCaretDown } from 'react-icons/bi';
 import classnames from 'classnames';
 import useI18RangeTag from './useI18RangeTag';
-import useVerifyDateRange from '@modules/developer/hooks/useVerifyDateRange';
+import useQueryDateRange from '@modules/developer/hooks/useQueryDateRange';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import Popper from '@mui/material/Popper';
@@ -10,7 +10,7 @@ import ContributorDateTagPanel from './ContributorDateTagPanel';
 
 const NavDatePicker = ({ disable }: { disable?: boolean }) => {
   const i18RangeTag = useI18RangeTag();
-  const { range } = useVerifyDateRange();
+  const { range } = useQueryDateRange();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [pickerPanelOpen, togglePickerPanel] = React.useState(false);
 

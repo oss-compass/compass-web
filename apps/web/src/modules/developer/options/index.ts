@@ -1,4 +1,3 @@
-export * from './ChartDataProvider';
 export * from './ChartOptionProvider';
 
 export * from './useCardManual';

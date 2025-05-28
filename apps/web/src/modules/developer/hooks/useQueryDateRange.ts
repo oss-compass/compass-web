@@ -1,18 +1,13 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
-import useVerifyDetailRangeQuery from '@modules/developer/hooks/useVerifyDetailRangeQuery';
 
 const defaultVal = {
-  range: '6M' as RangeTag,
-  timeStart: timeRange['6M'].start,
-  timeEnd: timeRange['6M'].end,
+  range: '1Y' as RangeTag,
+  timeStart: timeRange['1Y'].start,
+  timeEnd: timeRange['1Y'].end,
 };
-const contributorDefaultVal = {
-  range: '6M' as RangeTag,
-  timeStart: timeRange['6M'].start,
-  timeEnd: timeRange['6M'].end,
-};
+
 export const isDateRange = (range: string) => {
   if (range.includes(' ~ ')) {
     const start = range.split(' ~ ')[0];
@@ -29,32 +24,27 @@ export const isDateRange = (range: string) => {
 const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
-  const { isLoading, data } = useVerifyDetailRangeQuery();
 
   return useMemo(() => {
-    if (!range || !data?.verifyDetailDataRange?.status) {
-      return contributorDefaultVal;
+    if (!range) {
+      return defaultVal;
+    } else if (rangeTags.includes(range)) {
+      return {
+        range,
+        timeStart: timeRange[range].start,
+        timeEnd: timeRange[range].end,
+      };
+    } else if (isDateRange(range)) {
+      const { start, end } = isDateRange(range) as { start: Date; end: Date };
+      return {
+        range,
+        timeStart: start,
+        timeEnd: end,
+      };
     } else {
-      if (!range) {
-        return defaultVal;
-      } else if (rangeTags.includes(range)) {
-        return {
-          range,
-          timeStart: timeRange[range].start,
-          timeEnd: timeRange[range].end,
-        };
-      } else if (isDateRange(range)) {
-        const { start, end } = isDateRange(range) as { start: Date; end: Date };
-        return {
-          range,
-          timeStart: start,
-          timeEnd: end,
-        };
-      } else {
-        return defaultVal;
-      }
+      return defaultVal;
     }
-  }, [range, isLoading, data]);
+  }, [range]);
 };
 
 export default useQueryDateRange;

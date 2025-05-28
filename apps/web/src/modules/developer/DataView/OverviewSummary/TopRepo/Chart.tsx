@@ -1,41 +1,41 @@
 import React from 'react';
 import EchartCommon from '@modules/developer/components/EchartCommon';
+import { getPathname, getNameSpacePng } from '@common/utils';
 
-const Pie = ({ containerRef }) => {
-  let data = [
-    { name: 'flutter', value: 97 },
-    { name: 'react', value: 68 },
-    { name: 'vue', value: 50 },
-    { name: 'axios', value: 36 },
-  ];
-  let xAxisData = data.map((item) => item.name);
-  let seriesData = data.map((item) => item.value);
+interface RepoData {
+  repo_url: string;
+  contribution: number;
+}
+
+interface ChartProps {
+  containerRef: React.RefObject<HTMLDivElement>;
+  data?: RepoData[];
+}
+
+const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
+  // 如果没有数据或数据为空，使用默认值
+  // 处理API返回的数据
+  const processedData = data.slice(0, 5).map((item) => ({
+    name: getPathname(item.repo_url),
+    value: item.contribution,
+    img: getNameSpacePng(item.repo_url),
+  }));
+
+  let xAxisData = processedData.map((item) => item.name);
+  let seriesData = processedData.map((item) => item.value);
   let maxSeriesData = [];
   const MAX = Math.max(...seriesData);
   for (let i = 0; i < seriesData.length; i++) {
     maxSeriesData.push(MAX);
   }
+
   let barLinearColors = [
     '#4791ff',
     '#02bc77',
     '#ffd950',
     '#ff2366',
-    // new graphic.LinearGradient(0, 1, 1, 1, [
-    //   { offset: 0, color: '#EB3B5A' },
-    //   { offset: 1, color: '#FE9C5A' },
-    // ]),
-    // new graphic.LinearGradient(0, 1, 1, 1, [
-    //   { offset: 0, color: '#FA8231' },
-    //   { offset: 1, color: '#FFD14C' },
-    // ]),
-    // new graphic.LinearGradient(0, 1, 1, 1, [
-    //   { offset: 0, color: '#F7B731' },
-    //   { offset: 1, color: '#FFEE96' },
-    // ]),
-    // new graphic.LinearGradient(0, 1, 1, 1, [
-    //   { offset: 0, color: '#0fe5e3' },
-    //   { offset: 1, color: '#2ca1d6' },
-    // ]),
+    '#ef6667',
+    // 其他颜色注释保持不变
   ];
 
   function rankBarColor(cData) {
@@ -44,25 +44,20 @@ const Pie = ({ containerRef }) => {
       tempData.push({
         value: item,
         itemStyle: {
-          color: index > 4 ? barLinearColors[3] : barLinearColors[index],
+          color: index > 4 ? barLinearColors[4] : barLinearColors[index],
         },
       });
     });
     return tempData;
   }
+
   const option = {
-    // tooltip: {
-    //   backgroundColor: 'rgba(50,50,50,.3)',
-    //   textStyle: {
-    //     color: '#222',
-    //   },
-    // },
+    // tooltip 注释保持不变
     grid: {
       top: 20,
       bottom: 20,
-      left: -10,
+      left: 60,
       right: 30,
-      containLabel: true,
     },
     xAxis: [
       {
@@ -88,8 +83,7 @@ const Pie = ({ containerRef }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image:
-                  'https://avatars.githubusercontent.com/u/14101776?s=200&v=4',
+                image: processedData?.[0].img || '/images/default.png',
               },
               width: 25,
               height: 25,
@@ -100,8 +94,7 @@ const Pie = ({ containerRef }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image:
-                  'https://avatars.githubusercontent.com/u/5550850?s=48&v=4',
+                image: processedData?.[1].img || '/images/default.png',
               },
               width: 25,
               height: 25,
@@ -112,8 +105,7 @@ const Pie = ({ containerRef }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image:
-                  'https://avatars.githubusercontent.com/u/6128107?s=200&v=4',
+                image: processedData?.[2].img || '/images/default.png',
               },
               width: 25,
               height: 25,
@@ -124,7 +116,7 @@ const Pie = ({ containerRef }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image: 'https://avatars.githubusercontent.com/u/53640896?v=4',
+                image: processedData?.[3].img || '/images/default.png',
               },
               width: 25,
               height: 25,
@@ -158,7 +150,7 @@ const Pie = ({ containerRef }) => {
           fontWeight: 600,
           padding: [2, 4],
         },
-        data: xAxisData.reverse(),
+        data: xAxisData.slice().reverse(),
       },
     ],
     series: [
@@ -194,17 +186,11 @@ const Pie = ({ containerRef }) => {
     ],
   };
 
-  // const cardRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   let chart = init(cardRef.current);
-  //   chart.setOption(option);
-  // }, [option]);
-
   return (
     <>
       <EchartCommon option={option} containerRef={containerRef} />
     </>
   );
 };
+
 export default React.memo(Pie);

@@ -30,7 +30,7 @@ const MoreDropdown = () => {
       description: t('common:header.opensource_selection_description'),
       linkItems: [
         {
-          link: '/os-situation',
+          link: '/os-selection',
           linkText: t('common:header.product_home'),
         },
       ],

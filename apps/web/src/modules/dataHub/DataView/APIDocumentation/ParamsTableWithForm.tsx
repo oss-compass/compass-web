@@ -1,6 +1,5 @@
-// 修改后的 ParamsTableWithForm.tsx
-import React from 'react';
-import { Table, Form, Input, Button } from 'antd';
+import React, { useState } from 'react';
+import { Table, Form, Input, Button, Spin } from 'antd';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +8,8 @@ export interface ApiParameter {
   required: boolean;
   type: string;
   description?: string;
+  default?: any;
+  example?: any;
 }
 
 const constructUrl = (path: string, values: any) => {
@@ -26,15 +27,40 @@ const ParamsTableWithForm = ({
 }) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
-  const [testResult, setTestResult] = React.useState<any>(null);
+  const [testResult, setTestResult] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleTest = async (values: any) => {
+    setLoading(true);
+    setTestResult(null);
+
+    // 创建一个副本以避免直接修改原始的 values 对象
+    const processedValues = { ...values };
+
+    // 检查 datasets 是否存在且为字符串类型
+    if (
+      processedValues.datasets &&
+      typeof processedValues.datasets === 'string'
+    ) {
+      try {
+        // 尝试解析 datasets 字符串
+        processedValues.datasets = JSON.parse(processedValues.datasets);
+      } catch (e) {
+        console.error('Failed to parse datasets string:', e);
+        // 如果解析失败，可以选择设置一个错误状态或使用默认值
+        // 这里我们简单地保持它为原始字符串，或者你可以根据需求处理
+        // 例如: setTestResult({ status: 400, data: { error: 'Invalid datasets format' } });
+        // setLoading(false);
+        // return;
+      }
+    }
+
     try {
       const config = {
         method: method.toLowerCase(),
-        url: constructUrl(path, values),
-        data: method === 'POST' ? values : null,
-        params: method === 'GET' ? values : null,
+        url: constructUrl(path, processedValues), // 使用处理过的 processedValues
+        data: method === 'POST' ? processedValues : null, // 使用处理过的 processedValues
+        params: method === 'GET' ? processedValues : null, // 使用处理过的 processedValues
       };
 
       const response = await axios(config);
@@ -44,6 +70,8 @@ const ParamsTableWithForm = ({
         status: error.response?.status || 500,
         data: error.response?.data || { error: 'Request failed' },
       });
+    } finally {
+      setLoading(false); // 结束加载
     }
   };
 
@@ -84,22 +112,28 @@ const ParamsTableWithForm = ({
                     placeholder={`${record.type}${
                       record.required ? ' (required)' : ''
                     }`}
+                    defaultValue={record?.default}
                   />
                 </Form.Item>
               ),
               width: 250,
             },
             {
-              title: 'Type',
-              dataIndex: 'type',
-              key: 'type',
-              width: 120,
-            },
-            {
               title: 'Description',
               dataIndex: 'description',
               key: 'description',
               ellipsis: true,
+            },
+            {
+              title: 'Example',
+              dataIndex: 'example',
+              key: 'example',
+              ellipsis: true,
+              render: (_, record) => (
+                <div className="flex items-center">
+                  <span className="mr-1">{JSON.stringify(record.example)}</span>
+                </div>
+              ),
             },
           ]}
           dataSource={params}
@@ -108,14 +142,19 @@ const ParamsTableWithForm = ({
         />
 
         {/* 操作按钮和结果展示 */}
-        <div className="mt-4 flex flex-col gap-4">
+        <div className="mt-4 flex w-full flex-col gap-4">
           <div>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               {t('open_api:send_request')}
             </Button>
           </div>
+          {loading && (
+            <div className="flex flex-1 justify-center overflow-auto rounded bg-gray-50 p-8">
+              <Spin size="large" />
+            </div>
+          )}
           {testResult && (
-            <div className="flex-1 overflow-auto rounded bg-gray-50 p-4">
+            <div className="w-full flex-1 overflow-auto rounded bg-gray-50 p-4">
               <pre className="text-xs">
                 {JSON.stringify(testResult, null, 2)}
               </pre>

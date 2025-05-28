@@ -1,100 +1,141 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SoftwareCard from '../SoftwareCard';
+import client from '@common/gqlClient';
+import { Empty, Spin } from 'antd';
+import GenReport from '../GenReport';
+import { useSearchQuery } from '@oss-compass/graphql';
+import { getPathname, getProvider } from '@common/utils';
 
-interface AssessmentSectionProps {
+interface RecommendationSectionProps {
   onBack: () => void;
-  onSoftwareSelect: (softwareId: string, selected: boolean) => void;
-  selectedSoftware: string[];
 }
 
-const AssessmentSection: React.FC<AssessmentSectionProps> = ({
+const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   onBack,
-  onSoftwareSelect,
-  selectedSoftware,
 }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [softwareList, setSoftwareList] = useState([
-    {
-      id: 'shardingsphere',
-      name: 'Apache ShardingSphere',
-      description: '分布式数据库中间件生态',
-      license: 'Apache-2.0',
-      stars: '18k',
-      badges: ['热门'],
-      activity: '★★★★☆',
-      lastUpdate: '3天前',
-    },
-    {
-      id: 'seata',
-      name: 'Seata',
-      description: '分布式事务解决方案',
-      license: 'Apache-2.0',
-      stars: '24k',
-      badges: ['趋势'],
-      activity: '★★★★★',
-      lastUpdate: '1天前',
-    },
-  ]);
+  const [description, setDescription] = useState('');
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(''); // 新增状态用于存储错误信息
+  const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
 
-  const handleAddSoftware = () => {
-    if (inputValue.trim()) {
-      // 这里可以添加实际的软件添加逻辑
-      console.log('添加软件:', inputValue);
-      setInputValue('');
+  // 移除 enabled: Boolean(description)，改为手动触发
+  const { data, isFetching, refetch } = useSearchQuery(
+    client,
+    {
+      keyword: description,
+      level: 'repo',
+    },
+    { enabled: false } // 将 enabled 设置为 false，阻止自动触发
+  );
+
+  const targetMap = {
+    github: 'selected.github',
+    gitee: 'selected.gitee',
+  };
+  useEffect(() => {
+    console.log('data', data);
+    if (data?.fuzzySearch.length > 0) {
+      setRecommendations(
+        data.fuzzySearch?.map((item) => {
+          const name = getPathname(item.label); // "canvas"
+          const target = targetMap[getProvider(item.label)]; // "npm"
+          return {
+            name,
+            target,
+            ...item,
+          };
+        })
+      );
     }
-  };
+  }, [data]);
 
-  const handleImportCSV = () => {
-    // 这里可以添加CSV导入逻辑
-    console.log('导入CSV文件');
+  const handleSoftwareSelect = (softwareId: string) => {
+    setSelectedSoftware((prev) => {
+      if (prev.includes(softwareId)) {
+        return prev.filter((id) => id !== softwareId);
+      } else {
+        return [...prev, softwareId];
+      }
+    });
   };
-
+  const handleGetRecommendations = () => {
+    setErrorMessage(''); // 每次点击时清空之前的错误信息
+    setSelectedSoftware([]);
+    if (!description.trim()) {
+      setErrorMessage('请输入Git仓库URL。');
+      return;
+    }
+    console.log('获取推荐:', { description, selectedLanguages });
+    // 触发数据查询
+    refetch(); // 在这里手动调用 refetch 触发查询
+  };
+  let content: any = '';
+  if (isFetching) {
+    content = (
+      <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
+        {' '}
+        <Spin size="large" />
+      </div>
+    );
+  } else {
+    if (recommendations.length === 0) {
+      content = (
+        <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
+          {' '}
+          <Empty />
+        </div>
+      );
+    } else {
+      content = (
+        <div className="min-h-[400px] rounded bg-white p-6 shadow-sm ">
+          <div className="mb-4 border-b pb-4">
+            <GenReport selectedSoftware={selectedSoftware} />
+          </div>
+          <div className="grid grid-cols-3 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {recommendations.map((software) => (
+              <SoftwareCard
+                key={software.packageId}
+                software={software}
+                isSelected={selectedSoftware.includes(software.packageId)}
+                onSelect={(selected) =>
+                  handleSoftwareSelect(software.packageId)
+                }
+                showSimilarity={true}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    }
+  }
   return (
-    <div className="mx-auto max-w-6xl py-4 px-4">
-      <button
-        onClick={onBack}
-        className="mb-4 flex items-center gap-2 text-blue-500 hover:underline"
-      >
-        <i className="fas fa-arrow-left"></i> 返回首页
-      </button>
-
-      <div className="mx-auto mb-8 max-w-4xl rounded-lg bg-white p-6 shadow-sm">
+    <div className="mx-auto max-w-6xl py-4">
+      <div className="mx-auto mb-8 rounded bg-white p-6 shadow-sm">
         <input
           type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className="w-full rounded-lg border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
-          placeholder="输入软件名称或Git仓库URL (例: https://github.com/username/repo)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="mb-4 w-full rounded-lg border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
+          placeholder="输入Git仓库URL (例: https://github.com/username/repo)"
         />
-        <div className="mt-4 flex gap-4">
-          <button
-            onClick={handleAddSoftware}
-            className="rounded-lg bg-blue-500 px-6 py-3 text-white transition-colors hover:bg-blue-600"
-          >
-            添加软件
-          </button>
-          <button
-            onClick={handleImportCSV}
-            className="rounded-lg border border-gray-300 px-6 py-3 transition-colors hover:bg-gray-50"
-          >
-            导入CSV文件
-          </button>
-        </div>
+
+        {errorMessage && (
+          <div className="text-sm text-red-500">{errorMessage}</div>
+        )}
+
+        <button
+          onClick={handleGetRecommendations}
+          className="mt-4 bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+        >
+          获取推荐
+        </button>
       </div>
 
-      {/* 评估结果区域 */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {softwareList.map((software) => (
-          <SoftwareCard
-            key={software.id}
-            software={software}
-            isSelected={selectedSoftware.includes(software.id)}
-            onSelect={(selected) => onSoftwareSelect(software.id, selected)}
-          />
-        ))}
-      </div>
+      {/* 推荐结果 */}
+      {content}
     </div>
   );
 };
 
-export default AssessmentSection;
+export default RecommendationSection;

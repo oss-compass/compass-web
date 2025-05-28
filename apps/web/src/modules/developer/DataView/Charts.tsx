@@ -1,25 +1,14 @@
 import React, { PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
-import ChartsDataProvider from '../context/ChartsDataProvider';
 import OverviewSummary from './OverviewSummary';
 import UserPortrayal from './UserPortrayal';
 import RepoDataView from './RepoDataView';
 import PeopleDataView from './PeopleDataView';
-import CommunityServiceSupport from './CommunityServiceSupport';
-import OrganizationsActivity from './OrganizationsActivity';
+import CodeIssueView from './CodeIssueView';
 import { Topic } from '@modules/developer/components/SideBar/config';
-import { CiGrid41 } from 'react-icons/ci';
+import { CiUser } from 'react-icons/ci';
 
 const Charts = () => {
-  const { t } = useTranslation();
-
-  return (
-    <ChartsDataProvider>
-      <ChartsDataView />
-    </ChartsDataProvider>
-  );
-};
-const ChartsDataView = () => {
   const { t } = useTranslation();
   return (
     <>
@@ -28,7 +17,7 @@ const ChartsDataView = () => {
           'group relative z-20 mb-8 flex text-3xl font-semibold md:px-4 md:text-3xl'
         }
       >
-        <CiGrid41 className="mt-2 mr-2 h-[21px] w-[21px] flex-shrink-0" />
+        <CiUser className="mt-2 mr-2 h-[21px] w-[21px] flex-shrink-0" />
         WHOAMI
         <a href={`#${Topic.Overview}`}>
           <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
@@ -37,44 +26,16 @@ const ChartsDataView = () => {
         </a>
       </h1>
       <UserPortrayal />
-      {/* <h1
-        className={
-          'group relative z-20 mb-8 flex text-3xl font-semibold md:px-4 md:text-3xl'
-        }
-      >
-        <CiGrid41 className="mt-2 mr-2 h-[21px] w-[21px] flex-shrink-0" />
-        {t('analyze:overview')}
-        <a href={`#${Topic.Overview}`}>
-          <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
-            #
-          </span>
-        </a>
-      </h1> */}
       <OverviewSummary />
-
-      {/* <TopicTitle
-        icon={<ProductivityIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
-        id={Topic.Productivity}
-      >
-        仓库
-      </TopicTitle> */}
       <RepoDataView />
-
-      {/* <TopicTitle
-        icon={<RobustnessIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
-        id={Topic.Robustness}
-      >
-        协作
-      </TopicTitle> */}
       <PeopleDataView />
+      <CodeIssueView />
       {/* <TopicTitle
         icon={<NicheCreationIcon className="mt-2 mr-2 h-[21px] w-[21px]" />}
         id={Topic.NicheCreation}
       >
         Code
       </TopicTitle> */}
-      <OrganizationsActivity />
-      <CommunityServiceSupport />
     </>
   );
 };

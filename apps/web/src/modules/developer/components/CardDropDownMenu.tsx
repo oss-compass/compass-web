@@ -9,8 +9,6 @@ import Median from 'public/images/analyze/median.svg';
 import YScale from 'public/images/analyze/y-scale.svg';
 import classnames from 'classnames';
 import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
-import DownCardLoadImage from './DownCardLoadImage';
-import DownloadAndShare from './DownloadAndShare';
 import { subscribeKey } from 'valtio/utils';
 import { chartUserSettingState } from '@modules/developer/store';
 
@@ -177,26 +175,9 @@ const CardDropDownMenu = (props: CardDropDownMenuProps) => {
             <div className="rounded bg-white py-2 shadow-[0_1px_4px_1px_rgba(0,0,0,0.1)]">
               {/* {ReferenceNode} */}
               {/* {LineSetting} */}
-              <DownloadAndShare
-                cardRef={cardRef}
-                downloadImageSize={downloadImageSize}
-                yAxisScale={yAxisScale}
-                onePointSys={onePointSys}
-                yKey={yKey}
-              />
               {FullScreen}
             </div>
           </Popper>
-
-          {/* {loadingDownLoadImg && (
-            <DownCardLoadImage
-              size={downloadImageSize}
-              cardRef={cardRef}
-              onComplete={() => {
-                setLoadingDownLoadImg(false);
-              }}
-            />
-          )} */}
         </div>
       </ClickAwayListener>
     </>

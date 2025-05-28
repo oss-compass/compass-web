@@ -1069,3 +1069,58 @@ query tokenList {
     token
   }
 }
+query thirdTxt(
+  $query_txt: String!
+  $query_keywords: [String!]!
+  $target_ecosystem_list: [String!]!
+  $top_n: Int!
+  $online_judge: Boolean
+) {
+  thirdTxt(
+    queryTxt: $query_txt
+    queryKeywords: $query_keywords
+    targetEcosystemList: $target_ecosystem_list
+    topN: $top_n
+    onlineJudge: $online_judge
+  ) {
+    items {
+      keywordsBm25Score
+      keywordsEmbeddingScore
+      packageId
+      score
+      label
+      summaryBm25Score
+      summaryEmbeddingScore
+    }
+  }
+}
+query thirdTpl(
+  $src_package_name: String!
+  $src_ecosystem: String!
+  $target_ecosystem_list: [String!]!
+  $top_n: Int!
+  $online_judge: Boolean
+  $force_search: Boolean
+) {
+  thirdTpl(
+    srcPackageName: $src_package_name
+    srcEcosystem: $src_ecosystem
+    targetEcosystemList: $target_ecosystem_list
+    topN: $top_n
+    onlineJudge: $online_judge
+    forceSearch: $force_search
+  ) {
+    items {
+      keywordsBm25Score
+      keywordsEmbeddingScore
+      packageId
+      rawSearchScore
+      score
+      label
+      summaryBm25Score
+      summaryEmbeddingScore
+      voteUp
+      voteDown
+    }
+  }
+}

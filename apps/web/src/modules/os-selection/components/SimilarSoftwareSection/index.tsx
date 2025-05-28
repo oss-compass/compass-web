@@ -1,91 +1,193 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SoftwareCard from '../SoftwareCard';
+import client from '@common/gqlClient';
+import { useThirdTplQuery } from '@oss-compass/graphql';
+import { Empty, Spin } from 'antd';
+import { languagesList } from '@modules/os-selection/constant';
+import GenReport from '../GenReport';
 
-interface SimilarSoftwareSectionProps {
+interface RecommendationSectionProps {
   onBack: () => void;
-  onSoftwareSelect: (softwareId: string, selected: boolean) => void;
-  selectedSoftware: string[];
 }
 
-const SimilarSoftwareSection: React.FC<SimilarSoftwareSectionProps> = ({
+const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   onBack,
-  onSoftwareSelect,
-  selectedSoftware,
 }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [similarSoftware, setSimilarSoftware] = useState([
-    {
-      id: 'similar-1',
-      name: 'Apache Kafka',
-      description: '分布式流处理平台',
-      license: 'Apache-2.0',
-      stars: '25k',
-      badges: ['热门', '趋势'],
-      activity: '★★★★★',
-      lastUpdate: '2天前',
-      similarity: 88,
-    },
-    {
-      id: 'similar-2',
-      name: 'RabbitMQ',
-      description: '消息队列中间件',
-      license: 'MPL-2.0',
-      stars: '11k',
-      badges: ['稳定'],
-      activity: '★★★★☆',
-      lastUpdate: '1周前',
-      similarity: 75,
-    },
-  ]);
+  const [description, setDescription] = useState('');
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedSrcEcosystem, setSelectedSrcEcosystem] = useState<string>('');
+  const [recommendations, setRecommendations] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(''); // 新增状态用于存储错误信息
+  const [selectedSoftware, setSelectedSoftware] = useState<any[]>([]);
 
-  const handleFindSimilar = () => {
-    if (inputValue.trim()) {
-      // 这里可以添加实际的相似软件查找逻辑
-      console.log('查找相似软件:', inputValue);
+  // 移除 enabled: Boolean(description)，改为手动触发
+  const { data, isFetching, refetch } = useThirdTplQuery(
+    client,
+    {
+      src_package_name: description,
+      src_ecosystem: selectedSrcEcosystem,
+      target_ecosystem_list: selectedLanguages,
+      top_n: 10,
+    },
+    { enabled: false } // 将 enabled 设置为 false，阻止自动触发
+  );
+  useEffect(() => {
+    console.log('data', data);
+    const newData: any = data;
+    if (newData?.thirdTpl) {
+      setRecommendations(
+        newData.thirdTpl?.items!.map((item) => {
+          const parts = item?.packageId.split('@@@@$$@@@@');
+          const name = parts[0]; // "canvas"
+          const target = parts[1]; // "npm"
+          return {
+            name,
+            target,
+            ...item,
+          };
+        })
+      );
     }
+  }, [data]);
+
+  const handleSrcEcosystemToggle = (language: string) => {
+    setSelectedSrcEcosystem(language);
   };
-
+  const handleLanguageToggle = (language: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(language)
+        ? prev.filter((l) => l !== language)
+        : [...prev, language]
+    );
+  };
+  const handleSoftwareSelect = (software: any) => {
+    setSelectedSoftware((prev) => {
+      if (prev.find((i) => i.packageId === software.packageId)) {
+        return prev.filter((i) => i.packageId !== software.packageId);
+      } else {
+        return [...prev, software];
+      }
+    });
+  };
+  const handleGetRecommendations = () => {
+    setErrorMessage(''); // 每次点击时清空之前的错误信息
+    setSelectedSoftware([]);
+    if (!description.trim()) {
+      setErrorMessage('请输入软件名称。');
+      return;
+    }
+    if (!selectedSrcEcosystem) {
+      setErrorMessage('请选择输入库来源。');
+      return;
+    }
+    if (selectedLanguages.length === 0) {
+      setErrorMessage('请至少选择一个推荐库来源。');
+      return;
+    }
+    // 这里可以添加实际的推荐逻辑
+    console.log('获取推荐:', { description, selectedLanguages });
+    // 触发数据查询
+    refetch(); // 在这里手动调用 refetch 触发查询
+  };
+  let content: any = '';
+  if (isFetching) {
+    content = (
+      <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
+        {' '}
+        <Spin size="large" />
+      </div>
+    );
+  } else {
+    if (recommendations.length === 0) {
+      content = (
+        <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
+          {' '}
+          <Empty />
+        </div>
+      );
+    } else {
+      content = (
+        <div className="min-h-[400px] rounded bg-white p-6 shadow-sm ">
+          <div className="mb-4 border-b pb-4">
+            <GenReport selectedSoftware={selectedSoftware} />
+          </div>
+          <div className="grid grid-cols-3 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {recommendations.map((software) => (
+              <SoftwareCard
+                key={software.packageId}
+                software={software}
+                isSelected={selectedSoftware.find(
+                  (i) => i.packageId === software.packageId
+                )}
+                onSelect={(selected) => handleSoftwareSelect(software)}
+                showSimilarity={true}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    }
+  }
   return (
-    <div className="mx-auto max-w-6xl py-4 px-4">
-      <button
-        onClick={onBack}
-        className="mb-4 flex items-center gap-2 text-blue-500 hover:underline"
-      >
-        <i className="fas fa-arrow-left"></i> 返回首页
-      </button>
-
-      <div className="mx-auto mb-8 max-w-4xl rounded-lg bg-white p-6 shadow-sm">
+    <div className="mx-auto max-w-6xl py-4">
+      <div className="mx-auto mb-8 rounded bg-white p-6 shadow-sm">
         <input
           type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           className="w-full rounded-lg border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
-          placeholder="输入已知软件名称或GitHub地址"
+          placeholder="输入已知软件名称;如：react"
         />
-        <div className="mt-4">
-          <button
-            onClick={handleFindSimilar}
-            className="rounded-lg bg-blue-500 px-6 py-3 text-white transition-colors hover:bg-blue-600"
-          >
-            查找相似软件
-          </button>
+        <div className="my-6 flex flex-wrap gap-2">
+          <span className="mt-1 text-sm">选择输入库来源:</span>
+          {languagesList.map((language) => (
+            <button
+              key={language.id}
+              onClick={() => handleSrcEcosystemToggle(language.id)}
+              className={`rounded-full border px-4 py-1 text-sm transition-all ${
+                selectedSrcEcosystem === language.id
+                  ? 'border-blue-500 bg-blue-500 text-white'
+                  : 'border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              {language.name}
+            </button>
+          ))}
         </div>
+        {/* 编程语言选择器 */}
+        <div className="my-6 flex flex-wrap gap-2">
+          <span className="mt-1 text-sm">选择推荐库来源(可多选):</span>
+          {languagesList.map((language) => (
+            <button
+              key={language.id}
+              onClick={() => handleLanguageToggle(language.id)}
+              className={`rounded-full border px-4 py-1 text-sm transition-all ${
+                selectedLanguages.includes(language.id)
+                  ? 'border-blue-500 bg-blue-500 text-white'
+                  : 'border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              {language.name}
+            </button>
+          ))}
+        </div>
+
+        {errorMessage && (
+          <div className="mb-4 text-sm text-red-500">{errorMessage}</div>
+        )}
+
+        <button
+          onClick={handleGetRecommendations}
+          className="bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+        >
+          获取推荐
+        </button>
       </div>
 
-      {/* 相似软件结果 */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {similarSoftware.map((software) => (
-          <SoftwareCard
-            key={software.id}
-            software={software}
-            isSelected={selectedSoftware.includes(software.id)}
-            onSelect={(selected) => onSoftwareSelect(software.id, selected)}
-            showSimilarity={true}
-          />
-        ))}
-      </div>
+      {/* 推荐结果 */}
+      {content}
     </div>
   );
 };
 
-export default SimilarSoftwareSection;
+export default RecommendationSection;

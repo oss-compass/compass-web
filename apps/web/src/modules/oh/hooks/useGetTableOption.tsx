@@ -32,7 +32,7 @@ const useGetLineOption = <T extends Record<string, any>>(
       showSizeChanger: true,
       position: ['bottomCenter'],
       showTotal: (total) => {
-        return `${t('analyze:total_people', { total })} `;
+        return `${t('common:total_people', { total })} `;
       },
       total: 0,
     },

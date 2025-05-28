@@ -1,15 +1,12 @@
 import React from 'react';
+import { languagesList } from '@modules/os-selection/constant';
 
 interface Software {
-  id: string;
+  packageId: string;
   name: string;
-  description: string;
-  license: string;
-  stars: string;
-  badges: string[];
-  activity: string;
-  lastUpdate: string;
-  similarity?: number;
+  target: string;
+  label?: string;
+  score: number;
 }
 
 interface SoftwareCardProps {
@@ -19,27 +16,27 @@ interface SoftwareCardProps {
   showSimilarity?: boolean;
 }
 
-const SoftwareCard: React.FC<SoftwareCardProps> = ({
+const SoftwareCard = ({
   software,
   isSelected,
   onSelect,
   showSimilarity = false,
 }) => {
-  const getBadgeColor = (badge: string) => {
-    switch (badge) {
-      case '热门':
-        return 'bg-orange-100 text-orange-600';
-      case '趋势':
-        return 'bg-green-100 text-green-600';
-      case '稳定':
-        return 'bg-blue-100 text-blue-600';
-      default:
-        return 'bg-gray-100 text-gray-600';
-    }
-  };
+  // const getBadgeColor = (badge: string) => {
+  //   switch (badge) {
+  //     case '热门':
+  //       return 'bg-orange-100 text-orange-600';
+  //     case '趋势':
+  //       return 'bg-green-100 text-green-600';
+  //     case '稳定':
+  //       return 'bg-blue-100 text-blue-600';
+  //     default:
+  //       return 'bg-gray-100 text-gray-600';
+  //   }
+  // };
 
   return (
-    <div className="relative rounded-lg border-l-4 border-blue-500 bg-white p-6 shadow-sm">
+    <div className="relative rounded border  bg-white p-4 shadow-sm">
       {/* 勾选按钮 */}
       <button
         onClick={() => onSelect(!isSelected)}
@@ -56,13 +53,35 @@ const SoftwareCard: React.FC<SoftwareCardProps> = ({
         )}
       </button>
 
-      <h4 className="mb-4 pr-8 text-lg font-semibold">
-        {software.name}{' '}
-        <i className="fas fa-external-link-alt text-sm text-gray-400"></i>
+      <h4 className="mb-2 pr-8 text-lg font-semibold">
+        <a
+          className="line-clamp-1 hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            // onDetail();
+          }}
+          title={software.name}
+        >
+          {software.name}
+        </a>
       </h4>
-
+      <div className="line-clamp-1 my-2 text-sm text-[#3e8eff] hover:underline">
+        {software.label ? (
+          <a
+            onClick={() => window.open(software.label, '_blank')}
+            title={software.label}
+          >
+            {software.label}
+          </a>
+        ) : (
+          ''
+        )}
+      </div>
       <div className="mb-4 flex flex-wrap gap-2">
         <span className="inline-block rounded bg-blue-50 px-2 py-1 text-sm text-blue-600">
+          {languagesList.find((item) => item.id === software.target)?.name}
+        </span>
+        {/* <span className="inline-block rounded bg-blue-50 px-2 py-1 text-sm text-blue-600">
           {software.license}
         </span>
         {software.badges.map((badge, index) => (
@@ -74,7 +93,7 @@ const SoftwareCard: React.FC<SoftwareCardProps> = ({
           >
             {badge}
           </span>
-        ))}
+        ))} */}
         <span className="text-gray-600">
           <i className="fas fa-star text-yellow-400"></i> {software.stars}
         </span>
@@ -94,14 +113,15 @@ const SoftwareCard: React.FC<SoftwareCardProps> = ({
           </div>
         </div>
       )}
-
-      <div className="text-sm text-gray-600">
-        <p className="mb-3">{software.description}</p>
-        <div className="flex justify-between">
-          <span>活跃度: {software.activity}</span>
-          <span>最后更新: {software.lastUpdate}</span>
+      {software?.score && (
+        <div className="text-sm text-gray-600">
+          <p className="mb-3">{software.description}</p>
+          <div className="flex justify-between">
+            <span>功能匹配分数: {software?.score?.toFixed(2)}</span>
+            {/* <span>最后更新: {software.lastUpdate}</span> */}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

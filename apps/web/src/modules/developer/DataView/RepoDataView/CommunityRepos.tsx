@@ -13,6 +13,7 @@ import {
   toFixed,
 } from '@common/utils';
 import Pagination from '@common/components/Antd/Pagination';
+import useContributorName from '@modules/developer/hooks/useContributorName';
 
 const RepoItem: React.FC<{
   name: string;
@@ -57,16 +58,16 @@ const CommunityRepos = () => {
   const { t } = useTranslation();
   const [firstItem] = compareItems;
   const [type, setType] = useState('all');
-
+  const { contributorName } = useContributorName();
   const { data, isLoading } = useCommunityReposQuery(
     client,
     {
-      label: firstItem?.label,
+      label: contributorName as string,
       page: page,
       per: PRE_PAGE,
       type: type === 'all' ? '' : type,
     },
-    { enabled: Boolean(firstItem?.label) }
+    { enabled: Boolean(contributorName) }
   );
 
   const trends = data?.communityOverview?.trends || [];

@@ -548,3 +548,19 @@ mutation deleteAuthToken($id: Int!) {
     }
   }
 }
+mutation createThirdSoftwareReport(
+  $label: String!
+  $level: String!
+  $softwareReports: [ThirdSoftwareReportInput!]!
+) {
+  createThirdSoftwareReport(
+    input: { label: $label, level: $level, softwareReports: $softwareReports }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
