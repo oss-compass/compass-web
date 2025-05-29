@@ -57,8 +57,8 @@ const SoftwareCard = ({
         <a
           className="line-clamp-1 hover:underline"
           onClick={(e) => {
+            window.open(software.label, '_blank');
             e.stopPropagation();
-            // onDetail();
           }}
           title={software.name}
         >

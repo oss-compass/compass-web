@@ -73,7 +73,7 @@ const MerticPage = () => {
 
   return (
     <>
-      <div className="mb-8 text-2xl font-medium">指标</div>
+      <div className="mb-8 text-2xl font-medium">洞察维度</div>
       <div className="mx-auto flex w-[1200px] flex-col gap-6 pb-16 lg:w-full lg:px-4">
         {/* First Row: Card 1 (Large) and Card 2 (Small) */}
         <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
@@ -86,11 +86,11 @@ const MerticPage = () => {
         </div>
 
         {/* Second Row: Card 3 (Large) and Card 4 (Small) */}
-        <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
+        <div className="grid grid-cols-4 gap-6 md:grid-cols-1">
           <div className="col-span-2 md:col-span-1">
-            {renderCard(card2, true, '/images/os-situation/bar.png')}
+            {renderCard(card2, false)}
           </div>
-          <div className="col-span-1 md:col-span-1">
+          <div className="col-span-2 md:col-span-1">
             {renderCard(card4, false)}
           </div>
         </div>

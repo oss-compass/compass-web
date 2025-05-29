@@ -25,7 +25,7 @@ const MainContent = () => {
     {
       id: 'assessment' as ScenarioTabType,
       title: '直接评估已知软件', // 使用 t 函数获取翻译文本
-      desc: '输入软件名称/GitHub 地址，生成多维度评估报告',
+      desc: '输入GitHub/Gitee 地址，生成多维度评估报告',
       icon: <FaChartBar className="text-blue-500" size={40} />,
     },
     {

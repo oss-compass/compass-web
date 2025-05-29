@@ -1,10 +1,12 @@
 import React from 'react';
 import EchartCommon from '@modules/developer/components/EchartCommon';
 import { getPathname, getNameSpacePng } from '@common/utils';
+import { useTranslation } from 'next-i18next';
 
 interface RepoData {
   repo_url: string;
   contribution: number;
+  roles?: string; // 添加 repo_roles 字段
 }
 
 interface ChartProps {
@@ -13,14 +15,19 @@ interface ChartProps {
 }
 
 const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
+  const { t } = useTranslation();
   // 如果没有数据或数据为空，使用默认值
   // 处理API返回的数据
   const processedData = data.slice(0, 5).map((item) => ({
     name: getPathname(item.repo_url),
     value: item.contribution,
     img: getNameSpacePng(item.repo_url),
+    repo_roles:
+      item.roles && item.roles.length > 0
+        ? `${t('analyze:metric_detail:' + item.roles[0])}`
+        : '', // 映射 repo_roles 字段
   }));
-
+  console.log(processedData);
   let xAxisData = processedData.map((item) => item.name);
   let seriesData = processedData.map((item) => item.value);
   let maxSeriesData = [];
@@ -52,7 +59,20 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
   }
 
   const option = {
-    // tooltip 注释保持不变
+    tooltip: {
+      // 添加 tooltip 配置
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow',
+      },
+      formatter: function (params) {
+        const dataIndex = params[0].dataIndex;
+        const item = processedData[dataIndex];
+        return `仓库: ${item.name}<br/>贡献次数: ${item.value}<br/>角色: ${
+          item.repo_roles || 'N/A'
+        }`;
+      },
+    },
     grid: {
       top: 20,
       bottom: 20,

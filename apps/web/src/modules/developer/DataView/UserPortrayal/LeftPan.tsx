@@ -9,7 +9,7 @@ import { Tooltip } from 'antd';
 import useContributorInfo from '@modules/developer/hooks/useContributorInfo';
 import { getPathname } from '@common/utils';
 import { useTranslation } from 'next-i18next';
-import Wordcloud from './Wordcloud'; // 导入 Cloud 组件
+// import Wordcloud from './Wordcloud'; // 导入 Cloud 组件
 
 const LeftPan = () => {
   const { t } = useTranslation();
@@ -112,15 +112,18 @@ const LeftPan = () => {
           </div>
           <div className="mb flex flex-wrap gap-2.5 text-sm">
             {repoRolesInfo.map((role, index) => (
-              <Tooltip
-                key={`${role.repoName}-${index}`}
-                placement="top"
-                title={`在 ${role.repoName} 项目中担任: ${role.roles}`}
+              // <Tooltip
+              //   key={`${role.repoName}-${index}`}
+              //   placement="top"
+              //   title={`在 ${role.repoName} 项目中担任: ${role.roles}`}
+              // >
+              <div
+                key={role.repoName}
+                className="flex cursor-pointer items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-indigo-800"
               >
-                <div className="flex cursor-pointer items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-indigo-800">
-                  {role.repoName} -- {role.roles}
-                </div>
-              </Tooltip>
+                {role.repoName} -- {role.roles}
+              </div>
+              // </Tooltip>
             ))}
           </div>
         </div>

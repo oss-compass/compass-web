@@ -392,7 +392,7 @@ const Purpose = () => {
         {items.map((i, index) => (
           <div
             key={index}
-            className="flex cursor-pointer flex-col items-center rounded-lg border p-8"
+            className="flex cursor-pointer flex-col items-center rounded-lg border p-8 transition-all duration-300 hover:border-blue-500 hover:shadow-lg"
             onClick={() => {
               setOpen(true);
               setActive(i.key);

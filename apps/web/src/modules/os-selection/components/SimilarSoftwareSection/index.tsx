@@ -136,7 +136,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="w-full rounded-lg border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
-          placeholder="输入已知软件名称;如：react"
+          placeholder="输入已知软件名称;如：lz4、pako、@ohos/imageknife 等"
         />
         <div className="my-6 flex flex-wrap gap-2">
           <span className="mt-1 text-sm">选择输入库来源:</span>

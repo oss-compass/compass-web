@@ -3,7 +3,8 @@ import { BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
 import { GoIssueOpened } from 'react-icons/go';
 import useContributorInfo from '@modules/developer/hooks/useContributorInfo';
 import { useContributorApi } from '@modules/developer/hooks/useContributorApi';
-import { Select } from 'antd'; // 假设使用 Ant Design 的 Select 组件，请根据实际情况调整引入
+import { Select, Tooltip } from 'antd'; // 假设使用 Ant Design 的 Select 组件，请根据实际情况调整引入
+import { GoQuestion } from 'react-icons/go';
 
 // 定义接口返回数据类型
 interface ContributionRankData {
@@ -83,16 +84,23 @@ const RightPan = () => {
   return (
     <div className="relative flex w-[400px] flex-shrink-0 flex-col gap-4">
       {/* 添加年份选择下拉框 */}
-      <div className="z-50 absolute right-0 top-1 items-center justify-end">
+      <div className="absolute right-0 top-0 z-50 flex items-center justify-end gap-2">
+        {/* <Tooltip
+          placement="top"
+          title={`在`}
+        >
+          <GoQuestion className='cursor-pointer' />
+        </Tooltip > */}
         <Select
           defaultValue={selectedYear}
-          style={{ width: 80 }}
+          style={{ width: 74 }}
           onChange={handleYearChange}
           variant="borderless"
           options={[
-            { value: 2022, label: '2022' },
-            { value: 2023, label: '2023' },
+            // { value: 2022, label: '2022' },
+            // { value: 2023, label: '2023' },
             { value: 2024, label: '2024' },
+            { value: 2025, label: '2025' },
           ]}
         />
       </div>

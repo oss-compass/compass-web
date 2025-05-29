@@ -128,7 +128,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
           className="w-full resize-none  border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
-          placeholder="描述你的需求... (例: 需要支持绘制折线图的JS图表库)"
+          placeholder="描述你的需求... (例: 处理Microsoft Word文档的JS库)"
         />
 
         {/* 编程语言选择器 */}

@@ -1,5 +1,3 @@
-import { subMonths, subYears } from 'date-fns';
-
 export const languagesList = [
   {
     id: 'npm',
@@ -15,10 +13,10 @@ export const languagesList = [
   },
   {
     id: 'selected.github',
-    name: 'Github',
+    name: 'Github优选库',
   },
   {
     id: 'selected.gitee',
-    name: 'Gitee',
+    name: 'Gitee优选库',
   },
 ];

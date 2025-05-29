@@ -58,7 +58,7 @@ const Charts = ({ metric }) => {
               </h1>
               <div className="relative mb-12 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
                 {ChartItem.value.map((item) => (
-                  <ChartCards ChartInfo={item} key={ChartItem.value} />
+                  <ChartCards ChartInfo={item} key={item.value} />
                 ))}
               </div>
             </div>

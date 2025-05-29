@@ -36,15 +36,18 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   useEffect(() => {
     console.log('data', data);
     if (data?.fuzzySearch.length > 0) {
-      console.log('data', data.fuzzySearch?.map((item) => {
-        const name = getPathname(item.label); // "canvas"
-        const target = targetMap[getProvider(item.label)]; // "npm"
-        return {
-          name,
-          target,
-          ...item,
-        };
-      }));
+      console.log(
+        'data',
+        data.fuzzySearch?.map((item) => {
+          const name = getPathname(item.label); // "canvas"
+          const target = targetMap[getProvider(item.label)]; // "npm"
+          return {
+            name,
+            target,
+            ...item,
+          };
+        })
+      );
 
       setRecommendations(
         data.fuzzySearch?.map((item) => {
@@ -73,7 +76,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
     setErrorMessage(''); // 每次点击时清空之前的错误信息
     setSelectedSoftware([]);
     if (!description.trim()) {
-      setErrorMessage('请输入Git仓库URL。');
+      setErrorMessage('请输入GitHub、Gitee仓库URL。');
       return;
     }
     console.log('获取推荐:', { description, selectedLanguages });
@@ -92,7 +95,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
     if (recommendations.length === 0) {
       content = (
         <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
-          {' '}
           <Empty />
         </div>
       );
@@ -110,9 +112,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
                 isSelected={selectedSoftware.find(
                   (i) => i.label === software.label
                 )}
-                onSelect={(selected) =>
-                  handleSoftwareSelect(software)
-                }
+                onSelect={(selected) => handleSoftwareSelect(software)}
                 showSimilarity={true}
               />
             ))}
@@ -129,7 +129,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="mb-4 w-full rounded-lg border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
-          placeholder="输入Git仓库URL (例: https://github.com/username/repo)"
+          placeholder="输入GitHub、Gitee仓库URL (例: https://github.com/username/repo)"
         />
 
         {errorMessage && (

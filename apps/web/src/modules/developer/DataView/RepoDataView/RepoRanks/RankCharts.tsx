@@ -103,7 +103,7 @@ const RankCharts: React.FC<ChartProps> = ({ containerRef, data = [] }) => {
         left: '93%',
         startValue: processedData.length,
         endValue: processedData.length > 10 ? processedData.length - 10 : 0,
-        maxValueSpan: 10,
+        // maxValueSpan: 10,
       },
     ],
     yAxis: [

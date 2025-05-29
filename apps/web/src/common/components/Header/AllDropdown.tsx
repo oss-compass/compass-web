@@ -95,7 +95,9 @@ const MoreDropdown = () => {
                 <div className="w-8">{service.icon}</div>
                 <div className="cursor-pointer">
                   <div className="mb-3 text-base hover:text-[#597ef7]">
-                    {service.title}
+                    <Link href={service.linkItems[0].link}>
+                      {service.title}
+                    </Link>
                   </div>
                   <div className="line-clamp-3 mb-3 text-xs text-[#c1c1c1]">
                     {service.description}

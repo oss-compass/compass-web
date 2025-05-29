@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainContent from '../components/MainContent';
 import MyReports from './MyReports';
 import { Tabs } from 'antd';
@@ -7,8 +7,13 @@ import { useRouter } from 'next/router';
 const DataView = () => {
   const router = useRouter();
   const tabKey = router.query.tab as string;
-  const [defaultActiveKey, setDefaultActiveKey] = useState(tabKey || '1');
-  const [activeKey, setActiveKey] = useState(defaultActiveKey);
+  const [activeKey, setActiveKey] = useState(tabKey || '1');
+
+  // 使用 useEffect 监听 tabKey 变化并更新 activeKey
+  useEffect(() => {
+    setActiveKey(tabKey || '1');
+  }, [tabKey]); // 将 tabKey 添加到依赖数组
+
   const items = [
     {
       key: '1',
@@ -22,13 +27,29 @@ const DataView = () => {
       children: activeKey === '2' ? <MyReports /> : '',
     },
   ];
+
+  const handleTabChange = (key: string) => {
+    setActiveKey(key);
+    // 更新 URL 中的 tab 参数
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: key },
+      },
+      undefined,
+      { shallow: true }
+    ); // 使用 shallow: true 进行浅层路由更新
+  };
+
   return (
     <>
       <div className="mx-auto mt-6 min-h-screen max-w-6xl bg-gray-50">
         <Tabs
-          defaultActiveKey={activeKey}
+          activeKey={activeKey} // 使用 activeKey 状态控制当前选中的 Tab
           items={items}
-          onChange={(e) => setActiveKey(e)}
+          onChange={handleTabChange} // 调用新的处理函数
+          size="large"
+          tabBarStyle={{ fontWeight: 'bold', fontSize: '20px' }}
         />
       </div>
     </>
