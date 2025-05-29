@@ -22,7 +22,8 @@ const SubmitYourProject: React.FC<{
   content: React.ReactNode;
   noResult?: boolean;
   className?: string;
-}> = ({ className, noResult, content }) => {
+  hidden?: boolean;
+}> = ({ className, noResult, content, hidden = false }) => {
   const { t } = useTranslation();
   return (
     <p
@@ -34,16 +35,18 @@ const SubmitYourProject: React.FC<{
       )}
     >
       <span className="flex-wrap text-base leading-none">{content}</span>
-      <Link
-        href="/submit-your-project"
-        className={classnames(
-          'flex-shrink-0 bg-black  px-3 text-sm text-white shadow hover:opacity-90 ',
-          'md:px-2 md:text-sm',
-          [noResult ? 'py-2.5' : 'py-1']
-        )}
-      >
-        {t('home:submit_your_project')}
-      </Link>
+      {!hidden && (
+        <Link
+          href="/submit-your-project"
+          className={classnames(
+            'flex-shrink-0 bg-black  px-3 text-sm text-white shadow hover:opacity-90 ',
+            'md:px-2 md:text-sm',
+            [noResult ? 'py-2.5' : 'py-1']
+          )}
+        >
+          {t('home:submit_your_project')}
+        </Link>
+      )}
     </p>
   );
 };
@@ -144,15 +147,6 @@ const DropDownListDeveloper: React.FC<{
   result: SearchQuery['fuzzySearch'];
 }> = ({ result }) => {
   const { t } = useTranslation();
-  const router = useRouter();
-  // const { active } = useDropDown({
-  //   totalLength: result.length,
-  //   onPressEnter: () => {
-  //     const activeItem = result[active];
-  //     router.push(getShortAnalyzeLink(activeItem));
-  //   },
-  // });
-  console.log(getDeveloperLink(result[0].level));
   return (
     <>
       {result.map((item, index) => {
@@ -225,6 +219,7 @@ const SearchDropdown: React.FC<{
     content = (
       <SubmitYourProject
         noResult
+        hidden={activeTabKey == '1'}
         content={
           <>
             <Trans

@@ -1,4 +1,4 @@
-import { isArray, sortBy } from 'lodash';
+import { isArray, sortBy, min, max } from 'lodash'; // 引入 min 和 max
 
 const color = [
   '#9467bd', // 紫色
@@ -85,29 +85,57 @@ const getNodesLinks = (data, user, contribution) => {
 };
 
 const createQuantileScaleWithLodash = (values, colors) => {
-  // 如果传入的是数组值，计算分位数
-  const sortedValues = isArray(values) ? sortBy(values) : null;
+  console.log(values, colors);
 
-  if (sortedValues) {
-    const quantiles = [];
-    for (let i = 0; i <= colors.length; i++) {
-      const quantile = i / colors.length;
-      const index = Math.floor(quantile * (sortedValues.length - 1));
-      quantiles.push(sortedValues[index]);
-    }
-
-    return (value) => {
-      for (let i = 0; i < quantiles.length - 1; i++) {
-        if (value >= quantiles[i] && value < quantiles[i + 1]) {
-          return colors[i];
-        }
-      }
-      return colors[colors.length - 1];
-    };
+  // 检查 values 是否为非空数组
+  if (
+    !isArray(values) ||
+    values.length === 0 ||
+    !isArray(colors) ||
+    colors.length === 0
+  ) {
+    console.warn('Invalid input for createQuantileScaleWithLodash');
+    return () => colors[0] || undefined; // 返回一个默认函数或 undefined
   }
 
-  // 如果是 min/max 值
-  return createQuantileColorScale(values.min, values.max, colors);
+  const minValue = min(values);
+  const maxValue = max(values);
+
+  // 如果所有值都相同，则返回第一个颜色
+  if (minValue === maxValue) {
+    return () => colors[0];
+  }
+
+  const range = maxValue - minValue;
+  const intervalSize = range / colors.length;
+
+  // 生成区间的阈值
+  const thresholds = [];
+  for (let i = 0; i <= colors.length; i++) {
+    thresholds.push(minValue + i * intervalSize);
+  }
+
+  // 返回一个函数，根据数值返回对应的颜色
+  return (value) => {
+    // 处理超出范围的最小值
+    if (value < thresholds[0]) {
+      return colors[0];
+    }
+    // 处理超出范围的最大值
+    if (value >= thresholds[thresholds.length - 1]) {
+      return colors[colors.length - 1];
+    }
+
+    // 查找数值所在的区间
+    for (let i = 0; i < thresholds.length - 1; i++) {
+      // 注意：这里使用 >= 和 < 来定义区间，最后一个区间包含最大值
+      if (value >= thresholds[i] && value < thresholds[i + 1]) {
+        return colors[i];
+      }
+    }
+    // 如果由于浮点数精度等问题未能匹配到，返回最后一个颜色
+    return colors[colors.length - 1];
+  };
 };
 const formatData = (array, key) => {
   const result = {};
@@ -129,7 +157,8 @@ const formatData = (array, key) => {
   });
   return result;
 };
-export const calcData = (data, user, contributionLimit, key) => {
+export const calcData = (rowdData, user, contributionLimit, key) => {
+  const data = rowdData.length > 350 ? rowdData.slice(0, 350) : rowdData;
   let { links, nodes } = getNodesLinks(
     formatData(data, key),
     user,
