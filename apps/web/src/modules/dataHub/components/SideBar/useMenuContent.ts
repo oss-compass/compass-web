@@ -135,7 +135,7 @@ const useMenuContent = () => {
         const properties =
           definitions[methodInfo.operationId]?.properties || {};
         const schema =
-          methodInfo?.responses?.['201']?.schema?.$ref.split('/')[2];
+          methodInfo?.responses?.['201']?.schema?.$ref?.split('/')[2];
         const responses = resolveSchema(definitions, schema);
         const required = definitions[methodInfo.operationId]?.required || [];
         const menuItem = {
