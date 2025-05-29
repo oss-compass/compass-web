@@ -12,7 +12,7 @@ const DataView = () => {
   const items = [
     {
       key: '1',
-      label: '软件评估',
+      label: '软件评估选型',
       children: <MainContent />,
     },
     {
