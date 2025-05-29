@@ -16,8 +16,8 @@ const useApiData = () => {
       return getApiJson();
     },
     {
-      retry: 1, // 禁止重试
-      retryDelay: 3000, // 设置重试延迟为0
+      retry: 1,
+      retryDelay: 3000,
     }
   );
   return { isLoading, isError, data: data?.data || null };
