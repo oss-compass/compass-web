@@ -17,7 +17,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState([]);
   const [errorMessage, setErrorMessage] = useState(''); // 新增状态用于存储错误信息
-  const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
+  const [selectedSoftware, setSelectedSoftware] = useState<any[]>([]);
 
   // 移除 enabled: Boolean(description)，改为手动触发
   const { data, isFetching, refetch } = useSearchQuery(
@@ -36,6 +36,16 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   useEffect(() => {
     console.log('data', data);
     if (data?.fuzzySearch.length > 0) {
+      console.log('data', data.fuzzySearch?.map((item) => {
+        const name = getPathname(item.label); // "canvas"
+        const target = targetMap[getProvider(item.label)]; // "npm"
+        return {
+          name,
+          target,
+          ...item,
+        };
+      }));
+
       setRecommendations(
         data.fuzzySearch?.map((item) => {
           const name = getPathname(item.label); // "canvas"
@@ -50,12 +60,12 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
     }
   }, [data]);
 
-  const handleSoftwareSelect = (softwareId: string) => {
+  const handleSoftwareSelect = (software: any) => {
     setSelectedSoftware((prev) => {
-      if (prev.includes(softwareId)) {
-        return prev.filter((id) => id !== softwareId);
+      if (prev.find((i) => i.label === software.label)) {
+        return prev.filter((i) => i.label !== software.label);
       } else {
-        return [...prev, softwareId];
+        return [...prev, software];
       }
     });
   };
@@ -95,11 +105,13 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
           <div className="grid grid-cols-3 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {recommendations.map((software) => (
               <SoftwareCard
-                key={software.packageId}
+                key={software.label}
                 software={software}
-                isSelected={selectedSoftware.includes(software.packageId)}
+                isSelected={selectedSoftware.find(
+                  (i) => i.label === software.label
+                )}
                 onSelect={(selected) =>
-                  handleSoftwareSelect(software.packageId)
+                  handleSoftwareSelect(software)
                 }
                 showSimilarity={true}
               />

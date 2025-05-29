@@ -1,12 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { EChartsOption, init } from 'echarts';
 
-const Pie = ({ score }) => {
+const Pie = ({ score, rank }) => {
   const colorList = ['#826af9', '#edf0f4'];
+  const rankScore = Number(rank.replace('%', ''));
   let option: EChartsOption = {
     title: {
       // text: `{a|}`,
-      text: `S+`,
+      text: score,
       left: 'center',
       top: 'center',
       textStyle: {
@@ -54,15 +55,15 @@ const Pie = ({ score }) => {
         },
         data: [
           {
-            name: '一月',
-            value: score,
+            name: 'out',
+            value: 100 - rankScore,
             itemStyle: {
               borderRadius: 10,
             },
           },
           {
-            name: '一月',
-            value: 100 - score,
+            name: 'in',
+            value: rankScore,
           },
         ],
       },

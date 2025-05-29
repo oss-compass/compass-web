@@ -83,7 +83,7 @@ const RightPan = () => {
   return (
     <div className="relative flex w-[400px] flex-shrink-0 flex-col gap-4">
       {/* 添加年份选择下拉框 */}
-      <div className="z-9999 absolute right-0 top-1 items-center justify-end">
+      <div className="z-50 absolute right-0 top-1 items-center justify-end">
         <Select
           defaultValue={selectedYear}
           style={{ width: 80 }}

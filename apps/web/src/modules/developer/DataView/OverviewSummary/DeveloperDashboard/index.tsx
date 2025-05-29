@@ -15,6 +15,10 @@ interface ContributionOverviewData {
   issue_count: number;
   code_review_count: number;
   contributed_to_count: number;
+  level: {
+    rank: string;
+    score: string;
+  }
 }
 
 const Main = () => {
@@ -115,7 +119,7 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
         </div>
       </div>
       <div className="flex w-40 items-center justify-center">
-        <Pie score={80} />
+        <Pie score={data?.level?.score || '50%'} rank={data?.level?.rank || "S"} />
       </div>
     </div>
   );
