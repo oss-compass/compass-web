@@ -1,8 +1,4 @@
 import react from 'react';
-import useContributorName from '@modules/developer/hooks/useContributorName';
-import useQueryDateRange from '@modules/developer/hooks/useQueryDateRange';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
 import { GoIssueOpened } from 'react-icons/go';
 import useContributorInfo from '@modules/developer/hooks/useContributorInfo';

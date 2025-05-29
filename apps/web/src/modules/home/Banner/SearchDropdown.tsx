@@ -7,14 +7,16 @@ import { AiOutlineRightCircle } from 'react-icons/ai';
 import useDropDown from '@common/hooks/useDropDown';
 import { SearchQuery } from '@oss-compass/graphql';
 import {
-  getAnalyzeLink,
+  getUsername,
   getShortAnalyzeLink,
+  getDeveloperLink,
   getPathname,
   getProvider,
   getRepoName,
 } from '@common/utils';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import { Level } from '@modules/analyze/constant';
+import ImageFallback from '@common/components/ImageFallback';
 
 const SubmitYourProject: React.FC<{
   content: React.ReactNode;
@@ -138,32 +140,72 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
     </>
   );
 };
+const DropDownListDeveloper: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
+  result,
+}) => {
+  const { t } = useTranslation();
+  const router = useRouter();
+  // const { active } = useDropDown({
+  //   totalLength: result.length,
+  //   onPressEnter: () => {
+  //     const activeItem = result[active];
+  //     router.push(getShortAnalyzeLink(activeItem));
+  //   },
+  // });
+  console.log(getDeveloperLink(result[0].level))
+  return (
+    <>
+      {result.map((item, index) => {
+        return (
+          <Link
+            key={item.label}
+            href={getDeveloperLink(item.level)}
+            className='flex gap-4 flex min-h-[66px] cursor-pointer items-center  px-4 py-3 text-xl hover:bg-gray-100'>
+            <>
+              <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-100">
+                <ImageFallback
+                  src={item.label || '/images/default.png'}
+                  unoptimized
+                  width={32}
+                  height={32}
+                  style={{
+                    objectFit: 'cover',
+                  }}
+                  fallbackSrc={'/images/default.png'}
+                  alt="logo"
+                />
+              </div>
 
+              <span className="mb-1 truncate text-xl font-medium">
+                {getUsername(item.level!)}
+              </span>
+            </>
+          </Link>
+        );
+      })}
+    </>
+  );
+};
 const SearchDropdown: React.FC<{
   keyword: string;
   result: SearchQuery['fuzzySearch'];
-}> = ({ result, keyword }) => {
+  onTabChange: (type: string) => void;
+  activeTabKey: string;
+}> = ({ result, keyword, onTabChange, activeTabKey }) => {
   const onChange = (key: string) => {
     console.log(key);
   };
 
   const items = [
     {
-      key: '1',
-      label: 'All',
+      key: '2',
+      label: 'Repo/Community',
     },
     {
-      key: '2',
+      key: '1',
       label: 'Developer',
     },
-    {
-      key: '3',
-      label: 'Repo',
-    },
-    {
-      key: '4',
-      label: 'Community ',
-    },
+
   ];
   let content = null;
   if (keyword === '') {
@@ -201,23 +243,28 @@ const SearchDropdown: React.FC<{
       />
     );
   } else {
-    content = <DropDownList result={result!} />;
+    if (activeTabKey == '1') {
+      content = <DropDownListDeveloper result={result!} />;
+    } else {
+      content = <DropDownList result={result!} />;
+    }
   }
 
   return (
     <>
       <div>
-        <Tabs items={items} />
+        <Tabs items={items} onTabChange={onTabChange} activeTabKey={activeTabKey} />
       </div>
       {content}
     </>
   );
 };
-const Tabs = ({ items }) => {
-  const [activeKey, setActiveKey] = useState(items[0].key);
+const Tabs = ({ items, onTabChange, activeTabKey }) => {
+  // const [activeKey, setActiveKey] = useState(items[0].key); // 移除内部状态
 
   const handleTabChange = (key) => {
-    setActiveKey(key);
+    // setActiveKey(key); // 移除内部状态更新
+    onTabChange(key);
   };
 
   return (
@@ -226,11 +273,10 @@ const Tabs = ({ items }) => {
         {items.map((item) => (
           <button
             key={item.key}
-            className={`py-2 px-6 transition duration-150 ease-in-out focus:outline-none ${
-              item.key === activeKey
-                ? 'border-b-2 border-blue-500 text-blue-500'
-                : 'text-gray-600 hover:text-blue-500'
-            }`}
+            className={`py-2 px-6 transition duration-150 ease-in-out focus:outline-none ${item.key === activeTabKey
+              ? 'border-b-2 border-blue-500 text-blue-500'
+              : 'text-gray-600 hover:text-blue-500'
+              }`}
             onClick={() => handleTabChange(item.key)}
           >
             {item.label}

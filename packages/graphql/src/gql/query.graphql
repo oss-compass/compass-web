@@ -62,8 +62,8 @@ query statusVerify($label: String, $shortCode: String) {
   }
 }
 
-query search($keyword: String!, $level: String) {
-  fuzzySearch(keyword: $keyword, level: $level) {
+query search($keyword: String!, $level: String,$type: Int=2) {
+  fuzzySearch(keyword: $keyword, level: $level, type: $type) {
     level
     label
     status
@@ -1069,7 +1069,7 @@ query tokenList {
     token
   }
 }
-query thirdTxt(
+query thirdTxtSearch(
   $query_txt: String!
   $query_keywords: [String!]!
   $target_ecosystem_list: [String!]!
@@ -1094,7 +1094,7 @@ query thirdTxt(
     }
   }
 }
-query thirdTpl(
+query thirdTplSearch(
   $src_package_name: String!
   $src_ecosystem: String!
   $target_ecosystem_list: [String!]!

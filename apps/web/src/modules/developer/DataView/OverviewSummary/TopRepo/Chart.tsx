@@ -83,7 +83,7 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image: processedData?.[0].img || '/images/default.png',
+                image: processedData?.[0]?.img || '/images/default.png',
               },
               width: 25,
               height: 25,
@@ -94,7 +94,7 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image: processedData?.[1].img || '/images/default.png',
+                image: processedData?.[1]?.img || '/images/default.png',
               },
               width: 25,
               height: 25,
@@ -105,7 +105,7 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image: processedData?.[2].img || '/images/default.png',
+                image: processedData?.[2]?.img || '/images/default.png',
               },
               width: 25,
               height: 25,
@@ -116,7 +116,7 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
               fontSize: 0,
               color: '#fff',
               backgroundColor: {
-                image: processedData?.[3].img || '/images/default.png',
+                image: processedData?.[3]?.img || '/images/default.png',
               },
               width: 25,
               height: 25,

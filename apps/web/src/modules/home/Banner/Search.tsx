@@ -15,10 +15,11 @@ const Search = () => {
   const ref = useRef(null);
   const [keyword, setKeyword] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [searchType, setSearchType] = useState('2'); // 0: All, 1: Developer, 2: Repo
   const throttledKeyword = useThrottle(keyword, { wait: 300 });
   const { isLoading, data, fetchStatus } = useSearchQuery(
     client,
-    { keyword: throttledKeyword },
+    { keyword: throttledKeyword, type: Number(searchType) },
     { enabled: Boolean(throttledKeyword) }
   );
   const showLoading = isLoading && fetchStatus === 'fetching';
@@ -63,7 +64,7 @@ const Search = () => {
         className="relative w-[496px] md:w-full"
         ref={ref}
         onFocus={() => setIsFocused(true)}
-        // onBlur={() => setIsFocused(false)}
+      // onBlur={() => setIsFocused(false)}
       >
         <div className="flex items-center border-2 border-black px-4 md:px-2">
           <input
@@ -99,7 +100,12 @@ const Search = () => {
             )}
           >
             <div className="w-full">
-              <SearchDropdown keyword={keyword} result={data?.fuzzySearch!} />
+              <SearchDropdown
+                keyword={keyword}
+                result={data?.fuzzySearch!}
+                onTabChange={setSearchType}
+                activeTabKey={searchType}
+              />
             </div>
           </div>
         )}

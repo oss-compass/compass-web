@@ -37,7 +37,11 @@ export function getNameSpace(path: string) {
   //  https://jex.im/regulex/#!flags=&re=(.%2B%3F)%5C%2F.%2B%3F%5C%2F%3F%24
   return getPathname(path).match(/(.+?)\/.+?\/?$/)?.[1] || '';
 }
-
+export function getUsername(url: string) {
+  const urlObj = new URL(url);
+  const pathSegments = urlObj.pathname.split('/').filter(segment => segment !== '');
+  return pathSegments[0];
+}
 export function getRepoName(path: string) {
   if (!path) return '';
   // https://jex.im/regulex/#!flags=&re=.%2B%3F%5C%2F(.%2B%3F)%5C%2F%3F%24

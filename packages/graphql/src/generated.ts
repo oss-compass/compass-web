@@ -3404,6 +3404,7 @@ export type QueryEcoContributorsOverviewArgs = {
 export type QueryFuzzySearchArgs = {
   keyword: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryInvitationOverviewArgs = {
@@ -10262,6 +10263,7 @@ export type StatusVerifyQuery = {
 export type SearchQueryVariables = Exact<{
   keyword: Scalars['String'];
   level?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['Int']>;
 }>;
 
 export type SearchQuery = {
@@ -11366,7 +11368,7 @@ export type TokenListQuery = {
   }> | null;
 };
 
-export type ThirdTxtQueryVariables = Exact<{
+export type ThirdTxtSearchQueryVariables = Exact<{
   query_txt: Scalars['String'];
   query_keywords: Array<Scalars['String']> | Scalars['String'];
   target_ecosystem_list: Array<Scalars['String']> | Scalars['String'];
@@ -11374,7 +11376,7 @@ export type ThirdTxtQueryVariables = Exact<{
   online_judge?: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type ThirdTxtQuery = {
+export type ThirdTxtSearchQuery = {
   __typename?: 'Query';
   thirdTxt: {
     __typename?: 'ThirdTxtQuery';
@@ -11391,7 +11393,7 @@ export type ThirdTxtQuery = {
   };
 };
 
-export type ThirdTplQueryVariables = Exact<{
+export type ThirdTplSearchQueryVariables = Exact<{
   src_package_name: Scalars['String'];
   src_ecosystem: Scalars['String'];
   target_ecosystem_list: Array<Scalars['String']> | Scalars['String'];
@@ -11400,7 +11402,7 @@ export type ThirdTplQueryVariables = Exact<{
   force_search?: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type ThirdTplQuery = {
+export type ThirdTplSearchQuery = {
   __typename?: 'Query';
   thirdTpl: {
     __typename?: 'ThirdTplQuery';
@@ -17938,8 +17940,8 @@ useStatusVerifyQuery.fetcher = (
     headers
   );
 export const SearchDocument = /*#__PURE__*/ `
-    query search($keyword: String!, $level: String) {
-  fuzzySearch(keyword: $keyword, level: $level) {
+    query search($keyword: String!, $level: String, $type: Int = 2) {
+  fuzzySearch(keyword: $keyword, level: $level, type: $type) {
     level
     label
     status
@@ -19825,8 +19827,8 @@ useTokenListQuery.fetcher = (
     variables,
     headers
   );
-export const ThirdTxtDocument = /*#__PURE__*/ `
-    query thirdTxt($query_txt: String!, $query_keywords: [String!]!, $target_ecosystem_list: [String!]!, $top_n: Int!, $online_judge: Boolean) {
+export const ThirdTxtSearchDocument = /*#__PURE__*/ `
+    query thirdTxtSearch($query_txt: String!, $query_keywords: [String!]!, $target_ecosystem_list: [String!]!, $top_n: Int!, $online_judge: Boolean) {
   thirdTxt(
     queryTxt: $query_txt
     queryKeywords: $query_keywords
@@ -19846,40 +19848,43 @@ export const ThirdTxtDocument = /*#__PURE__*/ `
   }
 }
     `;
-export const useThirdTxtQuery = <TData = ThirdTxtQuery, TError = unknown>(
+export const useThirdTxtSearchQuery = <
+  TData = ThirdTxtSearchQuery,
+  TError = unknown
+>(
   client: GraphQLClient,
-  variables: ThirdTxtQueryVariables,
-  options?: UseQueryOptions<ThirdTxtQuery, TError, TData>,
+  variables: ThirdTxtSearchQueryVariables,
+  options?: UseQueryOptions<ThirdTxtSearchQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<ThirdTxtQuery, TError, TData>(
-    ['thirdTxt', variables],
-    fetcher<ThirdTxtQuery, ThirdTxtQueryVariables>(
+  useQuery<ThirdTxtSearchQuery, TError, TData>(
+    ['thirdTxtSearch', variables],
+    fetcher<ThirdTxtSearchQuery, ThirdTxtSearchQueryVariables>(
       client,
-      ThirdTxtDocument,
+      ThirdTxtSearchDocument,
       variables,
       headers
     ),
     options
   );
 
-useThirdTxtQuery.getKey = (variables: ThirdTxtQueryVariables) => [
-  'thirdTxt',
+useThirdTxtSearchQuery.getKey = (variables: ThirdTxtSearchQueryVariables) => [
+  'thirdTxtSearch',
   variables,
 ];
-useThirdTxtQuery.fetcher = (
+useThirdTxtSearchQuery.fetcher = (
   client: GraphQLClient,
-  variables: ThirdTxtQueryVariables,
+  variables: ThirdTxtSearchQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<ThirdTxtQuery, ThirdTxtQueryVariables>(
+  fetcher<ThirdTxtSearchQuery, ThirdTxtSearchQueryVariables>(
     client,
-    ThirdTxtDocument,
+    ThirdTxtSearchDocument,
     variables,
     headers
   );
-export const ThirdTplDocument = /*#__PURE__*/ `
-    query thirdTpl($src_package_name: String!, $src_ecosystem: String!, $target_ecosystem_list: [String!]!, $top_n: Int!, $online_judge: Boolean, $force_search: Boolean) {
+export const ThirdTplSearchDocument = /*#__PURE__*/ `
+    query thirdTplSearch($src_package_name: String!, $src_ecosystem: String!, $target_ecosystem_list: [String!]!, $top_n: Int!, $online_judge: Boolean, $force_search: Boolean) {
   thirdTpl(
     srcPackageName: $src_package_name
     srcEcosystem: $src_ecosystem
@@ -19903,35 +19908,38 @@ export const ThirdTplDocument = /*#__PURE__*/ `
   }
 }
     `;
-export const useThirdTplQuery = <TData = ThirdTplQuery, TError = unknown>(
+export const useThirdTplSearchQuery = <
+  TData = ThirdTplSearchQuery,
+  TError = unknown
+>(
   client: GraphQLClient,
-  variables: ThirdTplQueryVariables,
-  options?: UseQueryOptions<ThirdTplQuery, TError, TData>,
+  variables: ThirdTplSearchQueryVariables,
+  options?: UseQueryOptions<ThirdTplSearchQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<ThirdTplQuery, TError, TData>(
-    ['thirdTpl', variables],
-    fetcher<ThirdTplQuery, ThirdTplQueryVariables>(
+  useQuery<ThirdTplSearchQuery, TError, TData>(
+    ['thirdTplSearch', variables],
+    fetcher<ThirdTplSearchQuery, ThirdTplSearchQueryVariables>(
       client,
-      ThirdTplDocument,
+      ThirdTplSearchDocument,
       variables,
       headers
     ),
     options
   );
 
-useThirdTplQuery.getKey = (variables: ThirdTplQueryVariables) => [
-  'thirdTpl',
+useThirdTplSearchQuery.getKey = (variables: ThirdTplSearchQueryVariables) => [
+  'thirdTplSearch',
   variables,
 ];
-useThirdTplQuery.fetcher = (
+useThirdTplSearchQuery.fetcher = (
   client: GraphQLClient,
-  variables: ThirdTplQueryVariables,
+  variables: ThirdTplSearchQueryVariables,
   headers?: RequestInit['headers']
 ) =>
-  fetcher<ThirdTplQuery, ThirdTplQueryVariables>(
+  fetcher<ThirdTplSearchQuery, ThirdTplSearchQueryVariables>(
     client,
-    ThirdTplDocument,
+    ThirdTplSearchDocument,
     variables,
     headers
   );

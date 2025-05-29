@@ -11,6 +11,7 @@ import ChangeLanguage from './ChangeLanguage';
 import SubmitYouProject from './SubmitYouProject';
 import User from './User';
 import { useUserInfo } from '@modules/auth';
+import AllDropdown from './AllDropdown';
 import MoreDropdown from './MoreDropdown';
 
 const Header: React.FC<{
@@ -43,29 +44,30 @@ const Header: React.FC<{
                 {t('common:header.docs')}
               </a>
             </LinkX>
+            <AllDropdown />
 
-            <Link
+            {/* <Link
               href="/explore"
               className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.projects')}
-            </Link>
+            </Link> */}
 
-            <Link
+            {/* <Link
               href="/collaboration"
               className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.academe')}
-            </Link>
-
+            </Link> */}
+            {/* 
             <Link
               href="/lab"
               className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.lab')}
-            </Link>
+            </Link> */}
 
-            {roleLevel && roleLevel >= 1 && (
+            {/* {roleLevel && roleLevel >= 1 && (
               <LinkX href="/oh" legacyBehavior>
                 <a
                   className={
@@ -75,25 +77,15 @@ const Header: React.FC<{
                   OpenHarmony
                 </a>
               </LinkX>
-            )}
-            <LinkX href="/blog" legacyBehavior>
-              <a
-                className={
-                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
-                }
-              >
-                {t('common:header.news')}
-              </a>
-            </LinkX>
+            )} */}
             <CommunityDropdown />
-
+            <MoreDropdown />
             <Link
               href="/about"
               className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
             >
               {t('common:header.about')}
             </Link>
-            <MoreDropdown />
           </div>
 
           <div className="flex h-full items-center">

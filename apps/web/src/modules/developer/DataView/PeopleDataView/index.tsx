@@ -9,7 +9,7 @@ const PeopleData = () => {
   const url = '/api/v2/contributor_portrait/contributor_collaboration';
   const { data, error, isLoading } = useContributorApi(
     url,
-    'repo_collaboration'
+    'contributor_collaboration'
   );
 
   return (

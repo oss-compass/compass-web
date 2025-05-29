@@ -70,13 +70,13 @@ export const bar = (
   };
 };
 
-export const getLegendSelected = (s: SeriesOption[], includeWord: string) => {
-  return s.reduce<{ [key: string]: boolean }>((acc, cur) => {
-    const name = cur.name as string;
-    acc[name] = name.endsWith(includeWord);
-    return acc;
-  }, {});
-};
+// export const getLegendSelected = (s: SeriesOption[], includeWord: string) => {
+//   return s.reduce<{ [key: string]: boolean }>((acc, cur) => {
+//     const name = cur.name as string;
+//     acc[name] = name.endsWith(includeWord);
+//     return acc;
+//   }, {});
+// };
 
 export const legendFormat = (
   compareLabels: string[]
@@ -128,9 +128,8 @@ const genTooltipsItem = (
 <div style="margin: 0 0 8px;line-height:1;">
   <div style="margin: 0 0 0;line-height:1;display: flex; justify-content:space-between;">
     <div style="display: flex">
-       <div style="margin-right:4px;margin-top:3px;border-radius:10px;width:10px;height:10px;background-color:${
-         p.color
-       };"></div>
+       <div style="margin-right:4px;margin-top:3px;border-radius:10px;width:10px;height:10px;background-color:${p.color
+    };"></div>
        <div style="display:flex;flex-direction: column;">
           <div style="font-size:14px;color:#333;font-weight:500;margin-bottom:3px;margin-left:2px">
             ${name}
@@ -156,9 +155,8 @@ const genSummaryItem = (
 <div style="margin: 0 0 8px;line-height:1;">
   <div style="margin: 0 0 0;line-height:1;display: flex; justify-content:space-between;">
     <div style="display: flex">
-       <div style="margin-right:4px;margin-top:3px;border-radius:10px;width:10px;height:10px;border:1px dashed ${
-         p.color
-       };"></div>
+       <div style="margin-right:4px;margin-top:3px;border-radius:10px;width:10px;height:10px;border:1px dashed ${p.color
+    };"></div>
        <div style="display:flex;flex-direction: column;">
           <div style="font-size:14px;color:#333;font-weight:500;margin-bottom:3px;margin-left:2px">
             ${p.seriesName}
@@ -217,13 +215,12 @@ export const getTooltipsFormatter = (args: {
     <div style="margin: 10px 0 0;line-height:1;">
       ${items.join('')}
       
-      ${
-        summaryItems.length > 0
-          ? `<div style="position:relative;margin-top:10px;padding:10px 0 0;">
+      ${summaryItems.length > 0
+        ? `<div style="position:relative;margin-top:10px;padding:10px 0 0;">
         <div style="position:absolute;top:0;left:-10px;right:-10px;border-top: 1px solid #E3E9ED;"></div>
         ${summaryItems.join('')}
       </div> `
-          : ''
+        : ''
       }
       
       <div style="clear:both"></div>

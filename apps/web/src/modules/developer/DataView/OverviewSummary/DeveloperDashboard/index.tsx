@@ -14,6 +14,7 @@ interface ContributionOverviewData {
   pr_count: number;
   issue_count: number;
   code_review_count: number;
+  contributed_to_count: number;
 }
 
 const Main = () => {
@@ -108,7 +109,7 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
             </div>
             <div className="line-clamp-1 ">Contributed to</div>
           </div>
-          <div className="line-clamp-1 w-16 font-semibold">{236}</div>
+          <div className="line-clamp-1 w-16 font-semibold">{data?.contributed_to_count || 0}</div>
         </div>
       </div>
       <div className="flex w-40 items-center justify-center">

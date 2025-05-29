@@ -127,11 +127,11 @@ const Blog = () => {
   const { t } = useTranslation();
   return (
     <LinkX href="/blog" passHref legacyBehavior>
-      <a className={classnames(categoryClass, 'hover:bg-[#333333]')}>
+      <a className={classnames(categoryClass, borderBottomClass, 'hover:bg-[#333333]')}>
         <div className="mr-4 w-8">
           <BlogLogo />
         </div>
-        <div>{t('common:header.blog')}</div>
+        {t('common:header.news')}
       </a>
     </LinkX>
   );
@@ -142,6 +142,7 @@ const CommunityDropdown = () => {
 
   return (
     <div className="group relative flex h-full items-center transition">
+
       <div className="flex cursor-pointer items-center justify-center py-3 px-7 group-hover:bg-[#333333] 2xl:px-4">
         <a className={'font-medium text-white'}>
           {t('common:header.community')}
@@ -151,9 +152,20 @@ const CommunityDropdown = () => {
 
       <div className="z-dropdown absolute top-[100%] hidden w-[360px] group-hover:block">
         <div className="mt-[2px] bg-black/95 text-white">
+          {/* <div className='mt-4'>
+            <LinkX href="/blog" legacyBehavior>
+              <a
+                className={
+                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
+                }
+              >
+                {t('common:header.news')}
+              </a>
+            </LinkX>
+          </div> */}
+          <Blog />
           <Discussion />
           <RepoLinks />
-          {/*<Blog />*/}
         </div>
       </div>
     </div>

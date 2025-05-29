@@ -1,24 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from 'react-use';
-import {
-  useCollaborationDevelopmentIndex,
-  useCommunityActivity,
-  useCommunityServiceAndSupport,
-  useOrganizationsActivity,
-} from './config';
 
 const useActiveMenuId = (activeId: string) => {
-  const collaborationDevelopmentIndex = useCollaborationDevelopmentIndex();
-  const communityActivity = useCommunityActivity();
-  const communityServiceAndSupport = useCommunityServiceAndSupport();
-  const organizationsActivity = useOrganizationsActivity();
+
 
   return useMemo(() => {
     return [
-      collaborationDevelopmentIndex,
-      communityServiceAndSupport,
-      communityActivity,
-      organizationsActivity,
     ].reduce<{ topicId: string; menuId: string; subMenuId: string }>(
       (acc, cur) => {
         const { topic, id, groups } = cur;
@@ -46,10 +33,6 @@ const useActiveMenuId = (activeId: string) => {
     );
   }, [
     activeId,
-    collaborationDevelopmentIndex,
-    communityActivity,
-    communityServiceAndSupport,
-    organizationsActivity,
   ]);
 };
 

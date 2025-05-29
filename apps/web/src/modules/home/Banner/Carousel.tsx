@@ -7,10 +7,10 @@ const CarouselContent = () => {
 
   const images = [
     '/images/home/hero.png',
-    '/images/academe/case/compass-insight.png',
-    '/images/home/hero.png',
-    '/images/academe/case/compass-insight.png',
-    '/images/home/hero.png',
+    // '/images/academe/case/compass-insight.png',
+    // '/images/home/hero.png',
+    // '/images/academe/case/compass-insight.png',
+    // '/images/home/hero.png',
   ];
   const carouselRef = useRef(null);
   const handleThumbnailClick = (index) => {
@@ -36,13 +36,12 @@ const CarouselContent = () => {
           </div>
         ))}
       </Carousel>
-      <div className="absolute right-0 top-0 ml-4 flex flex-col justify-center">
+      <div className="absolute hidden right-0 top-0 ml-4 flex flex-col justify-center">
         {images.map((src, index) => (
           <button
             key={index}
-            className={`relative mb-2 h-[70px] w-[90px] cursor-pointer overflow-hidden transition-transform duration-200 ${
-              currentSlide === index ? 'scale-110' : ''
-            }`}
+            className={`relative mb-2 h-[70px] w-[90px] cursor-pointer overflow-hidden transition-transform duration-200 ${currentSlide === index ? 'scale-110' : ''
+              }`}
             onClick={() => handleThumbnailClick(index)}
           >
             <Image

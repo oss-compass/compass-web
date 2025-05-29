@@ -56,9 +56,18 @@ export const compareIdsJoin = (ids: string[]) => {
 };
 
 export const getAnalyzeLink = (item: SearchQuery['fuzzySearch'][number]) => {
-  return `/analyze?label=${encodeURIComponent(item.label!)}&level=${
-    item.level
-  }`;
+  return `/analyze?label=${encodeURIComponent(item.label!)}&level=${item.level
+    }`;
+};
+function getName(url: string) {
+  const urlObj = new URL(url);
+  const pathSegments = urlObj.pathname.split('/').filter(segment => segment !== '');
+  return pathSegments[0];
+}
+export const getDeveloperLink = (url: string) => {
+  const user = getName(url);
+  console.log(user)
+  return `/developer/${encodeURIComponent(user)}`;
 };
 
 export const getCompareAnalyzeLink = (list: string[], level: string) => {
@@ -69,9 +78,8 @@ export const getCompareAnalyzeLink = (list: string[], level: string) => {
 };
 
 export const getLabDetailLink = (repo: { origin: string }) => {
-  return `/lab/explore?label=${encodeURIComponent(repo?.origin!)}&level=${
-    Level.REPO
-  }`;
+  return `/lab/explore?label=${encodeURIComponent(repo?.origin!)}&level=${Level.REPO
+    }`;
 };
 export const getLabCompareAnalyzeLink = (list: string[], level: string) => {
   const url = list.reduce((pre, cur) => {

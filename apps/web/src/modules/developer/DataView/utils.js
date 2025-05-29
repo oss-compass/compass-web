@@ -113,8 +113,13 @@ const formatData = (array, key) => {
   const result = {};
   array.forEach((item) => {
     if (key === 'repo') {
-      const repoName = item[key].split('/').slice(3).join('/'); // 获取 repo 名称
-      result[repoName] = item; // 将项添加到结果对象中
+      // 确保 item[key] 存在且是字符串，避免 TypeError
+      if (item && typeof item[key] === 'string') {
+        const repoName = item[key].split('/').slice(3).join('/'); // 获取 repo 名称
+        result[repoName] = item; // 将项添加到结果对象中
+      } else {
+        console.warn(`Skipping item due to invalid or missing '${key}' property:`, item);
+      }
     } else {
       result[item[key]] = item; // 将项添加到结果对象中
     }

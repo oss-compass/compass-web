@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SoftwareCard from '../SoftwareCard';
 import client from '@common/gqlClient';
-import { useThirdTxtQuery } from '@oss-compass/graphql';
+import { useThirdTxtSearchQuery } from '@oss-compass/graphql';
 import { Empty, Spin } from 'antd';
 import { languagesList } from '@modules/os-selection/constant';
 import GenReport from '../GenReport';
@@ -20,7 +20,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   const [selectedSoftware, setSelectedSoftware] = useState<any[]>([]);
 
   // 移除 enabled: Boolean(description)，改为手动触发
-  const { data, isFetching, refetch } = useThirdTxtQuery(
+  const { data, isFetching, refetch } = useThirdTxtSearchQuery(
     client,
     {
       query_txt: description,
@@ -138,11 +138,10 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
             <button
               key={language.id}
               onClick={() => handleLanguageToggle(language.id)}
-              className={`rounded-full border px-4 py-1 text-sm transition-all ${
-                selectedLanguages.includes(language.id)
-                  ? 'border-blue-500 bg-blue-500 text-white'
-                  : 'border-gray-300 hover:bg-gray-50'
-              }`}
+              className={`rounded-full border px-4 py-1 text-sm transition-all ${selectedLanguages.includes(language.id)
+                ? 'border-blue-500 bg-blue-500 text-white'
+                : 'border-gray-300 hover:bg-gray-50'
+                }`}
             >
               {language.name}
             </button>
