@@ -140,9 +140,9 @@ const DropDownList: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
     </>
   );
 };
-const DropDownListDeveloper: React.FC<{ result: SearchQuery['fuzzySearch'] }> = ({
-  result,
-}) => {
+const DropDownListDeveloper: React.FC<{
+  result: SearchQuery['fuzzySearch'];
+}> = ({ result }) => {
   const { t } = useTranslation();
   const router = useRouter();
   // const { active } = useDropDown({
@@ -152,7 +152,7 @@ const DropDownListDeveloper: React.FC<{ result: SearchQuery['fuzzySearch'] }> = 
   //     router.push(getShortAnalyzeLink(activeItem));
   //   },
   // });
-  console.log(getDeveloperLink(result[0].level))
+  console.log(getDeveloperLink(result[0].level));
   return (
     <>
       {result.map((item, index) => {
@@ -160,7 +160,8 @@ const DropDownListDeveloper: React.FC<{ result: SearchQuery['fuzzySearch'] }> = 
           <Link
             key={item.label}
             href={getDeveloperLink(item.level)}
-            className='flex gap-4 flex min-h-[66px] cursor-pointer items-center  px-4 py-3 text-xl hover:bg-gray-100'>
+            className="flex flex min-h-[66px] cursor-pointer items-center gap-4  px-4 py-3 text-xl hover:bg-gray-100"
+          >
             <>
               <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-100">
                 <ImageFallback
@@ -205,7 +206,6 @@ const SearchDropdown: React.FC<{
       key: '1',
       label: 'Developer',
     },
-
   ];
   let content = null;
   if (keyword === '') {
@@ -253,7 +253,11 @@ const SearchDropdown: React.FC<{
   return (
     <>
       <div>
-        <Tabs items={items} onTabChange={onTabChange} activeTabKey={activeTabKey} />
+        <Tabs
+          items={items}
+          onTabChange={onTabChange}
+          activeTabKey={activeTabKey}
+        />
       </div>
       {content}
     </>
@@ -273,10 +277,11 @@ const Tabs = ({ items, onTabChange, activeTabKey }) => {
         {items.map((item) => (
           <button
             key={item.key}
-            className={`py-2 px-6 transition duration-150 ease-in-out focus:outline-none ${item.key === activeTabKey
-              ? 'border-b-2 border-blue-500 text-blue-500'
-              : 'text-gray-600 hover:text-blue-500'
-              }`}
+            className={`py-2 px-6 transition duration-150 ease-in-out focus:outline-none ${
+              item.key === activeTabKey
+                ? 'border-b-2 border-blue-500 text-blue-500'
+                : 'text-gray-600 hover:text-blue-500'
+            }`}
             onClick={() => handleTabChange(item.key)}
           >
             {item.label}

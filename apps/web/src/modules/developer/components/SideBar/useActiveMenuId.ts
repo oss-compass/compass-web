@@ -2,11 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from 'react-use';
 
 const useActiveMenuId = (activeId: string) => {
-
-
   return useMemo(() => {
-    return [
-    ].reduce<{ topicId: string; menuId: string; subMenuId: string }>(
+    return [].reduce<{ topicId: string; menuId: string; subMenuId: string }>(
       (acc, cur) => {
         const { topic, id, groups } = cur;
 
@@ -31,9 +28,7 @@ const useActiveMenuId = (activeId: string) => {
       },
       { topicId: '', menuId: '', subMenuId: '' }
     );
-  }, [
-    activeId,
-  ]);
+  }, [activeId]);
 };
 
 export default useActiveMenuId;

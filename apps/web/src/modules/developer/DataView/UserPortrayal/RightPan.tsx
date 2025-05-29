@@ -1,8 +1,9 @@
-import react from 'react';
+import react, { useState } from 'react'; // 引入 useState
 import { BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
 import { GoIssueOpened } from 'react-icons/go';
 import useContributorInfo from '@modules/developer/hooks/useContributorInfo';
 import { useContributorApi } from '@modules/developer/hooks/useContributorApi';
+import { Select } from 'antd'; // 假设使用 Ant Design 的 Select 组件，请根据实际情况调整引入
 
 // 定义接口返回数据类型
 interface ContributionRankData {
@@ -62,15 +63,40 @@ const ContributionCard: React.FC<ContributionCardProps> = ({
 
 const RightPan = () => {
   const { contributorInfo } = useContributorInfo();
+  // 新增 selectedYear 状态，并初始化为 2024
+  const [selectedYear, setSelectedYear] = useState<number>(2024);
+
   const { data, error, isLoading } = useContributorApi<ContributionRankData>(
     '/api/v2/contributor_portrait/contribution_rank',
-    'contribution_rank'
+    'contribution_rank',
+    {},
+    selectedYear // 将 selectedYear 传递给 useContributorApi
   );
 
   const country = contributorInfo?.country || 'Worldwide';
 
+  // 处理年份选择变化的函数
+  const handleYearChange = (year: number) => {
+    setSelectedYear(year);
+  };
+
   return (
     <div className="relative flex w-[400px] flex-shrink-0 flex-col gap-4">
+      {/* 添加年份选择下拉框 */}
+      <div className="z-9999 absolute right-0 top-1 items-center justify-end">
+        <Select
+          defaultValue={selectedYear}
+          style={{ width: 80 }}
+          onChange={handleYearChange}
+          variant="borderless"
+          options={[
+            { value: 2022, label: '2022' },
+            { value: 2023, label: '2023' },
+            { value: 2024, label: '2024' },
+          ]}
+        />
+      </div>
+
       <ContributionCard
         icon={<BiGitCommit />}
         bgColor="bg-[#e0edff]"

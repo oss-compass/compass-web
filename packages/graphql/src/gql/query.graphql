@@ -62,7 +62,7 @@ query statusVerify($label: String, $shortCode: String) {
   }
 }
 
-query search($keyword: String!, $level: String,$type: Int=2) {
+query search($keyword: String!, $level: String, $type: Int = 2) {
   fuzzySearch(keyword: $keyword, level: $level, type: $type) {
     level
     label

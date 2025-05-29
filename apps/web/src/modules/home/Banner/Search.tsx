@@ -64,7 +64,7 @@ const Search = () => {
         className="relative w-[496px] md:w-full"
         ref={ref}
         onFocus={() => setIsFocused(true)}
-      // onBlur={() => setIsFocused(false)}
+        // onBlur={() => setIsFocused(false)}
       >
         <div className="flex items-center border-2 border-black px-4 md:px-2">
           <input

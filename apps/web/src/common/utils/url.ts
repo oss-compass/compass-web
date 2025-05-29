@@ -39,7 +39,9 @@ export function getNameSpace(path: string) {
 }
 export function getUsername(url: string) {
   const urlObj = new URL(url);
-  const pathSegments = urlObj.pathname.split('/').filter(segment => segment !== '');
+  const pathSegments = urlObj.pathname
+    .split('/')
+    .filter((segment) => segment !== '');
   return pathSegments[0];
 }
 export function getRepoName(path: string) {

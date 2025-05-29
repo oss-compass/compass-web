@@ -109,7 +109,9 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
             </div>
             <div className="line-clamp-1 ">Contributed to</div>
           </div>
-          <div className="line-clamp-1 w-16 font-semibold">{data?.contributed_to_count || 0}</div>
+          <div className="line-clamp-1 w-16 font-semibold">
+            {data?.contributed_to_count || 0}
+          </div>
         </div>
       </div>
       <div className="flex w-40 items-center justify-center">
