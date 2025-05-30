@@ -426,10 +426,10 @@ const ChartsBar = () => {
       <div className="relative mb-12 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         {chartOptions.map((option, index) => (
           <SituationCard
-            key={index}
+            key={chartTitles[index] + index}
             bodyClass="h-[600px]"
             title={chartTitles[index]}
-            id={`chart-${index}`}
+            id={chartTitles[index]}
             loading={loading}
           >
             {(ref) => (
