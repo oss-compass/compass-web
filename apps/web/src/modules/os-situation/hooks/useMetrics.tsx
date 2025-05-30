@@ -35,7 +35,7 @@ const useMetrics = () => {
       icon: <MdOutlineTopic className="text-xl" />,
     },
     {
-      name: 'contributors',
+      name: 'contributor',
       title: '活跃及新增开发者发展态势',
       url: '/contributor',
       desc: '统计全球不同地区开源活跃（当年有代码提交）开发者和新增（当年创建且有代码提交）开发者数量，分析各国开发者生态差异和趋势；',
