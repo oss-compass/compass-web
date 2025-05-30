@@ -18,9 +18,8 @@ const Pie = ({ score, rank }) => {
             backgroundColor: {
               image: '/images/test1/4.png',
               //'./data/asset/img/weather/sunny_128.png'
-              //文本片段的 backgroundColor 可以指定为图片后，就可以在文本中使用图标了
             },
-            height: 85, // 可以只指定图片的高度，从而图片的宽度根据图片的长宽比自动得到。
+            height: 85,
             width: 85,
           },
         },
