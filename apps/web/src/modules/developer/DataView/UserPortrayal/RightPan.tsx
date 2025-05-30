@@ -5,6 +5,7 @@ import useContributorInfo from '@modules/developer/hooks/useContributorInfo';
 import { useContributorApi } from '@modules/developer/hooks/useContributorApi';
 import { Select, Tooltip } from 'antd'; // 假设使用 Ant Design 的 Select 组件，请根据实际情况调整引入
 import { GoQuestion } from 'react-icons/go';
+import TooltipInfo from '@modules/developer/components/TooltipInfo';
 
 // 定义接口返回数据类型
 interface ContributionRankData {
@@ -84,13 +85,19 @@ const RightPan = () => {
   return (
     <div className="relative flex w-[400px] flex-shrink-0 flex-col gap-4">
       {/* 添加年份选择下拉框 */}
-      <div className="absolute right-0 top-0 z-50 flex items-center justify-end gap-2">
-        {/* <Tooltip
+      <div className="absolute right-0 top-0 z-50 flex items-center justify-end gap-1">
+        <Tooltip
           placement="top"
-          title={`在`}
+          title={
+            <TooltipInfo
+              tooltipKey="contribution_rank"
+              showDetails={true}
+              showDataSource={true}
+            />
+          }
         >
-          <GoQuestion className='cursor-pointer' />
-        </Tooltip > */}
+          <GoQuestion className="cursor-pointer" />
+        </Tooltip>
         <Select
           defaultValue={selectedYear}
           style={{ width: 74 }}

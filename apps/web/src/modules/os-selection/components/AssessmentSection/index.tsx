@@ -140,7 +140,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
           onClick={handleGetRecommendations}
           className="mt-4 bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
         >
-          获取推荐
+          查找项目
         </button>
       </div>
 

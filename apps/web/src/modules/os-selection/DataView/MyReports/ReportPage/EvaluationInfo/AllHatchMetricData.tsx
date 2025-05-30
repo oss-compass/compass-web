@@ -216,18 +216,18 @@ export const allMetricData = [
     指标意义:
       '社区服务与支撑检查\n\n【建议】\n社区无明确版本计划，有效 bug、PR 半年以上未响应不建议选用；',
   },
-  {
-    key: 'ecologyAdaptationMethod',
-    detailRender: null,
-    维度: '技术生态',
-    指标名称: '适配方式',
-    风险重要性: '高',
-    是否必须澄清: '是',
-    指标检查项及评分项:
-      '设置评分。JS/TS 适配 10 分；C/C++ 库移植 10 分；仅作为实现参考 8 分；Java 库重写 6 分',
-    指标意义:
-      'OH TPC 适配方式及引入成本评估\n\n【建议】\n优先采用“JS/TS 适配”、“C/C++ 库移植”方式引入 TPC 软件；不建议采用“仅作为实现参考”、“Java 库重写”方式引入；',
-  },
+  // {
+  //   key: 'ecologyAdaptationMethod',
+  //   detailRender: null,
+  //   维度: '技术生态',
+  //   指标名称: '适配方式',
+  //   风险重要性: '高',
+  //   是否必须澄清: '是',
+  //   指标检查项及评分项:
+  //     '设置评分。JS/TS 适配 10 分；C/C++ 库移植 10 分；仅作为实现参考 8 分；Java 库重写 6 分',
+  //   指标意义:
+  //     'OH TPC 适配方式及引入成本评估\n\n【建议】\n优先采用“JS/TS 适配”、“C/C++ 库移植”方式引入 TPC 软件；不建议采用“仅作为实现参考”、“Java 库重写”方式引入；',
+  // },
   {
     key: 'ecologyAdoptionAnalysis',
     detailRender: null,

@@ -133,6 +133,35 @@ const Purpose = () => {
             ),
         },
         {
+          name: 'nju4',
+          url: '/images/academe/logo-nju@2x.png',
+          title: t('academe:nju4_title'),
+          desc: (
+            <ul className="h-full w-full">
+              <li className="ml-4 mb-2 list-disc">
+                {t('academe:nju4_author')}
+              </li>
+              <li className="ml-4 mb-2 list-disc">
+                {t('academe:nju4_author2')}
+              </li>
+              <li className="ml-4 list-disc">{t('academe:nju4_desc')}</li>
+            </ul>
+          ),
+          content: (
+            <div className="flex h-full w-full justify-center">
+              <video
+                controls
+                autoPlay={false}
+                className="max-h-[100%]"
+                // maxHeight={'100%'}
+                // width={'100%'}
+                src={'/images/academe/case/njdx.mp4'}
+              ></video>
+            </div>
+          ),
+          experienceUrl: 'http://47.120.44.193/#/',
+        },
+        {
           name: 'pku2',
           url: '/images/academe/logo-pku@2x.png',
           title: t('academe:pku2_title'),
@@ -329,6 +358,28 @@ const Purpose = () => {
       desc: t('home:software_selection_desc'),
       icon: <Svg4 className="h-full w-full object-contain" />,
       case: [
+        {
+          name: 'ics',
+          url: '/images/academe/case/软件所.jpg',
+          title: t('academe:isc_title'),
+          pngWidth: 120,
+          pngHeight: 40,
+          desc: (
+            <ul className="h-full w-full">
+              <li className="ml-4 mb-2 list-disc">
+                <div className="">{t('academe:ics_desc')}</div>
+              </li>
+            </ul>
+          ),
+          content: (
+            <img
+              alt="png"
+              className="h-full w-full"
+              src={'/images/academe/case/ics.png'}
+            />
+          ),
+          experienceUrl: 'https://artifact.yuantu.ac.cn/',
+        },
         {
           name: 'oh',
           url: '/images/academe/case/OpenHarmony_logo.png',

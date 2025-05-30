@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import SituationCard from '../components/SituationCard';
 import EchartCommon from '../components/EchartCommon';
 import { categoriesData } from './categoriesData';
+import { Alert } from 'antd';
 
 const fetchPublicData = async (url) => {
   const response = await fetch(url); // 确保路径正确
@@ -18,6 +19,14 @@ const ChartCards = ({ ChartInfo }) => {
     return fetchPublicData(ChartInfo.value);
   });
   console.log(data);
+  if (data?.series) {
+    data.series = data?.series.filter((item) => {
+      return (
+        item?.name !== '中国(台湾地区除外)-Gitee' &&
+        item?.name !== '中国(台湾地区除外)-Github'
+      );
+    });
+  }
   return (
     <SituationCard
       bodyClass="h-[600px]"
@@ -37,9 +46,20 @@ const ChartCards = ({ ChartInfo }) => {
 const Charts = ({ metric }) => {
   const { t } = useTranslation();
   const chartsList = categoriesData[metric];
+  const descMap = {
+    topics:
+      '基于2022-2024年GitHub全量项目中10%的抽样样本，调研覆盖约500万个活跃开源项目，深入分析了全球代码贡献量最大的17个技术领域的发展态势。',
+    // 'languages': '基于2022-2024年GitHub全量项目中10%的抽样样本，调研覆盖约500万个活跃开源项目，深入分析了全球代码贡献量最大的17个技术领域的发展态势。',
+  };
   return (
     <>
-      <div className="relative base-card">
+      <div className="base-card relative">
+        {descMap?.[metric] && (
+          <div className="mb-6">
+            {' '}
+            <Alert message={descMap?.[metric]} showIcon />
+          </div>
+        )}
         {chartsList.map((ChartItem) => {
           return (
             <div key={ChartItem.id}>
@@ -56,6 +76,7 @@ const Charts = ({ metric }) => {
                   </span>
                 </a>
               </h1>
+
               <div className="relative mb-12 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
                 {ChartItem.value.map((item) => (
                   <ChartCards ChartInfo={item} key={item.value} />

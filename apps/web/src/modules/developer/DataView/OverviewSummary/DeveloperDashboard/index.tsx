@@ -4,9 +4,10 @@ import { BiChat, BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
 import { GoIssueOpened, GoRepo } from 'react-icons/go';
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
 import BaseCard from '@modules/developer/components/DeveloperCard';
-import { Topic } from '@modules/developer/components/SideBar/config';
 import Pie from './Pie';
 import { useContributorApi } from '@modules/developer/hooks/useContributorApi';
+import { Tooltip } from 'antd';
+import { GoQuestion } from 'react-icons/go';
 
 // 定义接口返回数据类型
 interface ContributionOverviewData {
@@ -61,6 +62,12 @@ interface MetricBoxContributorsProps {
 const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
   return (
     <div className="relative flex min-w-0 scroll-mt-[200px] justify-center p-5">
+      <div className="absolute right-7 -top-9 z-50 flex items-center justify-end gap-2">
+        {/* <Tooltip placement="top" title={`在`}>
+          <GoQuestion className="cursor-pointer" />
+        </Tooltip> */}
+      </div>
+
       <div className="mr-10 grid max-w-[300px] flex-1 sm:mr-0 xl:mr-2">
         <div className="mb-2 flex items-center font-medium">
           <div className="flex flex-1 items-center">

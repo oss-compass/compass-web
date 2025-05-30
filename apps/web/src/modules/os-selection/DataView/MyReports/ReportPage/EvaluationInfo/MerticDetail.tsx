@@ -1,9 +1,6 @@
 import React from 'react';
 import { toFixed } from '@common/utils';
-import {
-  allMetricData,
-  getRishContent,
-} from '@modules/oh/DataView/HatchingTreatment/Hatch/EvaluationInfo/AllHatchMetricData';
+import { allMetricData, getRishContent } from './AllHatchMetricData';
 import { Tag, Badge, Popover } from 'antd';
 import {
   CloseCircleOutlined,

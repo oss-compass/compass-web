@@ -1,19 +1,23 @@
 {
-  "title": { "text": "" },
-  "tooltip": { "trigger": "axis" },
+  "title": {
+    "text": ""
+  },
+  "tooltip": {
+    "trigger": "axis"
+  },
   "legend": {
     "data": [
       "美国",
-      "中国",
+      "中国(台湾地区除外)",
       "欧盟",
-      "中国-Github",
+      "中国(台湾地区除外)-Github",
       "印度",
       "英国",
       "日本",
       "俄罗斯",
       "巴西",
       "印度尼西亚",
-      "中国-Gitee",
+      "中国(台湾地区除外)-Gitee",
       "墨西哥",
       "加拿大",
       "澳大利亚",
@@ -27,8 +31,17 @@
       "土耳其"
     ]
   },
-  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
-  "toolbox": { "feature": { "saveAsImage": {} } },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
+  "toolbox": {
+    "feature": {
+      "saveAsImage": {}
+    }
+  },
   "xAxis": {
     "type": "category",
     "boundaryGap": false,
@@ -47,7 +60,9 @@
       "2024 Q4"
     ]
   },
-  "yAxis": { "type": "value" },
+  "yAxis": {
+    "type": "value"
+  },
   "series": [
     {
       "name": "美国",
@@ -59,7 +74,7 @@
       ]
     },
     {
-      "name": "中国",
+      "name": "中国(台湾地区除外)",
       "type": "line",
       "smooth": true,
       "data": [
@@ -77,7 +92,7 @@
       ]
     },
     {
-      "name": "中国-Github",
+      "name": "中国(台湾地区除外)-Github",
       "type": "line",
       "smooth": true,
       "data": [
@@ -140,7 +155,7 @@
       ]
     },
     {
-      "name": "中国-Gitee",
+      "name": "中国(台湾地区除外)-Gitee",
       "type": "line",
       "smooth": true,
       "data": [

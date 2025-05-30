@@ -1,19 +1,23 @@
 {
-  "title": { "text": "" },
-  "tooltip": { "trigger": "axis" },
+  "title": {
+    "text": ""
+  },
+  "tooltip": {
+    "trigger": "axis"
+  },
   "legend": {
     "data": [
       "美国",
       "欧盟",
       "印度",
-      "中国",
+      "中国(台湾地区除外)",
       "巴西",
-      "中国-Github",
+      "中国(台湾地区除外)-Github",
       "英国",
       "俄罗斯",
       "加拿大",
       "印度尼西亚",
-      "中国-Gitee",
+      "中国(台湾地区除外)-Gitee",
       "韩国",
       "肯尼亚",
       "土耳其",
@@ -27,7 +31,7 @@
       "阿根廷",
       "墨西哥",
       "加纳",
-      "台湾",
+      "台湾地区",
       "伊朗",
       "白俄罗斯",
       "乌克兰",
@@ -37,14 +41,25 @@
       "秘鲁"
     ]
   },
-  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
-  "toolbox": { "feature": { "saveAsImage": {} } },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
+  "toolbox": {
+    "feature": {
+      "saveAsImage": {}
+    }
+  },
   "xAxis": {
     "type": "category",
     "boundaryGap": false,
     "data": ["2022", "2023", "2024"]
   },
-  "yAxis": { "type": "value" },
+  "yAxis": {
+    "type": "value"
+  },
   "series": [
     {
       "name": "美国",
@@ -65,7 +80,7 @@
       "data": [2859921, 4354489, 5971524]
     },
     {
-      "name": "中国",
+      "name": "中国(台湾地区除外)",
       "type": "line",
       "smooth": true,
       "data": [1574341, 1680663, 2241649]
@@ -77,7 +92,7 @@
       "data": [1413910, 1656299, 2118939]
     },
     {
-      "name": "中国-Github",
+      "name": "中国(台湾地区除外)-Github",
       "type": "line",
       "smooth": true,
       "data": [1003648, 1073879, 1274707]
@@ -107,7 +122,7 @@
       "data": [584040, 714290, 942604]
     },
     {
-      "name": "中国-Gitee",
+      "name": "中国(台湾地区除外)-Gitee",
       "type": "line",
       "smooth": true,
       "data": [570693, 606784, 966942]
@@ -191,7 +206,7 @@
       "data": [136950, 170356, 245337]
     },
     {
-      "name": "台湾",
+      "name": "台湾地区",
       "type": "line",
       "smooth": true,
       "data": [123202, 124943, 146555]

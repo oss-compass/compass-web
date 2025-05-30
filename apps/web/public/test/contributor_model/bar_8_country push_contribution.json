@@ -1,12 +1,24 @@
 {
-  "title": { "text": "总贡献者: 463455 国家贡献者: 103154 比率: 0.22" },
-  "tooltip": { "trigger": "axis", "axisPointer": { "type": "shadow" } },
-  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "title": {
+    "text": "总贡献者: 463455 国家贡献者: 103154 比率: 0.22"
+  },
+  "tooltip": {
+    "trigger": "axis",
+    "axisPointer": {
+      "type": "shadow"
+    }
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
   "xAxis": [
     {
       "type": "category",
       "data": [
-        "中国",
+        "中国(台湾地区除外)",
         "菲律宾",
         "臺灣",
         "新加坡",
@@ -17,10 +29,16 @@
         "澳大利亚",
         "英国"
       ],
-      "axisTick": { "alignWithLabel": true }
+      "axisTick": {
+        "alignWithLabel": true
+      }
     }
   ],
-  "yAxis": [{ "type": "value" }],
+  "yAxis": [
+    {
+      "type": "value"
+    }
+  ],
   "series": [
     {
       "name": "Direct",

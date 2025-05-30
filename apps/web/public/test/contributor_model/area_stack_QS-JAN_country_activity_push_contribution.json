@@ -1,25 +1,29 @@
 {
-  "title": { "text": "" },
+  "title": {
+    "text": ""
+  },
   "tooltip": {
     "trigger": "item",
     "axisPointer": {
       "type": "cross",
-      "label": { "backgroundColor": "#6a7985" }
+      "label": {
+        "backgroundColor": "#6a7985"
+      }
     }
   },
   "legend": {
     "data": [
       "美国",
-      "中国",
+      "中国(台湾地区除外)",
       "欧盟",
-      "中国-Github",
+      "中国(台湾地区除外)-Github",
       "印度",
       "英国",
       "日本",
       "俄罗斯",
       "巴西",
       "印度尼西亚",
-      "中国-Gitee",
+      "中国(台湾地区除外)-Gitee",
       "墨西哥",
       "加拿大",
       "澳大利亚",
@@ -33,8 +37,17 @@
       "土耳其"
     ]
   },
-  "toolbox": { "feature": { "saveAsImage": {} } },
-  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": {
+    "feature": {
+      "saveAsImage": {}
+    }
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
   "xAxis": [
     {
       "type": "category",
@@ -55,14 +68,20 @@
       ]
     }
   ],
-  "yAxis": [{ "type": "value" }],
+  "yAxis": [
+    {
+      "type": "value"
+    }
+  ],
   "series": [
     {
       "name": "美国",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         20856472, 21187362, 22548391, 22973201, 25164406, 23748549, 23647588,
@@ -70,11 +89,13 @@
       ]
     },
     {
-      "name": "中国",
+      "name": "中国(台湾地区除外)",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         12561688, 13468058, 12834132, 11655115, 10909990, 10555740, 10911375,
@@ -86,7 +107,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         11365677, 11963941, 12285164, 13613261, 15284266, 14060203, 13323941,
@@ -94,11 +117,13 @@
       ]
     },
     {
-      "name": "中国-Github",
+      "name": "中国(台湾地区除外)-Github",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         10343381, 10944578, 10841613, 9770690, 9345541, 8829172, 9149667,
@@ -110,7 +135,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         7972370, 7619581, 9297816, 11110969, 11479991, 10984670, 12844016,
@@ -122,7 +149,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         4910991, 4766222, 5680646, 5768464, 5714837, 5589522, 5480177, 5914334,
@@ -134,7 +163,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         4817810, 5070465, 5382702, 5495301, 5234493, 5768284, 5259104, 5567814,
@@ -146,7 +177,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         4783042, 5827153, 6140054, 7352455, 7734402, 8063404, 10195664, 9329161,
@@ -158,7 +191,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         4253569, 5234075, 6078941, 6013178, 5561945, 6417070, 6340697, 6702692,
@@ -170,7 +205,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         2933900, 2746795, 2703002, 3113159, 2791875, 3246761, 3271355, 4421126,
@@ -178,11 +215,13 @@
       ]
     },
     {
-      "name": "中国-Gitee",
+      "name": "中国(台湾地区除外)-Gitee",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         2218307, 2523480, 1992519, 1884425, 1564449, 1726568, 1761708, 1644282,
@@ -194,7 +233,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         1702411, 1576101, 1648562, 2189437, 2049897, 1990580, 1799216, 2146545,
@@ -206,7 +247,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         1589582, 1478238, 1536117, 1618691, 1757123, 1533159, 1606213, 1725658,
@@ -218,7 +261,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         1423377, 1482116, 1459544, 1571478, 1679418, 1713875, 1724156, 1745831,
@@ -230,7 +275,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         1293468, 1350384, 1432408, 1460546, 1548972, 1465299, 1558223, 1440997,
@@ -242,7 +289,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         749829, 707541, 946565, 884017, 1075674, 900336, 1211473, 1167896,
@@ -254,7 +303,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         726251, 748865, 808707, 893813, 870899, 842540, 917140, 968155, 1260111,
@@ -266,7 +317,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         525523, 436923, 589741, 497749, 517328, 447014, 407027, 182261, 198775,
@@ -278,7 +331,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         486024, 497273, 504661, 595778, 564448, 534656, 520521, 520914, 546679,
@@ -290,7 +345,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         428574, 160625, 227731, 244291, 270321, 272373, 346122, 339730, 681445,
@@ -302,7 +359,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         423127, 390177, 427944, 408369, 481417, 438976, 693198, 440774, 561769,
@@ -314,7 +373,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [
         419884, 402080, 590510, 495821, 507053, 458271, 482184, 456467, 613687,

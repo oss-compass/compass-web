@@ -4,7 +4,7 @@ import { useCreateThirdSoftwareReportMutation } from '@oss-compass/graphql';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
-import { Modal, Form, Alert, Input, Typography } from 'antd'; // 引入 Typography
+import { Modal, Button, Form, Alert, Input, Typography } from 'antd'; // 引入 Typography
 
 const { Text } = Typography; // 解构 Text 组件
 
@@ -74,6 +74,7 @@ const GenReport = ({ selectedSoftware }) => {
   };
 
   const submitReport = (softwareList) => {
+    setConfirmLoading(true); // 开启loading
     createMutation.mutate({
       label: 'OpenHarmony-TPC',
       level: 'community',
@@ -84,7 +85,6 @@ const GenReport = ({ selectedSoftware }) => {
   };
 
   const handleModalOk = () => {
-    setConfirmLoading(true); // 开启loading
     form
       .validateFields()
       .then((values) => {
@@ -119,15 +119,38 @@ const GenReport = ({ selectedSoftware }) => {
 
   return (
     <div className="">
-      <button
+      {/* <button
         onClick={handleCompare}
         className="flex items-center gap-2 bg-blue-500 px-4 py-2 text-white shadow-lg transition-all hover:bg-blue-600"
       >
-        <span>生成报告</span>
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-sm text-blue-500">
-          {selectedSoftware.length}
-        </span>
-      </button>
+        {confirmLoading ? (
+          <>
+            <span>生成报告</span> <Spin />
+          </>
+
+        ) : (
+          <>
+            <span>生成报告</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm text-blue-500">
+              {selectedSoftware.length}
+            </span>
+          </>
+        )}
+      </button> */}
+      <Button
+        onClick={handleCompare}
+        className="flex items-center gap-2"
+        type="primary" // 使用Ant Design的primary类型
+        loading={confirmLoading} // 绑定loading状态
+        disabled={confirmLoading} // 在loading状态下禁用按钮
+      >
+        <div className="flex items-center gap-2">
+          <span>生成报告</span>
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm text-blue-500">
+            {selectedSoftware.length}
+          </span>
+        </div>
+      </Button>
 
       <Modal
         title="填写仓库链接"
@@ -179,8 +202,8 @@ const GenReport = ({ selectedSoftware }) => {
                     isValidRepoUrl(value)
                       ? Promise.resolve()
                       : Promise.reject(
-                        new Error('请输入有效的GitHub或Gitee仓库链接!')
-                      ),
+                          new Error('请输入有效的GitHub或Gitee仓库链接!')
+                        ),
                 },
               ]}
             >

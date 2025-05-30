@@ -8,9 +8,8 @@ import classnames from 'classnames';
 import { usePrevious, useWindowScroll } from 'react-use';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 
-
 const SideBar = () => {
-  const hash = useHashchangeEvent()
+  const hash = useHashchangeEvent();
   const router = useRouter();
   const metric = router.query.metric as string;
   const [collapsed, setCollapsed] = useState(false);
@@ -39,7 +38,7 @@ const SideBar = () => {
       <Layout>
         {menuItems && menuItems.length > 0 && (
           <Sider
-            width={260}
+            width={280}
             theme="light"
             collapsible
             collapsed={collapsed}
@@ -48,8 +47,7 @@ const SideBar = () => {
           >
             {
               <Menu
-
-                style={{ width: '260px' }}
+                style={{ width: '280px' }}
                 mode="inline"
                 items={collapsed ? [] : menuItems}
                 onClick={handleMenuClick}

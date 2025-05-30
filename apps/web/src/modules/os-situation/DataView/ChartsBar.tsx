@@ -3,6 +3,8 @@ import { useTranslation } from 'next-i18next';
 import SituationCard from '../components/SituationCard';
 import EchartCommon from '../components/EchartCommon';
 import * as echarts from 'echarts';
+import Dependencywheel from './Dependency';
+import { importExportChartTitles } from './categoriesData';
 
 // 格式化数字的辅助函数 (从 index.html 迁移)
 const formatNumber = (num: number, decimals = 2): string => {
@@ -245,7 +247,7 @@ const ChartsBar = () => {
         const barSeries = country.map((c, i) => ({
           name: c + '年度',
           type: 'bar',
-          xAxisIndex: 1,
+          xAxisIndex: 0,
           data: years.map((y) => yearsData[y][c][types.indexOf(type)]),
           itemStyle: {
             color: `rgba(${colorList[i]},.7)`, // 示例颜色，需要根据实际 colorList 调整
@@ -262,13 +264,14 @@ const ChartsBar = () => {
           xAxis: [
             {
               type: 'category',
-              boundaryGap: false,
-              data: QList.map((i) => '20' + i), // 需要根据实际数据格式调整
+              data: years,
+              // show: false,
             },
             {
               type: 'category',
-              data: years,
+              boundaryGap: false,
               show: false,
+              data: QList.map((i) => '20' + i), // 需要根据实际数据格式调整
             },
           ],
           yAxis: {
@@ -407,29 +410,16 @@ const ChartsBar = () => {
     }
   }, [yearsData, QData, outRadioData]);
 
-  const chartTitles = [
-    '进口年度',
-    '进口季度',
-    '出口年度',
-    '进口年度',
-    '进出口总和年度',
-    '进出口总和季度',
-    '进出口贡献量占总贡献量比例年度',
-    '进出口贡献量占总贡献量比例季度',
-    'Top30进出口push量',
-    '全球总push量',
-    'Top30进出口/全球总push量比例图',
-  ];
-
   return (
     <>
+      <Dependencywheel />
       <div className="relative mb-12 grid min-w-0 grid-cols-2 gap-4 md:grid-cols-1">
         {chartOptions.map((option, index) => (
           <SituationCard
-            key={chartTitles[index] + index}
+            key={importExportChartTitles[index] + index}
             bodyClass="h-[600px]"
-            title={chartTitles[index]}
-            id={chartTitles[index]}
+            title={importExportChartTitles[index + 1]}
+            id={importExportChartTitles[index + 1]}
             loading={loading}
           >
             {(ref) => (

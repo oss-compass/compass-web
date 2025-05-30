@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SoftwareCard from '../SoftwareCard';
 import client from '@common/gqlClient';
 import { useThirdTxtSearchQuery } from '@oss-compass/graphql';
-import { Empty, Spin } from 'antd';
+import { Empty, Spin, Alert } from 'antd';
 import { languagesList } from '@modules/os-selection/constant';
 import GenReport from '../GenReport';
 
@@ -130,7 +130,10 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
           className="w-full resize-none  border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
           placeholder="描述你的需求... (例: 处理Microsoft Word文档的JS库)"
         />
-
+        {/* <Alert
+          message="推荐算法设计与研发： 南京大学计算机学院 / 计算机软件研究所 / 前沿交叉中心 汪亮 副教授及团队"
+          showIcon
+        /> */}
         {/* 编程语言选择器 */}
         <div className="my-6 flex flex-wrap gap-2">
           <span className="mt-1 text-sm">选择推荐库来源(可多选):</span>
@@ -152,13 +155,20 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
         {errorMessage && (
           <div className="mb-4 text-sm text-red-500">{errorMessage}</div>
         )}
-
-        <button
-          onClick={handleGetRecommendations}
-          className="bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
-        >
-          获取推荐
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleGetRecommendations}
+            className="bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+          >
+            获取推荐
+          </button>
+          <div className="">
+            <Alert
+              message="推荐算法设计与研发： 南京大学计算机学院 / 计算机软件研究所 / 前沿交叉中心 汪亮 副教授及团队"
+              showIcon
+            />
+          </div>
+        </div>
       </div>
 
       {/* 推荐结果 */}

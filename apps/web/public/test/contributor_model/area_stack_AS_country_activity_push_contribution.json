@@ -1,25 +1,29 @@
 {
-  "title": { "text": "" },
+  "title": {
+    "text": ""
+  },
   "tooltip": {
     "trigger": "item",
     "axisPointer": {
       "type": "cross",
-      "label": { "backgroundColor": "#6a7985" }
+      "label": {
+        "backgroundColor": "#6a7985"
+      }
     }
   },
   "legend": {
     "data": [
       "美国",
-      "中国",
+      "中国(台湾地区除外)",
       "欧盟",
-      "中国-Github",
+      "中国(台湾地区除外)-Github",
       "印度",
       "俄罗斯",
       "巴西",
       "英国",
       "日本",
       "印度尼西亚",
-      "中国-Gitee",
+      "中国(台湾地区除外)-Gitee",
       "墨西哥",
       "加拿大",
       "澳大利亚",
@@ -28,13 +32,22 @@
       "阿拉伯联合酋长国",
       "尼日利亚",
       "哥伦比亚",
-      "台湾",
+      "台湾地区",
       "南非",
       "阿根廷"
     ]
   },
-  "toolbox": { "feature": { "saveAsImage": {} } },
-  "grid": { "left": "3%", "right": "4%", "bottom": "3%", "containLabel": true },
+  "toolbox": {
+    "feature": {
+      "saveAsImage": {}
+    }
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
   "xAxis": [
     {
       "type": "category",
@@ -42,23 +55,31 @@
       "data": ["2022", "2023", "2024"]
     }
   ],
-  "yAxis": [{ "type": "value" }],
+  "yAxis": [
+    {
+      "type": "value"
+    }
+  ],
   "series": [
     {
       "name": "美国",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [87565426, 96055711, 113807231]
     },
     {
-      "name": "中国",
+      "name": "中国(台湾地区除外)",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [50518993, 43192289, 54583984]
     },
@@ -67,16 +88,20 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [49228043, 58394055, 69545716]
     },
     {
-      "name": "中国-Github",
+      "name": "中国(台湾地区除外)-Github",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [41900262, 36495282, 45252005]
     },
@@ -85,7 +110,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [36000736, 47463752, 65720109]
     },
@@ -94,7 +121,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [24102704, 35322631, 48467616]
     },
@@ -103,7 +132,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [21579763, 25022404, 30456849]
     },
@@ -112,7 +143,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [21126323, 22698870, 25696506]
     },
@@ -121,7 +154,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [20766278, 21829695, 25097027]
     },
@@ -130,16 +165,20 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [11496856, 13731117, 26207815]
     },
     {
-      "name": "中国-Gitee",
+      "name": "中国(台湾地区除外)-Gitee",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [8618731, 6697007, 9331979]
     },
@@ -148,7 +187,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [7116511, 7986238, 9539686]
     },
@@ -157,7 +198,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [6222628, 6622153, 7434261]
     },
@@ -166,7 +209,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [5936515, 6863280, 7334973]
     },
@@ -175,7 +220,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [5536806, 6013491, 5579887]
     },
@@ -184,7 +231,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [3287952, 4355379, 5761785]
     },
@@ -193,7 +242,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [3177636, 3598734, 6502626]
     },
@@ -202,7 +253,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [2736403, 2835663, 1782516]
     },
@@ -211,16 +264,20 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [2083736, 2140539, 2399009]
     },
     {
-      "name": "台湾",
+      "name": "台湾地区",
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [2055094, 1771600, 1568037]
     },
@@ -229,7 +286,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [2049936, 1553630, 777952]
     },
@@ -238,7 +297,9 @@
       "type": "line",
       "stack": "Total",
       "areaStyle": {},
-      "emphasis": { "focus": "series" },
+      "emphasis": {
+        "focus": "series"
+      },
       "smooth": true,
       "data": [1998794, 2416275, 2209794]
     }
