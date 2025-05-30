@@ -14,6 +14,7 @@ const GenReport = ({ selectedSoftware }) => {
   const [isModalVisible, setIsModalVisible] = useState(false); // 控制模态框显示
   const [form] = Form.useForm(); // 表单实例
   const [softwareToEdit, setSoftwareToEdit] = useState([]); // 需要编辑的软件列表
+  const [confirmLoading, setConfirmLoading] = useState(false); // 新增：控制模态框确认按钮的loading状态
 
   const createMutation = useCreateThirdSoftwareReportMutation(client, {
     onSuccess(res) {
@@ -26,6 +27,7 @@ const GenReport = ({ selectedSoftware }) => {
           res.createThirdSoftwareReport?.message || t('common:toast.add_failed')
         );
       }
+      setConfirmLoading(false); // 操作成功或失败后，关闭loading
       setIsModalVisible(false);
     },
     onError(e: any) {
@@ -35,6 +37,7 @@ const GenReport = ({ selectedSoftware }) => {
         msg = errors[0].message;
       }
       toast.error(msg || t('common:toast.add_failed'));
+      setConfirmLoading(false); // 操作失败后，关闭loading
     },
   });
 
@@ -81,6 +84,7 @@ const GenReport = ({ selectedSoftware }) => {
   };
 
   const handleModalOk = () => {
+    setConfirmLoading(true); // 开启loading
     form
       .validateFields()
       .then((values) => {
@@ -105,6 +109,7 @@ const GenReport = ({ selectedSoftware }) => {
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
+        setConfirmLoading(false); // 验证失败后，关闭loading
       });
   };
 
@@ -132,6 +137,7 @@ const GenReport = ({ selectedSoftware }) => {
         width={800}
         okText="提交"
         cancelText="取消"
+        confirmLoading={confirmLoading} // 将loading状态绑定到这里
       >
         <div className="my-4">
           <Alert
@@ -173,8 +179,8 @@ const GenReport = ({ selectedSoftware }) => {
                     isValidRepoUrl(value)
                       ? Promise.resolve()
                       : Promise.reject(
-                          new Error('请输入有效的GitHub或Gitee仓库链接!')
-                        ),
+                        new Error('请输入有效的GitHub或Gitee仓库链接!')
+                      ),
                 },
               ]}
             >
