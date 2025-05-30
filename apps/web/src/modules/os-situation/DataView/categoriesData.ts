@@ -748,6 +748,19 @@ const allOptions = {
     },
   ],
 };
+const importExportChartTitles = [
+  '进口年度',
+  '进口季度',
+  '出口年度',
+  '进口年度',
+  '进出口总和年度',
+  '进出口总和季度',
+  '进出口贡献量占总贡献量比例年度',
+  '进出口贡献量占总贡献量比例季度',
+  // 'Top30进出口push量',
+  // '全球总push量',
+  // 'Top30进出口/全球总push量比例图',
+];
 export const categoriesData = {
   push: [
     {
@@ -821,6 +834,18 @@ export const categoriesData = {
           text: '中国代码贡献量（Gitee）季度',
         },
       ],
+    },
+  ],
+  import_export: [
+    {
+      name: '全球代码贡献量',
+      id: 'global_push',
+      value: importExportChartTitles.map((item) => {
+        return {
+          value: item,
+          text: item,
+        };
+      }),
     },
   ],
   repositories: [

@@ -17,9 +17,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 const Metric = () => {
   return (
     <NoSsr>
-      <Header />
       <DataView />
-      <Footer />
     </NoSsr>
   );
 };

@@ -14,7 +14,7 @@ const fetchPublicData = async (url) => {
 };
 
 const ChartCards = ({ ChartInfo }) => {
-  const { data, error, isLoading } = useQuery(['publicData'], () => {
+  const { data, error, isLoading } = useQuery([ChartInfo.text], () => {
     return fetchPublicData(ChartInfo.value);
   });
   console.log(data);
