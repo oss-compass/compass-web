@@ -6,11 +6,11 @@ import { Layout, Menu } from 'antd';
 import { useState } from 'react';
 import classnames from 'classnames';
 import { usePrevious, useWindowScroll } from 'react-use';
-import { Main, Content } from '@common/components/Layout';
-import StickyNav from '@common/components/Header/StickyNav';
-import Header from '@common/components/Header';
+import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
+
 
 const SideBar = () => {
+  const hash = useHashchangeEvent()
   const router = useRouter();
   const metric = router.query.metric as string;
   const [collapsed, setCollapsed] = useState(false);
@@ -48,11 +48,12 @@ const SideBar = () => {
           >
             {
               <Menu
+
                 style={{ width: '260px' }}
                 mode="inline"
                 items={collapsed ? [] : menuItems}
                 onClick={handleMenuClick}
-                selectedKeys={[router.asPath.split('#')[1]]}
+                selectedKeys={[hash]}
                 defaultOpenKeys={menuItems.map((item: any) => item.key)}
               />
             }

@@ -39,7 +39,7 @@ const Charts = ({ metric }) => {
   const chartsList = categoriesData[metric];
   return (
     <>
-      <div className="relative">
+      <div className="relative base-card">
         {chartsList.map((ChartItem) => {
           return (
             <div key={ChartItem.id}>

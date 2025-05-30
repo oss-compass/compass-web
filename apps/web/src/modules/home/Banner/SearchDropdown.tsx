@@ -187,6 +187,7 @@ const SearchDropdown: React.FC<{
   onTabChange: (type: string) => void;
   activeTabKey: string;
 }> = ({ result, keyword, onTabChange, activeTabKey }) => {
+  const { t } = useTranslation();
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -194,11 +195,11 @@ const SearchDropdown: React.FC<{
   const items = [
     {
       key: '2',
-      label: 'Repo/Community',
+      label: t('home:repo_community'),
     },
     {
       key: '1',
-      label: 'Developer',
+      label: t('home:developer'),
     },
   ];
   let content = null;
@@ -211,7 +212,7 @@ const SearchDropdown: React.FC<{
         )}
       >
         <span className="flex-wrap text-base leading-none">
-          未找到匹配的结果。
+          {t('home:no_matching_results')}
         </span>
       </p>
     );

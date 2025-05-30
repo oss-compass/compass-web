@@ -64,14 +64,13 @@ const Search = () => {
         className="relative w-[496px] md:w-full"
         ref={ref}
         onFocus={() => setIsFocused(true)}
-        // onBlur={() => setIsFocused(false)}
       >
         <div className="flex items-center border-2 border-black px-4 md:px-2">
           <input
             value={keyword}
             type="text"
             className={classnames(
-              'h-[52px] w-full appearance-none bg-transparent text-xl outline-0 ',
+              'h-[52px] w-full appearance-none bg-transparent text-lg outline-0 ',
               'md:h-[40px] md:text-sm'
             )}
             placeholder={t('home:type_the_name_to_insight_into_your_project')}

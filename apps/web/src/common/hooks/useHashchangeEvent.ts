@@ -35,10 +35,11 @@ const useHashchangeEvent = (
 
   useDebounce(
     () => {
+      console.log(activeId);
       if (!activeId) return;
-      const el = document.getElementById(activeId);
+      const decodedId = decodeURIComponent(activeId);
+      const el = document.getElementById(decodedId);
       if (!el) return;
-
       const cards = document.querySelectorAll(`.${cardClassName}`);
       cards.forEach((card) => {
         card.classList.remove('card-hash-active-border');
