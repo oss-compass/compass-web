@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
+import { Popover } from 'antd';
 
 const CooperationCase = ({ caseList }) => {
   const { t } = useTranslation();
@@ -63,6 +64,28 @@ const CooperationCase = ({ caseList }) => {
               >
                 {t('academe:experience_immediately')}
               </div>
+            )}
+            {activeCase.contactUrl && (
+              <Popover
+                content={
+                  <>
+                    <div className="flex items-center justify-center text-base">
+                      Email:
+                      <a
+                        className="ml-2 mb-0.5 text-[#002fa7]"
+                        href={`mailto:${activeCase.contactUrl}`}
+                      >
+                        {activeCase.contactUrl}
+                      </a>
+                    </div>
+                  </>
+                }
+                trigger="click"
+              >
+                <div className="mt-4 flex h-8 w-48 cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90">
+                  {t('academe:contact_immediately')}
+                </div>
+              </Popover>
             )}
           </div>
           <div className="ml-8 flex h-[280px] flex-1 items-center">

@@ -159,7 +159,8 @@ const Purpose = () => {
               ></video>
             </div>
           ),
-          experienceUrl: 'http://47.120.44.193/#/',
+          contactUrl: 'stly@nju.edu.cn',
+          // experienceUrl: 'http://47.120.44.193/#/',
         },
         {
           name: 'pku2',
