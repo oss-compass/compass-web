@@ -1,6 +1,6 @@
 import React from 'react';
-import NotFoundOh from '@modules/oh/components/NotFoundOh';
-import Loading from '@modules/oh/components/Loading';
+import NotFoundOh from './NotFoundOh';
+import Loading from './Loading';
 import EvaluationDetail from './EvaluationInfo/EvaluationDetail';
 import { useTpcSoftwareSelectionReportQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';

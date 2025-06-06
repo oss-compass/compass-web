@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'; // 导入 useState
 import MyTable from '@common/components/Table';
-import useGetTableOption from '@modules/oh/hooks/useGetTableOption';
+import useGetTableOption from './useGetTableOption';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTableColumns } from './useTableColumns';

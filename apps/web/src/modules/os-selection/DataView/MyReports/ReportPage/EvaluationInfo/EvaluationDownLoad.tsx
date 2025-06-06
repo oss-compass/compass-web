@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTpcSoftwareSelectionReportRowQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import { Popover, Dropdown } from 'antd';
+import { Popover } from 'antd';
 import type { MenuProps } from 'antd';
 import { DownloadOutlined, LoadingOutlined } from '@ant-design/icons';
-import { downloadReport } from '@modules/oh/DataView/HatchingTreatment/Hatch/EvaluationInfo/MerticDetail';
+import { downloadReport } from './MerticDetail';
 
 const DownloadReportRow = ({ item, setLoadingDownLoad }) => {
   useTpcSoftwareSelectionReportRowQuery(

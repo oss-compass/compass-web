@@ -1,27 +1,15 @@
 import React, { useState } from 'react';
-import RiskBadge from '@modules/oh/DataView/HatchingTreatment/Hatch/EvaluationInfo/Badge/RiskBadge';
-import {
-  metricList,
-  useGetMetricIcon,
-  setRiskTag,
-} from '@modules/oh/DataView/HatchingTreatment/Hatch/EvaluationInfo/MerticDetail';
-import useCheckRiskState from '@modules/oh/hooks/useCheckRiskState';
+import { metricList, useGetMetricIcon, setRiskTag } from '../MerticDetail';
 
-const MetricIcon = ({ canClarify, shortCode, item }) => {
-  const { riskFill } = useCheckRiskState(shortCode, item);
+const MetricIcon = ({ item }) => {
   return (
     <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
-      {useGetMetricIcon(item, canClarify ? riskFill : false)}
+      {useGetMetricIcon(item, false)}
     </div>
   );
 };
-const RiskTag = ({ canClarify, shortCode, item }) => {
-  const { riskFill } = useCheckRiskState(shortCode, item);
-  return (
-    <div className="ml-2">
-      {setRiskTag(item, canClarify ? riskFill : false)}
-    </div>
-  );
+const RiskTag = ({ item }) => {
+  return <div className="ml-2">{setRiskTag(item, false)}</div>;
 };
 const EvaluationMerticItem = ({
   canClarify,
@@ -58,19 +46,11 @@ const EvaluationMerticItem = ({
               }}
               className="flex h-[90px] cursor-pointer border border-b-0 bg-white px-4 py-3 hover:bg-[#f5f6fd]"
             >
-              <MetricIcon
-                canClarify={canClarify}
-                shortCode={report.shortCode}
-                item={item}
-              />
+              <MetricIcon item={item} />
               <div className="flex-1 pr-3">
                 <div className="flex h-[29px] text-base font-semibold">
                   <div className="flex-shrink-0"> {item.指标名称}</div>
-                  <RiskTag
-                    canClarify={canClarify}
-                    shortCode={report.shortCode}
-                    item={item}
-                  />
+                  <RiskTag item={item} />
                 </div>
                 <div
                   title={item.指标意义.split('\n\n')}
@@ -84,9 +64,6 @@ const EvaluationMerticItem = ({
                   ))}
                 </div>
               </div>
-              {canClarify && (
-                <RiskBadge shortCode={report.shortCode} mertic={item} />
-              )}
             </div>
           );
         })}

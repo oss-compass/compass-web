@@ -6,15 +6,8 @@ import GenReport from '../GenReport';
 import { useSearchQuery } from '@oss-compass/graphql';
 import { getPathname, getProvider } from '@common/utils';
 
-interface RecommendationSectionProps {
-  onBack: () => void;
-}
-
-const RecommendationSection: React.FC<RecommendationSectionProps> = ({
-  onBack,
-}) => {
+const RecommendationSection = () => {
   const [description, setDescription] = useState('');
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState([]);
   const [errorMessage, setErrorMessage] = useState(''); // 新增状态用于存储错误信息
   const [selectedSoftware, setSelectedSoftware] = useState<any[]>([]);
@@ -79,7 +72,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
       setErrorMessage('请输入GitHub、Gitee仓库URL。');
       return;
     }
-    console.log('获取推荐:', { description, selectedLanguages });
     // 触发数据查询
     refetch(); // 在这里手动调用 refetch 触发查询
   };
@@ -87,7 +79,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   if (isFetching) {
     content = (
       <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
-        {' '}
         <Spin size="large" />
       </div>
     );

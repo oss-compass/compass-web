@@ -119,24 +119,6 @@ const GenReport = ({ selectedSoftware }) => {
 
   return (
     <div className="">
-      {/* <button
-        onClick={handleCompare}
-        className="flex items-center gap-2 bg-blue-500 px-4 py-2 text-white shadow-lg transition-all hover:bg-blue-600"
-      >
-        {confirmLoading ? (
-          <>
-            <span>生成报告</span> <Spin />
-          </>
-
-        ) : (
-          <>
-            <span>生成报告</span>
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm text-blue-500">
-              {selectedSoftware.length}
-            </span>
-          </>
-        )}
-      </button> */}
       <Button
         onClick={handleCompare}
         className="flex items-center gap-2"

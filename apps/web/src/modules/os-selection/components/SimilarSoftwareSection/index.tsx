@@ -6,13 +6,7 @@ import { Empty, Spin, Alert } from 'antd';
 import { languagesList } from '@modules/os-selection/constant';
 import GenReport from '../GenReport';
 
-interface RecommendationSectionProps {
-  onBack: () => void;
-}
-
-const RecommendationSection: React.FC<RecommendationSectionProps> = ({
-  onBack,
-}) => {
+const RecommendationSection = () => {
   const [description, setDescription] = useState('');
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedSrcEcosystem, setSelectedSrcEcosystem] = useState<string>('');
@@ -93,7 +87,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   if (isFetching) {
     content = (
       <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
-        {' '}
         <Spin size="large" />
       </div>
     );
@@ -101,7 +94,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
     if (recommendations.length === 0) {
       content = (
         <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded bg-white p-6 shadow-sm">
-          {' '}
           <Empty />
         </div>
       );

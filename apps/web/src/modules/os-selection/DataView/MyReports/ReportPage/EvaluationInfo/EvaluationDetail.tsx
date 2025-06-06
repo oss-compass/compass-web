@@ -1,13 +1,9 @@
 import React from 'react';
-import { LeftCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { Popover } from 'antd';
+import { LeftCircleOutlined } from '@ant-design/icons';
 import { getPathname } from '@common/utils';
 import EvaluationDownLoad from './EvaluationDownLoad';
-import EvaluationBaseInfo from './EvaluationBaseInfo';
 import EvaluationTopScore from './EvaluationTopScore';
 import EvaluationMerticList from './EvaluationMerticList';
-import RiskFetcher from '@modules/oh/store/RiskFetcher';
-import TargetSoftwareFetcher from '@modules/oh/store/TargetSoftwareFetcher';
 import { getEvaluationDetail, getMetricItemScore } from './MerticDetail';
 
 const EvaluationDetail = ({
@@ -30,7 +26,6 @@ const EvaluationDetail = ({
 
   return (
     <div>
-      <RiskFetcher shortCode={item.shortCode} />
       <div className="flex justify-between border bg-[#fafafa] py-3 px-6">
         <div className="flex">
           {back && (

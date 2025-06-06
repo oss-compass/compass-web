@@ -31,14 +31,10 @@ const DataView = () => {
   const handleTabChange = (key: string) => {
     setActiveKey(key);
     // 更新 URL 中的 tab 参数
-    router.replace(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, tab: key },
-      },
-      undefined,
-      { shallow: true }
-    ); // 使用 shallow: true 进行浅层路由更新
+    router.replace({
+      pathname: router.pathname,
+      query: { ...router.query, tab: key },
+    });
   };
 
   return (

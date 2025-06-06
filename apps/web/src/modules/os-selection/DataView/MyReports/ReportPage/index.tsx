@@ -1,5 +1,5 @@
 import React from 'react';
-import useLabelData from '@modules/oh/hooks/useLabelData';
+import useLabelData from '@modules/os-selection/hooks/useLabelData';
 import AuthRequire from '@modules/auth/AuthRequire';
 import Header from '@common/components/Header';
 import Footer from '@common/components/Footer';

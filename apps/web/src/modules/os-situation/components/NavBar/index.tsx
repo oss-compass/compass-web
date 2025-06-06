@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import classnames from 'classnames';
 // import LabelItems from './LabelItems';
 import useMetrics from '@modules/os-situation/hooks/useMetrics';
 import { Select } from 'antd';
 
 const NavBar = ({ defaultValue }) => {
+  const { t } = useTranslation();
   const merticsList = useMetrics();
   const handleChange = (value: string, option) => {
     window.location.href = '/os-situation/metrics' + option.url;
@@ -18,7 +20,9 @@ const NavBar = ({ defaultValue }) => {
       )}
     >
       <div className="flex items-center">
-        <div className="text-base font-semibold">洞察维度：</div>
+        <div className="text-base font-semibold">
+          {t('os-situation:dimensionLabel')}{' '}
+        </div>
         <Select
           defaultValue={defaultValue}
           style={{ width: 250, backgroundColor: '#e6f4ff', color: 'blue' }}

@@ -17,7 +17,7 @@ const MerticPage = () => {
   const card7 = merticsList[6];
 
   const normalStyle =
-    'flex cursor-pointer flex-col rounded border p-8 shadow hover:shadow-xl md:gap-4';
+    'flex h-full cursor-pointer flex-col rounded border p-8 shadow hover:shadow-xl md:gap-4';
   const normalTitleStyle = 'ml-4 text-xl font-semibold';
   const normalDescStyle =
     'line-clamp-3 mt-4 h-[72px] text-base leading-6 text-[#7b7c86]';
@@ -32,16 +32,17 @@ const MerticPage = () => {
           onClick={() => {
             window.location.href = '/os-situation/metrics' + item.url;
           }}
-          className="flex cursor-pointer gap-8 rounded border shadow hover:shadow-xl md:gap-4"
+          className="flex h-full cursor-pointer gap-8 rounded border shadow hover:shadow-xl md:gap-4"
         >
           <div className="flex flex-1 flex-col p-8">
             <div className="mt-2 flex items-center">
-              {item.icon}
+              <div className="min-w-[20px] flex-shrink-0">{item.icon}</div>
               <span className={normalTitleStyle}>{item.title}</span>
             </div>
             <div className={normalDescStyle}>{item.desc}</div>
             <div className={normalLinkStyle}>
-              View <IoIosArrowForward className="mt-[1px]" />
+              {t('os-situation:view')}{' '}
+              <IoIosArrowForward className="mt-[1px]" />
             </div>
           </div>
           <div className="relative ml-12 flex flex-1 items-center justify-center">
@@ -59,12 +60,12 @@ const MerticPage = () => {
           }}
         >
           <div className="mt-2 flex items-center">
-            {item.icon}
+            <div className="min-w-[20px] flex-shrink-0">{item.icon}</div>
             <span className={normalTitleStyle}>{item.title}</span>
           </div>
           <div className={normalDescStyle}>{item.desc}</div>
           <div className={normalLinkStyle}>
-            View <IoIosArrowForward className="mt-[1px]" />
+            {t('os-situation:view')} <IoIosArrowForward className="mt-[1px]" />
           </div>
         </div>
       );
@@ -73,11 +74,13 @@ const MerticPage = () => {
 
   return (
     <>
-      <div className="mb-8 text-2xl font-medium">洞察维度</div>
+      <div className="mb-8 text-2xl font-medium">
+        {t('os-situation:dimension')}
+      </div>
       <div className="mx-auto flex w-[1200px] flex-col gap-6 pb-16 lg:w-full lg:px-4">
         {/* First Row: Card 1 (Large) and Card 2 (Small) */}
         <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 h-full md:col-span-1">
             {renderCard(card1, true, '/images/os-situation/line.png')}
           </div>
           <div className="col-span-1 md:col-span-1">

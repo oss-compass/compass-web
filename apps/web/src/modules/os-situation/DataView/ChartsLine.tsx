@@ -47,9 +47,8 @@ const Charts = ({ metric }) => {
   const { t } = useTranslation();
   const chartsList = categoriesData[metric];
   const descMap = {
-    topics:
-      '基于2022-2024年GitHub全量项目中10%的抽样样本，调研覆盖约500万个活跃开源项目，深入分析了全球代码贡献量最大的17个技术领域的发展态势。',
-    // 'languages': '基于2022-2024年GitHub全量项目中10%的抽样样本，调研覆盖约500万个活跃开源项目，深入分析了全球代码贡献量最大的17个技术领域的发展态势。',
+    topics: t('os-situation:description.topics'),
+    // 'languages': t('os-situation:description.languages'),
   };
   return (
     <>

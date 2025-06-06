@@ -190,17 +190,17 @@ const getOutRadioData = async (): Promise<any> => {
 };
 
 // 新增的数据 (从 initBar2 迁移)
-const initBar2Data = [
-  [22892672, 25859844, 32893772], // Top30进出口push量
-  [478840783 + 8618731, 549930151 + 6697007, 706780614], // 全球总push量
-  [4.7, 4.65, 4.65], // Top30进出口/全球总push量比例图
-];
+// const initBar2Data = [
+//   [22892672, 25859844, 32893772], // Top30进出口push量
+//   [478840783 + 8618731, 549930151 + 6697007, 706780614], // 全球总push量
+//   [4.7, 4.65, 4.65], // Top30进出口/全球总push量比例图
+// ];
 
-const initBar2Types = [
-  'Top30进出口push量',
-  '全球总push量',
-  'Top30进出口/全球总push量比例图',
-];
+// const initBar2Types = [
+//   'Top30进出口push量',
+//   '全球总push量',
+//   'Top30进出口/全球总push量比例图',
+// ];
 
 const ChartsBar = () => {
   const { t } = useTranslation();

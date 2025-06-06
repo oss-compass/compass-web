@@ -1,58 +1,79 @@
+import { i18n } from 'next-i18next';
+
 export const importExportChartTitles = [
-  '全球开源进出口贡献量',
-  '进口贡献量（年度）',
-  '进口贡献量（季度）',
-  '出口贡献量（年度）',
-  '出口贡献量（季度）',
-  '进出口贡献量总和（年度）',
-  '进出口贡献量总和（季度）',
-  '进出口贡献量占总贡献量比例（年度）',
-  '进出口贡献量占总贡献量比例（季度）',
-  // 'Top30进出口push量',
-  // '全球总push量',
-  // 'Top30进出口/全球总push量比例图',
+  i18n?.t('os-situation:importExport.global') || '全球开源进出口贡献量',
+  i18n?.t('os-situation:importExport.import_annual') || '进口贡献量（年度）',
+  i18n?.t('os-situation:importExport.import_quarterly') || '进口贡献量（季度）',
+  i18n?.t('os-situation:importExport.export_annual') || '出口贡献量（年度）',
+  i18n?.t('os-situation:importExport.export_quarterly') || '出口贡献量（季度）',
+  i18n?.t('os-situation:importExport.total_annual') ||
+    '进出口贡献量总和（年度）',
+  i18n?.t('os-situation:importExport.total_quarterly') ||
+    '进出口贡献量总和（季度）',
+  i18n?.t('os-situation:importExport.ratio_annual') ||
+    '进出口贡献量占总贡献量比例（年度）',
+  i18n?.t('os-situation:importExport.ratio_quarterly') ||
+    '进出口贡献量占总贡献量比例（季度）',
+  // i18n?.t('os-situation:importExport.top30_import_export') || 'Top30进出口push量',
+  // i18n?.t('os-situation:importExport.global_total_push') || '全球总push量',
+  // i18n?.t('os-situation:importExport.ratio_chart') || 'Top30进出口/全球总push量比例图',
 ];
+
 export const categoriesData = {
   push: [
     {
-      name: '全球代码贡献量（Push次数）',
+      name:
+        i18n?.t('os-situation:categories.global_push') ||
+        '全球代码贡献量（Push次数）',
       id: 'global_push',
       value: [
         {
           value:
             '/test/contributor_model/line_AS_country_not_merge_eu_activity_push_contribution.json',
-          text: '全球代码贡献量',
+          text:
+            i18n?.t('os-situation:charts.global_code_contribution') ||
+            '全球代码贡献量',
         },
         {
           value:
             '/test/contributor_model/line_AS_eu_country_activity_push_contribution.json',
-          text: '欧盟代码贡献量',
+          text:
+            i18n?.t('os-situation:charts.eu_code_contribution') ||
+            '欧盟代码贡献量',
         },
         {
           value:
             '/test/contributor_model/line_QS-JAN_country_not_merge_eu_activity_push_contribution.json',
-          text: '全球代码贡献量',
+          text:
+            i18n?.t('os-situation:charts.global_code_contribution') ||
+            '全球代码贡献量',
         },
         {
           value:
             '/test/contributor_model/line_QS-JAN_eu_country_activity_push_contribution.json',
-          text: '欧盟代码贡献量',
+          text:
+            i18n?.t('os-situation:charts.eu_code_contribution') ||
+            '欧盟代码贡献量',
         },
       ],
     },
     {
-      name: '中国代码贡献量',
+      name: i18n?.t('os-situation:categories.china_push') || '中国代码贡献量',
       id: 'china_push',
       value: [
         {
           value:
             '/test/contributor_model/merge_line_AS_china_city_activity_push_contribution.json',
-          text: '中国代码贡献量（年度）',
+          text:
+            i18n?.t('os-situation:charts.china_code_contribution_annual') ||
+            '中国代码贡献量（年度）',
         },
         {
           value:
             '/test/contributor_model/merge_line_QS-JAN_china_city_activity_push_contribution.json',
-          text: '中国代码贡献量（季度）',
+          text:
+            i18n?.t('os-situation:charts.china_code_contribution_quarterly') ||
+            '中国代码贡献量（季度）',
         },
       ],
     },

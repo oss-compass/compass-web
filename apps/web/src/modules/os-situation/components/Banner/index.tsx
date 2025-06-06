@@ -21,8 +21,7 @@ const Banner = () => {
 
       <div className="relative mx-auto w-[1200px] pt-10 text-sm  md:w-full md:px-2">
         <div className="h-[40px] text-4xl font-semibold md:-right-[300px]">
-          {/* {t('academe:academic_research_cooperation')} */}
-          开源态势洞察
+          {t('os-situation:banner.title')}
         </div>
         <div
           className={classnames(
@@ -30,8 +29,7 @@ const Banner = () => {
             style.headerdsc
           )}
         >
-          通过分析全球开源项目，洞悉全球开源进出口、社区、技术领域、开发者、编程语言、许可证的发展态势。
-          {/* {t('academe:academic_research_desc')} */}
+          {t('os-situation:banner.description')}
         </div>
         <div className="flex gap-4">{/* <Coutact /> */}</div>
       </div>

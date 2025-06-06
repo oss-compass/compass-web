@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
-// 移除 ScenarioCards 组件，因为我们将直接在这里渲染卡片作为 Tab
-// import ScenarioCards from '../ScenarioCards';
 import AssessmentSection from '../AssessmentSection';
 import RecommendationSection from '../RecommendationSection';
 import SimilarSoftwareSection from '../SimilarSoftwareSection';
-import ReportsSection from '../ReportsSection'; // ReportsSection 暂时保留，但根据需求可能需要调整其位置或移除
-import CompareModal from '../CompareModal';
-import { useTranslation } from 'next-i18next'; // 引入 useTranslation
-import { FaChartBar, FaLightbulb, FaProjectDiagram } from 'react-icons/fa'; // 引入图标
+import { useTranslation } from 'next-i18next';
+import { FaChartBar, FaLightbulb, FaProjectDiagram } from 'react-icons/fa';
 
 // 定义场景 Tab 的类型
 type ScenarioTabType = 'assessment' | 'recommendation' | 'similar';
 
 const MainContent = () => {
   const { t } = useTranslation(); // 使用 useTranslation
-
   // 使用 activeTab 状态管理当前选中的场景
   const [activeTab, setActiveTab] = useState<ScenarioTabType>('assessment'); // 默认选中评估场
-  const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
-  const [showCompareModal, setShowCompareModal] = useState(false);
-
   // 定义场景 Tab 的数据
   const scenarioTabs = [
     {
@@ -110,32 +102,9 @@ const MainContent = () => {
         )}
       </div>
       {/* 根据 activeTab 显示对应的内容区域 */}
-      {activeTab === 'assessment' && (
-        <AssessmentSection
-          onBack={() => setActiveTab('assessment')} // 返回按钮可以回到当前 Tab 或根据需要调整
-        />
-      )}
-      {activeTab === 'recommendation' && (
-        <RecommendationSection
-          onBack={() => setActiveTab('recommendation')} // 返回按钮可以回到当前 Tab 或根据需要调整
-        />
-      )}
-      {activeTab === 'similar' && (
-        <SimilarSoftwareSection
-          onBack={() => setActiveTab('similar')} // 返回按钮可以回到当前 Tab 或根据需要调整
-        />
-      )}
-
-      {/* ReportsSection 和对比按钮/模态框保留，根据实际需求调整其显示逻辑 */}
-      {/* ReportsSection 暂时不与 Tab 关联，如果需要，可以添加一个 Reports Tab */}
-      {/* <ReportsSection onBack={() => handleSectionChange('landing')} /> */}
-
-      {/* 对比模态框 */}
-      <CompareModal
-        isOpen={showCompareModal}
-        onClose={() => setShowCompareModal(false)}
-        selectedSoftware={selectedSoftware}
-      />
+      {activeTab === 'assessment' && <AssessmentSection />}
+      {activeTab === 'recommendation' && <RecommendationSection />}
+      {activeTab === 'similar' && <SimilarSoftwareSection />}
     </div>
   );
 };

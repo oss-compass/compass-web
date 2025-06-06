@@ -1,5 +1,5 @@
 import React from 'react';
-import NotFoundOh from '@modules/oh/components/NotFoundOh';
+import NotFoundOh from './NotFoundOh';
 import GetReportData from './GetReportData';
 
 const ReportPageItems = ({

@@ -1,5 +1,5 @@
 import React from 'react';
-import Pie from '@modules/oh/components/Pie';
+import Pie from './Pie';
 
 const EvaluationTopScore = ({ items, score }) => {
   const clickAnchor = (e: any, id: string) => {

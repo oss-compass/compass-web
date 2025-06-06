@@ -9,32 +9,12 @@ interface Software {
   score: number;
 }
 
-interface SoftwareCardProps {
-  software: Software;
-  isSelected: boolean;
-  onSelect: (selected: boolean) => void;
-  showSimilarity?: boolean;
-}
-
 const SoftwareCard = ({
   software,
   isSelected,
   onSelect,
   showSimilarity = false,
 }) => {
-  // const getBadgeColor = (badge: string) => {
-  //   switch (badge) {
-  //     case '热门':
-  //       return 'bg-orange-100 text-orange-600';
-  //     case '趋势':
-  //       return 'bg-green-100 text-green-600';
-  //     case '稳定':
-  //       return 'bg-blue-100 text-blue-600';
-  //     default:
-  //       return 'bg-gray-100 text-gray-600';
-  //   }
-  // };
-
   return (
     <div className="relative rounded border  bg-white p-4 shadow-sm">
       {/* 勾选按钮 */}
@@ -81,19 +61,6 @@ const SoftwareCard = ({
         <span className="inline-block rounded bg-blue-50 px-2 py-1 text-sm text-blue-600">
           {languagesList.find((item) => item.id === software.target)?.name}
         </span>
-        {/* <span className="inline-block rounded bg-blue-50 px-2 py-1 text-sm text-blue-600">
-          {software.license}
-        </span>
-        {software.badges.map((badge, index) => (
-          <span
-            key={index}
-            className={`inline-block rounded px-2 py-1 text-sm ${getBadgeColor(
-              badge
-            )}`}
-          >
-            {badge}
-          </span>
-        ))} */}
         <span className="text-gray-600">
           <i className="fas fa-star text-yellow-400"></i> {software.stars}
         </span>
@@ -118,7 +85,6 @@ const SoftwareCard = ({
           <p className="mb-3">{software.description}</p>
           <div className="flex justify-between">
             <span>功能匹配分数: {software?.score?.toFixed(2)}</span>
-            {/* <span>最后更新: {software.lastUpdate}</span> */}
           </div>
         </div>
       )}
