@@ -15,7 +15,6 @@ const ReportPageItems = ({
       <GetReportData
         canClarify={canClarify}
         shortCode={reportItems[0].shortCode}
-        targetSoftware={targetSoftware}
       />
     );
   }
@@ -28,7 +27,6 @@ const ReportPageItems = ({
               key={index}
               canClarify={canClarify}
               shortCode={z.shortCode}
-              targetSoftware={targetSoftware}
             />
           );
         })}

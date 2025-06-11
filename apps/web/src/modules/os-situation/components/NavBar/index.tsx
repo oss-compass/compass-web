@@ -20,12 +20,12 @@ const NavBar = ({ defaultValue }) => {
       )}
     >
       <div className="flex items-center">
-        <div className="text-base font-semibold">
+        <div className="mr-1 text-base font-semibold">
           {t('os-situation:dimensionLabel')}{' '}
         </div>
         <Select
           defaultValue={defaultValue}
-          style={{ width: 250, backgroundColor: '#e6f4ff', color: 'blue' }}
+          style={{ width: 350, backgroundColor: '#e6f4ff', color: 'blue' }}
           onChange={handleChange}
           options={merticsList.map((item) => {
             return { label: item.title, value: item.name, ...item };

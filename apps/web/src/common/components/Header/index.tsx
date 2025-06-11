@@ -10,7 +10,6 @@ import CommunityDropdown from './CommunityDropdown';
 import ChangeLanguage from './ChangeLanguage';
 import SubmitYouProject from './SubmitYouProject';
 import User from './User';
-import { useUserInfo } from '@modules/auth';
 import AllDropdown from './AllDropdown';
 import MoreDropdown from './MoreDropdown';
 
@@ -19,7 +18,6 @@ const Header: React.FC<{
   mobileMenu?: React.ReactNode;
 }> = ({ sticky = true, mobileMenu }) => {
   const { t } = useTranslation();
-  const { roleLevel } = useUserInfo();
 
   return (
     <header>
@@ -45,39 +43,6 @@ const Header: React.FC<{
               </a>
             </LinkX>
             <AllDropdown />
-
-            {/* <Link
-              href="/explore"
-              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
-            >
-              {t('common:header.projects')}
-            </Link> */}
-
-            {/* <Link
-              href="/collaboration"
-              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
-            >
-              {t('common:header.academe')}
-            </Link> */}
-            {/* 
-            <Link
-              href="/lab"
-              className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
-            >
-              {t('common:header.lab')}
-            </Link> */}
-
-            {/* {roleLevel && roleLevel >= 1 && (
-              <LinkX href="/oh" legacyBehavior>
-                <a
-                  className={
-                    'mx-6 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
-                  }
-                >
-                  OpenHarmony
-                </a>
-              </LinkX>
-            )} */}
             <CommunityDropdown />
             <MoreDropdown />
             <Link

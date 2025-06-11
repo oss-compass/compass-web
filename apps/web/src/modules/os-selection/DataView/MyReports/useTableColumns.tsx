@@ -1,15 +1,16 @@
 import react from 'react';
-import { setUrlHost } from '@modules/oh/utils/utils';
-import { getHubUrl } from '@common/utils';
+import { getHubUrl, setUrlHost } from '@common/utils';
 // import RefreshReport from '@modules/oh/DataView/HatchingTreatment/Hatch/EvaluationInfo/EvaluationBaseInfo/RefreshReport';
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { TableDropdown } from '@modules/oh/components/TableDropdown';
+import { TableDropdown } from '@modules/os-selection/components/TableDropdown';
 import Link from 'next/link';
-import { STATUS_MAP } from '@modules/oh/constant';
+import { useStatusMap } from '@modules/os-selection/constant';
+import { useTranslation } from 'next-i18next';
 
 const StatusIndicator: React.FC<{ status: string; record: any }> = react.memo(
   ({ status, record }) => {
+    const STATUS_MAP = useStatusMap();
     if (status === 'success') {
       return (
         <Link href={'/os-selection/report?projectId=' + record.shortCode}>
@@ -22,16 +23,17 @@ const StatusIndicator: React.FC<{ status: string; record: any }> = react.memo(
 );
 StatusIndicator.displayName = 'StatusIndicator';
 export const useTableColumns = (anction) => {
+  const { t } = useTranslation('os-selection');
   const columns = [
     {
-      title: '操作',
+      title: t('my_reports.table.operation'),
       key: 'createdAt',
       width: 100,
       render: (_, record) => {
         return (
           <div className="flex cursor-pointer justify-center gap-2 text-[#3e8eff]">
             {record?.tpcSoftwareReportMetric?.status === 'success' ? (
-              <Popover content={'查看报告'}>
+              <Popover content={t('my_reports.table.view_report')}>
                 <Link
                   href={'/os-selection/report?projectId=' + record.shortCode}
                 >
@@ -39,7 +41,7 @@ export const useTableColumns = (anction) => {
                 </Link>
               </Popover>
             ) : (
-              <Popover content={'报告生成中'}>
+              <Popover content={t('my_reports.table.report_generating')}>
                 <FileTextOutlined className="cursor-not-allowed text-[#ABABAB]" />
               </Popover>
             )}
@@ -49,13 +51,15 @@ export const useTableColumns = (anction) => {
       },
     },
     {
-      title: '软件名称',
+      title: t('my_reports.table.software_name'),
       dataIndex: 'name',
       key: 'name',
-      ...TableDropdown.createFilterConfig('输入软件名称'),
+      ...TableDropdown.createFilterConfig(
+        t('my_reports.table.enter_software_name')
+      ),
     },
     {
-      title: '源码地址',
+      title: t('my_reports.table.source_code_address'),
       dataIndex: 'codeUrl',
       key: 'codeUrl',
       render: (text) => {
@@ -69,15 +73,12 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
-      ...TableDropdown.createFilterConfig('输入源码地址'),
+      ...TableDropdown.createFilterConfig(
+        t('my_reports.table.enter_source_code_address')
+      ),
     },
-    // {
-    //   title: '编程语言',
-    //   dataIndex: 'programmingLanguage',
-    //   key: 'programmingLanguage',
-    // },
     {
-      title: '申请人',
+      title: t('my_reports.table.applicant'),
       key: 'user',
       dataIndex: 'user',
       render: (_, record) => {
@@ -92,10 +93,12 @@ export const useTableColumns = (anction) => {
           </a>
         );
       },
-      ...TableDropdown.createFilterConfig('输入申请人'),
+      ...TableDropdown.createFilterConfig(
+        t('my_reports.table.enter_applicant')
+      ),
     },
     {
-      title: '当前状态',
+      title: t('my_reports.table.current_status'),
       dataIndex: 'state',
       key: 'state',
       render: (text, record) => (
@@ -106,7 +109,7 @@ export const useTableColumns = (anction) => {
       ),
     },
     {
-      title: '报告更新时间',
+      title: t('my_reports.table.report_update_time'),
       key: 'updatedAt',
       dataIndex: 'updatedAt',
       sorter: true,

@@ -21,8 +21,7 @@ const Banner = () => {
 
       <div className="relative mx-auto w-[1200px] pt-10 text-sm  md:w-full md:px-2">
         <div className="h-[40px] text-4xl font-semibold md:-right-[300px]">
-          {/* {t('academe:academic_research_cooperation')} */}
-          开源软件选型评估服务
+          {t('os-selection:banner.title')}
         </div>
         <div
           className={classnames(
@@ -30,8 +29,7 @@ const Banner = () => {
             style.headerdsc
           )}
         >
-          提供三大功能：评估已知软件、推荐候选软件和查找相似功能替代软件，助力用户高效选择合适的软件。
-          {/* {t('academe:academic_research_desc')} */}
+          {t('os-selection:banner.description')}
         </div>
         <div className="flex gap-4">{/* <Coutact /> */}</div>
       </div>

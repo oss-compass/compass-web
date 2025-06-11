@@ -5,21 +5,22 @@ import { Empty, Spin } from 'antd';
 import GenReport from '../GenReport';
 import { useSearchQuery } from '@oss-compass/graphql';
 import { getPathname, getProvider } from '@common/utils';
+import { useTranslation } from 'next-i18next';
 
-const RecommendationSection = () => {
+const AssessmentSection = () => {
+  const { t } = useTranslation();
   const [description, setDescription] = useState('');
   const [recommendations, setRecommendations] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(''); // 新增状态用于存储错误信息
+  const [errorMessage, setErrorMessage] = useState('');
   const [selectedSoftware, setSelectedSoftware] = useState<any[]>([]);
 
-  // 移除 enabled: Boolean(description)，改为手动触发
   const { data, isFetching, refetch } = useSearchQuery(
     client,
     {
       keyword: description,
       level: 'repo',
     },
-    { enabled: false } // 将 enabled 设置为 false，阻止自动触发
+    { enabled: false }
   );
 
   const targetMap = {
@@ -27,25 +28,11 @@ const RecommendationSection = () => {
     gitee: 'selected.gitee',
   };
   useEffect(() => {
-    console.log('data', data);
     if (data?.fuzzySearch.length > 0) {
-      console.log(
-        'data',
-        data.fuzzySearch?.map((item) => {
-          const name = getPathname(item.label); // "canvas"
-          const target = targetMap[getProvider(item.label)]; // "npm"
-          return {
-            name,
-            target,
-            ...item,
-          };
-        })
-      );
-
       setRecommendations(
         data.fuzzySearch?.map((item) => {
-          const name = getPathname(item.label); // "canvas"
-          const target = targetMap[getProvider(item.label)]; // "npm"
+          const name = getPathname(item.label);
+          const target = targetMap[getProvider(item.label)];
           return {
             name,
             target,
@@ -66,14 +53,13 @@ const RecommendationSection = () => {
     });
   };
   const handleGetRecommendations = () => {
-    setErrorMessage(''); // 每次点击时清空之前的错误信息
+    setErrorMessage('');
     setSelectedSoftware([]);
     if (!description.trim()) {
-      setErrorMessage('请输入GitHub、Gitee仓库URL。');
+      setErrorMessage(t('os-selection:assessment_section.input_error'));
       return;
     }
-    // 触发数据查询
-    refetch(); // 在这里手动调用 refetch 触发查询
+    refetch();
   };
   let content: any = '';
   if (isFetching) {
@@ -103,7 +89,7 @@ const RecommendationSection = () => {
                 isSelected={selectedSoftware.find(
                   (i) => i.label === software.label
                 )}
-                onSelect={(selected) => handleSoftwareSelect(software)}
+                onSelect={() => handleSoftwareSelect(software)}
                 showSimilarity={true}
               />
             ))}
@@ -120,25 +106,21 @@ const RecommendationSection = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="mb-4 w-full rounded-lg border-2 border-gray-300 p-4 text-base focus:border-blue-500 focus:outline-none"
-          placeholder="输入GitHub、Gitee仓库URL (例: https://github.com/username/repo)"
+          placeholder={t('os-selection:assessment_section.input_placeholder')}
         />
-
         {errorMessage && (
           <div className="text-sm text-red-500">{errorMessage}</div>
         )}
-
         <button
           onClick={handleGetRecommendations}
           className="mt-4 bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
         >
-          查找项目
+          {t('os-selection:assessment_section.button')}
         </button>
       </div>
-
-      {/* 推荐结果 */}
       {content}
     </div>
   );
 };
 
-export default RecommendationSection;
+export default AssessmentSection;

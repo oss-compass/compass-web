@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useTpcSoftwareSelectionReportRowQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { Popover } from 'antd';
-import type { MenuProps } from 'antd';
 import { DownloadOutlined, LoadingOutlined } from '@ant-design/icons';
-import { downloadReport } from './MerticDetail';
+import { useMerticDetailData } from './MerticDetail';
+import { useTranslation } from 'next-i18next';
 
 const DownloadReportRow = ({ item, setLoadingDownLoad }) => {
+  const { downloadReport } = useMerticDetailData();
   useTpcSoftwareSelectionReportRowQuery(
     client,
     { shortCode: item.shortCode },
@@ -26,21 +27,8 @@ const DownloadReportRow = ({ item, setLoadingDownLoad }) => {
 };
 
 const EvaluationDownLoad = ({ item }) => {
+  const { t } = useTranslation('os-selection');
   const [loadingDownLoad, setLoadingDownLoad] = useState(false);
-  const dropdownItem: MenuProps['items'] = [
-    {
-      key: '1',
-      label: (
-        <a
-          onClick={() => {
-            setLoadingDownLoad(true);
-          }}
-        >
-          下载 CSV
-        </a>
-      ),
-    },
-  ];
   return (
     <>
       {loadingDownLoad ? (
@@ -49,7 +37,7 @@ const EvaluationDownLoad = ({ item }) => {
           setLoadingDownLoad={setLoadingDownLoad}
         />
       ) : (
-        <Popover content="下载 CSV">
+        <Popover content={t('mertic_detail.download_csv')}>
           <div
             onClick={() => {
               setLoadingDownLoad(true);

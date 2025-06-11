@@ -1,13 +1,6 @@
 import React from 'react';
-import { languagesList } from '@modules/os-selection/constant';
-
-interface Software {
-  packageId: string;
-  name: string;
-  target: string;
-  label?: string;
-  score: number;
-}
+import { useLanguagesList } from '@modules/os-selection/constant';
+import { useTranslation } from 'next-i18next';
 
 const SoftwareCard = ({
   software,
@@ -15,6 +8,8 @@ const SoftwareCard = ({
   onSelect,
   showSimilarity = false,
 }) => {
+  const languagesList = useLanguagesList();
+  const { t } = useTranslation('os-selection');
   return (
     <div className="relative rounded border  bg-white p-4 shadow-sm">
       {/* 勾选按钮 */}
@@ -69,7 +64,7 @@ const SoftwareCard = ({
       {showSimilarity && software.similarity && (
         <div className="mb-4">
           <div className="mb-1 flex justify-between text-sm text-gray-600">
-            <span>相似度</span>
+            <span>{t('software_card.similarity')}</span>
             <span>{software.similarity}%</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-gray-200">
@@ -84,7 +79,9 @@ const SoftwareCard = ({
         <div className="text-sm text-gray-600">
           <p className="mb-3">{software.description}</p>
           <div className="flex justify-between">
-            <span>功能匹配分数: {software?.score?.toFixed(2)}</span>
+            <span>
+              {t('software_card.score')}: {software?.score?.toFixed(2)}
+            </span>
           </div>
         </div>
       )}

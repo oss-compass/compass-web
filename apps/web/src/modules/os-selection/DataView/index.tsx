@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import MainContent from '../components/MainContent';
+import MainContent from './Selection';
 import MyReports from './MyReports';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 const DataView = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const tabKey = router.query.tab as string;
   const [activeKey, setActiveKey] = useState(tabKey || '1');
@@ -17,14 +19,14 @@ const DataView = () => {
   const items = [
     {
       key: '1',
-      label: '软件评估选型',
-      children: <MainContent />,
+      label: t('os-selection:tabs.assessment'),
+      children: <MainContent />, // 软件评估选型
     },
     {
       key: '2',
-      label: '我的报告',
+      label: t('os-selection:tabs.my_reports'),
       destroyOnHidden: true,
-      children: activeKey === '2' ? <MyReports /> : '',
+      children: activeKey === '2' ? <MyReports /> : '', // 我的报告
     },
   ];
 

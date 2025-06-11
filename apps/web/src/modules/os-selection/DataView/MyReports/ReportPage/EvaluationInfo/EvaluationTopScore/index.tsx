@@ -20,7 +20,7 @@ const EvaluationTopScore = ({ items, score }) => {
             <div key={name} className="mb-2 flex h-9 w-full  border bg-white">
               <div
                 onClick={(e) => clickAnchor(e, name)}
-                className="flex min-w-[128px] cursor-pointer items-center justify-start px-3 font-semibold"
+                className="flex min-w-[175px]  cursor-pointer items-center justify-start px-3 font-semibold"
               >
                 <a className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline">
                   {name}

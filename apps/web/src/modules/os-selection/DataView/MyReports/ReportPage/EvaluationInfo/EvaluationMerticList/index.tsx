@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { metricList, useGetMetricIcon, setRiskTag } from '../MerticDetail';
+import { useMerticDetailData } from '../MerticDetail';
+import { useTranslation } from 'next-i18next';
 
 const MetricIcon = ({ item }) => {
+  const { useGetMetricIcon } = useMerticDetailData();
   return (
     <div className="flex w-12 flex-shrink-0 items-center justify-start pl-2 text-lg text-green-600">
       {useGetMetricIcon(item, false)}
@@ -9,6 +11,7 @@ const MetricIcon = ({ item }) => {
   );
 };
 const RiskTag = ({ item }) => {
+  const { setRiskTag } = useMerticDetailData();
   return <div className="ml-2">{setRiskTag(item, false)}</div>;
 };
 const EvaluationMerticItem = ({
@@ -19,10 +22,11 @@ const EvaluationMerticItem = ({
   score,
   showDrawer,
 }) => {
+  const { t } = useTranslation('os-selection');
   return (
     <div className="mb-4 flex flex-col border bg-[#fafafa] p-6">
       <div id={mertic} className="mb-4 text-lg font-semibold">
-        {mertic}
+        {t(mertic) || mertic}
       </div>
       <div className="flex h-6 items-center justify-start">
         <div className="h-1.5 w-[600px] bg-[#e5e5e5]">
@@ -40,7 +44,7 @@ const EvaluationMerticItem = ({
         {items.map((item) => {
           return (
             <div
-              key={item.指标名称}
+              key={t(item.指标名称) || item.指标名称}
               onClick={() => {
                 showDrawer(item);
               }}
@@ -49,19 +53,24 @@ const EvaluationMerticItem = ({
               <MetricIcon item={item} />
               <div className="flex-1 pr-3">
                 <div className="flex h-[29px] text-base font-semibold">
-                  <div className="flex-shrink-0"> {item.指标名称}</div>
+                  <div className="flex-shrink-0">
+                    {' '}
+                    {t(item.指标名称) || item.指标名称}
+                  </div>
                   <RiskTag item={item} />
                 </div>
                 <div
-                  title={item.指标意义.split('\n\n')}
+                  title={(t(item.指标意义) || item.指标意义).split('\n\n')}
                   className="line-clamp-2 mt-1 text-xs"
                 >
-                  {item.指标意义.split('\n\n').map((line, index) => (
-                    <React.Fragment key={index}>
-                      {line}
-                      <br />
-                    </React.Fragment>
-                  ))}
+                  {(t(item.指标意义) || item.指标意义)
+                    .split('\n\n')
+                    .map((line, index) => (
+                      <React.Fragment key={index}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
                 </div>
               </div>
             </div>
@@ -72,6 +81,8 @@ const EvaluationMerticItem = ({
   );
 };
 const EvaluationMerticList = ({ canClarify, allData, metricItemScoreList }) => {
+  const { t } = useTranslation('os-selection');
+  const { metricList } = useMerticDetailData();
   const [metric, setMetric] = useState(null);
   const [open, setOpen] = useState(false);
   const showDrawer = (item) => {
@@ -98,18 +109,18 @@ const EvaluationMerticList = ({ canClarify, allData, metricItemScoreList }) => {
     <div className="mt-6">
       {metricList.map((mertic) => {
         const items = metricItemScoreList.filter(
-          (item) => item.维度 === mertic
+          (item) => (t(item.维度) || item.维度) === (t(mertic) || mertic)
         );
         const score = allData.evaluationDetail.find(
-          (item) => item.name === mertic
+          (item) => (t(item.name) || item.name) === (t(mertic) || mertic)
         ).score;
         return (
           <EvaluationMerticItem
             canClarify={canClarify}
             report={allData}
             showDrawer={showDrawer}
-            key={mertic}
-            mertic={mertic}
+            key={t(mertic) || mertic}
+            mertic={t(mertic) || mertic}
             items={items}
             score={score}
           />

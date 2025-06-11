@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import AssessmentSection from '../AssessmentSection';
-import RecommendationSection from '../RecommendationSection';
-import SimilarSoftwareSection from '../SimilarSoftwareSection';
+import AssessmentSection from './AssessmentSection';
+import RecommendationSection from './RecommendationSection';
+import SimilarSoftwareSection from './SimilarSoftwareSection';
 import { useTranslation } from 'next-i18next';
 import { FaChartBar, FaLightbulb, FaProjectDiagram } from 'react-icons/fa';
 
@@ -9,30 +9,28 @@ import { FaChartBar, FaLightbulb, FaProjectDiagram } from 'react-icons/fa';
 type ScenarioTabType = 'assessment' | 'recommendation' | 'similar';
 
 const MainContent = () => {
-  const { t } = useTranslation(); // 使用 useTranslation
-  // 使用 activeTab 状态管理当前选中的场景
-  const [activeTab, setActiveTab] = useState<ScenarioTabType>('assessment'); // 默认选中评估场
-  // 定义场景 Tab 的数据
+  const { t } = useTranslation('os-selection');
+  const [activeTab, setActiveTab] = useState<ScenarioTabType>('assessment');
   const scenarioTabs = [
     {
       id: 'assessment' as ScenarioTabType,
-      title: '直接评估已知软件', // 使用 t 函数获取翻译文本
-      desc: '输入GitHub/Gitee 地址，生成多维度评估报告',
+      title: t('main_content.assessment.title'),
+      desc: t('main_content.assessment.desc'),
       icon: <FaChartBar className="text-blue-500" size={40} />,
     },
     {
       id: 'recommendation' as ScenarioTabType,
-      title: '通过功能描述推荐软件',
-      desc: '用自然语言描述需求，获取 TOP10 候选列表',
+      title: t('main_content.recommendation.title'),
+      desc: t('main_content.recommendation.desc'),
       icon: <FaLightbulb className="text-blue-500" size={40} />,
-      tagText: '功能推荐',
+      tagText: t('main_content.recommendation.tag'),
     },
     {
       id: 'similar' as ScenarioTabType,
-      title: '查找相似功能软件',
-      desc: '基于已有软件，寻找功能相似的替代方案',
+      title: t('main_content.similar.title'),
+      desc: t('main_content.similar.desc'),
       icon: <FaProjectDiagram className="text-blue-500" size={40} />,
-      tagText: '功能推荐',
+      tagText: t('main_content.similar.tag'),
     },
   ];
 
@@ -53,7 +51,7 @@ const MainContent = () => {
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.tagText && (
-              <div className="absolute top-3.5 right-1 z-10 w-[100px] origin-center translate-x-[30%] -translate-y-[10%] rotate-45 transform overflow-hidden bg-gradient-to-br from-[#4A90E2] to-[#2ECC71] py-1 px-6 text-center text-xs font-bold text-white shadow-md">
+              <div className="absolute top-[18px] right-1.5 z-10 w-[120px] origin-center translate-x-[30%] -translate-y-[10%] rotate-45 transform overflow-hidden bg-gradient-to-br from-[#4A90E2] to-[#2ECC71] py-1 px-6 text-center text-xs font-bold text-white shadow-md">
                 {tab.tagText}
               </div>
             )}
@@ -71,7 +69,7 @@ const MainContent = () => {
               {tab.title}
             </h3>
             <p
-              className={`${
+              className={`$${
                 activeTab === tab.id ? 'text-gray-200' : 'text-gray-600'
               } text-sm`}
             >
@@ -87,7 +85,6 @@ const MainContent = () => {
                 key={`indicator-${tab.id}`}
                 className="pointer-events-none absolute left-0 -bottom-2 flex w-full justify-center"
                 style={{
-                  // 计算三角形的位置，这里假设每个tab宽度相等
                   left: `${
                     (100 / scenarioTabs.length) *
                       scenarioTabs.findIndex((t) => t.id === tab.id) +

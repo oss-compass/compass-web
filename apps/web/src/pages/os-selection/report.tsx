@@ -6,7 +6,7 @@ import ReportPage from '@modules/os-selection/DataView/MyReports/ReportPage';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['os_selection'])),
+      ...(await getLocalesFile(req.cookies, ['os-selection'])),
     },
   };
 };

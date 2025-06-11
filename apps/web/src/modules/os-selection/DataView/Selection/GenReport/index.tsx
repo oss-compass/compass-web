@@ -19,7 +19,7 @@ const GenReport = ({ selectedSoftware }) => {
   const createMutation = useCreateThirdSoftwareReportMutation(client, {
     onSuccess(res) {
       if (res.createThirdSoftwareReport?.status) {
-        toast.success('提交生成报告成功，可在我的报告中查看生成状态');
+        toast.success(t('os-selection:gen_report.toast_success'));
         setIsModalVisible(false);
         router.push(`/os-selection?tab=${2}`);
       } else {
@@ -122,12 +122,12 @@ const GenReport = ({ selectedSoftware }) => {
       <Button
         onClick={handleCompare}
         className="flex items-center gap-2"
-        type="primary" // 使用Ant Design的primary类型
-        loading={confirmLoading} // 绑定loading状态
-        disabled={confirmLoading} // 在loading状态下禁用按钮
+        type="primary"
+        loading={confirmLoading}
+        disabled={confirmLoading}
       >
         <div className="flex items-center gap-2">
-          <span>生成报告</span>
+          <span>{t('os-selection:gen_report.button')}</span>
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm text-blue-500">
             {selectedSoftware.length}
           </span>
@@ -135,18 +135,18 @@ const GenReport = ({ selectedSoftware }) => {
       </Button>
 
       <Modal
-        title="填写仓库链接"
+        title={t('os-selection:gen_report.modal_title')}
         open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         width={800}
-        okText="提交"
-        cancelText="取消"
-        confirmLoading={confirmLoading} // 将loading状态绑定到这里
+        okText={t('os-selection:gen_report.submit')}
+        cancelText={t('os-selection:gen_report.cancel')}
+        confirmLoading={confirmLoading}
       >
         <div className="my-4">
           <Alert
-            message="以下软件并未提供Github或Gitee仓库链接，请提供对应Github或Gitee仓库链接以生成报告。"
+            message={t('os-selection:gen_report.alert')}
             type="warning"
             showIcon
           />
@@ -157,10 +157,10 @@ const GenReport = ({ selectedSoftware }) => {
               key={item.name}
               label={
                 <>
-                  软件名称: {item.name}
+                  {t('os-selection:gen_report.form_label')}: {item.name}
                   {item.label && (
                     <Text type="secondary" style={{ marginLeft: 8 }}>
-                      (原链接:{' '}
+                      ({t('os-selection:gen_report.origin_link')}:{' '}
                       <a
                         href={item.label}
                         target="_blank"
@@ -177,19 +177,21 @@ const GenReport = ({ selectedSoftware }) => {
               rules={[
                 {
                   required: true,
-                  message: '请输入GitHub或Gitee仓库链接!',
+                  message: t('os-selection:gen_report.form_required'),
                 },
                 {
                   validator: (_, value) =>
                     isValidRepoUrl(value)
                       ? Promise.resolve()
                       : Promise.reject(
-                          new Error('请输入有效的GitHub或Gitee仓库链接!')
+                          new Error(t('os-selection:gen_report.form_invalid'))
                         ),
                 },
               ]}
             >
-              <Input placeholder="请输入GitHub或Gitee仓库链接" />
+              <Input
+                placeholder={t('os-selection:gen_report.form_placeholder')}
+              />
             </Form.Item>
           ))}
         </Form>

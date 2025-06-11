@@ -6,7 +6,7 @@ import OsSelection from '@modules/os-selection';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['os_selection'])),
+      ...(await getLocalesFile(req.cookies, ['os-selection'])),
     },
   };
 };
