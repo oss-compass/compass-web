@@ -76,6 +76,102 @@ const DependencywheelCommon: React.FC<HighchartsDependencyWheelProps> = ({
   useEffect(() => {
     if (!loading) {
       loadHighchartsModules(() => {
+        (
+          Highcharts as any
+        ).SeriesRegistry.seriesTypes.dependencywheel.prototype.pointClass.prototype.getDataLabelPath =
+          function (a) {
+            var c = this.series.chart.renderer,
+              f = this.shapeArgs,
+              e = 0 > this.angle || this.angle > Math.PI,
+              g = f.start,
+              b = f.end;
+            // Create a dummy text element to get the bounding box width
+            const textContent = this.id || this.name || 'Sample';
+            const fontSize = a.text?.styles?.fontSize || '12px';
+            const fontWeight = a.text?.styles?.fontWeight || 'normal';
+
+            let tmpText = c
+              .text(textContent)
+              // Set the appropriate text styles so that we get an accurate bounding box
+              .attr({
+                style:
+                  'font-size: ' + fontSize + '; font-weight: ' + fontWeight,
+              })
+              // We don't get the real box until it's been added
+              .add();
+            var width = tmpText.getBBox().width;
+            // Clean up the dummy text element
+            tmpText.destroy();
+
+            const createOrUpdateRadialPath = (
+              point,
+              renderer,
+              shapeArgs,
+              angle,
+              labelWidth,
+              labelOptions
+            ) => {
+              const x =
+                (shapeArgs.r +
+                  (point.series.options.dataLabels.distance / 2 || 0)) *
+                  Math.cos(angle) +
+                shapeArgs.x;
+              const y =
+                (shapeArgs.r +
+                  (point.series.options.dataLabels.distance / 2 || 0)) *
+                  Math.sin(angle) +
+                shapeArgs.y;
+              const p1 = [Math.round(x), Math.round(y)];
+              const p2 = [
+                Math.round(x + Math.cos(angle) * labelWidth),
+                Math.round(y + Math.sin(angle) * labelWidth),
+              ];
+              const isUpperHalf = -Math.PI / 2 > angle || angle > Math.PI / 2;
+              const svgPath = isUpperHalf
+                ? ['M', p2[0], p2[1], 'L', p1[0], p1[1]]
+                : ['M', p1[0], p1[1], 'L', p2[0], p2[1]];
+
+              if (shapeArgs.end - shapeArgs.start === 0) {
+                labelOptions.options.enabled = false;
+                console.log(
+                  labelOptions,
+                  shapeArgs.start,
+                  shapeArgs.end,
+                  point.shapeArgs,
+                  point.dataLabel
+                );
+              }
+
+              if (!point.dataLabelPath) {
+                point.dataLabelPath = renderer.path(svgPath).add(labelOptions);
+              } else {
+                point.dataLabelPath.attr({
+                  d: svgPath,
+                });
+              }
+            };
+
+            if (
+              width <
+              (f.r + (this.series.options.dataLabels.distance || 0)) * (b - g)
+            ) {
+              // safe for arc shapeArgs (enough space for labelling in the arc)
+              this.dataLabelPath = c.arc({ open: !0 }).add(a);
+              this.dataLabelPath.attr({
+                x: f.x,
+                y: f.y,
+                r: f.r + (this.series.options.dataLabels.distance || 0),
+                start: e ? g : b,
+                end: e ? b : g,
+                clockwise: +e,
+              });
+            } else {
+              // go for radial
+              createOrUpdateRadialPath(this, c, f, this.angle, width, a);
+            }
+            return this.dataLabelPath;
+          };
+
         // (function (H) {
         //   H.wrap(
         //     H.seriesTypes.dependencywheel.prototype.pointClass.prototype,

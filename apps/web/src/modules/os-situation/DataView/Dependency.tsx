@@ -48,7 +48,7 @@ const ChartCards = ({ ChartInfo }) => {
     <SituationCard
       bodyClass="h-[600px]"
       title={ChartInfo.text}
-      id={t('dependency.global_import_export_contribution')}
+      id={'importExport.global'}
       loading={isLoading}
     >
       {(ref) => {
