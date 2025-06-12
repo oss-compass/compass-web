@@ -3,8 +3,9 @@ import { useTranslation } from 'next-i18next';
 import { useQuery } from '@tanstack/react-query';
 import SituationCard from '../components/SituationCard';
 import EchartCommon from '../components/EchartCommon';
-import { categoriesData } from './categoriesData';
+import { useCategoriesData } from '../hooks/useCategoriesData';
 import { Alert } from 'antd';
+import { getTranslatedCountryName } from '../utils/countryMapping';
 
 const fetchPublicData = async (url) => {
   const response = await fetch(url); // 确保路径正确
@@ -15,28 +16,46 @@ const fetchPublicData = async (url) => {
 };
 
 const ChartCards = ({ ChartInfo }) => {
-  const { data, error, isLoading } = useQuery([ChartInfo.text], () => {
+  const { t } = useTranslation('os-situation');
+  const { data, error, isLoading } = useQuery([ChartInfo.id], () => {
     return fetchPublicData(ChartInfo.value);
   });
-  console.log(data);
+
+  // 处理图表数据，过滤和国际化国家名称
+  let processedData = data;
   if (data?.series) {
-    data.series = data?.series.filter((item) => {
-      return (
-        item?.name !== '中国(台湾地区除外)-Gitee' &&
-        item?.name !== '中国(台湾地区除外)-Github'
-      );
-    });
+    processedData = {
+      ...data,
+      legend: {
+        shwo: true,
+      },
+      series: data.series
+        .filter((item) => {
+          return (
+            item?.name !== '中国(台湾地区除外)-Gitee' &&
+            item?.name !== '中国(台湾地区除外)-Github'
+          );
+        })
+        .map((item) => ({
+          ...item,
+          name: getTranslatedCountryName(item.name, t),
+        })),
+    };
   }
   return (
     <SituationCard
       bodyClass="h-[600px]"
-      title={ChartInfo.text}
-      id={ChartInfo.text}
+      title={ChartInfo.name}
+      id={ChartInfo.id}
       loading={isLoading}
     >
       {(ref) => {
         return (
-          <EchartCommon containerRef={ref} loading={isLoading} option={data} />
+          <EchartCommon
+            containerRef={ref}
+            loading={isLoading}
+            option={processedData}
+          />
         );
       }}
     </SituationCard>
@@ -44,10 +63,11 @@ const ChartCards = ({ ChartInfo }) => {
 };
 
 const Charts = ({ metric }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('os-situation');
+  const categoriesData = useCategoriesData();
   const chartsList = categoriesData[metric];
   const descMap = {
-    topics: t('os-situation:description.topics'),
+    topics: t('description.topics'),
     // 'languages': t('os-situation:description.languages'),
   };
   return (

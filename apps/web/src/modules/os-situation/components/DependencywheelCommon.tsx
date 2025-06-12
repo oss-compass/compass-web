@@ -207,7 +207,7 @@ const DependencywheelCommon: React.FC<HighchartsDependencyWheelProps> = ({
               keys: ['from', 'to', 'weight'],
               data: data,
               type: 'dependencywheel',
-              name: '进出口贡献总量',
+              name: '',
               dataLabels: {
                 color: '#333',
                 style: {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { categoriesData } from '../../DataView/categoriesData';
+import { useCategoriesData } from '@modules/os-situation/hooks/useCategoriesData';
 import { Layout, Menu } from 'antd';
 import { useState } from 'react';
 import classnames from 'classnames';
@@ -10,19 +9,23 @@ import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 
 const SideBar = () => {
   const hash = useHashchangeEvent();
+  const categoriesData = useCategoriesData();
   const router = useRouter();
+
   const metric = router.query.metric as string;
   const [collapsed, setCollapsed] = useState(false);
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
   const { Sider } = Layout;
   const menuItems = categoriesData[metric]?.map((item: any) => ({
-    key: item.id, // Assuming 'value' can serve as a unique key and hash
+    key: item.id,
     label: item.name,
-    children: item.value?.map((child: any) => ({
-      key: child.text, // Assuming 'value' can serve as a unique key and hash
-      label: child.text,
-    })),
+    ...(item?.value?.length > 0 && {
+      children: item.value.map((child: any) => ({
+        key: child.id,
+        label: child.name,
+      })),
+    }),
   }));
   const handleMenuClick = (e: any) => {
     window.location.hash = e.key;
@@ -30,7 +33,7 @@ const SideBar = () => {
   return (
     <div
       className={classnames('sticky overflow-auto', [
-        y > preY
+        y >= preY
           ? 'top-[56px] h-[calc(100vh-56px)]'
           : 'top-[136px] h-[calc(100vh-136px)]',
       ])}

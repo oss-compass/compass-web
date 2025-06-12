@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import SituationCard from '../components/SituationCard';
 import DependencywheelCommon from '../components/DependencywheelCommon';
 import { Select, Alert } from 'antd';
+import { getTranslatedCountryName } from '../utils/countryMapping';
 
 const fetchPublicData = async (url) => {
   const response = await fetch(url); // 确保路径正确
@@ -14,16 +15,40 @@ const fetchPublicData = async (url) => {
 };
 
 const ChartCards = ({ ChartInfo }) => {
+  const { t } = useTranslation('os-situation');
   console.log(ChartInfo.value);
   const { data, error, isLoading } = useQuery([ChartInfo.text], () => {
     return fetchPublicData(ChartInfo.value);
   });
-  console.log(data);
+
+  // 处理数据，国际化国家名称
+  const processedData = data
+    ? data.map((item) => {
+        if (Array.isArray(item) && item.length >= 2) {
+          // 处理 [from, to, weight] 格式的数据
+          return [
+            getTranslatedCountryName(item[0], t),
+            getTranslatedCountryName(item[1], t),
+            ...item.slice(2),
+          ];
+        } else if (typeof item === 'object' && item.from && item.to) {
+          // 处理对象格式的数据
+          return {
+            ...item,
+            from: getTranslatedCountryName(item.from, t),
+            to: getTranslatedCountryName(item.to, t),
+          };
+        }
+        return item;
+      })
+    : data;
+
+  console.log(processedData);
   return (
     <SituationCard
       bodyClass="h-[600px]"
       title={ChartInfo.text}
-      id={'全球开源进出口贡献量'}
+      id={t('dependency.global_import_export_contribution')}
       loading={isLoading}
     >
       {(ref) => {
@@ -32,7 +57,7 @@ const ChartCards = ({ ChartInfo }) => {
             <DependencywheelCommon
               containerRef={ref}
               loading={isLoading}
-              data={data}
+              data={processedData}
             />
           )
         );
@@ -42,165 +67,7 @@ const ChartCards = ({ ChartInfo }) => {
 };
 
 const Dependencywheel = () => {
-  const { t } = useTranslation();
-  const dependencywheel = [
-    {
-      name: '进出口依轮图',
-      id: 'import_xport_rotation chart(EU_Merger)',
-      value: [
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2022_AS_country.json',
-          text: '22 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2023_AS_country.json',
-          text: '23 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2024_AS_country.json',
-          text: '24 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2022 Q1_QS-JAN_country.json',
-          text: '22 Q1 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2022 Q2_QS-JAN_country.json',
-          text: '22 Q2 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2022 Q3_QS-JAN_country.json',
-          text: '22 Q3 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2022 Q4_QS-JAN_country.json',
-          text: '22 Q4 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2023 Q1_QS-JAN_country.json',
-          text: '23 Q1 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2023 Q2_QS-JAN_country.json',
-          text: '23 Q2 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2023 Q3_QS-JAN_country.json',
-          text: '23 Q3 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2023 Q4_QS-JAN_country.json',
-          text: '23 Q4 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2024 Q1_QS-JAN_country.json',
-          text: '24 Q1 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2024 Q2_QS-JAN_country.json',
-          text: '24 Q2 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2024 Q3_QS-JAN_country.json',
-          text: '24 Q3 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2024 Q4_QS-JAN_country.json',
-          text: '24 Q4 进出口(欧盟合并)',
-        },
-        {
-          value:
-            '/test/collaborator_model/dependency_wheel_2025 Q1_QS-JAN_country.json',
-          text: '25 Q1 进出口(欧盟合并)',
-        },
-      ],
-    },
-    // {
-    //     name: '进出口依轮图（欧盟）',
-    //     id: 'import_xport_rotation chart(EU_Separate)',
-    //     value: [
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2022 Q1_QS-JAN_country.json',
-    //             text: '22 Q1 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2022 Q2_QS-JAN_country.json',
-    //             text: '22 Q2 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2022 Q3_QS-JAN_country.json',
-    //             text: '22 Q3 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2022 Q4_QS-JAN_country.json',
-    //             text: '22 Q4 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2023 Q1_QS-JAN_country.json',
-    //             text: '23 Q1 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2023 Q2_QS-JAN_country.json',
-    //             text: '23 Q2 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2023 Q3_QS-JAN_country.json',
-    //             text: '23 Q3 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2023 Q4_QS-JAN_country.json',
-    //             text: '23 Q4 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2024 Q1_QS-JAN_country.json',
-    //             text: '24 Q1 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2024 Q2_QS-JAN_country.json',
-    //             text: '24 Q2 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2024 Q3_QS-JAN_country.json',
-    //             text: '24 Q3 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2024 Q4_QS-JAN_country.json',
-    //             text: '24 Q4 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2025 Q1_QS-JAN_country.json',
-    //             text: '25 Q1 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2022_AS_country.json',
-    //             text: '22 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2023_AS_country.json',
-    //             text: '23 进出口(欧盟拆开)',
-    //         },
-    //         {
-    //             value: '/test/collaborator_model/dependency_wheel_not_merge_eu_2024_AS_country.json',
-    //             text: '24 进出口(欧盟拆开)',
-    //         },
-    //     ]
-    // }
-  ];
+  const { t } = useTranslation('os-situation');
   const yearList = [
     {
       label: '2022',
@@ -286,44 +153,25 @@ const Dependencywheel = () => {
     setYear(value);
     setLabel(Option.label);
   };
-  const title = '全球开源进出口贡献量';
+  const title = t('dependency.global_import_export_contribution');
   return (
     <div className="relative">
-      <div key={title}>
-        <h1
-          id={title}
-          className={
-            'group relative z-20 mb-8 flex text-3xl font-semibold md:px-4 md:text-3xl'
-          }
-        >
-          {title}
-          <a href={`#${title}`}>
-            <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
-              #
-            </span>
-          </a>
-        </h1>
-        <div className="mb-6">
-          {' '}
-          <Alert
-            message="开源进出口贡献量是衡量国家和地区之间开源协作程度的重要指标。它被定义为某个国家或地区的开发者向其他国家或地区的开源项目贡献的代码量，即“出口”，以及该国家或地区的开源项目接受来自其他国家或地区开发者贡献的代码量，即“进口”。这里的代码量是指开发者在开源项目中实际编写的代码数量，通常以提交次数、代码行数来衡量。"
-            showIcon
+      <div className="mb-6">
+        <Alert message={t('dependency.description')} showIcon />
+      </div>
+      <div className="relative  mb-12 grid min-w-0 grid-cols-1 gap-4 md:grid-cols-1">
+        <div className="absolute right-0 top-0 z-50 flex items-center justify-end gap-1">
+          <Select
+            defaultValue={selectedYear}
+            style={{ width: 100 }}
+            onChange={handleYearChange}
+            variant="borderless"
+            options={yearList}
           />
         </div>
-        <div className="relative  mb-12 grid min-w-0 grid-cols-1 gap-4 md:grid-cols-1">
-          <div className="absolute right-0 top-0 z-50 flex items-center justify-end gap-1">
-            <Select
-              defaultValue={selectedYear}
-              style={{ width: 100 }}
-              onChange={handleYearChange}
-              variant="borderless"
-              options={yearList}
-            />
-          </div>
-          <ChartCards
-            ChartInfo={{ value: selectedYear, text: label + title }}
-          />
-        </div>
+        <ChartCards
+          ChartInfo={{ value: selectedYear, text: label + ' ' + title }}
+        />
       </div>
     </div>
   );
