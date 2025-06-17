@@ -1,15 +1,21 @@
 import React from 'react';
 import { useLanguagesList } from '@modules/os-selection/constant';
 import { useTranslation } from 'next-i18next';
+import VoteComponent from '../VoteComponent';
+import { useUserInfo } from '@modules/auth';
 
 const SoftwareCard = ({
   software,
   isSelected,
   onSelect,
   showSimilarity = false,
+  showVote = false,
+  srcPackageName = '',
+  srcEcosystem = '',
 }) => {
   const languagesList = useLanguagesList();
   const { t } = useTranslation('os-selection');
+  const { currentUser } = useUserInfo();
   return (
     <div className="relative rounded border  bg-white p-4 shadow-sm">
       {/* 勾选按钮 */}
@@ -78,10 +84,19 @@ const SoftwareCard = ({
       {software?.score && (
         <div className="text-sm text-gray-600">
           <p className="mb-3">{software.description}</p>
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
             <span>
               {t('software_card.score')}: {software?.score?.toFixed(2)}
             </span>
+            {showVote && currentUser && (
+              <VoteComponent
+                srcPackageName={srcPackageName}
+                srcEcosystem={srcEcosystem}
+                targetPackageName={software.name}
+                targetEcosystem={software.target}
+                whoVote={currentUser.name}
+              />
+            )}
           </div>
         </div>
       )}

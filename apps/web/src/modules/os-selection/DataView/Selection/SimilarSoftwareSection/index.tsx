@@ -110,6 +110,9 @@ const SimilarSoftwareSection = () => {
                 )}
                 onSelect={(selected) => handleSoftwareSelect(software)}
                 showSimilarity={true}
+                showVote={true}
+                srcPackageName={description}
+                srcEcosystem={selectedSrcEcosystem}
               />
             ))}
           </div>

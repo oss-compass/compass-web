@@ -564,3 +564,52 @@ mutation createThirdSoftwareReport(
     status
   }
 }
+mutation voteUp(
+  $src_package_name: String!
+  $src_ecosystem: String!
+  $target_package_name: String!
+  $target_ecosystem: String!
+  $who_vote: String!
+) {
+  voteUp(
+    input: {
+      srcPackageName: $src_package_name
+      srcEcosystem: $src_ecosystem
+      targetPackageName: $target_package_name
+      targetEcosystem: $target_ecosystem
+      whoVote: $who_vote
+    }
+  ) {
+    status
+    message
+  }
+}
+mutation voteDown(
+  $src_package_name: String!
+  $src_ecosystem: String!
+  $target_package_name: String!
+  $target_ecosystem: String!
+  $who_vote: String!
+) {
+  voteDown(
+    input: {
+      srcPackageName: $src_package_name
+      srcEcosystem: $src_ecosystem
+      targetPackageName: $target_package_name
+      targetEcosystem: $target_ecosystem
+      whoVote: $who_vote
+    }
+  ) {
+    status
+    message
+  }
+}
+mutation deleteThirdSoftwareReport($report_id: Int!) {
+  deleteThirdSoftwareReport(input: { reportId: $report_id }) {
+    errors {
+      message
+      path
+    }
+    message
+  }
+}

@@ -16,7 +16,6 @@ const fetchPublicData = async (url) => {
 
 const ChartCards = ({ ChartInfo }) => {
   const { t } = useTranslation('os-situation');
-  console.log(ChartInfo.value);
   const { data, error, isLoading } = useQuery([ChartInfo.text], () => {
     return fetchPublicData(ChartInfo.value);
   });
@@ -53,13 +52,11 @@ const ChartCards = ({ ChartInfo }) => {
     >
       {(ref) => {
         return (
-          !isLoading && (
-            <DependencywheelCommon
-              containerRef={ref}
-              loading={isLoading}
-              data={processedData}
-            />
-          )
+          <DependencywheelCommon
+            containerRef={ref}
+            loading={isLoading}
+            data={processedData}
+          />
         );
       }}
     </SituationCard>

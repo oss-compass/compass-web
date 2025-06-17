@@ -1,6 +1,7 @@
 import react from 'react';
 import { getHubUrl, setUrlHost } from '@common/utils';
-// import RefreshReport from '@modules/oh/DataView/HatchingTreatment/Hatch/EvaluationInfo/EvaluationBaseInfo/RefreshReport';
+import RefreshReport from './RefreshReport';
+import DeleteReport from './DeleteReport'; // 导入 DeleteReport 组件
 import { FileTextOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
 import { TableDropdown } from '@modules/os-selection/components/TableDropdown';
@@ -45,7 +46,9 @@ export const useTableColumns = (anction) => {
                 <FileTextOutlined className="cursor-not-allowed text-[#ABABAB]" />
               </Popover>
             )}
-            {/* <RefreshReport report={record} editSuccess={anction} /> */}
+            <RefreshReport report={record} editSuccess={anction} />
+            <DeleteReport report={record} deleteSuccess={anction} />{' '}
+            {/* 添加 DeleteReport 组件 */}
           </div>
         );
       },

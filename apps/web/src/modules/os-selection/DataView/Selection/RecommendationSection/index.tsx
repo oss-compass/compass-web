@@ -102,6 +102,7 @@ const RecommendationSection = () => {
                 )}
                 onSelect={() => handleSoftwareSelect(software)}
                 showSimilarity={true}
+                showVote={false}
               />
             ))}
           </div>
