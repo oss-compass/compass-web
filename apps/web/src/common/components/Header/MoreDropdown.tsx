@@ -62,26 +62,11 @@ const MoreDropdown = () => {
           >
             {t('common:header.lab')}
           </Link>
-          {roleLevel && roleLevel >= 1 && (
-            <LinkX href="/oh" legacyBehavior>
-              <a
-                className={
-                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2'
-                }
-              >
-                OpenHarmony
-              </a>
-            </LinkX>
+          {roleLevel >= 1 && (
+            <a className="mx-4 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2">
+              OpenHarmony
+            </a>
           )}
-          {/* <LinkX href="/blog" passHref legacyBehavior>
-                        <a className={classnames(categoryClass, borderBottomClass, 'hover:bg-[#333333]')}>
-                            <div className="mr-4 w-8">
-                                <BlogLogo />
-                            </div>
-                            {t('common:header.news')}
-                        </a>
-                    </LinkX> */}
-          {/* <Blog /> */}
         </div>
       </div>
     </div>
