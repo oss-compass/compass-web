@@ -5,6 +5,7 @@ export const cookieKeys = {
   USER_LOCALE_KEY: 'locale',
   AUTH_CALLBACK_URL: 'auth.callback-url',
   AUTH_PROVIDER: 'auth.provider',
+  AUTH_ROLE: 'auth.role',
 };
 
 // ------------------------------auth callback url-----------------------------------
@@ -26,7 +27,13 @@ export const cookieSetAuthProvider = (val: string) => {
     domain: getDomain(),
   });
 };
-
+export const cookieSetAuthRole = (val: number) => {
+  jsCookie.set(cookieKeys.AUTH_ROLE, String(val), {
+    expires: 365,
+    path: '/',
+    domain: getDomain(),
+  });
+};
 export const cookieGetAuthProvider = () => {
   return jsCookie.get(cookieKeys.AUTH_PROVIDER);
 };

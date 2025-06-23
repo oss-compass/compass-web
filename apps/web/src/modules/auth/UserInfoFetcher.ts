@@ -9,6 +9,7 @@ import {
   UserEventType,
   userEvent,
 } from './UserInfoStore';
+import { cookieSetAuthRole } from '@common/utils/cookie';
 
 const UserInfoFetcher: React.FC<PropsWithChildren> = ({ children }) => {
   const { data, isLoading, refetch } = useUserinfoQuery(client, {});
@@ -25,6 +26,7 @@ const UserInfoFetcher: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     setUserInfo(data);
+    cookieSetAuthRole(data?.currentUser?.roleLevel);
   }, [data]);
 
   useEffect(() => {
