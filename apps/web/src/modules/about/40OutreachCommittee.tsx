@@ -26,16 +26,16 @@ const data = [
     name: '林日华',
     intro: 'OSCHINA 社区内容负责人',
   },
-  {
-    avatar: '/images/about/吴萍@2x.png',
-    name: '吴萍',
-    intro: '华为开源管理中心',
-  },
-  {
-    avatar: '/images/about/周冉.jpeg',
-    name: '周冉',
-    intro: '华为开源管理中心',
-  },
+  // {
+  //   avatar: '/images/about/吴萍@2x.png',
+  //   name: '吴萍',
+  //   intro: '华为开源管理中心',
+  // },
+  // {
+  //   avatar: '/images/about/周冉.jpeg',
+  //   name: '周冉',
+  //   intro: '华为开源管理中心',
+  // },
 ];
 
 const OutreachCommittee = () => {
