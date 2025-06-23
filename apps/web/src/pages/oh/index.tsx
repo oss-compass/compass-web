@@ -14,11 +14,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 const OhPage = () => {
   return (
-    <>
-      <NoSsr>
-        <Oh />
-      </NoSsr>
-    </>
+    <NoSsr>
+      <Oh />
+    </NoSsr>
   );
 };
 
