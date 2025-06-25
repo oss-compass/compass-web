@@ -39,13 +39,23 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
       icon: null,
     },
     {
-      title: t('common:header.projects'),
-      href: '/explore',
+      title: t('common:header.opensource_insight_service'),
+      href: '/os-situation',
       icon: null,
     },
     {
-      title: t('common:header.academe'),
-      href: '/collaboration',
+      title: t('common:header.opensource_selection_service'),
+      href: '/os-selection',
+      icon: null,
+    },
+    {
+      title: t('common:header.opensource_research_service'),
+      href: '/dataHub',
+      icon: null,
+    },
+    {
+      title: t('common:header.projects'),
+      href: '/explore',
       icon: null,
     },
     {
@@ -66,11 +76,6 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
     {
       title: t('common:header.about'),
       href: '/about',
-      icon: null,
-    },
-    {
-      title: 'API',
-      href: '/openApi',
       icon: null,
     },
   ];
