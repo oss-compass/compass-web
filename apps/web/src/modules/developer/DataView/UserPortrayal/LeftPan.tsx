@@ -36,15 +36,12 @@ const LeftPan = () => {
       label: contributorInfo?.main_language || 'N/A', // 使用 N/A 作为默认值
       tooltipContent: `Top编程语言: ${contributorInfo?.main_language || 'N/A'}`,
     },
-    {
-      icon: <MdOutlineTopic className="h-4 w-4" />,
-      label: contributorInfo?.topics[0]?.name || 'N/A', // 使用 N/A 作为默认值
-      tooltipContent: `Top技术领域: ${
-        contributorInfo?.topics[0]?.name || 'N/A'
-      }`,
-    },
   ];
-
+  const topicInfo = contributorInfo?.topics?.slice(0, 5).map((item) => ({
+    icon: <MdOutlineTopic className="h-4 w-4" />,
+    label: item.name || 'N/A', // 使用 N/A 作为默认值
+    tooltipContent: `技术领域: ${item.name || 'N/A'}`,
+  }));
   // 从 repo_roles 动态获取仓库角色信息，并截取前两个
   const repoRolesInfo =
     contributorInfo?.repo_roles?.slice(0, 2).map((roleInfo) => ({
@@ -94,6 +91,24 @@ const LeftPan = () => {
         <div className="flex flex-col overflow-hidden ">
           <div className="mb-4 flex flex-wrap gap-2.5">
             {userInfo.map(
+              (item, index) =>
+                item.label &&
+                item.label !== 'N/A' && (
+                  <Tooltip
+                    key={`${item.label}-${index}`}
+                    placement="top"
+                    title={item.tooltipContent}
+                  >
+                    <div className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800">
+                      {item.icon}
+                      {item.label}
+                    </div>
+                  </Tooltip>
+                )
+            )}
+          </div>
+          <div className="mb-4 flex flex-wrap gap-2.5">
+            {topicInfo.map(
               (item, index) =>
                 item.label &&
                 item.label !== 'N/A' && (

@@ -26,7 +26,7 @@ const DomainPersona = ({ name, origin }) => {
 const getHubUrl = (origin, name) => {
   switch (origin) {
     case 'github':
-      return 'https://github.com/' + name;
+      return '/developer/' + name;
     case 'gitee':
       return 'https://gitee.com/' + name;
     // return <SiGitee color="#c71c27" className="mr-0" />;
