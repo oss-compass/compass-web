@@ -3,7 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-const DataSourceSelector = ({ defaultValue, onChange }) => {
+const DataSourceSelector = ({
+  defaultValue,
+  onChange,
+  hideenCompass = false,
+}) => {
   const { t } = useTranslation();
   const apiBaseUrl = `${window.location.origin}`;
   const [options, setOptions] = useState([]);
@@ -24,15 +28,22 @@ const DataSourceSelector = ({ defaultValue, onChange }) => {
       },
     ];
 
-    const newOptions = isDefaultUrl
+    let newOptions = isDefaultUrl
       ? [
           { value: apiBaseUrl, label: 'OSS Compass' },
           ...defaultOptions.slice(1),
         ]
       : defaultOptions;
 
+    // 当 hideenCompass 为 true 时，过滤掉 OSS Compass 选项
+    if (hideenCompass) {
+      newOptions = newOptions.filter(
+        (option) => option.label !== 'OSS Compass'
+      );
+    }
+
     setOptions(newOptions);
-  }, [apiBaseUrl]);
+  }, [apiBaseUrl, hideenCompass, t]);
 
   return (
     <div>

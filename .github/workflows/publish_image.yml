@@ -7,6 +7,7 @@ on:
       - 'main'
       - 'demo'
       - 'compass-IACAS'
+      - 'compass-PKU'
     paths-ignore:
       - README.md
       - docs/**
@@ -31,6 +32,7 @@ jobs:
             type=raw,value=nightly,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=raw,value=demo,enable=${{ github.ref == format('refs/heads/{0}', 'demo') }}
             type=raw,value=iacas,enable=${{ github.ref == format('refs/heads/{0}', 'compass-IACAS') }}
+            type=raw,value=pku,enable=${{ github.ref == format('refs/heads/{0}', 'compass-PKU') }}
             type=sha,prefix={{branch}}-
 
       - name: Set up QEMU
