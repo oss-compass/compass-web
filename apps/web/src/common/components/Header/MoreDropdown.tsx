@@ -63,9 +63,12 @@ const MoreDropdown = () => {
             {t('common:header.lab')}
           </Link>
           {roleLevel >= 1 && (
-            <a className="mx-4 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2">
+            <Link
+              href="/oh"
+              className="mx-4 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2"
+            >
               OpenHarmony
-            </a>
+            </Link>
           )}
         </div>
       </div>

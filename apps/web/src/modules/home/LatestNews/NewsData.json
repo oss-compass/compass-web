@@ -2,19 +2,19 @@
   "formData": [
     {
       "type": "Blog",
-      "title": "Reflections on the Evaluation and Measurement of Open Source Ecosystem (3) - Dynamics and Statics of Contributors",
-      "title_cn": "开源生态评估与度量的思考（三）——贡献者的动与静",
-      "img": "/images/home/news/8en.png",
+      "title": "Successfully Concluded! OSS-Compass Conference Highlights -- Open Source Experts Unveil New Dimensions of Value",
+      "title_cn": "圆满召开！OSS-Compass 发布会精彩活动回顾，开源大咖共启价值新维度！",
+      "img": "/images/home/news/8.png",
       "img_cn": "/images/home/news/8.png",
-      "url": "/blog/2023/12/09/open-source-eco3/open-source-eco3"
+      "url": "/blog/2025/06/03/compass-conference2025/"
     },
     {
       "type": "Blog",
-      "title": "Reflections on the Evaluation and Measurement of Open Source Ecosystem (2) - The Multidimensional Space of Evaluation Systems",
-      "title_cn": "开源生态评估与度量的思考（二）——评估体系的多维空间",
-      "img": "/images/home/news/9en.png",
+      "title": "A Wonderful Review of the 2025 Board Meeting of the OSS Compass Community",
+      "title_cn": "OSS Compass 社区 2025 年 Board 会议精彩回顾",
+      "img": "/images/home/news/9.png",
       "img_cn": "/images/home/news/9.png",
-      "url": "/blog/2023/12/08/open-source-eco2/open-source-eco2"
+      "url": "/blog/2025/04/25/board-meeting2025/"
     },
     {
       "type": "Event",
