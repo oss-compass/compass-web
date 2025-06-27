@@ -1,18 +1,31 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import useMenuContent from '../useMenuContent';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import { useTranslation } from 'react-i18next';
+import { trackEvent } from '@common/monumentedStation';
+import { getLocalizedText } from '@modules/dataHub/utils';
 
 const SideBarContent: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { result } = useMenuContent();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
   const currentHash = useHashchangeEvent();
 
   const onClick: MenuProps['onClick'] = (e) => {
+    // 只有当 key 以 'api' 开头时才上报埋点
+    if (e.key.startsWith('api')) {
+      trackEvent({
+        module: 'dataHub',
+        type: 'rest_api',
+        content: {
+          menu_key: e.key,
+        },
+      });
+    }
+
     window.location.hash = e.key;
   };
 
@@ -21,15 +34,18 @@ const SideBarContent: React.FC = () => {
     const res = result.map((item) => {
       return {
         key: item.name,
-        label: item.convertName,
+        label: getLocalizedText(item.convertName, i18n.language),
         children: item.menus.map((menu) => {
           return {
             key: menu?.name || menu?.id,
-            label: menu?.convertName || menu?.summary,
+            label: getLocalizedText(
+              menu?.convertName || menu?.summary,
+              i18n.language
+            ),
             children: menu?.subMenus?.map((subMenu) => {
               return {
                 key: subMenu.id,
-                label: subMenu.summary,
+                label: getLocalizedText(subMenu.summary, i18n.language),
               };
             }),
           };
@@ -42,7 +58,7 @@ const SideBarContent: React.FC = () => {
       children: undefined,
     });
     return res;
-  }, [result]);
+  }, [result, i18n.language]);
 
   const items = [
     { key: 'about', label: t('common:header.about') },

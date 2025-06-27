@@ -1,5 +1,7 @@
 import React from 'react';
 import { Collapse } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedText } from '@modules/dataHub/utils';
 
 const { Panel } = Collapse;
 
@@ -8,6 +10,8 @@ interface ResponsesViewerProps {
 }
 
 const ResponsesViewer: React.FC<ResponsesViewerProps> = ({ responses }) => {
+  const { i18n } = useTranslation();
+
   if (Object.keys(responses).length === 0) {
     return <></>;
   }
@@ -51,7 +55,7 @@ const ResponsesViewer: React.FC<ResponsesViewerProps> = ({ responses }) => {
                     <span className="font-bold text-gray-800">{key}:</span>
                     {value?.description && (
                       <span className="ml-2 text-gray-700">
-                        {value.description}
+                        {getLocalizedText(value.description, i18n.language)}
                       </span>
                     )}
                   </>

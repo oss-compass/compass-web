@@ -9,6 +9,7 @@ import { useVoteUpMutation, useVoteDownMutation } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'next-i18next';
+import { TrackingWrapper } from '@common/monumentedStation';
 
 interface VoteComponentProps {
   srcPackageName: string;
@@ -89,39 +90,63 @@ const VoteComponent: React.FC<VoteComponentProps> = ({
 
   return (
     <div className="ml-2 flex items-center gap-2">
-      <button
-        onClick={handleVoteUp}
-        disabled={isVoting || voteStatus === 'up'}
-        className={`flex h-8 w-8 items-center justify-center rounded-full text-sm transition-all ${
-          voteStatus === 'up'
-            ? 'cursor-not-allowed bg-green-100 text-green-600'
-            : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
-        } ${isVoting ? 'cursor-not-allowed opacity-50' : ''}`}
-        title={t('vote.like')}
+      <TrackingWrapper
+        module="os-selection"
+        type="similar_vote_up"
+        content={{
+          src_package_name: srcPackageName,
+          src_ecosystem: srcEcosystem,
+          target_package_name: targetPackageName,
+          target_ecosystem: targetEcosystem,
+          who_vote: whoVote,
+        }}
       >
-        {voteStatus === 'up' ? (
-          <AiFillLike className="text-lg" />
-        ) : (
-          <AiOutlineLike className="text-lg" />
-        )}
-      </button>
+        <button
+          onClick={handleVoteUp}
+          disabled={isVoting || voteStatus === 'up'}
+          className={`flex h-8 w-8 items-center justify-center rounded-full text-sm transition-all ${
+            voteStatus === 'up'
+              ? 'cursor-not-allowed bg-green-100 text-green-600'
+              : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
+          } ${isVoting ? 'cursor-not-allowed opacity-50' : ''}`}
+          title={t('vote.like')}
+        >
+          {voteStatus === 'up' ? (
+            <AiFillLike className="text-lg" />
+          ) : (
+            <AiOutlineLike className="text-lg" />
+          )}
+        </button>
+      </TrackingWrapper>
 
-      <button
-        onClick={handleVoteDown}
-        disabled={isVoting || voteStatus === 'down'}
-        className={`flex h-8 w-8 items-center justify-center rounded-full text-sm transition-all ${
-          voteStatus === 'down'
-            ? 'cursor-not-allowed bg-red-100 text-red-600'
-            : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'
-        } ${isVoting ? 'cursor-not-allowed opacity-50' : ''}`}
-        title={t('vote.dislike')}
+      <TrackingWrapper
+        module="os-selection"
+        type="similar_vote_down"
+        content={{
+          src_package_name: srcPackageName,
+          src_ecosystem: srcEcosystem,
+          target_package_name: targetPackageName,
+          target_ecosystem: targetEcosystem,
+          who_vote: whoVote,
+        }}
       >
-        {voteStatus === 'down' ? (
-          <AiFillDislike className="text-lg" />
-        ) : (
-          <AiOutlineDislike className="text-lg" />
-        )}
-      </button>
+        <button
+          onClick={handleVoteDown}
+          disabled={isVoting || voteStatus === 'down'}
+          className={`flex h-8 w-8 items-center justify-center rounded-full text-sm transition-all ${
+            voteStatus === 'down'
+              ? 'cursor-not-allowed bg-red-100 text-red-600'
+              : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'
+          } ${isVoting ? 'cursor-not-allowed opacity-50' : ''}`}
+          title={t('vote.dislike')}
+        >
+          {voteStatus === 'down' ? (
+            <AiFillDislike className="text-lg" />
+          ) : (
+            <AiOutlineDislike className="text-lg" />
+          )}
+        </button>
+      </TrackingWrapper>
     </div>
   );
 };

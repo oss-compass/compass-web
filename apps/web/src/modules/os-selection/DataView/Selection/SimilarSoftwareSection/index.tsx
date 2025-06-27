@@ -6,6 +6,7 @@ import { Empty, Spin, Alert } from 'antd';
 import { useLanguagesList } from '@modules/os-selection/constant';
 import GenReport from '../GenReport';
 import { useTranslation } from 'next-i18next';
+import { TrackingWrapper } from '@common/monumentedStation';
 
 const SimilarSoftwareSection = () => {
   const languagesList = useLanguagesList();
@@ -63,22 +64,28 @@ const SimilarSoftwareSection = () => {
       }
     });
   };
-  const handleGetRecommendations = () => {
-    setErrorMessage('');
-    setSelectedSoftware([]);
+  const validateForm = () => {
     if (!description.trim()) {
       setErrorMessage(t('similar_section.name_error'));
-      return;
+      return false;
     }
     if (!selectedSrcEcosystem) {
       setErrorMessage(t('similar_section.source_error'));
-      return;
+      return false;
     }
     if (selectedLanguages.length === 0) {
       setErrorMessage(t('similar_section.target_error'));
-      return;
+      return false;
     }
-    refetch();
+    return true;
+  };
+
+  const handleGetRecommendations = () => {
+    if (validateForm()) {
+      setErrorMessage('');
+      setSelectedSoftware([]);
+      refetch();
+    }
   };
   let content: any = '';
   if (isFetching) {
@@ -173,12 +180,23 @@ const SimilarSoftwareSection = () => {
         )}
 
         <div className="flex items-center gap-4">
-          <button
-            onClick={handleGetRecommendations}
-            className="bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+          <TrackingWrapper
+            module="similar_software_section"
+            type="click"
+            content={{
+              package_name: description,
+              src_ecosystem: selectedSrcEcosystem,
+              target_ecosystems: selectedLanguages,
+            }}
+            validate={validateForm}
           >
-            {t('similar_section.button')}
-          </button>
+            <button
+              onClick={handleGetRecommendations}
+              className="bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+            >
+              {t('similar_section.button')}
+            </button>
+          </TrackingWrapper>
           <div className="">
             <Alert message={t('similar_section.alert')} showIcon />
           </div>

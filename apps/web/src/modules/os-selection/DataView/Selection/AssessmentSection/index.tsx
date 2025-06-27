@@ -13,6 +13,7 @@ import { getUrlReg } from '@modules/submitProject/Misc';
 import { useSubmitUser } from '@modules/auth';
 import SuccessMessage from '@modules/submitProject/Misc/SuccessMessage';
 import ErrorMessage from '@modules/submitProject/Misc/ErrorMessage';
+import { TrackingWrapper } from '@common/monumentedStation';
 
 const AssessmentSection = () => {
   const { t } = useTranslation();
@@ -106,32 +107,13 @@ const AssessmentSection = () => {
     setSelectedSoftware([]);
     setShowCreatePR(false);
 
-    if (!description.trim()) {
-      setErrorMessage(t('os-selection:assessment_section.input_error'));
-      setShowErrorModal(true);
-      setIsValidUrl(false);
-      return;
-    }
-
     const isValid = validateUrl(description);
     setIsValidUrl(isValid);
-
-    if (!isValid) {
-      setErrorMessage('请输入有效的GitHub或Gitee仓库链接');
-      setShowErrorModal(true);
-      return;
-    }
 
     refetch();
   };
 
   const handleCreatePR = () => {
-    if (!user) {
-      setErrorMessage('请先登录');
-      setShowErrorModal(true);
-      return;
-    }
-
     const provider = user.provider || 'github';
     const urls = [fillHttps(description.trim())];
 
@@ -161,13 +143,30 @@ const AssessmentSection = () => {
           <div className="text-center">
             <div>
               <div className="mb-4 text-lg text-gray-600">平台未收录该项目</div>
-              <button
-                onClick={handleCreatePR}
-                disabled={isCreatingRepo}
-                className="bg-blue-500 px-6 py-2 text-white transition-colors hover:bg-blue-600 disabled:bg-gray-400"
+              <TrackingWrapper
+                module="os-selection"
+                type="assessment_section_create_pr"
+                content={{
+                  repoUrl: description.trim(),
+                  userProvider: user?.provider || 'unknown',
+                }}
+                validate={() => {
+                  if (!user) {
+                    setErrorMessage('请先登录');
+                    setShowErrorModal(true);
+                    return false;
+                  }
+                  return true;
+                }}
               >
-                {isCreatingRepo ? '提交中...' : '点击创建PR提交该项目'}
-              </button>
+                <button
+                  onClick={handleCreatePR}
+                  disabled={isCreatingRepo}
+                  className="bg-blue-500 px-6 py-2 text-white transition-colors hover:bg-blue-600 disabled:bg-gray-400"
+                >
+                  {isCreatingRepo ? '提交中...' : '点击创建PR提交该项目'}
+                </button>
+              </TrackingWrapper>
             </div>
           </div>
         </div>
@@ -207,12 +206,35 @@ const AssessmentSection = () => {
           placeholder={t('os-selection:assessment_section.input_placeholder')}
         />
 
-        <button
-          onClick={handleGetRecommendations}
-          className="mt-4 bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+        <TrackingWrapper
+          module="os-selection"
+          type="assessment_section_search"
+          content={{
+            inputUrl: description.trim(),
+            isValidUrl: validateUrl(description.trim()),
+          }}
+          validate={() => {
+            if (!description.trim()) {
+              setErrorMessage(t('os-selection:assessment_section.input_error'));
+              setShowErrorModal(true);
+              return false;
+            }
+            const isValid = validateUrl(description);
+            if (!isValid) {
+              setErrorMessage('请输入有效的GitHub或Gitee仓库链接');
+              setShowErrorModal(true);
+              return false;
+            }
+            return true;
+          }}
         >
-          {t('os-selection:assessment_section.button')}
-        </button>
+          <button
+            onClick={handleGetRecommendations}
+            className="mt-4 bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+          >
+            {t('os-selection:assessment_section.button')}
+          </button>
+        </TrackingWrapper>
       </div>
       {content}
 

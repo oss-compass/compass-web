@@ -13,9 +13,11 @@ const DataView = () => {
   const { isLoading } = useMenuContent();
   const id = useHashchangeEvent();
 
-  const match = id?.match(/^([a-z]+)(\/([a-z-]+))?/i) || [];
-  const [mainKey, subKey] = match[1] ? [match[1], match[3]] : [null, null];
-
+  // 使用简单的字符串分割方法替代正则表达式
+  const parts = id ? id.split(/[_-]/) : [];
+  const mainKey = parts[0] || null;
+  const subKey = parts[1] || null;
+  console.log(mainKey, subKey);
   if (isLoading) {
     return <Loading />;
   }

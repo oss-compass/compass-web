@@ -3,10 +3,12 @@ import Breadcrumb from '../../components/Breadcrumb';
 import DataSourceSelector from '../../components/DataSourceSelector';
 import { useTranslation } from 'react-i18next';
 import DateSelect from './DateSelect';
+import TrackingWrapper from '../../../../common/monumentedStation/TrackingWrapper';
 
-const ArchiveDownload = ({ category }) => {
+const ArchiveDownload = ({ category = 'insight' }) => {
   const { t } = useTranslation();
-  const apiBaseUrl = `${window.location.origin}`;
+  // const apiBaseUrl = `${window.location.origin}`;
+  const apiBaseUrl = `https://oss-compass.isrc.ac.cn`; //默认中科院站点
   const [baseUrl, setBaseUrl] = useState(apiBaseUrl);
   const [selectedDate, setSelectedDate] = useState('202503');
 
@@ -68,6 +70,7 @@ const ArchiveDownload = ({ category }) => {
       <DataSourceSelector
         defaultValue={apiBaseUrl}
         onChange={(value) => setBaseUrl(value)}
+        hideenCompass={true}
       />
       <DateSelect onChange={setSelectedDate} />
       <div className="overflow-x-auto">
@@ -95,14 +98,25 @@ const ArchiveDownload = ({ category }) => {
                   {item.description}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <a
-                    href={item.link}
-                    className="text-blue-500 hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <TrackingWrapper
+                    module="dataHub"
+                    type="archive_download"
+                    content={{
+                      dataset_name: item.name,
+                      download_link: item.link,
+                      selected_date: selectedDate,
+                      category: category,
+                    }}
                   >
-                    {t('open_api:download')}
-                  </a>
+                    <a
+                      href={item.link}
+                      className="text-blue-500 hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('open_api:download')}
+                    </a>
+                  </TrackingWrapper>
                 </td>
               </tr>
             ))}

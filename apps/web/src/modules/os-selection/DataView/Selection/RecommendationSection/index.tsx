@@ -6,6 +6,7 @@ import { Empty, Spin, Alert } from 'antd';
 import { useLanguagesList } from '@modules/os-selection/constant';
 import GenReport from '../GenReport';
 import { useTranslation } from 'next-i18next';
+import { TrackingWrapper } from '@common/monumentedStation';
 
 const RecommendationSection = () => {
   const languagesList = useLanguagesList();
@@ -62,15 +63,26 @@ const RecommendationSection = () => {
   const handleGetRecommendations = () => {
     setErrorMessage('');
     setSelectedSoftware([]);
+    refetch();
+  };
+
+  // 表单校验函数
+  const validateForm = () => {
+    setErrorMessage('');
     if (!description.trim()) {
       setErrorMessage(t('recommendation_section.desc_error'));
-      return;
+      return false;
     }
     if (selectedLanguages.length === 0) {
       setErrorMessage(t('recommendation_section.lang_error'));
-      return;
+      return false;
     }
-    refetch();
+    return true;
+  };
+
+  // 校验失败时的处理
+  const handleValidationFailed = () => {
+    // 校验失败时不需要额外处理，错误信息已在validateForm中设置
   };
   let content: any = '';
   if (isFetching) {
@@ -142,12 +154,23 @@ const RecommendationSection = () => {
           <div className="mb-4 text-sm text-red-500">{errorMessage}</div>
         )}
         <div className="flex items-center gap-4">
-          <button
-            onClick={handleGetRecommendations}
-            className="bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+          <TrackingWrapper
+            module="os-selection"
+            type="recommendation_section_search"
+            content={{
+              description: description.trim(),
+              selectedLanguages: selectedLanguages,
+            }}
+            validate={validateForm}
+            onValidationFailed={handleValidationFailed}
           >
-            {t('recommendation_section.button')}
-          </button>
+            <button
+              onClick={handleGetRecommendations}
+              className="bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+            >
+              {t('recommendation_section.button')}
+            </button>
+          </TrackingWrapper>
           <div className="">
             <Alert message={t('recommendation_section.alert')} showIcon />
           </div>

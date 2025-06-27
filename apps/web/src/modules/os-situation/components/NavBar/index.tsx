@@ -11,7 +11,6 @@ const NavBar = ({ defaultValue }) => {
   const handleChange = (value: string, option) => {
     window.location.href = '/os-situation/metrics' + option.url;
   };
-  console.log(defaultValue);
   return (
     <nav
       className={classnames(

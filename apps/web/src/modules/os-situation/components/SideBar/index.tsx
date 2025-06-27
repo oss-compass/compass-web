@@ -6,6 +6,7 @@ import { useState } from 'react';
 import classnames from 'classnames';
 import { usePrevious, useWindowScroll } from 'react-use';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
+import { trackEvent } from '@common/monumentedStation';
 
 const SideBar = () => {
   const hash = useHashchangeEvent();
@@ -28,6 +29,15 @@ const SideBar = () => {
     }),
   }));
   const handleMenuClick = (e: any) => {
+    // 上报埋点
+    trackEvent({
+      module: 'os-situation',
+      type: metric,
+      content: {
+        menu_key: e.key,
+      },
+    });
+
     window.location.hash = e.key;
   };
   return (

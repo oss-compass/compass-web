@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import UserInfoFetcher from '@modules/auth/UserInfoFetcher';
 import { useAppGA, GAScripts } from '@common/lib/ga';
 import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
+import { TrackingManager, useRouteTracking } from '@common/monumentedStation';
 
 import '../styles/globals.scss';
 
@@ -27,6 +28,9 @@ function MyApp({
   gaTrackingId,
 }: TProps) {
   useAppGA(gaTrackingId);
+
+  // 初始化埋点路由追踪
+  useRouteTracking();
 
   const [queryClient] = useState(
     () =>
@@ -47,6 +51,15 @@ function MyApp({
       APP_NAME: 'compass-web',
       GIT_COMMIT: process.env.NEXT_PUBLIC_GIT_COMMIT || 'unknown',
     });
+
+    // 初始化埋点管理器
+    const trackingManager = TrackingManager.getInstance();
+    trackingManager.init();
+
+    // 页面卸载时清理
+    return () => {
+      trackingManager.destroy();
+    };
   }, []);
 
   return (
