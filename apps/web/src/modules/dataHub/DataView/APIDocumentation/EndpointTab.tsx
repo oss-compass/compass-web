@@ -4,19 +4,25 @@ import ParamsTableWithForm from './ParamsTableWithForm';
 import Breadcrumb from '../../components/Breadcrumb';
 import ResponsesViewer from './ResponsesViewer';
 import DataSourceSelector from '../../components/DataSourceSelector';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedText } from '@modules/dataHub/utils';
 
 const EndpointTab = ({ endpoint }) => {
+  const { i18n } = useTranslation();
   const apiBaseUrl = `${window.location.origin}`;
   const [baseUrl, setBaseUrl] = useState(apiBaseUrl);
 
   return (
     <div className="space-y-6 rounded-lg bg-white">
       <Breadcrumb
-        items={[{ label: 'REST API' }, { label: endpoint?.summary }]}
+        items={[
+          { label: 'REST API' },
+          { label: getLocalizedText(endpoint?.summary, i18n.language) },
+        ]}
       />
       {endpoint?.description && (
         <p className="mt-2 whitespace-pre leading-relaxed text-gray-600">
-          {endpoint.description}
+          {getLocalizedText(endpoint?.description, i18n.language)}
         </p>
       )}
       <DataSourceSelector
