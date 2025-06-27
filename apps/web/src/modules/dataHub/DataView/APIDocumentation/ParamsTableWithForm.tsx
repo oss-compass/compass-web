@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Form, Input, Button, Spin } from 'antd';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { getLocalizedText } from '@modules/dataHub/utils';
 
 export interface ApiParameter {
   name: string;
@@ -25,7 +26,7 @@ const ParamsTableWithForm = ({
   path: string;
   params: ApiParameter[];
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [form] = Form.useForm();
   const [testResult, setTestResult] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -123,6 +124,11 @@ const ParamsTableWithForm = ({
               dataIndex: 'description',
               key: 'description',
               ellipsis: true,
+              render: (_, record) => (
+                <span>
+                  {getLocalizedText(record.description || '', i18n.language)}
+                </span>
+              ),
             },
             {
               title: 'Example',
@@ -131,11 +137,9 @@ const ParamsTableWithForm = ({
               ellipsis: true,
               render: (_, record) => (
                 <div className="flex items-center">
-                  <span className="mr-1">
-                    {record.name === 'datasets'
-                      ? JSON.stringify(record.example)
-                      : record.example}
-                  </span>
+                  {typeof record.example === 'string'
+                    ? record.example
+                    : JSON.stringify(record.example)}
                 </div>
               ),
             },
