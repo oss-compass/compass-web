@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import jsonData from './NewsData.json';
 import Image from 'next/image';
 import { BsArrowRight } from 'react-icons/bs';
-import DatePicker from './DatePicker';
+import EventTimeline from './EventTimeline';
 import LinkX from '@common/components/LinkX';
 
 const NewsBox = (props: {
@@ -42,8 +42,8 @@ const NewsBox = (props: {
             <div className="line-clamp-3 mt-2 h-[46px] text-2xl font-bold">
               {i18n.language === 'en' ? title : titleCn}
             </div>
-            <div className="flex justify-center">
-              <DatePicker />
+            <div className="mt-1">
+              <EventTimeline />
             </div>
           </>
         ) : (

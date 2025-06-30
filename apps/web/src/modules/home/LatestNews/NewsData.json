@@ -21,5 +21,77 @@
       "title": "OSS Compass Events",
       "title_cn": "OSS Compass 事件"
     }
+  ],
+  "eventList": [
+    {
+      "date": "2023年2月21日",
+      "dateEn": "February 21, 2023",
+      "titleCn": "开源指南针OSS Compass发布",
+      "titleEn": "OSS Compass Release",
+      "url": "https://mp.weixin.qq.com/s/C5A8eA7XClpq7D3R3u8kIw"
+    },
+    {
+      "date": "2023年4月19日",
+      "dateEn": "April 19, 2023",
+      "titleCn": "OSS Compass 参加第二届中国国际软件发展大会",
+      "titleEn": "OSS Compass Participated in the 2nd China International Software Development Conference",
+      "url": "https://mp.weixin.qq.com/s/3JVzMidbLAfhJNgh-0t4jA"
+    },
+    {
+      "date": "2023年5月27日",
+      "dateEn": "May 27, 2023",
+      "titleCn": "OSS Compass 参加全球开源技术峰会GOTC开源生态健康评估分会场",
+      "titleEn": "OSS Compass Participated in GOTC Open Source Ecosystem Health Assessment Session",
+      "url": "https://mp.weixin.qq.com/s/Y_FcT5LRe8a5ASb_szzR0g"
+    },
+    {
+      "date": "2023年8月23日",
+      "dateEn": "August 23, 2023",
+      "titleCn": "OSS Compass社区董事会2023年首次会议顺利召开",
+      "titleEn": "OSS Compass Community Board First Meeting of 2023 Successfully Held",
+      "url": "/blog/2023/09/01/first-board-meeting/first-board-meeting"
+    },
+    {
+      "date": "2023年10月24日",
+      "dateEn": "October 24, 2023",
+      "titleCn": "OSS Compass支持\"开源社区发展提质行动\"",
+      "titleEn": "OSS Compass Supports \"Open Source Community Development Quality Improvement Action\"",
+      "url": "/blog/2023/10/24/quality-improvement-action/"
+    },
+    {
+      "date": "2023年12月13日",
+      "dateEn": "December 13, 2023",
+      "titleCn": "OSS Compass社区成功举办2023年会",
+      "titleEn": "OSS Compass Community Successfully Held 2023 Annual Meeting",
+      "url": "/blog/2023/12/20/annual-meeting2023/"
+    },
+    {
+      "date": "2023年12月13日",
+      "dateEn": "December 13, 2023",
+      "titleCn": "OSS Compass社区董事会2023年第四季度会议在北京大学顺利召开",
+      "titleEn": "OSS Compass Community Board Q4 2023 Meeting Successfully Held at Peking University",
+      "url": "/blog/2023/12/20/explore-community-values/"
+    },
+    {
+      "date": "2024年12月20日",
+      "dateEn": "December 20, 2024",
+      "titleCn": "OSS Compass社区参与2024开放原子开发者大会暨首届开源技术学术大会",
+      "titleEn": "OSS Compass Community Participated in 2024 OpenAtom Developer Conference and First Open Source Technology Academic Conference",
+      "url": "https://mp.weixin.qq.com/s/TP_nOG3XoSuv_CFk9hfYMQ"
+    },
+    {
+      "date": "2025年4月25日",
+      "dateEn": "April 25, 2025",
+      "titleCn": "OSS Compass 社区 2025 年 Board 会议圆满召开",
+      "titleEn": "OSS Compass Community 2025 Board Meeting Successfully Held",
+      "url": "/blog/2025/04/25/board-meeting2025/"
+    },
+    {
+      "date": "2025年6月3日",
+      "dateEn": "June 3, 2025",
+      "titleCn": "OSS-Compass 产品创新发布会圆满召开",
+      "titleEn": "OSS-Compass Product Innovation Launch Event Successfully Held",
+      "url": "/blog/2025/06/03/compass-conference2025/"
+    }
   ]
 }
