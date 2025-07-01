@@ -1,8 +1,10 @@
 import React from 'react';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import Dashboard from './Dashboard';
+import MonitorOverview from './MonitorOverview';
 import ServiceMonitor from './ServiceMonitor';
 import UserManagement from './UserManagement';
+import UserList from './UserList';
 import SystemMonitor from './SystemMonitor';
 import EcosystemEvaluationMonitor from './EcosystemEvaluationMonitor';
 import SelectionEvaluationTPCMonitor from './SelectionEvaluationTPCMonitor';
@@ -14,7 +16,9 @@ const DataView: React.FC = () => {
   const renderContent = () => {
     switch (currentView) {
       case 'dashboard':
-        return <Dashboard />;
+        return <MonitorOverview />; // 重定向到监控总览
+      case 'user-list':
+        return <UserList />;
       case 'service-monitor':
         return <ServiceMonitor />;
       case 'ecosystem-evaluation-monitor':
@@ -26,7 +30,7 @@ const DataView: React.FC = () => {
       case 'system-monitor':
         return <SystemMonitor />;
       default:
-        return <Dashboard />;
+        return <MonitorOverview />; // 默认显示监控总览
     }
   };
 

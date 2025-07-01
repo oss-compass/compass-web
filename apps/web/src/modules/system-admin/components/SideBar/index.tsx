@@ -8,6 +8,7 @@ import {
   DesktopOutlined,
   BarChartOutlined,
   LineChartOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import { useTranslation } from 'next-i18next';
@@ -23,9 +24,21 @@ const SideBar: React.FC = () => {
 
   const menuItems: MenuItem[] = [
     {
-      key: 'dashboard',
+      key: 'user-operation',
       icon: <DashboardOutlined />,
       label: '用户运营监控',
+      children: [
+        {
+          key: 'dashboard',
+          icon: <BarChartOutlined />,
+          label: '监控总览',
+        },
+        {
+          key: 'user-list',
+          icon: <TeamOutlined />,
+          label: '用户列表',
+        },
+      ],
     },
     {
       key: 'service-monitor',
@@ -93,7 +106,7 @@ const SideBar: React.FC = () => {
           mode="inline"
           style={{ borderInlineEnd: '0px' }}
           selectedKeys={selectedKeys}
-          defaultOpenKeys={['service-monitor']}
+          defaultOpenKeys={['user-operation', 'service-monitor']}
           items={menuItems}
           onClick={handleMenuClick}
           className="border-none"

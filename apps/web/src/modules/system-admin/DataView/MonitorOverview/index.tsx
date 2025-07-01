@@ -22,9 +22,9 @@ import {
 import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import Service from './Service';
+import Service from '../Dashboard/Service';
 
-const Dashboard: React.FC = () => {
+const MonitorOverview: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
     dayjs('2023-01-01'),
@@ -316,4 +316,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default MonitorOverview;
