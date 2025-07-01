@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { BsArrowRight } from 'react-icons/bs';
 import EventTimeline from './EventTimeline';
 import LinkX from '@common/components/LinkX';
+import NoSsr from '@common/components/NoSsr';
 
 const NewsBox = (props: {
   type: string;
@@ -43,7 +44,9 @@ const NewsBox = (props: {
               {i18n.language === 'en' ? title : titleCn}
             </div>
             <div className="mt-1">
-              <EventTimeline />
+              <NoSsr>
+                <EventTimeline />
+              </NoSsr>
             </div>
           </>
         ) : (
