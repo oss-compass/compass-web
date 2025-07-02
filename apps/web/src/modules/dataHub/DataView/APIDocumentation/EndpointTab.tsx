@@ -9,8 +9,7 @@ import { getLocalizedText } from '@modules/dataHub/utils';
 
 const EndpointTab = ({ endpoint }) => {
   const { i18n } = useTranslation();
-  const apiBaseUrl = `${window.location.origin}`;
-  const [baseUrl, setBaseUrl] = useState(apiBaseUrl);
+  const [baseUrl, setBaseUrl] = useState('https://oss-compass.isrc.ac.cn');
 
   return (
     <div className="space-y-6 rounded-lg bg-white">
@@ -25,10 +24,7 @@ const EndpointTab = ({ endpoint }) => {
           {getLocalizedText(endpoint?.description, i18n.language)}
         </p>
       )}
-      <DataSourceSelector
-        defaultValue={apiBaseUrl}
-        onChange={(value) => setBaseUrl(value)}
-      />
+      <DataSourceSelector onChange={(value) => setBaseUrl(value)} />
       <div className="rounded-md border border-gray-200 bg-gray-50 px-4 py-3">
         <code className="font-mono text-blue-600">
           <span className="mr-3 text-purple-600">{endpoint.method}</span>

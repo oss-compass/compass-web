@@ -4,7 +4,7 @@ import { Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 const DataSourceSelector = ({
-  defaultValue,
+  defaultValue = 'https://oss-compass.isrc.ac.cn',
   onChange,
   hideenCompass = false,
 }) => {
