@@ -75,7 +75,12 @@ const RightPan = () => {
     selectedYear // 将 selectedYear 传递给 useContributorApi
   );
 
-  const country = contributorInfo?.country || 'Worldwide';
+  // 根据当前语言获取对应的国家字段
+  const getCurrentCountry = () => {
+    return contributorInfo?.country_raw || 'Worldwide';
+  };
+
+  const country = getCurrentCountry();
 
   // 处理年份选择变化的函数
   const handleYearChange = (year: number) => {

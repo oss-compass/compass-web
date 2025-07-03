@@ -30,15 +30,49 @@ class TrackingManager {
   }
 
   /**
+   * 检查是否为开发环境
+   */
+  private isDevelopment(): boolean {
+    // 检查环境变量
+    if (
+      typeof process !== 'undefined' &&
+      process.env.NODE_ENV === 'development'
+    ) {
+      return true;
+    }
+
+    // 检查是否为本地开发域名
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const isDev =
+        hostname === 'localhost' ||
+        hostname === '127.0.0.1' ||
+        hostname.includes('localhost') ||
+        hostname.includes('127.0.0.1') ||
+        hostname.includes('.local') ||
+        window.location.port !== '';
+
+      if (isDev) {
+        console.log(
+          '[TrackingManager] 检测到开发环境，埋点数据不会上传到服务器'
+        );
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * 初始化埋点管理器
    */
   public init() {
     // 初始化已在构造函数中完成，这里可以进行额外的初始化逻辑
-    console.log('TrackingManager initialized');
+    console.log('initialized');
   }
 
   /**
-   * 初始化用户ID
+   * 初始化用户 ID
    */
   public setUserId(userId: string) {
     this.userId = userId;
@@ -82,7 +116,7 @@ class TrackingManager {
     window.addEventListener('pagehide', handleBeforeUnload);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // 定期上报数据（每30秒）
+    // 定期上报数据（每 30 秒）
     this.reportTimer = setInterval(() => {
       console.log('report');
       this.flushReports();
@@ -155,13 +189,13 @@ class TrackingManager {
     if (!this.currentModule || this.moduleStartTime === 0) return;
 
     const now = Date.now();
-    // 防重复上报：如果距离上次上报时间小于500ms，则跳过
+    // 防重复上报：如果距离上次上报时间小于 500ms，则跳过
     if (now - this.lastModuleStayReportTime < 500) {
-      console.log(
-        'reportModuleStay: 跳过重复上报，距离上次上报时间:',
-        now - this.lastModuleStayReportTime,
-        'ms'
-      );
+      // console.log(
+      //   'reportModuleStay: 跳过重复上报，距离上次上报时间:',
+      //   now - this.lastModuleStayReportTime,
+      //   'ms'
+      // );
       return;
     }
 
@@ -171,13 +205,6 @@ class TrackingManager {
 
     // 只有停留时长大于0才上报
     if (stayDuration > 0) {
-      console.log('reportModuleStay: 上报模块停留', {
-        module: this.currentModule,
-        path: targetPath,
-        stayDuration,
-        enterTime: this.moduleStartTime,
-        leaveTime: now,
-      });
       const event = this.createEvent(
         'module_stay',
         {
@@ -195,18 +222,18 @@ class TrackingManager {
   }
 
   /**
-   * 从路径中提取type参数（子路由和hash）
+   * 从路径中提取 type 参数（子路由和 hash）
    */
   private extractTypeFromPath(path: string): string[] {
     const type: string[] = [];
 
     try {
-      // 如果是完整URL，直接解析
+      // 如果是完整 URL，直接解析
       let url: URL;
       if (path.startsWith('http://') || path.startsWith('https://')) {
         url = new URL(path);
       } else {
-        // 如果是相对路径，使用当前域名或默认base URL
+        // 如果是相对路径，使用当前域名或默认 base URL
         const baseUrl =
           typeof window !== 'undefined'
             ? window.location.origin
@@ -216,24 +243,24 @@ class TrackingManager {
 
       const pathSegments = url.pathname.split('/').filter(Boolean);
 
-      // 获取最后一个路径段作为type
+      // 获取最后一个路径段作为 type
       if (pathSegments.length > 1) {
         type.push(pathSegments[pathSegments.length - 1]);
       }
 
-      // 如果有hash，也加入type数组
+      // 如果有 hash，也加入 type 数组
       if (url.hash) {
         type.push(url.hash.substring(1)); // 去掉#号
       }
     } catch (error) {
-      // 如果URL解析失败，降级到简单的字符串处理
+      // 如果 URL 解析失败，降级到简单的字符串处理
       console.warn('Failed to parse URL, using fallback method:', error);
       const segments = path.split('/').filter(Boolean);
       if (segments.length > 1) {
         type.push(segments[segments.length - 1]);
       }
 
-      // 处理hash
+      // 处理 hash
       const hashIndex = path.indexOf('#');
       if (hashIndex !== -1) {
         type.push(path.substring(hashIndex + 1));
@@ -322,12 +349,23 @@ class TrackingManager {
   private async flushReports() {
     if (this.reportQueue.length === 0 || this.isReporting) return;
 
+    // 开发环境下不上传埋点数据
+    if (this.isDevelopment()) {
+      console.log(
+        '[TrackingManager] 开发环境 - 跳过埋点数据上传：',
+        this.reportQueue.length,
+        '个事件'
+      );
+      // 清空队列但不上传
+      this.reportQueue = [];
+      return;
+    }
+
     this.isReporting = true;
     const eventsToReport = [...this.reportQueue];
     this.reportQueue = [];
 
     try {
-      console.log(eventsToReport);
       await this.sendEvents(eventsToReport);
     } catch (error) {
       console.error('Failed to report tracking events:', error);
@@ -342,6 +380,12 @@ class TrackingManager {
    * 发送事件到服务器
    */
   private async sendEvents(data: TrackingEvent[]) {
+    // 双重保险：再次检查开发环境
+    if (this.isDevelopment()) {
+      console.log('[TrackingManager] 开发环境 - 阻止埋点数据发送');
+      return;
+    }
+
     const payload = { events: data };
 
     // 优先使用 sendBeacon API，确保页面卸载时数据能够发送

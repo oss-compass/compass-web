@@ -12,35 +12,55 @@ import { useTranslation } from 'next-i18next';
 // import Wordcloud from './Wordcloud'; // 导入 Cloud 组件
 
 const LeftPan = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { contributorInfo } = useContributorInfo();
+
+  // 根据当前语言获取对应字段
+  const getCurrentCountry = () => {
+    return i18n.language === 'zh'
+      ? contributorInfo?.country || 'N/A'
+      : contributorInfo?.country_raw || 'N/A';
+  };
+
+  const getCurrentCity = () => {
+    return i18n.language === 'zh'
+      ? contributorInfo?.city || 'N/A'
+      : contributorInfo?.city_raw || 'N/A';
+  };
+
+  const currentCountry = getCurrentCountry();
+  const currentCity = getCurrentCity();
 
   const userInfo = [
     {
       icon: <TfiWorld className="h-4 w-4" />,
-      label: contributorInfo?.country || 'N/A', // 使用 N/A 作为默认值
-      tooltipContent: `国家: ${contributorInfo?.country || 'N/A'}`,
+      label: currentCountry,
+      tooltipContent: `${t('developer:tooltip.country')}: ${currentCountry}`,
     },
     {
       icon: <IoLocationOutline className="h-4 w-4" />,
-      label: contributorInfo?.city || 'N/A', // 使用 N/A 作为默认值
-      tooltipContent: `地址: ${contributorInfo?.city || 'N/A'}`,
+      label: currentCity,
+      tooltipContent: `${t('developer:tooltip.city')}: ${currentCity}`,
     },
     {
       icon: <GoOrganization className="h-4 w-4" />,
       label: contributorInfo?.company || 'N/A', // 使用 N/A 作为默认值
-      tooltipContent: `组织: ${contributorInfo?.company || 'N/A'}`,
+      tooltipContent: `${t('developer:tooltip.company')}: ${
+        contributorInfo?.company || 'N/A'
+      }`,
     },
     {
       icon: <IoCodeSlash className="h-4 w-4" />,
       label: contributorInfo?.main_language || 'N/A', // 使用 N/A 作为默认值
-      tooltipContent: `Top编程语言: ${contributorInfo?.main_language || 'N/A'}`,
+      tooltipContent: `${t('developer:tooltip.main_language')}: ${
+        contributorInfo?.main_language || 'N/A'
+      }`,
     },
   ];
   const topicInfo = contributorInfo?.topics?.slice(0, 5).map((item) => ({
     icon: <MdOutlineTopic className="h-4 w-4" />,
     label: item.name || 'N/A', // 使用 N/A 作为默认值
-    tooltipContent: `技术领域: ${item.name || 'N/A'}`,
+    tooltipContent: `${t('developer:tooltip.topic')}: ${item.name || 'N/A'}`,
   }));
   // 从 repo_roles 动态获取仓库角色信息，并截取前两个
   const repoRolesInfo =
