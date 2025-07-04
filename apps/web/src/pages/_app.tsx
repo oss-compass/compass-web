@@ -10,7 +10,11 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import UserInfoFetcher from '@modules/auth/UserInfoFetcher';
 import { useAppGA, GAScripts } from '@common/lib/ga';
 import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
-import { TrackingManager, useRouteTracking } from '@common/monumentedStation';
+import {
+  TrackingManager,
+  useRouteTracking,
+  useUserTracking,
+} from '@common/monumentedStation';
 
 import '../styles/globals.scss';
 
@@ -29,9 +33,11 @@ function MyApp({
 }: TProps) {
   useAppGA(gaTrackingId);
 
+  // 初始化用户信息埋点追踪（必须在路由追踪之前）
+  useUserTracking();
+
   // 初始化埋点路由追踪
   useRouteTracking();
-
   const [queryClient] = useState(
     () =>
       new QueryClient({

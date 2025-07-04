@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import { useUserInfo } from '@modules/auth/useUserInfo';
 import TrackingManager from './TrackingManager';
 import { ModuleActionConfig } from './types';
 
@@ -8,15 +9,27 @@ import { ModuleActionConfig } from './types';
  */
 export function useRouteTracking() {
   const router = useRouter();
+  const { currentUser, loading } = useUserInfo();
   const trackingManager = TrackingManager.getInstance();
+  const initializedRef = useRef(false);
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
       trackingManager.onRouteChange(url);
     };
 
-    // 初始化当前路由
-    trackingManager.onRouteChange(router.asPath);
+    // 等待用户信息加载完成后再初始化当前路由
+    // 这样确保首次 module_visit 事件包含用户ID
+    if (!loading && !initializedRef.current) {
+      // 如果用户已登录，设置用户ID
+      if (currentUser?.id) {
+        trackingManager.setUserId(currentUser.id);
+      }
+
+      // 初始化当前路由
+      trackingManager.onRouteChange(router.asPath);
+      initializedRef.current = true;
+    }
 
     // 监听路由变化
     router.events.on('routeChangeComplete', handleRouteChange);
@@ -24,7 +37,7 @@ export function useRouteTracking() {
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange);
     };
-  }, [router, trackingManager]);
+  }, [router, trackingManager, currentUser?.id, loading]);
 }
 
 /**
@@ -64,4 +77,28 @@ export function usePageStayTracking() {
   };
 
   return { getStayDuration };
+}
+
+/**
+ * 用户信息埋点Hook - 监听用户信息变化并更新埋点管理器
+ */
+export function useUserTracking() {
+  const { currentUser, loading } = useUserInfo();
+  const trackingManager = TrackingManager.getInstance();
+
+  useEffect(() => {
+    // 当用户信息发生变化时，更新埋点管理器中的用户ID
+    // 注意：首次设置已在 useRouteTracking 中处理，这里主要处理后续变化
+    if (!loading && currentUser?.id) {
+      trackingManager.setUserId(currentUser.id);
+    } else if (!loading && !currentUser?.id) {
+      // 用户登出时清除用户ID
+      trackingManager.setUserId(null);
+    }
+  }, [currentUser?.id, loading, trackingManager]);
+
+  return {
+    userId: currentUser?.id,
+    isUserLoaded: !loading && !!currentUser?.id,
+  };
 }

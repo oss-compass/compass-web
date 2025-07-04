@@ -7,7 +7,7 @@ import { getDeviceInfo } from './utils';
 const FLUSH_INTERVAL = 30000;
 class TrackingManager {
   private static instance: TrackingManager;
-  private userId?: string;
+  private userId?: number | null;
   private sessionStartTime: number;
   private currentPagePath: string = '';
   private currentModule: string = '';
@@ -72,9 +72,9 @@ class TrackingManager {
   }
 
   /**
-   * 初始化用户 ID
+   * 设置用户 ID
    */
-  public setUserId(userId: string) {
+  public setUserId(userId: number | null) {
     this.userId = userId;
   }
 
@@ -351,6 +351,7 @@ class TrackingManager {
 
     // 开发环境下不上传埋点数据
     if (this.isDevelopment()) {
+      console.log(this.reportQueue);
       console.log(
         '[TrackingManager] 开发环境 - 跳过埋点数据上传：',
         this.reportQueue.length,

@@ -4,7 +4,7 @@
 export interface TrackingEvent {
   event_type: string; // 事件类型
   timestamp: number; // 时间戳
-  user_id?: string; // 用户ID 可为空
+  user_id?: number; // 用户ID 可为空
   referrer?: string; // 跳转来源 可为空
   page_path: string; // 页面路径
   module_id?: string; // 模块ID

@@ -32,18 +32,18 @@ const Dashboard: React.FC = () => {
   ]);
   const [timeFilter, setTimeFilter] = useState<'month' | 'year'>('year');
   const chartData = [
-    { month: '1月', value: 65 },
-    { month: '2月', value: 45 },
-    { month: '3月', value: 35 },
-    { month: '4月', value: 240 },
-    { month: '5月', value: 65 },
-    { month: '6月', value: 45 },
-    { month: '7月', value: 55 },
-    { month: '8月', value: 35 },
-    { month: '9月', value: 180 },
-    { month: '10月', value: 220 },
-    { month: '11月', value: 165 },
-    { month: '12月', value: 145 },
+    { month: '1 月', value: 65 },
+    { month: '2 月', value: 45 },
+    { month: '3 月', value: 35 },
+    { month: '4 月', value: 240 },
+    { month: '5 月', value: 65 },
+    { month: '6 月', value: 45 },
+    { month: '7 月', value: 55 },
+    { month: '8 月', value: 35 },
+    { month: '9 月', value: 180 },
+    { month: '10 月', value: 220 },
+    { month: '11 月', value: 165 },
+    { month: '12 月', value: 145 },
   ];
 
   useEffect(() => {
@@ -148,16 +148,6 @@ const Dashboard: React.FC = () => {
     }
   }, [chartData]);
 
-  const activityData = [
-    { id: 1, title: '工作流 0 导入', time: '321,234', avatar: '1' },
-    { id: 2, title: '工作流 1 导入', time: '321,234', avatar: '2' },
-    { id: 3, title: '工作流 2 导入', time: '321,234', avatar: '3' },
-    { id: 4, title: '工作流 3 导入', time: '321,234', avatar: '4' },
-    { id: 5, title: '工作流 4 导入', time: '321,234', avatar: '5' },
-    { id: 6, title: '工作流 5 导入', time: '321,234', avatar: '6' },
-    { id: 7, title: '工作流 6 导入', time: '321,234', avatar: '7' },
-  ];
-
   return (
     <div>
       <Row gutter={[16, 16]} className="mb-6">
@@ -176,7 +166,7 @@ const Dashboard: React.FC = () => {
               </div>
               {/* 横线分隔 */}
               <div className="border-t border-gray-200"></div>
-              {/* 下部分 - 固定30px高度 */}
+              {/* 下部分 - 固定 30px 高度 */}
               <div className="flex h-7 items-center justify-between pt-2">
                 <div className="text-sm text-gray-500">总访问量</div>
                 <div className="text-sm font-medium">12,423</div>
@@ -199,7 +189,7 @@ const Dashboard: React.FC = () => {
               </div>
               {/* 横线分隔 */}
               <div className="border-t border-gray-200"></div>
-              {/* 下部分 - 固定30px高度 */}
+              {/* 下部分 - 固定 30px 高度 */}
               <div className="flex h-7 items-center justify-between pt-2">
                 <div className="text-sm text-gray-500">总活跃用户</div>
                 <div className="text-sm font-medium">3034</div>
@@ -224,7 +214,7 @@ const Dashboard: React.FC = () => {
               </div>
               {/* 横线分隔 */}
               <div className="border-t border-gray-200"></div>
-              {/* 下部分 - 固定30px高度 */}
+              {/* 下部分 - 固定 30px 高度 */}
               <div className="flex h-7 items-center justify-between pt-2">
                 <div className="text-sm text-gray-500">总注册用户</div>
                 <div className="text-sm font-medium">960</div>
@@ -249,7 +239,7 @@ const Dashboard: React.FC = () => {
               </div>
               {/* 横线分隔 */}
               <div className="border-t border-gray-200"></div>
-              {/* 下部分 - 固定30px高度 */}
+              {/* 下部分 - 固定 30px 高度 */}
               <div className="flex h-7 items-center justify-between pt-2">
                 <div className="text-sm text-gray-500">总用户平均活动时长</div>
                 <div className="text-sm font-medium">3 分 46 秒</div>
@@ -262,7 +252,7 @@ const Dashboard: React.FC = () => {
       <Row gutter={[16, 16]} className="mb-6">
         <Col xs={24} lg={24}>
           <Card>
-            <div className="mb-2">
+            <div>
               <div className="flex items-center justify-between">
                 <Tabs defaultActiveKey="1" className="flex-1">
                   <Tabs.TabPane tab="访问量" key="1" />

@@ -46,6 +46,37 @@ const trackingManager = TrackingManager.getInstance();
 trackingManager.init();
 ```
 
+### 用户 ID 自动获取
+
+系统会自动获取用户 ID 并设置到埋点管理器中：
+
+```typescript
+// 在 _app.tsx 中已自动集成
+import { useUserTracking, useRouteTracking } from '@common/monumentedStation';
+
+function MyApp() {
+  // 必须在路由追踪之前初始化用户信息
+  useUserTracking();
+  useRouteTracking();
+
+  return <Component />;
+}
+```
+
+**功能说明：**
+
+- 自动从 `useUserInfo` 获取当前用户信息
+- 自动设置用户 ID 到埋点管理器
+- 确保首次路由变化时的 `module_visit` 事件包含用户 ID
+- 用户登出时自动清除用户 ID
+- 所有埋点事件的 `user_id` 字段会自动填充
+
+**重要提示：**
+
+- `useUserTracking()` 必须在 `useRouteTracking()` 之前调用
+- 系统会等待用户信息加载完成后再触发首次路由埋点
+- 这样确保了首次进入页面的 `module_visit` 事件包含正确的用户 ID
+
 ### 手动埋点 - 核心功能点击
 
 使用 `TrackingWrapper` 组件包装需要埋点的元素：
