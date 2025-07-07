@@ -6,12 +6,10 @@ import { useToggle } from 'react-use';
 import useI18RangeTag from './useI18RangeTag';
 import useQueryDateRange from '@modules/developer/hooks/useQueryDateRange';
 import useSwitchRange from '@modules/developer/components/NavBar/useSwitchRange';
-import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'next-i18next';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import DateRangePicker from './DateRangePicker';
 import Popper from '@mui/material/Popper';
-import ContributorDateTagPanel from '@modules/developer/components/NavBar/ContributorDateTagPanel';
 
 const DateTagPanel = ({
   togglePickerPanel,
@@ -20,13 +18,17 @@ const DateTagPanel = ({
 }) => {
   const { t } = useTranslation();
   const i18RangeTag = useI18RangeTag();
-  const [showRangePicker, setShowRangePicker] = useToggle(false);
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
 
+  // 当 range 不在 rangeTags 范围内时，默认显示自定义日期选择器
+  const [showRangePicker, setShowRangePicker] = useToggle(
+    !rangeTags.includes(range as any)
+  );
+
   return (
     <div
-      className={'bg-base-100 right-0 w-[280px] rounded text-xs drop-shadow-md'}
+      className={'bg-base-100 right-0 w-[288px] rounded text-xs drop-shadow-md'}
     >
       <div className="flex flex-wrap justify-between px-4 pt-4">
         {rangeTags.map((t, index) => {

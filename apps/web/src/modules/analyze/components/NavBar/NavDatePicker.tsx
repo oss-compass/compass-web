@@ -21,11 +21,12 @@ const DateTagPanel = ({
 }) => {
   const { t } = useTranslation();
   const i18RangeTag = useI18RangeTag();
-  const [showRangePicker, setShowRangePicker] = useToggle(false);
   const { range } = useQueryDateRange();
   const { switchRange } = useSwitchRange();
-  const topicType = useQueryMetricType();
-
+  // 当 range 不在 rangeTags 范围内时，默认显示自定义日期选择器
+  const [showRangePicker, setShowRangePicker] = useToggle(
+    !rangeTags.includes(range as any)
+  );
   return (
     <div
       className={'bg-base-100 right-0 w-[280px] rounded text-xs drop-shadow-md'}

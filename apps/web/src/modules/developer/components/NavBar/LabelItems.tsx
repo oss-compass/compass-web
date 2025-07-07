@@ -20,9 +20,6 @@ const Avatar = ({ url }) => {
           alt="logo"
         />
       </div>
-      {/* <div className="absolute -bottom-0.5 -right-0.5 z-10 rounded-full bg-white p-0.5">
-        <ProviderIcon provider={'github'} />
-      </div> */}
     </div>
   );
 };
@@ -47,12 +44,9 @@ const LabelItems = () => {
             {contributorInfo.contributor}
           </a>
           <div className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">
-            开发者
+            {t('developer:developer')}
           </div>
         </div>
-      </div>
-      <div className="hidden md:block">
-        {/* todo show compare items in mobile */}
       </div>
     </>
   );
