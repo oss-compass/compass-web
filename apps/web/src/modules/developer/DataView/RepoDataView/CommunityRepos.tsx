@@ -5,7 +5,6 @@ import BaseCard from '@modules/developer/components/DeveloperCard';
 import CommunityDropDownMenu from './CommunityDropDownMenu';
 import { useCommunityReposQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
-import useCompareItems from '@modules/developer/hooks/useCompareItems';
 import MiniChart from '@common/components/EChartX/MiniChart';
 import {
   getShortAnalyzeLink,
@@ -54,9 +53,7 @@ const PRE_PAGE = 9;
 
 const CommunityRepos = () => {
   const [page, setPage] = useState(1);
-  const { compareItems } = useCompareItems();
   const { t } = useTranslation();
-  const [firstItem] = compareItems;
   const [type, setType] = useState('all');
   const { contributorName } = useContributorName();
   const { data, isLoading } = useCommunityReposQuery(
