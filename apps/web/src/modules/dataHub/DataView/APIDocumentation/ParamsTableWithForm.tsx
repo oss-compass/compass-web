@@ -31,30 +31,121 @@ const ParamsTableWithForm = ({
   const [testResult, setTestResult] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // 检查字符串是否为有效的 JSON
+  const isValidJson = (str: string): boolean => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  // 获取参数的基本类型
+  const getBaseType = (type: string): string => {
+    return type.toLowerCase().split('<')[0].trim();
+  };
+
+  // 检查参数是否需要特殊处理
+  const needsSpecialHandling = (type: string): boolean => {
+    const baseType = getBaseType(type);
+    return ['array', 'object', 'boolean', 'number'].includes(baseType);
+  };
+
+  // 根据参数类型处理输入值的函数
+  const processValueByType = (value: any, type: string): any => {
+    // 如果值为空，直接返回
+    if (value === undefined || value === null || value === '') {
+      return value;
+    }
+
+    // 获取基本类型（处理如 'array<string>' 这样的复合类型描述）
+    const baseType = getBaseType(type);
+
+    // 根据类型处理值
+    try {
+      switch (baseType) {
+        case 'array':
+          // 如果是数组类型且输入是字符串，尝试解析为数组
+          if (typeof value === 'string') {
+            const trimmedValue = value.trim();
+            // 检查是否已经是有效的JSON格式的数组字符串
+            if (
+              trimmedValue.startsWith('[') &&
+              trimmedValue.endsWith(']') &&
+              isValidJson(trimmedValue)
+            ) {
+              return JSON.parse(trimmedValue);
+            }
+            return value;
+          }
+          return value;
+        case 'object':
+          // 如果是对象类型且输入是字符串，尝试解析为对象
+          if (typeof value === 'string') {
+            const trimmedValue = value.trim();
+            if (
+              trimmedValue.startsWith('{') &&
+              trimmedValue.endsWith('}') &&
+              isValidJson(trimmedValue)
+            ) {
+              return JSON.parse(trimmedValue);
+            }
+          }
+          return value;
+        case 'boolean':
+          // 处理布尔值
+          if (typeof value === 'string') {
+            const lowerValue = value.toLowerCase();
+            if (lowerValue === 'true') return true;
+            if (lowerValue === 'false') return false;
+          }
+          return value;
+        case 'number':
+          // 处理数字
+          if (typeof value === 'string' && !isNaN(Number(value))) {
+            return Number(value);
+          }
+          return value;
+        default:
+          return value;
+      }
+    } catch (e) {
+      console.error(`Failed to parse value for type ${type}:`, e);
+      return value; // 解析失败时返回原始值
+    }
+  };
+
   const handleTest = async (values: any) => {
+    console.log(values);
     setLoading(true);
     setTestResult(null);
 
     // 创建一个副本以避免直接修改原始的 values 对象
     const processedValues = { ...values };
 
-    // 检查 datasets 是否存在且为字符串类型
-    if (
-      processedValues.datasets &&
-      typeof processedValues.datasets === 'string'
-    ) {
-      try {
-        // 尝试解析 datasets 字符串
-        processedValues.datasets = JSON.parse(processedValues.datasets);
-      } catch (e) {
-        console.error('Failed to parse datasets string:', e);
-        // 如果解析失败，可以选择设置一个错误状态或使用默认值
-        // 这里我们简单地保持它为原始字符串，或者你可以根据需求处理
-        // 例如: setTestResult({ status: 400, data: { error: 'Invalid datasets format' } });
-        // setLoading(false);
-        // return;
+    // 根据参数类型处理每个输入值
+    params.forEach((param) => {
+      if (
+        processedValues[param.name] !== undefined &&
+        needsSpecialHandling(param.type)
+      ) {
+        const originalValue = processedValues[param.name];
+        processedValues[param.name] = processValueByType(
+          originalValue,
+          param.type
+        );
+
+        // 添加调试日志，显示参数处理前后的变化
+        if (originalValue !== processedValues[param.name]) {
+          console.log(`参数 ${param.name} (${param.type}) 处理: `, {
+            原始值: originalValue,
+            处理后: processedValues[param.name],
+            类型: typeof processedValues[param.name],
+          });
+        }
       }
-    }
+    });
 
     try {
       const config = {
@@ -137,9 +228,12 @@ const ParamsTableWithForm = ({
               ellipsis: true,
               render: (_, record) => (
                 <div className="flex items-center">
-                  {typeof record.example === 'string'
-                    ? record.example
-                    : JSON.stringify(record.example)}
+                  <span className="mr-1">
+                    {' '}
+                    {typeof record.example === 'string'
+                      ? record.example
+                      : JSON.stringify(record.example)}
+                  </span>
                 </div>
               ),
             },
