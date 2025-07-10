@@ -1,6 +1,7 @@
-import React from 'react';
-import { Card, Table } from 'antd';
+import React, { useEffect } from 'react';
+import { Card, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useUserReferrerData } from './hooks/useAdminApi';
 
 interface UserSourceData {
   key: string;
@@ -13,15 +14,48 @@ interface UserSourceCardProps {
 }
 
 const UserSourceCard: React.FC<UserSourceCardProps> = ({ className }) => {
-  const sourceData: UserSourceData[] = [
-    { key: '1', source: 'github.com', visits: 689 },
-    { key: '2', source: 'gitee.com', visits: 570 },
-    { key: '3', source: '114.114.114.114:9421', visits: 517 },
-    { key: '4', source: 'baidu', visits: 354 },
-    { key: '5', source: 'google', visits: 226 },
-    { key: '6', source: 'cn.bing.com', visits: 67 },
-    { key: '7', source: 'bing', visits: 57 },
-  ];
+  const { data: apiData, isLoading, error } = useUserReferrerData();
+
+  // 处理 URL 显示名称
+  const formatSourceName = (url: string): string => {
+    try {
+      // 移除前后空格和反引号
+      const cleanUrl = url.trim().replace(/`/g, '');
+
+      if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
+        const urlObj = new URL(cleanUrl);
+        return urlObj.href;
+      }
+      return cleanUrl;
+    } catch {
+      // 如果 URL 解析失败，返回原始字符串（去除反引号和空格）
+      return url.trim().replace(/`/g, '');
+    }
+  };
+
+  // 处理 API 数据
+  const processReferrerData = (): UserSourceData[] => {
+    if (apiData && apiData.length > 0) {
+      return apiData
+        .slice(0, 50) // 截取前50条
+        .map((item, index) => ({
+          key: (index + 1).toString(),
+          source: formatSourceName(item.name),
+          visits: item.value,
+        }));
+    }
+    return [];
+  };
+
+  const sourceData = processReferrerData();
+
+  // 错误处理
+  useEffect(() => {
+    if (error) {
+      console.error('用户来源数据获取失败：', error);
+      message.error('用户来源数据获取失败，使用模拟数据');
+    }
+  }, [error]);
 
   const columns: ColumnsType<UserSourceData> = [
     {
@@ -48,6 +82,7 @@ const UserSourceCard: React.FC<UserSourceCardProps> = ({ className }) => {
     <Card
       title="用户跳转来源"
       className={className}
+      loading={isLoading}
       extra={
         <span className="text-sm text-gray-500">
           {/* 按来源活动的手动创建... 刷新会话活动 */}

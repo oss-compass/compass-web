@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { Card } from 'antd';
+import { Card, message } from 'antd';
 import * as echarts from 'echarts';
+import { useServiceVisitData } from './hooks/useAdminApi';
 
 interface ServiceClickChartProps {
   className?: string;
@@ -8,8 +9,30 @@ interface ServiceClickChartProps {
 
 const ServiceClickChart: React.FC<ServiceClickChartProps> = ({ className }) => {
   const serviceChartRef = useRef<HTMLDivElement>(null);
+  const { data: apiData, isLoading, error } = useServiceVisitData();
 
-  const serviceData = [
+  // 服务名称映射
+  const serviceNameMap: Record<string, string> = {
+    analyze: '开源健康评估',
+    'os-selection': '开源选型评估',
+    lab: '实验室',
+    dataHub: '开源数据中枢',
+    developer: '开发者画像评估',
+    'os-situation': '开源态势洞察',
+  };
+
+  // 颜色配置
+  const colorMap: Record<string, string> = {
+    开源健康评估: '#1890ff',
+    开发者画像评估: '#52c41a',
+    开源选型评估: '#faad14',
+    开源态势洞察: '#f5222d',
+    开源数据中枢: '#722ed1',
+    实验室: '#13c2c2',
+  };
+
+  // 模拟数据（作为后备）
+  const mockServiceData = [
     { name: '开源健康评估', value: 2856, color: '#1890ff' },
     { name: '开发者画像评估', value: 2134, color: '#52c41a' },
     { name: '开源选型评估', value: 1987, color: '#faad14' },
@@ -18,8 +41,30 @@ const ServiceClickChart: React.FC<ServiceClickChartProps> = ({ className }) => {
     { name: '实验室', value: 1098, color: '#13c2c2' },
   ];
 
+  // 处理 API 数据
+  const processServiceData = () => {
+    if (apiData && apiData.length > 0) {
+      return apiData.map((item) => ({
+        name: serviceNameMap[item.name] || item.name,
+        value: item.value,
+        color: colorMap[serviceNameMap[item.name]] || '#1890ff',
+      }));
+    }
+    return mockServiceData;
+  };
+
+  const serviceData = processServiceData();
+
+  // 错误处理
   useEffect(() => {
-    if (serviceChartRef.current) {
+    if (error) {
+      console.error('服务访问数据获取失败：', error);
+      message.error('服务访问数据获取失败，使用模拟数据');
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (serviceChartRef.current && !isLoading) {
       const serviceChart = echarts.init(serviceChartRef.current);
 
       const serviceOption = {
@@ -74,10 +119,10 @@ const ServiceClickChart: React.FC<ServiceClickChartProps> = ({ className }) => {
         serviceChart.dispose();
       };
     }
-  }, []);
+  }, [serviceData, isLoading]);
 
   return (
-    <Card title="服务点击量占比" className={className}>
+    <Card title="服务点击量占比" className={className} loading={isLoading}>
       <div ref={serviceChartRef} className="h-72 w-full"></div>
     </Card>
   );

@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import { Card, Table } from 'antd';
+import React, { useRef, useEffect, useState } from 'react';
+import { Card, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import * as echarts from 'echarts';
+import { useUserRegionData } from './hooks/useAdminApi';
 
 interface RegionData {
   key: string;
@@ -17,21 +18,49 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
   className,
 }) => {
   const mapChartRef = useRef<HTMLDivElement>(null);
+  const [regionData, setRegionData] = useState<RegionData[]>([]);
 
-  // 模拟数据 - 按国家/地区划分的活跃用户数
-  const regionData: RegionData[] = [
-    { key: '1', country: 'China', activeUsers: 27000 },
-    { key: '2', country: 'Hong Kong', activeUsers: 672 },
-    { key: '3', country: 'Germany', activeUsers: 427 },
-    { key: '4', country: 'United States', activeUsers: 386 },
-    { key: '5', country: 'Singapore', activeUsers: 249 },
-    { key: '6', country: 'Japan', activeUsers: 202 },
-    { key: '7', country: 'Taiwan', activeUsers: 100 },
-  ];
+  // 获取用户地区分布数据
+  const { data: userRegionApiData, isLoading, error } = useUserRegionData();
 
-  // 地图数据映射
+  // 模拟数据作为后备
+  const fallbackRegionData: RegionData[] = [];
+
+  // 处理API数据转换
+  const processApiData = (
+    apiData:
+      | Array<{ country: string; value: number; desc: string }>
+      | undefined,
+    fallbackData: RegionData[]
+  ): RegionData[] => {
+    if (!apiData || apiData.length === 0) {
+      return fallbackData;
+    }
+
+    return apiData.map((item, index) => ({
+      key: (index + 1).toString(),
+      country: item.desc, // 使用desc字段显示中文名称
+      activeUsers: item.value,
+    }));
+  };
+
+  // 错误处理
+  useEffect(() => {
+    if (error) {
+      console.error('获取用户地区数据失败:', error);
+      message.error('获取用户地区数据失败，显示模拟数据');
+    }
+  }, [error]);
+
+  // 数据处理
+  useEffect(() => {
+    const processedData = processApiData(userRegionApiData, fallbackRegionData);
+    setRegionData(processedData);
+  }, [userRegionApiData]);
+
+  // 地图数据映射 - 使用中文名称匹配地图
   const mapData = regionData.map((item) => ({
-    name: item.country,
+    name: item.country, // 已经是中文名称（desc字段）
     value: item.activeUsers,
   }));
 
@@ -63,9 +92,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
       const mapChart = echarts.init(mapChartRef.current);
 
       // 注册世界地图 - 使用可用的 GeoJSON 数据源
-      fetch(
-        'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson'
-      )
+      fetch('/geoData/worldZh.json')
         .then((response) => response.json())
         .then((worldJson) => {
           echarts.registerMap('world', worldJson);
@@ -80,7 +107,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
                     value >= 10000
                       ? `${(value / 10000).toFixed(1)}万`
                       : value?.toLocaleString();
-                  return `${params.name}<br/>活跃用户: ${displayValue}`;
+                  return `${params.name}<br/>活跃用户: ${displayValue || 0}`;
                 }
                 return `${params.name}<br/>暂无数据`;
               },
@@ -93,7 +120,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
               text: ['高', '低'],
               calculable: true,
               inRange: {
-                color: ['#4096ff', '#0958d9', '#003eb3'],
+                color: ['#aecbfa', '#0958d9', '#003eb3'],
               },
               textStyle: {
                 fontSize: 12,
@@ -158,12 +185,13 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
         mapChart.dispose();
       };
     }
-  }, []);
+  }, [mapData]); // 依赖mapData，当数据变化时重新渲染地图
 
   return (
     <Card
       title="按国家/地区划分的活跃用户"
       className={className}
+      loading={isLoading}
       extra={
         <span className="text-sm text-gray-500">
           总计:{' '}

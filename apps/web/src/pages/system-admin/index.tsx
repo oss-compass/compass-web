@@ -5,7 +5,7 @@ import SystemAdmin from '@modules/system-admin';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['common'])),
+      ...(await getLocalesFile(req.cookies, ['common', 'analyze'])),
     },
   };
 };

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Card, Table, Tabs } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Table, Tabs, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useCollectionSearchRankData } from './hooks/useAdminApi';
 
 interface HotSearchData {
   key: string;
   rank: number;
   name: string;
+  label?: string;
   clicks: number;
 }
 
@@ -15,8 +17,27 @@ interface HotSearchCardProps {
 
 const HotSearchCard: React.FC<HotSearchCardProps> = ({ className }) => {
   const [activeTab, setActiveTab] = useState<string>('repository');
+  const [hotSearchData, setHotSearchData] = useState<{
+    repository: HotSearchData[];
+    developer: HotSearchData[];
+  }>({ repository: [], developer: [] });
 
-  const repositoryData: HotSearchData[] = [
+  // 根据当前活跃的tab获取对应数据
+  const {
+    data: repositoryApiData,
+    isLoading: repositoryLoading,
+    error: repositoryError,
+  } = useCollectionSearchRankData('collection', activeTab === 'repository');
+
+  // 获取开发者数据
+  const {
+    data: developerApiData,
+    isLoading: developerLoading,
+    error: developerError,
+  } = useCollectionSearchRankData('developer', activeTab === 'developer');
+
+  // 模拟数据作为后备
+  const fallbackRepositoryData: HotSearchData[] = [
     { key: '1', rank: 1, name: 'facebook/react', clicks: 15420 },
     { key: '2', rank: 2, name: 'vuejs/vue', clicks: 12350 },
     { key: '3', rank: 3, name: 'angular/angular', clicks: 9876 },
@@ -27,7 +48,7 @@ const HotSearchCard: React.FC<HotSearchCardProps> = ({ className }) => {
     { key: '8', rank: 8, name: 'fastify/fastify', clicks: 3210 },
   ];
 
-  const developerData: HotSearchData[] = [
+  const fallbackDeveloperData: HotSearchData[] = [
     { key: '1', rank: 1, name: 'torvalds', clicks: 8765 },
     { key: '2', rank: 2, name: 'gaearon', clicks: 7654 },
     { key: '3', rank: 3, name: 'sindresorhus', clicks: 6543 },
@@ -37,6 +58,63 @@ const HotSearchCard: React.FC<HotSearchCardProps> = ({ className }) => {
     { key: '7', rank: 7, name: 'wesbos', clicks: 2109 },
     { key: '8', rank: 8, name: 'bradtraversy', clicks: 1987 },
   ];
+
+  // 处理API数据转换
+  const processApiData = (
+    apiData: Array<{ name: string; value: number; label?: string }> | undefined
+  ): HotSearchData[] => {
+    if (!apiData || apiData.length === 0) {
+      return [];
+    }
+
+    return apiData.map((item, index) => ({
+      key: (index + 1).toString(),
+      rank: index + 1,
+      name: item.name,
+      label: item?.label || '',
+      clicks: item.value,
+    }));
+  };
+
+  // 错误处理 - 只处理当前活跃tab的错误
+  useEffect(() => {
+    if (activeTab === 'repository' && repositoryError) {
+      console.error('获取仓库/社区排名数据失败:', repositoryError);
+      message.error('获取仓库/社区排名数据失败');
+    }
+  }, [repositoryError, activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'developer' && developerError) {
+      console.error('获取开发者排名数据失败:', developerError);
+      message.error('获取开发者排名数据失败');
+    }
+  }, [developerError, activeTab]);
+
+  // 数据处理 - 根据当前tab处理对应数据
+  useEffect(() => {
+    if (activeTab === 'repository') {
+      const repositoryData = processApiData(repositoryApiData);
+      const finalRepositoryData =
+        repositoryData.length > 0 ? repositoryData : fallbackRepositoryData;
+      setHotSearchData((prev) => ({
+        ...prev,
+        repository: finalRepositoryData,
+      }));
+    }
+  }, [repositoryApiData, activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'developer') {
+      const developerData = processApiData(developerApiData);
+      const finalDeveloperData =
+        developerData.length > 0 ? developerData : fallbackDeveloperData;
+      setHotSearchData((prev) => ({
+        ...prev,
+        developer: finalDeveloperData,
+      }));
+    }
+  }, [developerApiData, activeTab]);
 
   const hotSearchColumns: ColumnsType<HotSearchData> = [
     {
@@ -62,10 +140,17 @@ const HotSearchCard: React.FC<HotSearchCardProps> = ({ className }) => {
       title: activeTab === 'repository' ? '仓库名' : '开发者',
       dataIndex: 'name',
       key: 'name',
-      render: (text: string) => (
-        <span className="cursor-pointer font-medium text-blue-600 hover:underline">
-          {text}
-        </span>
+      render: (text: string, row) => (
+        <a
+          href={
+            activeTab === 'repository'
+              ? '/analyze/' + text
+              : '/developer/' + text
+          }
+          className="cursor-pointer font-medium text-blue-600 hover:underline"
+        >
+          {row.label || text}
+        </a>
       ),
     },
     {
@@ -80,7 +165,13 @@ const HotSearchCard: React.FC<HotSearchCardProps> = ({ className }) => {
   ];
 
   const currentHotSearchData =
-    activeTab === 'repository' ? repositoryData : developerData;
+    activeTab === 'repository'
+      ? hotSearchData.repository
+      : hotSearchData.developer;
+
+  // 只考虑当前活跃tab的加载状态
+  const isLoading =
+    activeTab === 'repository' ? repositoryLoading : developerLoading;
 
   const tabItems = [
     {
@@ -95,8 +186,9 @@ const HotSearchCard: React.FC<HotSearchCardProps> = ({ className }) => {
 
   return (
     <Card
-      title="仓库/社区、开发者热门搜索"
+      title="仓库/社区、开发者访问排名"
       className={className}
+      loading={isLoading}
       extra={
         <Tabs
           activeKey={activeTab}

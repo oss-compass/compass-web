@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { Card, Table, Tabs } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Table, Tabs, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import {
+  useDatahubApiRankData,
+  useDatahubArchiveRankData,
+} from './hooks/useAdminApi';
 
 interface DataHubData {
   key: string;
   rank: number;
   name: string;
   count: number;
+  apiName?: string; // API名称，用于链接跳转
 }
 
 interface DataHubCardProps {
@@ -15,23 +20,103 @@ interface DataHubCardProps {
 
 const DataHubCard: React.FC<DataHubCardProps> = ({ className }) => {
   const [dataHubTab, setDataHubTab] = useState<string>('api');
+  const [dataHubData, setDataHubData] = useState<{
+    api: DataHubData[];
+    archive: DataHubData[];
+  }>({ api: [], archive: [] });
 
-  const apiClickData: DataHubData[] = [
-    { key: '1', rank: 1, name: '获取项目release元数据', count: 8765 },
-    { key: '2', rank: 2, name: '获取项目repo元数据', count: 7654 },
-    { key: '3', rank: 3, name: '开发者对仓库贡献', count: 6543 },
-    { key: '4', rank: 4, name: '获取项目git元数据', count: 5432 },
-    { key: '5', rank: 5, name: '获取项目fork元数据', count: 4321 },
-    { key: '6', rank: 6, name: '获取项目贡献者元数据', count: 3210 },
-    { key: '7', rank: 7, name: '获取项目event元数据', count: 2109 },
-  ];
+  // 根据当前活跃的tab获取对应数据
+  const {
+    data: apiRankData,
+    isLoading: apiLoading,
+    error: apiError,
+  } = useDatahubApiRankData(dataHubTab === 'api');
 
-  const archiveDownloadData: DataHubData[] = [
-    { key: '1', rank: 1, name: '贡献量数据集', count: 15420 },
-    { key: '2', rank: 2, name: '贡献者数据集', count: 12350 },
-    { key: '3', rank: 3, name: '进出口数据集', count: 9876 },
-    { key: '4', rank: 4, name: '编程语言数据集', count: 7654 },
-  ];
+  // 获取归档数据排名
+  const {
+    data: archiveRankData,
+    isLoading: archiveLoading,
+    error: archiveError,
+  } = useDatahubArchiveRankData(dataHubTab === 'archive');
+
+  // 模拟数据作为后备
+  const fallbackApiData: DataHubData[] = [];
+
+  const fallbackArchiveData: DataHubData[] = [];
+
+  // 处理API数据转换
+  const processApiData = (
+    apiData: Array<{ name: string; desc: string; value: number }> | undefined,
+    fallbackData: DataHubData[]
+  ): DataHubData[] => {
+    if (!apiData || apiData.length === 0) {
+      return fallbackData;
+    }
+
+    return apiData.map((item, index) => ({
+      key: (index + 1).toString(),
+      rank: index + 1,
+      name: item.desc, // 显示描述
+      count: item.value,
+      apiName: item.name, // 保存原始name用于链接跳转
+    }));
+  };
+
+  // 处理归档数据转换
+  const processArchiveData = (
+    archiveData: Array<{ name: string; value: number }> | undefined,
+    fallbackData: DataHubData[]
+  ): DataHubData[] => {
+    if (!archiveData || archiveData.length === 0) {
+      return fallbackData;
+    }
+
+    return archiveData.map((item, index) => ({
+      key: (index + 1).toString(),
+      rank: index + 1,
+      name: item.name,
+      count: item.value,
+    }));
+  };
+
+  // 错误处理 - 只处理当前活跃tab的错误
+  useEffect(() => {
+    if (dataHubTab === 'api' && apiError) {
+      console.error('获取API排名数据失败:', apiError);
+      message.error('获取API排名数据失败，显示模拟数据');
+    }
+  }, [apiError, dataHubTab]);
+
+  useEffect(() => {
+    if (dataHubTab === 'archive' && archiveError) {
+      console.error('获取归档数据排名失败:', archiveError);
+      message.error('获取归档数据排名失败，显示模拟数据');
+    }
+  }, [archiveError, dataHubTab]);
+
+  // 数据处理 - 根据当前tab处理对应数据
+  useEffect(() => {
+    if (dataHubTab === 'api') {
+      const apiData = processApiData(apiRankData, fallbackApiData);
+      setDataHubData((prev) => ({
+        ...prev,
+        api: apiData,
+      }));
+    }
+  }, [apiRankData, dataHubTab]);
+
+  useEffect(() => {
+    if (dataHubTab === 'archive') {
+      const archiveData = processArchiveData(
+        archiveRankData,
+        fallbackArchiveData
+      );
+      setDataHubData((prev) => ({
+        ...prev,
+        archive: archiveData,
+      }));
+    }
+  }, [archiveRankData, dataHubTab]);
 
   const dataHubColumns: ColumnsType<DataHubData> = [
     {
@@ -57,11 +142,23 @@ const DataHubCard: React.FC<DataHubCardProps> = ({ className }) => {
       title: dataHubTab === 'api' ? 'API名称' : '归档数据',
       dataIndex: 'name',
       key: 'name',
-      render: (text: string) => (
-        <span className="cursor-pointer font-medium text-blue-600 hover:underline">
-          {text}
-        </span>
-      ),
+      render: (text: string, record: DataHubData) => {
+        // 如果是API数据且有apiName，则渲染为链接
+        if (dataHubTab === 'api' && record.apiName) {
+          return (
+            <a
+              href={`/dataHub#${record.apiName}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-blue-600 hover:underline"
+            >
+              {text}
+            </a>
+          );
+        }
+        // 归档数据不需要链接
+        return <span className="font-medium text-gray-800">{text}</span>;
+      },
     },
     {
       title: dataHubTab === 'api' ? '点击量' : '下载量',
@@ -75,7 +172,10 @@ const DataHubCard: React.FC<DataHubCardProps> = ({ className }) => {
   ];
 
   const currentDataHubData =
-    dataHubTab === 'api' ? apiClickData : archiveDownloadData;
+    dataHubTab === 'api' ? dataHubData.api : dataHubData.archive;
+
+  // 只考虑当前活跃tab的加载状态
+  const isLoading = dataHubTab === 'api' ? apiLoading : archiveLoading;
 
   const dataHubTabItems = [
     {
@@ -92,6 +192,7 @@ const DataHubCard: React.FC<DataHubCardProps> = ({ className }) => {
     <Card
       title="开源数据中枢点击量排名"
       className={className}
+      loading={isLoading}
       extra={
         <Tabs
           activeKey={dataHubTab}
