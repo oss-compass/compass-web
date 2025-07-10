@@ -52,6 +52,57 @@ const ParamsTableWithForm = ({
     return ['array', 'object', 'boolean', 'number'].includes(baseType);
   };
 
+  // 处理数组类型的值
+  const processArrayValue = (value: any): any => {
+    if (typeof value !== 'string') return value;
+
+    const trimmedValue = value.trim();
+    // 检查是否已经是有效的JSON格式的数组字符串
+    if (
+      trimmedValue.startsWith('[') &&
+      trimmedValue.endsWith(']') &&
+      isValidJson(trimmedValue)
+    ) {
+      return JSON.parse(trimmedValue);
+    }
+    return value;
+  };
+
+  // 处理对象类型的值
+  const processObjectValue = (value: any): any => {
+    if (typeof value !== 'string') return value;
+
+    const trimmedValue = value.trim();
+    if (
+      trimmedValue.startsWith('{') &&
+      trimmedValue.endsWith('}') &&
+      isValidJson(trimmedValue)
+    ) {
+      return JSON.parse(trimmedValue);
+    }
+    return value;
+  };
+
+  // 处理布尔类型的值
+  const processBooleanValue = (value: any): any => {
+    if (typeof value !== 'string') return value;
+
+    const lowerValue = value.toLowerCase();
+    if (lowerValue === 'true') return true;
+    if (lowerValue === 'false') return false;
+    return value;
+  };
+
+  // 处理数字类型的值
+  const processNumberValue = (value: any): any => {
+    if (typeof value !== 'string') return value;
+
+    if (!isNaN(Number(value))) {
+      return Number(value);
+    }
+    return value;
+  };
+
   // 根据参数类型处理输入值的函数
   const processValueByType = (value: any, type: string): any => {
     // 如果值为空，直接返回
@@ -66,47 +117,13 @@ const ParamsTableWithForm = ({
     try {
       switch (baseType) {
         case 'array':
-          // 如果是数组类型且输入是字符串，尝试解析为数组
-          if (typeof value === 'string') {
-            const trimmedValue = value.trim();
-            // 检查是否已经是有效的JSON格式的数组字符串
-            if (
-              trimmedValue.startsWith('[') &&
-              trimmedValue.endsWith(']') &&
-              isValidJson(trimmedValue)
-            ) {
-              return JSON.parse(trimmedValue);
-            }
-            return value;
-          }
-          return value;
+          return processArrayValue(value);
         case 'object':
-          // 如果是对象类型且输入是字符串，尝试解析为对象
-          if (typeof value === 'string') {
-            const trimmedValue = value.trim();
-            if (
-              trimmedValue.startsWith('{') &&
-              trimmedValue.endsWith('}') &&
-              isValidJson(trimmedValue)
-            ) {
-              return JSON.parse(trimmedValue);
-            }
-          }
-          return value;
+          return processObjectValue(value);
         case 'boolean':
-          // 处理布尔值
-          if (typeof value === 'string') {
-            const lowerValue = value.toLowerCase();
-            if (lowerValue === 'true') return true;
-            if (lowerValue === 'false') return false;
-          }
-          return value;
+          return processBooleanValue(value);
         case 'number':
-          // 处理数字
-          if (typeof value === 'string' && !isNaN(Number(value))) {
-            return Number(value);
-          }
-          return value;
+          return processNumberValue(value);
         default:
           return value;
       }
