@@ -1,25 +1,35 @@
-import React, { useState } from 'react';
-import { Card, Table, Tag, Button, Space, Input, Tooltip } from 'antd';
+import React, { useState, useEffect } from 'react';
 import {
-  SearchOutlined,
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons';
+  Card,
+  Tag,
+  Button,
+  Space,
+  Input,
+  Tooltip,
+  message,
+  Modal,
+  Select,
+} from 'antd';
+import MyTable from '@common/components/Table';
+import { SearchOutlined, EditOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import axios from 'axios';
 
 interface UserData {
-  key: string;
-  username: string;
+  id: number;
+  name: string;
   email: string;
-  role: 'admin' | 'user' | 'oh_user';
-  lastLogin: string;
-  createTime: string;
-  behaviorProfile: {
-    name: string;
-    value: number;
-    color: string;
-  }[];
+  role_level: number;
+  role_level_desc: string;
+  last_sign_in_at: string;
+  created_at: string;
+}
+
+interface ApiResponse {
+  total: number;
+  page: number;
+  per_page: number;
+  data: UserData[];
 }
 
 interface BehaviorProfileProps {
@@ -61,11 +71,146 @@ const BehaviorProfile: React.FC<BehaviorProfileProps> = ({ data }) => {
 };
 
 const UserManagement: React.FC = () => {
+  const [userData, setUserData] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const [keywords, setKeywords] = useState('');
+  const [searchKeywords, setSearchKeywords] = useState('');
+
+  // 编辑相关状态
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserData | null>(null);
+  const [selectedRoleLevel, setSelectedRoleLevel] = useState<number>(1);
+  const [editLoading, setEditLoading] = useState(false);
+
+  // 角色选项
+  const roleOptions = [
+    { label: '普通用户', value: 0 },
+    { label: 'OH 用户', value: 2 },
+    { label: '管理员', value: 7 },
+  ];
+
+  // API 调用函数
+  const fetchUserData = async (
+    page: number = 1,
+    per_page: number = 20,
+    keywords: string = ''
+  ) => {
+    setLoading(true);
+    try {
+      const response = await axios.post<ApiResponse>(
+        '/api/v2/admin/manage_user_list',
+        {
+          keywords,
+          page,
+          per_page,
+        }
+      );
+
+      setUserData(response.data.data);
+      setTotal(response.data.total);
+      setCurrentPage(response.data.page);
+      setPageSize(response.data.per_page);
+    } catch (error) {
+      console.error('获取用户数据失败：', error);
+      message.error('获取用户数据失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 更新用户角色 API
+  const updateUserRole = async (id: number, role_level: number) => {
+    setEditLoading(true);
+    try {
+      const response = await axios.post('/api/v2/admin/update_user_role', {
+        id,
+        role_level,
+      });
+
+      if (response.data.message === 'ok') {
+        message.success('用户角色更新成功');
+
+        // 更新本地数据
+        setUserData((prevData) =>
+          prevData.map((user) =>
+            user.id === id
+              ? { ...user, role_level: response.data.new_role_level }
+              : user
+          )
+        );
+
+        setEditModalVisible(false);
+        setEditingUser(null);
+      } else {
+        message.error('更新失败');
+      }
+    } catch (error) {
+      console.error('更新用户角色失败：', error);
+      message.error('更新用户角色失败');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  // 组件加载时获取数据
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // 搜索处理
+  const handleSearch = () => {
+    setSearchKeywords(keywords);
+    fetchUserData(1, pageSize, keywords);
+  };
+
+  // 分页处理
+  const handleTableChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
+    fetchUserData(page, size, searchKeywords);
+  };
+
+  // 角色标签渲染
+  const getRoleTag = (roleLevel: number, roleDesc: string) => {
+    // 根据 role_level_desc 或 role_level 判断角色类型
+    if (roleLevel === 7) {
+      return <Tag color="red">管理员</Tag>;
+    } else if (roleLevel === 2) {
+      return <Tag color="purple">OH 用户</Tag>;
+    } else {
+      return <Tag color="blue">普通用户</Tag>;
+    }
+  };
+
+  // 打开编辑模态框
+  const handleEdit = (user: UserData) => {
+    setEditingUser(user);
+    setSelectedRoleLevel(user.role_level);
+    setEditModalVisible(true);
+  };
+
+  // 取消编辑
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+    setEditingUser(null);
+    setSelectedRoleLevel(1);
+  };
+
+  // 确认编辑
+  const handleEditConfirm = () => {
+    if (editingUser) {
+      updateUserRole(editingUser.id, selectedRoleLevel);
+    }
+  };
+
   const columns: ColumnsType<UserData> = [
     {
       title: '用户名',
-      dataIndex: 'username',
-      key: 'username',
+      dataIndex: 'name',
+      key: 'name',
       width: '15%',
     },
     {
@@ -76,42 +221,22 @@ const UserManagement: React.FC = () => {
     },
     {
       title: '角色',
-      dataIndex: 'role',
       key: 'role',
       width: '12%',
-      render: (role: string) => {
-        const config = {
-          admin: { color: 'red', text: '管理员' },
-          user: { color: 'blue', text: '普通用户' },
-          oh_user: { color: 'purple', text: 'OH用户' },
-        };
-        const { color, text } = config[role as keyof typeof config] || {
-          color: 'default',
-          text: '未知',
-        };
-        return <Tag color={color}>{text}</Tag>;
-      },
+      render: (_, record) =>
+        getRoleTag(record.role_level, record.role_level_desc),
     },
-    // {
-    //   title: '用户行为分析(点击量)',
-    //   dataIndex: 'behaviorProfile',
-    //   key: 'behaviorProfile',
-    //   width: '25%',
-    //   render: (behaviorProfile: UserData['behaviorProfile']) => (
-    //     <BehaviorProfile data={behaviorProfile} />
-    //   ),
-    // },
     {
       title: '最后登录',
-      dataIndex: 'lastLogin',
-      key: 'lastLogin',
+      dataIndex: 'last_sign_in_at',
+      key: 'last_sign_in_at',
       width: '15%',
     },
     {
       title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-      width: '10%',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: '15%',
     },
     {
       title: '操作',
@@ -119,152 +244,21 @@ const UserManagement: React.FC = () => {
       width: '13%',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="link" icon={<EditOutlined />} size="small">
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            size="small"
+            onClick={() => handleEdit(record)}
+          >
             编辑
-          </Button>
-          <Button type="link" danger icon={<DeleteOutlined />} size="small">
-            删除
           </Button>
         </Space>
       ),
     },
   ];
 
-  // 生成用户行为画像数据
-  const generateBehaviorProfile = (activeTypes: number[] = []) => {
-    const baseData = [
-      { name: '开源健康评估', value: 0, color: '#1890ff' },
-      { name: '开发者画像评估', value: 0, color: '#52c41a' },
-      { name: '开源选型评估', value: 0, color: '#faad14' },
-      { name: '开源态势洞察', value: 0, color: '#f5222d' },
-      { name: '开源数据中枢', value: 0, color: '#722ed1' },
-      { name: '实验室', value: 0, color: '#13c2c2' },
-    ];
-
-    return baseData.map((item, index) => ({
-      ...item,
-      value:
-        activeTypes.length === 0 || activeTypes.includes(index)
-          ? Math.floor(Math.random() * 3000) + 100
-          : 0,
-    }));
-  };
-
-  const data: UserData[] = [
-    {
-      key: '1',
-      username: 'admin',
-      email: 'admin@example.com',
-      role: 'admin',
-      lastLogin: '2024-01-15 10:30:00',
-      createTime: '2023-01-01',
-      behaviorProfile: generateBehaviorProfile([0, 1, 2, 3, 4, 5]), // 全部类型
-    },
-    {
-      key: '2',
-      username: 'john_doe',
-      email: 'john@example.com',
-      role: 'user',
-      lastLogin: '2024-01-14 15:45:00',
-      createTime: '2023-06-15',
-      behaviorProfile: generateBehaviorProfile([0, 2]), // 只有健康评估和选型评估
-    },
-    {
-      key: '3',
-      username: 'oh_user1',
-      email: 'oh@example.com',
-      role: 'oh_user',
-      lastLogin: '2024-01-13 09:20:00',
-      createTime: '2023-03-10',
-      behaviorProfile: generateBehaviorProfile([1, 3, 5]), // 画像评估、态势洞察、实验室
-    },
-    {
-      key: '4',
-      username: 'regular_user',
-      email: 'user@example.com',
-      role: 'user',
-      lastLogin: '2024-01-01 08:00:00',
-      createTime: '2023-12-01',
-      behaviorProfile: generateBehaviorProfile([0]), // 只有健康评估
-    },
-    {
-      key: '5',
-      username: 'developer_zhang',
-      email: 'zhang@tech.com',
-      role: 'user',
-      lastLogin: '2024-01-12 14:20:00',
-      createTime: '2023-08-20',
-      behaviorProfile: generateBehaviorProfile([1, 4]), // 画像评估和数据中枢
-    },
-    {
-      key: '6',
-      username: 'manager_li',
-      email: 'li@company.com',
-      role: 'oh_user',
-      lastLogin: '2024-01-11 16:45:00',
-      createTime: '2023-05-12',
-      behaviorProfile: generateBehaviorProfile([2, 3]), // 选型评估和态势洞察
-    },
-    {
-      key: '7',
-      username: 'researcher_wang',
-      email: 'wang@research.org',
-      role: 'user',
-      lastLogin: '2024-01-10 11:30:00',
-      createTime: '2023-09-08',
-      behaviorProfile: generateBehaviorProfile([5]), // 只有实验室
-    },
-    {
-      key: '8',
-      username: 'analyst_chen',
-      email: 'chen@analytics.com',
-      role: 'user',
-      lastLogin: '2024-01-09 13:15:00',
-      createTime: '2023-11-25',
-      behaviorProfile: generateBehaviorProfile([3, 4]), // 态势洞察和数据中枢
-    },
-    {
-      key: '9',
-      username: 'architect_liu',
-      email: 'liu@architect.net',
-      role: 'oh_user',
-      lastLogin: '2024-01-08 09:45:00',
-      createTime: '2023-04-18',
-      behaviorProfile: generateBehaviorProfile([0, 2, 4]), // 健康评估、选型评估、数据中枢
-    },
-    {
-      key: '10',
-      username: 'student_zhao',
-      email: 'zhao@university.edu',
-      role: 'user',
-      lastLogin: '2024-01-07 20:30:00',
-      createTime: '2023-10-15',
-      behaviorProfile: generateBehaviorProfile([1, 5]), // 画像评估和实验室
-    },
-    {
-      key: '11',
-      username: 'consultant_wu',
-      email: 'wu@consulting.com',
-      role: 'user',
-      lastLogin: '2024-01-06 12:00:00',
-      createTime: '2023-07-30',
-      behaviorProfile: generateBehaviorProfile([0, 1, 3]), // 健康评估、画像评估、态势洞察
-    },
-    {
-      key: '12',
-      username: 'engineer_sun',
-      email: 'sun@engineering.com',
-      role: 'user',
-      lastLogin: '2024-01-05 15:20:00',
-      createTime: '2023-12-10',
-      behaviorProfile: generateBehaviorProfile([4]), // 只有数据中枢
-    },
-  ];
-
   return (
     <div>
-      {/* <h1 className="mb-6 text-2xl font-bold text-gray-800">用户管理</h1> */}
-
       <Card title="用户管理">
         <div className="mb-4 flex items-center justify-between">
           <Space>
@@ -272,25 +266,66 @@ const UserManagement: React.FC = () => {
               placeholder="搜索用户名或邮箱"
               prefix={<SearchOutlined />}
               style={{ width: 300 }}
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              onPressEnter={handleSearch}
             />
+            <Button type="primary" onClick={handleSearch}>
+              搜索
+            </Button>
           </Space>
-          <Button type="primary" icon={<PlusOutlined />}>
-            添加用户
-          </Button>
         </div>
 
-        <Table
+        <MyTable
           columns={columns}
-          dataSource={data}
+          dataSource={userData}
+          loading={loading}
+          rowKey="id"
           pagination={{
-            total: data.length,
-            pageSize: 10,
+            current: currentPage,
+            pageSize: pageSize,
+            total: total,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
               `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+            onChange: handleTableChange,
+            onShowSizeChange: handleTableChange,
           }}
         />
+
+        {/* 编辑用户角色模态框 */}
+        <Modal
+          title="编辑用户角色"
+          open={editModalVisible}
+          onOk={handleEditConfirm}
+          onCancel={handleEditCancel}
+          confirmLoading={editLoading}
+          okText="确定"
+          cancelText="取消"
+        >
+          {editingUser && (
+            <div>
+              <p>
+                <strong>用户名：</strong>
+                {editingUser.name}
+              </p>
+              <p>
+                <strong>邮箱：</strong>
+                {editingUser.email}
+              </p>
+              <div style={{ marginTop: 16 }}>
+                <label>角色：</label>
+                <Select
+                  value={selectedRoleLevel}
+                  onChange={setSelectedRoleLevel}
+                  style={{ width: '100%', marginTop: 8 }}
+                  options={roleOptions}
+                />
+              </div>
+            </div>
+          )}
+        </Modal>
       </Card>
     </div>
   );

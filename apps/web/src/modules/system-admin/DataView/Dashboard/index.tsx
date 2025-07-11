@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
         >
           <div className="flex items-center">
             <h1 className="text-lg font-semibold text-gray-800 md:text-base">
-              数据概览
+              监控总览
             </h1>
           </div>
           <div className="flex items-center text-gray-600">

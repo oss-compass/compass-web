@@ -1,17 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Card,
-  Table,
-  message,
-  Tag,
-  Tooltip,
-  Typography,
-  Empty,
-  Input,
-  Space,
-  Button,
-} from 'antd';
-import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Card, message, Tag, Tooltip, Typography, Empty, Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import MyTable from '@common/components/Table';
 import {
   useOssSelectionSearchData,
   OssSelectionSearchItem,
@@ -31,14 +21,14 @@ const OssSelectionSearchTable: React.FC<OssSelectionSearchTableProps> = ({
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
-  // 使用自定义Hook获取数据
+  // 使用自定义 Hook 获取数据
   const {
     data: apiResponse,
     isLoading,
     error,
   } = useOssSelectionSearchData(page, pageSize);
 
-  // 处理API返回的数据结构
+  // 处理 API 返回的数据结构
   const tableData = apiResponse?.data || [];
   const total = apiResponse?.total || 0;
 
@@ -65,7 +55,7 @@ const OssSelectionSearchTable: React.FC<OssSelectionSearchTableProps> = ({
     const begin_date = dateRange?.[0]?.format('YYYY-MM-DD') || '';
     const end_date = dateRange?.[1]?.format('YYYY-MM-DD') || '';
 
-    // 构建下载URL，添加日期参数
+    // 构建下载 URL，添加日期参数
     const downloadUrl = `/api/v2/admin/oss_selection_search_table_download?begin_date=${begin_date}&end_date=${end_date}`;
 
     // 在新窗口打开下载链接
@@ -113,7 +103,7 @@ const OssSelectionSearchTable: React.FC<OssSelectionSearchTableProps> = ({
 
         // 添加额外信息
         if (record.content.src_ecosystem) {
-          extraInfo.push(`源生态: ${record.content.src_ecosystem}`);
+          extraInfo.push(`源生态：${record.content.src_ecosystem}`);
         }
 
         if (
@@ -121,7 +111,7 @@ const OssSelectionSearchTable: React.FC<OssSelectionSearchTableProps> = ({
           record.content.target_ecosystems.length > 0
         ) {
           extraInfo.push(
-            `目标生态: ${record.content.target_ecosystems.join(', ')}`
+            `目标生态：${record.content.target_ecosystems.join(', ')}`
           );
         }
 
@@ -130,7 +120,7 @@ const OssSelectionSearchTable: React.FC<OssSelectionSearchTableProps> = ({
           record.content.selectedLanguages.length > 0
         ) {
           extraInfo.push(
-            `选择语言: ${record.content.selectedLanguages.join(', ')}`
+            `选择语言：${record.content.selectedLanguages.join(', ')}`
           );
         }
 
@@ -179,7 +169,7 @@ const OssSelectionSearchTable: React.FC<OssSelectionSearchTableProps> = ({
         </Button>
       }
     >
-      <Table
+      <MyTable
         dataSource={tableData}
         columns={columns}
         rowKey={(record) =>

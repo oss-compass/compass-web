@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, message, Skeleton } from 'antd';
+import { Card, Row, Col, message, Skeleton, Tooltip } from 'antd';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   MinusOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 
 // 类型定义
@@ -58,7 +59,7 @@ const StatsCards: React.FC = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '获取数据失败';
       setError(errorMessage);
-      console.error('获取用户概览数据失败:', err);
+      console.error('获取用户概览数据失败：', err);
       message.error(errorMessage);
     } finally {
       setLoading(false);
@@ -129,7 +130,15 @@ const StatsCards: React.FC = () => {
             {/* 上部分 */}
             <div className="mb-4 flex flex-1 items-center justify-between">
               <div>
-                <div className="mb-1 text-sm font-semibold">月访问量</div>
+                <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
+                  月访问量
+                  <Tooltip
+                    title="统计上月所有用户对网站的访问次数，包括注册用户和访客的页面浏览量"
+                    placement="top"
+                  >
+                    <InfoCircleOutlined className="cursor-pointer text-sm" />
+                  </Tooltip>
+                </div>
                 <div className="text-3xl font-bold">
                   {data.monthly_visit_count.toLocaleString()}
                 </div>
@@ -156,7 +165,15 @@ const StatsCards: React.FC = () => {
             {/* 上部分 */}
             <div className="mb-4 flex flex-1 items-center justify-between">
               <div>
-                <div className="mb-1 text-sm font-semibold">月新增用户</div>
+                <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
+                  月新增用户
+                  <Tooltip
+                    title="统计上月首次访问网站的新用户数量"
+                    placement="top"
+                  >
+                    <InfoCircleOutlined className="cursor-pointer text-sm" />
+                  </Tooltip>
+                </div>
                 <div className="text-3xl font-bold">
                   {data.new_users_count.toLocaleString()}
                 </div>
@@ -210,8 +227,14 @@ const StatsCards: React.FC = () => {
             {/* 上部分 */}
             <div className="mb-4 flex flex-1 items-center justify-between">
               <div>
-                <div className="mb-1 text-sm font-semibold">
+                <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
                   月用户平均活动时长
+                  <Tooltip
+                    title="统计上月所有用户在网站上的平均停留时间，包括登录用户和访客"
+                    placement="top"
+                  >
+                    <InfoCircleOutlined className="cursor-pointer text-sm" />
+                  </Tooltip>
                 </div>
                 <div className="text-3xl font-bold">
                   {data.average_monthly_user_duration}

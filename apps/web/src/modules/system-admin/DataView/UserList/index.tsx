@@ -1,38 +1,29 @@
 import React, { useState } from 'react';
-import {
-  Card,
-  Table,
-  Tag,
-  Button,
-  Space,
-  Input,
-  Tooltip,
-  Progress,
-} from 'antd';
-import {
-  SearchOutlined,
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
+import { Card, Button, Space, Input, Tooltip } from 'antd';
+import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import MyTable from '@common/components/Table';
+import { DateProvider } from '../Dashboard/contexts/DateContext';
+import NavDatePicker from '../Dashboard/components/NavDatePicker';
+import { useUserListData } from '../Dashboard/hooks/useAdminApi';
+import { format } from 'date-fns';
+import { zhCN } from 'date-fns/locale';
 
 interface UserListData {
   key: string;
-  username: string;
+  id: number;
+  name: string;
   email: string;
-  country: string;
-  city: string;
-  behaviorProfile: {
-    name: string;
-    value: number;
-    color: string;
-  }[];
-  avgActiveTime: number; // 平均活跃时长（分钟）
-  organization: string;
-  reportCount: number;
-  reportDetails: string[];
+  last_sign_in_at: string;
+  role_level: number;
+  role_level_desc: string;
+  created_at: string;
+  ip?: string;
+  country?: string;
+  country_desc?: string;
+  avg_stay_per_day?: number;
+  click_stats?: Record<string, any>;
+  report_count?: number;
 }
 
 interface BehaviorProfileProps {
@@ -49,9 +40,9 @@ const BehaviorProfile: React.FC<BehaviorProfileProps> = ({ data }) => {
 
   return (
     <div className="w-full">
-      <div className="flex h-2.5 items-center  overflow-hidden">
+      <div className="flex h-2.5 items-center overflow-hidden">
         {data.map(({ name, value, color }) => {
-          const width = (value / maxValue) * 100;
+          const width = maxValue > 0 ? (value / maxValue) * 100 : 0;
           return (
             <Tooltip key={name} title={`${name}: ${value}`}>
               <div
@@ -73,287 +64,252 @@ const BehaviorProfile: React.FC<BehaviorProfileProps> = ({ data }) => {
   );
 };
 
-const UserList: React.FC = () => {
+// API 字段到中文服务名称的映射
+const getServiceBehaviorData = (clickStats: Record<string, any>) => {
+  const baseData = [
+    { name: '开源健康评估', value: 0, color: '#1890ff', key: 'analyze' },
+    { name: '开发者画像评估', value: 0, color: '#52c41a', key: 'developer' },
+    { name: '开源选型评估', value: 0, color: '#faad14', key: 'os-selection' },
+    { name: '开源态势洞察', value: 0, color: '#f5222d', key: 'os-situation' },
+    { name: '开源数据中枢', value: 0, color: '#722ed1', key: 'dataHub' },
+    { name: '实验室', value: 0, color: '#13c2c2', key: 'lab' },
+  ];
+
+  return baseData
+    .map((item) => ({
+      name: item.name,
+      value: clickStats?.[item.key] || 0,
+      color: item.color,
+    }))
+    .filter((item) => item.value > 0); // 只显示有数据的服务
+};
+
+const UserListContent: React.FC = () => {
+  const [searchKeywords, setSearchKeywords] = useState(''); // 实际搜索用的关键词
+  const [inputValue, setInputValue] = useState(''); // 输入框的值
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  // 使用新的 API hook
+  const { data, isLoading, error } = useUserListData(
+    searchKeywords,
+    currentPage,
+    pageSize,
+    true
+  );
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '-';
+    try {
+      return format(new Date(dateString), 'yyyy-MM-dd', {
+        locale: zhCN,
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   const columns: ColumnsType<UserListData> = [
     {
       title: '用户名',
-      dataIndex: 'username',
-      key: 'username',
-      width: '12%',
+      dataIndex: 'name',
+      key: 'name',
+      width: '10%',
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       key: 'email',
-      width: '15%',
+      width: '16%',
     },
     {
       title: '地域',
       key: 'location',
-      width: '12%',
+      width: '10%',
       render: (_, record) => (
         <div>
-          <div className="font-medium">{record.country}</div>
-          <div className="text-xs text-gray-500">{record.city}</div>
+          <div className="font-medium">
+            {record.country_desc || record.country || '-'}
+          </div>
+          {record.ip && (
+            <div className="text-xs text-gray-500">IP: {record.ip}</div>
+          )}
         </div>
       ),
     },
     {
-      title: '服务使用量(点击量)',
-      dataIndex: 'behaviorProfile',
-      key: 'behaviorProfile',
-      width: '25%',
-      render: (behaviorProfile: UserListData['behaviorProfile']) => (
-        <BehaviorProfile data={behaviorProfile} />
-      ),
+      title: '服务使用量 (点击量)',
+      dataIndex: 'click_stats',
+      key: 'click_stats',
+      width: '20%',
+      render: (clickStats: Record<string, any>) => {
+        const behaviorData = getServiceBehaviorData(clickStats);
+        const totalClicks = behaviorData.reduce(
+          (sum, item) => sum + item.value,
+          0
+        );
+
+        if (totalClicks === 0) {
+          return <div className="text-center text-gray-500">暂无数据</div>;
+        }
+
+        return (
+          <div className="space-y-2">
+            <div className="text-center text-sm font-medium">
+              总点击量：{totalClicks}
+            </div>
+            <BehaviorProfile data={behaviorData} />
+          </div>
+        );
+      },
     },
     {
       title: '平均活跃时长',
-      dataIndex: 'avgActiveTime',
-      key: 'avgActiveTime',
+      dataIndex: 'avg_stay_per_day',
+      key: 'avg_stay_per_day',
       width: '10%',
       render: (time: number) => (
         <div className="text-center">
-          <div className="font-medium">{time}分钟</div>
-          <Progress
-            percent={Math.min((time / 120) * 100, 100)}
-            size="small"
-            strokeColor={
-              time > 60 ? '#52c41a' : time > 30 ? '#faad14' : '#f5222d'
-            }
-            showInfo={false}
-          />
+          {time !== undefined ? (
+            <>
+              <div className="font-medium">{Math.round(time)}分钟</div>
+            </>
+          ) : (
+            <div className="text-gray-500">-</div>
+          )}
         </div>
       ),
-    },
-    {
-      title: '组织信息',
-      dataIndex: 'organization',
-      key: 'organization',
-      width: '12%',
-      render: (org: string) => <Tag color="blue">{org}</Tag>,
     },
     {
       title: '提交报告数量',
-      dataIndex: 'reportCount',
-      key: 'reportCount',
+      dataIndex: 'report_count',
+      key: 'report_count',
       width: '8%',
       render: (count: number) => (
         <div className="text-center">
-          <div className="text-lg font-medium">{count}</div>
+          <div className="text-lg font-medium">{count || 0}</div>
         </div>
       ),
     },
+    // {
+    //   title: '最后登录时间',
+    //   dataIndex: 'last_sign_in_at',
+    //   key: 'last_sign_in_at',
+    //   width: '12%',
+    //   render: (time: string) => (
+    //     <div className="text-sm">{formatDate(time)}</div>
+    //   ),
+    // },
     {
-      title: '操作',
-      key: 'action',
-      width: '6%',
-      render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="查看报告详情">
-            <Button type="link" icon={<EyeOutlined />} size="small" />
-          </Tooltip>
-          {/* <Tooltip title="编辑用户">
-            <Button type="link" icon={<EditOutlined />} size="small" />
-          </Tooltip> */}
-        </Space>
+      title: '注册时间',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: '12%',
+      render: (time: string) => (
+        <div className="text-sm">{formatDate(time)}</div>
       ),
     },
+    // {
+    //   title: '操作',
+    //   key: 'action',
+    //   width: '6%',
+    //   render: (_, record) => (
+    //     <Space size="small">
+    //       <Tooltip title="查看详情">
+    //         <Button type="link" icon={<EyeOutlined />} size="small" />
+    //       </Tooltip>
+    //     </Space>
+    //   ),
+    // },
   ];
 
-  // 生成用户行为画像数据
-  const generateBehaviorProfile = (activeTypes: number[] = []) => {
-    const baseData = [
-      { name: '开源健康评估', value: 0, color: '#1890ff' },
-      { name: '开发者画像评估', value: 0, color: '#52c41a' },
-      { name: '开源选型评估', value: 0, color: '#faad14' },
-      { name: '开源态势洞察', value: 0, color: '#f5222d' },
-      { name: '开源数据中枢', value: 0, color: '#722ed1' },
-      { name: '实验室', value: 0, color: '#13c2c2' },
-    ];
-
-    return baseData.map((item, index) => ({
+  // 转换 API 数据为表格数据格式
+  const tableData: UserListData[] =
+    data?.data?.map((item) => ({
       ...item,
-      value:
-        activeTypes.length === 0 || activeTypes.includes(index)
-          ? Math.floor(Math.random() * 3000) + 100
-          : 0,
-    }));
+      key: item.id.toString(),
+    })) || [];
+
+  const handleSearch = (value: string) => {
+    setSearchKeywords(value);
+    setCurrentPage(1); // 重置到第一页
   };
 
-  // 生成报告详情
-  const generateReportDetails = (count: number): string[] => {
-    const reportTypes = [
-      '开源项目健康度评估报告',
-      '技术栈选型分析报告',
-      '开发者能力评估报告',
-      '开源生态趋势报告',
-      '项目风险评估报告',
-    ];
-
-    return Array.from(
-      { length: count },
-      (_, i) =>
-        `${
-          reportTypes[i % reportTypes.length]
-        }_${new Date().getFullYear()}_${String(i + 1).padStart(3, '0')}`
-    );
+  const handleTableChange = (pagination: any) => {
+    setCurrentPage(pagination.current);
+    setPageSize(pagination.pageSize);
   };
-
-  const data: UserListData[] = [
-    {
-      key: '1',
-      username: 'admin',
-      email: 'admin@example.com',
-      country: '中国',
-      city: '北京',
-      behaviorProfile: generateBehaviorProfile([0, 1, 2, 3, 4, 5]), // 全部类型
-      avgActiveTime: 95,
-      organization: 'OSS Compass',
-      reportCount: 15,
-      reportDetails: generateReportDetails(15),
-    },
-    {
-      key: '2',
-      username: 'john_doe',
-      email: 'john@example.com',
-      country: '美国',
-      city: '纽约',
-      behaviorProfile: generateBehaviorProfile([0, 2]), // 只有健康评估和选型评估
-      avgActiveTime: 67,
-      organization: 'Tech Corp',
-      reportCount: 8,
-      reportDetails: generateReportDetails(8),
-    },
-    {
-      key: '3',
-      username: 'oh_user1',
-      email: 'oh@example.com',
-      country: '中国',
-      city: '深圳',
-      behaviorProfile: generateBehaviorProfile([1, 3, 5]), // 画像评估、态势洞察、实验室
-      avgActiveTime: 123,
-      organization: 'OpenHarmony',
-      reportCount: 22,
-      reportDetails: generateReportDetails(22),
-    },
-    {
-      key: '4',
-      username: 'regular_user',
-      email: 'user@example.com',
-      country: '德国',
-      city: '柏林',
-      behaviorProfile: generateBehaviorProfile([0]), // 只有健康评估
-      avgActiveTime: 34,
-      organization: 'StartupGmbH',
-      reportCount: 3,
-      reportDetails: generateReportDetails(3),
-    },
-    {
-      key: '5',
-      username: 'developer_zhang',
-      email: 'zhang@tech.com',
-      country: '中国',
-      city: '上海',
-      behaviorProfile: generateBehaviorProfile([1, 4]), // 画像评估和数据中枢
-      avgActiveTime: 89,
-      organization: '科技公司',
-      reportCount: 12,
-      reportDetails: generateReportDetails(12),
-    },
-    {
-      key: '6',
-      username: 'manager_li',
-      email: 'li@company.com',
-      country: '日本',
-      city: '东京',
-      behaviorProfile: generateBehaviorProfile([2, 3]), // 选型评估和态势洞察
-      avgActiveTime: 76,
-      organization: 'Enterprise Ltd',
-      reportCount: 18,
-      reportDetails: generateReportDetails(18),
-    },
-    {
-      key: '7',
-      username: 'researcher_wang',
-      email: 'wang@research.org',
-      country: '英国',
-      city: '伦敦',
-      behaviorProfile: generateBehaviorProfile([5]), // 只有实验室
-      avgActiveTime: 145,
-      organization: '研究院',
-      reportCount: 25,
-      reportDetails: generateReportDetails(25),
-    },
-    {
-      key: '8',
-      username: 'analyst_chen',
-      email: 'chen@analytics.com',
-      country: '加拿大',
-      city: '多伦多',
-      behaviorProfile: generateBehaviorProfile([3, 4]), // 态势洞察和数据中枢
-      avgActiveTime: 52,
-      organization: 'Analytics Inc',
-      reportCount: 7,
-      reportDetails: generateReportDetails(7),
-    },
-    {
-      key: '9',
-      username: 'architect_liu',
-      email: 'liu@architect.net',
-      country: '澳大利亚',
-      city: '悉尼',
-      behaviorProfile: generateBehaviorProfile([0, 2, 4]), // 健康评估、选型评估、数据中枢
-      avgActiveTime: 98,
-      organization: 'Design Studio',
-      reportCount: 14,
-      reportDetails: generateReportDetails(14),
-    },
-    {
-      key: '10',
-      username: 'student_zhao',
-      email: 'zhao@university.edu',
-      country: '韩国',
-      city: '首尔',
-      behaviorProfile: generateBehaviorProfile([1, 5]), // 画像评估和实验室
-      avgActiveTime: 28,
-      organization: '大学',
-      reportCount: 2,
-      reportDetails: generateReportDetails(2),
-    },
-  ];
 
   return (
     <div>
-      <Card title="用户列表">
+      <Card
+        title="用户列表"
+        extra={
+          <div className="flex items-center space-x-4">
+            <NavDatePicker />
+          </div>
+        }
+      >
         <div className="mb-4 flex items-center justify-between">
           <Space>
             <Input
-              placeholder="搜索用户名、邮箱或组织"
+              placeholder="搜索用户名、邮箱"
               prefix={<SearchOutlined />}
               style={{ width: 300 }}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onPressEnter={(e) => handleSearch(e.currentTarget.value)}
+              allowClear
+              onClear={() => {
+                setInputValue('');
+                handleSearch('');
+              }}
             />
+            <Button
+              type="primary"
+              disabled={isLoading}
+              onClick={() => handleSearch(inputValue)}
+            >
+              搜索
+            </Button>
           </Space>
-          <Button type="primary" icon={<PlusOutlined />}>
-            导出数据
-          </Button>
         </div>
 
-        <Table
+        <MyTable
           columns={columns}
-          dataSource={data}
+          dataSource={tableData}
+          loading={isLoading}
           pagination={{
-            total: data.length,
-            pageSize: 10,
+            total: data?.total || 0,
+            current: currentPage,
+            pageSize: pageSize,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
               `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+            pageSizeOptions: ['10', '20', '50', '100'],
           }}
-          scroll={{ x: 1200 }}
+          onChange={handleTableChange}
+          scroll={{ x: 1400 }}
         />
+
+        {error && (
+          <div className="mt-4 text-center text-red-500">
+            数据加载失败：{error.message}
+          </div>
+        )}
       </Card>
     </div>
+  );
+};
+
+const UserList: React.FC = () => {
+  return (
+    <DateProvider>
+      <div className="min-h-screen bg-gray-50">
+        <UserListContent />
+      </div>
+    </DateProvider>
   );
 };
 

@@ -253,3 +253,65 @@ export const useOssSelectionSearchData = (
     }
   );
 };
+
+/**
+ * 用户列表API响应数据类型
+ */
+export interface UserListApiResponse {
+  total: number;
+  page: number;
+  per_page: number;
+  data: Array<{
+    id: number;
+    name: string;
+    email: string;
+    last_sign_in_at: string;
+    role_level: number;
+    role_level_desc: string;
+    created_at: string;
+    ip?: string;
+    country?: string;
+    country_desc?: string;
+    avg_stay_per_day?: number;
+    click_stats?: Record<string, any>;
+    report_count?: number;
+  }>;
+}
+
+/**
+ * 获取用户列表数据Hook
+ */
+export const useUserListData = (
+  keywords: string = '',
+  page: number = 1,
+  perPage: number = 20,
+  enabled: boolean = true
+) => {
+  const { dateRange } = useDateParams();
+
+  // 获取日期参数
+  const begin_date = dateRange?.[0]?.format('YYYY-MM-DD') || '';
+  const end_date = dateRange?.[1]?.format('YYYY-MM-DD') || '';
+
+  const params = {
+    begin_date,
+    end_date,
+    keywords,
+    page,
+    per_page: perPage,
+  };
+
+  const fetchData = async () => {
+    const response = await axios.post('/api/v2/admin/user_list', params);
+    return response.data as UserListApiResponse;
+  };
+
+  return useQuery<UserListApiResponse, Error>(
+    ['userList', begin_date, end_date, keywords, page, perPage].filter(Boolean),
+    fetchData,
+    {
+      enabled: enabled && !!begin_date && !!end_date,
+      keepPreviousData: true, // 保持之前的数据，避免分页时闪烁
+    }
+  );
+};
