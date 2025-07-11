@@ -4,6 +4,7 @@ import Link from 'next/link';
 import classnames from 'classnames';
 import { useSnapshot } from 'valtio';
 import { userInfoStore } from './UserInfoStore';
+import { useUserInfo } from './useUserInfo';
 
 interface Props {
   className?: string;
@@ -11,6 +12,12 @@ interface Props {
   loadingUi?: React.ReactNode;
   redirectTo?: string;
   redirectToAuth?: boolean;
+  /** 所需的最低权限级别 */
+  requiredRoleLevel?: number;
+  /** 权限不足时的提示内容 */
+  permissionDeniedUi?: React.ReactNode;
+  /** 权限不足时是否重定向到首页，默认为 true */
+  redirectOnPermissionDenied?: boolean;
 }
 
 const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
@@ -20,8 +27,12 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
   loadingUi,
   redirectTo,
   redirectToAuth = true,
+  requiredRoleLevel,
+  permissionDeniedUi,
+  redirectOnPermissionDenied = true,
 }) => {
   const { currentUser, loading } = useSnapshot(userInfoStore);
+  const { roleLevel } = useUserInfo();
 
   if (loading && loadingUi) {
     return <>{loadingUi}</>;
@@ -70,6 +81,24 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
         </div>
       );
     }
+  }
+
+  // 权限检查
+  if (requiredRoleLevel !== undefined && roleLevel < requiredRoleLevel) {
+    if (permissionDeniedUi) {
+      return <>{permissionDeniedUi}</>;
+    }
+
+    if (redirectOnPermissionDenied) {
+      router.replace('/');
+      return null;
+    }
+
+    return (
+      <div className="text-steel pt-20 pb-10 text-center text-2xl">
+        No Permission
+      </div>
+    );
   }
 
   return <>{children}</>;
