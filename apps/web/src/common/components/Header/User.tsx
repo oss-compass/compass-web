@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { AiOutlineUser, AiOutlineExperiment } from 'react-icons/ai';
-import { MdOutlineLogout } from 'react-icons/md';
+import { MdOutlineLogout, MdOutlineSettings } from 'react-icons/md';
 import { FiBookmark } from 'react-icons/fi';
 import client from '@common/gqlClient';
 import { useSignOutMutation } from '@oss-compass/graphql';
@@ -15,7 +15,7 @@ const User = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const mutation = useSignOutMutation(client);
-  const { providerUser: user } = useUserInfo();
+  const { providerUser: user, roleLevel } = useUserInfo();
 
   if (!user) {
     return (
@@ -60,6 +60,16 @@ const User = () => {
             <AiOutlineExperiment className="mr-2 text-base" />
             {t('common:my_models')}
           </Link>
+
+          {roleLevel >= 7 && (
+            <Link
+              href="/system-admin"
+              className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+            >
+              <MdOutlineSettings className="mr-2 text-base" />
+              {t('common:system_admin')}
+            </Link>
+          )}
 
           <Link
             href="/settings/profile"
