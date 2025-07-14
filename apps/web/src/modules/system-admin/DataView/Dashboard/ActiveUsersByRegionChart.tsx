@@ -3,6 +3,7 @@ import { Card, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import * as echarts from 'echarts';
 import { useUserRegionData } from './hooks/useAdminApi';
+import worldZh from '@public/geoData/worldZh.json';
 
 interface RegionData {
   key: string;
@@ -26,7 +27,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
   // 模拟数据作为后备
   const fallbackRegionData: RegionData[] = [];
 
-  // 处理API数据转换
+  // 处理 API 数据转换
   const processApiData = (
     apiData:
       | Array<{ country: string; value: number; desc: string }>
@@ -39,7 +40,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
 
     return apiData.map((item, index) => ({
       key: (index + 1).toString(),
-      country: item.desc, // 使用desc字段显示中文名称
+      country: item.desc, // 使用 desc 字段显示中文名称
       activeUsers: item.value,
     }));
   };
@@ -47,7 +48,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
   // 错误处理
   useEffect(() => {
     if (error) {
-      console.error('获取用户地区数据失败:', error);
+      console.error('获取用户地区数据失败：', error);
       message.error('获取用户地区数据失败，显示模拟数据');
     }
   }, [error]);
@@ -59,10 +60,17 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
   }, [userRegionApiData]);
 
   // 地图数据映射 - 使用中文名称匹配地图
-  const mapData = regionData.map((item) => ({
-    name: item.country, // 已经是中文名称（desc字段）
-    value: item.activeUsers,
-  }));
+  const mapData = regionData
+    .filter(
+      (item) =>
+        item.country &&
+        item.activeUsers !== undefined &&
+        item.activeUsers !== null
+    )
+    .map((item) => ({
+      name: item.country, // 已经是中文名称（desc 字段）
+      value: item.activeUsers || 0,
+    }));
 
   // 表格列定义
   const columns: ColumnsType<RegionData> = [
@@ -91,88 +99,73 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
     if (mapChartRef.current) {
       const mapChart = echarts.init(mapChartRef.current);
 
-      // 注册世界地图 - 使用可用的 GeoJSON 数据源
-      fetch('/geoData/worldZh.json')
-        .then((response) => response.json())
-        .then((worldJson) => {
-          echarts.registerMap('world', worldJson);
+      // 注册世界地图 - 使用导入的 GeoJSON 数据
+      echarts.registerMap('world', worldZh as any);
 
-          const mapOption = {
-            tooltip: {
-              trigger: 'item',
-              formatter: function (params: any) {
-                if (params.data) {
-                  const value = params.data.value;
-                  const displayValue =
-                    value >= 10000
-                      ? `${(value / 10000).toFixed(1)}万`
-                      : value?.toLocaleString();
-                  return `${params.name}<br/>活跃用户: ${displayValue || 0}`;
-                }
-                return `${params.name}<br/>暂无数据`;
-              },
+      const mapOption = {
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params: any) {
+            if (params.data) {
+              const value = params.data.value;
+              const displayValue =
+                value >= 10000
+                  ? `${(value / 10000).toFixed(1)}万`
+                  : value?.toLocaleString();
+              return `${params.name}<br/>活跃用户：${displayValue || 0}`;
+            }
+            return `${params.name}<br/>暂无数据`;
+          },
+        },
+        visualMap: {
+          min: 0,
+          max: (() => {
+            const validValues = mapData
+              .map((item) => item.value)
+              .filter((v) => v !== undefined && v !== null && v > 0);
+            return validValues.length > 0 ? Math.max(...validValues) : 1;
+          })(),
+          left: 'left',
+          top: 'bottom',
+          text: ['高', '低'],
+          calculable: true,
+          inRange: {
+            color: ['#aecbfa', '#0958d9', '#003eb3'],
+          },
+          textStyle: {
+            fontSize: 12,
+          },
+        },
+        series: [
+          {
+            name: '活跃用户',
+            type: 'map',
+            map: 'world',
+            roam: true,
+            zoom: 1.2,
+            scaleLimit: {
+              min: 0.8,
+              max: 3,
             },
-            visualMap: {
-              min: 0,
-              max: Math.max(...mapData.map((item) => item.value)),
-              left: 'left',
-              top: 'bottom',
-              text: ['高', '低'],
-              calculable: true,
-              inRange: {
-                color: ['#aecbfa', '#0958d9', '#003eb3'],
-              },
-              textStyle: {
+            emphasis: {
+              label: {
+                show: true,
                 fontSize: 12,
               },
-            },
-            series: [
-              {
-                name: '活跃用户',
-                type: 'map',
-                map: 'world',
-                roam: true,
-                zoom: 1.2,
-                scaleLimit: {
-                  min: 0.8,
-                  max: 3,
-                },
-                emphasis: {
-                  label: {
-                    show: true,
-                    fontSize: 12,
-                  },
-                  itemStyle: {
-                    areaColor: '#ffa500',
-                  },
-                },
-                itemStyle: {
-                  borderColor: '#fff',
-                  borderWidth: 0.5,
-                },
-                data: mapData,
+              itemStyle: {
+                areaColor: '#ffa500',
               },
-            ],
-          };
+            },
+            itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 0.5,
+            },
+            data: mapData,
+          },
+        ],
+      };
 
-          mapChart.setOption(mapOption);
-        })
-        .catch((error) => {
-          console.error('Failed to load world map data:', error);
-          // 如果地图数据加载失败，显示简单的提示
-          const fallbackOption = {
-            title: {
-              text: '地图数据加载中...',
-              left: 'center',
-              top: 'middle',
-              textStyle: {
-                fontSize: 16,
-                color: '#999',
-              },
-            },
-          };
-          mapChart.setOption(fallbackOption);
-        });
+      mapChart.setOption(mapOption);
 
       const handleMapResize = () => {
         mapChart.resize();
@@ -185,7 +178,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
         mapChart.dispose();
       };
     }
-  }, [mapData]); // 依赖mapData，当数据变化时重新渲染地图
+  }, [mapData]); // 依赖 mapData，当数据变化时重新渲染地图
 
   return (
     <Card
