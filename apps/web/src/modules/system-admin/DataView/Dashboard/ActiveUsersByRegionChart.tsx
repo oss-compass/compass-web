@@ -3,7 +3,7 @@ import { Card, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import * as echarts from 'echarts';
 import { useUserRegionData } from './hooks/useAdminApi';
-import worldZh from '@public/geoData/worldZh.json';
+import worldZh from '../../../../../public/geoData/worldZh.json';
 
 interface RegionData {
   key: string;
