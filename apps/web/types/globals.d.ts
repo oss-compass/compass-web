@@ -26,8 +26,3 @@ interface Window {
   _gaTrackingId?: string;
   gtag: undefined | ((...args: any[]) => void);
 }
-
-declare module '*.json' {
-  const content: any;
-  export default content;
-}
