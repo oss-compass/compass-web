@@ -34,7 +34,6 @@ const Main = () => {
             onFullScreen={(b) => {
               setFullScreen(b);
             }}
-            enableReferenceLineSwitch={false}
           />
         </>
       )}
