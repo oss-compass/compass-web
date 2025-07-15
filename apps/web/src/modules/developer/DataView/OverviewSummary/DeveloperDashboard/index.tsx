@@ -135,7 +135,7 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
         <div className="mb-2 flex items-center font-medium">
           <div className="flex flex-1 items-center">
             <div className="mr-2 text-lg text-[#ff9d36]">
-              <BiGitCommit />
+              <BiGitCommit className="inline" />
             </div>
             <div className="line-clamp-1 ">Commits</div>
           </div>
@@ -146,7 +146,7 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
         <div className="mb-2 flex items-center font-medium">
           <div className="flex flex-1 items-center">
             <div className="mr-2 text-lg text-[#ff9d36]">
-              <BiGitPullRequest />
+              <BiGitPullRequest className="inline" />
             </div>
             <div className="line-clamp-1 ">PRs</div>
           </div>
@@ -157,7 +157,7 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
         <div className="mb-2 flex items-center font-medium">
           <div className="flex flex-1 items-center">
             <div className="mr-2 text-[#ff9d36]">
-              <GoIssueOpened />
+              <GoIssueOpened className="inline" />
             </div>
             <div className="line-clamp-1 ">Issues</div>
           </div>
@@ -168,7 +168,7 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
         <div className="mb-2 flex items-center font-medium">
           <div className="flex flex-1 items-center">
             <div className="mr-2 text-[#ff9d36]">
-              <BiChat />
+              <BiChat className="inline" />
             </div>
             <div className="line-clamp-1 ">Code Reviews</div>
           </div>
@@ -179,7 +179,7 @@ const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
         <div className="mb-2 flex items-center font-medium">
           <div className="flex flex-1 items-center">
             <div className="mr-2 text-[#ff9d36]">
-              <GoRepo />
+              <GoRepo className="inline" />
             </div>
             <div className="line-clamp-1 ">Contributed to</div>
           </div>
