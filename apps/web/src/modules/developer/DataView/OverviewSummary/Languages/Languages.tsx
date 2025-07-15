@@ -1,4 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
+import { Tooltip } from 'antd';
+import { GoQuestion } from 'react-icons/go';
 
 interface LanguageData {
   language: string;
@@ -11,6 +14,8 @@ interface LanguagesProps {
 }
 
 const Languages: React.FC<LanguagesProps> = ({ data }) => {
+  const { t } = useTranslation();
+
   // 如果没有数据或数据为空，使用默认值
   const languages =
     data && data.length > 0
@@ -23,7 +28,7 @@ const Languages: React.FC<LanguagesProps> = ({ data }) => {
           }))
       : [];
 
-  // 如果有超过10种语言，将剩余的合并为"Others"
+  // 如果有超过 10 种语言，将剩余的合并为"Others"
   const processedLanguages =
     languages.length > 6
       ? [
@@ -56,6 +61,67 @@ const Languages: React.FC<LanguagesProps> = ({ data }) => {
 
   return (
     <div className="relative flex h-full max-w-[870px] scroll-mt-[200px] flex-col items-center justify-center gap-6 p-4">
+      <div className="absolute  right-7 -top-9 z-50 flex items-center justify-end gap-2">
+        <Tooltip
+          placement="top"
+          title={
+            <div>
+              <h3>{t('developer:contributor_language_info.title')}</h3>
+              <p>{t('developer:contributor_language_info.description')}</p>
+              <div className="my-2">
+                <p className="mb-2 font-medium">
+                  {t('developer:contributor_language_info.calculation_details')}
+                </p>
+                <ul className="space-y-1 text-xs">
+                  <li>• {t('developer:contributor_language_info.commits')}</li>
+                  <li>
+                    • {t('developer:contributor_language_info.pr_created')}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.pr_reopened')}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.pr_closed')}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.pr_approved')}
+                  </li>
+                  <li>
+                    •{' '}
+                    {t(
+                      'developer:contributor_language_info.pr_changes_requested'
+                    )}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.pr_merged')}
+                  </li>
+                  <li>
+                    •{' '}
+                    {t(
+                      'developer:contributor_language_info.pr_review_comments'
+                    )}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.issues_created')}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.issues_reopened')}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.issue_comments')}
+                  </li>
+                  <li>
+                    • {t('developer:contributor_language_info.issues_closed')}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          }
+        >
+          <GoQuestion className="cursor-pointer" />
+        </Tooltip>
+      </div>
+
       <div className="flex h-2.5 w-[90%] max-w-[800px] gap-[1px] overflow-hidden rounded-full">
         {processedLanguages.map((lang, index) => {
           return (

@@ -45,7 +45,7 @@ const Main = () => {
             onFullScreen={(b) => {
               setFullScreen(b);
             }}
-            enableReferenceLineSwitch={false}
+            yKey="contribution_overview"
           />
         </>
       )}
@@ -60,12 +60,75 @@ interface MetricBoxContributorsProps {
 }
 
 const MetricBoxContributors = ({ data }: MetricBoxContributorsProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="relative flex min-w-0 scroll-mt-[200px] justify-center p-5">
-      <div className="absolute right-7 -top-9 z-50 flex items-center justify-end gap-2">
-        {/* <Tooltip placement="top" title={`在`}>
+      <div
+        className="absolute right-7 -top-9 z-50 flex items-center justify-end gap-2"
+        data-html2canvas-ignore="true"
+      >
+        <Tooltip
+          placement="top"
+          title={
+            <div>
+              <h3>{t('developer:contribution_overview_score.title')}</h3>
+              <p>{t('developer:contribution_overview_score.description')}</p>
+              <div className="my-2">
+                <table className="w-full border-collapse text-xs">
+                  <thead>
+                    <tr>
+                      <th className="border border-gray-300 px-2 py-1 text-left">
+                        {t(
+                          'developer:contribution_overview_score.percentile_range'
+                        )}
+                      </th>
+                      <th className="border border-gray-300 px-2 py-1 text-left">
+                        {t(
+                          'developer:contribution_overview_score.level_description'
+                        )}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">
+                        Top 5%
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">S+</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">
+                        5%-15%
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">S</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">
+                        15%-30%
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">A+</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">
+                        30%-40%
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">A</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">
+                        40%-100%
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">B</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+        >
           <GoQuestion className="cursor-pointer" />
-        </Tooltip> */}
+        </Tooltip>
       </div>
 
       <div className="mr-10 grid max-w-[300px] flex-1 sm:mr-0 xl:mr-2">

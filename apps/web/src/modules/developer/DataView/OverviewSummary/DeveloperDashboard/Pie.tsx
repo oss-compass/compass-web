@@ -13,15 +13,6 @@ const Pie = ({ score, rank }) => {
       textStyle: {
         fontSize: 24,
         color: '#2A3A77',
-        // rich: {
-        //   a: {
-        //     backgroundColor: {
-        //       image: '/images/test1/4.png',
-        //     },
-        //     height: 85,
-        //     width: 85,
-        //   },
-        // },
       },
     },
     tooltip: {

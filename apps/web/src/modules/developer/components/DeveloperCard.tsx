@@ -1,9 +1,7 @@
 import React, { useState, RefObject, useRef, ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
-import LinkX from '@common/components/LinkX';
 import LoadInView from '@common/components/LoadInView';
 import classnames from 'classnames';
-import { BiFullscreen, BiExitFullscreen } from 'react-icons/bi';
 import { useHotkeys } from 'react-hotkeys-hook';
 import DocPopper from '@common/components/DocPopper';
 import { DebugLogger } from '@common/debug';
