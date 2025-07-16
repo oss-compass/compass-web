@@ -78,3 +78,6 @@ input[type='submit'] {
 .viewer-backdrop {
   background-color: rgba(0, 0, 0, 70%);
 }
+canvas {
+  display: inline-block !important;
+}
