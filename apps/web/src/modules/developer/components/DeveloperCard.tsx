@@ -59,11 +59,13 @@ interface BaseCardProps {
     | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
     | ReactNode;
 }
-const EmptyNode = () => {
+const EmptyNode = ({ bodyClass }) => {
   const { t, i18n } = useTranslation();
 
   return (
-    <div className="absolute left-0 right-0  bottom-0 z-10 flex h-[350px] w-full flex-col items-center justify-center bg-[rgba(255,255,255,.8)]">
+    <div
+      className={`absolute left-0 right-0  top-0 z-10 flex h-[260px] w-full flex-col items-center justify-center bg-[rgba(255,255,255,.8)] ${bodyClass}`}
+    >
       <p className="text-xs text-gray-400">
         {t('analyze:there_is_currently_no_data_in_the_chart')}
       </p>
@@ -105,7 +107,6 @@ const BaseCard: React.FC<BaseCardProps> = ({
   notes = '',
   headRight = null,
   bodyClass = 'h-[350px]',
-  bodyRender,
   children,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -136,9 +137,6 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   if (loading) {
     return <Loading className={cls} />;
-  }
-  if (isEmpty && !loading) {
-    return <EmptyNode />;
   }
   return (
     <div className={classnames(cls)} ref={cardRef} id={id}>
@@ -174,13 +172,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
         containerRef={cardRef}
         className={`relative ${bodyClass}`}
       >
-        {typeof bodyRender === 'function'
-          ? bodyRender(cardRef, fullScreen)
-          : bodyRender}
-
-        {typeof children === 'function'
-          ? children(cardRef, fullScreen)
-          : children}
+        {isEmpty ? (
+          <EmptyNode bodyClass={bodyClass} />
+        ) : typeof children === 'function' ? (
+          children(cardRef, fullScreen)
+        ) : (
+          children
+        )}
       </LoadInView>
     </div>
   );

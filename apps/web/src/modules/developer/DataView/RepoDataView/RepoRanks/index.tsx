@@ -14,6 +14,7 @@ const TotalScore = ({ data, isLoading }) => {
       title={t('developer:repo_graph_details')}
       id="repo_graph_details"
       loading={isLoading}
+      isEmpty={!data || data.length === 0}
       description={''}
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/'

@@ -20,13 +20,6 @@ import useQueryDateRange from '@modules/developer/hooks/useQueryDateRange';
 import { rangeTags } from '../constant';
 import { format } from 'date-fns';
 
-const queryMap = {
-  metricCodequality: 'collab_dev_index',
-  metricCommunity: 'community',
-  metricActivity: 'activity',
-  metricGroupActivity: 'organizations_activity',
-};
-
 const useGetSvgUrl = (slug: string, yKey: string) => {
   const { range, timeStart, timeEnd } = useQueryDateRange();
   let url = `/developer_chart/${slug}.svg`;

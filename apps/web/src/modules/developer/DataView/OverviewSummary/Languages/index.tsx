@@ -23,6 +23,7 @@ const Main = () => {
       title={t('developer:contributor_language')}
       id="contributor_language"
       loading={isLoading}
+      isEmpty={!data || data.length === 0}
       description=""
       className="h-[300px]"
       bodyClass="h-[240px]"

@@ -25,6 +25,7 @@ const RepoChart = () => {
       className="h-[380px]"
       bodyClass="h-[320px]"
       loading={isLoading}
+      isEmpty={!data || data.length === 0}
       headRight={(ref, fullScreen, setFullScreen) => (
         <>
           <CardDropDownMenu

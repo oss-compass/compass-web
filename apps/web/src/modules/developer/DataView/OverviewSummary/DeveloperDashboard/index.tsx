@@ -34,6 +34,7 @@ const Main = () => {
       title={t('developer:contribution_overview')}
       id="contribution_overview"
       loading={isLoading}
+      isEmpty={!data}
       description=""
       className="h-[300px]"
       bodyClass="h-[260px]"

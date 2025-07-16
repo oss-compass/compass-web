@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next';
 import { Tooltip } from 'antd';
 import { GoQuestion } from 'react-icons/go';
 import BaseCard from '@modules/developer/components/DeveloperCard';
-import { Topic } from '@modules/developer/components/SideBar/config';
 import CardDropDownMenu from '@modules/developer/components/CardDropDownMenu';
 import { useContributorApi } from '@modules/developer/hooks/useContributorApi';
 import Chart from './Chart';
@@ -31,6 +30,7 @@ const Radar = () => {
       className="h-[380px]"
       bodyClass="h-[320px]"
       loading={isLoading}
+      isEmpty={!data}
       headRight={(ref, fullScreen, setFullScreen) => (
         <>
           <div
