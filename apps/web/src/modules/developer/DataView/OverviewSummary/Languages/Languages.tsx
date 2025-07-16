@@ -61,7 +61,10 @@ const Languages: React.FC<LanguagesProps> = ({ data }) => {
 
   return (
     <div className="relative flex h-full max-w-[870px] scroll-mt-[200px] flex-col items-center justify-center gap-6 p-4">
-      <div className="absolute  right-7 -top-9 z-50 flex items-center justify-end gap-2">
+      <div
+        data-html2canvas-ignore="true"
+        className="absolute  right-7 -top-9 z-50 flex items-center justify-end gap-2"
+      >
         <Tooltip
           placement="top"
           title={
