@@ -54,6 +54,9 @@ const DownLoadImage = (props: DownLoadImageProps) => {
         cardRef.current!.style.width = '1200px';
       }
       await sleep(300);
+      const style = document.createElement('style');
+      style.innerHTML = 'img { display: inline-block !important; }'; // 添加 !important
+      document.head.appendChild(style);
       const canvas = await html2canvas(cardRef.current!, {
         backgroundColor: 'rgba(0,0,0,0)',
         ignoreElements: (el) => {
@@ -63,6 +66,8 @@ const DownLoadImage = (props: DownLoadImageProps) => {
       const dataURL = canvas.toDataURL('image/png');
       setDataUrl(dataURL);
       cardRef.current!.style.removeProperty('width');
+      //截图后移除样式
+      document.head.removeChild(style);
       await sleep(300);
       onCompleteLoad();
     };
