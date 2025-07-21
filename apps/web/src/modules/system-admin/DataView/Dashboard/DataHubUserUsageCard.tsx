@@ -117,79 +117,74 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
   const columns: ColumnsType<
     DataHubRestApiTableItem | DataHubArchiveDownloadTableItem
   > = [
-    {
-      title: '用户信息',
-      dataIndex: 'login_binds',
-      key: 'userInfo',
-      width: 200,
-      render: (loginBinds: any) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Avatar
-            src={loginBinds?.avatar_url}
-            icon={<UserOutlined />}
-            size="small"
-          />
-          <span>{loginBinds?.nickname || loginBinds?.account || '-'}</span>
-        </div>
-      ),
-    },
-    {
-      title: activeTab === 'api' ? 'API信息' : '数据集名称',
-      dataIndex: activeTab === 'download' ? 'dataset_name' : 'api_path',
-      key: 'api_info',
-      render: (value: string, record: any) => {
-        let apiInfo: any = null;
-
-        if (activeTab === 'api' && apiListData) {
-          apiInfo = apiListData.find((api: any) => api.api_path === value);
-        }
-
-        return (
-          <div>
-            <div style={{ fontWeight: 500, marginBottom: 4 }}>
-              {activeTab === 'api' ? <ApiOutlined /> : <DatabaseOutlined />}
-              <span style={{ marginLeft: 4 }}>{value}</span>
-            </div>
-            {apiInfo && activeTab === 'api' && (
-              <div style={{ fontSize: 12, color: '#666' }}>
-                {getLocalizedText(apiInfo.description || '', i18n.language)}
-              </div>
-            )}
-            {activeTab === 'download' && (
-              <div style={{ fontSize: 12, color: '#666' }}>
-                下载次数: {record.call_count?.toLocaleString() || 0}
-              </div>
-            )}
+      {
+        title: '用户信息',
+        dataIndex: 'login_binds',
+        key: 'userInfo',
+        width: 200,
+        render: (loginBinds: any) => (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Avatar
+              src={loginBinds?.avatar_url}
+              icon={<UserOutlined />}
+              size="small"
+            />
+            <span>{loginBinds?.nickname || loginBinds?.account || '-'}</span>
           </div>
-        );
+        ),
       },
-    },
-    {
-      title: activeTab === 'api' ? '调用次数' : '下载次数',
-      dataIndex: 'call_count',
-      key: 'usage_count',
-      width: 120,
-      sorter: true,
-      render: (count: number) => (
-        <Tag color={count > 100 ? 'red' : count > 50 ? 'orange' : 'blue'}>
-          {count?.toLocaleString() || 0}
-        </Tag>
-      ),
-    },
-    {
-      title: '最后使用时间',
-      dataIndex: 'last_called_at',
-      key: 'lastUsed',
-      width: 180,
-      sorter: true,
-      render: (date: string) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <CalendarOutlined style={{ color: '#666' }} />
-          <span>{formatDateTime(date)}</span>
-        </div>
-      ),
-    },
-  ];
+      {
+        title: activeTab === 'api' ? 'API信息' : '数据集名称',
+        dataIndex: activeTab === 'download' ? 'dataset_name' : 'api_path',
+        key: 'api_info',
+        render: (value: string, record: any) => {
+          let apiInfo: any = null;
+
+          if (activeTab === 'api' && apiListData) {
+            apiInfo = apiListData.find((api: any) => api.api_path === value);
+          }
+
+          return (
+            <div>
+              <div style={{ fontWeight: 500, marginBottom: 4 }}>
+                {activeTab === 'api' ? <ApiOutlined /> : <DatabaseOutlined />}
+                <span style={{ marginLeft: 4 }}>{value}</span>
+              </div>
+              {apiInfo && activeTab === 'api' && (
+                <div style={{ fontSize: 12, color: '#666' }}>
+                  {getLocalizedText(apiInfo.description || '', i18n.language)}
+                </div>
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        title: activeTab === 'api' ? '调用次数' : '下载次数',
+        dataIndex: 'call_count',
+        key: 'usage_count',
+        width: 120,
+        sorter: true,
+        render: (count: number) => (
+          <Tag color={count > 100 ? 'red' : count > 50 ? 'orange' : 'blue'}>
+            {count?.toLocaleString() || 0}
+          </Tag>
+        ),
+      },
+      {
+        title: '最后使用时间',
+        dataIndex: 'last_called_at',
+        key: 'lastUsed',
+        width: 180,
+        sorter: true,
+        render: (date: string) => (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <CalendarOutlined style={{ color: '#666' }} />
+            <span>{formatDateTime(date)}</span>
+          </div>
+        ),
+      },
+    ];
 
   // 处理表格数据
   const processedData = useMemo(() => {
@@ -204,9 +199,8 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
 
     return data.map((item, index) => ({
       ...item,
-      key: `${item.user_id}-${
-        (item as any).api_path || (item as any).dataset_name
-      }-${index}`,
+      key: `${item.user_id}-${(item as any).api_path || (item as any).dataset_name
+        }-${index}`,
     }));
   }, [apiTableData, archiveDownloadTableData, activeTab]);
 
