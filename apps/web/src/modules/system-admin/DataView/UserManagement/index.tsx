@@ -79,6 +79,10 @@ const UserManagement: React.FC = () => {
   const [keywords, setKeywords] = useState('');
   const [searchKeywords, setSearchKeywords] = useState('');
 
+  // 角色筛选相关状态
+  const [selectedRoleLevels, setSelectedRoleLevels] = useState<number[]>([]);
+  const [searchRoleLevels, setSearchRoleLevels] = useState<number[]>([]);
+
   // 编辑相关状态
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<UserData | null>(null);
@@ -96,17 +100,25 @@ const UserManagement: React.FC = () => {
   const fetchUserData = async (
     page: number = 1,
     per_page: number = 20,
-    keywords: string = ''
+    keywords: string = '',
+    role_level: number[] = []
   ) => {
     setLoading(true);
     try {
+      const requestData: any = {
+        keywords,
+        page,
+        per_page,
+      };
+
+      // 只有当role_level数组不为空时才添加到请求参数中
+      if (role_level.length > 0) {
+        requestData.role_levels = role_level;
+      }
+
       const response = await axios.post<ApiResponse>(
         '/api/v2/admin/manage_user_list',
-        {
-          keywords,
-          page,
-          per_page,
-        }
+        requestData
       );
 
       setUserData(response.data.data);
@@ -163,14 +175,15 @@ const UserManagement: React.FC = () => {
   // 搜索处理
   const handleSearch = () => {
     setSearchKeywords(keywords);
-    fetchUserData(1, pageSize, keywords);
+    setSearchRoleLevels(selectedRoleLevels);
+    fetchUserData(1, pageSize, keywords, selectedRoleLevels);
   };
 
   // 分页处理
   const handleTableChange = (page: number, size: number) => {
     setCurrentPage(page);
     setPageSize(size);
-    fetchUserData(page, size, searchKeywords);
+    fetchUserData(page, size, searchKeywords, searchRoleLevels);
   };
 
   // 角色标签渲染
@@ -258,10 +271,10 @@ const UserManagement: React.FC = () => {
   ];
 
   return (
-    <div>
+    <div className="p-6">
       <Card title="用户管理">
         <div className="mb-4 flex items-center justify-between">
-          <Space>
+          <Space wrap>
             <Input
               placeholder="搜索用户名或邮箱"
               prefix={<SearchOutlined />}
@@ -269,6 +282,16 @@ const UserManagement: React.FC = () => {
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
               onPressEnter={handleSearch}
+            />
+            <Select
+              mode="multiple"
+              placeholder="筛选用户角色"
+              style={{ width: 200 }}
+              value={selectedRoleLevels}
+              onChange={setSelectedRoleLevels}
+              options={roleOptions}
+              allowClear
+              maxTagCount="responsive"
             />
             <Button type="primary" onClick={handleSearch}>
               搜索

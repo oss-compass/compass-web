@@ -7,6 +7,7 @@ import HotSearchCard from './HotSearchCard';
 import EvaluationChart from './EvaluationChart';
 import OssSelectionSearchTable from './OssSelectionSearchTable';
 import DataHubCard from './DataHubCard';
+import DataHubUserUsageCard from './DataHubUserUsageCard';
 import ActiveUsersByRegionChart from './ActiveUsersByRegionChart';
 import UserSourceCard from './UserSourceCard';
 import ChartSection from './ChartSection';
@@ -52,6 +53,9 @@ const Services: React.FC = () => {
         </Col>
         <Col xs={24} lg={12}>
           <DataHubCard className="h-96" />
+        </Col>
+        <Col xs={24} lg={12}>
+          <DataHubUserUsageCard className="h-96" />
         </Col>
       </Row>
     </div>

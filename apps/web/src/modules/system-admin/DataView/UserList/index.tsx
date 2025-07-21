@@ -8,6 +8,7 @@ import NavDatePicker from '../Dashboard/components/NavDatePicker';
 import { useUserListData } from '../Dashboard/hooks/useAdminApi';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
+import { getHubUrl } from '@common/utils';
 
 interface UserListData {
   key: string;
@@ -24,6 +25,7 @@ interface UserListData {
   avg_stay_per_day?: number;
   click_stats?: Record<string, any>;
   report_count?: number;
+  login_binds?: any;
 }
 
 interface BehaviorProfileProps {
@@ -115,6 +117,20 @@ const UserListContent: React.FC = () => {
       dataIndex: 'name',
       key: 'name',
       width: '10%',
+      render: (name, record) => (
+        <div>
+          <a
+            href={getHubUrl(
+              record.login_binds.provider,
+              record.login_binds.nickname
+            )}
+            target="_blank"
+            className="cursor-pointer font-medium text-blue-600 hover:underline"
+          >
+            {name}
+          </a>
+        </div>
+      ),
     },
     {
       title: '邮箱',
@@ -241,7 +257,7 @@ const UserListContent: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="m-6">
       <Card
         title="用户列表"
         extra={

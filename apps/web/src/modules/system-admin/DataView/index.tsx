@@ -32,7 +32,7 @@ const DataView: React.FC = () => {
 
   return (
     <div className="flex h-[calc(100vh-80px)] flex-1 overflow-auto bg-gray-50">
-      <div className="w-full overflow-y-auto p-6">{renderContent()}</div>
+      <div className="w-full overflow-y-auto">{renderContent()}</div>
     </div>
   );
 };

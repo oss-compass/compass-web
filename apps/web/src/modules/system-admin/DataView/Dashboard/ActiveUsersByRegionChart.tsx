@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Card, Table, message } from 'antd';
+import { Card, Table, message, Tabs } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import * as echarts from 'echarts';
 import { useUserRegionData } from './hooks/useAdminApi';
@@ -8,7 +8,7 @@ import worldZh from '@public/geoData/worldZH.json';
 interface RegionData {
   key: string;
   country: string;
-  activeUsers: number;
+  userCount: number;
 }
 
 interface ActiveUsersByRegionChartProps {
@@ -20,9 +20,14 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
 }) => {
   const mapChartRef = useRef<HTMLDivElement>(null);
   const [regionData, setRegionData] = useState<RegionData[]>([]);
+  const [activeTab, setActiveTab] = useState<'0' | '1'>('0');
 
   // 获取用户地区分布数据
-  const { data: userRegionApiData, isLoading, error } = useUserRegionData();
+  const {
+    data: userRegionApiData,
+    isLoading,
+    error,
+  } = useUserRegionData(activeTab);
 
   // 模拟数据作为后备
   const fallbackRegionData: RegionData[] = [];
@@ -41,7 +46,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
     return apiData.map((item, index) => ({
       key: (index + 1).toString(),
       country: item.desc, // 使用 desc 字段显示中文名称
-      activeUsers: item.value,
+      userCount: item.value,
     }));
   };
 
@@ -49,7 +54,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
   useEffect(() => {
     if (error) {
       console.error('获取用户地区数据失败：', error);
-      message.error('获取用户地区数据失败，显示模拟数据');
+      message.error('获取用户地区数据失败');
     }
   }, [error]);
 
@@ -63,14 +68,35 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
   const mapData = regionData
     .filter(
       (item) =>
-        item.country &&
-        item.activeUsers !== undefined &&
-        item.activeUsers !== null
+        item.country && item.userCount !== undefined && item.userCount !== null
     )
     .map((item) => ({
       name: item.country, // 已经是中文名称（desc 字段）
-      value: item.activeUsers || 0,
+      value: item.userCount || 0,
     }));
+
+  // 获取当前标签页的标题和描述
+  const getTabInfo = () => {
+    switch (activeTab) {
+      case '0':
+        return {
+          title: '活跃用户',
+          description: '活跃用户数',
+        };
+      case '1':
+        return {
+          title: '新增用户',
+          description: '新增用户数',
+        };
+      default:
+        return {
+          title: '活跃用户',
+          description: '活跃用户数',
+        };
+    }
+  };
+
+  const tabInfo = getTabInfo();
 
   // 表格列定义
   const columns: ColumnsType<RegionData> = [
@@ -81,9 +107,9 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
       render: (text: string) => <span className="font-medium">{text}</span>,
     },
     {
-      title: '活跃用户',
-      dataIndex: 'activeUsers',
-      key: 'activeUsers',
+      title: tabInfo.description,
+      dataIndex: 'userCount',
+      key: 'userCount',
       width: 120,
       render: (count: number) => (
         <span className="font-medium text-blue-600">
@@ -112,7 +138,9 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
                 value >= 10000
                   ? `${(value / 10000).toFixed(1)}万`
                   : value?.toLocaleString();
-              return `${params.name}<br/>活跃用户：${displayValue || 0}`;
+              return `${params.name}<br/>${tabInfo.description}：${
+                displayValue || 0
+              }`;
             }
             return `${params.name}<br/>暂无数据`;
           },
@@ -138,7 +166,7 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
         },
         series: [
           {
-            name: '活跃用户',
+            name: tabInfo.description,
             type: 'map',
             map: 'world',
             roam: true,
@@ -178,18 +206,33 @@ const ActiveUsersByRegionChart: React.FC<ActiveUsersByRegionChartProps> = ({
         mapChart.dispose();
       };
     }
-  }, [mapData]); // 依赖 mapData，当数据变化时重新渲染地图
+  }, [mapData, tabInfo]); // 依赖 mapData 和 tabInfo，当数据或标签页变化时重新渲染地图
+
+  // 标签页配置
+  const tabItems = [
+    {
+      key: '0',
+      label: '活跃用户',
+    },
+    {
+      key: '1',
+      label: '新增用户',
+    },
+  ];
 
   return (
     <Card
-      title="按国家/地区划分的活跃用户"
+      title="按国家/地区划分的用户"
+      tabList={tabItems}
+      activeTabKey={activeTab}
+      onTabChange={(key) => setActiveTab(key as '0' | '1')}
       className={className}
       loading={isLoading}
       extra={
         <span className="text-sm text-gray-500">
           总计:{' '}
           {regionData
-            .reduce((sum, item) => sum + item.activeUsers, 0)
+            .reduce((sum, item) => sum + item.userCount, 0)
             .toLocaleString()}{' '}
           用户
         </span>

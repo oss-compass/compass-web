@@ -9,11 +9,10 @@ import NavDatePicker from './components/NavDatePicker';
 const Dashboard: React.FC = () => {
   return (
     <DateProvider>
-      <div className="min-h-screen bg-gray-50">
-        {/* 顶部导航栏 - 参考 NavBar 设计 */}
+      <div className="m-6 min-h-screen bg-gray-50">
         <nav
           className={classnames(
-            'flex h-14 items-center justify-between border-b bg-white px-6 shadow-sm',
+            'sticky top-0 z-50 flex h-14 items-center justify-between border-b bg-white px-6 shadow-sm',
             'md:h-12 md:px-4'
           )}
         >

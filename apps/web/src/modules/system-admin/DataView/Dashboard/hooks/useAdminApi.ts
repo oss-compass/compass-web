@@ -41,6 +41,34 @@ export function useAdminApi<TData>(
   );
 }
 
+// 类型定义
+interface ChangeData {
+  value: number;
+  trend: 'up' | 'down' | 'flat';
+}
+interface UserOverviewData {
+  monthly_visit_count: number;
+  total_visit_count: number;
+  sign_user: number;
+  total_sign_user: number;
+  new_users_count: number;
+  total_users_count: number;
+  average_monthly_user_duration: string;
+  total_average_user_duration: string;
+  monthly_visit_count_change: ChangeData;
+  sign_user_change: ChangeData;
+  new_users_count_change: ChangeData;
+  average_monthly_user_duration_change: ChangeData;
+}
+// 具体的API调用hooks
+export const useStatsData = (enabled: boolean = true) => {
+  return useAdminApi<UserOverviewData>(
+    '/api/v2/admin/user_overview',
+    'user_overview',
+    { enabled }
+  );
+};
+
 // 具体的API调用hooks
 export const useVisitData = (enabled: boolean = true) => {
   return useAdminApi<Array<{ date: string; value: number }>>(
@@ -156,12 +184,41 @@ export const useDatahubArchiveRankData = (enabled: boolean = true) => {
 /**
  * 获取用户地区分布数据Hook
  */
-export const useUserRegionData = (enabled: boolean = true) => {
-  return useAdminApi<Array<{ country: string; value: number; desc: string }>>(
-    '/api/v2/admin/user_region_table',
-    'userRegionData',
-    { enabled }
-  );
+export const useUserRegionData = (
+  type: '0' | '1' = '0',
+  enabled: boolean = true
+) => {
+  const { dateRange } = useDateParams();
+
+  // 获取日期参数
+  const begin_date = dateRange?.[0]?.format('YYYY-MM-DD') || '';
+  const end_date = dateRange?.[1]?.format('YYYY-MM-DD') || '';
+
+  const params = {
+    begin_date,
+    end_date,
+    user_type: Number(type), // 添加type参数
+    type: 0,
+  };
+
+  const fetchData = async () => {
+    const response = await axios.post(
+      '/api/v2/admin/user_region_table',
+      params
+    );
+    return response.data as Array<{
+      country: string;
+      value: number;
+      desc: string;
+    }>;
+  };
+
+  return useQuery<
+    Array<{ country: string; value: number; desc: string }>,
+    Error
+  >(['userRegionData', type, begin_date, end_date].filter(Boolean), fetchData, {
+    enabled: enabled && !!begin_date && !!end_date,
+  });
 };
 
 /**
@@ -312,6 +369,211 @@ export const useUserListData = (
     {
       enabled: enabled && !!begin_date && !!end_date,
       keepPreviousData: true, // 保持之前的数据，避免分页时闪烁
+    }
+  );
+};
+
+/**
+ * 中枢服务用户使用详情数据类型
+ */
+export interface DataHubUserUsageItem {
+  user_id: number;
+  user_name: string;
+  user_email: string;
+  api_name: string;
+  api_desc: string;
+  usage_count: number;
+  last_used_at: string;
+  country?: string;
+  country_desc?: string;
+}
+
+export interface DataHubUserUsageResponse {
+  total: number;
+  page: number;
+  per_page: number;
+  data: DataHubUserUsageItem[];
+}
+
+/**
+ * DataHub REST API列表项类型
+ */
+export interface DataHubRestApiItem {
+  api_path: string;
+  description: string;
+}
+
+/**
+ * DataHub REST API表格数据项类型
+ */
+export interface DataHubRestApiTableItem {
+  user_id: number;
+  login_binds: {
+    account: string;
+    provider: string;
+    nickname: string;
+    avatar_url: string;
+  };
+  api_path: string;
+  call_count: number;
+  last_called_at: string;
+}
+
+/**
+ * DataHub REST API表格响应类型
+ */
+export interface DataHubRestApiTableResponse {
+  items: DataHubRestApiTableItem[];
+  total_count: number;
+  current_page: number;
+  per_page: number;
+  total_pages: number;
+}
+
+/**
+ * 获取DataHub REST API列表Hook
+ */
+export const useDataHubRestApiList = (enabled: boolean = true) => {
+  const fetchData = async () => {
+    const response = await axios.get('/api/v2/admin/datahub_restapi_list');
+    return response.data as DataHubRestApiItem[];
+  };
+
+  return useQuery<DataHubRestApiItem[], Error>(
+    ['dataHubRestApiList'],
+    fetchData,
+    {
+      enabled,
+      staleTime: 5 * 60 * 1000, // 5分钟内不重新获取
+    }
+  );
+};
+
+/**
+ * DataHub 归档数据表格数据项类型
+ */
+export interface DataHubArchiveTableItem {
+  user_id: number;
+  login_binds: {
+    account: string;
+    provider: string;
+    nickname: string;
+    avatar_url: string;
+  };
+  api_path: string;
+  call_count: number;
+  last_called_at: string;
+}
+
+/**
+ * DataHub 归档数据表格响应类型
+ */
+export interface DataHubArchiveTableResponse {
+  items: DataHubArchiveTableItem[];
+  total_count: number;
+  current_page: number;
+  per_page: number;
+  total_pages: number;
+}
+
+/**
+ * 获取DataHub 归档数据表格数据Hook
+ */
+export const useDataHubArchiveTable = (
+  page: number = 1,
+  perPage: number = 20,
+  apiPath: string = '',
+  keywords: string = '',
+  enabled: boolean = true
+) => {
+  const { dateRange } = useDateParams();
+
+  // 获取日期参数
+  const begin_date = dateRange?.[0]?.format('YYYY-MM-DD') || '2010-02-22';
+  const end_date = dateRange?.[1]?.format('YYYY-MM-DD') || '2026-03-22';
+
+  const params = {
+    begin_date,
+    end_date,
+    keywords,
+    api_path: apiPath,
+    page,
+    per_page: perPage,
+  };
+
+  const fetchData = async () => {
+    const response = await axios.post(
+      '/api/v2/admin/datahub_archive_table',
+      params
+    );
+    return response.data as DataHubArchiveTableResponse;
+  };
+
+  return useQuery<DataHubArchiveTableResponse, Error>(
+    [
+      'dataHubArchiveTable',
+      begin_date,
+      end_date,
+      page,
+      perPage,
+      apiPath,
+      keywords,
+    ].filter(Boolean),
+    fetchData,
+    {
+      enabled: enabled && !!begin_date && !!end_date,
+      keepPreviousData: true,
+    }
+  );
+};
+
+/**
+ * 获取DataHub REST API表格数据Hook
+ */
+export const useDataHubRestApiTable = (
+  page: number = 1,
+  perPage: number = 20,
+  apiPath: string = '',
+  keywords: string = '',
+  enabled: boolean = true
+) => {
+  const { dateRange } = useDateParams();
+
+  // 获取日期参数
+  const begin_date = dateRange?.[0]?.format('YYYY-MM-DD') || '2010-02-22';
+  const end_date = dateRange?.[1]?.format('YYYY-MM-DD') || '2026-03-22';
+
+  const params = {
+    begin_date,
+    end_date,
+    keywords,
+    api_path: apiPath,
+    page,
+    per_page: perPage,
+  };
+
+  const fetchData = async () => {
+    const response = await axios.post(
+      '/api/v2/admin/datahub_restapi_table',
+      params
+    );
+    return response.data as DataHubRestApiTableResponse;
+  };
+
+  return useQuery<DataHubRestApiTableResponse, Error>(
+    [
+      'dataHubRestApiTable',
+      begin_date,
+      end_date,
+      page,
+      perPage,
+      apiPath,
+      keywords,
+    ].filter(Boolean),
+    fetchData,
+    {
+      enabled: enabled && !!begin_date && !!end_date,
+      keepPreviousData: true,
     }
   );
 };

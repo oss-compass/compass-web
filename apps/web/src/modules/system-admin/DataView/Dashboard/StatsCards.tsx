@@ -6,6 +6,7 @@ import {
   MinusOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
+import { useStatsData } from './hooks/useAdminApi';
 
 // 类型定义
 interface ChangeData {
@@ -35,41 +36,7 @@ interface ApiResponse {
 }
 
 const StatsCards: React.FC = () => {
-  const [data, setData] = useState<UserOverviewData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // 获取用户概览数据
-  const fetchUserOverview = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch('/api/v2/admin/user_overview');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result: UserOverviewData = await response.json();
-      if (result) {
-        setData(result);
-      } else {
-        throw new Error('获取数据失败');
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '获取数据失败';
-      setError(errorMessage);
-      console.error('获取用户概览数据失败：', err);
-      message.error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 组件挂载时获取数据
-  useEffect(() => {
-    fetchUserOverview();
-  }, []);
+  const { data, isLoading, error } = useStatsData();
 
   // 根据趋势返回对应的图标
   const getTrendIcon = (trend: 'up' | 'down' | 'flat') => {
@@ -85,7 +52,7 @@ const StatsCards: React.FC = () => {
   };
 
   // 如果正在加载，显示骨架屏
-  if (loading) {
+  if (isLoading) {
     return (
       <Row gutter={[16, 16]} className="mb-6">
         {[1, 2, 3, 4].map((item) => (
@@ -108,13 +75,6 @@ const StatsCards: React.FC = () => {
             <div className="flex h-20 items-center justify-center text-red-500">
               <div className="text-center">
                 <div className="mb-2">数据加载失败</div>
-                <div className="text-sm text-gray-500">{error}</div>
-                <button
-                  className="mt-2 rounded bg-blue-500 px-4 py-1 text-sm text-white hover:bg-blue-600"
-                  onClick={fetchUserOverview}
-                >
-                  重新加载
-                </button>
               </div>
             </div>
           </Card>
@@ -131,9 +91,9 @@ const StatsCards: React.FC = () => {
             <div className="mb-4 flex flex-1 items-center justify-between">
               <div>
                 <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
-                  月访问量
+                  访问量
                   <Tooltip
-                    title="统计上月所有用户对网站的访问次数，包括注册用户和访客的页面浏览量"
+                    title="统计当前时间段所有用户对网站的访问次数，包括注册用户和访客的页面浏览量"
                     placement="top"
                   >
                     <InfoCircleOutlined className="cursor-pointer text-sm" />
@@ -166,9 +126,9 @@ const StatsCards: React.FC = () => {
             <div className="mb-4 flex flex-1 items-center justify-between">
               <div>
                 <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
-                  月新增用户
+                  新增用户
                   <Tooltip
-                    title="统计上月首次访问网站的新用户数量"
+                    title="统计当前时间段首次访问网站的新用户数量"
                     placement="top"
                   >
                     <InfoCircleOutlined className="cursor-pointer text-sm" />
@@ -200,7 +160,7 @@ const StatsCards: React.FC = () => {
             {/* 上部分 */}
             <div className="mb-4 flex flex-1 items-center justify-between">
               <div>
-                <div className="mb-1 text-sm font-semibold">月新增注册用户</div>
+                <div className="mb-1 text-sm font-semibold">新增注册用户</div>
                 <div className="text-3xl font-bold">
                   {data.sign_user.toLocaleString()}
                 </div>
@@ -228,9 +188,9 @@ const StatsCards: React.FC = () => {
             <div className="mb-4 flex flex-1 items-center justify-between">
               <div>
                 <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
-                  月用户平均活动时长
+                  用户平均活动时长
                   <Tooltip
-                    title="统计上月所有用户在网站上的平均停留时间，包括登录用户和访客"
+                    title="统计当前时间段所有用户在网站上的平均停留时间，包括登录用户和访客"
                     placement="top"
                   >
                     <InfoCircleOutlined className="cursor-pointer text-sm" />

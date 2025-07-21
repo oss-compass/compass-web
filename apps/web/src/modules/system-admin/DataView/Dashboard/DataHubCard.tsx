@@ -83,14 +83,14 @@ const DataHubCard: React.FC<DataHubCardProps> = ({ className }) => {
   useEffect(() => {
     if (dataHubTab === 'api' && apiError) {
       console.error('获取API排名数据失败:', apiError);
-      message.error('获取API排名数据失败，显示模拟数据');
+      message.error('获取API排名数据失败');
     }
   }, [apiError, dataHubTab]);
 
   useEffect(() => {
     if (dataHubTab === 'archive' && archiveError) {
       console.error('获取归档数据排名失败:', archiveError);
-      message.error('获取归档数据排名失败，显示模拟数据');
+      message.error('获取归档数据排名失败');
     }
   }, [archiveError, dataHubTab]);
 
