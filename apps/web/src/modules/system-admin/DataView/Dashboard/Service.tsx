@@ -51,11 +51,11 @@ const Services: React.FC = () => {
         <Col xs={24}>
           <OssSelectionSearchTable className="h-100" />
         </Col>
-        <Col xs={24} lg={12}>
-          <DataHubCard className="h-96" />
+        <Col xs={24} lg={24}>
+          <DataHubUserUsageCard className="h-100" />
         </Col>
         <Col xs={24} lg={12}>
-          <DataHubUserUsageCard className="h-96" />
+          <DataHubCard className="h-96" />
         </Col>
       </Row>
     </div>

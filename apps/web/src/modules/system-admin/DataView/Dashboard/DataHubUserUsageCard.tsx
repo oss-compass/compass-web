@@ -23,10 +23,10 @@ import { useTranslation } from 'next-i18next';
 import {
   useDataHubRestApiList,
   useDataHubRestApiTable,
-  useDataHubArchiveTable,
-  useDatahubArchiveRankData,
+  useDataHubArchiveDownloadTable,
+  useDatasetList,
   DataHubRestApiTableItem,
-  DataHubArchiveTableItem,
+  DataHubArchiveDownloadTableItem,
 } from './hooks/useAdminApi';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
@@ -40,7 +40,7 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
   className,
 }) => {
   const { i18n } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'api' | 'archive'>('api');
+  const [activeTab, setActiveTab] = useState<'api' | 'download'>('api');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [selectedApi, setSelectedApi] = useState<string>('');
@@ -66,33 +66,38 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
     activeTab === 'api'
   );
 
-  // 获取归档表格数据
+  // 获取归档数据下载量表格数据
   const {
-    data: archiveTableData,
-    isLoading: isArchiveTableLoading,
-    error: archiveTableError,
-  } = useDataHubArchiveTable(
+    data: archiveDownloadTableData,
+    isLoading: isArchiveDownloadTableLoading,
+    error: archiveDownloadTableError,
+  } = useDataHubArchiveDownloadTable(
     currentPage,
     pageSize,
     selectedApi,
     searchKeyword,
-    activeTab === 'archive'
+    activeTab === 'download'
   );
 
-  // 获取归档排名数据（用于API选项）
+  // 获取数据集列表数据
   const {
-    data: archiveRankData,
-    isLoading: isArchiveRankLoading,
-    error: archiveRankError,
-  } = useDatahubArchiveRankData();
+    data: datasetListData,
+    isLoading: isDatasetListLoading,
+    error: datasetListError,
+  } = useDatasetList(activeTab === 'download');
 
   // 错误处理
-  if (apiListError || apiTableError || archiveTableError || archiveRankError) {
+  if (
+    apiListError ||
+    apiTableError ||
+    archiveDownloadTableError ||
+    datasetListError
+  ) {
     console.error('API Error:', {
       apiListError,
       apiTableError,
-      archiveTableError,
-      archiveRankError,
+      archiveDownloadTableError,
+      datasetListError,
     });
   }
 
@@ -110,7 +115,7 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
 
   // 表格列定义
   const columns: ColumnsType<
-    DataHubRestApiTableItem | DataHubArchiveTableItem
+    DataHubRestApiTableItem | DataHubArchiveDownloadTableItem
   > = [
     {
       title: '用户信息',
@@ -130,28 +135,29 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
     },
     {
       title: activeTab === 'api' ? 'API信息' : '数据集名称',
-      dataIndex: 'api_path',
+      dataIndex: activeTab === 'download' ? 'dataset_name' : 'api_path',
       key: 'api_info',
-      render: (apiPath: string) => {
+      render: (value: string, record: any) => {
         let apiInfo: any = null;
 
         if (activeTab === 'api' && apiListData) {
-          apiInfo = apiListData.find((api: any) => api.api_path === apiPath);
-        } else if (activeTab === 'archive' && archiveRankData) {
-          apiInfo = archiveRankData.find((api: any) => api.name === apiPath);
+          apiInfo = apiListData.find((api: any) => api.api_path === value);
         }
 
         return (
           <div>
             <div style={{ fontWeight: 500, marginBottom: 4 }}>
               {activeTab === 'api' ? <ApiOutlined /> : <DatabaseOutlined />}
-              <span style={{ marginLeft: 4 }}>{apiPath}</span>
+              <span style={{ marginLeft: 4 }}>{value}</span>
             </div>
-            {apiInfo && (
+            {apiInfo && activeTab === 'api' && (
               <div style={{ fontSize: 12, color: '#666' }}>
-                {activeTab === 'api'
-                  ? getLocalizedText(apiInfo.description || '', i18n.language)
-                  : `总调用: ${apiInfo.value}`}
+                {getLocalizedText(apiInfo.description || '', i18n.language)}
+              </div>
+            )}
+            {activeTab === 'download' && (
+              <div style={{ fontSize: 12, color: '#666' }}>
+                下载次数: {record.call_count?.toLocaleString() || 0}
               </div>
             )}
           </div>
@@ -187,15 +193,22 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
 
   // 处理表格数据
   const processedData = useMemo(() => {
-    const data =
-      activeTab === 'api' ? apiTableData?.items : archiveTableData?.items;
+    let data;
+    if (activeTab === 'api') {
+      data = apiTableData?.items;
+    } else {
+      data = archiveDownloadTableData?.items;
+    }
+
     if (!data) return [];
 
     return data.map((item, index) => ({
       ...item,
-      key: `${item.user_id}-${item.api_path}-${index}`,
+      key: `${item.user_id}-${
+        (item as any).api_path || (item as any).dataset_name
+      }-${index}`,
     }));
-  }, [apiTableData, archiveTableData, activeTab]);
+  }, [apiTableData, archiveDownloadTableData, activeTab]);
 
   // 筛选数据（根据搜索关键词）
   const filteredData = useMemo(() => {
@@ -205,33 +218,48 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
       (item) =>
         item.login_binds?.nickname?.toLowerCase().includes(keyword) ||
         item.login_binds?.account?.toLowerCase().includes(keyword) ||
-        item.api_path?.toLowerCase().includes(keyword)
+        (item as any).api_path?.toLowerCase().includes(keyword) ||
+        (item as any).dataset_name?.toLowerCase().includes(keyword)
     );
   }, [processedData, searchKeyword]);
 
   // 获取API选项列表
   const getApiOptions = () => {
-    const data = activeTab === 'api' ? apiListData : archiveRankData;
-    if (!data) return [];
+    let data;
 
-    return data.map((item: any) => {
-      const description =
-        item.description ||
-        (activeTab === 'archive' ? `调用次数: ${item.value}` : '');
-      const localizedDescription = getLocalizedText(description, i18n.language);
-
-      return {
+    if (activeTab === 'api') {
+      data = apiListData;
+      if (!data) return [];
+      return data.map((item: any) => {
+        const description = getLocalizedText(
+          item.description || '',
+          i18n.language
+        );
+        return {
+          label: (
+            <div>
+              <div style={{ fontWeight: 500 }}>{item.api_path}</div>
+              <div style={{ fontSize: 12, color: '#666' }}>{description}</div>
+            </div>
+          ),
+          value: item.api_path,
+        };
+      });
+    } else {
+      data = datasetListData;
+      if (!data) return [];
+      return data.map((item: any) => ({
         label: (
           <div>
-            <div style={{ fontWeight: 500 }}>{item.api_path || item.name}</div>
+            <div style={{ fontWeight: 500 }}>{item.name}</div>
             <div style={{ fontSize: 12, color: '#666' }}>
-              {localizedDescription}
+              下载次数: {item.value}
             </div>
           </div>
         ),
-        value: item.api_path || item.name,
-      };
-    });
+        value: item.name,
+      }));
+    }
   };
 
   // API选项
@@ -240,30 +268,38 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
       { label: `全部${activeTab === 'api' ? 'API' : '数据集'}`, value: '' },
       ...getApiOptions(),
     ],
-    [activeTab, apiListData, archiveRankData]
+    [activeTab, apiListData, datasetListData]
   );
 
   // 获取统计信息
   const statistics = useMemo(() => {
-    const data = activeTab === 'api' ? apiTableData : archiveTableData;
+    let data;
+    if (activeTab === 'api') {
+      data = apiTableData;
+    } else {
+      data = archiveDownloadTableData;
+    }
+
     if (!data) return { totalUsers: 0, totalCalls: 0, totalApis: 0 };
 
     const totalUsers = data.total_count || 0;
     const totalCalls =
       data.items?.reduce((sum, item) => sum + (item.call_count || 0), 0) || 0;
     const uniqueApis =
-      new Set(data.items?.map((item) => item.api_path)).size || 0;
+      activeTab === 'download'
+        ? new Set(data.items?.map((item: any) => item.dataset_name)).size || 0
+        : new Set(data.items?.map((item: any) => item.api_path)).size || 0;
 
     return {
       totalUsers,
       totalCalls,
       totalApis: uniqueApis,
     };
-  }, [apiTableData, archiveTableData, activeTab]);
+  }, [apiTableData, archiveDownloadTableData, activeTab]);
 
   // 处理tab切换
   const handleTabChange = (key: string) => {
-    setActiveTab(key as 'api' | 'archive');
+    setActiveTab(key as 'api' | 'download');
     setCurrentPage(1);
     setSelectedApi(''); // 重置API筛选
     setSearchKeyword(''); // 重置搜索关键词
@@ -285,11 +321,11 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
       ),
     },
     {
-      key: 'archive',
+      key: 'download',
       label: (
         <span>
           <DatabaseOutlined />
-          归档数据
+          归档数据下载量
         </span>
       ),
     },
@@ -297,9 +333,10 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
 
   // 当前加载状态
   const isLoading =
-    activeTab === 'api' ? isApiTableLoading : isArchiveTableLoading;
+    activeTab === 'api' ? isApiTableLoading : isArchiveDownloadTableLoading;
+
   const currentTableData =
-    activeTab === 'api' ? apiTableData : archiveTableData;
+    activeTab === 'api' ? apiTableData : archiveDownloadTableData;
 
   return (
     <Card
@@ -336,7 +373,7 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
             options={apiOptions}
           />
           <Input.Search
-            placeholder={`搜索用户${activeTab === 'api' ? 'API' : '数据集'}`}
+            placeholder={`搜索用户、${activeTab === 'api' ? 'API' : '数据集'}`}
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             style={{ width: 200 }}
@@ -362,7 +399,7 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
             setPageSize(size || 20);
           },
         }}
-        scroll={{ x: 800 }}
+        scroll={{ y: 250 }}
       />
     </Card>
   );

@@ -450,84 +450,6 @@ export const useDataHubRestApiList = (enabled: boolean = true) => {
 };
 
 /**
- * DataHub 归档数据表格数据项类型
- */
-export interface DataHubArchiveTableItem {
-  user_id: number;
-  login_binds: {
-    account: string;
-    provider: string;
-    nickname: string;
-    avatar_url: string;
-  };
-  api_path: string;
-  call_count: number;
-  last_called_at: string;
-}
-
-/**
- * DataHub 归档数据表格响应类型
- */
-export interface DataHubArchiveTableResponse {
-  items: DataHubArchiveTableItem[];
-  total_count: number;
-  current_page: number;
-  per_page: number;
-  total_pages: number;
-}
-
-/**
- * 获取DataHub 归档数据表格数据Hook
- */
-export const useDataHubArchiveTable = (
-  page: number = 1,
-  perPage: number = 20,
-  apiPath: string = '',
-  keywords: string = '',
-  enabled: boolean = true
-) => {
-  const { dateRange } = useDateParams();
-
-  // 获取日期参数
-  const begin_date = dateRange?.[0]?.format('YYYY-MM-DD') || '2010-02-22';
-  const end_date = dateRange?.[1]?.format('YYYY-MM-DD') || '2026-03-22';
-
-  const params = {
-    begin_date,
-    end_date,
-    keywords,
-    api_path: apiPath,
-    page,
-    per_page: perPage,
-  };
-
-  const fetchData = async () => {
-    const response = await axios.post(
-      '/api/v2/admin/datahub_archive_table',
-      params
-    );
-    return response.data as DataHubArchiveTableResponse;
-  };
-
-  return useQuery<DataHubArchiveTableResponse, Error>(
-    [
-      'dataHubArchiveTable',
-      begin_date,
-      end_date,
-      page,
-      perPage,
-      apiPath,
-      keywords,
-    ].filter(Boolean),
-    fetchData,
-    {
-      enabled: enabled && !!begin_date && !!end_date,
-      keepPreviousData: true,
-    }
-  );
-};
-
-/**
  * 获取DataHub REST API表格数据Hook
  */
 export const useDataHubRestApiTable = (
@@ -576,4 +498,108 @@ export const useDataHubRestApiTable = (
       keepPreviousData: true,
     }
   );
+};
+
+/**
+ * DataHub 归档数据下载量表格数据项类型
+ */
+export interface DataHubArchiveDownloadTableItem {
+  user_id: number;
+  login_binds: {
+    account: string;
+    provider: string;
+    nickname: string;
+    avatar_url: string;
+  };
+  call_count: number;
+  last_called_at: string;
+  dataset_name: string;
+}
+
+/**
+ * DataHub 归档数据下载量表格响应类型
+ */
+export interface DataHubArchiveDownloadTableResponse {
+  items: DataHubArchiveDownloadTableItem[];
+  total_count: number;
+  current_page: number;
+  per_page: number;
+  total_pages: number;
+}
+
+/**
+ * 获取DataHub 归档数据下载量表格数据Hook
+ */
+export const useDataHubArchiveDownloadTable = (
+  page: number = 1,
+  perPage: number = 20,
+  datasetName: string = '',
+  keywords: string = '',
+  enabled: boolean = true
+) => {
+  const { dateRange } = useDateParams();
+
+  // 获取日期参数
+  const begin_date = dateRange?.[0]?.format('YYYY-MM-DD') || '2010-02-22';
+  const end_date = dateRange?.[1]?.format('YYYY-MM-DD') || '2024-03-22';
+
+  const params = {
+    begin_date,
+    end_date,
+    keywords,
+    dataset_name: datasetName,
+    page,
+    per_page: perPage,
+  };
+
+  const fetchData = async () => {
+    const response = await axios.post(
+      '/api/v2/admin/datahub_archive_download_table',
+      params
+    );
+    return response.data as DataHubArchiveDownloadTableResponse;
+  };
+
+  return useQuery<DataHubArchiveDownloadTableResponse, Error>(
+    [
+      'dataHubArchiveDownloadTable',
+      begin_date,
+      end_date,
+      page,
+      perPage,
+      datasetName,
+      keywords,
+    ].filter(Boolean),
+    fetchData,
+    {
+      enabled: enabled && !!begin_date && !!end_date,
+      keepPreviousData: true,
+    }
+  );
+};
+
+/**
+ * 数据集列表项类型
+ */
+export interface DatasetItem {
+  name: string;
+  value: number;
+}
+
+/**
+ * 获取数据集列表Hook（用于下拉选择器）
+ * 如果没有专门的数据集列表接口，可以使用归档排名数据作为备选
+ */
+export const useDatasetList = (enabled: boolean = true) => {
+  const fetchData = async () => {
+    // 这里可以调用专门的数据集列表接口，或者从归档排名数据中获取
+    const response = await axios.get('/api/v2/admin/dataset_list');
+    return response.data as DatasetItem[];
+  };
+
+  return useQuery<DatasetItem[], Error>(['datasetList'], fetchData, {
+    enabled,
+    staleTime: 5 * 60 * 1000, // 5分钟内不重新获取
+    retry: false, // 如果没有专门的数据集列表接口，不重试
+  });
 };
