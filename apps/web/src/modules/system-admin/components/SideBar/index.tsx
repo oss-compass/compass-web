@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   DashboardOutlined,
@@ -53,7 +53,15 @@ const SideBar: React.FC = () => {
         {
           key: 'selection-evaluation-tpc-monitor',
           icon: <LineChartOutlined />,
-          label: '开源选型评估(TPC)监控',
+          label: (
+            <Tooltip
+              title="开源鸿蒙跨平台框架及三方库评估监控"
+              placement="right"
+              mouseEnterDelay={0.5}
+            >
+              <span>开源鸿蒙跨平台框架及三方库评估监控</span>
+            </Tooltip>
+          ),
         },
       ],
     },
