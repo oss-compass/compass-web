@@ -37,6 +37,8 @@ interface RepositoryData {
     | '超过3个月'
     | '超过半年'
     | '超过1年';
+  category: string; // 分类：如关系型数据库、深度学习框架、前端框架等
+  organization: string; // 组织归属：如腾讯、阿里、开放原子等
   submitter: string;
   modelScore: {
     total: number;
@@ -47,10 +49,12 @@ interface RepositoryData {
   };
 }
 
-const RepositoryTab: React.FC = () => {
+const CommunityTab: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [updateTimeFilter, setUpdateTimeFilter] = useState<string>('all');
   const [platformFilter, setPlatformFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [organizationFilter, setOrganizationFilter] = useState<string>('all');
   const [batchModalVisible, setBatchModalVisible] = useState(false);
   const [batchTimeCategory, setBatchTimeCategory] = useState<string>('');
   const [batchQueueType, setBatchQueueType] = useState<'normal' | 'priority'>(
@@ -90,6 +94,8 @@ const RepositoryTab: React.FC = () => {
       status: 'success',
       lastUpdate: '2024/1/15 10:30:00',
       lastUpdateCategory: '1个月内',
+      category: '前端框架',
+      organization: 'Meta',
       submitter: '张三',
       modelScore: {
         total: 85,
@@ -107,6 +113,8 @@ const RepositoryTab: React.FC = () => {
       status: 'queued',
       lastUpdate: '2023/11/20 14:20:00',
       lastUpdateCategory: '超过1个月',
+      category: '前端框架',
+      organization: '开放原子',
       submitter: '李四',
       modelScore: {
         total: 78,
@@ -124,6 +132,8 @@ const RepositoryTab: React.FC = () => {
       status: 'success',
       lastUpdate: '2023/10/10 09:15:00',
       lastUpdateCategory: '超过3个月',
+      category: '前端框架',
+      organization: 'Google',
       submitter: '王五',
       modelScore: {
         total: 72,
@@ -141,6 +151,8 @@ const RepositoryTab: React.FC = () => {
       status: 'success',
       lastUpdate: '2023/8/5 16:45:00',
       lastUpdateCategory: '超过半年',
+      category: '深度学习框架',
+      organization: 'Google',
       submitter: '赵六',
       modelScore: {
         total: 92,
@@ -158,6 +170,8 @@ const RepositoryTab: React.FC = () => {
       status: 'success',
       lastUpdate: '2023/2/12 11:30:00',
       lastUpdateCategory: '超过1年',
+      category: '深度学习框架',
+      organization: 'Meta',
       submitter: '钱七',
       modelScore: {
         total: 89,
@@ -175,6 +189,8 @@ const RepositoryTab: React.FC = () => {
       status: 'queued',
       lastUpdate: '2024/1/8 13:20:00',
       lastUpdateCategory: '1个月内',
+      category: '关系型数据库',
+      organization: 'PostgreSQL Global Development Group',
       submitter: '孙八',
       modelScore: {
         total: 76,
@@ -192,6 +208,8 @@ const RepositoryTab: React.FC = () => {
       status: 'success',
       lastUpdate: '2023/12/1 08:45:00',
       lastUpdateCategory: '超过1个月',
+      category: '关系型数据库',
+      organization: 'Oracle',
       submitter: '周九',
       modelScore: {
         total: 81,
@@ -209,6 +227,8 @@ const RepositoryTab: React.FC = () => {
       status: 'success',
       lastUpdate: '2023/9/15 15:10:00',
       lastUpdateCategory: '超过3个月',
+      category: '容器编排',
+      organization: 'Docker Inc',
       submitter: '吴十',
       modelScore: {
         total: 87,
@@ -508,6 +528,62 @@ const RepositoryTab: React.FC = () => {
     {
       title: (
         <div className="flex items-center gap-2">
+          <span>分类</span>
+          <Select
+            size="small"
+            value={categoryFilter}
+            onChange={setCategoryFilter}
+            style={{ width: 120 }}
+            placeholder="筛选分类"
+          >
+            <Option value="all">全部</Option>
+            <Option value="关系型数据库">关系型数据库</Option>
+            <Option value="深度学习框架">深度学习框架</Option>
+            <Option value="前端框架">前端框架</Option>
+            <Option value="容器编排">容器编排</Option>
+          </Select>
+        </div>
+      ),
+      dataIndex: 'category',
+      key: 'category',
+      width: '15%',
+      render: (category: string) => {
+        return <span>{category}</span>;
+      },
+    },
+    {
+      title: (
+        <div className="flex items-center gap-2">
+          <span>组织归属</span>
+          <Select
+            size="small"
+            value={organizationFilter}
+            onChange={setOrganizationFilter}
+            style={{ width: 120 }}
+            placeholder="筛选组织"
+          >
+            <Option value="all">全部</Option>
+            <Option value="Meta">Meta</Option>
+            <Option value="开放原子">开放原子</Option>
+            <Option value="Google">Google</Option>
+            <Option value="Oracle">Oracle</Option>
+            <Option value="Docker Inc">Docker Inc</Option>
+            <Option value="PostgreSQL Global Development Group">
+              PostgreSQL Global Development Group
+            </Option>
+          </Select>
+        </div>
+      ),
+      dataIndex: 'organization',
+      key: 'organization',
+      width: '12%',
+      render: (organization: string) => {
+        return <span>{organization}</span>;
+      },
+    },
+    {
+      title: (
+        <div className="flex items-center gap-2">
           <span>上次更新时间</span>
           <Select
             size="small"
@@ -584,7 +660,7 @@ const RepositoryTab: React.FC = () => {
       key: 'action',
       width: '18%',
       render: () => (
-        <div className="flex cursor-pointer gap-2 text-[#3e8eff]">
+        <div className="flex cursor-pointer gap-2 whitespace-nowrap text-[#3e8eff]">
           <a>加入队列</a>
           <a>加入优先队列</a>
           <a>删除</a>
@@ -604,8 +680,18 @@ const RepositoryTab: React.FC = () => {
       item.lastUpdateCategory === updateTimeFilter;
     const matchesPlatformFilter =
       platformFilter === 'all' || item.platform === platformFilter;
+    const matchesCategoryFilter =
+      categoryFilter === 'all' || item.category === categoryFilter;
+    const matchesOrganizationFilter =
+      organizationFilter === 'all' || item.organization === organizationFilter;
 
-    return matchesSearch && matchesTimeFilter && matchesPlatformFilter;
+    return (
+      matchesSearch &&
+      matchesTimeFilter &&
+      matchesPlatformFilter &&
+      matchesCategoryFilter &&
+      matchesOrganizationFilter
+    );
   });
 
   return (
@@ -804,4 +890,4 @@ const RepositoryTab: React.FC = () => {
   );
 };
 
-export default RepositoryTab;
+export default CommunityTab;

@@ -44,6 +44,7 @@ interface GraduationData {
   maintainer: string;
   description: string;
   graduationDate?: string;
+  category: string;
 }
 
 // 固定的平台分布数据
@@ -82,6 +83,7 @@ const GraduationTab: React.FC = () => {
       maintainer: '张三',
       description: '这是毕业项目 1 的描述信息',
       graduationDate: '2023/12/15',
+      category: '网络及协议',
     },
     {
       key: '2',
@@ -98,6 +100,7 @@ const GraduationTab: React.FC = () => {
       maintainer: '李四',
       description: '这是毕业项目 2 的描述信息',
       graduationDate: '2023/11/20',
+      category: 'UI',
     },
     {
       key: '3',
@@ -114,6 +117,7 @@ const GraduationTab: React.FC = () => {
       maintainer: '王五',
       description: '这是毕业项目 3 的描述信息',
       graduationDate: '2023/10/01',
+      category: '文件及解析',
     },
     {
       key: '4',
@@ -129,6 +133,7 @@ const GraduationTab: React.FC = () => {
       progress: 95,
       maintainer: '赵六',
       description: '这是待毕业项目 1 的描述信息',
+      category: 'RN框架',
     },
     {
       key: '5',
@@ -144,6 +149,7 @@ const GraduationTab: React.FC = () => {
       progress: 90,
       maintainer: '钱七',
       description: '这是待毕业项目 2 的描述信息',
+      category: '网络及协议',
     },
   ];
 
@@ -152,6 +158,7 @@ const GraduationTab: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [updateTimeFilter, setUpdateTimeFilter] = useState<string>('all');
   const [platformFilter, setPlatformFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [batchModalVisible, setBatchModalVisible] = useState(false);
   const [batchTimeCategory, setBatchTimeCategory] = useState<string>('');
   const [batchQueueType, setBatchQueueType] = useState<'normal' | 'priority'>(
@@ -268,6 +275,13 @@ const GraduationTab: React.FC = () => {
       width: '10%',
     },
     {
+      title: '分类',
+      dataIndex: 'category',
+      key: 'category',
+      width: '10%',
+      render: (category: string) => <span>{category}</span>,
+    },
+    {
       title: '最后更新',
       dataIndex: 'lastUpdateCategory',
       key: 'lastUpdateCategory',
@@ -340,8 +354,12 @@ const GraduationTab: React.FC = () => {
       filtered = filtered.filter((item) => item.platform === platformFilter);
     }
 
+    if (categoryFilter !== 'all') {
+      filtered = filtered.filter((item) => item.category === categoryFilter);
+    }
+
     setFilteredData(filtered);
-  }, [searchText, updateTimeFilter, platformFilter]);
+  }, [searchText, updateTimeFilter, platformFilter, categoryFilter]);
 
   // 初始化平台分布图表
   useEffect(() => {
@@ -532,6 +550,51 @@ const GraduationTab: React.FC = () => {
               </Button>
               <Button icon={<UploadOutlined />}>批量导入</Button>
             </Space>
+          </div>
+
+          {/* 过滤器区域 */}
+          <div className="mt-4 flex items-center gap-4">
+            <Select
+              placeholder="选择平台"
+              value={platformFilter}
+              onChange={setPlatformFilter}
+              style={{ width: 120 }}
+              allowClear
+            >
+              <Option value="all">全部平台</Option>
+              <Option value="GitHub">GitHub</Option>
+              <Option value="Gitee">Gitee</Option>
+              <Option value="GitLab">GitLab</Option>
+            </Select>
+
+            <Select
+              placeholder="选择更新时间"
+              value={updateTimeFilter}
+              onChange={setUpdateTimeFilter}
+              style={{ width: 150 }}
+              allowClear
+            >
+              <Option value="all">全部时间</Option>
+              <Option value="1个月内">1个月内</Option>
+              <Option value="超过1个月">超过1个月</Option>
+              <Option value="超过3个月">超过3个月</Option>
+              <Option value="超过半年">超过半年</Option>
+              <Option value="超过1年">超过1年</Option>
+            </Select>
+
+            <Select
+              placeholder="选择分类"
+              value={categoryFilter}
+              onChange={setCategoryFilter}
+              style={{ width: 120 }}
+              allowClear
+            >
+              <Option value="all">全部分类</Option>
+              <Option value="网络及协议">网络及协议</Option>
+              <Option value="UI">UI</Option>
+              <Option value="文件及解析">文件及解析</Option>
+              <Option value="RN框架">RN框架</Option>
+            </Select>
           </div>
         </div>
 

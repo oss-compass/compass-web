@@ -33,6 +33,16 @@ interface ServerData {
   diskIO: number;
   bandwidth: number;
   location: string;
+  // 新增字段
+  role: 'compute' | 'storage' | 'network' | 'database' | 'cache';
+  config: {
+    cpu: string;
+    memory: string;
+    disk: string;
+    network: string;
+    os: string;
+    architecture: string;
+  };
   // 添加趋势数据
   cpuTrend: number[];
   memoryTrend: number[];
@@ -48,15 +58,59 @@ interface MirrorSourceData {
   servers: ServerData[];
 }
 
+// 生成30天的趋势数据
+const generateMonthlyTrendData = (
+  baseValue: number,
+  variance: number = 10
+): number[] => {
+  const data: number[] = [];
+  for (let i = 0; i < 30; i++) {
+    // 生成基于基础值的随机波动数据
+    const randomVariance = (Math.random() - 0.5) * variance;
+    const value = Math.max(0, Math.min(100, baseValue + randomVariance));
+    data.push(Math.round(value * 10) / 10);
+  }
+  return data;
+};
+
+// 生成30天的带宽趋势数据
+const generateBandwidthTrendData = (
+  baseValue: number,
+  variance: number = 20
+): number[] => {
+  const data: number[] = [];
+  for (let i = 0; i < 30; i++) {
+    const randomVariance = (Math.random() - 0.5) * variance;
+    const value = Math.max(0, baseValue + randomVariance);
+    data.push(Math.round(value * 10) / 10);
+  }
+  return data;
+};
+
+// 生成30天的磁盘IO趋势数据
+const generateDiskIOTrendData = (
+  baseValue: number,
+  variance: number = 30
+): number[] => {
+  const data: number[] = [];
+  for (let i = 0; i < 30; i++) {
+    const randomVariance = (Math.random() - 0.5) * variance;
+    const value = Math.max(0, baseValue + randomVariance);
+    data.push(Math.round(value * 10) / 10);
+  }
+  return data;
+};
+
 const SystemMonitor: React.FC = () => {
   const [activeTab, setActiveTab] = useState('gitee');
   const [modalVisible, setModalVisible] = useState(false);
+  const [configModalVisible, setConfigModalVisible] = useState(false);
   const [selectedServer, setSelectedServer] = useState<ServerData | null>(null);
 
   // 模拟镜像源数据
   const mirrorSources: MirrorSourceData[] = [
     {
-      name: 'Gitee',
+      name: '开源中国',
       key: 'gitee',
       totalServers: 8,
       onlineServers: 7,
@@ -71,12 +125,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 125.6,
           bandwidth: 89.3,
           location: '北京',
-          cpuTrend: [42, 45, 48, 44, 46, 43, 47, 45, 49, 46, 44, 45],
-          memoryTrend: [65, 67, 69, 66, 68, 65, 70, 67, 71, 68, 66, 67],
-          diskIOTrend: [
-            120, 125, 130, 122, 128, 123, 132, 125, 135, 128, 124, 125,
-          ],
-          bandwidthTrend: [85, 89, 92, 87, 91, 86, 94, 89, 96, 91, 88, 89],
+          role: 'compute',
+          config: {
+            cpu: 'Intel Xeon E5-2680 v4 (14核28线程)',
+            memory: '64GB DDR4 ECC',
+            disk: '2TB SSD + 4TB HDD',
+            network: '10Gbps 以太网',
+            os: 'CentOS 7.9',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(45.2, 8),
+          memoryTrend: generateMonthlyTrendData(67.8, 6),
+          diskIOTrend: generateDiskIOTrendData(125.6, 25),
+          bandwidthTrend: generateBandwidthTrendData(89.3, 15),
         },
         {
           key: '2',
@@ -88,10 +149,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 98.4,
           bandwidth: 76.8,
           location: '上海',
-          cpuTrend: [50, 52, 55, 51, 53, 50, 54, 52, 56, 53, 51, 52],
-          memoryTrend: [69, 71, 74, 70, 72, 69, 75, 71, 76, 72, 70, 71],
-          diskIOTrend: [95, 98, 102, 96, 100, 97, 105, 98, 108, 100, 96, 98],
-          bandwidthTrend: [74, 76, 79, 75, 78, 74, 81, 76, 83, 78, 75, 76],
+          role: 'storage',
+          config: {
+            cpu: 'Intel Xeon Silver 4214 (12核24线程)',
+            memory: '128GB DDR4 ECC',
+            disk: '8TB SSD RAID 10',
+            network: '25Gbps 以太网',
+            os: 'Ubuntu 20.04 LTS',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(52.1, 7),
+          memoryTrend: generateMonthlyTrendData(71.3, 5),
+          diskIOTrend: generateDiskIOTrendData(98.4, 20),
+          bandwidthTrend: generateBandwidthTrendData(76.8, 12),
         },
         {
           key: '3',
@@ -103,12 +173,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 156.7,
           bandwidth: 45.2,
           location: '深圳',
-          cpuTrend: [76, 78, 82, 77, 80, 76, 83, 78, 85, 80, 77, 78],
-          memoryTrend: [83, 85, 88, 84, 87, 83, 90, 85, 92, 87, 84, 85],
-          diskIOTrend: [
-            152, 156, 162, 154, 159, 153, 165, 156, 168, 159, 155, 156,
-          ],
-          bandwidthTrend: [43, 45, 48, 44, 47, 43, 50, 45, 52, 47, 44, 45],
+          role: 'compute',
+          config: {
+            cpu: 'AMD EPYC 7542 (32核64线程)',
+            memory: '256GB DDR4 ECC',
+            disk: '4TB NVMe SSD',
+            network: '40Gbps 以太网',
+            os: 'Rocky Linux 8.5',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(78.9, 10),
+          memoryTrend: generateMonthlyTrendData(85.6, 8),
+          diskIOTrend: generateDiskIOTrendData(156.7, 35),
+          bandwidthTrend: generateBandwidthTrendData(45.2, 10),
         },
         {
           key: '4',
@@ -120,12 +197,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 87.3,
           bandwidth: 112.5,
           location: '广州',
-          cpuTrend: [36, 38, 41, 37, 40, 36, 42, 38, 44, 40, 37, 38],
-          memoryTrend: [52, 54, 57, 53, 56, 52, 58, 54, 60, 56, 53, 54],
-          diskIOTrend: [84, 87, 91, 85, 89, 84, 93, 87, 96, 89, 85, 87],
-          bandwidthTrend: [
-            110, 112, 116, 111, 115, 110, 118, 112, 121, 115, 111, 112,
-          ],
+          role: 'network',
+          config: {
+            cpu: 'Intel Xeon Gold 6248 (20核40线程)',
+            memory: '96GB DDR4 ECC',
+            disk: '1TB SSD + 2TB HDD',
+            network: '100Gbps 以太网',
+            os: 'CentOS 8.4',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(38.7, 6),
+          memoryTrend: generateMonthlyTrendData(54.2, 5),
+          diskIOTrend: generateDiskIOTrendData(87.3, 18),
+          bandwidthTrend: generateBandwidthTrendData(112.5, 20),
         },
         {
           key: '5',
@@ -137,12 +221,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 134.2,
           bandwidth: 98.1,
           location: '杭州',
-          cpuTrend: [59, 61, 64, 60, 63, 59, 65, 61, 67, 63, 60, 61],
-          memoryTrend: [71, 73, 76, 72, 75, 71, 77, 73, 79, 75, 72, 73],
-          diskIOTrend: [
-            130, 134, 139, 132, 137, 131, 141, 134, 144, 137, 133, 134,
-          ],
-          bandwidthTrend: [96, 98, 102, 97, 101, 96, 104, 98, 106, 101, 97, 98],
+          role: 'database',
+          config: {
+            cpu: 'Intel Xeon Platinum 8280 (28核56线程)',
+            memory: '512GB DDR4 ECC',
+            disk: '16TB SSD RAID 1',
+            network: '50Gbps 以太网',
+            os: 'Red Hat Enterprise Linux 8',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(61.4, 8),
+          memoryTrend: generateMonthlyTrendData(73.9, 6),
+          diskIOTrend: generateDiskIOTrendData(134.2, 28),
+          bandwidthTrend: generateBandwidthTrendData(98.1, 15),
         },
         {
           key: '6',
@@ -154,12 +245,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 76.9,
           bandwidth: 134.7,
           location: '成都',
-          cpuTrend: [27, 29, 32, 28, 31, 27, 33, 29, 35, 31, 28, 29],
-          memoryTrend: [39, 41, 44, 40, 43, 39, 45, 41, 47, 43, 40, 41],
-          diskIOTrend: [74, 76, 80, 75, 79, 74, 82, 76, 84, 79, 75, 76],
-          bandwidthTrend: [
-            132, 134, 138, 133, 137, 132, 140, 134, 142, 137, 133, 134,
-          ],
+          role: 'cache',
+          config: {
+            cpu: 'Intel Xeon E5-2650 v4 (12核24线程)',
+            memory: '128GB DDR4 ECC',
+            disk: '2TB NVMe SSD',
+            network: '25Gbps 以太网',
+            os: 'Ubuntu 22.04 LTS',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(29.8, 5),
+          memoryTrend: generateMonthlyTrendData(41.5, 4),
+          diskIOTrend: generateDiskIOTrendData(76.9, 15),
+          bandwidthTrend: generateBandwidthTrendData(134.7, 25),
         },
         {
           key: '7',
@@ -171,12 +269,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 145.8,
           bandwidth: 67.2,
           location: '西安',
-          cpuTrend: [53, 55, 58, 54, 57, 53, 59, 55, 61, 57, 54, 55],
-          memoryTrend: [66, 68, 71, 67, 70, 66, 72, 68, 74, 70, 67, 68],
-          diskIOTrend: [
-            142, 145, 150, 144, 148, 143, 152, 145, 155, 148, 144, 145,
-          ],
-          bandwidthTrend: [65, 67, 70, 66, 69, 65, 72, 67, 74, 69, 66, 67],
+          role: 'storage',
+          config: {
+            cpu: 'AMD EPYC 7443P (24核48线程)',
+            memory: '192GB DDR4 ECC',
+            disk: '12TB SSD RAID 5',
+            network: '40Gbps 以太网',
+            os: 'SUSE Linux Enterprise 15',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(55.3, 7),
+          memoryTrend: generateMonthlyTrendData(68.7, 6),
+          diskIOTrend: generateDiskIOTrendData(145.8, 30),
+          bandwidthTrend: generateBandwidthTrendData(67.2, 12),
         },
         {
           key: '8',
@@ -188,10 +293,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 0,
           bandwidth: 0,
           location: '武汉',
-          cpuTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          memoryTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          diskIOTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          bandwidthTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          role: 'compute',
+          config: {
+            cpu: 'Intel Xeon Gold 6226R (16核32线程)',
+            memory: '128GB DDR4 ECC',
+            disk: '2TB SSD + 4TB HDD',
+            network: '25Gbps 以太网',
+            os: 'CentOS 7.9',
+            architecture: 'x86_64',
+          },
+          cpuTrend: Array(30).fill(0),
+          memoryTrend: Array(30).fill(0),
+          diskIOTrend: Array(30).fill(0),
+          bandwidthTrend: Array(30).fill(0),
         },
       ],
     },
@@ -211,12 +325,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 75.3,
           bandwidth: 152.1,
           location: '北京',
-          cpuTrend: [66, 68, 71, 67, 70, 68, 72, 68, 69, 70, 67, 68],
-          memoryTrend: [63, 65, 68, 64, 67, 65, 69, 65, 66, 67, 64, 65],
-          diskIOTrend: [72, 75, 78, 74, 77, 75, 79, 75, 76, 77, 74, 75],
-          bandwidthTrend: [
-            148, 152, 156, 150, 154, 152, 157, 152, 153, 154, 150, 152,
-          ],
+          role: 'compute',
+          config: {
+            cpu: 'Intel Xeon Platinum 8358 (32核64线程)',
+            memory: '256GB DDR4 ECC',
+            disk: '4TB NVMe SSD',
+            network: '100Gbps InfiniBand',
+            os: 'CentOS 8.5',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(68.5, 8),
+          memoryTrend: generateMonthlyTrendData(65.2, 6),
+          diskIOTrend: generateDiskIOTrendData(75.3, 18),
+          bandwidthTrend: generateBandwidthTrendData(152.1, 25),
         },
         {
           key: '2',
@@ -228,12 +349,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 81.9,
           bandwidth: 161.5,
           location: '北京',
-          cpuTrend: [74, 76, 79, 75, 78, 76, 80, 76, 77, 78, 75, 76],
-          memoryTrend: [70, 72, 75, 71, 74, 72, 76, 72, 73, 74, 71, 72],
-          diskIOTrend: [79, 81, 84, 80, 83, 81, 85, 81, 82, 83, 80, 81],
-          bandwidthTrend: [
-            158, 161, 165, 159, 163, 161, 166, 161, 162, 163, 159, 161,
-          ],
+          role: 'storage',
+          config: {
+            cpu: 'AMD EPYC 7763 (64核128线程)',
+            memory: '512GB DDR4 ECC',
+            disk: '32TB SSD RAID 6',
+            network: '200Gbps InfiniBand',
+            os: 'Ubuntu 20.04 LTS',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(76.1, 9),
+          memoryTrend: generateMonthlyTrendData(72.8, 7),
+          diskIOTrend: generateDiskIOTrendData(81.9, 20),
+          bandwidthTrend: generateBandwidthTrendData(161.5, 30),
         },
       ],
     },
@@ -253,10 +381,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 62.1,
           bandwidth: 94.7,
           location: '南京',
-          cpuTrend: [53, 55, 58, 54, 57, 55, 59, 55, 56, 57, 54, 55],
-          memoryTrend: [56, 58, 61, 57, 60, 58, 62, 58, 59, 60, 57, 58],
-          diskIOTrend: [59, 62, 65, 61, 64, 62, 66, 62, 63, 64, 61, 62],
-          bandwidthTrend: [92, 94, 97, 93, 96, 94, 98, 94, 95, 96, 93, 94],
+          role: 'compute',
+          config: {
+            cpu: 'Intel Xeon Gold 6240 (18核36线程)',
+            memory: '128GB DDR4 ECC',
+            disk: '2TB SSD + 4TB HDD',
+            network: '25Gbps 以太网',
+            os: 'CentOS 7.9',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(55.3, 7),
+          memoryTrend: generateMonthlyTrendData(58.9, 6),
+          diskIOTrend: generateDiskIOTrendData(62.1, 15),
+          bandwidthTrend: generateBandwidthTrendData(94.7, 18),
         },
         {
           key: '2',
@@ -268,12 +405,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 68.3,
           bandwidth: 101.9,
           location: '南京',
-          cpuTrend: [60, 62, 65, 61, 64, 62, 66, 62, 63, 64, 61, 62],
-          memoryTrend: [63, 65, 68, 64, 67, 65, 69, 65, 66, 67, 64, 65],
-          diskIOTrend: [65, 68, 71, 67, 70, 68, 72, 68, 69, 70, 67, 68],
-          bandwidthTrend: [
-            99, 101, 104, 100, 103, 101, 105, 101, 102, 103, 100, 101,
-          ],
+          role: 'database',
+          config: {
+            cpu: 'Intel Xeon Silver 4216 (16核32线程)',
+            memory: '192GB DDR4 ECC',
+            disk: '8TB SSD RAID 1',
+            network: '40Gbps 以太网',
+            os: 'Ubuntu 18.04 LTS',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(62.1, 8),
+          memoryTrend: generateMonthlyTrendData(65.9, 6),
+          diskIOTrend: generateDiskIOTrendData(68.3, 16),
+          bandwidthTrend: generateBandwidthTrendData(101.9, 20),
         },
         {
           key: '3',
@@ -285,10 +429,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 0,
           bandwidth: 0,
           location: '南京',
-          cpuTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          memoryTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          diskIOTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          bandwidthTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          role: 'network',
+          config: {
+            cpu: 'Intel Xeon E5-2690 v4 (14核28线程)',
+            memory: '64GB DDR4 ECC',
+            disk: '1TB SSD',
+            network: '10Gbps 以太网',
+            os: 'CentOS 7.8',
+            architecture: 'x86_64',
+          },
+          cpuTrend: Array(30).fill(0),
+          memoryTrend: Array(30).fill(0),
+          diskIOTrend: Array(30).fill(0),
+          bandwidthTrend: Array(30).fill(0),
         },
       ],
     },
@@ -308,12 +461,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 69.7,
           bandwidth: 112.3,
           location: '北京',
-          cpuTrend: [59, 61, 64, 60, 63, 61, 65, 61, 62, 63, 60, 61],
-          memoryTrend: [66, 68, 71, 67, 70, 68, 72, 68, 69, 70, 67, 68],
-          diskIOTrend: [67, 69, 72, 68, 71, 69, 73, 69, 70, 71, 68, 69],
-          bandwidthTrend: [
-            110, 112, 115, 111, 114, 112, 116, 112, 113, 114, 111, 112,
-          ],
+          role: 'compute',
+          config: {
+            cpu: 'Intel Xeon Gold 6248R (24核48线程)',
+            memory: '192GB DDR4 ECC',
+            disk: '4TB NVMe SSD',
+            network: '50Gbps 以太网',
+            os: 'Red Hat Enterprise Linux 8',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(61.8, 8),
+          memoryTrend: generateMonthlyTrendData(68.5, 7),
+          diskIOTrend: generateDiskIOTrendData(69.7, 17),
+          bandwidthTrend: generateBandwidthTrendData(112.3, 22),
         },
         {
           key: '2',
@@ -325,12 +485,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 76.1,
           bandwidth: 118.9,
           location: '北京',
-          cpuTrend: [64, 66, 69, 65, 68, 66, 70, 66, 67, 68, 65, 66],
-          memoryTrend: [73, 75, 78, 74, 77, 75, 79, 75, 76, 77, 74, 75],
-          diskIOTrend: [74, 76, 79, 75, 78, 76, 80, 76, 77, 78, 75, 76],
-          bandwidthTrend: [
-            116, 118, 121, 117, 120, 118, 122, 118, 119, 120, 117, 118,
-          ],
+          role: 'storage',
+          config: {
+            cpu: 'AMD EPYC 7502P (32核64线程)',
+            memory: '256GB DDR4 ECC',
+            disk: '16TB SSD RAID 5',
+            network: '100Gbps 以太网',
+            os: 'SUSE Linux Enterprise 15',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(66.6, 9),
+          memoryTrend: generateMonthlyTrendData(75.1, 8),
+          diskIOTrend: generateDiskIOTrendData(76.1, 19),
+          bandwidthTrend: generateBandwidthTrendData(118.9, 24),
         },
         {
           key: '3',
@@ -342,12 +509,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 89.3,
           bandwidth: 135.2,
           location: '北京',
-          cpuTrend: [76, 78, 81, 77, 80, 78, 82, 78, 79, 80, 77, 78],
-          memoryTrend: [83, 85, 88, 84, 87, 85, 89, 85, 86, 87, 84, 85],
-          diskIOTrend: [87, 89, 92, 88, 91, 89, 93, 89, 90, 91, 88, 89],
-          bandwidthTrend: [
-            133, 135, 138, 134, 137, 135, 139, 135, 136, 137, 134, 135,
-          ],
+          role: 'database',
+          config: {
+            cpu: 'Intel Xeon Platinum 8280L (28核56线程)',
+            memory: '384GB DDR4 ECC',
+            disk: '20TB SSD RAID 1',
+            network: '100Gbps InfiniBand',
+            os: 'Red Hat Enterprise Linux 8',
+            architecture: 'x86_64',
+          },
+          cpuTrend: generateMonthlyTrendData(78.9, 10),
+          memoryTrend: generateMonthlyTrendData(85.2, 8),
+          diskIOTrend: generateDiskIOTrendData(89.3, 22),
+          bandwidthTrend: generateBandwidthTrendData(135.2, 28),
         },
         {
           key: '4',
@@ -359,10 +533,19 @@ const SystemMonitor: React.FC = () => {
           diskIO: 0,
           bandwidth: 0,
           location: '北京',
-          cpuTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          memoryTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          diskIOTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          bandwidthTrend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          role: 'cache',
+          config: {
+            cpu: 'Intel Xeon Gold 6230 (20核40线程)',
+            memory: '128GB DDR4 ECC',
+            disk: '4TB NVMe SSD',
+            network: '25Gbps 以太网',
+            os: 'CentOS 8.3',
+            architecture: 'x86_64',
+          },
+          cpuTrend: Array(30).fill(0),
+          memoryTrend: Array(30).fill(0),
+          diskIOTrend: Array(30).fill(0),
+          bandwidthTrend: Array(30).fill(0),
         },
       ],
     },
@@ -381,6 +564,35 @@ const SystemMonitor: React.FC = () => {
   const handleCloseModal = () => {
     setModalVisible(false);
     setSelectedServer(null);
+  };
+
+  // 配置信息弹窗处理函数
+  const handleShowConfigModal = (server: ServerData) => {
+    setSelectedServer(server);
+    setConfigModalVisible(true);
+  };
+
+  const handleCloseConfigModal = () => {
+    setConfigModalVisible(false);
+    setSelectedServer(null);
+  };
+
+  // 获取角色配置
+  const getRoleConfig = (role: string) => {
+    switch (role) {
+      case 'compute':
+        return { color: 'blue', icon: <ThunderboltOutlined />, text: '计算' };
+      case 'storage':
+        return { color: 'green', icon: <HddOutlined />, text: '存储' };
+      case 'network':
+        return { color: 'orange', icon: <WifiOutlined />, text: '网络' };
+      case 'database':
+        return { color: 'purple', icon: <DatabaseOutlined />, text: '数据库' };
+      case 'cache':
+        return { color: 'cyan', icon: <CloudServerOutlined />, text: '缓存' };
+      default:
+        return { color: 'default', icon: null, text: '未知' };
+    }
   };
 
   // 获取状态颜色和图标
@@ -419,13 +631,13 @@ const SystemMonitor: React.FC = () => {
       title: '服务器名称',
       dataIndex: 'name',
       key: 'name',
-      width: '15%',
+      width: '12%',
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: '8%',
+      width: '6%',
       render: (status: string) => {
         const config = getStatusConfig(status);
         return (
@@ -439,13 +651,27 @@ const SystemMonitor: React.FC = () => {
       title: '位置',
       dataIndex: 'location',
       key: 'location',
+      width: '6%',
+    },
+    {
+      title: '服务器作用',
+      dataIndex: 'role',
+      key: 'role',
       width: '8%',
+      render: (role: string) => {
+        const config = getRoleConfig(role);
+        return (
+          <Tag color={config.color} icon={config.icon}>
+            {config.text}
+          </Tag>
+        );
+      },
     },
     {
       title: 'CPU使用率',
       dataIndex: 'cpu',
       key: 'cpu',
-      width: '12%',
+      width: '10%',
       render: (value: number) => (
         <div>
           <Progress percent={value} size="small" />
@@ -456,7 +682,7 @@ const SystemMonitor: React.FC = () => {
       title: '内存使用率',
       dataIndex: 'memory',
       key: 'memory',
-      width: '12%',
+      width: '10%',
       render: (value: number) => (
         <div>
           <Progress percent={value} size="small" strokeColor="#52c41a" />
@@ -467,7 +693,7 @@ const SystemMonitor: React.FC = () => {
       title: '磁盘使用率',
       dataIndex: 'disk',
       key: 'disk',
-      width: '12%',
+      width: '10%',
       render: (value: number) => (
         <div>
           <Progress percent={value} size="small" strokeColor="#faad14" />
@@ -478,14 +704,14 @@ const SystemMonitor: React.FC = () => {
       title: '磁盘IO',
       dataIndex: 'diskIO',
       key: 'diskIO',
-      width: '10%',
+      width: '8%',
       render: (value: number) => `${value.toFixed(1)} MB/s`,
     },
     {
       title: '网络带宽',
       dataIndex: 'bandwidth',
       key: 'bandwidth',
-      width: '10%',
+      width: '8%',
       render: (value: number) => (
         <span style={{ color: getBandwidthColor(value) }}>
           {value.toFixed(1)} Mbps
@@ -495,16 +721,27 @@ const SystemMonitor: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      width: '8%',
+      width: '12%',
       render: (_: any, record: ServerData) => (
-        <Button
-          type="link"
-          icon={<EyeOutlined />}
-          onClick={() => handleShowModal(record)}
-          disabled={record.status === 'offline'}
-        >
-          详情
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            type="link"
+            icon={<EyeOutlined />}
+            onClick={() => handleShowModal(record)}
+            disabled={record.status === 'offline'}
+            size="small"
+          >
+            监控详情
+          </Button>
+          <Button
+            type="link"
+            icon={<CloudServerOutlined />}
+            onClick={() => handleShowConfigModal(record)}
+            size="small"
+          >
+            配置详情
+          </Button>
+        </div>
       ),
     },
   ];
@@ -534,9 +771,14 @@ const SystemMonitor: React.FC = () => {
         },
         xAxis: {
           type: 'category',
-          data: Array.from({ length: 12 }, (_, i) => `${i + 1}h`),
+          data: Array.from({ length: 30 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (29 - i));
+            return `${date.getMonth() + 1}/${date.getDate()}`;
+          }),
           axisLabel: {
             fontSize: 10,
+            rotate: 45,
           },
         },
         yAxis: {
@@ -774,6 +1016,181 @@ const SystemMonitor: React.FC = () => {
                 </Card>
               </Col>
             </Row>
+          </div>
+        )}
+      </Modal>
+
+      {/* 服务器配置信息弹窗 */}
+      <Modal
+        title={selectedServer ? `${selectedServer.name} 配置信息` : ''}
+        open={configModalVisible}
+        onCancel={handleCloseConfigModal}
+        footer={null}
+        width={800}
+        destroyOnClose
+      >
+        {selectedServer && (
+          <div>
+            {/* 服务器基本信息 */}
+            <Row gutter={16} style={{ marginBottom: '20px' }}>
+              <Col span={8}>
+                <Card size="small" title="基本信息">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">服务器名称:</span>
+                      <span className="font-medium">{selectedServer.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">服务器作用:</span>
+                      <span>
+                        {(() => {
+                          const config = getRoleConfig(selectedServer.role);
+                          return (
+                            <Tag color={config.color} icon={config.icon}>
+                              {config.text}
+                            </Tag>
+                          );
+                        })()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">部署位置:</span>
+                      <span className="font-medium">
+                        {selectedServer.location}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">运行状态:</span>
+                      <span>
+                        {(() => {
+                          const config = getStatusConfig(selectedServer.status);
+                          return (
+                            <Tag color={config.color} icon={config.icon}>
+                              {config.text}
+                            </Tag>
+                          );
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </Col>
+              <Col span={8}>
+                <Card size="small" title="硬件配置">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">CPU:</span>
+                      <span className="ml-2 flex-1 text-right font-medium">
+                        {selectedServer.config.cpu}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">内存:</span>
+                      <span className="font-medium">
+                        {selectedServer.config.memory}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">存储:</span>
+                      <span className="ml-2 flex-1 text-right font-medium">
+                        {selectedServer.config.disk}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">网络:</span>
+                      <span className="ml-2 flex-1 text-right font-medium">
+                        {selectedServer.config.network}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </Col>
+              <Col span={8}>
+                <Card size="small" title="系统信息">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">操作系统:</span>
+                      <span className="ml-2 flex-1 text-right font-medium">
+                        {selectedServer.config.os}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">架构:</span>
+                      <span className="font-medium">
+                        {selectedServer.config.architecture}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </Col>
+            </Row>
+
+            {/* 当前资源使用情况 */}
+            <Card title="当前资源使用情况" size="small">
+              <Row gutter={16}>
+                <Col span={6}>
+                  <div className="text-center">
+                    <div className="text-lg font-semibold text-blue-600">
+                      {selectedServer.cpu.toFixed(1)}%
+                    </div>
+                    <div className="text-gray-600">CPU使用率</div>
+                    <Progress
+                      percent={selectedServer.cpu}
+                      size="small"
+                      strokeColor={
+                        selectedServer.cpu > 80 ? '#f5222d' : '#1890ff'
+                      }
+                    />
+                  </div>
+                </Col>
+                <Col span={6}>
+                  <div className="text-center">
+                    <div className="text-lg font-semibold text-green-600">
+                      {selectedServer.memory.toFixed(1)}%
+                    </div>
+                    <div className="text-gray-600">内存使用率</div>
+                    <Progress
+                      percent={selectedServer.memory}
+                      size="small"
+                      strokeColor={
+                        selectedServer.memory > 80 ? '#f5222d' : '#52c41a'
+                      }
+                    />
+                  </div>
+                </Col>
+                <Col span={6}>
+                  <div className="text-center">
+                    <div className="text-lg font-semibold text-orange-600">
+                      {selectedServer.disk.toFixed(1)}%
+                    </div>
+                    <div className="text-gray-600">磁盘使用率</div>
+                    <Progress
+                      percent={selectedServer.disk}
+                      size="small"
+                      strokeColor={
+                        selectedServer.disk > 80 ? '#f5222d' : '#faad14'
+                      }
+                    />
+                  </div>
+                </Col>
+                <Col span={6}>
+                  <div className="text-center">
+                    <div
+                      className="text-lg font-semibold"
+                      style={{
+                        color: getBandwidthColor(selectedServer.bandwidth),
+                      }}
+                    >
+                      {selectedServer.bandwidth.toFixed(1)} Mbps
+                    </div>
+                    <div className="text-gray-600">网络带宽</div>
+                    <div className="mt-1 text-xs text-gray-500">
+                      磁盘IO: {selectedServer.diskIO.toFixed(1)} MB/s
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Card>
           </div>
         )}
       </Modal>

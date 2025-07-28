@@ -29,6 +29,8 @@ interface RepositoryData {
   repository: string;
   repositoryUrl: string;
   platform: 'GitHub' | 'Gitee' | 'GitCode';
+  category: string; // 分类：如关系型数据库、深度学习框架、前端框架等
+  organization: string; // 组织归属：如腾讯、阿里、开放原子等
   status: 'success' | 'queued';
   lastUpdate: string;
   lastUpdateCategory:
@@ -51,6 +53,8 @@ const RepositoryTab: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [updateTimeFilter, setUpdateTimeFilter] = useState<string>('all');
   const [platformFilter, setPlatformFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [organizationFilter, setOrganizationFilter] = useState<string>('all');
   const [batchModalVisible, setBatchModalVisible] = useState(false);
   const [batchTimeCategory, setBatchTimeCategory] = useState<string>('');
   const [batchQueueType, setBatchQueueType] = useState<'normal' | 'priority'>(
@@ -87,6 +91,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'React',
       repositoryUrl: 'https://github.com/example/react',
       platform: 'GitHub',
+      category: '前端框架',
+      organization: 'Meta',
       status: 'success',
       lastUpdate: '2024/1/15 10:30:00',
       lastUpdateCategory: '1个月内',
@@ -104,6 +110,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'Vue.js',
       repositoryUrl: 'https://gitee.com/example/vue-js',
       platform: 'Gitee',
+      category: '前端框架',
+      organization: '开放原子',
       status: 'queued',
       lastUpdate: '2023/11/20 14:20:00',
       lastUpdateCategory: '超过1个月',
@@ -121,6 +129,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'Angular',
       repositoryUrl: 'https://gitcode.net/example/angular',
       platform: 'GitCode',
+      category: '前端框架',
+      organization: 'Google',
       status: 'success',
       lastUpdate: '2023/10/10 09:15:00',
       lastUpdateCategory: '超过3个月',
@@ -138,6 +148,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'TensorFlow',
       repositoryUrl: 'https://github.com/example/tensorflow',
       platform: 'GitHub',
+      category: '深度学习框架',
+      organization: 'Google',
       status: 'success',
       lastUpdate: '2023/8/5 16:45:00',
       lastUpdateCategory: '超过半年',
@@ -155,6 +167,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'PyTorch',
       repositoryUrl: 'https://gitee.com/example/pytorch',
       platform: 'Gitee',
+      category: '深度学习框架',
+      organization: 'Meta',
       status: 'success',
       lastUpdate: '2023/2/12 11:30:00',
       lastUpdateCategory: '超过1年',
@@ -172,6 +186,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'PostgreSQL',
       repositoryUrl: 'https://gitcode.net/example/postgresql',
       platform: 'GitCode',
+      category: '关系型数据库',
+      organization: 'PostgreSQL Global Development Group',
       status: 'queued',
       lastUpdate: '2024/1/8 13:20:00',
       lastUpdateCategory: '1个月内',
@@ -189,6 +205,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'MySQL',
       repositoryUrl: 'https://github.com/example/mysql',
       platform: 'GitHub',
+      category: '关系型数据库',
+      organization: 'Oracle',
       status: 'success',
       lastUpdate: '2023/12/1 08:45:00',
       lastUpdateCategory: '超过1个月',
@@ -206,6 +224,8 @@ const RepositoryTab: React.FC = () => {
       repository: 'Docker',
       repositoryUrl: 'https://gitee.com/example/docker',
       platform: 'Gitee',
+      category: '容器技术',
+      organization: 'Docker Inc',
       status: 'success',
       lastUpdate: '2023/9/15 15:10:00',
       lastUpdateCategory: '超过3个月',
@@ -216,6 +236,82 @@ const RepositoryTab: React.FC = () => {
         community: 89,
         activity: 86,
         organization: 88,
+      },
+    },
+    {
+      key: '9',
+      repository: 'Kubernetes',
+      repositoryUrl: 'https://github.com/example/kubernetes',
+      platform: 'GitHub',
+      category: '容器编排',
+      organization: 'CNCF',
+      status: 'success',
+      lastUpdate: '2024/1/20 09:15:00',
+      lastUpdateCategory: '1个月内',
+      submitter: '陈十一',
+      modelScore: {
+        total: 94,
+        collaboration: 96,
+        community: 92,
+        activity: 95,
+        organization: 93,
+      },
+    },
+    {
+      key: '10',
+      repository: 'Spring Boot',
+      repositoryUrl: 'https://github.com/example/spring-boot',
+      platform: 'GitHub',
+      category: 'Java框架',
+      organization: 'VMware',
+      status: 'success',
+      lastUpdate: '2024/1/18 14:30:00',
+      lastUpdateCategory: '1个月内',
+      submitter: '李十二',
+      modelScore: {
+        total: 88,
+        collaboration: 90,
+        community: 86,
+        activity: 89,
+        organization: 87,
+      },
+    },
+    {
+      key: '11',
+      repository: 'Redis',
+      repositoryUrl: 'https://github.com/example/redis',
+      platform: 'GitHub',
+      category: 'NoSQL数据库',
+      organization: 'Redis Ltd',
+      status: 'success',
+      lastUpdate: '2024/1/12 16:45:00',
+      lastUpdateCategory: '1个月内',
+      submitter: '王十三',
+      modelScore: {
+        total: 86,
+        collaboration: 84,
+        community: 88,
+        activity: 87,
+        organization: 85,
+      },
+    },
+    {
+      key: '12',
+      repository: 'Ant Design',
+      repositoryUrl: 'https://github.com/example/ant-design',
+      platform: 'GitHub',
+      category: 'UI组件库',
+      organization: '阿里巴巴',
+      status: 'success',
+      lastUpdate: '2024/1/10 11:20:00',
+      lastUpdateCategory: '1个月内',
+      submitter: '张十四',
+      modelScore: {
+        total: 83,
+        collaboration: 85,
+        community: 81,
+        activity: 84,
+        organization: 82,
       },
     },
   ];
@@ -508,6 +604,63 @@ const RepositoryTab: React.FC = () => {
     {
       title: (
         <div className="flex items-center gap-2">
+          <span>分类</span>
+          <Select
+            size="small"
+            value={categoryFilter}
+            onChange={setCategoryFilter}
+            style={{ width: 120 }}
+            placeholder="筛选分类"
+          >
+            <Option value="all">全部</Option>
+            <Option value="关系型数据库">关系型数据库</Option>
+            <Option value="深度学习框架">深度学习框架</Option>
+            <Option value="前端框架">前端框架</Option>
+            <Option value="容器编排">容器编排</Option>
+            <Option value="Java框架">Java框架</Option>
+            <Option value="NoSQL数据库">NoSQL数据库</Option>
+            <Option value="UI组件库">UI组件库</Option>
+          </Select>
+        </div>
+      ),
+      dataIndex: 'category',
+      key: 'category',
+      width: '15%',
+      render: (category: string) => {
+        return <span>{category}</span>;
+      },
+    },
+    {
+      title: (
+        <div className="flex items-center gap-2">
+          <span>组织归属</span>
+          <Select
+            size="small"
+            value={organizationFilter}
+            onChange={setOrganizationFilter}
+            style={{ width: 120 }}
+            placeholder="筛选组织"
+          >
+            <Option value="all">全部</Option>
+            <Option value="腾讯">腾讯</Option>
+            <Option value="阿里巴巴">阿里巴巴</Option>
+            <Option value="开放原子">开放原子</Option>
+            <Option value="CNCF">CNCF</Option>
+            <Option value="VMware">VMware</Option>
+            <Option value="Redis Ltd">Redis Ltd</Option>
+          </Select>
+        </div>
+      ),
+      dataIndex: 'organization',
+      key: 'organization',
+      width: '12%',
+      render: (organization: string) => {
+        return <span>{organization}</span>;
+      },
+    },
+    {
+      title: (
+        <div className="flex items-center gap-2">
           <span>上次更新时间</span>
           <Select
             size="small"
@@ -582,9 +735,8 @@ const RepositoryTab: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      width: '18%',
       render: () => (
-        <div className="flex cursor-pointer gap-2 text-[#3e8eff]">
+        <div className="flex cursor-pointer gap-2 whitespace-nowrap text-[#3e8eff]">
           <a>加入队列</a>
           <a>加入优先队列</a>
           <a>删除</a>
@@ -604,8 +756,18 @@ const RepositoryTab: React.FC = () => {
       item.lastUpdateCategory === updateTimeFilter;
     const matchesPlatformFilter =
       platformFilter === 'all' || item.platform === platformFilter;
+    const matchesCategoryFilter =
+      categoryFilter === 'all' || item.category === categoryFilter;
+    const matchesOrganizationFilter =
+      organizationFilter === 'all' || item.organization === organizationFilter;
 
-    return matchesSearch && matchesTimeFilter && matchesPlatformFilter;
+    return (
+      matchesSearch &&
+      matchesTimeFilter &&
+      matchesPlatformFilter &&
+      matchesCategoryFilter &&
+      matchesOrganizationFilter
+    );
   });
 
   return (
