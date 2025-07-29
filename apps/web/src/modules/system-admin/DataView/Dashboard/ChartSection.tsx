@@ -113,10 +113,10 @@ const ChartSection: React.FC = () => {
     return {
       xAxisData: dates,
       seriesData: [
-        data.stay_rate.map((item) => item.value),
+        data.stay_rate.map((item) => item.value * 100), // 将小数转换为百分数
         // data.transfer_rate.map((item) => item.value),
       ],
-      seriesNames: ['用户留存率（%）'],
+      seriesNames: ['用户留存率'],
       title: '',
     };
   };
@@ -321,6 +321,14 @@ const ChartSection: React.FC = () => {
               backgroundColor: '#6a7985',
             },
           },
+          // 为留存率图表添加百分数格式化
+          formatter:
+            activeTab === 'retention'
+              ? (params: any) => {
+                  const param = Array.isArray(params) ? params[0] : params;
+                  return `${param.axisValue}<br/>${param.seriesName}: ${param.value}%`;
+                }
+              : undefined,
         },
         xAxis: {
           type: 'category',
@@ -347,6 +355,8 @@ const ChartSection: React.FC = () => {
           },
           axisLabel: {
             color: '#6b7280',
+            // 为留存率图表添加百分数格式化
+            formatter: activeTab === 'retention' ? '{value}%' : '{value}',
           },
           splitLine: {
             lineStyle: {

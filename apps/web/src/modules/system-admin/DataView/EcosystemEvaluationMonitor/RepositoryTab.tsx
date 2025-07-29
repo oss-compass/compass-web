@@ -827,6 +827,7 @@ const RepositoryTab: React.FC = () => {
               allowClear
             />
             <Space>
+              <Button onClick={() => {}}>设置自动更新周期</Button>
               <Button onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
               </Button>
