@@ -23,7 +23,7 @@ const Main = () => {
   return (
     <div className="flex flex-1 bg-[#f2f2f2]">
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col bg-white drop-shadow-sm md:p-0 lg:h-[calc(100vh-138px)]">
-        <div className="oh-tabs relative my-3 h-full overflow-auto">
+        <div className="oh-tabs relative my-3 h-full">
           <Tabs
             onChange={(activeKey) => {
               window.location.hash = '#graduateTable' + '?tab=' + activeKey;

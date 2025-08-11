@@ -41,7 +41,7 @@ const ReportTable = () => {
   const { columns } = useTableColumns(refetch);
   return (
     <>
-      <div className="h-[calc(100vh-240px)] p-4">
+      <div className="h-[calc(100vh-250px)] px-3">
         <MyTable
           columns={columns}
           dataSource={tableData}
