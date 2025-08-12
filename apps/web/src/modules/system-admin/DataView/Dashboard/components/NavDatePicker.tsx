@@ -73,7 +73,7 @@ const DateTagPanel = ({
         </div>
       </div>
       <div
-        className={classnames('h-10 bg-[#F7F7F7] px-4', {
+        className={classnames('h-10 bg-[#F7F7F7] px-4 py-2', {
           hidden: !showRangePicker,
         })}
       >
