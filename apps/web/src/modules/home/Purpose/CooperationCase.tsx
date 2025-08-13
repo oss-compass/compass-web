@@ -87,6 +87,7 @@ const CooperationCase = ({ caseList }) => {
                 </div>
               </Popover>
             )}
+            {activeCase.experience && activeCase.experience}
           </div>
           <div className="ml-8 flex h-[280px] flex-1 items-center">
             {activeCase.content}

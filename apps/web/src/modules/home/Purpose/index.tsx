@@ -8,10 +8,12 @@ import { GrClose } from 'react-icons/gr';
 import { useTranslation } from 'next-i18next';
 import CooperationCase from './CooperationCase';
 import LinkX from '@common/components/LinkX';
+import Experience from './Experience';
 
 const Purpose = () => {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [experienceOpen, setExperienceOpen] = useState(false);
   const [active, setActive] = useState('dataDecision');
 
   const items = [
@@ -52,6 +54,32 @@ const Purpose = () => {
       icon: <Svg3 className="h-full w-full object-contain" />,
       case: [
         {
+          name: 'oss_selection',
+          url: '/images/academe/logo-nju@2x.png',
+          title: t('academe:oss_selection_title'),
+          desc: (
+            <ul className="h-full w-full">
+              <li className="ml-4 mb-2 list-disc">
+                {t('academe:oss_selection_author')}
+              </li>
+              <li className="ml-4 mb-2 list-disc">
+                {t('academe:oss_selection_author2')}
+              </li>
+              <li className="ml-4 list-disc">
+                {t('academe:oss_selection_desc')}
+              </li>
+            </ul>
+          ),
+          content: (
+            <img
+              className="h-full w-full"
+              alt="png"
+              src={'/images/academe/case/os-select.png'}
+            />
+          ),
+          experienceUrl: '/os-selection',
+        },
+        {
           name: 'nju',
           url: '/images/academe/logo-nju@2x.png',
           title: t('academe:nju_title'),
@@ -90,6 +118,9 @@ const Purpose = () => {
                 src={'/images/academe/case/nju.png'}
               />
             ),
+          experience: (
+            <Experience open={experienceOpen} setOpen={setExperienceOpen} />
+          ),
         },
         {
           name: 'pku1',
