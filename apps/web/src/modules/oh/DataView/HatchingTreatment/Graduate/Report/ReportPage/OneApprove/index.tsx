@@ -17,12 +17,14 @@ const Approve = () => {
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentCommunityCollaborationWgPermission,
   } = useGetReportData();
   const hasRole =
     commentCommitterPermission ||
     commentSigLeadPermission ||
     commentCompliancePermission ||
-    commentLegalPermission;
+    commentLegalPermission ||
+    commentCommunityCollaborationWgPermission;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

@@ -1193,6 +1193,7 @@ query tpcSoftwareGraduationReport($shortCode: String!) {
     clarificationSigLeadPermission
     clarificationCompliancePermission
     clarificationLegalPermission
+    clarificationCommunityCollaborationWgPermission
   }
 }
 query tpcSoftwareGraduationPage(
@@ -1278,6 +1279,7 @@ query tpcSoftwareGraduation($graduationId: Int!) {
     commentCount
     commentSigLeadPermission
     commentQaPermission
+    commentCommunityCollaborationWgPermission
     commentState {
       createdAt
       id

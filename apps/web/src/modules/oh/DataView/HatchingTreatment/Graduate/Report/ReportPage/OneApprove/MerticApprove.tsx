@@ -21,21 +21,27 @@ const MetricApprove = () => {
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentCommunityCollaborationWgPermission,
   } = useGetReportData();
   const metricList = useMemo(() => {
     if (!metricItemScoreList?.length) {
       return [];
     }
-    console.log(
-      commentCommitterPermission,
-      commentSigLeadPermission,
-      commentCompliancePermission,
-      commentLegalPermission
-    );
     // 过滤出合法合规的列表
     let legalList = metricItemScoreList?.filter((m) => {
       return (
         m.维度 == '合法合规' &&
+        m.score !== 10 &&
+        m.score !== null &&
+        m.score !== -1 &&
+        m.score !== -2
+      );
+    });
+    // 过滤出回合上游的列表
+    let roundList = metricItemScoreList?.filter((m) => {
+      console.log(m);
+      return (
+        m.指标名称 == '回合上游' &&
         m.score !== 10 &&
         m.score !== null &&
         m.score !== -1 &&
@@ -62,12 +68,19 @@ const MetricApprove = () => {
     if (commentCommitterPermission || commentSigLeadPermission) {
       res.push(...otherList);
     }
+    if (commentCommunityCollaborationWgPermission) {
+      if (res.find((item) => item.指标名称 == '回合上游')) {
+      } else {
+        res.push(...roundList);
+      }
+    }
     return res;
   }, [
     commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentCommunityCollaborationWgPermission,
     metricItemScoreList,
   ]);
   const genExtra = (metric) => {

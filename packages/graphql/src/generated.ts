@@ -48,7 +48,7 @@ export type AcceptTpcSoftwareGraduationInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
   graduationId: Scalars['Int'];
-  /** committer: 0, sig lead: 1, legal: 2, compliance: 3, QA: 4 */
+  /** committer: 0, sig lead: 1, legal: 2, compliance: 3, QA: 4,community collaboration wg: 5 */
   memberType?: Scalars['Int'];
   /** reject: -1, cancel: 0, accept: 1 */
   state?: Scalars['Int'];
@@ -4278,6 +4278,8 @@ export type TpcSoftwareGraduation = {
   /** 1: permissioned, 0: unpermissioned */
   commentCommitterPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
+  commentCommunityCollaborationWgPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
   commentCompliancePermission?: Maybe<Scalars['Int']>;
   commentCount?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
@@ -4834,6 +4836,8 @@ export type TpcSoftwareReportMetricClarificationPermission = {
   __typename?: 'TpcSoftwareReportMetricClarificationPermission';
   /** 1: permissioned, 0: unpermissioned */
   clarificationCommitterPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  clarificationCommunityCollaborationWgPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
   clarificationCompliancePermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
@@ -9686,6 +9690,7 @@ export type TpcSoftwareGraduationReportQuery = {
     clarificationSigLeadPermission?: number | null;
     clarificationCompliancePermission?: number | null;
     clarificationLegalPermission?: number | null;
+    clarificationCommunityCollaborationWgPermission?: number | null;
   } | null;
 };
 
@@ -9755,6 +9760,7 @@ export type TpcSoftwareGraduationQuery = {
     commentCount?: number | null;
     commentSigLeadPermission?: number | null;
     commentQaPermission?: number | null;
+    commentCommunityCollaborationWgPermission?: number | null;
     demandSource?: string | null;
     incubationTime?: string | null;
     committers?: Array<string> | null;
@@ -17311,6 +17317,7 @@ export const TpcSoftwareGraduationReportDocument = /*#__PURE__*/ `
     clarificationSigLeadPermission
     clarificationCompliancePermission
     clarificationLegalPermission
+    clarificationCommunityCollaborationWgPermission
   }
 }
     ${TpcSoftwareGraduationReportMetricFragmentDoc}
@@ -17430,6 +17437,7 @@ export const TpcSoftwareGraduationDocument = /*#__PURE__*/ `
     commentCount
     commentSigLeadPermission
     commentQaPermission
+    commentCommunityCollaborationWgPermission
     commentState {
       createdAt
       id

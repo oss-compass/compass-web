@@ -164,4 +164,5 @@ export const MEMBER_MAP = {
   '2': '法务专家',
   '3': '合规专家',
   '4': 'QA确认',
+  '5': 'Community Collaboration Wg',
 };

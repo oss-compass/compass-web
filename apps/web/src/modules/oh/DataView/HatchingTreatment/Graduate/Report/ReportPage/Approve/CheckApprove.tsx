@@ -29,6 +29,7 @@ const CheckApprove = ({ selectionId }) => {
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentCommunityCollaborationWgPermission,
     commentState,
   } = useGetReportData();
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
@@ -124,6 +125,42 @@ const CheckApprove = ({ selectionId }) => {
     return [];
   }, [metricItemScoreList, metricClarificationState, userId]);
 
+  const canCommunityWgApprove = useMemo(() => {
+    const checkClarification = (clarificationState, dimension) => {
+      if (!clarificationState) {
+        return true;
+      }
+      //查找当前用户是否通过澄清
+      let userState = clarificationState.filter(
+        (s) => s.userId === userId && s.state === 1
+      );
+      if (userState.length > 0) {
+        return false;
+      }
+      return true;
+    };
+    if (metricItemScoreList?.length > 0) {
+      let notMetricList = [];
+      let clarificationList = metricItemScoreList.filter((m) => {
+        return (
+          m.指标名称 === '回合上游' &&
+          m.score !== 10 &&
+          m.score !== null &&
+          m.score !== -1 &&
+          m.score !== -2
+        );
+      });
+      clarificationList.forEach((metric) => {
+        let clarificationState = metricClarificationState?.[metric.key];
+        if (checkClarification(clarificationState, metric.维度)) {
+          notMetricList.push(metric.指标名称);
+        }
+      });
+      return notMetricList;
+    }
+    return [];
+  }, [metricItemScoreList, metricClarificationState, userId]);
+
   const mutation = useAcceptTpcSoftwareGraduationMutation(gqlClient);
   const handleApprove = (memberType, state) => {
     mutation.mutate(
@@ -188,6 +225,19 @@ const CheckApprove = ({ selectionId }) => {
           },
         ];
       }
+    } else if (
+      commentCommunityCollaborationWgPermission &&
+      canCommunityWgApprove.length > 0
+    ) {
+      //审批回合
+      return [
+        {
+          key: '0',
+          label: `目标选型软件报告中存在指标风险澄清未闭环：${canCommunityWgApprove.join(
+            '、'
+          )}`,
+        },
+      ];
     }
     return getApprovalOptions();
   };
@@ -196,7 +246,8 @@ const CheckApprove = ({ selectionId }) => {
       commentCommitterPermission ||
       commentSigLeadPermission ||
       commentCompliancePermission ||
-      commentLegalPermission
+      commentLegalPermission ||
+      commentCommunityCollaborationWgPermission
     );
   };
 
@@ -206,6 +257,7 @@ const CheckApprove = ({ selectionId }) => {
     const committerState = isUserStateValid(0);
     const legalState = isUserStateValid(2);
     const complianceState = isUserStateValid(3);
+    const cmmunityWgState = isUserStateValid(5);
 
     if (commentSigLeadPermission) {
       res.push(createApprovalOption(1, leaderState, '以 TPC Leader 通过'));
@@ -219,7 +271,15 @@ const CheckApprove = ({ selectionId }) => {
     if (commentCompliancePermission) {
       res.push(createApprovalOption(3, complianceState, '以合规专家通过'));
     }
-
+    if (commentCommunityCollaborationWgPermission) {
+      res.push(
+        createApprovalOption(
+          5,
+          cmmunityWgState,
+          '以 Community Collaboration Wg 通过'
+        )
+      );
+    }
     return res;
   };
 
@@ -270,6 +330,7 @@ const CheckApprove = ({ selectionId }) => {
     const committerState = isUserStateState(-1, 0);
     const legalState = isUserStateState(-1, 2);
     const complianceState = isUserStateState(-1, 3);
+    const cmmunityWgState = isUserStateState(-1, 5);
 
     if (commentSigLeadPermission) {
       res.push(createRejectionOption(1, leaderState, '以 TPC Leader 驳回'));
@@ -283,7 +344,15 @@ const CheckApprove = ({ selectionId }) => {
     if (commentCompliancePermission) {
       res.push(createRejectionOption(3, complianceState, '以合规专家驳回'));
     }
-
+    if (commentCommunityCollaborationWgPermission) {
+      res.push(
+        createRejectionOption(
+          5,
+          cmmunityWgState,
+          '以 Community Collaboration Wg 驳回'
+        )
+      );
+    }
     return res;
   };
 
