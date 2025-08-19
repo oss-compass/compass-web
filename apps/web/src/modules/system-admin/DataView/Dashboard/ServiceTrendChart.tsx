@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Card, message } from 'antd';
 import * as echarts from 'echarts';
-import { useServiceVisitTrendData } from './hooks/useAdminApi';
+import { useServiceVisitTrendData } from '../../hooks';
 
 interface ServiceTrendChartProps {
   className?: string;

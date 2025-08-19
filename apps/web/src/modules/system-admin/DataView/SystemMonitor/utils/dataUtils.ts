@@ -1,4 +1,4 @@
-import { DateRangeType } from '../types';
+import type { DateRangeType } from '@common/components/DateRangePicker';
 
 // 生成趋势数据的函数
 export const generateTrendData = (

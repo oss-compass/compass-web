@@ -3,9 +3,14 @@ import { Card, Button, Space, Input, Tooltip } from 'antd';
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import MyTable from '@common/components/Table';
-import { DateProvider } from '../Dashboard/contexts/DateContext';
-import NavDatePicker from '../Dashboard/components/NavDatePicker';
-import { useUserListData } from '../Dashboard/hooks/useAdminApi';
+import {
+  DateProvider,
+  useDateContext,
+} from '../Dashboard/contexts/DateContext';
+import CommonDateRangePicker, {
+  DateRangeType,
+} from '@common/components/DateRangePicker';
+import { useUserListData } from '../../hooks';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { getHubUrl } from '@common/utils';
@@ -87,10 +92,50 @@ const getServiceBehaviorData = (clickStats: Record<string, any>) => {
 };
 
 const UserListContent: React.FC = () => {
+  const { dateState, updateDateRange } = useDateContext();
+  const { range } = dateState;
   const [searchKeywords, setSearchKeywords] = useState(''); // 实际搜索用的关键词
   const [inputValue, setInputValue] = useState(''); // 输入框的值
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+
+  // 获取当前选中的日期范围类型
+  const getCurrentDateRange = (): DateRangeType => {
+    if (typeof range === 'string' && range.includes(' ~ ')) {
+      return 'custom';
+    }
+    // 直接使用 range 作为 DateRangeType，如果不匹配则默认为 '1M'
+    const validRanges: DateRangeType[] = [
+      '1M',
+      '3M',
+      '6M',
+      '1Y',
+      '3Y',
+      '5Y',
+      'Since 2000',
+    ];
+    return validRanges.includes(range as DateRangeType)
+      ? (range as DateRangeType)
+      : '1M';
+  };
+
+  const handleDateRangeChange = (
+    dateRange: DateRangeType,
+    customDates?: { start: string; end: string }
+  ) => {
+    if (dateRange === 'custom' && customDates) {
+      // 处理自定义日期
+      const customRange = `${customDates.start} ~ ${customDates.end}`;
+      updateDateRange(
+        customRange,
+        new Date(customDates.start),
+        new Date(customDates.end)
+      );
+    } else {
+      // 处理预设日期范围，直接使用 dateRange
+      updateDateRange(dateRange);
+    }
+  };
 
   // 使用新的 API hook
   const { data, isLoading, error } = useUserListData(
@@ -262,7 +307,11 @@ const UserListContent: React.FC = () => {
         title="用户列表"
         extra={
           <div className="flex items-center space-x-4">
-            <NavDatePicker />
+            <CommonDateRangePicker
+              value={getCurrentDateRange()}
+              onChange={handleDateRangeChange}
+              showCustom={true}
+            />
           </div>
         }
       >

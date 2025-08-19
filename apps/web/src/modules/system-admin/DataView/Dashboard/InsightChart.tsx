@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Card, message } from 'antd';
 import * as echarts from 'echarts';
-import { useOsSituationVisitData } from './hooks/useAdminApi';
+import { useOsSituationVisitData } from '../../hooks';
 
 interface InsightChartProps {
   className?: string;

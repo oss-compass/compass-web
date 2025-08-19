@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Card, message } from 'antd';
 import * as echarts from 'echarts';
-import { useServiceVisitData } from './hooks/useAdminApi';
+import { useServiceVisitData } from '../../hooks';
 
 interface ServiceClickChartProps {
   className?: string;

@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Card, Table, message, Tabs } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import * as echarts from 'echarts';
-import { useUserRegionData } from './hooks/useAdminApi';
+import { useUserRegionData } from '../../hooks';
 import worldZh from '@public/geoData/worldZH.json';
 
 interface RegionData {

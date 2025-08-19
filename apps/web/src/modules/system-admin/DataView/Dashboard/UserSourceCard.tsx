@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Card, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useUserReferrerData } from './hooks/useAdminApi';
+import { useUserReferrerData } from '../../hooks';
 
 interface UserSourceData {
   key: string;

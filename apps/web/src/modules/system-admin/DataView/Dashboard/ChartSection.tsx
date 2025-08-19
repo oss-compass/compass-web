@@ -1,11 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Card, message, Skeleton } from 'antd';
 import * as echarts from 'echarts';
-import {
-  useVisitData,
-  useUserData,
-  useDurationData,
-} from './hooks/useAdminApi';
+import { useVisitData, useUserData, useDurationData } from '../../hooks';
 import { symbol } from 'joi';
 
 // 类型定义

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Card, message } from 'antd';
 import * as echarts from 'echarts';
-import { useOssSelectionClickData } from './hooks/useAdminApi';
+import { useOssSelectionClickData } from '../../hooks';
 
 interface EvaluationChartProps {
   className?: string;

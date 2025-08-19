@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Tabs, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useCollectionSearchRankData } from './hooks/useAdminApi';
+import { useCollectionSearchRankData } from '../../hooks';
 
 interface HotSearchData {
   key: string;

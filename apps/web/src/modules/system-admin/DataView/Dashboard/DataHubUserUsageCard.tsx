@@ -27,7 +27,7 @@ import {
   useDatasetList,
   DataHubRestApiTableItem,
   DataHubArchiveDownloadTableItem,
-} from './hooks/useAdminApi';
+} from '../../hooks';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { getLocalizedText } from '@modules/dataHub/utils';

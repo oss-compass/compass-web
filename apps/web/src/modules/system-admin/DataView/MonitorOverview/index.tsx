@@ -8,9 +8,11 @@ import {
   List,
   Avatar,
   Tabs,
-  DatePicker,
   Space,
 } from 'antd';
+import CommonDateRangePicker, {
+  DateRangeType,
+} from '@common/components/DateRangePicker';
 import {
   DollarOutlined,
   EyeOutlined,
@@ -26,11 +28,19 @@ import Service from '../Dashboard/Service';
 
 const MonitorOverview: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
-    dayjs('2023-01-01'),
-    dayjs('2023-12-31'),
-  ]);
+  const [dateRange, setDateRange] = useState<DateRangeType>('1y');
   const [timeFilter, setTimeFilter] = useState<'month' | 'year'>('year');
+
+  const handleDateRangeChange = (
+    range: DateRangeType,
+    customDates?: { start: string; end: string }
+  ) => {
+    setDateRange(range);
+    // 如果是自定义日期，可以在这里处理customDates
+    if (range === 'custom' && customDates) {
+      console.log('Custom date range:', customDates);
+    }
+  };
   const chartData = [
     { month: '1月', value: 65 },
     { month: '2月', value: 45 },
@@ -293,14 +303,9 @@ const MonitorOverview: React.FC = () => {
                       本年
                     </span>
                   </Space>
-                  <DatePicker.RangePicker
+                  <CommonDateRangePicker
                     value={dateRange}
-                    onChange={(dates) => {
-                      if (dates) {
-                        setDateRange([dates[0]!, dates[1]!]);
-                      }
-                    }}
-                    format="YYYY-MM-DD"
+                    onChange={handleDateRangeChange}
                     size="small"
                     className="text-sm"
                   />

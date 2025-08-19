@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Card, Row, Col, Statistic, Tabs, Tag } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Tabs, Spin, Alert } from 'antd';
 import {
   DatabaseOutlined,
   CloudServerOutlined,
@@ -8,25 +8,63 @@ import {
 } from '@ant-design/icons';
 
 // 导入类型定义
-import { ServerData } from './types';
+import { ServerData, MirrorSourceData } from './types';
 
 // 导入子组件
 import ServerTable from './components/ServerTable';
 import ServerDetailModal from './components/ServerDetailModal';
 import ServerConfigModal from './components/ServerConfigModal';
 
-// 导入模拟数据
-import { mockMirrorSources } from './data/mockData';
+// 导入API调用hook
+import { useServerList } from '../../hooks';
+
+// 导入数据转换工具
+import { transformApiServerData } from './utils/dataTransform';
 
 const SystemMonitor: React.FC = () => {
   const [activeTab, setActiveTab] = useState('gitee');
   const [modalVisible, setModalVisible] = useState(false);
   const [configModalVisible, setConfigModalVisible] = useState(false);
   const [selectedServer, setSelectedServer] = useState<ServerData | null>(null);
-  // 获取当前选中的镜像源数据
-  const currentSource =
-    mockMirrorSources.find((source) => source.key === activeTab) ||
-    mockMirrorSources[0];
+
+  // 固定的三个机构tab
+  const fixedTabs = [
+    { key: 'gitee', name: '开源中国', belongTo: '开源中国' },
+    { key: 'cas', name: '中科院', belongTo: '中科院' },
+    { key: 'pku', name: '北大', belongTo: '北大' },
+  ];
+
+  // 根据当前选中的tab获取对应机构的数据
+  const getCurrentBelongTo = () => {
+    switch (activeTab) {
+      case 'gitee':
+        return '开源中国';
+      case 'cas':
+        return '中科院';
+      case 'pku':
+        return '北大';
+      default:
+        return '开源中国';
+    }
+  };
+
+  // 只获取当前选中tab的数据
+  const {
+    data: currentData,
+    isLoading: currentLoading,
+    error: currentError,
+  } = useServerList(getCurrentBelongTo());
+
+  // 转换当前tab的服务器数据
+  const currentServers = currentData
+    ? currentData.map(transformApiServerData)
+    : [];
+
+  // 计算在线服务器数量
+  const onlineServers = currentServers.filter(
+    (server) => server.status === 'online'
+  ).length;
+  const totalServers = currentServers.length;
 
   // 弹窗处理函数
   const handleShowModal = (server: ServerData) => {
@@ -50,90 +88,54 @@ const SystemMonitor: React.FC = () => {
     setSelectedServer(null);
   };
 
-  // 创建标签页项目
-  const tabItems = mockMirrorSources.map((source) => ({
-    key: source.key,
+  // 创建固定的标签页项目
+  const tabItems = fixedTabs.map((tab) => ({
+    key: tab.key,
     label: (
       <div className="flex items-center gap-2">
-        <span>{source.name}</span>
-        <Tag
-          color={
-            source.onlineServers === source.totalServers ? 'green' : 'orange'
-          }
-        >
-          {source.onlineServers}/{source.totalServers}
-        </Tag>
+        <span>{tab.name}</span>
       </div>
     ),
     children: (
       <div>
         {/* 服务器详细信息 */}
-        <Card title={`${source.name} 计算节点详情`}>
-          <ServerTable
-            servers={source.servers}
-            onShowModal={handleShowModal}
-            onShowConfigModal={handleShowConfigModal}
-          />
+        <Card title={`${tab.name} 节点详情`}>
+          {currentLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Spin size="large" tip="正在加载服务器数据..." />
+            </div>
+          ) : currentError ? (
+            <Alert
+              message="数据加载失败"
+              description={`无法获取服务器列表数据: ${currentError.message}`}
+              type="error"
+              showIcon
+            />
+          ) : currentServers.length === 0 ? (
+            <Alert
+              message="暂无数据"
+              description="当前没有可用的服务器数据"
+              type="info"
+              showIcon
+            />
+          ) : (
+            <ServerTable
+              servers={currentServers}
+              onShowModal={handleShowModal}
+              onShowConfigModal={handleShowConfigModal}
+            />
+          )}
         </Card>
       </div>
     ),
   }));
 
+  // 获取当前选中tab的名称
+  const currentTabName =
+    fixedTabs.find((tab) => tab.key === activeTab)?.name || '开源中国';
+
   return (
     <div className="p-6">
-      {/* 概览统计 */}
-      <Row gutter={16} style={{ marginBottom: '24px' }}>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="总服务器数"
-              value={currentSource.totalServers}
-              prefix={<CloudServerOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="在线服务器"
-              value={currentSource.onlineServers}
-              prefix={<DatabaseOutlined />}
-              valueStyle={{ color: '#3f8600' }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="离线服务器"
-              value={currentSource.totalServers - currentSource.onlineServers}
-              prefix={<HddOutlined />}
-              valueStyle={{ color: '#cf1322' }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="在线率"
-              value={
-                (currentSource.onlineServers / currentSource.totalServers) * 100
-              }
-              precision={1}
-              suffix="%"
-              prefix={<WifiOutlined />}
-              valueStyle={{
-                color:
-                  currentSource.onlineServers === currentSource.totalServers
-                    ? '#3f8600'
-                    : '#faad14',
-              }}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {/* 标签页 */}
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}

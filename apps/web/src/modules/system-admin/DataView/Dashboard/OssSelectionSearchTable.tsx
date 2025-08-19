@@ -5,9 +5,9 @@ import MyTable from '@common/components/Table';
 import {
   useOssSelectionSearchData,
   OssSelectionSearchItem,
-} from './hooks/useAdminApi';
+  useDateParams,
+} from '../../hooks';
 import dayjs from 'dayjs';
-import useDateParams from './hooks/useDateParams';
 
 interface OssSelectionSearchTableProps {
   className?: string;

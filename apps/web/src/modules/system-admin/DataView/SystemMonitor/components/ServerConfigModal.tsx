@@ -1,11 +1,13 @@
 import React from 'react';
-import { Modal, Row, Col, Card, Tag, Progress } from 'antd';
-import { ServerData } from '../types';
+import { Modal, Card, Divider } from 'antd';
 import {
-  getRoleConfig,
-  getStatusConfig,
-  getBandwidthColor,
-} from '../utils/uiUtils';
+  DatabaseOutlined,
+  CloudServerOutlined,
+  HddOutlined,
+  WifiOutlined,
+  LaptopOutlined,
+} from '@ant-design/icons';
+import { ServerData } from '../types';
 
 interface ServerConfigModalProps {
   visible: boolean;
@@ -22,163 +24,91 @@ const ServerConfigModal: React.FC<ServerConfigModalProps> = ({
 
   return (
     <Modal
-      title={`${server.name} 配置信息`}
+      title={
+        <div className="flex items-center gap-2">
+          <DatabaseOutlined style={{ color: '#3b82f6', fontSize: '18px' }} />
+          <span className="text-lg font-semibold">{server.name} 硬件配置</span>
+        </div>
+      }
       open={visible}
       onCancel={onClose}
       footer={null}
-      width={800}
+      width={780}
       destroyOnClose
+      className="hardware-config-modal"
     >
-      {/* 服务器基本信息 */}
-      <Row gutter={16} style={{ marginBottom: '20px' }}>
-        <Col span={8}>
-          <Card size="small" title="基本信息">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">服务器名称:</span>
-                <span className="font-medium">{server.name}</span>
+      <div className="mb-0 p-6">
+        <div className="space-y-6">
+          {/* CPU配置 */}
+          <div className="flex items-center justify-between rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100 p-4">
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-blue-500 p-2">
+                <DatabaseOutlined
+                  style={{ color: 'white', fontSize: '18px' }}
+                />
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">服务器作用:</span>
-                <span>
-                  {(() => {
-                    const config = getRoleConfig(server.role);
-                    return (
-                      <Tag color={config.color} icon={config.icon}>
-                        {config.text}
-                      </Tag>
-                    );
-                  })()}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">部署位置:</span>
-                <span className="font-medium">{server.location}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">运行状态:</span>
-                <span>
-                  {(() => {
-                    const config = getStatusConfig(server.status);
-                    return (
-                      <Tag color={config.color} icon={config.icon}>
-                        {config.text}
-                      </Tag>
-                    );
-                  })()}
-                </span>
-              </div>
+              <span className="font-medium text-gray-700">CPU</span>
             </div>
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card size="small" title="硬件配置">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">CPU:</span>
-                <span className="ml-2 flex-1 text-right font-medium">
-                  {server.config.cpu}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">内存:</span>
-                <span className="font-medium">{server.config.memory}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">存储:</span>
-                <span className="ml-2 flex-1 text-right font-medium">
-                  {server.config.disk}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">网络:</span>
-                <span className="ml-2 flex-1 text-right font-medium">
-                  {server.config.network}
-                </span>
-              </div>
-            </div>
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card size="small" title="系统信息">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">操作系统:</span>
-                <span className="ml-2 flex-1 text-right font-medium">
-                  {server.config.os}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">架构:</span>
-                <span className="font-medium">
-                  {server.config.architecture}
-                </span>
-              </div>
-            </div>
-          </Card>
-        </Col>
-      </Row>
+            <span className="rounded-full bg-white px-3 py-1 font-semibold text-blue-700">
+              {server.config.cpu}
+            </span>
+          </div>
 
-      {/* 当前资源使用情况 */}
-      <Card title="当前资源使用情况" size="small">
-        <Row gutter={16}>
-          <Col span={6}>
-            <div className="text-center">
-              <div className="text-lg font-semibold text-blue-600">
-                {server.cpu.toFixed(1)}%
+          {/* 内存配置 */}
+          <div className="flex items-center justify-between rounded-lg border border-green-200 bg-gradient-to-r from-green-50 to-green-100 p-4">
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-green-500 p-2">
+                <CloudServerOutlined
+                  style={{ color: 'white', fontSize: '18px' }}
+                />
               </div>
-              <div className="text-gray-600">CPU使用率</div>
-              <Progress
-                percent={server.cpu}
-                size="small"
-                strokeColor={server.cpu > 80 ? '#f5222d' : '#1890ff'}
-              />
+              <span className="font-medium text-gray-700">内存</span>
             </div>
-          </Col>
-          <Col span={6}>
-            <div className="text-center">
-              <div className="text-lg font-semibold text-green-600">
-                {server.memory.toFixed(1)}%
+            <span className="rounded-full bg-white px-3 py-1 font-semibold text-green-700">
+              {server.config.memory}
+            </span>
+          </div>
+
+          {/* 存储配置 */}
+          <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-gradient-to-r from-purple-50 to-purple-100 p-4">
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-purple-500 p-2">
+                <HddOutlined style={{ color: 'white', fontSize: '18px' }} />
               </div>
-              <div className="text-gray-600">内存使用率</div>
-              <Progress
-                percent={server.memory}
-                size="small"
-                strokeColor={server.memory > 80 ? '#f5222d' : '#52c41a'}
-              />
+              <span className="font-medium text-gray-700">存储</span>
             </div>
-          </Col>
-          <Col span={6}>
-            <div className="text-center">
-              <div className="text-lg font-semibold text-orange-600">
-                {server.disk.toFixed(1)}%
+            <span className="rounded-full bg-white px-3 py-1 font-semibold text-purple-700">
+              {server.config.disk}
+            </span>
+          </div>
+
+          {/* 网络配置 */}
+          <div className="flex items-center justify-between rounded-lg border border-orange-200 bg-gradient-to-r from-orange-50 to-orange-100 p-4">
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-orange-500 p-2">
+                <WifiOutlined style={{ color: 'white', fontSize: '18px' }} />
               </div>
-              <div className="text-gray-600">磁盘使用率</div>
-              <Progress
-                percent={server.disk}
-                size="small"
-                strokeColor={server.disk > 80 ? '#f5222d' : '#faad14'}
-              />
+              <span className="font-medium text-gray-700">网络</span>
             </div>
-          </Col>
-          <Col span={6}>
-            <div className="text-center">
-              <div
-                className="text-lg font-semibold"
-                style={{
-                  color: getBandwidthColor(server.bandwidth),
-                }}
-              >
-                {server.bandwidth.toFixed(1)} Mbps
+            <span className="rounded-full bg-white px-3 py-1 font-semibold text-orange-700">
+              {server.config.network}
+            </span>
+          </div>
+
+          {/* 操作系统配置 */}
+          <div className="flex items-center justify-between rounded-lg border border-indigo-200 bg-gradient-to-r from-indigo-50 to-indigo-100 p-4">
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-indigo-500 p-2">
+                <LaptopOutlined style={{ color: 'white', fontSize: '18px' }} />
               </div>
-              <div className="text-gray-600">网络带宽</div>
-              <div className="mt-1 text-xs text-gray-500">
-                磁盘IO: {server.diskIO.toFixed(1)} MB/s
-              </div>
+              <span className="font-medium text-gray-700">操作系统</span>
             </div>
-          </Col>
-        </Row>
-      </Card>
+            <span className="rounded-full bg-white px-3 py-1 font-semibold text-indigo-700">
+              {server.config.system_info} ({server.config.architecture})
+            </span>
+          </div>
+        </div>
+      </div>
     </Modal>
   );
 };

@@ -2,11 +2,15 @@ import React from 'react';
 import { Table, Button, Progress, Tag } from 'antd';
 import { EyeOutlined, CloudServerOutlined } from '@ant-design/icons';
 import { ServerData } from '../types';
-import {
-  getRoleConfig,
-  getStatusConfig,
-  getBandwidthColor,
-} from '../utils/uiUtils';
+import { getStatusConfig, getBandwidthColor } from '../utils/uiUtils';
+
+// 修复Progress组件样式
+const progressStyle = {
+  '.ant-progress-line': {
+    padding: '4px 0 !important',
+    margin: '2px 0 !important',
+  },
+};
 
 interface ServerTableProps {
   servers: ServerData[];
@@ -47,18 +51,16 @@ const ServerTable: React.FC<ServerTableProps> = ({
       width: '6%',
     },
     {
-      title: '服务器作用',
-      dataIndex: 'role',
-      key: 'role',
+      title: '公网IP',
+      dataIndex: 'ip_address',
+      key: 'ip_address',
       width: '8%',
-      render: (role: string) => {
-        const config = getRoleConfig(role);
-        return (
-          <Tag color={config.color} icon={config.icon}>
-            {config.text}
-          </Tag>
-        );
-      },
+    },
+    {
+      title: '服务器作用',
+      dataIndex: 'use_for',
+      key: 'use_for',
+      width: '8%',
     },
     {
       title: 'CPU使用率',
@@ -67,7 +69,12 @@ const ServerTable: React.FC<ServerTableProps> = ({
       width: '10%',
       render: (value: number) => (
         <div>
-          <Progress percent={value} size="small" />
+          <div className="mb-1 text-xs text-gray-600">{value.toFixed(1)}%</div>
+          <Progress
+            percent={value}
+            size="small"
+            style={{ padding: '4px 0', margin: '2px 0' }}
+          />
         </div>
       ),
     },
@@ -78,7 +85,13 @@ const ServerTable: React.FC<ServerTableProps> = ({
       width: '10%',
       render: (value: number) => (
         <div>
-          <Progress percent={value} size="small" strokeColor="#52c41a" />
+          <div className="mb-1 text-xs text-gray-600">{value.toFixed(1)}%</div>
+          <Progress
+            percent={value}
+            size="small"
+            strokeColor="#52c41a"
+            style={{ padding: '4px 0', margin: '2px 0' }}
+          />
         </div>
       ),
     },
@@ -89,7 +102,13 @@ const ServerTable: React.FC<ServerTableProps> = ({
       width: '10%',
       render: (value: number) => (
         <div>
-          <Progress percent={value} size="small" strokeColor="#faad14" />
+          <div className="mb-1 text-xs text-gray-600">{value.toFixed(1)}%</div>
+          <Progress
+            percent={value}
+            size="small"
+            strokeColor="#faad14"
+            style={{ padding: '4px 0', margin: '2px 0' }}
+          />
         </div>
       ),
     },
@@ -110,6 +129,24 @@ const ServerTable: React.FC<ServerTableProps> = ({
           {value.toFixed(1)} Mbps
         </span>
       ),
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
+      width: '10%',
+      render: (value: string) => {
+        const date = new Date(value);
+        return date.toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        });
+      },
     },
     {
       title: '操作',

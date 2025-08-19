@@ -60,7 +60,8 @@ interface UserOverviewData {
   new_users_count_change: ChangeData;
   average_monthly_user_duration_change: ChangeData;
 }
-// 具体的API调用hooks
+
+// Dashboard 相关的API调用hooks
 export const useStatsData = (enabled: boolean = true) => {
   return useAdminApi<UserOverviewData>(
     '/api/v2/admin/user_overview',
@@ -69,7 +70,6 @@ export const useStatsData = (enabled: boolean = true) => {
   );
 };
 
-// 具体的API调用hooks
 export const useVisitData = (enabled: boolean = true) => {
   return useAdminApi<Array<{ date: string; value: number }>>(
     '/api/v2/admin/visit_count_table',
@@ -234,6 +234,7 @@ export const useServiceVisitTrendData = (enabled: boolean = true) => {
     enabled,
   });
 };
+
 /**
  * 获取开源态势洞察访问数据Hook
  */

@@ -6,7 +6,7 @@ import {
   MinusOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
-import { useStatsData } from './hooks/useAdminApi';
+import { useStatsData } from '../../hooks';
 
 // 类型定义
 interface ChangeData {
