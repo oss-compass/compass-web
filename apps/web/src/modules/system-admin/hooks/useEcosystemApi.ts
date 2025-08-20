@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
 // 更新时间分布接口响应类型
@@ -234,5 +234,38 @@ export const useCommunityList = (params: CommunityListRequest) => {
     },
     staleTime: 2 * 60 * 1000, // 2分钟
     refetchOnWindowFocus: false,
+  });
+};
+
+// 队列类型枚举
+export enum QueueType {
+  NORMAL = 0,
+  PRIORITY = 1,
+}
+
+// 加入队列请求参数类型
+export interface AddToQueueRequest {
+  project_url: string;
+  type: QueueType;
+}
+
+// 加入队列响应类型
+export interface AddToQueueResponse {
+  message?: string;
+  [key: string]: any;
+}
+
+// 加入队列 hook
+export const useAddToQueue = () => {
+  return useMutation({
+    mutationFn: async (
+      params: AddToQueueRequest
+    ): Promise<AddToQueueResponse> => {
+      const response = await axios.post(
+        '/api/v2/queue_server/add_queue',
+        params
+      );
+      return response.data;
+    },
   });
 };

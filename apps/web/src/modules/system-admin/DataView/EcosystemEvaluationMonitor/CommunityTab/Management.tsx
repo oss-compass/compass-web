@@ -57,13 +57,8 @@ const CommunityManagement: React.FC = () => {
 
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
-    const timeMapping: Record<string, number> = {
-      '1 个月内': CommunityTimeType.ONE_MONTH,
-      '超过 1 个月': CommunityTimeType.THREE_MONTHS,
-      '超过 3 个月': CommunityTimeType.SIX_MONTHS,
-      超过半年: CommunityTimeType.TWELVE_MONTHS,
-    };
-    return timeMapping[updateTimeFilter];
+    if (updateTimeFilter === 'all') return undefined;
+    return Number(updateTimeFilter);
   }, [updateTimeFilter]);
 
   const apiPlatform = useMemo(() => {
@@ -341,11 +336,10 @@ const CommunityManagement: React.FC = () => {
               allowClear
             >
               <Option value="all">全部时间</Option>
-              <Option value="1个月内">1 个月内</Option>
-              <Option value="超过1个月">超过 1 个月</Option>
-              <Option value="超过3个月">超过 3 个月</Option>
-              <Option value="超过半年">超过半年</Option>
-              <Option value="超过1年">超过 1 年</Option>
+              <Option value="1">1 个月内</Option>
+              <Option value="3">超过 1 个月</Option>
+              <Option value="6">超过 3 个月</Option>
+              <Option value="12">超过半年</Option>
             </Select>
           </div>
         </div>
@@ -399,7 +393,7 @@ const CommunityManagement: React.FC = () => {
               className="w-full"
             >
               <div className="space-y-2">
-                <Radio value="超过1个月">
+                <Radio value="超过 1 个月">
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
@@ -411,7 +405,7 @@ const CommunityManagement: React.FC = () => {
                     个社区)
                   </span>
                 </Radio>
-                <Radio value="超过3个月">
+                <Radio value="超过 3 个月">
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
@@ -435,7 +429,7 @@ const CommunityManagement: React.FC = () => {
                     个社区)
                   </span>
                 </Radio>
-                <Radio value="超过1年">
+                <Radio value="超过 1 年">
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
                     (

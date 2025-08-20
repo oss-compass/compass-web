@@ -20,8 +20,10 @@ import {
 } from '@ant-design/icons';
 import {
   useRepositoryList,
+  useAddToQueue,
   RepositoryTimeType,
   RepositoryPlatformType,
+  QueueType,
   type RepositoryListRequest,
   type RepositoryListItem,
 } from '../../../hooks';
@@ -54,16 +56,12 @@ const RepositoryManagement: React.FC = () => {
   const [batchQueueType, setBatchQueueType] = useState<'normal' | 'priority'>(
     'normal'
   );
+  const [loadingQueues, setLoadingQueues] = useState<Set<string>>(new Set());
 
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
-    const timeMapping: Record<string, number> = {
-      '1 个月内': RepositoryTimeType.ONE_MONTH,
-      '超过 1 个月': RepositoryTimeType.THREE_MONTHS,
-      '超过 3 个月': RepositoryTimeType.SIX_MONTHS,
-      超过半年: RepositoryTimeType.TWELVE_MONTHS,
-    };
-    return timeMapping[updateTimeFilter];
+    if (updateTimeFilter === 'all') return undefined;
+    return Number(updateTimeFilter);
   }, [updateTimeFilter]);
 
   const apiPlatform = useMemo(() => {
@@ -86,6 +84,9 @@ const RepositoryManagement: React.FC = () => {
     error: repositoryListError,
   } = useRepositoryList(repositoryListParams);
 
+  // 加入队列 hook
+  const addToQueueMutation = useAddToQueue();
+
   // 事件处理函数
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
@@ -100,6 +101,42 @@ const RepositoryManagement: React.FC = () => {
   const handlePlatformFilterChange = (value: string) => {
     setPlatformFilter(value);
     setCurrentPage(1);
+  };
+
+  // 处理加入队列
+  const handleAddToQueue = async (
+    record: RepositoryData,
+    queueType: 'normal' | 'priority'
+  ) => {
+    const queueId = `${record.key}_${queueType}`;
+
+    if (loadingQueues.has(queueId)) {
+      return; // 防止重复提交
+    }
+
+    setLoadingQueues((prev) => new Set(prev).add(queueId));
+
+    try {
+      await addToQueueMutation.mutateAsync({
+        project_url: record.label,
+        type: queueType === 'priority' ? QueueType.PRIORITY : QueueType.NORMAL,
+      });
+      message.success(
+        `成功将 ${record.repository} 加入${
+          queueType === 'priority' ? '优先' : '普通'
+        }队列`
+      );
+    } catch (error) {
+      message.error(
+        `加入队列失败：${error instanceof Error ? error.message : '未知错误'}`
+      );
+    } finally {
+      setLoadingQueues((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(queueId);
+        return newSet;
+      });
+    }
   };
 
   // 获取平台显示名称
@@ -162,8 +199,6 @@ const RepositoryManagement: React.FC = () => {
       };
     });
   }, [repositoryListData]);
-
-  // 客户端过滤数据（分类和组织由于 API 不提供，在客户端过滤）
 
   // 批量操作处理函数
   const handleBatchQueue = () => {
@@ -251,20 +286,6 @@ const RepositoryManagement: React.FC = () => {
         <Tag color={record.statusColor}>{status}</Tag>
       ),
     },
-    // {
-    //   title: '分类',
-    //   dataIndex: 'category',
-    //   key: 'category',
-    //   width: '12%',
-    //   render: (category: string) => <span>{category}</span>,
-    // },
-    // {
-    //   title: '组织归属',
-    //   dataIndex: 'organization',
-    //   key: 'organization',
-    //   width: '12%',
-    //   render: (organization: string) => <span>{organization}</span>,
-    // },
     {
       title: '上次更新时间',
       dataIndex: 'lastUpdateCategory',
@@ -298,13 +319,38 @@ const RepositoryManagement: React.FC = () => {
       title: '操作',
       key: 'action',
       width: '25%',
-      render: () => (
-        <div className="flex cursor-pointer gap-2 text-[#3e8eff]">
-          <a>加入队列</a>
-          <a>加入优先队列</a>
-          <a>删除</a>
-        </div>
-      ),
+      render: (_, record: RepositoryData) => {
+        const normalQueueId = `${record.key}_normal`;
+        const priorityQueueId = `${record.key}_priority`;
+        const isNormalLoading = loadingQueues.has(normalQueueId);
+        const isPriorityLoading = loadingQueues.has(priorityQueueId);
+
+        return (
+          <div className="flex gap-2 text-[#3e8eff]">
+            <a
+              className={`cursor-pointer hover:underline ${
+                isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
+              }`}
+              onClick={() =>
+                !isNormalLoading && handleAddToQueue(record, 'normal')
+              }
+            >
+              {isNormalLoading ? '加入中...' : '加入队列'}
+            </a>
+            <a
+              className={`cursor-pointer hover:underline ${
+                isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
+              }`}
+              onClick={() =>
+                !isPriorityLoading && handleAddToQueue(record, 'priority')
+              }
+            >
+              {isPriorityLoading ? '加入中...' : '加入优先队列'}
+            </a>
+            <a className="cursor-pointer hover:underline">删除</a>
+          </div>
+        );
+      },
     },
   ];
 
@@ -357,11 +403,10 @@ const RepositoryManagement: React.FC = () => {
               allowClear
             >
               <Option value="all">全部时间</Option>
-              <Option value="1个月内">1 个月内</Option>
-              <Option value="超过1个月">超过 1 个月</Option>
-              <Option value="超过3个月">超过 3 个月</Option>
-              <Option value="超过半年">超过半年</Option>
-              <Option value="超过1年">超过 1 年</Option>
+              <Option value="1">1 个月内</Option>
+              <Option value="3">超过 1 个月</Option>
+              <Option value="6">超过 3 个月</Option>
+              <Option value="12">超过半年</Option>
             </Select>
           </div>
         </div>
@@ -415,7 +460,7 @@ const RepositoryManagement: React.FC = () => {
               className="w-full"
             >
               <div className="space-y-2">
-                <Radio value="超过1个月">
+                <Radio value="超过 1 个月">
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
@@ -427,7 +472,7 @@ const RepositoryManagement: React.FC = () => {
                     个仓库)
                   </span>
                 </Radio>
-                <Radio value="超过3个月">
+                <Radio value="超过 3 个月">
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
@@ -451,7 +496,7 @@ const RepositoryManagement: React.FC = () => {
                     个仓库)
                   </span>
                 </Radio>
-                <Radio value="超过1年">
+                <Radio value="超过 1 年">
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
                     (

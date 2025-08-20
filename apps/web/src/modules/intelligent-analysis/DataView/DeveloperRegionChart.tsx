@@ -1,0 +1,318 @@
+import React, { useRef, useEffect, useState } from 'react';
+import { Card, Table, Tabs } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import * as echarts from 'echarts';
+import worldZh from '@public/geoData/worldZH.json';
+
+interface DeveloperData {
+  用户ID: string;
+  总得分: number;
+  国家: string;
+  省: string;
+  市: string;
+  用户类型: string;
+  排名: number;
+  全球排名: number;
+  国内排名: number;
+}
+
+interface RegionData {
+  key: string;
+  country: string;
+  userCount: number;
+}
+
+interface DeveloperRegionChartProps {
+  className?: string;
+  data: DeveloperData[];
+}
+
+const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
+  className,
+  data,
+}) => {
+  const mapChartRef = useRef<HTMLDivElement>(null);
+  const [regionData, setRegionData] = useState<RegionData[]>([]);
+  const [activeTab, setActiveTab] = useState<'all' | 'org' | 'developer'>(
+    'all'
+  );
+
+  // 处理数据转换
+  const processData = (
+    sourceData: DeveloperData[],
+    filterType: string
+  ): RegionData[] => {
+    if (!sourceData || sourceData.length === 0) {
+      return [];
+    }
+
+    // 根据 Tab 筛选数据
+    let filteredData = sourceData;
+    if (filterType === 'org') {
+      filteredData = sourceData.filter((item) => item.用户类型 === '组织');
+    } else if (filterType === 'developer') {
+      filteredData = sourceData.filter((item) => item.用户类型 === '开发者');
+    }
+
+    // 按国家分组统计
+    const countryMap = new Map<string, number>();
+    filteredData.forEach((item) => {
+      if (item.国家) {
+        countryMap.set(item.国家, (countryMap.get(item.国家) || 0) + 1);
+      }
+    });
+
+    // 转换为数组格式
+    const result: RegionData[] = [];
+    countryMap.forEach((count, country) => {
+      result.push({
+        key: country,
+        country: country,
+        userCount: count,
+      });
+    });
+
+    // 按用户数量降序排序
+    return result.sort((a, b) => b.userCount - a.userCount);
+  };
+
+  // 数据处理
+  useEffect(() => {
+    const processedData = processData(data, activeTab);
+    setRegionData(processedData);
+  }, [data, activeTab]);
+
+  // 地图数据映射
+  const mapData = regionData
+    .filter(
+      (item) =>
+        item.country && item.userCount !== undefined && item.userCount !== null
+    )
+    .map((item) => ({
+      name: item.country,
+      value: item.userCount || 0,
+    }));
+
+  // 获取当前标签页的标题和描述
+  const getTabInfo = () => {
+    switch (activeTab) {
+      case 'all':
+        return {
+          title: '全部',
+          description: '用户数',
+        };
+      case 'org':
+        return {
+          title: '组织',
+          description: '组织数',
+        };
+      case 'developer':
+        return {
+          title: '开发者',
+          description: '开发者数',
+        };
+      default:
+        return {
+          title: '全部',
+          description: '用户数',
+        };
+    }
+  };
+
+  const tabInfo = getTabInfo();
+
+  // 表格列定义
+  const columns: ColumnsType<RegionData> = [
+    {
+      title: '国家/地区',
+      dataIndex: 'country',
+      key: 'country',
+      render: (text: string) => <span className="font-medium">{text}</span>,
+    },
+    {
+      title: tabInfo.description,
+      dataIndex: 'userCount',
+      key: 'userCount',
+      width: 120,
+      render: (count: number) => (
+        <span className="font-medium text-blue-600">
+          {count >= 10000
+            ? `${(count / 10000).toFixed(1)}万`
+            : count.toLocaleString()}
+        </span>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    if (mapChartRef.current) {
+      const mapChart = echarts.init(mapChartRef.current);
+
+      // 注册世界地图
+      echarts.registerMap('world', worldZh as any);
+
+      const mapOption = {
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params: any) {
+            if (params.data) {
+              const value = params.data.value;
+              const displayValue =
+                value >= 10000
+                  ? `${(value / 10000).toFixed(1)}万`
+                  : value?.toLocaleString();
+              return `${params.name}<br/>${tabInfo.description}：${
+                displayValue || 0
+              }`;
+            }
+            return `${params.name}<br/>暂无数据`;
+          },
+        },
+        visualMap: {
+          min: 0,
+          max: (() => {
+            const validValues = mapData
+              .map((item) => item.value)
+              .filter((v) => v !== undefined && v !== null && v > 0);
+            return validValues.length > 0 ? Math.max(...validValues) : 1;
+          })(),
+          left: 'left',
+          top: 'bottom',
+          text: ['高', '低'],
+          calculable: true,
+          inRange: {
+            color: ['#aecbfa', '#0958d9', '#003eb3'],
+          },
+          textStyle: {
+            fontSize: 12,
+          },
+        },
+        series: [
+          {
+            name: tabInfo.description,
+            type: 'map',
+            map: 'world',
+            roam: true,
+            zoom: 1.2,
+            scaleLimit: {
+              min: 0.8,
+              max: 3,
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 12,
+              },
+              itemStyle: {
+                areaColor: '#ffa500',
+              },
+            },
+            itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 0.5,
+            },
+            data: mapData,
+          },
+        ],
+      };
+
+      mapChart.setOption(mapOption);
+
+      const handleMapResize = () => {
+        mapChart.resize();
+      };
+
+      window.addEventListener('resize', handleMapResize);
+
+      return () => {
+        window.removeEventListener('resize', handleMapResize);
+        mapChart.dispose();
+      };
+    }
+  }, [mapData, tabInfo]);
+
+  // 计算各类型的数据统计
+  const getTabStats = () => {
+    const allCount = data.reduce((sum, item) => sum + 1, 0);
+    const orgCount = data.filter((item) => item.用户类型 === '组织').length;
+    const developerCount = data.filter(
+      (item) => item.用户类型 === '开发者'
+    ).length;
+
+    return {
+      all: allCount,
+      org: orgCount,
+      developer: developerCount,
+    };
+  };
+
+  const tabStats = getTabStats();
+
+  // 标签页配置
+  const tabItems = [
+    {
+      key: 'all',
+      label: (
+        <span className="flex items-center gap-2">
+          <span>全部</span>
+          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
+            {tabStats.all.toLocaleString()}
+          </span>
+        </span>
+      ),
+    },
+    {
+      key: 'org',
+      label: (
+        <span className="flex items-center gap-2">
+          <span>组织</span>
+          <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+            {tabStats.org.toLocaleString()}
+          </span>
+        </span>
+      ),
+    },
+    {
+      key: 'developer',
+      label: (
+        <span className="flex items-center gap-2">
+          <span>开发者</span>
+          <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+            {tabStats.developer.toLocaleString()}
+          </span>
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <Card
+      title="组织、开发者国家/地区分布"
+      tabList={tabItems}
+      activeTabKey={activeTab}
+      onTabChange={(key) => setActiveTab(key as 'all' | 'org' | 'developer')}
+      className={className}
+    >
+      <div className="flex h-full">
+        {/* 地图区域 */}
+        <div className="flex-1">
+          <div ref={mapChartRef} className="h-80 w-full"></div>
+        </div>
+
+        {/* 右侧数据表格 */}
+        <div className="ml-4 w-64">
+          <Table
+            columns={columns}
+            dataSource={regionData}
+            pagination={false}
+            size="small"
+            scroll={{ y: 300 }}
+            className="border-l border-gray-200 pl-4"
+          />
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+export default DeveloperRegionChart;

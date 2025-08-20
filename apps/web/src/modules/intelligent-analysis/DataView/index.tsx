@@ -1,23 +1,39 @@
 import React from 'react';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
-import Main from './Main';
 import SubmitProject from './SubmitProject';
 import MySubmissions from './MySubmissions';
+import Overview from './Overview';
+import Main from './Main';
 
 const DataView: React.FC = () => {
   const hash = useHashchangeEvent();
   const currentView = hash || 'overview';
 
+  // 项目路由映射
+  const projectRoutes = [
+    'flutter',
+    'ionic',
+    'react-native',
+    'cef',
+    'electron',
+    'chromium',
+  ];
+
   const renderContent = () => {
+    // 检查是否是项目页面
+    if (projectRoutes.includes(currentView)) {
+      return <Main projectType={currentView} />;
+    }
+
     switch (currentView) {
       case 'overview':
-        return <Main />;
+        return <Overview />;
       case 'submit-project':
         return <SubmitProject />;
       case 'my-submissions':
         return <MySubmissions />;
       default:
-        return <Main />;
+        return <Overview />;
     }
   };
 

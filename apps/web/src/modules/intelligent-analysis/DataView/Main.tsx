@@ -1,3 +1,4 @@
+// autocorrect: false
 import React, { useState, useEffect } from 'react';
 import {
   Card,
@@ -9,12 +10,14 @@ import {
   Tooltip,
   Radio,
   message,
+  Breadcrumb,
 } from 'antd';
-import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
+import { SearchOutlined, EyeOutlined, HomeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import MyTable from '@common/components/Table';
 import DetailPage from './DetailPage';
-import flutterData from './Flutter汇总_backup.json';
+import DeveloperRegionChart from './DeveloperRegionChart';
+import flutterData from '../Flutter_backup.json';
 
 // 定义数据类型
 interface DeveloperData {
@@ -33,12 +36,28 @@ interface DeveloperData {
 interface EcosystemScore {
   生态: string;
   生态年均分: number;
-  '2024年得分': number;
-  '2025年得分': number;
+  '2024 年得分': number;
+  '2025 年得分': number;
 }
 
-const Main = () => {
-  const [category, setCategory] = useState<string>('Flutter');
+interface MainProps {
+  projectType?: string;
+}
+
+const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
+  // 项目路由名到显示名的映射
+  const projectNameMap: Record<string, string> = {
+    flutter: 'Flutter',
+    ionic: 'Ionic',
+    'react-native': 'React Native',
+    cef: 'CEF',
+    electron: 'Electron',
+    chromium: 'Chromium',
+  };
+
+  const initialCategory = projectNameMap[projectType] || 'Flutter';
+
+  const [category, setCategory] = useState<string>(initialCategory);
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [userTypeFilter, setUserTypeFilter] = useState<string>('all');
   const [loading, setLoading] = useState(false);
@@ -46,15 +65,9 @@ const Main = () => {
   const [pageSize, setPageSize] = useState(20);
   const [total, setTotal] = useState(0);
   const [tableData, setTableData] = useState<DeveloperData[]>([]);
+  const [allFilteredData, setAllFilteredData] = useState<DeveloperData[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<DeveloperData | null>(null);
-
-  // 项目分类选项
-  const categoryOptions = [
-    { label: 'Flutter', value: 'Flutter' },
-    { label: 'Ionic', value: 'Ionic' },
-    { label: 'RN', value: 'RN' },
-  ];
 
   // 用户类型筛选选项
   const userTypeOptions = [
@@ -63,11 +76,11 @@ const Main = () => {
     { label: '开发者', value: '开发者' },
   ];
 
-  // 处理Flutter数据，添加排名和用户类型
+  // 处理 Flutter 数据，添加排名和用户类型
   const processFlutterData = (): DeveloperData[] => {
     try {
       if (!flutterData || !Array.isArray(flutterData)) {
-        console.warn('Flutter数据格式不正确');
+        console.warn('Flutter 数据格式不正确');
         return [];
       }
 
@@ -77,22 +90,22 @@ const Main = () => {
         // 生成模拟的生态得分数据
         const mockEcosystemScores: EcosystemScore[] = [
           {
-            生态: 'Flutter主仓',
+            生态: 'Flutter 主仓',
             生态年均分: Math.random() * 30 + 70, // 70-100
-            '2024年得分': Math.random() * 25 + 65,
-            '2025年得分': Math.random() * 25 + 70,
+            '2024 年得分': Math.random() * 25 + 65,
+            '2025 年得分': Math.random() * 25 + 70,
           },
           {
             生态: 'Flutter Candies',
             生态年均分: Math.random() * 40 + 50, // 50-90
-            '2024年得分': Math.random() * 35 + 45,
-            '2025年得分': Math.random() * 35 + 50,
+            '2024 年得分': Math.random() * 35 + 45,
+            '2025 年得分': Math.random() * 35 + 50,
           },
           {
             生态: 'Pub.dev',
             生态年均分: Math.random() * 50 + 40, // 40-90
-            '2024年得分': Math.random() * 45 + 35,
-            '2025年得分': Math.random() * 45 + 40,
+            '2024 年得分': Math.random() * 45 + 35,
+            '2025 年得分': Math.random() * 45 + 40,
           },
         ];
 
@@ -110,9 +123,102 @@ const Main = () => {
         };
       });
     } catch (error) {
-      console.error('处理Flutter数据时出错：', error);
+      console.error('处理 Flutter 数据时出错：', error);
       return [];
     }
+  };
+
+  // 为其他项目生成模拟数据
+  const generateMockData = (projectName: string): DeveloperData[] => {
+    const mockUserIds = [
+      'microsoft',
+      'google',
+      'facebook',
+      'amazon',
+      'apple',
+      'org:chromium-team',
+      'org:ionic-team',
+      'org:electron-community',
+      'john-doe',
+      'jane-smith',
+      'alex-chen',
+      'sarah-wilson',
+      'mike-brown',
+      'org:react-native-community',
+      'org:cef-project',
+      'developer123',
+      'codemaster',
+      'techguru',
+      'opensourcedev',
+      'contributor456',
+    ];
+
+    const countries = [
+      'United States',
+      'China',
+      'Germany',
+      'United Kingdom',
+      'India',
+      'Canada',
+      'Japan',
+    ];
+    const provinces = [
+      'California',
+      'Beijing',
+      'Berlin',
+      'London',
+      'Mumbai',
+      'Toronto',
+      'Tokyo',
+    ];
+    const cities = [
+      'San Francisco',
+      'Shanghai',
+      'Munich',
+      'Manchester',
+      'Bangalore',
+      'Vancouver',
+      'Osaka',
+    ];
+
+    return mockUserIds.map((id, index) => {
+      const isOrg =
+        id.startsWith('org:') ||
+        ['microsoft', 'google', 'facebook', 'amazon', 'apple'].includes(id);
+      const randomIndex = Math.floor(Math.random() * countries.length);
+
+      // 为不同项目生成不同的生态得分
+      const getEcosystemScores = (project: string): EcosystemScore[] => {
+        const baseScore = Math.random() * 40 + 50; // 50-90
+        return [
+          {
+            生态: `${project} 主仓`,
+            生态年均分: baseScore + Math.random() * 20,
+            '2024 年得分': baseScore + Math.random() * 15,
+            '2025 年得分': baseScore + Math.random() * 25,
+          },
+          {
+            生态: `${project} 社区`,
+            生态年均分: baseScore - 10 + Math.random() * 20,
+            '2024 年得分': baseScore - 10 + Math.random() * 15,
+            '2025 年得分': baseScore - 5 + Math.random() * 20,
+          },
+        ];
+      };
+
+      return {
+        用户ID: id,
+        总得分: Math.random() * 80 + 20, // 20-100
+        国家: countries[randomIndex],
+        省: provinces[randomIndex],
+        市: cities[randomIndex],
+        用户类型: isOrg ? '组织' : '开发者',
+        排名: index + 1,
+        全球排名: Math.floor(Math.random() * 2000) + index + 1,
+        国内排名: Math.floor(Math.random() * 200) + Math.floor(index / 3) + 1,
+        生态得分: getEcosystemScores(projectName),
+      };
+    });
   };
 
   // 获取处理后的数据
@@ -128,10 +234,17 @@ const Main = () => {
   ) => {
     setLoading(true);
     try {
-      // 模拟API延迟
+      // 模拟 API 延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      let filteredData = allData;
+      // 根据不同项目获取数据，目前只有 Flutter 有真实数据，其他项目使用模拟数据
+      let currentData = allData;
+      if (category !== 'Flutter') {
+        // 为其他项目生成模拟数据
+        currentData = generateMockData(category);
+      }
+
+      let filteredData = currentData;
 
       // 根据用户类型筛选
       if (userType !== 'all') {
@@ -151,6 +264,9 @@ const Main = () => {
         );
       }
 
+      // 保存完整的筛选后数据供地图组件使用
+      setAllFilteredData(filteredData);
+
       // 分页处理
       const startIndex = (page - 1) * size;
       const endIndex = startIndex + size;
@@ -169,12 +285,6 @@ const Main = () => {
   useEffect(() => {
     fetchData(category, searchKeyword, userTypeFilter, currentPage, pageSize);
   }, [category, searchKeyword, userTypeFilter, currentPage, pageSize]);
-
-  // 分类变更处理
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-    setCurrentPage(1);
-  };
 
   // 搜索处理
   const handleSearch = () => {
@@ -294,31 +404,45 @@ const Main = () => {
   ];
 
   return (
-    <div className="min-h-full bg-gray-50">
-      <div className="px-6 py-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">总览</h1>
-        </div>
+    <>
+      {showDetail && selectedUser ? (
+        <DetailPage
+          data={selectedUser}
+          onBack={handleBackToList}
+          projectType={category}
+        />
+      ) : (
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mb-6 flex items-center justify-between">
+            <div className="w-full">
+              <Breadcrumb
+                className="mb-4 text-base"
+                items={[
+                  {
+                    href: '/intelligent-analysis#overview',
+                    title: (
+                      <span className="flex items-center">
+                        <HomeOutlined />
+                        <span className="ml-1">总览</span>
+                      </span>
+                    ),
+                  },
+                  {
+                    title: category,
+                  },
+                ]}
+              />
+              <h1 className="text-2xl font-bold text-gray-900">{category}</h1>
+            </div>
+          </div>
 
-        {showDetail && selectedUser ? (
-          <DetailPage data={selectedUser} onBack={handleBackToList} />
-        ) : (
-          <Card>
+          {/* 地图卡片组件 */}
+          <DeveloperRegionChart data={allFilteredData} className="mb-6" />
+
+          <Card title="组织、开发者贡献详情">
             {/* 搜索和筛选区域 */}
             <div className="mb-6">
               <Space wrap size="middle">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium text-gray-700">
-                    项目分类：
-                  </span>
-                  <Select
-                    value={category}
-                    onChange={handleCategoryChange}
-                    options={categoryOptions}
-                    style={{ width: 120 }}
-                  />
-                </div>
-
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium text-gray-700">
                     用户类型：
@@ -370,9 +494,9 @@ const Main = () => {
               }}
             />
           </Card>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 };
 

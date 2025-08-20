@@ -59,10 +59,12 @@ export {
   useCommunityPlatformOverview,
   useRepositoryList,
   useCommunityList,
+  useAddToQueue,
   RepositoryTimeType,
   RepositoryPlatformType,
   CommunityTimeType,
   CommunityPlatformType,
+  QueueType,
   type UpdateOverviewResponse,
   type PlatformOverviewResponse,
   type RepositoryListRequest,
@@ -71,6 +73,8 @@ export {
   type CommunityListRequest,
   type CommunityListItem,
   type CommunityListResponse,
+  type AddToQueueRequest,
+  type AddToQueueResponse,
 } from './useEcosystemApi';
 
 export {

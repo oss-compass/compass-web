@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { IoPeopleSharp } from 'react-icons/io5';
-import { RiLineChartLine } from 'react-icons/ri';
+import { RiLineChartLine, RiBarChartLine } from 'react-icons/ri';
 import { AiOutlineSelect } from 'react-icons/ai';
 import { GoMirror } from 'react-icons/go';
 
@@ -56,6 +56,7 @@ const MoreDropdown = () => {
         },
       ],
     },
+
     {
       icon: <GoMirror color="#ffd949" className="mr-2 text-4xl" />,
       title: t('common:header.opensource_research_service'),
@@ -74,6 +75,17 @@ const MoreDropdown = () => {
           link: 'https://oss-compass.osslab-pku.org/',
           linkText: t('common:header.mirror_site_of_pku'),
           target: '_blank',
+        },
+      ],
+    },
+    {
+      icon: <RiBarChartLine color="#ffd949" className="mr-2 text-4xl" />,
+      title: t('common:header.opensource_ecology_service'),
+      description: t('common:header.opensource_ecology_description'),
+      linkItems: [
+        {
+          link: '/intelligent-analysis',
+          linkText: t('common:header.product_home'),
         },
       ],
     },

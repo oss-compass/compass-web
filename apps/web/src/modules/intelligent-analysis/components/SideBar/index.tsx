@@ -61,7 +61,7 @@ const SideBar: React.FC = () => {
     >
       <div className="flex h-full flex-col py-4">
         <div className="mb-4 ml-4 flex items-center px-4 text-lg font-semibold text-gray-800">
-          {!collapsed && '开发者挖掘'}
+          {!collapsed && '开源生态智能分析'}
         </div>
         <Menu
           mode="inline"

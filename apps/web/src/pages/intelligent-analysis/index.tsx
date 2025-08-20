@@ -1,7 +1,7 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import getLocalesFile from '@common/utils/getLocalesFile';
-import DeveloperMining from '@modules/developer-mining';
+import IntelligentAnalysis from '@modules/intelligent-analysis';
 import NoSsr from '@common/components/NoSsr';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
@@ -12,12 +12,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   };
 };
 
-const DeveloperMiningPage = () => {
+const IntelligentAnalysisPage = () => {
   return (
     <NoSsr>
-      <DeveloperMining />
+      <IntelligentAnalysis />
     </NoSsr>
   );
 };
 
-export default DeveloperMiningPage;
+export default IntelligentAnalysisPage;
