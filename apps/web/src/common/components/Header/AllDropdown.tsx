@@ -7,9 +7,11 @@ import { IoPeopleSharp } from 'react-icons/io5';
 import { RiLineChartLine, RiBarChartLine } from 'react-icons/ri';
 import { AiOutlineSelect } from 'react-icons/ai';
 import { GoMirror } from 'react-icons/go';
+import { useUserInfo } from '@modules/auth';
 
 const MoreDropdown = () => {
   const { t } = useTranslation();
+  const { roleLevel } = useUserInfo();
 
   // 服务数组
   const services = [
@@ -78,17 +80,22 @@ const MoreDropdown = () => {
         },
       ],
     },
-    {
-      icon: <RiBarChartLine color="#ffd949" className="mr-2 text-4xl" />,
-      title: t('common:header.opensource_ecology_service'),
-      description: t('common:header.opensource_ecology_description'),
-      linkItems: [
-        {
-          link: '/intelligent-analysis',
-          linkText: t('common:header.product_home'),
-        },
-      ],
-    },
+    // 只有 roleLevel >= 7 时才显示智能分析服务
+    ...(roleLevel >= 7
+      ? [
+          {
+            icon: <RiBarChartLine color="#ffd949" className="mr-2 text-4xl" />,
+            title: t('common:header.opensource_ecology_service'),
+            description: t('common:header.opensource_ecology_description'),
+            linkItems: [
+              {
+                link: '/intelligent-analysis',
+                linkText: t('common:header.product_home'),
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   return (

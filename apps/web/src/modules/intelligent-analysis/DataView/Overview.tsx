@@ -52,7 +52,7 @@ const ProjectCard: React.FC<{ project: ProjectData }> = ({ project }) => {
   const { t } = useTranslation();
 
   const normalStyle =
-    'flex h-full cursor-pointer flex-col rounded border p-6 shadow hover:shadow-xl md:gap-4';
+    'flex h-full bg-[#ffffff] cursor-pointer flex-col rounded border p-6 shadow hover:shadow-xl md:gap-4';
   const normalTitleStyle = 'text-lg font-semibold';
   const normalDescStyle = 'mt-3 h-[60px] text-sm leading-5 text-[#7b7c86]';
   const normalLinkStyle =
