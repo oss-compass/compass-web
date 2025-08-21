@@ -115,10 +115,6 @@ const Overview: React.FC = () => {
           <ProjectCard project={projectsData[1]} />
           <ProjectCard project={projectsData[2]} />
           <ProjectCard project={projectsData[3]} />
-        </div>
-
-        {/* Second Row: 2 cards */}
-        <div className="grid grid-cols-4 gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
           <ProjectCard project={projectsData[4]} />
           <ProjectCard project={projectsData[5]} />
         </div>
