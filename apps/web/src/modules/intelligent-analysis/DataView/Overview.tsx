@@ -114,9 +114,9 @@ const Overview: React.FC = () => {
           <ProjectCard project={projectsData[0]} />
           <ProjectCard project={projectsData[1]} />
           <ProjectCard project={projectsData[2]} />
-          <ProjectCard project={projectsData[3]} />
+          {/* <ProjectCard project={projectsData[3]} />
           <ProjectCard project={projectsData[4]} />
-          <ProjectCard project={projectsData[5]} />
+          <ProjectCard project={projectsData[5]} /> */}
         </div>
       </div>
     </div>

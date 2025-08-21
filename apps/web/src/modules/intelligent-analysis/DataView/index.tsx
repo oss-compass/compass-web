@@ -14,9 +14,9 @@ const DataView: React.FC = () => {
     'flutter',
     'ionic',
     'react-native',
-    'cef',
-    'electron',
-    'chromium',
+    // 'cef',
+    // 'electron',
+    // 'chromium',
   ];
 
   const renderContent = () => {
