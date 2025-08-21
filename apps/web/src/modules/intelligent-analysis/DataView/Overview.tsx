@@ -12,40 +12,40 @@ interface ProjectData {
 const projectsData: ProjectData[] = [
   {
     name: 'Flutter',
-    developers: 1250,
-    organizations: 89,
+    developers: 56924,
+    organizations: 14912,
     slug: 'flutter',
   },
   {
     name: 'Ionic',
-    developers: 856,
-    organizations: 65,
+    developers: 1712,
+    organizations: 713,
     slug: 'ionic',
   },
   {
     name: 'React Native',
-    developers: 2340,
-    organizations: 156,
+    developers: 48371,
+    organizations: 16137,
     slug: 'react-native',
   },
-  {
-    name: 'CEF',
-    developers: 234,
-    organizations: 23,
-    slug: 'cef',
-  },
-  {
-    name: 'Electron',
-    developers: 1890,
-    organizations: 134,
-    slug: 'electron',
-  },
-  {
-    name: 'Chromium',
-    developers: 3200,
-    organizations: 89,
-    slug: 'chromium',
-  },
+  // {
+  //   name: 'CEF',
+  //   developers: 234,
+  //   organizations: 23,
+  //   slug: 'cef',
+  // },
+  // {
+  //   name: 'Electron',
+  //   developers: 1890,
+  //   organizations: 134,
+  //   slug: 'electron',
+  // },
+  // {
+  //   name: 'Chromium',
+  //   developers: 3200,
+  //   organizations: 89,
+  //   slug: 'chromium',
+  // },
 ];
 
 const ProjectCard: React.FC<{ project: ProjectData }> = ({ project }) => {

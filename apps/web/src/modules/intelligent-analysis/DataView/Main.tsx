@@ -17,7 +17,12 @@ import type { ColumnsType } from 'antd/es/table';
 import MyTable from '@common/components/Table';
 import DetailPage from './DetailPage';
 import DeveloperRegionChart from './DeveloperRegionChart';
-import flutterData from '../Flutter_backup.json';
+// @ts-ignore
+import flutterData from 'public/test/intelligent-analysis/Flutter_backup.json';
+// @ts-ignore
+import ionicData from 'public/test/intelligent-analysis/Ionic_backup.json';
+// @ts-ignore
+import rnData from 'public/test/intelligent-analysis/RN_backup.json';
 
 // 定义数据类型
 interface DeveloperData {
@@ -55,6 +60,9 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
     chromium: 'Chromium',
   };
 
+  // 有真实数据的项目列表
+  const realDataProjects = ['Flutter', 'Ionic', 'React Native'];
+
   const initialCategory = projectNameMap[projectType] || 'Flutter';
 
   const [category, setCategory] = useState<string>(initialCategory);
@@ -76,38 +84,45 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
     { label: '开发者', value: '开发者' },
   ];
 
-  // 处理 Flutter 数据，添加排名和用户类型
-  const processFlutterData = (): DeveloperData[] => {
+  // 处理真实数据，添加排名和用户类型
+  const processRealData = (
+    data: any[],
+    projectName: string
+  ): DeveloperData[] => {
     try {
-      if (!flutterData || !Array.isArray(flutterData)) {
-        console.warn('Flutter 数据格式不正确');
+      if (!data || !Array.isArray(data)) {
+        console.warn(`${projectName} 数据格式不正确`);
         return [];
       }
 
-      return flutterData.map((item: any, index: number) => {
+      return data.map((item: any, index: number) => {
         const isOrg = item.用户ID?.startsWith('org:');
 
-        // 生成模拟的生态得分数据
-        const mockEcosystemScores: EcosystemScore[] = [
-          {
-            生态: 'Flutter 主仓',
+        // 根据项目类型生成对应的生态得分数据
+        const getEcosystemScores = (project: string): EcosystemScore[] => {
+          const ecosystemMap: Record<string, string[]> = {
+            Flutter: ['Flutter 主仓', 'Flutter Candies', 'Pub.dev'],
+            Ionic: ['Ionic Core', 'Ionic Native', 'Capacitor'],
+            'React Native': [
+              'React Native Core',
+              'React Native Community',
+              'Expo',
+            ],
+          };
+
+          const ecosystems = ecosystemMap[project] || [
+            `${project} 主仓`,
+            `${project} 社区`,
+            `${project} 插件`,
+          ];
+
+          return ecosystems.map((ecosystem) => ({
+            生态: ecosystem,
             生态年均分: Math.random() * 30 + 70, // 70-100
             '2024 年得分': Math.random() * 25 + 65,
             '2025 年得分': Math.random() * 25 + 70,
-          },
-          {
-            生态: 'Flutter Candies',
-            生态年均分: Math.random() * 40 + 50, // 50-90
-            '2024 年得分': Math.random() * 35 + 45,
-            '2025 年得分': Math.random() * 35 + 50,
-          },
-          {
-            生态: 'Pub.dev',
-            生态年均分: Math.random() * 50 + 40, // 40-90
-            '2024 年得分': Math.random() * 45 + 35,
-            '2025 年得分': Math.random() * 45 + 40,
-          },
-        ];
+          }));
+        };
 
         return {
           用户ID: item.用户ID || '',
@@ -117,13 +132,13 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
           市: item.市 || '',
           用户类型: isOrg ? '组织' : '开发者',
           排名: index + 1, // 按出现顺序排名
-          全球排名: Math.floor(Math.random() * 1000) + index + 1, // 模拟全球排名
-          国内排名: Math.floor(Math.random() * 100) + Math.floor(index / 2) + 1, // 模拟国内排名
-          生态得分: mockEcosystemScores,
+          全球排名: 1, // 模拟全球排名
+          国内排名: 1, // 模拟国内排名
+          生态得分: getEcosystemScores(projectName),
         };
       });
     } catch (error) {
-      console.error('处理 Flutter 数据时出错：', error);
+      console.error(`处理 ${projectName} 数据时出错：`, error);
       return [];
     }
   };
@@ -221,8 +236,19 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
     });
   };
 
-  // 获取处理后的数据
-  const allData = processFlutterData();
+  // 获取真实数据的函数
+  const getRealData = (projectName: string): DeveloperData[] => {
+    switch (projectName) {
+      case 'Flutter':
+        return processRealData(flutterData, 'Flutter');
+      case 'Ionic':
+        return processRealData(ionicData, 'Ionic');
+      case 'React Native':
+        return processRealData(rnData, 'React Native');
+      default:
+        return [];
+    }
+  };
 
   // 获取数据的函数
   const fetchData = async (
@@ -237,9 +263,13 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
       // 模拟 API 延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 根据不同项目获取数据，目前只有 Flutter 有真实数据，其他项目使用模拟数据
-      let currentData = allData;
-      if (category !== 'Flutter') {
+      // 根据不同项目获取数据
+      let currentData: DeveloperData[] = [];
+
+      // 检查是否有真实数据
+      if (realDataProjects.includes(category)) {
+        currentData = getRealData(category);
+      } else {
         // 为其他项目生成模拟数据
         currentData = generateMockData(category);
       }
@@ -267,10 +297,24 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
       // 保存完整的筛选后数据供地图组件使用
       setAllFilteredData(filteredData);
 
+      // 对数据进行排序，将"未知"和"东八区"的数据排到最后
+      const sortedData = [...filteredData].sort((a, b) => {
+        const specialCountries = ['未知', '东八区'];
+        const aIsSpecial = specialCountries.includes(a.国家);
+        const bIsSpecial = specialCountries.includes(b.国家);
+
+        // 如果一个是特殊国家，一个不是，特殊国家排后面
+        if (aIsSpecial && !bIsSpecial) return 1;
+        if (!aIsSpecial && bIsSpecial) return -1;
+
+        // 都是特殊国家或都不是，保持原有顺序（按排名）
+        return a.排名 - b.排名;
+      });
+
       // 分页处理
       const startIndex = (page - 1) * size;
       const endIndex = startIndex + size;
-      const paginatedData = filteredData.slice(startIndex, endIndex);
+      const paginatedData = sortedData.slice(startIndex, endIndex);
 
       setTableData(paginatedData);
       setTotal(filteredData.length);

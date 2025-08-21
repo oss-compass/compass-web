@@ -72,8 +72,19 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       });
     });
 
-    // 按用户数量降序排序
-    return result.sort((a, b) => b.userCount - a.userCount);
+    // 按用户数量降序排序，但将"未知"和"东八区"排到最后
+    return result.sort((a, b) => {
+      const specialCountries = ['未知', '东八区'];
+      const aIsSpecial = specialCountries.includes(a.country);
+      const bIsSpecial = specialCountries.includes(b.country);
+
+      // 如果一个是特殊国家，一个不是，特殊国家排后面
+      if (aIsSpecial && !bIsSpecial) return 1;
+      if (!aIsSpecial && bIsSpecial) return -1;
+
+      // 都是特殊国家或都不是，按用户数量降序排序
+      return b.userCount - a.userCount;
+    });
   };
 
   // 数据处理
@@ -92,6 +103,12 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       name: item.country,
       value: item.userCount || 0,
     }));
+
+  // 获取用于计算 visualMap 的数据（排除"未知"和"东八区"）
+  const getValidMapData = () => {
+    const excludeCountries = ['未知', '东八区'];
+    return mapData.filter((item) => !excludeCountries.includes(item.name));
+  };
 
   // 获取当前标签页的标题和描述
   const getTabInfo = () => {
@@ -171,7 +188,8 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
         visualMap: {
           min: 0,
           max: (() => {
-            const validValues = mapData
+            const validMapData = getValidMapData();
+            const validValues = validMapData
               .map((item) => item.value)
               .filter((v) => v !== undefined && v !== null && v > 0);
             return validValues.length > 0 ? Math.max(...validValues) : 1;
