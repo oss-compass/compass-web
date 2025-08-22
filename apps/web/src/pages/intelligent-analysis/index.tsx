@@ -1,23 +1,17 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import getLocalesFile from '@common/utils/getLocalesFile';
-import IntelligentAnalysis from '@modules/intelligent-analysis';
-import NoSsr from '@common/components/NoSsr';
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   return {
-    props: {
-      ...(await getLocalesFile(req.cookies, ['home'])),
+    redirect: {
+      destination: '/intelligent-analysis/overview',
+      permanent: false,
     },
   };
 };
 
 const IntelligentAnalysisPage = () => {
-  return (
-    <NoSsr>
-      <IntelligentAnalysis />
-    </NoSsr>
-  );
+  return null;
 };
 
 export default IntelligentAnalysisPage;

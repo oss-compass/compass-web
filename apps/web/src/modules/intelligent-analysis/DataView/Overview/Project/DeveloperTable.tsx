@@ -1,0 +1,161 @@
+// autocorrect: false
+import React, { useState, useMemo } from 'react';
+import { Card, Input, Button, Space, Tag, Tooltip } from 'antd';
+import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
+import { useTranslation } from 'next-i18next';
+import type { ColumnsType } from 'antd/es/table';
+import MyTable from '@common/components/Table';
+import { DeveloperData } from '../types';
+import { translateByLocale, countryMapping } from './utils/countryMapping';
+
+interface DeveloperTableProps {
+  data: DeveloperData[];
+  loading: boolean;
+  onViewDetail: (record: DeveloperData) => void;
+}
+
+const DeveloperTable: React.FC<DeveloperTableProps> = ({
+  data,
+  loading,
+  onViewDetail,
+}) => {
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const { t, i18n } = useTranslation('intelligent_analysis');
+
+  // 过滤数据
+  const filteredData = useMemo(() => {
+    if (!searchKeyword.trim()) {
+      return data;
+    }
+    const keyword = searchKeyword.trim().toLowerCase();
+    return data.filter((item) =>
+      item.用户ID.toLowerCase().includes(keyword)
+    );
+  }, [data, searchKeyword]);
+
+  // 分页数据
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, currentPage, pageSize]);
+
+  // 处理搜索
+  const handleSearch = () => {
+    setCurrentPage(1);
+  };
+
+  // 处理分页变化
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  // 开发者表格列定义
+  const columns: ColumnsType<DeveloperData> = [
+    {
+      title: t('project_detail.rank'),
+      dataIndex: '排名',
+      key: '排名',
+      width: 80,
+      render: (rank: number) => (
+        <Tag color={rank <= 3 ? 'gold' : rank <= 10 ? 'orange' : 'default'}>
+          #{rank}
+        </Tag>
+      ),
+    },
+    {
+      title: t('project_detail.developer_id'),
+      dataIndex: '用户ID',
+      key: '用户ID',
+      width: 200,
+      ellipsis: true,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <span style={{ fontWeight: 'bold' }}>{text}</span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: t('project_detail.total_score'),
+      dataIndex: '总得分',
+      key: '总得分',
+      width: 100,
+      sorter: (a, b) => a.总得分 - b.总得分,
+      render: (score: number) => (
+        <span
+          style={{
+            color:
+              score >= 70 ? '#52c41a' : score >= 50 ? '#fa8c16' : '#ff4d4f',
+            fontWeight: 'bold',
+          }}
+        >
+          {score.toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      title: t('project_detail.location'),
+      key: '地理位置',
+      width: 150,
+      render: (_, record) => translateByLocale(record.国家, countryMapping, i18n.language),
+    },
+    {
+      title: t('project_detail.actions'),
+      key: 'action',
+      width: 100,
+      render: (_, record) => (
+        <Button
+          type="link"
+          icon={<EyeOutlined />}
+          onClick={() => onViewDetail(record)}
+        >
+          {t('project_detail.view_details')}
+        </Button>
+      ),
+    },
+  ];
+
+  return (
+    <Card title={t('project_detail.developer_contribution_details')} className="mb-6">
+      {/* 搜索区域 */}
+      <div className="mb-6">
+        <Space wrap size="middle">
+          <div className="flex items-center space-x-2">
+            <Input
+              placeholder={t('project_detail.search_developer')}
+              prefix={<SearchOutlined />}
+              style={{ width: 300 }}
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              onPressEnter={handleSearch}
+            />
+            <Button type="primary" onClick={handleSearch}>
+              {t('project_detail.search')}
+            </Button>
+          </div>
+        </Space>
+      </div>
+
+      {/* 开发者表格 */}
+      <MyTable
+        columns={columns}
+        dataSource={paginatedData}
+        loading={loading}
+        rowKey="用户ID"
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: filteredData.length,
+          showSizeChanger: false,
+          showQuickJumper: true,
+          showTotal: (total, range) =>
+            t('project_detail.pagination_total', { start: range[0], end: range[1], total }),
+          onChange: handlePageChange,
+        }}
+      />
+    </Card>
+  );
+};
+
+export default DeveloperTable;

@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
+import { useTranslation } from 'next-i18next';
 
 const { TextArea } = Input;
 const { Text, Paragraph } = Typography;
@@ -27,6 +28,7 @@ interface ProjectFormData {
 }
 
 const SubmitProject: React.FC = () => {
+  const { t } = useTranslation('intelligent_analysis');
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [batchInputText, setBatchInputText] = useState<{
@@ -59,12 +61,12 @@ const SubmitProject: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       console.log('提交的项目数据:', submitData);
-      message.success('项目提交成功！我们会在3个工作日内审核您的项目。');
+      message.success(t('submit_project.submit_success'));
       form.resetFields();
       setRepositories({ main: [], thirdParty: [] });
       setBatchInputText({ main: '', thirdParty: '' });
     } catch (error) {
-      message.error('提交失败，请稍后重试');
+      message.error(t('submit_project.submit_error'));
     } finally {
       setLoading(false);
     }
@@ -94,9 +96,9 @@ const SubmitProject: React.FC = () => {
           ...prev,
           [type]: [...prev[type], ...repositories],
         }));
-        message.success(`成功导入 ${repositories.length} 个仓库地址`);
+        message.success(t('submit_project.import_success', { count: repositories.length }));
       } catch (error) {
-        message.error('JSON文件格式错误，请检查文件内容');
+        message.error(t('submit_project.json_format_error'));
       }
     };
     reader.readAsText(file);
@@ -117,7 +119,7 @@ const SubmitProject: React.FC = () => {
       );
 
     if (urls.length === 0) {
-      message.warning('请输入有效的仓库地址（以http://或https://开头）');
+      message.warning(t('submit_project.invalid_url_warning'));
       return;
     }
 
@@ -128,7 +130,7 @@ const SubmitProject: React.FC = () => {
 
     // 清空文本域
     setBatchInputText((prev) => ({ ...prev, [type]: '' }));
-    message.success(`成功添加 ${urls.length} 个仓库地址`);
+    message.success(t('submit_project.add_success', { count: urls.length }));
   };
 
   const removeRepository = (type: 'main' | 'thirdParty', index: number) => {
@@ -136,7 +138,7 @@ const SubmitProject: React.FC = () => {
       ...prev,
       [type]: prev[type].filter((_, i) => i !== index),
     }));
-    message.success('已删除仓库地址');
+    message.success(t('submit_project.remove_success'));
   };
 
   const jsonUploadProps = (type: 'main' | 'thirdParty'): UploadProps => ({
@@ -151,8 +153,8 @@ const SubmitProject: React.FC = () => {
     <div className="min-h-full bg-gray-50">
       <div className="px-6 py-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">提交项目</h1>
-          <p className="mt-2 text-gray-600">请填写项目基本信息和仓库地址</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('submit_project.title')}</h1>
+          <p className="mt-2 text-gray-600">{t('submit_project.description')}</p>
         </div>
 
         <Card>
@@ -166,31 +168,31 @@ const SubmitProject: React.FC = () => {
             <Form.Item
               label={
                 <span className="font-medium">
-                  项目名称 <span className="text-red-500">*</span>
+                  {t('submit_project.project_name')} <span className="text-red-500">*</span>
                 </span>
               }
               name="projectName"
               rules={[
-                { required: true, message: '请输入项目名称' },
-                { min: 2, message: '项目名称至少2个字符' },
-                { max: 50, message: '项目名称不能超过50个字符' },
+                { required: true, message: t('submit_project.project_name_required_error') },
+                { min: 2, message: t('submit_project.project_name_min_error') },
+                { max: 50, message: t('submit_project.project_name_max_error') },
               ]}
             >
               <Input
-                placeholder="请输入项目名称，如：我的移动应用项目"
+                placeholder={t('submit_project.project_name_placeholder')}
                 size="large"
               />
             </Form.Item>
 
             {/* 项目描述 - 选填 */}
             <Form.Item
-              label={<span className="font-medium">项目描述</span>}
+              label={<span className="font-medium">{t('submit_project.project_description')}</span>}
               name="description"
-              extra="选填：简要描述项目的功能、特点和技术栈"
+              extra={t('submit_project.project_description_extra')}
             >
               <TextArea
                 rows={3}
-                placeholder="请详细描述您的项目功能、特点和技术栈，如：这是一个基于React Native开发的电商移动应用..."
+                placeholder={t('submit_project.project_description_placeholder')}
                 maxLength={500}
                 showCount
               />
@@ -201,10 +203,10 @@ const SubmitProject: React.FC = () => {
             {/* 主仓库地址 */}
             <div className="mb-6">
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-base font-medium">主仓库地址</span>
+                <span className="text-base font-medium">{t('submit_project.main_repositories')}</span>
                 <Upload {...jsonUploadProps('main')}>
                   <Button icon={<UploadOutlined />} size="small">
-                    导入JSON
+                    {t('submit_project.import_json')}
                   </Button>
                 </Upload>
               </div>
@@ -213,7 +215,7 @@ const SubmitProject: React.FC = () => {
               <div className="mb-4 rounded-lg bg-gray-50 p-4">
                 <div className="mb-2">
                   <Text type="secondary" className="text-sm">
-                    每行输入一个仓库地址，支持GitHub、GitLab、Gitee等平台
+                    {t('submit_project.batch_input_hint')}
                   </Text>
                 </div>
                 <TextArea
@@ -233,7 +235,7 @@ const SubmitProject: React.FC = () => {
                   onClick={() => handleBatchInput('main')}
                   disabled={!batchInputText.main.trim()}
                 >
-                  添加到列表
+                  {t('submit_project.add_to_list')}
                 </Button>
               </div>
 
@@ -242,7 +244,7 @@ const SubmitProject: React.FC = () => {
                 <div className="mb-4">
                   <div className="mb-2">
                     <Text className="font-medium">
-                      已添加的主仓库 ({repositories.main.length})
+                      {t('submit_project.added_main_repos_count', { count: repositories.main.length })}
                     </Text>
                   </div>
                   <List
@@ -277,10 +279,10 @@ const SubmitProject: React.FC = () => {
             {/* 三方库仓库地址 */}
             <div className="mb-6">
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-base font-medium">三方库仓库地址</span>
+                <span className="text-base font-medium">{t('submit_project.third_party_repositories')}</span>
                 <Upload {...jsonUploadProps('thirdParty')}>
                   <Button icon={<UploadOutlined />} size="small">
-                    导入JSON
+                    {t('submit_project.import_json')}
                   </Button>
                 </Upload>
               </div>
@@ -309,7 +311,7 @@ const SubmitProject: React.FC = () => {
                   onClick={() => handleBatchInput('thirdParty')}
                   disabled={!batchInputText.thirdParty.trim()}
                 >
-                  添加到列表
+                  {t('submit_project.add_to_list')}
                 </Button>
               </div>
 
@@ -318,7 +320,7 @@ const SubmitProject: React.FC = () => {
                 <div className="mb-4">
                   <div className="mb-2">
                     <Text className="font-medium">
-                      已添加的三方库仓库 ({repositories.thirdParty.length})
+                      {t('submit_project.added_third_party_repos_count', { count: repositories.thirdParty.length })}
                     </Text>
                   </div>
                   <List
@@ -360,10 +362,10 @@ const SubmitProject: React.FC = () => {
                   loading={loading}
                   size="large"
                 >
-                  提交项目
+                  {t('submit_project.submit_button')}
                 </Button>
                 <Button size="large" onClick={() => form.resetFields()}>
-                  重置表单
+                  {t('submit_project.reset_button')}
                 </Button>
               </Space>
             </Form.Item>

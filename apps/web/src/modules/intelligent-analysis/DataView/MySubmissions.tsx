@@ -12,6 +12,7 @@ import {
   Select,
 } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useTranslation } from 'next-i18next';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Search } = Input;
@@ -32,6 +33,7 @@ interface Submission {
 }
 
 const MySubmissions: React.FC = () => {
+  const { t } = useTranslation('intelligent_analysis');
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [filteredSubmissions, setFilteredSubmissions] = useState<Submission[]>(
@@ -101,7 +103,7 @@ const MySubmissions: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       setSubmissions(mockData);
     } catch (error) {
-      message.error('获取提交记录失败');
+      message.error(t('my_submissions.fetch_error'));
     } finally {
       setLoading(false);
     }
@@ -131,10 +133,10 @@ const MySubmissions: React.FC = () => {
 
   const getStatusTag = (status: string) => {
     const statusMap = {
-      pending: { color: 'default', text: '待审核' },
-      'under-review': { color: 'processing', text: '审核中' },
-      approved: { color: 'success', text: '已通过' },
-      rejected: { color: 'error', text: '已拒绝' },
+      pending: { color: 'default', text: t('my_submissions.status.pending') },
+      'under-review': { color: 'processing', text: t('my_submissions.status.reviewing') },
+      approved: { color: 'success', text: t('my_submissions.status.approved') },
+      rejected: { color: 'error', text: t('my_submissions.status.rejected') },
     };
     const config = statusMap[status as keyof typeof statusMap];
     return <Tag color={config.color}>{config.text}</Tag>;
@@ -145,7 +147,7 @@ const MySubmissions: React.FC = () => {
       flutter: { color: 'blue', text: 'Flutter' },
       'react-native': { color: 'cyan', text: 'React Native' },
       ionic: { color: 'purple', text: 'Ionic' },
-      other: { color: 'default', text: '其他' },
+      other: { color: 'default', text: t('my_submissions.project_types.other') },
     };
     const config = typeMap[type as keyof typeof typeMap];
     return <Tag color={config.color}>{config.text}</Tag>;
@@ -158,16 +160,18 @@ const MySubmissions: React.FC = () => {
 
   const handleDelete = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除这个提交记录吗？此操作不可恢复。',
+      title: t('my_submissions.delete_confirm_title'),
+      content: t('my_submissions.delete_confirm_content'),
+      okText: t('my_submissions.confirm'),
+      cancelText: t('my_submissions.cancel'),
       onOk: async () => {
         try {
           // 模拟删除API调用
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          setSubmissions((prev) => prev.filter((item) => item.id !== id));
-          message.success('删除成功');
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          setSubmissions(prev => prev.filter(item => item.id !== id));
+          message.success(t('my_submissions.delete_success'));
         } catch (error) {
-          message.error('删除失败');
+          message.error(t('my_submissions.delete_error'));
         }
       },
     });
@@ -175,27 +179,27 @@ const MySubmissions: React.FC = () => {
 
   const columns: ColumnsType<Submission> = [
     {
-      title: '项目名称',
+      title: t('my_submissions.table.project_name'),
       dataIndex: 'projectName',
       key: 'projectName',
       width: '20%',
     },
     {
-      title: '项目类型',
+      title: t('my_submissions.table.project_type'),
       dataIndex: 'projectType',
       key: 'projectType',
       width: '12%',
       render: (type: string) => getProjectTypeTag(type),
     },
     {
-      title: '状态',
+      title: t('my_submissions.table.status'),
       dataIndex: 'status',
       key: 'status',
       width: '10%',
       render: (status: string) => getStatusTag(status),
     },
     {
-      title: '得分',
+      title: t('my_submissions.table.score'),
       dataIndex: 'score',
       key: 'score',
       width: '8%',
@@ -207,20 +211,20 @@ const MySubmissions: React.FC = () => {
         ),
     },
     {
-      title: '提交时间',
+      title: t('my_submissions.table.submit_time'),
       dataIndex: 'submitTime',
       key: 'submitTime',
       width: '15%',
     },
     {
-      title: '审核时间',
+      title: t('my_submissions.table.review_time'),
       dataIndex: 'reviewTime',
       key: 'reviewTime',
       width: '15%',
       render: (time?: string) => time || '-',
     },
     {
-      title: '操作',
+      title: t('my_submissions.table.actions'),
       key: 'action',
       width: '20%',
       render: (_, record) => (
@@ -231,11 +235,11 @@ const MySubmissions: React.FC = () => {
             size="small"
             onClick={() => handleViewDetail(record)}
           >
-            查看
+            {t('my_submissions.view')}
           </Button>
           {record.status === 'pending' && (
             <Button type="link" icon={<EditOutlined />} size="small">
-              编辑
+              {t('my_submissions.edit')}
             </Button>
           )}
           <Button
@@ -245,7 +249,7 @@ const MySubmissions: React.FC = () => {
             size="small"
             onClick={() => handleDelete(record.id)}
           >
-            删除
+            {t('my_submissions.delete')}
           </Button>
         </Space>
       ),
@@ -256,8 +260,8 @@ const MySubmissions: React.FC = () => {
     <div className="min-h-full bg-gray-50">
       <div className="px-6 py-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">我的提交</h1>
-          <p className="mt-2 text-gray-600">查看和管理您提交的项目状态。</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('my_submissions.title')}</h1>
+          <p className="mt-2 text-gray-600">{t('my_submissions.description')}</p>
         </div>
 
         <Card>
@@ -265,23 +269,23 @@ const MySubmissions: React.FC = () => {
           <div className="mb-6">
             <Space wrap size="middle">
               <Search
-                placeholder="搜索项目名称或描述"
+                placeholder={t('my_submissions.search_placeholder')}
                 style={{ width: 300 }}
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 allowClear
               />
               <Select
-                placeholder="筛选状态"
+                placeholder={t('my_submissions.filter_status')}
                 style={{ width: 120 }}
                 value={statusFilter}
                 onChange={setStatusFilter}
               >
-                <Select.Option value="all">全部状态</Select.Option>
-                <Select.Option value="pending">待审核</Select.Option>
-                <Select.Option value="under-review">审核中</Select.Option>
-                <Select.Option value="approved">已通过</Select.Option>
-                <Select.Option value="rejected">已拒绝</Select.Option>
+                <Select.Option value="all">{t('my_submissions.all_status')}</Select.Option>
+                <Select.Option value="pending">{t('my_submissions.status.pending')}</Select.Option>
+                <Select.Option value="under-review">{t('my_submissions.status.reviewing')}</Select.Option>
+                <Select.Option value="approved">{t('my_submissions.status.approved')}</Select.Option>
+                <Select.Option value="rejected">{t('my_submissions.status.rejected')}</Select.Option>
               </Select>
             </Space>
           </div>
@@ -296,14 +300,14 @@ const MySubmissions: React.FC = () => {
               showSizeChanger: true,
               showQuickJumper: true,
               showTotal: (total, range) =>
-                `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+                t('my_submissions.pagination_total', { start: range[0], end: range[1], total }),
             }}
           />
         </Card>
 
         {/* 详情弹窗 */}
         <Modal
-          title="提交详情"
+          title={t('my_submissions.detail_modal_title')}
           open={detailModalVisible}
           onCancel={() => setDetailModalVisible(false)}
           footer={null}
@@ -311,32 +315,32 @@ const MySubmissions: React.FC = () => {
         >
           {selectedSubmission && (
             <Descriptions column={2} bordered>
-              <Descriptions.Item label="项目名称" span={2}>
+              <Descriptions.Item label={t('my_submissions.detail.project_name')} span={2}>
                 {selectedSubmission.projectName}
               </Descriptions.Item>
-              <Descriptions.Item label="项目类型">
+              <Descriptions.Item label={t('my_submissions.detail.project_type')}>
                 {getProjectTypeTag(selectedSubmission.projectType)}
               </Descriptions.Item>
-              <Descriptions.Item label="状态">
+              <Descriptions.Item label={t('my_submissions.detail.status')}>
                 {getStatusTag(selectedSubmission.status)}
               </Descriptions.Item>
-              <Descriptions.Item label="提交时间">
+              <Descriptions.Item label={t('my_submissions.detail.submit_time')}>
                 {selectedSubmission.submitTime}
               </Descriptions.Item>
-              <Descriptions.Item label="审核时间">
-                {selectedSubmission.reviewTime || '未审核'}
+              <Descriptions.Item label={t('my_submissions.detail.review_time')}>
+                {selectedSubmission.reviewTime || t('my_submissions.detail.not_reviewed')}
               </Descriptions.Item>
               {selectedSubmission.score && (
-                <Descriptions.Item label="得分" span={2}>
+                <Descriptions.Item label={t('my_submissions.detail.score')} span={2}>
                   <span className="text-lg font-semibold text-blue-600">
                     {selectedSubmission.score}
                   </span>
                 </Descriptions.Item>
               )}
-              <Descriptions.Item label="项目描述" span={2}>
+              <Descriptions.Item label={t('my_submissions.detail.description')} span={2}>
                 {selectedSubmission.description}
               </Descriptions.Item>
-              <Descriptions.Item label="代码仓库" span={2}>
+              <Descriptions.Item label={t('my_submissions.detail.repository')} span={2}>
                 <a
                   href={selectedSubmission.repositoryUrl}
                   target="_blank"
@@ -345,10 +349,10 @@ const MySubmissions: React.FC = () => {
                   {selectedSubmission.repositoryUrl}
                 </a>
               </Descriptions.Item>
-              <Descriptions.Item label="联系邮箱" span={2}>
+              <Descriptions.Item label={t('my_submissions.detail.contact_email')} span={2}>
                 {selectedSubmission.contactEmail}
               </Descriptions.Item>
-              <Descriptions.Item label="项目标签" span={2}>
+              <Descriptions.Item label={t('my_submissions.detail.tags')} span={2}>
                 {selectedSubmission.tags.map((tag) => (
                   <Tag key={tag} color="blue">
                     {tag}
@@ -356,7 +360,7 @@ const MySubmissions: React.FC = () => {
                 ))}
               </Descriptions.Item>
               {selectedSubmission.reviewComments && (
-                <Descriptions.Item label="审核意见" span={2}>
+                <Descriptions.Item label={t('my_submissions.detail.review_comments')} span={2}>
                   {selectedSubmission.reviewComments}
                 </Descriptions.Item>
               )}
