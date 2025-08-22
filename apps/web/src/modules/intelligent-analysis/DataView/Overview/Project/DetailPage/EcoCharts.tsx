@@ -45,349 +45,248 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
     }));
   }, [data?.length]);
 
+  // Helper functions to reduce complexity
+  const getAllCategories = (
+    data2024: Record<string, number>,
+    data2025: Record<string, number>
+  ) => {
+    const categories = new Set([
+      ...Object.keys(data2024),
+      ...Object.keys(data2025),
+    ]);
+    return Array.from(categories);
+  };
+
+  const getValueByCategory = (
+    data: Record<string, number>,
+    category: string
+  ) => {
+    return data[category] || 0;
+  };
+
+  const createChartOption = (
+    categories: string[],
+    data2024: Record<string, number>,
+    data2025: Record<string, number>,
+    yAxisName: string,
+    isContribution = false
+  ) => {
+    const formatCategoryName = (item: string) => {
+      if (isContribution) {
+        const match = item.match(/^(\d+年)?(.+?)(\(.*\))?$/);
+        const cleanName = match ? match[2] : item;
+        return translateByLocale(cleanName, ecosystemMapping, i18n.language);
+      }
+      return translateByLocale(item, ecosystemMapping, i18n.language);
+    };
+
+    return {
+      tooltip: {
+        trigger: 'axis' as const,
+        axisPointer: {
+          type: 'shadow' as const,
+        },
+      },
+      legend: {
+        data: i18n.language === 'en' ? ['2024', '2025'] : ['2024年', '2025年'],
+        top: 0,
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '15%',
+        containLabel: true,
+      },
+      xAxis: {
+        type: 'category' as const,
+        data: categories.map(formatCategoryName),
+        axisLabel: {
+          rotate: 45,
+          fontSize: 10,
+        },
+      },
+      yAxis: {
+        type: 'value' as const,
+        name: yAxisName,
+      },
+      series: [
+        {
+          name: i18n.language === 'en' ? '2024' : '2024年',
+          type: 'bar' as const,
+          data: categories.map((cat) => getValueByCategory(data2024, cat)),
+          itemStyle: {
+            color: '#1890ff',
+          },
+          label: {
+            show: true,
+            position: 'top' as const,
+            fontSize: 10,
+            formatter: function (params): string {
+              return typeof params.value === 'number'
+                ? params.value.toFixed(2)
+                : String(params.value);
+            },
+          },
+        },
+        {
+          name: i18n.language === 'en' ? '2025' : '2025年',
+          type: 'bar' as const,
+          data: categories.map((cat) => getValueByCategory(data2025, cat)),
+          itemStyle: {
+            color: '#52c41a',
+          },
+          label: {
+            show: true,
+            position: 'top' as const,
+            fontSize: 10,
+            formatter: function (params): string {
+              return typeof params.value === 'number'
+                ? params.value.toFixed(2)
+                : String(params.value);
+            },
+          },
+        },
+      ],
+    };
+  };
+
+  const createEcoTabItem = (eco: EcoData, index: number) => {
+    const currentRefs = chartRefs[index];
+    if (!currentRefs) return null;
+
+    const { roleRef, contributionRef, influenceRef } = currentRefs;
+
+    const roleCategories = getAllCategories(
+      eco.roleBreakdown2024,
+      eco.roleBreakdown2025
+    );
+    const contributionCategories = getAllCategories(
+      eco.contributionBreakdown2024,
+      eco.contributionBreakdown2025
+    );
+    const influenceCategories = getAllCategories(
+      eco.influenceBreakdown2024,
+      eco.influenceBreakdown2025
+    );
+
+    const scoreChange = eco.score2025 - eco.score2024;
+    const isPositiveChange = eco.score2025 > eco.score2024;
+
+    return {
+      key: eco.name,
+      label: translateByLocale(eco.name, ecosystemMapping, i18n.language),
+      children: (
+        <div className="space-y-6">
+          <div className="mb-6 text-center">
+            <h3 className="mb-2 text-xl font-bold text-gray-800">
+              {translateByLocale(eco.name, ecosystemMapping, i18n.language)}
+            </h3>
+            <div className="text-base text-gray-600">
+              <span className="font-semibold text-blue-600">
+                {i18n.language === 'en' ? '2024: ' : '2024年: '}
+                {eco.score2024.toFixed(2)}
+              </span>
+              <span className="mx-3 text-gray-400">→</span>
+              <span className="font-semibold text-green-600">
+                {i18n.language === 'en' ? '2025: ' : '2025年: '}
+                {eco.score2025.toFixed(2)}
+              </span>
+              <span
+                className={`ml-3 font-bold ${
+                  isPositiveChange ? 'text-green-600' : 'text-red-600'
+                }`}
+              >
+                ({isPositiveChange ? '+' : ''}
+                {scoreChange.toFixed(2)})
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-6 lg:grid-cols-3">
+            <Card
+              title={i18n.language === 'en' ? 'Role Score' : '角色得分'}
+              size="small"
+            >
+              <div style={{ height: '300px', width: '100%' }} ref={roleRef}>
+                <EChartX
+                  containerRef={roleRef}
+                  loading={false}
+                  style={{ width: '100%', height: '100%' }}
+                  option={createChartOption(
+                    roleCategories,
+                    eco.roleBreakdown2024,
+                    eco.roleBreakdown2025,
+                    i18n.language === 'en' ? 'Project Count' : '项目数量'
+                  )}
+                />
+              </div>
+            </Card>
+
+            <Card
+              title={
+                i18n.language === 'en'
+                  ? 'Code Issue Contribution Score'
+                  : '代码Issue贡献得分'
+              }
+              size="small"
+            >
+              <div
+                style={{ height: '300px', width: '100%' }}
+                ref={contributionRef}
+              >
+                <EChartX
+                  containerRef={contributionRef}
+                  loading={false}
+                  style={{ width: '100%', height: '100%' }}
+                  option={createChartOption(
+                    contributionCategories,
+                    eco.contributionBreakdown2024,
+                    eco.contributionBreakdown2025,
+                    i18n.language === 'en' ? 'Normalized Score' : '归一化得分',
+                    true
+                  )}
+                />
+              </div>
+            </Card>
+
+            <Card
+              title={
+                i18n.language === 'en'
+                  ? 'Collaboration Influence Score'
+                  : '协作影响力得分'
+              }
+              size="small"
+            >
+              <div
+                style={{ height: '300px', width: '100%' }}
+                ref={influenceRef}
+              >
+                <EChartX
+                  containerRef={influenceRef}
+                  loading={false}
+                  style={{ width: '100%', height: '100%' }}
+                  option={createChartOption(
+                    influenceCategories,
+                    eco.influenceBreakdown2024,
+                    eco.influenceBreakdown2025,
+                    i18n.language === 'en' ? 'Normalized Score' : '归一化得分',
+                    true
+                  )}
+                />
+              </div>
+            </Card>
+          </div>
+        </div>
+      ),
+    };
+  };
+
   const chartOptions = useMemo(() => {
-    // 如果没有数据，返回空数组
     if (!data || data.length === 0) {
       return [];
     }
 
-    return data.map((eco, index) => {
-      // 使用动态创建的refs
-      const currentRefs = chartRefs[index];
-      if (!currentRefs) return null;
-
-      const { roleRef, contributionRef, influenceRef } = currentRefs;
-
-      // 合并2024年和2025年的所有类别
-      const getAllCategories = (
-        data2024: Record<string, number>,
-        data2025: Record<string, number>
-      ) => {
-        const categories = new Set([
-          ...Object.keys(data2024),
-          ...Object.keys(data2025),
-        ]);
-        return Array.from(categories);
-      };
-
-      // 根据类别获取对应的值
-      const getValueByCategory = (
-        data: Record<string, number>,
-        category: string
-      ) => {
-        return data[category] || 0;
-      };
-
-      const roleCategories = getAllCategories(
-        eco.roleBreakdown2024,
-        eco.roleBreakdown2025
-      );
-      const contributionCategories = getAllCategories(
-        eco.contributionBreakdown2024,
-        eco.contributionBreakdown2025
-      );
-      const influenceCategories = getAllCategories(
-        eco.influenceBreakdown2024,
-        eco.influenceBreakdown2025
-      );
-
-      return {
-        key: eco.name,
-        label: translateByLocale(eco.name, ecosystemMapping, i18n.language),
-        children: (
-          <div className="space-y-6">
-            <div className="mb-6 text-center">
-              <h3 className="mb-2 text-xl font-bold text-gray-800">
-                {translateByLocale(eco.name, ecosystemMapping, i18n.language)}
-              </h3>
-              <div className="text-base text-gray-600">
-                <span className="font-semibold text-blue-600">
-                  {i18n.language === 'en' ? '2024: ' : '2024年: '}{eco.score2024.toFixed(2)}
-                </span>
-                <span className="mx-3 text-gray-400">→</span>
-                <span className="font-semibold text-green-600">
-                  {i18n.language === 'en' ? '2025: ' : '2025年: '}{eco.score2025.toFixed(2)}
-                </span>
-                <span
-                  className={`ml-3 font-bold ${
-                    eco.score2025 > eco.score2024
-                      ? 'text-green-600'
-                      : 'text-red-600'
-                  }`}
-                >
-                  ({eco.score2025 > eco.score2024 ? '+' : ''}
-                  {(eco.score2025 - eco.score2024).toFixed(2)})
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-6 lg:grid-cols-3">
-              {/* 角色得分图表 */}
-              <Card title={i18n.language === 'en' ? 'Role Score' : '角色得分'} size="small">
-                <div
-                  style={{ height: '300px', width: '100%' }}
-                  ref={roleRef}
-                >
-                  <EChartX
-                    containerRef={roleRef}
-                    loading={false}
-                    style={{ width: '100%', height: '100%' }}
-                    option={{
-                      tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                          type: 'shadow',
-                        },
-                      },
-                      legend: {
-                        data: i18n.language === 'en' ? ['2024', '2025'] : ['2024年', '2025年'],
-                        top: 0,
-                      },
-                      grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '15%',
-                        containLabel: true,
-                      },
-                      xAxis: {
-                        type: 'category',
-                        data: roleCategories.map(cat => translateByLocale(cat, ecosystemMapping, i18n.language)),
-                        axisLabel: {
-                          rotate: 45,
-                          fontSize: 10,
-                        },
-                      },
-                      yAxis: {
-                        type: 'value',
-                        name: i18n.language === 'en' ? 'Project Count' : '项目数量',
-                      },
-                      series: [
-                        {
-                          name: i18n.language === 'en' ? '2024' : '2024年',
-                          type: 'bar',
-                          data: roleCategories.map((cat) =>
-                            getValueByCategory(eco.roleBreakdown2024, cat)
-                          ),
-                          itemStyle: {
-                            color: '#1890ff',
-                          },
-                          label: {
-                            show: true,
-                            position: 'top',
-                            fontSize: 10,
-                            formatter: function(params): string {
-                              return typeof params.value === 'number' ? params.value.toFixed(2) : String(params.value);
-                            },
-                          },
-                        },
-                        {
-                          name: i18n.language === 'en' ? '2025' : '2025年',
-                          type: 'bar',
-                          data: roleCategories.map((cat) =>
-                            getValueByCategory(eco.roleBreakdown2025, cat)
-                          ),
-                          itemStyle: {
-                            color: '#52c41a',
-                          },
-                          label: {
-                            show: true,
-                            position: 'top',
-                            fontSize: 10,
-                            formatter: function(params): string {
-                              return typeof params.value === 'number' ? params.value.toFixed(2) : String(params.value);
-                            },
-                          },
-                        },
-                      ],
-                    }}
-                  />
-                </div>
-              </Card>
-
-              {/* 代码Issue贡献得分图表 */}
-              <Card title={i18n.language === 'en' ? 'Code Issue Contribution Score' : '代码Issue贡献得分'} size="small">
-                <div
-                  style={{ height: '300px', width: '100%' }}
-                  ref={contributionRef}
-                >
-                  <EChartX
-                    containerRef={contributionRef}
-                    loading={false}
-                    style={{ width: '100%', height: '100%' }}
-                    option={{
-                      tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                          type: 'shadow',
-                        },
-                      },
-                      legend: {
-                        data: i18n.language === 'en' ? ['2024', '2025'] : ['2024年', '2025年'],
-                        top: 0,
-                      },
-                      grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '15%',
-                        containLabel: true,
-                      },
-                      xAxis: {
-                        type: 'category',
-                        data: contributionCategories.map((item) => {
-                          // 提取括号前的名称，如 "2024年代码贡献(里程:核心, 数量:1685)" -> "代码贡献"
-                          const match = item.match(/^(\d+年)?(.+?)(\(.*\))?$/);
-                          const cleanName = match ? match[2] : item;
-                          return translateByLocale(cleanName, ecosystemMapping, i18n.language);
-                        }),
-                        axisLabel: {
-                          rotate: 45,
-                          fontSize: 10,
-                        },
-                      },
-                      yAxis: {
-                        type: 'value',
-                        name: i18n.language === 'en' ? 'Normalized Score' : '归一化得分',
-                      },
-                      series: [
-                        {
-                          name: i18n.language === 'en' ? '2024' : '2024年',
-                          type: 'bar',
-                          data: contributionCategories.map((cat) =>
-                            getValueByCategory(
-                              eco.contributionBreakdown2024,
-                              cat
-                            )
-                          ),
-                          itemStyle: {
-                            color: '#1890ff',
-                          },
-                          label: {
-                            show: true,
-                            position: 'top',
-                            fontSize: 10,
-                            formatter: function(params): string {
-                              return typeof params.value === 'number' ? params.value.toFixed(2) : String(params.value);
-                            },
-                          },
-                        },
-                        {
-                          name: i18n.language === 'en' ? '2025' : '2025年',
-                          type: 'bar',
-                          data: contributionCategories.map((cat) =>
-                            getValueByCategory(
-                              eco.contributionBreakdown2025,
-                              cat
-                            )
-                          ),
-                          itemStyle: {
-                            color: '#52c41a',
-                          },
-                          label: {
-                            show: true,
-                            position: 'top',
-                            fontSize: 10,
-                            formatter: function(params): string {
-                              return typeof params.value === 'number' ? params.value.toFixed(2) : String(params.value);
-                            },
-                          },
-                        },
-                      ],
-                    }}
-                  />
-                </div>
-              </Card>
-
-              {/* 协作影响力得分图表 */}
-              <Card title={i18n.language === 'en' ? 'Collaboration Influence Score' : '协作影响力得分'} size="small">
-                <div
-                  style={{ height: '300px', width: '100%' }}
-                  ref={influenceRef}
-                >
-                  <EChartX
-                    containerRef={influenceRef}
-                    loading={false}
-                    style={{ width: '100%', height: '100%' }}
-                    option={{
-                      tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                          type: 'shadow',
-                        },
-                      },
-                      legend: {
-                        data: i18n.language === 'en' ? ['2024', '2025'] : ['2024年', '2025年'],
-                        top: 0,
-                      },
-                      grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '15%',
-                        containLabel: true,
-                      },
-                      xAxis: {
-                        type: 'category',
-                        data: influenceCategories.map((item) => {
-                          // 提取括号前的名称，如 "2024年社区核心度(程度:核心, 数值:0.0017)" -> "社区核心度"
-                          const match = item.match(/^(\d+年)?(.+?)(\(.*\))?$/);
-                          const cleanName = match ? match[2] : item;
-                          return translateByLocale(cleanName, ecosystemMapping, i18n.language);
-                        }),
-                        axisLabel: {
-                          rotate: 45,
-                          fontSize: 10,
-                        },
-                      },
-                      yAxis: {
-                        type: 'value',
-                        name: i18n.language === 'en' ? 'Normalized Score' : '归一化得分',
-                      },
-                      series: [
-                        {
-                          name: i18n.language === 'en' ? '2024' : '2024年',
-                          type: 'bar',
-                          data: influenceCategories.map((cat) =>
-                            getValueByCategory(eco.influenceBreakdown2024, cat)
-                          ),
-                          itemStyle: {
-                            color: '#1890ff',
-                          },
-                          label: {
-                            show: true,
-                            position: 'top',
-                            fontSize: 10,
-                            formatter: function(params): string {
-                              return typeof params.value === 'number' ? params.value.toFixed(2) : String(params.value);
-                            },
-                          },
-                        },
-                        {
-                          name: i18n.language === 'en' ? '2025' : '2025年',
-                          type: 'bar',
-                          data: influenceCategories.map((cat) =>
-                            getValueByCategory(eco.influenceBreakdown2025, cat)
-                          ),
-                          itemStyle: {
-                            color: '#52c41a',
-                          },
-                          label: {
-                            show: true,
-                            position: 'top',
-                            fontSize: 10,
-                            formatter: function(params): string {
-                              return typeof params.value === 'number' ? params.value.toFixed(2) : String(params.value);
-                            },
-                          },
-                        },
-                      ],
-                    }}
-                  />
-                </div>
-              </Card>
-            </div>
-          </div>
-        ),
-      };
-    }).filter(Boolean); // 过滤掉null值
+    return data.map(createEcoTabItem).filter(Boolean);
   }, [data, chartRefs, i18n.language]);
 
   // 如果没有数据，显示提示信息
