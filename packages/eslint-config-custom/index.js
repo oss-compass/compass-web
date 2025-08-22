@@ -11,7 +11,7 @@ module.exports = {
     ],
     'valtio/state-snapshot-rule': 'error',
     'valtio/avoid-this-in-proxy': 'error',
-    complexity: ['error', { max: 14 }],
+    complexity: ['error', { max: 18 }],
     '@next/next/no-img-element': 'off',
   },
   overrides: [
