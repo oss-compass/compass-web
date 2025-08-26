@@ -251,14 +251,14 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                 <>
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
-                      i18n.language === 'en' ? '2024 Organization Network Influence' : '2024组织网络影响力',
+                      i18n.language === 'en' ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)' : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
                       ecosystemData['2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'],
                       '#fa8c16'
                     )}
                   </Col>
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
-                      i18n.language === 'en' ? '2025 Organization Network Influence' : '2025年组织网络影响力',
+                      i18n.language === 'en' ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)' : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
                       ecosystemData['2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'],
                       '#722ed1'
                     )}
@@ -477,7 +477,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       style={{
         borderRadius: '8px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-        height: '120px',
+        height: '130px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center'
@@ -500,7 +500,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       style={{
         borderRadius: '8px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-        height: '120px',
+        height: '130px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center'
@@ -516,7 +516,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           const translated = translateCompositeString(value as string, ecosystemMapping, i18n.language);
           if (translated.length > 20) {
             return (
-              <span title={translated} style={{ 
+              <span title={translated} style={{
                 display: 'block',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',

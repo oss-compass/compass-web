@@ -70,14 +70,6 @@ const MoreDropdown = () => {
               OpenHarmony
             </Link>
           )}
-          {roleLevel >= 7 && (
-            <Link
-              href="/developer-mining"
-              className="mx-4 flex-shrink-0 px-2.5 font-medium text-white 2xl:mx-2"
-            >
-              开发者挖掘
-            </Link>
-          )}
         </div>
       </div>
     </div>
