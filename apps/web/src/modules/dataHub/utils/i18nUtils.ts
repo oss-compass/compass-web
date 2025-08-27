@@ -12,9 +12,9 @@ export const getLocalizedText = (text: string, language: string): string => {
   if (!text || !text.includes(' / ')) {
     return text;
   }
-  
+
   const [englishText, chineseText] = text.split(' / ');
-  
+
   // 根据当前语言返回对应文本
   if (language === 'zh' || language === 'zh-CN') {
     return chineseText?.trim() || englishText?.trim() || text;
@@ -29,8 +29,11 @@ export const getLocalizedText = (text: string, language: string): string => {
  * @param language 当前语言代码
  * @returns 处理后的文本数组
  */
-export const getLocalizedTexts = (texts: string[], language: string): string[] => {
-  return texts.map(text => getLocalizedText(text, language));
+export const getLocalizedTexts = (
+  texts: string[],
+  language: string
+): string[] => {
+  return texts.map((text) => getLocalizedText(text, language));
 };
 
 /**
@@ -51,7 +54,7 @@ export const getEnglishText = (text: string): string => {
   if (!isInternationalizedText(text)) {
     return text;
   }
-  
+
   const [englishText] = text.split(' / ');
   return englishText?.trim() || text;
 };
@@ -65,7 +68,7 @@ export const getChineseText = (text: string): string => {
   if (!isInternationalizedText(text)) {
     return text;
   }
-  
+
   const [, chineseText] = text.split(' / ');
   return chineseText?.trim() || text;
 };
