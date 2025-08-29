@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Tabs } from 'antd';
-
-import QueueTab from './QueueTab';
 import HatchingTab from './HatchingTab';
 import GraduationTab from './GraduationTab';
+import QueueTab from './QueueTab';
 
 const SelectionEvaluationTPCMonitor: React.FC = () => {
   const [activeTab, setActiveTab] = useState('queue');

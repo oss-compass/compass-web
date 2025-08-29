@@ -116,7 +116,7 @@ const UserListContent: React.FC = () => {
     ];
     return validRanges.includes(range as DateRangeType)
       ? (range as DateRangeType)
-      : '1M';
+      : '3M';
   };
 
   const handleDateRangeChange = (

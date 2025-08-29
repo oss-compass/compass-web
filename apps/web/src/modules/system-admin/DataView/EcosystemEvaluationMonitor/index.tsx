@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Tabs } from 'antd';
-import QueueTab from './QueueTab';
 import RepositoryTab from './RepositoryTab/index';
 import CommunityTab from './CommunityTab/index';
+import QueueTab from './QueueTab';
 
 const EcosystemEvaluationMonitor: React.FC = () => {
   const [activeTab, setActiveTab] = useState('queue');

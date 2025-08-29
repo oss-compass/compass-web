@@ -122,8 +122,7 @@ const RepositoryManagement: React.FC = () => {
         type: queueType === 'priority' ? QueueType.PRIORITY : QueueType.NORMAL,
       });
       message.success(
-        `成功将 ${record.repository} 加入${
-          queueType === 'priority' ? '优先' : '普通'
+        `成功将 ${record.repository} 加入${queueType === 'priority' ? '优先' : '普通'
         }队列`
       );
     } catch (error) {
@@ -328,9 +327,8 @@ const RepositoryManagement: React.FC = () => {
         return (
           <div className="flex gap-2 text-[#3e8eff]">
             <a
-              className={`cursor-pointer hover:underline ${
-                isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
-              }`}
+              className={`cursor-pointer hover:underline ${isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
+                }`}
               onClick={() =>
                 !isNormalLoading && handleAddToQueue(record, 'normal')
               }
@@ -338,9 +336,8 @@ const RepositoryManagement: React.FC = () => {
               {isNormalLoading ? '加入中...' : '加入队列'}
             </a>
             <a
-              className={`cursor-pointer hover:underline ${
-                isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
-              }`}
+              className={`cursor-pointer hover:underline ${isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
+                }`}
               onClick={() =>
                 !isPriorityLoading && handleAddToQueue(record, 'priority')
               }
@@ -369,7 +366,7 @@ const RepositoryManagement: React.FC = () => {
               allowClear
             />
             <Space>
-              <Button onClick={() => {}}>设置自动更新周期</Button>
+              <Button onClick={() => { }}>设置自动更新周期</Button>
               <Button onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
               </Button>
@@ -403,10 +400,11 @@ const RepositoryManagement: React.FC = () => {
               allowClear
             >
               <Option value="all">全部时间</Option>
-              <Option value="1">1 个月内</Option>
-              <Option value="3">超过 1 个月</Option>
-              <Option value="6">超过 3 个月</Option>
-              <Option value="12">超过半年</Option>
+              <Option value="1个月内">1 个月内</Option>
+              <Option value="超过1个月">超过 1 个月</Option>
+              <Option value="超过3个月">超过 3 个月</Option>
+              <Option value="超过半年">超过半年</Option>
+              <Option value="超过1年">超过 1 年</Option>
             </Select>
           </div>
         </div>
