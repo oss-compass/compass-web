@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
 // 更新时间分布接口响应类型
@@ -97,6 +97,29 @@ export interface ProjectListResponse {
   current_page: number;
   per_page: number;
   total_pages: number;
+}
+
+// TPC 队列相关接口
+export interface AddToTpcQueueRequest {
+  report_id: string;
+  report_type: number; // 0孵化，1毕业
+  type: number; // 0普通队列，1优先队列
+}
+
+export interface AddToTpcQueueResponse {
+  message: string;
+}
+
+// TPC 队列类型枚举
+export enum TpcQueueType {
+  NORMAL = 0,
+  PRIORITY = 1,
+}
+
+// TPC 报告类型枚举
+export enum TpcReportType {
+  INCUBATION = 0,
+  GRADUATION = 1,
 }
 
 // 获取选择评估更新时间分布数据
@@ -237,6 +260,21 @@ export const useIncubationProjectList = (params: ProjectListRequest) => {
     },
     staleTime: 2 * 60 * 1000, // 2分钟
     refetchOnWindowFocus: false,
+  });
+};
+
+// TPC 队列 hook
+export const useAddToTpcQueue = () => {
+  return useMutation({
+    mutationFn: async (
+      params: AddToTpcQueueRequest
+    ): Promise<AddToTpcQueueResponse> => {
+      const response = await axios.post(
+        '/api/v2/queue_server/add_tpc_queue',
+        params
+      );
+      return response.data;
+    },
   });
 };
 

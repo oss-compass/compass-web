@@ -11,6 +11,7 @@ import {
   Modal,
   Radio,
   message,
+  Form,
 } from 'antd';
 import {
   SearchOutlined,
@@ -21,6 +22,8 @@ import {
 import {
   useRepositoryList,
   useAddToQueue,
+  useBatchAddToQueue,
+  useRepositoryUpdateOverview,
   RepositoryTimeType,
   RepositoryPlatformType,
   QueueType,
@@ -57,6 +60,10 @@ const RepositoryManagement: React.FC = () => {
     'normal'
   );
   const [loadingQueues, setLoadingQueues] = useState<Set<string>>(new Set());
+  const [addRepoModalVisible, setAddRepoModalVisible] = useState(false);
+  const [addRepoForm] = Form.useForm();
+  const [addRepoLoading, setAddRepoLoading] = useState(false);
+  const [batchLoading, setBatchLoading] = useState(false);
 
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
@@ -84,8 +91,17 @@ const RepositoryManagement: React.FC = () => {
     error: repositoryListError,
   } = useRepositoryList(repositoryListParams);
 
+  // 获取仓库更新时间分布数据
+  const {
+    data: repositoryUpdateOverview,
+    isLoading: updateOverviewLoading,
+  } = useRepositoryUpdateOverview();
+
   // 加入队列 hook
   const addToQueueMutation = useAddToQueue();
+
+  // 批量加入队列 hook
+  const batchAddToQueueMutation = useBatchAddToQueue();
 
   // 事件处理函数
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,6 +151,35 @@ const RepositoryManagement: React.FC = () => {
         newSet.delete(queueId);
         return newSet;
       });
+    }
+  };
+
+  // 验证仓库链接
+  const validateRepositoryUrl = (url: string): boolean => {
+    const githubPattern = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/;
+    const giteePattern = /^https:\/\/gitee\.com\/[\w.-]+\/[\w.-]+\/?$/;
+    return githubPattern.test(url) || giteePattern.test(url);
+  };
+
+  // 处理新增仓库
+  const handleAddRepository = async (values: { repositoryUrl: string; queueType: 'normal' | 'priority' }) => {
+    setAddRepoLoading(true);
+    try {
+      await addToQueueMutation.mutateAsync({
+        project_url: values.repositoryUrl,
+        type: values.queueType === 'priority' ? QueueType.PRIORITY : QueueType.NORMAL,
+      });
+      message.success(
+        `成功将仓库加入${values.queueType === 'priority' ? '优先' : '普通'}队列`
+      );
+      setAddRepoModalVisible(false);
+      addRepoForm.resetFields();
+    } catch (error) {
+      message.error(
+        `加入队列失败：${error instanceof Error ? error.message : '未知错误'}`
+      );
+    } finally {
+      setAddRepoLoading(false);
     }
   };
 
@@ -200,34 +245,51 @@ const RepositoryManagement: React.FC = () => {
   }, [repositoryListData]);
 
   // 批量操作处理函数
-  const handleBatchQueue = () => {
+  const handleBatchQueue = async () => {
     if (!batchTimeCategory) {
       message.warning('请选择时间类别');
       return;
     }
 
-    const targetRepositories = transformedData.filter(
-      (item) => item.lastUpdateCategory === batchTimeCategory
-    );
+    // 将时间类别映射为 API 所需的数字参数
+    const timeTypeMap: Record<string, number> = {
+      '超过 1 个月': 1,
+      '超过 3 个月': 3,
+      '超过半年': 6,
+      '超过 1 年': 12,
+    };
 
-    if (targetRepositories.length === 0) {
-      message.warning(`没有找到${batchTimeCategory}的仓库`);
+    const timeType = timeTypeMap[batchTimeCategory];
+    if (!timeType) {
+      message.error('无效的时间类别');
       return;
     }
 
-    const queueTypeText =
-      batchQueueType === 'priority' ? '优先队列' : '普通队列';
+    const queueType = batchQueueType === 'priority' ? 1 : 0;
+    const queueTypeText = batchQueueType === 'priority' ? '优先队列' : '普通队列';
 
     Modal.confirm({
       title: '确认批量操作',
-      content: `确定要将 ${targetRepositories.length} 个${batchTimeCategory}的仓库加入${queueTypeText}吗？`,
-      onOk: () => {
-        message.success(
-          `成功将 ${targetRepositories.length} 个仓库加入${queueTypeText}`
-        );
-        setBatchModalVisible(false);
-        setBatchTimeCategory('');
-        setBatchQueueType('normal');
+      content: `确定要将${batchTimeCategory}的仓库加入${queueTypeText}吗？`,
+      onOk: async () => {
+        setBatchLoading(true);
+        try {
+          const result = await batchAddToQueueMutation.mutateAsync({
+            time_type: timeType,
+            queue_type: queueType,
+          });
+
+          message.success(result.message || `成功加入${queueTypeText}`);
+          setBatchModalVisible(false);
+          setBatchTimeCategory('');
+          setBatchQueueType('normal');
+        } catch (error) {
+          message.error(
+            `批量加入队列失败：${error instanceof Error ? error.message : '未知错误'}`
+          );
+        } finally {
+          setBatchLoading(false);
+        }
       },
     });
   };
@@ -344,7 +406,7 @@ const RepositoryManagement: React.FC = () => {
             >
               {isPriorityLoading ? '加入中...' : '加入优先队列'}
             </a>
-            <a className="cursor-pointer hover:underline">删除</a>
+            {/* <a className="cursor-pointer hover:underline">删除</a> */}
           </div>
         );
       },
@@ -370,7 +432,11 @@ const RepositoryManagement: React.FC = () => {
               <Button onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
               </Button>
-              <Button type="primary" icon={<PlusOutlined />}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setAddRepoModalVisible(true)}
+              >
                 新增仓库
               </Button>
               <Button icon={<UploadOutlined />}>批量导入</Button>
@@ -445,6 +511,7 @@ const RepositoryManagement: React.FC = () => {
           setBatchTimeCategory('');
           setBatchQueueType('normal');
         }}
+        confirmLoading={batchLoading}
         width={500}
       >
         <div className="space-y-4">
@@ -462,11 +529,7 @@ const RepositoryManagement: React.FC = () => {
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 个月'
-                      ).length
-                    }{' '}
+                    {repositoryUpdateOverview?.over_1m || 0}{' '}
                     个仓库)
                   </span>
                 </Radio>
@@ -474,11 +537,7 @@ const RepositoryManagement: React.FC = () => {
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 3 个月'
-                      ).length
-                    }{' '}
+                    {repositoryUpdateOverview?.over_3m || 0}{' '}
                     个仓库)
                   </span>
                 </Radio>
@@ -486,11 +545,7 @@ const RepositoryManagement: React.FC = () => {
                   超过半年未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过半年'
-                      ).length
-                    }{' '}
+                    {repositoryUpdateOverview?.over_6m || 0}{' '}
                     个仓库)
                   </span>
                 </Radio>
@@ -498,11 +553,7 @@ const RepositoryManagement: React.FC = () => {
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 年'
-                      ).length
-                    }{' '}
+                    {repositoryUpdateOverview?.over_12m || 0}{' '}
                     个仓库)
                   </span>
                 </Radio>
@@ -542,6 +593,77 @@ const RepositoryManagement: React.FC = () => {
             </div>
           )}
         </div>
+      </Modal>
+
+      {/* 新增仓库模态框 */}
+      <Modal
+        title="新增仓库"
+        open={addRepoModalVisible}
+        onCancel={() => {
+          setAddRepoModalVisible(false);
+          addRepoForm.resetFields();
+        }}
+        footer={null}
+        width={500}
+      >
+        <Form
+          form={addRepoForm}
+          layout="vertical"
+          onFinish={handleAddRepository}
+          initialValues={{ queueType: 'normal' }}
+        >
+          <Form.Item
+            label="仓库链接"
+            name="repositoryUrl"
+            rules={[
+              { required: true, message: '请输入仓库链接' },
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  if (validateRepositoryUrl(value)) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('请输入有效的 GitHub 或 Gitee 仓库链接'));
+                },
+              },
+            ]}
+          >
+            <Input
+              placeholder="请输入 GitHub 或 Gitee 仓库链接，例如：https://github.com/user/repo"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="队列类型"
+            name="queueType"
+            rules={[{ required: true, message: '请选择队列类型' }]}
+          >
+            <Radio.Group>
+              <Radio value="normal">普通队列</Radio>
+              <Radio value="priority">优先队列</Radio>
+            </Radio.Group>
+          </Form.Item>
+
+          <Form.Item className="mb-0">
+            <div className="flex justify-end gap-2">
+              <Button
+                onClick={() => {
+                  setAddRepoModalVisible(false);
+                  addRepoForm.resetFields();
+                }}
+              >
+                取消
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={addRepoLoading}
+              >
+                确认添加
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   );

@@ -255,6 +255,17 @@ export interface AddToQueueResponse {
   [key: string]: any;
 }
 
+// 批量加入队列请求参数类型
+export interface BatchAddToQueueRequest {
+  time_type: number; // 时间类型：1，3，6，12
+  queue_type: number; // 类型，0普通队列，1优先队列
+}
+
+// 批量加入队列响应类型
+export interface BatchAddToQueueResponse {
+  message: string;
+}
+
 // 加入队列 hook
 export const useAddToQueue = () => {
   return useMutation({
@@ -263,6 +274,21 @@ export const useAddToQueue = () => {
     ): Promise<AddToQueueResponse> => {
       const response = await axios.post(
         '/api/v2/queue_server/add_queue',
+        params
+      );
+      return response.data;
+    },
+  });
+};
+
+// 批量加入队列 hook
+export const useBatchAddToQueue = () => {
+  return useMutation({
+    mutationFn: async (
+      params: BatchAddToQueueRequest
+    ): Promise<BatchAddToQueueResponse> => {
+      const response = await axios.post(
+        '/api/v2/queue_server/batch_add_queue',
         params
       );
       return response.data;

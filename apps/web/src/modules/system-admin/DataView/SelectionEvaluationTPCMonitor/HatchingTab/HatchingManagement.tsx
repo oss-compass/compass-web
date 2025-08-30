@@ -21,6 +21,12 @@ import {
   PROJECT_STATE_MAP,
   type ProjectListItem,
   useIncubationProjectList,
+  useAddToTpcQueue,
+  TimeType,
+  PlatformType,
+  TpcQueueType,
+  TpcReportType,
+  type ProjectListRequest,
 } from '../../../hooks';
 
 const { Option } = Select;
@@ -98,11 +104,15 @@ const GraduationManagement: React.FC = () => {
   const { data: projectListData, isLoading: projectListLoading } =
     useIncubationProjectList(projectListParams);
 
+  // TPC 队列 hook
+  const addToTpcQueueMutation = useAddToTpcQueue();
+
   const [batchModalVisible, setBatchModalVisible] = useState(false);
   const [batchTimeCategory, setBatchTimeCategory] = useState<string>('');
   const [batchQueueType, setBatchQueueType] = useState<'normal' | 'priority'>(
     'normal'
   );
+  const [loadingQueues, setLoadingQueues] = useState<Set<string>>(new Set());
 
   // 获取更新时间分类
   const getUpdateTimeCategory = (updatedAt: string): string => {
@@ -188,6 +198,35 @@ const GraduationManagement: React.FC = () => {
     return filtered;
   }, [transformedData, updateTimeFilter, platformFilter]);
 
+  // 处理单个项目加入队列
+  const handleAddToQueue = async (
+    reportId: number,
+    queueType: 'normal' | 'priority'
+  ) => {
+    const queueTypeText = queueType === 'priority' ? '优先队列' : '普通队列';
+
+    setLoadingQueues(prev => new Set(prev).add(`${reportId}-${queueType}`));
+
+    try {
+      await addToTpcQueueMutation.mutateAsync({
+        report_id: String(reportId),
+        report_type: TpcReportType.INCUBATION,
+        type: queueType === 'priority' ? TpcQueueType.PRIORITY : TpcQueueType.NORMAL,
+      });
+
+      message.success(`已成功加入${queueTypeText}`);
+    } catch (error) {
+      console.error('加入队列失败:', error);
+      message.error(`加入${queueTypeText}失败，请重试`);
+    } finally {
+      setLoadingQueues(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(`${reportId}-${queueType}`);
+        return newSet;
+      });
+    }
+  };
+
   // 批量操作处理函数
   const handleBatchQueue = () => {
     if (!batchTimeCategory) {
@@ -252,10 +291,10 @@ const GraduationManagement: React.FC = () => {
             platform === 'GitHub'
               ? 'blue'
               : platform === 'Gitee'
-              ? 'red'
-              : platform === 'GitCode'
-              ? 'orange'
-              : 'green'
+                ? 'red'
+                : platform === 'GitCode'
+                  ? 'orange'
+                  : 'green'
           }
         >
           {platform}
@@ -333,11 +372,28 @@ const GraduationManagement: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      width: '18%',
-      render: () => (
-        <div className="flex cursor-pointer gap-2 text-[#3e8eff]">
-          <a>重跑</a>
-          <a>删除</a>
+      width: '25%',
+      render: (_, record: GraduationData) => (
+        <div className="flex gap-2">
+          <Button
+            type="link"
+            size="small"
+            loading={loadingQueues.has(`${record.report_id}-normal`)}
+            onClick={() => handleAddToQueue(record.report_id, 'normal')}
+          >
+            加入队列
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            loading={loadingQueues.has(`${record.report_id}-priority`)}
+            onClick={() => handleAddToQueue(record.report_id, 'priority')}
+          >
+            加入优先队列
+          </Button>
+          {/* <Button type="link" size="small" danger>
+            删除
+          </Button> */}
         </div>
       ),
     },
@@ -359,7 +415,8 @@ const GraduationManagement: React.FC = () => {
             />
             <Space>
               <Button onClick={() => setBatchModalVisible(true)}>
-                批量重跑
+                批量加入队列
+
               </Button>
             </Space>
           </div>
@@ -424,7 +481,7 @@ const GraduationManagement: React.FC = () => {
 
       {/* 批量操作模态框 */}
       <Modal
-        title="按时间批量重跑"
+        title="按时间批量加入队列"
         open={batchModalVisible}
         onOk={handleBatchQueue}
         onCancel={() => {
@@ -499,14 +556,14 @@ const GraduationManagement: React.FC = () => {
 
           <div>
             <label className="mb-2 block text-sm font-medium">
-              选择评估类型：
+              选择队列类型：
             </label>
             <Radio.Group
               value={batchQueueType}
               onChange={(e) => setBatchQueueType(e.target.value)}
             >
-              <Radio value="normal">常规评估</Radio>
-              <Radio value="priority">优先评估</Radio>
+              <Radio value="normal">常规队列</Radio>
+              <Radio value="priority">优先队列</Radio>
             </Radio.Group>
           </div>
 
@@ -523,7 +580,7 @@ const GraduationManagement: React.FC = () => {
                 </strong>{' '}
                 个<strong>{batchTimeCategory}</strong>的项目进行
                 <strong>
-                  {batchQueueType === 'priority' ? '优先评估' : '常规评估'}
+                  {batchQueueType === 'priority' ? '优先队列' : '常规队列'}
                 </strong>
               </p>
             </div>

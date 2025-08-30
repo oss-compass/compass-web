@@ -32,7 +32,9 @@
     "*.{ts,tsx,mjs,js,jsx}": [
       "prettier --ignore-unknown --write --cache",
       "eslint --cache --fix"
-    ]
+    ],
+    "!apps/web/public/test/**/*.json": [],
+    "apps/web/i18n/**/*.json": "prettier --ignore-unknown --write --cache"
   },
   "engines": {
     "node": ">=16.0.0",

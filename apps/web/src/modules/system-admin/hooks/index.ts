@@ -60,6 +60,7 @@ export {
   useRepositoryList,
   useCommunityList,
   useAddToQueue,
+  useBatchAddToQueue,
   RepositoryTimeType,
   RepositoryPlatformType,
   CommunityTimeType,
@@ -75,6 +76,8 @@ export {
   type CommunityListResponse,
   type AddToQueueRequest,
   type AddToQueueResponse,
+  type BatchAddToQueueRequest,
+  type BatchAddToQueueResponse,
 } from './useEcosystemApi';
 
 export {
@@ -86,9 +89,12 @@ export {
   useGraduationPlatformOverview,
   useIncubationProjectList,
   useGraduationProjectList,
+  useAddToTpcQueue,
   SelectionProjectType,
   TimeType,
   PlatformType,
+  TpcQueueType,
+  TpcReportType,
   PROJECT_STATE_MAP,
   type SelectionUpdateOverviewResponse,
   type SelectionPlatformOverviewResponse,
@@ -98,4 +104,6 @@ export {
   type LoginBind,
   type BaseRequestParams,
   type OverviewRequestParams,
+  type AddToTpcQueueRequest,
+  type AddToTpcQueueResponse,
 } from './useSelectionApi';

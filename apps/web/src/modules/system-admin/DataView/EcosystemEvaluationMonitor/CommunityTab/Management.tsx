@@ -20,8 +20,11 @@ import {
 } from '@ant-design/icons';
 import {
   useCommunityList,
+  useCommunityUpdateOverview,
+  useAddToQueue,
   CommunityTimeType,
   CommunityPlatformType,
+  QueueType,
   type CommunityListRequest,
   type CommunityListItem,
 } from '../../../hooks';
@@ -54,6 +57,7 @@ const CommunityManagement: React.FC = () => {
   const [batchQueueType, setBatchQueueType] = useState<'normal' | 'priority'>(
     'normal'
   );
+  const [loadingQueues, setLoadingQueues] = useState<Set<string>>(new Set());
 
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
@@ -81,6 +85,15 @@ const CommunityManagement: React.FC = () => {
     error: communityListError,
   } = useCommunityList(communityListParams);
 
+  // 获取社区更新概览数据
+  const {
+    data: communityUpdateOverview,
+    isLoading: updateOverviewLoading,
+  } = useCommunityUpdateOverview();
+
+  // 加入队列 hook
+  const addToQueueMutation = useAddToQueue();
+
   // 事件处理函数
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
@@ -95,6 +108,41 @@ const CommunityManagement: React.FC = () => {
   const handlePlatformFilterChange = (value: string) => {
     setPlatformFilter(value);
     setCurrentPage(1);
+  };
+
+  // 处理加入队列
+  const handleAddToQueue = async (
+    record: CommunityData,
+    queueType: 'normal' | 'priority'
+  ) => {
+    const queueId = `${record.key}_${queueType}`;
+
+    if (loadingQueues.has(queueId)) {
+      return; // 防止重复提交
+    }
+
+    setLoadingQueues((prev) => new Set(prev).add(queueId));
+
+    try {
+      await addToQueueMutation.mutateAsync({
+        project_url: record.label,
+        type: queueType === 'priority' ? QueueType.PRIORITY : QueueType.NORMAL,
+      });
+      message.success(
+        `成功将 ${record.community} 加入${queueType === 'priority' ? '优先' : '普通'
+        }队列`
+      );
+    } catch (error) {
+      message.error(
+        `加入队列失败：${error instanceof Error ? error.message : '未知错误'}`
+      );
+    } finally {
+      setLoadingQueues((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(queueId);
+        return newSet;
+      });
+    }
   };
 
   // 获取平台显示名称
@@ -277,13 +325,36 @@ const CommunityManagement: React.FC = () => {
       title: '操作',
       key: 'action',
       width: '25%',
-      render: () => (
-        <div className="flex cursor-pointer gap-2 text-[#3e8eff]">
-          <a>加入队列</a>
-          <a>加入优先队列</a>
-          <a>删除</a>
-        </div>
-      ),
+      render: (_, record: CommunityData) => {
+        const normalQueueId = `${record.key}_normal`;
+        const priorityQueueId = `${record.key}_priority`;
+        const isNormalLoading = loadingQueues.has(normalQueueId);
+        const isPriorityLoading = loadingQueues.has(priorityQueueId);
+
+        return (
+          <div className="flex gap-2 text-[#3e8eff]">
+            <a
+              className={`cursor-pointer hover:underline ${isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
+                }`}
+              onClick={() =>
+                !isNormalLoading && handleAddToQueue(record, 'normal')
+              }
+            >
+              {isNormalLoading ? '加入中...' : '加入队列'}
+            </a>
+            <a
+              className={`cursor-pointer hover:underline ${isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
+                }`}
+              onClick={() =>
+                !isPriorityLoading && handleAddToQueue(record, 'priority')
+              }
+            >
+              {isPriorityLoading ? '加入中...' : '加入优先队列'}
+            </a>
+            {/* <a className="cursor-pointer hover:underline">删除</a> */}
+          </div>
+        );
+      },
     },
   ];
 
@@ -302,14 +373,13 @@ const CommunityManagement: React.FC = () => {
               allowClear
             />
             <Space>
-              <Button onClick={() => { }}>设置自动更新周期</Button>
               <Button onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
               </Button>
               <Button type="primary" icon={<PlusOutlined />}>
                 新增社区
               </Button>
-              <Button icon={<UploadOutlined />}>批量导入</Button>
+              {/* <Button icon={<UploadOutlined />}>批量导入</Button> */}
             </Space>
           </div>
 
@@ -398,11 +468,7 @@ const CommunityManagement: React.FC = () => {
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 个月'
-                      ).length
-                    }{' '}
+                    {communityUpdateOverview?.over_1m || 0}{' '}
                     个社区)
                   </span>
                 </Radio>
@@ -410,11 +476,7 @@ const CommunityManagement: React.FC = () => {
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 3 个月'
-                      ).length
-                    }{' '}
+                    {communityUpdateOverview?.over_3m || 0}{' '}
                     个社区)
                   </span>
                 </Radio>
@@ -422,11 +484,7 @@ const CommunityManagement: React.FC = () => {
                   超过半年未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过半年'
-                      ).length
-                    }{' '}
+                    {communityUpdateOverview?.over_6m || 0}{' '}
                     个社区)
                   </span>
                 </Radio>
@@ -434,11 +492,7 @@ const CommunityManagement: React.FC = () => {
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
                     (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 年'
-                      ).length
-                    }{' '}
+                    {communityUpdateOverview?.over_12m || 0}{' '}
                     个社区)
                   </span>
                 </Radio>
@@ -465,9 +519,21 @@ const CommunityManagement: React.FC = () => {
                 将会把{' '}
                 <strong>
                   {
-                    transformedData.filter(
-                      (item) => item.lastUpdateCategory === batchTimeCategory
-                    ).length
+                    (() => {
+                      if (!communityUpdateOverview) return 0;
+                      switch (batchTimeCategory) {
+                        case '超过 1 个月':
+                          return communityUpdateOverview.over_1m;
+                        case '超过 3 个月':
+                          return communityUpdateOverview.over_3m;
+                        case '超过半年':
+                          return communityUpdateOverview.over_6m;
+                        case '超过 1 年':
+                          return communityUpdateOverview.over_12m;
+                        default:
+                          return 0;
+                      }
+                    })()
                   }
                 </strong>{' '}
                 个<strong>{batchTimeCategory}</strong>的社区加入

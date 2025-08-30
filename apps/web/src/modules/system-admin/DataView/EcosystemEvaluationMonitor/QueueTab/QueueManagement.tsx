@@ -152,7 +152,7 @@ const QueueManagement: React.FC = () => {
   }
 
   return (
-    <Card title="队列详情">
+    <Card title="队列详情" className="mt-4">
       <Table
         columns={columns}
         dataSource={tableData}
