@@ -60,7 +60,10 @@ export {
   useRepositoryList,
   useCommunityList,
   useAddToQueue,
+  useAddCommunityToQueue,
   useBatchAddToQueue,
+  useBatchAddCommunityToQueue,
+  useBatchImportProjects,
   RepositoryTimeType,
   RepositoryPlatformType,
   CommunityTimeType,
@@ -76,8 +79,12 @@ export {
   type CommunityListResponse,
   type AddToQueueRequest,
   type AddToQueueResponse,
+  type AddCommunityToQueueRequest,
+  type AddCommunityToQueueResponse,
   type BatchAddToQueueRequest,
   type BatchAddToQueueResponse,
+  type BatchImportProjectsRequest,
+  type BatchImportProjectsResponse,
 } from './useEcosystemApi';
 
 export {

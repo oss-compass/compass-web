@@ -255,6 +255,18 @@ export interface AddToQueueResponse {
   [key: string]: any;
 }
 
+// 社区加入队列请求参数类型
+export interface AddCommunityToQueueRequest {
+  community_name: string;
+  type: QueueType;
+}
+
+// 社区加入队列响应类型
+export interface AddCommunityToQueueResponse {
+  message?: string;
+  [key: string]: any;
+}
+
 // 批量加入队列请求参数类型
 export interface BatchAddToQueueRequest {
   time_type: number; // 时间类型：1，3，6，12
@@ -281,6 +293,21 @@ export const useAddToQueue = () => {
   });
 };
 
+// 社区加入队列 hook
+export const useAddCommunityToQueue = () => {
+  return useMutation({
+    mutationFn: async (
+      params: AddCommunityToQueueRequest
+    ): Promise<AddCommunityToQueueResponse> => {
+      const response = await axios.post(
+        '/api/v2/queue_server/add_group_queue',
+        params
+      );
+      return response.data;
+    },
+  });
+};
+
 // 批量加入队列 hook
 export const useBatchAddToQueue = () => {
   return useMutation({
@@ -289,6 +316,48 @@ export const useBatchAddToQueue = () => {
     ): Promise<BatchAddToQueueResponse> => {
       const response = await axios.post(
         '/api/v2/queue_server/batch_add_queue',
+        params
+      );
+      return response.data;
+    },
+  });
+};
+
+// 批量加入社区队列 hook
+export const useBatchAddCommunityToQueue = () => {
+  return useMutation({
+    mutationFn: async (
+      params: BatchAddToQueueRequest
+    ): Promise<BatchAddToQueueResponse> => {
+      const response = await axios.post(
+        '/api/v2/queue_server/batch_add_group_queue',
+        params
+      );
+      return response.data;
+    },
+  });
+};
+
+// 批量导入项目请求参数类型
+export interface BatchImportProjectsRequest {
+  project_urls: string[];
+  type: number; // 队列类型，0普通队列，1优先队列
+}
+
+// 批量导入项目响应类型
+export interface BatchImportProjectsResponse {
+  message?: string;
+  [key: string]: any;
+}
+
+// 批量导入项目 hook
+export const useBatchImportProjects = () => {
+  return useMutation({
+    mutationFn: async (
+      params: BatchImportProjectsRequest
+    ): Promise<BatchImportProjectsResponse> => {
+      const response = await axios.post(
+        '/api/v2/queue_server/projects_add_queue',
         params
       );
       return response.data;

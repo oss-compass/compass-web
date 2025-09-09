@@ -21,12 +21,14 @@ import {
 import {
   useCommunityList,
   useCommunityUpdateOverview,
-  useAddToQueue,
+  useAddCommunityToQueue,
+  useBatchAddCommunityToQueue,
   CommunityTimeType,
   CommunityPlatformType,
   QueueType,
   type CommunityListRequest,
   type CommunityListItem,
+  type BatchAddToQueueRequest,
 } from '../../../hooks';
 
 const { Option } = Select;
@@ -86,13 +88,17 @@ const CommunityManagement: React.FC = () => {
   } = useCommunityList(communityListParams);
 
   // 获取社区更新概览数据
-  const {
-    data: communityUpdateOverview,
-    isLoading: updateOverviewLoading,
-  } = useCommunityUpdateOverview();
+  const { data: communityUpdateOverview, isLoading: updateOverviewLoading } =
+    useCommunityUpdateOverview();
 
   // 加入队列 hook
-  const addToQueueMutation = useAddToQueue();
+  const addToQueueMutation = useAddCommunityToQueue();
+
+  // 批量加入队列 hook
+  const batchAddToQueueMutation = useBatchAddCommunityToQueue();
+
+  // 批量操作状态
+  const [batchLoading, setBatchLoading] = useState(false);
 
   // 事件处理函数
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,11 +131,12 @@ const CommunityManagement: React.FC = () => {
 
     try {
       await addToQueueMutation.mutateAsync({
-        project_url: record.label,
+        community_name: record.label,
         type: queueType === 'priority' ? QueueType.PRIORITY : QueueType.NORMAL,
       });
       message.success(
-        `成功将 ${record.community} 加入${queueType === 'priority' ? '优先' : '普通'
+        `成功将 ${record.community} 加入${
+          queueType === 'priority' ? '优先' : '普通'
         }队列`
       );
     } catch (error) {
@@ -207,34 +214,54 @@ const CommunityManagement: React.FC = () => {
   }, [communityListData]);
 
   // 批量操作处理函数
-  const handleBatchQueue = () => {
+  const handleBatchQueue = async () => {
     if (!batchTimeCategory) {
       message.warning('请选择时间类别');
       return;
     }
 
-    const targetCommunities = transformedData.filter(
-      (item) => item.lastUpdateCategory === batchTimeCategory
-    );
+    // 将时间类别映射为 API 所需的数字参数
+    const timeTypeMap: Record<string, number> = {
+      '超过 1 个月': 1,
+      '超过 3 个月': 3,
+      超过半年: 6,
+      '超过 1 年': 12,
+    };
 
-    if (targetCommunities.length === 0) {
-      message.warning(`没有找到${batchTimeCategory}的社区`);
+    const timeType = timeTypeMap[batchTimeCategory];
+    if (!timeType) {
+      message.error('无效的时间类别');
       return;
     }
 
+    const queueType = batchQueueType === 'priority' ? 1 : 0;
     const queueTypeText =
       batchQueueType === 'priority' ? '优先队列' : '普通队列';
 
     Modal.confirm({
       title: '确认批量操作',
-      content: `确定要将 ${targetCommunities.length} 个${batchTimeCategory}的社区加入${queueTypeText}吗？`,
-      onOk: () => {
-        message.success(
-          `成功将 ${targetCommunities.length} 个社区加入${queueTypeText}`
-        );
-        setBatchModalVisible(false);
-        setBatchTimeCategory('');
-        setBatchQueueType('normal');
+      content: `确定要将${batchTimeCategory}的社区加入${queueTypeText}吗？`,
+      onOk: async () => {
+        setBatchLoading(true);
+        try {
+          const result = await batchAddToQueueMutation.mutateAsync({
+            time_type: timeType,
+            queue_type: queueType,
+          });
+
+          message.success(result.message || `成功加入${queueTypeText}`);
+          setBatchModalVisible(false);
+          setBatchTimeCategory('');
+          setBatchQueueType('normal');
+        } catch (error) {
+          message.error(
+            `批量加入队列失败：${
+              error instanceof Error ? error.message : '未知错误'
+            }`
+          );
+        } finally {
+          setBatchLoading(false);
+        }
       },
     });
   };
@@ -334,8 +361,9 @@ const CommunityManagement: React.FC = () => {
         return (
           <div className="flex gap-2 text-[#3e8eff]">
             <a
-              className={`cursor-pointer hover:underline ${isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+              className={`cursor-pointer hover:underline ${
+                isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
+              }`}
               onClick={() =>
                 !isNormalLoading && handleAddToQueue(record, 'normal')
               }
@@ -343,8 +371,9 @@ const CommunityManagement: React.FC = () => {
               {isNormalLoading ? '加入中...' : '加入队列'}
             </a>
             <a
-              className={`cursor-pointer hover:underline ${isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+              className={`cursor-pointer hover:underline ${
+                isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
+              }`}
               onClick={() =>
                 !isPriorityLoading && handleAddToQueue(record, 'priority')
               }
@@ -373,12 +402,12 @@ const CommunityManagement: React.FC = () => {
               allowClear
             />
             <Space>
-              <Button onClick={() => setBatchModalVisible(true)}>
+              <Button type="primary" onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
               </Button>
-              <Button type="primary" icon={<PlusOutlined />}>
+              {/* <Button type="primary" icon={<PlusOutlined />}>
                 新增社区
-              </Button>
+              </Button> */}
               {/* <Button icon={<UploadOutlined />}>批量导入</Button> */}
             </Space>
           </div>
@@ -451,6 +480,7 @@ const CommunityManagement: React.FC = () => {
           setBatchTimeCategory('');
           setBatchQueueType('normal');
         }}
+        confirmLoading={batchLoading}
         width={500}
       >
         <div className="space-y-4">
@@ -467,33 +497,25 @@ const CommunityManagement: React.FC = () => {
                 <Radio value="超过 1 个月">
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {communityUpdateOverview?.over_1m || 0}{' '}
-                    个社区)
+                    ({communityUpdateOverview?.over_1m || 0} 个社区)
                   </span>
                 </Radio>
                 <Radio value="超过 3 个月">
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {communityUpdateOverview?.over_3m || 0}{' '}
-                    个社区)
+                    ({communityUpdateOverview?.over_3m || 0} 个社区)
                   </span>
                 </Radio>
                 <Radio value="超过半年">
                   超过半年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {communityUpdateOverview?.over_6m || 0}{' '}
-                    个社区)
+                    ({communityUpdateOverview?.over_6m || 0} 个社区)
                   </span>
                 </Radio>
                 <Radio value="超过 1 年">
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {communityUpdateOverview?.over_12m || 0}{' '}
-                    个社区)
+                    ({communityUpdateOverview?.over_12m || 0} 个社区)
                   </span>
                 </Radio>
               </div>
@@ -518,23 +540,21 @@ const CommunityManagement: React.FC = () => {
               <p className="text-sm text-blue-700">
                 将会把{' '}
                 <strong>
-                  {
-                    (() => {
-                      if (!communityUpdateOverview) return 0;
-                      switch (batchTimeCategory) {
-                        case '超过 1 个月':
-                          return communityUpdateOverview.over_1m;
-                        case '超过 3 个月':
-                          return communityUpdateOverview.over_3m;
-                        case '超过半年':
-                          return communityUpdateOverview.over_6m;
-                        case '超过 1 年':
-                          return communityUpdateOverview.over_12m;
-                        default:
-                          return 0;
-                      }
-                    })()
-                  }
+                  {(() => {
+                    if (!communityUpdateOverview) return 0;
+                    switch (batchTimeCategory) {
+                      case '超过 1 个月':
+                        return communityUpdateOverview.over_1m;
+                      case '超过 3 个月':
+                        return communityUpdateOverview.over_3m;
+                      case '超过半年':
+                        return communityUpdateOverview.over_6m;
+                      case '超过 1 年':
+                        return communityUpdateOverview.over_12m;
+                      default:
+                        return 0;
+                    }
+                  })()}
                 </strong>{' '}
                 个<strong>{batchTimeCategory}</strong>的社区加入
                 <strong>

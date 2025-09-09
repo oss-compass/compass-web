@@ -13,6 +13,7 @@ import {
   message,
   Form,
 } from 'antd';
+const { TextArea } = Input;
 import {
   SearchOutlined,
   PlusOutlined,
@@ -23,12 +24,14 @@ import {
   useRepositoryList,
   useAddToQueue,
   useBatchAddToQueue,
+  useBatchImportProjects,
   useRepositoryUpdateOverview,
   RepositoryTimeType,
   RepositoryPlatformType,
   QueueType,
   type RepositoryListRequest,
   type RepositoryListItem,
+  type BatchImportProjectsRequest,
 } from '../../../hooks';
 
 const { Option } = Select;
@@ -64,6 +67,9 @@ const RepositoryManagement: React.FC = () => {
   const [addRepoForm] = Form.useForm();
   const [addRepoLoading, setAddRepoLoading] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
+  const [batchImportModalVisible, setBatchImportModalVisible] = useState(false);
+  const [batchImportForm] = Form.useForm();
+  const [batchImportLoading, setBatchImportLoading] = useState(false);
 
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
@@ -92,16 +98,17 @@ const RepositoryManagement: React.FC = () => {
   } = useRepositoryList(repositoryListParams);
 
   // 获取仓库更新时间分布数据
-  const {
-    data: repositoryUpdateOverview,
-    isLoading: updateOverviewLoading,
-  } = useRepositoryUpdateOverview();
+  const { data: repositoryUpdateOverview, isLoading: updateOverviewLoading } =
+    useRepositoryUpdateOverview();
 
   // 加入队列 hook
   const addToQueueMutation = useAddToQueue();
 
   // 批量加入队列 hook
   const batchAddToQueueMutation = useBatchAddToQueue();
+
+  // 批量新增项目 hook
+  const batchImportProjectsMutation = useBatchImportProjects();
 
   // 事件处理函数
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,7 +145,8 @@ const RepositoryManagement: React.FC = () => {
         type: queueType === 'priority' ? QueueType.PRIORITY : QueueType.NORMAL,
       });
       message.success(
-        `成功将 ${record.repository} 加入${queueType === 'priority' ? '优先' : '普通'
+        `成功将 ${record.repository} 加入${
+          queueType === 'priority' ? '优先' : '普通'
         }队列`
       );
     } catch (error) {
@@ -156,18 +164,24 @@ const RepositoryManagement: React.FC = () => {
 
   // 验证仓库链接
   const validateRepositoryUrl = (url: string): boolean => {
-    const githubPattern = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/;
-    const giteePattern = /^https:\/\/gitee\.com\/[\w.-]+\/[\w.-]+\/?$/;
+    const githubPattern = /^https?:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/;
+    const giteePattern = /^https?:\/\/gitee\.com\/[\w.-]+\/[\w.-]+\/?$/;
     return githubPattern.test(url) || giteePattern.test(url);
   };
 
   // 处理新增仓库
-  const handleAddRepository = async (values: { repositoryUrl: string; queueType: 'normal' | 'priority' }) => {
+  const handleAddRepository = async (values: {
+    repositoryUrl: string;
+    queueType: 'normal' | 'priority';
+  }) => {
     setAddRepoLoading(true);
     try {
       await addToQueueMutation.mutateAsync({
         project_url: values.repositoryUrl,
-        type: values.queueType === 'priority' ? QueueType.PRIORITY : QueueType.NORMAL,
+        type:
+          values.queueType === 'priority'
+            ? QueueType.PRIORITY
+            : QueueType.NORMAL,
       });
       message.success(
         `成功将仓库加入${values.queueType === 'priority' ? '优先' : '普通'}队列`
@@ -180,6 +194,79 @@ const RepositoryManagement: React.FC = () => {
       );
     } finally {
       setAddRepoLoading(false);
+    }
+  };
+
+  // 解析项目URL列表，支持多种格式
+  const parseProjectUrls = (input: string): string[] => {
+    let urlList: string[] = [];
+
+    try {
+      // 尝试解析为JSON数组
+      const parsed = JSON.parse(input);
+      if (Array.isArray(parsed)) {
+        urlList = parsed
+          .map((item) => String(item).trim())
+          .filter((url) => url.length > 0);
+      } else {
+        throw new Error('Not an array');
+      }
+    } catch {
+      // JSON解析失败，按行分割处理
+      urlList = input
+        .split(/[\n\r,;\t]+/) // 支持换行、逗号、分号、制表符分割
+        .map((url) => url.trim())
+        .map((url) => url.replace(/^["']|["']$/g, '')) // 移除首尾引号
+        .filter((url) => url.length > 0);
+    }
+
+    return urlList;
+  };
+
+  // 处理批量新增
+  const handleBatchImport = async (values: {
+    projectUrls: string;
+    queueType: 'normal' | 'priority';
+  }) => {
+    setBatchImportLoading(true);
+    try {
+      // 解析项目URL列表
+      const urlList = parseProjectUrls(values.projectUrls);
+
+      if (urlList.length === 0) {
+        message.warning('请输入至少一个项目地址');
+        return;
+      }
+
+      // 验证URL格式
+      const invalidUrls = urlList.filter((url) => !validateRepositoryUrl(url));
+      if (invalidUrls.length > 0) {
+        message.error(
+          `以下地址格式不正确：${invalidUrls.slice(0, 3).join(', ')}${
+            invalidUrls.length > 3 ? '...' : ''
+          }`
+        );
+        return;
+      }
+
+      await batchImportProjectsMutation.mutateAsync({
+        project_urls: urlList,
+        type: values.queueType === 'priority' ? 1 : 0,
+      });
+
+      message.success(
+        `成功将 ${urlList.length} 个项目加入${
+          values.queueType === 'priority' ? '优先' : '普通'
+        }队列`
+      );
+      setBatchImportModalVisible(false);
+      batchImportForm.resetFields();
+    } catch (error) {
+      message.error(
+        `批量新增失败：${error instanceof Error ? error.message : '未知错误'}`
+      );
+    } finally {
+      setBatchImportLoading(false);
     }
   };
 
@@ -255,7 +342,7 @@ const RepositoryManagement: React.FC = () => {
     const timeTypeMap: Record<string, number> = {
       '超过 1 个月': 1,
       '超过 3 个月': 3,
-      '超过半年': 6,
+      超过半年: 6,
       '超过 1 年': 12,
     };
 
@@ -266,7 +353,8 @@ const RepositoryManagement: React.FC = () => {
     }
 
     const queueType = batchQueueType === 'priority' ? 1 : 0;
-    const queueTypeText = batchQueueType === 'priority' ? '优先队列' : '普通队列';
+    const queueTypeText =
+      batchQueueType === 'priority' ? '优先队列' : '普通队列';
 
     Modal.confirm({
       title: '确认批量操作',
@@ -285,7 +373,9 @@ const RepositoryManagement: React.FC = () => {
           setBatchQueueType('normal');
         } catch (error) {
           message.error(
-            `批量加入队列失败：${error instanceof Error ? error.message : '未知错误'}`
+            `批量加入队列失败：${
+              error instanceof Error ? error.message : '未知错误'
+            }`
           );
         } finally {
           setBatchLoading(false);
@@ -389,8 +479,9 @@ const RepositoryManagement: React.FC = () => {
         return (
           <div className="flex gap-2 text-[#3e8eff]">
             <a
-              className={`cursor-pointer hover:underline ${isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+              className={`cursor-pointer hover:underline ${
+                isNormalLoading ? 'cursor-not-allowed opacity-50' : ''
+              }`}
               onClick={() =>
                 !isNormalLoading && handleAddToQueue(record, 'normal')
               }
@@ -398,8 +489,9 @@ const RepositoryManagement: React.FC = () => {
               {isNormalLoading ? '加入中...' : '加入队列'}
             </a>
             <a
-              className={`cursor-pointer hover:underline ${isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+              className={`cursor-pointer hover:underline ${
+                isPriorityLoading ? 'cursor-not-allowed opacity-50' : ''
+              }`}
               onClick={() =>
                 !isPriorityLoading && handleAddToQueue(record, 'priority')
               }
@@ -428,7 +520,7 @@ const RepositoryManagement: React.FC = () => {
               allowClear
             />
             <Space>
-              <Button onClick={() => { }}>设置自动更新周期</Button>
+              <Button onClick={() => {}}>设置自动更新周期</Button>
               <Button onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
               </Button>
@@ -439,7 +531,12 @@ const RepositoryManagement: React.FC = () => {
               >
                 新增仓库
               </Button>
-              <Button icon={<UploadOutlined />}>批量导入</Button>
+              <Button
+                icon={<UploadOutlined />}
+                onClick={() => setBatchImportModalVisible(true)}
+              >
+                批量新增仓库
+              </Button>
             </Space>
           </div>
 
@@ -528,33 +625,25 @@ const RepositoryManagement: React.FC = () => {
                 <Radio value="超过 1 个月">
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {repositoryUpdateOverview?.over_1m || 0}{' '}
-                    个仓库)
+                    ({repositoryUpdateOverview?.over_1m || 0} 个仓库)
                   </span>
                 </Radio>
                 <Radio value="超过 3 个月">
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {repositoryUpdateOverview?.over_3m || 0}{' '}
-                    个仓库)
+                    ({repositoryUpdateOverview?.over_3m || 0} 个仓库)
                   </span>
                 </Radio>
                 <Radio value="超过半年">
                   超过半年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {repositoryUpdateOverview?.over_6m || 0}{' '}
-                    个仓库)
+                    ({repositoryUpdateOverview?.over_6m || 0} 个仓库)
                   </span>
                 </Radio>
                 <Radio value="超过 1 年">
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {repositoryUpdateOverview?.over_12m || 0}{' '}
-                    个仓库)
+                    ({repositoryUpdateOverview?.over_12m || 0} 个仓库)
                   </span>
                 </Radio>
               </div>
@@ -623,14 +712,16 @@ const RepositoryManagement: React.FC = () => {
                   if (validateRepositoryUrl(value)) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error('请输入有效的 GitHub 或 Gitee 仓库链接'));
+                  return Promise.reject(
+                    new Error(
+                      '请输入有效的 GitHub 或 Gitee 仓库链接（支持 http 和 https 协议）'
+                    )
+                  );
                 },
               },
             ]}
           >
-            <Input
-              placeholder="请输入 GitHub 或 Gitee 仓库链接，例如：https://github.com/user/repo"
-            />
+            <Input placeholder="请输入 GitHub 或 Gitee 仓库链接，例如：https://github.com/user/repo 或 http://github.com/user/repo" />
           </Form.Item>
 
           <Form.Item
@@ -654,12 +745,84 @@ const RepositoryManagement: React.FC = () => {
               >
                 取消
               </Button>
+              <Button type="primary" htmlType="submit" loading={addRepoLoading}>
+                确认添加
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* 批量新增弹窗 */}
+      <Modal
+        title="批量新增项目"
+        open={batchImportModalVisible}
+        onCancel={() => {
+          setBatchImportModalVisible(false);
+          batchImportForm.resetFields();
+        }}
+        footer={null}
+        width={600}
+      >
+        <Form
+          form={batchImportForm}
+          layout="vertical"
+          onFinish={handleBatchImport}
+          initialValues={{ queueType: 'normal' }}
+        >
+          <Form.Item
+            label="项目地址列表"
+            name="projectUrls"
+            rules={[
+              { required: true, message: '请输入项目地址' },
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  const urlList = value
+                    .split('\n')
+                    .map((url: string) => url.trim())
+                    .filter((url: string) => url.length > 0);
+                  if (urlList.length === 0) {
+                    return Promise.reject(new Error('请输入至少一个项目地址'));
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <TextArea
+              rows={8}
+              placeholder={`支持多种输入格式：\n\n1. 每行一个地址：\nhttps://github.com/user/repo1\nhttps://github.com/user/repo2\n\n2. JSON数组格式：\n["https://github.com/user/repo1", "https://github.com/user/repo2"]\n\n3. 从Excel复制的数据（支持逗号、分号、制表符分割）`}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="队列类型"
+            name="queueType"
+            rules={[{ required: true, message: '请选择队列类型' }]}
+          >
+            <Radio.Group>
+              <Radio value="normal">普通队列</Radio>
+              <Radio value="priority">优先队列</Radio>
+            </Radio.Group>
+          </Form.Item>
+
+          <Form.Item className="mb-0">
+            <div className="flex justify-end gap-2">
+              <Button
+                onClick={() => {
+                  setBatchImportModalVisible(false);
+                  batchImportForm.resetFields();
+                }}
+              >
+                取消
+              </Button>
               <Button
                 type="primary"
                 htmlType="submit"
-                loading={addRepoLoading}
+                loading={batchImportLoading}
               >
-                确认添加
+                确认导入
               </Button>
             </div>
           </Form.Item>
