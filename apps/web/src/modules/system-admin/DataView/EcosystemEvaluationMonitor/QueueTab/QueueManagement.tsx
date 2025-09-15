@@ -140,7 +140,7 @@ const QueueManagement: React.FC = () => {
   // 错误处理
   if (error) {
     return (
-      <Card title="队列详情">
+      <Card title="队列详情" className="mt-4">
         <Alert
           message="获取队列数据失败"
           description={error instanceof Error ? error.message : '未知错误'}

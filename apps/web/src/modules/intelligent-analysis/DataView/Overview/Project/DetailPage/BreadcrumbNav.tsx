@@ -2,17 +2,7 @@ import React from 'react';
 import { Breadcrumb } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
-
-// 项目显示名称映射 - 与 utils.ts 保持一致
-const PROJECT_DISPLAY_NAME_MAP: Record<string, string> = {
-  flutter: 'Flutter',
-  ionic: 'Ionic',
-  'react-native': 'React Native',
-  cef: 'CEF',
-  electron: 'Electron',
-  chromium: 'Chromium',
-  'kmp-oh': 'KMP OH',
-};
+import { PROJECT_DISPLAY_NAME_MAP } from '../../utils';
 
 interface BreadcrumbNavProps {
   projectType: string;
@@ -26,10 +16,10 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
   onBack,
 }) => {
   const { t } = useTranslation('intelligent_analysis');
-  
+
   // 获取项目显示名称
   const projectDisplayName = PROJECT_DISPLAY_NAME_MAP[projectType] || projectType;
-  
+
   return (
     <div className="mb-6">
       <Breadcrumb

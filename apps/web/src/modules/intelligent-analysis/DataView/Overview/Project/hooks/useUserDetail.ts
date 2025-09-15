@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UserDetailData, ParsedUserDetail, EcoData } from '../../types';
+import { PROJECT_NAME_MAP } from '../../utils';
 
 /**
  * 用于获取和解析用户详情数据的 Hook
@@ -199,23 +200,13 @@ export const useUserDetail = (projectType: string, userId: string) => {
       setError(null);
 
       try {
-        // 参考 utils.ts 的项目名称映射，用于将 slug 转为实际文件名前缀
-        const PROJECT_NAME_MAP: Record<string, string> = {
-          flutter: 'Flutter',
-          ionic: 'Ionic',
-          'react-native': 'RN',
-          cef: 'CEF',
-          electron: 'Electron',
-          chromium: 'Chromium',
-          'kmp-oh': 'KMP_OH',
-        };
-        const fileName = `${(PROJECT_NAME_MAP[projectType] || projectType)}_detail.json`;
+        const fileName = `${(PROJECT_NAME_MAP[projectType] || projectType)}`;
         const response = await fetch(
-          `/test/intelligent-analysis-new/${fileName}`
+          `/test/intelligent-analysis-new/${fileName}/${userId.replace(':', '_')}_main.json`
         );
 
         if (!response.ok) {
-          throw new Error(`无法加载数据文件: ${fileName}`);
+          throw new Error(`当前仅提供前200个组织和开发者详情数据`);
         }
 
         const rawData: UserDetailData = await response.json();

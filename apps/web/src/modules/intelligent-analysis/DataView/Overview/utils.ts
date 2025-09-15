@@ -12,7 +12,7 @@ export const PROJECT_NAME_MAP: Record<string, string> = {
 };
 
 // 项目显示名称映射
-const PROJECT_DISPLAY_NAME_MAP: Record<string, string> = {
+export const PROJECT_DISPLAY_NAME_MAP: Record<string, string> = {
   flutter: 'Flutter',
   ionic: 'Ionic',
   'react-native': 'React Native',
