@@ -20,6 +20,20 @@ export const getServerSideProps: GetServerSideProps = async ({
     'electron',
     'chromium',
     'kmp-oh',
+    // 新增项目
+    'ollama',
+    'vllm',
+    'pytorch',
+    'llama-factory',
+    'onnxruntime',
+    'servers',
+    'avalonia',
+    'triton',
+    'vllm-ascend',
+    'jax',
+    'xla',
+    'aibrix',
+    'a2a',
   ];
   if (!validProjects.includes(project)) {
     return {

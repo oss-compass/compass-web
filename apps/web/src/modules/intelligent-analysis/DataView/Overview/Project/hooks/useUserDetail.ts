@@ -216,9 +216,18 @@ export const useUserDetail = (projectType: string, userId: string) => {
           throw new Error(`用户 ${userId} 的详情数据不存在`);
         }
 
+        // 删除不需要的属性
+        const userData = { ...rawData[userId] };
+        delete userData['用户ID'];
+        delete userData['总得分'];
+        delete userData['国家'];
+        delete userData['省'];
+        delete userData['市'];
+        delete userData['用户类型'];
+
         // 解析数据
-        const parsedDetail = parseUserDetail(rawData[userId]);
-        const ecoCharts = parseEcoChartsData(rawData[userId]);
+        const parsedDetail = parseUserDetail(userData);
+        const ecoCharts = parseEcoChartsData(userData);
 
         setDetailData(parsedDetail);
         setEcoChartsData(ecoCharts);

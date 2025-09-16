@@ -12,16 +12,89 @@ interface ProjectData {
 
 const projectsData: ProjectData[] = [
   {
-    name: 'Flutter',
-    developers: 56924,
-    organizations: 14912,
-    slug: 'flutter',
+    name: 'Ollama',
+    developers: 12271,
+    organizations: 2589,
+    slug: 'ollama',
   },
   {
-    name: 'Ionic',
-    developers: 1712,
-    organizations: 713,
-    slug: 'ionic',
+    name: 'vLLM',
+    developers: 11418,
+    organizations: 2030,
+    slug: 'vllm',
+  },
+  {
+    name: 'PyTorch',
+    developers: 6366,
+    organizations: 2012,
+    slug: 'pytorch',
+  },
+  {
+    name: 'LLaMA-Factory',
+    developers: 4087,
+    organizations: 628,
+    slug: 'llama-factory',
+  },
+  {
+    name: 'ONNX Runtime',
+    developers: 2594,
+    organizations: 525,
+    slug: 'onnxruntime',
+  },
+  {
+    name: 'Servers',
+    developers: 1448,
+    organizations: 754,
+    slug: 'servers',
+  },
+  {
+    name: 'Avalonia',
+    developers: 1242,
+    organizations: 292,
+    slug: 'avalonia',
+  },
+  {
+    name: 'Triton',
+    developers: 1015,
+    organizations: 259,
+    slug: 'triton',
+  },
+  {
+    name: 'vLLM-Ascend',
+    developers: 531,
+    organizations: 89,
+    slug: 'vllm-ascend',
+  },
+  {
+    name: 'JAX',
+    developers: 493,
+    organizations: 274,
+    slug: 'jax',
+  },
+  {
+    name: 'XLA',
+    developers: 337,
+    organizations: 42,
+    slug: 'xla',
+  },
+  {
+    name: 'Aibrix',
+    developers: 92,
+    organizations: 57,
+    slug: 'aibrix',
+  },
+  {
+    name: 'A2A',
+    developers: 56,
+    organizations: 26,
+    slug: 'a2a',
+  },
+
+  {
+    name: 'Flutter',
+    developers: 56924,
+    organizations: 14910,
+    slug: 'flutter',
   },
   {
     name: 'React Native',
@@ -30,28 +103,34 @@ const projectsData: ProjectData[] = [
     slug: 'react-native',
   },
   {
-    name: 'CEF',
-    developers: 234,
-    organizations: 23,
-    slug: 'cef',
-  },
-  {
-    name: 'Electron',
-    developers: 1890,
-    organizations: 134,
-    slug: 'electron',
-  },
-  {
     name: 'Chromium',
-    developers: 3200,
-    organizations: 89,
+    developers: 12329,
+    organizations: 3345,
     slug: 'chromium',
   },
   {
+    name: 'Electron',
+    developers: 4450,
+    organizations: 1636,
+    slug: 'electron',
+  },
+  {
     name: 'KMP OH',
-    developers: 1560,
-    organizations: 245,
+    developers: 1915,
+    organizations: 835,
     slug: 'kmp-oh',
+  },
+  {
+    name: 'Ionic',
+    developers: 1712,
+    organizations: 713,
+    slug: 'ionic',
+  },
+  {
+    name: 'CEF',
+    developers: 216,
+    organizations: 61,
+    slug: 'cef',
   },
 ];
 
