@@ -73,12 +73,12 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
             <Text strong>{t('project_detail.basic_info.rank_position', { rank: data.排名 })}</Text>
           </Space>
         </Descriptions.Item>
-        <Descriptions.Item label={t('project_detail.basic_info.country_rank', { country: translateByLocale(data.国家, countryMapping, i18n.language) })}>
+        {/* <Descriptions.Item label={t('project_detail.basic_info.country_rank', { country: translateByLocale(data.国家, countryMapping, i18n.language) })}>
           <Space>
             <TrophyOutlined style={{ color: '#52c41a' }} />
             <Text strong>{t('project_detail.basic_info.rank_position', { rank: data.排名 })}</Text>
           </Space>
-        </Descriptions.Item>
+        </Descriptions.Item> */}
       </Descriptions>
     </Card>
   );
