@@ -69,7 +69,6 @@ const ServerTable: React.FC<ServerTableProps> = ({
       width: '10%',
       render: (value: number) => (
         <div>
-          <div className="mb-1 text-xs text-gray-600">{value.toFixed(1)}%</div>
           <Progress
             percent={value}
             size="small"
@@ -85,7 +84,6 @@ const ServerTable: React.FC<ServerTableProps> = ({
       width: '10%',
       render: (value: number) => (
         <div>
-          <div className="mb-1 text-xs text-gray-600">{value.toFixed(1)}%</div>
           <Progress
             percent={value}
             size="small"
@@ -102,7 +100,6 @@ const ServerTable: React.FC<ServerTableProps> = ({
       width: '10%',
       render: (value: number) => (
         <div>
-          <div className="mb-1 text-xs text-gray-600">{value.toFixed(1)}%</div>
           <Progress
             percent={value}
             size="small"
@@ -116,18 +113,42 @@ const ServerTable: React.FC<ServerTableProps> = ({
       title: '磁盘IO',
       dataIndex: 'diskIO',
       key: 'diskIO',
-      width: '8%',
-      render: (value: number) => `${value.toFixed(1)} MB/s`,
+      width: '10%',
+      render: (value: { read: number; write: number }) => (
+        <div className="text-xs">
+          <div className="flex justify-between">
+            <span className="text-blue-600">读:</span>
+            <span className="text-blue-600">{value.read.toFixed(1)} MB/s</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-orange-600">写:</span>
+            <span className="text-orange-600">
+              {value.write.toFixed(1)} MB/s
+            </span>
+          </div>
+        </div>
+      ),
     },
     {
       title: '网络带宽',
       dataIndex: 'bandwidth',
       key: 'bandwidth',
-      width: '8%',
-      render: (value: number) => (
-        <span style={{ color: getBandwidthColor(value) }}>
-          {value.toFixed(1)} Mbps
-        </span>
+      width: '10%',
+      render: (value: { upload: number; download: number }) => (
+        <div className="text-xs">
+          <div className="flex justify-between">
+            <span className="text-blue-600">上传:</span>
+            <span className="text-blue-600">
+              {value.upload.toFixed(1)} Mbps
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-orange-600">下载:</span>
+            <span className="text-orange-600">
+              {value.download.toFixed(1)} Mbps
+            </span>
+          </div>
+        </div>
       ),
     },
     {

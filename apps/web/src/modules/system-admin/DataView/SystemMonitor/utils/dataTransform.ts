@@ -52,11 +52,14 @@ export const transformApiServerData = (apiData: ApiServerData): ServerData => {
         cpu: apiData.metric.cpu_percent || 0,
         memory: apiData.metric.memory_percent || 0,
         disk: apiData.metric.disk_percent || 0,
-        diskIO:
-          (apiData.metric.disk_io_read || 0) +
-          (apiData.metric.disk_io_write || 0),
-        bandwidth:
-          (apiData.metric.net_io_recv || 0) + (apiData.metric.net_io_sent || 0),
+        diskIO: {
+          read: apiData.metric.disk_io_read || 0,
+          write: apiData.metric.disk_io_write || 0,
+        },
+        bandwidth: {
+          upload: apiData.metric.net_io_sent || 0,
+          download: apiData.metric.net_io_recv || 0,
+        },
       };
     }
     // 如果没有metric数据，返回0值
@@ -64,8 +67,14 @@ export const transformApiServerData = (apiData: ApiServerData): ServerData => {
       cpu: 0,
       memory: 0,
       disk: 0,
-      diskIO: 0,
-      bandwidth: 0,
+      diskIO: {
+        read: 0,
+        write: 0,
+      },
+      bandwidth: {
+        upload: 0,
+        download: 0,
+      },
     };
   };
 
@@ -96,8 +105,16 @@ export const transformApiServerData = (apiData: ApiServerData): ServerData => {
     },
     cpuTrend: generateTrendData(usageData.cpu, 8, 365),
     memoryTrend: generateTrendData(usageData.memory, 6, 365),
-    diskIOTrend: generateDiskIOTrendData(usageData.diskIO, 25, 365),
-    bandwidthTrend: generateBandwidthTrendData(usageData.bandwidth, 15, 365),
+    diskIOTrend: generateDiskIOTrendData(
+      usageData.diskIO.read + usageData.diskIO.write,
+      25,
+      365
+    ),
+    bandwidthTrend: generateBandwidthTrendData(
+      usageData.bandwidth.upload + usageData.bandwidth.download,
+      15,
+      365
+    ),
   };
 };
 

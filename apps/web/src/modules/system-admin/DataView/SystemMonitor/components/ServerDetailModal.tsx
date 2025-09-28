@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Modal, Row, Col, Card, Statistic, message } from 'antd';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { ServerData, MetricTableRequest, MetricTableResponse } from '../types';
@@ -6,6 +6,9 @@ import { getBandwidthColor } from '../utils/uiUtils';
 import CommonDateRangePicker from '@common/components/DateRangePicker';
 import type { DateRangeType } from '@common/components/DateRangePicker';
 import TrendChart, { TrendChartRef } from './TrendChart';
+import MultiLineTrendChart, {
+  MultiLineTrendChartRef,
+} from './MultiLineTrendChart';
 import { useServerMetricData } from '../../../hooks';
 
 interface ServerDetailModalProps {
@@ -17,40 +20,32 @@ interface ServerDetailModalProps {
 // 日期范围转换函数
 const getDateRange = (range: DateRangeType) => {
   const now = new Date();
+  // 将时间精确到分钟级别，避免秒级变化导致频繁请求
+  now.setSeconds(0, 0);
   const endTime = now.toISOString().slice(0, 19).replace('T', ' ');
 
   let startTime: string;
+  const startDate = new Date(now);
+
   switch (range) {
     case '7d':
-      startTime = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 19)
-        .replace('T', ' ');
+      startDate.setTime(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       break;
     case '30d':
-      startTime = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 19)
-        .replace('T', ' ');
+      startDate.setTime(now.getTime() - 30 * 24 * 60 * 60 * 1000);
       break;
     case '90d':
-      startTime = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 19)
-        .replace('T', ' ');
+      startDate.setTime(now.getTime() - 90 * 24 * 60 * 60 * 1000);
       break;
     case '1y':
-      startTime = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 19)
-        .replace('T', ' ');
+      startDate.setTime(now.getTime() - 365 * 24 * 60 * 60 * 1000);
       break;
     default:
-      startTime = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 19)
-        .replace('T', ' ');
+      startDate.setTime(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   }
+
+  startDate.setSeconds(0, 0);
+  startTime = startDate.toISOString().slice(0, 19).replace('T', ' ');
 
   return { startTime, endTime };
 };
@@ -65,20 +60,34 @@ const transformMetricData = (data: MetricTableResponse[]) => {
     time: item.created_at,
     value: item.memory_percent,
   }));
-  const diskIOData = data.map((item) => ({
+
+  // 磁盘IO分为读和写
+  const diskReadData = data.map((item) => ({
     time: item.created_at,
-    value: item.disk_io_read + item.disk_io_write,
+    value: item.disk_io_read,
   }));
-  const networkData = data.map((item) => ({
+  const diskWriteData = data.map((item) => ({
     time: item.created_at,
-    value: item.net_io_recv + item.net_io_sent,
+    value: item.disk_io_write,
+  }));
+
+  // 网络带宽分为上传和下载
+  const networkUploadData = data.map((item) => ({
+    time: item.created_at,
+    value: item.net_io_sent,
+  }));
+  const networkDownloadData = data.map((item) => ({
+    time: item.created_at,
+    value: item.net_io_recv,
   }));
 
   return {
     cpuData,
     memoryData,
-    diskIOData,
-    networkData,
+    diskReadData,
+    diskWriteData,
+    networkUploadData,
+    networkDownloadData,
   };
 };
 
@@ -108,20 +117,26 @@ const ServerDetailModal: React.FC<ServerDetailModalProps> = ({
     }
   };
 
-  // 构建API请求参数
-  const { startTime, endTime } = getDateRange(dateRange);
-  const metricParams: MetricTableRequest = {
-    server_id: server?.name || '',
-    begin_time: startTime,
-    end_time: endTime,
-  };
+  // 使用 useMemo 缓存API请求参数，避免每次渲染都重新创建
+  const metricParams = useMemo(() => {
+    if (!server?.name) {
+      return null;
+    }
+
+    const { startTime, endTime } = getDateRange(dateRange);
+    return {
+      server_id: server.name,
+      begin_time: startTime,
+      end_time: endTime,
+    };
+  }, [server?.name, dateRange]);
 
   // 使用hook获取监控数据
   const {
     data: rawMetricData,
     isLoading: loading,
     error,
-  } = useServerMetricData(metricParams, visible && !!server);
+  } = useServerMetricData(metricParams, visible && !!metricParams);
 
   // 转换数据格式
   const metricData = rawMetricData ? transformMetricData(rawMetricData) : null;
@@ -137,8 +152,8 @@ const ServerDetailModal: React.FC<ServerDetailModalProps> = ({
   // TrendChart refs
   const cpuChartRef = useRef<TrendChartRef>(null);
   const memoryChartRef = useRef<TrendChartRef>(null);
-  const diskIOChartRef = useRef<TrendChartRef>(null);
-  const networkChartRef = useRef<TrendChartRef>(null);
+  const diskIOChartRef = useRef<MultiLineTrendChartRef>(null);
+  const networkChartRef = useRef<MultiLineTrendChartRef>(null);
 
   // 处理Modal关闭，清理图表实例
   const handleClose = () => {
@@ -211,22 +226,43 @@ const ServerDetailModal: React.FC<ServerDetailModalProps> = ({
 
         <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
           <Col xs={24} lg={12}>
-            <TrendChart
+            <MultiLineTrendChart
               ref={diskIOChartRef}
-              data={metricData?.diskIOData || []}
-              title="磁盘IO趋势"
-              color="#faad14"
+              series={[
+                {
+                  name: '磁盘读取',
+                  data: metricData?.diskReadData || [],
+                  color: '#1890ff',
+                },
+                {
+                  name: '磁盘写入',
+                  data: metricData?.diskWriteData || [],
+                  color: '#faad14',
+                },
+              ]}
+              title="磁盘I/O趋势"
               unit="MB/s"
               dateRange={dateRange}
               loading={loading}
             />
           </Col>
+
           <Col xs={24} lg={12}>
-            <TrendChart
+            <MultiLineTrendChart
               ref={networkChartRef}
-              data={metricData?.networkData || []}
+              series={[
+                {
+                  name: '网络上传',
+                  data: metricData?.networkUploadData || [],
+                  color: '#1890ff',
+                },
+                {
+                  name: '网络下载',
+                  data: metricData?.networkDownloadData || [],
+                  color: '#faad14',
+                },
+              ]}
               title="网络带宽趋势"
-              color="#722ed1"
               unit="Mbps"
               dateRange={dateRange}
               loading={loading}

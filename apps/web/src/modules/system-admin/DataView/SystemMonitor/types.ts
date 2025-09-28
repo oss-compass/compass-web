@@ -36,8 +36,16 @@ export interface ServerData {
   cpu: number;
   memory: number;
   disk: number;
-  diskIO: number;
-  bandwidth: number;
+  // 磁盘IO分为读取和写入
+  diskIO: {
+    read: number; // 磁盘读取速度 MB/s
+    write: number; // 磁盘写入速度 MB/s
+  };
+  // 网络带宽分为上传和下载
+  bandwidth: {
+    upload: number; // 上传带宽 Mbps
+    download: number; // 下载带宽 Mbps
+  };
   location: string;
   ip_address: string; // 新增公网IP字段
   use_for: string; // 新增服务器作用字段

@@ -77,10 +77,14 @@ export const useServerList = (belongTo: string, enabled: boolean = true) => {
  * @param enabled 是否启用查询
  */
 export const useServerMetricData = (
-  params: MetricTableRequest,
+  params: MetricTableRequest | null,
   enabled: boolean = true
 ) => {
   const fetchMetricData = async (): Promise<MetricTableResponse[]> => {
+    if (!params) {
+      throw new Error('Parameters are required');
+    }
+
     try {
       const response = await fetch('/api/v2/server/metric_table', {
         method: 'POST',
@@ -104,14 +108,22 @@ export const useServerMetricData = (
   return useQuery<MetricTableResponse[], Error>({
     queryKey: [
       'serverMetricData',
-      params.server_id,
-      params.begin_time,
-      params.end_time,
+      params?.server_id,
+      params?.begin_time,
+      params?.end_time,
     ],
     queryFn: fetchMetricData,
     enabled:
-      enabled && !!params.server_id && !!params.begin_time && !!params.end_time,
+      enabled &&
+      !!params &&
+      !!params.server_id &&
+      !!params.begin_time &&
+      !!params.end_time,
     retry: 1,
-    staleTime: 30000, // 30秒内不重新获取
+    staleTime: 2 * 60 * 1000, // 2分钟内不重新获取
+    cacheTime: 5 * 60 * 1000, // 缓存5分钟
+    refetchInterval: 5 * 60 * 1000, // 每5分钟自动刷新一次
+    refetchIntervalInBackground: false, // 页面不在前台时不刷新
+    refetchOnWindowFocus: false, // 窗口获得焦点时不刷新
   });
 };
