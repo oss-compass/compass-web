@@ -60,6 +60,12 @@ const PlatinumMembers = () => {
       width: 164,
       height: 48,
     },
+    {
+      name: 'copu',
+      logo: '/images/about/copu.png',
+      width: 104,
+      height: 46,
+    },
   ];
   return (
     <>
