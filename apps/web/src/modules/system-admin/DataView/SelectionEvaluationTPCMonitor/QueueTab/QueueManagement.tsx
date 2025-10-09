@@ -1,6 +1,9 @@
 import React from 'react';
 import { Card, Table, Tag, Progress, Alert } from 'antd';
-import { useTpcQueueList, TpcQueueData } from '@modules/system-admin/hooks/useTpcQueueApi';
+import {
+  useTpcQueueList,
+  TpcQueueData,
+} from '@modules/system-admin/hooks/useTpcQueueApi';
 
 // TPC队列类型映射
 const QUEUE_TYPE_MAP = {
@@ -18,10 +21,12 @@ const QueueManagement: React.FC = () => {
   const { data: queueData, isLoading, error } = useTpcQueueList();
 
   // 转换数据格式以适配表格
-  const tableData: TableQueueData[] = queueData ? queueData.map((item, index) => ({
-    ...item,
-    key: index.toString(),
-  })) : [];
+  const tableData: TableQueueData[] = queueData
+    ? queueData.map((item, index) => ({
+        ...item,
+        key: index.toString(),
+      }))
+    : [];
 
   // 渲染队列状态
   const renderQueueStatus = (ready: number, total: number) => {
@@ -75,9 +80,7 @@ const QueueManagement: React.FC = () => {
       dataIndex: 'queue',
       key: 'queue',
       width: '25%',
-      render: (queue: string) => (
-        <span className="font-medium">{queue}</span>
-      ),
+      render: (queue: string) => <span className="font-medium">{queue}</span>,
     },
     {
       title: '总任务数',
@@ -124,9 +127,7 @@ const QueueManagement: React.FC = () => {
       key: 'belong_to',
       width: '12%',
       render: (belongTo: string | null) => (
-        <span className="text-gray-600">
-          {belongTo || '-'}
-        </span>
+        <span className="text-gray-600">{belongTo || '-'}</span>
       ),
     },
   ];

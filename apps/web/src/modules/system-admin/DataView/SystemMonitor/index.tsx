@@ -31,7 +31,8 @@ const SystemMonitor: React.FC = () => {
   const fixedTabs = [
     { key: 'gitee', name: '开源中国', belongTo: '开源中国' },
     { key: 'cas', name: '中科院', belongTo: '中科院' },
-    { key: 'pku', name: '北大', belongTo: '北大' },
+    { key: 'pku', name: '北京大学', belongTo: '北大' },
+    { key: 'nju', name: '南京大学', belongTo: '南大' },
   ];
 
   // 根据当前选中的tab获取对应机构的数据
@@ -43,6 +44,8 @@ const SystemMonitor: React.FC = () => {
         return '中科院';
       case 'pku':
         return '北大';
+      case 'nju':
+        return '南大';
       default:
         return '开源中国';
     }

@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Card, Alert } from 'antd';
 import * as echarts from 'echarts';
-import { useQueueChartData, QueueChartParams } from '@modules/system-admin/hooks/useQueueChartApi';
+import {
+  useQueueChartData,
+  QueueChartParams,
+} from '@modules/system-admin/hooks/useQueueChartApi';
 
 // 图表数据类型
 interface ChartData {
@@ -34,8 +37,8 @@ const QueueOverview: React.FC = () => {
   // 生成API请求参数
   const chartParams: QueueChartParams = useMemo(() => {
     return {
-      begin_date: "2010-02-22",
-      end_date: "2026-03-22",
+      begin_date: '2010-02-22',
+      end_date: '2026-03-22',
       queue_type: activeChartTab === 'all' ? '0' : activeChartTab,
       is_all: activeChartTab === 'all' ? 1 : 0,
     };
@@ -56,11 +59,12 @@ const QueueOverview: React.FC = () => {
     }
 
     // 按日期排序
-    const sortedData = [...chartData].sort((a, b) =>
-      new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    const sortedData = [...chartData].sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     );
 
-    const xAxisData = sortedData.map(item => {
+    const xAxisData = sortedData.map((item) => {
       const date = new Date(item.created_at);
       return date.toLocaleDateString('zh-CN', {
         month: '2-digit',
@@ -68,9 +72,9 @@ const QueueOverview: React.FC = () => {
       });
     });
 
-    const joinData = sortedData.map(item => item.join_count);
-    const consumeData = sortedData.map(item => item.consume_count);
-    const totalData = sortedData.map(item => item.total_count);
+    const joinData = sortedData.map((item) => item.join_count);
+    const consumeData = sortedData.map((item) => item.consume_count);
+    const totalData = sortedData.map((item) => item.total_count);
 
     return {
       xAxisData,

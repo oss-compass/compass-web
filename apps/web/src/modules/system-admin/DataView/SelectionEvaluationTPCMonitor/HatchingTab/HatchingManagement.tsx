@@ -205,13 +205,16 @@ const GraduationManagement: React.FC = () => {
   ) => {
     const queueTypeText = queueType === 'priority' ? '优先队列' : '普通队列';
 
-    setLoadingQueues(prev => new Set(prev).add(`${reportId}-${queueType}`));
+    setLoadingQueues((prev) => new Set(prev).add(`${reportId}-${queueType}`));
 
     try {
       await addToTpcQueueMutation.mutateAsync({
         report_id: String(reportId),
         report_type: TpcReportType.INCUBATION,
-        type: queueType === 'priority' ? TpcQueueType.PRIORITY : TpcQueueType.NORMAL,
+        type:
+          queueType === 'priority'
+            ? TpcQueueType.PRIORITY
+            : TpcQueueType.NORMAL,
       });
 
       message.success(`已成功加入${queueTypeText}`);
@@ -219,7 +222,7 @@ const GraduationManagement: React.FC = () => {
       console.error('加入队列失败:', error);
       message.error(`加入${queueTypeText}失败，请重试`);
     } finally {
-      setLoadingQueues(prev => {
+      setLoadingQueues((prev) => {
         const newSet = new Set(prev);
         newSet.delete(`${reportId}-${queueType}`);
         return newSet;
@@ -291,10 +294,10 @@ const GraduationManagement: React.FC = () => {
             platform === 'GitHub'
               ? 'blue'
               : platform === 'Gitee'
-                ? 'red'
-                : platform === 'GitCode'
-                  ? 'orange'
-                  : 'green'
+              ? 'red'
+              : platform === 'GitCode'
+              ? 'orange'
+              : 'green'
           }
         >
           {platform}
@@ -416,7 +419,6 @@ const GraduationManagement: React.FC = () => {
             <Space>
               <Button onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
-
               </Button>
             </Space>
           </div>

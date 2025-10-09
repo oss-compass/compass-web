@@ -18,7 +18,9 @@ export interface QueueChartParams {
 }
 
 // 获取队列图表数据
-const fetchQueueChartData = async (params: QueueChartParams): Promise<QueueChartData[]> => {
+const fetchQueueChartData = async (
+  params: QueueChartParams
+): Promise<QueueChartData[]> => {
   const response = await axios.post('/api/v2/queue_server/queue_table', params);
   return response.data;
 };

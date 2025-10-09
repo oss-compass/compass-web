@@ -26,7 +26,10 @@ export const useTpcQueueChartData = (params: TpcQueueChartParams) => {
   return useQuery<TpcQueueChartData[], Error>({
     queryKey: ['tpcQueueChartData', params],
     queryFn: async () => {
-      const response = await axios.post('/api/v2/queue_server/tpc_queue_table', params);
+      const response = await axios.post(
+        '/api/v2/queue_server/tpc_queue_table',
+        params
+      );
       return response.data;
     },
     // Refetch every 30 seconds
