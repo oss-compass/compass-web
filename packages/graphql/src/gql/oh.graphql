@@ -499,6 +499,7 @@ fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {
   ecologyAdaptationMethod
   id
   lifecycleVersionLifecycle
+  upstreamCollaborationStrategy
   lifecycleVersionNormalization
   lifecycleVersionNumber
   securityBinaryArtifact
@@ -553,6 +554,8 @@ query tpcSoftwareSelectionReportPage(
       }
       userId
       vulnerabilityResponse
+      upstreamCollaborationStrategy
+      upstreamCommunicationLink
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
       }
@@ -647,6 +650,7 @@ fragment tpcSoftwareReportMetricDetail on TpcSoftwareReportMetric {
   ecologyDependencyAcquisitionDetail
   ecologyPatentRiskDetail
   ecologyAdaptationMethodDetail
+  upstreamCollaborationStrategyDetail
   ecologySoftwareQualityDetail {
     coverageRatio
     coverageScore
@@ -692,6 +696,7 @@ fragment tpcSoftwareReportMetricRaw on TpcSoftwareReportMetricRaw {
   ecologyAdaptationMethodRaw
   id
   lifecycleVersionLifecycleRaw
+  upstreamCollaborationStrategyRaw
   lifecycleVersionNormalizationRaw
   lifecycleVersionNumberRaw
   securityBinaryArtifactRaw
@@ -732,6 +737,7 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     clarificationSigLeadPermission
     clarificationCompliancePermission
     clarificationLegalPermission
+    clarificationCommunityCollaborationWgPermission
   }
 }
 
@@ -811,6 +817,7 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
       ecologySoftwareQuality
       ecologyAdaptationMethod
       lifecycleVersionLifecycle
+      upstreamCollaborationStrategy
       lifecycleVersionNormalization
       lifecycleVersionNumber
       securityBinaryArtifact
@@ -854,6 +861,9 @@ query tpcSoftwareSelectionReportRisk($shortCode: String!) {
         ...tpcClarificationStateDetail
       }
       lifecycleVersionLifecycle {
+        ...tpcClarificationStateDetail
+      }
+      upstreamCollaborationStrategy {
         ...tpcClarificationStateDetail
       }
       lifecycleVersionNormalization {
@@ -923,6 +933,7 @@ query tpcSoftwareSelection($selectionId: Int!) {
     commentCount
     commentSigLeadPermission
     commentQaPermission
+    commentCommunityCollaborationWgPermission
     commentState {
       createdAt
       id

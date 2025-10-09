@@ -192,6 +192,28 @@ const SelectionReportApplication = () => {
               </Popover>
             </Col>
             <Col xs={24} sm={24} md={24} lg={12}>
+              <Form.Item
+                label="上游协同策略"
+                name="upstreamCollaborationStrategy"
+                rules={[{ required: true, message: '请选择上游协同策略!' }]}
+              >
+                <Select placeholder="请选择上游协同策略">
+                  <Select.Option value={1}>上游贡献</Select.Option>
+                  <Select.Option value={2}>适配后回合</Select.Option>
+                  <Select.Option value={3}>自维护</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={12}>
+              <Form.Item
+                label="上游沟通链接"
+                name="upstreamCommunicationLink"
+                rules={[{ required: true, message: '请输入上游沟通链接!' }]}
+              >
+                <Input placeholder="提供与上游沟通的链接（PR、Issue等）" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item label="架构图" name="architectureDiagrams">
                 <Upload
                   onFileChange={(images) => {

@@ -21,6 +21,7 @@ const MetricApprove = () => {
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentCommunityCollaborationWgPermission,
   } = useGetReportData();
   const metricList = useMemo(() => {
     if (!metricItemScoreList?.length) {
@@ -40,6 +41,7 @@ const MetricApprove = () => {
     let otherList = metricItemScoreList?.filter((m) => {
       return (
         m.维度 !== '合法合规' &&
+        m.key !== 'upstreamCollaborationStrategy' &&
         m.是否必须澄清 === '是' &&
         m.score !== 10 &&
         m.score !== null &&
@@ -47,10 +49,25 @@ const MetricApprove = () => {
         m.score !== -2
       );
     });
-    if (commentCompliancePermission) {
-      return [...legalList, ...otherList];
-    }
+
+    // 过滤出上游协同的列表
+    let roundList = metricItemScoreList?.filter((m) => {
+      return (
+        m.key == 'upstreamCollaborationStrategy' &&
+        m.score !== 10 &&
+        m.score !== null &&
+        m.score !== -1 &&
+        m.score !== -2
+      );
+    });
     const res = [];
+    console.log(commentCommunityCollaborationWgPermission, roundList);
+    if (commentCommunityCollaborationWgPermission) {
+      res.push(...roundList);
+    }
+    if (commentCompliancePermission) {
+      return [...res, ...legalList, ...otherList];
+    }
     if (commentLegalPermission) {
       res.push(...legalList);
     }
@@ -63,6 +80,7 @@ const MetricApprove = () => {
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
+    commentCommunityCollaborationWgPermission,
     metricItemScoreList,
   ]);
   const genExtra = (metric) => {

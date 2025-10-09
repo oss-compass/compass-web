@@ -2,231 +2,92 @@ import React from 'react';
 import { Badge, Popover, Avatar } from 'antd';
 import { useGetRisk } from '@modules/oh/store/useRiskStore';
 
+const processMemberState = (metricState, memberType, roleName) => {
+  const state = metricState.filter((item) => item.memberType === memberType);
+  const approve = state
+    .filter((item) => item.state === 1)
+    ?.map((item) => item?.user?.name);
+  const reject = state
+    .filter((item) => item.state === -1)
+    ?.map((item) => item?.user?.name);
+  const score = state.reduce((acc, cur) => acc + cur.state, 0);
+
+  let content = '';
+  if (approve.length > 0) {
+    content += `${approve.length}名${roleName}已赞同风险澄清：${approve.join(
+      ','
+    )}\n`;
+  }
+  if (reject.length > 0) {
+    content += `${reject.length}名${roleName}已拒绝风险澄清：${reject.join(
+      ','
+    )}`;
+  }
+
+  return { state, score, content };
+};
+
+const renderBadge = (memberState, avatar, gap = 1) => {
+  if (memberState.state.length === 0) return null;
+
+  return (
+    <Popover
+      content={memberState.content.split('\n').map((line, index) => (
+        <React.Fragment key={index}>
+          {index !== 0 && <br />}
+          {line}
+        </React.Fragment>
+      ))}
+    >
+      <Badge count={memberState.score} size="small">
+        <Avatar
+          shape="square"
+          style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}
+          gap={gap}
+        >
+          {avatar}
+        </Avatar>
+      </Badge>
+    </Popover>
+  );
+};
+
 const RiskBadgeInner = ({ report, keyId }) => {
   const { shortCode } = report;
   const { count, metricState } = useGetRisk(shortCode, keyId);
-  let BadgeContent = null;
 
-  if (metricState?.length > 0) {
-    const leaderState = metricState.filter((item) => item.memberType === 1);
-    const leaderApprove = leaderState
-      .filter((item) => item.state === 1)
-      ?.map((item) => item?.user?.name);
-    const leaderReject = leaderState
-      .filter((item) => item.state === -1)
-      ?.map((item) => item?.user?.name);
-    const leaderScore = leaderState.reduce((acc, cur) => {
-      return acc + cur.state;
-    }, 0);
-    let leaderContent = '';
-    leaderApprove.length > 0 &&
-      (leaderContent += `${
-        leaderApprove.length
-      }名 TPC Leader 已赞同风险澄清：${leaderApprove.join(',')};\n`);
-    leaderReject.length > 0 &&
-      (leaderContent += `${
-        leaderReject.length
-      }名 TPC Leader 已拒绝风险澄清：${leaderReject.join(',')}`);
-
-    const commiterState = metricState.filter((item) => item.memberType === 0);
-    const commiterApprove = commiterState
-      .filter((item) => item.state === 1)
-      ?.map((item) => item?.user?.name);
-    const commiterReject = commiterState
-      .filter((item) => item.state === -1)
-      ?.map((item) => item?.user?.name);
-    const commiterScore = commiterState.reduce((acc, cur) => {
-      return acc + cur.state;
-    }, 0);
-    let commiterContent = '';
-    commiterApprove.length > 0 &&
-      (commiterContent += `${
-        commiterApprove.length
-      }名 Commiter 已赞同风险澄清：${commiterApprove.join(',')}\n`);
-    commiterReject.length > 0 &&
-      (commiterContent += `${
-        commiterReject.length
-      }名 Commiter 已拒绝风险澄清：${commiterReject.join(',')}`);
-
-    const legalState = metricState.filter((item) => item.memberType === 2);
-    const legalApprove = legalState
-      .filter((item) => item.state === 1)
-      ?.map((item) => item?.user?.name);
-    const legalReject = legalState
-      .filter((item) => item.state === -1)
-      ?.map((item) => item?.user?.name);
-    const legalScore = legalState.reduce((acc, cur) => {
-      return acc + cur.state;
-    }, 0);
-    let legalContent = '';
-    legalApprove.length > 0 &&
-      (legalContent += `${
-        legalApprove.length
-      }名法务专家已赞同风险澄清：${legalApprove.join(',')}\n`);
-    legalReject.length > 0 &&
-      (legalContent += `${
-        legalReject.length
-      }名法务专家已拒绝风险澄清：${legalReject.join(',')}`);
-
-    const complianceState = metricState.filter((item) => item.memberType === 3);
-    const complianceApprove = complianceState
-      .filter((item) => item.state === 1)
-      ?.map((item) => item?.user?.name);
-    const complianceReject = complianceState
-      .filter((item) => item.state === -1)
-      ?.map((item) => item?.user?.name);
-    const complianceScore = complianceState.reduce((acc, cur) => {
-      return acc + cur.state;
-    }, 0);
-    let complianceContent = '';
-    complianceApprove.length > 0 &&
-      (complianceContent += `${
-        complianceApprove.length
-      }名合规专家已赞同风险澄清：${complianceApprove.join(',')}\n`);
-    complianceReject.length > 0 &&
-      (complianceContent += `${
-        complianceReject.length
-      }名合规专家已拒绝风险澄清：${complianceReject.join(',')}`);
-
-    BadgeContent = (
-      <div className="flex cursor-pointer gap-4">
-        {leaderState.length > 0 && (
-          <Popover
-            content={leaderContent.split('\n').map((line, index) => (
-              <React.Fragment key={index}>
-                {index !== 0 && <br />}
-                {line}
-              </React.Fragment>
-            ))}
-          >
-            <Badge
-              count={leaderScore}
-              size="small"
-              style={
-                {
-                  // backgroundColor: '#52c41a',
-                }
-              }
-            >
-              <Avatar
-                shape="square"
-                style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}
-                gap={2}
-              >
-                {/* {'Leader'} */}
-                {'L'}
-              </Avatar>
-            </Badge>
-          </Popover>
-        )}
-        {commiterState.length > 0 && (
-          <Popover
-            content={commiterContent.split('\n').map((line, index) => (
-              <React.Fragment key={index}>
-                {index !== 0 && <br />}
-                {line}
-              </React.Fragment>
-            ))}
-          >
-            <Badge
-              count={commiterScore}
-              size="small"
-              style={
-                {
-                  // backgroundColor: '#52c41a',
-                }
-              }
-            >
-              <Avatar
-                shape="square"
-                style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}
-                gap={1}
-              >
-                {/* {'Commiter'} */}
-                {'C'}
-              </Avatar>
-            </Badge>
-          </Popover>
-        )}
-        {legalState.length > 0 && (
-          <Popover
-            content={legalContent.split('\n').map((line, index) => (
-              <React.Fragment key={index}>
-                {index !== 0 && <br />}
-                {line}
-              </React.Fragment>
-            ))}
-          >
-            <Badge
-              count={legalScore}
-              size="small"
-              style={
-                {
-                  // backgroundColor: '#52c41a',
-                }
-              }
-            >
-              <Avatar
-                shape="square"
-                style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}
-                gap={1}
-              >
-                {'LE'}
-              </Avatar>
-            </Badge>
-          </Popover>
-        )}
-        {complianceState.length > 0 && (
-          <Popover
-            content={complianceContent.split('\n').map((line, index) => (
-              <React.Fragment key={index}>
-                {index !== 0 && <br />}
-                {line}
-              </React.Fragment>
-            ))}
-          >
-            <Badge
-              count={complianceScore}
-              size="small"
-              style={
-                {
-                  // backgroundColor: '#52c41a',
-                }
-              }
-            >
-              <Avatar
-                shape="square"
-                style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}
-                gap={1}
-              >
-                {'CE'}
-              </Avatar>
-            </Badge>
-          </Popover>
-        )}
+  if (!metricState?.length) {
+    return (
+      <div className="flex flex-shrink-0 items-center justify-center">
+        {null}
       </div>
     );
   }
-  // else {
-  //   BadgeContent = (
-  //     <Popover content={''}>
-  //       <Badge
-  //         count={count}
-  //         size="small"
-  //         style={{
-  //           backgroundColor: 'red',
-  //         }}
-  //       >
-  //         <TbMessage2 className="text-xl" />
-  //       </Badge>
-  //     </Popover>
-  //   );
-  // }
+
+  const leaderState = processMemberState(metricState, 1, 'TPC Leader');
+  const commiterState = processMemberState(metricState, 0, 'Commiter');
+  const legalState = processMemberState(metricState, 2, '法务专家');
+  const complianceState = processMemberState(metricState, 3, '合规专家');
+  const cmmunityWgState = processMemberState(
+    metricState,
+    5,
+    'Community Collaboration Wg'
+  );
+
+  const BadgeContent = (
+    <div className="flex cursor-pointer gap-4">
+      {renderBadge(leaderState, 'L', 2)}
+      {renderBadge(commiterState, 'C')}
+      {renderBadge(legalState, 'LE')}
+      {renderBadge(complianceState, 'CE')}
+      {renderBadge(cmmunityWgState, 'WG')}
+    </div>
+  );
+
   return (
     <div className="flex flex-shrink-0 items-center justify-center">
       {BadgeContent}
     </div>
   );
 };
-
 export default RiskBadgeInner;

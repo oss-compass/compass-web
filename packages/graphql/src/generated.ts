@@ -4807,6 +4807,8 @@ export type TpcSoftwareReportMetric = {
   tpcSoftwareReportId?: Maybe<Scalars['Int']>;
   tpcSoftwareReportType?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['ISO8601DateTime']>;
+  upstreamCollaborationStrategy?: Maybe<Scalars['Int']>;
+  upstreamCollaborationStrategyDetail?: Maybe<Scalars['String']>;
 };
 
 export type TpcSoftwareReportMetricClarificationCount = {
@@ -4830,6 +4832,7 @@ export type TpcSoftwareReportMetricClarificationCount = {
   securityVulnerability?: Maybe<Scalars['Int']>;
   securityVulnerabilityDisclosure?: Maybe<Scalars['Int']>;
   securityVulnerabilityResponse?: Maybe<Scalars['Int']>;
+  upstreamCollaborationStrategy?: Maybe<Scalars['Int']>;
 };
 
 export type TpcSoftwareReportMetricClarificationPermission = {
@@ -4867,6 +4870,7 @@ export type TpcSoftwareReportMetricClarificationState = {
   securityVulnerability?: Maybe<Array<TpcSoftwareCommentState>>;
   securityVulnerabilityDisclosure?: Maybe<Array<TpcSoftwareCommentState>>;
   securityVulnerabilityResponse?: Maybe<Array<TpcSoftwareCommentState>>;
+  upstreamCollaborationStrategy?: Maybe<Array<TpcSoftwareCommentState>>;
 };
 
 export type TpcSoftwareReportMetricComplianceCopyrightStatement = {
@@ -4942,6 +4946,7 @@ export type TpcSoftwareReportMetricRaw = {
   securityVulnerabilityDisclosureRaw?: Maybe<Scalars['String']>;
   securityVulnerabilityRaw?: Maybe<Scalars['String']>;
   securityVulnerabilityResponseRaw?: Maybe<Scalars['String']>;
+  upstreamCollaborationStrategyRaw?: Maybe<Scalars['String']>;
 };
 
 export type TpcSoftwareReportMetricSecurityBinaryArtifact = {
@@ -4970,6 +4975,8 @@ export type TpcSoftwareSelection = {
   clarifiedCount?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
   commentCommitterPermission?: Maybe<Scalars['Int']>;
+  /** 1: permissioned, 0: unpermissioned */
+  commentCommunityCollaborationWgPermission?: Maybe<Scalars['Int']>;
   /** 1: permissioned, 0: unpermissioned */
   commentCompliancePermission?: Maybe<Scalars['Int']>;
   commentCount?: Maybe<Scalars['Int']>;
@@ -5037,6 +5044,8 @@ export type TpcSoftwareSelectionReport = {
   tpcSoftwareReportMetricRaw?: Maybe<TpcSoftwareReportMetricRaw>;
   tpcSoftwareSig?: Maybe<TpcSoftwareSig>;
   tpcSoftwareSigId?: Maybe<Scalars['Int']>;
+  upstreamCollaborationStrategy?: Maybe<Scalars['Int']>;
+  upstreamCommunicationLink?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
   userId: Scalars['Int'];
   vulnerabilityDisclosure?: Maybe<Scalars['String']>;
@@ -5053,6 +5062,8 @@ export type TpcSoftwareSelectionReportInput = {
   programmingLanguage: Scalars['String'];
   reportCategory?: InputMaybe<Scalars['Int']>;
   tpcSoftwareSigId: Scalars['Int'];
+  upstreamCollaborationStrategy: Scalars['Int'];
+  upstreamCommunicationLink: Scalars['String'];
   vulnerabilityResponse: Scalars['String'];
 };
 
@@ -5081,6 +5092,8 @@ export type TpcSoftwareSelectionReportUpdateInput = {
   name: Scalars['String'];
   programmingLanguage: Scalars['String'];
   tpcSoftwareSigId: Scalars['Int'];
+  upstreamCollaborationStrategy: Scalars['Int'];
+  upstreamCommunicationLink: Scalars['String'];
   vulnerabilityResponse: Scalars['String'];
 };
 
@@ -8471,6 +8484,7 @@ export type TpcSoftwareReportMetricFragment = {
   ecologyAdaptationMethod?: number | null;
   id: number;
   lifecycleVersionLifecycle?: number | null;
+  upstreamCollaborationStrategy?: number | null;
   lifecycleVersionNormalization?: number | null;
   lifecycleVersionNumber?: number | null;
   securityBinaryArtifact?: number | null;
@@ -8512,6 +8526,8 @@ export type TpcSoftwareSelectionReportPageQuery = {
       shortCode: string;
       userId: number;
       vulnerabilityResponse?: string | null;
+      upstreamCollaborationStrategy?: number | null;
+      upstreamCommunicationLink?: string | null;
       architectureDiagrams?: Array<{
         __typename?: 'Image';
         filename: string;
@@ -8544,6 +8560,7 @@ export type TpcSoftwareSelectionReportPageQuery = {
         ecologyAdaptationMethod?: number | null;
         id: number;
         lifecycleVersionLifecycle?: number | null;
+        upstreamCollaborationStrategy?: number | null;
         lifecycleVersionNormalization?: number | null;
         lifecycleVersionNumber?: number | null;
         securityBinaryArtifact?: number | null;
@@ -8638,6 +8655,7 @@ export type TpcSoftwareReportMetricDetailFragment = {
   ecologyDependencyAcquisitionDetail?: Array<string> | null;
   ecologyPatentRiskDetail?: string | null;
   ecologyAdaptationMethodDetail?: string | null;
+  upstreamCollaborationStrategyDetail?: string | null;
   lifecycleVersionNormalizationDetail?: string | null;
   lifecycleVersionNumberDetail?: string | null;
   securityVulnerabilityDisclosureDetail?: string | null;
@@ -8710,6 +8728,7 @@ export type TpcSoftwareReportMetricRawFragment = {
   ecologyAdaptationMethodRaw?: string | null;
   id: number;
   lifecycleVersionLifecycleRaw?: string | null;
+  upstreamCollaborationStrategyRaw?: string | null;
   lifecycleVersionNormalizationRaw?: string | null;
   lifecycleVersionNumberRaw?: string | null;
   securityBinaryArtifactRaw?: string | null;
@@ -8758,6 +8777,7 @@ export type TpcSoftwareSelectionReportQuery = {
       ecologyAdaptationMethod?: number | null;
       id: number;
       lifecycleVersionLifecycle?: number | null;
+      upstreamCollaborationStrategy?: number | null;
       lifecycleVersionNormalization?: number | null;
       lifecycleVersionNumber?: number | null;
       securityBinaryArtifact?: number | null;
@@ -8778,6 +8798,7 @@ export type TpcSoftwareSelectionReportQuery = {
       ecologyDependencyAcquisitionDetail?: Array<string> | null;
       ecologyPatentRiskDetail?: string | null;
       ecologyAdaptationMethodDetail?: string | null;
+      upstreamCollaborationStrategyDetail?: string | null;
       lifecycleVersionNormalizationDetail?: string | null;
       lifecycleVersionNumberDetail?: string | null;
       securityVulnerabilityDisclosureDetail?: string | null;
@@ -8851,6 +8872,7 @@ export type TpcSoftwareSelectionReportQuery = {
     clarificationSigLeadPermission?: number | null;
     clarificationCompliancePermission?: number | null;
     clarificationLegalPermission?: number | null;
+    clarificationCommunityCollaborationWgPermission?: number | null;
   } | null;
 };
 
@@ -8879,6 +8901,7 @@ export type TpcSoftwareSelectionReportRowQuery = {
       ecologyAdaptationMethodRaw?: string | null;
       id: number;
       lifecycleVersionLifecycleRaw?: string | null;
+      upstreamCollaborationStrategyRaw?: string | null;
       lifecycleVersionNormalizationRaw?: string | null;
       lifecycleVersionNumberRaw?: string | null;
       securityBinaryArtifactRaw?: string | null;
@@ -8966,6 +8989,7 @@ export type TpcSoftwareSelectionReportRiskQuery = {
       ecologySoftwareQuality?: number | null;
       ecologyAdaptationMethod?: number | null;
       lifecycleVersionLifecycle?: number | null;
+      upstreamCollaborationStrategy?: number | null;
       lifecycleVersionNormalization?: number | null;
       lifecycleVersionNumber?: number | null;
       securityBinaryArtifact?: number | null;
@@ -9108,6 +9132,17 @@ export type TpcSoftwareSelectionReportRiskQuery = {
         userId: number;
         user?: { __typename?: 'User'; name: string } | null;
       }> | null;
+      upstreamCollaborationStrategy?: Array<{
+        __typename?: 'TpcSoftwareCommentState';
+        createdAt: any;
+        id: number;
+        memberType?: number | null;
+        metricName?: string | null;
+        state?: number | null;
+        updatedAt: any;
+        userId: number;
+        user?: { __typename?: 'User'; name: string } | null;
+      }> | null;
       lifecycleVersionNormalization?: Array<{
         __typename?: 'TpcSoftwareCommentState';
         createdAt: any;
@@ -9239,6 +9274,7 @@ export type TpcSoftwareSelectionQuery = {
     commentCount?: number | null;
     commentSigLeadPermission?: number | null;
     commentQaPermission?: number | null;
+    commentCommunityCollaborationWgPermission?: number | null;
     targetSoftware?: string | null;
     reason?: string | null;
     demandSource?: string | null;
@@ -11784,6 +11820,7 @@ export const TpcSoftwareReportMetricFragmentDoc = /*#__PURE__*/ `
   ecologyAdaptationMethod
   id
   lifecycleVersionLifecycle
+  upstreamCollaborationStrategy
   lifecycleVersionNormalization
   lifecycleVersionNumber
   securityBinaryArtifact
@@ -11825,6 +11862,7 @@ export const TpcSoftwareReportMetricDetailFragmentDoc = /*#__PURE__*/ `
   ecologyDependencyAcquisitionDetail
   ecologyPatentRiskDetail
   ecologyAdaptationMethodDetail
+  upstreamCollaborationStrategyDetail
   ecologySoftwareQualityDetail {
     coverageRatio
     coverageScore
@@ -11871,6 +11909,7 @@ export const TpcSoftwareReportMetricRawFragmentDoc = /*#__PURE__*/ `
   ecologyAdaptationMethodRaw
   id
   lifecycleVersionLifecycleRaw
+  upstreamCollaborationStrategyRaw
   lifecycleVersionNormalizationRaw
   lifecycleVersionNumberRaw
   securityBinaryArtifactRaw
@@ -16612,6 +16651,8 @@ export const TpcSoftwareSelectionReportPageDocument = /*#__PURE__*/ `
       }
       userId
       vulnerabilityResponse
+      upstreamCollaborationStrategy
+      upstreamCommunicationLink
       tpcSoftwareReportMetric {
         ...tpcSoftwareReportMetric
       }
@@ -16767,6 +16808,7 @@ export const TpcSoftwareSelectionReportDocument = /*#__PURE__*/ `
     clarificationSigLeadPermission
     clarificationCompliancePermission
     clarificationLegalPermission
+    clarificationCommunityCollaborationWgPermission
   }
 }
     ${TpcSoftwareReportMetricFragmentDoc}
@@ -16937,6 +16979,7 @@ export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
       ecologySoftwareQuality
       ecologyAdaptationMethod
       lifecycleVersionLifecycle
+      upstreamCollaborationStrategy
       lifecycleVersionNormalization
       lifecycleVersionNumber
       securityBinaryArtifact
@@ -16980,6 +17023,9 @@ export const TpcSoftwareSelectionReportRiskDocument = /*#__PURE__*/ `
         ...tpcClarificationStateDetail
       }
       lifecycleVersionLifecycle {
+        ...tpcClarificationStateDetail
+      }
+      upstreamCollaborationStrategy {
         ...tpcClarificationStateDetail
       }
       lifecycleVersionNormalization {
@@ -17111,6 +17157,7 @@ export const TpcSoftwareSelectionDocument = /*#__PURE__*/ `
     commentCount
     commentSigLeadPermission
     commentQaPermission
+    commentCommunityCollaborationWgPermission
     commentState {
       createdAt
       id

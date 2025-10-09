@@ -93,6 +93,35 @@ export const useTableColumns = (anction) => {
       },
     },
     {
+      title: '上游协同策略',
+      dataIndex: 'upstreamCollaborationStrategy',
+      key: 'upstreamCollaborationStrategy',
+      render: (text) => {
+        const strategyMap = {
+          1: '上游贡献',
+          2: '适配后回合',
+          3: '自维护',
+        };
+        return strategyMap[text] || text;
+      },
+    },
+    {
+      title: '上游沟通链接',
+      dataIndex: 'upstreamCommunicationLink',
+      key: 'upstreamCommunicationLink',
+      render: (text) => {
+        return text ? (
+          <a
+            target="_blank"
+            href={setUrlHost(text)}
+            className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+          >
+            {text}
+          </a>
+        ) : null;
+      },
+    },
+    {
       title: '编程语言',
       dataIndex: 'programmingLanguage',
       key: 'programmingLanguage',

@@ -26,6 +26,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     clarificationSigLeadPermission,
     clarificationCompliancePermission,
     clarificationLegalPermission,
+    clarificationCommunityCollaborationWgPermission,
   } = report;
 
   const { currentUser } = useUserInfo();
@@ -73,7 +74,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const committerState = isUserStateValid(0);
     const legalState = isUserStateValid(2);
     const complianceState = isUserStateValid(3);
-
+    const cmmunityWgState = isUserStateValid(5);
     if (clarificationSigLeadPermission && !dimension) {
       res.push(createApprovalOption(1, leaderState, '以 TPC Leader 赞同'));
     }
@@ -87,6 +88,18 @@ const CheckRisk = ({ report, metricName, dimension }) => {
       res.push(createApprovalOption(3, complianceState, '以合规专家赞同'));
     }
 
+    if (
+      clarificationCommunityCollaborationWgPermission &&
+      metricName == 'upstreamCollaborationStrategy'
+    ) {
+      res.push(
+        createApprovalOption(
+          5,
+          cmmunityWgState,
+          '以 Community Collaboration Wg 赞同'
+        )
+      );
+    }
     return res;
   };
   const isUserStateState = (state, memberType) => {
@@ -113,6 +126,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const committerState = isUserStateState(-1, 0);
     const legalState = isUserStateState(-1, 2);
     const complianceState = isUserStateState(-1, 3);
+    const cmmunityWgState = isUserStateState(-1, 5);
 
     if (clarificationSigLeadPermission && !dimension) {
       res.push(createRejectionOption(1, leaderState, '以 TPC Leader 拒绝'));
@@ -126,7 +140,18 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     if (clarificationCompliancePermission) {
       res.push(createRejectionOption(3, complianceState, '以合规专家拒绝'));
     }
-
+    if (
+      clarificationCommunityCollaborationWgPermission &&
+      metricName == 'upstreamCollaborationStrategy'
+    ) {
+      res.push(
+        createRejectionOption(
+          5,
+          cmmunityWgState,
+          '以 Community Collaboration Wg 驳回'
+        )
+      );
+    }
     return res;
   };
   const getApproveItems = () => {
@@ -142,6 +167,13 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         return getApprovalOptions(dimension);
       }
     } else {
+      if (
+        clarificationCommunityCollaborationWgPermission &&
+        metricName == 'upstreamCollaborationStrategy'
+      ) {
+        console.log(9999, clarificationCommunityCollaborationWgPermission);
+        return getApprovalOptions();
+      }
       if (
         !clarificationCommitterPermission &&
         !clarificationSigLeadPermission &&
@@ -173,6 +205,12 @@ const CheckRisk = ({ report, metricName, dimension }) => {
       }
     } else {
       if (
+        clarificationCommunityCollaborationWgPermission &&
+        metricName == 'upstreamCollaborationStrategy'
+      ) {
+        return getRejectionOptions();
+      }
+      if (
         !clarificationCommitterPermission &&
         !clarificationSigLeadPermission &&
         !clarificationCompliancePermission
@@ -190,6 +228,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   };
   const approveitems = getApproveItems();
   const rejectitems = getRejectItems();
+  console.log(count, hasOhRole);
   return (
     <>
       {count > 0 && (

@@ -314,6 +314,17 @@ export const allMetricData = [
       '检查引入软件版本社区维护生命周期是否结束\n\n【建议】\n1. 优先选择 2 年以内有正式版本发布的软件（以评审节点计算）；\n2. 社区已经 EOL(归档) 的软件，不建议引入；',
   },
   {
+    key: 'upstreamCollaborationStrategy',
+    detailRender: null,
+    维度: '生命周期',
+    指标名称: '上游协同策略',
+    是否必须澄清: '是',
+    指标意义:
+      '孵化软件上游协同策略评估\n\n【建议】\n提倡Upstream First, 三方库开展鸿蒙化适配时优先考虑在上游社区贡献，上游社区未响应或未采纳方案，三方库在下游仓库适配和维护；',
+    指标检查项及评分项:
+      '设置评分。上游贡献 10 分，适配后回合 6 分，自维护 0 分；',
+  },
+  {
     key: 'securityBinaryArtifact',
     detailRender: ({ tpcDetail, oatDetail }) => {
       let res = '';
@@ -420,6 +431,8 @@ const getWarningContent = (item) => {
     ecologySoftwareQuality: '软件质量分析未达标',
     lifecycleVersionLifecycle: '无明确声明周期声明软件及版本 2 年以上发布',
     ecologyAdaptationMethod: '未采用“JS/TS 适配”、“C/C++ 库移植”方式引入',
+    upstreamCollaborationStrategy:
+      '未采用上游社区贡献协同策略，需要 Community Collaboration Wg 角色审批',
   };
   return statusMessages[key];
 };
@@ -442,6 +455,8 @@ const getErrorContent = (item) => {
     securityBinaryArtifact: '引入软件源码仓库包含二进制制品或存在 oat 告警',
     securityVulnerability: '引入软件及依赖源码有公开未修复漏洞',
     securityVulnerabilityResponse: '软件无漏洞响应机制',
+    upstreamCollaborationStrategy:
+      '未采用上游社区贡献协同策略，需要 Community Collaboration Wg 角色审批',
     // 版本归一化:'该软件已在 OpenHarmony 及 TPC 中引入',
     // 版本号:'未检测到版本号或版本号不规范',
   };
