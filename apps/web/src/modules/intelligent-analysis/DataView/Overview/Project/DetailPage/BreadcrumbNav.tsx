@@ -18,7 +18,8 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
   const { t } = useTranslation('intelligent_analysis');
 
   // 获取项目显示名称
-  const projectDisplayName = PROJECT_DISPLAY_NAME_MAP[projectType] || projectType;
+  const projectDisplayName =
+    PROJECT_DISPLAY_NAME_MAP[projectType] || projectType;
 
   return (
     <div className="mb-6">

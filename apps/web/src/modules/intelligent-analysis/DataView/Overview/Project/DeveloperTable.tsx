@@ -30,9 +30,7 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       return data;
     }
     const keyword = searchKeyword.trim().toLowerCase();
-    return data.filter((item) =>
-      item.用户ID.toLowerCase().includes(keyword)
-    );
+    return data.filter((item) => item.用户ID.toLowerCase().includes(keyword));
   }, [data, searchKeyword]);
 
   // 分页数据
@@ -98,7 +96,8 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       title: t('project_detail.location'),
       key: '地理位置',
       width: 150,
-      render: (_, record) => translateByLocale(record.国家, countryMapping, i18n.language),
+      render: (_, record) =>
+        translateByLocale(record.国家, countryMapping, i18n.language),
     },
     {
       title: t('project_detail.actions'),
@@ -117,7 +116,10 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   ];
 
   return (
-    <Card title={t('project_detail.developer_contribution_details')} className="mb-6">
+    <Card
+      title={t('project_detail.developer_contribution_details')}
+      className="mb-6"
+    >
       {/* 搜索区域 */}
       <div className="mb-6">
         <Space wrap size="middle">
@@ -150,7 +152,11 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
           showSizeChanger: false,
           showQuickJumper: true,
           showTotal: (total, range) =>
-            t('project_detail.pagination_total', { start: range[0], end: range[1], total }),
+            t('project_detail.pagination_total', {
+              start: range[0],
+              end: range[1],
+              total,
+            }),
           onChange: handlePageChange,
         }}
       />

@@ -23,7 +23,14 @@ export const useUserDetail = (projectType: string, userId: string) => {
     Object.keys(rawData).forEach((key) => {
       // 匹配类似 "Flutter主仓得分"、"Flutter Candies生态得分"、"Pub.dev生态得分" 的模式
       const match = key.match(/^(.+?)(?:得分)$/);
-      if (match && !key.includes('2024年') && !key.includes('2025年') && !key.includes('角色') && !key.includes('代码Issue') && !key.includes('协作影响力')) {
+      if (
+        match &&
+        !key.includes('2024年') &&
+        !key.includes('2025年') &&
+        !key.includes('角色') &&
+        !key.includes('代码Issue') &&
+        !key.includes('协作影响力')
+      ) {
         ecosystems.add(match[1]);
       }
     });
@@ -200,9 +207,12 @@ export const useUserDetail = (projectType: string, userId: string) => {
       setError(null);
 
       try {
-        const fileName = `${(PROJECT_NAME_MAP[projectType] || projectType)}`;
+        const fileName = `${PROJECT_NAME_MAP[projectType] || projectType}`;
         const response = await fetch(
-          `/test/intelligent-analysis-new/${fileName}/${userId.replace(':', '_')}_main.json`
+          `/test/intelligent-analysis-new/${fileName}/${userId.replace(
+            ':',
+            '_'
+          )}_main.json`
         );
 
         if (!response.ok) {

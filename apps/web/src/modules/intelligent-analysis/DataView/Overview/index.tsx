@@ -162,20 +162,25 @@ const ProjectCard: React.FC<{ project: ProjectData }> = ({ project }) => {
             <span className="text-sm">
               {project.developers.toLocaleString()}
             </span>
-            <span className="ml-1 text-xs">{t('overview_page.developers')}</span>
+            <span className="ml-1 text-xs">
+              {t('overview_page.developers')}
+            </span>
           </div>
 
           <div className="flex items-center">
             <span className="text-sm ">
               {project.organizations.toLocaleString()}
             </span>
-            <span className="ml-1 text-xs">{t('overview_page.organizations')}</span>
+            <span className="ml-1 text-xs">
+              {t('overview_page.organizations')}
+            </span>
           </div>
         </div>
       </div>
 
       <div className={normalLinkStyle}>
-        {t('overview_page.view_details')} <IoIosArrowForward className="mt-[1px]" />
+        {t('overview_page.view_details')}{' '}
+        <IoIosArrowForward className="mt-[1px]" />
       </div>
     </div>
   );
@@ -190,11 +195,11 @@ const Overview: React.FC = () => {
         <h1 className="mb-2 text-3xl font-bold text-gray-900">
           {t('overview_page.title')}
         </h1>
-        <p className="text-gray-600">
-          {t('overview_page.description')}
-        </p>
+        <p className="text-gray-600">{t('overview_page.description')}</p>
       </div>
-      <div className="mb-8 text-2xl font-medium">{t('overview_page.projects')}</div>
+      <div className="mb-8 text-2xl font-medium">
+        {t('overview_page.projects')}
+      </div>
       <div className="flex flex-col gap-6 pb-16">
         <div className="grid grid-cols-4 gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
           {projectsData.map((project) => (

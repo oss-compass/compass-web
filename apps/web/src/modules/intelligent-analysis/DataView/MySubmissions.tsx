@@ -134,7 +134,10 @@ const MySubmissions: React.FC = () => {
   const getStatusTag = (status: string) => {
     const statusMap = {
       pending: { color: 'default', text: t('my_submissions.status.pending') },
-      'under-review': { color: 'processing', text: t('my_submissions.status.reviewing') },
+      'under-review': {
+        color: 'processing',
+        text: t('my_submissions.status.reviewing'),
+      },
       approved: { color: 'success', text: t('my_submissions.status.approved') },
       rejected: { color: 'error', text: t('my_submissions.status.rejected') },
     };
@@ -147,7 +150,10 @@ const MySubmissions: React.FC = () => {
       flutter: { color: 'blue', text: 'Flutter' },
       'react-native': { color: 'cyan', text: 'React Native' },
       ionic: { color: 'purple', text: 'Ionic' },
-      other: { color: 'default', text: t('my_submissions.project_types.other') },
+      other: {
+        color: 'default',
+        text: t('my_submissions.project_types.other'),
+      },
     };
     const config = typeMap[type as keyof typeof typeMap];
     return <Tag color={config.color}>{config.text}</Tag>;
@@ -167,8 +173,8 @@ const MySubmissions: React.FC = () => {
       onOk: async () => {
         try {
           // 模拟删除API调用
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          setSubmissions(prev => prev.filter(item => item.id !== id));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          setSubmissions((prev) => prev.filter((item) => item.id !== id));
           message.success(t('my_submissions.delete_success'));
         } catch (error) {
           message.error(t('my_submissions.delete_error'));
@@ -260,8 +266,12 @@ const MySubmissions: React.FC = () => {
     <div className="min-h-full bg-gray-50">
       <div className="px-6 py-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">{t('my_submissions.title')}</h1>
-          <p className="mt-2 text-gray-600">{t('my_submissions.description')}</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {t('my_submissions.title')}
+          </h1>
+          <p className="mt-2 text-gray-600">
+            {t('my_submissions.description')}
+          </p>
         </div>
 
         <Card>
@@ -281,11 +291,21 @@ const MySubmissions: React.FC = () => {
                 value={statusFilter}
                 onChange={setStatusFilter}
               >
-                <Select.Option value="all">{t('my_submissions.all_status')}</Select.Option>
-                <Select.Option value="pending">{t('my_submissions.status.pending')}</Select.Option>
-                <Select.Option value="under-review">{t('my_submissions.status.reviewing')}</Select.Option>
-                <Select.Option value="approved">{t('my_submissions.status.approved')}</Select.Option>
-                <Select.Option value="rejected">{t('my_submissions.status.rejected')}</Select.Option>
+                <Select.Option value="all">
+                  {t('my_submissions.all_status')}
+                </Select.Option>
+                <Select.Option value="pending">
+                  {t('my_submissions.status.pending')}
+                </Select.Option>
+                <Select.Option value="under-review">
+                  {t('my_submissions.status.reviewing')}
+                </Select.Option>
+                <Select.Option value="approved">
+                  {t('my_submissions.status.approved')}
+                </Select.Option>
+                <Select.Option value="rejected">
+                  {t('my_submissions.status.rejected')}
+                </Select.Option>
               </Select>
             </Space>
           </div>
@@ -300,7 +320,11 @@ const MySubmissions: React.FC = () => {
               showSizeChanger: true,
               showQuickJumper: true,
               showTotal: (total, range) =>
-                t('my_submissions.pagination_total', { start: range[0], end: range[1], total }),
+                t('my_submissions.pagination_total', {
+                  start: range[0],
+                  end: range[1],
+                  total,
+                }),
             }}
           />
         </Card>
@@ -315,10 +339,15 @@ const MySubmissions: React.FC = () => {
         >
           {selectedSubmission && (
             <Descriptions column={2} bordered>
-              <Descriptions.Item label={t('my_submissions.detail.project_name')} span={2}>
+              <Descriptions.Item
+                label={t('my_submissions.detail.project_name')}
+                span={2}
+              >
                 {selectedSubmission.projectName}
               </Descriptions.Item>
-              <Descriptions.Item label={t('my_submissions.detail.project_type')}>
+              <Descriptions.Item
+                label={t('my_submissions.detail.project_type')}
+              >
                 {getProjectTypeTag(selectedSubmission.projectType)}
               </Descriptions.Item>
               <Descriptions.Item label={t('my_submissions.detail.status')}>
@@ -328,19 +357,29 @@ const MySubmissions: React.FC = () => {
                 {selectedSubmission.submitTime}
               </Descriptions.Item>
               <Descriptions.Item label={t('my_submissions.detail.review_time')}>
-                {selectedSubmission.reviewTime || t('my_submissions.detail.not_reviewed')}
+                {selectedSubmission.reviewTime ||
+                  t('my_submissions.detail.not_reviewed')}
               </Descriptions.Item>
               {selectedSubmission.score && (
-                <Descriptions.Item label={t('my_submissions.detail.score')} span={2}>
+                <Descriptions.Item
+                  label={t('my_submissions.detail.score')}
+                  span={2}
+                >
                   <span className="text-lg font-semibold text-blue-600">
                     {selectedSubmission.score}
                   </span>
                 </Descriptions.Item>
               )}
-              <Descriptions.Item label={t('my_submissions.detail.description')} span={2}>
+              <Descriptions.Item
+                label={t('my_submissions.detail.description')}
+                span={2}
+              >
                 {selectedSubmission.description}
               </Descriptions.Item>
-              <Descriptions.Item label={t('my_submissions.detail.repository')} span={2}>
+              <Descriptions.Item
+                label={t('my_submissions.detail.repository')}
+                span={2}
+              >
                 <a
                   href={selectedSubmission.repositoryUrl}
                   target="_blank"
@@ -349,10 +388,16 @@ const MySubmissions: React.FC = () => {
                   {selectedSubmission.repositoryUrl}
                 </a>
               </Descriptions.Item>
-              <Descriptions.Item label={t('my_submissions.detail.contact_email')} span={2}>
+              <Descriptions.Item
+                label={t('my_submissions.detail.contact_email')}
+                span={2}
+              >
                 {selectedSubmission.contactEmail}
               </Descriptions.Item>
-              <Descriptions.Item label={t('my_submissions.detail.tags')} span={2}>
+              <Descriptions.Item
+                label={t('my_submissions.detail.tags')}
+                span={2}
+              >
                 {selectedSubmission.tags.map((tag) => (
                   <Tag key={tag} color="blue">
                     {tag}
@@ -360,7 +405,10 @@ const MySubmissions: React.FC = () => {
                 ))}
               </Descriptions.Item>
               {selectedSubmission.reviewComments && (
-                <Descriptions.Item label={t('my_submissions.detail.review_comments')} span={2}>
+                <Descriptions.Item
+                  label={t('my_submissions.detail.review_comments')}
+                  span={2}
+                >
                   {selectedSubmission.reviewComments}
                 </Descriptions.Item>
               )}

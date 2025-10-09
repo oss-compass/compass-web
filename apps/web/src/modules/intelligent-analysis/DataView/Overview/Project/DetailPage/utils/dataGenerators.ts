@@ -1,12 +1,20 @@
 import { DetailedTableRowData } from '../types';
-import { translateByLocale, ecosystemMapping } from '../../utils/countryMapping';
+import {
+  translateByLocale,
+  ecosystemMapping,
+} from '../../utils/countryMapping';
 
 // 生成生态得分概览表格数据
-export const generateEcosystemTableData = (detailData: any, locale?: string) => {
+export const generateEcosystemTableData = (
+  detailData: any,
+  locale?: string
+) => {
   if (!detailData) return [];
 
   return detailData.生态得分概览.map((eco: any) => ({
-    生态: locale ? translateByLocale(eco.生态, ecosystemMapping, locale) : eco.生态,
+    生态: locale
+      ? translateByLocale(eco.生态, ecosystemMapping, locale)
+      : eco.生态,
     生态年均分: eco.总得分,
     '2024 年得分': eco.年度得分2024,
     '2025 年得分': eco.年度得分2025,

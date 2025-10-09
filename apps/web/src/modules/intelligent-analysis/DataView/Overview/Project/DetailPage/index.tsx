@@ -31,7 +31,7 @@ const DetailPage: React.FC<DetailPageProps> = ({
   projectType = 'Flutter',
 }) => {
   const { i18n } = useTranslation('intelligent_analysis');
-  
+
   // 使用 hook 获取用户详情数据
   const { detailData, ecoChartsData, loading, error } = useUserDetail(
     projectType,

@@ -52,8 +52,6 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
     loadProjectData();
   }, [projectType]);
 
-
-
   // 查看详情
   const handleViewDetail = (record: DeveloperData) => {
     setSelectedUser(record);

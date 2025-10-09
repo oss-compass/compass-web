@@ -322,7 +322,14 @@ const ChartSection: React.FC = () => {
             activeTab === 'retention'
               ? (params: any) => {
                   const param = Array.isArray(params) ? params[0] : params;
-                  return `${param.axisValue}<br/>${param.seriesName}: ${param.value}%`;
+                  const rawValue =
+                    Array.isArray(param?.value) && param.value.length > 1
+                      ? Number(param.value[1])
+                      : Number(param?.value);
+                  const formatted = isNaN(rawValue)
+                    ? param?.value
+                    : rawValue.toFixed(2);
+                  return `${param.axisValue}<br/>${param.seriesName}: ${formatted}%`;
                 }
               : undefined,
         },

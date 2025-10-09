@@ -17,7 +17,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
   onBack,
 }) => {
   const { t } = useTranslation('intelligent_analysis');
-  
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1 bg-gray-50">

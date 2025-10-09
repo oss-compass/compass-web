@@ -96,7 +96,9 @@ const SubmitProject: React.FC = () => {
           ...prev,
           [type]: [...prev[type], ...repositories],
         }));
-        message.success(t('submit_project.import_success', { count: repositories.length }));
+        message.success(
+          t('submit_project.import_success', { count: repositories.length })
+        );
       } catch (error) {
         message.error(t('submit_project.json_format_error'));
       }
@@ -153,8 +155,12 @@ const SubmitProject: React.FC = () => {
     <div className="min-h-full bg-gray-50">
       <div className="px-6 py-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">{t('submit_project.title')}</h1>
-          <p className="mt-2 text-gray-600">{t('submit_project.description')}</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {t('submit_project.title')}
+          </h1>
+          <p className="mt-2 text-gray-600">
+            {t('submit_project.description')}
+          </p>
         </div>
 
         <Card>
@@ -168,14 +174,21 @@ const SubmitProject: React.FC = () => {
             <Form.Item
               label={
                 <span className="font-medium">
-                  {t('submit_project.project_name')} <span className="text-red-500">*</span>
+                  {t('submit_project.project_name')}{' '}
+                  <span className="text-red-500">*</span>
                 </span>
               }
               name="projectName"
               rules={[
-                { required: true, message: t('submit_project.project_name_required_error') },
+                {
+                  required: true,
+                  message: t('submit_project.project_name_required_error'),
+                },
                 { min: 2, message: t('submit_project.project_name_min_error') },
-                { max: 50, message: t('submit_project.project_name_max_error') },
+                {
+                  max: 50,
+                  message: t('submit_project.project_name_max_error'),
+                },
               ]}
             >
               <Input
@@ -186,13 +199,19 @@ const SubmitProject: React.FC = () => {
 
             {/* 项目描述 - 选填 */}
             <Form.Item
-              label={<span className="font-medium">{t('submit_project.project_description')}</span>}
+              label={
+                <span className="font-medium">
+                  {t('submit_project.project_description')}
+                </span>
+              }
               name="description"
               extra={t('submit_project.project_description_extra')}
             >
               <TextArea
                 rows={3}
-                placeholder={t('submit_project.project_description_placeholder')}
+                placeholder={t(
+                  'submit_project.project_description_placeholder'
+                )}
                 maxLength={500}
                 showCount
               />
@@ -203,7 +222,9 @@ const SubmitProject: React.FC = () => {
             {/* 主仓库地址 */}
             <div className="mb-6">
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-base font-medium">{t('submit_project.main_repositories')}</span>
+                <span className="text-base font-medium">
+                  {t('submit_project.main_repositories')}
+                </span>
                 <Upload {...jsonUploadProps('main')}>
                   <Button icon={<UploadOutlined />} size="small">
                     {t('submit_project.import_json')}
@@ -244,7 +265,9 @@ const SubmitProject: React.FC = () => {
                 <div className="mb-4">
                   <div className="mb-2">
                     <Text className="font-medium">
-                      {t('submit_project.added_main_repos_count', { count: repositories.main.length })}
+                      {t('submit_project.added_main_repos_count', {
+                        count: repositories.main.length,
+                      })}
                     </Text>
                   </div>
                   <List
@@ -279,7 +302,9 @@ const SubmitProject: React.FC = () => {
             {/* 三方库仓库地址 */}
             <div className="mb-6">
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-base font-medium">{t('submit_project.third_party_repositories')}</span>
+                <span className="text-base font-medium">
+                  {t('submit_project.third_party_repositories')}
+                </span>
                 <Upload {...jsonUploadProps('thirdParty')}>
                   <Button icon={<UploadOutlined />} size="small">
                     {t('submit_project.import_json')}
@@ -320,7 +345,9 @@ const SubmitProject: React.FC = () => {
                 <div className="mb-4">
                   <div className="mb-2">
                     <Text className="font-medium">
-                      {t('submit_project.added_third_party_repos_count', { count: repositories.thirdParty.length })}
+                      {t('submit_project.added_third_party_repos_count', {
+                        count: repositories.thirdParty.length,
+                      })}
                     </Text>
                   </div>
                   <List

@@ -51,8 +51,8 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
                 (totalScore || data.总得分) >= 70
                   ? '#3f8600'
                   : (totalScore || data.总得分) >= 50
-                    ? '#cf1322'
-                    : '#8c8c8c',
+                  ? '#cf1322'
+                  : '#8c8c8c',
             }}
           />
         </div>
@@ -70,7 +70,11 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
         <Descriptions.Item label={t('project_detail.basic_info.global_rank')}>
           <Space>
             <TrophyOutlined style={{ color: '#1890ff' }} />
-            <Text strong>{t('project_detail.basic_info.rank_position', { rank: data.排名 })}</Text>
+            <Text strong>
+              {t('project_detail.basic_info.rank_position', {
+                rank: data.排名,
+              })}
+            </Text>
           </Space>
         </Descriptions.Item>
         {/* <Descriptions.Item label={t('project_detail.basic_info.country_rank', { country: translateByLocale(data.国家, countryMapping, i18n.language) })}>

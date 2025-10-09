@@ -100,8 +100,14 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     const fetchData = async () => {
       try {
         setLoading(true);
-        const mappedEcosystem = PROJECT_NAME_MAP[ecosystem.toLowerCase()] || ecosystem;
-        const response = await fetch(`/test/intelligent-analysis-new/${mappedEcosystem}/${organizationId.replace(':', '_')}.json`);
+        const mappedEcosystem =
+          PROJECT_NAME_MAP[ecosystem.toLowerCase()] || ecosystem;
+        const response = await fetch(
+          `/test/intelligent-analysis-new/${mappedEcosystem}/${organizationId.replace(
+            ':',
+            '_'
+          )}.json`
+        );
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
@@ -118,7 +124,9 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   }, [ecosystem, organizationId]);
 
   // 处理表格数据
-  const processTableData = (ecosystemData: EcosystemData): ParticipantTableRow[] => {
+  const processTableData = (
+    ecosystemData: EcosystemData
+  ): ParticipantTableRow[] => {
     const result: ParticipantTableRow[] = [];
     const participants = ecosystemData.人员参与项目清单 || {};
 
@@ -129,7 +137,8 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           具体人员: githubUser,
           贡献仓库: repository,
           '2024年角色承担': repoData['2024年角色承担'],
-          '2024年目标生态占个人总活跃量比值': repoData['2024年目标生态占个人总活跃量比值'],
+          '2024年目标生态占个人总活跃量比值':
+            repoData['2024年目标生态占个人总活跃量比值'],
           '2024年个人代码贡献量': repoData['2024年个人代码贡献量'],
           '2024年个人Issue贡献量': repoData['2024年个人Issue贡献量'],
           '2024年个人社区核心度': repoData['2024年个人社区核心度'],
@@ -137,21 +146,20 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           '2024年个人联通控制力': repoData['2024年个人联通控制力'],
           '2024年个人PageRank': repoData['2024年个人PageRank'],
           '2025年角色承担': repoData['2025年角色承担'],
-          '2025年目标生态占个人总活跃量比值': repoData['2025年目标生态占个人总活跃量比值'],
+          '2025年目标生态占个人总活跃量比值':
+            repoData['2025年目标生态占个人总活跃量比值'],
           '2025年个人代码贡献量': repoData['2025年个人代码贡献量'],
           '2025年个人Issue贡献量': repoData['2025年个人Issue贡献量'],
           '2025年个人社区核心度': repoData['2025年个人社区核心度'],
           '2025年个人协作影响力': repoData['2025年个人协作影响力'],
           '2025年个人联通控制力': repoData['2025年个人联通控制力'],
-          '2025年个人PageRank': repoData['2025年个人PageRank']
+          '2025年个人PageRank': repoData['2025年个人PageRank'],
         });
       });
     });
 
     return result;
   };
-
-
 
   // 渲染加载状态
   const renderLoadingState = () => (
@@ -166,7 +174,9 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     >
       <div style={{ textAlign: 'center', padding: '50px' }}>
         <Spin size="large" />
-        <div style={{ marginTop: 16 }}>{t('project_detail.participant.loading')}</div>
+        <div style={{ marginTop: 16 }}>
+          {t('project_detail.participant.loading')}
+        </div>
       </div>
     </Card>
   );
@@ -177,7 +187,9 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       title={
         <Space>
           <TeamOutlined />
-          <span>{i18n.language === 'en' ? 'Participant Details' : '参与者详情'}</span>
+          <span>
+            {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
+          </span>
         </Space>
       }
       style={{ marginTop: 16 }}
@@ -194,14 +206,14 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       title={
         <Space>
           <TeamOutlined />
-          <span>{i18n.language === 'en' ? 'Participant Details' : '参与者详情'}</span>
+          <span>
+            {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
+          </span>
         </Space>
       }
       style={{ marginTop: 16 }}
     >
-      <div style={{ textAlign: 'center', padding: '50px' }}>
-        {message}
-      </div>
+      <div style={{ textAlign: 'center', padding: '50px' }}>{message}</div>
     </Card>
   );
 
@@ -213,7 +225,10 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   };
 
   // 创建单个Tab项
-  const createTabItem = (ecosystemName: string, ecosystemData: EcosystemData) => {
+  const createTabItem = (
+    ecosystemName: string,
+    ecosystemData: EcosystemData
+  ) => {
     const tableData = processTableData(ecosystemData);
 
     return {
@@ -225,14 +240,23 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           <div className="mb-6">
             <h3 className="mb-4 text-xl font-bold text-gray-800">
               {i18n.language === 'en'
-                ? `${translateByLocale(ecosystemName, ecosystemMapping, i18n.language)} Overview`
-                : `${translateByLocale(ecosystemName, ecosystemMapping, i18n.language)}概览`
-              }
+                ? `${translateByLocale(
+                    ecosystemName,
+                    ecosystemMapping,
+                    i18n.language
+                  )} Overview`
+                : `${translateByLocale(
+                    ecosystemName,
+                    ecosystemMapping,
+                    i18n.language
+                  )}概览`}
             </h3>
             <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
               <Col span={6}>
                 {renderStatisticCard(
-                  i18n.language === 'en' ? 'Organization Code Contribution Total' : '组织代码贡献总量',
+                  i18n.language === 'en'
+                    ? 'Organization Code Contribution Total'
+                    : '组织代码贡献总量',
                   ecosystemData['2024-2025组织代码贡献总量'],
                   '#1890ff',
                   (value) => value?.toLocaleString()
@@ -240,7 +264,9 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
               </Col>
               <Col span={6}>
                 {renderStatisticCard(
-                  i18n.language === 'en' ? 'Organization Issue Contribution Total' : '组织Issue贡献总量',
+                  i18n.language === 'en'
+                    ? 'Organization Issue Contribution Total'
+                    : '组织Issue贡献总量',
                   ecosystemData['2024-2025组织Issue贡献总量'],
                   '#52c41a',
                   (value) => value?.toLocaleString()
@@ -251,15 +277,23 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                 <>
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
-                      i18n.language === 'en' ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)' : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
-                      ecosystemData['2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'],
+                      i18n.language === 'en'
+                        ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
+                        : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                      ecosystemData[
+                        '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                      ],
                       '#fa8c16'
                     )}
                   </Col>
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
-                      i18n.language === 'en' ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)' : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
-                      ecosystemData['2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'],
+                      i18n.language === 'en'
+                        ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
+                        : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                      ecosystemData[
+                        '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                      ],
                       '#722ed1'
                     )}
                   </Col>
@@ -281,7 +315,11 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
             scroll={{ x: 1800, y: 600 }}
             size="small"
             bordered
-            title={() => i18n.language === 'en' ? 'Personnel Project List' : '人员参与项目清单'}
+            title={() =>
+              i18n.language === 'en'
+                ? 'Personnel Project List'
+                : '人员参与项目清单'
+            }
           />
         </div>
       ),
@@ -305,12 +343,15 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     // 获取第一个组织的数据
     const organizationData = Object.values(data)[0];
     if (!organizationData) {
-      return renderEmptyState(t('project_detail.participant.organization_data_not_exist'));
+      return renderEmptyState(
+        t('project_detail.participant.organization_data_not_exist')
+      );
     }
 
     // 创建Tab项
-    const tabItems = Object.entries(organizationData).map(([ecosystemName, ecosystemData]) =>
-      createTabItem(ecosystemName, ecosystemData)
+    const tabItems = Object.entries(organizationData).map(
+      ([ecosystemName, ecosystemData]) =>
+        createTabItem(ecosystemName, ecosystemData)
     );
 
     return (
@@ -318,7 +359,9 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
         title={
           <Space>
             <TeamOutlined />
-            <span>{i18n.language === 'en' ? 'Participant Details' : '参与者详情'}</span>
+            <span>
+              {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
+            </span>
           </Space>
         }
         style={{ marginTop: 16 }}
@@ -357,54 +400,69 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           dataIndex: '2024年角色承担',
           key: '2024年角色承担',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
-          title: i18n.language === 'en' ? 'Ecosystem Ratio' : '目标生态占个人总活跃量比值',
+          title:
+            i18n.language === 'en'
+              ? 'Ecosystem Ratio'
+              : '目标生态占个人总活跃量比值',
           dataIndex: '2024年目标生态占个人总活跃量比值',
           key: '2024年目标生态占个人总活跃量比值',
           width: 120,
           render: (value: number) => `${(value * 100).toFixed(4)}%`,
         },
         {
-          title: i18n.language === 'en' ? 'Code Contribution' : '个人代码贡献量',
+          title:
+            i18n.language === 'en' ? 'Code Contribution' : '个人代码贡献量',
           dataIndex: '2024年个人代码贡献量',
           key: '2024年个人代码贡献量',
           width: 120,
         },
         {
-          title: i18n.language === 'en' ? 'Issue Contribution' : '个人Issue贡献量',
+          title:
+            i18n.language === 'en' ? 'Issue Contribution' : '个人Issue贡献量',
           dataIndex: '2024年个人Issue贡献量',
           key: '2024年个人Issue贡献量',
           width: 120,
         },
         {
-          title: i18n.language === 'en' ? 'Community Centrality' : '个人社区核心度',
+          title:
+            i18n.language === 'en' ? 'Community Centrality' : '个人社区核心度',
           dataIndex: '2024年个人社区核心度',
           key: '2024年个人社区核心度',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
-          title: i18n.language === 'en' ? 'Collaboration Influence' : '个人协作影响力',
+          title:
+            i18n.language === 'en'
+              ? 'Collaboration Influence'
+              : '个人协作影响力',
           dataIndex: '2024年个人协作影响力',
           key: '2024年个人协作影响力',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
-          title: i18n.language === 'en' ? 'Connectivity Control' : '个人联通控制力',
+          title:
+            i18n.language === 'en' ? 'Connectivity Control' : '个人联通控制力',
           dataIndex: '2024年个人联通控制力',
           key: '2024年个人联通控制力',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
           title: 'PageRank',
           dataIndex: '2024年个人PageRank',
           key: '2024年个人PageRank',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
       ],
     },
@@ -416,7 +474,8 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           dataIndex: '2025年角色承担',
           key: '2025年角色承担',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
           title: i18n.language === 'en' ? 'Ecosystem Ratio' : '生态占比',
@@ -442,35 +501,45 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           dataIndex: '2025年个人社区核心度',
           key: '2025年个人社区核心度',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
-          title: i18n.language === 'en' ? 'Collaboration Influence' : '协作影响力',
+          title:
+            i18n.language === 'en' ? 'Collaboration Influence' : '协作影响力',
           dataIndex: '2025年个人协作影响力',
           key: '2025年个人协作影响力',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
           title: i18n.language === 'en' ? 'Connectivity Control' : '联通控制力',
           dataIndex: '2025年个人联通控制力',
           key: '2025年个人联通控制力',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
         {
           title: 'PageRank',
           dataIndex: '2025年个人PageRank',
           key: '2025年个人PageRank',
           width: 120,
-          render: (value: string) => translateByLocale(value, ecosystemMapping, i18n.language),
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
         },
       ],
     },
   ];
 
   // 渲染统计卡片
-  const renderStatisticCard = (title: string, value: any, color: string, formatter?: (value: any) => any) => (
+  const renderStatisticCard = (
+    title: string,
+    value: any,
+    color: string,
+    formatter?: (value: any) => any
+  ) => (
     <Card
       size="small"
       className="text-center"
@@ -480,7 +549,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
         height: '130px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center'
+        justifyContent: 'center',
       }}
     >
       <Statistic
@@ -493,7 +562,11 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   );
 
   // 渲染网络影响力统计卡片
-  const renderNetworkInfluenceCard = (title: string, value: string, color: string) => (
+  const renderNetworkInfluenceCard = (
+    title: string,
+    value: string,
+    color: string
+  ) => (
     <Card
       size="small"
       className="text-center"
@@ -503,7 +576,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
         height: '130px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center'
+        justifyContent: 'center',
       }}
     >
       <Statistic
@@ -513,23 +586,35 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           if (!value || value === 'N/A') {
             return i18n.language === 'en' ? 'No data' : '暂无数据';
           }
-          const translated = translateCompositeString(value as string, ecosystemMapping, i18n.language);
+          const translated = translateCompositeString(
+            value as string,
+            ecosystemMapping,
+            i18n.language
+          );
           if (translated.length > 20) {
             return (
-              <span title={translated} style={{
-                display: 'block',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '100%'
-              }}>
+              <span
+                title={translated}
+                style={{
+                  display: 'block',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '100%',
+                }}
+              >
                 {translated}
               </span>
             );
           }
           return translated;
         }}
-        valueStyle={{ color, fontSize: '14px', fontWeight: 'bold', lineHeight: '1.2' }}
+        valueStyle={{
+          color,
+          fontSize: '14px',
+          fontWeight: 'bold',
+          lineHeight: '1.2',
+        }}
       />
     </Card>
   );

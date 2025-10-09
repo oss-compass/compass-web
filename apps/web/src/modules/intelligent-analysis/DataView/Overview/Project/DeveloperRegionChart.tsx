@@ -173,12 +173,23 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
                 value >= 10000
                   ? `${(value / 10000).toFixed(1)}万`
                   : value?.toLocaleString();
-              const translatedName = translateByLocale(params.name, countryMapping, i18n.language);
-              return `${translatedName}<br/>${tabInfo.description}：${displayValue || 0
-                }`;
+              const translatedName = translateByLocale(
+                params.name,
+                countryMapping,
+                i18n.language
+              );
+              return `${translatedName}<br/>${tabInfo.description}：${
+                displayValue || 0
+              }`;
             }
-            const translatedName = translateByLocale(params.name, countryMapping, i18n.language);
-            return `${translatedName}<br/>${t('project_detail.region_chart.no_data')}`;
+            const translatedName = translateByLocale(
+              params.name,
+              countryMapping,
+              i18n.language
+            );
+            return `${translatedName}<br/>${t(
+              'project_detail.region_chart.no_data'
+            )}`;
           },
         },
         visualMap: {
@@ -192,7 +203,10 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
           })(),
           left: 'left',
           top: 'bottom',
-          text: [t('project_detail.region_chart.high'), t('project_detail.region_chart.low')],
+          text: [
+            t('project_detail.region_chart.high'),
+            t('project_detail.region_chart.low'),
+          ],
           calculable: true,
           inRange: {
             color: ['#aecbfa', '#0958d9', '#003eb3'],

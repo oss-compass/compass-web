@@ -10,7 +10,7 @@ interface EcosystemChartsProps {
 
 const EcosystemCharts: React.FC<EcosystemChartsProps> = ({ data }) => {
   const { t } = useTranslation('intelligent_analysis');
-  
+
   if (data.length === 0) {
     return null;
   }

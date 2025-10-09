@@ -28,7 +28,9 @@ const EcosystemOverview: React.FC<EcosystemOverviewProps> = ({ data }) => {
       dataIndex: '生态',
       key: '生态',
       render: (text: string) => (
-        <Text strong>{translateByLocale(text, ecosystemMapping, i18n.language)}</Text>
+        <Text strong>
+          {translateByLocale(text, ecosystemMapping, i18n.language)}
+        </Text>
       ),
     },
     {
