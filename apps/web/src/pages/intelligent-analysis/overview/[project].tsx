@@ -13,6 +13,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   // 验证项目类型
   const validProjects = [
+    'flutter-tpc',
     'flutter',
     'ionic',
     'react-native',

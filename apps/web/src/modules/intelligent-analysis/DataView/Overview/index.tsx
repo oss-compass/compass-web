@@ -12,6 +12,12 @@ interface ProjectData {
 
 const projectsData: ProjectData[] = [
   {
+    name: 'Flutter TPC',
+    developers: 53039,
+    organizations: 14158,
+    slug: 'flutter-tpc',
+  },
+  {
     name: 'Ollama',
     developers: 12271,
     organizations: 2589,

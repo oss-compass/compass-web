@@ -1,7 +1,8 @@
 import { DeveloperData } from './types';
 
-// 项目名称映射表
+// 项目名称映射文件夹表
 export const PROJECT_NAME_MAP: Record<string, string> = {
+  'flutter-tpc': 'Flutter-TPC',
   flutter: 'Flutter',
   ionic: 'Ionic',
   'react-native': 'RN',
@@ -26,6 +27,7 @@ export const PROJECT_NAME_MAP: Record<string, string> = {
 
 // 项目显示名称映射
 export const PROJECT_DISPLAY_NAME_MAP: Record<string, string> = {
+  'flutter-tpc': 'Flutter TPC',
   flutter: 'Flutter',
   ionic: 'Ionic',
   'react-native': 'React Native',
@@ -60,6 +62,7 @@ export async function fetchProjectData(
 ): Promise<any[]> {
   try {
     const fileName = PROJECT_NAME_MAP[projectSlug];
+    console.log(fileName);
     if (!fileName) {
       throw new Error(`Unknown project: ${projectSlug}`);
     }
