@@ -88,7 +88,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
         },
       },
       legend: {
-        data: i18n.language === 'en' ? ['2024', '2025'] : ['2024年', '2025年'],
+        data: ['2024年', '2025年'],
         top: 0,
       },
       grid: {
@@ -111,7 +111,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
       },
       series: [
         {
-          name: i18n.language === 'en' ? '2024' : '2024年',
+          name: '2024',
           type: 'bar' as const,
           data: categories.map((cat) => getValueByCategory(data2024, cat)),
           itemStyle: {
@@ -129,7 +129,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
           },
         },
         {
-          name: i18n.language === 'en' ? '2025' : '2025年',
+          name: '2025',
           type: 'bar' as const,
           data: categories.map((cat) => getValueByCategory(data2025, cat)),
           itemStyle: {
@@ -183,18 +183,17 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             </h3>
             <div className="text-base text-gray-600">
               <span className="font-semibold text-blue-600">
-                {i18n.language === 'en' ? '2024: ' : '2024年: '}
-                {eco.score2024.toFixed(2)}
+                2024:
+                {' ' + eco.score2024.toFixed(2)}
               </span>
               <span className="mx-3 text-gray-400">→</span>
               <span className="font-semibold text-green-600">
-                {i18n.language === 'en' ? '2025: ' : '2025年: '}
-                {eco.score2025.toFixed(2)}
+                2025:
+                {' ' + eco.score2025.toFixed(2)}
               </span>
               <span
-                className={`ml-3 font-bold ${
-                  isPositiveChange ? 'text-green-600' : 'text-red-600'
-                }`}
+                className={`ml-3 font-bold ${isPositiveChange ? 'text-green-600' : 'text-red-600'
+                  }`}
               >
                 ({isPositiveChange ? '+' : ''}
                 {scoreChange.toFixed(2)})
@@ -204,7 +203,11 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
 
           <div className="grid grid-cols-3 gap-6 lg:grid-cols-3">
             <Card
-              title={i18n.language === 'en' ? 'Role Score' : '角色得分'}
+              title={
+                i18n.language === 'en'
+                  ? `Role Score (2024: ${eco.roleScore2024.toFixed(2)} → 2025: ${eco.roleScore2025.toFixed(2)})`
+                  : `角色得分（2024：${eco.roleScore2024.toFixed(2)} → 2025：${eco.roleScore2025.toFixed(2)}）`
+              }
               size="small"
             >
               <div style={{ height: '300px', width: '100%' }} ref={roleRef}>
@@ -225,8 +228,8 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             <Card
               title={
                 i18n.language === 'en'
-                  ? 'Code Issue Contribution Score'
-                  : '代码Issue贡献得分'
+                  ? `Code Issue Contribution Score (2024: ${eco.contributionScore2024.toFixed(2)} → 2025: ${eco.contributionScore2025.toFixed(2)})`
+                  : `代码Issue贡献得分（2024：${eco.contributionScore2024.toFixed(2)} → 2025：${eco.contributionScore2025.toFixed(2)}）`
               }
               size="small"
             >
@@ -252,8 +255,8 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             <Card
               title={
                 i18n.language === 'en'
-                  ? 'Collaboration Influence Score'
-                  : '协作影响力得分'
+                  ? `Collaboration Influence Score (2024: ${eco.influenceScore2024.toFixed(2)} → 2025: ${eco.influenceScore2025.toFixed(2)})`
+                  : `协作影响力得分（2024：${eco.influenceScore2024.toFixed(2)} → 2025：${eco.influenceScore2025.toFixed(2)}）`
               }
               size="small"
             >
