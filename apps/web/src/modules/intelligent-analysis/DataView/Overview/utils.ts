@@ -1,54 +1,12 @@
 import { DeveloperData } from './types';
+import { 
+  PROJECT_NAME_MAP, 
+  PROJECT_DISPLAY_NAME_MAP,
+  getProjectConfig 
+} from '../../config/projects';
 
-// 项目名称映射文件夹表
-export const PROJECT_NAME_MAP: Record<string, string> = {
-  'flutter-tpc': 'Flutter-TPC',
-  flutter: 'Flutter',
-  ionic: 'Ionic',
-  'react-native': 'RN',
-  cef: 'CEF',
-  electron: 'Electron',
-  chromium: 'Chromium',
-  'kmp-oh': 'KMP_OH',
-  a2a: 'A2A',
-  avalonia: 'Avalonia',
-  'llama-factory': 'LLaMA-Factory',
-  aibrix: 'aibrix',
-  jax: 'jax',
-  ollama: 'ollama',
-  onnxruntime: 'onnxruntime',
-  pytorch: 'pytorch',
-  servers: 'servers',
-  triton: 'triton',
-  vllm: 'vllm',
-  'vllm-ascend': 'vllm-ascend',
-  xla: 'xla',
-};
-
-// 项目显示名称映射
-export const PROJECT_DISPLAY_NAME_MAP: Record<string, string> = {
-  'flutter-tpc': 'Flutter TPC',
-  flutter: 'Flutter',
-  ionic: 'Ionic',
-  'react-native': 'React Native',
-  cef: 'CEF',
-  electron: 'Electron',
-  chromium: 'Chromium',
-  'kmp-oh': 'KMP OH',
-  a2a: 'A2A',
-  avalonia: 'Avalonia',
-  'llama-factory': 'LLaMA-Factory',
-  aibrix: 'Aibrix',
-  jax: 'JAX',
-  ollama: 'Ollama',
-  onnxruntime: 'ONNX Runtime',
-  pytorch: 'PyTorch',
-  servers: 'Servers',
-  triton: 'Triton',
-  vllm: 'vLLM',
-  'vllm-ascend': 'vLLM-Ascend',
-  xla: 'XLA',
-};
+// 导出项目映射（保持向后兼容）
+export { PROJECT_NAME_MAP, PROJECT_DISPLAY_NAME_MAP };
 
 /**
  * 获取项目数据

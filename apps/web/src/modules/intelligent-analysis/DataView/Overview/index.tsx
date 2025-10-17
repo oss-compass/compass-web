@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { IoIosArrowForward } from 'react-icons/io';
+import { PROJECTS_CONFIG, ProjectConfig } from '../../config/projects';
 
 interface ProjectData {
   name: string;
@@ -10,135 +11,13 @@ interface ProjectData {
   slug: string;
 }
 
-const projectsData: ProjectData[] = [
-  {
-    name: 'Flutter TPC',
-    developers: 53039,
-    organizations: 14158,
-    slug: 'flutter-tpc',
-  },
-  {
-    name: 'Ollama',
-    developers: 12271,
-    organizations: 2589,
-    slug: 'ollama',
-  },
-  {
-    name: 'vLLM',
-    developers: 11418,
-    organizations: 2030,
-    slug: 'vllm',
-  },
-  {
-    name: 'PyTorch',
-    developers: 6366,
-    organizations: 2012,
-    slug: 'pytorch',
-  },
-  {
-    name: 'LLaMA-Factory',
-    developers: 4087,
-    organizations: 628,
-    slug: 'llama-factory',
-  },
-  {
-    name: 'ONNX Runtime',
-    developers: 2594,
-    organizations: 525,
-    slug: 'onnxruntime',
-  },
-  {
-    name: 'Servers',
-    developers: 1448,
-    organizations: 754,
-    slug: 'servers',
-  },
-  {
-    name: 'Avalonia',
-    developers: 1242,
-    organizations: 292,
-    slug: 'avalonia',
-  },
-  {
-    name: 'Triton',
-    developers: 1015,
-    organizations: 259,
-    slug: 'triton',
-  },
-  {
-    name: 'vLLM-Ascend',
-    developers: 531,
-    organizations: 89,
-    slug: 'vllm-ascend',
-  },
-  {
-    name: 'JAX',
-    developers: 493,
-    organizations: 274,
-    slug: 'jax',
-  },
-  {
-    name: 'XLA',
-    developers: 337,
-    organizations: 42,
-    slug: 'xla',
-  },
-  {
-    name: 'Aibrix',
-    developers: 92,
-    organizations: 57,
-    slug: 'aibrix',
-  },
-  {
-    name: 'A2A',
-    developers: 56,
-    organizations: 26,
-    slug: 'a2a',
-  },
-
-  {
-    name: 'Flutter',
-    developers: 56924,
-    organizations: 14910,
-    slug: 'flutter',
-  },
-  {
-    name: 'React Native',
-    developers: 48371,
-    organizations: 16137,
-    slug: 'react-native',
-  },
-  {
-    name: 'Chromium',
-    developers: 12329,
-    organizations: 3345,
-    slug: 'chromium',
-  },
-  {
-    name: 'Electron',
-    developers: 4450,
-    organizations: 1636,
-    slug: 'electron',
-  },
-  {
-    name: 'KMP OH',
-    developers: 1915,
-    organizations: 835,
-    slug: 'kmp-oh',
-  },
-  {
-    name: 'Ionic',
-    developers: 1712,
-    organizations: 713,
-    slug: 'ionic',
-  },
-  {
-    name: 'CEF',
-    developers: 216,
-    organizations: 61,
-    slug: 'cef',
-  },
-];
+// 从配置文件转换为组件需要的数据格式
+const projectsData: ProjectData[] = PROJECTS_CONFIG.map(project => ({
+  name: project.name,
+  developers: project.developers,
+  organizations: project.organizations,
+  slug: project.slug,
+}));
 
 const ProjectCard: React.FC<{ project: ProjectData }> = ({ project }) => {
   const { t } = useTranslation('intelligent_analysis');

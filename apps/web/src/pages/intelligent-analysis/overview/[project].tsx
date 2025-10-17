@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import IntelligentAnalysisLayout from '@modules/intelligent-analysis/components/Layout';
 import Main from '@modules/intelligent-analysis/DataView/Overview/Project';
+import { isValidProject } from '@modules/intelligent-analysis/config/projects';
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -12,31 +13,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const project = params?.project as string;
 
   // 验证项目类型
-  const validProjects = [
-    'flutter-tpc',
-    'flutter',
-    'ionic',
-    'react-native',
-    'cef',
-    'electron',
-    'chromium',
-    'kmp-oh',
-    // 新增项目
-    'ollama',
-    'vllm',
-    'pytorch',
-    'llama-factory',
-    'onnxruntime',
-    'servers',
-    'avalonia',
-    'triton',
-    'vllm-ascend',
-    'jax',
-    'xla',
-    'aibrix',
-    'a2a',
-  ];
-  if (!validProjects.includes(project)) {
+  if (!isValidProject(project)) {
     return {
       notFound: true,
     };
