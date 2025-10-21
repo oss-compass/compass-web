@@ -30,7 +30,7 @@ const IntelligentAnalysisLayout: React.FC<IntelligentAnalysisLayoutProps> = ({
   return (
     <NoSsr>
       <AuthRequire
-        requiredRoleLevel={7}
+        requiredRoleLevel={2}
         loadingUi={loadingUi}
         redirectToAuth={true}
         redirectOnPermissionDenied={true}
