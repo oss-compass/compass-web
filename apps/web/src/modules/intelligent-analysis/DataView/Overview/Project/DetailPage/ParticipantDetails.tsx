@@ -90,6 +90,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   ecosystem,
   organizationId,
 }) => {
+  const normalizeId = (n: string) => (typeof n === 'string' ? n.replace(/^github:/i, '') : n);
   const { t, i18n } = useTranslation('intelligent_analysis');
   const [data, setData] = useState<OrganizationData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -384,6 +385,18 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       key: '具体人员',
       width: 150,
       fixed: 'left',
+      render: (name: string) => {
+        const normalized = normalizeId(name);
+        return (
+          <a
+            href={`/developer/${encodeURIComponent(normalized)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {normalized}
+          </a>
+        );
+      },
     },
     {
       title: t('project_detail.participant.contribution_repo'),
@@ -391,6 +404,28 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       key: '贡献仓库',
       width: 200,
       fixed: 'left',
+      render: (repo: string) => {
+        const toGithubUrl = (r?: string) => {
+          if (!r) return null;
+          const value = r.trim();
+          if (/^https?:\/\/(www\.)?github\.com\//i.test(value)) {
+            return value;
+          }
+          const normalized = value.replace(/^github:/i, '');
+          const match = normalized.match(/^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)(\.git)?$/);
+          if (match) {
+            return `https://github.com/${match[1]}/${match[2]}`;
+          }
+          return null;
+        };
+        const url = toGithubUrl(repo);
+        const display = (repo || '').replace(/^github:/i, '');
+        return url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer">{display}</a>
+        ) : (
+          <span>{display}</span>
+        );
+      },
     },
     {
       title: i18n.language === 'en' ? '2024 Data' : '2024年数据',

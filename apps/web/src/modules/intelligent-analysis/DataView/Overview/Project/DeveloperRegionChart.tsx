@@ -1,6 +1,6 @@
 // autocorrect: false
-import React, { useRef, useEffect, useState } from 'react';
-import { Card, Table, Tabs } from 'antd';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
+import { Card, Table, Tabs, Spin } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'next-i18next';
 import * as echarts from 'echarts';
@@ -16,12 +16,18 @@ interface RegionData {
 
 interface DeveloperRegionChartProps {
   className?: string;
+  loading: boolean;
   data: DeveloperData[];
+  selectedRegions?: string[];
+  onRegionFilterChange?: (regions: string[]) => void;
 }
 
 const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
   className,
+  loading,
   data,
+  selectedRegions = [],
+  onRegionFilterChange,
 }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
   const mapChartRef = useRef<HTMLDivElement>(null);
@@ -85,6 +91,14 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
     const processedData = processData(data, activeTab);
     setRegionData(processedData);
   }, [data, activeTab]);
+
+  // 根据选中地区过滤表格数据
+  const filteredRegionData = useMemo(() => {
+    if (selectedRegions.length === 0) {
+      return regionData;
+    }
+    return regionData.filter(item => selectedRegions.includes(item.country));
+  }, [regionData, selectedRegions]);
 
   // 地图数据映射
   const mapData = regionData
@@ -178,9 +192,8 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
                 countryMapping,
                 i18n.language
               );
-              return `${translatedName}<br/>${tabInfo.description}：${
-                displayValue || 0
-              }`;
+              return `${translatedName}<br/>${tabInfo.description}：${displayValue || 0
+                }`;
             }
             const translatedName = translateByLocale(
               params.name,
@@ -222,6 +235,7 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
             map: 'world',
             roam: true,
             zoom: 1.2,
+            selectedMode: 'multiple',
             scaleLimit: {
               min: 0.8,
               max: 3,
@@ -235,16 +249,35 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
                 areaColor: '#ffa500',
               },
             },
+            select: {
+              itemStyle: {
+                areaColor: '#52c41a',
+              },
+            },
             itemStyle: {
               borderColor: '#fff',
               borderWidth: 0.5,
             },
-            data: mapData,
+            data: mapData.map(item => ({
+              ...item,
+              selected: selectedRegions.includes(item.name),
+            })),
           },
         ],
       };
 
       mapChart.setOption(mapOption);
+
+      // 添加地图点击事件处理
+      mapChart.on('click', (params: any) => {
+        if (params.name && onRegionFilterChange) {
+          const clickedRegion = params.name;
+          const newSelectedRegions = selectedRegions.includes(clickedRegion)
+            ? selectedRegions.filter(region => region !== clickedRegion)
+            : [...selectedRegions, clickedRegion];
+          onRegionFilterChange(newSelectedRegions);
+        }
+      });
 
       const handleMapResize = () => {
         mapChart.resize();
@@ -257,7 +290,7 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
         mapChart.dispose();
       };
     }
-  }, [mapData, tabInfo]);
+  }, [mapData, tabInfo, selectedRegions, onRegionFilterChange]);
 
   // 计算各类型的数据统计
   const getTabStats = () => {
@@ -321,24 +354,26 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       onTabChange={(key) => setActiveTab(key as 'all' | 'org' | 'developer')}
       className={className}
     >
-      <div className="flex h-full">
-        {/* 地图区域 */}
-        <div className="flex-1">
-          <div ref={mapChartRef} className="h-80 w-full"></div>
-        </div>
+      <Spin spinning={loading}>
+        <div className="flex h-80">
+          {/* 地图区域 */}
+          <div className="flex-1">
+            <div ref={mapChartRef} className="h-full w-full"></div>
+          </div>
 
-        {/* 右侧数据表格 */}
-        <div className="ml-4 w-64">
-          <Table
-            columns={columns}
-            dataSource={regionData}
-            pagination={false}
-            size="small"
-            scroll={{ y: 300 }}
-            className="border-l border-gray-200 pl-4"
-          />
+          {/* 右侧数据表格 */}
+          <div className="ml-4 w-64">
+            <Table
+              columns={columns}
+              dataSource={filteredRegionData}
+              pagination={false}
+              size="small"
+              scroll={{ y: 300 }}
+              className="border-l border-gray-200 pl-4"
+            />
+          </div>
         </div>
-      </div>
+      </Spin>
     </Card>
   );
 };

@@ -46,47 +46,7 @@ const MySubmissions: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   // 模拟数据
-  const mockData: Submission[] = [
-    {
-      id: '1',
-      projectName: 'Flutter商城应用',
-      projectType: 'flutter',
-      status: 'approved',
-      submitTime: '2024-01-15 10:30:00',
-      reviewTime: '2024-01-18 14:20:00',
-      score: 85.5,
-      description:
-        '基于Flutter开发的电商应用，包含商品展示、购物车、支付等功能',
-      repositoryUrl: 'https://github.com/user/flutter-shop',
-      contactEmail: 'user@example.com',
-      tags: ['移动应用', '电商', 'Flutter'],
-      reviewComments: '项目结构清晰，代码质量良好，功能完整。',
-    },
-    {
-      id: '2',
-      projectName: 'React Native天气应用',
-      projectType: 'react-native',
-      status: 'under-review',
-      submitTime: '2024-01-20 09:15:00',
-      description: '跨平台天气预报应用，支持多城市天气查询',
-      repositoryUrl: 'https://github.com/user/rn-weather',
-      contactEmail: 'user@example.com',
-      tags: ['移动应用', '工具', 'React Native'],
-    },
-    {
-      id: '3',
-      projectName: 'Ionic教育平台',
-      projectType: 'ionic',
-      status: 'rejected',
-      submitTime: '2024-01-10 16:45:00',
-      reviewTime: '2024-01-12 11:30:00',
-      description: '在线教育平台，支持课程学习和考试功能',
-      repositoryUrl: 'https://github.com/user/ionic-edu',
-      contactEmail: 'user@example.com',
-      tags: ['移动应用', '教育', 'Ionic'],
-      reviewComments: '项目缺少核心功能实现，代码结构需要优化。',
-    },
-  ];
+  const mockData: Submission[] = []
 
   useEffect(() => {
     fetchSubmissions();

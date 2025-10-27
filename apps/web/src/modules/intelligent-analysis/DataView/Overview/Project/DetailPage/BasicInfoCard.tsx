@@ -29,15 +29,29 @@ const renderUserTypeTag = (type: string, t: (key: string) => string) => {
   );
 };
 
+const normalizeId = (n: string) => (typeof n === 'string' ? n.replace(/^github:/i, '') : n);
+
 const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
+  const isDeveloper = data.用户类型 === '开发者';
+  const normalizedId = normalizeId(data.用户ID);
 
   return (
     <Card className="mb-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <Title level={2} className="mb-2">
-            {data.用户ID}
+            {isDeveloper ? (
+              <a
+                href={`/developer/${encodeURIComponent(normalizedId)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {normalizedId}
+              </a>
+            ) : (
+              normalizedId
+            )}
           </Title>
           <Space size="middle">{renderUserTypeTag(data.用户类型, t)}</Space>
         </div>

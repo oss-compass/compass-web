@@ -1,6 +1,6 @@
 // autocorrect: false
 import React, { useState, useMemo } from 'react';
-import { Card, Input, Button, Space, Tag, Tooltip } from 'antd';
+import { Card, Input, Button, Space, Tag, Tooltip, Select } from 'antd';
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
 import type { ColumnsType } from 'antd/es/table';
@@ -12,17 +12,30 @@ interface DeveloperTableProps {
   data: DeveloperData[];
   loading: boolean;
   onViewDetail: (record: DeveloperData) => void;
+  selectedRegions?: string[];
+  onRegionFilterChange?: (regions: string[]) => void;
 }
 
 const DeveloperTable: React.FC<DeveloperTableProps> = ({
   data,
   loading,
   onViewDetail,
+  selectedRegions = [],
+  onRegionFilterChange,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { t, i18n } = useTranslation('intelligent_analysis');
+
+  // 获取所有可用的地区选项
+  const availableRegions = useMemo(() => {
+    const regions = Array.from(new Set(data.map(item => item.国家).filter(Boolean)));
+    return regions.map(region => ({
+      label: translateByLocale(region, countryMapping, i18n.language),
+      value: region,
+    })).sort((a, b) => a.label.localeCompare(b.label));
+  }, [data, i18n.language]);
 
   // 过滤数据
   const filteredData = useMemo(() => {
@@ -68,11 +81,21 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       key: '用户ID',
       width: 200,
       ellipsis: true,
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <span style={{ fontWeight: 'bold' }}>{text}</span>
-        </Tooltip>
-      ),
+      render: (text: string) => {
+        const normalized = typeof text === 'string' ? text.replace(/^github:/i, '') : text;
+        return (
+          <Tooltip title={normalized}>
+            <a
+              href={`/developer/${encodeURIComponent(normalized)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontWeight: 'bold' }}
+            >
+              {normalized}
+            </a>
+          </Tooltip>
+        );
+      },
     },
     {
       title: t('project_detail.total_score'),
@@ -135,6 +158,19 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
             <Button type="primary" onClick={handleSearch}>
               {t('project_detail.search')}
             </Button>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">{t('project_detail.filter_by_region')}:</span>
+            <Select
+              mode="multiple"
+              placeholder={t('project_detail.select_regions')}
+              style={{ minWidth: 200 }}
+              value={selectedRegions}
+              onChange={onRegionFilterChange}
+              options={availableRegions}
+              allowClear
+              maxTagCount="responsive"
+            />
           </div>
         </Space>
       </div>

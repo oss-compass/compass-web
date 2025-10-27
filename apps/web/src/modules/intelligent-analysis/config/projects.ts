@@ -12,13 +12,30 @@ export interface ProjectConfig {
  * 新增项目时只需要在这里添加一条配置即可
  */
 export const PROJECTS_CONFIG: ProjectConfig[] = [
+
+  {
+    slug: 'react-native',
+    name: 'React Native',
+    displayName: 'React Native',
+    developers: 48371,
+    organizations: 16137,
+    folderName: 'RN',
+  },
   {
     slug: 'rn-tpc',
-    name: 'RN TPC',
-    displayName: 'RN TPC',
+    name: 'React Native TPC',
+    displayName: 'React Native TPC',
     developers: 48808,
     organizations: 15909,
     folderName: 'RN-TPC',
+  },
+  {
+    slug: 'flutter',
+    name: 'Flutter',
+    displayName: 'Flutter',
+    developers: 56924,
+    organizations: 14910,
+    folderName: 'Flutter',
   },
   {
     slug: 'flutter-tpc',
@@ -104,22 +121,7 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
 
   // 跨平台开发框架
 
-  {
-    slug: 'flutter',
-    name: 'Flutter',
-    displayName: 'Flutter',
-    developers: 56924,
-    organizations: 14910,
-    folderName: 'Flutter',
-  },
-  {
-    slug: 'react-native',
-    name: 'React Native',
-    displayName: 'React Native',
-    developers: 48371,
-    organizations: 16137,
-    folderName: 'RN',
-  },
+
   {
     slug: 'ionic',
     name: 'Ionic',

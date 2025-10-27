@@ -24,6 +24,7 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
   const [allData, setAllData] = useState<DeveloperData[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [selectedUser, setSelectedUser] = useState<DeveloperData | null>(null);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
 
   const category = getProjectDisplayName(projectType);
 
@@ -66,12 +67,25 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
 
   // 获取开发者数据
   const getDeveloperData = () => {
-    return allData.filter((item) => item.用户类型 === '开发者');
+    const developers = allData.filter((item) => item.用户类型 === '开发者');
+    if (selectedRegions.length === 0) {
+      return developers;
+    }
+    return developers.filter((item) => selectedRegions.includes(item.国家));
   };
 
   // 获取组织数据
   const getOrganizationData = () => {
-    return allData.filter((item) => item.用户类型 === '组织');
+    const organizations = allData.filter((item) => item.用户类型 === '组织');
+    if (selectedRegions.length === 0) {
+      return organizations;
+    }
+    return organizations.filter((item) => selectedRegions.includes(item.国家));
+  };
+
+  // 处理地区筛选变化
+  const handleRegionFilterChange = (regions: string[]) => {
+    setSelectedRegions(regions);
   };
 
   // 移除原来的表格列定义
@@ -110,13 +124,21 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
           </div>
 
           {/* 地图卡片组件 */}
-          <DeveloperRegionChart data={allData} className="mb-6" />
+          <DeveloperRegionChart 
+            data={allData} 
+            className="mb-6" 
+            loading={loading} 
+            selectedRegions={selectedRegions}
+            onRegionFilterChange={handleRegionFilterChange}
+          />
 
           {/* 组织表格组件 */}
           <OrganizationTable
             data={getOrganizationData()}
             loading={loading}
             onViewDetail={handleViewDetail}
+            selectedRegions={selectedRegions}
+            onRegionFilterChange={handleRegionFilterChange}
           />
 
           {/* 开发者表格组件 */}
@@ -124,6 +146,8 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
             data={getDeveloperData()}
             loading={loading}
             onViewDetail={handleViewDetail}
+            selectedRegions={selectedRegions}
+            onRegionFilterChange={handleRegionFilterChange}
           />
         </div>
       )}
