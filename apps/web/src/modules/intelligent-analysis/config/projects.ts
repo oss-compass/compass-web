@@ -12,7 +12,6 @@ export interface ProjectConfig {
  * 新增项目时只需要在这里添加一条配置即可
  */
 export const PROJECTS_CONFIG: ProjectConfig[] = [
-
   {
     slug: 'react-native',
     name: 'React Native',
@@ -199,6 +198,14 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     developers: 56,
     organizations: 26,
     folderName: 'A2A',
+  },
+  {
+    slug: 'react-native-raw',
+    name: 'React Native raw',
+    displayName: 'React Native raw',
+    developers: 48371,
+    organizations: 16137,
+    folderName: 'RN-raw',
   },
 ];
 
