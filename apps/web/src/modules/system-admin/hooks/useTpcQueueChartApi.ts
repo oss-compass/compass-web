@@ -33,6 +33,6 @@ export const useTpcQueueChartData = (params: TpcQueueChartParams) => {
       return response.data;
     },
     // Refetch every 30 seconds
-    refetchInterval: 30000,
+    refetchInterval: 300000,
   });
 };

@@ -24,8 +24,8 @@ export const useQueueList = () => {
   return useQuery<QueueData[], Error>({
     queryKey: ['queueList'],
     queryFn: fetchQueueList,
-    staleTime: 30 * 1000, // 30秒内不重新获取
-    refetchInterval: 30 * 1000, // 每30秒自动刷新
+    staleTime: 30 * 10000, // 300秒内不重新获取
+    refetchInterval: 30 * 10000, // 每300秒自动刷新
     refetchOnWindowFocus: false,
   });
 };

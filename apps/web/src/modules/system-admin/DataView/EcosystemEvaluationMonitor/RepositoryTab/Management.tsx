@@ -74,7 +74,17 @@ const RepositoryManagement: React.FC = () => {
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
     if (updateTimeFilter === 'all') return undefined;
-    return Number(updateTimeFilter);
+    
+    // 将中文选项值映射为 API 所需的数字参数
+    const timeTypeMap: Record<string, number> = {
+      '1个月内': RepositoryTimeType.ONE_MONTH,
+      '超过1个月': RepositoryTimeType.ONE_MONTH,
+      '超过3个月': RepositoryTimeType.THREE_MONTHS,
+      '超过半年': RepositoryTimeType.SIX_MONTHS,
+      '超过1年': RepositoryTimeType.TWELVE_MONTHS,
+    };
+    
+    return timeTypeMap[updateTimeFilter];
   }, [updateTimeFilter]);
 
   const apiPlatform = useMemo(() => {
@@ -520,7 +530,7 @@ const RepositoryManagement: React.FC = () => {
               allowClear
             />
             <Space>
-              <Button onClick={() => {}}>设置自动更新周期</Button>
+              {/* <Button onClick={() => {}}>设置自动更新周期</Button> */}
               <Button onClick={() => setBatchModalVisible(true)}>
                 批量加入队列
               </Button>
@@ -668,11 +678,16 @@ const RepositoryManagement: React.FC = () => {
               <p className="text-sm text-blue-700">
                 将会把{' '}
                 <strong>
-                  {
-                    transformedData.filter(
-                      (item) => item.lastUpdateCategory === batchTimeCategory
-                    ).length
-                  }
+                  {(() => {
+                    // 根据选择的批量时间类别，使用 API 数据统计
+                    const apiDataMap = {
+                      '超过 1 个月': repositoryUpdateOverview?.over_1m || 0,
+                      '超过 3 个月': repositoryUpdateOverview?.over_3m || 0,
+                      '超过半年': repositoryUpdateOverview?.over_6m || 0,
+                      '超过 1 年': repositoryUpdateOverview?.over_12m || 0,
+                    };
+                    return apiDataMap[batchTimeCategory as keyof typeof apiDataMap] || 0;
+                  })()}
                 </strong>{' '}
                 个<strong>{batchTimeCategory}</strong>的仓库加入
                 <strong>

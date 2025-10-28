@@ -14,13 +14,12 @@ import {
 } from 'antd';
 import {
   SearchOutlined,
-  PlusOutlined,
-  UploadOutlined,
 } from '@ant-design/icons';
 import {
   PROJECT_STATE_MAP,
   type ProjectListItem,
   useGraduationProjectList,
+  useGraduationUpdateOverview,
   useAddToTpcQueue,
   TimeType,
   PlatformType,
@@ -53,14 +52,15 @@ const GraduationManagement: React.FC = () => {
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
     const timeMapping: Record<string, string> = {
-      '1 个月内': TimeType.ONE_MONTH,
+      '1个月内': TimeType.ONE_MONTH,
       超过1个月: TimeType.THREE_MONTHS,
       超过3个月: TimeType.SIX_MONTHS,
       超过半年: TimeType.TWELVE_MONTHS,
       超过1年: TimeType.ALL_TIME,
       all: TimeType.ALL_TIME,
     };
-    return timeMapping[updateTimeFilter] || TimeType.ALL_TIME;
+    const mapped = timeMapping[updateTimeFilter];
+    return mapped && mapped !== TimeType.ALL_TIME ? mapped : undefined;
   }, [updateTimeFilter]);
 
   const apiPlatform = useMemo(() => {
@@ -88,6 +88,10 @@ const GraduationManagement: React.FC = () => {
     isLoading: projectListLoading,
     error: projectListError,
   } = useGraduationProjectList(projectListParams);
+
+  // 获取毕业项目更新概览数据
+  const { data: graduationUpdateOverview, isLoading: updateOverviewLoading } =
+    useGraduationUpdateOverview();
 
   // TPC 队列 hook
   const addToTpcQueueMutation = useAddToTpcQueue();
@@ -300,10 +304,10 @@ const GraduationManagement: React.FC = () => {
             platform === 'GitHub'
               ? 'blue'
               : platform === 'Gitee'
-              ? 'red'
-              : platform === 'GitCode'
-              ? 'orange'
-              : 'green'
+                ? 'red'
+                : platform === 'GitCode'
+                  ? 'orange'
+                  : 'green'
           }
         >
           {platform}
@@ -513,49 +517,25 @@ const GraduationManagement: React.FC = () => {
                 <Radio value="超过1个月">
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 个月'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({graduationUpdateOverview?.updated_within_three_months || 0} 个项目)
                   </span>
                 </Radio>
                 <Radio value="超过3个月">
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 3 个月'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({graduationUpdateOverview?.updated_within_six_months || 0} 个项目)
                   </span>
                 </Radio>
                 <Radio value="超过半年">
                   超过半年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过半年'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({graduationUpdateOverview?.updated_within_twelve_months || 0} 个项目)
                   </span>
                 </Radio>
                 <Radio value="超过1年">
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 年'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({graduationUpdateOverview?.updated_over_twelve_months || 0} 个项目)
                   </span>
                 </Radio>
               </div>
@@ -580,11 +560,21 @@ const GraduationManagement: React.FC = () => {
               <p className="text-sm text-blue-700">
                 将会把{' '}
                 <strong>
-                  {
-                    transformedData.filter(
-                      (item) => item.lastUpdateCategory === batchTimeCategory
-                    ).length
-                  }
+                  {(() => {
+                    if (!graduationUpdateOverview) return 0;
+                    switch (batchTimeCategory) {
+                      case '超过1个月':
+                        return graduationUpdateOverview.updated_within_three_months;
+                      case '超过3个月':
+                        return graduationUpdateOverview.updated_within_six_months;
+                      case '超过半年':
+                        return graduationUpdateOverview.updated_within_twelve_months;
+                      case '超过1年':
+                        return graduationUpdateOverview.updated_over_twelve_months;
+                      default:
+                        return 0;
+                    }
+                  })()}
                 </strong>{' '}
                 个<strong>{batchTimeCategory}</strong>的项目进行
                 <strong>

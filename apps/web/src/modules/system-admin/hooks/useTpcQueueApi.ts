@@ -23,7 +23,7 @@ export const useTpcQueueList = () => {
   return useQuery({
     queryKey: ['tpc-queue-list'],
     queryFn: fetchTpcQueueList,
-    refetchInterval: 30000, // 每30秒刷新一次
-    staleTime: 25000, // 25秒内认为数据是新鲜的
+    refetchInterval: 300000, // 每30秒刷新一次
+    staleTime: 250000, // 25秒内认为数据是新鲜的
   });
 };

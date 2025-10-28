@@ -5,6 +5,9 @@ import {
   useTpcQueueChartData,
   TpcQueueChartParams,
 } from '@modules/system-admin/hooks/useTpcQueueChartApi';
+import CommonDateRangePicker, {
+  DateRangeType,
+} from '@common/components/DateRangePicker';
 
 // 图表数据类型
 interface ChartData {
@@ -25,17 +28,68 @@ const chartTabList = [
 
 const QueueOverview: React.FC = () => {
   const [activeChartTab, setActiveChartTab] = useState<ChartTabKey>('all');
+  const [dateRange, setDateRange] = useState<DateRangeType>('1M');
+  const [customDateRange, setCustomDateRange] = useState<{
+    start: string;
+    end: string;
+  } | null>(null);
   const chartRef = useRef<HTMLDivElement>(null);
+
+  // 计算实际的日期范围
+  const getActualDateRange = (): { begin_date: string; end_date: string } => {
+    const now = new Date();
+    const endDate = now.toISOString().split('T')[0];
+    
+    if (dateRange === 'custom' && customDateRange) {
+      return {
+        begin_date: customDateRange.start,
+        end_date: customDateRange.end,
+      };
+    }
+
+    let beginDate: Date;
+    switch (dateRange) {
+      case '1M':
+        beginDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        break;
+      case '3M':
+        beginDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+        break;
+      case '6M':
+        beginDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+        break;
+      case '1Y':
+        beginDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+        break;
+      case '3Y':
+        beginDate = new Date(now.getFullYear() - 3, now.getMonth(), now.getDate());
+        break;
+      case '5Y':
+        beginDate = new Date(now.getFullYear() - 5, now.getMonth(), now.getDate());
+        break;
+      case 'Since 2000':
+        beginDate = new Date(2000, 0, 1);
+        break;
+      default:
+        beginDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+    }
+
+    return {
+      begin_date: beginDate.toISOString().split('T')[0],
+      end_date: endDate,
+    };
+  };
 
   // 生成API请求参数
   const chartParams: TpcQueueChartParams = useMemo(() => {
+    const { begin_date, end_date } = getActualDateRange();
     return {
-      begin_date: '2010-02-22',
-      end_date: '2026-03-22',
+      begin_date,
+      end_date,
       queue_type: activeChartTab === 'all' ? '0' : activeChartTab,
       is_all: activeChartTab === 'all' ? 1 : 0,
     };
-  }, [activeChartTab]);
+  }, [activeChartTab, dateRange, customDateRange]);
 
   // 获取图表数据
   const {
@@ -43,6 +97,17 @@ const QueueOverview: React.FC = () => {
     isLoading,
     error,
   } = useTpcQueueChartData(chartParams);
+
+  // 处理日期范围变更
+  const handleDateRangeChange = (
+    range: DateRangeType,
+    customRange?: { start: string; end: string }
+  ) => {
+    setDateRange(range);
+    if (range === 'custom' && customRange) {
+      setCustomDateRange(customRange);
+    }
+  };
 
   // 处理图表数据
   const processedChartData: ChartData = useMemo(() => {
@@ -177,7 +242,15 @@ const QueueOverview: React.FC = () => {
   if (error) {
     return (
       <Card
-        title="TPC队列趋势分析"
+        title={
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>TPC队列趋势分析</span>
+            <CommonDateRangePicker
+              value={dateRange}
+              onChange={handleDateRangeChange}
+            />
+          </div>
+        }
         tabList={chartTabList}
         activeTabKey={activeChartTab}
         onTabChange={(key) => setActiveChartTab(key as ChartTabKey)}
@@ -195,7 +268,15 @@ const QueueOverview: React.FC = () => {
 
   return (
     <Card
-      title="TPC队列趋势分析"
+      title={
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>TPC队列趋势分析</span>
+          <CommonDateRangePicker
+            value={dateRange}
+            onChange={handleDateRangeChange}
+          />
+        </div>
+      }
       tabList={chartTabList}
       activeTabKey={activeChartTab}
       onTabChange={(key) => setActiveChartTab(key as ChartTabKey)}

@@ -64,7 +64,17 @@ const CommunityManagement: React.FC = () => {
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
     if (updateTimeFilter === 'all') return undefined;
-    return Number(updateTimeFilter);
+    
+    // 将中文选项值映射为 API 所需的数字参数
+    const timeTypeMap: Record<string, number> = {
+      '1个月内': CommunityTimeType.ONE_MONTH,
+      '超过1个月': CommunityTimeType.ONE_MONTH,
+      '超过3个月': CommunityTimeType.THREE_MONTHS,
+      '超过半年': CommunityTimeType.SIX_MONTHS,
+      '超过1年': CommunityTimeType.TWELVE_MONTHS,
+    };
+    
+    return timeTypeMap[updateTimeFilter];
   }, [updateTimeFilter]);
 
   const apiPlatform = useMemo(() => {

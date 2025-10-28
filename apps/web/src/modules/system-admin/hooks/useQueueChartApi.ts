@@ -30,8 +30,8 @@ export const useQueueChartData = (params: QueueChartParams) => {
   return useQuery({
     queryKey: ['queue-chart-data', params],
     queryFn: () => fetchQueueChartData(params),
-    refetchInterval: 30000, // 每30秒刷新一次
-    staleTime: 25000, // 25秒内认为数据是新鲜的
+    refetchInterval: 300000, // 每300秒刷新一次
+    staleTime: 295000, // 295秒内认为数据是新鲜的
     enabled: !!params.begin_date && !!params.end_date, // 只有当日期参数存在时才执行查询
   });
 };

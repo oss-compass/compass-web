@@ -21,6 +21,7 @@ import {
   PROJECT_STATE_MAP,
   type ProjectListItem,
   useIncubationProjectList,
+  useIncubationUpdateOverview,
   useAddToTpcQueue,
   TimeType,
   PlatformType,
@@ -53,15 +54,15 @@ const GraduationManagement: React.FC = () => {
   // API 参数计算
   const apiTimeType = useMemo(() => {
     const timeMapping: Record<string, string> = {
-      '1个月内': '0',
-      超过1个月: '1',
-      超过3个月: '3',
-      超过半年: '6',
-      超过1年: '12',
-      all: '12',
+      '1个月内': TimeType.ONE_MONTH,
+      '超过1个月': TimeType.THREE_MONTHS,
+      '超过3个月': TimeType.SIX_MONTHS,
+      '超过半年': TimeType.TWELVE_MONTHS,
+      '超过1年': TimeType.ALL_TIME,
+      all: TimeType.ALL_TIME,
     };
-    const mapped = timeMapping[updateTimeFilter] ?? '12';
-    return mapped !== '12' ? mapped : undefined;
+    const mapped = timeMapping[updateTimeFilter] ?? TimeType.ALL_TIME;
+    return mapped !== TimeType.ALL_TIME ? mapped : undefined;
   }, [updateTimeFilter]);
 
   const apiPlatform = useMemo(() => {
@@ -103,6 +104,10 @@ const GraduationManagement: React.FC = () => {
 
   const { data: projectListData, isLoading: projectListLoading } =
     useIncubationProjectList(projectListParams);
+
+  // 获取孵化项目更新概览数据
+  const { data: incubationUpdateOverview, isLoading: updateOverviewLoading } =
+    useIncubationUpdateOverview();
 
   // TPC 队列 hook
   const addToTpcQueueMutation = useAddToTpcQueue();
@@ -237,7 +242,7 @@ const GraduationManagement: React.FC = () => {
       return;
     }
 
-    const targetProjects = transformedData.filter(
+    const targetProjects = filteredData.filter(
       (item) => item.lastUpdateCategory === batchTimeCategory
     );
 
@@ -507,49 +512,25 @@ const GraduationManagement: React.FC = () => {
                 <Radio value="超过1个月">
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 个月'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({incubationUpdateOverview?.updated_within_three_months || 0} 个项目)
                   </span>
                 </Radio>
                 <Radio value="超过3个月">
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 3 个月'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({incubationUpdateOverview?.updated_within_six_months || 0} 个项目)
                   </span>
                 </Radio>
                 <Radio value="超过半年">
                   超过半年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过半年'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({incubationUpdateOverview?.updated_within_twelve_months || 0} 个项目)
                   </span>
                 </Radio>
                 <Radio value="超过1年">
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
-                    (
-                    {
-                      transformedData.filter(
-                        (item) => item.lastUpdateCategory === '超过 1 年'
-                      ).length
-                    }{' '}
-                    个项目)
+                    ({incubationUpdateOverview?.updated_over_twelve_months || 0} 个项目)
                   </span>
                 </Radio>
               </div>
@@ -574,11 +555,21 @@ const GraduationManagement: React.FC = () => {
               <p className="text-sm text-blue-700">
                 将会把{' '}
                 <strong>
-                  {
-                    transformedData.filter(
-                      (item) => item.lastUpdateCategory === batchTimeCategory
-                    ).length
-                  }
+                  {(() => {
+                    if (!incubationUpdateOverview) return 0;
+                    switch (batchTimeCategory) {
+                      case '超过1个月':
+                        return incubationUpdateOverview.updated_within_three_months;
+                      case '超过3个月':
+                        return incubationUpdateOverview.updated_within_six_months;
+                      case '超过半年':
+                        return incubationUpdateOverview.updated_within_twelve_months;
+                      case '超过1年':
+                        return incubationUpdateOverview.updated_over_twelve_months;
+                      default:
+                        return 0;
+                    }
+                  })()}
                 </strong>{' '}
                 个<strong>{batchTimeCategory}</strong>的项目进行
                 <strong>
