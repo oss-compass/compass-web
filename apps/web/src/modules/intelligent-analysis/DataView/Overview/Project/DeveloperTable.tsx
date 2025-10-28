@@ -69,11 +69,15 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       dataIndex: '排名',
       key: '排名',
       width: 80,
-      render: (rank: number) => (
-        <Tag color={rank <= 3 ? 'gold' : rank <= 10 ? 'orange' : 'default'}>
-          #{rank}
-        </Tag>
-      ),
+      render: (rank: number, record: DeveloperData, index: number) => {
+        // 使用当前页面的索引计算排名
+        const currentRank = (currentPage - 1) * pageSize + index + 1;
+        return (
+          <Tag color={currentRank <= 3 ? 'gold' : currentRank <= 10 ? 'orange' : 'default'}>
+            #{currentRank}
+          </Tag>
+        );
+      },
     },
     {
       title: t('project_detail.developer_id'),
