@@ -50,6 +50,7 @@ const CommentFrequency = () => {
       docLink={
         '/docs/metrics-models/productivity/community-service-and-support/#comment-frequency'
       }
+      bodyClass={'h-[400px]'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu
           cardRef={ref}
@@ -69,13 +70,17 @@ const CommentFrequency = () => {
     >
       {(ref) => {
         return (
-          <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
-            {({ loading, option }) => {
-              return (
-                <EChartX containerRef={ref} loading={loading} option={option} />
-              );
-            }}
-          </ChartWithData>
+          <>
+            <div className="mb-4 h-[48px]">
+            </div>
+            <ChartWithData tansOpts={tansOpts} getOptions={getOptions}>
+              {({ loading, option }) => {
+                return (
+                  <EChartX containerRef={ref} loading={loading} option={option} />
+                );
+              }}
+            </ChartWithData>
+          </>
         );
       }}
     </BaseCard>

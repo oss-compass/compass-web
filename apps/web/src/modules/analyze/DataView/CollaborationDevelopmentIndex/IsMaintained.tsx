@@ -49,6 +49,7 @@ const IsMaintained = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#is-maintained'
       }
+      bodyClass={'h-[400px]'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu
           fullScreen={fullScreen}
@@ -68,13 +69,17 @@ const IsMaintained = () => {
     >
       {(ref) => {
         return (
-          <ChartWithData tansOpts={tansOpt} getOptions={getOptions}>
-            {({ loading, option }) => {
-              return (
-                <EChartX containerRef={ref} loading={loading} option={option} />
-              );
-            }}
-          </ChartWithData>
+          <>
+            <div className="mb-4 h-[38px]">
+            </div>
+            <ChartWithData tansOpts={tansOpt} getOptions={getOptions}>
+              {({ loading, option }) => {
+                return (
+                  <EChartX containerRef={ref} loading={loading} option={option} />
+                );
+              }}
+            </ChartWithData>
+          </>
         );
       }}
     </BaseCard>

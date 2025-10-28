@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import ParticipantDetails from './ParticipantDetails';
 import { useUserDetail } from '../hooks/useUserDetail';
 import { DeveloperData } from '../../types';
-import { EcosystemScore } from './types';
+// import { EcosystemScore } from './types';
 import {
   generateEcosystemTableData,
   generateParticipantTableData,
@@ -23,12 +23,14 @@ interface DetailPageProps {
   data: DeveloperData;
   onBack: () => void;
   projectType?: string;
+  isModal?: boolean; // 新增属性，标识是否在弹窗中显示
 }
 
 const DetailPage: React.FC<DetailPageProps> = ({
   data,
   onBack,
   projectType = 'Flutter',
+  isModal = false,
 }) => {
   const { i18n } = useTranslation('intelligent_analysis');
 
@@ -68,15 +70,17 @@ const DetailPage: React.FC<DetailPageProps> = ({
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <main className="flex-1 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          {/* 面包屑导航 */}
-          <BreadcrumbNav
-            projectType={projectType}
-            userId={data.用户ID}
-            onBack={onBack}
-          />
+    <div className={isModal ? "bg-white" : "flex min-h-screen flex-col"}>
+      <main className={isModal ? "p-6" : "flex-1 bg-gray-50"}>
+        <div className={isModal ? "" : "mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"}>
+          {/* 面包屑导航 - 在弹窗模式下隐藏 */}
+          {!isModal && (
+            <BreadcrumbNav
+              projectType={projectType}
+              userId={data.用户ID}
+              onBack={onBack}
+            />
+          )}
 
           {/* 基本信息卡片 */}
           <BasicInfoCard data={data} totalScore={detailData?.基本信息.总得分} />

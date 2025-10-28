@@ -1,6 +1,6 @@
 // autocorrect: false
 import React, { useState, useEffect } from 'react';
-import { message, Breadcrumb } from 'antd';
+import { message, Breadcrumb, Modal } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
 import DetailPage from './DetailPage';
@@ -22,7 +22,7 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
   const { t } = useTranslation('intelligent_analysis');
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState<DeveloperData[]>([]);
-  const [showDetail, setShowDetail] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<DeveloperData | null>(null);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
 
@@ -56,12 +56,12 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
   // 查看详情
   const handleViewDetail = (record: DeveloperData) => {
     setSelectedUser(record);
-    setShowDetail(true);
+    setShowDetailModal(true);
   };
 
-  // 返回列表
-  const handleBackToList = () => {
-    setShowDetail(false);
+  // 关闭弹窗
+  const handleCloseModal = () => {
+    setShowDetailModal(false);
     setSelectedUser(null);
   };
 
@@ -92,65 +92,80 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
 
   return (
     <>
-      {showDetail && selectedUser ? (
-        <DetailPage
-          data={selectedUser}
-          onBack={handleBackToList}
-          projectType={projectType}
-        />
-      ) : (
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="mb-6 flex items-center justify-between">
-            <div className="w-full">
-              <Breadcrumb
-                className="mb-4 text-base"
-                items={[
-                  {
-                    href: '/intelligent-analysis/overview',
-                    title: (
-                      <span className="flex items-center">
-                        <HomeOutlined />
-                        <span className="ml-1">{t('overview')}</span>
-                      </span>
-                    ),
-                  },
-                  {
-                    title: category,
-                  },
-                ]}
-              />
-              <h1 className="text-2xl font-bold text-gray-900">{category}</h1>
-            </div>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-center justify-between">
+          <div className="w-full">
+            <Breadcrumb
+              className="mb-4 text-base"
+              items={[
+                {
+                  href: '/intelligent-analysis/overview',
+                  title: (
+                    <span className="flex items-center">
+                      <HomeOutlined />
+                      <span className="ml-1">{t('overview')}</span>
+                    </span>
+                  ),
+                },
+                {
+                  title: category,
+                },
+              ]}
+            />
+            <h1 className="text-2xl font-bold text-gray-900">{category}</h1>
           </div>
-
-          {/* 地图卡片组件 */}
-          <DeveloperRegionChart 
-            data={allData} 
-            className="mb-6" 
-            loading={loading} 
-            selectedRegions={selectedRegions}
-            onRegionFilterChange={handleRegionFilterChange}
-          />
-
-          {/* 组织表格组件 */}
-          <OrganizationTable
-            data={getOrganizationData()}
-            loading={loading}
-            onViewDetail={handleViewDetail}
-            selectedRegions={selectedRegions}
-            onRegionFilterChange={handleRegionFilterChange}
-          />
-
-          {/* 开发者表格组件 */}
-          <DeveloperTable
-            data={getDeveloperData()}
-            loading={loading}
-            onViewDetail={handleViewDetail}
-            selectedRegions={selectedRegions}
-            onRegionFilterChange={handleRegionFilterChange}
-          />
         </div>
-      )}
+
+        {/* 地图卡片组件 */}
+        <DeveloperRegionChart 
+          data={allData} 
+          className="mb-6" 
+          loading={loading} 
+          selectedRegions={selectedRegions}
+          onRegionFilterChange={handleRegionFilterChange}
+        />
+
+        {/* 组织表格组件 */}
+        <OrganizationTable
+          data={getOrganizationData()}
+          loading={loading}
+          onViewDetail={handleViewDetail}
+          selectedRegions={selectedRegions}
+          onRegionFilterChange={handleRegionFilterChange}
+        />
+
+        {/* 开发者表格组件 */}
+        <DeveloperTable
+          data={getDeveloperData()}
+          loading={loading}
+          onViewDetail={handleViewDetail}
+          selectedRegions={selectedRegions}
+          onRegionFilterChange={handleRegionFilterChange}
+        />
+      </div>
+
+      {/* 详情弹窗 */}
+      <Modal
+          title={selectedUser ? `${selectedUser.用户ID} 详情` : '详情'}
+          open={showDetailModal}
+          onCancel={handleCloseModal}
+          width="90%"
+          style={{ top: 20 }}
+          footer={null}
+          destroyOnClose
+          bodyStyle={{ 
+            padding: 0, 
+            maxHeight: 'calc(100vh - 120px)', 
+            overflow: 'auto' 
+          }}
+        >
+          <DetailPage
+            data={selectedUser}
+            onBack={handleCloseModal}
+            projectType={projectType}
+            isModal={true}
+          />
+        </Modal>
     </>
   );
 };

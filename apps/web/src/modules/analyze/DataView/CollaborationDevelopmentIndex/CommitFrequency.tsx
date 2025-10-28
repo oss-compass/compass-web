@@ -69,6 +69,7 @@ const CommitFrequency = () => {
       docLink={
         '/docs/metrics-models/productivity/collaboration-development-index/#commit-frequency'
       }
+      bodyClass={'h-[400px]'}
       headRight={(ref, fullScreen, setFullScreen) => (
         <CardDropDownMenu
           cardRef={ref}
@@ -88,25 +89,29 @@ const CommitFrequency = () => {
     >
       {(ref) => {
         return (
-          <ChartDataProvider tansOpts={tansOpts}>
-            {({ loading, result }) => {
-              return (
-                <ChartOptionProvider
-                  data={result}
-                  optionFn={geOptionFn}
-                  render={({ option }) => {
-                    return (
-                      <EChartX
-                        loading={loading}
-                        option={option}
-                        containerRef={ref}
-                      />
-                    );
-                  }}
-                />
-              );
-            }}
-          </ChartDataProvider>
+          <>
+            <div className="mb-4 h-[38px]">
+            </div>
+            <ChartDataProvider tansOpts={tansOpts}>
+              {({ loading, result }) => {
+                return (
+                  <ChartOptionProvider
+                    data={result}
+                    optionFn={geOptionFn}
+                    render={({ option }) => {
+                      return (
+                        <EChartX
+                          loading={loading}
+                          option={option}
+                          containerRef={ref}
+                        />
+                      );
+                    }}
+                  />
+                );
+              }}
+            </ChartDataProvider>
+          </>
         );
       }}
     </BaseCard>
