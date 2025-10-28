@@ -61,12 +61,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
             value={totalScore || data.总得分}
             precision={2}
             valueStyle={{
-              color:
-                (totalScore || data.总得分) >= 70
-                  ? '#3f8600'
-                  : (totalScore || data.总得分) >= 50
-                  ? '#cf1322'
-                  : '#8c8c8c',
+              color: '#cf1322',
             }}
           />
         </div>

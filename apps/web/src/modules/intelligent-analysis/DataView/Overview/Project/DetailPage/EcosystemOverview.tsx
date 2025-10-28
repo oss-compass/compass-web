@@ -38,9 +38,7 @@ const EcosystemOverview: React.FC<EcosystemOverviewProps> = ({ data }) => {
       dataIndex: '生态年均分',
       key: '生态年均分',
       render: (score: number) => (
-        <Text
-          type={score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}
-        >
+        <Text>
           {score?.toFixed(2) || '0.00'}
         </Text>
       ),
@@ -52,9 +50,7 @@ const EcosystemOverview: React.FC<EcosystemOverviewProps> = ({ data }) => {
       key: '2024 年得分',
       render: (score: number) =>
         score > 0 ? (
-          <Text
-            type={score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}
-          >
+          <Text>
             {score?.toFixed(2) || '0.00'}
           </Text>
         ) : (
@@ -67,9 +63,7 @@ const EcosystemOverview: React.FC<EcosystemOverviewProps> = ({ data }) => {
       key: '2025 年得分',
       render: (score: number) =>
         score > 0 ? (
-          <Text
-            type={score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}
-          >
+          <Text>
             {score?.toFixed(2) || '0.00'}
           </Text>
         ) : (

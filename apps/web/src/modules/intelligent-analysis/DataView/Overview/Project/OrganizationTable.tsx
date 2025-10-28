@@ -73,8 +73,8 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
         // 使用当前页面的索引计算排名
         const currentRank = (currentPage - 1) * pageSize + index + 1;
         return (
-          <Tag color={currentRank <= 3 ? 'gold' : currentRank <= 10 ? 'orange' : 'default'}>
-            #{currentRank}
+          <Tag color={'default'}>
+            {currentRank}
           </Tag>
         );
       },
@@ -100,8 +100,7 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       render: (score: number) => (
         <span
           style={{
-            color:
-              score >= 70 ? '#52c41a' : score >= 50 ? '#fa8c16' : '#ff4d4f',
+            color: '#2563eb',
             fontWeight: 'bold',
           }}
         >
