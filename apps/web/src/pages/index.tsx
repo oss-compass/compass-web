@@ -13,6 +13,7 @@ import Trending from '@modules/home/Trending';
 import Explain from '@modules/home/Explain';
 import LatestNews from '@modules/home/LatestNews';
 import Purpose from '@modules/home/Purpose';
+import StatisticsModule from '@modules/home/StatisticsModule';
 
 // import ExplainMobile from '@modules/home/Explain/Mobile';
 import SpecialThank from '@modules/home/SpecialThank';
@@ -47,6 +48,7 @@ const Home: React.FC = (props) => {
           {/* <ExplainMobile /> */}
           {/* <Questionnaire /> */}
         </NoSsr>
+        <StatisticsModule />
         <SpecialThank />
       </main>
       <footer>
