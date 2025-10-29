@@ -50,7 +50,7 @@ const CustomTabPanel = (props: { value: string; ident: string }) => {
 
 const HotProjects = () => {
   const { t, i18n } = useTranslation();
-  const [value, setValue] = React.useState('open-source-llms');
+  const [value, setValue] = React.useState('open-source-llms-tools');
   // const data = {
   //   LLM: 'open-source-llms',
   //   'Computer Vision': 'computer-vision-face-recognition',
@@ -62,11 +62,11 @@ const HotProjects = () => {
   // };
 
   const list = [
-    {
-      ident: 'open-source-llms',
-      name: 'Open Source LLMs',
-      name_cn: '开源LLMs',
-    },
+    // {
+    //   ident: 'open-source-llms',
+    //   name: 'Open Source LLMs',
+    //   name_cn: '开源LLMs',
+    // },
     {
       ident: 'open-source-llms-tools',
       name: 'Open Source LLMs Tools',
@@ -87,7 +87,7 @@ const HotProjects = () => {
             return (
               <div
                 className={classnames(
-                  'flex w-44 cursor-pointer items-center justify-center border-b border-[#EBEFF4] pb-4 font-bold',
+                  'flex w-[50%] cursor-pointer items-center justify-center border-b border-[#EBEFF4] pb-4 font-bold',
                   {
                     'border-[#868690] text-black': value === ident,
                   }
