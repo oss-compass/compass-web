@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Center } from '@common/components/Layout';
-import { AiOutlineUser, AiOutlineProject } from 'react-icons/ai';
+import { AiOutlineUser, AiOutlineProject, AiOutlineDatabase, AiOutlineBarChart, AiOutlineGlobal } from 'react-icons/ai';
 
 interface StatisticCardProps {
   icon: React.ReactNode;
   value: string;
   label: string;
+  description?: string;
   delay?: number;
 }
 
@@ -14,6 +15,7 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
   icon,
   value,
   label,
+  description,
   delay = 0
 }) => {
   const [displayValue, setDisplayValue] = useState('0');
@@ -49,19 +51,24 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
         bg-white rounded-lg border border-gray-200
         hover:border-gray-300 hover:shadow-lg
         transition-all duration-300 ease-out
-         min-h-[180px] w-full
+        p-6 min-h-[160px] w-full
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
       `}
     >
-      <div className="text-4xl text-gray-800 mb-4">
+      <div className="text-3xl text-gray-800 mb-3">
         {icon}
       </div>
-      <div className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="text-2xl font-bold text-gray-900 mb-2">
         {displayValue}
       </div>
-      <div className="text-sm text-gray-600 text-center font-medium">
+      <div className="text-sm text-gray-900 text-center font-medium mb-1">
         {label}
       </div>
+      {description && (
+        <div className="text-xs text-gray-500 text-center leading-tight">
+          {description}
+        </div>
+      )}
     </div>
   );
 };
@@ -74,21 +81,44 @@ const StatisticsModule: React.FC = () => {
       <Center>
         <div className="w-full">
           {/* 标题样式与其他模块保持一致 */}
-          <div className="mb-6 text-2xl font-bold">{t('home:platform_statistics')}</div>
+          {/* <div className="mb-6 text-2xl font-bold">{t('home:platform_statistics')}</div> */}
 
-          {/* 两个统计卡片左右分布 */}
-          <div className="flex gap-8 md:flex-col">
+          {/* 五个统计卡片网格布局 */}
+          <div className="grid grid-cols-5 gap-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
             <StatisticCard
-              icon={<AiOutlineUser />}
-              value="18500"
-              label={t('home:active_users')}
+              icon={<AiOutlineDatabase />}
+              value="10+"
+              label={t('home:data_platform_integration')}
+              description={t('home:data_platform_integration_desc')}
+              delay={100}
+            />
+            <StatisticCard
+              icon={<AiOutlineBarChart />}
+              value="114/30+"
+              label={t('home:evaluation_metrics_models')}
+              description={t('home:evaluation_metrics_models_desc')}
               delay={200}
             />
             <StatisticCard
               icon={<AiOutlineProject />}
-              value="204493"
-              label={t('home:collected_projects')}
+              value="1.5亿+"
+              label={t('home:open_source_projects')}
+              description={t('home:open_source_projects_desc')}
+              delay={300}
+            />
+            <StatisticCard
+              icon={<AiOutlineGlobal />}
+              value="55"
+              label={t('home:countries_regions')}
+              description={t('home:countries_regions_desc')}
               delay={400}
+            />
+            <StatisticCard
+              icon={<AiOutlineUser />}
+              value="1.85万+"
+              label={t('home:active_users_new')}
+              description={t('home:active_users_new_desc')}
+              delay={500}
             />
           </div>
         </div>

@@ -15,7 +15,7 @@ const SpecialThank = () => {
           passHref
           target="_blank"
           rel="noopener noreferrer"
-          className="w-[250px]"
+          className="w-[200px]"
         >
           <Chaoss />
         </Link>
@@ -24,12 +24,12 @@ const SpecialThank = () => {
           passHref
           target="_blank"
           rel="noopener noreferrer"
-          className="w-[250px]"
+          className="w-[200px]"
         >
           <Grimoirelab />
         </Link>
         <div className="basis-[500px] px-4 md:basis-auto">
-          <h2 className="mb-2 text-4xl font-bold">
+          <h2 className="mb-2 text-3xl font-bold">
             {t('home:a_special_thank_you')}
           </h2>
           <p className="font-medium text-gray-500">
