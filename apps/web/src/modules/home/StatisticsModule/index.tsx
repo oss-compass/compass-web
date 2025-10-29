@@ -51,7 +51,7 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
         bg-white rounded-lg border border-gray-200
         hover:border-gray-300 hover:shadow-lg
         transition-all duration-300 ease-out
-        p-6 min-h-[160px] w-full
+        p-6 pb-2 min-h-[160px] w-full
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
       `}
     >
@@ -64,8 +64,8 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
       <div className="text-sm text-gray-900 text-center font-medium mb-1">
         {label}
       </div>
-      {description && (
-        <div className="text-xs text-gray-500 text-center leading-tight">
+      {(
+        <div className="text-xs text-gray-500 text-center leading-tight h-5">
           {description}
         </div>
       )}
@@ -74,7 +74,21 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
 };
 
 const StatisticsModule: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // 根据语言环境获取格式化的数值
+  const getFormattedValue = (key: string) => {
+    const isEnglish = i18n.language === 'en';
+
+    switch (key) {
+      case 'open_source_projects':
+        return isEnglish ? '600M' : '6亿';
+      case 'active_users':
+        return isEnglish ? '18.5K' : '18527';
+      default:
+        return '';
+    }
+  };
 
   return (
     <section className="py-16">
@@ -87,35 +101,31 @@ const StatisticsModule: React.FC = () => {
           <div className="grid grid-cols-5 gap-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
             <StatisticCard
               icon={<AiOutlineDatabase />}
-              value="10+"
+              value="10"
               label={t('home:data_platform_integration')}
-              description={t('home:data_platform_integration_desc')}
               delay={100}
             />
             <StatisticCard
               icon={<AiOutlineBarChart />}
-              value="114/30+"
+              value="114/30"
               label={t('home:evaluation_metrics_models')}
-              description={t('home:evaluation_metrics_models_desc')}
               delay={200}
             />
             <StatisticCard
               icon={<AiOutlineProject />}
-              value="1.5亿+"
+              value={getFormattedValue('open_source_projects')}
               label={t('home:open_source_projects')}
-              description={t('home:open_source_projects_desc')}
               delay={300}
             />
             <StatisticCard
               icon={<AiOutlineGlobal />}
-              value="55"
+              value="93"
               label={t('home:countries_regions')}
-              description={t('home:countries_regions_desc')}
               delay={400}
             />
             <StatisticCard
               icon={<AiOutlineUser />}
-              value="1.85万+"
+              value={getFormattedValue('active_users')}
               label={t('home:active_users_new')}
               description={t('home:active_users_new_desc')}
               delay={500}
