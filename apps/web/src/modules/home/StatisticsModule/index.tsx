@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Center } from '@common/components/Layout';
-import { AiOutlineUser, AiOutlineProject, AiOutlineDatabase, AiOutlineBarChart, AiOutlineGlobal } from 'react-icons/ai';
+import {
+  AiOutlineUser,
+  AiOutlineProject,
+  AiOutlineDatabase,
+  AiOutlineBarChart,
+  AiOutlineGlobal,
+} from 'react-icons/ai';
 
 interface StatisticCardProps {
   icon: React.ReactNode;
@@ -16,7 +22,7 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
   value,
   label,
   description,
-  delay = 0
+  delay = 0,
 }) => {
   const [displayValue, setDisplayValue] = useState('0');
   const [isVisible, setIsVisible] = useState(false);
@@ -47,28 +53,26 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
   return (
     <div
       className={`
-        flex flex-col items-center justify-center
-        bg-white rounded-lg border border-gray-200
-        hover:border-gray-300 hover:shadow-lg
-        transition-all duration-300 ease-out
-        p-6 pb-2 min-h-[160px] w-full
-        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+        flex min-h-[160px] w-full flex-col
+        items-center justify-center rounded-lg border
+        border-gray-200 bg-white
+        p-6 pb-2 transition-all
+        duration-300 ease-out hover:border-gray-300 hover:shadow-lg
+        ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
       `}
     >
-      <div className="text-3xl text-gray-800 mb-3">
-        {icon}
-      </div>
-      <div className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="mb-3 text-3xl text-gray-800">{icon}</div>
+      <div className="mb-2 text-2xl font-bold text-gray-900">
         {displayValue}
       </div>
-      <div className="text-sm text-gray-900 text-center font-medium mb-1">
+      <div className="mb-1 text-center text-sm font-medium text-gray-900">
         {label}
       </div>
-      {(
-        <div className="text-xs text-gray-500 text-center leading-tight h-5">
+      {
+        <div className="h-5 text-center text-xs leading-tight text-gray-500">
           {description}
         </div>
-      )}
+      }
     </div>
   );
 };
@@ -98,7 +102,7 @@ const StatisticsModule: React.FC = () => {
           {/* <div className="mb-6 text-2xl font-bold">{t('home:platform_statistics')}</div> */}
 
           {/* 五个统计卡片网格布局 */}
-          <div className="grid grid-cols-5 gap-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+          <div className="grid grid-cols-5 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <StatisticCard
               icon={<AiOutlineDatabase />}
               value="10"
@@ -107,7 +111,7 @@ const StatisticsModule: React.FC = () => {
             />
             <StatisticCard
               icon={<AiOutlineBarChart />}
-              value="114/30"
+              value="114/50"
               label={t('home:evaluation_metrics_models')}
               delay={200}
             />
