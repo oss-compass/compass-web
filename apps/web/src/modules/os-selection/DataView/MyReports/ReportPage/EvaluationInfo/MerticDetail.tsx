@@ -262,10 +262,8 @@ export const useMerticDetailData = () => {
 
   const downloadReport = (item) => {
     const { tpcSoftwareReportMetric, name, tpcSoftwareReportMetricRaw } = item;
-    console.log(name);
     const metricScore = getMetricItemScore(tpcSoftwareReportMetric);
     let title = t('mertic_detail.download_report.title_suffix', { name: name });
-    console.log(title);
     let head = [
       t('mertic_detail.download_report.header.metric_name'),
       t('mertic_detail.download_report.header.dimension'),
