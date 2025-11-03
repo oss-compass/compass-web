@@ -125,7 +125,7 @@
   "lint-staged": {
     "*": "prettier --write --ignore-unknown --cache",
     "*.{ts,tsx,mjs,js,jsx}": [
-      "prettier . --ignore-unknown --write",
+      "prettier --ignore-unknown --write --cache",
       "eslint --cache --fix"
     ]
   },
