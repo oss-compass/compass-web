@@ -13,6 +13,14 @@ export interface ProjectConfig {
  */
 export const PROJECTS_CONFIG: ProjectConfig[] = [
   {
+    slug: 'pytorch-ecosystem',
+    name: 'PyTorch Ecosystem',
+    displayName: 'PyTorch Ecosystem',
+    developers: 28579,
+    organizations: 6802,
+    folderName: 'pytorch-ecosystem',
+  },
+  {
     slug: 'react-native',
     name: 'React Native',
     displayName: 'React Native',
@@ -120,7 +128,6 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
 
   // 跨平台开发框架
 
-
   {
     slug: 'ionic',
     name: 'Ionic',
@@ -220,12 +227,17 @@ export const PROJECT_NAME_MAP = PROJECTS_CONFIG.reduce((acc, project) => {
   return acc;
 }, {} as Record<string, string>);
 
-export const PROJECT_DISPLAY_NAME_MAP = PROJECTS_CONFIG.reduce((acc, project) => {
-  acc[project.slug] = project.displayName;
-  return acc;
-}, {} as Record<string, string>);
+export const PROJECT_DISPLAY_NAME_MAP = PROJECTS_CONFIG.reduce(
+  (acc, project) => {
+    acc[project.slug] = project.displayName;
+    return acc;
+  },
+  {} as Record<string, string>
+);
 
-export const VALID_PROJECT_SLUGS = PROJECTS_CONFIG.map(project => project.slug);
+export const VALID_PROJECT_SLUGS = PROJECTS_CONFIG.map(
+  (project) => project.slug
+);
 
 /**
  * 获取项目配置
