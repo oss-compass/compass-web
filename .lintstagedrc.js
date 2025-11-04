@@ -37,7 +37,6 @@ module.exports = {
       ' '
     )}`;
   },
-
   // 特别处理 i18n 文件夹下的 JSON 文件
   'apps/web/i18n/**/*.json': 'prettier --ignore-unknown --write --cache',
 };
