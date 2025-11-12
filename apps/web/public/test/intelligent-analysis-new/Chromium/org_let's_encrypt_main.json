@@ -1,5 +1,11 @@
 {
   "org:let's encrypt": {
+    "用户ID": "org:let's encrypt",
+    "总得分": 25.0,
+    "国家": "美国",
+    "省": "俄勒冈州",
+    "市": "Multnomah County",
+    "用户类型": "组织",
     "Chromium主仓得分": 50.0,
     "Chromium主仓2024年得分": 50.0,
     "Chromium主仓2025年得分": 50.0,

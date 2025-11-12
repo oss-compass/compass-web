@@ -1,5 +1,5 @@
 // autocorrect: false
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, Input, Button, Space, Tag, Tooltip, Select } from 'antd';
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
@@ -23,9 +23,9 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   selectedRegions = [],
   onRegionFilterChange,
 }) => {
-  console.log(data);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOrgTypes, setSelectedOrgTypes] = useState<string[]>([]);
   const pageSize = 10;
   const { t, i18n } = useTranslation('intelligent_analysis');
 
@@ -42,14 +42,49 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data, i18n.language]);
 
+  const orgTypeOptions = useMemo(
+    () => [
+      { label: '高校及研究机构', value: '高校及研究机构' },
+      { label: '企业', value: '企业' },
+      { label: '其他', value: '其他' },
+    ],
+    []
+  );
+
   // 过滤数据
   const filteredData = useMemo(() => {
-    if (!searchKeyword.trim()) {
-      return data;
-    }
     const keyword = searchKeyword.trim().toLowerCase();
-    return data.filter((item) => item.用户ID.toLowerCase().includes(keyword));
-  }, [data, searchKeyword]);
+    const hasKeyword = keyword.length > 0;
+    const hasRegionFilter = Array.isArray(selectedRegions) && selectedRegions.length > 0;
+    const hasOrgTypeFilter = Array.isArray(selectedOrgTypes) && selectedOrgTypes.length > 0;
+
+    return data.filter((item) => {
+      const rawId = item.用户ID || '';
+      const normalizedId = typeof rawId === 'string' && rawId.startsWith('org:') ? rawId.slice(4) : rawId;
+      const chineseId = item.中文用户ID || '';
+      const matchKeyword = !hasKeyword
+        ? true
+        : normalizedId.toLowerCase().includes(keyword) || chineseId.toLowerCase().includes(keyword);
+
+      const matchRegion = !hasRegionFilter ? true : selectedRegions.includes(item.国家);
+
+      const orgType = item.组织类型 || '';
+      const matchOrgType = !hasOrgTypeFilter ? true : selectedOrgTypes.includes(orgType);
+
+      return matchKeyword && matchRegion && matchOrgType;
+    });
+  }, [data, searchKeyword, selectedRegions, selectedOrgTypes]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchKeyword, selectedRegions, selectedOrgTypes]);
+
+  // 当地区不包含中国时，清空已选组织类型
+  useEffect(() => {
+    if (!selectedRegions.includes('中国')) {
+      setSelectedOrgTypes([]);
+    }
+  }, [selectedRegions]);
 
   // 分页数据
   const paginatedData = useMemo(() => {
@@ -67,6 +102,9 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+  // 仅当地区过滤包含“中国”时才显示组织类型列
+  const showOrgTypeCol = selectedRegions.includes('中国');
+
   // 组织表格列定义
   const columns: ColumnsType<DeveloperData> = [
     {
@@ -87,11 +125,10 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       width: 200,
       ellipsis: true,
       render: (text: string, record) => {
-        console.log(record.中文用户ID);
         const preferred =
           record.中文用户ID &&
-          typeof record.中文用户ID === 'string' &&
-          record.中文用户ID.trim() !== ''
+            typeof record.中文用户ID === 'string' &&
+            record.中文用户ID.trim() !== ''
             ? record.中文用户ID
             : text;
         const displayText =
@@ -105,14 +142,18 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
         );
       },
     },
-    {
-      title: '类型',
-      dataIndex: '组织类型',
-      key: '组织类型',
-      width: 120,
-      ellipsis: true,
-      render: (text: string) => (text && text.trim() ? text : '-'),
-    },
+    ...(showOrgTypeCol
+      ? [
+          {
+            title: '组织类型',
+            dataIndex: '组织类型' as const,
+            key: '组织类型',
+            width: 120,
+            ellipsis: true,
+            render: (text: string) => (text && text.trim() ? text : '-'),
+          },
+        ]
+      : []),
     {
       title: t('project_detail.total_score'),
       dataIndex: '总得分',
@@ -189,6 +230,21 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
               maxTagCount="responsive"
             />
           </div>
+          {showOrgTypeCol && (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">组织类型:</span>
+              <Select
+                mode="multiple"
+                placeholder={'选择组织类型'}
+                style={{ minWidth: 200 }}
+                value={selectedOrgTypes}
+                onChange={setSelectedOrgTypes}
+                options={orgTypeOptions}
+                allowClear
+                maxTagCount="responsive"
+              />
+            </div>
+          )}
         </Space>
       </div>
 

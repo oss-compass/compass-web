@@ -34,7 +34,7 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     displayName: 'React Native TPC',
     developers: 48808,
     organizations: 15909,
-    folderName: 'RN-TPC',
+    folderName: 'RN-tpc',
   },
   {
     slug: 'flutter',
@@ -50,7 +50,7 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     displayName: 'Flutter TPC',
     developers: 53039,
     organizations: 14158,
-    folderName: 'Flutter-TPC',
+    folderName: 'Flutter-tpc',
   },
   // AI/ML 相关项目
   {

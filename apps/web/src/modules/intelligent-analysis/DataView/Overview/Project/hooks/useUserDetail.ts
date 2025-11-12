@@ -212,9 +212,12 @@ export const useUserDetail = (projectType: string, userId: string) => {
           `/test/intelligent-analysis-new/${fileName}/${userId.replace(
             ':',
             '_'
-          )}_main.json`
+          ).replaceAll(' ', '_')}_main.json`
         );
-
+        console.log(`/test/intelligent-analysis-new/${fileName}/${userId.replace(
+          ':',
+          '_'
+        ).replaceAll(' ', '_')}_main.json`)
         if (!response.ok) {
           throw new Error(`当前仅提供前200个组织和开发者详情数据`);
         }
