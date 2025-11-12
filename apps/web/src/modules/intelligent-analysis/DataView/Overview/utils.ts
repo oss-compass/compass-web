@@ -1,8 +1,8 @@
 import { DeveloperData } from './types';
-import { 
-  PROJECT_NAME_MAP, 
+import {
+  PROJECT_NAME_MAP,
   PROJECT_DISPLAY_NAME_MAP,
-  getProjectConfig 
+  getProjectConfig,
 } from '../../config/projects';
 
 // 导出项目映射（保持向后兼容）
@@ -76,6 +76,7 @@ export function processRawData(
     const isOrg = userId.startsWith('org:');
 
     return {
+      ...item,
       用户ID: userId,
       总得分: totalScore,
       国家: item.国家,

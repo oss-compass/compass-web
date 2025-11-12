@@ -23,6 +23,7 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   selectedRegions = [],
   onRegionFilterChange,
 }) => {
+  console.log(data);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -30,11 +31,15 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
   // 获取所有可用的地区选项
   const availableRegions = useMemo(() => {
-    const regions = Array.from(new Set(data.map(item => item.国家).filter(Boolean)));
-    return regions.map(region => ({
-      label: translateByLocale(region, countryMapping, i18n.language),
-      value: region,
-    })).sort((a, b) => a.label.localeCompare(b.label));
+    const regions = Array.from(
+      new Set(data.map((item) => item.国家).filter(Boolean))
+    );
+    return regions
+      .map((region) => ({
+        label: translateByLocale(region, countryMapping, i18n.language),
+        value: region,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [data, i18n.language]);
 
   // 过滤数据
@@ -72,11 +77,7 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       render: (rank: number, record: DeveloperData, index: number) => {
         // 使用当前页面的索引计算排名
         const currentRank = (currentPage - 1) * pageSize + index + 1;
-        return (
-          <Tag color={'default'}>
-            {currentRank}
-          </Tag>
-        );
+        return <Tag color={'default'}>{currentRank}</Tag>;
       },
     },
     {
@@ -85,11 +86,32 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       key: '用户ID',
       width: 200,
       ellipsis: true,
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <span style={{ fontWeight: 'bold' }}>{text}</span>
-        </Tooltip>
-      ),
+      render: (text: string, record) => {
+        console.log(record.中文用户ID);
+        const preferred =
+          record.中文用户ID &&
+          typeof record.中文用户ID === 'string' &&
+          record.中文用户ID.trim() !== ''
+            ? record.中文用户ID
+            : text;
+        const displayText =
+          typeof preferred === 'string' && preferred.startsWith('org:')
+            ? preferred.slice(4)
+            : preferred;
+        return (
+          <Tooltip title={displayText}>
+            <span style={{ fontWeight: 'bold' }}>{displayText}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '类型',
+      dataIndex: '组织类型',
+      key: '组织类型',
+      width: 120,
+      ellipsis: true,
+      render: (text: string) => (text && text.trim() ? text : '-'),
     },
     {
       title: t('project_detail.total_score'),
@@ -153,7 +175,9 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
             </Button>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">{t('project_detail.filter_by_region')}:</span>
+            <span className="text-sm text-gray-600">
+              {t('project_detail.filter_by_region')}:
+            </span>
             <Select
               mode="multiple"
               placeholder={t('project_detail.select_regions')}

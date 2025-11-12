@@ -9,11 +9,13 @@ export interface ProjectData {
 // 开发者数据类型（用于 Main 组件）
 export interface DeveloperData {
   用户ID: string;
+  中文用户ID?: string;
   总得分: number;
   国家: string;
   省: string;
   市: string;
   用户类型: string;
+  组织类型?: string;
   排名: number;
 }
 

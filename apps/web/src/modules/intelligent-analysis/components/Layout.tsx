@@ -29,22 +29,22 @@ const IntelligentAnalysisLayout: React.FC<IntelligentAnalysisLayoutProps> = ({
 
   return (
     <NoSsr>
-      <AuthRequire
+      {/* <AuthRequire
         requiredRoleLevel={2}
         loadingUi={loadingUi}
         redirectToAuth={true}
         redirectOnPermissionDenied={true}
-      >
-        <StickyNav className=">md:-top-[80px] md:-top-[48px]">
-          <Header />
-        </StickyNav>
-        <Main>
-          <SideBar />
-          <div className="flex h-[calc(100vh-80px)] flex-1 overflow-auto bg-gray-50">
-            <div className="w-full overflow-y-auto">{children}</div>
-          </div>
-        </Main>
-      </AuthRequire>
+      > */}
+      <StickyNav className=">md:-top-[80px] md:-top-[48px]">
+        <Header />
+      </StickyNav>
+      <Main>
+        <SideBar />
+        <div className="flex h-[calc(100vh-80px)] flex-1 overflow-auto bg-gray-50">
+          <div className="w-full overflow-y-auto">{children}</div>
+        </div>
+      </Main>
+      {/* </AuthRequire> */}
     </NoSsr>
   );
 };

@@ -80,22 +80,33 @@ const MoreDropdown = () => {
         },
       ],
     },
-    // 只有 roleLevel >= 2 时才显示智能分析服务
-    ...(roleLevel >= 2
-      ? [
+    {
+      icon: <RiBarChartLine color="#ffd949" className="mr-2 text-4xl" />,
+      title: t('common:header.opensource_ecology_service'),
+      description: t('common:header.opensource_ecology_description'),
+      linkItems: [
         {
-          icon: <RiBarChartLine color="#ffd949" className="mr-2 text-4xl" />,
-          title: t('common:header.opensource_ecology_service'),
-          description: t('common:header.opensource_ecology_description'),
-          linkItems: [
-            {
-              link: '/intelligent-analysis',
-              linkText: t('common:header.product_home'),
-            },
-          ],
+          link: '/intelligent-analysis',
+          linkText: t('common:header.product_home'),
         },
-      ]
-      : []),
+      ],
+    },
+    // 只有 roleLevel >= 2 时才显示智能分析服务
+    // ...(roleLevel >= 2
+    //   ? [
+    //     {
+    //       icon: <RiBarChartLine color="#ffd949" className="mr-2 text-4xl" />,
+    //       title: t('common:header.opensource_ecology_service'),
+    //       description: t('common:header.opensource_ecology_description'),
+    //       linkItems: [
+    //         {
+    //           link: '/intelligent-analysis',
+    //           linkText: t('common:header.product_home'),
+    //         },
+    //       ],
+    //     },
+    //   ]
+    //   : []),
   ];
 
   return (
