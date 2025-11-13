@@ -7,6 +7,7 @@ import type { ColumnsType } from 'antd/es/table';
 import MyTable from '@common/components/Table';
 import { DeveloperData } from '../types';
 import { translateByLocale, countryMapping } from './utils/countryMapping';
+import { getDisplayUserId } from './utils/getDisplayUserId';
 
 interface OrganizationTableProps {
   data: DeveloperData[];
@@ -55,21 +56,31 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   const filteredData = useMemo(() => {
     const keyword = searchKeyword.trim().toLowerCase();
     const hasKeyword = keyword.length > 0;
-    const hasRegionFilter = Array.isArray(selectedRegions) && selectedRegions.length > 0;
-    const hasOrgTypeFilter = Array.isArray(selectedOrgTypes) && selectedOrgTypes.length > 0;
+    const hasRegionFilter =
+      Array.isArray(selectedRegions) && selectedRegions.length > 0;
+    const hasOrgTypeFilter =
+      Array.isArray(selectedOrgTypes) && selectedOrgTypes.length > 0;
 
     return data.filter((item) => {
       const rawId = item.用户ID || '';
-      const normalizedId = typeof rawId === 'string' && rawId.startsWith('org:') ? rawId.slice(4) : rawId;
+      const normalizedId =
+        typeof rawId === 'string' && rawId.startsWith('org:')
+          ? rawId.slice(4)
+          : rawId;
       const chineseId = item.中文用户ID || '';
       const matchKeyword = !hasKeyword
         ? true
-        : normalizedId.toLowerCase().includes(keyword) || chineseId.toLowerCase().includes(keyword);
+        : normalizedId.toLowerCase().includes(keyword) ||
+          chineseId.toLowerCase().includes(keyword);
 
-      const matchRegion = !hasRegionFilter ? true : selectedRegions.includes(item.国家);
+      const matchRegion = !hasRegionFilter
+        ? true
+        : selectedRegions.includes(item.国家);
 
       const orgType = item.组织类型 || '';
-      const matchOrgType = !hasOrgTypeFilter ? true : selectedOrgTypes.includes(orgType);
+      const matchOrgType = !hasOrgTypeFilter
+        ? true
+        : selectedOrgTypes.includes(orgType);
 
       return matchKeyword && matchRegion && matchOrgType;
     });
@@ -125,16 +136,7 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       width: 200,
       ellipsis: true,
       render: (text: string, record) => {
-        const preferred =
-          record.中文用户ID &&
-            typeof record.中文用户ID === 'string' &&
-            record.中文用户ID.trim() !== ''
-            ? record.中文用户ID
-            : text;
-        const displayText =
-          typeof preferred === 'string' && preferred.startsWith('org:')
-            ? preferred.slice(4)
-            : preferred;
+        const displayText = getDisplayUserId(record);
         return (
           <Tooltip title={displayText}>
             <span style={{ fontWeight: 'bold' }}>{displayText}</span>

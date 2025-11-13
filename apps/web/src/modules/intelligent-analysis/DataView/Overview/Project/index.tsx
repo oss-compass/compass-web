@@ -13,6 +13,7 @@ import {
   processRawData,
 } from '../utils';
 import { DeveloperData } from '../types';
+import { getDisplayUserId } from './utils/getDisplayUserId';
 
 interface MainProps {
   projectType?: string;
@@ -117,10 +118,10 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
         </div>
 
         {/* 地图卡片组件 */}
-        <DeveloperRegionChart 
-          data={allData} 
-          className="mb-6" 
-          loading={loading} 
+        <DeveloperRegionChart
+          data={allData}
+          className="mb-6"
+          loading={loading}
           selectedRegions={selectedRegions}
           onRegionFilterChange={handleRegionFilterChange}
         />
@@ -146,26 +147,26 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
 
       {/* 详情弹窗 */}
       <Modal
-          title={selectedUser ? `${selectedUser.用户ID} 详情` : '详情'}
-          open={showDetailModal}
-          onCancel={handleCloseModal}
-          width="90%"
-          style={{ top: 20 }}
-          footer={null}
-          destroyOnClose
-          bodyStyle={{ 
-            padding: 0, 
-            maxHeight: 'calc(100vh - 120px)', 
-            overflow: 'auto' 
-          }}
-        >
-          <DetailPage
-            data={selectedUser}
-            onBack={handleCloseModal}
-            projectType={projectType}
-            isModal={true}
-          />
-        </Modal>
+        title={selectedUser ? `${getDisplayUserId(selectedUser)} 详情` : '详情'}
+        open={showDetailModal}
+        onCancel={handleCloseModal}
+        width="90%"
+        style={{ top: 20 }}
+        footer={null}
+        destroyOnClose
+        bodyStyle={{
+          padding: 0,
+          maxHeight: 'calc(100vh - 120px)',
+          overflow: 'auto',
+        }}
+      >
+        <DetailPage
+          data={selectedUser}
+          onBack={handleCloseModal}
+          projectType={projectType}
+          isModal={true}
+        />
+      </Modal>
     </>
   );
 };

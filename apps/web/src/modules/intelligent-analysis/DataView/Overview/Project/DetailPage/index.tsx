@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import ParticipantDetails from './ParticipantDetails';
 import { useUserDetail } from '../hooks/useUserDetail';
 import { DeveloperData } from '../../types';
+import { getDisplayUserId } from '../utils/getDisplayUserId';
 // import { EcosystemScore } from './types';
 import {
   generateEcosystemTableData,
@@ -33,6 +34,8 @@ const DetailPage: React.FC<DetailPageProps> = ({
   isModal = false,
 }) => {
   const { i18n } = useTranslation('intelligent_analysis');
+  // 用于界面展示的友好 ID
+  const displayUserId = getDisplayUserId(data);
 
   // 使用 hook 获取用户详情数据
   const { detailData, ecoChartsData, loading, error } = useUserDetail(
@@ -63,29 +66,31 @@ const DetailPage: React.FC<DetailPageProps> = ({
       <ErrorState
         error={error}
         projectType={projectType}
-        userId={data.用户ID}
+        userId={displayUserId}
         onBack={onBack}
       />
     );
   }
 
   return (
-    <div className={isModal ? "bg-white" : "flex min-h-screen flex-col"}>
-      <main className={isModal ? "p-6" : "flex-1 bg-gray-50"}>
-        <div className={isModal ? "" : "mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"}>
+    <div className={isModal ? 'bg-white' : 'flex min-h-screen flex-col'}>
+      <main className={isModal ? 'p-6' : 'flex-1 bg-gray-50'}>
+        <div
+          className={
+            isModal ? '' : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'
+          }
+        >
           {/* 面包屑导航 - 在弹窗模式下隐藏 */}
           {!isModal && (
             <BreadcrumbNav
               projectType={projectType}
-              userId={data.用户ID}
+              userId={displayUserId}
               onBack={onBack}
             />
           )}
 
           {/* 基本信息卡片 */}
           <BasicInfoCard data={data} totalScore={detailData?.基本信息.总得分} />
-
-          <Divider />
 
           {/* 生态得分概览 */}
           <EcosystemOverview data={ecosystemTableData} />

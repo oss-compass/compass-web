@@ -8,6 +8,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { DeveloperData } from '../../types';
 import { translateByLocale, countryMapping } from '../utils/countryMapping';
+import { getDisplayUserId } from '../utils/getDisplayUserId';
 
 const { Title, Text } = Typography;
 
@@ -29,12 +30,10 @@ const renderUserTypeTag = (type: string, t: (key: string) => string) => {
   );
 };
 
-const normalizeId = (n: string) => (typeof n === 'string' ? n.replace(/^github:/i, '') : n);
-
 const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
   const isDeveloper = data.用户类型 === '开发者';
-  const normalizedId = normalizeId(data.用户ID);
+  const displayId = getDisplayUserId(data);
 
   return (
     <Card className="mb-6">
@@ -43,14 +42,14 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
           <Title level={2} className="mb-2">
             {isDeveloper ? (
               <a
-                href={`/developer/${encodeURIComponent(normalizedId)}`}
+                href={`/developer/${encodeURIComponent(displayId)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {normalizedId}
+                {displayId}
               </a>
             ) : (
-              normalizedId
+              displayId
             )}
           </Title>
           <Space size="middle">{renderUserTypeTag(data.用户类型, t)}</Space>
