@@ -55,6 +55,7 @@ const CheckApprove = ({ selectionId }) => {
       let clarificationList = metricItemScoreList.filter((m) => {
         return (
           m.维度 !== '合法合规' &&
+          m.key !== 'upstreamCollaborationStrategy' &&
           m.score !== 10 &&
           m.score !== null &&
           m.score !== -1 &&
@@ -191,12 +192,20 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
+    const wgApprove = [];
+    if (
+      commentCommunityCollaborationWgPermission &&
+      canCommunityWgApprove.length > 0
+    ) {
+      wgApprove.push(...canCommunityWgApprove);
+    }
     if (commentCompliancePermission) {
       if (canLegalApprove.length > 0 || canApprove.length > 0) {
         return [
           {
             key: '0',
             label: `目标选型软件报告中存在指标风险澄清未闭环：${[
+              ...wgApprove,
               ...canLegalApprove,
               ...canApprove,
             ]?.join('、')}`,
@@ -208,9 +217,10 @@ const CheckApprove = ({ selectionId }) => {
         return [
           {
             key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${canLegalApprove.join(
-              '、'
-            )}`,
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
+              ...wgApprove,
+              ...canLegalApprove,
+            ]?.join('、')}`,
           },
         ];
       }
@@ -219,9 +229,10 @@ const CheckApprove = ({ selectionId }) => {
         return [
           {
             key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${canApprove.join(
-              '、'
-            )}`,
+            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
+              ...wgApprove,
+              ...canApprove,
+            ]?.join('、')}`,
           },
         ];
       }
