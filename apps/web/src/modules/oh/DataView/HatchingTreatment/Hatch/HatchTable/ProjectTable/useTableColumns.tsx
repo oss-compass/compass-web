@@ -74,7 +74,7 @@ export const useTableColumns = (anction) => {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
-      width: 120,
+      width: 140,
       filters: taskState,
       render: (text) => {
         return taskState.find((i) => i.value === text)?.text || text;
@@ -123,23 +123,23 @@ export const useTableColumns = (anction) => {
         return record?.repoUrl?.join('; ');
       },
     },
-    {
-      title: 'Issue 链接',
-      key: 'issueUrl',
-      width: 100,
-      dataIndex: 'issueUrl',
-      render: (issueUrl) => {
-        return (
-          <a
-            target="_blank"
-            href={issueUrl}
-            className="line-clamp-1 whitespace-nowrap text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {issueUrl?.slice(-6)}
-          </a>
-        );
-      },
-    },
+    // {
+    //   title: 'Issue 链接',
+    //   key: 'issueUrl',
+    //   width: 100,
+    //   dataIndex: 'issueUrl',
+    //   render: (issueUrl) => {
+    //     return (
+    //       <a
+    //         target="_blank"
+    //         href={issueUrl}
+    //         className="line-clamp-1 whitespace-nowrap text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+    //       >
+    //         {issueUrl?.slice(-6)}
+    //       </a>
+    //     );
+    //   },
+    // },
   ];
   return { columns };
 };

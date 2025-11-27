@@ -27,7 +27,8 @@ export const getEvaluationDetail = (row) => {
     d.forEach((i) => {
       scoreTotal += row?.tpcSoftwareReportMetric?.[i.key] || 0;
     });
-    const score: number = toFixed((scoreTotal / d.length) * 10, 0);
+    const score: number =
+      d.length === 0 ? 0 : toFixed((scoreTotal / d.length) * 10, 0);
     return {
       name: item,
       score,

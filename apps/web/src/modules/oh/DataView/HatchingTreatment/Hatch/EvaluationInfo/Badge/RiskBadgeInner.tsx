@@ -64,20 +64,14 @@ const RiskBadgeInner = ({ report, keyId }) => {
     );
   }
 
-  const leaderState = processMemberState(metricState, 1, 'TPC Leader');
-  const commiterState = processMemberState(metricState, 0, 'Commiter');
-  const legalState = processMemberState(metricState, 2, '法务专家');
-  const complianceState = processMemberState(metricState, 3, '合规专家');
-  const cmmunityWgState = processMemberState(
-    metricState,
-    5,
-    'Community Collaboration Wg'
-  );
+  const leaderState = processMemberState(metricState, 1, 'SIG Lead');
+  const legalState = processMemberState(metricState, 2, '法务代表');
+  const complianceState = processMemberState(metricState, 3, '合规代表');
+  const cmmunityWgState = processMemberState(metricState, 5, '开源能力代表');
 
   const BadgeContent = (
     <div className="flex cursor-pointer gap-4">
       {renderBadge(leaderState, 'L', 2)}
-      {renderBadge(commiterState, 'C')}
       {renderBadge(legalState, 'LE')}
       {renderBadge(complianceState, 'CE')}
       {renderBadge(cmmunityWgState, 'WG')}

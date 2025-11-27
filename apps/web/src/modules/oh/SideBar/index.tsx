@@ -29,7 +29,7 @@ const SideMenu: React.FC = () => {
   const preY = usePrevious(y) as number;
   const defaultSelectedKeys = useMemo(() => {
     return [id || 'hatchTable'];
-  }, [id, window.location.href]);
+  }, [id]);
 
   const { Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
@@ -56,7 +56,7 @@ const SideMenu: React.FC = () => {
             defaultSelectedKeys={[id || 'hatchTable']}
             onClick={onClick}
             // style={{ width: 220 }}
-            defaultOpenKeys={['sub3', 'hatch', 'graduate']}
+            defaultOpenKeys={['sub3', 'hatch', 'graduate', 'sandbox']}
             mode="inline"
             items={items}
             selectedKeys={defaultSelectedKeys}

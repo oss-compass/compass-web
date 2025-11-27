@@ -9,7 +9,6 @@ const HatchTimeline = () => {
     clarifiedCount,
     awaitingConfirmationCount,
     confirmedCount,
-    committerCount,
     sigLeadCount,
     complianceCount,
     legalCount,
@@ -33,10 +32,9 @@ const HatchTimeline = () => {
   } else if (state === 2) {
     content = (
       <>
-        <div>垂域 Committer 已审批人数：{committerCount}/1</div>
-        <div>TPC Leader 已审批人数：{sigLeadCount}/1</div>
-        <div>合规专家已审批人数：{complianceCount}/1</div>
-        <div> 法务专家已审批人数：{legalCount}/1</div>
+        <div>SIG Lead 已审批人数：{sigLeadCount}/1</div>
+        <div>合规代表已审批人数：{complianceCount}/1</div>
+        <div> 法务代表已审批人数：{legalCount}/1</div>
       </>
     );
   }

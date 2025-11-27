@@ -121,6 +121,7 @@ export const useTableColumns = (anction) => {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
+      width: 140,
       render: (text, record) => {
         const status = record?.graduationReportMetric?.status;
         if (status === 'success') {

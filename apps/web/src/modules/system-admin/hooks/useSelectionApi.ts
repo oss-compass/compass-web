@@ -18,7 +18,7 @@ export interface SelectionPlatformOverviewResponse {
   gitee_count: number;
 }
 
-// 项目类型枚举 (0: 孵化项目, 1: 毕业项目)
+// 项目类型枚举 (0: 孵化项目，1: 毕业项目)
 export enum SelectionProjectType {
   INCUBATION = 0,
   GRADUATION = 1,
@@ -47,7 +47,7 @@ export const PROJECT_STATE_MAP = {
   1: '待确认',
   2: '待审批',
   3: '已通过',
-  4: '待QA确认',
+  4: '待质量代表确认',
   '-1': '已拒绝',
 } as const;
 
@@ -57,14 +57,14 @@ export interface BaseRequestParams {
   platform?: string;
 }
 
-// 项目列表API请求参数类型
+// 项目列表 API 请求参数类型
 export interface ProjectListRequest extends BaseRequestParams {
   page: number;
   per_page: number;
   keywords?: string;
 }
 
-// 概览API请求参数类型
+// 概览 API 请求参数类型
 export interface OverviewRequestParams extends BaseRequestParams {
   type: SelectionProjectType;
 }
@@ -90,7 +90,7 @@ export interface ProjectListItem {
   login_binds: LoginBind;
 }
 
-// 项目列表API响应类型
+// 项目列表 API 响应类型
 export interface ProjectListResponse {
   items: ProjectListItem[];
   total_count: number;
@@ -102,8 +102,8 @@ export interface ProjectListResponse {
 // TPC 队列相关接口
 export interface AddToTpcQueueRequest {
   report_id: string;
-  report_type: number; // 0孵化，1毕业
-  type: number; // 0普通队列，1优先队列
+  report_type: number; // 0 孵化，1 毕业
+  type: number; // 0 普通队列，1 优先队列
 }
 
 export interface AddToTpcQueueResponse {
@@ -147,7 +147,7 @@ export const useSelectionUpdateOverviewData = (
       );
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // 5分钟
+    staleTime: 5 * 60 * 1000, // 5 分钟
     refetchOnWindowFocus: false,
   });
 };
@@ -177,7 +177,7 @@ export const useSelectionPlatformOverviewData = (
       );
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // 5分钟
+    staleTime: 5 * 60 * 1000, // 5 分钟
     refetchOnWindowFocus: false,
   });
 };
@@ -258,7 +258,7 @@ export const useIncubationProjectList = (params: ProjectListRequest) => {
       );
       return response.data;
     },
-    staleTime: 2 * 60 * 1000, // 2分钟
+    staleTime: 2 * 60 * 1000, // 2 分钟
     refetchOnWindowFocus: false,
   });
 };
@@ -306,7 +306,7 @@ export const useGraduationProjectList = (params: ProjectListRequest) => {
       );
       return response.data;
     },
-    staleTime: 2 * 60 * 1000, // 2分钟
+    staleTime: 2 * 60 * 1000, // 2 分钟
     refetchOnWindowFocus: false,
   });
 };

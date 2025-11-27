@@ -38,10 +38,12 @@ const Qasubmit = ({ selectionId }) => {
   return (
     <>
       <div className="oh mb-4 flex items-center gap-2">
-        <div className="oh text-base font-semibold">报告评审(QA确认)：</div>
+        <div className="oh text-base font-semibold">
+          报告评审 (质量代表确认)：
+        </div>
         <Popover
           content={
-            commentQaPermission ? '' : '您不是该软件的QA人员，暂无权限审批'
+            commentQaPermission ? '' : '您不是软件质量代表人员，暂无权限审批'
           }
         >
           <div className="flex gap-2">

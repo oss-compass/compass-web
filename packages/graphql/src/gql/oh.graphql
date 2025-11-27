@@ -483,6 +483,11 @@ fragment tpcSoftwareSig on TpcSoftwareSig {
     id
     # name
   }
+  adaptationCommitter {
+    gitcodeAccount
+    id
+    name
+  }
 }
 fragment tpcSoftwareReportMetric on TpcSoftwareReportMetric {
   complianceDco
@@ -594,7 +599,6 @@ query tpcSoftwareSelectionPage(
       id
       incubationTime
       isSameTypeCheck
-      issueUrl
       repoUrl
       reason
       sameTypeSoftwareName
@@ -733,7 +737,6 @@ query tpcSoftwareSelectionReport($shortCode: String!) {
     shortCode: $shortCode
     reportType: 0
   ) {
-    clarificationCommitterPermission
     clarificationSigLeadPermission
     clarificationCompliancePermission
     clarificationLegalPermission
@@ -929,7 +932,6 @@ query tpcSoftwareSelection($selectionId: Int!) {
   tpcSoftwareSelection(selectionId: $selectionId) {
     commentCompliancePermission
     commentLegalPermission
-    commentCommitterPermission
     commentCount
     commentSigLeadPermission
     commentQaPermission
@@ -1200,7 +1202,6 @@ query tpcSoftwareGraduationReport($shortCode: String!) {
     shortCode: $shortCode
     reportType: 1
   ) {
-    clarificationCommitterPermission
     clarificationSigLeadPermission
     clarificationCompliancePermission
     clarificationLegalPermission
@@ -1232,7 +1233,6 @@ query tpcSoftwareGraduationPage(
       committers
       incubationStartTime
       incubationTime
-      issueUrl
       state
       tpcSoftwareGraduationReportIds
       functionalDescription
@@ -1286,7 +1286,6 @@ query tpcSoftwareGraduation($graduationId: Int!) {
   tpcSoftwareGraduation(graduationId: $graduationId) {
     commentCompliancePermission
     commentLegalPermission
-    commentCommitterPermission
     commentCount
     commentSigLeadPermission
     commentQaPermission
@@ -1530,7 +1529,6 @@ query tpcSoftwareMyCreationPage(
       confirmedCount
       createdAt
       id
-      issueUrl
       legalCount
       name
       riskCount
@@ -1583,7 +1581,6 @@ query tpcSoftwareMyReviewPage(
       confirmedCount
       createdAt
       id
-      issueUrl
       legalCount
       name
       riskCount
@@ -1605,5 +1602,370 @@ query tpcSoftwareMyReviewPage(
     }
     page
     totalPage
+  }
+}
+
+query tpcSoftwareSandboxReportPage(
+  $label: String!
+  $level: String = "repo"
+  $reportTypeList: [Int!]!
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+) {
+  tpcSoftwareSandboxReportPage(
+    page: $page
+    per: $per
+    reportTypeList: $reportTypeList
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      adaptationMethod
+      architectureDiagrams {
+        filename
+        id
+        url
+      }
+      codeCount
+      codeUrl
+      id
+      name
+      programmingLanguage
+      reportType
+      shortCode
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+      tpcSoftwareSandboxReportMetric {
+        ...tpcSoftwareSandboxReportMetric
+      }
+      tpcSoftwareSig {
+        ...tpcSoftwareSig
+      }
+    }
+    page
+    totalPage
+  }
+}
+# query tpcSoftwareSandboxPage(
+#   $label: String!
+#   $level: String = "repo"
+#   $page: Int
+#   $per: Int
+#   $filterOpts: [FilterOptionInput!]
+#   $sortOpts: [SortOptionInput!]
+# ) {
+#   tpcSoftwareSandboxPage(
+#     page: $page
+#     per: $per
+#     label: $label
+#     level: $level
+#     filterOpts: $filterOpts
+#     sortOpts: $sortOpts
+#   ) {
+#     count
+#     items {
+#       committers
+#       createdAt
+#       demandSource
+#       functionalDescription
+#       id
+#       incubationTime
+#       isSameTypeCheck
+#       issueUrl
+#       repoUrl
+#       reason
+#       sameTypeSoftwareName
+#       state
+#       targetSoftware
+#       updatedAt
+#       user {
+#         name
+#         loginBinds {
+#           account
+#           nickname
+#           provider
+#         }
+#       }
+#       userId
+#       tpcSoftwareSelectionReportIds
+#       tpcSoftwareSelectionReports {
+#         name
+#         shortCode
+#         codeUrl
+#       }
+#     }
+#     page
+#     totalPage
+#   }
+# }
+
+query tpcSoftwareSandboxReport($shortCode: String!) {
+  tpcSoftwareSandboxReport(shortCode: $shortCode) {
+    adaptationMethod
+    architectureDiagrams {
+      filename
+      id
+      url
+    }
+    codeCount
+    codeUrl
+    id
+    name
+    programmingLanguage
+    shortCode
+    vulnerabilityResponse
+    tpcSoftwareSandboxReportMetric {
+      ...tpcSoftwareSandboxReportMetric
+      ...tpcSoftwareSandboxReportMetricDetail
+    }
+    tpcSoftwareSig {
+      ...tpcSoftwareSig
+    }
+    userId
+  }
+  tpcSoftwareReportMetricClarificationPermission(
+    shortCode: $shortCode
+    reportType: 3
+  ) {
+    clarificationSigLeadPermission
+    clarificationCompliancePermission
+    clarificationLegalPermission
+  }
+}
+fragment tpcSoftwareSandboxReportMetric on TpcSoftwareSandboxReportMetric {
+  complianceLicense
+  complianceLicenseCompatibility
+  createdAt
+  ecologyCodeMaintenance
+  ecologyDependencyAcquisition
+  ecologySoftwareQuality
+  ecologyAdaptationMethod
+  lifecycleVersionLifecycle
+  securityBinaryArtifact
+  securityVulnerability
+  id
+  status
+  tpcSoftwareSandboxReportId
+  updatedAt
+}
+fragment tpcSoftwareSandboxReportMetricDetail on TpcSoftwareSandboxReportMetric {
+  baseCodeUrlDetail
+  baseRepoNameDetail
+  baseWebsiteUrlDetail
+  complianceLicenseCompatibilityDetail {
+    oatDetail
+    tpcDetail {
+      license
+      licenseConflictList
+    }
+  }
+  complianceLicenseDetail {
+    nonOsiLicenses
+    osiCopyleftLimitedLicenses
+    osiFreeRestrictedLicenses
+    osiPermissiveLicenses
+  }
+  ecologyCodeMaintenanceDetail
+
+  ecologyDependencyAcquisitionDetail
+
+  ecologySoftwareQualityDetail {
+    coverageRatio
+    coverageScore
+    duplicationRatio
+    duplicationScore
+  }
+  lifecycleVersionLifecycleDetail {
+    archived
+    latestVersionCreatedAt
+    latestVersionName
+  }
+  securityBinaryArtifactDetail {
+    oatDetail
+    tpcDetail
+  }
+  securityVulnerabilityDetail {
+    packageName
+    packageVersion
+    vulnerabilities
+  }
+}
+query tpcSoftwareSandboxPage(
+  $label: String!
+  $level: String = "repo"
+  # $selectionType: Int!
+  $page: Int
+  $per: Int
+  $filterOpts: [FilterOptionInput!]
+  $sortOpts: [SortOptionInput!]
+) {
+  tpcSoftwareSandboxPage(
+    page: $page
+    per: $per
+    # selectionType: $selectionType
+    label: $label
+    level: $level
+    filterOpts: $filterOpts
+    sortOpts: $sortOpts
+  ) {
+    count
+    items {
+      committers
+      createdAt
+      functionalDescription
+      id
+      isSameTypeCheck
+      # issueUrl
+      repoUrl
+      sameTypeSoftwareName
+      state
+      targetSoftware
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          nickname
+          provider
+        }
+      }
+      userId
+      tpcSoftwareSandboxReportIds
+      tpcSoftwareSandboxReports {
+        name
+        shortCode
+        codeUrl
+      }
+    }
+    page
+    totalPage
+  }
+}
+query tpcSoftwareSandboxReportRow($shortCode: String!) {
+  tpcSoftwareSandboxReport(shortCode: $shortCode) {
+    id
+    tpcSoftwareSandboxReportMetricRaw {
+      ...tpcSoftwareSandboxReportMetricRaw
+    }
+  }
+}
+fragment tpcSoftwareSandboxReportMetricRaw on TpcSoftwareSandboxReportMetricRaw {
+  codeUrl
+  complianceLicenseCompatibilityRaw
+  complianceLicenseRaw
+  ecologyCodeMaintenanceRaw
+  ecologyDependencyAcquisitionRaw
+  ecologySoftwareQualityRaw
+  ecologyAdaptationMethodRaw
+  id
+  lifecycleVersionLifecycleRaw
+  securityBinaryArtifactRaw
+  securityVulnerabilityRaw
+}
+query tpcSoftwareSandbox($sandboxId: Int!) {
+  tpcSoftwareSandbox(sandboxId: $sandboxId) {
+    commentCompliancePermission
+    commentLegalPermission
+    commentCount
+    commentSigLeadPermission
+    commentQaPermission
+    commentState {
+      createdAt
+      id
+      memberType
+      state
+      updatedAt
+      user {
+        name
+        loginBinds {
+          account
+          avatarUrl
+          nickname
+          provider
+        }
+      }
+      userId
+    }
+    targetSoftware
+    functionalDescription
+    committers
+    isSameTypeCheck
+    sameTypeSoftwareName
+    sigLeadCount
+    state
+    riskCount
+    legalCount
+    complianceCount
+    confirmedCount
+    committerCount
+    awaitingClarificationCount
+    awaitingConfirmationCount
+    clarifiedCount
+    repoUrl
+    tpcSoftwareSandboxReports {
+      adaptationMethod
+      license
+      codeUrl
+    }
+  }
+}
+query tpcSoftwareSandboxReportRisk($shortCode: String!) {
+  tpcSoftwareSandboxReport(shortCode: $shortCode) {
+    codeUrl
+    id
+    shortCode
+    metricClarificationCount {
+      complianceLicense
+      complianceLicenseCompatibility
+      ecologyCodeMaintenance
+      ecologyDependencyAcquisition
+      ecologySoftwareQuality
+      ecologyAdaptationMethod
+      lifecycleVersionLifecycle
+      securityBinaryArtifact
+      securityVulnerability
+    }
+    metricClarificationState {
+      complianceLicense {
+        ...tpcClarificationStateDetail
+      }
+      complianceLicenseCompatibility {
+        ...tpcClarificationStateDetail
+      }
+      ecologyCodeMaintenance {
+        ...tpcClarificationStateDetail
+      }
+      ecologyDependencyAcquisition {
+        ...tpcClarificationStateDetail
+      }
+      ecologySoftwareQuality {
+        ...tpcClarificationStateDetail
+      }
+      ecologyAdaptationMethod {
+        ...tpcClarificationStateDetail
+      }
+      lifecycleVersionLifecycle {
+        ...tpcClarificationStateDetail
+      }
+      securityBinaryArtifact {
+        ...tpcClarificationStateDetail
+      }
+      securityVulnerability {
+        ...tpcClarificationStateDetail
+      }
+    }
+    userId
   }
 }

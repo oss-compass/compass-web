@@ -153,6 +153,7 @@ export const useTableColumns = (anction) => {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
+      width: 140,
       render: (text, record) => (
         <StatusIndicator
           status={record?.tpcSoftwareReportMetric?.status}

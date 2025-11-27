@@ -10,9 +10,9 @@ export const domainList = [
     name: 'RN 框架',
   },
   {
-    description: 'Flutter 框架描述',
+    description: 'Flutter 描述',
     id: 3,
-    name: 'Flutter 框架',
+    name: 'Flutter',
   },
   {
     description: '动画描述',
@@ -141,7 +141,7 @@ export const taskState = [
     value: 2,
   },
   {
-    text: '待QA确认',
+    text: '待质量代表确认',
     value: 4,
   },
   {
@@ -159,10 +159,10 @@ export const STATUS_MAP = {
   default: '生成中',
 };
 export const MEMBER_MAP = {
-  '1': 'TPC Leader',
-  '0': 'TPC Committer',
-  '2': '法务专家',
-  '3': '合规专家',
-  '4': 'QA确认',
-  '5': 'Community Collaboration Wg',
+  '1': 'SIG Lead',
+  // '0': 'TPC Committer',
+  '2': '法务代表',
+  '3': '合规代表',
+  '4': '质量代表',
+  '5': '开源能力代表',
 };

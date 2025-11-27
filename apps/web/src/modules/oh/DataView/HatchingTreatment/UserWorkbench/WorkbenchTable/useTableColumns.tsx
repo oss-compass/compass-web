@@ -14,7 +14,11 @@ export const useTableColumns = (anction) => {
             <Popover content={'查看申请详情'}>
               <FileTextOutlined
                 onClick={() => {
-                  if (record.applicationType === 1) {
+                  if (record.applicationType === 2) {
+                    window.location.hash = `sandboxDetailPage?taskId=${
+                      record.id
+                    }&projectId=${record?.softwareReportShortCodes.join('..')}`;
+                  } else if (record.applicationType === 1) {
                     window.location.hash = `graduationReportPage?taskId=${record.id}&projectId=${record?.softwareReportShortCodes[0]}`;
                   } else {
                     window.location.hash = `reportDetailPage?taskId=${
@@ -28,23 +32,23 @@ export const useTableColumns = (anction) => {
         );
       },
     },
-    {
-      title: 'Issue 链接',
-      key: 'issueUrl',
-      dataIndex: 'issueUrl',
-      width: 100,
-      render: (issueUrl) => {
-        return (
-          <a
-            target="_blank"
-            href={issueUrl}
-            className="block w-28 overflow-hidden truncate  whitespace-nowrap text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
-          >
-            {issueUrl?.slice(-6)}
-          </a>
-        );
-      },
-    },
+    // {
+    //   title: 'Issue 链接',
+    //   key: 'issueUrl',
+    //   dataIndex: 'issueUrl',
+    //   width: 100,
+    //   render: (issueUrl) => {
+    //     return (
+    //       <a
+    //         target="_blank"
+    //         href={issueUrl}
+    //         className="block w-28 overflow-hidden truncate  whitespace-nowrap text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+    //       >
+    //         {issueUrl?.slice(-6)}
+    //       </a>
+    //     );
+    //   },
+    // },
     {
       title: '软件名称',
       dataIndex: 'name',
@@ -75,7 +79,7 @@ export const useTableColumns = (anction) => {
       title: '当前状态',
       dataIndex: 'state',
       key: 'state',
-      width: 120,
+      width: 140,
       filters: taskState,
       render: (text) => {
         return taskState.find((i) => i.value === text)?.text || text;
@@ -114,26 +118,19 @@ export const useTableColumns = (anction) => {
       },
     },
     {
-      title: '垂域 Committer 审批人数',
-      width: 200,
-      key: 'committerCount',
-      dataIndex: 'committerCount',
-    },
-    {
-      title: 'TPC Leader 审批人数',
+      title: 'SIG Lead 审批人数',
       width: 170,
       key: 'sigLeadCount',
       dataIndex: 'sigLeadCount',
     },
-
     {
-      title: '合规专家审批人数',
+      title: '合规代表审批人数',
       width: 150,
       key: 'complianceCount',
       dataIndex: 'complianceCount',
     },
     {
-      title: '法务专家审批人数',
+      title: '法务代表审批人数',
       width: 150,
       key: 'legalCount',
       dataIndex: 'legalCount',

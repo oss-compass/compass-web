@@ -20,7 +20,7 @@ const Timeline = ({ state, content, userId }) => {
       value: 2,
     },
     {
-      text: '待QA确认',
+      text: '待质量代表确认',
       value: 4,
     },
     {
@@ -38,7 +38,7 @@ const Timeline = ({ state, content, userId }) => {
   useEffect(() => {
     if (currentStep === 5 && id === userId)
       toast.success(`当前申请已完成线上平台审批，请启动 TPC SIG 汇报流程！`);
-  }, [currentStep]);
+  }, [currentStep, id, userId]);
   return (
     <div className="mb-2 flex items-center justify-between">
       {stepsList.map((step, index) => (
@@ -55,7 +55,7 @@ const Timeline = ({ state, content, userId }) => {
                 }`}
               />
               <div
-                className={`absolute mt-8 w-20 text-center text-xs font-normal ${
+                className={`absolute mt-8 w-24 text-center text-xs font-normal ${
                   index === currentStep
                     ? 'cursor-pointer text-blue-500'
                     : 'cursor-default'

@@ -16,12 +16,16 @@ import SigCenter from '@modules/oh/DataView/Community/SigCenter';
 import HatchReport from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchReport';
 import HatchProject from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchProject';
 import HatchTable from '@modules/oh/DataView/HatchingTreatment/Hatch/HatchTable';
+import SandboxReport from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxReport';
+import SandboxProject from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxProject';
+import SandboxTable from '@modules/oh/DataView/HatchingTreatment/Sandbox/SandboxTable';
 import UserWorkbench from '@modules/oh/DataView/HatchingTreatment/UserWorkbench';
 import ReportPage from '@modules/oh/DataView/HatchingTreatment/Hatch/Report/ReportPage';
 import GraduateReport from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateReport';
 import GraduateProject from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateProject';
 import GraduateTable from '@modules/oh/DataView/HatchingTreatment/Graduate/GraduateTable';
 import GraduationReport from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage';
+import SandboxReportPage from '@modules/oh/DataView/HatchingTreatment/Sandbox/Report/ReportPage';
 // import SelectionReport from '@modules/oh/DataView/HatchingTreatment/Selection/SelectionReport';
 // import SelectionProject from '@modules/oh/DataView/HatchingTreatment/Selection/SelectionProject';
 // import SelectionTable from '@modules/oh/DataView/HatchingTreatment/Selection/SelectionTable';
@@ -30,48 +34,48 @@ import GraduationReport from '@modules/oh/DataView/HatchingTreatment/Graduate/Re
 type MenuItem = Required<MenuProps>['items'][number];
 
 export const menuItems: MenuItem[] = [
-  {
-    key: 'sub1',
-    label: '社区总览',
-    icon: <TeamOutlined />,
-    children: [
-      {
-        key: 'communityOverview',
-        label: '总览',
-      },
-      {
-        key: 'sigCenter',
-        label: 'SIG 管理',
-      },
-      {
-        key: 'communityManagement',
-        label: '社区管理',
-      },
-    ],
-  },
-  {
-    key: 'sub2',
-    label: '贡献价值',
-    icon: <PieChartOutlined />,
-    children: [
-      {
-        key: 'contributeOverview',
-        label: '总览',
-      },
-      {
-        key: 'code',
-        label: '代码量统计',
-      },
-      {
-        key: 'committer',
-        label: 'Committer 贡献统计',
-      },
-      {
-        key: 'communityContributions',
-        label: '社区贡献统计',
-      },
-    ],
-  },
+  // {
+  //   key: 'sub1',
+  //   label: '社区总览',
+  //   icon: <TeamOutlined />,
+  //   children: [
+  //     {
+  //       key: 'communityOverview',
+  //       label: '总览',
+  //     },
+  //     {
+  //       key: 'sigCenter',
+  //       label: 'SIG 管理',
+  //     },
+  //     {
+  //       key: 'communityManagement',
+  //       label: '社区管理',
+  //     },
+  //   ],
+  // },
+  // {
+  //   key: 'sub2',
+  //   label: '贡献价值',
+  //   icon: <PieChartOutlined />,
+  //   children: [
+  //     {
+  //       key: 'contributeOverview',
+  //       label: '总览',
+  //     },
+  //     {
+  //       key: 'code',
+  //       label: '代码量统计',
+  //     },
+  //     {
+  //       key: 'committer',
+  //       label: 'Committer 贡献统计',
+  //     },
+  //     {
+  //       key: 'communityContributions',
+  //       label: '社区贡献统计',
+  //     },
+  //   ],
+  // },
   {
     key: 'sub3',
     label: 'TPC 治理',
@@ -95,6 +99,24 @@ export const menuItems: MenuItem[] = [
       //     },
       //   ],
       // },
+      {
+        key: 'sandbox',
+        label: '沙箱项目',
+        children: [
+          {
+            key: 'sandboxReport',
+            label: '报告申请',
+          },
+          {
+            key: 'sandboxProject',
+            label: '沙箱申请',
+          },
+          {
+            key: 'sandboxTable',
+            label: '申请列表',
+          },
+        ],
+      },
       {
         key: 'hatch',
         label: '孵化项目',
@@ -140,23 +162,27 @@ export const menuItems: MenuItem[] = [
   },
 ];
 export const componentMap = {
-  communityOverview: <CommunityOverview />,
-  sigCenter: <SigCenter />,
-  communityManagement: <CommunityManagement />,
-  contributeOverview: <ContributeOverview />,
-  code: <CodeStatistics />,
-  committer: <CommitterStatistics />,
-  communityContributions: <CommunityContributions />,
+  // communityOverview: <CommunityOverview />,
+  // sigCenter: <SigCenter />,
+  // communityManagement: <CommunityManagement />,
+  // contributeOverview: <ContributeOverview />,
+  // code: <CodeStatistics />,
+  // committer: <CommitterStatistics />,
+  // communityContributions: <CommunityContributions />,
 
   hatchReport: <HatchReport />,
   hatchProject: <HatchProject />,
   hatchTable: <HatchTable />,
+  sandboxReport: <SandboxReport />,
+  sandboxProject: <SandboxProject />,
+  sandboxTable: <SandboxTable />,
   graduateReport: <GraduateReport />,
   graduateProject: <GraduateProject />,
   graduateTable: <GraduateTable />,
 
   reportDetailPage: <ReportPage />,
   graduationReportPage: <GraduationReport />,
+  sandboxDetailPage: <SandboxReportPage />,
   // selectionReport: <SelectionReport />,
   // selectionProject: <SelectionProject />,
   // selectionTable: <SelectionTable />,

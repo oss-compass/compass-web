@@ -68,23 +68,17 @@ const RiskBadge = ({ shortCode, mertic }) => {
       </Badge>
     </Popover>
   );
-  const getBadgeContent = (leaderState, commiterState, complianceState) => {
+  const getBadgeContent = (leaderState, complianceState) => {
     let requiredApprovals = [];
 
     if (leaderState.length === 0) {
-      requiredApprovals.push('TPC Leader');
-    }
-    if (commiterState.length === 0) {
-      requiredApprovals.push('Committer');
+      requiredApprovals.push('SIG Lead');
     }
     if (complianceState.length === 0) {
-      requiredApprovals.push('合规专家');
+      requiredApprovals.push('合规代表');
     }
     let content = `等待${requiredApprovals.join('、 ')}赞同风险澄清`;
     return content;
-    // leaderState.length ===0&&(content+=`还需至少一名 Committer 赞同风险澄清`)
-    // commiterState.length ===0&&content+=`还需至少一名 Committer 赞同风险澄清`
-    // complianceState.length ===0&&content+=`还需至少一名 Committer 赞同风险澄清`
   };
   if (!metricState || metricState.length === 0) {
     if (count > 0) {
@@ -101,16 +95,14 @@ const RiskBadge = ({ shortCode, mertic }) => {
   } else {
     let content = '';
     const leaderState = metricState.filter((item) => item.memberType === 1);
-    const commiterState = metricState.filter((item) => item.memberType === 0);
     const legalState = metricState.filter((item) => item.memberType === 2);
     const complianceState = metricState.filter((item) => item.memberType === 3);
 
     if (hasReject) {
       content = '需要重新澄清！';
-      content += getRejectDetails(leaderState, 'TPC Leader');
-      content += getRejectDetails(commiterState, 'Committer');
-      content += getRejectDetails(legalState, '法务专家');
-      content += getRejectDetails(complianceState, '合规专家');
+      content += getRejectDetails(leaderState, 'SIG Lead');
+      content += getRejectDetails(legalState, '法务代表');
+      content += getRejectDetails(complianceState, '合规代表');
 
       BadgeContent = createBadge(
         content,
@@ -119,8 +111,8 @@ const RiskBadge = ({ shortCode, mertic }) => {
       );
     } else {
       if (dimension === '合法合规') {
-        content += getApprovalDetails(legalState, '法务专家');
-        content += getApprovalDetails(complianceState, '合规专家');
+        content += getApprovalDetails(legalState, '法务代表');
+        content += getApprovalDetails(complianceState, '合规代表');
 
         if (legalState.length > 0 && complianceState.length > 0) {
           BadgeContent = createBadge(
@@ -131,8 +123,8 @@ const RiskBadge = ({ shortCode, mertic }) => {
         } else {
           content +=
             legalState.length > 0
-              ? `还需至少一名合规专家赞同风险澄清`
-              : `还需至少一名法务专家赞同风险澄清`;
+              ? `还需至少一名合规代表赞同风险澄清`
+              : `还需至少一名法务代表赞同风险澄清`;
           BadgeContent = createBadge(
             content,
             '#fff',
@@ -140,26 +132,17 @@ const RiskBadge = ({ shortCode, mertic }) => {
           );
         }
       } else {
-        content += getApprovalDetails(leaderState, 'TPC Leader');
-        content += getApprovalDetails(commiterState, 'Committer');
-        content += getApprovalDetails(complianceState, '合规专家');
+        content += getApprovalDetails(leaderState, 'SIG Lead');
+        content += getApprovalDetails(complianceState, '合规代表');
 
-        if (
-          leaderState.length > 0 &&
-          commiterState.length > 0 &&
-          complianceState.length > 0
-        ) {
+        if (leaderState.length > 0 && complianceState.length > 0) {
           BadgeContent = createBadge(
             content,
             '#52c41a',
             <CheckOutlined className="rounded-full text-xs text-white" />
           );
         } else {
-          content += getBadgeContent(
-            leaderState,
-            commiterState,
-            complianceState
-          );
+          content += getBadgeContent(leaderState, complianceState);
           BadgeContent = createBadge(
             content,
             '#fff',

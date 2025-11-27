@@ -7,6 +7,8 @@ import HatchTimeline from '../ReportPage/HatchTimeline';
 import { useGetReportData } from '../ReportPage/store/useReportStore';
 import OneApprove from '../ReportPage/OneApprove';
 import ApproveBox from './Approve/ApproveBox';
+import ApprovalGuide from '@modules/oh/DataView/HatchingTreatment/components/ApprovalGuide';
+import { allMetricData } from '@modules/oh/DataView/HatchingTreatment/Hatch/EvaluationInfo/AllHatchMetricData';
 
 const ProjectPageDetail = () => {
   const { reportItems, taskId } = useLabelData();
@@ -17,6 +19,7 @@ const ProjectPageDetail = () => {
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
         <div className="oh-tabs flex items-center  border-b px-5 py-2 text-lg font-semibold">
           {'孵化申请详情'}
+          <ApprovalGuide allMetricData={allMetricData} moduleType="hatch" />
           <HatchTimeline />
         </div>
         <div className="relative h-[calc(100%-60px)] overflow-auto p-5">

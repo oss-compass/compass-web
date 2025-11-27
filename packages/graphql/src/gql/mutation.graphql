@@ -152,6 +152,7 @@ mutation createTpcSoftwareSelectionReport(
     status
   }
 }
+
 mutation createTpcSoftwareSelection(
   $label: String!
   $level: String!
@@ -528,6 +529,7 @@ mutation triggerTpcSoftwareGraduationReport($reportId: Int!) {
     status
   }
 }
+
 mutation createAuthToken($name: String!, $expiresAt: ISO8601DateTime!) {
   createAuthToken(input: { name: $name, expiresAt: $expiresAt }) {
     message
@@ -611,5 +613,136 @@ mutation deleteThirdSoftwareReport($report_id: Int!) {
       path
     }
     message
+  }
+}
+# 沙箱
+mutation triggerTpcSoftwareSandboxReport($reportId: Int!) {
+  triggerTpcSoftwareSandboxReport(input: { reportId: $reportId }) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation createTpcSoftwareSandboxReport(
+  $label: String!
+  $level: String!
+  $reportType: Int!
+  $softwareReport: TpcSoftwareSandboxReportInput!
+) {
+  createTpcSoftwareSandboxReport(
+    input: {
+      label: $label
+      level: $level
+      reportType: $reportType
+      softwareReport: $softwareReport
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation updateTpcSoftwareSandboxReport(
+  $reportId: Int!
+  $softwareReport: TpcSoftwareSandboxReportUpdateInput!
+) {
+  updateTpcSoftwareSandboxReport(
+    input: { reportId: $reportId, softwareReport: $softwareReport }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+mutation createTpcSoftwareSandbox(
+  $label: String!
+  $level: String!
+  $tpcSoftwareSandboxReportIds: [Int!]!
+  $reportCategory: Int!
+  $repoUrl: [String!]!
+  $committers: [String!]!
+  $functionalDescription: String!
+  # $adaptationMethod: String!
+  $sameTypeSoftwareName: String
+  $adaptationCommitters: [String!]
+  $targetSoftware: String!
+  $isSameTypeCheck: Int!
+) {
+  createTpcSoftwareSandbox(
+    input: {
+      label: $label
+      level: $level
+      reportCategory: $reportCategory
+      tpcSoftwareSandboxReportIds: $tpcSoftwareSandboxReportIds
+      repoUrl: $repoUrl
+      committers: $committers
+      functionalDescription: $functionalDescription
+      sameTypeSoftwareName: $sameTypeSoftwareName
+      adaptationCommitters: $adaptationCommitters
+      targetSoftware: $targetSoftware
+      isSameTypeCheck: $isSameTypeCheck
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    id
+    message
+    status
+  }
+}
+
+mutation updateTpcSoftwareSandbox(
+  $sandboxId: Int!
+  $repoUrl: [String!]!
+  $committers: [String!]!
+  $functionalDescription: String!
+  # $adaptationMethod: String!
+  $sameTypeSoftwareName: String
+  $isSameTypeCheck: Int!
+) {
+  updateTpcSoftwareSandbox(
+    input: {
+      sandboxId: $sandboxId
+      repoUrl: $repoUrl
+      committers: $committers
+      functionalDescription: $functionalDescription
+      sameTypeSoftwareName: $sameTypeSoftwareName
+      isSameTypeCheck: $isSameTypeCheck
+    }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
+  }
+}
+
+mutation acceptTpcSoftwareSandbox(
+  $sandboxId: Int!
+  $state: Int!
+  $memberType: Int!
+) {
+  acceptTpcSoftwareSandbox(
+    input: { sandboxId: $sandboxId, state: $state, memberType: $memberType }
+  ) {
+    errors {
+      message
+      path
+    }
+    message
+    status
   }
 }

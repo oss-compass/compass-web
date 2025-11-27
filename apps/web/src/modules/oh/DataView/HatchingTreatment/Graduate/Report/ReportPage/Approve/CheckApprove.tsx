@@ -25,7 +25,6 @@ const CheckApprove = ({ selectionId }) => {
   const { currentUser } = useUserInfo();
   const userId = currentUser?.id;
   const {
-    commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
@@ -187,8 +186,7 @@ const CheckApprove = ({ selectionId }) => {
       return [
         {
           key: '1',
-          label:
-            '您不是该软件的 Committer 或 TPC Leader 或法务合规专家，暂无权限审批',
+          label: '您不是该软件的 SIG Lead 或法务合规代表，暂无权限审批',
         },
       ];
     }
@@ -224,7 +222,7 @@ const CheckApprove = ({ selectionId }) => {
           },
         ];
       }
-    } else if (commentCommitterPermission || commentSigLeadPermission) {
+    } else if (commentSigLeadPermission) {
       if (canApprove.length > 0) {
         return [
           {
@@ -254,7 +252,6 @@ const CheckApprove = ({ selectionId }) => {
   };
   const hasCommentPermissions = () => {
     return (
-      commentCommitterPermission ||
       commentSigLeadPermission ||
       commentCompliancePermission ||
       commentLegalPermission ||
@@ -265,31 +262,21 @@ const CheckApprove = ({ selectionId }) => {
   const getApprovalOptions = () => {
     const res = [];
     const leaderState = isUserStateValid(1);
-    const committerState = isUserStateValid(0);
     const legalState = isUserStateValid(2);
     const complianceState = isUserStateValid(3);
     const cmmunityWgState = isUserStateValid(5);
 
     if (commentSigLeadPermission) {
-      res.push(createApprovalOption(1, leaderState, '以 TPC Leader 通过'));
-    }
-    if (commentCommitterPermission) {
-      res.push(createApprovalOption(0, committerState, '以 Committer 通过'));
+      res.push(createApprovalOption(1, leaderState, '以 SIG Lead 通过'));
     }
     if (commentLegalPermission) {
-      res.push(createApprovalOption(2, legalState, '以法务专家通过'));
+      res.push(createApprovalOption(2, legalState, '以法务代表通过'));
     }
     if (commentCompliancePermission) {
-      res.push(createApprovalOption(3, complianceState, '以合规专家通过'));
+      res.push(createApprovalOption(3, complianceState, '以合规代表通过'));
     }
     if (commentCommunityCollaborationWgPermission) {
-      res.push(
-        createApprovalOption(
-          5,
-          cmmunityWgState,
-          '以 Community Collaboration Wg 通过'
-        )
-      );
+      res.push(createApprovalOption(5, cmmunityWgState, '以开源能力代表通过'));
     }
     return res;
   };
@@ -319,8 +306,7 @@ const CheckApprove = ({ selectionId }) => {
       return [
         {
           key: '1',
-          label:
-            '您不是该软件的 Committer 或 TPC Leader 或法务合规专家，暂无权限审批',
+          label: '您不是该软件的 SIG Lead 或法务合规代表，暂无权限审批',
         },
       ];
     }
@@ -338,31 +324,21 @@ const CheckApprove = ({ selectionId }) => {
   const getRejectionOptions = () => {
     const res = [];
     const leaderState = isUserStateState(-1, 1);
-    const committerState = isUserStateState(-1, 0);
     const legalState = isUserStateState(-1, 2);
     const complianceState = isUserStateState(-1, 3);
     const cmmunityWgState = isUserStateState(-1, 5);
 
     if (commentSigLeadPermission) {
-      res.push(createRejectionOption(1, leaderState, '以 TPC Leader 驳回'));
-    }
-    if (commentCommitterPermission) {
-      res.push(createRejectionOption(0, committerState, '以 Committer 驳回'));
+      res.push(createRejectionOption(1, leaderState, '以 SIG Lead 驳回'));
     }
     if (commentLegalPermission) {
-      res.push(createRejectionOption(2, legalState, '以法务专家驳回'));
+      res.push(createRejectionOption(2, legalState, '以法务代表驳回'));
     }
     if (commentCompliancePermission) {
-      res.push(createRejectionOption(3, complianceState, '以合规专家驳回'));
+      res.push(createRejectionOption(3, complianceState, '以合规代表驳回'));
     }
     if (commentCommunityCollaborationWgPermission) {
-      res.push(
-        createRejectionOption(
-          5,
-          cmmunityWgState,
-          '以 Community Collaboration Wg 驳回'
-        )
-      );
+      res.push(createRejectionOption(5, cmmunityWgState, '以开源能力代表驳回'));
     }
     return res;
   };

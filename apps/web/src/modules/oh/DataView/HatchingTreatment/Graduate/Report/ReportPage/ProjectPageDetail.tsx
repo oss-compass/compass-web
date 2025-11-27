@@ -7,6 +7,8 @@ import ReportIdFetcher from '@modules/oh/DataView/HatchingTreatment/Graduate/Rep
 import OneApprove from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage/OneApprove';
 import ProjectInfo from '@modules/oh/DataView/HatchingTreatment/Graduate/Report/ReportPage/ProjectInfo';
 import ApproveBox from './Approve/ApproveBox';
+import ApprovalGuide from '@modules/oh/DataView/HatchingTreatment/components/ApprovalGuide';
+import { allMetricData } from '@modules/oh/DataView/HatchingTreatment/Graduate/EvaluationInfo/AllGraduateMetricData';
 
 const ProjectPageDetail = () => {
   const { reportItems, taskId } = useLabelData();
@@ -17,6 +19,7 @@ const ProjectPageDetail = () => {
       <div className="relative flex h-[calc(100vh-170px)] flex-1 flex-col border bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
         <div className="oh-tabs flex items-center  border-b px-5 py-2 text-lg font-semibold">
           {'毕业申请详情'}
+          <ApprovalGuide allMetricData={allMetricData} moduleType="graduate" />
           <GraduationTimeline />
         </div>
         <div className="relative h-[calc(100%-60px)] overflow-auto p-5">

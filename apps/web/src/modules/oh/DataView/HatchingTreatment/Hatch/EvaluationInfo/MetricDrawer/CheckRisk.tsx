@@ -22,7 +22,6 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   const { hasOhRole } = useHasOhRole();
   const {
     shortCode,
-    clarificationCommitterPermission,
     clarificationSigLeadPermission,
     clarificationCompliancePermission,
     clarificationLegalPermission,
@@ -71,34 +70,24 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   const getApprovalOptions = (dimension = '') => {
     const res = [];
     const leaderState = isUserStateValid(1);
-    const committerState = isUserStateValid(0);
     const legalState = isUserStateValid(2);
     const complianceState = isUserStateValid(3);
     const cmmunityWgState = isUserStateValid(5);
     if (clarificationSigLeadPermission && !dimension) {
-      res.push(createApprovalOption(1, leaderState, '以 TPC Leader 赞同'));
-    }
-    if (clarificationCommitterPermission && !dimension) {
-      res.push(createApprovalOption(0, committerState, '以 Committer 赞同'));
+      res.push(createApprovalOption(1, leaderState, '以 SIG Lead 赞同'));
     }
     if (clarificationLegalPermission && dimension) {
-      res.push(createApprovalOption(2, legalState, '以法务专家赞同'));
+      res.push(createApprovalOption(2, legalState, '以法务代表赞同'));
     }
     if (clarificationCompliancePermission) {
-      res.push(createApprovalOption(3, complianceState, '以合规专家赞同'));
+      res.push(createApprovalOption(3, complianceState, '以合规代表赞同'));
     }
 
     if (
       clarificationCommunityCollaborationWgPermission &&
       metricName == 'upstreamCollaborationStrategy'
     ) {
-      res.push(
-        createApprovalOption(
-          5,
-          cmmunityWgState,
-          '以 Community Collaboration Wg 赞同'
-        )
-      );
+      res.push(createApprovalOption(5, cmmunityWgState, '以开源能力代表赞同'));
     }
     return res;
   };
@@ -123,34 +112,24 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   const getRejectionOptions = (dimension = '') => {
     const res = [];
     const leaderState = isUserStateState(-1, 1);
-    const committerState = isUserStateState(-1, 0);
     const legalState = isUserStateState(-1, 2);
     const complianceState = isUserStateState(-1, 3);
     const cmmunityWgState = isUserStateState(-1, 5);
 
     if (clarificationSigLeadPermission && !dimension) {
-      res.push(createRejectionOption(1, leaderState, '以 TPC Leader 拒绝'));
-    }
-    if (clarificationCommitterPermission && !dimension) {
-      res.push(createRejectionOption(0, committerState, '以 Committer 拒绝'));
+      res.push(createRejectionOption(1, leaderState, '以 SIG Lead 拒绝'));
     }
     if (clarificationLegalPermission && dimension) {
-      res.push(createRejectionOption(2, legalState, '以法务专家拒绝'));
+      res.push(createRejectionOption(2, legalState, '以法务代表拒绝'));
     }
     if (clarificationCompliancePermission) {
-      res.push(createRejectionOption(3, complianceState, '以合规专家拒绝'));
+      res.push(createRejectionOption(3, complianceState, '以合规代表拒绝'));
     }
     if (
       clarificationCommunityCollaborationWgPermission &&
       metricName == 'upstreamCollaborationStrategy'
     ) {
-      res.push(
-        createRejectionOption(
-          5,
-          cmmunityWgState,
-          '以 Community Collaboration Wg 驳回'
-        )
-      );
+      res.push(createRejectionOption(5, cmmunityWgState, '以开源能力代表驳回'));
     }
     return res;
   };
@@ -160,7 +139,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         return [
           {
             key: '1',
-            label: '您不是该软件的法务专家或合规专家，暂无权限操作',
+            label: '您不是该软件的法务代表或合规代表，暂无权限操作',
           },
         ];
       } else {
@@ -171,19 +150,16 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         clarificationCommunityCollaborationWgPermission &&
         metricName == 'upstreamCollaborationStrategy'
       ) {
-        console.log(9999, clarificationCommunityCollaborationWgPermission);
         return getApprovalOptions();
       }
       if (
-        !clarificationCommitterPermission &&
         !clarificationSigLeadPermission &&
         !clarificationCompliancePermission
       ) {
         return [
           {
             key: '1',
-            label:
-              '您不是该软件的 Committer 或 TPC Leader 或合规专家，暂无权限操作',
+            label: '您不是该软件的 SIG Lead 或合规代表，暂无权限操作',
           },
         ];
       } else {
@@ -197,7 +173,7 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         return [
           {
             key: '1',
-            label: '您不是该软件的法务专家或合规专家，暂无权限操作',
+            label: '您不是该软件的法务代表或合规代表，暂无权限操作',
           },
         ];
       } else {
@@ -211,14 +187,13 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         return getRejectionOptions();
       }
       if (
-        !clarificationCommitterPermission &&
         !clarificationSigLeadPermission &&
         !clarificationCompliancePermission
       ) {
         return [
           {
             key: '1',
-            label: '您不是该软件的 Committer 或 TPC Leader，暂无权限操作',
+            label: '您不是该软件的 SIG Lead，暂无权限操作',
           },
         ];
       } else {

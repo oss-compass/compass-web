@@ -1,0 +1,58 @@
+import React from 'react';
+import NotFoundOh from '@modules/oh/components/NotFoundOh';
+import Loading from '@modules/oh/components/Loading';
+import EvaluationDetail from '@modules/oh/DataView/HatchingTreatment/Sandbox/EvaluationInfo/EvaluationDetail';
+import { useTpcSoftwareSandboxReportQuery } from '@oss-compass/graphql';
+import client from '@common/gqlClient';
+
+const GetReportData = ({
+  shortCode,
+  canClarify = false,
+  targetSoftware = null,
+  back,
+}: {
+  shortCode: any;
+  canClarify?: boolean;
+  targetSoftware?: string;
+  back?: () => void;
+}) => {
+  const { isLoading, data, refetch } = useTpcSoftwareSandboxReportQuery(
+    client,
+    {
+      shortCode,
+    }
+  );
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
+        <Loading />
+      </div>
+    );
+  }
+  if (!data?.tpcSoftwareSandboxReport) {
+    return (
+      <div className="flex h-[calc(100vh-170px)] min-w-[688px] flex-col bg-white drop-shadow-sm lg:h-[calc(100vh-138px)]">
+        <NotFoundOh />
+      </div>
+    );
+  }
+  const reportPermission = (report, permission) => {
+    return { ...report, ...permission };
+  };
+  return (
+    <>
+      <EvaluationDetail
+        item={reportPermission(
+          data?.tpcSoftwareSandboxReport,
+          data?.tpcSoftwareReportMetricClarificationPermission
+        )}
+        canClarify={canClarify}
+        back={back}
+        refetch={refetch}
+        targetSoftware={targetSoftware}
+      />
+    </>
+  );
+};
+
+export default GetReportData;
