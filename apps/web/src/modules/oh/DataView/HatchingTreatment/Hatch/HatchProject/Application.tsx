@@ -25,12 +25,9 @@ const SelectionApplication = () => {
   const mutation = useCreateTpcSoftwareSelectionMutation(client, {
     onSuccess(data) {
       if (data.createTpcSoftwareSelection.status == 'true') {
-        const id = data.createTpcSoftwareSelection.id;
-        toast.success(
-          `提交成功，即将跳转 Gitee，会自动生成 Issue模板，您只需点击按钮创建 Issue 即可`
-        );
+        toast.success(`提交成功`);
         setTimeout(() => {
-          openGiteeIssue(report, form.getFieldsValue(true), id);
+          // openGiteeIssue(report, form.getFieldsValue(true), id);
           window.location.hash = 'hatchTable?tab=2';
         }, 3000);
       } else {

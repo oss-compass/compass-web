@@ -166,7 +166,7 @@ const EditReportForm = ({ report, refetch }) => {
               <Input
                 placeholder="需填写 Committers 的 Gitee/Github 用户名，多个
                       Committers 用逗号分开"
-                disabled={false}
+                disabled={true}
               />
             </Form.Item>
           </Col>

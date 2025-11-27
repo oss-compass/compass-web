@@ -23,12 +23,9 @@ const SelectionApplication = () => {
   const mutation = useCreateTpcSoftwareGraduationMutation(client, {
     onSuccess(data) {
       if (data.createTpcSoftwareGraduation.status == 'true') {
-        const id = data.createTpcSoftwareGraduation.id;
-        toast.success(
-          `提交成功，即将跳转 Gitee，会自动生成 Issue模板，您只需点击按钮创建 Issue 即可`
-        );
+        toast.success(`提交成功`);
         setTimeout(() => {
-          openGraduationIssue(report, form.getFieldsValue(true), id);
+          // openGraduationIssue(report, form.getFieldsValue(true), id);
           window.location.hash = 'graduateTable?tab=2';
         }, 3000);
       } else {

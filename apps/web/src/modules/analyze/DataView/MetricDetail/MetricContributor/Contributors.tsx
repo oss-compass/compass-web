@@ -47,16 +47,19 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
           }, []);
         }
 
+        let otherRatio = 0;
         distribution.forEach((z, y) => {
-          const { subCount, subName } = z;
+          const { subCount, subName, subRatio } = z;
           count += subCount;
           if (subName == 'other' || y > 10) {
             otherCount += subCount;
+            otherRatio += subRatio || 0;
           } else {
             contributorsData.push({
               parentName: name,
               name: subName,
               value: subCount,
+              ratio: subRatio,
               itemStyle: { color: colorList[y + 1] },
             });
           }
@@ -66,6 +69,7 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
             parentName: name,
             name: 'other',
             value: otherCount,
+            ratio: otherRatio,
             itemStyle: { color: colorList[0] },
           });
         legend.push({
@@ -89,15 +93,18 @@ const getSeriesFun = (data, onlyIdentity, onlyOrg, getEcologicalText) => {
         const { name, index } = getEcologicalText(subTypeName);
         const colorList = gradientRamp[index];
         let count = 0;
-        topContributorDistribution.forEach(({ subCount, subName }, index) => {
-          count += subCount;
-          contributorsData.push({
-            parentName: name,
-            name: subName,
-            value: subCount,
-            itemStyle: { color: colorList[index + 1] },
-          });
-        });
+        topContributorDistribution.forEach(
+          ({ subCount, subName, subRatio }, index) => {
+            count += subCount;
+            contributorsData.push({
+              parentName: name,
+              name: subName,
+              value: subCount,
+              ratio: subRatio,
+              itemStyle: { color: colorList[index + 1] },
+            });
+          }
+        );
         legend.push({
           name: name,
           index: index,
@@ -144,7 +151,13 @@ const ContributorContributors: React.FC<{
     return getSeriesFun(data, onlyIdentity, onlyOrg, getEcologicalText);
   }, [data, onlyIdentity, onlyOrg, getEcologicalText]);
   const unit: string = t('analyze:metric_detail:contributor_unit');
-  const formatter = '{b} : {c}' + unit + ' ({d}%)';
+  const formatter = (params: any) => {
+    const ratio = params.data?.ratio;
+    const percentage = ratio
+      ? (ratio * 100).toFixed(2)
+      : params.percent.toFixed(2);
+    return `${params.name} : ${params.value}${unit} (${percentage}%)`;
+  };
   const option: EChartsOption = {
     tooltip: {
       trigger: 'item',

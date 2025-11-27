@@ -83,7 +83,8 @@ const CommonReport = ({
                   item={item}
                   isChecked={checked.some((c) => c.id === item.id)}
                   onSelect={
-                    reportMetricName === 'graduationReportMetric'
+                    reportMetricName === 'graduationReportMetric' ||
+                    reportMetricName === 'tpcSoftwareReportMetric'
                       ? onSelectChangeGraduate
                       : onSelectChange
                   }

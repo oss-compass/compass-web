@@ -86,6 +86,24 @@ export const getIcons = (origin, name) => {
           />
         </div>
       );
+    case 'gitcode':
+      console.log('gitcode');
+      return (
+        <div className="relative mr-2 h-6 w-6 overflow-hidden rounded-full border border-gray-100">
+          <Image
+            src={'https://gitcode.com/' + name + '.png'}
+            onError={(e) => (e.currentTarget.src = '/images/logos/gitcode.png')}
+            unoptimized
+            fill={true}
+            style={{
+              objectFit: 'cover',
+            }}
+            alt="icon"
+            placeholder="blur"
+            blurDataURL="/images/logos/gitcode.png"
+          />
+        </div>
+      );
     default:
       return <IoPeopleCircle />;
   }
