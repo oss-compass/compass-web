@@ -3,7 +3,7 @@ import { Popover } from 'antd';
 import { useUserInfo } from '@modules/auth';
 import { toast } from 'react-hot-toast';
 
-const Timeline = ({ state, content, userId }) => {
+const Timeline = ({ state, content, userId, hasRepo = true }) => {
   const { id } = useUserInfo().currentUser || {};
   const stepsList = [
     { text: '提交申请', value: 99 },
@@ -27,11 +27,22 @@ const Timeline = ({ state, content, userId }) => {
       text: '已通过',
       value: 3,
     },
+    {
+      text: '已建仓',
+      value: 5,
+    },
   ];
+  if (!hasRepo) {
+    stepsList.pop();
+  }
   let currentStep = stepsList.findIndex((i) => i.value === state);
   if (state === -1) {
     stepsList[4].text = '已驳回';
     currentStep = 4;
+  }
+  if (state === 6) {
+    stepsList[6].text = '建仓失败';
+    currentStep = 6;
   } else if (state === 3) {
     currentStep = 5; //已通过
   }

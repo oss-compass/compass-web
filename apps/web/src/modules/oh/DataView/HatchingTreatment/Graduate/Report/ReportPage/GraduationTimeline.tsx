@@ -41,7 +41,12 @@ const HatchTimeline = () => {
 
   return (
     <div className="flex h-10 w-full flex-1 justify-center">
-      <Timeline state={state} content={content} userId={userId} />
+      <Timeline
+        state={state}
+        content={content}
+        userId={userId}
+        hasRepo={false}
+      />
     </div>
   );
 };

@@ -145,6 +145,14 @@ export const taskState = [
     value: 4,
   },
   {
+    text: '已建仓',
+    value: 5,
+  },
+  {
+    text: '建仓失败',
+    value: 6,
+  },
+  {
     text: '已通过',
     value: 3,
   },
