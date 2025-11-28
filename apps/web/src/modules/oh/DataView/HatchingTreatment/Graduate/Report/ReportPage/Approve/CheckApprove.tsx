@@ -54,7 +54,7 @@ const CheckApprove = ({ selectionId }) => {
       let clarificationList = metricItemScoreList.filter((m) => {
         return (
           m.维度 !== '合法合规' &&
-          m.key !== 'upstreamCollaborationStrategy' &&
+          m.key !== 'ecologyCodeUpstream' &&
           m.score !== 10 &&
           m.score !== null &&
           m.score !== -1 &&
@@ -143,7 +143,7 @@ const CheckApprove = ({ selectionId }) => {
       let notMetricList = [];
       let clarificationList = metricItemScoreList.filter((m) => {
         return (
-          m.指标名称 === '回合上游' &&
+          m.key === 'ecologyCodeUpstream' &&
           m.score !== 10 &&
           m.score !== null &&
           m.score !== -1 &&

@@ -80,6 +80,9 @@ const RiskBadge = ({ shortCode, mertic }) => {
     let content = `等待${requiredApprovals.join('、 ')}赞同风险澄清`;
     return content;
   };
+
+  let countGreen = createBadge('', '#52c41a', '', count);
+
   if (!metricState || metricState.length === 0) {
     if (count > 0) {
       BadgeContent = createBadge('需要确认风险澄清！', 'red', null, count);
@@ -97,6 +100,46 @@ const RiskBadge = ({ shortCode, mertic }) => {
     const leaderState = metricState.filter((item) => item.memberType === 1);
     const legalState = metricState.filter((item) => item.memberType === 2);
     const complianceState = metricState.filter((item) => item.memberType === 3);
+    const communityWgState = metricState.filter(
+      (item) => item.memberType === 5
+    );
+
+    // 如果是回合上游指标，只需要开源能力代表审批
+    if (key === 'ecologyCodeUpstream') {
+      const hasCommunityWgReject = communityWgState.some((z) => z.state === -1);
+
+      if (hasCommunityWgReject) {
+        content = '需要重新澄清！';
+        content += getRejectDetails(communityWgState, '开源能力代表');
+        BadgeContent = createBadge(
+          content,
+          '#ff0000',
+          <CloseOutlined className="rounded-full text-xs text-white" />
+        );
+      } else {
+        content += getApprovalDetails(communityWgState, '开源能力代表');
+
+        if (communityWgState.length > 0) {
+          BadgeContent = createBadge(
+            content,
+            '#52c41a',
+            <CheckOutlined className="rounded-full text-xs text-white" />
+          );
+        } else {
+          content += '还需至少一名开源能力代表赞同风险澄清';
+          BadgeContent = createBadge(
+            content,
+            '#fff',
+            <BsFillClockFill className="rounded-full text-sm text-[red]" />
+          );
+        }
+      }
+      return (
+        <div className="flex w-8 flex-shrink-0 items-center justify-center">
+          {needClarification ? BadgeContent : countGreen}
+        </div>
+      );
+    }
 
     if (hasReject) {
       content = '需要重新澄清！';
@@ -152,7 +195,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
       }
     }
   }
-  let countGreen = createBadge('', '#52c41a', '', count);
+
   return (
     <div className="flex w-8 flex-shrink-0 items-center justify-center">
       {needClarification ? BadgeContent : countGreen}

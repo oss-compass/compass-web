@@ -17,7 +17,6 @@ const MetricApprove = () => {
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode); //指标澄清状态
 
   const {
-    commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
@@ -41,7 +40,7 @@ const MetricApprove = () => {
     let roundList = metricItemScoreList?.filter((m) => {
       console.log(m);
       return (
-        m.指标名称 == '回合上游' &&
+        m.key == 'ecologyCodeUpstream' &&
         m.score !== 10 &&
         m.score !== null &&
         m.score !== -1 &&
@@ -51,32 +50,28 @@ const MetricApprove = () => {
     let otherList = metricItemScoreList?.filter((m) => {
       return (
         m.维度 !== '合法合规' &&
+        m.key !== 'ecologyCodeUpstream' &&
         m.score !== 10 &&
         m.score !== null &&
         m.score !== -1 &&
         m.score !== -2
       );
     });
-    console.log(otherList);
+    const res = [];
+    if (commentCommunityCollaborationWgPermission) {
+      res.push(...roundList);
+    }
     if (commentCompliancePermission) {
       return [...legalList, ...otherList];
     }
-    const res = [];
     if (commentLegalPermission) {
       res.push(...legalList);
     }
-    if (commentCommitterPermission || commentSigLeadPermission) {
+    if (commentSigLeadPermission) {
       res.push(...otherList);
-    }
-    if (commentCommunityCollaborationWgPermission) {
-      if (res.find((item) => item.指标名称 == '回合上游')) {
-      } else {
-        res.push(...roundList);
-      }
     }
     return res;
   }, [
-    commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,

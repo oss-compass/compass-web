@@ -53,7 +53,10 @@ const ApprovalGuide: React.FC<ApprovalGuideProps> = ({
         (item.维度 === '技术生态' ||
           item.维度 === '生命周期' ||
           item.维度 === '网络安全') &&
-        needClarification(item)
+        needClarification(item) &&
+        // 排除上游协同策略和回合上游
+        item.key !== 'upstreamCollaborationStrategy' &&
+        item.key !== 'ecologyCodeUpstream'
     );
   };
 
@@ -66,7 +69,13 @@ const ApprovalGuide: React.FC<ApprovalGuideProps> = ({
 
   // 获取所有必须澄清的指标
   const getAllClarificationMetrics = () => {
-    return allMetricData.filter((item) => needClarification(item));
+    return allMetricData.filter(
+      (item) =>
+        needClarification(item) &&
+        // 排除上游协同策略和回合上游
+        item.key !== 'upstreamCollaborationStrategy' &&
+        item.key !== 'ecologyCodeUpstream'
+    );
   };
 
   // 获取开源能力代表需要审批的指标（孵化和毕业模块特有）
@@ -124,6 +133,16 @@ const ApprovalGuide: React.FC<ApprovalGuideProps> = ({
             申请人需要对所有必须澄清并且得分不为 10 分的指标项
             (开发中的指标除外) 进行澄清，澄清后需由以下代表审批：
           </p>
+          {moduleType === 'hatch' && (
+            <p className="mt-2 text-sm text-amber-700">
+              注：SIG Lead 和合规代表无需审批&ldquo;上游协同策略&rdquo;指标。
+            </p>
+          )}
+          {moduleType === 'graduate' && (
+            <p className="mt-2 text-sm text-amber-700">
+              注：SIG Lead 和合规代表无需审批&ldquo;回合上游&rdquo;指标。
+            </p>
+          )}
         </div>
 
         <div className="space-y-6">

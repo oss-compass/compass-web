@@ -17,7 +17,6 @@ const MetricApprove = () => {
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode); //指标澄清状态
 
   const {
-    commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
@@ -61,7 +60,6 @@ const MetricApprove = () => {
       );
     });
     const res = [];
-    console.log(commentCommunityCollaborationWgPermission, roundList);
     if (commentCommunityCollaborationWgPermission) {
       res.push(...roundList);
     }
@@ -71,12 +69,11 @@ const MetricApprove = () => {
     if (commentLegalPermission) {
       res.push(...legalList);
     }
-    if (commentCommitterPermission || commentSigLeadPermission) {
+    if (commentSigLeadPermission) {
       res.push(...otherList);
     }
     return res;
   }, [
-    commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,

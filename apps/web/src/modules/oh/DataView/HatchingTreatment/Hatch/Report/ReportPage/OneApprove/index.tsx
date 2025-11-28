@@ -15,7 +15,6 @@ const Approve = () => {
   const {
     state,
     commentState,
-    commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
@@ -23,7 +22,6 @@ const Approve = () => {
   } = useGetReportData();
 
   const hasRole =
-    commentCommitterPermission ||
     commentSigLeadPermission ||
     commentCompliancePermission ||
     commentLegalPermission ||

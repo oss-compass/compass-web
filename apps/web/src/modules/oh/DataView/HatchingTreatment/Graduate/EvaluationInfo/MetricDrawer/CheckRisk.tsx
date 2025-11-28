@@ -74,6 +74,16 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const complianceState = isUserStateValid(3);
     const cmmunityWgState = isUserStateValid(5);
 
+    // 如果是回合上游指标，只有开源能力代表可以审批
+    if (metricName === 'ecologyCodeUpstream') {
+      if (clarificationCommunityCollaborationWgPermission) {
+        res.push(
+          createApprovalOption(5, cmmunityWgState, '以开源能力代表赞同')
+        );
+      }
+      return res;
+    }
+
     if (clarificationSigLeadPermission && !dimension) {
       res.push(createApprovalOption(1, leaderState, '以 SIG Lead 赞同'));
     }
@@ -82,12 +92,6 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     }
     if (clarificationCompliancePermission) {
       res.push(createApprovalOption(3, complianceState, '以合规代表赞同'));
-    }
-    if (
-      clarificationCommunityCollaborationWgPermission &&
-      metricName == 'ecologyCodeUpstream'
-    ) {
-      res.push(createApprovalOption(5, cmmunityWgState, '以开源能力代表赞同'));
     }
     return res;
   };
@@ -116,6 +120,16 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const complianceState = isUserStateState(-1, 3);
     const cmmunityWgState = isUserStateState(-1, 5);
 
+    // 如果是回合上游指标，只有开源能力代表可以拒绝
+    if (metricName === 'ecologyCodeUpstream') {
+      if (clarificationCommunityCollaborationWgPermission) {
+        res.push(
+          createRejectionOption(5, cmmunityWgState, '以开源能力代表驳回')
+        );
+      }
+      return res;
+    }
+
     if (clarificationSigLeadPermission && !dimension) {
       res.push(createRejectionOption(1, leaderState, '以 SIG Lead 拒绝'));
     }
@@ -125,21 +139,9 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     if (clarificationCompliancePermission) {
       res.push(createRejectionOption(3, complianceState, '以合规代表拒绝'));
     }
-    if (
-      clarificationCommunityCollaborationWgPermission &&
-      metricName == 'ecologyCodeUpstream'
-    ) {
-      res.push(createRejectionOption(5, cmmunityWgState, '以开源能力代表驳回'));
-    }
     return res;
   };
   const getApproveItems = () => {
-    console.log(
-      9999,
-      clarificationCommunityCollaborationWgPermission,
-      metricName
-    );
-
     if (dimension === '合法合规') {
       if (!clarificationCompliancePermission && !clarificationLegalPermission) {
         return [
@@ -152,12 +154,20 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         return getApprovalOptions(dimension);
       }
     } else {
-      if (
-        clarificationCommunityCollaborationWgPermission &&
-        metricName == 'ecologyCodeUpstream'
-      ) {
-        return getApprovalOptions();
+      // 如果是回合上游指标
+      if (metricName === 'ecologyCodeUpstream') {
+        if (!clarificationCommunityCollaborationWgPermission) {
+          return [
+            {
+              key: '1',
+              label: '您不是该软件的开源能力代表，暂无权限操作',
+            },
+          ];
+        } else {
+          return getApprovalOptions();
+        }
       }
+      // 其他指标
       if (
         !clarificationSigLeadPermission &&
         !clarificationCompliancePermission
@@ -186,12 +196,20 @@ const CheckRisk = ({ report, metricName, dimension }) => {
         return getRejectionOptions(dimension);
       }
     } else {
-      if (
-        clarificationCommunityCollaborationWgPermission &&
-        metricName == 'ecologyCodeUpstream'
-      ) {
-        return getRejectionOptions();
+      // 如果是回合上游指标
+      if (metricName === 'ecologyCodeUpstream') {
+        if (!clarificationCommunityCollaborationWgPermission) {
+          return [
+            {
+              key: '1',
+              label: '您不是该软件的开源能力代表，暂无权限操作',
+            },
+          ];
+        } else {
+          return getRejectionOptions();
+        }
       }
+      // 其他指标
       if (
         !clarificationSigLeadPermission &&
         !clarificationCompliancePermission

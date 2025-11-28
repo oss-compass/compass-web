@@ -13,14 +13,12 @@ const Approve = () => {
   const userId = currentUser?.id;
   const {
     commentState,
-    commentCommitterPermission,
     commentSigLeadPermission,
     commentCompliancePermission,
     commentLegalPermission,
     commentCommunityCollaborationWgPermission,
   } = useGetReportData();
   const hasRole =
-    commentCommitterPermission ||
     commentSigLeadPermission ||
     commentCompliancePermission ||
     commentLegalPermission ||
