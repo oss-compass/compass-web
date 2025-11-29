@@ -177,7 +177,7 @@ export const allMetricData = [
           >
             {' ' + window.location.origin + '/analyze?label=' + codeUrl + ' '}
           </a>
-          前往该软件的 Oss-Compass 评估报告查看社区活跃度详情
+          前往该软件的 OSS-Compass 评估报告查看社区活跃度详情
         </>
       );
     },
@@ -203,7 +203,7 @@ export const allMetricData = [
           >
             {' ' + window.location.origin + '/analyze?label=' + codeUrl + ' '}
           </a>
-          前往该软件的 Oss-Compass 评估报告查看社区服务与支撑详情
+          前往该软件的 OSS-Compass 评估报告查看社区服务与支撑详情
         </>
       );
     },
