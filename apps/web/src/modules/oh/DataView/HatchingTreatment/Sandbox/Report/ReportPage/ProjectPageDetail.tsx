@@ -31,7 +31,7 @@ const ProjectPageDetail = () => {
             reportItems={reportItems}
             targetSoftware={targetSoftware}
           />
-          <ReportIdFetcher selectionId={Number(taskId)} />
+          {taskId ? <ReportIdFetcher selectionId={Number(taskId)} /> : ''}
           <OneApprove />
           <ApproveBox selectionId={Number(taskId)} />
         </div>

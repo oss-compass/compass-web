@@ -15,9 +15,9 @@ const EvaluationBaseInfo = () => {
     functionalDescription,
     committers,
     sameTypeSoftwareName,
-    tpcSoftwareSelectionReports,
+    tpcSoftwareSandboxReports,
   } = useGetReportData();
-  const targetReport = tpcSoftwareSelectionReports?.find(
+  const targetReport = tpcSoftwareSandboxReports?.find(
     (item) => getPathname(item.codeUrl) === targetSoftware
   );
   const baseItems = [

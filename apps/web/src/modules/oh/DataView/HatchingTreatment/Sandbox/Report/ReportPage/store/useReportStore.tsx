@@ -46,7 +46,7 @@ export const useGetReportData = () => {
     isSameTypeCheck,
     sameTypeSoftwareName,
     repoUrl,
-    tpcSoftwareSelectionReports,
+    tpcSoftwareSandboxReports,
   } = data || {};
   return {
     state,
@@ -65,7 +65,7 @@ export const useGetReportData = () => {
     isSameTypeCheck,
     sameTypeSoftwareName,
     repoUrl,
-    tpcSoftwareSelectionReports,
+    tpcSoftwareSandboxReports,
   };
 };
 export const useGetTaskTimelineData = () => {
