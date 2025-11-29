@@ -3257,8 +3257,6 @@ export type Query = {
   thirdTxt: ThirdTxtQuery;
   /** Get list of token */
   tokenList?: Maybe<Array<Token>>;
-  /** check committer */
-  tpcSoftwareCheckCommitters?: Maybe<TpcSoftwareCheckCommitters>;
   /** Get tpc software graduation */
   tpcSoftwareGraduation?: Maybe<TpcSoftwareGraduation>;
   /** Get tpc software graduation list */
@@ -3879,10 +3877,6 @@ export type QueryThirdTxtArgs = {
   topN: Scalars['Int'];
 };
 
-export type QueryTpcSoftwareCheckCommittersArgs = {
-  adaptedRepoCommitters: Array<Scalars['String']>;
-};
-
 export type QueryTpcSoftwareGraduationArgs = {
   graduationId: Scalars['Int'];
 };
@@ -4399,18 +4393,6 @@ export type Token = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   token?: Maybe<Scalars['String']>;
-};
-
-export type TpcSoftwareCheckCommitters = {
-  __typename?: 'TpcSoftwareCheckCommitters';
-  /** Committer validation results */
-  committers: Array<TpcSoftwareCheckCommittersResult>;
-};
-
-export type TpcSoftwareCheckCommittersResult = {
-  __typename?: 'TpcSoftwareCheckCommittersResult';
-  username: Scalars['String'];
-  valid: Scalars['Boolean'];
 };
 
 export type TpcSoftwareComment = {
@@ -11021,7 +11003,6 @@ export type TpcSoftwareSandboxReportQuery = {
     name?: string | null;
     programmingLanguage?: string | null;
     shortCode: string;
-    vulnerabilityResponse?: string | null;
     userId: number;
     architectureDiagrams?: Array<{
       __typename?: 'Image';
@@ -19611,7 +19592,6 @@ export const TpcSoftwareSandboxReportDocument = /*#__PURE__*/ `
     name
     programmingLanguage
     shortCode
-    vulnerabilityResponse
     tpcSoftwareSandboxReportMetric {
       ...tpcSoftwareSandboxReportMetric
       ...tpcSoftwareSandboxReportMetricDetail

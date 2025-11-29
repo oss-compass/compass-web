@@ -1725,7 +1725,6 @@ query tpcSoftwareSandboxReport($shortCode: String!) {
     name
     programmingLanguage
     shortCode
-    vulnerabilityResponse
     tpcSoftwareSandboxReportMetric {
       ...tpcSoftwareSandboxReportMetric
       ...tpcSoftwareSandboxReportMetricDetail
