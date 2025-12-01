@@ -168,7 +168,7 @@ export const STATUS_MAP = {
 };
 export const MEMBER_MAP = {
   '1': 'SIG Lead',
-  // '0': 'TPC Committer',
+  '0': 'TPC Committer', // 废弃
   '2': '法务代表',
   '3': '合规代表',
   '4': '质量代表',
