@@ -12,13 +12,13 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const SideMenu: React.FC = () => {
   const { roleLevel } = useUserInfo();
-  let items = [];
-  if (roleLevel >= 5) {
-    items = menuItems;
-  } else {
-    items.push(menuItems[2]);
-    items.push(menuItems[3]);
-  }
+  // let items = [];
+  // if (roleLevel >= 5) {
+  //   items = menuItems;
+  // } else {
+  //   items.push(menuItems[2]);
+  //   items.push(menuItems[3]);
+  // }
   const id = useHashchangeEvent();
   // const { clearAllQueryParams } = useHandleQueryParams();
   const onClick: MenuProps['onClick'] = (e) => {
@@ -58,7 +58,7 @@ const SideMenu: React.FC = () => {
             // style={{ width: 220 }}
             defaultOpenKeys={['sub3', 'hatch', 'graduate', 'sandbox']}
             mode="inline"
-            items={items}
+            items={menuItems}
             selectedKeys={defaultSelectedKeys}
           />
         </Sider>
