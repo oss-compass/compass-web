@@ -99,6 +99,25 @@ export const useTableColumns = (anction) => {
       dataIndex: 'repoUrl',
       key: 'repoUrl',
       render: (_, record) => {
+        // 如果状态是已建仓(值为5)，渲染为可点击的链接
+        if (record?.state === 5 && record?.repoUrl?.length > 0) {
+          return (
+            <div className="flex flex-wrap gap-1">
+              {record.repoUrl.map((url, index) => (
+                <span key={index}>
+                  <a
+                    target="_blank"
+                    href={url}
+                    className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
+                  >
+                    {url}
+                  </a>
+                  {index < record.repoUrl.length - 1 && '; '}
+                </span>
+              ))}
+            </div>
+          );
+        }
         return record?.repoUrl?.join('; ');
       },
     },
