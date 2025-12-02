@@ -190,65 +190,9 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-    const wgApprove = [];
-    if (
-      commentCommunityCollaborationWgPermission &&
-      canCommunityWgApprove.length > 0
-    ) {
-      wgApprove.push(...canCommunityWgApprove);
-    }
-    if (commentCompliancePermission) {
-      if (canLegalApprove.length > 0 || canApprove.length > 0) {
-        return [
-          {
-            key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
-              ...wgApprove,
-              ...canLegalApprove,
-              ...canApprove,
-            ]?.join('、')}`,
-          },
-        ];
-      }
-    } else if (commentLegalPermission) {
-      if (canLegalApprove.length > 0) {
-        return [
-          {
-            key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
-              ...wgApprove,
-              ...canLegalApprove,
-            ]?.join('、')}`,
-          },
-        ];
-      }
-    } else if (commentSigLeadPermission) {
-      if (canApprove.length > 0) {
-        return [
-          {
-            key: '0',
-            label: `目标选型软件报告中存在指标风险澄清未闭环：${[
-              ...wgApprove,
-              ...canApprove,
-            ]?.join('、')}`,
-          },
-        ];
-      }
-    } else if (
-      commentCommunityCollaborationWgPermission &&
-      canCommunityWgApprove.length > 0
-    ) {
-      //审批回合
-      return [
-        {
-          key: '0',
-          label: `目标选型软件报告中存在指标风险澄清未闭环：${canCommunityWgApprove.join(
-            '、'
-          )}`,
-        },
-      ];
-    }
-    return getApprovalOptions();
+
+    // 返回所有权限的审批选项，包括禁用状态的
+    return getAllApprovalOptionsWithStatus();
   };
   const hasCommentPermissions = () => {
     return (
@@ -259,25 +203,58 @@ const CheckApprove = ({ selectionId }) => {
     );
   };
 
-  const getApprovalOptions = () => {
+  const getAllApprovalOptionsWithStatus = () => {
     const res = [];
     const leaderState = isUserStateValid(1);
     const legalState = isUserStateValid(2);
     const complianceState = isUserStateValid(3);
     const cmmunityWgState = isUserStateValid(5);
 
+    // SIG Lead 权限：只需要一般指标闭环
     if (commentSigLeadPermission) {
-      res.push(createApprovalOption(1, leaderState, '以 SIG Lead 通过'));
+      const blockedMetrics = canApprove.length > 0 ? canApprove : null;
+      res.push(
+        createApprovalOption(1, leaderState, '以 SIG Lead 通过', blockedMetrics)
+      );
     }
+
+    // 法务代表权限：只需要法务指标闭环
     if (commentLegalPermission) {
-      res.push(createApprovalOption(2, legalState, '以法务代表通过'));
+      const blockedMetrics =
+        canLegalApprove.length > 0 ? canLegalApprove : null;
+      res.push(
+        createApprovalOption(2, legalState, '以法务代表通过', blockedMetrics)
+      );
     }
+
+    // 合规代表权限：需要法务和一般指标都闭环
     if (commentCompliancePermission) {
-      res.push(createApprovalOption(3, complianceState, '以合规代表通过'));
+      const allMetrics = [...canLegalApprove, ...canApprove];
+      const blockedMetrics = allMetrics.length > 0 ? allMetrics : null;
+      res.push(
+        createApprovalOption(
+          3,
+          complianceState,
+          '以合规代表通过',
+          blockedMetrics
+        )
+      );
     }
+
+    // 开源能力代表权限：只需要 ecologyCodeUpstream 闭环
     if (commentCommunityCollaborationWgPermission) {
-      res.push(createApprovalOption(5, cmmunityWgState, '以开源能力代表通过'));
+      const blockedMetrics =
+        canCommunityWgApprove.length > 0 ? canCommunityWgApprove : null;
+      res.push(
+        createApprovalOption(
+          5,
+          cmmunityWgState,
+          '以开源能力代表通过',
+          blockedMetrics
+        )
+      );
     }
+
     return res;
   };
 
@@ -287,17 +264,32 @@ const CheckApprove = ({ selectionId }) => {
     );
   };
 
-  const createApprovalOption = (type, state, label) => {
+  const createApprovalOption = (type, state, label, blockedMetrics = null) => {
+    const isBlocked = blockedMetrics && blockedMetrics.length > 0;
+    const displayLabel = isBlocked
+      ? `${label}（未闭环：${blockedMetrics.join('、')}）`
+      : label;
+
     return {
       label: (
-        <a onClick={() => handleApprove(type, Number(!state))}>
-          {label}
-          <span className="ml-2 text-[#3a5bef]">
-            {state && <CheckCircleOutlined />}
-          </span>
+        <a
+          onClick={() => !isBlocked && handleApprove(type, Number(!state))}
+          style={{
+            cursor: isBlocked ? 'not-allowed' : 'pointer',
+            opacity: isBlocked ? 0.5 : 1,
+            color: isBlocked ? 'rgba(0, 0, 0, 0.9)' : undefined,
+          }}
+        >
+          {displayLabel}
+          {!isBlocked && (
+            <span className="ml-2 text-[#3a5bef]">
+              {state && <CheckCircleOutlined />}
+            </span>
+          )}
         </a>
       ),
       key: String(type + 1),
+      disabled: isBlocked,
     };
   };
 
@@ -310,14 +302,7 @@ const CheckApprove = ({ selectionId }) => {
         },
       ];
     }
-    if (!canReject) {
-      return [
-        {
-          key: '1',
-          label: '需要至少拒绝一项指标风险澄清才可以驳回申请',
-        },
-      ];
-    }
+    // 返回所有权限的驳回选项，包括禁用状态的
     return getRejectionOptions();
   };
 
@@ -329,16 +314,29 @@ const CheckApprove = ({ selectionId }) => {
     const cmmunityWgState = isUserStateState(-1, 5);
 
     if (commentSigLeadPermission) {
-      res.push(createRejectionOption(1, leaderState, '以 SIG Lead 驳回'));
+      res.push(
+        createRejectionOption(1, leaderState, '以 SIG Lead 驳回', canReject)
+      );
     }
     if (commentLegalPermission) {
-      res.push(createRejectionOption(2, legalState, '以法务代表驳回'));
+      res.push(
+        createRejectionOption(2, legalState, '以法务代表驳回', canReject)
+      );
     }
     if (commentCompliancePermission) {
-      res.push(createRejectionOption(3, complianceState, '以合规代表驳回'));
+      res.push(
+        createRejectionOption(3, complianceState, '以合规代表驳回', canReject)
+      );
     }
     if (commentCommunityCollaborationWgPermission) {
-      res.push(createRejectionOption(5, cmmunityWgState, '以开源能力代表驳回'));
+      res.push(
+        createRejectionOption(
+          5,
+          cmmunityWgState,
+          '以开源能力代表驳回',
+          canReject
+        )
+      );
     }
     return res;
   };
@@ -349,17 +347,32 @@ const CheckApprove = ({ selectionId }) => {
     );
   };
 
-  const createRejectionOption = (type, state, label) => {
+  const createRejectionOption = (type, state, label, isRejectable = true) => {
+    const isBlocked = !isRejectable;
+    const displayLabel = isBlocked
+      ? `${label}（需要至少拒绝一项指标风险澄清）`
+      : label;
+
     return {
       label: (
-        <a onClick={() => handleApprove(type, state ? 0 : -1)}>
-          {label}
-          <span className="ml-2 text-[#3a5bef]">
-            {state && <CheckCircleOutlined />}
-          </span>
+        <a
+          onClick={() => !isBlocked && handleApprove(type, state ? 0 : -1)}
+          style={{
+            cursor: isBlocked ? 'not-allowed' : 'pointer',
+            opacity: isBlocked ? 0.5 : 1,
+            color: isBlocked ? 'rgba(0, 0, 0, 0.9)' : undefined,
+          }}
+        >
+          {displayLabel}
+          {!isBlocked && (
+            <span className="ml-2 text-[#3a5bef]">
+              {state && <CheckCircleOutlined />}
+            </span>
+          )}
         </a>
       ),
       key: String(type + 1),
+      disabled: isBlocked,
     };
   };
 
