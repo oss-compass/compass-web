@@ -38,7 +38,7 @@ export enum PlatformType {
   ALL = 'all',
   GITHUB = 'github',
   GITEE = 'gitee',
-  GITLAB = 'gitlab',
+  GITCODE = 'gitcode',
 }
 
 // 项目状态映射

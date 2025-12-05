@@ -241,7 +241,7 @@ const SubmitProject: React.FC = () => {
                 </div>
                 <TextArea
                   rows={4}
-                  placeholder="https://github.com/username/repo1&#10;https://gitlab.com/username/repo2&#10;https://gitee.com/username/repo3"
+                  placeholder="https://github.com/username/repo1&#10;https://gitcode.com/username/repo2&#10;https://gitee.com/username/repo3"
                   value={batchInputText.main}
                   onChange={(e) =>
                     setBatchInputText((prev) => ({
@@ -316,12 +316,12 @@ const SubmitProject: React.FC = () => {
               <div className="mb-4 rounded-lg bg-gray-50 p-4">
                 <div className="mb-2">
                   <Text type="secondary" className="text-sm">
-                    每行输入一个仓库地址，支持GitHub、GitLab、Gitee等平台
+                    每行输入一个仓库地址，支持GitHub、GitCode、Gitee等平台
                   </Text>
                 </div>
                 <TextArea
                   rows={4}
-                  placeholder="https://github.com/username/repo1&#10;https://gitlab.com/username/repo2&#10;https://gitee.com/username/repo3"
+                  placeholder="https://github.com/username/repo1&#10;https://gitcode.com/username/repo2&#10;https://gitee.com/username/repo3"
                   value={batchInputText.thirdParty}
                   onChange={(e) =>
                     setBatchInputText((prev) => ({

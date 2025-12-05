@@ -1,5 +1,6 @@
 import React from 'react';
 import { SiGitee, SiGithub } from 'react-icons/si';
+import Image from 'next/image';
 import classnames from 'classnames';
 
 const ProviderIcon: React.FC<{ provider: string; className?: string }> = ({
@@ -11,6 +12,17 @@ const ProviderIcon: React.FC<{ provider: string; className?: string }> = ({
   }
   if (provider === 'github') {
     return <SiGithub className={classnames(className)} />;
+  }
+  if (provider === 'gitcode') {
+    return (
+      <Image
+        src="/images/logos/gitcode.png"
+        alt="gitcode"
+        width={16}
+        height={16}
+        className={classnames(className)}
+      />
+    );
   }
 
   if (provider === 'combine') {

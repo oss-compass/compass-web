@@ -66,7 +66,7 @@ export const useSubmitUser = () => {
   });
 
   const count = currentUser?.loginBinds?.reduce?.((acc, cur) => {
-    if (['gitee', 'github'].includes(cur.provider!)) {
+    if (['gitee', 'github', 'gitcode'].includes(cur.provider!)) {
       return ++acc;
     }
     return acc;

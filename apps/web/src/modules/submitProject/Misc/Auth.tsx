@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
@@ -7,8 +7,41 @@ import { useSubmitUser, userInfoStore } from '@modules/auth';
 
 const Auth: React.FC = () => {
   const { t } = useTranslation();
-  const { submitUser: user, repoProviderCount } = useSubmitUser();
+  const { submitUser: user, repoProviderCount, loginBinds } = useSubmitUser();
   const hasLoggedIn = Boolean(user);
+
+  // 获取所有已绑定的代码托管平台
+  const availableProviders = useMemo(() => {
+    return (
+      loginBinds
+        ?.filter((bind) =>
+          ['github', 'gitee', 'gitcode'].includes(bind.provider!)
+        )
+        .map((bind) => bind.provider!) || []
+    );
+  }, [loginBinds]);
+
+  // 获取下一个可切换的provider
+  const getNextProvider = () => {
+    const currentIndex = availableProviders.indexOf(user?.provider!);
+    const nextIndex = (currentIndex + 1) % availableProviders.length;
+    return availableProviders[nextIndex];
+  };
+
+  // 获取下一个provider的显示名称
+  const getNextProviderName = () => {
+    const nextProvider = getNextProvider();
+    switch (nextProvider) {
+      case 'github':
+        return 'GitHub';
+      case 'gitee':
+        return 'Gitee';
+      case 'gitcode':
+        return 'GitCode';
+      default:
+        return '';
+    }
+  };
 
   if (!hasLoggedIn) return null;
 
@@ -41,6 +74,7 @@ const Auth: React.FC = () => {
             <span className="text-sm text-gray-400">
               {user?.provider === 'gitee' ? 'Gitee' : ''}
               {user?.provider === 'github' ? 'GitHub' : ''}
+              {user?.provider === 'gitcode' ? 'GitCode' : ''}
             </span>
           </div>
         </div>
@@ -50,20 +84,13 @@ const Auth: React.FC = () => {
             <button
               className="text-primary flex items-center text-sm"
               onClick={() => {
-                if (user?.provider === 'github') {
-                  userInfoStore.submitProvider = 'gitee';
-                } else {
-                  userInfoStore.submitProvider = 'github';
-                }
+                userInfoStore.submitProvider = getNextProvider();
               }}
             >
               <HiOutlineSwitchHorizontal className="mr-1" />
-              {user?.provider === 'gitee'
-                ? t('submit_project:switch_github')
-                : null}
-              {user?.provider === 'github'
-                ? t('submit_project:switch_gitee')
-                : null}
+              {t('submit_project:switch_to', {
+                provider: getNextProviderName(),
+              })}
             </button>
           ) : (
             <Link href="/settings/profile" className="text-primary text-sm ">

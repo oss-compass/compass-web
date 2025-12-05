@@ -69,7 +69,6 @@ export enum RepositoryTimeType {
 export enum RepositoryPlatformType {
   GITHUB = 'github',
   GITEE = 'gitee',
-  GITLAB = 'gitlab',
   GITCODE = 'gitcode',
 }
 
@@ -86,7 +85,7 @@ export const useProjectUpdateCountData = (level: 'repo' | 'community') => {
       );
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // 5分钟
+    staleTime: 5 * 60 * 1000, // 5 分钟
     refetchOnWindowFocus: false,
   });
 };
@@ -104,7 +103,7 @@ export const useProjectPlatformCountData = (level: 'repo' | 'community') => {
       );
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // 5分钟
+    staleTime: 5 * 60 * 1000, // 5 分钟
     refetchOnWindowFocus: false,
   });
 };
@@ -175,7 +174,6 @@ export enum CommunityTimeType {
 export enum CommunityPlatformType {
   GITHUB = 'github',
   GITEE = 'gitee',
-  GITLAB = 'gitlab',
   GITCODE = 'gitcode',
 }
 
@@ -203,7 +201,7 @@ export const useRepositoryList = (params: RepositoryListRequest) => {
       );
       return response.data;
     },
-    staleTime: 2 * 60 * 1000, // 2分钟
+    staleTime: 2 * 60 * 1000, // 2 分钟
     refetchOnWindowFocus: false,
   });
 };
@@ -232,7 +230,7 @@ export const useCommunityList = (params: CommunityListRequest) => {
       );
       return response.data;
     },
-    staleTime: 2 * 60 * 1000, // 2分钟
+    staleTime: 2 * 60 * 1000, // 2 分钟
     refetchOnWindowFocus: false,
   });
 };
@@ -270,7 +268,7 @@ export interface AddCommunityToQueueResponse {
 // 批量加入队列请求参数类型
 export interface BatchAddToQueueRequest {
   time_type: number; // 时间类型：1，3，6，12
-  queue_type: number; // 类型，0普通队列，1优先队列
+  queue_type: number; // 类型，0 普通队列，1 优先队列
 }
 
 // 批量加入队列响应类型
@@ -341,7 +339,7 @@ export const useBatchAddCommunityToQueue = () => {
 // 批量导入项目请求参数类型
 export interface BatchImportProjectsRequest {
   project_urls: string[];
-  type: number; // 队列类型，0普通队列，1优先队列
+  type: number; // 队列类型，0 普通队列，1 优先队列
 }
 
 // 批量导入项目响应类型

@@ -1,6 +1,7 @@
 import React from 'react';
 import { AiFillGithub, AiOutlineClose } from 'react-icons/ai';
 import { SiGitee } from 'react-icons/si';
+import Image from 'next/image';
 import { useSubmitUser } from '@modules/auth';
 
 export const getIcons = (type: string) => {
@@ -9,6 +10,16 @@ export const getIcons = (type: string) => {
       return <AiFillGithub className="mr-2" />;
     case 'gitee':
       return <SiGitee color="#c71c27" className="mr-2" />;
+    case 'gitcode':
+      return (
+        <Image
+          src="/images/logos/gitcode.png"
+          alt="gitcode"
+          width={16}
+          height={16}
+          className="mr-2"
+        />
+      );
     default:
       return null;
   }

@@ -18,7 +18,11 @@ const OrgUrlInput = ({
   const providerName =
     provider === 'github'
       ? t('common:community.github')
-      : t('common:community.gitee');
+      : provider === 'gitee'
+      ? t('common:community.gitee')
+      : provider === 'gitcode'
+      ? t('common:community.gitcode')
+      : t('common:community.github');
   return (
     <div>
       <Input

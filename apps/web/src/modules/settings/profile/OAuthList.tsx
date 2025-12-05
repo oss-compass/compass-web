@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SiGitee, SiGithub } from 'react-icons/si';
+import Image from 'next/image';
 import Slack from '@public/images/logos/slack.svg';
 import Wechat from '@public/images/logos/wechat.svg';
 import { Provider, ProviderItem } from './ProviderItem';
@@ -20,6 +21,21 @@ const OAuthList = () => {
       id: 'gitee',
       desc: t('setting:profile.can_be_used_to_submit_project_after_binding'),
       icon: <SiGitee className="h-10 w-10 text-[#c71c27]" />,
+    },
+    {
+      name: 'GitCode',
+      id: 'gitcode',
+      desc: t('setting:profile.can_be_used_to_submit_project_after_binding'),
+      icon: (
+        <div className="flex h-10 w-10 items-center justify-center">
+          <Image
+            src="/images/logos/gitcode.png"
+            alt="gitcode"
+            width={40}
+            height={40}
+          />
+        </div>
+      ),
     },
     {
       name: 'Slack',

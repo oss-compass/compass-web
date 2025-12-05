@@ -83,6 +83,39 @@ const LoginItems: React.FC = () => {
         />
         <span className="ml-3">{t('submit_project:continue_with_gitee')}</span>
       </div>
+
+      <div
+        className="mb-6 flex h-12 w-[400px] cursor-pointer items-center bg-[#fc6d26] pl-24 text-white hover:bg-[#e24329]"
+        onClick={async () => {
+          mutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                cookieSetAuthProvider('gitcode');
+                cookieSetCallbackUrl(redirectTo);
+                window.location.href = '/users/auth/gitcode';
+              },
+              onError: (e) => {
+                toast.error(t('auth:auth_failed'));
+              },
+            }
+          );
+        }}
+      >
+        <Image
+          width={28}
+          height={28}
+          src={'/images/logos/white-gitcode.svg'}
+          alt={'gitcode'}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
+        />
+        <span className="ml-3">
+          {t('submit_project:continue_with_gitcode')}
+        </span>
+      </div>
     </>
   );
 };

@@ -12,6 +12,10 @@ export const oauthProvider = {
     id: 'gitee',
     name: 'Gitee',
   },
+  gitcode: {
+    id: 'gitcode',
+    name: 'GitCode',
+  },
 };
 
 export type ChartTab = 'One' | 'two' | 'three' | 'four';

@@ -36,7 +36,7 @@ interface GraduationData extends Omit<ProjectListItem, 'state'> {
   key: string;
   status: string;
   statusColor: string;
-  platformDisplay: 'GitHub' | 'Gitee' | 'GitLab' | 'GitCode';
+  platformDisplay: 'GitHub' | 'Gitee' | 'GitCode';
   lastUpdateCategory: string;
   displayName: string;
   maintainerName: string;
@@ -54,11 +54,11 @@ const GraduationManagement: React.FC = () => {
   // API 参数计算
   const apiTimeType = useMemo(() => {
     const timeMapping: Record<string, string> = {
-      '1个月内': TimeType.ONE_MONTH,
-      '超过1个月': TimeType.THREE_MONTHS,
-      '超过3个月': TimeType.SIX_MONTHS,
-      '超过半年': TimeType.TWELVE_MONTHS,
-      '超过1年': TimeType.ALL_TIME,
+      '1 个月内': TimeType.ONE_MONTH,
+      超过1个月: TimeType.THREE_MONTHS,
+      超过3个月: TimeType.SIX_MONTHS,
+      超过半年: TimeType.TWELVE_MONTHS,
+      超过1年: TimeType.ALL_TIME,
       all: TimeType.ALL_TIME,
     };
     const mapped = timeMapping[updateTimeFilter] ?? TimeType.ALL_TIME;
@@ -69,7 +69,7 @@ const GraduationManagement: React.FC = () => {
     const platformMapping: Record<string, string> = {
       GitHub: 'github',
       Gitee: 'gitee',
-      GitLab: 'gitlab',
+      GitCode: 'gitcode',
       all: 'all',
     };
     const mapped = platformMapping[platformFilter] ?? 'all';
@@ -153,14 +153,10 @@ const GraduationManagement: React.FC = () => {
   // 获取平台显示名称
   const getPlatformDisplay = (
     platform: string
-  ): 'GitHub' | 'Gitee' | 'GitLab' | 'GitCode' => {
-    const platformMap: Record<
-      string,
-      'GitHub' | 'Gitee' | 'GitLab' | 'GitCode'
-    > = {
+  ): 'GitHub' | 'Gitee' | 'GitCode' => {
+    const platformMap: Record<string, 'GitHub' | 'Gitee' | 'GitCode'> = {
       github: 'GitHub',
       gitee: 'Gitee',
-      gitlab: 'GitLab',
       gitcode: 'GitCode',
     };
     return platformMap[platform.toLowerCase()] || 'GitHub';
@@ -224,7 +220,7 @@ const GraduationManagement: React.FC = () => {
 
       message.success(`已成功加入${queueTypeText}`);
     } catch (error) {
-      console.error('加入队列失败:', error);
+      console.error('加入队列失败：', error);
       message.error(`加入${queueTypeText}失败，请重试`);
     } finally {
       setLoadingQueues((prev) => {
@@ -440,7 +436,7 @@ const GraduationManagement: React.FC = () => {
               <Option value="all">全部平台</Option>
               <Option value="GitHub">GitHub</Option>
               <Option value="Gitee">Gitee</Option>
-              <Option value="GitLab">GitLab</Option>
+              <Option value="GitCode">GitCode</Option>
             </Select>
 
             <Select
@@ -512,25 +508,32 @@ const GraduationManagement: React.FC = () => {
                 <Radio value="超过1个月">
                   超过 1 个月未更新
                   <span className="ml-2 text-gray-500">
-                    ({incubationUpdateOverview?.updated_within_three_months || 0} 个项目)
+                    (
+                    {incubationUpdateOverview?.updated_within_three_months || 0}{' '}
+                    个项目)
                   </span>
                 </Radio>
                 <Radio value="超过3个月">
                   超过 3 个月未更新
                   <span className="ml-2 text-gray-500">
-                    ({incubationUpdateOverview?.updated_within_six_months || 0} 个项目)
+                    ({incubationUpdateOverview?.updated_within_six_months || 0}{' '}
+                    个项目)
                   </span>
                 </Radio>
                 <Radio value="超过半年">
                   超过半年未更新
                   <span className="ml-2 text-gray-500">
-                    ({incubationUpdateOverview?.updated_within_twelve_months || 0} 个项目)
+                    (
+                    {incubationUpdateOverview?.updated_within_twelve_months ||
+                      0}{' '}
+                    个项目)
                   </span>
                 </Radio>
                 <Radio value="超过1年">
                   超过 1 年未更新
                   <span className="ml-2 text-gray-500">
-                    ({incubationUpdateOverview?.updated_over_twelve_months || 0} 个项目)
+                    ({incubationUpdateOverview?.updated_over_twelve_months || 0}{' '}
+                    个项目)
                   </span>
                 </Radio>
               </div>
@@ -558,13 +561,13 @@ const GraduationManagement: React.FC = () => {
                   {(() => {
                     if (!incubationUpdateOverview) return 0;
                     switch (batchTimeCategory) {
-                      case '超过1个月':
+                      case '超过 1 个月':
                         return incubationUpdateOverview.updated_within_three_months;
-                      case '超过3个月':
+                      case '超过 3 个月':
                         return incubationUpdateOverview.updated_within_six_months;
                       case '超过半年':
                         return incubationUpdateOverview.updated_within_twelve_months;
-                      case '超过1年':
+                      case '超过 1 年':
                         return incubationUpdateOverview.updated_over_twelve_months;
                       default:
                         return 0;

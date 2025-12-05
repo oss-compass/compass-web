@@ -39,7 +39,7 @@ export const useTableColumns = (anction) => {
       title: '目标孵化软件',
       dataIndex: 'targetSoftware',
       key: 'targetSoftware',
-      width: 140,
+      width: 240,
       ...TableDropdown.createFilterConfig('输入目标孵化软件'),
     },
 
