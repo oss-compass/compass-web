@@ -25,7 +25,7 @@ const SourceItem: React.FC<{
         <Image
           width={20}
           height={20}
-          src={avatar_url}
+          src={avatar_url || '/images/default.png'}
           unoptimized
           alt={''}
           style={{

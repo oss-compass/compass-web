@@ -6,6 +6,7 @@ export interface Repos {
   full_name: string;
   language: string;
   html_url: string;
+  web_url?: string;
   updated_at: string;
 }
 

@@ -33,6 +33,7 @@ const User = () => {
       <div className="border-secondary relative flex h-[32px] w-[32px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-hover:bg-[#333333]">
         <Image
           src={user?.avatarUrl!}
+          referrerPolicy="no-referrer"
           unoptimized
           fill
           sizes="64px"

@@ -42,6 +42,7 @@ const PublicItem: React.FC<{
           <span className="border-secondary relative flex h-[24px] w-[24px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-hover:bg-[#333333]">
             <Image
               src={loginBinds?.avatarUrl!}
+              referrerPolicy="no-referrer"
               unoptimized
               fill
               sizes="24px"

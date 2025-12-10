@@ -21,14 +21,14 @@ const Auth: React.FC = () => {
     );
   }, [loginBinds]);
 
-  // 获取下一个可切换的provider
+  // 获取下一个可切换的 provider
   const getNextProvider = () => {
     const currentIndex = availableProviders.indexOf(user?.provider!);
     const nextIndex = (currentIndex + 1) % availableProviders.length;
     return availableProviders[nextIndex];
   };
 
-  // 获取下一个provider的显示名称
+  // 获取下一个 provider 的显示名称
   const getNextProviderName = () => {
     const nextProvider = getNextProvider();
     switch (nextProvider) {
@@ -57,6 +57,7 @@ const Auth: React.FC = () => {
             <div className="relative h-12 w-12  overflow-hidden rounded-full bg-slate-100">
               <Image
                 src={user?.avatarUrl!}
+                referrerPolicy="no-referrer"
                 unoptimized
                 fill
                 sizes="64px"

@@ -105,8 +105,9 @@ const LoginItems: React.FC = () => {
         <Image
           width={28}
           height={28}
-          src={'/images/logos/white-gitcode.svg'}
+          src={'/images/logos/gitcode-white.png'}
           alt={'gitcode'}
+          unoptimized
           style={{
             maxWidth: '100%',
             height: 'auto',

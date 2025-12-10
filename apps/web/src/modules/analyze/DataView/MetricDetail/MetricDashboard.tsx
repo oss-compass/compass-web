@@ -503,6 +503,15 @@ const getIcons = (type: string) => {
       return <SiGithub color="#171516" />;
     case 'gitee':
       return <SiGitee color="#c71c27" className="mr-0" />;
+    case 'gitcode':
+      return (
+        <Image
+          src="/images/logos/gitcode.png"
+          alt="gitcode"
+          width={16}
+          height={16}
+        />
+      );
     default:
       return <IoPeopleCircle />;
   }
@@ -547,6 +556,24 @@ const getTopUser = (type, name) => {
               alt="icon"
               placeholder="blur"
               blurDataURL="/images/logos/gitee-red.svg"
+            />
+          </div>
+        );
+        break;
+      case 'gitcode':
+        url = 'https://gitcode.com/' + name;
+        userIcon = (
+          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
+            <Image
+              src={'https://gitcode.com/' + name + '.png'}
+              onError={(e) =>
+                (e.currentTarget.src = '/images/logos/gitcode.png')
+              }
+              unoptimized
+              fill={true}
+              alt="icon"
+              placeholder="blur"
+              blurDataURL="/images/logos/gitcode.png"
             />
           </div>
         );

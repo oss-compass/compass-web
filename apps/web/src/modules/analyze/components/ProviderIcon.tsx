@@ -16,7 +16,7 @@ const ProviderIcon: React.FC<{ provider: string; className?: string }> = ({
   if (provider === 'gitcode') {
     return (
       <Image
-        src="/images/logos/gitcode.png"
+        src="/images/logos/gitcode-white.png"
         alt="gitcode"
         width={16}
         height={16}

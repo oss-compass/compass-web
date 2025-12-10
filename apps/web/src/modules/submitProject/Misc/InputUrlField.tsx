@@ -90,7 +90,14 @@ const InputUrlField = forwardRef<InputRef, Props>(
               className="w-full"
               placeholder={
                 t('submit_project:type_address_of', {
-                  providerName: provider,
+                  providerName:
+                    provider === 'github'
+                      ? t('common:community.github')
+                      : provider === 'gitee'
+                      ? t('common:community.gitee')
+                      : provider === 'gitcode'
+                      ? t('common:community.gitcode')
+                      : provider,
                 }) as string
               }
               error={error}
@@ -115,7 +122,12 @@ const InputUrlField = forwardRef<InputRef, Props>(
         {error && (
           <p className="p-1 text-red-500">
             {message} ( {t('submit_project:eg')}:
-            <span className="mx-2 font-semibold">{provider}.com/xxx/xxx</span>)
+            <span className="mx-2 font-semibold">
+              {provider === 'gitcode'
+                ? 'gitcode.com/xxx/xxx'
+                : `${provider}.com/xxx/xxx`}
+            </span>
+            )
           </p>
         )}
       </>

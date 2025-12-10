@@ -9,6 +9,7 @@ import {
 import Link from 'next/link';
 import { SiGitee } from 'react-icons/si';
 import Image from 'next/image';
+import ProviderIcon from '@common/components/ProviderIcon';
 
 const ProjectItem = ({ shortCode, url }) => {
   const name = getLastPathSegment(url);
@@ -33,6 +34,10 @@ const ProjectItem = ({ shortCode, url }) => {
                 }}
                 alt="icon"
               />
+            </div>
+          ) : origin === 'gitcode' ? (
+            <div className="flex h-6 w-6 items-center justify-center">
+              <ProviderIcon provider="gitcode" className="!h-6 !w-6" />
             </div>
           ) : (
             <SiGitee className="text-2xl text-[#c71c27]" />

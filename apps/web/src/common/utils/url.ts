@@ -140,6 +140,8 @@ export const getHubUrl = (origin, name) => {
       return 'https://github.com/' + name;
     case 'gitee':
       return 'https://gitee.com/' + name;
+    case 'gitcode':
+      return 'https://gitcode.com/' + name;
     // return <SiGitee color="#c71c27" className="mr-0" />;
     default:
       return null;

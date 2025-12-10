@@ -245,6 +245,7 @@ const ProfileForm = () => {
             {providerUser?.avatarUrl ? (
               <Image
                 src={providerUser?.avatarUrl!}
+                referrerPolicy="no-referrer"
                 unoptimized
                 fill
                 sizes="156px"

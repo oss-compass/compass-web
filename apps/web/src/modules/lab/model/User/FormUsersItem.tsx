@@ -213,6 +213,7 @@ const FormUsersItem = (props: {
         <div className="relative mr-4 flex h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
           <Image
             src={user.avatarUrl || '/images/default-avatar.png'}
+            referrerPolicy="no-referrer"
             unoptimized
             fill
             sizes="64px"

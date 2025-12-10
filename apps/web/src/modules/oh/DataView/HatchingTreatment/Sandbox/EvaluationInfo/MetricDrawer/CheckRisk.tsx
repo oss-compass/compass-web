@@ -177,7 +177,6 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   };
   const approveitems = getApproveItems();
   const rejectitems = getRejectItems();
-  console.log(count, hasOhRole);
   return (
     <>
       {count > 0 && (

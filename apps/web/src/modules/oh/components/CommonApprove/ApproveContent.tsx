@@ -15,6 +15,7 @@ const ApproveContent = ({ item }: { item: any }) => {
               item?.user?.loginBinds[0]?.avatarUrl ||
               '/images/default-avatar.png'
             }
+            referrerPolicy="no-referrer"
             unoptimized
             fill
             sizes="64px"

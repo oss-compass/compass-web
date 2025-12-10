@@ -46,7 +46,7 @@ const SignIn: React.FC = () => {
 
         <LoginItems />
 
-        <div className="w-[400px] text-xs">
+        <div className="flex w-[400px] items-center justify-center text-xs">
           {t('submit_project:by_creating_an_account')}
           <Link
             href="/docs/terms-of-use/"

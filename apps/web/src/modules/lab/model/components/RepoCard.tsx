@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { getNameSpace, getProvider, getRepoName } from '@common/utils';
 import { SiGitee } from 'react-icons/si';
 import { AiFillGithub } from 'react-icons/ai';
+import Image from 'next/image';
 import classnames from 'classnames';
 import TriggerSingleBtn from './TriggerSingleBtn';
 import ImageFallback from '@common/components/ImageFallback';
 import { getLabRange } from '@modules/lab/utils';
 
 const Avatar = ({ logoUrl, origin }: { logoUrl: string; origin: string }) => {
-  const hasOrigin = ['gitee', 'github'].includes(origin);
+  const hasOrigin = ['gitee', 'github', 'gitcode'].includes(origin);
   return (
     <div className="relative">
       <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-300">
@@ -30,6 +31,15 @@ const Avatar = ({ logoUrl, origin }: { logoUrl: string; origin: string }) => {
         origin === 'gitee' ? (
           <div className="absolute -bottom-0 -right-0 z-10 h-4 rounded-full bg-white">
             <SiGitee className="h-4 w-4 text-[#c71c27]" />
+          </div>
+        ) : origin === 'gitcode' ? (
+          <div className="absolute -bottom-0 -right-0 z-10 h-4 rounded-full bg-white">
+            <Image
+              src="/images/logos/gitcode.png"
+              alt="gitcode"
+              width={16}
+              height={16}
+            />
           </div>
         ) : (
           <div className="absolute -bottom-0 -right-0 z-10 h-4 rounded-full bg-white">

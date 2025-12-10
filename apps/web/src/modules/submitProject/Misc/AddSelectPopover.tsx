@@ -3,6 +3,7 @@ import { useClickAway } from 'react-use';
 import { AiFillGithub, AiOutlineLink, AiOutlinePlus } from 'react-icons/ai';
 import classnames from 'classnames';
 import { SiGitee } from 'react-icons/si';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useSubmitUser } from '@modules/auth';
 
@@ -12,6 +13,15 @@ export const getIcons = (type: string) => {
       return <AiFillGithub />;
     case 'gitee':
       return <SiGitee color="#c71c27" />;
+    case 'gitcode':
+      return (
+        <Image
+          src="/images/logos/gitcode.png"
+          alt="gitcode"
+          width={16}
+          height={16}
+        />
+      );
     default:
       return null;
   }
@@ -33,7 +43,14 @@ const AddSelectPopover: React.FC<{
     onClose();
   });
 
-  const providerName = provider === 'github' ? 'GitHub' : 'Gitee';
+  const providerName =
+    provider === 'github'
+      ? 'GitHub'
+      : provider === 'gitee'
+      ? 'Gitee'
+      : provider === 'gitcode'
+      ? 'GitCode'
+      : 'GitHub';
 
   return (
     <div className={classnames('relative z-10 mt-4', className)}>

@@ -8,6 +8,8 @@ import {
   Organization,
 } from './common';
 
+const TOKEN = 'yVW2WJjVB3sM4RbLSmCszhcF';
+
 export async function getRepos({
   username,
   sort = 'updated',
@@ -15,17 +17,19 @@ export async function getRepos({
   per_page = defaultPageSize,
 }: ReposParams): Promise<AxiosResponse<Repos[]>> {
   return await axios.get(
-    `https://gitcode.com/api/v4/users/${username}/projects`,
+    `https://api.gitcode.com/api/v5/users/${username}/repos`,
     {
       params: {
+        access_token: TOKEN,
         order_by: sort === 'updated' ? 'updated_at' : sort,
         page,
         per_page,
         visibility: 'public',
       },
       headers: {
-        accept: 'application/json',
+        Accept: 'application/json',
       },
+      withCredentials: true,
     }
   );
 }
@@ -36,11 +40,15 @@ export async function getUserOrgs({
   username: string;
 }): Promise<AxiosResponse<Organization[]>> {
   return await axios.get(
-    `https://gitcode.com/api/v4/users/${username}/groups`,
+    `https://api.gitcode.com/api/v5/users/${username}/orgs`,
     {
-      headers: {
-        accept: 'application/json',
+      params: {
+        access_token: TOKEN,
       },
+      headers: {
+        Accept: 'application/json',
+      },
+      withCredentials: true,
     }
   );
 }
@@ -51,15 +59,17 @@ export async function getOrgRepos({
   page,
   per_page = defaultPageSize,
 }: OrgParams): Promise<AxiosResponse<Repos[]>> {
-  return await axios.get(`https://gitcode.com/api/v4/groups/${org}/projects`, {
+  return await axios.get(`https://api.gitcode.com/api/v5/orgs/${org}/repos`, {
     params: {
+      access_token: TOKEN,
       order_by: sort === 'updated' ? 'updated_at' : sort,
       page,
       per_page,
       visibility: 'public',
     },
     headers: {
-      accept: 'application/json',
+      Accept: 'application/json',
     },
+    withCredentials: true,
   });
 }

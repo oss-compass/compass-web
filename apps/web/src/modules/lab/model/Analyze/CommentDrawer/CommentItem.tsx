@@ -33,6 +33,7 @@ const CommentItem = ({
         <div className="relative h-8 w-8  shrink-0 overflow-hidden rounded-full">
           <Image
             src={comment?.user?.avatarUrl || '/images/default-avatar.png'}
+            referrerPolicy="no-referrer"
             unoptimized
             fill
             sizes="64px"

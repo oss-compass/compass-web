@@ -30,6 +30,7 @@ const DeveloperItem: React.FC<LinkItemProps> = ({ item, active }) => {
       <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-100">
         <ImageFallback
           src={developerInfo.avatarUrl}
+          referrerPolicy="no-referrer"
           unoptimized
           width={32}
           height={32}

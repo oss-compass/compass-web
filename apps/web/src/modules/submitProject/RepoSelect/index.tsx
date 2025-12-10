@@ -91,7 +91,10 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
                 updateAt={repo.updated_at}
                 onPick={() => {
                   //  gitee html_url value endWith .git
-                  const repoUrl = removeExtname(repo.html_url, '.git');
+                  const repoUrl = removeExtname(
+                    repo.html_url || repo.web_url,
+                    '.git'
+                  );
                   onConfirm(repoUrl);
                 }}
               />

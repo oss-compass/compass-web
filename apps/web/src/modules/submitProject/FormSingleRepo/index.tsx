@@ -56,7 +56,11 @@ const FormSingleRepo = () => {
   const providerName =
     provider === 'github'
       ? t('common:community.github')
-      : t('common:community.gitee');
+      : provider === 'gitee'
+      ? t('common:community.gitee')
+      : provider === 'gitcode'
+      ? t('common:community.gitcode')
+      : t('common:community.github');
 
   return (
     <>
@@ -136,7 +140,9 @@ const FormSingleRepo = () => {
               <p className="p-1 text-red-500 ">
                 {errors?.url.message} ( {t('submit_project:eg')}:
                 <span className="mx-2 font-semibold">
-                  {provider}.com/xxx/xxx
+                  {provider === 'gitcode'
+                    ? 'gitcode.com/xxx/xxx'
+                    : `${provider}.com/xxx/xxx`}
                 </span>
                 )
               </p>

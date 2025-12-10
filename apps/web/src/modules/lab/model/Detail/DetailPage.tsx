@@ -77,6 +77,7 @@ const DetailPage = ({
           <span className="border-secondary relative flex h-[20px] w-[20px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-hover:bg-[#333333]">
             <Image
               src={loginBinds?.avatarUrl!}
+              referrerPolicy="no-referrer"
               unoptimized
               fill
               sizes="20px"
