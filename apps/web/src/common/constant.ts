@@ -14,7 +14,7 @@ export const oauthProvider = {
   },
   gitcode: {
     id: 'gitcode',
-    name: 'GitCode',
+    name: 'AtomGit',
   },
 };
 

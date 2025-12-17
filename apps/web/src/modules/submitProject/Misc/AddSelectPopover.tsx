@@ -49,7 +49,7 @@ const AddSelectPopover: React.FC<{
       : provider === 'gitee'
       ? 'Gitee'
       : provider === 'gitcode'
-      ? 'GitCode'
+      ? 'AtomGit'
       : 'GitHub';
 
   return (

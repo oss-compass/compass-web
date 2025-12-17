@@ -37,7 +37,7 @@ const Auth: React.FC = () => {
       case 'gitee':
         return 'Gitee';
       case 'gitcode':
-        return 'GitCode';
+        return 'AtomGit';
       default:
         return '';
     }
@@ -75,7 +75,7 @@ const Auth: React.FC = () => {
             <span className="text-sm text-gray-400">
               {user?.provider === 'gitee' ? 'Gitee' : ''}
               {user?.provider === 'github' ? 'GitHub' : ''}
-              {user?.provider === 'gitcode' ? 'GitCode' : ''}
+              {user?.provider === 'gitcode' ? 'AtomGit' : ''}
             </span>
           </div>
         </div>

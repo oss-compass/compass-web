@@ -23,7 +23,7 @@ const OAuthList = () => {
       icon: <SiGitee className="h-10 w-10 text-[#c71c27]" />,
     },
     {
-      name: 'GitCode',
+      name: 'AtomGit',
       id: 'gitcode',
       desc: t('setting:profile.can_be_used_to_submit_project_after_binding'),
       icon: (

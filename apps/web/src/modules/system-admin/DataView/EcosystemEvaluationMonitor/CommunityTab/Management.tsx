@@ -64,16 +64,16 @@ const CommunityManagement: React.FC = () => {
   // 将前端过滤器值映射到 API 参数
   const apiTimeType = useMemo(() => {
     if (updateTimeFilter === 'all') return undefined;
-    
+
     // 将中文选项值映射为 API 所需的数字参数
     const timeTypeMap: Record<string, number> = {
-      '1个月内': CommunityTimeType.ONE_MONTH,
-      '超过1个月': CommunityTimeType.ONE_MONTH,
-      '超过3个月': CommunityTimeType.THREE_MONTHS,
-      '超过半年': CommunityTimeType.SIX_MONTHS,
-      '超过1年': CommunityTimeType.TWELVE_MONTHS,
+      '1 个月内': CommunityTimeType.ONE_MONTH,
+      超过1个月: CommunityTimeType.ONE_MONTH,
+      超过3个月: CommunityTimeType.THREE_MONTHS,
+      超过半年: CommunityTimeType.SIX_MONTHS,
+      超过1年: CommunityTimeType.TWELVE_MONTHS,
     };
-    
+
     return timeTypeMap[updateTimeFilter];
   }, [updateTimeFilter]);
 
@@ -434,7 +434,7 @@ const CommunityManagement: React.FC = () => {
               <Option value="all">全部平台</Option>
               <Option value="GitHub">GitHub</Option>
               <Option value="Gitee">Gitee</Option>
-              <Option value="GitCode">GitCode</Option>
+              <Option value="GitCode">AtomGit</Option>
             </Select>
 
             <Select
@@ -496,7 +496,7 @@ const CommunityManagement: React.FC = () => {
         <div className="space-y-4">
           <div>
             <label className="mb-2 block text-sm font-medium">
-              选择时间类别:
+              选择时间类别：
             </label>
             <Radio.Group
               value={batchTimeCategory}
@@ -534,7 +534,7 @@ const CommunityManagement: React.FC = () => {
 
           <div>
             <label className="mb-2 block text-sm font-medium">
-              选择队列类型:
+              选择队列类型：
             </label>
             <Radio.Group
               value={batchQueueType}

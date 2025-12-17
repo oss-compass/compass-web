@@ -57,10 +57,10 @@ const SubmitProject: React.FC = () => {
         thirdPartyRepositories: repositories.thirdParty,
       };
 
-      // 模拟API调用
+      // 模拟 API 调用
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log('提交的项目数据:', submitData);
+      console.log('提交的项目数据：', submitData);
       message.success(t('submit_project.submit_success'));
       form.resetFields();
       setRepositories({ main: [], thirdParty: [] });
@@ -89,7 +89,7 @@ const SubmitProject: React.FC = () => {
             (item) => typeof item === 'string'
           );
         } else {
-          throw new Error('JSON格式不正确');
+          throw new Error('JSON 格式不正确');
         }
 
         setRepositories((prev) => ({
@@ -111,7 +111,7 @@ const SubmitProject: React.FC = () => {
     const text = batchInputText[type];
     if (!text.trim()) return;
 
-    // 按行分割，过滤空行和无效URL
+    // 按行分割，过滤空行和无效 URL
     const urls = text
       .split('\n')
       .map((line) => line.trim())
@@ -316,7 +316,7 @@ const SubmitProject: React.FC = () => {
               <div className="mb-4 rounded-lg bg-gray-50 p-4">
                 <div className="mb-2">
                   <Text type="secondary" className="text-sm">
-                    每行输入一个仓库地址，支持GitHub、GitCode、Gitee等平台
+                    每行输入一个仓库地址，支持 GitHub、Gitee、AtomGit 等平台
                   </Text>
                 </div>
                 <TextArea
