@@ -1,4 +1,4 @@
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS builder
 # # If your server node is in a special area, you can replace the apk source to speed up deployment. For example as follow:
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 RUN apk add --no-cache git libc6-compat
@@ -43,7 +43,7 @@ RUN yarn build
 # RUN npm run build
 
 # Production image, copy all the files and run next
-FROM node:16-alpine AS runner
+FROM node:18-alpine AS runner
 WORKDIR /oss-compass
 
 ENV NODE_ENV production
