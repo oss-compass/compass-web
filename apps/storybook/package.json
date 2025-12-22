@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@oss-compass/ui": "*",
-    "next": "15.5.9",
+    "next": "16.0.10",
     "react": "19.0.3",
     "react-dom": "19.0.3"
   },
