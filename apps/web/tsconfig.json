@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
-      "@oss-compass/graphql": ["../../packages/graphql/index"],
+      "@oss-compass/graphql": ["../../packages/graphql/src/index"],
       "@oss-compass/ui": ["../../packages/ui/src/index"],
       "@public/*": ["public/*"],
       "@common/*": ["src/common/*"],

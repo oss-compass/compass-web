@@ -9,6 +9,8 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
+    '^@oss-compass/graphql$': '<rootDir>/../../packages/graphql/src/index.ts',
+    '^@oss-compass/ui$': '<rootDir>/../../packages/ui/src/index.tsx',
     '^@common/(.*)$': '<rootDir>/src/common/$1',
     '^@modules/(.*)$': '<rootDir>/src/modules/$1',
     '^@components/(.*)$': '<rootDir>/src/common/components/$1',
