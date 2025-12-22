@@ -45,16 +45,20 @@ const FooterLinks = ({ dark = false }: FooterLinks) => {
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-4 px-6 pt-20 pb-16 md:grid-cols-2 md:flex-col ">
+    <div className="grid grid-cols-5 gap-4 px-6 pb-16 pt-20 md:grid-cols-2 md:flex-col ">
       <LogoSquare />
       {linkData.map((item) => {
         return (
-          <div className="mr-4 ml-4 mb-4 flex w-44 flex-col " key={item.title}>
+          <div className="mb-4 ml-4 mr-4 flex w-44 flex-col " key={item.title}>
             <h3 className="mb-4 text-sm font-bold">{item.title}</h3>
             {item.links.map((link) => {
               return (
-                <LinkX href={link.href} key={link.text} legacyBehavior>
-                  <a className="mb-2 text-sm text-gray-500">{link.text}</a>
+                <LinkX
+                  href={link.href}
+                  className="mb-2 text-sm text-gray-500"
+                  key={link.text}
+                >
+                  {link.text}
                 </LinkX>
               );
             })}

@@ -62,7 +62,7 @@ const Search: React.FC<SearchProps> = ({
         )}
       >
         <Trans
-          i18nKey="it_points_to_the_thing_you_want_most_in_open_source"
+          i18nKey={'it_points_to_the_thing_you_want_most_in_open_source' as any}
           ns="home"
           components={{
             br: <br />,

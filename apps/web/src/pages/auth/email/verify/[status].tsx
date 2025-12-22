@@ -63,7 +63,7 @@ const Content = ({ status }: { status: string }) => {
           <div className="leading-6 text-black">{desc}</div>
         </div>
       </div>
-      <div className="mt-5 mb-[56px] ml-[190px]">
+      <div className="mb-[56px] ml-[190px] mt-5 flex flex-col items-center justify-center rounded-md bg-white px-20 py-10 shadow-md">
         <Button
           size="lg"
           onClick={() => {

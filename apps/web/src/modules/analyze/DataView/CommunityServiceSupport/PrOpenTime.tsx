@@ -44,10 +44,10 @@ const PrOpenTime = () => {
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
 
-  const indicators = t('analyze:negative_indicators');
+  const indicators = t('analyze:negative_indicators') as string;
   const unit = t('analyze:unit_label', {
     unit: t('analyze:unit_day'),
-  });
+  } as any) as string;
 
   const {
     getOptions,
@@ -66,8 +66,8 @@ const PrOpenTime = () => {
     return {
       ...options,
       ...getYAxisWithUnit({
-        indicators,
-        unit,
+        indicators: indicators as string,
+        unit: unit as string,
         namePaddingLeft: i18n.language === 'zh' ? 0 : 35,
         result,
         scale: yAxisScale,

@@ -37,8 +37,8 @@ export interface InputRefProps {
 
 const CommentInput = forwardRef<InputRefProps, Props>(
   ({ showFooter = false, placeholder, loading, onSubmit, onCancel }, ref) => {
-    const boxRef = useRef<HTMLDivElement>();
-    const textAreaRef = useRef<HTMLTextAreaElement>();
+    const boxRef = useRef<HTMLDivElement>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState('');
     const [images, setImages] = useState<Image[]>([]);
     const { ref: previewRef, open: openPreview, close } = useImagePreview();
@@ -101,7 +101,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
     return (
       <div className="relative">
         <div
-          className="border-silver min-h-8 relative rounded-sm border text-sm"
+          className="border-silver relative min-h-8 rounded-sm border text-sm"
           ref={boxRef}
         >
           <TextareaAutosize
@@ -110,7 +110,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
             onChange={(event) => {
               setValue(event.target.value);
             }}
-            className="w-full resize-none  pt-1 pl-2 outline-0"
+            className="w-full resize-none  pl-2 pt-1 outline-0"
             placeholder={placeholder ? placeholder : t('lab:commit_enter')}
             onKeyDown={(event) => {
               if (loading) return;
@@ -156,7 +156,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
 
           {images.length > 0 ? (
             <div
-              className="grid grid-cols-4 gap-4 px-2 pt-4 pb-8"
+              className="grid grid-cols-4 gap-4 px-2 pb-8 pt-4"
               ref={previewRef}
             >
               {images.map((image) => {

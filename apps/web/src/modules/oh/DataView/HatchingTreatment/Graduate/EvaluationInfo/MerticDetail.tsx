@@ -199,7 +199,7 @@ const getAllText = (children) => {
     } else if (typeof children === 'string') {
       allText += children;
     } else if (React.isValidElement(children)) {
-      traverseChildren(children.props.children);
+      traverseChildren((children.props as any).children);
     }
   };
 

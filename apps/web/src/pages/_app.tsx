@@ -69,7 +69,7 @@ function MyApp({
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient} contextSharing>
+    <QueryClientProvider client={queryClient}>
       <Head>
         <title>OSS Compass</title>
         <meta charSet="utf-8" />

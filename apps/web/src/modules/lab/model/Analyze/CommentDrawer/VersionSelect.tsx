@@ -10,7 +10,7 @@ import { pageState, actions } from '../state';
 const VersionSelect = () => {
   const { t } = useTranslation();
   const snapshot = useSnapshot(pageState);
-  const popperRef = useRef<PopperRefProps>();
+  const popperRef = useRef<PopperRefProps>(null);
   const { data } = useLabModelDetail();
   const versions = data?.labModelDetail?.latestVersions;
 

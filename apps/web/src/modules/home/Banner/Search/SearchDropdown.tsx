@@ -85,7 +85,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
           hidden={activeTabKey === SEARCH_TYPES.DEVELOPER}
           content={
             <Trans
-              i18nKey="nothing_about_yet"
+              i18nKey={'nothing_about_yet' as any}
               ns="home"
               values={{
                 expr: formatKeywordDisplay(keyword),

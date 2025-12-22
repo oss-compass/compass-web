@@ -31,7 +31,7 @@ const Purpose = () => {
           title: t('academe:atom_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 <div className="">{t('academe:atom_desc')}</div>
               </li>
             </ul>
@@ -59,10 +59,10 @@ const Purpose = () => {
           title: t('academe:oss_selection_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:oss_selection_author')}
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:oss_selection_author2')}
               </li>
               <li className="ml-4 list-disc">
@@ -85,8 +85,8 @@ const Purpose = () => {
           title: t('academe:nju_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">{t('academe:nju_author')}</li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">{t('academe:nju_author')}</li>
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:nju_author2')}
               </li>
               <li className="ml-4 list-disc">
@@ -128,13 +128,13 @@ const Purpose = () => {
           title: t('academe:pku1_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4  mb-2 list-disc">
+              <li className="mb-2  ml-4 list-disc">
                 {t('academe:pku1_author')}
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:pku1_author2')}
               </li>
-              <li className="ml-4  mb-2 list-disc">
+              <li className="mb-2  ml-4 list-disc">
                 <div className="">{t('academe:pku1_desc1')}</div>
               </li>
               <li className="ml-4 list-disc">
@@ -169,10 +169,10 @@ const Purpose = () => {
           title: t('academe:nju4_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:nju4_author')}
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:nju4_author2')}
               </li>
               <li className="ml-4 list-disc">{t('academe:nju4_desc')}</li>
@@ -199,31 +199,13 @@ const Purpose = () => {
           title: t('academe:pku2_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:pku2_author')}
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:pku2_author2')}
               </li>
-              {/* <div className="ml-8 flex list-disc">
-                <Trans
-                  i18nKey="pku2_author"
-                  ns="academe"
-                  components={{
-                    br: <br />,
-                  }}
-                />
-              </div>
-              <div className="ml-8 mb-2 flex list-disc">
-                <Trans
-                  i18nKey="pku2_author2"
-                  ns="academe"
-                  components={{
-                    br: <br />,
-                  }}
-                />
-              </div> */}
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 <div className="">{t('academe:pku2_desc1')}</div>
               </li>
               <li className="ml-4 list-disc">
@@ -258,10 +240,10 @@ const Purpose = () => {
           title: t('academe:nju2_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:nju2_author')}
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:nju2_author2')}
               </li>
               <li className="ml-4 list-disc">
@@ -299,17 +281,17 @@ const Purpose = () => {
           title: t('academe:pku3_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:pku3_author')}
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:pku3_author2')}
               </li>
 
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 <div className="">{t('academe:pku3_desc1')}</div>
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:pku3_desc2')}
                 <a className="text-[#002fa7]" href={'https://licenserec.com'}>
                   https://licenserec.com
@@ -347,10 +329,10 @@ const Purpose = () => {
           title: t('academe:nju3_title'),
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:nju3_author')}
               </li>
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 {t('academe:nju3_author2')}
               </li>
               <li className="ml-4 list-disc">
@@ -398,7 +380,7 @@ const Purpose = () => {
           pngHeight: 40,
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 <div className="">{t('academe:ics_desc')}</div>
               </li>
             </ul>
@@ -420,7 +402,7 @@ const Purpose = () => {
           pngHeight: 50,
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 <div className="">{t('academe:oh_desc')}</div>
               </li>
             </ul>
@@ -451,7 +433,7 @@ const Purpose = () => {
           pngHeight: 50,
           desc: (
             <ul className="h-full w-full">
-              <li className="ml-4 mb-2 list-disc">
+              <li className="mb-2 ml-4 list-disc">
                 <div className="">{t('academe:deep_insight_desc')}</div>
               </li>
             </ul>
@@ -491,7 +473,7 @@ const Purpose = () => {
         <Modal open={open} onClose={() => setOpen(false)}>
           <div className="relative h-[560px] w-[1200px] border-2 border-black bg-white shadow outline-0">
             <div
-              className="absolute top-10 right-10 cursor-pointer p-2 "
+              className="absolute right-10 top-10 cursor-pointer p-2 "
               onClick={() => {
                 setOpen(false);
               }}

@@ -8,7 +8,7 @@ const Legend = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex h-full w-[440px] flex-col justify-center bg-[#eff1f1] py-6 px-4 text-xs lg:hidden">
+    <div className="flex h-full w-[440px] flex-col justify-center bg-[#eff1f1] px-4 py-6 text-xs lg:hidden">
       <div className="my-4">
         <div className="flex w-[155px] items-center gap-1 font-semibold">
           <Productivity />
@@ -57,7 +57,7 @@ const Legend = () => {
       </div>
       <div className="mt-2 flex h-8 w-[180px] cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90">
         <LinkX href="/docs/dimensions-define/">
-          <a>{t('common:more_about_the_evaluation_system')}</a>
+          {t('common:more_about_the_evaluation_system')}
         </LinkX>
       </div>
     </div>

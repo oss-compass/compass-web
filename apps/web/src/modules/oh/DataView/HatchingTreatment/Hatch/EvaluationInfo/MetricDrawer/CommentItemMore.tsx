@@ -25,7 +25,7 @@ const CommentItemMore = ({
 }) => {
   const { t } = useTranslation();
 
-  const popperRef = useRef<PopperRefProps>();
+  const popperRef = useRef<PopperRefProps>(null);
   const router = useRouter();
   const { currentUser } = useUserInfo();
 

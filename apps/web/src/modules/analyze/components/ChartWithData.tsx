@@ -86,13 +86,13 @@ const ChartWithData: React.FC<{
   let EmptyNode = null;
   if (isEmpty && !loading) {
     EmptyNode = (
-      <div className="absolute left-0 right-0  bottom-0 z-10 flex h-[350px] w-full flex-col items-center justify-center bg-[rgba(255,255,255,.8)]">
+      <div className="absolute bottom-0 left-0  right-0 z-10 flex h-[350px] w-full flex-col items-center justify-center bg-[rgba(255,255,255,.8)]">
         <p className="text-xs text-gray-400">
           {t('analyze:there_is_currently_no_data_in_the_chart')}
         </p>
         <p className="text-xs text-gray-400">
           <Trans
-            i18nKey="please_contact_us_if_you_have"
+            i18nKey={'please_contact_us_if_you_have' as any}
             ns="analyze"
             components={{
               l: (

@@ -33,14 +33,13 @@ const Header: React.FC<{
               <Logo color="white" />
             </Link>
 
-            <LinkX href="/docs/dimensions-define" legacyBehavior>
-              <a
-                className={
-                  'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
-                }
-              >
-                {t('common:header.docs')}
-              </a>
+            <LinkX
+              href="/docs/dimensions-define"
+              className={
+                'mx-4 flex-shrink-0 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'
+              }
+            >
+              {t('common:header.docs')}
             </LinkX>
             <AllDropdown />
             <CommunityDropdown />

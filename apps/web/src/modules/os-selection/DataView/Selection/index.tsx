@@ -51,7 +51,7 @@ const MainContent = () => {
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.tagText && (
-              <div className="absolute top-[18px] right-1.5 z-10 w-[120px] origin-center translate-x-[30%] -translate-y-[10%] rotate-45 transform overflow-hidden bg-gradient-to-br from-[#4A90E2] to-[#2ECC71] py-1 px-6 text-center text-xs font-bold text-white shadow-md">
+              <div className="absolute right-1.5 top-[18px] z-10 w-[120px] origin-center -translate-y-[10%] translate-x-[30%] rotate-45 transform overflow-hidden bg-gradient-to-br from-[#4A90E2] to-[#2ECC71] px-6 py-1 text-center text-xs font-bold text-white shadow-md">
                 {tab.tagText}
               </div>
             )}
@@ -59,7 +59,7 @@ const MainContent = () => {
               {React.cloneElement(tab.icon, {
                 className:
                   activeTab === tab.id ? 'text-white' : 'text-blue-500',
-              })}
+              } as any)}
             </div>
             <h3
               className={`mb-2 text-lg font-semibold ${
@@ -83,7 +83,7 @@ const MainContent = () => {
             activeTab === tab.id && (
               <div
                 key={`indicator-${tab.id}`}
-                className="pointer-events-none absolute left-0 -bottom-2 flex w-full justify-center"
+                className="pointer-events-none absolute -bottom-2 left-0 flex w-full justify-center"
                 style={{
                   left: `${
                     (100 / scenarioTabs.length) *

@@ -110,10 +110,11 @@ const CollectionFullCard = (props: { collection: Collection }) => {
           </div>
         </div>
       </div>
-      <Link href={`/collection${collection.slug}`} legacyBehavior>
-        <div className="mt-4 flex cursor-pointer justify-end text-xs hover:underline">
-          {t('collection:more_repositories')}
-        </div>
+      <Link
+        href={`/collection${collection.slug}`}
+        className="mt-4 flex cursor-pointer justify-end text-xs hover:underline"
+      >
+        {t('collection:more_repositories')}
       </Link>
     </div>
   );

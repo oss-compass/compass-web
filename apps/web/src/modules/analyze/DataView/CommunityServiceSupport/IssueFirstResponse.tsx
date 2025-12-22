@@ -40,10 +40,11 @@ const IssueFirstResponse = () => {
   const [tab, setTab] = useState<TabValue>('1');
   const tansOpts: TransOpt = chartTabs[tab];
 
-  const indicators = t('analyze:negative_indicators');
+  const indicators = t('analyze:negative_indicators') as string;
+  const unitDay = t('analyze:unit_day') as string;
   const unit = t('analyze:unit_label', {
-    unit: t('analyze:unit_day'),
-  });
+    unit: unitDay,
+  } as any) as string;
 
   const {
     getOptions,

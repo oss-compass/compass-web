@@ -6,3 +6,4 @@ export * from './misc';
 export * from './number';
 export * from './time';
 export * from './url';
+export * from './i18n';

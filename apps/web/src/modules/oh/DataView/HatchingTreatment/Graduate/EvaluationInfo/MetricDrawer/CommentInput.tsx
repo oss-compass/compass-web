@@ -47,9 +47,9 @@ const CommentInput = forwardRef<InputRefProps, Props>(
     ref
   ) => {
     const { t } = useTranslation();
-    const boxRef = useRef<HTMLDivElement>();
-    const textAreaRef = useRef<HTMLTextAreaElement>();
-    const [value, setValue] = useState(content);
+    const boxRef = useRef<HTMLDivElement>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const [value, setValue] = useState(content || '');
     const [images, setImages] = useState<Image[]>([]);
     // const { ref: previewRef, open: openPreview, close } = useImagePreview();
     const imagesLength = images.length;
@@ -108,7 +108,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
     return (
       <>
         <div
-          className="border-silver min-h-8 relative rounded-sm border text-sm"
+          className="border-silver relative min-h-8 rounded-sm border text-sm"
           ref={boxRef}
         >
           <TextareaAutosize
@@ -118,7 +118,7 @@ const CommentInput = forwardRef<InputRefProps, Props>(
               setValue(event.target.value);
             }}
             disabled={disabled}
-            className="w-full resize-none pt-1 pl-2 outline-0"
+            className="w-full resize-none pl-2 pt-1 outline-0"
             placeholder={placeholder ? placeholder : t('lab:commit_enter')}
             onKeyDown={(event) => {
               if (loading) return;

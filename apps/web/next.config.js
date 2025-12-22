@@ -15,19 +15,41 @@ const silent = !process.env.SENTRY_LOG_ENABLE;
 
 const nextConfig = {
   reactStrictMode: false,
-  transpilePackages: ['ahooks', '@oss-compass/graphql', '@oss-compass/ui'],
-  swcMinify: true,
+  transpilePackages: [
+    'ahooks',
+    '@oss-compass/graphql',
+    '@oss-compass/ui',
+    'i18next',
+    'react-i18next',
+    'next-i18next',
+  ],
   compress: false,
   output: 'standalone',
+  // 为 next-i18next 15.x 设置配置文件路径
+  env: {
+    NEXT_I18NEXT_CONFIG_PATH: path.resolve('./next-i18next.config.js'),
+  },
   sassOptions: {
     includePaths: [path.join(__dirname, 'src/styles')],
   },
   images: {
-    domains: [
-      'portrait.gitee.com',
-      'foruda.gitee.com',
-      'avatars.githubusercontent.com',
-      'compass.gitee.co',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'portrait.gitee.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'foruda.gitee.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'compass.gitee.co',
+      },
     ],
   },
   async rewrites() {
@@ -61,9 +83,6 @@ const nextConfig = {
       return process.env.NEXT_PUBLIC_GIT_COMMIT;
     }
     return execSync('git rev-parse HEAD').toString().trim();
-  },
-  experimental: {
-    scrollRestoration: true,
   },
 };
 

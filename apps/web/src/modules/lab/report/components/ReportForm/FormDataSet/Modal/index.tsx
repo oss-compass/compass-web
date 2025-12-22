@@ -78,14 +78,6 @@ const ModalSelect = ({
         <>
           <div className="text-secondary mb-2 text-sm">
             {t('lab:dataset_desc')}
-            {/* {t('lab:cant_find_a_suitable_dataset')}
-            <Trans
-              i18nKey="contact_us"
-              ns="common"
-              components={{
-                s: <LinkA href={'/docs/community/'} />,
-              }}
-            /> */}
           </div>
           <div className="flex h-[405px]">
             <Content />
@@ -108,7 +100,7 @@ const ModalSelect = ({
       return (
         <div className="text-secondary w-full text-center ">
           <Trans
-            i18nKey="cant_find_a_suitable_dataset"
+            i18nKey={'cant_find_a_suitable_dataset' as any}
             ns="lab"
             components={{
               s: <LinkA href={'/submit-your-project'} />,
@@ -147,7 +139,7 @@ const ModalSelect = ({
     <Modal open={open} onClose={() => onClose()}>
       <div className="relative h-[700px] w-[900px] border-2 border-black bg-white shadow outline-0 md:w-full">
         <div
-          className="absolute top-10 right-10 cursor-pointer p-2 "
+          className="absolute right-10 top-10 cursor-pointer p-2 "
           onClick={() => {
             onClose();
           }}
@@ -173,20 +165,10 @@ const ModalSelect = ({
 
           <div className="flex h-[440px] flex-col">{modalContent()}</div>
 
-          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9 text-sm">
-            {/* <div>
-              {t('lab:cant_find_a_suitable_dataset')}
-              <Trans
-                i18nKey="contact_us"
-                ns="common"
-                components={{
-                  s: <LinkA href={'/docs/community/'} />,
-                }}
-              />
-            </div> */}
+          <div className="border-silver absolute bottom-0 left-0 right-0 flex h-20 items-center justify-between border-t bg-white px-9 text-sm">
             <div className="text-center ">
               <Trans
-                i18nKey="cant_find_a_suitable_dataset"
+                i18nKey={'cant_find_a_suitable_dataset' as any}
                 ns="lab"
                 components={{
                   s: <LinkA href={'/submit-your-project'} />,

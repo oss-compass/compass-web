@@ -1,4 +1,4 @@
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next';
 import { FallbackProps } from 'react-error-boundary';
 
 export default function ErrorFallback({
@@ -16,8 +16,7 @@ export default function ErrorFallback({
 
           <h6 className="text-1xl mb-2 text-center font-bold text-gray-800 md:text-3xl">
             <Trans
-              i18nKey="error.oops"
-              ns="common"
+              i18nKey={'common:error.oops' as any}
               values={{ message: error.message }}
               components={{
                 s: <span className="text-red-500" />,

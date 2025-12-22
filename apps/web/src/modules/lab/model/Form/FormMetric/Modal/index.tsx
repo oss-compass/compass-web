@@ -157,7 +157,7 @@ const ModalSelect = ({
     <Modal open={open} onClose={() => onClose()}>
       <div className="relative h-[700px] w-[900px] border-2 border-black bg-white shadow outline-0">
         <div
-          className="absolute top-10 right-10 cursor-pointer p-2 "
+          className="absolute right-10 top-10 cursor-pointer p-2 "
           onClick={() => {
             onClose();
           }}
@@ -181,11 +181,11 @@ const ModalSelect = ({
 
           <div className="flex h-[440px]">{content()}</div>
 
-          <div className="border-silver absolute left-0 right-0 bottom-0 flex h-20 items-center justify-between border-t bg-white px-9 text-sm">
+          <div className="border-silver absolute bottom-0 left-0 right-0 flex h-20 items-center justify-between border-t bg-white px-9 text-sm">
             <div>
               {t('lab:cant_find_a_suitable_metric')}
               <Trans
-                i18nKey="contact_us"
+                i18nKey={'contact_us' as any}
                 ns="common"
                 components={{
                   s: <LinkA href={'/docs/community/'} />,

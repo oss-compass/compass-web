@@ -20,19 +20,18 @@ const borderTopClass = 'border-t border-white/20';
 const Blog = () => {
   const { t } = useTranslation();
   return (
-    <LinkX href="/blog" passHref legacyBehavior>
-      <a
-        className={classnames(
-          categoryClass,
-          borderBottomClass,
-          'hover:bg-[#333333]'
-        )}
-      >
-        <div className="mr-4 w-8">
-          <BlogLogo />
-        </div>
-        {t('common:header.news')}
-      </a>
+    <LinkX
+      href="/blog"
+      className={classnames(
+        categoryClass,
+        borderBottomClass,
+        'hover:bg-[#333333]'
+      )}
+    >
+      <div className="mr-4 w-8">
+        <BlogLogo />
+      </div>
+      {t('common:header.news')}
     </LinkX>
   );
 };
@@ -43,7 +42,7 @@ const MoreDropdown = () => {
 
   return (
     <div className="group relative flex h-full items-center transition">
-      <div className="flex cursor-pointer items-center justify-center py-3 px-7 group-hover:bg-[#333333] 2xl:px-4">
+      <div className="flex cursor-pointer items-center justify-center px-7 py-3 group-hover:bg-[#333333] 2xl:px-4">
         <a className={'font-medium text-white'}>{t('common:header.more')}</a>
         <AiFillCaretDown color="#fff" className="ml-2" />
       </div>

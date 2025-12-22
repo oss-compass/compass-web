@@ -38,10 +38,10 @@ const UpdatedSince = () => {
     summaryKey: 'summaryActivity.updatedSince',
   };
 
-  const indicators = t('analyze:negative_indicators');
+  const indicators = t('analyze:negative_indicators') as string;
   const unit = t('analyze:unit_label', {
     unit: t('analyze:unit_day'),
-  });
+  } as any) as string;
 
   const {
     getOptions,

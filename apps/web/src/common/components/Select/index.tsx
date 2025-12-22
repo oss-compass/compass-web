@@ -27,14 +27,18 @@ const Select: React.FC<
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
-        placeholder={placeholder}
         className={classnames(
           'daisy-select  h-12 w-full flex-1  border-2 border-black text-base outline-none'
         )}
       >
+        {placeholder && (
+          <option value="" disabled hidden>
+            {placeholder}
+          </option>
+        )}
         {children}
       </select>
-      <div className={classnames('absolute top-2 right-2 cursor-pointer p-2')}>
+      <div className={classnames('absolute right-2 top-2 cursor-pointer p-2')}>
         <AiFillCaretDown />
       </div>
     </div>

@@ -12,7 +12,7 @@ interface StyleProps {
 }
 
 export const Select = forwardRef(function Select<
-  OptionValue,
+  OptionValue extends {},
   Multiple extends boolean
 >(
   props: SelectProps<OptionValue, Multiple> & StyleProps,
@@ -46,17 +46,17 @@ export const Select = forwardRef(function Select<
             rootClassNames
           ),
         },
-        popper: { className: `${isDarkMode ? 'dark' : ''} z-10` },
+        popup: { className: `${isDarkMode ? 'dark' : ''} z-10` },
       }}
       {...restProps}
     >
       {children}
     </SelectBase>
   );
-}) as <OptionValue, Multiple extends boolean>(
+}) as <OptionValue extends {}, Multiple extends boolean>(
   props: SelectProps<OptionValue, Multiple> &
     React.RefAttributes<HTMLUListElement> &
     StyleProps
-) => JSX.Element;
+) => React.ReactElement;
 
 export * from './Options';

@@ -9,7 +9,7 @@ function NotFound() {
       </p>
       <Link
         href="/"
-        className="bg-black py-2 px-4 font-bold text-white hover:bg-gray-700"
+        className="bg-black px-4 py-2 font-bold text-white hover:bg-gray-700"
       >
         Go back to Home
       </Link>

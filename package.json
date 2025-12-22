@@ -30,5 +30,14 @@
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
+  },
+  "resolutions": {
+    "react": "19.0.3",
+    "react-dom": "19.0.3",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "i18next": "23.16.8",
+    "next-i18next": "^15.4.3",
+    "react-i18next": "^13.5.0"
   }
 }

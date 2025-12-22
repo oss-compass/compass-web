@@ -12,6 +12,7 @@ import useGetLineOption from '@modules/analyze/hooks/useGetLineOption';
 import { getYAxisWithUnit } from '@common/options';
 import { DataContainerResult } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
+import { toTransString } from '@common/utils';
 
 const BugIssueOpenTime = () => {
   const { t, i18n } = useTranslation();
@@ -40,10 +41,12 @@ const BugIssueOpenTime = () => {
   type TabValue = keyof typeof chartTabs;
   const tansOpts: TransOpt = chartTabs[tab];
 
-  const indicators = t('analyze:negative_indicators');
-  const unit = t('analyze:unit_label', {
-    unit: t('analyze:unit_day'),
-  });
+  const indicators = toTransString(t('analyze:negative_indicators'));
+  const unit = toTransString(
+    t('analyze:unit_label', {
+      unit: t('analyze:unit_day'),
+    } as any)
+  );
 
   const {
     getOptions,

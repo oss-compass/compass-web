@@ -74,8 +74,8 @@ const TrackingWrapper: React.FC<TrackingWrapperProps> = ({
 
   // 克隆子元素并添加点击事件处理
   const enhancedChild = cloneElement(children, {
-    onClick: handleClick(children.props.onClick),
-  });
+    onClick: handleClick((children.props as any).onClick),
+  } as any);
 
   return enhancedChild;
 };

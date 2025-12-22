@@ -47,7 +47,7 @@ const Content = () => {
           <div className="text-sm text-black">
             <>
               <Trans
-                i18nKey="you_are_here_because_you_have_been_invited"
+                i18nKey={'you_are_here_because_you_have_been_invited' as any}
                 ns="lab"
                 values={{ invitee: invitee, modelName: modelName }}
                 components={{

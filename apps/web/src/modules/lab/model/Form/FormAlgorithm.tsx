@@ -32,7 +32,7 @@ const FormAlgorithm = () => {
         </div>
         <div className="text-secondary pl-8">
           <Trans
-            i18nKey="algorithm_selection.default_desc"
+            i18nKey={'algorithm_selection.default_desc' as any}
             ns="lab"
             components={{
               s: (
@@ -72,7 +72,7 @@ const FormAlgorithm = () => {
                 height: 'auto',
               }}
             />
-            <p className="ml-6 text-xl  italic text-black md:mt-4 md:ml-0 md:text-base">
+            <p className="ml-6 text-xl  italic text-black md:ml-0 md:mt-4 md:text-base">
               (
               <i className="font-medium">
                 S<sub>𝑖 </sub>
@@ -105,9 +105,9 @@ const FormAlgorithm = () => {
       {/*  <div className=" text-secondary">算法介绍文案，设置度量指标的权重</div>*/}
       {/*</div>*/}
 
-      <div className="border border-[#D6B76B] bg-[#FFF6D5] py-3 px-4">
+      <div className="border border-[#D6B76B] bg-[#FFF6D5] px-4 py-3">
         <Trans
-          i18nKey="algorithm_selection.contact_us"
+          i18nKey={'algorithm_selection.contact_us' as any}
           ns="lab"
           components={{
             s: <LinkA href={'/docs/community/'} />,

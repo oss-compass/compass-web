@@ -10,16 +10,15 @@ const MenuItem: React.FC<
   PropsWithChildren<{ title: string; href: string; onClick?: () => void }>
 > = ({ title, href, children, onClick }) => {
   return (
-    <LinkX href={href} legacyBehavior>
-      <a
-        className="flex cursor-pointer items-center py-2 px-6 hover:bg-gray-200"
-        onClick={() => {
-          onClick?.();
-        }}
-      >
-        {children}
-        <h2 className="pl-2 font-semibold">{title}</h2>
-      </a>
+    <LinkX
+      href={href}
+      className="flex cursor-pointer items-center px-6 py-2 hover:bg-gray-200"
+      onClick={() => {
+        onClick?.();
+      }}
+    >
+      {children}
+      <h2 className="pl-2 font-semibold">{title}</h2>
     </LinkX>
   );
 };
@@ -112,7 +111,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
       >
         <div className="pt-14">
           <div
-            className="absolute top-2 right-2 cursor-pointer p-2"
+            className="absolute right-2 top-2 cursor-pointer p-2"
             onClick={() => toggle()}
           >
             <AiOutlineClose />

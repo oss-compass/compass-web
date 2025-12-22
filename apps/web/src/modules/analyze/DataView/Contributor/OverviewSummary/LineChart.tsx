@@ -31,7 +31,7 @@ const Empty = () => {
       </p>
       <p className="text-xs text-gray-400">
         <Trans
-          i18nKey="please_contact_us_if_you_have"
+          i18nKey={'please_contact_us_if_you_have' as any}
           ns="analyze"
           values={{
             e: t('analyze:contact_us'),
