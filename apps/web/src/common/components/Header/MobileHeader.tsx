@@ -34,7 +34,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
     },
     {
       title: t('common:header.docs'),
-      href: '/docs/dimensions-define',
+      href: '/docs/service-guide',
       icon: null,
     },
     {

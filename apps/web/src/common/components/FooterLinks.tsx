@@ -13,10 +13,10 @@ const FooterLinks = ({ dark = false }: FooterLinks) => {
     {
       title: t('common:footer.tutorial'),
       links: [
-        { text: t('common:footer.quick_start'), href: '/docs/quick-start' },
+        { text: t('common:footer.quick_start'), href: '/docs/service-guide' },
         {
           text: t('common:footer.dimensions_define'),
-          href: '/docs/dimensions-define',
+          href: '/docs/service-guide',
         },
       ],
     },

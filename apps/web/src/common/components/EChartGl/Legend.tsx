@@ -56,7 +56,7 @@ const Legend = () => {
         </div>
       </div>
       <div className="mt-2 flex h-8 w-[180px] cursor-pointer items-center justify-center bg-[#000000] px-3 text-sm text-white hover:bg-black/90">
-        <LinkX href="/docs/dimensions-define/">
+        <LinkX href="/docs/service-guide/ecosystem-evaluation/metrics-models">
           {t('common:more_about_the_evaluation_system')}
         </LinkX>
       </div>
