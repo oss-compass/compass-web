@@ -8,6 +8,7 @@ import { RiLineChartLine, RiBarChartLine } from 'react-icons/ri';
 import { AiOutlineSelect } from 'react-icons/ai';
 import { GoMirror } from 'react-icons/go';
 import { useUserInfo } from '@modules/auth';
+import LinkX from '../LinkX';
 
 const MoreDropdown = () => {
   const { t } = useTranslation();
@@ -24,6 +25,10 @@ const MoreDropdown = () => {
           link: '/os-situation',
           linkText: t('common:header.product_home'),
         },
+        {
+          link: '/docs/docs/service-guide/open-source-insights/',
+          linkText: t('common:header.service_guide'),
+        },
       ],
     },
     {
@@ -35,6 +40,10 @@ const MoreDropdown = () => {
           link: '/os-selection',
           linkText: t('common:header.product_home'),
         },
+        {
+          link: '/docs/docs/service-guide/software-selection',
+          linkText: t('common:header.service_guide'),
+        },
       ],
     },
     {
@@ -43,6 +52,10 @@ const MoreDropdown = () => {
       description: t('common:header.developer_influence_description'),
       linkItems: [
         { link: '/', linkText: t('common:header.home_input_experience') },
+        {
+          link: '/docs/docs/service-guide/developer-persona',
+          linkText: t('common:header.service_guide'),
+        },
       ],
     },
     {
@@ -55,6 +68,10 @@ const MoreDropdown = () => {
         {
           link: '/',
           linkText: t('common:header.home_input_experience'),
+        },
+        {
+          link: '/docs/quick-start',
+          linkText: t('common:header.service_guide'),
         },
       ],
     },
@@ -78,6 +95,10 @@ const MoreDropdown = () => {
           linkText: t('common:header.mirror_site_of_pku'),
           target: '_blank',
         },
+        {
+          link: '/docs/docs/service-guide/research-data-hub',
+          linkText: t('common:header.service_guide'),
+        },
       ],
     },
     {
@@ -88,6 +109,10 @@ const MoreDropdown = () => {
         {
           link: '/intelligent-analysis',
           linkText: t('common:header.product_home'),
+        },
+        {
+          link: '/docs/docs/service-guide/open-source-ecology',
+          linkText: t('common:header.service_guide'),
         },
       ],
     },
@@ -111,13 +136,13 @@ const MoreDropdown = () => {
 
   return (
     <div className="group relative flex h-full items-center transition">
-      <div className="flex cursor-pointer items-center justify-center py-3 px-7 group-hover:bg-[#333333] xl:mx-1 2xl:px-4">
+      <div className="flex cursor-pointer items-center justify-center px-7 py-3 group-hover:bg-[#333333] xl:mx-1 2xl:px-4">
         <a className={'font-medium text-white'}>
           {t('common:header.all_services')}
         </a>
         <AiFillCaretDown color="#fff" className="ml-2" />
       </div>
-      <div className="z-dropdown invisible fixed top-[82px] left-0 max-h-[calc(100%-80px)] w-[100vw] bg-black/95 opacity-0 transition-all duration-300 ease-in-out group-hover:visible group-hover:opacity-100">
+      <div className="z-dropdown invisible fixed left-0 top-[82px] max-h-[calc(100%-80px)] w-[100vw] bg-black/95 opacity-0 transition-all duration-300 ease-in-out group-hover:visible group-hover:opacity-100">
         <div className="mx-auto w-[1200px] pb-16 text-white md:w-full md:px-4 lg:w-full lg:px-10">
           <div className="mt-12 grid grid-cols-4 gap-8 md:grid-cols-1 md:gap-y-6 lg:grid-cols-3">
             {services.map((service, index) => (
@@ -129,19 +154,23 @@ const MoreDropdown = () => {
                       {service.title}
                     </Link>
                   </div>
-                  <div className="line-clamp-3 mb-3 text-xs text-[#c1c1c1]">
+                  <div className="mb-3 line-clamp-3 text-xs text-[#c1c1c1]">
                     {service.description}
                   </div>
                   <div className="flex flex-col gap-1 text-sm text-[#8ba5f9]">
-                    {service.linkItems.map((linkItem) => (
-                      <Link
-                        key={linkItem.link}
-                        href={linkItem.link}
-                        target={linkItem.target}
-                      >
-                        <div>{linkItem.linkText}</div>
-                      </Link>
-                    ))}
+                    {service.linkItems.map((linkItem) => {
+                      const isDocLink = linkItem.link?.includes('/docs/');
+                      const LinkComponent = isDocLink ? LinkX : Link;
+                      return (
+                        <LinkComponent
+                          key={linkItem.link}
+                          href={linkItem.link}
+                          target={linkItem.target}
+                        >
+                          <div>{linkItem.linkText}</div>
+                        </LinkComponent>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
