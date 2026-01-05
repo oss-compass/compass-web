@@ -7,6 +7,7 @@ import TechnicalCommittee from './30TechnicalCommittee';
 import OutreachCommittee from './40OutreachCommittee';
 import AssessmentModelWorkingGroup from './50AssessmentModelWorkingGroup';
 import SaaSWorkingGroup from './60SaaSWorkingGroup';
+import AIWorkingGroup from './55AIWorkingGroup';
 
 const About = () => {
   return (
@@ -20,6 +21,7 @@ const About = () => {
           <TechnicalCommittee />
           <OutreachCommittee />
           <AssessmentModelWorkingGroup />
+          <AIWorkingGroup />
           <SaaSWorkingGroup />
         </div>
       </div>
