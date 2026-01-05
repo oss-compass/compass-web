@@ -14,7 +14,9 @@ const RiskBadge = ({ shortCode, mertic }) => {
   const { key, 维度: dimension } = mertic;
   const { count, metricState } = useGetRisk(shortCode, key);
   const hasReject = useMemo(() => {
-    return metricState?.some((z) => z.state === -1);
+    return metricState
+      ?.filter((z) => z.memberType !== 0)
+      .some((z) => z.state === -1);
   }, [metricState]);
   const needClarification = useMemo(() => {
     return (
