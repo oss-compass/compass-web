@@ -34,7 +34,7 @@ const LinkItem: React.FC<LinkItemProps> = ({ item, active }) => {
     if (contentInfo.type === 'repository') {
       return (
         <>
-          <span className="mb-1 truncate text-xl font-medium">
+          <span className="mb-0.5 truncate text-base font-medium">
             {contentInfo.title}
           </span>
           <span className="flex items-center text-xs">
@@ -51,7 +51,7 @@ const LinkItem: React.FC<LinkItemProps> = ({ item, active }) => {
 
     return (
       <span className="flex items-center">
-        <span className="mb-1 truncate text-xl font-medium">
+        <span className="truncate text-base font-medium">
           {contentInfo.title}
         </span>
         <span className="ml-2 rounded-[10px] bg-[#FFF9F2] px-2 py-0.5 text-xs text-[#D98523]">

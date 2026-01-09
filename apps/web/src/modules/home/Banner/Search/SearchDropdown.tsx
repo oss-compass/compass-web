@@ -9,6 +9,8 @@ import {
   DropDownList,
   DropDownListDeveloper,
   SubmitYourProject,
+  LinkItem,
+  DeveloperItem,
 } from './components';
 
 /**
@@ -30,6 +32,10 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
 
   // 标签页配置
   const tabItems: TabItem[] = [
+    {
+      key: SEARCH_TYPES.ALL,
+      label: t('home:all'),
+    },
     {
       key: SEARCH_TYPES.REPOSITORY,
       label: t('home:repo_community'),
@@ -82,7 +88,10 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
       return (
         <SubmitYourProject
           noResult
-          hidden={activeTabKey === SEARCH_TYPES.DEVELOPER}
+          hidden={
+            activeTabKey === SEARCH_TYPES.DEVELOPER ||
+            activeTabKey === SEARCH_TYPES.ALL
+          }
           content={
             <Trans
               i18nKey={'nothing_about_yet' as any}
@@ -100,7 +109,55 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
     }
 
     // 有搜索结果状态
-    if (activeTabKey === SEARCH_TYPES.DEVELOPER) {
+    if (activeTabKey === SEARCH_TYPES.ALL) {
+      // ALL tab: 混合展示仓库和开发者，按类型分组
+      const repoItems = result!.filter((item) => item.type !== 'developer');
+      const developerItems = result!.filter(
+        (item) => item.type === 'developer'
+      );
+
+      return (
+        <>
+          {/* 仓库/社区分组 */}
+          {repoItems.length > 0 && (
+            <>
+              <div className="border-b border-gray-200 bg-gray-50 px-4 py-1.5 text-xs font-medium text-gray-600">
+                {t('home:repo_community')}
+              </div>
+              {repoItems.map((item, index) => (
+                <LinkItem
+                  key={`repo-${item.label}-${index}`}
+                  item={item}
+                  active={false}
+                />
+              ))}
+            </>
+          )}
+
+          {/* 开发者分组 */}
+          {developerItems.length > 0 && (
+            <>
+              <div className="border-y border-gray-200 bg-gray-50 px-4 py-1.5 text-xs font-medium text-gray-600">
+                {t('home:developer')}
+              </div>
+              {developerItems.map((item, index) => (
+                <DeveloperItem
+                  key={`dev-${item.label}-${index}`}
+                  item={item}
+                  active={false}
+                />
+              ))}
+            </>
+          )}
+
+          {/* 提交项目提示 */}
+          <SubmitYourProject
+            content={t('home:cant_find_the_right_option')}
+            className="border-t-2 border-black"
+          />
+        </>
+      );
+    } else if (activeTabKey === SEARCH_TYPES.DEVELOPER) {
       return <DropDownListDeveloper result={result!} />;
     } else {
       return <DropDownList result={result!} />;

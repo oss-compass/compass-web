@@ -10,7 +10,7 @@ const data = [
     intro: '华为 2012 实验室',
   },
   {
-    avatar: '/images/about/朱家顺.png',
+    avatar: '/images/about/朱家顺.jpg',
     name: '朱家顺',
     intro: '吉林大学计算机学院在读研究生',
   },

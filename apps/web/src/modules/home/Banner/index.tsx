@@ -8,9 +8,7 @@ import { SearchType } from './Search/types';
 
 const SectionBanner = () => {
   const [highlightSearch, setHighlightSearch] = useState(false);
-  const [searchType, setSearchType] = useState<SearchType>(
-    SEARCH_TYPES.REPOSITORY
-  );
+  const [searchType, setSearchType] = useState<SearchType>(SEARCH_TYPES.ALL);
 
   /**
    * 处理轮播图点击事件

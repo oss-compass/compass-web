@@ -6,8 +6,8 @@ import Members from './20Members';
 import TechnicalCommittee from './30TechnicalCommittee';
 import OutreachCommittee from './40OutreachCommittee';
 import AssessmentModelWorkingGroup from './50AssessmentModelWorkingGroup';
-import SaaSWorkingGroup from './60SaaSWorkingGroup';
 import AIWorkingGroup from './55AIWorkingGroup';
+import SaaSWorkingGroup from './60SaaSWorkingGroup';
 
 const About = () => {
   return (

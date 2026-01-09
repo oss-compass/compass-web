@@ -10,9 +10,9 @@ export type SearchResultItem = SearchQuery['fuzzySearch'][number];
 
 // 搜索类型枚举
 export enum SearchType {
-  ALL = '0',
-  DEVELOPER = '1',
   REPOSITORY = '2',
+  DEVELOPER = '1',
+  ALL = '3',
 }
 
 // 标签页配置项

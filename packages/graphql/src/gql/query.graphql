@@ -69,6 +69,7 @@ query search($keyword: String!, $level: String, $type: Int = 2) {
     status
     shortCode
     collections
+    type
   }
 }
 

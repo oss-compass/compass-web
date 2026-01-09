@@ -24,16 +24,16 @@ const DeveloperItem: React.FC<LinkItemProps> = ({ item, active }) => {
     <Link
       key={item.label}
       href={developerInfo.profileLink}
-      className={`flex min-h-[${MIN_HEIGHT.LINK_ITEM}] cursor-pointer items-center gap-4 px-4 py-3 text-xl hover:bg-gray-100`}
+      className="flex min-h-[48px] cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-100"
     >
       {/* 开发者头像 */}
-      <div className="h-8 w-8 overflow-hidden rounded-full border border-gray-100">
+      <div className="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full border border-gray-100">
         <ImageFallback
           src={developerInfo.avatarUrl}
           referrerPolicy="no-referrer"
           unoptimized
-          width={32}
-          height={32}
+          width={28}
+          height={28}
           style={{
             objectFit: 'cover',
           }}
@@ -43,7 +43,7 @@ const DeveloperItem: React.FC<LinkItemProps> = ({ item, active }) => {
       </div>
 
       {/* 开发者用户名 */}
-      <span className="mb-1 truncate text-xl font-medium">
+      <span className="truncate text-base font-medium">
         {developerInfo.username}
       </span>
     </Link>

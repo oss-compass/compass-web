@@ -7,13 +7,13 @@ import { SearchType } from '../types';
 
 // 搜索类型配置
 export const SEARCH_TYPES = {
-  ALL: SearchType.ALL,
-  DEVELOPER: SearchType.DEVELOPER,
   REPOSITORY: SearchType.REPOSITORY,
+  DEVELOPER: SearchType.DEVELOPER,
+  ALL: SearchType.ALL,
 } as const;
 
 // 默认搜索类型
-export const DEFAULT_SEARCH_TYPE = SEARCH_TYPES.REPOSITORY;
+export const DEFAULT_SEARCH_TYPE = SEARCH_TYPES.ALL;
 
 // 搜索防抖延迟时间（毫秒）
 export const SEARCH_DEBOUNCE_DELAY = 300;
@@ -51,7 +51,7 @@ export const STYLE_CLASSES = {
     'z-dropdown absolute left-0 right-0 top-[58px] border-2 border-black bg-white drop-shadow-xl md:top-[46px]',
   // 链接项样式
   LINK_ITEM_BASE:
-    'flex min-h-[66px] cursor-pointer items-center justify-between px-4 py-3 text-xl hover:bg-gray-100 md:py-2 md:px-2 md:text-base',
+    'flex min-h-[48px] cursor-pointer items-center justify-between px-4 py-2 text-base hover:bg-gray-100 md:py-1.5 md:px-2 md:text-sm',
 } as const;
 
 // 图标名称映射
@@ -64,5 +64,5 @@ export const ICON_NAMES = {
 export const MIN_HEIGHT = {
   SUBMIT_PROJECT_NORMAL: '48px',
   SUBMIT_PROJECT_NO_RESULT: '84px',
-  LINK_ITEM: '66px',
+  LINK_ITEM: '48px',
 } as const;
