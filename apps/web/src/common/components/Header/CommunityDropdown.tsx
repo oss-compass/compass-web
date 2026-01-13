@@ -59,7 +59,7 @@ const Discussion = () => {
           </div>
         </LinkX>
         <LinkX
-          href="/docs/community/meting/"
+          href="/docs/community/metting/"
           target="_blank"
           rel="noopener noreferrer"
           className={classnames(subItemClass)}
