@@ -45,11 +45,9 @@ export const MetricItemsCard = ({
     <Popover content={hasDisable ? t('lab:cannot_select_both') : ''}>
       <div
         className={classname(
-          'min-h-16 flex items-center justify-between border border-[#CCCCCC]  p-3',
+          'flex min-h-16 items-center justify-between border border-[#CCCCCC]  p-3',
           [
-            select
-              ? ['border-blue-600', 'border-2', 'bg-smoke']
-              : ['border', 'p-px'],
+            select ? ['border-blue-600', 'border-2', 'bg-smoke'] : ['border'],
             hasDisable ? ['cursor-not-allowed'] : ['cursor-pointer'],
           ]
         )}
