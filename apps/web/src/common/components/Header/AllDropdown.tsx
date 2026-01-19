@@ -110,10 +110,6 @@ const MoreDropdown = () => {
           link: '/intelligent-analysis',
           linkText: t('common:header.product_home'),
         },
-        {
-          link: '/docs/docs/service-guide/open-source-ecology',
-          linkText: t('common:header.service_guide'),
-        },
       ],
     },
     // 只有 roleLevel >= 2 时才显示智能分析服务
