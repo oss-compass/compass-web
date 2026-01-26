@@ -10589,10 +10589,10 @@ ip-address@^10.0.1:
   resolved "https://registry.yarnpkg.com/ip-address/-/ip-address-10.1.0.tgz#d8dcffb34d0e02eb241427444a6e23f5b0595aa4"
   integrity sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==
 
-ip@2.0.1, ip@^1.1.5:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/ip/-/ip-2.0.1.tgz#e8f3595d33a3ea66490204234b77636965307105"
-  integrity sha512-lJUL9imLTNi1ZfXT+DU6rBBdbiKGBuay9B6xGSPVjUeQwaH1RIGqef8RZkUtHioLmSNpPR5M4HVKJGm1j8FWVQ==
+ip@^1.1.5:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.9.tgz#8dfbcc99a754d07f425310b86a99546b1151e396"
+  integrity sha512-cyRxvOEpNHNtchU3Ln9KC/auJgup87llfQpQ+t5ghoC/UhL16SWzbueiCsdTnWmqAWl7LadfuwhlqmtOaqMHdQ==
 
 ipaddr.js@1.9.1:
   version "1.9.1"
@@ -16923,9 +16923,9 @@ vm-browserify@^1.1.2:
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
 vm2@^3.9.17:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.10.0.tgz#bd241fbf37fed0b7d0050e40ad08d7be6ba33d57"
-  integrity sha512-3ggF4Bs0cw4M7Rxn19/Cv3nJi04xrgHwt4uLto+zkcZocaKwP/nKP9wPx6ggN2X0DSXxOOIc63BV1jvES19wXQ==
+  version "3.10.3"
+  resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.10.3.tgz#451e5d6e74bc4ec9c95d3a4b378bb9e174a682fa"
+  integrity sha512-zJyUr2FPAj/jmnaHNPNX494wDvPzl3pnmmvxAqVJESQTd5wAju6n8nXiFVfCZXlCTRamR6N3lCJOdv6dM559mQ==
   dependencies:
     acorn "^8.14.1"
     acorn-walk "^8.3.4"
