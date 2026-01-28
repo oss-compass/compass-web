@@ -85,7 +85,7 @@ const LoginItems: React.FC = () => {
       </div>
 
       <div
-        className="mb-6 flex h-12 w-[400px] cursor-pointer items-center bg-[#fc6d26] pl-24 text-white hover:bg-[#e24329]"
+        className="mb-6 flex h-12 w-[400px] cursor-pointer items-center bg-[#FE7030] pl-24 text-white hover:bg-[#E5652B]"
         onClick={async () => {
           mutation.mutate(
             {},

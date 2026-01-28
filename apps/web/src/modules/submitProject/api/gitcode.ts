@@ -20,7 +20,7 @@ export async function getRepos({
     `https://api.gitcode.com/api/v5/users/${username}/repos`,
     {
       params: {
-        access_token: TOKEN,
+        // access_token: TOKEN,
         order_by: sort === 'updated' ? 'updated_at' : sort,
         page,
         per_page,
@@ -42,9 +42,9 @@ export async function getUserOrgs({
   return await axios.get(
     `https://api.gitcode.com/api/v5/users/${username}/orgs`,
     {
-      params: {
-        access_token: TOKEN,
-      },
+      // params: {
+      //   access_token: TOKEN,
+      // },
       headers: {
         Accept: 'application/json',
       },
@@ -61,7 +61,7 @@ export async function getOrgRepos({
 }: OrgParams): Promise<AxiosResponse<Repos[]>> {
   return await axios.get(`https://api.gitcode.com/api/v5/orgs/${org}/repos`, {
     params: {
-      access_token: TOKEN,
+      // access_token: TOKEN,
       order_by: sort === 'updated' ? 'updated_at' : sort,
       page,
       per_page,
