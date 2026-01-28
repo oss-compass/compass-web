@@ -8,6 +8,7 @@ import Slack from '@public/images/logos/slack.svg';
 import Wechat from '@public/images/logos/wechat.svg';
 import Github from '@public/images/logos/github.svg';
 import GiteeRed from '@public/images/logos/gitee-red.svg';
+import Gitcode from '@public/images/logos/gitcode-white.png';
 import BlogLogo from '@public/images/logos/blog.svg';
 import TencentMeeting from '@public/images/logos/tencentmeeting.svg';
 
@@ -116,6 +117,24 @@ const RepoLinks = () => {
             <p className="text-base">{t('common:community.gitee')}</p>
             <p className="text-sm text-white/50">
               {t('common:community.official_repository_on_gitee')}
+            </p>
+          </div>
+        </LinkX>
+        <LinkX
+          href="https://atomgit.com/oss-compass"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classnames(subItemClass)}
+        >
+          <div className="mr-4 w-8">
+            <Image src={Gitcode} alt="gitcode" width={32} height={32} />
+          </div>
+          <div>
+            <p className="text-base">AtomGit</p>
+            <p className="text-sm text-white/50">
+              {t('common:community.official_repository_on_atomgit', {
+                defaultValue: 'Official repository on AtomGit',
+              })}
             </p>
           </div>
         </LinkX>

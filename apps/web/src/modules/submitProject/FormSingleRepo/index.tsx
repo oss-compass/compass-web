@@ -141,7 +141,7 @@ const FormSingleRepo = () => {
                 {errors?.url.message} ( {t('submit_project:eg')}:
                 <span className="mx-2 font-semibold">
                   {provider === 'gitcode'
-                    ? 'gitcode.com/xxx/xxx'
+                    ? 'atomgit.com/xxx/xxx 或 gitcode.com/xxx/xxx'
                     : `${provider}.com/xxx/xxx`}
                 </span>
                 )
