@@ -4,12 +4,12 @@ import AuthRequire from '@modules/auth/AuthRequire';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
-import OsBoardDetail from '@modules/os-board/Dashboard/Detail';
+import OsBoardDetail from '@modules/os-board/Detail';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['os_board', 'analyze'])),
+      ...(await getLocalesFile(req.cookies, ['os_board', 'lab', 'analyze'])),
     },
   };
 };

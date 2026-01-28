@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Center from '@common/components/Layout/Center';
 import { Button } from '@oss-compass/ui';
 import Dialog from '@common/components/Dialog';
-import { actions } from '../state';
+import { actions } from './state';
 import DashboardForm, {
   DashboardFormRef,
   DashboardFormValues,

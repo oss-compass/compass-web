@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import classnames from 'classnames';
 
 interface OsBoardMetric {
   id: string;
@@ -16,6 +17,7 @@ interface DraggableMetricItemProps {
   onDragOver: (index: number) => void;
   onDragEnd: () => void;
   isDragging: boolean;
+  isNew?: boolean;
 }
 
 const DraggableMetricItem: React.FC<DraggableMetricItemProps> = ({
@@ -26,6 +28,7 @@ const DraggableMetricItem: React.FC<DraggableMetricItemProps> = ({
   onDragOver,
   onDragEnd,
   isDragging,
+  isNew,
 }) => {
   const { t } = useTranslation();
 
@@ -46,9 +49,11 @@ const DraggableMetricItem: React.FC<DraggableMetricItemProps> = ({
         onDragOver(index);
       }}
       onDragEnd={onDragEnd}
-      className={`flex items-center justify-between border bg-white px-3 py-2 ${
-        isDragging ? 'opacity-50' : ''
-      }`}
+      className={classnames(
+        'flex items-center justify-between border px-3 py-2',
+        isDragging ? 'opacity-50' : '',
+        isNew ? 'animate-highlight-new' : 'border-gray-200 bg-white'
+      )}
     >
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <div className="cursor-grab touch-none text-gray-400 hover:text-gray-600">
@@ -101,6 +106,22 @@ const DraggableMetricList: React.FC<DraggableMetricListProps> = ({
   const { t } = useTranslation();
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [newlyAddedIds, setNewlyAddedIds] = useState<string[]>([]);
+  const prevMetricIdsRef = React.useRef<string[]>(metricIds);
+
+  // 检测新增的指标
+  useEffect(() => {
+    const prevIds = prevMetricIdsRef.current;
+    const added = metricIds.filter((id) => !prevIds.includes(id));
+    if (added.length > 0) {
+      setNewlyAddedIds((prev) => [...prev, ...added]);
+      // 1.5秒后移除高亮
+      setTimeout(() => {
+        setNewlyAddedIds((prev) => prev.filter((id) => !added.includes(id)));
+      }, 1500);
+    }
+    prevMetricIdsRef.current = metricIds;
+  }, [metricIds]);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -155,6 +176,7 @@ const DraggableMetricList: React.FC<DraggableMetricListProps> = ({
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
           isDragging={draggedIndex === index}
+          isNew={newlyAddedIds.includes(metric.id)}
         />
       ))}
     </div>

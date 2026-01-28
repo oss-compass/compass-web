@@ -1,7 +1,13 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@oss-compass/ui';
-import type { OsBoardDashboardType } from '../../types';
+import classnames from 'classnames';
+import type { OsBoardDashboardType } from '../types';
 import ProjectSearchInput from './ProjectSearchInput';
 import { MetricSelectionModal, DraggableMetricList } from './MetricSelector';
 import ModelSelectionModal from './ModelSelector/ModelSelectionModal';
@@ -76,6 +82,17 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
       onSubmit,
       metricIds,
     });
+
+    const [newlyAddedModels, setNewlyAddedModels] = useState<string[]>([]);
+
+    useEffect(() => {
+      if (newlyAddedModels.length > 0) {
+        const timer = setTimeout(() => {
+          setNewlyAddedModels([]);
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    }, [newlyAddedModels]);
 
     useImperativeHandle(ref, () => ({
       submit: validateAndSubmit,
@@ -225,10 +242,17 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
                   const model = allModels.find((m) => m.id === modelId);
                   if (!model) return null;
 
+                  const isNew = newlyAddedModels.includes(modelId);
+
                   return (
                     <div
                       key={modelId}
-                      className="flex items-center justify-between border bg-white px-3 py-2"
+                      className={classnames(
+                        'flex items-center justify-between border px-3 py-2',
+                        isNew
+                          ? 'animate-highlight-new'
+                          : 'border-gray-200 bg-white'
+                      )}
                     >
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm font-medium">
@@ -286,6 +310,12 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
           onClose={() => setModelModalOpen(false)}
           selectedModelIds={selectedModels}
           onConfirm={(newModelIds) => {
+            const added = newModelIds.filter(
+              (id) => !selectedModels.includes(id)
+            );
+            if (added.length > 0) {
+              setNewlyAddedModels(added);
+            }
             setSelectedModels(newModelIds);
           }}
         />

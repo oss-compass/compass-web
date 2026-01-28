@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import Popper from '@mui/material/Popper';
 import DashboardDateRangePicker from './DashboardDateRangePicker';
-import type { OsBoardTimeRangePreset } from '../../types';
+import type { OsBoardTimeRangePreset } from '../types';
 
 export interface DashboardDatePickerProps {
   preset: OsBoardTimeRangePreset;

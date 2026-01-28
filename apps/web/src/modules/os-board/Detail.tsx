@@ -2,39 +2,24 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { useSnapshot } from 'valtio';
+import { GrClose } from 'react-icons/gr';
 import Dialog from '@common/components/Dialog';
-import { Button } from '@oss-compass/ui';
+import { Button, Modal } from '@oss-compass/ui';
 import {
   actions,
   buildReportText,
   evaluateDashboardAlerts,
   loadFromStorage,
   saveToStorage,
-} from '../state';
-import { osBoardState } from '../state';
-import type { OsBoardExportFormat } from '../types';
-import ProjectInput from './components/ProjectInput';
+} from './state';
+import { osBoardState } from './state';
+import type { OsBoardExportFormat, OsBoardTimeRangePreset } from './types';
 import DetailNav from './components/DetailNav';
 import MetricChartLayout from './components/MetricChartLayout';
 import AlertManageDialog from './components/AlertManageDialog';
-
-const LoadingUi = () => (
-  <div className="rounded-lg bg-white px-6 py-6 drop-shadow-sm">
-    <div className="flex-1 animate-pulse space-y-4">
-      <div className="h-6 rounded bg-slate-200"></div>
-      <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 h-6 rounded bg-slate-200"></div>
-        <div className="col-span-1 h-6 rounded bg-slate-200"></div>
-      </div>
-      <div className="h-6 rounded bg-slate-200"></div>
-      <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-1 h-6 rounded bg-slate-200"></div>
-        <div className="col-span-2 h-6 rounded bg-slate-200"></div>
-      </div>
-      <div className="h-6 rounded bg-slate-200"></div>
-    </div>
-  </div>
-);
+import UserManageDialog from './components/UserManageDialog';
+import DashboardForm, { DashboardFormValues } from './components/DashboardForm';
+import ProjectList from './components/ProjectList';
 
 const Detail = () => {
   const { t } = useTranslation();
@@ -46,15 +31,9 @@ const Detail = () => {
   const [exportOpen, setExportOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [alertManageOpen, setAlertManageOpen] = useState(false);
+  const [userManageOpen, setUserManageOpen] = useState(false);
 
-  const [editName, setEditName] = useState('');
-  const [editCompare, setEditCompare] = useState(false);
-  const [editPreset, setEditPreset] = useState<'7d' | '30d' | '90d' | '1y'>(
-    '30d'
-  );
-  const [editProjects, setEditProjects] = useState<string[]>([]);
-  const [editCompetitors, setEditCompetitors] = useState<string[]>([]);
-  const [editMetricIds, setEditMetricIds] = useState<string[]>([]);
+  const editFormRef = React.useRef<{ submit: () => void }>(null);
 
   useEffect(() => {
     loadFromStorage();
@@ -134,13 +113,22 @@ const Detail = () => {
   };
 
   const handleEdit = () => {
-    setEditName(dashboard.name);
-    setEditCompare(dashboard.config.compareMode);
-    setEditPreset(dashboard.config.timeRange.preset as any);
-    setEditProjects([...dashboard.config.projects]);
-    setEditCompetitors([...dashboard.config.competitorProjects]);
-    setEditMetricIds([...dashboard.config.metrics]);
     setEditOpen(true);
+  };
+
+  const handleEditSubmit = (values: DashboardFormValues) => {
+    actions.updateDashboard(dashboard.id, {
+      name: values.name,
+      config: {
+        ...dashboard.config,
+        compareMode: values.compareMode,
+        projects: values.projects,
+        competitorProjects: values.competitors,
+        metrics: values.metricIds,
+      },
+    });
+    saveToStorage();
+    setEditOpen(false);
   };
 
   const handleAlertManage = () => {
@@ -153,18 +141,41 @@ const Detail = () => {
     if (copy) router.push(`/os-board/dashboard/${copy.id}`);
   };
 
+  const handleTimeRangeChange = (
+    preset: OsBoardTimeRangePreset,
+    start?: string,
+    end?: string
+  ) => {
+    actions.updateDashboard(dashboard.id, {
+      config: {
+        ...dashboard.config,
+        timeRange: {
+          preset,
+          start,
+          end,
+        },
+      },
+    });
+    saveToStorage();
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col">
       <DetailNav
         dashboard={dashboard}
         onEdit={handleEdit}
         onAlertManage={handleAlertManage}
-        onExport={() => setExportOpen(true)}
-        onCopy={handleCopy}
+        onUserManage={() => setUserManageOpen(true)}
         onDelete={() => setConfirmDelete(true)}
+        onTimeRangeChange={handleTimeRangeChange}
       />
 
       <div className="relative flex-1 bg-[#f9f9f9] px-8 py-6 md:px-4">
+        <ProjectList
+          projects={dashboard.config.projects}
+          competitorProjects={dashboard.config.competitorProjects}
+          compareMode={dashboard.config.compareMode}
+        />
         <MetricChartLayout
           dashboard={dashboard}
           metrics={snap.metrics as any}
@@ -271,153 +282,68 @@ const Detail = () => {
         handleClose={() => setExportOpen(false)}
       />
 
-      <Dialog
-        open={editOpen}
-        dialogTitle={t('os_board:detail.edit')}
-        dialogContent={
-          <div className="w-[640px] space-y-4 md:w-[360px]">
-            <div>
-              <div className="mb-1 text-xs text-gray-500">
-                {t('os_board:create.basic.name')}
+      <Modal open={editOpen} onClose={() => setEditOpen(false)}>
+        <div className="relative h-[80vh] w-[80vw] border-2 border-black bg-white shadow outline-0">
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between border-b px-8 pb-4 pt-8">
+              <h2 className="text-2xl font-medium">
+                {t('os_board:detail.edit')}
+              </h2>
+              <div
+                className="cursor-pointer p-2 hover:bg-gray-100"
+                onClick={() => setEditOpen(false)}
+              >
+                <GrClose />
               </div>
-              <input
-                className="w-full rounded border px-3 py-2"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
+            </div>
+            <div className="flex-1 overflow-y-auto px-8 py-6">
+              <DashboardForm
+                ref={editFormRef}
+                mode="edit"
+                initialValues={{
+                  name: dashboard.name,
+                  type: dashboard.type,
+                  projects: [...dashboard.config.projects],
+                  competitors: [...dashboard.config.competitorProjects],
+                  compareMode: dashboard.config.compareMode,
+                  metricIds: [...dashboard.config.metrics],
+                }}
+                onSubmit={handleEditSubmit}
+                onCancel={() => setEditOpen(false)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
-              <div>
-                <div className="mb-1 text-xs text-gray-500">
-                  {t('os_board:create.basic.time_range')}
-                </div>
-                <select
-                  className="w-full rounded border px-3 py-2"
-                  value={editPreset}
-                  onChange={(e) => setEditPreset(e.target.value as any)}
-                >
-                  <option value="7d">{t('os_board:time.7d')}</option>
-                  <option value="30d">{t('os_board:time.30d')}</option>
-                  <option value="90d">{t('os_board:time.90d')}</option>
-                  <option value="1y">{t('os_board:time.1y')}</option>
-                </select>
-              </div>
-              <div>
-                <div className="mb-1 text-xs text-gray-500">
-                  {t('os_board:create.basic.compare')}
-                </div>
-                <label className="flex cursor-pointer items-center gap-2 pt-2">
-                  <input
-                    type="checkbox"
-                    checked={editCompare}
-                    onChange={(e) => setEditCompare(e.target.checked)}
-                  />
-                  <span>{t('os_board:create.basic.compare_help')}</span>
-                </label>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
-              <div>
-                <div className="mb-1 text-xs text-gray-500">
-                  {t('os_board:create.scope.projects')}
-                </div>
-                <ProjectInput
-                  values={editProjects}
-                  onChange={setEditProjects}
-                  placeholder={t('os_board:create.scope.projects_placeholder')}
-                />
-              </div>
-              <div>
-                <div className="mb-1 text-xs text-gray-500">
-                  {t('os_board:create.scope.competitors')}
-                </div>
-                <ProjectInput
-                  values={editCompetitors}
-                  onChange={setEditCompetitors}
-                  placeholder={t(
-                    'os_board:create.scope.competitors_placeholder'
-                  )}
-                  disabled={!editCompare}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="mb-1 text-xs text-gray-500">
-                {t('os_board:create.metrics.selected')}
-              </div>
-              <div className="grid grid-cols-3 gap-2 md:grid-cols-1">
-                {selectableMetrics.map((m) => {
-                  const selected = editMetricIds.includes(m.id);
-                  return (
-                    <button
-                      key={m.id}
-                      type="button"
-                      className={
-                        selected
-                          ? 'rounded border border-blue-600 bg-blue-50 px-2 py-2 text-left text-xs'
-                          : 'rounded border bg-white px-2 py-2 text-left text-xs'
-                      }
-                      onClick={() => {
-                        if (selected) {
-                          setEditMetricIds(
-                            editMetricIds.filter((x) => x !== m.id)
-                          );
-                          return;
-                        }
-                        setEditMetricIds([...editMetricIds, m.id]);
-                      }}
-                    >
-                      <div className="truncate font-semibold">{m.name}</div>
-                      <div className="truncate text-[10px] text-gray-500">
-                        {m.category}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="flex justify-end border-t px-8 py-4">
+              <Button
+                intent="text"
+                size="sm"
+                onClick={() => setEditOpen(false)}
+              >
+                {t('common:btn.cancel')}
+              </Button>
+              <Button
+                intent="primary"
+                size="sm"
+                className="ml-4"
+                onClick={() => {
+                  editFormRef.current?.submit();
+                }}
+              >
+                {t('common:btn.save')}
+              </Button>
             </div>
           </div>
-        }
-        dialogActions={
-          <div className="flex">
-            <Button intent="text" size="sm" onClick={() => setEditOpen(false)}>
-              {t('common:btn.cancel')}
-            </Button>
-            <Button
-              intent="primary"
-              size="sm"
-              className="ml-4"
-              disabled={
-                editName.trim().length === 0 ||
-                editProjects.length === 0 ||
-                editMetricIds.length === 0
-              }
-              onClick={() => {
-                actions.updateDashboard(dashboard.id, {
-                  name: editName.trim(),
-                  config: {
-                    ...dashboard.config,
-                    compareMode: editCompare,
-                    projects: editProjects,
-                    competitorProjects: editCompare ? editCompetitors : [],
-                    metrics: editMetricIds,
-                    timeRange: { preset: editPreset },
-                  },
-                });
-                saveToStorage();
-                setEditOpen(false);
-              }}
-            >
-              {t('common:btn.save')}
-            </Button>
-          </div>
-        }
-        handleClose={() => setEditOpen(false)}
-      />
+        </div>
+      </Modal>
 
       <AlertManageDialog
         open={alertManageOpen}
         onClose={() => setAlertManageOpen(false)}
+        dashboardId={dashboard.id}
+      />
+
+      <UserManageDialog
+        open={userManageOpen}
+        onClose={() => setUserManageOpen(false)}
         dashboardId={dashboard.id}
       />
     </div>

@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
-import OsBoardHome from '@modules/os-board/Dashboard/Home';
+import OsBoardHome from '@modules/os-board/Home';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {

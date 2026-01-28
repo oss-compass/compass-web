@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { GrClose } from 'react-icons/gr';
 import { Button, Modal, Switch } from '@oss-compass/ui';
 import classnames from 'classnames';
-import { osBoardState, actions, saveToStorage } from '../../state';
+import { osBoardState, actions, saveToStorage } from '../state';
 import type {
   OsBoardAlertRule,
   OsBoardAlertCondition,
   OsBoardAlertLevel,
   OsBoardMetric,
   OsBoardDerivedMetric,
-} from '../../types';
+} from '../types';
 
 // 阈值类型
 type ThresholdType = 'absolute' | 'percentage' | 'growth_rate';

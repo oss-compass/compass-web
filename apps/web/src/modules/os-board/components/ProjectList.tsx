@@ -15,27 +15,8 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
   name,
   isCompetitor,
 }) => {
-  // 'opensearch-project/OpenSearch' -> 'https://github.com/opensearch-project/OpenSearch'
-  // Currently compass default to GitHub if only name provided, but for accurate icon we need to know the source.
-  // Assuming the project name format in dashboard config might be just 'owner/repo' or full URL.
-  // If it is just 'owner/repo', getProvider might fail if it expects a full URL.
-  // Let's check how 'name' is formatted. Based on typical usage, it's likely 'owner/repo'.
-  // However, getProvider implementation:
-  // export function getProvider(url: string) {
-  //   if (!url) return '';
-  //   const result = url.match(/^https:\/\/(.+?)\..+$/i);
-  //   if (result && result.length >= 2) {
-  //     return result[1];
-  //   }
-  //   return url;
-  // }
-  // If name is 'owner/repo', getProvider returns 'owner/repo'.
-  // ProviderIcon expects 'github', 'gitee', etc.
-
-  // We need a helper to determine provider from project string or default to github if ambiguous/internal logic implies so.
-  // In many parts of the app, 'owner/repo' implies GitHub.
-
-  let host = 'github'; // Default to github for simple 'owner/repo'
+  const { t } = useTranslation();
+  let host = 'github';
   if (name.includes('gitee.com')) {
     host = 'gitee';
   } else if (name.includes('gitcode.com')) {
@@ -44,7 +25,6 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
     host = getProvider(name);
   }
 
-  const { t } = useTranslation();
   const projectUrl = name.startsWith('http')
     ? name
     : `https://github.com/${name}`;
@@ -53,10 +33,7 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
     <div className={classnames('flex items-center')}>
       <ProviderIcon provider={host} />
       <a
-        className={classnames(
-          'ml-1 mr-1 whitespace-nowrap font-semibold hover:underline',
-          isCompetitor ? 'text-orange-700' : 'text-blue-700'
-        )}
+        className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline"
         href={projectUrl}
         target="_blank"
         rel={'noreferrer'}
@@ -65,7 +42,7 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
       </a>
       {isCompetitor && (
         <span className="ml-1 rounded bg-orange-100 px-1.5 py-0.5 text-[10px] text-orange-600">
-          竞品
+          {t('os_board:create.scope.competitors')}
         </span>
       )}
     </div>

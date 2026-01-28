@@ -85,11 +85,11 @@ const ModelSelectionModal: React.FC<ModelSelectionModalProps> = ({
       <div
         key={model.id}
         className={classnames(
-          'flex min-h-16 items-center justify-between border border-[#CCCCCC] p-3',
+          'flex min-h-16 items-center justify-between border border-[#CCCCCC]',
           [
             isSelected
-              ? ['border-blue-600', 'border-2', 'bg-smoke']
-              : ['border'],
+              ? ['border-blue-600', 'border-2', 'bg-smoke', 'p-[11px]']
+              : ['border', 'p-3'],
             'cursor-pointer',
           ]
         )}

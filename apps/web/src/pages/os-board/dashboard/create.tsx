@@ -4,7 +4,7 @@ import AuthRequire from '@modules/auth/AuthRequire';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
-import OsBoardCreate from '@modules/os-board/Dashboard/Create';
+import OsBoardCreate from '@modules/os-board/Create';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {

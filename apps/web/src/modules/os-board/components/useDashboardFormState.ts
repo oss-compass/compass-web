@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import type { OsBoardDashboardType } from '../../types';
+import type { OsBoardDashboardType } from '../types';
 
 export interface DashboardFormValues {
   name: string;

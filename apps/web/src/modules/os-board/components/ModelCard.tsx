@@ -4,7 +4,7 @@ import EChartX from '@common/components/EChartX';
 import LoadInView from '@common/components/LoadInView';
 import { colors } from '@common/options';
 import { shortenAxisLabel } from '@common/utils/format';
-import { getMetricValue } from '../../state';
+import { getMetricValue } from '../state';
 
 interface ModelCardProps {
   dashboardId: string;

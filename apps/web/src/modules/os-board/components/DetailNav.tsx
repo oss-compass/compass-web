@@ -3,6 +3,8 @@ import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import StickyNav from '@common/components/Header/StickyNav';
 import { Button } from '@oss-compass/ui';
+import type { OsBoardTimeRangePreset } from '../types';
+import DashboardDatePicker from './DashboardDatePicker';
 
 interface DetailNavProps {
   dashboard: {
@@ -13,23 +15,29 @@ interface DetailNavProps {
       projects: readonly string[];
       timeRange: {
         preset: string;
+        start?: string;
+        end?: string;
       };
     };
   };
   onEdit: () => void;
   onAlertManage: () => void;
-  onExport: () => void;
-  onCopy: () => void;
+  onUserManage: () => void;
   onDelete: () => void;
+  onTimeRangeChange: (
+    preset: OsBoardTimeRangePreset,
+    start?: string,
+    end?: string
+  ) => void;
 }
 
 const DetailNav: React.FC<DetailNavProps> = ({
   dashboard,
   onEdit,
   onAlertManage,
-  onExport,
-  onCopy,
+  onUserManage,
   onDelete,
+  onTimeRangeChange,
 }) => {
   const { t } = useTranslation();
 
@@ -58,10 +66,6 @@ const DetailNav: React.FC<DetailNavProps> = ({
                 {t('os_board:detail.updated_at')}:{' '}
                 {dashboard.updatedAt.slice(0, 10)}
               </span>
-              <span>|</span>
-              <span>
-                {t(`os_board:time.${dashboard.config.timeRange.preset}`)}
-              </span>
             </div>
           </div>
           <div className="hidden items-center gap-1.5 md:hidden lg:flex">
@@ -82,17 +86,20 @@ const DetailNav: React.FC<DetailNavProps> = ({
         </div>
 
         <div className="flex flex-shrink-0 flex-wrap items-center gap-2">
+          <DashboardDatePicker
+            preset={dashboard.config.timeRange.preset as OsBoardTimeRangePreset}
+            start={dashboard.config.timeRange.start}
+            end={dashboard.config.timeRange.end}
+            onChange={onTimeRangeChange}
+          />
           <Button size="sm" onClick={onEdit}>
             {t('common:btn.edit')}
           </Button>
           <Button size="sm" onClick={onAlertManage}>
             {t('os_board:detail.alerts_manage')}
           </Button>
-          <Button size="sm" intent="text" onClick={onExport}>
-            {t('os_board:detail.export_title')}
-          </Button>
-          <Button size="sm" intent="text" onClick={onCopy}>
-            {t('os_board:detail.copy')}
+          <Button size="sm" intent="text" onClick={onUserManage}>
+            {t('lab:user_management')}
           </Button>
           <Button size="sm" intent="text" onClick={onDelete}>
             {t('common:btn.delete')}

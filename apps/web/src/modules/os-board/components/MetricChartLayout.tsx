@@ -7,7 +7,7 @@ import type {
   OsBoardMetric,
   OsBoardDerivedMetric,
   OsBoardDashboard,
-} from '../../types';
+} from '../types';
 
 interface MetricChartLayoutProps {
   dashboard: {

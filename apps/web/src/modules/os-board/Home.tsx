@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSnapshot } from 'valtio';
 import Center from '@common/components/Layout/Center';
 import { Button } from '@oss-compass/ui';
-import { osBoardState, loadFromStorage } from '../state';
+import { osBoardState, loadFromStorage } from './state';
 import { formatToNow } from '@common/utils/time';
 import { METRIC_I18N_MAP } from './config/modelMetrics';
 import Banner from './Banner';

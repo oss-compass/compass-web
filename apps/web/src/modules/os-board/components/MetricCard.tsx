@@ -5,8 +5,8 @@ import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import { colors } from '@common/options';
 import { shortenAxisLabel } from '@common/utils/format';
-import type { OsBoardMetric, OsBoardDerivedMetric } from '../../types';
-import { getMetricValue } from '../../state';
+import type { OsBoardMetric, OsBoardDerivedMetric } from '../types';
+import { getMetricValue } from '../state';
 import AlertManageDialog from './AlertManageDialog';
 
 interface MetricCardProps {

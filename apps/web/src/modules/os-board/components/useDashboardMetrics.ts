@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-hot-toast';
 import { useSnapshot } from 'valtio';
 import { useMetricSetListQuery } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
-import { osBoardState } from '../../state';
+import { osBoardState } from '../state';
 import { MODEL_METRICS_MAP } from '../config/modelMetrics';
 import {
   useCollaborationDevelopmentIndex,
@@ -23,6 +25,7 @@ interface DashboardMetricsHookProps {
 export const useDashboardMetrics = ({
   initialValues,
 }: DashboardMetricsHookProps) => {
+  const { t } = useTranslation();
   const snap = useSnapshot(osBoardState);
 
   const [metricIds, setMetricIds] = useState<string[]>([]);
@@ -181,11 +184,24 @@ export const useDashboardMetrics = ({
   };
 
   const handleDelete = (id: string) => {
+    // 检查是否属于某个已选模型
+    const belongingModelId = selectedModels.find((modelId) =>
+      MODEL_METRICS_MAP[modelId]?.includes(id)
+    );
+
+    if (belongingModelId) {
+      const model = allModels.find((m) => m.id === belongingModelId);
+      const modelName = model?.name || belongingModelId;
+      toast.error(
+        t('os_board:create.metrics.cannot_delete_model_metric', { modelName })
+      );
+      return;
+    }
+
     // 删除指标时，检查是否是手动添加的
     if (manualMetricIds.includes(id)) {
       setManualMetricIds(manualMetricIds.filter((x) => x !== id));
     }
-    // 如果是模型带来的指标，不允许删除，需要删除模型
   };
 
   return {

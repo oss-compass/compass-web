@@ -30,7 +30,7 @@ const Banner = ({ className }: { className?: string }) => {
         <div className="mt-2 max-w-[600px] text-sm text-[#876E35]">
           {t('os_board:banner.description')}
         </div>
-        <div className="mt-6 flex gap-4">
+        {/* <div className="mt-6 flex gap-4">
           <div
             className="h-8 w-40 cursor-pointer bg-gradient-to-r from-[#F1B600] to-[#854700] text-center leading-8 text-[#fff]"
             onClick={() => {
@@ -39,7 +39,7 @@ const Banner = ({ className }: { className?: string }) => {
           >
             {t('os_board:banner.create_dashboard')}
           </div>
-        </div>
+        </div> */}
       </Center>
     </div>
   );
