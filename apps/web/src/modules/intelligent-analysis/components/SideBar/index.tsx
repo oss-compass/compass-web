@@ -24,16 +24,16 @@ const SideBar: React.FC = () => {
       icon: <DashboardOutlined />,
       label: t('sidebar.overview'),
     },
-    {
-      key: 'submit-project',
-      icon: <PlusOutlined />,
-      label: t('sidebar.submit_project'),
-    },
-    {
-      key: 'my-submissions',
-      icon: <FileTextOutlined />,
-      label: t('sidebar.my_submissions'),
-    },
+    // {
+    //   key: 'submit-project',
+    //   icon: <PlusOutlined />,
+    //   label: t('sidebar.submit_project'),
+    // },
+    // {
+    //   key: 'my-submissions',
+    //   icon: <FileTextOutlined />,
+    //   label: t('sidebar.my_submissions'),
+    // },
   ];
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
