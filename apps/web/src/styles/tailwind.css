@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  @keyframes highlight-new-item {
+    0% {
+      background-color: #eff6ff; /* blue-50 */
+      border-color: #3b82f6; /* blue-500 */
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+      transform: scale(1.01);
+    }
+    40% {
+      transform: scale(1);
+      border-color: #93c5fd; /* blue-300 */
+    }
+    100% {
+      background-color: white;
+      border-color: #e5e7eb; /* gray-200 */
+      box-shadow: none;
+      transform: scale(1);
+    }
+  }
+
+  .animate-highlight-new {
+    animation: highlight-new-item 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+}
