@@ -132,9 +132,7 @@ const RepoLinks = () => {
           <div>
             <p className="text-base">AtomGit</p>
             <p className="text-sm text-white/50">
-              {t('common:community.official_repository_on_atomgit', {
-                defaultValue: 'Official repository on AtomGit',
-              })}
+              {t('common:community.official_repository_on_atomgit')}
             </p>
           </div>
         </LinkX>
