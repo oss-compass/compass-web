@@ -29,6 +29,8 @@ export const useDashboardMetrics = ({
   const snap = useSnapshot(osBoardState);
 
   const [metricIds, setMetricIds] = useState<string[]>([]);
+  // 记录隐藏的指标（用于后端标记）
+  const [hiddenMetricIds, setHiddenMetricIds] = useState<string[]>([]);
   // 记录手动添加的指标（非模型带来的）
   // In edit mode, initial metrics are considered manual since we don't store model info
   const [manualMetricIds, setManualMetricIds] = useState<string[]>(
@@ -204,8 +206,16 @@ export const useDashboardMetrics = ({
     }
   };
 
+  const handleHide = (id: string) => {
+    // 隐藏指标：切换隐藏状态，用于后端标记
+    setHiddenMetricIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
   return {
     metricIds,
+    hiddenMetricIds,
     manualMetricIds,
     setManualMetricIds,
     metricModalOpen,
@@ -218,5 +228,6 @@ export const useDashboardMetrics = ({
     selectableMetrics,
     handleReorder,
     handleDelete,
+    handleHide,
   };
 };

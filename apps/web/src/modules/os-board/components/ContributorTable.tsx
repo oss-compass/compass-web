@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Select } from 'antd';
+import { Tabs } from 'antd';
+import { IoPeopleCircle, IoPersonCircle } from 'react-icons/io5';
+import { SiGitee, SiGithub } from 'react-icons/si';
+import Image from 'next/image';
 import BaseCard from '@common/components/BaseCard';
 import MyTable from '@common/components/Table';
 import type { ColumnsType } from 'antd/es/table';
@@ -8,6 +11,7 @@ import type { ColumnsType } from 'antd/es/table';
 interface ContributorTableProps {
   dashboardId: string;
   projects: readonly string[];
+  competitorProjects?: readonly string[];
 }
 
 interface DomainItem {
@@ -138,26 +142,227 @@ const generateMockContributors = (
   return contributors.sort((a, b) => b.contribution - a.contribution);
 };
 
+// 获取平台图标
+const getIcons = (type: string) => {
+  if (!type) {
+    return <IoPeopleCircle />;
+  }
+  switch (type) {
+    case 'github':
+      return <SiGithub color="#171516" />;
+    case 'gitee':
+      return <SiGitee color="#c71c27" className="mr-0" />;
+    case 'gitcode':
+      return (
+        <Image
+          src="/images/logos/gitcode.png"
+          alt="gitcode"
+          width={16}
+          height={16}
+        />
+      );
+    default:
+      return <IoPeopleCircle />;
+  }
+};
+
+// 获取 Top 用户显示
+const getTopUser = (type: string, name: string) => {
+  let url: string | null = null;
+  let userIcon = null;
+  if (!name) {
+    userIcon = <IoPersonCircle />;
+  } else {
+    switch (type) {
+      case 'github':
+        url = 'https://github.com/' + name;
+        userIcon = (
+          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100 p-0">
+            <Image
+              src={'https://github.com/' + name + '.png'}
+              onError={(e) => (e.currentTarget.src = '/images/github.png')}
+              unoptimized
+              fill={true}
+              style={{ objectFit: 'cover' }}
+              alt="icon"
+              placeholder="blur"
+              blurDataURL="/images/github.png"
+            />
+          </div>
+        );
+        break;
+      case 'gitee':
+        url = 'https://gitee.com/' + name;
+        userIcon = (
+          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
+            <Image
+              src={'https://gitee.com/' + name + '.png'}
+              onError={(e) =>
+                (e.currentTarget.src = '/images/logos/gitee-red.svg')
+              }
+              unoptimized
+              fill={true}
+              alt="icon"
+              placeholder="blur"
+              blurDataURL="/images/logos/gitee-red.svg"
+            />
+          </div>
+        );
+        break;
+      case 'gitcode':
+        url = 'https://gitcode.com/' + name;
+        userIcon = (
+          <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
+            <Image
+              src={'https://gitcode.com/' + name + '.png'}
+              onError={(e) =>
+                (e.currentTarget.src = '/images/logos/gitcode.png')
+              }
+              unoptimized
+              fill={true}
+              alt="icon"
+              placeholder="blur"
+              blurDataURL="/images/logos/gitcode.png"
+            />
+          </div>
+        );
+        break;
+      default:
+        userIcon = <IoPersonCircle />;
+        break;
+    }
+  }
+
+  return (
+    <>
+      <div className="mr-2 text-[#ccc]">{userIcon}</div>
+      <div className="line-clamp-1">
+        {url ? (
+          <a
+            className="whitespace-nowrap hover:text-[black] hover:underline"
+            href={url}
+            target="_blank"
+            rel={'noreferrer'}
+          >
+            {name}
+          </a>
+        ) : (
+          name || '/'
+        )}
+      </div>
+    </>
+  );
+};
+
 const ContributorTable: React.FC<ContributorTableProps> = ({
   dashboardId,
   projects,
+  competitorProjects = [],
 }) => {
   const { t } = useTranslation();
   const [selectedProject, setSelectedProject] = useState<string>(
     projects[0] || ''
   );
 
-  const projectOptions = useMemo(() => {
-    return projects.map((project) => ({
-      value: project,
-      label: project.replace(/^github:/, ''),
-    }));
-  }, [projects]);
-
   const tableData = useMemo(() => {
     if (!selectedProject) return [];
     return generateMockContributors(dashboardId, selectedProject);
   }, [dashboardId, selectedProject]);
+
+  // 根据选中的项目生成测试统计数据
+  const statsData = useMemo(() => {
+    if (!selectedProject) return null;
+    const seed = hashSeed(`${dashboardId}-${selectedProject}-stats`);
+    const platform = selectedProject.includes('gitee')
+      ? 'gitee'
+      : selectedProject.includes('gitcode')
+      ? 'gitcode'
+      : 'github';
+    const topContributorName =
+      tableData[0]?.contributor || selectedProject.split('/').pop() || 'test';
+
+    return {
+      contributorAllCount: 80 + (seed % 100),
+      orgAllCount: 5 + (seed % 20),
+      highestContributionContributor: {
+        name: topContributorName,
+        origin: platform,
+      },
+      highestContributionOrganization: {
+        name: tableData[0]?.organization || 'OSS Compass',
+        origin: platform,
+      },
+    };
+  }, [dashboardId, selectedProject, tableData]);
+
+  // 获取项目平台类型
+  const getProjectPlatform = (project: string) => {
+    if (project.includes('gitee')) return 'gitee';
+    if (project.includes('gitcode')) return 'gitcode';
+    return 'github';
+  };
+
+  // 获取项目显示名称
+  const getProjectDisplayName = (project: string) => {
+    return project.replace(
+      /^(github:|https?:\/\/(github|gitee|gitcode)\.com\/)/,
+      ''
+    );
+  };
+
+  // 项目 Tab 配置
+  const tabItems = useMemo(() => {
+    const mainItems = projects.map((project) => {
+      const platform = getProjectPlatform(project);
+      const displayName = getProjectDisplayName(project);
+      return {
+        key: project,
+        label: (
+          <div className="flex items-center gap-1.5">
+            {platform === 'github' && <SiGithub color="#171516" size={14} />}
+            {platform === 'gitee' && <SiGitee color="#c71c27" size={14} />}
+            {platform === 'gitcode' && (
+              <Image
+                src="/images/logos/gitcode.png"
+                alt="gitcode"
+                width={14}
+                height={14}
+              />
+            )}
+            <span>{displayName}</span>
+          </div>
+        ),
+      };
+    });
+
+    const competitorItems = competitorProjects.map((project) => {
+      const platform = getProjectPlatform(project);
+      const displayName = getProjectDisplayName(project);
+      return {
+        key: project,
+        label: (
+          <div className="flex items-center gap-1.5">
+            {platform === 'github' && <SiGithub color="#171516" size={14} />}
+            {platform === 'gitee' && <SiGitee color="#c71c27" size={14} />}
+            {platform === 'gitcode' && (
+              <Image
+                src="/images/logos/gitcode.png"
+                alt="gitcode"
+                width={14}
+                height={14}
+              />
+            )}
+            <span>{displayName}</span>
+            <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] text-orange-600">
+              {t('os_board:detail.competitors')}
+            </span>
+          </div>
+        ),
+      };
+    });
+
+    return [...mainItems, ...competitorItems];
+  }, [projects, competitorProjects, t]);
 
   const columns: ColumnsType<ContributorRecord> = [
     {
@@ -233,27 +438,99 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     <BaseCard
       id="contributor_table"
       title={String(t('os_board:detail.contributor_table'))}
-      headRight={
-        <Select
-          value={selectedProject}
-          onChange={setSelectedProject}
-          options={projectOptions}
-          style={{ minWidth: 200 }}
-        />
-      }
       bodyClass=""
     >
-      <MyTable
-        columns={columns}
-        dataSource={tableData}
-        rowKey="id"
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showTotal: (total) => t('analyze:total_people', { total }),
-        }}
-        scroll={{ x: 'max-content' }}
+      {/* 项目切换 Tabs */}
+      <Tabs
+        activeKey={selectedProject}
+        onChange={setSelectedProject}
+        items={tabItems}
+        className="mb-4 [&_.ant-tabs-nav]:mb-0"
       />
+
+      {/* 贡献者统计卡片 */}
+      <div className="mb-4 grid grid-cols-4 gap-4 md:grid-cols-2">
+        {/* 贡献者数量 */}
+        <div className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+          <div className="flex items-center text-xl font-medium">
+            <div className="mr-2 text-[#3A5BEF]">
+              <IoPersonCircle />
+            </div>
+            <div className="line-clamp-1">
+              {statsData?.contributorAllCount || '-'}
+            </div>
+          </div>
+          <div className="mt-1 text-sm text-[#585858]">
+            {t('os_board:detail.contributor_count')}
+          </div>
+        </div>
+
+        {/* Top 贡献者 */}
+        <div className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+          <div className="flex items-center text-xl font-medium">
+            {statsData?.highestContributionContributor?.name ? (
+              getTopUser(
+                statsData.highestContributionContributor.origin || '',
+                statsData.highestContributionContributor.name || ''
+              )
+            ) : (
+              <>
+                <div className="mr-2 text-[#3A5BEF]">
+                  <IoPersonCircle />
+                </div>
+                <div className="line-clamp-1">-</div>
+              </>
+            )}
+          </div>
+          <div className="mt-1 text-sm text-[#585858]">
+            {t('os_board:detail.top_contributor')}
+          </div>
+        </div>
+
+        {/* 贡献组织数量 */}
+        <div className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+          <div className="flex items-center text-xl font-medium">
+            <div className="mr-2 text-[#3A5BEF]">
+              <IoPeopleCircle />
+            </div>
+            <div className="line-clamp-1">{statsData?.orgAllCount || '-'}</div>
+          </div>
+          <div className="mt-1 text-sm text-[#585858]">
+            {t('os_board:detail.org_count')}
+          </div>
+        </div>
+
+        {/* Top 贡献组织 */}
+        <div className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+          <div className="flex items-center text-xl font-medium">
+            <div className="mr-2 text-[#3A5BEF]">
+              {getIcons(
+                statsData?.highestContributionOrganization?.origin || ''
+              )}
+            </div>
+            <div className="line-clamp-1">
+              {statsData?.highestContributionOrganization?.name || '-'}
+            </div>
+          </div>
+          <div className="mt-1 text-sm text-[#585858]">
+            {t('os_board:detail.top_contributing_org')}
+          </div>
+        </div>
+      </div>
+
+      <div className="h-[540px]">
+        <MyTable
+          columns={columns}
+          dataSource={tableData}
+          rowKey="id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => t('analyze:total_people', { total }),
+          }}
+          scroll={{ x: 'max-content', y: 500 }}
+        />
+      </div>
     </BaseCard>
   );
 };

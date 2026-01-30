@@ -61,12 +61,12 @@ const MoreDropdown = () => {
           >
             {t('common:header.lab')}
           </Link>
-          <Link
+          {/* <Link
             href="/os-board"
             className={'mx-4 px-2.5 font-medium text-white xl:mx-1 2xl:mx-2'}
           >
             {t('common:header.os_board')}
-          </Link>
+          </Link> */}
           {roleLevel >= 1 && (
             <Link
               href="/oh"

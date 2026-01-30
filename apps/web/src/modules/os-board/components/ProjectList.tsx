@@ -42,7 +42,7 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
       </a>
       {isCompetitor && (
         <span className="ml-1 rounded bg-orange-100 px-1.5 py-0.5 text-[10px] text-orange-600">
-          {t('os_board:create.scope.competitors')}
+          {t('os_board:detail.competitors')}
         </span>
       )}
     </div>

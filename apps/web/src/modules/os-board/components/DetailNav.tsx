@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
+import Header from '@common/components/Header';
 import StickyNav from '@common/components/Header/StickyNav';
 import { Button } from '@oss-compass/ui';
 import type { OsBoardTimeRangePreset } from '../types';
@@ -42,15 +43,16 @@ const DetailNav: React.FC<DetailNavProps> = ({
   const { t } = useTranslation();
 
   return (
-    <StickyNav className="top-0">
+    <StickyNav className=">md:-top-[80px] md:-top-[48px]">
+      <Header />
       <nav
         className={classnames(
-          'flex min-h-[56px] flex-wrap items-center justify-between gap-3 border-b border-t bg-white px-6 py-2',
+          'flex h-[56px] flex-wrap items-center justify-between gap-3 border-b border-t bg-white px-6 py-2',
           'md:px-4'
         )}
       >
         <div className="flex min-w-0 flex-1 items-center gap-4">
-          <div className="min-w-0">
+          <div className="flex min-w-0">
             <div className="flex items-center gap-2">
               <h1 className="truncate text-lg font-semibold">
                 {dashboard.name}
@@ -61,7 +63,7 @@ const DetailNav: React.FC<DetailNavProps> = ({
                 </span>
               )}
             </div>
-            <div className="mt-0.5 flex items-center gap-3 text-xs text-gray-500">
+            <div className="ml-2 mt-0.5 flex items-center gap-3 text-xs text-gray-500">
               <span>
                 {t('os_board:detail.updated_at')}:{' '}
                 {dashboard.updatedAt.slice(0, 10)}

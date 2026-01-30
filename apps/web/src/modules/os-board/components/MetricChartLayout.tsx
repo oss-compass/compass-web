@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import MetricCard from './MetricCard';
 import ModelCard from './ModelCard';
 import ContributorTable from './ContributorTable';
+import IssueTable from './IssueTable';
+import PrTable from './PrTable';
 import type {
   OsBoardMetric,
   OsBoardDerivedMetric,
@@ -60,6 +62,21 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
       <ContributorTable
         dashboardId={dashboard.id}
         projects={dashboard.config.projects}
+        competitorProjects={dashboard.config.competitorProjects}
+      />
+
+      {/* Issue 管理表格 */}
+      <IssueTable
+        dashboardId={dashboard.id}
+        projects={dashboard.config.projects}
+        competitorProjects={dashboard.config.competitorProjects}
+      />
+
+      {/* PR 管理表格 */}
+      <PrTable
+        dashboardId={dashboard.id}
+        projects={dashboard.config.projects}
+        competitorProjects={dashboard.config.competitorProjects}
       />
 
       {/* 模型综合评分图表 - 占满一行 */}

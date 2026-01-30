@@ -12,7 +12,9 @@ interface OsBoardMetric {
 interface DraggableMetricItemProps {
   metric: OsBoardMetric;
   index: number;
+  isHidden: boolean;
   onDelete: () => void;
+  onHide: () => void;
   onDragStart: (index: number) => void;
   onDragOver: (index: number) => void;
   onDragEnd: () => void;
@@ -23,7 +25,9 @@ interface DraggableMetricItemProps {
 const DraggableMetricItem: React.FC<DraggableMetricItemProps> = ({
   metric,
   index,
+  isHidden,
   onDelete,
+  onHide,
   onDragStart,
   onDragOver,
   onDragEnd,
@@ -82,6 +86,13 @@ const DraggableMetricItem: React.FC<DraggableMetricItemProps> = ({
       <button
         className="ml-2 flex-shrink-0 border px-2 py-1 text-xs hover:bg-gray-50"
         type="button"
+        onClick={onHide}
+      >
+        {isHidden ? t('common:btn.show') : t('common:btn.hide')}
+      </button>
+      <button
+        className="ml-2 flex-shrink-0 border px-2 py-1 text-xs hover:bg-gray-50"
+        type="button"
         onClick={onDelete}
       >
         {t('common:btn.delete')}
@@ -92,16 +103,20 @@ const DraggableMetricItem: React.FC<DraggableMetricItemProps> = ({
 
 interface DraggableMetricListProps {
   metricIds: string[];
+  hiddenMetricIds: string[];
   allMetrics: OsBoardMetric[];
   onReorder: (newIds: string[]) => void;
   onDelete: (metricId: string) => void;
+  onHide: (metricId: string) => void;
 }
 
 const DraggableMetricList: React.FC<DraggableMetricListProps> = ({
   metricIds,
+  hiddenMetricIds,
   allMetrics,
   onReorder,
   onDelete,
+  onHide,
 }) => {
   const { t } = useTranslation();
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -171,7 +186,9 @@ const DraggableMetricList: React.FC<DraggableMetricListProps> = ({
           key={metric.id}
           metric={metric}
           index={index}
+          isHidden={hiddenMetricIds.includes(metric.id)}
           onDelete={() => onDelete(metric.id)}
+          onHide={() => onHide(metric.id)}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}

@@ -51,6 +51,7 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
 
     const {
       metricIds,
+      hiddenMetricIds,
       manualMetricIds,
       setManualMetricIds,
       metricModalOpen,
@@ -63,6 +64,7 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
       selectableMetrics,
       handleReorder,
       handleDelete,
+      handleHide,
     } = useDashboardMetrics({ initialValues });
 
     const {
@@ -288,9 +290,11 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
             </div>
             <DraggableMetricList
               metricIds={metricIds}
+              hiddenMetricIds={hiddenMetricIds}
               allMetrics={selectableMetrics}
               onReorder={handleReorder}
               onDelete={handleDelete}
+              onHide={handleHide}
             />
           </div>
         </Section>
