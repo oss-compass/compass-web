@@ -40,6 +40,7 @@ const FooterLinks = ({ dark = false }: FooterLinks) => {
       links: [
         { text: 'GitHub', href: 'https://github.com/oss-compass' },
         { text: 'Gitee', href: 'https://gitee.com/oss-compass' },
+        { text: 'AtomGit', href: 'https://atomgit.com/oss-compass' },
       ],
     },
   ];
