@@ -8,6 +8,7 @@ import DeveloperRegionChart from './DeveloperRegionChart';
 import PanoramaChart from './PanoramaChart';
 import DeveloperTable from './DeveloperTable';
 import OrganizationTable from './OrganizationTable';
+import RepoTable from './RepoTable';
 import {
   fetchProjectData,
   getProjectDisplayName,
@@ -133,6 +134,12 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
             />
           </div>
         </div>
+
+        {/* 仓库表格组件 */}
+        <RepoTable
+          projectType={projectType}
+          selectedRegions={selectedRegions}
+        />
 
         {/* 组织表格组件 */}
         <OrganizationTable

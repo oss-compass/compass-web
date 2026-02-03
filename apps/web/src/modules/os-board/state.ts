@@ -372,7 +372,7 @@ export const actions = {
       .map((r) => ({
         ...r,
         id: uid('ar'),
-        dashboardId: copy.id,
+        dashboardId: String(copy.id),
       }));
     osBoardState.alertRules.unshift(...rulesToCopy);
     return copy;
