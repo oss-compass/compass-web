@@ -19,6 +19,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/api/v2/:path*',
+    '/services/:path*',
     '/api/graphql',
     '/api/beta/predict',
     '/api/v1/:path*',

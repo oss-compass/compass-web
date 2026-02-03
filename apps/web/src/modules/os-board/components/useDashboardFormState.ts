@@ -10,24 +10,33 @@ export interface DashboardFormValues {
   competitors: string[];
   compareMode: boolean;
   metricIds: string[];
+  selectedModels?: string[];
+  hiddenMetricIds?: string[];
+  metricToModelMap?: Record<string, string>; // 指标ID到模型ident的映射
 }
 
 interface UseDashboardFormStateProps {
   initialValues?: Partial<DashboardFormValues>;
   onSubmit: (values: DashboardFormValues) => void;
   metricIds: string[];
+  selectedModels?: string[];
+  hiddenMetricIds?: string[];
+  metricToModelMap?: Record<string, string>;
 }
 
 export const useDashboardFormState = ({
   initialValues,
   onSubmit,
   metricIds,
+  selectedModels = [],
+  hiddenMetricIds = [],
+  metricToModelMap = {},
 }: UseDashboardFormStateProps) => {
   const { t } = useTranslation();
 
   const [name, setName] = useState(initialValues?.name || '');
   const [type, setType] = useState<OsBoardDashboardType>(
-    initialValues?.type || 'project'
+    initialValues?.type || 'repo'
   );
   const [compareMode, setCompareMode] = useState(
     initialValues?.compareMode || false
@@ -35,28 +44,27 @@ export const useDashboardFormState = ({
 
   // Split state for projects and competitors by dashboard type
   const [repoProjects, setRepoProjects] = useState<string[]>(
-    initialValues?.type === 'project' ? initialValues.projects || [] : []
+    initialValues?.type === 'repo' ? initialValues.projects || [] : []
   );
   const [communityProjects, setCommunityProjects] = useState<string[]>(
     initialValues?.type === 'community' ? initialValues.projects || [] : []
   );
   const [repoCompetitors, setRepoCompetitors] = useState<string[]>(
-    initialValues?.type === 'project' ? initialValues.competitors || [] : []
+    initialValues?.type === 'repo' ? initialValues.competitors || [] : []
   );
   const [communityCompetitors, setCommunityCompetitors] = useState<string[]>(
     initialValues?.type === 'community' ? initialValues.competitors || [] : []
   );
 
-  const projects = type === 'project' ? repoProjects : communityProjects;
+  const projects = type === 'repo' ? repoProjects : communityProjects;
   const setProjects = (vals: string[]) => {
-    if (type === 'project') setRepoProjects(vals);
+    if (type === 'repo') setRepoProjects(vals);
     else setCommunityProjects(vals);
   };
 
-  const competitors =
-    type === 'project' ? repoCompetitors : communityCompetitors;
+  const competitors = type === 'repo' ? repoCompetitors : communityCompetitors;
   const setCompetitors = (vals: string[]) => {
-    if (type === 'project') setRepoCompetitors(vals);
+    if (type === 'repo') setRepoCompetitors(vals);
     else setCommunityCompetitors(vals);
   };
 
@@ -91,6 +99,9 @@ export const useDashboardFormState = ({
       competitors,
       compareMode,
       metricIds,
+      selectedModels,
+      hiddenMetricIds,
+      metricToModelMap,
     });
   };
 

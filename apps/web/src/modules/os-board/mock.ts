@@ -96,7 +96,7 @@ const seedDashboards = (): OsBoardDashboard[] => {
     {
       id: 'db-2',
       name: 'React 生态分析',
-      type: 'project',
+      type: 'repo',
       ownerId: 'me',
       createdAt: weekAgo,
       updatedAt: weekAgo,
@@ -118,7 +118,7 @@ const seedDashboards = (): OsBoardDashboard[] => {
     {
       id: 'db-3',
       name: '前端框架对比',
-      type: 'project',
+      type: 'repo',
       ownerId: 'me',
       createdAt: dayAgo,
       updatedAt: dayAgo,
@@ -164,7 +164,7 @@ const seedDashboards = (): OsBoardDashboard[] => {
     {
       id: 'db-5',
       name: '开源 AI 项目追踪',
-      type: 'project',
+      type: 'repo',
       ownerId: 'me',
       createdAt: weekAgo,
       updatedAt: dayAgo,

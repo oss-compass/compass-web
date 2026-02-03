@@ -14,6 +14,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
         'os_board',
         'lab_metrics',
         'metrics_models',
+        'metrics_models_v2',
       ])),
     },
   };
@@ -23,9 +24,9 @@ const CreateDashboardPage = () => {
   return (
     <NoSsr>
       <Header />
-      {/* <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6"> */}
-      <OsBoardCreate />
-      {/* </AuthRequire> */}
+      <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
+        <OsBoardCreate />
+      </AuthRequire>
     </NoSsr>
   );
 };

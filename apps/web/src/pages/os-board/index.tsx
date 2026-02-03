@@ -4,6 +4,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import OsBoardHome from '@modules/os-board/Home';
+import AuthRequire from '@modules/auth/AuthRequire';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
@@ -12,6 +13,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
         'os_board',
         'lab_metrics',
         'metrics_models',
+        'metrics_models_v2',
       ])),
     },
   };
@@ -20,8 +22,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 const OsBoardPage = () => {
   return (
     <NoSsr>
-      <Header />
-      <OsBoardHome />
+      <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
+        <Header />
+        <OsBoardHome />
+      </AuthRequire>
     </NoSsr>
   );
 };

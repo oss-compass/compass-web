@@ -87,7 +87,7 @@ const ProjectSearchInput = ({
           return (
             <div
               key={v}
-              className="group flex items-center justify-between rounded-lg border bg-white p-3 transition-colors hover:border-blue-200 hover:bg-blue-50/30"
+              className="group flex items-center justify-between border bg-white p-3 transition-colors hover:border-blue-200 hover:bg-blue-50/30"
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
                 {content.showIcon && content.icon && (
@@ -132,7 +132,7 @@ const ProjectSearchInput = ({
   return (
     <div className={disabled ? 'opacity-60' : ''} ref={containerRef}>
       <div className="relative">
-        <div className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2.5 shadow-sm transition-all focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
+        <div className="flex items-center border border-gray-200 bg-white px-3 py-2.5 transition-all focus-within:border-blue-500">
           <input
             className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
             value={keyword}
@@ -151,7 +151,7 @@ const ProjectSearchInput = ({
 
         {/* Dropdown Results */}
         {isFocused && keyword && (
-          <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-72 overflow-auto rounded-lg border border-gray-200 bg-white shadow-xl">
+          <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-72 overflow-auto border border-gray-200 bg-white shadow-xl">
             {searchResult.length > 0 ? (
               searchResult.map((item) => {
                 const content = getSearchItemContent(item, t);

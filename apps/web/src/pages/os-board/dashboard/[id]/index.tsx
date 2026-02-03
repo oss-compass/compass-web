@@ -8,7 +8,12 @@ import OsBoardDetail from '@modules/os-board/Detail';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await getLocalesFile(req.cookies, ['os_board', 'lab', 'analyze'])),
+      ...(await getLocalesFile(req.cookies, [
+        'os_board',
+        'lab',
+        'analyze',
+        'metrics_models_v2',
+      ])),
     },
   };
 };
@@ -16,9 +21,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 const DashboardDetailPage = () => {
   return (
     <NoSsr>
-      {/* <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6"> */}
-      <OsBoardDetail />
-      {/* </AuthRequire> */}
+      <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
+        <OsBoardDetail />
+      </AuthRequire>
     </NoSsr>
   );
 };

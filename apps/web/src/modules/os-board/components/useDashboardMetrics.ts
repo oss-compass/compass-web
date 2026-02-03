@@ -2,10 +2,9 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useSnapshot } from 'valtio';
-import { useMetricSetListQuery } from '@oss-compass/graphql';
-import gqlClient from '@common/gqlClient';
 import { osBoardState } from '../state';
 import { MODEL_METRICS_MAP } from '../config/modelMetrics';
+import { useModelMetricList } from '../api/dashboard';
 import {
   useCollaborationDevelopmentIndex,
   useCommunityServiceAndSupport,
@@ -36,6 +35,10 @@ export const useDashboardMetrics = ({
   const [manualMetricIds, setManualMetricIds] = useState<string[]>(
     initialValues?.metricIds || []
   );
+  // 记录指标ID到模型ident的映射
+  const [metricToModelMap, setMetricToModelMap] = useState<
+    Record<string, string>
+  >({});
 
   const [metricModalOpen, setMetricModalOpen] = useState(false);
 
@@ -117,49 +120,68 @@ export const useDashboardMetrics = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedModels, manualMetricIds]);
 
-  // 使用 GraphQL API 获取指标数据
-  const { data: metricData } = useMetricSetListQuery(
-    gqlClient,
-    {},
-    { staleTime: 5 * 60 * 1000 }
-  );
+  // 使用新的 REST API 获取指标数据
+  const { data: metricData } = useModelMetricList();
 
-  // 合并本地指标和远程指标
+  // 合并本地指标和远程指标，并更新指标到模型的映射
   const selectableMetrics = useMemo(() => {
     // 本地指标
     const localMetrics = [...snap.metrics, ...snap.derivedMetrics];
 
-    // 远程指标
-    const remoteMetrics = metricData?.metricSetOverview || [];
+    // 从 API 数据中提取所有指标，同时更新映射关系
+    const remoteMetrics: Array<{
+      id: string;
+      name: string;
+      category: string;
+      unit: string;
+      modelIdent?: string;
+    }> = [];
+    const newMetricToModelMap: Record<string, string> = {};
 
-    // 将远程指标转换为本地格式
-    const convertedRemoteMetrics = remoteMetrics.map((m) => ({
-      id: m.ident || String(m.id), // 使用 ident 作为 id 以匹配初始值
-      name: m.ident || '',
-      category: m.category || '',
-      unit: '',
-    }));
+    // 添加独立指标
+    if (metricData?.independent_metrics) {
+      metricData.independent_metrics.forEach((m) => {
+        remoteMetrics.push({
+          id: m.ident,
+          name: m.name,
+          category: m.category,
+          unit: '',
+          modelIdent: 'model_999',
+        });
+        newMetricToModelMap[m.ident] = 'model_999';
+      });
+    }
 
-    // 优先使用远程指标的信息（包含 category 等），补充本地指标缺失的信息
-    const remoteMetricMap = new Map(
-      convertedRemoteMetrics.map((m) => [m.id, m])
-    );
+    // 添加模型指标
+    if (metricData?.models) {
+      metricData.models.forEach((model) => {
+        model.dashboard_metric_infos.forEach((m) => {
+          remoteMetrics.push({
+            id: m.ident,
+            name: m.name,
+            category: m.category,
+            unit: '',
+            modelIdent: model.ident,
+          });
+          newMetricToModelMap[m.ident] = model.ident;
+        });
+      });
+    }
+
+    // 更新映射关系
+    setMetricToModelMap(newMetricToModelMap);
 
     // 合并指标，避免重复
-    const allMetrics = [...localMetrics, ...convertedRemoteMetrics];
+    const remoteMetricMap = new Map(remoteMetrics.map((m) => [m.id, m]));
+    const allMetrics = [...localMetrics, ...remoteMetrics];
     const uniqueMetrics = allMetrics
       .filter(
         (m, index, self) => index === self.findIndex((mm) => mm.id === m.id)
       )
       .map((m) => {
-        // 如果是本地指标（可能缺失 category），尝试从远程指标中获取补充信息
-        if (!m.category && remoteMetricMap.has(m.id)) {
-          const remote = remoteMetricMap.get(m.id);
-          return {
-            ...m,
-            category: remote?.category || '',
-            unit: remote?.unit || '',
-          };
+        // 优先使用远程指标信息
+        if (remoteMetricMap.has(m.id)) {
+          return remoteMetricMap.get(m.id)!;
         }
         return m;
       });
@@ -229,5 +251,6 @@ export const useDashboardMetrics = ({
     handleReorder,
     handleDelete,
     handleHide,
+    metricToModelMap,
   };
 };

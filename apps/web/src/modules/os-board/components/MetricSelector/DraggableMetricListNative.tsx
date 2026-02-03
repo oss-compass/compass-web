@@ -7,6 +7,7 @@ interface OsBoardMetric {
   name: string;
   category?: string;
   unit?: string;
+  modelIdent?: string;
 }
 
 interface DraggableMetricItemProps {
@@ -36,13 +37,14 @@ const DraggableMetricItem: React.FC<DraggableMetricItemProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // 使用 lab_metrics 国际化显示指标名称和描述
-  const displayName = metric.category
-    ? t(`lab_metrics:${metric.category}.${metric.id}`)
-    : metric.name;
-  const displayDesc = metric.category
-    ? t(`lab_metrics:${metric.category}.${metric.id}_desc`)
+  // 使用 metrics_models_v2 国际化显示指标名称和描述
+  const i18nKey = metric.modelIdent
+    ? `metrics_models_v2:${metric.modelIdent}.metrics.${metric.id}`
     : '';
+  const displayName = i18nKey
+    ? t(`${i18nKey}.title`, metric.name)
+    : metric.name;
+  const displayDesc = i18nKey ? t(`${i18nKey}.desc`, '') : '';
 
   return (
     <div
@@ -130,7 +132,7 @@ const DraggableMetricList: React.FC<DraggableMetricListProps> = ({
     const added = metricIds.filter((id) => !prevIds.includes(id));
     if (added.length > 0) {
       setNewlyAddedIds((prev) => [...prev, ...added]);
-      // 1.5秒后移除高亮
+      // 1.5 秒后移除高亮
       setTimeout(() => {
         setNewlyAddedIds((prev) => prev.filter((id) => !added.includes(id)));
       }, 1500);
@@ -180,7 +182,7 @@ const DraggableMetricList: React.FC<DraggableMetricListProps> = ({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 overflow-y-auto">
       {metrics.map((metric, index) => (
         <DraggableMetricItem
           key={metric.id}

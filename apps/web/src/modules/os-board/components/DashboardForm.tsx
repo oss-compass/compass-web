@@ -1,16 +1,9 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useState,
-  useEffect,
-} from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@oss-compass/ui';
-import classnames from 'classnames';
 import type { OsBoardDashboardType } from '../types';
 import ProjectSearchInput from './ProjectSearchInput';
 import { MetricSelectionModal, DraggableMetricList } from './MetricSelector';
-import ModelSelectionModal from './ModelSelector/ModelSelectionModal';
 import { useDashboardMetrics } from './useDashboardMetrics';
 import {
   useDashboardFormState,
@@ -56,15 +49,11 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
       setManualMetricIds,
       metricModalOpen,
       setMetricModalOpen,
-      selectedModels,
-      setSelectedModels,
-      modelModalOpen,
-      setModelModalOpen,
-      allModels,
       selectableMetrics,
       handleReorder,
       handleDelete,
       handleHide,
+      metricToModelMap,
     } = useDashboardMetrics({ initialValues });
 
     const {
@@ -83,18 +72,10 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
       initialValues,
       onSubmit,
       metricIds,
+      selectedModels: [],
+      hiddenMetricIds,
+      metricToModelMap,
     });
-
-    const [newlyAddedModels, setNewlyAddedModels] = useState<string[]>([]);
-
-    useEffect(() => {
-      if (newlyAddedModels.length > 0) {
-        const timer = setTimeout(() => {
-          setNewlyAddedModels([]);
-        }, 1500);
-        return () => clearTimeout(timer);
-      }
-    }, [newlyAddedModels]);
 
     useImperativeHandle(ref, () => ({
       submit: validateAndSubmit,
@@ -126,12 +107,12 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
               <div className="flex flex-wrap gap-3">
                 <button
                   className={
-                    type === 'project'
+                    type === 'repo'
                       ? 'border border-blue-600 bg-blue-50 px-3 py-2'
                       : 'border px-3 py-2'
                   }
                   onClick={() =>
-                    !mode || mode === 'create' ? setType('project') : undefined
+                    !mode || mode === 'create' ? setType('repo') : undefined
                   }
                   type="button"
                   disabled={mode === 'edit'}
@@ -141,7 +122,7 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
                       : {}
                   }
                 >
-                  {t('os_board:dashboard.type.project')}
+                  {t('os_board:dashboard.type.repo')}
                 </button>
                 <button
                   className={
@@ -174,11 +155,11 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
                 values={projects}
                 onChange={setProjects}
                 placeholder={
-                  type === 'project'
+                  type === 'repo'
                     ? t('os_board:create.scope.placeholder_repo')
                     : t('os_board:create.scope.placeholder_community')
                 }
-                searchLevel={type === 'project' ? 'repo' : 'community'}
+                searchLevel={type === 'repo' ? 'repo' : 'community'}
               />
             </div>
             <div>
@@ -203,11 +184,11 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
                   values={competitors}
                   onChange={setCompetitors}
                   placeholder={
-                    type === 'project'
+                    type === 'repo'
                       ? t('os_board:create.scope.placeholder_repo')
                       : t('os_board:create.scope.placeholder_community')
                   }
-                  searchLevel={type === 'project' ? 'repo' : 'community'}
+                  searchLevel={type === 'repo' ? 'repo' : 'community'}
                 />
               </div>
             )}
@@ -223,66 +204,7 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
             >
               {t('os_board:create.metrics.add_metric')}
             </Button>
-            <Button
-              intent="secondary"
-              size="sm"
-              onClick={() => setModelModalOpen(true)}
-            >
-              选择模型（可选）
-            </Button>
           </div>
-
-          {/* 展示选中模型列表 */}
-          {selectedModels.length > 0 && (
-            <div className="mb-4">
-              <div className="mb-2 font-semibold">
-                {t('os_board:create.model_selection.selected_models')} (
-                {selectedModels.length})
-              </div>
-              <div className="space-y-2">
-                {selectedModels.map((modelId) => {
-                  const model = allModels.find((m) => m.id === modelId);
-                  if (!model) return null;
-
-                  const isNew = newlyAddedModels.includes(modelId);
-
-                  return (
-                    <div
-                      key={modelId}
-                      className={classnames(
-                        'flex items-center justify-between border px-3 py-2',
-                        isNew
-                          ? 'animate-highlight-new'
-                          : 'border-gray-200 bg-white'
-                      )}
-                    >
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate text-sm font-medium">
-                          {model.name}
-                        </div>
-                        <div className="truncate text-xs text-[#585858]">
-                          包含 {model.groups.length} 个指标：
-                          {model.groups.map((m) => m.name).join('、')}
-                        </div>
-                      </div>
-                      <button
-                        className="ml-2 flex-shrink-0 border px-2 py-1 text-xs hover:bg-gray-50"
-                        type="button"
-                        onClick={() => {
-                          const newSelectedModels = selectedModels.filter(
-                            (id) => id !== modelId
-                          );
-                          setSelectedModels(newSelectedModels);
-                        }}
-                      >
-                        {t('common:btn.delete')}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           <div>
             <div className="mb-2 font-semibold">
@@ -308,8 +230,7 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
             setManualMetricIds(newIds);
           }}
         />
-
-        <ModelSelectionModal
+        {/* <ModelSelectionModal
           open={modelModalOpen}
           onClose={() => setModelModalOpen(false)}
           selectedModelIds={selectedModels}
@@ -322,7 +243,7 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
             }
             setSelectedModels(newModelIds);
           }}
-        />
+        /> */}
       </>
     );
   }

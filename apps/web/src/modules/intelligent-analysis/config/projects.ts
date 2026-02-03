@@ -214,6 +214,22 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     organizations: 16137,
     folderName: 'RN-raw',
   },
+  {
+    slug: 'CUDA',
+    name: 'CUDA 生态',
+    displayName: 'CUDA 生态',
+    developers: 48371,
+    organizations: 16137,
+    folderName: 'CUDA',
+  },
+  {
+    slug: 'CUDA_operator_library',
+    name: 'CUDA 生态-算子库',
+    displayName: 'CUDA 生态-算子库',
+    developers: 48371,
+    organizations: 16137,
+    folderName: 'CUDA_operator_library',
+  },
 ];
 
 // 导出便捷的映射对象
