@@ -93,11 +93,6 @@ const RepoTable: React.FC<RepoTableProps> = ({
     setCurrentPage(1);
   }, [searchKeyword, projectType, selectedRegions]);
 
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
   const columns: ColumnsType<RepoData> = [
     {
       title: '排名',
@@ -154,6 +149,7 @@ const RepoTable: React.FC<RepoTableProps> = ({
       dataIndex: '贡献者数量',
       key: '贡献者数量',
       sorter: (a, b) => a.贡献者数量 - b.贡献者数量,
+      defaultSortOrder: 'descend',
     },
     {
       title: '代码贡献量',
@@ -183,7 +179,7 @@ const RepoTable: React.FC<RepoTableProps> = ({
 
       <MyTable
         columns={columns}
-        dataSource={paginatedData}
+        dataSource={filteredData}
         loading={loading}
         rowKey="项目URL"
         pagination={{

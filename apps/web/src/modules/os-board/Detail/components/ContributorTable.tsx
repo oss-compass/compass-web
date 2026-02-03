@@ -60,6 +60,73 @@ const MILEAGE_TYPES = [
   { value: 'guest', label: 'analyze:metric_detail:guest' },
 ];
 
+// Mock 数据
+const MOCK_CONTRIBUTOR_DATA: ContributorDetail[] = [
+  {
+    contributor: 'zhangsan',
+    ecologicalType: 'organization manager',
+    mileageType: 'core',
+    contributionTypeList: [
+      { contributionType: 'code', contribution: 120 },
+      { contributionType: 'issue', contribution: 45 },
+      { contributionType: 'code review', contribution: 30 },
+    ],
+    organization: 'OpenSource Inc',
+    contribution: 195,
+  },
+  {
+    contributor: 'lisi',
+    ecologicalType: 'individual participant',
+    mileageType: 'regular',
+    contributionTypeList: [
+      { contributionType: 'code', contribution: 80 },
+      { contributionType: 'issue comment', contribution: 25 },
+    ],
+    organization: null,
+    contribution: 105,
+  },
+  {
+    contributor: 'wangwu',
+    ecologicalType: 'organization participant',
+    mileageType: 'guest',
+    contributionTypeList: [
+      { contributionType: 'issue', contribution: 60 },
+      { contributionType: 'observe', contribution: 15 },
+    ],
+    organization: 'Tech Corp',
+    contribution: 75,
+  },
+  {
+    contributor: 'zhaoliu',
+    ecologicalType: 'individual manager',
+    mileageType: 'core',
+    contributionTypeList: [
+      { contributionType: 'code', contribution: 200 },
+      { contributionType: 'code review', contribution: 50 },
+    ],
+    organization: null,
+    contribution: 250,
+  },
+  {
+    contributor: 'sunqi',
+    ecologicalType: 'organization participant',
+    mileageType: 'regular',
+    contributionTypeList: [
+      { contributionType: 'sig management', contribution: 40 },
+      { contributionType: 'issue', contribution: 30 },
+    ],
+    organization: 'Dev Labs',
+    contribution: 70,
+  },
+] as unknown as ContributorDetail[];
+
+const MOCK_STATS_DATA = {
+  contributorAllCount: 156,
+  orgAllCount: 23,
+  highestContributionContributor: { name: 'zhaoliu', origin: 'gitcode' },
+  highestContributionOrganization: { name: 'cann', origin: 'gitcode' },
+};
+
 // 领域颜色映射
 const DOMAIN_COLORS: Record<string, string> = {
   code: '#5470c6',
@@ -281,8 +348,12 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       enabled: !!selectedProject,
     });
 
-  // 统计卡片数据
-  const statsData = contributorsOverview
+  // 统计卡片数据（API 无有效数据时使用 mock）
+  const hasValidStats =
+    contributorsOverview &&
+    contributorsOverview.contributorAllCount != null &&
+    contributorsOverview.contributorAllCount > 0;
+  const statsData = hasValidStats
     ? {
         contributorAllCount: contributorsOverview.contributorAllCount,
         orgAllCount: contributorsOverview.orgAllCount,
@@ -291,7 +362,11 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
         highestContributionOrganization:
           contributorsOverview.highestContributionOrganization,
       }
-    : null;
+    : MOCK_STATS_DATA;
+
+  // 表格数据（API 无数据时使用 mock）
+  const displayTableData =
+    tableData.length > 0 ? tableData : MOCK_CONTRIBUTOR_DATA;
 
   // 处理表格变更
   const handleTableChange = (
@@ -550,7 +625,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
         <div className="min-h-0 flex-1">
           <MyTable
             columns={columns}
-            dataSource={tableData}
+            dataSource={displayTableData}
             rowKey="contributor"
             loading={isLoading || isFetching || statsLoading}
             onChange={handleTableChange}

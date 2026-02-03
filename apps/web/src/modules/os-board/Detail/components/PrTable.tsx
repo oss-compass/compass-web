@@ -104,6 +104,132 @@ const STATE_OPTIONS = [
   { value: 'rejected', text: 'analyze:metric_detail:rejected' },
 ];
 
+// Mock 数据
+const MOCK_PR_DATA: PullDetail[] = [
+  {
+    title: '重构用户认证模块',
+    url: 'https://gitcode.com/cann/cann/pulls/201',
+    state: 'merged',
+    createdAt: '2024-01-12T09:00:00Z',
+    closedAt: '2024-01-15T14:00:00Z',
+    timeToCloseDays: 3.2,
+    timeToFirstAttentionWithoutBot: 0.5,
+    numReviewComments: 12,
+    labels: ['enhancement', 'auth'],
+    userLogin: 'zhangsan',
+    reviewersLogin: ['lisi', 'wangwu'],
+    mergeAuthorLogin: 'lisi',
+  },
+  {
+    title: '添加单元测试覆盖',
+    url: 'https://gitcode.com/cann/cann/pulls/202',
+    state: 'open',
+    createdAt: '2024-01-20T10:00:00Z',
+    closedAt: null,
+    timeToCloseDays: null,
+    timeToFirstAttentionWithoutBot: 1.2,
+    numReviewComments: 5,
+    labels: ['test'],
+    userLogin: 'wangwu',
+    reviewersLogin: ['zhaoliu'],
+    mergeAuthorLogin: null,
+  },
+  {
+    title: '修复内存泄漏问题',
+    url: 'https://gitcode.com/cann/cann/pulls/203',
+    state: 'merged',
+    createdAt: '2024-01-08T15:00:00Z',
+    closedAt: '2024-01-09T10:00:00Z',
+    timeToCloseDays: 0.8,
+    timeToFirstAttentionWithoutBot: 0.3,
+    numReviewComments: 8,
+    labels: ['bug', 'critical'],
+    userLogin: 'sunqi',
+    reviewersLogin: ['zhangsan', 'lisi'],
+    mergeAuthorLogin: 'zhangsan',
+  },
+  {
+    title: '优化前端构建配置',
+    url: 'https://gitcode.com/cann/cann/pulls/204',
+    state: 'rejected',
+    createdAt: '2024-01-16T11:00:00Z',
+    closedAt: '2024-01-18T09:00:00Z',
+    timeToCloseDays: 1.9,
+    timeToFirstAttentionWithoutBot: 0.8,
+    numReviewComments: 15,
+    labels: ['build', 'frontend'],
+    userLogin: 'lisi',
+    reviewersLogin: ['wangwu'],
+    mergeAuthorLogin: null,
+  },
+  {
+    title: '更新依赖版本',
+    url: 'https://gitcode.com/cann/cann/pulls/205',
+    state: 'open',
+    createdAt: '2024-01-22T08:00:00Z',
+    closedAt: null,
+    timeToCloseDays: null,
+    timeToFirstAttentionWithoutBot: null,
+    numReviewComments: 0,
+    labels: ['dependencies'],
+    userLogin: 'zhaoliu',
+    reviewersLogin: [],
+    mergeAuthorLogin: null,
+  },
+] as unknown as PullDetail[];
+
+const MOCK_PR_STATS = {
+  pullCount: 38,
+  pullCompletionRatio: 0.842,
+  pullCompletionCount: 32,
+  pullUnresponsiveCount: 2,
+  commitCount: 156,
+};
+
+// 社区维度 Mock 数据
+const MOCK_COMMUNITY_PR_DATA: CommunityPrRecord[] = [
+  {
+    id: '1',
+    repoName: 'cann/cann',
+    repoUrl: 'https://gitcode.com/cann/cann',
+    prTotal: 156,
+    prOpen: 18,
+    prCompletionRatio: 88,
+    prUnresponsiveCount: 3,
+    prFirstResponseTime: 0.8,
+  },
+  {
+    id: '2',
+    repoName: 'cann/metadef',
+    repoUrl: 'https://gitcode.com/cann/metadef',
+    prTotal: 92,
+    prOpen: 8,
+    prCompletionRatio: 91,
+    prUnresponsiveCount: 1,
+    prFirstResponseTime: 0.5,
+  },
+  {
+    id: '3',
+    repoName: 'cann/graphengine',
+    repoUrl: 'https://gitcode.com/cann/graphengine',
+    prTotal: 38,
+    prOpen: 5,
+    prCompletionRatio: 87,
+    prUnresponsiveCount: 2,
+    prFirstResponseTime: 1.2,
+  },
+  {
+    id: '4',
+    repoName: 'cann/parser',
+    repoUrl: 'https://gitcode.com/cann/parser',
+    prTotal: 45,
+    prOpen: 6,
+    prCompletionRatio: 87,
+    prUnresponsiveCount: 1,
+    prFirstResponseTime: 0.9,
+  },
+];
+
 // 将项目 URL 转换为 API 所需的 label 格式
 const formatProjectLabel = (project: string): string => {
   if (
@@ -210,8 +336,12 @@ const PrTable: React.FC<PrTableProps> = ({
     enabled: !!selectedProject,
   });
 
-  // 统计卡片数据
-  const statsData = pullsOverview
+  // 统计卡片数据（API 无有效数据时使用 mock）
+  const hasValidStats =
+    pullsOverview &&
+    pullsOverview.pullCount != null &&
+    pullsOverview.pullCount > 0;
+  const statsData = hasValidStats
     ? {
         pullCount: pullsOverview.pullCount,
         pullCompletionRatio: pullsOverview.pullCompletionRatio,
@@ -219,7 +349,17 @@ const PrTable: React.FC<PrTableProps> = ({
         pullUnresponsiveCount: pullsOverview.pullUnresponsiveCount,
         commitCount: pullsOverview.commitCount,
       }
-    : null;
+    : MOCK_PR_STATS;
+
+  // 表格数据（API 无数据时使用 mock）
+  const displayTableData =
+    dashboardType === 'community'
+      ? communityTableData.length > 0
+        ? communityTableData
+        : MOCK_COMMUNITY_PR_DATA
+      : repoTableData.length > 0
+      ? repoTableData
+      : MOCK_PR_DATA;
 
   // 处理表格变更
   const handleTableChange = (
@@ -473,6 +613,10 @@ const PrTable: React.FC<PrTableProps> = ({
     },
   ];
 
+  // 根据维度选择列配置
+  const displayColumns =
+    dashboardType === 'community' ? communityColumns : repoColumns;
+
   const isTableLoading = repoLoading || repoFetching;
 
   return (
@@ -557,9 +701,11 @@ const PrTable: React.FC<PrTableProps> = ({
       <div className="flex h-[420px] flex-col">
         <div className="min-h-0 flex-1">
           <MyTable
-            columns={repoColumns}
-            dataSource={repoTableData}
-            rowKey="url"
+            columns={
+              displayColumns as ColumnsType<PullDetail | CommunityPrRecord>
+            }
+            dataSource={displayTableData}
+            rowKey={dashboardType === 'community' ? 'id' : 'url'}
             loading={isTableLoading || statsLoading}
             onChange={handleTableChange}
             pagination={tableParams.pagination}
