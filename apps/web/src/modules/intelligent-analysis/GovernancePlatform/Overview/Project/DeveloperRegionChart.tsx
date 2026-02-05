@@ -32,9 +32,9 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
   const { t, i18n } = useTranslation('intelligent_analysis');
   const mapChartRef = useRef<HTMLDivElement>(null);
   const [regionData, setRegionData] = useState<RegionData[]>([]);
-  const [activeTab, setActiveTab] = useState<'all' | 'org' | 'developer'>(
-    'all'
-  );
+  const [activeTab, setActiveTab] = useState<
+    'all' | 'individual' | 'org_devs' | 'org_count'
+  >('all');
 
   // 处理数据转换
   const processData = (
@@ -45,19 +45,42 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       return [];
     }
 
-    // 根据 Tab 筛选数据
     let filteredData = sourceData;
-    if (filterType === 'org') {
-      filteredData = sourceData.filter((item) => item.用户类型 === '组织');
-    } else if (filterType === 'developer') {
-      filteredData = sourceData.filter((item) => item.用户类型 === '开发者');
+    let valueExtractor = (item: DeveloperData) => 0;
+
+    switch (filterType) {
+      case 'all':
+        filteredData = sourceData;
+        valueExtractor = (item) => {
+          if (item.用户类型 === '组织') {
+            return item.开发者数量 || 0;
+          }
+          return 1;
+        };
+        break;
+      case 'individual':
+        filteredData = sourceData.filter((item) => item.用户类型 === '开发者');
+        valueExtractor = () => 1;
+        break;
+      case 'org_devs':
+        filteredData = sourceData.filter((item) => item.用户类型 === '组织');
+        valueExtractor = (item) => item.开发者数量 || 0;
+        break;
+      case 'org_count':
+        filteredData = sourceData.filter((item) => item.用户类型 === '组织');
+        valueExtractor = () => 1;
+        break;
+      default:
+        filteredData = sourceData;
+        valueExtractor = (item) => item.开发者数量 || 1;
     }
 
     // 按国家分组统计
     const countryMap = new Map<string, number>();
     filteredData.forEach((item) => {
       if (item.国家) {
-        countryMap.set(item.国家, (countryMap.get(item.国家) || 0) + 1);
+        const value = valueExtractor(item);
+        countryMap.set(item.国家, (countryMap.get(item.国家) || 0) + value);
       }
     });
 
@@ -122,23 +145,28 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
     switch (activeTab) {
       case 'all':
         return {
-          title: t('project_detail.region_chart.all'),
-          description: t('project_detail.region_chart.count'),
-        };
-      case 'org':
-        return {
-          title: t('project_detail.region_chart.organization'),
-          description: t('project_detail.region_chart.organization_count'),
-        };
-      case 'developer':
-        return {
-          title: t('project_detail.region_chart.developer'),
+          title: t('project_detail.region_chart.all_developers'),
           description: t('project_detail.region_chart.developer_count'),
+        };
+      case 'individual':
+        return {
+          title: t('project_detail.region_chart.individual_developers'),
+          description: t('project_detail.region_chart.developer_count'),
+        };
+      case 'org_devs':
+        return {
+          title: t('project_detail.region_chart.organization_developers'),
+          description: t('project_detail.region_chart.developer_count'),
+        };
+      case 'org_count':
+        return {
+          title: t('project_detail.region_chart.organization_count_label'),
+          description: t('project_detail.region_chart.organization_count'),
         };
       default:
         return {
-          title: t('project_detail.region_chart.all'),
-          description: t('project_detail.region_chart.count'),
+          title: t('project_detail.region_chart.all_developers'),
+          description: t('project_detail.region_chart.developer_count'),
         };
     }
   };
@@ -295,16 +323,32 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
 
   // 计算各类型的数据统计
   const getTabStats = () => {
-    const allCount = data.reduce((sum, item) => sum + 1, 0);
-    const orgCount = data.filter((item) => item.用户类型 === '组织').length;
-    const developerCount = data.filter(
+    // 1. All Developers: Sum of developer counts (or 1 for individuals)
+    const allDevsCount = data.reduce((sum, item) => {
+      if (item.用户类型 === '组织') {
+        return sum + (item.开发者数量 || 0);
+      }
+      return sum + 1;
+    }, 0);
+
+    // 2. Individual Developers: Count of individual items
+    const individualCount = data.filter(
       (item) => item.用户类型 === '开发者'
     ).length;
 
+    // 3. Organization Developers: Sum of developer counts for organizations
+    const orgDevsCount = data
+      .filter((item) => item.用户类型 === '组织')
+      .reduce((sum, item) => sum + (item.开发者数量 || 0), 0);
+
+    // 4. Organization Count: Count of organization items
+    const orgCount = data.filter((item) => item.用户类型 === '组织').length;
+
     return {
-      all: allCount,
-      org: orgCount,
-      developer: developerCount,
+      all: allDevsCount,
+      individual: individualCount,
+      orgDevs: orgDevsCount,
+      orgCount: orgCount,
     };
   };
 
@@ -316,7 +360,7 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       key: 'all',
       label: (
         <span className="flex items-center gap-2">
-          <span>{t('project_detail.region_chart.all')}</span>
+          <span>{t('project_detail.region_chart.all_developers')}</span>
           <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
             {tabStats.all.toLocaleString()}
           </span>
@@ -324,23 +368,38 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       ),
     },
     {
-      key: 'org',
+      key: 'individual',
       label: (
         <span className="flex items-center gap-2">
-          <span>{t('project_detail.region_chart.organization')}</span>
-          <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
-            {tabStats.org.toLocaleString()}
+          <span>{t('project_detail.region_chart.individual_developers')}</span>
+          <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+            {tabStats.individual.toLocaleString()}
           </span>
         </span>
       ),
     },
     {
-      key: 'developer',
+      key: 'org_devs',
       label: (
         <span className="flex items-center gap-2">
-          <span>{t('project_detail.region_chart.developer')}</span>
-          <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-            {tabStats.developer.toLocaleString()}
+          <span>
+            {t('project_detail.region_chart.organization_developers')}
+          </span>
+          <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+            {tabStats.orgDevs.toLocaleString()}
+          </span>
+        </span>
+      ),
+    },
+    {
+      key: 'org_count',
+      label: (
+        <span className="flex items-center gap-2">
+          <span>
+            {t('project_detail.region_chart.organization_count_label')}
+          </span>
+          <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
+            {tabStats.orgCount.toLocaleString()}
           </span>
         </span>
       ),
@@ -352,7 +411,9 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       title={t('project_detail.region_chart.title')}
       tabList={tabItems}
       activeTabKey={activeTab}
-      onTabChange={(key) => setActiveTab(key as 'all' | 'org' | 'developer')}
+      onTabChange={(key) =>
+        setActiveTab(key as 'all' | 'individual' | 'org_devs' | 'org_count')
+      }
       className={className}
     >
       <Spin spinning={loading}>

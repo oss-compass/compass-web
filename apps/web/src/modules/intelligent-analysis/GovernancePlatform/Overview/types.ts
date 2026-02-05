@@ -19,6 +19,7 @@ export interface DeveloperData {
   技术栈?: string | string[];
   联系方式?: string;
   排名: number;
+  开发者数量?: number;
 }
 
 // 开发者详情数据类型（用于 DetailPage）
