@@ -60,11 +60,21 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
       <Spin spinning={loading || isNavigating}>
         <div className="flex h-full select-none flex-col rounded-lg text-sm text-gray-700">
           {/* Top: AI Framework */}
-          <div className={topBottomCardClass}>AI框架</div>
+          <div
+            className={getCardClass(topBottomCardClass, 'CUDA_ai_framework')}
+            onClick={() => handleNavigate('CUDA_ai_framework')}
+          >
+            AI框架
+            <span className="ml-2 text-gray-400">&gt;</span>
+          </div>
 
           {/* Adapter */}
           <div
-            className={`mb-4 flex items-center justify-center ${topBottomCardClass}`}
+            className={getCardClass(
+              `mb-4 flex items-center justify-center ${topBottomCardClass}`,
+              'CUDA_ai_framework_adapter'
+            )}
+            onClick={() => handleNavigate('CUDA_ai_framework_adapter')}
           >
             AI框架适配 Framework Adapter{' '}
             <span className="ml-2 text-gray-400">&gt;</span>
@@ -102,7 +112,13 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   </div>
                 </div>
 
-                <div className={cardBaseClass}>
+                <div
+                  className={getCardClass(
+                    cardBaseClass,
+                    'CUDA_communication_library'
+                  )}
+                  onClick={() => handleNavigate('CUDA_communication_library')}
+                >
                   <div className="mb-1 flex items-center font-bold">
                     <CloudServerOutlined className="mr-1" /> 通信库{' '}
                     <span className="ml-1 text-gray-400">&gt;</span>
@@ -114,7 +130,10 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                     分布式通信
                   </div>
                 </div>
-                <div className={cardBaseClass}>
+                <div
+                  className={getCardClass(cardBaseClass, 'CUDA_graph_engine')}
+                  onClick={() => handleNavigate('CUDA_graph_engine')}
+                >
                   <div className="mb-1 flex items-center font-bold">
                     <BuildOutlined className="mr-1" /> 图引擎{' '}
                     <span className="ml-1 text-gray-400">&gt;</span>
@@ -126,7 +145,15 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                     图执行加速
                   </div>
                 </div>
-                <div className={cardBaseClass}>
+                <div
+                  className={getCardClass(
+                    cardBaseClass,
+                    'CUDA_domain_acceleration_library'
+                  )}
+                  onClick={() =>
+                    handleNavigate('CUDA_domain_acceleration_library')
+                  }
+                >
                   <div className="mb-1 flex items-center font-bold">
                     <RocketOutlined className="mr-1" /> 领域加速库{' '}
                     <span className="ml-1 text-gray-400">&gt;</span>
@@ -138,7 +165,13 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
               </div>
 
               {/* Programming Language */}
-              <div className={`flex-1 ${cardBaseClass}`}>
+              <div
+                className={getCardClass(
+                  `flex-1 ${cardBaseClass}`,
+                  'CUDA_programming_language'
+                )}
+                onClick={() => handleNavigate('CUDA_programming_language')}
+              >
                 <div className="mb-1 flex items-center font-bold">
                   <CodeOutlined className="mr-1" /> 编程语言{' '}
                   <span className="ml-1 text-gray-400">&gt;</span>
@@ -146,7 +179,10 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                 <div className="text-xs text-gray-500">CUDA C++</div>
               </div>
               {/* Runtime */}
-              <div className={`flex-1 ${cardBaseClass}`}>
+              <div
+                className={getCardClass(`flex-1 ${cardBaseClass}`, 'CUDA_compiler')}
+                onClick={() => handleNavigate('CUDA_compiler')}
+              >
                 <div className="mb-1 flex items-center font-bold">
                   <HddOutlined className="mr-1" /> 编译器{' '}
                   <span className="ml-1 text-gray-400">&gt;</span>
@@ -156,7 +192,10 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                 </div>
               </div>
               {/* Runtime */}
-              <div className={`flex-1 ${cardBaseClass}`}>
+              <div
+                className={getCardClass(`flex-1 ${cardBaseClass}`, 'CUDA_runtime')}
+                onClick={() => handleNavigate('CUDA_runtime')}
+              >
                 <div className="mb-1 flex items-center font-bold">
                   <HddOutlined className="mr-1" /> 运行时{' '}
                   <span className="ml-1 text-gray-400">&gt;</span>
@@ -167,7 +206,10 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
               </div>
 
               {/* Driver */}
-              <div className={`flex-1 ${cardBaseClass}`}>
+              <div
+                className={getCardClass(`flex-1 ${cardBaseClass}`, 'CUDA_driver')}
+                onClick={() => handleNavigate('CUDA_driver')}
+              >
                 <div className="mb-1 flex items-center font-bold">
                   <DatabaseOutlined className="mr-1" /> 驱动{' '}
                   <span className="ml-1 text-gray-400">&gt;</span>
@@ -182,7 +224,8 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
             <div className="flex w-32 cursor-pointer flex-col items-center rounded border border-gray-200 bg-white p-2 text-center transition-shadow duration-200 hover:shadow-md">
               <div className="mb-2 mt-4 font-bold">Nsight</div>
               <div className="mb-2 text-xs font-bold">
-                全流程工具链 <span className="text-gray-400">&gt;</span>
+                全流程工具链
+                {/* <span className="text-gray-400">&gt;</span> */}
               </div>
               <div className="mt-2 w-full px-1 text-left text-xs leading-relaxed text-gray-500">
                 支持调试、性能分析、优化，提供可视化能力

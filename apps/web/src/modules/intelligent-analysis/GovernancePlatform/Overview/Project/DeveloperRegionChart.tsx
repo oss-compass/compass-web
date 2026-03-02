@@ -36,6 +36,14 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
     'all' | 'individual' | 'org_devs' | 'org_count'
   >('all');
 
+  const getAffiliatedOrg = (item: DeveloperData) => {
+    const org = typeof item.所属组织 === 'string' ? item.所属组织.trim() : '';
+    return org || '未知';
+  };
+
+  const isIndividualDeveloper = (item: DeveloperData) =>
+    getAffiliatedOrg(item) === '未知';
+
   // 处理数据转换
   const processData = (
     sourceData: DeveloperData[],
@@ -45,44 +53,35 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       return [];
     }
 
-    let filteredData = sourceData;
-    let valueExtractor = (item: DeveloperData) => 0;
-
-    switch (filterType) {
-      case 'all':
-        filteredData = sourceData;
-        valueExtractor = (item) => {
-          if (item.用户类型 === '组织') {
-            return item.开发者数量 || 0;
-          }
-          return 1;
-        };
-        break;
-      case 'individual':
-        filteredData = sourceData.filter((item) => item.用户类型 === '开发者');
-        valueExtractor = () => 1;
-        break;
-      case 'org_devs':
-        filteredData = sourceData.filter((item) => item.用户类型 === '组织');
-        valueExtractor = (item) => item.开发者数量 || 0;
-        break;
-      case 'org_count':
-        filteredData = sourceData.filter((item) => item.用户类型 === '组织');
-        valueExtractor = () => 1;
-        break;
-      default:
-        filteredData = sourceData;
-        valueExtractor = (item) => item.开发者数量 || 1;
-    }
-
-    // 按国家分组统计
     const countryMap = new Map<string, number>();
-    filteredData.forEach((item) => {
-      if (item.国家) {
-        const value = valueExtractor(item);
-        countryMap.set(item.国家, (countryMap.get(item.国家) || 0) + value);
-      }
-    });
+
+    if (filterType === 'org_count') {
+      const countryOrgMap = new Map<string, Set<string>>();
+      sourceData.forEach((item) => {
+        if (!item.国家) return;
+        const org = getAffiliatedOrg(item);
+        if (org === '未知') return;
+        const set = countryOrgMap.get(item.国家) || new Set<string>();
+        set.add(org);
+        countryOrgMap.set(item.国家, set);
+      });
+      countryOrgMap.forEach((orgSet, country) => {
+        countryMap.set(country, orgSet.size);
+      });
+    } else {
+      const filteredData =
+        filterType === 'individual'
+          ? sourceData.filter((item) => isIndividualDeveloper(item))
+          : filterType === 'org_devs'
+            ? sourceData.filter((item) => !isIndividualDeveloper(item))
+            : sourceData;
+
+      filteredData.forEach((item) => {
+        if (item.国家) {
+          countryMap.set(item.国家, (countryMap.get(item.国家) || 0) + 1);
+        }
+      });
+    }
 
     // 转换为数组格式
     const result: RegionData[] = [];
@@ -220,9 +219,8 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
                 countryMapping,
                 i18n.language
               );
-              return `${translatedName}<br/>${tabInfo.description}：${
-                displayValue || 0
-              }`;
+              return `${translatedName}<br/>${tabInfo.description}：${displayValue || 0
+                }`;
             }
             const translatedName = translateByLocale(
               params.name,
@@ -323,26 +321,14 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
 
   // 计算各类型的数据统计
   const getTabStats = () => {
-    // 1. All Developers: Sum of developer counts (or 1 for individuals)
-    const allDevsCount = data.reduce((sum, item) => {
-      if (item.用户类型 === '组织') {
-        return sum + (item.开发者数量 || 0);
-      }
-      return sum + 1;
-    }, 0);
-
-    // 2. Individual Developers: Count of individual items
-    const individualCount = data.filter(
-      (item) => item.用户类型 === '开发者'
-    ).length;
-
-    // 3. Organization Developers: Sum of developer counts for organizations
-    const orgDevsCount = data
-      .filter((item) => item.用户类型 === '组织')
-      .reduce((sum, item) => sum + (item.开发者数量 || 0), 0);
-
-    // 4. Organization Count: Count of organization items
-    const orgCount = data.filter((item) => item.用户类型 === '组织').length;
+    const allDevsCount = data.length;
+    const individualCount = data.filter((item) => isIndividualDeveloper(item)).length;
+    const orgDevsCount = data.filter((item) => !isIndividualDeveloper(item)).length;
+    const orgCount = new Set(
+      data
+        .map((item) => getAffiliatedOrg(item))
+        .filter((org) => org !== '未知')
+    ).size;
 
     return {
       all: allDevsCount,

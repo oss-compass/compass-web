@@ -17,6 +17,7 @@ export interface DeveloperData {
   用户类型: string;
   组织类型?: string;
   排名: number;
+  开发者数量?: number;
 }
 
 // 开发者详情数据类型（用于 DetailPage）

@@ -5,11 +5,38 @@ import { SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import MyTable from '@common/components/Table';
 
+const nameMapping = {
+  CUDA_ai_framework_adapter: 'AI框架适配',
+  CUDA_ai_framework: 'AI框架',
+  CUDA_communication_library: '通信库',
+  CUDA_compiler: '编译器',
+  CUDA_domain_acceleration_library: '领域加速库',
+  CUDA_driver: '驱动',
+  CUDA_graph_engine: '图引擎',
+  CUDA_operator_library: '算子库',
+  CUDA_programming_language: '编程语言',
+  CUDA_runtime: '运行时',
+  CUDA: 'CUDA 生态',
+} as const;
+
+const stackKeywordsByProjectType: Record<string, string[]> = {
+  CUDA_ai_framework_adapter: [nameMapping.CUDA_ai_framework_adapter],
+  CUDA_ai_framework: [nameMapping.CUDA_ai_framework],
+  CUDA_communication_library: [nameMapping.CUDA_communication_library],
+  CUDA_compiler: [nameMapping.CUDA_compiler, '毕昇编译器'],
+  CUDA_domain_acceleration_library: [nameMapping.CUDA_domain_acceleration_library],
+  CUDA_driver: [nameMapping.CUDA_driver],
+  CUDA_graph_engine: [nameMapping.CUDA_graph_engine],
+  CUDA_operator_library: [nameMapping.CUDA_operator_library],
+  CUDA_programming_language: [nameMapping.CUDA_programming_language, 'CUDA C++'],
+  CUDA_runtime: [nameMapping.CUDA_runtime],
+};
+
 interface RepoData {
   项目URL: string;
   主导组织: string;
   技术栈: string;
-  贡献者数量: number;
+  代码贡献者数量: number;
   代码贡献量: number;
 }
 
@@ -34,8 +61,19 @@ const RepoTable: React.FC<RepoTableProps> = ({
         const response = await fetch(
           '/test/intelligent-analysis-new/repo_data.csv'
         );
-        const text = await response.text();
-        const rows = text.trim().split('\n');
+        const buffer = await response.arrayBuffer();
+        const decode = (encoding: string) =>
+          new TextDecoder(encoding).decode(buffer);
+        let text = decode('utf-8');
+        if (
+          text.includes('�') &&
+          !text.includes('项目URL') &&
+          !text.includes('主导组织')
+        ) {
+          text = decode('gbk');
+        }
+        text = text.replace(/^\uFEFF/, '');
+        const rows = text.trim().split(/\r?\n/);
 
         // Skip header row and parse data
         const parsedData: RepoData[] = rows.slice(1).map((row) => {
@@ -47,7 +85,7 @@ const RepoTable: React.FC<RepoTableProps> = ({
             主导组织: cols[1],
             // cols[2] is '英伟达主导/参与', skipping it
             技术栈: cols[3],
-            贡献者数量: parseInt(cols[4], 10) || 0,
+            代码贡献者数量: parseInt(cols[4], 10) || 0,
             代码贡献量: parseInt(cols[5], 10) || 0,
           };
         });
@@ -69,10 +107,15 @@ const RepoTable: React.FC<RepoTableProps> = ({
       item.项目URL.toLowerCase().includes(searchKeyword.toLowerCase()) ||
       item.主导组织.toLowerCase().includes(searchKeyword.toLowerCase());
 
-    // 2. Filter by projectType (CUDA_operator_library)
+    // 2. Filter by projectType (CUDA ecosystem categories)
     let matchProjectType = true;
-    if (projectType === 'CUDA_operator_library') {
-      matchProjectType = item.技术栈.includes('算子库');
+    if (projectType && projectType !== 'CUDA') {
+      const keywords = stackKeywordsByProjectType[projectType];
+      if (keywords && keywords.length > 0) {
+        matchProjectType = keywords.some((keyword) =>
+          (item.技术栈 || '').includes(keyword)
+        );
+      }
     }
 
     // 3. Filter by regions
@@ -145,10 +188,10 @@ const RepoTable: React.FC<RepoTableProps> = ({
       },
     },
     {
-      title: '贡献者数量',
-      dataIndex: '贡献者数量',
-      key: '贡献者数量',
-      sorter: (a, b) => a.贡献者数量 - b.贡献者数量,
+      title: '代码贡献者数量',
+      dataIndex: '代码贡献者数量',
+      key: '代码贡献者数量',
+      sorter: (a, b) => a.代码贡献者数量 - b.代码贡献者数量,
       defaultSortOrder: 'descend',
     },
     {

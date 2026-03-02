@@ -127,6 +127,38 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
         translateByLocale(record.国家, countryMapping, i18n.language),
     },
     {
+      title: '所属组织',
+      dataIndex: '所属组织',
+      key: '所属组织',
+      width: 180,
+      ellipsis: true,
+      render: (val: string | undefined) => {
+        const text = (val || '').trim();
+        return (
+          <Tooltip title={text || '未知'}>
+            <span>{text || '未知'}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '邮箱',
+      dataIndex: '邮箱',
+      key: '邮箱',
+      width: 220,
+      ellipsis: true,
+      render: (val: string | undefined) => {
+        const text = (val || '').trim();
+        return text ? (
+          <Tooltip title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        ) : (
+          '-'
+        );
+      },
+    },
+    {
       title: '参与技术栈',
       dataIndex: '技术栈',
       key: '技术栈',

@@ -10,6 +10,8 @@ export interface ProjectData {
 export interface DeveloperData {
   用户ID: string;
   中文用户ID?: string;
+  所属组织?: string;
+  邮箱?: string;
   总得分: number;
   国家: string;
   省: string;

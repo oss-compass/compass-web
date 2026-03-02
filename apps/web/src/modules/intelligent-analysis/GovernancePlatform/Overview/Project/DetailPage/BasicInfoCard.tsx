@@ -109,10 +109,13 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
             </Text>
           </Space>
         </Descriptions.Item>
-        {/* 空占位，强制技术栈换行 */}
-        <Descriptions.Item label={null} className="!border-0 !p-0">
-          {''}
+        <Descriptions.Item label="所属组织">
+          {data.所属组织.trim() ? data.所属组织.trim() : '未知'}
         </Descriptions.Item>
+        <Descriptions.Item label="邮箱">
+          {data.邮箱 && data.邮箱.trim() ? data.邮箱.trim() : '-'}
+        </Descriptions.Item>
+
         <Descriptions.Item label="参与技术栈" span={3}>
           <Space>
             <CodeOutlined />
