@@ -37,6 +37,14 @@ const stackKeywordsByProjectType: Record<string, string[]> = {
   CUDA_runtime: [nameMapping.CUDA_runtime],
 };
 
+const splitTechStacks = (techStack: string | undefined) => {
+  if (!techStack) return [];
+  return techStack
+    .split(/[;；]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+};
+
 interface RepoData {
   项目URL: string;
   主导组织: string;
@@ -117,9 +125,8 @@ const RepoTable: React.FC<RepoTableProps> = ({
     if (projectType && projectType !== 'CUDA') {
       const keywords = stackKeywordsByProjectType[projectType];
       if (keywords && keywords.length > 0) {
-        matchProjectType = keywords.some((keyword) =>
-          (item.技术栈 || '').includes(keyword)
-        );
+        const stacks = splitTechStacks(item.技术栈);
+        matchProjectType = keywords.some((keyword) => stacks.includes(keyword));
       }
     }
 
