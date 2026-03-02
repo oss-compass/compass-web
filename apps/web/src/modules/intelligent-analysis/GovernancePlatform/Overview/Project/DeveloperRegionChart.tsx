@@ -73,8 +73,8 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
         filterType === 'individual'
           ? sourceData.filter((item) => isIndividualDeveloper(item))
           : filterType === 'org_devs'
-            ? sourceData.filter((item) => !isIndividualDeveloper(item))
-            : sourceData;
+          ? sourceData.filter((item) => !isIndividualDeveloper(item))
+          : sourceData;
 
       filteredData.forEach((item) => {
         if (item.国家) {
@@ -219,8 +219,9 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
                 countryMapping,
                 i18n.language
               );
-              return `${translatedName}<br/>${tabInfo.description}：${displayValue || 0
-                }`;
+              return `${translatedName}<br/>${tabInfo.description}：${
+                displayValue || 0
+              }`;
             }
             const translatedName = translateByLocale(
               params.name,
@@ -322,12 +323,14 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
   // 计算各类型的数据统计
   const getTabStats = () => {
     const allDevsCount = data.length;
-    const individualCount = data.filter((item) => isIndividualDeveloper(item)).length;
-    const orgDevsCount = data.filter((item) => !isIndividualDeveloper(item)).length;
+    const individualCount = data.filter((item) =>
+      isIndividualDeveloper(item)
+    ).length;
+    const orgDevsCount = data.filter(
+      (item) => !isIndividualDeveloper(item)
+    ).length;
     const orgCount = new Set(
-      data
-        .map((item) => getAffiliatedOrg(item))
-        .filter((org) => org !== '未知')
+      data.map((item) => getAffiliatedOrg(item)).filter((org) => org !== '未知')
     ).size;
 
     return {

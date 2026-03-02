@@ -24,11 +24,16 @@ const stackKeywordsByProjectType: Record<string, string[]> = {
   CUDA_ai_framework: [nameMapping.CUDA_ai_framework],
   CUDA_communication_library: [nameMapping.CUDA_communication_library],
   CUDA_compiler: [nameMapping.CUDA_compiler, '毕昇编译器'],
-  CUDA_domain_acceleration_library: [nameMapping.CUDA_domain_acceleration_library],
+  CUDA_domain_acceleration_library: [
+    nameMapping.CUDA_domain_acceleration_library,
+  ],
   CUDA_driver: [nameMapping.CUDA_driver],
   CUDA_graph_engine: [nameMapping.CUDA_graph_engine],
   CUDA_operator_library: [nameMapping.CUDA_operator_library],
-  CUDA_programming_language: [nameMapping.CUDA_programming_language, 'CUDA C++'],
+  CUDA_programming_language: [
+    nameMapping.CUDA_programming_language,
+    'CUDA C++',
+  ],
   CUDA_runtime: [nameMapping.CUDA_runtime],
 };
 

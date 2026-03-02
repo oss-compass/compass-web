@@ -180,7 +180,10 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
               </div>
               {/* Runtime */}
               <div
-                className={getCardClass(`flex-1 ${cardBaseClass}`, 'CUDA_compiler')}
+                className={getCardClass(
+                  `flex-1 ${cardBaseClass}`,
+                  'CUDA_compiler'
+                )}
                 onClick={() => handleNavigate('CUDA_compiler')}
               >
                 <div className="mb-1 flex items-center font-bold">
@@ -193,7 +196,10 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
               </div>
               {/* Runtime */}
               <div
-                className={getCardClass(`flex-1 ${cardBaseClass}`, 'CUDA_runtime')}
+                className={getCardClass(
+                  `flex-1 ${cardBaseClass}`,
+                  'CUDA_runtime'
+                )}
                 onClick={() => handleNavigate('CUDA_runtime')}
               >
                 <div className="mb-1 flex items-center font-bold">
@@ -207,7 +213,10 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
 
               {/* Driver */}
               <div
-                className={getCardClass(`flex-1 ${cardBaseClass}`, 'CUDA_driver')}
+                className={getCardClass(
+                  `flex-1 ${cardBaseClass}`,
+                  'CUDA_driver'
+                )}
                 onClick={() => handleNavigate('CUDA_driver')}
               >
                 <div className="mb-1 flex items-center font-bold">

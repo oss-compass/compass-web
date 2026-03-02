@@ -301,7 +301,7 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     developers: 48371,
     organizations: 16137,
     folderName: 'CUDA_runtime',
-  }
+  },
 ];
 
 // 导出便捷的映射对象
