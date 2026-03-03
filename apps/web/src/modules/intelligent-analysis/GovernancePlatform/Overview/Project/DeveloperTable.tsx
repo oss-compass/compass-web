@@ -4,11 +4,14 @@ import { Card, Input, Button, Space, Tag, Tooltip, Select } from 'antd';
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
 import type { ColumnsType } from 'antd/es/table';
+import { useQuery } from '@tanstack/react-query';
 import MyTable from '@common/components/Table';
 import { DeveloperData } from '../types';
 import { translateByLocale, countryMapping } from './utils/countryMapping';
+import { PROJECT_NAME_MAP } from '../utils';
 
 interface DeveloperTableProps {
+  projectType: string;
   data: DeveloperData[];
   loading: boolean;
   onViewDetail: (record: DeveloperData) => void;
@@ -17,6 +20,7 @@ interface DeveloperTableProps {
 }
 
 const DeveloperTable: React.FC<DeveloperTableProps> = ({
+  projectType,
   data,
   loading,
   onViewDetail,
@@ -25,6 +29,8 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [orgSearchKeyword, setOrgSearchKeyword] = useState('');
+  const [appliedKeyword, setAppliedKeyword] = useState('');
+  const [appliedOrgKeyword, setAppliedOrgKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { t, i18n } = useTranslation('intelligent_analysis');
@@ -32,18 +38,62 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
     'all' | 'individual' | 'org'
   >('all');
 
+  const dataset = PROJECT_NAME_MAP[projectType] || projectType;
+
+  const { data: apiData, isFetching: apiLoading } = useQuery({
+    queryKey: [
+      'intelligent-analysis',
+      'developers',
+      dataset,
+      currentPage,
+      pageSize,
+      appliedKeyword,
+      appliedOrgKeyword,
+      devRoleFilter,
+      selectedRegions.join('|'),
+    ],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.set('page', String(currentPage));
+      params.set('pageSize', String(pageSize));
+      params.set('sort', 'score_desc');
+      if (appliedKeyword) params.set('q', appliedKeyword);
+      if (appliedOrgKeyword) params.set('orgQ', appliedOrgKeyword);
+      if (devRoleFilter !== 'all') params.set('role', devRoleFilter);
+      if (selectedRegions.length > 0)
+        params.set('regions', selectedRegions.join(','));
+
+      const response = await fetch(
+        `/api/intelligent-analysis/projects/${encodeURIComponent(
+          dataset
+        )}/developers?${params.toString()}`
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch developers: ${response.status}`);
+      }
+      return response.json();
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const rows: DeveloperData[] = Array.isArray(apiData?.items)
+    ? apiData.items
+    : [];
+  const total = typeof apiData?.total === 'number' ? apiData.total : 0;
+  const computedLoading = apiLoading || loading;
+
   // 获取所有可用的地区选项
   const availableRegions = useMemo(() => {
-    const regions = Array.from(
-      new Set(data.map((item) => item.国家).filter(Boolean))
-    );
+    const regions = Array.isArray(apiData?.availableRegions)
+      ? apiData.availableRegions
+      : Array.from(new Set(data.map((item) => item.国家).filter(Boolean)));
     return regions
       .map((region) => ({
         label: translateByLocale(region, countryMapping, i18n.language),
         value: region,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [data, i18n.language]);
+  }, [apiData?.availableRegions, data, i18n.language]);
 
   const getAffiliatedOrg = (org?: string) => {
     const v = typeof org === 'string' ? org.trim() : '';
@@ -52,48 +102,10 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   const isIndividualDeveloper = (org?: string) =>
     getAffiliatedOrg(org) === '未知';
 
-  // 过滤数据
-  const filteredDataBySearch = useMemo(() => {
-    const userIdKeyword = searchKeyword.trim().toLowerCase();
-    const orgKeyword = orgSearchKeyword.trim().toLowerCase();
-    if (!userIdKeyword && !orgKeyword) {
-      return data;
-    }
-    return data.filter((item) => {
-      const userIdMatched =
-        !userIdKeyword ||
-        (typeof item.用户ID === 'string' &&
-          item.用户ID.toLowerCase().includes(userIdKeyword));
-
-      const affiliatedOrg = getAffiliatedOrg(item.所属组织);
-      const orgMatched =
-        !orgKeyword || affiliatedOrg.toLowerCase().includes(orgKeyword);
-
-      return userIdMatched && orgMatched;
-    });
-  }, [data, searchKeyword, orgSearchKeyword]);
-
-  const filteredData = useMemo(() => {
-    if (devRoleFilter === 'all') return filteredDataBySearch;
-    if (devRoleFilter === 'individual') {
-      return filteredDataBySearch.filter((item) =>
-        isIndividualDeveloper(item.所属组织)
-      );
-    }
-    return filteredDataBySearch.filter(
-      (item) => !isIndividualDeveloper(item.所属组织)
-    );
-  }, [filteredDataBySearch, devRoleFilter]);
-
-  // 分页数据
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredData.slice(startIndex, endIndex);
-  }, [filteredData, currentPage, pageSize]);
-
   // 处理搜索
   const handleSearch = () => {
+    setAppliedKeyword(searchKeyword.trim());
+    setAppliedOrgKeyword(orgSearchKeyword.trim());
     setCurrentPage(1);
   };
 
@@ -111,7 +123,7 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       render: (rank: number, record: DeveloperData, index: number) => {
         // 使用当前页面的索引计算排名
         const currentRank = (currentPage - 1) * pageSize + index + 1;
-        return <Tag color={'default'}>{currentRank}</Tag>;
+        return <Tag color={'default'}>{rank || currentRank}</Tag>;
       },
     },
     {
@@ -317,13 +329,13 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       {/* 开发者表格 */}
       <MyTable
         columns={columns}
-        dataSource={paginatedData}
-        loading={loading}
+        dataSource={rows}
+        loading={computedLoading}
         rowKey="用户ID"
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: filteredData.length,
+          total,
           showSizeChanger: false,
           showQuickJumper: true,
           showTotal: (total, range) =>

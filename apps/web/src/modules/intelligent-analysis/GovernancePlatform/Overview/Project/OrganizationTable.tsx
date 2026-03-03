@@ -4,13 +4,16 @@ import { Card, Input, Button, Space, Tag, Tooltip, Select } from 'antd';
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
 import type { ColumnsType } from 'antd/es/table';
+import { useQuery } from '@tanstack/react-query';
 import MyTable from '@common/components/Table';
 import { DeveloperData } from '../types';
 import { translateByLocale, countryMapping } from './utils/countryMapping';
 import { getDisplayUserId } from './utils/getDisplayUserId';
 import { classifyOrganization } from './utils/orgClassifier';
+import { PROJECT_NAME_MAP } from '../utils';
 
 interface OrganizationTableProps {
+  projectType: string;
   data: DeveloperData[];
   loading: boolean;
   onViewDetail: (record: DeveloperData) => void;
@@ -19,6 +22,7 @@ interface OrganizationTableProps {
 }
 
 const OrganizationTable: React.FC<OrganizationTableProps> = ({
+  projectType,
   data,
   loading,
   onViewDetail,
@@ -26,23 +30,67 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   onRegionFilterChange,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [appliedKeyword, setAppliedKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrgTypes, setSelectedOrgTypes] = useState<string[]>([]);
   const pageSize = 10;
   const { t, i18n } = useTranslation('intelligent_analysis');
 
+  const dataset = PROJECT_NAME_MAP[projectType] || projectType;
+
+  const { data: apiData, isFetching: apiLoading } = useQuery({
+    queryKey: [
+      'intelligent-analysis',
+      'organizations',
+      dataset,
+      currentPage,
+      pageSize,
+      appliedKeyword,
+      selectedRegions.join('|'),
+      selectedOrgTypes.join('|'),
+    ],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.set('page', String(currentPage));
+      params.set('pageSize', String(pageSize));
+      params.set('sort', 'score_desc');
+      if (appliedKeyword) params.set('q', appliedKeyword);
+      if (selectedRegions.length > 0)
+        params.set('regions', selectedRegions.join(','));
+      if (selectedOrgTypes.length > 0)
+        params.set('orgTypes', selectedOrgTypes.join(','));
+
+      const response = await fetch(
+        `/api/intelligent-analysis/projects/${encodeURIComponent(
+          dataset
+        )}/organizations?${params.toString()}`
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch organizations: ${response.status}`);
+      }
+      return response.json();
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const rows: DeveloperData[] = Array.isArray(apiData?.items)
+    ? apiData.items
+    : [];
+  const total = typeof apiData?.total === 'number' ? apiData.total : 0;
+  const computedLoading = apiLoading || loading;
+
   // 获取所有可用的地区选项
   const availableRegions = useMemo(() => {
-    const regions = Array.from(
-      new Set(data.map((item) => item.国家).filter(Boolean))
-    );
+    const regions = Array.isArray(apiData?.availableRegions)
+      ? apiData.availableRegions
+      : Array.from(new Set(data.map((item) => item.国家).filter(Boolean)));
     return regions
       .map((region) => ({
         label: translateByLocale(region, countryMapping, i18n.language),
         value: region,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [data, i18n.language]);
+  }, [apiData?.availableRegions, data, i18n.language]);
 
   const orgTypeOptions = useMemo(
     () => [
@@ -52,43 +100,9 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
     []
   );
 
-  // 过滤数据
-  const filteredData = useMemo(() => {
-    const keyword = searchKeyword.trim().toLowerCase();
-    const hasKeyword = keyword.length > 0;
-    const hasRegionFilter =
-      Array.isArray(selectedRegions) && selectedRegions.length > 0;
-    const hasOrgTypeFilter =
-      Array.isArray(selectedOrgTypes) && selectedOrgTypes.length > 0;
-
-    return data.filter((item) => {
-      const rawId = item.用户ID || '';
-      const normalizedId =
-        typeof rawId === 'string' && rawId.startsWith('org:')
-          ? rawId.slice(4)
-          : rawId;
-      const chineseId = item.中文用户ID || '';
-      const matchKeyword = !hasKeyword
-        ? true
-        : normalizedId.toLowerCase().includes(keyword) ||
-          chineseId.toLowerCase().includes(keyword);
-
-      const matchRegion = !hasRegionFilter
-        ? true
-        : selectedRegions.includes(item.国家);
-
-      const orgType = classifyOrganization(item.用户ID || '');
-      const matchOrgType = !hasOrgTypeFilter
-        ? true
-        : selectedOrgTypes.includes(orgType);
-
-      return matchKeyword && matchRegion && matchOrgType;
-    });
-  }, [data, searchKeyword, selectedRegions, selectedOrgTypes]);
-
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchKeyword, selectedRegions, selectedOrgTypes]);
+  }, [appliedKeyword, selectedRegions, selectedOrgTypes]);
 
   // 当地区不包含中国时，清空已选组织类型
   useEffect(() => {
@@ -97,15 +111,9 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
     }
   }, [selectedRegions]);
 
-  // 分页数据
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredData.slice(startIndex, endIndex);
-  }, [filteredData, currentPage, pageSize]);
-
   // 处理搜索
   const handleSearch = () => {
+    setAppliedKeyword(searchKeyword.trim());
     setCurrentPage(1);
   };
 
@@ -124,9 +132,8 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       key: '排名',
       width: 80,
       render: (rank: number, record: DeveloperData, index: number) => {
-        // 使用当前页面的索引计算排名
         const currentRank = (currentPage - 1) * pageSize + index + 1;
-        return <Tag color={'default'}>{currentRank}</Tag>;
+        return <Tag color={'default'}>{rank || currentRank}</Tag>;
       },
     },
     {
@@ -277,13 +284,13 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
       {/* 组织表格 */}
       <MyTable
         columns={columns}
-        dataSource={paginatedData}
-        loading={loading}
+        dataSource={rows}
+        loading={computedLoading}
         rowKey="用户ID"
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: filteredData.length,
+          total,
           showSizeChanger: false,
           showQuickJumper: true,
           showTotal: (total, range) =>

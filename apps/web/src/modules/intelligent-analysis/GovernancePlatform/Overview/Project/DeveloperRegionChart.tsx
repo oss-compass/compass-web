@@ -1,12 +1,12 @@
 // autocorrect: false
 import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { Card, Table, Tabs, Spin } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { Card, Spin } from 'antd';
 import { useTranslation } from 'next-i18next';
 import * as echarts from 'echarts';
 import worldZh from '@public/geoData/worldZH.json';
-import { DeveloperData } from '../types';
 import { translateByLocale, countryMapping } from './utils/countryMapping';
+import { useQuery } from '@tanstack/react-query';
+import { PROJECT_NAME_MAP } from '../utils';
 
 interface RegionData {
   key: string;
@@ -16,111 +16,45 @@ interface RegionData {
 
 interface DeveloperRegionChartProps {
   className?: string;
-  loading: boolean;
-  data: DeveloperData[];
+  projectType: string;
+  loading?: boolean;
   selectedRegions?: string[];
   onRegionFilterChange?: (regions: string[]) => void;
 }
 
 const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
   className,
-  loading,
-  data,
+  projectType,
+  loading = false,
   selectedRegions = [],
   onRegionFilterChange,
 }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
   const mapChartRef = useRef<HTMLDivElement>(null);
-  const [regionData, setRegionData] = useState<RegionData[]>([]);
   const [activeTab, setActiveTab] = useState<
     'all' | 'individual' | 'org_devs' | 'org_count'
   >('all');
+  const dataset = PROJECT_NAME_MAP[projectType] || projectType;
 
-  const getAffiliatedOrg = (item: DeveloperData) => {
-    const org = typeof item.所属组织 === 'string' ? item.所属组织.trim() : '';
-    return org || '未知';
-  };
+  const { data: apiData, isFetching: apiLoading } = useQuery({
+    queryKey: ['intelligent-analysis', 'regions', dataset, activeTab],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/intelligent-analysis/projects/${encodeURIComponent(
+          dataset
+        )}/regions?metric=${encodeURIComponent(activeTab)}`
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch regions: ${response.status}`);
+      }
+      return response.json();
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const isIndividualDeveloper = (item: DeveloperData) =>
-    getAffiliatedOrg(item) === '未知';
-
-  // 处理数据转换
-  const processData = (
-    sourceData: DeveloperData[],
-    filterType: string
-  ): RegionData[] => {
-    if (!sourceData || sourceData.length === 0) {
-      return [];
-    }
-
-    const countryMap = new Map<string, number>();
-
-    if (filterType === 'org_count') {
-      const countryOrgMap = new Map<string, Set<string>>();
-      sourceData.forEach((item) => {
-        if (!item.国家) return;
-        const org = getAffiliatedOrg(item);
-        if (org === '未知') return;
-        const set = countryOrgMap.get(item.国家) || new Set<string>();
-        set.add(org);
-        countryOrgMap.set(item.国家, set);
-      });
-      countryOrgMap.forEach((orgSet, country) => {
-        countryMap.set(country, orgSet.size);
-      });
-    } else {
-      const filteredData =
-        filterType === 'individual'
-          ? sourceData.filter((item) => isIndividualDeveloper(item))
-          : filterType === 'org_devs'
-          ? sourceData.filter((item) => !isIndividualDeveloper(item))
-          : sourceData;
-
-      filteredData.forEach((item) => {
-        if (item.国家) {
-          countryMap.set(item.国家, (countryMap.get(item.国家) || 0) + 1);
-        }
-      });
-    }
-
-    // 转换为数组格式
-    const result: RegionData[] = [];
-    countryMap.forEach((count, country) => {
-      result.push({
-        key: country,
-        country: country,
-        userCount: count,
-      });
-    });
-
-    // 按用户数量降序排序，但将"未知"和"东八区"排到最后
-    return result.sort((a, b) => {
-      const specialCountries = ['未知', '东八区'];
-      const aIsSpecial = specialCountries.includes(a.country);
-      const bIsSpecial = specialCountries.includes(b.country);
-
-      // 如果一个是特殊国家，一个不是，特殊国家排后面
-      if (aIsSpecial && !bIsSpecial) return 1;
-      if (!aIsSpecial && bIsSpecial) return -1;
-
-      // 都是特殊国家或都不是，按用户数量降序排序
-      return b.userCount - a.userCount;
-    });
-  };
-
-  // 数据处理
-  useEffect(() => {
-    const processedData = processData(data, activeTab);
-    setRegionData(processedData);
-  }, [data, activeTab]);
-
-  // 根据选中地区过滤表格数据
-  const filteredRegionData = useMemo(() => {
-    if (selectedRegions.length === 0) {
-      return regionData;
-    }
-    return regionData.filter((item) => selectedRegions.includes(item.country));
-  }, [regionData, selectedRegions]);
+  const regionData: RegionData[] = Array.isArray(apiData?.items)
+    ? apiData.items
+    : [];
 
   // 地图数据映射
   const mapData = regionData
@@ -133,11 +67,14 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       value: item.userCount || 0,
     }));
 
-  // 获取用于计算 visualMap 的数据（排除"未知"和"东八区"）
-  const getValidMapData = () => {
+  const visualMapMax = useMemo(() => {
     const excludeCountries = ['未知', '东八区'];
-    return mapData.filter((item) => !excludeCountries.includes(item.name));
-  };
+    const validValues = mapData
+      .filter((item) => !excludeCountries.includes(item.name))
+      .map((item) => item.value)
+      .filter((v) => v !== undefined && v !== null && v > 0);
+    return validValues.length > 0 ? Math.max(...validValues) : 1;
+  }, [mapData]);
 
   // 获取当前标签页的标题和描述
   const getTabInfo = () => {
@@ -171,31 +108,6 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
   };
 
   const tabInfo = getTabInfo();
-
-  // 表格列定义
-  const columns: ColumnsType<RegionData> = [
-    {
-      title: t('project_detail.region_chart.country_region'),
-      dataIndex: 'country',
-      key: 'country',
-      render: (text: string) => (
-        <span className="font-medium">
-          {translateByLocale(text, countryMapping, i18n.language)}
-        </span>
-      ),
-    },
-    {
-      title: tabInfo.description,
-      dataIndex: 'userCount',
-      key: 'userCount',
-      width: 80,
-      render: (count: number) => (
-        <span className="font-medium text-blue-600">
-          {count.toLocaleString()}
-        </span>
-      ),
-    },
-  ];
 
   useEffect(() => {
     if (mapChartRef.current) {
@@ -235,13 +147,7 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
         },
         visualMap: {
           min: 0,
-          max: (() => {
-            const validMapData = getValidMapData();
-            const validValues = validMapData
-              .map((item) => item.value)
-              .filter((v) => v !== undefined && v !== null && v > 0);
-            return validValues.length > 0 ? Math.max(...validValues) : 1;
-          })(),
+          max: visualMapMax,
           left: 'left',
           top: 'bottom',
           text: [
@@ -318,30 +224,22 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
         mapChart.dispose();
       };
     }
-  }, [mapData, tabInfo, selectedRegions, onRegionFilterChange]);
+  }, [
+    i18n.language,
+    mapData,
+    onRegionFilterChange,
+    selectedRegions,
+    t,
+    tabInfo,
+    visualMapMax,
+  ]);
 
-  // 计算各类型的数据统计
-  const getTabStats = () => {
-    const allDevsCount = data.length;
-    const individualCount = data.filter((item) =>
-      isIndividualDeveloper(item)
-    ).length;
-    const orgDevsCount = data.filter(
-      (item) => !isIndividualDeveloper(item)
-    ).length;
-    const orgCount = new Set(
-      data.map((item) => getAffiliatedOrg(item)).filter((org) => org !== '未知')
-    ).size;
-
-    return {
-      all: allDevsCount,
-      individual: individualCount,
-      orgDevs: orgDevsCount,
-      orgCount: orgCount,
-    };
+  const tabStats = apiData?.stats || {
+    all: 0,
+    individual: 0,
+    orgDevs: 0,
+    orgCount: 0,
   };
-
-  const tabStats = getTabStats();
 
   // 标签页配置
   const tabItems = [
@@ -405,7 +303,7 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
       }
       className={className}
     >
-      <Spin spinning={loading}>
+      <Spin spinning={loading || apiLoading}>
         <div className="flex h-[460px]">
           {/* 地图区域 */}
           <div className="flex-1">

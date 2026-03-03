@@ -1,7 +1,6 @@
 // autocorrect: false
-import React, { useState, useEffect } from 'react';
-import { message, Breadcrumb, Modal } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Modal } from 'antd';
 import { useTranslation } from 'next-i18next';
 import DetailPage from './DetailPage';
 import DeveloperRegionChart from './DeveloperRegionChart';
@@ -9,11 +8,7 @@ import PanoramaChart from './PanoramaChart';
 import DeveloperTable from './DeveloperTable';
 import OrganizationTable from './OrganizationTable';
 import RepoTable from './RepoTable';
-import {
-  fetchProjectData,
-  getProjectDisplayName,
-  processRawData,
-} from '../utils';
+import { getProjectDisplayName } from '../utils';
 import { DeveloperData } from '../types';
 import { getDisplayUserId } from './utils/getDisplayUserId';
 
@@ -23,8 +18,6 @@ interface MainProps {
 
 const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
   const { t } = useTranslation('intelligent_analysis');
-  const [loading, setLoading] = useState(false);
-  const [allData, setAllData] = useState<DeveloperData[]>([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<DeveloperData | null>(null);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
@@ -32,29 +25,6 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
   const category = getProjectDisplayName(projectType);
 
   // 移除用户类型选项
-
-  // 加载项目数据
-  const loadProjectData = async () => {
-    setLoading(true);
-    try {
-      console.log(`Loading data for project: ${projectType}`);
-      const rawData = await fetchProjectData(projectType);
-      const processedData = processRawData(rawData, category);
-
-      console.log(`Loaded ${processedData.length} items for ${category}`);
-      setAllData(processedData);
-    } catch (error) {
-      console.error('Error loading project data:', error);
-      message.error(t('project_detail.data_load_error'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 初始化和项目类型变化时加载数据
-  useEffect(() => {
-    loadProjectData();
-  }, [projectType]);
 
   // 查看详情
   const handleViewDetail = (record: DeveloperData) => {
@@ -66,24 +36,6 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
   const handleCloseModal = () => {
     setShowDetailModal(false);
     setSelectedUser(null);
-  };
-
-  // 获取开发者数据
-  const getDeveloperData = () => {
-    const developers = allData.filter((item) => item.用户类型 === '开发者');
-    if (selectedRegions.length === 0) {
-      return developers;
-    }
-    return developers.filter((item) => selectedRegions.includes(item.国家));
-  };
-
-  // 获取组织数据
-  const getOrganizationData = () => {
-    const organizations = allData.filter((item) => item.用户类型 === '组织');
-    if (selectedRegions.length === 0) {
-      return organizations;
-    }
-    return organizations.filter((item) => selectedRegions.includes(item.国家));
   };
 
   // 处理地区筛选变化
@@ -122,12 +74,12 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
         {/* 全景图与地图卡片组件 */}
         <div className="mb-6 flex gap-6">
           <div className="w-1/2">
-            <PanoramaChart activeSlug={projectType} loading={loading} />
+            <PanoramaChart activeSlug={projectType} loading={false} />
           </div>
           <div className="w-1/2">
             <DeveloperRegionChart
-              data={allData}
-              loading={loading}
+              projectType={projectType}
+              loading={false}
               selectedRegions={selectedRegions}
               onRegionFilterChange={handleRegionFilterChange}
               className="h-full"
@@ -143,8 +95,9 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
 
         {/* 组织表格组件 */}
         <OrganizationTable
-          data={getOrganizationData()}
-          loading={loading}
+          projectType={projectType}
+          data={[]}
+          loading={false}
           onViewDetail={handleViewDetail}
           selectedRegions={selectedRegions}
           onRegionFilterChange={handleRegionFilterChange}
@@ -152,8 +105,9 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
 
         {/* 开发者表格组件 */}
         <DeveloperTable
-          data={getDeveloperData()}
-          loading={loading}
+          projectType={projectType}
+          data={[]}
+          loading={false}
           onViewDetail={handleViewDetail}
           selectedRegions={selectedRegions}
           onRegionFilterChange={handleRegionFilterChange}
