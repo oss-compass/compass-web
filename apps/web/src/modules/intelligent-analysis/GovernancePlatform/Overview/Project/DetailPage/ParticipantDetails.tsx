@@ -242,15 +242,15 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
             <h3 className="mb-4 text-xl font-bold text-gray-800">
               {i18n.language === 'en'
                 ? `${translateByLocale(
-                  ecosystemName,
-                  ecosystemMapping,
-                  i18n.language
-                )} Overview`
+                    ecosystemName,
+                    ecosystemMapping,
+                    i18n.language
+                  )} Overview`
                 : `${translateByLocale(
-                  ecosystemName,
-                  ecosystemMapping,
-                  i18n.language
-                )}概览`}
+                    ecosystemName,
+                    ecosystemMapping,
+                    i18n.language
+                  )}概览`}
             </h3>
             <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
               <Col span={6}>
@@ -282,7 +282,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                         ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
                         : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
                       ecosystemData[
-                      '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                        '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
                       ],
                       '#fa8c16'
                     )}
@@ -293,7 +293,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                         ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
                         : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
                       ecosystemData[
-                      '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                        '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
                       ],
                       '#722ed1'
                     )}

@@ -28,7 +28,9 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { t, i18n } = useTranslation('intelligent_analysis');
-  const [devRoleFilter, setDevRoleFilter] = useState<'all' | 'individual' | 'org'>('all');
+  const [devRoleFilter, setDevRoleFilter] = useState<
+    'all' | 'individual' | 'org'
+  >('all');
 
   // 获取所有可用的地区选项
   const availableRegions = useMemo(() => {
@@ -47,7 +49,8 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
     const v = typeof org === 'string' ? org.trim() : '';
     return v || '未知';
   };
-  const isIndividualDeveloper = (org?: string) => getAffiliatedOrg(org) === '未知';
+  const isIndividualDeveloper = (org?: string) =>
+    getAffiliatedOrg(org) === '未知';
 
   // 过滤数据
   const filteredDataBySearch = useMemo(() => {
@@ -73,9 +76,13 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   const filteredData = useMemo(() => {
     if (devRoleFilter === 'all') return filteredDataBySearch;
     if (devRoleFilter === 'individual') {
-      return filteredDataBySearch.filter((item) => isIndividualDeveloper(item.所属组织));
+      return filteredDataBySearch.filter((item) =>
+        isIndividualDeveloper(item.所属组织)
+      );
     }
-    return filteredDataBySearch.filter((item) => !isIndividualDeveloper(item.所属组织));
+    return filteredDataBySearch.filter(
+      (item) => !isIndividualDeveloper(item.所属组织)
+    );
   }, [filteredDataBySearch, devRoleFilter]);
 
   // 分页数据
