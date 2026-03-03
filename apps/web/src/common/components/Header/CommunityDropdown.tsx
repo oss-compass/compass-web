@@ -132,7 +132,7 @@ const RepoLinks = () => {
           <div>
             <p className="text-base">AtomGit</p>
             <p className="text-sm text-white/50">
-              {t('common:community.official_repository_on_atomgit')}
+              {t('common:community.official_repository_on_gitcode')}
             </p>
           </div>
         </LinkX>

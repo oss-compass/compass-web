@@ -24,9 +24,11 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   onRegionFilterChange,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [orgSearchKeyword, setOrgSearchKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { t, i18n } = useTranslation('intelligent_analysis');
+  const [devRoleFilter, setDevRoleFilter] = useState<'all' | 'individual' | 'org'>('all');
 
   // 获取所有可用的地区选项
   const availableRegions = useMemo(() => {
@@ -41,14 +43,40 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data, i18n.language]);
 
+  const getAffiliatedOrg = (org?: string) => {
+    const v = typeof org === 'string' ? org.trim() : '';
+    return v || '未知';
+  };
+  const isIndividualDeveloper = (org?: string) => getAffiliatedOrg(org) === '未知';
+
   // 过滤数据
-  const filteredData = useMemo(() => {
-    if (!searchKeyword.trim()) {
+  const filteredDataBySearch = useMemo(() => {
+    const userIdKeyword = searchKeyword.trim().toLowerCase();
+    const orgKeyword = orgSearchKeyword.trim().toLowerCase();
+    if (!userIdKeyword && !orgKeyword) {
       return data;
     }
-    const keyword = searchKeyword.trim().toLowerCase();
-    return data.filter((item) => item.用户ID.toLowerCase().includes(keyword));
-  }, [data, searchKeyword]);
+    return data.filter((item) => {
+      const userIdMatched =
+        !userIdKeyword ||
+        (typeof item.用户ID === 'string' &&
+          item.用户ID.toLowerCase().includes(userIdKeyword));
+
+      const affiliatedOrg = getAffiliatedOrg(item.所属组织);
+      const orgMatched =
+        !orgKeyword || affiliatedOrg.toLowerCase().includes(orgKeyword);
+
+      return userIdMatched && orgMatched;
+    });
+  }, [data, searchKeyword, orgSearchKeyword]);
+
+  const filteredData = useMemo(() => {
+    if (devRoleFilter === 'all') return filteredDataBySearch;
+    if (devRoleFilter === 'individual') {
+      return filteredDataBySearch.filter((item) => isIndividualDeveloper(item.所属组织));
+    }
+    return filteredDataBySearch.filter((item) => !isIndividualDeveloper(item.所属组织));
+  }, [filteredDataBySearch, devRoleFilter]);
 
   // 分页数据
   const paginatedData = useMemo(() => {
@@ -222,10 +250,25 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
             <Input
               placeholder={t('project_detail.search_developer')}
               prefix={<SearchOutlined />}
-              style={{ width: 300 }}
+              style={{ width: 200 }}
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               onPressEnter={handleSearch}
+              allowClear
+            />
+            <Button type="primary" onClick={handleSearch}>
+              {t('project_detail.search')}
+            </Button>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Input
+              placeholder="搜索所属组织"
+              prefix={<SearchOutlined />}
+              style={{ width: 200 }}
+              value={orgSearchKeyword}
+              onChange={(e) => setOrgSearchKeyword(e.target.value)}
+              onPressEnter={handleSearch}
+              allowClear
             />
             <Button type="primary" onClick={handleSearch}>
               {t('project_detail.search')}
@@ -244,6 +287,21 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
               options={availableRegions}
               allowClear
               maxTagCount="responsive"
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">开发者类型:</span>
+            <Select
+              style={{ width: 160 }}
+              value={devRoleFilter}
+              onChange={(v) =>
+                setDevRoleFilter(v as 'all' | 'individual' | 'org')
+              }
+              options={[
+                { label: '全部', value: 'all' },
+                { label: '个人开发者', value: 'individual' },
+                { label: '组织开发者', value: 'org' },
+              ]}
             />
           </div>
         </Space>

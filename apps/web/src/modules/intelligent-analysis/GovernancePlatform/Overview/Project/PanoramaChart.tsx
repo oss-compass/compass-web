@@ -230,7 +230,7 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
             </div>
 
             {/* Right: Toolchain */}
-            <div className="flex w-32 cursor-pointer flex-col items-center rounded border border-gray-200 bg-white p-2 text-center transition-shadow duration-200 hover:shadow-md">
+            <div className="flex cur w-32 cursor-not-allowed  flex-col items-center rounded border border-gray-200 bg-white p-2 text-center transition-shadow duration-200">
               <div className="mb-2 mt-4 font-bold">Nsight</div>
               <div className="mb-2 text-xs font-bold">
                 全流程工具链
@@ -243,7 +243,7 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
           </div>
 
           {/* Bottom: Processor */}
-          <div className={`mt-4 ${topBottomCardClass}`}>AI处理器</div>
+          <div className={`mt-4 cursor-not-allowed mb-2 rounded border border-gray-200 bg-white p-3 text-center shadow-sm`}>AI处理器</div>
         </div>
       </Spin>
     </Card>
