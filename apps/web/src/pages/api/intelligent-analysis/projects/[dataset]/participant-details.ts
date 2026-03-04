@@ -105,7 +105,7 @@ function buildMetaByEcosystem(organizationData: Record<string, any>) {
     if (!ecosystemData || typeof ecosystemData !== 'object') continue;
     const participants =
       (ecosystemData as any)?.['人员参与项目清单'] &&
-      typeof (ecosystemData as any)['人员参与项目清单'] === 'object'
+        typeof (ecosystemData as any)['人员参与项目清单'] === 'object'
         ? (ecosystemData as any)['人员参与项目清单']
         : {};
     let totalItems = 0;
@@ -114,19 +114,30 @@ function buildMetaByEcosystem(organizationData: Record<string, any>) {
       totalItems += Object.keys(userData as any).length;
     }
 
+    const codeTotal =
+      Number(
+        (ecosystemData as any)['2024-2025组织代码贡献总量'] ??
+        (ecosystemData as any)['2025-2026组织代码贡献总量'] ??
+        0
+      ) || 0;
+    const issueTotal =
+      Number(
+        (ecosystemData as any)['2024-2025组织Issue贡献总量'] ??
+        (ecosystemData as any)['2025-2026组织Issue贡献总量'] ??
+        0
+      ) || 0;
+
     metaByEcosystem[ecosystemName] = {
-      '2024-2025组织代码贡献总量':
-        Number((ecosystemData as any)['2024-2025组织代码贡献总量']) || 0,
-      '2024-2025组织Issue贡献总量':
-        Number((ecosystemData as any)['2024-2025组织Issue贡献总量']) || 0,
+      '2024-2025组织代码贡献总量': codeTotal,
+      '2024-2025组织Issue贡献总量': issueTotal,
       '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
         (ecosystemData as any)[
-          '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+        '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
         ] || ''
       ),
       '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
         (ecosystemData as any)[
-          '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+        '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
         ] || ''
       ),
       totalItems,

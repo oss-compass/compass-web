@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card,
+  Button,
   Table,
   Typography,
   Space,
@@ -201,6 +202,466 @@ interface ParticipantDetailsProps {
   organizationId: string;
 }
 
+const buildColumns = (
+  t: (key: string) => string,
+  i18n: { language: string }
+): ColumnsType<ParticipantTableRow> => [
+    {
+      title: t('project_detail.participant.specific_personnel'),
+      dataIndex: '具体人员',
+      key: '具体人员',
+      width: 150,
+      fixed: 'left',
+      render: (name: string) => {
+        const normalized = normalizeId(name);
+        return (
+          <a
+            href={`/developer/${encodeURIComponent(normalized)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {normalized}
+          </a>
+        );
+      },
+    },
+    {
+      title: t('project_detail.participant.contribution_repo'),
+      dataIndex: '贡献仓库',
+      key: '贡献仓库',
+      width: 200,
+      fixed: 'left',
+      render: (repo: string) => {
+        const toGithubUrl = (r?: string) => {
+          if (!r) return null;
+          const value = r.trim();
+          if (/^https?:\/\/(www\.)?github\.com\//i.test(value)) {
+            return value;
+          }
+          const normalized = value.replace(/^github:/i, '');
+          const match = normalized.match(
+            /^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)(\.git)?$/
+          );
+          if (match) {
+            return `https://github.com/${match[1]}/${match[2]}`;
+          }
+          return null;
+        };
+        const url = toGithubUrl(repo);
+        const display = (repo || '').replace(/^github:/i, '');
+        return url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {display}
+          </a>
+        ) : (
+          <span>{display}</span>
+        );
+      },
+    },
+
+    {
+      title: i18n.language === 'en' ? '2025 Data' : '2025年数据',
+      children: [
+        {
+          title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
+          dataIndex: '2025年角色承担',
+          key: '2025年角色承担',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title: i18n.language === 'en' ? 'Ecosystem Ratio' : '生态占比',
+          dataIndex: '2025年目标生态占个人总活跃量比值',
+          key: '2025年目标生态占个人总活跃量比值',
+          width: 120,
+          render: (value: number) => `${(value * 100).toFixed(4)}%`,
+        },
+        {
+          title: i18n.language === 'en' ? 'Code Contribution' : '代码贡献量',
+          dataIndex: '2025年个人代码贡献量',
+          key: '2025年个人代码贡献量',
+          width: 120,
+        },
+        {
+          title: i18n.language === 'en' ? 'Issue Contribution' : 'Issue贡献量',
+          dataIndex: '2025年个人Issue贡献量',
+          key: '2025年个人Issue贡献量',
+          width: 120,
+        },
+        {
+          title: i18n.language === 'en' ? 'Community Centrality' : '社区核心度',
+          dataIndex: '2025年个人社区核心度',
+          key: '2025年个人社区核心度',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title:
+            i18n.language === 'en' ? 'Collaboration Influence' : '协作影响力',
+          dataIndex: '2025年个人协作影响力',
+          key: '2025年个人协作影响力',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title: i18n.language === 'en' ? 'Connectivity Control' : '联通控制力',
+          dataIndex: '2025年个人联通控制力',
+          key: '2025年个人联通控制力',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title: 'PageRank',
+          dataIndex: '2025年个人PageRank',
+          key: '2025年个人PageRank',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+      ],
+    },
+    {
+      title: i18n.language === 'en' ? '2024 Data' : '2024年数据',
+      children: [
+        {
+          title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
+          dataIndex: '2024年角色承担',
+          key: '2024年角色承担',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title:
+            i18n.language === 'en'
+              ? 'Ecosystem Ratio'
+              : '目标生态占个人总活跃量比值',
+          dataIndex: '2024年目标生态占个人总活跃量比值',
+          key: '2024年目标生态占个人总活跃量比值',
+          width: 120,
+          render: (value: number) => `${(value * 100).toFixed(4)}%`,
+        },
+        {
+          title:
+            i18n.language === 'en' ? 'Code Contribution' : '个人代码贡献量',
+          dataIndex: '2024年个人代码贡献量',
+          key: '2024年个人代码贡献量',
+          width: 120,
+        },
+        {
+          title:
+            i18n.language === 'en' ? 'Issue Contribution' : '个人Issue贡献量',
+          dataIndex: '2024年个人Issue贡献量',
+          key: '2024年个人Issue贡献量',
+          width: 120,
+        },
+        {
+          title:
+            i18n.language === 'en' ? 'Community Centrality' : '个人社区核心度',
+          dataIndex: '2024年个人社区核心度',
+          key: '2024年个人社区核心度',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title:
+            i18n.language === 'en'
+              ? 'Collaboration Influence'
+              : '个人协作影响力',
+          dataIndex: '2024年个人协作影响力',
+          key: '2024年个人协作影响力',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title:
+            i18n.language === 'en' ? 'Connectivity Control' : '个人联通控制力',
+          dataIndex: '2024年个人联通控制力',
+          key: '2024年个人联通控制力',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+        {
+          title: 'PageRank',
+          dataIndex: '2024年个人PageRank',
+          key: '2024年个人PageRank',
+          width: 120,
+          render: (value: string) =>
+            translateByLocale(value, ecosystemMapping, i18n.language),
+        },
+      ],
+    },
+  ];
+
+interface ParticipantMainContentProps {
+  t: (key: string) => string;
+  i18n: { language: string };
+  ecosystems: string[];
+  activeEcosystem: string;
+  onTabChange: (key: string) => void;
+  activeMeta: any;
+  organizationId: string;
+  columns: ColumnsType<ParticipantTableRow>;
+  tableRows: ParticipantTableRow[];
+  currentPage: number;
+  pageSize: number;
+  total: number;
+  onPageChange: (page: number, pageSize: number) => void;
+  apiLoading: boolean;
+  apiError: unknown;
+}
+
+const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) => {
+  const {
+    t,
+    i18n,
+    ecosystems,
+    activeEcosystem,
+    onTabChange,
+    activeMeta,
+    organizationId,
+    columns,
+    tableRows,
+    currentPage,
+    pageSize,
+    total,
+    onPageChange,
+    apiLoading,
+    apiError,
+  } = props;
+
+  const [corsTestLoading, setCorsTestLoading] = useState(false);
+  const [corsTestMessage, setCorsTestMessage] = useState<string | null>(null);
+
+  if (apiLoading) {
+    return renderLoadingState(t);
+  }
+
+  if (apiError) {
+    return renderErrorState(t, i18n, apiError);
+  }
+
+  if (ecosystems.length === 0) {
+    return renderEmptyState(i18n, t('project_detail.participant.no_data'));
+  }
+
+  const tabItems = ecosystems.map((ecosystemName) => ({
+    key: ecosystemName,
+    label: translateByLocale(ecosystemName, ecosystemMapping, i18n.language),
+  }));
+
+  return (
+    <Card
+      title={
+        <Space>
+          <TeamOutlined />
+          <span>
+            {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
+          </span>
+        </Space>
+      }
+      style={{ marginTop: 16 }}
+    // extra={
+    //   <Space>
+    //     <Button
+    //       type="primary"
+    //       loading={corsTestLoading}
+    //       onClick={async () => {
+    //         setCorsTestLoading(true);
+    //         setCorsTestMessage(null);
+    //         try {
+    //           // const resp = await fetch(
+    //           //   '/api/intelligent-analysis/external/developer-discovery/detail-list',
+    //           //   {
+    //           //     method: 'POST',
+    //           //     headers: {
+    //           //       Accept: '*/*',
+    //           //       'Content-Type': 'application/json',
+    //           //     },
+    //           //     body: JSON.stringify({
+    //           //       ecosystem: activeEcosystem || ecosystems[0],
+    //           //       developer: organizationId,
+    //           //       page: 1,
+    //           //       page_size: 10,
+    //           //     }),
+    //           //   }
+    //           // );
+
+    //           const resp = await fetch('http://compute.lishengbao.com.cn:8801/developer_discovery/detail_list', {
+    //             method: 'POST',
+    //             headers: {
+    //               'X-API-Key': 'opensearch',          // 可改成你的真实值/从后端获取
+    //               'Cookie': 'session=16c064d959d9f60faa680e00faa33f87', // 建议放到后端，不要在前端暴露
+    //               'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+    //               'Content-Type': 'application/json',
+    //               'Accept': '*/*',
+    //               'Host': 'compute.lishengbao.com.cn:8801',
+    //               'Connection': 'keep-alive'
+    //             },
+    //             body: JSON.stringify({
+    //               ecosystem: activeEcosystem || ecosystems[0],
+    //               developer: organizationId,
+    //               page: 1,
+    //               page_size: 10,
+    //             }),
+    //           });
+
+    //           const text = await resp.text();
+    //           if (resp.ok) {
+    //             setCorsTestMessage(
+    //               i18n.language === 'en'
+    //                 ? `Success ${resp.status}, length ${text.length}`
+    //                 : `成功 ${resp.status}, 响应长度 ${text.length}`
+    //             );
+    //           } else {
+    //             setCorsTestMessage(
+    //               i18n.language === 'en'
+    //                 ? `HTTP ${resp.status}, ${text.slice(0, 200)}`
+    //                 : `HTTP ${resp.status}, ${text.slice(0, 200)}`
+    //             );
+    //           }
+    //         } catch (e: any) {
+    //           setCorsTestMessage(
+    //             i18n.language === 'en'
+    //               ? `Error: ${e?.message || String(e)}`
+    //               : `错误: ${e?.message || String(e)}`
+    //           );
+    //         } finally {
+    //           setCorsTestLoading(false);
+    //         }
+    //       }}
+    //     >
+    //       {i18n.language === 'en'
+    //         ? 'Test External API (CORS)'
+    //         : '测试外部接口（跨域）'}
+    //     </Button>
+    //     {corsTestMessage && (
+    //       <Text
+    //         type={
+    //           corsTestMessage.startsWith('成功') ||
+    //             corsTestMessage.startsWith('Success')
+    //             ? 'success'
+    //             : 'danger'
+    //         }
+    //       >
+    //         {corsTestMessage}
+    //       </Text>
+    //     )}
+    //   </Space>
+    // }
+    >
+      <Tabs
+        items={tabItems}
+        activeKey={activeEcosystem}
+        onChange={onTabChange}
+        size="large"
+        tabPosition="top"
+      />
+      <div>
+        <div className="mb-6">
+          <h3 className="mb-4 text-xl font-bold text-gray-800">
+            {i18n.language === 'en'
+              ? `${translateByLocale(
+                activeEcosystem || ecosystems[0],
+                ecosystemMapping,
+                i18n.language
+              )} Overview`
+              : `${translateByLocale(
+                activeEcosystem || ecosystems[0],
+                ecosystemMapping,
+                i18n.language
+              )}概览`}
+          </h3>
+          <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+            <Col span={6}>
+              {renderStatisticCard(
+                i18n.language === 'en'
+                  ? 'Organization Code Contribution Total'
+                  : '组织代码贡献总量',
+                Number(activeMeta?.['2024-2025组织代码贡献总量'] || activeMeta?.['2025-2026组织代码贡献总量'] || 0),
+                '#1890ff',
+                (value) => value?.toLocaleString()
+              )}
+            </Col>
+            <Col span={6}>
+              {renderStatisticCard(
+                i18n.language === 'en'
+                  ? 'Organization Issue Contribution Total'
+                  : '组织Issue贡献总量',
+                Number(activeMeta?.['2024-2025组织Issue贡献总量'] || activeMeta?.['2025-2026组织Issue贡献总量'] || 0),
+                '#52c41a',
+                (value) => value?.toLocaleString()
+              )}
+            </Col>
+            {organizationId.startsWith('org:') && (
+              <>
+                <Col span={6}>
+                  {renderNetworkInfluenceCard(
+                    i18n,
+                    i18n.language === 'en'
+                      ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
+                      : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                    String(
+                      activeMeta?.[
+                      '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                      ] || ''
+                    ),
+                    '#fa8c16'
+                  )}
+                </Col>
+                <Col span={6}>
+                  {renderNetworkInfluenceCard(
+                    i18n,
+                    i18n.language === 'en'
+                      ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
+                      : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                    String(
+                      activeMeta?.[
+                      '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                      ] || ''
+                    ),
+                    '#722ed1'
+                  )}
+                </Col>
+              </>
+            )}
+          </Row>
+        </div>
+
+        <Table
+          columns={columns}
+          dataSource={tableRows}
+          pagination={{
+            current: currentPage,
+            pageSize,
+            total,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (tot, range) =>
+              getPaginationTotal(i18n, tot, range as [number, number]),
+            onChange: (p, ps) => onPageChange(p, ps),
+          }}
+          scroll={{ x: 1800, y: 600 }}
+          size="small"
+          bordered
+          title={() =>
+            i18n.language === 'en'
+              ? 'Personnel Project List'
+              : '人员参与项目清单'
+          }
+        />
+      </div>
+    </Card>
+  );
+};
+
 const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   ecosystem,
   organizationId,
@@ -281,342 +742,33 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     : [];
   const total = typeof apiData?.total === 'number' ? apiData.total : 0;
 
-  const renderMainContent = () => {
-    if (apiLoading) {
-      return renderLoadingState(t);
-    }
+  const columns = buildColumns(t, i18n);
 
-    if (apiError) {
-      return renderErrorState(t, i18n, apiError);
-    }
-
-    if (ecosystems.length === 0) {
-      return renderEmptyState(i18n, t('project_detail.participant.no_data'));
-    }
-
-    const tabItems = ecosystems.map((ecosystemName) => ({
-      key: ecosystemName,
-      label: translateByLocale(ecosystemName, ecosystemMapping, i18n.language),
-    }));
-
-    return (
-      <Card
-        title={
-          <Space>
-            <TeamOutlined />
-            <span>
-              {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
-            </span>
-          </Space>
-        }
-        style={{ marginTop: 16 }}
-      >
-        <Tabs
-          items={tabItems}
-          activeKey={activeEcosystem}
-          onChange={(key) => {
-            setRequestedEcosystem(key);
-            setCurrentPage(1);
-          }}
-          size="large"
-          tabPosition="top"
-        />
-        <div>
-          <div className="mb-6">
-            <h3 className="mb-4 text-xl font-bold text-gray-800">
-              {i18n.language === 'en'
-                ? `${translateByLocale(
-                  activeEcosystem || ecosystems[0],
-                  ecosystemMapping,
-                  i18n.language
-                )} Overview`
-                : `${translateByLocale(
-                  activeEcosystem || ecosystems[0],
-                  ecosystemMapping,
-                  i18n.language
-                )}概览`}
-            </h3>
-            <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-              <Col span={6}>
-                {renderStatisticCard(
-                  i18n.language === 'en'
-                    ? 'Organization Code Contribution Total'
-                    : '组织代码贡献总量',
-                  Number(activeMeta?.['2024-2025组织代码贡献总量'] || 0),
-                  '#1890ff',
-                  (value) => value?.toLocaleString()
-                )}
-              </Col>
-              <Col span={6}>
-                {renderStatisticCard(
-                  i18n.language === 'en'
-                    ? 'Organization Issue Contribution Total'
-                    : '组织Issue贡献总量',
-                  Number(activeMeta?.['2024-2025组织Issue贡献总量'] || 0),
-                  '#52c41a',
-                  (value) => value?.toLocaleString()
-                )}
-              </Col>
-              {organizationId.startsWith('org:') && (
-                <>
-                  <Col span={6}>
-                    {renderNetworkInfluenceCard(
-                      i18n,
-                      i18n.language === 'en'
-                        ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
-                        : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
-                      String(
-                        activeMeta?.[
-                        '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
-                        ] || ''
-                      ),
-                      '#fa8c16'
-                    )}
-                  </Col>
-                  <Col span={6}>
-                    {renderNetworkInfluenceCard(
-                      i18n,
-                      i18n.language === 'en'
-                        ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
-                        : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
-                      String(
-                        activeMeta?.[
-                        '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
-                        ] || ''
-                      ),
-                      '#722ed1'
-                    )}
-                  </Col>
-                </>
-              )}
-            </Row>
-          </div>
-
-          <Table
-            columns={columns}
-            dataSource={tableRows}
-            pagination={{
-              current: currentPage,
-              pageSize,
-              total,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (tot, range) => getPaginationTotal(i18n, tot, range as [number, number]),
-              onChange: (p, ps) => {
-                setCurrentPage(p);
-                setPageSize(ps);
-              },
-            }}
-            scroll={{ x: 1800, y: 600 }}
-            size="small"
-            bordered
-            title={() =>
-              i18n.language === 'en'
-                ? 'Personnel Project List'
-                : '人员参与项目清单'
-            }
-          />
-        </div>
-      </Card>
-    );
-  };
-
-  // 表格列定义
-  const columns: ColumnsType<ParticipantTableRow> = [
-    {
-      title: t('project_detail.participant.specific_personnel'),
-      dataIndex: '具体人员',
-      key: '具体人员',
-      width: 150,
-      fixed: 'left',
-      render: (name: string) => {
-        const normalized = normalizeId(name);
-        return (
-          <a
-            href={`/developer/${encodeURIComponent(normalized)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {normalized}
-          </a>
-        );
-      },
-    },
-    {
-      title: t('project_detail.participant.contribution_repo'),
-      dataIndex: '贡献仓库',
-      key: '贡献仓库',
-      width: 200,
-      fixed: 'left',
-      render: (repo: string) => {
-        const toGithubUrl = (r?: string) => {
-          if (!r) return null;
-          const value = r.trim();
-          if (/^https?:\/\/(www\.)?github\.com\//i.test(value)) {
-            return value;
-          }
-          const normalized = value.replace(/^github:/i, '');
-          const match = normalized.match(
-            /^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)(\.git)?$/
-          );
-          if (match) {
-            return `https://github.com/${match[1]}/${match[2]}`;
-          }
-          return null;
-        };
-        const url = toGithubUrl(repo);
-        const display = (repo || '').replace(/^github:/i, '');
-        return url ? (
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            {display}
-          </a>
-        ) : (
-          <span>{display}</span>
-        );
-      },
-    },
-    {
-      title: i18n.language === 'en' ? '2024 Data' : '2024年数据',
-      children: [
-        {
-          title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
-          dataIndex: '2024年角色承担',
-          key: '2024年角色承担',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en'
-              ? 'Ecosystem Ratio'
-              : '目标生态占个人总活跃量比值',
-          dataIndex: '2024年目标生态占个人总活跃量比值',
-          key: '2024年目标生态占个人总活跃量比值',
-          width: 120,
-          render: (value: number) => `${(value * 100).toFixed(4)}%`,
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Code Contribution' : '个人代码贡献量',
-          dataIndex: '2024年个人代码贡献量',
-          key: '2024年个人代码贡献量',
-          width: 120,
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Issue Contribution' : '个人Issue贡献量',
-          dataIndex: '2024年个人Issue贡献量',
-          key: '2024年个人Issue贡献量',
-          width: 120,
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Community Centrality' : '个人社区核心度',
-          dataIndex: '2024年个人社区核心度',
-          key: '2024年个人社区核心度',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en'
-              ? 'Collaboration Influence'
-              : '个人协作影响力',
-          dataIndex: '2024年个人协作影响力',
-          key: '2024年个人协作影响力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Connectivity Control' : '个人联通控制力',
-          dataIndex: '2024年个人联通控制力',
-          key: '2024年个人联通控制力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: 'PageRank',
-          dataIndex: '2024年个人PageRank',
-          key: '2024年个人PageRank',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-      ],
-    },
-    {
-      title: i18n.language === 'en' ? '2025 Data' : '2025年数据',
-      children: [
-        {
-          title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
-          dataIndex: '2025年角色承担',
-          key: '2025年角色承担',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: i18n.language === 'en' ? 'Ecosystem Ratio' : '生态占比',
-          dataIndex: '2025年目标生态占个人总活跃量比值',
-          key: '2025年目标生态占个人总活跃量比值',
-          width: 120,
-          render: (value: number) => `${(value * 100).toFixed(4)}%`,
-        },
-        {
-          title: i18n.language === 'en' ? 'Code Contribution' : '代码贡献量',
-          dataIndex: '2025年个人代码贡献量',
-          key: '2025年个人代码贡献量',
-          width: 120,
-        },
-        {
-          title: i18n.language === 'en' ? 'Issue Contribution' : 'Issue贡献量',
-          dataIndex: '2025年个人Issue贡献量',
-          key: '2025年个人Issue贡献量',
-          width: 120,
-        },
-        {
-          title: i18n.language === 'en' ? 'Community Centrality' : '社区核心度',
-          dataIndex: '2025年个人社区核心度',
-          key: '2025年个人社区核心度',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Collaboration Influence' : '协作影响力',
-          dataIndex: '2025年个人协作影响力',
-          key: '2025年个人协作影响力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: i18n.language === 'en' ? 'Connectivity Control' : '联通控制力',
-          dataIndex: '2025年个人联通控制力',
-          key: '2025年个人联通控制力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: 'PageRank',
-          dataIndex: '2025年个人PageRank',
-          key: '2025年个人PageRank',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-      ],
-    },
-  ];
-
-  return renderMainContent();
+  return (
+    <ParticipantMainContent
+      t={t}
+      i18n={i18n}
+      ecosystems={ecosystems}
+      activeEcosystem={activeEcosystem}
+      onTabChange={(key) => {
+        setRequestedEcosystem(key);
+        setCurrentPage(1);
+      }}
+      activeMeta={activeMeta}
+      organizationId={organizationId}
+      columns={columns}
+      tableRows={tableRows}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      total={total}
+      onPageChange={(p, ps) => {
+        setCurrentPage(p);
+        setPageSize(ps);
+      }}
+      apiLoading={apiLoading}
+      apiError={apiError}
+    />
+  );
 };
 
 export default ParticipantDetails;

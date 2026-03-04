@@ -122,9 +122,7 @@ export default async function handler(
 
   const filePath = (await fileExists(mainFilePath))
     ? mainFilePath
-    : (await fileExists(fallbackFilePath))
-      ? fallbackFilePath
-      : null;
+    : (await fileExists(fallbackFilePath)) ? fallbackFilePath : null;
 
   if (!filePath) {
     try {
