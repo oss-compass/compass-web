@@ -303,7 +303,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
     }
 
     return data.map(createEcoTabItem).filter(Boolean);
-  }, [data, chartRefs, i18n.language]);
+  }, [data, chartRefs, i18n.language, createEcoTabItem]);
 
   // 如果没有数据，显示提示信息
   if (!data || data.length === 0 || chartOptions.length === 0) {
