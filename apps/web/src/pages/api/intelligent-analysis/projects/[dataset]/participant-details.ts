@@ -283,7 +283,7 @@ export default async function handler(
     const { entry } = await loadEntry(dataset, organizationId);
     if (!entry) {
       res.status(404).json({
-        message: 'Participant detail not found',
+        message: '数据更新中',
         dataset,
         organizationId,
       });

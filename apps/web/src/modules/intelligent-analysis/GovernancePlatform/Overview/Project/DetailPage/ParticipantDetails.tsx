@@ -581,24 +581,34 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) =>
           </h3>
           <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
             <Col span={6}>
-              {renderStatisticCard(
-                i18n.language === 'en'
-                  ? 'Organization Code Contribution Total'
-                  : '组织代码贡献总量',
-                Number(activeMeta?.['2024-2025组织代码贡献总量'] || activeMeta?.['2025-2026组织代码贡献总量'] || 0),
-                '#1890ff',
-                (value) => value?.toLocaleString()
-              )}
+              {(() => {
+                const hasA = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2024-2025组织代码贡献总量');
+                const hasB = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2025-2026组织代码贡献总量');
+                const range = hasA ? '2024-2025' : hasB ? '2025-2026' : '';
+                const title =
+                  i18n.language === 'en'
+                    ? `Organization Code Contribution Total${range ? ` (${range})` : ''}`
+                    : `组织代码贡献总量${range ? `(${range})` : ''}`;
+                const value = Number(
+                  (hasA ? (activeMeta as any)['2024-2025组织代码贡献总量'] : (activeMeta as any)?.['2025-2026组织代码贡献总量']) ?? 0
+                );
+                return renderStatisticCard(title, value, '#1890ff', (v) => v?.toLocaleString());
+              })()}
             </Col>
             <Col span={6}>
-              {renderStatisticCard(
-                i18n.language === 'en'
-                  ? 'Organization Issue Contribution Total'
-                  : '组织Issue贡献总量',
-                Number(activeMeta?.['2024-2025组织Issue贡献总量'] || activeMeta?.['2025-2026组织Issue贡献总量'] || 0),
-                '#52c41a',
-                (value) => value?.toLocaleString()
-              )}
+              {(() => {
+                const hasA = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2024-2025组织Issue贡献总量');
+                const hasB = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2025-2026组织Issue贡献总量');
+                const range = hasA ? '2024-2025' : hasB ? '2025-2026' : '';
+                const title =
+                  i18n.language === 'en'
+                    ? `Organization Issue Contribution Total${range ? ` (${range})` : ''}`
+                    : `组织Issue贡献总量${range ? `(${range})` : ''}`;
+                const value = Number(
+                  (hasA ? (activeMeta as any)['2024-2025组织Issue贡献总量'] : (activeMeta as any)?.['2025-2026组织Issue贡献总量']) ?? 0
+                );
+                return renderStatisticCard(title, value, '#52c41a', (v) => v?.toLocaleString());
+              })()}
             </Col>
             {organizationId.startsWith('org:') && (
               <>
