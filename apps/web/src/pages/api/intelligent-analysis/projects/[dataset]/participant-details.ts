@@ -99,7 +99,9 @@ function parsePageSize(value: unknown) {
 
 function buildMetaByEcosystem(organizationData: Record<string, any>) {
   const metaByEcosystem: Record<string, EcosystemMeta> = {};
-  for (const [ecosystemName, ecosystemData] of Object.entries(organizationData)) {
+  for (const [ecosystemName, ecosystemData] of Object.entries(
+    organizationData
+  )) {
     if (!ecosystemData || typeof ecosystemData !== 'object') continue;
     const participants =
       (ecosystemData as any)?.['人员参与项目清单'] &&
@@ -117,62 +119,80 @@ function buildMetaByEcosystem(organizationData: Record<string, any>) {
         Number((ecosystemData as any)['2024-2025组织代码贡献总量']) || 0,
       '2024-2025组织Issue贡献总量':
         Number((ecosystemData as any)['2024-2025组织Issue贡献总量']) || 0,
-      '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)':
-        String(
-          (ecosystemData as any)[
-            '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
-          ] || ''
-        ),
-      '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)':
-        String(
-          (ecosystemData as any)[
-            '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
-          ] || ''
-        ),
+      '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
+        (ecosystemData as any)[
+          '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+        ] || ''
+      ),
+      '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
+        (ecosystemData as any)[
+          '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+        ] || ''
+      ),
       totalItems,
     };
   }
   return metaByEcosystem;
 }
 
-function flattenParticipantRows(ecosystemData: any): ParticipantTableRow[] {
-  const result: ParticipantTableRow[] = [];
-  const participants = ecosystemData?.['人员参与项目清单'];
-  if (!participants || typeof participants !== 'object') return result;
+function pickStr(obj: any, key: string): string {
+  const v = obj && typeof obj === 'object' ? (obj as any)[key] : undefined;
+  return String(v || '');
+}
 
-  for (const [githubUser, userData] of Object.entries(participants)) {
-    if (!userData || typeof userData !== 'object') continue;
-    for (const [repository, repoData] of Object.entries(userData as any)) {
-      const r = repoData as any;
-      result.push({
-        key: `${githubUser}-${repository}`,
-        具体人员: String(githubUser),
-        贡献仓库: String(repository),
-        '2024年角色承担': String(r?.['2024年角色承担'] || ''),
-        '2024年目标生态占个人总活跃量比值': Number(
-          r?.['2024年目标生态占个人总活跃量比值'] || 0
-        ),
-        '2024年个人代码贡献量': Number(r?.['2024年个人代码贡献量'] || 0),
-        '2024年个人Issue贡献量': Number(r?.['2024年个人Issue贡献量'] || 0),
-        '2024年个人社区核心度': String(r?.['2024年个人社区核心度'] || ''),
-        '2024年个人协作影响力': String(r?.['2024年个人协作影响力'] || ''),
-        '2024年个人联通控制力': String(r?.['2024年个人联通控制力'] || ''),
-        '2024年个人PageRank': String(r?.['2024年个人PageRank'] || ''),
-        '2025年角色承担': String(r?.['2025年角色承担'] || ''),
-        '2025年目标生态占个人总活跃量比值': Number(
-          r?.['2025年目标生态占个人总活跃量比值'] || 0
-        ),
-        '2025年个人代码贡献量': Number(r?.['2025年个人代码贡献量'] || 0),
-        '2025年个人Issue贡献量': Number(r?.['2025年个人Issue贡献量'] || 0),
-        '2025年个人社区核心度': String(r?.['2025年个人社区核心度'] || ''),
-        '2025年个人协作影响力': String(r?.['2025年个人协作影响力'] || ''),
-        '2025年个人联通控制力': String(r?.['2025年个人联通控制力'] || ''),
-        '2025年个人PageRank': String(r?.['2025年个人PageRank'] || ''),
-      });
-    }
+function pickNum(obj: any, key: string): number {
+  const v = obj && typeof obj === 'object' ? (obj as any)[key] : undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function flattenUserRows(
+  githubUser: string,
+  userData: any
+): ParticipantTableRow[] {
+  const rows: ParticipantTableRow[] = [];
+  if (!userData || typeof userData !== 'object') return rows;
+  for (const [repository, repoData] of Object.entries(userData)) {
+    const r = repoData as any;
+    rows.push({
+      key: `${githubUser}-${repository}`,
+      具体人员: String(githubUser),
+      贡献仓库: String(repository),
+      '2024年角色承担': pickStr(r, '2024年角色承担'),
+      '2024年目标生态占个人总活跃量比值': pickNum(
+        r,
+        '2024年目标生态占个人总活跃量比值'
+      ),
+      '2024年个人代码贡献量': pickNum(r, '2024年个人代码贡献量'),
+      '2024年个人Issue贡献量': pickNum(r, '2024年个人Issue贡献量'),
+      '2024年个人社区核心度': pickStr(r, '2024年个人社区核心度'),
+      '2024年个人协作影响力': pickStr(r, '2024年个人协作影响力'),
+      '2024年个人联通控制力': pickStr(r, '2024年个人联通控制力'),
+      '2024年个人PageRank': pickStr(r, '2024年个人PageRank'),
+      '2025年角色承担': pickStr(r, '2025年角色承担'),
+      '2025年目标生态占个人总活跃量比值': pickNum(
+        r,
+        '2025年目标生态占个人总活跃量比值'
+      ),
+      '2025年个人代码贡献量': pickNum(r, '2025年个人代码贡献量'),
+      '2025年个人Issue贡献量': pickNum(r, '2025年个人Issue贡献量'),
+      '2025年个人社区核心度': pickStr(r, '2025年个人社区核心度'),
+      '2025年个人协作影响力': pickStr(r, '2025年个人协作影响力'),
+      '2025年个人联通控制力': pickStr(r, '2025年个人联通控制力'),
+      '2025年个人PageRank': pickStr(r, '2025年个人PageRank'),
+    });
   }
+  return rows;
+}
 
-  return result;
+function flattenParticipantRows(ecosystemData: any): ParticipantTableRow[] {
+  const participants = ecosystemData?.['人员参与项目清单'];
+  if (!participants || typeof participants !== 'object') return [];
+  const rows: ParticipantTableRow[] = [];
+  for (const [githubUser, userData] of Object.entries(participants)) {
+    rows.push(...flattenUserRows(String(githubUser), userData));
+  }
+  return rows;
 }
 
 async function loadEntry(dataset: string, organizationId: string) {
@@ -187,7 +207,11 @@ async function loadEntry(dataset: string, organizationId: string) {
 
   if (shouldCache) {
     const cached = cache.get(cacheKey);
-    if (cached && cached.size === stat.size && cached.mtimeMs === stat.mtimeMs) {
+    if (
+      cached &&
+      cached.size === stat.size &&
+      cached.mtimeMs === stat.mtimeMs
+    ) {
       return { entry: cached, filePath };
     }
   }
@@ -277,7 +301,9 @@ export default async function handler(
 
     let allRows = entry.flattenedByEcosystem.get(activeEcosystem);
     if (!allRows) {
-      allRows = flattenParticipantRows(entry.rawOrganizationData[activeEcosystem]);
+      allRows = flattenParticipantRows(
+        entry.rawOrganizationData[activeEcosystem]
+      );
       entry.flattenedByEcosystem.set(activeEcosystem, allRows);
     }
 
@@ -306,4 +332,3 @@ export default async function handler(
     });
   }
 }
-
