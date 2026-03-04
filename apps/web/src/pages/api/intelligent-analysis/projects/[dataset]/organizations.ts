@@ -20,7 +20,9 @@ function normalizeSearchText(value: unknown): string {
 
 function normalizeOrgIdForSearch(userId: unknown): string {
   const raw = String(userId || '');
-  if (raw.toLowerCase().startsWith('org:')) return raw.slice(4);
+  const lower = raw.toLowerCase();
+  if (lower.startsWith('org:')) return raw.slice(4);
+  if (lower.startsWith('org.')) return raw.slice(4);
   return raw;
 }
 
