@@ -24,6 +24,156 @@ import { PROJECT_NAME_MAP } from '../../utils';
 
 const { Text } = Typography;
 
+const normalizeId = (n: string) =>
+  typeof n === 'string' ? n.replace(/^(github|gitcode):/i, '') : n;
+
+const renderLoadingState = (t: (key: string) => string) => (
+  <Card
+    title={
+      <Space>
+        <TeamOutlined />
+        <span>{t('project_detail.participant.title')}</span>
+      </Space>
+    }
+    style={{ marginTop: 16 }}
+  >
+    <div style={{ textAlign: 'center', padding: '50px' }}>
+      <Spin size="large" />
+      <div style={{ marginTop: 16 }}>{t('project_detail.participant.loading')}</div>
+    </div>
+  </Card>
+);
+
+const renderErrorState = (
+  t: (key: string) => string,
+  i18n: { language: string },
+  apiError: unknown
+) => (
+  <Card
+    title={
+      <Space>
+        <TeamOutlined />
+        <span>{i18n.language === 'en' ? 'Participant Details' : '参与者详情'}</span>
+      </Space>
+    }
+    style={{ marginTop: 16 }}
+  >
+    <div style={{ textAlign: 'center', padding: '50px', color: 'red' }}>
+      {t('project_detail.participant.load_failed')}:{' '}
+      {apiError instanceof Error ? apiError.message : String(apiError || '')}
+    </div>
+  </Card>
+);
+
+const renderEmptyState = (i18n: { language: string }, message: string) => (
+  <Card
+    title={
+      <Space>
+        <TeamOutlined />
+        <span>{i18n.language === 'en' ? 'Participant Details' : '参与者详情'}</span>
+      </Space>
+    }
+    style={{ marginTop: 16 }}
+  >
+    <div style={{ textAlign: 'center', padding: '50px' }}>{message}</div>
+  </Card>
+);
+
+const getPaginationTotal = (
+  i18n: { language: string },
+  total: number,
+  range: [number, number]
+) => {
+  return i18n.language === 'en'
+    ? `${range[0]}-${range[1]} of ${total} items`
+    : `第 ${range[0]}-${range[1]} 条/共 ${total} 条`;
+};
+
+const renderStatisticCard = (
+  title: string,
+  value: any,
+  color: string,
+  formatter?: (value: any) => any
+) => (
+  <Card
+    size="small"
+    className="text-center"
+    style={{
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+      height: '130px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+    }}
+  >
+    <Statistic
+      title={title}
+      value={value}
+      formatter={formatter}
+      valueStyle={{ color, fontSize: '20px', fontWeight: 'bold' }}
+    />
+  </Card>
+);
+
+const renderNetworkInfluenceCard = (
+  i18n: { language: string },
+  title: string,
+  value: string,
+  color: string
+) => (
+  <Card
+    size="small"
+    className="text-center"
+    style={{
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+      height: '130px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+    }}
+  >
+    <Statistic
+      title={title}
+      value={value || 'N/A'}
+      formatter={(val) => {
+        if (!val || val === 'N/A') {
+          return i18n.language === 'en' ? 'No data' : '暂无数据';
+        }
+        const translated = translateCompositeString(
+          val as string,
+          ecosystemMapping,
+          i18n.language
+        );
+        if (translated.length > 20) {
+          return (
+            <span
+              title={translated}
+              style={{
+                display: 'block',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '100%',
+              }}
+            >
+              {translated}
+            </span>
+          );
+        }
+        return translated;
+      }}
+      valueStyle={{
+        color,
+        fontSize: '14px',
+        fontWeight: 'bold',
+        lineHeight: '1.2',
+      }}
+    />
+  </Card>
+);
+
 interface ParticipantTableRow {
   key: string;
   具体人员: string;
@@ -47,16 +197,14 @@ interface ParticipantTableRow {
 }
 
 interface ParticipantDetailsProps {
-  ecosystem: string; // 如 'Flutter'
-  organizationId: string; // 如 'org_google'
+  ecosystem: string;
+  organizationId: string;
 }
 
 const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   ecosystem,
   organizationId,
 }) => {
-  const normalizeId = (n: string) =>
-    typeof n === 'string' ? n.replace(/^(github|gitcode):/i, '') : n;
   const { t, i18n } = useTranslation('intelligent_analysis');
   const [requestedEcosystem, setRequestedEcosystem] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -113,70 +261,6 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     keepPreviousData: true,
   });
 
-  // 渲染加载状态
-  const renderLoadingState = () => (
-    <Card
-      title={
-        <Space>
-          <TeamOutlined />
-          <span>{t('project_detail.participant.title')}</span>
-        </Space>
-      }
-      style={{ marginTop: 16 }}
-    >
-      <div style={{ textAlign: 'center', padding: '50px' }}>
-        <Spin size="large" />
-        <div style={{ marginTop: 16 }}>
-          {t('project_detail.participant.loading')}
-        </div>
-      </div>
-    </Card>
-  );
-
-  // 渲染错误状态
-  const renderErrorState = () => (
-    <Card
-      title={
-        <Space>
-          <TeamOutlined />
-          <span>
-            {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
-          </span>
-        </Space>
-      }
-      style={{ marginTop: 16 }}
-    >
-      <div style={{ textAlign: 'center', padding: '50px', color: 'red' }}>
-        {t('project_detail.participant.load_failed')}:{' '}
-        {apiError instanceof Error ? apiError.message : String(apiError || '')}
-      </div>
-    </Card>
-  );
-
-  // 渲染空数据状态
-  const renderEmptyState = (message: string) => (
-    <Card
-      title={
-        <Space>
-          <TeamOutlined />
-          <span>
-            {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
-          </span>
-        </Space>
-      }
-      style={{ marginTop: 16 }}
-    >
-      <div style={{ textAlign: 'center', padding: '50px' }}>{message}</div>
-    </Card>
-  );
-
-  // 分页总数显示函数
-  const getPaginationTotal = (total: number, range: [number, number]) => {
-    return i18n.language === 'en'
-      ? `${range[0]}-${range[1]} of ${total} items`
-      : `第 ${range[0]}-${range[1]} 条/共 ${total} 条`;
-  };
-
   const ecosystems: string[] = Array.isArray(apiData?.ecosystems)
     ? apiData.ecosystems
     : [];
@@ -197,18 +281,17 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     : [];
   const total = typeof apiData?.total === 'number' ? apiData.total : 0;
 
-  // 渲染主要内容
   const renderMainContent = () => {
     if (apiLoading) {
-      return renderLoadingState();
+      return renderLoadingState(t);
     }
 
     if (apiError) {
-      return renderErrorState();
+      return renderErrorState(t, i18n, apiError);
     }
 
     if (ecosystems.length === 0) {
-      return renderEmptyState(t('project_detail.participant.no_data'));
+      return renderEmptyState(i18n, t('project_detail.participant.no_data'));
     }
 
     const tabItems = ecosystems.map((ecosystemName) => ({
@@ -278,6 +361,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                 <>
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
+                      i18n,
                       i18n.language === 'en'
                         ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
                         : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
@@ -291,6 +375,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                   </Col>
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
+                      i18n,
                       i18n.language === 'en'
                         ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
                         : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
@@ -316,7 +401,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
               total,
               showSizeChanger: true,
               showQuickJumper: true,
-              showTotal: getPaginationTotal,
+              showTotal: (tot, range) => getPaginationTotal(i18n, tot, range as [number, number]),
               onChange: (p, ps) => {
                 setCurrentPage(p);
                 setPageSize(ps);
@@ -530,92 +615,6 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       ],
     },
   ];
-
-  // 渲染统计卡片
-  const renderStatisticCard = (
-    title: string,
-    value: any,
-    color: string,
-    formatter?: (value: any) => any
-  ) => (
-    <Card
-      size="small"
-      className="text-center"
-      style={{
-        borderRadius: '8px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-        height: '130px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
-      <Statistic
-        title={title}
-        value={value}
-        formatter={formatter}
-        valueStyle={{ color, fontSize: '20px', fontWeight: 'bold' }}
-      />
-    </Card>
-  );
-
-  // 渲染网络影响力统计卡片
-  const renderNetworkInfluenceCard = (
-    title: string,
-    value: string,
-    color: string
-  ) => (
-    <Card
-      size="small"
-      className="text-center"
-      style={{
-        borderRadius: '8px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-        height: '130px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
-      <Statistic
-        title={title}
-        value={value || 'N/A'}
-        formatter={(value) => {
-          if (!value || value === 'N/A') {
-            return i18n.language === 'en' ? 'No data' : '暂无数据';
-          }
-          const translated = translateCompositeString(
-            value as string,
-            ecosystemMapping,
-            i18n.language
-          );
-          if (translated.length > 20) {
-            return (
-              <span
-                title={translated}
-                style={{
-                  display: 'block',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  maxWidth: '100%',
-                }}
-              >
-                {translated}
-              </span>
-            );
-          }
-          return translated;
-        }}
-        valueStyle={{
-          color,
-          fontSize: '14px',
-          fontWeight: 'bold',
-          lineHeight: '1.2',
-        }}
-      />
-    </Card>
-  );
 
   return renderMainContent();
 };
