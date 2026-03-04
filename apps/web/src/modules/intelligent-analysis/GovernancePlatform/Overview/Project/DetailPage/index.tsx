@@ -1,6 +1,5 @@
 // autocorrect: false
 import React, { useMemo } from 'react';
-import { Divider } from 'antd';
 import { useTranslation } from 'next-i18next';
 import ParticipantDetails from './ParticipantDetails';
 import { useUserDetail } from '../hooks/useUserDetail';
@@ -11,7 +10,6 @@ import {
   generateEcosystemTableData,
   generateParticipantTableData,
 } from './utils/dataGenerators';
-
 // 导入子组件
 import BreadcrumbNav from './BreadcrumbNav';
 import BasicInfoCard from './BasicInfoCard';

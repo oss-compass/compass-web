@@ -302,6 +302,14 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     organizations: 16137,
     folderName: 'CUDA_runtime',
   },
+  {
+    slug: 'CANN',
+    name: 'CANN 生态',
+    displayName: 'CANN 生态',
+    developers: 48371,
+    organizations: 16137,
+    folderName: 'CANN',
+  },
 ];
 
 // 导出便捷的映射对象

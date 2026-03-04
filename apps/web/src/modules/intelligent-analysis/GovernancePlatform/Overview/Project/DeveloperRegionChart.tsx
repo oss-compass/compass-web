@@ -177,9 +177,8 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
               countryMapping,
               i18n.language
             );
-            return `${translatedName}<br/>${tabInfo.description}：${
-              displayValue || 0
-            }`;
+            return `${translatedName}<br/>${tabInfo.description}：${displayValue || 0
+              }`;
           }
           const translatedName = translateByLocale(
             params.name,
@@ -315,14 +314,14 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
         onTabChange={
           shouldShowTabs
             ? (key) =>
-                setActiveTab(
-                  key as 'all' | 'individual' | 'org_devs' | 'org_count'
-                )
+              setActiveTab(
+                key as 'all' | 'individual' | 'org_devs' | 'org_count'
+              )
             : undefined
         }
         className={className ? `w-full ${className}` : 'w-full'}
       >
-        <div className="flex h-[460px]">
+        <div className="flex h-[484px]">
           {/* 地图区域 */}
           <div className="flex-1">
             <div ref={mapChartRef} className="h-full w-full"></div>

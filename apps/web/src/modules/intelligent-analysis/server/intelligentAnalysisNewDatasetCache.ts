@@ -11,6 +11,7 @@ export type OrganizationRow = RawRow & {
   总得分?: number;
   国家?: string;
   排名?: number;
+  用户类型?: string;
 };
 
 export type DeveloperRow = RawRow & {
@@ -20,6 +21,7 @@ export type DeveloperRow = RawRow & {
   国家?: string;
   所属组织?: string;
   排名?: number;
+  用户类型?: string;
 };
 
 export type RegionMetric = 'all' | 'individual' | 'org_devs' | 'org_count';
@@ -94,6 +96,20 @@ function normalizeScore(value: unknown): number {
   return Number.isFinite(score) ? score : 0;
 }
 
+function getUserTypeFromRow(row: Record<string, any>): string {
+  const t = typeof row['用户类型'] === 'string' ? row['用户类型'].trim() : '';
+  return t || '未知';
+}
+
+function normalizeOrgId(value: unknown): string {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return '未知';
+  const lower = raw.toLowerCase();
+  if (lower.startsWith('org:')) return raw.slice(4).trim().toLowerCase();
+  if (lower.startsWith('org.')) return raw.slice(4).trim().toLowerCase();
+  return raw.toLowerCase();
+}
+
 function getAffiliatedOrgFromRow(row: Record<string, any>): string {
   const org = typeof row['所属组织'] === 'string' ? row['所属组织'].trim() : '';
   return org || '未知';
@@ -126,8 +142,14 @@ function splitRows(list: any[]) {
 
     const score = normalizeScore(item?.['总得分']);
     const country = item?.['国家'];
+    const userType = getUserTypeFromRow(item);
 
-    if (userId.startsWith('org:')) {
+    const isOrg =
+      userType === '组织' ||
+      userId.toLowerCase().startsWith('org:') ||
+      userId.toLowerCase().startsWith('org.');
+
+    if (isOrg) {
       const record: OrganizationRow = { ...item, 总得分: score };
       if (country) orgRegionsSet.add(country);
       organizations.push(record);
@@ -195,23 +217,24 @@ function buildDeveloperIndexes(developers: DeveloperRow[]) {
   return { devByRegion, devByRole };
 }
 
-function computeRegionMetrics(
-  regionSourceRows: Array<DeveloperRow | OrganizationRow>
-) {
+function computeRegionMetrics(input: {
+  developers: DeveloperRow[];
+  organizations: OrganizationRow[];
+}) {
   const regionAllMap = new Map<string, number>();
   const regionIndividualMap = new Map<string, number>();
   const regionOrgDevsMap = new Map<string, number>();
-  const regionOrgCountTmp: Record<string, Record<string, true>> = {};
-  const uniqueOrgTmp: Record<string, true> = {};
+  const regionOrgCountMap = new Map<string, number>();
 
-  for (const record of regionSourceRows) {
+  for (const record of input.developers) {
+    if (getUserTypeFromRow(record) !== '个人') continue;
     const country = record?.国家;
     if (!country) continue;
 
     regionAllMap.set(country, (regionAllMap.get(country) || 0) + 1);
 
-    const isIndividual = isIndividualDeveloper(record);
-    if (isIndividual) {
+    const affiliatedOrg = getAffiliatedOrgFromRow(record);
+    if (affiliatedOrg === '未知') {
       regionIndividualMap.set(
         country,
         (regionIndividualMap.get(country) || 0) + 1
@@ -220,13 +243,13 @@ function computeRegionMetrics(
     }
 
     regionOrgDevsMap.set(country, (regionOrgDevsMap.get(country) || 0) + 1);
+  }
 
-    const org = getAffiliatedOrgFromRow(record);
-    if (org !== '未知') {
-      uniqueOrgTmp[org] = true;
-      if (!regionOrgCountTmp[country]) regionOrgCountTmp[country] = {};
-      regionOrgCountTmp[country][org] = true;
-    }
+  for (const record of input.organizations) {
+    if (getUserTypeFromRow(record) !== '组织') continue;
+    const country = record?.国家;
+    if (!country) continue;
+    regionOrgCountMap.set(country, (regionOrgCountMap.get(country) || 0) + 1);
   }
 
   const toRegionDataArray = (m: Map<string, number>): RegionData[] => {
@@ -237,16 +260,10 @@ function computeRegionMetrics(
     return sortRegionData(result);
   };
 
-  const regionOrgCountData: RegionData[] = sortRegionData(
-    Object.keys(regionOrgCountTmp).map((country) => ({
-      key: country,
-      country,
-      userCount: Object.keys(regionOrgCountTmp[country] || {}).length,
-    }))
-  );
+  const regionOrgCountData: RegionData[] = toRegionDataArray(regionOrgCountMap);
 
   const stats = {
-    all: regionSourceRows.length,
+    all: Array.from(regionAllMap.values()).reduce((acc, v) => acc + v, 0),
     individual: Array.from(regionIndividualMap.values()).reduce(
       (acc, v) => acc + v,
       0
@@ -255,7 +272,8 @@ function computeRegionMetrics(
       (acc, v) => acc + v,
       0
     ),
-    orgCount: Object.keys(uniqueOrgTmp).length,
+    orgCount: input.organizations.filter((r) => getUserTypeFromRow(r) === '组织')
+      .length,
   };
 
   const regionMetrics: Record<RegionMetric, RegionData[]> = {
@@ -285,11 +303,10 @@ export async function getDatasetCacheValue(
     splitRows(list);
   const { orgByRegion, orgByOrgType } = buildOrganizationIndexes(organizations);
   const { devByRegion, devByRole } = buildDeveloperIndexes(developers);
-  const regionSourceRows: Array<DeveloperRow | OrganizationRow> = [
-    ...developers,
-    ...organizations,
-  ];
-  const { stats, regionMetrics } = computeRegionMetrics(regionSourceRows);
+  const { stats, regionMetrics } = computeRegionMetrics({
+    developers,
+    organizations,
+  });
 
   const value: DatasetCacheValue = {
     organizations,

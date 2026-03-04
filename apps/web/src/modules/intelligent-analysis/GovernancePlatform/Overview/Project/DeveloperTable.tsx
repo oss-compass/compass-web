@@ -1,5 +1,5 @@
 // autocorrect: false
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, Input, Button, Space, Tag, Tooltip, Select } from 'antd';
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
@@ -27,6 +27,25 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   selectedRegions = [],
   onRegionFilterChange,
 }) => {
+  const normalizeUserId = (value: unknown) => {
+    const raw = typeof value === 'string' ? value.trim() : '';
+    return raw.replace(/^(github|gitcode):/i, '');
+  };
+
+  const getUserHomepageUrl = (value: unknown) => {
+    const raw = typeof value === 'string' ? value.trim() : '';
+    const lower = raw.toLowerCase();
+    if (lower.startsWith('github:')) {
+      const username = raw.slice('github:'.length).trim();
+      return username ? `https://github.com/${username}` : '';
+    }
+    if (lower.startsWith('gitcode:')) {
+      const username = raw.slice('gitcode:'.length).trim();
+      return username ? `https://gitcode.com/${username}` : '';
+    }
+    return '';
+  };
+
   const [searchKeyword, setSearchKeyword] = useState('');
   const [orgSearchKeyword, setOrgSearchKeyword] = useState('');
   const [appliedKeyword, setAppliedKeyword] = useState('');
@@ -39,6 +58,10 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   >('all');
 
   const dataset = PROJECT_NAME_MAP[projectType] || projectType;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [dataset]);
 
   const { data: apiData, isFetching: apiLoading } = useQuery({
     queryKey: [
@@ -133,8 +156,7 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       width: 200,
       ellipsis: true,
       render: (text: string) => {
-        const normalized =
-          typeof text === 'string' ? text.replace(/^github:/i, '') : text;
+        const normalized = normalizeUserId(text);
         return (
           <Tooltip title={normalized}>
             <a
@@ -194,8 +216,26 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       key: '邮箱',
       width: 220,
       ellipsis: true,
-      render: (val: string | undefined) => {
+      render: (val: string | undefined, record: DeveloperData) => {
         const text = (val || '').trim();
+        if (text === '未知') {
+          const rawUserId = (record as any)?.用户ID;
+          const url = getUserHomepageUrl(rawUserId);
+          return url ? (
+            <Tooltip title={url}>
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {url}
+              </a>
+            </Tooltip>
+          ) : (
+            <span>{text}</span>
+          );
+        }
         return text ? (
           <Tooltip title={text}>
             <span>{text}</span>

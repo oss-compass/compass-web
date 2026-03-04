@@ -209,17 +209,22 @@ export const useUserDetail = (projectType: string, userId: string) => {
       try {
         const fileName = `${PROJECT_NAME_MAP[projectType] || projectType}`;
         const response = await fetch(
-          `/test/intelligent-analysis-new/${fileName}/${userId
-            .replace(':', '_')
-            .replaceAll(' ', '_')}_main.json`
+          `/api/intelligent-analysis/projects/${encodeURIComponent(
+            fileName
+          )}/user-detail?userId=${encodeURIComponent(userId)}`
         );
-        console.log(
-          `/test/intelligent-analysis-new/${fileName}/${userId
-            .replace(':', '_')
-            .replaceAll(' ', '_')}_main.json`
-        );
+        console.log(`/user-detail?userId=${userId}`)
         if (!response.ok) {
-          throw new Error(`当前仅提供前200个组织和开发者详情数据`);
+          let message = `获取用户详情数据失败 (${response.status})`;
+          try {
+            const errJson = await response.json();
+            const maybeMessage =
+              errJson && typeof errJson.message === 'string'
+                ? errJson.message
+                : '';
+            if (maybeMessage) message = maybeMessage;
+          } catch { }
+          throw new Error(message);
         }
 
         const rawData: UserDetailData = await response.json();

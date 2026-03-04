@@ -71,8 +71,15 @@ const RepoTable: React.FC<RepoTableProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        const prefix = (projectType || '').split('_')[0].trim();
+        const csvPath = prefix
+          ? `/test/intelligent-analysis-new/${encodeURIComponent(
+            prefix
+          )}_repo_data.csv`
+          : '/test/intelligent-analysis-new/repo_data.csv';
         const response = await fetch(
-          '/test/intelligent-analysis-new/repo_data.csv'
+          csvPath
         );
         const buffer = await response.arrayBuffer();
         const decode = (encoding: string) =>
@@ -112,7 +119,7 @@ const RepoTable: React.FC<RepoTableProps> = ({
     };
 
     fetchData();
-  }, []);
+  }, [projectType]);
 
   const filteredData = data.filter((item) => {
     // 1. Filter by keyword

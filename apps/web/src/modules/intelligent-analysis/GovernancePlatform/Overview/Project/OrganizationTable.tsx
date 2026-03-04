@@ -38,6 +38,10 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
   const dataset = PROJECT_NAME_MAP[projectType] || projectType;
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [dataset]);
+
   const { data: apiData, isFetching: apiLoading } = useQuery({
     queryKey: [
       'intelligent-analysis',

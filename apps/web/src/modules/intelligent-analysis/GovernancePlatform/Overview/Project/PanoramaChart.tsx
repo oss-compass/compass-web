@@ -26,12 +26,15 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
 }) => {
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
+  const activePrefix = (activeSlug || '').split('_')[0];
+  const disableNavigation = activePrefix === 'CANN';
 
   useEffect(() => {
     setIsNavigating(false);
   }, [activeSlug]);
 
   const handleNavigate = (slug: string) => {
+    if (disableNavigation) return;
     setIsNavigating(true);
     // If clicking the currently active slug, navigate back to 'CUDA' (unless it's already CUDA)
     if (slug === activeSlug && slug !== 'CUDA') {
@@ -50,10 +53,12 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
     return baseClass;
   };
 
-  const cardBaseClass =
-    'flex flex-col items-center justify-center rounded border border-gray-200 bg-white p-2 text-center cursor-pointer hover:shadow-md transition-shadow duration-200';
-  const topBottomCardClass =
-    'mb-2 rounded border border-gray-200 bg-white p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-200';
+  const cardBaseClass = disableNavigation
+    ? 'flex flex-col items-center justify-center rounded border border-gray-200 bg-white p-2 text-center cursor-not-allowed'
+    : 'flex flex-col items-center justify-center rounded border border-gray-200 bg-white p-2 text-center cursor-pointer hover:shadow-md transition-shadow duration-200';
+  const topBottomCardClass = disableNavigation
+    ? 'mb-2 rounded border border-gray-200 bg-white p-3 text-center shadow-sm cursor-not-allowed'
+    : 'mb-2 rounded border border-gray-200 bg-white p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-200';
 
   return (
     <Card title="技术全景图" className={`h-full ${className}`}>
@@ -62,7 +67,11 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
           {/* Top: AI Framework */}
           <div
             className={getCardClass(topBottomCardClass, 'CUDA_ai_framework')}
-            onClick={() => handleNavigate('CUDA_ai_framework')}
+            onClick={
+              disableNavigation
+                ? undefined
+                : () => handleNavigate('CUDA_ai_framework')
+            }
           >
             AI框架
             <span className="ml-2 text-gray-400">&gt;</span>
@@ -74,7 +83,11 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
               `mb-4 flex items-center justify-center ${topBottomCardClass}`,
               'CUDA_ai_framework_adapter'
             )}
-            onClick={() => handleNavigate('CUDA_ai_framework_adapter')}
+            onClick={
+              disableNavigation
+                ? undefined
+                : () => handleNavigate('CUDA_ai_framework_adapter')
+            }
           >
             AI框架适配 Framework Adapter{' '}
             <span className="ml-2 text-gray-400">&gt;</span>
@@ -98,7 +111,11 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                     cardBaseClass,
                     'CUDA_operator_library'
                   )}
-                  onClick={() => handleNavigate('CUDA_operator_library')}
+                  onClick={
+                    disableNavigation
+                      ? undefined
+                      : () => handleNavigate('CUDA_operator_library')
+                  }
                 >
                   <div className="mb-1 flex items-center font-bold">
                     <AppstoreOutlined className="mr-1" /> 算子库{' '}
@@ -117,7 +134,11 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                     cardBaseClass,
                     'CUDA_communication_library'
                   )}
-                  onClick={() => handleNavigate('CUDA_communication_library')}
+                  onClick={
+                    disableNavigation
+                      ? undefined
+                      : () => handleNavigate('CUDA_communication_library')
+                  }
                 >
                   <div className="mb-1 flex items-center font-bold">
                     <CloudServerOutlined className="mr-1" /> 通信库{' '}
@@ -132,7 +153,11 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                 </div>
                 <div
                   className={getCardClass(cardBaseClass, 'CUDA_graph_engine')}
-                  onClick={() => handleNavigate('CUDA_graph_engine')}
+                  onClick={
+                    disableNavigation
+                      ? undefined
+                      : () => handleNavigate('CUDA_graph_engine')
+                  }
                 >
                   <div className="mb-1 flex items-center font-bold">
                     <BuildOutlined className="mr-1" /> 图引擎{' '}
@@ -150,16 +175,15 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                     cardBaseClass,
                     'CUDA_domain_acceleration_library'
                   )}
-                  onClick={() =>
-                    handleNavigate('CUDA_domain_acceleration_library')
+                  onClick={
+                    disableNavigation
+                      ? undefined
+                      : () => handleNavigate('CUDA_domain_acceleration_library')
                   }
                 >
                   <div className="mb-1 flex items-center font-bold">
                     <RocketOutlined className="mr-1" /> 领域加速库{' '}
                     <span className="ml-1 text-gray-400">&gt;</span>
-                  </div>
-                  <div className="scale-90 text-xs text-gray-500">
-                    ATB、SiP等加速套件
                   </div>
                 </div>
               </div>
@@ -170,13 +194,17 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   `flex-1 ${cardBaseClass}`,
                   'CUDA_programming_language'
                 )}
-                onClick={() => handleNavigate('CUDA_programming_language')}
+                onClick={
+                  disableNavigation
+                    ? undefined
+                    : () => handleNavigate('CUDA_programming_language')
+                }
               >
                 <div className="mb-1 flex items-center font-bold">
                   <CodeOutlined className="mr-1" /> 编程语言{' '}
                   <span className="ml-1 text-gray-400">&gt;</span>
                 </div>
-                <div className="text-xs text-gray-500">CUDA C++</div>
+                {/* <div className="text-xs text-gray-500">C++</div> */}
               </div>
               {/* Runtime */}
               <div
@@ -184,7 +212,9 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   `flex-1 ${cardBaseClass}`,
                   'CUDA_compiler'
                 )}
-                onClick={() => handleNavigate('CUDA_compiler')}
+                onClick={
+                  disableNavigation ? undefined : () => handleNavigate('CUDA_compiler')
+                }
               >
                 <div className="mb-1 flex items-center font-bold">
                   <HddOutlined className="mr-1" /> 编译器{' '}
@@ -200,7 +230,9 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   `flex-1 ${cardBaseClass}`,
                   'CUDA_runtime'
                 )}
-                onClick={() => handleNavigate('CUDA_runtime')}
+                onClick={
+                  disableNavigation ? undefined : () => handleNavigate('CUDA_runtime')
+                }
               >
                 <div className="mb-1 flex items-center font-bold">
                   <HddOutlined className="mr-1" /> 运行时{' '}
@@ -217,7 +249,9 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   `flex-1 ${cardBaseClass}`,
                   'CUDA_driver'
                 )}
-                onClick={() => handleNavigate('CUDA_driver')}
+                onClick={
+                  disableNavigation ? undefined : () => handleNavigate('CUDA_driver')
+                }
               >
                 <div className="mb-1 flex items-center font-bold">
                   <DatabaseOutlined className="mr-1" /> 驱动{' '}
@@ -231,7 +265,7 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
 
             {/* Right: Toolchain */}
             <div className="cur flex w-32 cursor-not-allowed  flex-col items-center rounded border border-gray-200 bg-white p-2 text-center transition-shadow duration-200">
-              <div className="mb-2 mt-4 font-bold">Nsight</div>
+              {/* <div className="mb-2 mt-4 font-bold">Nsight</div> */}
               <div className="mb-2 text-xs font-bold">
                 全流程工具链
                 {/* <span className="text-gray-400">&gt;</span> */}

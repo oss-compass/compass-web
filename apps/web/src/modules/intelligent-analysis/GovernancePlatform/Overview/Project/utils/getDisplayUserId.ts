@@ -10,5 +10,6 @@ export function getDisplayUserId(record: {
   let cleaned = preferred.startsWith('org:') ? preferred.slice(4) : preferred;
   // 再去掉 github:
   cleaned = cleaned.startsWith('github:') ? cleaned.slice(7) : cleaned;
+  cleaned = cleaned.startsWith('gitcode:') ? cleaned.slice(8) : cleaned;
   return cleaned;
 }
