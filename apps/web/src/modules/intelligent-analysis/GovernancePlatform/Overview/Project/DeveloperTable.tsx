@@ -327,26 +327,32 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       </div>
 
       {/* 开发者表格 */}
-      <MyTable
-        columns={columns}
-        dataSource={rows}
-        loading={computedLoading}
-        rowKey="用户ID"
-        pagination={{
-          current: currentPage,
-          pageSize: pageSize,
-          total,
-          showSizeChanger: false,
-          showQuickJumper: true,
-          showTotal: (total, range) =>
-            t('project_detail.pagination_total', {
-              start: range[0],
-              end: range[1],
+      <div className="flex h-[760px] flex-col">
+        <div className="min-h-0 flex-1">
+          <MyTable
+            columns={columns}
+            dataSource={rows}
+            loading={computedLoading}
+            rowKey="用户ID"
+            pagination={{
+              current: currentPage,
+              pageSize: pageSize,
               total,
-            }),
-          onChange: handlePageChange,
-        }}
-      />
+              showSizeChanger: false,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                t('project_detail.pagination_total', {
+                  start: range[0],
+                  end: range[1],
+                  total,
+                }),
+              onChange: handlePageChange,
+            }}
+            scroll={{ x: 'max-content', y: 660 }}
+            className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-2 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
+          />
+        </div>
+      </div>
     </Card>
   );
 };

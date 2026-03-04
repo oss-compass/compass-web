@@ -72,7 +72,7 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
         </div>
 
         {/* 全景图与地图卡片组件 */}
-        <div className="mb-6 flex gap-6">
+        <div className="mb-6 flex w-full gap-6">
           <div className="w-1/2">
             <PanoramaChart activeSlug={projectType} loading={false} />
           </div>

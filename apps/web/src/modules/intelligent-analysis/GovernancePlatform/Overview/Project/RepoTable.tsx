@@ -1,6 +1,6 @@
 // autocorrect: false
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Input, Button, Space, Tag } from 'antd';
+import { Card, Input, Button, Space, Tag } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import MyTable from '@common/components/Table';
@@ -232,20 +232,26 @@ const RepoTable: React.FC<RepoTableProps> = ({
         </Space>
       </div>
 
-      <MyTable
-        columns={columns}
-        dataSource={filteredData}
-        loading={loading}
-        rowKey="项目URL"
-        pagination={{
-          current: currentPage,
-          pageSize,
-          total: filteredData.length,
-          onChange: setCurrentPage,
-          showTotal: (total, range) =>
-            `第 ${range[0]}-${range[1]} 条/总共 ${total} 条`,
-        }}
-      />
+      <div className="flex h-[650px] flex-col">
+        <div className="min-h-0 flex-1">
+          <MyTable
+            columns={columns}
+            dataSource={filteredData}
+            loading={loading}
+            rowKey="项目URL"
+            pagination={{
+              current: currentPage,
+              pageSize,
+              total: filteredData.length,
+              onChange: setCurrentPage,
+              showTotal: (total, range) =>
+                `第 ${range[0]}-${range[1]} 条/总共 ${total} 条`,
+            }}
+            scroll={{ x: 'max-content', y: 580 }}
+            className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-2 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
+          />
+        </div>
+      </div>
     </Card>
   );
 };

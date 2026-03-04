@@ -66,7 +66,7 @@ const ContributionCard: React.FC<ContributionCardProps> = ({
 const RightPan = () => {
   const { contributorInfo } = useContributorInfo();
   // 新增 selectedYear 状态，并初始化为 2024
-  const [selectedYear, setSelectedYear] = useState<number>(2024);
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
 
   const { data, error, isLoading } = useContributorApi<ContributionRankData>(
     '/api/v2/contributor_portrait/contribution_rank',
