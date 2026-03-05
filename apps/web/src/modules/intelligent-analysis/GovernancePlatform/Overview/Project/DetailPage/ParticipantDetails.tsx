@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card,
-  Button,
   Table,
   Typography,
   Space,
@@ -23,8 +22,6 @@ import {
 } from '../utils/countryMapping';
 import { PROJECT_NAME_MAP } from '../../utils';
 
-const { Text } = Typography;
-
 const normalizeId = (n: string) =>
   typeof n === 'string' ? n.replace(/^(github|gitcode):/i, '') : n;
 
@@ -40,7 +37,9 @@ const renderLoadingState = (t: (key: string) => string) => (
   >
     <div style={{ textAlign: 'center', padding: '50px' }}>
       <Spin size="large" />
-      <div style={{ marginTop: 16 }}>{t('project_detail.participant.loading')}</div>
+      <div style={{ marginTop: 16 }}>
+        {t('project_detail.participant.loading')}
+      </div>
     </div>
   </Card>
 );
@@ -54,7 +53,9 @@ const renderErrorState = (
     title={
       <Space>
         <TeamOutlined />
-        <span>{i18n.language === 'en' ? 'Participant Details' : '参与者详情'}</span>
+        <span>
+          {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
+        </span>
       </Space>
     }
     style={{ marginTop: 16 }}
@@ -71,7 +72,9 @@ const renderEmptyState = (i18n: { language: string }, message: string) => (
     title={
       <Space>
         <TeamOutlined />
-        <span>{i18n.language === 'en' ? 'Participant Details' : '参与者详情'}</span>
+        <span>
+          {i18n.language === 'en' ? 'Participant Details' : '参与者详情'}
+        </span>
       </Space>
     }
     style={{ marginTop: 16 }}
@@ -206,199 +209,196 @@ const buildColumns = (
   t: (key: string) => string,
   i18n: { language: string }
 ): ColumnsType<ParticipantTableRow> => [
-    {
-      title: t('project_detail.participant.specific_personnel'),
-      dataIndex: '具体人员',
-      key: '具体人员',
-      width: 150,
-      fixed: 'left',
-      render: (name: string) => {
-        const normalized = normalizeId(name);
-        return (
-          <a
-            href={`/developer/${encodeURIComponent(normalized)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {normalized}
-          </a>
-        );
-      },
+  {
+    title: t('project_detail.participant.specific_personnel'),
+    dataIndex: '具体人员',
+    key: '具体人员',
+    width: 150,
+    fixed: 'left',
+    render: (name: string) => {
+      const normalized = normalizeId(name);
+      return (
+        <a
+          href={`/developer/${encodeURIComponent(normalized)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {normalized}
+        </a>
+      );
     },
-    {
-      title: t('project_detail.participant.contribution_repo'),
-      dataIndex: '贡献仓库',
-      key: '贡献仓库',
-      width: 200,
-      fixed: 'left',
-      render: (repo: string) => {
-        const toGithubUrl = (r?: string) => {
-          if (!r) return null;
-          const value = r.trim();
-          if (/^https?:\/\/(www\.)?github\.com\//i.test(value)) {
-            return value;
-          }
-          const normalized = value.replace(/^github:/i, '');
-          const match = normalized.match(
-            /^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)(\.git)?$/
-          );
-          if (match) {
-            return `https://github.com/${match[1]}/${match[2]}`;
-          }
-          return null;
-        };
-        const url = toGithubUrl(repo);
-        const display = (repo || '').replace(/^github:/i, '');
-        return url ? (
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            {display}
-          </a>
-        ) : (
-          <span>{display}</span>
+  },
+  {
+    title: t('project_detail.participant.contribution_repo'),
+    dataIndex: '贡献仓库',
+    key: '贡献仓库',
+    width: 200,
+    fixed: 'left',
+    render: (repo: string) => {
+      const toGithubUrl = (r?: string) => {
+        if (!r) return null;
+        const value = r.trim();
+        if (/^https?:\/\/(www\.)?github\.com\//i.test(value)) {
+          return value;
+        }
+        const normalized = value.replace(/^github:/i, '');
+        const match = normalized.match(
+          /^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)(\.git)?$/
         );
-      },
+        if (match) {
+          return `https://github.com/${match[1]}/${match[2]}`;
+        }
+        return null;
+      };
+      const url = toGithubUrl(repo);
+      const display = (repo || '').replace(/^github:/i, '');
+      return url ? (
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          {display}
+        </a>
+      ) : (
+        <span>{display}</span>
+      );
     },
+  },
 
-    {
-      title: i18n.language === 'en' ? '2025 Data' : '2025年数据',
-      children: [
-        {
-          title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
-          dataIndex: '2025年角色承担',
-          key: '2025年角色承担',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: i18n.language === 'en' ? 'Ecosystem Ratio' : '生态占比',
-          dataIndex: '2025年目标生态占个人总活跃量比值',
-          key: '2025年目标生态占个人总活跃量比值',
-          width: 120,
-          render: (value: number) => `${(value * 100).toFixed(4)}%`,
-        },
-        {
-          title: i18n.language === 'en' ? 'Code Contribution' : '代码贡献量',
-          dataIndex: '2025年个人代码贡献量',
-          key: '2025年个人代码贡献量',
-          width: 120,
-        },
-        {
-          title: i18n.language === 'en' ? 'Issue Contribution' : 'Issue贡献量',
-          dataIndex: '2025年个人Issue贡献量',
-          key: '2025年个人Issue贡献量',
-          width: 120,
-        },
-        {
-          title: i18n.language === 'en' ? 'Community Centrality' : '社区核心度',
-          dataIndex: '2025年个人社区核心度',
-          key: '2025年个人社区核心度',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Collaboration Influence' : '协作影响力',
-          dataIndex: '2025年个人协作影响力',
-          key: '2025年个人协作影响力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: i18n.language === 'en' ? 'Connectivity Control' : '联通控制力',
-          dataIndex: '2025年个人联通控制力',
-          key: '2025年个人联通控制力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: 'PageRank',
-          dataIndex: '2025年个人PageRank',
-          key: '2025年个人PageRank',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-      ],
-    },
-    {
-      title: i18n.language === 'en' ? '2024 Data' : '2024年数据',
-      children: [
-        {
-          title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
-          dataIndex: '2024年角色承担',
-          key: '2024年角色承担',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en'
-              ? 'Ecosystem Ratio'
-              : '目标生态占个人总活跃量比值',
-          dataIndex: '2024年目标生态占个人总活跃量比值',
-          key: '2024年目标生态占个人总活跃量比值',
-          width: 120,
-          render: (value: number) => `${(value * 100).toFixed(4)}%`,
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Code Contribution' : '个人代码贡献量',
-          dataIndex: '2024年个人代码贡献量',
-          key: '2024年个人代码贡献量',
-          width: 120,
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Issue Contribution' : '个人Issue贡献量',
-          dataIndex: '2024年个人Issue贡献量',
-          key: '2024年个人Issue贡献量',
-          width: 120,
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Community Centrality' : '个人社区核心度',
-          dataIndex: '2024年个人社区核心度',
-          key: '2024年个人社区核心度',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en'
-              ? 'Collaboration Influence'
-              : '个人协作影响力',
-          dataIndex: '2024年个人协作影响力',
-          key: '2024年个人协作影响力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title:
-            i18n.language === 'en' ? 'Connectivity Control' : '个人联通控制力',
-          dataIndex: '2024年个人联通控制力',
-          key: '2024年个人联通控制力',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-        {
-          title: 'PageRank',
-          dataIndex: '2024年个人PageRank',
-          key: '2024年个人PageRank',
-          width: 120,
-          render: (value: string) =>
-            translateByLocale(value, ecosystemMapping, i18n.language),
-        },
-      ],
-    },
-  ];
+  {
+    title: i18n.language === 'en' ? '2025 Data' : '2025年数据',
+    children: [
+      {
+        title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
+        dataIndex: '2025年角色承担',
+        key: '2025年角色承担',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title: i18n.language === 'en' ? 'Ecosystem Ratio' : '生态占比',
+        dataIndex: '2025年目标生态占个人总活跃量比值',
+        key: '2025年目标生态占个人总活跃量比值',
+        width: 120,
+        render: (value: number) => `${(value * 100).toFixed(4)}%`,
+      },
+      {
+        title: i18n.language === 'en' ? 'Code Contribution' : '代码贡献量',
+        dataIndex: '2025年个人代码贡献量',
+        key: '2025年个人代码贡献量',
+        width: 120,
+      },
+      {
+        title: i18n.language === 'en' ? 'Issue Contribution' : 'Issue贡献量',
+        dataIndex: '2025年个人Issue贡献量',
+        key: '2025年个人Issue贡献量',
+        width: 120,
+      },
+      {
+        title: i18n.language === 'en' ? 'Community Centrality' : '社区核心度',
+        dataIndex: '2025年个人社区核心度',
+        key: '2025年个人社区核心度',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title:
+          i18n.language === 'en' ? 'Collaboration Influence' : '协作影响力',
+        dataIndex: '2025年个人协作影响力',
+        key: '2025年个人协作影响力',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title: i18n.language === 'en' ? 'Connectivity Control' : '联通控制力',
+        dataIndex: '2025年个人联通控制力',
+        key: '2025年个人联通控制力',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title: 'PageRank',
+        dataIndex: '2025年个人PageRank',
+        key: '2025年个人PageRank',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+    ],
+  },
+  {
+    title: i18n.language === 'en' ? '2024 Data' : '2024年数据',
+    children: [
+      {
+        title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
+        dataIndex: '2024年角色承担',
+        key: '2024年角色承担',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title:
+          i18n.language === 'en'
+            ? 'Ecosystem Ratio'
+            : '目标生态占个人总活跃量比值',
+        dataIndex: '2024年目标生态占个人总活跃量比值',
+        key: '2024年目标生态占个人总活跃量比值',
+        width: 120,
+        render: (value: number) => `${(value * 100).toFixed(4)}%`,
+      },
+      {
+        title: i18n.language === 'en' ? 'Code Contribution' : '个人代码贡献量',
+        dataIndex: '2024年个人代码贡献量',
+        key: '2024年个人代码贡献量',
+        width: 120,
+      },
+      {
+        title:
+          i18n.language === 'en' ? 'Issue Contribution' : '个人Issue贡献量',
+        dataIndex: '2024年个人Issue贡献量',
+        key: '2024年个人Issue贡献量',
+        width: 120,
+      },
+      {
+        title:
+          i18n.language === 'en' ? 'Community Centrality' : '个人社区核心度',
+        dataIndex: '2024年个人社区核心度',
+        key: '2024年个人社区核心度',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title:
+          i18n.language === 'en' ? 'Collaboration Influence' : '个人协作影响力',
+        dataIndex: '2024年个人协作影响力',
+        key: '2024年个人协作影响力',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title:
+          i18n.language === 'en' ? 'Connectivity Control' : '个人联通控制力',
+        dataIndex: '2024年个人联通控制力',
+        key: '2024年个人联通控制力',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+      {
+        title: 'PageRank',
+        dataIndex: '2024年个人PageRank',
+        key: '2024年个人PageRank',
+        width: 120,
+        render: (value: string) =>
+          translateByLocale(value, ecosystemMapping, i18n.language),
+      },
+    ],
+  },
+];
 
 interface ParticipantMainContentProps {
   t: (key: string) => string;
@@ -418,7 +418,9 @@ interface ParticipantMainContentProps {
   apiError: unknown;
 }
 
-const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) => {
+const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (
+  props
+) => {
   const {
     t,
     i18n,
@@ -436,9 +438,6 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) =>
     apiLoading,
     apiError,
   } = props;
-
-  const [corsTestLoading, setCorsTestLoading] = useState(false);
-  const [corsTestMessage, setCorsTestMessage] = useState<string | null>(null);
 
   if (apiLoading) {
     return renderLoadingState(t);
@@ -468,94 +467,94 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) =>
         </Space>
       }
       style={{ marginTop: 16 }}
-    // extra={
-    //   <Space>
-    //     <Button
-    //       type="primary"
-    //       loading={corsTestLoading}
-    //       onClick={async () => {
-    //         setCorsTestLoading(true);
-    //         setCorsTestMessage(null);
-    //         try {
-    //           // const resp = await fetch(
-    //           //   '/api/intelligent-analysis/external/developer-discovery/detail-list',
-    //           //   {
-    //           //     method: 'POST',
-    //           //     headers: {
-    //           //       Accept: '*/*',
-    //           //       'Content-Type': 'application/json',
-    //           //     },
-    //           //     body: JSON.stringify({
-    //           //       ecosystem: activeEcosystem || ecosystems[0],
-    //           //       developer: organizationId,
-    //           //       page: 1,
-    //           //       page_size: 10,
-    //           //     }),
-    //           //   }
-    //           // );
+      // extra={
+      //   <Space>
+      //     <Button
+      //       type="primary"
+      //       loading={corsTestLoading}
+      //       onClick={async () => {
+      //         setCorsTestLoading(true);
+      //         setCorsTestMessage(null);
+      //         try {
+      //           // const resp = await fetch(
+      //           //   '/api/intelligent-analysis/external/developer-discovery/detail-list',
+      //           //   {
+      //           //     method: 'POST',
+      //           //     headers: {
+      //           //       Accept: '*/*',
+      //           //       'Content-Type': 'application/json',
+      //           //     },
+      //           //     body: JSON.stringify({
+      //           //       ecosystem: activeEcosystem || ecosystems[0],
+      //           //       developer: organizationId,
+      //           //       page: 1,
+      //           //       page_size: 10,
+      //           //     }),
+      //           //   }
+      //           // );
 
-    //           const resp = await fetch('http://compute.lishengbao.com.cn:8801/developer_discovery/detail_list', {
-    //             method: 'POST',
-    //             headers: {
-    //               'X-API-Key': 'opensearch',          // 可改成你的真实值/从后端获取
-    //               'Cookie': 'session=16c064d959d9f60faa680e00faa33f87', // 建议放到后端，不要在前端暴露
-    //               'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-    //               'Content-Type': 'application/json',
-    //               'Accept': '*/*',
-    //               'Host': 'compute.lishengbao.com.cn:8801',
-    //               'Connection': 'keep-alive'
-    //             },
-    //             body: JSON.stringify({
-    //               ecosystem: activeEcosystem || ecosystems[0],
-    //               developer: organizationId,
-    //               page: 1,
-    //               page_size: 10,
-    //             }),
-    //           });
+      //           const resp = await fetch('http://compute.lishengbao.com.cn:8801/developer_discovery/detail_list', {
+      //             method: 'POST',
+      //             headers: {
+      //               'X-API-Key': 'opensearch',          // 可改成你的真实值/从后端获取
+      //               'Cookie': 'session=16c064d959d9f60faa680e00faa33f87', // 建议放到后端，不要在前端暴露
+      //               'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+      //               'Content-Type': 'application/json',
+      //               'Accept': '*/*',
+      //               'Host': 'compute.lishengbao.com.cn:8801',
+      //               'Connection': 'keep-alive'
+      //             },
+      //             body: JSON.stringify({
+      //               ecosystem: activeEcosystem || ecosystems[0],
+      //               developer: organizationId,
+      //               page: 1,
+      //               page_size: 10,
+      //             }),
+      //           });
 
-    //           const text = await resp.text();
-    //           if (resp.ok) {
-    //             setCorsTestMessage(
-    //               i18n.language === 'en'
-    //                 ? `Success ${resp.status}, length ${text.length}`
-    //                 : `成功 ${resp.status}, 响应长度 ${text.length}`
-    //             );
-    //           } else {
-    //             setCorsTestMessage(
-    //               i18n.language === 'en'
-    //                 ? `HTTP ${resp.status}, ${text.slice(0, 200)}`
-    //                 : `HTTP ${resp.status}, ${text.slice(0, 200)}`
-    //             );
-    //           }
-    //         } catch (e: any) {
-    //           setCorsTestMessage(
-    //             i18n.language === 'en'
-    //               ? `Error: ${e?.message || String(e)}`
-    //               : `错误: ${e?.message || String(e)}`
-    //           );
-    //         } finally {
-    //           setCorsTestLoading(false);
-    //         }
-    //       }}
-    //     >
-    //       {i18n.language === 'en'
-    //         ? 'Test External API (CORS)'
-    //         : '测试外部接口（跨域）'}
-    //     </Button>
-    //     {corsTestMessage && (
-    //       <Text
-    //         type={
-    //           corsTestMessage.startsWith('成功') ||
-    //             corsTestMessage.startsWith('Success')
-    //             ? 'success'
-    //             : 'danger'
-    //         }
-    //       >
-    //         {corsTestMessage}
-    //       </Text>
-    //     )}
-    //   </Space>
-    // }
+      //           const text = await resp.text();
+      //           if (resp.ok) {
+      //             setCorsTestMessage(
+      //               i18n.language === 'en'
+      //                 ? `Success ${resp.status}, length ${text.length}`
+      //                 : `成功 ${resp.status}, 响应长度 ${text.length}`
+      //             );
+      //           } else {
+      //             setCorsTestMessage(
+      //               i18n.language === 'en'
+      //                 ? `HTTP ${resp.status}, ${text.slice(0, 200)}`
+      //                 : `HTTP ${resp.status}, ${text.slice(0, 200)}`
+      //             );
+      //           }
+      //         } catch (e: any) {
+      //           setCorsTestMessage(
+      //             i18n.language === 'en'
+      //               ? `Error: ${e?.message || String(e)}`
+      //               : `错误: ${e?.message || String(e)}`
+      //           );
+      //         } finally {
+      //           setCorsTestLoading(false);
+      //         }
+      //       }}
+      //     >
+      //       {i18n.language === 'en'
+      //         ? 'Test External API (CORS)'
+      //         : '测试外部接口（跨域）'}
+      //     </Button>
+      //     {corsTestMessage && (
+      //       <Text
+      //         type={
+      //           corsTestMessage.startsWith('成功') ||
+      //             corsTestMessage.startsWith('Success')
+      //             ? 'success'
+      //             : 'danger'
+      //         }
+      //       >
+      //         {corsTestMessage}
+      //       </Text>
+      //     )}
+      //   </Space>
+      // }
     >
       <Tabs
         items={tabItems}
@@ -569,45 +568,77 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) =>
           <h3 className="mb-4 text-xl font-bold text-gray-800">
             {i18n.language === 'en'
               ? `${translateByLocale(
-                activeEcosystem || ecosystems[0],
-                ecosystemMapping,
-                i18n.language
-              )} Overview`
+                  activeEcosystem || ecosystems[0],
+                  ecosystemMapping,
+                  i18n.language
+                )} Overview`
               : `${translateByLocale(
-                activeEcosystem || ecosystems[0],
-                ecosystemMapping,
-                i18n.language
-              )}概览`}
+                  activeEcosystem || ecosystems[0],
+                  ecosystemMapping,
+                  i18n.language
+                )}概览`}
           </h3>
           <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
             <Col span={6}>
               {(() => {
-                const hasA = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2024-2025组织代码贡献总量');
-                const hasB = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2025-2026组织代码贡献总量');
+                const hasA =
+                  activeMeta &&
+                  Object.prototype.hasOwnProperty.call(
+                    activeMeta,
+                    '2024-2025组织代码贡献总量'
+                  );
+                const hasB =
+                  activeMeta &&
+                  Object.prototype.hasOwnProperty.call(
+                    activeMeta,
+                    '2025-2026组织代码贡献总量'
+                  );
                 const range = hasA ? '2024-2025' : hasB ? '2025-2026' : '';
                 const title =
                   i18n.language === 'en'
-                    ? `Organization Code Contribution Total${range ? ` (${range})` : ''}`
+                    ? `Organization Code Contribution Total${
+                        range ? ` (${range})` : ''
+                      }`
                     : `组织代码贡献总量${range ? `(${range})` : ''}`;
                 const value = Number(
-                  (hasA ? (activeMeta as any)['2024-2025组织代码贡献总量'] : (activeMeta as any)?.['2025-2026组织代码贡献总量']) ?? 0
+                  (hasA
+                    ? (activeMeta as any)['2024-2025组织代码贡献总量']
+                    : (activeMeta as any)?.['2025-2026组织代码贡献总量']) ?? 0
                 );
-                return renderStatisticCard(title, value, '#1890ff', (v) => v?.toLocaleString());
+                return renderStatisticCard(title, value, '#1890ff', (v) =>
+                  v?.toLocaleString()
+                );
               })()}
             </Col>
             <Col span={6}>
               {(() => {
-                const hasA = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2024-2025组织Issue贡献总量');
-                const hasB = activeMeta && Object.prototype.hasOwnProperty.call(activeMeta, '2025-2026组织Issue贡献总量');
+                const hasA =
+                  activeMeta &&
+                  Object.prototype.hasOwnProperty.call(
+                    activeMeta,
+                    '2024-2025组织Issue贡献总量'
+                  );
+                const hasB =
+                  activeMeta &&
+                  Object.prototype.hasOwnProperty.call(
+                    activeMeta,
+                    '2025-2026组织Issue贡献总量'
+                  );
                 const range = hasA ? '2024-2025' : hasB ? '2025-2026' : '';
                 const title =
                   i18n.language === 'en'
-                    ? `Organization Issue Contribution Total${range ? ` (${range})` : ''}`
+                    ? `Organization Issue Contribution Total${
+                        range ? ` (${range})` : ''
+                      }`
                     : `组织Issue贡献总量${range ? `(${range})` : ''}`;
                 const value = Number(
-                  (hasA ? (activeMeta as any)['2024-2025组织Issue贡献总量'] : (activeMeta as any)?.['2025-2026组织Issue贡献总量']) ?? 0
+                  (hasA
+                    ? (activeMeta as any)['2024-2025组织Issue贡献总量']
+                    : (activeMeta as any)?.['2025-2026组织Issue贡献总量']) ?? 0
                 );
-                return renderStatisticCard(title, value, '#52c41a', (v) => v?.toLocaleString());
+                return renderStatisticCard(title, value, '#52c41a', (v) =>
+                  v?.toLocaleString()
+                );
               })()}
             </Col>
             {organizationId.startsWith('org:') && (
@@ -620,7 +651,7 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) =>
                       : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
                     String(
                       activeMeta?.[
-                      '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                        '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
                       ] || ''
                     ),
                     '#fa8c16'
@@ -634,7 +665,7 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (props) =>
                       : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
                     String(
                       activeMeta?.[
-                      '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+                        '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
                       ] || ''
                     ),
                     '#722ed1'
@@ -686,7 +717,8 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     setCurrentPage(1);
   }, [ecosystem, organizationId]);
 
-  const mappedEcosystem = PROJECT_NAME_MAP[ecosystem.toLowerCase()] || ecosystem;
+  const mappedEcosystem =
+    PROJECT_NAME_MAP[ecosystem.toLowerCase()] || ecosystem;
 
   const {
     data: apiData,
@@ -698,21 +730,30 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       'participant-details',
       mappedEcosystem,
       organizationId,
-      requestedEcosystem,
       currentPage,
       pageSize,
     ],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      params.set('organizationId', organizationId);
-      params.set('page', String(currentPage));
-      params.set('pageSize', String(pageSize));
-      if (requestedEcosystem) params.set('ecosystemName', requestedEcosystem);
-
       const response = await fetch(
-        `/api/intelligent-analysis/projects/${encodeURIComponent(
-          mappedEcosystem
-        )}/participant-details?${params.toString()}`
+        'http://compute.lishengbao.com.cn:8801/developer_discovery/detail_list',
+        {
+          method: 'POST',
+          headers: {
+            'X-API-Key': 'opensearch', // 可改成你的真实值/从后端获取
+            // 'Cookie': 'session=16c064d959d9f60faa680e00faa33f87', // 建议放到后端，不要在前端暴露
+            // 'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+            'Content-Type': 'application/json',
+            Accept: '*/*',
+            // 'Host': 'compute.lishengbao.com.cn:8801',
+            // 'Connection': 'keep-alive'
+          },
+          body: JSON.stringify({
+            ecosystem: mappedEcosystem,
+            developer: organizationId,
+            page: currentPage,
+            page_size: pageSize,
+          }),
+        }
       );
 
       if (!response.ok) {
@@ -720,13 +761,37 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
         try {
           const errJson = await response.json();
           const maybeMessage =
-            errJson && typeof errJson.message === 'string' ? errJson.message : '';
+            errJson && typeof errJson.message === 'string'
+              ? errJson.message
+              : '';
           if (maybeMessage) message = maybeMessage;
-        } catch { }
+        } catch {}
         throw new Error(message);
       }
 
-      return response.json();
+      const rawData = await response.json();
+
+      if (rawData?.status && rawData.status !== 'success') {
+        throw new Error(
+          typeof rawData?.message === 'string'
+            ? rawData.message
+            : 'Request failed'
+        );
+      }
+
+      const dataByEcosystem =
+        rawData?.data && typeof rawData.data === 'object' ? rawData.data : {};
+      const ecosystems = Object.keys(dataByEcosystem);
+      const pagination =
+        rawData?.pagination && typeof rawData.pagination === 'object'
+          ? rawData.pagination
+          : {};
+
+      return {
+        ecosystems,
+        dataByEcosystem,
+        pagination,
+      };
     },
     staleTime: 1000 * 60 * 5,
     keepPreviousData: true,
@@ -735,22 +800,53 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   const ecosystems: string[] = Array.isArray(apiData?.ecosystems)
     ? apiData.ecosystems
     : [];
-  const metaByEcosystem =
-    apiData?.metaByEcosystem && typeof apiData.metaByEcosystem === 'object'
-      ? apiData.metaByEcosystem
-      : null;
-  const activeEcosystem = String(
-    requestedEcosystem ||
-    apiData?.activeEcosystem ||
-    ecosystems[0] ||
-    ''
-  );
+  const dataByEcosystem =
+    apiData?.dataByEcosystem && typeof apiData.dataByEcosystem === 'object'
+      ? (apiData.dataByEcosystem as Record<string, any>)
+      : {};
+  const activeEcosystem =
+    requestedEcosystem && ecosystems.includes(requestedEcosystem)
+      ? requestedEcosystem
+      : ecosystems[0] || '';
   const activeMeta =
-    metaByEcosystem && activeEcosystem ? (metaByEcosystem as any)[activeEcosystem] : null;
-  const tableRows: ParticipantTableRow[] = Array.isArray(apiData?.items)
-    ? apiData.items
-    : [];
-  const total = typeof apiData?.total === 'number' ? apiData.total : 0;
+    activeEcosystem && dataByEcosystem[activeEcosystem]
+      ? dataByEcosystem[activeEcosystem]
+      : null;
+  const tableRows: ParticipantTableRow[] = (() => {
+    const list = activeMeta?.['人员参与项目清单'];
+    const items: any[] = Array.isArray(list) ? list : [];
+    return items.map((item, idx) => ({
+      key: `${String(item?.['用户ID'] || '')}-${String(
+        item?.['项目名称'] || ''
+      )}-${idx}`,
+      具体人员: String(item?.['用户ID'] || ''),
+      贡献仓库: String(item?.['项目名称'] || ''),
+      '2024年角色承担': String(item?.['2024年角色承担'] || ''),
+      '2024年目标生态占个人总活跃量比值': Number(
+        item?.['2024年目标生态占个人总活跃量比值'] ?? 0
+      ),
+      '2024年个人代码贡献量': Number(item?.['2024年个人代码贡献量'] ?? 0),
+      '2024年个人Issue贡献量': Number(item?.['2024年个人Issue贡献量'] ?? 0),
+      '2024年个人社区核心度': String(item?.['2024年个人社区核心度'] || ''),
+      '2024年个人协作影响力': String(item?.['2024年个人协作影响力'] || ''),
+      '2024年个人联通控制力': String(item?.['2024年个人联通控制力'] || ''),
+      '2024年个人PageRank': String(item?.['2024年个人PageRank'] || ''),
+      '2025年角色承担': String(item?.['2025年角色承担'] || ''),
+      '2025年目标生态占个人总活跃量比值': Number(
+        item?.['2025年目标生态占个人总活跃量比值'] ?? 0
+      ),
+      '2025年个人代码贡献量': Number(item?.['2025年个人代码贡献量'] ?? 0),
+      '2025年个人Issue贡献量': Number(item?.['2025年个人Issue贡献量'] ?? 0),
+      '2025年个人社区核心度': String(item?.['2025年个人社区核心度'] || ''),
+      '2025年个人协作影响力': String(item?.['2025年个人协作影响力'] || ''),
+      '2025年个人联通控制力': String(item?.['2025年个人联通控制力'] || ''),
+      '2025年个人PageRank': String(item?.['2025年个人PageRank'] || ''),
+    }));
+  })();
+  const total =
+    typeof apiData?.pagination?.total === 'number'
+      ? apiData.pagination.total
+      : 0;
 
   const columns = buildColumns(t, i18n);
 

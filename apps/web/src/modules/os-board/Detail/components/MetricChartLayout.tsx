@@ -11,7 +11,12 @@ import type {
   OsBoardDerivedMetric,
   OsBoardDashboardMetric,
 } from '../../types';
-import { fetchMetricsByIdentifier, MetricData } from '../../api/dashboard';
+import {
+  fetchMetricsByIdentifier,
+  MetricData,
+  ModelScoreData,
+  MetricsByIdentifierResponse,
+} from '../../api/dashboard';
 import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
   modelToMetricsMap,
@@ -75,7 +80,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
         timeStart.toISOString(),
         timeEnd.toISOString(),
       ],
-      queryFn: () =>
+      queryFn: (): Promise<MetricsByIdentifierResponse> =>
         fetchMetricsByIdentifier({
           identifier: dashboard.identifier || dashboard.id,
           repo: project,
@@ -93,8 +98,19 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
     const map = new Map<string, MetricData[]>();
     metricQueries.forEach((result, index) => {
       const project = allProjects[index];
-      if (result.data) {
-        map.set(project, result.data);
+      if (result.data?.metrics) {
+        map.set(project, result.data.metrics);
+      }
+    });
+    return map;
+  }, [metricQueries, allProjects]);
+
+  const modelScoresDataMap = useMemo(() => {
+    const map = new Map<string, ModelScoreData[]>();
+    metricQueries.forEach((result, index) => {
+      const project = allProjects[index];
+      if (result.data?.model_scores) {
+        map.set(project, result.data.model_scores);
       }
     });
     return map;
@@ -274,7 +290,8 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
               modelId={modelIdent}
               dashboardId={dashboard.id}
               projects={[...dashboard.config.projects]}
-              metrics={modelMetrics}
+              modelScoresDataMap={modelScoresDataMap}
+              isLoading={metricQueries.some((q) => q.isLoading)}
             />
           </div>
         );

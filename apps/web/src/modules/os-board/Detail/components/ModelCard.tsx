@@ -1,78 +1,30 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EChartX from '@common/components/EChartX';
 import LoadInView from '@common/components/LoadInView';
 import { colors } from '@common/options';
 import { shortenAxisLabel } from '@common/utils/format';
-import { getMetricValue } from '../../state';
+import type { ModelScoreData } from '../../api/dashboard';
+import ScoreConversion from '@modules/analyze/components/ScoreConversion';
+import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
 
 interface ModelCardProps {
   modelId: string;
   dashboardId: string;
   projects: readonly string[];
-  metrics: readonly string[];
+  modelScoresDataMap?: Map<string, ModelScoreData[]>;
+  isLoading?: boolean;
 }
-
-// 确定性哈希函数
-const hashSeed = (str: string): number => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash);
-};
-
-// 基于种子的伪随机数生成器
-const seededRandom = (seed: number, index: number): number => {
-  const x = Math.sin(seed + index * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-};
-
-// 生成模型综合评分数据
-const generateModelScoreData = (
-  dashboardId: string,
-  project: string,
-  metrics: readonly string[],
-  days: number = 30
-) => {
-  const seed = hashSeed(`${dashboardId}-${project}-model`);
-  const data: number[] = [];
-  const dates: string[] = [];
-  const baseDate = new Date('2026-01-15');
-
-  // 计算基础分数（基于所有指标的平均值）
-  let baseScore = 0;
-  metrics.forEach((metricId) => {
-    const value = getMetricValue({ dashboardId, project, metricId });
-    baseScore += value;
-  });
-  baseScore = metrics.length > 0 ? (baseScore / metrics.length) % 100 : 50;
-  baseScore = Math.max(30, Math.min(95, baseScore));
-
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date(baseDate);
-    date.setDate(date.getDate() - i);
-    dates.push(date.toISOString().slice(0, 7));
-
-    const randomFactor = seededRandom(seed, i) - 0.5;
-    const variation = Math.sin(i * 0.3) * 5 + randomFactor * 3;
-    data.push(
-      Math.max(0, Math.min(100, Number((baseScore + variation).toFixed(2))))
-    );
-  }
-
-  return { dates, data };
-};
 
 const ModelCard: React.FC<ModelCardProps> = ({
   modelId,
   dashboardId,
   projects,
-  metrics,
+  modelScoresDataMap,
+  isLoading = false,
 }) => {
   const { t } = useTranslation();
+  const [onePointSys, setOnePointSys] = useState(true);
 
   const displayProjects = useMemo(() => {
     if (projects.length === 0) {
@@ -82,14 +34,28 @@ const ModelCard: React.FC<ModelCardProps> = ({
   }, [projects]);
 
   const chartOption = useMemo(() => {
-    const { dates } = generateModelScoreData(
-      dashboardId,
-      displayProjects[0] || 'default',
-      metrics
-    );
+    let dates: string[] = [];
+    let overallMax = 0;
 
     const series = displayProjects.map((project, idx) => {
-      const { data } = generateModelScoreData(dashboardId, project, metrics);
+      const projectModelScores = modelScoresDataMap?.get(project) || [];
+      const score = projectModelScores.find((m) => m.ident === modelId);
+      const dataPoints = score?.data || [];
+      const raw = dataPoints.map((d) => d.value);
+      const data = onePointSys
+        ? raw
+        : raw.map((v) => transHundredMarkSystem(v) as number);
+
+      if (dates.length === 0 && dataPoints.length > 0) {
+        dates = dataPoints.map((d) => d.date.slice(0, 7));
+      }
+
+      const localMax = data.reduce(
+        (m, v) =>
+          typeof v === 'number' && Number.isFinite(v) ? Math.max(m, v) : m,
+        0
+      );
+      overallMax = Math.max(overallMax, localMax);
 
       return {
         name: project.split('/').pop() || project,
@@ -125,7 +91,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
             const display = (() => {
               if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
               if (Number.isInteger(v)) return String(v);
-              return v.toFixed(2).replace(/\.?0+$/, '');
+              return v.toFixed(3);
             })();
             return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
           });
@@ -160,14 +126,14 @@ const ModelCard: React.FC<ModelCardProps> = ({
         type: 'value' as const,
         scale: true,
         min: 0,
-        max: 100,
+        max: onePointSys ? 1 : 100,
         axisLabel: {
           formatter: (value: any) => shortenAxisLabel(value) as string,
         },
       },
       series,
     };
-  }, [dashboardId, displayProjects, metrics]);
+  }, [dashboardId, displayProjects, modelId, modelScoresDataMap, onePointSys]);
 
   const id = `model_card_${modelId}`;
   const cardRef = useRef<HTMLDivElement>(null);
@@ -183,19 +149,26 @@ const ModelCard: React.FC<ModelCardProps> = ({
       ref={cardRef}
       className="base-card relative min-w-0 scroll-mt-[200px] rounded-lg border-2 border-transparent bg-white p-5 drop-shadow-sm md:rounded-none"
     >
-      <h3 className="group mb-2 text-lg font-semibold text-[#000000]">
-        <span className="mr-2 rounded bg-[#F5F0FF] px-2 py-0.5 text-xs font-normal text-[#722ED1]">
-          {t('os_board:detail.model_tag')}
-        </span>
-        {modelTitle}
-        <a href={`#${id}`}>
-          <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
-            #
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="group text-lg font-semibold text-[#000000]">
+          <span className="mr-2 rounded bg-[#F5F0FF] px-2 py-0.5 text-xs font-normal text-[#722ED1]">
+            {t('os_board:detail.model_tag')}
           </span>
-        </a>
-      </h3>
+          {modelTitle}
+          <a href={`#${id}`}>
+            <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
+              #
+            </span>
+          </a>
+        </h3>
+        <ScoreConversion onePoint={onePointSys} onChange={setOnePointSys} />
+      </div>
       <LoadInView containerRef={cardRef} className="relative h-[360px]">
-        <EChartX loading={false} option={chartOption} containerRef={cardRef} />
+        <EChartX
+          loading={isLoading}
+          option={chartOption}
+          containerRef={cardRef}
+        />
       </LoadInView>
     </div>
   );

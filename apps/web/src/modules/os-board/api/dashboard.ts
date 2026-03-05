@@ -79,7 +79,16 @@ export interface MetricData {
   data: MetricDataPoint[];
 }
 
-export type MetricsByIdentifierResponse = MetricData[];
+export interface ModelScoreData {
+  id: number | null;
+  ident: string;
+  data: MetricDataPoint[];
+}
+
+export interface MetricsByIdentifierResponse {
+  metrics: MetricData[];
+  model_scores: ModelScoreData[];
+}
 
 export interface ModelMetricListRequest {
   // 此接口暂无额外参数

@@ -103,7 +103,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
             const display = (() => {
               if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
               if (Number.isInteger(v)) return String(v);
-              return v.toFixed(2).replace(/\.?0+$/, '');
+              return v.toFixed(3);
             })();
             return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
           });
