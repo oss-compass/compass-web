@@ -54,7 +54,7 @@ const generateModelScoreData = (
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date(baseDate);
     date.setDate(date.getDate() - i);
-    dates.push(date.toISOString().slice(0, 10));
+    dates.push(date.toISOString().slice(0, 7));
 
     const randomFactor = seededRandom(seed, i) - 0.5;
     const variation = Math.sin(i * 0.3) * 5 + randomFactor * 3;
@@ -115,6 +115,22 @@ const ModelCard: React.FC<ModelCardProps> = ({
         },
         order: 'valueDesc' as const,
         enterable: true,
+        formatter: (params: any) => {
+          const items = Array.isArray(params) ? params : [params];
+          const axisValue =
+            items[0]?.axisValueLabel ?? items[0]?.axisValue ?? '';
+          const rows = items.map((p: any) => {
+            const raw = Array.isArray(p?.value) ? p.value[1] : p?.value;
+            const v = typeof raw === 'number' ? raw : Number(raw);
+            const display = (() => {
+              if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
+              if (Number.isInteger(v)) return String(v);
+              return v.toFixed(2).replace(/\.?0+$/, '');
+            })();
+            return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
+          });
+          return [axisValue, ...rows].join('<br/>');
+        },
       },
       legend: {
         type: 'scroll' as const,

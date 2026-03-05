@@ -167,14 +167,14 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
                 {dashboardRules.length === 0 ? (
                   <div className="flex flex-col items-center py-20">
                     <p className="mb-4 text-gray-400">{t('common:no_data')}</p>
-                    <Button
+                    {/* <Button
                       onClick={() => {
                         setEditRuleId(undefined);
                         setAddDialogOpen(true);
                       }}
                     >
                       {t('os_board:alert_manage.add_rule')}
-                    </Button>
+                    </Button> */}
                   </div>
                 ) : (
                   <table className="w-full text-sm">

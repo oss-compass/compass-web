@@ -66,7 +66,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
       // 如果 dates 为空，且当前项目有数据，则使用该项目的日期作为 X 轴
       if (dates.length === 0 && dataPoints.length > 0) {
-        dates = dataPoints.map((d) => d.date.slice(0, 10));
+        dates = dataPoints.map((d) => d.date.slice(0, 7));
       }
 
       return {
@@ -93,6 +93,22 @@ const MetricCard: React.FC<MetricCardProps> = ({
         },
         order: 'valueDesc' as const,
         enterable: true,
+        formatter: (params: any) => {
+          const items = Array.isArray(params) ? params : [params];
+          const axisValue =
+            items[0]?.axisValueLabel ?? items[0]?.axisValue ?? '';
+          const rows = items.map((p: any) => {
+            const raw = Array.isArray(p?.value) ? p.value[1] : p?.value;
+            const v = typeof raw === 'number' ? raw : Number(raw);
+            const display = (() => {
+              if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
+              if (Number.isInteger(v)) return String(v);
+              return v.toFixed(2).replace(/\.?0+$/, '');
+            })();
+            return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
+          });
+          return [axisValue, ...rows].join('<br/>');
+        },
       },
       legend: {
         type: 'scroll' as const,

@@ -180,7 +180,53 @@ export const fetchPullsDetailList = async (
       label: formatProjectLabel(params.label),
     }
   );
-  return response.data;
+  const data: any = response.data as any;
+  const items = Array.isArray(data?.items)
+    ? data.items.map((raw: any) => {
+        if (!raw || typeof raw !== 'object') return raw;
+        const url =
+          typeof raw.url === 'string'
+            ? raw.url.replaceAll('`', '').trim()
+            : raw.url;
+        const repository =
+          typeof raw.repository === 'string'
+            ? raw.repository.replaceAll('`', '').trim()
+            : raw.repository;
+        const createdAt = raw.createdAt ?? raw.created_at ?? null;
+        const closedAt = raw.closedAt ?? raw.closed_at ?? null;
+        const idInRepoRaw = raw.idInRepo ?? raw.id_in_repo ?? null;
+        const idInRepo =
+          typeof idInRepoRaw === 'string' ? Number(idInRepoRaw) : idInRepoRaw;
+        const timeToCloseDays =
+          raw.timeToCloseDays ?? raw.time_to_close_days ?? null;
+        const timeToFirstAttentionWithoutBot =
+          raw.timeToFirstAttentionWithoutBot ??
+          raw.time_to_first_attention_without_bot ??
+          null;
+        const mergeAuthorLogin =
+          raw.mergeAuthorLogin ?? raw.merge_author_login ?? null;
+        const reviewersLogin =
+          raw.reviewersLogin ?? raw.reviewers_login ?? null;
+        const numReviewComments =
+          raw.numReviewComments ?? raw.num_review_comments ?? null;
+        const userLogin = raw.userLogin ?? raw.user_login ?? null;
+        return {
+          ...raw,
+          url,
+          repository,
+          createdAt,
+          closedAt,
+          idInRepo: Number.isFinite(idInRepo) ? idInRepo : null,
+          timeToCloseDays,
+          timeToFirstAttentionWithoutBot,
+          mergeAuthorLogin,
+          reviewersLogin,
+          numReviewComments,
+          userLogin,
+        } as PullDetail;
+      })
+    : [];
+  return { ...data, items } as PageResponse<PullDetail>;
 };
 
 /**
@@ -196,7 +242,51 @@ export const fetchIssuesDetailList = async (
       label: formatProjectLabel(params.label),
     }
   );
-  return response.data;
+  const data: any = response.data as any;
+  const items = Array.isArray(data?.items)
+    ? data.items.map((raw: any) => {
+        if (!raw || typeof raw !== 'object') return raw;
+        const url =
+          typeof raw.url === 'string'
+            ? raw.url.replaceAll('`', '').trim()
+            : raw.url;
+        const repository =
+          typeof raw.repository === 'string'
+            ? raw.repository.replaceAll('`', '').trim()
+            : raw.repository;
+        const createdAt = raw.createdAt ?? raw.created_at ?? null;
+        const closedAt = raw.closedAt ?? raw.closed_at ?? null;
+        const idInRepoRaw = raw.idInRepo ?? raw.id_in_repo ?? null;
+        const idInRepo =
+          typeof idInRepoRaw === 'string' ? Number(idInRepoRaw) : idInRepoRaw;
+        const timeToCloseDays =
+          raw.timeToCloseDays ?? raw.time_to_close_days ?? null;
+        const timeToFirstAttentionWithoutBot =
+          raw.timeToFirstAttentionWithoutBot ??
+          raw.time_to_first_attention_without_bot ??
+          null;
+        const numOfCommentsWithoutBot =
+          raw.numOfCommentsWithoutBot ??
+          raw.num_of_comments_without_bot ??
+          null;
+        const userLogin = raw.userLogin ?? raw.user_login ?? null;
+        const assigneeLogin = raw.assigneeLogin ?? raw.assignee_login ?? null;
+        return {
+          ...raw,
+          url,
+          repository,
+          createdAt,
+          closedAt,
+          idInRepo: Number.isFinite(idInRepo) ? idInRepo : null,
+          timeToCloseDays,
+          timeToFirstAttentionWithoutBot,
+          numOfCommentsWithoutBot,
+          userLogin,
+          assigneeLogin,
+        } as IssueDetail;
+      })
+    : [];
+  return { ...data, items } as PageResponse<IssueDetail>;
 };
 
 /**
