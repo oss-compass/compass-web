@@ -58,6 +58,29 @@ export interface DashboardDeleteRequest {
   id: string;
 }
 
+export interface MetricsByIdentifierRequest {
+  identifier: string;
+  repo: string;
+  period: string;
+  beginDate: string;
+  endDate: string;
+}
+
+export interface MetricDataPoint {
+  date: string;
+  value: number;
+  extra?: Record<string, any>;
+}
+
+export interface MetricData {
+  id: number;
+  name: string;
+  ident: string;
+  data: MetricDataPoint[];
+}
+
+export type MetricsByIdentifierResponse = MetricData[];
+
 export interface ModelMetricListRequest {
   // 此接口暂无额外参数
 }
@@ -297,5 +320,18 @@ export const deleteDashboard = async (
   params: DashboardDeleteRequest
 ): Promise<void> => {
   const response = await axios.post('/services/dashboard/delete', params);
+  return response.data;
+};
+
+/**
+ * 直接调用：获取指标数据
+ */
+export const fetchMetricsByIdentifier = async (
+  params: MetricsByIdentifierRequest
+): Promise<MetricsByIdentifierResponse> => {
+  const response = await axios.post(
+    '/services/dashboard/get_metrics_by_identifier',
+    params
+  );
   return response.data;
 };

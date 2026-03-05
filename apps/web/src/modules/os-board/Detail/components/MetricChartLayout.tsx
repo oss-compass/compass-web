@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueries } from '@tanstack/react-query';
 import MetricCard from './MetricCard';
 import ModelCard from './ModelCard';
 import ContributorTable from './ContributorTable';
@@ -10,6 +11,8 @@ import type {
   OsBoardDerivedMetric,
   OsBoardDashboardMetric,
 } from '../../types';
+import { fetchMetricsByIdentifier, MetricData } from '../../api/dashboard';
+import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
   modelToMetricsMap,
   type ModelId,
@@ -25,6 +28,7 @@ const SPECIAL_METRICS = {
 interface MetricChartLayoutProps {
   dashboard: {
     id: string;
+    identifier?: string;
     type: 'repo' | 'community';
     dashboard_metrics?: OsBoardDashboardMetric[];
     config: {
@@ -44,6 +48,57 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
   derivedMetrics = [],
 }) => {
   const { t } = useTranslation();
+  const { timeStart, timeEnd } = useOsBoardDateRange();
+
+  // 获取所有需要查询的项目（包括竞品）
+  const allProjects = useMemo(() => {
+    if (dashboard.config.compareMode) {
+      return [
+        ...dashboard.config.projects,
+        ...dashboard.config.competitorProjects,
+      ];
+    }
+    return [...dashboard.config.projects];
+  }, [
+    dashboard.config.projects,
+    dashboard.config.competitorProjects,
+    dashboard.config.compareMode,
+  ]);
+
+  // 并行查询所有项目的指标数据
+  const metricQueries = useQueries({
+    queries: allProjects.map((project) => ({
+      queryKey: [
+        'dashboardMetrics',
+        dashboard.id,
+        project,
+        timeStart.toISOString(),
+        timeEnd.toISOString(),
+      ],
+      queryFn: () =>
+        fetchMetricsByIdentifier({
+          identifier: dashboard.identifier || dashboard.id,
+          repo: project,
+          period: 'month', // 默认为 month，或者根据时间范围动态计算
+          beginDate: timeStart.toISOString().slice(0, 10),
+          endDate: timeEnd.toISOString().slice(0, 10),
+        }),
+      staleTime: 5 * 60 * 1000,
+      enabled: !!dashboard.id && !!project,
+    })),
+  });
+
+  // 将查询结果组织成 Map<Project, MetricData[]>
+  const metricsDataMap = useMemo(() => {
+    const map = new Map<string, MetricData[]>();
+    metricQueries.forEach((result, index) => {
+      const project = allProjects[index];
+      if (result.data) {
+        map.set(project, result.data);
+      }
+    });
+    return map;
+  }, [metricQueries, allProjects]);
 
   // 从 dashboard_metrics 获取指标列表
   const displayMetrics = useMemo(() => {
@@ -186,6 +241,8 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
             projects={dashboard.config.projects}
             competitorProjects={dashboard.config.competitorProjects}
             compareMode={dashboard.config.compareMode}
+            metricsDataMap={metricsDataMap}
+            isLoading={metricQueries.some((q) => q.isLoading)}
           />
         );
     }

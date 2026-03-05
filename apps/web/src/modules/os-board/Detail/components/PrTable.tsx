@@ -11,15 +11,14 @@ import MyTable from '@common/components/Table';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { format, parseJSON } from 'date-fns';
+import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
-  usePullsDetailListQuery,
+  useOsBoardPullsDetailList,
+  useOsBoardPullsOverview,
   PullDetail,
   FilterOptionInput,
   SortOptionInput,
-} from '@oss-compass/graphql';
-import client from '@common/gqlClient';
-import { useOsBoardMetricDashboard } from '../../hooks';
-import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
+} from '../../api/tableData';
 import { toFixed } from '@common/utils';
 import { toUnderline } from '@common/utils/format';
 
@@ -104,144 +103,6 @@ const STATE_OPTIONS = [
   { value: 'rejected', text: 'analyze:metric_detail:rejected' },
 ];
 
-// Mock 数据
-const MOCK_PR_DATA: PullDetail[] = [
-  {
-    title: '重构用户认证模块',
-    url: 'https://gitcode.com/cann/cann/pulls/201',
-    state: 'merged',
-    createdAt: '2024-01-12T09:00:00Z',
-    closedAt: '2024-01-15T14:00:00Z',
-    timeToCloseDays: 3.2,
-    timeToFirstAttentionWithoutBot: 0.5,
-    numReviewComments: 12,
-    labels: ['enhancement', 'auth'],
-    userLogin: 'zhangsan',
-    reviewersLogin: ['lisi', 'wangwu'],
-    mergeAuthorLogin: 'lisi',
-  },
-  {
-    title: '添加单元测试覆盖',
-    url: 'https://gitcode.com/cann/cann/pulls/202',
-    state: 'open',
-    createdAt: '2024-01-20T10:00:00Z',
-    closedAt: null,
-    timeToCloseDays: null,
-    timeToFirstAttentionWithoutBot: 1.2,
-    numReviewComments: 5,
-    labels: ['test'],
-    userLogin: 'wangwu',
-    reviewersLogin: ['zhaoliu'],
-    mergeAuthorLogin: null,
-  },
-  {
-    title: '修复内存泄漏问题',
-    url: 'https://gitcode.com/cann/cann/pulls/203',
-    state: 'merged',
-    createdAt: '2024-01-08T15:00:00Z',
-    closedAt: '2024-01-09T10:00:00Z',
-    timeToCloseDays: 0.8,
-    timeToFirstAttentionWithoutBot: 0.3,
-    numReviewComments: 8,
-    labels: ['bug', 'critical'],
-    userLogin: 'sunqi',
-    reviewersLogin: ['zhangsan', 'lisi'],
-    mergeAuthorLogin: 'zhangsan',
-  },
-  {
-    title: '优化前端构建配置',
-    url: 'https://gitcode.com/cann/cann/pulls/204',
-    state: 'rejected',
-    createdAt: '2024-01-16T11:00:00Z',
-    closedAt: '2024-01-18T09:00:00Z',
-    timeToCloseDays: 1.9,
-    timeToFirstAttentionWithoutBot: 0.8,
-    numReviewComments: 15,
-    labels: ['build', 'frontend'],
-    userLogin: 'lisi',
-    reviewersLogin: ['wangwu'],
-    mergeAuthorLogin: null,
-  },
-  {
-    title: '更新依赖版本',
-    url: 'https://gitcode.com/cann/cann/pulls/205',
-    state: 'open',
-    createdAt: '2024-01-22T08:00:00Z',
-    closedAt: null,
-    timeToCloseDays: null,
-    timeToFirstAttentionWithoutBot: null,
-    numReviewComments: 0,
-    labels: ['dependencies'],
-    userLogin: 'zhaoliu',
-    reviewersLogin: [],
-    mergeAuthorLogin: null,
-  },
-] as unknown as PullDetail[];
-
-const MOCK_PR_STATS = {
-  pullCount: 38,
-  pullCompletionRatio: 0.842,
-  pullCompletionCount: 32,
-  pullUnresponsiveCount: 2,
-  commitCount: 156,
-};
-
-// 社区维度 Mock 数据
-const MOCK_COMMUNITY_PR_DATA: CommunityPrRecord[] = [
-  {
-    id: '1',
-    repoName: 'cann/cann',
-    repoUrl: 'https://gitcode.com/cann/cann',
-    prTotal: 156,
-    prOpen: 18,
-    prCompletionRatio: 88,
-    prUnresponsiveCount: 3,
-    prFirstResponseTime: 0.8,
-  },
-  {
-    id: '2',
-    repoName: 'cann/metadef',
-    repoUrl: 'https://gitcode.com/cann/metadef',
-    prTotal: 92,
-    prOpen: 8,
-    prCompletionRatio: 91,
-    prUnresponsiveCount: 1,
-    prFirstResponseTime: 0.5,
-  },
-  {
-    id: '3',
-    repoName: 'cann/graphengine',
-    repoUrl: 'https://gitcode.com/cann/graphengine',
-    prTotal: 38,
-    prOpen: 5,
-    prCompletionRatio: 87,
-    prUnresponsiveCount: 2,
-    prFirstResponseTime: 1.2,
-  },
-  {
-    id: '4',
-    repoName: 'cann/parser',
-    repoUrl: 'https://gitcode.com/cann/parser',
-    prTotal: 45,
-    prOpen: 6,
-    prCompletionRatio: 87,
-    prUnresponsiveCount: 1,
-    prFirstResponseTime: 0.9,
-  },
-];
-
-// 将项目 URL 转换为 API 所需的 label 格式
-const formatProjectLabel = (project: string): string => {
-  if (
-    project.startsWith('github:') ||
-    project.startsWith('gitee:') ||
-    project.startsWith('gitcode:')
-  ) {
-    return project;
-  }
-  return project.replace(/^https?:\/\//, '');
-};
-
 // 获取项目平台类型
 const getProjectPlatform = (project: string) => {
   if (project.includes('gitee')) return 'gitee';
@@ -285,37 +146,32 @@ const PrTable: React.FC<PrTableProps> = ({
     },
   });
 
-  // 构建查询参数
-  const label = formatProjectLabel(selectedProject);
-  const query = {
+  // 调用 PR 列表 API (使用 REST API)
+  const {
+    data: pullsDetailData,
+    isLoading: repoLoading,
+    isFetching: repoFetching,
+  } = useOsBoardPullsDetailList({
+    project: selectedProject,
     page: tableParams.pagination?.current,
     per: tableParams.pagination?.pageSize,
-    filterOpts: tableParams.filterOpts || [],
+    filterOpts: tableParams.filterOpts,
     sortOpts: tableParams.sortOpts,
-    label,
-    level: 'repo',
-    beginDate: timeStart,
-    endDate: timeEnd,
-  };
+    enabled: !!selectedProject,
+  });
 
-  // 调用 PR 列表 API (仅仓库维度)
-  const [repoTableData, setRepoTableData] = useState<PullDetail[]>([]);
-
-  const { isLoading: repoLoading, isFetching: repoFetching } =
-    usePullsDetailListQuery(client, query, {
-      enabled: !!selectedProject,
-      onSuccess: (data) => {
-        const items = data.pullsDetailList.items;
-        setRepoTableData(items);
-        setTableParams((prev) => ({
-          ...prev,
-          pagination: {
-            ...prev.pagination,
-            total: data.pullsDetailList.count,
-          },
-        }));
-      },
-    });
+  // 同步 API 返回的分页总数到 tableParams
+  React.useEffect(() => {
+    if (pullsDetailData) {
+      setTableParams((prev) => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: pullsDetailData.count,
+        },
+      }));
+    }
+  }, [pullsDetailData]);
 
   // ============ 社区维度数据 (接口开发中，预留) ============
   // TODO: 替换为真实的社区 PR 汇总 API
@@ -329,37 +185,29 @@ const PrTable: React.FC<PrTableProps> = ({
   const communityTableData: CommunityPrRecord[] = [];
   const communityLoading = false;
 
-  // 使用真实 API 获取统计数据
-  const { pullsOverview, isLoading: statsLoading } = useOsBoardMetricDashboard({
-    project: selectedProject,
-    level: dashboardType,
-    enabled: !!selectedProject,
-  });
+  // 使用 REST API 获取 PR 概览统计数据
+  const { data: pullsOverview, isLoading: statsLoading } =
+    useOsBoardPullsOverview({
+      project: selectedProject,
+      level: dashboardType,
+      enabled: !!selectedProject,
+    });
 
-  // 统计卡片数据（API 无有效数据时使用 mock）
-  const hasValidStats =
-    pullsOverview &&
-    pullsOverview.pullCount != null &&
-    pullsOverview.pullCount > 0;
-  const statsData = hasValidStats
-    ? {
-        pullCount: pullsOverview.pullCount,
-        pullCompletionRatio: pullsOverview.pullCompletionRatio,
-        pullCompletionCount: pullsOverview.pullCompletionCount,
-        pullUnresponsiveCount: pullsOverview.pullUnresponsiveCount,
-        commitCount: pullsOverview.commitCount,
-      }
-    : MOCK_PR_STATS;
+  // 统计卡片数据 (使用 API 实际返回的字段名)
+  const statsData = {
+    pullCount: pullsOverview?.new_pr_count,
+    pullCompletionRatio: pullsOverview?.pr_resolution_percentage
+      ? parseFloat(pullsOverview.pr_resolution_percentage.replace('%', '')) /
+        100
+      : null,
+    pullUnresponsiveCount: pullsOverview?.unresponsive_pr_count,
+    commitCount: pullsOverview?.commit_count,
+  };
 
-  // 表格数据（API 无数据时使用 mock）
+  // 表格数据
+  const repoTableData = pullsDetailData?.items || [];
   const displayTableData =
-    dashboardType === 'community'
-      ? communityTableData.length > 0
-        ? communityTableData
-        : MOCK_COMMUNITY_PR_DATA
-      : repoTableData.length > 0
-      ? repoTableData
-      : MOCK_PR_DATA;
+    dashboardType === 'community' ? communityTableData : repoTableData;
 
   // 处理表格变更
   const handleTableChange = (
@@ -367,7 +215,7 @@ const PrTable: React.FC<PrTableProps> = ({
     filters: Record<string, FilterValue>,
     sorter: SorterResult<PullDetail>
   ) => {
-    let sortOpts = null;
+    let sortOpts: SortOptionInput | null = null;
     const filterOpts: FilterOptionInput[] = [];
 
     if (sorter.field) {
@@ -657,9 +505,7 @@ const PrTable: React.FC<PrTableProps> = ({
             </div>
             <div className="line-clamp-1">
               {statsData?.pullCompletionRatio != null
-                ? `${toFixed(statsData.pullCompletionRatio * 100, 1)}% (${
-                    statsData.pullCompletionCount ?? 0
-                  })`
+                ? `${toFixed(statsData.pullCompletionRatio * 100, 1)}%`
                 : '-'}
             </div>
           </div>

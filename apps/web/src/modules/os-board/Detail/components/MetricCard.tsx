@@ -6,7 +6,7 @@ import EChartX from '@common/components/EChartX';
 import { colors } from '@common/options';
 import { shortenAxisLabel } from '@common/utils/format';
 import type { OsBoardMetric, OsBoardDerivedMetric } from '../../types';
-import { getMetricValue } from '../../state';
+import { MetricData } from '../../api/dashboard';
 import AlertManageDialog from './AlertManageDialog';
 
 interface MetricCardProps {
@@ -17,55 +17,11 @@ interface MetricCardProps {
   compareMode?: boolean;
   /** 是否显示预警设置按钮 */
   showAlertButton?: boolean;
+  metricsDataMap?: Map<string, MetricData[]>;
+  isLoading?: boolean;
 }
 
 // 确定性哈希函数，用于生成稳定的伪随机数
-const hashSeed = (str: string): number => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash);
-};
-
-// 基于种子的伪随机数生成器
-const seededRandom = (seed: number, index: number): number => {
-  const x = Math.sin(seed + index * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-};
-
-// 生成模拟的时序数据（确定性）
-const generateMockTimeSeriesData = (
-  dashboardId: string,
-  project: string,
-  metricId: string,
-  days: number = 30
-) => {
-  const baseValue = getMetricValue({ dashboardId, project, metricId });
-  const seed = hashSeed(`${dashboardId}-${project}-${metricId}`);
-  const data: number[] = [];
-  const dates: string[] = [];
-
-  // 使用固定的基准日期，避免 SSR/CSR 不一致
-  const baseDate = new Date('2026-01-15');
-
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date(baseDate);
-    date.setDate(date.getDate() - i);
-    dates.push(date.toISOString().slice(0, 10));
-
-    // 使用确定性的波动
-    const randomFactor = seededRandom(seed, i) - 0.5;
-    const variation =
-      (Math.sin(i * 0.5) * 0.15 + randomFactor * 0.1) * baseValue;
-    data.push(Math.max(0, Number((baseValue + variation).toFixed(2))));
-  }
-
-  return { dates, data };
-};
-
 const MetricCard: React.FC<MetricCardProps> = ({
   metric,
   dashboardId,
@@ -73,6 +29,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
   competitorProjects = [],
   compareMode = false,
   showAlertButton = true,
+  metricsDataMap,
+  isLoading = false,
 }) => {
   const { t } = useTranslation();
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
@@ -94,18 +52,22 @@ const MetricCard: React.FC<MetricCardProps> = ({
   }, [allProjects]);
 
   const chartOption = useMemo(() => {
-    const { dates } = generateMockTimeSeriesData(
-      dashboardId,
-      displayProjects[0] || 'default',
-      metric.id
-    );
+    let dates: string[] = [];
 
+    // 收集所有数据系列
     const series = displayProjects.map((project, idx) => {
-      const { data } = generateMockTimeSeriesData(
-        dashboardId,
-        project,
-        metric.id
-      );
+      // 从 Map 中获取该项目的所有指标数据
+      const projectMetrics = metricsDataMap?.get(project);
+      // 找到当前卡片对应的指标数据
+      const metricData = projectMetrics?.find((m) => m.ident === metric.id);
+
+      const dataPoints = metricData?.data || [];
+      const data = dataPoints.map((d) => d.value);
+
+      // 如果 dates 为空，且当前项目有数据，则使用该项目的日期作为 X 轴
+      if (dates.length === 0 && dataPoints.length > 0) {
+        dates = dataPoints.map((d) => d.date.slice(0, 10));
+      }
 
       return {
         name: project.split('/').pop() || project,
@@ -165,7 +127,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
       },
       series,
     };
-  }, [dashboardId, displayProjects, metric]);
+  }, [dashboardId, displayProjects, metric, metricsDataMap]);
 
   const id = `metric_card_${metric.id}`;
 
@@ -189,7 +151,11 @@ const MetricCard: React.FC<MetricCardProps> = ({
           ) : null
         }
         bodyRender={(ref) => (
-          <EChartX loading={false} option={chartOption} containerRef={ref} />
+          <EChartX
+            loading={isLoading}
+            option={chartOption}
+            containerRef={ref}
+          />
         )}
       />
 

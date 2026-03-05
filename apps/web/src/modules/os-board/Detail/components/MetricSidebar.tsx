@@ -48,6 +48,7 @@ interface MetricItem {
   metricIdent: string;
   modelIdent: string;
   fromModel: boolean;
+  sort: number;
 }
 
 interface ModelGroup {
@@ -182,7 +183,12 @@ const DimensionalityTopicItem: React.FC<{
   const isContributionOverview = dim.dimensionalityId === 'dimensionality_005';
 
   // 获取所有指标（用于贡献总览直接展示）
-  const allMetrics = dim.models.flatMap((model) => model.metrics);
+  // 确保按照 sort 字段排序，保证与主区域显示顺序一致
+  const allMetrics = useMemo(() => {
+    return dim.models
+      .flatMap((model) => model.metrics)
+      .sort((a, b) => a.sort - b.sort);
+  }, [dim.models]);
 
   return (
     <>
@@ -250,7 +256,7 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
     const metricsByModel = new Map<string, MetricItem[]>();
 
     if (dashboardMetrics && dashboardMetrics.length > 0) {
-      dashboardMetrics
+      [...dashboardMetrics]
         .filter((m) => !m.hidden)
         .sort((a, b) => a.sort - b.sort)
         .forEach((m) => {
@@ -266,6 +272,7 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
             metricIdent,
             modelIdent,
             fromModel: m.from_model,
+            sort: m.sort,
           };
 
           if (!metricsByModel.has(modelIdent)) {
@@ -277,7 +284,7 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
       // 兼容旧方式
       const allMetrics = [...metrics, ...derivedMetrics];
       const metricMap = new Map(allMetrics.map((m) => [m.id, m]));
-      selectedMetricIds.forEach((id) => {
+      selectedMetricIds.forEach((id, index) => {
         const m = metricMap.get(id);
         if (m) {
           const modelIdent = 'model_999';
@@ -287,6 +294,7 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
             metricIdent: m.id,
             modelIdent,
             fromModel: false,
+            sort: index,
           };
           if (!metricsByModel.has(modelIdent)) {
             metricsByModel.set(modelIdent, []);

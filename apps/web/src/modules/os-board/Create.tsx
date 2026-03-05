@@ -6,7 +6,6 @@ import { toast } from 'react-hot-toast';
 import Center from '@common/components/Layout/Center';
 import { Button } from '@oss-compass/ui';
 import Dialog from '@common/components/Dialog';
-import { actions } from './state';
 import { useCreateDashboard } from './api/dashboard';
 import { MODEL_CONFIGS } from './config/modelMetrics';
 import DashboardForm, {
@@ -64,7 +63,7 @@ const CreateDashboard = () => {
       );
 
       // 调用 API 创建看板
-      const result = await createMutation.mutateAsync({
+      await createMutation.mutateAsync({
         name: values.name,
         dashboard_type: values.type,
         repo_urls: values.projects,

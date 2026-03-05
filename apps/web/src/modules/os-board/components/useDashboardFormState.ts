@@ -38,9 +38,6 @@ export const useDashboardFormState = ({
   const [type, setType] = useState<OsBoardDashboardType>(
     initialValues?.type || 'repo'
   );
-  const [compareMode, setCompareMode] = useState(
-    initialValues?.compareMode || false
-  );
 
   // Split state for projects and competitors by dashboard type
   const [repoProjects, setRepoProjects] = useState<string[]>(
@@ -49,12 +46,6 @@ export const useDashboardFormState = ({
   const [communityProjects, setCommunityProjects] = useState<string[]>(
     initialValues?.type === 'community' ? initialValues.projects || [] : []
   );
-  const [repoCompetitors, setRepoCompetitors] = useState<string[]>(
-    initialValues?.type === 'repo' ? initialValues.competitors || [] : []
-  );
-  const [communityCompetitors, setCommunityCompetitors] = useState<string[]>(
-    initialValues?.type === 'community' ? initialValues.competitors || [] : []
-  );
 
   const projects = type === 'repo' ? repoProjects : communityProjects;
   const setProjects = (vals: string[]) => {
@@ -62,11 +53,7 @@ export const useDashboardFormState = ({
     else setCommunityProjects(vals);
   };
 
-  const competitors = type === 'repo' ? repoCompetitors : communityCompetitors;
-  const setCompetitors = (vals: string[]) => {
-    if (type === 'repo') setRepoCompetitors(vals);
-    else setCommunityCompetitors(vals);
-  };
+  const competitors = initialValues?.competitors || [];
 
   const validateAndSubmit = () => {
     const errors: string[] = [];
@@ -97,7 +84,8 @@ export const useDashboardFormState = ({
       type,
       projects,
       competitors,
-      compareMode,
+      // 对比视图功能暂时关闭
+      compareMode: false,
       metricIds,
       selectedModels,
       hiddenMetricIds,
@@ -110,12 +98,8 @@ export const useDashboardFormState = ({
     setName,
     type,
     setType,
-    compareMode,
-    setCompareMode,
     projects,
     setProjects,
-    competitors,
-    setCompetitors,
     validateAndSubmit,
   };
 };

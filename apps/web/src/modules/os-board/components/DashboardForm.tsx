@@ -1,7 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@oss-compass/ui';
-import type { OsBoardDashboardType } from '../types';
 import ProjectSearchInput from './ProjectSearchInput';
 import { MetricSelectionModal, DraggableMetricList } from './MetricSelector';
 import { useDashboardMetrics } from './useDashboardMetrics';
@@ -61,12 +60,8 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
       setName,
       type,
       setType,
-      compareMode,
-      setCompareMode,
       projects,
       setProjects,
-      competitors,
-      setCompetitors,
       validateAndSubmit,
     } = useDashboardFormState({
       initialValues,
@@ -162,36 +157,39 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
                 searchLevel={type === 'repo' ? 'repo' : 'community'}
               />
             </div>
-            <div>
-              <div className="mb-2 font-semibold">
-                {t('os_board:create.basic.compare')}
-              </div>
-              <label className="flex cursor-pointer items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={compareMode}
-                  onChange={(e) => setCompareMode(e.target.checked)}
-                />
-                <span>{t('os_board:create.basic.compare_help')}</span>
-              </label>
-            </div>
-            {compareMode && (
+            {/*
+              对比视图功能暂时关闭（创建/编辑表单）
               <div>
                 <div className="mb-2 font-semibold">
-                  {t('os_board:create.scope.competitors')}
+                  {t('os_board:create.basic.compare')}
                 </div>
-                <ProjectSearchInput
-                  values={competitors}
-                  onChange={setCompetitors}
-                  placeholder={
-                    type === 'repo'
-                      ? t('os_board:create.scope.placeholder_repo')
-                      : t('os_board:create.scope.placeholder_community')
-                  }
-                  searchLevel={type === 'repo' ? 'repo' : 'community'}
-                />
+                <label className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={compareMode}
+                    onChange={(e) => setCompareMode(e.target.checked)}
+                  />
+                  <span>{t('os_board:create.basic.compare_help')}</span>
+                </label>
               </div>
-            )}
+              {compareMode && (
+                <div>
+                  <div className="mb-2 font-semibold">
+                    {t('os_board:create.scope.competitors')}
+                  </div>
+                  <ProjectSearchInput
+                    values={competitors}
+                    onChange={setCompetitors}
+                    placeholder={
+                      type === 'repo'
+                        ? t('os_board:create.scope.placeholder_repo')
+                        : t('os_board:create.scope.placeholder_community')
+                    }
+                    searchLevel={type === 'repo' ? 'repo' : 'community'}
+                  />
+                </div>
+              )}
+            */}
           </div>
         </Section>
 

@@ -8,25 +8,20 @@ import BaseCard from '@common/components/BaseCard';
 import MyTable from '@common/components/Table';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
+import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
-  useContributorsDetailListQuery,
+  useOsBoardContributorsDetailList,
+  useOsBoardContributorsOverview,
   ContributorDetail,
   FilterOptionInput,
   SortOptionInput,
-} from '@oss-compass/graphql';
-import client from '@common/gqlClient';
-import { useOsBoardMetricDashboard } from '../../hooks';
-import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
+} from '../../api/tableData';
+import DomainPersona from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/DomainPersona';
 
 interface ContributorTableProps {
   dashboardId: string;
   projects: readonly string[];
   competitorProjects?: readonly string[];
-}
-
-interface DomainItem {
-  contributionType: string;
-  contribution: number;
 }
 
 interface TableParams {
@@ -60,81 +55,29 @@ const MILEAGE_TYPES = [
   { value: 'guest', label: 'analyze:metric_detail:guest' },
 ];
 
-// Mock 数据
-const MOCK_CONTRIBUTOR_DATA: ContributorDetail[] = [
-  {
-    contributor: 'zhangsan',
-    ecologicalType: 'organization manager',
-    mileageType: 'core',
-    contributionTypeList: [
-      { contributionType: 'code', contribution: 120 },
-      { contributionType: 'issue', contribution: 45 },
-      { contributionType: 'code review', contribution: 30 },
-    ],
-    organization: 'OpenSource Inc',
-    contribution: 195,
-  },
-  {
-    contributor: 'lisi',
-    ecologicalType: 'individual participant',
-    mileageType: 'regular',
-    contributionTypeList: [
-      { contributionType: 'code', contribution: 80 },
-      { contributionType: 'issue comment', contribution: 25 },
-    ],
-    organization: null,
-    contribution: 105,
-  },
-  {
-    contributor: 'wangwu',
-    ecologicalType: 'organization participant',
-    mileageType: 'guest',
-    contributionTypeList: [
-      { contributionType: 'issue', contribution: 60 },
-      { contributionType: 'observe', contribution: 15 },
-    ],
-    organization: 'Tech Corp',
-    contribution: 75,
-  },
-  {
-    contributor: 'zhaoliu',
-    ecologicalType: 'individual manager',
-    mileageType: 'core',
-    contributionTypeList: [
-      { contributionType: 'code', contribution: 200 },
-      { contributionType: 'code review', contribution: 50 },
-    ],
-    organization: null,
-    contribution: 250,
-  },
-  {
-    contributor: 'sunqi',
-    ecologicalType: 'organization participant',
-    mileageType: 'regular',
-    contributionTypeList: [
-      { contributionType: 'sig management', contribution: 40 },
-      { contributionType: 'issue', contribution: 30 },
-    ],
-    organization: 'Dev Labs',
-    contribution: 70,
-  },
-] as unknown as ContributorDetail[];
-
-const MOCK_STATS_DATA = {
-  contributorAllCount: 156,
-  orgAllCount: 23,
-  highestContributionContributor: { name: 'zhaoliu', origin: 'gitcode' },
-  highestContributionOrganization: { name: 'cann', origin: 'gitcode' },
+// 将 API 返回的下划线命名数据转换为 DomainPersona 组件期望的驼峰命名格式
+const convertToDomainPersonaData = (
+  dataList:
+    | { contribution_type: string; contribution: number }[]
+    | null
+    | undefined
+) => {
+  if (!dataList) return [];
+  return dataList.map((item) => ({
+    contributionType: item.contribution_type,
+    contribution: item.contribution,
+  }));
 };
 
-// 领域颜色映射
-const DOMAIN_COLORS: Record<string, string> = {
-  code: '#5470c6',
-  issue: '#91cc75',
-  'code review': '#fac858',
-  'issue comment': '#ee6666',
-  'sig management': '#73c0de',
-  observe: '#3ba272',
+// 计算最大贡献值（用于 DomainPersona 组件的 maxDomain）
+const getMaxContribution = (
+  dataList:
+    | { contribution_type: string; contribution: number }[]
+    | null
+    | undefined
+): number => {
+  if (!dataList || dataList.length === 0) return 0;
+  return dataList.reduce((sum, item) => sum + item.contribution, 0);
 };
 
 // 获取平台图标
@@ -249,18 +192,6 @@ const getTopUser = (type: string, name: string) => {
   );
 };
 
-// 将项目 URL 转换为 API 所需的 label 格式
-const formatProjectLabel = (project: string): string => {
-  if (
-    project.startsWith('github:') ||
-    project.startsWith('gitee:') ||
-    project.startsWith('gitcode:')
-  ) {
-    return project;
-  }
-  return project.replace(/^https?:\/\//, '');
-};
-
 // 获取项目平台类型
 const getProjectPlatform = (project: string) => {
   if (project.includes('gitee')) return 'gitee';
@@ -303,70 +234,55 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     },
   });
 
-  // 构建查询参数
-  const label = formatProjectLabel(selectedProject);
-  const query = {
+  // 调用贡献者列表 API (使用 REST API)
+  const {
+    data: contributorsDetailData,
+    isLoading,
+    isFetching,
+  } = useOsBoardContributorsDetailList({
+    project: selectedProject,
     page: tableParams.pagination?.current,
     per: tableParams.pagination?.pageSize,
-    filterOpts: tableParams.filterOpts || [],
+    filterOpts: tableParams.filterOpts,
     sortOpts: tableParams.sortOpts,
-    label,
-    level: 'repo',
-    beginDate: timeStart,
-    endDate: timeEnd,
-  };
+    enabled: !!selectedProject,
+  });
 
-  // 调用贡献者列表 API
-  const [tableData, setTableData] = useState<ContributorDetail[]>([]);
-  const [origin, setOrigin] = useState('');
-
-  const { isLoading, isFetching } = useContributorsDetailListQuery(
-    client,
-    query,
-    {
-      enabled: !!selectedProject,
-      onSuccess: (data) => {
-        const items = data.contributorsDetailList.items;
-        setTableData(items);
-        setOrigin(data.contributorsDetailList.origin);
-        setTableParams((prev) => ({
-          ...prev,
-          pagination: {
-            ...prev.pagination,
-            total: data.contributorsDetailList.count,
-          },
-        }));
-      },
-    }
-  );
-
-  // 使用真实 API 获取统计数据
-  const { contributorsOverview, isLoading: statsLoading } =
-    useOsBoardMetricDashboard({
+  // 使用 REST API 获取贡献者概览统计数据
+  const { data: contributorsOverview, isLoading: statsLoading } =
+    useOsBoardContributorsOverview({
       project: selectedProject,
       level: 'repo',
       enabled: !!selectedProject,
     });
 
-  // 统计卡片数据（API 无有效数据时使用 mock）
-  const hasValidStats =
-    contributorsOverview &&
-    contributorsOverview.contributorAllCount != null &&
-    contributorsOverview.contributorAllCount > 0;
-  const statsData = hasValidStats
-    ? {
-        contributorAllCount: contributorsOverview.contributorAllCount,
-        orgAllCount: contributorsOverview.orgAllCount,
-        highestContributionContributor:
-          contributorsOverview.highestContributionContributor,
-        highestContributionOrganization:
-          contributorsOverview.highestContributionOrganization,
-      }
-    : MOCK_STATS_DATA;
+  // 同步 API 返回的分页总数到 tableParams
+  React.useEffect(() => {
+    if (contributorsDetailData) {
+      setTableParams((prev) => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: contributorsDetailData.count,
+        },
+      }));
+    }
+  }, [contributorsDetailData]);
 
-  // 表格数据（API 无数据时使用 mock）
-  const displayTableData =
-    tableData.length > 0 ? tableData : MOCK_CONTRIBUTOR_DATA;
+  // origin 从统计数据中获取 (取第一个 top_contributor 的 origin)
+  const origin = contributorsOverview?.top_contributors?.[0]?.origin || '';
+
+  // 统计卡片数据 (使用 API 实际返回的字段名)
+  const statsData = {
+    contributorAllCount: contributorsOverview?.contributors_count,
+    orgAllCount: contributorsOverview?.organizations_count,
+    highestContributionContributor: contributorsOverview?.top_contributors?.[0],
+    highestContributionOrganization:
+      contributorsOverview?.top_organizations?.[0],
+  };
+
+  // 表格数据
+  const displayTableData = contributorsDetailData?.items || [];
 
   // 处理表格变更
   const handleTableChange = (
@@ -374,7 +290,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     filters: Record<string, FilterValue>,
     sorter: SorterResult<ContributorDetail>
   ) => {
-    const sortOpts = sorter.order
+    const sortOpts: SortOptionInput | undefined = sorter.order
       ? {
           type: sorter.field as string,
           direction: sorter.order === 'ascend' ? 'asc' : 'desc',
@@ -445,23 +361,24 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     return [...mainItems, ...competitorItems];
   }, [projects, competitorProjects, t]);
 
-  // 渲染领域画像
-  const renderDomainPersona = (dataList: DomainItem[]) => {
+  // 渲染领域画像（使用复用的 DomainPersona 组件）
+  const renderDomainPersona = (
+    dataList:
+      | { contribution_type: string; contribution: number }[]
+      | null
+      | undefined,
+    record: ContributorDetail
+  ) => {
     if (!dataList || dataList.length === 0) return '-';
-    const total = dataList.reduce((sum, d) => sum + d.contribution, 0);
+    const convertedData = convertToDomainPersonaData(dataList);
+    const maxDomain = getMaxContribution(dataList);
     return (
-      <div className="flex h-2 w-full overflow-hidden rounded">
-        {dataList.map((d) => (
-          <div
-            key={d.contributionType}
-            style={{
-              width: `${(d.contribution / total) * 100}%`,
-              backgroundColor: DOMAIN_COLORS[d.contributionType] || '#999',
-            }}
-            title={`${d.contributionType}: ${d.contribution}`}
-          />
-        ))}
-      </div>
+      <DomainPersona
+        maxDomain={maxDomain}
+        dataList={convertedData}
+        name={record.contributor || ''}
+        origin={origin}
+      />
     );
   };
 
@@ -494,7 +411,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     },
     {
       title: t('analyze:metric_detail:role_persona'),
-      dataIndex: 'ecologicalType',
+      dataIndex: 'ecological_type',
       align: 'left',
       width: 150,
       render: (val: string) => {
@@ -504,7 +421,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     },
     {
       title: t('analyze:metric_detail:milestone_persona'),
-      dataIndex: 'mileageType',
+      dataIndex: 'mileage_type',
       align: 'left',
       width: 120,
       render: (val: string) => {
@@ -514,10 +431,10 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     },
     {
       title: t('analyze:metric_detail:domain_persona'),
-      dataIndex: 'contributionTypeList',
+      dataIndex: 'contribution_type_list',
       align: 'left',
       width: 200,
-      render: renderDomainPersona,
+      render: (dataList, record) => renderDomainPersona(dataList, record),
     },
     {
       title: t('analyze:metric_detail:organization'),

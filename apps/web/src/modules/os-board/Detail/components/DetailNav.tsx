@@ -6,6 +6,7 @@ import StickyNav from '@common/components/Header/StickyNav';
 import { Button } from '@oss-compass/ui';
 import DashboardDatePicker from './DashboardDatePicker';
 import ProjectList from './ProjectList';
+import { useRouter } from 'next/router';
 
 interface DetailNavProps {
   dashboard: {
@@ -35,6 +36,7 @@ const DetailNav: React.FC<DetailNavProps> = ({
   onDelete,
 }) => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   // 兼容新旧数据结构
   const dashboardType =
@@ -104,6 +106,13 @@ const DetailNav: React.FC<DetailNavProps> = ({
           </Button>
           <Button size="sm" intent="text" onClick={onUserManage}>
             {t('lab:user_management')}
+          </Button>
+          <Button
+            size="sm"
+            intent="text"
+            onClick={() => router.push('/os-board/dashboard/create')}
+          >
+            {t('os_board:home.new_dashboard')}
           </Button>
           <Button size="sm" intent="text" onClick={onDelete}>
             {t('common:btn.delete')}

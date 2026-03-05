@@ -11,15 +11,14 @@ import MyTable from '@common/components/Table';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { format, parseJSON } from 'date-fns';
+import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
-  useIssuesDetailListQuery,
+  useOsBoardIssuesDetailList,
+  useOsBoardIssuesOverview,
   IssueDetail,
   FilterOptionInput,
   SortOptionInput,
-} from '@oss-compass/graphql';
-import client from '@common/gqlClient';
-import { useOsBoardMetricDashboard } from '../../hooks';
-import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
+} from '../../api/tableData';
 import { toFixed } from '@common/utils';
 import { toUnderline } from '@common/utils/format';
 
@@ -105,143 +104,6 @@ const STATE_OPTIONS = [
   { value: 'progressing', text: 'analyze:metric_detail:progressing' },
 ];
 
-// Mock 数据
-const MOCK_ISSUE_DATA: IssueDetail[] = [
-  {
-    title: '修复登录页面样式问题',
-    url: 'https://gitcode.com/cann/cann/issues/101',
-    state: 'open',
-    createdAt: '2024-01-15T10:30:00Z',
-    closedAt: null,
-    timeToCloseDays: null,
-    timeToFirstAttentionWithoutBot: 1.5,
-    numOfCommentsWithoutBot: 3,
-    labels: ['bug', 'ui'],
-    userLogin: 'zhangsan',
-    assigneeLogin: 'lisi',
-  },
-  {
-    title: '添加国际化支持',
-    url: 'https://gitcode.com/cann/cann/issues/102',
-    state: 'closed',
-    createdAt: '2024-01-10T08:00:00Z',
-    closedAt: '2024-01-20T16:00:00Z',
-    timeToCloseDays: 10.3,
-    timeToFirstAttentionWithoutBot: 0.5,
-    numOfCommentsWithoutBot: 8,
-    labels: ['feature', 'i18n'],
-    userLogin: 'wangwu',
-    assigneeLogin: 'zhaoliu',
-  },
-  {
-    title: '优化数据库查询性能',
-    url: 'https://gitcode.com/cann/cann/issues/103',
-    state: 'progressing',
-    createdAt: '2024-01-18T14:00:00Z',
-    closedAt: null,
-    timeToCloseDays: null,
-    timeToFirstAttentionWithoutBot: 2.1,
-    numOfCommentsWithoutBot: 5,
-    labels: ['performance', 'database'],
-    userLogin: 'sunqi',
-    assigneeLogin: null,
-  },
-  {
-    title: '更新文档说明',
-    url: 'https://gitcode.com/cann/cann/issues/104',
-    state: 'closed',
-    createdAt: '2024-01-05T09:00:00Z',
-    closedAt: '2024-01-06T11:00:00Z',
-    timeToCloseDays: 1.1,
-    timeToFirstAttentionWithoutBot: 0.2,
-    numOfCommentsWithoutBot: 2,
-    labels: ['documentation'],
-    userLogin: 'lisi',
-    assigneeLogin: 'lisi',
-  },
-  {
-    title: '修复移动端适配问题',
-    url: 'https://gitcode.com/cann/cann/issues/105',
-    state: 'open',
-    createdAt: '2024-01-22T11:00:00Z',
-    closedAt: null,
-    timeToCloseDays: null,
-    timeToFirstAttentionWithoutBot: null,
-    numOfCommentsWithoutBot: 0,
-    labels: ['bug', 'mobile'],
-    userLogin: 'zhaoliu',
-    assigneeLogin: null,
-  },
-] as unknown as IssueDetail[];
-
-const MOCK_ISSUE_STATS = {
-  issueCount: 45,
-  issueCompletionRatio: 0.756,
-  issueCompletionCount: 34,
-  issueUnresponsiveCount: 3,
-  issueCommentFrequencyMean: 4.2,
-};
-
-// 社区维度 Mock 数据
-const MOCK_COMMUNITY_ISSUE_DATA: CommunityIssueRecord[] = [
-  {
-    id: '1',
-    repoName: 'cann/cann',
-    repoUrl: 'https://gitcode.com/cann/cann',
-    issueTotal: 128,
-    issueOpen: 23,
-    issueCompletionRatio: 82,
-    issueUnresponsiveCount: 5,
-    issueFirstResponseTime: 1.2,
-    issueCommentMean: 4.5,
-  },
-  {
-    id: '2',
-    repoName: 'cann/metadef',
-    repoUrl: 'https://gitcode.com/cann/metadef',
-    issueTotal: 86,
-    issueOpen: 12,
-    issueCompletionRatio: 86,
-    issueUnresponsiveCount: 2,
-    issueFirstResponseTime: 0.8,
-    issueCommentMean: 3.2,
-  },
-  {
-    id: '3',
-    repoName: 'cann/graphengine',
-    repoUrl: 'https://gitcode.com/cann/graphengine',
-    issueTotal: 45,
-    issueOpen: 8,
-    issueCompletionRatio: 78,
-    issueUnresponsiveCount: 3,
-    issueFirstResponseTime: 2.1,
-    issueCommentMean: 2.8,
-  },
-  {
-    id: '4',
-    repoName: 'cann/parser',
-    repoUrl: 'https://gitcode.com/cann/parser',
-    issueTotal: 32,
-    issueOpen: 5,
-    issueCompletionRatio: 84,
-    issueUnresponsiveCount: 1,
-    issueFirstResponseTime: 1.5,
-    issueCommentMean: 5.1,
-  },
-];
-
-// 将项目 URL 转换为 API 所需的 label 格式
-const formatProjectLabel = (project: string): string => {
-  if (
-    project.startsWith('github:') ||
-    project.startsWith('gitee:') ||
-    project.startsWith('gitcode:')
-  ) {
-    return project;
-  }
-  return project.replace(/^https?:\/\//, '');
-};
-
 // 获取项目平台类型
 const getProjectPlatform = (project: string) => {
   if (project.includes('gitee')) return 'gitee';
@@ -285,37 +147,32 @@ const IssueTable: React.FC<IssueTableProps> = ({
     },
   });
 
-  // 构建查询参数
-  const label = formatProjectLabel(selectedProject);
-  const query = {
+  // 调用 Issue 列表 API (使用 REST API)
+  const {
+    data: issuesDetailData,
+    isLoading: repoLoading,
+    isFetching: repoFetching,
+  } = useOsBoardIssuesDetailList({
+    project: selectedProject,
     page: tableParams.pagination?.current,
     per: tableParams.pagination?.pageSize,
-    filterOpts: tableParams.filterOpts || [],
+    filterOpts: tableParams.filterOpts,
     sortOpts: tableParams.sortOpts,
-    label,
-    level: 'repo',
-    beginDate: timeStart,
-    endDate: timeEnd,
-  };
+    enabled: !!selectedProject,
+  });
 
-  // 调用 Issue 列表 API (仅仓库维度)
-  const [repoTableData, setRepoTableData] = useState<IssueDetail[]>([]);
-
-  const { isLoading: repoLoading, isFetching: repoFetching } =
-    useIssuesDetailListQuery(client, query, {
-      enabled: !!selectedProject,
-      onSuccess: (data) => {
-        const items = data.issuesDetailList.items;
-        setRepoTableData(items);
-        setTableParams((prev) => ({
-          ...prev,
-          pagination: {
-            ...prev.pagination,
-            total: data.issuesDetailList.count,
-          },
-        }));
-      },
-    });
+  // 同步 API 返回的分页总数到 tableParams
+  React.useEffect(() => {
+    if (issuesDetailData) {
+      setTableParams((prev) => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: issuesDetailData.count,
+        },
+      }));
+    }
+  }, [issuesDetailData]);
 
   // ============ 社区维度数据 (接口开发中，预留) ============
   // TODO: 替换为真实的社区 Issue 汇总 API
@@ -329,39 +186,30 @@ const IssueTable: React.FC<IssueTableProps> = ({
   const communityTableData: CommunityIssueRecord[] = [];
   const communityLoading = false;
 
-  // 使用真实 API 获取统计数据
-  const { issuesOverview, isLoading: statsLoading } = useOsBoardMetricDashboard(
-    {
+  // 使用 REST API 获取 Issue 概览统计数据
+  const { data: issuesOverview, isLoading: statsLoading } =
+    useOsBoardIssuesOverview({
       project: selectedProject,
       level: dashboardType,
       enabled: !!selectedProject,
-    }
-  );
+    });
 
-  // 统计卡片数据（API 无有效数据时使用 mock）
-  const hasValidStats =
-    issuesOverview &&
-    issuesOverview.issueCount != null &&
-    issuesOverview.issueCount > 0;
-  const statsData = hasValidStats
-    ? {
-        issueCount: issuesOverview.issueCount,
-        issueCompletionRatio: issuesOverview.issueCompletionRatio,
-        issueCompletionCount: issuesOverview.issueCompletionCount,
-        issueUnresponsiveCount: issuesOverview.issueUnresponsiveCount,
-        issueCommentFrequencyMean: issuesOverview.issueCommentFrequencyMean,
-      }
-    : MOCK_ISSUE_STATS;
+  // 统计卡片数据 (使用 API 实际返回的字段名)
+  const statsData = {
+    issueCount: issuesOverview?.new_issue_count,
+    issueCompletionRatio: issuesOverview?.issue_resolution_percentage
+      ? parseFloat(
+          issuesOverview.issue_resolution_percentage.replace('%', '')
+        ) / 100
+      : null,
+    issueUnresponsiveCount: issuesOverview?.unresponsive_issue_count,
+    issueCommentFrequencyMean: issuesOverview?.avg_comments,
+  };
 
-  // 表格数据（API 无数据时使用 mock）
+  // 表格数据
+  const repoTableData = issuesDetailData?.items || [];
   const displayTableData =
-    dashboardType === 'community'
-      ? communityTableData.length > 0
-        ? communityTableData
-        : MOCK_COMMUNITY_ISSUE_DATA
-      : repoTableData.length > 0
-      ? repoTableData
-      : MOCK_ISSUE_DATA;
+    dashboardType === 'community' ? communityTableData : repoTableData;
 
   // 处理表格变更
   const handleTableChange = (
@@ -369,7 +217,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
     filters: Record<string, FilterValue>,
     sorter: SorterResult<IssueDetail>
   ) => {
-    let sortOpts = null;
+    let sortOpts: SortOptionInput | null = null;
     const filterOpts: FilterOptionInput[] = [];
 
     if (sorter.field) {
@@ -660,9 +508,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
             </div>
             <div className="line-clamp-1">
               {statsData?.issueCompletionRatio != null
-                ? `${toFixed(statsData.issueCompletionRatio * 100, 1)}% (${
-                    statsData.issueCompletionCount ?? 0
-                  })`
+                ? `${toFixed(statsData.issueCompletionRatio * 100, 1)}%`
                 : '-'}
             </div>
           </div>

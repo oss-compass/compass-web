@@ -1,0 +1,712 @@
+[
+  {
+    "id": 1,
+    "name": "响应及时性",
+    "description": "响应及时性模型说明",
+    "ident": "model_001",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 1,
+        "name": "Issue 超过一个周期未响应的占比",
+        "ident": "metric_001",
+        "category": "Issue",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 1
+      },
+      {
+        "id": 2,
+        "name": "Issue 首次响应时间",
+        "ident": "metric_002",
+        "category": "Issue",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 1
+      },
+      {
+        "id": 3,
+        "name": "Issue 处理时长",
+        "ident": "metric_003",
+        "category": "Issue",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 1
+      },
+      {
+        "id": 4,
+        "name": "PR 超过一个周期未响应的占比",
+        "ident": "metric_004",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 1
+      },
+      {
+        "id": 5,
+        "name": "PR 首次响应时间",
+        "ident": "metric_005",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 1
+      },
+      {
+        "id": 6,
+        "name": "PR 处理时长",
+        "ident": "metric_006",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 1
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "协作开发质量",
+    "description": "协作开发质量模型说明",
+    "ident": "model_002",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 7,
+        "name": "通过PR提交代码的比率",
+        "ident": "metric_007",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 2
+      },
+      {
+        "id": 8,
+        "name": "PR 关联 Issue 的比率",
+        "ident": "metric_008",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 2
+      },
+      {
+        "id": 9,
+        "name": "Review协作比率",
+        "ident": "metric_009",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 2
+      },
+      {
+        "id": 10,
+        "name": "Merge协作比率",
+        "ident": "metric_010",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 2
+      },
+      {
+        "id": 11,
+        "name": "PR 评论频率",
+        "ident": "metric_011",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 2
+      },
+      {
+        "id": 12,
+        "name": "Review Time by Pull Request Size",
+        "ident": "metric_012",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 2
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "开发者基数",
+    "description": "开发者基数模型说明",
+    "ident": "model_003",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 13,
+        "name": "社区贡献者数量",
+        "ident": "metric_013",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 3
+      },
+      {
+        "id": 14,
+        "name": "代码贡献者数量",
+        "ident": "metric_014",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 3
+      },
+      {
+        "id": 15,
+        "name": "非代码贡献者数量",
+        "ident": "metric_015",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 3
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "贡献活跃度",
+    "description": "贡献活跃度模型说明",
+    "ident": "model_004",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 16,
+        "name": "代码提交次数",
+        "ident": "metric_016",
+        "category": "Commit",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 4
+      },
+      {
+        "id": 17,
+        "name": "新增代码行数",
+        "ident": "metric_017",
+        "category": "Commit",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 4
+      },
+      {
+        "id": 18,
+        "name": "PR 评论数量",
+        "ident": "metric_018",
+        "category": "PR",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 4
+      },
+      {
+        "id": 19,
+        "name": "Issue 建立数量",
+        "ident": "metric_019",
+        "category": "Issue",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 4
+      },
+      {
+        "id": 20,
+        "name": "Issue 评论数量",
+        "ident": "metric_020",
+        "category": "Issue",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 4
+      },
+      {
+        "id": 21,
+        "name": "版本迭代次数",
+        "ident": "metric_021",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 4
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "社区流行度",
+    "description": "社区流行度模型说明",
+    "ident": "model_005",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 22,
+        "name": "Stars",
+        "ident": "metric_022",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 5
+      },
+      {
+        "id": 23,
+        "name": "Forks",
+        "ident": "metric_023",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 5
+      },
+      {
+        "id": 24,
+        "name": "社交网站提及",
+        "ident": "metric_024",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 5
+      },
+      {
+        "id": 25,
+        "name": "Github提及",
+        "ident": "metric_025",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 5
+      },
+      {
+        "id": 26,
+        "name": "媒体报道",
+        "ident": "metric_026",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 5
+      },
+      {
+        "id": 27,
+        "name": "搜索查询量",
+        "ident": "metric_027",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 5
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "生态伙伴多样性",
+    "description": "生态伙伴多样性模型说明",
+    "ident": "model_006",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 28,
+        "name": "商业组织数量",
+        "ident": "metric_028",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 6
+      },
+      {
+        "id": 29,
+        "name": "商业组织贡献者数量",
+        "ident": "metric_029",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 6
+      },
+      {
+        "id": 30,
+        "name": "研究机构数量",
+        "ident": "metric_030",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 6
+      },
+      {
+        "id": 31,
+        "name": "研究机构开发者数量",
+        "ident": "metric_031",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 6
+      },
+      {
+        "id": 32,
+        "name": "个人主力贡献者数量",
+        "ident": "metric_032",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 6
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "生态伙伴影响力",
+    "description": "生态伙伴影响力模型说明",
+    "ident": "model_007",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 33,
+        "name": "商业组织生态影响力",
+        "ident": "metric_033",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 7
+      },
+      {
+        "id": 34,
+        "name": "研究机构生态影响力",
+        "ident": "metric_034",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 7
+      },
+      {
+        "id": 35,
+        "name": "个人贡献者生态影响力",
+        "ident": "metric_035",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 7
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "技术采纳度",
+    "description": "技术采纳度模型说明",
+    "ident": "model_008",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 36,
+        "name": "软件包下载量",
+        "ident": "metric_036",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 8
+      },
+      {
+        "id": 37,
+        "name": "开源软件采用量",
+        "ident": "metric_037",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 8
+      },
+      {
+        "id": 38,
+        "name": "商业软件采用量",
+        "ident": "metric_038",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 8
+      },
+      {
+        "id": 39,
+        "name": "论文引用量",
+        "ident": "metric_039",
+        "category": "Repo",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 8
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "组织开放治理",
+    "description": "组织开放治理模型说明",
+    "ident": "model_009",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 40,
+        "name": "组织数",
+        "ident": "metric_040",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 41,
+        "name": "组织代码贡献者",
+        "ident": "metric_041",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 42,
+        "name": "组织代码贡献者占比",
+        "ident": "metric_042",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 43,
+        "name": "组织代码贡献量",
+        "ident": "metric_043",
+        "category": "Commit",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 44,
+        "name": "组织代码贡献量占比",
+        "ident": "metric_044",
+        "category": "Commit",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 45,
+        "name": "组织非代码贡献者",
+        "ident": "metric_045",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 46,
+        "name": "组织非代码贡献者占比",
+        "ident": "metric_046",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 47,
+        "name": "组织非代码贡献量",
+        "ident": "metric_047",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 48,
+        "name": "组织非代码贡献量占比",
+        "ident": "metric_048",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 49,
+        "name": "参与治理的组织数",
+        "ident": "metric_049",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 50,
+        "name": "组织管理者数量",
+        "ident": "metric_050",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      },
+      {
+        "id": 51,
+        "name": "组织管理者数量占比",
+        "ident": "metric_051",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 9
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "个人开放治理",
+    "description": "个人开放治理模型说明",
+    "ident": "model_010",
+    "created_at": "2026-01-31T01:41:23.000Z",
+    "updated_at": "2026-01-31T01:41:23.000Z",
+    "dashboard_metric_infos": [
+      {
+        "id": 52,
+        "name": "个人代码贡献者",
+        "ident": "metric_052",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 53,
+        "name": "个人代码贡献者占比",
+        "ident": "metric_053",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 54,
+        "name": "个人代码贡献量",
+        "ident": "metric_054",
+        "category": "Commit",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 55,
+        "name": "个人代码贡献量占比",
+        "ident": "metric_055",
+        "category": "Commit",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 56,
+        "name": "个人非代码贡献者",
+        "ident": "metric_056",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 57,
+        "name": "个人非代码贡献者占比",
+        "ident": "metric_057",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 58,
+        "name": "个人非代码贡献量",
+        "ident": "metric_058",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 59,
+        "name": "个人非代码贡献量占比",
+        "ident": "metric_059",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 60,
+        "name": "个人管理者数量",
+        "ident": "metric_060",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      },
+      {
+        "id": 61,
+        "name": "个人管理者数量占比",
+        "ident": "metric_061",
+        "category": "Contributor",
+        "from": "system",
+        "default_weight": 1,
+        "default_threshold": 0,
+        "dashboard_model_info_id": 10
+      }
+    ]
+  }
+]
