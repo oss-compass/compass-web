@@ -123,7 +123,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         // top: unit ? 18 : undefined,
       },
       grid: {
-        top: unit ? 70 : 60,
+        top: 60,
         left: '50px',
         right: '30px',
         bottom: '50px',
