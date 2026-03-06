@@ -735,7 +735,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     ],
     queryFn: async () => {
       const response = await fetch(
-        'http://compute.lishengbao.com.cn:8801/developer_discovery/detail_list',
+        'https://compute.lishengbao.com.cn:8801/developer_discovery/detail_list',
         {
           method: 'POST',
           headers: {
