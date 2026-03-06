@@ -4,6 +4,7 @@ import EChartX from '@common/components/EChartX';
 import LoadInView from '@common/components/LoadInView';
 import { colors } from '@common/options';
 import { shortenAxisLabel } from '@common/utils/format';
+import { toFixed } from '@common/utils';
 import type { ModelScoreData } from '../../api/dashboard';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
@@ -91,7 +92,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
             const display = (() => {
               if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
               if (Number.isInteger(v)) return String(v);
-              return v.toFixed(3);
+              return String(toFixed(v, 3));
             })();
             return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
           });

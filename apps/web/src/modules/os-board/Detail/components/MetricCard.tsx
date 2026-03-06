@@ -5,6 +5,8 @@ import BaseCard from '@common/components/BaseCard';
 import EChartX from '@common/components/EChartX';
 import { colors } from '@common/options';
 import { shortenAxisLabel } from '@common/utils/format';
+import type { EChartsOption } from 'echarts';
+import { toFixed } from '@common/utils';
 import type { OsBoardMetric, OsBoardDerivedMetric } from '../../types';
 import { MetricData } from '../../api/dashboard';
 import AlertManageDialog from './AlertManageDialog';
@@ -53,6 +55,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
   const chartOption = useMemo(() => {
     let dates: string[] = [];
+    let unit: string | undefined;
 
     // 收集所有数据系列
     const series = displayProjects.map((project, idx) => {
@@ -62,6 +65,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
       const metricData = projectMetrics?.find((m) => m.ident === metric.id);
 
       const dataPoints = metricData?.data || [];
+      if (!unit) {
+        unit = dataPoints.find((d) => d.extra?.unit)?.extra?.unit;
+      }
       const data = dataPoints.map((d) => d.value);
 
       // 如果 dates 为空，且当前项目有数据，则使用该项目的日期作为 X 轴
@@ -103,7 +109,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
             const display = (() => {
               if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
               if (Number.isInteger(v)) return String(v);
-              return v.toFixed(3);
+              return String(toFixed(v, 3));
             })();
             return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
           });
@@ -114,9 +120,10 @@ const MetricCard: React.FC<MetricCardProps> = ({
         type: 'scroll' as const,
         icon: 'circle',
         left: 0,
+        // top: unit ? 18 : undefined,
       },
       grid: {
-        top: 60,
+        top: unit ? 70 : 60,
         left: '50px',
         right: '30px',
         bottom: '50px',
@@ -137,12 +144,38 @@ const MetricCard: React.FC<MetricCardProps> = ({
       yAxis: {
         type: 'value' as const,
         scale: true,
+        name: unit
+          ? `{a|${t('analyze:unit_label', {
+              unit:
+                unit === 'day'
+                  ? t('analyze:unit_day', { defaultValue: 'day' })
+                  : unit,
+              defaultValue: `Unit: ${unit}`,
+            })}}`
+          : undefined,
+        nameGap: unit ? 15 : undefined,
+        nameTextStyle: unit
+          ? {
+              align: 'center' as const,
+              padding: [0, 10, 0, 0],
+              rich: {
+                a: {
+                  align: 'left' as const,
+                  color: '#2C3542',
+                  fontSize: 10,
+                  lineHeight: 14,
+                  fontStyle: 'italic' as const,
+                  fontWeight: 'bold' as const,
+                },
+              },
+            }
+          : undefined,
         axisLabel: {
           formatter: (value: any) => shortenAxisLabel(value) as string,
         },
       },
       series,
-    };
+    } as EChartsOption;
   }, [dashboardId, displayProjects, metric, metricsDataMap]);
 
   const id = `metric_card_${metric.id}`;
