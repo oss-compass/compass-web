@@ -2,7 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { AiOutlineUser, AiOutlineExperiment } from 'react-icons/ai';
+import {
+  AiOutlineUser,
+  AiOutlineExperiment,
+  AiOutlineDashboard,
+} from 'react-icons/ai';
 import { MdOutlineLogout, MdOutlineSettings } from 'react-icons/md';
 import { FiBookmark } from 'react-icons/fi';
 import client from '@common/gqlClient';
@@ -44,11 +48,11 @@ const User = () => {
         />
       </div>
 
-      <div className="z-dropdown absolute top-[100%] -right-4 hidden w-auto group-hover:block">
+      <div className="z-dropdown absolute -right-4 top-[100%] hidden w-auto group-hover:block">
         <div className="mt-[2px] bg-black/90 text-white">
           <Link
             href="/settings/subscribe"
-            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 px-6 py-4 text-center last:border-b-0 hover:bg-[#333333]"
           >
             <FiBookmark className="mr-2 text-base" />
             {t('common:subscribe')}
@@ -56,16 +60,25 @@ const User = () => {
 
           <Link
             href="/lab/model/my"
-            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 px-6 py-4 text-center last:border-b-0 hover:bg-[#333333]"
           >
             <AiOutlineExperiment className="mr-2 text-base" />
             {t('common:my_models')}
           </Link>
+          {roleLevel >= 7 && (
+            <Link
+              href="/os-board"
+              className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 px-6 py-4 text-center last:border-b-0 hover:bg-[#333333]"
+            >
+              <AiOutlineDashboard className="mr-2 text-base" />
+              {t('common:my_dashboards')}
+            </Link>
+          )}
 
           {roleLevel >= 7 && (
             <Link
               href="/system-admin"
-              className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+              className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 px-6 py-4 text-center last:border-b-0 hover:bg-[#333333]"
             >
               <MdOutlineSettings className="mr-2 text-base" />
               {t('common:system_admin')}
@@ -74,7 +87,7 @@ const User = () => {
 
           <Link
             href="/settings/profile"
-            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 py-4 px-6 text-center last:border-b-0 hover:bg-[#333333]"
+            className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 px-6 py-4 text-center last:border-b-0 hover:bg-[#333333]"
           >
             <AiOutlineUser className="mr-2 text-base" />
             {t('common:profile_setting')}

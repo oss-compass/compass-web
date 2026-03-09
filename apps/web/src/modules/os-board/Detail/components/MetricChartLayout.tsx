@@ -244,6 +244,8 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
         // 普通指标图表卡片
         const i18nKey = `metrics_models_v2:${modelIdent}.metrics.${metricIdent}.title`;
         const name = t(i18nKey, { defaultValue: metricIdent });
+        const i18nKeyDesc = `metrics_models_v2:${modelIdent}.metrics.${metricIdent}.desc`;
+        const description = t(i18nKeyDesc, { defaultValue: '' });
 
         return (
           <MetricCard
@@ -251,6 +253,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
             metric={{
               id: metricIdent,
               name,
+              description,
               category: modelIdent,
             }}
             dashboardId={dashboard.id}

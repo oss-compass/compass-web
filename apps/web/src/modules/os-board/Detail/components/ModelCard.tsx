@@ -25,7 +25,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
   isLoading = false,
 }) => {
   const { t } = useTranslation();
-  const [onePointSys, setOnePointSys] = useState(true);
+  const [onePointSys, setOnePointSys] = useState(false);
 
   const displayProjects = useMemo(() => {
     if (projects.length === 0) {
