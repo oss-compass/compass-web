@@ -359,7 +359,7 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
           <div className="flex items-center gap-2">
             <AiOutlineAppstore className="h-6 w-6 text-gray-700" />
             <span className="text-base font-bold text-gray-800">
-              {t('home:oss_eco_evaluation_system')}
+              {t('os_board:oss_eco_evaluation_system')}
             </span>
           </div>
         </div>
