@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
 
 const defaultVal = {
-  range: '1Y' as RangeTag,
-  timeStart: timeRange['1Y'].start,
-  timeEnd: timeRange['1Y'].end,
+  range: '3Y' as RangeTag,
+  timeStart: timeRange['3Y'].start,
+  timeEnd: timeRange['3Y'].end,
 };
 
 export const isDateRange = (range: string) => {
