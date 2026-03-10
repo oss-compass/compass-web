@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import Developer from '@modules/developer';
 import getLocalesFile from '@common/utils/getLocalesFile';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
       ...(await getLocalesFile(req.cookies, [

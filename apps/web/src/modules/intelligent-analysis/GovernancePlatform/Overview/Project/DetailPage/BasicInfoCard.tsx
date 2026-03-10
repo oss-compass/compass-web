@@ -58,6 +58,12 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
   const isDeveloper = data.用户类型 === '开发者';
   const displayId = getDisplayUserId(data);
+  const rawUserId = (data.用户ID || '').trim().toLowerCase();
+  const platform = rawUserId.startsWith('gitee:')
+    ? 'gitee'
+    : rawUserId.startsWith('gitcode:') || rawUserId.startsWith('atomgit:')
+    ? 'atomgit'
+    : 'github';
 
   return (
     <Card className="mb-6">
@@ -66,7 +72,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
           <Title level={2} className="mb-2">
             {isDeveloper ? (
               <a
-                href={`/developer/${encodeURIComponent(displayId)}`}
+                href={`/developer/${platform}/${encodeURIComponent(displayId)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -20,18 +20,25 @@ import useQueryDateRange from '@modules/developer/hooks/useQueryDateRange';
 import { rangeTags } from '../constant';
 import { format } from 'date-fns';
 
-const useGetSvgUrl = (slug: string, yKey: string) => {
+const useGetSvgUrl = (slug: string, platform: string, yKey: string) => {
   const { range, timeStart, timeEnd } = useQueryDateRange();
-  let url = `/developer_chart/${slug}.svg`;
-  yKey && (url += `?metric=${yKey}`);
+  const params = new URLSearchParams();
+  if (yKey) params.set('metric', yKey);
+  if (platform) params.set('platform', platform);
+
   if (rangeTags.includes(range)) {
-    url += `&range=${range}`;
+    params.set('range', range);
   } else {
     const begin_date = format(timeStart!, 'yyyy-MM-dd');
     const end_date = format(timeEnd!, 'yyyy-MM-dd');
-    url += `&begin_date=${begin_date}&end_date=${end_date}`;
+    params.set('begin_date', begin_date);
+    params.set('end_date', end_date);
   }
-  return url;
+
+  const qs = params.toString();
+  return qs
+    ? `/developer_chart/${slug}.svg?${qs}`
+    : `/developer_chart/${slug}.svg`;
 };
 const DownloadAndShare = (props: {
   cardRef: RefObject<HTMLElement>;
@@ -44,8 +51,12 @@ const DownloadAndShare = (props: {
   const { t } = useTranslation();
   const router = useRouter();
   const slug = router.query.slugs as string;
+  const platform =
+    (Array.isArray(router.query.platform)
+      ? router.query.platform[0]
+      : router.query.platform) || 'github';
   const len = 1;
-  const svgUrl = useGetSvgUrl(slug, yKey);
+  const svgUrl = useGetSvgUrl(slug, platform, yKey);
   const [open, setOpen] = useState(false);
   const [fileFormat, setFileFormat] = useState('SVG');
   const [loadingDownLoadImg, setLoadingDownLoadImg] = useState(false);

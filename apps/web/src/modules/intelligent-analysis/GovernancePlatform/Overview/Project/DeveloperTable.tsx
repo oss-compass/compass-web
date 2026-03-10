@@ -29,7 +29,15 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
 }) => {
   const normalizeUserId = (value: unknown) => {
     const raw = typeof value === 'string' ? value.trim() : '';
-    return raw.replace(/^(github|gitcode):/i, '');
+    return raw.replace(/^(github|gitcode|gitee|atomgit):/i, '');
+  };
+
+  const getPlatformFromUserId = (value: unknown) => {
+    const raw = typeof value === 'string' ? value.trim().toLowerCase() : '';
+    if (raw.startsWith('gitee:')) return 'gitee';
+    if (raw.startsWith('gitcode:')) return 'atomgit';
+    if (raw.startsWith('atomgit:')) return 'atomgit';
+    return 'github';
   };
 
   const getUserHomepageUrl = (value: unknown) => {
@@ -42,6 +50,10 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
     if (lower.startsWith('gitcode:')) {
       const username = raw.slice('gitcode:'.length).trim();
       return username ? `https://gitcode.com/${username}` : '';
+    }
+    if (lower.startsWith('atomgit:')) {
+      const username = raw.slice('atomgit:'.length).trim();
+      return username ? `https://atomgit.com/${username}` : '';
     }
     return '';
   };
@@ -157,10 +169,11 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       ellipsis: true,
       render: (text: string) => {
         const normalized = normalizeUserId(text);
+        const platform = getPlatformFromUserId(text);
         return (
           <Tooltip title={normalized}>
             <a
-              href={`/developer/${encodeURIComponent(normalized)}`}
+              href={`/developer/${platform}/${encodeURIComponent(normalized)}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontWeight: 'bold' }}

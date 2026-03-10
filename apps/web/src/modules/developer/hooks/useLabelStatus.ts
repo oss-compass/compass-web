@@ -7,6 +7,7 @@ import { ContributorOverviewData } from '@modules/developer/context/StatusContex
 // API 请求体
 interface ApiRequestBody {
   contributor: string;
+  platform: string;
   begin_date: string; // 日期通常作为 ISO 字符串发送
   end_date: string; // 日期通常作为 ISO 字符串发送
 }
@@ -16,11 +17,13 @@ const API_URL = '/api/v2/contributor_portrait/contributor_overview';
 // React Query fetcher 函数
 const fetchContributorOverview = async (
   contributor: string,
+  platform: string,
   begin_date: string,
   end_date: string
 ): Promise<ContributorOverviewData> => {
   const { data } = await axios.post<ContributorOverviewData>(API_URL, {
     contributor,
+    platform,
     begin_date,
     end_date,
   } as ApiRequestBody);
@@ -29,7 +32,7 @@ const fetchContributorOverview = async (
 
 // Hook 的新名称可能更合适，例如 useContributorOverviews
 const useContributorOverviews = () => {
-  const { contributorName } = useContributorName();
+  const { contributorName, contributorPlatform } = useContributorName();
   const { timeStart, timeEnd } = useQueryDateRange();
 
   // 将 Date 对象格式化为 ISO 字符串，如果 API 需要特定格式，请调整
@@ -42,6 +45,7 @@ const useContributorOverviews = () => {
         // 更新 queryKey 以反映新的数据和参数
         queryKey: [
           'contributorOverview',
+          contributorPlatform,
           contributorId,
           beginDateStr,
           endDateStr,
@@ -49,6 +53,7 @@ const useContributorOverviews = () => {
         queryFn: () =>
           fetchContributorOverview(
             contributorId as string,
+            contributorPlatform,
             beginDateStr,
             endDateStr
           ),

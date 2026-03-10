@@ -23,7 +23,17 @@ import {
 import { PROJECT_NAME_MAP } from '../../utils';
 
 const normalizeId = (n: string) =>
-  typeof n === 'string' ? n.replace(/^(github|gitcode):/i, '') : n;
+  typeof n === 'string'
+    ? n.replace(/^(github|gitcode|gitee|atomgit):/i, '')
+    : n;
+
+const getPlatformFromId = (n: string) => {
+  const raw = typeof n === 'string' ? n.trim().toLowerCase() : '';
+  if (raw.startsWith('gitee:')) return 'gitee';
+  if (raw.startsWith('gitcode:')) return 'atomgit';
+  if (raw.startsWith('atomgit:')) return 'atomgit';
+  return 'github';
+};
 
 const renderLoadingState = (t: (key: string) => string) => (
   <Card
@@ -217,9 +227,10 @@ const buildColumns = (
     fixed: 'left',
     render: (name: string) => {
       const normalized = normalizeId(name);
+      const platform = getPlatformFromId(name);
       return (
         <a
-          href={`/developer/${encodeURIComponent(normalized)}`}
+          href={`/developer/${platform}/${encodeURIComponent(normalized)}`}
           target="_blank"
           rel="noopener noreferrer"
         >

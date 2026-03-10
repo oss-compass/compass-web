@@ -23,6 +23,19 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   selectedRegions = [],
   onRegionFilterChange,
 }) => {
+  const getPlatformFromUserId = (value: unknown) => {
+    const raw = typeof value === 'string' ? value.trim().toLowerCase() : '';
+    if (raw.startsWith('gitee:')) return 'gitee';
+    if (raw.startsWith('gitcode:')) return 'atomgit';
+    if (raw.startsWith('atomgit:')) return 'atomgit';
+    return 'github';
+  };
+
+  const normalizeUserId = (value: unknown) => {
+    const raw = typeof value === 'string' ? value.trim() : '';
+    return raw.replace(/^(github|gitcode|gitee):/i, '');
+  };
+
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -30,11 +43,15 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
 
   // 获取所有可用的地区选项
   const availableRegions = useMemo(() => {
-    const regions = Array.from(new Set(data.map(item => item.国家).filter(Boolean)));
-    return regions.map(region => ({
-      label: translateByLocale(region, countryMapping, i18n.language),
-      value: region,
-    })).sort((a, b) => a.label.localeCompare(b.label));
+    const regions = Array.from(
+      new Set(data.map((item) => item.国家).filter(Boolean))
+    );
+    return regions
+      .map((region) => ({
+        label: translateByLocale(region, countryMapping, i18n.language),
+        value: region,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [data, i18n.language]);
 
   // 过滤数据
@@ -72,11 +89,7 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       render: (rank: number, record: DeveloperData, index: number) => {
         // 使用当前页面的索引计算排名
         const currentRank = (currentPage - 1) * pageSize + index + 1;
-        return (
-          <Tag color={'default'}>
-            {currentRank}
-          </Tag>
-        );
+        return <Tag color={'default'}>{currentRank}</Tag>;
       },
     },
     {
@@ -86,11 +99,12 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
       width: 200,
       ellipsis: true,
       render: (text: string) => {
-        const normalized = typeof text === 'string' ? text.replace(/^github:/i, '') : text;
+        const platform = getPlatformFromUserId(text);
+        const normalized = normalizeUserId(text);
         return (
           <Tooltip title={normalized}>
             <a
-              href={`/developer/${encodeURIComponent(normalized)}`}
+              href={`/developer/${platform}/${encodeURIComponent(normalized)}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontWeight: 'bold' }}
@@ -163,7 +177,9 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
             </Button>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">{t('project_detail.filter_by_region')}:</span>
+            <span className="text-sm text-gray-600">
+              {t('project_detail.filter_by_region')}:
+            </span>
             <Select
               mode="multiple"
               placeholder={t('project_detail.select_regions')}

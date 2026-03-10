@@ -69,8 +69,15 @@ function getName(url: string) {
 }
 export const getDeveloperLink = (url: string) => {
   const user = getName(url);
-  console.log(user);
-  return `/developer/${encodeURIComponent(user)}`;
+  const hostname = new URL(url).hostname.toLowerCase();
+  const platform = hostname.includes('gitee.com')
+    ? 'gitee'
+    : hostname.includes('github.com')
+    ? 'github'
+    : hostname.includes('gitcode.com') || hostname.includes('atomgit.com')
+    ? 'atomgit'
+    : 'github';
+  return `/developer/${platform}/${encodeURIComponent(user)}`;
 };
 
 export const getCompareAnalyzeLink = (list: string[], level: string) => {
