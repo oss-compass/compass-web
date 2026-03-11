@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { FiGithub } from 'react-icons/fi';
 import { TfiWorld } from 'react-icons/tfi';
 import { GoOrganization } from 'react-icons/go';
 import { IoLocationOutline, IoCodeSlash } from 'react-icons/io5';
 import { MdOutlineTopic } from 'react-icons/md';
 import ImageFallback from '@common/components/ImageFallback';
+import ProviderIcon from '@common/components/ProviderIcon';
 import { Tooltip } from 'antd';
 import useContributorInfo from '@modules/developer/hooks/useContributorInfo';
+import useContributorName from '@modules/developer/hooks/useContributorName';
 import { getPathname } from '@common/utils';
 import { useTranslation } from 'next-i18next';
 // import Wordcloud from './Wordcloud'; // 导入 Cloud 组件
@@ -14,6 +15,7 @@ import { useTranslation } from 'next-i18next';
 const LeftPan = () => {
   const { t, i18n } = useTranslation();
   const { contributorInfo } = useContributorInfo();
+  const { contributorPlatform } = useContributorName();
 
   // 根据当前语言获取对应字段
   const getCurrentCountry = () => {
@@ -99,9 +101,12 @@ const LeftPan = () => {
                 href={contributorInfo.html_url.trim()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex cursor-pointer items-center gap-2 rounded-full bg-gray-100 py-[5px] px-3 transition hover:bg-indigo-100"
+                className="flex cursor-pointer items-center gap-2 rounded-full bg-gray-100 px-3 py-[5px] transition hover:bg-indigo-100"
               >
-                <FiGithub className=" h-5 w-5 text-gray-600" />
+                <ProviderIcon
+                  provider={contributorPlatform}
+                  className="h-5 w-5 text-gray-600"
+                />
                 <div>{contributorInfo.html_url.trim()}</div>
               </a>
             )}

@@ -13,7 +13,7 @@ const ProviderIcon: React.FC<{ provider: string; className?: string }> = ({
   if (provider === 'github') {
     return <SiGithub className={classnames(className)} />;
   }
-  if (provider === 'gitcode') {
+  if (provider === 'gitcode' || provider === 'atomgit') {
     return (
       <Image
         src="/images/logos/gitcode.png"
