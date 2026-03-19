@@ -17,6 +17,8 @@ interface DeveloperTableProps {
   onViewDetail: (record: DeveloperData) => void;
   selectedRegions?: string[];
   onRegionFilterChange?: (regions: string[]) => void;
+  initialDevRole?: 'all' | 'individual' | 'org';
+  showTitle?: boolean;
 }
 
 const DeveloperTable: React.FC<DeveloperTableProps> = ({
@@ -26,6 +28,8 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   onViewDetail,
   selectedRegions = [],
   onRegionFilterChange,
+  initialDevRole = 'all',
+  showTitle = true,
 }) => {
   const normalizeUserId = (value: unknown) => {
     const raw = typeof value === 'string' ? value.trim() : '';
@@ -67,13 +71,17 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
   const { t, i18n } = useTranslation('intelligent_analysis');
   const [devRoleFilter, setDevRoleFilter] = useState<
     'all' | 'individual' | 'org'
-  >('all');
+  >(initialDevRole);
 
   const dataset = PROJECT_NAME_MAP[projectType] || projectType;
 
   useEffect(() => {
     setCurrentPage(1);
   }, [dataset]);
+
+  useEffect(() => {
+    setDevRoleFilter(initialDevRole);
+  }, [initialDevRole]);
 
   const { data: apiData, isFetching: apiLoading } = useQuery({
     queryKey: [
@@ -312,7 +320,9 @@ const DeveloperTable: React.FC<DeveloperTableProps> = ({
 
   return (
     <Card
-      title={t('project_detail.developer_contribution_details')}
+      title={
+        showTitle ? t('project_detail.developer_contribution_details') : null
+      }
       className="mb-6"
     >
       {/* 搜索区域 */}

@@ -105,7 +105,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ data, totalScore }) => {
             </Text>
           </Space>
         </Descriptions.Item>
-        <Descriptions.Item label={t('project_detail.basic_info.global_rank')}>
+        <Descriptions.Item label={'排名'}>
           <Space>
             <TrophyOutlined style={{ color: '#1890ff' }} />
             <Text strong>

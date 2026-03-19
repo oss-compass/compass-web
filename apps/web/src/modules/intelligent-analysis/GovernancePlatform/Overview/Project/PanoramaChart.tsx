@@ -17,12 +17,16 @@ interface PanoramaChartProps {
   className?: string;
   activeSlug?: string;
   loading?: boolean;
+  routeBasePath?: string;
+  rootSlug?: string;
 }
 
 const PanoramaChart: React.FC<PanoramaChartProps> = ({
   className,
   activeSlug,
   loading = false,
+  routeBasePath = '/intelligent-analysis/governance-platform',
+  rootSlug = 'CUDA',
 }) => {
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
@@ -36,11 +40,11 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
   const handleNavigate = (slug: string) => {
     if (disableNavigation) return;
     setIsNavigating(true);
-    // If clicking the currently active slug, navigate back to 'CUDA' (unless it's already CUDA)
-    if (slug === activeSlug && slug !== 'CUDA') {
-      router.push(`/intelligent-analysis/governance-platform/CUDA`);
+    // Clicking the current node returns to the root stack view.
+    if (slug === activeSlug && slug !== rootSlug) {
+      router.push(`${routeBasePath}/${rootSlug}`);
     } else {
-      router.push(`/intelligent-analysis/governance-platform/${slug}`);
+      router.push(`${routeBasePath}/${slug}`);
     }
   };
 
@@ -213,7 +217,9 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   'CUDA_compiler'
                 )}
                 onClick={
-                  disableNavigation ? undefined : () => handleNavigate('CUDA_compiler')
+                  disableNavigation
+                    ? undefined
+                    : () => handleNavigate('CUDA_compiler')
                 }
               >
                 <div className="mb-1 flex items-center font-bold">
@@ -231,7 +237,9 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   'CUDA_runtime'
                 )}
                 onClick={
-                  disableNavigation ? undefined : () => handleNavigate('CUDA_runtime')
+                  disableNavigation
+                    ? undefined
+                    : () => handleNavigate('CUDA_runtime')
                 }
               >
                 <div className="mb-1 flex items-center font-bold">
@@ -250,7 +258,9 @@ const PanoramaChart: React.FC<PanoramaChartProps> = ({
                   'CUDA_driver'
                 )}
                 onClick={
-                  disableNavigation ? undefined : () => handleNavigate('CUDA_driver')
+                  disableNavigation
+                    ? undefined
+                    : () => handleNavigate('CUDA_driver')
                 }
               >
                 <div className="mb-1 flex items-center font-bold">

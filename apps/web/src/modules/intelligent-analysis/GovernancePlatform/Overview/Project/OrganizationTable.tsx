@@ -19,6 +19,8 @@ interface OrganizationTableProps {
   onViewDetail: (record: DeveloperData) => void;
   selectedRegions?: string[];
   onRegionFilterChange?: (regions: string[]) => void;
+  initialOrgTypes?: string[];
+  showTitle?: boolean;
 }
 
 const OrganizationTable: React.FC<OrganizationTableProps> = ({
@@ -28,11 +30,14 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   onViewDetail,
   selectedRegions = [],
   onRegionFilterChange,
+  initialOrgTypes = [],
+  showTitle = true,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [appliedKeyword, setAppliedKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedOrgTypes, setSelectedOrgTypes] = useState<string[]>([]);
+  const [selectedOrgTypes, setSelectedOrgTypes] =
+    useState<string[]>(initialOrgTypes);
   const pageSize = 10;
   const { t, i18n } = useTranslation('intelligent_analysis');
 
@@ -41,6 +46,10 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   useEffect(() => {
     setCurrentPage(1);
   }, [dataset]);
+
+  useEffect(() => {
+    setSelectedOrgTypes(initialOrgTypes);
+  }, [initialOrgTypes]);
 
   const { data: apiData, isFetching: apiLoading } = useQuery({
     queryKey: [
@@ -233,7 +242,9 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
   return (
     <Card
-      title={t('project_detail.organization_contribution_details')}
+      title={
+        showTitle ? t('project_detail.organization_contribution_details') : null
+      }
       className="mb-6"
     >
       {/* 搜索区域 */}

@@ -56,11 +56,13 @@ interface RepoData {
 interface RepoTableProps {
   projectType?: string;
   selectedRegions?: string[];
+  shwoTitle?: boolean;
 }
 
 const RepoTable: React.FC<RepoTableProps> = ({
   projectType = '',
   selectedRegions = [],
+  shwoTitle = false,
 }) => {
   const [data, setData] = useState<RepoData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,12 +77,10 @@ const RepoTable: React.FC<RepoTableProps> = ({
         const prefix = (projectType || '').split('_')[0].trim();
         const csvPath = prefix
           ? `/test/intelligent-analysis-new/${encodeURIComponent(
-            prefix
-          )}_repo_data.csv`
+              prefix
+            )}_repo_data.csv`
           : '/test/intelligent-analysis-new/repo_data.csv';
-        const response = await fetch(
-          csvPath
-        );
+        const response = await fetch(csvPath);
         const buffer = await response.arrayBuffer();
         const decode = (encoding: string) =>
           new TextDecoder(encoding).decode(buffer);
@@ -222,7 +222,7 @@ const RepoTable: React.FC<RepoTableProps> = ({
   ];
 
   return (
-    <Card title="仓库信息" className="mb-6">
+    <Card title={shwoTitle ? '仓库信息' : ''} className="mb-6">
       <div className="mb-6">
         <Space>
           <Input

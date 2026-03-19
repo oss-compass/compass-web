@@ -18,6 +18,7 @@ interface DeveloperRegionChartProps {
   className?: string;
   projectType: string;
   loading?: boolean;
+  showTitle?: boolean;
   selectedRegions?: string[];
   onRegionFilterChange?: (regions: string[]) => void;
 }
@@ -28,6 +29,7 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
   loading = false,
   selectedRegions = [],
   onRegionFilterChange,
+  showTitle = false,
 }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
   const mapChartRef = useRef<HTMLDivElement>(null);
@@ -177,8 +179,9 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
               countryMapping,
               i18n.language
             );
-            return `${translatedName}<br/>${tabInfo.description}：${displayValue || 0
-              }`;
+            return `${translatedName}<br/>${tabInfo.description}：${
+              displayValue || 0
+            }`;
           }
           const translatedName = translateByLocale(
             params.name,
@@ -308,15 +311,15 @@ const DeveloperRegionChart: React.FC<DeveloperRegionChartProps> = ({
   return (
     <Spin spinning={computedLoading}>
       <Card
-        title={t('project_detail.region_chart.title')}
+        title={showTitle ? t('project_detail.region_chart.title') : ''}
         tabList={shouldShowTabs ? tabItems : undefined}
         activeTabKey={shouldShowTabs ? activeTab : undefined}
         onTabChange={
           shouldShowTabs
             ? (key) =>
-              setActiveTab(
-                key as 'all' | 'individual' | 'org_devs' | 'org_count'
-              )
+                setActiveTab(
+                  key as 'all' | 'individual' | 'org_devs' | 'org_count'
+                )
             : undefined
         }
         className={className ? `w-full ${className}` : 'w-full'}
