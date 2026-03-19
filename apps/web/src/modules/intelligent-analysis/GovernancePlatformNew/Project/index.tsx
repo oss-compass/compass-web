@@ -82,6 +82,8 @@ const compactMetaTagClassName =
 const compactTechTagClassName =
   'max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap align-middle';
 const BOARD_PAGE_SIZE = 6;
+const ALL_REGION = '全部';
+const DEFAULT_REGION = '中国';
 
 const getProjectFamily = (projectType: string) => {
   const family = projectType.split('_')[0];
@@ -208,10 +210,12 @@ const getRegionOptions = (regions: unknown) => {
         .filter(Boolean)
     : [];
 
-  return Array.from(new Set(['中国', ...normalized])).map((region) => ({
-    label: region,
-    value: region,
-  }));
+  return Array.from(new Set([ALL_REGION, DEFAULT_REGION, ...normalized])).map(
+    (region) => ({
+      label: region,
+      value: region,
+    })
+  );
 };
 
 const CompactTechStackRow: React.FC<{
@@ -369,7 +373,9 @@ const OrganizationListCard: React.FC<{
       params.set('pageSize', String(BOARD_PAGE_SIZE));
       params.set('sort', 'score_desc');
       params.set('orgTypes', orgType);
-      params.set('regions', countryFilter);
+      if (countryFilter && countryFilter !== ALL_REGION) {
+        params.set('regions', countryFilter);
+      }
 
       const response = await fetch(
         `/api/intelligent-analysis/projects/${encodeURIComponent(
@@ -519,7 +525,9 @@ const DeveloperListCard: React.FC<{
       params.set('pageSize', String(BOARD_PAGE_SIZE));
       params.set('sort', 'score_desc');
       params.set('role', role);
-      params.set('regions', countryFilter);
+      if (countryFilter && countryFilter !== ALL_REGION) {
+        params.set('regions', countryFilter);
+      }
 
       const response = await fetch(
         `/api/intelligent-analysis/projects/${encodeURIComponent(
@@ -665,8 +673,9 @@ const GovernanceTabPanel: React.FC<{
 }> = ({ projectType }) => {
   const dataset = PROJECT_NAME_MAP[projectType] || projectType;
   const techStackName = getTechStackName(projectType);
-  const [organizationCountry, setOrganizationCountry] = useState('中国');
-  const [developerCountry, setDeveloperCountry] = useState('中国');
+  const [organizationCountry, setOrganizationCountry] =
+    useState(DEFAULT_REGION);
+  const [developerCountry, setDeveloperCountry] = useState(DEFAULT_REGION);
   const [tableModal, setTableModal] = useState<BoardTableModalState | null>(
     null
   );
@@ -743,7 +752,12 @@ const GovernanceTabPanel: React.FC<{
     setTableModal({
       title: `${techStackName} - ${title}`,
       type: 'organization',
-      regions: country ? [country] : [],
+      regions:
+        country && country !== ALL_REGION && country !== DEFAULT_REGION
+          ? [country]
+          : country === DEFAULT_REGION
+          ? [DEFAULT_REGION]
+          : [],
       orgTypes: [orgType],
     });
   };
@@ -760,7 +774,12 @@ const GovernanceTabPanel: React.FC<{
     setTableModal({
       title: `${techStackName} - ${title}`,
       type: 'developer',
-      regions: country ? [country] : [],
+      regions:
+        country && country !== ALL_REGION && country !== DEFAULT_REGION
+          ? [country]
+          : country === DEFAULT_REGION
+          ? [DEFAULT_REGION]
+          : [],
       developerRole: role,
     });
   };
