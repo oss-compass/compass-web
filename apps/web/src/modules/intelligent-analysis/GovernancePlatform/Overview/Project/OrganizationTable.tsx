@@ -12,6 +12,8 @@ import { getDisplayUserId } from './utils/getDisplayUserId';
 import { classifyOrganization } from './utils/orgClassifier';
 import { PROJECT_NAME_MAP } from '../utils';
 
+const EMPTY_STRING_ARRAY: string[] = [];
+
 interface OrganizationTableProps {
   projectType: string;
   data: DeveloperData[];
@@ -28,9 +30,9 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   data,
   loading,
   onViewDetail,
-  selectedRegions = [],
+  selectedRegions = EMPTY_STRING_ARRAY,
   onRegionFilterChange,
-  initialOrgTypes = [],
+  initialOrgTypes = EMPTY_STRING_ARRAY,
   showTitle = true,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -48,7 +50,15 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   }, [dataset]);
 
   useEffect(() => {
-    setSelectedOrgTypes(initialOrgTypes);
+    setSelectedOrgTypes((prev) => {
+      if (
+        prev.length === initialOrgTypes.length &&
+        prev.every((item, index) => item === initialOrgTypes[index])
+      ) {
+        return prev;
+      }
+      return initialOrgTypes;
+    });
   }, [initialOrgTypes]);
 
   const { data: apiData, isFetching: apiLoading } = useQuery({
