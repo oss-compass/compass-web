@@ -252,14 +252,14 @@ const UserJourney: React.FC = () => {
   return (
     <div className="min-h-full bg-[#f5f7fb]">
       <nav className="flex h-14 items-center justify-between border-b border-t bg-white px-6 md:h-12 md:px-4">
-        <div className="relative flex h-6 flex-1 items-center gap-3 overflow-hidden text-xl font-semibold text-black">
+        <div className="relative flex h-10 flex-1 items-center gap-3 overflow-hidden pl-4 text-xl font-semibold text-black">
           <span>外部入门开发者</span>
-          <div className="ml-4 pt-1">
+          <div className="ml-4 mt-2">
             <Segmented
               value={'算子学习'}
               style={{ marginBottom: 8 }}
               // onChange={setAlignValue}
-              options={['算子学习', 'center', 'end']}
+              options={['算子学习', 'CV融合']}
             />
           </div>
         </div>
