@@ -259,7 +259,7 @@ const UserJourney: React.FC = () => {
               value={'开发算子入门'}
               style={{ marginBottom: 8 }}
               // onChange={setAlignValue}
-              options={['开发算子入门', '调用算子学习']}
+              options={['开发算子入门', '调用算子入门']}
             />
           </div>
         </div>
