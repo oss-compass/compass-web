@@ -14,6 +14,7 @@ import {
   Col,
   Layout,
   Row,
+  Select,
   Space,
   Statistic,
   Segmented,
@@ -31,10 +32,7 @@ type OverviewMetric = {
   extra?: string;
   delta: string;
   color: string;
-  progress?: number;
 };
-
-type MetricVisualVariant = 'bar' | 'line';
 
 type JourneyScene = {
   key: string;
@@ -136,7 +134,6 @@ const overviewMetrics: OverviewMetric[] = [
     extra: '(8/10)',
     delta: '+2',
     color: '#1677ff',
-    progress: 80,
   },
   {
     key: 'pass',
@@ -146,7 +143,6 @@ const overviewMetrics: OverviewMetric[] = [
     extra: '(8/10)',
     delta: '+2',
     color: '#722ed1',
-    progress: 45,
   },
   {
     key: 'tokens',
@@ -164,13 +160,6 @@ const overviewMetrics: OverviewMetric[] = [
     color: '#b37feb',
   },
 ];
-
-const metricVisualMap: Record<string, MetricVisualVariant> = {
-  success: 'bar',
-  pass: 'bar',
-  tokens: 'line',
-  duration: 'line',
-};
 
 const MetricBarVisual: React.FC<{ color: string }> = ({ color }) => {
   const heights = [18, 24, 20, 32, 22, 28];
@@ -241,6 +230,7 @@ const getSceneColor = (key: string) => {
 
 const UserJourney: React.FC = () => {
   const [activeSceneKey, setActiveSceneKey] = useState(journeyScenes[0].key);
+  const [developerType, setDeveloperType] = useState('外部入门开发者');
 
   const currentScene = useMemo(
     () =>
@@ -252,14 +242,24 @@ const UserJourney: React.FC = () => {
   return (
     <div className="min-h-full bg-[#f5f7fb]">
       <nav className="flex h-14 items-center justify-between border-b border-t bg-white px-6 md:h-12 md:px-4">
-        <div className="relative flex h-10 flex-1 items-center gap-3 overflow-hidden pl-4 text-xl font-semibold text-black">
-          <span>外部入门开发者</span>
+        <div className="relative flex h-10 flex-1 items-center gap-3 overflow-hidden pl-4 text-xl font-semibold ">
+          <Select
+            value={developerType}
+            onChange={setDeveloperType}
+            bordered={false}
+            options={[
+              { label: '外部入门开发者', value: '外部入门开发者' },
+              { label: 'Ascend C算子开发', value: 'Ascend C算子开发' },
+            ]}
+            className="min-w-[185px] [&_.ant-select-arrow]:text-slate-700 [&_.ant-select-selection-item]:!text-xl [&_.ant-select-selection-item]:!font-bold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selector]:!border-0 [&_.ant-select-selector]:!bg-transparent [&_.ant-select-selector]:!shadow-none"
+            dropdownStyle={{ minWidth: 200 }}
+          />
           <div className="ml-4 mt-2">
             <Segmented
-              value={'算子学习'}
+              value={'调用算子学习'}
               style={{ marginBottom: 8 }}
               // onChange={setAlignValue}
-              options={['算子学习', 'CV融合']}
+              options={['调用算子学习', '开发算子学习']}
             />
           </div>
         </div>
@@ -283,7 +283,6 @@ const UserJourney: React.FC = () => {
             borderRadius: 24,
             padding: 16,
             marginRight: 20,
-            height: 'auto',
             minHeight: 'calc(100vh - 176px)',
             boxShadow: '0 12px 32px rgba(15, 23, 42, 0.05)',
             boxSizing: 'border-box',
@@ -342,7 +341,7 @@ const UserJourney: React.FC = () => {
                 指标概览
               </div>
               <Row gutter={[16, 16]}>
-                {overviewMetrics.map((metric, index) => (
+                {overviewMetrics.map((metric) => (
                   <Col xs={24} md={12} xl={6} key={metric.key}>
                     <Card
                       bordered
@@ -373,7 +372,8 @@ const UserJourney: React.FC = () => {
                             </div>
                           </div>
                           <div className="flex min-w-[110px] justify-end">
-                            {metricVisualMap[metric.key] === 'bar' ? (
+                            {metric.key === 'success' ||
+                            metric.key === 'pass' ? (
                               <MetricBarVisual color={metric.color} />
                             ) : (
                               <MetricLineVisual
@@ -407,6 +407,7 @@ const UserJourney: React.FC = () => {
                 {currentScene.actions.map((action, index) => (
                   <Card
                     key={`${currentScene.key}-${action}`}
+                    bordered
                     className="h-[176px] rounded-2xl border-slate-300 shadow-[0_14px_30px_rgba(15,23,42,0.08)]"
                     headStyle={{
                       minHeight: 174,
@@ -424,7 +425,7 @@ const UserJourney: React.FC = () => {
                         >
                           {index + 1}
                         </div>
-                        <div className="whitespace-normal break-words text-base font-semibold leading-10 text-slate-900">
+                        <div className="whitespace-normal break-words text-base font-semibold leading-8 text-slate-900">
                           {action}
                         </div>
                       </div>
@@ -433,7 +434,7 @@ const UserJourney: React.FC = () => {
                   />
                 ))}
               </div>
-              <div className="ml-4 mt-10">
+              <div className="mt-4">
                 <a
                   href="https://onebox.huawei.com/v/ae8e6ec514aec0689eb41ea813c9c1e2?type=0"
                   target="_blank"
