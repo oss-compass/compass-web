@@ -256,10 +256,10 @@ const UserJourney: React.FC = () => {
           />
           <div className="ml-4 mt-2">
             <Segmented
-              value={'调用算子学习'}
+              value={'开发算子入门'}
               style={{ marginBottom: 8 }}
               // onChange={setAlignValue}
-              options={['调用算子学习', '开发算子学习']}
+              options={['开发算子入门', '调用算子学习']}
             />
           </div>
         </div>
