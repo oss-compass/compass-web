@@ -21,7 +21,12 @@ type PageHeaderProps = {
   onDeveloperTypeChange: (value: string) => void;
   onJourneyModeChange: (value: string) => void;
   projects: HeaderProject[];
+  projectOptions: CompareProjectOption[];
+  versionOptions: CompareProjectOption[];
+  currentVersion?: string;
   compareProjectOptions: CompareProjectOption[];
+  onSelectProject: (value: string) => void;
+  onSelectVersion: (value: string) => void;
   onAddProject: (value: string) => void;
   onRemoveProject: (value: string) => void;
 };
@@ -40,7 +45,7 @@ const ProjectPill: React.FC<{
           </span>
           {project.version ? (
             <span className="text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
-              {project.version}
+              {`版本 ${project.version}`}
             </span>
           ) : null}
         </div>
@@ -67,7 +72,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   onDeveloperTypeChange,
   onJourneyModeChange,
   projects,
+  projectOptions,
+  versionOptions,
+  currentVersion,
   compareProjectOptions,
+  onSelectProject,
+  onSelectVersion,
   onAddProject,
   onRemoveProject,
 }) => {
@@ -105,20 +115,38 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       </div>
 
       <div className="ml-4 flex flex-shrink-0 items-center gap-3 md:flex">
-        {projects.map((project, index) => (
-          <React.Fragment key={project.queryKey}>
-            {index > 0 ? (
-              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
-                vs
-              </span>
-            ) : null}
-            <ProjectPill
-              project={project}
-              removable={compareMode}
-              onRemove={onRemoveProject}
+        {compareMode ? (
+          projects.map((project, index) => (
+            <React.Fragment key={project.queryKey}>
+              {index > 0 ? (
+                <span className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  vs
+                </span>
+              ) : null}
+              <ProjectPill
+                project={project}
+                removable={compareMode}
+                onRemove={onRemoveProject}
+              />
+            </React.Fragment>
+          ))
+        ) : (
+          <>
+            <Select
+              value={projects[0]?.queryKey}
+              onChange={(value) => onSelectProject(String(value))}
+              options={projectOptions}
+              className="h-10 min-w-[200px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_8px_18px_rgba(15,23,42,0.05)]"
             />
-          </React.Fragment>
-        ))}
+            <Select
+              value={currentVersion}
+              onChange={(value) => onSelectVersion(String(value))}
+              options={versionOptions}
+              className="h-10 min-w-[190px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!uppercase [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_8px_18px_rgba(15,23,42,0.05)]"
+              dropdownStyle={{ minWidth: 190 }}
+            />
+          </>
+        )}
 
         {!compareMode && compareProjectOptions.length ? (
           showAddSelector ? (

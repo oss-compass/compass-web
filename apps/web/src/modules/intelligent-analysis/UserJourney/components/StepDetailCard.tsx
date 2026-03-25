@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Popover, Tooltip, Typography } from 'antd';
-import { ArrowRightOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import KeyActionsSection from './KeyActionsSection';
 import MetricTrendChart from './MetricTrendChart';
 import PainGuidePopoverContent from './PainGuidePopoverContent';
@@ -15,7 +15,6 @@ type StepDetailCardProps = {
   painNarrative: string;
   executionPathItems: ActionDetailRecord[];
   keyTools: string[];
-  detailReportUrl?: string;
   agentVersion: string;
 };
 
@@ -25,7 +24,6 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   painNarrative,
   executionPathItems,
   keyTools,
-  detailReportUrl,
   agentVersion,
 }) => {
   return (
@@ -35,19 +33,8 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
       bodyStyle={{ padding: 24 }}
     >
       <div className="mb-5">
-        <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <div className="text-xl font-semibold text-slate-900">开发旅程</div>
-          {detailReportUrl ? (
-            <a
-              href={detailReportUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ml-3 inline-flex items-center gap-1 text-sm font-semibold text-[#1677ff] hover:underline"
-            >
-              查看详细报告
-              <ArrowRightOutlined />
-            </a>
-          ) : null}
+        <div className="mb-2 text-xl font-semibold text-slate-900">
+          开发旅程
         </div>
       </div>
 
@@ -129,7 +116,6 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
 
         <KeyActionsSection
           currentStepKey={currentStep.key}
-          currentStepColor={currentStep.color}
           executionPathItems={executionPathItems}
         />
 

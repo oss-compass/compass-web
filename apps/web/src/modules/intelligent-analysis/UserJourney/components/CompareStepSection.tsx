@@ -101,7 +101,6 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
                       }
                       executionPathItems={getExecutionPathItems(currentStep)}
                       keyTools={currentStep.tools.slice(0, 3)}
-                      detailReportUrl={project.data.reportDetailUrl}
                       agentVersion={project.data.agentVersion}
                     />
                   ) : (

@@ -204,4 +204,57 @@ describe('buildUserJourneyProjectData', () => {
       })
     );
   });
+
+  it('preserves textual action results and maps boolean false to failed', () => {
+    const result = buildUserJourneyProjectData({
+      ...report,
+      journey_steps: [
+        {
+          ...report.journey_steps[0],
+          per_project_assessments: [
+            {
+              ...report.journey_steps[0].per_project_assessments[0],
+              actual_path: {
+                ...report.journey_steps[0].per_project_assessments[0]
+                  .actual_path,
+                actions: [
+                  {
+                    action_type: 'web_search',
+                    detail: 'search result not matched',
+                    duration: '3s',
+                    timestamp: '3s',
+                    success: '\u672a\u547d\u4e2d',
+                    error_message: null,
+                  },
+                  {
+                    action_type: 'retry',
+                    detail: 'retry command',
+                    duration: '2s',
+                    timestamp: '5s',
+                    success: false,
+                    error_message: null,
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.journeySteps[0].executionPath).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          result: '\u672a\u547d\u4e2d',
+          status: 'failed',
+          statusLabel: '\u672a\u547d\u4e2d',
+        }),
+        expect.objectContaining({
+          result: false,
+          status: 'failed',
+          statusLabel: '\u5931\u8d25',
+        }),
+      ])
+    );
+  });
 });

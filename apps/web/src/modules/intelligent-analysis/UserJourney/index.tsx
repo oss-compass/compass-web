@@ -11,6 +11,8 @@ import {
   loadUserJourneyProjectData,
   resolveUserJourneyProjectFileKey,
   USER_JOURNEY_PROJECT_OPTIONS,
+  USER_JOURNEY_PROJECT_VERSION_MAP,
+  USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP,
   UserJourneyProjectFileKey,
 } from './rawData';
 import { UserJourneyProjectView } from './types';
@@ -123,8 +125,16 @@ const UserJourney: React.FC = () => {
   const headerProjects = projectViews.map((project) => ({
     queryKey: project.queryKey,
     name: project.data.projectInfo.name,
-    version: project.data.projectInfo.version,
+    version:
+      USER_JOURNEY_PROJECT_VERSION_MAP[project.queryKey] ??
+      project.data.projectInfo.version,
   }));
+  const currentProjectKey = requestedProjects[0];
+  const currentVersionOptions =
+    USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP[currentProjectKey] ?? [];
+  const currentVersion =
+    USER_JOURNEY_PROJECT_VERSION_MAP[currentProjectKey] ??
+    primaryProject?.projectInfo.version;
 
   const availableCompareProjects = USER_JOURNEY_PROJECT_OPTIONS.filter(
     (option) => !requestedProjects.includes(option.value)
@@ -153,6 +163,14 @@ const UserJourney: React.FC = () => {
     ]);
 
     updateProjectsRoute(nextProjects);
+  };
+
+  const handleSelectProject = (projectKey: string) => {
+    updateProjectsRoute([resolveUserJourneyProjectFileKey(projectKey)]);
+  };
+
+  const handleSelectVersion = (_version: string) => {
+    return;
   };
 
   const handleRemoveProject = (projectKey: string) => {
@@ -196,7 +214,12 @@ const UserJourney: React.FC = () => {
         onDeveloperTypeChange={setDeveloperType}
         onJourneyModeChange={setJourneyMode}
         projects={headerProjects}
+        projectOptions={USER_JOURNEY_PROJECT_OPTIONS}
+        versionOptions={currentVersionOptions}
+        currentVersion={currentVersion}
         compareProjectOptions={availableCompareProjects}
+        onSelectProject={handleSelectProject}
+        onSelectVersion={handleSelectVersion}
         onAddProject={handleAddProject}
         onRemoveProject={handleRemoveProject}
       />
@@ -220,6 +243,7 @@ const UserJourney: React.FC = () => {
               recommendations={primaryProject.recommendations}
               journeySteps={primaryProject.journeySteps}
               reportUpdatedAt={primaryProject.reportUpdatedAt}
+              detailReportUrl={primaryProject.reportDetailUrl}
             />
 
             <Row gutter={20} wrap={false} className="flex-1 items-stretch">
@@ -240,7 +264,6 @@ const UserJourney: React.FC = () => {
                   }
                   executionPathItems={executionPathItems}
                   keyTools={keyTools}
-                  detailReportUrl={primaryProject.reportDetailUrl}
                   agentVersion={primaryProject.agentVersion}
                 />
               </Col>

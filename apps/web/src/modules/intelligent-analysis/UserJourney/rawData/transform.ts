@@ -426,18 +426,31 @@ const buildProjectRecommendations = (
     });
 
 const buildActionDetailRecord = (action: BackendAction): ActionDetailRecord => {
-  const status = getActionStatus(action.success, action.error_message);
+  const result =
+    typeof action.success === 'string'
+      ? normalizeText(action.success) || null
+      : action.success;
+  const status =
+    typeof result === 'boolean'
+      ? result
+        ? 'success'
+        : 'failed'
+      : result
+      ? 'failed'
+      : getActionStatus(undefined, action.error_message);
 
   return {
     label: action.action_type,
     description: action.detail,
     duration: action.duration,
+    result,
     status,
-    statusLabel: action.success
-      ? '\u6210\u529f'
-      : action.error_message
-      ? '\u5931\u8d25'
-      : '\u8b66\u544a',
+    statusLabel:
+      typeof result === 'boolean'
+        ? result
+          ? '\u6210\u529f'
+          : '\u5931\u8d25'
+        : result || (action.error_message ? '\u5931\u8d25' : '\u8b66\u544a'),
   };
 };
 

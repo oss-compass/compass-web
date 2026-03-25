@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Col, Descriptions, Row, Tooltip, Typography } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import JourneyPanoramaSection from './JourneyPanoramaSection';
 import {
   JourneyRecommendation,
@@ -18,6 +18,7 @@ type ReportSummaryCardProps = {
   recommendations: JourneyRecommendation[];
   journeySteps: JourneyStep[];
   reportUpdatedAt: string;
+  detailReportUrl?: string;
 };
 
 const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
@@ -27,6 +28,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
   recommendations,
   journeySteps,
   reportUpdatedAt,
+  detailReportUrl,
 }) => {
   return (
     <Card
@@ -66,6 +68,20 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
           />
         </div>
       </div>
+
+      {detailReportUrl ? (
+        <div className="mt-4">
+          <a
+            href={detailReportUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-[#1677ff] hover:underline"
+          >
+            查看详细报告
+            <ArrowRightOutlined />
+          </a>
+        </div>
+      ) : null}
 
       <div className="mt-3 border-slate-100 pt-3">
         <div className="mb-2 text-xl font-semibold text-slate-900">

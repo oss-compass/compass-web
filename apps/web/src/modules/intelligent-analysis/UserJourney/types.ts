@@ -32,6 +32,8 @@ export type MetricTrend = {
 
 export type ActionStatus = 'success' | 'warning' | 'failed' | 'neutral';
 
+export type ActionResultValue = boolean | string | null;
+
 export type StepMetric = {
   label: string;
   value: string;
@@ -45,6 +47,7 @@ export type ActionDetailRecord = {
   label: string;
   description: string;
   duration?: string;
+  result?: ActionResultValue;
   status?: ActionStatus;
   statusLabel?: string;
 };
@@ -158,7 +161,7 @@ export type BackendAction = {
   detail: string;
   duration: string;
   timestamp: string | null;
-  success: boolean;
+  success: ActionResultValue;
   error_message: string | null;
 };
 
