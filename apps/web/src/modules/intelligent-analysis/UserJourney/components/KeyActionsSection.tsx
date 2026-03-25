@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowRightOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { ActionDetailRecord } from '../types';
 import { getActionStatusClasses } from '../helpers';
@@ -20,14 +19,14 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
       <div className="text-base font-semibold text-slate-900">关键动作</div>
 
       {executionPathItems.length ? (
-        <div className="mt-4 flex flex-wrap items-stretch gap-3">
+        <div className="mt-4 grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(min(100%,370px),1fr))]">
           {executionPathItems.map((detailItem, index) => (
             <div
               key={`${currentStepKey}-execution-${index}-${detailItem.label}`}
-              className="flex items-stretch gap-2"
+              className="w-full"
             >
-              <div className="h-[192px] w-[380px] flex-none">
-                <div className="flex h-full flex-col rounded-[26px] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_24px_rgba(15,23,42,0.05)]">
+              <div className="h-[192px] w-full max-w-[560px]">
+                <div className="flex h-full flex-col rounded-[26px] border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_24px_rgba(15,23,42,0.05)]">
                   <div className="h-full px-1 py-1">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -77,11 +76,6 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                   </div>
                 </div>
               </div>
-              {index < executionPathItems.length - 1 ? (
-                <div className="flex h-[208px] w-4 flex-none items-center justify-center text-slate-300">
-                  <ArrowRightOutlined className="text-base" />
-                </div>
-              ) : null}
             </div>
           ))}
         </div>

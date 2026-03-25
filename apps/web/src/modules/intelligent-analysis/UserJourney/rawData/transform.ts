@@ -241,13 +241,13 @@ const buildFixedOverviewMetrics = (
       description:
         '来自七步旅程综合评分，最能反映外部开发者从零跑通的真实体验。',
       stage: '全链路结果',
-      recentValues: '近五次数据',
+      // recentValues: '近五次数据',
       tone: getToneByScore(report.overall_scores.composite_score),
       color: '#2563eb',
     },
     {
       key: 'e2e-success',
-      title: '平均端到端成功率',
+      title: '端到端成功率',
       value: successValue.value,
       suffix: successValue.suffix,
       description:
@@ -267,7 +267,7 @@ const buildFixedOverviewMetrics = (
       description:
         '覆盖从环境准备到最终验证的完整首次跑通时长，比单步耗时更有决策价值。',
       stage: 'S6 运行验证',
-      recentValues: '近五次数据',
+      // recentValues: '近五次数据',
       tone: durationMetric
         ? getToneByScore(getMetricScore(durationMetric))
         : 'neutral',
@@ -281,7 +281,7 @@ const buildFixedOverviewMetrics = (
       description:
         '用近五次任务的平均 token 消耗量观察分析成本，辅助判断任务复杂度和调用负担。',
       stage: '全链路成本',
-      recentValues: '近五次数据',
+      // recentValues: '近五次数据',
       tone: tokenMetric
         ? getToneByScore(getMetricScore(tokenMetric))
         : 'neutral',
