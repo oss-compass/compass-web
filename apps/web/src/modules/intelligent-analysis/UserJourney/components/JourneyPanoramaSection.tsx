@@ -15,7 +15,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
   steps,
 }) => {
   return (
-    <div className="mt-5 border-slate-100 pt-5">
+    <div className="mt-2 border-slate-100 pt-5">
       <div className="mb-3">
         <div className="text-xl font-semibold text-slate-900">全景图</div>
       </div>

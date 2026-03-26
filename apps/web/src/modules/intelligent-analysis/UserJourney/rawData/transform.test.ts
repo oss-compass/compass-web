@@ -132,7 +132,7 @@ describe('buildUserJourneyProjectData', () => {
       expect.arrayContaining([
         expect.objectContaining({
           key: 'overall-score',
-          recentValues: '\u8bc4\u7ea7 A',
+          recentValues: '评级 良好',
         }),
         expect.objectContaining({
           key: 'e2e-duration',

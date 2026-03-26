@@ -73,10 +73,67 @@ const stepPresentationMap: Record<
 
 const painLabelMap: Record<PainLevel, string> = {
   P0_BLOCKER: '完全阻塞',
-  P1_CRITICAL: '关键阻塞',
-  P2_MAJOR: '显著摩擦',
-  P3_MINOR: '轻微摩擦',
-  P4_TRIVIAL: '体验顺畅',
+  P1_CRITICAL: '严重',
+  P2_MAJOR: '显著',
+  P3_MINOR: '轻微',
+  P4_TRIVIAL: '无感',
+};
+
+export const experienceGradeGuideItems = [
+  {
+    grade: 'A',
+    scoreRange: '90 — 100',
+    label: '卓越',
+    rowClassName: 'bg-emerald-50',
+    badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+    accentColor: '#16a34a',
+  },
+  {
+    grade: 'B',
+    scoreRange: '75 — 89',
+    label: '良好',
+    rowClassName: 'bg-sky-50',
+    badgeClassName: 'border-sky-200 bg-sky-50 text-sky-700',
+    accentColor: '#0284c7',
+  },
+  {
+    grade: 'C',
+    scoreRange: '60 — 74',
+    label: '合格',
+    rowClassName: 'bg-amber-50',
+    badgeClassName: 'border-amber-200 bg-amber-50 text-amber-700',
+    accentColor: '#d97706',
+  },
+  {
+    grade: 'D',
+    scoreRange: '40 — 59',
+    label: '欠佳',
+    rowClassName: 'bg-orange-50',
+    badgeClassName: 'border-orange-200 bg-orange-50 text-orange-700',
+    accentColor: '#ea580c',
+  },
+  {
+    grade: 'F',
+    scoreRange: '0 — 39',
+    label: '不合格',
+    rowClassName: 'bg-rose-50',
+    badgeClassName: 'border-rose-200 bg-rose-50 text-rose-700',
+    accentColor: '#e11d48',
+  },
+] as const;
+
+export type ExperienceGrade =
+  (typeof experienceGradeGuideItems)[number]['grade'];
+
+const experienceGradeGuideItemMap: Record<
+  ExperienceGrade,
+  (typeof experienceGradeGuideItems)[number]
+> = {
+  A: experienceGradeGuideItems[0],
+  B: experienceGradeGuideItems[1],
+  C: experienceGradeGuideItems[2],
+  D: experienceGradeGuideItems[3],
+  F: experienceGradeGuideItems[4],
 };
 
 export const getJourneyStepIcon = (iconKey: string) =>
@@ -128,6 +185,39 @@ export const getPainLevelFromScore = (
 };
 
 export const getPainLabel = (level: PainLevel) => painLabelMap[level];
+
+export const getExperienceGradeFromScore = (
+  score: number | null | undefined
+): ExperienceGrade => {
+  if (score == null || Number.isNaN(score)) {
+    return 'F';
+  }
+
+  if (score >= 90) {
+    return 'A';
+  }
+
+  if (score >= 75) {
+    return 'B';
+  }
+
+  if (score >= 60) {
+    return 'C';
+  }
+
+  if (score >= 40) {
+    return 'D';
+  }
+
+  return 'F';
+};
+
+export const getExperienceGradeGuideItem = (grade: ExperienceGrade) =>
+  experienceGradeGuideItemMap[grade];
+
+export const getExperienceGradeLabelFromScore = (
+  score: number | null | undefined
+) => getExperienceGradeGuideItem(getExperienceGradeFromScore(score)).label;
 
 export const getToneByScore = (score: number | null | undefined): Tone => {
   if (score == null || Number.isNaN(score)) {

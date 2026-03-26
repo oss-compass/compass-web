@@ -2,6 +2,7 @@ import {
   formatBenchmarkValue,
   formatMetricValue,
   getActionStatus,
+  getExperienceGradeLabelFromScore,
   getJourneyStepIcon,
   getPainLabel,
   getPainLevelFromScore,
@@ -137,7 +138,9 @@ const buildOverviewMetrics = (report: BackendReportData): OverviewMetric[] => {
       suffix: '/100',
       description: report.key_insight,
       stage: '综合评估',
-      recentValues: `等级 ${report.overall_scores.grade}`,
+      recentValues: `${getExperienceGradeLabelFromScore(
+        report.overall_scores.composite_score
+      )}`,
       tone: getToneByScore(report.overall_scores.composite_score),
       color: '#2563eb',
     },
@@ -293,7 +296,9 @@ const buildFixedOverviewMetrics = (
     if (metric.key === 'overall-score') {
       return {
         ...metric,
-        recentValues: `\u8bc4\u7ea7 ${report.overall_scores.grade}`,
+        recentValues: `${getExperienceGradeLabelFromScore(
+          report.overall_scores.composite_score
+        )}`,
       };
     }
 

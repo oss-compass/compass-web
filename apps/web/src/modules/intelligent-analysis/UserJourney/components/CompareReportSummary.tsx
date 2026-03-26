@@ -25,7 +25,7 @@ const renderProjectName = (
   project: UserJourneyProjectView,
   linkVersion = false
 ) => (
-  <div>
+  <div className="flex flex-col gap-1">
     <div className="text-sm font-semibold text-slate-900">
       {project.data.projectInfo.name}
     </div>
@@ -35,16 +35,19 @@ const renderProjectName = (
           href={project.data.reportDetailUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-1 inline-block text-xs font-medium uppercase tracking-[0.08em] text-[#1677ff] hover:underline"
+          className="inline-block text-xs font-medium uppercase tracking-[0.08em] text-[#1677ff] hover:underline"
         >
-          {`\u7248\u672c ${project.data.projectInfo.version}`}
+          {project.data.projectInfo.version}
         </a>
       ) : (
-        <div className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
-          {`\u7248\u672c ${project.data.projectInfo.version}`}
+        <div className="text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+          {project.data.projectInfo.version}
         </div>
       )
     ) : null}
+    <div className="text-[11px] leading-5 text-slate-400">
+      更新于：{project.data.reportUpdatedAt}
+    </div>
   </div>
 );
 
@@ -57,16 +60,11 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
     return null;
   }
 
-  const metadataColumns: ComparisonTableColumn[] = [
-    {
-      key: 'reportUpdatedAt',
-      title: '\u66f4\u65b0\u65f6\u95f4',
-    },
-    ...baseProject.reportMetadata.map((item) => ({
+  const metadataColumns: ComparisonTableColumn[] =
+    baseProject.reportMetadata.map((item) => ({
       key: item.key,
       title: item.label,
-    })),
-  ];
+    }));
 
   const metadataRows: ComparisonTableRow[] = projects.map((project) => ({
     key: `${project.queryKey}-metadata`,
@@ -121,16 +119,22 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
 
   return (
     <div className="flex flex-col gap-5">
-      <ComparisonTableCard
-        title="报告元数据"
-        columns={metadataColumns}
-        rows={metadataRows}
-      />
-      <ComparisonTableCard
-        title="指标概览"
-        columns={overviewColumns}
-        rows={overviewRows}
-      />
+      <div className=">lg:flex-row flex flex-col gap-4">
+        <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
+          <ComparisonTableCard
+            title="报告元数据"
+            columns={metadataColumns}
+            rows={metadataRows}
+          />
+        </div>
+        <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
+          <ComparisonTableCard
+            title="指标概览"
+            columns={overviewColumns}
+            rows={overviewRows}
+          />
+        </div>
+      </div>
       <ComparePanoramaCard projects={projects} />
       <CompareRecommendationsCard projects={projects} />
     </div>

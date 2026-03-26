@@ -94,7 +94,7 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
                   </div>
                   {project.data.projectInfo.version ? (
                     <div className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
-                      {`版本 ${project.data.projectInfo.version}`}
+                      {`${project.data.projectInfo.version}`}
                     </div>
                   ) : null}
                 </div>

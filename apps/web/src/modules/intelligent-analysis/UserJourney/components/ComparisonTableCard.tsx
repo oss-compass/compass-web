@@ -47,58 +47,62 @@ const ComparisonTableCard: React.FC<ComparisonTableCardProps> = ({
   return (
     <Card
       bordered={false}
-      className="rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
-      bodyStyle={{ padding: 24 }}
+      className="h-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
+      bodyStyle={{ padding: 24, height: '100%' }}
     >
-      <div className="mb-5 text-xl font-semibold text-slate-900">{title}</div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr>
-              <th className="min-w-[220px] border-b border-b-white bg-slate-50 px-5 py-4 text-left text-sm font-semibold text-slate-700">
-                项目名称
-              </th>
-              {columns.map((column, index) => (
-                <th
-                  key={column.key}
-                  className={classNames(
-                    'min-w-[160px] border-b border-t-2 border-b-white px-5 py-4 text-center text-sm font-semibold text-slate-700',
-                    getColumnClassName(index)
-                  )}
-                >
-                  {column.title}
+      <div className="flex h-full flex-col">
+        <div className="mb-4 flex min-h-[28px] items-center text-base font-semibold text-slate-800">
+          {title}
+        </div>
+        <div className="min-h-0 flex-1 overflow-x-auto">
+          <table className="min-w-full table-auto">
+            <thead>
+              <tr>
+                <th className="min-w-[200px] border-b border-b-white bg-slate-50 px-3 py-2 text-left text-sm font-semibold text-slate-700">
+                  项目名称
                 </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.key} className="group">
-                <td className="border-b border-b-white bg-white px-5 py-4 text-left align-top">
-                  <div className="text-sm font-semibold text-slate-900">
-                    {row.projectName}
-                  </div>
-                </td>
-                {columns.map((column, index) => {
-                  const cell = row.cells[column.key];
-
-                  return (
-                    <td
-                      key={`${row.key}-${column.key}`}
-                      className={classNames(
-                        'border-b border-b-white px-5 py-4 text-center text-sm text-slate-700',
-                        getColumnClassName(index),
-                        cell?.className
-                      )}
-                    >
-                      {cell?.content ?? '-'}
-                    </td>
-                  );
-                })}
+                {columns.map((column, index) => (
+                  <th
+                    key={column.key}
+                    className={classNames(
+                      'min-w-[160px] border-b border-t-2 border-b-white px-3 py-2 text-center text-sm font-semibold text-slate-700',
+                      getColumnClassName(index)
+                    )}
+                  >
+                    {column.title}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.key} className="group">
+                  <td className="border-b border-b-white bg-white px-3 py-2 text-left align-top">
+                    <div className="text-sm font-semibold text-slate-900">
+                      {row.projectName}
+                    </div>
+                  </td>
+                  {columns.map((column, index) => {
+                    const cell = row.cells[column.key];
+
+                    return (
+                      <td
+                        key={`${row.key}-${column.key}`}
+                        className={classNames(
+                          'border-b border-b-white px-3 py-2 text-center text-sm text-slate-700',
+                          getColumnClassName(index),
+                          cell?.className
+                        )}
+                      >
+                        {cell?.content ?? '-'}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </Card>
   );
