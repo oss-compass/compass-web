@@ -51,7 +51,7 @@ export const USER_JOURNEY_PAIN_GUIDE_ITEMS: PainGuideItem[] = [
 ];
 
 export const USER_JOURNEY_DEVELOPER_TYPE_OPTIONS = [
-  '外部入门开发者',
+  '社区入门体验',
   'Ascend C算子开发',
 ];
 
