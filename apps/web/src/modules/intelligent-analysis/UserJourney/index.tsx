@@ -10,8 +10,9 @@ import StepSidebar from './components/StepSidebar';
 import {
   loadUserJourneyProjectData,
   resolveUserJourneyProjectFileKey,
+  USER_JOURNEY_COMPARE_PROJECT_OPTIONS,
+  USER_JOURNEY_PROJECT_KEY_MAP,
   USER_JOURNEY_PROJECT_OPTIONS,
-  USER_JOURNEY_PROJECT_VERSION_MAP,
   USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP,
   UserJourneyProjectFileKey,
 } from './rawData';
@@ -125,18 +126,15 @@ const UserJourney: React.FC = () => {
   const headerProjects = projectViews.map((project) => ({
     queryKey: project.queryKey,
     name: project.data.projectInfo.name,
-    version:
-      USER_JOURNEY_PROJECT_VERSION_MAP[project.queryKey] ??
-      project.data.projectInfo.version,
+    version: project.data.projectInfo.version,
   }));
-  const currentProjectKey = requestedProjects[0];
+  const currentProjectFileKey = requestedProjects[0];
+  const currentProjectKey = USER_JOURNEY_PROJECT_KEY_MAP[currentProjectFileKey];
   const currentVersionOptions =
     USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP[currentProjectKey] ?? [];
-  const currentVersion =
-    USER_JOURNEY_PROJECT_VERSION_MAP[currentProjectKey] ??
-    primaryProject?.projectInfo.version;
+  const currentVersion = currentProjectFileKey;
 
-  const availableCompareProjects = USER_JOURNEY_PROJECT_OPTIONS.filter(
+  const availableCompareProjects = USER_JOURNEY_COMPARE_PROJECT_OPTIONS.filter(
     (option) => !requestedProjects.includes(option.value)
   );
 
@@ -170,7 +168,7 @@ const UserJourney: React.FC = () => {
   };
 
   const handleSelectVersion = (_version: string) => {
-    return;
+    updateProjectsRoute([resolveUserJourneyProjectFileKey(_version)]);
   };
 
   const handleRemoveProject = (projectKey: string) => {
@@ -215,6 +213,7 @@ const UserJourney: React.FC = () => {
         onJourneyModeChange={setJourneyMode}
         projects={headerProjects}
         projectOptions={USER_JOURNEY_PROJECT_OPTIONS}
+        currentProjectKey={currentProjectKey}
         versionOptions={currentVersionOptions}
         currentVersion={currentVersion}
         compareProjectOptions={availableCompareProjects}
@@ -244,6 +243,7 @@ const UserJourney: React.FC = () => {
               journeySteps={primaryProject.journeySteps}
               reportUpdatedAt={primaryProject.reportUpdatedAt}
               detailReportUrl={primaryProject.reportDetailUrl}
+              projectVersion={primaryProject.projectInfo.version}
             />
 
             <Row gutter={20} wrap={false} className="flex-1 items-stretch">

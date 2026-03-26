@@ -22,6 +22,7 @@ type PageHeaderProps = {
   onJourneyModeChange: (value: string) => void;
   projects: HeaderProject[];
   projectOptions: CompareProjectOption[];
+  currentProjectKey: string;
   versionOptions: CompareProjectOption[];
   currentVersion?: string;
   compareProjectOptions: CompareProjectOption[];
@@ -73,6 +74,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   onJourneyModeChange,
   projects,
   projectOptions,
+  currentProjectKey,
   versionOptions,
   currentVersion,
   compareProjectOptions,
@@ -133,7 +135,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         ) : (
           <>
             <Select
-              value={projects[0]?.queryKey}
+              value={currentProjectKey}
               onChange={(value) => onSelectProject(String(value))}
               options={projectOptions}
               className="h-10 min-w-[200px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_8px_18px_rgba(15,23,42,0.05)]"
@@ -156,7 +158,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               value={undefined}
               placeholder="选择对比项目"
               options={compareProjectOptions}
-              className="w-[220px]"
+              className="w-[340px]"
+              dropdownStyle={{ minWidth: 340 }}
               onSelect={(value) => {
                 onAddProject(String(value));
                 setShowAddSelector(false);

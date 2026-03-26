@@ -25,8 +25,15 @@ const ComparePanoramaCard: React.FC<ComparePanoramaCardProps> = ({
           >
             <div className="flex items-center gap-4">
               <div className="h-px flex-1 bg-slate-200" />
-              <div className="text-center text-lg font-semibold text-slate-900">
-                {project.data.projectInfo.name}
+              <div className="text-center">
+                <div className="text-lg font-semibold text-slate-900">
+                  {project.data.projectInfo.name}
+                </div>
+                {project.data.projectInfo.version ? (
+                  <div className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+                    {`版本 ${project.data.projectInfo.version}`}
+                  </div>
+                ) : null}
               </div>
               <div className="h-px flex-1 bg-slate-200" />
             </div>

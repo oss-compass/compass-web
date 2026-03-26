@@ -21,6 +21,33 @@ const getOverviewMetricLabel = (metric: OverviewMetric) =>
 const getMetadataItem = (items: ReportMetadataItem[], key: string) =>
   items.find((item) => item.key === key);
 
+const renderProjectName = (
+  project: UserJourneyProjectView,
+  linkVersion = false
+) => (
+  <div>
+    <div className="text-sm font-semibold text-slate-900">
+      {project.data.projectInfo.name}
+    </div>
+    {project.data.projectInfo.version ? (
+      linkVersion && project.data.reportDetailUrl ? (
+        <a
+          href={project.data.reportDetailUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-block text-xs font-medium uppercase tracking-[0.08em] text-[#1677ff] hover:underline"
+        >
+          {`\u7248\u672c ${project.data.projectInfo.version}`}
+        </a>
+      ) : (
+        <div className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+          {`\u7248\u672c ${project.data.projectInfo.version}`}
+        </div>
+      )
+    ) : null}
+  </div>
+);
+
 const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
   projects,
 }) => {
@@ -33,7 +60,7 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
   const metadataColumns: ComparisonTableColumn[] = [
     {
       key: 'reportUpdatedAt',
-      title: '更新时间',
+      title: '\u66f4\u65b0\u65f6\u95f4',
     },
     ...baseProject.reportMetadata.map((item) => ({
       key: item.key,
@@ -43,7 +70,7 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
 
   const metadataRows: ComparisonTableRow[] = projects.map((project) => ({
     key: `${project.queryKey}-metadata`,
-    projectName: project.data.projectInfo.name,
+    projectName: renderProjectName(project, true),
     cells: metadataColumns.reduce<ComparisonTableRow['cells']>(
       (cells, column) => {
         if (column.key === 'reportUpdatedAt') {
@@ -74,7 +101,7 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
 
   const overviewRows: ComparisonTableRow[] = projects.map((project) => ({
     key: `${project.queryKey}-overview`,
-    projectName: project.data.projectInfo.name,
+    projectName: renderProjectName(project),
     cells: overviewColumns.reduce<ComparisonTableRow['cells']>(
       (cells, column) => {
         const metric = project.data.overviewMetrics.find(

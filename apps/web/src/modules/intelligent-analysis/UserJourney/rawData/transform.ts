@@ -253,7 +253,7 @@ const buildFixedOverviewMetrics = (
       description:
         '这是最直接的结果指标，比通用成功率更贴近用户是否真的能把 Quick Start 跑起来。',
       stage: 'S6 运行验证',
-      recentValues: '近五次数据',
+      // recentValues: '近五次数据',
       tone: successMetric
         ? getToneByScore(getMetricScore(successMetric))
         : 'neutral',

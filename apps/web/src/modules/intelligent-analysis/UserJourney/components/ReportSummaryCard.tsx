@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Col, Descriptions, Row, Tooltip, Typography } from 'antd';
-import { ArrowRightOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import JourneyPanoramaSection from './JourneyPanoramaSection';
 import {
   JourneyRecommendation,
@@ -19,6 +19,7 @@ type ReportSummaryCardProps = {
   journeySteps: JourneyStep[];
   reportUpdatedAt: string;
   detailReportUrl?: string;
+  projectVersion?: string;
 };
 
 const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
@@ -29,7 +30,22 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
   journeySteps,
   reportUpdatedAt,
   detailReportUrl,
+  projectVersion,
 }) => {
+  const metadataItems =
+    detailReportUrl && projectVersion
+      ? [
+          ...reportMetadata,
+          {
+            key: 'detail-report-link',
+            label: '详细报告',
+            value: projectVersion,
+            tone: 'mono' as const,
+            href: detailReportUrl,
+          },
+        ]
+      : reportMetadata;
+
   return (
     <Card
       bordered={false}
@@ -46,14 +62,25 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
         <div className="rounded-2xl border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-3 shadow-[0_10px_20px_rgba(15,23,42,0.04)]">
           <Descriptions
             size="small"
-            column={{ xs: 1, sm: 2, md: 2, lg: 2, xl: 2, xxl: 2 }}
+            column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 3 }}
             colon
-            labelStyle={{ width: '92px' }}
-            className="[&_.ant-descriptions-item-content]:!whitespace-normal [&_.ant-descriptions-item-content]:!align-top [&_.ant-descriptions-item-content]:!leading-6 [&_.ant-descriptions-item-content]:!text-slate-700 [&_.ant-descriptions-item-label]:!align-top [&_.ant-descriptions-item-label]:!text-xs [&_.ant-descriptions-item-label]:!font-medium [&_.ant-descriptions-item-label]:!leading-6 [&_.ant-descriptions-item-label]:!text-slate-400 [&_.ant-descriptions-item]:!pb-2"
-            items={reportMetadata.map((item) => ({
+            labelStyle={{ width: '80px' }}
+            className="[&_.ant-descriptions-item-content]:!whitespace-normal [&_.ant-descriptions-item-content]:!align-top [&_.ant-descriptions-item-content]:!leading-6 [&_.ant-descriptions-item-content]:!text-slate-700 [&_.ant-descriptions-item-label]:!align-top [&_.ant-descriptions-item-label]:!text-xs [&_.ant-descriptions-item-label]:!font-medium [&_.ant-descriptions-item-label]:!leading-6 [&_.ant-descriptions-item-label]:!text-slate-400 [&_.ant-descriptions-item]:!pb-1"
+            items={metadataItems.map((item) => ({
               key: item.key,
               label: item.label,
-              children: (
+              children: item.href ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`block whitespace-normal break-words text-sm leading-6 text-[#1677ff] hover:underline ${
+                    item.tone === 'mono' ? 'font-mono' : 'font-medium'
+                  }`}
+                >
+                  {item.value}
+                </a>
+              ) : (
                 <Tooltip title={item.value}>
                   <span
                     className={`block whitespace-normal break-words text-sm leading-6 ${
@@ -68,20 +95,6 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
           />
         </div>
       </div>
-
-      {detailReportUrl ? (
-        <div className="mt-4">
-          <a
-            href={detailReportUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-[#1677ff] hover:underline"
-          >
-            查看详细报告
-            <ArrowRightOutlined />
-          </a>
-        </div>
-      ) : null}
 
       <div className="mt-3 border-slate-100 pt-3">
         <div className="mb-2 text-xl font-semibold text-slate-900">

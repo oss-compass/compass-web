@@ -19,6 +19,7 @@ export type ReportMetadataItem = {
   label: string;
   value: string;
   tone?: 'default' | 'mono';
+  href?: string;
 };
 
 export type MetricTrend = {
