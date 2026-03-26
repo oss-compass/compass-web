@@ -1,5 +1,5 @@
 {
-  "report_detail_url": "https://onebox.huawei.com/p/ae4e7aad5b1cd649e988067ea4dac6bc",
+  "report_detail_url": "https://github.com/oss-compass/Cogito/blob/main/developer_experience_agent/src/report/Report-nvidia_cuda-samples-20260325-1920.md",
   "meta": {
     "report_id": "nvidia_cuda_samples_20260325_1917",
     "report_title": "",
@@ -9,7 +9,7 @@
     "persona": {
       "role": "外部开发者",
       "background": "无项目经验",
-      "hardware_access": "标准开发环境",
+      "hardware_access": "Ubuntu 24.03, Nvidia V100",
       "language": "中文"
     }
   },
@@ -40,22 +40,22 @@
     {
       "metric_id": "SDX_E2E_SUCCESS_RATE",
       "metric_name": "端到端成功率",
-      "value": 90,
+      "value": 100,
       "unit": "percentage",
       "benchmark_value": 100,
-      "score": 90,
-      "evidence": "5/6 任务成功",
+      "score": 100,
+      "evidence": "6/6 任务成功",
       "applicable": true
     },
     {
       "metric_id": "SDX_E2E_TOKEN_USAGE",
       "metric_name": "Token 总消耗",
-      "value": "N/A",
+      "value": 773619,
       "unit": "tokens",
       "benchmark_value": 50000,
-      "score": null,
-      "evidence": "未记录 Token 消耗",
-      "applicable": false
+      "score": 0,
+      "evidence": "Token 消耗：773619",
+      "applicable": true
     }
   ],
   "journey_steps": [

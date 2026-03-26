@@ -1,0 +1,724 @@
+{
+  "report_detail_url": "https://github.com/oss-compass/Cogito/blob/main/developer_experience_agent/src/report/Report-cann_ops-math-20260325-2335.md",
+  "meta": {
+    "report_id": "cann_ops_math_20260325_2320",
+    "report_title": "",
+    "generated_at": "2026-03-25 23:20:49",
+    "agent_version": "1.0.0",
+    "purpose": "开源社区入门体验评估",
+    "persona": {
+      "role": "外部开发者",
+      "background": "无项目经验",
+      "hardware_access": "标准开发环境",
+      "language": "中文"
+    }
+  },
+  "project": {
+    "project_id": "",
+    "project_name": "cann/ops-math",
+    "repo_url": "https://gitcode.com/cann/ops-math",
+    "platform": "github",
+    "description": ""
+  },
+  "overall_scores": {
+    "sdx_avg_score": 84.0,
+    "obj_avg_score": 84.0,
+    "composite_score": 84.0,
+    "grade": "B"
+  },
+  "e2e_metrics": [
+    {
+      "metric_id": "SDX_E2E_TOTAL_TIME_SEC",
+      "metric_name": "工具执行总耗时",
+      "value": 142.5,
+      "unit": "seconds",
+      "benchmark_value": 900,
+      "score": 100,
+      "evidence": "共 7 个步骤",
+      "applicable": true
+    },
+    {
+      "metric_id": "SDX_E2E_SUCCESS_RATE",
+      "metric_name": "端到端成功率",
+      "value": 100,
+      "unit": "percentage",
+      "benchmark_value": 100,
+      "score": 100,
+      "evidence": "全部任务成功",
+      "applicable": true
+    },
+    {
+      "metric_id": "SDX_E2E_TOKEN_USAGE",
+      "metric_name": "Token总消耗",
+      "value": 893325,
+      "unit": "tokens",
+      "benchmark_value": 50000,
+      "score": 100,
+      "evidence": "Token消耗: 893325",
+      "applicable": true
+    }
+  ],
+  "journey_steps": [
+    {
+      "step_id": "S0_DISCOVER",
+      "step_name": "搜索与发现",
+      "step_description": "通过搜索引擎/社区导航定位目标仓库地址",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "web_search",
+                "detail": "搜索“cann ops-math quick_start”，返回 10 条结果：\n\n1. 昇腾 CANN 平台的强大功能有哪些？ - 知乎\n   URL: https://www.zhihu.com...",
+                "duration": "68.4s",
+                "timestamp": "68.4s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "web_search",
+                "detail": "搜索“cann ops-math site:huawei.com”，返回 10 条结果：\n\n1. 昇腾 CANN 平台的强大功能有哪些？ - 知乎\n   URL: https://www.zhihu...",
+                "duration": "68.4s",
+                "timestamp": "136.8s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "web_search",
+                "detail": "搜索“昇腾 CANN ops-math 官方文档”，返回 10 条结果：\n\n1. 「昇」和「升」这两个字到底是什么关系？ - 知乎\n   URL: https://www.zhihu.com/que...",
+                "duration": "68.4s",
+                "timestamp": "205.2s",
+                "success": true,
+                "error_message": null
+              }
+            ],
+            "total_duration_seconds": 6.4,
+            "retry_count": 2
+          },
+          "subjective": {
+            "pain_level": "中低",
+            "pain_summary": "直达率低不足",
+            "narrative": "discovery阶段的开发者体验存在严重问题，搜索困难，急需改进。",
+            "metrics": [
+              {
+                "metric_id": "SDX_SEARCH_ROUNDS",
+                "metric_name": "搜索轮次",
+                "value": 3,
+                "unit": "count",
+                "benchmark_value": 1,
+                "score": 50,
+                "evidence": "搜索 '昇腾 CANN ops-math 官方文档'找到官方文档",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_SEARCH_TIME_SEC",
+                "metric_name": "搜索耗时",
+                "value": 181.0,
+                "unit": "seconds",
+                "benchmark_value": 60,
+                "score": 50,
+                "evidence": "181.0s",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_SEARCH_DIRECT_HIT_RATE",
+                "metric_name": "直达率",
+                "value": 0,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 100,
+                "evidence": "首次搜索成功定位目标",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_NAMING_CONFUSION_COUNT",
+                "metric_name": "命名混淆数",
+                "value": 0,
+                "unit": "count",
+                "benchmark_value": 0,
+                "score": 80,
+                "evidence": "命名清晰无歧义",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_PLATFORM_MIGRATION_FRICTION",
+                "metric_name": "平台迁移摩擦",
+                "value": 0,
+                "unit": "0-100 scale",
+                "benchmark_value": 0,
+                "score": 100,
+                "evidence": "单一平台，无迁移摩擦",
+                "applicable": true
+              }
+            ]
+          },
+          "objective": {
+            "metrics": []
+          },
+          "pros": "命名清晰无歧义",
+          "cons": "搜索效率低、定位耗时长、直达率低"
+        }
+      ]
+    },
+    {
+      "step_id": "S1_COMPREHEND",
+      "step_name": "理解与导航",
+      "step_description": "阅读README、QuickStart、项目结构，理解文档体系",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "browser_navigate",
+                "detail": "访问链接 url=https://www.zhihu.com/question/624955377，输出：导航失败: Page.title: Execution context was destroyed, most likely because of a navigation",
+                "duration": "26.8s",
+                "timestamp": "26.8s",
+                "success": false,
+                "error_message": "导航失败: Page.title: Execution context was destroyed, most likely because of a navigation"
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `curl -I -L -s -o /dev/null -w '%{http_code}' 'https://www.zhihu.com/question/624955377'`，输出：403",
+                "duration": "26.8s",
+                "timestamp": "53.5s",
+                "success": true,
+                "error_message": null
+              }
+            ],
+            "total_duration_seconds": 10.6,
+            "retry_count": 0
+          },
+          "subjective": {
+            "pain_level": "低",
+            "pain_summary": "文档自足",
+            "narrative": "分析：\"理解与导航\"环节整体表现良好（95/100），核心优势在于文档自包含度满分，所有引用均来自内部资源，有效降低了信息碎片化风险。外部跳转至zhihu.com的高频操作（文档跳转数85分）可能增加开发者认知成本。",
+            "metrics": [
+              {
+                "metric_id": "SDX_DOC_JUMPS",
+                "metric_name": "文档跳转数",
+                "value": 1,
+                "unit": "count",
+                "benchmark_value": 1,
+                "score": 85,
+                "evidence": "访问域名: www.zhihu.com",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_DOC_DEAD_LINKS",
+                "metric_name": "死链数",
+                "value": 0,
+                "unit": "count",
+                "benchmark_value": 0,
+                "score": 100,
+                "evidence": "未检测到死链",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_DOC_SELF_CONTAINED_RATIO",
+                "metric_name": "文档自包含度",
+                "value": 100,
+                "unit": "percentage",
+                "benchmark_value": 80,
+                "score": 100,
+                "evidence": "内部引用: 1, 外部引用: 0",
+                "applicable": true
+              }
+            ]
+          },
+          "objective": {
+            "metrics": []
+          },
+          "pros": "文档集中、导航清晰、链接有效、文档自包含度高",
+          "cons": "-"
+        }
+      ]
+    },
+    {
+      "step_id": "S2_ENVIRONMENT",
+      "step_name": "环境准备",
+      "step_description": "获取硬件/云环境，安装SDK/工具链，配置环境变量",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "file_read",
+                "detail": "读取文件 path=/tmp/devx_workspace/README.md，内容片段：# ops-math\n\n## 🔥Latest News\n- [2026/01] 新增[QuickStart](docs/QUICKSTART.md)，指导新手零基础入门算子项目部署（支持Docker环...",
+                "duration": "12.0s",
+                "timestamp": "12.0s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "file_read",
+                "detail": "读取文件 path=/tmp/devx_workspace/docs/zh/install/quick_install.md，内容片段：# 环境部署\n\n在学习[QuickStart](../../QUICKSTART.md)或各类[学习教程](../../../README.md#学习教程)操作之前，请您先参考下面步骤完成基础环境搭建...",
+                "duration": "12.0s",
+                "timestamp": "23.9s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `npu-smi info`，输出：+------------------------------------------------------------------------------------------------+\n|...",
+                "duration": "12.0s",
+                "timestamp": "35.9s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `python3 --version && gcc --version | head -n1 && cmake --version | head -n1 && cat /usr/local/Ascend/cann/$(uname -m)-linux/ascend_toolkit_install.info || echo 'CANN_NOT_INSTALLED'`，输出：Python 3.12.13\ngcc (GCC) 10.3.1\ncmake version 3.22.0\npackage_name=Ascend-cann-toolkit\nversion=9.0.0-...",
+                "duration": "12.0s",
+                "timestamp": "47.9s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "file_read",
+                "detail": "读取文件 path=/tmp/devx_workspace/README.md，内容片段：# ops-math\n\n## 🔥Latest News\n- [2026/01] 新增[QuickStart](docs/QUICKSTART.md)，指导新手零基础入门算子项目部署（支持Docker环...",
+                "duration": "25.6s",
+                "timestamp": "25.6s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `bash install_deps.sh && pip install -r requirements.txt && echo \"验证工具链:\" && gcc --version && cmake --version && python --version`，输出：====================================================\nStarting project dependency installation\n======...",
+                "duration": "25.6s",
+                "timestamp": "51.3s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1"
+              },
+              {
+                "action_type": "file_read",
+                "detail": "读取文件 path=/tmp/devx_workspace/docs/zh/install/quick_install.md，内容片段：# 环境部署\n\n在学习[QuickStart](../../QUICKSTART.md)或各类[学习教程](../../../README.md#学习教程)操作之前，请您先参考下面步骤完成基础环境搭建...",
+                "duration": "25.6s",
+                "timestamp": "76.9s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `sudo apt-get update && sudo apt-get install -y python3 python3-pip gcc cmake pigz dos2unix gawk make patch`，输出：sudo: apt-get: command not found",
+                "duration": "25.6s",
+                "timestamp": "102.6s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1"
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `cat /etc/os-release || uname -a`，输出：NAME=\"openEuler\"\nVERSION=\"22.03 (LTS-SP4)\"\nID=\"openEuler\"\nVERSION_ID=\"22.03\"\nPRETTY_NAME=\"openEuler ...",
+                "duration": "25.6s",
+                "timestamp": "128.2s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `sudo dnf update -y && sudo dnf install -y python3 python3-pip gcc cmake pigz dos2unix gawk make patch && pip3 install -r requirements.txt && echo '验证工具链:' && gcc --version && cmake --version && python3 --version`，输出：Last metadata expiration check: 0:03:36 ago on Wed 25 Mar 2026 10:54:08 PM CST.\nDependencies resolve...",
+                "duration": "25.6s",
+                "timestamp": "153.8s",
+                "success": true,
+                "error_message": null
+              }
+            ],
+            "total_duration_seconds": 54.4,
+            "retry_count": 1
+          },
+          "subjective": {
+            "pain_level": "低",
+            "pain_summary": "表现优秀",
+            "narrative": "setup阶段的开发者体验存在严重问题，急需改进。",
+            "metrics": [
+              {
+                "metric_id": "SDX_ENV_INIT_TIME_SEC",
+                "metric_name": "环境初始化耗时",
+                "value": 54.4,
+                "unit": "seconds",
+                "benchmark_value": 120,
+                "score": 100,
+                "evidence": "54.4s",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_STEP_COUNT",
+                "metric_name": "环境配置步数",
+                "value": 6,
+                "unit": "count",
+                "benchmark_value": 2,
+                "score": 60,
+                "evidence": "执行命令: npu-smi info, python3 --version && gcc --ver, bash install_deps.sh && pip in, sudo apt-get update && sudo ap, cat /etc/os-release || uname -",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_PERSISTENCE",
+                "metric_name": "环境持久化",
+                "value": true,
+                "unit": "boolean",
+                "benchmark_value": true,
+                "score": 100,
+                "evidence": "检测到持久化环境: bash install_deps.sh && pip install -r requirement",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_HARDWARE_COST_USD",
+                "metric_name": "硬件成本",
+                "value": 0,
+                "unit": "USD",
+                "benchmark_value": 0,
+                "score": 100,
+                "evidence": "使用云开发环境，无额外硬件成本",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_CLOUD_SESSION_LIMIT_SEC",
+                "metric_name": "云环境时限",
+                "value": "unlimited",
+                "unit": "seconds",
+                "benchmark_value": "unlimited",
+                "score": 100,
+                "evidence": "云环境无时间限制",
+                "applicable": true
+              }
+            ]
+          },
+          "objective": {
+            "metrics": []
+          },
+          "pros": "环境可配置",
+          "cons": "-"
+        }
+      ]
+    },
+    {
+      "step_id": "S3_ACQUIRE",
+      "step_name": "获取代码",
+      "step_description": "Clone仓库，安装依赖，解决权限/网络问题",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "git_clone",
+                "detail": "克隆仓库 repo=https://gitcode.com/cann/ops-math，输出：fatal: destination path '/tmp/devx_workspace' already exists and is not an empty directory.\n",
+                "duration": "6.5s",
+                "timestamp": "6.5s",
+                "success": false,
+                "error_message": "fatal: destination path '/tmp/devx_workspace' already exists and is not an empty directory.\n"
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `rm -rf /tmp/devx_workspace && mkdir -p /tmp/devx_workspace`，输出：（无输出）",
+                "duration": "6.5s",
+                "timestamp": "13.0s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "git_clone",
+                "detail": "克隆仓库 repo=https://gitcode.com/cann/ops-math，输出：Cloned https://gitcode.com/cann/ops-math to /tmp/devx_workspace",
+                "duration": "6.5s",
+                "timestamp": "19.5s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `ls -A /tmp/devx_workspace`，输出：build.sh\nCHANGELOG.md\n.clang-format\nclassify_rule.yaml\ncmake\nCMakeLists.txt\ncommon\nCONTRIBUTING.md\nc...",
+                "duration": "6.5s",
+                "timestamp": "26.0s",
+                "success": true,
+                "error_message": null
+              }
+            ],
+            "total_duration_seconds": 36.5,
+            "retry_count": 0
+          },
+          "subjective": {
+            "pain_level": "中低",
+            "pain_summary": "依赖不透明",
+            "narrative": "获取代码步骤平均得分65/100，痛点等级中低，表明整体表现尚可但需优化。克隆成功率100%是核心优势，确保代码获取可靠。关键问题是依赖透明度仅30分（未检测到依赖声明），可能导致后续开发依赖管理混乱。（68字）",
+            "metrics": [
+              {
+                "metric_id": "SDX_CLONE_SUCCESS_RATE",
+                "metric_name": "克隆成功率",
+                "value": 100,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 100,
+                "evidence": "克隆成功",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_DEPENDENCY_TRANSPARENCY",
+                "metric_name": "依赖透明度",
+                "value": 30,
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": 30,
+                "evidence": "未检测到依赖声明",
+                "applicable": true
+              }
+            ]
+          },
+          "objective": {
+            "metrics": []
+          },
+          "pros": "克隆顺利",
+          "cons": "未检测到依赖声明"
+        }
+      ]
+    },
+    {
+      "step_id": "S4_BUILD",
+      "step_name": "编译构建",
+      "step_description": "执行构建命令，编译算子/模块，处理编译错误",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "file_read",
+                "detail": "读取文件 path=/tmp/devx_workspace/README.md，内容片段：# ops-math\n\n## 🔥Latest News\n- [2026/01] 新增[QuickStart](docs/QUICKSTART.md)，指导新手零基础入门算子项目部署（支持Docker环...",
+                "duration": "9.7s",
+                "timestamp": "9.7s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "file_read",
+                "detail": "读取文件 path=/tmp/devx_workspace/docs/QUICKSTART.md，内容片段：# 快速入门：基于ops-math仓\n\n## 使用须知\n\n本指南旨在帮助您快速上手CANN和`ops-math`算子仓的使用。为方便快速了解算子开发全流程，将以**AddExample**算子为实践对...",
+                "duration": "9.7s",
+                "timestamp": "19.4s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `bash build.sh --pkg --soc=ascend910_93 --ops=add_example -j16`，输出：[2026-03-25 23:13:43] [INFO] check ascend950 group compile config\n[2026-03-25 23:13:44] [PASS] check...",
+                "duration": "9.7s",
+                "timestamp": "29.0s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `./build_out/cann-ops-math-*linux*.run`，输出：Verifying archive integrity... All good.\nUncompressing version:1.0\n[ops_custom] [2026-03-25 23:18:36...",
+                "duration": "9.7s",
+                "timestamp": "38.7s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `export LD_LIBRARY_PATH=/usr/local/Ascend/cann-9.0.0-beta.1/opp/vendors/custom_math/op_api/lib/:$LD_LIBRARY_PATH && bash build.sh --run_example add_example eager cust --vendor_name=custom`，输出：[2026-03-25 23:19:54] [INFO] check ascend950 group compile config\n[2026-03-25 23:19:55] [PASS] check...",
+                "duration": "9.7s",
+                "timestamp": "48.4s",
+                "success": true,
+                "error_message": null
+              }
+            ],
+            "total_duration_seconds": 34.6,
+            "retry_count": 0
+          },
+          "subjective": {
+            "pain_level": "低",
+            "pain_summary": "编译快速",
+            "narrative": "编译快速。",
+            "metrics": [
+              {
+                "metric_id": "SDX_BUILD_TIME_SEC",
+                "metric_name": "编译耗时",
+                "value": 48.4,
+                "unit": "seconds",
+                "benchmark_value": 60,
+                "score": 100,
+                "evidence": "quickstart_doc: 48.4s",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_BUILD_PARAM_COUNT",
+                "metric_name": "构建参数数",
+                "value": 6,
+                "unit": "count",
+                "benchmark_value": 5,
+                "score": 75,
+                "evidence": "参数: --pkg, --soc=ascend910_93, --ops=add_example, --run_example, --vendor_name=custom",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_BUILD_ERROR_DIAGNOSABILITY",
+                "metric_name": "报错可诊断性",
+                "value": 100,
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": 100,
+                "evidence": "无编译错误",
+                "applicable": true
+              }
+            ]
+          },
+          "objective": {
+            "metrics": []
+          },
+          "pros": "编译效率高、错误信息清晰可诊断",
+          "cons": "-"
+        }
+      ]
+    },
+    {
+      "step_id": "S5_DEPLOY",
+      "step_name": "部署安装",
+      "step_description": "将构建产物安装到目标环境，完成注册",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "",
+          "actual_path": {
+            "actions": [],
+            "total_duration_seconds": 0,
+            "retry_count": 0
+          },
+          "subjective": {
+            "pain_level": "高",
+            "pain_summary": "需改进",
+            "narrative": "部署安装步骤的平均分为0/100，痛点等级高，表明开发者体验极差。关键问题在于部署验证可用和部署幂等性均未涉及，导致该步骤缺乏可靠性和可重复性评估。这反映出严重缺陷，亟需改进。（48字）",
+            "metrics": [
+              {
+                "metric_id": "SDX_DEPLOY_VERIFY_AVAILABLE",
+                "metric_name": "部署验证可用",
+                "value": "N/A",
+                "unit": "boolean",
+                "benchmark_value": true,
+                "score": null,
+                "evidence": "不涉及",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_DEPLOY_IDEMPOTENT",
+                "metric_name": "部署幂等性",
+                "value": "N/A",
+                "unit": "boolean",
+                "benchmark_value": true,
+                "score": null,
+                "evidence": "不涉及",
+                "applicable": false
+              }
+            ]
+          },
+          "objective": {
+            "metrics": []
+          },
+          "pros": "可部署",
+          "cons": "部署操作不幂等"
+        }
+      ]
+    },
+    {
+      "step_id": "S6_VERIFY",
+      "step_name": "运行验证",
+      "step_description": "运行示例/测试，确认功能正确，端到端成功",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "",
+          "actual_path": {
+            "actions": [],
+            "total_duration_seconds": 0,
+            "retry_count": 0
+          },
+          "subjective": {
+            "pain_level": "高",
+            "pain_summary": "输出难读",
+            "narrative": "运行验证步骤的平均得分仅为0.0/100，且痛点等级高，表明该步骤的开发者体验极差。关键问题是输出可读性和运行模式组合指标均被标记为“不涉及”，暗示这些功能缺失或未启用，导致用户无法有效验证运行结果。这严重阻碍了开发流程的效率。（字数：78）",
+            "metrics": [
+              {
+                "metric_id": "SDX_RUN_OUTPUT_READABILITY",
+                "metric_name": "输出可读性",
+                "value": "N/A",
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": null,
+                "evidence": "不涉及",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_RUN_MODE_COMBINATIONS",
+                "metric_name": "运行模式组合",
+                "value": "N/A",
+                "unit": "count",
+                "benchmark_value": 1,
+                "score": null,
+                "evidence": "不涉及",
+                "applicable": false
+              }
+            ]
+          },
+          "objective": {
+            "metrics": []
+          },
+          "pros": "可验证",
+          "cons": "未检测到运行任务、运行模式单一"
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "中",
+      "category": "",
+      "title": "优化搜索可发现性",
+      "description": "【搜索与发现】在cann/ops-math的GitHub仓库中，优化README和项目描述，添加关键词如\"数学操作\"和\"cann库\"，并设置相关主题标签（如math, operations），以提高搜索引擎可见性。（当前评分：50分）",
+      "expected_improvement": "",
+      "related_metric_ids": [
+        "SDX_SEARCH_ROUNDS"
+      ],
+      "affected_metrics": []
+    },
+    {
+      "priority": "中",
+      "category": "",
+      "title": "减少搜索定位时间",
+      "description": "【搜索与发现】在cann/ops-math的GitHub仓库中，更新项目描述为“数学运维工具集”，添加标签如“math”、“devops”和“operations”，并在README顶部添加清晰的文档入口链接，以加速搜索定位。（当前评分：50分）",
+      "expected_improvement": "",
+      "related_metric_ids": [
+        "SDX_SEARCH_TIME_SEC"
+      ],
+      "affected_metrics": []
+    },
+    {
+      "priority": "低",
+      "category": "",
+      "title": "减少环境配置步骤",
+      "description": "【环境准备】为cann/ops-math项目开发一个Bash自动化安装脚本，自动执行依赖安装（如使用apt或pip）和环境配置步骤，将现有手动操作整合为单一命令运行。  \n这样可将SDX_ENV_STEP_COUNT指标降低，提升入门效率，建议在项目根目录添加install.sh文件实现。  \n\n（字数：58）（当前评分：60分）",
+      "expected_improvement": "",
+      "related_metric_ids": [
+        "SDX_ENV_STEP_COUNT"
+      ],
+      "affected_metrics": []
+    },
+    {
+      "priority": "高",
+      "category": "",
+      "title": "明确依赖版本要求",
+      "description": "【获取代码】在项目README.md文件中清晰列出所有外部依赖项及其版本要求（如NumPy、Pandas等），并添加一个Python脚本（例如`check_deps.py`）来自动验证这些依赖是否满足指定版本。（当前评分：30分）",
+      "expected_improvement": "",
+      "related_metric_ids": [
+        "SDX_DEPENDENCY_TRANSPARENCY"
+      ],
+      "affected_metrics": []
+    }
+  ],
+  "divergence_alerts": [],
+  "key_insight": "整体开发者体验中等（84/100），优势在于环境准备优秀和编译构建快速；最关键问题是搜索发现直达率低和获取代码依赖不透明。建议优先优化搜索与发现和代码获取步骤以提升效率。"
+}

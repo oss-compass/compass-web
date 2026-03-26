@@ -1,61 +1,61 @@
 {
-  "report_detail_url": "https://onebox.huawei.com/p/562be37d614b5d2f00e134a75165e3a0",
+  "report_detail_url": "https://github.com/oss-compass/Cogito/blob/main/developer_experience_agent/src/report/Report-cann_ops-math-20260325-2335.md",
   "meta": {
-    "report_id": "cann_cann_samples_20260325_1929",
-    "report_title": "",
-    "generated_at": "2026-03-25 19:29:16",
+    "report_id": "cann_ops_math_20260325_2320",
+    "report_title": "OSS-Compass 开源社区开发者体验诊断报告",
+    "generated_at": "2026-03-25 23:20:49",
     "agent_version": "1.0.0",
     "purpose": "开源社区入门体验评估",
     "persona": {
       "role": "外部开发者",
       "background": "无项目经验",
-      "hardware_access": "标准开发环境",
+      "hardware_access": "openEuler 22.03, Ascend 910C",
       "language": "中文"
     }
   },
   "project": {
-    "project_id": "",
-    "project_name": "cann/cann-samples",
-    "repo_url": "https://gitcode.com/cann/cann-samples",
-    "platform": "github",
-    "description": ""
+    "project_id": "ops-math",
+    "project_name": "cann/ops-math",
+    "repo_url": "https://gitcode.com/cann/ops-math",
+    "platform": "gitcode",
+    "description": "CANN 生态中的数学算子项目"
   },
   "overall_scores": {
-    "sdx_avg_score": 45.8,
-    "obj_avg_score": 0,
-    "composite_score": 45.8,
-    "grade": "D"
+    "sdx_avg_score": 80.0,
+    "obj_avg_score": 80.0,
+    "composite_score": 80.0,
+    "grade": "B"
   },
   "e2e_metrics": [
     {
       "metric_id": "SDX_E2E_TOTAL_TIME_SEC",
       "metric_name": "工具执行总耗时",
-      "value": 5432.2,
+      "value": 142.5,
       "unit": "seconds",
       "benchmark_value": 900,
-      "score": 25,
-      "evidence": "S0到S6总耗时（7步骤）",
-      "applicable": false
+      "score": 100,
+      "evidence": "共 7 个步骤",
+      "applicable": true
     },
     {
       "metric_id": "SDX_E2E_SUCCESS_RATE",
       "metric_name": "端到端成功率",
-      "value": 42,
+      "value": 100,
       "unit": "percentage",
       "benchmark_value": 100,
-      "score": 42,
-      "evidence": "3/7 步骤成功",
-      "applicable": false
+      "score": 100,
+      "evidence": "全部任务成功",
+      "applicable": true
     },
     {
       "metric_id": "SDX_E2E_TOKEN_USAGE",
       "metric_name": "Token总消耗",
-      "value": "456821",
+      "value": 893325,
       "unit": "tokens",
       "benchmark_value": 50000,
-      "score": null,
-      "evidence": "Token总消耗 456821",
-      "applicable": false
+      "score": 100,
+      "evidence": "Token消耗: 893325",
+      "applicable": true
     }
   ],
   "journey_steps": [
@@ -71,111 +71,55 @@
             "actions": [
               {
                 "action_type": "web_search",
-                "detail": "搜索“cann-samples documentation quickstart”，搜索结果未命中",
-                "duration": "15.3s",
-                "timestamp": "15.3s",
+                "detail": "搜索 'cann ops-math quick_start' 找到 10 条结果：...",
+                "duration": "2.4s",
+                "timestamp": "2.4s",
                 "success": false,
                 "error_message": null
               },
               {
                 "action_type": "web_search",
-                "detail": "搜索“huawei cann samples documentation”",
-                "duration": "12.3s",
-                "timestamp": "12.3s",
-                "success": true,
-                "error_message": null
-              },
-              {
-                "action_type": "browser_navigate",
-                "detail": "访问链接 https://developer.huawei.com/cn/，页面访问成功",
-                "duration": "5.3s",
-                "timestamp": "5.3s",
-                "success": true,
-                "error_message": null
-              },
-              {
-                "action_type": "browser_content",
-                "detail": "查看页面内容：华为开发者官方网站_创新从这里开始，URL: https://developer.huawei.com/cn/",
-                "duration": "8.1s",
-                "timestamp": "8.1s",
-                "success": true,
-                "error_message": null
-              },
-              {
-                "action_type": "browser_navigate",
-                "detail": "访问链接 https://developer.huawei.com/cn/search?q=cann-samples+quickstart，页面访问成功",
-                "duration": "5.7s",
-                "timestamp": "5.7s",
-                "success": true,
-                "error_message": null
-              },
-              {
-                "action_type": "browser_content",
-                "detail": "查看页面内容：华为开发者官方网站_创新从这里开始，URL: https://develope...",
-                "duration": "5.9s",
-                "timestamp": "5.9s",
-                "success": true,
-                "error_message": null
-              },
-              {
-                "action_type": "browser_navigate",
-                "detail": "访问链接 https://developer.huawei.com/cn/ascend，页面访问成功",
-                "duration": "6.0s",
-                "timestamp": "6.0s",
-                "success": true,
+                "detail": "搜索 'cann ops-math site:huawei.com' 找到...",
+                "duration": "2.2s",
+                "timestamp": "4.6s",
+                "success": false,
                 "error_message": null
               },
               {
                 "action_type": "web_search",
-                "detail": "搜索“cann-samples repository site:gitee.com”",
-                "duration": "9.0s",
-                "timestamp": "9.0s",
+                "detail": "搜索 '昇腾 CANN ops-math 官方文档' 找到 10 条结果：  1. 「昇」...",
+                "duration": "1.8s",
+                "timestamp": "6.4s",
                 "success": true,
-                "error_message": null
-              },
-              {
-                "action_type": "browser_navigate",
-                "detail": "访问链接 https://gitee.com/ascend/cann-samples 失败",
-                "duration": "9.0s",
-                "timestamp": "9.0s",
-                "success": false,
-                "error_message": "失败访问: https://gitee.com/ascend/cann-samples"
-              },
-              {
-                "action_type": "web_search",
-                "detail": "搜索超过 10 次仍未找到目标，改用预先准备的地址 https://gitcode.com/ascend/cann-samples",
-                "duration": "5.3s",
-                "timestamp": "5.3s",
-                "success": false,
                 "error_message": null
               }
             ],
-            "total_duration_seconds": 81.1,
-            "retry_count": 0
+            "total_duration_seconds": 6.4,
+            "retry_count": 2
           },
           "subjective": {
-            "pain_level": "高",
-            "pain_summary": "开发者体验存在严重问题，搜索多轮没有找到目标仓库,急需改进",
-            "narrative": "discovery阶段的开发者体验存在严重问题，搜索多轮没有找到目标仓库,急需改进。",
+            "pain_level": "中低",
+            "pain_summary": " ❌ 直达率低",
+            "narrative": "discovery阶段的开发者体验存在严重问题，搜索困难，急需改进。",
             "metrics": [
               {
                 "metric_id": "SDX_SEARCH_ROUNDS",
                 "metric_name": "搜索轮次",
-                "value": 10,
+                "value": 3,
                 "unit": "count",
                 "benchmark_value": 1,
-                "score": 0,
-                "evidence": "搜索超过10次，搜索失败",
+                "score": 50,
+                "evidence": "搜索 '昇腾 CANN ops-math 官方文档'找到官方文档",
                 "applicable": true
               },
               {
                 "metric_id": "SDX_SEARCH_TIME_SEC",
                 "metric_name": "搜索耗时",
-                "value": 81.1,
+                "value": 181.0,
                 "unit": "seconds",
                 "benchmark_value": 60,
-                "score": 20,
-                "evidence": "discovery_search: 81.1s",
+                "score": 50,
+                "evidence": "181.0s",
                 "applicable": true
               },
               {
@@ -185,7 +129,7 @@
                 "unit": "percentage",
                 "benchmark_value": 100,
                 "score": 0,
-                "evidence": "首次搜索失败: None",
+                "evidence": "首次搜索成功定位目标",
                 "applicable": true
               },
               {
@@ -193,8 +137,8 @@
                 "metric_name": "命名混淆数",
                 "value": 0,
                 "unit": "count",
-                "benchmark_value": null,
-                "score": 100,
+                "benchmark_value": 0,
+                "score": 80,
                 "evidence": "命名清晰无歧义",
                 "applicable": true
               },
@@ -203,7 +147,7 @@
                 "metric_name": "平台迁移摩擦",
                 "value": 0,
                 "unit": "0-100 scale",
-                "benchmark_value": null,
+                "benchmark_value": 0,
                 "score": 100,
                 "evidence": "单一平台，无迁移摩擦",
                 "applicable": true
@@ -213,8 +157,8 @@
           "objective": {
             "metrics": []
           },
-          "pros": "命名清晰无歧义、单一平台无迁移摩擦",
-          "cons": "搜索多轮未直达目标仓库、搜索耗时偏长、直达率为0"
+          "pros": "命名清晰无歧义",
+          "cons": "搜索效率低、定位耗时长、直达率低"
         }
       ]
     },
@@ -229,29 +173,29 @@
           "actual_path": {
             "actions": [
               {
-                "action_type": "doc_read",
-                "detail": "阅读文档 README.md",
-                "duration": "1.0s",
-                "timestamp": "1.0s",
-                "success": true,
-                "error_message": null
+                "action_type": "browser_navigate",
+                "detail": "导航失败: Page.title: Execution co...",
+                "duration": "3.8s",
+                "timestamp": "3.8s",
+                "success": false,
+                "error_message": "导航失败: Page.title: Execution context was destroy..."
               },
               {
-                "action_type": "llm_analysis",
-                "detail": "分析文档，提炼出：1. 安装社区 CANN toolkit 包；2. 初始化构建配置：`cmake -S . -B build`；3. 执行编译安装：`cmake --build build --parallel`",
-                "duration": "123.1s",
-                "timestamp": "123.1s",
+                "action_type": "shell_exec",
+                "detail": "执行命令 `curl -I -L -s -o /dev/null -w '%{http_code}' 'https://www.zhihu.com/question...'`",
+                "duration": "6.8s",
+                "timestamp": "10.6s",
                 "success": true,
                 "error_message": null
               }
             ],
-            "total_duration_seconds": 123.1,
+            "total_duration_seconds": 10.6,
             "retry_count": 0
           },
           "subjective": {
             "pain_level": "低",
             "pain_summary": "文档自足",
-            "narrative": "快速阅读README.md，文档很清晰，整个过程顺利无重试，体验流畅。",
+            "narrative": "分析：\"理解与导航\"环节整体表现良好（95/100），核心优势在于文档自包含度满分，所有引用均来自内部资源，有效降低了信息碎片化风险。外部跳转至zhihu.com的高频操作（文档跳转数85分）可能增加开发者认知成本。",
             "metrics": [
               {
                 "metric_id": "SDX_DOC_JUMPS",
@@ -259,8 +203,8 @@
                 "value": 1,
                 "unit": "count",
                 "benchmark_value": 1,
-                "score": 100,
-                "evidence": "",
+                "score": 85,
+                "evidence": "访问域名: www.zhihu.com",
                 "applicable": true
               },
               {
@@ -268,7 +212,7 @@
                 "metric_name": "死链数",
                 "value": 0,
                 "unit": "count",
-                "benchmark_value": null,
+                "benchmark_value": 0,
                 "score": 100,
                 "evidence": "未检测到死链",
                 "applicable": true
@@ -276,11 +220,11 @@
               {
                 "metric_id": "SDX_DOC_SELF_CONTAINED_RATIO",
                 "metric_name": "文档自包含度",
-                "value": 0,
+                "value": 100,
                 "unit": "percentage",
-                "benchmark_value": 60,
-                "score": 60,
-                "evidence": "文档自包含度60%",
+                "benchmark_value": 80,
+                "score": 100,
+                "evidence": "内部引用: 1, 外部引用: 0",
                 "applicable": true
               }
             ]
@@ -288,7 +232,7 @@
           "objective": {
             "metrics": []
           },
-          "pros": "文档自足、过程顺利、体验流畅",
+          "pros": "文档集中、导航清晰、链接有效、文档自包含度高",
           "cons": "-"
         }
       ]
@@ -305,79 +249,103 @@
             "actions": [
               {
                 "action_type": "file_read",
-                "detail": "读取文件 path=/tmp/devx_workspace/README.md，内容片段：# cann-samples\n\n## 🔥Latest News\n- [2026/03] ops-samples更名为cann-samples。\n- [2026/02] ops-samples项目上线，...",
-                "duration": "31.2s",
-                "timestamp": "31.2s",
-                "success": true,
-                "error_message": null
-              },
-              {
-                "action_type": "shell_exec",
-                "detail": "执行命令 `ls -la /tmp/devx_workspace | grep -E 'requirements|prerequisites|INSTALL|SETUP'`，输出：-rw-r--r--  1 root root         27 Mar 25 17:29 requirements.txt",
-                "duration": "31.2s",
-                "timestamp": "62.4s",
+                "detail": "读取： /tmp/devx_workspace/README.md",
+                "duration": "5.0s",
+                "timestamp": "5.0s",
                 "success": true,
                 "error_message": null
               },
               {
                 "action_type": "file_read",
-                "detail": "读取文件 path=/tmp/devx_workspace/requirements.txt，内容片段：en_dtypes==0.0.4\nml_dtypes\n",
-                "duration": "31.2s",
-                "timestamp": "93.6s",
+                "detail": "读取： /tmp/devx_workspace/docs/zh/install/quick_install.md",
+                "duration": "6.0s",
+                "timestamp": "11.0s",
                 "success": true,
                 "error_message": null
               },
               {
                 "action_type": "shell_exec",
-                "detail": "执行命令 `find . -type f -iname '*install*' -o -iname '*setup*' -o -iname '*env*' -not -path './build*'`，输出：（无输出）",
-                "duration": "31.2s",
-                "timestamp": "124.7s",
+                "detail": "执行命令：`npu-smi info`",
+                "duration": "3.0s",
+                "timestamp": "14.0s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令：`python3 --version && gcc --version`",
+                "duration": "3.0s",
+                "timestamp": "17.0s",
                 "success": true,
                 "error_message": null
               },
               {
                 "action_type": "file_read",
-                "detail": "读取文件 path=/tmp/devx_workspace/README.md，内容片段：# cann-samples\n\n## 🔥Latest News\n- [2026/03] ops-samples更名为cann-samples。\n- [2026/02] ops-samples项目上线，...",
-                "duration": "12.1s",
-                "timestamp": "12.1s",
+                "detail": "读取： /tmp/devx_workspace/README.md",
+                "duration": "5.0s",
+                "timestamp": "22.0s",
                 "success": true,
                 "error_message": null
               },
               {
                 "action_type": "shell_exec",
-                "detail": "执行命令 `uname -m`，输出：aarch64",
-                "duration": "12.1s",
-                "timestamp": "24.1s",
+                "detail": "执行命令：`bash install_deps.sh && pip install -r requirements.txt`",
+                "duration": "3.0s",
+                "timestamp": "25.0s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1"
+              },
+              {
+                "action_type": "file_read",
+                "detail": "读取： /tmp/devx_workspace/docs/zh/install/quick_install.md",
+                "duration": "6.6s",
+                "timestamp": "31.6s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令：`cat /etc/os-release || uname -a`",
+                "duration": "5.6s",
+                "timestamp": "37.2s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令：`sudo dnf update -y && sudo dnf install -y python3 python3-pip gcc cmake pigz...`",
+                "duration": "6.6s",
+                "timestamp": "43.8s",
                 "success": true,
                 "error_message": null
               }
             ],
-            "total_duration_seconds": 197.1,
-            "retry_count": 0
+            "total_duration_seconds": 54.4,
+            "retry_count": 1
           },
           "subjective": {
-            "pain_level": "中低",
-            "pain_summary": "需优化",
-            "narrative": "setup阶段的开发者体验较差，多个环节存在问题。",
+            "pain_level": "低",
+            "pain_summary": "表现优秀",
+            "narrative": "setup阶段的开发者体验存在严重问题，急需改进。",
             "metrics": [
               {
                 "metric_id": "SDX_ENV_INIT_TIME_SEC",
                 "metric_name": "环境初始化耗时",
-                "value": 197.1,
+                "value": 54.4,
                 "unit": "seconds",
                 "benchmark_value": 120,
-                "score": 60,
-                "evidence": "setup_prereq: 124.7s; setup_deps: 72.4s",
+                "score": 100,
+                "evidence": "54.4s",
                 "applicable": true
               },
               {
                 "metric_id": "SDX_ENV_STEP_COUNT",
                 "metric_name": "环境配置步数",
-                "value": 3,
+                "value": 6,
                 "unit": "count",
                 "benchmark_value": 2,
                 "score": 60,
-                "evidence": "执行命令: ls -la /tmp/devx_workspace | g, find . -type f -iname '*instal, uname -m",
+                "evidence": "执行命令: npu-smi info, python3 --version && gcc --ver, bash install_deps.sh && pip in, sudo apt-get update && sudo ap, cat /etc/os-release || uname -",
                 "applicable": true
               },
               {
@@ -387,7 +355,7 @@
                 "unit": "boolean",
                 "benchmark_value": true,
                 "score": 100,
-                "evidence": "本地环境默认可跨会话保留",
+                "evidence": "检测到持久化环境: bash install_deps.sh && pip install -r requirement",
                 "applicable": true
               },
               {
@@ -395,9 +363,9 @@
                 "metric_name": "硬件成本",
                 "value": 0,
                 "unit": "USD",
-                "benchmark_value": null,
+                "benchmark_value": 0,
                 "score": 100,
-                "evidence": "本地 GPU 环境已就绪，无额外硬件成本",
+                "evidence": "使用云开发环境，无额外硬件成本",
                 "applicable": true
               },
               {
@@ -415,7 +383,7 @@
           "objective": {
             "metrics": []
           },
-          "pros": "配置步骤精简",
+          "pros": "环境可配置",
           "cons": "-"
         }
       ]
@@ -432,36 +400,28 @@
             "actions": [
               {
                 "action_type": "git_clone",
-                "detail": "克隆仓库 repo=https://gitcode.com/cann/cann-samples.git，输出：fatal: destination path '/tmp/devx_workspace' already exists and is not an empty directory.\n",
-                "duration": "21.0s",
-                "timestamp": "21.0s",
-                "success": false,
-                "error_message": "fatal: destination path '/tmp/devx_workspace' already exists and is not an empty directory.\n"
-              },
-              {
-                "action_type": "shell_exec",
-                "detail": "执行命令 `ls -la /tmp/devx_workspace`，输出：total 2289840\ndrwxr-xr-x 10 root root        500 Mar 25 18:50 .\ndrwxrwxrwt 55 root root       1720 M...",
-                "duration": "21.0s",
-                "timestamp": "42.0s",
+                "detail": "Git克隆：https://gitcode.com/cann/ops-math → Cloned https://gitcode.com/cann/ops-...",
+                "duration": "30.0s",
+                "timestamp": "30.0s",
                 "success": true,
                 "error_message": null
               },
               {
                 "action_type": "shell_exec",
-                "detail": "执行命令 `git remote -v`，输出：origin\thttps://gitcode.com/cann/cann-samples.git (fetch)\norigin\thttps://gitcode.com/cann/cann-sample...",
-                "duration": "21.0s",
-                "timestamp": "63.0s",
+                "detail": "执行命令：`ls -A /tmp/devx_workspace` → build.sh CHANGELOG.md .clang-format classify_ru...",
+                "duration": "6.5s",
+                "timestamp": "36.5s",
                 "success": true,
                 "error_message": null
               }
             ],
-            "total_duration_seconds": 63.0,
+            "total_duration_seconds": 36.5,
             "retry_count": 0
           },
           "subjective": {
             "pain_level": "中低",
             "pain_summary": "依赖不透明",
-            "narrative": "该步骤的整体表现中等，平均分65/0/100，痛点级别中低。关键优势在于克隆成功率极高（100分），确保代码获取始终成功。然而，依赖透明度严重不足（30分），未检测到依赖声明，可能引发后续兼容性问题。",
+            "narrative": "获取代码步骤平均得分65/100，痛点等级中低，表明整体表现尚可但需优化。克隆成功率100%是核心优势，确保代码获取可靠。关键问题是依赖透明度仅30分（未检测到依赖声明），可能导致后续开发依赖管理混乱。（68字）",
             "metrics": [
               {
                 "metric_id": "SDX_CLONE_SUCCESS_RATE",
@@ -505,81 +465,81 @@
             "actions": [
               {
                 "action_type": "file_read",
-                "detail": "读取文件 path=/tmp/devx_workspace/README.md，内容片段：# cann-samples\n\n## 🔥Latest News\n- [2026/03] ops-samples更名为cann-samples。\n- [2026/02] ops-samples项目上线，...",
-                "duration": "16.7s",
-                "timestamp": "16.7s",
+                "detail": "读取：/tmp/devx_workspace/README.md",
+                "duration": "2.8s",
+                "timestamp": "2.8s",
+                "success": true,
+                "error_message": null
+              },
+              {
+                "action_type": "file_read",
+                "detail": "读取：/tmp/devx_workspace/docs/QUICKSTART.md",
+                "duration": "2.7s",
+                "timestamp": "5.5s",
                 "success": true,
                 "error_message": null
               },
               {
                 "action_type": "shell_exec",
-                "detail": "执行命令 `cmake -S . -B build`，输出：-- Using Ascend toolkit path: /usr/local/Ascend/cann-9.0.0-beta.1\n-- Bisheng compiler path: /usr/loc...",
-                "duration": "16.7s",
-                "timestamp": "33.5s",
+                "detail": "执行命令：`bash build.sh --pkg --soc=ascend910_93 --ops=add_example -j16`",
+                "duration": "9.7s",
+                "timestamp": "15.2s",
                 "success": true,
                 "error_message": null
               },
               {
                 "action_type": "shell_exec",
-                "detail": "执行命令 `cmake --build build --parallel`，输出：[  1%] Building CXX object Samples/1_Features/hardware_features/simt/CMakeFiles/simt.dir/main.cpp.o\n...",
-                "duration": "16.7s",
-                "timestamp": "50.2s",
-                "success": false,
-                "error_message": "命令执行失败，退出码: 2"
+                "detail": "执行命令：`./build_out/cann-ops-math-*linux*.run`",
+                "duration": "9.8s",
+                "timestamp": "25.0s",
+                "success": true,
+                "error_message": null
               },
               {
                 "action_type": "shell_exec",
-                "detail": "执行命令 `cmake --build build --parallel 2`，输出：[  3%] Building CXX object Samples/0_Introduction/matmul/CMakeFiles/matmul.dir/main.cpp.o\n[  3%] Bui...",
-                "duration": "16.7s",
-                "timestamp": "67.0s",
-                "success": false,
-                "error_message": "命令执行失败，退出码: 2"
-              },
-              {
-                "action_type": "shell_exec",
-                "detail": "执行命令 `wget 'https://ascend.devcloud.huaweicloud.com/artifactory/cann-run-mirror/software/master/Ascend-cann-toolkit_latest_linux-aarch64.run' -O Ascend-cann-toolkit_latest_linux-aarch64.run && chmod +x Ascend-cann-toolkit_latest_linux-aarch64.run && ./Ascend-cann-toolkit_latest_linux-aarch64.run --install --force --install-path=/usr/local/Ascend`，输出：--2026-03-25 19:27:51--  https://ascend.devcloud.huaweicloud.com/artifactory/cann-run-mirror/softwar...",
-                "duration": "16.7s",
-                "timestamp": "83.7s",
-                "success": false,
-                "error_message": "命令执行失败，退出码: 8"
+                "detail": "执行命令：`export LD_LIBRARY_PATH=/usr/local/Ascend/cann-9.0.0-beta.1/opp/vendors/custo...`",
+                "duration": "9.6s",
+                "timestamp": "34.6s",
+                "success": true,
+                "error_message": null
               }
             ],
-            "total_duration_seconds": 83.7,
+            "total_duration_seconds": 34.6,
             "retry_count": 0
           },
           "subjective": {
-            "pain_level": "中",
-            "pain_summary": "报错模糊不足",
-            "narrative": "quickstart阶段的开发者体验存在严重问题，急需改进。",
+            "pain_level": "低",
+            "pain_summary": "编译快速",
+            "narrative": "编译快速。",
             "metrics": [
               {
                 "metric_id": "SDX_BUILD_TIME_SEC",
                 "metric_name": "编译耗时",
-                "value": 83.7,
+                "value": 48.4,
                 "unit": "seconds",
                 "benchmark_value": 60,
-                "score": 75,
-                "evidence": "quickstart_doc: 83.7s",
+                "score": 100,
+                "evidence": "quickstart_doc: 48.4s",
                 "applicable": true
               },
               {
                 "metric_id": "SDX_BUILD_PARAM_COUNT",
                 "metric_name": "构建参数数",
-                "value": 10,
+                "value": 6,
                 "unit": "count",
                 "benchmark_value": 5,
-                "score": 50,
-                "evidence": "参数: -S, -B, --build, --parallel, --build",
+                "score": 75,
+                "evidence": "参数: --pkg, --soc=ascend910_93, --ops=add_example, --run_example, --vendor_name=custom",
                 "applicable": true
               },
               {
                 "metric_id": "SDX_BUILD_ERROR_DIAGNOSABILITY",
                 "metric_name": "报错可诊断性",
-                "value": 0,
+                "value": 100,
                 "unit": "0-100 scale",
                 "benchmark_value": 80,
-                "score": 0,
-                "evidence": "模糊错误: ...",
+                "score": 100,
+                "evidence": "无编译错误",
                 "applicable": true
               }
             ]
@@ -587,8 +547,8 @@
           "objective": {
             "metrics": []
           },
-          "pros": "可编译",
-          "cons": "构建参数复杂、错误信息难以诊断"
+          "pros": "编译效率高、错误信息清晰可诊断",
+          "cons": "-"
         }
       ]
     },
@@ -608,7 +568,7 @@
           "subjective": {
             "pain_level": "高",
             "pain_summary": "需改进",
-            "narrative": "部署安装步骤的平均得分仅为0/100，痛点等级高，表明该过程存在严重缺陷。关键问题在于部署验证和幂等性均未涉及，意味着这些功能未被评估或实现，导致整体体验不佳。这突出了立即改进部署可靠性和测试覆盖的紧迫性。",
+            "narrative": "部署安装步骤的平均分为0/100，痛点等级高，表明开发者体验极差。关键问题在于部署验证可用和部署幂等性均未涉及，导致该步骤缺乏可靠性和可重复性评估。这反映出严重缺陷，亟需改进。（48字）",
             "metrics": [
               {
                 "metric_id": "SDX_DEPLOY_VERIFY_AVAILABLE",
@@ -656,7 +616,7 @@
           "subjective": {
             "pain_level": "高",
             "pain_summary": "输出难读",
-            "narrative": "The Run Verification step exhibits a critical state with an average score of 0.0/100 and a high pain level, indicating severe developer dissatisfaction. Key issues are not captured by the provided met",
+            "narrative": "运行验证步骤的平均得分仅为0.0/100，且痛点等级高，表明该步骤的开发者体验极差。关键问题是输出可读性和运行模式组合指标均被标记为“不涉及”，暗示这些功能缺失或未启用，导致用户无法有效验证运行结果。这严重阻碍了开发流程的效率。（字数：78）",
             "metrics": [
               {
                 "metric_id": "SDX_RUN_OUTPUT_READABILITY",
@@ -693,13 +653,43 @@
     {
       "priority": "高",
       "category": "",
+      "title": "优化搜索可发现性",
+      "description": "【搜索与发现】在cann/ops-math的GitHub仓库中，优化README和项目描述，添加关键词如\"数学操作\"和\"cann库\"，并设置相关主题标签（如math, operations），以提高搜索引擎可见性。（当前评分：50分）",
+      "expected_improvement": "~15%，实施成本：中",
+      "related_metric_ids": [
+        "SDX_SEARCH_ROUNDS"
+      ],
+      "affected_metrics": [
+        "SDX_SEARCH_ROUNDS"
+      ]
+    },
+    {
+      "priority": "低",
+      "category": "",
+      "title": "减少环境配置步骤",
+      "description": "【环境准备】为cann/ops-math项目开发一个Bash自动化安装脚本，自动执行依赖安装（如使用apt或pip）和环境配置步骤，将现有手动操作整合为单一命令运行。  \n这样可将SDX_ENV_STEP_COUNT指标降低，提升入门效率，建议在项目根目录添加install.sh文件实现。  \n\n（字数：58）（当前评分：60分）",
+      "expected_improvement": "~10%，实施成本：中",
+      "related_metric_ids": [
+        "SDX_ENV_STEP_COUNT"
+      ],
+      "affected_metrics": [
+        "SDX_ENV_STEP_COUNT"
+      ]
+    },
+    {
+      "priority": "高",
+      "category": "",
       "title": "明确依赖版本要求",
-      "description": "【获取代码】在项目README.md中添加“依赖项”章节，明确列出所有Python库（如NumPy>=1.2）及其版本要求；同时创建check_deps.py脚本，使用pip freeze自动验证依赖版本匹配。（当前评分：30分）",
-      "expected_improvement": "预估改善幅度: ~20%；实施成本: 高",
-      "related_metric_ids": ["SDX_DEPENDENCY_TRANSPARENCY"],
-      "affected_metrics": ["SDX_DEPENDENCY_TRANSPARENCY"]
+      "description": "【获取代码】在项目README.md文件中清晰列出所有外部依赖项及其版本要求（如NumPy、Pandas等），并添加一个Python脚本（例如`check_deps.py`）来自动验证这些依赖是否满足指定版本。（当前评分：30分）",
+      "expected_improvement": "~20%，实施成本：高",
+      "related_metric_ids": [
+        "SDX_DEPENDENCY_TRANSPARENCY"
+      ],
+      "affected_metrics": [
+        "SDX_DEPENDENCY_TRANSPARENCY"
+      ]
     }
   ],
   "divergence_alerts": [],
-  "key_insight": "基于评估数据，整体开发者体验处于中等水平（D级）。**最突出的优势是高效的搜索发现和自足易理解的文档（低痛点）；最关键的问题是编译构建阶段的模糊报错信息（中痛点）和依赖管理透明度不足（中低痛点）。** 优化应**优先彻底解决编译报错模糊性问题**，其次提升依赖透明度和环境准备效率，同时保持现有文档和搜索优势。"
+  "key_insight": "整体开发者体验中等（84/100），优势在于环境准备优秀和编译构建快速；最关键问题是搜索发现直达率低和获取代码依赖不透明。建议优先优化搜索与发现和代码获取步骤以提升效率。"
 }
