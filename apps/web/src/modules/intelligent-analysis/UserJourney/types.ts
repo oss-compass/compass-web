@@ -71,13 +71,23 @@ export type PainLevel =
   | 'P3_MINOR'
   | 'P4_TRIVIAL';
 
+/** 全景图卡片使用的图标类型 */
+export type PainIconType = 'check' | 'exclamation';
+
 export type PainGuideItem = {
   level: PainLevel;
   scoreRange: string;
   label: string;
   english: string;
   description: string;
+  /** PainGuidePopoverContent 表格行背景色 */
   rowClassName: string;
+  /** JourneyPanoramaFlow 卡片边框/背景样式 */
+  cardClassName: string;
+  /** JourneyPanoramaFlow 状态图标类型 */
+  iconType: PainIconType;
+  /** 强调色（十六进制），用于图标颜色及高亮描边 */
+  accentColor: string;
 };
 
 export type JourneyStep = {

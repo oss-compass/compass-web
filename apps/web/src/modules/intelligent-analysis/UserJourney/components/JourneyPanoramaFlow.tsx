@@ -4,37 +4,8 @@ import {
   CheckCircleFilled,
   ExclamationCircleFilled,
 } from '@ant-design/icons';
+import { getPainGuideItem, getPainLevelFromScore } from '../helpers';
 import { JourneyStep } from '../types';
-
-type PanoramaStatus = {
-  label: string;
-  cardClassName: string;
-  icon: React.ReactNode;
-};
-
-const getPanoramaStatus = (score: number): PanoramaStatus => {
-  if (score < 60) {
-    return {
-      label: '关键卡点',
-      cardClassName: 'border-rose-200 bg-white',
-      icon: <ExclamationCircleFilled className="text-rose-500" />,
-    };
-  }
-
-  if (score >= 80) {
-    return {
-      label: '顺畅通过',
-      cardClassName: 'border-emerald-200 bg-white',
-      icon: <CheckCircleFilled className="text-emerald-500" />,
-    };
-  }
-
-  return {
-    label: '轻微摩擦',
-    cardClassName: 'border-amber-200 bg-white',
-    icon: <ExclamationCircleFilled className="text-amber-500" />,
-  };
-};
 
 const getStarText = (score: number) => {
   const filled = Math.max(0, Math.min(5, Math.round(score / 20)));
@@ -66,12 +37,19 @@ type StepNodeProps = {
 
 const StepNode: React.FC<StepNodeProps> = ({ step }) => {
   const panoramaScore = step.panoramaScore;
-  const status = getPanoramaStatus(panoramaScore);
+  const painLevel = getPainLevelFromScore(panoramaScore);
+  const guideItem = getPainGuideItem(painLevel);
+  const icon =
+    guideItem.iconType === 'check' ? (
+      <CheckCircleFilled style={{ color: guideItem.accentColor }} />
+    ) : (
+      <ExclamationCircleFilled style={{ color: guideItem.accentColor }} />
+    );
 
   return (
     <div className="flex w-[180px] flex-none flex-col items-center">
       <div
-        className={`flex h-[252px] w-full flex-col rounded-[20px] border px-4 pb-5 pt-4 shadow-[0_14px_32px_rgba(15,23,42,0.06)] ${status.cardClassName}`}
+        className={`flex h-[252px] w-full flex-col rounded-[20px] border px-4 pb-5 pt-4 shadow-[0_14px_32px_rgba(15,23,42,0.06)] ${guideItem.cardClassName}`}
       >
         <div className="flex min-h-[40px] items-center justify-center gap-3">
           <span
@@ -106,8 +84,8 @@ const StepNode: React.FC<StepNodeProps> = ({ step }) => {
 
         <div className="mt-4 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-2.5">
           <div className="flex items-center justify-center gap-1.5 text-[13px] font-semibold text-slate-500">
-            {status.icon}
-            <span>{status.label}</span>
+            {icon}
+            <span>{guideItem.label}</span>
           </div>
           <div className="mt-1 line-clamp-2 min-h-[40px] text-center text-[14px] font-medium leading-6 text-slate-700">
             {getCompactResult(step)}

@@ -12,9 +12,11 @@ import {
   ActionCard,
   ActionDetailRecord,
   ActionStatus,
+  PainGuideItem,
   PainLevel,
   Tone,
 } from './types';
+import { USER_JOURNEY_PAIN_GUIDE_ITEMS } from './rawData/constants';
 
 const journeyStepIconMap: Record<string, React.ReactNode> = {
   discover: React.createElement(AppstoreOutlined),
@@ -195,6 +197,18 @@ export const getPainLevelFromScore = (
 };
 
 export const getPainLabel = (level: PainLevel) => painLabelMap[level];
+
+const painGuideItemMap: Record<PainLevel, PainGuideItem> =
+  USER_JOURNEY_PAIN_GUIDE_ITEMS.reduce((acc, item) => {
+    acc[item.level] = item;
+    return acc;
+  }, {} as Record<PainLevel, PainGuideItem>);
+
+/**
+ * 根据 PainLevel 获取完整的痛点标准条目，供全景图和说明浮层共用。
+ */
+export const getPainGuideItem = (level: PainLevel): PainGuideItem =>
+  painGuideItemMap[level];
 
 export const getExperienceGradeFromScore = (
   score: number | null | undefined
