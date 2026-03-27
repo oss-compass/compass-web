@@ -153,6 +153,7 @@ const PrTable: React.FC<PrTableProps> = ({
     isFetching: repoFetching,
   } = useOsBoardPullsDetailList({
     project: selectedProject,
+    dashboardType,
     page: tableParams.pagination?.current,
     per: tableParams.pagination?.pageSize,
     filterOpts: tableParams.filterOpts,

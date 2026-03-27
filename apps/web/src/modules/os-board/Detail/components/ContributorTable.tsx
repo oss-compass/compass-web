@@ -20,6 +20,7 @@ import DomainPersona from '@modules/analyze/DataView/MetricDetail/MetricContribu
 
 interface ContributorTableProps {
   dashboardId: string;
+  dashboardType?: 'repo' | 'community';
   projects: readonly string[];
   competitorProjects?: readonly string[];
 }
@@ -209,6 +210,7 @@ const getProjectDisplayName = (project: string) => {
 
 const ContributorTable: React.FC<ContributorTableProps> = ({
   dashboardId,
+  dashboardType = 'repo',
   projects,
   competitorProjects = [],
 }) => {
@@ -241,6 +243,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     isFetching,
   } = useOsBoardContributorsDetailList({
     project: selectedProject,
+    dashboardType,
     page: tableParams.pagination?.current,
     per: tableParams.pagination?.pageSize,
     filterOpts: tableParams.filterOpts,
@@ -252,7 +255,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
   const { data: contributorsOverview, isLoading: statsLoading } =
     useOsBoardContributorsOverview({
       project: selectedProject,
-      level: 'repo',
+      level: dashboardType,
       enabled: !!selectedProject,
     });
 

@@ -77,6 +77,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
         'dashboardMetrics',
         dashboard.id,
         project,
+        dashboard.type,
         timeStart.toISOString(),
         timeEnd.toISOString(),
       ],
@@ -84,6 +85,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
         fetchMetricsByIdentifier({
           identifier: dashboard.identifier || dashboard.id,
           repo: project,
+          level: dashboard.type,
           period: 'month', // 默认为 month，或者根据时间范围动态计算
           beginDate: timeStart.toISOString().slice(0, 10),
           endDate: timeEnd.toISOString().slice(0, 10),
@@ -202,6 +204,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
           >
             <ContributorTable
               dashboardId={dashboard.id}
+              dashboardType={dashboard.type}
               projects={dashboard.config.projects}
               competitorProjects={dashboard.config.competitorProjects}
             />

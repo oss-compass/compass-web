@@ -368,6 +368,7 @@ export const fetchPullsOverview = async (params: {
 
 interface UseTableDataOptions {
   project: string;
+  dashboardType?: 'repo' | 'community';
   page?: number;
   per?: number;
   filterOpts?: FilterOptionInput[];
@@ -380,6 +381,7 @@ interface UseTableDataOptions {
  */
 export const useOsBoardPullsDetailList = ({
   project,
+  dashboardType = 'repo',
   page = 1,
   per = 10,
   filterOpts = [],
@@ -392,6 +394,7 @@ export const useOsBoardPullsDetailList = ({
     queryKey: [
       'osBoardPullsDetailList',
       project,
+      dashboardType,
       page,
       per,
       filterOpts,
@@ -402,7 +405,7 @@ export const useOsBoardPullsDetailList = ({
     queryFn: () =>
       fetchPullsDetailList({
         label: project,
-        level: 'repo',
+        level: dashboardType === 'community' ? 'community' : 'repo',
         page,
         per,
         filterOpts,
@@ -421,6 +424,7 @@ export const useOsBoardPullsDetailList = ({
  */
 export const useOsBoardIssuesDetailList = ({
   project,
+  dashboardType = 'repo',
   page = 1,
   per = 10,
   filterOpts = [],
@@ -433,6 +437,7 @@ export const useOsBoardIssuesDetailList = ({
     queryKey: [
       'osBoardIssuesDetailList',
       project,
+      dashboardType,
       page,
       per,
       filterOpts,
@@ -443,7 +448,7 @@ export const useOsBoardIssuesDetailList = ({
     queryFn: () =>
       fetchIssuesDetailList({
         label: project,
-        level: 'repo',
+        level: dashboardType === 'community' ? 'community' : 'repo',
         page,
         per,
         filterOpts,
@@ -462,6 +467,7 @@ export const useOsBoardIssuesDetailList = ({
  */
 export const useOsBoardContributorsDetailList = ({
   project,
+  dashboardType = 'repo',
   page = 1,
   per = 10,
   filterOpts = [],
@@ -474,6 +480,7 @@ export const useOsBoardContributorsDetailList = ({
     queryKey: [
       'osBoardContributorsDetailList',
       project,
+      dashboardType,
       page,
       per,
       filterOpts,
@@ -484,7 +491,7 @@ export const useOsBoardContributorsDetailList = ({
     queryFn: () =>
       fetchContributorsDetailList({
         label: project,
-        level: 'repo',
+        level: dashboardType === 'community' ? 'community' : 'repo',
         page,
         per,
         filterOpts,

@@ -61,6 +61,7 @@ export interface DashboardDeleteRequest {
 export interface MetricsByIdentifierRequest {
   identifier: string;
   repo: string;
+  level?: 'repo' | 'community';
   period: string;
   beginDate: string;
   endDate: string;

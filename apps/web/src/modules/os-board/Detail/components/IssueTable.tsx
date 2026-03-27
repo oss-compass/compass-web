@@ -154,6 +154,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
     isFetching: repoFetching,
   } = useOsBoardIssuesDetailList({
     project: selectedProject,
+    dashboardType,
     page: tableParams.pagination?.current,
     per: tableParams.pagination?.pageSize,
     filterOpts: tableParams.filterOpts,
