@@ -40,7 +40,15 @@ const normalizeRequestedProjects = (
     : [resolveUserJourneyProjectFileKey(undefined)];
 };
 
-const UserJourney: React.FC = () => {
+type UserJourneyProps = {
+  hidePageHeaderDeveloperControls?: boolean;
+  transparentPageHeader?: boolean;
+};
+
+const UserJourney: React.FC<UserJourneyProps> = ({
+  hidePageHeaderDeveloperControls = false,
+  transparentPageHeader = false,
+}) => {
   const router = useRouter();
   const requestedProjects = useMemo(
     () => normalizeRequestedProjects(router.query.project),
@@ -221,6 +229,8 @@ const UserJourney: React.FC = () => {
         onSelectVersion={handleSelectVersion}
         onAddProject={handleAddProject}
         onRemoveProject={handleRemoveProject}
+        hideDeveloperControls={hidePageHeaderDeveloperControls}
+        transparent={transparentPageHeader}
       />
 
       <div className="flex min-h-[calc(100vh-136px)] flex-col gap-5 p-5">

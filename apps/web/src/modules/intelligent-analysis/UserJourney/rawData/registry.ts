@@ -102,7 +102,7 @@ export const USER_JOURNEY_PROJECT_OPTIONS = Object.entries(
   USER_JOURNEY_PROJECT_LABEL_MAP
 ).map(([projectKey, label]) => ({
   value: projectKey as UserJourneyProjectKey,
-  label,
+  label: `项目 ${label}`,
 }));
 
 export const USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP = Object.keys(

@@ -69,7 +69,7 @@ const StepNode: React.FC<StepNodeProps> = ({ step }) => {
   const status = getPanoramaStatus(panoramaScore);
 
   return (
-    <div className="flex w-[188px] flex-none flex-col items-center">
+    <div className="flex w-[180px] flex-none flex-col items-center">
       <div
         className={`flex h-[252px] w-full flex-col rounded-[20px] border px-4 pb-5 pt-4 shadow-[0_14px_32px_rgba(15,23,42,0.06)] ${status.cardClassName}`}
       >
@@ -129,7 +129,7 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
 }) => {
   return (
     <div className={`overflow-x-auto pb-2 ${className}`.trim()}>
-      <div className="flex w-max min-w-full items-start justify-center gap-3 px-2">
+      <div className="flex w-max min-w-full items-start justify-center gap-1 px-2">
         {steps.map((step, index) => (
           <React.Fragment key={step.key}>
             <StepNode step={step} />

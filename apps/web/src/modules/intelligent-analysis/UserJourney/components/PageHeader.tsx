@@ -30,6 +30,8 @@ type PageHeaderProps = {
   onSelectVersion: (value: string) => void;
   onAddProject: (value: string) => void;
   onRemoveProject: (value: string) => void;
+  hideDeveloperControls?: boolean;
+  transparent?: boolean;
 };
 
 const ProjectPill: React.FC<{
@@ -82,6 +84,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   onSelectVersion,
   onAddProject,
   onRemoveProject,
+  hideDeveloperControls = false,
+  transparent = false,
 }) => {
   const [showAddSelector, setShowAddSelector] = useState(false);
   const compareMode = projects.length > 1;
@@ -93,30 +97,36 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   }, [compareProjectOptions.length]);
 
   return (
-    <nav className="flex h-14 items-center justify-between border-b border-t bg-white/90 px-6 backdrop-blur md:h-12 md:px-4">
-      <div className="relative flex h-10 flex-1 items-center gap-3 overflow-hidden pl-4 text-xl font-semibold">
-        <Select
-          value={developerType}
-          onChange={onDeveloperTypeChange}
-          bordered={false}
-          options={developerTypeOptions.map((item) => ({
-            label: item,
-            value: item,
-          }))}
-          className="min-w-[185px] [&_.ant-select-arrow]:text-slate-700 [&_.ant-select-selection-item]:!text-xl [&_.ant-select-selection-item]:!font-bold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selector]:!border-0 [&_.ant-select-selector]:!bg-transparent [&_.ant-select-selector]:!shadow-none"
-          dropdownStyle={{ minWidth: 200 }}
-        />
-        <div className="ml-4 mt-2">
-          <Segmented
-            value={journeyMode}
-            onChange={(value) => onJourneyModeChange(String(value))}
-            style={{ marginBottom: 8 }}
-            options={journeyModeOptions}
+    <nav
+      className={`flex h-14 items-center justify-between px-6 md:h-12 md:px-4 ${
+        transparent ? 'pt-5' : 'border-b border-t bg-white/90'
+      }`}
+    >
+      {!hideDeveloperControls && (
+        <div className="relative flex h-10 flex-1 items-center gap-3 overflow-hidden pl-4 text-xl font-semibold">
+          <Select
+            value={developerType}
+            onChange={onDeveloperTypeChange}
+            bordered={false}
+            options={developerTypeOptions.map((item) => ({
+              label: item,
+              value: item,
+            }))}
+            className="min-w-[185px] [&_.ant-select-arrow]:text-slate-700 [&_.ant-select-selection-item]:!text-xl [&_.ant-select-selection-item]:!font-bold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selector]:!border-0 [&_.ant-select-selector]:!bg-transparent [&_.ant-select-selector]:!shadow-none"
+            dropdownStyle={{ minWidth: 200 }}
           />
+          <div className="ml-4 mt-2">
+            <Segmented
+              value={journeyMode}
+              onChange={(value) => onJourneyModeChange(String(value))}
+              style={{ marginBottom: 8 }}
+              options={journeyModeOptions}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="ml-4 flex flex-shrink-0 items-center gap-3 md:flex">
+      <div className="flex flex-shrink-0 items-center gap-3 md:flex">
         {compareMode ? (
           projects.map((project, index) => (
             <React.Fragment key={project.queryKey}>
@@ -138,12 +148,18 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               value={currentProjectKey}
               onChange={(value) => onSelectProject(String(value))}
               options={projectOptions}
+              optionRender={(option) =>
+                String(option.label).replace(/^项目\s*/, '')
+              }
               className="h-10 min-w-[200px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_8px_18px_rgba(15,23,42,0.05)]"
             />
             <Select
               value={currentVersion}
               onChange={(value) => onSelectVersion(String(value))}
               options={versionOptions}
+              optionRender={(option) =>
+                String(option.label).replace(/^版本\s*/, '')
+              }
               className="h-10 min-w-[190px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!uppercase [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_8px_18px_rgba(15,23,42,0.05)]"
               dropdownStyle={{ minWidth: 190 }}
             />

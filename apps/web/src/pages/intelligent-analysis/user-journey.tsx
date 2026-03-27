@@ -21,7 +21,7 @@ const UserJourneyPage: React.FC = () => {
         <Header />
       </StickyNav>
       <Main>
-        <div className="flex h-[calc(100vh-80px)] flex-1 overflow-auto bg-gray-50">
+        <div className="flex h-[calc(100vh-80px)] flex-1 overflow-auto bg-[#eef2fa]">
           <div className="w-full overflow-y-auto">
             <UserJourney />
           </div>
