@@ -11,6 +11,8 @@ type CompareStepSectionProps = {
   projects: UserJourneyProjectView[];
   activeStepKey: string;
   onStepChange: (stepKey: string) => void;
+  /** sticky 吸顶时距容器顶部的偏移量（px），默认 0 */
+  stickyTop?: number;
 };
 
 const getStepByKey = (
@@ -44,38 +46,39 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
   projects,
   activeStepKey,
   onStepChange,
+  stickyTop = 0,
 }) => {
   const baseSteps = projects[0]?.data.journeySteps ?? [];
 
   return (
-    <div className="flex flex-col gap-5">
-      <Card
-        bordered={false}
-        className="rounded-3xl border border-white/80 bg-white/90 shadow-[0_20px_48px_rgba(15,23,42,0.08)]"
-        bodyStyle={{ padding: 20 }}
-      >
-        <div className="mb-4 text-xl font-semibold text-slate-900">
-          步骤名称
+    <div className="rounded-3xl border border-white/80 bg-white shadow-[0_20px_48px_rgba(15,23,42,0.08)]">
+      {/* 吸顶 Tab 栏 */}
+      <div className="sticky z-10" style={{ top: stickyTop }}>
+        <div className="rounded-t-3xl border-b border-slate-100 bg-white px-5 pb-0 pt-5">
+          <div className="mb-1 text-xl font-semibold text-slate-900">
+            步骤名称
+          </div>
+          <Tabs
+            activeKey={activeStepKey}
+            onChange={onStepChange}
+            items={baseSteps.map((step, index) => ({
+              key: step.key,
+              label: (
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
+                    {index + 1}
+                  </span>
+                  <span>{step.title}</span>
+                </div>
+              ),
+            }))}
+            className="[&_.ant-tabs-nav-list]:gap-6 [&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-tab]:px-0 [&_.ant-tabs-tab]:py-2"
+          />
         </div>
-        <Tabs
-          activeKey={activeStepKey}
-          onChange={onStepChange}
-          items={baseSteps.map((step, index) => ({
-            key: step.key,
-            label: (
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
-                  {index + 1}
-                </span>
-                <span>{step.title}</span>
-              </div>
-            ),
-          }))}
-          className="[&_.ant-tabs-nav-list]:gap-6 [&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-tab]:px-0 [&_.ant-tabs-tab]:py-2"
-        />
-      </Card>
+      </div>
 
-      <div className="overflow-x-auto pb-2">
+      {/* 内容区（横向滚动） */}
+      <div className="overflow-x-auto p-5 pb-6">
         <div className="flex w-max items-stretch gap-5">
           {projects.map((project) => {
             const currentStep = getStepByKey(
@@ -86,15 +89,23 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
             return (
               <div
                 key={project.queryKey}
-                className="flex w-[920px] flex-none flex-col self-stretch"
+                className="flex w-[904px] flex-none flex-col self-stretch"
               >
                 <div className="mb-3 px-1">
-                  <div className="text-lg font-semibold text-slate-900">
-                    {project.data.projectInfo.name}
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-lg font-semibold text-slate-900">
+                      {project.data.projectInfo.name}
+                    </div>
+                    <div className="text-lg font-semibold text-slate-900">
+                      ·
+                    </div>
+                    <div className="text-lg font-semibold text-slate-900">
+                      开发旅程
+                    </div>
                   </div>
                   {project.data.projectInfo.version ? (
-                    <div className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
-                      {`${project.data.projectInfo.version}`}
+                    <div className="mt-0.5 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+                      {project.data.projectInfo.version}
                     </div>
                   ) : null}
                 </div>
@@ -109,6 +120,8 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
                       executionPathItems={getExecutionPathItems(currentStep)}
                       keyTools={currentStep.tools.slice(0, 3)}
                       agentVersion={project.data.agentVersion}
+                      hideTitle
+                      fixedMetricCols={2}
                     />
                   ) : (
                     <EmptyStepCard

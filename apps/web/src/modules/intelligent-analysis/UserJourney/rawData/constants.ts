@@ -60,7 +60,7 @@ export const USER_JOURNEY_PAIN_GUIDE_ITEMS: PainGuideItem[] = [
     description: '基本没有显著障碍，对整体体验影响很小。',
     rowClassName: 'bg-slate-50',
     cardClassName: 'border-emerald-200 bg-white',
-    iconType: 'check',
+    iconType: 'smile',
     accentColor: '#16a34a',
   },
 ];

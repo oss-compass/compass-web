@@ -72,7 +72,7 @@ export type PainLevel =
   | 'P4_TRIVIAL';
 
 /** 全景图卡片使用的图标类型 */
-export type PainIconType = 'check' | 'exclamation';
+export type PainIconType = 'check' | 'exclamation' | 'smile';
 
 export type PainGuideItem = {
   level: PainLevel;

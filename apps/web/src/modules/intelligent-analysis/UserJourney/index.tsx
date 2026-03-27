@@ -241,6 +241,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               projects={projectViews}
               activeStepKey={activeStepKey}
               onStepChange={setActiveStepKey}
+              stickyTop={0}
             />
           </>
         ) : currentStep ? (

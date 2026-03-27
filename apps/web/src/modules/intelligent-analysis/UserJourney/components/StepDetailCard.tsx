@@ -16,6 +16,9 @@ type StepDetailCardProps = {
   executionPathItems: ActionDetailRecord[];
   keyTools: string[];
   agentVersion: string;
+  hideTitle?: boolean;
+  /** 固定列数（对比模式使用）；不传时使用响应式列数 */
+  fixedMetricCols?: 2 | 3 | 4;
 };
 
 const StepDetailCard: React.FC<StepDetailCardProps> = ({
@@ -25,18 +28,29 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   executionPathItems,
   keyTools,
   agentVersion,
+  hideTitle = false,
+  fixedMetricCols,
 }) => {
   return (
     <Card
       bordered={false}
-      className="h-full w-full min-w-0 rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
-      bodyStyle={{ padding: 24 }}
+      className={`h-full w-full min-w-0 ${
+        hideTitle
+          ? 'rounded-3xl bg-transparent'
+          : 'rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]'
+      }`}
+      style={
+        hideTitle ? { boxShadow: 'none', background: 'transparent' } : undefined
+      }
+      bodyStyle={{ padding: hideTitle ? 0 : 24 }}
     >
-      <div className="mb-5">
-        <div className="mb-2 text-xl font-semibold text-slate-900">
-          开发旅程
+      {!hideTitle && (
+        <div className="mb-5">
+          <div className="mb-2 text-xl font-semibold text-slate-900">
+            开发旅程
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="rounded-[28px] border border-slate-200/80 bg-[linear-gradient(180deg,#fbfdff_0%,#f8fbff_100%)] p-6 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
@@ -137,11 +151,19 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
 
         <div className="mt-6">
           <div className="text-base font-semibold text-slate-900">关键指标</div>
-          <div className="mt-3 flex items-stretch gap-3 overflow-x-auto pb-1">
+          <div
+            className={`mt-3 grid gap-3 pb-1 ${
+              fixedMetricCols
+                ? { 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4' }[
+                    fixedMetricCols
+                  ]
+                : '>lg:grid-cols-3 >2xl:grid-cols-4 grid-cols-2'
+            }`}
+          >
             {keyMetrics.map((metric) => (
               <div
                 key={`${currentStep.key}-${metric.label}`}
-                className="min-w-[280px] flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0 text-[15px] font-semibold text-slate-800">

@@ -41,7 +41,7 @@ const ProjectPill: React.FC<{
 }> = ({ project, removable, onRemove }) => {
   return (
     <div className="group relative">
-      <div className="inline-flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3.5 py-2 shadow-[0_8px_18px_rgba(15,23,42,0.05)]">
+      <div className="inline-flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3.5 py-2 shadow-[0_2px_6px_rgba(15,23,42,0.06)]">
         <div className="flex items-baseline gap-2">
           <span className="text-sm font-semibold text-slate-900">
             {project.name}
@@ -151,7 +151,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               optionRender={(option) =>
                 String(option.label).replace(/^项目\s*/, '')
               }
-              className="h-10 min-w-[200px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_8px_18px_rgba(15,23,42,0.05)]"
+              className="h-10 min-w-[200px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
             />
             <Select
               value={currentVersion}
@@ -160,7 +160,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               optionRender={(option) =>
                 String(option.label).replace(/^版本\s*/, '')
               }
-              className="h-10 min-w-[190px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!uppercase [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_8px_18px_rgba(15,23,42,0.05)]"
+              className="h-10 min-w-[190px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!uppercase [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
               dropdownStyle={{ minWidth: 190 }}
             />
           </>

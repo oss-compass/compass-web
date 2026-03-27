@@ -3,6 +3,7 @@ import {
   ArrowRightOutlined,
   CheckCircleFilled,
   ExclamationCircleFilled,
+  SmileFilled,
 } from '@ant-design/icons';
 import { getPainGuideItem, getPainLevelFromScore } from '../helpers';
 import { JourneyStep } from '../types';
@@ -42,6 +43,8 @@ const StepNode: React.FC<StepNodeProps> = ({ step }) => {
   const icon =
     guideItem.iconType === 'check' ? (
       <CheckCircleFilled style={{ color: guideItem.accentColor }} />
+    ) : guideItem.iconType === 'smile' ? (
+      <SmileFilled style={{ color: guideItem.accentColor }} />
     ) : (
       <ExclamationCircleFilled style={{ color: guideItem.accentColor }} />
     );
@@ -49,7 +52,7 @@ const StepNode: React.FC<StepNodeProps> = ({ step }) => {
   return (
     <div className="flex w-[180px] flex-none flex-col items-center">
       <div
-        className={`flex h-[252px] w-full flex-col rounded-[20px] border px-4 pb-5 pt-4 shadow-[0_14px_32px_rgba(15,23,42,0.06)] ${guideItem.cardClassName}`}
+        className={`flex h-[252px] w-full flex-col rounded-[20px] border px-4 pb-5 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] ${guideItem.cardClassName}`}
       >
         <div className="flex min-h-[40px] items-center justify-center gap-3">
           <span

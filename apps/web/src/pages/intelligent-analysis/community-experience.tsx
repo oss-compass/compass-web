@@ -13,8 +13,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 const CommunityExperiencePage: React.FC = () => {
   return (
-    <div className="flex h-screen flex-1 overflow-auto bg-[#eef2fa]">
-      <div className="w-full overflow-y-auto">
+    <div className="flex h-screen flex-1 bg-[#eef2fa]">
+      <div className="h-screen w-full overflow-y-auto">
         <UserJourney hidePageHeaderDeveloperControls transparentPageHeader />
       </div>
     </div>
