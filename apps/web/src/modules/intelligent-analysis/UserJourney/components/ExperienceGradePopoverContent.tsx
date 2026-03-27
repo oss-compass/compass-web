@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  ExperienceGrade,
-  experienceGradeGuideItems,
-  getExperienceGradeGuideItem,
-} from '../helpers';
+import { ExperienceGrade, experienceGradeGuideItems } from '../helpers';
 
 type ExperienceGradePopoverContentProps = {
   currentGrade: ExperienceGrade;
@@ -13,11 +9,13 @@ const ExperienceGradePopoverContent: React.FC<
   ExperienceGradePopoverContentProps
 > = ({ currentGrade }) => {
   return (
-    <div className="w-[420px] max-w-[calc(100vw-96px)] overflow-hidden rounded-xl border border-slate-200">
-      <div className="grid grid-cols-[88px_120px_minmax(0,1fr)] bg-slate-50 px-4 py-2 text-xs font-medium text-slate-500">
+    <div className="w-[920px] max-w-[calc(100vw-96px)] overflow-hidden rounded-xl border border-slate-200">
+      <div className="grid grid-cols-[88px_120px_130px_170px_minmax(0,1fr)] bg-amber-700 px-4 py-2 text-xs font-semibold text-white">
         <span>等级</span>
-        <span>分数</span>
-        <span>中文评级</span>
+        <span>分数范围</span>
+        <span>等级名称(中)</span>
+        <span>Grade Name(EN)</span>
+        <span>体验描述</span>
       </div>
       <div className="divide-y divide-slate-200 bg-white">
         {experienceGradeGuideItems.map((item) => {
@@ -26,7 +24,7 @@ const ExperienceGradePopoverContent: React.FC<
           return (
             <div
               key={item.grade}
-              className={`grid grid-cols-[88px_120px_minmax(0,1fr)] gap-0 px-4 py-3 text-[13px] leading-6 ${
+              className={`grid grid-cols-[88px_120px_130px_170px_minmax(0,1fr)] gap-0 px-4 py-3 text-[13px] leading-6 ${
                 item.rowClassName
               } ${
                 isCurrentGrade
@@ -36,9 +34,7 @@ const ExperienceGradePopoverContent: React.FC<
               style={
                 isCurrentGrade
                   ? {
-                      boxShadow: `inset 4px 0 0 ${
-                        getExperienceGradeGuideItem(item.grade).accentColor
-                      }, inset 0 0 0 1px rgba(15,23,42,0.08)`,
+                      boxShadow: `inset 4px 0 0 ${item.accentColor}, inset 0 0 0 1px rgba(15,23,42,0.08)`,
                     }
                   : undefined
               }
@@ -70,6 +66,24 @@ const ExperienceGradePopoverContent: React.FC<
                 }
               >
                 {item.label}
+              </div>
+              <div
+                className={
+                  isCurrentGrade
+                    ? 'font-semibold text-slate-900'
+                    : 'font-medium text-slate-700'
+                }
+              >
+                {item.english}
+              </div>
+              <div
+                className={
+                  isCurrentGrade
+                    ? 'font-medium text-slate-800'
+                    : 'text-slate-600'
+                }
+              >
+                {item.description}
               </div>
             </div>
           );

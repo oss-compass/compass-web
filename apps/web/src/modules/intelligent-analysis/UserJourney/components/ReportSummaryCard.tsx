@@ -56,7 +56,7 @@ const renderMetricRecentValue = (metric: OverviewMetric) => {
       placement="bottomRight"
       trigger="hover"
       overlayStyle={{
-        maxWidth: 'min(460px, calc(100vw - 32px))',
+        maxWidth: 'min(960px, calc(100vw - 32px))',
       }}
     >
       <button
