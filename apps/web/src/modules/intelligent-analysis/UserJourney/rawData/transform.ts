@@ -138,7 +138,7 @@ const buildOverviewMetrics = (report: BackendReportData): OverviewMetric[] => {
       suffix: '/100',
       description: report.key_insight,
       stage: '综合评估',
-      recentValues: `${getExperienceGradeLabelFromScore(
+      recentValues: `评级 ${getExperienceGradeLabelFromScore(
         report.overall_scores.composite_score
       )}`,
       tone: getToneByScore(report.overall_scores.composite_score),
@@ -296,7 +296,7 @@ const buildFixedOverviewMetrics = (
     if (metric.key === 'overall-score') {
       return {
         ...metric,
-        recentValues: `${getExperienceGradeLabelFromScore(
+        recentValues: `评级 ${getExperienceGradeLabelFromScore(
           report.overall_scores.composite_score
         )}`,
       };
