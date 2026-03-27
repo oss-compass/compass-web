@@ -21,10 +21,10 @@
     "description": "基于 CANN 的数学类算子库项目"
   },
   "overall_scores": {
-    "sdx_avg_score": 73.0,
+    "sdx_avg_score": 50.0,
     "obj_avg_score": 0.0,
-    "composite_score": 73.0,
-    "grade": "C"
+    "composite_score": 50.0,
+    "grade": "D"
   },
   "e2e_metrics": [
     {

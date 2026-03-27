@@ -120,18 +120,19 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
   return (
     <div className="flex flex-col gap-5">
       <div className=">lg:flex-row flex flex-col gap-4">
+    
         <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
+          <ComparisonTableCard
+            title="报告概览"
+            columns={overviewColumns}
+            rows={overviewRows}
+          />
+        </div>
+            <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
           <ComparisonTableCard
             title="报告元数据"
             columns={metadataColumns}
             rows={metadataRows}
-          />
-        </div>
-        <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
-          <ComparisonTableCard
-            title="指标概览"
-            columns={overviewColumns}
-            rows={overviewRows}
           />
         </div>
       </div>

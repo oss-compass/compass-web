@@ -58,14 +58,14 @@ const ComparisonTableCard: React.FC<ComparisonTableCardProps> = ({
           <table className="min-w-full table-auto">
             <thead>
               <tr>
-                <th className="min-w-[200px] border-b border-b-white bg-slate-50 px-3 py-2 text-left text-sm font-semibold text-slate-700">
+                <th className="min-w-[180px] border-b border-b-white bg-slate-50 px-2 py-2 text-left text-sm font-semibold text-slate-700">
                   项目名称
                 </th>
                 {columns.map((column, index) => (
                   <th
                     key={column.key}
                     className={classNames(
-                      'min-w-[160px] border-b border-t-2 border-b-white px-3 py-2 text-center text-sm font-semibold text-slate-700',
+                      'min-w-[130px] border-b border-t-2 border-b-white px-2 py-2 text-center text-sm font-semibold text-slate-700',
                       getColumnClassName(index)
                     )}
                   >
@@ -77,7 +77,7 @@ const ComparisonTableCard: React.FC<ComparisonTableCardProps> = ({
             <tbody>
               {rows.map((row) => (
                 <tr key={row.key} className="group">
-                  <td className="border-b border-b-white bg-white px-3 py-2 text-left align-top">
+                  <td className="border-b border-b-white bg-white px-2 py-2 text-left align-top">
                     <div className="text-sm font-semibold text-slate-900">
                       {row.projectName}
                     </div>
@@ -89,7 +89,7 @@ const ComparisonTableCard: React.FC<ComparisonTableCardProps> = ({
                       <td
                         key={`${row.key}-${column.key}`}
                         className={classNames(
-                          'border-b border-b-white px-3 py-2 text-center text-sm text-slate-700',
+                          'border-b border-b-white px-2 py-2 text-center text-sm text-slate-700',
                           getColumnClassName(index),
                           cell?.className
                         )}

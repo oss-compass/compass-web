@@ -21,10 +21,10 @@
     "description": "CANN 生态示例项目"
   },
   "overall_scores": {
-    "sdx_avg_score": 64.2,
+    "sdx_avg_score": 43.0,
     "obj_avg_score": 0,
-    "composite_score": 64.2,
-    "grade": "C"
+    "composite_score": 43.0,
+    "grade": "D"
   },
   "e2e_metrics": [
     {
