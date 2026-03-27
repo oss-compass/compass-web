@@ -155,7 +155,7 @@
           },
           "subjective": {
             "pain_level": "高",
-            "pain_summary": "❌ 开发者体验存在严重问题，搜索多轮没有找到目标仓库,急需改进",
+            "pain_summary": "❌ 搜索多轮没有找到目标仓库",
             "narrative": "discovery阶段的开发者体验存在严重问题，搜索多轮没有找到目标仓库,急需改进。",
             "metrics": [
               {
