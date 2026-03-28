@@ -1,7 +1,7 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
+// import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
-import getLocalesFile from '@common/utils/getLocalesFile';
+// import getLocalesFile from '@common/utils/getLocalesFile';
 
 const UserJourney = dynamic(
   () => import('@modules/intelligent-analysis/UserJourney'),
@@ -13,14 +13,14 @@ const UserJourney = dynamic(
     ),
   }
 );
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await getLocalesFile(req.cookies, ['home', 'intelligent_analysis'])),
-    },
-  };
-};
+// 暂时不需要国际化
+// export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+//   return {
+//     props: {
+//       ...(await getLocalesFile(req.cookies, ['home', 'intelligent_analysis'])),
+//     },
+//   };
+// };
 
 const CommunityExperiencePage: React.FC = () => {
   return (

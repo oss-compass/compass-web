@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Popover, Tooltip, Typography } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import KeyActionsSection from './KeyActionsSection';
-import MetricTrendChart from './MetricTrendChart';
+// import MetricTrendChart from './MetricTrendChart';
 import PainGuidePopoverContent from './PainGuidePopoverContent';
 import { ActionDetailRecord, JourneyStep, StepMetric } from '../types';
 import { getPainClasses } from '../helpers';
