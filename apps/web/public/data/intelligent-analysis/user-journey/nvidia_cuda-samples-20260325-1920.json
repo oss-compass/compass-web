@@ -1,5 +1,5 @@
 {
-  "report_detail_url": "https://onebox.huawei.com/p/ae4e7aad5b1cd649e988067ea4dac6bc",
+  "report_detail_url": "https://onebox.huawei.com/p/f2d69636b8fe4ee7853cd64537188b49",
   "meta": {
     "report_id": "nvidia_cuda_samples_20260325_1917",
     "report_title": "",
@@ -525,7 +525,7 @@
           },
           "subjective": {
             "pain_level": "中",
-            "pain_summary": "版本不匹配",
+            "pain_summary": "版本需手动切换；info:switching to checkout v12.9",
             "narrative": "首次构建因版本不匹配失败，需手动检出与本地 CUDA 版本匹配的分支，增加了学习成本。",
             "metrics": [
               {

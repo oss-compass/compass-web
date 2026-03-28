@@ -5,6 +5,7 @@ import {
   ExclamationCircleFilled,
   SmileFilled,
 } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import { getPainGuideItem, getPainLevelFromScore } from '../helpers';
 import { JourneyStep } from '../types';
 
@@ -15,21 +16,13 @@ const getStarText = (score: number) => {
 };
 
 const getCompactResult = (step: JourneyStep) => {
-  const primaryText =
+  return (
     step.summary ||
     step.painPoints?.[0] ||
     step.painSummary ||
     step.description ||
-    '';
-  const compactText =
-    primaryText
-      .replace(/\s+/g, ' ')
-      .split(/[，。；;？?]/)[0]
-      ?.trim() || primaryText;
-
-  return compactText.length > 16
-    ? `${compactText.slice(0, 16)}...`
-    : compactText;
+    ''
+  );
 };
 
 type StepNodeProps = {
@@ -50,9 +43,9 @@ const StepNode: React.FC<StepNodeProps> = ({ step }) => {
     );
 
   return (
-    <div className="flex w-[180px] flex-none flex-col items-center">
+    <div className="flex w-[188px] flex-none flex-col items-center">
       <div
-        className={`flex h-[252px] w-full flex-col rounded-[20px] border px-4 pb-5 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] ${guideItem.cardClassName}`}
+        className={`flex h-[256px] w-full flex-col rounded-[20px] border px-4 pb-5 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] ${guideItem.cardClassName}`}
       >
         <div className="flex min-h-[40px] items-center justify-center gap-3">
           <span
@@ -85,13 +78,17 @@ const StepNode: React.FC<StepNodeProps> = ({ step }) => {
           <span className="ml-1 text-xs font-medium text-slate-500">分</span>
         </div>
 
-        <div className="mt-4 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-2.5">
-          <div className="flex items-center justify-center gap-1.5 text-[13px] font-semibold text-slate-500">
+        <div className="mt-4 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-2 py-1.5">
+          <div className="flex items-center justify-center gap-1.5 text-[14px] font-semibold text-slate-500">
             {icon}
             <span>{guideItem.label}</span>
           </div>
-          <div className="mt-1 line-clamp-2 min-h-[40px] text-center text-[14px] font-medium leading-6 text-slate-700">
-            {getCompactResult(step)}
+          <div className="mt-1 min-h-[40px] text-center">
+            <Tooltip title={getCompactResult(step)} placement="bottom">
+              <div className="line-clamp-3 cursor-default text-[12px] leading-4 text-slate-700">
+                {getCompactResult(step)}
+              </div>
+            </Tooltip>
           </div>
         </div>
       </div>

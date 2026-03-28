@@ -1,5 +1,5 @@
 {
-  "report_detail_url": "https://onebox.huawei.com/p/68c78f1ea1738f1bc8d91c025dd76019",
+  "report_detail_url": "https://onebox.huawei.com/p/2b8eaf0e99ce5878772cd5f9b046764b",
   "meta": {
     "report_id": "cann_ops_math_20260323_1500",
     "report_title": "OSS-Compass 开源社区开发者体验诊断报告",
@@ -541,7 +541,7 @@
           },
           "subjective": {
             "pain_level": "中",
-            "pain_summary": "❌ 报错模糊不足",
+            "pain_summary": "❌ 报错模糊不足（error: socVersion  do not support opType [AddExample]）",
             "narrative": "quickstart阶段的开发者体验存在问题，编译构建报错信息模糊（报错可诊断性0分），退出码233未提供明确修复建议，严重影响开发者排查效率。",
             "metrics": [
               {
@@ -550,7 +550,7 @@
                 "value": 165.9,
                 "unit": "seconds",
                 "benchmark_value": 60,
-                "score": 75,
+                "score": 55,
                 "evidence": "quickstart_doc: 165.9s",
                 "applicable": true
               },
@@ -560,7 +560,7 @@
                 "value": 6,
                 "unit": "count",
                 "benchmark_value": 5,
-                "score": 75,
+                "score": 63,
                 "evidence": "参数: --pkg, --soc=ascend910b, --ops=add_example, --run_example, --vendor_name=custom",
                 "applicable": true
               },

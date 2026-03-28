@@ -1,5 +1,5 @@
 {
-  "report_detail_url": "https://onebox.huawei.com/p/562be37d614b5d2f00e134a75165e3a0",
+  "report_detail_url": "https://onebox.huawei.com/p/100cddb47911f78dffc4164e4468b7cd",
   "meta": {
     "report_id": "cann_cann_samples_20260325_1929",
     "report_title": "OSS-Compass 开源社区开发者体验诊断报告",
@@ -533,7 +533,7 @@
           },
           "subjective": {
             "pain_level": "中",
-            "pain_summary": "❌ 构建失败",
+            "pain_summary": "❌ 构建失败（error:Unsupported NPU architecture or soc）",
             "narrative": "quickstart阶段的开发者体验存在严重问题，急需改进。",
             "metrics": [
               {
@@ -542,7 +542,7 @@
                 "value": 27.1,
                 "unit": "seconds",
                 "benchmark_value": 60,
-                "score": 75,
+                "score": 50,
                 "evidence": "quickstart_doc: 27.1s",
                 "applicable": true
               },
