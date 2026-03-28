@@ -38,8 +38,16 @@ export function browserLanguageDetectorAndReload() {
   const found = navigatorLangLookup();
 
   if (found && !cookieGetLocale()) {
+    // 防止 iframe 第三方 cookie 限制导致 cookieGetLocale() 始终为空，循环 reload
+    const SESSION_KEY = '__locale_reloaded__';
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(SESSION_KEY)) {
+      return;
+    }
     const lang = getLang(found);
     cookieSetLocale(lang);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(SESSION_KEY, '1');
+    }
     window.location.reload();
   }
 }
