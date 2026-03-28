@@ -52,16 +52,16 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                 <th className="w-20 px-4 py-3 text-left text-sm font-semibold text-slate-700">
                   序号
                 </th>
-                <th className="w-40 px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                <th className="w-28 px-4 py-3 text-left text-sm font-semibold text-slate-700">
                   动作类型
                 </th>
-                <th className="min-w-[420px] px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                <th className="min-w-[250px] px-4 py-3 text-left text-sm font-semibold text-slate-700">
                   详情
                 </th>
-                <th className="w-32 px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                <th className="w-24 px-4 py-3 text-left text-sm font-semibold text-slate-700">
                   结果
                 </th>
-                <th className="w-28 px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                <th className="w-20 px-4 py-3 text-left text-sm font-semibold text-slate-700">
                   耗时
                 </th>
               </tr>

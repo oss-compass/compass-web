@@ -79,7 +79,7 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
 
       {/* 内容区（横向滚动） */}
       <div className="overflow-x-auto p-5 pb-6">
-        <div className="flex w-max items-stretch gap-5">
+        <div className="flex min-w-full items-stretch gap-5">
           {projects.map((project) => {
             const currentStep = getStepByKey(
               project.data.journeySteps,
@@ -89,7 +89,7 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
             return (
               <div
                 key={project.queryKey}
-                className="flex w-[904px] flex-none flex-col self-stretch"
+                className="flex min-w-[625px] flex-1 flex-col self-stretch"
               >
                 <div className="mb-3 px-1">
                   <div className="flex items-baseline gap-2">

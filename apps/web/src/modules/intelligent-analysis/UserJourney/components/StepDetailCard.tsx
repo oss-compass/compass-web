@@ -173,13 +173,13 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
                     {metric.value}
                   </div>
                 </div>
-                {metric.trend ? (
+                {/* {metric.trend ? (
                   <MetricTrendChart trend={metric.trend} tone={metric.tone} />
-                ) : (
-                  <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-3 py-4 text-center text-xs text-slate-400">
-                    趋势数据待补充
-                  </div>
-                )}
+                ) : ( */}
+                <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-3 py-4 text-center text-xs text-slate-400">
+                  趋势数据待补充
+                </div>
+                {/* )} */}
                 <Tooltip title={metric.note}>
                   <div className="mt-3 truncate text-[13px] leading-5 text-slate-500">
                     {metric.note}
