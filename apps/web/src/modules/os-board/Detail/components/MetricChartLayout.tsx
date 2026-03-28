@@ -135,45 +135,25 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
     })) as OsBoardDashboardMetric[];
   }, [dashboard.dashboard_metrics, dashboard.config.metrics]);
 
-  // 计算哪些模型的所有指标都被选中了
+  // 计算哪些模型有指标被选中（只要有任意指标就展示模型卡片）
   const completeModels = useMemo(() => {
-    // 获取当前选中的所有指标 ID
-    const selectedMetricIds = new Set(
-      displayMetrics.map((m) => m.dashboard_metric_info_ident)
-    );
+    const complete = new Set<string>();
 
-    // 按模型分组当前选中的指标
-    const metricsByModel = new Map<string, string[]>();
     displayMetrics.forEach((m) => {
       const modelId = m.dashboard_model_info_ident;
-      if (!metricsByModel.has(modelId)) {
-        metricsByModel.set(modelId, []);
-      }
-      metricsByModel.get(modelId)!.push(m.dashboard_metric_info_ident);
-    });
 
-    // 检查每个模型是否所有指标都被选中
-    const complete = new Set<string>();
-    metricsByModel.forEach((_, modelId) => {
       // 其他指标（model_999）不需要模型卡片
       if (modelId === 'model_999') {
         return;
       }
 
-      // 获取该模型下应有的所有指标
+      // 该模型在 modelToMetricsMap 中有定义才展示模型卡片
       const allMetricsInModel = modelToMetricsMap[modelId as ModelId];
       if (!allMetricsInModel || allMetricsInModel.length === 0) {
         return;
       }
 
-      // 检查是否所有指标都在选中列表中
-      const allSelected = allMetricsInModel.every((metricId) =>
-        selectedMetricIds.has(metricId)
-      );
-
-      if (allSelected) {
-        complete.add(modelId);
-      }
+      complete.add(modelId);
     });
 
     return complete;
