@@ -1,10 +1,15 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
 import getLocalesFile from '@common/utils/getLocalesFile';
-import Main from '@modules/intelligent-analysis/GovernancePlatform/Overview/Project';
 import { isValidProject } from '@modules/intelligent-analysis/config/projects';
 import Header from '@common/components/Header';
 import StickyNav from '@common/components/Header/StickyNav';
+
+const Main = dynamic(
+  () =>
+    import('@modules/intelligent-analysis/GovernancePlatform/Overview/Project')
+);
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,

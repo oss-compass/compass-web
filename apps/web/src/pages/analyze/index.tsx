@@ -1,7 +1,9 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import Analyze from '@modules/analyze';
+import dynamic from 'next/dynamic';
 import getLocalesFile from '@common/utils/getLocalesFile';
+
+const Analyze = dynamic(() => import('@modules/analyze'));
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {

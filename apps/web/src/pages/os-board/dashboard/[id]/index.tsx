@@ -1,9 +1,11 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
 import AuthRequire from '@modules/auth/AuthRequire';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
-import OsBoardDetail from '@modules/os-board/Detail';
+
+const OsBoardDetail = dynamic(() => import('@modules/os-board/Detail'));
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {

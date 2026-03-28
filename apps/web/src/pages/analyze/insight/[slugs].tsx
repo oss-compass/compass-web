@@ -1,8 +1,12 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
 import getLocalesFile from '@common/utils/getLocalesFile';
-import MetricDetailPage from '@modules/analyze/MetricDetailPage';
 import AuthRequire from '@modules/auth/AuthRequire';
+
+const MetricDetailPage = dynamic(
+  () => import('@modules/analyze/MetricDetailPage')
+);
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {

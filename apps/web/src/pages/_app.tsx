@@ -6,7 +6,6 @@ import { appWithTranslation } from 'next-i18next';
 import { Toaster } from 'react-hot-toast';
 import i18nextConfig from '../../next-i18next.config.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import UserInfoFetcher from '@modules/auth/UserInfoFetcher';
 import { useAppGA, GAScripts } from '@common/lib/ga';
 import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
@@ -21,6 +20,17 @@ import '../styles/globals.scss';
 const NextNProgress = dynamic(() => import('nextjs-progressbar'), {
   ssr: false,
 });
+
+const ReactQueryDevtools =
+  process.env.NODE_ENV === 'development'
+    ? dynamic(
+        () =>
+          import('@tanstack/react-query-devtools').then(
+            (mod) => mod.ReactQueryDevtools
+          ),
+        { ssr: false }
+      )
+    : () => null;
 
 type TProps = AppProps & {
   gaTrackingId: string;

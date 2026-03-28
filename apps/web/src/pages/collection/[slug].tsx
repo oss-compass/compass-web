@@ -1,7 +1,9 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import Collection from '@modules/collection';
+import dynamic from 'next/dynamic';
 import getLocalesFile from '@common/utils/getLocalesFile';
+
+const Collection = dynamic(() => import('@modules/collection'));
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {

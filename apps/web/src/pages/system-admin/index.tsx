@@ -1,6 +1,8 @@
 import { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
 import getLocalesFile from '@common/utils/getLocalesFile';
-import SystemAdmin from '@modules/system-admin';
+
+const SystemAdmin = dynamic(() => import('@modules/system-admin'));
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {

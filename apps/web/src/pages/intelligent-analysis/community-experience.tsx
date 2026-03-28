@@ -1,7 +1,18 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
 import getLocalesFile from '@common/utils/getLocalesFile';
-import UserJourney from '@modules/intelligent-analysis/UserJourney';
+
+const UserJourney = dynamic(
+  () => import('@modules/intelligent-analysis/UserJourney'),
+  {
+    loading: () => (
+      <div className="flex min-h-screen items-center justify-center px-6 text-sm text-slate-500">
+        报告加载中...
+      </div>
+    ),
+  }
+);
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {

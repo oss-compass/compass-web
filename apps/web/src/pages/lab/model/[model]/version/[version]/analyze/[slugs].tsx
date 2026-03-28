@@ -1,11 +1,13 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
 import AuthRequire from '@modules/auth/AuthRequire';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
-import AnalyzePage from '@modules/lab/model/Analyze';
 import ModelVersionProvider from '@modules/lab/model/Provider/ModelVersionProvider';
+
+const AnalyzePage = dynamic(() => import('@modules/lab/model/Analyze'));
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
