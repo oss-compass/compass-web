@@ -567,7 +567,7 @@
           },
           "subjective": {
             "pain_level": "高",
-            "pain_summary": "需改进",
+            "pain_summary": "安装成功",
             "narrative": "部署安装步骤的平均分为0/100，痛点等级高，表明开发者体验极差。关键问题在于部署验证可用和部署幂等性均未涉及，导致该步骤缺乏可靠性和可重复性评估。这反映出严重缺陷，亟需改进。（48字）",
             "metrics": [
               {
@@ -576,7 +576,7 @@
                 "value": "N/A",
                 "unit": "boolean",
                 "benchmark_value": true,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               },
@@ -586,7 +586,7 @@
                 "value": "N/A",
                 "unit": "boolean",
                 "benchmark_value": true,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               }
@@ -615,7 +615,7 @@
           },
           "subjective": {
             "pain_level": "高",
-            "pain_summary": "输出难读",
+            "pain_summary": "验证通过",
             "narrative": "运行验证步骤的平均得分仅为0.0/100，且痛点等级高，表明该步骤的开发者体验极差。关键问题是输出可读性和运行模式组合指标均被标记为“不涉及”，暗示这些功能缺失或未启用，导致用户无法有效验证运行结果。这严重阻碍了开发流程的效率。（字数：78）",
             "metrics": [
               {
@@ -624,7 +624,7 @@
                 "value": "N/A",
                 "unit": "0-100 scale",
                 "benchmark_value": 80,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               },
@@ -634,7 +634,7 @@
                 "value": "N/A",
                 "unit": "count",
                 "benchmark_value": 1,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               }

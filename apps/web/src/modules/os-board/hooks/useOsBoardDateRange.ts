@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import { rangeTags, timeRange, RangeTag } from '@modules/analyze/constant';
 
 const defaultVal = {
-  range: '6M' as RangeTag,
-  timeStart: timeRange['6M'].start,
-  timeEnd: timeRange['6M'].end,
+  range: '3M' as RangeTag,
+  timeStart: timeRange['3M'].start,
+  timeEnd: timeRange['3M'].end,
 };
 
 /**

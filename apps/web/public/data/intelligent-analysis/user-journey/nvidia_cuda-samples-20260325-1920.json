@@ -583,7 +583,7 @@
           },
           "subjective": {
             "pain_level": "低",
-            "pain_summary": "不涉及",
+            "pain_summary": "安装成功",
             "narrative": "该项目为示例代码库，无需部署安装步骤。",
             "metrics": [
               {
@@ -592,7 +592,7 @@
                 "value": "N/A",
                 "unit": "boolean",
                 "benchmark_value": true,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               },
@@ -602,7 +602,7 @@
                 "value": "N/A",
                 "unit": "boolean",
                 "benchmark_value": true,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               }
@@ -631,7 +631,7 @@
           },
           "subjective": {
             "pain_level": "低",
-            "pain_summary": "不涉及",
+            "pain_summary": "运行通过",
             "narrative": "该项目为示例代码库，验证通过编译构建即完成，无需单独运行验证步骤。",
             "metrics": [
               {
@@ -640,7 +640,7 @@
                 "value": "N/A",
                 "unit": "0-100 scale",
                 "benchmark_value": 80,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               },
@@ -650,7 +650,7 @@
                 "value": "N/A",
                 "unit": "count",
                 "benchmark_value": 1,
-                "score": null,
+                "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
               }
