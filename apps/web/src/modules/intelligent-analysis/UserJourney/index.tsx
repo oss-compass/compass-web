@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Col, Row } from 'antd';
 import { useRouter } from 'next/router';
 import CompareReportSummary from './components/CompareReportSummary';
@@ -50,9 +50,16 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   transparentPageHeader = false,
 }) => {
   const router = useRouter();
-  const requestedProjects = useMemo(
+  const requestedProjectsRaw = useMemo(
     () => normalizeRequestedProjects(router.query.project),
     [router.query.project]
+  );
+  // 稳定化引用：内容相同时不产生新数组，避免 iframe 场景下 router 重新初始化导致重复加载
+  const requestedProjectsKey = requestedProjectsRaw.join(',');
+  const requestedProjects = useMemo(
+    () => requestedProjectsRaw,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [requestedProjectsKey]
   );
   const [projectViews, setProjectViews] = useState<UserJourneyProjectView[]>(
     []
@@ -63,12 +70,19 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   const [journeyMode, setJourneyMode] = useState('');
   const compareMode = projectViews.length > 1;
   const primaryProject = projectViews[0]?.data ?? null;
+  // 记录上一次已加载的 key，避免 router 对象重新初始化时重复加载相同数据
+  const loadedKeyRef = useRef<string>('');
 
   useEffect(() => {
     if (!router.isReady) {
       return;
     }
 
+    if (loadedKeyRef.current === requestedProjectsKey) {
+      return;
+    }
+
+    loadedKeyRef.current = requestedProjectsKey;
     let isCancelled = false;
 
     setLoadingError(null);
