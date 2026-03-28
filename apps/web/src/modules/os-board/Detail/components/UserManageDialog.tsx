@@ -115,7 +115,7 @@ const UserManageDialog: React.FC<UserManageDialogProps> = ({
               <Input
                 className="flex-1"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(value) => setEmail(value)}
                 placeholder={t(
                   'os_board:manage.permissions.invite_placeholder'
                 )}
