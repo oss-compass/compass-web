@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GrClose } from 'react-icons/gr';
 import { Button, Input, Modal } from '@oss-compass/ui';
 import classnames from 'classnames';
-import { MODEL_CONFIGS } from '../../config/modelMetrics';
 
 interface Model {
   id: string;
@@ -42,17 +41,8 @@ const ModelSelectionModal: React.FC<ModelSelectionModalProps> = ({
     }
   }, [open, selectedModelIds]);
 
-  // 从公共配置生成模型数据，并应用国际化
-  const allModels: Model[] = useMemo(() => {
-    return MODEL_CONFIGS.map((config) => ({
-      id: config.id,
-      name: t(config.i18nKey),
-      groups: config.metrics.map((m) => ({
-        id: m.id,
-        name: t(m.i18nKey),
-      })),
-    }));
-  }, [t]);
+  // 从公共配置生成模型数据（MODEL_CONFIGS 已废弃，暂为空列表）
+  const allModels: Model[] = [];
 
   // 过滤模型
   const filteredModels = allModels.filter(

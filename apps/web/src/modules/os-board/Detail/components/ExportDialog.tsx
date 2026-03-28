@@ -2,8 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@common/components/Dialog';
 import { Button } from '@oss-compass/ui';
-import { actions, buildReportText, saveToStorage } from '../../state';
-import type { OsBoardExportFormat } from '../../types';
 
 interface ExportDialogProps {
   open: boolean;
@@ -12,48 +10,15 @@ interface ExportDialogProps {
   dashboardName: string;
 }
 
-const ExportDialog: React.FC<ExportDialogProps> = ({
-  open,
-  onClose,
-  dashboardId,
-  dashboardName,
-}) => {
+const ExportDialog: React.FC<ExportDialogProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const doExport = (format: OsBoardExportFormat) => {
-    const res = actions.exportDashboardSnapshot(dashboardId, format);
-    if (!res.ok) return;
-    const filename =
-      format === 'json'
-        ? `${dashboardName}.json`
-        : format === 'csv'
-        ? `${dashboardName}.csv`
-        : `${dashboardName}.txt`;
-    const blob = new Blob([res.payload], {
-      type:
-        format === 'json'
-          ? 'application/json;charset=utf-8'
-          : format === 'csv'
-          ? 'text/csv;charset=utf-8'
-          : 'text/plain;charset=utf-8',
-    });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    saveToStorage();
+  const doExport = (_format: 'json' | 'csv' | 'pdf') => {
+    // TODO: 接入后端导出接口
   };
 
-  const downloadText = (filename: string, content: string) => {
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
+  const downloadReport = (_template: 'weekly' | 'monthly') => {
+    // TODO: 接入后端报告生成接口
   };
 
   return (
@@ -80,30 +45,10 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
             {t('os_board:detail.report')}
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              onClick={() => {
-                const text = buildReportText({
-                  dashboardId,
-                  template: 'weekly',
-                });
-                if (!text) return;
-                downloadText(`${dashboardName}-weekly-report.txt`, text);
-              }}
-            >
+            <Button size="sm" onClick={() => downloadReport('weekly')}>
               {t('os_board:detail.report_weekly')}
             </Button>
-            <Button
-              size="sm"
-              onClick={() => {
-                const text = buildReportText({
-                  dashboardId,
-                  template: 'monthly',
-                });
-                if (!text) return;
-                downloadText(`${dashboardName}-monthly-report.txt`, text);
-              }}
-            >
+            <Button size="sm" onClick={() => downloadReport('monthly')}>
               {t('os_board:detail.report_monthly')}
             </Button>
           </div>

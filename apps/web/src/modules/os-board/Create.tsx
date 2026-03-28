@@ -7,7 +7,6 @@ import Center from '@common/components/Layout/Center';
 import { Button } from '@oss-compass/ui';
 import Dialog from '@common/components/Dialog';
 import { useCreateDashboard } from './api/dashboard';
-import { MODEL_CONFIGS } from './config/modelMetrics';
 import DashboardForm, {
   DashboardFormRef,
   DashboardFormValues,
@@ -26,12 +25,9 @@ const CreateDashboard = () => {
       // 构建模型属性数组
       const dashboardModelsAttributes = (values.selectedModels || []).map(
         (modelIdent) => {
-          const modelConfig = MODEL_CONFIGS.find((m) => m.id === modelIdent);
           return {
-            name: modelConfig?.id || modelIdent,
-            description: modelConfig?.i18nKey
-              ? t(modelConfig.i18nKey)
-              : modelIdent,
+            name: modelIdent,
+            description: modelIdent,
             dashboard_model_info_id: 0, // 后端会自动处理
             dashboard_model_info_ident: modelIdent,
           };

@@ -3,13 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { GrClose } from 'react-icons/gr';
 import { Button, Modal, Switch } from '@oss-compass/ui';
 import classnames from 'classnames';
-import { osBoardState, actions, saveToStorage } from '../../state';
 import type {
   OsBoardAlertRule,
   OsBoardAlertCondition,
   OsBoardAlertLevel,
-  OsBoardMetric,
-  OsBoardDerivedMetric,
 } from '../../types';
 
 // 阈值类型
@@ -57,7 +54,6 @@ const thresholdTypeOptions: { value: ThresholdType; labelKey: string }[] = [
 const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   open,
   onClose,
-  dashboardId,
   presetMetricId,
   editRuleId,
 }) => {
@@ -72,34 +68,22 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   const [enabled, setEnabled] = useState<boolean>(true);
   const [channels, setChannels] = useState<Array<'inbox' | 'email'>>(['inbox']);
 
-  // 可选指标列表 - 直接使用 proxy state
-  const selectableMetrics = [
-    ...osBoardState.metrics,
-    ...osBoardState.derivedMetrics,
-  ] as (OsBoardMetric | OsBoardDerivedMetric)[];
+  // 暂无后端接口，可选指标列表为空
+  const selectableMetrics: Array<{
+    id: string;
+    name: string;
+    category: string;
+  }> = [];
 
-  // 当前看板的预警规则 - 直接使用 proxy state
-  const dashboardRules = osBoardState.alertRules.filter(
-    (r) => r.dashboardId === dashboardId
-  );
+  // 暂无后端接口，当前指标已有规则为空
+  const currentMetricRules: OsBoardAlertRule[] = [];
 
-  // 当前指标的预警规则（用于显示已有规则列表）
-  const currentMetricRules = metricId
-    ? dashboardRules.filter((r) => r.metricId === metricId)
-    : [];
+  const isFormValid = metricId && threshold !== undefined;
 
   // 编辑模式下加载规则数据
   useEffect(() => {
     if (editRuleId && open) {
-      const rule = osBoardState.alertRules.find((r) => r.id === editRuleId);
-      if (rule) {
-        setMetricId(rule.metricId);
-        setCondition(rule.condition);
-        setThreshold(rule.threshold);
-        setLevel(rule.level);
-        setEnabled(rule.enabled);
-        setChannels([...rule.channels]);
-      }
+      // TODO: 接入后端获取规则详情
     }
   }, [editRuleId, open]);
 
@@ -130,76 +114,14 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   // 保存规则
   const handleSave = () => {
     if (!metricId) return;
-
-    // 根据阈值类型转换阈值（这里简化处理，实际可能需要更复杂的逻辑）
-    let finalThreshold = threshold;
-    if (thresholdType === 'percentage') {
-      // 百分比转换为小数
-      finalThreshold = threshold / 100;
-    }
-
-    const rule: Omit<OsBoardAlertRule, 'id'> & { id?: string } = {
-      id: editRuleId,
-      dashboardId,
-      metricId,
-      condition,
-      threshold: finalThreshold,
-      level,
-      channels,
-      enabled,
-    };
-
-    actions.upsertAlertRule(rule);
-    saveToStorage();
+    // TODO: 接入后端保存接口
     handleClose();
-  };
-
-  // 删除规则
-  const handleDelete = (ruleId: string) => {
-    actions.removeAlertRule(ruleId);
-    saveToStorage();
-  };
-
-  // 编辑规则
-  const handleEdit = (rule: OsBoardAlertRule) => {
-    setMetricId(rule.metricId);
-    setCondition(rule.condition);
-    setThreshold(rule.threshold);
-    setLevel(rule.level);
-    setEnabled(rule.enabled);
-    setChannels([...rule.channels] as Array<'inbox' | 'email'>);
-  };
-
-  // 切换规则启用状态
-  const handleToggleEnabled = (ruleId: string) => {
-    const rule = osBoardState.alertRules.find((r) => r.id === ruleId);
-    if (rule) {
-      actions.upsertAlertRule({
-        ...rule,
-        channels: [...rule.channels] as Array<'inbox' | 'email'>,
-        enabled: !rule.enabled,
-      });
-      saveToStorage();
-    }
-  };
-
-  const isFormValid = metricId && threshold !== undefined;
-
-  // 获取指标名称
-  const getMetricName = (id: string) => {
-    const metric = selectableMetrics.find((m) => m.id === id);
-    return metric?.name || id;
   };
 
   // 获取条件显示文本
   const getConditionLabel = (cond: OsBoardAlertCondition) => {
     const opt = conditionOptions.find((o) => o.value === cond);
     return opt?.label || cond;
-  };
-
-  // 获取级别显示文本
-  const getLevelLabel = (lvl: OsBoardAlertLevel) => {
-    return t(`os_board:alert_dialog.levels.${lvl}`);
   };
 
   // 级别对应的按钮样式
@@ -228,6 +150,11 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
       default:
         return 'bg-gray-100 text-gray-700';
     }
+  };
+
+  // 获取级别显示文本
+  const getLevelLabel = (lvl: OsBoardAlertLevel) => {
+    return t(`os_board:alert_dialog.levels.${lvl}`);
   };
 
   return (
@@ -467,44 +394,6 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
                           ({t('os_board:alert_dialog.disabled')})
                         </span>
                       )}
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        className="border px-3 py-1 text-xs hover:bg-gray-50"
-                        onClick={() =>
-                          handleEdit({
-                            id: rule.id,
-                            dashboardId: rule.dashboardId,
-                            metricId: rule.metricId,
-                            condition: rule.condition,
-                            threshold: rule.threshold,
-                            level: rule.level,
-                            channels: [...rule.channels] as Array<
-                              'inbox' | 'email'
-                            >,
-                            enabled: rule.enabled,
-                          })
-                        }
-                      >
-                        {t('common:btn.edit')}
-                      </button>
-                      <button
-                        type="button"
-                        className="border px-3 py-1 text-xs hover:bg-gray-50"
-                        onClick={() => handleToggleEnabled(rule.id)}
-                      >
-                        {rule.enabled
-                          ? t('os_board:alert_dialog.disable')
-                          : t('os_board:alert_dialog.enable')}
-                      </button>
-                      <button
-                        type="button"
-                        className="border border-red-200 px-3 py-1 text-xs text-red-600 hover:bg-red-50"
-                        onClick={() => handleDelete(rule.id)}
-                      >
-                        {t('common:btn.delete')}
-                      </button>
                     </div>
                   </div>
                 ))}

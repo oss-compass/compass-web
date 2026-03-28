@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { GrClose } from 'react-icons/gr';
 import { Button, Modal, Switch } from '@oss-compass/ui';
 import classnames from 'classnames';
-import { osBoardState, actions, saveToStorage } from '../../state';
 import type {
   OsBoardAlertRule,
   OsBoardAlertCondition,
@@ -40,26 +39,18 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editRuleId, setEditRuleId] = useState<string | undefined>();
 
-  // 获取指标名称
-  const getMetricName = (id: string) => {
-    const metrics = [...osBoardState.metrics, ...osBoardState.derivedMetrics];
-    const metric = metrics.find((m) => m.id === id);
-    return metric?.name || id;
-  };
+  const getMetricName = (id: string) => id;
 
-  // 当前看板的预警规则（可能按指标过滤）
-  const dashboardRules = osBoardState.alertRules.filter(
-    (r) =>
-      r.dashboardId === dashboardId && (!metricId || r.metricId === metricId)
-  );
-
-  // 当前看板的触发记录（可能按指标过滤）
-  const dashboardEvents = osBoardState.alertEvents
-    .filter(
-      (e) =>
-        e.dashboardId === dashboardId && (!metricId || e.metricId === metricId)
-    )
-    .slice(0, 50);
+  // 暂无后端接口，保持空数组
+  const dashboardRules: OsBoardAlertRule[] = [];
+  const dashboardEvents: Array<{
+    id: string;
+    metricId: string;
+    level: OsBoardAlertLevel;
+    value: number;
+    threshold: number;
+    createdAt: string;
+  }> = [];
 
   // 弹窗标题
   const dialogTitle = metricId
@@ -81,19 +72,13 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
   };
 
   // 切换启用状态
-  const handleToggleEnabled = (rule: OsBoardAlertRule) => {
-    actions.upsertAlertRule({
-      ...rule,
-      channels: [...rule.channels] as Array<'inbox' | 'email'>,
-      enabled: !rule.enabled,
-    });
-    saveToStorage();
+  const handleToggleEnabled = (_rule: OsBoardAlertRule) => {
+    // TODO: 接入后端切换启用接口
   };
 
   // 删除规则
-  const handleDelete = (ruleId: string) => {
-    actions.removeAlertRule(ruleId);
-    saveToStorage();
+  const handleDelete = (_ruleId: string) => {
+    // TODO: 接入后端删除接口
   };
 
   // 编辑规则
@@ -164,41 +149,38 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
           <div className="thin-scrollbar h-[calc(100%-130px)] overflow-y-auto px-8 py-4">
             {activeTab === 'rules' && (
               <div>
-                {dashboardRules.length === 0 ? (
-                  <div className="flex flex-col items-center py-20">
-                    <p className="mb-4 text-gray-400">{t('common:no_data')}</p>
-                    {/* <Button
-                      onClick={() => {
-                        setEditRuleId(undefined);
-                        setAddDialogOpen(true);
-                      }}
-                    >
-                      {t('os_board:alert_manage.add_rule')}
-                    </Button> */}
-                  </div>
-                ) : (
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b bg-gray-50 text-left">
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.metric')}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.condition')}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.level')}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.status')}
-                        </th>
-                        <th className="px-3 py-3 text-center font-medium">
-                          {t('os_board:alert_manage.table.actions')}
-                        </th>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b bg-gray-50 text-left">
+                      <th className="px-3 py-3 font-medium">
+                        {t('os_board:alert_manage.table.metric')}
+                      </th>
+                      <th className="px-3 py-3 font-medium">
+                        {t('os_board:alert_manage.table.condition')}
+                      </th>
+                      <th className="px-3 py-3 font-medium">
+                        {t('os_board:alert_manage.table.level')}
+                      </th>
+                      <th className="px-3 py-3 font-medium">
+                        {t('os_board:alert_manage.table.status')}
+                      </th>
+                      <th className="px-3 py-3 text-center font-medium">
+                        {t('os_board:alert_manage.table.actions')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dashboardRules.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="py-20 text-center text-gray-400"
+                        >
+                          {t('common:no_data')}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {dashboardRules.map((rule) => (
+                    ) : (
+                      dashboardRules.map((rule) => (
                         <tr key={rule.id} className="border-b hover:bg-gray-50">
                           <td className="px-3 py-3">
                             {getMetricName(rule.metricId)}
@@ -240,10 +222,10 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
                             </button>
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             )}
 
@@ -255,25 +237,6 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
                   </div>
                 ) : (
                   <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b bg-gray-50 text-left">
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.metric')}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.level')}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.value')}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.threshold')}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.trigger_time')}
-                        </th>
-                      </tr>
-                    </thead>
                     <tbody>
                       {dashboardEvents.map((event) => (
                         <tr

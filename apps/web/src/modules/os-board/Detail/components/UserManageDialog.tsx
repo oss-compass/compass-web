@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal, Input } from '@oss-compass/ui';
 import { GrClose } from 'react-icons/gr';
-import { osBoardState, actions, saveToStorage } from '../../state';
-import type { OsBoardRole } from '../../types';
 import classNames from 'classnames';
+import type { OsBoardRole } from '../../types';
 
 interface UserManageDialogProps {
   open: boolean;
@@ -12,7 +11,6 @@ interface UserManageDialogProps {
   dashboardId: string;
 }
 
-// 模拟 SelectDrowBox 简单的下拉选择组件
 const SimpleSelect = ({
   value,
   options,
@@ -66,108 +64,87 @@ const SimpleSelect = ({
 const UserManageDialog: React.FC<UserManageDialogProps> = ({
   open,
   onClose,
-  dashboardId,
 }) => {
   const { t } = useTranslation();
-  const dashboard = osBoardState.dashboards.find((d) => d.id === dashboardId);
 
   const [email, setEmail] = useState('');
   const [addRole, setAddRole] = useState<OsBoardRole>('viewer');
 
-  if (!dashboard) return null;
+  // 成员列表暂无后端接口，保持空
+  const permissions: Array<{ userId: string; role: OsBoardRole }> = [];
 
   const handleSendInvite = () => {
     if (!email.trim()) return;
-    // 模拟发送邀请
-    actions.addDashboardMember({
-      dashboardId,
-      userId: email.trim(), // 暂时用 email 作为 userId
-      role: addRole,
-    });
-    saveToStorage();
+    // TODO: 接入后端邀请接口
     setEmail('');
   };
 
-  const handleRemoveMember = (userId: string) => {
-    actions.removeDashboardMember({ dashboardId, userId });
-    saveToStorage();
+  const handleRemoveMember = (_userId: string) => {
+    // TODO: 接入后端删除接口
   };
 
-  const handleRoleChange = (userId: string, role: OsBoardRole) => {
-    actions.setDashboardMemberRole({ dashboardId, userId, role });
-    saveToStorage();
+  const handleRoleChange = (_userId: string, _role: OsBoardRole) => {
+    // TODO: 接入后端角色修改接口
   };
 
   const roleOptions = [
-    { value: 'viewer', label: t('os_board:manage.permissions.roles.viewer') },
-    { value: 'editor', label: t('os_board:manage.permissions.roles.editor') },
-    { value: 'owner', label: t('os_board:manage.permissions.roles.owner') },
+    { label: t('os_board:manage.permissions.roles.viewer'), value: 'viewer' },
+    { label: t('os_board:manage.permissions.roles.editor'), value: 'editor' },
   ];
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="relative h-[80vh] w-[80vw] max-w-[1000px] border-2 border-black bg-white shadow outline-0">
-        {/* Close Button */}
+      <div className="relative w-[480px] border-2 border-black bg-white shadow outline-0">
         <div
           className="absolute right-6 top-6 cursor-pointer p-2 hover:bg-gray-100"
           onClick={onClose}
         >
           <GrClose />
         </div>
+        <div className="px-8 pb-8 pt-8">
+          <h2 className="mb-6 text-xl font-semibold">
+            {t('os_board:manage.permissions.title')}
+          </h2>
 
-        <div className="flex h-full flex-col p-10">
-          {/* Header */}
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold">
-              {t('os_board:manage.permissions.title')}
-            </h2>
-          </div>
-
-          {/* Invite Section (FormInvite style) */}
-          <div className="mb-10">
-            <div className="mb-2 text-sm font-medium">
-              {t('lab:user.invite_users')}
+          {/* 邀请区域 */}
+          <div className="mb-6">
+            <div className="mb-1 text-sm font-medium text-gray-700">
+              {t('os_board:manage.permissions.invite_label')}
             </div>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex-1">
-                <Input
-                  value={email}
-                  intent={'secondary'}
-                  placeholder={t('lab:user.input_email')}
-                  onChange={(e) => setEmail(e)}
-                />
-              </div>
+            <div className="flex gap-2">
+              <Input
+                className="flex-1"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t(
+                  'os_board:manage.permissions.invite_placeholder'
+                )}
+              />
               <SimpleSelect
                 value={addRole}
                 options={roleOptions}
-                onChange={(val) => setAddRole(val as OsBoardRole)}
+                onChange={(v) => setAddRole(v as OsBoardRole)}
               />
-              <Button
-                disabled={!email}
-                onClick={handleSendInvite}
-                className="h-10 min-w-[100px] border border-black bg-white text-black"
-              >
-                {t('lab:user.send_email')}
+              <Button size="sm" onClick={handleSendInvite}>
+                {t('os_board:manage.permissions.invite_btn')}
               </Button>
             </div>
           </div>
 
-          {/* Members List (FormUsers style) */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="mb-4 text-sm font-medium">
-              {t('lab:user.member')} ({dashboard.permissions.length})
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {dashboard.permissions.map((p) => (
+          {/* 成员列表 */}
+          <div className="max-h-64 overflow-y-auto">
+            {permissions.length === 0 ? (
+              <div className="py-8 text-center text-sm text-gray-400">
+                {t('common:no_data')}
+              </div>
+            ) : (
+              permissions.map((p) => (
                 <div
                   key={p.userId}
-                  className={classNames(
-                    'flex h-32 flex-col justify-between border border-[#CCCCCC] p-4',
-                    'bg-white text-black'
-                  )}
+                  className="mb-3 grid grid-cols-[1fr_auto_auto] items-center gap-3 border-b pb-3"
                 >
-                  <div className="flex">
-                    <div className="relative mr-4 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-lg font-bold text-gray-500">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-lg font-bold text-gray-500">
                       {p.userId.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex flex-col">
@@ -198,7 +175,6 @@ const UserManageDialog: React.FC<UserManageDialogProps> = ({
                         >
                           {t('common:btn.delete')}
                         </button>
-                        {/* 简单的角色切换下拉 */}
                         <select
                           className="text-xs outline-none"
                           value={p.role}
@@ -220,8 +196,8 @@ const UserManageDialog: React.FC<UserManageDialogProps> = ({
                     )}
                   </div>
                 </div>
-              ))}
-            </div>
+              ))
+            )}
           </div>
         </div>
       </div>

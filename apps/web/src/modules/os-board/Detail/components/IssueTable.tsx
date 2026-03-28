@@ -209,8 +209,12 @@ const IssueTable: React.FC<IssueTableProps> = ({
 
   // 表格数据
   const repoTableData = issuesDetailData?.items || [];
-  const displayTableData =
-    dashboardType === 'community' ? communityTableData : repoTableData;
+  // Community 聚合表格接口未接入前，先复用明细接口数据，避免出现分页有数据但表格为空。
+  const useCommunityAggregateTable =
+    dashboardType === 'community' && communityTableData.length > 0;
+  const displayTableData = useCommunityAggregateTable
+    ? communityTableData
+    : repoTableData;
 
   // 处理表格变更
   const handleTableChange = (
@@ -466,10 +470,14 @@ const IssueTable: React.FC<IssueTableProps> = ({
   ];
 
   // 根据维度选择列配置
-  const displayColumns =
-    dashboardType === 'community' ? communityColumns : repoColumns;
+  const displayColumns = useCommunityAggregateTable
+    ? communityColumns
+    : repoColumns;
 
-  const isTableLoading = repoLoading || repoFetching;
+  const isTableLoading =
+    repoLoading ||
+    repoFetching ||
+    (useCommunityAggregateTable && communityLoading);
 
   return (
     <BaseCard
@@ -559,7 +567,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
               displayColumns as ColumnsType<IssueDetail | CommunityIssueRecord>
             }
             dataSource={displayTableData}
-            rowKey={dashboardType === 'community' ? 'id' : 'url'}
+            rowKey={useCommunityAggregateTable ? 'id' : 'url'}
             loading={isTableLoading || statsLoading}
             onChange={handleTableChange}
             pagination={tableParams.pagination}

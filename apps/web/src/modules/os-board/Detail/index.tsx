@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import { useSnapshot } from 'valtio';
 import { toast } from 'react-hot-toast';
-import { Button } from '@oss-compass/ui';
-import { osBoardState } from '../state';
-import { useDashboardByIdentifier, useUpdateDashboard } from '../api/dashboard';
-import { MODEL_CONFIGS } from '../config/modelMetrics';
+import {
+  useDashboardByIdentifier,
+  useUpdateDashboard,
+  useDeleteDashboard,
+} from '../api/dashboard';
 import {
   DashboardContextProvider,
   DashboardStatus,
@@ -34,8 +34,6 @@ const DetailContent: React.FC<{
 }> = ({ dashboard, refetch }) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const snap = useSnapshot(osBoardState);
-
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -43,6 +41,7 @@ const DetailContent: React.FC<{
   const [userManageOpen, setUserManageOpen] = useState(false);
 
   const updateMutation = useUpdateDashboard();
+  const deleteMutation = useDeleteDashboard();
 
   const handleEdit = () => {
     setEditOpen(true);
@@ -53,12 +52,9 @@ const DetailContent: React.FC<{
       // 构建模型属性数组
       const dashboardModelsAttributes = (values.selectedModels || []).map(
         (modelIdent) => {
-          const modelConfig = MODEL_CONFIGS.find((m) => m.id === modelIdent);
           return {
-            name: modelConfig?.id || modelIdent,
-            description: modelConfig?.i18nKey
-              ? t(modelConfig.i18nKey)
-              : modelIdent,
+            name: modelIdent,
+            description: modelIdent,
             dashboard_model_info_id: 0,
             dashboard_model_info_ident: modelIdent,
           };
@@ -118,10 +114,19 @@ const DetailContent: React.FC<{
     setAlertManageOpen(true);
   };
 
-  const handleDelete = () => {
-    // TODO: 调用删除 API
-    setConfirmDelete(false);
-    router.push('/os-board');
+  const handleDelete = async () => {
+    try {
+      await deleteMutation.mutateAsync({ id: String(dashboard.id) });
+      setConfirmDelete(false);
+      router.push('/os-board');
+    } catch (error: any) {
+      console.error('删除看板失败', error);
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          t('common:toast.delete_failed')
+      );
+    }
   };
 
   // 解析 repo_urls

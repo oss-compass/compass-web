@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import { useSnapshot } from 'valtio';
-import { osBoardState } from '../state';
-import { MODEL_METRICS_MAP } from '../config/modelMetrics';
 import { useModelMetricList } from '../api/dashboard';
+
+// MODEL_METRICS_MAP 已废弃，使用空映射占位
+const MODEL_METRICS_MAP: Record<string, string[]> = {};
 import {
   useCollaborationDevelopmentIndex,
   useCommunityServiceAndSupport,
@@ -25,7 +25,6 @@ export const useDashboardMetrics = ({
   initialValues,
 }: DashboardMetricsHookProps) => {
   const { t } = useTranslation();
-  const snap = useSnapshot(osBoardState);
 
   const [metricIds, setMetricIds] = useState<string[]>([]);
   // 记录隐藏的指标（用于后端标记）
@@ -120,15 +119,11 @@ export const useDashboardMetrics = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedModels, manualMetricIds]);
 
-  // 使用新的 REST API 获取指标数据
+  // 使用 REST API 获取指标数据
   const { data: metricData } = useModelMetricList();
 
-  // 合并本地指标和远程指标，并更新指标到模型的映射
+  // 从远程 API 构建可选指标列表，并更新指标到模型的映射
   const selectableMetrics = useMemo(() => {
-    // 本地指标
-    const localMetrics = [...snap.metrics, ...snap.derivedMetrics];
-
-    // 从 API 数据中提取所有指标，同时更新映射关系
     const remoteMetrics: Array<{
       id: string;
       name: string;
@@ -171,23 +166,13 @@ export const useDashboardMetrics = ({
     // 更新映射关系
     setMetricToModelMap(newMetricToModelMap);
 
-    // 合并指标，避免重复
-    const remoteMetricMap = new Map(remoteMetrics.map((m) => [m.id, m]));
-    const allMetrics = [...localMetrics, ...remoteMetrics];
-    const uniqueMetrics = allMetrics
-      .filter(
-        (m, index, self) => index === self.findIndex((mm) => mm.id === m.id)
-      )
-      .map((m) => {
-        // 优先使用远程指标信息
-        if (remoteMetricMap.has(m.id)) {
-          return remoteMetricMap.get(m.id)!;
-        }
-        return m;
-      });
+    // 去重处理
+    const uniqueMetrics = remoteMetrics.filter(
+      (m, index, self) => index === self.findIndex((mm) => mm.id === m.id)
+    );
 
     return uniqueMetrics;
-  }, [snap.metrics, snap.derivedMetrics, metricData]);
+  }, [metricData]);
 
   const handleReorder = (newIds: string[]) => {
     // 重新排序时，直接更新 metricIds，保持用户排序
