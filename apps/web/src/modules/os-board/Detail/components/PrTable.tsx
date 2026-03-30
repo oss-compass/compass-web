@@ -44,7 +44,7 @@ interface TableParams {
 const STATE_OPTIONS = [
   { value: 'open', text: 'analyze:metric_detail:open' },
   { value: 'merged', text: 'analyze:metric_detail:merged' },
-  { value: 'rejected', text: 'analyze:metric_detail:rejected' },
+  // { value: 'rejected', text: 'analyze:metric_detail:rejected' },
   { value: 'closed', text: 'analyze:metric_detail:closed' },
 ];
 
