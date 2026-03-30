@@ -426,9 +426,9 @@ const PrTable: React.FC<PrTableProps> = ({
         filteredValue: getFilteredValues(tableParams.filterOpts, 'repository'),
         render: (text: string | null, record) => {
           const repositoryName = getRepositoryDisplayName(text);
-          return repositoryName && record.url ? (
+          return repositoryName && record.repository ? (
             <a
-              href={record.url}
+              href={record.repository}
               target="_blank"
               rel="noreferrer"
               title={repositoryName}
