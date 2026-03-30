@@ -453,7 +453,7 @@
           "subjective": {
             "pain_level": "中低",
             "pain_summary": "依赖不透明",
-            "narrative": "在获取代码步骤中，平均得分65.0（痛点等级中低），克隆成功率为100%，表现优异；但依赖透明度仅30分，表明未检测到依赖声明，这构成关键挑战，可能导致后续依赖管理问题。（59字）",
+            "narrative": "在获取代码步骤中，平均得分65.0（痛点等级中低），克隆成功率为100%，表现优异；但依赖透明度仅30分，表明未检测到依赖声明，这构成关键挑战，可能导致后续依赖管理问题。",
             "metrics": [
               {
                 "metric_id": "SDX_CLONE_SUCCESS_RATE",
@@ -600,7 +600,7 @@
           "subjective": {
             "pain_level": "不涉及",
             "pain_summary": "流程中断",
-            "narrative": "基于提供的指标数据，对\"部署安装 (S5_DEPLOY)\"步骤的分析如下：\n\n**当前状态**：文档中未检测出相关步骤\n**关键问题**：核心指标\"部署验证可用\"与\"部署幂等性\"均未涉及，说明部署后无法确认成功性，且重复操作存在风险。  \n**影响**：这导致部署过程极不可靠，是开发者体验的明显瓶颈。  \n\n（字数：98）",
+            "narrative": "文档中未检测出相关步骤；关键问题在于部署验证和幂等性均未涉及，意味着这些功能未被评估或实现，导致整体体验不佳。这突出了立即改进部署可靠性和测试覆盖的紧迫性。",
             "metrics": [
               {
                 "metric_id": "SDX_DEPLOY_VERIFY_AVAILABLE",
@@ -699,7 +699,7 @@
       "priority": "高",
       "category": "S0_DISCOVER",
       "title": "优化搜索可发现性",
-      "description": "【搜索与发现】在项目的 GitHub 仓库描述和 README.md 文件中添加高相关性关键词（如 \"数学优化工具\" 或 \"cann ops math\"），并确保文档页面的 meta 标签（如 title 和 description）包含这些术语，以提高搜索可见性和降低 SDX_SEARCH_ROUNDS。（当前评分：25分）",
+      "description": "【搜索与发现】在项目的 GitHub 仓库描述和 README.md 文件中添加高相关性关键词（如 \"数学优化工具\" 或 \"cann ops math\"），并确保文档页面的 meta 标签（如 title 和 description）包含这些术语，以提高搜索可见性和降低 SDX_SEARCH_ROUNDS。",
       "expected_improvement": "预估改善幅度: ~20%；实施成本: 高",
       "related_metric_ids": [
         "SDX_SEARCH_ROUNDS"
@@ -712,7 +712,7 @@
       "priority": "低",
       "category": "S2_ENVIRONMENT",
       "title": "减少环境配置步骤",
-      "description": "【环境准备】为cann/ops-math项目开发一个Python自动化安装脚本或Docker镜像，一键执行所有依赖安装和环境配置步骤，将SDX_ENV_STEP_COUNT减少50%以上。（当前指标评分：60/100）",
+      "description": "【环境准备】为cann/ops-math项目开发一个Python自动化安装脚本或Docker镜像，一键执行所有依赖安装和环境配置步骤，将SDX_ENV_STEP_COUNT减少50%以上。",
       "expected_improvement": "预估改善幅度: ~10%；实施成本: 中",
       "related_metric_ids": [
         "SDX_ENV_STEP_COUNT"
@@ -725,7 +725,7 @@
       "priority": "高",
       "category": "S3_ACQUIRE",
       "title": "明确依赖版本要求",
-      "description": "【获取代码】为项目cann/ops-math，在README.md文件中添加一个\"依赖项\"章节，明确列出所有依赖库和精确版本（如NumPy>=1.0）。同时，创建一个简单的Shell脚本（如check_deps.sh），使用命令（如pip list）自动验证依赖版本。（当前指标评分：30/100）",
+      "description": "【获取代码】为项目cann/ops-math，在README.md文件中添加一个\"依赖项\"章节，明确列出所有依赖库和精确版本（如NumPy>=1.0）。同时，创建一个简单的Shell脚本（如check_deps.sh），使用命令（如pip list）自动验证依赖版本。",
       "expected_improvement": "预估改善幅度: ~20%；实施成本: 高",
       "related_metric_ids": [
         "SDX_DEPENDENCY_TRANSPARENCY"

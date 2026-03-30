@@ -670,7 +670,7 @@
       "priority": "高",
       "category": "",
       "title": "减少环境配置步骤",
-      "description": "【环境准备】提供自动化脚本检测 CUDA Toolkit 与驱动版本，或集成 Docker 配置文件，实现开发环境的一键构建与部署。（当前评分：70 分）",
+      "description": "【环境准备】提供自动化脚本检测 CUDA Toolkit 与驱动版本，或集成 Docker 配置文件，实现开发环境的一键构建与部署。",
       "expected_improvement": "",
       "related_metric_ids": [
         "SDX_ENV_STEP_COUNT"
@@ -681,7 +681,7 @@
       "priority": "高",
       "category": "",
       "title": "明确依赖版本要求",
-      "description": "【获取代码】在 README 中增设依赖章节，明确列出 CUDA Toolkit、驱动及 GPU 架构版本要求，并提供脚本检查 `nvcc` 和 `nvidia-smi` 版本。（当前评分：80 分）",
+      "description": "【获取代码】在 README 中增设依赖章节，明确列出 CUDA Toolkit、驱动及 GPU 架构版本要求，并提供脚本检查 `nvcc` 和 `nvidia-smi` 版本。",
       "expected_improvement": "",
       "related_metric_ids": [
         "SDX_DEPENDENCY_TRANSPARENCY"

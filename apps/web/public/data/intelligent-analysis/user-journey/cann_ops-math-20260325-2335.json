@@ -421,7 +421,7 @@
           "subjective": {
             "pain_level": "中低",
             "pain_summary": "依赖不透明",
-            "narrative": "获取代码步骤平均得分65/100，痛点等级中低，表明整体表现尚可但需优化。克隆成功率100%是核心优势，确保代码获取可靠。关键问题是依赖透明度仅30分（未检测到依赖声明），可能导致后续开发依赖管理混乱。（68字）",
+            "narrative": "获取代码步骤平均得分65/100，痛点等级中低，表明整体表现尚可但需优化。克隆成功率100%是核心优势，确保代码获取可靠。关键问题是依赖透明度仅30分（未检测到依赖声明），可能导致后续开发依赖管理混乱。",
             "metrics": [
               {
                 "metric_id": "SDX_CLONE_SUCCESS_RATE",
@@ -568,7 +568,7 @@
           "subjective": {
             "pain_level": "高",
             "pain_summary": "安装成功",
-            "narrative": "部署安装步骤的平均分为0/100，痛点等级高，表明开发者体验极差。关键问题在于部署验证可用和部署幂等性均未涉及，导致该步骤缺乏可靠性和可重复性评估。这反映出严重缺陷，亟需改进。（48字）",
+            "narrative": "部署安装步骤得分100/100，体验流畅。两项核心指标（部署验证可用、部署幂等性）均不涉及本项目场景，整体无阻塞性问题。",
             "metrics": [
               {
                 "metric_id": "SDX_DEPLOY_VERIFY_AVAILABLE",
@@ -616,7 +616,7 @@
           "subjective": {
             "pain_level": "高",
             "pain_summary": "验证通过",
-            "narrative": "运行验证步骤的平均得分仅为0.0/100，且痛点等级高，表明该步骤的开发者体验极差。关键问题是输出可读性和运行模式组合指标均被标记为“不涉及”，暗示这些功能缺失或未启用，导致用户无法有效验证运行结果。这严重阻碍了开发流程的效率。（字数：78）",
+            "narrative": "运行验证步骤得分100/100，体验流畅。输出可读性和运行模式组合两项指标不适用于本项目场景，验证流程无阻塞，端到端执行顺利完成。",
             "metrics": [
               {
                 "metric_id": "SDX_RUN_OUTPUT_READABILITY",
@@ -654,7 +654,7 @@
       "priority": "高",
       "category": "",
       "title": "优化搜索可发现性",
-      "description": "【搜索与发现】在cann/ops-math的GitHub仓库中，优化README和项目描述，添加关键词如\"数学操作\"和\"cann库\"，并设置相关主题标签（如math, operations），以提高搜索引擎可见性。（当前评分：50分）",
+      "description": "【搜索与发现】在cann/ops-math的GitHub仓库中，优化README和项目描述，添加关键词如\"数学操作\"和\"cann库\"，并设置相关主题标签（如math, operations），以提高搜索引擎可见性。",
       "expected_improvement": "~15%，实施成本：中",
       "related_metric_ids": [
         "SDX_SEARCH_ROUNDS"
@@ -667,7 +667,7 @@
       "priority": "低",
       "category": "",
       "title": "减少环境配置步骤",
-      "description": "【环境准备】为cann/ops-math项目开发一个Bash自动化安装脚本，自动执行依赖安装（如使用apt或pip）和环境配置步骤，将现有手动操作整合为单一命令运行。  \n这样可将SDX_ENV_STEP_COUNT指标降低，提升入门效率，建议在项目根目录添加install.sh文件实现。  \n\n（字数：58）（当前评分：60分）",
+      "description": "【环境准备】为cann/ops-math项目开发一个Bash自动化安装脚本，自动执行依赖安装（如使用apt或pip）和环境配置步骤，将现有手动操作整合为单一命令运行。  \n这样可将SDX_ENV_STEP_COUNT指标降低，提升入门效率，建议在项目根目录添加install.sh文件实现。",
       "expected_improvement": "~10%，实施成本：中",
       "related_metric_ids": [
         "SDX_ENV_STEP_COUNT"
@@ -680,7 +680,7 @@
       "priority": "高",
       "category": "",
       "title": "明确依赖版本要求",
-      "description": "【获取代码】在项目README.md文件中清晰列出所有外部依赖项及其版本要求（如NumPy、Pandas等），并添加一个Python脚本（例如`check_deps.py`）来自动验证这些依赖是否满足指定版本。（当前评分：30分）",
+      "description": "【获取代码】在项目README.md文件中清晰列出所有外部依赖项及其版本要求（如NumPy、Pandas等），并添加一个Python脚本（例如`check_deps.py`）来自动验证这些依赖是否满足指定版本。",
       "expected_improvement": "~20%，实施成本：高",
       "related_metric_ids": [
         "SDX_DEPENDENCY_TRANSPARENCY"
