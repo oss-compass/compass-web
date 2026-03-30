@@ -103,6 +103,10 @@ export interface PageResponse<T> {
   origin?: string | null;
 }
 
+export interface RepositoryListResponse {
+  items: string[];
+}
+
 // 排序选项
 export interface SortOptionInput {
   type: string;
@@ -149,6 +153,11 @@ export interface ContributorsDetailListRequest {
   sortOpts?: SortOptionInput;
   beginDate?: Date;
   endDate?: Date;
+}
+
+export interface RepositoryListRequest {
+  label: string;
+  level?: string;
 }
 
 // ========== 工具函数 ==========
@@ -305,6 +314,28 @@ export const fetchContributorsDetailList = async (
     }
   );
   return response.data;
+};
+
+/**
+ * 获取社区/仓库下的仓库列表
+ */
+export const fetchRepositoryList = async (
+  params: RepositoryListRequest
+): Promise<RepositoryListResponse> => {
+  const response = await axios.post<RepositoryListResponse>(
+    '/services/dashboard/repository_list',
+    {
+      ...params,
+      label: formatProjectLabel(params.label),
+    }
+  );
+  return {
+    items: Array.isArray(response.data?.items)
+      ? response.data.items
+          .filter((item): item is string => typeof item === 'string')
+          .map((item) => item.replaceAll('`', '').trim())
+      : [],
+  };
 };
 
 // ========== 概览统计 API ==========
@@ -515,6 +546,12 @@ interface UseOverviewOptions {
   enabled?: boolean;
 }
 
+interface UseRepositoryListOptions {
+  project: string;
+  level?: 'repo' | 'community';
+  enabled?: boolean;
+}
+
 /**
  * 贡献者概览统计 Hook
  */
@@ -592,6 +629,27 @@ export const useOsBoardPullsOverview = ({
       }),
     enabled: enabled && !!project,
     staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+/**
+ * 仓库列表 Hook
+ */
+export const useOsBoardRepositoryList = ({
+  project,
+  level = 'community',
+  enabled = true,
+}: UseRepositoryListOptions) => {
+  return useQuery({
+    queryKey: ['osBoardRepositoryList', project, level],
+    queryFn: () =>
+      fetchRepositoryList({
+        label: project,
+        level,
+      }),
+    enabled: enabled && !!project,
+    staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };

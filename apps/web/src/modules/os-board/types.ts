@@ -114,6 +114,7 @@ export interface OsBoardDashboard {
   id: string | number;
   identifier?: string;
   name: string;
+  origin?: string | null;
   type?: OsBoardDashboardType;
   dashboard_type?: 'repo' | 'community';
   ownerId?: string;

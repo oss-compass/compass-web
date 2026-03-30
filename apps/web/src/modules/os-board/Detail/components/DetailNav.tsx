@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 interface DetailNavProps {
   dashboard: {
     name: string;
+    origin?: string | null;
     updatedAt?: string;
     updated_at?: string;
     type?: 'repo' | 'community';
@@ -48,6 +49,7 @@ const DetailNav: React.FC<DetailNavProps> = ({
   const projects = dashboard.config?.projects || [];
   const competitorProjects = dashboard.config?.competitorProjects || [];
   const compareMode = dashboard.config?.compareMode || false;
+  const origin = dashboard.origin;
 
   // 格式化日期
   const formatDate = (dateStr: string) => {
@@ -91,6 +93,7 @@ const DetailNav: React.FC<DetailNavProps> = ({
               projects={projects}
               competitorProjects={competitorProjects}
               compareMode={compareMode}
+              origin={origin}
               compact
             />
           </div>

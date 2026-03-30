@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tabs } from 'antd';
+import { Popover, Tabs } from 'antd';
 import { GoGitPullRequest, GoGitPullRequestClosed } from 'react-icons/go';
 import { AiFillClockCircle } from 'react-icons/ai';
 import { BiGitCommit } from 'react-icons/bi';
@@ -11,91 +11,35 @@ import MyTable from '@common/components/Table';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { format, parseJSON } from 'date-fns';
-import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
   useOsBoardPullsDetailList,
   useOsBoardPullsOverview,
+  useOsBoardRepositoryList,
   PullDetail,
   FilterOptionInput,
   SortOptionInput,
 } from '../../api/tableData';
-import { toFixed } from '@common/utils';
+import {
+  getLastPathSegment,
+  getRepoOrigin,
+  getRepoPath,
+  toFixed,
+} from '@common/utils';
 import { toUnderline } from '@common/utils/format';
 
 interface PrTableProps {
   dashboardId: string;
   dashboardType: 'repo' | 'community';
+  origin?: string | null;
   projects: readonly string[];
   competitorProjects?: readonly string[];
-}
-
-// 社区维度表格数据接口
-interface CommunityPrRecord {
-  id: string;
-  repoName: string;
-  repoUrl: string;
-  prTotal: number;
-  prOpen: number;
-  prCompletionRatio: number;
-  prUnresponsiveCount: number;
-  prFirstResponseTime: number;
 }
 
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
-  sortOpts?: SortOptionInput;
+  sortOpts?: SortOptionInput | null;
 }
-
-// 圆环饼图组件
-const RingChart: React.FC<{ percentage: number; size?: number }> = ({
-  percentage,
-  size = 24,
-}) => {
-  const radius = (size - 4) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference * (1 - percentage / 100);
-
-  // 根据百分比确定颜色
-  const getColor = (pct: number) => {
-    if (pct >= 90) return '#52c41a'; // 绿色
-    if (pct >= 60) return '#faad14'; // 黄色
-    return '#ff4d4f'; // 红色
-  };
-
-  const color = getColor(percentage);
-
-  return (
-    <div className="inline-flex items-center gap-2">
-      <svg width={size} height={size} className="-rotate-90">
-        {/* 背景圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="#f0f0f0"
-          strokeWidth="3"
-        />
-        {/* 进度圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="3"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-        />
-      </svg>
-      <span className="text-sm font-medium" style={{ color }}>
-        {percentage}%
-      </span>
-    </div>
-  );
-};
 
 const STATE_OPTIONS = [
   { value: 'open', text: 'analyze:metric_detail:open' },
@@ -103,24 +47,33 @@ const STATE_OPTIONS = [
   { value: 'rejected', text: 'analyze:metric_detail:rejected' },
 ];
 
-// 获取项目平台类型
-const getProjectPlatform = (project: string) => {
-  if (project.includes('gitee')) return 'gitee';
-  if (project.includes('gitcode')) return 'gitcode';
-  return 'github';
+const TITLE_COLUMN_WIDTH = 280;
+const TITLE_TEXT_MAX_WIDTH = 248;
+const REPOSITORY_COLUMN_WIDTH = 220;
+const REPOSITORY_TEXT_MAX_WIDTH = 188;
+
+const getProjectPlatform = (project: string, fallbackOrigin = 'github') =>
+  getRepoOrigin(project, fallbackOrigin);
+
+const getProjectDisplayName = (project: string) =>
+  getRepoPath(project) || project;
+
+const getRepositoryDisplayName = (repository?: string | null) => {
+  const repositoryPath = getRepoPath(repository || '') || repository || '';
+  return getLastPathSegment(repositoryPath);
 };
 
-// 获取项目显示名称
-const getProjectDisplayName = (project: string) => {
-  return project.replace(
-    /^(github:|https?:\/\/(github|gitee|gitcode)\.com\/)/,
-    ''
-  );
+const getFilteredValues = (
+  filterOpts: FilterOptionInput[] | undefined,
+  type: string
+) => {
+  const values = filterOpts?.find((item) => item.type === type)?.values;
+  return values && values.length > 0 ? values : null;
 };
 
 const PrTable: React.FC<PrTableProps> = ({
-  dashboardId,
   dashboardType,
+  origin,
   projects,
   competitorProjects = [],
 }) => {
@@ -128,9 +81,6 @@ const PrTable: React.FC<PrTableProps> = ({
   const [selectedProject, setSelectedProject] = useState<string>(
     projects[0] || ''
   );
-  const { timeStart, timeEnd } = useOsBoardDateRange();
-
-  // ============ 仓库维度数据 ============
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -146,7 +96,6 @@ const PrTable: React.FC<PrTableProps> = ({
     },
   });
 
-  // 调用 PR 列表 API (使用 REST API)
   const {
     data: pullsDetailData,
     isLoading: repoLoading,
@@ -157,11 +106,10 @@ const PrTable: React.FC<PrTableProps> = ({
     page: tableParams.pagination?.current,
     per: tableParams.pagination?.pageSize,
     filterOpts: tableParams.filterOpts,
-    sortOpts: tableParams.sortOpts,
+    sortOpts: tableParams.sortOpts || undefined,
     enabled: !!selectedProject,
   });
 
-  // 同步 API 返回的分页总数到 tableParams
   React.useEffect(() => {
     if (pullsDetailData) {
       setTableParams((prev) => ({
@@ -174,19 +122,16 @@ const PrTable: React.FC<PrTableProps> = ({
     }
   }, [pullsDetailData]);
 
-  // ============ 社区维度数据 (接口开发中，预留) ============
-  // TODO: 替换为真实的社区 PR 汇总 API
-  // const { data: communityData, isLoading: communityLoading } = useCommunityPrStats({
-  //   dashboardId,
-  //   projects,
-  //   beginDate: timeStart,
-  //   endDate: timeEnd,
-  //   enabled: dashboardType === 'community',
-  // });
-  const communityTableData: CommunityPrRecord[] = [];
-  const communityLoading = false;
+  const {
+    data: repositoryListData,
+    isLoading: repositoryListLoading,
+    isFetching: repositoryListFetching,
+  } = useOsBoardRepositoryList({
+    project: selectedProject,
+    level: 'community',
+    enabled: dashboardType === 'community' && !!selectedProject,
+  });
 
-  // 使用 REST API 获取 PR 概览统计数据
   const { data: pullsOverview, isLoading: statsLoading } =
     useOsBoardPullsOverview({
       project: selectedProject,
@@ -194,7 +139,6 @@ const PrTable: React.FC<PrTableProps> = ({
       enabled: !!selectedProject,
     });
 
-  // 统计卡片数据 (使用 API 实际返回的字段名)
   const statsData = {
     pullCount: pullsOverview?.new_pr_count,
     pullCompletionRatio: pullsOverview?.pr_resolution_percentage
@@ -205,16 +149,57 @@ const PrTable: React.FC<PrTableProps> = ({
     commitCount: pullsOverview?.commit_count,
   };
 
-  // 表格数据
-  const repoTableData = pullsDetailData?.items || [];
-  // Community 聚合表格接口未接入前，先复用明细接口数据，避免出现分页有数据但表格为空。
-  const useCommunityAggregateTable =
-    dashboardType === 'community' && communityTableData.length > 0;
-  const displayTableData = useCommunityAggregateTable
-    ? communityTableData
-    : repoTableData;
+  const tableData = pullsDetailData?.items || [];
 
-  // 处理表格变更
+  const repositoryFilters = useMemo(() => {
+    if (dashboardType !== 'community') {
+      return [];
+    }
+
+    return (repositoryListData?.items || [])
+      .map((repository) => {
+        const repositoryName = getRepositoryDisplayName(repository);
+        return repositoryName
+          ? {
+              text: repositoryName,
+              value: repository,
+            }
+          : null;
+      })
+      .filter(
+        (
+          item
+        ): item is {
+          text: string;
+          value: string;
+        } => !!item
+      );
+  }, [dashboardType, repositoryListData]);
+
+  React.useEffect(() => {
+    if (dashboardType !== 'community') {
+      return;
+    }
+
+    setTableParams((prev) => {
+      const nextFilterOpts =
+        prev.filterOpts?.filter((item) => item.type !== 'repository') || [];
+
+      if (nextFilterOpts.length === (prev.filterOpts?.length || 0)) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          current: 1,
+        },
+        filterOpts: nextFilterOpts,
+      };
+    });
+  }, [dashboardType, selectedProject]);
+
   const handleTableChange = (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue>,
@@ -231,29 +216,37 @@ const PrTable: React.FC<PrTableProps> = ({
     }
 
     for (const key in filters) {
-      if (filters.hasOwnProperty(key) && filters[key]) {
+      const values = Array.isArray(filters[key])
+        ? filters[key].filter(
+            (value): value is string =>
+              typeof value === 'string' && value.length > 0
+          )
+        : [];
+
+      if (Object.prototype.hasOwnProperty.call(filters, key) && values.length) {
         filterOpts.push({
           type: key,
-          values: filters[key] as string[],
+          values,
         });
       }
     }
 
-    setTableParams({
+    setTableParams((prev) => ({
       pagination: {
-        ...tableParams.pagination,
+        ...prev.pagination,
         ...pagination,
       },
       sortOpts,
       filterOpts,
-    });
+    }));
   };
 
-  // 项目 Tab 配置（仅仓库维度使用）
   const tabItems = useMemo(() => {
-    const mainItems = projects.map((project) => {
-      const platform = getProjectPlatform(project);
+    const fallbackOrigin = origin?.toLowerCase() || 'github';
+    const buildTabItem = (project: string, isCompetitor?: boolean) => {
+      const platform = getProjectPlatform(project, fallbackOrigin);
       const displayName = getProjectDisplayName(project);
+
       return {
         key: project,
         label: (
@@ -269,232 +262,196 @@ const PrTable: React.FC<PrTableProps> = ({
               />
             )}
             <span>{displayName}</span>
-          </div>
-        ),
-      };
-    });
-
-    const competitorItems = competitorProjects.map((project) => {
-      const platform = getProjectPlatform(project);
-      const displayName = getProjectDisplayName(project);
-      return {
-        key: project,
-        label: (
-          <div className="flex items-center gap-1.5">
-            {platform === 'github' && <SiGithub color="#171516" size={14} />}
-            {platform === 'gitee' && <SiGitee color="#c71c27" size={14} />}
-            {platform === 'gitcode' && (
-              <Image
-                src="/images/logos/gitcode.png"
-                alt="gitcode"
-                width={14}
-                height={14}
-              />
+            {isCompetitor && (
+              <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] text-orange-600">
+                {t('os_board:detail.competitors')}
+              </span>
             )}
-            <span>{displayName}</span>
-            <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] text-orange-600">
-              {t('os_board:detail.competitors')}
-            </span>
           </div>
         ),
       };
-    });
+    };
 
-    return [...mainItems, ...competitorItems];
-  }, [projects, competitorProjects, t]);
+    return [
+      ...projects.map((project) => buildTabItem(project)),
+      ...competitorProjects.map((project) => buildTabItem(project, true)),
+    ];
+  }, [projects, competitorProjects, origin, t]);
 
-  // 仓库维度表格列定义
-  const repoColumns: ColumnsType<PullDetail> = [
-    {
-      title: 'ID',
-      dataIndex: 'idInRepo',
-      align: 'left',
-      width: 90,
-      fixed: 'left',
-      render: (id: number | null, record) =>
-        id != null && record.url ? (
-          <a
-            href={record.url}
-            target="_blank"
-            rel="noreferrer"
-            className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
-          >
-            #{id}
-          </a>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: t('analyze:metric_detail:pr_title'),
-      dataIndex: 'title',
-      align: 'left',
-      width: 200,
-      fixed: 'left',
-      sorter: true,
-      render: (text: string, record) => (
-        <a
-          href={record.url}
-          target="_blank"
-          rel="noreferrer"
-          className="font-medium text-gray-900 hover:text-blue-600 hover:underline"
-        >
-          {text}
-        </a>
-      ),
-    },
-    {
-      title: t('analyze:metric_detail:state'),
-      dataIndex: 'state',
-      align: 'left',
-      width: 100,
-      sorter: true,
-      filters: STATE_OPTIONS.map((s) => ({ text: t(s.text), value: s.value })),
-      render: (val: string) => {
-        const item = STATE_OPTIONS.find((s) => s.value === val);
-        return item ? t(item.text) : val;
+  const columns = useMemo<ColumnsType<PullDetail>>(() => {
+    const baseColumns: ColumnsType<PullDetail> = [
+      {
+        title: 'ID',
+        dataIndex: 'idInRepo',
+        align: 'left',
+        width: 90,
+        fixed: 'left',
+        render: (id: number | null, record) =>
+          id != null && record.url ? (
+            <a
+              href={record.url}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
+            >
+              #{id}
+            </a>
+          ) : (
+            '-'
+          ),
       },
-    },
-    {
-      title: t('analyze:metric_detail:created_time'),
-      dataIndex: 'createdAt',
-      align: 'left',
-      width: 120,
-      sorter: true,
-      render: (time: string) =>
-        time ? format(parseJSON(time)!, 'yyyy-MM-dd') : '-',
-    },
-    {
-      title: t('analyze:metric_detail:close_time'),
-      dataIndex: 'closedAt',
-      align: 'left',
-      width: 120,
-      sorter: true,
-      render: (time: string | null) =>
-        time ? format(parseJSON(time)!, 'yyyy-MM-dd') : '-',
-    },
-    {
-      title: t('analyze:metric_detail:processing_time'),
-      dataIndex: 'timeToCloseDays',
-      align: 'left',
-      width: 120,
-      sorter: true,
-      render: (val: number | null) =>
-        val != null ? `${toFixed(val, 1)} ${t('analyze:unit_day')}` : '-',
-    },
-    {
-      title: t('analyze:metric_detail:first_response_time'),
-      dataIndex: 'timeToFirstAttentionWithoutBot',
-      align: 'left',
-      width: 150,
-      sorter: true,
-      render: (val: number | null) =>
-        val != null ? `${toFixed(val, 1)} ${t('analyze:unit_day')}` : '-',
-    },
-    {
-      title: t('analyze:metric_detail:comments_count'),
-      dataIndex: 'numReviewComments',
-      align: 'left',
-      width: 100,
-      sorter: true,
-    },
-    {
-      title: t('analyze:metric_detail:tags'),
-      dataIndex: 'labels',
-      align: 'left',
-      width: 150,
-      render: (list: string[]) => list?.join(', ') || '-',
-    },
-    {
-      title: t('analyze:metric_detail:creator'),
-      dataIndex: 'userLogin',
-      align: 'left',
-      width: 120,
-    },
-    {
-      title: t('analyze:metric_detail:reviewer'),
-      dataIndex: 'reviewersLogin',
-      align: 'left',
-      width: 120,
-      render: (list: string[]) => list?.join(', ') || '-',
-    },
-    {
-      title: t('analyze:metric_detail:merge_author'),
-      dataIndex: 'mergeAuthorLogin',
-      align: 'left',
-      width: 120,
-      render: (val: string | null) => val || '-',
-    },
-  ];
+      {
+        title: t('analyze:metric_detail:pr_title'),
+        dataIndex: 'title',
+        align: 'left',
+        width: TITLE_COLUMN_WIDTH,
+        fixed: 'left',
+        sorter: true,
+        render: (text: string, record) => (
+          <Popover
+            content={<div className="max-w-[520px] break-words">{text}</div>}
+            trigger="hover"
+            placement="topLeft"
+          >
+            <a
+              href={record.url}
+              target="_blank"
+              rel="noreferrer"
+              className="block overflow-hidden text-ellipsis whitespace-nowrap font-medium text-gray-900 hover:text-blue-600 hover:underline"
+              style={{ maxWidth: TITLE_TEXT_MAX_WIDTH }}
+            >
+              {text}
+            </a>
+          </Popover>
+        ),
+      },
+      {
+        title: t('analyze:metric_detail:state'),
+        dataIndex: 'state',
+        align: 'left',
+        width: 100,
+        sorter: true,
+        filters: STATE_OPTIONS.map((s) => ({
+          text: t(s.text),
+          value: s.value,
+        })),
+        filteredValue: getFilteredValues(tableParams.filterOpts, 'state'),
+        render: (val: string) => {
+          const item = STATE_OPTIONS.find((s) => s.value === val);
+          return item ? t(item.text) : val;
+        },
+      },
+      {
+        title: t('analyze:metric_detail:created_time'),
+        dataIndex: 'createdAt',
+        align: 'left',
+        width: 110,
+        sorter: true,
+        render: (time: string) =>
+          time ? format(parseJSON(time)!, 'yyyy-MM-dd') : '-',
+      },
+      {
+        title: t('analyze:metric_detail:close_time'),
+        dataIndex: 'closedAt',
+        align: 'left',
+        width: 110,
+        sorter: true,
+        render: (time: string | null) =>
+          time ? format(parseJSON(time)!, 'yyyy-MM-dd') : '-',
+      },
+      {
+        title: t('analyze:metric_detail:processing_time'),
+        dataIndex: 'timeToCloseDays',
+        align: 'left',
+        width: 120,
+        sorter: true,
+        render: (val: number | null) =>
+          val != null ? `${toFixed(val, 1)} ${t('analyze:unit_day')}` : '-',
+      },
+      {
+        title: t('analyze:metric_detail:first_response_time'),
+        dataIndex: 'timeToFirstAttentionWithoutBot',
+        align: 'left',
+        width: 150,
+        sorter: true,
+        render: (val: number | null) =>
+          val != null ? `${toFixed(val, 1)} ${t('analyze:unit_day')}` : '-',
+      },
+      {
+        title: t('analyze:metric_detail:comments_count'),
+        dataIndex: 'numReviewComments',
+        align: 'left',
+        width: 100,
+        sorter: true,
+      },
+      {
+        title: t('analyze:metric_detail:tags'),
+        dataIndex: 'labels',
+        align: 'left',
+        width: 150,
+        render: (list: string[]) => list?.join(', ') || '-',
+      },
+      {
+        title: t('analyze:metric_detail:creator'),
+        dataIndex: 'userLogin',
+        align: 'left',
+        width: 100,
+      },
+      {
+        title: t('analyze:metric_detail:reviewer'),
+        dataIndex: 'reviewersLogin',
+        align: 'left',
+        width: 100,
+        render: (list: string[]) => list?.join(', ') || '-',
+      },
+      {
+        title: t('analyze:metric_detail:merge_author'),
+        dataIndex: 'mergeAuthorLogin',
+        align: 'left',
+        width: 100,
+        render: (val: string | null) => val || '-',
+      },
+    ];
 
-  // 社区维度表格列定义
-  const communityColumns: ColumnsType<CommunityPrRecord> = [
-    {
-      title: t('os_board:pr_table.repo_name'),
-      dataIndex: 'repoName',
-      align: 'left',
-      width: 200,
-      fixed: 'left',
-      render: (text: string, record) => (
-        <a
-          href={record.repoUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="font-medium text-gray-900 hover:text-blue-600 hover:underline"
-        >
-          {text}
-        </a>
-      ),
-    },
-    {
-      title: t('os_board:pr_table.pr_total'),
-      dataIndex: 'prTotal',
-      align: 'center',
-      width: 100,
-      sorter: (a, b) => a.prTotal - b.prTotal,
-    },
-    {
-      title: t('os_board:pr_table.pr_open'),
-      dataIndex: 'prOpen',
-      align: 'center',
-      width: 120,
-      sorter: (a, b) => a.prOpen - b.prOpen,
-    },
-    {
-      title: t('os_board:pr_table.pr_completion_ratio'),
-      dataIndex: 'prCompletionRatio',
-      align: 'center',
-      width: 140,
-      sorter: (a, b) => a.prCompletionRatio - b.prCompletionRatio,
-      render: (val: number) => <RingChart percentage={val} />,
-    },
-    {
-      title: t('os_board:pr_table.pr_unresponsive'),
-      dataIndex: 'prUnresponsiveCount',
-      align: 'center',
-      width: 130,
-      sorter: (a, b) => a.prUnresponsiveCount - b.prUnresponsiveCount,
-    },
-    {
-      title: t('os_board:pr_table.pr_first_response'),
-      dataIndex: 'prFirstResponseTime',
-      align: 'center',
-      width: 150,
-      sorter: (a, b) => a.prFirstResponseTime - b.prFirstResponseTime,
-      render: (val: number) =>
-        val != null ? `${toFixed(val, 1)} ${t('analyze:unit_day')}` : '-',
-    },
-  ];
+    if (dashboardType === 'community') {
+      baseColumns.splice(2, 0, {
+        title: t('os_board:pr_table.repo_name'),
+        dataIndex: 'repository',
+        key: 'repository',
+        align: 'left',
+        width: REPOSITORY_COLUMN_WIDTH,
+        fixed: 'left',
+        filters: repositoryFilters,
+        filterSearch: true,
+        filteredValue: getFilteredValues(tableParams.filterOpts, 'repository'),
+        render: (text: string | null, record) => {
+          const repositoryName = getRepositoryDisplayName(text);
+          return repositoryName && record.url ? (
+            <a
+              href={record.url}
+              target="_blank"
+              rel="noreferrer"
+              title={repositoryName}
+              className="block overflow-hidden text-ellipsis whitespace-nowrap font-medium text-gray-900 hover:text-blue-600 hover:underline"
+              style={{ maxWidth: REPOSITORY_TEXT_MAX_WIDTH }}
+            >
+              {repositoryName}
+            </a>
+          ) : (
+            '-'
+          );
+        },
+      });
+    }
 
-  // 根据维度选择列配置
-  const displayColumns = useCommunityAggregateTable
-    ? communityColumns
-    : repoColumns;
+    return baseColumns;
+  }, [dashboardType, repositoryFilters, t, tableParams.filterOpts]);
 
   const isTableLoading =
     repoLoading ||
     repoFetching ||
-    (useCommunityAggregateTable && communityLoading);
+    (dashboardType === 'community' &&
+      (repositoryListLoading || repositoryListFetching));
 
   return (
     <BaseCard
@@ -503,7 +460,6 @@ const PrTable: React.FC<PrTableProps> = ({
       bodyClass=""
       className="!p-4 [&_h3]:!mb-1"
     >
-      {/* 项目切换 Tabs */}
       <Tabs
         activeKey={selectedProject}
         onChange={setSelectedProject}
@@ -511,29 +467,26 @@ const PrTable: React.FC<PrTableProps> = ({
         className="mb-2 [&_.ant-tabs-nav]:mb-0"
       />
 
-      {/* PR 统计卡片 */}
       <div className="mb-3 grid grid-cols-4 gap-3 md:grid-cols-2">
-        {/* 新建 PR 数量 */}
         <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
           <div className="flex items-center text-lg font-medium">
             <div className="mr-2 text-[#3A5BEF]">
               <GoGitPullRequest />
             </div>
-            <div className="line-clamp-1">{statsData?.pullCount ?? '-'}</div>
+            <div className="line-clamp-1">{statsData.pullCount ?? '-'}</div>
           </div>
           <div className="text-xs text-[#585858]">
             {t('analyze:metric_detail:newly_created_pr_count')}
           </div>
         </div>
 
-        {/* PR 解决百分比 */}
         <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
           <div className="flex items-center text-lg font-medium">
             <div className="mr-2 text-[#3A5BEF]">
               <GoGitPullRequestClosed />
             </div>
             <div className="line-clamp-1">
-              {statsData?.pullCompletionRatio != null
+              {statsData.pullCompletionRatio != null
                 ? `${toFixed(statsData.pullCompletionRatio * 100, 1)}%`
                 : '-'}
             </div>
@@ -543,14 +496,13 @@ const PrTable: React.FC<PrTableProps> = ({
           </div>
         </div>
 
-        {/* 未响应 PR 数量 */}
         <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
           <div className="flex items-center text-lg font-medium">
             <div className="mr-2 text-[#3A5BEF]">
               <AiFillClockCircle />
             </div>
             <div className="line-clamp-1">
-              {statsData?.pullUnresponsiveCount ?? '-'}
+              {statsData.pullUnresponsiveCount ?? '-'}
             </div>
           </div>
           <div className="text-xs text-[#585858]">
@@ -558,13 +510,12 @@ const PrTable: React.FC<PrTableProps> = ({
           </div>
         </div>
 
-        {/* 代码提交数量 */}
         <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
           <div className="flex items-center text-lg font-medium">
             <div className="mr-2 text-[#3A5BEF]">
               <BiGitCommit />
             </div>
-            <div className="line-clamp-1">{statsData?.commitCount ?? '-'}</div>
+            <div className="line-clamp-1">{statsData.commitCount ?? '-'}</div>
           </div>
           <div className="text-xs text-[#585858]">
             {t('analyze:metric_detail:commit_count')}
@@ -572,20 +523,18 @@ const PrTable: React.FC<PrTableProps> = ({
         </div>
       </div>
 
-      {/* 表格区域：根据类型切换 */}
       <div className="flex h-[420px] flex-col">
         <div className="min-h-0 flex-1">
           <MyTable
-            columns={
-              displayColumns as ColumnsType<PullDetail | CommunityPrRecord>
-            }
-            dataSource={displayTableData}
-            rowKey={useCommunityAggregateTable ? 'id' : 'url'}
+            columns={columns}
+            dataSource={tableData}
+            rowKey="url"
+            tableLayout="fixed"
             loading={isTableLoading || statsLoading}
             onChange={handleTableChange}
             pagination={tableParams.pagination}
             scroll={{ x: 'max-content', y: 320 }}
-            className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-2 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
+            className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-1 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
           />
         </div>
       </div>

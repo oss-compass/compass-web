@@ -17,10 +17,12 @@ import {
   SortOptionInput,
 } from '../../api/tableData';
 import DomainPersona from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/DomainPersona';
+import { getRepoOrigin, getRepoPath } from '@common/utils';
 
 interface ContributorTableProps {
   dashboardId: string;
   dashboardType?: 'repo' | 'community';
+  origin?: string | null;
   projects: readonly string[];
   competitorProjects?: readonly string[];
 }
@@ -83,10 +85,11 @@ const getMaxContribution = (
 
 // 获取平台图标
 const getIcons = (type: string) => {
-  if (!type) {
+  const normalizedType = type?.toLowerCase();
+  if (!normalizedType) {
     return <IoPeopleCircle />;
   }
-  switch (type) {
+  switch (normalizedType) {
     case 'github':
       return <SiGithub color="#171516" />;
     case 'gitee':
@@ -107,9 +110,10 @@ const getIcons = (type: string) => {
 
 // 获取 Top 用户显示
 const getContributorProfileUrl = (type: string, name: string) => {
-  if (!type || !name) return null;
+  const normalizedType = type?.toLowerCase();
+  if (!normalizedType || !name) return null;
 
-  switch (type) {
+  switch (normalizedType) {
     case 'github':
       return `https://github.com/${name}`;
     case 'gitee':
@@ -122,14 +126,15 @@ const getContributorProfileUrl = (type: string, name: string) => {
 };
 
 const getTopUser = (type: string, name: string) => {
+  const normalizedType = type?.toLowerCase();
   let url: string | null = null;
   let userIcon = null;
   if (!name) {
     userIcon = <IoPersonCircle />;
   } else {
-    switch (type) {
+    switch (normalizedType) {
       case 'github':
-        url = getContributorProfileUrl(type, name);
+        url = getContributorProfileUrl(normalizedType, name);
         userIcon = (
           <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100 p-0">
             <Image
@@ -146,7 +151,7 @@ const getTopUser = (type: string, name: string) => {
         );
         break;
       case 'gitee':
-        url = getContributorProfileUrl(type, name);
+        url = getContributorProfileUrl(normalizedType, name);
         userIcon = (
           <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
             <Image
@@ -164,7 +169,7 @@ const getTopUser = (type: string, name: string) => {
         );
         break;
       case 'gitcode':
-        url = getContributorProfileUrl(type, name);
+        url = getContributorProfileUrl(normalizedType, name);
         userIcon = (
           <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
             <Image
@@ -209,23 +214,17 @@ const getTopUser = (type: string, name: string) => {
 };
 
 // 获取项目平台类型
-const getProjectPlatform = (project: string) => {
-  if (project.includes('gitee')) return 'gitee';
-  if (project.includes('gitcode')) return 'gitcode';
-  return 'github';
-};
+const getProjectPlatform = (project: string, fallbackOrigin = 'github') =>
+  getRepoOrigin(project, fallbackOrigin);
 
 // 获取项目显示名称
-const getProjectDisplayName = (project: string) => {
-  return project.replace(
-    /^(github:|https?:\/\/(github|gitee|gitcode)\.com\/)/,
-    ''
-  );
-};
+const getProjectDisplayName = (project: string) =>
+  getRepoPath(project) || project;
 
 const ContributorTable: React.FC<ContributorTableProps> = ({
   dashboardId,
   dashboardType = 'repo',
+  origin,
   projects,
   competitorProjects = [],
 }) => {
@@ -288,10 +287,11 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
   }, [contributorsDetailData]);
 
   // origin 从统计数据中获取 (取第一个 top_contributor 的 origin)
-  const origin =
-    contributorsDetailData?.origin ||
-    contributorsOverview?.top_contributors?.[0]?.origin ||
-    getProjectPlatform(selectedProject);
+  const currentOrigin =
+    origin?.toLowerCase() ||
+    contributorsDetailData?.origin?.toLowerCase() ||
+    contributorsOverview?.top_contributors?.[0]?.origin?.toLowerCase() ||
+    getRepoOrigin(selectedProject, 'github');
 
   // 统计卡片数据 (使用 API 实际返回的字段名)
   const statsData = {
@@ -330,8 +330,9 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
 
   // 项目 Tab 配置
   const tabItems = useMemo(() => {
+    const fallbackOrigin = origin?.toLowerCase() || 'github';
     const mainItems = projects.map((project) => {
-      const platform = getProjectPlatform(project);
+      const platform = getProjectPlatform(project, fallbackOrigin);
       const displayName = getProjectDisplayName(project);
       return {
         key: project,
@@ -354,7 +355,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     });
 
     const competitorItems = competitorProjects.map((project) => {
-      const platform = getProjectPlatform(project);
+      const platform = getProjectPlatform(project, fallbackOrigin);
       const displayName = getProjectDisplayName(project);
       return {
         key: project,
@@ -380,7 +381,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     });
 
     return [...mainItems, ...competitorItems];
-  }, [projects, competitorProjects, t]);
+  }, [projects, competitorProjects, origin, t]);
 
   // 渲染领域画像（使用复用的 DomainPersona 组件）
   const renderDomainPersona = (
@@ -398,7 +399,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
         maxDomain={maxDomain}
         dataList={convertedData}
         name={record.contributor || ''}
-        origin={origin}
+        origin={currentOrigin}
       />
     );
   };
@@ -411,7 +412,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       width: 180,
       fixed: 'left',
       render: (name: string) => {
-        const url = getContributorProfileUrl(origin, name);
+        const url = getContributorProfileUrl(currentOrigin, name);
         if (!url) {
           return name || '-';
         }
@@ -507,7 +508,9 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
           <div className="flex items-center text-lg font-medium">
             {statsData?.highestContributionContributor?.name ? (
               getTopUser(
-                statsData.highestContributionContributor.origin || '',
+                statsData.highestContributionContributor.origin ||
+                  currentOrigin ||
+                  '',
                 statsData.highestContributionContributor.name || ''
               )
             ) : (
@@ -542,7 +545,9 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
           <div className="flex items-center text-lg font-medium">
             <div className="mr-2 text-[#3A5BEF]">
               {getIcons(
-                statsData?.highestContributionOrganization?.origin || ''
+                statsData?.highestContributionOrganization?.origin ||
+                  currentOrigin ||
+                  ''
               )}
             </div>
             <div className="line-clamp-1">
@@ -566,7 +571,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
             onChange={handleTableChange}
             pagination={tableParams.pagination}
             scroll={{ x: 'max-content', y: 320 }}
-            className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-2 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
+            className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-1 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
           />
         </div>
       </div>

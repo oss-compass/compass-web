@@ -11,16 +11,18 @@ interface ProjectListProps {
   projects: readonly string[];
   competitorProjects: readonly string[];
   compareMode: boolean;
-  /** compact 模式用于 nav，只显示前 3 个，超出的用下拉展示 */
+  origin?: string | null;
   compact?: boolean;
 }
 
-const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
-  name,
-  isCompetitor,
-}) => {
+const ProjectItem: React.FC<{
+  name: string;
+  origin?: string | null;
+  isCompetitor?: boolean;
+}> = ({ name, origin, isCompetitor }) => {
   const { t } = useTranslation();
-  const host = getRepoOrigin(name, 'gitcode');
+  const fallbackOrigin = origin?.toLowerCase() || 'gitcode';
+  const host = getRepoOrigin(name, fallbackOrigin);
   const projectUrl = getRepoUrlByName(name, host);
   const displayName = getRepoPath(name) || name;
 
@@ -31,7 +33,7 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
         className="ml-1 mr-1 whitespace-nowrap font-semibold hover:underline"
         href={projectUrl}
         target="_blank"
-        rel={'noreferrer'}
+        rel="noreferrer"
       >
         {displayName}
       </a>
@@ -48,6 +50,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
   projects,
   competitorProjects,
   compareMode,
+  origin,
   compact = false,
 }) => {
   const [moreOpen, setMoreOpen] = useState(false);
@@ -58,7 +61,6 @@ const ProjectList: React.FC<ProjectListProps> = ({
     setMoreOpen((prev) => !prev);
   };
 
-  // compact 模式：只显示前 3 个，超出的用下拉
   if (compact) {
     const visibleProjects = projects.slice(0, 3);
     const hiddenProjects = projects.slice(3);
@@ -69,7 +71,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
     return (
       <div className="flex items-center gap-3">
         {visibleProjects.map((project) => (
-          <ProjectItem key={project} name={project} />
+          <ProjectItem key={project} name={project} origin={origin} />
         ))}
         {hasHiddenItems && (
           <ClickAwayListener
@@ -93,8 +95,12 @@ const ProjectList: React.FC<ProjectListProps> = ({
                 <div className="mt-1 max-h-[300px] min-w-[200px] overflow-auto rounded bg-white p-3 shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
                   {hiddenProjects.length > 0 && (
                     <div className="flex flex-col gap-2">
-                      {hiddenProjects.map((p) => (
-                        <ProjectItem key={p} name={p} />
+                      {hiddenProjects.map((project) => (
+                        <ProjectItem
+                          key={project}
+                          name={project}
+                          origin={origin}
+                        />
                       ))}
                     </div>
                   )}
@@ -104,8 +110,13 @@ const ProjectList: React.FC<ProjectListProps> = ({
                         <div className="my-2 h-[1px] bg-gray-200" />
                       )}
                       <div className="flex flex-col gap-2">
-                        {competitorProjects.map((p) => (
-                          <ProjectItem key={p} name={p} isCompetitor />
+                        {competitorProjects.map((project) => (
+                          <ProjectItem
+                            key={project}
+                            name={project}
+                            origin={origin}
+                            isCompetitor
+                          />
                         ))}
                       </div>
                     </>
@@ -119,21 +130,25 @@ const ProjectList: React.FC<ProjectListProps> = ({
     );
   }
 
-  // 默认模式：全部展示
   return (
     <div className="mb-6 flex flex-wrap items-center gap-4 rounded-lg bg-white p-4 drop-shadow-sm">
       <div className="flex flex-wrap gap-4">
         {projects.map((project) => (
-          <ProjectItem key={project} name={project} />
+          <ProjectItem key={project} name={project} origin={origin} />
         ))}
       </div>
 
       {compareMode && competitorProjects.length > 0 && (
         <>
-          <div className="h-4 w-[1px] bg-gray-300"></div>
+          <div className="h-4 w-[1px] bg-gray-300" />
           <div className="flex flex-wrap gap-4">
             {competitorProjects.map((project) => (
-              <ProjectItem key={project} name={project} isCompetitor />
+              <ProjectItem
+                key={project}
+                name={project}
+                origin={origin}
+                isCompetitor
+              />
             ))}
           </div>
         </>

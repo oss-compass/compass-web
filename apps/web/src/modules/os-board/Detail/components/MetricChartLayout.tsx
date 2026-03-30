@@ -34,6 +34,7 @@ interface MetricChartLayoutProps {
   dashboard: {
     id: string;
     identifier?: string;
+    origin?: string | null;
     type: 'repo' | 'community';
     dashboard_metrics?: OsBoardDashboardMetric[];
     config: {
@@ -185,6 +186,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
             <ContributorTable
               dashboardId={dashboard.id}
               dashboardType={dashboard.type}
+              origin={dashboard.origin}
               projects={dashboard.config.projects}
               competitorProjects={dashboard.config.competitorProjects}
             />
@@ -201,6 +203,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
             <IssueTable
               dashboardId={dashboard.id}
               dashboardType={dashboard.type}
+              origin={dashboard.origin}
               projects={dashboard.config.projects}
               competitorProjects={dashboard.config.competitorProjects}
             />
@@ -217,6 +220,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
             <PrTable
               dashboardId={dashboard.id}
               dashboardType={dashboard.type}
+              origin={dashboard.origin}
               projects={dashboard.config.projects}
               competitorProjects={dashboard.config.competitorProjects}
             />
