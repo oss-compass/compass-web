@@ -4,6 +4,9 @@ import {
   getNameSpace,
   getRepoName,
   getLastPathSegment,
+  getRepoOrigin,
+  getRepoPath,
+  getRepoUrlByName,
   removeExtname,
   removeTrailingSlash,
   getNameSpacePng,
@@ -35,9 +38,69 @@ describe('utils url ', () => {
       { input: 'https://github.com/EdmondFrank/.emacs.d', result: 'github' },
       { input: 'https://github.com/ant-design/ant-design', result: 'github' },
       { input: 'https://gitee.com/dotnetchina/MiniWord', result: 'gitee' },
+      { input: 'http://gitcode.com/org/repo', result: 'gitcode' },
     ];
     testCases.map((item) => {
       expect(getProvider(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('getRepoOrigin', () => {
+    const testCases = [
+      { input: 'https://github.com/ant-design/ant-design', result: 'github' },
+      { input: 'gitee:dotnetchina/MiniWord', result: 'gitee' },
+      { input: 'gitcode.com/org/repo', result: 'gitcode' },
+      { input: 'owner/repo', result: 'gitcode', fallbackOrigin: 'gitcode' },
+    ];
+
+    testCases.map((item) => {
+      expect(getRepoOrigin(item.input, item.fallbackOrigin)).toEqual(
+        item.result
+      );
+    });
+  });
+
+  it('getRepoPath', () => {
+    const testCases = [
+      {
+        input: 'https://github.com/ant-design/ant-design',
+        result: 'ant-design/ant-design',
+      },
+      { input: 'gitee:dotnetchina/MiniWord', result: 'dotnetchina/MiniWord' },
+      { input: 'gitcode.com/org/repo', result: 'org/repo' },
+      { input: 'owner/repo', result: 'owner/repo' },
+    ];
+
+    testCases.map((item) => {
+      expect(getRepoPath(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('getRepoUrlByName', () => {
+    const testCases = [
+      {
+        input: 'https://github.com/ant-design/ant-design/',
+        result: 'https://github.com/ant-design/ant-design',
+      },
+      {
+        input: 'gitee:dotnetchina/MiniWord',
+        result: 'https://gitee.com/dotnetchina/MiniWord',
+      },
+      {
+        input: 'gitcode.com/org/repo',
+        result: 'https://gitcode.com/org/repo',
+      },
+      {
+        input: 'owner/repo',
+        result: 'https://gitcode.com/owner/repo',
+        fallbackOrigin: 'gitcode',
+      },
+    ];
+
+    testCases.map((item) => {
+      expect(getRepoUrlByName(item.input, item.fallbackOrigin)).toEqual(
+        item.result
+      );
     });
   });
 

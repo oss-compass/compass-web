@@ -5,7 +5,7 @@ import Popper from '@mui/material/Popper';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import { BsThreeDots } from 'react-icons/bs';
 import ProviderIcon from '@modules/analyze/components/ProviderIcon';
-import { getProvider } from '@common/utils';
+import { getRepoOrigin, getRepoPath, getRepoUrlByName } from '@common/utils';
 
 interface ProjectListProps {
   projects: readonly string[];
@@ -20,18 +20,9 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
   isCompetitor,
 }) => {
   const { t } = useTranslation();
-  let host = 'gitcode';
-  if (name.includes('gitee.com')) {
-    host = 'gitee';
-  } else if (name.includes('github.com')) {
-    host = 'github';
-  } else if (name.startsWith('http')) {
-    host = getProvider(name);
-  }
-
-  const projectUrl = name.startsWith('http')
-    ? name
-    : `https://github.com/${name}`;
+  const host = getRepoOrigin(name, 'gitcode');
+  const projectUrl = getRepoUrlByName(name, host);
+  const displayName = getRepoPath(name) || name;
 
   return (
     <div className={classnames('flex items-center')}>
@@ -42,7 +33,7 @@ const ProjectItem: React.FC<{ name: string; isCompetitor?: boolean }> = ({
         target="_blank"
         rel={'noreferrer'}
       >
-        {name.replace('github:', '')}
+        {displayName}
       </a>
       {isCompetitor && (
         <span className="ml-1 rounded bg-orange-100 px-1.5 py-0.5 text-[10px] text-orange-600">

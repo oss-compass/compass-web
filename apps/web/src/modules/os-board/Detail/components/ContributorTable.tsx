@@ -106,6 +106,21 @@ const getIcons = (type: string) => {
 };
 
 // 获取 Top 用户显示
+const getContributorProfileUrl = (type: string, name: string) => {
+  if (!type || !name) return null;
+
+  switch (type) {
+    case 'github':
+      return `https://github.com/${name}`;
+    case 'gitee':
+      return `https://gitee.com/${name}`;
+    case 'gitcode':
+      return `https://gitcode.com/${name}`;
+    default:
+      return null;
+  }
+};
+
 const getTopUser = (type: string, name: string) => {
   let url: string | null = null;
   let userIcon = null;
@@ -114,7 +129,7 @@ const getTopUser = (type: string, name: string) => {
   } else {
     switch (type) {
       case 'github':
-        url = 'https://github.com/' + name;
+        url = getContributorProfileUrl(type, name);
         userIcon = (
           <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100 p-0">
             <Image
@@ -131,7 +146,7 @@ const getTopUser = (type: string, name: string) => {
         );
         break;
       case 'gitee':
-        url = 'https://gitee.com/' + name;
+        url = getContributorProfileUrl(type, name);
         userIcon = (
           <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
             <Image
@@ -149,7 +164,7 @@ const getTopUser = (type: string, name: string) => {
         );
         break;
       case 'gitcode':
-        url = 'https://gitcode.com/' + name;
+        url = getContributorProfileUrl(type, name);
         userIcon = (
           <div className="relative h-[22px] w-[22px] overflow-hidden rounded-full border border-gray-100">
             <Image
@@ -273,7 +288,10 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
   }, [contributorsDetailData]);
 
   // origin 从统计数据中获取 (取第一个 top_contributor 的 origin)
-  const origin = contributorsOverview?.top_contributors?.[0]?.origin || '';
+  const origin =
+    contributorsDetailData?.origin ||
+    contributorsOverview?.top_contributors?.[0]?.origin ||
+    getProjectPlatform(selectedProject);
 
   // 统计卡片数据 (使用 API 实际返回的字段名)
   const statsData = {
@@ -393,13 +411,10 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       width: 180,
       fixed: 'left',
       render: (name: string) => {
-        const platform = getProjectPlatform(selectedProject);
-        const url =
-          platform === 'github'
-            ? `https://github.com/${name}`
-            : platform === 'gitee'
-            ? `https://gitee.com/${name}`
-            : `https://gitcode.com/${name}`;
+        const url = getContributorProfileUrl(origin, name);
+        if (!url) {
+          return name || '-';
+        }
         return (
           <a
             href={url}

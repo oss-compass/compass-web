@@ -5,9 +5,10 @@ import {
   ExclamationCircleFilled,
   SmileFilled,
 } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { Popover, Tooltip } from 'antd';
 import { getPainGuideItem, getPainLevelFromScore } from '../helpers';
 import { JourneyStep } from '../types';
+import PainGuidePopoverContent from './PainGuidePopoverContent';
 
 const getStarText = (score: number) => {
   const filled = Math.max(0, Math.min(5, Math.round(score / 20)));
@@ -81,11 +82,32 @@ const StepNode: React.FC<StepNodeProps> = ({ step }) => {
         <div className="mt-4 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-2 py-1.5">
           <div className="flex items-center justify-center gap-1.5 text-[14px] font-semibold text-slate-500">
             {icon}
-            <span>{guideItem.label}</span>
+            <Popover
+              title={
+                <div className="text-sm font-semibold text-slate-900">
+                  痛点等级说明
+                </div>
+              }
+              content={
+                <PainGuidePopoverContent
+                  currentPainLevel={step.painLevel}
+                  currentColor={step.color}
+                />
+              }
+              placement="bottom"
+              trigger="hover"
+              overlayStyle={{
+                maxWidth: 'min(760px, calc(100vw - 32px))',
+              }}
+            >
+              <span className="cursor-pointer transition-colors hover:text-slate-700 hover:underline">
+                {guideItem.label}
+              </span>
+            </Popover>
           </div>
-          <div className="mt-1 min-h-[40px] text-center">
+          <div className="mt-1 min-h-[40px] cursor-pointer text-center">
             <Tooltip title={getCompactResult(step)} placement="bottom">
-              <div className="line-clamp-3 cursor-default text-[12px] leading-4 text-slate-700">
+              <div className="line-clamp-3 text-[12px] leading-4 text-slate-700">
                 {getCompactResult(step)}
               </div>
             </Tooltip>

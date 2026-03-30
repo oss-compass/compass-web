@@ -306,6 +306,26 @@ const PrTable: React.FC<PrTableProps> = ({
   // 仓库维度表格列定义
   const repoColumns: ColumnsType<PullDetail> = [
     {
+      title: 'ID',
+      dataIndex: 'idInRepo',
+      align: 'left',
+      width: 90,
+      fixed: 'left',
+      render: (id: number | null, record) =>
+        id != null && record.url ? (
+          <a
+            href={record.url}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
+          >
+            #{id}
+          </a>
+        ) : (
+          '-'
+        ),
+    },
+    {
       title: t('analyze:metric_detail:pr_title'),
       dataIndex: 'title',
       align: 'left',

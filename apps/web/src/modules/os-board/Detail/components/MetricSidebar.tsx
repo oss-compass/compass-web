@@ -25,12 +25,12 @@ const EVALUATION_SYSTEMS = [
     name: '开源软件供应链安全评估',
     enabled: false,
   },
-  { id: 'developer_experience', name: '开发者体验套件评估', enabled: false },
-  {
-    id: 'product_competitiveness',
-    name: '开源软件制品竞争力评估',
-    enabled: false,
-  },
+  // { id: 'developer_experience', name: '开发者体验套件评估', enabled: false },
+  // {
+  //   id: 'product_competitiveness',
+  //   name: '开源软件制品竞争力评估',
+  //   enabled: false,
+  // },
 ] as const;
 
 interface MetricSidebarProps {

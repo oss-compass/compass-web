@@ -357,7 +357,7 @@
           },
           "subjective": {
             "pain_level": "中低",
-            "pain_summary": "需优化",
+            "pain_summary": "配置便捷",
             "narrative": "setup阶段的开发者体验较差，多个环节存在问题。",
             "metrics": [
               {
@@ -591,7 +591,7 @@
           },
           "subjective": {
             "pain_level": "高",
-            "pain_summary": "需改进",
+            "pain_summary": "流程中断",
             "narrative": "部署安装步骤的平均得分仅为0/100，痛点等级高，表明该过程存在严重缺陷。关键问题在于部署验证和幂等性均未涉及，意味着这些功能未被评估或实现，导致整体体验不佳。这突出了立即改进部署可靠性和测试覆盖的紧迫性。",
             "metrics": [
               {
@@ -639,7 +639,7 @@
           },
           "subjective": {
             "pain_level": "高",
-            "pain_summary": "输出难读",
+            "pain_summary": "流程中断",
             "narrative": "The Run Verification step exhibits a critical state with an average score of 0.0/100 and a high pain level, indicating severe developer dissatisfaction. Key issues are not captured by the provided met",
             "metrics": [
               {

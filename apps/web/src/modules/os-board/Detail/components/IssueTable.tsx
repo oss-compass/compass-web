@@ -101,7 +101,7 @@ const RingChart: React.FC<{ percentage: number; size?: number }> = ({
 const STATE_OPTIONS = [
   { value: 'open', text: 'analyze:metric_detail:open' },
   { value: 'closed', text: 'analyze:metric_detail:closed' },
-  { value: 'progressing', text: 'analyze:metric_detail:progressing' },
+  // { value: 'progressing', text: 'analyze:metric_detail:progressing' },
 ];
 
 // 获取项目平台类型
@@ -307,6 +307,26 @@ const IssueTable: React.FC<IssueTableProps> = ({
 
   // 仓库维度表格列定义
   const repoColumns: ColumnsType<IssueDetail> = [
+    {
+      title: 'ID',
+      dataIndex: 'idInRepo',
+      align: 'left',
+      width: 90,
+      fixed: 'left',
+      render: (id: number | null, record) =>
+        id != null && record.url ? (
+          <a
+            href={record.url}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
+          >
+            #{id}
+          </a>
+        ) : (
+          '-'
+        ),
+    },
     {
       title: t('analyze:metric_detail:issue_title'),
       dataIndex: 'title',

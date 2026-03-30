@@ -98,7 +98,9 @@ export interface PageResponse<T> {
   count: number;
   page: number;
   totalPage: number;
+  total_page?: number;
   items: T[];
+  origin?: string | null;
 }
 
 // 排序选项

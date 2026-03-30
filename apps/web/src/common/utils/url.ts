@@ -53,7 +53,7 @@ export function getRepoName(path: string) {
 //https://github.com/  =>  github
 export function getProvider(url: string) {
   if (!url) return '';
-  const result = url.match(/^https:\/\/(.+?)\..+$/i);
+  const result = url.match(/^https?:\/\/(.+?)\..+$/i);
   if (result && result.length >= 2) {
     return result[1];
   }
@@ -146,6 +146,50 @@ export const getHubUrl = (origin, name) => {
     default:
       return null;
   }
+};
+
+export const getRepoOrigin = (repo?: string, fallbackOrigin = 'github') => {
+  if (!repo) return fallbackOrigin;
+
+  if (repo.startsWith('http://') || repo.startsWith('https://')) {
+    const provider = getProvider(repo);
+    return provider || fallbackOrigin;
+  }
+
+  const matchedOrigin = repo.match(
+    /^(github|gitee|gitcode)(?::|\.com\/)/i
+  )?.[1];
+  return matchedOrigin?.toLowerCase() || fallbackOrigin;
+};
+
+export const getRepoPath = (repo?: string) => {
+  if (!repo) return '';
+
+  if (repo.startsWith('http://') || repo.startsWith('https://')) {
+    return getPathname(repo);
+  }
+
+  return repo
+    .replace(/^(github|gitee|gitcode):/i, '')
+    .replace(/^(github|gitee|gitcode)\.com\//i, '')
+    .replace(/^\/+/, '');
+};
+
+export const getRepoUrlByName = (repo?: string, fallbackOrigin = 'github') => {
+  if (!repo) return '';
+
+  if (repo.startsWith('http://') || repo.startsWith('https://')) {
+    return removeTrailingSlash(repo);
+  }
+
+  if (/^(github|gitee|gitcode)\.com\//i.test(repo)) {
+    return fillHttps(repo);
+  }
+
+  const origin = getRepoOrigin(repo, fallbackOrigin);
+  const path = getRepoPath(repo);
+
+  return getHubUrl(origin, path) || '';
 };
 export const setUrlHost = (url) => {
   if (!url) return url;
