@@ -35,15 +35,9 @@ const normalizeRequestedProjects = (
       (item, index, currentProjects) => currentProjects.indexOf(item) === index
     );
 
-  if (normalizedProjects.length) {
-    return normalizedProjects.slice(0, 2);
-  }
-
-  // 无 project 参数时，默认进入对比模式
-  return [
-    'cann_ops_math_20260323_1500',
-    'cann_ops_math_20260325_2335',
-  ] as UserJourneyProjectFileKey[];
+  return normalizedProjects.length
+    ? normalizedProjects.slice(0, 2)
+    : [resolveUserJourneyProjectFileKey(undefined)];
 };
 
 type UserJourneyProps = {

@@ -96,7 +96,7 @@ export const USER_JOURNEY_PROJECT_DEFAULT_FILE_MAP = registryEntries.reduce(
 );
 
 export const USER_JOURNEY_FALLBACK_PROJECT: UserJourneyProjectFileKey =
-  'cann_ops_math_20260323_1500';
+  'cann_ops_math_20260325_2335';
 
 export const USER_JOURNEY_PROJECT_OPTIONS = Object.entries(
   USER_JOURNEY_PROJECT_LABEL_MAP
