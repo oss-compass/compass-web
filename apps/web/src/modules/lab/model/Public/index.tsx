@@ -30,7 +30,6 @@ const Model = () => {
   });
 
   const list = data?.labModelPublicOverview?.items || [];
-
   const pageTotal = data?.labModelPublicOverview?.totalPage || 0;
   const count = data?.labModelPublicOverview?.count || 0;
   const tabItems = [
