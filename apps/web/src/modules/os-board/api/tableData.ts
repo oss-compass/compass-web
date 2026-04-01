@@ -28,7 +28,10 @@ export interface ContributorsOverviewResponse {
 export interface IssuesOverviewResponse {
   new_issue_count?: number | null;
   issue_resolution_percentage?: string | null;
+  issue_resolution_numerator?: number | null;
+  issue_resolution_denominator?: number | null;
   unresponsive_issue_count?: number | null;
+  avg_response_time?: number | null;
   avg_comments?: number | null;
 }
 
@@ -58,6 +61,17 @@ export interface PullDetail {
   userLogin?: string | null;
 }
 
+export interface CommunityPullSummaryItem {
+  identifier?: string | null;
+  repoUrl?: string | null;
+  pullTotalCount?: number | null;
+  pullOpenCount?: number | null;
+  closedLoopRate?: number | null;
+  avgClosedLoopTime?: number | null;
+  avgFirstResponseTime?: number | null;
+  openUnresponsiveCount?: number | null;
+}
+
 // Issue 详情
 export interface IssueDetail {
   assigneeLogin?: string | null;
@@ -73,6 +87,17 @@ export interface IssueDetail {
   title?: string | null;
   url?: string | null;
   userLogin?: string | null;
+}
+
+export interface CommunityIssueSummaryItem {
+  identifier?: string | null;
+  repoUrl?: string | null;
+  issueTotalCount?: number | null;
+  issueOpenCount?: number | null;
+  closedLoopRate?: number | null;
+  avgClosedLoopTime?: number | null;
+  avgFirstResponseTime?: number | null;
+  openUnresponsiveCount?: number | null;
 }
 
 // 贡献类型项
@@ -131,6 +156,17 @@ export interface PullsDetailListRequest {
   endDate?: Date;
 }
 
+export interface CommunityPullSummaryListRequest {
+  label: string;
+  level?: string;
+  page?: number;
+  per?: number;
+  filterOpts?: FilterOptionInput[];
+  sortOpts?: SortOptionInput;
+  beginDate?: Date;
+  endDate?: Date;
+}
+
 // Issue 列表请求参数
 export interface IssuesDetailListRequest {
   label: string;
@@ -144,6 +180,17 @@ export interface IssuesDetailListRequest {
 }
 
 // 贡献者列表请求参数
+export interface CommunityIssueSummaryListRequest {
+  label: string;
+  level?: string;
+  page?: number;
+  per?: number;
+  filterOpts?: FilterOptionInput[];
+  sortOpts?: SortOptionInput;
+  beginDate?: Date;
+  endDate?: Date;
+}
+
 export interface ContributorsDetailListRequest {
   label: string;
   level?: string;
@@ -240,6 +287,74 @@ export const fetchPullsDetailList = async (
   return { ...data, items } as PageResponse<PullDetail>;
 };
 
+export const fetchCommunityPullSummaryList = async (
+  params: CommunityPullSummaryListRequest
+): Promise<PageResponse<CommunityPullSummaryItem>> => {
+  const response = await axios.post<PageResponse<CommunityPullSummaryItem>>(
+    '/services/dashboard/community_pull_summary_list',
+    {
+      ...params,
+      label: formatProjectLabel(params.label),
+    }
+  );
+  const data: any = response.data as any;
+  const items = Array.isArray(data?.items)
+    ? data.items.map((raw: any) => {
+        if (!raw || typeof raw !== 'object') return raw;
+
+        const identifier =
+          typeof raw.identifier === 'string'
+            ? raw.identifier.replaceAll('`', '').trim() || null
+            : null;
+        const repoUrlRaw = raw.repoUrl ?? raw.repo_url ?? null;
+        const repoUrl =
+          typeof repoUrlRaw === 'string'
+            ? repoUrlRaw.replaceAll('`', '').trim()
+            : null;
+        const pullTotalCountRaw =
+          raw.pullTotalCount ?? raw.pull_total_count ?? null;
+        const pullOpenCountRaw =
+          raw.pullOpenCount ?? raw.pull_open_count ?? null;
+        const closedLoopRateRaw =
+          raw.closedLoopRate ?? raw.closed_loop_rate ?? null;
+        const avgClosedLoopTimeRaw =
+          raw.avgClosedLoopTime ?? raw.avg_closed_loop_time ?? null;
+        const avgFirstResponseTimeRaw =
+          raw.avgFirstResponseTime ?? raw.avg_first_response_time ?? null;
+        const openUnresponsiveCountRaw =
+          raw.openUnresponsiveCount ?? raw.open_unresponsive_count ?? null;
+
+        return {
+          ...raw,
+          identifier,
+          repoUrl,
+          pullTotalCount:
+            pullTotalCountRaw == null ? null : Number(pullTotalCountRaw),
+          pullOpenCount:
+            pullOpenCountRaw == null ? null : Number(pullOpenCountRaw),
+          closedLoopRate:
+            closedLoopRateRaw == null ? null : Number(closedLoopRateRaw),
+          avgClosedLoopTime:
+            avgClosedLoopTimeRaw == null ? null : Number(avgClosedLoopTimeRaw),
+          avgFirstResponseTime:
+            avgFirstResponseTimeRaw == null
+              ? null
+              : Number(avgFirstResponseTimeRaw),
+          openUnresponsiveCount:
+            openUnresponsiveCountRaw == null
+              ? null
+              : Number(openUnresponsiveCountRaw),
+        } as CommunityPullSummaryItem;
+      })
+    : [];
+
+  return {
+    ...data,
+    totalPage: data?.totalPage ?? data?.total_page ?? 0,
+    items,
+  } as PageResponse<CommunityPullSummaryItem>;
+};
+
 /**
  * 获取 Issue 详情列表
  */
@@ -298,6 +413,74 @@ export const fetchIssuesDetailList = async (
       })
     : [];
   return { ...data, items } as PageResponse<IssueDetail>;
+};
+
+export const fetchCommunityIssueSummaryList = async (
+  params: CommunityIssueSummaryListRequest
+): Promise<PageResponse<CommunityIssueSummaryItem>> => {
+  const response = await axios.post<PageResponse<CommunityIssueSummaryItem>>(
+    '/services/dashboard/community_issue_summary_list',
+    {
+      ...params,
+      label: formatProjectLabel(params.label),
+    }
+  );
+  const data: any = response.data as any;
+  const items = Array.isArray(data?.items)
+    ? data.items.map((raw: any) => {
+        if (!raw || typeof raw !== 'object') return raw;
+
+        const identifier =
+          typeof raw.identifier === 'string'
+            ? raw.identifier.replaceAll('`', '').trim() || null
+            : null;
+        const repoUrlRaw = raw.repoUrl ?? raw.repo_url ?? null;
+        const repoUrl =
+          typeof repoUrlRaw === 'string'
+            ? repoUrlRaw.replaceAll('`', '').trim()
+            : null;
+        const issueTotalCountRaw =
+          raw.issueTotalCount ?? raw.issue_total_count ?? null;
+        const issueOpenCountRaw =
+          raw.issueOpenCount ?? raw.issue_open_count ?? null;
+        const closedLoopRateRaw =
+          raw.closedLoopRate ?? raw.closed_loop_rate ?? null;
+        const avgClosedLoopTimeRaw =
+          raw.avgClosedLoopTime ?? raw.avg_closed_loop_time ?? null;
+        const avgFirstResponseTimeRaw =
+          raw.avgFirstResponseTime ?? raw.avg_first_response_time ?? null;
+        const openUnresponsiveCountRaw =
+          raw.openUnresponsiveCount ?? raw.open_unresponsive_count ?? null;
+
+        return {
+          ...raw,
+          identifier,
+          repoUrl,
+          issueTotalCount:
+            issueTotalCountRaw == null ? null : Number(issueTotalCountRaw),
+          issueOpenCount:
+            issueOpenCountRaw == null ? null : Number(issueOpenCountRaw),
+          closedLoopRate:
+            closedLoopRateRaw == null ? null : Number(closedLoopRateRaw),
+          avgClosedLoopTime:
+            avgClosedLoopTimeRaw == null ? null : Number(avgClosedLoopTimeRaw),
+          avgFirstResponseTime:
+            avgFirstResponseTimeRaw == null
+              ? null
+              : Number(avgFirstResponseTimeRaw),
+          openUnresponsiveCount:
+            openUnresponsiveCountRaw == null
+              ? null
+              : Number(openUnresponsiveCountRaw),
+        } as CommunityIssueSummaryItem;
+      })
+    : [];
+
+  return {
+    ...data,
+    totalPage: data?.totalPage ?? data?.total_page ?? 0,
+    items,
+  } as PageResponse<CommunityIssueSummaryItem>;
 };
 
 /**
@@ -455,6 +638,47 @@ export const useOsBoardPullsDetailList = ({
 /**
  * Issue 详情列表 Hook
  */
+export const useOsBoardCommunityPullSummaryList = ({
+  project,
+  page = 1,
+  per = 10,
+  filterOpts = [],
+  sortOpts,
+  enabled = true,
+}: UseTableDataOptions) => {
+  const { timeStart, timeEnd } = useOsBoardDateRange();
+
+  return useQuery({
+    queryKey: [
+      'osBoardCommunityPullSummaryList',
+      project,
+      page,
+      per,
+      filterOpts,
+      sortOpts,
+      timeStart,
+      timeEnd,
+    ],
+    queryFn: () =>
+      fetchCommunityPullSummaryList({
+        label: project,
+        level: 'community',
+        page,
+        per,
+        filterOpts,
+        sortOpts,
+        beginDate: timeStart,
+        endDate: timeEnd,
+      }),
+    enabled: enabled && !!project,
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+/**
+ * Issue 璇︽儏鍒楄〃 Hook
+ */
 export const useOsBoardIssuesDetailList = ({
   project,
   dashboardType = 'repo',
@@ -491,6 +715,44 @@ export const useOsBoardIssuesDetailList = ({
       }),
     enabled: enabled && !!project,
     staleTime: 60 * 1000, // 1 分钟
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useOsBoardCommunityIssueSummaryList = ({
+  project,
+  page = 1,
+  per = 10,
+  filterOpts = [],
+  sortOpts,
+  enabled = true,
+}: UseTableDataOptions) => {
+  const { timeStart, timeEnd } = useOsBoardDateRange();
+
+  return useQuery({
+    queryKey: [
+      'osBoardCommunityIssueSummaryList',
+      project,
+      page,
+      per,
+      filterOpts,
+      sortOpts,
+      timeStart,
+      timeEnd,
+    ],
+    queryFn: () =>
+      fetchCommunityIssueSummaryList({
+        label: project,
+        level: 'community',
+        page,
+        per,
+        filterOpts,
+        sortOpts,
+        beginDate: timeStart,
+        endDate: timeEnd,
+      }),
+    enabled: enabled && !!project,
+    staleTime: 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };

@@ -33,6 +33,14 @@ const EVALUATION_SYSTEMS = [
   // },
 ] as const;
 
+const CONTRIBUTION_OVERVIEW_DIMENSION_ID: DimensionalityId =
+  'dimensionality_005';
+const CONTRIBUTION_OVERVIEW_METRIC_ORDER: Record<string, number> = {
+  metric_063: 0,
+  metric_064: 1,
+  metric_062: 2,
+};
+
 interface MetricSidebarProps {
   /** 后端返回的指标列表 */
   dashboardMetrics?: OsBoardDashboardMetric[];
@@ -180,15 +188,31 @@ const DimensionalityTopicItem: React.FC<{
   onMetricClick: (metricId: string) => void;
 }> = ({ dim, onMetricClick }) => {
   // 贡献总览（dimensionality_005）特殊处理：直接显示指标，不显示模型层级
-  const isContributionOverview = dim.dimensionalityId === 'dimensionality_005';
+  const isContributionOverview =
+    dim.dimensionalityId === CONTRIBUTION_OVERVIEW_DIMENSION_ID;
 
   // 获取所有指标（用于贡献总览直接展示）
   // 确保按照 sort 字段排序，保证与主区域显示顺序一致
   const allMetrics = useMemo(() => {
     return dim.models
       .flatMap((model) => model.metrics)
-      .sort((a, b) => a.sort - b.sort);
-  }, [dim.models]);
+      .sort((a, b) => {
+        if (isContributionOverview) {
+          const orderA =
+            CONTRIBUTION_OVERVIEW_METRIC_ORDER[a.metricIdent] ??
+            Number.MAX_SAFE_INTEGER;
+          const orderB =
+            CONTRIBUTION_OVERVIEW_METRIC_ORDER[b.metricIdent] ??
+            Number.MAX_SAFE_INTEGER;
+
+          if (orderA !== orderB) {
+            return orderA - orderB;
+          }
+        }
+
+        return a.sort - b.sort;
+      });
+  }, [dim.models, isContributionOverview]);
 
   return (
     <>
@@ -337,7 +361,20 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
       }
     });
 
-    return result;
+    const contributionOverviewGroup = result.find(
+      (item) => item.dimensionalityId === CONTRIBUTION_OVERVIEW_DIMENSION_ID
+    );
+
+    if (!contributionOverviewGroup) {
+      return result;
+    }
+
+    return [
+      contributionOverviewGroup,
+      ...result.filter(
+        (item) => item.dimensionalityId !== CONTRIBUTION_OVERVIEW_DIMENSION_ID
+      ),
+    ];
   }, [dashboardMetrics, metrics, derivedMetrics, selectedMetricIds, t]);
 
   const scrollToMetric = (metricId: string) => {

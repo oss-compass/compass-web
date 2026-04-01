@@ -33,6 +33,10 @@ interface TableParams {
   sortOpts?: SortOptionInput;
 }
 
+const TABLE_CARD_CLASS = '!p-4 [&_h3]:!mb-1 flex h-[850px] flex-col';
+const TABLE_CARD_BODY_CLASS = 'flex flex-1 flex-col';
+const TABLE_SCROLL_HEIGHT = 540;
+
 const ECOLOGICAL_TYPES = [
   {
     value: 'organization manager',
@@ -475,8 +479,8 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     <BaseCard
       id="contributor_table"
       title={String(t('metrics_models_v2:model_999.metrics.metric_062.title'))}
-      bodyClass=""
-      className="!p-4 [&_h3]:!mb-1"
+      bodyClass={TABLE_CARD_BODY_CLASS}
+      className={TABLE_CARD_CLASS}
     >
       {/* 项目切换 Tabs */}
       <Tabs
@@ -561,7 +565,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       </div>
 
       {/* 贡献者表格 */}
-      <div className="flex h-[420px] flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <div className="min-h-0 flex-1">
           <MyTable
             columns={columns}
@@ -570,7 +574,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
             loading={isLoading || isFetching || statsLoading}
             onChange={handleTableChange}
             pagination={tableParams.pagination}
-            scroll={{ x: 'max-content', y: 320 }}
+            scroll={{ x: 'max-content', y: TABLE_SCROLL_HEIGHT }}
             className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-1 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
           />
         </div>

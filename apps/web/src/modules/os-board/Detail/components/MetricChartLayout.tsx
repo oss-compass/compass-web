@@ -30,6 +30,13 @@ const SPECIAL_METRICS = {
   PR: 'metric_064', // PR 管理
 } as const;
 
+const CONTRIBUTION_OVERVIEW_MODEL_ID: ModelId = 'model_999';
+const CONTRIBUTION_OVERVIEW_METRIC_ORDER: Record<string, number> = {
+  [SPECIAL_METRICS.ISSUE]: 0,
+  [SPECIAL_METRICS.PR]: 1,
+  [SPECIAL_METRICS.CONTRIBUTOR]: 2,
+};
+
 interface MetricChartLayoutProps {
   dashboard: {
     id: string;
@@ -129,12 +136,40 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
     // 兼容旧方式
     return dashboard.config.metrics.map((id, index) => ({
       dashboard_metric_info_ident: id,
-      dashboard_model_info_ident: 'model_999',
+      dashboard_model_info_ident: CONTRIBUTION_OVERVIEW_MODEL_ID,
       sort: index,
       hidden: false,
       from_model: false,
     })) as OsBoardDashboardMetric[];
   }, [dashboard.dashboard_metrics, dashboard.config.metrics]);
+
+  const orderedDisplayMetrics = useMemo(() => {
+    const contributionOverviewMetrics = displayMetrics.filter(
+      (metric) =>
+        metric.dashboard_model_info_ident === CONTRIBUTION_OVERVIEW_MODEL_ID
+    );
+    const otherMetrics = displayMetrics.filter(
+      (metric) =>
+        metric.dashboard_model_info_ident !== CONTRIBUTION_OVERVIEW_MODEL_ID
+    );
+
+    contributionOverviewMetrics.sort((a, b) => {
+      const orderA =
+        CONTRIBUTION_OVERVIEW_METRIC_ORDER[a.dashboard_metric_info_ident] ??
+        Number.MAX_SAFE_INTEGER;
+      const orderB =
+        CONTRIBUTION_OVERVIEW_METRIC_ORDER[b.dashboard_metric_info_ident] ??
+        Number.MAX_SAFE_INTEGER;
+
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+
+      return a.sort - b.sort;
+    });
+
+    return [...contributionOverviewMetrics, ...otherMetrics];
+  }, [displayMetrics]);
 
   // 计算哪些模型有指标被选中（只要有任意指标就展示模型卡片）
   const completeModels = useMemo(() => {
@@ -144,7 +179,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
       const modelId = m.dashboard_model_info_ident;
 
       // 其他指标（model_999）不需要模型卡片
-      if (modelId === 'model_999') {
+      if (modelId === CONTRIBUTION_OVERVIEW_MODEL_ID) {
         return;
       }
 
@@ -161,7 +196,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
   }, [displayMetrics]);
 
   // 如果没有任何指标，显示暂无数据
-  if (displayMetrics.length === 0) {
+  if (orderedDisplayMetrics.length === 0) {
     return (
       <div className="flex items-center justify-center py-20 text-gray-500">
         {t('common:no_data')}
@@ -259,7 +294,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
     const elements: React.ReactNode[] = [];
     const renderedModels = new Set<string>();
 
-    displayMetrics.forEach((metric) => {
+    orderedDisplayMetrics.forEach((metric) => {
       const modelIdent = metric.dashboard_model_info_ident;
 
       // 如果该模型的所有指标都被选中，且还未渲染过该模型的 ModelCard

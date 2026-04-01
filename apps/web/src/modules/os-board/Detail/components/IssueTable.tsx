@@ -12,9 +12,11 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { format, parseJSON } from 'date-fns';
 import {
+  useOsBoardCommunityIssueSummaryList,
   useOsBoardIssuesDetailList,
   useOsBoardIssuesOverview,
   useOsBoardRepositoryList,
+  CommunityIssueSummaryItem,
   IssueDetail,
   FilterOptionInput,
   SortOptionInput,
@@ -41,6 +43,12 @@ interface TableParams {
   sortOpts?: SortOptionInput | null;
 }
 
+type IssueTableRecord = IssueDetail | CommunityIssueSummaryItem;
+
+const TABLE_CARD_CLASS = '!p-4 [&_h3]:!mb-1 flex h-[850px] flex-col';
+const TABLE_CARD_BODY_CLASS = 'flex flex-1 flex-col';
+const TABLE_SCROLL_HEIGHT = 540;
+
 const STATE_OPTIONS = [
   { value: 'open', text: 'analyze:metric_detail:open' },
   { value: 'closed', text: 'analyze:metric_detail:closed' },
@@ -50,6 +58,70 @@ const TITLE_COLUMN_WIDTH = 280;
 const TITLE_TEXT_MAX_WIDTH = 248;
 const REPOSITORY_COLUMN_WIDTH = 220;
 const REPOSITORY_TEXT_MAX_WIDTH = 188;
+
+const getDefaultSortOption = (
+  dashboardType: 'repo' | 'community'
+): SortOptionInput | null => {
+  if (dashboardType === 'community') {
+    return null;
+  }
+
+  return {
+    type: 'state',
+    direction: 'desc',
+  };
+};
+
+const RingChart: React.FC<{ percentage: number; size?: number }> = ({
+  percentage,
+  size = 24,
+}) => {
+  const safePercentage = Math.max(0, Math.min(percentage, 100));
+  const radius = (size - 4) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference * (1 - safePercentage / 100);
+
+  const getColor = (value: number) => {
+    if (value >= 90) {
+      return '#52c41a';
+    }
+    if (value >= 60) {
+      return '#faad14';
+    }
+    return '#ff4d4f';
+  };
+
+  const color = getColor(safePercentage);
+
+  return (
+    <div className="inline-flex items-center gap-2">
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#f0f0f0"
+          strokeWidth="3"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth="3"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="text-sm font-medium" style={{ color }}>
+        {toFixed(safePercentage, 1)}%
+      </span>
+    </div>
+  );
+};
 
 const getProjectPlatform = (project: string, fallbackOrigin = 'github') =>
   getRepoOrigin(project, fallbackOrigin);
@@ -80,19 +152,17 @@ const IssueTable: React.FC<IssueTableProps> = ({
   const [selectedProject, setSelectedProject] = useState<string>(
     projects[0] || ''
   );
+  const isCommunityDashboard = dashboardType === 'community';
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
       pageSize: 10,
       showSizeChanger: true,
       position: ['bottomCenter'],
-      showTotal: (total) => t('analyze:total_issues', { total }),
+      showTotal: (total) => t('analyze:total_people', { total }),
     },
     filterOpts: [],
-    sortOpts: {
-      type: 'state',
-      direction: 'desc',
-    },
+    sortOpts: getDefaultSortOption(dashboardType),
   });
 
   const {
@@ -106,20 +176,21 @@ const IssueTable: React.FC<IssueTableProps> = ({
     per: tableParams.pagination?.pageSize,
     filterOpts: tableParams.filterOpts,
     sortOpts: tableParams.sortOpts || undefined,
-    enabled: !!selectedProject,
+    enabled: !isCommunityDashboard && !!selectedProject,
   });
 
-  React.useEffect(() => {
-    if (issuesDetailData) {
-      setTableParams((prev) => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: issuesDetailData.count,
-        },
-      }));
-    }
-  }, [issuesDetailData]);
+  const {
+    data: communityIssueSummaryData,
+    isLoading: communityLoading,
+    isFetching: communityFetching,
+  } = useOsBoardCommunityIssueSummaryList({
+    project: selectedProject,
+    page: tableParams.pagination?.current,
+    per: tableParams.pagination?.pageSize,
+    filterOpts: tableParams.filterOpts,
+    sortOpts: tableParams.sortOpts || undefined,
+    enabled: isCommunityDashboard && !!selectedProject,
+  });
 
   const {
     data: repositoryListData,
@@ -128,7 +199,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
   } = useOsBoardRepositoryList({
     project: selectedProject,
     level: 'community',
-    enabled: dashboardType === 'community' && !!selectedProject,
+    enabled: isCommunityDashboard && !!selectedProject,
   });
 
   const { data: issuesOverview, isLoading: statsLoading } =
@@ -140,19 +211,33 @@ const IssueTable: React.FC<IssueTableProps> = ({
 
   const statsData = {
     issueCount: issuesOverview?.new_issue_count,
-    issueCompletionRatio: issuesOverview?.issue_resolution_percentage
-      ? parseFloat(
-          issuesOverview.issue_resolution_percentage.replace('%', '')
-        ) / 100
-      : null,
+    issueCompletionRatio: issuesOverview?.issue_resolution_percentage,
+    issueResolutionNumerator: issuesOverview?.issue_resolution_numerator,
+    issueResolutionDenominator: issuesOverview?.issue_resolution_denominator,
     issueUnresponsiveCount: issuesOverview?.unresponsive_issue_count,
-    issueCommentFrequencyMean: issuesOverview?.avg_comments,
+    issueAverageResponseTime: issuesOverview?.avg_response_time,
   };
 
-  const tableData = issuesDetailData?.items || [];
+  const activeTotalCount = isCommunityDashboard
+    ? communityIssueSummaryData?.count
+    : issuesDetailData?.count;
+
+  React.useEffect(() => {
+    if (activeTotalCount == null) {
+      return;
+    }
+
+    setTableParams((prev) => ({
+      ...prev,
+      pagination: {
+        ...prev.pagination,
+        total: activeTotalCount,
+      },
+    }));
+  }, [activeTotalCount]);
 
   const repositoryFilters = useMemo(() => {
-    if (dashboardType !== 'community') {
+    if (!isCommunityDashboard) {
       return [];
     }
 
@@ -174,10 +259,10 @@ const IssueTable: React.FC<IssueTableProps> = ({
           value: string;
         } => !!item
       );
-  }, [dashboardType, repositoryListData]);
+  }, [isCommunityDashboard, repositoryListData]);
 
   React.useEffect(() => {
-    if (dashboardType !== 'community') {
+    if (!isCommunityDashboard) {
       return;
     }
 
@@ -185,7 +270,10 @@ const IssueTable: React.FC<IssueTableProps> = ({
       const nextFilterOpts =
         prev.filterOpts?.filter((item) => item.type !== 'repository') || [];
 
-      if (nextFilterOpts.length === (prev.filterOpts?.length || 0)) {
+      if (
+        nextFilterOpts.length === (prev.filterOpts?.length || 0) &&
+        prev.pagination?.current === 1
+      ) {
         return prev;
       }
 
@@ -198,20 +286,25 @@ const IssueTable: React.FC<IssueTableProps> = ({
         filterOpts: nextFilterOpts,
       };
     });
-  }, [dashboardType, selectedProject]);
+  }, [isCommunityDashboard, selectedProject]);
 
   const handleTableChange = (
     pagination: TablePaginationConfig,
-    filters: Record<string, FilterValue>,
-    sorter: SorterResult<IssueDetail>
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<IssueTableRecord> | SorterResult<IssueTableRecord>[]
   ) => {
     let sortOpts: SortOptionInput | null = null;
     const filterOpts: FilterOptionInput[] = [];
+    const activeSorter = Array.isArray(sorter) ? sorter[0] : sorter;
 
-    if (sorter.field) {
+    if (
+      activeSorter?.field &&
+      typeof activeSorter.field === 'string' &&
+      activeSorter.order
+    ) {
       sortOpts = {
-        type: toUnderline(sorter.field as string),
-        direction: sorter.order === 'ascend' ? 'asc' : 'desc',
+        type: toUnderline(activeSorter.field),
+        direction: activeSorter.order === 'ascend' ? 'asc' : 'desc',
       };
     }
 
@@ -278,8 +371,8 @@ const IssueTable: React.FC<IssueTableProps> = ({
     ];
   }, [projects, competitorProjects, origin, t]);
 
-  const columns = useMemo<ColumnsType<IssueDetail>>(() => {
-    const baseColumns: ColumnsType<IssueDetail> = [
+  const repoColumns = useMemo<ColumnsType<IssueDetail>>(
+    () => [
       {
         title: 'ID',
         dataIndex: 'idInRepo',
@@ -331,14 +424,14 @@ const IssueTable: React.FC<IssueTableProps> = ({
         align: 'left',
         width: 100,
         sorter: true,
-        filters: STATE_OPTIONS.map((s) => ({
-          text: t(s.text),
-          value: s.value,
+        filters: STATE_OPTIONS.map((item) => ({
+          text: t(item.text),
+          value: item.value,
         })),
         filteredValue: getFilteredValues(tableParams.filterOpts, 'state'),
-        render: (val: string) => {
-          const item = STATE_OPTIONS.find((s) => s.value === val);
-          return item ? t(item.text) : val;
+        render: (value: string) => {
+          const item = STATE_OPTIONS.find((state) => state.value === value);
+          return item ? t(item.text) : value;
         },
       },
       {
@@ -348,7 +441,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
         width: 120,
         sorter: true,
         render: (time: string) =>
-          time ? format(parseJSON(time)!, 'yyyy-MM-dd') : '-',
+          time ? format(parseJSON(time), 'yyyy-MM-dd') : '-',
       },
       {
         title: t('analyze:metric_detail:close_time'),
@@ -357,7 +450,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
         width: 120,
         sorter: true,
         render: (time: string | null) =>
-          time ? format(parseJSON(time)!, 'yyyy-MM-dd') : '-',
+          time ? format(parseJSON(time), 'yyyy-MM-dd') : '-',
       },
       {
         title: t('analyze:metric_detail:processing_time'),
@@ -365,8 +458,8 @@ const IssueTable: React.FC<IssueTableProps> = ({
         align: 'left',
         width: 120,
         sorter: true,
-        render: (val: number | null) =>
-          val != null ? `${toFixed(val, 1)} ${t('analyze:unit_day')}` : '-',
+        render: (value: number | null) =>
+          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
       },
       {
         title: t('analyze:metric_detail:first_response_time'),
@@ -374,8 +467,8 @@ const IssueTable: React.FC<IssueTableProps> = ({
         align: 'left',
         width: 150,
         sorter: true,
-        render: (val: number | null) =>
-          val != null ? `${toFixed(val, 1)} ${t('analyze:unit_day')}` : '-',
+        render: (value: number | null) =>
+          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
       },
       {
         title: t('analyze:metric_detail:comments_count'),
@@ -402,14 +495,17 @@ const IssueTable: React.FC<IssueTableProps> = ({
         dataIndex: 'assigneeLogin',
         align: 'left',
         width: 120,
-        render: (val: string | null) => val || '-',
+        render: (value: string | null) => value || '-',
       },
-    ];
+    ],
+    [t, tableParams.filterOpts]
+  );
 
-    if (dashboardType === 'community') {
-      baseColumns.splice(2, 0, {
+  const communityColumns = useMemo<ColumnsType<CommunityIssueSummaryItem>>(
+    () => [
+      {
         title: t('os_board:issue_table.repo_name'),
-        dataIndex: 'repository',
+        dataIndex: 'repoUrl',
         key: 'repository',
         align: 'left',
         width: REPOSITORY_COLUMN_WIDTH,
@@ -417,13 +513,17 @@ const IssueTable: React.FC<IssueTableProps> = ({
         filters: repositoryFilters,
         filterSearch: true,
         filteredValue: getFilteredValues(tableParams.filterOpts, 'repository'),
-        render: (text: string | null, record) => {
-          const repositoryName = getRepositoryDisplayName(text);
-          return repositoryName && record.repository ? (
+        render: (repoUrl: string | null, record) => {
+          const repositoryName = getRepositoryDisplayName(repoUrl);
+          const href = record.identifier
+            ? `/os-board/dashboard/${encodeURIComponent(record.identifier)}`
+            : repoUrl;
+
+          return repositoryName && href ? (
             <a
-              href={record.repository}
-              target="_blank"
-              rel="noreferrer"
+              href={href}
+              target={'_blank'}
+              rel={'noreferrer'}
               title={repositoryName}
               className="block overflow-hidden text-ellipsis whitespace-nowrap font-medium text-gray-900 hover:text-blue-600 hover:underline"
               style={{ maxWidth: REPOSITORY_TEXT_MAX_WIDTH }}
@@ -434,24 +534,85 @@ const IssueTable: React.FC<IssueTableProps> = ({
             '-'
           );
         },
-      });
-    }
+      },
+      {
+        title: t('os_board:issue_table.issue_total'),
+        dataIndex: 'issueTotalCount',
+        align: 'center',
+        width: 110,
+        sorter: true,
+        render: (value: number | null) => value ?? '-',
+      },
+      {
+        title: t('os_board:issue_table.issue_open'),
+        dataIndex: 'issueOpenCount',
+        align: 'center',
+        width: 110,
+        sorter: true,
+        render: (value: number | null) => value ?? '-',
+      },
+      {
+        title: t('os_board:issue_table.issue_completion_ratio'),
+        dataIndex: 'closedLoopRate',
+        align: 'center',
+        width: 150,
+        sorter: true,
+        render: (value: number | null) =>
+          value != null ? <RingChart percentage={value} /> : '-',
+      },
+      {
+        title: t('os_board:issue_table.avg_closed_loop_time'),
+        dataIndex: 'avgClosedLoopTime',
+        align: 'center',
+        width: 160,
+        sorter: true,
+        render: (value: number | null) =>
+          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
+      },
+      {
+        title: t('os_board:issue_table.issue_first_response'),
+        dataIndex: 'avgFirstResponseTime',
+        align: 'center',
+        width: 160,
+        sorter: true,
+        render: (value: number | null) =>
+          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
+      },
+      {
+        title: t('os_board:issue_table.issue_unresponsive'),
+        dataIndex: 'openUnresponsiveCount',
+        align: 'center',
+        width: 150,
+        sorter: true,
+        render: (value: number | null) => value ?? '-',
+      },
+    ],
+    [repositoryFilters, t, tableParams.filterOpts]
+  );
 
-    return baseColumns;
-  }, [dashboardType, repositoryFilters, t, tableParams.filterOpts]);
+  const columns = (
+    isCommunityDashboard ? communityColumns : repoColumns
+  ) as ColumnsType<IssueTableRecord>;
 
-  const isTableLoading =
-    repoLoading ||
-    repoFetching ||
-    (dashboardType === 'community' &&
-      (repositoryListLoading || repositoryListFetching));
+  const tableData = (
+    isCommunityDashboard
+      ? communityIssueSummaryData?.items || []
+      : issuesDetailData?.items || []
+  ) as IssueTableRecord[];
+
+  const isTableLoading = isCommunityDashboard
+    ? communityLoading ||
+      communityFetching ||
+      repositoryListLoading ||
+      repositoryListFetching
+    : repoLoading || repoFetching;
 
   return (
     <BaseCard
       id="issue_table"
       title={String(t('metrics_models_v2:model_999.metrics.metric_063.title'))}
-      bodyClass=""
-      className="!p-4 [&_h3]:!mb-1"
+      bodyClass={TABLE_CARD_BODY_CLASS}
+      className={TABLE_CARD_CLASS}
     >
       <Tabs
         activeKey={selectedProject}
@@ -480,7 +641,12 @@ const IssueTable: React.FC<IssueTableProps> = ({
             </div>
             <div className="line-clamp-1">
               {statsData.issueCompletionRatio != null
-                ? `${toFixed(statsData.issueCompletionRatio * 100, 1)}%`
+                ? `${statsData.issueCompletionRatio}${
+                    statsData.issueResolutionNumerator != null &&
+                    statsData.issueResolutionDenominator != null
+                      ? ` (${statsData.issueResolutionNumerator}/${statsData.issueResolutionDenominator})`
+                      : ''
+                  }`
                 : '-'}
             </div>
           </div>
@@ -509,28 +675,30 @@ const IssueTable: React.FC<IssueTableProps> = ({
               <BiChat />
             </div>
             <div className="line-clamp-1">
-              {statsData.issueCommentFrequencyMean != null
-                ? toFixed(statsData.issueCommentFrequencyMean, 2)
+              {statsData.issueAverageResponseTime != null
+                ? `${toFixed(statsData.issueAverageResponseTime, 2)} ${t(
+                    'analyze:unit_day'
+                  )}`
                 : '-'}
             </div>
           </div>
           <div className="text-xs text-[#585858]">
-            {t('analyze:metric_detail:average_comments_count')}
+            {t('analyze:metric_detail:average_response_time')}
           </div>
         </div>
       </div>
 
-      <div className="flex h-[420px] flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <div className="min-h-0 flex-1">
           <MyTable
             columns={columns}
             dataSource={tableData}
-            rowKey="url"
+            rowKey={isCommunityDashboard ? 'repoUrl' : 'url'}
             tableLayout="fixed"
             loading={isTableLoading || statsLoading}
             onChange={handleTableChange}
             pagination={tableParams.pagination}
-            scroll={{ x: 'max-content', y: 320 }}
+            scroll={{ x: 'max-content', y: TABLE_SCROLL_HEIGHT }}
             className="h-full [&_.ant-pagination]:flex-shrink-0 [&_.ant-pagination]:py-1 [&_.ant-spin-container]:flex [&_.ant-spin-container]:h-full [&_.ant-spin-container]:flex-col [&_.ant-spin-nested-loading]:h-full [&_.ant-table-body]:min-h-0 [&_.ant-table-body]:flex-1 [&_.ant-table-container]:min-h-0 [&_.ant-table-container]:flex-1 [&_.ant-table-thead_th]:whitespace-nowrap [&_.ant-table-wrapper]:min-h-0 [&_.ant-table-wrapper]:flex-1 [&_.ant-table]:flex [&_.ant-table]:h-full [&_.ant-table]:flex-col"
           />
         </div>
