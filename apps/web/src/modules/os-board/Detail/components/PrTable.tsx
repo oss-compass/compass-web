@@ -161,7 +161,7 @@ const PrTable: React.FC<PrTableProps> = ({
       pageSize: 10,
       showSizeChanger: true,
       position: ['bottomCenter'],
-      showTotal: (total) => t('analyze:total_prs', { total }),
+      showTotal: (total) => t('analyze:total_people', { total }),
     },
     filterOpts: [],
     sortOpts: getDefaultSortOption(dashboardType),
