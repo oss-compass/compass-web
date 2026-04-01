@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
+import { Input, Tabs } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import Center from '@common/components/Layout/Center';
 import { Button } from '@oss-compass/ui';
 import { formatToNow } from '@common/utils/time';
 import Banner from './Banner';
 import { useDashboardList } from './api/dashboard';
+
+type DashboardTypeFilter = 'all' | 'community' | 'repo';
 
 const DashboardHome = () => {
   const { t } = useTranslation();
@@ -14,6 +18,28 @@ const DashboardHome = () => {
   // API 调用：获取看板列表
   const [page, setPage] = useState(1);
   const [perPage] = useState(9);
+  const [keyword, setKeyword] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [activeTab, setActiveTab] = useState<DashboardTypeFilter>('all');
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      setInputValue(val);
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+      searchTimerRef.current = setTimeout(() => {
+        setKeyword(val);
+        setPage(1);
+      }, 400);
+    },
+    []
+  );
+
+  const handleTabChange = (tab: DashboardTypeFilter) => {
+    setActiveTab(tab);
+    setPage(1);
+  };
 
   const {
     data: dashboardData,
@@ -23,6 +49,8 @@ const DashboardHome = () => {
   } = useDashboardList({
     page,
     per_page: perPage,
+    ...(keyword ? { keywords: keyword } : {}),
+    ...(activeTab !== 'all' ? { dashboard_type: activeTab } : {}),
   });
 
   // 使用 API 数据
@@ -86,9 +114,19 @@ const DashboardHome = () => {
     <div className="bg-[#ffffff] pb-10">
       <Banner className="!mb-0" />
       <Center className="pt-10 md:px-4">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="text-xl font-semibold">
-            {t('os_board:home.title')}
+        <div className="mb-2 flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <div className="text-xl font-semibold">
+              {t('os_board:home.title')}
+            </div>
+            <Input
+              prefix={<SearchOutlined className="text-gray-400" />}
+              placeholder="搜索看板名称"
+              value={inputValue}
+              onChange={handleInputChange}
+              allowClear
+              style={{ width: 220 }}
+            />
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -101,6 +139,18 @@ const DashboardHome = () => {
             </Button>
           </div>
         </div>
+
+        {/* Tabs */}
+        <Tabs
+          activeKey={activeTab}
+          onChange={(key) => handleTabChange(key as DashboardTypeFilter)}
+          items={[
+            { key: 'all', label: '全部' },
+            { key: 'community', label: '社区' },
+            { key: 'repo', label: '仓库' },
+          ]}
+          className="mb-1"
+        />
 
         {isLoading ? (
           <div className="py-20 text-center text-gray-500">

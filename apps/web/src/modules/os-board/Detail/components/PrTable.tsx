@@ -144,6 +144,13 @@ const getFilteredValues = (
   return values && values.length > 0 ? values : null;
 };
 
+const formatResponseTime = (
+  value: number | null | undefined,
+  unitLabel: string,
+  emptyLabel: string,
+  digits = 1
+) => (value != null ? `${toFixed(value, digits)} ${unitLabel}` : emptyLabel);
+
 const PrTable: React.FC<PrTableProps> = ({
   dashboardType,
   origin,
@@ -151,6 +158,8 @@ const PrTable: React.FC<PrTableProps> = ({
   competitorProjects = [],
 }) => {
   const { t } = useTranslation();
+  const noResponseText = t('analyze:metric_detail:no_response');
+  const dayUnitText = t('analyze:unit_day');
   const [selectedProject, setSelectedProject] = useState<string>(
     projects[0] || ''
   );
@@ -471,7 +480,7 @@ const PrTable: React.FC<PrTableProps> = ({
         width: 150,
         sorter: true,
         render: (value: number | null) =>
-          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
+          formatResponseTime(value, dayUnitText, noResponseText),
       },
       {
         title: t('analyze:metric_detail:comments_count'),
@@ -508,7 +517,7 @@ const PrTable: React.FC<PrTableProps> = ({
         render: (value: string | null) => value || '-',
       },
     ],
-    [t, tableParams.filterOpts]
+    [dayUnitText, noResponseText, t, tableParams.filterOpts]
   );
 
   const communityColumns = useMemo<ColumnsType<CommunityPullSummaryItem>>(
@@ -586,7 +595,7 @@ const PrTable: React.FC<PrTableProps> = ({
         width: 160,
         sorter: true,
         render: (value: number | null) =>
-          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
+          formatResponseTime(value, dayUnitText, noResponseText),
       },
       {
         title: t('os_board:pr_table.pr_unresponsive'),
@@ -597,7 +606,7 @@ const PrTable: React.FC<PrTableProps> = ({
         render: (value: number | null) => value ?? '-',
       },
     ],
-    [repositoryFilters, t, tableParams.filterOpts]
+    [dayUnitText, noResponseText, repositoryFilters, t, tableParams.filterOpts]
   );
 
   const columns = (

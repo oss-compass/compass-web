@@ -142,6 +142,13 @@ const getFilteredValues = (
   return values && values.length > 0 ? values : null;
 };
 
+const formatResponseTime = (
+  value: number | null | undefined,
+  unitLabel: string,
+  emptyLabel: string,
+  digits = 1
+) => (value != null ? `${toFixed(value, digits)} ${unitLabel}` : emptyLabel);
+
 const IssueTable: React.FC<IssueTableProps> = ({
   dashboardType,
   origin,
@@ -149,6 +156,8 @@ const IssueTable: React.FC<IssueTableProps> = ({
   competitorProjects = [],
 }) => {
   const { t } = useTranslation();
+  const noResponseText = t('analyze:metric_detail:no_response');
+  const dayUnitText = t('analyze:unit_day');
   const [selectedProject, setSelectedProject] = useState<string>(
     projects[0] || ''
   );
@@ -468,7 +477,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
         width: 150,
         sorter: true,
         render: (value: number | null) =>
-          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
+          formatResponseTime(value, dayUnitText, noResponseText),
       },
       {
         title: t('analyze:metric_detail:comments_count'),
@@ -498,7 +507,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
         render: (value: string | null) => value || '-',
       },
     ],
-    [t, tableParams.filterOpts]
+    [dayUnitText, noResponseText, t, tableParams.filterOpts]
   );
 
   const communityColumns = useMemo<ColumnsType<CommunityIssueSummaryItem>>(
@@ -576,7 +585,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
         width: 160,
         sorter: true,
         render: (value: number | null) =>
-          value != null ? `${toFixed(value, 1)} ${t('analyze:unit_day')}` : '-',
+          formatResponseTime(value, dayUnitText, noResponseText),
       },
       {
         title: t('os_board:issue_table.issue_unresponsive'),
@@ -587,7 +596,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
         render: (value: number | null) => value ?? '-',
       },
     ],
-    [repositoryFilters, t, tableParams.filterOpts]
+    [dayUnitText, noResponseText, repositoryFilters, t, tableParams.filterOpts]
   );
 
   const columns = (
@@ -675,11 +684,12 @@ const IssueTable: React.FC<IssueTableProps> = ({
               <BiChat />
             </div>
             <div className="line-clamp-1">
-              {statsData.issueAverageResponseTime != null
-                ? `${toFixed(statsData.issueAverageResponseTime, 2)} ${t(
-                    'analyze:unit_day'
-                  )}`
-                : '-'}
+              {formatResponseTime(
+                statsData.issueAverageResponseTime,
+                dayUnitText,
+                noResponseText,
+                2
+              )}
             </div>
           </div>
           <div className="text-xs text-[#585858]">
