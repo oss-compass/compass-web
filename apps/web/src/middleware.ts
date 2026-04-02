@@ -18,6 +18,9 @@ export function middleware(request: NextRequest) {
 // See "Matching Paths" below to learn more
 export const config = {
   matcher: [
+    '/api/v3/:path*',
+    '/api/v2/:path*',
+    '/services/:path*',
     '/api/graphql',
     '/api/beta/predict',
     '/api/v1/:path*',
