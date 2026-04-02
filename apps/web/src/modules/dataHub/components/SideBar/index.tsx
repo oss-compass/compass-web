@@ -8,6 +8,8 @@ import { SideBarContextProvider } from '../../context/SideBarContext';
 import ErrorFallback from '@common/components/ErrorFallback';
 import { useApiDataContext } from '@modules/dataHub/context';
 
+const SIDEBAR_WIDTH_CLASS = 'w-[300px] min-w-[300px]';
+
 const MenuLoading = () => (
   <div className="px-4">
     <div className="mb-8 flex-1 space-y-4">
@@ -77,7 +79,9 @@ export const SideBarMenu: React.FC<PropsWithChildren> = ({ children }) => {
 
 const SideBar = () => {
   return (
-    <aside className="relative min-w-[255px] flex-shrink-0 border-r bg-white lg:hidden">
+    <aside
+      className={`relative flex-shrink-0 border-r bg-white lg:hidden ${SIDEBAR_WIDTH_CLASS}`}
+    >
       <div className="thin-scrollbar sticky top-[0px] h-[calc(100vh-80px)] overflow-auto">
         <div className="py-4">
           <SideBarMenu />
