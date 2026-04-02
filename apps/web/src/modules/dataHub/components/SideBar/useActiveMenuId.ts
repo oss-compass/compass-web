@@ -1,23 +1,27 @@
 import { useMemo } from 'react';
 import useMenuContent from './useMenuContent';
+import { findMenuPathSegments } from './menuTree';
 
 const useActiveMenuId = (activeId: string) => {
   const { isLoading, result } = useMenuContent();
+
   return useMemo(() => {
-    if (isLoading) {
+    if (isLoading || !result) {
       return { topicId: '', menuId: '', subMenuId: '' };
     }
-    for (const item of result) {
-      if (item.name === activeId) {
-        return { topicId: item.name, menuId: '', subMenuId: '' };
-      } else {
-        if (item.menus.find((menu) => menu.id === activeId)) {
-          const menu = item.menus.find((menu) => menu.id === activeId);
-          return { topicId: item.name, menuId: menu.id, subMenuId: '' };
-        }
-      }
+
+    const pathSegments = findMenuPathSegments(result, activeId);
+    if (pathSegments.length === 0) {
+      return { topicId: '', menuId: '', subMenuId: '' };
     }
-    return { topicId: '', menuId: '', subMenuId: '' };
-  }, [activeId, isLoading]);
+
+    return {
+      topicId: pathSegments[0] || '',
+      menuId: pathSegments[1] || '',
+      subMenuId:
+        pathSegments.length > 2 ? pathSegments[pathSegments.length - 1] : '',
+    };
+  }, [activeId, isLoading, result]);
 };
+
 export default useActiveMenuId;

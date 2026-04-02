@@ -1,37 +1,14 @@
 import { useMemo } from 'react';
 import { useApiDataContext } from '@modules/dataHub/context';
-// 类型定义
-interface SchemaProperty {
-  type: string;
-  format?: string;
-  description?: string;
-  [key: string]: unknown;
-}
+import type {
+  ApiEndpointNode,
+  ApiMenuGroupNode,
+  ApiMenuNode,
+} from './menuTree';
+import { isApiMenuGroup } from './menuTree';
 
-interface MenuItem {
-  id: string;
-  path: string;
-  method: string;
-  description?: string;
-  parameters: Array<
-    {
-      name: string;
-      required: boolean;
-    } & SchemaProperty
-  >;
-}
-
-interface SubMenu {
-  name: string;
-  convertName: string;
-  subMenus: MenuItem[];
-}
-
-interface MenuCategory {
-  name: string;
-  convertName: string;
-  menus: Array<MenuItem | SubMenu>;
-}
+type DefinitionsMap = Record<string, any>;
+const ALLOWED_ROOT_TAGS = new Set(['V2 API', 'V3 API']);
 
 const convertPath = (path: string) => {
   let res = path;
@@ -48,25 +25,30 @@ const convertNameFun = (str: string) => {
     .trim();
 };
 
-const getResponses = (definitions, schema) => {
-  const res = definitions[schema]?.properties || {};
-  const result = Object.entries(res).map(([key, value]) => {
-    return {
-      name: key,
-    };
-  });
+const createGroupKey = (segments: string[]) => {
+  return `api-group:${segments.join('>')}`;
 };
+
+const getAllowedTagPath = (tags: string[] = []) => {
+  const startIndex = tags.findIndex((tag) => ALLOWED_ROOT_TAGS.has(tag));
+  if (startIndex === -1) {
+    return [];
+  }
+
+  return tags.slice(startIndex).filter(Boolean);
+};
+
 // @ts-ignore
-function resolveSchema(definitions, targetSchema) {
-  // 类型校验安全门
-  if (!definitions[targetSchema]) {
+function resolveSchema(definitions: DefinitionsMap, targetSchema?: string) {
+  if (!targetSchema || !definitions[targetSchema]) {
     return {};
   }
 
   const schema = definitions[targetSchema] || {};
   const result = {};
-  // 递归终止条件
+
   if (!schema.properties) return result;
+
   Object.entries(schema.properties).forEach(([propName, propDef1]) => {
     const propDef: any = propDef1;
     const propData: any = {
@@ -75,7 +57,6 @@ function resolveSchema(definitions, targetSchema) {
       example: propDef.example,
     };
 
-    // 处理数组类型嵌套
     if (propDef?.type === 'array' && propDef.items) {
       if (propDef.items.$ref) {
         const refSchema = propDef.items.$ref.split('/').pop();
@@ -85,15 +66,92 @@ function resolveSchema(definitions, targetSchema) {
       }
     }
 
-    // 处理对象类型嵌套
     if (propDef.type === 'object' && propDef.properties) {
       propData.properties = resolveSchema(definitions, propDef.type);
     }
 
     result[propName] = propData;
   });
+
   return result;
 }
+
+const createGroupNode = (
+  name: string,
+  pathSegments: string[]
+): ApiMenuGroupNode => ({
+  type: 'group',
+  key: createGroupKey(pathSegments),
+  name,
+  convertName: convertNameFun(name),
+  children: [],
+});
+
+const ensureGroupNode = (
+  nodes: ApiMenuNode[],
+  name: string,
+  pathSegments: string[]
+): ApiMenuGroupNode => {
+  const existingNode = nodes.find(
+    (node): node is ApiMenuGroupNode =>
+      isApiMenuGroup(node) && node.name === name
+  );
+
+  if (existingNode) {
+    return existingNode;
+  }
+
+  const node = createGroupNode(name, pathSegments);
+  nodes.push(node);
+  return node;
+};
+
+const filterEmptyGroups = (nodes: ApiMenuNode[]): ApiMenuNode[] => {
+  return nodes.reduce<ApiMenuNode[]>((acc, node) => {
+    if (!isApiMenuGroup(node)) {
+      acc.push(node);
+      return acc;
+    }
+
+    const children = filterEmptyGroups(node.children);
+    if (children.length > 0) {
+      acc.push({
+        ...node,
+        children,
+      });
+    }
+
+    return acc;
+  }, []);
+};
+
+const createEndpointNode = (
+  path: string,
+  httpMethod: string,
+  methodInfo: any,
+  definitions: DefinitionsMap
+): ApiEndpointNode => {
+  const properties = definitions[methodInfo.operationId]?.properties || {};
+  const schema = methodInfo?.responses?.['201']?.schema?.$ref?.split('/')[2];
+  const required = definitions[methodInfo.operationId]?.required || [];
+
+  return {
+    type: 'endpoint',
+    id: convertPath(path),
+    path,
+    method: httpMethod.toUpperCase(),
+    description: methodInfo.description,
+    summary: methodInfo?.summary || '',
+    responses: resolveSchema(definitions, schema),
+    parameters: Object.keys(properties).map((key) => {
+      return {
+        ...properties[key],
+        name: key,
+        required: required.includes(key),
+      };
+    }),
+  };
+};
 
 const useMenuContent = () => {
   const { data: apiData, isLoading } = useApiDataContext();
@@ -104,75 +162,80 @@ const useMenuContent = () => {
     }
 
     const definitions = apiData?.definitions || {};
-    const resultMap = new Map();
-    const baseTags = apiData?.tags?.filter((tag) => tag.second_names);
-    // 处理所有tags（一级目录）
-    baseTags?.forEach((tag) => {
-      const category: MenuCategory = {
-        name: tag.name,
-        convertName: convertNameFun(tag.name),
-        menus: [],
-      };
+    const resultMap = new Map<string, ApiMenuGroupNode>();
 
-      // 构建二级目录结构
-      if (tag.second_names?.length > 0) {
-        category.menus = tag.second_names.map((secondName) => ({
-          name: secondName,
-          convertName: convertNameFun(secondName),
-          subMenus: [],
-        }));
+    const ensureRootNode = (name: string) => {
+      const existingNode = resultMap.get(name);
+      if (existingNode) {
+        return existingNode;
       }
 
-      resultMap.set(tag.name, category);
+      const rootNode = createGroupNode(name, [name]);
+      resultMap.set(name, rootNode);
+      return rootNode;
+    };
+
+    const baseTags =
+      apiData?.tags?.filter(
+        (tag) => tag.second_names && ALLOWED_ROOT_TAGS.has(tag.name)
+      ) || [];
+
+    baseTags.forEach((tag) => {
+      const category = ensureRootNode(tag.name);
+
+      if (tag.second_names?.length > 0) {
+        tag.second_names.forEach((secondName) => {
+          ensureGroupNode(category.children, secondName, [
+            tag.name,
+            secondName,
+          ]);
+        });
+      }
     });
-    // 遍历所有API路径
+
     Object.entries(apiData?.paths || {}).forEach(([path, methods]) => {
-      Object.entries(methods).forEach(([httpMethod, methodInfo]) => {
-        const [primaryTag, secondaryTag] = methodInfo.tags || [];
-        const category = resultMap.get(primaryTag);
+      Object.entries(methods as Record<string, any>).forEach(
+        ([httpMethod, methodInfo]) => {
+          const tagPath = getAllowedTagPath(methodInfo.tags || []);
+          if (tagPath.length === 0) {
+            return;
+          }
 
-        if (!category) return;
-        const properties =
-          definitions[methodInfo.operationId]?.properties || {};
-        const schema =
-          methodInfo?.responses?.['201']?.schema?.$ref?.split('/')[2];
-        const responses = resolveSchema(definitions, schema);
-        const required = definitions[methodInfo.operationId]?.required || [];
-        const menuItem = {
-          id: convertPath(path),
-          path: path,
-          method: httpMethod.toUpperCase(),
-          description: methodInfo.description,
-          summary: methodInfo?.summary || '',
-          responses: responses,
-          parameters: Object.keys(properties).map((key) => {
-            return {
-              ...properties[key],
-              name: key,
-              required: required.includes(key),
-            };
-          }),
-        };
-        // 二级目录处理
-        if (secondaryTag) {
-          const subMenu = category.menus.find(
-            (m) => 'subMenus' in m && m.name === secondaryTag
-          ) as SubMenu | undefined;
-          subMenu?.subMenus.push(menuItem);
-        } else {
-          category.menus.push(menuItem);
+          const [primaryTag, ...nestedTags] = tagPath;
+          const rootNode = ensureRootNode(primaryTag);
+          let currentGroup = rootNode;
+
+          nestedTags.forEach((tagName, index) => {
+            currentGroup = ensureGroupNode(
+              currentGroup.children,
+              tagName,
+              tagPath.slice(0, index + 2)
+            );
+          });
+
+          currentGroup.children.push(
+            createEndpointNode(path, httpMethod, methodInfo, definitions)
+          );
         }
-      });
+      );
     });
 
-    // 过滤掉空目录
-    const result = Array.from(resultMap.values()).filter((category) =>
-      category.subMenus
-        ? category.subMenus.some((sub) => sub.menus.length > 0)
-        : category.menus?.length > 0
+    const result = Array.from(resultMap.values()).reduce<ApiMenuGroupNode[]>(
+      (acc, category) => {
+        const children = filterEmptyGroups(category.children);
+        if (children.length > 0) {
+          acc.push({
+            ...category,
+            children,
+          });
+        }
+        return acc;
+      },
+      []
     );
+
     return { isLoading, result };
-  }, [isLoading, apiData]);
+  }, [apiData, isLoading]);
 };
 
 export default useMenuContent;

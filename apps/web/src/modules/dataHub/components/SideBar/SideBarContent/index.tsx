@@ -6,6 +6,54 @@ import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '@common/monumentedStation';
 import { getLocalizedText } from '@modules/dataHub/utils';
+import type { ApiMenuNode } from '../menuTree';
+import { isApiMenuGroup } from '../menuTree';
+
+type MenuTreeItem = NonNullable<NonNullable<MenuProps['items']>[number]>;
+const MENU_INLINE_INDENT = 14;
+
+const buildApiItems = (
+  nodes: ApiMenuNode[],
+  language: string
+): MenuTreeItem[] => {
+  return nodes.map((node): MenuTreeItem => {
+    if (isApiMenuGroup(node)) {
+      return {
+        key: node.key,
+        label: getLocalizedText(node.convertName, language),
+        children: buildApiItems(node.children, language),
+      };
+    }
+
+    return {
+      key: node.id,
+      label: getLocalizedText(node.summary, language),
+    };
+  });
+};
+
+const findParentKeys = (key: string, menuItems: MenuTreeItem[]): string[] => {
+  for (const item of menuItems) {
+    const itemKey = 'key' in item ? String(item.key) : '';
+    if (itemKey === key) {
+      return [itemKey];
+    }
+
+    const childItems =
+      'children' in item && Array.isArray(item.children)
+        ? (item.children as MenuTreeItem[])
+        : undefined;
+
+    if (childItems) {
+      const childKeys = findParentKeys(key, childItems);
+      if (childKeys.length > 0) {
+        return [itemKey, ...childKeys];
+      }
+    }
+  }
+
+  return [];
+};
 
 const SideBarContent: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -15,86 +63,60 @@ const SideBarContent: React.FC = () => {
   const currentHash = useHashchangeEvent();
 
   const onClick: MenuProps['onClick'] = (e) => {
-    // 只有当 key 以 'api' 开头时才上报埋点
-    if (e.key.startsWith('api')) {
+    const menuKey = String(e.key);
+
+    if (menuKey.startsWith('api')) {
       trackEvent({
         module: 'dataHub',
         type: 'rest_api',
         content: {
-          menu_key: e.key,
+          menu_key: menuKey,
         },
       });
     }
 
-    window.location.hash = e.key;
+    window.location.hash = menuKey;
   };
 
-  // 构建菜单项
-  const ApiItems = useMemo(() => {
-    const res = result.map((item) => {
-      return {
-        key: item.name,
-        label: getLocalizedText(item.convertName, i18n.language),
-        children: item.menus.map((menu) => {
-          return {
-            key: menu?.name || menu?.id,
-            label: getLocalizedText(
-              menu?.convertName || menu?.summary,
-              i18n.language
-            ),
-            children: menu?.subMenus?.map((subMenu) => {
-              return {
-                key: subMenu.id,
-                label: getLocalizedText(subMenu.summary, i18n.language),
-              };
-            }),
-          };
-        }),
-      };
-    });
-    res.unshift({
+  const apiItems = useMemo(() => {
+    const items = buildApiItems(result || [], i18n.language);
+
+    items.unshift({
       key: 'introduction',
       label: t('open_api:introduction'),
-      children: undefined,
     });
-    return res;
-  }, [result, i18n.language]);
 
-  const items = [
-    { key: 'about', label: t('common:header.about') },
-    { key: 'restApi', label: 'REST API', children: ApiItems },
-    {
-      key: 'archive',
-      label: t('open_api:archived_data'),
-      children: [
-        { key: 'archive-insight', label: t('open_api:opensource_insight') },
-      ],
-    },
-  ];
-  const findParentKeys = (key: string, menuItems: any[]): string[] => {
-    for (const item of menuItems) {
-      if (item.key === key) {
-        return [item.key];
-      }
-      if (item.children) {
-        const childKeys = findParentKeys(key, item.children);
-        if (childKeys.length > 0) {
-          return [item.key, ...childKeys];
-        }
-      }
-    }
-    return [];
-  };
-  // 监听 hash 变化并更新选中和打开的菜单项
+    return items;
+  }, [i18n.language, result, t]);
+
+  const items = useMemo<MenuTreeItem[]>(
+    () => [
+      { key: 'about', label: t('common:header.about') },
+      { key: 'restApi', label: 'REST API', children: apiItems },
+      {
+        key: 'archive',
+        label: t('open_api:archived_data'),
+        children: [
+          { key: 'archive-insight', label: t('open_api:opensource_insight') },
+        ],
+      },
+    ],
+    [apiItems, t]
+  );
+
   useEffect(() => {
-    const hash = currentHash.replace('#', ''); // 去掉 hash 前的 #
+    const hash = currentHash.replace('#', '');
+
+    if (!hash) {
+      setSelectedKeys([]);
+      return;
+    }
+
     setSelectedKeys([hash]);
 
-    // 根据 hash 动态设置需要展开的菜单项
-    const parentKeys = findParentKeys(hash, items);
-    setOpenKeys([...parentKeys, ...openKeys]);
-    // setOpenKeys(parentKeys);
-  }, [currentHash]);
+    const parentKeys = findParentKeys(hash, items).slice(0, -1);
+    setOpenKeys((prev) => Array.from(new Set([...prev, ...parentKeys])));
+  }, [currentHash, items]);
 
   const onOpenChange = (keys: string[]) => {
     setOpenKeys(keys);
@@ -102,17 +124,18 @@ const SideBarContent: React.FC = () => {
 
   return (
     <>
-      <div className="line-clamp-1 mb-4 max-w-[255px] pl-8 text-lg font-semibold">
+      <div className="mb-4 line-clamp-1 px-6 text-lg font-semibold">
         {t('common:header.opensource_research_service')}
       </div>
       <Menu
         onClick={onClick}
-        style={{ width: 255, border: 0, fontWeight: 500 }}
+        style={{ width: '100%', border: 0, fontWeight: 500 }}
         mode="inline"
+        inlineIndent={MENU_INLINE_INDENT}
         items={items}
-        selectedKeys={selectedKeys} // 当前选中的菜单项
-        openKeys={openKeys} // 当前展开的菜单项
-        onOpenChange={onOpenChange} // 菜单展开/收起时触发
+        selectedKeys={selectedKeys}
+        openKeys={openKeys}
+        onOpenChange={onOpenChange}
       />
     </>
   );
