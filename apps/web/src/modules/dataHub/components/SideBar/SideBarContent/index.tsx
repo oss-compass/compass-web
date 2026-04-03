@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import useMenuContent from '../useMenuContent';
 import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+import { Menu, Tag } from 'antd';
 import useHashchangeEvent from '@common/hooks/useHashchangeEvent';
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '@common/monumentedStation';
@@ -11,6 +11,29 @@ import { isApiMenuGroup } from '../menuTree';
 
 type MenuTreeItem = NonNullable<NonNullable<MenuProps['items']>[number]>;
 const MENU_INLINE_INDENT = 14;
+const RECOMMENDED_TEXT = {
+  en: 'Recommended',
+  zh: '推荐',
+};
+
+const getRecommendedText = (language: string) => {
+  return language === 'zh' || language === 'zh-CN'
+    ? RECOMMENDED_TEXT.zh
+    : RECOMMENDED_TEXT.en;
+};
+
+const renderGroupLabel = (name: string, label: string, language: string) => {
+  if (name !== 'V3 API') {
+    return label;
+  }
+
+  return (
+    <span className="flex items-center gap-2">
+      <span className="truncate">{label}</span>
+      <Tag color="processing">{getRecommendedText(language)}</Tag>
+    </span>
+  );
+};
 
 const buildApiItems = (
   nodes: ApiMenuNode[],
@@ -20,7 +43,11 @@ const buildApiItems = (
     if (isApiMenuGroup(node)) {
       return {
         key: node.key,
-        label: getLocalizedText(node.convertName, language),
+        label: renderGroupLabel(
+          node.name,
+          getLocalizedText(node.convertName, language),
+          language
+        ),
         children: buildApiItems(node.children, language),
       };
     }

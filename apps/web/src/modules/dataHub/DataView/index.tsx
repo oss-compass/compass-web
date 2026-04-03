@@ -17,12 +17,10 @@ const DataView = () => {
   const parts = id ? id.split(/[_-]/) : [];
   const mainKey = parts[0] || null;
   const subKey = parts[1] || null;
-  console.log(mainKey, subKey);
   if (isLoading) {
     return <Loading />;
   }
   let content = null;
-  console.log(mainKey);
   switch (mainKey) {
     case 'archive':
       content = <ArchiveDownload category={subKey || 'default'} />;
