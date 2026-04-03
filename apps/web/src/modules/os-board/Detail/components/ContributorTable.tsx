@@ -12,12 +12,14 @@ import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
   useOsBoardContributorsDetailList,
   useOsBoardContributorsOverview,
+  useOsBoardOrganizationList,
   ContributorDetail,
   FilterOptionInput,
   SortOptionInput,
 } from '../../api/tableData';
 import DomainPersona from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/DomainPersona';
 import { getRepoOrigin, getRepoPath } from '@common/utils';
+import ContributorOrganizationCell from './ContributorOrganizationCell';
 
 interface ContributorTableProps {
   dashboardId: string;
@@ -36,6 +38,7 @@ interface TableParams {
 const TABLE_CARD_CLASS = '!p-4 [&_h3]:!mb-1 flex h-[850px] flex-col';
 const TABLE_CARD_BODY_CLASS = 'flex flex-1 flex-col';
 const TABLE_SCROLL_HEIGHT = 540;
+const EMPTY_CONTRIBUTORS: ContributorDetail[] = [];
 
 const ECOLOGICAL_TYPES = [
   {
@@ -225,6 +228,14 @@ const getProjectPlatform = (project: string, fallbackOrigin = 'github') =>
 const getProjectDisplayName = (project: string) =>
   getRepoPath(project) || project;
 
+const getFilteredValues = (
+  filterOpts: FilterOptionInput[] | undefined,
+  type: string
+) => {
+  const values = filterOpts?.find((item) => item.type === type)?.values;
+  return values && values.length > 0 ? values : null;
+};
+
 const ContributorTable: React.FC<ContributorTableProps> = ({
   dashboardId,
   dashboardType = 'repo',
@@ -259,6 +270,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     data: contributorsDetailData,
     isLoading,
     isFetching,
+    refetch: refetchContributorsDetail,
   } = useOsBoardContributorsDetailList({
     project: selectedProject,
     dashboardType,
@@ -270,10 +282,19 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
   });
 
   // 使用 REST API 获取贡献者概览统计数据
-  const { data: contributorsOverview, isLoading: statsLoading } =
-    useOsBoardContributorsOverview({
+  const {
+    data: contributorsOverview,
+    isLoading: statsLoading,
+    refetch: refetchContributorsOverview,
+  } = useOsBoardContributorsOverview({
+    project: selectedProject,
+    level: dashboardType,
+    enabled: !!selectedProject,
+  });
+
+  const { data: organizationListData, refetch: refetchOrganizationList } =
+    useOsBoardOrganizationList({
       project: selectedProject,
-      level: dashboardType,
       enabled: !!selectedProject,
     });
 
@@ -290,12 +311,36 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
     }
   }, [contributorsDetailData]);
 
+  React.useEffect(() => {
+    setTableParams((prev) => {
+      const nextFilterOpts =
+        prev.filterOpts?.filter((item) => item.type !== 'organization') || [];
+
+      if (
+        nextFilterOpts.length === (prev.filterOpts?.length || 0) &&
+        prev.pagination?.current === 1
+      ) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          current: 1,
+        },
+        filterOpts: nextFilterOpts,
+      };
+    });
+  }, [selectedProject]);
+
   // origin 从统计数据中获取 (取第一个 top_contributor 的 origin)
   const currentOrigin =
     origin?.toLowerCase() ||
     contributorsDetailData?.origin?.toLowerCase() ||
     contributorsOverview?.top_contributors?.[0]?.origin?.toLowerCase() ||
     getRepoOrigin(selectedProject, 'github');
+  const currentPlatform = getProjectPlatform(selectedProject, currentOrigin);
 
   // 统计卡片数据 (使用 API 实际返回的字段名)
   const statsData = {
@@ -307,7 +352,26 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
   };
 
   // 表格数据
-  const displayTableData = contributorsDetailData?.items || [];
+  const displayTableData = useMemo(
+    () => contributorsDetailData?.items || EMPTY_CONTRIBUTORS,
+    [contributorsDetailData?.items]
+  );
+  const topContributorName =
+    statsData.highestContributionContributor?.name || undefined;
+  const topContributorOrganization = useMemo(
+    () =>
+      displayTableData.find((item) => item.contributor === topContributorName)
+        ?.organization || '',
+    [displayTableData, topContributorName]
+  );
+  const organizationFilters = useMemo(
+    () =>
+      (organizationListData?.organizations || []).map((organization) => ({
+        text: organization,
+        value: organization,
+      })),
+    [organizationListData]
+  );
 
   // 处理表格变更
   const handleTableChange = (
@@ -321,6 +385,23 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
           direction: sorter.order === 'ascend' ? 'asc' : 'desc',
         }
       : undefined;
+    const filterOpts: FilterOptionInput[] = [];
+
+    for (const key in filters) {
+      const values = Array.isArray(filters[key])
+        ? filters[key].filter(
+            (value): value is string =>
+              typeof value === 'string' && value.length > 0
+          )
+        : [];
+
+      if (Object.prototype.hasOwnProperty.call(filters, key) && values.length) {
+        filterOpts.push({
+          type: key,
+          values,
+        });
+      }
+    }
 
     setTableParams({
       pagination: {
@@ -328,7 +409,7 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
         ...pagination,
       },
       sortOpts,
-      filterOpts: tableParams.filterOpts,
+      filterOpts,
     });
   };
 
@@ -463,8 +544,26 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       title: t('analyze:metric_detail:organization'),
       dataIndex: 'organization',
       align: 'left',
-      width: 140,
-      render: (val: string) => val || '-',
+      width: 220,
+      filters: organizationFilters,
+      filterSearch: true,
+      filteredValue: getFilteredValues(tableParams.filterOpts, 'organization'),
+      render: (val: string, record) => (
+        <ContributorOrganizationCell
+          contributor={record.contributor}
+          organization={val}
+          label={selectedProject}
+          level={dashboardType}
+          platform={currentPlatform}
+          onUpdated={async () => {
+            await Promise.all([
+              refetchContributorsDetail(),
+              refetchContributorsOverview(),
+              refetchOrganizationList(),
+            ]);
+          }}
+        />
+      ),
     },
     {
       title: t('analyze:metric_detail:contribution'),
@@ -511,12 +610,31 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
         <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
           <div className="flex items-center text-lg font-medium">
             {statsData?.highestContributionContributor?.name ? (
-              getTopUser(
-                statsData.highestContributionContributor.origin ||
-                  currentOrigin ||
-                  '',
-                statsData.highestContributionContributor.name || ''
-              )
+              <>
+                {getTopUser(
+                  statsData.highestContributionContributor.origin ||
+                    currentOrigin ||
+                    '',
+                  statsData.highestContributionContributor.name || ''
+                )}
+                <div className="ml-2 flex-shrink-0">
+                  <ContributorOrganizationCell
+                    contributor={topContributorName}
+                    organization={topContributorOrganization}
+                    label={selectedProject}
+                    level={dashboardType}
+                    platform={currentPlatform}
+                    displayMode="icon"
+                    onUpdated={async () => {
+                      await Promise.all([
+                        refetchContributorsDetail(),
+                        refetchContributorsOverview(),
+                        refetchOrganizationList(),
+                      ]);
+                    }}
+                  />
+                </div>
+              </>
             ) : (
               <>
                 <div className="mr-2 text-[#3A5BEF]">

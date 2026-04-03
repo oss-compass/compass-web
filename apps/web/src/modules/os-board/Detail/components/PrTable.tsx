@@ -13,6 +13,7 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { format, parseJSON } from 'date-fns';
 import {
   useOsBoardCommunityPullSummaryList,
+  useOsBoardOrganizationList,
   useOsBoardPullsDetailList,
   useOsBoardPullsOverview,
   useOsBoardRepositoryList,
@@ -28,6 +29,7 @@ import {
   toFixed,
 } from '@common/utils';
 import { toUnderline } from '@common/utils/format';
+import ContributorOrganizationCell from './ContributorOrganizationCell';
 
 interface PrTableProps {
   dashboardId: string;
@@ -180,6 +182,7 @@ const PrTable: React.FC<PrTableProps> = ({
     data: pullsDetailData,
     isLoading: repoLoading,
     isFetching: repoFetching,
+    refetch: refetchPullsDetail,
   } = useOsBoardPullsDetailList({
     project: selectedProject,
     dashboardType,
@@ -212,6 +215,12 @@ const PrTable: React.FC<PrTableProps> = ({
     level: 'community',
     enabled: isCommunityDashboard && !!selectedProject,
   });
+
+  const { data: organizationListData, refetch: refetchOrganizationList } =
+    useOsBoardOrganizationList({
+      project: selectedProject,
+      enabled: !isCommunityDashboard && !!selectedProject,
+    });
 
   const { data: pullsOverview, isLoading: statsLoading } =
     useOsBoardPullsOverview({
@@ -273,14 +282,23 @@ const PrTable: React.FC<PrTableProps> = ({
       );
   }, [isCommunityDashboard, repositoryListData]);
 
-  React.useEffect(() => {
-    if (!isCommunityDashboard) {
-      return;
-    }
+  const organizationFilters = useMemo(
+    () =>
+      (organizationListData?.organizations || []).map((organization) => ({
+        text: organization,
+        value: organization,
+      })),
+    [organizationListData]
+  );
 
+  React.useEffect(() => {
     setTableParams((prev) => {
+      const removableFilterType = isCommunityDashboard
+        ? 'repository'
+        : 'organization';
       const nextFilterOpts =
-        prev.filterOpts?.filter((item) => item.type !== 'repository') || [];
+        prev.filterOpts?.filter((item) => item.type !== removableFilterType) ||
+        [];
 
       if (
         nextFilterOpts.length === (prev.filterOpts?.length || 0) &&
@@ -383,6 +401,12 @@ const PrTable: React.FC<PrTableProps> = ({
     ];
   }, [projects, competitorProjects, origin, t]);
 
+  const currentPlatform = useMemo(
+    () =>
+      getProjectPlatform(selectedProject, origin?.toLowerCase() || 'github'),
+    [origin, selectedProject]
+  );
+
   const repoColumns = useMemo<ColumnsType<PullDetail>>(
     () => [
       {
@@ -456,6 +480,40 @@ const PrTable: React.FC<PrTableProps> = ({
           time ? format(parseJSON(time), 'yyyy-MM-dd') : '-',
       },
       {
+        title: t('analyze:metric_detail:creator'),
+        dataIndex: 'userLogin',
+        align: 'left',
+        width: 100,
+      },
+      {
+        title: t('analyze:metric_detail:organization'),
+        key: 'organization',
+        dataIndex: ['contributor', 'organization'],
+        align: 'left',
+        width: 220,
+        filters: organizationFilters,
+        filterSearch: true,
+        filteredValue: getFilteredValues(
+          tableParams.filterOpts,
+          'organization'
+        ),
+        render: (_: string | null, record) => (
+          <ContributorOrganizationCell
+            contributor={record.userLogin}
+            organization={record.contributor?.organization}
+            label={selectedProject}
+            level={dashboardType}
+            platform={currentPlatform}
+            onUpdated={async () => {
+              await Promise.all([
+                refetchPullsDetail(),
+                refetchOrganizationList(),
+              ]);
+            }}
+          />
+        ),
+      },
+      {
         title: t('analyze:metric_detail:close_time'),
         dataIndex: 'closedAt',
         align: 'left',
@@ -497,12 +555,6 @@ const PrTable: React.FC<PrTableProps> = ({
         render: (list: string[]) => list?.join(', ') || '-',
       },
       {
-        title: t('analyze:metric_detail:creator'),
-        dataIndex: 'userLogin',
-        align: 'left',
-        width: 100,
-      },
-      {
         title: t('analyze:metric_detail:reviewer'),
         dataIndex: 'reviewersLogin',
         align: 'left',
@@ -517,7 +569,18 @@ const PrTable: React.FC<PrTableProps> = ({
         render: (value: string | null) => value || '-',
       },
     ],
-    [dayUnitText, noResponseText, t, tableParams.filterOpts]
+    [
+      currentPlatform,
+      dashboardType,
+      dayUnitText,
+      noResponseText,
+      organizationFilters,
+      refetchOrganizationList,
+      refetchPullsDetail,
+      selectedProject,
+      t,
+      tableParams.filterOpts,
+    ]
   );
 
   const communityColumns = useMemo<ColumnsType<CommunityPullSummaryItem>>(

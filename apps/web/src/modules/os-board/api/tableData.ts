@@ -46,6 +46,7 @@ export interface PullsOverviewResponse {
 // PR 详情
 export interface PullDetail {
   closedAt?: string | null;
+  contributor?: ContributorOrganizationInfo | null;
   createdAt?: string | null;
   idInRepo?: number | null;
   labels?: string[] | null;
@@ -76,6 +77,7 @@ export interface CommunityPullSummaryItem {
 export interface IssueDetail {
   assigneeLogin?: string | null;
   closedAt?: string | null;
+  contributor?: ContributorOrganizationInfo | null;
   createdAt?: string | null;
   idInRepo?: number | null;
   labels?: string[] | null;
@@ -118,6 +120,11 @@ export interface ContributorDetail {
   is_bot?: boolean | null;
 }
 
+export interface ContributorOrganizationInfo {
+  organization?: string | null;
+  isInternal?: boolean | null;
+}
+
 // 分页响应
 export interface PageResponse<T> {
   count: number;
@@ -130,6 +137,11 @@ export interface PageResponse<T> {
 
 export interface RepositoryListResponse {
   items: string[];
+}
+
+export interface OrganizationListResponse {
+  count?: number | null;
+  organizations: string[];
 }
 
 // 排序选项
@@ -207,6 +219,31 @@ export interface RepositoryListRequest {
   level?: string;
 }
 
+export interface OrganizationListRequest {
+  label: string;
+  beginDate?: Date;
+  endDate?: Date;
+}
+
+export interface ManageUserOrgRequest {
+  contributor: string;
+  label: string;
+  level: string;
+  platform: string;
+  organization: {
+    org_name: string;
+    first_date: string;
+    last_date: string;
+  };
+}
+
+export interface ManageUserOrgResponse {
+  message?: string | null;
+  pr_url?: string | null;
+  prUrl?: string | null;
+  status?: boolean | string | null;
+}
+
 // ========== 工具函数 ==========
 
 /**
@@ -221,6 +258,20 @@ const formatProjectLabel = (project: string): string => {
     return project;
   }
   return project;
+};
+
+const normalizeContributorOrganization = (
+  rawContributor: any
+): ContributorOrganizationInfo | null => {
+  if (!rawContributor || typeof rawContributor !== 'object') {
+    return null;
+  }
+
+  return {
+    organization:
+      rawContributor.organization ?? rawContributor.org_name ?? null,
+    isInternal: rawContributor.isInternal ?? rawContributor.is_internal ?? null,
+  };
 };
 
 // ========== API 函数 ==========
@@ -268,6 +319,7 @@ export const fetchPullsDetailList = async (
         const numReviewComments =
           raw.numReviewComments ?? raw.num_review_comments ?? null;
         const userLogin = raw.userLogin ?? raw.user_login ?? null;
+        const contributor = normalizeContributorOrganization(raw.contributor);
         return {
           ...raw,
           url,
@@ -281,6 +333,7 @@ export const fetchPullsDetailList = async (
           reviewersLogin,
           numReviewComments,
           userLogin,
+          contributor,
         } as PullDetail;
       })
     : [];
@@ -397,6 +450,7 @@ export const fetchIssuesDetailList = async (
           null;
         const userLogin = raw.userLogin ?? raw.user_login ?? null;
         const assigneeLogin = raw.assigneeLogin ?? raw.assignee_login ?? null;
+        const contributor = normalizeContributorOrganization(raw.contributor);
         return {
           ...raw,
           url,
@@ -409,6 +463,7 @@ export const fetchIssuesDetailList = async (
           numOfCommentsWithoutBot,
           userLogin,
           assigneeLogin,
+          contributor,
         } as IssueDetail;
       })
     : [];
@@ -519,6 +574,41 @@ export const fetchRepositoryList = async (
           .map((item) => item.replaceAll('`', '').trim())
       : [],
   };
+};
+
+export const fetchOrganizationList = async (
+  params: OrganizationListRequest
+): Promise<OrganizationListResponse> => {
+  const response = await axios.post<OrganizationListResponse>(
+    '/services/dashboard/organization_list',
+    {
+      ...params,
+      label: formatProjectLabel(params.label),
+    }
+  );
+
+  const organizations = Array.isArray(response.data?.organizations)
+    ? response.data.organizations
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => item.replaceAll('`', '').trim())
+        .filter((item) => item.length > 0)
+    : [];
+
+  return {
+    count: response.data?.count ?? organizations.length,
+    organizations,
+  };
+};
+
+export const manageOsBoardUserOrg = async (
+  params: ManageUserOrgRequest
+): Promise<ManageUserOrgResponse> => {
+  const response = await axios.post<ManageUserOrgResponse>(
+    '/services/dashboard/manage_user_orgs',
+    params
+  );
+
+  return response.data;
 };
 
 // ========== 概览统计 API ==========
@@ -814,6 +904,11 @@ interface UseRepositoryListOptions {
   enabled?: boolean;
 }
 
+interface UseOrganizationListOptions {
+  project: string;
+  enabled?: boolean;
+}
+
 /**
  * 贡献者概览统计 Hook
  */
@@ -912,6 +1007,26 @@ export const useOsBoardRepositoryList = ({
       }),
     enabled: enabled && !!project,
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useOsBoardOrganizationList = ({
+  project,
+  enabled = true,
+}: UseOrganizationListOptions) => {
+  const { timeStart, timeEnd } = useOsBoardDateRange();
+
+  return useQuery({
+    queryKey: ['osBoardOrganizationList', project, timeStart, timeEnd],
+    queryFn: () =>
+      fetchOrganizationList({
+        label: project,
+        beginDate: timeStart,
+        endDate: timeEnd,
+      }),
+    enabled: enabled && !!project,
+    staleTime: 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };

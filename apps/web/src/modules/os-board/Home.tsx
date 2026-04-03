@@ -49,7 +49,7 @@ const DashboardHome = () => {
   } = useDashboardList({
     page,
     per_page: perPage,
-    ...(keyword ? { keywords: keyword } : {}),
+    ...(keyword ? { keyword: keyword } : {}),
     ...(activeTab !== 'all' ? { dashboard_type: activeTab } : {}),
   });
 
@@ -245,7 +245,7 @@ const DashboardHome = () => {
                         return (
                           <span
                             key={project}
-                            className="mr-2 inline-block h-7 max-w-[160px] truncate rounded bg-[#E8F4FF] px-2 text-xs leading-7 text-[#1677FF]"
+                            className="mr-2 inline-block h-7 max-w-[200px] truncate rounded bg-[#E8F4FF] px-2 text-xs leading-7 text-[#1677FF]"
                             title={project}
                           >
                             {displayName}

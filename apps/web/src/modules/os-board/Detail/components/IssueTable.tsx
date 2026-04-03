@@ -15,6 +15,7 @@ import {
   useOsBoardCommunityIssueSummaryList,
   useOsBoardIssuesDetailList,
   useOsBoardIssuesOverview,
+  useOsBoardOrganizationList,
   useOsBoardRepositoryList,
   CommunityIssueSummaryItem,
   IssueDetail,
@@ -28,6 +29,7 @@ import {
   toFixed,
 } from '@common/utils';
 import { toUnderline } from '@common/utils/format';
+import ContributorOrganizationCell from './ContributorOrganizationCell';
 
 interface IssueTableProps {
   dashboardId: string;
@@ -178,6 +180,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
     data: issuesDetailData,
     isLoading: repoLoading,
     isFetching: repoFetching,
+    refetch: refetchIssuesDetail,
   } = useOsBoardIssuesDetailList({
     project: selectedProject,
     dashboardType,
@@ -210,6 +213,12 @@ const IssueTable: React.FC<IssueTableProps> = ({
     level: 'community',
     enabled: isCommunityDashboard && !!selectedProject,
   });
+
+  const { data: organizationListData, refetch: refetchOrganizationList } =
+    useOsBoardOrganizationList({
+      project: selectedProject,
+      enabled: !isCommunityDashboard && !!selectedProject,
+    });
 
   const { data: issuesOverview, isLoading: statsLoading } =
     useOsBoardIssuesOverview({
@@ -270,14 +279,23 @@ const IssueTable: React.FC<IssueTableProps> = ({
       );
   }, [isCommunityDashboard, repositoryListData]);
 
-  React.useEffect(() => {
-    if (!isCommunityDashboard) {
-      return;
-    }
+  const organizationFilters = useMemo(
+    () =>
+      (organizationListData?.organizations || []).map((organization) => ({
+        text: organization,
+        value: organization,
+      })),
+    [organizationListData]
+  );
 
+  React.useEffect(() => {
     setTableParams((prev) => {
+      const removableFilterType = isCommunityDashboard
+        ? 'repository'
+        : 'organization';
       const nextFilterOpts =
-        prev.filterOpts?.filter((item) => item.type !== 'repository') || [];
+        prev.filterOpts?.filter((item) => item.type !== removableFilterType) ||
+        [];
 
       if (
         nextFilterOpts.length === (prev.filterOpts?.length || 0) &&
@@ -380,6 +398,12 @@ const IssueTable: React.FC<IssueTableProps> = ({
     ];
   }, [projects, competitorProjects, origin, t]);
 
+  const currentPlatform = useMemo(
+    () =>
+      getProjectPlatform(selectedProject, origin?.toLowerCase() || 'github'),
+    [origin, selectedProject]
+  );
+
   const repoColumns = useMemo<ColumnsType<IssueDetail>>(
     () => [
       {
@@ -453,6 +477,40 @@ const IssueTable: React.FC<IssueTableProps> = ({
           time ? format(parseJSON(time), 'yyyy-MM-dd') : '-',
       },
       {
+        title: t('analyze:metric_detail:creator'),
+        dataIndex: 'userLogin',
+        align: 'left',
+        width: 120,
+      },
+      {
+        title: t('analyze:metric_detail:organization'),
+        key: 'organization',
+        dataIndex: ['contributor', 'organization'],
+        align: 'left',
+        width: 220,
+        filters: organizationFilters,
+        filterSearch: true,
+        filteredValue: getFilteredValues(
+          tableParams.filterOpts,
+          'organization'
+        ),
+        render: (_: string | null, record) => (
+          <ContributorOrganizationCell
+            contributor={record.userLogin}
+            organization={record.contributor?.organization}
+            label={selectedProject}
+            level={dashboardType}
+            platform={currentPlatform}
+            onUpdated={async () => {
+              await Promise.all([
+                refetchIssuesDetail(),
+                refetchOrganizationList(),
+              ]);
+            }}
+          />
+        ),
+      },
+      {
         title: t('analyze:metric_detail:close_time'),
         dataIndex: 'closedAt',
         align: 'left',
@@ -494,12 +552,6 @@ const IssueTable: React.FC<IssueTableProps> = ({
         render: (list: string[]) => list?.join(', ') || '-',
       },
       {
-        title: t('analyze:metric_detail:creator'),
-        dataIndex: 'userLogin',
-        align: 'left',
-        width: 120,
-      },
-      {
         title: t('analyze:metric_detail:assignee'),
         dataIndex: 'assigneeLogin',
         align: 'left',
@@ -507,7 +559,18 @@ const IssueTable: React.FC<IssueTableProps> = ({
         render: (value: string | null) => value || '-',
       },
     ],
-    [dayUnitText, noResponseText, t, tableParams.filterOpts]
+    [
+      currentPlatform,
+      dashboardType,
+      dayUnitText,
+      noResponseText,
+      organizationFilters,
+      refetchOrganizationList,
+      refetchIssuesDetail,
+      selectedProject,
+      t,
+      tableParams.filterOpts,
+    ]
   );
 
   const communityColumns = useMemo<ColumnsType<CommunityIssueSummaryItem>>(
