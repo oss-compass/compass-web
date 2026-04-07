@@ -14,7 +14,6 @@ type StepDetailCardProps = {
   keyMetrics: StepMetric[];
   painNarrative: string;
   executionPathItems: ActionDetailRecord[];
-  keyTools: string[];
   agentVersion: string;
   hideTitle?: boolean;
   /** 固定列数（对比模式使用）；不传时使用响应式列数 */
@@ -26,11 +25,14 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   keyMetrics,
   painNarrative,
   executionPathItems,
-  keyTools,
   agentVersion,
   hideTitle = false,
   fixedMetricCols,
 }) => {
+  const achievementMetric = keyMetrics.find(
+    (m) => m.metricId === 'SDX_TASK_ACHIEVEMENT_RATE'
+  );
+
   return (
     <Card
       bordered={false}
@@ -80,6 +82,24 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
                 {currentStep.score}
               </span>
             </span>
+            {achievementMetric && (
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
+                  achievementMetric.score != null &&
+                  achievementMetric.score >= 80
+                    ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+                    : achievementMetric.score != null &&
+                      achievementMetric.score >= 60
+                    ? 'border-amber-300 bg-amber-50 text-amber-700'
+                    : 'border-red-200 bg-red-50 text-red-600'
+                }`}
+              >
+                <span>任务目标达成率</span>
+                <span className="text-base leading-none">
+                  {achievementMetric.value}
+                </span>
+              </span>
+            )}
             <Popover
               title={
                 <div>
@@ -128,27 +148,6 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
           </div>
         </div>
 
-        <KeyActionsSection
-          currentStepKey={currentStep.key}
-          executionPathItems={executionPathItems}
-        />
-
-        <div className="mt-6">
-          <div className="text-base font-semibold text-slate-900">
-            典型命令 / 工具
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {keyTools.map((tool) => (
-              <span
-                key={tool}
-                className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-[0_8px_16px_rgba(15,23,42,0.03)]"
-              >
-                {tool}
-              </span>
-            ))}
-          </div>
-        </div>
-
         <div className="mt-6">
           <div className="text-base font-semibold text-slate-900">关键指标</div>
           <div
@@ -165,23 +164,31 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
                 key={`${currentStep.key}-${metric.label}`}
                 className="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0 text-[15px] font-semibold text-slate-800">
+                {/* 指标名称 + 得分 */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 text-[13px] font-medium leading-5 text-slate-600">
                     {metric.label}
                   </div>
-                  <div className="flex-shrink-0 text-[15px] font-semibold leading-none text-slate-900">
-                    {metric.value}
-                  </div>
+                  {metric.score != null && (
+                    <span
+                      className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[12px] font-bold leading-none ${
+                        metric.score >= 80
+                          ? 'bg-emerald-50 text-emerald-700'
+                          : metric.score >= 60
+                          ? 'bg-amber-50 text-amber-700'
+                          : 'bg-red-50 text-red-600'
+                      }`}
+                    >
+                      {metric.score}分
+                    </span>
+                  )}
                 </div>
-                {/* {metric.trend ? (
-                  <MetricTrendChart trend={metric.trend} tone={metric.tone} />
-                ) : ( */}
-                <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-3 py-4 text-center text-xs text-slate-400">
-                  趋势数据待补充
+                {/* 指标值 */}
+                <div className="mt-2 text-[22px] font-bold leading-none tracking-tight text-slate-900">
+                  {metric.value}
                 </div>
-                {/* )} */}
                 <Tooltip title={metric.note}>
-                  <div className="mt-3 truncate text-[13px] leading-5 text-slate-500">
+                  <div className="mt-3 truncate text-[12px] leading-5 text-slate-400">
                     {metric.note}
                   </div>
                 </Tooltip>
@@ -189,6 +196,11 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
             ))}
           </div>
         </div>
+
+        <KeyActionsSection
+          currentStepKey={currentStep.key}
+          executionPathItems={executionPathItems}
+        />
       </div>
 
       <div className="mt-4 flex justify-end">

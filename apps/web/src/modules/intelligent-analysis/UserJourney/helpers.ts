@@ -36,6 +36,7 @@ const stepPresentationMap: Record<
     color: string;
   }
 > = {
+  // 旧 step_id 体系（向后兼容）
   S0_DISCOVER: {
     key: 'discover',
     iconKey: 'discover',
@@ -70,6 +71,37 @@ const stepPresentationMap: Record<
     key: 'verify',
     iconKey: 'verify',
     color: '#1d4ed8',
+  },
+  // 新 step_id 体系
+  S0_DISCOVERY: {
+    key: 'discovery',
+    iconKey: 'discover',
+    color: '#2563eb',
+  },
+  S1_SETUP: {
+    key: 'setup',
+    iconKey: 'environment',
+    color: '#7c3aed',
+  },
+  S2_QUICKSTART: {
+    key: 'quickstart',
+    iconKey: 'build',
+    color: '#ea580c',
+  },
+  S3_DEVELOPMENT: {
+    key: 'development',
+    iconKey: 'comprehend',
+    color: '#059669',
+  },
+  S4_TESTING: {
+    key: 'testing',
+    iconKey: 'verify',
+    color: '#d97706',
+  },
+  S5_CONTRIBUTION: {
+    key: 'contribution',
+    iconKey: 'deploy',
+    color: '#db2777',
   },
 };
 

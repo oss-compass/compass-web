@@ -1,5 +1,4 @@
 {
-  "report_detail_url": "https://onebox.huawei.com/p/74228ba1819ace3678a8911760b76d17",
   "meta": {
     "report_id": "cann_ops_math_20260325_2320",
     "report_title": "OSS-Compass 开源社区开发者体验诊断报告",
@@ -18,12 +17,23 @@
     "project_name": "cann/ops-math",
     "repo_url": "https://gitcode.com/cann/ops-math",
     "platform": "gitcode",
-    "description": "CANN 生态中的数学算子项目"
+    "description": "CANN 生态中的数学算子项目",
+    "ecosystem": "",
+    "hosting_platform": "gitcode",
+    "primary_language": "",
+    "license": "",
+    "quickstart_url": "",
+    "community_size_tier": "",
+    "sdx_avg_score": 83.7,
+    "obj_avg_score": 80.0,
+    "composite_score": 81.8,
+    "grade": "B"
   },
   "overall_scores": {
-    "sdx_avg_score": 80.0,
+    "sdx_avg_score": 83.7,
     "obj_avg_score": 80.0,
-    "composite_score": 80.0,
+    "composite_score": 81.8,
+    "task_achievement_rate": 100.0,
     "grade": "B"
   },
   "e2e_metrics": [
@@ -60,9 +70,12 @@
   ],
   "journey_steps": [
     {
-      "step_id": "S0_DISCOVER",
-      "step_name": "搜索与发现",
-      "step_description": "通过搜索引擎/社区导航定位目标仓库地址",
+      "step_id": "S0_DISCOVERY",
+      "step_name": "发现阶段",
+      "step_description": "搜索定位仓库并理解文档导航",
+      "phase_id": "discovery",
+      "phase_name": "发现阶段",
+      "phase_description": "搜索定位仓库并理解文档导航",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -75,7 +88,10 @@
                 "duration": "2.4s",
                 "timestamp": "2.4s",
                 "success": false,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "web_search",
+                "tool_args": {}
               },
               {
                 "action_type": "web_search",
@@ -83,7 +99,10 @@
                 "duration": "2.2s",
                 "timestamp": "4.6s",
                 "success": false,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "web_search",
+                "tool_args": {}
               },
               {
                 "action_type": "web_search",
@@ -91,24 +110,49 @@
                 "duration": "1.8s",
                 "timestamp": "6.4s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "web_search",
+                "tool_args": {}
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "导航失败: Page.title: Execution co...",
+                "duration": "3.8s",
+                "timestamp": "3.8s",
+                "success": false,
+                "error_message": "导航失败: Page.title: Execution context was destroy...",
+                "task_id": "",
+                "tool_name": "browser_navigate",
+                "tool_args": {}
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令 `curl -I -L -s -o /dev/null -w '%{http_code}' 'https://www.zhihu.com/question...'`",
+                "duration": "6.8s",
+                "timestamp": "10.6s",
+                "success": true,
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               }
             ],
-            "total_duration_seconds": 6.4,
+            "total_duration_seconds": 17.0,
             "retry_count": 2
           },
           "subjective": {
             "pain_level": "中低",
             "pain_summary": " ❌ 直达率低",
-            "narrative": "discovery阶段的开发者体验存在严重问题，搜索困难，急需改进。",
+            "narrative": "discovery阶段的开发者体验存在严重问题，搜索困难，急需改进。\n分析：\"理解与导航\"环节整体表现良好（95/100），核心优势在于文档自包含度满分，所有引用均来自内部资源，有效降低了信息碎片化风险。外部跳转至zhihu.com的高频操作（文档跳转数85分）可能增加开发者认知成本。",
             "metrics": [
               {
                 "metric_id": "SDX_SEARCH_ROUNDS",
                 "metric_name": "搜索轮次",
-                "value": 3,
+                "value": 3.0,
                 "unit": "count",
                 "benchmark_value": 1,
-                "score": 50,
+                "score": 50.0,
                 "evidence": "搜索 '昇腾 CANN ops-math 官方文档'找到官方文档",
                 "applicable": true
               },
@@ -117,7 +161,7 @@
                 "metric_name": "搜索耗时",
                 "value": 181.0,
                 "unit": "seconds",
-                "benchmark_value": 60,
+                "benchmark_value": 120,
                 "score": 50,
                 "evidence": "181.0s",
                 "applicable": true
@@ -138,7 +182,7 @@
                 "value": 0,
                 "unit": "count",
                 "benchmark_value": 0,
-                "score": 80,
+                "score": 100.0,
                 "evidence": "命名清晰无歧义",
                 "applicable": true
               },
@@ -148,62 +192,17 @@
                 "value": 0,
                 "unit": "0-100 scale",
                 "benchmark_value": 0,
-                "score": 100,
+                "score": 100.0,
                 "evidence": "单一平台，无迁移摩擦",
                 "applicable": true
-              }
-            ]
-          },
-          "objective": {
-            "metrics": []
-          },
-          "pros": "命名清晰无歧义",
-          "cons": "搜索效率低、定位耗时长、直达率低"
-        }
-      ]
-    },
-    {
-      "step_id": "S1_COMPREHEND",
-      "step_name": "理解与导航",
-      "step_description": "阅读README、QuickStart、项目结构，理解文档体系",
-      "expected_duration_minutes": 0,
-      "per_project_assessments": [
-        {
-          "project_id": "",
-          "actual_path": {
-            "actions": [
-              {
-                "action_type": "browser_navigate",
-                "detail": "导航失败: Page.title: Execution co...",
-                "duration": "3.8s",
-                "timestamp": "3.8s",
-                "success": false,
-                "error_message": "导航失败: Page.title: Execution context was destroy..."
               },
-              {
-                "action_type": "shell_exec",
-                "detail": "执行命令 `curl -I -L -s -o /dev/null -w '%{http_code}' 'https://www.zhihu.com/question...'`",
-                "duration": "6.8s",
-                "timestamp": "10.6s",
-                "success": true,
-                "error_message": null
-              }
-            ],
-            "total_duration_seconds": 10.6,
-            "retry_count": 0
-          },
-          "subjective": {
-            "pain_level": "低",
-            "pain_summary": "文档自足",
-            "narrative": "分析：\"理解与导航\"环节整体表现良好（95/100），核心优势在于文档自包含度满分，所有引用均来自内部资源，有效降低了信息碎片化风险。外部跳转至zhihu.com的高频操作（文档跳转数85分）可能增加开发者认知成本。",
-            "metrics": [
               {
                 "metric_id": "SDX_DOC_JUMPS",
                 "metric_name": "文档跳转数",
                 "value": 1,
                 "unit": "count",
-                "benchmark_value": 1,
-                "score": 85,
+                "benchmark_value": 2,
+                "score": 100,
                 "evidence": "访问域名: www.zhihu.com",
                 "applicable": true
               },
@@ -230,17 +229,23 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
-          "pros": "文档集中、导航清晰、链接有效、文档自包含度高",
-          "cons": "-"
+          "pros": "命名清晰无歧义；文档集中、导航清晰、链接有效、文档自包含度高",
+          "cons": "搜索效率低、定位耗时长、直达率低"
         }
       ]
     },
     {
-      "step_id": "S2_ENVIRONMENT",
-      "step_name": "环境准备",
-      "step_description": "获取硬件/云环境，安装SDK/工具链，配置环境变量",
+      "step_id": "S1_SETUP",
+      "step_name": "准备阶段",
+      "step_description": "准备环境并获取代码，完成依赖安装",
+      "phase_id": "setup",
+      "phase_name": "准备阶段",
+      "phase_description": "准备环境并获取代码，完成依赖安装",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -253,7 +258,10 @@
                 "duration": "5.0s",
                 "timestamp": "5.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "file_read",
@@ -261,7 +269,10 @@
                 "duration": "6.0s",
                 "timestamp": "11.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -269,7 +280,10 @@
                 "duration": "3.0s",
                 "timestamp": "14.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -277,7 +291,10 @@
                 "duration": "3.0s",
                 "timestamp": "17.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "file_read",
@@ -285,7 +302,10 @@
                 "duration": "5.0s",
                 "timestamp": "22.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -293,7 +313,10 @@
                 "duration": "3.0s",
                 "timestamp": "25.0s",
                 "success": false,
-                "error_message": "命令执行失败，退出码: 1"
+                "error_message": "命令执行失败，退出码: 1",
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "file_read",
@@ -301,7 +324,10 @@
                 "duration": "6.6s",
                 "timestamp": "31.6s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -309,7 +335,10 @@
                 "duration": "5.6s",
                 "timestamp": "37.2s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -317,16 +346,41 @@
                 "duration": "6.6s",
                 "timestamp": "43.8s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
+              },
+              {
+                "action_type": "git_clone",
+                "detail": "Git克隆：https://gitcode.com/cann/ops-math → Cloned https://gitcode.com/cann/ops-...",
+                "duration": "30.0s",
+                "timestamp": "30.0s",
+                "success": true,
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "git_clone",
+                "tool_args": {}
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "执行命令：`ls -A /tmp/devx_workspace` → build.sh CHANGELOG.md .clang-format classify_ru...",
+                "duration": "6.5s",
+                "timestamp": "36.5s",
+                "success": true,
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               }
             ],
-            "total_duration_seconds": 54.4,
+            "total_duration_seconds": 90.9,
             "retry_count": 1
           },
           "subjective": {
             "pain_level": "低",
             "pain_summary": "表现优秀",
-            "narrative": "setup阶段的开发者体验存在严重问题，急需改进。",
+            "narrative": "setup阶段的开发者体验存在严重问题，急需改进。\n获取代码步骤平均得分65/100，痛点等级中低，表明整体表现尚可但需优化。克隆成功率100%是核心优势，确保代码获取可靠。关键问题是依赖透明度仅30分（未检测到依赖声明），可能导致后续开发依赖管理混乱。",
             "metrics": [
               {
                 "metric_id": "SDX_ENV_INIT_TIME_SEC",
@@ -377,52 +431,7 @@
                 "score": 100,
                 "evidence": "云环境无时间限制",
                 "applicable": true
-              }
-            ]
-          },
-          "objective": {
-            "metrics": []
-          },
-          "pros": "环境可配置",
-          "cons": "-"
-        }
-      ]
-    },
-    {
-      "step_id": "S3_ACQUIRE",
-      "step_name": "获取代码",
-      "step_description": "Clone仓库，安装依赖，解决权限/网络问题",
-      "expected_duration_minutes": 0,
-      "per_project_assessments": [
-        {
-          "project_id": "",
-          "actual_path": {
-            "actions": [
-              {
-                "action_type": "git_clone",
-                "detail": "Git克隆：https://gitcode.com/cann/ops-math → Cloned https://gitcode.com/cann/ops-...",
-                "duration": "30.0s",
-                "timestamp": "30.0s",
-                "success": true,
-                "error_message": null
               },
-              {
-                "action_type": "shell_exec",
-                "detail": "执行命令：`ls -A /tmp/devx_workspace` → build.sh CHANGELOG.md .clang-format classify_ru...",
-                "duration": "6.5s",
-                "timestamp": "36.5s",
-                "success": true,
-                "error_message": null
-              }
-            ],
-            "total_duration_seconds": 36.5,
-            "retry_count": 0
-          },
-          "subjective": {
-            "pain_level": "中低",
-            "pain_summary": "依赖不透明",
-            "narrative": "获取代码步骤平均得分65/100，痛点等级中低，表明整体表现尚可但需优化。克隆成功率100%是核心优势，确保代码获取可靠。关键问题是依赖透明度仅30分（未检测到依赖声明），可能导致后续开发依赖管理混乱。",
-            "metrics": [
               {
                 "metric_id": "SDX_CLONE_SUCCESS_RATE",
                 "metric_name": "克隆成功率",
@@ -446,17 +455,23 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
-          "pros": "克隆顺利",
-          "cons": "未检测到依赖声明"
+          "pros": "环境可配置；克隆顺利",
+          "cons": "-；未检测到依赖声明"
         }
       ]
     },
     {
-      "step_id": "S4_BUILD",
-      "step_name": "编译构建",
-      "step_description": "执行构建命令，编译算子/模块，处理编译错误",
+      "step_id": "S2_QUICKSTART",
+      "step_name": "快速开始阶段",
+      "step_description": "阅读 Quick Start 文档并依文档完成本阶段指引的编译/运行步骤（任务 quickstart_doc）",
+      "phase_id": "quickstart",
+      "phase_name": "快速开始阶段",
+      "phase_description": "阅读 Quick Start 文档并依文档完成本阶段指引的编译/运行步骤（任务 quickstart_doc）",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -469,7 +484,10 @@
                 "duration": "2.8s",
                 "timestamp": "2.8s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "file_read",
@@ -477,7 +495,10 @@
                 "duration": "2.7s",
                 "timestamp": "5.5s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -485,7 +506,10 @@
                 "duration": "9.7s",
                 "timestamp": "15.2s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -493,7 +517,10 @@
                 "duration": "9.8s",
                 "timestamp": "25.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -501,7 +528,10 @@
                 "duration": "9.6s",
                 "timestamp": "34.6s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               }
             ],
             "total_duration_seconds": 34.6,
@@ -545,7 +575,10 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
           "pros": "编译效率高、错误信息清晰可诊断",
           "cons": "-"
@@ -553,9 +586,12 @@
       ]
     },
     {
-      "step_id": "S5_DEPLOY",
-      "step_name": "部署安装",
-      "step_description": "将构建产物安装到目标环境，完成注册",
+      "step_id": "S3_DEVELOPMENT",
+      "step_name": "开发阶段",
+      "step_description": "局部修改代码、按构建文档编译安装、运行示例验证（dev_modify / dev_build / dev_run）",
+      "phase_id": "development",
+      "phase_name": "开发阶段",
+      "phase_description": "局部修改代码、按构建文档编译安装、运行示例验证（dev_modify / dev_build / dev_run）",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -568,7 +604,7 @@
           "subjective": {
             "pain_level": "高",
             "pain_summary": "安装成功",
-            "narrative": "部署安装步骤得分100/100，体验流畅。两项核心指标（部署验证可用、部署幂等性）均不涉及本项目场景，整体无阻塞性问题。",
+            "narrative": "部署安装步骤得分100/100，体验流畅。两项核心指标（部署验证可用、部署幂等性）均不涉及本项目场景，整体无阻塞性问题。\n运行验证步骤得分100/100，体验流畅。输出可读性和运行模式组合两项指标不适用于本项目场景，验证流程无阻塞，端到端执行顺利完成。",
             "metrics": [
               {
                 "metric_id": "SDX_DEPLOY_VERIFY_AVAILABLE",
@@ -589,35 +625,7 @@
                 "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
-              }
-            ]
-          },
-          "objective": {
-            "metrics": []
-          },
-          "pros": "可部署",
-          "cons": "部署操作不幂等"
-        }
-      ]
-    },
-    {
-      "step_id": "S6_VERIFY",
-      "step_name": "运行验证",
-      "step_description": "运行示例/测试，确认功能正确，端到端成功",
-      "expected_duration_minutes": 0,
-      "per_project_assessments": [
-        {
-          "project_id": "",
-          "actual_path": {
-            "actions": [],
-            "total_duration_seconds": 0,
-            "retry_count": 0
-          },
-          "subjective": {
-            "pain_level": "高",
-            "pain_summary": "验证通过",
-            "narrative": "运行验证步骤得分100/100，体验流畅。输出可读性和运行模式组合两项指标不适用于本项目场景，验证流程无阻塞，端到端执行顺利完成。",
-            "metrics": [
+              },
               {
                 "metric_id": "SDX_RUN_OUTPUT_READABILITY",
                 "metric_name": "输出可读性",
@@ -641,55 +649,96 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
-          "pros": "可验证",
-          "cons": "未检测到运行任务、运行模式单一"
+          "pros": "可部署；可验证",
+          "cons": "部署操作不幂等；未检测到运行任务、运行模式单一"
         }
       ]
     }
   ],
   "recommendations": [
     {
-      "priority": "高",
-      "category": "",
+      "rec_id": "REC-01",
       "title": "优化搜索可发现性",
-      "description": "【搜索与发现】在cann/ops-math的GitHub仓库中，优化README和项目描述，添加关键词如\"数学操作\"和\"cann库\"，并设置相关主题标签（如math, operations），以提高搜索引擎可见性。",
-      "expected_improvement": "~15%，实施成本：中",
-      "related_metric_ids": [
-        "SDX_SEARCH_ROUNDS"
-      ],
-      "affected_metrics": [
-        "SDX_SEARCH_ROUNDS"
-      ]
-    },
-    {
-      "priority": "低",
-      "category": "",
-      "title": "减少环境配置步骤",
-      "description": "【环境准备】为cann/ops-math项目开发一个Bash自动化安装脚本，自动执行依赖安装（如使用apt或pip）和环境配置步骤，将现有手动操作整合为单一命令运行。  \n这样可将SDX_ENV_STEP_COUNT指标降低，提升入门效率，建议在项目根目录添加install.sh文件实现。",
-      "expected_improvement": "~10%，实施成本：中",
-      "related_metric_ids": [
-        "SDX_ENV_STEP_COUNT"
-      ],
-      "affected_metrics": [
-        "SDX_ENV_STEP_COUNT"
-      ]
-    },
-    {
       "priority": "高",
-      "category": "",
+      "target_project_id": "ops-math",
+      "related_step_ids": [],
+      "related_metric_ids": [
+        "SDX_SEARCH_ROUNDS"
+      ],
+      "description": "【搜索与发现】在cann/ops-math的GitHub仓库中，优化README和项目描述，添加关键词如\"数学操作\"和\"cann库\"，并设置相关主题标签（如math, operations），以提高搜索引擎可见性。",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_SEARCH_ROUNDS"
+        ],
+        "estimated_improvement_pct": 15,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
+    },
+    {
+      "rec_id": "REC-02",
+      "title": "减少环境配置步骤",
+      "priority": "低",
+      "target_project_id": "ops-math",
+      "related_step_ids": [],
+      "related_metric_ids": [
+        "SDX_ENV_STEP_COUNT"
+      ],
+      "description": "【环境准备】为cann/ops-math项目开发一个Bash自动化安装脚本，自动执行依赖安装（如使用apt或pip）和环境配置步骤，将现有手动操作整合为单一命令运行。  \n这样可将SDX_ENV_STEP_COUNT指标降低，提升入门效率，建议在项目根目录添加install.sh文件实现。",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_ENV_STEP_COUNT"
+        ],
+        "estimated_improvement_pct": 10,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
+    },
+    {
+      "rec_id": "REC-03",
       "title": "明确依赖版本要求",
-      "description": "【获取代码】在项目README.md文件中清晰列出所有外部依赖项及其版本要求（如NumPy、Pandas等），并添加一个Python脚本（例如`check_deps.py`）来自动验证这些依赖是否满足指定版本。",
-      "expected_improvement": "~20%，实施成本：高",
+      "priority": "高",
+      "target_project_id": "ops-math",
+      "related_step_ids": [],
       "related_metric_ids": [
         "SDX_DEPENDENCY_TRANSPARENCY"
       ],
-      "affected_metrics": [
-        "SDX_DEPENDENCY_TRANSPARENCY"
-      ]
+      "description": "【获取代码】在项目README.md文件中清晰列出所有外部依赖项及其版本要求（如NumPy、Pandas等），并添加一个Python脚本（例如`check_deps.py`）来自动验证这些依赖是否满足指定版本。",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_DEPENDENCY_TRANSPARENCY"
+        ],
+        "estimated_improvement_pct": 20,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
     }
   ],
   "divergence_alerts": [],
-  "key_insight": "整体开发者体验中等（84/100），优势在于环境准备优秀和编译构建快速；最关键问题是搜索发现直达率低和获取代码依赖不透明。建议优先优化搜索与发现和代码获取步骤以提升效率。"
+  "key_insight": "整体开发者体验中等（84/100），优势在于环境准备优秀和编译构建快速；最关键问题是搜索发现直达率低和获取代码依赖不透明。建议优先优化搜索与发现和代码获取步骤以提升效率。",
+  "targets": [
+    {
+      "project_name": "cann/ops-math",
+      "project_id": "ops-math",
+      "description": "CANN 生态中的数学算子项目",
+      "ecosystem": "",
+      "repo_url": "https://gitcode.com/cann/ops-math",
+      "hosting_platform": "gitcode",
+      "primary_language": "",
+      "license": "",
+      "quickstart_url": "",
+      "community_size_tier": "",
+      "_sdx_avg_score": 83.7,
+      "_obj_avg_score": 80.0,
+      "_composite_score": 81.8,
+      "_grade": "B"
+    }
+  ],
+  "journey_map": {},
+  "phase_analysis": {}
 }

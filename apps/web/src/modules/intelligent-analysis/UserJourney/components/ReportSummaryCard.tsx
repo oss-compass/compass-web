@@ -80,6 +80,7 @@ type ReportSummaryCardProps = {
   reportUpdatedAt: string;
   detailReportUrl?: string;
   projectVersion?: string;
+  metricNameMap?: Record<string, string>;
 };
 
 const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
@@ -91,20 +92,20 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
   reportUpdatedAt,
   detailReportUrl,
   projectVersion,
+  metricNameMap,
 }) => {
-  const metadataItems =
-    detailReportUrl && projectVersion
-      ? [
-          ...reportMetadata,
-          {
-            key: 'detail-report-link',
-            label: '详细报告',
-            value: projectVersion,
-            tone: 'mono' as const,
-            href: detailReportUrl,
-          },
-        ]
-      : reportMetadata;
+  const metadataItems = projectVersion
+    ? [
+        ...reportMetadata,
+        {
+          key: 'detail-report-link',
+          label: '详细报告',
+          value: detailReportUrl ? projectVersion : '上传中',
+          tone: 'mono' as const,
+          href: detailReportUrl || undefined,
+        },
+      ]
+    : reportMetadata;
 
   return (
     <Card
@@ -112,9 +113,9 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
       className="rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
       bodyStyle={{ padding: 24 }}
     >
-      <div className="flex flex-col gap-5 >lg:flex-row >lg:items-stretch">
+      <div className=">lg:flex-row >lg:items-stretch flex flex-col gap-5">
         {/* ── 左侧：指标概览（50%）── */}
-        <div className="flex w-full flex-col >lg:w-1/2">
+        <div className=">lg:w-1/2 flex w-full flex-col">
           <div className="mb-2 text-base font-semibold text-slate-800">
             报告概览
           </div>
@@ -149,7 +150,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
         </div>
 
         {/* ── 右侧：报告元数据（50%）── */}
-        <div className="flex w-full flex-col >lg:w-1/2">
+        <div className=">lg:w-1/2 flex w-full flex-col">
           {/* 标题行 */}
           <div className="mb-2 flex items-center justify-between">
             <div className="text-base font-semibold text-slate-800">
@@ -202,6 +203,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
         projectName={projectName}
         recommendations={recommendations}
         steps={journeySteps}
+        metricNameMap={metricNameMap}
       />
     </Card>
   );

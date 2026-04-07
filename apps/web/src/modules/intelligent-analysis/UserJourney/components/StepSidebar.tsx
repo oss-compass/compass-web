@@ -18,7 +18,7 @@ const StepSidebar: React.FC<StepSidebarProps> = ({
   return (
     <Card
       bordered={false}
-      className="h-full w-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_20px_48px_rgba(15,23,42,0.08)]"
+      className="w-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_20px_48px_rgba(15,23,42,0.08)]"
       bodyStyle={{ padding: 16 }}
     >
       <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>

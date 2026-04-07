@@ -1,0 +1,327 @@
+{
+  "meta": {
+    "description": "开发者旅程任务模板定义 —— 包含所有 task_id 的关键信息",
+    "generated_at": "2026-04-07",
+    "source": "src/models/journey/tasks.py :: DEFAULT_TASK_TEMPLATES"
+  },
+  "phases": [
+    {
+      "phase_id": "discovery",
+      "phase_name": "搜索与发现",
+      "phase_description": "搜索定位仓库并理解文档导航",
+      "tasks": ["discovery_doc", "discovery_repo"]
+    },
+    {
+      "phase_id": "setup",
+      "phase_name": "环境检查与准备",
+      "phase_description": "准备环境并获取代码，完成依赖安装",
+      "tasks": ["setup_clone", "setup_prereq", "setup_deps"]
+    },
+    {
+      "phase_id": "quickstart",
+      "phase_name": "样例快速体验",
+      "phase_description": "阅读文档并按步骤执行快速入门流程",
+      "tasks": ["quickstart_doc"]
+    },
+    {
+      "phase_id": "development",
+      "phase_name": "开发与编译",
+      "phase_description": "代码修改、编译、运行验证",
+      "tasks": ["dev_modify", "dev_build", "dev_run"]
+    },
+    {
+      "phase_id": "testing",
+      "phase_name": "测试与验证",
+      "phase_description": "运行完整测试套件并评估测试质量",
+      "tasks": ["test_unit"]
+    },
+    {
+      "phase_id": "contribution",
+      "phase_name": "反馈与贡献",
+      "phase_description": "发现问题并向社区提交 Issue",
+      "tasks": ["contrib_discover", "contrib_search", "contrib_submit"]
+    }
+  ],
+  "tasks": {
+    "discovery_doc": {
+      "task_id": "discovery_doc",
+      "name": "搜索并验证官方文档",
+      "phase": "discovery",
+      "task_type": "search",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "使用搜索引擎搜索开源项目的官方开发文档（搜索关键词不超过3个词，如 'cann ops-math quick_start'），找到文档链接后立即访问验证页面可访问性与内容完整性，确认包含开发指南或 quick start 内容",
+      "expected_outcome": "找到并访问官方文档/入门教程链接，确认页面可访问且内容有效",
+      "tool_hint": "web_search, browser_navigate",
+      "success_indicators": [
+        "搜索结果包含官方文档链接",
+        "找到官方 quick start 或入门教程链接",
+        "页面加载成功，文档内容清晰",
+        "包含开发指南或者quick_start内容"
+      ],
+      "failure_indicators": [
+        "无相关结果",
+        "全是第三方内容",
+        "找不到官方文档链接",
+        "页面404",
+        "内容为空",
+        "文档内容不包含开发指南或quick_start内容"
+      ]
+    },
+    "discovery_repo": {
+      "task_id": "discovery_repo",
+      "name": "搜索并验证源码仓库",
+      "phase": "discovery",
+      "task_type": "search",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "使用搜索引擎搜索开源项目的官方源码仓库（搜索关键词不超过3个词，如 'cann ops-math repo'），找到仓库链接后立即访问验证页面可访问性，确认仓库存在且包含实际代码内容（代码文件、README、提交记录等）。注意：不允许直接git clone",
+      "expected_outcome": "找到并访问官方源码仓库链接，确认仓库可正常访问且内容有效",
+      "tool_hint": "web_search, browser_navigate",
+      "success_indicators": [
+        "仓库页面加载成功",
+        "仓库存在且包含代码文件",
+        "可见README或提交记录",
+        "找到的仓库地址与'任务完成判断标准'中的'期望地址'一致"
+      ],
+      "failure_indicators": [
+        "找不到官方源码仓库",
+        "仓库页面404或无法访问",
+        "仓库为空或已删除",
+        "搜索结果全是第三方镜像",
+        "仓库地址与'任务完成判断标准'中的'期望地址'不一致"
+      ]
+    },
+    "setup_clone": {
+      "task_id": "setup_clone",
+      "name": "代码克隆",
+      "phase": "setup",
+      "task_type": "git",
+      "optional": false,
+      "timeout_sec": 300,
+      "retry_limit": 3,
+      "description": "使用背景中的'项目地址'作为克隆源（不得使用上一步任务结果中的地址，其可能是错误的），将仓库克隆到背景中指定的'仓库本地路径'，克隆完成后确认目录存在且文件完整",
+      "expected_outcome": "仓库克隆完成",
+      "tool_hint": "git_clone",
+      "success_indicators": ["克隆成功", "文件存在"],
+      "failure_indicators": ["网络错误", "权限拒绝"]
+    },
+    "setup_prereq": {
+      "task_id": "setup_prereq",
+      "name": "环境预检",
+      "phase": "setup",
+      "task_type": "shell",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "从背景中'仓库本地路径'下的 README 或 requirements/prerequisites 文档中找到项目对操作系统环境（硬件和软件）的前置要求，通过命令检查当前环境是否满足，修复和安装不满足的要求项。硬件检查项（按需）：GPU/NPU 设备是否可见（如 npu-smi、nvidia-smi）、驱动版本是否符合。软件检查项（按需）：操作系统版本、Python/GCC/CMake 版本、CUDA/CANN SDK 版本等。重要：只完成对系统硬件和软件环境前置条件检查和修复，对于项目本身的三方库依赖（类如python requirements.txt）禁止检查和安装；禁止执行构建、编译或任何与本任务无关的额外操作",
+      "expected_outcome": "明确当前环境与项目要求的匹配情况，修复不满足的条件",
+      "tool_hint": "shell_exec",
+      "success_indicators": [
+        "成功获取项目前置要求",
+        "完成硬件和软件环境检查",
+        "修复不满足的条件"
+      ],
+      "failure_indicators": [
+        "无法找到项目的环境要求文档",
+        "关键硬件设备不可见导致无法修复"
+      ]
+    },
+    "setup_deps": {
+      "task_id": "setup_deps",
+      "name": "依赖安装",
+      "phase": "setup",
+      "task_type": "shell",
+      "optional": false,
+      "timeout_sec": 600,
+      "retry_limit": 3,
+      "description": "根据背景中'仓库本地路径'下的文档（README、安装指南、依赖申明文件等）安装项目所需依赖，执行所有依赖安装步骤（如 pip install、conda install、source set_env.sh 等），修复识别到的依赖版本不匹配问题。重要：只完成项目本身的三方库依赖（例如python requirements.txt）检查和修复，对于系统硬件（NPU、GPU可见等）和软件环境（操作系统版本、Python/GCC/CMake 版本、CUDA/CANN SDK 版本等）前置条件前面任务已完成检查和修复；禁止执行构建、编译或任何与本任务无关的额外操作；所有命令均以背景中的'仓库本地路径'为工作目录",
+      "expected_outcome": "项目依赖安装完成，关键工具链验证可用",
+      "tool_hint": "shell_exec",
+      "success_indicators": [
+        "依赖包安装成功",
+        "关键工具链命令可正常执行",
+        "环境变量已生效"
+      ],
+      "failure_indicators": [
+        "依赖冲突",
+        "版本不兼容",
+        "网络超时导致安装失败",
+        "工具链命令执行失败"
+      ]
+    },
+    "quickstart_doc": {
+      "task_id": "quickstart_doc",
+      "name": "阅读Quick Start文档并提取步骤",
+      "phase": "quickstart",
+      "task_type": "shell",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "在背景中'仓库本地路径'下查找Quick Start或快速入门文档（通常在docs/目录、README.md或QUICKSTART.md中），识别文档中为开发者设计的试用体验操作链条（通常为环境检查、环境变量配置、编译、安装、运行示例等）及具体步骤与命令，严格按照文档中的步骤执行命令，修复遇到的问题。重要：当遇到系统环境与当前代码版本不匹配/兼容，重新获取匹配/兼容的代码版本",
+      "expected_outcome": "全部文档步骤执行完毕，编译/安装/运行示例均成功，遇到的问题已修复",
+      "tool_hint": "file_read, shell_exec",
+      "success_indicators": [
+        "成功执行提取的全部命令或脚本",
+        "错误可以修复并通过"
+      ],
+      "failure_indicators": [
+        "仓库中找不到快速入门文档",
+        "文档内容过于简略无法指导操作",
+        "文档步骤严重缺失",
+        "无法执行提取的命令或脚本",
+        "错误无法修复"
+      ]
+    },
+    "dev_modify": {
+      "task_id": "dev_modify",
+      "name": "代码修改",
+      "phase": "development",
+      "task_type": "shell",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "在背景中'仓库本地路径'下选择一个功能模块，进行不超过10行的有意义代码修改（如调整参数值、修改逻辑分支、添加日志输出等）。",
+      "expected_outcome": "代码修改完成，记录了修改的文件和具体改动",
+      "tool_hint": "shell_exec",
+      "success_indicators": ["目标文件已成功修改", "修改内容已确认写入"],
+      "failure_indicators": ["文件不存在或无写权限", "修改操作失败"]
+    },
+    "dev_build": {
+      "task_id": "dev_build",
+      "name": "按文档编译与安装",
+      "phase": "development",
+      "task_type": "shell",
+      "optional": true,
+      "timeout_sec": 600,
+      "retry_limit": 3,
+      "description": "在背景中'仓库本地路径'下查找编译构建文档，按照文档中的步骤执行项目的编译和安装流程（如cmake、make等），完成编译产物的安装。部分纯脚本项目可能无需编译，可跳过。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作",
+      "expected_outcome": "项目编译并安装成功，生成可执行产物",
+      "tool_hint": "shell_exec",
+      "success_indicators": [
+        "编译成功无报错",
+        "安装产物已生成",
+        "安装命令执行完成"
+      ],
+      "failure_indicators": [
+        "编译报错退出",
+        "缺少依赖导致编译失败",
+        "安装命令失败"
+      ]
+    },
+    "dev_run": {
+      "task_id": "dev_run",
+      "name": "运行示例验证功能",
+      "phase": "development",
+      "task_type": "shell",
+      "optional": false,
+      "timeout_sec": 300,
+      "retry_limit": 3,
+      "description": "在背景中'仓库本地路径'下根据文档（通常是README.md或QUICKSTART.md）指导运行项目官方示例代码，验证核心功能是否正常工作，输出是否符合文档预期。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作",
+      "expected_outcome": "示例代码运行成功，输出结果符合文档预期描述",
+      "tool_hint": "shell_exec",
+      "success_indicators": [
+        "示例程序运行成功",
+        "输出结果符合文档描述的预期",
+        "核心功能正常工作"
+      ],
+      "failure_indicators": [
+        "示例运行报错退出",
+        "输出结果与预期明显不符",
+        "核心功能异常"
+      ]
+    },
+    "test_unit": {
+      "task_id": "test_unit",
+      "name": "完整测试套件",
+      "phase": "testing",
+      "task_type": "shell",
+      "optional": false,
+      "timeout_sec": 600,
+      "retry_limit": 3,
+      "description": "运行项目的完整测试套件（执行全量单元测试或集成测试命令，如pytest、ctest、make test等），统计测试通过率，观察测试框架的易用性、错误信息清晰度、测试覆盖情况。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作",
+      "expected_outcome": "完整测试套件执行完毕，获取测试通过率、框架易用性评估及覆盖情况",
+      "tool_hint": "shell_exec",
+      "success_indicators": [
+        "测试套件命令执行完毕",
+        "获取到测试通过/失败统计数据",
+        "测试结果输出清晰可读"
+      ],
+      "failure_indicators": [
+        "测试命令无法执行或不存在",
+        "测试框架配置错误导致无法运行",
+        "大量测试失败且无法定位原因"
+      ]
+    },
+    "contrib_discover": {
+      "task_id": "contrib_discover",
+      "name": "问题发现与整理",
+      "phase": "contribution",
+      "task_type": "internal",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "重点阅读前面「前期各阶段执行情况」中的失败任务记录和用户体验痛点，从中筛选出有价值的一个问题（优先选取：编译/运行失败、文档缺失或误导、环境配置障碍等真实阻碍开发者的问题），整理出清晰的问题描述和复现步骤，作为后续提交Issue的素材；必要时可查阅仓库本地文件（如 CMakeLists.txt、README、CHANGELOG 等）补充问题细节",
+      "expected_outcome": "输出结构化结论：有问题时包含完整的问题描述（现象、复现步骤、期望行为、实际行为），或确认无需反馈（no_issue_to_report: true）",
+      "tool_hint": "file_read, shell_exec",
+      "success_indicators": [
+        "明确选定了一个具体问题或确认无需反馈",
+        "有问题时 content 包含现象和复现步骤",
+        "以结构化格式输出 no_issue_to_report 和 content 字段"
+      ],
+      "failure_indicators": [
+        "无法从之前阶段找到有价值的问题",
+        "问题描述过于模糊无法复现",
+        "未输出结构化结论格式"
+      ]
+    },
+    "contrib_search": {
+      "task_id": "contrib_search",
+      "name": "搜索社区已有Issue排重",
+      "phase": "contribution",
+      "task_type": "browse",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "重点阅读前面「contrib_discover 问题发现结论」章节的内容判断后续操作：若 no_issue_to_report=true 则直接以同样的结构化格式输出结论（no_issue_to_report=true, content=''）跳过搜索；若 no_issue_to_report=false 则通过浏览器访问项目Issue页面，搜索社区中是否已有与待提交问题相关的Issue，确认是否存在重复提交或已有解决方案，避免创建重复Issue。完成后输出更新后的结构化结论：no_issue_to_report 值继承自 discover 结论，content 在原问题描述基础上补充排重搜索结果",
+      "expected_outcome": "输出更新后的结构化结论：no_issue_to_report 继承 discover 阶段，content 包含原问题描述并补充排重结果（无重复或已有相关讨论链接）",
+      "tool_hint": "browser_navigate, issue_search",
+      "success_indicators": [
+        "理解背景中 contrib_discover 问题发现结论",
+        "完成已有Issue的排重搜索（若 no_issue_to_report=false）",
+        "输出结构化结论：no_issue_to_report 字段 + 更新后的 content 字段"
+      ],
+      "failure_indicators": [
+        "忽略背景中的 contrib_discover 结论直接开始搜索",
+        "Issue搜索功能不可用且无法访问项目Issue页面",
+        "未输出结构化结论格式"
+      ]
+    },
+    "contrib_submit": {
+      "task_id": "contrib_submit",
+      "name": "查阅贡献指南并提交Issue",
+      "phase": "contribution",
+      "task_type": "api",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "在背景中'仓库本地路径'下查找CONTRIBUTING.md或Issue提交指南，了解Issue提交规范和模板要求；根据前面[contrib_discover 问题发现结论] 和「contrib_search 排重搜索结论」章节的内容（包含问题描述和排重结论）组织Issue标题(title)和正文(body)，按照贡献规范和Issue模板格式撰写内容；然后使用 issue_submit 工具提交Issue，根据仓库地址判断目标平台（github.com → platform=github，gitcode.com → platform=gitcode，gitee.com → platform=gitee），从仓库URL中解析出 owner 和 repo，生成完整的工具调用指令（platform/owner/repo/title/body/labels参数），最终验证Issue创建成功并返回可访问链接",
+      "expected_outcome": "Issue成功创建，可通过链接访问",
+      "tool_hint": "file_read, issue_submit",
+      "success_indicators": [
+        "找到贡献指南或Issue提交说明",
+        "Issue内容符合模板要求",
+        "Issue已成功创建",
+        "返回了可访问的Issue链接或编号"
+      ],
+      "failure_indicators": [
+        "Issue创建失败",
+        "内容格式不符合模板要求",
+        "权限不足无法提交",
+        "未找到对应平台的API Token环境变量"
+      ]
+    }
+  }
+}

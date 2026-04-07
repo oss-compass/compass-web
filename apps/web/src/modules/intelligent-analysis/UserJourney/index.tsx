@@ -217,12 +217,8 @@ const UserJourney: React.FC<UserJourneyProps> = ({
     );
   }
 
-  const keyMetrics =
-    currentStep?.key === 'discover'
-      ? currentStep.metrics.slice(0, 4)
-      : currentStep?.metrics.slice(0, 3) ?? [];
+  const keyMetrics = currentStep?.metrics ?? [];
   const executionPathItems = currentStep?.executionPath ?? [];
-  const keyTools = currentStep?.tools.slice(0, 3) ?? [];
 
   return (
     <div className="min-h-full bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.08),_transparent_24%),linear-gradient(180deg,#f6f8fc_0%,#eef3fb_100%)]">
@@ -269,15 +265,18 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               reportUpdatedAt={primaryProject.reportUpdatedAt}
               detailReportUrl={primaryProject.reportDetailUrl}
               projectVersion={primaryProject.projectInfo.version}
+              metricNameMap={primaryProject.metricNameMap}
             />
 
             <Row gutter={20} wrap={false} className="flex-1 items-stretch">
-              <Col flex="260px" className="flex min-w-[260px]">
-                <StepSidebar
-                  steps={primaryProject.journeySteps}
-                  activeStepKey={activeStepKey}
-                  onStepChange={setActiveStepKey}
-                />
+              <Col flex="260px" className="min-w-[260px]">
+                <div className="sticky top-5">
+                  <StepSidebar
+                    steps={primaryProject.journeySteps}
+                    activeStepKey={activeStepKey}
+                    onStepChange={setActiveStepKey}
+                  />
+                </div>
               </Col>
 
               <Col flex="auto" className="flex min-w-0">
@@ -288,7 +287,6 @@ const UserJourney: React.FC<UserJourneyProps> = ({
                     currentStep.painNarrative || currentStep.painSummary
                   }
                   executionPathItems={executionPathItems}
-                  keyTools={keyTools}
                   agentVersion={primaryProject.agentVersion}
                 />
               </Col>

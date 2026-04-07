@@ -1,6 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { Segmented, Select } from 'antd';
+import { Popover, Segmented, Select } from 'antd';
+import {
+  USER_JOURNEY_PROJECT_REGISTRY,
+  UserJourneyProjectFileKey,
+  UserJourneyProjectKey,
+  filterRegistryEntries,
+} from '../rawData/registry';
 
 type HeaderProject = {
   queryKey: string;
@@ -33,6 +39,18 @@ type PageHeaderProps = {
   hideDeveloperControls?: boolean;
   transparent?: boolean;
 };
+
+// ---------- helpers ----------
+
+function uniq<T>(arr: T[]): T[] {
+  return Array.from(new Set(arr));
+}
+
+function toOptions(values: string[]) {
+  return values.map((v) => ({ value: v, label: v }));
+}
+
+// ---------- ProjectPill ----------
 
 const ProjectPill: React.FC<{
   project: HeaderProject;
@@ -67,6 +85,249 @@ const ProjectPill: React.FC<{
   );
 };
 
+// ---------- CascadingSelects ----------
+
+const SELECT_H = 32;
+
+const selectCls =
+  '[&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!rounded-r-2xl [&_.ant-select-selector]:!rounded-l-none [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-l-0 [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center';
+
+const LabelTag: React.FC<{ text: string }> = ({ text }) => (
+  <span
+    style={{ height: SELECT_H, lineHeight: `${SELECT_H}px` }}
+    className="inline-flex items-center whitespace-nowrap rounded-l-2xl border border-r-0 border-slate-200/80 bg-slate-50 px-2.5 text-xs font-medium text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
+  >
+    {text}
+  </span>
+);
+
+/**
+ * Shared five-level cascading selects.
+ * - mode="view"  : shows current selection, auto-syncs to currentFileKey
+ * - mode="add"   : starts empty, calls onSelectFileKey as soon as version is chosen
+ * excludeFileKeys: file keys that should be hidden from version options
+ */
+const CascadingSelects: React.FC<{
+  mode: 'view' | 'add';
+  currentFileKey?: string;
+  excludeFileKeys?: string[];
+  onSelectFileKey: (fileKey: string) => void;
+}> = ({ mode, currentFileKey = '', excludeFileKeys = [], onSelectFileKey }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const currentEntry =
+    USER_JOURNEY_PROJECT_REGISTRY[
+      currentFileKey as UserJourneyProjectFileKey
+    ] ?? null;
+
+  const initOrg = mode === 'view' ? currentEntry?.org ?? '' : '';
+  const initSig = mode === 'view' ? currentEntry?.sig ?? '' : '';
+  const initProjectKey = mode === 'view' ? currentEntry?.projectKey ?? '' : '';
+  const initHardware =
+    mode === 'view' ? currentEntry?.hardware_access ?? '' : '';
+
+  const [org, setOrg] = useState<string>(initOrg);
+  const [sig, setSig] = useState<string>(initSig);
+  const [projectKey, setProjectKey] = useState<string>(initProjectKey);
+  const [hardware, setHardware] = useState<string>(initHardware);
+
+  // Sync state when external currentFileKey changes (view mode only)
+  useEffect(() => {
+    if (mode === 'view' && currentEntry) {
+      setOrg(currentEntry.org);
+      setSig(currentEntry.sig);
+      setProjectKey(currentEntry.projectKey);
+      setHardware(currentEntry.hardware_access);
+    }
+  }, [currentFileKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // --- Derive options at each level ---
+
+  const orgOptions = useMemo(() => {
+    const orgs = uniq(filterRegistryEntries({}).map(([, e]) => e.org));
+    return toOptions(orgs);
+  }, []);
+
+  const sigOptions = useMemo(() => {
+    const sigs = uniq(
+      filterRegistryEntries({ org: org || undefined }).map(([, e]) => e.sig)
+    );
+    return toOptions(sigs);
+  }, [org]);
+
+  const projectOptions = useMemo(() => {
+    const filtered = filterRegistryEntries({
+      org: org || undefined,
+      sig: sig || undefined,
+    });
+    const seen = new Set<string>();
+    const opts: { value: string; label: string }[] = [];
+    for (const [, e] of filtered) {
+      if (!seen.has(e.projectKey)) {
+        seen.add(e.projectKey);
+        opts.push({ value: e.projectKey, label: e.projectName });
+      }
+    }
+    return opts;
+  }, [org, sig]);
+
+  const hardwareOptions = useMemo(() => {
+    const hws = uniq(
+      filterRegistryEntries({
+        org: org || undefined,
+        sig: sig || undefined,
+        projectKey: (projectKey as UserJourneyProjectKey) || undefined,
+      })
+        .map(([, e]) => e.hardware_access)
+        .filter(Boolean)
+    );
+    return toOptions(hws);
+  }, [org, sig, projectKey]);
+
+  const versionOptions = useMemo(() => {
+    return filterRegistryEntries({
+      org: org || undefined,
+      sig: sig || undefined,
+      projectKey: (projectKey as UserJourneyProjectKey) || undefined,
+      hardware_access: hardware || undefined,
+    })
+      .filter(([fileKey]) => !excludeFileKeys.includes(fileKey))
+      .map(([fileKey, e]) => ({ value: fileKey, label: e.version }));
+  }, [org, sig, projectKey, hardware, excludeFileKeys]);
+
+  const currentFileKeyDerived = useMemo(() => {
+    if (versionOptions.length === 0) return '';
+    const found = versionOptions.find((o) => o.value === currentFileKey);
+    return found ? found.value : versionOptions[0].value;
+  }, [versionOptions, currentFileKey]);
+
+  function handleOrgChange(value: string) {
+    setOrg(value);
+    setSig('');
+    setProjectKey('');
+    setHardware('');
+  }
+  function handleSigChange(value: string) {
+    setSig(value);
+    setProjectKey('');
+    setHardware('');
+  }
+  function handleProjectChange(value: string) {
+    setProjectKey(value);
+    setHardware('');
+  }
+  function handleHardwareChange(value: string) {
+    setHardware(value);
+  }
+  function handleVersionChange(fileKey: string) {
+    onSelectFileKey(fileKey);
+  }
+
+  // view mode: propagate auto-derived key upward
+  useEffect(() => {
+    if (
+      mode === 'view' &&
+      currentFileKeyDerived &&
+      currentFileKeyDerived !== currentFileKey &&
+      versionOptions.length > 0
+    ) {
+      onSelectFileKey(currentFileKeyDerived);
+    }
+  }, [currentFileKeyDerived]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const getContainer = () => containerRef.current ?? document.body;
+
+  return (
+    <div
+      ref={containerRef}
+      className="flex items-center gap-2"
+      style={{ position: 'relative' }}
+    >
+      <div className="flex items-center">
+        <LabelTag text="组织" />
+        <Select
+          value={org || undefined}
+          placeholder="全部"
+          onChange={handleOrgChange}
+          options={orgOptions}
+          style={{ height: SELECT_H }}
+          className={`${selectCls} min-w-[90px]`}
+          dropdownStyle={{ minWidth: 120 }}
+          getPopupContainer={getContainer}
+        />
+      </div>
+      <div className="flex items-center">
+        <LabelTag text="SIG" />
+        <Select
+          value={sig || undefined}
+          placeholder="全部"
+          onChange={handleSigChange}
+          options={sigOptions}
+          style={{ height: SELECT_H }}
+          className={`${selectCls} min-w-[130px]`}
+          dropdownStyle={{ minWidth: 160 }}
+          getPopupContainer={getContainer}
+        />
+      </div>
+      <div className="flex items-center">
+        <LabelTag text="项目" />
+        <Select
+          value={projectKey || undefined}
+          placeholder="全部"
+          onChange={handleProjectChange}
+          options={projectOptions}
+          style={{ height: SELECT_H }}
+          className={`${selectCls} min-w-[150px]`}
+          dropdownStyle={{ minWidth: 180 }}
+          getPopupContainer={getContainer}
+        />
+      </div>
+      <div className="flex items-center">
+        <LabelTag text="硬件环境" />
+        <Select
+          value={hardware || undefined}
+          placeholder="全部"
+          onChange={handleHardwareChange}
+          options={hardwareOptions}
+          style={{ height: SELECT_H }}
+          className={`${selectCls} min-w-[140px]`}
+          dropdownStyle={{ minWidth: 200 }}
+          getPopupContainer={getContainer}
+        />
+      </div>
+      <div className="flex items-center">
+        <LabelTag text="版本" />
+        <Select
+          value={
+            mode === 'view' ? currentFileKeyDerived || undefined : undefined
+          }
+          placeholder={mode === 'add' ? '选择版本' : '全部'}
+          onChange={handleVersionChange}
+          options={versionOptions}
+          style={{ height: SELECT_H }}
+          className={`${selectCls} min-w-[130px] [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!uppercase [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500`}
+          dropdownStyle={{ minWidth: 160 }}
+          getPopupContainer={getContainer}
+        />
+      </div>
+    </div>
+  );
+};
+
+// ---------- CascadingProjectSelector (view mode wrapper) ----------
+
+const CascadingProjectSelector: React.FC<{
+  currentFileKey: string;
+  onSelectFileKey: (fileKey: string) => void;
+}> = ({ currentFileKey, onSelectFileKey }) => (
+  <CascadingSelects
+    mode="view"
+    currentFileKey={currentFileKey}
+    onSelectFileKey={onSelectFileKey}
+  />
+);
+
+// ---------- PageHeader ----------
+
 const PageHeader: React.FC<PageHeaderProps> = ({
   developerType,
   developerTypeOptions,
@@ -75,9 +336,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   onDeveloperTypeChange,
   onJourneyModeChange,
   projects,
-  projectOptions,
   currentProjectKey,
-  versionOptions,
   currentVersion,
   compareProjectOptions,
   onSelectProject,
@@ -90,11 +349,44 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const [showAddSelector, setShowAddSelector] = useState(false);
   const compareMode = projects.length > 1;
 
+  // The file keys already in the compare list (to exclude from add options)
+  const existingFileKeys = useMemo(
+    () => projects.map((p) => p.queryKey),
+    [projects]
+  );
+
   useEffect(() => {
     if (!compareProjectOptions.length) {
       setShowAddSelector(false);
     }
   }, [compareProjectOptions.length]);
+
+  const currentFileKey = currentVersion ?? currentProjectKey;
+
+  function handleFileKeySelect(fileKey: string) {
+    onSelectVersion(fileKey);
+    const entry =
+      USER_JOURNEY_PROJECT_REGISTRY[fileKey as UserJourneyProjectFileKey];
+    if (entry && entry.projectKey !== currentProjectKey) {
+      onSelectProject(entry.projectKey);
+    }
+  }
+
+  function handleAddFileKey(fileKey: string) {
+    onAddProject(fileKey);
+    setShowAddSelector(false);
+  }
+
+  const addPopoverContent = (
+    <div className="py-1">
+      <p className="mb-3 text-xs font-medium text-slate-500">选择对比项目</p>
+      <CascadingSelects
+        mode="add"
+        excludeFileKeys={existingFileKeys}
+        onSelectFileKey={handleAddFileKey}
+      />
+    </div>
+  );
 
   return (
     <nav
@@ -143,59 +435,30 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             </React.Fragment>
           ))
         ) : (
-          <>
-            <Select
-              value={currentProjectKey}
-              onChange={(value) => onSelectProject(String(value))}
-              options={projectOptions}
-              optionRender={(option) =>
-                String(option.label).replace(/^项目\s*/, '')
-              }
-              className="h-10 min-w-[200px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
-            />
-            <Select
-              value={currentVersion}
-              onChange={(value) => onSelectVersion(String(value))}
-              options={versionOptions}
-              optionRender={(option) =>
-                String(option.label).replace(/^版本\s*/, '')
-              }
-              className="h-10 min-w-[190px] [&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!uppercase [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500 [&_.ant-select-selector]:!h-[38px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!px-3.5 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
-              dropdownStyle={{ minWidth: 190 }}
-            />
-          </>
+          <CascadingProjectSelector
+            currentFileKey={currentFileKey}
+            onSelectFileKey={handleFileKeySelect}
+          />
         )}
 
         {!compareMode && compareProjectOptions.length ? (
-          showAddSelector ? (
-            <Select
-              open
-              autoFocus
-              value={undefined}
-              placeholder="选择对比项目"
-              options={compareProjectOptions}
-              className="w-[340px]"
-              dropdownStyle={{ minWidth: 340 }}
-              onSelect={(value) => {
-                onAddProject(String(value));
-                setShowAddSelector(false);
-              }}
-              onOpenChange={(open) => {
-                if (!open) {
-                  setShowAddSelector(false);
-                }
-              }}
-            />
-          ) : (
+          <Popover
+            open={showAddSelector}
+            onOpenChange={(open) => setShowAddSelector(open)}
+            content={addPopoverContent}
+            trigger="click"
+            placement="bottomRight"
+            arrow={false}
+            overlayInnerStyle={{ padding: '12px 16px' }}
+          >
             <button
               type="button"
-              onClick={() => setShowAddSelector(true)}
               className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white text-slate-500 transition hover:border-slate-400 hover:text-slate-700"
               aria-label="添加对比项目"
             >
               <PlusOutlined />
             </button>
-          )
+          </Popover>
         ) : null}
       </div>
     </nav>

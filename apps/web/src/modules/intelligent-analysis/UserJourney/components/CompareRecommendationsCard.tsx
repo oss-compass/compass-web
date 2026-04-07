@@ -39,6 +39,8 @@ const CompareRecommendationsCard: React.FC<CompareRecommendationsCardProps> = ({
             </div>
             <RecommendationsSection
               recommendations={project.data.recommendations}
+              steps={project.data.journeySteps}
+              metricNameMap={project.data.metricNameMap}
               className="mt-5"
               showHeader={false}
               variant="compact"

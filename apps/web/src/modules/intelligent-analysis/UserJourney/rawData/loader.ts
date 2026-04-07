@@ -4,11 +4,28 @@ import {
   USER_JOURNEY_PROJECT_DEFAULT_FILE_MAP,
   USER_JOURNEY_PROJECT_KEY_MAP,
   USER_JOURNEY_PROJECT_LABEL_MAP,
+  USER_JOURNEY_PROJECT_REGISTRY,
   USER_JOURNEY_PROJECT_REPORT_MAP,
   USER_JOURNEY_PROJECT_VERSION_MAP,
   UserJourneyProjectFileKey,
   UserJourneyProjectKey,
 } from './registry';
+
+const GITHUB_REPORT_BASE =
+  'https://github.com/oss-compass/Cogito/blob/main/developer_experience_agent/reports/';
+
+/**
+ * 从 hardware_access 字符串（如 "Ascend 910B"、"Ascend 910C "）提取目录名（如 "910b"、"910c"）
+ * 规则：找到 "910" 后紧跟的字母，拼成小写；找不到则返回 null
+ */
+const extractHardwareDir = (
+  hardwareAccess: string | undefined
+): string | null => {
+  if (!hardwareAccess) return null;
+  const match = hardwareAccess.match(/910([A-Za-z])/i);
+  if (!match) return null;
+  return `910${match[1].toLowerCase()}`;
+};
 import { buildUserJourneyProjectData } from './transform';
 
 const PROJECT_FILE_KEY_PATTERN = /^[A-Za-z0-9_-]+$/;
@@ -50,18 +67,27 @@ const fetchUserJourneyReport = async (
 const attachProjectRegistryMeta = (
   projectData: UserJourneyProjectData,
   projectFileKey: UserJourneyProjectFileKey
-): UserJourneyProjectData => ({
-  ...projectData,
-  projectInfo: {
-    ...projectData.projectInfo,
-    name:
-      projectData.projectInfo.name ||
-      USER_JOURNEY_PROJECT_LABEL_MAP[
-        USER_JOURNEY_PROJECT_KEY_MAP[projectFileKey]
-      ],
-    version: USER_JOURNEY_PROJECT_VERSION_MAP[projectFileKey],
-  },
-});
+): UserJourneyProjectData => {
+  const registryEntry = USER_JOURNEY_PROJECT_REGISTRY[projectFileKey];
+  const hardwareDir = extractHardwareDir(registryEntry?.hardware_access);
+  const reportDetailUrl = hardwareDir
+    ? `${GITHUB_REPORT_BASE}${hardwareDir}/Report_${projectFileKey}.md`
+    : undefined;
+
+  return {
+    ...projectData,
+    reportDetailUrl,
+    projectInfo: {
+      ...projectData.projectInfo,
+      name:
+        projectData.projectInfo.name ||
+        USER_JOURNEY_PROJECT_LABEL_MAP[
+          USER_JOURNEY_PROJECT_KEY_MAP[projectFileKey]
+        ],
+      version: USER_JOURNEY_PROJECT_VERSION_MAP[projectFileKey],
+    },
+  };
+};
 
 export const resolveUserJourneyProjectFileKey = (
   project: string | null | undefined

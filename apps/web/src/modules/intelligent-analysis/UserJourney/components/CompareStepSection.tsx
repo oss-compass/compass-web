@@ -21,8 +21,7 @@ const getStepByKey = (
 ): JourneyStep | null =>
   steps.find((step) => step.key === activeStepKey) ?? steps[0] ?? null;
 
-const getKeyMetrics = (step: JourneyStep) =>
-  step.key === 'discover' ? step.metrics.slice(0, 4) : step.metrics.slice(0, 3);
+const getKeyMetrics = (step: JourneyStep) => step.metrics;
 
 const getExecutionPathItems = (step: JourneyStep): ActionDetailRecord[] =>
   step.executionPath ?? [];
@@ -118,7 +117,6 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
                         currentStep.painNarrative || currentStep.painSummary
                       }
                       executionPathItems={getExecutionPathItems(currentStep)}
-                      keyTools={currentStep.tools.slice(0, 3)}
                       agentVersion={project.data.agentVersion}
                       hideTitle
                       fixedMetricCols={2}

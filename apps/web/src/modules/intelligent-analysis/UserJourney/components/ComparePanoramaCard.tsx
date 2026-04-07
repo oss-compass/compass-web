@@ -16,7 +16,9 @@ const ComparePanoramaCard: React.FC<ComparePanoramaCardProps> = ({
       className="rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
       bodyStyle={{ padding: 24 }}
     >
-      <div className="mb-5 text-xl font-semibold text-slate-900">旅程体验全景图</div>
+      <div className="mb-5 text-xl font-semibold text-slate-900">
+        旅程体验全景图
+      </div>
       <div className="space-y-7">
         {projects.map((project, index) => (
           <div
@@ -40,6 +42,7 @@ const ComparePanoramaCard: React.FC<ComparePanoramaCardProps> = ({
             <JourneyPanoramaFlow
               steps={project.data.journeySteps}
               className="mt-6"
+              compact
             />
           </div>
         ))}

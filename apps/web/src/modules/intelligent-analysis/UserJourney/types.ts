@@ -42,6 +42,8 @@ export type StepMetric = {
   note: string;
   tone: Tone;
   trend?: MetricTrend;
+  score?: number | null;
+  metricId?: string;
 };
 
 export type ActionDetailRecord = {
@@ -51,6 +53,7 @@ export type ActionDetailRecord = {
   result?: ActionResultValue;
   status?: ActionStatus;
   statusLabel?: string;
+  taskId?: string;
 };
 
 export type ActionCard = {
@@ -126,6 +129,8 @@ export type JourneyRecommendation = {
   priority: string;
   title: string;
   description: string;
+  relatedStepIds?: string[];
+  relatedMetricIds?: string[];
 };
 
 export type UserJourneyProjectData = {
@@ -142,6 +147,7 @@ export type UserJourneyProjectData = {
   recommendations: JourneyRecommendation[];
   reportMetadata: ReportMetadataItem[];
   journeySteps: JourneyStep[];
+  metricNameMap: Record<string, string>;
 };
 
 export type UserJourneyProjectView = {
@@ -152,7 +158,7 @@ export type UserJourneyProjectView = {
 export type BackendMetric = {
   metric_id: string;
   metric_name: string;
-  value: number | string | null;
+  value: number | string | boolean | null;
   unit: string;
   benchmark_value: number | string | null;
   score: number | null;
@@ -174,6 +180,8 @@ export type BackendAction = {
   timestamp: string | null;
   success: ActionResultValue;
   error_message: string | null;
+  task_id?: string;
+  tool_name?: string;
 };
 
 export type BackendAssessment = {
@@ -210,6 +218,7 @@ export type BackendRecommendation = {
   title: string;
   description: string;
   expected_improvement: string;
+  related_step_ids?: string[];
   related_metric_ids?: string[];
   affected_metrics?: string[];
 };
@@ -219,6 +228,15 @@ export type BackendDivergenceAlert = {
   alert_type: string;
   severity: string;
   message: string;
+};
+
+export type BackendJourneyMapEntry = {
+  not_evaluated: boolean;
+  score: number | null;
+  stars: string | null;
+  icon: string | null;
+  summary: string;
+  task_achievement_rate?: number | null;
 };
 
 export type BackendReportData = {
@@ -251,6 +269,7 @@ export type BackendReportData = {
   };
   e2e_metrics: BackendMetric[];
   journey_steps: BackendJourneyStep[];
+  journey_map?: Record<string, BackendJourneyMapEntry>;
   recommendations: BackendRecommendation[];
   divergence_alerts: BackendDivergenceAlert[];
   key_insight: string;

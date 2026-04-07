@@ -1,5 +1,4 @@
 {
-  "report_detail_url": "https://onebox.huawei.com/p/f2d69636b8fe4ee7853cd64537188b49",
   "meta": {
     "report_id": "nvidia_cuda_samples_20260325_1917",
     "report_title": "",
@@ -18,13 +17,24 @@
     "project_name": "nvidia/cuda-samples",
     "repo_url": "https://github.com/nvidia/cuda-samples",
     "platform": "github",
-    "description": ""
+    "description": "",
+    "ecosystem": "",
+    "hosting_platform": "github",
+    "primary_language": "",
+    "license": "",
+    "quickstart_url": "",
+    "community_size_tier": "",
+    "sdx_avg_score": 87.3,
+    "obj_avg_score": 90.0,
+    "composite_score": 88.7,
+    "grade": "B"
   },
   "overall_scores": {
-    "sdx_avg_score": 94.0,
+    "sdx_avg_score": 87.3,
     "obj_avg_score": 90.0,
-    "composite_score": 94.0,
-    "grade": "A"
+    "composite_score": 88.7,
+    "task_achievement_rate": 100.0,
+    "grade": "B"
   },
   "e2e_metrics": [
     {
@@ -60,9 +70,12 @@
   ],
   "journey_steps": [
     {
-      "step_id": "S0_DISCOVER",
-      "step_name": "搜索与发现",
-      "step_description": "通过搜索引擎/社区导航定位目标仓库地址",
+      "step_id": "S0_DISCOVERY",
+      "step_name": "发现阶段",
+      "step_description": "搜索定位仓库并理解文档导航",
+      "phase_id": "discovery",
+      "phase_name": "发现阶段",
+      "phase_description": "搜索定位仓库并理解文档导航",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -75,7 +88,10 @@
                 "duration": "1.5s",
                 "timestamp": "1.5s",
                 "success": false,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "web_search",
+                "tool_args": {}
               },
               {
                 "action_type": "web_search",
@@ -83,7 +99,10 @@
                 "duration": "1.8s",
                 "timestamp": "3.3s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "web_search",
+                "tool_args": {}
               },
               {
                 "action_type": "browser_navigate",
@@ -91,24 +110,49 @@
                 "duration": "1.6s",
                 "timestamp": "4.9s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "browser_navigate",
+                "tool_args": {}
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "访问链接 url=https://github.com/nvidia/cuda-samples，页面导航成功（Page.goto）",
+                "duration": "2.1s",
+                "timestamp": "2.1s",
+                "success": true,
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "browser_navigate",
+                "tool_args": {}
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "访问链接 url=https://github.com/NVIDIA/cuda-samples/blob/master/README.md，页面导航成功（Page.goto）",
+                "duration": "2.0s",
+                "timestamp": "4.1s",
+                "success": true,
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "browser_navigate",
+                "tool_args": {}
               }
             ],
-            "total_duration_seconds": 4.9,
+            "total_duration_seconds": 9.0,
             "retry_count": 1
           },
           "subjective": {
             "pain_level": "低",
             "pain_summary": "首次命中率低",
-            "narrative": "discovery 阶段的开发者体验顺畅",
+            "narrative": "discovery 阶段的开发者体验顺畅\n\"理解与导航\"步骤整体表现优异，平均分达 97 且痛点等级低。文档自包含度满分体现了极佳的内容独立性。",
             "metrics": [
               {
                 "metric_id": "SDX_SEARCH_ROUNDS",
                 "metric_name": "搜索轮次",
-                "value": 2,
+                "value": 2.0,
                 "unit": "count",
                 "benchmark_value": 1,
-                "score": 90,
+                "score": 75.0,
                 "evidence": "搜索：cuda samples documentation...; 搜索：nvidia cuda-samples quickstart",
                 "applicable": true
               },
@@ -117,7 +161,7 @@
                 "metric_name": "搜索耗时",
                 "value": 4.9,
                 "unit": "seconds",
-                "benchmark_value": 60,
+                "benchmark_value": 120,
                 "score": 100,
                 "evidence": "discovery_search: 4.9s",
                 "applicable": true
@@ -138,7 +182,7 @@
                 "value": 4,
                 "unit": "count",
                 "benchmark_value": 0,
-                "score": 80,
+                "score": 20.0,
                 "evidence": "搜索结果包含 4 个不同来源",
                 "applicable": true
               },
@@ -148,62 +192,17 @@
                 "value": 0,
                 "unit": "0-100 scale",
                 "benchmark_value": 0,
-                "score": 100,
+                "score": 100.0,
                 "evidence": "单一平台，无迁移摩擦",
                 "applicable": true
-              }
-            ]
-          },
-          "objective": {
-            "metrics": []
-          },
-          "pros": "定位快速、搜索耗时短、无平台迁移摩擦",
-          "cons": "首次命中率偏低、命名存在混淆"
-        }
-      ]
-    },
-    {
-      "step_id": "S1_COMPREHEND",
-      "step_name": "理解与导航",
-      "step_description": "阅读README、QuickStart、项目结构，理解文档体系",
-      "expected_duration_minutes": 0,
-      "per_project_assessments": [
-        {
-          "project_id": "",
-          "actual_path": {
-            "actions": [
-              {
-                "action_type": "browser_navigate",
-                "detail": "访问链接 url=https://github.com/nvidia/cuda-samples，页面导航成功（Page.goto）",
-                "duration": "2.1s",
-                "timestamp": "2.1s",
-                "success": true,
-                "error_message": null
               },
-              {
-                "action_type": "browser_navigate",
-                "detail": "访问链接 url=https://github.com/NVIDIA/cuda-samples/blob/master/README.md，页面导航成功（Page.goto）",
-                "duration": "2.0s",
-                "timestamp": "4.1s",
-                "success": true,
-                "error_message": null
-              }
-            ],
-            "total_duration_seconds": 4.1,
-            "retry_count": 1
-          },
-          "subjective": {
-            "pain_level": "低",
-            "pain_summary": "文档自足",
-            "narrative": "\"理解与导航\"步骤整体表现优异，平均分达 97 且痛点等级低。文档自包含度满分体现了极佳的内容独立性。",
-            "metrics": [
               {
                 "metric_id": "SDX_DOC_JUMPS",
                 "metric_name": "文档跳转数",
                 "value": 1,
                 "unit": "count",
-                "benchmark_value": 1,
-                "score": 90,
+                "benchmark_value": 2,
+                "score": 100,
                 "evidence": "访问域名：developer.nvidia.com",
                 "applicable": true
               },
@@ -230,17 +229,23 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
-          "pros": "文档集中、导航清晰、链接有效、文档自包含度高",
-          "cons": "-"
+          "pros": "定位快速、搜索耗时短、无平台迁移摩擦；文档集中、导航清晰、链接有效、文档自包含度高",
+          "cons": "首次命中率偏低、命名存在混淆"
         }
       ]
     },
     {
-      "step_id": "S2_ENVIRONMENT",
-      "step_name": "环境准备",
-      "step_description": "获取硬件/云环境，安装SDK/工具链，配置环境变量",
+      "step_id": "S1_SETUP",
+      "step_name": "准备阶段",
+      "step_description": "准备环境并获取代码，完成依赖安装",
+      "phase_id": "setup",
+      "phase_name": "准备阶段",
+      "phase_description": "准备环境并获取代码，完成依赖安装",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -253,7 +258,10 @@
                 "duration": "1.8s",
                 "timestamp": "1.8s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "git_clone",
@@ -261,7 +269,10 @@
                 "duration": "1.8s",
                 "timestamp": "3.7s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "git_clone",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -269,7 +280,10 @@
                 "duration": "1.8s",
                 "timestamp": "5.5s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "file_read",
@@ -277,7 +291,10 @@
                 "duration": "1.8s",
                 "timestamp": "7.4s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -285,7 +302,10 @@
                 "duration": "1.8s",
                 "timestamp": "9.2s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -293,7 +313,10 @@
                 "duration": "1.8s",
                 "timestamp": "11.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -301,7 +324,10 @@
                 "duration": "1.8s",
                 "timestamp": "12.9s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -309,7 +335,10 @@
                 "duration": "1.8s",
                 "timestamp": "14.7s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "file_read",
@@ -317,7 +346,10 @@
                 "duration": "6.4s",
                 "timestamp": "6.4s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -325,16 +357,30 @@
                 "duration": "6.4s",
                 "timestamp": "12.8s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
+              },
+              {
+                "action_type": "git_clone",
+                "detail": "克隆仓库 repo=https://github.com/nvidia/cuda-samples.git，输出：Cloning into '/tmp/devx_workspace'...",
+                "duration": "3.1s",
+                "timestamp": "3.1s",
+                "success": true,
+                "error_message": "Cloning into '/tmp/devx_workspace'...\n",
+                "task_id": "",
+                "tool_name": "git_clone",
+                "tool_args": {}
               }
             ],
-            "total_duration_seconds": 27.5,
+            "total_duration_seconds": 30.6,
             "retry_count": 0
           },
           "subjective": {
             "pain_level": "低",
             "pain_summary": "配置便捷",
-            "narrative": "环境配置步骤较多，体验待优化",
+            "narrative": "环境配置步骤较多，体验待优化\n获取代码方便",
             "metrics": [
               {
                 "metric_id": "SDX_ENV_INIT_TIME_SEC",
@@ -352,7 +398,7 @@
                 "value": 7,
                 "unit": "count",
                 "benchmark_value": 2,
-                "score": 70,
+                "score": 50,
                 "evidence": "执行命令：ls -la /tmp/devx_workspace 2>&, ls -la /tmp/devx_workspace, nvidia-smi 2>&1 || echo 'nvidi, cmake --version 2>&1; echo '--, ls -la /usr/local/cuda* 2>/dev",
                 "applicable": true
               },
@@ -385,44 +431,7 @@
                 "score": 100,
                 "evidence": "云环境无时间限制",
                 "applicable": true
-              }
-            ]
-          },
-          "objective": {
-            "metrics": []
-          },
-          "pros": "初始化快速、环境持久化、无硬件成本",
-          "cons": "配置步骤较多 (7 步)"
-        }
-      ]
-    },
-    {
-      "step_id": "S3_ACQUIRE",
-      "step_name": "获取代码",
-      "step_description": "Clone仓库，安装依赖，解决权限/网络问题",
-      "expected_duration_minutes": 0,
-      "per_project_assessments": [
-        {
-          "project_id": "",
-          "actual_path": {
-            "actions": [
-              {
-                "action_type": "git_clone",
-                "detail": "克隆仓库 repo=https://github.com/nvidia/cuda-samples.git，输出：Cloning into '/tmp/devx_workspace'...",
-                "duration": "3.1s",
-                "timestamp": "3.1s",
-                "success": true,
-                "error_message": "Cloning into '/tmp/devx_workspace'...\n"
-              }
-            ],
-            "total_duration_seconds": 3.1,
-            "retry_count": 0
-          },
-          "subjective": {
-            "pain_level": "低",
-            "pain_summary": "克隆顺畅",
-            "narrative": "获取代码方便",
-            "metrics": [
+              },
               {
                 "metric_id": "SDX_CLONE_SUCCESS_RATE",
                 "metric_name": "克隆成功率",
@@ -446,17 +455,23 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
-          "pros": "克隆成功率高、依赖透明度佳",
-          "cons": "-"
+          "pros": "初始化快速、环境持久化、无硬件成本；克隆成功率高、依赖透明度佳",
+          "cons": "配置步骤较多 (7 步)"
         }
       ]
     },
     {
-      "step_id": "S4_BUILD",
-      "step_name": "编译构建",
-      "step_description": "执行构建命令，编译算子/模块，处理编译错误",
+      "step_id": "S2_QUICKSTART",
+      "step_name": "快速开始阶段",
+      "step_description": "阅读 Quick Start 文档并依文档完成本阶段指引的编译/运行步骤（任务 quickstart_doc）",
+      "phase_id": "quickstart",
+      "phase_name": "快速开始阶段",
+      "phase_description": "阅读 Quick Start 文档并依文档完成本阶段指引的编译/运行步骤（任务 quickstart_doc）",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -469,7 +484,10 @@
                 "duration": "5.8s",
                 "timestamp": "5.8s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "file_read",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -477,7 +495,10 @@
                 "duration": "5.8s",
                 "timestamp": "11.7s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -485,7 +506,10 @@
                 "duration": "5.8s",
                 "timestamp": "17.5s",
                 "success": false,
-                "error_message": "命令执行失败，退出码: 2"
+                "error_message": "命令执行失败，退出码: 2",
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -493,7 +517,10 @@
                 "duration": "5.8s",
                 "timestamp": "23.3s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -501,7 +528,10 @@
                 "duration": "5.8s",
                 "timestamp": "29.2s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -509,7 +539,10 @@
                 "duration": "5.8s",
                 "timestamp": "35.0s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               },
               {
                 "action_type": "shell_exec",
@@ -517,7 +550,10 @@
                 "duration": "5.8s",
                 "timestamp": "40.8s",
                 "success": true,
-                "error_message": null
+                "error_message": null,
+                "task_id": "",
+                "tool_name": "shell_exec",
+                "tool_args": {}
               }
             ],
             "total_duration_seconds": 40.8,
@@ -561,7 +597,10 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
           "pros": "编译效率高、耗时可控",
           "cons": "版本不匹配需手动切换、报错诊断性待提升"
@@ -569,9 +608,12 @@
       ]
     },
     {
-      "step_id": "S5_DEPLOY",
-      "step_name": "部署安装",
-      "step_description": "将构建产物安装到目标环境，完成注册",
+      "step_id": "S3_DEVELOPMENT",
+      "step_name": "开发阶段",
+      "step_description": "局部修改代码、按构建文档编译安装、运行示例验证（dev_modify / dev_build / dev_run）",
+      "phase_id": "development",
+      "phase_name": "开发阶段",
+      "phase_description": "局部修改代码、按构建文档编译安装、运行示例验证（dev_modify / dev_build / dev_run）",
       "expected_duration_minutes": 0,
       "per_project_assessments": [
         {
@@ -584,7 +626,7 @@
           "subjective": {
             "pain_level": "低",
             "pain_summary": "安装成功",
-            "narrative": "该项目为示例代码库，无需部署安装步骤。",
+            "narrative": "该项目为示例代码库，无需部署安装步骤。\n该项目为示例代码库，验证通过编译构建即完成，无需单独运行验证步骤。",
             "metrics": [
               {
                 "metric_id": "SDX_DEPLOY_VERIFY_AVAILABLE",
@@ -605,35 +647,7 @@
                 "score": 100,
                 "evidence": "不涉及",
                 "applicable": false
-              }
-            ]
-          },
-          "objective": {
-            "metrics": []
-          },
-          "pros": "可部署",
-          "cons": "文档未提供部署指令"
-        }
-      ]
-    },
-    {
-      "step_id": "S6_VERIFY",
-      "step_name": "运行验证",
-      "step_description": "运行示例/测试，确认功能正确，端到端成功",
-      "expected_duration_minutes": 0,
-      "per_project_assessments": [
-        {
-          "project_id": "",
-          "actual_path": {
-            "actions": [],
-            "total_duration_seconds": 0,
-            "retry_count": 0
-          },
-          "subjective": {
-            "pain_level": "低",
-            "pain_summary": "运行通过",
-            "narrative": "该项目为示例代码库，验证通过编译构建即完成，无需单独运行验证步骤。",
-            "metrics": [
+              },
               {
                 "metric_id": "SDX_RUN_OUTPUT_READABILITY",
                 "metric_name": "输出可读性",
@@ -657,38 +671,77 @@
             ]
           },
           "objective": {
-            "metrics": []
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "",
+            "avg_score": 0.0
           },
-          "pros": "可验证",
-          "cons": "文档未提供验证指令"
+          "pros": "可部署；可验证",
+          "cons": "文档未提供部署指令；文档未提供验证指令"
         }
       ]
     }
   ],
   "recommendations": [
     {
-      "priority": "高",
-      "category": "",
+      "rec_id": "REC-01",
       "title": "减少环境配置步骤",
-      "description": "【环境准备】提供自动化脚本检测 CUDA Toolkit 与驱动版本，或集成 Docker 配置文件，实现开发环境的一键构建与部署。",
-      "expected_improvement": "",
+      "priority": "高",
+      "target_project_id": "nvidia/cuda-samples",
+      "related_step_ids": [],
       "related_metric_ids": [
         "SDX_ENV_STEP_COUNT"
       ],
-      "affected_metrics": []
+      "description": "【环境准备】提供自动化脚本检测 CUDA Toolkit 与驱动版本，或集成 Docker 配置文件，实现开发环境的一键构建与部署。",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_ENV_STEP_COUNT"
+        ],
+        "estimated_improvement_pct": 10,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
     },
     {
-      "priority": "高",
-      "category": "",
+      "rec_id": "REC-02",
       "title": "明确依赖版本要求",
-      "description": "【获取代码】在 README 中增设依赖章节，明确列出 CUDA Toolkit、驱动及 GPU 架构版本要求，并提供脚本检查 `nvcc` 和 `nvidia-smi` 版本。",
-      "expected_improvement": "",
+      "priority": "高",
+      "target_project_id": "nvidia/cuda-samples",
+      "related_step_ids": [],
       "related_metric_ids": [
         "SDX_DEPENDENCY_TRANSPARENCY"
       ],
-      "affected_metrics": []
+      "description": "【获取代码】在 README 中增设依赖章节，明确列出 CUDA Toolkit、驱动及 GPU 架构版本要求，并提供脚本检查 `nvcc` 和 `nvidia-smi` 版本。",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_DEPENDENCY_TRANSPARENCY"
+        ],
+        "estimated_improvement_pct": 10,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
     }
   ],
   "divergence_alerts": [],
-  "key_insight": "项目文档完善是核心优势，需进一步优化版本匹配提示和环境自动化检测，以快速提升体验。"
+  "key_insight": "项目文档完善是核心优势，需进一步优化版本匹配提示和环境自动化检测，以快速提升体验。",
+  "targets": [
+    {
+      "project_name": "nvidia/cuda-samples",
+      "project_id": "",
+      "description": "",
+      "ecosystem": "",
+      "repo_url": "https://github.com/nvidia/cuda-samples",
+      "hosting_platform": "github",
+      "primary_language": "",
+      "license": "",
+      "quickstart_url": "",
+      "community_size_tier": "",
+      "_sdx_avg_score": 87.3,
+      "_obj_avg_score": 90.0,
+      "_composite_score": 88.7,
+      "_grade": "B"
+    }
+  ],
+  "journey_map": {},
+  "phase_analysis": {}
 }

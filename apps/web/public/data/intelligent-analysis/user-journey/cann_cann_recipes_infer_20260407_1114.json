@@ -1,0 +1,1663 @@
+{
+  "meta": {
+    "report_id": "cann_cann_recipes_infer_20260407_1114",
+    "report_title": "cann/cann-recipes-infer 开发者体验评估报告",
+    "generated_at": "2026-04-07 11:14:54",
+    "agent_version": "1.0.0",
+    "purpose": "开源社区入门体验评估",
+    "persona": {
+      "role": "外部开发者",
+      "background": "无项目经验",
+      "hardware_access": "Ascend 910B",
+      "language": "中文"
+    },
+    "sig": "recipes"
+  },
+  "project": {
+    "project_id": "cann/cann-recipes-infer",
+    "project_name": "cann/cann-recipes-infer",
+    "repo_url": "https://gitcode.com/cann/cann-recipes-infer",
+    "platform": "gitcode",
+    "description": "",
+    "ecosystem": "",
+    "hosting_platform": "gitcode",
+    "primary_language": "",
+    "license": "",
+    "quickstart_url": "",
+    "community_size_tier": "",
+    "sdx_avg_score": 34.3,
+    "obj_avg_score": 0.0,
+    "composite_score": 34.3,
+    "grade": "F"
+  },
+  "targets": [
+    {
+      "project_name": "cann/cann-recipes-infer",
+      "project_id": "cann/cann-recipes-infer",
+      "description": "",
+      "ecosystem": "",
+      "repo_url": "https://gitcode.com/cann/cann-recipes-infer",
+      "hosting_platform": "gitcode",
+      "primary_language": "",
+      "license": "",
+      "quickstart_url": "",
+      "community_size_tier": "",
+      "_sdx_avg_score": 34.3,
+      "_obj_avg_score": 0,
+      "_composite_score": 34.3,
+      "_grade": "F"
+    }
+  ],
+  "overall_scores": {
+    "sdx_avg_score": 34.3,
+    "obj_avg_score": 0,
+    "composite_score": 34.3,
+    "task_achievement_rate": 50.0,
+    "grade": "F"
+  },
+  "e2e_metrics": [
+    {
+      "metric_id": "SDX_E2E_TOTAL_TIME_SEC",
+      "metric_name": "工具执行总耗时",
+      "value": 652.7,
+      "unit": "seconds",
+      "benchmark_value": 900,
+      "score": 100,
+      "evidence": "共 10 个任务，累计 652.7s",
+      "applicable": false
+    },
+    {
+      "metric_id": "SDX_E2E_SUCCESS_RATE",
+      "metric_name": "端到端成功率",
+      "value": 50,
+      "unit": "percentage",
+      "benchmark_value": 100,
+      "score": 50,
+      "evidence": "5/10 个任务目标达成；✓ 使用搜索引擎搜索开源项目的官方开发文档（搜索关键词不超过3个词，如 'cann ops-math quick_start'），找到文档链接后立即访问验证页面可访问性与内容完整性，确认包含开发指南或 quick start 内容；✓ 使用搜索引擎搜索开源项目的官方源码仓库（搜索关键词不超过3个词，如 'cann ops-math repo'），找到仓库链接后立即访问验证页面可访问性，确认仓库存在且包含实际代码内容（代码文件、README、提交记录等）。注意：不允许直接git clone；✓ 使用背景中的'项目地址'作为克隆源（不得使用上一步任务结果中的地址，其可能是错误的），将仓库克隆到背景中指定的'仓库本地路径'，克隆完成后确认目录存在且文件完整；✗ 从背景中'仓库本地路径'下的 README 或 requirements/prerequisites 文档中找到项目对操作系统环境（硬件和软件）的前置要求，通过命令检查当前环境是否满足，修复和安装不满足的要求项。硬件检查项（按需）：GPU/NPU 设备是否可见（如 npu-smi、nvidia-smi）、驱动版本是否符合。软件检查项（按需）：操作系统版本、Python/GCC/CMake 版本、CUDA/CANN SDK 版本等。重要：只完成对系统硬件和软件环境前置条件检查和修复，对于项目本身的三方库依赖（类如python requirements.txt）禁止检查和安装；禁止执行构建、编译或任何与本任务无关的额外操作；✗ 根据背景中'仓库本地路径'下的文档（README、安装指南、依赖申明文件等）安装项目所需依赖，执行所有依赖安装步骤（如 pip install、conda install、source set_env.sh 等），修复识别到的依赖版本不匹配问题。重要：只完成项目本身的三方库依赖（例如python requirements.txt）检查和修复，对于系统硬件（NPU、GPU可见等）和软件环境（操作系统版本、Python/GCC/CMake 版本、CUDA/CANN SDK 版本等）前置条件前面任务已完成检查和修复；禁止执行构建、编译或任何与本任务无关的额外操作；所有命令均以背景中的'仓库本地路径'为工作目录；✗ 在背景中'仓库本地路径'下查找Quick Start或快速入门文档（通常在docs/目录、README.md或QUICKSTART.md中），识别文档中为开发者设计的试用体验操作链条（通常为环境检查、环境变量配置、编译、安装、运行示例等）及具体步骤与命令，严格按照文档中的步骤执行命令，修复遇到的问题。重要：当遇到系统环境与当前代码版本不匹配/兼容，重新获取匹配/兼容的代码版本；✓ 在背景中'仓库本地路径'下选择一个功能模块，进行不超过10行的有意义代码修改（如调整参数值、修改逻辑分支、添加日志输出等）。；✓ 在背景中'仓库本地路径'下查找编译构建文档，按照文档中的步骤执行项目的编译和安装流程（如cmake、make等），完成编译产物的安装。部分纯脚本项目可能无需编译，可跳过。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作；✗ 在背景中'仓库本地路径'下根据文档（通常是README.md或QUICKSTART.md）指导运行项目官方示例代码，验证核心功能是否正常工作，输出是否符合文档预期。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作；✗ 运行项目的完整测试套件（执行全量单元测试或集成测试命令，如pytest、ctest、make test等），统计测试通过率，观察测试框架的易用性、错误信息清晰度、测试覆盖情况。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作",
+      "applicable": false
+    },
+    {
+      "metric_id": "SDX_E2E_TOKEN_USAGE",
+      "metric_name": "Token总消耗",
+      "value": 437246,
+      "unit": "tokens",
+      "benchmark_value": 50000,
+      "score": null,
+      "evidence": "参考评分: 25/100",
+      "applicable": false
+    }
+  ],
+  "journey_steps": [
+    {
+      "step_id": "S0_DISCOVERY",
+      "step_name": "S0 搜索与发现",
+      "step_description": "搜索定位仓库并理解文档导航",
+      "phase_id": "discovery",
+      "phase_name": "发现阶段",
+      "phase_description": "搜索定位仓库并理解文档导航",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "cann/cann-recipes-infer",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "web_search",
+                "detail": "query=`\"cann-recipes-infer quick_start\"` → 搜索 'cann-recipes-infer quick_start' 找到 8 条结果：\n\n1. CANN cann-recipes-infer 深度解析:大模型推理加速的实践指南-CSDN博客\n   URL: http://www.baidu.com/link?url=GyGSpsJ8hhgq_...",
+                "duration": "4.7s",
+                "timestamp": "累计 4.7s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "web_search",
+                "tool_args": {
+                  "query": "cann-recipes-infer quick_start"
+                }
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "url=`http://www.baidu.com/link?url=i6l-_qvgLXDFL_vc_CDk71LfQWR6p3rRrrGxiRVUftmWaNjK5HKbbj24MKRgzmHhO-KmXxwwfEto47tuXAW3t-k1OI6x7T0R3JTntEkdyf1OW6R0cVVeoIIMi3jQ9HgqiSHyjXUigWInWQb9RGXfGruUQ7K23OZhrQuHmIT1ZdPGzLh1KkJ9O8FNfnKN6rii` → 成功访问: http://www.baidu.com/link?url=i6l-_qvgLXDFL_vc_CDk71LfQWR6p3rRrrGxiRVUftmWaNjK5HKbbj24MKRgzmHhO-KmXxwwfEto47tuXAW3t-k1OI6x7T0R3JTntEkdyf1OW6R0cV...",
+                "duration": "2.0s",
+                "timestamp": "累计 6.7s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "browser_navigate",
+                "tool_args": {
+                  "url": "http://www.baidu.com/link?url=i6l-_qvgLXDFL_vc_CDk71LfQWR6p3rRrrGxiRVUftmWaNjK5HKbbj24MKRgzmHhO-KmXxwwfEto47tuXAW3t-k1OI6x7T0R3JTntEkdyf1OW6R0cVVeoIIMi3jQ9HgqiSHyjXUigWInWQb9RGXfGruUQ7K23OZhrQuHmIT1ZdPGzLh1KkJ9O8FNfnKN6rii"
+                }
+              },
+              {
+                "action_type": "browser_content",
+                "detail": "selector=`body` → 页面: cann-recipes-infer/docs/models/deepseek-v3.2-exp/deepseek_v3.2_exp_tilelang_operato-代码预览-cann-recipes-infer:基于 CANN 平台的 LLM 与多模态模型推理优化样例项目 - AtomG...",
+                "duration": "0.29s",
+                "timestamp": "累计 7.0s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "browser_content",
+                "tool_args": {
+                  "max_length": "3000"
+                }
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "url=`https://gitcode.com/cann/cann-recipes-infer` → 成功访问: https://gitcode.com/cann/cann-recipes-infer\n页面标题: AtomGit | GitCode - 全球开发者的开源社区,开源代码托管平台\nHTTP状态: 200",
+                "duration": "3.1s",
+                "timestamp": "累计 10.2s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "browser_navigate",
+                "tool_args": {
+                  "url": "https://gitcode.com/cann/cann-recipes-infer"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace/README.md` → <p align=\"center\">\n  <img src=\"docs/figures/pto_logo.svg\" alt=\"PTO Tile Lib\" width=\"220\" />\n</p>\n\n# PTO Tile Library\n\nParallel Tile Operation (PTO) is...",
+                "duration": "0ms",
+                "timestamp": "累计 10.2s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace/README.md"
+                }
+              },
+              {
+                "action_type": "web_search",
+                "detail": "query=`\"cann-recipes-infer official documentation\"` → 搜索 'cann-recipes-infer official documentation' 找到 9 条结果：\n\n1. cann-recipes-infer解读:大模型推理加速的实践指南-CSDN博客\n   URL: http://www.baidu.com/link?url=bYbULNtIbm...",
+                "duration": "3.9s",
+                "timestamp": "累计 14.1s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "web_search",
+                "tool_args": {
+                  "query": "cann-recipes-infer official documentation"
+                }
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "url=`http://www.baidu.com/link?url=4NCjLmm3nZxSD21AYDG63k5DxSd82cumVK16nfvyHReRFK3IESEb31WNIdCXVIeOBH8Lj_HAo05qFfyJQLJiExprGBrDveAyGbSAbN-5KU4nPzWGYrnMfUt0gyv3vZfweViX_W-Winy3m2-cbipzBYpaHdR5P2Xnq3Jyx5kvfrPBD4wjWag8G2mWzkibLgkD` → 成功访问: http://www.baidu.com/link?url=4NCjLmm3nZxSD21AYDG63k5DxSd82cumVK16nfvyHReRFK3IESEb31WNIdCXVIeOBH8Lj_HAo05qFfyJQLJiExprGBrDveAyGbSAbN-5KU4nPzWGYr...",
+                "duration": "2.0s",
+                "timestamp": "累计 16.1s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "browser_navigate",
+                "tool_args": {
+                  "url": "http://www.baidu.com/link?url=4NCjLmm3nZxSD21AYDG63k5DxSd82cumVK16nfvyHReRFK3IESEb31WNIdCXVIeOBH8Lj_HAo05qFfyJQLJiExprGBrDveAyGbSAbN-5KU4nPzWGYrnMfUt0gyv3vZfweViX_W-Winy3m2-cbipzBYpaHdR5P2Xnq3Jyx5kvfrPBD4wjWag8G2mWzkibLgkD"
+                }
+              },
+              {
+                "action_type": "browser_content",
+                "detail": "selector=`body` → 页面: cann-recipes-infer/docs/models/deepseek-v3.2-exp/deepseek_v3.2_exp_pypto_operator_g-代码预览-cann-recipes-infer:基于 CANN 平台的 LLM 与多模态模型推理优化样例项目 - AtomG...",
+                "duration": "0.29s",
+                "timestamp": "累计 16.3s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_doc",
+                "tool_name": "browser_content",
+                "tool_args": {}
+              },
+              {
+                "action_type": "web_search",
+                "detail": "query=`\"cann cann-recipes-infer repo\"` → 搜索 'cann cann-recipes-infer repo' 找到 8 条结果：\n\n1. 深度解读CANN cann-recipes-infer仓库:AIGC模型部署的“工业级配方手册...\n   URL: http://www.baidu.com/link?url=rgSxI-9JcDJgg...",
+                "duration": "3.9s",
+                "timestamp": "累计 3.9s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_repo",
+                "tool_name": "web_search",
+                "tool_args": {
+                  "query": "cann cann-recipes-infer repo"
+                }
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "url=`http://www.baidu.com/link?url=STN31vPcitLKvAu7dB09awAf1HaQYwykEFJ7RZBGpnDAeZ6KB6nbK8WQxg-jTr_x2sUOJQ2j-OzsifHKEnvfi4SaKYGHTWnpQ1muH3ouO-hHdtOfE98AUK46B98V3DHAA1sSQl9-MEtXIa0lhVwRQSgTTL_fSVk9CU3IOsm2YESElc2WRWxNj_Wyi1M3z4q-` → 成功访问: http://www.baidu.com/link?url=STN31vPcitLKvAu7dB09awAf1HaQYwykEFJ7RZBGpnDAeZ6KB6nbK8WQxg-jTr_x2sUOJQ2j-OzsifHKEnvfi4SaKYGHTWnpQ1muH3ouO-hHdtOfE9...",
+                "duration": "0.84s",
+                "timestamp": "累计 4.7s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_repo",
+                "tool_name": "browser_navigate",
+                "tool_args": {
+                  "url": "http://www.baidu.com/link?url=STN31vPcitLKvAu7dB09awAf1HaQYwykEFJ7RZBGpnDAeZ6KB6nbK8WQxg-jTr_x2sUOJQ2j-OzsifHKEnvfi4SaKYGHTWnpQ1muH3ouO-hHdtOfE98AUK46B98V3DHAA1sSQl9-MEtXIa0lhVwRQSgTTL_fSVk9CU3IOsm2YESElc2WRWxNj_Wyi1M3z4q-"
+                }
+              },
+              {
+                "action_type": "browser_content",
+                "detail": "selector=`body` → 页面: cann-recipes-infer/docs/models/deepseek-v3.2-exp/deepseek_v3.2_exp_tilelang_operato-代码预览-cann-recipes-infer:基于 CANN 平台的 LLM 与多模态模型推理优化样例项目 - AtomG...",
+                "duration": "0.11s",
+                "timestamp": "累计 4.8s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_repo",
+                "tool_name": "browser_content",
+                "tool_args": {}
+              },
+              {
+                "action_type": "browser_navigate",
+                "detail": "url=`https://gitcode.com/cann/cann-recipes-infer` → 成功访问: https://gitcode.com/cann/cann-recipes-infer\n页面标题: AtomGit | GitCode - 全球开发者的开源社区,开源代码托管平台\nHTTP状态: 200",
+                "duration": "0.82s",
+                "timestamp": "累计 5.7s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_repo",
+                "tool_name": "browser_navigate",
+                "tool_args": {
+                  "url": "https://gitcode.com/cann/cann-recipes-infer"
+                }
+              },
+              {
+                "action_type": "browser_content",
+                "detail": "selector=`body` → 页面: cann-recipes-infer:基于 CANN 平台的 LLM 与多模态模型推理优化样例项目 - AtomGit | GitCode\nURL: https://gitcode.com/cann/cann-recipes-infer\n\n内容:\nmaster 分支 1 Tags 3 云开发...",
+                "duration": "0.13s",
+                "timestamp": "累计 5.8s",
+                "success": true,
+                "error_message": null,
+                "task_id": "discovery_repo",
+                "tool_name": "browser_content",
+                "tool_args": {}
+              }
+            ],
+            "total_duration_seconds": 22.1,
+            "retry_count": 0
+          },
+          "subjective": {
+            "pain_level": "低",
+            "pain_summary": "定位快速",
+            "narrative": "在发现阶段，我体验非常顺畅，平均95分且痛点低，这得益于高效的文档设计——搜索耗时仅16.3秒（100分）和直达率100%让我快速定位资源，一次搜索就成功。尽管搜索轮次75分暗示可能需要微调查询，但无命名混淆和单一平台（100分）让流程无缝，工具链整体高效。",
+            "metrics": [
+              {
+                "metric_id": "SDX_SEARCH_ROUNDS",
+                "metric_name": "搜索轮次",
+                "value": 3,
+                "unit": "count",
+                "benchmark_value": 2,
+                "score": 75,
+                "evidence": "搜索: cann-recipes-infer quick_start; 搜索: cann-recipes-infer official do...; 搜索: cann cann-recipes-infer repo",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_SEARCH_TIME_SEC",
+                "metric_name": "搜索耗时",
+                "value": 22.1,
+                "unit": "seconds",
+                "benchmark_value": 120,
+                "score": 100,
+                "evidence": "discovery_doc: 16.3s; discovery_repo: 5.8s",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_SEARCH_DIRECT_HIT_RATE",
+                "metric_name": "直达率",
+                "value": 100,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 100,
+                "evidence": "discovery_repo 一次搜索即成功",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_NAMING_CONFUSION_COUNT",
+                "metric_name": "命名混淆数",
+                "value": 0,
+                "unit": "count",
+                "benchmark_value": 0,
+                "score": 100,
+                "evidence": "LLM裁决未发现命名混淆（候选数=1）",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_PLATFORM_MIGRATION_FRICTION",
+                "metric_name": "平台迁移摩擦",
+                "value": 0,
+                "unit": "0-100 scale",
+                "benchmark_value": 0,
+                "score": 100,
+                "evidence": "单一平台，无迁移摩擦",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_TASK_ACHIEVEMENT_RATE",
+                "metric_name": "任务目标达成率",
+                "value": 100.0,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 100.0,
+                "evidence": "2/2 个任务目标达成；✓ 使用搜索引擎搜索开源项目的官方开发文档（搜索关键词不超过3个词，如 'cann ops-math quick_start'），找到文档链接后立即访问验证页面可访问性与内容完整性，确认包含开发指南或 quick start 内容；✓ 使用搜索引擎搜索开源项目的官方源码仓库（搜索关键词不超过3个词，如 'cann ops-math repo'），找到仓库链接后立即访问验证页面可访问性，确认仓库存在且包含实际代码内容（代码文件、README、提交记录等）。注意：不允许直接git clone",
+                "applicable": false
+              }
+            ]
+          },
+          "objective": {
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "2026-04-07T11:16:35.376093",
+            "avg_score": 0.0
+          },
+          "pros": "定位快速、直达率高、命名清晰无歧义",
+          "cons": "-"
+        }
+      ]
+    },
+    {
+      "step_id": "S1_SETUP",
+      "step_name": "S1 环境检查与准备",
+      "step_description": "准备环境并获取代码，完成依赖安装",
+      "phase_id": "setup",
+      "phase_name": "准备阶段",
+      "phase_description": "准备环境并获取代码，完成依赖安装",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "cann/cann-recipes-infer",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "git_clone",
+                "detail": "repo=`https://gitcode.com/cann/cann-recipes-infer` → Cloned https://gitcode.com/cann/cann-recipes-infer to /tmp/devx_workspace_lsb",
+                "duration": "2.9s",
+                "timestamp": "累计 2.9s",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_clone",
+                "tool_name": "git_clone",
+                "tool_args": {
+                  "url": "https://gitcode.com/cann/cann-recipes-infer",
+                  "path": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l /tmp/devx_workspace_lsb && echo 'Verification: directory exists'` → total 192\ndrwxr-xr-x  2 root root     60 Apr  7 09:45 accelerator\ndrwxr-xr-x  5 root root    120 Apr  7 09:45 contrib\n-rw-r--r--  1 root root   4674 A...",
+                "duration": "5ms",
+                "timestamp": "累计 2.9s",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_clone",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l /tmp/devx_workspace_lsb && echo 'Verification: directory exists'",
+                  "workdir": "/"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/README.md` → # cann-recipes-infer\n\n## 🚀Latest News\n- [2026/03] SANA-Video模型在昇腾Atlas A2系列上已支持推理部署。\n- [2026/03] 模型优化 Agent Skills已开源，支持 Agent 在昇腾Atlas A2/A3系列上完成端到端推...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_prereq",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/README.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/CONTRIBUTION.md` → # 贡献指南\n\n本项目欢迎广大开发者体验并参与贡献，在参与社区贡献之前。请参见[cann-community](https://gitcode.com/cann/community)了解行为准则，进行CLA协议签署，了解源码仓的贡献流程。\n\n开发者准备本地代码与提交PR时需要重点关注如下几点：\n\n1...",
+                "duration": "0ms",
+                "timestamp": "累计 1ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_prereq",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/CONTRIBUTION.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/docs/common/README.md` → 文件不存在: /tmp/devx_workspace_lsb/docs/common/README.md",
+                "duration": "0ms",
+                "timestamp": "累计 1ms",
+                "success": false,
+                "error_message": "文件不存在: /tmp/devx_workspace_lsb/docs/common/README.md",
+                "task_id": "setup_prereq",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/docs/common/README.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l /tmp/devx_workspace_lsb/docs` → total 0\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 agent\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 cann\ndrwxr-xr-x  3 root root 120 Apr  7 09:45 common\nd...",
+                "duration": "4ms",
+                "timestamp": "累计 4ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_prereq",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l /tmp/devx_workspace_lsb/docs",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l /tmp/devx_workspace_lsb/docs/common` → total 24\ndrwxr-xr-x 2 root root  100 Apr  7 09:45 figures\n-rw-r--r-- 1 root root 4242 Apr  7 09:45 inference_config_guide.md\n-rw-r--r-- 1 root root 97...",
+                "duration": "3ms",
+                "timestamp": "累计 7ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_prereq",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l /tmp/devx_workspace_lsb/docs/common",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/docs/common/inference_config_guide.md` → # InferenceConfig 类使用指南\n\n## 1. 概述\n\n`InferenceConfig` 是推理框架中统一的配置入口类，用于替代原有的 `runner_settings` 字典。它采用了结构化的 `dataclass` 设计，提供了类型安全检查、嵌套配置管理以及自动化的验证逻辑，使得...",
+                "duration": "0ms",
+                "timestamp": "累计 7ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_prereq",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/docs/common/inference_config_guide.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/README.md` → # cann-recipes-infer\n\n## 🚀Latest News\n- [2026/03] SANA-Video模型在昇腾Atlas A2系列上已支持推理部署。\n- [2026/03] 模型优化 Agent Skills已开源，支持 Agent 在昇腾Atlas A2/A3系列上完成端到端推...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_deps",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/README.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`find . -maxdepth 1 -type f \\( -name '*requirements*.txt' -o -name 'environment.yml' \\)` → (无输出)",
+                "duration": "3ms",
+                "timestamp": "累计 3ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_deps",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "find . -maxdepth 1 -type f \\( -name '*requirements*.txt' -o -name 'environment.yml' \\)",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`find models -type f \\( -name '*requirements*.txt' -o -name 'environment.yml' -o -name 'install.sh' \\)` → models/wan2.2-i2v/requirements.txt\nmodels/qwen3_moe/requirements.txt\nmodels/qwen3-next/ops/npu_ops_transformer_ext/requirements.txt\nmodels/pangu-7b/re...",
+                "duration": "5ms",
+                "timestamp": "累计 8ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_deps",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "find models -type f \\( -name '*requirements*.txt' -o -name 'environment.yml' -o -name 'install.sh' \\)",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/CONTRIBUTION.md` → # 贡献指南\n\n本项目欢迎广大开发者体验并参与贡献，在参与社区贡献之前。请参见[cann-community](https://gitcode.com/cann/community)了解行为准则，进行CLA协议签署，了解源码仓的贡献流程。\n\n开发者准备本地代码与提交PR时需要重点关注如下几点：\n\n1...",
+                "duration": "0ms",
+                "timestamp": "累计 8ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_deps",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/CONTRIBUTION.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`pip install -r models/wan2.2-i2v/requirements.txt` → Looking in indexes: https://mirrors.aliyun.com/pypi/simple/\nERROR: Could not find a version that satisfies the requirement torch==2.1.0 (from versions...",
+                "duration": "0.71s",
+                "timestamp": "累计 0.71s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1",
+                "task_id": "setup_deps",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "pip install -r models/wan2.2-i2v/requirements.txt",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`pip install -r models/wan2.2-i2v/requirements.txt -i https://repo.huaweicloud.com/repository/pypi/simple` → Looking in indexes: https://repo.huaweicloud.com/repository/pypi/simple\nERROR: Could not find a version that satisfies the requirement torch==2.1.0 (f...",
+                "duration": "0.71s",
+                "timestamp": "累计 1.4s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1",
+                "task_id": "setup_deps",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "pip install -r models/wan2.2-i2v/requirements.txt -i https://repo.huaweicloud.com/repository/pypi/simple",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/models/wan2.2-i2v/README.md` → # 在昇腾Atlas A2环境上适配Wan2.2-I2V模型的推理\nWan2.2-I2V模型是一款多模态视频生成模型，提供了图生视频功能。本项目旨在提供 Wan2.2-I2V 模型的 Atlas A2 适配版本，为开发者开展相关 NPU 迁移工作提供参考。\n\n本项目基于NPU主要完成以下优化点，具体...",
+                "duration": "0ms",
+                "timestamp": "累计 1.4s",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_deps",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/models/wan2.2-i2v/README.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`pip install torch-npu==2.1.0.post17 --index-url https://pypi.tuna.tsinghua.edu.cn/simple && pip install -r models/wan2.2-i2v/requirements.txt` → Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple\nERROR: Could not find a version that satisfies the requirement torch-npu==2.1.0.post17 (f...",
+                "duration": "0.79s",
+                "timestamp": "累计 2.2s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1",
+                "task_id": "setup_deps",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "pip install torch-npu==2.1.0.post17 --index-url https://pypi.tuna.tsinghua.edu.cn/simple && pip install -r models/wan2.2-i2v/requirements.txt",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`pip install torch-npu==2.1.0.post17 -i https://repo.huaweicloud.com/repository/pypi/simple && pip install -r models/wan2.2-i2v/requirements.txt` → Looking in indexes: https://repo.huaweicloud.com/repository/pypi/simple\nERROR: Could not find a version that satisfies the requirement torch-npu==2.1....",
+                "duration": "0.76s",
+                "timestamp": "累计 3.0s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1",
+                "task_id": "setup_deps",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "pip install torch-npu==2.1.0.post17 -i https://repo.huaweicloud.com/repository/pypi/simple && pip install -r models/wan2.2-i2v/requirements.txt",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "web_search",
+                "detail": "query=`\"华为昇腾 torch-npu 2.1.0.post17 官方安装指南\"` → 搜索 '华为昇腾 torch-npu 2.1.0.post17 官方安装指南' 找到 5 条结果：\n\n1. 从零开始:torch-npu的安装与常见问题解决指南-CSDN博客\n   URL: http://www.baidu.com/link?url=hLM_p2f8vVGteozhtFdXau6x...",
+                "duration": "3.8s",
+                "timestamp": "累计 6.8s",
+                "success": true,
+                "error_message": null,
+                "task_id": "setup_deps",
+                "tool_name": "web_search",
+                "tool_args": {
+                  "query": "华为昇腾 torch-npu 2.1.0.post17 官方安装指南",
+                  "max_results": "5"
+                }
+              }
+            ],
+            "total_duration_seconds": 9.7,
+            "retry_count": 5
+          },
+          "subjective": {
+            "pain_level": "低",
+            "pain_summary": "配置快速",
+            "narrative": "作为开发者，我在准备阶段的体验非常流畅：环境初始化和代码克隆分别仅需6.8秒和2.9秒，云环境零成本且持久化完善（environment.yml），大大节省了时间。然而，依赖透明度仅40分是痛点，安装命令如\"pip install -r models/wan2.2-i2v/r\"不够清晰，增加了配置不确定性。",
+            "metrics": [
+              {
+                "metric_id": "SDX_ENV_INIT_TIME_SEC",
+                "metric_name": "环境初始化耗时",
+                "value": 6.8,
+                "unit": "seconds",
+                "benchmark_value": 120,
+                "score": 100,
+                "evidence": "setup_prereq: 0.0s; setup_deps: 6.8s; 已排除clone: 2.9s",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_STEP_COUNT",
+                "metric_name": "环境配置步数",
+                "value": 1,
+                "unit": "count",
+                "benchmark_value": 2,
+                "score": 100,
+                "evidence": "去重后独立操作: pip install -r models/wan2.2-i2v/require",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_PERSISTENCE",
+                "metric_name": "环境持久化",
+                "value": true,
+                "unit": "boolean",
+                "benchmark_value": true,
+                "score": 100,
+                "evidence": "完全持久化配置: environment.yml",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_HARDWARE_COST_USD",
+                "metric_name": "硬件成本",
+                "value": 0,
+                "unit": "USD",
+                "benchmark_value": 0,
+                "score": 100,
+                "evidence": "使用云开发环境，无额外硬件成本",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_ENV_CLOUD_SESSION_LIMIT_SEC",
+                "metric_name": "云环境时限",
+                "value": "unlimited",
+                "unit": "seconds",
+                "benchmark_value": "unlimited",
+                "score": 100,
+                "evidence": "云环境无时间限制",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_CLONE_SUCCESS_RATE",
+                "metric_name": "克隆成功率",
+                "value": 100,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 100,
+                "evidence": "克隆成功",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_CLONE_TIME_SEC",
+                "metric_name": "克隆耗时",
+                "value": 2.9,
+                "unit": "seconds",
+                "benchmark_value": 30,
+                "score": 100,
+                "evidence": "setup_clone/git_clone: 2.9s",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_DEPENDENCY_TRANSPARENCY",
+                "metric_name": "依赖透明度",
+                "value": 40,
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": 40,
+                "evidence": "安装命令: pip install -r models/wan2.2-i2v/requirements.txt; CANN/Ascend相关(无版本号)(LLM); 硬件: A2, A3(LLM)",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_TASK_ACHIEVEMENT_RATE",
+                "metric_name": "任务目标达成率",
+                "value": 33.3,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 33.3,
+                "evidence": "1/3 个任务目标达成；✓ 使用背景中的'项目地址'作为克隆源（不得使用上一步任务结果中的地址，其可能是错误的），将仓库克隆到背景中指定的'仓库本地路径'，克隆完成后确认目录存在且文件完整；✗ 从背景中'仓库本地路径'下的 README 或 requirements/prerequisites 文档中找到项目对操作系统环境（硬件和软件）的前置要求，通过命令检查当前环境是否满足，修复和安装不满足的要求项。硬件检查项（按需）：GPU/NPU 设备是否可见（如 npu-smi、nvidia-smi）、驱动版本是否符合。软件检查项（按需）：操作系统版本、Python/GCC/CMake 版本、CUDA/CANN SDK 版本等。重要：只完成对系统硬件和软件环境前置条件检查和修复，对于项目本身的三方库依赖（类如python requirements.txt）禁止检查和安装；禁止执行构建、编译或任何与本任务无关的额外操作；✗ 根据背景中'仓库本地路径'下的文档（README、安装指南、依赖申明文件等）安装项目所需依赖，执行所有依赖安装步骤（如 pip install、conda install、source set_env.sh 等），修复识别到的依赖版本不匹配问题。重要：只完成项目本身的三方库依赖（例如python requirements.txt）检查和修复，对于系统硬件（NPU、GPU可见等）和软件环境（操作系统版本、Python/GCC/CMake 版本、CUDA/CANN SDK 版本等）前置条件前面任务已完成检查和修复；禁止执行构建、编译或任何与本任务无关的额外操作；所有命令均以背景中的'仓库本地路径'为工作目录",
+                "applicable": false
+              }
+            ]
+          },
+          "objective": {
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "2026-04-07T11:17:47.269116",
+            "avg_score": 0.0
+          },
+          "pros": "配置快速便捷、配置步骤精简、支持环境持久化",
+          "cons": "未检测到依赖声明"
+        }
+      ]
+    },
+    {
+      "step_id": "S2_QUICKSTART",
+      "step_name": "S2 样例快速体验",
+      "step_description": "阅读 Quick Start 文档并依文档完成本阶段指引的编译/运行步骤（任务 quickstart_doc）",
+      "phase_id": "quickstart",
+      "phase_name": "快速开始阶段",
+      "phase_description": "阅读 Quick Start 文档并依文档完成本阶段指引的编译/运行步骤（任务 quickstart_doc）",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "cann/cann-recipes-infer",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/README.md` → # cann-recipes-infer\n\n## 🚀Latest News\n- [2026/03] SANA-Video模型在昇腾Atlas A2系列上已支持推理部署。\n- [2026/03] 模型优化 Agent Skills已开源，支持 Agent 在昇腾Atlas A2/A3系列上完成端到端推...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "quickstart_doc",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/README.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l /tmp/devx_workspace_lsb/docs` → total 0\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 agent\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 cann\ndrwxr-xr-x  3 root root 120 Apr  7 09:45 common\nd...",
+                "duration": "3ms",
+                "timestamp": "累计 4ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "quickstart_doc",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l /tmp/devx_workspace_lsb/docs",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/docs/common` → [Errno 21] Is a directory: '/tmp/devx_workspace_lsb/docs/common'",
+                "duration": "0ms",
+                "timestamp": "累计 4ms",
+                "success": false,
+                "error_message": "[Errno 21] Is a directory: '/tmp/devx_workspace_lsb/docs/common'",
+                "task_id": "quickstart_doc",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/docs/common"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l /tmp/devx_workspace_lsb/docs` → total 0\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 agent\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 cann\ndrwxr-xr-x  3 root root 120 Apr  7 09:45 common\nd...",
+                "duration": "3ms",
+                "timestamp": "累计 7ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "quickstart_doc",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l /tmp/devx_workspace_lsb/docs",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l docs/common` → total 24\ndrwxr-xr-x 2 root root  100 Apr  7 09:45 figures\n-rw-r--r-- 1 root root 4242 Apr  7 09:45 inference_config_guide.md\n-rw-r--r-- 1 root root 97...",
+                "duration": "3ms",
+                "timestamp": "累计 10ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "quickstart_doc",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l docs/common",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/README.md` → # DeepSeek-V3.2-Exp Inference on NPU\n## 概述\nDeepSeek团队发布了最新的模型DeepSeek-V3.2-Exp，在各项指标上都达到了SOTA水平。本样例基于DeepSeek开源代码进行迁移，并在CANN平台上完成对应的优化适配，可在华为 Atlas A3...",
+                "duration": "0ms",
+                "timestamp": "累计 10ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "quickstart_doc",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/README.md"
+                }
+              }
+            ],
+            "total_duration_seconds": 0.0,
+            "retry_count": 1
+          },
+          "subjective": {
+            "pain_level": "中低",
+            "pain_summary": "依赖外部不足",
+            "narrative": "作为开发者，这个阶段的体验还算顺畅但文档体验拖了后腿。最头疼的是需要在4个不同域名（如gitcode.com、hiascend.com）反复跳转查文档，自包含度只有50分让我不得不额外搜索关键操作步骤。虽然链接没死链，但2次因网络问题打不开文档也耽误了进度，整体效率被拉低了。",
+            "metrics": [
+              {
+                "metric_id": "SDX_DOC_JUMPS",
+                "metric_name": "文档跳转数",
+                "value": 4,
+                "unit": "count",
+                "benchmark_value": 2,
+                "score": 70,
+                "evidence": "文档引用域名(4个): gitcode.com, hiascend.com, huggingface.co, myhuaweicloud.com; 来源文件: /tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/readme.md, /tmp/devx_workspace_lsb/readme.md",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_DOC_DEAD_LINKS",
+                "metric_name": "死链数",
+                "value": 0,
+                "unit": "count",
+                "benchmark_value": 0,
+                "score": 100,
+                "evidence": "已验证 7 个链接，无死链；2 个不可达(网络问题，非死链)",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_DOC_SELF_CONTAINED_RATIO",
+                "metric_name": "文档自包含度",
+                "value": 50,
+                "unit": "percentage",
+                "benchmark_value": 80,
+                "score": 50,
+                "evidence": "未检测到构建步骤，基于任务成功状态推断",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_BUILD_TIME_SEC",
+                "metric_name": "编译耗时",
+                "value": "N/A",
+                "unit": "seconds",
+                "benchmark_value": 60,
+                "score": null,
+                "evidence": "未检测到 build/run 命令；已排除检查/排障耗时 0.0s",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_BUILD_PARAM_COUNT",
+                "metric_name": "构建参数数",
+                "value": "N/A",
+                "unit": "count",
+                "benchmark_value": 5,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_BUILD_ERROR_DIAGNOSABILITY",
+                "metric_name": "报错可诊断性",
+                "value": "N/A",
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_BUILD_FIRST_TRY_SUCCESS",
+                "metric_name": "首次构建成功率",
+                "value": "N/A",
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_QUICKSTART_RUN_SUCCESS",
+                "metric_name": "QuickStart成功率",
+                "value": "N/A",
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_TASK_ACHIEVEMENT_RATE",
+                "metric_name": "任务目标达成率",
+                "value": 0.0,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 0.0,
+                "evidence": "0/1 个任务目标达成；✗ 在背景中'仓库本地路径'下查找Quick Start或快速入门文档（通常在docs/目录、README.md或QUICKSTART.md中），识别文档中为开发者设计的试用体验操作链条（通常为环境检查、环境变量配置、编译、安装、运行示例等）及具体步骤与命令，严格按照文档中的步骤执行命令，修复遇到的问题。重要：当遇到系统环境与当前代码版本不匹配/兼容，重新获取匹配/兼容的代码版本",
+                "applicable": false
+              }
+            ]
+          },
+          "objective": {
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "2026-04-07T11:18:16.914618",
+            "avg_score": 0.0
+          },
+          "pros": "链接有效",
+          "cons": "文档自包含度低"
+        }
+      ]
+    },
+    {
+      "step_id": "S3_DEVELOPMENT",
+      "step_name": "S3 开发与编译",
+      "step_description": "局部修改代码、按构建文档编译安装、运行示例验证（dev_modify / dev_build / dev_run）",
+      "phase_id": "development",
+      "phase_name": "开发阶段",
+      "phase_description": "局部修改代码、按构建文档编译安装、运行示例验证（dev_modify / dev_build / dev_run）",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "cann/cann-recipes-infer",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/infer.sh` → # coding=utf-8\n# Copyright (c) 2025 Huawei Technologies Co., Ltd.\n# This program is free software, you can redistribute it and/or modify it under the ...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_modify",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/infer.sh"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`sed -i '/launch_infer_task/i echo \"[DEVX_MODIFICATION] Using YAML config: $YAML\"' /tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/infer.sh` → (无输出)",
+                "duration": "3ms",
+                "timestamp": "累计 3ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_modify",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "sed -i '/launch_infer_task/i echo \"[DEVX_MODIFICATION] Using YAML config: $YAML\"' /tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/infer.sh"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/infer.sh` → # coding=utf-8\n# Copyright (c) 2025 Huawei Technologies Co., Ltd.\n# This program is free software, you can redistribute it and/or modify it under the ...",
+                "duration": "0ms",
+                "timestamp": "累计 3ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_modify",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/infer.sh"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/README.md` → # cann-recipes-infer\n\n## 🚀Latest News\n- [2026/03] SANA-Video模型在昇腾Atlas A2系列上已支持推理部署。\n- [2026/03] 模型优化 Agent Skills已开源，支持 Agent 在昇腾Atlas A2/A3系列上完成端到端推...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_build",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/README.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/CONTRIBUTION.md` → # 贡献指南\n\n本项目欢迎广大开发者体验并参与贡献，在参与社区贡献之前。请参见[cann-community](https://gitcode.com/cann/community)了解行为准则，进行CLA协议签署，了解源码仓的贡献流程。\n\n开发者准备本地代码与提交PR时需要重点关注如下几点：\n\n1...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_build",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/CONTRIBUTION.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/INSTALL.md` → 文件不存在: /tmp/devx_workspace_lsb/INSTALL.md",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": false,
+                "error_message": "文件不存在: /tmp/devx_workspace_lsb/INSTALL.md",
+                "task_id": "dev_build",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/INSTALL.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l docs` → total 0\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 agent\ndrwxr-xr-x  2 root root  60 Apr  7 09:45 cann\ndrwxr-xr-x  3 root root 120 Apr  7 09:45 common\nd...",
+                "duration": "4ms",
+                "timestamp": "累计 4ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_build",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l docs",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l docs/common` → total 24\ndrwxr-xr-x 2 root root  100 Apr  7 09:45 figures\n-rw-r--r-- 1 root root 4242 Apr  7 09:45 inference_config_guide.md\n-rw-r--r-- 1 root root 97...",
+                "duration": "3ms",
+                "timestamp": "累计 7ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_build",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l docs/common",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`ls -l | grep -E 'CMakeLists|Makefile|build.sh|install.sh'` → (无输出)",
+                "duration": "4ms",
+                "timestamp": "累计 10ms",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1",
+                "task_id": "dev_build",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "ls -l | grep -E 'CMakeLists|Makefile|build.sh|install.sh'",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/README.md` → # DeepSeek-V3.2-Exp Inference on NPU\n## 概述\nDeepSeek团队发布了最新的模型DeepSeek-V3.2-Exp，在各项指标上都达到了SOTA水平。本样例基于DeepSeek开源代码进行迁移，并在CANN平台上完成对应的优化适配，可在华为 Atlas A3...",
+                "duration": "0ms",
+                "timestamp": "累计 11ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_build",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/README.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/set_env.sh` → # coding=utf-8\n# Copyright (c) 2025 Huawei Technologies Co., Ltd.\n# This program is free software, you can redistribute it and/or modify it under the ...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_run",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/set_env.sh"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/README.md` → # cann-recipes-infer\n\n## 🚀Latest News\n- [2026/03] SANA-Video模型在昇腾Atlas A2系列上已支持推理部署。\n- [2026/03] 模型优化 Agent Skills已开源，支持 Agent 在昇腾Atlas A2/A3系列上完成端到端推...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_run",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/README.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/README.md` → # DeepSeek-V3.2-Exp Inference on NPU\n## 概述\nDeepSeek团队发布了最新的模型DeepSeek-V3.2-Exp，在各项指标上都达到了SOTA水平。本样例基于DeepSeek开源代码进行迁移，并在CANN平台上完成对应的优化适配，可在华为 Atlas A3...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_run",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/models/deepseek-v3.2-exp/README.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`docker exec -w /home/code/cann-recipes-infer/models/deepseek-v3.2-exp cann_recipes_infer bash infer.sh` → Error: No such container: cann_recipes_infer",
+                "duration": "51ms",
+                "timestamp": "累计 52ms",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 1",
+                "task_id": "dev_run",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "docker exec -w /home/code/cann-recipes-infer/models/deepseek-v3.2-exp cann_recipes_infer bash infer.sh",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`docker run -u root -itd --name cann_recipes_infer --ulimit nproc=65535:65535 --ipc=host --device=/dev/davinci0 --device=/dev/davinci1 --device=/dev/davinci2 --device=/dev/davinci3 --device=/dev/davinci4 --device=/dev/davinci5 --device=/dev/davinci6 --device=/dev/davinci7 --device=/dev/davinci8 --device=/dev/davinci9 --device=/dev/davinci10 --device=/dev/davinci11 --device=/dev/davinci12 --device=/dev/davinci13 --device=/dev/davinci14 --device=/dev/davinci15 --device=/dev/davinci_manager --device=/dev/devmm_svm --device=/dev/hisi_hdc -v /tmp/devx_workspace_lsb:/home/code/cann-recipes-infer -v /etc/localtime:/etc/localtime -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /etc/ascend_install.info:/etc/ascend_install.info -v /var/log/npu/:/usr/slog -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /usr/local/dcmi:/usr/local/dcmi -v /usr/local/sbin:/usr/local/sbin -v /etc/hccn.conf:/etc/hccn.conf -v /root/.pip:/root/.pip -v /etc/hosts:/etc/hosts -v /usr/bin/hostname:/usr/bin/hostname --net=host --shm-size=128g --privileged cann8.5_pt2.6.0_dsv3.2_aarch_image:v0.7 /bin/bash` → Unable to find image 'cann8.5_pt2.6.0_dsv3.2_aarch_image:v0.7' locally\ndocker: Error response from daemon: Get \"https://registry-1.docker.io/v2/\": con...",
+                "duration": "15.1s",
+                "timestamp": "累计 15.1s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 125",
+                "task_id": "dev_run",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "docker run -u root -itd --name cann_recipes_infer --ulimit nproc=65535:65535 --ipc=host --device=/dev/davinci0 --device=/dev/davinci1 --device=/dev/davinci2 --device=/dev/davinci3 --device=/dev/davinci4 --device=/dev/davinci5 --device=/dev/davinci6 --device=/dev/davinci7 --device=/dev/davinci8 --device=/dev/davinci9 --device=/dev/davinci10 --device=/dev/davinci11 --device=/dev/davinci12 --device=/dev/davinci13 --device=/dev/davinci14 --device=/dev/davinci15 --device=/dev/davinci_manager --device=/dev/devmm_svm --device=/dev/hisi_hdc -v /tmp/devx_workspace_lsb:/home/code/cann-recipes-infer -v /etc/localtime:/etc/localtime -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /etc/ascend_install.info:/etc/ascend_install.info -v /var/log/npu/:/usr/slog -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /usr/local/dcmi:/usr/local/dcmi -v /usr/local/sbin:/usr/local/sbin -v /etc/hccn.conf:/etc/hccn.conf -v /root/.pip:/root/.pip -v /etc/hosts:/etc/hosts -v /usr/bin/hostname:/usr/bin/hostname --net=host --shm-size=128g --privileged cann8.5_pt2.6.0_dsv3.2_aarch_image:v0.7 /bin/bash",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`wget https://cann-ai.obs.cn-north-4.myhuaweicloud.com/cann-quantization/DeepSeek-V3.2-Exp/cann8.5_pt2.6.0_dsv3.2_aarch_image_v0.7.tar -O /tmp/devx_workspace_lsb/docker_image.tar && docker load -i /tmp/devx_workspace_lsb/docker_image.tar` → --2026-04-07 10:45:42--  https://cann-ai.obs.cn-north-4.myhuaweicloud.com/cann-quantization/DeepSeek-V3.2-Exp/cann8.5_pt2.6.0_dsv3.2_aarch_image_v0.7....",
+                "duration": "411.3s",
+                "timestamp": "累计 426.5s",
+                "success": true,
+                "error_message": null,
+                "task_id": "dev_run",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "wget https://cann-ai.obs.cn-north-4.myhuaweicloud.com/cann-quantization/DeepSeek-V3.2-Exp/cann8.5_pt2.6.0_dsv3.2_aarch_image_v0.7.tar -O /tmp/devx_workspace_lsb/docker_image.tar && docker load -i /tmp/devx_workspace_lsb/docker_image.tar",
+                  "workdir": "/tmp/devx_workspace_lsb",
+                  "timeout": "1800"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`docker run -u root -itd --name cann_recipes_infer --ulimit nproc=65535:65535 --ipc=host --device=/dev/davinci0 --device=/dev/davinci1 --device=/dev/davinci2 --device=/dev/davinci3 --device=/dev/davinci4 --device=/dev/davinci5 --device=/dev/davinci6 --device=/dev/davinci7 --device=/dev/davinci8 --device=/dev/davinci9 --device=/dev/davinci10 --device=/dev/davinci11 --device=/dev/davinci12 --device=/dev/davinci13 --device=/dev/davinci14 --device=/dev/davinci15 --device=/dev/davinci_manager --device=/dev/devmm_svm --device=/dev/hisi_hdc -v /tmp/devx_workspace_lsb:/home/code/cann-recipes-infer -v /data:/data -v /etc/localtime:/etc/localtime -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /etc/ascend_install.info:/etc/ascend_install.info -v /var/log/npu/:/usr/slog -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /usr/local/dcmi:/usr/local/dcmi -v /usr/local/sbin:/usr/local/sbin -v /etc/hccn.conf:/etc/hccn.conf -v /root/.pip:/root/.pip -v /etc/hosts:/etc/hosts -v /usr/bin/hostname:/usr/bin/hostname --net=host --shm-size=128g --privileged cann8.5_pt2.6.0_dsv3.2_aarch_image:v0.7 /bin/bash` → ba2144195c8d98960bf7a2c243fc48c48985db91a37d7554d3abd65b13086aad\ndocker: Error response from daemon: OCI runtime create failed: unable to retrieve OCI...",
+                "duration": "0.25s",
+                "timestamp": "累计 426.7s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 127",
+                "task_id": "dev_run",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "docker run -u root -itd --name cann_recipes_infer --ulimit nproc=65535:65535 --ipc=host --device=/dev/davinci0 --device=/dev/davinci1 --device=/dev/davinci2 --device=/dev/davinci3 --device=/dev/davinci4 --device=/dev/davinci5 --device=/dev/davinci6 --device=/dev/davinci7 --device=/dev/davinci8 --device=/dev/davinci9 --device=/dev/davinci10 --device=/dev/davinci11 --device=/dev/davinci12 --device=/dev/davinci13 --device=/dev/davinci14 --device=/dev/davinci15 --device=/dev/davinci_manager --device=/dev/devmm_svm --device=/dev/hisi_hdc -v /tmp/devx_workspace_lsb:/home/code/cann-recipes-infer -v /data:/data -v /etc/localtime:/etc/localtime -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /etc/ascend_install.info:/etc/ascend_install.info -v /var/log/npu/:/usr/slog -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /usr/local/dcmi:/usr/local/dcmi -v /usr/local/sbin:/usr/local/sbin -v /etc/hccn.conf:/etc/hccn.conf -v /root/.pip:/root/.pip -v /etc/hosts:/etc/hosts -v /usr/bin/hostname:/usr/bin/hostname --net=host --shm-size=128g --privileged cann8.5_pt2.6.0_dsv3.2_aarch_image:v0.7 /bin/bash",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              }
+            ],
+            "total_duration_seconds": 426.7,
+            "retry_count": 5
+          },
+          "subjective": {
+            "pain_level": "中低",
+            "pain_summary": "部署不幂等",
+            "narrative": "作为开发者，我在开发阶段的体验整体一般（平均分68.2），痛点中低。亮点是部署验证100%可靠，工具链设计很顺畅；但关键痛点是部署幂等性仅50分（5/17次工具调用失败），导致重复工作，加上输出可读性63分（仅7/11次清晰），文档和流程拖慢了效率。",
+            "metrics": [
+              {
+                "metric_id": "SDX_BUILD_TIME_SEC",
+                "metric_name": "编译耗时",
+                "value": "N/A",
+                "unit": "seconds",
+                "benchmark_value": 60,
+                "score": null,
+                "evidence": "未检测到 build/run 命令；已排除检查/排障耗时 426.7s",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_BUILD_PARAM_COUNT",
+                "metric_name": "构建参数数",
+                "value": "N/A",
+                "unit": "count",
+                "benchmark_value": 5,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_BUILD_ERROR_DIAGNOSABILITY",
+                "metric_name": "报错可诊断性",
+                "value": "N/A",
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_BUILD_FIRST_TRY_SUCCESS",
+                "metric_name": "首次构建成功率",
+                "value": "N/A",
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_QUICKSTART_RUN_SUCCESS",
+                "metric_name": "QuickStart成功率",
+                "value": "N/A",
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": null,
+                "evidence": "未检测到 build/run 命令",
+                "applicable": false
+              },
+              {
+                "metric_id": "SDX_DEPLOY_VERIFY_AVAILABLE",
+                "metric_name": "部署验证可用",
+                "value": true,
+                "unit": "boolean",
+                "benchmark_value": true,
+                "score": 100,
+                "evidence": "部署验证通过",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_DEPLOY_IDEMPOTENT",
+                "metric_name": "部署幂等性",
+                "value": false,
+                "unit": "boolean",
+                "benchmark_value": true,
+                "score": 50,
+                "evidence": "部署存在 5/17 次工具调用失败",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_RUN_OUTPUT_READABILITY",
+                "metric_name": "输出可读性",
+                "value": 63,
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": 63,
+                "evidence": "7/11 次输出具有清晰指示",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_RUN_MODE_COMBINATIONS",
+                "metric_name": "运行模式组合",
+                "value": 3,
+                "unit": "count",
+                "benchmark_value": 1,
+                "score": 60,
+                "evidence": "检测到的运行模式: cmake, docker, shell",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_TASK_ACHIEVEMENT_RATE",
+                "metric_name": "任务目标达成率",
+                "value": 66.7,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 66.7,
+                "evidence": "2/3 个任务目标达成；✓ 在背景中'仓库本地路径'下选择一个功能模块，进行不超过10行的有意义代码修改（如调整参数值、修改逻辑分支、添加日志输出等）。；✓ 在背景中'仓库本地路径'下查找编译构建文档，按照文档中的步骤执行项目的编译和安装流程（如cmake、make等），完成编译产物的安装。部分纯脚本项目可能无需编译，可跳过。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作；✗ 在背景中'仓库本地路径'下根据文档（通常是README.md或QUICKSTART.md）指导运行项目官方示例代码，验证核心功能是否正常工作，输出是否符合文档预期。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作",
+                "applicable": false
+              }
+            ]
+          },
+          "objective": {
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "2026-04-07T11:18:39.832797",
+            "avg_score": 0.0
+          },
+          "pros": "提供部署验证命令",
+          "cons": "部署操作不幂等"
+        }
+      ]
+    },
+    {
+      "step_id": "S4_TESTING",
+      "step_name": "S4 测试与验证",
+      "step_description": "运行完整测试套件并评估测试体验（test_unit）",
+      "phase_id": "testing",
+      "phase_name": "测试阶段",
+      "phase_description": "运行完整测试套件并评估测试体验（test_unit）",
+      "expected_duration_minutes": 0,
+      "per_project_assessments": [
+        {
+          "project_id": "cann/cann-recipes-infer",
+          "actual_path": {
+            "actions": [
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/README.md` → # cann-recipes-infer\n\n## 🚀Latest News\n- [2026/03] SANA-Video模型在昇腾Atlas A2系列上已支持推理部署。\n- [2026/03] 模型优化 Agent Skills已开源，支持 Agent 在昇腾Atlas A2/A3系列上完成端到端推...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "test_unit",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/README.md"
+                }
+              },
+              {
+                "action_type": "file_read",
+                "detail": "path=`/tmp/devx_workspace_lsb/CONTRIBUTION.md` → # 贡献指南\n\n本项目欢迎广大开发者体验并参与贡献，在参与社区贡献之前。请参见[cann-community](https://gitcode.com/cann/community)了解行为准则，进行CLA协议签署，了解源码仓的贡献流程。\n\n开发者准备本地代码与提交PR时需要重点关注如下几点：\n\n1...",
+                "duration": "0ms",
+                "timestamp": "累计 0ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "test_unit",
+                "tool_name": "file_read",
+                "tool_args": {
+                  "path": "/tmp/devx_workspace_lsb/CONTRIBUTION.md"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`find /tmp/devx_workspace_lsb -name '*test*.py' -o -name 'test_*.py' | head -5` → /tmp/devx_workspace_lsb/ops/tilelang/examples/test_sparse_flash_attention.py\n/tmp/devx_workspace_lsb/ops/tilelang/examples/test_lightning_indexer.py\n/...",
+                "duration": "8ms",
+                "timestamp": "累计 8ms",
+                "success": true,
+                "error_message": null,
+                "task_id": "test_unit",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "find /tmp/devx_workspace_lsb -name '*test*.py' -o -name 'test_*.py' | head -5",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`pytest ops/ --cov --cov-report=term` → ERROR: usage: pytest [options] [file_or_dir] [file_or_dir] [...]\npytest: error: unrecognized arguments: --cov --cov-report=term\n  inifile: None\n  root...",
+                "duration": "0.94s",
+                "timestamp": "累计 0.95s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 4",
+                "task_id": "test_unit",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "pytest ops/ --cov --cov-report=term",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`pytest ops/ --no-cov -v 2>&1` → ERROR: usage: pytest [options] [file_or_dir] [file_or_dir] [...]\npytest: error: unrecognized arguments: --no-cov\n  inifile: None\n  rootdir: /tmp/devx_...",
+                "duration": "0.94s",
+                "timestamp": "累计 1.9s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 4",
+                "task_id": "test_unit",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "pytest ops/ --no-cov -v 2>&1",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              },
+              {
+                "action_type": "shell_exec",
+                "detail": "`pytest -v` → ============================= test session starts ==============================\nplatform linux -- Python 3.12.13, pytest-9.0.2, pluggy-1.6.0 -- /root...",
+                "duration": "7.5s",
+                "timestamp": "累计 9.4s",
+                "success": false,
+                "error_message": "命令执行失败，退出码: 139",
+                "task_id": "test_unit",
+                "tool_name": "shell_exec",
+                "tool_args": {
+                  "command": "pytest -v",
+                  "workdir": "/tmp/devx_workspace_lsb"
+                }
+              }
+            ],
+            "total_duration_seconds": 9.4,
+            "retry_count": 3
+          },
+          "subjective": {
+            "pain_level": "中低",
+            "pain_summary": "测试失败率高不足",
+            "narrative": "作为开发者，在测试阶段，我感受到工具链集成非常顺畅，pytest运行模式检测完美（100分），执行速度快（24.5秒，100分），覆盖率命令也清晰可见（100分），这提升了效率。但测试套件通过率为0（0/1成功），任务失败让我很挫败，成为主要痛点。输出可读性80分（4/5清晰），有一次指示模糊，文档或错误处理需优化。（字数：78）",
+            "metrics": [
+              {
+                "metric_id": "SDX_RUN_OUTPUT_READABILITY",
+                "metric_name": "输出可读性",
+                "value": 80,
+                "unit": "0-100 scale",
+                "benchmark_value": 80,
+                "score": 80,
+                "evidence": "4/5 次输出具有清晰指示",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_RUN_MODE_COMBINATIONS",
+                "metric_name": "运行模式组合",
+                "value": 1,
+                "unit": "count",
+                "benchmark_value": 1,
+                "score": 100,
+                "evidence": "检测到的运行模式: pytest",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_TEST_SUITE_PASS_RATE",
+                "metric_name": "测试套件通过率",
+                "value": 0,
+                "unit": "percentage",
+                "benchmark_value": 95,
+                "score": 0,
+                "evidence": "任务级别: 0/1 成功",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_TEST_EXECUTION_TIME_SEC",
+                "metric_name": "测试执行耗时",
+                "value": 24.5,
+                "unit": "seconds",
+                "benchmark_value": 60,
+                "score": 100,
+                "evidence": "测试套件耗时 24.5s",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_TEST_COVERAGE_AVAILABLE",
+                "metric_name": "测试覆盖率可见性",
+                "value": true,
+                "unit": "boolean",
+                "benchmark_value": true,
+                "score": 100,
+                "evidence": "检测到覆盖率命令: pytest ops/ --cov --cov-report=term",
+                "applicable": true
+              },
+              {
+                "metric_id": "SDX_TASK_ACHIEVEMENT_RATE",
+                "metric_name": "任务目标达成率",
+                "value": 0.0,
+                "unit": "percentage",
+                "benchmark_value": 100,
+                "score": 0.0,
+                "evidence": "0/1 个任务目标达成；✗ 运行项目的完整测试套件（执行全量单元测试或集成测试命令，如pytest、ctest、make test等），统计测试通过率，观察测试框架的易用性、错误信息清晰度、测试覆盖情况。注意：对于系统环境（硬件、驱动、编译工具、SDK等）和项目本身依赖，前面任务已完成检查和修复,当前任务中无需再检查，且禁止执行其他与本任务无关的操作",
+                "applicable": false
+              }
+            ]
+          },
+          "objective": {
+            "metrics": [],
+            "data_source": "OSS-Compass / Agent采集",
+            "collection_timestamp": "2026-04-07T11:19:23.841492",
+            "avg_score": 0.0
+          },
+          "pros": "输出清晰易读、运行方式简洁统一、测试执行速度快",
+          "cons": "测试失败率高"
+        }
+      ]
+    }
+  ],
+  "journey_map": {
+    "discovery": {
+      "not_evaluated": false,
+      "score": 95,
+      "stars": "⭐⭐⭐⭐⭐",
+      "icon": "✅",
+      "summary": "定位快速",
+      "task_achievement_rate": 100.0
+    },
+    "setup": {
+      "not_evaluated": false,
+      "score": 31,
+      "stars": "⭐⭐",
+      "icon": "🔴",
+      "summary": "配置快速",
+      "task_achievement_rate": 33.3
+    },
+    "quickstart": {
+      "not_evaluated": false,
+      "score": 0,
+      "stars": "⭐",
+      "icon": "🔴",
+      "summary": "依赖外部不足",
+      "task_achievement_rate": 0.0
+    },
+    "development": {
+      "not_evaluated": false,
+      "score": 46,
+      "stars": "⭐⭐",
+      "icon": "⚠️",
+      "summary": "部署不幂等",
+      "task_achievement_rate": 66.7
+    },
+    "testing": {
+      "not_evaluated": false,
+      "score": 0,
+      "stars": "⭐",
+      "icon": "🔴",
+      "summary": "测试失败率高不足",
+      "task_achievement_rate": 0.0
+    },
+    "contribution": {
+      "not_evaluated": true,
+      "score": null,
+      "stars": null,
+      "icon": "❓",
+      "summary": "本次未评估"
+    }
+  },
+  "phase_analysis": {
+    "discovery": {
+      "phase_name": "发现阶段",
+      "not_evaluated": false,
+      "pros": "定位快速、直达率高、命名清晰无歧义",
+      "cons": "-"
+    },
+    "setup": {
+      "phase_name": "准备阶段",
+      "not_evaluated": false,
+      "pros": "配置快速便捷、配置步骤精简、支持环境持久化",
+      "cons": "未检测到依赖声明"
+    },
+    "quickstart": {
+      "phase_name": "快速开始阶段",
+      "not_evaluated": false,
+      "pros": "链接有效",
+      "cons": "文档自包含度低"
+    },
+    "development": {
+      "phase_name": "开发阶段",
+      "not_evaluated": false,
+      "pros": "提供部署验证命令",
+      "cons": "部署操作不幂等"
+    },
+    "testing": {
+      "phase_name": "测试阶段",
+      "not_evaluated": false,
+      "pros": "输出清晰易读、运行方式简洁统一、测试执行速度快",
+      "cons": "测试失败率高"
+    },
+    "contribution": {
+      "phase_name": "贡献阶段",
+      "not_evaluated": true,
+      "pros": null,
+      "cons": null
+    }
+  },
+  "recommendations": [
+    {
+      "rec_id": "REC-01",
+      "title": "优化搜索可发现性",
+      "priority": "低",
+      "target_project_id": "cann/cann-recipes-infer",
+      "related_step_ids": [
+        "S0_DISCOVERY"
+      ],
+      "related_metric_ids": [
+        "SDX_SEARCH_ROUNDS"
+      ],
+      "description": "【发现阶段】在项目文档（如 README.md）中添加关键词如“CANN AI recipes”和“inference models”，并优化GitHub仓库的元数据描述和标签，以提升搜索引擎可见性。",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_SEARCH_ROUNDS"
+        ],
+        "estimated_improvement_pct": 10,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
+    },
+    {
+      "rec_id": "REC-02",
+      "title": "明确依赖版本要求",
+      "priority": "中",
+      "target_project_id": "cann/cann-recipes-infer",
+      "related_step_ids": [
+        "S1_SETUP"
+      ],
+      "related_metric_ids": [
+        "SDX_DEPENDENCY_TRANSPARENCY"
+      ],
+      "description": "【准备阶段】为提升依赖透明度，请在项目README.md中创建明确的依赖表格（含库名、要求版本），同时添加一个Python脚本check_dependencies.py，调用`pip freeze`比对当前环境与requirements.txt的差异。  \n\n（具体步骤：1. 整理requirements.tx",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_DEPENDENCY_TRANSPARENCY"
+        ],
+        "estimated_improvement_pct": 15,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
+    },
+    {
+      "rec_id": "REC-03",
+      "title": "提升文档自包含度",
+      "priority": "中",
+      "target_project_id": "cann/cann-recipes-infer",
+      "related_step_ids": [
+        "S2_QUICKSTART"
+      ],
+      "related_metric_ids": [
+        "SDX_DOC_SELF_CONTAINED_RATIO"
+      ],
+      "description": "【快速开始阶段】**改进建议：**  \n在Quick Start文档中直接嵌入必要的Python环境配置命令（如CANN Toolkit安装步骤）和示例代码片段，避免外部链接；同时添加本地数据集的最小示例文件内容，确保用户无需跳转即可完成初始化运行。  \n\n（字数：58）",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_DOC_SELF_CONTAINED_RATIO"
+        ],
+        "estimated_improvement_pct": 15,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
+    },
+    {
+      "rec_id": "REC-04",
+      "title": "确保部署幂等性",
+      "priority": "中",
+      "target_project_id": "cann/cann-recipes-infer",
+      "related_step_ids": [
+        "S3_DEVELOPMENT"
+      ],
+      "related_metric_ids": [
+        "SDX_DEPLOY_IDEMPOTENT"
+      ],
+      "description": "【开发阶段】**改进建议：** 在部署脚本中使用 `kubectl apply`（若用K8s）或 `terraform apply`（若用Terraform）替代非幂等命令（如 `create`），并对数据库初始化脚本添加 `IF NOT EXISTS` 条件（如PostgreSQL），确保资源重复部署时自动跳",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_DEPLOY_IDEMPOTENT"
+        ],
+        "estimated_improvement_pct": 15,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
+    },
+    {
+      "rec_id": "REC-05",
+      "title": "改进运行输出可读性",
+      "priority": "低",
+      "target_project_id": "cann/cann-recipes-infer",
+      "related_step_ids": [
+        "S3_DEVELOPMENT"
+      ],
+      "related_metric_ids": [
+        "SDX_RUN_OUTPUT_READABILITY"
+      ],
+      "description": "【开发阶段】基于项目cann/cann-recipes-infer的日志输出场景，建议：\n\n1. 使用Python的`logging`模块为关键步骤（如数据加载、模型推理）添加状态标识：成功时输出绿色\"[SUCCESS] Step X completed\"，失败时输出红色\"[ERROR] Step X fail",
+      "expected_impact": {
+        "affected_metrics": [
+          "SDX_RUN_OUTPUT_READABILITY"
+        ],
+        "estimated_improvement_pct": 10,
+        "effort_level": "中"
+      },
+      "reference_implementation": ""
+    }
+  ],
+  "divergence_alerts": [],
+  "key_insight": "整体体验较差（总分34.3，等级F），最突出的优势是发现和准备阶段定位与配置快速，入门顺畅；但最关键的问题是开发阶段部署不幂等引发不稳定性，测试阶段失败率高削弱可靠性。优化优先级建议：首先聚焦开发和测试阶段，强化部署幂等性和测试稳定性，其次改进快速开始阶段的依赖管理。"
+}

@@ -10,6 +10,7 @@ import {
   getToneByScore,
   getToolLabel,
 } from '../helpers';
+import { SDX_METRIC_NAME_MAP } from './sdxMetricNameMap';
 import {
   ActionDetailRecord,
   BackendAction,
@@ -31,7 +32,6 @@ import {
   USER_JOURNEY_DEFAULT_PERSONA,
   USER_JOURNEY_DEVELOPER_TYPE_OPTIONS,
   USER_JOURNEY_MODE_OPTIONS,
-  USER_JOURNEY_STEP_STATIC_CONTENT,
 } from './constants';
 
 const overviewMetricConfig: Record<
@@ -363,7 +363,7 @@ const buildReportMetadata = (
   },
   {
     key: 'hardware',
-    label: '硬件条件',
+    label: '硬件环境',
     value: buildHardwareLabel(report),
   },
   {
@@ -417,6 +417,11 @@ const buildProjectRecommendations = (
         normalizeText(recommendation.description) ||
         normalizeText(recommendation.expected_improvement) ||
         report.key_insight,
+      relatedStepIds: recommendation.related_step_ids,
+      relatedMetricIds: [
+        ...(recommendation.related_metric_ids ?? []),
+        ...(recommendation.affected_metrics ?? []),
+      ].filter((v, i, arr) => arr.indexOf(v) === i),
     }))
     .sort((left, right) => {
       const priorityDiff =
@@ -456,6 +461,7 @@ const buildActionDetailRecord = (action: BackendAction): ActionDetailRecord => {
           ? '\u6210\u529f'
           : '\u5931\u8d25'
         : result || (action.error_message ? '\u5931\u8d25' : '\u8b66\u544a'),
+    taskId: action.task_id,
   };
 };
 
@@ -466,20 +472,29 @@ const buildStepMetrics = (
   retryCount: number,
   subjectiveMetrics: BackendMetric[]
 ): StepMetric[] => {
-  const mappedMetrics = subjectiveMetrics
-    .filter((metric) => metric.applicable !== false)
-    .map((metric) => ({
+  const mappedMetrics = subjectiveMetrics.map((metric) => {
+    // 处理 true/false 值的展示
+    const rawValue = metric.value;
+    const displayValue =
+      metric.ui?.display_value ??
+      (rawValue === (true as unknown)
+        ? '成功'
+        : rawValue === (false as unknown)
+        ? '失败'
+        : formatMetricValue(rawValue as string | number | null, metric.unit));
+    return {
       label: metric.metric_name,
-      value:
-        metric.ui?.display_value ??
-        formatMetricValue(metric.value, metric.unit),
+      value: displayValue,
       benchmark:
         metric.ui?.display_benchmark ??
         formatBenchmarkValue(metric.benchmark_value, metric.unit),
       note: (metric.ui?.note ?? metric.evidence) || metric.metric_id,
       tone: metric.ui?.tone ?? getToneByScore(metric.score),
       trend: metric.ui?.trend,
-    }));
+      score: metric.score,
+      metricId: metric.metric_id,
+    };
+  });
   const hasRichMetrics = subjectiveMetrics.some((metric) => Boolean(metric.ui));
   const durationMetric: StepMetric = {
     label: '\u5b9e\u9645\u8017\u65f6',
@@ -546,13 +561,24 @@ const buildJourneyStep = (
     step.per_project_assessments.find(
       (item) => item.project_id === report.project.project_id
     ) ?? step.per_project_assessments[0];
-  const stepStaticContent = USER_JOURNEY_STEP_STATIC_CONTENT[step.step_id];
   const presentation = getStepPresentation(step.step_id);
   const actionDetails = (assessment?.actual_path.actions ?? []).map(
     buildActionDetailRecord
   );
   const subjectiveMetrics = assessment?.subjective.metrics ?? [];
   const metricIds = subjectiveMetrics.map((metric) => metric.metric_id);
+
+  // 从 journey_map 获取该阶段的 score（step_id 去掉前缀数字部分取小写 key）
+  const journeyMapKey = step.step_id.replace(/^S\d+_/, '').toLowerCase();
+  const journeyMapEntry = report.journey_map?.[journeyMapKey];
+  const journeyMapScore =
+    journeyMapEntry &&
+    !journeyMapEntry.not_evaluated &&
+    typeof journeyMapEntry.score === 'number'
+      ? journeyMapEntry.score
+      : null;
+
+  // 兜底：从主观指标均值计算
   const panoramaScoreCandidates = step.per_project_assessments.reduce<number[]>(
     (scores, currentAssessment) => {
       currentAssessment.subjective.metrics.forEach((metric) => {
@@ -574,10 +600,12 @@ const buildJourneyStep = (
     panoramaScoreCandidates,
     Boolean(panoramaMetricCount)
   );
+
+  // 优先用 journey_map score，无则 fallback 到计算值
+  const panoramaScore = journeyMapScore ?? derivedPanoramaScore;
   const narrative = normalizeText(assessment?.subjective.narrative);
   const shortPainSummary = normalizeText(assessment?.subjective.pain_summary);
-  const resolvedScore = derivedPanoramaScore;
-  const painLevel = getPainLevelFromScore(resolvedScore);
+  const painLevel = getPainLevelFromScore(panoramaScore);
   const painPoints = uniqueStrings([
     narrative,
     normalizeText(assessment?.cons),
@@ -591,9 +619,12 @@ const buildJourneyStep = (
   );
   const totalDurationSeconds =
     assessment?.actual_path.total_duration_seconds ?? 0;
-  const resolvedActions = stepStaticContent?.actions?.length
-    ? stepStaticContent.actions
-    : actionDetails.map((action) => action.description);
+
+  // actions: 优先从 JSON 中 actions 的 detail 提取，作为步骤实际执行动作列表
+  const resolvedActions = actionDetails.length
+    ? actionDetails.map((action) => action.description)
+    : [];
+
   const fallbackActionCards = actionDetails.length
     ? actionDetails.map((action, index) => ({
         title: resolvedActions[index] ?? action.description,
@@ -605,14 +636,15 @@ const buildJourneyStep = (
         details: [action],
       }))
     : undefined;
-  const fallbackTools = uniqueStrings(
-    (assessment?.actual_path.actions ?? []).map((action) =>
-      getToolLabel(action.action_type, action.detail)
+
+  // tools: 直接从 actions 的 tool_name 字段提取（JSON 新增字段），fallback 到 action_type
+  const resolvedTools = uniqueStrings(
+    (assessment?.actual_path.actions ?? []).map(
+      (action) =>
+        action.tool_name || getToolLabel(action.action_type, action.detail)
     )
   );
-  const resolvedTools = stepStaticContent?.tools?.length
-    ? stepStaticContent.tools
-    : fallbackTools;
+
   const derivedTimeShare = totalJourneyDuration
     ? `~${Math.max(
         1,
@@ -625,12 +657,12 @@ const buildJourneyStep = (
     code: step.step_id,
     title: step.step_name,
     summary: shortPainSummary || step.step_name,
-    description: stepStaticContent?.description ?? step.step_description,
+    description: normalizeText(step.step_description) || step.step_name,
     iconKey: presentation.iconKey,
     icon: getJourneyStepIcon(presentation.iconKey),
     color: presentation.color,
-    score: resolvedScore,
-    panoramaScore: derivedPanoramaScore,
+    score: panoramaScore,
+    panoramaScore,
     benchmarkScore: 100,
     timeShare: derivedTimeShare,
     painLevel,
@@ -665,6 +697,28 @@ export const buildUserJourneyProjectData = (
     return sum + (assessment?.actual_path.total_duration_seconds ?? 0);
   }, 0);
 
+  // 构建 metric_id → metric_name 映射：以静态 SDX 定义表为基础，再用 JSON 动态数据覆盖
+  const metricNameMap: Record<string, string> = { ...SDX_METRIC_NAME_MAP };
+  report.journey_steps.forEach((step) => {
+    step.per_project_assessments.forEach((assessment) => {
+      assessment.subjective.metrics.forEach((metric) => {
+        if (metric.metric_id && metric.metric_name) {
+          metricNameMap[metric.metric_id] = metric.metric_name;
+        }
+      });
+      assessment.objective.metrics.forEach((metric) => {
+        if (metric.metric_id && metric.metric_name) {
+          metricNameMap[metric.metric_id] = metric.metric_name;
+        }
+      });
+    });
+  });
+  report.e2e_metrics.forEach((metric) => {
+    if (metric.metric_id && metric.metric_name) {
+      metricNameMap[metric.metric_id] = metric.metric_name;
+    }
+  });
+
   return {
     projectKey: report.project.project_id,
     agentVersion: buildAgentVersionLabel(report),
@@ -683,5 +737,6 @@ export const buildUserJourneyProjectData = (
     journeySteps: report.journey_steps.map((step) =>
       buildJourneyStep(step, report, totalJourneyDuration)
     ),
+    metricNameMap,
   };
 };
