@@ -47,7 +47,9 @@ function uniq<T>(arr: T[]): T[] {
 }
 
 function toOptions(values: string[]) {
-  return values.map((v) => ({ value: v, label: v }));
+  return [...values]
+    .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+    .map((v) => ({ value: v, label: v }));
 }
 
 // ---------- ProjectPill ----------
@@ -167,7 +169,9 @@ const CascadingSelects: React.FC<{
         opts.push({ value: e.projectKey, label: e.projectName });
       }
     }
-    return opts;
+    return opts.sort((a, b) =>
+      a.label.localeCompare(b.label, 'en', { sensitivity: 'base' })
+    );
   }, [org, sig]);
 
   const hardwareOptions = useMemo(() => {
