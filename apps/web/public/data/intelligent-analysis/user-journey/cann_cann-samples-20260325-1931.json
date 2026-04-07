@@ -10,7 +10,8 @@
       "background": "无项目经验",
       "hardware_access": "openEuler 22.03, Ascend 910C ",
       "language": "中文"
-    }
+    },
+    "sig": "ops-basic"
   },
   "project": {
     "project_id": "cann-samples",
