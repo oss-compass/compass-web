@@ -113,13 +113,13 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
 
       {executionPathItems.length ? (
         <div className="mt-4 overflow-x-auto rounded-[26px] border border-slate-200 bg-white shadow-[0_12px_24px_rgba(15,23,42,0.05)]">
-          <table className="min-w-full table-fixed">
+          <table className="w-full table-fixed">
             <colgroup>
-              <col className="w-14" />
-              <col className="w-28" />
+              <col style={{ width: '62px' }} />
+              <col style={{ width: '112px' }} />
               <col />
-              <col className="w-24" />
-              <col className="w-20" />
+              <col style={{ width: '88px' }} />
+              <col style={{ width: '72px' }} />
             </colgroup>
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/80">
@@ -205,7 +205,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                         <td className="px-4 py-4 align-top text-sm font-medium text-slate-800">
                           {detailItem.label}
                         </td>
-                        <td className="px-4 py-4 align-top text-sm leading-7 text-slate-600">
+                        <td className="overflow-hidden px-4 py-4 align-top text-sm leading-7 text-slate-600">
                           {detailItem.description &&
                           detailItem.description.length > 60 ? (
                             <div className="relative pr-6">
