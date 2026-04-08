@@ -24,6 +24,10 @@ interface DetailNavProps {
       competitorProjects?: readonly string[];
     };
   };
+  /** editor 或 admin：显示用户管理、预警管理按钮 */
+  canManage?: boolean;
+  /** admin：显示删除按钮中的操作 */
+  isAdmin?: boolean;
   onEdit: () => void;
   onAlertManage: () => void;
   onUserManage: () => void;
@@ -72,6 +76,8 @@ const getMinTitleWidth = (containerWidth: number) => {
 
 const DetailNav: React.FC<DetailNavProps> = ({
   dashboard,
+  canManage = false,
+  isAdmin = false,
   onEdit,
   onAlertManage,
   onUserManage,
@@ -302,31 +308,35 @@ const DetailNav: React.FC<DetailNavProps> = ({
             </Button>
           </div>
 
-          {/* <div
+          <div
             ref={setItemRef('alertManage')}
             className={optionalItemClassName('alertManage')}
           >
-            <Button
-              className="whitespace-nowrap"
-              size="sm"
-              onClick={onAlertManage}
-            >
-              {t('os_board:detail.alerts_manage')}
-            </Button>
+            {canManage && (
+              <Button
+                className="whitespace-nowrap"
+                size="sm"
+                onClick={onAlertManage}
+              >
+                {t('os_board:detail.alerts_manage')}
+              </Button>
+            )}
           </div>
           <div
             ref={setItemRef('userManage')}
             className={optionalItemClassName('userManage')}
           >
-            <Button
-              className="whitespace-nowrap"
-              size="sm"
-              intent="text"
-              onClick={onUserManage}
-            >
-              {t('lab:user_management')}
-            </Button>
-          </div> */}
+            {canManage && (
+              <Button
+                className="whitespace-nowrap"
+                size="sm"
+                intent="text"
+                onClick={onUserManage}
+              >
+                {t('lab:user_management')}
+              </Button>
+            )}
+          </div>
 
           <div
             ref={setItemRef('newDashboard')}
@@ -346,14 +356,16 @@ const DetailNav: React.FC<DetailNavProps> = ({
             ref={setItemRef('delete')}
             className={optionalItemClassName('delete')}
           >
-            <Button
-              className="whitespace-nowrap"
-              size="sm"
-              intent="text"
-              onClick={onDelete}
-            >
-              {t('common:btn.delete')}
-            </Button>
+            {isAdmin && (
+              <Button
+                className="whitespace-nowrap"
+                size="sm"
+                intent="text"
+                onClick={onDelete}
+              >
+                {t('common:btn.delete')}
+              </Button>
+            )}
           </div>
         </div>
       </nav>

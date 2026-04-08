@@ -164,10 +164,18 @@ const DetailContent: React.FC<{
     },
   };
 
+  // 根据 current_user_role 计算权限
+  const userRole = dashboard.current_user_role?.role;
+  // editor 和 admin 可看到用户管理、预警管理按钮；admin 额外有删除按钮中的操作权限
+  const canManage = userRole === 'editor' || userRole === 'admin';
+  const isAdmin = userRole === 'admin';
+
   return (
     <div className="relative flex min-h-screen flex-col">
       <DetailNav
         dashboard={compatibleDashboard as any}
+        canManage={canManage}
+        isAdmin={isAdmin}
         onEdit={handleEdit}
         onAlertManage={handleAlertManage}
         onUserManage={() => setUserManageOpen(true)}
@@ -226,6 +234,8 @@ const DetailContent: React.FC<{
         open={userManageOpen}
         onClose={() => setUserManageOpen(false)}
         dashboardId={String(dashboard.id)}
+        identifier={dashboard.identifier}
+        isAdmin={isAdmin}
       />
     </div>
   );

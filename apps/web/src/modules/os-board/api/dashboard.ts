@@ -333,6 +333,223 @@ export const deleteDashboard = async (
   return response.data;
 };
 
+// ========== 用户管理 API ==========
+
+export interface SearchUserRequest {
+  keyword: string;
+}
+
+// 看板已授权用户列表请求
+export interface AuthorizedUsersRequest {
+  identifier: string;
+  page?: number;
+  per_page?: number;
+  role?: 'viewer' | 'editor' | 'admin';
+  keyword?: string;
+}
+
+// 看板已授权用户
+export interface AuthorizedUserItem {
+  id: number;
+  member_id?: number;
+  name: string;
+  email?: string;
+  avatar_url?: string;
+  role: 'viewer' | 'editor' | 'admin';
+  status?: string;
+  joined_at?: string;
+  invited_by?: string | null;
+  is_owner?: boolean;
+  remark?: string | null;
+}
+
+export interface AuthorizedUsersResponse {
+  total: number;
+  page: number;
+  per_page: number;
+  data: AuthorizedUserItem[];
+}
+
+/**
+ * 获取看板已授权用户列表
+ */
+export const fetchAuthorizedUsers = async (
+  params: AuthorizedUsersRequest
+): Promise<AuthorizedUsersResponse> => {
+  const response = await axios.post<AuthorizedUsersResponse>(
+    '/services/dashboard/authorized_users',
+    params
+  );
+  return response.data;
+};
+
+/**
+ * Hook: 获取看板已授权用户列表
+ */
+export const useAuthorizedUsers = (
+  params: AuthorizedUsersRequest,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: ['authorizedUsers', params],
+    queryFn: () => fetchAuthorizedUsers(params),
+    enabled: options?.enabled !== false && !!params.identifier,
+    staleTime: 30 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export interface SearchUserItem {
+  id: number;
+  name: string;
+  email?: string;
+}
+
+export interface SearchUserResponse {
+  total: number;
+  page: number;
+  per_page: number;
+  data: SearchUserItem[];
+}
+
+export interface AssignMembersRequest {
+  identifier: string;
+  members: Array<{
+    user_id: number;
+    role: 'viewer' | 'editor';
+  }>;
+}
+
+// role 字符串 → 后端数字映射
+const roleToNumber = (role: 'viewer' | 'editor' | 'admin'): 0 | 1 | 2 => {
+  if (role === 'editor') return 1;
+  if (role === 'admin') return 2;
+  return 0;
+};
+
+/**
+ * 模糊查询用户
+ */
+export const searchUser = async (
+  params: SearchUserRequest
+): Promise<SearchUserItem[]> => {
+  const response = await axios.post<SearchUserResponse>(
+    '/services/dashboard/search_user',
+    params
+  );
+  return response.data?.data ?? [];
+};
+
+/**
+ * 分配用户权限（邀请用户）
+ */
+export const assignMembers = async (
+  params: AssignMembersRequest
+): Promise<void> => {
+  const response = await axios.post(
+    '/services/dashboard/assign_members',
+    {
+      ...params,
+      members: params.members.map((m) => ({
+        ...m,
+        role: roleToNumber(m.role),
+      })),
+    }
+  );
+  return response.data;
+};
+
+/**
+ * Hook: 模糊查询用户
+ */
+export const useSearchUser = () => {
+  return useMutation({
+    mutationFn: async (params: SearchUserRequest): Promise<SearchUserItem[]> => {
+      return searchUser(params);
+    },
+  });
+};
+
+/**
+ * Hook: 分配用户权限
+ */
+export const useAssignMembers = () => {
+  return useMutation({
+    mutationFn: async (params: AssignMembersRequest): Promise<void> => {
+      return assignMembers(params);
+    },
+  });
+};
+
+// 修改成员权限
+export interface UpdateMemberRolesRequest {
+  identifier: string;
+  members: Array<{
+    member_id: number;
+    role: 'viewer' | 'editor' | 'admin';
+  }>;
+}
+
+/**
+ * 修改成员权限
+ */
+export const updateMemberRoles = async (
+  params: UpdateMemberRolesRequest
+): Promise<void> => {
+  const response = await axios.post(
+    '/services/dashboard/update_member_roles',
+    {
+      ...params,
+      members: params.members.map((m) => ({
+        ...m,
+        role: roleToNumber(m.role),
+      })),
+    }
+  );
+  return response.data;
+};
+
+/**
+ * Hook: 修改成员权限
+ */
+export const useUpdateMemberRoles = () => {
+  return useMutation({
+    mutationFn: async (params: UpdateMemberRolesRequest): Promise<void> => {
+      return updateMemberRoles(params);
+    },
+  });
+};
+
+// 删除成员
+export interface RemoveMembersRequest {
+  identifier: string;
+  member_ids: number[];
+}
+
+/**
+ * 删除成员
+ */
+export const removeMembers = async (
+  params: RemoveMembersRequest
+): Promise<void> => {
+  const response = await axios.post(
+    '/services/dashboard/remove_members',
+    params
+  );
+  return response.data;
+};
+
+/**
+ * Hook: 删除成员
+ */
+export const useRemoveMembers = () => {
+  return useMutation({
+    mutationFn: async (params: RemoveMembersRequest): Promise<void> => {
+      return removeMembers(params);
+    },
+  });
+};
+
 /**
  * 直接调用：获取指标数据
  */

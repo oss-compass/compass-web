@@ -110,6 +110,11 @@ export interface OsBoardDashboardModel {
   updated_at: string;
 }
 
+export interface OsBoardCurrentUserRole {
+  is_member: boolean;
+  role: 'viewer' | 'editor' | 'admin';
+}
+
 export interface OsBoardDashboard {
   id: string | number;
   identifier?: string;
@@ -126,6 +131,8 @@ export interface OsBoardDashboard {
   config?: OsBoardDashboardConfig;
   repo_urls?: string;
   competitor_urls?: string;
+  /** 当前用户在该看板中的角色信息 */
+  current_user_role?: OsBoardCurrentUserRole;
   permissions?: OsBoardPermission[];
   dashboard_models?: OsBoardDashboardModel[];
   dashboard_metrics?: OsBoardDashboardMetric[];
