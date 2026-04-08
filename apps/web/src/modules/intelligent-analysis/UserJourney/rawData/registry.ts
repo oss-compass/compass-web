@@ -43,6 +43,17 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'asc-devkit',
     hardware_access: 'Ascend 910B',
   },
+  cann_asc_devkit_20260408_1824: {
+    projectKey: 'cann_asc_devkit',
+    label: 'cann/asc-devkit',
+    reportPath:
+      '/data/intelligent-analysis/user-journey/cann_asc_devkit_20260408_1824.json',
+    version: '20260408_1824',
+    org: 'cann',
+    sig: 'ascendc',
+    projectName: 'asc-devkit',
+    hardware_access: 'Ascend 910B',
+  },
   cann_asc_tools_20260405_0217: {
     projectKey: 'cann_asc_tools',
     label: 'cann/asc-tools',
