@@ -1,47 +1,4 @@
 {
-  "meta": {
-    "description": "开发者旅程任务模板定义 —— 包含所有 task_id 的关键信息",
-    "generated_at": "2026-04-07",
-    "source": "src/models/journey/tasks.py :: DEFAULT_TASK_TEMPLATES"
-  },
-  "phases": [
-    {
-      "phase_id": "discovery",
-      "phase_name": "搜索与发现",
-      "phase_description": "搜索定位仓库并理解文档导航",
-      "tasks": ["discovery_doc", "discovery_repo"]
-    },
-    {
-      "phase_id": "setup",
-      "phase_name": "环境检查与准备",
-      "phase_description": "准备环境并获取代码，完成依赖安装",
-      "tasks": ["setup_clone", "setup_prereq", "setup_deps"]
-    },
-    {
-      "phase_id": "quickstart",
-      "phase_name": "样例快速体验",
-      "phase_description": "阅读文档并按步骤执行快速入门流程",
-      "tasks": ["quickstart_doc"]
-    },
-    {
-      "phase_id": "development",
-      "phase_name": "开发与编译",
-      "phase_description": "代码修改、编译、运行验证",
-      "tasks": ["dev_modify", "dev_build", "dev_run"]
-    },
-    {
-      "phase_id": "testing",
-      "phase_name": "测试与验证",
-      "phase_description": "运行完整测试套件并评估测试质量",
-      "tasks": ["test_unit"]
-    },
-    {
-      "phase_id": "contribution",
-      "phase_name": "反馈与贡献",
-      "phase_description": "发现问题并向社区提交 Issue",
-      "tasks": ["contrib_discover", "contrib_search", "contrib_submit"]
-    }
-  ],
   "tasks": {
     "discovery_doc": {
       "task_id": "discovery_doc",

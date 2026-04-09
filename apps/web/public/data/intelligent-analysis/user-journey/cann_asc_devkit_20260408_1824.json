@@ -8,7 +8,7 @@
     "persona": {
       "role": "外部开发者",
       "background": "无项目经验",
-      "hardware_access": "Ascend 910B",
+      "hardware_access": "Ascend 910C",
       "language": "中文"
     },
     "sig": "ascendc"

@@ -52,7 +52,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     org: 'cann',
     sig: 'ascendc',
     projectName: 'asc-devkit',
-    hardware_access: 'Ascend 910B',
+    hardware_access: 'Ascend 910C',
   },
   cann_asc_tools_20260405_0217: {
     projectKey: 'cann_asc_tools',
