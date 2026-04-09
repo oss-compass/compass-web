@@ -70,9 +70,11 @@ const attachProjectRegistryMeta = (
 ): UserJourneyProjectData => {
   const registryEntry = USER_JOURNEY_PROJECT_REGISTRY[projectFileKey];
   const hardwareDir = extractHardwareDir(registryEntry?.hardware_access);
-  const reportDetailUrl = hardwareDir
+  const fallbackReportDetailUrl = hardwareDir
     ? `${GITHUB_REPORT_BASE}${hardwareDir}/Report_${projectFileKey}.md`
     : undefined;
+  const reportDetailUrl =
+    projectData.reportDetailUrl || fallbackReportDetailUrl;
 
   return {
     ...projectData,
