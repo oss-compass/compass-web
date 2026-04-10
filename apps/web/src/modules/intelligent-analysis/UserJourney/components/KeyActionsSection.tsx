@@ -284,6 +284,68 @@ const LogOutputModal: React.FC<{
   </Modal>
 );
 
+/* ─── 有 log 时表格上方展示的观点 & 痛点（内联卡片，默认展开） ─── */
+const EvidenceInline: React.FC<{
+  observations?: string[];
+  pain_points?: string[];
+}> = ({ observations, pain_points }) => {
+  const hasObs = observations && observations.length > 0;
+  const hasPain = pain_points && pain_points.length > 0;
+  if (!hasObs && !hasPain) return null;
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-1.5">
+        <EvidenceIcon className="h-3.5 w-3.5 text-slate-400" />
+        <span className="text-sm font-semibold text-slate-700">观点 & 痛点</span>
+        <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-200 px-1 text-[10px] font-bold leading-none text-slate-600">
+          {(observations?.length ?? 0) + (pain_points?.length ?? 0)}
+        </span>
+      </div>
+      <div className="flex gap-3">
+        {hasObs && (
+          <div className="min-w-0 flex-1 rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-sky-600">
+              <EvidenceIcon className="h-3 w-3" />
+              观点
+              <span className="ml-0.5 rounded-full bg-sky-100 px-1.5 text-[10px] font-bold text-sky-700">
+                {observations!.length}
+              </span>
+            </div>
+            <ul className="space-y-1.5">
+              {observations!.map((obs, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm leading-5 text-sky-900">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+                  {obs}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {hasPain && (
+          <div className="min-w-0 flex-1 rounded-xl border border-rose-100 bg-rose-50/70 px-4 py-3">
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600">
+              <PainIcon className="h-3 w-3" />
+              痛点
+              <span className="ml-0.5 rounded-full bg-rose-100 px-1.5 text-[10px] font-bold text-rose-700">
+                {pain_points!.length}
+              </span>
+            </div>
+            <ul className="space-y-1.5">
+              {pain_points!.map((p, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm leading-5 text-rose-900">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 /* ─── 证据 / 痛点折叠块 ─── */
 const EvidenceBlock: React.FC<{
   observations?: string[];
@@ -783,6 +845,16 @@ const TaskCard: React.FC<{
         </button>
       </div>
 
+      {/* 有 log 时：观点 & 痛点置于表格上方 */}
+      {tableExpanded && logTask && (evidence?.observations?.length || evidence?.pain_points?.length) ? (
+        <div className="border-b border-slate-100 px-5 py-4">
+          <EvidenceInline
+            observations={evidence?.observations}
+            pain_points={evidence?.pain_points}
+          />
+        </div>
+      ) : null}
+
       {/* 动作表格 */}
       {tableExpanded &&
         (logTask?.commands ? (
@@ -797,13 +869,15 @@ const TaskCard: React.FC<{
           />
         ))}
 
-      {/* 观测 & 痛点 */}
-      <div className="border-t border-slate-100 px-5 py-4">
-        <EvidenceBlock
-          observations={evidence?.observations}
-          pain_points={evidence?.pain_points}
-        />
-      </div>
+      {/* 无 log 时：观测 & 痛点保留在表格下方（折叠块） */}
+      {!logTask && tableExpanded && (
+        <div className="border-t border-slate-100 px-5 py-4">
+          <EvidenceBlock
+            observations={evidence?.observations}
+            pain_points={evidence?.pain_points}
+          />
+        </div>
+      )}
     </div>
   );
 };
