@@ -417,6 +417,17 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'ge',
     hardware_access: 'Ascend 910B',
   },
+  cann_ge_20260410_1002: {
+    projectKey: 'cann_ge',
+    label: 'cann/ge',
+    reportPath:
+      '/data/intelligent-analysis/user-journey/cann_ge_20260410_1002.json',
+    version: '20260410_1002',
+    org: 'cann',
+    sig: 'ge',
+    projectName: 'ge',
+    hardware_access: 'Ascend 910C',
+  },
   cann_graph_autofusion_20260405_0734: {
     projectKey: 'cann_graph_autofusion',
     label: 'cann/graph-autofusion',
