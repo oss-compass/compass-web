@@ -1022,7 +1022,7 @@ export const filterRegistryEntries = (
 ): Array<
   [
     UserJourneyProjectFileKey,
-    (typeof USER_JOURNEY_PROJECT_REGISTRY)[UserJourneyProjectFileKey]
+    (typeof USER_JOURNEY_PROJECT_REGISTRY)[UserJourneyProjectFileKey],
   ]
 > => {
   return registryEntries.filter(([, entry]) => {

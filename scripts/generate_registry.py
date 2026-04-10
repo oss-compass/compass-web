@@ -299,6 +299,61 @@ export const filterRegistryEntries = (
     return ts
 
 
+def compress_log_files(log_dir: str) -> None:
+    """
+    Minify all JSON files under log_dir in-place (remove unnecessary whitespace).
+    Skips files that are already minified (single line) or cannot be parsed.
+    """
+    if not os.path.isdir(log_dir):
+        print(f"\n[LOG] Log directory not found, skipping: {log_dir}")
+        return
+
+    json_files = [f for f in sorted(os.listdir(log_dir)) if f.lower().endswith(".json")]
+    if not json_files:
+        print("\n[LOG] No JSON files found in log directory.")
+        return
+
+    print(f"\nCompressing log files in: {log_dir}")
+    total_before = 0
+    total_after = 0
+
+    for fname in json_files:
+        fpath = os.path.join(log_dir, fname)
+        try:
+            before = os.path.getsize(fpath)
+            with open(fpath, encoding="utf-8") as f:
+                raw = f.read()
+
+            # Already a single non-empty line → already minified
+            if "\n" not in raw.strip():
+                print(f"  [SKIP] {fname}  (already minified, {before:,} bytes)")
+                total_before += before
+                total_after += before
+                continue
+
+            data = json.loads(raw)
+            minified = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+
+            with open(fpath, "w", encoding="utf-8") as f:
+                f.write(minified)
+
+            after = len(minified.encode("utf-8"))
+            saved = before - after
+            pct = saved / before * 100 if before else 0
+            total_before += before
+            total_after += after
+            print(f"  [OK]   {fname}  {before:>10,} -> {after:>10,} bytes  (-{pct:.1f}%)")
+
+        except Exception as e:
+            print(f"  [WARN] {fname}: {e}")
+            total_before += os.path.getsize(fpath)
+            total_after += os.path.getsize(fpath)
+
+    saved_total = total_before - total_after
+    pct_total = saved_total / total_before * 100 if total_before else 0
+    print(f"\n  Total: {total_before:,} -> {total_after:,} bytes  saved {saved_total:,} bytes ({pct_total:.1f}%)")
+
+
 def main():
     print(f"Scanning: {DATA_DIR}")
     entries = collect_entries(DATA_DIR)
@@ -310,6 +365,10 @@ def main():
         f.write(ts_content)
 
     print(f"\nRegistry written to:\n  {REGISTRY_FILE}")
+
+    # Compress log JSON files
+    log_dir = os.path.join(DATA_DIR, "log")
+    compress_log_files(log_dir)
 
 
 if __name__ == "__main__":

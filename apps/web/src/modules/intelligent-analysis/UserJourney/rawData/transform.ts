@@ -571,14 +571,16 @@ const buildJourneyStep = (
   // 从 journey_map 获取该阶段的 score（step_id 去掉前缀数字部分取小写 key）
   const journeyMapKey = step.step_id.replace(/^S\d+_/, '').toLowerCase();
   const journeyMapEntry = report.journey_map?.[journeyMapKey];
-  const journeyMapScore =
-    journeyMapEntry &&
-    !journeyMapEntry.not_evaluated &&
-    typeof journeyMapEntry.score === 'number'
-      ? journeyMapEntry.score
-      : null;
 
-  // 兜底：从主观指标均值计算
+  // 有 journey_map 条目时严格使用其 score：
+  //   - score 为数字 → 直接用
+  //   - score 为 null 或 not_evaluated: true → 视为 0
+  // 无条目时 fallback 到主观指标均值
+  const journeyMapScore = journeyMapEntry
+    ? (typeof journeyMapEntry.score === 'number' ? journeyMapEntry.score : 0)
+    : null;
+
+  // 兜底：从主观指标均值计算（仅在无 journey_map 条目时使用）
   const panoramaScoreCandidates = step.per_project_assessments.reduce<number[]>(
     (scores, currentAssessment) => {
       currentAssessment.subjective.metrics.forEach((metric) => {
@@ -601,7 +603,7 @@ const buildJourneyStep = (
     Boolean(panoramaMetricCount)
   );
 
-  // 优先用 journey_map score，无则 fallback 到计算值
+  // 有 journey_map 条目时严格使用，无条目时 fallback 到计算值
   const panoramaScore = journeyMapScore ?? derivedPanoramaScore;
   const narrative = normalizeText(assessment?.subjective.narrative);
   const shortPainSummary = normalizeText(assessment?.subjective.pain_summary);
