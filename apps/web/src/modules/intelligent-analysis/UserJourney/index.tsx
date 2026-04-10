@@ -288,6 +288,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
                   }
                   executionPathItems={executionPathItems}
                   agentVersion={primaryProject.agentVersion}
+                  projectFileKey={currentProjectFileKey}
                 />
               </Col>
             </Row>

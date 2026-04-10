@@ -164,17 +164,6 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'cann-samples',
     hardware_access: 'openEuler 22.03, Ascend 910C ',
   },
-  cann_cann_agreements_20260405_2320: {
-    projectKey: 'cann_cann_agreements',
-    label: 'cann/cann-agreements',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_cann_agreements_20260405_2320.json',
-    version: '20260405_2320',
-    org: 'cann',
-    sig: 'others',
-    projectName: 'cann-agreements',
-    hardware_access: 'Ascend 910C',
-  },
   cann_cann_learning_hub_20260404_0604: {
     projectKey: 'cann_cann_learning_hub',
     label: 'cann/cann-learning-hub',
@@ -285,28 +274,6 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'cann-samples',
     hardware_access: 'Ascend 910B',
   },
-  cann_cann_spack_package_20260403_2326: {
-    projectKey: 'cann_cann_spack_package',
-    label: 'cann/cann-spack-package',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_cann_spack_package_20260403_2326.json',
-    version: '20260403_2326',
-    org: 'cann',
-    sig: 'infrastructure',
-    projectName: 'cann-spack-package',
-    hardware_access: 'Ascend 910C',
-  },
-  cann_cann_spack_package_20260404_0148: {
-    projectKey: 'cann_cann_spack_package',
-    label: 'cann/cann-spack-package',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_cann_spack_package_20260404_0148.json',
-    version: '20260404_0148',
-    org: 'cann',
-    sig: 'infrastructure',
-    projectName: 'cann-spack-package',
-    hardware_access: 'Ascend 910B',
-  },
   cann_catlass_20260405_2320: {
     projectKey: 'cann_catlass',
     label: 'cann/catlass',
@@ -317,28 +284,6 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     sig: 'catlass',
     projectName: 'catlass',
     hardware_access: 'Ascend 910C',
-  },
-  cann_community_20260405_2320: {
-    projectKey: 'cann_community',
-    label: 'cann/community',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_community_20260405_2320.json',
-    version: '20260405_2320',
-    org: 'cann',
-    sig: 'others',
-    projectName: 'community',
-    hardware_access: 'Ascend 910C',
-  },
-  cann_community_20260407_1235: {
-    projectKey: 'cann_community',
-    label: 'cann/community',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_community_20260407_1235.json',
-    version: '20260407_1235',
-    org: 'cann',
-    sig: 'others',
-    projectName: 'community',
-    hardware_access: 'Ascend 910B',
   },
   cann_creat_repo_test_20260403_2013: {
     projectKey: 'cann_creat_repo_test',
@@ -559,39 +504,6 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     sig: 'hccl',
     projectName: 'hixl',
     hardware_access: 'Ascend 910B',
-  },
-  cann_infrastructure_20260405_0816: {
-    projectKey: 'cann_infrastructure',
-    label: 'cann/infrastructure',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_infrastructure_20260405_0816.json',
-    version: '20260405_0816',
-    org: 'cann',
-    sig: 'infrastructure',
-    projectName: 'infrastructure',
-    hardware_access: 'Ascend 910C',
-  },
-  cann_infrastructure_20260406_1616: {
-    projectKey: 'cann_infrastructure',
-    label: 'cann/infrastructure',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_infrastructure_20260406_1616.json',
-    version: '20260406_1616',
-    org: 'cann',
-    sig: 'infrastructure',
-    projectName: 'infrastructure',
-    hardware_access: 'Ascend 910B',
-  },
-  cann_manifest_20260405_2321: {
-    projectKey: 'cann_manifest',
-    label: 'cann/manifest',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_manifest_20260405_2321.json',
-    version: '20260405_2321',
-    org: 'cann',
-    sig: 'others',
-    projectName: 'manifest',
-    hardware_access: 'Ascend 910C',
   },
   cann_mat_chem_sim_pred_20260404_0737: {
     projectKey: 'cann_mat_chem_sim_pred',
@@ -879,17 +791,6 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'pypto',
     hardware_access: 'Ascend 910B',
   },
-  cann_release_management_20260405_2321: {
-    projectKey: 'cann_release_management',
-    label: 'cann/release-management',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_release_management_20260405_2321.json',
-    version: '20260405_2321',
-    org: 'cann',
-    sig: 'others',
-    projectName: 'release-management',
-    hardware_access: 'Ascend 910C',
-  },
   cann_runtime_20260404_1427: {
     projectKey: 'cann_runtime',
     label: 'cann/runtime',
@@ -954,28 +855,6 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     org: 'cann',
     sig: 'aal',
     projectName: 'sip',
-    hardware_access: 'Ascend 910B',
-  },
-  cann_skills_20260403_2154: {
-    projectKey: 'cann_skills',
-    label: 'cann/skills',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_skills_20260403_2154.json',
-    version: '20260403_2154',
-    org: 'cann',
-    sig: 'cannbot',
-    projectName: 'skills',
-    hardware_access: 'Ascend 910C',
-  },
-  cann_skills_20260403_2228: {
-    projectKey: 'cann_skills',
-    label: 'cann/skills',
-    reportPath:
-      '/data/intelligent-analysis/user-journey/cann_skills_20260403_2228.json',
-    version: '20260403_2228',
-    org: 'cann',
-    sig: 'cannbot',
-    projectName: 'skills',
     hardware_access: 'Ascend 910B',
   },
   cann_triton_inference_server_ge_backend_20260404_2159: {

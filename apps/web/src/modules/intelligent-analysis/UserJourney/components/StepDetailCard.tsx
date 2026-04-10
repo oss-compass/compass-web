@@ -18,6 +18,8 @@ type StepDetailCardProps = {
   hideTitle?: boolean;
   /** 固定列数（对比模式使用）；不传时使用响应式列数 */
   fixedMetricCols?: 2 | 3 | 4;
+  /** 报告文件 key，用于加载对应 log 文件 */
+  projectFileKey?: string;
 };
 
 const StepDetailCard: React.FC<StepDetailCardProps> = ({
@@ -28,6 +30,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   agentVersion,
   hideTitle = false,
   fixedMetricCols,
+  projectFileKey,
 }) => {
   const achievementMetric = keyMetrics.find(
     (m) => m.metricId === 'SDX_TASK_ACHIEVEMENT_RATE'
@@ -200,6 +203,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
         <KeyActionsSection
           currentStepKey={currentStep.key}
           executionPathItems={executionPathItems}
+          projectFileKey={projectFileKey}
         />
       </div>
 

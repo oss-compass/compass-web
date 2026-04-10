@@ -120,6 +120,7 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
                       agentVersion={project.data.agentVersion}
                       hideTitle
                       fixedMetricCols={2}
+                      projectFileKey={project.queryKey}
                     />
                   ) : (
                     <EmptyStepCard
