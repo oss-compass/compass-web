@@ -560,6 +560,17 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'metadef',
     hardware_access: 'Ascend 910B',
   },
+  cann_oam_tools_20260413_0239: {
+    projectKey: 'cann_oam_tools',
+    label: 'cann/oam-tools',
+    reportPath:
+      '/data/intelligent-analysis/user-journey/cann_oam-tools-20260413-0239.json',
+    version: '20260413_0239',
+    org: 'cann',
+    sig: 'tools',
+    projectName: 'oam-tools',
+    hardware_access: 'Ascend 910C',
+  },
   cann_oam_tools_20260404_1708: {
     projectKey: 'cann_oam_tools',
     label: 'cann/oam-tools',
@@ -1022,7 +1033,7 @@ export const filterRegistryEntries = (
 ): Array<
   [
     UserJourneyProjectFileKey,
-    (typeof USER_JOURNEY_PROJECT_REGISTRY)[UserJourneyProjectFileKey],
+    (typeof USER_JOURNEY_PROJECT_REGISTRY)[UserJourneyProjectFileKey]
   ]
 > => {
   return registryEntries.filter(([, entry]) => {
