@@ -266,6 +266,8 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               detailReportUrl={primaryProject.reportDetailUrl}
               projectVersion={primaryProject.projectInfo.version}
               metricNameMap={primaryProject.metricNameMap}
+              activeStepKey={activeStepKey}
+              onStepChange={setActiveStepKey}
             />
 
             <Row gutter={20} wrap={false} className="flex-1 items-stretch">

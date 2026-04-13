@@ -29,7 +29,7 @@ type StepNodeProps = {
   step: JourneyStep;
   recCount: number;
   isActive: boolean;
-  onRecTagClick: (stepCode: string) => void;
+  onCardClick: (stepCode: string) => void;
   compact?: boolean;
 };
 
@@ -37,7 +37,7 @@ const StepNode: React.FC<StepNodeProps> = ({
   step,
   recCount,
   isActive,
-  onRecTagClick,
+  onCardClick,
   compact = false,
 }) => {
   const panoramaScore = step.panoramaScore;
@@ -55,11 +55,21 @@ const StepNode: React.FC<StepNodeProps> = ({
   return (
     <div className="flex w-[208px] flex-none flex-col items-center">
       <div
+        role="button"
+        tabIndex={0}
+        onClick={() => onCardClick(step.code)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') onCardClick(step.code);
+        }}
         className={`flex ${
           compact ? 'h-[256px]' : 'h-[296px]'
-        } w-full flex-col rounded-[20px] border px-4 pb-4 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
+        } w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-4 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
           guideItem.cardClassName
-        } ${isActive ? 'ring-2 ring-violet-400' : ''}`}
+        } ${
+          isActive
+            ? 'ring-2 ring-violet-400'
+            : 'hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)]'
+        }`}
       >
         <div className="flex min-h-[40px] items-center justify-center gap-3">
           <span
@@ -122,41 +132,14 @@ const StepNode: React.FC<StepNodeProps> = ({
           </div>
         </div>
 
-        {/* 改进建议 tag */}
+        {/* 改进点 tag */}
         {recCount > 0 && (
-          <button
-            type="button"
-            onClick={() => onRecTagClick(step.code)}
-            className={`mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-xl border px-2 py-1.5 text-[11px] font-medium transition-all duration-150 ${
-              isActive
-                ? 'border-slate-300 bg-slate-100 text-slate-600'
-                : 'border-slate-200 bg-white/60 text-slate-500 hover:border-slate-300 hover:bg-slate-50'
-            }`}
-          >
+          <div className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white/60 px-2 py-1.5 text-[11px] font-medium text-slate-500">
             改进点
-            <span
-              className={`flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-semibold leading-none ${
-                isActive ? 'bg-slate-500 text-white' : 'bg-slate-400 text-white'
-              }`}
-            >
+            <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-slate-400 px-1 text-[10px] font-semibold leading-none text-white">
               {recCount}
             </span>
-            {isActive && (
-              <svg
-                className="ml-0.5 h-2.5 w-2.5 shrink-0"
-                viewBox="0 0 10 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            )}
-          </button>
+          </div>
         )}
       </div>
     </div>
@@ -168,7 +151,7 @@ type JourneyPanoramaFlowProps = {
   className?: string;
   recCountMap?: Record<string, number>;
   activeStepCode?: string;
-  onStepRecClick?: (stepCode: string) => void;
+  onCardClick?: (stepCode: string) => void;
   compact?: boolean;
 };
 
@@ -177,7 +160,7 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
   className = '',
   recCountMap = {},
   activeStepCode,
-  onStepRecClick,
+  onCardClick,
   compact = false,
 }) => {
   return (
@@ -190,11 +173,11 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
               recCount={recCountMap[step.code] ?? 0}
               isActive={activeStepCode === step.code}
               compact={compact}
-              onRecTagClick={(code) => {
+              onCardClick={(code) => {
                 if (activeStepCode === code) {
-                  onStepRecClick?.('');
+                  onCardClick?.('');
                 } else {
-                  onStepRecClick?.(code);
+                  onCardClick?.(code);
                 }
               }}
             />

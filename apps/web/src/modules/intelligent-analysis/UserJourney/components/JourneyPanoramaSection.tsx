@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import JourneyPanoramaFlow from './JourneyPanoramaFlow';
 import RecommendationsSection from './RecommendationsSection';
 import { JourneyRecommendation, JourneyStep } from '../types';
@@ -8,6 +8,8 @@ type JourneyPanoramaSectionProps = {
   recommendations: JourneyRecommendation[];
   steps: JourneyStep[];
   metricNameMap?: Record<string, string>;
+  activeStepKey?: string;
+  onStepChange?: (stepKey: string) => void;
 };
 
 const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
@@ -15,9 +17,9 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
   recommendations,
   steps,
   metricNameMap,
+  activeStepKey = '',
+  onStepChange,
 }) => {
-  const [activeStepCode, setActiveStepCode] = useState<string>('');
-
   // 计算每个 step 关联的改进建议数量
   const recCountMap: Record<string, number> = {};
   steps.forEach((step) => {
@@ -26,8 +28,24 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
     ).length;
   });
 
-  const handleStepRecClick = (stepCode: string) => {
-    setActiveStepCode(stepCode);
+  // 由 activeStepKey 反推当前高亮的 stepCode（用于全景图卡片高亮 & 改进建议筛选）
+  const activeStep = steps.find((s) => s.key === activeStepKey);
+  const activeStepCode = activeStep?.code ?? '';
+
+  const handleCardClick = (stepCode: string) => {
+    if (!onStepChange) return;
+    if (stepCode === '') {
+      // 取消选中
+      onStepChange('');
+      return;
+    }
+    const matchedStep = steps.find((s) => s.code === stepCode);
+    // 再次点击同一张卡片则取消选中
+    if (matchedStep && matchedStep.key === activeStepKey) {
+      onStepChange('');
+    } else {
+      onStepChange(matchedStep ? matchedStep.key : '');
+    }
   };
 
   return (
@@ -54,7 +72,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
           className="mt-6"
           recCountMap={recCountMap}
           activeStepCode={activeStepCode}
-          onStepRecClick={handleStepRecClick}
+          onCardClick={handleCardClick}
         />
 
         <div className="border-slate-100pt-5 mt-6">
@@ -76,7 +94,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
             showHeader={false}
             variant="compact"
             activeStepCode={activeStepCode || undefined}
-            onClearFilter={() => setActiveStepCode('')}
+            onClearFilter={() => onStepChange?.('')}
           />
         </div>
       </div>

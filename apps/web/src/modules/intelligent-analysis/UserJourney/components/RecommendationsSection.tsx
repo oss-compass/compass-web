@@ -163,10 +163,11 @@ const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  // 激活筛选时重置展开状态
+  // activeStepCode 变化时：有筛选则展开全部，清除筛选则收起
   const prevActiveRef = React.useRef(activeStepCode);
   if (prevActiveRef.current !== activeStepCode) {
     prevActiveRef.current = activeStepCode;
+    setExpanded(!!activeStepCode);
   }
 
   // 按激活的 step 过滤（无激活时展示全部）
