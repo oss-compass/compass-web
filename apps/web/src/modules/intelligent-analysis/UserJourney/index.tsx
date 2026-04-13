@@ -266,7 +266,6 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               detailReportUrl={primaryProject.reportDetailUrl}
               projectVersion={primaryProject.projectInfo.version}
               metricNameMap={primaryProject.metricNameMap}
-              activeStepKey={activeStepKey}
               onStepChange={setActiveStepKey}
             />
 

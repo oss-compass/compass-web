@@ -81,7 +81,6 @@ type ReportSummaryCardProps = {
   detailReportUrl?: string;
   projectVersion?: string;
   metricNameMap?: Record<string, string>;
-  activeStepKey?: string;
   onStepChange?: (stepKey: string) => void;
 };
 
@@ -95,7 +94,6 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
   detailReportUrl,
   projectVersion,
   metricNameMap,
-  activeStepKey,
   onStepChange,
 }) => {
   const metadataItems = projectVersion
@@ -208,7 +206,6 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
         recommendations={recommendations}
         steps={journeySteps}
         metricNameMap={metricNameMap}
-        activeStepKey={activeStepKey}
         onStepChange={onStepChange}
       />
     </Card>
