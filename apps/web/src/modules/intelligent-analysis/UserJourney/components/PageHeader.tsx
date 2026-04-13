@@ -67,7 +67,7 @@ const ProjectPill: React.FC<{
             {project.name}
           </span>
           {project.version ? (
-            <span className="text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+            <span className="text-xs font-medium tracking-[0.08em] text-slate-400">
               {`版本 ${project.version}`}
             </span>
           ) : null}
@@ -308,7 +308,7 @@ const CascadingSelects: React.FC<{
           onChange={handleVersionChange}
           options={versionOptions}
           style={{ height: SELECT_H }}
-          className={`${selectCls} min-w-[130px] [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!uppercase [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500`}
+          className={`${selectCls} min-w-[130px] [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500`}
           dropdownStyle={{ minWidth: 160 }}
           getPopupContainer={getContainer}
         />

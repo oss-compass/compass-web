@@ -56,6 +56,14 @@ def extract_version(report_id: str) -> str:
     return clean
 
 
+def build_version_with_branch(version: str, branch: str) -> str:
+    """
+    Append branch to version string.
+    e.g. version='20260408_1824', branch='master' -> '20260408_1824_master'
+    """
+    return f"{version}@{branch}"
+
+
 def parse_json_file(filepath: str) -> dict | None:
     try:
         with open(filepath, encoding="utf-8") as f:
@@ -84,7 +92,9 @@ def collect_entries(data_dir: str) -> list[dict]:
 
         # --- report_id & version ---
         report_id: str = meta.get("report_id", "")
-        version = extract_version(report_id)
+        version_base = extract_version(report_id)
+        branch: str = project.get("branch", "master") or "master"
+        version = build_version_with_branch(version_base, branch)
 
         # --- project_name parts ---
         full_project_name: str = project.get("project_name", "")

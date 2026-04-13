@@ -19,6 +19,7 @@
     "project_name": "cann/asc-devkit",
     "repo_url": "https://gitcode.com/cann/asc-devkit",
     "platform": "gitcode",
+    "branch":"master",
     "description": "",
     "ecosystem": "",
     "hosting_platform": "gitcode",

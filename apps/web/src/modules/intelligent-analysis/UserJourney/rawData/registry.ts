@@ -4,7 +4,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/amct',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_amct_20260404_1834.json',
-    version: '20260404_1834',
+    version: '20260404_1834@master',
     org: 'cann',
     sig: 'tools',
     projectName: 'amct',
@@ -15,7 +15,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/amct',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_amct_20260405_1310.json',
-    version: '20260405_1310',
+    version: '20260405_1310@master',
     org: 'cann',
     sig: 'tools',
     projectName: 'amct',
@@ -26,7 +26,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/asc-devkit',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_asc_devkit_20260405_0027.json',
-    version: '20260405_0027',
+    version: '20260405_0027@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'asc-devkit',
@@ -37,7 +37,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/asc-devkit',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_asc_devkit_20260405_2147.json',
-    version: '20260405_2147',
+    version: '20260405_2147@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'asc-devkit',
@@ -48,7 +48,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/asc-devkit',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_asc_devkit_20260408_1824.json',
-    version: '20260408_1824',
+    version: '20260408_1824@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'asc-devkit',
@@ -59,7 +59,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/asc-tools',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_asc_tools_20260405_0217.json',
-    version: '20260405_0217',
+    version: '20260405_0217@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'asc-tools',
@@ -70,7 +70,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/asc-tools',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_asc_tools_20260406_0124.json',
-    version: '20260406_0124',
+    version: '20260406_0124@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'asc-tools',
@@ -81,7 +81,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ascend-boost-comm',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ascend_boost_comm_20260405_2320.json',
-    version: '20260405_2320',
+    version: '20260405_2320@master',
     org: 'cann',
     sig: 'aal',
     projectName: 'ascend-boost-comm',
@@ -92,7 +92,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ascend-transformer-boost',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ascend_transformer_boost_20260405_2320.json',
-    version: '20260405_2320',
+    version: '20260405_2320@master',
     org: 'cann',
     sig: 'aal',
     projectName: 'ascend-transformer-boost',
@@ -103,7 +103,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/asnumpy',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_asnumpy_20260405_1305.json',
-    version: '20260405_1305',
+    version: '20260405_1305@master',
     org: 'cann',
     sig: 'asnumpy',
     projectName: 'asnumpy',
@@ -114,7 +114,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/asnumpy',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_asnumpy_20260406_2301.json',
-    version: '20260406_2301',
+    version: '20260406_2301@master',
     org: 'cann',
     sig: 'asnumpy',
     projectName: 'asnumpy',
@@ -125,7 +125,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/atvc',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_atvc_20260405_0550.json',
-    version: '20260405_0550',
+    version: '20260405_0550@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'atvc',
@@ -136,7 +136,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/atvc',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_atvc_20260406_1004.json',
-    version: '20260406_1004',
+    version: '20260406_1004@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'atvc',
@@ -147,7 +147,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/atvoss',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_atvoss_20260405_2320.json',
-    version: '20260405_2320',
+    version: '20260405_2320@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'atvoss',
@@ -158,7 +158,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-samples',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann-samples-20260325-1931.json',
-    version: '20260325_1929',
+    version: '20260325_1929@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'cann-samples',
@@ -169,7 +169,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-learning-hub',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_learning_hub_20260404_0604.json',
-    version: '20260404_0604',
+    version: '20260404_0604@master',
     org: 'cann',
     sig: 'doc',
     projectName: 'cann-learning-hub',
@@ -180,7 +180,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-learning-hub',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_learning_hub_20260404_0835.json',
-    version: '20260404_0835',
+    version: '20260404_0835@master',
     org: 'cann',
     sig: 'doc',
     projectName: 'cann-learning-hub',
@@ -191,7 +191,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-recipes-embodied-intelligence',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_recipes_embodied_intelligence_20260405_2320.json',
-    version: '20260405_2320',
+    version: '20260405_2320@master',
     org: 'cann',
     sig: 'recipes',
     projectName: 'cann-recipes-embodied-intelligence',
@@ -202,7 +202,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-recipes-harmony-infer',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_recipes_harmony_infer_20260405_2320.json',
-    version: '20260405_2320',
+    version: '20260405_2320@master',
     org: 'cann',
     sig: 'recipes',
     projectName: 'cann-recipes-harmony-infer',
@@ -213,7 +213,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-recipes-infer',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_recipes_infer_20260405_2313.json',
-    version: '20260405_2313',
+    version: '20260405_2313@master',
     org: 'cann',
     sig: 'recipes',
     projectName: 'cann-recipes-infer',
@@ -224,7 +224,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-recipes-infer',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_recipes_infer_20260407_1114.json',
-    version: '20260407_1114',
+    version: '20260407_1114@master',
     org: 'cann',
     sig: 'recipes',
     projectName: 'cann-recipes-infer',
@@ -235,7 +235,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-recipes-spatial-intelligence',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_recipes_spatial_intelligence_20260405_2320.json',
-    version: '20260405_2320',
+    version: '20260405_2320@master',
     org: 'cann',
     sig: 'recipes',
     projectName: 'cann-recipes-spatial-intelligence',
@@ -246,7 +246,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-recipes-train',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_recipes_train_20260405_2321.json',
-    version: '20260405_2321',
+    version: '20260405_2321@master',
     org: 'cann',
     sig: 'recipes',
     projectName: 'cann-recipes-train',
@@ -257,7 +257,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-samples',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_samples_20260404_1544.json',
-    version: '20260404_1544',
+    version: '20260404_1544@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'cann-samples',
@@ -268,7 +268,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/cann-samples',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_cann_samples_20260405_0812.json',
-    version: '20260405_0812',
+    version: '20260405_0812@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'cann-samples',
@@ -279,7 +279,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/catlass',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_catlass_20260405_2320.json',
-    version: '20260405_2320',
+    version: '20260405_2320@master',
     org: 'cann',
     sig: 'catlass',
     projectName: 'catlass',
@@ -290,7 +290,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/creat-repo-test',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_creat_repo_test_20260403_2013.json',
-    version: '20260403_2013',
+    version: '20260403_2013@master',
     org: 'cann',
     sig: 'others',
     projectName: 'creat-repo-test',
@@ -301,7 +301,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/creat-repo-test',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_creat_repo_test_20260403_2049.json',
-    version: '20260403_2049',
+    version: '20260403_2049@master',
     org: 'cann',
     sig: 'others',
     projectName: 'creat-repo-test',
@@ -312,7 +312,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/driver',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_driver_20260404_1515.json',
-    version: '20260404_1515',
+    version: '20260404_1515@master',
     org: 'cann',
     sig: 'driver',
     projectName: 'driver',
@@ -323,7 +323,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/driver',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_driver_20260405_0421.json',
-    version: '20260405_0421',
+    version: '20260405_0421@master',
     org: 'cann',
     sig: 'driver',
     projectName: 'driver',
@@ -334,7 +334,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/elec-ops-inspection',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_elec_ops_inspection_20260404_0141.json',
-    version: '20260404_0141',
+    version: '20260404_0141@master',
     org: 'cann',
     sig: 'electrical-engineering',
     projectName: 'elec-ops-inspection',
@@ -345,7 +345,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/elec-ops-inspection',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_elec_ops_inspection_20260404_0343.json',
-    version: '20260404_0343',
+    version: '20260404_0343@master',
     org: 'cann',
     sig: 'electrical-engineering',
     projectName: 'elec-ops-inspection',
@@ -356,7 +356,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/elec-ops-prediction',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_elec_ops_prediction_20260404_0257.json',
-    version: '20260404_0257',
+    version: '20260404_0257@master',
     org: 'cann',
     sig: 'electrical-engineering',
     projectName: 'elec-ops-prediction',
@@ -367,7 +367,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/elec-ops-prediction',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_elec_ops_prediction_20260404_0515.json',
-    version: '20260404_0515',
+    version: '20260404_0515@master',
     org: 'cann',
     sig: 'electrical-engineering',
     projectName: 'elec-ops-prediction',
@@ -378,7 +378,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/elec-ops-simulation',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_elec_ops_simulation_20260404_0513.json',
-    version: '20260404_0513',
+    version: '20260404_0513@master',
     org: 'cann',
     sig: 'electrical-engineering',
     projectName: 'elec-ops-simulation',
@@ -389,7 +389,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/elec-ops-simulation',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_elec_ops_simulation_20260404_0654.json',
-    version: '20260404_0654',
+    version: '20260404_0654@master',
     org: 'cann',
     sig: 'electrical-engineering',
     projectName: 'elec-ops-simulation',
@@ -400,7 +400,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ge',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ge_20260404_1128.json',
-    version: '20260404_1128',
+    version: '20260404_1128@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'ge',
@@ -411,7 +411,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ge',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ge_20260404_2027.json',
-    version: '20260404_2027',
+    version: '20260404_2027@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'ge',
@@ -422,7 +422,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ge',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ge_20260410_1002.json',
-    version: '20260410_1002',
+    version: '20260410_1002@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'ge',
@@ -433,7 +433,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/graph-autofusion',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_graph_autofusion_20260405_0734.json',
-    version: '20260405_0734',
+    version: '20260405_0734@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'graph-autofusion',
@@ -444,7 +444,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/graph-autofusion',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_graph_autofusion_20260406_1512.json',
-    version: '20260406_1512',
+    version: '20260406_1512@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'graph-autofusion',
@@ -455,7 +455,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/hccl',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_hccl_20260403_1903.json',
-    version: '20260403_1903',
+    version: '20260403_1903@master',
     org: 'cann',
     sig: 'hccl',
     projectName: 'hccl',
@@ -466,7 +466,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/hccl',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_hccl_20260403_1924.json',
-    version: '20260403_1924',
+    version: '20260403_1924@master',
     org: 'cann',
     sig: 'hccl',
     projectName: 'hccl',
@@ -477,7 +477,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/hcomm',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_hcomm_20260405_1035.json',
-    version: '20260405_1035',
+    version: '20260405_1035@master',
     org: 'cann',
     sig: 'hccl',
     projectName: 'hcomm',
@@ -488,7 +488,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/hcomm',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_hcomm_20260406_1831.json',
-    version: '20260406_1831',
+    version: '20260406_1831@master',
     org: 'cann',
     sig: 'hccl',
     projectName: 'hcomm',
@@ -499,7 +499,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/hixl',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_hixl_20260405_1143.json',
-    version: '20260405_1143',
+    version: '20260405_1143@master',
     org: 'cann',
     sig: 'hccl',
     projectName: 'hixl',
@@ -510,7 +510,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/hixl',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_hixl_20260406_2022.json',
-    version: '20260406_2022',
+    version: '20260406_2022@master',
     org: 'cann',
     sig: 'hccl',
     projectName: 'hixl',
@@ -521,7 +521,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/mat-chem-sim-pred',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_mat_chem_sim_pred_20260404_0737.json',
-    version: '20260404_0737',
+    version: '20260404_0737@master',
     org: 'cann',
     sig: 'material-chemical-engineering',
     projectName: 'mat-chem-sim-pred',
@@ -532,7 +532,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/mat-chem-sim-pred',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_mat_chem_sim_pred_20260404_1100.json',
-    version: '20260404_1100',
+    version: '20260404_1100@master',
     org: 'cann',
     sig: 'material-chemical-engineering',
     projectName: 'mat-chem-sim-pred',
@@ -543,7 +543,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/metadef',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_metadef_20260404_1233.json',
-    version: '20260404_1233',
+    version: '20260404_1233@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'metadef',
@@ -554,7 +554,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/metadef',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_metadef_20260404_2227.json',
-    version: '20260404_2227',
+    version: '20260404_2227@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'metadef',
@@ -565,7 +565,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/oam-tools',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_oam-tools-20260413-0239.json',
-    version: '20260413_0239',
+    version: '20260413_0239@master',
     org: 'cann',
     sig: 'tools',
     projectName: 'oam-tools',
@@ -576,7 +576,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/oam-tools',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_oam_tools_20260404_1708.json',
-    version: '20260404_1708',
+    version: '20260404_1708@master',
     org: 'cann',
     sig: 'tools',
     projectName: 'oam-tools',
@@ -587,7 +587,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/oam-tools',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_oam_tools_20260405_1034.json',
-    version: '20260405_1034',
+    version: '20260405_1034@master',
     org: 'cann',
     sig: 'tools',
     projectName: 'oam-tools',
@@ -598,7 +598,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/opbase',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_opbase_20260405_2137.json',
-    version: '20260405_2137',
+    version: '20260405_2137@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'opbase',
@@ -609,7 +609,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/opbase',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_opbase_20260407_0904.json',
-    version: '20260407_0904',
+    version: '20260407_0904@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'opbase',
@@ -620,7 +620,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-math',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops-math-20260323-1500.json',
-    version: '20260323_1500',
+    version: '20260323_1500@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'ops-math',
@@ -631,7 +631,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-math',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops-math-20260325-2335.json',
-    version: '20260325_2320',
+    version: '20260325_2320@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'ops-math',
@@ -642,7 +642,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-blas',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_blas_20260404_0832.json',
-    version: '20260404_0832',
+    version: '20260404_0832@master',
     org: 'cann',
     sig: 'ops-linear-algebra',
     projectName: 'ops-blas',
@@ -653,7 +653,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-blas',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_blas_20260404_1320.json',
-    version: '20260404_1320',
+    version: '20260404_1320@master',
     org: 'cann',
     sig: 'ops-linear-algebra',
     projectName: 'ops-blas',
@@ -664,7 +664,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-cv',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_cv_20260405_1852.json',
-    version: '20260405_1852',
+    version: '20260405_1852@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'ops-cv',
@@ -675,7 +675,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-cv',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_cv_20260407_0459.json',
-    version: '20260407_0459',
+    version: '20260407_0459@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'ops-cv',
@@ -686,7 +686,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-math',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_math_20260405_2034.json',
-    version: '20260405_2034',
+    version: '20260405_2034@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'ops-math',
@@ -697,7 +697,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-math',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_math_20260407_0630.json',
-    version: '20260407_0630',
+    version: '20260407_0630@master',
     org: 'cann',
     sig: 'ops-basic',
     projectName: 'ops-math',
@@ -708,7 +708,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-nn',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_nn_20260405_1730.json',
-    version: '20260405_1730',
+    version: '20260405_1730@master',
     org: 'cann',
     sig: 'ops-nn',
     projectName: 'ops-nn',
@@ -719,7 +719,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-nn',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_nn_20260407_0257.json',
-    version: '20260407_0257',
+    version: '20260407_0257@master',
     org: 'cann',
     sig: 'ops-nn',
     projectName: 'ops-nn',
@@ -730,7 +730,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-transformer',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_transformer_20260405_1543.json',
-    version: '20260405_1543',
+    version: '20260405_1543@master',
     org: 'cann',
     sig: 'ops-transformer',
     projectName: 'ops-transformer',
@@ -741,7 +741,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/ops-transformer',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_ops_transformer_20260407_0106.json',
-    version: '20260407_0106',
+    version: '20260407_0106@master',
     org: 'cann',
     sig: 'ops-transformer',
     projectName: 'ops-transformer',
@@ -752,7 +752,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/pto-isa',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_pto_isa_20260404_0946.json',
-    version: '20260404_0946',
+    version: '20260404_0946@master',
     org: 'cann',
     sig: 'pto',
     projectName: 'pto-isa',
@@ -763,7 +763,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/pto-isa',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_pto_isa_20260404_1644.json',
-    version: '20260404_1644',
+    version: '20260404_1644@master',
     org: 'cann',
     sig: 'pto',
     projectName: 'pto-isa',
@@ -774,7 +774,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/pyasc',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_pyasc_20260405_0347.json',
-    version: '20260405_0347',
+    version: '20260405_0347@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'pyasc',
@@ -785,7 +785,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/pyasc',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_pyasc_20260406_0402.json',
-    version: '20260406_0402',
+    version: '20260406_0402@master',
     org: 'cann',
     sig: 'ascendc',
     projectName: 'pyasc',
@@ -796,7 +796,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/pypto',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_pypto_20260404_1934.json',
-    version: '20260404_1934',
+    version: '20260404_1934@master',
     org: 'cann',
     sig: 'pto',
     projectName: 'pypto',
@@ -807,7 +807,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/pypto',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_pypto_20260405_1626.json',
-    version: '20260405_1626',
+    version: '20260405_1626@master',
     org: 'cann',
     sig: 'pto',
     projectName: 'pypto',
@@ -818,7 +818,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/runtime',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_runtime_20260404_1427.json',
-    version: '20260404_1427',
+    version: '20260404_1427@master',
     org: 'cann',
     sig: 'runtime',
     projectName: 'runtime',
@@ -829,7 +829,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/runtime',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_runtime_20260405_0128.json',
-    version: '20260405_0128',
+    version: '20260405_0128@master',
     org: 'cann',
     sig: 'runtime',
     projectName: 'runtime',
@@ -840,7 +840,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/shmem',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_shmem_20260405_0518.json',
-    version: '20260405_0518',
+    version: '20260405_0518@master',
     org: 'cann',
     sig: 'shmem',
     projectName: 'shmem',
@@ -851,7 +851,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/shmem',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_shmem_20260406_0742.json',
-    version: '20260406_0742',
+    version: '20260406_0742@master',
     org: 'cann',
     sig: 'shmem',
     projectName: 'shmem',
@@ -862,7 +862,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/sip',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_sip_20260405_0712.json',
-    version: '20260405_0712',
+    version: '20260405_0712@master',
     org: 'cann',
     sig: 'aal',
     projectName: 'sip',
@@ -873,7 +873,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/sip',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_sip_20260406_1235.json',
-    version: '20260406_1235',
+    version: '20260406_1235@master',
     org: 'cann',
     sig: 'aal',
     projectName: 'sip',
@@ -884,7 +884,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/triton-inference-server-ge-backend',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_triton_inference_server_ge_backend_20260404_2159.json',
-    version: '20260404_2159',
+    version: '20260404_2159@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'triton-inference-server-ge-backend',
@@ -895,7 +895,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/triton-inference-server-ge-backend',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_triton_inference_server_ge_backend_20260405_1803.json',
-    version: '20260405_1803',
+    version: '20260405_1803@master',
     org: 'cann',
     sig: 'ge',
     projectName: 'triton-inference-server-ge-backend',
@@ -906,7 +906,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'nvidia/cuda-samples',
     reportPath:
       '/data/intelligent-analysis/user-journey/nvidia_cuda-samples-20260325-1920.json',
-    version: '20260325_1917',
+    version: '20260325_1917@master',
     org: 'nvidia',
     sig: 'other',
     projectName: 'cuda-samples',
