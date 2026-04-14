@@ -593,6 +593,17 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'oam-tools',
     hardware_access: 'Ascend 910B',
   },
+  cann_oam_tools_20260413_1218: {
+    projectKey: 'cann_oam_tools',
+    label: 'cann/oam-tools',
+    reportPath:
+      '/data/intelligent-analysis/user-journey/cann_oam_tools_20260413_1218.json',
+    version: 'cann_oam-tools-20260413-1218@master',
+    org: 'cann',
+    sig: 'tools',
+    projectName: 'oam-tools',
+    hardware_access: 'Ascend 910C',
+  },
   cann_opbase_20260405_2137: {
     projectKey: 'cann_opbase',
     label: 'cann/opbase',
