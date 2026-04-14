@@ -14,6 +14,8 @@ interface Props {
   redirectToAuth?: boolean;
   /** 所需的最低权限级别 */
   requiredRoleLevel?: number;
+  /** 允许访问的权限级别白名单（满足其中之一即可），与 requiredRoleLevel 互斥，优先级更高 */
+  allowedRoleLevels?: number[];
   /** 权限不足时的提示内容 */
   permissionDeniedUi?: React.ReactNode;
   /** 权限不足时是否重定向到首页，默认为 true */
@@ -28,6 +30,7 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
   redirectTo,
   redirectToAuth = true,
   requiredRoleLevel,
+  allowedRoleLevels,
   permissionDeniedUi,
   redirectOnPermissionDenied = true,
 }) => {
@@ -72,7 +75,7 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
       return null;
     } else {
       return (
-        <div className="text-steel pt-20 pb-10 text-center text-2xl">
+        <div className="text-steel pb-10 pt-20 text-center text-2xl">
           Please
           <Link href={authUrl} className=" text-primary mx-2">
             Sign In
@@ -84,7 +87,12 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
   }
 
   // 权限检查
-  if (requiredRoleLevel !== undefined && roleLevel < requiredRoleLevel) {
+  const permissionDenied =
+    allowedRoleLevels !== undefined
+      ? !allowedRoleLevels.includes(roleLevel)
+      : requiredRoleLevel !== undefined && roleLevel < requiredRoleLevel;
+
+  if (permissionDenied) {
     if (permissionDeniedUi) {
       return <>{permissionDeniedUi}</>;
     }
@@ -95,7 +103,7 @@ const AuthRequire: React.FC<PropsWithChildren<Props>> = ({
     }
 
     return (
-      <div className="text-steel pt-20 pb-10 text-center text-2xl">
+      <div className="text-steel pb-10 pt-20 text-center text-2xl">
         No Permission
       </div>
     );

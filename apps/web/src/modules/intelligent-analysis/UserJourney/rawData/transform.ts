@@ -549,7 +549,7 @@ const getAverageScore = (scores: number[], hasMetrics: boolean) => {
     );
   }
 
-  return hasMetrics ? 0 : 50;
+  return hasMetrics ? null : 0;
 };
 
 const buildJourneyStep = (
@@ -574,10 +574,12 @@ const buildJourneyStep = (
 
   // 有 journey_map 条目时严格使用其 score：
   //   - score 为数字 → 直接用
-  //   - score 为 null 或 not_evaluated: true → 视为 0
+  //   - score 为 null 或 not_evaluated: true → 视为 null（未评估）
   // 无条目时 fallback 到主观指标均值
   const journeyMapScore = journeyMapEntry
-    ? (typeof journeyMapEntry.score === 'number' ? journeyMapEntry.score : 0)
+    ? typeof journeyMapEntry.score === 'number'
+      ? journeyMapEntry.score
+      : null
     : null;
 
   // 兜底：从主观指标均值计算（仅在无 journey_map 条目时使用）
@@ -603,8 +605,11 @@ const buildJourneyStep = (
     Boolean(panoramaMetricCount)
   );
 
-  // 有 journey_map 条目时严格使用，无条目时 fallback 到计算值
-  const panoramaScore = journeyMapScore ?? derivedPanoramaScore;
+  // 有 journey_map 条目时严格使用其 score（含 null），不 fallback 到指标均值
+  // 无 journey_map 条目时才 fallback 到主观指标均值
+  const panoramaScore = journeyMapEntry
+    ? journeyMapScore
+    : derivedPanoramaScore;
   const narrative = normalizeText(assessment?.subjective.narrative);
   const shortPainSummary = normalizeText(assessment?.subjective.pain_summary);
   const painLevel = getPainLevelFromScore(panoramaScore);

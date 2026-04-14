@@ -102,8 +102,8 @@ export type JourneyStep = {
   iconKey: string;
   icon: React.ReactNode;
   color: string;
-  score: number;
-  panoramaScore: number;
+  score: number | null;
+  panoramaScore: number | null;
   benchmarkScore: number;
   timeShare: string;
   painLevel: PainLevel;

@@ -39,6 +39,7 @@ const StepNode: React.FC<StepNodeProps> = ({
   compact = false,
 }) => {
   const panoramaScore = step.panoramaScore;
+  const hasScore = panoramaScore !== null && panoramaScore !== undefined;
   const painLevel = getPainLevelFromScore(panoramaScore);
   const guideItem = getPainGuideItem(painLevel);
   const icon =
@@ -86,48 +87,100 @@ const StepNode: React.FC<StepNodeProps> = ({
           </div>
         </div>
 
-        <div className="mt-5 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
-          {getStarText(panoramaScore)}
-        </div>
-
-        <div className="mt-2 text-center">
-          <span className="text-[28px] font-semibold leading-none text-slate-900">
-            {panoramaScore}
-          </span>
-          <span className="ml-1 text-xs font-medium text-slate-500">分</span>
-        </div>
-
-        <div className="mt-4 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-2 py-1.5">
-          <div className="flex items-center justify-center gap-1.5 text-[14px] font-semibold text-slate-500">
-            {icon}
-            <Popover
-              title={
-                <div className="text-sm font-semibold text-slate-900">
-                  痛点等级说明
-                </div>
-              }
-              content={
-                <PainGuidePopoverContent
-                  currentPainLevel={step.painLevel}
-                  currentColor={step.color}
-                />
-              }
-              placement="bottom"
-              trigger="hover"
-              overlayStyle={{ maxWidth: 'min(760px, calc(100vw - 32px))' }}
-            >
-              <span className="cursor-pointer transition-colors hover:text-slate-700 hover:underline">
-                {guideItem.label}
+        {hasScore ? (
+          <>
+            <div className="mt-5 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
+              {getStarText(panoramaScore)}
+            </div>
+            <div className="mt-2 text-center">
+              <span className="text-[28px] font-semibold leading-none text-slate-900">
+                {panoramaScore}
               </span>
-            </Popover>
+              <span className="ml-1 text-xs font-medium text-slate-500">
+                分
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="mt-3 flex flex-col items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              <span className="h-px w-5 bg-slate-300" />
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                Not Evaluated
+              </span>
+              <span className="h-px w-5 bg-slate-300" />
+            </div>
           </div>
-          <div className="mt-1 min-h-[40px] cursor-pointer text-center">
-            <Tooltip title={getCompactResult(step)} placement="bottom">
-              <div className="line-clamp-3 text-[12px] leading-4 text-slate-700">
-                {getCompactResult(step)}
-              </div>
-            </Tooltip>
-          </div>
+        )}
+
+        <div
+          className={`mt-4 flex flex-1 flex-col rounded-2xl border px-2 py-1.5 ${
+            hasScore
+              ? 'border-slate-200/70 bg-white/80'
+              : 'border-dashed border-slate-200 bg-slate-50/60'
+          }`}
+        >
+          {hasScore ? (
+            <div className="flex items-center justify-center gap-1.5 text-[14px] font-semibold text-slate-500">
+              {icon}
+              <Popover
+                title={
+                  <div className="text-sm font-semibold text-slate-900">
+                    痛点等级说明
+                  </div>
+                }
+                content={
+                  <PainGuidePopoverContent
+                    currentPainLevel={step.painLevel}
+                    currentColor={step.color}
+                  />
+                }
+                placement="bottom"
+                trigger="hover"
+                overlayStyle={{ maxWidth: 'min(760px, calc(100vw - 32px))' }}
+              >
+                <span className="cursor-pointer transition-colors hover:text-slate-700 hover:underline">
+                  {guideItem.label}
+                </span>
+              </Popover>
+            </div>
+          ) : (
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
+              <svg
+                className="h-7 w-7 text-slate-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeDasharray="3 2"
+                />
+                <path
+                  d="M9 12h6M12 9v6"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="text-center text-base leading-4 text-slate-400">
+                本次未评估
+              </span>
+            </div>
+          )}
+          {hasScore && (
+            <div className="mt-1 min-h-[40px] cursor-pointer text-center">
+              <Tooltip title={getCompactResult(step)} placement="bottom">
+                <div className="line-clamp-3 text-[12px] leading-4 text-slate-700">
+                  {getCompactResult(step)}
+                </div>
+              </Tooltip>
+            </div>
+          )}
         </div>
       </div>
     </div>
