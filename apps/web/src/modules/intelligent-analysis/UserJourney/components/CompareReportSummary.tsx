@@ -1,6 +1,5 @@
 import React from 'react';
 import ComparePanoramaCard from './ComparePanoramaCard';
-import CompareRecommendationsCard from './CompareRecommendationsCard';
 import ComparisonTableCard, {
   ComparisonTableColumn,
   ComparisonTableRow,
@@ -120,7 +119,6 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
   return (
     <div className="flex flex-col gap-5">
       <div className=">lg:flex-row flex flex-col gap-4">
-    
         <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
           <ComparisonTableCard
             title="报告概览"
@@ -128,7 +126,7 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
             rows={overviewRows}
           />
         </div>
-            <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
+        <div className=">lg:min-w-0 >lg:flex-1 >lg:basis-0">
           <ComparisonTableCard
             title="报告元数据"
             columns={metadataColumns}
@@ -137,7 +135,6 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
         </div>
       </div>
       <ComparePanoramaCard projects={projects} />
-      <CompareRecommendationsCard projects={projects} />
     </div>
   );
 };

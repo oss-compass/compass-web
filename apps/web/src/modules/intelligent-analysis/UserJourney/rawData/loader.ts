@@ -64,7 +64,7 @@ const fetchUserJourneyReport = async (
   return (await response.json()) as BackendReportData;
 };
 
-const attachProjectRegistryMeta = (
+export const attachProjectRegistryMeta = (
   projectData: UserJourneyProjectData,
   projectFileKey: UserJourneyProjectFileKey
 ): UserJourneyProjectData => {

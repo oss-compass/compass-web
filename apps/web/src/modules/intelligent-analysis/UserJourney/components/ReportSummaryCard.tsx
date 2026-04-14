@@ -7,12 +7,7 @@ import {
   getExperienceGradeFromScore,
   getExperienceGradeGuideItem,
 } from '../helpers';
-import {
-  JourneyRecommendation,
-  JourneyStep,
-  OverviewMetric,
-  ReportMetadataItem,
-} from '../types';
+import { JourneyStep, OverviewMetric, ReportMetadataItem } from '../types';
 
 const { Text } = Typography;
 
@@ -75,12 +70,11 @@ type ReportSummaryCardProps = {
   projectName: string;
   reportMetadata: ReportMetadataItem[];
   overviewMetrics: OverviewMetric[];
-  recommendations: JourneyRecommendation[];
   journeySteps: JourneyStep[];
   reportUpdatedAt: string;
   detailReportUrl?: string;
   projectVersion?: string;
-  metricNameMap?: Record<string, string>;
+  projectFileKey?: string;
   onStepChange?: (stepKey: string) => void;
 };
 
@@ -88,12 +82,11 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
   projectName,
   reportMetadata,
   overviewMetrics,
-  recommendations,
   journeySteps,
   reportUpdatedAt,
   detailReportUrl,
   projectVersion,
-  metricNameMap,
+  projectFileKey,
   onStepChange,
 }) => {
   const metadataItems = projectVersion
@@ -203,9 +196,8 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
 
       <JourneyPanoramaSection
         projectName={projectName}
-        recommendations={recommendations}
         steps={journeySteps}
-        metricNameMap={metricNameMap}
+        projectFileKey={projectFileKey}
         onStepChange={onStepChange}
       />
     </Card>

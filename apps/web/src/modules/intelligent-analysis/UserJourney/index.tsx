@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Col, Row } from 'antd';
 import { useRouter } from 'next/router';
 import CompareReportSummary from './components/CompareReportSummary';
@@ -8,7 +8,6 @@ import ReportSummaryCard from './components/ReportSummaryCard';
 import StepDetailCard from './components/StepDetailCard';
 import StepSidebar from './components/StepSidebar';
 import {
-  loadUserJourneyProjectData,
   resolveUserJourneyProjectFileKey,
   USER_JOURNEY_COMPARE_PROJECT_OPTIONS,
   USER_JOURNEY_PROJECT_KEY_MAP,
@@ -16,6 +15,7 @@ import {
   USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP,
   UserJourneyProjectFileKey,
 } from './rawData';
+import { useUserJourneyReport } from './hooks/useUserJourneyReport';
 import { UserJourneyProjectView } from './types';
 
 const getProjectQueryValues = (project: string | string[] | undefined) => {
@@ -61,58 +61,38 @@ const UserJourney: React.FC<UserJourneyProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [requestedProjectsKey]
   );
-  const [projectViews, setProjectViews] = useState<UserJourneyProjectView[]>(
-    []
-  );
-  const [loadingError, setLoadingError] = useState<string | null>(null);
   const [activeStepKey, setActiveStepKey] = useState('');
   const [developerType, setDeveloperType] = useState('');
   const [journeyMode, setJourneyMode] = useState('');
+
+  const project0Key = requestedProjects[0] as
+    | UserJourneyProjectFileKey
+    | undefined;
+  const project1Key = requestedProjects[1] as
+    | UserJourneyProjectFileKey
+    | undefined;
+
+  const { data: project0Data, isError: isError0 } = useUserJourneyReport(
+    router.isReady ? project0Key : undefined
+  );
+  const { data: project1Data } = useUserJourneyReport(
+    router.isReady ? project1Key : undefined
+  );
+
+  const projectViews = useMemo<UserJourneyProjectView[]>(() => {
+    const views: UserJourneyProjectView[] = [];
+    if (project0Key && project0Data) {
+      views.push({ queryKey: project0Key, data: project0Data });
+    }
+    if (project1Key && project1Data) {
+      views.push({ queryKey: project1Key, data: project1Data });
+    }
+    return views;
+  }, [project0Key, project0Data, project1Key, project1Data]);
+
   const compareMode = projectViews.length > 1;
   const primaryProject = projectViews[0]?.data ?? null;
-  // 记录上一次已加载的 key，避免 router 对象重新初始化时重复加载相同数据
-  const loadedKeyRef = useRef<string>('');
-
-  useEffect(() => {
-    if (!router.isReady) {
-      return;
-    }
-
-    if (loadedKeyRef.current === requestedProjectsKey) {
-      return;
-    }
-
-    loadedKeyRef.current = requestedProjectsKey;
-    let isCancelled = false;
-
-    setLoadingError(null);
-
-    void Promise.all(
-      requestedProjects.map(async (projectKey) => ({
-        queryKey: projectKey,
-        data: await loadUserJourneyProjectData(projectKey),
-      }))
-    )
-      .then((nextProjectViews) => {
-        if (isCancelled) {
-          return;
-        }
-
-        setProjectViews(nextProjectViews);
-      })
-      .catch((error) => {
-        if (isCancelled) {
-          return;
-        }
-
-        console.error('Failed to load UserJourney report data.', error);
-        setLoadingError('报告数据加载失败');
-      });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [requestedProjects, router.isReady]);
+  const loadingError = isError0 ? '报告数据加载失败' : null;
 
   useEffect(() => {
     const firstProject = projectViews[0]?.data;
@@ -260,12 +240,11 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               projectName={primaryProject.projectInfo.name}
               reportMetadata={primaryProject.reportMetadata}
               overviewMetrics={primaryProject.overviewMetrics}
-              recommendations={primaryProject.recommendations}
               journeySteps={primaryProject.journeySteps}
               reportUpdatedAt={primaryProject.reportUpdatedAt}
               detailReportUrl={primaryProject.reportDetailUrl}
               projectVersion={primaryProject.projectInfo.version}
-              metricNameMap={primaryProject.metricNameMap}
+              projectFileKey={currentProjectFileKey}
               onStepChange={setActiveStepKey}
             />
 

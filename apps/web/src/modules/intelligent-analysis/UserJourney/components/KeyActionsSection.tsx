@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Modal, Tooltip } from 'antd';
 import { ActionDetailRecord, ActionStatus } from '../types';
 import { getActionStatusClasses } from '../helpers';
 import taskDefinitions from '../rawData/task_definitions.json';
+import useLogData, { LogCommand, LogTask } from '../hooks/useLogData';
 
 /* ─── 类型 ─── */
 type TaskDefinition = {
@@ -15,38 +16,6 @@ type TaskDefinition = {
   expected_outcome?: string;
   success_indicators?: string[];
   failure_indicators?: string[];
-};
-
-/** log 文件中单条 command */
-type LogCommand = {
-  id: string;
-  name: string;
-  status: string;
-  args?: string;
-  output?: string;
-  output_summary?: string;
-  thought?: string;
-  created_at?: string;
-  duration_time?: string;
-};
-
-/** log 文件中单个 task 节点 */
-type LogTask = {
-  name: string;
-  id: string;
-  belong_to_phase?: string;
-  status: string;
-  evidence?: {
-    observations?: string[];
-    pain_points?: string[];
-  };
-  commands?: LogCommand[];
-};
-
-/** log 文件整体结构 */
-type LogData = {
-  _meta?: Record<string, string>;
-  [taskId: string]: LogTask | Record<string, string> | undefined;
 };
 
 type KeyActionsSectionProps = {
@@ -297,7 +266,9 @@ const EvidenceInline: React.FC<{
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-1.5">
         <EvidenceIcon className="h-3.5 w-3.5 text-slate-400" />
-        <span className="text-sm font-semibold text-slate-700">观点 & 痛点</span>
+        <span className="text-sm font-semibold text-slate-700">
+          观点 & 痛点
+        </span>
         <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-200 px-1 text-[10px] font-bold leading-none text-slate-600">
           {(observations?.length ?? 0) + (pain_points?.length ?? 0)}
         </span>
@@ -314,7 +285,10 @@ const EvidenceInline: React.FC<{
             </div>
             <ul className="space-y-1.5">
               {observations!.map((obs, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm leading-5 text-sky-900">
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-sm leading-5 text-sky-900"
+                >
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
                   {obs}
                 </li>
@@ -333,7 +307,10 @@ const EvidenceInline: React.FC<{
             </div>
             <ul className="space-y-1.5">
               {pain_points!.map((p, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm leading-5 text-rose-900">
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-sm leading-5 text-rose-900"
+                >
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
                   {p}
                 </li>
@@ -846,7 +823,9 @@ const TaskCard: React.FC<{
       </div>
 
       {/* 有 log 时：观点 & 痛点置于表格上方 */}
-      {tableExpanded && logTask && (evidence?.observations?.length || evidence?.pain_points?.length) ? (
+      {tableExpanded &&
+      logTask &&
+      (evidence?.observations?.length || evidence?.pain_points?.length) ? (
         <div className="border-b border-slate-100 px-5 py-4">
           <EvidenceInline
             observations={evidence?.observations}
@@ -888,30 +867,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   executionPathItems,
   projectFileKey,
 }) => {
-  const [logData, setLogData] = useState<LogData | null>(null);
-  const fetchedRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!projectFileKey || fetchedRef.current === projectFileKey) return;
-    fetchedRef.current = projectFileKey;
-
-    // 切换项目时先清空旧 log 数据，避免显示上一个项目的内容
-    setLogData(null);
-
-    const url = `/data/intelligent-analysis/user-journey/log/log_${projectFileKey}.json`;
-    fetch(url, { cache: 'no-store' })
-      .then((res) => {
-        if (!res.ok) return null;
-        return res.json() as Promise<LogData>;
-      })
-      .then((data) => {
-        // 404 或解析失败时 data 为 null，setLogData(null) 保持降级状态
-        setLogData(data);
-      })
-      .catch(() => {
-        setLogData(null);
-      });
-  }, [projectFileKey]);
+  const logData = useLogData(projectFileKey);
 
   const groups = groupByTaskId(executionPathItems);
 

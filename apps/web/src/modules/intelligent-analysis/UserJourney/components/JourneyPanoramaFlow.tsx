@@ -27,7 +27,6 @@ const getCompactResult = (step: JourneyStep) => {
 
 type StepNodeProps = {
   step: JourneyStep;
-  recCount: number;
   isActive: boolean;
   onCardClick: (stepCode: string) => void;
   compact?: boolean;
@@ -35,7 +34,6 @@ type StepNodeProps = {
 
 const StepNode: React.FC<StepNodeProps> = ({
   step,
-  recCount,
   isActive,
   onCardClick,
   compact = false,
@@ -131,16 +129,6 @@ const StepNode: React.FC<StepNodeProps> = ({
             </Tooltip>
           </div>
         </div>
-
-        {/* 改进点 tag */}
-        {recCount > 0 && (
-          <div className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white/60 px-2 py-1.5 text-[11px] font-medium text-slate-500">
-            改进点
-            <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-slate-400 px-1 text-[10px] font-semibold leading-none text-white">
-              {recCount}
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -149,7 +137,6 @@ const StepNode: React.FC<StepNodeProps> = ({
 type JourneyPanoramaFlowProps = {
   steps: JourneyStep[];
   className?: string;
-  recCountMap?: Record<string, number>;
   activeStepCode?: string;
   onCardClick?: (stepCode: string) => void;
   compact?: boolean;
@@ -158,7 +145,6 @@ type JourneyPanoramaFlowProps = {
 const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
   steps,
   className = '',
-  recCountMap = {},
   activeStepCode,
   onCardClick,
   compact = false,
@@ -170,7 +156,6 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
           <React.Fragment key={step.key}>
             <StepNode
               step={step}
-              recCount={recCountMap[step.code] ?? 0}
               isActive={activeStepCode === step.code}
               compact={compact}
               onCardClick={(code) => {
