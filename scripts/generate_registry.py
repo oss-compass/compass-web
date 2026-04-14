@@ -130,12 +130,20 @@ def collect_entries(data_dir: str) -> list[dict]:
             "label": label,
             "reportPath": report_path,
             "version": version,
+            "version_base": version_base,  # used for sorting only
             "org": org,
             "sig": sig,
             "projectName": proj_part,
             "hardware_access": hardware_access,
         })
         print(f"  [OK] {fname}  ->  {entry_key}")
+
+    # Sort by version_base descending (newest first)
+    entries.sort(key=lambda e: e["version_base"], reverse=True)
+
+    # Remove internal-only field before rendering
+    for e in entries:
+        e.pop("version_base")
 
     return entries
 
