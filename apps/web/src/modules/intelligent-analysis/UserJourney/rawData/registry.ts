@@ -598,7 +598,7 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     label: 'cann/oam-tools',
     reportPath:
       '/data/intelligent-analysis/user-journey/cann_oam_tools_20260413_1218.json',
-    version: 'cann_oam-tools-20260413-1218@master',
+    version: '20260413_1218@master',
     org: 'cann',
     sig: 'tools',
     projectName: 'oam-tools',
@@ -1044,7 +1044,7 @@ export const filterRegistryEntries = (
 ): Array<
   [
     UserJourneyProjectFileKey,
-    (typeof USER_JOURNEY_PROJECT_REGISTRY)[UserJourneyProjectFileKey]
+    (typeof USER_JOURNEY_PROJECT_REGISTRY)[UserJourneyProjectFileKey],
   ]
 > => {
   return registryEntries.filter(([, entry]) => {
