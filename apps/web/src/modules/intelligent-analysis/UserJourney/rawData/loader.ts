@@ -10,6 +10,7 @@ import {
   UserJourneyProjectFileKey,
   UserJourneyProjectKey,
 } from './registry';
+import { compassApiFetch } from './apiClient';
 
 const GITHUB_REPORT_BASE =
   'https://github.com/oss-compass/Cogito/blob/main/developer_experience_agent/reports/';
@@ -47,21 +48,26 @@ const isValidUserJourneyProjectKey = (
 
 const fetchUserJourneyReport = async (
   projectFileKey: UserJourneyProjectFileKey
-) => {
-  const response = await fetch(
-    USER_JOURNEY_PROJECT_REPORT_MAP[projectFileKey],
-    {
-      cache: 'no-store',
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch UserJourney report: ${projectFileKey} (${response.status})`
+): Promise<BackendReportData> => {
+  // 优先调用后端 API
+  try {
+    return await compassApiFetch<BackendReportData>(
+      `/reports/${projectFileKey}`
     );
+  } catch {
+    // 后端不可用时回退到静态文件
+    const staticUrl = USER_JOURNEY_PROJECT_REPORT_MAP[projectFileKey];
+    if (!staticUrl) {
+      throw new Error(`No report found for key: ${projectFileKey}`);
+    }
+    const response = await fetch(staticUrl, { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch UserJourney report: ${projectFileKey} (${response.status})`
+      );
+    }
+    return (await response.json()) as BackendReportData;
   }
-
-  return (await response.json()) as BackendReportData;
 };
 
 export const attachProjectRegistryMeta = (

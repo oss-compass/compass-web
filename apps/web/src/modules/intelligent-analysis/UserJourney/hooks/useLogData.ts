@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { compassApiFetch } from '../rawData/apiClient';
 
 /** log 文件中单条 command */
 export type LogCommand = {
@@ -32,13 +33,22 @@ export type LogData = {
   [taskId: string]: LogTask | Record<string, string> | undefined;
 };
 
+/**
+ * 从后端 API 获取 log 数据，失败时回退到静态文件。
+ */
 const fetchLogData = async (
   projectFileKey: string
 ): Promise<LogData | null> => {
-  const url = `/data/intelligent-analysis/user-journey/log/log_${projectFileKey}.json`;
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  return res.json() as Promise<LogData>;
+  // 优先调用后端 API
+  try {
+    return await compassApiFetch<LogData>(`/logs/${projectFileKey}`);
+  } catch {
+    // 后端不可用时回退到静态文件
+    const staticUrl = `/data/intelligent-analysis/user-journey/log/log_${projectFileKey}.json`;
+    const res = await fetch(staticUrl);
+    if (!res.ok) return null;
+    return res.json() as Promise<LogData>;
+  }
 };
 
 /**
@@ -50,7 +60,7 @@ const useLogData = (projectFileKey: string | undefined): LogData | null => {
     queryKey: ['userJourneyLog', projectFileKey],
     queryFn: () => fetchLogData(projectFileKey!),
     enabled: !!projectFileKey,
-    staleTime: Infinity, // log 文件内容不会变化，永不过期
+    staleTime: Infinity,
     retry: false,
     refetchOnWindowFocus: false,
   });

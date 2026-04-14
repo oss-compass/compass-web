@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { UserJourneyProjectData } from '../types';
+import { UserJourneyProjectData, BackendReportData } from '../types';
 import {
   USER_JOURNEY_FALLBACK_PROJECT,
   USER_JOURNEY_PROJECT_REPORT_MAP,
@@ -7,22 +7,34 @@ import {
 } from '../rawData/registry';
 import { buildUserJourneyProjectData } from '../rawData/transform';
 import { attachProjectRegistryMeta } from '../rawData/loader';
+import { compassApiFetch } from '../rawData/apiClient';
 
 const fetchUserJourneyReport = async (
   projectFileKey: UserJourneyProjectFileKey
 ): Promise<UserJourneyProjectData> => {
-  const url = USER_JOURNEY_PROJECT_REPORT_MAP[projectFileKey];
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch UserJourney report: ${projectFileKey} (${response.status})`
+  // 优先调用后端 API
+  try {
+    const report = await compassApiFetch<BackendReportData>(
+      `/reports/${projectFileKey}`
     );
+    const projectData = buildUserJourneyProjectData(report);
+    return attachProjectRegistryMeta(projectData, projectFileKey);
+  } catch {
+    // 后端不可用时回退到静态文件
+    const staticUrl = USER_JOURNEY_PROJECT_REPORT_MAP[projectFileKey];
+    if (!staticUrl) {
+      throw new Error(`No report found for key: ${projectFileKey}`);
+    }
+    const res = await fetch(staticUrl);
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch UserJourney report: ${projectFileKey} (${res.status})`
+      );
+    }
+    const report = (await res.json()) as BackendReportData;
+    const projectData = buildUserJourneyProjectData(report);
+    return attachProjectRegistryMeta(projectData, projectFileKey);
   }
-
-  const report = await response.json();
-  const projectData = buildUserJourneyProjectData(report);
-  return attachProjectRegistryMeta(projectData, projectFileKey);
 };
 
 /**
