@@ -21,6 +21,17 @@ export const USER_JOURNEY_PROJECT_REGISTRY = {
     projectName: 'amct',
     hardware_access: 'Ascend 910B',
   },
+  cann_amct_20260413_1712: {
+    projectKey: 'cann_amct',
+    label: 'cann/amct',
+    reportPath:
+      '/data/intelligent-analysis/user-journey/cann_amct_20260413_1712.json',
+    version: '20260413_1712@master',
+    org: 'cann',
+    sig: 'tools',
+    projectName: 'amct',
+    hardware_access: 'Ascend 910C',
+  },
   cann_asc_devkit_20260405_0027: {
     projectKey: 'cann_asc_devkit',
     label: 'cann/asc-devkit',
