@@ -202,6 +202,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
 
         <KeyActionsSection
           currentStepKey={currentStep.key}
+          stepCode={currentStep.code}
           executionPathItems={executionPathItems}
           projectFileKey={projectFileKey}
         />

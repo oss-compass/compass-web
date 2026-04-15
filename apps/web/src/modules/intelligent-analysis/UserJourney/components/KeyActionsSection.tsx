@@ -8,6 +8,7 @@ import useLogData, {
   LogTask,
   useCommandOutput,
 } from '../hooks/useLogData';
+import EvidencePanel, { EvidenceIcon } from './EvidencePanel';
 
 /* ─── 类型 ─── */
 type TaskDefinition = {
@@ -24,6 +25,8 @@ type TaskDefinition = {
 
 type KeyActionsSectionProps = {
   currentStepKey: string;
+  /** 步骤的 code（如 S1_env_setup），用于痛点确认的唯一键 */
+  stepCode?: string;
   executionPathItems: ActionDetailRecord[];
   /** 报告文件 key，如 cann_asc_devkit_20260408_1824，用于推导 log 路径 */
   projectFileKey?: string;
@@ -54,47 +57,6 @@ const ChevronIcon: React.FC<{ expanded: boolean; className?: string }> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-  </svg>
-);
-
-const EvidenceIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <svg
-    className={className}
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.4" />
-    <path
-      d="M8 5v3.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <circle cx="8" cy="11" r="0.75" fill="currentColor" />
-  </svg>
-);
-
-const PainIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <svg
-    className={className}
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M8 2L14 13H2L8 2Z"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8 6v3"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-    />
-    <circle cx="8" cy="10.5" r="0.75" fill="currentColor" />
   </svg>
 );
 
@@ -273,7 +235,9 @@ const LogOutputModal: React.FC<{
 const EvidenceInline: React.FC<{
   observations?: string[];
   pain_points?: string[];
-}> = ({ observations, pain_points }) => {
+  fileKey?: string;
+  stepId?: string;
+}> = ({ observations, pain_points, fileKey, stepId }) => {
   const hasObs = observations && observations.length > 0;
   const hasPain = pain_points && pain_points.length > 0;
   if (!hasObs && !hasPain) return null;
@@ -283,58 +247,19 @@ const EvidenceInline: React.FC<{
       <div className="flex items-center gap-1.5">
         <EvidenceIcon className="h-3.5 w-3.5 text-slate-400" />
         <span className="text-sm font-semibold text-slate-700">
-          观点 & 痛点
+          观点 &amp; 痛点
         </span>
         <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-200 px-1 text-[10px] font-bold leading-none text-slate-600">
           {(observations?.length ?? 0) + (pain_points?.length ?? 0)}
         </span>
       </div>
-      <div className="flex gap-3">
-        {hasObs && (
-          <div className="min-w-0 flex-1 rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
-            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-sky-600">
-              <EvidenceIcon className="h-3 w-3" />
-              观点
-              <span className="ml-0.5 rounded-full bg-sky-100 px-1.5 text-[10px] font-bold text-sky-700">
-                {observations!.length}
-              </span>
-            </div>
-            <ul className="space-y-1.5">
-              {observations!.map((obs, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2 text-sm leading-5 text-sky-900"
-                >
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                  {obs}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {hasPain && (
-          <div className="min-w-0 flex-1 rounded-xl border border-rose-100 bg-rose-50/70 px-4 py-3">
-            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600">
-              <PainIcon className="h-3 w-3" />
-              痛点
-              <span className="ml-0.5 rounded-full bg-rose-100 px-1.5 text-[10px] font-bold text-rose-700">
-                {pain_points!.length}
-              </span>
-            </div>
-            <ul className="space-y-1.5">
-              {pain_points!.map((p, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2 text-sm leading-5 text-rose-900"
-                >
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      <EvidencePanel
+        observations={observations}
+        pain_points={pain_points}
+        showEmpty={false}
+        fileKey={fileKey}
+        stepId={stepId}
+      />
     </div>
   );
 };
@@ -343,7 +268,9 @@ const EvidenceInline: React.FC<{
 const EvidenceBlock: React.FC<{
   observations?: string[];
   pain_points?: string[];
-}> = ({ observations, pain_points }) => {
+  fileKey?: string;
+  stepId?: string;
+}> = ({ observations, pain_points, fileKey, stepId }) => {
   const [open, setOpen] = useState(false);
   const hasData =
     (observations && observations.length > 0) ||
@@ -376,45 +303,15 @@ const EvidenceBlock: React.FC<{
       </button>
 
       {open && (
-        <div className="space-y-3 border-t border-slate-100 px-3 py-3">
-          {observations && observations.length > 0 && (
-            <div>
-              <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                <EvidenceIcon className="h-3 w-3" />
-                观点
-              </div>
-              <ul className="space-y-1">
-                {observations.map((obs, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-2 rounded-md bg-sky-50 px-2.5 py-1.5 text-sm text-sky-800"
-                  >
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                    {obs}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {pain_points && pain_points.length > 0 && (
-            <div>
-              <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                <PainIcon className="h-3 w-3" />
-                痛点
-              </div>
-              <ul className="space-y-1">
-                {pain_points.map((p, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-2 rounded-md bg-rose-50 px-2.5 py-1.5 text-sm text-rose-800"
-                  >
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+        <div className="border-t border-slate-100 px-3 py-3">
+          <EvidencePanel
+            observations={observations}
+            pain_points={pain_points}
+            variant="compact"
+            showEmpty={false}
+            fileKey={fileKey}
+            stepId={stepId}
+          />
         </div>
       )}
     </div>
@@ -781,7 +678,16 @@ const TaskCard: React.FC<{
   logTask?: LogTask;
   cardIndex: number;
   projectFileKey?: string;
-}> = ({ taskId, rows, currentStepKey, logTask, cardIndex, projectFileKey }) => {
+  stepCode?: string;
+}> = ({
+  taskId,
+  rows,
+  currentStepKey,
+  logTask,
+  cardIndex,
+  projectFileKey,
+  stepCode,
+}) => {
   const [tableExpanded, setTableExpanded] = useState(true);
 
   const def = taskId ? TASK_DEF_MAP[taskId] : undefined;
@@ -853,6 +759,8 @@ const TaskCard: React.FC<{
           <EvidenceInline
             observations={evidence?.observations}
             pain_points={evidence?.pain_points}
+            fileKey={projectFileKey}
+            stepId={stepCode}
           />
         </div>
       ) : null}
@@ -878,6 +786,8 @@ const TaskCard: React.FC<{
           <EvidenceBlock
             observations={evidence?.observations}
             pain_points={evidence?.pain_points}
+            fileKey={projectFileKey}
+            stepId={stepCode}
           />
         </div>
       )}
@@ -888,6 +798,7 @@ const TaskCard: React.FC<{
 /* ─── 主组件 ─── */
 const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   currentStepKey,
+  stepCode,
   executionPathItems,
   projectFileKey,
 }) => {
@@ -917,6 +828,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                 logTask={logTask}
                 cardIndex={idx + 1}
                 projectFileKey={projectFileKey}
+                stepCode={stepCode}
               />
             );
           })}

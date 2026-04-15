@@ -4,6 +4,7 @@ import JourneyPanoramaFlow from './JourneyPanoramaFlow';
 import { JourneyStep, UserJourneyProjectView } from '../types';
 import taskDefinitions from '../rawData/task_definitions.json';
 import useLogData, { LogTask } from '../hooks/useLogData';
+import EvidencePanel from './EvidencePanel';
 
 /* ─── 类型 ─── */
 type TaskDefinition = {
@@ -17,48 +18,6 @@ const TASK_DEF_MAP = (
   taskDefinitions as { tasks: Record<string, TaskDefinition> }
 ).tasks as Record<string, TaskDefinition>;
 
-/* ─── 图标 ─── */
-const EvidenceIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <svg
-    className={className}
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.4" />
-    <path
-      d="M8 5v3.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <circle cx="8" cy="11" r="0.75" fill="currentColor" />
-  </svg>
-);
-
-const PainIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <svg
-    className={className}
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M8 2L14 13H2L8 2Z"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8 6v3"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-    />
-    <circle cx="8" cy="10.5" r="0.75" fill="currentColor" />
-  </svg>
-);
-
 /* ─── 单个任务的观点 & 痛点卡片 ─── */
 const TaskEvidenceCard: React.FC<{
   taskId: string;
@@ -71,8 +30,6 @@ const TaskEvidenceCard: React.FC<{
 
   const observations = logTask?.evidence?.observations ?? [];
   const painPoints = logTask?.evidence?.pain_points ?? [];
-  const hasObs = observations.length > 0;
-  const hasPain = painPoints.length > 0;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
@@ -102,59 +59,7 @@ const TaskEvidenceCard: React.FC<{
         </div>
       </div>
       <div className="px-5 py-4">
-        {hasObs || hasPain ? (
-          <div className="flex gap-3">
-            {hasObs && (
-              <div className="min-w-0 flex-1 rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
-                <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-sky-600">
-                  <EvidenceIcon className="h-3 w-3" />
-                  观点
-                  <span className="ml-0.5 rounded-full bg-sky-100 px-1.5 text-[10px] font-bold text-sky-700">
-                    {observations.length}
-                  </span>
-                </div>
-                <ul className="space-y-1.5">
-                  {observations.map((obs, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-sm leading-5 text-sky-900"
-                    >
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                      {obs}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {hasPain && (
-              <div className="min-w-0 flex-1 rounded-xl border border-rose-100 bg-rose-50/70 px-4 py-3">
-                <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600">
-                  <PainIcon className="h-3 w-3" />
-                  痛点
-                  <span className="ml-0.5 rounded-full bg-rose-100 px-1.5 text-[10px] font-bold text-rose-700">
-                    {painPoints.length}
-                  </span>
-                </div>
-                <ul className="space-y-1.5">
-                  {painPoints.map((p, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-sm leading-5 text-rose-900"
-                    >
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-slate-200 px-3 py-2">
-            <EvidenceIcon className="h-3.5 w-3.5 shrink-0 text-slate-300" />
-            <span className="text-xs text-slate-400">暂无观点与痛点记录</span>
-          </div>
-        )}
+        <EvidencePanel observations={observations} pain_points={painPoints} />
       </div>
     </div>
   );
