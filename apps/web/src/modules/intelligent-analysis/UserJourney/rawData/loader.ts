@@ -92,7 +92,10 @@ export const attachProjectRegistryMeta = (
         USER_JOURNEY_PROJECT_LABEL_MAP[
           USER_JOURNEY_PROJECT_KEY_MAP[projectFileKey]
         ],
-      version: USER_JOURNEY_PROJECT_VERSION_MAP[projectFileKey],
+      version:
+        USER_JOURNEY_PROJECT_VERSION_MAP[projectFileKey] ||
+        projectData.projectInfo.version ||
+        projectFileKey,
     },
   };
 };

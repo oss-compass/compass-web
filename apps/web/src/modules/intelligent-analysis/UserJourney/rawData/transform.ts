@@ -733,6 +733,7 @@ export const buildUserJourneyProjectData = (
     reportDetailUrl: report.report_detail_url ?? '',
     projectInfo: {
       name: report.project.project_name,
+      version: report.version,
     },
     developerTypeOptions: USER_JOURNEY_DEVELOPER_TYPE_OPTIONS,
     defaultDeveloperType: USER_JOURNEY_DEFAULT_DEVELOPER_TYPE,

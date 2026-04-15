@@ -241,6 +241,8 @@ export type BackendJourneyMapEntry = {
 
 export type BackendReportData = {
   report_detail_url?: string;
+  /** ES 存储的版本号，如 "20260413_1712@master"，由后端注入 */
+  version?: string;
   meta: {
     report_id: string;
     report_title: string;
