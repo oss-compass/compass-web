@@ -3,7 +3,11 @@ import { Modal, Tooltip } from 'antd';
 import { ActionDetailRecord, ActionStatus } from '../types';
 import { getActionStatusClasses } from '../helpers';
 import taskDefinitions from '../rawData/task_definitions.json';
-import useLogData, { LogCommand, LogTask } from '../hooks/useLogData';
+import useLogData, {
+  LogCommand,
+  LogTask,
+  useCommandOutput,
+} from '../hooks/useLogData';
 
 /* ─── 类型 ─── */
 type TaskDefinition = {
@@ -217,41 +221,53 @@ const LogOutputModal: React.FC<{
   open: boolean;
   onClose: () => void;
   commandName: string;
-  output?: string;
-}> = ({ open, onClose, commandName, output }) => (
-  <Modal
-    open={open}
-    onCancel={onClose}
-    onOk={onClose}
-    title={
-      <div className="flex items-center gap-2">
-        <LogIcon className="h-4 w-4 text-slate-500" />
-        <span className="text-sm font-semibold text-slate-800">日志详情</span>
-        <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-600">
-          {commandName}
-        </code>
+  projectFileKey?: string;
+  commandId?: string;
+}> = ({ open, onClose, commandName, projectFileKey, commandId }) => {
+  const { output, loading } = useCommandOutput(
+    open ? projectFileKey : undefined,
+    open ? commandId : undefined
+  );
+
+  return (
+    <Modal
+      open={open}
+      onCancel={onClose}
+      onOk={onClose}
+      title={
+        <div className="flex items-center gap-2">
+          <LogIcon className="h-4 w-4 text-slate-500" />
+          <span className="text-sm font-semibold text-slate-800">日志详情</span>
+          <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-600">
+            {commandName}
+          </code>
+        </div>
+      }
+      width={'80vw'}
+      footer={null}
+      styles={{ body: { padding: 0 } }}
+      destroyOnHidden
+    >
+      <div className="max-h-[70vh] overflow-y-auto">
+        {loading ? (
+          <div className="px-5 py-6 text-center text-sm text-slate-400">
+            加载中…
+          </div>
+        ) : output ? (
+          <div className="px-5 py-4">
+            <pre className="whitespace-pre-wrap break-all rounded-lg bg-slate-50 px-3 py-2.5 font-mono text-sm leading-relaxed text-slate-700">
+              {output}
+            </pre>
+          </div>
+        ) : (
+          <div className="px-5 py-6 text-center text-sm text-slate-400">
+            暂无输出内容
+          </div>
+        )}
       </div>
-    }
-    width={'80vw'}
-    footer={null}
-    styles={{ body: { padding: 0 } }}
-    destroyOnHidden
-  >
-    <div className="max-h-[70vh] overflow-y-auto">
-      {output ? (
-        <div className="px-5 py-4">
-          <pre className="whitespace-pre-wrap break-all rounded-lg bg-slate-50 px-3 py-2.5 font-mono text-sm leading-relaxed text-slate-700">
-            {output}
-          </pre>
-        </div>
-      ) : (
-        <div className="px-5 py-6 text-center text-sm text-slate-400">
-          暂无输出内容
-        </div>
-      )}
-    </div>
-  </Modal>
-);
+    </Modal>
+  );
+};
 
 /* ─── 有 log 时表格上方展示的观点 & 痛点（内联卡片，默认展开） ─── */
 const EvidenceInline: React.FC<{
@@ -409,7 +425,8 @@ const EvidenceBlock: React.FC<{
 const LogCommandsTable: React.FC<{
   commands: LogCommand[];
   tableKey: string;
-}> = ({ commands, tableKey }) => {
+  projectFileKey?: string;
+}> = ({ commands, tableKey, projectFileKey }) => {
   const [allExpanded, setAllExpanded] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
   const [modalCmd, setModalCmd] = useState<LogCommand | null>(null);
@@ -483,7 +500,11 @@ const LogCommandsTable: React.FC<{
               const expanded = isExpanded(i);
               const summary = cmd.output_summary ?? '';
               const longSummary = summary.length > 60;
-              const hasOutput = !!(cmd.output || cmd.thought);
+              // output 字段由后端按需加载，通过 output_summary 或 thought 判断是否有内容可查看
+              const hasOutput = !!(
+                cmd.id &&
+                (cmd.output_summary || cmd.thought || cmd.output)
+              );
 
               // 参数格式化（简短展示）
               let argsDisplay = '';
@@ -608,7 +629,8 @@ const LogCommandsTable: React.FC<{
           open={!!modalCmd}
           onClose={() => setModalCmd(null)}
           commandName={modalCmd.name}
-          output={modalCmd.output}
+          projectFileKey={projectFileKey}
+          commandId={modalCmd.id}
         />
       )}
     </>
@@ -758,7 +780,8 @@ const TaskCard: React.FC<{
   currentStepKey: string;
   logTask?: LogTask;
   cardIndex: number;
-}> = ({ taskId, rows, currentStepKey, logTask, cardIndex }) => {
+  projectFileKey?: string;
+}> = ({ taskId, rows, currentStepKey, logTask, cardIndex, projectFileKey }) => {
   const [tableExpanded, setTableExpanded] = useState(true);
 
   const def = taskId ? TASK_DEF_MAP[taskId] : undefined;
@@ -840,6 +863,7 @@ const TaskCard: React.FC<{
           <LogCommandsTable
             commands={logTask.commands}
             tableKey={`${currentStepKey}-${taskId ?? 'no_task'}`}
+            projectFileKey={projectFileKey}
           />
         ) : (
           <LegacyActionsTable
@@ -892,6 +916,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                 currentStepKey={currentStepKey}
                 logTask={logTask}
                 cardIndex={idx + 1}
+                projectFileKey={projectFileKey}
               />
             );
           })}

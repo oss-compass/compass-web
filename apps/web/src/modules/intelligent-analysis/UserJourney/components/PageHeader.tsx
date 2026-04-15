@@ -2,11 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { Popover, Segmented, Select } from 'antd';
 import {
-  USER_JOURNEY_PROJECT_REGISTRY,
-  UserJourneyProjectFileKey,
-  UserJourneyProjectKey,
-  filterRegistryEntries,
-} from '../rawData/registry';
+  useRegistryData,
+  filterRegistryEntriesFromRegistry,
+} from '../hooks/useRegistryData';
 
 type HeaderProject = {
   queryKey: string;
@@ -116,10 +114,8 @@ const CascadingSelects: React.FC<{
   onSelectFileKey: (fileKey: string) => void;
 }> = ({ mode, currentFileKey = '', excludeFileKeys = [], onSelectFileKey }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const currentEntry =
-    USER_JOURNEY_PROJECT_REGISTRY[
-      currentFileKey as UserJourneyProjectFileKey
-    ] ?? null;
+  const registry = useRegistryData();
+  const currentEntry = registry.entries[currentFileKey] ?? null;
 
   const initOrg = mode === 'view' ? currentEntry?.org ?? '' : '';
   const initSig = mode === 'view' ? currentEntry?.sig ?? '' : '';
@@ -145,19 +141,23 @@ const CascadingSelects: React.FC<{
   // --- Derive options at each level ---
 
   const orgOptions = useMemo(() => {
-    const orgs = uniq(filterRegistryEntries({}).map(([, e]) => e.org));
+    const orgs = uniq(
+      filterRegistryEntriesFromRegistry(registry, {}).map(([, e]) => e.org)
+    );
     return toOptions(orgs);
-  }, []);
+  }, [registry]);
 
   const sigOptions = useMemo(() => {
     const sigs = uniq(
-      filterRegistryEntries({ org: org || undefined }).map(([, e]) => e.sig)
+      filterRegistryEntriesFromRegistry(registry, {
+        org: org || undefined,
+      }).map(([, e]) => e.sig)
     );
     return toOptions(sigs);
-  }, [org]);
+  }, [registry, org]);
 
   const projectOptions = useMemo(() => {
-    const filtered = filterRegistryEntries({
+    const filtered = filterRegistryEntriesFromRegistry(registry, {
       org: org || undefined,
       sig: sig || undefined,
     });
@@ -172,31 +172,40 @@ const CascadingSelects: React.FC<{
     return opts.sort((a, b) =>
       a.label.localeCompare(b.label, 'en', { sensitivity: 'base' })
     );
-  }, [org, sig]);
+  }, [registry, org, sig]);
 
   const hardwareOptions = useMemo(() => {
     const hws = uniq(
-      filterRegistryEntries({
+      filterRegistryEntriesFromRegistry(registry, {
         org: org || undefined,
         sig: sig || undefined,
-        projectKey: (projectKey as UserJourneyProjectKey) || undefined,
+        projectKey: projectKey || undefined,
       })
         .map(([, e]) => e.hardware_access)
         .filter(Boolean)
     );
     return toOptions(hws);
-  }, [org, sig, projectKey]);
+  }, [registry, org, sig, projectKey]);
 
   const versionOptions = useMemo(() => {
-    return filterRegistryEntries({
+    return filterRegistryEntriesFromRegistry(registry, {
       org: org || undefined,
       sig: sig || undefined,
-      projectKey: (projectKey as UserJourneyProjectKey) || undefined,
+      projectKey: projectKey || undefined,
       hardware_access: hardware || undefined,
     })
       .filter(([fileKey]) => !excludeFileKeys.includes(fileKey))
-      .map(([fileKey, e]) => ({ value: fileKey, label: e.version }));
-  }, [org, sig, projectKey, hardware, excludeFileKeys]);
+      .map(([fileKey, e]) => ({
+        value: fileKey,
+        label: e.version.includes('@') ? e.version : `${e.version}@master`,
+      }))
+      .sort((a, b) => {
+        // version 格式如 "20260413_1218@master"，取 @ 前部分按降序排列（最新在上）
+        const dateA = a.label.split('@')[0] ?? '';
+        const dateB = b.label.split('@')[0] ?? '';
+        return dateB.localeCompare(dateA);
+      });
+  }, [registry, org, sig, projectKey, hardware, excludeFileKeys]);
 
   const currentFileKeyDerived = useMemo(() => {
     if (versionOptions.length === 0) return '';
@@ -351,6 +360,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   transparent = false,
 }) => {
   const [showAddSelector, setShowAddSelector] = useState(false);
+  const registry = useRegistryData();
   const compareMode = projects.length > 1;
 
   // The file keys already in the compare list (to exclude from add options)
@@ -369,8 +379,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   function handleFileKeySelect(fileKey: string) {
     onSelectVersion(fileKey);
-    const entry =
-      USER_JOURNEY_PROJECT_REGISTRY[fileKey as UserJourneyProjectFileKey];
+    const entry = registry.entries[fileKey];
     if (entry && entry.projectKey !== currentProjectKey) {
       onSelectProject(entry.projectKey);
     }

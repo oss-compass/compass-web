@@ -7,15 +7,12 @@ import PageHeader from './components/PageHeader';
 import ReportSummaryCard from './components/ReportSummaryCard';
 import StepDetailCard from './components/StepDetailCard';
 import StepSidebar from './components/StepSidebar';
-import {
-  resolveUserJourneyProjectFileKey,
-  USER_JOURNEY_COMPARE_PROJECT_OPTIONS,
-  USER_JOURNEY_PROJECT_KEY_MAP,
-  USER_JOURNEY_PROJECT_OPTIONS,
-  USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP,
-  UserJourneyProjectFileKey,
-} from './rawData';
+import { UserJourneyProjectFileKey } from './rawData';
 import { useUserJourneyReport } from './hooks/useUserJourneyReport';
+import {
+  useRegistryData,
+  resolveFileKeyFromRegistry,
+} from './hooks/useRegistryData';
 import { UserJourneyProjectView } from './types';
 
 const getProjectQueryValues = (project: string | string[] | undefined) => {
@@ -24,20 +21,6 @@ const getProjectQueryValues = (project: string | string[] | undefined) => {
   }
 
   return project ? [project] : [];
-};
-
-const normalizeRequestedProjects = (
-  project: string | string[] | undefined
-): UserJourneyProjectFileKey[] => {
-  const normalizedProjects = getProjectQueryValues(project)
-    .map((item) => resolveUserJourneyProjectFileKey(item))
-    .filter(
-      (item, index, currentProjects) => currentProjects.indexOf(item) === index
-    );
-
-  return normalizedProjects.length
-    ? normalizedProjects.slice(0, 2)
-    : [resolveUserJourneyProjectFileKey(undefined)];
 };
 
 type UserJourneyProps = {
@@ -50,11 +33,35 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   transparentPageHeader = false,
 }) => {
   const router = useRouter();
+  const registry = useRegistryData();
+
+  const normalizeRequestedProjects = useMemo(
+    () =>
+      (project: string | string[] | undefined): UserJourneyProjectFileKey[] => {
+        const normalizedProjects = getProjectQueryValues(project)
+          .map((item) => resolveFileKeyFromRegistry(item, registry))
+          .filter(
+            (item, index, currentProjects) =>
+              currentProjects.indexOf(item) === index
+          ) as UserJourneyProjectFileKey[];
+
+        return normalizedProjects.length
+          ? normalizedProjects.slice(0, 2)
+          : [
+              resolveFileKeyFromRegistry(
+                undefined,
+                registry
+              ) as UserJourneyProjectFileKey,
+            ];
+      },
+    [registry]
+  );
+
   const requestedProjectsRaw = useMemo(
     () => normalizeRequestedProjects(router.query.project),
-    [router.query.project]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [router.query.project, normalizeRequestedProjects]
   );
-  // 稳定化引用：内容相同时不产生新数组，避免 iframe 场景下 router 重新初始化导致重复加载
   const requestedProjectsKey = requestedProjectsRaw.join(',');
   const requestedProjects = useMemo(
     () => requestedProjectsRaw,
@@ -131,13 +138,15 @@ const UserJourney: React.FC<UserJourneyProps> = ({
     version: project.data.projectInfo.version,
   }));
   const currentProjectFileKey = requestedProjects[0];
-  const currentProjectKey = USER_JOURNEY_PROJECT_KEY_MAP[currentProjectFileKey];
+  const currentProjectKey =
+    registry.fileKeyToProjectKey[currentProjectFileKey] ?? '';
   const currentVersionOptions =
-    USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP[currentProjectKey] ?? [];
+    registry.versionOptionsMap[currentProjectKey] ?? [];
   const currentVersion = currentProjectFileKey;
 
-  const availableCompareProjects = USER_JOURNEY_COMPARE_PROJECT_OPTIONS.filter(
-    (option) => !requestedProjects.includes(option.value)
+  const availableCompareProjects = registry.compareProjectOptions.filter(
+    (option) =>
+      !requestedProjects.includes(option.value as UserJourneyProjectFileKey)
   );
 
   const updateProjectsRoute = (nextProjects: UserJourneyProjectFileKey[]) => {
@@ -166,11 +175,21 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   };
 
   const handleSelectProject = (projectKey: string) => {
-    updateProjectsRoute([resolveUserJourneyProjectFileKey(projectKey)]);
+    updateProjectsRoute([
+      resolveFileKeyFromRegistry(
+        projectKey,
+        registry
+      ) as UserJourneyProjectFileKey,
+    ]);
   };
 
   const handleSelectVersion = (_version: string) => {
-    updateProjectsRoute([resolveUserJourneyProjectFileKey(_version)]);
+    updateProjectsRoute([
+      resolveFileKeyFromRegistry(
+        _version,
+        registry
+      ) as UserJourneyProjectFileKey,
+    ]);
   };
 
   const handleRemoveProject = (projectKey: string) => {
@@ -210,7 +229,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
         onDeveloperTypeChange={setDeveloperType}
         onJourneyModeChange={setJourneyMode}
         projects={headerProjects}
-        projectOptions={USER_JOURNEY_PROJECT_OPTIONS}
+        projectOptions={registry.projectOptions}
         currentProjectKey={currentProjectKey}
         versionOptions={currentVersionOptions}
         currentVersion={currentVersion}
