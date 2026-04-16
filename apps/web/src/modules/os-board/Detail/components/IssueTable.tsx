@@ -886,7 +886,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
       )}
 
       {!isCommunityDashboard && (
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-3 mt-1 flex items-center gap-2">
           <span className="shrink-0 text-sm text-gray-500">
             {t('os_board:issue_table.label_filter', '标签筛选')}：
           </span>

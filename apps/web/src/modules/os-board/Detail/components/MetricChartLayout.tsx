@@ -278,7 +278,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
               description,
               category: modelIdent,
             }}
-            dashboardId={dashboard.id}
+            dashboardId={dashboard.identifier || dashboard.id}
             projects={dashboard.config.projects}
             competitorProjects={dashboard.config.competitorProjects}
             compareMode={dashboard.config.compareMode}

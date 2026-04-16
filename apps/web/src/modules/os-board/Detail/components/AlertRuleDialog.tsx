@@ -1,33 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GrClose } from 'react-icons/gr';
 import { Button, Modal, Switch } from '@oss-compass/ui';
 import classnames from 'classnames';
-import type {
-  OsBoardAlertRule,
-  OsBoardAlertCondition,
-  OsBoardAlertLevel,
-} from '../../types';
+import { toast } from 'react-hot-toast';
+import type { OsBoardAlertLevel } from '../../types';
+import {
+  useAlertMetricList,
+  useAlertRuleDetail,
+  useCreateAlertRule,
+  useUpdateAlertRule,
+} from '../../api/alert';
 
-// 阈值类型
-type ThresholdType = 'absolute' | 'percentage' | 'growth_rate';
+// 阈值类型（对应后端 operatorType）
+type ThresholdType = 'value' | 'percentage';
+
+// 运算符（对应后端 operator 字段）
+type Operator = '>' | '>=' | '<' | '<=' | '=' | '!=';
 
 interface AlertRuleDialogProps {
   open: boolean;
   onClose: () => void;
   dashboardId: string;
-  /** 预设指标 ID，从指标卡片打开时传入 */
+  /** 监控类型，从看板类型传入 */
+  monitorType?: 'community' | 'repo';
+  /** 预设指标 key，从指标卡片打开时传入 */
   presetMetricId?: string;
   /** 编辑模式下的规则 ID */
   editRuleId?: string;
 }
 
-const conditionOptions: { value: OsBoardAlertCondition; label: string }[] = [
-  { value: 'gt', label: '>' },
-  { value: 'gte', label: '>=' },
-  { value: 'lt', label: '<' },
-  { value: 'lte', label: '<=' },
-  { value: 'eq', label: '=' },
+const operatorOptions: { value: Operator; label: string }[] = [
+  { value: '>', label: '>' },
+  { value: '>=', label: '>=' },
+  { value: '<', label: '<' },
+  { value: '<=', label: '<=' },
+  { value: '=', label: '=' },
+  { value: '!=', label: '!=' },
 ];
 
 const levelOptions: { value: OsBoardAlertLevel; labelKey: string }[] = [
@@ -36,73 +45,103 @@ const levelOptions: { value: OsBoardAlertLevel; labelKey: string }[] = [
   { value: 'info', labelKey: 'os_board:alert_dialog.levels.info' },
 ];
 
-const thresholdTypeOptions: { value: ThresholdType; labelKey: string }[] = [
-  {
-    value: 'absolute',
-    labelKey: 'os_board:alert_dialog.threshold_types.absolute',
-  },
-  {
-    value: 'percentage',
-    labelKey: 'os_board:alert_dialog.threshold_types.percentage',
-  },
-  {
-    value: 'growth_rate',
-    labelKey: 'os_board:alert_dialog.threshold_types.growth_rate',
-  },
-];
+// 默认时间范围（最近几个月）
+const DEFAULT_TIME_RANGE = 3;
 
 const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   open,
   onClose,
+  dashboardId,
+  monitorType = 'community',
   presetMetricId,
   editRuleId,
 }) => {
   const { t } = useTranslation();
 
   // 表单状态
-  const [metricId, setMetricId] = useState<string>('');
-  const [condition, setCondition] = useState<OsBoardAlertCondition>('gt');
+  const [metricKey, setMetricKey] = useState<string>('');
+  const [metricName, setMetricName] = useState<string>('');
+  const [operator, setOperator] = useState<Operator>('>');
   const [threshold, setThreshold] = useState<number>(0);
-  const [thresholdType, setThresholdType] = useState<ThresholdType>('absolute');
+  const [thresholdType, setThresholdType] = useState<ThresholdType>('value');
   const [level, setLevel] = useState<OsBoardAlertLevel>('warning');
   const [enabled, setEnabled] = useState<boolean>(true);
-  const [channels, setChannels] = useState<Array<'inbox' | 'email'>>(['inbox']);
+  const [description, setDescription] = useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string>('');
 
-  // 暂无后端接口，可选指标列表为空
-  const selectableMetrics: Array<{
-    id: string;
-    name: string;
-    category: string;
-  }> = [];
+  const editRuleIdNum = editRuleId ? Number(editRuleId) : undefined;
 
-  // 暂无后端接口，当前指标已有规则为空
-  const currentMetricRules: OsBoardAlertRule[] = [];
+  // 获取指标列表
+  const { data: metricsData, isLoading: metricsLoading } = useAlertMetricList(
+    { monitorType },
+    { enabled: open }
+  );
+  const selectableMetrics = metricsData?.metrics ?? [];
 
-  const isFormValid = metricId && threshold !== undefined;
+  // 当前选中指标的单位
+  const currentMetricUnit = useMemo(
+    () => selectableMetrics.find((m) => m.key === metricKey)?.unit ?? '',
+    [selectableMetrics, metricKey]
+  );
 
-  // 编辑模式下加载规则数据
+  // 编辑模式：获取规则详情
+  const { data: ruleDetail, isLoading: ruleLoading } = useAlertRuleDetail(
+    editRuleIdNum,
+    { enabled: open && !!editRuleIdNum }
+  );
+
+  const createAlertRule = useCreateAlertRule();
+  const updateAlertRule = useUpdateAlertRule();
+
+  const isFormValid = !!metricKey && threshold !== undefined;
+  const isLoading = metricsLoading || (!!editRuleIdNum && ruleLoading);
+
+  // 编辑模式下回填数据
   useEffect(() => {
-    if (editRuleId && open) {
-      // TODO: 接入后端获取规则详情
+    if (ruleDetail && open && editRuleIdNum) {
+      setMetricKey(ruleDetail.metric_key);
+      setMetricName(ruleDetail.metric_name);
+      setOperator((ruleDetail.operator as Operator) || '>');
+      setThreshold(Number(ruleDetail.threshold));
+      setThresholdType(ruleDetail.operator_type ?? 'value');
+      setLevel(ruleDetail.level);
+      setEnabled(ruleDetail.enabled);
+      setDescription(ruleDetail.description ?? '');
     }
-  }, [editRuleId, open]);
+  }, [ruleDetail, open, editRuleIdNum]);
 
-  // 预设指标 ID
+  // 预设指标 key
   useEffect(() => {
     if (presetMetricId && open && !editRuleId) {
-      setMetricId(presetMetricId);
+      setMetricKey(presetMetricId);
+      const found = selectableMetrics.find((m) => m.key === presetMetricId);
+      if (found) {
+        setMetricName(found.name);
+        setThresholdType(found.operatorType);
+      }
     }
-  }, [presetMetricId, open, editRuleId]);
+  }, [presetMetricId, open, editRuleId, selectableMetrics]);
+
+  // 选择指标时同步 metricName 和 thresholdType
+  const handleMetricChange = (key: string) => {
+    setMetricKey(key);
+    const found = selectableMetrics.find((m) => m.key === key);
+    setMetricName(found?.name ?? key);
+    if (found?.operatorType) setThresholdType(found.operatorType);
+  };
 
   // 重置表单
   const resetForm = () => {
-    setMetricId(presetMetricId || '');
-    setCondition('gt');
+    setMetricKey(presetMetricId || '');
+    setMetricName('');
+    setOperator('>');
     setThreshold(0);
-    setThresholdType('absolute');
+    setThresholdType('value');
     setLevel('warning');
     setEnabled(true);
-    setChannels(['inbox']);
+    setDescription('');
+    setSubmitError('');
   };
 
   // 关闭弹窗时重置
@@ -112,16 +151,56 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   };
 
   // 保存规则
-  const handleSave = () => {
-    if (!metricId) return;
-    // TODO: 接入后端保存接口
-    handleClose();
-  };
-
-  // 获取条件显示文本
-  const getConditionLabel = (cond: OsBoardAlertCondition) => {
-    const opt = conditionOptions.find((o) => o.value === cond);
-    return opt?.label || cond;
+  const handleSave = async () => {
+    if (!metricKey) return;
+    setSubmitting(true);
+    setSubmitError('');
+    try {
+      if (editRuleIdNum) {
+        await updateAlertRule.mutateAsync({
+          id: editRuleIdNum,
+          metricKey,
+          metricName,
+          operator,
+          operatorType: thresholdType,
+          threshold,
+          level,
+          enabled,
+          description: description || undefined,
+        });
+      } else {
+        await createAlertRule.mutateAsync({
+          identifier: dashboardId,
+          monitorType,
+          metricKey,
+          metricName,
+          timeRange: DEFAULT_TIME_RANGE,
+          operator,
+          operatorType: thresholdType,
+          threshold,
+          level,
+          enabled,
+          description: description || undefined,
+        });
+      }
+      toast.success(
+        editRuleIdNum
+          ? t('common:toast.update_successful', { defaultValue: '修改成功' })
+          : t('common:toast.add_successful', { defaultValue: '创建成功' })
+      );
+      handleClose();
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        t('os_board:alert_dialog.save_error', {
+          defaultValue: '保存失败，请重试',
+        });
+      setSubmitError(msg);
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // 级别对应的按钮样式
@@ -136,25 +215,6 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
       default:
         return 'border-gray-300 bg-gray-50 text-gray-700';
     }
-  };
-
-  // 级别对应的标签样式
-  const getLevelBadgeStyle = (lvl: OsBoardAlertLevel) => {
-    switch (lvl) {
-      case 'critical':
-        return 'bg-red-100 text-red-700';
-      case 'warning':
-        return 'bg-yellow-100 text-yellow-700';
-      case 'info':
-        return 'bg-blue-100 text-blue-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  // 获取级别显示文本
-  const getLevelLabel = (lvl: OsBoardAlertLevel) => {
-    return t(`os_board:alert_dialog.levels.${lvl}`);
   };
 
   return (
@@ -182,223 +242,195 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
 
         {/* 表单内容 */}
         <div className="thin-scrollbar max-h-[60vh] overflow-y-auto px-8 py-6">
-          {/* 指标选择 */}
-          <div className="mb-6">
-            <label className="mb-2 block font-semibold">
-              {t('os_board:alert_dialog.metric')}
-            </label>
-            <select
-              className={classnames(
-                'h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black',
-                presetMetricId && 'cursor-not-allowed bg-gray-100 text-gray-500'
-              )}
-              value={metricId}
-              onChange={(e) => setMetricId(e.target.value)}
-              disabled={!!presetMetricId}
-            >
-              <option value="">
-                {t('os_board:alert_dialog.select_metric')}
-              </option>
-              {selectableMetrics.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name} ({m.category})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 预警条件设置 */}
-          <div className="mb-6">
-            <label className="mb-2 block font-semibold">
-              {t('os_board:alert_dialog.alert_condition')}
-            </label>
-            <div className="grid grid-cols-3 gap-4">
-              {/* 比较运算符 */}
-              <div>
-                <label className="mb-1 block text-xs text-[#585858]">
-                  {t('os_board:alert_dialog.condition')}
-                </label>
-                <select
-                  className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black"
-                  value={condition}
-                  onChange={(e) =>
-                    setCondition(e.target.value as OsBoardAlertCondition)
-                  }
-                >
-                  {conditionOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}{' '}
-                      {t(`os_board:alert_dialog.conditions.${opt.value}`)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* 阈值类型 */}
-              <div>
-                <label className="mb-1 block text-xs text-[#585858]">
-                  {t('os_board:alert_dialog.threshold_type')}
-                </label>
-                <select
-                  className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black"
-                  value={thresholdType}
-                  onChange={(e) =>
-                    setThresholdType(e.target.value as ThresholdType)
-                  }
-                >
-                  {thresholdTypeOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {t(opt.labelKey)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* 阈值 */}
-              <div>
-                <label className="mb-1 block text-xs text-[#585858]">
-                  {t('os_board:alert_dialog.threshold')}
-                </label>
-                <div className="flex items-center">
-                  <input
-                    type="number"
-                    className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black"
-                    value={threshold}
-                    onChange={(e) => setThreshold(Number(e.target.value))}
-                  />
-                  {thresholdType === 'percentage' && (
-                    <span className="ml-2 text-[#585858]">%</span>
-                  )}
-                </div>
-              </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12 text-gray-400">
+              {t('common:loading', { defaultValue: '加载中...' })}
             </div>
-          </div>
-
-          {/* 预警级别 */}
-          <div className="mb-6">
-            <label className="mb-2 block font-semibold">
-              {t('os_board:alert_dialog.level')}
-            </label>
-            <div className="flex gap-3">
-              {levelOptions.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
+          ) : (
+            <>
+              {/* 指标选择 */}
+              <div className="mb-6">
+                <label className="mb-2 block font-semibold">
+                  {t('os_board:alert_dialog.metric')}
+                </label>
+                <select
                   className={classnames(
-                    'flex h-10 flex-1 items-center justify-center border text-sm font-medium transition-colors',
-                    level === opt.value
-                      ? getLevelButtonStyle(opt.value)
-                      : 'border bg-white text-[#585858] hover:border-gray-400'
+                    'h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black',
+                    presetMetricId &&
+                      'cursor-not-allowed bg-gray-100 text-gray-500'
                   )}
-                  onClick={() => setLevel(opt.value)}
+                  value={metricKey}
+                  onChange={(e) => handleMetricChange(e.target.value)}
+                  disabled={!!presetMetricId}
                 >
-                  {t(opt.labelKey)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 通知渠道 */}
-          <div className="mb-6">
-            <label className="mb-2 block font-semibold">
-              {t('os_board:alert_dialog.channels')}
-            </label>
-            <div className="flex gap-6">
-              <label
-                className={classnames(
-                  'flex h-10 cursor-pointer items-center gap-2 border px-4',
-                  channels.includes('inbox') ? 'border-blue-600 bg-blue-50' : ''
-                )}
-              >
-                <input
-                  type="checkbox"
-                  className="h-4 w-4"
-                  checked={channels.includes('inbox')}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setChannels([...channels, 'inbox']);
-                    } else {
-                      setChannels(channels.filter((c) => c !== 'inbox'));
-                    }
-                  }}
-                />
-                <span className="text-sm">
-                  {t('os_board:alert_dialog.channel_inbox')}
-                </span>
-              </label>
-              <label
-                className={classnames(
-                  'flex h-10 cursor-pointer items-center gap-2 border px-4',
-                  channels.includes('email') ? 'border-blue-600 bg-blue-50' : ''
-                )}
-              >
-                <input
-                  type="checkbox"
-                  className="h-4 w-4"
-                  checked={channels.includes('email')}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setChannels([...channels, 'email']);
-                    } else {
-                      setChannels(channels.filter((c) => c !== 'email'));
-                    }
-                  }}
-                />
-                <span className="text-sm">
-                  {t('os_board:alert_dialog.channel_email')}
-                </span>
-              </label>
-            </div>
-          </div>
-
-          {/* 启用状态 */}
-          <div className="mb-6">
-            <div className="flex items-center gap-3">
-              <Switch
-                checked={enabled}
-                onChange={(e) => setEnabled(e.target.checked)}
-              />
-              <span className="text-sm font-medium">
-                {t('os_board:alert_dialog.enabled')}
-              </span>
-            </div>
-          </div>
-
-          {/* 已有规则列表 */}
-          {metricId && currentMetricRules.length > 0 && !editRuleId && (
-            <div className="border-t pt-4">
-              <div className="mb-3 font-semibold">
-                {t('os_board:alert_dialog.existing_rules')} (
-                {currentMetricRules.length})
+                  <option value="">
+                    {t('os_board:alert_dialog.select_metric')}
+                  </option>
+                  {selectableMetrics.map((m) => (
+                    <option key={m.key} value={m.key}>
+                      {m.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className="max-h-40 space-y-2 overflow-y-auto">
-                {currentMetricRules.map((rule) => (
-                  <div
-                    key={rule.id}
-                    className="flex items-center justify-between border bg-white p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={classnames(
-                          'px-2 py-1 text-xs font-medium',
-                          getLevelBadgeStyle(rule.level)
-                        )}
-                      >
-                        {getLevelLabel(rule.level)}
-                      </span>
-                      <span className="text-sm">
-                        {getConditionLabel(rule.condition)} {rule.threshold}
-                      </span>
-                      {!rule.enabled && (
-                        <span className="text-xs text-gray-400">
-                          ({t('os_board:alert_dialog.disabled')})
+
+              {/* 预警条件设置 */}
+              <div className="mb-6">
+                <label className="mb-2 block font-semibold">
+                  {t('os_board:alert_dialog.alert_condition')}
+                </label>
+                <div className="grid grid-cols-3 gap-4">
+                  {/* 比较运算符 */}
+                  <div>
+                    <label className="mb-1 block text-xs text-[#585858]">
+                      {t('os_board:alert_dialog.condition')}
+                    </label>
+                    <select
+                      className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black"
+                      value={operator}
+                      onChange={(e) => setOperator(e.target.value as Operator)}
+                    >
+                      {operatorOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 阈值类型（由指标决定，只读） */}
+                  <div>
+                    <label className="mb-1 block text-xs text-[#585858]">
+                      {t('os_board:alert_dialog.threshold_type')}
+                    </label>
+                    <div className="flex h-10 items-center border bg-gray-50 px-3 text-sm text-gray-500">
+                      {thresholdType === 'percentage'
+                        ? t(
+                            'os_board:alert_dialog.threshold_types.percentage',
+                            {
+                              defaultValue: '百分比',
+                            }
+                          )
+                        : t('os_board:alert_dialog.threshold_types.absolute', {
+                            defaultValue: '绝对值',
+                          })}
+                    </div>
+                  </div>
+
+                  {/* 阈值 */}
+                  <div>
+                    <label className="mb-1 block text-xs text-[#585858]">
+                      {t('os_board:alert_dialog.threshold')}
+                    </label>
+                    <div className="flex items-center">
+                      <input
+                        type="number"
+                        className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black"
+                        value={threshold}
+                        onChange={(e) => setThreshold(Number(e.target.value))}
+                      />
+                      {currentMetricUnit && (
+                        <span className="ml-2 shrink-0 text-[#585858]">
+                          {currentMetricUnit}
                         </span>
                       )}
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
+
+              {/* 预警级别 */}
+              <div className="mb-6">
+                <label className="mb-2 block font-semibold">
+                  {t('os_board:alert_dialog.level')}
+                </label>
+                <div className="flex gap-3">
+                  {levelOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={classnames(
+                        'flex h-10 flex-1 items-center justify-center border text-sm font-medium transition-colors',
+                        level === opt.value
+                          ? getLevelButtonStyle(opt.value)
+                          : 'border bg-white text-[#585858] hover:border-gray-400'
+                      )}
+                      onClick={() => setLevel(opt.value)}
+                    >
+                      {t(opt.labelKey)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 规则描述 */}
+              <div className="mb-6">
+                <label className="mb-2 block font-semibold">
+                  {t('os_board:alert_dialog.description', {
+                    defaultValue: '规则描述',
+                  })}
+                </label>
+                <input
+                  type="text"
+                  className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black"
+                  value={description}
+                  placeholder={t(
+                    'os_board:alert_dialog.description_placeholder',
+                    {
+                      defaultValue: '选填，规则备注说明',
+                    }
+                  )}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+
+              {/* 通知渠道 */}
+              <div className="mb-6">
+                <label className="mb-2 block font-semibold">
+                  {t('os_board:alert_dialog.notify_channel', {
+                    defaultValue: '通知渠道',
+                  })}
+                </label>
+                <label className="inline-flex cursor-not-allowed items-center gap-2 text-sm text-gray-700">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-sm border-2 border-black bg-black">
+                    <svg
+                      className="h-3 w-3 text-white"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="2,6 5,9 10,3" />
+                    </svg>
+                  </span>
+                  {t('os_board:alert_dialog.notify_email', {
+                    defaultValue: '邮箱',
+                  })}
+                </label>
+              </div>
+
+              {/* 启用状态 */}
+              <div className="mb-6">
+                <div className="flex items-center gap-3">
+                  <Switch
+                    checked={enabled}
+                    onChange={(e) => setEnabled(e.target.checked)}
+                  />
+                  <span className="text-sm font-medium">
+                    {t('os_board:alert_dialog.enabled')}
+                  </span>
+                </div>
+              </div>
+
+              {/* 错误提示 */}
+              {submitError && (
+                <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+                  {submitError}
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -408,15 +440,18 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
             intent="text"
             className="min-w-[100px] border"
             onClick={handleClose}
+            disabled={submitting}
           >
             {t('common:btn.cancel')}
           </Button>
           <Button
             className="min-w-[100px]"
-            disabled={!isFormValid}
+            disabled={!isFormValid || submitting || isLoading}
             onClick={handleSave}
           >
-            {t('common:btn.save')}
+            {submitting
+              ? t('common:saving', { defaultValue: '保存中...' })
+              : t('common:btn.save')}
           </Button>
         </div>
       </div>

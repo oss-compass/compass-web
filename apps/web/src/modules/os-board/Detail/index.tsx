@@ -227,7 +227,7 @@ const DetailContent: React.FC<{
       <AlertManageDialog
         open={alertManageOpen}
         onClose={() => setAlertManageOpen(false)}
-        dashboardId={String(dashboard.id)}
+        dashboardId={dashboard.identifier || String(dashboard.id)}
       />
 
       <UserManageDialog
