@@ -360,11 +360,6 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
                           })}
                         </th>
                         <th className="px-3 py-3 font-medium">
-                          {t('os_board:alert_manage.table.message', {
-                            defaultValue: '消息',
-                          })}
-                        </th>
-                        <th className="px-3 py-3 font-medium">
                           {t('os_board:alert_manage.table.triggered_at', {
                             defaultValue: '触发时间',
                           })}
@@ -399,11 +394,12 @@ const AlertManageDialog: React.FC<AlertManageDialogProps> = ({
                             </span>
                           </td>
                           <td className="px-3 py-3">
-                            {event.metric_value.toFixed(2)}
+                            {event.current_value != null
+                              ? Number(event.current_value).toFixed(2)
+                              : '—'}
                           </td>
-                          <td className="px-3 py-3">{event.threshold}</td>
-                          <td className="px-3 py-3 text-gray-500">
-                            {event.message}
+                          <td className="px-3 py-3">
+                            {event.threshold ?? '—'}
                           </td>
                           <td className="px-3 py-3">
                             {new Date(

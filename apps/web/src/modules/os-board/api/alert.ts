@@ -130,9 +130,8 @@ export interface AlertRecordItem {
   dashboard_id: number;
   dashboard_alert_rule_id: number;
   triggered_at: string;
-  metric_value: number;
-  threshold: number;
-  message: string;
+  current_value?: number;
+  threshold?: number;
   created_at: string;
   dashboard_alert_rule?: AlertRuleInfo;
 }
