@@ -247,7 +247,7 @@ const EvidenceInline: React.FC<{
       <div className="flex items-center gap-1.5">
         <EvidenceIcon className="h-3.5 w-3.5 text-slate-400" />
         <span className="text-sm font-semibold text-slate-700">
-          观点 &amp; 痛点
+          总结 &amp; 痛点
         </span>
         <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-200 px-1 text-[10px] font-bold leading-none text-slate-600">
           {(observations?.length ?? 0) + (pain_points?.length ?? 0)}
@@ -294,7 +294,7 @@ const EvidenceBlock: React.FC<{
       >
         <span className="flex items-center gap-2 text-sm font-medium text-slate-600">
           <EvidenceIcon className="h-3.5 w-3.5 text-slate-400" />
-          观点 & 痛点
+          总结 & 痛点
           <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-200 px-1 text-[10px] font-bold leading-none text-slate-600">
             {(observations?.length ?? 0) + (pain_points?.length ?? 0)}
           </span>

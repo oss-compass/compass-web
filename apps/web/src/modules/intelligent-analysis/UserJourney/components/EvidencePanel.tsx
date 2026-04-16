@@ -292,7 +292,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
           <div>
             <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
               <EvidenceIcon className="h-3 w-3" />
-              观点
+              总结
             </div>
             <ul className="space-y-1">
               {observations!.map((obs, i) => (
@@ -338,7 +338,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
         <div className="min-w-0 flex-1 rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
           <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-sky-600">
             <EvidenceIcon className="h-3 w-3" />
-            观点
+            总结
             <span className="ml-0.5 rounded-full bg-sky-100 px-1.5 text-[10px] font-bold text-sky-700">
               {observations!.length}
             </span>

@@ -73,6 +73,8 @@ export interface CommunityPullSummaryItem {
   openUnresponsiveCount?: number | null;
 }
 
+export type IssuePriority = 'fatal' | 'serious' | 'medium' | 'info';
+
 // Issue 详情
 export interface IssueDetail {
   assigneeLogin?: string | null;
@@ -80,8 +82,10 @@ export interface IssueDetail {
   contributor?: ContributorOrganizationInfo | null;
   createdAt?: string | null;
   idInRepo?: number | null;
+  identifier?: string | null;
   labels?: string[] | null;
   numOfCommentsWithoutBot?: number | null;
+  priority?: IssuePriority | null;
   repository?: string | null;
   state?: string | null;
   timeToCloseDays?: number | null;
@@ -89,6 +93,12 @@ export interface IssueDetail {
   title?: string | null;
   url?: string | null;
   userLogin?: string | null;
+}
+
+export interface ResponsiblePersonItem {
+  user_id: number;
+  user_name: string;
+  user_email?: string | null;
 }
 
 export interface CommunityIssueSummaryItem {
@@ -100,6 +110,8 @@ export interface CommunityIssueSummaryItem {
   avgClosedLoopTime?: number | null;
   avgFirstResponseTime?: number | null;
   openUnresponsiveCount?: number | null;
+  /** 责任人，取 responsible_person[0] */
+  responsiblePerson?: ResponsiblePersonItem | null;
 }
 
 // 贡献类型项
@@ -179,6 +191,8 @@ export interface CommunityPullSummaryListRequest {
   endDate?: Date;
 }
 
+export type IssueLabelFilter = 'bug' | 'feature' | 'question' | 'other';
+
 // Issue 列表请求参数
 export interface IssuesDetailListRequest {
   label: string;
@@ -189,6 +203,10 @@ export interface IssuesDetailListRequest {
   sortOpts?: SortOptionInput;
   beginDate?: Date;
   endDate?: Date;
+  identifier?: string | null;
+  labelFilter?: IssueLabelFilter | null;
+  /** 优先级筛选 */
+  Priority?: IssuePriority | null;
 }
 
 // 贡献者列表请求参数
@@ -201,6 +219,9 @@ export interface CommunityIssueSummaryListRequest {
   sortOpts?: SortOptionInput;
   beginDate?: Date;
   endDate?: Date;
+  identifier?: string | null;
+  /** 责任人筛选，传 user_id */
+  ResponsiblePerson?: number | null;
 }
 
 export interface ContributorsDetailListRequest {
@@ -451,6 +472,11 @@ export const fetchIssuesDetailList = async (
         const userLogin = raw.userLogin ?? raw.user_login ?? null;
         const assigneeLogin = raw.assigneeLogin ?? raw.assignee_login ?? null;
         const contributor = normalizeContributorOrganization(raw.contributor);
+        const priority = raw.priority ?? null;
+        const identifier =
+          typeof raw.identifier === 'string'
+            ? raw.identifier.replaceAll('`', '').trim() || null
+            : null;
         return {
           ...raw,
           url,
@@ -464,6 +490,8 @@ export const fetchIssuesDetailList = async (
           userLogin,
           assigneeLogin,
           contributor,
+          priority,
+          identifier,
         } as IssueDetail;
       })
     : [];
@@ -507,6 +535,14 @@ export const fetchCommunityIssueSummaryList = async (
         const openUnresponsiveCountRaw =
           raw.openUnresponsiveCount ?? raw.open_unresponsive_count ?? null;
 
+        const responsiblePersonArr = Array.isArray(raw.responsible_person)
+          ? raw.responsible_person
+          : null;
+        const responsiblePerson: ResponsiblePersonItem | null =
+          responsiblePersonArr && responsiblePersonArr.length > 0
+            ? (responsiblePersonArr[0] as ResponsiblePersonItem)
+            : null;
+
         return {
           ...raw,
           identifier,
@@ -527,6 +563,7 @@ export const fetchCommunityIssueSummaryList = async (
             openUnresponsiveCountRaw == null
               ? null
               : Number(openUnresponsiveCountRaw),
+          responsiblePerson,
         } as CommunityIssueSummaryItem;
       })
     : [];
@@ -640,6 +677,10 @@ export const fetchIssuesOverview = async (params: {
   level?: string;
   beginDate?: Date;
   endDate?: Date;
+  identifier?: string | null;
+  ResponsiblePerson?: number | null;
+  Priority?: IssuePriority | null;
+  labelFilter?: IssueLabelFilter | null;
 }): Promise<IssuesOverviewResponse> => {
   const response = await axios.post<IssuesOverviewResponse>(
     '/services/dashboard/issues_overview',
@@ -680,6 +721,12 @@ interface UseTableDataOptions {
   filterOpts?: FilterOptionInput[];
   sortOpts?: SortOptionInput;
   enabled?: boolean;
+  identifier?: string | null;
+  labelFilter?: IssueLabelFilter | null;
+  /** 社区 issue 汇总列表：责任人筛选 user_id */
+  responsiblePerson?: number | null;
+  /** 仓库 issue 列表：优先级筛选 */
+  priority?: IssuePriority | null;
 }
 
 /**
@@ -777,6 +824,9 @@ export const useOsBoardIssuesDetailList = ({
   filterOpts = [],
   sortOpts,
   enabled = true,
+  identifier,
+  labelFilter,
+  priority,
 }: UseTableDataOptions) => {
   const { timeStart, timeEnd } = useOsBoardDateRange();
 
@@ -791,6 +841,9 @@ export const useOsBoardIssuesDetailList = ({
       sortOpts,
       timeStart,
       timeEnd,
+      identifier,
+      labelFilter,
+      priority,
     ],
     queryFn: () =>
       fetchIssuesDetailList({
@@ -802,6 +855,9 @@ export const useOsBoardIssuesDetailList = ({
         sortOpts,
         beginDate: timeStart,
         endDate: timeEnd,
+        identifier,
+        labelFilter,
+        Priority: priority ?? undefined,
       }),
     enabled: enabled && !!project,
     staleTime: 60 * 1000, // 1 分钟
@@ -816,6 +872,8 @@ export const useOsBoardCommunityIssueSummaryList = ({
   filterOpts = [],
   sortOpts,
   enabled = true,
+  identifier,
+  responsiblePerson,
 }: UseTableDataOptions) => {
   const { timeStart, timeEnd } = useOsBoardDateRange();
 
@@ -829,6 +887,8 @@ export const useOsBoardCommunityIssueSummaryList = ({
       sortOpts,
       timeStart,
       timeEnd,
+      identifier,
+      responsiblePerson,
     ],
     queryFn: () =>
       fetchCommunityIssueSummaryList({
@@ -840,6 +900,8 @@ export const useOsBoardCommunityIssueSummaryList = ({
         sortOpts,
         beginDate: timeStart,
         endDate: timeEnd,
+        identifier,
+        ResponsiblePerson: responsiblePerson ?? undefined,
       }),
     enabled: enabled && !!project,
     staleTime: 60 * 1000,
@@ -896,6 +958,13 @@ interface UseOverviewOptions {
   project: string;
   level?: 'repo' | 'community';
   enabled?: boolean;
+  identifier?: string | null;
+  /** 社区 Issue 概览：责任人筛选 user_id */
+  responsiblePerson?: number | null;
+  /** 仓库 Issue 概览：优先级筛选 */
+  priority?: IssuePriority | null;
+  /** 仓库 Issue 概览：标签筛选 */
+  labelFilter?: IssueLabelFilter | null;
 }
 
 interface UseRepositoryListOptions {
@@ -947,17 +1016,35 @@ export const useOsBoardIssuesOverview = ({
   project,
   level = 'repo',
   enabled = true,
+  identifier,
+  responsiblePerson,
+  priority,
+  labelFilter,
 }: UseOverviewOptions) => {
   const { timeStart, timeEnd } = useOsBoardDateRange();
 
   return useQuery({
-    queryKey: ['osBoardIssuesOverview', project, level, timeStart, timeEnd],
+    queryKey: [
+      'osBoardIssuesOverview',
+      project,
+      level,
+      timeStart,
+      timeEnd,
+      identifier,
+      responsiblePerson,
+      priority,
+      labelFilter,
+    ],
     queryFn: () =>
       fetchIssuesOverview({
         label: project,
         level,
         beginDate: timeStart,
         endDate: timeEnd,
+        identifier,
+        ResponsiblePerson: responsiblePerson ?? undefined,
+        Priority: priority ?? undefined,
+        labelFilter: labelFilter ?? undefined,
       }),
     enabled: enabled && !!project,
     staleTime: 60 * 1000,
@@ -1029,4 +1116,54 @@ export const useOsBoardOrganizationList = ({
     staleTime: 60 * 1000,
     refetchOnWindowFocus: false,
   });
+};
+
+// ========== 优先级修改 API ==========
+
+export interface UpdateIssuePriorityRequest {
+  label: string;
+  url: string;
+  priority: IssuePriority;
+  identifier: string;
+}
+
+export interface UpdateIssuePriorityResponse {
+  status?: boolean | string | null;
+  message?: string | null;
+}
+
+export const updateIssuePriority = async (
+  params: UpdateIssuePriorityRequest
+): Promise<UpdateIssuePriorityResponse> => {
+  const response = await axios.post<UpdateIssuePriorityResponse>(
+    '/services/dashboard/update_issue_priority',
+    params
+  );
+  return response.data;
+};
+
+// ========== 责任人 API ==========
+
+export interface SetResponsiblePersonRequest {
+  /** 仓库 URL */
+  repo_url: string;
+  /** 责任人用户 ID */
+  ResponsiblePerson: number;
+  /** 社区看板 identifier，如 DASH-60C20E */
+  identifier: string;
+}
+
+export interface SetResponsiblePersonResponse {
+  status?: boolean | string | null;
+  message?: string | null;
+}
+
+export const setResponsiblePerson = async (
+  params: SetResponsiblePersonRequest
+): Promise<SetResponsiblePersonResponse> => {
+  const response = await axios.post<SetResponsiblePersonResponse>(
+    '/services/dashboard/set_responsible_person',
+    params
+  );
+  return response.data;
 };

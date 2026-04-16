@@ -1,0 +1,881 @@
+{
+  "paths": {
+    "/services/dashboard_alert/list_metrics": {
+      "post": {
+        "description": "获取监控指标列表",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "monitorType",
+            "description": "监控类型",
+            "type": "string",
+            "enum": ["community", "repo"],
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取监控指标列表",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertMetricListResponse"
+            }
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertListMetrics"
+      }
+    },
+    "/services/dashboard_alert/list_records": {
+      "post": {
+        "description": "获取预警记录列表",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "identifier",
+            "description": "看板唯一编码",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "ruleId",
+            "description": "规则ID筛选",
+            "type": "integer",
+            "format": "int32",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "level",
+            "description": "预警级别筛选",
+            "type": "string",
+            "enum": ["critical", "warning", "info"],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "page",
+            "description": "页码",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "perPage",
+            "description": "每页数量",
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取预警记录列表",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertRecordListResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问此看板"
+          },
+          "404": {
+            "description": "看板不存在"
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertListRecords"
+      }
+    },
+    "/services/dashboard_alert/toggle_rule": {
+      "post": {
+        "description": "启用/禁用预警规则",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "id",
+            "description": "规则ID",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "enabled",
+            "description": "是否启用",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "启用/禁用预警规则",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleResponse"
+            }
+          },
+          "403": {
+            "description": "需要编辑权限"
+          },
+          "404": {
+            "description": "规则不存在"
+          },
+          "422": {
+            "description": "更新失败"
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertToggleRule"
+      }
+    },
+    "/services/dashboard_alert/get_rule": {
+      "post": {
+        "description": "获取预警规则详情",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "id",
+            "description": "规则ID",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取预警规则详情",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleDetailResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问此看板"
+          },
+          "404": {
+            "description": "规则不存在"
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertGetRule"
+      }
+    },
+    "/services/dashboard_alert/list_rules": {
+      "post": {
+        "description": "获取预警规则列表",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "identifier",
+            "description": "看板唯一编码",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "monitorType",
+            "description": "监控类型筛选",
+            "type": "string",
+            "enum": ["community", "repo"],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "level",
+            "description": "预警级别筛选",
+            "type": "string",
+            "enum": ["critical", "warning", "info"],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "enabled",
+            "description": "启用状态筛选",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "page",
+            "description": "页码",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "perPage",
+            "description": "每页数量",
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取预警规则列表",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleListResponse"
+            }
+          },
+          "403": {
+            "description": "无权访问此看板"
+          },
+          "404": {
+            "description": "看板不存在"
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertListRules"
+      }
+    },
+    "/services/dashboard_alert/delete_rule": {
+      "post": {
+        "description": "删除预警规则",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "id",
+            "description": "规则ID",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除预警规则",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleResponse"
+            }
+          },
+          "403": {
+            "description": "需要编辑权限"
+          },
+          "404": {
+            "description": "规则不存在"
+          },
+          "422": {
+            "description": "删除失败"
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertDeleteRule"
+      }
+    },
+    "/services/dashboard_alert/update_rule": {
+      "post": {
+        "description": "更新预警规则",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "id",
+            "description": "规则ID",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "monitorType",
+            "description": "监控类型: community(社区), repo(仓库)",
+            "type": "string",
+            "enum": ["community", "repo"],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "targetRepo",
+            "description": "目标仓库地址",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "metricKey",
+            "description": "监控指标key",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "metricName",
+            "description": "监控指标名称",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "timeRange",
+            "description": "最近几个月",
+            "type": "integer",
+            "format": "int32",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "operatorType",
+            "description": "比较类型",
+            "type": "string",
+            "enum": ["value", "percentage"],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "operator",
+            "description": "比较运算符",
+            "type": "string",
+            "enum": ["\u003e", "\u003e=", "\u003c", "\u003c=", "=", "!="],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "threshold",
+            "description": "预警阈值",
+            "type": "number",
+            "format": "double",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "level",
+            "description": "预警级别",
+            "type": "string",
+            "enum": ["critical", "warning", "info"],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "description",
+            "description": "规则描述",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "enabled",
+            "description": "是否启用",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "更新预警规则",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleResponse"
+            }
+          },
+          "403": {
+            "description": "需要编辑权限"
+          },
+          "404": {
+            "description": "规则不存在"
+          },
+          "422": {
+            "description": "更新失败"
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertUpdateRule"
+      }
+    },
+    "/services/dashboard_alert/create_rule": {
+      "post": {
+        "description": "创建预警规则",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "identifier",
+            "description": "看板唯一编码",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "monitorType",
+            "description": "监控类型: community(社区), repo(仓库)",
+            "type": "string",
+            "enum": ["community", "repo"],
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "targetRepo",
+            "description": "目标仓库地址",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "metricKey",
+            "description": "监控指标key",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "timeRange",
+            "description": "最近几个月",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "metricName",
+            "description": "监控指标名称",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "operator",
+            "description": "比较运算符",
+            "type": "string",
+            "enum": ["\u003e", "\u003e=", "\u003c", "\u003c=", "=", "!="],
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "operatorType",
+            "description": "比较类型: value(数值), percentage(百分比)",
+            "type": "string",
+            "enum": ["value", "percentage"],
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "threshold",
+            "description": "预警阈值",
+            "type": "number",
+            "format": "double",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "level",
+            "description": "预警级别: critical(严重), warning(警告), info(提示)",
+            "type": "string",
+            "enum": ["critical", "warning", "info"],
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "description",
+            "description": "规则描述",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "enabled",
+            "description": "是否启用",
+            "type": "boolean",
+            "default": true,
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "创建预警规则",
+            "schema": {
+              "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleResponse"
+            }
+          },
+          "403": {
+            "description": "需要编辑权限"
+          },
+          "422": {
+            "description": "参数错误或保存失败"
+          }
+        },
+        "tags": ["DashboardAlertService / 预警服务"],
+        "operationId": "postServicesDashboardAlertCreateRule"
+      }
+    }
+  },
+  "definitions": {
+    "Openapi_Entities_DashboardAlertMetricListResponse": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Openapi_Entities_DashboardAlertMetricItem"
+          },
+          "description": "指标列表"
+        }
+      },
+      "description": "Openapi_Entities_DashboardAlertMetricListResponse model"
+    },
+    "Openapi_Entities_DashboardAlertMetricItem": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "example": "new_issue_count",
+          "description": "指标key"
+        },
+        "name": {
+          "type": "string",
+          "example": "新建Issue数量",
+          "description": "指标名称"
+        }
+      }
+    },
+    "Openapi_Entities_DashboardAlertRecordListResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Openapi_Entities_DashboardAlertRecordItem"
+          },
+          "description": "记录列表"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "example": 100,
+          "description": "总记录数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "当前页码"
+        },
+        "perPage": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "description": "每页数量"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "description": "总页数"
+        }
+      },
+      "description": "Openapi_Entities_DashboardAlertRecordListResponse model"
+    },
+    "Openapi_Entities_DashboardAlertRecordItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "记录ID"
+        },
+        "dashboard_id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "看板ID"
+        },
+        "dashboard_alert_rule_id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "规则ID"
+        },
+        "triggered_at": {
+          "type": "string",
+          "example": "2024-01-15T10:30:00Z",
+          "description": "触发时间"
+        },
+        "metric_value": {
+          "type": "number",
+          "format": "double",
+          "example": 150.0,
+          "description": "指标值"
+        },
+        "threshold": {
+          "type": "number",
+          "format": "double",
+          "example": 100.0,
+          "description": "阈值"
+        },
+        "message": {
+          "type": "string",
+          "example": "新建Issue数量超过阈值",
+          "description": "预警消息"
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2024-01-15T10:30:00Z",
+          "description": "创建时间"
+        },
+        "dashboard_alert_rule": {
+          "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleInfo",
+          "description": "关联的规则信息"
+        }
+      }
+    },
+    "Openapi_Entities_DashboardAlertRuleInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "规则ID"
+        },
+        "metric_name": {
+          "type": "string",
+          "example": "新建Issue数量",
+          "description": "监控指标名称"
+        },
+        "level": {
+          "type": "string",
+          "example": "warning",
+          "description": "预警级别"
+        }
+      }
+    },
+    "Openapi_Entities_DashboardAlertRuleResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true,
+          "description": "操作是否成功"
+        }
+      },
+      "description": "Openapi_Entities_DashboardAlertRuleResponse model"
+    },
+    "Openapi_Entities_DashboardAlertRuleDetailResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "规则ID"
+        },
+        "dashboard_id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "看板ID"
+        },
+        "monitor_type": {
+          "type": "string",
+          "example": "community",
+          "description": "监控类型"
+        },
+        "target_repo": {
+          "type": "string",
+          "example": "https://github.com/xxx/xxx",
+          "description": "目标仓库"
+        },
+        "metric_key": {
+          "type": "string",
+          "example": "new_issue_count",
+          "description": "监控指标key"
+        },
+        "metric_name": {
+          "type": "string",
+          "example": "新建Issue数量",
+          "description": "监控指标名称"
+        },
+        "operator": {
+          "type": "string",
+          "example": "\u003e",
+          "description": "比较运算符"
+        },
+        "operator_type": {
+          "type": "string",
+          "example": "value",
+          "description": "比较类型"
+        },
+        "threshold": {
+          "type": "number",
+          "format": "double",
+          "example": 100.0,
+          "description": "预警阈值"
+        },
+        "time_range": {
+          "type": "integer",
+          "format": "int32",
+          "example": 7,
+          "description": "时间范围"
+        },
+        "level": {
+          "type": "string",
+          "example": "warning",
+          "description": "预警级别"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否启用"
+        },
+        "description": {
+          "type": "string",
+          "example": "当新建Issue数量超过100时触发预警",
+          "description": "规则描述"
+        },
+        "last_triggered_at": {
+          "type": "string",
+          "example": "2024-01-15T10:30:00Z",
+          "description": "最后触发时间"
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2024-01-15T10:30:00Z",
+          "description": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "example": "2024-01-15T10:30:00Z",
+          "description": "更新时间"
+        }
+      },
+      "description": "Openapi_Entities_DashboardAlertRuleDetailResponse model"
+    },
+    "Openapi_Entities_DashboardAlertRuleListResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Openapi_Entities_DashboardAlertRuleItem"
+          },
+          "description": "规则列表"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "example": 100,
+          "description": "总记录数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "当前页码"
+        },
+        "perPage": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "description": "每页数量"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "description": "总页数"
+        }
+      },
+      "description": "Openapi_Entities_DashboardAlertRuleListResponse model"
+    },
+    "Openapi_Entities_DashboardAlertRuleItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "规则ID"
+        },
+        "dashboard_id": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "看板ID"
+        },
+        "monitor_type": {
+          "type": "string",
+          "example": "community",
+          "description": "监控类型"
+        },
+        "target_repo": {
+          "type": "string",
+          "example": "https://github.com/xxx/xxx",
+          "description": "目标仓库"
+        },
+        "metric_key": {
+          "type": "string",
+          "example": "new_issue_count",
+          "description": "监控指标key"
+        },
+        "metric_name": {
+          "type": "string",
+          "example": "新建Issue数量",
+          "description": "监控指标名称"
+        },
+        "operator": {
+          "type": "string",
+          "example": "\u003e",
+          "description": "比较运算符"
+        },
+        "operator_type": {
+          "type": "string",
+          "example": "value",
+          "description": "比较类型"
+        },
+        "threshold": {
+          "type": "number",
+          "format": "double",
+          "example": 100.0,
+          "description": "预警阈值"
+        },
+        "time_range": {
+          "type": "integer",
+          "format": "int32",
+          "example": 7,
+          "description": "时间范围"
+        },
+        "level": {
+          "type": "string",
+          "example": "warning",
+          "description": "预警级别"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否启用"
+        },
+        "description": {
+          "type": "string",
+          "example": "当新建Issue数量超过100时触发预警",
+          "description": "规则描述"
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2024-01-15T10:30:00Z",
+          "description": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "example": "2024-01-15T10:30:00Z",
+          "description": "更新时间"
+        }
+      }
+    }
+  }
+}

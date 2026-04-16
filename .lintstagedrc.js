@@ -22,7 +22,7 @@ module.exports = {
 
     return [
       `prettier --ignore-unknown --write --cache ${filteredFiles.join(' ')}`,
-      `eslint --cache --fix ${filteredFiles.join(' ')}`,
+      `eslint --cache ${filteredFiles.join(' ')}`,
     ];
   },
 

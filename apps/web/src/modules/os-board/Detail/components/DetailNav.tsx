@@ -303,9 +303,11 @@ const DetailNav: React.FC<DetailNavProps> = ({
           </div>
 
           <div ref={setItemRef('edit')} className="flex-shrink-0">
-            <Button className="whitespace-nowrap" size="sm" onClick={onEdit}>
-              {t('common:btn.edit')}
-            </Button>
+            {canManage && (
+              <Button className="whitespace-nowrap" size="sm" onClick={onEdit}>
+                {t('common:btn.edit')}
+              </Button>
+            )}
           </div>
 
           <div

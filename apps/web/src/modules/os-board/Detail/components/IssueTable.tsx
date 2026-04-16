@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Popover, Tabs } from 'antd';
+import { Popover, Select, Tabs, Radio } from 'antd';
 import { GoIssueOpened } from 'react-icons/go';
 import { AiFillClockCircle, AiOutlineIssuesClose } from 'react-icons/ai';
 import { BiChat } from 'react-icons/bi';
@@ -21,6 +21,7 @@ import {
   IssueDetail,
   FilterOptionInput,
   SortOptionInput,
+  IssueLabelFilter,
 } from '../../api/tableData';
 import {
   getLastPathSegment,
@@ -30,6 +31,10 @@ import {
 } from '@common/utils';
 import { toUnderline } from '@common/utils/format';
 import ContributorOrganizationCell from './ContributorOrganizationCell';
+import IssuePriorityCell from './IssuePriorityCell';
+import IssueResponsibleCell from './IssueResponsibleCell';
+import { useDashboardContext } from '../../context';
+import { useAuthorizedUsers } from '../../api/dashboard';
 
 interface IssueTableProps {
   dashboardId: string;
@@ -47,13 +52,30 @@ interface TableParams {
 
 type IssueTableRecord = IssueDetail | CommunityIssueSummaryItem;
 
-const TABLE_CARD_CLASS = '!p-4 [&_h3]:!mb-1 flex h-[850px] flex-col';
+const TABLE_CARD_CLASS = '!p-4 [&_h3]:!mb-1 flex h-[890px] flex-col';
 const TABLE_CARD_BODY_CLASS = 'flex flex-1 flex-col';
 const TABLE_SCROLL_HEIGHT = 540;
 
 const STATE_OPTIONS = [
   { value: 'open', text: 'analyze:metric_detail:open' },
   { value: 'closed', text: 'analyze:metric_detail:closed' },
+];
+
+const PRIORITY_OPTIONS = [
+  { value: 'fatal', text: 'os_board:issue_table.priority_fatal' },
+  { value: 'serious', text: 'os_board:issue_table.priority_serious' },
+  { value: 'medium', text: 'os_board:issue_table.priority_medium' },
+  { value: 'info', text: 'os_board:issue_table.priority_info' },
+];
+
+const LABEL_FILTER_OPTIONS: {
+  value: IssueLabelFilter;
+  label: string;
+}[] = [
+  { value: 'bug', label: 'Bug' },
+  { value: 'feature', label: 'New Feature/Requirement' },
+  { value: 'question', label: '咨询类' },
+  { value: 'other', label: 'Others' },
 ];
 
 const TITLE_COLUMN_WIDTH = 280;
@@ -151,6 +173,83 @@ const formatResponseTime = (
   digits = 1
 ) => (value != null ? `${toFixed(value, digits)} ${unitLabel}` : emptyLabel);
 
+interface StatsCardProps {
+  icon: React.ReactNode;
+  value: React.ReactNode;
+  label: string;
+}
+
+const StatsCard: React.FC<StatsCardProps> = ({ icon, value, label }) => (
+  <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+    <div className="flex items-center text-lg font-medium">
+      <div className="mr-2 text-[#3A5BEF]">{icon}</div>
+      <div className="line-clamp-1">{value}</div>
+    </div>
+    <div className="text-xs text-[#585858]">{label}</div>
+  </div>
+);
+
+interface IssueStatsBarProps {
+  statsData: {
+    issueCount?: number | null;
+    issueCompletionRatio?: string | number | null;
+    issueResolutionNumerator?: number | null;
+    issueResolutionDenominator?: number | null;
+    issueUnresponsiveCount?: number | null;
+    issueAverageResponseTime?: number | null;
+  };
+  dayUnitText: string;
+  noResponseText: string;
+  t: (key: string) => string;
+}
+
+const IssueStatsBar: React.FC<IssueStatsBarProps> = ({
+  statsData,
+  dayUnitText,
+  noResponseText,
+  t,
+}) => {
+  const completionDisplay =
+    statsData.issueCompletionRatio != null
+      ? `${statsData.issueCompletionRatio}${
+          statsData.issueResolutionNumerator != null &&
+          statsData.issueResolutionDenominator != null
+            ? ` (${statsData.issueResolutionNumerator}/${statsData.issueResolutionDenominator})`
+            : ''
+        }`
+      : '-';
+
+  return (
+    <div className="mb-3 grid grid-cols-4 gap-3 md:grid-cols-2">
+      <StatsCard
+        icon={<GoIssueOpened />}
+        value={statsData.issueCount ?? '-'}
+        label={t('analyze:metric_detail:newly_created_issues')}
+      />
+      <StatsCard
+        icon={<AiOutlineIssuesClose />}
+        value={completionDisplay}
+        label={t('analyze:metric_detail:issue_completion_rate')}
+      />
+      <StatsCard
+        icon={<AiFillClockCircle />}
+        value={statsData.issueUnresponsiveCount ?? '-'}
+        label={t('analyze:metric_detail:unanswered_issue_count')}
+      />
+      <StatsCard
+        icon={<BiChat />}
+        value={formatResponseTime(
+          statsData.issueAverageResponseTime,
+          dayUnitText,
+          noResponseText,
+          2
+        )}
+        label={t('analyze:metric_detail:average_response_time')}
+      />
+    </div>
+  );
+};
+
 const IssueTable: React.FC<IssueTableProps> = ({
   dashboardType,
   origin,
@@ -158,12 +257,18 @@ const IssueTable: React.FC<IssueTableProps> = ({
   competitorProjects = [],
 }) => {
   const { t } = useTranslation();
+  const { dashboard: dashboardCtx } = useDashboardContext();
+  const userRole = dashboardCtx?.current_user_role?.role;
+  const canManage = userRole === 'editor' || userRole === 'admin';
+  // 看板标识符，如 DASH-FE3323，用于修改优先级接口的 identifier 参数
+  const dashboardIdentifier = dashboardCtx?.identifier ?? null;
   const noResponseText = t('analyze:metric_detail:no_response');
   const dayUnitText = t('analyze:unit_day');
   const [selectedProject, setSelectedProject] = useState<string>(
     projects[0] || ''
   );
   const isCommunityDashboard = dashboardType === 'community';
+  const [labelFilter, setLabelFilter] = useState<IssueLabelFilter | null>(null);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -175,6 +280,17 @@ const IssueTable: React.FC<IssueTableProps> = ({
     filterOpts: [],
     sortOpts: getDefaultSortOption(dashboardType),
   });
+
+  // 社区模式下加载授权用户列表，作为责任人筛选选项
+  const { data: authorizedUsersData } = useAuthorizedUsers(
+    { identifier: dashboardIdentifier! },
+    { enabled: isCommunityDashboard && !!dashboardIdentifier }
+  );
+
+  // 社区模式：责任人独立筛选状态（user_id，null 表示全部）
+  const [selectedResponsiblePerson, setSelectedResponsiblePerson] = useState<
+    number | null
+  >(null);
 
   const {
     data: issuesDetailData,
@@ -189,12 +305,16 @@ const IssueTable: React.FC<IssueTableProps> = ({
     filterOpts: tableParams.filterOpts,
     sortOpts: tableParams.sortOpts || undefined,
     enabled: !isCommunityDashboard && !!selectedProject,
+    identifier: dashboardIdentifier,
+    labelFilter,
+    priority: null,
   });
 
   const {
     data: communityIssueSummaryData,
     isLoading: communityLoading,
     isFetching: communityFetching,
+    refetch: refetchCommunityIssueSummary,
   } = useOsBoardCommunityIssueSummaryList({
     project: selectedProject,
     page: tableParams.pagination?.current,
@@ -202,6 +322,8 @@ const IssueTable: React.FC<IssueTableProps> = ({
     filterOpts: tableParams.filterOpts,
     sortOpts: tableParams.sortOpts || undefined,
     enabled: isCommunityDashboard && !!selectedProject,
+    identifier: dashboardIdentifier,
+    responsiblePerson: isCommunityDashboard ? selectedResponsiblePerson : null,
   });
 
   const {
@@ -225,6 +347,12 @@ const IssueTable: React.FC<IssueTableProps> = ({
       project: selectedProject,
       level: dashboardType,
       enabled: !!selectedProject,
+      identifier: dashboardIdentifier,
+      responsiblePerson: isCommunityDashboard
+        ? selectedResponsiblePerson
+        : null,
+      priority: null,
+      labelFilter: !isCommunityDashboard ? labelFilter : null,
     });
 
   const statsData = {
@@ -468,6 +596,28 @@ const IssueTable: React.FC<IssueTableProps> = ({
         },
       },
       {
+        title: t('os_board:issue_table.priority', '优先级'),
+        dataIndex: 'priority',
+        key: 'priority',
+        align: 'left',
+        width: 120,
+        filters: PRIORITY_OPTIONS.map((item) => ({
+          text: t(item.text),
+          value: item.value,
+        })),
+        filteredValue: getFilteredValues(tableParams.filterOpts, 'priority'),
+        render: (_: unknown, record: IssueDetail) => (
+          <IssuePriorityCell
+            priority={record.priority}
+            label={selectedProject}
+            url={record.url}
+            identifier={dashboardIdentifier}
+            hasEditPermission={canManage}
+            onUpdated={refetchIssuesDetail}
+          />
+        ),
+      },
+      {
         title: t('analyze:metric_detail:created_time'),
         dataIndex: 'createdAt',
         align: 'left',
@@ -487,7 +637,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
         key: 'organization',
         dataIndex: ['contributor', 'organization'],
         align: 'left',
-        width: 220,
+        width: 120,
         filters: organizationFilters,
         filterSearch: true,
         filteredValue: getFilteredValues(
@@ -550,13 +700,6 @@ const IssueTable: React.FC<IssueTableProps> = ({
         align: 'left',
         width: 150,
         render: (list: string[]) => list?.join(', ') || '-',
-      },
-      {
-        title: t('analyze:metric_detail:assignee'),
-        dataIndex: 'assigneeLogin',
-        align: 'left',
-        width: 120,
-        render: (value: string | null) => value || '-',
       },
     ],
     [
@@ -658,8 +801,33 @@ const IssueTable: React.FC<IssueTableProps> = ({
         sorter: true,
         render: (value: number | null) => value ?? '-',
       },
+      {
+        title: t('analyze:metric_detail:assignee'),
+        dataIndex: 'responsiblePerson',
+        key: 'responsible_person',
+        align: 'left',
+        width: 160,
+        render: (_: unknown, record: CommunityIssueSummaryItem) => (
+          <IssueResponsibleCell
+            assigneeLogin={record.responsiblePerson?.user_name ?? null}
+            repoUrl={record.repoUrl ?? ''}
+            identifier={dashboardIdentifier}
+            hasEditPermission={canManage}
+            onUpdated={refetchCommunityIssueSummary}
+          />
+        ),
+      },
     ],
-    [dayUnitText, noResponseText, repositoryFilters, t, tableParams.filterOpts]
+    [
+      canManage,
+      dashboardIdentifier,
+      dayUnitText,
+      noResponseText,
+      refetchCommunityIssueSummary,
+      repositoryFilters,
+      t,
+      tableParams.filterOpts,
+    ]
   );
 
   const columns = (
@@ -688,78 +856,71 @@ const IssueTable: React.FC<IssueTableProps> = ({
     >
       <Tabs
         activeKey={selectedProject}
-        onChange={setSelectedProject}
+        onChange={(key) => {
+          setSelectedProject(key);
+          setLabelFilter(null);
+        }}
         items={tabItems}
         className="mb-2 [&_.ant-tabs-nav]:mb-0"
       />
 
-      <div className="mb-3 grid grid-cols-4 gap-3 md:grid-cols-2">
-        <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
-          <div className="flex items-center text-lg font-medium">
-            <div className="mr-2 text-[#3A5BEF]">
-              <GoIssueOpened />
-            </div>
-            <div className="line-clamp-1">{statsData.issueCount ?? '-'}</div>
-          </div>
-          <div className="text-xs text-[#585858]">
-            {t('analyze:metric_detail:newly_created_issues')}
-          </div>
+      {isCommunityDashboard && (
+        <div className="mb-3 flex items-center gap-2">
+          <span className="shrink-0 text-sm text-gray-500">
+            {t('analyze:metric_detail:assignee')}：
+          </span>
+          <Select
+            allowClear
+            style={{ minWidth: 160 }}
+            placeholder={t('common:all')}
+            value={selectedResponsiblePerson ?? undefined}
+            onChange={(val: number | undefined) =>
+              setSelectedResponsiblePerson(val ?? null)
+            }
+            options={(authorizedUsersData?.data ?? []).map((user) => ({
+              label: user.name,
+              value: user.id,
+            }))}
+          />
         </div>
+      )}
 
-        <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
-          <div className="flex items-center text-lg font-medium">
-            <div className="mr-2 text-[#3A5BEF]">
-              <AiOutlineIssuesClose />
-            </div>
-            <div className="line-clamp-1">
-              {statsData.issueCompletionRatio != null
-                ? `${statsData.issueCompletionRatio}${
-                    statsData.issueResolutionNumerator != null &&
-                    statsData.issueResolutionDenominator != null
-                      ? ` (${statsData.issueResolutionNumerator}/${statsData.issueResolutionDenominator})`
-                      : ''
-                  }`
-                : '-'}
-            </div>
-          </div>
-          <div className="text-xs text-[#585858]">
-            {t('analyze:metric_detail:issue_completion_rate')}
-          </div>
+      {!isCommunityDashboard && (
+        <div className="mb-3 flex items-center gap-2">
+          <span className="shrink-0 text-sm text-gray-500">
+            {t('os_board:issue_table.label_filter', '标签筛选')}：
+          </span>
+          <Radio.Group
+            value={labelFilter}
+            onChange={(e) => {
+              setLabelFilter(e.target.value as IssueLabelFilter | null);
+              setTableParams((prev) => ({
+                ...prev,
+                pagination: { ...prev.pagination, current: 1 },
+              }));
+            }}
+            optionType="button"
+            buttonStyle="solid"
+            size="small"
+          >
+            <Radio.Button value={null}>
+              {t('os_board:issue_table.label_all', '全部')}
+            </Radio.Button>
+            {LABEL_FILTER_OPTIONS.map((opt) => (
+              <Radio.Button key={opt.value} value={opt.value}>
+                {opt.label}
+              </Radio.Button>
+            ))}
+          </Radio.Group>
         </div>
+      )}
 
-        <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
-          <div className="flex items-center text-lg font-medium">
-            <div className="mr-2 text-[#3A5BEF]">
-              <AiFillClockCircle />
-            </div>
-            <div className="line-clamp-1">
-              {statsData.issueUnresponsiveCount ?? '-'}
-            </div>
-          </div>
-          <div className="text-xs text-[#585858]">
-            {t('analyze:metric_detail:unanswered_issue_count')}
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
-          <div className="flex items-center text-lg font-medium">
-            <div className="mr-2 text-[#3A5BEF]">
-              <BiChat />
-            </div>
-            <div className="line-clamp-1">
-              {formatResponseTime(
-                statsData.issueAverageResponseTime,
-                dayUnitText,
-                noResponseText,
-                2
-              )}
-            </div>
-          </div>
-          <div className="text-xs text-[#585858]">
-            {t('analyze:metric_detail:average_response_time')}
-          </div>
-        </div>
-      </div>
+      <IssueStatsBar
+        statsData={statsData}
+        dayUnitText={dayUnitText}
+        noResponseText={noResponseText}
+        t={t}
+      />
 
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="min-h-0 flex-1">
