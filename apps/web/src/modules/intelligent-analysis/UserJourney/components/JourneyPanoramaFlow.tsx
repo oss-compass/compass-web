@@ -15,14 +15,10 @@ const getStarText = (score: number) => {
   return `${'★'.repeat(filled)}${'☆'.repeat(5 - filled)}`;
 };
 
-const getCompactResult = (step: JourneyStep) => {
-  return (
-    step.summary ||
-    step.painPoints?.[0] ||
-    step.painSummary ||
-    step.description ||
-    ''
-  );
+export type StepStats = {
+  taskCount: number;
+  painCount: number;
+  obsCount: number;
 };
 
 type StepNodeProps = {
@@ -30,6 +26,7 @@ type StepNodeProps = {
   isActive: boolean;
   onCardClick: (stepCode: string) => void;
   compact?: boolean;
+  stats?: StepStats;
 };
 
 const StepNode: React.FC<StepNodeProps> = ({
@@ -37,6 +34,7 @@ const StepNode: React.FC<StepNodeProps> = ({
   isActive,
   onCardClick,
   compact = false,
+  stats,
 }) => {
   const panoramaScore = step.panoramaScore;
   const hasScore = panoramaScore !== null && panoramaScore !== undefined;
@@ -61,8 +59,8 @@ const StepNode: React.FC<StepNodeProps> = ({
           if (e.key === 'Enter' || e.key === ' ') onCardClick(step.code);
         }}
         className={`flex ${
-          compact ? 'h-[256px]' : 'h-[296px]'
-        } w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-4 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
+          compact ? 'h-[228px]' : 'h-[260px]'
+        } w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-3 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
           guideItem.cardClassName
         } ${
           isActive
@@ -89,10 +87,10 @@ const StepNode: React.FC<StepNodeProps> = ({
 
         {hasScore ? (
           <>
-            <div className="mt-5 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
+            <div className="mt-3 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
               {getStarText(panoramaScore)}
             </div>
-            <div className="mt-2 text-center">
+            <div className="mt-1.5 text-center">
               <span className="text-[28px] font-semibold leading-none text-slate-900">
                 {panoramaScore}
               </span>
@@ -114,7 +112,7 @@ const StepNode: React.FC<StepNodeProps> = ({
         )}
 
         <div
-          className={`mt-4 flex flex-1 flex-col rounded-2xl border px-2 py-1.5 ${
+          className={`mt-3 flex flex-1 flex-col rounded-2xl border px-2 py-1.5 ${
             hasScore
               ? 'border-slate-200/70 bg-white/80'
               : 'border-dashed border-slate-200 bg-slate-50/60'
@@ -173,12 +171,37 @@ const StepNode: React.FC<StepNodeProps> = ({
             </div>
           )}
           {hasScore && (
-            <div className="mt-1 min-h-[40px] cursor-pointer text-center">
-              <Tooltip title={getCompactResult(step)} placement="bottom">
-                <div className="line-clamp-3 text-[12px] leading-4 text-slate-700">
-                  {getCompactResult(step)}
+            <div className="mt-2 grid grid-cols-3">
+              {(
+                [
+                  {
+                    label: '任务',
+                    value: stats?.taskCount ?? 0,
+                    color: 'text-slate-900',
+                  },
+                  {
+                    label: '痛点',
+                    value: stats?.painCount ?? 0,
+                    color: 'text-rose-500',
+                  },
+                  {
+                    label: '观点',
+                    value: stats?.obsCount ?? 0,
+                    color: 'text-sky-500',
+                  },
+                ] as const
+              ).map(({ label, value, color }) => (
+                <div key={label} className="flex flex-col items-center py-1">
+                  <span
+                    className={`text-[20px] font-bold leading-none ${color}`}
+                  >
+                    {value}
+                  </span>
+                  <span className="mt-1 text-[14px] text-slate-400">
+                    {label}
+                  </span>
                 </div>
-              </Tooltip>
+              ))}
             </div>
           )}
         </div>
@@ -193,6 +216,7 @@ type JourneyPanoramaFlowProps = {
   activeStepCode?: string;
   onCardClick?: (stepCode: string) => void;
   compact?: boolean;
+  stepStats?: Record<string, StepStats>;
 };
 
 const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
@@ -201,6 +225,7 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
   activeStepCode,
   onCardClick,
   compact = false,
+  stepStats,
 }) => {
   return (
     <div className={`overflow-x-auto pb-2 pt-1 ${className}`.trim()}>
@@ -211,6 +236,7 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
               step={step}
               isActive={activeStepCode === step.code}
               compact={compact}
+              stats={stepStats?.[step.key]}
               onCardClick={(code) => {
                 if (activeStepCode === code) {
                   onCardClick?.('');
@@ -222,7 +248,7 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
             {index < steps.length - 1 ? (
               <div
                 className={`flex ${
-                  compact ? 'h-[256px]' : 'h-[296px]'
+                  compact ? 'h-[228px]' : 'h-[260px]'
                 } flex-shrink-0 items-center text-slate-300`}
               >
                 <ArrowRightOutlined className="text-base" />

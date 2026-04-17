@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Tooltip } from 'antd';
-import JourneyPanoramaFlow from './JourneyPanoramaFlow';
+import JourneyPanoramaFlow, { StepStats } from './JourneyPanoramaFlow';
 import { JourneyStep } from '../types';
 import taskDefinitions from '../rawData/task_definitions.json';
 import useLogData, { LogTask } from '../hooks/useLogData';
@@ -133,6 +133,27 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
   const activeStep = panoramaActiveStep;
   const taskIds = activeStep ? getUniqueTaskIds(activeStep) : [];
 
+  // 每个 step 的统计数（任务数、痛点数、观点数）
+  const stepStats = useMemo(() => {
+    const map: Record<string, StepStats> = {};
+    for (const step of steps) {
+      const ids = getUniqueTaskIds(step);
+      let painCount = 0;
+      let obsCount = 0;
+      for (const taskId of ids) {
+        const logTask = logData
+          ? (logData[taskId] as
+              | import('../hooks/useLogData').LogTask
+              | undefined)
+          : undefined;
+        painCount += logTask?.evidence?.pain_points?.length ?? 0;
+        obsCount += logTask?.evidence?.observations?.length ?? 0;
+      }
+      map[step.key] = { taskCount: ids.length, painCount, obsCount };
+    }
+    return map;
+  }, [steps, logData]);
+
   return (
     <div className="mt-2 border-slate-100 pt-5">
       <div className="mb-3">
@@ -157,6 +178,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
           className="mt-6"
           activeStepCode={activeStepCode}
           onCardClick={handleCardClick}
+          stepStats={stepStats}
         />
 
         {/* 观点与痛点区域 */}

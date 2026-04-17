@@ -43,11 +43,11 @@ const PainGuidePopoverContent: React.FC<PainGuidePopoverContentProps> = ({
                   : undefined
               }
             >
-              <div className="flex items-center gap-2 font-semibold text-slate-900">
+              <div className="flex items-center gap-1 font-semibold text-slate-900">
                 <span>{item.level}</span>
                 {isCurrentLevel ? (
                   <span
-                    className={`inline-flex min-w-[40px] items-center justify-center whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-semibold ${getPainClasses(
+                    className={`inline-flex min-w-[35px] items-center justify-center whitespace-nowrap rounded-full border px-1 py-0.5 text-[10px] font-semibold ${getPainClasses(
                       item.level
                     )}`}
                   >
@@ -58,8 +58,8 @@ const PainGuidePopoverContent: React.FC<PainGuidePopoverContentProps> = ({
               <div
                 className={
                   isCurrentLevel
-                    ? 'font-semibold text-slate-900'
-                    : 'text-slate-700'
+                    ? 'flex items-center font-semibold text-slate-900'
+                    : 'flex items-center text-slate-700'
                 }
               >
                 {item.scoreRange}
@@ -67,8 +67,8 @@ const PainGuidePopoverContent: React.FC<PainGuidePopoverContentProps> = ({
               <div
                 className={
                   isCurrentLevel
-                    ? 'font-semibold text-slate-900'
-                    : 'text-slate-700'
+                    ? 'flex items-center font-semibold text-slate-900'
+                    : 'flex items-center text-slate-700'
                 }
               >
                 {item.label}
@@ -76,8 +76,8 @@ const PainGuidePopoverContent: React.FC<PainGuidePopoverContentProps> = ({
               <div
                 className={
                   isCurrentLevel
-                    ? 'font-semibold text-slate-900'
-                    : 'font-medium text-slate-800'
+                    ? 'flex items-center font-semibold text-slate-900'
+                    : 'flex items-center font-medium text-slate-800'
                 }
               >
                 {item.english}

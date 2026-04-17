@@ -542,14 +542,101 @@ const buildRecommendation = (
   return fallbackText || report.key_insight;
 };
 
-const getAverageScore = (scores: number[], hasMetrics: boolean) => {
-  if (scores.length) {
-    return Math.round(
-      scores.reduce((sum, current) => sum + current, 0) / scores.length
-    );
+/**
+ * 体验系数配置：
+ *   - 任务达成率 < 100%  → 0（强制置零）
+ *   - 达成率 100% + 有重试（actions 中存在 success=false）：
+ *       S0/S4/S5 → 0.8，S1/S2/S3 → 0.6
+ *   - 达成率 100% + 无重试 → 1
+ */
+const RETRY_COEFFICIENT_HIGH = 0.8; // S0, S4, S5
+const RETRY_COEFFICIENT_LOW = 0.6; // S1, S2, S3
+
+const HIGH_COEFFICIENT_STEPS = new Set([
+  'S0_DISCOVERY',
+  'S4_TESTING',
+  'S5_CONTRIBUTION',
+]);
+
+/**
+ * 计算阶段体验系数。
+ * @param stepId  后端 step_id，如 "S1_SETUP"
+ * @param assessment  当前阶段的 per_project_assessment 条目
+ */
+const getExperienceCoefficient = (
+  stepId: string,
+  assessment: BackendReportData['journey_steps'][number]['per_project_assessments'][number]
+): number => {
+  const metrics = assessment.subjective.metrics;
+
+  // 1. 找到任务达成率指标
+  const achievementMetric = metrics.find(
+    (m) => m.metric_id === 'SDX_TASK_ACHIEVEMENT_RATE'
+  );
+
+  // 无达成率指标时（未评估阶段），返回 null 由外层判断
+  if (!achievementMetric) {
+    return 1;
   }
 
-  return hasMetrics ? null : 0;
+  const achievementValue =
+    typeof achievementMetric.value === 'number'
+      ? achievementMetric.value
+      : null;
+
+  // 2. 达成率 < 100% → 系数为 0
+  if (achievementValue === null || achievementValue < 100) {
+    return 0;
+  }
+
+  // 3. 达成率 100%，检查是否有重试（actions 中存在 success === false）
+  const hasRetry = (assessment.actual_path.actions ?? []).some(
+    (action) => action.success === false
+  );
+
+  if (!hasRetry) {
+    return 1;
+  }
+
+  // 4. 有重试，按阶段返回系数
+  return HIGH_COEFFICIENT_STEPS.has(stepId)
+    ? RETRY_COEFFICIENT_HIGH
+    : RETRY_COEFFICIENT_LOW;
+};
+
+/**
+ * 根据新算法计算 panoramaScore：
+ *   阶段内 subjective.metrics（排除达成率指标本身）有效得分均值 × 体验系数
+ *   - 无有效指标（未评估）→ null
+ *   - 系数为 0 → 0
+ */
+const computePanoramaScore = (
+  stepId: string,
+  assessment:
+    | BackendReportData['journey_steps'][number]['per_project_assessments'][number]
+    | undefined
+): number | null => {
+  if (!assessment) return null;
+
+  const metrics = assessment.subjective.metrics;
+
+  // 未评估：无指标
+  if (metrics.length === 0) return null;
+
+  // 收集非达成率指标的得分
+  const scoreCandidates = metrics
+    .filter((m) => m.metric_id !== 'SDX_TASK_ACHIEVEMENT_RATE')
+    .map((m) => m.score)
+    .filter((s): s is number => typeof s === 'number');
+
+  if (scoreCandidates.length === 0) return null;
+
+  const avgScore =
+    scoreCandidates.reduce((sum, s) => sum + s, 0) / scoreCandidates.length;
+
+  const coefficient = getExperienceCoefficient(stepId, assessment);
+
+  return Math.round(avgScore * coefficient);
 };
 
 const buildJourneyStep = (
@@ -568,48 +655,8 @@ const buildJourneyStep = (
   const subjectiveMetrics = assessment?.subjective.metrics ?? [];
   const metricIds = subjectiveMetrics.map((metric) => metric.metric_id);
 
-  // 从 journey_map 获取该阶段的 score（step_id 去掉前缀数字部分取小写 key）
-  const journeyMapKey = step.step_id.replace(/^S\d+_/, '').toLowerCase();
-  const journeyMapEntry = report.journey_map?.[journeyMapKey];
-
-  // 有 journey_map 条目时严格使用其 score：
-  //   - score 为数字 → 直接用
-  //   - score 为 null 或 not_evaluated: true → 视为 null（未评估）
-  // 无条目时 fallback 到主观指标均值
-  const journeyMapScore = journeyMapEntry
-    ? typeof journeyMapEntry.score === 'number'
-      ? journeyMapEntry.score
-      : null
-    : null;
-
-  // 兜底：从主观指标均值计算（仅在无 journey_map 条目时使用）
-  const panoramaScoreCandidates = step.per_project_assessments.reduce<number[]>(
-    (scores, currentAssessment) => {
-      currentAssessment.subjective.metrics.forEach((metric) => {
-        if (typeof metric.score === 'number') {
-          scores.push(metric.score);
-        }
-      });
-
-      return scores;
-    },
-    []
-  );
-  const panoramaMetricCount = step.per_project_assessments.reduce(
-    (count, currentAssessment) =>
-      count + currentAssessment.subjective.metrics.length,
-    0
-  );
-  const derivedPanoramaScore = getAverageScore(
-    panoramaScoreCandidates,
-    Boolean(panoramaMetricCount)
-  );
-
-  // 有 journey_map 条目时严格使用其 score（含 null），不 fallback 到指标均值
-  // 无 journey_map 条目时才 fallback 到主观指标均值
-  const panoramaScore = journeyMapEntry
-    ? journeyMapScore
-    : derivedPanoramaScore;
+  // 使用新算法计算 panoramaScore：均值 × 体验系数
+  const panoramaScore = computePanoramaScore(step.step_id, assessment);
   const narrative = normalizeText(assessment?.subjective.narrative);
   const shortPainSummary = normalizeText(assessment?.subjective.pain_summary);
   const painLevel = getPainLevelFromScore(panoramaScore);

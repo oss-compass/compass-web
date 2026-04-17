@@ -271,6 +271,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   fileKey,
   stepId,
 }) => {
+  const [obsExpanded, setObsExpanded] = useState(false);
   const hasObs = !!observations && observations.length > 0;
   const hasPain = !!pain_points && pain_points.length > 0;
 
@@ -331,33 +332,11 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     );
   }
 
-  /* ── card 变体（默认）：带边框背景的大卡片，两列并排 ── */
+  /* ── card 变体（默认）：上下布局，痛点在上，总结在下默认折叠 ── */
   return (
-    <div className="flex gap-3">
-      {hasObs && (
-        <div className="min-w-0 flex-1 rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
-          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-sky-600">
-            <EvidenceIcon className="h-3 w-3" />
-            总结
-            <span className="ml-0.5 rounded-full bg-sky-100 px-1.5 text-[10px] font-bold text-sky-700">
-              {observations!.length}
-            </span>
-          </div>
-          <ul className="space-y-1.5">
-            {observations!.map((obs, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2 text-sm leading-5 text-sky-900"
-              >
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                {obs}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+    <div className="flex flex-col gap-3">
       {hasPain && (
-        <div className="min-w-0 flex-1 rounded-xl border border-rose-100 bg-rose-50/70 px-4 py-3">
+        <div className="rounded-xl border border-rose-100 bg-rose-50/70 px-4 py-3">
           <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600">
             <PainIcon className="h-3 w-3" />
             痛点
@@ -376,6 +355,47 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               />
             ))}
           </ul>
+        </div>
+      )}
+      {hasObs && (
+        <div className="rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
+          <button
+            type="button"
+            className="mb-1 flex w-full items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-sky-600"
+            onClick={() => setObsExpanded((v) => !v)}
+          >
+            <EvidenceIcon className="h-3 w-3" />
+            总结
+            <span className="ml-0.5 rounded-full bg-sky-100 px-1.5 text-[10px] font-bold text-sky-700">
+              {observations!.length}
+            </span>
+            <svg
+              className={`ml-auto h-3.5 w-3.5 transition-transform ${
+                obsExpanded ? 'rotate-180' : ''
+              }`}
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="4,6 8,10 12,6" />
+            </svg>
+          </button>
+          {obsExpanded && (
+            <ul className="mt-2 space-y-1.5">
+              {observations!.map((obs, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-sm leading-5 text-sky-900"
+                >
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+                  {obs}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </div>

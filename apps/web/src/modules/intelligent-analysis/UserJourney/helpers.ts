@@ -209,22 +209,27 @@ export const getPainLevelFromScore = (
     return 'P2_MAJOR';
   }
 
-  if (score < 20) {
+  // 0 → 完全阻塞
+  if (score === 0) {
     return 'P0_BLOCKER';
   }
 
-  if (score < 40) {
+  // 1–59 → 关键卡点
+  if (score < 60) {
     return 'P1_CRITICAL';
   }
 
-  if (score < 60) {
+  // 60–79 → 显著影响
+  if (score < 80) {
     return 'P2_MAJOR';
   }
 
-  if (score < 80) {
+  // 80–94 → 体验流畅
+  if (score < 95) {
     return 'P3_MINOR';
   }
 
+  // 95–100 → 极致体验
   return 'P4_TRIVIAL';
 };
 
