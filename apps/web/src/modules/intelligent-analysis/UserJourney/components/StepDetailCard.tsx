@@ -79,15 +79,17 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            {
-              currentStep.score ?  <span className="inline-flex items-center gap-1.5 rounded-full border border-fuchsia-300 bg-[linear-gradient(180deg,#fdf4ff_0%,#fae8ff_100%)] px-3.5 py-1.5 text-sm font-semibold text-fuchsia-700">
+            {currentStep.score ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-fuchsia-300 bg-[linear-gradient(180deg,#fdf4ff_0%,#fae8ff_100%)] px-3.5 py-1.5 text-sm font-semibold text-fuchsia-700">
                 <span className="text-fuchsia-700">得分</span>
                 <span className="text-base leading-none text-fuchsia-900">
                   {currentStep.score}
                 </span>
-            </span>:""
-            }
-          
+              </span>
+            ) : (
+              ''
+            )}
+
             {achievementMetric && (
               <span
                 className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
