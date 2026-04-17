@@ -220,7 +220,8 @@ const getFixedOverviewMetricValue = (metric?: BackendMetric) => {
 };
 
 const buildFixedOverviewMetrics = (
-  report: BackendReportData
+  report: BackendReportData,
+  compositeScore: number | null
 ): OverviewMetric[] => {
   const successMetric = getFixedOverviewMetricById(
     report,
@@ -235,17 +236,19 @@ const buildFixedOverviewMetrics = (
   const durationValue = getFixedOverviewMetricValue(durationMetric);
   const tokenValue = getFixedOverviewMetricValue(tokenMetric);
 
+  const displayScore = compositeScore !== null ? compositeScore : 0;
+
   const overviewMetrics = [
     {
       key: 'overall-score',
       title: '综合体验评分',
-      value: String(Number(report.overall_scores.composite_score.toFixed(1))),
+      value: String(Number(displayScore.toFixed(1))),
       suffix: '/100',
       description:
         '来自七步旅程综合评分，最能反映外部开发者从零跑通的真实体验。',
       stage: '全链路结果',
       // recentValues: '近五次数据',
-      tone: getToneByScore(report.overall_scores.composite_score),
+      tone: getToneByScore(displayScore),
       color: '#2563eb',
     },
     {
@@ -296,9 +299,7 @@ const buildFixedOverviewMetrics = (
     if (metric.key === 'overall-score') {
       return {
         ...metric,
-        recentValues: `评级 ${getExperienceGradeLabelFromScore(
-          report.overall_scores.composite_score
-        )}`,
+        recentValues: `评级 ${getExperienceGradeLabelFromScore(displayScore)}`,
       };
     }
 
@@ -751,6 +752,22 @@ export const buildUserJourneyProjectData = (
     return sum + (assessment?.actual_path.total_duration_seconds ?? 0);
   }, 0);
 
+  const journeySteps = report.journey_steps.map((step) =>
+    buildJourneyStep(step, report, totalJourneyDuration)
+  );
+
+  // 综合体验得分：仅取已评估步骤（panoramaScore !== null）的均值
+  const evaluatedScores = journeySteps
+    .map((s) => s.panoramaScore)
+    .filter((s): s is number => s !== null && s !== undefined);
+  const compositeScore =
+    evaluatedScores.length > 0
+      ? Math.round(
+          evaluatedScores.reduce((sum, s) => sum + s, 0) /
+            evaluatedScores.length
+        )
+      : null;
+
   // 构建 metric_id → metric_name 映射：以静态 SDX 定义表为基础，再用 JSON 动态数据覆盖
   const metricNameMap: Record<string, string> = { ...SDX_METRIC_NAME_MAP };
   report.journey_steps.forEach((step) => {
@@ -786,12 +803,10 @@ export const buildUserJourneyProjectData = (
     defaultDeveloperType: USER_JOURNEY_DEFAULT_DEVELOPER_TYPE,
     journeyModeOptions: USER_JOURNEY_MODE_OPTIONS,
     defaultJourneyMode: USER_JOURNEY_DEFAULT_MODE,
-    overviewMetrics: buildFixedOverviewMetrics(report),
+    overviewMetrics: buildFixedOverviewMetrics(report, compositeScore),
     recommendations: buildProjectRecommendations(report),
     reportMetadata: buildReportMetadata(report),
-    journeySteps: report.journey_steps.map((step) =>
-      buildJourneyStep(step, report, totalJourneyDuration)
-    ),
+    journeySteps,
     metricNameMap,
   };
 };
