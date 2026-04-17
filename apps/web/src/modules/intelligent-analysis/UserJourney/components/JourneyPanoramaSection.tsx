@@ -70,7 +70,7 @@ const TaskEvidenceCard: React.FC<{
         </div>
       </div>
 
-      {/* 观点 & 痛点内容 */}
+      {/* 总结 & 痛点内容 */}
       <div className="px-5 py-4">
         <EvidencePanel
           observations={observations}
@@ -200,7 +200,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
                 }`}
               >
                 <span className="font-semibold">{activeStep.title}</span>
-                <span className="text-slate-400">· 任务观点与痛点</span>
+                <span className="text-slate-400">· 任务总结与痛点</span>
                 <svg
                   className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform duration-200 ${
                     detailExpanded ? '' : '-rotate-90'
@@ -220,7 +220,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
               </div>
             ) : (
               <span className="text-base font-medium text-slate-400">
-                任务观点与痛点
+                任务总结与痛点
               </span>
             )}
             <div className="h-px flex-1 bg-slate-200" />

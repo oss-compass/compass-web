@@ -256,7 +256,7 @@ const PainPointItem: React.FC<{
 /**
  * EvidencePanel
  *
- * 统一渲染「观点」列和「痛点」列，供以下场景复用：
+ * 统一渲染「总结」列和「痛点」列，供以下场景复用：
  * - JourneyPanoramaSection > TaskEvidenceCard（variant="card"）
  * - KeyActionsSection > EvidenceInline（variant="card"，showEmpty=false）
  * - KeyActionsSection > EvidenceBlock 展开内容（variant="compact"，showEmpty=false）
@@ -280,7 +280,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     return (
       <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-slate-200 px-3 py-2">
         <EvidenceIcon className="h-3.5 w-3.5 shrink-0 text-slate-300" />
-        <span className="text-xs text-slate-400">暂无观点与痛点记录</span>
+        <span className="text-xs text-slate-400">暂无总结与痛点记录</span>
       </div>
     );
   }

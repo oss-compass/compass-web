@@ -18,7 +18,7 @@ const TASK_DEF_MAP = (
   taskDefinitions as { tasks: Record<string, TaskDefinition> }
 ).tasks as Record<string, TaskDefinition>;
 
-/* ─── 单个任务的观点 & 痛点卡片 ─── */
+/* ─── 单个任务的总结 & 痛点卡片 ─── */
 const TaskEvidenceCard: React.FC<{
   taskId: string;
   cardIndex: number;
@@ -78,7 +78,7 @@ const getUniqueTaskIds = (step: JourneyStep): string[] => {
   return ids;
 };
 
-/* ─── 单个项目的全景图 + 任务观点痛点 ─── */
+/* ─── 单个项目的全景图 + 任务总结痛点 ─── */
 const ProjectPanoramaBlock: React.FC<{
   project: UserJourneyProjectView;
   hasBorderTop: boolean;
@@ -128,15 +128,15 @@ const ProjectPanoramaBlock: React.FC<{
         onCardClick={handleCardClick}
       />
 
-      {/* 任务观点与痛点 */}
+      {/* 任务总结与痛点 */}
       <div className="mt-6">
         <div className="flex items-center gap-4">
           <div className="h-px flex-1 bg-slate-200" />
           <div className="text-center">
             <div className="text-lg font-semibold text-slate-900">
               {activeStep
-                ? `「${activeStep.title}」任务观点与痛点`
-                : '任务观点与痛点'}
+                ? `「${activeStep.title}」任务总结与痛点`
+                : '任务总结与痛点'}
             </div>
           </div>
           <div className="h-px flex-1 bg-slate-200" />
@@ -166,7 +166,7 @@ const ProjectPanoramaBlock: React.FC<{
           )
         ) : (
           <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-sm text-slate-400">
-            点击上方全景图卡片查看对应任务的观点与痛点
+            点击上方全景图卡片查看对应任务的总结与痛点
           </div>
         )}
       </div>

@@ -185,7 +185,7 @@ const StepNode: React.FC<StepNodeProps> = ({
                     color: 'text-rose-500',
                   },
                   {
-                    label: '观点',
+                    label: '总结',
                     value: stats?.obsCount ?? 0,
                     color: 'text-sky-500',
                   },

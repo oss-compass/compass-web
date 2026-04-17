@@ -231,7 +231,7 @@ const LogOutputModal: React.FC<{
   );
 };
 
-/* ─── 有 log 时表格上方展示的观点 & 痛点（内联卡片，默认展开） ─── */
+/* ─── 有 log 时表格上方展示的总结 & 痛点（内联卡片，默认展开） ─── */
 const EvidenceInline: React.FC<{
   observations?: string[];
   pain_points?: string[];
@@ -280,7 +280,7 @@ const EvidenceBlock: React.FC<{
     return (
       <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-slate-200 px-3 py-2">
         <EvidenceIcon className="h-3.5 w-3.5 shrink-0 text-slate-300" />
-        <span className="text-xs text-slate-400">暂无观点与痛点记录</span>
+        <span className="text-xs text-slate-400">暂无总结与痛点记录</span>
       </div>
     );
   }
@@ -751,7 +751,7 @@ const TaskCard: React.FC<{
         </button>
       </div>
 
-      {/* 有 log 时：观点 & 痛点置于表格上方 */}
+      {/* 有 log 时：总结 & 痛点置于表格上方 */}
       {tableExpanded &&
       logTask &&
       (evidence?.observations?.length || evidence?.pain_points?.length) ? (
