@@ -357,28 +357,28 @@ const buildAgentVersionLabel = (report: BackendReportData) => {
 const buildReportMetadata = (
   report: BackendReportData
 ): ReportMetadataItem[] => [
-  {
-    key: 'persona',
-    label: '模拟角色',
-    value: buildPersonaLabel(report),
-  },
-  {
-    key: 'hardware',
-    label: '硬件环境',
-    value: buildHardwareLabel(report),
-  },
-  {
-    key: 'purpose',
-    label: '目的',
-    value: buildPurpose(report),
-  },
-  {
-    key: 'agent-version',
-    label: 'Agent版本',
-    value: buildAgentVersionLabel(report),
-    tone: 'mono',
-  },
-];
+    {
+      key: 'persona',
+      label: '模拟角色',
+      value: buildPersonaLabel(report),
+    },
+    {
+      key: 'hardware',
+      label: '硬件环境',
+      value: buildHardwareLabel(report),
+    },
+    {
+      key: 'purpose',
+      label: '目的',
+      value: buildPurpose(report),
+    },
+    {
+      key: 'agent-version',
+      label: 'Agent版本',
+      value: buildAgentVersionLabel(report),
+      tone: 'mono',
+    },
+  ];
 
 const getRecommendationPriorityRank = (priority: string) => {
   const normalizedPriority = priority.trim().toLowerCase();
@@ -447,8 +447,8 @@ const buildActionDetailRecord = (action: BackendAction): ActionDetailRecord => {
         ? 'success'
         : 'failed'
       : result
-      ? 'failed'
-      : getActionStatus(undefined, action.error_message);
+        ? 'failed'
+        : getActionStatus(undefined, action.error_message);
 
   return {
     label: action.action_type,
@@ -481,8 +481,8 @@ const buildStepMetrics = (
       (rawValue === (true as unknown)
         ? '成功'
         : rawValue === (false as unknown)
-        ? '失败'
-        : formatMetricValue(rawValue as string | number | null, metric.unit));
+          ? '失败'
+          : formatMetricValue(rawValue as string | number | null, metric.unit));
     return {
       label: metric.metric_name,
       value: displayValue,
@@ -547,17 +547,16 @@ const buildRecommendation = (
  * 体验系数配置：
  *   - 任务达成率 < 100%  → 0（强制置零）
  *   - 达成率 100% + 有重试（actions 中存在 success=false）：
- *       S0/S1/S4/S5 → 0.8，S2/S3 → 0.6
+ *       S0/S4/S5 → 0.8，S1/S2/S3 → 0.6
  *   - S0 额外判定：达成率 100% 且无 actions 重试时，
  *     若 SDX_SEARCH_ROUNDS > 2 也视为有重试 → 0.8
  *   - 达成率 100% + 无重试 → 1
  */
-const RETRY_COEFFICIENT_HIGH = 0.8; // S0, S1, S4, S5
-const RETRY_COEFFICIENT_LOW = 0.6; // S2, S3
+const RETRY_COEFFICIENT_HIGH = 0.8; // S0,  S4, S5
+const RETRY_COEFFICIENT_LOW = 0.6; // S1,S2, S3
 
 const HIGH_COEFFICIENT_STEPS = new Set([
   'S0_DISCOVERY',
-  'S1_SETUP',
   'S4_TESTING',
   'S5_CONTRIBUTION',
 ]);
@@ -706,14 +705,14 @@ const buildJourneyStep = (
 
   const fallbackActionCards = actionDetails.length
     ? actionDetails.map((action, index) => ({
-        title: resolvedActions[index] ?? action.description,
-        summary: action.description,
-        actionType: action.label === 'step_action' ? undefined : action.label,
-        duration: action.duration || undefined,
-        status: action.status,
-        statusLabel: action.statusLabel,
-        details: [action],
-      }))
+      title: resolvedActions[index] ?? action.description,
+      summary: action.description,
+      actionType: action.label === 'step_action' ? undefined : action.label,
+      duration: action.duration || undefined,
+      status: action.status,
+      statusLabel: action.statusLabel,
+      details: [action],
+    }))
     : undefined;
 
   // tools: 直接从 actions 的 tool_name 字段提取（JSON 新增字段），fallback 到 action_type
@@ -726,9 +725,9 @@ const buildJourneyStep = (
 
   const derivedTimeShare = totalJourneyDuration
     ? `~${Math.max(
-        1,
-        Math.round((totalDurationSeconds / totalJourneyDuration) * 100)
-      )}%`
+      1,
+      Math.round((totalDurationSeconds / totalJourneyDuration) * 100)
+    )}%`
     : '~0%';
 
   return {
@@ -787,9 +786,9 @@ export const buildUserJourneyProjectData = (
   const compositeScore =
     evaluatedScores.length > 0
       ? Math.round(
-          evaluatedScores.reduce((sum, s) => sum + s, 0) /
-            evaluatedScores.length
-        )
+        evaluatedScores.reduce((sum, s) => sum + s, 0) /
+        evaluatedScores.length
+      )
       : null;
 
   // 构建 metric_id → metric_name 映射：以静态 SDX 定义表为基础，再用 JSON 动态数据覆盖
