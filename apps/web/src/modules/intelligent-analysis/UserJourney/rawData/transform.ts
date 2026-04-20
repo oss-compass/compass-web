@@ -547,17 +547,23 @@ const buildRecommendation = (
  * 体验系数配置：
  *   - 任务达成率 < 100%  → 0（强制置零）
  *   - 达成率 100% + 有重试（actions 中存在 success=false）：
- *       S0/S4/S5 → 0.8，S1/S2/S3 → 0.6
+ *       S0/S1/S4/S5 → 0.8，S2/S3 → 0.6
+ *   - S0 额外判定：达成率 100% 且无 actions 重试时，
+ *     若 SDX_SEARCH_ROUNDS > 2 也视为有重试 → 0.8
  *   - 达成率 100% + 无重试 → 1
  */
-const RETRY_COEFFICIENT_HIGH = 0.8; // S0, S4, S5
-const RETRY_COEFFICIENT_LOW = 0.6; // S1, S2, S3
+const RETRY_COEFFICIENT_HIGH = 0.8; // S0, S1, S4, S5
+const RETRY_COEFFICIENT_LOW = 0.6; // S2, S3
 
 const HIGH_COEFFICIENT_STEPS = new Set([
   'S0_DISCOVERY',
+  'S1_SETUP',
   'S4_TESTING',
   'S5_CONTRIBUTION',
 ]);
+
+/** S0 搜索轮次阈值：超过此值视为发生了搜索重试 */
+const S0_SEARCH_ROUNDS_THRESHOLD = 2;
 
 /**
  * 计算阶段体验系数。
@@ -575,7 +581,7 @@ const getExperienceCoefficient = (
     (m) => m.metric_id === 'SDX_TASK_ACHIEVEMENT_RATE'
   );
 
-  // 无达成率指标时（未评估阶段），返回 null 由外层判断
+  // 无达成率指标时（未评估阶段），返回 1 由外层判断
   if (!achievementMetric) {
     return 1;
   }
@@ -591,18 +597,36 @@ const getExperienceCoefficient = (
   }
 
   // 3. 达成率 100%，检查是否有重试（actions 中存在 success === false）
-  const hasRetry = (assessment.actual_path.actions ?? []).some(
+  const hasActionRetry = (assessment.actual_path.actions ?? []).some(
     (action) => action.success === false
   );
 
-  if (!hasRetry) {
-    return 1;
+  if (hasActionRetry) {
+    // 4. 有重试，按阶段返回系数
+    return HIGH_COEFFICIENT_STEPS.has(stepId)
+      ? RETRY_COEFFICIENT_HIGH
+      : RETRY_COEFFICIENT_LOW;
   }
 
-  // 4. 有重试，按阶段返回系数
-  return HIGH_COEFFICIENT_STEPS.has(stepId)
-    ? RETRY_COEFFICIENT_HIGH
-    : RETRY_COEFFICIENT_LOW;
+  // 5. S0 额外判定：搜索轮次 > 阈值时也视为有重试 → 0.8
+  if (stepId === 'S0_DISCOVERY') {
+    const searchRoundsMetric = metrics.find(
+      (m) => m.metric_id === 'SDX_SEARCH_ROUNDS'
+    );
+    const searchRoundsValue =
+      typeof searchRoundsMetric?.value === 'number'
+        ? searchRoundsMetric.value
+        : null;
+
+    if (
+      searchRoundsValue !== null &&
+      searchRoundsValue > S0_SEARCH_ROUNDS_THRESHOLD
+    ) {
+      return RETRY_COEFFICIENT_HIGH;
+    }
+  }
+
+  return 1;
 };
 
 /**
