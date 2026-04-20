@@ -1,12 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   fetchPainConfirmations,
+  fetchPainHistory,
   upsertPainConfirmation,
   type PainConfirmationRecord,
   type UpsertPainConfirmationPayload,
 } from '../rawData/apiClient';
 
 const QUERY_KEY = (fileKey: string) => ['painConfirmations', fileKey];
+const HISTORY_QUERY_KEY = (
+  fileKey: string,
+  stepId: string,
+  painIndex: number
+) => ['painHistory', fileKey, stepId, painIndex];
 
 /**
  * 按 "stepId#painIndex" 建立快速查找 map
@@ -65,6 +71,11 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
           };
         }
       );
+
+      // 同时清除该痛点的历史记录缓存，以便下次打开弹窗时重新加载
+      queryClient.invalidateQueries({
+        queryKey: ['painHistory', fileKey],
+      });
     },
   });
 
@@ -74,4 +85,20 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
     upsert: mutation.mutateAsync,
     isSubmitting: mutation.isPending,
   };
+};
+
+/**
+ * 加载单条痛点的完整历史记录
+ */
+export const usePainHistory = (
+  fileKey: string | undefined,
+  stepId: string,
+  painIndex: number
+) => {
+  return useQuery({
+    queryKey: HISTORY_QUERY_KEY(fileKey ?? '', stepId, painIndex),
+    queryFn: () => fetchPainHistory(fileKey!, stepId, painIndex),
+    enabled: !!fileKey && !!stepId,
+    staleTime: 1000 * 60, // 1 分钟缓存
+  });
 };

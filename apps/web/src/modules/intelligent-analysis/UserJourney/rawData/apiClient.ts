@@ -42,7 +42,10 @@ export type PainConfirmationRecord = {
   step_id: string;
   pain_index: number;
   pain_text: string;
-  level: string;
+  status: number;
+  severity: string;
+  issue_link: string | null;
+  pr_link: string | null;
   confirmed_by: string;
   confirmed_at: string;
 };
@@ -52,12 +55,32 @@ export type PainConfirmationsResponse = {
   confirmations: PainConfirmationRecord[];
 };
 
+export type PainHistoryItem = {
+  status: number;
+  severity: string;
+  issue_link: string | null;
+  pr_link: string | null;
+  confirmed_by: string | null;
+  confirmed_at: string;
+};
+
+export type PainHistoryResponse = {
+  file_key: string;
+  step_id: string;
+  pain_index: number;
+  current: PainConfirmationRecord;
+  history: PainHistoryItem[];
+};
+
 export type UpsertPainConfirmationPayload = {
   step_id: string;
   pain_index: number;
   pain_text: string;
-  level: string;
-  confirmed_by: string;
+  status: number;
+  confirmed_by: string | null;
+  severity?: string;
+  issue_link?: string;
+  pr_link?: string;
 };
 
 /**
@@ -75,7 +98,25 @@ export const fetchPainConfirmations = async (
 };
 
 /**
- * 新增或更新一条痛点确认（等级 + 确认人）
+ * 查询单条痛点的完整历史记录
+ */
+export const fetchPainHistory = async (
+  fileKey: string,
+  stepId: string,
+  painIndex: number
+): Promise<PainHistoryResponse> => {
+  const url = compassApiUrl(
+    `/reports/${fileKey}/pain-confirmations/${stepId}/${painIndex}/history`
+  );
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error(`[CompassAPI] ${res.status} ${res.statusText} — ${url}`);
+  }
+  return res.json() as Promise<PainHistoryResponse>;
+};
+
+/**
+ * 新增或更新一条痛点确认（状态流转）
  */
 export const upsertPainConfirmation = async (
   fileKey: string,
@@ -83,7 +124,7 @@ export const upsertPainConfirmation = async (
 ): Promise<{ message: string; data: PainConfirmationRecord }> => {
   const url = compassApiUrl(`/reports/${fileKey}/pain-confirmations`);
   const res = await fetch(url, {
-    method: 'PUT',
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });

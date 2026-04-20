@@ -3,9 +3,11 @@ import { Popover, message } from 'antd';
 import PainLevelConfirmModal, {
   getPainLevelLabel,
   getPainLevelStyle,
+  STATUS_LABELS,
+  PainStatus,
 } from './PainLevelConfirmModal';
 import { usePainConfirmations } from '../hooks/usePainConfirmations';
-import type { PainLevel } from '../types';
+import type { UpsertPainConfirmationPayload } from '../rawData/apiClient';
 
 /* ─── 图标 ─── */
 export const EvidenceIcon: React.FC<{ className?: string }> = ({
@@ -93,30 +95,35 @@ const UnconfirmedBadge: React.FC<{ onClick: () => void }> = ({ onClick }) => (
   </button>
 );
 
-/* ─── 已确认 badge（可再次点击修改） ─── */
-const ConfirmedBadge: React.FC<{
-  level: string;
+/* ─── 状态 Badge（可再次点击修改） ─── */
+const StatusBadge: React.FC<{
+  status: number;
+  severity: string;
   confirmedBy: string;
   confirmedAt: string;
-  painText: string;
   onClick: () => void;
-}> = ({ level, confirmedBy, confirmedAt, painText, onClick }) => {
-  const style = getPainLevelStyle(level);
-  const label = getPainLevelLabel(level);
+}> = ({ status, severity, confirmedBy, confirmedAt, onClick }) => {
+  const style = getPainLevelStyle(severity);
+  const label = STATUS_LABELS[status] || '未知状态';
 
   const popoverContent = (
     <div className="max-w-xs space-y-2 text-sm">
-      {/* <div className="font-medium text-slate-800">{painText}</div> */}
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
-        <span className="font-medium text-slate-600">确认人：</span>
+        <span className="font-medium text-slate-600">严重程度：</span>
+        <span className={`${style.text} font-semibold`}>
+          {getPainLevelLabel(severity)}
+        </span>
+      </div>
+      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+        <span className="font-medium text-slate-600">操作人：</span>
         {confirmedBy}
       </div>
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
-        <span className="font-medium text-slate-600">确认时间：</span>
+        <span className="font-medium text-slate-600">操作时间：</span>
         {confirmedAt.replace('T', ' ').replace('Z', '')}
       </div>
       <div className="rounded bg-slate-50 px-2 py-1 text-xs text-slate-500">
-        点击可修改等级
+        点击进入流转管理
       </div>
     </div>
   );
@@ -132,10 +139,22 @@ const ConfirmedBadge: React.FC<{
       <button
         type="button"
         onClick={onClick}
-        className={`ml-1.5 inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-all hover:shadow-sm ${style.bg} ${style.text} ${style.border}`}
+        className={`ml-1.5 inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-all hover:shadow-sm ${
+          status === PainStatus.RETESTED_PASSED
+            ? 'border-emerald-300 bg-emerald-100 text-emerald-700'
+            : status === PainStatus.RETESTING
+            ? 'border-amber-300 bg-amber-100 text-amber-700'
+            : `${style.bg} ${style.text} ${style.border}`
+        }`}
       >
         <span
-          className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${style.dot}`}
+          className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${
+            status === PainStatus.RETESTED_PASSED
+              ? 'bg-emerald-500'
+              : status === PainStatus.RETESTING
+              ? 'bg-amber-500'
+              : style.dot
+          }`}
         />
         {label}
       </button>
@@ -161,90 +180,45 @@ const PainPointItem: React.FC<{
   const confirmKey = `${stepId}#${index}`;
   const existing = canConfirm ? confirmationMap.get(confirmKey) : undefined;
 
-  const handleSubmit = async (values: {
-    level: PainLevel;
-    confirmed_by: string;
-  }) => {
-    await upsert({
-      step_id: stepId!,
-      pain_index: index,
-      pain_text: text,
-      level: values.level,
-      confirmed_by: values.confirmed_by,
-    });
-    message.success('痛点等级已确认');
-    setModalOpen(false);
+  const handleSubmit = async (payload: UpsertPainConfirmationPayload) => {
+    await upsert(payload);
   };
 
-  if (compact) {
-    return (
-      <>
-        <li className="flex items-start gap-2 rounded-md bg-rose-50 px-2.5 py-1.5 text-sm text-rose-800">
-          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
-          <span className="flex-1">{text}</span>
-          {canConfirm &&
-            (existing ? (
-              <ConfirmedBadge
-                level={existing.level}
-                confirmedBy={existing.confirmed_by}
-                confirmedAt={existing.confirmed_at}
-                painText={text}
-                onClick={() => setModalOpen(true)}
-              />
-            ) : (
-              <UnconfirmedBadge onClick={() => setModalOpen(true)} />
-            ))}
-        </li>
-        {canConfirm && (
-          <PainLevelConfirmModal
-            open={modalOpen}
-            painText={text}
-            initialValues={
-              existing
-                ? {
-                    level: existing.level as PainLevel,
-                    confirmed_by: existing.confirmed_by,
-                  }
-                : null
-            }
-            onCancel={() => setModalOpen(false)}
-            onSubmit={handleSubmit}
-          />
-        )}
-      </>
-    );
-  }
+  const badgeElement =
+    canConfirm &&
+    (existing ? (
+      <StatusBadge
+        status={existing.status}
+        severity={existing.severity}
+        confirmedBy={existing.confirmed_by}
+        confirmedAt={existing.confirmed_at}
+        onClick={() => setModalOpen(true)}
+      />
+    ) : (
+      <UnconfirmedBadge onClick={() => setModalOpen(true)} />
+    ));
 
   return (
     <>
-      <li className="flex items-start gap-2 text-sm leading-5 text-rose-900">
+      <li
+        className={`flex items-start gap-2 rounded-md ${
+          compact
+            ? 'bg-rose-50 px-2.5 py-1.5 text-sm text-rose-800'
+            : 'text-sm leading-5 text-rose-900'
+        }`}
+      >
         <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
         <span className="flex-1">{text}</span>
-        {canConfirm &&
-          (existing ? (
-            <ConfirmedBadge
-              level={existing.level}
-              confirmedBy={existing.confirmed_by}
-              confirmedAt={existing.confirmed_at}
-              painText={text}
-              onClick={() => setModalOpen(true)}
-            />
-          ) : (
-            <UnconfirmedBadge onClick={() => setModalOpen(true)} />
-          ))}
+        {badgeElement}
       </li>
       {canConfirm && (
         <PainLevelConfirmModal
           open={modalOpen}
+          fileKey={fileKey!}
+          stepId={stepId!}
+          painIndex={index}
           painText={text}
-          initialValues={
-            existing
-              ? {
-                  level: existing.level as PainLevel,
-                  confirmed_by: existing.confirmed_by,
-                }
-              : null
-          }
+          currentRecord={existing}
           onCancel={() => setModalOpen(false)}
           onSubmit={handleSubmit}
         />
