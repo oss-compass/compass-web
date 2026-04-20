@@ -15,14 +15,14 @@ const HISTORY_QUERY_KEY = (
 ) => ['painHistory', fileKey, stepId, painIndex];
 
 /**
- * 按 "stepId#painIndex" 建立快速查找 map
+ * 按 "file_key#step_id#pain_text" 建立快速查找 map
  */
 export const buildConfirmationMap = (
   records: PainConfirmationRecord[]
 ): Map<string, PainConfirmationRecord> => {
   const map = new Map<string, PainConfirmationRecord>();
   records.forEach((r) => {
-    map.set(`${r.step_id}#${r.pain_index}`, r);
+    map.set(`${r.file_key}#${r.step_id}#${r.pain_text}`, r);
   });
   return map;
 };
@@ -61,9 +61,9 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
               confirmations: [result.data],
             };
           }
-          const key = `${result.data.step_id}#${result.data.pain_index}`;
+          const key = `${result.data.file_key}#${result.data.step_id}#${result.data.pain_text}`;
           const filtered = old.confirmations.filter(
-            (r) => `${r.step_id}#${r.pain_index}` !== key
+            (r) => `${r.file_key}#${r.step_id}#${r.pain_text}` !== key
           );
           return {
             ...old,

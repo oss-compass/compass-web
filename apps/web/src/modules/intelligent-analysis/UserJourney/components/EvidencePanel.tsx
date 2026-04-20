@@ -176,8 +176,14 @@ const PainPointItem: React.FC<{
   const { confirmationMap, upsert } = usePainConfirmations(
     canConfirm ? fileKey : undefined
   );
-  const confirmKey = `${stepId}#${index}`;
+  const confirmKey = `${fileKey}#${stepId}#${text}`;
   const existing = canConfirm ? confirmationMap.get(confirmKey) : undefined;
+
+  // 判断是否已完成：status = 2 且 severity = "P4_TRIVIAL"
+  const isCompleted =
+    existing &&
+    existing.status === PainStatus.CONFIRMED_PENDING_FIX &&
+    existing.severity === 'P4_TRIVIAL';
 
   const handleSubmit = async (payload: UpsertPainConfirmationPayload) => {
     await upsert(payload);
@@ -188,13 +194,52 @@ const PainPointItem: React.FC<{
   const badgeElement =
     canConfirm &&
     (existing && existing.pain_text === text ? (
-      <StatusBadge
-        status={existing.status}
-        severity={existing.severity}
-        confirmedBy={existing.confirmed_by}
-        confirmedAt={existing.confirmed_at}
-        onClick={() => setModalOpen(true)}
-      />
+      isCompleted ? (
+        <Popover
+          content={
+            <div className="max-w-xs space-y-2 text-sm">
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <span className="font-medium text-slate-600">严重程度：</span>
+                <span className="font-semibold text-emerald-700">
+                  非项目本身问题
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <span className="font-medium text-slate-600">操作人：</span>
+                {existing.confirmed_by}
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <span className="font-medium text-slate-600">操作时间：</span>
+                {existing.confirmed_at.replace('T', ' ').replace('Z', '')}
+              </div>
+              <div className="rounded bg-emerald-50 px-2 py-1 text-xs text-emerald-600">
+                已完成，无需进一步处理
+              </div>
+            </div>
+          }
+          title={null}
+          trigger="hover"
+          placement="top"
+          styles={{ root: { maxWidth: 320 } }}
+        >
+          <button
+            type="button"
+            disabled
+            className="ml-1.5 inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
+          >
+            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+            已完成（非项目本身问题）
+          </button>
+        </Popover>
+      ) : (
+        <StatusBadge
+          status={existing.status}
+          severity={existing.severity}
+          confirmedBy={existing.confirmed_by}
+          confirmedAt={existing.confirmed_at}
+          onClick={() => setModalOpen(true)}
+        />
+      )
     ) : (
       <UnconfirmedBadge onClick={() => setModalOpen(true)} />
     ));
