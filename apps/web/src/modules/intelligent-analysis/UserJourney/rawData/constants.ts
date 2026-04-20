@@ -104,7 +104,7 @@ export const USER_JOURNEY_PAIN_GUIDE_ITEMS: PainGuideItem[] = [
   {
     level: 'P3_MINOR',
     scoreRange: '80 — 94',
-    label: '体验流畅',
+    label: '轻微影响',
     english: 'Minor',
     description: '存在一定摩擦，但整体仍然可以顺利推进。',
     rowClassName: 'bg-emerald-50',
