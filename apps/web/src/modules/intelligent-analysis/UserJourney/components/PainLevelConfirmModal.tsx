@@ -13,8 +13,7 @@ import {
   Typography,
 } from 'antd';
 import { toast } from 'react-hot-toast';
-import { HistoryOutlined } from '@ant-design/icons';
-import { USER_JOURNEY_PAIN_GUIDE_ITEMS } from '../rawData/constants';
+import { USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO } from '../rawData/constants';
 import type { PainLevel } from '../types';
 import type {
   PainConfirmationRecord,
@@ -41,7 +40,7 @@ export const STATUS_LABELS: Record<number, string> = {
   [PainStatus.RETESTED_PASSED]: '已复测通过',
 };
 
-const SEVERITY_OPTIONS = USER_JOURNEY_PAIN_GUIDE_ITEMS.map((item) => ({
+const SEVERITY_OPTIONS = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.map((item) => ({
   label: item.label,
   value: item.level,
   description: item.description,
@@ -98,7 +97,9 @@ export const getPainLevelStyle = (
 };
 
 export const getPainLevelLabel = (level: string): string => {
-  const item = USER_JOURNEY_PAIN_GUIDE_ITEMS.find((g) => g.level === level);
+  const item = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.find(
+    (g) => g.level === level
+  );
   return item ? item.label : level;
 };
 

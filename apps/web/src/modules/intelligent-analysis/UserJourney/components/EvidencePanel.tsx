@@ -123,7 +123,7 @@ const StatusBadge: React.FC<{
         {confirmedAt.replace('T', ' ').replace('Z', '')}
       </div>
       <div className="rounded bg-slate-50 px-2 py-1 text-xs text-slate-500">
-        点击进入流转管理
+        点击进入痛点管理
       </div>
     </div>
   );
@@ -176,17 +176,18 @@ const PainPointItem: React.FC<{
   const { confirmationMap, upsert } = usePainConfirmations(
     canConfirm ? fileKey : undefined
   );
-
   const confirmKey = `${stepId}#${index}`;
   const existing = canConfirm ? confirmationMap.get(confirmKey) : undefined;
 
   const handleSubmit = async (payload: UpsertPainConfirmationPayload) => {
     await upsert(payload);
   };
+  // console.log(existing?.pain_text)
+  // console.log(text)
 
   const badgeElement =
     canConfirm &&
-    (existing ? (
+    (existing && existing.pain_text === text ? (
       <StatusBadge
         status={existing.status}
         severity={existing.severity}
