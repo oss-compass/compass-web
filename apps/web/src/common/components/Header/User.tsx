@@ -19,7 +19,7 @@ const User = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const mutation = useSignOutMutation(client);
-  const { providerUser: user, roleLevel } = useUserInfo();
+  const { providerUser: user, roleLevel, dashboardRole } = useUserInfo();
 
   if (!user) {
     return (
@@ -65,7 +65,7 @@ const User = () => {
             <AiOutlineExperiment className="mr-2 text-base" />
             {t('common:my_models')}
           </Link>
-          {roleLevel >= 7 && (
+          {dashboardRole === true && (
             <Link
               href="/os-board"
               className="flex cursor-pointer items-center whitespace-nowrap border-b border-white/20 px-6 py-4 text-center last:border-b-0 hover:bg-[#333333]"

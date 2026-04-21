@@ -53,6 +53,7 @@ export const useUserInfo = () => {
     providerUser,
     loginBinds: user?.loginBinds,
     roleLevel: user?.roleLevel,
+    dashboardRole: user?.dashboardRole,
   };
 };
 

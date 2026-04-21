@@ -3,6 +3,7 @@ query userinfo {
     id
     name
     roleLevel
+    dashboardRole
     email
     language
     emailVerified

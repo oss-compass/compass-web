@@ -6,6 +6,7 @@ export const cookieKeys = {
   AUTH_CALLBACK_URL: 'auth.callback-url',
   AUTH_PROVIDER: 'auth.provider',
   AUTH_ROLE: 'auth.role',
+  AUTH_BOARD_ROLE: 'auth.board-role',
 };
 
 // ------------------------------auth callback url-----------------------------------
@@ -29,6 +30,13 @@ export const cookieSetAuthProvider = (val: string) => {
 };
 export const cookieSetAuthRole = (val: number) => {
   jsCookie.set(cookieKeys.AUTH_ROLE, String(val), {
+    expires: 365,
+    path: '/',
+    domain: getDomain(),
+  });
+};
+export const cookieSetAuthBoardRole = (val: boolean) => {
+  jsCookie.set(cookieKeys.AUTH_BOARD_ROLE, String(val), {
     expires: 365,
     path: '/',
     domain: getDomain(),

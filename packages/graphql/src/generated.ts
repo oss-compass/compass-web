@@ -6026,6 +6026,7 @@ export type UpdateTpcSoftwareSelectionReportPayload = {
 export type User = {
   __typename?: 'User';
   contributingOrgs?: Maybe<Array<ContributorOrg>>;
+  dashboardRole?: Maybe<Scalars['Boolean']>;
   email: Scalars['String'];
   emailVerified: Scalars['Boolean'];
   id: Scalars['Int'];
@@ -11454,6 +11455,7 @@ export type UserinfoQuery = {
     id: number;
     name: string;
     roleLevel: number;
+    dashboardRole?: boolean | null;
     email: string;
     language: string;
     emailVerified: boolean;
@@ -19932,6 +19934,7 @@ export const UserinfoDocument = /*#__PURE__*/ `
     id
     name
     roleLevel
+    dashboardRole
     email
     language
     emailVerified
