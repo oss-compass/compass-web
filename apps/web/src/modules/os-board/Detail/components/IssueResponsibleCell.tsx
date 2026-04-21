@@ -64,17 +64,20 @@ const IssueResponsibleCell: React.FC<IssueResponsibleCellProps> = ({
   );
   const userList: AuthorizedUserItem[] = authorizedData?.data ?? [];
 
+  const EMPTY_VALUE = -1;
+
   const mutation = useMutation({ mutationFn: setResponsiblePerson });
 
   const handleChange = React.useCallback(
     async (userId: number) => {
       if (!canEdit || !repoUrl || !identifier) return;
       try {
-        const response = await mutation.mutateAsync({
-          repo_url: repoUrl,
-          ResponsiblePerson: userId,
-          identifier,
-        });
+        const isRemove = userId === EMPTY_VALUE;
+        const response = await mutation.mutateAsync(
+          isRemove
+            ? { repo_url: repoUrl, identifier }
+            : { repo_url: repoUrl, ResponsiblePerson: userId, identifier }
+        );
 
         const success =
           response.status === true || String(response.status) === 'success';
@@ -144,15 +147,28 @@ const IssueResponsibleCell: React.FC<IssueResponsibleCellProps> = ({
             </div>
           </div>
         )}
-        options={userList.map((user) => ({
-          value: user.id,
-          label: (
-            <div className="flex items-center gap-2">
-              <span className="flex-1 truncate font-medium">{user.name}</span>
-              {user.role && <RoleBadge role={user.role} />}
-            </div>
-          ),
-        }))}
+        options={[
+          {
+            value: EMPTY_VALUE,
+            label: (
+              <span className="text-gray-400">
+                {t(
+                  'os_board:issue_table.no_responsible_person',
+                  '无（清除责任人）'
+                )}
+              </span>
+            ),
+          },
+          ...userList.map((user) => ({
+            value: user.id,
+            label: (
+              <div className="flex items-center gap-2">
+                <span className="flex-1 truncate font-medium">{user.name}</span>
+                {user.role && <RoleBadge role={user.role} />}
+              </div>
+            ),
+          })),
+        ]}
       />
 
       <button

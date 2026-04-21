@@ -10,9 +10,23 @@ const MyTable = (props) => {
     const l = getLocale();
     setLocale(l === 'zh' ? zhCN : enUS);
   }, []);
+
+  // 处理 pagination，确保分页器的 Select 下拉框不被容器裁剪
+  const enhancedProps = { ...props };
+  if (enhancedProps.pagination) {
+    enhancedProps.pagination = {
+      ...enhancedProps.pagination,
+      showSizeChanger: {
+        popupMatchSelectWidth: false,
+        getPopupContainer: () => document.body,
+        placement: 'topLeft',
+      },
+    };
+  }
+
   return (
     <ConfigProvider locale={local}>
-      <Table {...props} />
+      <Table {...enhancedProps} />
     </ConfigProvider>
   );
 };

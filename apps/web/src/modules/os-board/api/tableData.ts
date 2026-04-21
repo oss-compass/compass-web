@@ -1147,8 +1147,8 @@ export const updateIssuePriority = async (
 export interface SetResponsiblePersonRequest {
   /** 仓库 URL */
   repo_url: string;
-  /** 责任人用户 ID */
-  ResponsiblePerson: number;
+  /** 责任人用户 ID，不传则删除责任人 */
+  ResponsiblePerson?: number;
   /** 社区看板 identifier，如 DASH-60C20E */
   identifier: string;
 }

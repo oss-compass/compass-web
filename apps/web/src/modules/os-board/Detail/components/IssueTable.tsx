@@ -52,7 +52,8 @@ interface TableParams {
 
 type IssueTableRecord = IssueDetail | CommunityIssueSummaryItem;
 
-const TABLE_CARD_CLASS = '!p-4 [&_h3]:!mb-1 flex h-[890px] flex-col';
+const TABLE_CARD_CLASS =
+  '!p-4 [&_h3]:!mb-1 flex h-[890px] flex-col overflow-visible';
 const TABLE_CARD_BODY_CLASS = 'flex flex-1 flex-col';
 const TABLE_SCROLL_HEIGHT = 540;
 
