@@ -1,6 +1,8 @@
 import React from 'react';
 // import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { Empty } from 'antd';
 // import getLocalesFile from '@common/utils/getLocalesFile';
 
 const UserJourney = dynamic(
@@ -23,6 +25,23 @@ const UserJourney = dynamic(
 // };
 
 const CommunityExperiencePage: React.FC = () => {
+  const router = useRouter();
+  const { soc } = router.query;
+
+  if (soc === 'A5') {
+    return (
+      <div className="flex h-screen flex-1 items-center justify-center bg-[#f4f6fb]">
+        <Empty
+          styles={{
+            image: { height: 150 },
+            description: { color: '#000000d9' },
+          }}
+          description="正在开发中，敬请期待"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen flex-1 bg-[#eef2fa]">
       <div className="h-screen w-full overflow-y-auto">
