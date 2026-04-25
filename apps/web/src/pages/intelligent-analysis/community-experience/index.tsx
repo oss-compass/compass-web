@@ -34,9 +34,20 @@ const CommunityExperiencePage: React.FC = () => {
         <Empty
           styles={{
             image: { height: 150 },
-            description: { color: '#000000d9' },
+            description: { marginTop: 8 },
           }}
-          description="正在开发中，敬请期待"
+          description={
+            <span
+              style={{
+                color: '#000000',
+                fontSize: 14,
+                lineHeight: '1.5715',
+                textAlign: 'center',
+              }}
+            >
+              正在开发中，敬请期待
+            </span>
+          }
         />
       </div>
     );
