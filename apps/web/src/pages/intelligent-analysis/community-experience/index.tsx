@@ -30,11 +30,12 @@ const CommunityExperiencePage: React.FC = () => {
 
   if (soc === 'A5') {
     return (
-      <div className="flex h-screen flex-1 items-center justify-center bg-[#f4f6fb]">
+      <div className="flex h-screen flex-1  justify-center bg-[#f4f6fb]">
         <Empty
+          className="mt-[100px]"
           styles={{
             image: { height: 150 },
-            description: { marginTop: 8 },
+            description: { marginTop: 8, textAlign: 'center' },
           }}
           description={
             <span
@@ -42,10 +43,9 @@ const CommunityExperiencePage: React.FC = () => {
                 color: '#000000',
                 fontSize: 14,
                 lineHeight: '1.5715',
-                textAlign: 'center',
               }}
             >
-              正在开发中，敬请期待
+              暂无数据
             </span>
           }
         />
