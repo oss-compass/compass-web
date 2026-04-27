@@ -58,9 +58,7 @@ const StepNode: React.FC<StepNodeProps> = ({
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') onCardClick(step.code);
         }}
-        className={`flex ${
-          compact ? 'h-[228px]' : 'h-[260px]'
-        } w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-3 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
+        className={`flex h-[260px] w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-3 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
           guideItem.cardClassName
         } ${
           isActive
@@ -247,9 +245,7 @@ const JourneyPanoramaFlow: React.FC<JourneyPanoramaFlowProps> = ({
             />
             {index < steps.length - 1 ? (
               <div
-                className={`flex ${
-                  compact ? 'h-[228px]' : 'h-[260px]'
-                } flex-shrink-0 items-center text-slate-300`}
+                className={`flex h-[260px] flex-shrink-0 items-center text-slate-300`}
               >
                 <ArrowRightOutlined className="text-base" />
               </div>

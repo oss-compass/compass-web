@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, Tooltip } from 'antd';
-import JourneyPanoramaFlow from './JourneyPanoramaFlow';
+import JourneyPanoramaFlow, { StepStats } from './JourneyPanoramaFlow';
 import { JourneyStep, UserJourneyProjectView } from '../types';
 import taskDefinitions from '../rawData/task_definitions.json';
 import useLogData, { LogTask } from '../hooks/useLogData';
@@ -89,6 +89,25 @@ const ProjectPanoramaBlock: React.FC<{
   const [activeStepKey, setActiveStepKey] = useState('');
   const logData = useLogData(queryKey);
 
+  // 每个 step 的统计数（任务数、痛点数、观点数）
+  const stepStats = useMemo(() => {
+    const map: Record<string, StepStats> = {};
+    for (const step of steps) {
+      const ids = getUniqueTaskIds(step);
+      let painCount = 0;
+      let obsCount = 0;
+      for (const taskId of ids) {
+        const logTask = logData
+          ? (logData[taskId] as LogTask | undefined)
+          : undefined;
+        painCount += logTask?.evidence?.pain_points?.length ?? 0;
+        obsCount += logTask?.evidence?.observations?.length ?? 0;
+      }
+      map[step.key] = { taskCount: ids.length, painCount, obsCount };
+    }
+    return map;
+  }, [steps, logData]);
+
   const activeStep = steps.find((s) => s.key === activeStepKey);
   const activeStepCode = activeStep?.code ?? '';
 
@@ -126,6 +145,7 @@ const ProjectPanoramaBlock: React.FC<{
         compact
         activeStepCode={activeStepCode}
         onCardClick={handleCardClick}
+        stepStats={stepStats}
       />
 
       {/* 任务总结与痛点 */}
