@@ -30,9 +30,9 @@ const CommunityExperiencePage: React.FC = () => {
 
   if (soc === 'A5') {
     return (
-      <div className="flex h-screen flex-1 justify-center bg-[#f4f6fb]">
+      <div className="flex h-screen flex-1 items-center justify-center bg-[#f4f6fb]">
         <Empty
-          className="mt-[210px]"
+          className="mb-[100px]"
           styles={{
             image: { height: 150 },
             description: { marginTop: 8, textAlign: 'center' },
