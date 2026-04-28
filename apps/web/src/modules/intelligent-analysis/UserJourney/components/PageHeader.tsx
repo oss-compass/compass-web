@@ -466,7 +466,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           >
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white text-slate-500 transition hover:border-slate-400 hover:text-slate-700"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white text-slate-500 transition hover:border-slate-400 hover:text-slate-700"
               aria-label="添加对比项目"
             >
               <PlusOutlined />
