@@ -1,6 +1,12 @@
 /**
  * 维度与模型的对应关系映射
  * 用于根据模型 ID 查找对应的维度
+ *
+ * 层级关系：L1 维度 → L2 维度 → 模型 → 指标
+ * - L1 维度（一级维度）：如 "社区健康"、"贡献总览"、"开发者生态"
+ * - L2 维度（二级维度）：如 "协作效率"、"社区活力" 等
+ * - 模型：每个 L2 维度下包含若干模型
+ * - 指标：每个模型包含固定的指标列表
  */
 
 export type DimensionalityId =
@@ -8,7 +14,19 @@ export type DimensionalityId =
   | 'dimensionality_002'
   | 'dimensionality_003'
   | 'dimensionality_004'
-  | 'dimensionality_005';
+  | 'dimensionality_005'
+  | 'dimensionality_006'
+  | 'dimensionality_007'
+  | 'dimensionality_008'
+  | 'dimensionality_009'
+  | 'dimensionality_010'
+  | 'dimensionality_011';
+
+export type L1DimensionalityId =
+  | 'l1_community_health'
+  | 'l1_contributor_overview'
+  | 'l1_developer_ecology'
+  | 'l1_supply_chain_security';
 
 export type ModelId =
   | 'model_001'
@@ -21,6 +39,19 @@ export type ModelId =
   | 'model_008'
   | 'model_009'
   | 'model_010'
+  | 'model_012'
+  | 'model_013'
+  | 'model_014'
+  | 'model_015'
+  | 'model_016'
+  | 'model_017'
+  | 'model_018'
+  | 'model_019'
+  | 'model_020'
+  | 'model_021'
+  | 'model_022'
+  | 'model_023'
+  | 'model_024'
   | 'model_999';
 
 export type MetricId = string;
@@ -30,13 +61,57 @@ export interface DimensionalityInfo {
   models: ModelId[];
 }
 
+export interface L1DimensionalityInfo {
+  id: L1DimensionalityId;
+  l2Dimensions: DimensionalityId[];
+}
+
 /**
- * 维度到模型的映射
+ * L1 维度到 L2 维度的映射
+ * - l1_community_health (社区健康): 协作效率、社区活力、生态影响力、开放治理
+ * - l1_contributor_overview (贡献总览): 贡献总览(独立指标)
+ * - l1_developer_ecology (开发者生态): 开发者吸引、开发者成长、开发者留存
+ */
+export const l1ToL2Map: Record<L1DimensionalityId, DimensionalityId[]> = {
+  l1_community_health: [
+    'dimensionality_001',
+    'dimensionality_002',
+    'dimensionality_003',
+    'dimensionality_004',
+  ],
+  l1_contributor_overview: ['dimensionality_005'],
+  l1_developer_ecology: [
+    'dimensionality_006',
+    'dimensionality_007',
+    'dimensionality_008',
+  ],
+  l1_supply_chain_security: [
+    'dimensionality_009',
+    'dimensionality_010',
+    'dimensionality_011',
+  ],
+};
+
+/**
+ * L1 维度 ID 列表
+ */
+export const allL1DimensionalityIds: L1DimensionalityId[] = [
+  'l1_contributor_overview',
+  'l1_community_health',
+  'l1_developer_ecology',
+  'l1_supply_chain_security',
+];
+
+/**
+ * L2 维度到模型的映射
  * - dimensionality_001 (协作效率): model_001(响应及时性), model_002(协作开发质量)
  * - dimensionality_002 (社区活力): model_003(开发者基数), model_004(贡献活跃度), model_005(社区流行度)
  * - dimensionality_003 (生态影响力): model_006(生态伙伴多样性), model_007(生态伙伴影响力), model_008(技术采纳度)
- * - dimensionality_004 (开发治理): model_009(组织开放治理), model_010(个人开放治理)
- * - dimensionality_005 (其他指标): model_999(独立指标)
+ * - dimensionality_004 (开放治理): model_009(组织开放治理), model_010(个人开放治理)
+ * - dimensionality_005 (贡献总览/独立指标): model_999(独立指标)
+ * - dimensionality_006 (开发者吸引): model_012(开发者吸引)
+ * - dimensionality_007 (开发者成长): model_013(开发者参与度分层), model_014(开发者晋升)
+ * - dimensionality_008 (开发者留存): model_015(核心开发者留存率), model_016(核心开发者淡出率), model_017(核心开发者流失率)
  */
 export const dimensionalityToModelsMap: Record<DimensionalityId, ModelId[]> = {
   dimensionality_001: ['model_001', 'model_002'],
@@ -44,6 +119,12 @@ export const dimensionalityToModelsMap: Record<DimensionalityId, ModelId[]> = {
   dimensionality_003: ['model_006', 'model_007', 'model_008'],
   dimensionality_004: ['model_009', 'model_010'],
   dimensionality_005: ['model_999'],
+  dimensionality_006: ['model_012'],
+  dimensionality_007: ['model_013', 'model_014'],
+  dimensionality_008: ['model_015', 'model_016', 'model_017'],
+  dimensionality_009: ['model_018', 'model_019'],
+  dimensionality_010: ['model_020', 'model_021', 'model_022'],
+  dimensionality_011: ['model_023', 'model_024'],
 };
 
 /**
@@ -61,6 +142,19 @@ export const modelToDimensionalityMap: Record<ModelId, DimensionalityId> = {
   model_008: 'dimensionality_003',
   model_009: 'dimensionality_004',
   model_010: 'dimensionality_004',
+  model_012: 'dimensionality_006',
+  model_013: 'dimensionality_007',
+  model_014: 'dimensionality_007',
+  model_015: 'dimensionality_008',
+  model_016: 'dimensionality_008',
+  model_017: 'dimensionality_008',
+  model_018: 'dimensionality_009',
+  model_019: 'dimensionality_009',
+  model_020: 'dimensionality_010',
+  model_021: 'dimensionality_010',
+  model_022: 'dimensionality_010',
+  model_023: 'dimensionality_011',
+  model_024: 'dimensionality_011',
   model_999: 'dimensionality_005',
 };
 
@@ -147,6 +241,59 @@ export const modelToMetricsMap: Record<ModelId, MetricId[]> = {
     'metric_060',
     'metric_061',
   ],
+  // model_012 开发者吸引
+  model_012: [
+    'metric_065',
+    'metric_066',
+    'metric_067',
+    'metric_068',
+    'metric_069',
+  ],
+  // model_013 开发者参与度分层
+  model_013: [
+    'metric_070',
+    'metric_071',
+    'metric_072',
+    'metric_073',
+    'metric_074',
+    'metric_075',
+    'metric_076',
+    'metric_077',
+    'metric_078',
+    'metric_079',
+    'metric_080',
+    'metric_081',
+  ],
+  // model_014 开发者晋升
+  model_014: ['metric_082', 'metric_083', 'metric_084', 'metric_085'],
+  // model_015 核心开发者留存率
+  model_015: ['metric_086', 'metric_087', 'metric_088', 'metric_089'],
+  // model_016 核心开发者淡出率
+  model_016: ['metric_090', 'metric_091', 'metric_092', 'metric_093'],
+  // model_017 核心开发者流失率
+  model_017: ['metric_094', 'metric_095', 'metric_096', 'metric_097'],
+  // model_018 合法合规
+  model_018: ['metric_098', 'metric_099', 'metric_100', 'metric_101'],
+  // model_019 安全管理
+  model_019: ['metric_102', 'metric_103'],
+  // model_020 开发文档质量
+  model_020: ['metric_104', 'metric_105', 'metric_106', 'metric_107'],
+  // model_021 代码审查质量
+  model_021: [
+    'metric_108',
+    'metric_109',
+    'metric_110',
+    'metric_111',
+    'metric_112',
+    'metric_113',
+    'metric_114',
+  ],
+  // model_022 可信构建
+  model_022: ['metric_115', 'metric_116', 'metric_117', 'metric_118'],
+  // model_023 发布质量
+  model_023: ['metric_119', 'metric_120', 'metric_121', 'metric_122'],
+  // model_024 维护管理
+  model_024: ['metric_123', 'metric_124'],
   // model_999 其他指标（独立指标）
   model_999: ['metric_062', 'metric_063', 'metric_064'],
 };
@@ -223,6 +370,12 @@ export const allDimensionalityIds: DimensionalityId[] = [
   'dimensionality_003',
   'dimensionality_004',
   'dimensionality_005',
+  'dimensionality_006',
+  'dimensionality_007',
+  'dimensionality_008',
+  'dimensionality_009',
+  'dimensionality_010',
+  'dimensionality_011',
 ];
 
 /**
@@ -239,6 +392,19 @@ export const allModelIds: ModelId[] = [
   'model_008',
   'model_009',
   'model_010',
+  'model_012',
+  'model_013',
+  'model_014',
+  'model_015',
+  'model_016',
+  'model_017',
+  'model_018',
+  'model_019',
+  'model_020',
+  'model_021',
+  'model_022',
+  'model_023',
+  'model_024',
   'model_999',
 ];
 

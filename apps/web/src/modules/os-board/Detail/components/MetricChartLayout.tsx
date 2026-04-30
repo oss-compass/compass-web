@@ -6,6 +6,7 @@ import ModelCard from './ModelCard';
 import ContributorTable from './ContributorTable';
 import IssueTable from './IssueTable';
 import PrTable from './PrTable';
+import SupplyChainView from './SupplyChainView';
 import type {
   OsBoardMetric,
   OsBoardDerivedMetric,
@@ -31,6 +32,15 @@ const SPECIAL_METRICS = {
 } as const;
 
 const CONTRIBUTION_OVERVIEW_MODEL_ID: ModelId = 'model_999';
+const SUPPLY_CHAIN_MODEL_IDS: Set<string> = new Set([
+  'model_018',
+  'model_019',
+  'model_020',
+  'model_021',
+  'model_022',
+  'model_023',
+  'model_024',
+]);
 const CONTRIBUTION_OVERVIEW_METRIC_ORDER: Record<string, number> = {
   [SPECIAL_METRICS.ISSUE]: 0,
   [SPECIAL_METRICS.PR]: 1,
@@ -293,9 +303,18 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
   const renderMetricsWithModelCards = () => {
     const elements: React.ReactNode[] = [];
     const renderedModels = new Set<string>();
+    const supplyChainMetrics: OsBoardDashboardMetric[] = [];
+    let hasSupplyChain = false;
 
     orderedDisplayMetrics.forEach((metric) => {
       const modelIdent = metric.dashboard_model_info_ident;
+
+      // 供应链安全模型走特殊渲染
+      if (SUPPLY_CHAIN_MODEL_IDS.has(modelIdent)) {
+        hasSupplyChain = true;
+        supplyChainMetrics.push(metric);
+        return;
+      }
 
       // 如果该模型的所有指标都被选中，且还未渲染过该模型的 ModelCard
       if (completeModels.has(modelIdent) && !renderedModels.has(modelIdent)) {
@@ -325,6 +344,21 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
       // 渲染指标卡片
       elements.push(renderMetricItem(metric));
     });
+
+    // 供应链安全视图
+    if (hasSupplyChain && dashboard.config.projects.length > 0) {
+      elements.push(
+        <div key="supply_chain_view" className="col-span-2 md:col-span-1">
+          <SupplyChainView
+            project={dashboard.config.projects[0]}
+            metricsDataMap={metricsDataMap}
+            modelScoresDataMap={modelScoresDataMap}
+            supplyChainMetrics={supplyChainMetrics}
+            isLoading={metricQueries.some((q) => q.isLoading)}
+          />
+        </div>
+      );
+    }
 
     return elements;
   };

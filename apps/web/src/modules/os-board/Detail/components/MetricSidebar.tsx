@@ -12,18 +12,20 @@ import type {
 import {
   allDimensionalityIds,
   dimensionalityToModelsMap,
+  l1ToL2Map,
   type DimensionalityId,
+  type L1DimensionalityId,
   type ModelId,
 } from '../../config/dimensionalityModelMap';
 
 // 一级评估体系配置
 const EVALUATION_SYSTEMS = [
-  { id: 'community_health', name: '社区生态健康评估', enabled: true },
-  { id: 'developer_journey', name: '开发者旅程评估', enabled: false },
+  { id: 'community_health', l1Id: 'l1_community_health', enabled: true },
+  { id: 'developer_journey', l1Id: 'l1_developer_ecology', enabled: true },
   {
     id: 'supply_chain_security',
-    name: '开源软件供应链安全评估',
-    enabled: false,
+    l1Id: 'l1_supply_chain_security',
+    enabled: true,
   },
   // { id: 'developer_experience', name: '开发者体验套件评估', enabled: false },
   // {
@@ -32,6 +34,13 @@ const EVALUATION_SYSTEMS = [
   //   enabled: false,
   // },
 ] as const;
+
+// 评估体系ID → L1维度ID 映射
+const SYSTEM_TO_L1_MAP: Record<string, L1DimensionalityId> = {
+  community_health: 'l1_community_health',
+  developer_journey: 'l1_developer_ecology',
+  supply_chain_security: 'l1_supply_chain_security',
+};
 
 const CONTRIBUTION_OVERVIEW_DIMENSION_ID: DimensionalityId =
   'dimensionality_005';
@@ -70,11 +79,6 @@ interface DimensionalityGroup {
   dimensionalityName: string;
   models: ModelGroup[];
 }
-
-// 分隔线组件
-const Divider = () => (
-  <div className="mx-6 mb-4 mt-2 border-b border-gray-200"></div>
-);
 
 // 禁用菜单项组件（带hover Popper提示）
 const DisabledMenuItem: React.FC<{ name: string }> = ({ name }) => {
@@ -116,8 +120,8 @@ const DisabledMenuItem: React.FC<{ name: string }> = ({ name }) => {
 // 二级菜单项组件（模型），带 Popper 显示三级菜单
 const ModelMenuItem: React.FC<{
   model: ModelGroup;
-  onMetricClick: (metricId: string) => void;
-}> = ({ model, onMetricClick }) => {
+  onItemClick: (itemId: string) => void;
+}> = ({ model, onItemClick }) => {
   const popoverAnchor = useRef<HTMLDivElement>(null);
   const [openedPopover, setOpenedPopover] = useState(false);
 
@@ -130,7 +134,7 @@ const ModelMenuItem: React.FC<{
         onMouseLeave={() => setOpenedPopover(false)}
       >
         <a
-          href={`#metric_card_${model.metrics[0]?.id}`}
+          href={`#metric_card_${model.modelId}`}
           className={classnames(
             'flex items-center justify-between text-xs text-gray-600',
             'cursor-pointer rounded py-2 pl-6 pr-2',
@@ -138,12 +142,10 @@ const ModelMenuItem: React.FC<{
           )}
           onClick={(e) => {
             e.preventDefault();
-            if (model.metrics[0]) {
-              onMetricClick(model.metrics[0].id);
-            }
+            onItemClick(model.modelId);
           }}
         >
-          <span className="truncate">{model.modelName}</span>
+          <span className="truncate whitespace-nowrap">{model.modelName}</span>
         </a>
       </div>
       <Popper
@@ -170,7 +172,7 @@ const ModelMenuItem: React.FC<{
               )}
               onClick={(e) => {
                 e.preventDefault();
-                onMetricClick(metric.id);
+                onItemClick(metric.id);
               }}
             >
               {metric.name}
@@ -185,8 +187,8 @@ const ModelMenuItem: React.FC<{
 // 一级菜单项组件（维度）
 const DimensionalityTopicItem: React.FC<{
   dim: DimensionalityGroup;
-  onMetricClick: (metricId: string) => void;
-}> = ({ dim, onMetricClick }) => {
+  onItemClick: (itemId: string) => void;
+}> = ({ dim, onItemClick }) => {
   // 贡献总览（dimensionality_005）特殊处理：直接显示指标，不显示模型层级
   const isContributionOverview =
     dim.dimensionalityId === CONTRIBUTION_OVERVIEW_DIMENSION_ID;
@@ -218,12 +220,9 @@ const DimensionalityTopicItem: React.FC<{
     <>
       <div className="group px-4">
         <div
-          className={classnames(
-            'mb-0.5 flex cursor-pointer items-center rounded px-2 py-2',
-            'hover:bg-gray-100 hover:text-black'
-          )}
+          className={classnames('mb-0.5 flex items-center rounded px-2 py-2')}
         >
-          <h3 className="line-clamp-1 text-sm font-medium">
+          <h3 className="line-clamp-1 truncate whitespace-nowrap text-sm font-medium">
             {dim.dimensionalityName}
           </h3>
         </div>
@@ -242,10 +241,10 @@ const DimensionalityTopicItem: React.FC<{
               )}
               onClick={(e) => {
                 e.preventDefault();
-                onMetricClick(metric.id);
+                onItemClick(metric.id);
               }}
             >
-              <span className="truncate">{metric.name}</span>
+              <span className="truncate whitespace-nowrap">{metric.name}</span>
             </a>
           ))}
         </div>
@@ -255,7 +254,7 @@ const DimensionalityTopicItem: React.FC<{
           <ModelMenuItem
             key={model.modelId}
             model={model}
-            onMetricClick={onMetricClick}
+            onItemClick={onItemClick}
           />
         ))
       )}
@@ -272,8 +271,10 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
   const { t } = useTranslation();
   const { y } = useWindowScroll();
   const preY = usePrevious(y) as number;
-  // 控制社区生态健康评估的展开/收缩状态
-  const [isExpanded, setIsExpanded] = useState(true);
+  // 控制各评估体系的展开/收缩状态
+  const [expandedSystems, setExpandedSystems] = useState<Set<string>>(
+    new Set(EVALUATION_SYSTEMS.filter((s) => s.enabled).map((s) => s.id))
+  );
 
   // 构建三级菜单数据结构
   const menuData = useMemo((): DimensionalityGroup[] => {
@@ -377,8 +378,8 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
     ];
   }, [dashboardMetrics, metrics, derivedMetrics, selectedMetricIds, t]);
 
-  const scrollToMetric = (metricId: string) => {
-    const element = document.getElementById(`metric_card_${metricId}`);
+  const scrollToCard = (id: string) => {
+    const element = document.getElementById(`metric_card_${id}`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       element.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
@@ -393,9 +394,9 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
       <>
         {/* 总标题 */}
         <div className="border-b px-6 pb-4">
-          <div className="flex items-center gap-2">
-            <AiOutlineAppstore className="h-6 w-6 text-gray-700" />
-            <span className="text-base font-bold text-gray-800">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <AiOutlineAppstore className="h-6 w-6 shrink-0 text-gray-700" />
+            <span className="truncate whitespace-nowrap text-base font-bold text-gray-800">
               {t('os_board:oss_eco_evaluation_system')}
             </span>
           </div>
@@ -403,58 +404,87 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
 
         {/* 一级评估体系菜单 */}
         <div className="py-2">
-          {EVALUATION_SYSTEMS.map((system, sysIndex) => (
-            <div key={system.id}>
-              {system.enabled ? (
-                <>
-                  {/* 社区生态健康评估 - 可展开/收缩 */}
-                  <div className="group px-4">
-                    <div
-                      className={classnames(
-                        'mb-1 flex cursor-pointer items-center rounded px-2 py-2',
-                        isExpanded
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'hover:bg-gray-100'
-                      )}
-                      onClick={() => setIsExpanded(!isExpanded)}
-                    >
-                      <AiOutlineRight
+          {EVALUATION_SYSTEMS.map((system) => {
+            const isExpanded = expandedSystems.has(system.id);
+            const systemName = t(`metrics_models_v2:${system.l1Id}.title`);
+
+            return (
+              <div key={system.id}>
+                {system.enabled ? (
+                  <>
+                    {/* 一级评估体系标题 - 可展开/收缩 */}
+                    <div className="group px-4">
+                      <div
                         className={classnames(
-                          'mr-1 h-3 w-3 transition-transform duration-200',
-                          isExpanded && 'rotate-90'
+                          'mb-1 flex cursor-pointer items-center rounded px-2 py-2',
+                          isExpanded
+                            ? 'bg-blue-50 text-blue-700'
+                            : 'hover:bg-gray-100'
                         )}
-                      />
-                      <span className="text-sm font-semibold">
-                        {system.name}
-                      </span>
+                        onClick={() =>
+                          setExpandedSystems((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(system.id)) {
+                              next.delete(system.id);
+                            } else {
+                              next.add(system.id);
+                            }
+                            return next;
+                          })
+                        }
+                      >
+                        <AiOutlineRight
+                          className={classnames(
+                            'mr-1 h-3 w-3 transition-transform duration-200',
+                            isExpanded && 'rotate-90'
+                          )}
+                        />
+                        <span className="truncate whitespace-nowrap text-sm font-semibold">
+                          {systemName}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  {/* 展开的维度->模型->指标三级菜单（缩进） */}
-                  {isExpanded &&
-                    (menuData.length > 0 ? (
-                      <div className="pb-2 pl-4">
-                        {menuData.map((dim, index) => (
-                          <React.Fragment key={dim.dimensionalityId}>
-                            {index > 0 && <Divider />}
-                            <DimensionalityTopicItem
-                              dim={dim}
-                              onMetricClick={scrollToMetric}
-                            />
-                          </React.Fragment>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center py-6 text-sm text-gray-400">
-                        {t('os_board:sidebar.empty')}
-                      </div>
-                    ))}
-                </>
-              ) : (
-                /* 其他评估体系 - 灰色不可点击，hover显示即将上线 */
-                <DisabledMenuItem name={system.name} />
-              )}
-            </div>
-          ))}
+                    {/* 展开的维度->模型->指标三级菜单 */}
+                    {isExpanded &&
+                      (() => {
+                        const l1Id = SYSTEM_TO_L1_MAP[system.id];
+                        // community_health 同时包含 l1_community_health 和 l1_contributor_overview
+                        const allowedDimIds =
+                          system.id === 'community_health'
+                            ? [
+                                ...(l1ToL2Map[l1Id] || []),
+                                ...(l1ToL2Map['l1_contributor_overview'] || []),
+                              ]
+                            : l1ToL2Map[l1Id] || [];
+                        const filteredMenuData = menuData.filter((dim) =>
+                          allowedDimIds.includes(dim.dimensionalityId)
+                        );
+
+                        return filteredMenuData.length > 0 ? (
+                          <div className="pb-2 pl-4">
+                            {filteredMenuData.map((dim) => (
+                              <React.Fragment key={dim.dimensionalityId}>
+                                <DimensionalityTopicItem
+                                  dim={dim}
+                                  onItemClick={scrollToCard}
+                                />
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center py-6 text-sm text-gray-400">
+                            {t('os_board:sidebar.empty')}
+                          </div>
+                        );
+                      })()}
+                  </>
+                ) : (
+                  /* 未启用的评估体系 - 灰色不可点击，hover显示即将上线 */
+                  <DisabledMenuItem name={systemName} />
+                )}
+              </div>
+            );
+          })}
         </div>
       </>
     );

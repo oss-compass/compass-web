@@ -11,7 +11,11 @@ import type { DashboardMetricInfo } from '../../api/dashboard';
 import {
   dimensionalityToModelsMap,
   allDimensionalityIds,
+  allL1DimensionalityIds,
+  l1ToL2Map,
+  getMetricsByModel,
   type DimensionalityId,
+  type L1DimensionalityId,
   type ModelId,
 } from '../../config/dimensionalityModelMap';
 
@@ -19,7 +23,14 @@ interface MetricSelectionModalProps {
   open: boolean;
   onClose: () => void;
   selectedIds: string[];
-  onConfirm: (metricIds: string[]) => void;
+  onConfirm: (modelIds: string[]) => void;
+}
+
+interface ModelCardData {
+  modelIdent: string;
+  name: string;
+  description: string;
+  metrics: DashboardMetricInfo[];
 }
 
 const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
@@ -31,45 +42,40 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const throttleSearch = useThrottle(search, { wait: 200 });
-  const [currentCategory, setCurrentCategory] = useState('');
+  const [currentL2Category, setCurrentL2Category] = useState<string>('');
   const [tempSelected, setTempSelected] = useState<string[]>([]);
-  // 维度展开状态
-  const [expandedDimensionalities, setExpandedDimensionalities] = useState<
-    Set<DimensionalityId>
-  >(new Set(allDimensionalityIds));
+  // L1 维度展开状态
+  const [expandedL1, setExpandedL1] = useState<Set<L1DimensionalityId>>(
+    new Set(allL1DimensionalityIds)
+  );
+  // 模型卡片收起状态（默认全部展开，用户可主动收起）
+  const [collapsedModels, setCollapsedModels] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     if (open) {
       setTempSelected(selectedIds);
       setSearch('');
+      setCollapsedModels(new Set());
     }
   }, [open, selectedIds]);
 
-  // 使用新的 API 接口
+  // 使用 API 接口
   const { data, isLoading } = useModelMetricList();
 
-  // 模型数据映射（modelIdent -> 模型信息）
+  // 模型数据映射（modelIdent → 模型信息 + 指标列表）
   const modelDataMap = useMemo(() => {
-    const map: Record<
-      string,
-      {
-        id: string;
-        name: string;
-        description?: string;
-        modelIdent: string;
-        metrics: DashboardMetricInfo[];
-      }
-    > = {};
+    const map: Record<string, ModelCardData> = {};
 
     // 独立指标（model_999）
     if (data?.independent_metrics && data.independent_metrics.length > 0) {
       const i18nTitle = t('metrics_models_v2:model_999.title', '独立指标');
       const i18nDesc = t('metrics_models_v2:model_999.desc', '');
       map['model_999'] = {
-        id: 'independent',
+        modelIdent: 'model_999',
         name: i18nTitle,
         description: i18nDesc,
-        modelIdent: 'model_999',
         metrics: data.independent_metrics,
       };
     }
@@ -88,10 +94,9 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
             model.description
           );
           map[modelIdent] = {
-            id: `model_${model.id}`,
+            modelIdent,
             name: i18nTitle,
             description: i18nDesc,
-            modelIdent,
             metrics: model.dashboard_metric_infos,
           };
         }
@@ -101,27 +106,22 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
     return map;
   }, [data, t]);
 
-  // 按维度分组的数据结构
-  const dimensionalityGroups = useMemo(() => {
+  // L2 维度分组数据
+  const l2Groups = useMemo(() => {
     return allDimensionalityIds
       .map((dimId) => {
         const dimTitle = t(`metrics_models_v2:${dimId}.title`, dimId);
-        const modelIds = dimensionalityToModelsMap[dimId] || [];
+        const configuredModelIds = dimensionalityToModelsMap[dimId] || [];
 
-        // 过滤出有数据的模型
-        const models = modelIds
+        // 过滤出 API 返回中实际存在的模型
+        const models = configuredModelIds
           .filter((modelId) => modelDataMap[modelId])
           .map((modelId) => modelDataMap[modelId]);
 
-        // 计算该维度下已选中的指标数量
-        const selectedCount = models.reduce((count, model) => {
-          return (
-            count +
-            tempSelected.filter((ident) =>
-              model.metrics.some((m) => m.ident === ident)
-            ).length
-          );
-        }, 0);
+        // 计算该 L2 维度下已选中的模型数量
+        const selectedCount = models.filter((m) =>
+          tempSelected.includes(m.modelIdent)
+        ).length;
 
         return {
           id: dimId,
@@ -133,82 +133,145 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
       .filter((group) => group.models.length > 0);
   }, [modelDataMap, t, tempSelected]);
 
-  // 设置默认分类为第一个维度的第一个模型
+  // L1 维度分组数据
+  const l1Groups = useMemo(() => {
+    return allL1DimensionalityIds
+      .map((l1Id) => {
+        const l1Title = t(`metrics_models_v2:${l1Id}.title`, l1Id);
+        const l2Ids = l1ToL2Map[l1Id] || [];
+
+        // 过滤出有模型数据的 L2 维度
+        const children = l2Ids
+          .map((l2Id) => l2Groups.find((g) => g.id === l2Id))
+          .filter(Boolean) as typeof l2Groups;
+
+        if (children.length === 0) return null;
+
+        const totalSelected = children.reduce(
+          (sum, c) => sum + c.selectedCount,
+          0
+        );
+
+        return {
+          id: l1Id,
+          title: l1Title,
+          children,
+          totalSelected,
+        };
+      })
+      .filter(Boolean) as Array<{
+      id: L1DimensionalityId;
+      title: string;
+      children: typeof l2Groups;
+      totalSelected: number;
+    }>;
+  }, [l2Groups, t]);
+
+  // 设置默认分类为第一个 L2 维度
   useEffect(() => {
-    if (open && dimensionalityGroups.length > 0 && !currentCategory) {
-      const firstModel = dimensionalityGroups[0]?.models[0];
-      if (firstModel) {
-        setCurrentCategory(firstModel.modelIdent);
+    if (open && l2Groups.length > 0 && !currentL2Category) {
+      setCurrentL2Category(l2Groups[0].id);
+    }
+  }, [open, l2Groups, currentL2Category]);
+
+  // 当前 L2 维度的模型列表
+  const currentModels = useMemo(() => {
+    const group = l2Groups.find((g) => g.id === currentL2Category);
+    return group?.models || [];
+  }, [l2Groups, currentL2Category]);
+
+  // 当前 L2 维度名称
+  const currentL2Title = useMemo(() => {
+    const group = l2Groups.find((g) => g.id === currentL2Category);
+    return group?.title || '';
+  }, [l2Groups, currentL2Category]);
+
+  // 所有模型（用于搜索）
+  const allModelsFlat = useMemo(() => {
+    const models: Array<{
+      modelIdent: string;
+      name: string;
+      description: string;
+      l2DimensionId: string;
+    }> = [];
+    Object.values(modelDataMap).forEach((model) => {
+      // 找到该模型所属的 L2 维度
+      const l2Id = Object.entries(dimensionalityToModelsMap).find(
+        ([, modelIds]) => modelIds.includes(model.modelIdent as ModelId)
+      )?.[0];
+      if (l2Id) {
+        models.push({
+          modelIdent: model.modelIdent,
+          name: model.name,
+          description: model.description,
+          l2DimensionId: l2Id,
+        });
       }
-    }
-  }, [open, dimensionalityGroups, currentCategory]);
-
-  // 当前分类的指标列表
-  const showListItem = useMemo(() => {
-    const model = modelDataMap[currentCategory];
-    return model?.metrics || [];
-  }, [modelDataMap, currentCategory]);
-
-  // 当前模型信息
-  const currentModelData = useMemo(() => {
-    return modelDataMap[currentCategory];
-  }, [modelDataMap, currentCategory]);
-
-  // 所有指标（用于搜索）
-  const allMetrics = useMemo(() => {
-    const metrics: DashboardMetricInfo[] = [];
-    if (data?.independent_metrics) {
-      metrics.push(...data.independent_metrics);
-    }
-    if (data?.models) {
-      data.models.forEach((model) => {
-        metrics.push(...model.dashboard_metric_infos);
-      });
-    }
-    return metrics;
-  }, [data]);
+    });
+    return models;
+  }, [modelDataMap]);
 
   // 搜索结果
   const searchResult = useMemo(() => {
     if (!throttleSearch) return [];
-    return allMetrics.filter((metric) => {
+    return allModelsFlat.filter((model) => {
+      const searchLower = throttleSearch.toLowerCase();
       return (
-        metric.ident.toLowerCase().indexOf(throttleSearch.toLowerCase()) > -1 ||
-        metric.name.toLowerCase().indexOf(throttleSearch.toLowerCase()) > -1
+        model.name.toLowerCase().indexOf(searchLower) > -1 ||
+        model.description.toLowerCase().indexOf(searchLower) > -1
       );
     });
-  }, [allMetrics, throttleSearch]);
+  }, [allModelsFlat, throttleSearch]);
 
-  const toggleMetric = (metricIdent: string) => {
-    const idStr = metricIdent;
+  const toggleModel = (modelIdent: string) => {
     setTempSelected((prev) =>
-      prev.includes(idStr)
-        ? prev.filter((id) => id !== idStr)
-        : [...prev, idStr]
+      prev.includes(modelIdent)
+        ? prev.filter((id) => id !== modelIdent)
+        : [...prev, modelIdent]
     );
   };
 
-  // 当前模型的全选/取消全选
-  const isAllSelected = useMemo(() => {
-    if (!showListItem || showListItem.length === 0) return false;
-    return showListItem.every((m) => tempSelected.includes(m.ident));
-  }, [showListItem, tempSelected]);
+  const handleSelectAllCurrent = () => {
+    const modelIdents = throttleSearch
+      ? searchResult.map((r) => r.modelIdent)
+      : currentModels.map((m) => m.modelIdent);
 
-  const toggleSelectAll = () => {
-    if (!showListItem || showListItem.length === 0) return;
-    const currentIdents = showListItem.map((m) => m.ident);
-    if (isAllSelected) {
-      // 取消全选
-      setTempSelected((prev) =>
-        prev.filter((id) => !currentIdents.includes(id))
-      );
+    if (modelIdents.length === 0) return;
+
+    const allSelected = modelIdents.every((id) => tempSelected.includes(id));
+
+    if (allSelected) {
+      setTempSelected((prev) => prev.filter((id) => !modelIdents.includes(id)));
     } else {
-      // 全选
       setTempSelected((prev) => {
-        const newSet = new Set([...prev, ...currentIdents]);
-        return Array.from(newSet);
+        const toAdd = modelIdents.filter((id) => !prev.includes(id));
+        return [...prev, ...toAdd];
       });
     }
+  };
+
+  const currentSelectAllState = useMemo(() => {
+    const modelIdents = throttleSearch
+      ? searchResult.map((r) => r.modelIdent)
+      : currentModels.map((m) => m.modelIdent);
+    if (modelIdents.length === 0) return 'none';
+    const allSelected = modelIdents.every((id) => tempSelected.includes(id));
+    const someSelected = modelIdents.some((id) => tempSelected.includes(id));
+    if (allSelected) return 'all';
+    if (someSelected) return 'partial';
+    return 'none';
+  }, [throttleSearch, searchResult, currentModels, tempSelected]);
+
+  const toggleModelExpand = (modelIdent: string) => {
+    setCollapsedModels((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(modelIdent)) {
+        newSet.delete(modelIdent);
+      } else {
+        newSet.add(modelIdent);
+      }
+      return newSet;
+    });
   };
 
   const handleSave = () => {
@@ -218,62 +281,32 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
 
   const count = tempSelected.length;
 
-  const toggleDimensionality = (dimId: DimensionalityId) => {
-    setExpandedDimensionalities((prev) => {
+  const toggleL1 = (l1Id: L1DimensionalityId) => {
+    setExpandedL1((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(dimId)) {
-        newSet.delete(dimId);
+      if (newSet.has(l1Id)) {
+        newSet.delete(l1Id);
       } else {
-        newSet.add(dimId);
+        newSet.add(l1Id);
       }
       return newSet;
     });
   };
 
+  // 渲染左侧 L1→L2 菜单
   const renderCategoryMenu = () => {
     return (
       <div className="thin-scrollbar w-60 overflow-auto md:w-auto">
         <div className="border-silver flex flex-col border-l border-r border-t">
-          {dimensionalityGroups.map((group) => {
-            const isExpanded = expandedDimensionalities.has(
-              group.id as DimensionalityId
-            );
-
-            // 其他指标（dimensionality_005）特殊处理：直接作为可点击项，不展示子菜单
-            const isOtherMetrics = group.id === 'dimensionality_005';
-            const isOtherMetricsSelected =
-              isOtherMetrics && currentCategory === 'model_999';
-
-            if (isOtherMetrics) {
-              return (
-                <div
-                  key={group.id}
-                  className={classnames(
-                    'border-silver flex h-10 cursor-pointer items-center justify-between border-b px-3 text-sm font-semibold',
-                    isOtherMetricsSelected
-                      ? 'border-l-2 border-l-blue-600 bg-blue-50'
-                      : 'bg-gray-50'
-                  )}
-                  onClick={() => setCurrentCategory('model_999')}
-                >
-                  <span className="truncate">{group.title}</span>
-                  {group.selectedCount > 0 && (
-                    <span className="bg-primary h-4 min-w-[16px] shrink-0 text-center text-xs leading-4 text-white">
-                      {group.selectedCount}
-                    </span>
-                  )}
-                </div>
-              );
-            }
+          {l1Groups.map((l1Group) => {
+            const isExpanded = expandedL1.has(l1Group.id);
 
             return (
-              <div key={group.id}>
-                {/* 维度一级菜单 - 字体更大更粗 */}
+              <div key={l1Group.id}>
+                {/* L1 一级维度菜单 */}
                 <div
-                  className="border-silver flex h-10 cursor-pointer items-center justify-between border-b bg-gray-50 px-3 text-sm font-semibold"
-                  onClick={() =>
-                    toggleDimensionality(group.id as DimensionalityId)
-                  }
+                  className="border-silver flex h-10 cursor-pointer items-center justify-between border-b bg-gray-100 px-3 text-sm font-semibold"
+                  onClick={() => toggleL1(l1Group.id)}
                 >
                   <div className="flex items-center gap-1">
                     {isExpanded ? (
@@ -281,38 +314,35 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
                     ) : (
                       <IoChevronForward className="text-gray-500" size={14} />
                     )}
-                    <span className="truncate">{group.title}</span>
+                    <span className="truncate">{l1Group.title}</span>
                   </div>
-                  {group.selectedCount > 0 && (
+                  {l1Group.totalSelected > 0 && (
                     <span className="bg-primary h-4 min-w-[16px] shrink-0 text-center text-xs leading-4 text-white">
-                      {group.selectedCount}
+                      {l1Group.totalSelected}
                     </span>
                   )}
                 </div>
 
-                {/* 模型二级菜单 - 字体更小更细 */}
+                {/* L2 二级维度子菜单 */}
                 {isExpanded &&
-                  group.models.map((model) => {
-                    const modelCount = tempSelected.filter((ident) =>
-                      model.metrics.some((m) => m.ident === ident)
-                    ).length;
-                    const isSelected = currentCategory === model.modelIdent;
+                  l1Group.children.map((l2Group) => {
+                    const isSelected = currentL2Category === l2Group.id;
 
                     return (
                       <div
-                        key={model.modelIdent}
-                        onClick={() => setCurrentCategory(model.modelIdent)}
+                        key={l2Group.id}
+                        onClick={() => setCurrentL2Category(l2Group.id)}
                         className={classnames(
                           'border-silver flex h-9 cursor-pointer items-center justify-between border-b pl-7 pr-3 text-xs font-normal',
                           isSelected
-                            ? 'border-l-2 border-l-blue-600 bg-blue-50 !pl-[26px]'
+                            ? 'border-l-2 border-l-blue-600 bg-blue-50 !pl-[26px] text-blue-600'
                             : ''
                         )}
                       >
-                        <div className="truncate">{model.name}</div>
-                        {modelCount > 0 && (
+                        <span className="truncate">{l2Group.title}</span>
+                        {l2Group.selectedCount > 0 && (
                           <span className="bg-primary h-4 min-w-[16px] shrink-0 text-center text-xs leading-4 text-white">
-                            {modelCount}
+                            {l2Group.selectedCount}
                           </span>
                         )}
                       </div>
@@ -326,14 +356,13 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
     );
   };
 
-  const renderMetricCard = (
+  // 渲染模型指标子项（只读）
+  const renderMetricItem = (
     metric: DashboardMetricInfo,
     modelIdent: string
   ) => {
-    const { ident, name, category } = metric;
-    const isSelected = tempSelected.includes(ident);
+    const { ident, name } = metric;
 
-    // 使用国际化获取指标名称和描述
     const i18nTitle = t(
       `metrics_models_v2:${modelIdent}.metrics.${ident}.title`,
       name
@@ -346,40 +375,100 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
     return (
       <div
         key={ident}
-        className={classnames(
-          'flex min-h-16 items-center justify-between border border-[#CCCCCC]',
-          [
-            isSelected
-              ? ['border-blue-600', 'border-2', 'bg-smoke', 'p-[11px]']
-              : ['border', 'p-3'],
-            'cursor-pointer',
-          ]
-        )}
-        onClick={() => toggleMetric(ident)}
+        className="border-b border-gray-200 px-3 py-2 last:border-b-0"
       >
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{i18nTitle}</span>
-            <span className="rounded bg-gray-200 px-2 py-0.5 text-xs text-gray-600">
-              {category}
-            </span>
+        <div className="flex items-center justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="text-xs font-medium">{i18nTitle}</div>
+            {i18nDesc && (
+              <div
+                className="mt-0.5 line-clamp-2 text-xs text-[#585858]"
+                title={i18nDesc}
+              >
+                {i18nDesc}
+              </div>
+            )}
           </div>
-          {i18nDesc && (
-            <div className="mt-1 text-xs text-[#585858]" title={i18nDesc}>
-              {i18nDesc}
-            </div>
+        </div>
+      </div>
+    );
+  };
+
+  // 渲染模型卡片
+  const renderModelCard = (model: ModelCardData) => {
+    const isSelected = tempSelected.includes(model.modelIdent);
+    const isExpanded = !collapsedModels.has(model.modelIdent);
+
+    return (
+      <div
+        key={model.modelIdent}
+        className={classnames('border', {
+          'border-2 border-blue-600': isSelected,
+          'border-[#CCCCCC]': !isSelected,
+        })}
+      >
+        {/* 卡片头部：选中框 + 模型信息 + 展开按钮 */}
+        <div
+          className={classnames(
+            'flex min-h-14 cursor-pointer items-center justify-between',
+            isSelected ? 'bg-smoke p-[11px]' : 'p-3'
           )}
+        >
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <input
+              checked={isSelected}
+              type="checkbox"
+              onChange={() => toggleModel(model.modelIdent)}
+              className="h-4 w-4 shrink-0"
+            />
+            <div
+              className="min-w-0 flex-1"
+              onClick={() => toggleModelExpand(model.modelIdent)}
+            >
+              <div className="text-sm font-medium">{model.name}</div>
+              {model.description && (
+                <div
+                  className="mt-0.5 line-clamp-2 text-xs text-[#585858]"
+                  title={model.description}
+                >
+                  {model.description}
+                </div>
+              )}
+            </div>
+          </div>
+          <button
+            type="button"
+            className="ml-3 shrink-0 text-gray-400 hover:text-gray-600"
+            onClick={() => toggleModelExpand(model.modelIdent)}
+          >
+            {isExpanded ? (
+              <IoChevronDown size={18} />
+            ) : (
+              <IoChevronForward size={18} />
+            )}
+          </button>
         </div>
-        <div className="pl-5">
-          <input checked={isSelected} type="checkbox" onChange={() => {}} />
-        </div>
+
+        {/* 展开的指标列表（只读） */}
+        {isExpanded && model.metrics.length > 0 && (
+          <div className="border-t border-gray-200 bg-gray-50">
+            <div className="border-b border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500">
+              {t('os_board:create.metrics.metric_count', {
+                count: model.metrics.length,
+              })}
+            </div>
+            {model.metrics.map((metric) =>
+              renderMetricItem(metric, model.modelIdent)
+            )}
+          </div>
+        )}
       </div>
     );
   };
 
   const content = () => {
     if (throttleSearch) {
-      if (!searchResult || searchResult.length === 0) {
+      if (searchResult.length === 0) {
         return (
           <div className="text-secondary w-full text-center">
             {t('common:no_data')}
@@ -387,27 +476,24 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
         );
       }
 
-      // 搜索结果需要找到对应的模型 ident
-      const getMetricModelIdent = (metric: DashboardMetricInfo) => {
-        // 先检查是否在独立指标中
-        if (data?.independent_metrics?.some((m) => m.ident === metric.ident)) {
-          return 'model_999';
-        }
-
-        // 在模型中查找，直接返回 model.ident
-        const foundModel = data?.models?.find((model) =>
-          model.dashboard_metric_infos.some((m) => m.ident === metric.ident)
-        );
-
-        return foundModel?.ident || '';
-      };
-
       return (
         <div className="thin-scrollbar flex-1 overflow-auto pl-4">
+          <div className="mb-3 flex items-center justify-end pr-2">
+            <button
+              type="button"
+              className="text-sm text-blue-600 hover:text-blue-800"
+              onClick={handleSelectAllCurrent}
+            >
+              {currentSelectAllState === 'all'
+                ? t('common:btn.deselect_all')
+                : t('common:btn.select_all')}
+            </button>
+          </div>
           <div className="grid grid-cols-1 gap-4 pr-2">
-            {searchResult?.map((metric) => {
-              const modelIdent = getMetricModelIdent(metric);
-              return renderMetricCard(metric, modelIdent);
+            {searchResult.map((modelSummary) => {
+              const model = modelDataMap[modelSummary.modelIdent];
+              if (!model) return null;
+              return renderModelCard(model);
             })}
           </div>
         </div>
@@ -420,48 +506,43 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
         <div className="thin-scrollbar flex-1 overflow-auto pl-4">
           {isLoading ? (
             <div className="animate-pulse p-4">
-              <div className="flex-1 space-y-4">
+              <div className="space-y-4">
                 <div className="h-4 bg-slate-200"></div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2 h-4 bg-slate-200"></div>
                   <div className="col-span-1 h-4 bg-slate-200"></div>
-                </div>
-                <div className="h-4 bg-slate-200"></div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-1 h-4 bg-slate-200"></div>
-                  <div className="col-span-2 h-4 bg-slate-200"></div>
                 </div>
                 <div className="h-4 bg-slate-200"></div>
               </div>
             </div>
           ) : (
             <div className="pr-2">
-              {/* 全选按钮 */}
-              {showListItem && showListItem.length > 0 && (
+              {/* L2 维度标题 + 已选模型数量 */}
+              {currentModels.length > 0 && (
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="text-sm text-gray-500">
-                    {t('os_board:create.metrics.metric_count', {
-                      count: showListItem.length,
-                    })}
+                  <span className="text-sm font-medium text-gray-700">
+                    {currentL2Title}
                   </span>
-                  <button
-                    type="button"
-                    className="text-sm text-blue-600 hover:underline"
-                    onClick={toggleSelectAll}
-                  >
-                    {isAllSelected
-                      ? t('common:btn.deselect_all')
-                      : t('common:btn.select_all')}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                      onClick={handleSelectAllCurrent}
+                    >
+                      {currentSelectAllState === 'all'
+                        ? t('common:btn.deselect_all')
+                        : t('common:btn.select_all')}
+                    </button>
+                    <span className="text-sm text-gray-500">
+                      {t('os_board:create.metrics.model_count', {
+                        count: currentModels.length,
+                      })}
+                    </span>
+                  </div>
                 </div>
               )}
               <div className="grid grid-cols-1 gap-4">
-                {showListItem?.map((metric) => {
-                  return renderMetricCard(
-                    metric,
-                    currentModelData?.modelIdent || ''
-                  );
-                })}
+                {currentModels.map((model) => renderModelCard(model))}
               </div>
             </div>
           )}
@@ -482,10 +563,10 @@ const MetricSelectionModal: React.FC<MetricSelectionModalProps> = ({
 
         <div className="px-10 pt-8 md:px-2">
           <div className="mb-3 text-2xl font-medium">
-            {t('os_board:create.metrics.add_metric')}
+            {t('os_board:create.model_selection.add_model')}
           </div>
           <div className="mb-4 text-sm">
-            {t('os_board:create.metrics.selected_count', { count })}
+            {t('os_board:create.metrics.selected_model_count', { count })}
           </div>
           <Input
             value={search}

@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@oss-compass/ui';
 import ProjectSearchInput from './ProjectSearchInput';
-import { MetricSelectionModal, DraggableMetricList } from './MetricSelector';
+import { MetricSelectionModal, SelectedModelList } from './MetricSelector';
 import { useDashboardMetrics } from './useDashboardMetrics';
 import {
   useDashboardFormState,
@@ -44,14 +44,12 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
     const {
       metricIds,
       hiddenMetricIds,
-      manualMetricIds,
-      setManualMetricIds,
+      selectedModelIds,
+      setSelectedModelIds,
       metricModalOpen,
       setMetricModalOpen,
       selectableMetrics,
-      handleReorder,
-      handleDelete,
-      handleHide,
+      handleDeleteModel,
       metricToModelMap,
     } = useDashboardMetrics({ initialValues });
 
@@ -67,7 +65,7 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
       initialValues,
       onSubmit,
       metricIds,
-      selectedModels: [],
+      selectedModels: selectedModelIds,
       hiddenMetricIds,
       metricToModelMap,
     });
@@ -200,21 +198,18 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
               size="sm"
               onClick={() => setMetricModalOpen(true)}
             >
-              {t('os_board:create.metrics.add_metric')}
+              {t('os_board:create.model_selection.add_model')}
             </Button>
           </div>
 
           <div>
             <div className="mb-2 font-semibold">
-              {t('os_board:create.metrics.selected')}（{metricIds.length}）
+              {t('os_board:create.model_selection.selected_models')}（
+              {selectedModelIds.length}）
             </div>
-            <DraggableMetricList
-              metricIds={metricIds}
-              hiddenMetricIds={hiddenMetricIds}
-              allMetrics={selectableMetrics}
-              onReorder={handleReorder}
-              onDelete={handleDelete}
-              onHide={handleHide}
+            <SelectedModelList
+              selectedModelIds={selectedModelIds}
+              onDelete={handleDeleteModel}
             />
           </div>
         </Section>
@@ -222,10 +217,9 @@ const DashboardForm = forwardRef<DashboardFormRef, DashboardFormProps>(
         <MetricSelectionModal
           open={metricModalOpen}
           onClose={() => setMetricModalOpen(false)}
-          selectedIds={manualMetricIds}
-          onConfirm={(newIds) => {
-            // 更新手动选择的指标列表
-            setManualMetricIds(newIds);
+          selectedIds={selectedModelIds}
+          onConfirm={(newModelIds) => {
+            setSelectedModelIds(newModelIds);
           }}
         />
         {/* <ModelSelectionModal
