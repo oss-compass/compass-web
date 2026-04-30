@@ -212,8 +212,10 @@ export type OverviewSigConfig = {
 export const fetchOverviewSummary = async (params: {
   sig?: string;
   keyword?: string;
+  org?: string;
 }): Promise<OverviewSummary> => {
   const search = new URLSearchParams();
+  if (params.org) search.set('org', params.org);
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
   const query = search.toString();
@@ -228,9 +230,11 @@ export const fetchOverviewCards = async (params: {
   keyword?: string;
   page?: number;
   size?: number;
+  org?: string;
 }): Promise<OverviewCardsResponse> => {
   const search = new URLSearchParams();
   search.set('view_type', params.viewType);
+  if (params.org) search.set('org', params.org);
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
   search.set('page', String(params.page ?? 1));

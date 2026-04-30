@@ -1,15 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { compassApiFetch } from '../rawData/apiClient';
 import {
-  USER_JOURNEY_PROJECT_REGISTRY,
-  USER_JOURNEY_FALLBACK_PROJECT,
-  USER_JOURNEY_PROJECT_OPTIONS,
-  USER_JOURNEY_COMPARE_PROJECT_OPTIONS,
-  USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP,
-  USER_JOURNEY_PROJECT_KEY_MAP,
-  USER_JOURNEY_PROJECT_DEFAULT_FILE_MAP,
-  USER_JOURNEY_PROJECT_LABEL_MAP,
-  USER_JOURNEY_PROJECT_VERSION_MAP,
   UserJourneyProjectFileKey,
   UserJourneyProjectKey,
 } from '../rawData/registry';
@@ -38,11 +29,11 @@ type BackendRegistryResponse = {
 // ---- 前端统一使用的 RegistryData 类型 ----
 
 export type RegistryData = {
-  /** fileKey → entry，与 USER_JOURNEY_PROJECT_REGISTRY 完全一致 */
+  /** fileKey → entry */
   entries: Record<string, RegistryEntry>;
   /** projectKey → 默认 fileKey */
   defaultFileMap: Record<string, string>;
-  /** fallback fileKey */
+  /** API 返回的默认项目 fileKey */
   fallbackProject: string;
   /** 项目选择下拉选项 */
   projectOptions: Array<{ value: string; label: string }>;
@@ -56,40 +47,6 @@ export type RegistryData = {
   versionMap: Record<string, string>;
   /** projectKey → label */
   labelMap: Record<string, string>;
-};
-
-/** 把静态 registry 转成统一格式（作为 fallback） */
-const buildStaticRegistryData = (): RegistryData => {
-  return {
-    entries: USER_JOURNEY_PROJECT_REGISTRY as unknown as Record<
-      string,
-      RegistryEntry
-    >,
-    defaultFileMap: USER_JOURNEY_PROJECT_DEFAULT_FILE_MAP as unknown as Record<
-      string,
-      string
-    >,
-    fallbackProject: USER_JOURNEY_FALLBACK_PROJECT,
-    projectOptions: USER_JOURNEY_PROJECT_OPTIONS,
-    compareProjectOptions: USER_JOURNEY_COMPARE_PROJECT_OPTIONS,
-    versionOptionsMap:
-      USER_JOURNEY_PROJECT_VERSION_OPTIONS_MAP as unknown as Record<
-        string,
-        Array<{ value: string; label: string }>
-      >,
-    fileKeyToProjectKey: USER_JOURNEY_PROJECT_KEY_MAP as unknown as Record<
-      string,
-      string
-    >,
-    versionMap: USER_JOURNEY_PROJECT_VERSION_MAP as unknown as Record<
-      string,
-      string
-    >,
-    labelMap: USER_JOURNEY_PROJECT_LABEL_MAP as unknown as Record<
-      string,
-      string
-    >,
-  };
 };
 
 /** 把后端响应转成统一格式 */
@@ -121,17 +78,18 @@ const transformBackendRegistry = (
   };
 };
 
-const staticRegistryData = buildStaticRegistryData();
-
 /**
- * 从后端 /registry 接口获取动态 registry 数据。
- * 后端不可用时自动使用静态 registry 作为 fallback。
+ * 从后端 /registry 接口获取 registry 数据。
+ * API 未完成时返回 undefined，调用方据此显示加载状态。
  */
-export const useRegistryData = (): RegistryData => {
+export const useRegistryData = (org?: string): RegistryData | undefined => {
   const { data } = useQuery({
-    queryKey: ['userJourneyRegistry'],
+    queryKey: ['userJourneyRegistry', org],
     queryFn: async (): Promise<RegistryData> => {
-      const res = await compassApiFetch<BackendRegistryResponse>('/registry');
+      const path = org
+        ? `/registry?org=${encodeURIComponent(org)}`
+        : '/registry';
+      const res = await compassApiFetch<BackendRegistryResponse>(path);
       return transformBackendRegistry(res);
     },
     staleTime: 5 * 60 * 1000, // 5 分钟缓存
@@ -139,16 +97,16 @@ export const useRegistryData = (): RegistryData => {
     refetchOnWindowFocus: false,
   });
 
-  return data ?? staticRegistryData;
+  return data;
 };
 
-// ---- 工具函数（接收 RegistryData，替代原静态函数）----
+// ---- 工具函数（接收 RegistryData）----
 
 export const resolveFileKeyFromRegistry = (
   project: string | null | undefined,
-  registry: RegistryData
-): string => {
-  if (!project) return registry.fallbackProject;
+  registry: RegistryData | undefined
+): string | null => {
+  if (!registry || !project) return null;
 
   let resolved = project.trim();
   try {
@@ -157,14 +115,14 @@ export const resolveFileKeyFromRegistry = (
     resolved = project.trim();
   }
   const normalized = resolved.replace(/\.json$/i, '');
-  if (!/^[A-Za-z0-9_-]+$/.test(normalized)) return registry.fallbackProject;
+  if (!/^[A-Za-z0-9_-]+$/.test(normalized)) return null;
 
   if (normalized in registry.entries) return normalized;
 
   const defaultKey = registry.defaultFileMap[normalized];
   if (defaultKey) return defaultKey;
 
-  return registry.fallbackProject;
+  return null;
 };
 
 export const filterRegistryEntriesFromRegistry = (

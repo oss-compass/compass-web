@@ -26,33 +26,36 @@ const getProjectQueryValues = (project: string | string[] | undefined) => {
 type UserJourneyProps = {
   hidePageHeaderDeveloperControls?: boolean;
   transparentPageHeader?: boolean;
+  org?: string;
 };
 
 const UserJourney: React.FC<UserJourneyProps> = ({
   hidePageHeaderDeveloperControls = false,
   transparentPageHeader = false,
+  org,
 }) => {
   const router = useRouter();
-  const registry = useRegistryData();
+  const registry = useRegistryData(org);
 
   const normalizeRequestedProjects = useMemo(
     () =>
       (project: string | string[] | undefined): UserJourneyProjectFileKey[] => {
+        if (!registry) return [];
+
         const normalizedProjects = getProjectQueryValues(project)
           .map((item) => resolveFileKeyFromRegistry(item, registry))
+          .filter((item): item is string => item !== null)
           .filter(
             (item, index, currentProjects) =>
               currentProjects.indexOf(item) === index
           ) as UserJourneyProjectFileKey[];
 
-        return normalizedProjects.length
-          ? normalizedProjects.slice(0, 2)
-          : [
-              resolveFileKeyFromRegistry(
-                undefined,
-                registry
-              ) as UserJourneyProjectFileKey,
-            ];
+        if (normalizedProjects.length) {
+          return normalizedProjects.slice(0, 2);
+        }
+
+        // URL 无 project 参数时，使用 API 返回的默认项目
+        return [registry.fallbackProject as UserJourneyProjectFileKey];
       },
     [registry]
   );
@@ -139,12 +142,14 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   }));
   const currentProjectFileKey = requestedProjects[0];
   const currentProjectKey =
-    registry.fileKeyToProjectKey[currentProjectFileKey] ?? '';
+    registry?.fileKeyToProjectKey[currentProjectFileKey] ?? '';
   const currentVersionOptions =
-    registry.versionOptionsMap[currentProjectKey] ?? [];
+    registry?.versionOptionsMap[currentProjectKey] ?? [];
   const currentVersion = currentProjectFileKey;
 
-  const availableCompareProjects = registry.compareProjectOptions.filter(
+  const availableCompareProjects = (
+    registry?.compareProjectOptions ?? []
+  ).filter(
     (option) =>
       !requestedProjects.includes(option.value as UserJourneyProjectFileKey)
   );
@@ -175,21 +180,17 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   };
 
   const handleSelectProject = (projectKey: string) => {
-    updateProjectsRoute([
-      resolveFileKeyFromRegistry(
-        projectKey,
-        registry
-      ) as UserJourneyProjectFileKey,
-    ]);
+    const resolved = resolveFileKeyFromRegistry(projectKey, registry);
+    if (resolved) {
+      updateProjectsRoute([resolved as UserJourneyProjectFileKey]);
+    }
   };
 
   const handleSelectVersion = (_version: string) => {
-    updateProjectsRoute([
-      resolveFileKeyFromRegistry(
-        _version,
-        registry
-      ) as UserJourneyProjectFileKey,
-    ]);
+    const resolved = resolveFileKeyFromRegistry(_version, registry);
+    if (resolved) {
+      updateProjectsRoute([resolved as UserJourneyProjectFileKey]);
+    }
   };
 
   const handleRemoveProject = (projectKey: string) => {
@@ -229,7 +230,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
         onDeveloperTypeChange={setDeveloperType}
         onJourneyModeChange={setJourneyMode}
         projects={headerProjects}
-        projectOptions={registry.projectOptions}
+        projectOptions={registry?.projectOptions ?? []}
         currentProjectKey={currentProjectKey}
         versionOptions={currentVersionOptions}
         currentVersion={currentVersion}
@@ -240,6 +241,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
         onRemoveProject={handleRemoveProject}
         hideDeveloperControls={hidePageHeaderDeveloperControls}
         transparent={transparentPageHeader}
+        org={org}
       />
 
       <div className="flex min-h-[calc(100vh-136px)] flex-col gap-5 p-5">

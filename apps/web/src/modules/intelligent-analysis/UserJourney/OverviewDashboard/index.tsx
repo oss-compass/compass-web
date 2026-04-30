@@ -1209,7 +1209,11 @@ const PainEditModal: React.FC<{
 // Main Dashboard
 // ─────────────────────────────────────────
 
-const OverviewDashboard: React.FC = () => {
+type OverviewDashboardProps = {
+  org?: string;
+};
+
+const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState<'repo' | 'sig'>('repo');
   const [sigFilter, setSigFilter] = useState<string>('');
@@ -1220,19 +1224,21 @@ const OverviewDashboard: React.FC = () => {
   );
 
   const { data: stats } = useQuery({
-    queryKey: ['overview-summary', sigFilter, searchText],
+    queryKey: ['overview-summary', org, sigFilter, searchText],
     queryFn: () =>
       fetchOverviewSummary({
+        org,
         sig: sigFilter || undefined,
         keyword: searchText || undefined,
       }),
   });
 
   const { data: cardsResp, isLoading: cardsLoading } = useQuery({
-    queryKey: ['overview-cards', activeTab, sigFilter, searchText],
+    queryKey: ['overview-cards', org, activeTab, sigFilter, searchText],
     queryFn: () =>
       fetchOverviewCards({
         viewType: activeTab,
+        org,
         sig: sigFilter || undefined,
         keyword: searchText || undefined,
       }),

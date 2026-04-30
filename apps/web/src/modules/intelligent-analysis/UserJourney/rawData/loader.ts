@@ -1,6 +1,5 @@
 import { BackendReportData, UserJourneyProjectData } from '../types';
 import {
-  USER_JOURNEY_FALLBACK_PROJECT,
   USER_JOURNEY_PROJECT_DEFAULT_FILE_MAP,
   USER_JOURNEY_PROJECT_KEY_MAP,
   USER_JOURNEY_PROJECT_LABEL_MAP,
@@ -102,9 +101,9 @@ export const attachProjectRegistryMeta = (
 
 export const resolveUserJourneyProjectFileKey = (
   project: string | null | undefined
-): UserJourneyProjectFileKey => {
+): UserJourneyProjectFileKey | null => {
   if (!project) {
-    return USER_JOURNEY_FALLBACK_PROJECT;
+    return null;
   }
 
   let resolvedProject = project.trim();
@@ -118,7 +117,7 @@ export const resolveUserJourneyProjectFileKey = (
   const normalizedProject = resolvedProject.replace(/\.json$/i, '');
 
   if (!PROJECT_FILE_KEY_PATTERN.test(normalizedProject)) {
-    return USER_JOURNEY_FALLBACK_PROJECT;
+    return null;
   }
 
   if (isValidUserJourneyProjectFileKey(normalizedProject)) {
@@ -129,7 +128,7 @@ export const resolveUserJourneyProjectFileKey = (
     return USER_JOURNEY_PROJECT_DEFAULT_FILE_MAP[normalizedProject];
   }
 
-  return USER_JOURNEY_FALLBACK_PROJECT;
+  return null;
 };
 
 export const loadUserJourneyProjectData = async (
@@ -137,24 +136,12 @@ export const loadUserJourneyProjectData = async (
 ): Promise<UserJourneyProjectData> => {
   const resolvedProject = resolveUserJourneyProjectFileKey(project);
 
-  try {
-    const report = await fetchUserJourneyReport(resolvedProject);
-    const projectData = buildUserJourneyProjectData(report);
-
-    return attachProjectRegistryMeta(projectData, resolvedProject);
-  } catch (error) {
-    if (resolvedProject !== USER_JOURNEY_FALLBACK_PROJECT) {
-      const fallbackReport = await fetchUserJourneyReport(
-        USER_JOURNEY_FALLBACK_PROJECT
-      );
-      const projectData = buildUserJourneyProjectData(fallbackReport);
-
-      return attachProjectRegistryMeta(
-        projectData,
-        USER_JOURNEY_FALLBACK_PROJECT
-      );
-    }
-
-    throw error;
+  if (!resolvedProject) {
+    throw new Error(`Cannot resolve project: ${project}`);
   }
+
+  const report = await fetchUserJourneyReport(resolvedProject);
+  const projectData = buildUserJourneyProjectData(report);
+
+  return attachProjectRegistryMeta(projectData, resolvedProject);
 };

@@ -4,6 +4,7 @@ import { Popover, Segmented, Select } from 'antd';
 import {
   useRegistryData,
   filterRegistryEntriesFromRegistry,
+  type RegistryData,
 } from '../hooks/useRegistryData';
 
 type HeaderProject = {
@@ -36,6 +37,7 @@ type PageHeaderProps = {
   onRemoveProject: (value: string) => void;
   hideDeveloperControls?: boolean;
   transparent?: boolean;
+  org?: string;
 };
 
 // ---------- helpers ----------
@@ -112,10 +114,30 @@ const CascadingSelects: React.FC<{
   currentFileKey?: string;
   excludeFileKeys?: string[];
   onSelectFileKey: (fileKey: string) => void;
-}> = ({ mode, currentFileKey = '', excludeFileKeys = [], onSelectFileKey }) => {
+  org?: string;
+}> = ({
+  mode,
+  currentFileKey = '',
+  excludeFileKeys = [],
+  onSelectFileKey,
+  org: pageOrg,
+}) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const registry = useRegistryData();
-  const currentEntry = registry.entries[currentFileKey] ?? null;
+  const registry = useRegistryData(pageOrg);
+  const safeRegistry =
+    registry ??
+    ({
+      entries: {},
+      defaultFileMap: {},
+      fallbackProject: '',
+      projectOptions: [],
+      compareProjectOptions: [],
+      versionOptionsMap: {},
+      fileKeyToProjectKey: {},
+      versionMap: {},
+      labelMap: {},
+    } as RegistryData);
+  const currentEntry = safeRegistry.entries[currentFileKey] ?? null;
 
   const initOrg = mode === 'view' ? currentEntry?.org ?? '' : '';
   const initSig = mode === 'view' ? currentEntry?.sig ?? '' : '';
@@ -142,22 +164,22 @@ const CascadingSelects: React.FC<{
 
   const orgOptions = useMemo(() => {
     const orgs = uniq(
-      filterRegistryEntriesFromRegistry(registry, {}).map(([, e]) => e.org)
+      filterRegistryEntriesFromRegistry(safeRegistry, {}).map(([, e]) => e.org)
     );
     return toOptions(orgs);
-  }, [registry]);
+  }, [safeRegistry]);
 
   const sigOptions = useMemo(() => {
     const sigs = uniq(
-      filterRegistryEntriesFromRegistry(registry, {
+      filterRegistryEntriesFromRegistry(safeRegistry, {
         org: org || undefined,
       }).map(([, e]) => e.sig)
     );
     return toOptions(sigs);
-  }, [registry, org]);
+  }, [safeRegistry, org]);
 
   const projectOptions = useMemo(() => {
-    const filtered = filterRegistryEntriesFromRegistry(registry, {
+    const filtered = filterRegistryEntriesFromRegistry(safeRegistry, {
       org: org || undefined,
       sig: sig || undefined,
     });
@@ -172,11 +194,11 @@ const CascadingSelects: React.FC<{
     return opts.sort((a, b) =>
       a.label.localeCompare(b.label, 'en', { sensitivity: 'base' })
     );
-  }, [registry, org, sig]);
+  }, [safeRegistry, org, sig]);
 
   const hardwareOptions = useMemo(() => {
     const hws = uniq(
-      filterRegistryEntriesFromRegistry(registry, {
+      filterRegistryEntriesFromRegistry(safeRegistry, {
         org: org || undefined,
         sig: sig || undefined,
         projectKey: projectKey || undefined,
@@ -185,10 +207,10 @@ const CascadingSelects: React.FC<{
         .filter(Boolean)
     );
     return toOptions(hws);
-  }, [registry, org, sig, projectKey]);
+  }, [safeRegistry, org, sig, projectKey]);
 
   const versionOptions = useMemo(() => {
-    return filterRegistryEntriesFromRegistry(registry, {
+    return filterRegistryEntriesFromRegistry(safeRegistry, {
       org: org || undefined,
       sig: sig || undefined,
       projectKey: projectKey || undefined,
@@ -205,7 +227,7 @@ const CascadingSelects: React.FC<{
         const dateB = b.label.split('@')[0] ?? '';
         return dateB.localeCompare(dateA);
       });
-  }, [registry, org, sig, projectKey, hardware, excludeFileKeys]);
+  }, [safeRegistry, org, sig, projectKey, hardware, excludeFileKeys]);
 
   const currentFileKeyDerived = useMemo(() => {
     if (versionOptions.length === 0) return '';
@@ -331,11 +353,13 @@ const CascadingSelects: React.FC<{
 const CascadingProjectSelector: React.FC<{
   currentFileKey: string;
   onSelectFileKey: (fileKey: string) => void;
-}> = ({ currentFileKey, onSelectFileKey }) => (
+  org?: string;
+}> = ({ currentFileKey, onSelectFileKey, org }) => (
   <CascadingSelects
     mode="view"
     currentFileKey={currentFileKey}
     onSelectFileKey={onSelectFileKey}
+    org={org}
   />
 );
 
@@ -358,9 +382,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   onRemoveProject,
   hideDeveloperControls = false,
   transparent = false,
+  org,
 }) => {
   const [showAddSelector, setShowAddSelector] = useState(false);
-  const registry = useRegistryData();
+  const registry = useRegistryData(org);
   const compareMode = projects.length > 1;
 
   // The file keys already in the compare list (to exclude from add options)
@@ -379,7 +404,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   function handleFileKeySelect(fileKey: string) {
     onSelectVersion(fileKey);
-    const entry = registry.entries[fileKey];
+    const entry = registry?.entries[fileKey];
     if (entry && entry.projectKey !== currentProjectKey) {
       onSelectProject(entry.projectKey);
     }
@@ -397,6 +422,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         mode="add"
         excludeFileKeys={existingFileKeys}
         onSelectFileKey={handleAddFileKey}
+        org={org}
       />
     </div>
   );
@@ -451,6 +477,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           <CascadingProjectSelector
             currentFileKey={currentFileKey}
             onSelectFileKey={handleFileKeySelect}
+            org={org}
           />
         )}
 

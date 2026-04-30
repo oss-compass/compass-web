@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { UserJourneyProjectData, BackendReportData } from '../types';
 import {
-  USER_JOURNEY_FALLBACK_PROJECT,
   USER_JOURNEY_PROJECT_REPORT_MAP,
   UserJourneyProjectFileKey,
 } from '../rawData/registry';
@@ -40,7 +39,6 @@ const fetchUserJourneyReport = async (
 /**
  * 加载单个项目的报告数据。
  * 基于 react-query，相同 projectFileKey 只 fetch 一次，自动缓存与去重。
- * 若指定 key 加载失败，自动回退到 fallback 项目。
  */
 export const useUserJourneyReport = (
   projectFileKey: UserJourneyProjectFileKey | undefined
@@ -48,14 +46,7 @@ export const useUserJourneyReport = (
   return useQuery({
     queryKey: ['userJourneyReport', projectFileKey],
     queryFn: async (): Promise<UserJourneyProjectData> => {
-      try {
-        return await fetchUserJourneyReport(projectFileKey!);
-      } catch (error) {
-        if (projectFileKey !== USER_JOURNEY_FALLBACK_PROJECT) {
-          return fetchUserJourneyReport(USER_JOURNEY_FALLBACK_PROJECT);
-        }
-        throw error;
-      }
+      return await fetchUserJourneyReport(projectFileKey!);
     },
     enabled: !!projectFileKey,
     staleTime: Infinity,
