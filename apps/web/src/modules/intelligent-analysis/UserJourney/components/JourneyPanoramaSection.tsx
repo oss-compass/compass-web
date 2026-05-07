@@ -33,13 +33,16 @@ const TaskEvidenceCard: React.FC<{
   logTask?: LogTask;
   fileKey?: string;
   stepId?: string;
-}> = ({ taskId, cardIndex, logTask, fileKey, stepId }) => {
+  onStepClick?: (toolIds: string[]) => void;
+}> = ({ taskId, cardIndex, logTask, fileKey, stepId, onStepClick }) => {
   const def = TASK_DEF_MAP[taskId];
   const displayName = def?.name ?? taskId;
   const description = def?.description ?? logTask?.name ?? '';
 
   const observations = logTask?.evidence?.observations ?? [];
   const painPoints = logTask?.evidence?.pain_points ?? [];
+  const observationsToolNums = logTask?.evidence?.observations_tool_nums;
+  const painPointsToolNums = logTask?.evidence?.pain_points_tool_nums;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
@@ -75,8 +78,11 @@ const TaskEvidenceCard: React.FC<{
         <EvidencePanel
           observations={observations}
           pain_points={painPoints}
+          observations_tool_nums={observationsToolNums}
+          pain_points_tool_nums={painPointsToolNums}
           fileKey={fileKey}
           stepId={stepId}
+          onStepClick={onStepClick}
         />
       </div>
     </div>
@@ -242,6 +248,16 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
                         logTask={logTask}
                         fileKey={projectFileKey}
                         stepId={activeStep?.code}
+                        onStepClick={(toolIds) => {
+                          // 1. 切换主视图步骤
+                          onStepChange?.(activeStep.key);
+                          // 2. 发送全局高亮事件
+                          window.dispatchEvent(
+                            new CustomEvent('user-journey:highlight-steps', {
+                              detail: { toolIds },
+                            })
+                          );
+                        }}
                       />
                     );
                   })}

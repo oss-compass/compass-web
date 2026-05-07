@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Tooltip } from 'antd';
 import { ActionDetailRecord, ActionStatus } from '../types';
 import { getActionStatusClasses } from '../helpers';
@@ -235,9 +235,20 @@ const LogOutputModal: React.FC<{
 const EvidenceInline: React.FC<{
   observations?: string[];
   pain_points?: string[];
+  observations_tool_nums?: string[][];
+  pain_points_tool_nums?: string[][];
   fileKey?: string;
   stepId?: string;
-}> = ({ observations, pain_points, fileKey, stepId }) => {
+  onStepClick?: (toolIds: string[]) => void;
+}> = ({
+  observations,
+  pain_points,
+  observations_tool_nums,
+  pain_points_tool_nums,
+  fileKey,
+  stepId,
+  onStepClick,
+}) => {
   const hasObs = observations && observations.length > 0;
   const hasPain = pain_points && pain_points.length > 0;
   if (!hasObs && !hasPain) return null;
@@ -256,9 +267,12 @@ const EvidenceInline: React.FC<{
       <EvidencePanel
         observations={observations}
         pain_points={pain_points}
+        observations_tool_nums={observations_tool_nums}
+        pain_points_tool_nums={pain_points_tool_nums}
         showEmpty={false}
         fileKey={fileKey}
         stepId={stepId}
+        onStepClick={onStepClick}
       />
     </div>
   );
@@ -268,9 +282,20 @@ const EvidenceInline: React.FC<{
 const EvidenceBlock: React.FC<{
   observations?: string[];
   pain_points?: string[];
+  observations_tool_nums?: string[][];
+  pain_points_tool_nums?: string[][];
   fileKey?: string;
   stepId?: string;
-}> = ({ observations, pain_points, fileKey, stepId }) => {
+  onStepClick?: (toolIds: string[]) => void;
+}> = ({
+  observations,
+  pain_points,
+  observations_tool_nums,
+  pain_points_tool_nums,
+  fileKey,
+  stepId,
+  onStepClick,
+}) => {
   const [open, setOpen] = useState(false);
   const hasData =
     (observations && observations.length > 0) ||
@@ -307,10 +332,13 @@ const EvidenceBlock: React.FC<{
           <EvidencePanel
             observations={observations}
             pain_points={pain_points}
+            observations_tool_nums={observations_tool_nums}
+            pain_points_tool_nums={pain_points_tool_nums}
             variant="compact"
             showEmpty={false}
             fileKey={fileKey}
             stepId={stepId}
+            onStepClick={onStepClick}
           />
         </div>
       )}
@@ -323,7 +351,8 @@ const LogCommandsTable: React.FC<{
   commands: LogCommand[];
   tableKey: string;
   projectFileKey?: string;
-}> = ({ commands, tableKey, projectFileKey }) => {
+  highlightedIndices?: number[];
+}> = ({ commands, tableKey, projectFileKey, highlightedIndices = [] }) => {
   const [allExpanded, setAllExpanded] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
   const [modalCmd, setModalCmd] = useState<LogCommand | null>(null);
@@ -422,7 +451,12 @@ const LogCommandsTable: React.FC<{
               return (
                 <tr
                   key={`${tableKey}-cmd-${i}-${cmd.id}`}
-                  className="border-b border-slate-100 transition-colors last:border-b-0 hover:bg-slate-50/50"
+                  id={`cmd-row-${tableKey}-${i + 1}`}
+                  className={`border-b border-slate-100 transition-all last:border-b-0 hover:bg-slate-50/50 ${
+                    highlightedIndices.includes(i + 1)
+                      ? 'bg-indigo-50/80 ring-1 ring-inset ring-indigo-200'
+                      : ''
+                  }`}
                 >
                   {/* 序号 */}
                   <td className="whitespace-nowrap px-4 py-3.5 align-top text-sm font-semibold text-slate-400">
@@ -679,6 +713,8 @@ const TaskCard: React.FC<{
   cardIndex: number;
   projectFileKey?: string;
   stepCode?: string;
+  highlightedIndices?: number[];
+  onStepClick?: (toolIds: string[]) => void;
 }> = ({
   taskId,
   rows,
@@ -687,6 +723,8 @@ const TaskCard: React.FC<{
   cardIndex,
   projectFileKey,
   stepCode,
+  highlightedIndices,
+  onStepClick,
 }) => {
   const [tableExpanded, setTableExpanded] = useState(true);
 
@@ -697,6 +735,8 @@ const TaskCard: React.FC<{
   const actionCount = logTask?.commands ? logTask.commands.length : rows.length;
   const taskStatus = logTask ? normalizeLogStatus(logTask.status) : undefined;
   const evidence = logTask?.evidence;
+
+  const tableKey = `${currentStepKey}-${taskId ?? 'no_task'}`;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
@@ -759,8 +799,11 @@ const TaskCard: React.FC<{
           <EvidenceInline
             observations={evidence?.observations}
             pain_points={evidence?.pain_points}
+            observations_tool_nums={evidence?.observations_tool_nums}
+            pain_points_tool_nums={evidence?.pain_points_tool_nums}
             fileKey={projectFileKey}
             stepId={stepCode}
+            onStepClick={onStepClick}
           />
         </div>
       ) : null}
@@ -770,14 +813,12 @@ const TaskCard: React.FC<{
         (logTask?.commands ? (
           <LogCommandsTable
             commands={logTask.commands}
-            tableKey={`${currentStepKey}-${taskId ?? 'no_task'}`}
+            tableKey={tableKey}
             projectFileKey={projectFileKey}
+            highlightedIndices={highlightedIndices}
           />
         ) : (
-          <LegacyActionsTable
-            rows={rows}
-            tableKey={`${currentStepKey}-${taskId ?? 'no_task'}`}
-          />
+          <LegacyActionsTable rows={rows} tableKey={tableKey} />
         ))}
 
       {/* 无 log 时：观测 & 痛点保留在表格下方（折叠块） */}
@@ -786,8 +827,11 @@ const TaskCard: React.FC<{
           <EvidenceBlock
             observations={evidence?.observations}
             pain_points={evidence?.pain_points}
+            observations_tool_nums={evidence?.observations_tool_nums}
+            pain_points_tool_nums={evidence?.pain_points_tool_nums}
             fileKey={projectFileKey}
             stepId={stepCode}
+            onStepClick={onStepClick}
           />
         </div>
       )}
@@ -803,8 +847,55 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   projectFileKey,
 }) => {
   const logData = useLogData(projectFileKey);
+  const [highlightedInfo, setHighlightedInfo] = useState<{
+    tableKey: string;
+    indices: number[];
+  } | null>(null);
 
   const groups = groupByTaskId(executionPathItems);
+
+  const handleStepClick = (toolIds: string[], tableKey: string) => {
+    const indices = toolIds
+      .map((id) => parseInt(id, 10))
+      .filter((n) => !isNaN(n));
+    if (indices.length === 0) return;
+
+    setHighlightedInfo({ tableKey, indices });
+
+    // 滚动到第一个 ID 对应的步骤
+    const firstId = indices[0];
+    const element = document.getElementById(`cmd-row-${tableKey}-${firstId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  useEffect(() => {
+    const handleGlobalHighlight = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && detail.toolIds) {
+        // 全局触发时，默认高亮第一个分组（通常是一个步骤对应一个分组）
+        const firstGroupTableKey = groups[0]
+          ? `${currentStepKey}-${groups[0].taskId ?? 'no_task'}`
+          : null;
+
+        if (firstGroupTableKey) {
+          handleStepClick(detail.toolIds, firstGroupTableKey);
+        }
+      }
+    };
+
+    window.addEventListener(
+      'user-journey:highlight-steps',
+      handleGlobalHighlight
+    );
+    return () => {
+      window.removeEventListener(
+        'user-journey:highlight-steps',
+        handleGlobalHighlight
+      );
+    };
+  }, [currentStepKey, groups]); // 当步骤切换或数据变化时重新绑定逻辑
 
   return (
     <div className="mt-6">
@@ -819,6 +910,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
               logData && taskId
                 ? (logData[taskId] as LogTask | undefined)
                 : undefined;
+            const tableKey = `${currentStepKey}-${taskId ?? 'no_task'}`;
             return (
               <TaskCard
                 key={taskId ?? '__no_task__'}
@@ -829,6 +921,12 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                 cardIndex={idx + 1}
                 projectFileKey={projectFileKey}
                 stepCode={stepCode}
+                highlightedIndices={
+                  highlightedInfo?.tableKey === tableKey
+                    ? highlightedInfo.indices
+                    : []
+                }
+                onStepClick={(ids) => handleStepClick(ids, tableKey)}
               />
             );
           })}

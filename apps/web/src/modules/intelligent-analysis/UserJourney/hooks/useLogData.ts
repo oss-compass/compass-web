@@ -23,6 +23,8 @@ export type LogTask = {
   evidence?: {
     observations?: string[];
     pain_points?: string[];
+    observations_tool_nums?: string[][];
+    pain_points_tool_nums?: string[][];
   };
   commands?: LogCommand[];
 };

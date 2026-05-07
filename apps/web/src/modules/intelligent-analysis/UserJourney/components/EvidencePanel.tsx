@@ -59,6 +59,8 @@ export const PainIcon: React.FC<{ className?: string }> = ({
 export type EvidencePanelProps = {
   observations?: string[];
   pain_points?: string[];
+  observations_tool_nums?: string[][];
+  pain_points_tool_nums?: string[][];
   /**
    * 无数据时的兜底展示，默认 true。
    * 设为 false 时若无数据则返回 null（由调用方自行处理）。
@@ -77,6 +79,56 @@ export type EvidencePanelProps = {
    */
   fileKey?: string;
   stepId?: string;
+  /**
+   * 点击关联步骤 ID 时的回调
+   */
+  onStepClick?: (toolIds: string[]) => void;
+};
+
+/* ─── 关联步骤按钮 ─── */
+const LinkStepsButton: React.FC<{
+  toolIds?: string[];
+  onClick?: (toolIds: string[]) => void;
+}> = ({ toolIds, onClick }) => {
+  if (!toolIds || toolIds.length === 0) return null;
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onClick) {
+      onClick(toolIds);
+    } else {
+      // 如果没有传入 onClick，则发送全局事件供 KeyActionsSection 监听
+      window.dispatchEvent(
+        new CustomEvent('user-journey:highlight-steps', {
+          detail: { toolIds },
+        })
+      );
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      title="点击查看关联执行步骤"
+      className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-dashed border-indigo-400 bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-600 transition-all hover:border-indigo-500 hover:bg-indigo-100 hover:text-indigo-700 hover:shadow-sm"
+    >
+      <svg
+        className="h-2.5 w-2.5"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6 8h4M4 10.5h8M4 5.5h8"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+      关联步骤
+    </button>
+  );
 };
 
 /* ─── 未确认标识按钮 ─── */
@@ -85,7 +137,7 @@ const UnconfirmedBadge: React.FC<{ onClick: () => void }> = ({ onClick }) => (
     type="button"
     onClick={onClick}
     title="点击确认痛点等级"
-    className="ml-1.5 inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-dashed border-amber-400 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-600 transition-all hover:border-amber-500 hover:bg-amber-100 hover:text-amber-700 hover:shadow-sm"
+    className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-dashed border-amber-400 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-600 transition-all hover:border-amber-500 hover:bg-amber-100 hover:text-amber-700 hover:shadow-sm"
   >
     <span className="relative flex h-2 w-2 shrink-0">
       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-50" />
@@ -139,7 +191,7 @@ const StatusBadge: React.FC<{
       <button
         type="button"
         onClick={onClick}
-        className={`ml-1.5 inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-all hover:shadow-sm ${
+        className={`inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-all hover:shadow-sm ${
           status === PainStatus.RETESTED_PASSED
             ? 'border-emerald-300 bg-emerald-100 text-emerald-700'
             : status === PainStatus.RETESTING
@@ -162,6 +214,32 @@ const StatusBadge: React.FC<{
   );
 };
 
+/* ─── 单条总结行 ─── */
+const ObservationItem: React.FC<{
+  text: string;
+  toolIds?: string[];
+  onStepClick?: (toolIds: string[]) => void;
+  compact?: boolean;
+}> = ({ text, toolIds, onStepClick, compact = false }) => {
+  return (
+    <li
+      className={`flex items-start gap-2 rounded-md ${
+        compact
+          ? 'bg-sky-50 px-2.5 py-1.5 text-sm text-sky-800'
+          : 'text-sm leading-5 text-sky-900'
+      }`}
+    >
+      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+      <div className="flex flex-1 items-start justify-between gap-3">
+        <span className="flex-1 py-0.5">{text}</span>
+        <div className="flex shrink-0 items-center">
+          <LinkStepsButton toolIds={toolIds} onClick={onStepClick} />
+        </div>
+      </div>
+    </li>
+  );
+};
+
 /* ─── 单条痛点行（含确认交互） ─── */
 const PainPointItem: React.FC<{
   text: string;
@@ -169,7 +247,17 @@ const PainPointItem: React.FC<{
   fileKey?: string;
   stepId?: string;
   compact?: boolean;
-}> = ({ text, index, fileKey, stepId, compact = false }) => {
+  toolIds?: string[];
+  onStepClick?: (toolIds: string[]) => void;
+}> = ({
+  text,
+  index,
+  fileKey,
+  stepId,
+  compact = false,
+  toolIds,
+  onStepClick,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const canConfirm = !!(fileKey && stepId);
@@ -225,7 +313,7 @@ const PainPointItem: React.FC<{
           <button
             type="button"
             disabled
-            className="ml-1.5 inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
+            className="inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
           >
             <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
             已完成（非项目本身问题）
@@ -254,8 +342,13 @@ const PainPointItem: React.FC<{
         }`}
       >
         <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
-        <span className="flex-1">{text}</span>
-        {badgeElement}
+        <div className="flex flex-1 items-start justify-between gap-3">
+          <span className="flex-1 py-0.5">{text}</span>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <LinkStepsButton toolIds={toolIds} onClick={onStepClick} />
+            {badgeElement}
+          </div>
+        </div>
       </li>
       {canConfirm && (
         <PainLevelConfirmModal
@@ -286,10 +379,13 @@ const PainPointItem: React.FC<{
 const EvidencePanel: React.FC<EvidencePanelProps> = ({
   observations,
   pain_points,
+  observations_tool_nums,
+  pain_points_tool_nums,
   showEmpty = true,
   variant = 'card',
   fileKey,
   stepId,
+  onStepClick,
 }) => {
   const [obsExpanded, setObsExpanded] = useState(false);
   const hasObs = !!observations && observations.length > 0;
@@ -317,13 +413,13 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
             </div>
             <ul className="space-y-1">
               {observations!.map((obs, i) => (
-                <li
+                <ObservationItem
                   key={i}
-                  className="flex items-start gap-2 rounded-md bg-sky-50 px-2.5 py-1.5 text-sm text-sky-800"
-                >
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                  {obs}
-                </li>
+                  text={obs}
+                  toolIds={observations_tool_nums?.[i]}
+                  onStepClick={onStepClick}
+                  compact
+                />
               ))}
             </ul>
           </div>
@@ -342,6 +438,8 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   index={i}
                   fileKey={fileKey}
                   stepId={stepId}
+                  toolIds={pain_points_tool_nums?.[i]}
+                  onStepClick={onStepClick}
                   compact
                 />
               ))}
@@ -372,6 +470,8 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                 index={i}
                 fileKey={fileKey}
                 stepId={stepId}
+                toolIds={pain_points_tool_nums?.[i]}
+                onStepClick={onStepClick}
               />
             ))}
           </ul>
@@ -406,13 +506,12 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
           {obsExpanded && (
             <ul className="mt-2 space-y-1.5">
               {observations!.map((obs, i) => (
-                <li
+                <ObservationItem
                   key={i}
-                  className="flex items-start gap-2 text-sm leading-5 text-sky-900"
-                >
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                  {obs}
-                </li>
+                  text={obs}
+                  toolIds={observations_tool_nums?.[i]}
+                  onStepClick={onStepClick}
+                />
               ))}
             </ul>
           )}
