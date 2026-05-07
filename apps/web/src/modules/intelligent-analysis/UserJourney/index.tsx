@@ -114,13 +114,14 @@ const UserJourney: React.FC<UserJourneyProps> = ({
 
     setDeveloperType(firstProject.defaultDeveloperType);
     setJourneyMode(firstProject.defaultJourneyMode);
-    setActiveStepKey((currentActiveStepKey) =>
-      firstProject.journeySteps.some(
-        (step) => step.key === currentActiveStepKey
-      )
-        ? currentActiveStepKey
-        : firstStep.key
+
+    // 默认选中第一个有评估的步骤；若全部未评估则选第一个
+    const firstEvaluated = firstProject.journeySteps.find(
+      (s) => s.panoramaScore !== null && s.panoramaScore !== undefined
     );
+    const defaultStepKey = (firstEvaluated ?? firstStep).key;
+
+    setActiveStepKey(defaultStepKey);
   }, [projectViews]);
 
   const currentStep = useMemo(() => {
@@ -266,6 +267,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               detailReportUrl={primaryProject.reportDetailUrl}
               projectVersion={primaryProject.projectInfo.version}
               projectFileKey={currentProjectFileKey}
+              activeStepKey={activeStepKey}
               onStepChange={setActiveStepKey}
             />
 

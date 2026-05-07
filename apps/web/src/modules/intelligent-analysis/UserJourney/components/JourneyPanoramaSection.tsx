@@ -18,6 +18,7 @@ type JourneyPanoramaSectionProps = {
   projectName: string;
   steps: JourneyStep[];
   projectFileKey?: string;
+  activeStepKey?: string;
   onStepChange?: (stepKey: string) => void;
 };
 
@@ -107,29 +108,22 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
   projectName,
   steps,
   projectFileKey,
+  activeStepKey,
   onStepChange,
 }) => {
-  const [panoramaActiveStepKey, setPanoramaActiveStepKey] = useState(() => {
-    // 默认选中第一个有评估（panoramaScore !== null）的步骤；若全部未评估则选第一个
-    const firstEvaluated = steps.find(
-      (s) => s.panoramaScore !== null && s.panoramaScore !== undefined
-    );
-    return (firstEvaluated ?? steps[0])?.key ?? '';
-  });
   const [detailExpanded, setDetailExpanded] = useState(true);
   const logData = useLogData(projectFileKey);
 
   // 由全景图内部 activeStepKey 反推 step
-  const panoramaActiveStep = steps.find((s) => s.key === panoramaActiveStepKey);
+  const panoramaActiveStep = steps.find((s) => s.key === activeStepKey);
   const activeStepCode = panoramaActiveStep?.code ?? '';
 
   const handleCardClick = (stepCode: string) => {
     const matchedStep = steps.find((s) => s.code === stepCode);
     const nextKey =
-      matchedStep && matchedStep.key === panoramaActiveStepKey
+      matchedStep && matchedStep.key === activeStepKey
         ? ''
         : matchedStep?.key ?? '';
-    setPanoramaActiveStepKey(nextKey);
     // 切换步骤时自动展开
     if (nextKey) setDetailExpanded(true);
     onStepChange?.(nextKey);
