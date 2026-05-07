@@ -40,7 +40,9 @@ export const STATUS_LABELS: Record<number, string> = {
   [PainStatus.RETESTED_PASSED]: '已复测通过',
 };
 
-const SEVERITY_OPTIONS = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.map((item) => ({
+const SEVERITY_OPTIONS = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.filter(
+  (item) => item.level !== 'P5'
+).map((item) => ({
   label: item.label,
   value: item.level,
   description: item.description,
@@ -86,6 +88,13 @@ export const getPainLevelStyle = (
         border: 'border-slate-300',
         dot: 'bg-slate-400',
       };
+    case 'P5':
+      return {
+        bg: 'bg-slate-100',
+        text: 'text-slate-600',
+        border: 'border-slate-300',
+        dot: 'bg-slate-400',
+      };
     default:
       return {
         bg: 'bg-slate-100',
@@ -106,6 +115,7 @@ export const getPainLevelLabel = (level: string): string => {
 type FormValues = {
   status: PainStatus;
   severity: PainLevel;
+  is_common: boolean;
   confirmed_by: string;
   issue_link?: string;
   pr_link?: string;
@@ -160,12 +170,15 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       form.setFieldsValue({
         status: currentStatus,
         severity: (currentRecord?.severity as PainLevel) || 'P1_CRITICAL',
+        is_common: currentRecord?.severity === 'P5',
         confirmed_by: currentRecord?.confirmed_by || '',
         issue_link: currentRecord?.issue_link || '',
         pr_link: currentRecord?.pr_link || '',
       });
     }
   }, [open, currentRecord, currentStatus, form]);
+
+  const isCommon = Form.useWatch('is_common', form);
 
   const handleOk = async () => {
     try {
@@ -183,7 +196,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
 
       // 如果当前在 待确认(1) 阶段，点击提交后目标状态是 已确认待修复(2)，此时需要提交严重程度
       if (currentStatus === PainStatus.TO_BE_CONFIRMED) {
-        payload.severity = values.severity;
+        payload.severity = values.is_common ? 'P5' : values.severity;
       }
       // 如果当前在 已确认待修复(2) 阶段，点击提交后目标状态是 已修复待复测(3)，此时需要提交 issue_link
       else if (currentStatus === PainStatus.CONFIRMED_PENDING_FIX) {
@@ -226,16 +239,21 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (s: number) => <Tag color="blue">{STATUS_LABELS[s]}</Tag>,
+      render: (s: number, record: any) => (
+        <Tag color="blue">
+          {record.severity === 'P5' ? '共性问题' : STATUS_LABELS[s]}
+        </Tag>
+      ),
     },
     {
       title: '详情',
       key: 'details',
       render: (_: any, record: any) => {
+        if (record.severity === 'P5') return '共性问题待处理';
         if (record.status === 1)
           return `等级: ${getPainLevelLabel(record.severity)}`;
-        if (record.status === 2) return `Issue: ${record.issue_link}`;
-        if (record.status === 3) return `PR: ${record.pr_link}`;
+        if (record.status === 2) return `Issue: ${record.issue_link || '-'}`;
+        if (record.status === 3) return `PR: ${record.pr_link || '-'}`;
         return '-';
       },
     },
@@ -340,48 +358,67 @@ const PainLevelConfirmModal: React.FC<Props> = ({
               </Form.Item>
 
               {currentStatus === PainStatus.TO_BE_CONFIRMED && (
-                <Form.Item
-                  name="severity"
-                  label={
-                    <span className="text-sm font-medium text-slate-700">
-                      确认严重程度
-                    </span>
-                  }
-                  rules={[{ required: true, message: '请选择严重程度' }]}
-                >
-                  <Radio.Group className="w-full">
-                    <Space direction="vertical" className="w-full">
-                      {SEVERITY_OPTIONS.map((item) => {
-                        const style = getPainLevelStyle(item.value);
-                        return (
-                          <Radio
-                            key={item.value}
-                            value={item.value}
-                            className="w-full"
-                          >
-                            <span className="inline-flex items-center gap-2">
-                              <span
-                                className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
+                <>
+                  <Form.Item
+                    name="is_common"
+                    label={
+                      <span className="text-sm font-medium text-slate-700">
+                        是否共性问题
+                      </span>
+                    }
+                    initialValue={false}
+                  >
+                    <Radio.Group>
+                      <Radio value={true}>是</Radio>
+                      <Radio value={false}>否</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+
+                  {!isCommon && (
+                    <Form.Item
+                      name="severity"
+                      label={
+                        <span className="text-sm font-medium text-slate-700">
+                          确认严重程度
+                        </span>
+                      }
+                      rules={[{ required: true, message: '请选择严重程度' }]}
+                    >
+                      <Radio.Group className="w-full">
+                        <Space direction="vertical" className="w-full">
+                          {SEVERITY_OPTIONS.map((item) => {
+                            const style = getPainLevelStyle(item.value);
+                            return (
+                              <Radio
+                                key={item.value}
+                                value={item.value}
+                                className="w-full"
                               >
-                                <span
-                                  className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
-                                />
-                                {item.value === 'P4_TRIVIAL'
-                                  ? '非项目本身问题'
-                                  : item.label}
-                              </span>
-                              <span className="text-xs text-slate-500">
-                                {item.value === 'P4_TRIVIAL'
-                                  ? ''
-                                  : item.description}
-                              </span>
-                            </span>
-                          </Radio>
-                        );
-                      })}
-                    </Space>
-                  </Radio.Group>
-                </Form.Item>
+                                <span className="inline-flex items-center gap-2">
+                                  <span
+                                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
+                                  >
+                                    <span
+                                      className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
+                                    />
+                                    {item.value === 'P4_TRIVIAL'
+                                      ? '非项目本身问题'
+                                      : item.label}
+                                  </span>
+                                  <span className="text-xs text-slate-500">
+                                    {item.value === 'P4_TRIVIAL'
+                                      ? ''
+                                      : item.description}
+                                  </span>
+                                </span>
+                              </Radio>
+                            );
+                          })}
+                        </Space>
+                      </Radio.Group>
+                    </Form.Item>
+                  )}
+                </>
               )}
 
               {currentStatus === PainStatus.CONFIRMED_PENDING_FIX && (

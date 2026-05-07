@@ -72,7 +72,8 @@ export type PainLevel =
   | 'P1_CRITICAL'
   | 'P2_MAJOR'
   | 'P3_MINOR'
-  | 'P4_TRIVIAL';
+  | 'P4_TRIVIAL'
+  | 'P5';
 
 /** 全景图卡片使用的图标类型 */
 export type PainIconType = 'check' | 'exclamation' | 'smile';

@@ -273,6 +273,9 @@ const PainPointItem: React.FC<{
     existing.status === PainStatus.CONFIRMED_PENDING_FIX &&
     existing.severity === 'P4_TRIVIAL';
 
+  // 判断是否为共性问题
+  const isCommonIssue = existing && existing.severity === 'P5';
+
   const handleSubmit = async (payload: UpsertPainConfirmationPayload) => {
     await upsert(payload);
   };
@@ -282,7 +285,46 @@ const PainPointItem: React.FC<{
   const badgeElement =
     canConfirm &&
     (existing && existing.pain_text === text ? (
-      isCompleted ? (
+      isCommonIssue ? (
+        <Popover
+          content={
+            <div className="max-w-xs space-y-2 text-sm">
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <span className="font-medium text-slate-600">严重程度：</span>
+                <span className="font-semibold text-slate-700">共性问题</span>
+              </div>
+              {existing.confirmed_by && (
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <span className="font-medium text-slate-600">操作人：</span>
+                  {existing.confirmed_by}
+                </div>
+              )}
+              {existing.confirmed_at && (
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <span className="font-medium text-slate-600">操作时间：</span>
+                  {existing.confirmed_at.replace('T', ' ').replace('Z', '')}
+                </div>
+              )}
+              <div className="rounded bg-slate-50 px-2 py-1 text-xs text-slate-600">
+                共性问题待处理
+              </div>
+            </div>
+          }
+          title={null}
+          trigger="hover"
+          placement="top"
+          styles={{ root: { maxWidth: 320 } }}
+        >
+          <button
+            type="button"
+            disabled
+            className="inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700"
+          >
+            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500" />
+            共性问题
+          </button>
+        </Popover>
+      ) : isCompleted ? (
         <Popover
           content={
             <div className="max-w-xs space-y-2 text-sm">
