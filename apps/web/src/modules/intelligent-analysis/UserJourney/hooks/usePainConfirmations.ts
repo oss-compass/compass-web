@@ -22,10 +22,14 @@ export const buildConfirmationMap = (
 ): Map<string, PainConfirmationRecord> => {
   const map = new Map<string, PainConfirmationRecord>();
   records.forEach((r) => {
-    map.set(`${r.file_key}#${r.step_id}#${r.pain_text}`, r);
+    // 统一标准化文本处理逻辑：trim + 压缩空格
+    const normalizedText = r.pain_text.trim().replace(/\s+/g, ' ');
+    map.set(`${r.file_key}#${r.step_id}#${normalizedText}`, r);
   });
   return map;
 };
+
+const normalizePainText = (t: string) => t.trim().replace(/\s+/g, ' ');
 
 /**
  * 加载并缓存某个报告的所有痛点确认记录。
@@ -61,9 +65,13 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
               confirmations: [result.data],
             };
           }
-          const key = `${result.data.file_key}#${result.data.step_id}#${result.data.pain_text}`;
+          const key = `${result.data.file_key}#${
+            result.data.step_id
+          }#${normalizePainText(result.data.pain_text)}`;
           const filtered = old.confirmations.filter(
-            (r) => `${r.file_key}#${r.step_id}#${r.pain_text}` !== key
+            (r) =>
+              `${r.file_key}#${r.step_id}#${normalizePainText(r.pain_text)}` !==
+              key
           );
           return {
             ...old,

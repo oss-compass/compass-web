@@ -79,6 +79,7 @@ export type EvidencePanelProps = {
    */
   fileKey?: string;
   stepId?: string;
+  legacyStepId?: string;
   /**
    * 点击关联步骤 ID 时的回调
    */
@@ -246,6 +247,7 @@ const PainPointItem: React.FC<{
   index: number;
   fileKey?: string;
   stepId?: string;
+  legacyStepId?: string;
   compact?: boolean;
   toolIds?: string[];
   onStepClick?: (toolIds: string[]) => void;
@@ -254,6 +256,7 @@ const PainPointItem: React.FC<{
   index,
   fileKey,
   stepId,
+  legacyStepId,
   compact = false,
   toolIds,
   onStepClick,
@@ -264,8 +267,22 @@ const PainPointItem: React.FC<{
   const { confirmationMap, upsert } = usePainConfirmations(
     canConfirm ? fileKey : undefined
   );
-  const confirmKey = `${fileKey}#${stepId}#${text}`;
-  const existing = canConfirm ? confirmationMap.get(confirmKey) : undefined;
+
+  // 辅助函数：标准化文本对比，忽略前后空格、换行及多余空格
+  const normalizeText = (t: string) => t.trim().replace(/\s+/g, ' ');
+  const isSamePainText = (t1: string, t2: string) =>
+    normalizeText(t1) === normalizeText(t2);
+
+  // 使用标准化后的文本构建查找 key
+  const confirmKey = `${fileKey}#${stepId}#${normalizeText(text)}`;
+  const existingPrimary = canConfirm
+    ? confirmationMap.get(confirmKey)
+    : undefined;
+  const existingFallback =
+    canConfirm && legacyStepId
+      ? confirmationMap.get(`${fileKey}#${legacyStepId}#${normalizeText(text)}`)
+      : undefined;
+  const existing = existingPrimary ?? existingFallback;
 
   // 判断是否已完成：status = 2 且 severity = "P4_TRIVIAL"
   const isCompleted =
@@ -284,7 +301,7 @@ const PainPointItem: React.FC<{
 
   const badgeElement =
     canConfirm &&
-    (existing && existing.pain_text === text ? (
+    (existing && isSamePainText(existing.pain_text, text) ? (
       isCommonIssue ? (
         <Popover
           content={
@@ -427,6 +444,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   variant = 'card',
   fileKey,
   stepId,
+  legacyStepId,
   onStepClick,
 }) => {
   const [obsExpanded, setObsExpanded] = useState(false);
@@ -480,6 +498,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   index={i}
                   fileKey={fileKey}
                   stepId={stepId}
+                  legacyStepId={legacyStepId}
                   toolIds={pain_points_tool_nums?.[i]}
                   onStepClick={onStepClick}
                   compact
@@ -512,6 +531,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                 index={i}
                 fileKey={fileKey}
                 stepId={stepId}
+                legacyStepId={legacyStepId}
                 toolIds={pain_points_tool_nums?.[i]}
                 onStepClick={onStepClick}
               />

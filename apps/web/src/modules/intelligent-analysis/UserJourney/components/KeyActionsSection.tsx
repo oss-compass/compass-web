@@ -239,6 +239,7 @@ const EvidenceInline: React.FC<{
   pain_points_tool_nums?: string[][];
   fileKey?: string;
   stepId?: string;
+  legacyStepId?: string;
   onStepClick?: (toolIds: string[]) => void;
 }> = ({
   observations,
@@ -247,6 +248,7 @@ const EvidenceInline: React.FC<{
   pain_points_tool_nums,
   fileKey,
   stepId,
+  legacyStepId,
   onStepClick,
 }) => {
   const hasObs = observations && observations.length > 0;
@@ -272,6 +274,7 @@ const EvidenceInline: React.FC<{
         showEmpty={false}
         fileKey={fileKey}
         stepId={stepId}
+        legacyStepId={legacyStepId}
         onStepClick={onStepClick}
       />
     </div>
@@ -286,6 +289,7 @@ const EvidenceBlock: React.FC<{
   pain_points_tool_nums?: string[][];
   fileKey?: string;
   stepId?: string;
+  legacyStepId?: string;
   onStepClick?: (toolIds: string[]) => void;
 }> = ({
   observations,
@@ -294,6 +298,7 @@ const EvidenceBlock: React.FC<{
   pain_points_tool_nums,
   fileKey,
   stepId,
+  legacyStepId,
   onStepClick,
 }) => {
   const [open, setOpen] = useState(false);
@@ -338,6 +343,7 @@ const EvidenceBlock: React.FC<{
             showEmpty={false}
             fileKey={fileKey}
             stepId={stepId}
+            legacyStepId={legacyStepId}
             onStepClick={onStepClick}
           />
         </div>
@@ -802,7 +808,8 @@ const TaskCard: React.FC<{
             observations_tool_nums={evidence?.observations_tool_nums}
             pain_points_tool_nums={evidence?.pain_points_tool_nums}
             fileKey={projectFileKey}
-            stepId={stepCode}
+            stepId={taskId}
+            legacyStepId={stepCode}
             onStepClick={onStepClick}
           />
         </div>
@@ -830,7 +837,8 @@ const TaskCard: React.FC<{
             observations_tool_nums={evidence?.observations_tool_nums}
             pain_points_tool_nums={evidence?.pain_points_tool_nums}
             fileKey={projectFileKey}
-            stepId={stepCode}
+            stepId={taskId}
+            legacyStepId={stepCode}
             onStepClick={onStepClick}
           />
         </div>

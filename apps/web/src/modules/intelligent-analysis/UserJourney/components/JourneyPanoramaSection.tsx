@@ -82,7 +82,8 @@ const TaskEvidenceCard: React.FC<{
           observations_tool_nums={observationsToolNums}
           pain_points_tool_nums={painPointsToolNums}
           fileKey={fileKey}
-          stepId={stepId}
+          stepId={taskId}
+          legacyStepId={stepId}
           onStepClick={onStepClick}
         />
       </div>
