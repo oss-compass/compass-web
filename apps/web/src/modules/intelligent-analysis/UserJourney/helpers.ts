@@ -111,6 +111,7 @@ const painLabelMap: Record<PainLevel, string> = {
   P2_MAJOR: '显著',
   P3_MINOR: '轻微',
   P4_TRIVIAL: '无感',
+  P5: '共性问题',
 };
 
 export const experienceGradeGuideItems = [
