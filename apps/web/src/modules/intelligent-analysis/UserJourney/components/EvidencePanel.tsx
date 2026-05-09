@@ -83,25 +83,26 @@ export type EvidencePanelProps = {
   /**
    * 点击关联步骤 ID 时的回调
    */
-  onStepClick?: (toolIds: string[]) => void;
+  onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
 };
 
 /* ─── 关联步骤按钮 ─── */
 const LinkStepsButton: React.FC<{
   toolIds?: string[];
-  onClick?: (toolIds: string[]) => void;
-}> = ({ toolIds, onClick }) => {
+  taskId?: string;
+  onClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
+}> = ({ toolIds, taskId, onClick }) => {
   if (!toolIds || toolIds.length === 0) return null;
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onClick) {
-      onClick(toolIds);
+      onClick(toolIds, { taskId });
     } else {
       // 如果没有传入 onClick，则发送全局事件供 KeyActionsSection 监听
       window.dispatchEvent(
         new CustomEvent('user-journey:highlight-steps', {
-          detail: { toolIds },
+          detail: { toolIds, taskId },
         })
       );
     }
@@ -219,9 +220,10 @@ const StatusBadge: React.FC<{
 const ObservationItem: React.FC<{
   text: string;
   toolIds?: string[];
-  onStepClick?: (toolIds: string[]) => void;
+  taskId?: string;
+  onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
   compact?: boolean;
-}> = ({ text, toolIds, onStepClick, compact = false }) => {
+}> = ({ text, toolIds, taskId, onStepClick, compact = false }) => {
   return (
     <li
       className={`flex items-start gap-2 rounded-md ${
@@ -234,7 +236,11 @@ const ObservationItem: React.FC<{
       <div className="flex flex-1 items-start justify-between gap-3">
         <span className="flex-1 py-0.5">{text}</span>
         <div className="flex shrink-0 items-center">
-          <LinkStepsButton toolIds={toolIds} onClick={onStepClick} />
+          <LinkStepsButton
+            toolIds={toolIds}
+            taskId={taskId}
+            onClick={onStepClick}
+          />
         </div>
       </div>
     </li>
@@ -250,7 +256,7 @@ const PainPointItem: React.FC<{
   legacyStepId?: string;
   compact?: boolean;
   toolIds?: string[];
-  onStepClick?: (toolIds: string[]) => void;
+  onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
 }> = ({
   text,
   index,
@@ -404,7 +410,11 @@ const PainPointItem: React.FC<{
         <div className="flex flex-1 items-start justify-between gap-3">
           <span className="flex-1 py-0.5">{text}</span>
           <div className="flex shrink-0 items-center gap-1.5">
-            <LinkStepsButton toolIds={toolIds} onClick={onStepClick} />
+            <LinkStepsButton
+              toolIds={toolIds}
+              taskId={stepId}
+              onClick={onStepClick}
+            />
             {badgeElement}
           </div>
         </div>
@@ -477,6 +487,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   key={i}
                   text={obs}
                   toolIds={observations_tool_nums?.[i]}
+                  taskId={stepId}
                   onStepClick={onStepClick}
                   compact
                 />
@@ -572,6 +583,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   key={i}
                   text={obs}
                   toolIds={observations_tool_nums?.[i]}
+                  taskId={stepId}
                   onStepClick={onStepClick}
                 />
               ))}

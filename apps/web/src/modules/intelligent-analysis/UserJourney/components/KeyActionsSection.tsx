@@ -882,13 +882,19 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
     const handleGlobalHighlight = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail && detail.toolIds) {
-        // 全局触发时，默认高亮第一个分组（通常是一个步骤对应一个分组）
-        const firstGroupTableKey = groups[0]
+        const targetTaskId =
+          typeof detail.taskId === 'string' ? detail.taskId : undefined;
+        const targetGroup = targetTaskId
+          ? groups.find((g) => g.taskId === targetTaskId)
+          : undefined;
+        const targetTableKey = targetGroup
+          ? `${currentStepKey}-${targetGroup.taskId ?? 'no_task'}`
+          : groups[0]
           ? `${currentStepKey}-${groups[0].taskId ?? 'no_task'}`
           : null;
 
-        if (firstGroupTableKey) {
-          handleStepClick(detail.toolIds, firstGroupTableKey);
+        if (targetTableKey) {
+          handleStepClick(detail.toolIds, targetTableKey);
         }
       }
     };

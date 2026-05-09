@@ -34,7 +34,7 @@ const TaskEvidenceCard: React.FC<{
   logTask?: LogTask;
   fileKey?: string;
   stepId?: string;
-  onStepClick?: (toolIds: string[]) => void;
+  onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
 }> = ({ taskId, cardIndex, logTask, fileKey, stepId, onStepClick }) => {
   const def = TASK_DEF_MAP[taskId];
   const displayName = def?.name ?? taskId;
@@ -243,13 +243,13 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
                         logTask={logTask}
                         fileKey={projectFileKey}
                         stepId={activeStep?.code}
-                        onStepClick={(toolIds) => {
+                        onStepClick={(toolIds, ctx) => {
                           // 1. 切换主视图步骤
                           onStepChange?.(activeStep.key);
                           // 2. 发送全局高亮事件
                           window.dispatchEvent(
                             new CustomEvent('user-journey:highlight-steps', {
-                              detail: { toolIds },
+                              detail: { toolIds, taskId: ctx?.taskId },
                             })
                           );
                         }}
