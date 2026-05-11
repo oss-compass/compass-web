@@ -30,6 +30,7 @@ export enum PainStatus {
   FIXED_PENDING_RETEST = 3,
   RETESTING = 4,
   RETESTED_PASSED = 5,
+  RETESTED_FALL = 6,
 }
 
 export const STATUS_LABELS: Record<number, string> = {
@@ -38,6 +39,7 @@ export const STATUS_LABELS: Record<number, string> = {
   [PainStatus.FIXED_PENDING_RETEST]: '已修复待复测',
   [PainStatus.RETESTING]: '复测中',
   [PainStatus.RETESTED_PASSED]: '已复测通过',
+  [PainStatus.RETESTED_FALL]: '复测不通过',
 };
 
 const SEVERITY_OPTIONS = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.filter(
@@ -116,6 +118,7 @@ type FormValues = {
   status: PainStatus;
   severity: PainLevel;
   is_common: boolean;
+  common_issue_type?: string;
   confirmed_by: string;
   issue_link?: string;
   pr_link?: string;
@@ -148,6 +151,10 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const [form] = Form.useForm<FormValues>();
   const [submitting, setSubmitting] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const commonIssueTypeOptions = useMemo(
+    () => ['百度SEO搜索', 'SoC代号映射'],
+    []
+  );
 
   // 计算当前状态：如果没有记录，默认是 1 (待确认)
   const currentStatus = currentRecord?.status || PainStatus.TO_BE_CONFIRMED;
@@ -167,18 +174,31 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     if (open) {
       setShowHistory(false);
       // 默认设置为当前的状态
+      const currentCommonIssueType = currentRecord?.common_issue_type || '';
+      const safeCommonIssueType = commonIssueTypeOptions.includes(
+        currentCommonIssueType
+      )
+        ? currentCommonIssueType
+        : undefined;
       form.setFieldsValue({
         status: currentStatus,
         severity: (currentRecord?.severity as PainLevel) || 'P1_CRITICAL',
         is_common: currentRecord?.severity === 'P5',
+        common_issue_type: safeCommonIssueType,
         confirmed_by: currentRecord?.confirmed_by || '',
         issue_link: currentRecord?.issue_link || '',
         pr_link: currentRecord?.pr_link || '',
       });
     }
-  }, [open, currentRecord, currentStatus, form]);
+  }, [open, currentRecord, currentStatus, form, commonIssueTypeOptions]);
 
   const isCommon = Form.useWatch('is_common', form);
+
+  useEffect(() => {
+    if (!isCommon) {
+      form.setFieldsValue({ common_issue_type: undefined });
+    }
+  }, [isCommon, form]);
 
   const handleOk = async () => {
     try {
@@ -197,6 +217,9 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       // 如果当前在 待确认(1) 阶段，点击提交后目标状态是 已确认待修复(2)，此时需要提交严重程度
       if (currentStatus === PainStatus.TO_BE_CONFIRMED) {
         payload.severity = values.is_common ? 'P5' : values.severity;
+        if (values.is_common) {
+          payload.common_issue_type = values.common_issue_type;
+        }
       }
       // 如果当前在 已确认待修复(2) 阶段，点击提交后目标状态是 已修复待复测(3)，此时需要提交 issue_link
       else if (currentStatus === PainStatus.CONFIRMED_PENDING_FIX) {
@@ -249,7 +272,10 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       title: '详情',
       key: 'details',
       render: (_: any, record: any) => {
-        if (record.severity === 'P5') return '共性问题待处理';
+        if (record.severity === 'P5')
+          return record.common_issue_type
+            ? `共性问题类型: ${record.common_issue_type}`
+            : '共性问题待处理';
         if (record.status === 1)
           return `等级: ${getPainLevelLabel(record.severity)}`;
         if (record.status === 2) return `Issue: ${record.issue_link || '-'}`;
@@ -373,6 +399,32 @@ const PainLevelConfirmModal: React.FC<Props> = ({
                       <Radio value={false}>否</Radio>
                     </Radio.Group>
                   </Form.Item>
+
+                  {isCommon && (
+                    <Form.Item
+                      name="common_issue_type"
+                      label={
+                        <span className="text-sm font-medium text-slate-700">
+                          共性问题类型
+                        </span>
+                      }
+                      rules={[
+                        { required: true, message: '请选择共性问题类型' },
+                      ]}
+                    >
+                      <Radio.Group className="w-full">
+                        <Space direction="vertical" className="w-full">
+                          {commonIssueTypeOptions.map((t) => (
+                            <Radio key={t} value={t} className="w-full">
+                              <span className="text-sm text-slate-700">
+                                {t}
+                              </span>
+                            </Radio>
+                          ))}
+                        </Space>
+                      </Radio.Group>
+                    </Form.Item>
+                  )}
 
                   {!isCommon && (
                     <Form.Item

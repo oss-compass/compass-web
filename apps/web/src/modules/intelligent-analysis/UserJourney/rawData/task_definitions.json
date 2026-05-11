@@ -1,6 +1,7 @@
 {
   "tasks": {
     "discovery_doc": {
+      "step_id": "S0_DISCOVERY",
       "task_id": "discovery_doc",
       "name": "搜索并验证官方文档",
       "phase": "discovery",
@@ -27,6 +28,7 @@
       ]
     },
     "discovery_repo": {
+      "step_id": "S0_DISCOVERY",
       "task_id": "discovery_repo",
       "name": "搜索并验证源码仓库",
       "phase": "discovery",
@@ -52,6 +54,7 @@
       ]
     },
     "setup_clone": {
+      "step_id": "S1_SETUP",
       "task_id": "setup_clone",
       "name": "代码克隆",
       "phase": "setup",
@@ -66,6 +69,7 @@
       "failure_indicators": ["网络错误", "权限拒绝"]
     },
     "setup_prereq": {
+      "step_id": "S1_SETUP",
       "task_id": "setup_prereq",
       "name": "环境预检",
       "phase": "setup",
@@ -87,6 +91,7 @@
       ]
     },
     "setup_deps": {
+      "step_id": "S1_SETUP",
       "task_id": "setup_deps",
       "name": "依赖安装",
       "phase": "setup",
@@ -110,6 +115,7 @@
       ]
     },
     "quickstart_doc": {
+      "step_id": "S2_QUICKSTART",
       "task_id": "quickstart_doc",
       "name": "阅读Quick Start文档并提取步骤",
       "phase": "quickstart",
@@ -133,6 +139,7 @@
       ]
     },
     "dev_modify": {
+      "step_id": "S3_DEVELOPMENT",
       "task_id": "dev_modify",
       "name": "代码修改",
       "phase": "development",
@@ -147,6 +154,7 @@
       "failure_indicators": ["文件不存在或无写权限", "修改操作失败"]
     },
     "dev_build": {
+      "step_id": "S3_DEVELOPMENT",
       "task_id": "dev_build",
       "name": "按文档编译与安装",
       "phase": "development",
@@ -169,6 +177,7 @@
       ]
     },
     "dev_run": {
+      "step_id": "S3_DEVELOPMENT",
       "task_id": "dev_run",
       "name": "运行示例验证功能",
       "phase": "development",
@@ -191,6 +200,7 @@
       ]
     },
     "test_unit": {
+      "step_id": "S4_TESTING",
       "task_id": "test_unit",
       "name": "完整测试套件",
       "phase": "testing",
@@ -213,6 +223,7 @@
       ]
     },
     "contrib_discover": {
+      "step_id": "S5_CONTRIBUTION",
       "task_id": "contrib_discover",
       "name": "问题发现与整理",
       "phase": "contribution",
@@ -235,6 +246,7 @@
       ]
     },
     "contrib_search": {
+      "step_id": "S5_CONTRIBUTION",
       "task_id": "contrib_search",
       "name": "搜索社区已有Issue排重",
       "phase": "contribution",
@@ -257,6 +269,7 @@
       ]
     },
     "contrib_submit": {
+      "step_id": "S5_CONTRIBUTION",
       "task_id": "contrib_submit",
       "name": "查阅贡献指南并提交Issue",
       "phase": "contribution",

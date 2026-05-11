@@ -175,7 +175,8 @@ const CascadingSelects: React.FC<{
         org: org || undefined,
       }).map(([, e]) => e.sig)
     );
-    return toOptions(sigs);
+    const opts = toOptions(sigs);
+    return [{ value: '', label: '全部' }, ...opts];
   }, [safeRegistry, org]);
 
   const projectOptions = useMemo(() => {
@@ -293,8 +294,7 @@ const CascadingSelects: React.FC<{
       <div className="flex items-center">
         <LabelTag text="SIG" />
         <Select
-          value={sig || undefined}
-          placeholder="全部"
+          value={sig}
           onChange={handleSigChange}
           options={sigOptions}
           style={{ height: SELECT_H }}

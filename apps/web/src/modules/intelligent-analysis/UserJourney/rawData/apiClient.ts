@@ -44,6 +44,7 @@ export type PainConfirmationRecord = {
   pain_text: string;
   status: number;
   severity: string;
+  common_issue_type?: string | null;
   issue_link: string | null;
   pr_link: string | null;
   confirmed_by: string;
@@ -58,6 +59,7 @@ export type PainConfirmationsResponse = {
 export type PainHistoryItem = {
   status: number;
   severity: string;
+  common_issue_type?: string | null;
   issue_link: string | null;
   pr_link: string | null;
   confirmed_by: string | null;
@@ -79,6 +81,7 @@ export type UpsertPainConfirmationPayload = {
   status: number;
   confirmed_by: string | null;
   severity?: string;
+  common_issue_type?: string | null;
   issue_link?: string;
   pr_link?: string;
 };

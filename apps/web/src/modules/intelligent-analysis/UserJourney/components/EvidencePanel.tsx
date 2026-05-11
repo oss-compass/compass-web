@@ -153,10 +153,18 @@ const UnconfirmedBadge: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 const StatusBadge: React.FC<{
   status: number;
   severity: string;
+  commonIssueType?: string | null;
   confirmedBy: string;
   confirmedAt: string;
   onClick: () => void;
-}> = ({ status, severity, confirmedBy, confirmedAt, onClick }) => {
+}> = ({
+  status,
+  severity,
+  commonIssueType,
+  confirmedBy,
+  confirmedAt,
+  onClick,
+}) => {
   const style = getPainLevelStyle(severity);
   const label = STATUS_LABELS[status] || '未知状态';
 
@@ -168,6 +176,14 @@ const StatusBadge: React.FC<{
           {getPainLevelLabel(severity)}
         </span>
       </div>
+      {commonIssueType ? (
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">共性问题类型：</span>
+          <span className="font-semibold text-slate-700">
+            {commonIssueType}
+          </span>
+        </div>
+      ) : null}
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-600">操作人：</span>
         {confirmedBy}
@@ -316,6 +332,16 @@ const PainPointItem: React.FC<{
                 <span className="font-medium text-slate-600">严重程度：</span>
                 <span className="font-semibold text-slate-700">共性问题</span>
               </div>
+              {existing.common_issue_type ? (
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <span className="font-medium text-slate-600">
+                    共性问题类型：
+                  </span>
+                  <span className="font-semibold text-slate-700">
+                    {existing.common_issue_type}
+                  </span>
+                </div>
+              ) : null}
               {existing.confirmed_by && (
                 <div className="flex items-center gap-1.5 text-xs text-slate-500">
                   <span className="font-medium text-slate-600">操作人：</span>
@@ -388,6 +414,7 @@ const PainPointItem: React.FC<{
         <StatusBadge
           status={existing.status}
           severity={existing.severity}
+          commonIssueType={existing.common_issue_type}
           confirmedBy={existing.confirmed_by}
           confirmedAt={existing.confirmed_at}
           onClick={() => setModalOpen(true)}
