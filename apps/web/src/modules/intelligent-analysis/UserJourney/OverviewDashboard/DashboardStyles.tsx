@@ -93,6 +93,10 @@ const DashboardStyles: React.FC = () => (
       font-weight: 500;
       color: #64748b;
       line-height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
     }
 
     .ov-value {
@@ -300,6 +304,17 @@ const DashboardStyles: React.FC = () => (
       display: inline-flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .overview-info-icon {
+      color: #94a3b8;
+      font-size: 12px;
+      cursor: help;
+      transition: color 0.2s ease;
+    }
+
+    .overview-info-icon:hover {
+      color: #64748b;
     }
 
     .sort-arrow {

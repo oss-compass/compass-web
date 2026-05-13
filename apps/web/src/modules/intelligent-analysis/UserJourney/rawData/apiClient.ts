@@ -195,7 +195,10 @@ export type OverviewCardItem = {
   scoreHistory: Array<{ reportId: string; date: string; score: number }>;
   totalPainPoints: number;
   pendingPainPoints: number;
+  inProgressPainPoints: number;
   closedPainPoints: number;
+  naPainPoints: number;
+  closeRate: number;
   painPoints: OverviewPainPointRow[];
 };
 
@@ -380,22 +383,6 @@ export type UpdateOverviewPainPayload = {
   retest_report_id?: string;
   retest_report_score?: number | null;
   agent_score_after_retest?: number | null;
-};
-
-export const updateOverviewPainDetail = async (
-  payload: UpdateOverviewPainPayload
-) => {
-  const url = compassApiUrl('/overview/pain-details');
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error((errBody as { detail?: string }).detail || '更新痛点失败');
-  }
-  return res.json();
 };
 
 export type UpdateOverviewParentPainPayload = {

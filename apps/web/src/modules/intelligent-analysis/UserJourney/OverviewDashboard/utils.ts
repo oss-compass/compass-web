@@ -2,7 +2,7 @@ import type {
   OverviewCardItem,
   OverviewPainPointRow,
 } from '../rawData/apiClient';
-import { BLOCKING_SEVERITY, NON_ACTIONABLE_SEVERITY } from './constants';
+import { NON_ACTIONABLE_SEVERITY } from './constants';
 import type {
   DashboardIssue,
   IssueBucket,
@@ -73,49 +73,15 @@ export const normalizeStatus = (row: OverviewPainPointRow): IssueBucket => {
   return 'inProgress';
 };
 
-export const calcMetrics = (issues: DashboardIssue[]): MetricSummary => {
-  const summary = issues.reduce(
-    (acc, issue) => {
-      acc[issue.normalizedStatus] += 1;
-      return acc;
-    },
-    { total: 0, pending: 0, inProgress: 0, resolved: 0, na: 0 }
-  );
-  const actionable = summary.pending + summary.inProgress + summary.resolved;
+export const toMetricSummary = (card: OverviewCardItem): MetricSummary => {
   return {
-    total: actionable,
-    pending: summary.pending,
-    inProgress: summary.inProgress,
-    resolved: summary.resolved,
-    na: summary.na,
-    closeRate:
-      actionable > 0
-        ? Number(((summary.resolved / actionable) * 100).toFixed(1))
-        : 0,
+    total: card.totalPainPoints ?? 0,
+    pending: card.pendingPainPoints ?? 0,
+    inProgress: card.inProgressPainPoints ?? 0,
+    resolved: card.closedPainPoints ?? 0,
+    na: card.naPainPoints ?? 0,
+    closeRate: card.closeRate ?? 0,
   };
-};
-
-export const mergeMetrics = (
-  rows: RepoProgressRow[],
-  tab: ProgressTab
-): MetricSummary => {
-  const aggregate = rows.reduce(
-    (acc, row) => {
-      const current = row[tab];
-      acc.total += current.total;
-      acc.pending += current.pending;
-      acc.inProgress += current.inProgress;
-      acc.resolved += current.resolved;
-      acc.na += current.na;
-      return acc;
-    },
-    { total: 0, pending: 0, inProgress: 0, resolved: 0, na: 0, closeRate: 0 }
-  );
-  aggregate.closeRate =
-    aggregate.total > 0
-      ? Number(((aggregate.resolved / aggregate.total) * 100).toFixed(1))
-      : 0;
-  return aggregate;
 };
 
 export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
@@ -129,7 +95,6 @@ export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
     score: latestScore,
     successRate,
     normalizedStatus: normalizeStatus(row),
-    blocking: BLOCKING_SEVERITY.includes(normalizeSeverity(row.severity)),
   }));
 };
 

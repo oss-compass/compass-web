@@ -105,7 +105,6 @@ export const STATUS_CFG: Record<
 };
 
 export const NON_ACTIONABLE_SEVERITY: Severity[] = ['P4_TRIVIAL'];
-export const BLOCKING_SEVERITY: Severity[] = ['P0_BLOCKER'];
 
 export const SEVERITY_RANK: Record<Severity, number> = {
   P0_BLOCKER: 5,

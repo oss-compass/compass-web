@@ -19,7 +19,6 @@ export type DashboardIssue = OverviewPainPointRow & {
   score: number | null;
   successRate: number | null;
   normalizedStatus: IssueBucket;
-  blocking: boolean;
 };
 
 export type MetricSummary = {

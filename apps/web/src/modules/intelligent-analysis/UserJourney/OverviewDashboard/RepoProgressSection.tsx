@@ -1,5 +1,14 @@
 import React from 'react';
-import { Button, Checkbox, Segmented, Select, Table, Typography } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Segmented,
+  Select,
+  Table,
+  Tooltip,
+  Typography,
+} from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import type { ProgressTab, RepoProgressRow, RepoSortKey } from './types';
 import { formatPercent, formatScore, getAverage } from './utils';
@@ -66,6 +75,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     <span className="sortable-col-title">
       {label}
       <span className="sort-arrow">{sortArrow(key)}</span>
+    </span>
+  );
+
+  const resolvedTitle = (
+    <span className="sortable-col-title">
+      <span>已闭环</span>
+      <Tooltip title="含不需要修复">
+        <InfoCircleOutlined className="overview-info-icon" />
+      </Tooltip>
+      <span className="sort-arrow">{sortArrow('resolved')}</span>
     </span>
   );
 
@@ -159,7 +178,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       }),
     },
     {
-      title: sortableTitle('已闭环', 'resolved'),
+      title: resolvedTitle,
       key: 'resolved',
       width: 110,
       render: (_value, record) => {

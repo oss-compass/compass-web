@@ -1,4 +1,6 @@
 import React from 'react';
+import { Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import type { MetricSummary } from './types';
 import { formatPercent } from './utils';
 
@@ -28,7 +30,12 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
           <div className="ov-value ov-value-blue">{summary.inProgress}</div>
         </div>
         <div className="ov-item">
-          <div className="ov-label">已闭环</div>
+          <div className="ov-label">
+            已闭环
+            <Tooltip title="含不需要修复">
+              <InfoCircleOutlined className="overview-info-icon" />
+            </Tooltip>
+          </div>
           <div className="ov-value ov-value-green">{summary.resolved}</div>
         </div>
         <div className="ov-item">

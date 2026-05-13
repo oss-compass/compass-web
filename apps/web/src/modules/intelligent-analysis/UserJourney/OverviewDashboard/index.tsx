@@ -1,19 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { message } from 'antd';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   fetchOverviewSummary,
   fetchOverviewCards,
   fetchOverviewCommonIssues,
-  updateOverviewPainDetail,
-  type OverviewPainPointRow,
 } from '../rawData/apiClient';
 import CommonIssuesSection from './CommonIssuesSection';
 import { SEVERITY_RANK, STATUS_RANK } from './constants';
 import DashboardStyles from './DashboardStyles';
 import IssueDetailModal from './IssueDetailModal';
 import OverviewSummarySection from './OverviewSummarySection';
-import PainEditModal from './PainEditModal';
 import RepoProgressSection from './RepoProgressSection';
 import type {
   CommonIssueGroup,
@@ -25,22 +21,26 @@ import type {
   RepoSortKey,
 } from './types';
 import {
-  calcMetrics,
   getAverage,
   getSortValue,
-  mergeMetrics,
+  toMetricSummary,
   toDashboardIssue,
 } from './utils';
+
+const EMPTY_SUMMARY = {
+  total: 0,
+  pending: 0,
+  inProgress: 0,
+  resolved: 0,
+  na: 0,
+  closeRate: 0,
+};
 
 type OverviewDashboardProps = {
   org?: string;
 };
 
 const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
-  const queryClient = useQueryClient();
-  const [editingPain, setEditingPain] = useState<OverviewPainPointRow | null>(
-    null
-  );
   const [issueModal, setIssueModal] = useState<IssueModalState>({
     open: false,
     title: '',
@@ -76,41 +76,22 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
 
   const { data: summaryResp } = useQuery({
-    queryKey: ['overview-summary', org],
-    queryFn: () =>
-      fetchOverviewSummary({
-        org,
-      }),
+    queryKey: ['overview-summary'],
+    queryFn: () => fetchOverviewSummary({}),
   });
 
   const { data: commonIssuesResp } = useQuery({
-    queryKey: ['overview-common-issues', org, currentTab, teamFilter],
+    queryKey: ['overview-common-issues', org],
     queryFn: () =>
       fetchOverviewCommonIssues({
         org,
-        tab: currentTab,
-        team: teamFilter || undefined,
       }),
-  });
-
-  const painMutation = useMutation({
-    mutationFn: (payload: Parameters<typeof updateOverviewPainDetail>[0]) =>
-      updateOverviewPainDetail(payload),
-    onSuccess: async () => {
-      message.success('痛点已更新');
-      await queryClient.invalidateQueries({
-        queryKey: ['overview-cards-page'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['overview-summary'],
-      });
-    },
-    onError: (error: Error) => message.error(error.message),
   });
 
   const repoRows = useMemo<RepoProgressRow[]>(() => {
     return (cardsResp?.items ?? []).map((card) => {
       const issues = toDashboardIssue(card);
+      const metrics = toMetricSummary(card);
       return {
         id: card.id,
         name: card.name,
@@ -119,8 +100,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
         latestReportId: card.latestReportId,
         detailReportUrl: card.detailReportUrl,
-        overall: calcMetrics(issues),
-        blocking: calcMetrics(issues.filter((issue) => issue.blocking)),
+        overall: metrics,
+        blocking: metrics,
         issues,
       };
     });
@@ -148,22 +129,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     [cardsResp, repoRows]
   );
 
-  const progressRows = useMemo<RepoProgressRow[]>(() => {
-    if (includeCommonIssues) return repoRows;
-    return repoRows.map((row) => {
-      const issues = row.issues.filter(
-        (issue) => String(issue.severity) !== 'P5'
-      );
-      return {
-        ...row,
-        issues,
-        overall: calcMetrics(issues),
-        blocking: calcMetrics(issues.filter((issue) => issue.blocking)),
-      };
-    });
-  }, [includeCommonIssues, repoRows]);
-
-  const filteredRows = useMemo(() => progressRows, [progressRows]);
+  const filteredRows = useMemo(() => repoRows, [repoRows]);
 
   const sortedRows = useMemo(() => {
     if (!sortKey) return filteredRows;
@@ -182,12 +148,12 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   }, [currentTab, filteredRows, sortAsc, sortKey]);
 
   const overviewSummary = useMemo(
-    () => summaryResp?.overviewSummary ?? mergeMetrics(repoRows, 'overall'),
-    [repoRows, summaryResp]
+    () => summaryResp?.overviewSummary ?? EMPTY_SUMMARY,
+    [summaryResp]
   );
   const blockingSummary = useMemo(
-    () => summaryResp?.blockingSummary ?? mergeMetrics(repoRows, 'blocking'),
-    [repoRows, summaryResp]
+    () => summaryResp?.blockingSummary ?? EMPTY_SUMMARY,
+    [summaryResp]
   );
   const summaryScore = useMemo(
     () =>
@@ -229,10 +195,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     row: RepoProgressRow,
     bucket: IssueBucket | 'total'
   ) => {
-    let issues =
-      currentTab === 'blocking'
-        ? row.issues.filter((issue) => issue.blocking)
-        : row.issues;
+    let issues = row.issues;
     if (bucket === 'pending') {
       issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
     } else if (bucket === 'inProgress') {
@@ -240,11 +203,13 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         (issue) => issue.normalizedStatus === 'inProgress'
       );
     } else if (bucket === 'resolved') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'resolved');
+      issues = issues.filter(
+        (issue) =>
+          issue.normalizedStatus === 'resolved' ||
+          issue.normalizedStatus === 'na'
+      );
     } else if (bucket === 'na') {
       issues = issues.filter((issue) => issue.normalizedStatus === 'na');
-    } else {
-      issues = issues.filter((issue) => issue.normalizedStatus !== 'na');
     }
 
     const bucketLabel =
@@ -281,7 +246,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           blockingSummary={blockingSummary}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
-          repoCount={summaryResp?.repoCount ?? repoRows.length}
+          repoCount={summaryResp?.repoCount ?? 0}
         />
 
         <RepoProgressSection
@@ -310,23 +275,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         <IssueDetailModal
           state={issueModal}
           onClose={() => setIssueModal({ open: false, title: '', issues: [] })}
-          onEdit={(issue) => {
-            setIssueModal((prev) => ({ ...prev, open: false }));
-            setEditingPain(issue);
-          }}
-        />
-        <PainEditModal
-          open={!!editingPain}
-          row={editingPain}
-          onClose={() => setEditingPain(null)}
-          onSubmit={async (row, patch) => {
-            await painMutation.mutateAsync({
-              file_key: row.fileKey,
-              step_id: row.stepId,
-              pain_index: row.painIndex,
-              ...patch,
-            });
-          }}
         />
         <DashboardStyles />
       </div>

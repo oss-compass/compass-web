@@ -1,18 +1,16 @@
 import React from 'react';
-import { Button, Modal, Tooltip } from 'antd';
+import { Modal, Tooltip } from 'antd';
 import { SeverityBadge, StatusBadge } from './Badges';
-import type { DashboardIssue, IssueModalState } from './types';
+import type { IssueModalState } from './types';
 
 type IssueDetailModalProps = {
   state: IssueModalState;
   onClose: () => void;
-  onEdit: (issue: DashboardIssue) => void;
 };
 
 const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   state,
   onClose,
-  onEdit,
 }) => (
   <Modal
     open={state.open}
@@ -23,19 +21,38 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     destroyOnHidden
   >
     <div className="max-h-[70vh] overflow-auto rounded-xl border border-slate-200">
-      <table className="w-full border-collapse text-[13px] text-slate-700">
+      <table className="w-full min-w-[1400px] table-fixed border-collapse text-[13px] text-slate-700">
         <thead className="sticky top-0 z-10 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
           <tr>
-            <th className="px-3 py-3 text-left font-semibold">仓库</th>
-            <th className="px-3 py-3 text-left font-semibold">责任团队</th>
-            <th className="px-3 py-3 text-left font-semibold">阶段</th>
-            <th className="px-3 py-3 text-left font-semibold">问题类型</th>
-            <th className="px-3 py-3 text-left font-semibold">问题描述</th>
-            <th className="px-3 py-3 text-left font-semibold">严重程度</th>
-            <th className="px-3 py-3 text-left font-semibold">状态</th>
-            <th className="px-3 py-3 text-left font-semibold">责任人</th>
-            <th className="px-3 py-3 text-left font-semibold">报告地址</th>
-            <th className="px-3 py-3 text-left font-semibold">操作</th>
+            <th className="w-[120px] px-3 py-3 text-left font-semibold">
+              仓库
+            </th>
+            <th className="w-[120px] px-3 py-3 text-left font-semibold">
+              责任团队
+            </th>
+            <th className="w-[110px] px-3 py-3 text-left font-semibold">
+              阶段
+            </th>
+            <th className="w-[110px] px-3 py-3 text-left font-semibold">
+              问题类型
+            </th>
+            <th className="w-[280px] px-3 py-3 text-left font-semibold">
+              问题描述
+            </th>
+            <th className="w-[110px] px-3 py-3 text-left font-semibold">
+              严重程度
+            </th>
+            <th className="w-[80px] px-3 py-3 text-left font-semibold">状态</th>
+            <th className="w-[110px] px-3 py-3 text-left font-semibold">
+              结论
+            </th>
+            <th className="w-[90px] px-3 py-3 text-left font-semibold">
+              责任人
+            </th>
+            <th className="w-[180px] px-3 py-3 text-left font-semibold">
+              报告地址
+            </th>
+            <th className="w-[90px] px-3 py-3 text-left font-semibold">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -67,6 +84,13 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">
                   <StatusBadge status={issue.normalizedStatus} />
+                </td>
+                <td className="px-3 py-3">
+                  <Tooltip title={issue.remark || '--'}>
+                    <span className="block cursor-default truncate">
+                      {issue.remark || '--'}
+                    </span>
+                  </Tooltip>
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">
                   {issue.owner || '--'}
@@ -116,24 +140,14 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   })()}
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">
-                  {issue.sourceType === 'parent' ? (
-                    <span className="text-slate-300">--</span>
-                  ) : (
-                    <Button
-                      type="link"
-                      size="small"
-                      onClick={() => onEdit(issue)}
-                    >
-                      编辑
-                    </Button>
-                  )}
+                  <span className="text-slate-300">--</span>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
               <td
-                colSpan={10}
+                colSpan={11}
                 className="px-3 py-12 text-center text-sm text-slate-400"
               >
                 暂无数据
