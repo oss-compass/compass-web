@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Table, Tag, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
-import { SEVERITY_CFG, STATUS_CFG } from './constants';
+import { STATUS_CFG } from './constants';
+import { SeverityBadge } from './Badges';
 import type { CommonIssueGroup } from './types';
-import { normalizeSeverity } from './utils';
 
 const { Title } = Typography;
 
@@ -70,21 +70,7 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
       title: '严重程度',
       key: 'severity',
       width: 120,
-      render: (_value, record) => {
-        const sev = normalizeSeverity(record.severity);
-        return (
-          <Tag
-            className="overview-ant-tag nowrap-tag"
-            style={{
-              background: SEVERITY_CFG[sev].tagBg,
-              color: SEVERITY_CFG[sev].tagColor,
-              borderColor: SEVERITY_CFG[sev].tagBorder,
-            }}
-          >
-            {SEVERITY_CFG[sev].label}
-          </Tag>
-        );
-      },
+      render: (_value, record) => <SeverityBadge severity={record.severity} />,
     },
     {
       title: '状态',

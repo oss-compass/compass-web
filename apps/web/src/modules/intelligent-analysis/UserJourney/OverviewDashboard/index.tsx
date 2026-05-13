@@ -23,6 +23,7 @@ import type {
 import {
   getAverage,
   getSortValue,
+  normalizeSeverity,
   toMetricSummary,
   toDashboardIssue,
 } from './utils';
@@ -186,7 +187,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             STATUS_RANK[left.normalizedStatus]
           );
         }
-        return SEVERITY_RANK[right.severity] - SEVERITY_RANK[left.severity];
+        return (
+          (SEVERITY_RANK[normalizeSeverity(right.severity)] ?? 0) -
+          (SEVERITY_RANK[normalizeSeverity(left.severity)] ?? 0)
+        );
       }),
     });
   };

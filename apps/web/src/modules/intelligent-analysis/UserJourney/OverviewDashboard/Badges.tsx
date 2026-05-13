@@ -7,7 +7,11 @@ import { normalizeSeverity } from './utils';
 export const SeverityBadge: React.FC<{ severity: Severity }> = ({
   severity,
 }) => {
-  const cfg = SEVERITY_CFG[normalizeSeverity(severity)];
+  const normalizedSeverity = normalizeSeverity(severity);
+  if (!normalizedSeverity) {
+    return <span className="text-slate-300">--</span>;
+  }
+  const cfg = SEVERITY_CFG[normalizedSeverity];
   return (
     <Tag
       className="overview-ant-tag"

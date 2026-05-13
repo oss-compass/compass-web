@@ -1,7 +1,9 @@
 import type { IssueBucket, Severity } from './types';
 
+type KnownSeverity = Exclude<Severity, ''>;
+
 export const SEVERITY_CFG: Record<
-  Severity,
+  KnownSeverity,
   {
     label: string;
     bg: string;
@@ -13,49 +15,49 @@ export const SEVERITY_CFG: Record<
   }
 > = {
   P0_BLOCKER: {
-    label: 'P0 阻塞',
+    label: 'P0完全阻塞',
     bg: 'bg-rose-50',
     text: 'text-rose-700',
-    border: 'border-rose-200',
+    border: 'border-rose-300',
     tagBg: '#fff1f0',
-    tagColor: '#cf1322',
-    tagBorder: '#ffccc7',
+    tagColor: '#e11d48',
+    tagBorder: '#fda4af',
   },
   P1_CRITICAL: {
-    label: 'P1 严重',
-    bg: 'bg-orange-50',
-    text: 'text-orange-700',
-    border: 'border-orange-200',
-    tagBg: '#fff7e8',
-    tagColor: '#d46b08',
-    tagBorder: '#ffd591',
+    label: 'P1关键卡点',
+    bg: 'bg-red-50',
+    text: 'text-rose-700',
+    border: 'border-rose-200',
+    tagBg: '#fff1f2',
+    tagColor: '#f43f5e',
+    tagBorder: '#fda4af',
   },
   P2_MAJOR: {
-    label: 'P2 中等',
-    bg: 'bg-sky-50',
-    text: 'text-sky-700',
-    border: 'border-sky-200',
-    tagBg: '#e6f4ff',
-    tagColor: '#1677ff',
-    tagBorder: '#91caff',
+    label: 'P2显著影响',
+    bg: 'bg-amber-50',
+    text: 'text-amber-700',
+    border: 'border-amber-200',
+    tagBg: '#fffbeb',
+    tagColor: '#d97706',
+    tagBorder: '#fcd34d',
   },
   P3_MINOR: {
-    label: 'P3 次要',
-    bg: 'bg-blue-50',
-    text: 'text-blue-700',
-    border: 'border-blue-200',
-    tagBg: '#e6fffb',
-    tagColor: '#08979c',
-    tagBorder: '#87e8de',
+    label: 'P3轻微影响',
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-700',
+    border: 'border-emerald-200',
+    tagBg: '#ecfdf5',
+    tagColor: '#059669',
+    tagBorder: '#86efac',
   },
   P4_TRIVIAL: {
-    label: 'P4 轻微',
+    label: 'P4极致体验',
     bg: 'bg-slate-50',
-    text: 'text-slate-600',
-    border: 'border-slate-200',
-    tagBg: '#f5f5f5',
-    tagColor: '#595959',
-    tagBorder: '#d9d9d9',
+    text: 'text-emerald-700',
+    border: 'border-emerald-200',
+    tagBg: '#f0fdf4',
+    tagColor: '#16a34a',
+    tagBorder: '#86efac',
   },
 };
 
@@ -104,9 +106,9 @@ export const STATUS_CFG: Record<
   },
 };
 
-export const NON_ACTIONABLE_SEVERITY: Severity[] = ['P4_TRIVIAL'];
+export const NON_ACTIONABLE_SEVERITY: KnownSeverity[] = ['P4_TRIVIAL'];
 
-export const SEVERITY_RANK: Record<Severity, number> = {
+export const SEVERITY_RANK: Record<KnownSeverity, number> = {
   P0_BLOCKER: 5,
   P1_CRITICAL: 4,
   P2_MAJOR: 3,

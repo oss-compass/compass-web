@@ -170,7 +170,8 @@ export type OverviewPainPointRow = {
     | 'P1_CRITICAL'
     | 'P2_MAJOR'
     | 'P3_MINOR'
-    | 'P4_TRIVIAL';
+    | 'P4_TRIVIAL'
+    | '';
   description: string;
   owner: string;
   isRealIssue: boolean | null;

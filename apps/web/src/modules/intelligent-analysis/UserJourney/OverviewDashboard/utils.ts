@@ -14,22 +14,28 @@ import type {
 } from './types';
 
 export const normalizeSeverity = (severity: unknown): Severity => {
-  if (typeof severity !== 'string') return 'P2_MAJOR';
+  if (typeof severity !== 'string') return '';
+  if (!severity.trim()) return '';
 
   const severityMap: Record<string, Severity> = {
     P0_BLOCKER: 'P0_BLOCKER',
     'P0-阻塞': 'P0_BLOCKER',
+    'P0-完全阻塞': 'P0_BLOCKER',
     P1_CRITICAL: 'P1_CRITICAL',
     'P1-严重': 'P1_CRITICAL',
+    'P1-关键卡点': 'P1_CRITICAL',
     P2_MAJOR: 'P2_MAJOR',
     'P2-中等': 'P2_MAJOR',
+    'P2-显著影响': 'P2_MAJOR',
     P3_MINOR: 'P3_MINOR',
     'P3-次要': 'P3_MINOR',
+    'P3-轻微影响': 'P3_MINOR',
     P4_TRIVIAL: 'P4_TRIVIAL',
     'P4-轻微': 'P4_TRIVIAL',
+    'P4-极致体验': 'P4_TRIVIAL',
   };
 
-  return severityMap[severity] ?? 'P2_MAJOR';
+  return severityMap[severity] ?? '';
 };
 
 export const normalizeText = (text: string) => text.trim().replace(/\s+/g, ' ');
