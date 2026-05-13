@@ -151,6 +151,8 @@ export type OverviewImprovementStatus =
 
 export type OverviewPainPointRow = {
   id: string;
+  parentId?: string;
+  sourceType?: 'child' | 'parent';
   fileKey: string;
   stepId: string;
   painIndex: number;
@@ -160,6 +162,9 @@ export type OverviewPainPointRow = {
   agentScoreAtFound: number;
   issueType: string;
   chipModel: string;
+  isCommonIssue?: boolean;
+  commonIssueType?: string;
+  childIds?: string[];
   severity:
     | 'P0_BLOCKER'
     | 'P1_CRITICAL'
@@ -181,7 +186,12 @@ export type OverviewCardItem = {
   id: string;
   name: string;
   sig: string;
+  team?: string;
   repoCount?: number;
+  latestReportId?: string;
+  detailReportUrl?: string;
+  latestScore?: number | null;
+  latestSuccessRate?: number | null;
   scoreHistory: Array<{ reportId: string; date: string; score: number }>;
   totalPainPoints: number;
   pendingPainPoints: number;
@@ -189,7 +199,42 @@ export type OverviewCardItem = {
   painPoints: OverviewPainPointRow[];
 };
 
+export type OverviewMetricSummary = {
+  total: number;
+  pending: number;
+  inProgress: number;
+  resolved: number;
+  na: number;
+  closeRate: number;
+};
+
+export type OverviewIssueBucket = 'pending' | 'inProgress' | 'resolved' | 'na';
+
+export type OverviewCommonIssueItem = OverviewPainPointRow & {
+  repoName: string;
+  team: string;
+  score: number | null;
+  successRate: number | null;
+  normalizedStatus: OverviewIssueBucket;
+  blocking: boolean;
+};
+
+export type OverviewCommonIssueGroup = {
+  key: string;
+  journeyStage: string;
+  issueType: string;
+  description: string;
+  severity: OverviewPainPointRow['severity'] | string;
+  repoCount: number;
+  status: OverviewIssueBucket;
+  items: OverviewCommonIssueItem[];
+};
+
 export type OverviewSummary = {
+  overviewSummary: OverviewMetricSummary;
+  blockingSummary: OverviewMetricSummary;
+  summaryScore: number | null;
+  summarySuccessRate: number | null;
   repoCount: number;
   sigCount: number;
   reportCount: number;
@@ -203,6 +248,8 @@ export type OverviewCardsResponse = {
   total: number;
   page: number;
   size: number;
+  teamOptions?: string[];
+  repoOptions?: Array<{ value: string; label: string }>;
   items: OverviewCardItem[];
 };
 
@@ -229,6 +276,10 @@ export const fetchOverviewSummary = async (params: {
 
 export const fetchOverviewCards = async (params: {
   viewType: 'repo' | 'sig';
+  tab?: 'overall' | 'blocking';
+  includeCommonIssues?: boolean;
+  team?: string;
+  repo?: string;
   sig?: string;
   keyword?: string;
   page?: number;
@@ -238,12 +289,36 @@ export const fetchOverviewCards = async (params: {
   const search = new URLSearchParams();
   search.set('view_type', params.viewType);
   if (params.org) search.set('org', params.org);
+  if (params.tab) search.set('tab', params.tab);
+  if (typeof params.includeCommonIssues === 'boolean')
+    search.set('include_common_issues', String(params.includeCommonIssues));
+  if (params.team) search.set('team', params.team);
+  if (params.repo) search.set('repo', params.repo);
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiFetch<OverviewCardsResponse>(
     `/overview/cards?${search.toString()}`
+  );
+};
+
+export const fetchOverviewCommonIssues = async (params: {
+  tab?: 'overall' | 'blocking';
+  team?: string;
+  sig?: string;
+  keyword?: string;
+  org?: string;
+}): Promise<{ items: OverviewCommonIssueGroup[] }> => {
+  const search = new URLSearchParams();
+  if (params.org) search.set('org', params.org);
+  if (params.tab) search.set('tab', params.tab);
+  if (params.team) search.set('team', params.team);
+  if (params.sig) search.set('sig', params.sig);
+  if (params.keyword) search.set('keyword', params.keyword);
+  const query = search.toString();
+  return compassApiFetch<{ items: OverviewCommonIssueGroup[] }>(
+    `/overview/common-issues${query ? `?${query}` : ''}`
   );
 };
 
@@ -319,6 +394,39 @@ export const updateOverviewPainDetail = async (
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
     throw new Error((errBody as { detail?: string }).detail || '更新痛点失败');
+  }
+  return res.json();
+};
+
+export type UpdateOverviewParentPainPayload = {
+  parent_id: string;
+  severity?: OverviewPainPointRow['severity'];
+  owner?: string;
+  remark?: string;
+  issue_link?: string;
+  pr_link?: string;
+  is_common_issue?: boolean;
+  common_issue_type?: string | null;
+  status?: string;
+};
+
+export const updateOverviewParentPain = async (
+  payload: UpdateOverviewParentPainPayload
+) => {
+  const { parent_id, ...body } = payload;
+  const url = compassApiUrl(
+    `/overview/parent-pains/${encodeURIComponent(parent_id)}`
+  );
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(
+      (errBody as { detail?: string }).detail || '更新父级痛点失败'
+    );
   }
   return res.json();
 };

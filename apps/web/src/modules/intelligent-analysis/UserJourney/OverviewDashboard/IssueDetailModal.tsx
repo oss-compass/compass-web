@@ -18,7 +18,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     open={state.open}
     onCancel={onClose}
     footer={null}
-    width={1120}
+    width={1320}
     title={state.title}
     destroyOnHidden
   >
@@ -34,6 +34,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
             <th className="px-3 py-3 text-left font-semibold">严重程度</th>
             <th className="px-3 py-3 text-left font-semibold">状态</th>
             <th className="px-3 py-3 text-left font-semibold">责任人</th>
+            <th className="px-3 py-3 text-left font-semibold">报告地址</th>
             <th className="px-3 py-3 text-left font-semibold">操作</th>
           </tr>
         </thead>
@@ -70,21 +71,69 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                 <td className="whitespace-nowrap px-3 py-3">
                   {issue.owner || '--'}
                 </td>
+                <td className="px-3 py-3">
+                  {(() => {
+                    const childIds = issue.childIds ?? [];
+                    const seen = new Set<string>();
+                    const fileKeys: string[] = [];
+                    for (let i = childIds.length - 1; i >= 0; i -= 1) {
+                      const fileKey = String(childIds[i] || '').split('#')[0];
+                      if (!fileKey || seen.has(fileKey)) continue;
+                      seen.add(fileKey);
+                      fileKeys.push(fileKey);
+                      if (fileKeys.length >= 3) break;
+                    }
+
+                    if (!fileKeys.length) {
+                      return <span className="text-slate-300">--</span>;
+                    }
+
+                    return fileKeys.map((fileKey) => {
+                      const href = `/intelligent-analysis/community-experience?project=${encodeURIComponent(
+                        fileKey
+                      )}`;
+                      const displayText = (() => {
+                        const last = fileKey.lastIndexOf('_');
+                        if (last <= 0) return fileKey;
+                        const prev = fileKey.lastIndexOf('_', last - 1);
+                        if (prev < 0 || prev + 1 >= fileKey.length)
+                          return fileKey;
+                        return fileKey.slice(prev + 1);
+                      })();
+                      return (
+                        <div key={fileKey} className="leading-5">
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="overview-table-link text-blue-600"
+                          >
+                            {displayText}
+                          </a>
+                        </div>
+                      );
+                    });
+                  })()}
+                </td>
                 <td className="whitespace-nowrap px-3 py-3">
-                  <Button
-                    type="link"
-                    size="small"
-                    onClick={() => onEdit(issue)}
-                  >
-                    编辑
-                  </Button>
+                  {issue.sourceType === 'parent' ? (
+                    <span className="text-slate-300">--</span>
+                  ) : (
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() => onEdit(issue)}
+                    >
+                      编辑
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
               <td
-                colSpan={9}
+                colSpan={10}
                 className="px-3 py-12 text-center text-sm text-slate-400"
               >
                 暂无数据

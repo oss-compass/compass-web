@@ -5,45 +5,35 @@ import { formatPercent } from './utils';
 type OverviewSummaryBlockProps = {
   title: string;
   summary: MetricSummary;
-  onOpenTotal: () => void;
-  onOpenPending: () => void;
-  onOpenInProgress: () => void;
-  onOpenResolved: () => void;
 };
 
 const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   title,
   summary,
-  onOpenTotal,
-  onOpenPending,
-  onOpenInProgress,
-  onOpenResolved,
 }) => {
   return (
     <div className="overview-block">
       <div className="ov-title">{title}</div>
       <div className="ov-row">
-        <button type="button" className="ov-item" onClick={onOpenTotal}>
+        <div className="ov-item">
           <div className="ov-label">总问题数</div>
           <div className="ov-value">{summary.total}</div>
-        </button>
-        <button type="button" className="ov-item" onClick={onOpenPending}>
+        </div>
+        <div className="ov-item">
           <div className="ov-label">待处理</div>
-          <div className="ov-value pending-color">{summary.pending}</div>
-        </button>
-        <button type="button" className="ov-item" onClick={onOpenInProgress}>
+          <div className="ov-value">{summary.pending}</div>
+        </div>
+        <div className="ov-item">
           <div className="ov-label">进行中</div>
-          <div className="ov-value in-progress-color">{summary.inProgress}</div>
-        </button>
-        <button type="button" className="ov-item" onClick={onOpenResolved}>
+          <div className="ov-value ov-value-blue">{summary.inProgress}</div>
+        </div>
+        <div className="ov-item">
           <div className="ov-label">已闭环</div>
-          <div className="ov-value resolved-color">{summary.resolved}</div>
-        </button>
-        <div className="ov-item ov-no-click">
+          <div className="ov-value ov-value-green">{summary.resolved}</div>
+        </div>
+        <div className="ov-item">
           <div className="ov-label">闭环率</div>
-          <div className="ov-value rate-color">
-            {formatPercent(summary.closeRate)}
-          </div>
+          <div className="ov-value">{formatPercent(summary.closeRate)}</div>
         </div>
       </div>
     </div>

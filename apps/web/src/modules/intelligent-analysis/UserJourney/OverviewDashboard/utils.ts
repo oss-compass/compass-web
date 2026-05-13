@@ -119,13 +119,13 @@ export const mergeMetrics = (
 };
 
 export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
-  const latestScore = getLatestScore(card);
-  const successRate = toSuccessRate(latestScore);
+  const latestScore = card.latestScore ?? getLatestScore(card);
+  const successRate = card.latestSuccessRate ?? toSuccessRate(latestScore);
   return card.painPoints.map((row) => ({
     ...row,
     severity: normalizeSeverity(row.severity),
     repoName: card.name,
-    team: card.sig,
+    team: card.team || card.sig,
     score: latestScore,
     successRate,
     normalizedStatus: normalizeStatus(row),

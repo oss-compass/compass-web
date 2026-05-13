@@ -1,8 +1,11 @@
 import React from 'react';
-import { Tag, Tooltip } from 'antd';
+import { Button, Table, Tag, Tooltip, Typography } from 'antd';
+import type { TableProps } from 'antd';
 import { SEVERITY_CFG, STATUS_CFG } from './constants';
 import type { CommonIssueGroup } from './types';
 import { normalizeSeverity } from './utils';
+
+const { Title } = Typography;
 
 type CommonIssuesSectionProps = {
   commonIssues: CommonIssueGroup[];
@@ -12,92 +15,117 @@ type CommonIssuesSectionProps = {
 const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
   commonIssues,
   onOpenIssueModal,
-}) => (
-  <>
-    <div className="section-title">🔍 共性问题统计</div>
-    <div className="section-card">
-      <div className="table-wrapper">
-        <table className="common-issues-table">
-          <thead>
-            <tr>
-              <th className="nowrap-col">序号</th>
-              <th className="nowrap-col">阶段</th>
-              <th>描述</th>
-              <th className="nowrap-col">类型</th>
-              <th className="nowrap-col">涉及仓库</th>
-              <th className="nowrap-col severity-col">严重程度</th>
-              <th className="nowrap-col status-col">状态</th>
-            </tr>
-          </thead>
-          <tbody>
-            {commonIssues.length > 0 ? (
-              commonIssues.map((group, index) => {
-                const sev = normalizeSeverity(group.severity);
-                return (
-                  <tr key={group.key}>
-                    <td className="row-num nowrap-col">{index + 1}</td>
-                    <td className="nowrap-col">{group.journeyStage}</td>
-                    <td>
-                      <Tooltip title={group.description}>
-                        <span>{group.description}</span>
-                      </Tooltip>
-                    </td>
-                    <td className="nowrap-col">{group.issueType}</td>
-                    <td className="nowrap-col">
-                      <span
-                        className="clickable-count"
-                        onClick={() =>
-                          onOpenIssueModal(
-                            `共性问题 · ${group.description}`,
-                            group.items
-                          )
-                        }
-                      >
-                        {group.repoCount}
-                      </span>
-                    </td>
-                    <td className="nowrap-col severity-col">
-                      <Tag
-                        className="overview-ant-tag nowrap-tag"
-                        style={{
-                          background: SEVERITY_CFG[sev].tagBg,
-                          color: SEVERITY_CFG[sev].tagColor,
-                          borderColor: SEVERITY_CFG[sev].tagBorder,
-                        }}
-                      >
-                        {SEVERITY_CFG[sev].label}
-                      </Tag>
-                    </td>
-                    <td className="nowrap-col status-col">
-                      <Tag
-                        className="overview-ant-tag nowrap-tag"
-                        style={{
-                          background: STATUS_CFG[group.status].tagBg,
-                          color: STATUS_CFG[group.status].tagColor,
-                          borderColor: STATUS_CFG[group.status].tagBorder,
-                        }}
-                      >
-                        {STATUS_CFG[group.status].label}
-                      </Tag>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td
-                  colSpan={7}
-                  className="px-5 py-8 text-center text-sm text-slate-400"
-                >
-                  暂无共性问题
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+}) => {
+  const columns: TableProps<CommonIssueGroup>['columns'] = [
+    {
+      title: '序号',
+      key: 'index',
+      width: 72,
+      render: (_value, _record, index) => (
+        <span className="row-num">{index + 1}</span>
+      ),
+    },
+    {
+      title: '阶段',
+      dataIndex: 'journeyStage',
+      key: 'journeyStage',
+      width: 120,
+      ellipsis: true,
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      ellipsis: true,
+      render: (value: string) => (
+        <Tooltip title={value}>
+          <span>{value}</span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: '类型',
+      dataIndex: 'issueType',
+      key: 'issueType',
+      width: 120,
+      ellipsis: true,
+    },
+    {
+      title: '涉及仓库',
+      key: 'repoCount',
+      width: 120,
+      render: (_value, record) => (
+        <Button
+          type="link"
+          className="overview-table-link"
+          onClick={() =>
+            onOpenIssueModal(`共性问题 · ${record.description}`, record.items)
+          }
+        >
+          {record.repoCount}
+        </Button>
+      ),
+    },
+    {
+      title: '严重程度',
+      key: 'severity',
+      width: 120,
+      render: (_value, record) => {
+        const sev = normalizeSeverity(record.severity);
+        return (
+          <Tag
+            className="overview-ant-tag nowrap-tag"
+            style={{
+              background: SEVERITY_CFG[sev].tagBg,
+              color: SEVERITY_CFG[sev].tagColor,
+              borderColor: SEVERITY_CFG[sev].tagBorder,
+            }}
+          >
+            {SEVERITY_CFG[sev].label}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: '状态',
+      key: 'status',
+      width: 120,
+      render: (_value, record) => (
+        <Tag
+          className="overview-ant-tag nowrap-tag"
+          style={{
+            background: STATUS_CFG[record.status].tagBg,
+            color: STATUS_CFG[record.status].tagColor,
+            borderColor: STATUS_CFG[record.status].tagBorder,
+          }}
+        >
+          {STATUS_CFG[record.status].label}
+        </Tag>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Title level={4} className="oj-section-title">
+        共性问题统计
+      </Title>
+      <div className="section-card">
+        <Table<CommonIssueGroup>
+          className="overview-ant-table"
+          dataSource={commonIssues}
+          columns={columns}
+          rowKey="key"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: false,
+          }}
+          scroll={{ x: 1050, y: 550 }}
+          locale={{ emptyText: '暂无共性问题' }}
+        />
       </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 export default CommonIssuesSection;

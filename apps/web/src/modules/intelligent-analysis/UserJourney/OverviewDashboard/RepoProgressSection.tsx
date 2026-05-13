@@ -1,11 +1,20 @@
 import React from 'react';
-import { Segmented, Select } from 'antd';
+import { Button, Checkbox, Segmented, Select, Table, Typography } from 'antd';
+import type { TableProps } from 'antd';
 import type { ProgressTab, RepoProgressRow, RepoSortKey } from './types';
 import { formatPercent, formatScore, getAverage } from './utils';
+
+const { Title } = Typography;
+const { Link } = Typography;
 
 type RepoProgressSectionProps = {
   currentTab: ProgressTab;
   onTabChange: (tab: ProgressTab) => void;
+  includeCommonIssues: boolean;
+  onIncludeCommonIssuesChange: (next: boolean) => void;
+  repoFilter: string;
+  repoOptions: Array<{ value: string; label: string }>;
+  onRepoFilterChange: (repo: string) => void;
   teamFilter: string;
   teamOptions: string[];
   onTeamFilterChange: (team: string) => void;
@@ -22,6 +31,11 @@ type RepoProgressSectionProps = {
 const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   currentTab,
   onTabChange,
+  includeCommonIssues,
+  onIncludeCommonIssuesChange,
+  repoFilter,
+  repoOptions,
+  onRepoFilterChange,
   teamFilter,
   teamOptions,
   onTeamFilterChange,
@@ -48,9 +62,212 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       ? Number(((tableSummary.resolved / tableSummary.total) * 100).toFixed(1))
       : 0;
 
+  const sortableTitle = (label: string, key: RepoSortKey) => (
+    <span className="sortable-col-title">
+      {label}
+      <span className="sort-arrow">{sortArrow(key)}</span>
+    </span>
+  );
+
+  const columns: TableProps<RepoProgressRow>['columns'] = [
+    {
+      title: '序号',
+      key: 'index',
+      width: 72,
+      render: (_value, _record, index) => (
+        <span className="row-num">{index + 1}</span>
+      ),
+    },
+    {
+      title: '仓库',
+      dataIndex: 'name',
+      key: 'name',
+      width: 220,
+      ellipsis: true,
+    },
+    {
+      title: sortableTitle('责任团队', 'team'),
+      dataIndex: 'team',
+      key: 'team',
+      width: 160,
+      ellipsis: true,
+      onHeaderCell: () => ({
+        onClick: () => onSort('team'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: sortableTitle('评分', 'score'),
+      key: 'score',
+      width: 110,
+      render: (_value, record) => formatScore(record.score),
+      onHeaderCell: () => ({
+        onClick: () => onSort('score'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: sortableTitle('成功率', 'rate'),
+      key: 'rate',
+      width: 120,
+      render: (_value, record) => formatPercent(record.successRate),
+      onHeaderCell: () => ({
+        onClick: () => onSort('rate'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: sortableTitle('待处理', 'pending'),
+      key: 'pending',
+      width: 110,
+      render: (_value, record) => {
+        const metrics = record[currentTab];
+        return (
+          <Button
+            type="link"
+            className="overview-table-link"
+            onClick={() => onOpenRepoIssues(record, 'pending')}
+          >
+            {metrics.pending}
+          </Button>
+        );
+      },
+      onHeaderCell: () => ({
+        onClick: () => onSort('pending'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: sortableTitle('进行中', 'inProgress'),
+      key: 'inProgress',
+      width: 110,
+      render: (_value, record) => {
+        const metrics = record[currentTab];
+        return (
+          <Button
+            type="link"
+            className="overview-table-link"
+            onClick={() => onOpenRepoIssues(record, 'inProgress')}
+          >
+            {metrics.inProgress}
+          </Button>
+        );
+      },
+      onHeaderCell: () => ({
+        onClick: () => onSort('inProgress'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: sortableTitle('已闭环', 'resolved'),
+      key: 'resolved',
+      width: 110,
+      render: (_value, record) => {
+        const metrics = record[currentTab];
+        return (
+          <Button
+            type="link"
+            className="overview-table-link"
+            onClick={() => onOpenRepoIssues(record, 'resolved')}
+          >
+            {metrics.resolved}
+          </Button>
+        );
+      },
+      onHeaderCell: () => ({
+        onClick: () => onSort('resolved'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: sortableTitle('总问题数', 'total'),
+      key: 'total',
+      width: 120,
+      render: (_value, record) => {
+        const metrics = record[currentTab];
+        return (
+          <Button
+            type="link"
+            className="overview-table-link overview-table-link-strong"
+            onClick={() => onOpenRepoIssues(record, 'total')}
+          >
+            {metrics.total}
+          </Button>
+        );
+      },
+      onHeaderCell: () => ({
+        onClick: () => onSort('total'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: sortableTitle('闭环率', 'closeRate'),
+      key: 'closeRate',
+      width: 120,
+      render: (_value, record) => formatPercent(record[currentTab].closeRate),
+      onHeaderCell: () => ({
+        onClick: () => onSort('closeRate'),
+        className: 'sortable-col',
+      }),
+    },
+    {
+      title: '不需要修复',
+      key: 'na',
+      width: 120,
+      render: (_value, record) => {
+        const metrics = record[currentTab];
+        return (
+          <Button
+            type="link"
+            className="overview-table-link overview-table-link-muted"
+            onClick={() => onOpenRepoIssues(record, 'na')}
+          >
+            {metrics.na}
+          </Button>
+        );
+      },
+    },
+    {
+      title: '详细报告',
+      key: 'detail',
+      width: 180,
+      render: (_value, record) => {
+        const fileKey = record.latestReportId;
+        const reportUrl = fileKey
+          ? `/intelligent-analysis/community-experience?project=${encodeURIComponent(
+              fileKey
+            )}`
+          : '';
+        const displayText = (() => {
+          if (!fileKey) return '';
+          const last = fileKey.lastIndexOf('_');
+          if (last <= 0) return fileKey;
+          const prev = fileKey.lastIndexOf('_', last - 1);
+          if (prev < 0 || prev + 1 >= fileKey.length) return fileKey;
+          return fileKey.slice(prev + 1);
+        })();
+
+        return fileKey ? (
+          <Link
+            href={reportUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="overview-table-link"
+          >
+            {displayText}
+          </Link>
+        ) : (
+          <span className="text-slate-300">--</span>
+        );
+      },
+    },
+  ];
+
   return (
     <>
-      <div className="section-title">🗂️ 各仓库进展</div>
+      <Title level={4} className="oj-section-title">
+        各仓库进展
+      </Title>
       <div className="section-card">
         <div className="tab-bar">
           <Segmented
@@ -62,7 +279,24 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               { label: '阻塞问题', value: 'blocking' },
             ]}
           />
-          <div className="team-filter">
+          <Checkbox
+            checked={includeCommonIssues}
+            onChange={(e) => onIncludeCommonIssuesChange(e.target.checked)}
+            className="overview-common-checkbox"
+          >
+            包含共性问题
+          </Checkbox>
+          <div className="team-filter overview-filter-group">
+            <Select
+              value={repoFilter || undefined}
+              onChange={(value) => onRepoFilterChange(value ?? '')}
+              allowClear
+              placeholder="全部仓库"
+              className="overview-select"
+              popupMatchSelectWidth={false}
+              dropdownClassName="overview-select-dropdown"
+              options={repoOptions}
+            />
             <Select
               value={teamFilter || undefined}
               onChange={(value) => onTeamFilterChange(value ?? '')}
@@ -70,6 +304,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               placeholder="全部团队"
               className="overview-select"
               popupMatchSelectWidth={false}
+              dropdownClassName="overview-select-dropdown"
               options={teamOptions.map((team) => ({
                 value: team,
                 label: team,
@@ -78,171 +313,60 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           </div>
         </div>
 
-        <div className="table-wrapper">
-          {isLoading ? (
-            <div className="px-5 py-8 text-center text-sm text-slate-400">
-              加载中...
-            </div>
-          ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>序号</th>
-                  <th>仓库</th>
-                  <th className="sortable" onClick={() => onSort('team')}>
-                    责任团队{' '}
-                    <span className="sort-arrow">{sortArrow('team')}</span>
-                  </th>
-                  <th className="sortable" onClick={() => onSort('score')}>
-                    评分{' '}
-                    <span className="sort-arrow">{sortArrow('score')}</span>
-                  </th>
-                  <th className="sortable" onClick={() => onSort('rate')}>
-                    成功率{' '}
-                    <span className="sort-arrow">{sortArrow('rate')}</span>
-                  </th>
-                  <th
-                    className="sortable"
-                    style={{ color: '#f97316' }}
-                    onClick={() => onSort('pending')}
-                  >
-                    待处理{' '}
-                    <span className="sort-arrow">{sortArrow('pending')}</span>
-                  </th>
-                  <th
-                    className="sortable"
-                    style={{ color: '#f59e0b' }}
-                    onClick={() => onSort('inProgress')}
-                  >
-                    进行中{' '}
-                    <span className="sort-arrow">
-                      {sortArrow('inProgress')}
-                    </span>
-                  </th>
-                  <th
-                    className="sortable"
-                    style={{ color: '#10b981' }}
-                    onClick={() => onSort('resolved')}
-                  >
-                    已闭环{' '}
-                    <span className="sort-arrow">{sortArrow('resolved')}</span>
-                  </th>
-                  <th className="sortable" onClick={() => onSort('total')}>
-                    总问题数{' '}
-                    <span className="sort-arrow">{sortArrow('total')}</span>
-                  </th>
-                  <th className="sortable" onClick={() => onSort('closeRate')}>
-                    闭环率{' '}
-                    <span className="sort-arrow">{sortArrow('closeRate')}</span>
-                  </th>
-                  <th style={{ color: '#b0b7c3' }}>不需要修复</th>
-                  <th>详细报告</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedRows.length > 0 ? (
-                  sortedRows.map((row, index) => {
-                    const metrics = row[currentTab];
-                    return (
-                      <tr key={row.id}>
-                        <td className="row-num">{index + 1}</td>
-                        <td>{row.name}</td>
-                        <td>{row.team}</td>
-                        <td>{formatScore(row.score)}</td>
-                        <td>{formatPercent(row.successRate)}</td>
-                        <td>
-                          <span
-                            className="clickable-count"
-                            onClick={() => onOpenRepoIssues(row, 'pending')}
-                          >
-                            {metrics.pending}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className="clickable-count"
-                            onClick={() => onOpenRepoIssues(row, 'inProgress')}
-                          >
-                            {metrics.inProgress}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className="clickable-count"
-                            onClick={() => onOpenRepoIssues(row, 'resolved')}
-                          >
-                            {metrics.resolved}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className="clickable-count total-deep"
-                            onClick={() => onOpenRepoIssues(row, 'total')}
-                          >
-                            {metrics.total}
-                          </span>
-                        </td>
-                        <td>{formatPercent(metrics.closeRate)}</td>
-                        <td>
-                          <span
-                            className="clickable-count na-cell"
-                            onClick={() => onOpenRepoIssues(row, 'na')}
-                          >
-                            {metrics.na}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className="detail-arrow"
-                            onClick={() => onOpenRepoIssues(row, 'total')}
-                          >
-                            →
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={12}
-                      className="px-5 py-8 text-center text-sm text-slate-400"
-                    >
-                      暂无匹配仓库
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-              {sortedRows.length > 0 && (
-                <tfoot>
-                  <tr>
-                    <td />
-                    <td colSpan={2}>
-                      <strong>总计</strong>
-                    </td>
-                    <td>
-                      {formatScore(
-                        getAverage(sortedRows.map((row) => row.score))
-                      )}
-                    </td>
-                    <td>
-                      {formatPercent(
-                        getAverage(sortedRows.map((row) => row.successRate))
-                      )}
-                    </td>
-                    <td>{tableSummary.pending}</td>
-                    <td>{tableSummary.inProgress}</td>
-                    <td>{tableSummary.resolved}</td>
-                    <td>{tableSummary.total}</td>
-                    <td>{formatPercent(closeRate)}</td>
-                    <td className="na-cell">{tableSummary.na}</td>
-                    <td>—</td>
-                  </tr>
-                </tfoot>
-              )}
-            </table>
-          )}
-        </div>
+        <Table<RepoProgressRow>
+          className="overview-ant-table"
+          loading={isLoading}
+          dataSource={sortedRows}
+          columns={columns}
+          rowKey="id"
+          pagination={false}
+          scroll={{ x: 1250, y: 600 }}
+          locale={{ emptyText: '暂无匹配仓库' }}
+          summary={
+            sortedRows.length > 0
+              ? () => (
+                  <Table.Summary>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell index={0} />
+                      <Table.Summary.Cell index={1} colSpan={2}>
+                        <strong>总计</strong>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={2} colSpan={0} />
+                      <Table.Summary.Cell index={3}>
+                        {formatScore(
+                          getAverage(sortedRows.map((row) => row.score))
+                        )}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={4}>
+                        {formatPercent(
+                          getAverage(sortedRows.map((row) => row.successRate))
+                        )}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={5}>
+                        {tableSummary.pending}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={6}>
+                        {tableSummary.inProgress}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={7}>
+                        {tableSummary.resolved}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={8}>
+                        {tableSummary.total}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={9}>
+                        {formatPercent(closeRate)}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={10}>
+                        {tableSummary.na}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={11}>—</Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </Table.Summary>
+                )
+              : undefined
+          }
+        />
       </div>
     </>
   );

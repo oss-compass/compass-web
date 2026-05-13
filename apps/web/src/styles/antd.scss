@@ -75,18 +75,16 @@
 .ant-btn-primary {
   background-color: #1677ff !important;
 }
-.ant-select-dropdown {
-  z-index: 1400 !important;
-}
+
 .ant-select-selector {
   border-radius: 0 !important;
   // border-color: #cccccc !important;
 }
 .ant-select-dropdown {
-  border-radius: 0 !important;
-  .ant-select-item {
-    border-radius: 0 !important;
-  }
+  z-index: 1400 !important;
+  // .ant-select-item {
+  //   border-radius: 0 !important;
+  // }
 }
 .ant-pagination-options-quick-jumper input {
   border-radius: 0 !important;

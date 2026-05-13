@@ -2,7 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { message } from 'antd';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  fetchOverviewSummary,
   fetchOverviewCards,
+  fetchOverviewCommonIssues,
   updateOverviewPainDetail,
   type OverviewPainPointRow,
 } from '../rawData/apiClient';
@@ -27,7 +29,6 @@ import {
   getAverage,
   getSortValue,
   mergeMetrics,
-  normalizeText,
   toDashboardIssue,
 } from './utils';
 
@@ -46,18 +47,49 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     issues: [],
   });
   const [currentTab, setCurrentTab] = useState<ProgressTab>('overall');
+  const [includeCommonIssues, setIncludeCommonIssues] = useState(true);
+  const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
-  const [sortKey, setSortKey] = useState<RepoSortKey>('team');
+  const [sortKey, setSortKey] = useState<RepoSortKey | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
 
   const { data: cardsResp, isLoading } = useQuery({
-    queryKey: ['overview-cards-page', org],
+    queryKey: [
+      'overview-cards-page',
+      org,
+      currentTab,
+      includeCommonIssues,
+      repoFilter,
+      teamFilter,
+    ],
     queryFn: () =>
       fetchOverviewCards({
         viewType: 'repo',
         org,
+        tab: currentTab,
+        includeCommonIssues,
+        team: teamFilter || undefined,
+        repo: repoFilter || undefined,
         page: 1,
         size: 200,
+      }),
+  });
+
+  const { data: summaryResp } = useQuery({
+    queryKey: ['overview-summary', org],
+    queryFn: () =>
+      fetchOverviewSummary({
+        org,
+      }),
+  });
+
+  const { data: commonIssuesResp } = useQuery({
+    queryKey: ['overview-common-issues', org, currentTab, teamFilter],
+    queryFn: () =>
+      fetchOverviewCommonIssues({
+        org,
+        tab: currentTab,
+        team: teamFilter || undefined,
       }),
   });
 
@@ -69,6 +101,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       await queryClient.invalidateQueries({
         queryKey: ['overview-cards-page'],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['overview-summary'],
+      });
     },
     onError: (error: Error) => message.error(error.message),
   });
@@ -79,9 +114,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       return {
         id: card.id,
         name: card.name,
-        team: card.sig,
-        score: issues[0]?.score ?? null,
-        successRate: issues[0]?.successRate ?? null,
+        team: card.team || card.sig,
+        score: card.latestScore ?? issues[0]?.score ?? null,
+        successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
+        latestReportId: card.latestReportId,
+        detailReportUrl: card.detailReportUrl,
         overall: calcMetrics(issues),
         blocking: calcMetrics(issues.filter((issue) => issue.blocking)),
         issues,
@@ -89,21 +126,47 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     });
   }, [cardsResp]);
 
-  const teamOptions = useMemo(
+  const teamOptions = useMemo(() => {
+    const fromApi = (cardsResp?.teamOptions ?? []).filter(Boolean);
+    if (fromApi.length) return fromApi;
+    return Array.from(new Set(repoRows.map((row) => row.team))).sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [cardsResp, repoRows]);
+
+  const repoOptions = useMemo(
     () =>
-      Array.from(new Set(repoRows.map((row) => row.team))).sort((a, b) =>
-        a.localeCompare(b)
-      ),
-    [repoRows]
+      cardsResp?.repoOptions?.length
+        ? cardsResp.repoOptions
+        : Array.from(
+            new Map(
+              repoRows.map((row) => [row.id, row.name] as const)
+            ).entries()
+          )
+            .map(([value, label]) => ({ value, label }))
+            .sort((a, b) => a.label.localeCompare(b.label)),
+    [cardsResp, repoRows]
   );
 
-  const filteredRows = useMemo(
-    () =>
-      repoRows.filter((row) => (teamFilter ? row.team === teamFilter : true)),
-    [repoRows, teamFilter]
-  );
+  const progressRows = useMemo<RepoProgressRow[]>(() => {
+    if (includeCommonIssues) return repoRows;
+    return repoRows.map((row) => {
+      const issues = row.issues.filter(
+        (issue) => String(issue.severity) !== 'P5'
+      );
+      return {
+        ...row,
+        issues,
+        overall: calcMetrics(issues),
+        blocking: calcMetrics(issues.filter((issue) => issue.blocking)),
+      };
+    });
+  }, [includeCommonIssues, repoRows]);
+
+  const filteredRows = useMemo(() => progressRows, [progressRows]);
 
   const sortedRows = useMemo(() => {
+    if (!sortKey) return filteredRows;
     const rows = [...filteredRows];
     rows.sort((left, right) => {
       const a = getSortValue(left, sortKey, currentTab);
@@ -119,68 +182,29 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   }, [currentTab, filteredRows, sortAsc, sortKey]);
 
   const overviewSummary = useMemo(
-    () => mergeMetrics(repoRows, 'overall'),
-    [repoRows]
+    () => summaryResp?.overviewSummary ?? mergeMetrics(repoRows, 'overall'),
+    [repoRows, summaryResp]
   );
   const blockingSummary = useMemo(
-    () => mergeMetrics(repoRows, 'blocking'),
-    [repoRows]
+    () => summaryResp?.blockingSummary ?? mergeMetrics(repoRows, 'blocking'),
+    [repoRows, summaryResp]
   );
   const summaryScore = useMemo(
-    () => getAverage(repoRows.map((row) => row.score)),
-    [repoRows]
+    () =>
+      summaryResp?.summaryScore ?? getAverage(repoRows.map((row) => row.score)),
+    [repoRows, summaryResp]
   );
   const summarySuccessRate = useMemo(
-    () => getAverage(repoRows.map((row) => row.successRate)),
-    [repoRows]
+    () =>
+      summaryResp?.summarySuccessRate ??
+      getAverage(repoRows.map((row) => row.successRate)),
+    [repoRows, summaryResp]
   );
 
-  const commonIssues = useMemo<CommonIssueGroup[]>(() => {
-    const issueMap = new Map<string, CommonIssueGroup>();
-    repoRows.forEach((row) => {
-      row.issues.forEach((issue) => {
-        const key = [
-          issue.journeyStage,
-          issue.issueType,
-          normalizeText(issue.description),
-          issue.severity,
-        ].join('::');
-        const existing = issueMap.get(key);
-        if (existing) {
-          existing.items.push(issue);
-          existing.repoCount = new Set(
-            existing.items.map((item) => item.repoName)
-          ).size;
-          existing.status =
-            STATUS_RANK[issue.normalizedStatus] > STATUS_RANK[existing.status]
-              ? issue.normalizedStatus
-              : existing.status;
-          return;
-        }
-        issueMap.set(key, {
-          key,
-          journeyStage: issue.journeyStage,
-          issueType: issue.issueType,
-          description: issue.description,
-          severity: issue.severity,
-          repoCount: 1,
-          status: issue.normalizedStatus,
-          items: [issue],
-        });
-      });
-    });
-
-    return Array.from(issueMap.values())
-      .filter((group) => group.items.length > 0)
-      .sort((left, right) => {
-        if (right.repoCount !== left.repoCount)
-          return right.repoCount - left.repoCount;
-        if (SEVERITY_RANK[right.severity] !== SEVERITY_RANK[left.severity]) {
-          return SEVERITY_RANK[right.severity] - SEVERITY_RANK[left.severity];
-        }
-        return STATUS_RANK[right.status] - STATUS_RANK[left.status];
-      });
-  }, [repoRows]);
+  const commonIssues = useMemo<CommonIssueGroup[]>(
+    () => (commonIssuesResp?.items ?? []) as unknown as CommonIssueGroup[],
+    [commonIssuesResp]
+  );
 
   const openIssueModal = (title: string, issues: DashboardIssue[]) => {
     setIssueModal({
@@ -199,39 +223,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         return SEVERITY_RANK[right.severity] - SEVERITY_RANK[left.severity];
       }),
     });
-  };
-
-  const openSummaryIssues = (
-    tab: ProgressTab,
-    bucket: Exclude<IssueBucket, 'na'> | 'total'
-  ) => {
-    let issues = repoRows.flatMap((row) => row.issues);
-    if (tab === 'blocking') {
-      issues = issues.filter((issue) => issue.blocking);
-    }
-    if (bucket === 'pending') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
-    } else if (bucket === 'inProgress') {
-      issues = issues.filter(
-        (issue) => issue.normalizedStatus === 'inProgress'
-      );
-    } else if (bucket === 'resolved') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'resolved');
-    } else {
-      issues = issues.filter((issue) => issue.normalizedStatus !== 'na');
-    }
-
-    const tabLabel = tab === 'blocking' ? '阻塞问题' : '总体问题';
-    const bucketLabel =
-      bucket === 'pending'
-        ? '待处理'
-        : bucket === 'inProgress'
-        ? '进行中'
-        : bucket === 'resolved'
-        ? '已闭环'
-        : '总问题数';
-
-    openIssueModal(`总览信息 · ${tabLabel} · ${bucketLabel}`, issues);
   };
 
   const openRepoIssues = (
@@ -290,13 +281,17 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           blockingSummary={blockingSummary}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
-          repoCount={repoRows.length}
-          onOpenSummaryIssues={openSummaryIssues}
+          repoCount={summaryResp?.repoCount ?? repoRows.length}
         />
 
         <RepoProgressSection
           currentTab={currentTab}
           onTabChange={setCurrentTab}
+          includeCommonIssues={includeCommonIssues}
+          onIncludeCommonIssuesChange={setIncludeCommonIssues}
+          repoFilter={repoFilter}
+          repoOptions={repoOptions}
+          onRepoFilterChange={setRepoFilter}
           teamFilter={teamFilter}
           teamOptions={teamOptions}
           onTeamFilterChange={setTeamFilter}

@@ -37,6 +37,8 @@ export type RepoProgressRow = {
   team: string;
   score: number | null;
   successRate: number | null;
+  latestReportId?: string;
+  detailReportUrl?: string;
   overall: MetricSummary;
   blocking: MetricSummary;
   issues: DashboardIssue[];

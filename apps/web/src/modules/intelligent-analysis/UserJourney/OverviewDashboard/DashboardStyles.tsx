@@ -3,42 +3,44 @@ import React from 'react';
 const DashboardStyles: React.FC = () => (
   <style jsx global>{`
     .oj-page {
-      background: #f8fafb;
+      // background: radial-gradient(
+      //     circle at top left,
+      //     rgba(37, 99, 235, 0.08),
+      //     transparent 24%
+      //   ),
+      //   linear-gradient(180deg, #f6f8fc 0%, #eef3fb 100%);
+      background: #eef3fb;
       min-height: 100%;
     }
 
     .detail-panel-body {
-      max-width: 1150px;
-      margin: 0 auto;
-      padding: 24px 28px 40px;
+      width: 100%;
+      padding: 20px 48px;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 20px;
     }
 
-    .section-title {
-      font-size: 15px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #1a202c;
-    }
-
-    .section-title::before {
-      content: '';
-      width: 4px;
-      height: 20px;
-      border-radius: 3px;
-      background: linear-gradient(135deg, #4f7dff, #6366f1);
+    .oj-section-title.ant-typography {
+      margin: 0;
+      font-size: 18px;
+      line-height: 28px;
+      font-weight: 800;
+      color: #0f172a;
     }
 
     .section-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 22px 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-      border: 1px solid #eef1f6;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .overview-summary-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .overview-grid {
@@ -48,102 +50,131 @@ const DashboardStyles: React.FC = () => (
     }
 
     .overview-block {
-      background: #f9fafb;
-      border-radius: 10px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
       padding: 16px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 120px;
     }
 
     .ov-title {
-      font-size: 11px;
+      font-size: 14px;
       font-weight: 600;
-      color: #8899a6;
-      text-transform: uppercase;
-      margin-bottom: 10px;
+      color: #0f172a;
+      letter-spacing: 0.02em;
     }
 
     .ov-row {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      text-align: center;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+      align-items: center;
     }
 
-    button.ov-item {
+    .ov-item {
       width: 100%;
-      background: transparent;
+      text-align: center;
       border: none;
+      background: transparent;
       padding: 0;
-      cursor: pointer;
-    }
-
-    .ov-item.ov-no-click {
-      cursor: default;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     .ov-label {
-      font-size: 10px;
-      color: #8899a6;
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748b;
+      line-height: 16px;
     }
 
     .ov-value {
-      font-size: 20px;
-      font-weight: 700;
-      color: #1a202c;
+      font-size: 26px;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 30px;
+      font-variant-numeric: tabular-nums;
     }
 
-    .pending-color {
-      color: #f97316 !important;
+    .ov-value-blue {
+      color: #1677ff;
     }
 
-    .in-progress-color {
-      color: #f59e0b !important;
-    }
-
-    .resolved-color {
-      color: #10b981 !important;
-    }
-
-    .rate-color {
-      color: #0d9488 !important;
+    .ov-value-green {
+      color: #00b42a;
     }
 
     .overview-bottom-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid #eef1f6;
+      gap: 0;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      padding: 0;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+      min-height: 120px;
     }
 
     .bottom-metric {
       text-align: center;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bottom-metric:not(:last-child) {
+      position: relative;
+    }
+
+    .bottom-metric:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 16px;
+      bottom: 16px;
+      width: 1px;
+      background: rgba(226, 232, 240, 0.9);
     }
 
     .bm-label {
       font-size: 12px;
-      color: #8899a6;
+      font-weight: 500;
+      color: #64748b;
+      line-height: 18px;
     }
 
     .bm-value {
-      font-size: 22px;
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 10px;
+      font-size: 36px;
       font-weight: 700;
+      color: #0f172a;
+      font-variant-numeric: tabular-nums;
+      line-height: 44px;
     }
 
-    .score-high {
-      color: #10b981 !important;
+    .bm-value-main {
+      line-height: 44px;
     }
 
-    .score-mid {
-      color: #f59e0b !important;
-    }
-
-    .rate-high {
-      color: #10b981 !important;
-    }
-
-    .rate-mid {
-      color: #f59e0b !important;
+    .bm-value-suffix {
+      font-size: 14px;
+      font-weight: 600;
+      color: #94a3b8;
+      line-height: 20px;
     }
 
     .tab-bar {
@@ -155,8 +186,8 @@ const DashboardStyles: React.FC = () => (
     }
 
     .overview-segmented {
-      background: #f5f7fa;
-      border: 1px solid #e8ecf1;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.35);
       padding: 3px;
       border-radius: 10px;
     }
@@ -179,6 +210,12 @@ const DashboardStyles: React.FC = () => (
       margin-left: auto;
     }
 
+    .overview-filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .overview-select {
       width: 160px;
     }
@@ -196,80 +233,110 @@ const DashboardStyles: React.FC = () => (
       border-color: #91caff !important;
     }
 
-    .table-wrapper {
-      overflow-x: auto;
-      border: 1px solid #eef1f6;
-      border-radius: 10px;
+    .overview-select-dropdown.ant-select-dropdown {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+    }
+
+    .overview-common-checkbox {
+      margin-left: 10px;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .overview-ant-table {
       margin-top: 12px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      background: #fff;
+    .overview-ant-table .ant-table-container {
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.9);
     }
 
-    th {
-      background: #f8fafc;
-      padding: 10px 8px;
+    .overview-ant-table .ant-table {
+      background: transparent;
+    }
+
+    .overview-ant-table .ant-table-thead > tr > th {
+      background: rgba(241, 245, 249, 0.8);
+      color: #475569;
+      font-size: 12px;
       font-weight: 600;
-      color: #5a6872;
-      font-size: 11px;
-      text-transform: uppercase;
-      border-bottom: 2px solid #e8ecf1;
+      padding: 10px 12px;
       white-space: nowrap;
-      text-align: center;
+      text-align: left;
     }
 
-    th.sortable {
+    .overview-ant-table .ant-table-tbody > tr > td {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #0f172a;
+      text-align: left;
+    }
+
+    .overview-ant-table .ant-table-summary td {
+      background: rgba(241, 245, 249, 0.7);
+      border-top: 1px solid rgba(148, 163, 184, 0.25);
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .overview-ant-table .sortable-col {
       cursor: pointer;
       user-select: none;
+      transition: background-color 140ms ease;
     }
 
-    th.sortable:hover {
+    .overview-ant-table .sortable-col:hover {
       background: #eef1f6;
     }
 
-    th .sort-arrow {
-      margin-left: 4px;
-      font-size: 10px;
+    .sortable-col-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    td {
-      padding: 8px 8px;
-      text-align: center;
-      border-bottom: 1px solid #f2f4f7;
+    .sort-arrow {
+      font-size: 11px;
+      color: #94a3b8;
     }
 
-    tr:hover {
-      background: #fafbfc;
-    }
-
-    tfoot td {
-      background: #f8fafc;
-      border-bottom: none;
-      border-top: 1px solid #e8ecf1;
-    }
-
-    .clickable-count {
-      cursor: pointer;
-      color: #4f7dff;
+    .overview-ant-table .overview-table-link.ant-btn-link {
+      padding: 0;
+      height: auto;
+      color: #1677ff;
       font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .overview-ant-table .overview-table-link.ant-btn-link:hover {
+      color: #0958d9;
       text-decoration: underline;
     }
 
-    .detail-arrow {
-      cursor: pointer;
-      color: #4f7dff;
+    .overview-ant-table .overview-table-link.ant-btn-link:active {
+      color: #003eb3;
     }
 
-    .na-cell {
-      color: #b0b7c3;
+    .overview-ant-table .overview-table-link-muted.ant-btn-link {
+      color: #94a3b8;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
-    .total-deep {
-      color: #1a202c;
+    .overview-ant-table .overview-table-link-muted.ant-btn-link:hover {
+      color: #94a3b8;
+    }
+
+    .overview-ant-table .overview-table-link-strong.ant-btn-link {
       font-weight: 700;
     }
 
@@ -296,15 +363,9 @@ const DashboardStyles: React.FC = () => (
       white-space: nowrap;
     }
 
-    .common-issues-table .severity-col,
-    .common-issues-table .status-col {
-      width: 112px;
-      min-width: 112px;
-    }
-
     @media (max-width: 1024px) {
       .detail-panel-body {
-        padding: 20px 18px 32px;
+        padding: 16px;
       }
 
       .overview-grid {
