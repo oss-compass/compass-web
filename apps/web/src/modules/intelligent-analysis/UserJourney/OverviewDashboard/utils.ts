@@ -70,7 +70,11 @@ export const formatPercent = (value: number | null): string =>
 
 export const isNonActionable = (row: OverviewPainPointRow) =>
   row.isRealIssue === false ||
-  NON_ACTIONABLE_SEVERITY.includes(normalizeSeverity(row.severity));
+  (() => {
+    const severity = normalizeSeverity(row.severity);
+    if (!severity) return false;
+    return NON_ACTIONABLE_SEVERITY.includes(severity);
+  })();
 
 export const normalizeStatus = (row: OverviewPainPointRow): IssueBucket => {
   if (isNonActionable(row)) return 'na';
@@ -98,6 +102,7 @@ export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
     severity: normalizeSeverity(row.severity),
     repoName: card.name,
     team: card.team || card.sig,
+    teamOwner: card.teamOwner || row.teamOwner,
     score: latestScore,
     successRate,
     normalizedStatus: normalizeStatus(row),

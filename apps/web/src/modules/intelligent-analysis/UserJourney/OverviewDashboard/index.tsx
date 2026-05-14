@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   fetchOverviewSummary,
@@ -130,6 +130,17 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     [cardsResp, repoRows]
   );
 
+  const cachedRepoOptions = useRef<Array<{ value: string; label: string }>>([]);
+  useEffect(() => {
+    if (repoOptions.length > 0 && cachedRepoOptions.current.length === 0) {
+      cachedRepoOptions.current = repoOptions;
+    }
+  }, [repoOptions]);
+  const displayRepoOptions =
+    cachedRepoOptions.current.length > 0
+      ? cachedRepoOptions.current
+      : repoOptions;
+
   const filteredRows = useMemo(() => repoRows, [repoRows]);
 
   const sortedRows = useMemo(() => {
@@ -259,7 +270,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           includeCommonIssues={includeCommonIssues}
           onIncludeCommonIssuesChange={setIncludeCommonIssues}
           repoFilter={repoFilter}
-          repoOptions={repoOptions}
+          repoOptions={displayRepoOptions}
           onRepoFilterChange={setRepoFilter}
           teamFilter={teamFilter}
           teamOptions={teamOptions}

@@ -122,3 +122,54 @@ export const STATUS_RANK: Record<IssueBucket, number> = {
   resolved: 2,
   na: 1,
 };
+
+export const PAIN_STATUS_LABEL: Record<string, string> = {
+  '1': '待确认',
+  '2': '已确认待修复',
+  '3': '已修复待复测',
+  '5': '已复测通过',
+  '6': '不需要修复',
+  '7': '复测不通过',
+};
+
+export const PAIN_STATUS_CFG: Record<
+  string,
+  { label: string; tagBg: string; tagColor: string; tagBorder: string }
+> = {
+  '1': {
+    label: '待确认',
+    tagBg: '#fff7e8',
+    tagColor: '#d46b08',
+    tagBorder: '#ffd591',
+  },
+  '2': {
+    label: '已确认待修复',
+    tagBg: '#fffbe6',
+    tagColor: '#d4b106',
+    tagBorder: '#ffe58f',
+  },
+  '3': {
+    label: '已修复待复测',
+    tagBg: '#e6f4ff',
+    tagColor: '#1677ff',
+    tagBorder: '#91caff',
+  },
+  '5': {
+    label: '已复测通过',
+    tagBg: '#e6fffb',
+    tagColor: '#08979c',
+    tagBorder: '#87e8de',
+  },
+  '6': {
+    label: '不需要修复',
+    tagBg: '#f6ffed',
+    tagColor: '#389e0d',
+    tagBorder: '#b7eb8f',
+  },
+  '7': {
+    label: '复测不通过',
+    tagBg: '#fff1f0',
+    tagColor: '#e11d48',
+    tagBorder: '#fda4af',
+  },
+};

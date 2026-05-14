@@ -45,7 +45,7 @@ export type RepoProgressRow = {
 
 export type CommonIssueGroup = {
   key: string;
-  journeyStage: string;
+  journeyStages: string[];
   issueType: string;
   description: string;
   severity: Severity;

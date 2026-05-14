@@ -100,7 +100,7 @@ const DashboardStyles: React.FC = () => (
     }
 
     .ov-value {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 600;
       color: #0f172a;
       line-height: 30px;
@@ -108,11 +108,11 @@ const DashboardStyles: React.FC = () => (
     }
 
     .ov-value-blue {
-      color: #1677ff;
+      color: #4b93fe;
     }
 
     .ov-value-green {
-      color: #00b42a;
+      color: #3bd8c8;
     }
 
     .overview-bottom-row {

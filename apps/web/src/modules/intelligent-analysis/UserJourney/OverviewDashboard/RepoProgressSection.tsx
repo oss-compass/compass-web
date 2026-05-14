@@ -247,7 +247,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       },
     },
     {
-      title: '详细报告',
+      title: '最新报告',
       key: 'detail',
       width: 180,
       render: (_value, record) => {

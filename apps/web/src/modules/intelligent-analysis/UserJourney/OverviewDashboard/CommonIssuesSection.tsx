@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Table, Tag, Tooltip, Typography } from 'antd';
+import { Button, Table, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
-import { STATUS_CFG } from './constants';
 import { SeverityBadge } from './Badges';
 import type { CommonIssueGroup } from './types';
+import { formatPercent } from './utils';
 
 const { Title } = Typography;
 
@@ -26,10 +26,10 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
       ),
     },
     {
-      title: '阶段',
-      dataIndex: 'journeyStage',
-      key: 'journeyStage',
-      width: 120,
+      title: '类型',
+      dataIndex: 'issueType',
+      key: 'issueType',
+      width: 140,
       ellipsis: true,
     },
     {
@@ -44,11 +44,19 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
       ),
     },
     {
-      title: '类型',
-      dataIndex: 'issueType',
-      key: 'issueType',
-      width: 120,
+      title: '涉及阶段',
+      key: 'journeyStages',
+      width: 180,
       ellipsis: true,
+      render: (_value, record) => {
+        const stages = record.journeyStages ?? [];
+        const label = stages.length ? stages.join('、') : '--';
+        return (
+          <Tooltip title={label}>
+            <span>{label}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '涉及仓库',
@@ -73,21 +81,20 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
       render: (_value, record) => <SeverityBadge severity={record.severity} />,
     },
     {
-      title: '状态',
-      key: 'status',
+      title: '闭环率',
+      key: 'closeRate',
       width: 120,
-      render: (_value, record) => (
-        <Tag
-          className="overview-ant-tag nowrap-tag"
-          style={{
-            background: STATUS_CFG[record.status].tagBg,
-            color: STATUS_CFG[record.status].tagColor,
-            borderColor: STATUS_CFG[record.status].tagBorder,
-          }}
-        >
-          {STATUS_CFG[record.status].label}
-        </Tag>
-      ),
+      render: (_value, record) => {
+        const total = record.items.length;
+        const resolved = record.items.filter(
+          (item) =>
+            item.normalizedStatus === 'resolved' ||
+            item.normalizedStatus === 'na'
+        ).length;
+        const rate =
+          total > 0 ? Number(((resolved / total) * 100).toFixed(1)) : null;
+        return <span>{formatPercent(rate)}</span>;
+      },
     },
   ];
 

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Modal, Tooltip } from 'antd';
-import { SeverityBadge, StatusBadge } from './Badges';
+import { Modal, Tag, Tooltip } from 'antd';
+import { SeverityBadge } from './Badges';
+import { PAIN_STATUS_CFG } from './constants';
 import type { IssueModalState } from './types';
 
 type IssueDetailModalProps = {
@@ -21,7 +22,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     destroyOnHidden
   >
     <div className="max-h-[70vh] overflow-auto rounded-xl border border-slate-200">
-      <table className="w-full min-w-[1400px] table-fixed border-collapse text-[13px] text-slate-700">
+      <table className="w-full min-w-[1280px] table-fixed border-collapse text-[13px] text-slate-700">
         <thead className="sticky top-0 z-10 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
           <tr>
             <th className="w-[120px] px-3 py-3 text-left font-semibold">
@@ -42,17 +43,16 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
             <th className="w-[110px] px-3 py-3 text-left font-semibold">
               严重程度
             </th>
-            <th className="w-[80px] px-3 py-3 text-left font-semibold">状态</th>
+            <th className="w-[90px] px-3 py-3 text-left font-semibold">状态</th>
             <th className="w-[110px] px-3 py-3 text-left font-semibold">
               结论
             </th>
             <th className="w-[90px] px-3 py-3 text-left font-semibold">
               责任人
             </th>
-            <th className="w-[180px] px-3 py-3 text-left font-semibold">
-              报告地址
+            <th className="w-[120px] px-3 py-3 text-left font-semibold">
+              相关报告
             </th>
-            <th className="w-[90px] px-3 py-3 text-left font-semibold">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -83,7 +83,22 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   <SeverityBadge severity={issue.severity} />
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">
-                  <StatusBadge status={issue.normalizedStatus} />
+                  {(() => {
+                    const cfg = PAIN_STATUS_CFG[issue.status || ''];
+                    if (!cfg) return <span className="text-slate-300">--</span>;
+                    return (
+                      <Tag
+                        className="overview-ant-tag"
+                        style={{
+                          background: cfg.tagBg,
+                          color: cfg.tagColor,
+                          borderColor: cfg.tagBorder,
+                        }}
+                      >
+                        {cfg.label}
+                      </Tag>
+                    );
+                  })()}
                 </td>
                 <td className="px-3 py-3">
                   <Tooltip title={issue.remark || '--'}>
@@ -93,7 +108,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   </Tooltip>
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">
-                  {issue.owner || '--'}
+                  {issue.teamOwner || issue.owner || '--'}
                 </td>
                 <td className="px-3 py-3">
                   {(() => {
@@ -139,15 +154,12 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     });
                   })()}
                 </td>
-                <td className="whitespace-nowrap px-3 py-3">
-                  <span className="text-slate-300">--</span>
-                </td>
               </tr>
             ))
           ) : (
             <tr>
               <td
-                colSpan={11}
+                colSpan={10}
                 className="px-3 py-12 text-center text-sm text-slate-400"
               >
                 暂无数据

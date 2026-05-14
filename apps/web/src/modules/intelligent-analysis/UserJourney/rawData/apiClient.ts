@@ -162,6 +162,11 @@ export type OverviewPainPointRow = {
   agentScoreAtFound: number;
   issueType: string;
   chipModel: string;
+  projectKey?: string;
+  projectName?: string;
+  sig?: string;
+  team?: string;
+  teamOwner?: string;
   isCommonIssue?: boolean;
   commonIssueType?: string;
   childIds?: string[];
@@ -177,6 +182,7 @@ export type OverviewPainPointRow = {
   isRealIssue: boolean | null;
   remark: string;
   improvementStatus: OverviewImprovementStatus;
+  status?: string;
   issueOrPrLink: string;
   retestReportId: string;
   retestReportScore: number | null;
@@ -188,6 +194,7 @@ export type OverviewCardItem = {
   name: string;
   sig: string;
   team?: string;
+  teamOwner?: string;
   repoCount?: number;
   latestReportId?: string;
   detailReportUrl?: string;
@@ -225,7 +232,7 @@ export type OverviewCommonIssueItem = OverviewPainPointRow & {
 
 export type OverviewCommonIssueGroup = {
   key: string;
-  journeyStage: string;
+  journeyStages: string[];
   issueType: string;
   description: string;
   severity: OverviewPainPointRow['severity'] | string;
