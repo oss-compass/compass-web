@@ -9,6 +9,26 @@ type IssueDetailModalProps = {
   onClose: () => void;
 };
 
+const parseChildId = (
+  raw: string
+): { fileKey: string; taskId?: string; painIndex?: number } | null => {
+  const text = String(raw || '').trim();
+  if (!text) return null;
+
+  const [fileKeyRaw, taskIdRaw, painIndexRaw] = text.split('#');
+  const fileKey = String(fileKeyRaw || '').trim();
+  if (!fileKey) return null;
+
+  const taskId = String(taskIdRaw || '').trim();
+  const painIndexNum = Number.parseInt(String(painIndexRaw || '').trim(), 10);
+
+  return {
+    fileKey,
+    taskId: taskId || undefined,
+    painIndex: Number.isNaN(painIndexNum) ? undefined : painIndexNum,
+  };
+};
+
 const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   state,
   onClose,
@@ -63,7 +83,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                 className="border-t border-slate-100 align-top transition-colors hover:bg-slate-50"
               >
                 <td className="px-3 py-3 font-medium text-slate-900">
-                  {issue.repoName}
+                  {issue.repoName ||
+                    issue.projectName ||
+                    issue.projectKey ||
+                    '--'}
                 </td>
                 <td className="px-3 py-3">{issue.team}</td>
                 <td className="whitespace-nowrap px-3 py-3">
@@ -113,24 +136,54 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                 <td className="px-3 py-3">
                   {(() => {
                     const childIds = issue.childIds ?? [];
+                    const entries: Array<{
+                      fileKey: string;
+                      taskId?: string;
+                      painIndex?: number;
+                    }> = [];
                     const seen = new Set<string>();
-                    const fileKeys: string[] = [];
+
                     for (let i = childIds.length - 1; i >= 0; i -= 1) {
-                      const fileKey = String(childIds[i] || '').split('#')[0];
-                      if (!fileKey || seen.has(fileKey)) continue;
-                      seen.add(fileKey);
-                      fileKeys.push(fileKey);
-                      if (fileKeys.length >= 3) break;
+                      const parsed = parseChildId(String(childIds[i] || ''));
+                      if (!parsed || seen.has(parsed.fileKey)) continue;
+
+                      seen.add(parsed.fileKey);
+                      entries.push(parsed);
+                      if (entries.length >= 3) break;
                     }
 
-                    if (!fileKeys.length) {
+                    if (!entries.length) {
+                      const currentIssueEntry = parseChildId(
+                        String(issue.id || '')
+                      );
+                      if (
+                        currentIssueEntry &&
+                        (!issue.fileKey ||
+                          currentIssueEntry.fileKey === issue.fileKey)
+                      ) {
+                        entries.push(currentIssueEntry);
+                      } else if (issue.fileKey) {
+                        entries.push({
+                          fileKey: issue.fileKey,
+                        });
+                      }
+                    }
+
+                    if (!entries.length) {
                       return <span className="text-slate-300">--</span>;
                     }
 
-                    return fileKeys.map((fileKey) => {
-                      const href = `/intelligent-analysis/community-experience?project=${encodeURIComponent(
-                        fileKey
-                      )}`;
+                    return entries.map(({ fileKey, taskId, painIndex }) => {
+                      const search = new URLSearchParams();
+                      search.set('project', fileKey);
+                      if (taskId) {
+                        search.set('focusTaskId', taskId);
+                      }
+                      if (typeof painIndex === 'number') {
+                        search.set('focusPainIndex', String(painIndex));
+                        search.set('autoOpenPain', '1');
+                      }
+                      const href = `/intelligent-analysis/community-experience?${search.toString()}`;
                       const displayText = (() => {
                         const last = fileKey.lastIndexOf('_');
                         if (last <= 0) return fileKey;
@@ -139,12 +192,14 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                           return fileKey;
                         return fileKey.slice(prev + 1);
                       })();
+
                       return (
-                        <div key={fileKey} className="leading-5">
+                        <div
+                          key={`${fileKey}-${taskId || ''}-${painIndex ?? ''}`}
+                          className="leading-5"
+                        >
                           <a
                             href={href}
-                            target="_blank"
-                            rel="noreferrer"
                             className="overview-table-link text-blue-600"
                           >
                             {displayText}

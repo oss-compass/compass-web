@@ -44,9 +44,12 @@ export type PainConfirmationRecord = {
   pain_text: string;
   status: number;
   severity: string;
+  is_common_issue?: boolean;
   common_issue_type?: string | null;
   issue_link: string | null;
   pr_link: string | null;
+  retest_decision?: 'passed' | 'failed' | 'not_detected' | null;
+  latest_file_key?: string | null;
   confirmed_by: string;
   confirmed_at: string;
 };
@@ -59,6 +62,7 @@ export type PainConfirmationsResponse = {
 export type PainHistoryItem = {
   status: number;
   severity: string;
+  is_common_issue?: boolean;
   common_issue_type?: string | null;
   issue_link: string | null;
   pr_link: string | null;
@@ -81,9 +85,11 @@ export type UpsertPainConfirmationPayload = {
   status: number;
   confirmed_by: string | null;
   severity?: string;
+  is_common_issue?: boolean;
   common_issue_type?: string | null;
   issue_link?: string;
   pr_link?: string;
+  retest_decision?: 'passed' | 'failed' | 'not_detected';
 };
 
 /**
@@ -200,6 +206,7 @@ export type OverviewCardItem = {
   detailReportUrl?: string;
   latestScore?: number | null;
   latestSuccessRate?: number | null;
+  latestExecutionTime?: number | null;
   scoreHistory: Array<{ reportId: string; date: string; score: number }>;
   totalPainPoints: number;
   pendingPainPoints: number;
@@ -246,6 +253,7 @@ export type OverviewSummary = {
   blockingSummary: OverviewMetricSummary;
   summaryScore: number | null;
   summarySuccessRate: number | null;
+  summaryAvgExecutionTime: number | null;
   repoCount: number;
   sigCount: number;
   reportCount: number;
@@ -274,11 +282,15 @@ export const fetchOverviewSummary = async (params: {
   sig?: string;
   keyword?: string;
   org?: string;
+  includeCommonIssues?: boolean;
 }): Promise<OverviewSummary> => {
   const search = new URLSearchParams();
   if (params.org) search.set('org', params.org);
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
+  if (typeof params.includeCommonIssues === 'boolean') {
+    search.set('include_common_issues', String(params.includeCommonIssues));
+  }
   const query = search.toString();
   return compassApiFetch<OverviewSummary>(
     `/overview/summary${query ? `?${query}` : ''}`
@@ -286,7 +298,7 @@ export const fetchOverviewSummary = async (params: {
 };
 
 export const fetchOverviewCards = async (params: {
-  viewType: 'repo' | 'sig';
+  viewType: 'repo' | 'team' | 'sig';
   tab?: 'overall' | 'blocking';
   includeCommonIssues?: boolean;
   team?: string;

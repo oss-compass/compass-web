@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Form,
   Input,
@@ -11,13 +12,15 @@ import {
   Empty,
   Tag,
   Typography,
+  Spin,
 } from 'antd';
 import { toast } from 'react-hot-toast';
 import { USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO } from '../rawData/constants';
 import type { PainLevel } from '../types';
-import type {
-  PainConfirmationRecord,
-  UpsertPainConfirmationPayload,
+import {
+  fetchOverviewCommonIssues,
+  type PainConfirmationRecord,
+  type UpsertPainConfirmationPayload,
 } from '../rawData/apiClient';
 import { usePainHistory } from '../hooks/usePainConfirmations';
 
@@ -122,6 +125,7 @@ type FormValues = {
   confirmed_by: string;
   issue_link?: string;
   pr_link?: string;
+  retest_decision?: 'passed' | 'failed' | 'not_detected';
 };
 
 type Props = {
@@ -151,13 +155,38 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const [form] = Form.useForm<FormValues>();
   const [submitting, setSubmitting] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const commonIssueTypeOptions = useMemo(
-    () => ['百度SEO搜索', 'SoC代号映射'],
-    []
-  );
 
   // 计算当前状态：如果没有记录，默认是 1 (待确认)
   const currentStatus = currentRecord?.status || PainStatus.TO_BE_CONFIRMED;
+  const latestFileKey = String(currentRecord?.latest_file_key || '').trim();
+  const showRetestDecision =
+    currentStatus === PainStatus.RETESTING && !!latestFileKey;
+
+  const { data: commonIssueResp, isFetching: commonIssueLoading } = useQuery({
+    queryKey: ['overviewKnownCommonIssuesForConfirmModal'],
+    queryFn: () => fetchOverviewCommonIssues({}),
+    enabled: open && currentStatus === PainStatus.TO_BE_CONFIRMED,
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  const knownCommonIssues = useMemo(
+    () =>
+      (commonIssueResp?.items ?? []).map((item) => ({
+        issueType: String(item.issueType || '').trim(),
+        description: String(item.description || '').trim(),
+      })),
+    [commonIssueResp?.items]
+  );
+
+  const commonIssueTypeOptions = useMemo(() => {
+    return Array.from(
+      new Set(
+        knownCommonIssues.map((item) => item.issueType).filter((item) => !!item)
+      )
+    );
+  }, [knownCommonIssues]);
   // 计算下一步状态
   // 如果当前是 1 (待确认)，下一步是 2 (已确认待修复)
   // 如果当前已经是 5 (已复测通过)，则保持在 5
@@ -180,14 +209,22 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       )
         ? currentCommonIssueType
         : undefined;
+      const currentIsCommon =
+        currentRecord?.is_common_issue === true ||
+        !!String(currentRecord?.common_issue_type || '').trim();
+
       form.setFieldsValue({
         status: currentStatus,
         severity: (currentRecord?.severity as PainLevel) || 'P1_CRITICAL',
-        is_common: currentRecord?.severity === 'P5',
+        is_common:
+          currentStatus === PainStatus.TO_BE_CONFIRMED && !currentRecord
+            ? undefined
+            : currentIsCommon,
         common_issue_type: safeCommonIssueType,
         confirmed_by: currentRecord?.confirmed_by || '',
         issue_link: currentRecord?.issue_link || '',
         pr_link: currentRecord?.pr_link || '',
+        retest_decision: undefined,
       });
     }
   }, [open, currentRecord, currentStatus, form, commonIssueTypeOptions]);
@@ -195,7 +232,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const isCommon = Form.useWatch('is_common', form);
 
   useEffect(() => {
-    if (!isCommon) {
+    if (isCommon !== true) {
       form.setFieldsValue({ common_issue_type: undefined });
     }
   }, [isCommon, form]);
@@ -216,10 +253,10 @@ const PainLevelConfirmModal: React.FC<Props> = ({
 
       // 如果当前在 待确认(1) 阶段，点击提交后目标状态是 已确认待修复(2)，此时需要提交严重程度
       if (currentStatus === PainStatus.TO_BE_CONFIRMED) {
-        payload.severity = values.is_common ? 'P5' : values.severity;
-        if (values.is_common) {
-          payload.common_issue_type = values.common_issue_type;
-        }
+        payload.severity = values.severity;
+        payload.is_common_issue = values.is_common === true;
+        payload.common_issue_type =
+          values.is_common === true ? values.common_issue_type || null : null;
       }
       // 如果当前在 已确认待修复(2) 阶段，点击提交后目标状态是 已修复待复测(3)，此时需要提交 issue_link
       else if (currentStatus === PainStatus.CONFIRMED_PENDING_FIX) {
@@ -228,6 +265,10 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       // 如果当前在 已修复待复测(3) 阶段，点击提交后目标状态是 复测中(4)，此时需要提交 pr_link
       else if (currentStatus === PainStatus.FIXED_PENDING_RETEST) {
         payload.pr_link = values.pr_link;
+      }
+      // 如果当前在 复测中(4) 且检测到最新报告，则需要提交复测结论
+      else if (showRetestDecision) {
+        payload.retest_decision = values.retest_decision;
       }
 
       await onSubmit(payload);
@@ -262,17 +303,22 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (s: number, record: any) => (
-        <Tag color="blue">
-          {record.severity === 'P5' ? '共性问题' : STATUS_LABELS[s]}
-        </Tag>
-      ),
+      render: (s: number, record: any) => {
+        const statusText = STATUS_LABELS[s] || '未知状态';
+        return (
+          <Tag color="blue">
+            {record.is_common_issue || record.common_issue_type
+              ? `${statusText}（痛点问题）`
+              : statusText}
+          </Tag>
+        );
+      },
     },
     {
       title: '详情',
       key: 'details',
       render: (_: any, record: any) => {
-        if (record.severity === 'P5')
+        if (record.is_common_issue || record.common_issue_type)
           return record.common_issue_type
             ? `共性问题类型: ${record.common_issue_type}`
             : '共性问题待处理';
@@ -317,7 +363,13 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       open={open}
       onCancel={onCancel}
       onOk={handleOk}
-      okText={nextStatus === currentStatus ? '更新当前状态' : `提交`}
+      okText={
+        showRetestDecision
+          ? '提交复测结论'
+          : nextStatus === currentStatus
+          ? '更新当前状态'
+          : '提交'
+      }
       cancelText="取消"
       confirmLoading={submitting}
       width="70%"
@@ -334,7 +386,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
           <Button key="back" onClick={() => setShowHistory(false)}>
             返回
           </Button>
-        ) : currentStatus >= PainStatus.RETESTING ? (
+        ) : currentStatus >= PainStatus.RETESTING && !showRetestDecision ? (
           <Button key="close" onClick={onCancel}>
             关闭
           </Button>
@@ -385,22 +437,61 @@ const PainLevelConfirmModal: React.FC<Props> = ({
 
               {currentStatus === PainStatus.TO_BE_CONFIRMED && (
                 <>
-                  <Form.Item
-                    name="is_common"
-                    label={
-                      <span className="text-sm font-medium text-slate-700">
-                        是否共性问题
-                      </span>
-                    }
-                    initialValue={false}
+                  <div
+                    className="grid gap-4"
+                    style={{
+                      gridTemplateColumns:
+                        'minmax(120px, 150px) minmax(0, 1fr)',
+                    }}
                   >
-                    <Radio.Group>
-                      <Radio value={true}>是</Radio>
-                      <Radio value={false}>否</Radio>
-                    </Radio.Group>
-                  </Form.Item>
+                    <Form.Item
+                      name="is_common"
+                      label={
+                        <span className="text-sm font-medium text-slate-700">
+                          是否共性问题
+                        </span>
+                      }
+                      rules={[
+                        { required: true, message: '请选择是否共性问题' },
+                      ]}
+                    >
+                      <Radio.Group>
+                        <Radio value={true}>是</Radio>
+                        <Radio value={false}>否</Radio>
+                      </Radio.Group>
+                    </Form.Item>
 
-                  {isCommon && (
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                      <div className="mb-2 text-sm font-medium text-slate-700">
+                        已知共性问题
+                      </div>
+                      {commonIssueLoading ? (
+                        <div className="flex items-center justify-center py-6">
+                          <Spin size="small" />
+                        </div>
+                      ) : knownCommonIssues.length === 0 ? (
+                        <Empty
+                          image={Empty.PRESENTED_IMAGE_SIMPLE}
+                          description="暂无已知共性问题"
+                        />
+                      ) : (
+                        <ul className="max-h-48 list-disc space-y-1 overflow-auto pl-5 text-xs text-slate-700">
+                          {knownCommonIssues.map((item, idx) => (
+                            <li
+                              key={`${item.issueType}-${item.description}-${idx}`}
+                            >
+                              {(item.issueType || '--') +
+                                '（' +
+                                (item.description || '--') +
+                                '）'}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+
+                  {isCommon === true && (
                     <Form.Item
                       name="common_issue_type"
                       label={
@@ -409,7 +500,15 @@ const PainLevelConfirmModal: React.FC<Props> = ({
                         </span>
                       }
                       rules={[
-                        { required: true, message: '请选择共性问题类型' },
+                        {
+                          validator: async (_, value) => {
+                            if (form.getFieldValue('is_common') !== true)
+                              return;
+                            if (!String(value || '').trim()) {
+                              throw new Error('请选择共性问题类型');
+                            }
+                          },
+                        },
                       ]}
                     >
                       <Radio.Group className="w-full">
@@ -426,50 +525,48 @@ const PainLevelConfirmModal: React.FC<Props> = ({
                     </Form.Item>
                   )}
 
-                  {!isCommon && (
-                    <Form.Item
-                      name="severity"
-                      label={
-                        <span className="text-sm font-medium text-slate-700">
-                          确认严重程度
-                        </span>
-                      }
-                      rules={[{ required: true, message: '请选择严重程度' }]}
-                    >
-                      <Radio.Group className="w-full">
-                        <Space direction="vertical" className="w-full">
-                          {SEVERITY_OPTIONS.map((item) => {
-                            const style = getPainLevelStyle(item.value);
-                            return (
-                              <Radio
-                                key={item.value}
-                                value={item.value}
-                                className="w-full"
-                              >
-                                <span className="inline-flex items-center gap-2">
+                  <Form.Item
+                    name="severity"
+                    label={
+                      <span className="text-sm font-medium text-slate-700">
+                        确认严重程度
+                      </span>
+                    }
+                    rules={[{ required: true, message: '请选择严重程度' }]}
+                  >
+                    <Radio.Group className="w-full">
+                      <Space direction="vertical" className="w-full">
+                        {SEVERITY_OPTIONS.map((item) => {
+                          const style = getPainLevelStyle(item.value);
+                          return (
+                            <Radio
+                              key={item.value}
+                              value={item.value}
+                              className="w-full"
+                            >
+                              <span className="inline-flex items-center gap-2">
+                                <span
+                                  className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
+                                >
                                   <span
-                                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
-                                  >
-                                    <span
-                                      className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
-                                    />
-                                    {item.value === 'P4_TRIVIAL'
-                                      ? '非项目本身问题'
-                                      : item.label}
-                                  </span>
-                                  <span className="text-xs text-slate-500">
-                                    {item.value === 'P4_TRIVIAL'
-                                      ? ''
-                                      : item.description}
-                                  </span>
+                                    className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
+                                  />
+                                  {item.value === 'P4_TRIVIAL'
+                                    ? '非项目本身问题'
+                                    : item.label}
                                 </span>
-                              </Radio>
-                            );
-                          })}
-                        </Space>
-                      </Radio.Group>
-                    </Form.Item>
-                  )}
+                                <span className="text-xs text-slate-500">
+                                  {item.value === 'P4_TRIVIAL'
+                                    ? ''
+                                    : item.description}
+                                </span>
+                              </span>
+                            </Radio>
+                          );
+                        })}
+                      </Space>
+                    </Radio.Group>
+                  </Form.Item>
                 </>
               )}
 
@@ -513,16 +610,46 @@ const PainLevelConfirmModal: React.FC<Props> = ({
                 </Form.Item>
               )}
 
-              {currentStatus === PainStatus.RETESTING && (
-                <div className="rounded-md bg-amber-50 p-4 text-center">
-                  <Text type="warning" strong>
-                    请联系相关接口人启动复测
-                  </Text>
-                  <div className="mt-2 text-xs text-slate-500">
-                    复测启动后，系统将自动跟踪后续进展
+              {currentStatus === PainStatus.RETESTING &&
+                (showRetestDecision ? (
+                  <div className="space-y-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                    <div className="space-y-1">
+                      <Text type="warning" strong>
+                        检测到新报告已生成，该痛点是否复测通过？
+                      </Text>
+                      <div className="text-xs text-slate-500">
+                        最新报告标识：{latestFileKey}
+                      </div>
+                    </div>
+                    <Form.Item
+                      name="retest_decision"
+                      label={
+                        <span className="text-sm font-medium text-slate-700">
+                          复测结论
+                        </span>
+                      }
+                      rules={[{ required: true, message: '请选择复测结论' }]}
+                    >
+                      <Radio.Group className="w-full">
+                        <Space direction="vertical" className="w-full">
+                          <Radio value="passed">通过（通知负责人邮箱）</Radio>
+                          <Radio value="failed">
+                            不通过（通知负责人邮箱，并回到已确认待修复）
+                          </Radio>
+                          <Radio value="not_detected">
+                            未检测到（通知管理员团队邮箱）
+                          </Radio>
+                        </Space>
+                      </Radio.Group>
+                    </Form.Item>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="rounded-md bg-amber-50 p-4 text-center">
+                    <Text type="warning" strong>
+                      请联系相关接口人启动复测
+                    </Text>
+                  </div>
+                ))}
 
               {currentStatus === PainStatus.RETESTED_PASSED && (
                 <div className="rounded-md bg-emerald-50 p-4 text-center">

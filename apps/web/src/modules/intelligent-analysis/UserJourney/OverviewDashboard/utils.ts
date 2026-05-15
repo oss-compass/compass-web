@@ -11,6 +11,8 @@ import type {
   RepoProgressRow,
   RepoSortKey,
   Severity,
+  TeamProgressRow,
+  TeamSortKey,
 } from './types';
 
 export const normalizeSeverity = (severity: unknown): Severity => {
@@ -68,6 +70,11 @@ export const formatScore = (value: number | null): string =>
 export const formatPercent = (value: number | null): string =>
   value == null ? '--' : `${value.toFixed(value % 1 === 0 ? 0 : 1)}%`;
 
+export const formatExecutionTime = (seconds: number | null): string => {
+  if (seconds == null) return '--';
+  return `${(seconds / 60).toFixed(1)} 分钟`;
+};
+
 export const isNonActionable = (row: OverviewPainPointRow) =>
   row.isRealIssue === false ||
   (() => {
@@ -109,25 +116,76 @@ export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
   }));
 };
 
-export const getSortValue = (
+export const toCloseRate = (
+  summary: Omit<MetricSummary, 'closeRate'>
+): number => {
+  const denominator = summary.total - summary.na;
+  if (denominator <= 0) return 0;
+  return Number(((summary.resolved / denominator) * 100).toFixed(1));
+};
+
+export const mergeMetricSummaries = (items: MetricSummary[]): MetricSummary => {
+  const summary = items.reduce(
+    (acc, item) => {
+      acc.total += item.total;
+      acc.pending += item.pending;
+      acc.inProgress += item.inProgress;
+      acc.resolved += item.resolved;
+      acc.na += item.na;
+      return acc;
+    },
+    { total: 0, pending: 0, inProgress: 0, resolved: 0, na: 0 }
+  );
+
+  return {
+    ...summary,
+    closeRate: toCloseRate(summary),
+  };
+};
+
+export const getRepoSortValue = (
   row: RepoProgressRow,
   sortKey: RepoSortKey,
   tab: ProgressTab
 ) => {
   const metrics = row[tab];
   switch (sortKey) {
+    case 'name':
+      return row.name;
     case 'team':
       return `${row.team}-${row.name}`;
     case 'score':
       return row.score ?? -1;
-    case 'rate':
+    case 'successRate':
       return row.successRate ?? -1;
-    case 'pending':
-      return metrics.pending;
-    case 'inProgress':
-      return metrics.inProgress;
-    case 'resolved':
-      return metrics.resolved;
+    case 'executionTime':
+      return row.executionTime ?? -1;
+    case 'total':
+      return metrics.total;
+    case 'closeRate':
+      return metrics.closeRate;
+    default:
+      return row.name;
+  }
+};
+
+export const getTeamSortValue = (
+  row: TeamProgressRow,
+  sortKey: TeamSortKey,
+  tab: ProgressTab
+) => {
+  const metrics = row[tab];
+  switch (sortKey) {
+    case 'name':
+      return row.name;
+    case 'repoCount':
+      return row.repoCount;
+    case 'score':
+      return row.score ?? -1;
+    case 'successRate':
+      return row.successRate ?? -1;
+    case 'executionTime':
+      return row.executionTime ?? -1;
     case 'total':
       return metrics.total;
     case 'closeRate':

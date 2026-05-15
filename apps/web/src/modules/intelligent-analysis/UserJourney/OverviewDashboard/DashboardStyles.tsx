@@ -37,6 +37,13 @@ const DashboardStyles: React.FC = () => (
       border: 1px solid rgba(255, 255, 255, 0.8);
     }
 
+    .overview-summary-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .overview-summary-stack {
       display: flex;
       flex-direction: column;
@@ -117,7 +124,7 @@ const DashboardStyles: React.FC = () => (
 
     .overview-bottom-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 0;
       background: rgba(255, 255, 255, 0.9);
       border-radius: 16px;
@@ -187,6 +194,13 @@ const DashboardStyles: React.FC = () => (
       margin-bottom: 12px;
       align-items: center;
       flex-wrap: wrap;
+    }
+
+    .overview-top-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
     .overview-segmented {
@@ -322,6 +336,122 @@ const DashboardStyles: React.FC = () => (
       color: #94a3b8;
     }
 
+    .overview-bar-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .overview-bar-value {
+      min-width: 44px;
+      font-weight: 700;
+      color: #0f172a;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .overview-bar-track {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .overview-bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .overview-bar-blue {
+      background: linear-gradient(90deg, #60a5fa 0%, #2563eb 100%);
+    }
+
+    .overview-bar-green {
+      background: linear-gradient(90deg, #5eead4 0%, #16a34a 100%);
+    }
+
+    .overview-ring-progress {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: auto;
+      gap: 8px;
+    }
+
+    .overview-ring-svg {
+      transform: rotate(-90deg);
+      flex: 0 0 auto;
+    }
+
+    .overview-ring-label {
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 400;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .overview-progress-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .overview-progress-bar {
+      display: flex;
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e2e8f0;
+    }
+
+    .overview-progress-segment {
+      height: 100%;
+    }
+
+    .overview-progress-pending {
+      background: #e0962b;
+    }
+
+    .overview-progress-inProgress {
+      background: #2f7be5;
+    }
+
+    .overview-progress-resolved {
+      background: #1ea362;
+    }
+
+    .overview-progress-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .overview-progress-text {
+      color: #475569;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .overview-progress-link.ant-btn-link {
+      padding: 0;
+      height: auto;
+      color: #1677ff;
+      font-size: 12px;
+      font-weight: 400;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      white-space: nowrap;
+    }
+
+    .overview-progress-link.ant-btn-link:hover {
+      color: #0958d9;
+    }
+
     .overview-ant-table .overview-table-link.ant-btn-link {
       padding: 0;
       height: auto;
@@ -358,6 +488,106 @@ const DashboardStyles: React.FC = () => (
     .row-num {
       color: #8899a6;
       font-weight: 500;
+    }
+
+    .overview-expand-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .overview-expand-icon {
+      font-size: 12px;
+      color: #64748b;
+      transition: transform 0.2s ease;
+    }
+
+    .overview-expand-icon.is-expanded {
+      transform: rotate(90deg);
+    }
+
+    .overview-ant-table .ant-table-expanded-row > td {
+      background: rgba(248, 250, 252, 0.85);
+      padding: 0 !important;
+    }
+
+    .overview-expanded-rows {
+      width: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .overview-expanded-table {
+      width: 100%;
+      min-width: 1302px;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+
+    .overview-expanded-row {
+      animation: overviewExpandedFadeIn 220ms ease both;
+    }
+
+    .overview-expanded-cell {
+      padding: 9px 10px;
+      background: #fbfcfe;
+      vertical-align: middle;
+      color: #5b6168;
+      font-size: 13px;
+      border: none;
+    }
+
+    .overview-expanded-table tbody tr:first-child td {
+      border-top: 1px solid #eef2f6;
+    }
+
+    .overview-expanded-table tbody tr + tr td {
+      border-top: 1px solid #eef2f6;
+    }
+
+    .overview-expanded-cell-empty {
+      background: #fbfcfe;
+    }
+
+    .overview-expanded-cell-index {
+      box-shadow: inset 3px 0 0 #eaf1fc;
+    }
+
+    .overview-expanded-repo-name {
+      display: inline-flex;
+      align-items: center;
+      padding-left: 12px;
+      color: #1e5fbf;
+      font-size: 13px;
+      font-weight: 400;
+      position: relative;
+    }
+
+    .overview-expanded-cell-name {
+      position: relative;
+    }
+
+    .overview-expanded-cell-name::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: #eaf1fc;
+    }
+
+    @keyframes overviewExpandedFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-2px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .overview-ant-tag {

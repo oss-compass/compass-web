@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  ArrowLeftOutlined,
+  CloseOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import Link from 'next/link';
 import { Popover, Segmented, Select } from 'antd';
 import {
   useRegistryData,
@@ -30,14 +35,15 @@ type PageHeaderProps = {
   currentProjectKey: string;
   versionOptions: CompareProjectOption[];
   currentVersion?: string;
+  selectedSig?: string;
   compareProjectOptions: CompareProjectOption[];
-  onSelectProject: (value: string) => void;
-  onSelectVersion: (value: string) => void;
+  onSelectVersion: (value: string, selection?: { sig: string }) => void;
   onAddProject: (value: string) => void;
   onRemoveProject: (value: string) => void;
   hideDeveloperControls?: boolean;
   transparent?: boolean;
   org?: string;
+  overviewHref?: string;
 };
 
 // ---------- helpers ----------
@@ -113,12 +119,14 @@ const CascadingSelects: React.FC<{
   mode: 'view' | 'add';
   currentFileKey?: string;
   excludeFileKeys?: string[];
-  onSelectFileKey: (fileKey: string) => void;
+  selectedSig?: string;
+  onSelectFileKey: (fileKey: string, selection?: { sig: string }) => void;
   org?: string;
 }> = ({
   mode,
   currentFileKey = '',
   excludeFileKeys = [],
+  selectedSig,
   onSelectFileKey,
   org: pageOrg,
 }) => {
@@ -140,7 +148,7 @@ const CascadingSelects: React.FC<{
   const currentEntry = safeRegistry.entries[currentFileKey] ?? null;
 
   const initOrg = mode === 'view' ? currentEntry?.org ?? '' : '';
-  const initSig = mode === 'view' ? currentEntry?.sig ?? '' : '';
+  const initSig = mode === 'view' ? selectedSig ?? currentEntry?.sig ?? '' : '';
   const initProjectKey = mode === 'view' ? currentEntry?.projectKey ?? '' : '';
   const initHardware =
     mode === 'view' ? currentEntry?.hardware_access ?? '' : '';
@@ -154,11 +162,11 @@ const CascadingSelects: React.FC<{
   useEffect(() => {
     if (mode === 'view' && currentEntry) {
       setOrg(currentEntry.org);
-      setSig(currentEntry.sig);
+      setSig(selectedSig ?? currentEntry.sig);
       setProjectKey(currentEntry.projectKey);
       setHardware(currentEntry.hardware_access);
     }
-  }, [currentFileKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentEntry, mode, selectedSig]);
 
   // --- Derive options at each level ---
 
@@ -254,8 +262,11 @@ const CascadingSelects: React.FC<{
   function handleHardwareChange(value: string) {
     setHardware(value);
   }
+  function selectFileKey(fileKey: string) {
+    onSelectFileKey(fileKey, { sig });
+  }
   function handleVersionChange(fileKey: string) {
-    onSelectFileKey(fileKey);
+    selectFileKey(fileKey);
   }
 
   // view mode: propagate auto-derived key upward
@@ -266,7 +277,7 @@ const CascadingSelects: React.FC<{
       currentFileKeyDerived !== currentFileKey &&
       versionOptions.length > 0
     ) {
-      onSelectFileKey(currentFileKeyDerived);
+      selectFileKey(currentFileKeyDerived);
     }
   }, [currentFileKeyDerived]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -352,12 +363,14 @@ const CascadingSelects: React.FC<{
 
 const CascadingProjectSelector: React.FC<{
   currentFileKey: string;
-  onSelectFileKey: (fileKey: string) => void;
+  selectedSig?: string;
+  onSelectFileKey: (fileKey: string, selection?: { sig: string }) => void;
   org?: string;
-}> = ({ currentFileKey, onSelectFileKey, org }) => (
+}> = ({ currentFileKey, selectedSig, onSelectFileKey, org }) => (
   <CascadingSelects
     mode="view"
     currentFileKey={currentFileKey}
+    selectedSig={selectedSig}
     onSelectFileKey={onSelectFileKey}
     org={org}
   />
@@ -375,17 +388,17 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   projects,
   currentProjectKey,
   currentVersion,
+  selectedSig,
   compareProjectOptions,
-  onSelectProject,
   onSelectVersion,
   onAddProject,
   onRemoveProject,
   hideDeveloperControls = false,
   transparent = false,
   org,
+  overviewHref,
 }) => {
   const [showAddSelector, setShowAddSelector] = useState(false);
-  const registry = useRegistryData(org);
   const compareMode = projects.length > 1;
 
   // The file keys already in the compare list (to exclude from add options)
@@ -402,12 +415,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   const currentFileKey = currentVersion ?? currentProjectKey;
 
-  function handleFileKeySelect(fileKey: string) {
-    onSelectVersion(fileKey);
-    const entry = registry?.entries[fileKey];
-    if (entry && entry.projectKey !== currentProjectKey) {
-      onSelectProject(entry.projectKey);
-    }
+  function handleFileKeySelect(fileKey: string, selection?: { sig: string }) {
+    onSelectVersion(fileKey, selection);
   }
 
   function handleAddFileKey(fileKey: string) {
@@ -433,29 +442,41 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         transparent ? 'pt-5' : 'border-b border-t bg-white/90'
       }`}
     >
-      {!hideDeveloperControls && (
-        <div className="relative flex h-10 flex-1 items-center gap-3 overflow-hidden pl-4 text-xl font-semibold">
-          <Select
-            value={developerType}
-            onChange={onDeveloperTypeChange}
-            bordered={false}
-            options={developerTypeOptions.map((item) => ({
-              label: item,
-              value: item,
-            }))}
-            className="min-w-[185px] [&_.ant-select-arrow]:text-slate-700 [&_.ant-select-selection-item]:!text-xl [&_.ant-select-selection-item]:!font-bold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selector]:!border-0 [&_.ant-select-selector]:!bg-transparent [&_.ant-select-selector]:!shadow-none"
-            dropdownStyle={{ minWidth: 200 }}
-          />
-          <div className="ml-4 mt-2">
-            <Segmented
-              value={journeyMode}
-              onChange={(value) => onJourneyModeChange(String(value))}
-              style={{ marginBottom: 8 }}
-              options={journeyModeOptions}
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        {overviewHref ? (
+          <Link
+            href={overviewHref}
+            className="group inline-flex h-9 flex-shrink-0 items-center gap-2 rounded-full border border-white/80 bg-white px-3.5 text-sm font-semibold text-slate-700 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white hover:text-sky-700 hover:shadow-[0_16px_36px_rgba(59,130,246,0.18)]"
+          >
+            <ArrowLeftOutlined className="text-xs transition-transform group-hover:-translate-x-0.5" />
+            <span>返回看板</span>
+          </Link>
+        ) : null}
+
+        {!hideDeveloperControls ? (
+          <div className="relative flex h-10 min-w-0 flex-1 items-center gap-3 overflow-hidden pl-1 text-xl font-semibold">
+            <Select
+              value={developerType}
+              onChange={onDeveloperTypeChange}
+              bordered={false}
+              options={developerTypeOptions.map((item) => ({
+                label: item,
+                value: item,
+              }))}
+              className="min-w-[185px] [&_.ant-select-arrow]:text-slate-700 [&_.ant-select-selection-item]:!text-xl [&_.ant-select-selection-item]:!font-bold [&_.ant-select-selection-item]:!leading-10 [&_.ant-select-selector]:!border-0 [&_.ant-select-selector]:!bg-transparent [&_.ant-select-selector]:!shadow-none"
+              dropdownStyle={{ minWidth: 200 }}
             />
+            <div className="ml-4 mt-2">
+              <Segmented
+                value={journeyMode}
+                onChange={(value) => onJourneyModeChange(String(value))}
+                style={{ marginBottom: 8 }}
+                options={journeyModeOptions}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        ) : null}
+      </div>
 
       <div className="flex flex-shrink-0 items-center gap-3 md:flex">
         {compareMode ? (
@@ -476,6 +497,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         ) : (
           <CascadingProjectSelector
             currentFileKey={currentFileKey}
+            selectedSig={selectedSig}
             onSelectFileKey={handleFileKeySelect}
             org={org}
           />

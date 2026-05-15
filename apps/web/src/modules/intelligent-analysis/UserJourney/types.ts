@@ -211,6 +211,7 @@ export type BackendJourneyStep = {
   step_description: string;
   expected_duration_minutes: number;
   per_project_assessments: BackendAssessment[];
+  score?: number | null;
 };
 
 export type BackendRecommendation = {
@@ -265,9 +266,9 @@ export type BackendReportData = {
     description: string;
   };
   overall_scores: {
-    sdx_avg_score: number;
-    obj_avg_score: number;
-    composite_score: number;
+    sdx_avg_score: number | null;
+    obj_avg_score: number | null;
+    composite_score: number | null;
     grade: string;
   };
   e2e_metrics: BackendMetric[];

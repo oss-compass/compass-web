@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Popover, message } from 'antd';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Popover, Tooltip } from 'antd';
+import { useQuery } from '@tanstack/react-query';
 import PainLevelConfirmModal, {
   getPainLevelLabel,
   getPainLevelStyle,
@@ -7,8 +8,13 @@ import PainLevelConfirmModal, {
   PainStatus,
 } from './PainLevelConfirmModal';
 import { usePainConfirmations } from '../hooks/usePainConfirmations';
-import type { UpsertPainConfirmationPayload } from '../rawData/apiClient';
-
+import {
+  fetchOverviewCards,
+  updateOverviewParentPain,
+  type OverviewPainPointRow,
+  type PainConfirmationRecord,
+  type UpsertPainConfirmationPayload,
+} from '../rawData/apiClient';
 /* ─── 图标 ─── */
 export const EvidenceIcon: React.FC<{ className?: string }> = ({
   className = '',
@@ -84,6 +90,11 @@ export type EvidencePanelProps = {
    * 点击关联步骤 ID 时的回调
    */
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
+  painFocusTarget?: {
+    painIndex: number;
+    autoOpen?: boolean;
+  };
+  onPainFocusHandled?: () => void;
 };
 
 /* ─── 关联步骤按钮 ─── */
@@ -154,6 +165,7 @@ const StatusBadge: React.FC<{
   status: number;
   severity: string;
   commonIssueType?: string | null;
+  isCommonIssue?: boolean;
   confirmedBy: string;
   confirmedAt: string;
   onClick: () => void;
@@ -161,12 +173,15 @@ const StatusBadge: React.FC<{
   status,
   severity,
   commonIssueType,
+  isCommonIssue = false,
   confirmedBy,
   confirmedAt,
   onClick,
 }) => {
   const style = getPainLevelStyle(severity);
-  const label = STATUS_LABELS[status] || '未知状态';
+  const label = `${STATUS_LABELS[status] || '未知状态'}${
+    isCommonIssue ? '（痛点问题）' : ''
+  }`;
 
   const popoverContent = (
     <div className="max-w-xs space-y-2 text-sm">
@@ -232,6 +247,256 @@ const StatusBadge: React.FC<{
   );
 };
 
+type DerivedPainDisplayState = {
+  childMatched: boolean;
+  effectiveStatus?: number;
+  effectiveSeverity: string;
+  effectiveCommonIssueType?: string | null;
+  effectiveIsCommonIssue: boolean;
+  effectiveConfirmedBy: string;
+  effectiveConfirmedAt: string;
+  isCompleted: boolean;
+};
+
+const normalizePainText = (value: string) => value.trim().replace(/\s+/g, ' ');
+
+const isSamePainText = (left: string, right: string) =>
+  normalizePainText(left) === normalizePainText(right);
+
+const getExistingPainConfirmation = ({
+  canConfirm,
+  confirmationMap,
+  fileKey,
+  stepId,
+  legacyStepId,
+  text,
+}: {
+  canConfirm: boolean;
+  confirmationMap: Map<string, PainConfirmationRecord>;
+  fileKey?: string;
+  stepId?: string;
+  legacyStepId?: string;
+  text: string;
+}): PainConfirmationRecord | undefined => {
+  if (!canConfirm || !fileKey || !stepId) return undefined;
+
+  const normalizedText = normalizePainText(text);
+
+  return (
+    confirmationMap.get(`${fileKey}#${stepId}#${normalizedText}`) ??
+    (legacyStepId
+      ? confirmationMap.get(`${fileKey}#${legacyStepId}#${normalizedText}`)
+      : undefined)
+  );
+};
+
+const derivePainDisplayState = ({
+  existing,
+  parentPain,
+  text,
+}: {
+  existing?: PainConfirmationRecord;
+  parentPain?: OverviewPainPointRow;
+  text: string;
+}): DerivedPainDisplayState => {
+  const parentStatusValue = String(parentPain?.status ?? '').trim();
+  const parentStatusNum = Number.parseInt(parentStatusValue, 10);
+  const childMatched = !!(existing && isSamePainText(existing.pain_text, text));
+  const effectiveStatus = Number.isNaN(parentStatusNum)
+    ? childMatched
+      ? existing?.status
+      : undefined
+    : parentStatusNum;
+  const effectiveSeverity =
+    String(parentPain?.severity || '').trim() ||
+    (childMatched ? String(existing?.severity || '').trim() : '');
+  const effectiveCommonIssueType =
+    parentPain?.commonIssueType ||
+    (childMatched ? existing?.common_issue_type : undefined);
+  const effectiveIsCommonIssue =
+    parentPain?.isCommonIssue === true ||
+    !!String(effectiveCommonIssueType || '').trim() ||
+    (childMatched && existing?.is_common_issue === true);
+  const effectiveConfirmedBy =
+    (childMatched ? existing?.confirmed_by : '') ||
+    String(parentPain?.owner || '').trim() ||
+    '--';
+  const effectiveConfirmedAt = childMatched ? existing?.confirmed_at || '' : '';
+  const isCompleted =
+    effectiveStatus === PainStatus.CONFIRMED_PENDING_FIX &&
+    effectiveSeverity === 'P4_TRIVIAL';
+
+  return {
+    childMatched,
+    effectiveStatus,
+    effectiveSeverity,
+    effectiveCommonIssueType,
+    effectiveIsCommonIssue,
+    effectiveConfirmedBy,
+    effectiveConfirmedAt,
+    isCompleted,
+  };
+};
+
+const buildModalCurrentRecord = ({
+  canConfirm,
+  fileKey,
+  stepId,
+  index,
+  text,
+  existing,
+  displayState,
+}: {
+  canConfirm: boolean;
+  fileKey?: string;
+  stepId?: string;
+  index: number;
+  text: string;
+  existing?: PainConfirmationRecord;
+  displayState: DerivedPainDisplayState;
+}): PainConfirmationRecord | undefined => {
+  if (
+    !canConfirm ||
+    typeof displayState.effectiveStatus !== 'number' ||
+    !fileKey ||
+    !stepId
+  ) {
+    return existing;
+  }
+
+  if (existing && displayState.childMatched) {
+    return {
+      ...existing,
+      status: displayState.effectiveStatus,
+      severity: displayState.effectiveSeverity || existing.severity,
+      is_common_issue: displayState.effectiveIsCommonIssue,
+      common_issue_type:
+        displayState.effectiveCommonIssueType ??
+        existing.common_issue_type ??
+        null,
+      confirmed_by:
+        displayState.effectiveConfirmedBy === '--'
+          ? existing.confirmed_by
+          : displayState.effectiveConfirmedBy,
+      confirmed_at: displayState.effectiveConfirmedAt || existing.confirmed_at,
+    };
+  }
+
+  return {
+    file_key: fileKey,
+    step_id: stepId,
+    pain_index: index,
+    pain_text: text,
+    status: displayState.effectiveStatus,
+    severity: displayState.effectiveSeverity || 'P1_CRITICAL',
+    is_common_issue: displayState.effectiveIsCommonIssue,
+    common_issue_type: displayState.effectiveCommonIssueType ?? null,
+    issue_link: null,
+    pr_link: null,
+    confirmed_by:
+      displayState.effectiveConfirmedBy === '--'
+        ? ''
+        : displayState.effectiveConfirmedBy,
+    confirmed_at: displayState.effectiveConfirmedAt || '',
+  };
+};
+
+const syncParentPainStatus = async ({
+  parentPainId,
+  parentStatusValue,
+  nextStatus,
+}: {
+  parentPainId: string;
+  parentStatusValue: string;
+  nextStatus: string;
+}) => {
+  if (!parentPainId || !nextStatus || nextStatus === parentStatusValue) {
+    return;
+  }
+
+  try {
+    await updateOverviewParentPain({
+      parent_id: parentPainId,
+      status: nextStatus,
+    });
+  } catch (error) {
+    console.error('[EvidencePanel] 同步父级痛点状态失败', error);
+  }
+};
+
+const CompletedPainBadge: React.FC<{
+  confirmedBy: string;
+  confirmedAt: string;
+}> = ({ confirmedBy, confirmedAt }) => (
+  <Popover
+    content={
+      <div className="max-w-xs space-y-2 text-sm">
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">严重程度：</span>
+          <span className="font-semibold text-emerald-700">非项目本身问题</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">操作人：</span>
+          {confirmedBy}
+        </div>
+        {confirmedAt ? (
+          <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <span className="font-medium text-slate-600">操作时间：</span>
+            {confirmedAt.replace('T', ' ').replace('Z', '')}
+          </div>
+        ) : null}
+        <div className="rounded bg-emerald-50 px-2 py-1 text-xs text-emerald-600">
+          已完成，无需进一步处理
+        </div>
+      </div>
+    }
+    title={null}
+    trigger="hover"
+    placement="top"
+    styles={{ root: { maxWidth: 320 } }}
+  >
+    <button
+      type="button"
+      disabled
+      className="inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
+    >
+      <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+      已完成（非项目本身问题）
+    </button>
+  </Popover>
+);
+
+const PainPointBadge: React.FC<{
+  canConfirm: boolean;
+  displayState: DerivedPainDisplayState;
+  onClick: () => void;
+}> = ({ canConfirm, displayState, onClick }) => {
+  if (!canConfirm || typeof displayState.effectiveStatus !== 'number') {
+    return <UnconfirmedBadge onClick={onClick} />;
+  }
+
+  if (displayState.isCompleted) {
+    return (
+      <CompletedPainBadge
+        confirmedBy={displayState.effectiveConfirmedBy}
+        confirmedAt={displayState.effectiveConfirmedAt}
+      />
+    );
+  }
+
+  return (
+    <StatusBadge
+      status={displayState.effectiveStatus}
+      severity={displayState.effectiveSeverity || 'P4_TRIVIAL'}
+      commonIssueType={displayState.effectiveCommonIssueType}
+      isCommonIssue={displayState.effectiveIsCommonIssue}
+      confirmedBy={displayState.effectiveConfirmedBy}
+      confirmedAt={displayState.effectiveConfirmedAt || ''}
+      onClick={onClick}
+    />
+  );
+};
+
 /* ─── 单条总结行 ─── */
 const ObservationItem: React.FC<{
   text: string;
@@ -270,163 +535,98 @@ const PainPointItem: React.FC<{
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
+  parentPain?: OverviewPainPointRow;
   compact?: boolean;
   toolIds?: string[];
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
+  shouldAutoOpen?: boolean;
+  onAutoOpenHandled?: () => void;
 }> = ({
   text,
   index,
   fileKey,
   stepId,
   legacyStepId,
+  parentPain,
   compact = false,
   toolIds,
   onStepClick,
+  shouldAutoOpen = false,
+  onAutoOpenHandled,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const itemRef = useRef<HTMLLIElement | null>(null);
+  const shouldHandleAutoOpenRef = useRef(false);
+
+  useEffect(() => {
+    if (!shouldAutoOpen) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      itemRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      shouldHandleAutoOpenRef.current = true;
+      setModalOpen(true);
+    }, 220);
+
+    return () => window.clearTimeout(timer);
+  }, [shouldAutoOpen]);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    if (shouldHandleAutoOpenRef.current) {
+      shouldHandleAutoOpenRef.current = false;
+      onAutoOpenHandled?.();
+    }
+  };
 
   const canConfirm = !!(fileKey && stepId);
   const { confirmationMap, upsert } = usePainConfirmations(
     canConfirm ? fileKey : undefined
   );
-
-  // 辅助函数：标准化文本对比，忽略前后空格、换行及多余空格
-  const normalizeText = (t: string) => t.trim().replace(/\s+/g, ' ');
-  const isSamePainText = (t1: string, t2: string) =>
-    normalizeText(t1) === normalizeText(t2);
-
-  // 使用标准化后的文本构建查找 key
-  const confirmKey = `${fileKey}#${stepId}#${normalizeText(text)}`;
-  const existingPrimary = canConfirm
-    ? confirmationMap.get(confirmKey)
-    : undefined;
-  const existingFallback =
-    canConfirm && legacyStepId
-      ? confirmationMap.get(`${fileKey}#${legacyStepId}#${normalizeText(text)}`)
-      : undefined;
-  const existing = existingPrimary ?? existingFallback;
-
-  // 判断是否已完成：status = 2 且 severity = "P4_TRIVIAL"
-  const isCompleted =
-    existing &&
-    existing.status === PainStatus.CONFIRMED_PENDING_FIX &&
-    existing.severity === 'P4_TRIVIAL';
-
-  // 判断是否为共性问题
-  const isCommonIssue = existing && existing.severity === 'P5';
+  const existing = getExistingPainConfirmation({
+    canConfirm,
+    confirmationMap,
+    fileKey,
+    stepId,
+    legacyStepId,
+    text,
+  });
+  const parentPainId = String(
+    parentPain?.parentId || parentPain?.id || ''
+  ).trim();
+  const parentStatusValue = String(parentPain?.status ?? '').trim();
+  const displayState = derivePainDisplayState({
+    existing,
+    parentPain,
+    text,
+  });
 
   const handleSubmit = async (payload: UpsertPainConfirmationPayload) => {
-    await upsert(payload);
-  };
-  // console.log(existing?.pain_text)
-  // console.log(text)
+    const result = await upsert(payload);
+    const nextStatus = String(result.data?.status ?? payload.status ?? '');
 
-  const badgeElement =
-    canConfirm &&
-    (existing && isSamePainText(existing.pain_text, text) ? (
-      isCommonIssue ? (
-        <Popover
-          content={
-            <div className="max-w-xs space-y-2 text-sm">
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                <span className="font-medium text-slate-600">严重程度：</span>
-                <span className="font-semibold text-slate-700">共性问题</span>
-              </div>
-              {existing.common_issue_type ? (
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                  <span className="font-medium text-slate-600">
-                    共性问题类型：
-                  </span>
-                  <span className="font-semibold text-slate-700">
-                    {existing.common_issue_type}
-                  </span>
-                </div>
-              ) : null}
-              {existing.confirmed_by && (
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                  <span className="font-medium text-slate-600">操作人：</span>
-                  {existing.confirmed_by}
-                </div>
-              )}
-              {existing.confirmed_at && (
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                  <span className="font-medium text-slate-600">操作时间：</span>
-                  {existing.confirmed_at.replace('T', ' ').replace('Z', '')}
-                </div>
-              )}
-              <div className="rounded bg-slate-50 px-2 py-1 text-xs text-slate-600">
-                共性问题待处理
-              </div>
-            </div>
-          }
-          title={null}
-          trigger="hover"
-          placement="top"
-          styles={{ root: { maxWidth: 320 } }}
-        >
-          <button
-            type="button"
-            disabled
-            className="inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700"
-          >
-            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500" />
-            共性问题
-          </button>
-        </Popover>
-      ) : isCompleted ? (
-        <Popover
-          content={
-            <div className="max-w-xs space-y-2 text-sm">
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                <span className="font-medium text-slate-600">严重程度：</span>
-                <span className="font-semibold text-emerald-700">
-                  非项目本身问题
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                <span className="font-medium text-slate-600">操作人：</span>
-                {existing.confirmed_by}
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                <span className="font-medium text-slate-600">操作时间：</span>
-                {existing.confirmed_at.replace('T', ' ').replace('Z', '')}
-              </div>
-              <div className="rounded bg-emerald-50 px-2 py-1 text-xs text-emerald-600">
-                已完成，无需进一步处理
-              </div>
-            </div>
-          }
-          title={null}
-          trigger="hover"
-          placement="top"
-          styles={{ root: { maxWidth: 320 } }}
-        >
-          <button
-            type="button"
-            disabled
-            className="inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
-          >
-            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-            已完成（非项目本身问题）
-          </button>
-        </Popover>
-      ) : (
-        <StatusBadge
-          status={existing.status}
-          severity={existing.severity}
-          commonIssueType={existing.common_issue_type}
-          confirmedBy={existing.confirmed_by}
-          confirmedAt={existing.confirmed_at}
-          onClick={() => setModalOpen(true)}
-        />
-      )
-    ) : (
-      <UnconfirmedBadge onClick={() => setModalOpen(true)} />
-    ));
+    await syncParentPainStatus({
+      parentPainId,
+      parentStatusValue,
+      nextStatus,
+    });
+  };
+
+  const modalCurrentRecord = buildModalCurrentRecord({
+    canConfirm,
+    fileKey,
+    stepId,
+    index,
+    text,
+    existing,
+    displayState,
+  });
 
   return (
     <>
       <li
+        ref={itemRef}
         className={`flex items-start gap-2 rounded-md ${
           compact
             ? 'bg-rose-50 px-2.5 py-1.5 text-sm text-rose-800'
@@ -442,7 +642,11 @@ const PainPointItem: React.FC<{
               taskId={stepId}
               onClick={onStepClick}
             />
-            {badgeElement}
+            <PainPointBadge
+              canConfirm={canConfirm}
+              displayState={displayState}
+              onClick={() => setModalOpen(true)}
+            />
           </div>
         </div>
       </li>
@@ -453,12 +657,237 @@ const PainPointItem: React.FC<{
           stepId={stepId!}
           painIndex={index}
           painText={text}
-          currentRecord={existing}
-          onCancel={() => setModalOpen(false)}
+          currentRecord={modalCurrentRecord}
+          onCancel={handleModalClose}
           onSubmit={handleSubmit}
         />
       )}
     </>
+  );
+};
+
+const deriveProjectKeyFromFileKey = (value?: string): string => {
+  const fileKey = String(value || '').trim();
+  if (!fileKey) return '';
+
+  const parts = fileKey.split('_');
+  if (parts.length >= 3) {
+    const datePart = parts[parts.length - 2];
+    const timePart = parts[parts.length - 1];
+    if (/^\d{8}$/.test(datePart) && /^\d{3,6}$/.test(timePart)) {
+      return parts.slice(0, -2).join('_');
+    }
+  }
+
+  return fileKey;
+};
+
+const parseChildId = (
+  raw: string
+): { fileKey: string; taskId: string; painIndex?: number } | null => {
+  const text = String(raw || '').trim();
+  if (!text) return null;
+
+  const [fileKeyRaw, taskIdRaw, painIndexRaw] = text.split('#');
+  const fileKey = String(fileKeyRaw || '').trim();
+  if (!fileKey) return null;
+
+  const taskId = String(taskIdRaw || '').trim();
+  const painIndexNum = Number.parseInt(String(painIndexRaw || '').trim(), 10);
+
+  return {
+    fileKey,
+    taskId,
+    painIndex: Number.isNaN(painIndexNum) ? undefined : painIndexNum,
+  };
+};
+
+const HistoryPainTable: React.FC<{
+  items: OverviewPainPointRow[];
+  loading: boolean;
+  compact?: boolean;
+  currentFileKey?: string;
+}> = ({ items, loading, compact = false, currentFileKey }) => {
+  const normalizedCurrentFileKey = String(currentFileKey || '').trim();
+
+  return (
+    <div className={compact ? 'mt-2' : 'mt-3'}>
+      <div className="mb-2 text-xs font-semibold text-slate-700">
+        历史痛点（{items.length}）
+      </div>
+
+      {loading ? (
+        <div className="text-xs text-slate-500">历史痛点加载中…</div>
+      ) : items.length === 0 ? (
+        <div className="text-xs text-slate-500">当前任务暂无历史痛点</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1160px] table-fixed border-collapse text-[13px] text-slate-700">
+            <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+              <tr>
+                <th className="w-[120px] px-3 py-3 text-left font-semibold">
+                  仓库
+                </th>
+                <th className="w-[120px] px-3 py-3 text-left font-semibold">
+                  责任团队
+                </th>
+                <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                  阶段
+                </th>
+                <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                  问题类型
+                </th>
+                <th className="w-[280px] px-3 py-3 text-left font-semibold">
+                  问题描述
+                </th>
+                <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                  严重程度
+                </th>
+                <th className="w-[90px] px-3 py-3 text-left font-semibold">
+                  状态
+                </th>
+                <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                  结论
+                </th>
+                <th className="w-[90px] px-3 py-3 text-left font-semibold">
+                  责任人
+                </th>
+                <th className="w-[120px] px-3 py-3 text-left font-semibold">
+                  相关报告
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, index) => {
+                const severity = item.severity || 'P4_TRIVIAL';
+                const severityStyle = getPainLevelStyle(severity);
+                const statusLabel = STATUS_LABELS[Number(item.status)] || '--';
+                const childIds = item.childIds ?? [];
+                const entries: Array<{
+                  fileKey: string;
+                  taskId?: string;
+                  painIndex?: number;
+                }> = [];
+                const seen = new Set<string>();
+
+                for (let i = childIds.length - 1; i >= 0; i -= 1) {
+                  const parsed = parseChildId(childIds[i]);
+                  if (!parsed || seen.has(parsed.fileKey)) continue;
+                  if (
+                    normalizedCurrentFileKey &&
+                    parsed.fileKey === normalizedCurrentFileKey
+                  ) {
+                    continue;
+                  }
+                  seen.add(parsed.fileKey);
+                  entries.push(parsed);
+                  if (entries.length >= 3) break;
+                }
+
+                if (
+                  !entries.length &&
+                  item.fileKey &&
+                  item.fileKey !== normalizedCurrentFileKey
+                ) {
+                  entries.push({ fileKey: item.fileKey });
+                }
+
+                return (
+                  <tr
+                    key={`${
+                      item.id || item.parentId || item.description
+                    }-${index}`}
+                    className={`border-t border-rose-100/70 align-top transition-colors hover:bg-rose-100/40 ${
+                      index % 2 === 0 ? 'bg-white/80' : 'bg-rose-50/40'
+                    }`}
+                  >
+                    <td className="px-3 py-3 font-medium text-slate-900">
+                      {item.projectName || item.projectKey || '--'}
+                    </td>
+                    <td className="px-3 py-3">{item.team || '--'}</td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {item.journeyStage || '--'}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {item.issueType || '--'}
+                    </td>
+                    <td className="max-w-[360px] px-3 py-3">
+                      <Tooltip title={item.description || '--'}>
+                        <span className="line-clamp-2 cursor-default">
+                          {item.description || '--'}
+                        </span>
+                      </Tooltip>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      <span
+                        className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${severityStyle.bg} ${severityStyle.text} ${severityStyle.border}`}
+                      >
+                        {getPainLevelLabel(severity)}
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {statusLabel}
+                    </td>
+                    <td className="px-3 py-3">
+                      <Tooltip title={item.remark || '--'}>
+                        <span className="block cursor-default truncate">
+                          {item.remark || '--'}
+                        </span>
+                      </Tooltip>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {item.teamOwner || item.owner || '--'}
+                    </td>
+                    <td className="px-3 py-3">
+                      {entries.length ? (
+                        entries.map(({ fileKey, taskId, painIndex }) => {
+                          const search = new URLSearchParams();
+                          search.set('project', fileKey);
+                          if (taskId) {
+                            search.set('focusTaskId', taskId);
+                          }
+                          if (typeof painIndex === 'number') {
+                            search.set('focusPainIndex', String(painIndex));
+                            search.set('autoOpenPain', '1');
+                          }
+                          const href = `/intelligent-analysis/community-experience?${search.toString()}`;
+                          const displayText = (() => {
+                            const last = fileKey.lastIndexOf('_');
+                            if (last <= 0) return fileKey;
+                            const prev = fileKey.lastIndexOf('_', last - 1);
+                            if (prev < 0 || prev + 1 >= fileKey.length)
+                              return fileKey;
+                            return fileKey.slice(prev + 1);
+                          })();
+
+                          return (
+                            <div
+                              key={`${fileKey}-${taskId || ''}-${
+                                painIndex ?? ''
+                              }`}
+                              className="leading-5"
+                            >
+                              <a
+                                href={href}
+                                className="overview-table-link text-blue-600"
+                              >
+                                {displayText}
+                              </a>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <span className="text-slate-300">--</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -483,10 +912,83 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   stepId,
   legacyStepId,
   onStepClick,
+  painFocusTarget,
+  onPainFocusHandled,
 }) => {
   const [obsExpanded, setObsExpanded] = useState(false);
   const hasObs = !!observations && observations.length > 0;
   const hasPain = !!pain_points && pain_points.length > 0;
+  const projectKey = useMemo(
+    () => deriveProjectKeyFromFileKey(fileKey),
+    [fileKey]
+  );
+  const targetTaskIds = useMemo(() => {
+    const ids = new Set<string>();
+    if (stepId?.trim()) ids.add(stepId.trim());
+    if (legacyStepId?.trim()) ids.add(legacyStepId.trim());
+    return ids;
+  }, [legacyStepId, stepId]);
+
+  const { data: overviewCardResp, isFetching: parentPainsLoading } = useQuery({
+    queryKey: ['userJourneyParentPainsByProject', projectKey],
+    queryFn: () =>
+      fetchOverviewCards({
+        viewType: 'repo',
+        repo: projectKey,
+        includeCommonIssues: true,
+        page: 1,
+        size: 1,
+      }),
+    enabled: !!projectKey && targetTaskIds.size > 0,
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  const taskParentPains = useMemo(() => {
+    if (!fileKey || targetTaskIds.size === 0)
+      return [] as OverviewPainPointRow[];
+
+    const card = overviewCardResp?.items?.[0];
+    const rows = card?.painPoints ?? [];
+    if (!rows.length) return [] as OverviewPainPointRow[];
+
+    return rows.filter((row) => {
+      const childIds = row.childIds ?? [];
+      if (!childIds.length) return false;
+
+      return childIds.some((rawId) => {
+        const parsed = parseChildId(rawId);
+        if (!parsed) return false;
+        if (parsed.fileKey !== fileKey) return false;
+        return targetTaskIds.has(parsed.taskId);
+      });
+    });
+  }, [fileKey, overviewCardResp?.items, targetTaskIds]);
+
+  const shouldAutoOpenForIndex = (index: number) => {
+    if (!painFocusTarget) return false;
+    const target = painFocusTarget.painIndex;
+    return index === target || index === target - 1;
+  };
+
+  const findParentPainByIndex = (
+    index: number
+  ): OverviewPainPointRow | undefined => {
+    if (!fileKey || targetTaskIds.size === 0) return undefined;
+
+    return taskParentPains.find((row) => {
+      const childIds = row.childIds ?? [];
+      return childIds.some((rawId) => {
+        const parsed = parseChildId(rawId);
+        if (!parsed) return false;
+        if (parsed.fileKey !== fileKey) return false;
+        if (!targetTaskIds.has(parsed.taskId)) return false;
+        if (typeof parsed.painIndex !== 'number') return false;
+        return parsed.painIndex === index || parsed.painIndex === index + 1;
+      });
+    });
+  };
 
   if (!hasObs && !hasPain) {
     if (!showEmpty) return null;
@@ -537,12 +1039,21 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   fileKey={fileKey}
                   stepId={stepId}
                   legacyStepId={legacyStepId}
+                  parentPain={findParentPainByIndex(i)}
                   toolIds={pain_points_tool_nums?.[i]}
                   onStepClick={onStepClick}
                   compact
+                  shouldAutoOpen={shouldAutoOpenForIndex(i)}
+                  onAutoOpenHandled={onPainFocusHandled}
                 />
               ))}
             </ul>
+            <HistoryPainTable
+              items={taskParentPains}
+              loading={parentPainsLoading}
+              compact
+              currentFileKey={fileKey}
+            />
           </div>
         )}
       </div>
@@ -570,11 +1081,19 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                 fileKey={fileKey}
                 stepId={stepId}
                 legacyStepId={legacyStepId}
+                parentPain={findParentPainByIndex(i)}
                 toolIds={pain_points_tool_nums?.[i]}
                 onStepClick={onStepClick}
+                shouldAutoOpen={shouldAutoOpenForIndex(i)}
+                onAutoOpenHandled={onPainFocusHandled}
               />
             ))}
           </ul>
+          <HistoryPainTable
+            items={taskParentPains}
+            loading={parentPainsLoading}
+            currentFileKey={fileKey}
+          />
         </div>
       )}
       {hasObs && (

@@ -2,14 +2,22 @@ import type { OverviewPainPointRow } from '../rawData/apiClient';
 
 export type Severity = OverviewPainPointRow['severity'];
 export type ProgressTab = 'overall' | 'blocking';
+export type ProgressView = 'team' | 'repo';
 export type IssueBucket = 'pending' | 'inProgress' | 'resolved' | 'na';
 export type RepoSortKey =
+  | 'name'
   | 'team'
   | 'score'
-  | 'rate'
-  | 'pending'
-  | 'inProgress'
-  | 'resolved'
+  | 'successRate'
+  | 'executionTime'
+  | 'total'
+  | 'closeRate';
+export type TeamSortKey =
+  | 'name'
+  | 'repoCount'
+  | 'score'
+  | 'successRate'
+  | 'executionTime'
   | 'total'
   | 'closeRate';
 
@@ -36,11 +44,25 @@ export type RepoProgressRow = {
   team: string;
   score: number | null;
   successRate: number | null;
+  executionTime: number | null;
   latestReportId?: string;
   detailReportUrl?: string;
   overall: MetricSummary;
   blocking: MetricSummary;
   issues: DashboardIssue[];
+};
+
+export type TeamProgressRow = {
+  id: string;
+  name: string;
+  repoCount: number;
+  score: number | null;
+  successRate: number | null;
+  executionTime: number | null;
+  overall: MetricSummary;
+  blocking: MetricSummary;
+  issues: DashboardIssue[];
+  repos: RepoProgressRow[];
 };
 
 export type CommonIssueGroup = {

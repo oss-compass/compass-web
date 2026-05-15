@@ -130,18 +130,21 @@ const getOverviewMetricValue = (metric: BackendMetric) => {
 };
 
 const buildOverviewMetrics = (report: BackendReportData): OverviewMetric[] => {
+  const compositeScore =
+    typeof report.overall_scores.composite_score === 'number'
+      ? report.overall_scores.composite_score
+      : 0;
+
   const overviewMetrics: OverviewMetric[] = [
     {
       key: 'overall-composite-score',
       title: '综合体验评分',
-      value: String(Number(report.overall_scores.composite_score.toFixed(1))),
+      value: String(Number(compositeScore.toFixed(1))),
       suffix: '/100',
       description: report.key_insight,
       stage: '综合评估',
-      recentValues: `评级 ${getExperienceGradeLabelFromScore(
-        report.overall_scores.composite_score
-      )}`,
-      tone: getToneByScore(report.overall_scores.composite_score),
+      recentValues: `评级 ${getExperienceGradeLabelFromScore(compositeScore)}`,
+      tone: getToneByScore(compositeScore),
       color: '#2563eb',
     },
   ];
@@ -357,28 +360,28 @@ const buildAgentVersionLabel = (report: BackendReportData) => {
 const buildReportMetadata = (
   report: BackendReportData
 ): ReportMetadataItem[] => [
-    {
-      key: 'persona',
-      label: '模拟角色',
-      value: buildPersonaLabel(report),
-    },
-    {
-      key: 'hardware',
-      label: '硬件环境',
-      value: buildHardwareLabel(report),
-    },
-    {
-      key: 'purpose',
-      label: '目的',
-      value: buildPurpose(report),
-    },
-    {
-      key: 'agent-version',
-      label: 'Agent版本',
-      value: buildAgentVersionLabel(report),
-      tone: 'mono',
-    },
-  ];
+  {
+    key: 'persona',
+    label: '模拟角色',
+    value: buildPersonaLabel(report),
+  },
+  {
+    key: 'hardware',
+    label: '硬件环境',
+    value: buildHardwareLabel(report),
+  },
+  {
+    key: 'purpose',
+    label: '目的',
+    value: buildPurpose(report),
+  },
+  {
+    key: 'agent-version',
+    label: 'Agent版本',
+    value: buildAgentVersionLabel(report),
+    tone: 'mono',
+  },
+];
 
 const getRecommendationPriorityRank = (priority: string) => {
   const normalizedPriority = priority.trim().toLowerCase();
@@ -447,8 +450,8 @@ const buildActionDetailRecord = (action: BackendAction): ActionDetailRecord => {
         ? 'success'
         : 'failed'
       : result
-        ? 'failed'
-        : getActionStatus(undefined, action.error_message);
+      ? 'failed'
+      : getActionStatus(undefined, action.error_message);
 
   return {
     label: action.action_type,
@@ -481,8 +484,8 @@ const buildStepMetrics = (
       (rawValue === (true as unknown)
         ? '成功'
         : rawValue === (false as unknown)
-          ? '失败'
-          : formatMetricValue(rawValue as string | number | null, metric.unit));
+        ? '失败'
+        : formatMetricValue(rawValue as string | number | null, metric.unit));
     return {
       label: metric.metric_name,
       value: displayValue,
@@ -543,124 +546,20 @@ const buildRecommendation = (
   return fallbackText || report.key_insight;
 };
 
-/**
- * 体验系数配置：
- *   - 任务达成率 < 100%  → 0（强制置零）
- *   - 达成率 100% + 有重试（actions 中存在 success=false）：
- *       S0/S4/S5 → 0.8，S1/S2/S3 → 0.6
- *   - S0 额外判定：达成率 100% 且无 actions 重试时，
- *     若 SDX_SEARCH_ROUNDS > 2 也视为有重试 → 0.8
- *   - 达成率 100% + 无重试 → 1
- */
-const RETRY_COEFFICIENT_HIGH = 0.8; // S0,  S4, S5
-const RETRY_COEFFICIENT_LOW = 0.6; // S1,S2, S3
-
-const HIGH_COEFFICIENT_STEPS = new Set([
-  'S0_DISCOVERY',
-  'S4_TESTING',
-  'S5_CONTRIBUTION',
-]);
-
-/** S0 搜索轮次阈值：超过此值视为发生了搜索重试 */
-const S0_SEARCH_ROUNDS_THRESHOLD = 2;
-
-/**
- * 计算阶段体验系数。
- * @param stepId  后端 step_id，如 "S1_SETUP"
- * @param assessment  当前阶段的 per_project_assessment 条目
- */
-const getExperienceCoefficient = (
-  stepId: string,
-  assessment: BackendReportData['journey_steps'][number]['per_project_assessments'][number]
-): number => {
-  const metrics = assessment.subjective.metrics;
-
-  // 1. 找到任务达成率指标
-  const achievementMetric = metrics.find(
-    (m) => m.metric_id === 'SDX_TASK_ACHIEVEMENT_RATE'
-  );
-
-  // 无达成率指标时（未评估阶段），返回 1 由外层判断
-  if (!achievementMetric) {
-    return 1;
-  }
-
-  const achievementValue =
-    typeof achievementMetric.value === 'number'
-      ? achievementMetric.value
-      : null;
-
-  // 2. 达成率 < 100% → 系数为 0
-  if (achievementValue === null || achievementValue < 100) {
-    return 0;
-  }
-
-  // 3. 达成率 100%，检查是否有重试（actions 中存在 success === false）
-  const hasActionRetry = (assessment.actual_path.actions ?? []).some(
-    (action) => action.success === false
-  );
-
-  if (hasActionRetry) {
-    // 4. 有重试，按阶段返回系数
-    return HIGH_COEFFICIENT_STEPS.has(stepId)
-      ? RETRY_COEFFICIENT_HIGH
-      : RETRY_COEFFICIENT_LOW;
-  }
-
-  // 5. S0 额外判定：搜索轮次 > 阈值时也视为有重试 → 0.8
-  if (stepId === 'S0_DISCOVERY') {
-    const searchRoundsMetric = metrics.find(
-      (m) => m.metric_id === 'SDX_SEARCH_ROUNDS'
-    );
-    const searchRoundsValue =
-      typeof searchRoundsMetric?.value === 'number'
-        ? searchRoundsMetric.value
-        : null;
-
-    if (
-      searchRoundsValue !== null &&
-      searchRoundsValue > S0_SEARCH_ROUNDS_THRESHOLD
-    ) {
-      return RETRY_COEFFICIENT_HIGH;
-    }
-  }
-
-  return 1;
-};
-
-/**
- * 根据新算法计算 panoramaScore：
- *   阶段内 subjective.metrics（排除达成率指标本身）有效得分均值 × 体验系数
- *   - 无有效指标（未评估）→ null
- *   - 系数为 0 → 0
- */
-const computePanoramaScore = (
-  stepId: string,
-  assessment:
-    | BackendReportData['journey_steps'][number]['per_project_assessments'][number]
-    | undefined
+const getBackendStepScore = (
+  report: BackendReportData,
+  step: BackendJourneyStep
 ): number | null => {
-  if (!assessment) return null;
+  if (typeof step.score === 'number') {
+    return step.score;
+  }
 
-  const metrics = assessment.subjective.metrics;
+  const journeyMapScore = report.journey_map?.[step.step_id]?.score;
+  if (typeof journeyMapScore === 'number') {
+    return journeyMapScore;
+  }
 
-  // 未评估：无指标
-  if (metrics.length === 0) return null;
-
-  // 收集非达成率指标的得分
-  const scoreCandidates = metrics
-    .filter((m) => m.metric_id !== 'SDX_TASK_ACHIEVEMENT_RATE')
-    .map((m) => m.score)
-    .filter((s): s is number => typeof s === 'number');
-
-  if (scoreCandidates.length === 0) return null;
-
-  const avgScore =
-    scoreCandidates.reduce((sum, s) => sum + s, 0) / scoreCandidates.length;
-
-  const coefficient = getExperienceCoefficient(stepId, assessment);
-
-  return Math.round(avgScore * coefficient);
+  return null;
 };
 
 const buildJourneyStep = (
@@ -679,8 +578,7 @@ const buildJourneyStep = (
   const subjectiveMetrics = assessment?.subjective.metrics ?? [];
   const metricIds = subjectiveMetrics.map((metric) => metric.metric_id);
 
-  // 使用新算法计算 panoramaScore：均值 × 体验系数
-  const panoramaScore = computePanoramaScore(step.step_id, assessment);
+  const panoramaScore = getBackendStepScore(report, step);
   const narrative = normalizeText(assessment?.subjective.narrative);
   const shortPainSummary = normalizeText(assessment?.subjective.pain_summary);
   const painLevel = getPainLevelFromScore(panoramaScore);
@@ -705,14 +603,14 @@ const buildJourneyStep = (
 
   const fallbackActionCards = actionDetails.length
     ? actionDetails.map((action, index) => ({
-      title: resolvedActions[index] ?? action.description,
-      summary: action.description,
-      actionType: action.label === 'step_action' ? undefined : action.label,
-      duration: action.duration || undefined,
-      status: action.status,
-      statusLabel: action.statusLabel,
-      details: [action],
-    }))
+        title: resolvedActions[index] ?? action.description,
+        summary: action.description,
+        actionType: action.label === 'step_action' ? undefined : action.label,
+        duration: action.duration || undefined,
+        status: action.status,
+        statusLabel: action.statusLabel,
+        details: [action],
+      }))
     : undefined;
 
   // tools: 直接从 actions 的 tool_name 字段提取（JSON 新增字段），fallback 到 action_type
@@ -725,9 +623,9 @@ const buildJourneyStep = (
 
   const derivedTimeShare = totalJourneyDuration
     ? `~${Math.max(
-      1,
-      Math.round((totalDurationSeconds / totalJourneyDuration) * 100)
-    )}%`
+        1,
+        Math.round((totalDurationSeconds / totalJourneyDuration) * 100)
+      )}%`
     : '~0%';
 
   return {
@@ -779,16 +677,9 @@ export const buildUserJourneyProjectData = (
     buildJourneyStep(step, report, totalJourneyDuration)
   );
 
-  // 综合体验得分：仅取已评估步骤（panoramaScore !== null）的均值
-  const evaluatedScores = journeySteps
-    .map((s) => s.panoramaScore)
-    .filter((s): s is number => s !== null && s !== undefined);
   const compositeScore =
-    evaluatedScores.length > 0
-      ? Math.round(
-        evaluatedScores.reduce((sum, s) => sum + s, 0) /
-        evaluatedScores.length
-      )
+    typeof report.overall_scores.composite_score === 'number'
+      ? report.overall_scores.composite_score
       : null;
 
   // 构建 metric_id → metric_name 映射：以静态 SDX 定义表为基础，再用 JSON 动态数据覆盖

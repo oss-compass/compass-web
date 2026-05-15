@@ -20,6 +20,12 @@ type StepDetailCardProps = {
   fixedMetricCols?: 2 | 3 | 4;
   /** 报告文件 key，用于加载对应 log 文件 */
   projectFileKey?: string;
+  painFocusTarget?: {
+    taskId: string;
+    painIndex: number;
+    autoOpen?: boolean;
+  };
+  onPainFocusHandled?: () => void;
 };
 
 const StepDetailCard: React.FC<StepDetailCardProps> = ({
@@ -31,6 +37,8 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   hideTitle = false,
   fixedMetricCols,
   projectFileKey,
+  painFocusTarget,
+  onPainFocusHandled,
 }) => {
   const achievementMetric = keyMetrics.find(
     (m) => m.metricId === 'SDX_TASK_ACHIEVEMENT_RATE'
@@ -210,6 +218,8 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
           stepCode={currentStep.code}
           executionPathItems={executionPathItems}
           projectFileKey={projectFileKey}
+          {...(painFocusTarget ? { painFocusTarget } : {})}
+          onPainFocusHandled={onPainFocusHandled}
         />
       </div>
 

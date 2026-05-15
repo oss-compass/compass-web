@@ -1,22 +1,24 @@
-import React from 'react';
-import {
-  Button,
-  Checkbox,
-  Segmented,
-  Select,
-  Table,
-  Tooltip,
-  Typography,
-} from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import React, { useMemo, useState } from 'react';
+import { Button, Checkbox, Segmented, Select, Table, Typography } from 'antd';
+import { RightOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
-import type { ProgressTab, RepoProgressRow, RepoSortKey } from './types';
-import { formatPercent, formatScore, getAverage } from './utils';
+import type {
+  IssueBucket,
+  ProgressTab,
+  ProgressView,
+  RepoProgressRow,
+  RepoSortKey,
+  TeamProgressRow,
+  TeamSortKey,
+} from './types';
+import { formatExecutionTime, formatPercent, formatScore } from './utils';
 
-const { Title } = Typography;
-const { Link } = Typography;
+const { Link, Title } = Typography;
+const TEAM_DETAIL_COLS = [72, 220, 110, 150, 120, 130, 240, 110, 150];
 
 type RepoProgressSectionProps = {
+  progressView: ProgressView;
+  onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
   onTabChange: (tab: ProgressTab) => void;
   includeCommonIssues: boolean;
@@ -28,16 +30,25 @@ type RepoProgressSectionProps = {
   teamOptions: string[];
   onTeamFilterChange: (team: string) => void;
   isLoading: boolean;
-  sortedRows: RepoProgressRow[];
-  sortArrow: (key: RepoSortKey) => string;
-  onSort: (key: RepoSortKey) => void;
+  teamRows: TeamProgressRow[];
+  repoRows: RepoProgressRow[];
+  repoSortArrow: (key: RepoSortKey) => string;
+  teamSortArrow: (key: TeamSortKey) => string;
+  onRepoSort: (key: RepoSortKey) => void;
+  onTeamSort: (key: TeamSortKey) => void;
   onOpenRepoIssues: (
     row: RepoProgressRow,
     bucket: 'pending' | 'inProgress' | 'resolved' | 'na' | 'total'
   ) => void;
+  onOpenTeamIssues: (
+    row: TeamProgressRow,
+    bucket: IssueBucket | 'total'
+  ) => void;
 };
 
 const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
+  progressView,
+  onProgressViewChange,
   currentTab,
   onTabChange,
   includeCommonIssues,
@@ -49,245 +60,473 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   teamOptions,
   onTeamFilterChange,
   isLoading,
-  sortedRows,
-  sortArrow,
-  onSort,
+  teamRows,
+  repoRows,
+  repoSortArrow,
+  teamSortArrow,
+  onRepoSort,
+  onTeamSort,
   onOpenRepoIssues,
+  onOpenTeamIssues,
 }) => {
-  const tableSummary = sortedRows.reduce(
-    (acc, row) => {
-      const metrics = row[currentTab];
-      acc.pending += metrics.pending;
-      acc.inProgress += metrics.inProgress;
-      acc.resolved += metrics.resolved;
-      acc.total += metrics.total;
-      acc.na += metrics.na;
-      return acc;
-    },
-    { pending: 0, inProgress: 0, resolved: 0, total: 0, na: 0 }
-  );
-  const closeRate =
-    tableSummary.total > 0
-      ? Number(((tableSummary.resolved / tableSummary.total) * 100).toFixed(1))
-      : 0;
+  const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
 
-  const sortableTitle = (label: string, key: RepoSortKey) => (
+  const renderMetricBar = (
+    value: number | null,
+    formatter: (next: number | null) => string,
+    colorClassName: string
+  ) => (
+    <div className="overview-bar-cell">
+      <span className="overview-bar-value">{formatter(value)}</span>
+      <div className="overview-bar-track">
+        <span
+          className={`overview-bar-fill ${colorClassName}`}
+          style={{ width: `${Math.max(0, Math.min(value ?? 0, 100))}%` }}
+        />
+      </div>
+    </div>
+  );
+
+  const renderCircularProgress = (value: number | null) => {
+    const safeValue =
+      value == null ? 0 : Math.max(0, Math.min(Number(value.toFixed(1)), 100));
+    const ringColor =
+      safeValue < 50 ? '#ef4444' : safeValue > 80 ? '#10b981' : '#f59e0b';
+    const size = 24;
+    const radius = (size - 4) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference * (1 - safeValue / 100);
+    const label = value == null ? '--' : `${safeValue.toFixed(1)}%`;
+    return (
+      <div className="overview-ring-progress">
+        <svg
+          width={size}
+          height={size}
+          className="overview-ring-svg"
+          viewBox={`0 0 ${size} ${size}`}
+        >
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke="#f0f0f0"
+            strokeWidth="3"
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke={ringColor}
+            strokeWidth="3"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+          />
+        </svg>
+        <span
+          className="overview-ring-label"
+          style={{ color: value == null ? '#94a3b8' : ringColor }}
+        >
+          {label}
+        </span>
+      </div>
+    );
+  };
+
+  const renderIssueProgress = (
+    metrics: RepoProgressRow[ProgressTab],
+    onBucketClick?: (bucket: IssueBucket) => void
+  ) => {
+    const total = metrics.pending + metrics.inProgress + metrics.resolved || 1;
+    const items: Array<{ key: IssueBucket; label: string; value: number }> = [
+      { key: 'pending', label: '待处理', value: metrics.pending },
+      { key: 'inProgress', label: '进行中', value: metrics.inProgress },
+      { key: 'resolved', label: '已闭环', value: metrics.resolved },
+    ];
+
+    return (
+      <div className="overview-progress-cell">
+        <div className="overview-progress-bar">
+          {items.map((item) => (
+            <span
+              key={item.key}
+              className={`overview-progress-segment overview-progress-${item.key}`}
+              style={{ width: `${(item.value / total) * 100}%` }}
+            />
+          ))}
+        </div>
+        <div className="overview-progress-meta">
+          {items.map((item) =>
+            onBucketClick ? (
+              <Button
+                key={item.key}
+                type="link"
+                className="overview-progress-link"
+                onClick={() => onBucketClick(item.key)}
+              >
+                {item.label} {item.value}
+              </Button>
+            ) : (
+              <span key={item.key} className="overview-progress-text">
+                {item.label} {item.value}
+              </span>
+            )
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderDetailLink = (record: RepoProgressRow) => {
+    const fileKey = record.latestReportId;
+    const reportUrl = fileKey
+      ? `/intelligent-analysis/community-experience?project=${encodeURIComponent(
+          fileKey
+        )}`
+      : '';
+    const displayText = (() => {
+      if (!fileKey) return '';
+      const last = fileKey.lastIndexOf('_');
+      if (last <= 0) return fileKey;
+      const prev = fileKey.lastIndexOf('_', last - 1);
+      if (prev < 0 || prev + 1 >= fileKey.length) return fileKey;
+      return fileKey.slice(prev + 1);
+    })();
+
+    return fileKey ? (
+      <Link href={reportUrl} className="overview-table-link">
+        {displayText}
+      </Link>
+    ) : (
+      <span className="text-slate-300">--</span>
+    );
+  };
+
+  const sortableTitle = (label: string, arrow: string) => (
     <span className="sortable-col-title">
       {label}
-      <span className="sort-arrow">{sortArrow(key)}</span>
+      <span className="sort-arrow">{arrow}</span>
     </span>
   );
 
-  const resolvedTitle = (
-    <span className="sortable-col-title">
-      <span>已闭环</span>
-      <Tooltip title="含不需要修复">
-        <InfoCircleOutlined className="overview-info-icon" />
-      </Tooltip>
-      <span className="sort-arrow">{sortArrow('resolved')}</span>
-    </span>
-  );
-
-  const columns: TableProps<RepoProgressRow>['columns'] = [
-    {
-      title: '序号',
-      key: 'index',
-      width: 72,
-      render: (_value, _record, index) => (
-        <span className="row-num">{index + 1}</span>
-      ),
-    },
-    {
-      title: '仓库',
-      dataIndex: 'name',
-      key: 'name',
-      width: 220,
-      ellipsis: true,
-    },
-    {
-      title: sortableTitle('责任团队', 'team'),
-      dataIndex: 'team',
-      key: 'team',
-      width: 160,
-      ellipsis: true,
-      onHeaderCell: () => ({
-        onClick: () => onSort('team'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: sortableTitle('评分', 'score'),
-      key: 'score',
-      width: 110,
-      render: (_value, record) => formatScore(record.score),
-      onHeaderCell: () => ({
-        onClick: () => onSort('score'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: sortableTitle('成功率', 'rate'),
-      key: 'rate',
-      width: 120,
-      render: (_value, record) => formatPercent(record.successRate),
-      onHeaderCell: () => ({
-        onClick: () => onSort('rate'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: sortableTitle('待处理', 'pending'),
-      key: 'pending',
-      width: 110,
-      render: (_value, record) => {
-        const metrics = record[currentTab];
-        return (
-          <Button
-            type="link"
-            className="overview-table-link"
-            onClick={() => onOpenRepoIssues(record, 'pending')}
-          >
-            {metrics.pending}
-          </Button>
-        );
+  const repoColumns = useMemo<TableProps<RepoProgressRow>['columns']>(
+    () => [
+      {
+        title: '序号',
+        key: 'index',
+        width: 72,
+        render: (_value, _record, index) => (
+          <span className="row-num">{index + 1}</span>
+        ),
       },
-      onHeaderCell: () => ({
-        onClick: () => onSort('pending'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: sortableTitle('进行中', 'inProgress'),
-      key: 'inProgress',
-      width: 110,
-      render: (_value, record) => {
-        const metrics = record[currentTab];
-        return (
-          <Button
-            type="link"
-            className="overview-table-link"
-            onClick={() => onOpenRepoIssues(record, 'inProgress')}
-          >
-            {metrics.inProgress}
-          </Button>
-        );
+      {
+        title: sortableTitle('仓库', repoSortArrow('name')),
+        dataIndex: 'name',
+        key: 'name',
+        width: 220,
+        ellipsis: true,
+        onHeaderCell: () => ({
+          onClick: () => onRepoSort('name'),
+          className: 'sortable-col',
+        }),
       },
-      onHeaderCell: () => ({
-        onClick: () => onSort('inProgress'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: resolvedTitle,
-      key: 'resolved',
-      width: 110,
-      render: (_value, record) => {
-        const metrics = record[currentTab];
-        return (
-          <Button
-            type="link"
-            className="overview-table-link"
-            onClick={() => onOpenRepoIssues(record, 'resolved')}
-          >
-            {metrics.resolved}
-          </Button>
-        );
+      {
+        title: sortableTitle('责任团队', repoSortArrow('team')),
+        dataIndex: 'team',
+        key: 'team',
+        width: 160,
+        ellipsis: true,
+        onHeaderCell: () => ({
+          onClick: () => onRepoSort('team'),
+          className: 'sortable-col',
+        }),
       },
-      onHeaderCell: () => ({
-        onClick: () => onSort('resolved'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: sortableTitle('总问题数', 'total'),
-      key: 'total',
-      width: 120,
-      render: (_value, record) => {
-        const metrics = record[currentTab];
-        return (
+      {
+        title: sortableTitle('评分', repoSortArrow('score')),
+        key: 'score',
+        width: 150,
+        render: (_value, record) =>
+          renderMetricBar(record.score, formatScore, 'overview-bar-blue'),
+        onHeaderCell: () => ({
+          onClick: () => onRepoSort('score'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: sortableTitle('成功率', repoSortArrow('successRate')),
+        key: 'successRate',
+        width: 110,
+        render: (_value, record) => formatPercent(record.successRate),
+        onHeaderCell: () => ({
+          onClick: () => onRepoSort('successRate'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: sortableTitle('执行耗时', repoSortArrow('executionTime')),
+        key: 'executionTime',
+        width: 130,
+        render: (_value, record) => formatExecutionTime(record.executionTime),
+        onHeaderCell: () => ({
+          onClick: () => onRepoSort('executionTime'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: '问题处理进展',
+        key: 'progress',
+        width: 240,
+        render: (_value, record) =>
+          renderIssueProgress(record[currentTab], (bucket) =>
+            onOpenRepoIssues(record, bucket)
+          ),
+      },
+      {
+        title: sortableTitle('总问题数', repoSortArrow('total')),
+        key: 'total',
+        width: 110,
+        render: (_value, record) => (
           <Button
             type="link"
             className="overview-table-link overview-table-link-strong"
             onClick={() => onOpenRepoIssues(record, 'total')}
           >
-            {metrics.total}
+            {record[currentTab].total}
           </Button>
-        );
+        ),
+        onHeaderCell: () => ({
+          onClick: () => onRepoSort('total'),
+          className: 'sortable-col',
+        }),
       },
-      onHeaderCell: () => ({
-        onClick: () => onSort('total'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: sortableTitle('闭环率', 'closeRate'),
-      key: 'closeRate',
-      width: 120,
-      render: (_value, record) => formatPercent(record[currentTab].closeRate),
-      onHeaderCell: () => ({
-        onClick: () => onSort('closeRate'),
-        className: 'sortable-col',
-      }),
-    },
-    {
-      title: '不需要修复',
-      key: 'na',
-      width: 120,
-      render: (_value, record) => {
-        const metrics = record[currentTab];
-        return (
+      {
+        title: sortableTitle('闭环率', repoSortArrow('closeRate')),
+        key: 'closeRate',
+        width: 150,
+        render: (_value, record) =>
+          renderCircularProgress(record[currentTab].closeRate),
+        onHeaderCell: () => ({
+          onClick: () => onRepoSort('closeRate'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: '详细报告',
+        key: 'detail',
+        width: 140,
+        render: (_value, record) => renderDetailLink(record),
+      },
+    ],
+    [currentTab, onOpenRepoIssues, onRepoSort, repoSortArrow]
+  );
+
+  const teamColumns = useMemo<TableProps<TeamProgressRow>['columns']>(
+    () => [
+      {
+        title: '序号',
+        key: 'index',
+        width: 72,
+        render: (_value, _record, index) => (
+          <span className="row-num">{index + 1}</span>
+        ),
+      },
+      {
+        title: sortableTitle('责任团队', teamSortArrow('name')),
+        dataIndex: 'name',
+        key: 'name',
+        width: 220,
+        render: (value, record) => (
+          <span className="overview-expand-label">
+            <RightOutlined
+              className={`overview-expand-icon ${
+                expandedRowKeys.includes(record.id) ? 'is-expanded' : ''
+              }`}
+            />
+            <span>{value}</span>
+          </span>
+        ),
+        onHeaderCell: () => ({
+          onClick: () => onTeamSort('name'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: sortableTitle('负责仓库', teamSortArrow('repoCount')),
+        key: 'repoCount',
+        width: 110,
+        render: (_value, record) => `${record.repoCount} 个`,
+        onHeaderCell: () => ({
+          onClick: () => onTeamSort('repoCount'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: sortableTitle('综合评分', teamSortArrow('score')),
+        key: 'score',
+        width: 150,
+        render: (_value, record) =>
+          renderMetricBar(record.score, formatScore, 'overview-bar-blue'),
+        onHeaderCell: () => ({
+          onClick: () => onTeamSort('score'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: sortableTitle('端到端成功率', teamSortArrow('successRate')),
+        key: 'successRate',
+        width: 120,
+        render: (_value, record) => formatPercent(record.successRate),
+        onHeaderCell: () => ({
+          onClick: () => onTeamSort('successRate'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: sortableTitle('执行耗时', teamSortArrow('executionTime')),
+        key: 'executionTime',
+        width: 130,
+        render: (_value, record) => formatExecutionTime(record.executionTime),
+        onHeaderCell: () => ({
+          onClick: () => onTeamSort('executionTime'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: '问题处理进展',
+        key: 'progress',
+        width: 240,
+        render: (_value, record) =>
+          renderIssueProgress(record[currentTab], (bucket) =>
+            onOpenTeamIssues(record, bucket)
+          ),
+      },
+      {
+        title: sortableTitle('总问题数', teamSortArrow('total')),
+        key: 'total',
+        width: 110,
+        render: (_value, record) => (
           <Button
             type="link"
-            className="overview-table-link overview-table-link-muted"
-            onClick={() => onOpenRepoIssues(record, 'na')}
+            className="overview-table-link overview-table-link-strong"
+            onClick={() => onOpenTeamIssues(record, 'total')}
           >
-            {metrics.na}
+            {record[currentTab].total}
           </Button>
-        );
+        ),
+        onHeaderCell: () => ({
+          onClick: () => onTeamSort('total'),
+          className: 'sortable-col',
+        }),
       },
-    },
-    {
-      title: '最新报告',
-      key: 'detail',
-      width: 180,
-      render: (_value, record) => {
-        const fileKey = record.latestReportId;
-        const reportUrl = fileKey
-          ? `/intelligent-analysis/community-experience?project=${encodeURIComponent(
-              fileKey
-            )}`
-          : '';
-        const displayText = (() => {
-          if (!fileKey) return '';
-          const last = fileKey.lastIndexOf('_');
-          if (last <= 0) return fileKey;
-          const prev = fileKey.lastIndexOf('_', last - 1);
-          if (prev < 0 || prev + 1 >= fileKey.length) return fileKey;
-          return fileKey.slice(prev + 1);
-        })();
+      {
+        title: sortableTitle('闭环率', teamSortArrow('closeRate')),
+        key: 'closeRate',
+        width: 150,
+        render: (_value, record) =>
+          renderCircularProgress(record[currentTab].closeRate),
+        onHeaderCell: () => ({
+          onClick: () => onTeamSort('closeRate'),
+          className: 'sortable-col',
+        }),
+      },
+    ],
+    [currentTab, expandedRowKeys, onOpenTeamIssues, onTeamSort, teamSortArrow]
+  );
 
-        return fileKey ? (
-          <Link
-            href={reportUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="overview-table-link"
-          >
-            {displayText}
-          </Link>
-        ) : (
-          <span className="text-slate-300">--</span>
+  const renderExpandedRepoRows = (repos: RepoProgressRow[]) => (
+    <div className="overview-expanded-rows">
+      <table className="overview-expanded-table">
+        <colgroup>
+          {TEAM_DETAIL_COLS.map((width, index) => (
+            <col key={index} style={{ width }} />
+          ))}
+        </colgroup>
+        <tbody>
+          {repos.map((repo, index) => (
+            <tr
+              key={repo.id}
+              className="overview-expanded-row"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <td className="overview-expanded-cell overview-expanded-cell-index" />
+              <td className="overview-expanded-cell overview-expanded-cell-name">
+                <span className="overview-expanded-repo-name">{repo.name}</span>
+              </td>
+              <td className="overview-expanded-cell overview-expanded-cell-empty">
+                -
+              </td>
+              <td className="overview-expanded-cell">
+                {renderMetricBar(repo.score, formatScore, 'overview-bar-blue')}
+              </td>
+              <td className="overview-expanded-cell">
+                {formatPercent(repo.successRate)}
+              </td>
+              <td className="overview-expanded-cell">
+                {formatExecutionTime(repo.executionTime)}
+              </td>
+              <td className="overview-expanded-cell">
+                {renderIssueProgress(repo[currentTab], (bucket) =>
+                  onOpenRepoIssues(repo, bucket)
+                )}
+              </td>
+              <td className="overview-expanded-cell">
+                <Button
+                  type="link"
+                  className="overview-table-link overview-table-link-strong"
+                  onClick={() => onOpenRepoIssues(repo, 'total')}
+                >
+                  {repo[currentTab].total}
+                </Button>
+              </td>
+              <td className="overview-expanded-cell">
+                {renderDetailLink(repo)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const teamExpandable = useMemo<TableProps<TeamProgressRow>['expandable']>(
+    () => ({
+      expandedRowKeys,
+      expandRowByClick: true,
+      showExpandColumn: false,
+      onExpand: (expanded, record) => {
+        setExpandedRowKeys((prev) =>
+          expanded
+            ? [...prev, record.id]
+            : prev.filter((key) => key !== record.id)
         );
       },
-    },
-  ];
+      expandedRowRender: (record) => renderExpandedRepoRows(record.repos),
+    }),
+    [currentTab, expandedRowKeys, onOpenRepoIssues]
+  );
+
+  const emptyText =
+    progressView === 'team' ? '暂无匹配责任团队' : '暂无匹配仓库';
 
   return (
     <>
       <Title level={4} className="oj-section-title">
-        各仓库进展
+        进展
       </Title>
       <div className="section-card">
+        <div className="overview-top-tabs">
+          <Segmented
+            className="overview-segmented"
+            value={progressView}
+            onChange={(value) => onProgressViewChange(value as ProgressView)}
+            options={[
+              { label: '责任团队进展', value: 'team' },
+              { label: '各仓库进展', value: 'repo' },
+            ]}
+          />
+        </div>
         <div className="tab-bar">
           <Segmented
             className="overview-segmented"
@@ -332,60 +571,30 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           </div>
         </div>
 
-        <Table<RepoProgressRow>
-          className="overview-ant-table"
-          loading={isLoading}
-          dataSource={sortedRows}
-          columns={columns}
-          rowKey="id"
-          pagination={false}
-          scroll={{ x: 1250, y: 600 }}
-          locale={{ emptyText: '暂无匹配仓库' }}
-          summary={
-            sortedRows.length > 0
-              ? () => (
-                  <Table.Summary>
-                    <Table.Summary.Row>
-                      <Table.Summary.Cell index={0} />
-                      <Table.Summary.Cell index={1} colSpan={2}>
-                        <strong>总计</strong>
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={2} colSpan={0} />
-                      <Table.Summary.Cell index={3}>
-                        {formatScore(
-                          getAverage(sortedRows.map((row) => row.score))
-                        )}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={4}>
-                        {formatPercent(
-                          getAverage(sortedRows.map((row) => row.successRate))
-                        )}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={5}>
-                        {tableSummary.pending}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={6}>
-                        {tableSummary.inProgress}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={7}>
-                        {tableSummary.resolved}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={8}>
-                        {tableSummary.total}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={9}>
-                        {formatPercent(closeRate)}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={10}>
-                        {tableSummary.na}
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell index={11}>—</Table.Summary.Cell>
-                    </Table.Summary.Row>
-                  </Table.Summary>
-                )
-              : undefined
-          }
-        />
+        {progressView === 'team' ? (
+          <Table<TeamProgressRow>
+            className="overview-ant-table"
+            loading={isLoading}
+            dataSource={teamRows}
+            columns={teamColumns}
+            rowKey="id"
+            pagination={false}
+            scroll={{ x: 1320, y: 600 }}
+            locale={{ emptyText }}
+            expandable={teamExpandable}
+          />
+        ) : (
+          <Table<RepoProgressRow>
+            className="overview-ant-table"
+            loading={isLoading}
+            dataSource={repoRows}
+            columns={repoColumns}
+            rowKey="id"
+            pagination={false}
+            scroll={{ x: 1480, y: 600 }}
+            locale={{ emptyText }}
+          />
+        )}
       </div>
     </>
   );

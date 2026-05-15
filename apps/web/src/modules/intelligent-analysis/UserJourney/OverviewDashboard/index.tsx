@@ -17,12 +17,17 @@ import type {
   IssueBucket,
   IssueModalState,
   ProgressTab,
+  ProgressView,
   RepoProgressRow,
   RepoSortKey,
+  TeamProgressRow,
+  TeamSortKey,
 } from './types';
 import {
   getAverage,
-  getSortValue,
+  getRepoSortValue,
+  getTeamSortValue,
+  mergeMetricSummaries,
   normalizeSeverity,
   toMetricSummary,
   toDashboardIssue,
@@ -47,19 +52,25 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     title: '',
     issues: [],
   });
+  const [progressView, setProgressView] = useState<ProgressView>('team');
   const [currentTab, setCurrentTab] = useState<ProgressTab>('overall');
-  const [includeCommonIssues, setIncludeCommonIssues] = useState(true);
+  const [includeCommonIssuesInProgress, setIncludeCommonIssuesInProgress] =
+    useState(true);
+  const [includeCommonIssuesInSummary, setIncludeCommonIssuesInSummary] =
+    useState(true);
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
-  const [sortKey, setSortKey] = useState<RepoSortKey | null>(null);
-  const [sortAsc, setSortAsc] = useState(true);
+  const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('name');
+  const [repoSortAsc, setRepoSortAsc] = useState(true);
+  const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('name');
+  const [teamSortAsc, setTeamSortAsc] = useState(true);
 
   const { data: cardsResp, isLoading } = useQuery({
     queryKey: [
       'overview-cards-page',
       org,
       currentTab,
-      includeCommonIssues,
+      includeCommonIssuesInProgress,
       repoFilter,
       teamFilter,
     ],
@@ -68,7 +79,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         viewType: 'repo',
         org,
         tab: currentTab,
-        includeCommonIssues,
+        includeCommonIssues: includeCommonIssuesInProgress,
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
         page: 1,
@@ -77,8 +88,12 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
 
   const { data: summaryResp } = useQuery({
-    queryKey: ['overview-summary'],
-    queryFn: () => fetchOverviewSummary({}),
+    queryKey: ['overview-summary', org, includeCommonIssuesInSummary],
+    queryFn: () =>
+      fetchOverviewSummary({
+        org,
+        includeCommonIssues: includeCommonIssuesInSummary,
+      }),
   });
 
   const { data: commonIssuesResp } = useQuery({
@@ -99,6 +114,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         team: card.team || card.sig,
         score: card.latestScore ?? issues[0]?.score ?? null,
         successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
+        executionTime: card.latestExecutionTime ?? null,
         latestReportId: card.latestReportId,
         detailReportUrl: card.detailReportUrl,
         overall: metrics,
@@ -107,6 +123,53 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       };
     });
   }, [cardsResp]);
+
+  const teamRows = useMemo<TeamProgressRow[]>(() => {
+    const groups = new Map<string, TeamProgressRow>();
+
+    repoRows.forEach((row) => {
+      const teamName = row.team?.trim() || '未分配团队';
+      const existing = groups.get(teamName);
+      if (existing) {
+        existing.repoCount += 1;
+        existing.repos.push(row);
+        existing.issues.push(...row.issues);
+        existing.score =
+          getAverage(existing.repos.map((repo) => repo.score)) ??
+          existing.score;
+        existing.successRate =
+          getAverage(existing.repos.map((repo) => repo.successRate)) ??
+          existing.successRate;
+        existing.executionTime =
+          getAverage(existing.repos.map((repo) => repo.executionTime)) ??
+          existing.executionTime;
+        existing.overall = mergeMetricSummaries(
+          existing.repos.map((repo) => repo.overall)
+        );
+        existing.blocking = mergeMetricSummaries(
+          existing.repos.map((repo) => repo.blocking)
+        );
+        return;
+      }
+
+      groups.set(teamName, {
+        id: teamName,
+        name: teamName,
+        repoCount: 1,
+        score: row.score,
+        successRate: row.successRate,
+        executionTime: row.executionTime,
+        overall: row.overall,
+        blocking: row.blocking,
+        issues: [...row.issues],
+        repos: [row],
+      });
+    });
+
+    return Array.from(groups.values()).sort((left, right) =>
+      left.name.localeCompare(right.name)
+    );
+  }, [repoRows]);
 
   const teamOptions = useMemo(() => {
     const fromApi = (cardsResp?.teamOptions ?? []).filter(Boolean);
@@ -141,23 +204,35 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       ? cachedRepoOptions.current
       : repoOptions;
 
-  const filteredRows = useMemo(() => repoRows, [repoRows]);
-
-  const sortedRows = useMemo(() => {
-    if (!sortKey) return filteredRows;
-    const rows = [...filteredRows];
+  const sortedRepoRows = useMemo(() => {
+    const rows = [...repoRows];
     rows.sort((left, right) => {
-      const a = getSortValue(left, sortKey, currentTab);
-      const b = getSortValue(right, sortKey, currentTab);
+      const a = getRepoSortValue(left, repoSortKey, currentTab);
+      const b = getRepoSortValue(right, repoSortKey, currentTab);
       if (typeof a === 'string' && typeof b === 'string') {
         const result = a.localeCompare(b);
-        return sortAsc ? result : -result;
+        return repoSortAsc ? result : -result;
       }
       if (a === b) return 0;
-      return sortAsc ? (a > b ? 1 : -1) : a < b ? 1 : -1;
+      return repoSortAsc ? (a > b ? 1 : -1) : a < b ? 1 : -1;
     });
     return rows;
-  }, [currentTab, filteredRows, sortAsc, sortKey]);
+  }, [currentTab, repoRows, repoSortAsc, repoSortKey]);
+
+  const sortedTeamRows = useMemo(() => {
+    const rows = [...teamRows];
+    rows.sort((left, right) => {
+      const a = getTeamSortValue(left, teamSortKey, currentTab);
+      const b = getTeamSortValue(right, teamSortKey, currentTab);
+      if (typeof a === 'string' && typeof b === 'string') {
+        const result = a.localeCompare(b);
+        return teamSortAsc ? result : -result;
+      }
+      if (a === b) return 0;
+      return teamSortAsc ? (a > b ? 1 : -1) : a < b ? 1 : -1;
+    });
+    return rows;
+  }, [currentTab, teamRows, teamSortAsc, teamSortKey]);
 
   const overviewSummary = useMemo(
     () => summaryResp?.overviewSummary ?? EMPTY_SUMMARY,
@@ -168,15 +243,12 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     [summaryResp]
   );
   const summaryScore = useMemo(
-    () =>
-      summaryResp?.summaryScore ?? getAverage(repoRows.map((row) => row.score)),
-    [repoRows, summaryResp]
+    () => summaryResp?.summaryScore ?? null,
+    [summaryResp]
   );
   const summarySuccessRate = useMemo(
-    () =>
-      summaryResp?.summarySuccessRate ??
-      getAverage(repoRows.map((row) => row.successRate)),
-    [repoRows, summaryResp]
+    () => summaryResp?.summarySuccessRate ?? null,
+    [summaryResp]
   );
 
   const commonIssues = useMemo<CommonIssueGroup[]>(
@@ -241,17 +313,63 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     openIssueModal(`${row.name} · ${bucketLabel}`, issues);
   };
 
-  const handleSort = (key: RepoSortKey) => {
-    if (sortKey === key) {
-      setSortAsc((prev) => !prev);
-      return;
+  const openTeamIssues = (
+    row: TeamProgressRow,
+    bucket: IssueBucket | 'total'
+  ) => {
+    let issues = row.issues;
+    if (bucket === 'pending') {
+      issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
+    } else if (bucket === 'inProgress') {
+      issues = issues.filter(
+        (issue) => issue.normalizedStatus === 'inProgress'
+      );
+    } else if (bucket === 'resolved') {
+      issues = issues.filter(
+        (issue) =>
+          issue.normalizedStatus === 'resolved' ||
+          issue.normalizedStatus === 'na'
+      );
+    } else if (bucket === 'na') {
+      issues = issues.filter((issue) => issue.normalizedStatus === 'na');
     }
-    setSortKey(key);
-    setSortAsc(true);
+
+    const bucketLabel =
+      bucket === 'pending'
+        ? '待处理'
+        : bucket === 'inProgress'
+        ? '进行中'
+        : bucket === 'resolved'
+        ? '已闭环'
+        : bucket === 'na'
+        ? '不需要修复'
+        : '总问题数';
+
+    openIssueModal(`${row.name} · ${bucketLabel}`, issues);
   };
 
-  const sortArrow = (key: RepoSortKey) =>
-    sortKey === key ? (sortAsc ? '↑' : '↓') : '';
+  const handleRepoSort = (key: RepoSortKey) => {
+    if (repoSortKey === key) {
+      setRepoSortAsc((prev) => !prev);
+      return;
+    }
+    setRepoSortKey(key);
+    setRepoSortAsc(true);
+  };
+
+  const handleTeamSort = (key: TeamSortKey) => {
+    if (teamSortKey === key) {
+      setTeamSortAsc((prev) => !prev);
+      return;
+    }
+    setTeamSortKey(key);
+    setTeamSortAsc(true);
+  };
+
+  const repoSortArrow = (key: RepoSortKey) =>
+    repoSortKey === key ? (repoSortAsc ? '↑' : '↓') : '';
+  const teamSortArrow = (key: TeamSortKey) =>
+    teamSortKey === key ? (teamSortAsc ? '↑' : '↓') : '';
 
   return (
     <div className="oj-page">
@@ -261,14 +379,19 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           blockingSummary={blockingSummary}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
+          summaryAvgExecutionTime={summaryResp?.summaryAvgExecutionTime ?? null}
           repoCount={summaryResp?.repoCount ?? 0}
+          includeCommonIssues={includeCommonIssuesInSummary}
+          onIncludeCommonIssuesChange={setIncludeCommonIssuesInSummary}
         />
 
         <RepoProgressSection
+          progressView={progressView}
+          onProgressViewChange={setProgressView}
           currentTab={currentTab}
           onTabChange={setCurrentTab}
-          includeCommonIssues={includeCommonIssues}
-          onIncludeCommonIssuesChange={setIncludeCommonIssues}
+          includeCommonIssues={includeCommonIssuesInProgress}
+          onIncludeCommonIssuesChange={setIncludeCommonIssuesInProgress}
           repoFilter={repoFilter}
           repoOptions={displayRepoOptions}
           onRepoFilterChange={setRepoFilter}
@@ -276,10 +399,14 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           teamOptions={teamOptions}
           onTeamFilterChange={setTeamFilter}
           isLoading={isLoading}
-          sortedRows={sortedRows}
-          sortArrow={sortArrow}
-          onSort={handleSort}
+          teamRows={sortedTeamRows}
+          repoRows={sortedRepoRows}
+          repoSortArrow={repoSortArrow}
+          teamSortArrow={teamSortArrow}
+          onRepoSort={handleRepoSort}
+          onTeamSort={handleTeamSort}
           onOpenRepoIssues={openRepoIssues}
+          onOpenTeamIssues={openTeamIssues}
         />
 
         <CommonIssuesSection

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Col, Row } from 'antd';
 import { useRouter } from 'next/router';
 import CompareReportSummary from './components/CompareReportSummary';
@@ -15,12 +15,22 @@ import {
 } from './hooks/useRegistryData';
 import { UserJourneyProjectView } from './types';
 
+const ALL_SIG_QUERY_VALUE = '__all__';
+
 const getProjectQueryValues = (project: string | string[] | undefined) => {
   if (Array.isArray(project)) {
     return project;
   }
 
   return project ? [project] : [];
+};
+
+const getSingleQueryValue = (value: string | string[] | undefined) => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
 };
 
 type UserJourneyProps = {
@@ -71,6 +81,36 @@ const UserJourney: React.FC<UserJourneyProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [requestedProjectsKey]
   );
+  const selectedSig = useMemo(() => {
+    const sigQuery = getSingleQueryValue(router.query.sig);
+    if (sigQuery === ALL_SIG_QUERY_VALUE) {
+      return '';
+    }
+    return sigQuery;
+  }, [router.query.sig]);
+  const focusTaskId = useMemo(
+    () => getSingleQueryValue(router.query.focusTaskId)?.trim() ?? '',
+    [router.query.focusTaskId]
+  );
+  const focusPainIndex = useMemo(() => {
+    const raw = getSingleQueryValue(router.query.focusPainIndex);
+    if (!raw) return null;
+    const parsed = Number.parseInt(raw, 10);
+    return Number.isNaN(parsed) ? null : parsed;
+  }, [router.query.focusPainIndex]);
+  const autoOpenPain = useMemo(() => {
+    const raw = getSingleQueryValue(router.query.autoOpenPain);
+    return raw === '1' || raw === 'true';
+  }, [router.query.autoOpenPain]);
+  const overviewHref = useMemo(() => {
+    const orgValue =
+      getSingleQueryValue(router.query.org)?.trim() || org?.trim();
+    return orgValue
+      ? `/intelligent-analysis/${encodeURIComponent(
+          orgValue
+        )}/community-experience/overview`
+      : '/intelligent-analysis/community-experience/overview';
+  }, [org, router.query.org]);
   const [activeStepKey, setActiveStepKey] = useState('');
   const [developerType, setDeveloperType] = useState('');
   const [journeyMode, setJourneyMode] = useState('');
@@ -124,6 +164,25 @@ const UserJourney: React.FC<UserJourneyProps> = ({
     setActiveStepKey(defaultStepKey);
   }, [projectViews]);
 
+  useEffect(() => {
+    if (!focusTaskId) {
+      return;
+    }
+
+    const firstProject = projectViews[0]?.data;
+    if (!firstProject) {
+      return;
+    }
+
+    const matchedStep = firstProject.journeySteps.find((step) =>
+      (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
+    );
+
+    if (matchedStep && matchedStep.key !== activeStepKey) {
+      setActiveStepKey(matchedStep.key);
+    }
+  }, [activeStepKey, focusTaskId, projectViews]);
+
   const currentStep = useMemo(() => {
     if (!primaryProject) {
       return null;
@@ -155,14 +214,29 @@ const UserJourney: React.FC<UserJourneyProps> = ({
       !requestedProjects.includes(option.value as UserJourneyProjectFileKey)
   );
 
-  const updateProjectsRoute = (nextProjects: UserJourneyProjectFileKey[]) => {
+  const updateProjectsRoute = (
+    nextProjects: UserJourneyProjectFileKey[],
+    selection?: { sig?: string }
+  ) => {
+    const nextQuery = {
+      ...router.query,
+      project: nextProjects,
+    } as Record<string, string | string[]>;
+
+    if (selection && 'sig' in selection) {
+      if (selection.sig === '') {
+        nextQuery.sig = ALL_SIG_QUERY_VALUE;
+      } else if (selection.sig) {
+        nextQuery.sig = selection.sig;
+      } else {
+        delete nextQuery.sig;
+      }
+    }
+
     void router.push(
       {
         pathname: router.pathname,
-        query: {
-          ...router.query,
-          project: nextProjects,
-        },
+        query: nextQuery,
       },
       undefined,
       {
@@ -177,20 +251,18 @@ const UserJourney: React.FC<UserJourneyProps> = ({
       projectKey,
     ]);
 
-    updateProjectsRoute(nextProjects);
+    updateProjectsRoute(nextProjects, { sig: selectedSig });
   };
 
-  const handleSelectProject = (projectKey: string) => {
-    const resolved = resolveFileKeyFromRegistry(projectKey, registry);
-    if (resolved) {
-      updateProjectsRoute([resolved as UserJourneyProjectFileKey]);
-    }
-  };
-
-  const handleSelectVersion = (_version: string) => {
+  const handleSelectVersion = (
+    _version: string,
+    selection?: { sig: string }
+  ) => {
     const resolved = resolveFileKeyFromRegistry(_version, registry);
     if (resolved) {
-      updateProjectsRoute([resolved as UserJourneyProjectFileKey]);
+      updateProjectsRoute([resolved as UserJourneyProjectFileKey], {
+        sig: selection?.sig ?? selectedSig,
+      });
     }
   };
 
@@ -203,8 +275,39 @@ const UserJourney: React.FC<UserJourneyProps> = ({
       return;
     }
 
-    updateProjectsRoute(nextProjects);
+    updateProjectsRoute(nextProjects, { sig: selectedSig });
   };
+
+  const clearPainFocusQuery = useCallback(() => {
+    const nextQuery = {
+      ...router.query,
+    } as Record<string, string | string[]>;
+    let changed = false;
+
+    (['focusTaskId', 'focusPainIndex', 'autoOpenPain'] as const).forEach(
+      (key) => {
+        if (key in nextQuery) {
+          delete nextQuery[key];
+          changed = true;
+        }
+      }
+    );
+
+    if (!changed) {
+      return;
+    }
+
+    void router.replace(
+      {
+        pathname: router.pathname,
+        query: nextQuery,
+      },
+      undefined,
+      {
+        shallow: true,
+      }
+    );
+  }, [router]);
 
   if (
     !projectViews.length ||
@@ -220,6 +323,14 @@ const UserJourney: React.FC<UserJourneyProps> = ({
 
   const keyMetrics = currentStep?.metrics ?? [];
   const executionPathItems = currentStep?.executionPath ?? [];
+  const painFocusTarget =
+    !focusTaskId || focusPainIndex === null
+      ? undefined
+      : {
+          taskId: focusTaskId,
+          painIndex: focusPainIndex,
+          autoOpen: autoOpenPain,
+        };
 
   return (
     <div className="min-h-full bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.08),_transparent_24%),linear-gradient(180deg,#f6f8fc_0%,#eef3fb_100%)]">
@@ -235,14 +346,15 @@ const UserJourney: React.FC<UserJourneyProps> = ({
         currentProjectKey={currentProjectKey}
         versionOptions={currentVersionOptions}
         currentVersion={currentVersion}
+        selectedSig={selectedSig}
         compareProjectOptions={availableCompareProjects}
-        onSelectProject={handleSelectProject}
         onSelectVersion={handleSelectVersion}
         onAddProject={handleAddProject}
         onRemoveProject={handleRemoveProject}
         hideDeveloperControls={hidePageHeaderDeveloperControls}
         transparent={transparentPageHeader}
         org={org}
+        overviewHref={overviewHref}
       />
 
       <div className="flex min-h-[calc(100vh-136px)] flex-col gap-5 p-5">
@@ -292,6 +404,8 @@ const UserJourney: React.FC<UserJourneyProps> = ({
                   executionPathItems={executionPathItems}
                   agentVersion={primaryProject.agentVersion}
                   projectFileKey={currentProjectFileKey}
+                  painFocusTarget={painFocusTarget}
+                  onPainFocusHandled={clearPainFocusQuery}
                 />
               </Col>
             </Row>

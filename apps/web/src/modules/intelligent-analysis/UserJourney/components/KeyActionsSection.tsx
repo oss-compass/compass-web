@@ -30,6 +30,12 @@ type KeyActionsSectionProps = {
   executionPathItems: ActionDetailRecord[];
   /** 报告文件 key，如 cann_asc_devkit_20260408_1824，用于推导 log 路径 */
   projectFileKey?: string;
+  painFocusTarget?: {
+    taskId: string;
+    painIndex: number;
+    autoOpen?: boolean;
+  };
+  onPainFocusHandled?: () => void;
 };
 
 /* ─── 静态 task 定义 map ─── */
@@ -241,6 +247,11 @@ const EvidenceInline: React.FC<{
   stepId?: string;
   legacyStepId?: string;
   onStepClick?: (toolIds: string[]) => void;
+  painFocusTarget?: {
+    painIndex: number;
+    autoOpen?: boolean;
+  };
+  onPainFocusHandled?: () => void;
 }> = ({
   observations,
   pain_points,
@@ -250,6 +261,8 @@ const EvidenceInline: React.FC<{
   stepId,
   legacyStepId,
   onStepClick,
+  painFocusTarget,
+  onPainFocusHandled,
 }) => {
   const hasObs = observations && observations.length > 0;
   const hasPain = pain_points && pain_points.length > 0;
@@ -276,6 +289,8 @@ const EvidenceInline: React.FC<{
         stepId={stepId}
         legacyStepId={legacyStepId}
         onStepClick={onStepClick}
+        painFocusTarget={painFocusTarget}
+        onPainFocusHandled={onPainFocusHandled}
       />
     </div>
   );
@@ -291,6 +306,11 @@ const EvidenceBlock: React.FC<{
   stepId?: string;
   legacyStepId?: string;
   onStepClick?: (toolIds: string[]) => void;
+  painFocusTarget?: {
+    painIndex: number;
+    autoOpen?: boolean;
+  };
+  onPainFocusHandled?: () => void;
 }> = ({
   observations,
   pain_points,
@@ -300,6 +320,8 @@ const EvidenceBlock: React.FC<{
   stepId,
   legacyStepId,
   onStepClick,
+  painFocusTarget,
+  onPainFocusHandled,
 }) => {
   const [open, setOpen] = useState(false);
   const hasData =
@@ -345,6 +367,8 @@ const EvidenceBlock: React.FC<{
             stepId={stepId}
             legacyStepId={legacyStepId}
             onStepClick={onStepClick}
+            painFocusTarget={painFocusTarget}
+            onPainFocusHandled={onPainFocusHandled}
           />
         </div>
       )}
@@ -721,6 +745,11 @@ const TaskCard: React.FC<{
   stepCode?: string;
   highlightedIndices?: number[];
   onStepClick?: (toolIds: string[]) => void;
+  painFocusTarget?: {
+    painIndex: number;
+    autoOpen?: boolean;
+  };
+  onPainFocusHandled?: () => void;
 }> = ({
   taskId,
   rows,
@@ -731,6 +760,8 @@ const TaskCard: React.FC<{
   stepCode,
   highlightedIndices,
   onStepClick,
+  painFocusTarget,
+  onPainFocusHandled,
 }) => {
   const [tableExpanded, setTableExpanded] = useState(true);
 
@@ -745,7 +776,10 @@ const TaskCard: React.FC<{
   const tableKey = `${currentStepKey}-${taskId ?? 'no_task'}`;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+    <div
+      id={`task-card-${tableKey}`}
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
+    >
       {/* 卡片头 */}
       <div className="flex items-center gap-0 border-b border-slate-100">
         {/* 左侧序号 */}
@@ -811,6 +845,8 @@ const TaskCard: React.FC<{
             stepId={taskId}
             legacyStepId={stepCode}
             onStepClick={onStepClick}
+            painFocusTarget={painFocusTarget}
+            onPainFocusHandled={onPainFocusHandled}
           />
         </div>
       ) : null}
@@ -840,6 +876,8 @@ const TaskCard: React.FC<{
             stepId={taskId}
             legacyStepId={stepCode}
             onStepClick={onStepClick}
+            painFocusTarget={painFocusTarget}
+            onPainFocusHandled={onPainFocusHandled}
           />
         </div>
       )}
@@ -853,14 +891,29 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   stepCode,
   executionPathItems,
   projectFileKey,
+  painFocusTarget,
+  onPainFocusHandled,
 }) => {
   const logData = useLogData(projectFileKey);
   const [highlightedInfo, setHighlightedInfo] = useState<{
     tableKey: string;
     indices: number[];
   } | null>(null);
+  const [handledPainFocusKey, setHandledPainFocusKey] = useState<string>('');
 
   const groups = groupByTaskId(executionPathItems);
+  const normalizedTaskId = painFocusTarget?.taskId?.trim() || '';
+  const normalizedPainFocus =
+    painFocusTarget && Number.isFinite(painFocusTarget.painIndex)
+      ? {
+          taskId: normalizedTaskId,
+          painIndex: Number(painFocusTarget.painIndex),
+          autoOpen: painFocusTarget.autoOpen,
+        }
+      : null;
+  const painFocusKey = normalizedPainFocus
+    ? `${normalizedPainFocus.taskId}#${normalizedPainFocus.painIndex}`
+    : '';
 
   const handleStepClick = (toolIds: string[], tableKey: string) => {
     const indices = toolIds
@@ -911,6 +964,31 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
     };
   }, [currentStepKey, groups]); // 当步骤切换或数据变化时重新绑定逻辑
 
+  useEffect(() => {
+    if (!painFocusKey) {
+      setHandledPainFocusKey('');
+      return;
+    }
+
+    if (handledPainFocusKey && handledPainFocusKey !== painFocusKey) {
+      setHandledPainFocusKey('');
+    }
+  }, [handledPainFocusKey, painFocusKey]);
+
+  useEffect(() => {
+    if (!normalizedPainFocus || handledPainFocusKey === painFocusKey) {
+      return;
+    }
+
+    const targetTaskTableKey = `${currentStepKey}-${
+      normalizedPainFocus.taskId || 'no_task'
+    }`;
+    const taskCard = document.getElementById(`task-card-${targetTaskTableKey}`);
+    if (taskCard) {
+      taskCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentStepKey, handledPainFocusKey, normalizedPainFocus, painFocusKey]);
+
   return (
     <div className="mt-6">
       <div className="text-base font-semibold text-slate-900">
@@ -941,6 +1019,22 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                     : []
                 }
                 onStepClick={(ids) => handleStepClick(ids, tableKey)}
+                painFocusTarget={
+                  normalizedPainFocus &&
+                  taskId === normalizedPainFocus.taskId &&
+                  handledPainFocusKey !== painFocusKey
+                    ? {
+                        painIndex: normalizedPainFocus.painIndex,
+                        autoOpen: normalizedPainFocus.autoOpen,
+                      }
+                    : undefined
+                }
+                onPainFocusHandled={() => {
+                  if (painFocusKey) {
+                    setHandledPainFocusKey(painFocusKey);
+                  }
+                  onPainFocusHandled?.();
+                }}
               />
             );
           })}
