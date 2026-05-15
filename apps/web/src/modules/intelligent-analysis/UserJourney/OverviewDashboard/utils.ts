@@ -95,7 +95,7 @@ export const formatPercent = (value: number | null): string =>
 
 export const formatExecutionTime = (seconds: number | null): string => {
   if (seconds == null) return '--';
-  return `${(seconds / 60).toFixed(1)} 分钟`;
+  return `${((seconds * 10) / 60).toFixed(1)} 分钟`;
 };
 
 export const isNonActionable = (row: OverviewPainPointRow) =>

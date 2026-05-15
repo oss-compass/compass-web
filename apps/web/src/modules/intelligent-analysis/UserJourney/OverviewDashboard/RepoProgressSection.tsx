@@ -394,8 +394,12 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: sortableTitle('闭环率', repoSortArrow('closeRate')),
         key: 'closeRate',
         width: repoColumnWidths[8],
-        render: (_value, record) =>
-          renderCircularProgress(record[currentTab].closeRate),
+        render: (_value, record) => {
+          const metrics = record[currentTab];
+          return renderCircularProgress(
+            metrics.total === 0 ? 100 : metrics.closeRate
+          );
+        },
         onHeaderCell: () => ({
           onClick: () => onRepoSort('closeRate'),
           className: 'sortable-col',
@@ -513,8 +517,12 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: sortableTitle('闭环率', teamSortArrow('closeRate')),
         key: 'closeRate',
         width: teamColumnWidths[8],
-        render: (_value, record) =>
-          renderCircularProgress(record[currentTab].closeRate),
+        render: (_value, record) => {
+          const metrics = record[currentTab];
+          return renderCircularProgress(
+            metrics.total === 0 ? 100 : metrics.closeRate
+          );
+        },
         onHeaderCell: () => ({
           onClick: () => onTeamSort('closeRate'),
           className: 'sortable-col',
@@ -593,7 +601,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                   </Button>
                 </td>
                 <td className="overview-expanded-cell">
-                  {renderCircularProgress(repo[currentTab].closeRate)}
+                  {renderCircularProgress(
+                    repo[currentTab].total === 0
+                      ? 100
+                      : repo[currentTab].closeRate
+                  )}
                 </td>
                 <td className="overview-expanded-cell">
                   {renderDetailLink(repo)}
@@ -708,7 +720,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             columns={teamColumns}
             rowKey="id"
             pagination={false}
-            scroll={{ x: teamScrollX, y: 600 }}
+            scroll={{ x: teamScrollX }}
+            tableLayout="fixed"
             locale={{ emptyText }}
             expandable={teamExpandable}
           />
@@ -720,7 +733,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             columns={repoColumns}
             rowKey="id"
             pagination={false}
-            scroll={{ x: repoScrollX, y: 600 }}
+            scroll={{ x: repoScrollX }}
+            tableLayout="fixed"
             locale={{ emptyText }}
           />
         )}
