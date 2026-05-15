@@ -49,8 +49,16 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
       </div>
       <div className="overview-summary-stack">
         <div className="overview-grid">
-          <OverviewSummaryBlock title="总体问题" summary={overviewSummary} />
-          <OverviewSummaryBlock title="阻塞问题" summary={blockingSummary} />
+          <OverviewSummaryBlock
+            title="总体问题"
+            summary={overviewSummary}
+            tooltip="含严重程度P0-P5的所有问题"
+          />
+          <OverviewSummaryBlock
+            title="阻塞问题"
+            summary={blockingSummary}
+            tooltip="含严重程度P0-P2的问题"
+          />
         </div>
         <div className="overview-bottom-row">
           <div className="bottom-metric">
@@ -79,7 +87,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
             </div>
           </div>
           <div className="bottom-metric">
-            <div className="bm-label">平均工具执行耗时</div>
+            <div className="bm-label">开发者旅程耗时</div>
             <div className="bm-value">
               <span className="bm-value-main">
                 {formatExecutionTime(summaryAvgExecutionTime)}

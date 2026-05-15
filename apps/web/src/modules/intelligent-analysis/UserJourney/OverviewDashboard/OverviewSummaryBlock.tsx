@@ -7,15 +7,24 @@ import { formatPercent } from './utils';
 type OverviewSummaryBlockProps = {
   title: string;
   summary: MetricSummary;
+  tooltip?: string;
 };
 
 const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   title,
   summary,
+  tooltip,
 }) => {
   return (
     <div className="overview-block">
-      <div className="ov-title">{title}</div>
+      <div className="ov-title flex items-center gap-1.5">
+        <span>{title}</span>
+        {tooltip ? (
+          <Tooltip title={tooltip}>
+            <InfoCircleOutlined className="cursor-help text-[13px] text-slate-400 transition-colors hover:text-slate-600" />
+          </Tooltip>
+        ) : null}
+      </div>
       <div className="ov-row">
         <div className="ov-item">
           <div className="ov-label">总问题数</div>
@@ -30,12 +39,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
           <div className="ov-value ov-value-blue">{summary.inProgress}</div>
         </div>
         <div className="ov-item">
-          <div className="ov-label">
-            已闭环
-            <Tooltip title="含不需要修复">
-              <InfoCircleOutlined className="overview-info-icon" />
-            </Tooltip>
-          </div>
+          <div className="ov-label">已闭环</div>
           <div className="ov-value ov-value-green">{summary.resolved}</div>
         </div>
         <div className="ov-item">

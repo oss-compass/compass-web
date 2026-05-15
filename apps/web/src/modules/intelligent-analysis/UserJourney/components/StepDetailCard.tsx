@@ -26,6 +26,7 @@ type StepDetailCardProps = {
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  versionOptions?: Array<{ value: string; label: string }>;
 };
 
 const StepDetailCard: React.FC<StepDetailCardProps> = ({
@@ -39,6 +40,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   projectFileKey,
   painFocusTarget,
   onPainFocusHandled,
+  versionOptions,
 }) => {
   const achievementMetric = keyMetrics.find(
     (m) => m.metricId === 'SDX_TASK_ACHIEVEMENT_RATE'
@@ -220,6 +222,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
           projectFileKey={projectFileKey}
           {...(painFocusTarget ? { painFocusTarget } : {})}
           onPainFocusHandled={onPainFocusHandled}
+          versionOptions={versionOptions}
         />
       </div>
 

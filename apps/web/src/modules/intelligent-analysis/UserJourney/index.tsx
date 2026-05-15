@@ -406,6 +406,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
                   projectFileKey={currentProjectFileKey}
                   painFocusTarget={painFocusTarget}
                   onPainFocusHandled={clearPainFocusQuery}
+                  versionOptions={currentVersionOptions}
                 />
               </Col>
             </Row>

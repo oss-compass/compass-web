@@ -15,7 +15,7 @@ const DashboardStyles: React.FC = () => (
 
     .detail-panel-body {
       width: 100%;
-      padding: 20px 48px;
+      padding: 20px 24px;
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -339,12 +339,12 @@ const DashboardStyles: React.FC = () => (
     .overview-bar-cell {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 4px;
       min-width: 0;
     }
 
     .overview-bar-value {
-      min-width: 44px;
+      min-width: 24px;
       font-weight: 700;
       color: #0f172a;
       font-variant-numeric: tabular-nums;
@@ -352,7 +352,7 @@ const DashboardStyles: React.FC = () => (
 
     .overview-bar-track {
       flex: 1;
-      height: 8px;
+      height: 6px;
       border-radius: 999px;
       background: #e2e8f0;
       overflow: hidden;
@@ -530,7 +530,7 @@ const DashboardStyles: React.FC = () => (
     }
 
     .overview-expanded-cell {
-      padding: 9px 10px;
+      padding: 10px 12px;
       background: #fbfcfe;
       vertical-align: middle;
       color: #5b6168;

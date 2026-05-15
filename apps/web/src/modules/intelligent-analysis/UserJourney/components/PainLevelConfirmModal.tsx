@@ -5,6 +5,7 @@ import {
   Input,
   Modal,
   Radio,
+  Select,
   Space,
   Steps,
   Button,
@@ -126,6 +127,7 @@ type FormValues = {
   issue_link?: string;
   pr_link?: string;
   retest_decision?: 'passed' | 'failed' | 'not_detected';
+  retest_passed_file_key?: string;
 };
 
 type Props = {
@@ -136,11 +138,105 @@ type Props = {
   painText: string;
   /** 当前痛点状态 */
   currentRecord?: PainConfirmationRecord | null;
+  /** 可选：版本选项（file_key → label），用于复测通过时选择通过报告 */
+  versionOptions?: Array<{ value: string; label: string }>;
   onCancel: () => void;
   onSubmit: (payload: UpsertPainConfirmationPayload) => Promise<void>;
 };
 
 const CONFIRMED_BY_PATTERN = /^[\u4e00-\u9fa5a-zA-Z0-9 \-_]{1,20}$/;
+
+const enrichPayloadByStatus = (
+  base: UpsertPainConfirmationPayload,
+  status: PainStatus,
+  vals: FormValues,
+  shouldShowRetest: boolean
+): UpsertPainConfirmationPayload => {
+  if (status === PainStatus.TO_BE_CONFIRMED) {
+    return {
+      ...base,
+      severity: vals.severity,
+      is_common_issue: vals.is_common === true,
+      common_issue_type:
+        vals.is_common === true ? vals.common_issue_type || null : null,
+    };
+  }
+  if (status === PainStatus.CONFIRMED_PENDING_FIX) {
+    return { ...base, issue_link: vals.issue_link };
+  }
+  if (status === PainStatus.FIXED_PENDING_RETEST) {
+    return { ...base, pr_link: vals.pr_link };
+  }
+  if (shouldShowRetest) {
+    return {
+      ...base,
+      retest_decision: vals.retest_decision,
+      retest_passed_file_key:
+        vals.retest_decision === 'passed'
+          ? vals.retest_passed_file_key
+          : undefined,
+    };
+  }
+  return base;
+};
+
+const renderRetestedPassedInfo = (
+  currentRecord?: PainConfirmationRecord | null
+) => (
+  <div className="space-y-3 rounded-md bg-emerald-50 p-4">
+    <div className="flex items-center gap-2">
+      <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+      <Text type="success" strong>
+        复测已通过
+      </Text>
+    </div>
+    <div className="space-y-1.5 text-sm text-slate-600">
+      {currentRecord?.pr_link && (
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 text-xs text-slate-400">PR 链接：</span>
+          <Link
+            href={currentRecord.pr_link}
+            target="_blank"
+            className="text-blue-600 hover:text-blue-800"
+          >
+            {currentRecord.pr_link}
+          </Link>
+        </div>
+      )}
+      {(currentRecord?.retest_passed_file_key ||
+        currentRecord?.latest_file_key) && (
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 text-xs text-slate-400">通过报告：</span>
+          <Link
+            href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
+              currentRecord.retest_passed_file_key ||
+                currentRecord.latest_file_key ||
+                ''
+            )}`}
+            className="text-blue-600 hover:text-blue-800"
+          >
+            {currentRecord.retest_passed_file_key ||
+              currentRecord.latest_file_key}
+          </Link>
+        </div>
+      )}
+      {currentRecord?.confirmed_by && (
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 text-xs text-slate-400">提交人：</span>
+          <span>{currentRecord.confirmed_by}</span>
+        </div>
+      )}
+      {currentRecord?.confirmed_at && (
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 text-xs text-slate-400">提交时间：</span>
+          <span>
+            {currentRecord.confirmed_at.replace('T', ' ').replace('Z', '')}
+          </span>
+        </div>
+      )}
+    </div>
+  </div>
+);
 
 const PainLevelConfirmModal: React.FC<Props> = ({
   open,
@@ -149,6 +245,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   painIndex,
   painText,
   currentRecord,
+  versionOptions,
   onCancel,
   onSubmit,
 }) => {
@@ -225,11 +322,20 @@ const PainLevelConfirmModal: React.FC<Props> = ({
         issue_link: currentRecord?.issue_link || '',
         pr_link: currentRecord?.pr_link || '',
         retest_decision: undefined,
+        retest_passed_file_key: latestFileKey || undefined,
       });
     }
-  }, [open, currentRecord, currentStatus, form, commonIssueTypeOptions]);
+  }, [
+    open,
+    currentRecord,
+    currentStatus,
+    form,
+    commonIssueTypeOptions,
+    latestFileKey,
+  ]);
 
   const isCommon = Form.useWatch('is_common', form);
+  const retestDecision = Form.useWatch('retest_decision', form);
 
   useEffect(() => {
     if (isCommon !== true) {
@@ -242,8 +348,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       const values = await form.validateFields();
       setSubmitting(true);
 
-      // 根据 currentStatus 提交不同的负载
-      const payload: UpsertPainConfirmationPayload = {
+      const basePayload: UpsertPainConfirmationPayload = {
         step_id: stepId,
         pain_index: painIndex,
         pain_text: painText,
@@ -251,25 +356,12 @@ const PainLevelConfirmModal: React.FC<Props> = ({
         confirmed_by: values.confirmed_by || null,
       };
 
-      // 如果当前在 待确认(1) 阶段，点击提交后目标状态是 已确认待修复(2)，此时需要提交严重程度
-      if (currentStatus === PainStatus.TO_BE_CONFIRMED) {
-        payload.severity = values.severity;
-        payload.is_common_issue = values.is_common === true;
-        payload.common_issue_type =
-          values.is_common === true ? values.common_issue_type || null : null;
-      }
-      // 如果当前在 已确认待修复(2) 阶段，点击提交后目标状态是 已修复待复测(3)，此时需要提交 issue_link
-      else if (currentStatus === PainStatus.CONFIRMED_PENDING_FIX) {
-        payload.issue_link = values.issue_link;
-      }
-      // 如果当前在 已修复待复测(3) 阶段，点击提交后目标状态是 复测中(4)，此时需要提交 pr_link
-      else if (currentStatus === PainStatus.FIXED_PENDING_RETEST) {
-        payload.pr_link = values.pr_link;
-      }
-      // 如果当前在 复测中(4) 且检测到最新报告，则需要提交复测结论
-      else if (showRetestDecision) {
-        payload.retest_decision = values.retest_decision;
-      }
+      const payload = enrichPayloadByStatus(
+        basePayload,
+        currentStatus,
+        values,
+        showRetestDecision
+      );
 
       await onSubmit(payload);
       toast.success('痛点状态已更新', {
@@ -326,6 +418,13 @@ const PainLevelConfirmModal: React.FC<Props> = ({
           return `等级: ${getPainLevelLabel(record.severity)}`;
         if (record.status === 2) return `Issue: ${record.issue_link || '-'}`;
         if (record.status === 3) return `PR: ${record.pr_link || '-'}`;
+        if (record.status === 5) {
+          const parts = [];
+          if (record.pr_link) parts.push(`PR: ${record.pr_link}`);
+          if (record.retest_passed_file_key)
+            parts.push(`通过报告: ${record.retest_passed_file_key}`);
+          return parts.length ? parts.join(', ') : '--';
+        }
         return '-';
       },
     },
@@ -642,6 +741,31 @@ const PainLevelConfirmModal: React.FC<Props> = ({
                         </Space>
                       </Radio.Group>
                     </Form.Item>
+                    {retestDecision === 'passed' &&
+                      versionOptions &&
+                      versionOptions.length > 0 && (
+                        <Form.Item
+                          name="retest_passed_file_key"
+                          label={
+                            <span className="text-sm font-medium text-slate-700">
+                              通过报告
+                            </span>
+                          }
+                          rules={[
+                            { required: true, message: '请选择通过报告' },
+                          ]}
+                        >
+                          <Select
+                            placeholder="请选择复测通过的报告"
+                            options={versionOptions.filter(
+                              (opt) => opt.value !== fileKey
+                            )}
+                            showSearch
+                            optionFilterProp="label"
+                            popupMatchSelectWidth={false}
+                          />
+                        </Form.Item>
+                      )}
                   </div>
                 ) : (
                   <div className="rounded-md bg-amber-50 p-4 text-center">
@@ -651,21 +775,8 @@ const PainLevelConfirmModal: React.FC<Props> = ({
                   </div>
                 ))}
 
-              {currentStatus === PainStatus.RETESTED_PASSED && (
-                <div className="rounded-md bg-emerald-50 p-4 text-center">
-                  <Text type="success" strong>
-                    复测已通过
-                  </Text>
-                  {currentRecord?.issue_link && (
-                    <div className="mt-2 text-xs text-slate-500">
-                      最新报告已生成，点击查看：
-                      <Link href={currentRecord.issue_link} target="_blank">
-                        查看最新报告
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              )}
+              {currentStatus === PainStatus.RETESTED_PASSED &&
+                renderRetestedPassedInfo(currentRecord)}
 
               {currentStatus <= PainStatus.FIXED_PENDING_RETEST && (
                 <Form.Item

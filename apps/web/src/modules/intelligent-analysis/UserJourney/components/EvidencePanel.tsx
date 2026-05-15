@@ -95,6 +95,8 @@ export type EvidencePanelProps = {
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  /** 可选：版本选项（file_key → label），用于复测通过时选择通过报告 */
+  versionOptions?: Array<{ value: string; label: string }>;
 };
 
 /* ─── 关联步骤按钮 ─── */
@@ -168,6 +170,8 @@ const StatusBadge: React.FC<{
   isCommonIssue?: boolean;
   confirmedBy: string;
   confirmedAt: string;
+  prLink?: string | null;
+  retestPassedFileKey?: string | null;
   onClick: () => void;
 }> = ({
   status,
@@ -176,11 +180,13 @@ const StatusBadge: React.FC<{
   isCommonIssue = false,
   confirmedBy,
   confirmedAt,
+  prLink,
+  retestPassedFileKey,
   onClick,
 }) => {
   const style = getPainLevelStyle(severity);
-  const label = `${STATUS_LABELS[status] || '未知状态'}${
-    isCommonIssue ? '（痛点问题）' : ''
+  const label = `${STATUS_LABELS[status] || '待确认'}${
+    isCommonIssue ? '（共性问题）' : ''
   }`;
 
   const popoverContent = (
@@ -199,6 +205,34 @@ const StatusBadge: React.FC<{
           </span>
         </div>
       ) : null}
+      {status === PainStatus.RETESTED_PASSED && prLink && (
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">PR 链接：</span>
+          <a
+            href={prLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {prLink}
+          </a>
+        </div>
+      )}
+      {status === PainStatus.RETESTED_PASSED && retestPassedFileKey && (
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">通过报告：</span>
+          <a
+            href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
+              retestPassedFileKey
+            )}`}
+            className="text-blue-600 underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {retestPassedFileKey}
+          </a>
+        </div>
+      )}
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-600">操作人：</span>
         {confirmedBy}
@@ -255,6 +289,8 @@ type DerivedPainDisplayState = {
   effectiveIsCommonIssue: boolean;
   effectiveConfirmedBy: string;
   effectiveConfirmedAt: string;
+  effectivePrLink?: string | null;
+  effectiveRetestPassedFileKey?: string | null;
   isCompleted: boolean;
 };
 
@@ -322,6 +358,11 @@ const derivePainDisplayState = ({
     String(parentPain?.owner || '').trim() ||
     '--';
   const effectiveConfirmedAt = childMatched ? existing?.confirmed_at || '' : '';
+  const effectivePrLink =
+    existing?.pr_link || parentPain?.issueOrPrLink || undefined;
+  const effectiveRetestPassedFileKey = childMatched
+    ? existing?.retest_passed_file_key || existing?.latest_file_key
+    : undefined;
   const isCompleted =
     effectiveStatus === PainStatus.CONFIRMED_PENDING_FIX &&
     effectiveSeverity === 'P4_TRIVIAL';
@@ -334,6 +375,8 @@ const derivePainDisplayState = ({
     effectiveIsCommonIssue,
     effectiveConfirmedBy,
     effectiveConfirmedAt,
+    effectivePrLink,
+    effectiveRetestPassedFileKey,
     isCompleted,
   };
 };
@@ -374,6 +417,7 @@ const buildModalCurrentRecord = ({
         displayState.effectiveCommonIssueType ??
         existing.common_issue_type ??
         null,
+      pr_link: displayState.effectivePrLink || existing.pr_link,
       confirmed_by:
         displayState.effectiveConfirmedBy === '--'
           ? existing.confirmed_by
@@ -392,7 +436,7 @@ const buildModalCurrentRecord = ({
     is_common_issue: displayState.effectiveIsCommonIssue,
     common_issue_type: displayState.effectiveCommonIssueType ?? null,
     issue_link: null,
-    pr_link: null,
+    pr_link: displayState.effectivePrLink || null,
     confirmed_by:
       displayState.effectiveConfirmedBy === '--'
         ? ''
@@ -492,6 +536,8 @@ const PainPointBadge: React.FC<{
       isCommonIssue={displayState.effectiveIsCommonIssue}
       confirmedBy={displayState.effectiveConfirmedBy}
       confirmedAt={displayState.effectiveConfirmedAt || ''}
+      prLink={displayState.effectivePrLink}
+      retestPassedFileKey={displayState.effectiveRetestPassedFileKey}
       onClick={onClick}
     />
   );
@@ -541,6 +587,7 @@ const PainPointItem: React.FC<{
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
   shouldAutoOpen?: boolean;
   onAutoOpenHandled?: () => void;
+  versionOptions?: Array<{ value: string; label: string }>;
 }> = ({
   text,
   index,
@@ -553,6 +600,7 @@ const PainPointItem: React.FC<{
   onStepClick,
   shouldAutoOpen = false,
   onAutoOpenHandled,
+  versionOptions,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const itemRef = useRef<HTMLLIElement | null>(null);
@@ -658,6 +706,7 @@ const PainPointItem: React.FC<{
           painIndex={index}
           painText={text}
           currentRecord={modalCurrentRecord}
+          versionOptions={versionOptions}
           onCancel={handleModalClose}
           onSubmit={handleSubmit}
         />
@@ -914,6 +963,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
+  versionOptions,
 }) => {
   const [obsExpanded, setObsExpanded] = useState(false);
   const hasObs = !!observations && observations.length > 0;
@@ -966,11 +1016,52 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     });
   }, [fileKey, overviewCardResp?.items, targetTaskIds]);
 
-  const shouldAutoOpenForIndex = (index: number) => {
-    if (!painFocusTarget) return false;
+  const historyParentPains = useMemo(() => {
+    if (targetTaskIds.size === 0) return [] as OverviewPainPointRow[];
+
+    const card = overviewCardResp?.items?.[0];
+    const rows = card?.painPoints ?? [];
+    if (!rows.length) return [] as OverviewPainPointRow[];
+
+    return rows.filter((row) => {
+      const childIds = row.childIds ?? [];
+      if (!childIds.length) return false;
+
+      let hasTaskMatch = false;
+      let hasHistoricalEntry = false;
+
+      for (const rawId of childIds) {
+        const parsed = parseChildId(rawId);
+        if (!parsed || !targetTaskIds.has(parsed.taskId)) continue;
+
+        hasTaskMatch = true;
+        if (!fileKey || parsed.fileKey !== fileKey) {
+          hasHistoricalEntry = true;
+          break;
+        }
+      }
+
+      return hasTaskMatch && hasHistoricalEntry;
+    });
+  }, [fileKey, overviewCardResp?.items, targetTaskIds]);
+
+  const autoOpenIndex = useMemo(() => {
+    if (!painFocusTarget || !pain_points || !pain_points.length) return null;
     const target = painFocusTarget.painIndex;
-    return index === target || index === target - 1;
+    if (target > 0 && target - 1 < pain_points.length) return target - 1;
+    if (target >= 0 && target < pain_points.length) return target;
+    return null;
+  }, [painFocusTarget, pain_points]);
+
+  const shouldAutoOpenForIndex = (index: number) => {
+    return index === autoOpenIndex;
   };
+
+  useEffect(() => {
+    if (painFocusTarget && hasPain && autoOpenIndex === null) {
+      onPainFocusHandled?.();
+    }
+  }, [autoOpenIndex, painFocusTarget, hasPain, onPainFocusHandled]);
 
   const findParentPainByIndex = (
     index: number
@@ -1045,11 +1136,12 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   compact
                   shouldAutoOpen={shouldAutoOpenForIndex(i)}
                   onAutoOpenHandled={onPainFocusHandled}
+                  versionOptions={versionOptions}
                 />
               ))}
             </ul>
             <HistoryPainTable
-              items={taskParentPains}
+              items={historyParentPains}
               loading={parentPainsLoading}
               compact
               currentFileKey={fileKey}
@@ -1086,11 +1178,12 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                 onStepClick={onStepClick}
                 shouldAutoOpen={shouldAutoOpenForIndex(i)}
                 onAutoOpenHandled={onPainFocusHandled}
+                versionOptions={versionOptions}
               />
             ))}
           </ul>
           <HistoryPainTable
-            items={taskParentPains}
+            items={historyParentPains}
             loading={parentPainsLoading}
             currentFileKey={fileKey}
           />

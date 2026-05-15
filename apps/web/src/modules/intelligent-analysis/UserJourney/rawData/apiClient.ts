@@ -49,6 +49,7 @@ export type PainConfirmationRecord = {
   issue_link: string | null;
   pr_link: string | null;
   retest_decision?: 'passed' | 'failed' | 'not_detected' | null;
+  retest_passed_file_key?: string | null;
   latest_file_key?: string | null;
   confirmed_by: string;
   confirmed_at: string;
@@ -66,6 +67,7 @@ export type PainHistoryItem = {
   common_issue_type?: string | null;
   issue_link: string | null;
   pr_link: string | null;
+  retest_passed_file_key?: string | null;
   confirmed_by: string | null;
   confirmed_at: string;
 };
@@ -90,6 +92,7 @@ export type UpsertPainConfirmationPayload = {
   issue_link?: string;
   pr_link?: string;
   retest_decision?: 'passed' | 'failed' | 'not_detected';
+  retest_passed_file_key?: string;
 };
 
 /**

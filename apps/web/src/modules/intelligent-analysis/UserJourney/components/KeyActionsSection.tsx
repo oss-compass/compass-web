@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Modal, Tooltip } from 'antd';
 import { ActionDetailRecord, ActionStatus } from '../types';
 import { getActionStatusClasses } from '../helpers';
@@ -36,6 +36,7 @@ type KeyActionsSectionProps = {
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  versionOptions?: Array<{ value: string; label: string }>;
 };
 
 /* ─── 静态 task 定义 map ─── */
@@ -252,6 +253,7 @@ const EvidenceInline: React.FC<{
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  versionOptions?: Array<{ value: string; label: string }>;
 }> = ({
   observations,
   pain_points,
@@ -263,6 +265,7 @@ const EvidenceInline: React.FC<{
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
+  versionOptions,
 }) => {
   const hasObs = observations && observations.length > 0;
   const hasPain = pain_points && pain_points.length > 0;
@@ -291,6 +294,7 @@ const EvidenceInline: React.FC<{
         onStepClick={onStepClick}
         painFocusTarget={painFocusTarget}
         onPainFocusHandled={onPainFocusHandled}
+        versionOptions={versionOptions}
       />
     </div>
   );
@@ -311,6 +315,7 @@ const EvidenceBlock: React.FC<{
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  versionOptions?: Array<{ value: string; label: string }>;
 }> = ({
   observations,
   pain_points,
@@ -322,6 +327,7 @@ const EvidenceBlock: React.FC<{
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
+  versionOptions,
 }) => {
   const [open, setOpen] = useState(false);
   const hasData =
@@ -369,6 +375,7 @@ const EvidenceBlock: React.FC<{
             onStepClick={onStepClick}
             painFocusTarget={painFocusTarget}
             onPainFocusHandled={onPainFocusHandled}
+            versionOptions={versionOptions}
           />
         </div>
       )}
@@ -750,6 +757,7 @@ const TaskCard: React.FC<{
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  versionOptions?: Array<{ value: string; label: string }>;
 }> = ({
   taskId,
   rows,
@@ -762,6 +770,7 @@ const TaskCard: React.FC<{
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
+  versionOptions,
 }) => {
   const [tableExpanded, setTableExpanded] = useState(true);
 
@@ -847,6 +856,7 @@ const TaskCard: React.FC<{
             onStepClick={onStepClick}
             painFocusTarget={painFocusTarget}
             onPainFocusHandled={onPainFocusHandled}
+            versionOptions={versionOptions}
           />
         </div>
       ) : null}
@@ -878,6 +888,7 @@ const TaskCard: React.FC<{
             onStepClick={onStepClick}
             painFocusTarget={painFocusTarget}
             onPainFocusHandled={onPainFocusHandled}
+            versionOptions={versionOptions}
           />
         </div>
       )}
@@ -893,6 +904,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   projectFileKey,
   painFocusTarget,
   onPainFocusHandled,
+  versionOptions,
 }) => {
   const logData = useLogData(projectFileKey);
   const [highlightedInfo, setHighlightedInfo] = useState<{
@@ -903,14 +915,17 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
 
   const groups = groupByTaskId(executionPathItems);
   const normalizedTaskId = painFocusTarget?.taskId?.trim() || '';
-  const normalizedPainFocus =
-    painFocusTarget && Number.isFinite(painFocusTarget.painIndex)
-      ? {
-          taskId: normalizedTaskId,
-          painIndex: Number(painFocusTarget.painIndex),
-          autoOpen: painFocusTarget.autoOpen,
-        }
-      : null;
+  const normalizedPainFocus = useMemo(
+    () =>
+      painFocusTarget && Number.isFinite(painFocusTarget.painIndex)
+        ? {
+            taskId: normalizedTaskId,
+            painIndex: Number(painFocusTarget.painIndex),
+            autoOpen: painFocusTarget.autoOpen,
+          }
+        : null,
+    [painFocusTarget, normalizedTaskId]
+  );
   const painFocusKey = normalizedPainFocus
     ? `${normalizedPainFocus.taskId}#${normalizedPainFocus.painIndex}`
     : '';
@@ -1035,6 +1050,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                   }
                   onPainFocusHandled?.();
                 }}
+                versionOptions={versionOptions}
               />
             );
           })}

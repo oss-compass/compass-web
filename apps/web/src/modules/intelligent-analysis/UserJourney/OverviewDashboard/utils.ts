@@ -42,6 +42,29 @@ export const normalizeSeverity = (severity: unknown): Severity => {
 
 export const normalizeText = (text: string) => text.trim().replace(/\s+/g, ' ');
 
+const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
+
+const isOtherTeam = (teamName: string): boolean => {
+  const normalized = String(teamName || '')
+    .trim()
+    .replace(/\s+/g, '');
+  return OTHER_TEAM_LABELS.has(normalized);
+};
+
+export const compareTeamNames = (left: string, right: string): number => {
+  const normalizedLeft = String(left || '').trim();
+  const normalizedRight = String(right || '').trim();
+  const leftIsOther = isOtherTeam(normalizedLeft);
+  const rightIsOther = isOtherTeam(normalizedRight);
+
+  if (leftIsOther && !rightIsOther) return 1;
+  if (!leftIsOther && rightIsOther) return -1;
+
+  return normalizedLeft.localeCompare(normalizedRight, 'zh-Hans-CN', {
+    sensitivity: 'base',
+  });
+};
+
 export const getLatestScore = (card: OverviewCardItem): number | null => {
   if (!card.scoreHistory.length) return null;
   return card.scoreHistory[card.scoreHistory.length - 1]?.score ?? null;
@@ -153,7 +176,7 @@ export const getRepoSortValue = (
     case 'name':
       return row.name;
     case 'team':
-      return `${row.team}-${row.name}`;
+      return row.team;
     case 'score':
       return row.score ?? -1;
     case 'successRate':

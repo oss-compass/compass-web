@@ -29,7 +29,8 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
       title: '类型',
       dataIndex: 'issueType',
       key: 'issueType',
-      width: 140,
+      width: 110,
+      responsive: ['sm'],
       ellipsis: true,
     },
     {
@@ -46,7 +47,8 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
     {
       title: '涉及阶段',
       key: 'journeyStages',
-      width: 180,
+      width: 150,
+      responsive: ['lg'],
       ellipsis: true,
       render: (_value, record) => {
         const stages = record.journeyStages ?? [];
@@ -61,7 +63,7 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
     {
       title: '涉及仓库',
       key: 'repoCount',
-      width: 120,
+      width: 96,
       render: (_value, record) => (
         <Button
           type="link"
@@ -77,13 +79,15 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
     {
       title: '严重程度',
       key: 'severity',
-      width: 120,
+      width: 96,
+      responsive: ['md'],
       render: (_value, record) => <SeverityBadge severity={record.severity} />,
     },
     {
       title: '闭环率',
       key: 'closeRate',
-      width: 120,
+      width: 88,
+      responsive: ['md'],
       render: (_value, record) => {
         const total = record.items.length;
         const resolved = record.items.filter(
@@ -113,7 +117,7 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
             pageSize: 10,
             showSizeChanger: false,
           }}
-          scroll={{ x: 1050, y: 550 }}
+          scroll={{ x: 860, y: 550 }}
           locale={{ emptyText: '暂无共性问题' }}
         />
       </div>

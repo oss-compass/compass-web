@@ -24,6 +24,7 @@ import type {
   TeamSortKey,
 } from './types';
 import {
+  compareTeamNames,
   getAverage,
   getRepoSortValue,
   getTeamSortValue,
@@ -60,7 +61,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     useState(true);
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
-  const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('name');
+  const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('team');
   const [repoSortAsc, setRepoSortAsc] = useState(true);
   const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('name');
   const [teamSortAsc, setTeamSortAsc] = useState(true);
@@ -167,7 +168,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     });
 
     return Array.from(groups.values()).sort((left, right) =>
-      left.name.localeCompare(right.name)
+      compareTeamNames(left.name, right.name)
     );
   }, [repoRows]);
 
@@ -210,7 +211,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       const a = getRepoSortValue(left, repoSortKey, currentTab);
       const b = getRepoSortValue(right, repoSortKey, currentTab);
       if (typeof a === 'string' && typeof b === 'string') {
-        const result = a.localeCompare(b);
+        const result =
+          repoSortKey === 'team'
+            ? compareTeamNames(a, b) || left.name.localeCompare(right.name)
+            : a.localeCompare(b);
         return repoSortAsc ? result : -result;
       }
       if (a === b) return 0;
@@ -225,7 +229,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       const a = getTeamSortValue(left, teamSortKey, currentTab);
       const b = getTeamSortValue(right, teamSortKey, currentTab);
       if (typeof a === 'string' && typeof b === 'string') {
-        const result = a.localeCompare(b);
+        const result = compareTeamNames(a, b);
         return teamSortAsc ? result : -result;
       }
       if (a === b) return 0;
@@ -261,6 +265,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       open: true,
       title,
       issues: [...issues].sort((left, right) => {
+        const teamResult = compareTeamNames(left.team, right.team);
+        if (teamResult !== 0) {
+          return teamResult;
+        }
         if (
           STATUS_RANK[left.normalizedStatus] !==
           STATUS_RANK[right.normalizedStatus]
