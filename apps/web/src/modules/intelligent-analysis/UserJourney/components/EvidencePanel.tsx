@@ -263,6 +263,8 @@ const StatusBadge: React.FC<{
             ? 'border-emerald-300 bg-emerald-100 text-emerald-700'
             : status === PainStatus.RETESTING
             ? 'border-amber-300 bg-amber-100 text-amber-700'
+            : status === PainStatus.RETESTED_FAILED
+            ? 'border-rose-300 bg-rose-100 text-rose-700'
             : `${style.bg} ${style.text} ${style.border}`
         }`}
       >
@@ -272,6 +274,8 @@ const StatusBadge: React.FC<{
               ? 'bg-emerald-500'
               : status === PainStatus.RETESTING
               ? 'bg-amber-500'
+              : status === PainStatus.RETESTED_FAILED
+              ? 'bg-rose-500'
               : style.dot
           }`}
         />

@@ -34,7 +34,8 @@ export enum PainStatus {
   FIXED_PENDING_RETEST = 3,
   RETESTING = 4,
   RETESTED_PASSED = 5,
-  RETESTED_FALL = 6,
+  NO_FIX_NEEDED = 6,
+  RETESTED_FAILED = 7,
 }
 
 export const STATUS_LABELS: Record<number, string> = {
@@ -43,7 +44,8 @@ export const STATUS_LABELS: Record<number, string> = {
   [PainStatus.FIXED_PENDING_RETEST]: '已修复待复测',
   [PainStatus.RETESTING]: '复测中',
   [PainStatus.RETESTED_PASSED]: '已复测通过',
-  [PainStatus.RETESTED_FALL]: '复测不通过',
+  [PainStatus.NO_FIX_NEEDED]: '不需要修复',
+  [PainStatus.RETESTED_FAILED]: '复测不通过',
 };
 
 const SEVERITY_OPTIONS = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.filter(
@@ -164,7 +166,10 @@ const enrichPayloadByStatus = (
   if (status === PainStatus.CONFIRMED_PENDING_FIX) {
     return { ...base, issue_link: vals.issue_link };
   }
-  if (status === PainStatus.FIXED_PENDING_RETEST) {
+  if (
+    status === PainStatus.FIXED_PENDING_RETEST ||
+    status === PainStatus.RETESTED_FAILED
+  ) {
     return { ...base, pr_link: vals.pr_link };
   }
   if (shouldShowRetest) {
@@ -180,9 +185,9 @@ const enrichPayloadByStatus = (
   return base;
 };
 
-const renderRetestedPassedInfo = (
-  currentRecord?: PainConfirmationRecord | null
-) => (
+const RetestPassedInfo: React.FC<{
+  currentRecord?: PainConfirmationRecord | null;
+}> = ({ currentRecord }) => (
   <div className="space-y-3 rounded-md bg-emerald-50 p-4">
     <div className="flex items-center gap-2">
       <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
@@ -238,6 +243,283 @@ const renderRetestedPassedInfo = (
   </div>
 );
 
+const HistoryTable: React.FC<{
+  data?: { history: any[] };
+  loading: boolean;
+}> = ({ data, loading }) => {
+  const columns = [
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (s: number, record: any) => {
+        const statusText = STATUS_LABELS[s] || '未知状态';
+        return (
+          <Tag color="blue">
+            {record.is_common_issue || record.common_issue_type
+              ? `${statusText}（痛点问题）`
+              : statusText}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: '详情',
+      key: 'details',
+      render: (_: any, record: any) => {
+        if (record.is_common_issue || record.common_issue_type)
+          return record.common_issue_type
+            ? `共性问题类型: ${record.common_issue_type}`
+            : '共性问题待处理';
+        if (record.status === 1)
+          return `等级: ${getPainLevelLabel(record.severity)}`;
+        if (record.status === 2) return `Issue: ${record.issue_link || '-'}`;
+        if (record.status === 3) return `PR: ${record.pr_link || '-'}`;
+        if (record.status === 5) {
+          const parts = [];
+          if (record.pr_link) parts.push(`PR: ${record.pr_link}`);
+          if (record.retest_passed_file_key)
+            parts.push(`通过报告: ${record.retest_passed_file_key}`);
+          return parts.length ? parts.join(', ') : '--';
+        }
+        return '-';
+      },
+    },
+    {
+      title: '操作人',
+      dataIndex: 'confirmed_by',
+      key: 'confirmed_by',
+      render: (v: string) => v || '-',
+    },
+    {
+      title: '操作时间',
+      dataIndex: 'confirmed_at',
+      key: 'confirmed_at',
+      render: (v: string) => v.replace('T', ' ').replace('Z', ''),
+    },
+  ];
+
+  return (
+    <div className="space-y-3">
+      <div className="text-sm font-medium text-slate-700">历史记录</div>
+      <Table
+        dataSource={data?.history || []}
+        columns={columns}
+        pagination={false}
+        size="small"
+        loading={loading}
+        rowKey="confirmed_at"
+        locale={{ emptyText: <Empty description="暂无历史记录" /> }}
+      />
+    </div>
+  );
+};
+
+const ToBeConfirmedFormItems: React.FC<{
+  isCommon: boolean;
+  commonIssueLoading: boolean;
+  knownCommonIssues: Array<{ issueType: string; description: string }>;
+  commonIssueTypeOptions: string[];
+  form: any;
+}> = ({
+  isCommon,
+  commonIssueLoading,
+  knownCommonIssues,
+  commonIssueTypeOptions,
+  form,
+}) => (
+  <>
+    <div
+      className="grid gap-4"
+      style={{
+        gridTemplateColumns: 'minmax(120px, 150px) minmax(0, 1fr)',
+      }}
+    >
+      <Form.Item
+        name="is_common"
+        label={
+          <span className="text-sm font-medium text-slate-700">
+            是否共性问题
+          </span>
+        }
+        rules={[{ required: true, message: '请选择是否共性问题' }]}
+      >
+        <Radio.Group>
+          <Radio value={true}>是</Radio>
+          <Radio value={false}>否</Radio>
+        </Radio.Group>
+      </Form.Item>
+
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <div className="mb-2 text-sm font-medium text-slate-700">
+          已知共性问题
+        </div>
+        {commonIssueLoading ? (
+          <div className="flex items-center justify-center py-6">
+            <Spin size="small" />
+          </div>
+        ) : knownCommonIssues.length === 0 ? (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="暂无已知共性问题"
+          />
+        ) : (
+          <ul className="max-h-48 list-disc space-y-1 overflow-auto pl-5 text-xs text-slate-700">
+            {knownCommonIssues.map((item, idx) => (
+              <li key={`${item.issueType}-${item.description}-${idx}`}>
+                {(item.issueType || '--') +
+                  '（' +
+                  (item.description || '--') +
+                  '）'}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+
+    {isCommon === true && (
+      <Form.Item
+        name="common_issue_type"
+        label={
+          <span className="text-sm font-medium text-slate-700">
+            共性问题类型
+          </span>
+        }
+        rules={[
+          {
+            validator: async (_, value) => {
+              if (form.getFieldValue('is_common') !== true) return;
+              if (!String(value || '').trim()) {
+                throw new Error('请选择共性问题类型');
+              }
+            },
+          },
+        ]}
+      >
+        <Radio.Group className="w-full">
+          <Space direction="vertical" className="w-full">
+            {commonIssueTypeOptions.map((t) => (
+              <Radio key={t} value={t} className="w-full">
+                <span className="text-sm text-slate-700">{t}</span>
+              </Radio>
+            ))}
+          </Space>
+        </Radio.Group>
+      </Form.Item>
+    )}
+
+    <Form.Item
+      name="severity"
+      label={
+        <span className="text-sm font-medium text-slate-700">确认严重程度</span>
+      }
+      rules={[{ required: true, message: '请选择严重程度' }]}
+    >
+      <Radio.Group className="w-full">
+        <Space direction="vertical" className="w-full">
+          {SEVERITY_OPTIONS.map((item) => {
+            const style = getPainLevelStyle(item.value);
+            return (
+              <Radio key={item.value} value={item.value} className="w-full">
+                <span className="inline-flex items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
+                  >
+                    <span
+                      className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
+                    />
+                    {item.value === 'P4_TRIVIAL'
+                      ? '非项目本身问题'
+                      : item.label}
+                  </span>
+                  <span className="text-xs text-slate-500">
+                    {item.value === 'P4_TRIVIAL' ? '' : item.description}
+                  </span>
+                </span>
+              </Radio>
+            );
+          })}
+        </Space>
+      </Radio.Group>
+    </Form.Item>
+  </>
+);
+
+const RetestingFormItems: React.FC<{
+  showRetestDecision: boolean;
+  latestFileKey: string;
+  retestDecision?: string;
+  versionOptions?: Array<{ value: string; label: string }>;
+  fileKey: string;
+}> = ({
+  showRetestDecision,
+  latestFileKey,
+  retestDecision,
+  versionOptions,
+  fileKey,
+}) => {
+  if (showRetestDecision) {
+    return (
+      <div className="space-y-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+        <div className="space-y-1">
+          <Text type="warning" strong>
+            检测到新报告已生成，该痛点是否复测通过？
+          </Text>
+          <div className="text-xs text-slate-500">
+            最新报告标识：{latestFileKey}
+          </div>
+        </div>
+        <Form.Item
+          name="retest_decision"
+          label={
+            <span className="text-sm font-medium text-slate-700">复测结论</span>
+          }
+          rules={[{ required: true, message: '请选择复测结论' }]}
+        >
+          <Radio.Group className="w-full">
+            <Space direction="vertical" className="w-full">
+              <Radio value="passed">通过（通知负责人邮箱）</Radio>
+              <Radio value="failed">
+                不通过（通知负责人邮箱，状态变为复测不通过）
+              </Radio>
+              <Radio value="not_detected">未检测到（通知管理员团队邮箱）</Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+        {retestDecision === 'passed' &&
+          versionOptions &&
+          versionOptions.length > 0 && (
+            <Form.Item
+              name="retest_passed_file_key"
+              label={
+                <span className="text-sm font-medium text-slate-700">
+                  通过报告
+                </span>
+              }
+              rules={[{ required: true, message: '请选择通过报告' }]}
+            >
+              <Select
+                placeholder="请选择复测通过的报告"
+                options={versionOptions.filter((opt) => opt.value !== fileKey)}
+                showSearch
+                optionFilterProp="label"
+                popupMatchSelectWidth={false}
+              />
+            </Form.Item>
+          )}
+      </div>
+    );
+  }
+  return (
+    <div className="rounded-md bg-amber-50 p-4 text-center">
+      <Text type="warning" strong>
+        请联系相关接口人启动复测
+      </Text>
+    </div>
+  );
+};
+
 const PainLevelConfirmModal: React.FC<Props> = ({
   open,
   fileKey,
@@ -287,7 +569,12 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   // 计算下一步状态
   // 如果当前是 1 (待确认)，下一步是 2 (已确认待修复)
   // 如果当前已经是 5 (已复测通过)，则保持在 5
-  const nextStatus = Math.min(currentStatus + 1, 5) as PainStatus;
+  // 如果当前是 7 (复测不通过)，下一步是 3 (已修复待复测)
+  const nextStatus = useMemo(() => {
+    if (currentStatus === PainStatus.RETESTED_FAILED)
+      return PainStatus.FIXED_PENDING_RETEST;
+    return Math.min(currentStatus + 1, 5) as PainStatus;
+  }, [currentStatus]);
 
   const { data: historyData, isLoading: historyLoading } = usePainHistory(
     open && showHistory ? fileKey : undefined,
@@ -386,61 +673,13 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const stepsItems = useMemo(() => {
     return [1, 2, 3, 4, 5].map((s) => ({
       title: STATUS_LABELS[s],
-      description: s === currentStatus ? '当前状态' : '',
+      description:
+        s === currentStatus ||
+        (s === 3 && currentStatus === PainStatus.RETESTED_FAILED)
+          ? '当前状态'
+          : '',
     }));
   }, [currentStatus]);
-
-  const historyColumns = [
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: (s: number, record: any) => {
-        const statusText = STATUS_LABELS[s] || '未知状态';
-        return (
-          <Tag color="blue">
-            {record.is_common_issue || record.common_issue_type
-              ? `${statusText}（痛点问题）`
-              : statusText}
-          </Tag>
-        );
-      },
-    },
-    {
-      title: '详情',
-      key: 'details',
-      render: (_: any, record: any) => {
-        if (record.is_common_issue || record.common_issue_type)
-          return record.common_issue_type
-            ? `共性问题类型: ${record.common_issue_type}`
-            : '共性问题待处理';
-        if (record.status === 1)
-          return `等级: ${getPainLevelLabel(record.severity)}`;
-        if (record.status === 2) return `Issue: ${record.issue_link || '-'}`;
-        if (record.status === 3) return `PR: ${record.pr_link || '-'}`;
-        if (record.status === 5) {
-          const parts = [];
-          if (record.pr_link) parts.push(`PR: ${record.pr_link}`);
-          if (record.retest_passed_file_key)
-            parts.push(`通过报告: ${record.retest_passed_file_key}`);
-          return parts.length ? parts.join(', ') : '--';
-        }
-        return '-';
-      },
-    },
-    {
-      title: '操作人',
-      dataIndex: 'confirmed_by',
-      key: 'confirmed_by',
-      render: (v: string) => v || '-',
-    },
-    {
-      title: '操作时间',
-      dataIndex: 'confirmed_at',
-      key: 'confirmed_at',
-      render: (v: string) => v.replace('T', ' ').replace('Z', ''),
-    },
-  ];
 
   return (
     <Modal
@@ -496,7 +735,11 @@ const PainLevelConfirmModal: React.FC<Props> = ({
         {/* 流程进度 */}
         <div className="rounded-lg bg-slate-50 p-4">
           <Steps
-            current={currentStatus - 1}
+            current={
+              currentStatus === PainStatus.RETESTED_FAILED
+                ? 2
+                : currentStatus - 1
+            }
             items={stepsItems}
             size="small"
             className="pain-steps"
@@ -504,18 +747,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
         </div>
 
         {showHistory ? (
-          <div className="space-y-3">
-            <div className="text-sm font-medium text-slate-700">历史记录</div>
-            <Table
-              dataSource={historyData?.history || []}
-              columns={historyColumns}
-              pagination={false}
-              size="small"
-              loading={historyLoading}
-              rowKey="confirmed_at"
-              locale={{ emptyText: <Empty description="暂无历史记录" /> }}
-            />
-          </div>
+          <HistoryTable data={historyData} loading={historyLoading} />
         ) : (
           <>
             {/* 痛点内容预览 */}
@@ -535,138 +767,13 @@ const PainLevelConfirmModal: React.FC<Props> = ({
               </Form.Item>
 
               {currentStatus === PainStatus.TO_BE_CONFIRMED && (
-                <>
-                  <div
-                    className="grid gap-4"
-                    style={{
-                      gridTemplateColumns:
-                        'minmax(120px, 150px) minmax(0, 1fr)',
-                    }}
-                  >
-                    <Form.Item
-                      name="is_common"
-                      label={
-                        <span className="text-sm font-medium text-slate-700">
-                          是否共性问题
-                        </span>
-                      }
-                      rules={[
-                        { required: true, message: '请选择是否共性问题' },
-                      ]}
-                    >
-                      <Radio.Group>
-                        <Radio value={true}>是</Radio>
-                        <Radio value={false}>否</Radio>
-                      </Radio.Group>
-                    </Form.Item>
-
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                      <div className="mb-2 text-sm font-medium text-slate-700">
-                        已知共性问题
-                      </div>
-                      {commonIssueLoading ? (
-                        <div className="flex items-center justify-center py-6">
-                          <Spin size="small" />
-                        </div>
-                      ) : knownCommonIssues.length === 0 ? (
-                        <Empty
-                          image={Empty.PRESENTED_IMAGE_SIMPLE}
-                          description="暂无已知共性问题"
-                        />
-                      ) : (
-                        <ul className="max-h-48 list-disc space-y-1 overflow-auto pl-5 text-xs text-slate-700">
-                          {knownCommonIssues.map((item, idx) => (
-                            <li
-                              key={`${item.issueType}-${item.description}-${idx}`}
-                            >
-                              {(item.issueType || '--') +
-                                '（' +
-                                (item.description || '--') +
-                                '）'}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-
-                  {isCommon === true && (
-                    <Form.Item
-                      name="common_issue_type"
-                      label={
-                        <span className="text-sm font-medium text-slate-700">
-                          共性问题类型
-                        </span>
-                      }
-                      rules={[
-                        {
-                          validator: async (_, value) => {
-                            if (form.getFieldValue('is_common') !== true)
-                              return;
-                            if (!String(value || '').trim()) {
-                              throw new Error('请选择共性问题类型');
-                            }
-                          },
-                        },
-                      ]}
-                    >
-                      <Radio.Group className="w-full">
-                        <Space direction="vertical" className="w-full">
-                          {commonIssueTypeOptions.map((t) => (
-                            <Radio key={t} value={t} className="w-full">
-                              <span className="text-sm text-slate-700">
-                                {t}
-                              </span>
-                            </Radio>
-                          ))}
-                        </Space>
-                      </Radio.Group>
-                    </Form.Item>
-                  )}
-
-                  <Form.Item
-                    name="severity"
-                    label={
-                      <span className="text-sm font-medium text-slate-700">
-                        确认严重程度
-                      </span>
-                    }
-                    rules={[{ required: true, message: '请选择严重程度' }]}
-                  >
-                    <Radio.Group className="w-full">
-                      <Space direction="vertical" className="w-full">
-                        {SEVERITY_OPTIONS.map((item) => {
-                          const style = getPainLevelStyle(item.value);
-                          return (
-                            <Radio
-                              key={item.value}
-                              value={item.value}
-                              className="w-full"
-                            >
-                              <span className="inline-flex items-center gap-2">
-                                <span
-                                  className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
-                                >
-                                  <span
-                                    className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
-                                  />
-                                  {item.value === 'P4_TRIVIAL'
-                                    ? '非项目本身问题'
-                                    : item.label}
-                                </span>
-                                <span className="text-xs text-slate-500">
-                                  {item.value === 'P4_TRIVIAL'
-                                    ? ''
-                                    : item.description}
-                                </span>
-                              </span>
-                            </Radio>
-                          );
-                        })}
-                      </Space>
-                    </Radio.Group>
-                  </Form.Item>
-                </>
+                <ToBeConfirmedFormItems
+                  isCommon={isCommon}
+                  commonIssueLoading={commonIssueLoading}
+                  knownCommonIssues={knownCommonIssues}
+                  commonIssueTypeOptions={commonIssueTypeOptions}
+                  form={form}
+                />
               )}
 
               {currentStatus === PainStatus.CONFIRMED_PENDING_FIX && (
@@ -689,96 +796,52 @@ const PainLevelConfirmModal: React.FC<Props> = ({
                 </Form.Item>
               )}
 
-              {currentStatus === PainStatus.FIXED_PENDING_RETEST && (
-                <Form.Item
-                  name="pr_link"
-                  label={
-                    <span className="text-sm font-medium text-slate-700">
-                      PR 链接
-                    </span>
-                  }
-                  rules={[
-                    { required: true, message: '请输入 PR 链接' },
-                    { type: 'url', message: '请输入有效的 URL' },
-                  ]}
-                >
-                  <Input
-                    placeholder="https://gitcode.com/.../pull/1"
-                    allowClear
-                  />
-                </Form.Item>
+              {(currentStatus === PainStatus.FIXED_PENDING_RETEST ||
+                currentStatus === PainStatus.RETESTED_FAILED) && (
+                <>
+                  {currentStatus === PainStatus.RETESTED_FAILED && (
+                    <div className="mb-4 rounded-md bg-rose-50 p-3">
+                      <Text type="danger" strong className="text-xs">
+                        上轮复测不通过，请重新提交 PR
+                      </Text>
+                    </div>
+                  )}
+                  <Form.Item
+                    name="pr_link"
+                    label={
+                      <span className="text-sm font-medium text-slate-700">
+                        PR 链接
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: '请输入 PR 链接' },
+                      { type: 'url', message: '请输入有效的 URL' },
+                    ]}
+                  >
+                    <Input
+                      placeholder="https://gitcode.com/.../pull/1"
+                      allowClear
+                    />
+                  </Form.Item>
+                </>
               )}
 
-              {currentStatus === PainStatus.RETESTING &&
-                (showRetestDecision ? (
-                  <div className="space-y-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-                    <div className="space-y-1">
-                      <Text type="warning" strong>
-                        检测到新报告已生成，该痛点是否复测通过？
-                      </Text>
-                      <div className="text-xs text-slate-500">
-                        最新报告标识：{latestFileKey}
-                      </div>
-                    </div>
-                    <Form.Item
-                      name="retest_decision"
-                      label={
-                        <span className="text-sm font-medium text-slate-700">
-                          复测结论
-                        </span>
-                      }
-                      rules={[{ required: true, message: '请选择复测结论' }]}
-                    >
-                      <Radio.Group className="w-full">
-                        <Space direction="vertical" className="w-full">
-                          <Radio value="passed">通过（通知负责人邮箱）</Radio>
-                          <Radio value="failed">
-                            不通过（通知负责人邮箱，并回到已确认待修复）
-                          </Radio>
-                          <Radio value="not_detected">
-                            未检测到（通知管理员团队邮箱）
-                          </Radio>
-                        </Space>
-                      </Radio.Group>
-                    </Form.Item>
-                    {retestDecision === 'passed' &&
-                      versionOptions &&
-                      versionOptions.length > 0 && (
-                        <Form.Item
-                          name="retest_passed_file_key"
-                          label={
-                            <span className="text-sm font-medium text-slate-700">
-                              通过报告
-                            </span>
-                          }
-                          rules={[
-                            { required: true, message: '请选择通过报告' },
-                          ]}
-                        >
-                          <Select
-                            placeholder="请选择复测通过的报告"
-                            options={versionOptions.filter(
-                              (opt) => opt.value !== fileKey
-                            )}
-                            showSearch
-                            optionFilterProp="label"
-                            popupMatchSelectWidth={false}
-                          />
-                        </Form.Item>
-                      )}
-                  </div>
-                ) : (
-                  <div className="rounded-md bg-amber-50 p-4 text-center">
-                    <Text type="warning" strong>
-                      请联系相关接口人启动复测
-                    </Text>
-                  </div>
-                ))}
+              {currentStatus === PainStatus.RETESTING && (
+                <RetestingFormItems
+                  showRetestDecision={showRetestDecision}
+                  latestFileKey={latestFileKey}
+                  retestDecision={retestDecision}
+                  versionOptions={versionOptions}
+                  fileKey={fileKey}
+                />
+              )}
 
-              {currentStatus === PainStatus.RETESTED_PASSED &&
-                renderRetestedPassedInfo(currentRecord)}
+              {currentStatus === PainStatus.RETESTED_PASSED && (
+                <RetestPassedInfo currentRecord={currentRecord} />
+              )}
 
-              {currentStatus <= PainStatus.FIXED_PENDING_RETEST && (
+              {(currentStatus <= PainStatus.FIXED_PENDING_RETEST ||
+                currentStatus === PainStatus.RETESTED_FAILED) && (
                 <Form.Item
                   name="confirmed_by"
                   label={

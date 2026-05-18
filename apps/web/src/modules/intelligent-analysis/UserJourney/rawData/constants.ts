@@ -123,17 +123,17 @@ export const USER_JOURNEY_PAIN_GUIDE_ITEMS: PainGuideItem[] = [
     iconType: 'smile',
     accentColor: '#16a34a',
   },
-  {
-    level: 'P5',
-    scoreRange: '-',
-    label: '共性问题',
-    english: 'Common',
-    description: '',
-    rowClassName: 'bg-slate-50',
-    cardClassName: 'border-slate-200 bg-white',
-    iconType: 'exclamation',
-    accentColor: '#64748b',
-  },
+  // {
+  //   level: 'P5',
+  //   scoreRange: '-',
+  //   label: '共性问题',
+  //   english: 'Common',
+  //   description: '',
+  //   rowClassName: 'bg-slate-50',
+  //   cardClassName: 'border-slate-200 bg-white',
+  //   iconType: 'exclamation',
+  //   accentColor: '#64748b',
+  // },
 ];
 
 export const USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO: PainGuideItem[] = [
