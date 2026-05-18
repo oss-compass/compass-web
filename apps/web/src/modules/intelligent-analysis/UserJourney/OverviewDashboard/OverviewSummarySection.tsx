@@ -51,16 +51,29 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   onIssueSourceModeChange,
   onTabChange,
 }) => {
-  const primaryTitle = issueSourceMode === 'common' ? '共性问题' : '总体问题';
+  const primaryTitle =
+    issueSourceMode === 'common'
+      ? '共性问题'
+      : issueSourceMode === 'non-common'
+      ? '非共性问题'
+      : '总体问题';
   const primaryTooltip =
     issueSourceMode === 'common'
       ? '仅展示已标记为共性问题的全部问题'
+      : issueSourceMode === 'non-common'
+      ? '仅展示未标记为共性问题的全部问题'
       : '含严重程度P0-P4的所有问题';
   const secondaryTitle =
-    issueSourceMode === 'common' ? '关键共性问题' : '关键问题';
+    issueSourceMode === 'common'
+      ? '关键共性问题'
+      : issueSourceMode === 'non-common'
+      ? '关键非共性问题'
+      : '关键问题';
   const secondaryTooltip =
     issueSourceMode === 'common'
       ? '仅展示已标记为共性问题且严重程度P0-P1的问题'
+      : issueSourceMode === 'non-common'
+      ? '仅展示未标记为共性问题且严重程度P0-P1的问题'
       : '含严重程度P0-P1的问题';
 
   return (
@@ -84,6 +97,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
               options={[
                 { label: '总体问题', value: 'overall' },
                 { label: '共性问题', value: 'common' },
+                { label: '非共性问题', value: 'non-common' },
               ]}
             />
           </div>

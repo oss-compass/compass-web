@@ -60,13 +60,26 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [teamSortAsc, setTeamSortAsc] = useState(true);
 
   const { data: cardsResp, isLoading } = useQuery({
-    queryKey: ['overview-cards-page', org, currentTab, repoFilter, teamFilter],
+    queryKey: [
+      'overview-cards-page',
+      org,
+      currentTab,
+      repoFilter,
+      teamFilter,
+      issueSourceMode,
+    ],
     queryFn: () =>
       fetchOverviewCards({
         viewType: 'repo',
         org,
         tab: currentTab,
         includeCommonIssues: true,
+        commonOnly:
+          issueSourceMode === 'common'
+            ? true
+            : issueSourceMode === 'non-common'
+            ? false
+            : undefined,
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
         page: 1,
@@ -75,13 +88,19 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
 
   const { data: summaryCardsResp } = useQuery({
-    queryKey: ['overview-summary-cards', org],
+    queryKey: ['overview-summary-cards', org, issueSourceMode],
     queryFn: () =>
       fetchOverviewCards({
         viewType: 'repo',
         org,
         tab: 'overall',
         includeCommonIssues: true,
+        commonOnly:
+          issueSourceMode === 'common'
+            ? true
+            : issueSourceMode === 'non-common'
+            ? false
+            : undefined,
         page: 1,
         size: 200,
       }),
@@ -98,11 +117,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const repoRows = useMemo<RepoProgressRow[]>(() => {
     return (cardsResp?.items ?? [])
       .map((card) => {
-        const allIssues = toDashboardIssue(card);
-        const issues =
-          issueSourceMode === 'common'
-            ? allIssues.filter((issue) => isCommonIssue(issue))
-            : allIssues;
+        const issues = toDashboardIssue(card);
         const metrics = buildMetricSummaryFromPainRows(issues);
         return {
           id: card.id,
@@ -234,22 +249,14 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     return rows;
   }, [currentTab, teamRows, teamSortAsc, teamSortKey]);
 
-  const summaryCards = useMemo(() => {
-    const items = summaryCardsResp?.items ?? [];
-    if (issueSourceMode !== 'common') return items;
-    return items.filter((card) =>
-      card.painPoints.some((row) => isCommonIssue(row))
-    );
-  }, [issueSourceMode, summaryCardsResp]);
+  const summaryCards = useMemo(
+    () => summaryCardsResp?.items ?? [],
+    [summaryCardsResp]
+  );
 
   const summaryPainRows = useMemo(
-    () =>
-      summaryCards.flatMap((card) =>
-        issueSourceMode === 'common'
-          ? card.painPoints.filter((row) => isCommonIssue(row))
-          : card.painPoints
-      ),
-    [issueSourceMode, summaryCards]
+    () => summaryCards.flatMap((card) => card.painPoints),
+    [summaryCards]
   );
 
   const overviewSummary = useMemo(

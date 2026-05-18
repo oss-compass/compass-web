@@ -268,6 +268,7 @@ export const fetchOverviewSummary = async (params: {
   keyword?: string;
   org?: string;
   includeCommonIssues?: boolean;
+  commonOnly?: boolean | null;
 }): Promise<OverviewSummary> => {
   const search = new URLSearchParams();
   if (params.org) search.set('org', params.org);
@@ -275,6 +276,9 @@ export const fetchOverviewSummary = async (params: {
   if (params.keyword) search.set('keyword', params.keyword);
   if (typeof params.includeCommonIssues === 'boolean') {
     search.set('include_common_issues', String(params.includeCommonIssues));
+  }
+  if (params.commonOnly !== undefined && params.commonOnly !== null) {
+    search.set('common_only', String(params.commonOnly));
   }
   const query = search.toString();
   return compassApiFetch<OverviewSummary>(
@@ -286,6 +290,7 @@ export const fetchOverviewCards = async (params: {
   viewType: 'repo' | 'team' | 'sig';
   tab?: 'overall' | 'key' | 'blocking';
   includeCommonIssues?: boolean;
+  commonOnly?: boolean | null;
   team?: string;
   repo?: string;
   sig?: string;
@@ -300,6 +305,8 @@ export const fetchOverviewCards = async (params: {
   if (params.tab) search.set('tab', params.tab);
   if (typeof params.includeCommonIssues === 'boolean')
     search.set('include_common_issues', String(params.includeCommonIssues));
+  if (params.commonOnly !== undefined && params.commonOnly !== null)
+    search.set('common_only', String(params.commonOnly));
   if (params.team) search.set('team', params.team);
   if (params.repo) search.set('repo', params.repo);
   if (params.sig) search.set('sig', params.sig);
