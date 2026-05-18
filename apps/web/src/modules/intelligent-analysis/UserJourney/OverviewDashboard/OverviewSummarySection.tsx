@@ -1,10 +1,24 @@
 import React from 'react';
-import { Checkbox, Typography } from 'antd';
+import { Select, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
-import type { MetricSummary } from './types';
+import type { IssueSourceMode, MetricSummary, ProgressTab } from './types';
 import { formatPercent, formatScore } from './utils';
 
 const { Title } = Typography;
+
+const SUMMARY_SELECT_H = 32;
+
+const summarySelectCls =
+  '[&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!rounded-r-2xl [&_.ant-select-selector]:!rounded-l-none [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-l-0 [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center';
+
+const SummaryLabelTag: React.FC<{ text: string }> = ({ text }) => (
+  <span
+    style={{ height: SUMMARY_SELECT_H, lineHeight: `${SUMMARY_SELECT_H}px` }}
+    className="inline-flex items-center whitespace-nowrap rounded-l-2xl border border-r-0 border-slate-200/80 bg-slate-50 px-2.5 text-xs font-medium text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
+  >
+    {text}
+  </span>
+);
 
 const formatExecutionTime = (seconds: number | null): string => {
   if (seconds == null) return '--';
@@ -19,8 +33,10 @@ type OverviewSummarySectionProps = {
   summarySuccessRate: number | null;
   summaryAvgExecutionTime: number | null;
   repoCount: number;
-  includeCommonIssues: boolean;
-  onIncludeCommonIssuesChange: (next: boolean) => void;
+  issueSourceMode: IssueSourceMode;
+  currentTab: ProgressTab;
+  onIssueSourceModeChange: (mode: IssueSourceMode) => void;
+  onTabChange: (tab: ProgressTab) => void;
 };
 
 const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
@@ -30,34 +46,75 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   summarySuccessRate,
   summaryAvgExecutionTime,
   repoCount,
-  includeCommonIssues,
-  onIncludeCommonIssuesChange,
+  issueSourceMode,
+  currentTab,
+  onIssueSourceModeChange,
+  onTabChange,
 }) => {
+  const primaryTitle = issueSourceMode === 'common' ? '共性问题' : '总体问题';
+  const primaryTooltip =
+    issueSourceMode === 'common'
+      ? '仅展示已标记为共性问题的全部问题'
+      : '含严重程度P0-P4的所有问题';
+  const secondaryTitle =
+    issueSourceMode === 'common' ? '关键共性问题' : '关键问题';
+  const secondaryTooltip =
+    issueSourceMode === 'common'
+      ? '仅展示已标记为共性问题且严重程度P0-P1的问题'
+      : '含严重程度P0-P1的问题';
+
   return (
     <>
       <div className="overview-summary-title-row">
         <Title level={4} className="oj-section-title">
           总览信息
         </Title>
-        <Checkbox
-          checked={includeCommonIssues}
-          onChange={(e) => onIncludeCommonIssuesChange(e.target.checked)}
-          className="overview-common-checkbox"
-        >
-          包含共性问题
-        </Checkbox>
+        <div className="overview-summary-actions">
+          <div className="flex items-center">
+            <SummaryLabelTag text="问题类型" />
+            <Select
+              value={issueSourceMode}
+              onChange={(value) =>
+                onIssueSourceModeChange(value as IssueSourceMode)
+              }
+              style={{ height: SUMMARY_SELECT_H }}
+              className={`${summarySelectCls} min-w-[118px]`}
+              styles={{ popup: { root: { minWidth: 140 } } }}
+              getPopupContainer={(node) => node.parentElement ?? node}
+              options={[
+                { label: '总体问题', value: 'overall' },
+                { label: '共性问题', value: 'common' },
+              ]}
+            />
+          </div>
+          <div className="flex items-center">
+            <SummaryLabelTag text="严重程度" />
+            <Select
+              value={currentTab}
+              onChange={(value) => onTabChange(value as ProgressTab)}
+              style={{ height: SUMMARY_SELECT_H }}
+              className={`${summarySelectCls} min-w-[156px]`}
+              styles={{ popup: { root: { minWidth: 168 } } }}
+              getPopupContainer={(node) => node.parentElement ?? node}
+              options={[
+                { label: '全部（P0-P4）', value: 'overall' },
+                { label: '关键问题（P0-P1）', value: 'key' },
+              ]}
+            />
+          </div>
+        </div>
       </div>
       <div className="overview-summary-stack">
         <div className="overview-grid">
           <OverviewSummaryBlock
-            title="总体问题"
+            title={primaryTitle}
             summary={overviewSummary}
-            tooltip="含严重程度P0-P4的所有问题"
+            tooltip={primaryTooltip}
           />
           <OverviewSummaryBlock
-            title="关键问题"
+            title={secondaryTitle}
             summary={keyIssueSummary}
-            tooltip="含严重程度P0-P1的问题"
+            tooltip={secondaryTooltip}
           />
         </div>
         <div className="overview-bottom-row">

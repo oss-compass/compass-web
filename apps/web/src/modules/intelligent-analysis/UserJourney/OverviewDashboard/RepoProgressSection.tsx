@@ -5,22 +5,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {
-  Button,
-  Checkbox,
-  Grid,
-  Segmented,
-  Select,
-  Table,
-  Tooltip,
-  Typography,
-} from 'antd';
-import {
-  CheckOutlined,
-  FilterFilled,
-  InfoCircleOutlined,
-  RightOutlined,
-} from '@ant-design/icons';
+import { Button, Grid, Segmented, Select, Table, Typography } from 'antd';
+import { CheckOutlined, FilterFilled, RightOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import type {
   IssueBucket,
@@ -41,15 +27,6 @@ import {
 const { Link, Title } = Typography;
 type ProgressMetricSortKey = 'none' | 'pending' | 'inProgress' | 'resolved';
 type ProgressMetricSortOrder = 'asc' | 'desc';
-
-const renderTabLabel = (label: string, tooltip: string) => (
-  <span className="inline-flex items-center gap-1.5">
-    <span>{label}</span>
-    <Tooltip title={tooltip}>
-      <InfoCircleOutlined className="cursor-help text-[13px] text-slate-400 transition-colors hover:text-slate-600" />
-    </Tooltip>
-  </span>
-);
 
 const PROGRESS_METRIC_OPTIONS: Array<{
   value: ProgressMetricSortKey;
@@ -219,9 +196,6 @@ type RepoProgressSectionProps = {
   progressView: ProgressView;
   onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
-  onTabChange: (tab: ProgressTab) => void;
-  includeCommonIssues: boolean;
-  onIncludeCommonIssuesChange: (next: boolean) => void;
   repoFilter: string;
   repoOptions: Array<{ value: string; label: string }>;
   onRepoFilterChange: (repo: string) => void;
@@ -251,9 +225,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   progressView,
   onProgressViewChange,
   currentTab,
-  onTabChange,
-  includeCommonIssues,
-  onIncludeCommonIssuesChange,
   repoFilter,
   repoOptions,
   onRepoFilterChange,
@@ -937,40 +908,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         进展
       </Title>
       <div className="section-card">
-        <div className="overview-top-tabs">
+        <div className="tab-bar progress-toolbar-row">
           <Segmented
             className="overview-segmented"
             value={progressView}
             onChange={(value) => onProgressViewChange(value as ProgressView)}
             options={[
-              { label: '责任团队进展', value: 'team' },
-              { label: '各仓库进展', value: 'repo' },
+              { label: '责任团队', value: 'team' },
+              { label: '仓库', value: 'repo' },
             ]}
           />
-        </div>
-        <div className="tab-bar">
-          <Segmented
-            className="overview-segmented"
-            value={currentTab}
-            onChange={(value) => onTabChange(value as ProgressTab)}
-            options={[
-              {
-                label: renderTabLabel('总体问题', '含严重程度P0-P4的所有问题'),
-                value: 'overall',
-              },
-              {
-                label: renderTabLabel('关键问题', '含严重程度P0-P1的问题'),
-                value: 'key',
-              },
-            ]}
-          />
-          <Checkbox
-            checked={includeCommonIssues}
-            onChange={(e) => onIncludeCommonIssuesChange(e.target.checked)}
-            className="overview-common-checkbox"
-          >
-            包含共性问题
-          </Checkbox>
           <div className="team-filter overview-filter-group">
             <Select
               value={repoFilter || undefined}
@@ -979,7 +926,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               placeholder="全部仓库"
               className="overview-select"
               popupMatchSelectWidth={false}
-              dropdownClassName="overview-select-dropdown"
+              popupClassName="overview-select-dropdown"
               options={repoOptions}
             />
             <Select
@@ -989,7 +936,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               placeholder="全部团队"
               className="overview-select"
               popupMatchSelectWidth={false}
-              dropdownClassName="overview-select-dropdown"
+              popupClassName="overview-select-dropdown"
               options={teamOptions.map((team) => ({
                 value: team,
                 label: team,

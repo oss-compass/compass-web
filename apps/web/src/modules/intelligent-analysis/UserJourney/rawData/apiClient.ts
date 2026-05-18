@@ -53,6 +53,7 @@ export type PainConfirmationRecord = {
   latest_file_key?: string | null;
   confirmed_by: string;
   confirmed_at: string;
+  history?: PainHistoryItem[];
 };
 
 export type PainConfirmationsResponse = {
@@ -68,17 +69,10 @@ export type PainHistoryItem = {
   common_issue_type?: string | null;
   issue_link: string | null;
   pr_link: string | null;
+  retest_decision?: 'passed' | 'failed' | 'not_detected' | null;
   retest_passed_file_key?: string | null;
   confirmed_by: string | null;
   confirmed_at: string;
-};
-
-export type PainHistoryResponse = {
-  file_key: string;
-  step_id: string;
-  pain_index: number;
-  current: PainConfirmationRecord;
-  history: PainHistoryItem[];
 };
 
 export type UpsertPainConfirmationPayload = {
@@ -108,24 +102,6 @@ export const fetchPainConfirmations = async (
     throw new Error(`[CompassAPI] ${res.status} ${res.statusText} — ${url}`);
   }
   return res.json() as Promise<PainConfirmationsResponse>;
-};
-
-/**
- * 查询单条痛点的完整历史记录
- */
-export const fetchPainHistory = async (
-  fileKey: string,
-  stepId: string,
-  painIndex: number
-): Promise<PainHistoryResponse> => {
-  const url = compassApiUrl(
-    `/reports/${fileKey}/pain-confirmations/${stepId}/${painIndex}/history`
-  );
-  const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) {
-    throw new Error(`[CompassAPI] ${res.status} ${res.statusText} — ${url}`);
-  }
-  return res.json() as Promise<PainHistoryResponse>;
 };
 
 /**
@@ -177,6 +153,8 @@ export type OverviewPainPointRow = {
   sig?: string;
   team?: string;
   teamOwner?: string;
+  createdAt?: string;
+  created_at?: string;
   isCommonIssue?: boolean;
   commonIssueType?: string;
   childIds?: string[];
@@ -193,6 +171,8 @@ export type OverviewPainPointRow = {
   remark: string;
   improvementStatus: OverviewImprovementStatus;
   status?: string;
+  issueLink?: string;
+  prLink?: string;
   issueOrPrLink: string;
   retestReportId: string;
   retestReportScore: number | null;

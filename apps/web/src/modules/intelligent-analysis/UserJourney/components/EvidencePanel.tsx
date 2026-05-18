@@ -293,15 +293,21 @@ type DerivedPainDisplayState = {
   effectiveIsCommonIssue: boolean;
   effectiveConfirmedBy: string;
   effectiveConfirmedAt: string;
+  effectiveIssueLink?: string | null;
   effectivePrLink?: string | null;
   effectiveRetestPassedFileKey?: string | null;
   isCompleted: boolean;
 };
 
+const FALLBACK_LINK_TEXT = '未记录';
+
 const normalizePainText = (value: string) => value.trim().replace(/\s+/g, ' ');
 
 const isSamePainText = (left: string, right: string) =>
   normalizePainText(left) === normalizePainText(right);
+
+const getFallbackModalLinkValue = (value?: string | null): string =>
+  String(value || '').trim() || FALLBACK_LINK_TEXT;
 
 const getExistingPainConfirmation = ({
   canConfirm,
@@ -342,31 +348,69 @@ const derivePainDisplayState = ({
   const parentStatusValue = String(parentPain?.status ?? '').trim();
   const parentStatusNum = Number.parseInt(parentStatusValue, 10);
   const childMatched = !!(existing && isSamePainText(existing.pain_text, text));
-  const effectiveStatus = Number.isNaN(parentStatusNum)
-    ? childMatched
-      ? existing?.status
-      : undefined
-    : parentStatusNum;
-  const effectiveSeverity =
-    String(parentPain?.severity || '').trim() ||
-    (childMatched ? String(existing?.severity || '').trim() : '');
-  const effectiveCommonIssueType =
-    parentPain?.commonIssueType ||
-    (childMatched ? existing?.common_issue_type : undefined);
-  const effectiveIsCommonIssue =
-    parentPain?.isCommonIssue === true ||
-    !!String(effectiveCommonIssueType || '').trim() ||
-    (childMatched && existing?.is_common_issue === true);
+
+  const getEffectiveStatus = () => {
+    if (!Number.isNaN(parentStatusNum)) return parentStatusNum;
+    return childMatched ? existing?.status : undefined;
+  };
+
+  const getEffectiveSeverity = () => {
+    const parentSeverity = String(parentPain?.severity || '').trim();
+    if (parentSeverity) return parentSeverity;
+    return childMatched ? String(existing?.severity || '').trim() : '';
+  };
+
+  const getEffectiveCommonIssue = () => {
+    const commonIssueType =
+      parentPain?.commonIssueType ||
+      (childMatched ? existing?.common_issue_type : undefined);
+
+    const isCommonIssue =
+      parentPain?.isCommonIssue === true ||
+      !!String(commonIssueType || '').trim() ||
+      (childMatched && existing?.is_common_issue === true);
+
+    return { commonIssueType, isCommonIssue };
+  };
+
+  const getEffectiveLinks = () => {
+    const issueLink =
+      existing?.issue_link ||
+      parentPain?.issueLink ||
+      parentPain?.issueOrPrLink ||
+      undefined;
+
+    const prLink =
+      existing?.pr_link ||
+      parentPain?.prLink ||
+      parentPain?.issueOrPrLink ||
+      undefined;
+
+    return { issueLink, prLink };
+  };
+
+  const { commonIssueType, isCommonIssue } = getEffectiveCommonIssue();
+  const { issueLink, prLink } = getEffectiveLinks();
+
+  const effectiveStatus = getEffectiveStatus();
+  const effectiveSeverity = getEffectiveSeverity();
+
   const effectiveConfirmedBy =
     (childMatched ? existing?.confirmed_by : '') ||
     String(parentPain?.owner || '').trim() ||
     '--';
-  const effectiveConfirmedAt = childMatched ? existing?.confirmed_at || '' : '';
-  const effectivePrLink =
-    existing?.pr_link || parentPain?.issueOrPrLink || undefined;
+
+  const parentCreatedAt = String(
+    parentPain?.created_at || parentPain?.createdAt || ''
+  ).trim();
+
+  const effectiveConfirmedAt =
+    (childMatched ? existing?.confirmed_at || '' : '') || parentCreatedAt;
+
   const effectiveRetestPassedFileKey = childMatched
     ? existing?.retest_passed_file_key || existing?.latest_file_key
     : undefined;
+
   const isCompleted =
     effectiveStatus === PainStatus.CONFIRMED_PENDING_FIX &&
     effectiveSeverity === 'P4_TRIVIAL';
@@ -375,11 +419,12 @@ const derivePainDisplayState = ({
     childMatched,
     effectiveStatus,
     effectiveSeverity,
-    effectiveCommonIssueType,
-    effectiveIsCommonIssue,
+    effectiveCommonIssueType: commonIssueType,
+    effectiveIsCommonIssue: isCommonIssue,
     effectiveConfirmedBy,
     effectiveConfirmedAt,
-    effectivePrLink,
+    effectiveIssueLink: issueLink,
+    effectivePrLink: prLink,
     effectiveRetestPassedFileKey,
     isCompleted,
   };
@@ -421,7 +466,12 @@ const buildModalCurrentRecord = ({
         displayState.effectiveCommonIssueType ??
         existing.common_issue_type ??
         null,
-      pr_link: displayState.effectivePrLink || existing.pr_link,
+      issue_link: getFallbackModalLinkValue(
+        existing.issue_link || displayState.effectiveIssueLink
+      ),
+      pr_link: getFallbackModalLinkValue(
+        existing.pr_link || displayState.effectivePrLink
+      ),
       confirmed_by:
         displayState.effectiveConfirmedBy === '--'
           ? existing.confirmed_by
@@ -439,8 +489,8 @@ const buildModalCurrentRecord = ({
     severity: displayState.effectiveSeverity || 'P1_CRITICAL',
     is_common_issue: displayState.effectiveIsCommonIssue,
     common_issue_type: displayState.effectiveCommonIssueType ?? null,
-    issue_link: null,
-    pr_link: displayState.effectivePrLink || null,
+    issue_link: getFallbackModalLinkValue(displayState.effectiveIssueLink),
+    pr_link: getFallbackModalLinkValue(displayState.effectivePrLink),
     confirmed_by:
       displayState.effectiveConfirmedBy === '--'
         ? ''

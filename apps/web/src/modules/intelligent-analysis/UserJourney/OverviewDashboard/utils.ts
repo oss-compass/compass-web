@@ -139,6 +139,54 @@ export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
   }));
 };
 
+export const isCommonIssue = (
+  row: Pick<
+    OverviewPainPointRow,
+    'isCommonIssue' | 'commonIssueType' | 'severity'
+  >
+): boolean => {
+  if (row.isCommonIssue) return true;
+  if (String(row.commonIssueType || '').trim()) return true;
+  return String(row.severity || '').startsWith('P5');
+};
+
+export const isKeyIssue = (
+  row: Pick<OverviewPainPointRow, 'severity'>
+): boolean => {
+  const severity = normalizeSeverity(row.severity);
+  return severity === 'P0_BLOCKER' || severity === 'P1_CRITICAL';
+};
+
+export const buildMetricSummaryFromPainRows = (
+  rows: Array<Pick<OverviewPainPointRow, 'improvementStatus' | 'isRealIssue'>>
+): MetricSummary => {
+  const summary = rows.reduce(
+    (acc, row) => {
+      acc.total += 1;
+      if (row.isRealIssue === false) {
+        acc.na += 1;
+        return acc;
+      }
+      if (row.improvementStatus === 'pending') {
+        acc.pending += 1;
+        return acc;
+      }
+      if (row.improvementStatus === 'closed') {
+        acc.resolved += 1;
+        return acc;
+      }
+      acc.inProgress += 1;
+      return acc;
+    },
+    { total: 0, pending: 0, inProgress: 0, resolved: 0, na: 0 }
+  );
+
+  return {
+    ...summary,
+    closeRate: toCloseRate(summary),
+  };
+};
+
 export const toCloseRate = (
   summary: Omit<MetricSummary, 'closeRate'>
 ): number => {

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  fetchOverviewSummary,
   fetchOverviewCards,
   fetchOverviewCommonIssues,
 } from '../rawData/apiClient';
@@ -16,6 +15,7 @@ import type {
   DashboardIssue,
   IssueBucket,
   IssueModalState,
+  IssueSourceMode,
   ProgressTab,
   ProgressView,
   RepoProgressRow,
@@ -24,24 +24,19 @@ import type {
   TeamSortKey,
 } from './types';
 import {
+  buildMetricSummaryFromPainRows,
   compareTeamNames,
   getAverage,
+  getLatestScore,
   getRepoSortValue,
   getTeamSortValue,
+  isCommonIssue,
+  isKeyIssue,
   mergeMetricSummaries,
   normalizeSeverity,
-  toMetricSummary,
   toDashboardIssue,
+  toSuccessRate,
 } from './utils';
-
-const EMPTY_SUMMARY = {
-  total: 0,
-  pending: 0,
-  inProgress: 0,
-  resolved: 0,
-  na: 0,
-  closeRate: 0,
-};
 
 type OverviewDashboardProps = {
   org?: string;
@@ -55,10 +50,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
   const [progressView, setProgressView] = useState<ProgressView>('team');
   const [currentTab, setCurrentTab] = useState<ProgressTab>('overall');
-  const [includeCommonIssuesInProgress, setIncludeCommonIssuesInProgress] =
-    useState(true);
-  const [includeCommonIssuesInSummary, setIncludeCommonIssuesInSummary] =
-    useState(true);
+  const [issueSourceMode, setIssueSourceMode] =
+    useState<IssueSourceMode>('overall');
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
   const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('team');
@@ -67,20 +60,13 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [teamSortAsc, setTeamSortAsc] = useState(true);
 
   const { data: cardsResp, isLoading } = useQuery({
-    queryKey: [
-      'overview-cards-page',
-      org,
-      currentTab,
-      includeCommonIssuesInProgress,
-      repoFilter,
-      teamFilter,
-    ],
+    queryKey: ['overview-cards-page', org, currentTab, repoFilter, teamFilter],
     queryFn: () =>
       fetchOverviewCards({
         viewType: 'repo',
         org,
         tab: currentTab,
-        includeCommonIssues: includeCommonIssuesInProgress,
+        includeCommonIssues: true,
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
         page: 1,
@@ -88,12 +74,16 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
-  const { data: summaryResp } = useQuery({
-    queryKey: ['overview-summary', org, includeCommonIssuesInSummary],
+  const { data: summaryCardsResp } = useQuery({
+    queryKey: ['overview-summary-cards', org],
     queryFn: () =>
-      fetchOverviewSummary({
+      fetchOverviewCards({
+        viewType: 'repo',
         org,
-        includeCommonIssues: includeCommonIssuesInSummary,
+        tab: 'overall',
+        includeCommonIssues: true,
+        page: 1,
+        size: 200,
       }),
   });
 
@@ -106,24 +96,30 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
 
   const repoRows = useMemo<RepoProgressRow[]>(() => {
-    return (cardsResp?.items ?? []).map((card) => {
-      const issues = toDashboardIssue(card);
-      const metrics = toMetricSummary(card);
-      return {
-        id: card.id,
-        name: card.name,
-        team: card.team || card.sig,
-        score: card.latestScore ?? issues[0]?.score ?? null,
-        successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
-        executionTime: card.latestExecutionTime ?? null,
-        latestReportId: card.latestReportId,
-        detailReportUrl: card.detailReportUrl,
-        overall: metrics,
-        key: metrics,
-        issues,
-      };
-    });
-  }, [cardsResp]);
+    return (cardsResp?.items ?? [])
+      .map((card) => {
+        const allIssues = toDashboardIssue(card);
+        const issues =
+          issueSourceMode === 'common'
+            ? allIssues.filter((issue) => isCommonIssue(issue))
+            : allIssues;
+        const metrics = buildMetricSummaryFromPainRows(issues);
+        return {
+          id: card.id,
+          name: card.name,
+          team: card.team || card.sig,
+          score: card.latestScore ?? issues[0]?.score ?? null,
+          successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
+          executionTime: card.latestExecutionTime ?? null,
+          latestReportId: card.latestReportId,
+          detailReportUrl: card.detailReportUrl,
+          overall: metrics,
+          key: metrics,
+          issues,
+        };
+      })
+      .filter((row) => issueSourceMode === 'overall' || row.issues.length > 0);
+  }, [cardsResp, issueSourceMode]);
 
   const teamRows = useMemo<TeamProgressRow[]>(() => {
     const groups = new Map<string, TeamProgressRow>();
@@ -238,25 +234,58 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     return rows;
   }, [currentTab, teamRows, teamSortAsc, teamSortKey]);
 
+  const summaryCards = useMemo(() => {
+    const items = summaryCardsResp?.items ?? [];
+    if (issueSourceMode !== 'common') return items;
+    return items.filter((card) =>
+      card.painPoints.some((row) => isCommonIssue(row))
+    );
+  }, [issueSourceMode, summaryCardsResp]);
+
+  const summaryPainRows = useMemo(
+    () =>
+      summaryCards.flatMap((card) =>
+        issueSourceMode === 'common'
+          ? card.painPoints.filter((row) => isCommonIssue(row))
+          : card.painPoints
+      ),
+    [issueSourceMode, summaryCards]
+  );
+
   const overviewSummary = useMemo(
-    () => summaryResp?.overviewSummary ?? EMPTY_SUMMARY,
-    [summaryResp]
+    () => buildMetricSummaryFromPainRows(summaryPainRows),
+    [summaryPainRows]
   );
   const keyIssueSummary = useMemo(
     () =>
-      summaryResp?.keyIssueSummary ??
-      summaryResp?.blockingSummary ??
-      EMPTY_SUMMARY,
-    [summaryResp]
+      buildMetricSummaryFromPainRows(
+        summaryPainRows.filter((row) => isKeyIssue(row))
+      ),
+    [summaryPainRows]
   );
   const summaryScore = useMemo(
-    () => summaryResp?.summaryScore ?? null,
-    [summaryResp]
+    () =>
+      getAverage(
+        summaryCards.map((card) => card.latestScore ?? getLatestScore(card))
+      ),
+    [summaryCards]
   );
   const summarySuccessRate = useMemo(
-    () => summaryResp?.summarySuccessRate ?? null,
-    [summaryResp]
+    () =>
+      getAverage(
+        summaryCards.map((card) => {
+          const latestScore = card.latestScore ?? getLatestScore(card);
+          return card.latestSuccessRate ?? toSuccessRate(latestScore);
+        })
+      ),
+    [summaryCards]
   );
+  const summaryAvgExecutionTime = useMemo(
+    () =>
+      getAverage(summaryCards.map((card) => card.latestExecutionTime ?? null)),
+    [summaryCards]
+  );
+  const summaryRepoCount = useMemo(() => summaryCards.length, [summaryCards]);
 
   const commonIssues = useMemo<CommonIssueGroup[]>(
     () => (commonIssuesResp?.items ?? []) as unknown as CommonIssueGroup[],
@@ -390,19 +419,18 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           keyIssueSummary={keyIssueSummary}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
-          summaryAvgExecutionTime={summaryResp?.summaryAvgExecutionTime ?? null}
-          repoCount={summaryResp?.repoCount ?? 0}
-          includeCommonIssues={includeCommonIssuesInSummary}
-          onIncludeCommonIssuesChange={setIncludeCommonIssuesInSummary}
+          summaryAvgExecutionTime={summaryAvgExecutionTime}
+          repoCount={summaryRepoCount}
+          issueSourceMode={issueSourceMode}
+          currentTab={currentTab}
+          onIssueSourceModeChange={setIssueSourceMode}
+          onTabChange={setCurrentTab}
         />
 
         <RepoProgressSection
           progressView={progressView}
           onProgressViewChange={setProgressView}
           currentTab={currentTab}
-          onTabChange={setCurrentTab}
-          includeCommonIssues={includeCommonIssuesInProgress}
-          onIncludeCommonIssuesChange={setIncludeCommonIssuesInProgress}
           repoFilter={repoFilter}
           repoOptions={displayRepoOptions}
           onRepoFilterChange={setRepoFilter}

@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Form,
+  type FormInstance,
   Input,
   Modal,
   Radio,
@@ -21,9 +22,10 @@ import type { PainLevel } from '../types';
 import {
   fetchOverviewCommonIssues,
   type PainConfirmationRecord,
+  type PainHistoryItem,
   type UpsertPainConfirmationPayload,
 } from '../rawData/apiClient';
-import { usePainHistory } from '../hooks/usePainConfirmations';
+import { usePainConfirmations } from '../hooks/usePainConfirmations';
 
 const { Text, Link } = Typography;
 
@@ -147,6 +149,236 @@ type Props = {
 };
 
 const CONFIRMED_BY_PATTERN = /^[\u4e00-\u9fa5a-zA-Z0-9 \-_]{1,20}$/;
+const FALLBACK_LINK_TEXT = '未记录';
+
+const formatStatusTime = (value?: string | null): string => {
+  const normalized = String(value || '').trim();
+  if (!normalized) return '';
+  return normalized.replace('T', ' ').replace('Z', '').slice(0, 16);
+};
+
+const getDisplayedStepStatus = (status: PainStatus): PainStatus => {
+  if (status === PainStatus.NO_FIX_NEEDED) {
+    return PainStatus.CONFIRMED_PENDING_FIX;
+  }
+  if (status === PainStatus.RETESTED_FAILED) {
+    return PainStatus.FIXED_PENDING_RETEST;
+  }
+  return Math.min(status, PainStatus.RETESTED_PASSED) as PainStatus;
+};
+
+const getCurrentStatusTagMeta = (
+  status: PainStatus
+): { color: string; text: string } => {
+  if (status === PainStatus.NO_FIX_NEEDED) {
+    return { color: 'default', text: STATUS_LABELS[PainStatus.NO_FIX_NEEDED] };
+  }
+  if (status === PainStatus.RETESTED_FAILED) {
+    return { color: 'error', text: STATUS_LABELS[PainStatus.RETESTED_FAILED] };
+  }
+  return { color: 'processing', text: '当前状态' };
+};
+
+type StepSnapshot = Partial<PainConfirmationRecord> & {
+  status?: number;
+  severity?: string | null;
+  is_common_issue?: boolean;
+  common_issue_type?: string | null;
+  issue_link?: string | null;
+  pr_link?: string | null;
+  retest_decision?: 'passed' | 'failed' | 'not_detected' | null;
+  retest_passed_file_key?: string | null;
+  latest_file_key?: string | null;
+  confirmed_by?: string | null;
+  confirmed_at?: string | null;
+};
+
+const getDefaultVersionValue = (
+  versionOptions: Array<{ value: string; label: string }> | undefined,
+  fileKey: string
+): string | undefined =>
+  versionOptions?.find((item) => item.value !== fileKey)?.value;
+
+const getSafePainLevel = (value?: string | null): PainLevel => {
+  const normalized = String(value || '').trim();
+  return SEVERITY_OPTIONS.some((item) => item.value === normalized)
+    ? (normalized as PainLevel)
+    : 'P1_CRITICAL';
+};
+
+const getSafeCommonIssueType = (
+  value: string | null | undefined,
+  options: string[]
+): string | undefined => {
+  const normalized = String(value || '').trim();
+  if (normalized) return normalized;
+  return options[0];
+};
+
+const getSafeLinkValue = (
+  value: string | null | undefined,
+  fallback?: string | null,
+  isReviewing?: boolean
+): string => {
+  const normalized = String(value || '').trim();
+  if (normalized && normalized !== '未记录') return normalized;
+  if (!isReviewing) return '';
+  const fallbackValue = String(fallback || '').trim();
+  return fallbackValue || FALLBACK_LINK_TEXT;
+};
+
+const isValidUrlOrFallback = (value: string | null | undefined): boolean => {
+  const normalized = String(value || '').trim();
+  if (!normalized) return false;
+  if (normalized === FALLBACK_LINK_TEXT) return true;
+  try {
+    new URL(normalized);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const resolveStepSnapshot = ({
+  displayStep,
+  currentRecord,
+  historyItems,
+}: {
+  displayStep: number;
+  currentRecord?: PainConfirmationRecord | null;
+  historyItems?: PainHistoryItem[];
+}): StepSnapshot | undefined => {
+  const snapshots = [currentRecord, ...(historyItems ?? [])].filter(
+    Boolean
+  ) as StepSnapshot[];
+  const findByStatuses = (statuses: number[]) =>
+    snapshots.find((item) => statuses.includes(Number(item.status)));
+
+  if (displayStep === 1) {
+    return (
+      findByStatuses([PainStatus.CONFIRMED_PENDING_FIX]) ||
+      findByStatuses([
+        PainStatus.FIXED_PENDING_RETEST,
+        PainStatus.RETESTING,
+        PainStatus.RETESTED_PASSED,
+        PainStatus.NO_FIX_NEEDED,
+        PainStatus.RETESTED_FAILED,
+      ]) ||
+      currentRecord ||
+      snapshots[0]
+    );
+  }
+
+  if (displayStep === 2) {
+    return (
+      findByStatuses([PainStatus.FIXED_PENDING_RETEST]) ||
+      findByStatuses([
+        PainStatus.RETESTING,
+        PainStatus.RETESTED_PASSED,
+        PainStatus.RETESTED_FAILED,
+      ]) ||
+      snapshots.find((item) => !!String(item.issue_link || '').trim()) ||
+      currentRecord ||
+      snapshots[0]
+    );
+  }
+
+  if (displayStep === 3) {
+    return (
+      findByStatuses([PainStatus.RETESTING]) ||
+      findByStatuses([
+        PainStatus.RETESTED_PASSED,
+        PainStatus.RETESTED_FAILED,
+      ]) ||
+      snapshots.find((item) => !!String(item.pr_link || '').trim()) ||
+      currentRecord ||
+      snapshots[0]
+    );
+  }
+
+  if (displayStep === 4) {
+    return (
+      snapshots.find(
+        (item) =>
+          item.retest_decision != null ||
+          [PainStatus.RETESTED_PASSED, PainStatus.RETESTED_FAILED].includes(
+            Number(item.status)
+          )
+      ) ||
+      currentRecord ||
+      snapshots[0]
+    );
+  }
+
+  return currentRecord || snapshots[0];
+};
+
+const buildReadonlyFormValues = ({
+  displayStep,
+  snapshot,
+  currentStatus,
+  commonIssueTypeOptions,
+  versionOptions,
+  fileKey,
+  latestFileKey,
+  fallbackIssueLink,
+  fallbackPrLink,
+}: {
+  displayStep: number;
+  snapshot?: StepSnapshot;
+  currentStatus: PainStatus;
+  commonIssueTypeOptions: string[];
+  versionOptions?: Array<{ value: string; label: string }>;
+  fileKey: string;
+  latestFileKey: string;
+  fallbackIssueLink?: string | null;
+  fallbackPrLink?: string | null;
+}): FormValues => {
+  const isCommon =
+    snapshot?.is_common_issue === true ||
+    !!String(snapshot?.common_issue_type || '').trim();
+  const defaultVersionValue = getDefaultVersionValue(versionOptions, fileKey);
+  let retestDecision =
+    displayStep === 4 ? snapshot?.retest_decision : undefined;
+
+  if (displayStep === 4 && !retestDecision) {
+    if (Number(snapshot?.status) === PainStatus.RETESTED_PASSED) {
+      retestDecision = 'passed';
+    } else if (Number(snapshot?.status) === PainStatus.RETESTED_FAILED) {
+      retestDecision = 'failed';
+    } else if (snapshot) {
+      retestDecision = 'not_detected';
+    }
+  }
+
+  const passedFileKey =
+    retestDecision === 'passed'
+      ? String(
+          snapshot?.retest_passed_file_key ||
+            snapshot?.latest_file_key ||
+            latestFileKey ||
+            defaultVersionValue ||
+            ''
+        ).trim() || undefined
+      : undefined;
+
+  return {
+    status: currentStatus,
+    severity: getSafePainLevel(snapshot?.severity),
+    is_common: isCommon,
+    common_issue_type: isCommon
+      ? getSafeCommonIssueType(
+          snapshot?.common_issue_type,
+          commonIssueTypeOptions
+        )
+      : undefined,
+    confirmed_by: String(snapshot?.confirmed_by || 'System').trim(),
+    issue_link: getSafeLinkValue(snapshot?.issue_link, fallbackIssueLink, true),
+    pr_link: getSafeLinkValue(snapshot?.pr_link, fallbackPrLink, true),
+    retest_decision: retestDecision,
+    retest_passed_file_key: passedFileKey,
+  };
+};
 
 const enrichPayloadByStatus = (
   base: UpsertPainConfirmationPayload,
@@ -466,9 +698,13 @@ const RetestingFormItems: React.FC<{
           <Text type="warning" strong>
             检测到新报告已生成，该痛点是否复测通过？
           </Text>
-          <div className="text-xs text-slate-500">
-            最新报告标识：{latestFileKey}
-          </div>
+          {latestFileKey ? (
+            <div className="text-xs text-slate-500">
+              最新报告标识：{latestFileKey}
+            </div>
+          ) : (
+            ''
+          )}
         </div>
         <Form.Item
           name="retest_decision"
@@ -479,11 +715,12 @@ const RetestingFormItems: React.FC<{
         >
           <Radio.Group className="w-full">
             <Space direction="vertical" className="w-full">
-              <Radio value="passed">通过（通知负责人邮箱）</Radio>
-              <Radio value="failed">
-                不通过（通知负责人邮箱，状态变为复测不通过）
-              </Radio>
-              <Radio value="not_detected">未检测到（通知管理员团队邮箱）</Radio>
+              <Radio value="passed">通过</Radio>
+              {/* （通知负责人邮箱） */}
+              <Radio value="failed">不通过</Radio>
+              {/* （通知负责人邮箱，状态变为复测不通过） */}
+              <Radio value="not_detected">未检测到</Radio>
+              {/* （通知管理员团队邮箱） */}
             </Space>
           </Radio.Group>
         </Form.Item>
@@ -520,115 +757,75 @@ const RetestingFormItems: React.FC<{
   );
 };
 
-const PainLevelConfirmModal: React.FC<Props> = ({
-  open,
-  fileKey,
+const ConfirmedPendingFixFormItems: React.FC = () => (
+  <Form.Item
+    name="issue_link"
+    label={
+      <span className="text-sm font-medium text-slate-700">ISSUE 链接</span>
+    }
+    rules={[
+      { required: true, message: '请输入 ISSUE 链接' },
+      { type: 'url', message: '请输入有效的 URL' },
+    ]}
+  >
+    <Input placeholder="https://gitcode.com/.../issues/1" allowClear />
+  </Form.Item>
+);
+
+const FixedPendingRetestFormItems: React.FC<{
+  isReviewingHistoryStep: boolean;
+  currentStatus: number;
+}> = ({ isReviewingHistoryStep, currentStatus }) => (
+  <>
+    {!isReviewingHistoryStep &&
+      currentStatus === PainStatus.RETESTED_FAILED && (
+        <div className="mb-4 rounded-md bg-rose-50 p-3">
+          <Text type="danger" strong className="text-xs">
+            上轮复测不通过，请重新提交 PR
+          </Text>
+        </div>
+      )}
+    <Form.Item
+      name="pr_link"
+      label={
+        <span className="text-sm font-medium text-slate-700">PR 链接</span>
+      }
+      rules={[
+        { required: true, message: '请输入 PR 链接' },
+        {
+          validator: async (_, value) => {
+            if (!isValidUrlOrFallback(value)) {
+              throw new Error('请输入有效的 URL');
+            }
+          },
+        },
+      ]}
+    >
+      <Input placeholder="https://gitcode.com/.../pull/1" allowClear />
+    </Form.Item>
+  </>
+);
+
+const usePainConfirmationForm = ({
   stepId,
   painIndex,
   painText,
-  currentRecord,
-  versionOptions,
-  onCancel,
+  currentStatus,
+  showRetestDecision,
   onSubmit,
+  onCancel,
+  form,
+}: {
+  stepId: string;
+  painIndex: number;
+  painText: string;
+  currentStatus: number;
+  showRetestDecision: boolean;
+  onSubmit: (payload: UpsertPainConfirmationPayload) => Promise<void>;
+  onCancel: () => void;
+  form: FormInstance<FormValues>;
 }) => {
-  const [form] = Form.useForm<FormValues>();
   const [submitting, setSubmitting] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-
-  // 计算当前状态：如果没有记录，默认是 1 (待确认)
-  const currentStatus = currentRecord?.status || PainStatus.TO_BE_CONFIRMED;
-  const latestFileKey = String(currentRecord?.latest_file_key || '').trim();
-  const showRetestDecision =
-    currentStatus === PainStatus.RETESTING && !!latestFileKey;
-
-  const { data: commonIssueResp, isFetching: commonIssueLoading } = useQuery({
-    queryKey: ['overviewKnownCommonIssuesForConfirmModal'],
-    queryFn: () => fetchOverviewCommonIssues({}),
-    enabled: open && currentStatus === PainStatus.TO_BE_CONFIRMED,
-    staleTime: 60 * 1000,
-    refetchOnWindowFocus: false,
-    retry: false,
-  });
-
-  const knownCommonIssues = useMemo(
-    () =>
-      (commonIssueResp?.items ?? []).map((item) => ({
-        issueType: String(item.issueType || '').trim(),
-        description: String(item.description || '').trim(),
-      })),
-    [commonIssueResp?.items]
-  );
-
-  const commonIssueTypeOptions = useMemo(() => {
-    return Array.from(
-      new Set(
-        knownCommonIssues.map((item) => item.issueType).filter((item) => !!item)
-      )
-    );
-  }, [knownCommonIssues]);
-  // 计算下一步状态
-  // 如果当前是 1 (待确认)，下一步是 2 (已确认待修复)
-  // 如果当前已经是 5 (已复测通过)，则保持在 5
-  // 如果当前是 7 (复测不通过)，下一步是 3 (已修复待复测)
-  const nextStatus = useMemo(() => {
-    if (currentStatus === PainStatus.RETESTED_FAILED)
-      return PainStatus.FIXED_PENDING_RETEST;
-    return Math.min(currentStatus + 1, 5) as PainStatus;
-  }, [currentStatus]);
-
-  const { data: historyData, isLoading: historyLoading } = usePainHistory(
-    open && showHistory ? fileKey : undefined,
-    stepId,
-    painIndex
-  );
-
-  // 打开弹窗时重置/填充表单
-  useEffect(() => {
-    if (open) {
-      setShowHistory(false);
-      // 默认设置为当前的状态
-      const currentCommonIssueType = currentRecord?.common_issue_type || '';
-      const safeCommonIssueType = commonIssueTypeOptions.includes(
-        currentCommonIssueType
-      )
-        ? currentCommonIssueType
-        : undefined;
-      const currentIsCommon =
-        currentRecord?.is_common_issue === true ||
-        !!String(currentRecord?.common_issue_type || '').trim();
-
-      form.setFieldsValue({
-        status: currentStatus,
-        severity: (currentRecord?.severity as PainLevel) || 'P1_CRITICAL',
-        is_common:
-          currentStatus === PainStatus.TO_BE_CONFIRMED && !currentRecord
-            ? undefined
-            : currentIsCommon,
-        common_issue_type: safeCommonIssueType,
-        confirmed_by: currentRecord?.confirmed_by || '',
-        issue_link: currentRecord?.issue_link || '',
-        pr_link: currentRecord?.pr_link || '',
-        retest_decision: undefined,
-        retest_passed_file_key: latestFileKey || undefined,
-      });
-    }
-  }, [
-    open,
-    currentRecord,
-    currentStatus,
-    form,
-    commonIssueTypeOptions,
-    latestFileKey,
-  ]);
-
-  const isCommon = Form.useWatch('is_common', form);
-  const retestDecision = Form.useWatch('retest_decision', form);
-
-  useEffect(() => {
-    if (isCommon !== true) {
-      form.setFieldsValue({ common_issue_type: undefined });
-    }
-  }, [isCommon, form]);
 
   const handleOk = async () => {
     try {
@@ -670,34 +867,488 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     }
   };
 
-  const stepsItems = useMemo(() => {
-    return [1, 2, 3, 4, 5].map((s) => ({
-      title: STATUS_LABELS[s],
-      description:
-        s === currentStatus ||
-        (s === 3 && currentStatus === PainStatus.RETESTED_FAILED)
-          ? '当前状态'
-          : '',
+  return { handleOk, submitting };
+};
+
+const useStepsItems = ({
+  currentStatus,
+  displayedStepStatus,
+  isReviewingHistoryStep,
+  activeDisplayStep,
+  currentRecord,
+  reviewStepSnapshotMap,
+  setSelectedStep,
+}: {
+  currentStatus: number;
+  displayedStepStatus: number;
+  isReviewingHistoryStep: boolean;
+  activeDisplayStep: number;
+  currentRecord: PainConfirmationRecord | undefined;
+  reviewStepSnapshotMap: Map<number, StepSnapshot | undefined>;
+  setSelectedStep: (step: number | null) => void;
+}) => {
+  return useMemo(() => {
+    const currentTagMeta = getCurrentStatusTagMeta(currentStatus);
+
+    return [1, 2, 3, 4, 5].map((s) => {
+      const isCurrentStep = s === displayedStepStatus;
+      const canReviewStep = s < displayedStepStatus;
+      const canBackToCurrent = isCurrentStep && isReviewingHistoryStep;
+      const isReviewingThisStep =
+        isReviewingHistoryStep && activeDisplayStep === s;
+      const isStepClickable = canReviewStep || canBackToCurrent;
+      const stepSnapshot = isCurrentStep
+        ? currentRecord
+        : reviewStepSnapshotMap.get(s);
+      const timeText =
+        s > displayedStepStatus
+          ? ''
+          : formatStatusTime(
+              stepSnapshot?.confirmed_at || currentRecord?.confirmed_at
+            );
+
+      const titleContent = (
+        <div
+          className={`inline-flex min-h-6 items-center rounded-md px-2 py-0 align-middle leading-none transition-all ${
+            isReviewingThisStep
+              ? 'border border-blue-200 bg-blue-50 text-blue-700 shadow-sm'
+              : isStepClickable
+              ? 'border border-transparent hover:border-blue-200 hover:bg-blue-50/70'
+              : 'border border-transparent'
+          }`}
+        >
+          <span className="inline-flex items-center gap-2 whitespace-nowrap leading-5">
+            <span>{STATUS_LABELS[s]}</span>
+            {isCurrentStep ? (
+              <Tag
+                color={currentTagMeta.color}
+                className="!mr-0 whitespace-nowrap"
+              >
+                {currentTagMeta.text}
+              </Tag>
+            ) : null}
+          </span>
+        </div>
+      );
+
+      return {
+        title: isStepClickable ? (
+          <button
+            type="button"
+            onClick={() => {
+              if (canBackToCurrent) {
+                setSelectedStep(null);
+                return;
+              }
+              setSelectedStep(s);
+            }}
+            className="cursor-pointer rounded-sm text-left transition-colors hover:text-blue-600"
+          >
+            {titleContent}
+          </button>
+        ) : (
+          titleContent
+        ),
+        description: timeText ? (
+          <div className="text-xs leading-5 text-slate-500">{timeText}</div>
+        ) : null,
+      };
+    });
+  }, [
+    activeDisplayStep,
+    currentRecord,
+    currentStatus,
+    displayedStepStatus,
+    isReviewingHistoryStep,
+    reviewStepSnapshotMap,
+    setSelectedStep,
+  ]);
+};
+
+const ModalFooter: React.FC<{
+  showHistory: boolean;
+  setShowHistory: (show: boolean) => void;
+  isReviewingHistoryStep: boolean;
+  setSelectedStep: (step: number | null) => void;
+  onCancel: () => void;
+  currentStatus: number;
+  showRetestDecision: boolean;
+}> = ({
+  showHistory,
+  setShowHistory,
+  isReviewingHistoryStep,
+  setSelectedStep,
+  onCancel,
+  currentStatus,
+  showRetestDecision,
+}) => {
+  if (showHistory) {
+    return (
+      <Button key="back" onClick={() => setShowHistory(false)}>
+        返回
+      </Button>
+    );
+  }
+
+  if (isReviewingHistoryStep) {
+    return (
+      <div className="flex items-center justify-end gap-2">
+        <Button key="back-to-current" onClick={() => setSelectedStep(null)}>
+          返回当前状态
+        </Button>
+        <Button key="close-history" onClick={onCancel}>
+          关闭
+        </Button>
+      </div>
+    );
+  }
+
+  if (currentStatus >= PainStatus.RETESTING && !showRetestDecision) {
+    return (
+      <Button key="close" onClick={onCancel}>
+        关闭
+      </Button>
+    );
+  }
+
+  return undefined;
+};
+
+const ModalTitle: React.FC = () => (
+  <div className="flex items-center justify-between pr-8">
+    <span className="text-base font-semibold text-slate-800">痛点管理</span>
+  </div>
+);
+
+const PainConfirmationForm: React.FC<{
+  form: FormInstance<FormValues>;
+  isReviewingHistoryStep: boolean;
+  currentStatus: number;
+  activeDisplayStep: number;
+  isCommon: boolean;
+  commonIssueLoading: boolean;
+  knownCommonIssues: Array<{ issueType: string; description: string }>;
+  commonIssueTypeOptions: string[];
+  showRetestDecision: boolean;
+  latestFileKey: string;
+  reviewLatestFileKey: string;
+  retestDecision: string;
+  versionOptions: any[];
+  fileKey: string;
+  currentRecord: PainConfirmationRecord | undefined;
+}> = ({
+  form,
+  isReviewingHistoryStep,
+  currentStatus,
+  activeDisplayStep,
+  isCommon,
+  commonIssueLoading,
+  knownCommonIssues,
+  commonIssueTypeOptions,
+  showRetestDecision,
+  latestFileKey,
+  reviewLatestFileKey,
+  retestDecision,
+  versionOptions,
+  fileKey,
+  currentRecord,
+}) => {
+  return (
+    <Form
+      form={form}
+      layout="vertical"
+      requiredMark={false}
+      disabled={isReviewingHistoryStep}
+      initialValues={{ status: currentStatus }}
+    >
+      <Form.Item name="status" hidden>
+        <Input type="hidden" />
+      </Form.Item>
+
+      {(isReviewingHistoryStep
+        ? activeDisplayStep === PainStatus.TO_BE_CONFIRMED
+        : currentStatus === PainStatus.TO_BE_CONFIRMED) && (
+        <ToBeConfirmedFormItems
+          isCommon={isCommon}
+          commonIssueLoading={commonIssueLoading}
+          knownCommonIssues={knownCommonIssues}
+          commonIssueTypeOptions={commonIssueTypeOptions}
+          form={form}
+        />
+      )}
+
+      {(isReviewingHistoryStep
+        ? activeDisplayStep === PainStatus.CONFIRMED_PENDING_FIX
+        : currentStatus === PainStatus.CONFIRMED_PENDING_FIX) && (
+        <ConfirmedPendingFixFormItems />
+      )}
+
+      {((isReviewingHistoryStep &&
+        activeDisplayStep === PainStatus.FIXED_PENDING_RETEST) ||
+        (!isReviewingHistoryStep &&
+          (currentStatus === PainStatus.FIXED_PENDING_RETEST ||
+            currentStatus === PainStatus.RETESTED_FAILED))) && (
+        <FixedPendingRetestFormItems
+          isReviewingHistoryStep={isReviewingHistoryStep}
+          currentStatus={currentStatus}
+        />
+      )}
+
+      {((isReviewingHistoryStep &&
+        activeDisplayStep === PainStatus.RETESTING) ||
+        (!isReviewingHistoryStep &&
+          currentStatus === PainStatus.RETESTING)) && (
+        <RetestingFormItems
+          showRetestDecision={
+            isReviewingHistoryStep ? true : showRetestDecision
+          }
+          latestFileKey={
+            isReviewingHistoryStep ? reviewLatestFileKey : latestFileKey
+          }
+          retestDecision={retestDecision}
+          versionOptions={versionOptions}
+          fileKey={fileKey}
+        />
+      )}
+
+      {!isReviewingHistoryStep &&
+        currentStatus === PainStatus.RETESTED_PASSED && (
+          <RetestPassedInfo currentRecord={currentRecord} />
+        )}
+
+      {((isReviewingHistoryStep && activeDisplayStep <= 3) ||
+        (!isReviewingHistoryStep &&
+          (currentStatus <= PainStatus.FIXED_PENDING_RETEST ||
+            currentStatus === PainStatus.RETESTED_FAILED))) && (
+        <Form.Item
+          name="confirmed_by"
+          label={
+            <span className="text-sm font-medium text-slate-700">操作人</span>
+          }
+          rules={[
+            { required: true, message: '请填写操作人' },
+            {
+              pattern: CONFIRMED_BY_PATTERN,
+              message:
+                '只允许中文、字母、数字、空格、连字符和下划线，不超过 20 个字符',
+            },
+          ]}
+        >
+          <Input
+            placeholder="请输入您的姓名"
+            maxLength={20}
+            showCount
+            allowClear
+          />
+        </Form.Item>
+      )}
+    </Form>
+  );
+};
+
+const PainLevelConfirmModal: React.FC<Props> = ({
+  open,
+  fileKey,
+  stepId,
+  painIndex,
+  painText,
+  currentRecord,
+  versionOptions,
+  onCancel,
+  onSubmit,
+}) => {
+  const [form] = Form.useForm<FormValues>();
+  const [showHistory, setShowHistory] = useState(false);
+  const [selectedStep, setSelectedStep] = useState<number | null>(null);
+
+  // 计算当前状态：如果没有记录，默认是 1 (待确认)
+  const currentStatus = currentRecord?.status || PainStatus.TO_BE_CONFIRMED;
+  const latestFileKey = String(currentRecord?.latest_file_key || '').trim();
+  const showRetestDecision =
+    currentStatus === PainStatus.RETESTING && !!latestFileKey;
+
+  const { handleOk, submitting } = usePainConfirmationForm({
+    stepId,
+    painIndex,
+    painText,
+    currentStatus,
+    showRetestDecision,
+    onSubmit,
+    onCancel,
+    form,
+  });
+
+  const { data: commonIssueResp, isFetching: commonIssueLoading } = useQuery({
+    queryKey: ['overviewKnownCommonIssuesForConfirmModal'],
+    queryFn: () => fetchOverviewCommonIssues({}),
+    enabled:
+      open &&
+      (currentStatus === PainStatus.TO_BE_CONFIRMED ||
+        selectedStep === PainStatus.TO_BE_CONFIRMED),
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  const historyData = useMemo(
+    () => ({ history: currentRecord?.history || [] }),
+    [currentRecord?.history]
+  );
+  const historyLoading = false;
+
+  const { knownCommonIssues, commonIssueTypeOptions } = useMemo(() => {
+    const items = commonIssueResp?.items ?? [];
+    const issues = items.map((item) => ({
+      issueType: String(item.issueType || '').trim(),
+      description: String(item.description || '').trim(),
     }));
+    const options = Array.from(
+      new Set(issues.map((item) => item.issueType).filter(Boolean))
+    );
+    return { knownCommonIssues: issues, commonIssueTypeOptions: options };
+  }, [commonIssueResp?.items]);
+
+  // 计算下一步状态
+  const nextStatus = useMemo(() => {
+    if (currentStatus === PainStatus.RETESTED_FAILED)
+      return PainStatus.FIXED_PENDING_RETEST;
+    return Math.min(currentStatus + 1, 5) as PainStatus;
   }, [currentStatus]);
+
+  const displayedStepStatus = getDisplayedStepStatus(currentStatus);
+
+  const reviewStepSnapshotMap = useMemo(() => {
+    const historyItems = currentRecord?.history || [];
+    const steps = [
+      PainStatus.TO_BE_CONFIRMED,
+      PainStatus.CONFIRMED_PENDING_FIX,
+      PainStatus.FIXED_PENDING_RETEST,
+      PainStatus.RETESTING,
+    ];
+
+    return new Map(
+      steps.map((step) => [
+        step,
+        resolveStepSnapshot({
+          displayStep: step,
+          currentRecord,
+          historyItems,
+        }),
+      ])
+    );
+  }, [currentRecord]);
+
+  const activeDisplayStep = selectedStep ?? displayedStepStatus;
+  const isReviewingHistoryStep =
+    selectedStep !== null && selectedStep < displayedStepStatus;
+  const activeReviewSnapshot = isReviewingHistoryStep
+    ? reviewStepSnapshotMap.get(activeDisplayStep)
+    : undefined;
+
+  const reviewLatestFileKey = useMemo(() => {
+    return String(
+      activeReviewSnapshot?.latest_file_key ||
+        activeReviewSnapshot?.retest_passed_file_key ||
+        latestFileKey ||
+        ''
+    ).trim();
+  }, [activeReviewSnapshot, latestFileKey]);
+
+  const stepsItems = useStepsItems({
+    currentStatus,
+    displayedStepStatus,
+    isReviewingHistoryStep,
+    activeDisplayStep,
+    currentRecord,
+    reviewStepSnapshotMap,
+    setSelectedStep,
+  });
+
+  // 打开弹窗时重置查看态
+  useEffect(() => {
+    if (!open) return;
+    setShowHistory(false);
+    setSelectedStep(null);
+  }, [open]);
+
+  const resetFormToSnapshot = useCallback(() => {
+    form.setFieldsValue(
+      buildReadonlyFormValues({
+        displayStep: activeDisplayStep,
+        snapshot: activeReviewSnapshot,
+        currentStatus,
+        commonIssueTypeOptions,
+        versionOptions,
+        fileKey,
+        latestFileKey: reviewLatestFileKey,
+      })
+    );
+  }, [
+    activeDisplayStep,
+    activeReviewSnapshot,
+    currentStatus,
+    commonIssueTypeOptions,
+    versionOptions,
+    fileKey,
+    reviewLatestFileKey,
+    form,
+  ]);
+
+  const resetFormToCurrent = useCallback(() => {
+    const currentCommonIssueType = currentRecord?.common_issue_type || '';
+    const safeCommonIssueType = commonIssueTypeOptions.includes(
+      currentCommonIssueType
+    )
+      ? currentCommonIssueType
+      : undefined;
+    const currentIsCommon =
+      currentRecord?.is_common_issue === true ||
+      !!String(currentRecord?.common_issue_type || '').trim();
+
+    form.setFieldsValue({
+      status: currentStatus,
+      severity: (currentRecord?.severity as PainLevel) || 'P1_CRITICAL',
+      is_common:
+        currentStatus === PainStatus.TO_BE_CONFIRMED && !currentRecord
+          ? undefined
+          : currentIsCommon,
+      common_issue_type: safeCommonIssueType,
+      confirmed_by: currentRecord?.confirmed_by || '',
+      issue_link: getSafeLinkValue(currentRecord?.issue_link, '', false),
+      pr_link: getSafeLinkValue(currentRecord?.pr_link, '', false),
+      retest_decision: undefined,
+      retest_passed_file_key: latestFileKey || undefined,
+    });
+  }, [
+    currentRecord,
+    currentStatus,
+    commonIssueTypeOptions,
+    latestFileKey,
+    form,
+  ]);
+
+  // 打开弹窗或切换查看步骤时填充表单
+  useEffect(() => {
+    if (!open) return;
+    if (isReviewingHistoryStep) {
+      resetFormToSnapshot();
+    } else {
+      resetFormToCurrent();
+    }
+  }, [open, isReviewingHistoryStep, resetFormToSnapshot, resetFormToCurrent]);
+
+  const isCommon = Form.useWatch('is_common', form);
+  const retestDecision = Form.useWatch('retest_decision', form);
+
+  useEffect(() => {
+    if (isCommon !== true) {
+      form.setFieldsValue({ common_issue_type: undefined });
+    }
+  }, [isCommon, form]);
 
   return (
     <Modal
-      title={
-        <div className="flex items-center justify-between pr-8">
-          <span className="text-base font-semibold text-slate-800">
-            痛点管理
-          </span>
-          {/* <Button
-            type="link"
-            size="small"
-            icon={<HistoryOutlined />}
-            onClick={() => setShowHistory(!showHistory)}
-          >
-            {showHistory ? '收起历史' : '查看历史'}
-          </Button> */}
-        </div>
-      }
+      title={<ModalTitle />}
       open={open}
       onCancel={onCancel}
       onOk={handleOk}
@@ -720,26 +1371,22 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       }}
       destroyOnClose
       footer={
-        showHistory ? (
-          <Button key="back" onClick={() => setShowHistory(false)}>
-            返回
-          </Button>
-        ) : currentStatus >= PainStatus.RETESTING && !showRetestDecision ? (
-          <Button key="close" onClick={onCancel}>
-            关闭
-          </Button>
-        ) : undefined
+        <ModalFooter
+          showHistory={showHistory}
+          setShowHistory={setShowHistory}
+          isReviewingHistoryStep={isReviewingHistoryStep}
+          setSelectedStep={setSelectedStep}
+          onCancel={onCancel}
+          currentStatus={currentStatus}
+          showRetestDecision={showRetestDecision}
+        />
       }
     >
       <div className="space-y-6">
         {/* 流程进度 */}
         <div className="rounded-lg bg-slate-50 p-4">
           <Steps
-            current={
-              currentStatus === PainStatus.RETESTED_FAILED
-                ? 2
-                : currentStatus - 1
-            }
+            current={displayedStepStatus - 1}
             items={stepsItems}
             size="small"
             className="pain-steps"
@@ -756,117 +1403,23 @@ const PainLevelConfirmModal: React.FC<Props> = ({
               {painText}
             </div>
 
-            <Form
+            <PainConfirmationForm
               form={form}
-              layout="vertical"
-              requiredMark={false}
-              initialValues={{ status: currentStatus }}
-            >
-              <Form.Item name="status" hidden>
-                <Input type="hidden" />
-              </Form.Item>
-
-              {currentStatus === PainStatus.TO_BE_CONFIRMED && (
-                <ToBeConfirmedFormItems
-                  isCommon={isCommon}
-                  commonIssueLoading={commonIssueLoading}
-                  knownCommonIssues={knownCommonIssues}
-                  commonIssueTypeOptions={commonIssueTypeOptions}
-                  form={form}
-                />
-              )}
-
-              {currentStatus === PainStatus.CONFIRMED_PENDING_FIX && (
-                <Form.Item
-                  name="issue_link"
-                  label={
-                    <span className="text-sm font-medium text-slate-700">
-                      ISSUE 链接
-                    </span>
-                  }
-                  rules={[
-                    { required: true, message: '请输入 ISSUE 链接' },
-                    { type: 'url', message: '请输入有效的 URL' },
-                  ]}
-                >
-                  <Input
-                    placeholder="https://gitcode.com/.../issues/1"
-                    allowClear
-                  />
-                </Form.Item>
-              )}
-
-              {(currentStatus === PainStatus.FIXED_PENDING_RETEST ||
-                currentStatus === PainStatus.RETESTED_FAILED) && (
-                <>
-                  {currentStatus === PainStatus.RETESTED_FAILED && (
-                    <div className="mb-4 rounded-md bg-rose-50 p-3">
-                      <Text type="danger" strong className="text-xs">
-                        上轮复测不通过，请重新提交 PR
-                      </Text>
-                    </div>
-                  )}
-                  <Form.Item
-                    name="pr_link"
-                    label={
-                      <span className="text-sm font-medium text-slate-700">
-                        PR 链接
-                      </span>
-                    }
-                    rules={[
-                      { required: true, message: '请输入 PR 链接' },
-                      { type: 'url', message: '请输入有效的 URL' },
-                    ]}
-                  >
-                    <Input
-                      placeholder="https://gitcode.com/.../pull/1"
-                      allowClear
-                    />
-                  </Form.Item>
-                </>
-              )}
-
-              {currentStatus === PainStatus.RETESTING && (
-                <RetestingFormItems
-                  showRetestDecision={showRetestDecision}
-                  latestFileKey={latestFileKey}
-                  retestDecision={retestDecision}
-                  versionOptions={versionOptions}
-                  fileKey={fileKey}
-                />
-              )}
-
-              {currentStatus === PainStatus.RETESTED_PASSED && (
-                <RetestPassedInfo currentRecord={currentRecord} />
-              )}
-
-              {(currentStatus <= PainStatus.FIXED_PENDING_RETEST ||
-                currentStatus === PainStatus.RETESTED_FAILED) && (
-                <Form.Item
-                  name="confirmed_by"
-                  label={
-                    <span className="text-sm font-medium text-slate-700">
-                      操作人
-                    </span>
-                  }
-                  rules={[
-                    { required: true, message: '请填写操作人' },
-                    {
-                      pattern: CONFIRMED_BY_PATTERN,
-                      message:
-                        '只允许中文、字母、数字、空格、连字符和下划线，不超过 20 个字符',
-                    },
-                  ]}
-                >
-                  <Input
-                    placeholder="请输入您的姓名"
-                    maxLength={20}
-                    showCount
-                    allowClear
-                  />
-                </Form.Item>
-              )}
-            </Form>
+              isReviewingHistoryStep={isReviewingHistoryStep}
+              currentStatus={currentStatus}
+              activeDisplayStep={activeDisplayStep}
+              isCommon={isCommon}
+              commonIssueLoading={commonIssueLoading}
+              knownCommonIssues={knownCommonIssues}
+              commonIssueTypeOptions={commonIssueTypeOptions}
+              showRetestDecision={showRetestDecision}
+              latestFileKey={latestFileKey}
+              reviewLatestFileKey={reviewLatestFileKey}
+              retestDecision={retestDecision}
+              versionOptions={versionOptions}
+              fileKey={fileKey}
+              currentRecord={currentRecord}
+            />
           </>
         )}
       </div>

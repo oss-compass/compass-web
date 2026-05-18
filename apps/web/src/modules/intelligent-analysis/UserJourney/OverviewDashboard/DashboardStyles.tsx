@@ -39,9 +39,19 @@ const DashboardStyles: React.FC = () => (
 
     .overview-summary-title-row {
       display: flex;
+      width: 100%;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
+    }
+
+    .overview-summary-actions {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .overview-summary-stack {
@@ -196,13 +206,6 @@ const DashboardStyles: React.FC = () => (
       flex-wrap: wrap;
     }
 
-    .overview-top-tabs {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
     .overview-segmented {
       background: rgba(255, 255, 255, 0.7);
       border: 1px solid rgba(148, 163, 184, 0.35);
@@ -238,6 +241,14 @@ const DashboardStyles: React.FC = () => (
       width: 160px;
     }
 
+    .overview-type-select {
+      width: 144px;
+    }
+
+    .overview-severity-select {
+      width: 180px;
+    }
+
     .overview-select .ant-select-selector {
       border-radius: 10px !important;
       border-color: #d9e0ea !important;
@@ -256,13 +267,6 @@ const DashboardStyles: React.FC = () => (
       overflow: hidden;
       border: 1px solid rgba(148, 163, 184, 0.35);
       box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
-    }
-
-    .overview-common-checkbox {
-      margin-left: 10px;
-      color: #475569;
-      font-size: 12px;
-      font-weight: 600;
     }
 
     .overview-ant-table {
@@ -398,7 +402,9 @@ const DashboardStyles: React.FC = () => (
       flex-direction: column;
       gap: 8px;
     }
-
+    .overview-select-label {
+      font-size: 14px;
+    }
     .overview-progress-bar {
       display: flex;
       height: 8px;
@@ -615,6 +621,22 @@ const DashboardStyles: React.FC = () => (
 
       .overview-grid {
         grid-template-columns: 1fr;
+      }
+
+      .overview-dashboard-toolbar {
+        justify-content: flex-start;
+      }
+
+      .overview-source-switch {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .overview-summary-actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
       }
 
       .team-filter {

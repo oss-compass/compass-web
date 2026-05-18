@@ -3,6 +3,7 @@ import type { OverviewPainPointRow } from '../rawData/apiClient';
 export type Severity = OverviewPainPointRow['severity'];
 export type ProgressTab = 'overall' | 'key';
 export type ProgressView = 'team' | 'repo';
+export type IssueSourceMode = 'overall' | 'common';
 export type IssueBucket = 'pending' | 'inProgress' | 'resolved' | 'na';
 export type RepoSortKey =
   | 'name'
