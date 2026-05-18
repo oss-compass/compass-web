@@ -414,6 +414,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           repoRows={sortedRepoRows}
           repoSortArrow={repoSortArrow}
           teamSortArrow={teamSortArrow}
+          teamSortKey={teamSortKey}
+          teamSortAsc={teamSortAsc}
           onRepoSort={handleRepoSort}
           onTeamSort={handleTeamSort}
           onOpenRepoIssues={openRepoIssues}

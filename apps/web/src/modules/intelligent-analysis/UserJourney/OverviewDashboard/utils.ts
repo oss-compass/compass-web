@@ -186,7 +186,7 @@ export const getRepoSortValue = (
     case 'total':
       return metrics.total;
     case 'closeRate':
-      return metrics.closeRate;
+      return metrics.total === 0 ? 100 : metrics.closeRate;
     default:
       return row.name;
   }
@@ -212,7 +212,7 @@ export const getTeamSortValue = (
     case 'total':
       return metrics.total;
     case 'closeRate':
-      return metrics.closeRate;
+      return metrics.total === 0 ? 100 : metrics.closeRate;
     default:
       return row.name;
   }

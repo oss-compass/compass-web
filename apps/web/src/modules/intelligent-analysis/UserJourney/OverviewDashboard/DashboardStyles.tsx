@@ -401,7 +401,7 @@ const DashboardStyles: React.FC = () => (
 
     .overview-progress-bar {
       display: flex;
-      height: 10px;
+      height: 8px;
       overflow: hidden;
       border-radius: 999px;
       background: #e2e8f0;
@@ -416,11 +416,11 @@ const DashboardStyles: React.FC = () => (
     }
 
     .overview-progress-inProgress {
-      background: #2f7be5;
+      background: #4b93fe;
     }
 
     .overview-progress-resolved {
-      background: #1ea362;
+      background: #3bd8c8;
     }
 
     .overview-progress-meta {
