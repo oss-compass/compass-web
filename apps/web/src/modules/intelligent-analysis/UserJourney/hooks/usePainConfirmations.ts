@@ -89,6 +89,7 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
 
   return {
     confirmationMap,
+    overviewPains: query.data?.overview_pains ?? [],
     isLoading: query.isLoading,
     upsert: mutation.mutateAsync,
     isSubmitting: mutation.isPending,

@@ -58,6 +58,7 @@ export type PainConfirmationRecord = {
 export type PainConfirmationsResponse = {
   file_key: string;
   confirmations: PainConfirmationRecord[];
+  overview_pains: any[]; // 对应 ES 中的 user_journey_overview_pains 结构
 };
 
 export type PainHistoryItem = {

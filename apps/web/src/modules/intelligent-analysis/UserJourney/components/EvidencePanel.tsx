@@ -966,8 +966,31 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   versionOptions,
 }) => {
   const [obsExpanded, setObsExpanded] = useState(false);
+  const canConfirm = !!(fileKey && stepId);
+  const { confirmationMap, upsert, overviewPains } = usePainConfirmations(
+    canConfirm ? fileKey : undefined
+  );
+
+  const displayPainPoints = useMemo(() => {
+    if (fileKey && stepId && overviewPains && overviewPains.length > 0) {
+      // 从 overviewPains 中过滤出属于当前任务的痛点，包含对 legacyStepId 的兼容
+      return overviewPains
+        .filter((p: any) => {
+          const pid = p.task_id || p.step_id;
+          return pid === stepId || (legacyStepId && pid === legacyStepId);
+        })
+        .sort((a: any, b: any) => (a.pain_index ?? 0) - (b.pain_index ?? 0))
+        .map((p: any) => ({
+          text: p.pain_text,
+          index: p.pain_index ?? 0,
+        }));
+    }
+    // 不再自动降级为原来的 pain_points prop
+    return [];
+  }, [fileKey, stepId, legacyStepId, overviewPains]);
+
+  const hasPain = displayPainPoints.length > 0;
   const hasObs = !!observations && observations.length > 0;
-  const hasPain = !!pain_points && pain_points.length > 0;
   const projectKey = useMemo(
     () => deriveProjectKeyFromFileKey(fileKey),
     [fileKey]
@@ -1046,12 +1069,23 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   }, [fileKey, overviewCardResp?.items, targetTaskIds]);
 
   const autoOpenIndex = useMemo(() => {
-    if (!painFocusTarget || !pain_points || !pain_points.length) return null;
+    if (!painFocusTarget || !displayPainPoints.length) return null;
     const target = painFocusTarget.painIndex;
-    if (target > 0 && target - 1 < pain_points.length) return target - 1;
-    if (target >= 0 && target < pain_points.length) return target;
+
+    // 检查 displayPainPoints 中是否存在 index 为 target 的项
+    const match = displayPainPoints.find((p) => p.index === target);
+    if (match) return target;
+
+    // 兼容性逻辑：如果是 1-based index，尝试匹配 target - 1
+    if (typeof target === 'number' && target > 0) {
+      const matchMinusOne = displayPainPoints.find(
+        (p) => p.index === target - 1
+      );
+      if (matchMinusOne) return target - 1;
+    }
+
     return null;
-  }, [painFocusTarget, pain_points]);
+  }, [painFocusTarget, displayPainPoints]);
 
   const shouldAutoOpenForIndex = (index: number) => {
     return index === autoOpenIndex;
@@ -1122,19 +1156,19 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               痛点
             </div>
             <ul className="space-y-1">
-              {pain_points!.map((p, i) => (
+              {displayPainPoints.map(({ text, index }) => (
                 <PainPointItem
-                  key={i}
-                  text={p}
-                  index={i}
+                  key={index}
+                  text={text}
+                  index={index}
                   fileKey={fileKey}
                   stepId={stepId}
                   legacyStepId={legacyStepId}
-                  parentPain={findParentPainByIndex(i)}
-                  toolIds={pain_points_tool_nums?.[i]}
+                  parentPain={findParentPainByIndex(index)}
+                  toolIds={pain_points_tool_nums?.[index]}
                   onStepClick={onStepClick}
                   compact
-                  shouldAutoOpen={shouldAutoOpenForIndex(i)}
+                  shouldAutoOpen={shouldAutoOpenForIndex(index)}
                   onAutoOpenHandled={onPainFocusHandled}
                   versionOptions={versionOptions}
                 />
@@ -1161,22 +1195,22 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
             <PainIcon className="h-3 w-3" />
             痛点
             <span className="ml-0.5 rounded-full bg-rose-100 px-1.5 text-[10px] font-bold text-rose-700">
-              {pain_points!.length}
+              {displayPainPoints.length}
             </span>
           </div>
           <ul className="space-y-1.5">
-            {pain_points!.map((p, i) => (
+            {displayPainPoints.map(({ text, index }) => (
               <PainPointItem
-                key={i}
-                text={p}
-                index={i}
+                key={index}
+                text={text}
+                index={index}
                 fileKey={fileKey}
                 stepId={stepId}
                 legacyStepId={legacyStepId}
-                parentPain={findParentPainByIndex(i)}
-                toolIds={pain_points_tool_nums?.[i]}
+                parentPain={findParentPainByIndex(index)}
+                toolIds={pain_points_tool_nums?.[index]}
                 onStepClick={onStepClick}
-                shouldAutoOpen={shouldAutoOpenForIndex(i)}
+                shouldAutoOpen={shouldAutoOpenForIndex(index)}
                 onAutoOpenHandled={onPainFocusHandled}
                 versionOptions={versionOptions}
               />

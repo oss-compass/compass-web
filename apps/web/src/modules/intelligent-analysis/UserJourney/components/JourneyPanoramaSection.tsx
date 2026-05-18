@@ -5,6 +5,7 @@ import { JourneyStep } from '../types';
 import taskDefinitions from '../rawData/task_definitions.json';
 import useLogData, { LogTask } from '../hooks/useLogData';
 import EvidencePanel from './EvidencePanel';
+import { usePainConfirmations } from '../hooks/usePainConfirmations';
 
 /* ─── 类型 ─── */
 type TaskDefinition = {
@@ -114,6 +115,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
 }) => {
   const [detailExpanded, setDetailExpanded] = useState(true);
   const logData = useLogData(projectFileKey);
+  const { overviewPains } = usePainConfirmations(projectFileKey);
 
   // 由全景图内部 activeStepKey 反推 step
   const panoramaActiveStep = steps.find((s) => s.key === activeStepKey);
@@ -141,19 +143,29 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
       const ids = getUniqueTaskIds(step);
       let painCount = 0;
       let obsCount = 0;
+
+      // 如果有 overviewPains，痛点数量从这里计算
+      if (overviewPains && overviewPains.length > 0) {
+        const stepCode = step.code;
+        painCount = overviewPains.filter((p: any) => {
+          const pid = p.task_id || p.step_id;
+          return pid === stepCode || ids.includes(pid);
+        }).length;
+      }
+
       for (const taskId of ids) {
         const logTask = logData
           ? (logData[taskId] as
               | import('../hooks/useLogData').LogTask
               | undefined)
           : undefined;
-        painCount += logTask?.evidence?.pain_points?.length ?? 0;
+
         obsCount += logTask?.evidence?.observations?.length ?? 0;
       }
       map[step.key] = { taskCount: ids.length, painCount, obsCount };
     }
     return map;
-  }, [steps, logData]);
+  }, [steps, logData, overviewPains]);
 
   return (
     <div className="mt-2 border-slate-100 pt-5">
