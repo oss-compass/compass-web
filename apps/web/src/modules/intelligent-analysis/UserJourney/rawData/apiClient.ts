@@ -254,7 +254,8 @@ export type OverviewCommonIssueGroup = {
 
 export type OverviewSummary = {
   overviewSummary: OverviewMetricSummary;
-  blockingSummary: OverviewMetricSummary;
+  keyIssueSummary: OverviewMetricSummary;
+  blockingSummary?: OverviewMetricSummary;
   summaryScore: number | null;
   summarySuccessRate: number | null;
   summaryAvgExecutionTime: number | null;
@@ -303,7 +304,7 @@ export const fetchOverviewSummary = async (params: {
 
 export const fetchOverviewCards = async (params: {
   viewType: 'repo' | 'team' | 'sig';
-  tab?: 'overall' | 'blocking';
+  tab?: 'overall' | 'key' | 'blocking';
   includeCommonIssues?: boolean;
   team?: string;
   repo?: string;
@@ -331,7 +332,7 @@ export const fetchOverviewCards = async (params: {
 };
 
 export const fetchOverviewCommonIssues = async (params: {
-  tab?: 'overall' | 'blocking';
+  tab?: 'overall' | 'key' | 'blocking';
   team?: string;
   sig?: string;
   keyword?: string;

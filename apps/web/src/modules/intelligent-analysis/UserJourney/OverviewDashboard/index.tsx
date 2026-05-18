@@ -119,7 +119,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         latestReportId: card.latestReportId,
         detailReportUrl: card.detailReportUrl,
         overall: metrics,
-        blocking: metrics,
+        key: metrics,
         issues,
       };
     });
@@ -147,8 +147,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         existing.overall = mergeMetricSummaries(
           existing.repos.map((repo) => repo.overall)
         );
-        existing.blocking = mergeMetricSummaries(
-          existing.repos.map((repo) => repo.blocking)
+        existing.key = mergeMetricSummaries(
+          existing.repos.map((repo) => repo.key)
         );
         return;
       }
@@ -161,7 +161,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         successRate: row.successRate,
         executionTime: row.executionTime,
         overall: row.overall,
-        blocking: row.blocking,
+        key: row.key,
         issues: [...row.issues],
         repos: [row],
       });
@@ -242,8 +242,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     () => summaryResp?.overviewSummary ?? EMPTY_SUMMARY,
     [summaryResp]
   );
-  const blockingSummary = useMemo(
-    () => summaryResp?.blockingSummary ?? EMPTY_SUMMARY,
+  const keyIssueSummary = useMemo(
+    () =>
+      summaryResp?.keyIssueSummary ??
+      summaryResp?.blockingSummary ??
+      EMPTY_SUMMARY,
     [summaryResp]
   );
   const summaryScore = useMemo(
@@ -384,7 +387,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       <div className="detail-panel-body">
         <OverviewSummarySection
           overviewSummary={overviewSummary}
-          blockingSummary={blockingSummary}
+          keyIssueSummary={keyIssueSummary}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
           summaryAvgExecutionTime={summaryResp?.summaryAvgExecutionTime ?? null}

@@ -673,8 +673,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                 value: 'overall',
               },
               {
-                label: renderTabLabel('阻塞问题', '含严重程度P0-P2的问题'),
-                value: 'blocking',
+                label: renderTabLabel('关键问题', '含严重程度P0-P1的问题'),
+                value: 'key',
               },
             ]}
           />

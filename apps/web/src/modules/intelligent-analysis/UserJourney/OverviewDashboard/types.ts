@@ -1,7 +1,7 @@
 import type { OverviewPainPointRow } from '../rawData/apiClient';
 
 export type Severity = OverviewPainPointRow['severity'];
-export type ProgressTab = 'overall' | 'blocking';
+export type ProgressTab = 'overall' | 'key';
 export type ProgressView = 'team' | 'repo';
 export type IssueBucket = 'pending' | 'inProgress' | 'resolved' | 'na';
 export type RepoSortKey =
@@ -48,7 +48,7 @@ export type RepoProgressRow = {
   latestReportId?: string;
   detailReportUrl?: string;
   overall: MetricSummary;
-  blocking: MetricSummary;
+  key: MetricSummary;
   issues: DashboardIssue[];
 };
 
@@ -60,7 +60,7 @@ export type TeamProgressRow = {
   successRate: number | null;
   executionTime: number | null;
   overall: MetricSummary;
-  blocking: MetricSummary;
+  key: MetricSummary;
   issues: DashboardIssue[];
   repos: RepoProgressRow[];
 };

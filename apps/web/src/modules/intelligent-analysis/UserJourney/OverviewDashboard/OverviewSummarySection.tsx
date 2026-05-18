@@ -14,7 +14,7 @@ const formatExecutionTime = (seconds: number | null): string => {
 
 type OverviewSummarySectionProps = {
   overviewSummary: MetricSummary;
-  blockingSummary: MetricSummary;
+  keyIssueSummary: MetricSummary;
   summaryScore: number | null;
   summarySuccessRate: number | null;
   summaryAvgExecutionTime: number | null;
@@ -25,7 +25,7 @@ type OverviewSummarySectionProps = {
 
 const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   overviewSummary,
-  blockingSummary,
+  keyIssueSummary,
   summaryScore,
   summarySuccessRate,
   summaryAvgExecutionTime,
@@ -52,12 +52,12 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           <OverviewSummaryBlock
             title="总体问题"
             summary={overviewSummary}
-            tooltip="含严重程度P0-P5的所有问题"
+            tooltip="含严重程度P0-P4的所有问题"
           />
           <OverviewSummaryBlock
-            title="阻塞问题"
-            summary={blockingSummary}
-            tooltip="含严重程度P0-P2的问题"
+            title="关键问题"
+            summary={keyIssueSummary}
+            tooltip="含严重程度P0-P1的问题"
           />
         </div>
         <div className="overview-bottom-row">
