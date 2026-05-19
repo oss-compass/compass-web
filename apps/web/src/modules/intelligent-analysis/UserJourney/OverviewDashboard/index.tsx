@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   fetchOverviewCards,
   fetchOverviewCommonIssues,
+  fetchOverviewSummary,
 } from '../rawData/apiClient';
 import CommonIssuesSection from './CommonIssuesSection';
 import { SEVERITY_RANK, STATUS_RANK } from './constants';
@@ -27,15 +28,11 @@ import {
   buildMetricSummaryFromPainRows,
   compareTeamNames,
   getAverage,
-  getLatestScore,
   getRepoSortValue,
   getTeamSortValue,
-  isCommonIssue,
-  isKeyIssue,
   mergeMetricSummaries,
   normalizeSeverity,
   toDashboardIssue,
-  toSuccessRate,
 } from './utils';
 
 type OverviewDashboardProps = {
@@ -87,13 +84,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
-  const { data: summaryCardsResp } = useQuery({
-    queryKey: ['overview-summary-cards', org, issueSourceMode],
+  const { data: summaryResp } = useQuery({
+    queryKey: ['overview-summary', org, issueSourceMode],
     queryFn: () =>
-      fetchOverviewCards({
-        viewType: 'repo',
+      fetchOverviewSummary({
         org,
-        tab: 'overall',
         includeCommonIssues: true,
         commonOnly:
           issueSourceMode === 'common'
@@ -101,8 +96,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             : issueSourceMode === 'non-common'
             ? false
             : undefined,
-        page: 1,
-        size: 200,
       }),
   });
 
@@ -249,50 +242,46 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     return rows;
   }, [currentTab, teamRows, teamSortAsc, teamSortKey]);
 
-  const summaryCards = useMemo(
-    () => summaryCardsResp?.items ?? [],
-    [summaryCardsResp]
-  );
-
-  const summaryPainRows = useMemo(
-    () => summaryCards.flatMap((card) => card.painPoints),
-    [summaryCards]
-  );
-
   const overviewSummary = useMemo(
-    () => buildMetricSummaryFromPainRows(summaryPainRows),
-    [summaryPainRows]
+    () =>
+      summaryResp?.overviewSummary ?? {
+        total: 0,
+        pending: 0,
+        inProgress: 0,
+        resolved: 0,
+        na: 0,
+        closeRate: 0,
+      },
+    [summaryResp]
   );
   const keyIssueSummary = useMemo(
     () =>
-      buildMetricSummaryFromPainRows(
-        summaryPainRows.filter((row) => isKeyIssue(row))
-      ),
-    [summaryPainRows]
+      summaryResp?.keyIssueSummary ?? {
+        total: 0,
+        pending: 0,
+        inProgress: 0,
+        resolved: 0,
+        na: 0,
+        closeRate: 0,
+      },
+    [summaryResp]
   );
   const summaryScore = useMemo(
-    () =>
-      getAverage(
-        summaryCards.map((card) => card.latestScore ?? getLatestScore(card))
-      ),
-    [summaryCards]
+    () => summaryResp?.summaryScore ?? null,
+    [summaryResp]
   );
   const summarySuccessRate = useMemo(
-    () =>
-      getAverage(
-        summaryCards.map((card) => {
-          const latestScore = card.latestScore ?? getLatestScore(card);
-          return card.latestSuccessRate ?? toSuccessRate(latestScore);
-        })
-      ),
-    [summaryCards]
+    () => summaryResp?.summarySuccessRate ?? null,
+    [summaryResp]
   );
   const summaryAvgExecutionTime = useMemo(
-    () =>
-      getAverage(summaryCards.map((card) => card.latestExecutionTime ?? null)),
-    [summaryCards]
+    () => summaryResp?.summaryAvgExecutionTime ?? null,
+    [summaryResp]
   );
-  const summaryRepoCount = useMemo(() => summaryCards.length, [summaryCards]);
+  const summaryRepoCount = useMemo(
+    () => summaryResp?.repoCount ?? 0,
+    [summaryResp]
+  );
 
   const commonIssues = useMemo<CommonIssueGroup[]>(
     () => (commonIssuesResp?.items ?? []) as unknown as CommonIssueGroup[],

@@ -447,19 +447,19 @@ const buildModalCurrentRecord = ({
   existing?: PainConfirmationRecord;
   displayState: DerivedPainDisplayState;
 }): PainConfirmationRecord | undefined => {
-  if (
-    !canConfirm ||
-    typeof displayState.effectiveStatus !== 'number' ||
-    !fileKey ||
-    !stepId
-  ) {
+  if (!canConfirm || !fileKey || !stepId) {
     return existing;
   }
+
+  const effectiveStatus =
+    typeof displayState.effectiveStatus === 'number'
+      ? displayState.effectiveStatus
+      : existing?.status ?? PainStatus.TO_BE_CONFIRMED;
 
   if (existing && displayState.childMatched) {
     return {
       ...existing,
-      status: displayState.effectiveStatus,
+      status: effectiveStatus,
       severity: displayState.effectiveSeverity || existing.severity,
       is_common_issue: displayState.effectiveIsCommonIssue,
       common_issue_type:
@@ -485,7 +485,7 @@ const buildModalCurrentRecord = ({
     step_id: stepId,
     pain_index: index,
     pain_text: text,
-    status: displayState.effectiveStatus,
+    status: effectiveStatus,
     severity: displayState.effectiveSeverity || 'P1_CRITICAL',
     is_common_issue: displayState.effectiveIsCommonIssue,
     common_issue_type: displayState.effectiveCommonIssueType ?? null,

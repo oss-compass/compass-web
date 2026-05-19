@@ -1202,11 +1202,15 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       issueType: String(item.issueType || '').trim(),
       description: String(item.description || '').trim(),
     }));
-    const options = Array.from(
+    const optionsFromApi = Array.from(
       new Set(issues.map((item) => item.issueType).filter(Boolean))
     );
+    const currentType = String(currentRecord?.common_issue_type || '').trim();
+    const options = currentType
+      ? Array.from(new Set([currentType, ...optionsFromApi]))
+      : optionsFromApi;
     return { knownCommonIssues: issues, commonIssueTypeOptions: options };
-  }, [commonIssueResp?.items]);
+  }, [commonIssueResp?.items, currentRecord?.common_issue_type]);
 
   // 计算下一步状态
   const nextStatus = useMemo(() => {
@@ -1295,15 +1299,15 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   ]);
 
   const resetFormToCurrent = useCallback(() => {
-    const currentCommonIssueType = currentRecord?.common_issue_type || '';
-    const safeCommonIssueType = commonIssueTypeOptions.includes(
-      currentCommonIssueType
-    )
-      ? currentCommonIssueType
-      : undefined;
     const currentIsCommon =
       currentRecord?.is_common_issue === true ||
       !!String(currentRecord?.common_issue_type || '').trim();
+    const safeCommonIssueType = currentIsCommon
+      ? getSafeCommonIssueType(
+          currentRecord?.common_issue_type,
+          commonIssueTypeOptions
+        )
+      : undefined;
 
     form.setFieldsValue({
       status: currentStatus,
@@ -1371,15 +1375,19 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       }}
       destroyOnClose
       footer={
-        <ModalFooter
-          showHistory={showHistory}
-          setShowHistory={setShowHistory}
-          isReviewingHistoryStep={isReviewingHistoryStep}
-          setSelectedStep={setSelectedStep}
-          onCancel={onCancel}
-          currentStatus={currentStatus}
-          showRetestDecision={showRetestDecision}
-        />
+        showHistory ||
+        isReviewingHistoryStep ||
+        (currentStatus >= PainStatus.RETESTING && !showRetestDecision) ? (
+          <ModalFooter
+            showHistory={showHistory}
+            setShowHistory={setShowHistory}
+            isReviewingHistoryStep={isReviewingHistoryStep}
+            setSelectedStep={setSelectedStep}
+            onCancel={onCancel}
+            currentStatus={currentStatus}
+            showRetestDecision={showRetestDecision}
+          />
+        ) : undefined
       }
     >
       <div className="space-y-6">
