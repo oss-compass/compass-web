@@ -9,21 +9,20 @@ import {
 const QUERY_KEY = (fileKey: string) => ['painConfirmations', fileKey];
 
 /**
- * 按 "file_key#step_id#pain_text" 建立快速查找 map
+ * 按 "file_key#step_id#pain_index" 建立快速查找 map
  */
 export const buildConfirmationMap = (
   records: PainConfirmationRecord[]
 ): Map<string, PainConfirmationRecord> => {
   const map = new Map<string, PainConfirmationRecord>();
   records.forEach((r) => {
-    // 统一标准化文本处理逻辑：trim + 压缩空格
-    const normalizedText = r.pain_text.trim().replace(/\s+/g, ' ');
-    map.set(`${r.file_key}#${r.step_id}#${normalizedText}`, r);
+    map.set(`${r.file_key}#${r.step_id}#${r.pain_index}`, r);
   });
   return map;
 };
 
-const normalizePainText = (t: string) => t.trim().replace(/\s+/g, ' ');
+const normalizePainIndex = (value: number) =>
+  Number.isFinite(value) ? String(value) : '';
 
 /**
  * 加载并缓存某个报告的所有痛点确认记录。
@@ -66,11 +65,12 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
           }
           const key = `${result.data.file_key}#${
             result.data.step_id
-          }#${normalizePainText(result.data.pain_text)}`;
+          }#${normalizePainIndex(result.data.pain_index)}`;
           const filtered = old.confirmations.filter(
             (r) =>
-              `${r.file_key}#${r.step_id}#${normalizePainText(r.pain_text)}` !==
-              key
+              `${r.file_key}#${r.step_id}#${normalizePainIndex(
+                r.pain_index
+              )}` !== key
           );
           return {
             ...old,

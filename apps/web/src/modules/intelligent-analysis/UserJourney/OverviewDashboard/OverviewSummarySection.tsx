@@ -22,7 +22,7 @@ const SummaryLabelTag: React.FC<{ text: string }> = ({ text }) => (
 
 const formatExecutionTime = (seconds: number | null): string => {
   if (seconds == null) return '--';
-  const minutes = (seconds * 10) / 60;
+  const minutes = seconds / 60;
   return `${minutes.toFixed(1)}`;
 };
 

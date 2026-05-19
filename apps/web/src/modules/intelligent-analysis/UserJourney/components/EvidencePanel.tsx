@@ -358,6 +358,7 @@ const getExistingPainConfirmation = ({
   fileKey,
   stepId,
   legacyStepId,
+  painIndex,
   text,
 }: {
   canConfirm: boolean;
@@ -365,16 +366,15 @@ const getExistingPainConfirmation = ({
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
+  painIndex: number;
   text: string;
 }): PainConfirmationRecord | undefined => {
   if (!canConfirm || !fileKey || !stepId) return undefined;
 
-  const normalizedText = normalizePainText(text);
-
   return (
-    confirmationMap.get(`${fileKey}#${stepId}#${normalizedText}`) ??
+    confirmationMap.get(`${fileKey}#${stepId}#${painIndex}`) ??
     (legacyStepId
-      ? confirmationMap.get(`${fileKey}#${legacyStepId}#${normalizedText}`)
+      ? confirmationMap.get(`${fileKey}#${legacyStepId}#${painIndex}`)
       : undefined)
   );
 };
@@ -382,17 +382,19 @@ const getExistingPainConfirmation = ({
 const derivePainDisplayState = ({
   existing,
   parentPain,
+  painIndex,
   text,
   isLatestReport,
 }: {
   existing?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
+  painIndex: number;
   text: string;
   isLatestReport: boolean;
 }): DerivedPainDisplayState => {
   const parentStatusValue = String(parentPain?.status ?? '').trim();
   const parentStatusNum = Number.parseInt(parentStatusValue, 10);
-  const childMatched = !!(existing && isSamePainText(existing.pain_text, text));
+  const childMatched = !!(existing && existing.pain_index === painIndex);
 
   const getEffectiveStatus = () => {
     if (!Number.isNaN(parentStatusNum)) return parentStatusNum;
@@ -737,6 +739,7 @@ const PainPointItem: React.FC<{
     fileKey,
     stepId,
     legacyStepId,
+    painIndex: index,
     text,
   });
   const parentPainId = String(
@@ -746,6 +749,7 @@ const PainPointItem: React.FC<{
   const displayState = derivePainDisplayState({
     existing,
     parentPain,
+    painIndex: index,
     text,
     isLatestReport,
   });

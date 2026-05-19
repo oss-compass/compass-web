@@ -833,6 +833,7 @@ const usePainConfirmationForm = ({
   painText,
   currentStatus,
   showRetestDecision,
+  currentConfirmedBy,
   onSubmit,
   onCancel,
   form,
@@ -842,6 +843,7 @@ const usePainConfirmationForm = ({
   painText: string;
   currentStatus: number;
   showRetestDecision: boolean;
+  currentConfirmedBy?: string | null;
   onSubmit: (payload: UpsertPainConfirmationPayload) => Promise<void>;
   onCancel: () => void;
   form: FormInstance<FormValues>;
@@ -853,12 +855,17 @@ const usePainConfirmationForm = ({
       const values = await form.validateFields();
       setSubmitting(true);
 
+      const confirmedBy =
+        String(values.confirmed_by || '').trim() ||
+        String(currentConfirmedBy || '').trim() ||
+        null;
+
       const basePayload: UpsertPainConfirmationPayload = {
         step_id: stepId,
         pain_index: painIndex,
         pain_text: painText,
         status: values.status,
-        confirmed_by: values.confirmed_by || null,
+        confirmed_by: confirmedBy,
       };
 
       const payload = enrichPayloadByStatus(
@@ -928,7 +935,7 @@ const useStepsItems = ({
               stepSnapshot?.confirmed_at || currentRecord?.confirmed_at
             );
 
-      const titleContent = (
+      const labelContent = (
         <div
           className={`inline-flex min-h-6 items-center rounded-md px-2 py-0 align-middle leading-none transition-all ${
             isReviewingThisStep
@@ -938,38 +945,44 @@ const useStepsItems = ({
               : 'border border-transparent'
           }`}
         >
-          <span className="inline-flex items-center gap-2 whitespace-nowrap leading-5">
-            <span>{STATUS_LABELS[s]}</span>
-            {isCurrentStep ? (
-              <Tag
-                color={currentTagMeta.color}
-                className="!mr-0 whitespace-nowrap"
-              >
-                {currentTagMeta.text}
-              </Tag>
-            ) : null}
+          <span className="whitespace-nowrap leading-5">
+            {STATUS_LABELS[s]}
           </span>
         </div>
       );
 
+      const titleContent = (
+        <div className="inline-flex items-center gap-2">
+          {isStepClickable ? (
+            <button
+              type="button"
+              onClick={() => {
+                if (canBackToCurrent) {
+                  setSelectedStep(null);
+                  return;
+                }
+                setSelectedStep(s);
+              }}
+              className="cursor-pointer rounded-sm text-left transition-colors hover:text-blue-600"
+            >
+              {labelContent}
+            </button>
+          ) : (
+            labelContent
+          )}
+          {isCurrentStep ? (
+            <Tag
+              color={currentTagMeta.color}
+              className="!mr-0 whitespace-nowrap"
+            >
+              {currentTagMeta.text}
+            </Tag>
+          ) : null}
+        </div>
+      );
+
       return {
-        title: isStepClickable ? (
-          <button
-            type="button"
-            onClick={() => {
-              if (canBackToCurrent) {
-                setSelectedStep(null);
-                return;
-              }
-              setSelectedStep(s);
-            }}
-            className="cursor-pointer rounded-sm text-left transition-colors hover:text-blue-600"
-          >
-            {titleContent}
-          </button>
-        ) : (
-          titleContent
-        ),
+        title: titleContent,
         description: timeText ? (
           <div className="text-xs leading-5 text-slate-500">{timeText}</div>
         ) : null,
@@ -1018,14 +1031,11 @@ const ModalFooter: React.FC<{
   if (isReviewingHistoryStep) {
     return (
       <div className="flex items-center justify-end gap-2">
-        <Button key="back-to-current" onClick={() => setSelectedStep(null)}>
-          返回当前状态
-        </Button>
         {currentStatus !== PainStatus.TO_BE_CONFIRMED
           ? rollbackTargets.map((target) => (
               <Button
                 key={`rollback-${target}`}
-                danger={target === PainStatus.TO_BE_CONFIRMED}
+                danger
                 onClick={() => onRollback(target)}
               >
                 回退到{STATUS_LABELS[target] || target}
@@ -1219,6 +1229,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     painIndex,
     painText,
     currentStatus,
+    currentConfirmedBy: currentRecord?.confirmed_by ?? null,
     showRetestDecision,
     onSubmit,
     onCancel,
@@ -1572,7 +1583,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
             !rollbackBy.trim() ||
             !rollbackReason.trim(),
           loading: rollbackSubmitting,
-          danger: rollbackTarget === PainStatus.TO_BE_CONFIRMED,
+          danger: !!rollbackTarget,
         }}
         title={
           rollbackTarget
@@ -1599,6 +1610,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
               回退原因
             </div>
             <Input.TextArea
+              className="mb-4"
               value={rollbackReason}
               onChange={(e) => setRollbackReason(e.target.value)}
               placeholder="请输入回退原因"
