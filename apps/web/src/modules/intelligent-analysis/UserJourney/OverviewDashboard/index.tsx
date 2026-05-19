@@ -146,30 +146,24 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
 
   const repoRows = useMemo<RepoProgressRow[]>(() => {
-    return (cardsResp?.items ?? [])
-      .map((card) => {
-        const issues = toDashboardIssue(card);
-        const metrics = buildMetricSummaryFromPainRows(issues);
-        return {
-          id: card.id,
-          name: card.name,
-          team: card.team || card.sig,
-          score: card.latestScore ?? issues[0]?.score ?? null,
-          successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
-          executionTime: card.latestExecutionTime ?? null,
-          latestReportId: card.latestReportId,
-          detailReportUrl: card.detailReportUrl,
-          overall: metrics,
-          key: metrics,
-          issues,
-        };
-      })
-      .filter((row) => {
-        if (issueSourceMode === 'common') return row.issues.length > 0;
-        if (issueSourceMode === 'non-common') return row.issues.length > 0;
-        return includeCommonIssues || row.issues.length > 0;
-      });
-  }, [cardsResp, includeCommonIssues, issueSourceMode]);
+    return (cardsResp?.items ?? []).map((card) => {
+      const issues = toDashboardIssue(card);
+      const metrics = buildMetricSummaryFromPainRows(issues);
+      return {
+        id: card.id,
+        name: card.name,
+        team: card.team || card.sig,
+        score: card.latestScore ?? issues[0]?.score ?? null,
+        successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
+        executionTime: card.latestExecutionTime ?? null,
+        latestReportId: card.latestReportId,
+        detailReportUrl: card.detailReportUrl,
+        overall: metrics,
+        key: metrics,
+        issues,
+      };
+    });
+  }, [cardsResp]);
 
   const summaryIssues = useMemo<DashboardIssue[]>(() => {
     const items = cardsOverallResp?.items ?? [];

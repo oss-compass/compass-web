@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FilterFilled } from '@ant-design/icons';
-import { Dropdown, Modal, Radio, Tag, Tooltip } from 'antd';
+import { Button, Dropdown, Input, Modal, Radio, Tag, Tooltip } from 'antd';
 import { SeverityBadge } from './Badges';
 import { PAIN_STATUS_CFG, SEVERITY_RANK } from './constants';
 import type { DashboardIssue, IssueModalState, Severity } from './types';
+import { updateOverviewParentPain } from '../rawData/apiClient';
 
 const TEAM_FILTER_ALL = '__ALL__';
 const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
@@ -30,6 +31,15 @@ type ReportEntry = {
   painId?: string;
   fileKey: string;
   taskId?: string;
+};
+
+type ParentPainHistoryItem = {
+  from_status?: string;
+  to_status?: string;
+  action?: string;
+  reason?: string | null;
+  by?: string | null;
+  at?: string;
 };
 
 const parseChildId = (
@@ -127,6 +137,26 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   const [sortKey, setSortKey] = useState<IssueSortKey>('team');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [teamFilter, setTeamFilter] = useState<string>(TEAM_FILTER_ALL);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [statusModalIssue, setStatusModalIssue] =
+    useState<DashboardIssue | null>(null);
+  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<
+    number | null
+  >(null);
+  const [rollbackModalOpen, setRollbackModalOpen] = useState(false);
+  const [rollbackTargetStatus, setRollbackTargetStatus] = useState<string>('');
+  const [rollbackBy, setRollbackBy] = useState('');
+  const [rollbackReason, setRollbackReason] = useState('');
+  const [rollbackSubmitting, setRollbackSubmitting] = useState(false);
+  const [issueOverrides, setIssueOverrides] = useState<
+    Record<string, Partial<DashboardIssue>>
+  >({});
+
+  useEffect(() => {
+    if (!statusModalOpen) {
+      setSelectedHistoryIndex(null);
+    }
+  }, [statusModalOpen]);
 
   const teamOptions = useMemo(() => {
     const values = Array.from(
@@ -259,202 +289,487 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
 
   const modalTitle = `${state.title}（共${displayedIssues.length}条）`;
 
+  const statusHistory = (statusModalIssue?.statusHistory ??
+    []) as unknown as ParentPainHistoryItem[];
+  const currentStatus = String(statusModalIssue?.status || '').trim() || '';
+  const reviewedHistory =
+    selectedHistoryIndex == null ? null : statusHistory[selectedHistoryIndex];
+
+  const viewedRollbackTarget = useMemo(() => {
+    const reviewedTo = String(reviewedHistory?.to_status || '').trim();
+    if (!reviewedTo) return null;
+    if (!['1', '2', '3'].includes(reviewedTo)) return null;
+    if (reviewedTo === currentStatus) return null;
+    return reviewedTo;
+  }, [currentStatus, reviewedHistory]);
+
+  const openStatusModal = (issue: DashboardIssue) => {
+    const override = issueOverrides[String(issue.id || '')];
+    setStatusModalIssue(override ? { ...issue, ...override } : issue);
+    setStatusModalOpen(true);
+  };
+
+  const openRollbackModal = (target: string) => {
+    setRollbackTargetStatus(target);
+    setRollbackBy('');
+    setRollbackReason('');
+    setRollbackModalOpen(true);
+  };
+
+  const submitRollback = async () => {
+    if (!statusModalIssue) return;
+    const parentId = String(
+      statusModalIssue.parentId || statusModalIssue.id || ''
+    ).trim();
+    if (!parentId) return;
+    const by = rollbackBy.trim();
+    const reason = rollbackReason.trim();
+    if (!by || !reason || !rollbackTargetStatus) return;
+
+    setRollbackSubmitting(true);
+    try {
+      const res = await updateOverviewParentPain({
+        parent_id: parentId,
+        status: rollbackTargetStatus,
+        action: 'rollback',
+        action_by: by,
+        action_reason: reason,
+      });
+      const next = (res as any)?.data ?? res;
+      if (next && typeof next === 'object') {
+        const normalizedPatch: Partial<DashboardIssue> = {
+          status:
+            typeof (next as any).status === 'string'
+              ? (next as any).status
+              : String((next as any).status ?? ''),
+          statusHistory:
+            (next as any).statusHistory ??
+            (next as any).status_history ??
+            statusModalIssue.statusHistory,
+        };
+        setIssueOverrides((prev) => ({
+          ...prev,
+          [String(statusModalIssue.id)]: {
+            ...(prev[String(statusModalIssue.id)] ?? {}),
+            ...normalizedPatch,
+          },
+        }));
+        setStatusModalIssue((prev) =>
+          prev ? { ...prev, ...normalizedPatch } : prev
+        );
+      }
+      setRollbackModalOpen(false);
+      setSelectedHistoryIndex(null);
+    } finally {
+      setRollbackSubmitting(false);
+    }
+  };
+
   return (
-    <Modal
-      open={state.open}
-      onCancel={onClose}
-      footer={null}
-      width="min(96vw, 1420px)"
-      title={modalTitle}
-      destroyOnHidden
-    >
-      <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
-        <table className="w-full table-fixed border-collapse text-[12px] text-slate-700 md:text-[13px]">
-          <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
-            <tr>
-              <th className="w-[56px] px-2 py-2 text-center md:w-[64px] md:px-2 md:py-3">
-                序号
-              </th>
-              <th className="w-[96px] px-2 py-2 text-left md:w-[100px] md:px-3 md:py-3">
-                {renderSortableHeader('仓库', 'repo')}
-              </th>
-              <th className="w-[120px] px-2 py-2 text-left md:w-[100px] md:px-2 md:py-3">
-                <div className="flex items-center gap-1.5">
-                  {renderSortableHeader('责任团队', 'team')}
-                  <Dropdown
-                    trigger={['click']}
-                    placement="bottomLeft"
-                    popupRender={() => (
-                      <div
-                        className="w-[200px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+    <>
+      <Modal
+        open={state.open}
+        onCancel={onClose}
+        footer={null}
+        width="min(96vw, 1420px)"
+        title={modalTitle}
+        destroyOnHidden
+      >
+        <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
+          <table className="w-full table-fixed border-collapse text-[12px] text-slate-700 md:text-[13px]">
+            <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
+              <tr>
+                <th className="w-[56px] px-2 py-2 text-center md:w-[64px] md:px-2 md:py-3">
+                  序号
+                </th>
+                <th className="w-[96px] px-2 py-2 text-left md:w-[100px] md:px-3 md:py-3">
+                  {renderSortableHeader('仓库', 'repo')}
+                </th>
+                <th className="w-[120px] px-2 py-2 text-left md:w-[100px] md:px-2 md:py-3">
+                  <div className="flex items-center gap-1.5">
+                    {renderSortableHeader('责任团队', 'team')}
+                    <Dropdown
+                      trigger={['click']}
+                      placement="bottomLeft"
+                      popupRender={() => (
+                        <div
+                          className="w-[200px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                            责任团队筛选
+                          </div>
+                          <Radio.Group
+                            value={teamFilter}
+                            onChange={(e) =>
+                              setTeamFilter(
+                                String(e.target.value || TEAM_FILTER_ALL)
+                              )
+                            }
+                            className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
+                          >
+                            <Radio value={TEAM_FILTER_ALL}>全部</Radio>
+                            {teamOptions.map((team) => (
+                              <Radio key={team} value={team}>
+                                {team}
+                              </Radio>
+                            ))}
+                          </Radio.Group>
+                        </div>
+                      )}
+                    >
+                      <button
+                        type="button"
+                        aria-label="筛选责任团队"
+                        title="筛选责任团队"
+                        className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
+                          teamFilter === TEAM_FILTER_ALL
+                            ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                        }`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
-                          责任团队筛选
-                        </div>
-                        <Radio.Group
-                          value={teamFilter}
-                          onChange={(e) =>
-                            setTeamFilter(
-                              String(e.target.value || TEAM_FILTER_ALL)
-                            )
-                          }
-                          className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
-                        >
-                          <Radio value={TEAM_FILTER_ALL}>全部</Radio>
-                          {teamOptions.map((team) => (
-                            <Radio key={team} value={team}>
-                              {team}
-                            </Radio>
-                          ))}
-                        </Radio.Group>
-                      </div>
-                    )}
-                  >
-                    <button
-                      type="button"
-                      aria-label="筛选责任团队"
-                      title="筛选责任团队"
-                      className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
-                        teamFilter === TEAM_FILTER_ALL
-                          ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                      }`}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FilterFilled className="text-[12px]" />
-                    </button>
-                  </Dropdown>
-                </div>
-              </th>
-              <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
-                {renderSortableHeader('阶段', 'stage')}
-              </th>
-              <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
-                {renderSortableHeader('问题类型', 'issueType')}
-              </th>
-              <th className="w-[220px] px-2 py-2 text-left md:w-[280px] md:px-3 md:py-3">
-                {renderSortableHeader('问题描述', 'description')}
-              </th>
-              <th className="w-[96px] px-2 py-2 text-left md:table-cell">
-                {renderSortableHeader('严重程度', 'severity')}
-              </th>
-              <th className="w-[84px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
-                {renderSortableHeader('状态', 'status')}
-              </th>
-              <th className="w-[88px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
-                {renderSortableHeader('责任人', 'owner')}
-              </th>
-              <th className="w-[96px] px-2 py-2 text-left md:w-[120px] md:px-3 md:py-3">
-                {renderSortableHeader('相关报告', 'report')}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayedIssues.length > 0 ? (
-              displayedIssues.map((issue, index) => {
-                const reportEntries = getReportEntries(issue);
-                return (
-                  <tr
-                    key={`${issue.id}-${index}`}
-                    className="border-t border-slate-100 align-top transition-colors hover:bg-slate-50"
-                  >
-                    <td className="px-2 py-2 text-center font-medium text-slate-500 md:px-2 md:py-3">
-                      {index + 1}
-                    </td>
-                    <td className="break-all px-2 py-2 font-medium text-slate-900 md:px-3 md:py-3">
-                      {getRepoName(issue)}
-                    </td>
-                    <td className="break-all px-2 py-2 md:px-2 md:py-3">
-                      {issue.team || '--'}
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
-                      {issue.journeyStage || '--'}
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
-                      {issue.issueType || '--'}
-                    </td>
-                    <td className="max-w-[240px] px-2 py-2 md:max-w-[340px] md:px-3 md:py-3">
-                      <Tooltip title={issue.description || '--'}>
-                        <span className="line-clamp-2 cursor-default">
-                          {issue.description || '--'}
-                        </span>
-                      </Tooltip>
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 md:table-cell">
-                      <SeverityBadge severity={issue.severity} />
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 md:px-3 md:py-3">
-                      {(() => {
-                        const cfg = PAIN_STATUS_CFG[String(issue.status || '')];
-                        if (!cfg)
-                          return <span className="text-slate-300">--</span>;
-                        return (
-                          <Tag
-                            className="overview-ant-tag"
-                            style={{
-                              background: cfg.tagBg,
-                              color: cfg.tagColor,
-                              borderColor: cfg.tagBorder,
-                            }}
-                          >
-                            {cfg.label}
-                          </Tag>
-                        );
-                      })()}
-                    </td>
-                    <td className="break-all px-2 py-2 md:px-3 md:py-3">
-                      {issue.teamOwner || issue.owner || '--'}
-                    </td>
-                    <td className="px-2 py-2 text-[12px] md:px-3 md:py-3">
-                      {reportEntries.length ? (
-                        reportEntries.map(({ painId, fileKey, taskId }) => {
-                          const search = new URLSearchParams();
-                          search.set('project', fileKey);
-                          if (taskId) {
-                            search.set('focusTaskId', taskId);
-                          }
-                          if (painId) {
-                            search.set('painId', painId);
-                            search.set('autoOpenPain', '1');
-                          }
-                          const href = `/intelligent-analysis/community-experience?${search.toString()}`;
-
-                          return (
-                            <div
-                              key={`${fileKey}-${taskId || ''}-${painId || ''}`}
-                              className="leading-5"
-                            >
-                              <a
-                                href={href}
-                                className="overview-table-link text-blue-600"
-                              >
-                                {getReportDisplayText(fileKey)}
-                              </a>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <span className="text-slate-300">--</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td
-                  colSpan={10}
-                  className="px-3 py-12 text-center text-sm text-slate-400"
-                >
-                  暂无数据
-                </td>
+                        <FilterFilled className="text-[12px]" />
+                      </button>
+                    </Dropdown>
+                  </div>
+                </th>
+                <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
+                  {renderSortableHeader('阶段', 'stage')}
+                </th>
+                <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
+                  {renderSortableHeader('问题类型', 'issueType')}
+                </th>
+                <th className="w-[220px] px-2 py-2 text-left md:w-[280px] md:px-3 md:py-3">
+                  {renderSortableHeader('问题描述', 'description')}
+                </th>
+                <th className="w-[96px] px-2 py-2 text-left md:table-cell">
+                  {renderSortableHeader('严重程度', 'severity')}
+                </th>
+                <th className="w-[84px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
+                  {renderSortableHeader('状态', 'status')}
+                </th>
+                <th className="w-[88px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
+                  {renderSortableHeader('责任人', 'owner')}
+                </th>
+                <th className="w-[96px] px-2 py-2 text-left md:w-[120px] md:px-3 md:py-3">
+                  {renderSortableHeader('相关报告', 'report')}
+                </th>
               </tr>
+            </thead>
+            <tbody>
+              {displayedIssues.length > 0 ? (
+                displayedIssues.map((issue, index) => {
+                  const override = issueOverrides[String(issue.id || '')];
+                  const effectiveIssue = override
+                    ? ({ ...issue, ...override } as DashboardIssue)
+                    : issue;
+                  const reportEntries = getReportEntries(effectiveIssue);
+                  return (
+                    <tr
+                      key={`${issue.id}-${index}`}
+                      className="border-t border-slate-100 align-top transition-colors hover:bg-slate-50"
+                    >
+                      <td className="px-2 py-2 text-center font-medium text-slate-500 md:px-2 md:py-3">
+                        {index + 1}
+                      </td>
+                      <td className="break-all px-2 py-2 font-medium text-slate-900 md:px-3 md:py-3">
+                        {getRepoName(effectiveIssue)}
+                      </td>
+                      <td className="break-all px-2 py-2 md:px-2 md:py-3">
+                        {effectiveIssue.team || '--'}
+                      </td>
+                      <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
+                        {effectiveIssue.journeyStage || '--'}
+                      </td>
+                      <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
+                        {effectiveIssue.issueType || '--'}
+                      </td>
+                      <td className="max-w-[240px] px-2 py-2 md:max-w-[340px] md:px-3 md:py-3">
+                        <Tooltip title={effectiveIssue.description || '--'}>
+                          <span className="line-clamp-2 cursor-default">
+                            {effectiveIssue.description || '--'}
+                          </span>
+                        </Tooltip>
+                      </td>
+                      <td className="whitespace-nowrap px-2 py-2 md:table-cell">
+                        <SeverityBadge severity={effectiveIssue.severity} />
+                      </td>
+                      <td className="whitespace-nowrap px-2 py-2 md:px-3 md:py-3">
+                        {(() => {
+                          const cfg =
+                            PAIN_STATUS_CFG[
+                              String(effectiveIssue.status || '')
+                            ];
+                          if (!cfg)
+                            return <span className="text-slate-300">--</span>;
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => openStatusModal(effectiveIssue)}
+                            >
+                              <Tag
+                                className="overview-ant-tag"
+                                style={{
+                                  background: cfg.tagBg,
+                                  color: cfg.tagColor,
+                                  borderColor: cfg.tagBorder,
+                                }}
+                              >
+                                {cfg.label}
+                              </Tag>
+                            </button>
+                          );
+                        })()}
+                      </td>
+                      <td className="break-all px-2 py-2 md:px-3 md:py-3">
+                        {effectiveIssue.teamOwner ||
+                          effectiveIssue.owner ||
+                          '--'}
+                      </td>
+                      <td className="px-2 py-2 text-[12px] md:px-3 md:py-3">
+                        {reportEntries.length ? (
+                          reportEntries.map(({ painId, fileKey, taskId }) => {
+                            const search = new URLSearchParams();
+                            search.set('project', fileKey);
+                            if (taskId) {
+                              search.set('focusTaskId', taskId);
+                            }
+                            if (painId) {
+                              search.set('painId', painId);
+                              search.set('autoOpenPain', '1');
+                            }
+                            const href = `/intelligent-analysis/community-experience?${search.toString()}`;
+
+                            return (
+                              <div
+                                key={`${fileKey}-${taskId || ''}-${
+                                  painId || ''
+                                }`}
+                                className="leading-5"
+                              >
+                                <a
+                                  href={href}
+                                  className="overview-table-link text-blue-600"
+                                >
+                                  {getReportDisplayText(fileKey)}
+                                </a>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <span className="text-slate-300">--</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan={10}
+                    className="px-3 py-12 text-center text-sm text-slate-400"
+                  >
+                    暂无数据
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Modal>
+
+      <Modal
+        open={statusModalOpen}
+        onCancel={() => setStatusModalOpen(false)}
+        footer={
+          reviewedHistory ? (
+            <div className="flex items-center justify-end gap-2">
+              <Button onClick={() => setSelectedHistoryIndex(null)}>
+                返回当前状态
+              </Button>
+              {viewedRollbackTarget ? (
+                <Button
+                  danger={viewedRollbackTarget === '1'}
+                  onClick={() => openRollbackModal(viewedRollbackTarget)}
+                >
+                  回退到
+                  {PAIN_STATUS_CFG[viewedRollbackTarget]?.label ||
+                    viewedRollbackTarget}
+                </Button>
+              ) : null}
+              <Button onClick={() => setStatusModalOpen(false)}>关闭</Button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-end">
+              <Button onClick={() => setStatusModalOpen(false)}>关闭</Button>
+            </div>
+          )
+        }
+        width="min(92vw, 880px)"
+        title="状态流转"
+        destroyOnHidden
+      >
+        <div className="space-y-3">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+            <div className="font-semibold text-slate-800">当前状态</div>
+            <div className="mt-1">
+              {(() => {
+                const cfg = PAIN_STATUS_CFG[currentStatus];
+                if (!cfg) return <span className="text-slate-400">--</span>;
+                return (
+                  <Tag
+                    className="overview-ant-tag"
+                    style={{
+                      background: cfg.tagBg,
+                      color: cfg.tagColor,
+                      borderColor: cfg.tagBorder,
+                    }}
+                  >
+                    {cfg.label}
+                  </Tag>
+                );
+              })()}
+            </div>
+            <div className="mt-1 text-xs text-slate-500">
+              点击下方历史记录可进入“过往状态”查看与回退操作
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-slate-200">
+            <div className="border-b border-slate-100 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+              历史记录
+            </div>
+            {statusHistory.length ? (
+              <div className="max-h-[46vh] overflow-y-auto">
+                <table className="w-full table-fixed border-collapse text-[13px] text-slate-700">
+                  <thead className="sticky top-0 z-10 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+                    <tr>
+                      <th className="w-[120px] px-3 py-2 text-left font-semibold">
+                        目标状态
+                      </th>
+                      <th className="w-[100px] px-3 py-2 text-left font-semibold">
+                        动作
+                      </th>
+                      <th className="w-[120px] px-3 py-2 text-left font-semibold">
+                        操作人
+                      </th>
+                      <th className="w-[170px] px-3 py-2 text-left font-semibold">
+                        操作时间
+                      </th>
+                      <th className="px-3 py-2 text-left font-semibold">
+                        原因
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {statusHistory
+                      .slice()
+                      .reverse()
+                      .map((h, idxFromEnd) => {
+                        const actualIndex =
+                          statusHistory.length - 1 - idxFromEnd;
+                        const selected = selectedHistoryIndex === actualIndex;
+                        const to = String(h.to_status || '').trim();
+                        const toLabel =
+                          PAIN_STATUS_CFG[to]?.label || to || '--';
+                        return (
+                          <tr
+                            key={`${String(h.at || '')}-${actualIndex}`}
+                            className={`cursor-pointer border-t border-slate-100 align-top transition-colors hover:bg-slate-50 ${
+                              selected ? 'bg-indigo-50/60' : ''
+                            }`}
+                            onClick={() => setSelectedHistoryIndex(actualIndex)}
+                          >
+                            <td className="px-3 py-2">{toLabel}</td>
+                            <td className="px-3 py-2">
+                              {String(h.action || '').trim() || '--'}
+                            </td>
+                            <td className="px-3 py-2">
+                              {String(h.by || '').trim() || '--'}
+                            </td>
+                            <td className="px-3 py-2">
+                              {String(h.at || '')
+                                .replace('T', ' ')
+                                .replace('Z', '') || '--'}
+                            </td>
+                            <td className="px-3 py-2">
+                              <Tooltip
+                                title={String(h.reason || '').trim() || '--'}
+                              >
+                                <span className="block truncate">
+                                  {String(h.reason || '').trim() || '--'}
+                                </span>
+                              </Tooltip>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="px-3 py-8 text-center text-sm text-slate-400">
+                暂无历史记录
+              </div>
             )}
-          </tbody>
-        </table>
-      </div>
-    </Modal>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={rollbackModalOpen}
+        onCancel={() => setRollbackModalOpen(false)}
+        onOk={submitRollback}
+        okText="确认回退"
+        cancelText="取消"
+        okButtonProps={{
+          disabled:
+            rollbackSubmitting ||
+            !rollbackTargetStatus ||
+            !rollbackBy.trim() ||
+            !rollbackReason.trim(),
+          loading: rollbackSubmitting,
+          danger: rollbackTargetStatus === '1',
+        }}
+        title={`回退到${
+          PAIN_STATUS_CFG[rollbackTargetStatus]?.label || rollbackTargetStatus
+        }`}
+        destroyOnHidden
+      >
+        <div className="space-y-3">
+          <div className="text-sm text-slate-600">
+            回退将会修改当前痛点状态，并记录回退原因与操作人。
+          </div>
+          <div>
+            <div className="mb-1 text-xs font-medium text-slate-600">
+              操作人
+            </div>
+            <Input
+              value={rollbackBy}
+              onChange={(e) => setRollbackBy(e.target.value)}
+              placeholder="请输入操作人"
+              maxLength={100}
+              allowClear
+            />
+          </div>
+          <div className="mb-4">
+            <div className="mb-1 text-xs font-medium text-slate-600">
+              回退原因
+            </div>
+            <Input.TextArea
+              value={rollbackReason}
+              onChange={(e) => setRollbackReason(e.target.value)}
+              placeholder="请输入回退原因"
+              rows={2}
+              maxLength={1000}
+              showCount
+              allowClear
+            />
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 

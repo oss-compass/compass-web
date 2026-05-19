@@ -81,6 +81,8 @@ export type UpsertPainConfirmationPayload = {
   pain_text: string;
   status: number;
   confirmed_by: string | null;
+  action?: string;
+  action_reason?: string;
   severity?: string;
   is_common_issue?: boolean;
   common_issue_type?: string | null;
@@ -177,6 +179,14 @@ export type OverviewPainPointRow = {
   retestReportId: string;
   retestReportScore: number | null;
   agentScoreAfterRetest: number | null;
+  statusHistory?: Array<{
+    from_status?: string;
+    to_status?: string;
+    action?: string;
+    reason?: string | null;
+    by?: string | null;
+    at?: string;
+  }>;
 };
 
 export type OverviewCardItem = {
@@ -407,6 +417,9 @@ export type UpdateOverviewParentPainPayload = {
   is_common_issue?: boolean;
   common_issue_type?: string | null;
   status?: string;
+  action?: string;
+  action_by?: string;
+  action_reason?: string;
 };
 
 export const updateOverviewParentPain = async (

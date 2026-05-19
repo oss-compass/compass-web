@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Popover, Tooltip } from 'antd';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import PainLevelConfirmModal, {
   getPainLevelLabel,
   getPainLevelStyle,
@@ -188,13 +188,61 @@ const StatusBadge: React.FC<{
   const label = `${STATUS_LABELS[status] || '待确认'}${
     isCommonIssue ? '（共性问题）' : ''
   }`;
+  const statusStyle = (() => {
+    if (status === PainStatus.TO_BE_CONFIRMED) {
+      return {
+        pill: 'border-amber-300 bg-amber-100 text-amber-700',
+        dot: 'bg-amber-500',
+      };
+    }
+    if (status === PainStatus.CONFIRMED_PENDING_FIX) {
+      return {
+        pill: 'border-rose-300 bg-rose-100 text-rose-700',
+        dot: 'bg-rose-500',
+      };
+    }
+    if (status === PainStatus.FIXED_PENDING_RETEST) {
+      return {
+        pill: 'border-indigo-300 bg-indigo-100 text-indigo-700',
+        dot: 'bg-indigo-500',
+      };
+    }
+    if (status === PainStatus.RETESTING) {
+      return {
+        pill: 'border-amber-300 bg-amber-100 text-amber-700',
+        dot: 'bg-amber-500',
+      };
+    }
+    if (status === PainStatus.RETESTED_PASSED) {
+      return {
+        pill: 'border-emerald-300 bg-emerald-100 text-emerald-700',
+        dot: 'bg-emerald-500',
+      };
+    }
+    if (status === PainStatus.RETESTED_FAILED) {
+      return {
+        pill: 'border-rose-300 bg-rose-100 text-rose-700',
+        dot: 'bg-rose-500',
+      };
+    }
+    if (status === PainStatus.NO_FIX_NEEDED) {
+      return {
+        pill: 'border-slate-300 bg-slate-100 text-slate-700',
+        dot: 'bg-slate-500',
+      };
+    }
+    return {
+      pill: `${style.bg} ${style.text} ${style.border}`,
+      dot: style.dot,
+    };
+  })();
 
   const popoverContent = (
     <div className="max-w-xs space-y-2 text-sm">
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-600">严重程度：</span>
         <span className={`${style.text} font-semibold`}>
-          {getPainLevelLabel(severity)}
+          {formatSeverityLabel(severity)}
         </span>
       </div>
       {commonIssueType ? (
@@ -258,26 +306,10 @@ const StatusBadge: React.FC<{
       <button
         type="button"
         onClick={onClick}
-        className={`inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-all hover:shadow-sm ${
-          status === PainStatus.RETESTED_PASSED
-            ? 'border-emerald-300 bg-emerald-100 text-emerald-700'
-            : status === PainStatus.RETESTING
-            ? 'border-amber-300 bg-amber-100 text-amber-700'
-            : status === PainStatus.RETESTED_FAILED
-            ? 'border-rose-300 bg-rose-100 text-rose-700'
-            : `${style.bg} ${style.text} ${style.border}`
-        }`}
+        className={`inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-all hover:shadow-sm ${statusStyle.pill}`}
       >
         <span
-          className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${
-            status === PainStatus.RETESTED_PASSED
-              ? 'bg-emerald-500'
-              : status === PainStatus.RETESTING
-              ? 'bg-amber-500'
-              : status === PainStatus.RETESTED_FAILED
-              ? 'bg-rose-500'
-              : style.dot
-          }`}
+          className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${statusStyle.dot}`}
         />
         {label}
       </button>
@@ -305,6 +337,17 @@ const normalizePainText = (value: string) => value.trim().replace(/\s+/g, ' ');
 
 const isSamePainText = (left: string, right: string) =>
   normalizePainText(left) === normalizePainText(right);
+
+const formatSeverityLabel = (severity: string) => {
+  const raw = String(severity || '').trim();
+  if (!raw) return '--';
+  const prefix = raw.startsWith('P') ? raw.slice(0, 2) : '';
+  const label = getPainLevelLabel(raw);
+  if (raw === 'P4_TRIVIAL' || label === '非项目本身问题') return label;
+  if (!prefix) return label;
+  if (String(label || '').startsWith(prefix)) return label;
+  return `${prefix}${label}`;
+};
 
 const getFallbackModalLinkValue = (value?: string | null): string =>
   String(value || '').trim() || FALLBACK_LINK_TEXT;
@@ -505,20 +548,6 @@ const buildModalCurrentRecord = ({
   };
 };
 
-const syncParentPainStatus = async ({
-  parentPainId,
-  parentStatusValue,
-  nextStatus,
-}: {
-  parentPainId: string;
-  parentStatusValue: string;
-  nextStatus: string;
-}) => {
-  void parentPainId;
-  void parentStatusValue;
-  void nextStatus;
-};
-
 const CompletedPainBadge: React.FC<{
   confirmedBy: string;
   confirmedAt: string;
@@ -625,6 +654,22 @@ const ObservationItem: React.FC<{
   );
 };
 
+function deriveProjectKeyFromFileKey(value?: string): string {
+  const fileKey = String(value || '').trim();
+  if (!fileKey) return '';
+
+  const parts = fileKey.split('_');
+  if (parts.length >= 3) {
+    const datePart = parts[parts.length - 2];
+    const timePart = parts[parts.length - 1];
+    if (/^\d{8}$/.test(datePart) && /^\d{3,6}$/.test(timePart)) {
+      return parts.slice(0, -2).join('_');
+    }
+  }
+
+  return fileKey;
+}
+
 /* ─── 单条痛点行（含确认交互） ─── */
 const PainPointItem: React.FC<{
   text: string;
@@ -658,6 +703,7 @@ const PainPointItem: React.FC<{
   const [modalOpen, setModalOpen] = useState(false);
   const itemRef = useRef<HTMLLIElement | null>(null);
   const shouldHandleAutoOpenRef = useRef(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!shouldAutoOpen) {
@@ -708,11 +754,16 @@ const PainPointItem: React.FC<{
     const result = await upsert(payload);
     const nextStatus = String(result.data?.status ?? payload.status ?? '');
 
-    await syncParentPainStatus({
-      parentPainId,
-      parentStatusValue,
-      nextStatus,
-    });
+    void parentPainId;
+    void parentStatusValue;
+    void nextStatus;
+    const projectKey = deriveProjectKeyFromFileKey(fileKey);
+    if (projectKey) {
+      queryClient.invalidateQueries({
+        queryKey: ['userJourneyParentPainsByProject', projectKey],
+        exact: true,
+      });
+    }
   };
 
   const modalCurrentRecord = buildModalCurrentRecord({
@@ -760,6 +811,7 @@ const PainPointItem: React.FC<{
           painIndex={index}
           painText={text}
           currentRecord={modalCurrentRecord}
+          parentPainRemark={parentPain?.remark}
           versionOptions={versionOptions}
           onCancel={handleModalClose}
           onSubmit={handleSubmit}
@@ -767,22 +819,6 @@ const PainPointItem: React.FC<{
       )}
     </>
   );
-};
-
-const deriveProjectKeyFromFileKey = (value?: string): string => {
-  const fileKey = String(value || '').trim();
-  if (!fileKey) return '';
-
-  const parts = fileKey.split('_');
-  if (parts.length >= 3) {
-    const datePart = parts[parts.length - 2];
-    const timePart = parts[parts.length - 1];
-    if (/^\d{8}$/.test(datePart) && /^\d{3,6}$/.test(timePart)) {
-      return parts.slice(0, -2).join('_');
-    }
-  }
-
-  return fileKey;
 };
 
 const parseChildId = (
@@ -831,17 +867,74 @@ const HistoryPainTable: React.FC<{
   isLatestReport = false,
 }) => {
   const normalizedCurrentFileKey = String(currentFileKey || '').trim();
+  const hasRetestedPain = useMemo(
+    () =>
+      items.some((item) => {
+        const rawStatus = Number(item.status);
+        return (
+          rawStatus === PainStatus.RETESTED_PASSED ||
+          rawStatus === PainStatus.RETESTED_FAILED
+        );
+      }),
+    [items]
+  );
+  const [open, setOpen] = useState(true);
+  const getStatusPillStyle = (status: number) => {
+    const cfg: Record<number, string> = {
+      [PainStatus.TO_BE_CONFIRMED]:
+        'border-amber-200 bg-amber-50 text-amber-700',
+      [PainStatus.CONFIRMED_PENDING_FIX]:
+        'border-rose-200 bg-rose-50 text-rose-700',
+      [PainStatus.FIXED_PENDING_RETEST]:
+        'border-indigo-200 bg-indigo-50 text-indigo-700',
+      [PainStatus.RETESTING]: 'border-amber-200 bg-amber-50 text-amber-700',
+      [PainStatus.RETESTED_PASSED]:
+        'border-emerald-200 bg-emerald-50 text-emerald-700',
+      [PainStatus.NO_FIX_NEEDED]: 'border-slate-200 bg-slate-50 text-slate-600',
+      [PainStatus.RETESTED_FAILED]: 'border-rose-200 bg-rose-50 text-rose-700',
+    };
+    return cfg[status] || 'border-slate-200 bg-slate-50 text-slate-600';
+  };
+
+  useEffect(() => {
+    if (loading) return;
+    setOpen(!hasRetestedPain);
+  }, [hasRetestedPain, loading]);
 
   return (
     <div className={compact ? 'mt-2' : 'mt-3'}>
-      <div className="mb-2 text-xs font-semibold text-slate-700">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700"
+      >
         历史痛点（{items.length}）
-      </div>
+        {items.length > 0 && (
+          <svg
+            className={`h-3.5 w-3.5 text-slate-400 transition-transform ${
+              open ? 'rotate-180' : ''
+            }`}
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 6l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </button>
 
       {loading ? (
         <div className="text-xs text-slate-500">历史痛点加载中…</div>
       ) : items.length === 0 ? (
         <div className="text-xs text-slate-500">当前任务暂无历史痛点</div>
+      ) : !open ? (
+        <div className="text-xs text-slate-400">已收起</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1160px] table-fixed border-collapse text-[13px] text-slate-700">
@@ -869,7 +962,7 @@ const HistoryPainTable: React.FC<{
                   状态
                 </th>
                 <th className="w-[110px] px-3 py-3 text-left font-semibold">
-                  结论
+                  复测报告ID
                 </th>
                 <th className="w-[90px] px-3 py-3 text-left font-semibold">
                   责任人
@@ -949,17 +1042,34 @@ const HistoryPainTable: React.FC<{
                       <span
                         className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${severityStyle.bg} ${severityStyle.text} ${severityStyle.border}`}
                       >
-                        {getPainLevelLabel(severity)}
+                        {formatSeverityLabel(severity)}
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
-                      {statusLabel}
+                      <span
+                        className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${getStatusPillStyle(
+                          normalizedStatus
+                        )}`}
+                      >
+                        {statusLabel}
+                      </span>
                     </td>
                     <td className="px-3 py-3">
                       <Tooltip title={item.remark || '--'}>
-                        <span className="block cursor-default truncate">
-                          {item.remark || '--'}
-                        </span>
+                        {item.remark ? (
+                          <a
+                            href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
+                              item.remark
+                            )}`}
+                            className="overview-table-link block truncate text-blue-600"
+                          >
+                            {item.remark}
+                          </a>
+                        ) : (
+                          <span className="block cursor-default truncate">
+                            --
+                          </span>
+                        )}
                       </Tooltip>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">

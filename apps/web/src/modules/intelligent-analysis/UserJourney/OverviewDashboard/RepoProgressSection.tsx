@@ -977,7 +977,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                 popupClassName="overview-select-dropdown"
                 getPopupContainer={(node) => node.parentElement ?? node}
                 options={[
-                  { label: '全部（P0-P4）', value: 'overall' },
+                  { label: '全部（P0-P2）', value: 'overall' },
                   { label: '关键问题（P0-P1）', value: 'key' },
                 ]}
               />

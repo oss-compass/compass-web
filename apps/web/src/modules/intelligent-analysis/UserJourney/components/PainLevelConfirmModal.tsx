@@ -122,6 +122,17 @@ export const getPainLevelLabel = (level: string): string => {
   return item ? item.label : level;
 };
 
+const formatSeverityLabel = (severity: string) => {
+  const raw = String(severity || '').trim();
+  if (!raw) return '--';
+  const prefix = raw.startsWith('P') ? raw.slice(0, 2) : '';
+  const label = getPainLevelLabel(raw);
+  if (raw === 'P4_TRIVIAL' || label === '非项目本身问题') return label;
+  if (!prefix) return label;
+  if (String(label || '').startsWith(prefix)) return label;
+  return `${prefix}${label}`;
+};
+
 type FormValues = {
   status: PainStatus;
   severity: PainLevel;
@@ -142,6 +153,7 @@ type Props = {
   painText: string;
   /** 当前痛点状态 */
   currentRecord?: PainConfirmationRecord | null;
+  parentPainRemark?: string | null;
   /** 可选：版本选项（file_key → label），用于复测通过时选择通过报告 */
   versionOptions?: Array<{ value: string; label: string }>;
   onCancel: () => void;
@@ -419,61 +431,72 @@ const enrichPayloadByStatus = (
 
 const RetestPassedInfo: React.FC<{
   currentRecord?: PainConfirmationRecord | null;
-}> = ({ currentRecord }) => (
-  <div className="space-y-3 rounded-md bg-emerald-50 p-4">
-    <div className="flex items-center gap-2">
-      <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
-      <Text type="success" strong>
-        复测已通过
-      </Text>
-    </div>
-    <div className="space-y-1.5 text-sm text-slate-600">
-      {currentRecord?.pr_link && (
+  parentPainRemark?: string | null;
+}> = ({ currentRecord, parentPainRemark }) => {
+  const prLinkValue = String(currentRecord?.pr_link || '').trim();
+  const showPrLinkAsAnchor =
+    prLinkValue !== FALLBACK_LINK_TEXT &&
+    prLinkValue !== '' &&
+    isValidUrlOrFallback(prLinkValue);
+
+  const retestReportId = String(parentPainRemark || '').trim() || '';
+
+  return (
+    <div className="space-y-3 rounded-md bg-emerald-50 p-4">
+      <div className="flex items-center gap-2">
+        <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+        <Text type="success" strong>
+          复测已通过
+        </Text>
+      </div>
+      <div className="space-y-1.5 text-sm text-slate-600">
         <div className="flex items-center gap-2">
           <span className="shrink-0 text-xs text-slate-400">PR 链接：</span>
-          <Link
-            href={currentRecord.pr_link}
-            target="_blank"
-            className="text-blue-600 hover:text-blue-800"
-          >
-            {currentRecord.pr_link}
-          </Link>
+          {showPrLinkAsAnchor ? (
+            <Link
+              href={prLinkValue}
+              target="_blank"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              {prLinkValue}
+            </Link>
+          ) : (
+            <span>{FALLBACK_LINK_TEXT}</span>
+          )}
         </div>
-      )}
-      {(currentRecord?.retest_passed_file_key ||
-        currentRecord?.latest_file_key) && (
         <div className="flex items-center gap-2">
-          <span className="shrink-0 text-xs text-slate-400">通过报告：</span>
-          <Link
-            href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
-              currentRecord.retest_passed_file_key ||
-                currentRecord.latest_file_key ||
-                ''
-            )}`}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            {currentRecord.retest_passed_file_key ||
-              currentRecord.latest_file_key}
-          </Link>
+          <span className="shrink-0 text-xs text-slate-400">复测报告ID：</span>
+          {retestReportId ? (
+            <Link
+              href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
+                retestReportId
+              )}`}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              {retestReportId}
+            </Link>
+          ) : (
+            <span>{FALLBACK_LINK_TEXT}</span>
+          )}
         </div>
-      )}
-      {currentRecord?.confirmed_by && (
-        <div className="flex items-center gap-2">
-          <span className="shrink-0 text-xs text-slate-400">提交人：</span>
-          <span>{currentRecord.confirmed_by}</span>
-        </div>
-      )}
-      {currentRecord?.confirmed_at && (
-        <div className="flex items-center gap-2">
-          <span className="shrink-0 text-xs text-slate-400">提交时间：</span>
-          <span>
-            {currentRecord.confirmed_at.replace('T', ' ').replace('Z', '')}
-          </span>
-        </div>
-      )}
+        {currentRecord?.confirmed_by && (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">提交人：</span>
+            <span>{currentRecord.confirmed_by}</span>
+          </div>
+        )}
+        {currentRecord?.confirmed_at && (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">提交时间：</span>
+            <span>
+              {currentRecord.confirmed_at.replace('T', ' ').replace('Z', '')}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const HistoryTable: React.FC<{
   data?: { history: any[] };
@@ -504,7 +527,7 @@ const HistoryTable: React.FC<{
             ? `共性问题类型: ${record.common_issue_type}`
             : '共性问题待处理';
         if (record.status === 1)
-          return `等级: ${getPainLevelLabel(record.severity)}`;
+          return `等级: ${formatSeverityLabel(record.severity)}`;
         if (record.status === 2) return `Issue: ${record.issue_link || '-'}`;
         if (record.status === 3) return `PR: ${record.pr_link || '-'}`;
         if (record.status === 5) {
@@ -661,9 +684,7 @@ const ToBeConfirmedFormItems: React.FC<{
                     <span
                       className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
                     />
-                    {item.value === 'P4_TRIVIAL'
-                      ? '非项目本身问题'
-                      : item.label}
+                    {formatSeverityLabel(item.value)}
                   </span>
                   <span className="text-xs text-slate-500">
                     {item.value === 'P4_TRIVIAL' ? '' : item.description}
@@ -973,6 +994,8 @@ const ModalFooter: React.FC<{
   onCancel: () => void;
   currentStatus: number;
   showRetestDecision: boolean;
+  rollbackTargets: PainStatus[];
+  onRollback: (target: PainStatus) => void;
 }> = ({
   showHistory,
   setShowHistory,
@@ -981,6 +1004,8 @@ const ModalFooter: React.FC<{
   onCancel,
   currentStatus,
   showRetestDecision,
+  rollbackTargets,
+  onRollback,
 }) => {
   if (showHistory) {
     return (
@@ -996,6 +1021,17 @@ const ModalFooter: React.FC<{
         <Button key="back-to-current" onClick={() => setSelectedStep(null)}>
           返回当前状态
         </Button>
+        {currentStatus !== PainStatus.TO_BE_CONFIRMED
+          ? rollbackTargets.map((target) => (
+              <Button
+                key={`rollback-${target}`}
+                danger={target === PainStatus.TO_BE_CONFIRMED}
+                onClick={() => onRollback(target)}
+              >
+                回退到{STATUS_LABELS[target] || target}
+              </Button>
+            ))
+          : null}
         <Button key="close-history" onClick={onCancel}>
           关闭
         </Button>
@@ -1036,6 +1072,7 @@ const PainConfirmationForm: React.FC<{
   versionOptions: any[];
   fileKey: string;
   currentRecord: PainConfirmationRecord | undefined;
+  parentPainRemark?: string | null;
 }> = ({
   form,
   isReviewingHistoryStep,
@@ -1052,6 +1089,7 @@ const PainConfirmationForm: React.FC<{
   versionOptions,
   fileKey,
   currentRecord,
+  parentPainRemark,
 }) => {
   return (
     <Form
@@ -1113,7 +1151,10 @@ const PainConfirmationForm: React.FC<{
 
       {!isReviewingHistoryStep &&
         currentStatus === PainStatus.RETESTED_PASSED && (
-          <RetestPassedInfo currentRecord={currentRecord} />
+          <RetestPassedInfo
+            currentRecord={currentRecord}
+            parentPainRemark={parentPainRemark}
+          />
         )}
 
       {((isReviewingHistoryStep && activeDisplayStep <= 3) ||
@@ -1153,6 +1194,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   painIndex,
   painText,
   currentRecord,
+  parentPainRemark,
   versionOptions,
   onCancel,
   onSubmit,
@@ -1160,6 +1202,11 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const [form] = Form.useForm<FormValues>();
   const [showHistory, setShowHistory] = useState(false);
   const [selectedStep, setSelectedStep] = useState<number | null>(null);
+  const [rollbackModalOpen, setRollbackModalOpen] = useState(false);
+  const [rollbackTarget, setRollbackTarget] = useState<PainStatus | null>(null);
+  const [rollbackBy, setRollbackBy] = useState('');
+  const [rollbackReason, setRollbackReason] = useState('');
+  const [rollbackSubmitting, setRollbackSubmitting] = useState(false);
 
   // 计算当前状态：如果没有记录，默认是 1 (待确认)
   const currentStatus = currentRecord?.status || PainStatus.TO_BE_CONFIRMED;
@@ -1245,6 +1292,18 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const activeDisplayStep = selectedStep ?? displayedStepStatus;
   const isReviewingHistoryStep =
     selectedStep !== null && selectedStep < displayedStepStatus;
+  const rollbackTargets = useMemo(() => {
+    const candidate = activeDisplayStep as PainStatus;
+    const allowed: PainStatus[] = [
+      PainStatus.TO_BE_CONFIRMED,
+      PainStatus.CONFIRMED_PENDING_FIX,
+      PainStatus.FIXED_PENDING_RETEST,
+    ];
+    const cur = currentStatus as PainStatus;
+    if (!allowed.includes(candidate)) return [];
+    if (candidate >= cur) return [];
+    return [candidate];
+  }, [activeDisplayStep, currentStatus]);
   const activeReviewSnapshot = isReviewingHistoryStep
     ? reviewStepSnapshotMap.get(activeDisplayStep)
     : undefined;
@@ -1267,6 +1326,69 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     reviewStepSnapshotMap,
     setSelectedStep,
   });
+
+  const openRollback = useCallback((target: PainStatus) => {
+    setRollbackTarget(target);
+    setRollbackBy('');
+    setRollbackReason('');
+    setRollbackModalOpen(true);
+  }, []);
+
+  const submitRollback = useCallback(async () => {
+    if (!rollbackTarget) return;
+    const by = rollbackBy.trim();
+    const reason = rollbackReason.trim();
+    if (!by || !reason) return;
+
+    const base = currentRecord ?? ({} as PainConfirmationRecord);
+    const payload: UpsertPainConfirmationPayload = {
+      step_id: stepId,
+      pain_index: painIndex,
+      pain_text: painText,
+      status: rollbackTarget,
+      confirmed_by: by,
+      action: 'rollback',
+      action_reason: reason,
+    };
+
+    if (rollbackTarget === PainStatus.TO_BE_CONFIRMED) {
+      payload.severity = String(base.severity || 'P1_CRITICAL');
+      const isCommon =
+        base.is_common_issue === true ||
+        !!String(base.common_issue_type || '').trim();
+      if (isCommon) {
+        payload.is_common_issue = true;
+        payload.common_issue_type =
+          String(base.common_issue_type || '').trim() || '其他';
+      } else {
+        payload.is_common_issue = false;
+        payload.common_issue_type = null;
+      }
+    } else if (rollbackTarget === PainStatus.CONFIRMED_PENDING_FIX) {
+      payload.issue_link =
+        String(base.issue_link || '').trim() || FALLBACK_LINK_TEXT;
+    } else if (rollbackTarget === PainStatus.FIXED_PENDING_RETEST) {
+      payload.pr_link = String(base.pr_link || '').trim() || FALLBACK_LINK_TEXT;
+    }
+
+    setRollbackSubmitting(true);
+    try {
+      await onSubmit(payload);
+      setRollbackModalOpen(false);
+      setSelectedStep(null);
+    } finally {
+      setRollbackSubmitting(false);
+    }
+  }, [
+    currentRecord,
+    onSubmit,
+    painIndex,
+    painText,
+    rollbackBy,
+    rollbackReason,
+    rollbackTarget,
+    stepId,
+  ]);
 
   // 打开弹窗时重置查看态
   useEffect(() => {
@@ -1388,6 +1510,8 @@ const PainLevelConfirmModal: React.FC<Props> = ({
             onCancel={onCancel}
             currentStatus={currentStatus}
             showRetestDecision={showRetestDecision}
+            rollbackTargets={rollbackTargets}
+            onRollback={openRollback}
           />
         ) : undefined
       }
@@ -1429,10 +1553,63 @@ const PainLevelConfirmModal: React.FC<Props> = ({
               versionOptions={versionOptions}
               fileKey={fileKey}
               currentRecord={currentRecord}
+              parentPainRemark={parentPainRemark}
             />
           </>
         )}
       </div>
+
+      <Modal
+        open={rollbackModalOpen}
+        onCancel={() => setRollbackModalOpen(false)}
+        onOk={submitRollback}
+        okText="确认回退"
+        cancelText="取消"
+        okButtonProps={{
+          disabled:
+            rollbackSubmitting ||
+            !rollbackTarget ||
+            !rollbackBy.trim() ||
+            !rollbackReason.trim(),
+          loading: rollbackSubmitting,
+          danger: rollbackTarget === PainStatus.TO_BE_CONFIRMED,
+        }}
+        title={
+          rollbackTarget
+            ? `回退到${STATUS_LABELS[rollbackTarget] || rollbackTarget}`
+            : '回退'
+        }
+        destroyOnHidden
+      >
+        <div className="space-y-3">
+          <div>
+            <div className="mb-1 text-xs font-medium text-slate-600">
+              操作人
+            </div>
+            <Input
+              value={rollbackBy}
+              onChange={(e) => setRollbackBy(e.target.value)}
+              placeholder="请输入操作人"
+              maxLength={20}
+              allowClear
+            />
+          </div>
+          <div>
+            <div className="mb-1 text-xs font-medium text-slate-600">
+              回退原因
+            </div>
+            <Input.TextArea
+              value={rollbackReason}
+              onChange={(e) => setRollbackReason(e.target.value)}
+              placeholder="请输入回退原因"
+              rows={4}
+              maxLength={2000}
+              showCount
+              allowClear
+            />
+          </div>
+        </div>
+      </Modal>
     </Modal>
   );
 };

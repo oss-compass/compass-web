@@ -50,13 +50,18 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
         QUERY_KEY(fileKey ?? ''),
         (
           old:
-            | { file_key: string; confirmations: PainConfirmationRecord[] }
+            | {
+                file_key: string;
+                confirmations: PainConfirmationRecord[];
+                overview_pains?: any[];
+              }
             | undefined
         ) => {
           if (!old) {
             return {
               file_key: fileKey!,
               confirmations: [result.data],
+              overview_pains: [],
             };
           }
           const key = `${result.data.file_key}#${
@@ -73,6 +78,10 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
           };
         }
       );
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEY(fileKey ?? ''),
+        exact: true,
+      });
     },
   });
 

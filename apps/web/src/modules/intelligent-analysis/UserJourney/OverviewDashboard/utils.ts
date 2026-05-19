@@ -127,16 +127,25 @@ export const toMetricSummary = (card: OverviewCardItem): MetricSummary => {
 export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
   const latestScore = card.latestScore ?? getLatestScore(card);
   const successRate = card.latestSuccessRate ?? toSuccessRate(latestScore);
-  return card.painPoints.map((row) => ({
-    ...row,
-    severity: normalizeSeverity(row.severity),
-    repoName: card.name,
-    team: card.team || card.sig,
-    teamOwner: card.teamOwner || row.teamOwner,
-    score: latestScore,
-    successRate,
-    normalizedStatus: normalizeStatus(row),
-  }));
+  return card.painPoints
+    .filter((row) => {
+      const severity = normalizeSeverity(row.severity);
+      const isInScope =
+        severity === 'P0_BLOCKER' ||
+        severity === 'P1_CRITICAL' ||
+        severity === 'P2_MAJOR';
+      return isInScope;
+    })
+    .map((row) => ({
+      ...row,
+      severity: normalizeSeverity(row.severity),
+      repoName: card.name,
+      team: card.team || card.sig,
+      teamOwner: card.teamOwner || row.teamOwner,
+      score: latestScore,
+      successRate,
+      normalizedStatus: normalizeStatus(row),
+    }));
 };
 
 export const isCommonIssue = (
