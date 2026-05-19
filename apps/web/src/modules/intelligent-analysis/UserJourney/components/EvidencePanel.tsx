@@ -10,7 +10,6 @@ import PainLevelConfirmModal, {
 import { usePainConfirmations } from '../hooks/usePainConfirmations';
 import {
   fetchOverviewCards,
-  updateOverviewParentPain,
   type OverviewPainPointRow,
   type PainConfirmationRecord,
   type UpsertPainConfirmationPayload,
@@ -91,10 +90,11 @@ export type EvidencePanelProps = {
    */
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
   painFocusTarget?: {
-    painIndex: number;
+    painId: string;
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  isLatestReport?: boolean;
   /** 可选：版本选项（file_key → label），用于复测通过时选择通过报告 */
   versionOptions?: Array<{ value: string; label: string }>;
 };
@@ -340,10 +340,12 @@ const derivePainDisplayState = ({
   existing,
   parentPain,
   text,
+  isLatestReport,
 }: {
   existing?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
   text: string;
+  isLatestReport: boolean;
 }): DerivedPainDisplayState => {
   const parentStatusValue = String(parentPain?.status ?? '').trim();
   const parentStatusNum = Number.parseInt(parentStatusValue, 10);
@@ -392,7 +394,11 @@ const derivePainDisplayState = ({
   const { commonIssueType, isCommonIssue } = getEffectiveCommonIssue();
   const { issueLink, prLink } = getEffectiveLinks();
 
-  const effectiveStatus = getEffectiveStatus();
+  const effectiveStatusRaw = getEffectiveStatus();
+  const effectiveStatus =
+    isLatestReport && effectiveStatusRaw === PainStatus.RETESTED_FAILED
+      ? PainStatus.CONFIRMED_PENDING_FIX
+      : effectiveStatusRaw;
   const effectiveSeverity = getEffectiveSeverity();
 
   const effectiveConfirmedBy =
@@ -508,18 +514,9 @@ const syncParentPainStatus = async ({
   parentStatusValue: string;
   nextStatus: string;
 }) => {
-  if (!parentPainId || !nextStatus || nextStatus === parentStatusValue) {
-    return;
-  }
-
-  try {
-    await updateOverviewParentPain({
-      parent_id: parentPainId,
-      status: nextStatus,
-    });
-  } catch (error) {
-    console.error('[EvidencePanel] 同步父级痛点状态失败', error);
-  }
+  void parentPainId;
+  void parentStatusValue;
+  void nextStatus;
 };
 
 const CompletedPainBadge: React.FC<{
@@ -636,6 +633,7 @@ const PainPointItem: React.FC<{
   stepId?: string;
   legacyStepId?: string;
   parentPain?: OverviewPainPointRow;
+  isLatestReport?: boolean;
   compact?: boolean;
   toolIds?: string[];
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
@@ -649,6 +647,7 @@ const PainPointItem: React.FC<{
   stepId,
   legacyStepId,
   parentPain,
+  isLatestReport = false,
   compact = false,
   toolIds,
   onStepClick,
@@ -702,6 +701,7 @@ const PainPointItem: React.FC<{
     existing,
     parentPain,
     text,
+    isLatestReport,
   });
 
   const handleSubmit = async (payload: UpsertPainConfirmationPayload) => {
@@ -787,7 +787,12 @@ const deriveProjectKeyFromFileKey = (value?: string): string => {
 
 const parseChildId = (
   raw: string
-): { fileKey: string; taskId: string; painIndex?: number } | null => {
+): {
+  painId: string;
+  fileKey: string;
+  taskId: string;
+  painIndex?: number;
+} | null => {
   const text = String(raw || '').trim();
   if (!text) return null;
 
@@ -799,10 +804,17 @@ const parseChildId = (
   const painIndexNum = Number.parseInt(String(painIndexRaw || '').trim(), 10);
 
   return {
+    painId: text,
     fileKey,
     taskId,
     painIndex: Number.isNaN(painIndexNum) ? undefined : painIndexNum,
   };
+};
+
+type DisplayPainPoint = {
+  id?: string;
+  text: string;
+  index: number;
 };
 
 const HistoryPainTable: React.FC<{
@@ -810,7 +822,14 @@ const HistoryPainTable: React.FC<{
   loading: boolean;
   compact?: boolean;
   currentFileKey?: string;
-}> = ({ items, loading, compact = false, currentFileKey }) => {
+  isLatestReport?: boolean;
+}> = ({
+  items,
+  loading,
+  compact = false,
+  currentFileKey,
+  isLatestReport = false,
+}) => {
   const normalizedCurrentFileKey = String(currentFileKey || '').trim();
 
   return (
@@ -864,12 +883,17 @@ const HistoryPainTable: React.FC<{
               {items.map((item, index) => {
                 const severity = item.severity || 'P4_TRIVIAL';
                 const severityStyle = getPainLevelStyle(severity);
-                const statusLabel = STATUS_LABELS[Number(item.status)] || '--';
+                const rawStatus = Number(item.status);
+                const normalizedStatus =
+                  isLatestReport && rawStatus === PainStatus.RETESTED_FAILED
+                    ? PainStatus.CONFIRMED_PENDING_FIX
+                    : rawStatus;
+                const statusLabel = STATUS_LABELS[normalizedStatus] || '--';
                 const childIds = item.childIds ?? [];
                 const entries: Array<{
+                  painId?: string;
                   fileKey: string;
                   taskId?: string;
-                  painIndex?: number;
                 }> = [];
                 const seen = new Set<string>();
 
@@ -943,14 +967,14 @@ const HistoryPainTable: React.FC<{
                     </td>
                     <td className="px-3 py-3">
                       {entries.length ? (
-                        entries.map(({ fileKey, taskId, painIndex }) => {
+                        entries.map(({ painId, fileKey, taskId }) => {
                           const search = new URLSearchParams();
                           search.set('project', fileKey);
                           if (taskId) {
                             search.set('focusTaskId', taskId);
                           }
-                          if (typeof painIndex === 'number') {
-                            search.set('focusPainIndex', String(painIndex));
+                          if (painId) {
+                            search.set('painId', painId);
                             search.set('autoOpenPain', '1');
                           }
                           const href = `/intelligent-analysis/community-experience?${search.toString()}`;
@@ -965,10 +989,7 @@ const HistoryPainTable: React.FC<{
 
                           return (
                             <div
-                              key={`${fileKey}-${taskId || ''}-${
-                                painIndex ?? ''
-                              }`}
-                              className="leading-5"
+                              key={`${fileKey}-${taskId || ''}-${painId || ''}`}
                             >
                               <a
                                 href={href}
@@ -1017,6 +1038,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
+  isLatestReport = false,
   versionOptions,
 }) => {
   const [obsExpanded, setObsExpanded] = useState(false);
@@ -1025,16 +1047,19 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     canConfirm ? fileKey : undefined
   );
 
-  const displayPainPoints = useMemo(() => {
+  const displayPainPoints = useMemo<DisplayPainPoint[]>(() => {
     if (fileKey && stepId && overviewPains && overviewPains.length > 0) {
       // 从 overviewPains 中过滤出属于当前任务的痛点，包含对 legacyStepId 的兼容
       return overviewPains
         .filter((p: any) => {
           const pid = p.task_id || p.step_id;
-          return pid === stepId || (legacyStepId && pid === legacyStepId);
+          if (!(pid === stepId || (legacyStepId && pid === legacyStepId)))
+            return false;
+          return !!String(p.id || '').trim();
         })
         .sort((a: any, b: any) => (a.pain_index ?? 0) - (b.pain_index ?? 0))
         .map((p: any) => ({
+          id: p.id,
           text: p.pain_text,
           index: p.pain_index ?? 0,
         }));
@@ -1122,51 +1147,31 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     });
   }, [fileKey, overviewCardResp?.items, targetTaskIds]);
 
-  const autoOpenIndex = useMemo(() => {
-    if (!painFocusTarget || !displayPainPoints.length) return null;
-    const target = painFocusTarget.painIndex;
+  const autoOpenPainId = useMemo(() => {
+    const target = String(painFocusTarget?.painId || '').trim();
+    if (!target || !displayPainPoints.length) return null;
+    return displayPainPoints.some((p) => p.id === target) ? target : null;
+  }, [displayPainPoints, painFocusTarget?.painId]);
 
-    // 检查 displayPainPoints 中是否存在 index 为 target 的项
-    const match = displayPainPoints.find((p) => p.index === target);
-    if (match) return target;
-
-    // 兼容性逻辑：如果是 1-based index，尝试匹配 target - 1
-    if (typeof target === 'number' && target > 0) {
-      const matchMinusOne = displayPainPoints.find(
-        (p) => p.index === target - 1
-      );
-      if (matchMinusOne) return target - 1;
-    }
-
-    return null;
-  }, [painFocusTarget, displayPainPoints]);
-
-  const shouldAutoOpenForIndex = (index: number) => {
-    return index === autoOpenIndex;
+  const shouldAutoOpenForPainId = (painId?: string) => {
+    return !!painId && painId === autoOpenPainId;
   };
 
   useEffect(() => {
-    if (painFocusTarget && hasPain && autoOpenIndex === null) {
+    if (painFocusTarget && hasPain && autoOpenPainId === null) {
       onPainFocusHandled?.();
     }
-  }, [autoOpenIndex, painFocusTarget, hasPain, onPainFocusHandled]);
+  }, [autoOpenPainId, painFocusTarget, hasPain, onPainFocusHandled]);
 
-  const findParentPainByIndex = (
-    index: number
+  const findParentPainForPain = (
+    pain: Pick<DisplayPainPoint, 'id' | 'index'>
   ): OverviewPainPointRow | undefined => {
     if (!fileKey || targetTaskIds.size === 0) return undefined;
 
-    return taskParentPains.find((row) => {
-      const childIds = row.childIds ?? [];
-      return childIds.some((rawId) => {
-        const parsed = parseChildId(rawId);
-        if (!parsed) return false;
-        if (parsed.fileKey !== fileKey) return false;
-        if (!targetTaskIds.has(parsed.taskId)) return false;
-        if (typeof parsed.painIndex !== 'number') return false;
-        return parsed.painIndex === index || parsed.painIndex === index + 1;
-      });
-    });
+    if (!pain.id) return undefined;
+    return taskParentPains.find((row) =>
+      (row.childIds ?? []).includes(pain.id!)
+    );
   };
 
   if (!hasObs && !hasPain) {
@@ -1210,19 +1215,20 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               痛点
             </div>
             <ul className="space-y-1">
-              {displayPainPoints.map(({ text, index }) => (
+              {displayPainPoints.map(({ id, text, index }) => (
                 <PainPointItem
-                  key={index}
+                  key={id || index}
                   text={text}
                   index={index}
                   fileKey={fileKey}
                   stepId={stepId}
                   legacyStepId={legacyStepId}
-                  parentPain={findParentPainByIndex(index)}
+                  parentPain={findParentPainForPain({ id, index })}
+                  isLatestReport={isLatestReport}
                   toolIds={pain_points_tool_nums?.[index]}
                   onStepClick={onStepClick}
                   compact
-                  shouldAutoOpen={shouldAutoOpenForIndex(index)}
+                  shouldAutoOpen={shouldAutoOpenForPainId(id)}
                   onAutoOpenHandled={onPainFocusHandled}
                   versionOptions={versionOptions}
                 />
@@ -1233,6 +1239,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               loading={parentPainsLoading}
               compact
               currentFileKey={fileKey}
+              isLatestReport={isLatestReport}
             />
           </div>
         )}
@@ -1253,18 +1260,19 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
             </span>
           </div>
           <ul className="space-y-1.5">
-            {displayPainPoints.map(({ text, index }) => (
+            {displayPainPoints.map(({ id, text, index }) => (
               <PainPointItem
-                key={index}
+                key={id || index}
                 text={text}
                 index={index}
                 fileKey={fileKey}
                 stepId={stepId}
                 legacyStepId={legacyStepId}
-                parentPain={findParentPainByIndex(index)}
+                parentPain={findParentPainForPain({ id, index })}
+                isLatestReport={isLatestReport}
                 toolIds={pain_points_tool_nums?.[index]}
                 onStepClick={onStepClick}
-                shouldAutoOpen={shouldAutoOpenForIndex(index)}
+                shouldAutoOpen={shouldAutoOpenForPainId(id)}
                 onAutoOpenHandled={onPainFocusHandled}
                 versionOptions={versionOptions}
               />
@@ -1274,6 +1282,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
             items={historyParentPains}
             loading={parentPainsLoading}
             currentFileKey={fileKey}
+            isLatestReport={isLatestReport}
           />
         </div>
       )}

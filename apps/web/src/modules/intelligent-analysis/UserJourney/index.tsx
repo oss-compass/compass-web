@@ -92,12 +92,10 @@ const UserJourney: React.FC<UserJourneyProps> = ({
     () => getSingleQueryValue(router.query.focusTaskId)?.trim() ?? '',
     [router.query.focusTaskId]
   );
-  const focusPainIndex = useMemo(() => {
-    const raw = getSingleQueryValue(router.query.focusPainIndex);
-    if (!raw) return null;
-    const parsed = Number.parseInt(raw, 10);
-    return Number.isNaN(parsed) ? null : parsed;
-  }, [router.query.focusPainIndex]);
+  const painId = useMemo(
+    () => getSingleQueryValue(router.query.painId)?.trim() ?? '',
+    [router.query.painId]
+  );
   const autoOpenPain = useMemo(() => {
     const raw = getSingleQueryValue(router.query.autoOpenPain);
     return raw === '1' || raw === 'true';
@@ -206,6 +204,11 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   const currentVersionOptions =
     registry?.versionOptionsMap[currentProjectKey] ?? [];
   const currentVersion = currentProjectFileKey;
+  const isLatestReport = useMemo(() => {
+    if (!registry || !currentProjectKey || !currentProjectFileKey) return false;
+    const latest = registry.defaultFileMap[currentProjectKey];
+    return !!latest && latest === currentProjectFileKey;
+  }, [currentProjectFileKey, currentProjectKey, registry]);
 
   const availableCompareProjects = (
     registry?.compareProjectOptions ?? []
@@ -284,14 +287,14 @@ const UserJourney: React.FC<UserJourneyProps> = ({
     } as Record<string, string | string[]>;
     let changed = false;
 
-    (['focusTaskId', 'focusPainIndex', 'autoOpenPain'] as const).forEach(
-      (key) => {
-        if (key in nextQuery) {
-          delete nextQuery[key];
-          changed = true;
-        }
+    (
+      ['focusTaskId', 'painId', 'focusPainIndex', 'autoOpenPain'] as const
+    ).forEach((key) => {
+      if (key in nextQuery) {
+        delete nextQuery[key];
+        changed = true;
       }
-    );
+    });
 
     if (!changed) {
       return;
@@ -324,11 +327,11 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   const keyMetrics = currentStep?.metrics ?? [];
   const executionPathItems = currentStep?.executionPath ?? [];
   const painFocusTarget =
-    !focusTaskId || focusPainIndex === null
+    !focusTaskId || !painId
       ? undefined
       : {
           taskId: focusTaskId,
-          painIndex: focusPainIndex,
+          painId,
           autoOpen: autoOpenPain,
         };
 
@@ -379,6 +382,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               detailReportUrl={primaryProject.reportDetailUrl}
               projectVersion={primaryProject.projectInfo.version}
               projectFileKey={currentProjectFileKey}
+              isLatestReport={isLatestReport}
               activeStepKey={activeStepKey}
               onStepChange={setActiveStepKey}
             />
@@ -404,6 +408,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
                   executionPathItems={executionPathItems}
                   agentVersion={primaryProject.agentVersion}
                   projectFileKey={currentProjectFileKey}
+                  isLatestReport={isLatestReport}
                   painFocusTarget={painFocusTarget}
                   onPainFocusHandled={clearPainFocusQuery}
                   versionOptions={currentVersionOptions}

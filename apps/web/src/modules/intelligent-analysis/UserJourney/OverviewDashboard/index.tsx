@@ -32,6 +32,7 @@ import {
   getTeamSortValue,
   mergeMetricSummaries,
   normalizeSeverity,
+  isKeyIssue,
   toDashboardIssue,
 } from './utils';
 
@@ -49,6 +50,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [currentTab, setCurrentTab] = useState<ProgressTab>('overall');
   const [issueSourceMode, setIssueSourceMode] =
     useState<IssueSourceMode>('overall');
+  const [includeCommonIssues, setIncludeCommonIssues] = useState(true);
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
   const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('team');
@@ -64,6 +66,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       repoFilter,
       teamFilter,
       issueSourceMode,
+      includeCommonIssues,
     ],
     queryFn: () =>
       fetchOverviewCards({
@@ -76,7 +79,40 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             ? true
             : issueSourceMode === 'non-common'
             ? false
-            : undefined,
+            : includeCommonIssues
+            ? undefined
+            : false,
+        team: teamFilter || undefined,
+        repo: repoFilter || undefined,
+        page: 1,
+        size: 200,
+      }),
+  });
+
+  const { data: cardsOverallResp } = useQuery({
+    queryKey: [
+      'overview-cards-page',
+      org,
+      'overall',
+      repoFilter,
+      teamFilter,
+      issueSourceMode,
+      includeCommonIssues,
+    ],
+    queryFn: () =>
+      fetchOverviewCards({
+        viewType: 'repo',
+        org,
+        tab: 'overall',
+        includeCommonIssues: true,
+        commonOnly:
+          issueSourceMode === 'common'
+            ? true
+            : issueSourceMode === 'non-common'
+            ? false
+            : includeCommonIssues
+            ? undefined
+            : false,
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
         page: 1,
@@ -85,7 +121,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
 
   const { data: summaryResp } = useQuery({
-    queryKey: ['overview-summary', org, issueSourceMode],
+    queryKey: ['overview-summary', org, issueSourceMode, includeCommonIssues],
     queryFn: () =>
       fetchOverviewSummary({
         org,
@@ -95,7 +131,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             ? true
             : issueSourceMode === 'non-common'
             ? false
-            : undefined,
+            : includeCommonIssues
+            ? undefined
+            : false,
       }),
   });
 
@@ -126,8 +164,23 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           issues,
         };
       })
-      .filter((row) => issueSourceMode === 'overall' || row.issues.length > 0);
-  }, [cardsResp, issueSourceMode]);
+      .filter((row) => {
+        if (issueSourceMode === 'common') return row.issues.length > 0;
+        if (issueSourceMode === 'non-common') return row.issues.length > 0;
+        return includeCommonIssues || row.issues.length > 0;
+      });
+  }, [cardsResp, includeCommonIssues, issueSourceMode]);
+
+  const summaryIssues = useMemo<DashboardIssue[]>(() => {
+    const items = cardsOverallResp?.items ?? [];
+    if (!items.length) return [];
+    return items.flatMap((card) => toDashboardIssue(card));
+  }, [cardsOverallResp]);
+
+  const keySummaryIssues = useMemo<DashboardIssue[]>(
+    () => summaryIssues.filter((issue) => isKeyIssue(issue)),
+    [summaryIssues]
+  );
 
   const teamRows = useMemo<TeamProgressRow[]>(() => {
     const groups = new Map<string, TeamProgressRow>();
@@ -314,6 +367,52 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     });
   };
 
+  const openSummaryIssues = (
+    card: 'primary' | 'secondary',
+    bucket: IssueBucket | 'total'
+  ) => {
+    const baseIssues = card === 'secondary' ? keySummaryIssues : summaryIssues;
+    let issues = baseIssues;
+
+    if (bucket === 'pending') {
+      issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
+    } else if (bucket === 'inProgress') {
+      issues = issues.filter(
+        (issue) => issue.normalizedStatus === 'inProgress'
+      );
+    } else if (bucket === 'resolved') {
+      issues = issues.filter(
+        (issue) =>
+          issue.normalizedStatus === 'resolved' ||
+          issue.normalizedStatus === 'na'
+      );
+    } else if (bucket === 'na') {
+      issues = issues.filter((issue) => issue.normalizedStatus === 'na');
+    }
+
+    const bucketLabel =
+      bucket === 'pending'
+        ? '待处理'
+        : bucket === 'inProgress'
+        ? '进行中'
+        : bucket === 'resolved'
+        ? '已闭环'
+        : bucket === 'na'
+        ? '不需要修复'
+        : '总问题数';
+
+    const baseTitle =
+      issueSourceMode === 'common'
+        ? card === 'secondary'
+          ? '关键共性问题'
+          : '共性问题'
+        : card === 'secondary'
+        ? '关键问题'
+        : '总体问题';
+
+    openIssueModal(`${baseTitle} · ${bucketLabel}`, issues);
+  };
+
   const openRepoIssues = (
     row: RepoProgressRow,
     bucket: IssueBucket | 'total'
@@ -418,15 +517,17 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           summaryAvgExecutionTime={summaryAvgExecutionTime}
           repoCount={summaryRepoCount}
           issueSourceMode={issueSourceMode}
-          currentTab={currentTab}
+          includeCommonIssues={includeCommonIssues}
           onIssueSourceModeChange={setIssueSourceMode}
-          onTabChange={setCurrentTab}
+          onIncludeCommonIssuesChange={setIncludeCommonIssues}
+          onOpenIssues={openSummaryIssues}
         />
 
         <RepoProgressSection
           progressView={progressView}
           onProgressViewChange={setProgressView}
           currentTab={currentTab}
+          onTabChange={setCurrentTab}
           repoFilter={repoFilter}
           repoOptions={displayRepoOptions}
           onRepoFilterChange={setRepoFilter}

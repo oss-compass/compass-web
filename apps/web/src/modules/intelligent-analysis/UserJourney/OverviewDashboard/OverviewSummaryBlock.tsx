@@ -8,13 +8,49 @@ type OverviewSummaryBlockProps = {
   title: string;
   summary: MetricSummary;
   tooltip?: string;
+  onBucketClick?: (
+    bucket: 'total' | 'pending' | 'inProgress' | 'resolved'
+  ) => void;
 };
 
 const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   title,
   summary,
   tooltip,
+  onBucketClick,
 }) => {
+  const renderValue = (
+    bucket: 'total' | 'pending' | 'inProgress' | 'resolved',
+    value: number,
+    className = ''
+  ) => {
+    const clickableProps: React.HTMLAttributes<HTMLDivElement> | undefined =
+      onBucketClick
+        ? {
+            role: 'button',
+            tabIndex: 0,
+            onClick: () => onBucketClick(bucket),
+            onKeyDown: (event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onBucketClick(bucket);
+              }
+            },
+          }
+        : undefined;
+
+    return (
+      <div
+        className={`ov-value ${
+          onBucketClick ? 'ov-value-link' : ''
+        } ${className}`.trim()}
+        {...clickableProps}
+      >
+        {value}
+      </div>
+    );
+  };
+
   return (
     <div className="overview-block">
       <div className="ov-title flex items-center gap-1.5">
@@ -28,19 +64,19 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
       <div className="ov-row">
         <div className="ov-item">
           <div className="ov-label">总问题数</div>
-          <div className="ov-value">{summary.total}</div>
+          {renderValue('total', summary.total)}
         </div>
         <div className="ov-item">
           <div className="ov-label">待处理</div>
-          <div className="ov-value">{summary.pending}</div>
+          {renderValue('pending', summary.pending, 'ov-value-pending')}
         </div>
         <div className="ov-item">
           <div className="ov-label">进行中</div>
-          <div className="ov-value ov-value-blue">{summary.inProgress}</div>
+          {renderValue('inProgress', summary.inProgress, 'ov-value-blue')}
         </div>
         <div className="ov-item">
           <div className="ov-label">已闭环</div>
-          <div className="ov-value ov-value-green">{summary.resolved}</div>
+          {renderValue('resolved', summary.resolved, 'ov-value-green')}
         </div>
         <div className="ov-item">
           <div className="ov-label">闭环率</div>

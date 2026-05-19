@@ -1377,7 +1377,9 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       footer={
         showHistory ||
         isReviewingHistoryStep ||
-        (currentStatus >= PainStatus.RETESTING && !showRetestDecision) ? (
+        (currentStatus >= PainStatus.RETESTING &&
+          !showRetestDecision &&
+          currentStatus !== PainStatus.RETESTED_FAILED) ? (
           <ModalFooter
             showHistory={showHistory}
             setShowHistory={setShowHistory}

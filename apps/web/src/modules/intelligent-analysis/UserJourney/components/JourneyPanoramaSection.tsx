@@ -19,6 +19,7 @@ type JourneyPanoramaSectionProps = {
   projectName: string;
   steps: JourneyStep[];
   projectFileKey?: string;
+  isLatestReport?: boolean;
   activeStepKey?: string;
   onStepChange?: (stepKey: string) => void;
 };
@@ -35,8 +36,17 @@ const TaskEvidenceCard: React.FC<{
   logTask?: LogTask;
   fileKey?: string;
   stepId?: string;
+  isLatestReport?: boolean;
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
-}> = ({ taskId, cardIndex, logTask, fileKey, stepId, onStepClick }) => {
+}> = ({
+  taskId,
+  cardIndex,
+  logTask,
+  fileKey,
+  stepId,
+  isLatestReport = false,
+  onStepClick,
+}) => {
   const def = TASK_DEF_MAP[taskId];
   const displayName = def?.name ?? taskId;
   const description = def?.description ?? logTask?.name ?? '';
@@ -86,6 +96,7 @@ const TaskEvidenceCard: React.FC<{
           stepId={taskId}
           legacyStepId={stepId}
           onStepClick={onStepClick}
+          isLatestReport={isLatestReport}
         />
       </div>
     </div>
@@ -110,6 +121,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
   projectName,
   steps,
   projectFileKey,
+  isLatestReport = false,
   activeStepKey,
   onStepChange,
 }) => {
@@ -255,6 +267,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
                         logTask={logTask}
                         fileKey={projectFileKey}
                         stepId={activeStep?.code}
+                        isLatestReport={isLatestReport}
                         onStepClick={(toolIds, ctx) => {
                           // 1. 切换主视图步骤
                           onStepChange?.(activeStep.key);

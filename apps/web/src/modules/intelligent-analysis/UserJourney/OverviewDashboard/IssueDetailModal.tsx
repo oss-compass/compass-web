@@ -27,28 +27,27 @@ type IssueSortKey =
 type SortOrder = 'asc' | 'desc';
 
 type ReportEntry = {
+  painId?: string;
   fileKey: string;
   taskId?: string;
-  painIndex?: number;
 };
 
 const parseChildId = (
   raw: string
-): { fileKey: string; taskId?: string; painIndex?: number } | null => {
+): { painId: string; fileKey: string; taskId?: string } | null => {
   const text = String(raw || '').trim();
   if (!text) return null;
 
-  const [fileKeyRaw, taskIdRaw, painIndexRaw] = text.split('#');
+  const [fileKeyRaw, taskIdRaw] = text.split('#');
   const fileKey = String(fileKeyRaw || '').trim();
   if (!fileKey) return null;
 
   const taskId = String(taskIdRaw || '').trim();
-  const painIndexNum = Number.parseInt(String(painIndexRaw || '').trim(), 10);
 
   return {
+    painId: text,
     fileKey,
     taskId: taskId || undefined,
-    painIndex: Number.isNaN(painIndexNum) ? undefined : painIndexNum,
   };
 };
 
@@ -258,19 +257,24 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     </button>
   );
 
+  const modalTitle = `${state.title}（共${displayedIssues.length}条）`;
+
   return (
     <Modal
       open={state.open}
       onCancel={onClose}
       footer={null}
       width="min(96vw, 1420px)"
-      title={state.title}
+      title={modalTitle}
       destroyOnHidden
     >
       <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
         <table className="w-full table-fixed border-collapse text-[12px] text-slate-700 md:text-[13px]">
           <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
             <tr>
+              <th className="w-[56px] px-2 py-2 text-center md:w-[64px] md:px-2 md:py-3">
+                序号
+              </th>
               <th className="w-[96px] px-2 py-2 text-left md:w-[100px] md:px-3 md:py-3">
                 {renderSortableHeader('仓库', 'repo')}
               </th>
@@ -355,6 +359,9 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     key={`${issue.id}-${index}`}
                     className="border-t border-slate-100 align-top transition-colors hover:bg-slate-50"
                   >
+                    <td className="px-2 py-2 text-center font-medium text-slate-500 md:px-2 md:py-3">
+                      {index + 1}
+                    </td>
                     <td className="break-all px-2 py-2 font-medium text-slate-900 md:px-3 md:py-3">
                       {getRepoName(issue)}
                     </td>
@@ -401,23 +408,21 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     </td>
                     <td className="px-2 py-2 text-[12px] md:px-3 md:py-3">
                       {reportEntries.length ? (
-                        reportEntries.map(({ fileKey, taskId, painIndex }) => {
+                        reportEntries.map(({ painId, fileKey, taskId }) => {
                           const search = new URLSearchParams();
                           search.set('project', fileKey);
                           if (taskId) {
                             search.set('focusTaskId', taskId);
                           }
-                          if (typeof painIndex === 'number') {
-                            search.set('focusPainIndex', String(painIndex));
+                          if (painId) {
+                            search.set('painId', painId);
                             search.set('autoOpenPain', '1');
                           }
                           const href = `/intelligent-analysis/community-experience?${search.toString()}`;
 
                           return (
                             <div
-                              key={`${fileKey}-${taskId || ''}-${
-                                painIndex ?? ''
-                              }`}
+                              key={`${fileKey}-${taskId || ''}-${painId || ''}`}
                               className="leading-5"
                             >
                               <a
@@ -439,7 +444,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
             ) : (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={10}
                   className="px-3 py-12 text-center text-sm text-slate-400"
                 >
                   暂无数据

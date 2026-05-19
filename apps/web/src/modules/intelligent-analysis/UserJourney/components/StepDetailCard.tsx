@@ -20,9 +20,10 @@ type StepDetailCardProps = {
   fixedMetricCols?: 2 | 3 | 4;
   /** 报告文件 key，用于加载对应 log 文件 */
   projectFileKey?: string;
+  isLatestReport?: boolean;
   painFocusTarget?: {
     taskId: string;
-    painIndex: number;
+    painId: string;
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
@@ -38,6 +39,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   hideTitle = false,
   fixedMetricCols,
   projectFileKey,
+  isLatestReport = false,
   painFocusTarget,
   onPainFocusHandled,
   versionOptions,
@@ -220,6 +222,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
           stepCode={currentStep.code}
           executionPathItems={executionPathItems}
           projectFileKey={projectFileKey}
+          isLatestReport={isLatestReport}
           {...(painFocusTarget ? { painFocusTarget } : {})}
           onPainFocusHandled={onPainFocusHandled}
           versionOptions={versionOptions}

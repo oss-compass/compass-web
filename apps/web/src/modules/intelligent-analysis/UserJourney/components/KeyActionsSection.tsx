@@ -30,9 +30,10 @@ type KeyActionsSectionProps = {
   executionPathItems: ActionDetailRecord[];
   /** 报告文件 key，如 cann_asc_devkit_20260408_1824，用于推导 log 路径 */
   projectFileKey?: string;
+  isLatestReport?: boolean;
   painFocusTarget?: {
     taskId: string;
-    painIndex: number;
+    painId: string;
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
@@ -249,10 +250,11 @@ const EvidenceInline: React.FC<{
   legacyStepId?: string;
   onStepClick?: (toolIds: string[]) => void;
   painFocusTarget?: {
-    painIndex: number;
+    painId: string;
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  isLatestReport?: boolean;
   versionOptions?: Array<{ value: string; label: string }>;
 }> = ({
   observations,
@@ -265,6 +267,7 @@ const EvidenceInline: React.FC<{
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
+  isLatestReport = false,
   versionOptions,
 }) => {
   const hasObs = observations && observations.length > 0;
@@ -294,6 +297,7 @@ const EvidenceInline: React.FC<{
         onStepClick={onStepClick}
         painFocusTarget={painFocusTarget}
         onPainFocusHandled={onPainFocusHandled}
+        isLatestReport={isLatestReport}
         versionOptions={versionOptions}
       />
     </div>
@@ -311,10 +315,11 @@ const EvidenceBlock: React.FC<{
   legacyStepId?: string;
   onStepClick?: (toolIds: string[]) => void;
   painFocusTarget?: {
-    painIndex: number;
+    painId: string;
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
+  isLatestReport?: boolean;
   versionOptions?: Array<{ value: string; label: string }>;
 }> = ({
   observations,
@@ -327,6 +332,7 @@ const EvidenceBlock: React.FC<{
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
+  isLatestReport = false,
   versionOptions,
 }) => {
   const [open, setOpen] = useState(false);
@@ -375,6 +381,7 @@ const EvidenceBlock: React.FC<{
             onStepClick={onStepClick}
             painFocusTarget={painFocusTarget}
             onPainFocusHandled={onPainFocusHandled}
+            isLatestReport={isLatestReport}
             versionOptions={versionOptions}
           />
         </div>
@@ -750,10 +757,11 @@ const TaskCard: React.FC<{
   cardIndex: number;
   projectFileKey?: string;
   stepCode?: string;
+  isLatestReport?: boolean;
   highlightedIndices?: number[];
   onStepClick?: (toolIds: string[]) => void;
   painFocusTarget?: {
-    painIndex: number;
+    painId: string;
     autoOpen?: boolean;
   };
   onPainFocusHandled?: () => void;
@@ -766,6 +774,7 @@ const TaskCard: React.FC<{
   cardIndex,
   projectFileKey,
   stepCode,
+  isLatestReport = false,
   highlightedIndices,
   onStepClick,
   painFocusTarget,
@@ -856,6 +865,7 @@ const TaskCard: React.FC<{
             onStepClick={onStepClick}
             painFocusTarget={painFocusTarget}
             onPainFocusHandled={onPainFocusHandled}
+            isLatestReport={isLatestReport}
             versionOptions={versionOptions}
           />
         </div>
@@ -888,6 +898,7 @@ const TaskCard: React.FC<{
             onStepClick={onStepClick}
             painFocusTarget={painFocusTarget}
             onPainFocusHandled={onPainFocusHandled}
+            isLatestReport={isLatestReport}
             versionOptions={versionOptions}
           />
         </div>
@@ -902,6 +913,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   stepCode,
   executionPathItems,
   projectFileKey,
+  isLatestReport = false,
   painFocusTarget,
   onPainFocusHandled,
   versionOptions,
@@ -915,19 +927,20 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
 
   const groups = groupByTaskId(executionPathItems);
   const normalizedTaskId = painFocusTarget?.taskId?.trim() || '';
+  const normalizedPainId = painFocusTarget?.painId?.trim() || '';
   const normalizedPainFocus = useMemo(
     () =>
-      painFocusTarget && Number.isFinite(painFocusTarget.painIndex)
+      painFocusTarget && normalizedPainId
         ? {
             taskId: normalizedTaskId,
-            painIndex: Number(painFocusTarget.painIndex),
+            painId: normalizedPainId,
             autoOpen: painFocusTarget.autoOpen,
           }
         : null,
-    [painFocusTarget, normalizedTaskId]
+    [normalizedPainId, normalizedTaskId, painFocusTarget]
   );
   const painFocusKey = normalizedPainFocus
-    ? `${normalizedPainFocus.taskId}#${normalizedPainFocus.painIndex}`
+    ? `${normalizedPainFocus.taskId}#${normalizedPainFocus.painId}`
     : '';
 
   const handleStepClick = (toolIds: string[], tableKey: string) => {
@@ -1028,6 +1041,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                 cardIndex={idx + 1}
                 projectFileKey={projectFileKey}
                 stepCode={stepCode}
+                isLatestReport={isLatestReport}
                 highlightedIndices={
                   highlightedInfo?.tableKey === tableKey
                     ? highlightedInfo.indices
@@ -1039,7 +1053,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                   taskId === normalizedPainFocus.taskId &&
                   handledPainFocusKey !== painFocusKey
                     ? {
-                        painIndex: normalizedPainFocus.painIndex,
+                        painId: normalizedPainFocus.painId,
                         autoOpen: normalizedPainFocus.autoOpen,
                       }
                     : undefined

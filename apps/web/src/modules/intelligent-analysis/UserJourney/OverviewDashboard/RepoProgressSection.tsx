@@ -196,6 +196,7 @@ type RepoProgressSectionProps = {
   progressView: ProgressView;
   onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
+  onTabChange: (tab: ProgressTab) => void;
   repoFilter: string;
   repoOptions: Array<{ value: string; label: string }>;
   onRepoFilterChange: (repo: string) => void;
@@ -225,6 +226,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   progressView,
   onProgressViewChange,
   currentTab,
+  onTabChange,
   repoFilter,
   repoOptions,
   onRepoFilterChange,
@@ -902,6 +904,18 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const emptyText =
     progressView === 'team' ? '暂无匹配责任团队' : '暂无匹配仓库';
 
+  const SUMMARY_SELECT_H = 32;
+  const filterSelectCls =
+    '[&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!rounded-r-2xl [&_.ant-select-selector]:!rounded-l-none [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-l-0 [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center';
+  const FilterLabelTag: React.FC<{ text: string }> = ({ text }) => (
+    <span
+      style={{ height: SUMMARY_SELECT_H, lineHeight: `${SUMMARY_SELECT_H}px` }}
+      className="inline-flex items-center whitespace-nowrap rounded-l-2xl border border-r-0 border-slate-200/80 bg-slate-50 px-2.5 text-xs font-medium text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
+    >
+      {text}
+    </span>
+  );
+
   return (
     <>
       <Title level={4} className="oj-section-title">
@@ -919,29 +933,55 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             ]}
           />
           <div className="team-filter overview-filter-group">
-            <Select
-              value={repoFilter || undefined}
-              onChange={(value) => onRepoFilterChange(value ?? '')}
-              allowClear
-              placeholder="全部仓库"
-              className="overview-select"
-              popupMatchSelectWidth={false}
-              popupClassName="overview-select-dropdown"
-              options={repoOptions}
-            />
-            <Select
-              value={teamFilter || undefined}
-              onChange={(value) => onTeamFilterChange(value ?? '')}
-              allowClear
-              placeholder="全部团队"
-              className="overview-select"
-              popupMatchSelectWidth={false}
-              popupClassName="overview-select-dropdown"
-              options={teamOptions.map((team) => ({
-                value: team,
-                label: team,
-              }))}
-            />
+            <div className="flex items-center">
+              <FilterLabelTag text="仓库" />
+              <Select
+                value={repoFilter || undefined}
+                onChange={(value) => onRepoFilterChange(value ?? '')}
+                allowClear
+                placeholder="全部仓库"
+                style={{ height: SUMMARY_SELECT_H }}
+                className={`${filterSelectCls} min-w-[140px]`}
+                popupMatchSelectWidth={false}
+                popupClassName="overview-select-dropdown"
+                getPopupContainer={(node) => node.parentElement ?? node}
+                options={repoOptions}
+              />
+            </div>
+            <div className="flex items-center">
+              <FilterLabelTag text="团队" />
+              <Select
+                value={teamFilter || undefined}
+                onChange={(value) => onTeamFilterChange(value ?? '')}
+                allowClear
+                placeholder="全部团队"
+                style={{ height: SUMMARY_SELECT_H }}
+                className={`${filterSelectCls} min-w-[140px]`}
+                popupMatchSelectWidth={false}
+                popupClassName="overview-select-dropdown"
+                getPopupContainer={(node) => node.parentElement ?? node}
+                options={teamOptions.map((team) => ({
+                  value: team,
+                  label: team,
+                }))}
+              />
+            </div>
+            <div className="flex items-center">
+              <FilterLabelTag text="严重程度" />
+              <Select
+                value={currentTab}
+                onChange={(value) => onTabChange(value as ProgressTab)}
+                style={{ height: SUMMARY_SELECT_H }}
+                className={`${filterSelectCls} min-w-[156px]`}
+                popupMatchSelectWidth={false}
+                popupClassName="overview-select-dropdown"
+                getPopupContainer={(node) => node.parentElement ?? node}
+                options={[
+                  { label: '全部（P0-P4）', value: 'overall' },
+                  { label: '关键问题（P0-P1）', value: 'key' },
+                ]}
+              />
+            </div>
           </div>
         </div>
 

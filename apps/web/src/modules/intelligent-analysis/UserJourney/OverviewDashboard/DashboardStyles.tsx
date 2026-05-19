@@ -124,8 +124,21 @@ const DashboardStyles: React.FC = () => (
       font-variant-numeric: tabular-nums;
     }
 
+    .ov-value-link {
+      cursor: pointer;
+    }
+
+    .ov-value-link:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
     .ov-value-blue {
       color: #4b93fe;
+    }
+
+    .ov-value-pending {
+      color: #d09258;
     }
 
     .ov-value-green {

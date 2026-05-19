@@ -1,7 +1,7 @@
 import React from 'react';
-import { Select, Typography } from 'antd';
+import { Checkbox, Select, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
-import type { IssueSourceMode, MetricSummary, ProgressTab } from './types';
+import type { IssueSourceMode, MetricSummary } from './types';
 import { formatPercent, formatScore } from './utils';
 
 const { Title } = Typography;
@@ -34,9 +34,13 @@ type OverviewSummarySectionProps = {
   summaryAvgExecutionTime: number | null;
   repoCount: number;
   issueSourceMode: IssueSourceMode;
-  currentTab: ProgressTab;
+  includeCommonIssues: boolean;
   onIssueSourceModeChange: (mode: IssueSourceMode) => void;
-  onTabChange: (tab: ProgressTab) => void;
+  onIncludeCommonIssuesChange: (next: boolean) => void;
+  onOpenIssues?: (
+    card: 'primary' | 'secondary',
+    bucket: 'total' | 'pending' | 'inProgress' | 'resolved'
+  ) => void;
 };
 
 const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
@@ -47,33 +51,23 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   summaryAvgExecutionTime,
   repoCount,
   issueSourceMode,
-  currentTab,
+  includeCommonIssues,
   onIssueSourceModeChange,
-  onTabChange,
+  onIncludeCommonIssuesChange,
+  onOpenIssues,
 }) => {
-  const primaryTitle =
-    issueSourceMode === 'common'
-      ? '共性问题'
-      : issueSourceMode === 'non-common'
-      ? '非共性问题'
-      : '总体问题';
+  const effectiveMode: IssueSourceMode =
+    issueSourceMode === 'common' ? 'common' : 'overall';
+  const primaryTitle = effectiveMode === 'common' ? '共性问题' : '总体问题';
   const primaryTooltip =
-    issueSourceMode === 'common'
+    effectiveMode === 'common'
       ? '仅展示已标记为共性问题的全部问题'
-      : issueSourceMode === 'non-common'
-      ? '仅展示未标记为共性问题的全部问题'
       : '含严重程度P0-P4的所有问题';
   const secondaryTitle =
-    issueSourceMode === 'common'
-      ? '关键共性问题'
-      : issueSourceMode === 'non-common'
-      ? '关键非共性问题'
-      : '关键问题';
+    effectiveMode === 'common' ? '关键共性问题' : '关键问题';
   const secondaryTooltip =
-    issueSourceMode === 'common'
+    effectiveMode === 'common'
       ? '仅展示已标记为共性问题且严重程度P0-P1的问题'
-      : issueSourceMode === 'non-common'
-      ? '仅展示未标记为共性问题且严重程度P0-P1的问题'
       : '含严重程度P0-P1的问题';
 
   return (
@@ -97,24 +91,19 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
               options={[
                 { label: '总体问题', value: 'overall' },
                 { label: '共性问题', value: 'common' },
-                { label: '非共性问题', value: 'non-common' },
               ]}
             />
-          </div>
-          <div className="flex items-center">
-            <SummaryLabelTag text="严重程度" />
-            <Select
-              value={currentTab}
-              onChange={(value) => onTabChange(value as ProgressTab)}
-              style={{ height: SUMMARY_SELECT_H }}
-              className={`${summarySelectCls} min-w-[156px]`}
-              styles={{ popup: { root: { minWidth: 168 } } }}
-              getPopupContainer={(node) => node.parentElement ?? node}
-              options={[
-                { label: '全部（P0-P4）', value: 'overall' },
-                { label: '关键问题（P0-P1）', value: 'key' },
-              ]}
-            />
+            {issueSourceMode !== 'common' ? (
+              <Checkbox
+                checked={includeCommonIssues}
+                onChange={(event) =>
+                  onIncludeCommonIssuesChange(event.target.checked)
+                }
+                className="ml-3 text-xs font-medium text-slate-600"
+              >
+                包含共性问题
+              </Checkbox>
+            ) : null}
           </div>
         </div>
       </div>
@@ -124,11 +113,13 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
             title={primaryTitle}
             summary={overviewSummary}
             tooltip={primaryTooltip}
+            onBucketClick={(bucket) => onOpenIssues?.('primary', bucket)}
           />
           <OverviewSummaryBlock
             title={secondaryTitle}
             summary={keyIssueSummary}
             tooltip={secondaryTooltip}
+            onBucketClick={(bucket) => onOpenIssues?.('secondary', bucket)}
           />
         </div>
         <div className="overview-bottom-row">

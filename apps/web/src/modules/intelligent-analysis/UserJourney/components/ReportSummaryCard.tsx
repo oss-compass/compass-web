@@ -75,6 +75,7 @@ type ReportSummaryCardProps = {
   detailReportUrl?: string;
   projectVersion?: string;
   projectFileKey?: string;
+  isLatestReport?: boolean;
   activeStepKey?: string;
   onStepChange?: (stepKey: string) => void;
 };
@@ -88,6 +89,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
   detailReportUrl,
   projectVersion,
   projectFileKey,
+  isLatestReport = false,
   activeStepKey,
   onStepChange,
 }) => {
@@ -200,6 +202,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
         projectName={projectName}
         steps={journeySteps}
         projectFileKey={projectFileKey}
+        isLatestReport={isLatestReport}
         activeStepKey={activeStepKey}
         onStepChange={onStepChange}
       />
