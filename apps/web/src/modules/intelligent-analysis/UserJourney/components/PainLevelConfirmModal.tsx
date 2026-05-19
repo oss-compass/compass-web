@@ -135,8 +135,8 @@ const formatSeverityLabel = (severity: string) => {
 
 type FormValues = {
   status: PainStatus;
-  severity: PainLevel;
-  is_common: boolean;
+  severity?: PainLevel;
+  is_common?: boolean;
   common_issue_type?: string;
   confirmed_by: string;
   issue_link?: string;
@@ -1432,6 +1432,21 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   ]);
 
   const resetFormToCurrent = useCallback(() => {
+    if (currentRecord?.status === PainStatus.TO_BE_CONFIRMED) {
+      form.setFieldsValue({
+        status: PainStatus.TO_BE_CONFIRMED,
+        severity: (currentRecord?.severity as PainLevel) || 'P1_CRITICAL',
+        is_common: undefined,
+        common_issue_type: undefined,
+        confirmed_by: '',
+        issue_link: '',
+        pr_link: '',
+        retest_decision: undefined,
+        retest_passed_file_key: latestFileKey || undefined,
+      });
+      return;
+    }
+
     const currentIsCommon =
       currentRecord?.is_common_issue === true ||
       !!String(currentRecord?.common_issue_type || '').trim();
@@ -1444,7 +1459,9 @@ const PainLevelConfirmModal: React.FC<Props> = ({
 
     form.setFieldsValue({
       status: currentStatus,
-      severity: (currentRecord?.severity as PainLevel) || 'P1_CRITICAL',
+      severity: currentRecord?.severity
+        ? (currentRecord?.severity as PainLevel) || 'P1_CRITICAL'
+        : undefined,
       is_common:
         currentStatus === PainStatus.TO_BE_CONFIRMED && !currentRecord
           ? undefined

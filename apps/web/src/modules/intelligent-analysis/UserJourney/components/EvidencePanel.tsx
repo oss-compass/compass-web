@@ -371,12 +371,17 @@ const getExistingPainConfirmation = ({
 }): PainConfirmationRecord | undefined => {
   if (!canConfirm || !fileKey || !stepId) return undefined;
 
-  return (
+  const record =
     confirmationMap.get(`${fileKey}#${stepId}#${painIndex}`) ??
     (legacyStepId
       ? confirmationMap.get(`${fileKey}#${legacyStepId}#${painIndex}`)
-      : undefined)
-  );
+      : undefined);
+
+  if (record?.status === PainStatus.TO_BE_CONFIRMED) {
+    return undefined;
+  }
+
+  return record;
 };
 
 const derivePainDisplayState = ({
