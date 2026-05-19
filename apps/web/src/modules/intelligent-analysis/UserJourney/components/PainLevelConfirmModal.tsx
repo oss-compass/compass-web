@@ -1594,7 +1594,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
               allowClear
             />
           </div>
-          <div>
+          <div className="mb-4">
             <div className="mb-1 text-xs font-medium text-slate-600">
               回退原因
             </div>
@@ -1602,8 +1602,8 @@ const PainLevelConfirmModal: React.FC<Props> = ({
               value={rollbackReason}
               onChange={(e) => setRollbackReason(e.target.value)}
               placeholder="请输入回退原因"
-              rows={4}
-              maxLength={2000}
+              rows={2}
+              maxLength={1000}
               showCount
               allowClear
             />
