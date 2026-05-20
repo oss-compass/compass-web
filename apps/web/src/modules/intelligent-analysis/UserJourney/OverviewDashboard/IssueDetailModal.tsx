@@ -8,6 +8,9 @@ import { updateOverviewParentPain } from '../rawData/apiClient';
 import taskDefinitions from '../rawData/task_definitions.json';
 
 const TEAM_FILTER_ALL = '__ALL__';
+const STAGE_FILTER_ALL = TEAM_FILTER_ALL;
+const SEVERITY_FILTER_ALL = TEAM_FILTER_ALL;
+const STATUS_FILTER_ALL = TEAM_FILTER_ALL;
 const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
 
 type TaskDefinition = {
@@ -156,6 +159,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   const [sortKey, setSortKey] = useState<IssueSortKey>('team');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [teamFilter, setTeamFilter] = useState<string>(TEAM_FILTER_ALL);
+  const [stageFilter, setStageFilter] = useState<string>(STAGE_FILTER_ALL);
+  const [severityFilter, setSeverityFilter] =
+    useState<string>(SEVERITY_FILTER_ALL);
+  const [statusFilter, setStatusFilter] = useState<string>(STATUS_FILTER_ALL);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [statusModalIssue, setStatusModalIssue] =
     useState<DashboardIssue | null>(null);
@@ -177,25 +184,99 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     }
   }, [statusModalOpen]);
 
+  const issuesWithOverrides = useMemo(() => {
+    if (!Object.keys(issueOverrides).length) return state.issues;
+    return state.issues.map((issue) => {
+      const id = String(issue.id || '');
+      const override = issueOverrides[id];
+      return override ? ({ ...issue, ...override } as DashboardIssue) : issue;
+    });
+  }, [issueOverrides, state.issues]);
+
   const teamOptions = useMemo(() => {
     const values = Array.from(
       new Set(
-        state.issues
+        issuesWithOverrides
           .map((issue) => String(issue.team || '').trim())
           .filter(Boolean)
       )
     );
     values.sort((left, right) => compareTeamWithOtherLast(left, right, 'asc'));
     return values;
-  }, [state.issues]);
+  }, [issuesWithOverrides]);
+
+  const stageOptions = useMemo(() => {
+    const values = Array.from(
+      new Set(
+        issuesWithOverrides
+          .map((issue) => String(issue.journeyStage || '').trim())
+          .filter(Boolean)
+      )
+    );
+    values.sort(localeCompare);
+    return values;
+  }, [issuesWithOverrides]);
+
+  const severityOptions = useMemo(() => {
+    const values = Array.from(
+      new Set(
+        issuesWithOverrides
+          .map((issue) => String(issue.severity || '').trim())
+          .filter(Boolean)
+      )
+    );
+    values.sort((left, right) => {
+      const leftRank =
+        SEVERITY_RANK[left as Exclude<Severity, ''>] ??
+        (Number.isFinite(Number(left)) ? Number(left) : 0);
+      const rightRank =
+        SEVERITY_RANK[right as Exclude<Severity, ''>] ??
+        (Number.isFinite(Number(right)) ? Number(right) : 0);
+      return rightRank - leftRank;
+    });
+    return values;
+  }, [issuesWithOverrides]);
+
+  const statusOptions = useMemo(() => {
+    const values = Array.from(
+      new Set(
+        issuesWithOverrides
+          .map((issue) => String(issue.status || '').trim())
+          .filter(Boolean)
+      )
+    );
+    values.sort((left, right) => Number(left) - Number(right));
+    return values;
+  }, [issuesWithOverrides]);
 
   const displayedIssues = useMemo(() => {
-    const filtered =
-      teamFilter === TEAM_FILTER_ALL
-        ? state.issues
-        : state.issues.filter(
-            (issue) => String(issue.team || '').trim() === teamFilter
-          );
+    const filtered = issuesWithOverrides.filter((issue) => {
+      if (
+        teamFilter !== TEAM_FILTER_ALL &&
+        String(issue.team || '').trim() !== teamFilter
+      ) {
+        return false;
+      }
+      if (
+        stageFilter !== STAGE_FILTER_ALL &&
+        String(issue.journeyStage || '').trim() !== stageFilter
+      ) {
+        return false;
+      }
+      if (
+        severityFilter !== SEVERITY_FILTER_ALL &&
+        String(issue.severity || '').trim() !== severityFilter
+      ) {
+        return false;
+      }
+      if (
+        statusFilter !== STATUS_FILTER_ALL &&
+        String(issue.status || '').trim() !== statusFilter
+      ) {
+        return false;
+      }
+      return true;
+    });
 
     const withMeta = filtered.map((issue, index) => {
       const entries = getReportEntries(issue);
@@ -279,7 +360,15 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     });
 
     return withMeta.map((item) => item.issue);
-  }, [sortKey, sortOrder, state.issues, teamFilter]);
+  }, [
+    issuesWithOverrides,
+    sortKey,
+    sortOrder,
+    stageFilter,
+    severityFilter,
+    statusFilter,
+    teamFilter,
+  ]);
 
   const handleSort = (nextSortKey: IssueSortKey) => {
     if (sortKey === nextSortKey) {
@@ -454,7 +543,53 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   </div>
                 </th>
                 <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
-                  {renderSortableHeader('阶段', 'stage')}
+                  <div className="flex items-center gap-1.5">
+                    {renderSortableHeader('阶段', 'stage')}
+                    <Dropdown
+                      trigger={['click']}
+                      placement="bottomLeft"
+                      popupRender={() => (
+                        <div
+                          className="w-[200px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                            阶段筛选
+                          </div>
+                          <Radio.Group
+                            value={stageFilter}
+                            onChange={(e) =>
+                              setStageFilter(
+                                String(e.target.value || STAGE_FILTER_ALL)
+                              )
+                            }
+                            className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
+                          >
+                            <Radio value={STAGE_FILTER_ALL}>全部</Radio>
+                            {stageOptions.map((stage) => (
+                              <Radio key={stage} value={stage}>
+                                {stage}
+                              </Radio>
+                            ))}
+                          </Radio.Group>
+                        </div>
+                      )}
+                    >
+                      <button
+                        type="button"
+                        aria-label="筛选阶段"
+                        title="筛选阶段"
+                        className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
+                          stageFilter === STAGE_FILTER_ALL
+                            ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                        }`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <FilterFilled className="text-[12px]" />
+                      </button>
+                    </Dropdown>
+                  </div>
                 </th>
                 <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
                   {renderSortableHeader('具体任务', 'issueType')}
@@ -463,10 +598,120 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   {renderSortableHeader('问题描述', 'description')}
                 </th>
                 <th className="w-[96px] px-2 py-2 text-left md:table-cell">
-                  {renderSortableHeader('严重程度', 'severity')}
+                  <div className="flex items-center gap-1.5">
+                    {renderSortableHeader('严重程度', 'severity')}
+                    <Dropdown
+                      trigger={['click']}
+                      placement="bottomLeft"
+                      popupRender={() => (
+                        <div
+                          className="w-[220px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                            严重程度筛选
+                          </div>
+                          <Radio.Group
+                            value={severityFilter}
+                            onChange={(e) =>
+                              setSeverityFilter(
+                                String(e.target.value || SEVERITY_FILTER_ALL)
+                              )
+                            }
+                            className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
+                          >
+                            <Radio value={SEVERITY_FILTER_ALL}>全部</Radio>
+                            {severityOptions.map((severity) => (
+                              <Radio key={severity} value={severity}>
+                                <SeverityBadge
+                                  severity={severity as unknown as Severity}
+                                />
+                              </Radio>
+                            ))}
+                          </Radio.Group>
+                        </div>
+                      )}
+                    >
+                      <button
+                        type="button"
+                        aria-label="筛选严重程度"
+                        title="筛选严重程度"
+                        className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
+                          severityFilter === SEVERITY_FILTER_ALL
+                            ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                        }`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <FilterFilled className="text-[12px]" />
+                      </button>
+                    </Dropdown>
+                  </div>
                 </th>
                 <th className="w-[84px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
-                  {renderSortableHeader('状态', 'status')}
+                  <div className="flex items-center gap-1.5">
+                    {renderSortableHeader('状态', 'status')}
+                    <Dropdown
+                      trigger={['click']}
+                      placement="bottomLeft"
+                      popupRender={() => (
+                        <div
+                          className="w-[220px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                            状态筛选
+                          </div>
+                          <Radio.Group
+                            value={statusFilter}
+                            onChange={(e) =>
+                              setStatusFilter(
+                                String(e.target.value || STATUS_FILTER_ALL)
+                              )
+                            }
+                            className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
+                          >
+                            <Radio value={STATUS_FILTER_ALL}>全部</Radio>
+                            {statusOptions.map((status) => {
+                              const cfg = PAIN_STATUS_CFG[status];
+                              return (
+                                <Radio key={status} value={status}>
+                                  {cfg ? (
+                                    <Tag
+                                      className="overview-ant-tag"
+                                      style={{
+                                        background: cfg.tagBg,
+                                        color: cfg.tagColor,
+                                        borderColor: cfg.tagBorder,
+                                      }}
+                                    >
+                                      {cfg.label}
+                                    </Tag>
+                                  ) : (
+                                    <span>{status}</span>
+                                  )}
+                                </Radio>
+                              );
+                            })}
+                          </Radio.Group>
+                        </div>
+                      )}
+                    >
+                      <button
+                        type="button"
+                        aria-label="筛选状态"
+                        title="筛选状态"
+                        className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
+                          statusFilter === STATUS_FILTER_ALL
+                            ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                        }`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <FilterFilled className="text-[12px]" />
+                      </button>
+                    </Dropdown>
+                  </div>
                 </th>
                 <th className="w-[88px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
                   {renderSortableHeader('责任人', 'owner')}
@@ -479,12 +724,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
             <tbody>
               {displayedIssues.length > 0 ? (
                 displayedIssues.map((issue, index) => {
-                  const override = issueOverrides[String(issue.id || '')];
-                  const effectiveIssue = override
-                    ? ({ ...issue, ...override } as DashboardIssue)
-                    : issue;
-                  const taskLabel = getIssueTaskLabel(effectiveIssue);
-                  const reportEntries = getReportEntries(effectiveIssue);
+                  const taskLabel = getIssueTaskLabel(issue);
+                  const reportEntries = getReportEntries(issue);
                   return (
                     <tr
                       key={`${issue.id}-${index}`}
@@ -494,13 +735,13 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         {index + 1}
                       </td>
                       <td className="break-all px-2 py-2 font-medium text-slate-900 md:px-3 md:py-3">
-                        {getRepoName(effectiveIssue)}
+                        {getRepoName(issue)}
                       </td>
                       <td className="break-all px-2 py-2 md:px-2 md:py-3">
-                        {effectiveIssue.team || '--'}
+                        {issue.team || '--'}
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
-                        {effectiveIssue.journeyStage || '--'}
+                        {issue.journeyStage || '--'}
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
                         <Tooltip title={taskLabel || '--'}>
@@ -510,27 +751,25 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         </Tooltip>
                       </td>
                       <td className="max-w-[240px] px-2 py-2 md:max-w-[340px] md:px-3 md:py-3">
-                        <Tooltip title={effectiveIssue.description || '--'}>
+                        <Tooltip title={issue.description || '--'}>
                           <span className="line-clamp-2 cursor-default">
-                            {effectiveIssue.description || '--'}
+                            {issue.description || '--'}
                           </span>
                         </Tooltip>
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 md:table-cell">
-                        <SeverityBadge severity={effectiveIssue.severity} />
+                        <SeverityBadge severity={issue.severity} />
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 md:px-3 md:py-3">
                         {(() => {
                           const cfg =
-                            PAIN_STATUS_CFG[
-                              String(effectiveIssue.status || '')
-                            ];
+                            PAIN_STATUS_CFG[String(issue.status || '')];
                           if (!cfg)
                             return <span className="text-slate-300">--</span>;
                           return (
                             <button
                               type="button"
-                              onClick={() => openStatusModal(effectiveIssue)}
+                              onClick={() => openStatusModal(issue)}
                             >
                               <Tag
                                 className="overview-ant-tag"
@@ -547,9 +786,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         })()}
                       </td>
                       <td className="break-all px-2 py-2 md:px-3 md:py-3">
-                        {effectiveIssue.teamOwner ||
-                          effectiveIssue.owner ||
-                          '--'}
+                        {issue.teamOwner || issue.owner || '--'}
                       </td>
                       <td className="px-2 py-2 text-[12px] md:px-3 md:py-3">
                         {reportEntries.length ? (

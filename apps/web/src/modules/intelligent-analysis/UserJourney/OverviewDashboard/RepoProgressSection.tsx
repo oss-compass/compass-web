@@ -8,25 +8,39 @@ import React, {
 import { Button, Grid, Segmented, Select, Table, Typography } from 'antd';
 import { CheckOutlined, FilterFilled, RightOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
+import { SEVERITY_CFG } from './constants';
 import type {
+  DashboardIssue,
   IssueBucket,
+  MetricSummary,
   ProgressTab,
   ProgressView,
   RepoProgressRow,
   RepoSortKey,
+  Severity,
   TeamProgressRow,
   TeamSortKey,
 } from './types';
 import {
+  buildMetricSummaryFromPainRows,
   formatExecutionTime,
   formatPercent,
   formatScore,
-  getRepoSortValue,
+  normalizeSeverity,
 } from './utils';
 
 const { Link, Title } = Typography;
 type ProgressMetricSortKey = 'none' | 'pending' | 'inProgress' | 'resolved';
 type ProgressMetricSortOrder = 'asc' | 'desc';
+
+type KnownSeverity = Exclude<Severity, ''>;
+
+const SEVERITY_ORDER: KnownSeverity[] = [
+  'P0_BLOCKER',
+  'P1_CRITICAL',
+  'P2_MAJOR',
+  'P3_MINOR',
+];
 
 const PROGRESS_METRIC_OPTIONS: Array<{
   value: ProgressMetricSortKey;
@@ -42,8 +56,8 @@ const PROGRESS_ORDER_OPTIONS: Array<{
   value: ProgressMetricSortOrder;
   label: string;
 }> = [
-  { value: 'asc', label: '正序' },
-  { value: 'desc', label: '逆序' },
+  { value: 'asc', label: '升序' },
+  { value: 'desc', label: '降序' },
 ];
 
 const PROGRESS_LABEL_MAP: Record<
@@ -226,7 +240,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   progressView,
   onProgressViewChange,
   currentTab,
-  onTabChange,
+  onTabChange: _onTabChange,
   repoFilter,
   repoOptions,
   onRepoFilterChange,
@@ -293,13 +307,74 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [progressSortOrder, setProgressSortOrder] =
     useState<ProgressMetricSortOrder>('desc');
 
+  const [severityFilters, setSeverityFilters] = useState<KnownSeverity[]>(() =>
+    currentTab === 'key'
+      ? ['P0_BLOCKER', 'P1_CRITICAL']
+      : ['P0_BLOCKER', 'P1_CRITICAL', 'P2_MAJOR']
+  );
+
+  const severityFilterSet = useMemo(
+    () => new Set(severityFilters),
+    [severityFilters]
+  );
+
+  const getFilteredIssues = useCallback(
+    (issues: DashboardIssue[]) => {
+      if (!severityFilters.length) return issues;
+      return issues.filter((issue) =>
+        severityFilterSet.has(
+          normalizeSeverity(issue.severity) as KnownSeverity
+        )
+      );
+    },
+    [severityFilterSet, severityFilters.length]
+  );
+
+  const repoDerived = useMemo(() => {
+    const map = new Map<
+      string,
+      { issues: DashboardIssue[]; metrics: MetricSummary }
+    >();
+    repoRows.forEach((row) => {
+      const issues = getFilteredIssues(row.issues);
+      map.set(row.id, {
+        issues,
+        metrics: buildMetricSummaryFromPainRows(issues),
+      });
+    });
+    return map;
+  }, [getFilteredIssues, repoRows]);
+
+  const teamDerived = useMemo(() => {
+    const map = new Map<
+      string,
+      { issues: DashboardIssue[]; metrics: MetricSummary }
+    >();
+    teamRows.forEach((row) => {
+      const issues = getFilteredIssues(row.issues);
+      map.set(row.id, {
+        issues,
+        metrics: buildMetricSummaryFromPainRows(issues),
+      });
+    });
+    return map;
+  }, [getFilteredIssues, teamRows]);
+
   const sortedByProgressMetric = useCallback(
     <T extends RepoProgressRow | TeamProgressRow>(rows: T[]) => {
       if (progressSortKey === 'none') return rows;
       const direction = progressSortOrder === 'asc' ? 1 : -1;
       return [...rows].sort((left, right) => {
-        const leftValue = left[currentTab][progressSortKey] ?? 0;
-        const rightValue = right[currentTab][progressSortKey] ?? 0;
+        const leftMetrics =
+          ('repos' in left ? teamDerived : repoDerived).get(left.id)?.metrics ??
+          buildMetricSummaryFromPainRows(getFilteredIssues(left.issues));
+        const rightMetrics =
+          ('repos' in right ? teamDerived : repoDerived).get(right.id)
+            ?.metrics ??
+          buildMetricSummaryFromPainRows(getFilteredIssues(right.issues));
+
+        const leftValue = leftMetrics[progressSortKey] ?? 0;
+        const rightValue = rightMetrics[progressSortKey] ?? 0;
         if (leftValue !== rightValue) {
           return (leftValue - rightValue) * direction;
         }
@@ -312,7 +387,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         );
       });
     },
-    [currentTab, progressSortKey, progressSortOrder]
+    [
+      getFilteredIssues,
+      progressSortKey,
+      progressSortOrder,
+      repoDerived,
+      teamDerived,
+    ]
   );
 
   const displayedRepoRows = useMemo(
@@ -591,24 +672,37 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: progressHeaderTitle,
         key: 'progress',
         width: repoColumnWidths[6],
-        render: (_value, record) =>
-          renderIssueProgress(record[currentTab], (bucket) =>
-            onOpenRepoIssues(record, bucket)
-          ),
+        render: (_value, record) => {
+          const derived = repoDerived.get(record.id);
+          const metrics = derived?.metrics ?? record.overall;
+          const rowForModal = derived
+            ? ({ ...record, issues: derived.issues } as RepoProgressRow)
+            : record;
+          return renderIssueProgress(metrics, (bucket) =>
+            onOpenRepoIssues(rowForModal, bucket)
+          );
+        },
       },
       {
         title: sortableTitle('总问题数', repoSortArrow('total')),
         key: 'total',
         width: repoColumnWidths[7],
-        render: (_value, record) => (
-          <Button
-            type="link"
-            className="overview-table-link overview-table-link-strong"
-            onClick={() => onOpenRepoIssues(record, 'total')}
-          >
-            {record[currentTab].total}
-          </Button>
-        ),
+        render: (_value, record) => {
+          const derived = repoDerived.get(record.id);
+          const metrics = derived?.metrics ?? record.overall;
+          const rowForModal = derived
+            ? ({ ...record, issues: derived.issues } as RepoProgressRow)
+            : record;
+          return (
+            <Button
+              type="link"
+              className="overview-table-link overview-table-link-strong"
+              onClick={() => onOpenRepoIssues(rowForModal, 'total')}
+            >
+              {metrics.total}
+            </Button>
+          );
+        },
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('total'),
           className: 'sortable-col',
@@ -619,7 +713,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         key: 'closeRate',
         width: repoColumnWidths[8],
         render: (_value, record) => {
-          const metrics = record[currentTab];
+          const derived = repoDerived.get(record.id);
+          const metrics = derived?.metrics ?? record.overall;
           return renderCircularProgress(
             metrics.total === 0 ? 100 : metrics.closeRate
           );
@@ -637,12 +732,12 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       },
     ],
     [
-      currentTab,
       repoColumnWidths,
       onOpenRepoIssues,
       handleRepoSortWithReset,
       repoSortArrow,
       progressHeaderTitle,
+      repoDerived,
     ]
   );
 
@@ -721,24 +816,37 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: progressHeaderTitle,
         key: 'progress',
         width: teamColumnWidths[6],
-        render: (_value, record) =>
-          renderIssueProgress(record[currentTab], (bucket) =>
-            onOpenTeamIssues(record, bucket)
-          ),
+        render: (_value, record) => {
+          const derived = teamDerived.get(record.id);
+          const metrics = derived?.metrics ?? record.overall;
+          const rowForModal = derived
+            ? ({ ...record, issues: derived.issues } as TeamProgressRow)
+            : record;
+          return renderIssueProgress(metrics, (bucket) =>
+            onOpenTeamIssues(rowForModal, bucket)
+          );
+        },
       },
       {
         title: sortableTitle('总问题数', teamSortArrow('total')),
         key: 'total',
         width: teamColumnWidths[7],
-        render: (_value, record) => (
-          <Button
-            type="link"
-            className="overview-table-link overview-table-link-strong"
-            onClick={() => onOpenTeamIssues(record, 'total')}
-          >
-            {record[currentTab].total}
-          </Button>
-        ),
+        render: (_value, record) => {
+          const derived = teamDerived.get(record.id);
+          const metrics = derived?.metrics ?? record.overall;
+          const rowForModal = derived
+            ? ({ ...record, issues: derived.issues } as TeamProgressRow)
+            : record;
+          return (
+            <Button
+              type="link"
+              className="overview-table-link overview-table-link-strong"
+              onClick={() => onOpenTeamIssues(rowForModal, 'total')}
+            >
+              {metrics.total}
+            </Button>
+          );
+        },
         onHeaderCell: () => ({
           onClick: () => handleTeamSortWithReset('total'),
           className: 'sortable-col',
@@ -749,7 +857,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         key: 'closeRate',
         width: teamColumnWidths[8],
         render: (_value, record) => {
-          const metrics = record[currentTab];
+          const derived = teamDerived.get(record.id);
+          const metrics = derived?.metrics ?? record.overall;
           return renderCircularProgress(
             metrics.total === 0 ? 100 : metrics.closeRate
           );
@@ -767,14 +876,39 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       },
     ],
     [
-      currentTab,
       expandedRowKeys,
       teamColumnWidths,
       onOpenTeamIssues,
       handleTeamSortWithReset,
       teamSortArrow,
       progressHeaderTitle,
+      teamDerived,
     ]
+  );
+
+  const getRepoSortValueWithMetrics = useCallback(
+    (row: RepoProgressRow, sortKey: RepoSortKey) => {
+      const metrics = repoDerived.get(row.id)?.metrics ?? row.overall;
+      switch (sortKey) {
+        case 'name':
+          return row.name;
+        case 'team':
+          return row.team;
+        case 'score':
+          return row.score ?? -1;
+        case 'successRate':
+          return row.successRate ?? -1;
+        case 'executionTime':
+          return row.executionTime ?? -1;
+        case 'total':
+          return metrics.total;
+        case 'closeRate':
+          return metrics.total === 0 ? 100 : metrics.closeRate;
+        default:
+          return row.name;
+      }
+    },
+    [repoDerived]
   );
 
   const renderExpandedRepoRows = useCallback(
@@ -784,8 +918,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       if (teamSortKey !== 'repoCount') {
         const repoKey = teamSortKey as RepoSortKey;
         sortedRepos.sort((a, b) => {
-          const va = getRepoSortValue(a, repoKey, currentTab);
-          const vb = getRepoSortValue(b, repoKey, currentTab);
+          const va = getRepoSortValueWithMetrics(a, repoKey);
+          const vb = getRepoSortValueWithMetrics(b, repoKey);
           let cmp = 0;
           if (typeof va === 'string' && typeof vb === 'string') {
             cmp = va.localeCompare(vb);
@@ -837,25 +971,49 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                     {formatExecutionTime(repo.executionTime)}
                   </td>
                   <td className="overview-expanded-cell">
-                    {renderIssueProgress(repo[currentTab], (bucket) =>
-                      onOpenRepoIssues(repo, bucket)
-                    )}
+                    {(() => {
+                      const derived = repoDerived.get(repo.id);
+                      const metrics = derived?.metrics ?? repo.overall;
+                      const rowForModal = derived
+                        ? ({
+                            ...repo,
+                            issues: derived.issues,
+                          } as RepoProgressRow)
+                        : repo;
+                      return renderIssueProgress(metrics, (bucket) =>
+                        onOpenRepoIssues(rowForModal, bucket)
+                      );
+                    })()}
                   </td>
                   <td className="overview-expanded-cell">
-                    <Button
-                      type="link"
-                      className="overview-table-link overview-table-link-strong"
-                      onClick={() => onOpenRepoIssues(repo, 'total')}
-                    >
-                      {repo[currentTab].total}
-                    </Button>
+                    {(() => {
+                      const derived = repoDerived.get(repo.id);
+                      const metrics = derived?.metrics ?? repo.overall;
+                      const rowForModal = derived
+                        ? ({
+                            ...repo,
+                            issues: derived.issues,
+                          } as RepoProgressRow)
+                        : repo;
+                      return (
+                        <Button
+                          type="link"
+                          className="overview-table-link overview-table-link-strong"
+                          onClick={() => onOpenRepoIssues(rowForModal, 'total')}
+                        >
+                          {metrics.total}
+                        </Button>
+                      );
+                    })()}
                   </td>
                   <td className="overview-expanded-cell">
-                    {renderCircularProgress(
-                      repo[currentTab].total === 0
-                        ? 100
-                        : repo[currentTab].closeRate
-                    )}
+                    {(() => {
+                      const derived = repoDerived.get(repo.id);
+                      const metrics = derived?.metrics ?? repo.overall;
+                      return renderCircularProgress(
+                        metrics.total === 0 ? 100 : metrics.closeRate
+                      );
+                    })()}
                   </td>
                   <td className="overview-expanded-cell">
                     {renderDetailLink(repo)}
@@ -868,8 +1026,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       );
     },
     [
-      currentTab,
+      getRepoSortValueWithMetrics,
       onOpenRepoIssues,
+      repoDerived,
       sortedByProgressMetric,
       teamColumnWidths,
       teamScrollX,
@@ -969,17 +1128,23 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             <div className="flex items-center">
               <FilterLabelTag text="严重程度" />
               <Select
-                value={currentTab}
-                onChange={(value) => onTabChange(value as ProgressTab)}
+                mode="multiple"
+                value={severityFilters}
+                onChange={(values) =>
+                  setSeverityFilters(values as Exclude<Severity, ''>[])
+                }
+                allowClear
+                placeholder="全部严重程度"
+                maxTagCount="responsive"
                 style={{ height: SUMMARY_SELECT_H }}
-                className={`${filterSelectCls} min-w-[156px]`}
+                className={`${filterSelectCls} min-w-[220px]`}
                 popupMatchSelectWidth={false}
                 popupClassName="overview-select-dropdown"
                 getPopupContainer={(node) => node.parentElement ?? node}
-                options={[
-                  { label: '全部（P0-P2）', value: 'overall' },
-                  { label: '关键问题（P0-P1）', value: 'key' },
-                ]}
+                options={SEVERITY_ORDER.map((severity) => ({
+                  value: severity,
+                  label: SEVERITY_CFG[severity].label,
+                }))}
               />
             </div>
           </div>

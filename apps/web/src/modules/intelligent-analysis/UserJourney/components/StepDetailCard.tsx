@@ -124,7 +124,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
               title={
                 <div>
                   <div className="text-sm font-semibold text-slate-900">
-                    痛点等级说明
+                    等级说明
                   </div>
                 </div>
               }

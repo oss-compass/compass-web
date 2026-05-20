@@ -13,13 +13,11 @@ const PainGuidePopoverContent: React.FC<PainGuidePopoverContentProps> = ({
   currentColor,
 }) => {
   return (
-    <div className="w-[680px] max-w-[calc(100vw-96px)] overflow-hidden rounded-xl border border-slate-200">
-      <div className="grid grid-cols-[118px_82px_82px_90px_minmax(0,1fr)] bg-slate-50 px-4 py-2 text-xs font-medium text-slate-500">
+    <div className="w-[480px] max-w-[calc(100vw-96px)] overflow-hidden rounded-xl border border-slate-200">
+      <div className="grid grid-cols-[140px_90px_minmax(0,1fr)] bg-slate-50 px-4 py-2 text-xs font-medium text-slate-500">
         <span>等级</span>
         <span>分数</span>
         <span>中文</span>
-        <span>英文</span>
-        <span>说明</span>
       </div>
       <div className="divide-y divide-slate-200 bg-white">
         {painGuideItems.map((item) => {
@@ -28,7 +26,7 @@ const PainGuidePopoverContent: React.FC<PainGuidePopoverContentProps> = ({
           return (
             <div
               key={item.level}
-              className={`grid grid-cols-[118px_82px_82px_90px_minmax(0,1fr)] gap-0 px-4 py-3 text-[13px] leading-6 ${
+              className={`grid grid-cols-[140px_90px_minmax(0,1fr)] gap-0 px-4 py-3 text-[13px] leading-6 ${
                 item.rowClassName
               } ${
                 isCurrentLevel
@@ -72,24 +70,6 @@ const PainGuidePopoverContent: React.FC<PainGuidePopoverContentProps> = ({
                 }
               >
                 {item.label}
-              </div>
-              <div
-                className={
-                  isCurrentLevel
-                    ? 'flex items-center font-semibold text-slate-900'
-                    : 'flex items-center font-medium text-slate-800'
-                }
-              >
-                {item.english}
-              </div>
-              <div
-                className={
-                  isCurrentLevel
-                    ? 'font-medium leading-6 text-slate-700'
-                    : 'leading-6 text-slate-600'
-                }
-              >
-                {item.description}
               </div>
             </div>
           );

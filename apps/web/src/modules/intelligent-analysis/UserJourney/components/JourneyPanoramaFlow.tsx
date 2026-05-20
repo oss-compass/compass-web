@@ -122,7 +122,7 @@ const StepNode: React.FC<StepNodeProps> = ({
               <Popover
                 title={
                   <div className="text-sm font-semibold text-slate-900">
-                    痛点等级说明
+                    等级说明
                   </div>
                 }
                 content={

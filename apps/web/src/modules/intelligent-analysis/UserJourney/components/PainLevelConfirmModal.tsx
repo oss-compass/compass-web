@@ -25,7 +25,6 @@ import {
   type PainHistoryItem,
   type UpsertPainConfirmationPayload,
 } from '../rawData/apiClient';
-import { usePainConfirmations } from '../hooks/usePainConfirmations';
 
 const { Text, Link } = Typography;
 
