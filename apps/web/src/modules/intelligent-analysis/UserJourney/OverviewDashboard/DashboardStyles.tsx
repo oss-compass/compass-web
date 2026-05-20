@@ -155,8 +155,8 @@ const DashboardStyles: React.FC = () => (
     .oj-trend-val-green {
       fill: #19a796;
       paint-order: stroke;
-      stroke: rgba(255, 255, 255, 0.92);
-      stroke-width: 3.25px;
+      stroke: rgba(255, 255, 255, 0.94);
+      stroke-width: 1.2px;
       stroke-linejoin: round;
     }
 
