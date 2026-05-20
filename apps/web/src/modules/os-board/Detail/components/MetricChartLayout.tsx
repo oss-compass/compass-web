@@ -17,6 +17,7 @@ import {
   MetricData,
   ModelScoreData,
   MetricsByIdentifierResponse,
+  useSecurityDetailByIdentifier,
 } from '../../api/dashboard';
 import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 import {
@@ -181,6 +182,28 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
     return [...contributionOverviewMetrics, ...otherMetrics];
   }, [displayMetrics]);
 
+  const hasSupplyChain = useMemo(() => {
+    return orderedDisplayMetrics.some((metric) =>
+      SUPPLY_CHAIN_MODEL_IDS.has(metric.dashboard_model_info_ident)
+    );
+  }, [orderedDisplayMetrics]);
+
+  const supplyChainProject = dashboard.config.projects[0];
+
+  const securityDetailQuery = useSecurityDetailByIdentifier(
+    hasSupplyChain && supplyChainProject
+      ? {
+          identifier: dashboard.identifier || dashboard.id,
+          repo: supplyChainProject,
+          level: dashboard.type,
+          period: 'month',
+          beginDate: timeStart.toISOString().slice(0, 10),
+          endDate: timeEnd.toISOString().slice(0, 10),
+        }
+      : undefined,
+    { enabled: hasSupplyChain && !!dashboard.id && !!supplyChainProject }
+  );
+
   // 计算哪些模型有指标被选中（只要有任意指标就展示模型卡片）
   const completeModels = useMemo(() => {
     const complete = new Set<string>();
@@ -304,14 +327,14 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
     const elements: React.ReactNode[] = [];
     const renderedModels = new Set<string>();
     const supplyChainMetrics: OsBoardDashboardMetric[] = [];
-    let hasSupplyChain = false;
+    let hasSupplyChainLocal = false;
 
     orderedDisplayMetrics.forEach((metric) => {
       const modelIdent = metric.dashboard_model_info_ident;
 
       // 供应链安全模型走特殊渲染
       if (SUPPLY_CHAIN_MODEL_IDS.has(modelIdent)) {
-        hasSupplyChain = true;
+        hasSupplyChainLocal = true;
         supplyChainMetrics.push(metric);
         return;
       }
@@ -346,7 +369,7 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
     });
 
     // 供应链安全视图
-    if (hasSupplyChain && dashboard.config.projects.length > 0) {
+    if (hasSupplyChainLocal && dashboard.config.projects.length > 0) {
       elements.push(
         <div key="supply_chain_view" className="col-span-2 md:col-span-1">
           <SupplyChainView
@@ -354,6 +377,8 @@ const MetricChartLayout: React.FC<MetricChartLayoutProps> = ({
             metricsDataMap={metricsDataMap}
             modelScoresDataMap={modelScoresDataMap}
             supplyChainMetrics={supplyChainMetrics}
+            securityDetail={securityDetailQuery.data}
+            isSecurityDetailLoading={securityDetailQuery.isLoading}
             isLoading={metricQueries.some((q) => q.isLoading)}
           />
         </div>

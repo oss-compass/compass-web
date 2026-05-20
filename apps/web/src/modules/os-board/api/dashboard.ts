@@ -67,6 +67,30 @@ export interface MetricsByIdentifierRequest {
   endDate: string;
 }
 
+export interface SecurityDetailByIdentifierRequest {
+  identifier: string;
+  repo: string;
+  period: string;
+  level: 'repo' | 'community';
+  beginDate: string;
+  endDate: string;
+}
+
+export interface SecurityDetailDataPoint extends MetricDataPoint {
+  detail?: unknown;
+}
+
+export interface SecurityDetailMetric {
+  id: number;
+  name: string;
+  ident: string;
+  data: SecurityDetailDataPoint[];
+}
+
+export interface SecurityDetailByIdentifierResponse {
+  metrics: SecurityDetailMetric[];
+}
+
 export interface MetricDataPoint {
   date: string;
   value: number;
@@ -446,16 +470,13 @@ export const searchUser = async (
 export const assignMembers = async (
   params: AssignMembersRequest
 ): Promise<void> => {
-  const response = await axios.post(
-    '/services/dashboard/assign_members',
-    {
-      ...params,
-      members: params.members.map((m) => ({
-        ...m,
-        role: roleToNumber(m.role),
-      })),
-    }
-  );
+  const response = await axios.post('/services/dashboard/assign_members', {
+    ...params,
+    members: params.members.map((m) => ({
+      ...m,
+      role: roleToNumber(m.role),
+    })),
+  });
   return response.data;
 };
 
@@ -464,7 +485,9 @@ export const assignMembers = async (
  */
 export const useSearchUser = () => {
   return useMutation({
-    mutationFn: async (params: SearchUserRequest): Promise<SearchUserItem[]> => {
+    mutationFn: async (
+      params: SearchUserRequest
+    ): Promise<SearchUserItem[]> => {
       return searchUser(params);
     },
   });
@@ -496,16 +519,13 @@ export interface UpdateMemberRolesRequest {
 export const updateMemberRoles = async (
   params: UpdateMemberRolesRequest
 ): Promise<void> => {
-  const response = await axios.post(
-    '/services/dashboard/update_member_roles',
-    {
-      ...params,
-      members: params.members.map((m) => ({
-        ...m,
-        role: roleToNumber(m.role),
-      })),
-    }
-  );
+  const response = await axios.post('/services/dashboard/update_member_roles', {
+    ...params,
+    members: params.members.map((m) => ({
+      ...m,
+      role: roleToNumber(m.role),
+    })),
+  });
   return response.data;
 };
 
@@ -561,4 +581,42 @@ export const fetchMetricsByIdentifier = async (
     params
   );
   return response.data;
+};
+
+export const fetchSecurityDetailByIdentifier = async (
+  params: SecurityDetailByIdentifierRequest
+): Promise<SecurityDetailByIdentifierResponse> => {
+  const response = await axios.post(
+    '/services/dashboard/get_security_detail_by_identifier',
+    params
+  );
+  return response.data;
+};
+
+export const useSecurityDetailByIdentifier = (
+  params: SecurityDetailByIdentifierRequest | undefined,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: [
+      'securityDetailByIdentifier',
+      params?.identifier,
+      params?.repo,
+      params?.level,
+      params?.period,
+      params?.beginDate,
+      params?.endDate,
+    ],
+    queryFn: () => fetchSecurityDetailByIdentifier(params!),
+    enabled:
+      options?.enabled !== false &&
+      !!params?.identifier &&
+      !!params?.repo &&
+      !!params?.period &&
+      !!params?.level &&
+      !!params?.beginDate &&
+      !!params?.endDate,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 };

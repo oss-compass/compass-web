@@ -63,7 +63,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
         type: 'line' as const,
         data,
         smooth: true,
-        showSymbol: false,
+        showSymbol: data.length === 1,
         lineStyle: colors[idx % colors.length]
           ? { color: colors[idx % colors.length] }
           : {},

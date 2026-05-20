@@ -408,6 +408,24 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
             const isExpanded = expandedSystems.has(system.id);
             const systemName = t(`metrics_models_v2:${system.l1Id}.title`);
 
+            const l1Id = SYSTEM_TO_L1_MAP[system.id];
+            // community_health 同时包含 l1_community_health 和 l1_contributor_overview
+            const allowedDimIds =
+              system.id === 'community_health'
+                ? [
+                    ...(l1ToL2Map[l1Id] || []),
+                    ...(l1ToL2Map['l1_contributor_overview'] || []),
+                  ]
+                : l1ToL2Map[l1Id] || [];
+            const filteredMenuData = menuData.filter((dim) =>
+              allowedDimIds.includes(dim.dimensionalityId)
+            );
+
+            // 如果该评估体系下没有任何维度数据（即没有模型和指标），则不展示该一级菜单
+            if (system.enabled && filteredMenuData.length === 0) {
+              return null;
+            }
+
             return (
               <div key={system.id}>
                 {system.enabled ? (
@@ -445,38 +463,18 @@ const MetricSidebar: React.FC<MetricSidebarProps> = ({
                       </div>
                     </div>
                     {/* 展开的维度->模型->指标三级菜单 */}
-                    {isExpanded &&
-                      (() => {
-                        const l1Id = SYSTEM_TO_L1_MAP[system.id];
-                        // community_health 同时包含 l1_community_health 和 l1_contributor_overview
-                        const allowedDimIds =
-                          system.id === 'community_health'
-                            ? [
-                                ...(l1ToL2Map[l1Id] || []),
-                                ...(l1ToL2Map['l1_contributor_overview'] || []),
-                              ]
-                            : l1ToL2Map[l1Id] || [];
-                        const filteredMenuData = menuData.filter((dim) =>
-                          allowedDimIds.includes(dim.dimensionalityId)
-                        );
-
-                        return filteredMenuData.length > 0 ? (
-                          <div className="pb-2 pl-4">
-                            {filteredMenuData.map((dim) => (
-                              <React.Fragment key={dim.dimensionalityId}>
-                                <DimensionalityTopicItem
-                                  dim={dim}
-                                  onItemClick={scrollToCard}
-                                />
-                              </React.Fragment>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center py-6 text-sm text-gray-400">
-                            {t('os_board:sidebar.empty')}
-                          </div>
-                        );
-                      })()}
+                    {isExpanded && (
+                      <div className="pb-2 pl-4">
+                        {filteredMenuData.map((dim) => (
+                          <React.Fragment key={dim.dimensionalityId}>
+                            <DimensionalityTopicItem
+                              dim={dim}
+                              onItemClick={scrollToCard}
+                            />
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    )}
                   </>
                 ) : (
                   /* 未启用的评估体系 - 灰色不可点击，hover显示即将上线 */
