@@ -137,6 +137,10 @@ const DashboardStyles: React.FC = () => (
       font-variant-numeric: tabular-nums;
     }
 
+    .oj-trend-axis-y {
+      font-size: 9.5px;
+    }
+
     .oj-trend-axis-title {
       font-size: 10px;
       fill: #55657b;
@@ -145,8 +149,12 @@ const DashboardStyles: React.FC = () => (
       font-variant-numeric: tabular-nums;
     }
 
+    .oj-trend-axis-title-y {
+      font-size: 9px;
+    }
+
     .oj-trend-val {
-      font-size: 10.5px;
+      font-size: 9.5px;
       fill: #334155;
       font-weight: 700;
       font-variant-numeric: tabular-nums;

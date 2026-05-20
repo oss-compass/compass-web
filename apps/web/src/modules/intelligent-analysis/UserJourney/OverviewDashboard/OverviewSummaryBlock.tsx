@@ -183,7 +183,7 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
       {ticks.map((t, i) => (
         <text
           key={`yl-${i}`}
-          className="oj-trend-axis"
+          className="oj-trend-axis oj-trend-axis-y"
           x={TREND_LEFT_AXIS_X}
           y={yForCount(t) + 4}
           textAnchor="end"
@@ -192,7 +192,7 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
         </text>
       ))}
       <text
-        className="oj-trend-axis-title"
+        className="oj-trend-axis-title oj-trend-axis-title-y"
         x={TREND_LEFT_AXIS_X}
         y={16}
         textAnchor="end"
@@ -203,7 +203,7 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
       {[100, 75, 50, 25, 0].map((t, i) => (
         <text
           key={`yr-${i}`}
-          className="oj-trend-axis"
+          className="oj-trend-axis oj-trend-axis-y"
           x={TREND_RIGHT_AXIS_X}
           y={yForRate(t) + 4}
         >
@@ -211,7 +211,7 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
         </text>
       ))}
       <text
-        className="oj-trend-axis-title"
+        className="oj-trend-axis-title oj-trend-axis-title-y"
         x={TREND_RIGHT_AXIS_X}
         y={16}
         textAnchor="start"
