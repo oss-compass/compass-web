@@ -133,7 +133,8 @@ export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
       const isInScope =
         severity === 'P0_BLOCKER' ||
         severity === 'P1_CRITICAL' ||
-        severity === 'P2_MAJOR';
+        severity === 'P2_MAJOR' ||
+        severity === 'P3_MINOR';
       return isInScope;
     })
     .map((row) => ({

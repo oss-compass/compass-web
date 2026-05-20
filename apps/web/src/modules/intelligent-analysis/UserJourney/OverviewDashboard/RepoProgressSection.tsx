@@ -310,7 +310,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [severityFilters, setSeverityFilters] = useState<KnownSeverity[]>(() =>
     currentTab === 'key'
       ? ['P0_BLOCKER', 'P1_CRITICAL']
-      : ['P0_BLOCKER', 'P1_CRITICAL', 'P2_MAJOR']
+      : ['P0_BLOCKER', 'P1_CRITICAL', 'P2_MAJOR', 'P3_MINOR']
   );
 
   const severityFilterSet = useMemo(

@@ -61,8 +61,8 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   const primaryTitle = effectiveMode === 'common' ? '共性问题' : '总体问题';
   const primaryTooltip =
     effectiveMode === 'common'
-      ? '仅展示已标记为共性问题且严重程度P0-P2的问题'
-      : '含严重程度P0-P2的所有问题';
+      ? '仅展示已标记为共性问题且严重程度P0-P3的问题'
+      : '含严重程度P0-P3的所有问题';
   const secondaryTitle =
     effectiveMode === 'common' ? '关键共性问题' : '关键问题';
   const secondaryTooltip =
