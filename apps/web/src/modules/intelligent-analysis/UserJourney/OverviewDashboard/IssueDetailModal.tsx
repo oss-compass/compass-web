@@ -5,9 +5,19 @@ import { SeverityBadge } from './Badges';
 import { PAIN_STATUS_CFG, SEVERITY_RANK } from './constants';
 import type { DashboardIssue, IssueModalState, Severity } from './types';
 import { updateOverviewParentPain } from '../rawData/apiClient';
+import taskDefinitions from '../rawData/task_definitions.json';
 
 const TEAM_FILTER_ALL = '__ALL__';
 const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
+
+type TaskDefinition = {
+  task_id: string;
+  name: string;
+};
+
+const TASK_DEF_MAP = (
+  taskDefinitions as { tasks: Record<string, TaskDefinition> }
+).tasks as Record<string, TaskDefinition>;
 
 type IssueDetailModalProps = {
   state: IssueModalState;
@@ -63,6 +73,15 @@ const parseChildId = (
 
 const getRepoName = (issue: DashboardIssue) =>
   issue.repoName || issue.projectName || issue.projectKey || '--';
+
+const getIssueTaskLabel = (issue: DashboardIssue) => {
+  const taskId =
+    issue.taskId || (issue as unknown as { task_id?: string }).task_id;
+  if (!taskId) return issue.issueType || '--';
+  return (
+    TASK_DEF_MAP[String(taskId)]?.name || issue.issueType || String(taskId)
+  );
+};
 
 const getReportDisplayText = (fileKey: string) => {
   const last = fileKey.lastIndexOf('_');
@@ -221,8 +240,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
           break;
         case 'issueType':
           result = localeCompare(
-            left.issue.issueType || '',
-            right.issue.issueType || ''
+            getIssueTaskLabel(left.issue),
+            getIssueTaskLabel(right.issue)
           );
           break;
         case 'description':
@@ -438,7 +457,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   {renderSortableHeader('阶段', 'stage')}
                 </th>
                 <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
-                  {renderSortableHeader('问题类型', 'issueType')}
+                  {renderSortableHeader('具体任务', 'issueType')}
                 </th>
                 <th className="w-[220px] px-2 py-2 text-left md:w-[280px] md:px-3 md:py-3">
                   {renderSortableHeader('问题描述', 'description')}
@@ -464,6 +483,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   const effectiveIssue = override
                     ? ({ ...issue, ...override } as DashboardIssue)
                     : issue;
+                  const taskLabel = getIssueTaskLabel(effectiveIssue);
                   const reportEntries = getReportEntries(effectiveIssue);
                   return (
                     <tr
@@ -483,7 +503,11 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         {effectiveIssue.journeyStage || '--'}
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
-                        {effectiveIssue.issueType || '--'}
+                        <Tooltip title={taskLabel || '--'}>
+                          <span className="block truncate">
+                            {taskLabel || '--'}
+                          </span>
+                        </Tooltip>
                       </td>
                       <td className="max-w-[240px] px-2 py-2 md:max-w-[340px] md:px-3 md:py-3">
                         <Tooltip title={effectiveIssue.description || '--'}>

@@ -143,6 +143,7 @@ export type OverviewPainPointRow = {
   sourceType?: 'child' | 'parent';
   fileKey: string;
   stepId: string;
+  taskId?: string;
   painIndex: number;
   journeyStage: string;
   firstFoundReportId: string;

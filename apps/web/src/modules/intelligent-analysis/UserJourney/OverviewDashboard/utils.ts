@@ -138,6 +138,7 @@ export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
     })
     .map((row) => ({
       ...row,
+      taskId: row.taskId || (row as unknown as { task_id?: string }).task_id,
       severity: normalizeSeverity(row.severity),
       repoName: card.name,
       team: card.team || card.sig,

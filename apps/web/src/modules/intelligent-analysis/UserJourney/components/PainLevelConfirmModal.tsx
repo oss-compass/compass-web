@@ -179,18 +179,6 @@ const getDisplayedStepStatus = (status: PainStatus): PainStatus => {
   return Math.min(status, PainStatus.RETESTED_PASSED) as PainStatus;
 };
 
-const getCurrentStatusTagMeta = (
-  status: PainStatus
-): { color: string; text: string } => {
-  if (status === PainStatus.NO_FIX_NEEDED) {
-    return { color: 'default', text: STATUS_LABELS[PainStatus.NO_FIX_NEEDED] };
-  }
-  if (status === PainStatus.RETESTED_FAILED) {
-    return { color: 'error', text: STATUS_LABELS[PainStatus.RETESTED_FAILED] };
-  }
-  return { color: 'processing', text: '当前状态' };
-};
-
 type StepSnapshot = Partial<PainConfirmationRecord> & {
   status?: number;
   severity?: string | null;
@@ -916,8 +904,6 @@ const useStepsItems = ({
   setSelectedStep: (step: number | null) => void;
 }) => {
   return useMemo(() => {
-    const currentTagMeta = getCurrentStatusTagMeta(currentStatus);
-
     return [1, 2, 3, 4, 5].map((s) => {
       const isCurrentStep = s === displayedStepStatus;
       const canReviewStep = s < displayedStepStatus;
@@ -970,14 +956,6 @@ const useStepsItems = ({
           ) : (
             labelContent
           )}
-          {isCurrentStep ? (
-            <Tag
-              color={currentTagMeta.color}
-              className="!mr-0 whitespace-nowrap"
-            >
-              {currentTagMeta.text}
-            </Tag>
-          ) : null}
         </div>
       );
 
