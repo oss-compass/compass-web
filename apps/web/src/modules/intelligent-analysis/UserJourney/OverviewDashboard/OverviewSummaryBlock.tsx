@@ -288,7 +288,7 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
             <circle
               cx={x}
               cy={y}
-              r={3.5}
+              r={2.5}
               fill="#fff"
               stroke={TREND_COLORS.line}
               strokeWidth={2}
