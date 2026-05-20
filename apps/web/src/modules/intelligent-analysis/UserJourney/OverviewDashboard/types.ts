@@ -39,6 +39,17 @@ export type MetricSummary = {
   closeRate: number;
 };
 
+export type WeeklyCloseRateTrendPoint = {
+  weekStart: string;
+  weekEnd: string;
+  label: string;
+  total: number;
+  pending: number;
+  inProgress: number;
+  resolved: number;
+  closeRate: number;
+};
+
 export type RepoProgressRow = {
   id: string;
   name: string;

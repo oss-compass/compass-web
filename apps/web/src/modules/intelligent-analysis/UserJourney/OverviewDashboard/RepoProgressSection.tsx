@@ -23,6 +23,7 @@ import type {
 } from './types';
 import {
   buildMetricSummaryFromPainRows,
+  compareTeamNames,
   formatExecutionTime,
   formatPercent,
   formatScore,
@@ -220,6 +221,8 @@ type RepoProgressSectionProps = {
   isLoading: boolean;
   teamRows: TeamProgressRow[];
   repoRows: RepoProgressRow[];
+  repoSortKey: RepoSortKey;
+  repoSortAsc: boolean;
   repoSortArrow: (key: RepoSortKey) => string;
   teamSortArrow: (key: TeamSortKey) => string;
   teamSortKey: TeamSortKey;
@@ -250,6 +253,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   isLoading,
   teamRows,
   repoRows,
+  repoSortKey,
+  repoSortAsc,
   repoSortArrow,
   teamSortArrow,
   teamSortKey,
@@ -394,16 +399,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       repoDerived,
       teamDerived,
     ]
-  );
-
-  const displayedRepoRows = useMemo(
-    () => sortedByProgressMetric(repoRows),
-    [repoRows, sortedByProgressMetric]
-  );
-
-  const displayedTeamRows = useMemo(
-    () => sortedByProgressMetric(teamRows),
-    [teamRows, sortedByProgressMetric]
   );
 
   const handleRepoSortWithReset = useCallback(
@@ -911,6 +906,94 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     [repoDerived]
   );
 
+  const getTeamSortValueWithMetrics = useCallback(
+    (row: TeamProgressRow, sortKey: TeamSortKey) => {
+      const metrics = teamDerived.get(row.id)?.metrics ?? row.overall;
+      switch (sortKey) {
+        case 'name':
+          return row.name;
+        case 'repoCount':
+          return row.repoCount;
+        case 'score':
+          return row.score ?? -1;
+        case 'successRate':
+          return row.successRate ?? -1;
+        case 'executionTime':
+          return row.executionTime ?? -1;
+        case 'total':
+          return metrics.total;
+        case 'closeRate':
+          return metrics.total === 0 ? 100 : metrics.closeRate;
+        default:
+          return row.name;
+      }
+    },
+    [teamDerived]
+  );
+
+  const sortedRepoRowsBySortKey = useMemo(() => {
+    const rows = [...repoRows];
+    rows.sort((left, right) => {
+      const a = getRepoSortValueWithMetrics(left, repoSortKey);
+      const b = getRepoSortValueWithMetrics(right, repoSortKey);
+      if (typeof a === 'string' && typeof b === 'string') {
+        const result =
+          repoSortKey === 'team'
+            ? compareTeamNames(a, b) || left.name.localeCompare(right.name)
+            : a.localeCompare(b);
+        return repoSortAsc ? result : -result;
+      }
+      const na = Number(a);
+      const nb = Number(b);
+      const safeA = Number.isFinite(na) ? na : 0;
+      const safeB = Number.isFinite(nb) ? nb : 0;
+      if (safeA === safeB) return 0;
+      return repoSortAsc ? safeA - safeB : safeB - safeA;
+    });
+    return rows;
+  }, [
+    compareTeamNames,
+    getRepoSortValueWithMetrics,
+    repoRows,
+    repoSortAsc,
+    repoSortKey,
+  ]);
+
+  const sortedTeamRowsBySortKey = useMemo(() => {
+    const rows = [...teamRows];
+    rows.sort((left, right) => {
+      const a = getTeamSortValueWithMetrics(left, teamSortKey);
+      const b = getTeamSortValueWithMetrics(right, teamSortKey);
+      if (typeof a === 'string' && typeof b === 'string') {
+        const result = compareTeamNames(a, b);
+        return teamSortAsc ? result : -result;
+      }
+      const na = Number(a);
+      const nb = Number(b);
+      const safeA = Number.isFinite(na) ? na : 0;
+      const safeB = Number.isFinite(nb) ? nb : 0;
+      if (safeA === safeB) return 0;
+      return teamSortAsc ? safeA - safeB : safeB - safeA;
+    });
+    return rows;
+  }, [
+    compareTeamNames,
+    getTeamSortValueWithMetrics,
+    teamRows,
+    teamSortAsc,
+    teamSortKey,
+  ]);
+
+  const displayedRepoRows = useMemo(
+    () => sortedByProgressMetric(sortedRepoRowsBySortKey),
+    [sortedByProgressMetric, sortedRepoRowsBySortKey]
+  );
+
+  const displayedTeamRows = useMemo(
+    () => sortedByProgressMetric(sortedTeamRowsBySortKey),
+    [sortedByProgressMetric, sortedTeamRowsBySortKey]
+  );
+
   const renderExpandedRepoRows = useCallback(
     (repos: RepoProgressRow[]) => {
       // 按 teamSortKey 对仓库列表排序（repoCount 不适用于单仓库，跳过）
@@ -922,7 +1005,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           const vb = getRepoSortValueWithMetrics(b, repoKey);
           let cmp = 0;
           if (typeof va === 'string' && typeof vb === 'string') {
-            cmp = va.localeCompare(vb);
+            cmp =
+              repoKey === 'team'
+                ? compareTeamNames(va, vb) || a.name.localeCompare(b.name)
+                : va.localeCompare(vb);
           } else {
             cmp = (va as number) - (vb as number);
           }
@@ -1026,6 +1112,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       );
     },
     [
+      compareTeamNames,
       getRepoSortValueWithMetrics,
       onOpenRepoIssues,
       repoDerived,

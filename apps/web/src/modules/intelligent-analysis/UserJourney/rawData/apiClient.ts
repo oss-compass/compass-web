@@ -297,6 +297,50 @@ export const fetchOverviewSummary = async (params: {
   );
 };
 
+export type OverviewCloseRateTrendPoint = {
+  weekStart: string;
+  weekEnd: string;
+  label: string;
+  total: number;
+  pending: number;
+  inProgress: number;
+  resolved: number;
+  closeRate: number;
+};
+
+export type OverviewCloseRateTrendsResponse = {
+  weeks: number;
+  overall: OverviewCloseRateTrendPoint[];
+  key: OverviewCloseRateTrendPoint[];
+};
+
+export const fetchOverviewCloseRateTrends = async (params: {
+  sig?: string;
+  keyword?: string;
+  org?: string;
+  includeCommonIssues?: boolean;
+  commonOnly?: boolean | null;
+  weeks?: number;
+}): Promise<OverviewCloseRateTrendsResponse> => {
+  const search = new URLSearchParams();
+  if (params.org) search.set('org', params.org);
+  if (params.sig) search.set('sig', params.sig);
+  if (params.keyword) search.set('keyword', params.keyword);
+  if (typeof params.includeCommonIssues === 'boolean') {
+    search.set('include_common_issues', String(params.includeCommonIssues));
+  }
+  if (params.commonOnly !== undefined && params.commonOnly !== null) {
+    search.set('common_only', String(params.commonOnly));
+  }
+  if (typeof params.weeks === 'number' && Number.isFinite(params.weeks)) {
+    search.set('weeks', String(params.weeks));
+  }
+  const query = search.toString();
+  return compassApiFetch<OverviewCloseRateTrendsResponse>(
+    `/overview/close-rate-trends${query ? `?${query}` : ''}`
+  );
+};
+
 export const fetchOverviewCards = async (params: {
   viewType: 'repo' | 'team' | 'sig';
   tab?: 'overall' | 'key' | 'blocking';

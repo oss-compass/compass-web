@@ -1,7 +1,11 @@
 import React from 'react';
 import { Checkbox, Select, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
-import type { IssueSourceMode, MetricSummary } from './types';
+import type {
+  IssueSourceMode,
+  MetricSummary,
+  WeeklyCloseRateTrendPoint,
+} from './types';
 import { formatPercent, formatScore } from './utils';
 
 const { Title } = Typography;
@@ -29,6 +33,8 @@ const formatExecutionTime = (seconds: number | null): string => {
 type OverviewSummarySectionProps = {
   overviewSummary: MetricSummary;
   keyIssueSummary: MetricSummary;
+  overviewTrend: WeeklyCloseRateTrendPoint[];
+  keyIssueTrend: WeeklyCloseRateTrendPoint[];
   summaryScore: number | null;
   summarySuccessRate: number | null;
   summaryAvgExecutionTime: number | null;
@@ -46,6 +52,8 @@ type OverviewSummarySectionProps = {
 const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   overviewSummary,
   keyIssueSummary,
+  overviewTrend,
+  keyIssueTrend,
   summaryScore,
   summarySuccessRate,
   summaryAvgExecutionTime,
@@ -112,12 +120,14 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           <OverviewSummaryBlock
             title={primaryTitle}
             summary={overviewSummary}
+            trend={overviewTrend}
             tooltip={primaryTooltip}
             onBucketClick={(bucket) => onOpenIssues?.('primary', bucket)}
           />
           <OverviewSummaryBlock
             title={secondaryTitle}
             summary={keyIssueSummary}
+            trend={keyIssueTrend}
             tooltip={secondaryTooltip}
             onBucketClick={(bucket) => onOpenIssues?.('secondary', bucket)}
           />

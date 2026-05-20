@@ -93,6 +93,124 @@ const DashboardStyles: React.FC = () => (
       align-items: center;
     }
 
+    .oj-trend-block {
+      border-top: 1px dashed rgba(226, 232, 240, 0.95);
+      padding-top: 16px;
+      margin-top: 4px;
+    }
+
+    .oj-trend-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .oj-trend-plot-bg {
+      fill: rgba(248, 250, 252, 0.92);
+      stroke: rgba(226, 232, 240, 0.9);
+      stroke-width: 1;
+    }
+
+    .oj-trend-band {
+      fill: rgba(255, 255, 255, 0.16);
+    }
+
+    .oj-trend-band-strong {
+      fill: rgba(255, 255, 255, 0.3);
+    }
+
+    .oj-trend-grid {
+      stroke: rgba(203, 213, 225, 0.72);
+      stroke-width: 1;
+      stroke-dasharray: 3 4;
+    }
+
+    .oj-trend-axis-line {
+      stroke: rgba(203, 213, 225, 0.88);
+      stroke-width: 1;
+    }
+
+    .oj-trend-axis {
+      font-size: 10.5px;
+      fill: #8a98ab;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .oj-trend-axis-title {
+      font-size: 10px;
+      fill: #55657b;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .oj-trend-val {
+      font-size: 10.5px;
+      fill: #334155;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .oj-trend-val-green {
+      fill: #19a796;
+      paint-order: stroke;
+      stroke: rgba(255, 255, 255, 0.92);
+      stroke-width: 3.25px;
+      stroke-linejoin: round;
+    }
+
+    .oj-trend-rate-area {
+      pointer-events: none;
+    }
+
+    .oj-trend-bar {
+      stroke: rgba(255, 255, 255, 0.92);
+      stroke-width: 1;
+      shape-rendering: geometricPrecision;
+    }
+
+    .oj-trend-line-path {
+      filter: drop-shadow(0 4px 8px rgba(25, 167, 150, 0.16));
+    }
+
+    .oj-trend-legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 11.5px;
+      color: #475569;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .oj-trend-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.95);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+    }
+
+    .oj-trend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 3px;
+      display: inline-block;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+    }
+
+    .oj-trend-line {
+      width: 18px;
+      height: 3px;
+      background: linear-gradient(90deg, #34d399 0%, #19a796 100%);
+      display: inline-block;
+      border-radius: 999px;
+    }
+
     .ov-item {
       width: 100%;
       text-align: center;

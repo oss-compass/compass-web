@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   fetchOverviewCards,
+  fetchOverviewCloseRateTrends,
   fetchOverviewCommonIssues,
   fetchOverviewSummary,
 } from '../rawData/apiClient';
@@ -134,6 +135,29 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             : includeCommonIssues
             ? undefined
             : false,
+      }),
+  });
+
+  const { data: closeRateTrendsResp } = useQuery({
+    queryKey: [
+      'overview-close-rate-trends',
+      org,
+      issueSourceMode,
+      includeCommonIssues,
+    ],
+    queryFn: () =>
+      fetchOverviewCloseRateTrends({
+        org,
+        includeCommonIssues: true,
+        commonOnly:
+          issueSourceMode === 'common'
+            ? true
+            : issueSourceMode === 'non-common'
+            ? false
+            : includeCommonIssues
+            ? undefined
+            : false,
+        weeks: 7,
       }),
   });
 
@@ -330,6 +354,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     [summaryResp]
   );
 
+  const overviewTrend = useMemo(
+    () => closeRateTrendsResp?.overall ?? [],
+    [closeRateTrendsResp]
+  );
+  const keyIssueTrend = useMemo(
+    () => closeRateTrendsResp?.key ?? [],
+    [closeRateTrendsResp]
+  );
+
   const commonIssues = useMemo<CommonIssueGroup[]>(
     () => (commonIssuesResp?.items ?? []) as unknown as CommonIssueGroup[],
     [commonIssuesResp]
@@ -506,6 +539,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         <OverviewSummarySection
           overviewSummary={overviewSummary}
           keyIssueSummary={keyIssueSummary}
+          overviewTrend={overviewTrend}
+          keyIssueTrend={keyIssueTrend}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
           summaryAvgExecutionTime={summaryAvgExecutionTime}
@@ -531,6 +566,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           isLoading={isLoading}
           teamRows={sortedTeamRows}
           repoRows={sortedRepoRows}
+          repoSortKey={repoSortKey}
+          repoSortAsc={repoSortAsc}
           repoSortArrow={repoSortArrow}
           teamSortArrow={teamSortArrow}
           teamSortKey={teamSortKey}

@@ -21,9 +21,6 @@ export const buildConfirmationMap = (
   return map;
 };
 
-const normalizePainIndex = (value: number) =>
-  Number.isFinite(value) ? String(value) : '';
-
 /**
  * 加载并缓存某个报告的所有痛点确认记录。
  */
@@ -34,7 +31,7 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
     queryKey: QUERY_KEY(fileKey ?? ''),
     queryFn: () => fetchPainConfirmations(fileKey!),
     enabled: !!fileKey,
-    staleTime: 1000 * 60 * 5, // 5 分钟内不重新拉取
+    staleTime: 0,
     retry: 1,
   });
 
@@ -43,45 +40,9 @@ export const usePainConfirmations = (fileKey: string | undefined) => {
   const mutation = useMutation({
     mutationFn: (payload: UpsertPainConfirmationPayload) =>
       upsertPainConfirmation(fileKey!, payload),
-    onSuccess: (result) => {
-      // 乐观更新：直接把新数据合并进缓存，避免重新 fetch
-      queryClient.setQueryData(
-        QUERY_KEY(fileKey ?? ''),
-        (
-          old:
-            | {
-                file_key: string;
-                confirmations: PainConfirmationRecord[];
-                overview_pains?: any[];
-              }
-            | undefined
-        ) => {
-          if (!old) {
-            return {
-              file_key: fileKey!,
-              confirmations: [result.data],
-              overview_pains: [],
-            };
-          }
-          const key = `${result.data.file_key}#${
-            result.data.step_id
-          }#${normalizePainIndex(result.data.pain_index)}`;
-          const filtered = old.confirmations.filter(
-            (r) =>
-              `${r.file_key}#${r.step_id}#${normalizePainIndex(
-                r.pain_index
-              )}` !== key
-          );
-          return {
-            ...old,
-            confirmations: [...filtered, result.data],
-          };
-        }
-      );
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEY(fileKey ?? ''),
-        exact: true,
-      });
+    onSuccess: async () => {
+      const latest = await fetchPainConfirmations(fileKey!);
+      queryClient.setQueryData(QUERY_KEY(fileKey ?? ''), latest);
     },
   });
 

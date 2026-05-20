@@ -377,10 +377,6 @@ const getExistingPainConfirmation = ({
       ? confirmationMap.get(`${fileKey}#${legacyStepId}#${painIndex}`)
       : undefined);
 
-  if (record?.status === PainStatus.TO_BE_CONFIRMED) {
-    return undefined;
-  }
-
   return record;
 };
 
@@ -404,8 +400,11 @@ const derivePainDisplayState = ({
   const childMatched = !!(existing && existing.pain_index === painIndex);
 
   const getEffectiveStatus = () => {
+    if (childMatched && typeof existing?.status === 'number') {
+      return existing.status;
+    }
     if (!Number.isNaN(parentStatusNum)) return parentStatusNum;
-    return childMatched ? existing?.status : undefined;
+    return undefined;
   };
 
   const getEffectiveSeverity = () => {
@@ -775,10 +774,17 @@ const PainPointItem: React.FC<{
     void nextStatus;
     const projectKey = deriveProjectKeyFromFileKey(fileKey);
     if (projectKey) {
-      queryClient.invalidateQueries({
-        queryKey: ['userJourneyParentPainsByProject', projectKey],
-        exact: true,
+      const latestOverview = await fetchOverviewCards({
+        viewType: 'repo',
+        repo: projectKey,
+        includeCommonIssues: true,
+        page: 1,
+        size: 1,
       });
+      queryClient.setQueryData(
+        ['userJourneyParentPainsByProject', projectKey],
+        latestOverview
+      );
     }
   };
 
@@ -1220,7 +1226,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
         size: 1,
       }),
     enabled: !!projectKey && targetTaskIds.size > 0,
-    staleTime: 60 * 1000,
+    staleTime: 0,
     refetchOnWindowFocus: false,
     retry: false,
   });
