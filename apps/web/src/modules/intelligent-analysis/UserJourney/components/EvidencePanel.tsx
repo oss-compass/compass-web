@@ -387,12 +387,14 @@ const getExistingPainConfirmation = ({
 const derivePainDisplayState = ({
   existing,
   parentPain,
+  childSeverity,
   painIndex,
   text,
   isLatestReport,
 }: {
   existing?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
+  childSeverity?: string;
   painIndex: number;
   text: string;
   isLatestReport: boolean;
@@ -409,6 +411,8 @@ const derivePainDisplayState = ({
   const getEffectiveSeverity = () => {
     const parentSeverity = String(parentPain?.severity || '').trim();
     if (parentSeverity) return parentSeverity;
+    const childDefaultSeverity = String(childSeverity || '').trim();
+    if (childDefaultSeverity) return childDefaultSeverity;
     return childMatched ? String(existing?.severity || '').trim() : '';
   };
 
@@ -681,6 +685,7 @@ function deriveProjectKeyFromFileKey(value?: string): string {
 const PainPointItem: React.FC<{
   text: string;
   index: number;
+  childSeverity?: string;
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
@@ -695,6 +700,7 @@ const PainPointItem: React.FC<{
 }> = ({
   text,
   index,
+  childSeverity,
   fileKey,
   stepId,
   legacyStepId,
@@ -754,6 +760,7 @@ const PainPointItem: React.FC<{
   const displayState = derivePainDisplayState({
     existing,
     parentPain,
+    childSeverity,
     painIndex: index,
     text,
     isLatestReport,
@@ -860,6 +867,7 @@ type DisplayPainPoint = {
   id?: string;
   text: string;
   index: number;
+  severity?: string;
 };
 
 const HistoryPainTable: React.FC<{
@@ -1181,6 +1189,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
           id: p.id,
           text: p.pain_text,
           index: p.pain_index ?? 0,
+          severity: p.severity,
         }));
     }
     // 不再自动降级为原来的 pain_points prop
@@ -1334,11 +1343,12 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               痛点
             </div>
             <ul className="space-y-1">
-              {displayPainPoints.map(({ id, text, index }) => (
+              {displayPainPoints.map(({ id, text, index, severity }) => (
                 <PainPointItem
                   key={id || index}
                   text={text}
                   index={index}
+                  childSeverity={severity}
                   fileKey={fileKey}
                   stepId={stepId}
                   legacyStepId={legacyStepId}
@@ -1379,11 +1389,12 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
             </span>
           </div>
           <ul className="space-y-1.5">
-            {displayPainPoints.map(({ id, text, index }) => (
+            {displayPainPoints.map(({ id, text, index, severity }) => (
               <PainPointItem
                 key={id || index}
                 text={text}
                 index={index}
+                childSeverity={severity}
                 fileKey={fileKey}
                 stepId={stepId}
                 legacyStepId={legacyStepId}

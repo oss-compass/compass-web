@@ -61,7 +61,26 @@ const SEVERITY_OPTIONS = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.filter(
 export const getPainLevelStyle = (
   level: string
 ): { bg: string; text: string; border: string; dot: string } => {
-  switch (level) {
+  const normalized = String(level || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9_]/g, '');
+  const mapped =
+    normalized === 'P0'
+      ? 'P0_BLOCKER'
+      : normalized === 'P1'
+      ? 'P1_CRITICAL'
+      : normalized === 'P2'
+      ? 'P2_MAJOR'
+      : normalized === 'P3'
+      ? 'P3_MINOR'
+      : normalized === 'P4'
+      ? 'P4_TRIVIAL'
+      : normalized === 'P5'
+      ? 'P5'
+      : normalized;
+
+  switch (mapped) {
     case 'P0_BLOCKER':
       return {
         bg: 'bg-rose-100',
@@ -115,8 +134,26 @@ export const getPainLevelStyle = (
 };
 
 export const getPainLevelLabel = (level: string): string => {
+  const normalized = String(level || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9_]/g, '');
+  const mapped =
+    normalized === 'P0'
+      ? 'P0_BLOCKER'
+      : normalized === 'P1'
+      ? 'P1_CRITICAL'
+      : normalized === 'P2'
+      ? 'P2_MAJOR'
+      : normalized === 'P3'
+      ? 'P3_MINOR'
+      : normalized === 'P4'
+      ? 'P4_TRIVIAL'
+      : normalized === 'P5'
+      ? 'P5'
+      : normalized;
   const item = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.find(
-    (g) => g.level === level
+    (g) => g.level === mapped
   );
   return item ? item.label : level;
 };
@@ -199,9 +236,24 @@ const getDefaultVersionValue = (
   versionOptions?.find((item) => item.value !== fileKey)?.value;
 
 const getSafePainLevel = (value?: string | null): PainLevel => {
-  const normalized = String(value || '').trim();
-  return SEVERITY_OPTIONS.some((item) => item.value === normalized)
-    ? (normalized as PainLevel)
+  const raw = String(value || '').trim();
+  const normalized = raw.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+  const mapped =
+    normalized === 'P0'
+      ? 'P0_BLOCKER'
+      : normalized === 'P1'
+      ? 'P1_CRITICAL'
+      : normalized === 'P2'
+      ? 'P2_MAJOR'
+      : normalized === 'P3'
+      ? 'P3_MINOR'
+      : normalized === 'P4'
+      ? 'P4_TRIVIAL'
+      : normalized === 'P5'
+      ? 'P5'
+      : raw;
+  return SEVERITY_OPTIONS.some((item) => item.value === mapped)
+    ? (mapped as PainLevel)
     : 'P1_CRITICAL';
 };
 
