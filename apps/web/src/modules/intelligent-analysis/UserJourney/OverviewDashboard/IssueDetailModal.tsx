@@ -339,8 +339,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
           break;
         case 'owner':
           result = localeCompare(
-            left.issue.teamOwner || left.issue.owner || '',
-            right.issue.teamOwner || right.issue.owner || ''
+            left.issue.owner || left.issue.teamOwner || '',
+            right.issue.owner || right.issue.teamOwner || ''
           );
           break;
         case 'report':
@@ -786,7 +786,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         })()}
                       </td>
                       <td className="break-all px-2 py-2 md:px-3 md:py-3">
-                        {issue.teamOwner || issue.owner || '--'}
+                        {issue.owner || issue.teamOwner || '--'}
                       </td>
                       <td className="px-2 py-2 text-[12px] md:px-3 md:py-3">
                         {reportEntries.length ? (
