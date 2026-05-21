@@ -99,6 +99,11 @@ const DashboardStyles: React.FC = () => (
       margin-top: 4px;
     }
 
+    .oj-trend-chart {
+      position: relative;
+      overflow: visible;
+    }
+
     .oj-trend-svg {
       width: 100%;
       height: auto;
@@ -180,6 +185,116 @@ const DashboardStyles: React.FC = () => (
 
     .oj-trend-line-path {
       filter: drop-shadow(0 4px 8px rgba(25, 167, 150, 0.16));
+    }
+
+    .oj-trend-active-guide {
+      stroke: rgba(25, 167, 150, 0.32);
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+      pointer-events: none;
+    }
+
+    .oj-trend-hover-zone {
+      fill: transparent;
+      cursor: pointer;
+    }
+
+    .oj-trend-bar-muted {
+      opacity: 0.42;
+    }
+
+    .oj-trend-point-core {
+      fill: #fff;
+      stroke: #19a796;
+      stroke-width: 2;
+      transition: r 0.16s ease, filter 0.16s ease;
+    }
+
+    .oj-trend-point-active-halo {
+      fill: rgba(25, 167, 150, 0.14);
+      pointer-events: none;
+    }
+
+    .oj-trend-tooltip {
+      position: absolute;
+      z-index: 2;
+      min-width: 168px;
+      padding: 10px 12px;
+      border: 1px solid rgba(226, 232, 240, 0.96);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14),
+        0 2px 10px rgba(15, 23, 42, 0.08);
+      transform: translate(-50%, calc(-100% - 10px));
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+
+    .oj-trend-tooltip-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.92);
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 18px;
+    }
+
+    .oj-trend-tooltip-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .oj-trend-tooltip-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #475569;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .oj-trend-tooltip-item-total {
+      margin-top: 2px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(226, 232, 240, 0.92);
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .oj-trend-tooltip-key {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .oj-trend-tooltip-value {
+      color: #0f172a;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .oj-trend-tooltip-marker {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      display: inline-block;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44);
+    }
+
+    .oj-trend-tooltip-line-marker {
+      width: 14px;
+      height: 3px;
+      border-radius: 999px;
+      display: inline-block;
+      background: linear-gradient(90deg, #34d399 0%, #19a796 100%);
     }
 
     .oj-trend-legend {

@@ -23,6 +23,7 @@ const TREND_PLOT_BOTTOM = 156;
 const TREND_LABEL_SAFE_TOP = 18;
 const TREND_LEFT_AXIS_X = TREND_PLOT_LEFT - 8;
 const TREND_RIGHT_AXIS_X = TREND_PLOT_RIGHT + 8;
+const TREND_TOOLTIP_HALF_WIDTH = 92;
 
 const TREND_COLORS = {
   pending: '#f4840c',
@@ -46,10 +47,20 @@ const getNiceMax = (value: number): number => {
   return 10 * magnitude;
 };
 
+const formatTrendRange = (point: WeeklyCloseRateTrendPoint): string => {
+  if (point.weekStart && point.weekEnd) {
+    return `${point.weekStart} - ${point.weekEnd}`;
+  }
+  return point.label;
+};
+
 const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
   points,
 }) => {
   const chartId = React.useId();
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
+  const [tooltipPos, setTooltipPos] = React.useState({ left: 0, top: 0 });
   const n = points.length;
   if (n === 0) return null;
   const maxTotal = Math.max(0, ...points.map((p) => p.total));
@@ -92,233 +103,364 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
   const areaPoints = `${TREND_PLOT_LEFT},${TREND_PLOT_BOTTOM} ${polylinePoints} ${xCenter(
     n - 1
   )},${TREND_PLOT_BOTTOM}`;
+  const activePoint = activeIndex == null ? null : points[activeIndex];
+  const activeX = activeIndex == null ? null : xCenter(activeIndex);
+
+  const updateTooltip = (index: number) => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const rect = wrapper.getBoundingClientRect();
+    const leftPx = (xCenter(index) / TREND_VIEWBOX_W) * rect.width;
+    const topPx =
+      (Math.min(ratePointYs[index], totalTopYs[index]) / TREND_VIEWBOX_H) *
+      rect.height;
+    setTooltipPos({
+      left: Math.min(
+        Math.max(leftPx, TREND_TOOLTIP_HALF_WIDTH),
+        rect.width - TREND_TOOLTIP_HALF_WIDTH
+      ),
+      top: Math.max(topPx, 18),
+    });
+  };
+
+  const handleActivate = (index: number) => {
+    setActiveIndex(index);
+    updateTooltip(index);
+  };
 
   return (
-    <svg
-      className="oj-trend-svg"
-      viewBox={`0 0 ${TREND_VIEWBOX_W} ${TREND_VIEWBOX_H}`}
-      xmlns="http://www.w3.org/2000/svg"
+    <div
+      ref={wrapperRef}
+      className="oj-trend-chart"
+      onMouseLeave={() => setActiveIndex(null)}
     >
-      <defs>
-        <linearGradient
-          id={`${chartId}-line-gradient`}
-          x1="0%"
-          y1="0%"
-          x2="100%"
-          y2="0%"
-        >
-          <stop offset="0%" stopColor="#34D399" />
-          <stop offset="100%" stopColor={TREND_COLORS.line} />
-        </linearGradient>
-        <linearGradient
-          id={`${chartId}-area-gradient`}
-          x1="0%"
-          y1="0%"
-          x2="0%"
-          y2="100%"
-        >
-          <stop offset="0%" stopColor="rgba(25, 167, 150, 0.22)" />
-          <stop offset="100%" stopColor="rgba(25, 167, 150, 0.02)" />
-        </linearGradient>
-      </defs>
-      <rect
-        x={TREND_PLOT_LEFT}
-        y={TREND_PLOT_TOP}
-        width={plotW}
-        height={plotH}
-        rx={0}
-        className="oj-trend-plot-bg"
-      />
-      {ticks.slice(0, 4).map((t, i) => {
-        const y = yForCount(t);
-        const nextY =
-          i < ticks.length - 1 ? yForCount(ticks[i + 1]) : TREND_PLOT_BOTTOM;
-        return (
-          <rect
-            key={`band-${i}`}
-            x={TREND_PLOT_LEFT}
-            y={y}
-            width={plotW}
-            height={nextY - y}
-            className={
-              i % 2 === 0
-                ? 'oj-trend-band oj-trend-band-strong'
-                : 'oj-trend-band'
-            }
-          />
-        );
-      })}
-      {gridYs.slice(0, 4).map((y, i) => (
-        <line
-          key={`g-${i}`}
-          x1={TREND_PLOT_LEFT}
-          y1={y}
-          x2={TREND_PLOT_RIGHT}
-          y2={y}
-          className="oj-trend-grid"
+      <svg
+        className="oj-trend-svg"
+        viewBox={`0 0 ${TREND_VIEWBOX_W} ${TREND_VIEWBOX_H}`}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient
+            id={`${chartId}-line-gradient`}
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="0%"
+          >
+            <stop offset="0%" stopColor="#34D399" />
+            <stop offset="100%" stopColor={TREND_COLORS.line} />
+          </linearGradient>
+          <linearGradient
+            id={`${chartId}-area-gradient`}
+            x1="0%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
+            <stop offset="0%" stopColor="rgba(25, 167, 150, 0.22)" />
+            <stop offset="100%" stopColor="rgba(25, 167, 150, 0.02)" />
+          </linearGradient>
+        </defs>
+        <rect
+          x={TREND_PLOT_LEFT}
+          y={TREND_PLOT_TOP}
+          width={plotW}
+          height={plotH}
+          rx={0}
+          className="oj-trend-plot-bg"
         />
-      ))}
-      <line
-        x1={TREND_PLOT_LEFT}
-        y1={TREND_PLOT_BOTTOM}
-        x2={TREND_PLOT_RIGHT}
-        y2={TREND_PLOT_BOTTOM}
-        className="oj-trend-axis-line"
-      />
-      <line
-        x1={TREND_PLOT_LEFT}
-        y1={TREND_PLOT_TOP}
-        x2={TREND_PLOT_LEFT}
-        y2={TREND_PLOT_BOTTOM}
-        className="oj-trend-axis-line"
-      />
-      <line
-        x1={TREND_PLOT_RIGHT}
-        y1={TREND_PLOT_TOP}
-        x2={TREND_PLOT_RIGHT}
-        y2={TREND_PLOT_BOTTOM}
-        className="oj-trend-axis-line"
-      />
-
-      {ticks.map((t, i) => (
-        <text
-          key={`yl-${i}`}
-          className="oj-trend-axis oj-trend-axis-y"
-          x={TREND_LEFT_AXIS_X}
-          y={yForCount(t) + 4}
-          textAnchor="end"
-        >
-          {t}
-        </text>
-      ))}
-      <text
-        className="oj-trend-axis-title oj-trend-axis-title-y"
-        x={TREND_LEFT_AXIS_X}
-        y={16}
-        textAnchor="end"
-      >
-        问题数
-      </text>
-
-      {[100, 75, 50, 25, 0].map((t, i) => (
-        <text
-          key={`yr-${i}`}
-          className="oj-trend-axis oj-trend-axis-y"
-          x={TREND_RIGHT_AXIS_X}
-          y={yForRate(t) + 4}
-        >
-          {t}%
-        </text>
-      ))}
-      <text
-        className="oj-trend-axis-title oj-trend-axis-title-y"
-        x={TREND_RIGHT_AXIS_X}
-        y={16}
-        textAnchor="start"
-      >
-        闭环率
-      </text>
-
-      <polygon
-        points={areaPoints}
-        fill={`url(#${chartId}-area-gradient)`}
-        className="oj-trend-rate-area"
-      />
-
-      {points.map((p, index) => {
-        const x = xCenter(index);
-        const x0 = x - barW / 2;
-        let currentY = TREND_PLOT_BOTTOM;
-        const segments: Array<[keyof typeof TREND_COLORS, number]> = [
-          ['resolved', p.resolved],
-          ['inProgress', p.inProgress],
-          ['pending', p.pending],
-        ];
-        const rects = segments.map(([key, value]) => {
-          const h = (Math.max(0, value) / yMax) * plotH;
-          if (h <= 0) return null;
-          currentY -= h;
+        {ticks.slice(0, 4).map((t, i) => {
+          const y = yForCount(t);
+          const nextY =
+            i < ticks.length - 1 ? yForCount(ticks[i + 1]) : TREND_PLOT_BOTTOM;
           return (
             <rect
-              key={`${key}-${index}`}
-              x={x0}
-              y={currentY}
-              width={barW}
-              height={h}
-              fill={TREND_COLORS[key]}
-              rx={0}
-              className="oj-trend-bar"
+              key={`band-${i}`}
+              x={TREND_PLOT_LEFT}
+              y={y}
+              width={plotW}
+              height={nextY - y}
+              className={
+                i % 2 === 0
+                  ? 'oj-trend-band oj-trend-band-strong'
+                  : 'oj-trend-band'
+              }
             />
           );
-        });
+        })}
+        {gridYs.slice(0, 4).map((y, i) => (
+          <line
+            key={`g-${i}`}
+            x1={TREND_PLOT_LEFT}
+            y1={y}
+            x2={TREND_PLOT_RIGHT}
+            y2={y}
+            className="oj-trend-grid"
+          />
+        ))}
+        <line
+          x1={TREND_PLOT_LEFT}
+          y1={TREND_PLOT_BOTTOM}
+          x2={TREND_PLOT_RIGHT}
+          y2={TREND_PLOT_BOTTOM}
+          className="oj-trend-axis-line"
+        />
+        <line
+          x1={TREND_PLOT_LEFT}
+          y1={TREND_PLOT_TOP}
+          x2={TREND_PLOT_LEFT}
+          y2={TREND_PLOT_BOTTOM}
+          className="oj-trend-axis-line"
+        />
+        <line
+          x1={TREND_PLOT_RIGHT}
+          y1={TREND_PLOT_TOP}
+          x2={TREND_PLOT_RIGHT}
+          y2={TREND_PLOT_BOTTOM}
+          className="oj-trend-axis-line"
+        />
 
-        return (
-          <g key={`b-${index}`}>
-            {rects}
-            {showTotalLabel[index] ? (
-              <text
-                className="oj-trend-val"
-                x={x}
-                y={totalLabelYs[index]}
-                textAnchor="middle"
-              >
-                {p.total}
-              </text>
-            ) : null}
-          </g>
-        );
-      })}
-
-      <polyline
-        points={polylinePoints}
-        fill="none"
-        stroke={`url(#${chartId}-line-gradient)`}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="oj-trend-line-path"
-      />
-
-      {points.map((p, index) => {
-        const x = xCenter(index);
-        const y = ratePointYs[index];
-        const shouldLabel = showRateLabel[index];
-        return (
-          <g key={`p-${index}`}>
-            <circle
-              cx={x}
-              cy={y}
-              r={2.5}
-              fill="#fff"
-              stroke={TREND_COLORS.line}
-              strokeWidth={2}
-            />
-            {shouldLabel ? (
-              <text
-                className="oj-trend-val oj-trend-val-green"
-                x={x}
-                y={rateLabelYs[index]}
-                textAnchor="middle"
-              >
-                {formatPercent(p.closeRate)}
-              </text>
-            ) : null}
-          </g>
-        );
-      })}
-
-      {points.map((p, index) => (
+        {ticks.map((t, i) => (
+          <text
+            key={`yl-${i}`}
+            className="oj-trend-axis oj-trend-axis-y"
+            x={TREND_LEFT_AXIS_X}
+            y={yForCount(t) + 4}
+            textAnchor="end"
+          >
+            {t}
+          </text>
+        ))}
         <text
-          key={`x-${index}`}
-          className="oj-trend-axis"
-          x={xCenter(index)}
-          y={182}
-          textAnchor="middle"
+          className="oj-trend-axis-title oj-trend-axis-title-y"
+          x={TREND_LEFT_AXIS_X}
+          y={16}
+          textAnchor="end"
         >
-          {p.label}
+          问题数
         </text>
-      ))}
-    </svg>
+
+        {[100, 75, 50, 25, 0].map((t, i) => (
+          <text
+            key={`yr-${i}`}
+            className="oj-trend-axis oj-trend-axis-y"
+            x={TREND_RIGHT_AXIS_X}
+            y={yForRate(t) + 4}
+          >
+            {t}%
+          </text>
+        ))}
+        <text
+          className="oj-trend-axis-title oj-trend-axis-title-y"
+          x={TREND_RIGHT_AXIS_X}
+          y={16}
+          textAnchor="start"
+        >
+          闭环率
+        </text>
+
+        <polygon
+          points={areaPoints}
+          fill={`url(#${chartId}-area-gradient)`}
+          className="oj-trend-rate-area"
+        />
+
+        {activeX != null ? (
+          <line
+            x1={activeX}
+            y1={TREND_PLOT_TOP}
+            x2={activeX}
+            y2={TREND_PLOT_BOTTOM}
+            className="oj-trend-active-guide"
+          />
+        ) : null}
+
+        {points.map((p, index) => {
+          const x = xCenter(index);
+          const x0 = x - barW / 2;
+          let currentY = TREND_PLOT_BOTTOM;
+          const segments: Array<[keyof typeof TREND_COLORS, number]> = [
+            ['resolved', p.resolved],
+            ['inProgress', p.inProgress],
+            ['pending', p.pending],
+          ];
+          const rects = segments.map(([key, value]) => {
+            const h = (Math.max(0, value) / yMax) * plotH;
+            if (h <= 0) return null;
+            currentY -= h;
+            return (
+              <rect
+                key={`${key}-${index}`}
+                x={x0}
+                y={currentY}
+                width={barW}
+                height={h}
+                fill={TREND_COLORS[key]}
+                rx={0}
+                className={`oj-trend-bar ${
+                  activeIndex != null && activeIndex !== index
+                    ? 'oj-trend-bar-muted'
+                    : ''
+                }`.trim()}
+              />
+            );
+          });
+
+          return (
+            <g key={`b-${index}`}>
+              {rects}
+              {showTotalLabel[index] ? (
+                <text
+                  className="oj-trend-val"
+                  x={x}
+                  y={totalLabelYs[index]}
+                  textAnchor="middle"
+                >
+                  {p.total}
+                </text>
+              ) : null}
+            </g>
+          );
+        })}
+
+        <polyline
+          points={polylinePoints}
+          fill="none"
+          stroke={`url(#${chartId}-line-gradient)`}
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="oj-trend-line-path"
+        />
+
+        {points.map((p, index) => {
+          const x = xCenter(index);
+          const y = ratePointYs[index];
+          const shouldLabel = showRateLabel[index];
+          const isActive = activeIndex === index;
+          return (
+            <g key={`p-${index}`}>
+              {isActive ? (
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={8}
+                  className="oj-trend-point-active-halo"
+                />
+              ) : null}
+              <circle
+                cx={x}
+                cy={y}
+                r={isActive ? 4.5 : 2.5}
+                className="oj-trend-point-core"
+              />
+              {shouldLabel ? (
+                <text
+                  className="oj-trend-val oj-trend-val-green"
+                  x={x}
+                  y={rateLabelYs[index]}
+                  textAnchor="middle"
+                >
+                  {formatPercent(p.closeRate)}
+                </text>
+              ) : null}
+            </g>
+          );
+        })}
+
+        {points.map((p, index) => (
+          <text
+            key={`x-${index}`}
+            className="oj-trend-axis"
+            x={xCenter(index)}
+            y={182}
+            textAnchor="middle"
+          >
+            {p.label}
+          </text>
+        ))}
+
+        {points.map((_, index) => (
+          <rect
+            key={`hover-${index}`}
+            x={TREND_PLOT_LEFT + step * index}
+            y={TREND_PLOT_TOP}
+            width={step}
+            height={plotH}
+            className="oj-trend-hover-zone"
+            onMouseEnter={() => handleActivate(index)}
+            onMouseMove={() => handleActivate(index)}
+          />
+        ))}
+      </svg>
+      {activePoint ? (
+        <div
+          className="oj-trend-tooltip"
+          style={{
+            left: tooltipPos.left,
+            top: tooltipPos.top,
+          }}
+        >
+          <div className="oj-trend-tooltip-header">
+            <span>{activePoint.label}</span>
+            <span>{formatTrendRange(activePoint)}</span>
+          </div>
+          <div className="oj-trend-tooltip-list">
+            <div className="oj-trend-tooltip-item">
+              <span className="oj-trend-tooltip-key">
+                <i
+                  className="oj-trend-tooltip-marker"
+                  style={{ background: TREND_COLORS.pending }}
+                />
+                待处理
+              </span>
+              <span className="oj-trend-tooltip-value">
+                {activePoint.pending}
+              </span>
+            </div>
+            <div className="oj-trend-tooltip-item">
+              <span className="oj-trend-tooltip-key">
+                <i
+                  className="oj-trend-tooltip-marker"
+                  style={{ background: TREND_COLORS.inProgress }}
+                />
+                进行中
+              </span>
+              <span className="oj-trend-tooltip-value">
+                {activePoint.inProgress}
+              </span>
+            </div>
+            <div className="oj-trend-tooltip-item">
+              <span className="oj-trend-tooltip-key">
+                <i
+                  className="oj-trend-tooltip-marker"
+                  style={{ background: TREND_COLORS.resolved }}
+                />
+                已闭环
+              </span>
+              <span className="oj-trend-tooltip-value">
+                {activePoint.resolved}
+              </span>
+            </div>
+            <div className="oj-trend-tooltip-item">
+              <span className="oj-trend-tooltip-key">
+                <i className="oj-trend-tooltip-line-marker" />
+                周度闭环率
+              </span>
+              <span className="oj-trend-tooltip-value">
+                {formatPercent(activePoint.closeRate)}
+              </span>
+            </div>
+            <div className="oj-trend-tooltip-item oj-trend-tooltip-item-total">
+              <span className="oj-trend-tooltip-key">总问题数</span>
+              <span className="oj-trend-tooltip-value">
+                {activePoint.total}
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 };
 
