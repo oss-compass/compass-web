@@ -235,6 +235,35 @@ const getDefaultVersionValue = (
 ): string | undefined =>
   versionOptions?.find((item) => item.value !== fileKey)?.value;
 
+const getVersionLabelByFileKey = (
+  versionOptions: Array<{ value: string; label: string }> | undefined,
+  fileKey: string
+): string => {
+  const normalizedFileKey = String(fileKey || '').trim();
+  if (!normalizedFileKey) return '';
+  return (
+    versionOptions?.find((item) => item.value === normalizedFileKey)?.label ||
+    normalizedFileKey
+  );
+};
+
+const getRetestVersionOptions = ({
+  versionOptions,
+  fileKey,
+}: {
+  versionOptions: Array<{ value: string; label: string }> | undefined;
+  fileKey: string;
+}) => {
+  const filtered = (versionOptions || []).filter(
+    (opt) => opt.value !== fileKey
+  );
+  return filtered.slice().sort((left, right) => {
+    const leftDate = String(left.label || '').split('@')[0] ?? '';
+    const rightDate = String(right.label || '').split('@')[0] ?? '';
+    return rightDate.localeCompare(leftDate);
+  });
+};
+
 const getSafePainLevel = (value?: string | null): PainLevel => {
   const raw = String(value || '').trim();
   const normalized = raw.toUpperCase().replace(/[^A-Z0-9_]/g, '');
@@ -812,6 +841,15 @@ const RetestingFormItems: React.FC<{
   versionOptions,
   fileKey,
 }) => {
+  const latestVersionLabel = getVersionLabelByFileKey(
+    versionOptions,
+    latestFileKey
+  );
+  const retestVersionOptions = getRetestVersionOptions({
+    versionOptions,
+    fileKey,
+  });
+
   if (showRetestDecision) {
     return (
       <div className="space-y-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
@@ -821,7 +859,7 @@ const RetestingFormItems: React.FC<{
           </Text>
           {latestFileKey ? (
             <div className="text-xs text-slate-500">
-              最新报告标识：{latestFileKey}
+              最新报告版本：{latestVersionLabel}
             </div>
           ) : (
             ''
@@ -859,7 +897,7 @@ const RetestingFormItems: React.FC<{
             >
               <Select
                 placeholder="请选择复测通过的报告"
-                options={versionOptions.filter((opt) => opt.value !== fileKey)}
+                options={retestVersionOptions}
                 showSearch
                 optionFilterProp="label"
                 popupMatchSelectWidth={false}
