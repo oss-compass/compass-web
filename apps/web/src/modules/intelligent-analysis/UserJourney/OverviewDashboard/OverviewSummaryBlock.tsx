@@ -25,9 +25,9 @@ const TREND_LEFT_AXIS_X = TREND_PLOT_LEFT - 8;
 const TREND_RIGHT_AXIS_X = TREND_PLOT_RIGHT + 8;
 
 const TREND_COLORS = {
-  pending: '#D09258',
-  inProgress: '#4B93FE',
-  resolved: '#3BD8C8',
+  pending: '#f4840c',
+  inProgress: '#4791ff',
+  resolved: '#2eb78a',
   line: '#19A796',
 };
 

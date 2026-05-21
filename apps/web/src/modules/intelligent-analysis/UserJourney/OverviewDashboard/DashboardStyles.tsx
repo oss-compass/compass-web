@@ -260,15 +260,15 @@ const DashboardStyles: React.FC = () => (
     }
 
     .ov-value-blue {
-      color: #4b93fe;
+      color: #4791ff;
     }
 
     .ov-value-pending {
-      color: #d09258;
+      color: #f4840c;
     }
 
     .ov-value-green {
-      color: #3bd8c8;
+      color: #2eb78a;
     }
 
     .overview-bottom-row {
@@ -561,11 +561,11 @@ const DashboardStyles: React.FC = () => (
     }
 
     .overview-progress-inProgress {
-      background: #4b93fe;
+      background: #4f98ff;
     }
 
     .overview-progress-resolved {
-      background: #3bd8c8;
+      background: #33c998;
     }
 
     .overview-progress-meta {
