@@ -87,51 +87,51 @@ export const getPainLevelStyle = (
   switch (mapped) {
     case 'P0_BLOCKER':
       return {
-        bg: 'bg-rose-100',
-        text: 'text-rose-700',
-        border: 'border-rose-300',
+        bg: 'bg-rose-50',
+        text: 'text-rose-600',
+        border: 'border-rose-200',
         dot: 'bg-rose-500',
       };
     case 'P1_CRITICAL':
       return {
-        bg: 'bg-red-100',
-        text: 'text-red-700',
-        border: 'border-red-300',
-        dot: 'bg-red-500',
+        bg: 'bg-amber-50',
+        text: 'text-amber-600',
+        border: 'border-amber-200',
+        dot: 'bg-amber-500',
       };
     case 'P2_MAJOR':
       return {
-        bg: 'bg-amber-100',
-        text: 'text-amber-700',
-        border: 'border-amber-300',
-        dot: 'bg-amber-500',
+        bg: 'bg-blue-50',
+        text: 'text-blue-500',
+        border: 'border-blue-200',
+        dot: 'bg-blue-500',
       };
     case 'P3_MINOR':
       return {
-        bg: 'bg-emerald-100',
-        text: 'text-emerald-700',
-        border: 'border-emerald-300',
-        dot: 'bg-emerald-500',
+        bg: 'bg-slate-50',
+        text: 'text-slate-400',
+        border: 'border-slate-200',
+        dot: 'bg-slate-400',
       };
     case 'P4_TRIVIAL':
       return {
-        bg: 'bg-slate-100',
-        text: 'text-slate-600',
-        border: 'border-slate-300',
-        dot: 'bg-slate-400',
+        bg: 'bg-green-50',
+        text: 'text-green-600',
+        border: 'border-green-300',
+        dot: 'bg-green-500',
       };
     case 'P5':
       return {
-        bg: 'bg-slate-100',
-        text: 'text-slate-600',
-        border: 'border-slate-300',
+        bg: 'bg-slate-50',
+        text: 'text-slate-400',
+        border: 'border-slate-200',
         dot: 'bg-slate-400',
       };
     default:
       return {
-        bg: 'bg-slate-100',
-        text: 'text-slate-600',
-        border: 'border-slate-300',
+        bg: 'bg-slate-50',
+        text: 'text-slate-400',
+        border: 'border-slate-200',
         dot: 'bg-slate-400',
       };
   }

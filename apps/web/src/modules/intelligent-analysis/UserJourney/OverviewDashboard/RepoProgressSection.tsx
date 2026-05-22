@@ -9,6 +9,7 @@ import { Grid, Segmented, Select, Table, Typography } from 'antd';
 import { CheckOutlined, FilterFilled, RightOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import { SEVERITY_CFG } from './constants';
+import { CircularProgress, IssueProgressBar } from './ProgressComponents';
 import type {
   DashboardIssue,
   IssueBucket,
@@ -448,132 +449,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     </div>
   );
 
-  const renderCircularProgress = (value: number | null) => {
-    const safeValue =
-      value == null ? 0 : Math.max(0, Math.min(Number(value.toFixed(1)), 100));
-    const ringColor =
-      safeValue < 50 ? '#ef4444' : safeValue > 80 ? '#10b981' : '#f59e0b';
-    const size = 24;
-    const radius = (size - 4) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference * (1 - safeValue / 100);
-    const label = value == null ? '--' : `${safeValue.toFixed(1)}%`;
-    return (
-      <div className="overview-ring-progress">
-        <svg
-          width={size}
-          height={size}
-          className="overview-ring-svg"
-          viewBox={`0 0 ${size} ${size}`}
-        >
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke="#f0f0f0"
-            strokeWidth="3"
-          />
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke={ringColor}
-            strokeWidth="3"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-          />
-        </svg>
-        <span
-          className="overview-ring-label"
-          style={{ color: value == null ? '#94a3b8' : ringColor }}
-        >
-          {label}
-        </span>
-      </div>
-    );
-  };
-
-  const renderIssueProgress = (
-    metrics: RepoProgressRow[ProgressTab],
-    onBucketClick?: (bucket: IssueBucket) => void
-  ) => {
-    const total = metrics.pending + metrics.inProgress + metrics.resolved || 1;
-    const colorMap: Record<IssueBucket, string> = {
-      pending: '#f4840c',
-      inProgress: '#4791ff',
-      resolved: '#2eb78a',
-      na: '#94a3b8',
-    };
-    const items: Array<{
-      key: IssueBucket;
-      label: string;
-      value: number;
-      color: string;
-    }> = [
-      {
-        key: 'pending',
-        label: '待处理',
-        value: metrics.pending,
-        color: colorMap.pending,
-      },
-      {
-        key: 'inProgress',
-        label: '进行中',
-        value: metrics.inProgress,
-        color: colorMap.inProgress,
-      },
-      {
-        key: 'resolved',
-        label: '已闭环',
-        value: metrics.resolved,
-        color: colorMap.resolved,
-      },
-    ];
-
-    return (
-      <div className="overview-progress-cell">
-        <div className="overview-progress-bar">
-          {items.map((item) => (
-            <span
-              key={item.key}
-              className={`overview-progress-segment`}
-              style={{
-                width: `${(item.value / total) * 100}%`,
-                background: item.color,
-              }}
-            />
-          ))}
-        </div>
-        <div className="overview-progress-meta">
-          {items.map((item) =>
-            onBucketClick ? (
-              <button
-                key={item.key}
-                type="button"
-                className="overview-progress-link"
-                style={{ color: item.color }}
-                onClick={() => onBucketClick(item.key)}
-              >
-                {item.label} {item.value}
-              </button>
-            ) : (
-              <span
-                key={item.key}
-                className="overview-progress-text"
-                style={{ color: item.color }}
-              >
-                {item.label} {item.value}
-              </span>
-            )
-          )}
-        </div>
-      </div>
-    );
-  };
-
   const renderDetailLink = (record: RepoProgressRow) => {
     const fileKey = record.latestReportId;
     const reportUrl = fileKey
@@ -679,8 +554,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           const rowForModal = derived
             ? ({ ...record, issues: derived.issues } as RepoProgressRow)
             : record;
-          return renderIssueProgress(metrics, (bucket) =>
-            onOpenRepoIssues(rowForModal, bucket)
+          return (
+            <IssueProgressBar
+              pending={metrics.pending}
+              inProgress={metrics.inProgress}
+              resolved={metrics.resolved}
+              onBucketClick={(bucket) => onOpenRepoIssues(rowForModal, bucket)}
+            />
           );
         },
       },
@@ -716,8 +596,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         render: (_value, record) => {
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
-          return renderCircularProgress(
-            metrics.total === 0 ? 100 : metrics.closeRate
+          return (
+            <CircularProgress
+              value={metrics.total === 0 ? 100 : metrics.closeRate}
+            />
           );
         },
         onHeaderCell: () => ({
@@ -783,7 +665,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
-        title: sortableTitle('综合评分', teamSortArrow('score')),
+        title: sortableTitle('综合体验评分', teamSortArrow('score')),
         key: 'score',
         width: teamColumnWidths[3],
         render: (_value, record) =>
@@ -823,8 +705,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           const rowForModal = derived
             ? ({ ...record, issues: derived.issues } as TeamProgressRow)
             : record;
-          return renderIssueProgress(metrics, (bucket) =>
-            onOpenTeamIssues(rowForModal, bucket)
+          return (
+            <IssueProgressBar
+              pending={metrics.pending}
+              inProgress={metrics.inProgress}
+              resolved={metrics.resolved}
+              onBucketClick={(bucket) => onOpenTeamIssues(rowForModal, bucket)}
+            />
           );
         },
       },
@@ -860,8 +747,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         render: (_value, record) => {
           const derived = teamDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
-          return renderCircularProgress(
-            metrics.total === 0 ? 100 : metrics.closeRate
+          return (
+            <CircularProgress
+              value={metrics.total === 0 ? 100 : metrics.closeRate}
+            />
           );
         },
         onHeaderCell: () => ({
@@ -1072,8 +961,15 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                             issues: derived.issues,
                           } as RepoProgressRow)
                         : repo;
-                      return renderIssueProgress(metrics, (bucket) =>
-                        onOpenRepoIssues(rowForModal, bucket)
+                      return (
+                        <IssueProgressBar
+                          pending={metrics.pending}
+                          inProgress={metrics.inProgress}
+                          resolved={metrics.resolved}
+                          onBucketClick={(bucket) =>
+                            onOpenRepoIssues(rowForModal, bucket)
+                          }
+                        />
                       );
                     })()}
                   </td>
@@ -1102,8 +998,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                     {(() => {
                       const derived = repoDerived.get(repo.id);
                       const metrics = derived?.metrics ?? repo.overall;
-                      return renderCircularProgress(
-                        metrics.total === 0 ? 100 : metrics.closeRate
+                      return (
+                        <CircularProgress
+                          value={metrics.total === 0 ? 100 : metrics.closeRate}
+                        />
                       );
                     })()}
                   </td>

@@ -306,6 +306,11 @@ export const fetchOverviewSummary = async (params: {
   );
 };
 
+export type IssueTypeCount = {
+  issueType: string;
+  count: number;
+};
+
 export type OverviewCloseRateTrendPoint = {
   weekStart: string;
   weekEnd: string;
@@ -315,6 +320,7 @@ export type OverviewCloseRateTrendPoint = {
   p1: number;
   p2: number;
   p3: number;
+  issueTypeCounts?: IssueTypeCount[];
   closeRate: number;
 };
 
@@ -331,6 +337,7 @@ export const fetchOverviewCloseRateTrends = async (params: {
   includeCommonIssues?: boolean;
   commonOnly?: boolean | null;
   weeks?: number;
+  countChildPains?: boolean;
 }): Promise<OverviewCloseRateTrendsResponse> => {
   const search = new URLSearchParams();
   if (params.org) search.set('org', params.org);
@@ -344,6 +351,9 @@ export const fetchOverviewCloseRateTrends = async (params: {
   }
   if (typeof params.weeks === 'number' && Number.isFinite(params.weeks)) {
     search.set('weeks', String(params.weeks));
+  }
+  if (params.countChildPains === true) {
+    search.set('count_child_pains', 'true');
   }
   const query = search.toString();
   return compassApiFetch<OverviewCloseRateTrendsResponse>(

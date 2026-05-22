@@ -4,8 +4,10 @@ import OverviewSummaryBlock from './OverviewSummaryBlock';
 import type {
   CommonIssueGroup,
   DashboardIssue,
+  IssueBucket,
   IssueSourceMode,
   MetricSummary,
+  Severity,
   WeeklyCloseRateTrendPoint,
 } from './types';
 import { formatPercent, formatScore } from './utils';
@@ -35,7 +37,8 @@ type OverviewSummarySectionProps = {
   onIncludeCommonIssuesChange: (next: boolean) => void;
   onOpenIssues?: (
     card: 'primary' | 'secondary',
-    bucket: 'total' | 'pending' | 'inProgress' | 'resolved'
+    bucket: 'total' | IssueBucket,
+    severity?: Severity
   ) => void;
 };
 
@@ -103,6 +106,9 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           mode={effectiveMode}
           tooltip={primaryTooltip}
           onBucketClick={(bucket) => onOpenIssues?.('primary', bucket)}
+          onPriorityBucketClick={(severity, bucket) =>
+            onOpenIssues?.('primary', bucket, severity)
+          }
         />
         <div className="overview-bottom-row">
           <div className="bottom-metric">

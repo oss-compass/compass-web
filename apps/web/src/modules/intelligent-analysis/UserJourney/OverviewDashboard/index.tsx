@@ -22,6 +22,7 @@ import type {
   ProgressView,
   RepoProgressRow,
   RepoSortKey,
+  Severity,
   TeamProgressRow,
   TeamSortKey,
 } from './types';
@@ -164,6 +165,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             ? undefined
             : false,
         weeks: 7,
+        countChildPains: true,
       }),
   });
 
@@ -402,10 +404,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
 
   const openSummaryIssues = (
     card: 'primary' | 'secondary',
-    bucket: IssueBucket | 'total'
+    bucket: IssueBucket | 'total',
+    severity?: Severity
   ) => {
     const baseIssues = card === 'secondary' ? keySummaryIssues : summaryIssues;
     let issues = baseIssues;
+
+    if (severity) {
+      issues = issues.filter((issue) => issue.severity === severity);
+    }
 
     if (bucket === 'pending') {
       issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
@@ -443,7 +450,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         ? '关键问题'
         : '总体问题';
 
-    openIssueModal(`${baseTitle} · ${bucketLabel}`, issues);
+    const severityPrefix = severity ? `${severity.split('_')[0]} · ` : '';
+    openIssueModal(`${baseTitle} · ${severityPrefix}${bucketLabel}`, issues);
   };
 
   const openRepoIssues = (

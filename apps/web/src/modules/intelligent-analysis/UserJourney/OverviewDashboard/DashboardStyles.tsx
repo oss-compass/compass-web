@@ -313,65 +313,121 @@ const DashboardStyles: React.FC = () => (
 
     .ov-priority-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 156px;
-      gap: 16px;
-      align-items: stretch;
-      padding: 12px 14px;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+      align-items: center;
+      padding: 0 14px;
       border-radius: 14px;
       border: 1px solid rgba(226, 232, 240, 0.92);
       background: rgba(255, 255, 255, 0.82);
-      height: 100%;
+      height: 64px;
+      min-height: 64px;
+      max-height: 64px;
+      overflow: hidden;
     }
 
     .ov-priority-main {
       display: flex;
       align-items: center;
-      gap: 12px;
       min-width: 0;
+      height: 100%;
+    }
+
+    .ov-priority-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
+      height: 100%;
+      flex: 1;
     }
 
     .ov-priority-tag {
       flex: 0 0 auto;
       min-width: 42px;
-      height: 30px;
-      padding: 0 10px;
-      border-radius: 999px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 6px;
       border: 1px solid transparent;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      line-height: 18px;
+      font-size: 11px;
+      line-height: 1;
       font-weight: 800;
-      letter-spacing: 0.04em;
-    }
-
-    .ov-priority-copy {
-      min-width: 0;
-    }
-
-    .ov-priority-name {
-      font-size: 14px;
-      line-height: 22px;
-      font-weight: 700;
-      color: #0f172a;
+      letter-spacing: 0.02em;
       white-space: nowrap;
     }
 
-    .ov-priority-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      font-size: 12px;
-      line-height: 18px;
-      color: #64748b;
+    .ov-priority-desc {
+      font-size: 11px;
+      font-weight: 500;
+      color: #94a3b8;
+      line-height: 1.2;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
     }
 
     .ov-priority-side {
-      min-width: 0;
+      width: 340px;
+      flex: 0 0 340px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .ov-priority-bar-box {
+      width: 100%;
+    }
+
+    .ov-priority-meta-box {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ov-priority-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 12px;
+      border-left: 1px solid #e2e8f0;
+      flex: 0 0 auto;
+    }
+
+    .ov-priority-total {
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      color: #64748b;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .ov-priority-rate {
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+      color: #64748b;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .ov-priority-clickable {
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .ov-priority-clickable:hover {
+      color: #3b82f6;
+      text-decoration: underline;
     }
 
     .ov-priority-progress {
@@ -387,26 +443,6 @@ const DashboardStyles: React.FC = () => (
       height: 100%;
       border-radius: inherit;
       box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
-    }
-
-    .ov-priority-stats {
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 12px;
-      line-height: 18px;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .ov-priority-rate {
-      color: #0f172a;
-    }
-
-    .ov-priority-count {
-      color: #64748b;
     }
 
     .oj-trend-chart {
@@ -953,8 +989,9 @@ const DashboardStyles: React.FC = () => (
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      width: auto;
-      gap: 8px;
+      width: 76px;
+      flex: 0 0 76px;
+      gap: 6px;
     }
 
     .overview-ring-svg {
@@ -963,11 +1000,13 @@ const DashboardStyles: React.FC = () => (
     }
 
     .overview-ring-label {
-      font-size: 13px;
-      line-height: 20px;
-      font-weight: 400;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 600;
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
+      flex: 1;
+      text-align: right;
     }
 
     .overview-progress-cell {
@@ -1017,21 +1056,22 @@ const DashboardStyles: React.FC = () => (
     }
 
     .overview-progress-link {
+      background: none;
+      border: none;
       padding: 0;
-      height: auto;
-      color: #1677ff;
-      font-size: 12px;
-      font-weight: 400;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      white-space: nowrap;
-      background: transparent;
-      border: 0;
+      margin: 0;
+      font: inherit;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+      transition: opacity 0.2s;
     }
 
     .overview-progress-link:hover {
-      color: #0958d9;
+      opacity: 0.7;
+      text-decoration: underline;
     }
 
     .overview-ant-table .overview-table-link {

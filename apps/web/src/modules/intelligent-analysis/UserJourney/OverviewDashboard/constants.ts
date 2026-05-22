@@ -180,3 +180,111 @@ export const PAIN_STATUS_CFG: Record<
     tagBorder: '#fda4af',
   },
 };
+
+export const ISSUE_TYPE_CFG = {
+  tagBg: '#f5f0ff',
+  tagColor: '#722ed1',
+  tagBorder: '#d3adf7',
+  solidBg: '#722ed1',
+};
+
+export const ISSUE_TYPE_PALETTE = [
+  {
+    tagBg: '#fff0f6',
+    tagColor: '#c41d7f',
+    tagBorder: '#ffadd2',
+    solidBg: '#eb2f96',
+  },
+  {
+    tagBg: '#f5f0ff',
+    tagColor: '#722ed1',
+    tagBorder: '#d3adf7',
+    solidBg: '#722ed1',
+  },
+  {
+    tagBg: '#f0f5ff',
+    tagColor: '#2f54eb',
+    tagBorder: '#adc6ff',
+    solidBg: '#2f54eb',
+  },
+  {
+    tagBg: '#feffe6',
+    tagColor: '#ad8b00',
+    tagBorder: '#fffb8f',
+    solidBg: '#d4b106',
+  },
+  {
+    tagBg: '#fff7e6',
+    tagColor: '#d46b08',
+    tagBorder: '#ffd591',
+    solidBg: '#fa8c16',
+  },
+  {
+    tagBg: '#e6f4ff',
+    tagColor: '#1677ff',
+    tagBorder: '#91caff',
+    solidBg: '#1677ff',
+  },
+  {
+    tagBg: '#f9f0ff',
+    tagColor: '#7c3aed',
+    tagBorder: '#c4b5fd',
+    solidBg: '#7c3aed',
+  },
+  {
+    tagBg: '#fff1f0',
+    tagColor: '#cf1322',
+    tagBorder: '#ffa39e',
+    solidBg: '#f5222d',
+  },
+];
+
+const ISSUE_TYPE_OVERRIDES: Record<
+  string,
+  {
+    tagBg: string;
+    tagColor: string;
+    tagBorder: string;
+    solidBg: string;
+  }
+> = {
+  SoC代号映射: {
+    tagBg: '#fff0f6',
+    tagColor: '#c41d7f',
+    tagBorder: '#ffadd2',
+    solidBg: '#f759ab',
+  },
+  百度SEO搜索: {
+    tagBg: '#f5f0ff',
+    tagColor: '#722ed1',
+    tagBorder: '#d3adf7',
+    solidBg: '#9254de',
+  },
+};
+
+const getIssueTypeIndex = (issueType: string): number => {
+  const hash = issueType.split('').reduce((acc, char) => {
+    return (acc << 5) - acc + char.charCodeAt(0);
+  }, 0);
+  return Math.abs(hash) % ISSUE_TYPE_PALETTE.length;
+};
+
+const getIssueTypePalette = (issueType: string) => {
+  return (
+    ISSUE_TYPE_OVERRIDES[issueType] ??
+    ISSUE_TYPE_PALETTE[getIssueTypeIndex(issueType)]
+  );
+};
+
+export const getIssueTypeMarkerColor = (issueType: string): string => {
+  return getIssueTypePalette(issueType).solidBg;
+};
+
+export const getIssueTypeTagStyle = (issueType: string) => {
+  const palette = getIssueTypePalette(issueType);
+  return {
+    background: palette.solidBg,
+    color: '#ffffff',
+    borderColor: 'transparent',
+  };
+};

@@ -39,6 +39,11 @@ export type MetricSummary = {
   closeRate: number;
 };
 
+export type IssueTypeCount = {
+  issueType: string;
+  count: number;
+};
+
 export type WeeklyCloseRateTrendPoint = {
   weekStart: string;
   weekEnd: string;
@@ -48,6 +53,7 @@ export type WeeklyCloseRateTrendPoint = {
   p1: number;
   p2: number;
   p3: number;
+  issueTypeCounts?: IssueTypeCount[];
   closeRate: number;
 };
 
