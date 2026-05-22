@@ -128,6 +128,14 @@ const getReportEntries = (issue: DashboardIssue): ReportEntry[] => {
 const localeCompare = (left: string, right: string) =>
   left.localeCompare(right, 'zh-Hans-CN', { sensitivity: 'base' });
 
+const formatDateTime = (raw: string) => {
+  const text = String(raw || '').trim();
+  if (!text) return '--';
+  const m = text.match(/^(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2}))?/);
+  if (!m) return text;
+  return m[2] ? `${m[1]} ${m[2]}` : m[1];
+};
+
 const isOtherTeam = (teamName: string) =>
   OTHER_TEAM_LABELS.has(
     String(teamName || '')
@@ -713,6 +721,9 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     </Dropdown>
                   </div>
                 </th>
+                <th className="w-[96px] px-2 py-2 text-left md:w-[120px] md:px-3 md:py-3">
+                  发现时间
+                </th>
                 <th className="w-[88px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
                   {renderSortableHeader('责任人', 'owner')}
                 </th>
@@ -785,6 +796,21 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                           );
                         })()}
                       </td>
+                      <td className="whitespace-nowrap px-2 py-2 text-slate-600 md:px-3 md:py-3">
+                        <Tooltip
+                          title={
+                            String(
+                              issue.createdAt || issue.created_at || ''
+                            ).trim() || '--'
+                          }
+                        >
+                          <span>
+                            {formatDateTime(
+                              issue.createdAt || issue.created_at || ''
+                            )}
+                          </span>
+                        </Tooltip>
+                      </td>
                       <td className="break-all px-2 py-2 md:px-3 md:py-3">
                         {issue.owner || issue.teamOwner || '--'}
                       </td>
@@ -828,7 +854,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
               ) : (
                 <tr>
                   <td
-                    colSpan={10}
+                    colSpan={11}
                     className="px-3 py-12 text-center text-sm text-slate-400"
                   >
                     暂无数据

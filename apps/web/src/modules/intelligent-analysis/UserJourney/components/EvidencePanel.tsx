@@ -166,6 +166,7 @@ const UnconfirmedBadge: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 const StatusBadge: React.FC<{
   status: number;
   severity: string;
+  actionReason?: string;
   commonIssueType?: string | null;
   isCommonIssue?: boolean;
   confirmedBy: string;
@@ -176,6 +177,7 @@ const StatusBadge: React.FC<{
 }> = ({
   status,
   severity,
+  actionReason,
   commonIssueType,
   isCommonIssue = false,
   confirmedBy,
@@ -185,9 +187,11 @@ const StatusBadge: React.FC<{
   onClick,
 }) => {
   const style = getPainLevelStyle(severity);
-  const label = `${STATUS_LABELS[status] || '待确认'}${
-    isCommonIssue ? '（共性问题）' : ''
-  }`;
+  const baseLabel =
+    status === PainStatus.NO_FIX_NEEDED
+      ? '非项目本身问题'
+      : STATUS_LABELS[status] || '待确认';
+  const label = `${baseLabel}${isCommonIssue ? '（共性问题）' : ''}`;
   const statusStyle = (() => {
     if (status === PainStatus.TO_BE_CONFIRMED) {
       return {
@@ -281,6 +285,14 @@ const StatusBadge: React.FC<{
           </a>
         </div>
       )}
+      {status === PainStatus.NO_FIX_NEEDED && actionReason ? (
+        <div className="space-y-1 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">判断原因：</span>
+          <div className="rounded bg-emerald-50 px-2 py-1 leading-5 text-emerald-700">
+            {actionReason}
+          </div>
+        </div>
+      ) : null}
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-600">操作人：</span>
         {confirmedBy}
@@ -321,6 +333,7 @@ type DerivedPainDisplayState = {
   childMatched: boolean;
   effectiveStatus?: number;
   effectiveSeverity: string;
+  effectiveActionReason?: string;
   effectiveCommonIssueType?: string | null;
   effectiveIsCommonIssue: boolean;
   effectiveConfirmedBy: string;
@@ -328,7 +341,7 @@ type DerivedPainDisplayState = {
   effectiveIssueLink?: string | null;
   effectivePrLink?: string | null;
   effectiveRetestPassedFileKey?: string | null;
-  isCompleted: boolean;
+  isNonProjectIssue: boolean;
 };
 
 const FALLBACK_LINK_TEXT = '未记录';
@@ -348,6 +361,18 @@ const formatSeverityLabel = (severity: string) => {
   if (String(label || '').startsWith(prefix)) return label;
   return `${prefix}${label}`;
 };
+
+const isNonProjectSeverity = (severity?: string | null) => {
+  const raw = String(severity || '').trim();
+  return raw === 'P4_TRIVIAL' || getPainLevelLabel(raw) === '非项目本身问题';
+};
+
+const getActionReasonText = (
+  value?: Pick<
+    Partial<PainConfirmationRecord>,
+    'action_reason' | 'reason'
+  > | null
+) => String(value?.action_reason || value?.reason || '').trim();
 
 const getFallbackModalLinkValue = (value?: string | null): string =>
   String(value || '').trim() || FALLBACK_LINK_TEXT;
@@ -446,13 +471,22 @@ const derivePainDisplayState = ({
 
   const { commonIssueType, isCommonIssue } = getEffectiveCommonIssue();
   const { issueLink, prLink } = getEffectiveLinks();
+  const effectiveActionReason = childMatched
+    ? getActionReasonText(existing)
+    : '';
 
   const effectiveStatusRaw = getEffectiveStatus();
-  const effectiveStatus =
+  const normalizedEffectiveStatus =
     isLatestReport && effectiveStatusRaw === PainStatus.RETESTED_FAILED
       ? PainStatus.CONFIRMED_PENDING_FIX
       : effectiveStatusRaw;
   const effectiveSeverity = getEffectiveSeverity();
+  const isNonProjectIssue =
+    normalizedEffectiveStatus === PainStatus.NO_FIX_NEEDED ||
+    isNonProjectSeverity(effectiveSeverity);
+  const effectiveStatus = isNonProjectIssue
+    ? PainStatus.NO_FIX_NEEDED
+    : normalizedEffectiveStatus;
 
   const effectiveConfirmedBy =
     (childMatched ? existing?.confirmed_by : '') ||
@@ -470,14 +504,11 @@ const derivePainDisplayState = ({
     ? existing?.retest_passed_file_key || existing?.latest_file_key
     : undefined;
 
-  const isCompleted =
-    effectiveStatus === PainStatus.CONFIRMED_PENDING_FIX &&
-    effectiveSeverity === 'P4_TRIVIAL';
-
   return {
     childMatched,
     effectiveStatus,
     effectiveSeverity,
+    effectiveActionReason,
     effectiveCommonIssueType: commonIssueType,
     effectiveIsCommonIssue: isCommonIssue,
     effectiveConfirmedBy,
@@ -485,7 +516,7 @@ const derivePainDisplayState = ({
     effectiveIssueLink: issueLink,
     effectivePrLink: prLink,
     effectiveRetestPassedFileKey,
-    isCompleted,
+    isNonProjectIssue,
   };
 };
 
@@ -520,6 +551,9 @@ const buildModalCurrentRecord = ({
       ...existing,
       status: effectiveStatus,
       severity: displayState.effectiveSeverity || existing.severity,
+      action_reason:
+        displayState.effectiveActionReason || existing.action_reason,
+      reason: displayState.effectiveActionReason || existing.reason,
       is_common_issue: displayState.effectiveIsCommonIssue,
       common_issue_type:
         displayState.effectiveCommonIssueType ??
@@ -546,6 +580,8 @@ const buildModalCurrentRecord = ({
     pain_text: text,
     status: effectiveStatus,
     severity: displayState.effectiveSeverity || 'P1_CRITICAL',
+    action_reason: displayState.effectiveActionReason || null,
+    reason: displayState.effectiveActionReason || null,
     is_common_issue: displayState.effectiveIsCommonIssue,
     common_issue_type: displayState.effectiveCommonIssueType ?? null,
     issue_link: getFallbackModalLinkValue(displayState.effectiveIssueLink),
@@ -558,48 +594,6 @@ const buildModalCurrentRecord = ({
   };
 };
 
-const CompletedPainBadge: React.FC<{
-  confirmedBy: string;
-  confirmedAt: string;
-}> = ({ confirmedBy, confirmedAt }) => (
-  <Popover
-    content={
-      <div className="max-w-xs space-y-2 text-sm">
-        <div className="flex items-center gap-1.5 text-xs text-slate-500">
-          <span className="font-medium text-slate-600">严重程度：</span>
-          <span className="font-semibold text-emerald-700">非项目本身问题</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-xs text-slate-500">
-          <span className="font-medium text-slate-600">操作人：</span>
-          {confirmedBy}
-        </div>
-        {confirmedAt ? (
-          <div className="flex items-center gap-1.5 text-xs text-slate-500">
-            <span className="font-medium text-slate-600">操作时间：</span>
-            {confirmedAt.replace('T', ' ').replace('Z', '')}
-          </div>
-        ) : null}
-        <div className="rounded bg-emerald-50 px-2 py-1 text-xs text-emerald-600">
-          已完成，无需进一步处理
-        </div>
-      </div>
-    }
-    title={null}
-    trigger="hover"
-    placement="top"
-    styles={{ root: { maxWidth: 320 } }}
-  >
-    <button
-      type="button"
-      disabled
-      className="inline-flex shrink-0 cursor-not-allowed items-center gap-1 rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
-    >
-      <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-      已完成（非项目本身问题）
-    </button>
-  </Popover>
-);
-
 const PainPointBadge: React.FC<{
   canConfirm: boolean;
   displayState: DerivedPainDisplayState;
@@ -609,19 +603,11 @@ const PainPointBadge: React.FC<{
     return <UnconfirmedBadge onClick={onClick} />;
   }
 
-  if (displayState.isCompleted) {
-    return (
-      <CompletedPainBadge
-        confirmedBy={displayState.effectiveConfirmedBy}
-        confirmedAt={displayState.effectiveConfirmedAt}
-      />
-    );
-  }
-
   return (
     <StatusBadge
       status={displayState.effectiveStatus}
       severity={displayState.effectiveSeverity || 'P4_TRIVIAL'}
+      actionReason={displayState.effectiveActionReason}
       commonIssueType={displayState.effectiveCommonIssueType}
       isCommonIssue={displayState.effectiveIsCommonIssue}
       confirmedBy={displayState.effectiveConfirmedBy}

@@ -127,6 +127,7 @@ export const PAIN_STATUS_LABEL: Record<string, string> = {
   '1': '待确认',
   '2': '已确认待修复',
   '3': '已修复待复测',
+  '4': '已复测待确认',
   '5': '已复测通过',
   '6': '不需要修复',
   '7': '复测不通过',
@@ -153,6 +154,12 @@ export const PAIN_STATUS_CFG: Record<
     tagBg: '#e6f4ff',
     tagColor: '#1677ff',
     tagBorder: '#91caff',
+  },
+  '4': {
+    label: '已复测待确认',
+    tagBg: '#fff7e6',
+    tagColor: '#d46b08',
+    tagBorder: '#ffd8bf',
   },
   '5': {
     label: '已复测通过',

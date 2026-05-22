@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import dayjs, { type Dayjs } from 'dayjs';
+import 'dayjs/locale/zh-cn';
+import DatePicker from '@common/components/DatePicker';
 import {
   Form,
   type FormInstance,
@@ -27,6 +30,7 @@ import {
 } from '../rawData/apiClient';
 
 const { Text, Link } = Typography;
+dayjs.locale('zh-cn');
 
 // 状态定义
 export enum PainStatus {
@@ -172,11 +176,13 @@ const formatSeverityLabel = (severity: string) => {
 type FormValues = {
   status: PainStatus;
   severity?: PainLevel;
+  non_project_reason?: string;
   is_common?: boolean;
   common_issue_type?: string;
   confirmed_by: string;
   issue_link?: string;
   pr_link?: string;
+  expected_close_time?: Dayjs | null;
   retest_decision?: 'passed' | 'failed' | 'not_detected';
   retest_passed_file_key?: string;
 };
@@ -205,6 +211,13 @@ const formatStatusTime = (value?: string | null): string => {
   return normalized.replace('T', ' ').replace('Z', '').slice(0, 16);
 };
 
+const formatCloseTime = (value?: string | null): string => {
+  const normalized = String(value || '').trim();
+  if (!normalized) return '';
+  if (normalized.includes('T')) return formatStatusTime(normalized);
+  return normalized;
+};
+
 const getDisplayedStepStatus = (status: PainStatus): PainStatus => {
   if (status === PainStatus.NO_FIX_NEEDED) {
     return PainStatus.CONFIRMED_PENDING_FIX;
@@ -218,10 +231,13 @@ const getDisplayedStepStatus = (status: PainStatus): PainStatus => {
 type StepSnapshot = Partial<PainConfirmationRecord> & {
   status?: number;
   severity?: string | null;
+  action_reason?: string | null;
   is_common_issue?: boolean;
   common_issue_type?: string | null;
   issue_link?: string | null;
   pr_link?: string | null;
+  expected_close_time?: string | null;
+  actual_close_time?: string | null;
   retest_decision?: 'passed' | 'failed' | 'not_detected' | null;
   retest_passed_file_key?: string | null;
   latest_file_key?: string | null;
@@ -295,6 +311,19 @@ const getSafeCommonIssueType = (
   return options[0];
 };
 
+const isNonProjectSeverity = (value?: string | null): boolean => {
+  const normalized = String(value || '').trim();
+  if (!normalized) return false;
+  return (
+    normalized === 'P4_TRIVIAL' ||
+    getPainLevelLabel(normalized) === '非项目本身问题'
+  );
+};
+
+const getActionReasonText = (
+  value?: Pick<Partial<PainConfirmationRecord>, 'action_reason'> | null
+): string => String(value?.action_reason || '').trim();
+
 const getSafeLinkValue = (
   value: string | null | undefined,
   fallback?: string | null,
@@ -323,6 +352,170 @@ const isValidPrLink = (value: string | null | undefined): boolean => {
   if (!normalized) return false;
   if (normalized === FALLBACK_LINK_TEXT) return true;
   return GITCODE_PR_LINK_RE.test(normalized);
+};
+
+const isValidCloseDate = (value: string | null | undefined): boolean => {
+  const normalized = String(value || '').trim();
+  if (!normalized) return false;
+  const m = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return false;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d))
+    return false;
+  if (mo < 1 || mo > 12) return false;
+  if (d < 1 || d > 31) return false;
+  const dt = new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00Z`);
+  if (Number.isNaN(dt.getTime())) return false;
+  return (
+    dt.getUTCFullYear() === y &&
+    dt.getUTCMonth() + 1 === mo &&
+    dt.getUTCDate() === d
+  );
+};
+
+const getCloseDateValue = (value: string | null | undefined): Dayjs | null => {
+  const normalized = String(value || '').trim();
+  if (!normalized) return null;
+  if (!isValidCloseDate(normalized)) return null;
+  const parsed = dayjs(normalized);
+  if (!parsed.isValid()) return null;
+  return parsed;
+};
+
+const getDatePickerValue = (value: unknown): Dayjs | null => {
+  if (!value) return null;
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    'isValid' in value &&
+    typeof (value as { isValid?: () => boolean }).isValid === 'function'
+  ) {
+    return (value as Dayjs).isValid() ? (value as Dayjs) : null;
+  }
+  if (typeof value === 'string') return getCloseDateValue(value);
+  return null;
+};
+
+const getCloseDateString = (value: unknown): string | undefined => {
+  if (!value) return undefined;
+  if (typeof value === 'string') {
+    const normalized = value.trim();
+    return isValidCloseDate(normalized) ? normalized : undefined;
+  }
+  if (typeof value === 'object' && 'format' in value) {
+    const dateValue = value as { format?: (fmt: string) => string };
+    if (typeof dateValue.format === 'function') {
+      const text = dateValue.format('YYYY-MM-DD');
+      return isValidCloseDate(text) ? text : undefined;
+    }
+  }
+  return undefined;
+};
+
+const buildRollbackPayload = ({
+  stepId,
+  painIndex,
+  painText,
+  rollbackTarget,
+  confirmedBy,
+  actionReason,
+  base,
+}: {
+  stepId: string;
+  painIndex: number;
+  painText: string;
+  rollbackTarget: PainStatus;
+  confirmedBy: string;
+  actionReason: string;
+  base: PainConfirmationRecord;
+}): UpsertPainConfirmationPayload => {
+  const payload: UpsertPainConfirmationPayload = {
+    step_id: stepId,
+    pain_index: painIndex,
+    pain_text: painText,
+    status: rollbackTarget,
+    confirmed_by: confirmedBy,
+    action: 'rollback',
+    action_reason: actionReason,
+  };
+
+  if (rollbackTarget === PainStatus.TO_BE_CONFIRMED) {
+    payload.severity = String(base.severity || 'P1_CRITICAL');
+    const isCommon =
+      base.is_common_issue === true ||
+      !!String(base.common_issue_type || '').trim();
+    if (isCommon) {
+      payload.is_common_issue = true;
+      payload.common_issue_type =
+        String(base.common_issue_type || '').trim() || '其他';
+    } else {
+      payload.is_common_issue = false;
+      payload.common_issue_type = null;
+    }
+    return payload;
+  }
+
+  if (rollbackTarget === PainStatus.CONFIRMED_PENDING_FIX) {
+    payload.issue_link =
+      String(base.issue_link || '').trim() || FALLBACK_LINK_TEXT;
+    payload.pr_link = String(base.pr_link || '').trim() || FALLBACK_LINK_TEXT;
+    payload.expected_close_time =
+      String(base.expected_close_time || '').trim() || undefined;
+    return payload;
+  }
+
+  if (rollbackTarget === PainStatus.FIXED_PENDING_RETEST) {
+    payload.pr_link = String(base.pr_link || '').trim() || FALLBACK_LINK_TEXT;
+    return payload;
+  }
+
+  return payload;
+};
+
+const buildSessionRecordAfterRollback = ({
+  base,
+  rollbackTarget,
+  payload,
+  confirmedBy,
+}: {
+  base: PainConfirmationRecord;
+  rollbackTarget: PainStatus;
+  payload: UpsertPainConfirmationPayload;
+  confirmedBy: string;
+}): PainConfirmationRecord => {
+  return {
+    ...base,
+    status: rollbackTarget,
+    severity:
+      rollbackTarget === PainStatus.TO_BE_CONFIRMED
+        ? String(payload.severity || base.severity || 'P1_CRITICAL')
+        : base.severity,
+    action_reason:
+      rollbackTarget === PainStatus.TO_BE_CONFIRMED ? null : base.action_reason,
+    is_common_issue:
+      rollbackTarget === PainStatus.TO_BE_CONFIRMED
+        ? payload.is_common_issue
+        : base.is_common_issue,
+    common_issue_type:
+      rollbackTarget === PainStatus.TO_BE_CONFIRMED
+        ? payload.common_issue_type ?? null
+        : base.common_issue_type,
+    issue_link:
+      rollbackTarget === PainStatus.CONFIRMED_PENDING_FIX
+        ? payload.issue_link ?? base.issue_link
+        : base.issue_link,
+    pr_link:
+      rollbackTarget === PainStatus.FIXED_PENDING_RETEST
+        ? payload.pr_link ?? base.pr_link
+        : base.pr_link,
+    expected_close_time:
+      rollbackTarget === PainStatus.CONFIRMED_PENDING_FIX
+        ? payload.expected_close_time ?? base.expected_close_time
+        : base.expected_close_time,
+    confirmed_by: confirmedBy,
+  };
 };
 
 const getReadonlyLinkValue = (
@@ -467,6 +660,7 @@ const buildReadonlyFormValues = ({
   return {
     status: currentStatus,
     severity: getSafePainLevel(snapshot?.severity),
+    non_project_reason: getActionReasonText(snapshot),
     is_common: isCommon,
     common_issue_type: isCommon
       ? getSafeCommonIssueType(
@@ -481,6 +675,7 @@ const buildReadonlyFormValues = ({
       'issue'
     ),
     pr_link: getReadonlyLinkValue(snapshot?.pr_link, fallbackPrLink, 'pr'),
+    expected_close_time: getCloseDateValue(snapshot?.expected_close_time),
     retest_decision: retestDecision,
     retest_passed_file_key: passedFileKey,
   };
@@ -493,13 +688,21 @@ const enrichPayloadByStatus = (
   shouldShowRetest: boolean
 ): UpsertPainConfirmationPayload => {
   if (status === PainStatus.TO_BE_CONFIRMED) {
+    const isNonProjectIssue = isNonProjectSeverity(vals.severity);
     return {
       ...base,
+      status: isNonProjectIssue ? PainStatus.NO_FIX_NEEDED : base.status,
       severity: vals.severity,
+      action_reason: isNonProjectIssue
+        ? String(vals.non_project_reason || '').trim()
+        : undefined,
       is_common_issue: vals.is_common === true,
       common_issue_type:
         vals.is_common === true ? vals.common_issue_type || null : null,
-      issue_link: vals.issue_link || undefined,
+      issue_link: isNonProjectIssue ? undefined : vals.issue_link || undefined,
+      expected_close_time: isNonProjectIssue
+        ? undefined
+        : getCloseDateString(vals.expected_close_time),
     };
   }
   if (status === PainStatus.CONFIRMED_PENDING_FIX) {
@@ -507,6 +710,7 @@ const enrichPayloadByStatus = (
       ...base,
       issue_link: vals.issue_link,
       pr_link: vals.pr_link,
+      expected_close_time: getCloseDateString(vals.expected_close_time),
     };
   }
   if (status === PainStatus.RETESTED_FAILED) {
@@ -514,6 +718,7 @@ const enrichPayloadByStatus = (
       ...base,
       issue_link: vals.issue_link,
       pr_link: vals.pr_link,
+      expected_close_time: getCloseDateString(vals.expected_close_time),
     };
   }
   if (shouldShowRetest) {
@@ -527,6 +732,45 @@ const enrichPayloadByStatus = (
     };
   }
   return base;
+};
+
+const NonProjectIssueInfo: React.FC<{
+  currentRecord?: PainConfirmationRecord | null;
+}> = ({ currentRecord }) => {
+  const reason = getActionReasonText(currentRecord) || FALLBACK_LINK_TEXT;
+
+  return (
+    <div className="space-y-3 rounded-md border border-emerald-200 bg-emerald-50 p-4">
+      <div className="flex items-center gap-2">
+        <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+        <Text strong className="!text-emerald-700">
+          非项目本身问题
+        </Text>
+      </div>
+      <div className="space-y-1.5 text-sm text-slate-600">
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-slate-400">判断原因</span>
+          <div className="rounded-md bg-white/80 px-3 py-2 leading-6 text-slate-700">
+            {reason}
+          </div>
+        </div>
+        {currentRecord?.confirmed_by && (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">操作人：</span>
+            <span>{currentRecord.confirmed_by}</span>
+          </div>
+        )}
+        {currentRecord?.confirmed_at && (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">操作时间：</span>
+            <span>
+              {currentRecord.confirmed_at.replace('T', ' ').replace('Z', '')}
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 const RetestPassedInfo: React.FC<{
@@ -550,6 +794,29 @@ const RetestPassedInfo: React.FC<{
         </Text>
       </div>
       <div className="space-y-1.5 text-sm text-slate-600">
+        {(currentRecord?.expected_close_time ||
+          currentRecord?.actual_close_time) && (
+          <div className="flex flex-col gap-1">
+            {currentRecord?.expected_close_time && (
+              <div className="flex items-center gap-2">
+                <span className="shrink-0 text-xs text-slate-400">
+                  预计闭环：
+                </span>
+                <span>
+                  {formatCloseTime(currentRecord.expected_close_time)}
+                </span>
+              </div>
+            )}
+            {currentRecord?.actual_close_time && (
+              <div className="flex items-center gap-2">
+                <span className="shrink-0 text-xs text-slate-400">
+                  实际闭环：
+                </span>
+                <span>{formatCloseTime(currentRecord.actual_close_time)}</span>
+              </div>
+            )}
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <span className="shrink-0 text-xs text-slate-400">PR 链接：</span>
           {showPrLinkAsAnchor ? (
@@ -622,27 +889,67 @@ const HistoryTable: React.FC<{
       title: '详情',
       key: 'details',
       render: (_: any, record: any) => {
+        const extraParts: string[] = [];
+        const actionReason = getActionReasonText(record);
+        if (record.expected_close_time) {
+          extraParts.push(
+            `预计闭环: ${formatCloseTime(record.expected_close_time)}`
+          );
+        }
+        if (record.actual_close_time) {
+          extraParts.push(
+            `实际闭环: ${formatCloseTime(record.actual_close_time)}`
+          );
+        }
         if (record.is_common_issue || record.common_issue_type)
-          return record.common_issue_type
-            ? `共性问题类型: ${record.common_issue_type}`
-            : '共性问题待处理';
+          return [
+            record.common_issue_type
+              ? `共性问题类型: ${record.common_issue_type}`
+              : '共性问题待处理',
+            ...extraParts,
+          ]
+            .filter(Boolean)
+            .join('，');
+        if (
+          Number(record.status) === PainStatus.NO_FIX_NEEDED ||
+          isNonProjectSeverity(record.severity)
+        ) {
+          return [
+            '等级: 非项目本身问题',
+            actionReason && `判断原因: ${actionReason}`,
+          ]
+            .filter(Boolean)
+            .join('，');
+        }
         if (record.status === 1)
-          return `等级: ${formatSeverityLabel(record.severity)}`;
-        if (record.status === 2) return `Issue: ${record.issue_link || '-'}`;
+          return [
+            `等级: ${formatSeverityLabel(record.severity)}`,
+            ...extraParts,
+          ]
+            .filter(Boolean)
+            .join('，');
+        if (record.status === 2)
+          return [`Issue: ${record.issue_link || '-'}`, ...extraParts]
+            .filter(Boolean)
+            .join('，');
         if (record.status === 3) {
           const parts = [];
           if (record.issue_link) parts.push(`Issue: ${record.issue_link}`);
           if (record.pr_link) parts.push(`PR: ${record.pr_link}`);
-          return parts.length ? parts.join(', ') : '--';
+          return [...parts, ...extraParts].length
+            ? [...parts, ...extraParts].join(', ')
+            : '--';
         }
         if (record.status === 5) {
           const parts = [];
           if (record.pr_link) parts.push(`PR: ${record.pr_link}`);
           if (record.retest_passed_file_key)
             parts.push(`通过报告: ${record.retest_passed_file_key}`);
-          return parts.length ? parts.join(', ') : '--';
+          return [...parts, ...extraParts].length
+            ? [...parts, ...extraParts].join(', ')
+            : '--';
         }
-        return '-';
+        return extraParts.length ? extraParts.join(', ') : '-';
       },
     },
     {
@@ -711,6 +1018,12 @@ const ToBeConfirmedFormItems: React.FC<{
       </Form.Item>
 
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <div className="mb-2 text-sm font-medium text-slate-700">
+          共性问题说明
+        </div>
+        <div className="mb-3 text-xs leading-5 text-slate-700">
+          共性问题不是由特定项目的文档、项目本身及相关工具导致的，而是在不同项目里高频出现的普遍缺陷。同时，那些必须依靠社区统筹协调资源，或通过标准化工具与协议来通用解决的问题，也属于共性问题。
+        </div>
         <div className="mb-2 text-sm font-medium text-slate-700">
           已知共性问题
         </div>
@@ -782,16 +1095,16 @@ const ToBeConfirmedFormItems: React.FC<{
             const style = getPainLevelStyle(item.value);
             return (
               <Radio key={item.value} value={item.value} className="w-full">
-                <span className="inline-flex items-center gap-2">
+                <span className="flex items-start gap-2">
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
+                    className={`inline-flex flex-shrink-0 items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
                   >
                     <span
                       className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
                     />
                     {formatSeverityLabel(item.value)}
                   </span>
-                  <span className="text-xs text-slate-500">
+                  <span className="min-w-0 flex-1 whitespace-normal break-words text-xs text-slate-500">
                     {item.value === 'P4_TRIVIAL' ? '' : item.description}
                   </span>
                 </span>
@@ -802,29 +1115,80 @@ const ToBeConfirmedFormItems: React.FC<{
       </Radio.Group>
     </Form.Item>
 
-    <Form.Item
-      name="issue_link"
-      label={
-        <span className="text-sm font-medium text-slate-700">
-          ISSUE 链接（可选）
-        </span>
-      }
-      rules={[
-        {
-          validator: async (_, value) => {
-            const normalized = String(value || '').trim();
-            if (!normalized) return;
-            if (!isValidIssueLink(normalized)) {
-              throw new Error(
-                '请输入有效的 GitCode Issue 链接，格式应为 .../issues/数字'
-              );
-            }
+    {isNonProjectSeverity(form.getFieldValue('severity')) && (
+      <Form.Item
+        name="non_project_reason"
+        label={
+          <span className="text-sm font-medium text-slate-700">判断原因</span>
+        }
+        rules={[
+          {
+            validator: async (_, value) => {
+              if (!isNonProjectSeverity(form.getFieldValue('severity'))) return;
+              if (!String(value || '').trim()) {
+                throw new Error('请填写判断原因');
+              }
+            },
           },
-        },
-      ]}
-    >
-      <Input placeholder="https://gitcode.com/.../issues/1" allowClear />
-    </Form.Item>
+        ]}
+      >
+        <Input.TextArea
+          rows={3}
+          maxLength={500}
+          showCount
+          placeholder="请补充说明为什么该问题不属于项目本身问题"
+          allowClear
+        />
+      </Form.Item>
+    )}
+
+    {!isNonProjectSeverity(form.getFieldValue('severity')) && (
+      <>
+        <Form.Item
+          name="issue_link"
+          label={
+            <span className="text-sm font-medium text-slate-700">
+              ISSUE 链接（可选）
+            </span>
+          }
+          rules={[
+            {
+              validator: async (_, value) => {
+                const normalized = String(value || '').trim();
+                if (!normalized) return;
+                if (!isValidIssueLink(normalized)) {
+                  throw new Error(
+                    '请输入有效的 GitCode Issue 链接，格式应为 .../issues/数字'
+                  );
+                }
+              },
+            },
+          ]}
+        >
+          <Input placeholder="https://gitcode.com/.../issues/1" allowClear />
+        </Form.Item>
+
+        <Form.Item
+          name="expected_close_time"
+          label={
+            <span className="text-sm font-medium text-slate-700">
+              预计闭环时间（可选）
+            </span>
+          }
+          normalize={(value) => value ?? null}
+          getValueProps={(value) => ({
+            value: getDatePickerValue(value),
+          })}
+        >
+          <DatePicker
+            className="w-full"
+            format="YYYY-MM-DD"
+            placeholder="请选择预计闭环日期"
+            inputReadOnly
+          />
+        </Form.Item>
+      </>
+    )}
   </>
 );
 
@@ -919,6 +1283,24 @@ const RetestingFormItems: React.FC<{
 const ConfirmedPendingFixFormItems: React.FC = () => (
   <>
     <Form.Item
+      name="expected_close_time"
+      label={
+        <span className="text-sm font-medium text-slate-700">预计闭环时间</span>
+      }
+      rules={[{ required: true, message: '请选择预计闭环时间' }]}
+      normalize={(value) => value ?? null}
+      getValueProps={(value) => ({
+        value: getDatePickerValue(value),
+      })}
+    >
+      <DatePicker
+        className="w-full"
+        format="YYYY-MM-DD"
+        placeholder="请选择预计闭环日期"
+        inputReadOnly
+      />
+    </Form.Item>
+    <Form.Item
       name="issue_link"
       label={
         <span className="text-sm font-medium text-slate-700">ISSUE 链接</span>
@@ -935,7 +1317,6 @@ const ConfirmedPendingFixFormItems: React.FC = () => (
           },
         },
       ]}
-      extra="如上一轮已填写，会自动带出，可按需修改"
     >
       <Input placeholder="https://gitcode.com/.../issues/1" allowClear />
     </Form.Item>
@@ -1038,7 +1419,6 @@ const usePainConfirmationForm = ({
 };
 
 const useStepsItems = ({
-  currentStatus,
   displayedStepStatus,
   isReviewingHistoryStep,
   activeDisplayStep,
@@ -1046,7 +1426,6 @@ const useStepsItems = ({
   reviewStepSnapshotMap,
   setSelectedStep,
 }: {
-  currentStatus: number;
   displayedStepStatus: number;
   isReviewingHistoryStep: boolean;
   activeDisplayStep: number;
@@ -1120,7 +1499,6 @@ const useStepsItems = ({
   }, [
     activeDisplayStep,
     currentRecord,
-    currentStatus,
     displayedStepStatus,
     isReviewingHistoryStep,
     reviewStepSnapshotMap,
@@ -1128,11 +1506,96 @@ const useStepsItems = ({
   ]);
 };
 
+const useModalSessionState = ({
+  open,
+  currentRecord,
+  parentPainRemark,
+}: {
+  open: boolean;
+  currentRecord?: PainConfirmationRecord | null;
+  parentPainRemark?: string | null;
+}) => {
+  const [sessionRecord, setSessionRecord] = useState<
+    PainConfirmationRecord | undefined
+  >(currentRecord ?? undefined);
+  const [sessionParentPainRemark, setSessionParentPainRemark] = useState<
+    string | null | undefined
+  >(parentPainRemark);
+
+  useEffect(() => {
+    if (!open) {
+      setSessionRecord(currentRecord ?? undefined);
+      setSessionParentPainRemark(parentPainRemark);
+    }
+  }, [open, currentRecord, parentPainRemark]);
+
+  useEffect(() => {
+    if (open) {
+      setSessionRecord(currentRecord ?? undefined);
+      setSessionParentPainRemark(parentPainRemark);
+    }
+  }, [open, currentRecord, parentPainRemark]);
+
+  return {
+    sessionRecord,
+    setSessionRecord,
+    sessionParentPainRemark,
+  };
+};
+
+const getModalStatusState = (
+  modalRecord?: PainConfirmationRecord
+): {
+  currentStatus: PainStatus;
+  isCurrentNonProjectIssue: boolean;
+  latestFileKey: string;
+  showRetestDecision: boolean;
+} => {
+  const currentStatus = modalRecord?.status || PainStatus.TO_BE_CONFIRMED;
+  const isCurrentNonProjectIssue =
+    currentStatus === PainStatus.NO_FIX_NEEDED ||
+    (currentStatus === PainStatus.CONFIRMED_PENDING_FIX &&
+      isNonProjectSeverity(modalRecord?.severity));
+  const latestFileKey = String(modalRecord?.latest_file_key || '').trim();
+
+  return {
+    currentStatus,
+    isCurrentNonProjectIssue,
+    latestFileKey,
+    showRetestDecision:
+      !isCurrentNonProjectIssue &&
+      currentStatus === PainStatus.RETESTING &&
+      !!latestFileKey,
+  };
+};
+
+const shouldRenderCustomFooter = ({
+  showHistory,
+  isReviewingHistoryStep,
+  isCurrentNonProjectIssue,
+  currentStatus,
+  showRetestDecision,
+}: {
+  showHistory: boolean;
+  isReviewingHistoryStep: boolean;
+  isCurrentNonProjectIssue: boolean;
+  currentStatus: number;
+  showRetestDecision: boolean;
+}) =>
+  showHistory ||
+  isReviewingHistoryStep ||
+  isCurrentNonProjectIssue ||
+  currentStatus === PainStatus.FIXED_PENDING_RETEST ||
+  (currentStatus >= PainStatus.RETESTING &&
+    !showRetestDecision &&
+    currentStatus !== PainStatus.RETESTED_FAILED);
+
 const ModalFooter: React.FC<{
   showHistory: boolean;
   setShowHistory: (show: boolean) => void;
   isReviewingHistoryStep: boolean;
   onCancel: () => void;
+  isCurrentNonProjectIssue: boolean;
   currentStatus: number;
   showRetestDecision: boolean;
   rollbackTargets: PainStatus[];
@@ -1142,6 +1605,7 @@ const ModalFooter: React.FC<{
   setShowHistory,
   isReviewingHistoryStep,
   onCancel,
+  isCurrentNonProjectIssue,
   currentStatus,
   showRetestDecision,
   rollbackTargets,
@@ -1176,6 +1640,19 @@ const ModalFooter: React.FC<{
     );
   }
 
+  if (isCurrentNonProjectIssue) {
+    return (
+      <div className="flex items-center justify-end gap-2">
+        <Button danger onClick={() => onRollback(PainStatus.TO_BE_CONFIRMED)}>
+          回退到待确认
+        </Button>
+        <Button key="close-non-project" onClick={onCancel}>
+          关闭
+        </Button>
+      </div>
+    );
+  }
+
   if (
     currentStatus === PainStatus.FIXED_PENDING_RETEST ||
     (currentStatus >= PainStatus.RETESTING && !showRetestDecision)
@@ -1196,9 +1673,68 @@ const ModalTitle: React.FC = () => (
   </div>
 );
 
+type PainConfirmationFormVisibilityArgs = {
+  isReviewingHistoryStep: boolean;
+  isCurrentNonProjectIssue: boolean;
+  currentStatus: number;
+  activeDisplayStep: number;
+};
+
+const shouldShowToBeConfirmedForm = ({
+  isReviewingHistoryStep,
+  currentStatus,
+  activeDisplayStep,
+}: PainConfirmationFormVisibilityArgs) =>
+  isReviewingHistoryStep
+    ? activeDisplayStep === PainStatus.TO_BE_CONFIRMED
+    : currentStatus === PainStatus.TO_BE_CONFIRMED;
+
+const shouldShowConfirmedPendingFixForm = ({
+  isReviewingHistoryStep,
+  isCurrentNonProjectIssue,
+  currentStatus,
+  activeDisplayStep,
+}: PainConfirmationFormVisibilityArgs) =>
+  isReviewingHistoryStep
+    ? activeDisplayStep === PainStatus.CONFIRMED_PENDING_FIX
+    : (!isCurrentNonProjectIssue &&
+        currentStatus === PainStatus.CONFIRMED_PENDING_FIX) ||
+      currentStatus === PainStatus.RETESTED_FAILED;
+
+const shouldShowFixedPendingRetestInfo = ({
+  isReviewingHistoryStep,
+  currentStatus,
+  activeDisplayStep,
+}: PainConfirmationFormVisibilityArgs) =>
+  isReviewingHistoryStep
+    ? activeDisplayStep === PainStatus.FIXED_PENDING_RETEST
+    : currentStatus === PainStatus.FIXED_PENDING_RETEST;
+
+const shouldShowRetestingForm = ({
+  isReviewingHistoryStep,
+  currentStatus,
+  activeDisplayStep,
+}: PainConfirmationFormVisibilityArgs) =>
+  isReviewingHistoryStep
+    ? activeDisplayStep === PainStatus.RETESTING
+    : currentStatus === PainStatus.RETESTING;
+
+const shouldShowConfirmedByField = ({
+  isReviewingHistoryStep,
+  isCurrentNonProjectIssue,
+  currentStatus,
+  activeDisplayStep,
+}: PainConfirmationFormVisibilityArgs) =>
+  isReviewingHistoryStep
+    ? activeDisplayStep <= PainStatus.CONFIRMED_PENDING_FIX
+    : (!isCurrentNonProjectIssue &&
+        currentStatus <= PainStatus.CONFIRMED_PENDING_FIX) ||
+      currentStatus === PainStatus.RETESTED_FAILED;
+
 const PainConfirmationForm: React.FC<{
   form: FormInstance<FormValues>;
   isReviewingHistoryStep: boolean;
+  isCurrentNonProjectIssue: boolean;
   currentStatus: number;
   activeDisplayStep: number;
   isCommon: boolean;
@@ -1216,6 +1752,7 @@ const PainConfirmationForm: React.FC<{
 }> = ({
   form,
   isReviewingHistoryStep,
+  isCurrentNonProjectIssue,
   currentStatus,
   activeDisplayStep,
   isCommon,
@@ -1231,21 +1768,43 @@ const PainConfirmationForm: React.FC<{
   currentRecord,
   parentPainRemark,
 }) => {
+  const visibilityArgs = {
+    isReviewingHistoryStep,
+    isCurrentNonProjectIssue,
+    currentStatus,
+    activeDisplayStep,
+  };
+  const showToBeConfirmedForm = shouldShowToBeConfirmedForm(visibilityArgs);
+  const showConfirmedPendingFixForm =
+    shouldShowConfirmedPendingFixForm(visibilityArgs);
+  const showFixedPendingRetestInfo =
+    shouldShowFixedPendingRetestInfo(visibilityArgs);
+  const showRetestingForm = shouldShowRetestingForm(visibilityArgs);
+  const showConfirmedByField = shouldShowConfirmedByField(visibilityArgs);
+  const showNonProjectIssueInfo =
+    !isReviewingHistoryStep && isCurrentNonProjectIssue;
+  const showRetestPassedInfo =
+    !isReviewingHistoryStep && currentStatus === PainStatus.RETESTED_PASSED;
+  const retestingFormShowRetestDecision = isReviewingHistoryStep
+    ? true
+    : showRetestDecision;
+  const retestingFormLatestFileKey = isReviewingHistoryStep
+    ? reviewLatestFileKey
+    : latestFileKey;
+
   return (
     <Form
       form={form}
       layout="vertical"
       requiredMark={false}
-      disabled={isReviewingHistoryStep}
-      initialValues={{ status: currentStatus }}
+      disabled={isReviewingHistoryStep || isCurrentNonProjectIssue}
+      initialValues={{ status: currentStatus, expected_close_time: null }}
     >
       <Form.Item name="status" hidden>
         <Input type="hidden" />
       </Form.Item>
 
-      {(isReviewingHistoryStep
-        ? activeDisplayStep === PainStatus.TO_BE_CONFIRMED
-        : currentStatus === PainStatus.TO_BE_CONFIRMED) && (
+      {showToBeConfirmedForm && (
         <ToBeConfirmedFormItems
           isCommon={isCommon}
           commonIssueLoading={commonIssueLoading}
@@ -1255,50 +1814,32 @@ const PainConfirmationForm: React.FC<{
         />
       )}
 
-      {(isReviewingHistoryStep
-        ? activeDisplayStep === PainStatus.CONFIRMED_PENDING_FIX
-        : currentStatus === PainStatus.CONFIRMED_PENDING_FIX ||
-          currentStatus === PainStatus.RETESTED_FAILED) && (
-        <ConfirmedPendingFixFormItems />
-      )}
+      {showConfirmedPendingFixForm && <ConfirmedPendingFixFormItems />}
 
-      {((isReviewingHistoryStep &&
-        activeDisplayStep === PainStatus.FIXED_PENDING_RETEST) ||
-        (!isReviewingHistoryStep &&
-          currentStatus === PainStatus.FIXED_PENDING_RETEST)) && (
-        <FixedPendingRetestInfo />
-      )}
+      {showFixedPendingRetestInfo && <FixedPendingRetestInfo />}
 
-      {((isReviewingHistoryStep &&
-        activeDisplayStep === PainStatus.RETESTING) ||
-        (!isReviewingHistoryStep &&
-          currentStatus === PainStatus.RETESTING)) && (
+      {showRetestingForm && (
         <RetestingFormItems
-          showRetestDecision={
-            isReviewingHistoryStep ? true : showRetestDecision
-          }
-          latestFileKey={
-            isReviewingHistoryStep ? reviewLatestFileKey : latestFileKey
-          }
+          showRetestDecision={retestingFormShowRetestDecision}
+          latestFileKey={retestingFormLatestFileKey}
           retestDecision={retestDecision}
           versionOptions={versionOptions}
           fileKey={fileKey}
         />
       )}
 
-      {!isReviewingHistoryStep &&
-        currentStatus === PainStatus.RETESTED_PASSED && (
-          <RetestPassedInfo
-            currentRecord={currentRecord}
-            parentPainRemark={parentPainRemark}
-          />
-        )}
+      {showNonProjectIssueInfo && (
+        <NonProjectIssueInfo currentRecord={currentRecord} />
+      )}
 
-      {((isReviewingHistoryStep &&
-        activeDisplayStep <= PainStatus.CONFIRMED_PENDING_FIX) ||
-        (!isReviewingHistoryStep &&
-          (currentStatus <= PainStatus.CONFIRMED_PENDING_FIX ||
-            currentStatus === PainStatus.RETESTED_FAILED))) && (
+      {showRetestPassedInfo && (
+        <RetestPassedInfo
+          currentRecord={currentRecord}
+          parentPainRemark={parentPainRemark}
+        />
+      )}
+
+      {showConfirmedByField && (
         <Form.Item
           name="confirmed_by"
           label={
@@ -1345,37 +1886,24 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const [rollbackBy, setRollbackBy] = useState('');
   const [rollbackReason, setRollbackReason] = useState('');
   const [rollbackSubmitting, setRollbackSubmitting] = useState(false);
-  const [sessionRecord, setSessionRecord] = useState<
-    PainConfirmationRecord | undefined
-  >(currentRecord ?? undefined);
-  const [sessionParentPainRemark, setSessionParentPainRemark] = useState<
-    string | null | undefined
-  >(parentPainRemark);
-
-  useEffect(() => {
-    if (!open) {
-      setSessionRecord(currentRecord ?? undefined);
-      setSessionParentPainRemark(parentPainRemark);
-    }
-  }, [open, currentRecord, parentPainRemark]);
-
-  useEffect(() => {
-    if (open) {
-      setSessionRecord(currentRecord ?? undefined);
-      setSessionParentPainRemark(parentPainRemark);
-    }
-  }, [open]);
+  const { sessionRecord, setSessionRecord, sessionParentPainRemark } =
+    useModalSessionState({
+      open,
+      currentRecord,
+      parentPainRemark,
+    });
 
   const modalRecord = open ? sessionRecord : currentRecord ?? undefined;
   const modalParentPainRemark = open
     ? sessionParentPainRemark
     : parentPainRemark;
 
-  // 计算当前状态：如果没有记录，默认是 1 (待确认)
-  const currentStatus = modalRecord?.status || PainStatus.TO_BE_CONFIRMED;
-  const latestFileKey = String(modalRecord?.latest_file_key || '').trim();
-  const showRetestDecision =
-    currentStatus === PainStatus.RETESTING && !!latestFileKey;
+  const {
+    currentStatus,
+    isCurrentNonProjectIssue,
+    latestFileKey,
+    showRetestDecision,
+  } = getModalStatusState(modalRecord);
 
   const { handleOk, submitting } = usePainConfirmationForm({
     stepId,
@@ -1423,13 +1951,14 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   }, [commonIssueResp?.items, modalRecord?.common_issue_type]);
 
   // 计算下一步状态
-  const nextStatus = useMemo(() => {
-    if (currentStatus === PainStatus.RETESTED_FAILED)
-      return PainStatus.FIXED_PENDING_RETEST;
-    return Math.min(currentStatus + 1, 5) as PainStatus;
-  }, [currentStatus]);
+  const nextStatus =
+    currentStatus === PainStatus.RETESTED_FAILED
+      ? PainStatus.FIXED_PENDING_RETEST
+      : (Math.min(currentStatus + 1, 5) as PainStatus);
 
-  const displayedStepStatus = getDisplayedStepStatus(currentStatus);
+  const displayedStepStatus = isCurrentNonProjectIssue
+    ? PainStatus.NO_FIX_NEEDED
+    : getDisplayedStepStatus(currentStatus);
 
   const reviewStepSnapshotMap = useMemo(() => {
     const historyItems = modalRecord?.history || [];
@@ -1480,8 +2009,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     ).trim();
   }, [activeReviewSnapshot, latestFileKey]);
 
-  const stepsItems = useStepsItems({
-    currentStatus,
+  const normalStepsItems = useStepsItems({
     displayedStepStatus,
     isReviewingHistoryStep,
     activeDisplayStep,
@@ -1489,6 +2017,25 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     reviewStepSnapshotMap,
     setSelectedStep,
   });
+
+  const stepsItems = isCurrentNonProjectIssue
+    ? [
+        {
+          title: (
+            <div className="inline-flex min-h-6 items-center rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0 align-middle leading-none text-emerald-700 shadow-sm">
+              <span className="whitespace-nowrap leading-5">
+                非项目本身问题
+              </span>
+            </div>
+          ),
+          description: modalRecord?.confirmed_at ? (
+            <div className="text-xs leading-5 text-slate-500">
+              {formatStatusTime(modalRecord.confirmed_at)}
+            </div>
+          ) : null,
+        },
+      ]
+    : normalStepsItems;
 
   const openRollback = useCallback((target: PainStatus) => {
     setRollbackTarget(target);
@@ -1504,64 +2051,27 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     if (!by || !reason) return;
 
     const base = modalRecord ?? ({} as PainConfirmationRecord);
-    const payload: UpsertPainConfirmationPayload = {
-      step_id: stepId,
-      pain_index: painIndex,
-      pain_text: painText,
-      status: rollbackTarget,
-      confirmed_by: by,
-      action: 'rollback',
-      action_reason: reason,
-    };
-
-    if (rollbackTarget === PainStatus.TO_BE_CONFIRMED) {
-      payload.severity = String(base.severity || 'P1_CRITICAL');
-      const isCommon =
-        base.is_common_issue === true ||
-        !!String(base.common_issue_type || '').trim();
-      if (isCommon) {
-        payload.is_common_issue = true;
-        payload.common_issue_type =
-          String(base.common_issue_type || '').trim() || '其他';
-      } else {
-        payload.is_common_issue = false;
-        payload.common_issue_type = null;
-      }
-    } else if (rollbackTarget === PainStatus.CONFIRMED_PENDING_FIX) {
-      payload.issue_link =
-        String(base.issue_link || '').trim() || FALLBACK_LINK_TEXT;
-    } else if (rollbackTarget === PainStatus.FIXED_PENDING_RETEST) {
-      payload.pr_link = String(base.pr_link || '').trim() || FALLBACK_LINK_TEXT;
-    }
+    const payload = buildRollbackPayload({
+      stepId,
+      painIndex,
+      painText,
+      rollbackTarget,
+      confirmedBy: by,
+      actionReason: reason,
+      base,
+    });
 
     setRollbackSubmitting(true);
     try {
       await onSubmit(payload);
-      setSessionRecord({
-        ...base,
-        status: rollbackTarget,
-        severity:
-          rollbackTarget === PainStatus.TO_BE_CONFIRMED
-            ? String(payload.severity || base.severity || 'P1_CRITICAL')
-            : base.severity,
-        is_common_issue:
-          rollbackTarget === PainStatus.TO_BE_CONFIRMED
-            ? payload.is_common_issue
-            : base.is_common_issue,
-        common_issue_type:
-          rollbackTarget === PainStatus.TO_BE_CONFIRMED
-            ? payload.common_issue_type ?? null
-            : base.common_issue_type,
-        issue_link:
-          rollbackTarget === PainStatus.CONFIRMED_PENDING_FIX
-            ? payload.issue_link ?? base.issue_link
-            : base.issue_link,
-        pr_link:
-          rollbackTarget === PainStatus.FIXED_PENDING_RETEST
-            ? payload.pr_link ?? base.pr_link
-            : base.pr_link,
-        confirmed_by: by,
-      });
+      setSessionRecord(
+        buildSessionRecordAfterRollback({
+          base,
+          rollbackTarget,
+          payload,
+          confirmedBy: by,
+        })
+      );
       setRollbackModalOpen(false);
       setSelectedStep(null);
     } finally {
@@ -1613,11 +2123,15 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       form.setFieldsValue({
         status: PainStatus.TO_BE_CONFIRMED,
         severity: (modalRecord?.severity as PainLevel) || 'P1_CRITICAL',
+        non_project_reason: getActionReasonText(modalRecord),
         is_common: undefined,
         common_issue_type: undefined,
         confirmed_by: '',
         issue_link: '',
         pr_link: '',
+        expected_close_time: getCloseDateValue(
+          modalRecord?.expected_close_time
+        ),
         retest_decision: undefined,
         retest_passed_file_key: latestFileKey || undefined,
       });
@@ -1639,6 +2153,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       severity: modalRecord?.severity
         ? (modalRecord?.severity as PainLevel) || 'P1_CRITICAL'
         : undefined,
+      non_project_reason: getActionReasonText(modalRecord),
       is_common:
         currentStatus === PainStatus.TO_BE_CONFIRMED && !modalRecord
           ? undefined
@@ -1656,6 +2171,12 @@ const PainLevelConfirmModal: React.FC<Props> = ({
           ? getSafeLinkValue(modalRecord?.issue_link, '', false)
           : '',
       pr_link: '',
+      expected_close_time:
+        currentStatus === PainStatus.CONFIRMED_PENDING_FIX ||
+        currentStatus === PainStatus.RETESTED_FAILED ||
+        currentStatus === PainStatus.TO_BE_CONFIRMED
+          ? getCloseDateValue(modalRecord?.expected_close_time)
+          : null,
       retest_decision: undefined,
       retest_passed_file_key: latestFileKey || undefined,
     });
@@ -1672,13 +2193,32 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   }, [open, isReviewingHistoryStep, resetFormToSnapshot, resetFormToCurrent]);
 
   const isCommon = Form.useWatch('is_common', form);
+  const selectedSeverity = Form.useWatch('severity', form);
   const retestDecision = Form.useWatch('retest_decision', form);
+  const useCustomFooter = shouldRenderCustomFooter({
+    showHistory,
+    isReviewingHistoryStep,
+    isCurrentNonProjectIssue,
+    currentStatus,
+    showRetestDecision,
+  });
 
   useEffect(() => {
     if (isCommon !== true) {
       form.setFieldsValue({ common_issue_type: undefined });
     }
   }, [isCommon, form]);
+
+  useEffect(() => {
+    if (isNonProjectSeverity(selectedSeverity)) {
+      form.setFieldsValue({
+        issue_link: undefined,
+        expected_close_time: null,
+      });
+      return;
+    }
+    form.setFieldsValue({ non_project_reason: undefined });
+  }, [selectedSeverity, form]);
 
   return (
     <Modal
@@ -1700,22 +2240,18 @@ const PainLevelConfirmModal: React.FC<Props> = ({
         body: {
           height: '70vh',
           overflowY: 'auto',
-          paddingRight: '8px', // 预留滚动条空间
+          paddingRight: '8px',
         },
       }}
       destroyOnClose
       footer={
-        showHistory ||
-        isReviewingHistoryStep ||
-        currentStatus === PainStatus.FIXED_PENDING_RETEST ||
-        (currentStatus >= PainStatus.RETESTING &&
-          !showRetestDecision &&
-          currentStatus !== PainStatus.RETESTED_FAILED) ? (
+        useCustomFooter ? (
           <ModalFooter
             showHistory={showHistory}
             setShowHistory={setShowHistory}
             isReviewingHistoryStep={isReviewingHistoryStep}
             onCancel={onCancel}
+            isCurrentNonProjectIssue={isCurrentNonProjectIssue}
             currentStatus={currentStatus}
             showRetestDecision={showRetestDecision}
             rollbackTargets={rollbackTargets}
@@ -1725,10 +2261,9 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       }
     >
       <div className="space-y-6">
-        {/* 流程进度 */}
         <div className="rounded-lg bg-slate-50 p-4">
           <Steps
-            current={displayedStepStatus - 1}
+            current={isCurrentNonProjectIssue ? 0 : displayedStepStatus - 1}
             items={stepsItems}
             size="small"
             className="pain-steps"
@@ -1739,7 +2274,6 @@ const PainLevelConfirmModal: React.FC<Props> = ({
           <HistoryTable data={historyData} loading={historyLoading} />
         ) : (
           <>
-            {/* 痛点内容预览 */}
             <div className="rounded-lg border border-rose-100 bg-rose-50/80 px-3.5 py-2.5 text-sm leading-relaxed text-rose-800">
               <div className="mb-1 font-semibold">痛点描述：</div>
               {painText}
@@ -1748,6 +2282,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
             <PainConfirmationForm
               form={form}
               isReviewingHistoryStep={isReviewingHistoryStep}
+              isCurrentNonProjectIssue={isCurrentNonProjectIssue}
               currentStatus={currentStatus}
               activeDisplayStep={activeDisplayStep}
               isCommon={isCommon}
