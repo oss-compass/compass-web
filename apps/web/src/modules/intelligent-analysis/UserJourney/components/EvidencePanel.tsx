@@ -213,8 +213,8 @@ const StatusBadge: React.FC<{
     }
     if (status === PainStatus.RETESTING) {
       return {
-        pill: 'border-amber-300 bg-amber-100 text-amber-700',
-        dot: 'bg-amber-500',
+        pill: 'border-violet-300 bg-violet-100 text-violet-700',
+        dot: 'bg-violet-500',
       };
     }
     if (status === PainStatus.RETESTED_PASSED) {
@@ -591,6 +591,7 @@ const buildModalCurrentRecord = ({
         ? ''
         : displayState.effectiveConfirmedBy,
     confirmed_at: displayState.effectiveConfirmedAt || '',
+    latest_file_key: existing?.latest_file_key || fileKey || null,
   };
 };
 
@@ -896,7 +897,7 @@ const HistoryPainTable: React.FC<{
         'border-rose-200 bg-rose-50 text-rose-700',
       [PainStatus.FIXED_PENDING_RETEST]:
         'border-indigo-200 bg-indigo-50 text-indigo-700',
-      [PainStatus.RETESTING]: 'border-amber-200 bg-amber-50 text-amber-700',
+      [PainStatus.RETESTING]: 'border-violet-200 bg-violet-50 text-violet-700',
       [PainStatus.RETESTED_PASSED]:
         'border-emerald-200 bg-emerald-50 text-emerald-700',
       [PainStatus.NO_FIX_NEEDED]: 'border-slate-200 bg-slate-50 text-slate-600',

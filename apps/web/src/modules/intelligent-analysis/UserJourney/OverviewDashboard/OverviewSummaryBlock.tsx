@@ -1,6 +1,4 @@
 import React from 'react';
-import { Tooltip } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
 import { SEVERITY_CFG, STATUS_CFG } from './constants';
 import type {
   CommonIssueGroup,
@@ -638,13 +636,8 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
 
   return (
     <div className="overview-block">
-      <div className="ov-title flex items-center gap-1.5">
+      <div className="ov-title">
         {typeof title === 'string' ? <span>{title}</span> : title}
-        {tooltip ? (
-          <Tooltip title={tooltip}>
-            <InfoCircleOutlined className="cursor-help text-[13px] text-slate-400 transition-colors hover:text-slate-600" />
-          </Tooltip>
-        ) : null}
       </div>
       <div className="ov-row">
         {renderMetric('总问题数', 'total', summary.total)}

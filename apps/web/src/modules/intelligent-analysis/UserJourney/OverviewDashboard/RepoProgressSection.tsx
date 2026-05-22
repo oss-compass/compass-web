@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Button, Grid, Segmented, Select, Table, Typography } from 'antd';
+import { Grid, Segmented, Select, Table, Typography } from 'antd';
 import { CheckOutlined, FilterFilled, RightOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import { SEVERITY_CFG } from './constants';
@@ -21,6 +21,7 @@ import type {
   TeamProgressRow,
   TeamSortKey,
 } from './types';
+import { compassApiUrl } from '../rawData/apiClient';
 import {
   buildMetricSummaryFromPainRows,
   compareTeamNames,
@@ -212,6 +213,8 @@ type RepoProgressSectionProps = {
   onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
   onTabChange: (tab: ProgressTab) => void;
+  org?: string;
+  commonOnly?: boolean | null;
   repoFilter: string;
   repoOptions: Array<{ value: string; label: string }>;
   onRepoFilterChange: (repo: string) => void;
@@ -244,6 +247,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   onProgressViewChange,
   currentTab,
   onTabChange: _onTabChange,
+  org,
+  commonOnly,
   repoFilter,
   repoOptions,
   onRepoFilterChange,
@@ -317,6 +322,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       ? ['P0_BLOCKER', 'P1_CRITICAL']
       : ['P0_BLOCKER', 'P1_CRITICAL', 'P2_MAJOR', 'P3_MINOR']
   );
+  const [exportingCsv, setExportingCsv] = useState(false);
 
   const severityFilterSet = useMemo(
     () => new Set(severityFilters),
@@ -544,15 +550,15 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         <div className="overview-progress-meta">
           {items.map((item) =>
             onBucketClick ? (
-              <Button
+              <button
                 key={item.key}
-                type="link"
+                type="button"
                 className="overview-progress-link"
                 style={{ color: item.color }}
                 onClick={() => onBucketClick(item.key)}
               >
                 {item.label} {item.value}
-              </Button>
+              </button>
             ) : (
               <span
                 key={item.key}
@@ -689,13 +695,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             ? ({ ...record, issues: derived.issues } as RepoProgressRow)
             : record;
           return (
-            <Button
-              type="link"
+            <button
+              type="button"
               className="overview-table-link overview-table-link-strong"
               onClick={() => onOpenRepoIssues(rowForModal, 'total')}
             >
               {metrics.total}
-            </Button>
+            </button>
           );
         },
         onHeaderCell: () => ({
@@ -833,13 +839,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             ? ({ ...record, issues: derived.issues } as TeamProgressRow)
             : record;
           return (
-            <Button
-              type="link"
+            <button
+              type="button"
               className="overview-table-link overview-table-link-strong"
               onClick={() => onOpenTeamIssues(rowForModal, 'total')}
             >
               {metrics.total}
-            </Button>
+            </button>
           );
         },
         onHeaderCell: () => ({
@@ -1082,13 +1088,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                           } as RepoProgressRow)
                         : repo;
                       return (
-                        <Button
-                          type="link"
+                        <button
+                          type="button"
                           className="overview-table-link overview-table-link-strong"
                           onClick={() => onOpenRepoIssues(rowForModal, 'total')}
                         >
                           {metrics.total}
-                        </Button>
+                        </button>
                       );
                     })()}
                   </td>
@@ -1162,6 +1168,73 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     </span>
   );
 
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(href);
+  };
+
+  const parseFilenameFromDisposition = (value: string | null) => {
+    if (!value) return '';
+    const match = value.match(/filename="([^"]+)"/i);
+    if (match?.[1]) return match[1];
+    return '';
+  };
+
+  const handleExportCsv = async () => {
+    if (exportingCsv) return;
+    setExportingCsv(true);
+    try {
+      const search = new URLSearchParams();
+      if (org) search.set('org', org);
+      search.set('tab', currentTab);
+      search.set('include_common_issues', 'true');
+      if (commonOnly !== undefined && commonOnly !== null) {
+        search.set('common_only', String(commonOnly));
+      }
+      if (teamFilter) search.set('team', teamFilter);
+      if (repoFilter) search.set('repo', repoFilter);
+      search.set('view', progressView);
+
+      severityFilters.forEach((sev) => search.append('severity', sev));
+
+      const isRepoView = progressView === 'repo';
+      search.set('sort_key', isRepoView ? repoSortKey : teamSortKey);
+      search.set(
+        'sort_order',
+        isRepoView
+          ? repoSortAsc
+            ? 'asc'
+            : 'desc'
+          : teamSortAsc
+          ? 'asc'
+          : 'desc'
+      );
+      search.set('progress_metric', progressSortKey);
+      search.set('progress_metric_order', progressSortOrder);
+
+      const url = compassApiUrl(
+        `/overview/progress/export-csv?${search.toString()}`
+      );
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error(`导出失败：${res.status} ${res.statusText}`);
+      }
+      const blob = await res.blob();
+      const filename =
+        parseFilenameFromDisposition(res.headers.get('content-disposition')) ||
+        `progress_${progressView}.csv`;
+      downloadBlob(blob, filename);
+    } finally {
+      setExportingCsv(false);
+    }
+  };
+
   return (
     <>
       <Title level={4} className="oj-section-title">
@@ -1234,6 +1307,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                 }))}
               />
             </div>
+            <button
+              type="button"
+              disabled={exportingCsv}
+              className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={handleExportCsv}
+            >
+              {exportingCsv ? '导出中...' : '导出'}
+            </button>
           </div>
         </div>
 

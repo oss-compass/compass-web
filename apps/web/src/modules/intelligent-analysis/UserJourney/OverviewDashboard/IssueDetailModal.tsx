@@ -10,6 +10,7 @@ const TEAM_FILTER_ALL = '__ALL__';
 const STAGE_FILTER_ALL = TEAM_FILTER_ALL;
 const SEVERITY_FILTER_ALL = TEAM_FILTER_ALL;
 const STATUS_FILTER_ALL = TEAM_FILTER_ALL;
+const OWNER_FILTER_ALL = TEAM_FILTER_ALL;
 const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
 
 type TaskDefinition = {
@@ -161,6 +162,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   const [severityFilter, setSeverityFilter] =
     useState<string>(SEVERITY_FILTER_ALL);
   const [statusFilter, setStatusFilter] = useState<string>(STATUS_FILTER_ALL);
+  const [ownerFilter, setOwnerFilter] = useState<string>(OWNER_FILTER_ALL);
   const issues = state.issues;
 
   const teamOptions = useMemo(() => {
@@ -215,6 +217,18 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     return values;
   }, [issues]);
 
+  const ownerOptions = useMemo(() => {
+    const values = Array.from(
+      new Set(
+        issues
+          .map((issue) => String(issue.owner || issue.teamOwner || '').trim())
+          .filter(Boolean)
+      )
+    );
+    values.sort(localeCompare);
+    return values;
+  }, [issues]);
+
   const displayedIssues = useMemo(() => {
     const filtered = issues.filter((issue) => {
       if (
@@ -238,6 +252,12 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
       if (
         statusFilter !== STATUS_FILTER_ALL &&
         String(issue.status || '').trim() !== statusFilter
+      ) {
+        return false;
+      }
+      if (
+        ownerFilter !== OWNER_FILTER_ALL &&
+        String(issue.owner || issue.teamOwner || '').trim() !== ownerFilter
       ) {
         return false;
       }
@@ -334,6 +354,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     severityFilter,
     statusFilter,
     teamFilter,
+    ownerFilter,
   ]);
 
   const handleSort = (nextSortKey: IssueSortKey) => {
@@ -363,13 +384,100 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
 
   const modalTitle = `${state.title}（共${displayedIssues.length}条）`;
 
+  const downloadTextFile = (text: string, filename: string) => {
+    const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(href);
+  };
+
+  const escapeCsvCell = (value: string) => {
+    const text = String(value ?? '');
+    if (/[",\n]/.test(text)) {
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+    return text;
+  };
+
+  const buildIssuesCsv = (rows: DashboardIssue[]) => {
+    const header = [
+      '序号',
+      '仓库',
+      '责任团队',
+      '阶段',
+      '具体任务',
+      '问题描述',
+      '严重程度',
+      '状态',
+      '发现时间',
+      '责任人',
+      '相关报告',
+    ];
+    const lines = [header.map(escapeCsvCell).join(',')];
+
+    rows.forEach((issue, index) => {
+      const taskLabel = getIssueTaskLabel(issue) || '--';
+      const statusLabel =
+        PAIN_STATUS_CFG[String(issue.status || '')]?.label ||
+        String(issue.status || '').trim() ||
+        '--';
+      const reportEntries = getReportEntries(issue);
+      const reportText = reportEntries.length
+        ? reportEntries.map((e) => getReportDisplayText(e.fileKey)).join(' | ')
+        : '--';
+      const createdText = String(
+        issue.createdAt || issue.created_at || ''
+      ).trim();
+      const cells = [
+        String(index + 1),
+        getRepoName(issue),
+        issue.team || '--',
+        issue.journeyStage || '--',
+        taskLabel,
+        issue.description || '--',
+        String(issue.severity || '--'),
+        statusLabel,
+        formatDateTime(createdText),
+        issue.owner || issue.teamOwner || '--',
+        reportText,
+      ];
+      lines.push(cells.map(escapeCsvCell).join(','));
+    });
+
+    return `\uFEFF${lines.join('\n')}\n`;
+  };
+
   return (
     <Modal
       open={state.open}
       onCancel={onClose}
       footer={null}
       width="min(96vw, 1420px)"
-      title={modalTitle}
+      title={
+        <div className="mr-6 flex items-center justify-between gap-3">
+          <span>{modalTitle}</span>
+          <button
+            type="button"
+            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+            onClick={() =>
+              downloadTextFile(
+                buildIssuesCsv(displayedIssues),
+                `issues_${String(state.title || 'detail').replace(
+                  /[\\/:*?"<>|]+/g,
+                  '_'
+                )}.csv`
+              )
+            }
+          >
+            导出
+          </button>
+        </div>
+      }
       destroyOnHidden
     >
       <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
@@ -606,7 +714,53 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                 发现时间
               </th>
               <th className="w-[88px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
-                {renderSortableHeader('责任人', 'owner')}
+                <div className="flex items-center gap-1.5">
+                  {renderSortableHeader('责任人', 'owner')}
+                  <Dropdown
+                    trigger={['click']}
+                    placement="bottomLeft"
+                    popupRender={() => (
+                      <div
+                        className="w-[220px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                          责任人筛选
+                        </div>
+                        <Radio.Group
+                          value={ownerFilter}
+                          onChange={(e) =>
+                            setOwnerFilter(
+                              String(e.target.value || OWNER_FILTER_ALL)
+                            )
+                          }
+                          className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
+                        >
+                          <Radio value={OWNER_FILTER_ALL}>全部</Radio>
+                          {ownerOptions.map((owner) => (
+                            <Radio key={owner} value={owner}>
+                              {owner}
+                            </Radio>
+                          ))}
+                        </Radio.Group>
+                      </div>
+                    )}
+                  >
+                    <button
+                      type="button"
+                      aria-label="筛选责任人"
+                      title="筛选责任人"
+                      className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
+                        ownerFilter === OWNER_FILTER_ALL
+                          ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                      }`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FilterFilled className="text-[12px]" />
+                    </button>
+                  </Dropdown>
+                </div>
               </th>
               <th className="w-[96px] px-2 py-2 text-left md:w-[120px] md:px-3 md:py-3">
                 {renderSortableHeader('相关报告', 'report')}

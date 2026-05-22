@@ -121,6 +121,12 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
+  const commonOnly = useMemo(() => {
+    if (issueSourceMode === 'common') return true;
+    if (issueSourceMode === 'non-common') return false;
+    return includeCommonIssues ? undefined : false;
+  }, [includeCommonIssues, issueSourceMode]);
+
   const { data: summaryResp } = useQuery({
     queryKey: ['overview-summary', org, issueSourceMode, includeCommonIssues],
     queryFn: () =>
@@ -557,6 +563,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           onProgressViewChange={setProgressView}
           currentTab={currentTab}
           onTabChange={setCurrentTab}
+          org={org}
+          commonOnly={commonOnly}
           repoFilter={repoFilter}
           repoOptions={displayRepoOptions}
           onRepoFilterChange={setRepoFilter}

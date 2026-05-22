@@ -157,9 +157,9 @@ export const PAIN_STATUS_CFG: Record<
   },
   '4': {
     label: '已复测待确认',
-    tagBg: '#fff7e6',
-    tagColor: '#d46b08',
-    tagBorder: '#ffd8bf',
+    tagBg: '#f5f0ff',
+    tagColor: '#722ed1',
+    tagBorder: '#d3adf7',
   },
   '5': {
     label: '已复测通过',

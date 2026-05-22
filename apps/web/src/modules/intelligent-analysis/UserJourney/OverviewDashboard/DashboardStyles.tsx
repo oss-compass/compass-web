@@ -1016,7 +1016,7 @@ const DashboardStyles: React.FC = () => (
       white-space: nowrap;
     }
 
-    .overview-progress-link.ant-btn-link {
+    .overview-progress-link {
       padding: 0;
       height: auto;
       color: #1677ff;
@@ -1025,42 +1025,48 @@ const DashboardStyles: React.FC = () => (
       text-decoration: underline;
       text-underline-offset: 3px;
       white-space: nowrap;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
     }
 
-    .overview-progress-link.ant-btn-link:hover {
+    .overview-progress-link:hover {
       color: #0958d9;
     }
 
-    .overview-ant-table .overview-table-link.ant-btn-link {
+    .overview-ant-table .overview-table-link {
       padding: 0;
       height: auto;
       color: #1677ff;
       font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 3px;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
     }
 
-    .overview-ant-table .overview-table-link.ant-btn-link:hover {
+    .overview-ant-table .overview-table-link:hover {
       color: #0958d9;
       text-decoration: underline;
     }
 
-    .overview-ant-table .overview-table-link.ant-btn-link:active {
+    .overview-ant-table .overview-table-link:active {
       color: #003eb3;
     }
 
-    .overview-ant-table .overview-table-link-muted.ant-btn-link {
+    .overview-ant-table .overview-table-link-muted {
       color: #94a3b8;
       font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 3px;
     }
 
-    .overview-ant-table .overview-table-link-muted.ant-btn-link:hover {
+    .overview-ant-table .overview-table-link-muted:hover {
       color: #94a3b8;
     }
 
-    .overview-ant-table .overview-table-link-strong.ant-btn-link {
+    .overview-ant-table .overview-table-link-strong {
       font-weight: 700;
     }
 
