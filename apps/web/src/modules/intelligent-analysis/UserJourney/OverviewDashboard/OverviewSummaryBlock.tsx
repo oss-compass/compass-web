@@ -1,13 +1,23 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import type { MetricSummary, WeeklyCloseRateTrendPoint } from './types';
+import { SEVERITY_CFG, STATUS_CFG } from './constants';
+import type {
+  CommonIssueGroup,
+  DashboardIssue,
+  MetricSummary,
+  Severity,
+  WeeklyCloseRateTrendPoint,
+} from './types';
 import { formatPercent } from './utils';
 
 type OverviewSummaryBlockProps = {
-  title: string;
+  title: React.ReactNode;
   summary: MetricSummary;
   trend?: WeeklyCloseRateTrendPoint[];
+  issues?: DashboardIssue[];
+  commonIssues?: CommonIssueGroup[];
+  mode?: 'overall' | 'common';
   tooltip?: string;
   onBucketClick?: (
     bucket: 'total' | 'pending' | 'inProgress' | 'resolved'
@@ -26,11 +36,54 @@ const TREND_RIGHT_AXIS_X = TREND_PLOT_RIGHT + 8;
 const TREND_TOOLTIP_HALF_WIDTH = 92;
 
 const TREND_COLORS = {
-  pending: '#f4840c',
-  inProgress: '#4791ff',
-  resolved: '#2eb78a',
   line: '#19A796',
 };
+
+const TREND_SEVERITY_SEGMENTS = [
+  {
+    key: 'p3' as const,
+    label: 'P3 轻微影响',
+    markerColor: SEVERITY_CFG.P3_MINOR.tagColor,
+  },
+  {
+    key: 'p2' as const,
+    label: 'P2 显著影响',
+    markerColor: SEVERITY_CFG.P2_MAJOR.tagColor,
+  },
+  {
+    key: 'p1' as const,
+    label: 'P1 关键卡点',
+    markerColor: SEVERITY_CFG.P1_CRITICAL.tagColor,
+  },
+  {
+    key: 'p0' as const,
+    label: 'P0 完全阻塞',
+    markerColor: SEVERITY_CFG.P0_BLOCKER.tagColor,
+  },
+] as const;
+
+const PRIORITY_LEVELS = [
+  {
+    key: 'P0_BLOCKER' as Severity,
+    shortLabel: 'P0',
+    label: '完全阻塞',
+  },
+  {
+    key: 'P1_CRITICAL' as Severity,
+    shortLabel: 'P1',
+    label: '关键卡点',
+  },
+  {
+    key: 'P2_MAJOR' as Severity,
+    shortLabel: 'P2',
+    label: '显著影响',
+  },
+  {
+    key: 'P3_MINOR' as Severity,
+    shortLabel: 'P3',
+    label: '轻微影响',
+  },
+] as const;
 
 const getNiceMax = (value: number): number => {
   if (!Number.isFinite(value) || value <= 0) return 10;
@@ -53,6 +106,41 @@ const formatTrendRange = (point: WeeklyCloseRateTrendPoint): string => {
   }
   return point.label;
 };
+
+const getTrendSeverityValue = (
+  point: WeeklyCloseRateTrendPoint,
+  key: (typeof TREND_SEVERITY_SEGMENTS)[number]['key']
+): number => Number(point[key] ?? 0);
+
+const buildPriorityProgress = (issues: DashboardIssue[]) =>
+  PRIORITY_LEVELS.map((level) => {
+    const levelIssues = issues.filter((issue) => issue.severity === level.key);
+    const total = levelIssues.length;
+    const pending = levelIssues.filter(
+      (issue) => issue.normalizedStatus === 'pending'
+    ).length;
+    const inProgress = levelIssues.filter(
+      (issue) => issue.normalizedStatus === 'inProgress'
+    ).length;
+    const resolved = levelIssues.filter(
+      (issue) =>
+        issue.normalizedStatus === 'resolved' || issue.normalizedStatus === 'na'
+    ).length;
+    const closeRate =
+      total > 0 ? Number(((resolved / total) * 100).toFixed(1)) : 0;
+
+    return {
+      ...level,
+      tagColor: SEVERITY_CFG[level.key].tagColor,
+      tagBg: SEVERITY_CFG[level.key].tagBg,
+      tagBorder: SEVERITY_CFG[level.key].tagBorder,
+      total,
+      pending,
+      inProgress,
+      resolved,
+      closeRate,
+    };
+  });
 
 const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
   points,
@@ -279,12 +367,8 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
           const x = xCenter(index);
           const x0 = x - barW / 2;
           let currentY = TREND_PLOT_BOTTOM;
-          const segments: Array<[keyof typeof TREND_COLORS, number]> = [
-            ['resolved', p.resolved],
-            ['inProgress', p.inProgress],
-            ['pending', p.pending],
-          ];
-          const rects = segments.map(([key, value]) => {
+          const rects = TREND_SEVERITY_SEGMENTS.map(({ key, markerColor }) => {
+            const value = getTrendSeverityValue(p, key);
             const h = (Math.max(0, value) / yMax) * plotH;
             if (h <= 0) return null;
             currentY -= h;
@@ -295,7 +379,7 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
                 y={currentY}
                 width={barW}
                 height={h}
-                fill={TREND_COLORS[key]}
+                fill={markerColor}
                 rx={0}
                 className={`oj-trend-bar ${
                   activeIndex != null && activeIndex !== index
@@ -406,42 +490,22 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
             <span>{formatTrendRange(activePoint)}</span>
           </div>
           <div className="oj-trend-tooltip-list">
-            <div className="oj-trend-tooltip-item">
-              <span className="oj-trend-tooltip-key">
-                <i
-                  className="oj-trend-tooltip-marker"
-                  style={{ background: TREND_COLORS.pending }}
-                />
-                待处理
-              </span>
-              <span className="oj-trend-tooltip-value">
-                {activePoint.pending}
-              </span>
-            </div>
-            <div className="oj-trend-tooltip-item">
-              <span className="oj-trend-tooltip-key">
-                <i
-                  className="oj-trend-tooltip-marker"
-                  style={{ background: TREND_COLORS.inProgress }}
-                />
-                进行中
-              </span>
-              <span className="oj-trend-tooltip-value">
-                {activePoint.inProgress}
-              </span>
-            </div>
-            <div className="oj-trend-tooltip-item">
-              <span className="oj-trend-tooltip-key">
-                <i
-                  className="oj-trend-tooltip-marker"
-                  style={{ background: TREND_COLORS.resolved }}
-                />
-                已闭环
-              </span>
-              <span className="oj-trend-tooltip-value">
-                {activePoint.resolved}
-              </span>
-            </div>
+            {TREND_SEVERITY_SEGMENTS.slice()
+              .reverse()
+              .map(({ key, label, markerColor }) => (
+                <div className="oj-trend-tooltip-item" key={key}>
+                  <span className="oj-trend-tooltip-key">
+                    <i
+                      className="oj-trend-tooltip-marker"
+                      style={{ background: markerColor }}
+                    />
+                    {label}
+                  </span>
+                  <span className="oj-trend-tooltip-value">
+                    {getTrendSeverityValue(activePoint, key)}
+                  </span>
+                </div>
+              ))}
             <div className="oj-trend-tooltip-item">
               <span className="oj-trend-tooltip-key">
                 <i className="oj-trend-tooltip-line-marker" />
@@ -464,13 +528,66 @@ const TrendChart: React.FC<{ points: WeeklyCloseRateTrendPoint[] }> = ({
   );
 };
 
+const COMMON_ISSUE_LIST_MAX = 4;
+
+const getSeverityShort = (severity: string): string => {
+  const match = /^P\d/.exec(severity);
+  return match ? match[0] : severity;
+};
+
+const getSeveritySolidTagStyle = (severity: string) => {
+  const cfg = (SEVERITY_CFG as Record<string, any>)[severity];
+  if (cfg) {
+    return {
+      background: cfg.tagColor as string,
+      color: '#ffffff',
+      borderColor: 'transparent',
+    };
+  }
+  return {
+    background: '#64748b',
+    color: '#ffffff',
+    borderColor: 'transparent',
+  };
+};
+
+const getSeverityTagStyle = (severity: string) => {
+  const cfg = (SEVERITY_CFG as Record<string, any>)[severity];
+  if (cfg) {
+    return {
+      color: cfg.tagColor as string,
+      background: cfg.tagBg as string,
+      borderColor: cfg.tagBorder as string,
+    };
+  }
+  return {
+    color: '#475569',
+    background: '#f8fafc',
+    borderColor: '#e2e8f0',
+  };
+};
+
 const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   title,
   summary,
   trend,
+  issues = [],
+  commonIssues = [],
+  mode = 'overall',
   tooltip,
   onBucketClick,
 }) => {
+  const priorityProgress = React.useMemo(
+    () => buildPriorityProgress(issues),
+    [issues]
+  );
+  const visiblePriorityProgress = priorityProgress;
+  const shouldShowCommonList = mode === 'common' && commonIssues.length > 0;
+  const commonIssueRows = React.useMemo(
+    () => commonIssues.slice(0, COMMON_ISSUE_LIST_MAX),
+    [commonIssues]
+  );
+
   const renderValue = (
     bucket: 'total' | 'pending' | 'inProgress' | 'resolved',
     value: number,
@@ -503,10 +620,26 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
     );
   };
 
+  const renderMetric = (
+    label: string,
+    bucket: 'total' | 'pending' | 'inProgress' | 'resolved' | 'closeRate',
+    value: React.ReactNode,
+    className = ''
+  ) => (
+    <div className="ov-item">
+      <div className="ov-label">{label}</div>
+      {bucket === 'closeRate' ? (
+        <div className={`ov-value ${className}`.trim()}>{value}</div>
+      ) : (
+        renderValue(bucket, value as number, className)
+      )}
+    </div>
+  );
+
   return (
     <div className="overview-block">
       <div className="ov-title flex items-center gap-1.5">
-        <span>{title}</span>
+        {typeof title === 'string' ? <span>{title}</span> : title}
         {tooltip ? (
           <Tooltip title={tooltip}>
             <InfoCircleOutlined className="cursor-help text-[13px] text-slate-400 transition-colors hover:text-slate-600" />
@@ -514,57 +647,155 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
         ) : null}
       </div>
       <div className="ov-row">
-        <div className="ov-item">
-          <div className="ov-label">总问题数</div>
-          {renderValue('total', summary.total)}
-        </div>
-        <div className="ov-item">
-          <div className="ov-label">待处理</div>
-          {renderValue('pending', summary.pending, 'ov-value-pending')}
-        </div>
-        <div className="ov-item">
-          <div className="ov-label">进行中</div>
-          {renderValue('inProgress', summary.inProgress, 'ov-value-blue')}
-        </div>
-        <div className="ov-item">
-          <div className="ov-label">已闭环</div>
-          {renderValue('resolved', summary.resolved, 'ov-value-green')}
-        </div>
-        <div className="ov-item">
-          <div className="ov-label">闭环率</div>
-          <div className="ov-value">{formatPercent(summary.closeRate)}</div>
-        </div>
+        {renderMetric('总问题数', 'total', summary.total)}
+        {renderMetric('待处理', 'pending', summary.pending, 'ov-value-pending')}
+        {renderMetric(
+          '进行中',
+          'inProgress',
+          summary.inProgress,
+          'ov-value-blue'
+        )}
+        {renderMetric('已闭环', 'resolved', summary.resolved, 'ov-value-green')}
+        {renderMetric(
+          '闭环率',
+          'closeRate',
+          formatPercent(summary.closeRate),
+          'ov-value-green'
+        )}
       </div>
-      {trend && trend.length ? (
-        <div className="oj-trend-block">
-          <TrendChart points={trend} />
-          <div className="oj-trend-legend">
-            <span className="oj-trend-legend-item">
-              <i
-                className="oj-trend-dot"
-                style={{ background: TREND_COLORS.pending }}
-              />
-              待处理
-            </span>
-            <span className="oj-trend-legend-item">
-              <i
-                className="oj-trend-dot"
-                style={{ background: TREND_COLORS.inProgress }}
-              />
-              进行中
-            </span>
-            <span className="oj-trend-legend-item">
-              <i
-                className="oj-trend-dot"
-                style={{ background: TREND_COLORS.resolved }}
-              />
-              已闭环
-            </span>
-            <span className="oj-trend-legend-item">
-              <span className="oj-trend-line" />
-              周度闭环率
-            </span>
+      {visiblePriorityProgress.length || (trend && trend.length) ? (
+        <div className="overview-insight-grid">
+          <div className="ov-panel ov-priority-panel">
+            <div className="ov-panel-head">
+              <div className="ov-panel-title">
+                {shouldShowCommonList ? '共性问题清单' : '按优先级攻克进展'}
+              </div>
+            </div>
+            {shouldShowCommonList ? (
+              <div
+                className="ov-ci-list"
+                style={{
+                  gridTemplateRows: `repeat(${Math.max(
+                    1,
+                    commonIssueRows.length
+                  )}, minmax(0, 1fr))`,
+                }}
+              >
+                {commonIssueRows.map((group) => {
+                  const statusCfg = (STATUS_CFG as Record<string, any>)[
+                    group.status
+                  ];
+                  return (
+                    <div className="ov-ci-row" key={group.key}>
+                      <div className="ov-ci-head">
+                        <span
+                          className="ov-ci-type"
+                          style={getSeveritySolidTagStyle(group.severity)}
+                          title={group.issueType}
+                        >
+                          {group.issueType}
+                        </span>
+                        <div className="ov-ci-desc">{group.description}</div>
+                        <span className="ov-ci-repo">{group.repoCount} 仓</span>
+                      </div>
+                      {(group.journeyStages ?? []).length ? (
+                        <div className="ov-ci-meta">
+                          <span className="ov-ci-meta-key">涉及阶段</span>
+                          <span className="ov-ci-stage-wrap">
+                            {(group.journeyStages ?? []).map((stage) => (
+                              <span className="ov-ci-stage-tag" key={stage}>
+                                {stage}
+                              </span>
+                            ))}
+                          </span>
+                        </div>
+                      ) : null}
+                      <div className="ov-ci-meta">
+                        <span className="ov-ci-meta-key">严重程度</span>
+                        <span
+                          className="ov-ci-sev"
+                          style={getSeverityTagStyle(group.severity)}
+                        >
+                          {getSeverityShort(group.severity)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="ov-priority-list">
+                {visiblePriorityProgress.map((item) => (
+                  <div className="ov-priority-row" key={item.key}>
+                    <div className="ov-priority-main">
+                      <span
+                        className="ov-priority-tag"
+                        style={{
+                          color: item.tagColor,
+                          background: item.tagBg,
+                          borderColor: item.tagBorder,
+                        }}
+                      >
+                        {item.shortLabel}
+                      </span>
+                      <div className="ov-priority-copy">
+                        <div className="ov-priority-name">{item.label}</div>
+                        <div className="ov-priority-meta">
+                          <span>待处理 {item.pending}</span>
+                          <span>进行中 {item.inProgress}</span>
+                          <span>已闭环 {item.resolved}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ov-priority-side">
+                      <div className="ov-priority-progress">
+                        <span
+                          className="ov-priority-progress-fill"
+                          style={{
+                            width: `${item.closeRate}%`,
+                            background: item.tagColor,
+                          }}
+                        />
+                      </div>
+                      <div className="ov-priority-stats">
+                        <span className="ov-priority-rate">
+                          {formatPercent(item.closeRate)}
+                        </span>
+                        <span className="ov-priority-count">
+                          {item.resolved} / {item.total || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+          {trend && trend.length ? (
+            <div className="ov-panel ov-trend-panel">
+              <div className="ov-panel-head">
+                <div className="ov-panel-title">周度趋势</div>
+              </div>
+              <TrendChart points={trend} />
+              <div className="oj-trend-legend">
+                {TREND_SEVERITY_SEGMENTS.slice()
+                  .reverse()
+                  .map(({ key, label, markerColor }) => (
+                    <span className="oj-trend-legend-item" key={key}>
+                      <i
+                        className="oj-trend-dot"
+                        style={{ background: markerColor }}
+                      />
+                      {label}
+                    </span>
+                  ))}
+                <span className="oj-trend-legend-item">
+                  <span className="oj-trend-line" />
+                  周度闭环率
+                </span>
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

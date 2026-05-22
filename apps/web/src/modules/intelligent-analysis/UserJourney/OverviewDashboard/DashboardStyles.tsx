@@ -45,6 +45,43 @@ const DashboardStyles: React.FC = () => (
       flex-wrap: wrap;
     }
 
+    .oj-summary-mode-toggle.ant-segmented {
+      height: 34px;
+      padding: 2px;
+      border-radius: 16px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    .oj-summary-mode-toggle .ant-segmented-item {
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .oj-summary-mode-toggle .ant-segmented-item-selected {
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+      border-radius: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .oj-summary-mode-toggle .ant-segmented-thumb {
+      background: #ffffff !important;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+      border-radius: 12px;
+    }
+
+    .overview-summary-switch {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
     .overview-summary-actions {
       margin-left: auto;
       display: inline-flex;
@@ -68,45 +105,320 @@ const DashboardStyles: React.FC = () => (
 
     .overview-block {
       height: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 16px;
-      padding: 16px;
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.96) 0%,
+        rgba(248, 251, 255, 0.96) 100%
+      );
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       min-height: 120px;
+      overflow: hidden;
     }
 
     .ov-title {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       color: #0f172a;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
     }
 
     .ov-row {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 18px;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .overview-insight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+      height: 350px;
+    }
+
+    .ov-panel {
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      padding: 14px 14px 12px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .ov-priority-panel {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .ov-trend-panel {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .ov-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ov-panel-title {
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .ov-priority-list {
+      display: grid;
+      gap: 10px;
+      flex: 1 1 auto;
+      min-height: 0;
+      grid-template-rows: repeat(4, minmax(0, 1fr));
+    }
+
+    .ov-ci-list {
+      display: grid;
+      gap: 10px;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .ov-ci-row {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      min-width: 0;
+    }
+
+    .ov-ci-head {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 72px;
+      gap: 12px;
       align-items: center;
     }
 
-    .oj-trend-block {
-      border-top: 1px dashed rgba(226, 232, 240, 0.95);
-      padding-top: 16px;
-      margin-top: 4px;
+    .ov-ci-type {
+      font-size: 11px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid transparent;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ov-ci-desc {
+      font-size: 13.5px;
+      color: #0f172a;
+      font-weight: 600;
+      line-height: 1.4;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .ov-ci-repo {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .ov-ci-meta {
+      display: flex;
+      gap: 10px;
+      padding-left: 108px;
+      font-size: 12px;
+      color: #94a3b8;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .ov-ci-meta + .ov-ci-meta {
+      margin-top: 8px;
+    }
+
+    .ov-ci-meta-key {
+      color: #94a3b8;
+      flex: 0 0 auto;
+      font-weight: 700;
+    }
+
+    .ov-ci-stage-wrap {
+      display: inline-flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .ov-ci-stage-tag {
+      font-size: 10.5px;
+      background: rgba(240, 242, 246, 0.9);
+      color: #475569;
+      padding: 2.5px 8px;
+      border-radius: 7px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .ov-ci-status {
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .ov-ci-sev {
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .ov-priority-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 156px;
+      gap: 16px;
+      align-items: stretch;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      background: rgba(255, 255, 255, 0.82);
+      height: 100%;
+    }
+
+    .ov-priority-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .ov-priority-tag {
+      flex: 0 0 auto;
+      min-width: 42px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .ov-priority-copy {
+      min-width: 0;
+    }
+
+    .ov-priority-name {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    .ov-priority-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 18px;
+      color: #64748b;
+    }
+
+    .ov-priority-side {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .ov-priority-progress {
+      position: relative;
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(226, 232, 240, 0.92);
+    }
+
+    .ov-priority-progress-fill {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    .ov-priority-stats {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ov-priority-rate {
+      color: #0f172a;
+    }
+
+    .ov-priority-count {
+      color: #64748b;
     }
 
     .oj-trend-chart {
       position: relative;
       overflow: visible;
+      flex: 1 1 auto;
+      min-height: 0;
     }
 
     .oj-trend-svg {
       width: 100%;
-      height: auto;
+      height: 100%;
       display: block;
       overflow: visible;
     }
@@ -336,32 +648,39 @@ const DashboardStyles: React.FC = () => (
 
     .ov-item {
       width: 100%;
-      text-align: center;
-      border: none;
-      background: transparent;
-      padding: 0;
+      text-align: left;
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.96) 0%,
+        rgba(248, 250, 252, 0.96) 100%
+      );
+      padding: 14px 14px 12px;
+      border-radius: 16px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
+      justify-content: center;
+      gap: 10px;
+      min-height: 88px;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
     }
 
     .ov-label {
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       color: #64748b;
       line-height: 16px;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 4px;
     }
 
     .ov-value {
-      font-size: 24px;
-      font-weight: 600;
+      font-size: 28px;
+      font-weight: 700;
       color: #0f172a;
-      line-height: 30px;
+      line-height: 34px;
       font-variant-numeric: tabular-nums;
     }
 
@@ -891,6 +1210,19 @@ const DashboardStyles: React.FC = () => (
         margin-left: 0;
         width: 100%;
         justify-content: flex-start;
+      }
+
+      .ov-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .overview-insight-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .ov-priority-row {
+        grid-template-columns: 1fr;
       }
 
       .team-filter {

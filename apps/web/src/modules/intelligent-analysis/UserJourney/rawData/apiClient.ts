@@ -311,9 +311,10 @@ export type OverviewCloseRateTrendPoint = {
   weekEnd: string;
   label: string;
   total: number;
-  pending: number;
-  inProgress: number;
-  resolved: number;
+  p0: number;
+  p1: number;
+  p2: number;
+  p3: number;
   closeRate: number;
 };
 

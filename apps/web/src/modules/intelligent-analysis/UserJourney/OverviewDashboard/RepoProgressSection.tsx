@@ -496,9 +496,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   ) => {
     const total = metrics.pending + metrics.inProgress + metrics.resolved || 1;
     const colorMap: Record<IssueBucket, string> = {
-      pending: '#e0962b',
-      inProgress: '#5b8ff7',
-      resolved: '#5bd5c7',
+      pending: '#f4840c',
+      inProgress: '#4791ff',
+      resolved: '#2eb78a',
       na: '#94a3b8',
     };
     const items: Array<{

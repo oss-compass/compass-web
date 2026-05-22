@@ -409,6 +409,8 @@ const getRecommendationPriorityRank = (priority: string) => {
   return 3;
 };
 
+const HIDDEN_JOURNEY_STEP_IDS = new Set(['S5_CONTRIBUTION']);
+
 const buildProjectRecommendations = (
   report: BackendReportData
 ): JourneyRecommendation[] =>
@@ -421,11 +423,19 @@ const buildProjectRecommendations = (
         normalizeText(recommendation.description) ||
         normalizeText(recommendation.expected_improvement) ||
         report.key_insight,
-      relatedStepIds: recommendation.related_step_ids,
+      relatedStepIds: (recommendation.related_step_ids ?? []).filter(
+        (id) => !HIDDEN_JOURNEY_STEP_IDS.has(id)
+      ),
       relatedMetricIds: [
         ...(recommendation.related_metric_ids ?? []),
         ...(recommendation.affected_metrics ?? []),
       ].filter((v, i, arr) => arr.indexOf(v) === i),
+    }))
+    .map((item) => ({
+      ...item,
+      relatedStepIds: item.relatedStepIds.length
+        ? item.relatedStepIds
+        : undefined,
     }))
     .sort((left, right) => {
       const priorityDiff =
@@ -664,7 +674,11 @@ const buildJourneyStep = (
 export const buildUserJourneyProjectData = (
   report: BackendReportData
 ): UserJourneyProjectData => {
-  const totalJourneyDuration = report.journey_steps.reduce((sum, step) => {
+  const visibleJourneySteps = report.journey_steps.filter(
+    (step) => !HIDDEN_JOURNEY_STEP_IDS.has(step.step_id)
+  );
+
+  const totalJourneyDuration = visibleJourneySteps.reduce((sum, step) => {
     const assessment =
       step.per_project_assessments.find(
         (item) => item.project_id === report.project.project_id
@@ -673,7 +687,7 @@ export const buildUserJourneyProjectData = (
     return sum + (assessment?.actual_path.total_duration_seconds ?? 0);
   }, 0);
 
-  const journeySteps = report.journey_steps.map((step) =>
+  const journeySteps = visibleJourneySteps.map((step) =>
     buildJourneyStep(step, report, totalJourneyDuration)
   );
 

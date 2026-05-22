@@ -140,7 +140,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
 
   const { data: closeRateTrendsResp } = useQuery({
     queryKey: [
-      'overview-close-rate-trends',
+      'overview-close-rate-trends-v2',
       org,
       issueSourceMode,
       includeCommonIssues,
@@ -538,15 +538,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       <div className="detail-panel-body">
         <OverviewSummarySection
           overviewSummary={overviewSummary}
-          keyIssueSummary={keyIssueSummary}
           overviewTrend={overviewTrend}
-          keyIssueTrend={keyIssueTrend}
+          overviewIssues={summaryIssues}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
           summaryAvgExecutionTime={summaryAvgExecutionTime}
           repoCount={summaryRepoCount}
           issueSourceMode={issueSourceMode}
           includeCommonIssues={includeCommonIssues}
+          commonIssues={commonIssues}
           onIssueSourceModeChange={setIssueSourceMode}
           onIncludeCommonIssuesChange={setIncludeCommonIssues}
           onOpenIssues={openSummaryIssues}
