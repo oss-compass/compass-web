@@ -22,6 +22,7 @@ import type {
   WeeklyCloseRateTrendPoint,
 } from './types';
 import { formatPercent } from './utils';
+import { USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO } from '../rawData/constants';
 
 type OverviewSummaryBlockProps = {
   title: React.ReactNode;
@@ -76,34 +77,25 @@ const TREND_SEVERITY_SEGMENTS = [
   },
 ] as const;
 
-const PRIORITY_LEVELS = [
-  {
-    key: 'P0_BLOCKER' as Severity,
-    shortLabel: 'P0',
-    label: '完全阻塞',
-    description: '完全无法完成当前阶段任务，开发者无法自行解决。',
-  },
-  {
-    key: 'P1_CRITICAL' as Severity,
-    shortLabel: 'P1',
-    label: '关键卡点',
-    description:
-      '在环境配置、编译、构建等任务中出现报错或者中断，开发者自行尝试并已解决。',
-  },
-  {
-    key: 'P2_MAJOR' as Severity,
-    shortLabel: 'P2',
-    label: '显著影响',
-    description:
-      '在样例代码运行、测试验证等任务中出现报错或者中断，开发者自行尝试并已解决。',
-  },
-  {
-    key: 'P3_MINOR' as Severity,
-    shortLabel: 'P3',
-    label: '轻微影响',
-    description: '存在一定摩擦，但整体仍然可以顺利推进。',
-  },
-] as const;
+const PRIORITY_LEVELS: Array<{
+  key: Severity;
+  shortLabel: string;
+  label: string;
+  description: string;
+}> = (['P0_BLOCKER', 'P1_CRITICAL', 'P2_MAJOR', 'P3_MINOR'] as const).map(
+  (level) => {
+    const guide = USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO.find(
+      (item) => item.level === level
+    );
+
+    return {
+      key: level as Severity,
+      shortLabel: level.split('_')[0],
+      label: guide?.label ?? level,
+      description: guide?.description ?? '',
+    };
+  }
+);
 
 const getNiceMax = (value: number): number => {
   if (!Number.isFinite(value) || value <= 0) return 10;
@@ -794,7 +786,10 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                         >
                           {item.shortLabel} {item.label}
                         </span>
-                        <div className="ov-priority-desc">
+                        <div
+                          className="ov-priority-desc"
+                          title={item.description}
+                        >
                           {item.description}
                         </div>
                       </div>
