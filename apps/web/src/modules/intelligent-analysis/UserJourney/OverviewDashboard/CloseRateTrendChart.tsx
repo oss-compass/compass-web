@@ -9,50 +9,13 @@ type CloseRateSparklineProps = {
   stroke?: string;
 };
 
-const buildSmoothPath = (
+const buildLinePath = (
   points: Array<{ x: number; y: number }>
 ): string | null => {
   if (points.length === 0) return null;
-  if (points.length === 1) {
-    const p = points[0];
-    return `M ${p.x} ${p.y}`;
-  }
-
   const d: string[] = [`M ${points[0].x} ${points[0].y}`];
-  for (let i = 0; i < points.length - 1; i += 1) {
-    const curr = points[i];
-    const next = points[i + 1];
-    const mx = (curr.x + next.x) / 2;
-    const my = (curr.y + next.y) / 2;
-    if (i === 0) {
-      d.push(`Q ${curr.x} ${curr.y} ${mx} ${my}`);
-    } else {
-      d.push(`T ${mx} ${my}`);
-    }
-  }
-  const last = points[points.length - 1];
-  d.push(`T ${last.x} ${last.y}`);
-  return d.join(' ');
-};
-
-const buildCatmullRomPath = (
-  points: Array<{ x: number; y: number }>
-): string | null => {
-  if (points.length === 0) return null;
-  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
-
-  const d: string[] = [`M ${points[0].x} ${points[0].y}`];
-  for (let i = 0; i < points.length - 1; i += 1) {
-    const p0 = points[i - 1] ?? points[i];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[i + 2] ?? p2;
-
-    const c1x = p1.x + (p2.x - p0.x) / 6;
-    const c1y = p1.y + (p2.y - p0.y) / 6;
-    const c2x = p2.x - (p3.x - p1.x) / 6;
-    const c2y = p2.y - (p3.y - p1.y) / 6;
-    d.push(`C ${c1x} ${c1y} ${c2x} ${c2y} ${p2.x} ${p2.y}`);
+  for (let i = 1; i < points.length; i += 1) {
+    d.push(`L ${points[i].x} ${points[i].y}`);
   }
   return d.join(' ');
 };
@@ -90,7 +53,7 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
 
   const segmentPaths = segments
     .map((segment) => {
-      const path = buildSmoothPath(segment);
+      const path = buildLinePath(segment);
       if (!path) return null;
       return {
         path,
@@ -255,7 +218,7 @@ export const CloseRateTrendChart: React.FC<CloseRateTrendChartProps> = ({
         })}
 
         {segments.map((segment, idx) => {
-          const path = buildCatmullRomPath(segment.points);
+          const path = buildLinePath(segment.points);
           if (!path) return null;
           const startX = segment.points[0]?.x ?? RATE_PLOT_LEFT;
           const endX = segment.points[segment.points.length - 1]?.x ?? startX;
