@@ -715,7 +715,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
           <div className="ov-panel ov-priority-panel">
             <div className="ov-panel-head">
               <div className="ov-panel-title">
-                {shouldShowCommonList ? '共性问题清单' : '按优先级攻克进展'}
+                {shouldShowCommonList ? '共性问题清单' : '各优先级闭环进展'}
               </div>
             </div>
             {shouldShowCommonList ? (
@@ -786,12 +786,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                         >
                           {item.shortLabel} {item.label}
                         </span>
-                        <div
-                          className="ov-priority-desc"
-                          title={item.description}
-                        >
-                          {item.description}
-                        </div>
+                        {item.description}
                       </div>
                     </div>
                     <div className="ov-priority-side">
@@ -838,7 +833,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
           {trend && trend.length ? (
             <div className="ov-panel ov-trend-panel">
               <div className="ov-panel-head">
-                <div className="ov-panel-title">周度趋势</div>
+                <div className="ov-panel-title">周度新增问题及闭环趋势</div>
               </div>
               <TrendChart points={trend} mode={mode} />
               <div className="oj-trend-legend">

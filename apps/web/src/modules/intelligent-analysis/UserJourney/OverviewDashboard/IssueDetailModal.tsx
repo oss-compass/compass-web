@@ -165,6 +165,14 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   const [ownerFilter, setOwnerFilter] = useState<string>(OWNER_FILTER_ALL);
   const issues = state.issues;
 
+  const resetFilters = () => {
+    setTeamFilter(TEAM_FILTER_ALL);
+    setStageFilter(STAGE_FILTER_ALL);
+    setSeverityFilter(SEVERITY_FILTER_ALL);
+    setStatusFilter(STATUS_FILTER_ALL);
+    setOwnerFilter(OWNER_FILTER_ALL);
+  };
+
   const teamOptions = useMemo(() => {
     const values = Array.from(
       new Set(
@@ -456,6 +464,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     <Modal
       open={state.open}
       onCancel={onClose}
+      afterClose={resetFilters}
       footer={null}
       width="min(96vw, 1420px)"
       title={

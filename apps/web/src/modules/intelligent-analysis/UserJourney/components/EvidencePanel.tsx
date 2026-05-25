@@ -866,28 +866,16 @@ type DisplayPainPoint = {
 const HistoryPainTable: React.FC<{
   items: OverviewPainPointRow[];
   loading: boolean;
-  compact?: boolean;
   currentFileKey?: string;
   isLatestReport?: boolean;
-}> = ({
-  items,
-  loading,
-  compact = false,
-  currentFileKey,
-  isLatestReport = false,
-}) => {
+}> = ({ items, loading, currentFileKey, isLatestReport = false }) => {
   const normalizedCurrentFileKey = String(currentFileKey || '').trim();
-  const hasRetestedPain = useMemo(
-    () =>
-      items.some((item) => {
-        const rawStatus = Number(item.status);
-        return (
-          rawStatus === PainStatus.RETESTED_PASSED ||
-          rawStatus === PainStatus.RETESTED_FAILED
-        );
-      }),
-    [items]
-  );
+  const hasOnlyPassed = useMemo(() => {
+    if (!items.length) return false;
+    return items.every(
+      (item) => Number(item.status) === PainStatus.RETESTED_PASSED
+    );
+  }, [items]);
   const [open, setOpen] = useState(true);
   const getStatusPillStyle = (status: number) => {
     const cfg: Record<number, string> = {
@@ -908,11 +896,200 @@ const HistoryPainTable: React.FC<{
 
   useEffect(() => {
     if (loading) return;
-    setOpen(!hasRetestedPain);
-  }, [hasRetestedPain, loading]);
+    setOpen(!hasOnlyPassed);
+  }, [hasOnlyPassed, loading]);
+
+  const renderTable = (rows: OverviewPainPointRow[]) => {
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[1160px] table-fixed border-collapse text-[13px] text-slate-700">
+          <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+            <tr>
+              <th className="w-[120px] px-3 py-3 text-left font-semibold">
+                仓库
+              </th>
+              <th className="w-[120px] px-3 py-3 text-left font-semibold">
+                责任团队
+              </th>
+              <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                阶段
+              </th>
+              <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                问题类型
+              </th>
+              <th className="w-[280px] px-3 py-3 text-left font-semibold">
+                问题描述
+              </th>
+              <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                严重程度
+              </th>
+              <th className="w-[90px] px-3 py-3 text-left font-semibold">
+                状态
+              </th>
+              <th className="w-[110px] px-3 py-3 text-left font-semibold">
+                复测报告ID
+              </th>
+              <th className="w-[90px] px-3 py-3 text-left font-semibold">
+                责任人
+              </th>
+              <th className="w-[120px] px-3 py-3 text-left font-semibold">
+                相关报告
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((item, index) => {
+              const severity = item.severity || 'P4_TRIVIAL';
+              const severityStyle = getPainLevelStyle(severity);
+              const rawStatus = Number(item.status);
+              const normalizedStatus =
+                isLatestReport && rawStatus === PainStatus.RETESTED_FAILED
+                  ? PainStatus.CONFIRMED_PENDING_FIX
+                  : rawStatus;
+              const statusLabel = STATUS_LABELS[normalizedStatus] || '--';
+              const childIds = item.childIds ?? [];
+              const entries: Array<{
+                painId?: string;
+                fileKey: string;
+                taskId?: string;
+              }> = [];
+              const seen = new Set<string>();
+
+              for (let i = childIds.length - 1; i >= 0; i -= 1) {
+                const parsed = parseChildId(childIds[i]);
+                if (!parsed || seen.has(parsed.fileKey)) continue;
+                if (
+                  normalizedCurrentFileKey &&
+                  parsed.fileKey === normalizedCurrentFileKey
+                ) {
+                  continue;
+                }
+                seen.add(parsed.fileKey);
+                entries.push(parsed);
+                if (entries.length >= 3) break;
+              }
+
+              if (
+                !entries.length &&
+                item.fileKey &&
+                item.fileKey !== normalizedCurrentFileKey
+              ) {
+                entries.push({ fileKey: item.fileKey });
+              }
+
+              return (
+                <tr
+                  key={`${
+                    item.id || item.parentId || item.description
+                  }-${index}`}
+                  className={`border-t border-rose-100/70 align-top transition-colors hover:bg-rose-100/40 ${
+                    index % 2 === 0 ? 'bg-white/80' : 'bg-rose-50/40'
+                  }`}
+                >
+                  <td className="px-3 py-3 font-medium text-slate-900">
+                    {item.projectName || item.projectKey || '--'}
+                  </td>
+                  <td className="px-3 py-3">{item.team || '--'}</td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {item.journeyStage || '--'}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {item.issueType || '--'}
+                  </td>
+                  <td className="max-w-[360px] px-3 py-3">
+                    <Tooltip title={item.description || '--'}>
+                      <span className="line-clamp-2 cursor-default">
+                        {item.description || '--'}
+                      </span>
+                    </Tooltip>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${severityStyle.bg} ${severityStyle.text} ${severityStyle.border}`}
+                    >
+                      {formatSeverityLabel(severity)}
+                    </span>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${getStatusPillStyle(
+                        normalizedStatus
+                      )}`}
+                    >
+                      {statusLabel}
+                    </span>
+                  </td>
+                  <td className="px-3 py-3">
+                    <Tooltip title={item.remark || '--'}>
+                      {item.remark ? (
+                        <a
+                          href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
+                            item.remark
+                          )}`}
+                          className="overview-table-link block truncate text-blue-600"
+                        >
+                          {item.remark}
+                        </a>
+                      ) : (
+                        <span className="block cursor-default truncate">
+                          --
+                        </span>
+                      )}
+                    </Tooltip>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {item.teamOwner || item.owner || '--'}
+                  </td>
+                  <td className="px-3 py-3">
+                    {entries.length ? (
+                      entries.map(({ painId, fileKey, taskId }) => {
+                        const search = new URLSearchParams();
+                        search.set('project', fileKey);
+                        if (taskId) {
+                          search.set('focusTaskId', taskId);
+                        }
+                        if (painId) {
+                          search.set('painId', painId);
+                          search.set('autoOpenPain', '1');
+                        }
+                        const href = `/intelligent-analysis/community-experience?${search.toString()}`;
+                        const displayText = (() => {
+                          const last = fileKey.lastIndexOf('_');
+                          if (last <= 0) return fileKey;
+                          const prev = fileKey.lastIndexOf('_', last - 1);
+                          if (prev < 0 || prev + 1 >= fileKey.length)
+                            return fileKey;
+                          return fileKey.slice(prev + 1);
+                        })();
+
+                        return (
+                          <div
+                            key={`${fileKey}-${taskId || ''}-${painId || ''}`}
+                          >
+                            <a
+                              href={href}
+                              className="overview-table-link text-blue-600"
+                            >
+                              {displayText}
+                            </a>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <span className="text-slate-300">--</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
-    <div className={compact ? 'mt-2' : 'mt-3'}>
+    <div>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -946,190 +1123,7 @@ const HistoryPainTable: React.FC<{
       ) : !open ? (
         <div className="text-xs text-slate-400">已收起</div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1160px] table-fixed border-collapse text-[13px] text-slate-700">
-            <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
-              <tr>
-                <th className="w-[120px] px-3 py-3 text-left font-semibold">
-                  仓库
-                </th>
-                <th className="w-[120px] px-3 py-3 text-left font-semibold">
-                  责任团队
-                </th>
-                <th className="w-[110px] px-3 py-3 text-left font-semibold">
-                  阶段
-                </th>
-                <th className="w-[110px] px-3 py-3 text-left font-semibold">
-                  问题类型
-                </th>
-                <th className="w-[280px] px-3 py-3 text-left font-semibold">
-                  问题描述
-                </th>
-                <th className="w-[110px] px-3 py-3 text-left font-semibold">
-                  严重程度
-                </th>
-                <th className="w-[90px] px-3 py-3 text-left font-semibold">
-                  状态
-                </th>
-                <th className="w-[110px] px-3 py-3 text-left font-semibold">
-                  复测报告ID
-                </th>
-                <th className="w-[90px] px-3 py-3 text-left font-semibold">
-                  责任人
-                </th>
-                <th className="w-[120px] px-3 py-3 text-left font-semibold">
-                  相关报告
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, index) => {
-                const severity = item.severity || 'P4_TRIVIAL';
-                const severityStyle = getPainLevelStyle(severity);
-                const rawStatus = Number(item.status);
-                const normalizedStatus =
-                  isLatestReport && rawStatus === PainStatus.RETESTED_FAILED
-                    ? PainStatus.CONFIRMED_PENDING_FIX
-                    : rawStatus;
-                const statusLabel = STATUS_LABELS[normalizedStatus] || '--';
-                const childIds = item.childIds ?? [];
-                const entries: Array<{
-                  painId?: string;
-                  fileKey: string;
-                  taskId?: string;
-                }> = [];
-                const seen = new Set<string>();
-
-                for (let i = childIds.length - 1; i >= 0; i -= 1) {
-                  const parsed = parseChildId(childIds[i]);
-                  if (!parsed || seen.has(parsed.fileKey)) continue;
-                  if (
-                    normalizedCurrentFileKey &&
-                    parsed.fileKey === normalizedCurrentFileKey
-                  ) {
-                    continue;
-                  }
-                  seen.add(parsed.fileKey);
-                  entries.push(parsed);
-                  if (entries.length >= 3) break;
-                }
-
-                if (
-                  !entries.length &&
-                  item.fileKey &&
-                  item.fileKey !== normalizedCurrentFileKey
-                ) {
-                  entries.push({ fileKey: item.fileKey });
-                }
-
-                return (
-                  <tr
-                    key={`${
-                      item.id || item.parentId || item.description
-                    }-${index}`}
-                    className={`border-t border-rose-100/70 align-top transition-colors hover:bg-rose-100/40 ${
-                      index % 2 === 0 ? 'bg-white/80' : 'bg-rose-50/40'
-                    }`}
-                  >
-                    <td className="px-3 py-3 font-medium text-slate-900">
-                      {item.projectName || item.projectKey || '--'}
-                    </td>
-                    <td className="px-3 py-3">{item.team || '--'}</td>
-                    <td className="whitespace-nowrap px-3 py-3">
-                      {item.journeyStage || '--'}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
-                      {item.issueType || '--'}
-                    </td>
-                    <td className="max-w-[360px] px-3 py-3">
-                      <Tooltip title={item.description || '--'}>
-                        <span className="line-clamp-2 cursor-default">
-                          {item.description || '--'}
-                        </span>
-                      </Tooltip>
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
-                      <span
-                        className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${severityStyle.bg} ${severityStyle.text} ${severityStyle.border}`}
-                      >
-                        {formatSeverityLabel(severity)}
-                      </span>
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
-                      <span
-                        className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${getStatusPillStyle(
-                          normalizedStatus
-                        )}`}
-                      >
-                        {statusLabel}
-                      </span>
-                    </td>
-                    <td className="px-3 py-3">
-                      <Tooltip title={item.remark || '--'}>
-                        {item.remark ? (
-                          <a
-                            href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
-                              item.remark
-                            )}`}
-                            className="overview-table-link block truncate text-blue-600"
-                          >
-                            {item.remark}
-                          </a>
-                        ) : (
-                          <span className="block cursor-default truncate">
-                            --
-                          </span>
-                        )}
-                      </Tooltip>
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
-                      {item.teamOwner || item.owner || '--'}
-                    </td>
-                    <td className="px-3 py-3">
-                      {entries.length ? (
-                        entries.map(({ painId, fileKey, taskId }) => {
-                          const search = new URLSearchParams();
-                          search.set('project', fileKey);
-                          if (taskId) {
-                            search.set('focusTaskId', taskId);
-                          }
-                          if (painId) {
-                            search.set('painId', painId);
-                            search.set('autoOpenPain', '1');
-                          }
-                          const href = `/intelligent-analysis/community-experience?${search.toString()}`;
-                          const displayText = (() => {
-                            const last = fileKey.lastIndexOf('_');
-                            if (last <= 0) return fileKey;
-                            const prev = fileKey.lastIndexOf('_', last - 1);
-                            if (prev < 0 || prev + 1 >= fileKey.length)
-                              return fileKey;
-                            return fileKey.slice(prev + 1);
-                          })();
-
-                          return (
-                            <div
-                              key={`${fileKey}-${taskId || ''}-${painId || ''}`}
-                            >
-                              <a
-                                href={href}
-                                className="overview-table-link text-blue-600"
-                              >
-                                {displayText}
-                              </a>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <span className="text-slate-300">--</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <div className="space-y-3">{renderTable(items)}</div>
       )}
     </div>
   );
@@ -1268,6 +1262,8 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     });
   }, [fileKey, overviewCardResp?.items, targetTaskIds]);
 
+  const hasHistoryPain = historyParentPains.length > 0 || parentPainsLoading;
+
   const autoOpenPainId = useMemo(() => {
     const target = String(painFocusTarget?.painId || '').trim();
     if (!target || !displayPainPoints.length) return null;
@@ -1295,7 +1291,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     );
   };
 
-  if (!hasObs && !hasPain) {
+  if (!hasObs && !hasPain && !hasHistoryPain) {
     if (!showEmpty) return null;
     return (
       <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-slate-200 px-3 py-2">
@@ -1309,26 +1305,6 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   if (variant === 'compact') {
     return (
       <div className="space-y-3">
-        {hasObs && (
-          <div>
-            <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
-              <EvidenceIcon className="h-3 w-3" />
-              总结
-            </div>
-            <ul className="space-y-1">
-              {observations!.map((obs, i) => (
-                <ObservationItem
-                  key={i}
-                  text={obs}
-                  toolIds={observations_tool_nums?.[i]}
-                  taskId={stepId}
-                  onStepClick={onStepClick}
-                  compact
-                />
-              ))}
-            </ul>
-          </div>
-        )}
         {hasPain && (
           <div>
             <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
@@ -1356,13 +1332,34 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                 />
               ))}
             </ul>
-            <HistoryPainTable
-              items={historyParentPains}
-              loading={parentPainsLoading}
-              compact
-              currentFileKey={fileKey}
-              isLatestReport={isLatestReport}
-            />
+          </div>
+        )}
+        {hasHistoryPain && (
+          <HistoryPainTable
+            items={historyParentPains}
+            loading={parentPainsLoading}
+            currentFileKey={fileKey}
+            isLatestReport={isLatestReport}
+          />
+        )}
+        {hasObs && (
+          <div>
+            <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
+              <EvidenceIcon className="h-3 w-3" />
+              总结
+            </div>
+            <ul className="space-y-1">
+              {observations!.map((obs, i) => (
+                <ObservationItem
+                  key={i}
+                  text={obs}
+                  toolIds={observations_tool_nums?.[i]}
+                  taskId={stepId}
+                  onStepClick={onStepClick}
+                  compact
+                />
+              ))}
+            </ul>
           </div>
         )}
       </div>
@@ -1401,13 +1398,15 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               />
             ))}
           </ul>
-          <HistoryPainTable
-            items={historyParentPains}
-            loading={parentPainsLoading}
-            currentFileKey={fileKey}
-            isLatestReport={isLatestReport}
-          />
         </div>
+      )}
+      {hasHistoryPain && (
+        <HistoryPainTable
+          items={historyParentPains}
+          loading={parentPainsLoading}
+          currentFileKey={fileKey}
+          isLatestReport={isLatestReport}
+        />
       )}
       {hasObs && (
         <div className="rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
@@ -1425,7 +1424,6 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               className={`ml-auto h-3.5 w-3.5 transition-transform ${
                 obsExpanded ? 'rotate-180' : ''
               }`}
-              viewBox="0 0 16 16"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"

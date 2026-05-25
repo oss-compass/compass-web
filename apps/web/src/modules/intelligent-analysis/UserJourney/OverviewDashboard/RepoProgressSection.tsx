@@ -9,7 +9,11 @@ import { Grid, Segmented, Select, Table, Typography } from 'antd';
 import { CheckOutlined, FilterFilled, RightOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import { SEVERITY_CFG } from './constants';
-import { CircularProgress, IssueProgressBar } from './ProgressComponents';
+import { IssueProgressBar } from './ProgressComponents';
+import CloseRateTrendModal from './CloseRateTrendModal';
+import { CloseRateSparkline } from './CloseRateTrendChart';
+import { buildCloseRateTrend } from './closeRateTrend';
+import type { CloseRateTrendPoint } from './closeRateTrend';
 import type {
   DashboardIssue,
   IssueBucket,
@@ -317,6 +321,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     useState<ProgressMetricSortKey>('none');
   const [progressSortOrder, setProgressSortOrder] =
     useState<ProgressMetricSortOrder>('desc');
+  const [closeRateModal, setCloseRateModal] = useState<{
+    open: boolean;
+    title: string;
+    points: CloseRateTrendPoint[];
+  }>({ open: false, title: '', points: [] });
 
   const [severityFilters, setSeverityFilters] = useState<KnownSeverity[]>(() =>
     currentTab === 'key'
@@ -345,13 +354,18 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const repoDerived = useMemo(() => {
     const map = new Map<
       string,
-      { issues: DashboardIssue[]; metrics: MetricSummary }
+      {
+        issues: DashboardIssue[];
+        metrics: MetricSummary;
+        trend: CloseRateTrendPoint[];
+      }
     >();
     repoRows.forEach((row) => {
       const issues = getFilteredIssues(row.issues);
       map.set(row.id, {
         issues,
         metrics: buildMetricSummaryFromPainRows(issues),
+        trend: buildCloseRateTrend(issues, 7),
       });
     });
     return map;
@@ -360,13 +374,18 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const teamDerived = useMemo(() => {
     const map = new Map<
       string,
-      { issues: DashboardIssue[]; metrics: MetricSummary }
+      {
+        issues: DashboardIssue[];
+        metrics: MetricSummary;
+        trend: CloseRateTrendPoint[];
+      }
     >();
     teamRows.forEach((row) => {
       const issues = getFilteredIssues(row.issues);
       map.set(row.id, {
         issues,
         metrics: buildMetricSummaryFromPainRows(issues),
+        trend: buildCloseRateTrend(issues, 7),
       });
     });
     return map;
@@ -596,10 +615,41 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         render: (_value, record) => {
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
+          const trendPoints =
+            derived?.trend ?? buildCloseRateTrend(record.issues, 7);
+          const displayRate = metrics.total === 0 ? 100 : metrics.closeRate;
+          const sparkValues =
+            metrics.total === 0
+              ? Array.from({ length: 5 }, () => 100)
+              : trendPoints.slice(-5).map((point) => point.closeRate);
           return (
-            <CircularProgress
-              value={metrics.total === 0 ? 100 : metrics.closeRate}
-            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                title="查看闭环率趋势"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const modalPoints =
+                    metrics.total === 0
+                      ? trendPoints.map((point) => ({
+                          ...point,
+                          closeRate: point.total === 0 ? 100 : point.closeRate,
+                        }))
+                      : trendPoints;
+                  setCloseRateModal({
+                    open: true,
+                    title: `${record.name} · 闭环率趋势`,
+                    points: modalPoints,
+                  });
+                }}
+              >
+                <CloseRateSparkline values={sparkValues} />
+              </button>
+              <span className="text-sm font-semibold tabular-nums text-slate-700">
+                {formatPercent(displayRate)}
+              </span>
+            </div>
           );
         },
         onHeaderCell: () => ({
@@ -747,10 +797,41 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         render: (_value, record) => {
           const derived = teamDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
+          const trendPoints =
+            derived?.trend ?? buildCloseRateTrend(record.issues, 7);
+          const displayRate = metrics.total === 0 ? 100 : metrics.closeRate;
+          const sparkValues =
+            metrics.total === 0
+              ? Array.from({ length: 5 }, () => 100)
+              : trendPoints.slice(-5).map((point) => point.closeRate);
           return (
-            <CircularProgress
-              value={metrics.total === 0 ? 100 : metrics.closeRate}
-            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                title="查看闭环率趋势"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const modalPoints =
+                    metrics.total === 0
+                      ? trendPoints.map((point) => ({
+                          ...point,
+                          closeRate: point.total === 0 ? 100 : point.closeRate,
+                        }))
+                      : trendPoints;
+                  setCloseRateModal({
+                    open: true,
+                    title: `${record.name} · 闭环率趋势`,
+                    points: modalPoints,
+                  });
+                }}
+              >
+                <CloseRateSparkline values={sparkValues} />
+              </button>
+              <span className="text-sm font-semibold tabular-nums text-slate-700">
+                {formatPercent(displayRate)}
+              </span>
+            </div>
           );
         },
         onHeaderCell: () => ({
@@ -998,10 +1079,47 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                     {(() => {
                       const derived = repoDerived.get(repo.id);
                       const metrics = derived?.metrics ?? repo.overall;
+                      const trendPoints =
+                        derived?.trend ?? buildCloseRateTrend(repo.issues, 7);
+                      const displayRate =
+                        metrics.total === 0 ? 100 : metrics.closeRate;
+                      const sparkValues =
+                        metrics.total === 0
+                          ? Array.from({ length: 5 }, () => 100)
+                          : trendPoints
+                              .slice(-5)
+                              .map((point) => point.closeRate);
                       return (
-                        <CircularProgress
-                          value={metrics.total === 0 ? 100 : metrics.closeRate}
-                        />
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                            title="查看闭环率趋势"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              const modalPoints =
+                                metrics.total === 0
+                                  ? trendPoints.map((point) => ({
+                                      ...point,
+                                      closeRate:
+                                        point.total === 0
+                                          ? 100
+                                          : point.closeRate,
+                                    }))
+                                  : trendPoints;
+                              setCloseRateModal({
+                                open: true,
+                                title: `${repo.name} · 闭环率趋势`,
+                                points: modalPoints,
+                              });
+                            }}
+                          >
+                            <CloseRateSparkline values={sparkValues} />
+                          </button>
+                          <span className="text-sm font-semibold tabular-nums text-slate-700">
+                            {formatPercent(displayRate)}
+                          </span>
+                        </div>
                       );
                     })()}
                   </td>
@@ -1243,6 +1361,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           />
         )}
       </div>
+      <CloseRateTrendModal
+        open={closeRateModal.open}
+        title={closeRateModal.title}
+        points={closeRateModal.points}
+        onClose={() =>
+          setCloseRateModal({ open: false, title: '', points: [] })
+        }
+      />
     </>
   );
 };

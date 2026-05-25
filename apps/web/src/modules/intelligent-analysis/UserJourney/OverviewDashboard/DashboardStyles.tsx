@@ -327,21 +327,37 @@ const DashboardStyles: React.FC = () => (
     }
 
     .ov-priority-main {
-      display: flex;
-      align-items: center;
+      padding-top: 10px;
+      // display: flex;
+      // align-items: center;
       min-width: 0;
       height: 100%;
     }
 
     .ov-priority-header {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #94a3b8;
+      line-height: 2;
+      overflow: hidden;
+      white-space: normal;
+      text-overflow: ellipsis;
+      flex: 1 1 0;
       min-width: 0;
-      height: 100%;
-      flex: 1;
+      width: auto;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      // display: flex;
+      // flex-direction: row;
+      // flex-wrap: wrap;
+      // align-items: flex-start;
+      // justify-content: flex-start;
+      // column-gap: 8px;
+      // row-gap: 4px;
+      // min-width: 0;
+      // height: 100%;
+      // flex: 1;
     }
 
     .ov-priority-tag {
@@ -349,6 +365,7 @@ const DashboardStyles: React.FC = () => (
       min-width: 42px;
       height: 22px;
       padding: 0 8px;
+      margin-right: 8px;
       border-radius: 6px;
       border: 1px solid transparent;
       display: inline-flex;
@@ -359,17 +376,6 @@ const DashboardStyles: React.FC = () => (
       font-weight: 800;
       letter-spacing: 0.02em;
       white-space: nowrap;
-    }
-
-    .ov-priority-desc {
-      font-size: 11px;
-      font-weight: 500;
-      color: #94a3b8;
-      line-height: 1.2;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      width: 100%;
     }
 
     .ov-priority-side {
