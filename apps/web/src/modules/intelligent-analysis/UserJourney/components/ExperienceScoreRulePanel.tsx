@@ -18,11 +18,11 @@ const stageRows = [
 ];
 
 const painRangeRows = [
-  { painCount: '0 个', level: 'p4 极致体验', range: '[95, 100]' },
-  { painCount: '1 个', level: 'p3 轻微影响', range: '[80, 94]' },
-  { painCount: '2 个', level: 'p2 显著影响', range: '[60, 79]' },
-  { painCount: '≥ 3 个', level: 'p1 关键卡点', range: '[1, 59]' },
-  { painCount: '任务失败', level: 'p0 完全阻塞', range: '[0, 0]' },
+  { painCount: '0 个', level: '极致体验', range: '[95, 100]' },
+  { painCount: '1 个', level: '轻微影响', range: '[80, 94]' },
+  { painCount: '2 个', level: '显著影响', range: '[60, 79]' },
+  { painCount: '≥ 3 个', level: '关键卡点', range: '[1, 59]' },
+  { painCount: '任务失败', level: '完全阻塞', range: '[0, 0]' },
 ];
 
 const gradeRows = [
