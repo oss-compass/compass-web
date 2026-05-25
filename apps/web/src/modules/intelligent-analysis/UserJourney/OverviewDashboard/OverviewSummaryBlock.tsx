@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import {
   getIssueTypeMarkerColor,
   getIssueTypeTagStyle,
@@ -786,7 +787,11 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                         >
                           {item.shortLabel} {item.label}
                         </span>
-                        {item.description}
+                        <Tooltip title={item.description}>
+                          <span className="ov-priority-desc">
+                            {item.description}
+                          </span>
+                        </Tooltip>
                       </div>
                     </div>
                     <div className="ov-priority-side">
