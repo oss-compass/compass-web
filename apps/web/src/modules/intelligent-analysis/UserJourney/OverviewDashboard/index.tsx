@@ -7,6 +7,7 @@ import {
   fetchOverviewSummary,
 } from '../rawData/apiClient';
 import CommonIssuesSection from './CommonIssuesSection';
+import ExperienceScoreRuleQASection from './ExperienceScoreRuleQASection';
 import { SEVERITY_RANK, STATUS_RANK } from './constants';
 import DashboardStyles from './DashboardStyles';
 import IssueDetailModal from './IssueDetailModal';
@@ -598,6 +599,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           commonIssues={commonIssues}
           onOpenIssueModal={openIssueModal}
         />
+
+        <ExperienceScoreRuleQASection />
 
         <IssueDetailModal
           state={issueModal}

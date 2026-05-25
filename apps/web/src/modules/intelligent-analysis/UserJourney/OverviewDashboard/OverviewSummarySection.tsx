@@ -1,6 +1,7 @@
 import React from 'react';
 import { Checkbox, Segmented, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
+import ExperienceScoreRulePopoverTrigger from '../components/ExperienceScoreRulePopoverTrigger';
 import type {
   CommonIssueGroup,
   DashboardIssue,
@@ -112,7 +113,10 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
         />
         <div className="overview-bottom-row">
           <div className="bottom-metric">
-            <div className="bm-label">综合体验评分</div>
+            <div className="bm-label inline-flex items-center justify-center gap-1">
+              综合体验评分
+              <ExperienceScoreRulePopoverTrigger />
+            </div>
             <div className="bm-value">
               {summaryScore == null ? (
                 <span className="bm-value-main">

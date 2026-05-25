@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Descriptions, Popover, Tooltip, Typography } from 'antd';
-import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import ExperienceGradePopoverContent from './ExperienceGradePopoverContent';
+import { Card, Descriptions, Tooltip, Typography } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import ExperienceScoreRulePopoverTrigger from './ExperienceScoreRulePopoverTrigger';
 import JourneyPanoramaSection from './JourneyPanoramaSection';
 import {
   getExperienceGradeFromScore,
@@ -41,28 +41,11 @@ const renderMetricRecentValue = (metric: OverviewMetric) => {
   const currentGradeItem = getExperienceGradeGuideItem(currentGrade);
 
   return (
-    <Popover
-      title={
-        <div className="text-sm font-semibold text-slate-900">
-          综合体验评级说明
-        </div>
-      }
-      content={<ExperienceGradePopoverContent currentGrade={currentGrade} />}
-      placement="bottomRight"
-      trigger="hover"
-      overlayStyle={{
-        maxWidth: 'min(960px, calc(100vw - 32px))',
-      }}
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-1 text-[11px] font-medium leading-4 ${currentGradeItem.badgeClassName}`}
     >
-      <button
-        type="button"
-        className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[11px] font-medium leading-4 transition-colors ${currentGradeItem.badgeClassName}`}
-        aria-label="查看综合体验评级说明"
-      >
-        <span>{metric.recentValues}</span>
-        <QuestionCircleOutlined className="text-[12px]" />
-      </button>
-    </Popover>
+      {metric.recentValues}
+    </span>
   );
 };
 
@@ -127,9 +110,13 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-slate-500">
                     <span className="truncate">{metric.title}</span>
-                    <Tooltip title={metric.description}>
-                      <InfoCircleOutlined className="shrink-0 cursor-help text-slate-400" />
-                    </Tooltip>
+                    {isOverallScoreMetric(metric) ? (
+                      <ExperienceScoreRulePopoverTrigger className="shrink-0 text-slate-400 transition-colors hover:text-slate-600" />
+                    ) : (
+                      <Tooltip title={metric.description}>
+                        <InfoCircleOutlined className="shrink-0 cursor-help text-slate-400" />
+                      </Tooltip>
+                    )}
                   </div>
                   {renderMetricRecentValue(metric)}
                 </div>
