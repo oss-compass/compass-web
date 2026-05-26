@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
-import {
-  DashboardOutlined,
-  PlusOutlined,
-  FileTextOutlined,
-} from '@ant-design/icons';
+import { CodeOutlined, DashboardOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
@@ -24,16 +20,11 @@ const SideBar: React.FC = () => {
       icon: <DashboardOutlined />,
       label: t('sidebar.overview'),
     },
-    // {
-    //   key: 'submit-project',
-    //   icon: <PlusOutlined />,
-    //   label: t('sidebar.submit_project'),
-    // },
-    // {
-    //   key: 'my-submissions',
-    //   icon: <FileTextOutlined />,
-    //   label: t('sidebar.my_submissions'),
-    // },
+    {
+      key: 'rust',
+      icon: <CodeOutlined />,
+      label: t('sidebar.rust'),
+    },
   ];
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -45,7 +36,12 @@ const SideBar: React.FC = () => {
     const asPath = router.asPath;
 
     // 处理不同的路由情况
-    if (pathname.includes('/overview/') || asPath.includes('/overview/')) {
+    if (pathname.includes('/rust') || asPath.includes('/rust')) {
+      return ['rust'];
+    } else if (
+      pathname.includes('/overview/') ||
+      asPath.includes('/overview/')
+    ) {
       return ['overview'];
     } else if (pathname.includes('/submit-project')) {
       return ['submit-project'];
