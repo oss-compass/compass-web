@@ -40,7 +40,11 @@ const LeaderboardPieChart: React.FC<LeaderboardPieChartProps> = ({
   const chartInstanceRef = useRef<echarts.ECharts | null>(null);
 
   const chartTitle =
-    type === 'organizations' ? 'Top10组织构成' : 'Top10国家/地区构成';
+    type === 'organizations'
+      ? 'Top10组织构成'
+      : type === 'projects'
+      ? 'Top10项目数量'
+      : 'Top10开发者数量';
   const metricLabel = type === 'projects' ? '项目数量' : '开发者数量';
 
   const displayItems = useMemo(

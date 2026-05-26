@@ -39,7 +39,7 @@ const RustPage: React.FC = () => {
         <div className="space-y-5">
           <LeaderboardTableCard
             type="developers"
-            title="开发者排行榜"
+            title="开发者数量排行榜"
             selectedRegions={selectedRegions}
           />
           <LeaderboardTableCard
@@ -49,7 +49,7 @@ const RustPage: React.FC = () => {
           />
           <LeaderboardTableCard
             type="projects"
-            title="项目排行榜"
+            title="项目数量排行榜"
             selectedRegions={selectedRegions}
           />
         </div>
