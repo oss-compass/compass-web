@@ -230,6 +230,7 @@ const RegionDistributionCard: React.FC<RegionDistributionCardProps> = ({
               visibility: activeRows.length === 0 ? 'hidden' : 'visible',
             }}
           />
+
           {activeRows.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center">
               <Empty description="暂无地区分布数据" />
