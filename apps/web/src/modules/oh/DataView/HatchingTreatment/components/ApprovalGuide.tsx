@@ -135,12 +135,12 @@ const ApprovalGuide: React.FC<ApprovalGuideProps> = ({
           </p>
           {moduleType === 'hatch' && (
             <p className="mt-2 text-sm text-amber-700">
-              注：SIG Lead 和合规代表无需审批&ldquo;上游协同策略&rdquo;指标。
+              注：SIG Lead 无需审批&ldquo;上游协同策略&rdquo;指标。
             </p>
           )}
           {moduleType === 'graduate' && (
             <p className="mt-2 text-sm text-amber-700">
-              注：SIG Lead 和合规代表无需审批&ldquo;回合上游&rdquo;指标。
+              注：SIG Lead 无需审批&ldquo;回合上游&rdquo;指标。
             </p>
           )}
         </div>
@@ -181,23 +181,6 @@ const ApprovalGuide: React.FC<ApprovalGuideProps> = ({
             </ul>
           </div>
 
-          {/* 合规代表 */}
-          <div className="rounded-lg border border-gray-200 p-4">
-            <h3 className="mb-3 text-base font-semibold text-gray-800">
-              合规代表
-            </h3>
-            <div className="mb-2 text-sm text-gray-600">
-              需审批所有必须澄清的指标，共 {allClarificationMetrics.length} 项：
-            </div>
-            <ul className="ml-5 list-disc space-y-1 text-sm text-gray-700">
-              {allClarificationMetrics.map((metric, index) => (
-                <li key={index}>
-                  【{metric.维度}】{metric.指标名称}
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* 开源能力代表（仅孵化和毕业模块） */}
           {showOpenSourceRole && openSourceMetrics.length > 0 && (
             <div className="rounded-lg border border-gray-200 p-4">
@@ -224,8 +207,8 @@ const ApprovalGuide: React.FC<ApprovalGuideProps> = ({
             </h3>
             <div className="text-sm text-gray-700">
               {showOpenSourceRole
-                ? 'SIG Lead、法务代表、合规代表、开源能力代表全部审批通过后进行确认。'
-                : 'SIG Lead、法务代表、合规代表全部审批通过后进行确认。'}
+                ? 'SIG Lead、法务代表、开源能力代表全部审批通过后进行确认。'
+                : 'SIG Lead、法务代表全部审批通过后进行确认。'}
             </div>
           </div>
         </div>

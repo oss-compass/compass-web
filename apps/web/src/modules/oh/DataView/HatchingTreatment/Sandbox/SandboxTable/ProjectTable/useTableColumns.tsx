@@ -47,11 +47,17 @@ export const useTableColumns = (anction) => {
       key: 'user',
       dataIndex: 'user',
       render: (_, record) => {
-        const { provider, nickname } = record?.user?.loginBinds[0];
+        const loginBind = record?.user?.loginBinds?.[0];
+        const provider = loginBind?.provider;
+        const nickname = loginBind?.nickname;
+        const hubUrl =
+          provider && nickname ? getHubUrl(provider, nickname) : null;
+
+        if (!hubUrl) return <span>{record?.user?.name || '--'}</span>;
         return (
           <a
             target="_blank"
-            href={getHubUrl(provider, nickname)}
+            href={hubUrl}
             className="text-[#3e8eff] hover:text-[#3e8eff] hover:underline"
           >
             {record?.user?.name}

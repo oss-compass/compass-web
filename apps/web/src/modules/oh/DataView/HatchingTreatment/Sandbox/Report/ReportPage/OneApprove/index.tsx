@@ -16,14 +16,10 @@ const Approve = () => {
     state,
     commentState,
     commentSigLeadPermission,
-    commentCompliancePermission,
     commentLegalPermission,
   } = useGetReportData();
 
-  const hasRole =
-    commentSigLeadPermission ||
-    commentCompliancePermission ||
-    commentLegalPermission;
+  const hasRole = commentSigLeadPermission || commentLegalPermission;
 
   const [open, setOpen] = useState(false);
 

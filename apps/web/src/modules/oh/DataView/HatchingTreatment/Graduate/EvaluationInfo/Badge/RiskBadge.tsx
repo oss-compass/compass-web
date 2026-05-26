@@ -70,14 +70,11 @@ const RiskBadge = ({ shortCode, mertic }) => {
       </Badge>
     </Popover>
   );
-  const getBadgeContent = (leaderState, complianceState) => {
+  const getBadgeContent = (leaderState) => {
     let requiredApprovals = [];
 
     if (leaderState.length === 0) {
       requiredApprovals.push('SIG Lead');
-    }
-    if (complianceState.length === 0) {
-      requiredApprovals.push('合规代表');
     }
     let content = `等待${requiredApprovals.join('、 ')}赞同风险澄清`;
     return content;
@@ -101,7 +98,6 @@ const RiskBadge = ({ shortCode, mertic }) => {
     let content = '';
     const leaderState = metricState.filter((item) => item.memberType === 1);
     const legalState = metricState.filter((item) => item.memberType === 2);
-    const complianceState = metricState.filter((item) => item.memberType === 3);
     const communityWgState = metricState.filter(
       (item) => item.memberType === 5
     );
@@ -147,7 +143,6 @@ const RiskBadge = ({ shortCode, mertic }) => {
       content = '需要重新澄清！';
       content += getRejectDetails(leaderState, 'SIG Lead');
       content += getRejectDetails(legalState, '法务代表');
-      content += getRejectDetails(complianceState, '合规代表');
 
       BadgeContent = createBadge(
         content,
@@ -157,9 +152,8 @@ const RiskBadge = ({ shortCode, mertic }) => {
     } else {
       if (dimension === '合法合规') {
         content += getApprovalDetails(legalState, '法务代表');
-        content += getApprovalDetails(complianceState, '合规代表');
 
-        if (legalState.length > 0 && complianceState.length > 0) {
+        if (legalState.length > 0) {
           BadgeContent = createBadge(
             content,
             '#52c41a',
@@ -167,9 +161,7 @@ const RiskBadge = ({ shortCode, mertic }) => {
           );
         } else {
           content +=
-            legalState.length > 0
-              ? `还需至少一名合规代表赞同风险澄清`
-              : `还需至少一名法务代表赞同风险澄清`;
+            legalState.length > 0 ? `` : `还需至少一名法务代表赞同风险澄清`;
           BadgeContent = createBadge(
             content,
             '#fff',
@@ -178,16 +170,15 @@ const RiskBadge = ({ shortCode, mertic }) => {
         }
       } else {
         content += getApprovalDetails(leaderState, 'SIG Lead');
-        content += getApprovalDetails(complianceState, '合规代表');
 
-        if (leaderState.length > 0 && complianceState.length > 0) {
+        if (leaderState.length > 0) {
           BadgeContent = createBadge(
             content,
             '#52c41a',
             <CheckOutlined className="rounded-full text-xs text-white" />
           );
         } else {
-          content += getBadgeContent(leaderState, complianceState);
+          content += getBadgeContent(leaderState);
           BadgeContent = createBadge(
             content,
             '#fff',

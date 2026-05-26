@@ -16,11 +16,8 @@ const MetricApprove = () => {
   const { targetSoftware, metricItemScoreList } = useGetTargetSoftwareData();
   const { metricClarificationState } = useGetAllRisk(targetSoftware?.shortCode);
 
-  const {
-    commentSigLeadPermission,
-    commentCompliancePermission,
-    commentLegalPermission,
-  } = useGetReportData();
+  const { commentSigLeadPermission, commentLegalPermission } =
+    useGetReportData();
   const metricList = useMemo(() => {
     if (!metricItemScoreList?.length) {
       return [];
@@ -56,9 +53,6 @@ const MetricApprove = () => {
       );
     });
     const res = [];
-    if (commentCompliancePermission) {
-      return [...res, ...legalList, ...otherList];
-    }
     if (commentLegalPermission) {
       res.push(...legalList);
     }
@@ -66,12 +60,7 @@ const MetricApprove = () => {
       res.push(...otherList);
     }
     return res;
-  }, [
-    commentSigLeadPermission,
-    commentCompliancePermission,
-    commentLegalPermission,
-    metricItemScoreList,
-  ]);
+  }, [commentSigLeadPermission, commentLegalPermission, metricItemScoreList]);
   const genExtra = (metric) => {
     let clarificationState = metricClarificationState?.[metric.key];
     const errorText = (

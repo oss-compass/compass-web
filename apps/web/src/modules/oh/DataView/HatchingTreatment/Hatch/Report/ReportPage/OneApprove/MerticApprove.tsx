@@ -18,7 +18,6 @@ const MetricApprove = () => {
 
   const {
     commentSigLeadPermission,
-    commentCompliancePermission,
     commentLegalPermission,
     commentCommunityCollaborationWgPermission,
   } = useGetReportData();
@@ -63,9 +62,6 @@ const MetricApprove = () => {
     if (commentCommunityCollaborationWgPermission) {
       res.push(...roundList);
     }
-    if (commentCompliancePermission) {
-      return [...res, ...legalList, ...otherList];
-    }
     if (commentLegalPermission) {
       res.push(...legalList);
     }
@@ -75,7 +71,6 @@ const MetricApprove = () => {
     return res;
   }, [
     commentSigLeadPermission,
-    commentCompliancePermission,
     commentLegalPermission,
     commentCommunityCollaborationWgPermission,
     metricItemScoreList,

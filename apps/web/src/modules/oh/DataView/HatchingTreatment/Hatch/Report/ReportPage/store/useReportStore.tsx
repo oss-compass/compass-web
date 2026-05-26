@@ -5,7 +5,7 @@ export const ReportEvent = {
   REFRESH: 'refresh' as const,
 };
 
-export type ReportEventType = typeof ReportEvent[keyof typeof ReportEvent];
+export type ReportEventType = (typeof ReportEvent)[keyof typeof ReportEvent];
 
 export const ReportStore = proxy<{
   loading: boolean;
@@ -34,7 +34,6 @@ export const useGetReportData = () => {
     count,
     commentState,
     commentSigLeadPermission,
-    commentCompliancePermission,
     commentLegalPermission,
     commentQaPermission,
     commentCommunityCollaborationWgPermission,
@@ -54,7 +53,6 @@ export const useGetReportData = () => {
     count,
     commentState,
     commentSigLeadPermission,
-    commentCompliancePermission,
     commentLegalPermission,
     commentQaPermission,
     commentCommunityCollaborationWgPermission,
@@ -80,7 +78,6 @@ export const useGetTaskTimelineData = () => {
     state,
     riskCount,
     legalCount,
-    complianceCount,
     confirmedCount,
     committerCount,
     awaitingClarificationCount,
@@ -94,7 +91,6 @@ export const useGetTaskTimelineData = () => {
     state,
     riskCount,
     legalCount,
-    complianceCount,
     confirmedCount,
     committerCount,
     awaitingClarificationCount,

@@ -22,7 +22,6 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   const {
     shortCode,
     clarificationSigLeadPermission,
-    clarificationCompliancePermission,
     clarificationLegalPermission,
   } = report;
 
@@ -70,15 +69,11 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const res = [];
     const leaderState = isUserStateValid(1);
     const legalState = isUserStateValid(2);
-    const complianceState = isUserStateValid(3);
     if (clarificationSigLeadPermission && !dimension) {
       res.push(createApprovalOption(1, leaderState, '以 SIG Lead 赞同'));
     }
     if (clarificationLegalPermission && dimension) {
       res.push(createApprovalOption(2, legalState, '以法务代表赞同'));
-    }
-    if (clarificationCompliancePermission) {
-      res.push(createApprovalOption(3, complianceState, '以合规代表赞同'));
     }
 
     return res;
@@ -105,7 +100,6 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     const res = [];
     const leaderState = isUserStateState(-1, 1);
     const legalState = isUserStateState(-1, 2);
-    const complianceState = isUserStateState(-1, 3);
 
     if (clarificationSigLeadPermission && !dimension) {
       res.push(createRejectionOption(1, leaderState, '以 SIG Lead 拒绝'));
@@ -114,32 +108,26 @@ const CheckRisk = ({ report, metricName, dimension }) => {
     if (clarificationLegalPermission && dimension) {
       res.push(createRejectionOption(2, legalState, '以法务代表拒绝'));
     }
-    if (clarificationCompliancePermission) {
-      res.push(createRejectionOption(3, complianceState, '以合规代表拒绝'));
-    }
     return res;
   };
   const getApproveItems = () => {
     if (dimension === '合法合规') {
-      if (!clarificationCompliancePermission && !clarificationLegalPermission) {
+      if (!clarificationLegalPermission) {
         return [
           {
             key: '1',
-            label: '您不是该软件的法务代表或合规代表，暂无权限操作',
+            label: '您不是该软件的法务代表代表，暂无权限操作',
           },
         ];
       } else {
         return getApprovalOptions(dimension);
       }
     } else {
-      if (
-        !clarificationSigLeadPermission &&
-        !clarificationCompliancePermission
-      ) {
+      if (!clarificationSigLeadPermission) {
         return [
           {
             key: '1',
-            label: '您不是该软件的 SIG Lead 或合规代表，暂无权限操作',
+            label: '您不是该软件的 SIG Lead 代表，暂无权限操作',
           },
         ];
       } else {
@@ -149,21 +137,18 @@ const CheckRisk = ({ report, metricName, dimension }) => {
   };
   const getRejectItems = () => {
     if (dimension === '合法合规') {
-      if (!clarificationCompliancePermission && !clarificationLegalPermission) {
+      if (!clarificationLegalPermission) {
         return [
           {
             key: '1',
-            label: '您不是该软件的法务代表或合规代表，暂无权限操作',
+            label: '您不是该软件的法务代表代表，暂无权限操作',
           },
         ];
       } else {
         return getRejectionOptions(dimension);
       }
     } else {
-      if (
-        !clarificationSigLeadPermission &&
-        !clarificationCompliancePermission
-      ) {
+      if (!clarificationSigLeadPermission) {
         return [
           {
             key: '1',

@@ -123,12 +123,12 @@ export const useTableColumns = (anction) => {
       key: 'sigLeadCount',
       dataIndex: 'sigLeadCount',
     },
-    {
-      title: '合规代表审批人数',
-      width: 150,
-      key: 'complianceCount',
-      dataIndex: 'complianceCount',
-    },
+    // {
+    //   title: '合规代表审批人数',
+    //   width: 150,
+    //   key: 'complianceCount',
+    //   dataIndex: 'complianceCount',
+    // },
     {
       title: '法务代表审批人数',
       width: 150,

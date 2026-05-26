@@ -26,7 +26,6 @@ const CheckApprove = ({ selectionId }) => {
   const userId = currentUser?.id;
   const {
     commentSigLeadPermission,
-    commentCompliancePermission,
     commentLegalPermission,
     commentCommunityCollaborationWgPermission,
     commentState,
@@ -184,7 +183,7 @@ const CheckApprove = ({ selectionId }) => {
       return [
         {
           key: '1',
-          label: '您不是该软件的 SIG Lead 或法务合规代表，暂无权限审批',
+          label: '您不是该软件的 SIG Lead 或法务代表，暂无权限审批',
         },
       ];
     }
@@ -195,7 +194,6 @@ const CheckApprove = ({ selectionId }) => {
   const hasCommentPermissions = () => {
     return (
       commentSigLeadPermission ||
-      commentCompliancePermission ||
       commentLegalPermission ||
       commentCommunityCollaborationWgPermission
     );
@@ -205,7 +203,6 @@ const CheckApprove = ({ selectionId }) => {
     const res = [];
     const leaderState = isUserStateValid(1);
     const legalState = isUserStateValid(2);
-    const complianceState = isUserStateValid(3);
     const cmmunityWgState = isUserStateValid(5);
 
     // SIG Lead 权限：只需要一般指标闭环
@@ -222,20 +219,6 @@ const CheckApprove = ({ selectionId }) => {
         canLegalApprove.length > 0 ? canLegalApprove : null;
       res.push(
         createApprovalOption(2, legalState, '以法务代表通过', blockedMetrics)
-      );
-    }
-
-    // 合规代表权限：需要法务和一般指标都闭环
-    if (commentCompliancePermission) {
-      const allMetrics = [...canLegalApprove, ...canApprove];
-      const blockedMetrics = allMetrics.length > 0 ? allMetrics : null;
-      res.push(
-        createApprovalOption(
-          3,
-          complianceState,
-          '以合规代表通过',
-          blockedMetrics
-        )
       );
     }
 
@@ -296,7 +279,7 @@ const CheckApprove = ({ selectionId }) => {
       return [
         {
           key: '1',
-          label: '您不是该软件的 SIG Lead 或法务合规代表，暂无权限审批',
+          label: '您不是该软件的 SIG Lead 或法务代表，暂无权限审批',
         },
       ];
     }
@@ -308,7 +291,6 @@ const CheckApprove = ({ selectionId }) => {
     const res = [];
     const leaderState = isUserStateState(-1, 1);
     const legalState = isUserStateState(-1, 2);
-    const complianceState = isUserStateState(-1, 3);
     const cmmunityWgState = isUserStateState(-1, 5);
 
     if (commentSigLeadPermission) {
@@ -319,11 +301,6 @@ const CheckApprove = ({ selectionId }) => {
     if (commentLegalPermission) {
       res.push(
         createRejectionOption(2, legalState, '以法务代表驳回', canReject)
-      );
-    }
-    if (commentCompliancePermission) {
-      res.push(
-        createRejectionOption(3, complianceState, '以合规代表驳回', canReject)
       );
     }
     if (commentCommunityCollaborationWgPermission) {
