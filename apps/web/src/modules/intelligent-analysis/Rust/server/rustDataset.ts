@@ -322,7 +322,7 @@ function filterByRegions<T>(
 
 function filterByKeyword(
   type: RustLeaderboardType,
-  rows: RustRegionRow[] | RustOrganizationRow[],
+  rows: Array<RustRegionRow | RustOrganizationRow>,
   keyword: string
 ) {
   if (!keyword) {
@@ -372,7 +372,7 @@ export async function getRustLeaderboardPage(
     normalizeCountry(region)
   );
 
-  let sourceRows: RustRegionRow[] | RustOrganizationRow[] = [];
+  let sourceRows: Array<RustRegionRow | RustOrganizationRow> = [];
 
   if (type === 'developers') {
     sourceRows = filterByRegions(cache.developers, regions, (row) => row.国家);
