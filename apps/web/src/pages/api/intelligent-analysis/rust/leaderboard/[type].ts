@@ -22,9 +22,13 @@ export default async function handler(
     return;
   }
 
+  const queryKeyword = Array.isArray(req.query.q)
+    ? req.query.q[0]
+    : req.query.q;
+
   try {
     const data = await getRustLeaderboardPage(type, {
-      q: req.query.q,
+      q: queryKeyword,
       regions: parseRegionList(req.query.regions),
       page: Number(req.query.page || 1),
       pageSize: Number(req.query.pageSize || 10),
