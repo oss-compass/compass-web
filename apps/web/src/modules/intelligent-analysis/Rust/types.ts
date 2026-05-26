@@ -32,6 +32,13 @@ export interface RustOverviewResponse {
   };
 }
 
+export interface RustLeaderboardChartItem {
+  key: string;
+  name: string;
+  value: number;
+  share: number;
+}
+
 export interface RustLeaderboardResponse<
   T extends RustRegionRow | RustOrganizationRow
 > {
@@ -40,4 +47,5 @@ export interface RustLeaderboardResponse<
   pageSize: number;
   total: number;
   items: T[];
+  chartItems: RustLeaderboardChartItem[];
 }

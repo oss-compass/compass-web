@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import type {
+  RustLeaderboardChartItem,
   RustLeaderboardType,
   RustOrganizationRow,
   RustOverviewResponse,
@@ -348,6 +349,77 @@ function filterByKeyword(
   });
 }
 
+function getLeaderboardRowName(
+  type: RustLeaderboardType,
+  row: RustRegionRow | RustOrganizationRow
+): string {
+  if (type === 'organizations') {
+    return (row as RustOrganizationRow).组织;
+  }
+
+  return (row as RustRegionRow).国家;
+}
+
+function getLeaderboardRowValue(
+  type: RustLeaderboardType,
+  row: RustRegionRow | RustOrganizationRow
+): number {
+  if (type === 'organizations') {
+    return (row as RustOrganizationRow).开发者数量;
+  }
+
+  return (row as RustRegionRow).数量;
+}
+
+function parseSharePercent(share: string): number {
+  return parseFloat(share.replace('%', '').trim()) || 0;
+}
+
+function isUnknownName(name: string): boolean {
+  const n = name.toLowerCase().trim();
+  return !n || n === 'unknown' || n === '未知' || n === '未知组织';
+}
+
+function buildLeaderboardChartItems(
+  type: RustLeaderboardType,
+  rows: Array<RustRegionRow | RustOrganizationRow>
+): RustLeaderboardChartItem[] {
+  // 组织榜：饼图排除 unknown 组织
+  const validRows =
+    type === 'organizations'
+      ? rows.filter((row) => !isUnknownName((row as RustOrganizationRow).组织))
+      : rows;
+
+  const topRows = validRows.slice(0, 10);
+  const otherRows = validRows.slice(10);
+
+  const otherValue = otherRows.reduce(
+    (sum, row) => sum + getLeaderboardRowValue(type, row),
+    0
+  );
+  // Other 的占比：直接累加 11 名之后各行的原始占比（不含 unknown）
+  const otherShare = otherRows.reduce(
+    (sum, row) => sum + parseSharePercent(row.占比),
+    0
+  );
+
+  const chartItems = topRows.map((row, index) => ({
+    key: `${type}-${index + 1}`,
+    name: getLeaderboardRowName(type, row),
+    value: getLeaderboardRowValue(type, row),
+    share: parseSharePercent(row.占比),
+  }));
+
+  chartItems.push({
+    key: `${type}-other`,
+    name: 'Other',
+    value: otherValue,
+    share: otherShare,
+  });
+
+  return chartItems;
+}
+
 export async function getRustOverviewData(): Promise<RustOverviewResponse> {
   const cache = await getRustDatasetCache();
 
@@ -366,7 +438,7 @@ export async function getRustLeaderboardPage(
 ) {
   const cache = await getRustDatasetCache();
   const page = Math.max(1, Number(query.page || 1));
-  const pageSize = Math.min(50, Math.max(1, Number(query.pageSize || 10)));
+  const pageSize = Math.max(1, Number(query.pageSize || 10));
   const keyword = normalizeText(query.q).toLowerCase();
   const regions = (query.regions || []).map((region) =>
     normalizeCountry(region)
@@ -387,6 +459,7 @@ export async function getRustLeaderboardPage(
   }
 
   const filteredRows = filterByKeyword(type, sourceRows, keyword);
+  const chartItems = buildLeaderboardChartItems(type, filteredRows);
   const total = filteredRows.length;
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
@@ -398,6 +471,7 @@ export async function getRustLeaderboardPage(
     pageSize,
     total,
     items,
+    chartItems,
   };
 }
 
