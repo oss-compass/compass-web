@@ -31,6 +31,7 @@ type OverviewSummarySectionProps = {
   summarySuccessRate: number | null;
   summaryAvgExecutionTime: number | null;
   repoCount: number;
+  titleExtra?: React.ReactNode;
   issueSourceMode: IssueSourceMode;
   includeCommonIssues: boolean;
   commonIssues: CommonIssueGroup[];
@@ -51,6 +52,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   summarySuccessRate,
   summaryAvgExecutionTime,
   repoCount,
+  titleExtra,
   issueSourceMode,
   includeCommonIssues,
   commonIssues,
@@ -70,6 +72,9 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
         <Title level={4} className="oj-section-title">
           总览信息
         </Title>
+        {titleExtra ? (
+          <div className="overview-summary-actions">{titleExtra}</div>
+        ) : null}
       </div>
       <div className="overview-summary-stack">
         <OverviewSummaryBlock

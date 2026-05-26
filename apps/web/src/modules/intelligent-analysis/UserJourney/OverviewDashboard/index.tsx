@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Button, Modal } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import {
   fetchOverviewCards,
@@ -60,6 +62,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [repoSortAsc, setRepoSortAsc] = useState(true);
   const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('name');
   const [teamSortAsc, setTeamSortAsc] = useState(true);
+  const [qaOpen, setQaOpen] = useState(false);
 
   const { data: cardsResp, isLoading } = useQuery({
     queryKey: [
@@ -559,6 +562,16 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           summarySuccessRate={summarySuccessRate}
           summaryAvgExecutionTime={summaryAvgExecutionTime}
           repoCount={summaryRepoCount}
+          titleExtra={
+            <Button
+              type="default"
+              className="oj-qa-trigger"
+              icon={<QuestionCircleOutlined />}
+              onClick={() => setQaOpen(true)}
+            >
+              QA
+            </Button>
+          }
           issueSourceMode={issueSourceMode}
           includeCommonIssues={includeCommonIssues}
           commonIssues={commonIssues}
@@ -600,12 +613,22 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           onOpenIssueModal={openIssueModal}
         />
 
-        <ExperienceScoreRuleQASection />
-
         <IssueDetailModal
           state={issueModal}
           onClose={() => setIssueModal({ open: false, title: '', issues: [] })}
         />
+        <Modal
+          open={qaOpen}
+          onCancel={() => setQaOpen(false)}
+          footer={null}
+          width="min(92vw, 1460px)"
+          title="QA"
+          destroyOnHidden
+        >
+          <div className="oj-qa-modal-body">
+            <ExperienceScoreRuleQASection showTitle={false} />
+          </div>
+        </Modal>
         <DashboardStyles />
       </div>
     </div>

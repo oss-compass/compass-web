@@ -21,6 +21,49 @@ const DashboardStyles: React.FC = () => (
       gap: 20px;
     }
 
+    .oj-dashboard-top-actions {
+      position: fixed;
+      top: 12px;
+      right: 32px;
+      z-index: 30;
+      display: flex;
+      justify-content: flex-end;
+      pointer-events: none;
+    }
+
+    .oj-dashboard-top-actions > * {
+      pointer-events: auto;
+    }
+
+    .oj-qa-trigger.ant-btn {
+      height: 36px;
+      border-radius: 999px !important;
+      padding: 0 14px;
+      font-weight: 800;
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .oj-qa-trigger.ant-btn:not(:disabled):hover {
+      color: #0f172a;
+      border-color: rgba(203, 213, 225, 0.95);
+      background: rgba(248, 250, 252, 0.98);
+    }
+
+    .oj-qa-trigger.ant-btn:not(:disabled):active {
+      color: #0f172a;
+      border-color: rgba(148, 163, 184, 0.95);
+      background: rgba(241, 245, 249, 0.98);
+    }
+
+    .oj-qa-modal-body {
+      max-height: min(72vh, 780px);
+      overflow: auto;
+      padding: 4px;
+    }
+
     .oj-section-title.ant-typography {
       margin: 0;
       font-size: 18px;

@@ -838,7 +838,9 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
           {trend && trend.length ? (
             <div className="ov-panel ov-trend-panel">
               <div className="ov-panel-head">
-                <div className="ov-panel-title">周度新增问题及闭环趋势</div>
+                <div className="ov-panel-title">
+                  周度新增问题及闭环趋势（未去重）
+                </div>
               </div>
               <TrendChart points={trend} mode={mode} />
               <div className="oj-trend-legend">

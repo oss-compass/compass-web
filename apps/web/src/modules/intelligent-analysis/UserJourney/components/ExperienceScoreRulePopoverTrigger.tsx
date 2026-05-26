@@ -43,7 +43,7 @@ const ExperienceScoreRulePopoverTrigger: React.FC<
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
-        width={'95vw'}
+        width="min(92vw, 1460px)"
         centered
       >
         <div className="max-h-[70vh] overflow-auto pr-1">
