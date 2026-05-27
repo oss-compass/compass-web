@@ -15,12 +15,12 @@ const TAB_CONFIG: {
   {
     key: 'global',
     label: '全球',
-    title: '2022-2025年全球Rust开源项目分析',
+    title: '2022-2025年全球 Rust 开源项目分析',
   },
   {
     key: 'creatio',
     label: 'CreatIO',
-    title: '2022-2025年CreatIORust开源项目分析',
+    title: '2022-2025年 CreatIO Rust 开源项目分析',
   },
 ];
 
