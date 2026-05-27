@@ -7,6 +7,9 @@ import type { RustOverviewResponse } from './types';
 
 type RustDataset = 'global' | 'creatio';
 
+const EXPORT_ALL_DATA_URL =
+  'https://compute.lishengbao.com.cn/downloads/22-25年rust数据.xlsx';
+
 const TAB_CONFIG: {
   key: RustDataset;
   label: string;
@@ -57,22 +60,33 @@ const RustPage: React.FC = () => {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* 顶部 Tab 切换 */}
-      <div className="mb-4 flex w-fit items-center gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1">
-        {TAB_CONFIG.map((tab) => (
-          <button
-            key={tab.key}
-            type="button"
-            onClick={() => handleTabChange(tab.key)}
-            className={[
-              'rounded-md px-5 py-1.5 text-sm font-medium transition-all',
-              activeDataset === tab.key
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700',
-            ].join(' ')}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex w-fit items-center gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1">
+          {TAB_CONFIG.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => handleTabChange(tab.key)}
+              className={[
+                'rounded-md px-5 py-1.5 text-sm font-medium transition-all',
+                activeDataset === tab.key
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700',
+              ].join(' ')}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <a
+          href={EXPORT_ALL_DATA_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+        >
+          导出全部数据
+        </a>
       </div>
 
       <h1 className="text-2xl font-semibold leading-tight text-slate-900 md:text-3xl">
