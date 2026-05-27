@@ -4,6 +4,7 @@ import { Dropdown, Modal, Radio, Tag, Tooltip } from 'antd';
 import { SeverityBadge } from './Badges';
 import { PAIN_STATUS_CFG, SEVERITY_RANK } from './constants';
 import type { DashboardIssue, IssueModalState, Severity } from './types';
+import { formatLocalDateTime } from '../time';
 import taskDefinitions from '../rawData/task_definitions.json';
 
 const TEAM_FILTER_ALL = '__ALL__';
@@ -35,6 +36,7 @@ type IssueSortKey =
   | 'description'
   | 'severity'
   | 'status'
+  | 'createdAt'
   | 'owner'
   | 'report';
 
@@ -120,11 +122,29 @@ const localeCompare = (left: string, right: string) =>
   left.localeCompare(right, 'zh-Hans-CN', { sensitivity: 'base' });
 
 const formatDateTime = (raw: string) => {
-  const text = String(raw || '').trim();
-  if (!text) return '--';
-  const m = text.match(/^(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2}))?/);
-  if (!m) return text;
-  return m[2] ? `${m[1]} ${m[2]}` : m[1];
+  return formatLocalDateTime(raw, { emptyText: '--' });
+};
+
+const parseDateToMs = (raw: unknown): number | null => {
+  const text = String(raw ?? '').trim();
+  if (!text) return null;
+  const ms = Date.parse(text);
+  if (Number.isNaN(ms)) return null;
+  return ms;
+};
+
+const compareDateTimeWithEmptyLast = (
+  leftMs: number | null,
+  rightMs: number | null,
+  order: SortOrder
+) => {
+  const leftInvalid = leftMs === null;
+  const rightInvalid = rightMs === null;
+  if (leftInvalid && rightInvalid) return 0;
+  if (leftInvalid) return 1;
+  if (rightInvalid) return -1;
+  const result = leftMs - rightMs;
+  return order === 'asc' ? result : -result;
 };
 
 const isOtherTeam = (teamName: string) =>
@@ -281,6 +301,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
         SEVERITY_RANK[issue.severity as Exclude<Severity, ''>] ?? 0;
       const statusLabel =
         PAIN_STATUS_CFG[String(issue.status || '')]?.label || '';
+      const createdAtMs = parseDateToMs(issue.createdAt || issue.created_at);
 
       return {
         issue,
@@ -288,6 +309,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
         reportText,
         severityRank,
         statusLabel,
+        createdAtMs,
       };
     });
 
@@ -331,6 +353,13 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
         case 'status':
           result = localeCompare(left.statusLabel, right.statusLabel);
           break;
+        case 'createdAt':
+          result = compareDateTimeWithEmptyLast(
+            left.createdAtMs,
+            right.createdAtMs,
+            sortOrder
+          );
+          break;
         case 'owner':
           result = localeCompare(
             left.issue.owner || left.issue.teamOwner || '',
@@ -344,7 +373,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
           result = 0;
       }
 
-      if (sortKey === 'team') {
+      if (sortKey === 'team' || sortKey === 'createdAt') {
         if (result !== 0) return result;
       } else {
         if (result !== 0) return sortOrder === 'asc' ? result : -result;
@@ -720,7 +749,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                 </div>
               </th>
               <th className="w-[96px] px-2 py-2 text-left md:w-[120px] md:px-3 md:py-3">
-                发现时间
+                {renderSortableHeader('发现时间', 'createdAt')}
               </th>
               <th className="w-[88px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
                 <div className="flex items-center gap-1.5">
@@ -839,19 +868,17 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       })()}
                     </td>
                     <td className="whitespace-nowrap px-2 py-2 text-slate-600 md:px-3 md:py-3">
-                      <Tooltip
-                        title={
-                          String(
-                            issue.createdAt || issue.created_at || ''
-                          ).trim() || '--'
-                        }
-                      >
-                        <span>
-                          {formatDateTime(
-                            issue.createdAt || issue.created_at || ''
-                          )}
-                        </span>
-                      </Tooltip>
+                      {(() => {
+                        const createdText = String(
+                          issue.createdAt || issue.created_at || ''
+                        ).trim();
+                        const displayTime = formatDateTime(createdText);
+                        return (
+                          <Tooltip title={displayTime}>
+                            <span>{displayTime}</span>
+                          </Tooltip>
+                        );
+                      })()}
                     </td>
                     <td className="break-all px-2 py-2 md:px-3 md:py-3">
                       {issue.owner || issue.teamOwner || '--'}

@@ -700,7 +700,11 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
         {typeof title === 'string' ? <span>{title}</span> : title}
       </div>
       <div className="ov-row">
-        {renderMetric('总问题数', 'total', summary.total)}
+        {renderMetric(
+          mode === 'common' ? '总问题数（去重后）' : '总问题数',
+          'total',
+          summary.total
+        )}
         {renderMetric('待处理', 'pending', summary.pending, 'ov-value-pending')}
         {renderMetric(
           '进行中',
@@ -838,9 +842,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
           {trend && trend.length ? (
             <div className="ov-panel ov-trend-panel">
               <div className="ov-panel-head">
-                <div className="ov-panel-title">
-                  周度新增问题及闭环趋势（未去重）
-                </div>
+                <div className="ov-panel-title">周度新增问题及闭环趋势</div>
               </div>
               <TrendChart points={trend} mode={mode} />
               <div className="oj-trend-legend">

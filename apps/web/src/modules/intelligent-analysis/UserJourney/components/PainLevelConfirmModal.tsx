@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs, { type Dayjs } from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import DatePicker from '@common/components/DatePicker';
+import { formatLocalDateTime } from '../time';
 import {
   Form,
   type FormInstance,
@@ -206,16 +207,11 @@ const CONFIRMED_BY_PATTERN = /^[\u4e00-\u9fa5a-zA-Z0-9 \-_]{1,20}$/;
 const FALLBACK_LINK_TEXT = '未记录';
 
 const formatStatusTime = (value?: string | null): string => {
-  const normalized = String(value || '').trim();
-  if (!normalized) return '';
-  return normalized.replace('T', ' ').replace('Z', '').slice(0, 16);
+  return formatLocalDateTime(value);
 };
 
 const formatCloseTime = (value?: string | null): string => {
-  const normalized = String(value || '').trim();
-  if (!normalized) return '';
-  if (normalized.includes('T')) return formatStatusTime(normalized);
-  return normalized;
+  return formatLocalDateTime(value);
 };
 
 const getDisplayedStepStatus = (status: PainStatus): PainStatus => {
@@ -763,9 +759,7 @@ const NonProjectIssueInfo: React.FC<{
         {currentRecord?.confirmed_at && (
           <div className="flex items-center gap-2">
             <span className="shrink-0 text-xs text-slate-400">操作时间：</span>
-            <span>
-              {currentRecord.confirmed_at.replace('T', ' ').replace('Z', '')}
-            </span>
+            <span>{formatStatusTime(currentRecord.confirmed_at)}</span>
           </div>
         )}
       </div>
@@ -855,9 +849,7 @@ const RetestPassedInfo: React.FC<{
         {currentRecord?.confirmed_at && (
           <div className="flex items-center gap-2">
             <span className="shrink-0 text-xs text-slate-400">提交时间：</span>
-            <span>
-              {currentRecord.confirmed_at.replace('T', ' ').replace('Z', '')}
-            </span>
+            <span>{formatStatusTime(currentRecord.confirmed_at)}</span>
           </div>
         )}
       </div>
@@ -962,7 +954,7 @@ const HistoryTable: React.FC<{
       title: '操作时间',
       dataIndex: 'confirmed_at',
       key: 'confirmed_at',
-      render: (v: string) => v.replace('T', ' ').replace('Z', ''),
+      render: (v: string) => formatStatusTime(v),
     },
   ];
 

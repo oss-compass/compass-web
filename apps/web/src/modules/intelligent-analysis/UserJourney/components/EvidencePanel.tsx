@@ -14,6 +14,7 @@ import {
   type PainConfirmationRecord,
   type UpsertPainConfirmationPayload,
 } from '../rawData/apiClient';
+import { formatLocalDateTime } from '../time';
 /* ─── 图标 ─── */
 export const EvidenceIcon: React.FC<{ className?: string }> = ({
   className = '',
@@ -299,7 +300,7 @@ const StatusBadge: React.FC<{
       </div>
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-600">操作时间：</span>
-        {confirmedAt.replace('T', ' ').replace('Z', '')}
+        {formatLocalDateTime(confirmedAt)}
       </div>
       <div className="rounded bg-slate-50 px-2 py-1 text-xs text-slate-500">
         点击进入痛点管理
