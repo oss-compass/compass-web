@@ -533,7 +533,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
-        title: sortableTitle('评分', repoSortArrow('score')),
+        title: sortableTitle('综合体验评分', repoSortArrow('score')),
         key: 'score',
         width: repoColumnWidths[3],
         render: (_value, record) =>
@@ -544,7 +544,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
-        title: sortableTitle('成功率', repoSortArrow('successRate')),
+        title: sortableTitle('端到端成功率', repoSortArrow('successRate')),
         key: 'successRate',
         width: repoColumnWidths[4],
         render: (_value, record) => formatPercent(record.successRate),

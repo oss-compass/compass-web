@@ -77,45 +77,6 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
         ) : null}
       </div>
       <div className="overview-summary-stack">
-        <OverviewSummaryBlock
-          title={
-            <div className="flex items-center gap-2">
-              <Segmented
-                value={effectiveMode}
-                onChange={(value) =>
-                  onIssueSourceModeChange(value as IssueSourceMode)
-                }
-                options={[
-                  { label: '总体问题', value: 'overall' },
-                  { label: '共性问题', value: 'common' },
-                ]}
-                style={{ height: SUMMARY_TOGGLE_H }}
-                className="oj-summary-mode-toggle"
-              />
-              {effectiveMode !== 'common' ? (
-                <Checkbox
-                  checked={includeCommonIssues}
-                  onChange={(event) =>
-                    onIncludeCommonIssuesChange(event.target.checked)
-                  }
-                  className="ml-1 text-xs font-medium text-slate-600"
-                >
-                  包含共性问题
-                </Checkbox>
-              ) : null}
-            </div>
-          }
-          summary={overviewSummary}
-          trend={overviewTrend}
-          issues={overviewIssues}
-          commonIssues={commonIssues}
-          mode={effectiveMode}
-          tooltip={primaryTooltip}
-          onBucketClick={(bucket) => onOpenIssues?.('primary', bucket)}
-          onPriorityBucketClick={(severity, bucket) =>
-            onOpenIssues?.('primary', bucket, severity)
-          }
-        />
         <div className="overview-bottom-row">
           <div className="bottom-metric">
             <div className="bm-label inline-flex items-center justify-center gap-1">
@@ -161,6 +122,45 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
             </div>
           </div>
         </div>
+        <OverviewSummaryBlock
+          title={
+            <div className="flex items-center gap-2">
+              <Segmented
+                value={effectiveMode}
+                onChange={(value) =>
+                  onIssueSourceModeChange(value as IssueSourceMode)
+                }
+                options={[
+                  { label: '总体问题', value: 'overall' },
+                  { label: '共性问题', value: 'common' },
+                ]}
+                style={{ height: SUMMARY_TOGGLE_H }}
+                className="oj-summary-mode-toggle"
+              />
+              {effectiveMode !== 'common' ? (
+                <Checkbox
+                  checked={includeCommonIssues}
+                  onChange={(event) =>
+                    onIncludeCommonIssuesChange(event.target.checked)
+                  }
+                  className="ml-1 text-xs font-medium text-slate-600"
+                >
+                  包含共性问题
+                </Checkbox>
+              ) : null}
+            </div>
+          }
+          summary={overviewSummary}
+          trend={overviewTrend}
+          issues={overviewIssues}
+          commonIssues={commonIssues}
+          mode={effectiveMode}
+          tooltip={primaryTooltip}
+          onBucketClick={(bucket) => onOpenIssues?.('primary', bucket)}
+          onPriorityBucketClick={(severity, bucket) =>
+            onOpenIssues?.('primary', bucket, severity)
+          }
+        />
       </div>
     </>
   );
