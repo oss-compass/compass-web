@@ -849,21 +849,47 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         const cfg = PAIN_STATUS_CFG[String(issue.status || '')];
                         if (!cfg)
                           return <span className="text-slate-300">--</span>;
+                        const status = String(issue.status || '').trim();
+                        const retestReportId = String(
+                          issue.retestReportId || ''
+                        ).trim();
+                        const shouldShowRetestReportId =
+                          !!retestReportId &&
+                          (status === '4' || status === '5' || status === '7');
+                        const retestHref = shouldShowRetestReportId
+                          ? `/intelligent-analysis/community-experience?project=${encodeURIComponent(
+                              retestReportId
+                            )}`
+                          : '';
                         return (
-                          <Tooltip title="请点击相关报告处理痛点">
-                            <span className="inline-flex cursor-help">
-                              <Tag
-                                className="overview-ant-tag"
-                                style={{
-                                  background: cfg.tagBg,
-                                  color: cfg.tagColor,
-                                  borderColor: cfg.tagBorder,
-                                }}
-                              >
-                                {cfg.label}
-                              </Tag>
-                            </span>
-                          </Tooltip>
+                          <div className="flex flex-col gap-1">
+                            <Tooltip title="请点击相关报告处理痛点">
+                              <span className="inline-flex cursor-help">
+                                <Tag
+                                  className="overview-ant-tag"
+                                  style={{
+                                    background: cfg.tagBg,
+                                    color: cfg.tagColor,
+                                    borderColor: cfg.tagBorder,
+                                  }}
+                                >
+                                  {cfg.label}
+                                </Tag>
+                              </span>
+                            </Tooltip>
+                            {shouldShowRetestReportId ? (
+                              <span className="self-center">
+                                <Tooltip title={retestReportId}>
+                                  <a
+                                    href={retestHref}
+                                    className="overview-table-link text-blue-600"
+                                  >
+                                    复测报告
+                                  </a>
+                                </Tooltip>
+                              </span>
+                            ) : null}
+                          </div>
                         );
                       })()}
                     </td>

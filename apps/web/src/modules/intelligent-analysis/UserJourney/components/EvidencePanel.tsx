@@ -1021,22 +1021,29 @@ const HistoryPainTable: React.FC<{
                     </span>
                   </td>
                   <td className="px-3 py-3">
-                    <Tooltip title={item.remark || '--'}>
-                      {item.remark ? (
-                        <a
-                          href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
-                            item.remark
-                          )}`}
-                          className="overview-table-link block truncate text-blue-600"
-                        >
-                          {item.remark}
-                        </a>
-                      ) : (
-                        <span className="block cursor-default truncate">
-                          --
-                        </span>
-                      )}
-                    </Tooltip>
+                    {(() => {
+                      const retestReportId =
+                        String(item.retestReportId || '').trim() ||
+                        String(item.remark || '').trim();
+                      return (
+                        <Tooltip title={retestReportId || '--'}>
+                          {retestReportId ? (
+                            <a
+                              href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
+                                retestReportId
+                              )}`}
+                              className="overview-table-link block truncate text-blue-600"
+                            >
+                              {retestReportId}
+                            </a>
+                          ) : (
+                            <span className="block cursor-default truncate">
+                              --
+                            </span>
+                          )}
+                        </Tooltip>
+                      );
+                    })()}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {item.teamOwner || item.owner || '--'}

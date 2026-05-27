@@ -777,7 +777,12 @@ const RetestPassedInfo: React.FC<{
     prLinkValue !== '' &&
     isValidPrLink(prLinkValue);
 
-  const retestReportId = String(parentPainRemark || '').trim() || '';
+  const retestReportId =
+    String(
+      currentRecord?.retest_passed_file_key ||
+        currentRecord?.latest_file_key ||
+        ''
+    ).trim() || '';
 
   return (
     <div className="space-y-3 rounded-md bg-emerald-50 p-4">
