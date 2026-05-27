@@ -24,7 +24,31 @@ type RustLeaderboardQuery = {
   pageSize?: number;
 };
 
-let rustDatasetPromise: Promise<RustDatasetCacheValue> | null = null;
+export type RustDataset = 'global' | 'creatio';
+
+const rustDatasetPromises = new Map<
+  RustDataset,
+  Promise<RustDatasetCacheValue>
+>();
+
+function getCsvFileNames(dataset: RustDataset): {
+  developers: string;
+  organizations: string;
+  projects: string;
+} {
+  if (dataset === 'creatio') {
+    return {
+      developers: '开发者-CreatIO.csv',
+      organizations: '开发者组织-CreatIO.csv',
+      projects: '项目-CreatIO.csv',
+    };
+  }
+  return {
+    developers: '开发者.csv',
+    organizations: '开发者组织.csv',
+    projects: '项目.csv',
+  };
+}
 
 function normalizeText(value: unknown): string {
   return String(value ?? '').trim();
@@ -263,12 +287,15 @@ function getAvailableRegions(input: RustDatasetCacheValue) {
   );
 }
 
-async function createRustDatasetCache(): Promise<RustDatasetCacheValue> {
+async function createRustDatasetCache(
+  dataset: RustDataset
+): Promise<RustDatasetCacheValue> {
+  const fileNames = getCsvFileNames(dataset);
   const [developerRecords, organizationRecords, projectRecords] =
     await Promise.all([
-      readCsvRecords('开发者.csv'),
-      readCsvRecords('开发者组织.csv'),
-      readCsvRecords('项目.csv'),
+      readCsvRecords(fileNames.developers),
+      readCsvRecords(fileNames.organizations),
+      readCsvRecords(fileNames.projects),
     ]);
 
   const developers = buildRegionRows(developerRecords, '开发者数量');
@@ -288,12 +315,14 @@ async function createRustDatasetCache(): Promise<RustDatasetCacheValue> {
   return cacheValue;
 }
 
-async function getRustDatasetCache(): Promise<RustDatasetCacheValue> {
-  if (!rustDatasetPromise) {
-    rustDatasetPromise = createRustDatasetCache();
+async function getRustDatasetCache(
+  dataset: RustDataset = 'global'
+): Promise<RustDatasetCacheValue> {
+  if (!rustDatasetPromises.has(dataset)) {
+    rustDatasetPromises.set(dataset, createRustDatasetCache(dataset));
   }
 
-  return rustDatasetPromise;
+  return rustDatasetPromises.get(dataset)!;
 }
 
 function normalizeLeaderboardType(value: unknown): RustLeaderboardType | null {
@@ -420,8 +449,10 @@ function buildLeaderboardChartItems(
   return chartItems;
 }
 
-export async function getRustOverviewData(): Promise<RustOverviewResponse> {
-  const cache = await getRustDatasetCache();
+export async function getRustOverviewData(
+  dataset: RustDataset = 'global'
+): Promise<RustOverviewResponse> {
+  const cache = await getRustDatasetCache(dataset);
 
   return {
     metrics: cache.metrics,
@@ -434,9 +465,10 @@ export async function getRustOverviewData(): Promise<RustOverviewResponse> {
 
 export async function getRustLeaderboardPage(
   type: RustLeaderboardType,
-  query: RustLeaderboardQuery
+  query: RustLeaderboardQuery,
+  dataset: RustDataset = 'global'
 ) {
-  const cache = await getRustDatasetCache();
+  const cache = await getRustDatasetCache(dataset);
   const page = Math.max(1, Number(query.page || 1));
   const pageSize = Math.max(1, Number(query.pageSize || 10));
   const keyword = normalizeText(query.q).toLowerCase();

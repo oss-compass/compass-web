@@ -5,13 +5,42 @@ import RegionDistributionCard from './components/RegionDistributionCard';
 import LeaderboardTableCard from './components/LeaderboardTableCard';
 import type { RustOverviewResponse } from './types';
 
+type RustDataset = 'global' | 'creatio';
+
+const TAB_CONFIG: {
+  key: RustDataset;
+  label: string;
+  title: string;
+}[] = [
+  {
+    key: 'global',
+    label: '全球',
+    title: '2022-2025年全球Rust开源项目分析',
+  },
+  {
+    key: 'creatio',
+    label: 'CreatIO',
+    title: '2022-2025年CreatIORust开源项目分析',
+  },
+];
+
 const RustPage: React.FC = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [activeDataset, setActiveDataset] = useState<RustDataset>('global');
+
+  const activeTab = TAB_CONFIG.find((t) => t.key === activeDataset)!;
 
   const { data, isFetching } = useQuery<RustOverviewResponse>({
-    queryKey: ['intelligent-analysis', 'rust', 'overview'],
+    queryKey: ['intelligent-analysis', 'rust', 'overview', activeDataset],
     queryFn: async () => {
-      const response = await fetch('/api/intelligent-analysis/rust/overview');
+      const params = new URLSearchParams();
+      if (activeDataset !== 'global') {
+        params.set('dataset', activeDataset);
+      }
+      const qs = params.toString();
+      const response = await fetch(
+        `/api/intelligent-analysis/rust/overview${qs ? `?${qs}` : ''}`
+      );
       if (!response.ok) {
         throw new Error('Failed to load Rust overview');
       }
@@ -20,10 +49,34 @@ const RustPage: React.FC = () => {
     staleTime: 1000 * 60 * 5,
   });
 
+  const handleTabChange = (key: RustDataset) => {
+    setActiveDataset(key);
+    setSelectedRegions([]);
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-semibold leading-tight text-slate-900 md:text-4xl">
-        2022-2025年全球Rust开源项目分析
+      {/* 顶部 Tab 切换 */}
+      <div className="mb-4 flex w-fit items-center gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1">
+        {TAB_CONFIG.map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => handleTabChange(tab.key)}
+            className={[
+              'rounded-md px-5 py-1.5 text-sm font-medium transition-all',
+              activeDataset === tab.key
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700',
+            ].join(' ')}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <h1 className="text-2xl font-semibold leading-tight text-slate-900 md:text-3xl">
+        {activeTab.title}
       </h1>
 
       <div className="mt-6">
@@ -41,16 +94,19 @@ const RustPage: React.FC = () => {
             type="developers"
             title="开发者数量排行榜"
             selectedRegions={selectedRegions}
+            dataset={activeDataset}
           />
           <LeaderboardTableCard
             type="organizations"
             title="开发者组织排行榜"
             selectedRegions={selectedRegions}
+            dataset={activeDataset}
           />
           <LeaderboardTableCard
             type="projects"
             title="项目数量排行榜"
             selectedRegions={selectedRegions}
+            dataset={activeDataset}
           />
         </div>
       </section>

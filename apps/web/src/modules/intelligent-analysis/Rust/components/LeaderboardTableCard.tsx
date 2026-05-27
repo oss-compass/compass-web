@@ -24,6 +24,7 @@ interface LeaderboardTableCardProps {
   type: RustLeaderboardType;
   title: string;
   selectedRegions: string[];
+  dataset?: 'global' | 'creatio';
 }
 
 const PAGE_SIZE = 20;
@@ -32,6 +33,7 @@ const LeaderboardTableCard: React.FC<LeaderboardTableCardProps> = ({
   type,
   title,
   selectedRegions,
+  dataset = 'global',
 }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -42,7 +44,7 @@ const LeaderboardTableCard: React.FC<LeaderboardTableCardProps> = ({
     setAppliedKeyword('');
     setSearchKeyword('');
     setCurrentPage(1);
-  }, [selectedRegions, type]);
+  }, [selectedRegions, type, dataset]);
 
   const { data, isFetching } = useQuery<
     RustLeaderboardResponse<LeaderboardRow>
@@ -56,6 +58,7 @@ const LeaderboardTableCard: React.FC<LeaderboardTableCardProps> = ({
       PAGE_SIZE,
       appliedKeyword,
       selectedRegions.join('|'),
+      dataset,
     ],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -66,6 +69,9 @@ const LeaderboardTableCard: React.FC<LeaderboardTableCardProps> = ({
       }
       if (selectedRegions.length > 0) {
         params.set('regions', selectedRegions.join(','));
+      }
+      if (dataset !== 'global') {
+        params.set('dataset', dataset);
       }
 
       const response = await fetch(

@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { getRustOverviewData } from '@modules/intelligent-analysis/Rust/server/rustDataset';
+import {
+  getRustOverviewData,
+  type RustDataset,
+} from '@modules/intelligent-analysis/Rust/server/rustDataset';
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,8 +15,14 @@ export default async function handler(
     return;
   }
 
+  const datasetParam = Array.isArray(req.query.dataset)
+    ? req.query.dataset[0]
+    : req.query.dataset;
+  const dataset: RustDataset =
+    datasetParam === 'creatio' ? 'creatio' : 'global';
+
   try {
-    const data = await getRustOverviewData();
+    const data = await getRustOverviewData(dataset);
     res.setHeader('Cache-Control', 'public, max-age=300');
     res.status(200).json(data);
   } catch (error) {
