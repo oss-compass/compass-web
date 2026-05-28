@@ -167,17 +167,24 @@ const UserJourney: React.FC<UserJourneyProps> = ({
       return;
     }
 
-    const firstProject = projectViews[0]?.data;
-    if (!firstProject) {
-      return;
-    }
+    const matchedStep = projectViews
+      .map((project) => project.data)
+      .find(Boolean)
+      ?.journeySteps.find((step) =>
+        (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
+      );
 
-    const matchedStep = firstProject.journeySteps.find((step) =>
-      (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
-    );
+    const matchedAcrossProjects =
+      matchedStep ??
+      projectViews
+        .map((project) => project.data)
+        .flatMap((project) => project.journeySteps)
+        .find((step) =>
+          (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
+        );
 
-    if (matchedStep && matchedStep.key !== activeStepKey) {
-      setActiveStepKey(matchedStep.key);
+    if (matchedAcrossProjects && matchedAcrossProjects.key !== activeStepKey) {
+      setActiveStepKey(matchedAcrossProjects.key);
     }
   }, [activeStepKey, focusTaskId, projectViews]);
 

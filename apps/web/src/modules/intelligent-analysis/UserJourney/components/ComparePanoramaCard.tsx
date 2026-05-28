@@ -5,6 +5,7 @@ import { JourneyStep, UserJourneyProjectView } from '../types';
 import taskDefinitions from '../rawData/task_definitions.json';
 import useLogData, { LogTask } from '../hooks/useLogData';
 import EvidencePanel from './EvidencePanel';
+import { usePainConfirmations } from '../hooks/usePainConfirmations';
 
 /* ─── 类型 ─── */
 type TaskDefinition = {
@@ -23,13 +24,17 @@ const TaskEvidenceCard: React.FC<{
   taskId: string;
   cardIndex: number;
   logTask?: LogTask;
-}> = ({ taskId, cardIndex, logTask }) => {
+  fileKey?: string;
+  stepId?: string;
+}> = ({ taskId, cardIndex, logTask, fileKey, stepId }) => {
   const def = TASK_DEF_MAP[taskId];
   const displayName = def?.name ?? taskId;
   const description = def?.description ?? logTask?.name ?? '';
 
   const observations = logTask?.evidence?.observations ?? [];
   const painPoints = logTask?.evidence?.pain_points ?? [];
+  const observationsToolNums = logTask?.evidence?.observations_tool_nums;
+  const painPointsToolNums = logTask?.evidence?.pain_points_tool_nums;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
@@ -59,7 +64,15 @@ const TaskEvidenceCard: React.FC<{
         </div>
       </div>
       <div className="px-5 py-4">
-        <EvidencePanel observations={observations} pain_points={painPoints} />
+        <EvidencePanel
+          observations={observations}
+          pain_points={painPoints}
+          observations_tool_nums={observationsToolNums}
+          pain_points_tool_nums={painPointsToolNums}
+          fileKey={fileKey}
+          stepId={taskId}
+          legacyStepId={stepId}
+        />
       </div>
     </div>
   );
@@ -88,6 +101,7 @@ const ProjectPanoramaBlock: React.FC<{
 
   const [activeStepKey, setActiveStepKey] = useState('');
   const logData = useLogData(queryKey);
+  const { overviewPains } = usePainConfirmations(queryKey);
 
   // 每个 step 的统计数（任务数、痛点数、观点数）
   const stepStats = useMemo(() => {
@@ -96,17 +110,29 @@ const ProjectPanoramaBlock: React.FC<{
       const ids = getUniqueTaskIds(step);
       let painCount = 0;
       let obsCount = 0;
+      const stepCode = step.code;
+
+      if (overviewPains && overviewPains.length > 0) {
+        painCount = overviewPains.filter((p: any) => {
+          const pid = p.task_id || p.step_id;
+          return pid === stepCode || ids.includes(pid);
+        }).length;
+      }
+
       for (const taskId of ids) {
         const logTask = logData
           ? (logData[taskId] as LogTask | undefined)
           : undefined;
-        painCount += logTask?.evidence?.pain_points?.length ?? 0;
+        if (!(overviewPains && overviewPains.length > 0)) {
+          painCount += logTask?.evidence?.pain_points?.length ?? 0;
+        }
         obsCount += logTask?.evidence?.observations?.length ?? 0;
       }
+
       map[step.key] = { taskCount: ids.length, painCount, obsCount };
     }
     return map;
-  }, [steps, logData]);
+  }, [steps, logData, overviewPains]);
 
   const activeStep = steps.find((s) => s.key === activeStepKey);
   const activeStepCode = activeStep?.code ?? '';
@@ -175,6 +201,8 @@ const ProjectPanoramaBlock: React.FC<{
                     taskId={taskId}
                     cardIndex={idx + 1}
                     logTask={logTask}
+                    fileKey={queryKey}
+                    stepId={activeStep?.code}
                   />
                 );
               })}

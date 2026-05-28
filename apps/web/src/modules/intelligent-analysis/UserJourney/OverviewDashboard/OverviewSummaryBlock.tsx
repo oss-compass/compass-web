@@ -24,7 +24,7 @@ import type {
   Severity,
   WeeklyCloseRateTrendPoint,
 } from './types';
-import { formatPercent } from './utils';
+import { formatPercent, normalizeSeverity } from './utils';
 import { USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO } from '../rawData/constants';
 
 type OverviewSummaryBlockProps = {
@@ -567,24 +567,40 @@ const getSeverityShort = (severity: string): string => {
   return match ? match[0] : severity;
 };
 
-const getSeveritySolidTagStyle = (severity: string) => {
-  const cfg = (SEVERITY_CFG as Record<string, any>)[severity];
-  if (cfg) {
-    return {
-      background: cfg.tagColor as string,
-      color: '#ffffff',
-      borderColor: 'transparent',
-    };
+const stripSeverityPrefix = (label: string, prefix: string) => {
+  if (!label) return '';
+  if (!prefix) return label;
+  return label.startsWith(prefix) ? label.slice(prefix.length) : label;
+};
+
+const getSeverityDisplay = (severity: string): string => {
+  const raw = String(severity || '').trim();
+  if (!raw) return '--';
+
+  const normalizedKey = normalizeSeverity(raw) || raw;
+
+  const matchedPriority = PRIORITY_LEVELS.find(
+    (item) => item.key === normalizedKey
+  );
+  if (matchedPriority) {
+    const zhPart = stripSeverityPrefix(
+      String(matchedPriority.label || '').trim(),
+      matchedPriority.shortLabel
+    ).trim();
+    return [matchedPriority.shortLabel, zhPart].filter(Boolean).join(' ');
   }
-  return {
-    background: '#64748b',
-    color: '#ffffff',
-    borderColor: 'transparent',
-  };
+
+  const cfgLabel = String(
+    (SEVERITY_CFG as Record<string, any>)[normalizedKey]?.label || ''
+  ).trim();
+  const short = getSeverityShort(normalizedKey);
+  const zhPart = stripSeverityPrefix(cfgLabel, short).trim();
+  return [short, zhPart].filter(Boolean).join(' ') || raw;
 };
 
 const getSeverityTagStyle = (severity: string) => {
-  const cfg = (SEVERITY_CFG as Record<string, any>)[severity];
+  const normalizedKey = normalizeSeverity(severity) || severity;
+  const cfg = (SEVERITY_CFG as Record<string, any>)[normalizedKey];
   if (cfg) {
     return {
       color: cfg.tagColor as string,
@@ -751,7 +767,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                                 className="ov-ci-sev"
                                 style={getSeverityTagStyle(String(sev))}
                               >
-                                {getSeverityShort(String(sev))}
+                                {getSeverityDisplay(String(sev))}
                               </span>
                             ))}
                         </span>

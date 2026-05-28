@@ -462,7 +462,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       <div className="overview-bar-track" style={{ maxWidth: 44 }}>
         <span
           className={`overview-bar-fill ${colorClassName}`}
-          style={{ width: `${Math.max(0, Math.min(value ?? 0, 50))}%` }}
+          style={{ width: `${Math.max(0, Math.min(value ?? 0, 100))}%` }}
         />
       </div>
     </div>
