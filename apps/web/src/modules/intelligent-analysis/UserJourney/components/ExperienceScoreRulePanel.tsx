@@ -22,7 +22,7 @@ const stageRows = [
   },
   {
     step: 'S2_QUICKSTART',
-    name: ' 样例快速体验',
+    name: '样例快速体验',
     task: '阅读 QuickStart 文档并运行样例',
   },
   {
