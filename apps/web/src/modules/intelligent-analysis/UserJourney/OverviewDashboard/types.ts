@@ -90,6 +90,7 @@ export type CommonIssueGroup = {
   issueType: string;
   description: string;
   severity: Severity;
+  severities?: Severity[];
   repoCount: number;
   status: IssueBucket;
   items: DashboardIssue[];

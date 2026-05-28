@@ -61,6 +61,34 @@ export const SEVERITY_CFG: Record<
   },
 };
 
+export const OJ_TREND_COLORS = {
+  line: '#19A796',
+  lineGradientStart: '#34D399',
+} as const;
+
+export const OJ_TREND_SEVERITY_SEGMENTS = [
+  {
+    key: 'p3' as const,
+    label: 'P3 轻微影响',
+    markerColor: SEVERITY_CFG.P3_MINOR.tagColor,
+  },
+  {
+    key: 'p2' as const,
+    label: 'P2 显著影响',
+    markerColor: SEVERITY_CFG.P2_MAJOR.tagColor,
+  },
+  {
+    key: 'p1' as const,
+    label: 'P1 关键卡点',
+    markerColor: SEVERITY_CFG.P1_CRITICAL.tagColor,
+  },
+  {
+    key: 'p0' as const,
+    label: 'P0 完全阻塞',
+    markerColor: SEVERITY_CFG.P0_BLOCKER.tagColor,
+  },
+] as const;
+
 export const STATUS_CFG: Record<
   IssueBucket,
   {

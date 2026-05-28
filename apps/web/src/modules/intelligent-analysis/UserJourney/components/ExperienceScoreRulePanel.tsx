@@ -10,11 +10,27 @@ type ScoreMetricItem = {
 };
 
 const stageRows = [
-  { step: 'S0', name: '搜索与发现', task: '搜索并验证官方文档、源码仓库' },
-  { step: 'S1', name: '环境准备', task: '代码克隆、环境预检、依赖安装' },
-  { step: 'S2', name: '快速体验', task: '阅读 QuickStart 文档并运行样例' },
-  { step: 'S3', name: '开发编译', task: '代码修改、按文档编译安装、运行验证' },
-  { step: 'S4', name: '测试验证', task: '运行完整测试套件' },
+  {
+    step: 'S0_DISCOVERY',
+    name: '搜索与发现',
+    task: '搜索并验证官方文档、源码仓库',
+  },
+  {
+    step: 'S1_SETUP',
+    name: '环境检查与准备',
+    task: '代码克隆、环境预检、依赖安装',
+  },
+  {
+    step: 'S2_QUICKSTART',
+    name: ' 样例快速体验',
+    task: '阅读 QuickStart 文档并运行样例',
+  },
+  {
+    step: 'S3_DEVELOPMENT',
+    name: '开发与编译',
+    task: '代码修改、按文档编译安装、运行验证',
+  },
+  { step: 'S4_TESTING', name: '测试与验证', task: '运行完整测试套件' },
 ];
 
 const painRangeRows = [

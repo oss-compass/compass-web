@@ -6,6 +6,10 @@ export type CloseRateTrendPoint = {
   weekEnd: string;
   label: string;
   total: number;
+  p0: number;
+  p1: number;
+  p2: number;
+  p3: number;
   closeRate: number | null;
 };
 
@@ -74,11 +78,27 @@ export const buildCloseRateTrend = (
     const summary = buildMetricSummaryFromPainRows(weekIssues);
     const closeRate = summary.total === 0 ? 100 : summary.closeRate;
     const weekEnd = addDays(start, 6);
+    const p0 = weekIssues.filter(
+      (issue) => issue.severity === 'P0_BLOCKER'
+    ).length;
+    const p1 = weekIssues.filter(
+      (issue) => issue.severity === 'P1_CRITICAL'
+    ).length;
+    const p2 = weekIssues.filter(
+      (issue) => issue.severity === 'P2_MAJOR'
+    ).length;
+    const p3 = weekIssues.filter(
+      (issue) => issue.severity === 'P3_MINOR'
+    ).length;
     return {
       weekStart: formatDate(start),
       weekEnd: formatDate(weekEnd),
       label: formatLabel(start),
       total: summary.total,
+      p0,
+      p1,
+      p2,
+      p3,
       closeRate,
     };
   });

@@ -247,6 +247,7 @@ export type OverviewCommonIssueGroup = {
   issueType: string;
   description: string;
   severity: OverviewPainPointRow['severity'] | string;
+  severities?: Array<OverviewPainPointRow['severity'] | string>;
   repoCount: number;
   status: OverviewIssueBucket;
   items: OverviewCommonIssueItem[];

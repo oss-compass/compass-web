@@ -1,6 +1,5 @@
 import React from 'react';
 import type { IssueBucket } from './types';
-import { formatPercent } from './utils';
 
 const PENDING_COLOR = '#f4840c';
 const IN_PROGRESS_COLOR = '#4791ff';

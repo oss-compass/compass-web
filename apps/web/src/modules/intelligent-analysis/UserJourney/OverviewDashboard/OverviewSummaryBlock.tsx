@@ -5,6 +5,8 @@ import {
   getIssueTypeTagStyle,
   ISSUE_TYPE_CFG,
   ISSUE_TYPE_PALETTE,
+  OJ_TREND_COLORS,
+  OJ_TREND_SEVERITY_SEGMENTS,
   SEVERITY_CFG,
   STATUS_CFG,
 } from './constants';
@@ -51,33 +53,6 @@ const TREND_LEFT_AXIS_X = TREND_PLOT_LEFT - 8;
 const TREND_RIGHT_AXIS_X = TREND_PLOT_RIGHT + 8;
 const TREND_TOOLTIP_HALF_WIDTH = 92;
 
-const TREND_COLORS = {
-  line: '#19A796',
-};
-
-const TREND_SEVERITY_SEGMENTS = [
-  {
-    key: 'p3' as const,
-    label: 'P3 轻微影响',
-    markerColor: SEVERITY_CFG.P3_MINOR.tagColor,
-  },
-  {
-    key: 'p2' as const,
-    label: 'P2 显著影响',
-    markerColor: SEVERITY_CFG.P2_MAJOR.tagColor,
-  },
-  {
-    key: 'p1' as const,
-    label: 'P1 关键卡点',
-    markerColor: SEVERITY_CFG.P1_CRITICAL.tagColor,
-  },
-  {
-    key: 'p0' as const,
-    label: 'P0 完全阻塞',
-    markerColor: SEVERITY_CFG.P0_BLOCKER.tagColor,
-  },
-] as const;
-
 const PRIORITY_LEVELS: Array<{
   key: Severity;
   shortLabel: string;
@@ -122,7 +97,7 @@ const formatTrendRange = (point: WeeklyCloseRateTrendPoint): string => {
 
 const getTrendSeverityValue = (
   point: WeeklyCloseRateTrendPoint,
-  key: (typeof TREND_SEVERITY_SEGMENTS)[number]['key']
+  key: (typeof OJ_TREND_SEVERITY_SEGMENTS)[number]['key']
 ): number => Number(point[key] ?? 0);
 
 const buildPriorityProgress = (issues: DashboardIssue[]) =>
@@ -249,8 +224,8 @@ const TrendChart: React.FC<{
             x2="100%"
             y2="0%"
           >
-            <stop offset="0%" stopColor="#34D399" />
-            <stop offset="100%" stopColor={TREND_COLORS.line} />
+            <stop offset="0%" stopColor={OJ_TREND_COLORS.lineGradientStart} />
+            <stop offset="100%" stopColor={OJ_TREND_COLORS.line} />
           </linearGradient>
           <linearGradient
             id={`${chartId}-area-gradient`}
@@ -404,7 +379,7 @@ const TrendChart: React.FC<{
                     />
                   );
                 })
-              : TREND_SEVERITY_SEGMENTS.map(({ key, markerColor }) => {
+              : OJ_TREND_SEVERITY_SEGMENTS.map(({ key, markerColor }) => {
                   const value = getTrendSeverityValue(p, key);
                   const h = (Math.max(0, value) / yMax) * plotH;
                   if (h <= 0) return null;
@@ -547,7 +522,7 @@ const TrendChart: React.FC<{
                       </span>
                     </div>
                   ))
-              : TREND_SEVERITY_SEGMENTS.slice()
+              : OJ_TREND_SEVERITY_SEGMENTS.slice()
                   .reverse()
                   .map(({ key, label, markerColor }) => (
                     <div className="oj-trend-tooltip-item" key={key}>
@@ -764,11 +739,21 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                       ) : null}
                       <div className="ov-ci-meta">
                         <span className="ov-ci-meta-key">严重程度</span>
-                        <span
-                          className="ov-ci-sev"
-                          style={getSeverityTagStyle(group.severity)}
-                        >
-                          {getSeverityShort(group.severity)}
+                        <span className="flex flex-wrap gap-1">
+                          {(group.severities?.length
+                            ? group.severities
+                            : [group.severity]
+                          )
+                            .filter((sev) => String(sev || '').trim())
+                            .map((sev) => (
+                              <span
+                                key={String(sev)}
+                                className="ov-ci-sev"
+                                style={getSeverityTagStyle(String(sev))}
+                              >
+                                {getSeverityShort(String(sev))}
+                              </span>
+                            ))}
                         </span>
                       </div>
                     </div>
@@ -876,7 +861,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                           </span>
                         ));
                     })()
-                  : TREND_SEVERITY_SEGMENTS.slice()
+                  : OJ_TREND_SEVERITY_SEGMENTS.slice()
                       .reverse()
                       .map(({ key, label, markerColor }) => (
                         <span className="oj-trend-legend-item" key={key}>

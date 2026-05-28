@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Typography } from 'antd';
 import type { CloseRateTrendPoint } from './closeRateTrend';
 import { CloseRateTrendChart } from './CloseRateTrendChart';
+import { OJ_TREND_SEVERITY_SEGMENTS } from './constants';
 
 const { Title } = Typography;
 
@@ -33,6 +34,20 @@ const CloseRateTrendModal: React.FC<CloseRateTrendModalProps> = ({
         </Title>
       </div>
       <CloseRateTrendChart points={points} />
+      <div className="oj-trend-legend">
+        {OJ_TREND_SEVERITY_SEGMENTS.slice()
+          .reverse()
+          .map(({ key, label, markerColor }) => (
+            <span className="oj-trend-legend-item" key={key}>
+              <i className="oj-trend-dot" style={{ background: markerColor }} />
+              {label}
+            </span>
+          ))}
+        <span className="oj-trend-legend-item">
+          <span className="oj-trend-line" />
+          周度闭环率
+        </span>
+      </div>
     </Modal>
   );
 };

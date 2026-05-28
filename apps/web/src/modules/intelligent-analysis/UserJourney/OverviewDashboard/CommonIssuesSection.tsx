@@ -79,9 +79,25 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
     {
       title: '严重程度',
       key: 'severity',
-      width: 96,
+      width: 160,
       responsive: ['md'],
-      render: (_value, record) => <SeverityBadge severity={record.severity} />,
+      render: (_value, record) => {
+        const severities =
+          record.severities && record.severities.length
+            ? record.severities
+            : [record.severity];
+        const visible = severities.filter((sev) => String(sev || '').trim());
+        if (!visible.length) {
+          return <SeverityBadge severity={record.severity} />;
+        }
+        return (
+          <span className="flex flex-wrap gap-1">
+            {visible.map((sev) => (
+              <SeverityBadge key={String(sev)} severity={sev} />
+            ))}
+          </span>
+        );
+      },
     },
     {
       title: '闭环率',
