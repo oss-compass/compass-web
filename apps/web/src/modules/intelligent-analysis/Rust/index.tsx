@@ -22,8 +22,8 @@ const TAB_CONFIG: {
   },
   {
     key: 'creatio',
-    label: 'CreatIO',
-    title: '2022-2025年 CreatIO Rust 开源项目分析',
+    label: 'crates.io',
+    title: '2022-2025年 crates.io Rust 开源项目分析',
   },
 ];
 
