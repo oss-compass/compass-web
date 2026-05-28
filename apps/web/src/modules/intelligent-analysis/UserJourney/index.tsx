@@ -370,7 +370,11 @@ const UserJourney: React.FC<UserJourneyProps> = ({
       <div className="flex min-h-[calc(100vh-136px)] flex-col gap-5 p-5">
         {compareMode ? (
           <>
-            <CompareReportSummary projects={projectViews} />
+            <CompareReportSummary
+              projects={projectViews}
+              activeStepKey={activeStepKey}
+              onStepChange={setActiveStepKey}
+            />
             <CompareStepSection
               projects={projectViews}
               activeStepKey={activeStepKey}

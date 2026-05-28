@@ -12,6 +12,8 @@ import {
 
 type CompareReportSummaryProps = {
   projects: UserJourneyProjectView[];
+  activeStepKey: string;
+  onStepChange: (stepKey: string) => void;
 };
 
 const getOverviewMetricLabel = (metric: OverviewMetric) =>
@@ -52,6 +54,8 @@ const renderProjectName = (
 
 const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
   projects,
+  activeStepKey,
+  onStepChange,
 }) => {
   const baseProject = projects[0]?.data;
 
@@ -134,7 +138,11 @@ const CompareReportSummary: React.FC<CompareReportSummaryProps> = ({
           />
         </div>
       </div>
-      <ComparePanoramaCard projects={projects} />
+      <ComparePanoramaCard
+        projects={projects}
+        activeStepKey={activeStepKey}
+        onStepChange={onStepChange}
+      />
     </div>
   );
 };

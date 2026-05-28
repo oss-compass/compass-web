@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Card, Tooltip } from 'antd';
 import JourneyPanoramaFlow, { StepStats } from './JourneyPanoramaFlow';
 import { JourneyStep, UserJourneyProjectView } from '../types';
@@ -95,11 +95,12 @@ const getUniqueTaskIds = (step: JourneyStep): string[] => {
 const ProjectPanoramaBlock: React.FC<{
   project: UserJourneyProjectView;
   hasBorderTop: boolean;
-}> = ({ project, hasBorderTop }) => {
+  activeStepKey: string;
+  onStepChange: (stepKey: string) => void;
+}> = ({ project, hasBorderTop, activeStepKey, onStepChange }) => {
   const { data, queryKey } = project;
   const steps = data.journeySteps;
 
-  const [activeStepKey, setActiveStepKey] = useState('');
   const logData = useLogData(queryKey);
   const { overviewPains } = usePainConfirmations(queryKey);
 
@@ -139,9 +140,9 @@ const ProjectPanoramaBlock: React.FC<{
 
   const handleCardClick = (stepCode: string) => {
     const matched = steps.find((s) => s.code === stepCode);
-    const nextKey =
-      matched && matched.key === activeStepKey ? '' : matched?.key ?? '';
-    setActiveStepKey(nextKey);
+    if (matched) {
+      onStepChange(matched.key);
+    }
   };
 
   const taskIds = activeStep ? getUniqueTaskIds(activeStep) : [];
@@ -225,10 +226,14 @@ const ProjectPanoramaBlock: React.FC<{
 /* ─── 主组件 ─── */
 type ComparePanoramaCardProps = {
   projects: UserJourneyProjectView[];
+  activeStepKey: string;
+  onStepChange: (stepKey: string) => void;
 };
 
 const ComparePanoramaCard: React.FC<ComparePanoramaCardProps> = ({
   projects,
+  activeStepKey,
+  onStepChange,
 }) => {
   return (
     <Card
@@ -245,6 +250,8 @@ const ComparePanoramaCard: React.FC<ComparePanoramaCardProps> = ({
             key={project.queryKey}
             project={project}
             hasBorderTop={index > 0}
+            activeStepKey={activeStepKey}
+            onStepChange={onStepChange}
           />
         ))}
       </div>
