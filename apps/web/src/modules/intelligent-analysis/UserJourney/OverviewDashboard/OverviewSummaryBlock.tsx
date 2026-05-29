@@ -14,19 +14,12 @@ import 'dayjs/locale/zh-cn';
 import {
   getIssueTypeMarkerColor,
   getIssueTypeTagStyle,
-  ISSUE_TYPE_CFG,
-  ISSUE_TYPE_PALETTE,
   OJ_TREND_COLORS,
   OJ_TREND_SEVERITY_SEGMENTS,
   SEVERITY_CFG,
   STATUS_CFG,
 } from './constants';
-import {
-  CircularProgress,
-  IssueProgressBar,
-  ProgressBarOnly,
-  ProgressMetaOnly,
-} from './ProgressComponents';
+import { ProgressBarOnly, ProgressMetaOnly } from './ProgressComponents';
 import type {
   CommonIssueGroup,
   DashboardIssue,
@@ -778,7 +771,7 @@ const getSeverityDisplay = (severity: string): string => {
       String(matchedPriority.label || '').trim(),
       matchedPriority.shortLabel
     ).trim();
-    return [matchedPriority.shortLabel, zhPart].filter(Boolean).join(' ');
+    return [matchedPriority.shortLabel, zhPart].filter(Boolean).join('');
   }
 
   const cfgLabel = String(
@@ -786,7 +779,7 @@ const getSeverityDisplay = (severity: string): string => {
   ).trim();
   const short = getSeverityShort(normalizedKey);
   const zhPart = stripSeverityPrefix(cfgLabel, short).trim();
-  return [short, zhPart].filter(Boolean).join(' ') || raw;
+  return [short, zhPart].filter(Boolean).join('') || raw;
 };
 
 const getSeverityTagStyle = (severity: string) => {
@@ -983,7 +976,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                             borderColor: item.tagBorder,
                           }}
                         >
-                          {item.shortLabel} {item.label}
+                          {getSeverityDisplay(item.key)}
                         </span>
                         <Tooltip title={item.description}>
                           <span className="ov-priority-desc">
