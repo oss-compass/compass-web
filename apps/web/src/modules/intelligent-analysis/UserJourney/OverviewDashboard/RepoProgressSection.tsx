@@ -49,6 +49,29 @@ const SEVERITY_ORDER: KnownSeverity[] = [
   'P3_MINOR',
 ];
 
+const BEAT_REPO_IDS = new Set([
+  'cann_atvoss',
+  'cann_ops_tensor',
+  'cann_ops_rand',
+  'cann_ops_fft',
+]);
+
+const normalizeRepoId = (value: unknown) =>
+  String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/-/g, '_');
+
+const isBeatRepo = (value: unknown) =>
+  BEAT_REPO_IDS.has(normalizeRepoId(value));
+
+const compareBeatLast = (leftId: unknown, rightId: unknown) => {
+  const leftBeat = isBeatRepo(leftId);
+  const rightBeat = isBeatRepo(rightId);
+  if (leftBeat === rightBeat) return 0;
+  return leftBeat ? 1 : -1;
+};
+
 const PROGRESS_METRIC_OPTIONS: Array<{
   value: ProgressMetricSortKey;
   label: string;
@@ -396,6 +419,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       if (progressSortKey === 'none') return rows;
       const direction = progressSortOrder === 'asc' ? 1 : -1;
       return [...rows].sort((left, right) => {
+        if (!('repos' in left) && !('repos' in right)) {
+          const beatCmp = compareBeatLast(left.id, right.id);
+          if (beatCmp !== 0) return beatCmp;
+        }
+
         const leftMetrics =
           ('repos' in left ? teamDerived : repoDerived).get(left.id)?.metrics ??
           buildMetricSummaryFromPainRows(getFilteredIssues(left.issues));
@@ -516,6 +544,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         key: 'name',
         width: repoColumnWidths[1],
         ellipsis: true,
+        render: (value, record) => (
+          <span className="inline-flex flex-col">
+            <span>{value}</span>
+            {isBeatRepo(record.id) ? (
+              <span className="text-slate-400">(仅支持950，内测中)</span>
+            ) : null}
+          </span>
+        ),
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('name'),
           className: 'sortable-col',
@@ -537,7 +573,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         key: 'score',
         width: repoColumnWidths[3],
         render: (_value, record) =>
-          renderMetricBar(record.score, formatScore, 'overview-bar-blue'),
+          isBeatRepo(record.id) ? (
+            <span className="text-slate-400">-</span>
+          ) : (
+            renderMetricBar(record.score, formatScore, 'overview-bar-blue')
+          ),
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('score'),
           className: 'sortable-col',
@@ -547,7 +587,12 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: sortableTitle('端到端成功率', repoSortArrow('successRate')),
         key: 'successRate',
         width: repoColumnWidths[4],
-        render: (_value, record) => formatPercent(record.successRate),
+        render: (_value, record) =>
+          isBeatRepo(record.id) ? (
+            <span className="text-slate-400">-</span>
+          ) : (
+            formatPercent(record.successRate)
+          ),
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('successRate'),
           className: 'sortable-col',
@@ -557,7 +602,12 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: sortableTitle('开发者旅程耗时', repoSortArrow('executionTime')),
         key: 'executionTime',
         width: repoColumnWidths[5],
-        render: (_value, record) => formatExecutionTime(record.executionTime),
+        render: (_value, record) =>
+          isBeatRepo(record.id) ? (
+            <span className="text-slate-400">-</span>
+          ) : (
+            formatExecutionTime(record.executionTime)
+          ),
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('executionTime'),
           className: 'sortable-col',
@@ -568,6 +618,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         key: 'progress',
         width: repoColumnWidths[6],
         render: (_value, record) => {
+          if (isBeatRepo(record.id)) {
+            return <span className="text-slate-400">-</span>;
+          }
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
           const rowForModal = derived
@@ -588,6 +641,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         key: 'total',
         width: repoColumnWidths[7],
         render: (_value, record) => {
+          if (isBeatRepo(record.id)) {
+            return <span className="text-slate-400">-</span>;
+          }
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
           const rowForModal = derived
@@ -613,6 +669,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         key: 'closeRate',
         width: repoColumnWidths[8],
         render: (_value, record) => {
+          if (isBeatRepo(record.id)) {
+            return <span className="text-slate-400">-</span>;
+          }
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
           const trendPoints =
@@ -859,6 +918,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
 
   const getRepoSortValueWithMetrics = useCallback(
     (row: RepoProgressRow, sortKey: RepoSortKey) => {
+      const beat = isBeatRepo(row.id);
       const metrics = repoDerived.get(row.id)?.metrics ?? row.overall;
       switch (sortKey) {
         case 'name':
@@ -872,9 +932,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         case 'executionTime':
           return row.executionTime ?? -1;
         case 'total':
-          return metrics.total;
+          return beat ? -1 : metrics.total;
         case 'closeRate':
-          return metrics.total === 0 ? 100 : metrics.closeRate;
+          return beat ? -1 : metrics.total === 0 ? 100 : metrics.closeRate;
         default:
           return row.name;
       }
@@ -910,6 +970,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const sortedRepoRowsBySortKey = useMemo(() => {
     const rows = [...repoRows];
     rows.sort((left, right) => {
+      const beatCmp = compareBeatLast(left.id, right.id);
+      if (beatCmp !== 0) return beatCmp;
+
       const a = getRepoSortValueWithMetrics(left, repoSortKey);
       const b = getRepoSortValueWithMetrics(right, repoSortKey);
       if (typeof a === 'string' && typeof b === 'string') {
@@ -977,6 +1040,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       if (teamSortKey !== 'repoCount') {
         const repoKey = teamSortKey as RepoSortKey;
         sortedRepos.sort((a, b) => {
+          const beatCmp = compareBeatLast(a.id, b.id);
+          if (beatCmp !== 0) return beatCmp;
+
           const va = getRepoSortValueWithMetrics(a, repoKey);
           const vb = getRepoSortValueWithMetrics(b, repoKey);
           let cmp = 0;
@@ -1013,27 +1079,49 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                   <td className="overview-expanded-cell overview-expanded-cell-index" />
                   <td className="overview-expanded-cell overview-expanded-cell-name">
                     <span className="overview-expanded-repo-name">
-                      {repo.name}
+                      <span className="inline-flex flex-col">
+                        <span>{repo.name}</span>
+                        {isBeatRepo(repo.id) ? (
+                          <span className="text-slate-400">
+                            （仅支持950，内测中）
+                          </span>
+                        ) : null}
+                      </span>
                     </span>
                   </td>
                   <td className="overview-expanded-cell overview-expanded-cell-empty">
                     -
                   </td>
                   <td className="overview-expanded-cell">
-                    {renderMetricBar(
-                      repo.score,
-                      formatScore,
-                      'overview-bar-blue'
+                    {isBeatRepo(repo.id) ? (
+                      <span className="text-slate-400">-</span>
+                    ) : (
+                      renderMetricBar(
+                        repo.score,
+                        formatScore,
+                        'overview-bar-blue'
+                      )
                     )}
                   </td>
                   <td className="overview-expanded-cell">
-                    {formatPercent(repo.successRate)}
+                    {isBeatRepo(repo.id) ? (
+                      <span className="text-slate-400">-</span>
+                    ) : (
+                      formatPercent(repo.successRate)
+                    )}
                   </td>
                   <td className="overview-expanded-cell">
-                    {formatExecutionTime(repo.executionTime)}
+                    {isBeatRepo(repo.id) ? (
+                      <span className="text-slate-400">-</span>
+                    ) : (
+                      formatExecutionTime(repo.executionTime)
+                    )}
                   </td>
                   <td className="overview-expanded-cell">
                     {(() => {
+                      if (isBeatRepo(repo.id)) {
+                        return <span className="text-slate-400">-</span>;
+                      }
                       const derived = repoDerived.get(repo.id);
                       const metrics = derived?.metrics ?? repo.overall;
                       const rowForModal = derived
@@ -1056,6 +1144,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                   </td>
                   <td className="overview-expanded-cell">
                     {(() => {
+                      if (isBeatRepo(repo.id)) {
+                        return <span className="text-slate-400">-</span>;
+                      }
                       const derived = repoDerived.get(repo.id);
                       const metrics = derived?.metrics ?? repo.overall;
                       const rowForModal = derived
@@ -1077,6 +1168,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                   </td>
                   <td className="overview-expanded-cell">
                     {(() => {
+                      if (isBeatRepo(repo.id)) {
+                        return <span className="text-slate-400">-</span>;
+                      }
                       const derived = repoDerived.get(repo.id);
                       const metrics = derived?.metrics ?? repo.overall;
                       const trendPoints =
