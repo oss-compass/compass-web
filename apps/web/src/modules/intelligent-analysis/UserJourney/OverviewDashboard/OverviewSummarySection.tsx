@@ -9,6 +9,7 @@ import type {
   IssueSourceMode,
   MetricSummary,
   Severity,
+  TrendWindow,
   WeeklyCloseRateTrendPoint,
 } from './types';
 import { formatPercent, formatScore } from './utils';
@@ -35,6 +36,8 @@ type OverviewSummarySectionProps = {
   issueSourceMode: IssueSourceMode;
   includeCommonIssues: boolean;
   commonIssues: CommonIssueGroup[];
+  trendWindow: TrendWindow;
+  onTrendWindowChange: (next: TrendWindow) => void;
   onIssueSourceModeChange: (mode: IssueSourceMode) => void;
   onIncludeCommonIssuesChange: (next: boolean) => void;
   onOpenIssues?: (
@@ -56,6 +59,8 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   issueSourceMode,
   includeCommonIssues,
   commonIssues,
+  trendWindow,
+  onTrendWindowChange,
   onIssueSourceModeChange,
   onIncludeCommonIssuesChange,
   onOpenIssues,
@@ -152,6 +157,8 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           }
           summary={overviewSummary}
           trend={overviewTrend}
+          trendWindow={trendWindow}
+          onTrendWindowChange={onTrendWindowChange}
           issues={overviewIssues}
           commonIssues={commonIssues}
           mode={effectiveMode}

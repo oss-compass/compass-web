@@ -1,5 +1,16 @@
 import React from 'react';
-import { Tooltip } from 'antd';
+import { ConfigProvider, DatePicker, Popover, Tooltip } from 'antd';
+import type { Locale } from 'antd/es/locale';
+import zhCN from 'antd/locale/zh_CN';
+import enUS from 'antd/locale/en_US';
+import getLocale from '@common/utils/getLocale';
+import {
+  CalendarOutlined,
+  CheckOutlined,
+  DownOutlined,
+} from '@ant-design/icons';
+import dayjs, { type Dayjs } from 'dayjs';
+import 'dayjs/locale/zh-cn';
 import {
   getIssueTypeMarkerColor,
   getIssueTypeTagStyle,
@@ -22,6 +33,7 @@ import type {
   IssueBucket,
   MetricSummary,
   Severity,
+  TrendWindow,
   WeeklyCloseRateTrendPoint,
 } from './types';
 import { formatPercent, normalizeSeverity } from './utils';
@@ -31,15 +43,194 @@ type OverviewSummaryBlockProps = {
   title: React.ReactNode;
   summary: MetricSummary;
   trend?: WeeklyCloseRateTrendPoint[];
+  trendWindow?: TrendWindow;
   issues?: DashboardIssue[];
   commonIssues?: CommonIssueGroup[];
   mode?: 'overall' | 'common';
   tooltip?: string;
+  onTrendWindowChange?: (next: TrendWindow) => void;
   onBucketClick?: (bucket: 'total' | IssueBucket) => void;
   onPriorityBucketClick?: (
     severity: Severity,
     bucket: 'total' | IssueBucket
   ) => void;
+};
+
+const DATE_RANGE_FORMAT = 'YYYY-MM-DD';
+const TREND_PRESET_WEEKS = [7, 13, 28] as const;
+const { RangePicker } = DatePicker;
+
+const getTrendPresetLabel = (weeks: number): string => {
+  if (weeks === 13) return '最近三月';
+  if (weeks === 28) return '最近六月';
+  return `最近${weeks}周`;
+};
+
+const formatTrendWindowLabel = (value: TrendWindow): string => {
+  if (value.kind === 'weeks') return getTrendPresetLabel(value.weeks);
+  return `${value.start} ~ ${value.end}`;
+};
+
+const TrendWindowPicker: React.FC<{
+  value: TrendWindow;
+  onChange: (next: TrendWindow) => void;
+}> = ({ value, onChange }) => {
+  const [open, setOpen] = React.useState(false);
+  const [locale, setLocale] = React.useState<Locale>(enUS);
+  const [showCustom, setShowCustom] = React.useState(value.kind === 'range');
+  const [customRange, setCustomRange] = React.useState<
+    [Dayjs | null, Dayjs | null]
+  >(() => {
+    if (value.kind === 'range') {
+      return [dayjs(value.start), dayjs(value.end)];
+    }
+    const end = dayjs().subtract(1, 'day');
+    const start = end.subtract(value.weeks * 7 - 1, 'day');
+    return [start, end];
+  });
+
+  React.useEffect(() => {
+    const l = getLocale();
+    if (l === 'zh') {
+      setLocale(zhCN);
+      dayjs.locale('zh-cn');
+    } else {
+      setLocale(enUS);
+      dayjs.locale('en');
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    setShowCustom(value.kind === 'range');
+    if (value.kind === 'range') {
+      setCustomRange([dayjs(value.start), dayjs(value.end)]);
+      return;
+    }
+    const end = dayjs().subtract(1, 'day');
+    const start = end.subtract(value.weeks * 7 - 1, 'day');
+    setCustomRange([start, end]);
+  }, [open, value]);
+
+  const disabledDate = (current: Dayjs) => {
+    if (!current) return false;
+    const latest = dayjs().subtract(1, 'day');
+    const minDate = dayjs('2000-01-01');
+    return current.isAfter(latest, 'day') || current.isBefore(minDate, 'day');
+  };
+
+  const handlePreset = (weeks: number) => {
+    onChange({ kind: 'weeks', weeks });
+    setOpen(false);
+  };
+
+  const handleConfirm = () => {
+    const [start, end] = customRange;
+    if (!start || !end) return;
+    const normalizedStart = start.isBefore(end) ? start : end;
+    const normalizedEnd = start.isBefore(end) ? end : start;
+    const daysDiff = normalizedEnd.diff(normalizedStart, 'day');
+    const finalEnd =
+      daysDiff >= 6 ? normalizedEnd : normalizedStart.add(6, 'day');
+    onChange({
+      kind: 'range',
+      start: normalizedStart.format(DATE_RANGE_FORMAT),
+      end: finalEnd.format(DATE_RANGE_FORMAT),
+    });
+    setOpen(false);
+  };
+
+  const content = (
+    <ConfigProvider locale={locale}>
+      <div className="oj-trend-range-panel">
+        <div className="oj-trend-range-presets">
+          {TREND_PRESET_WEEKS.map((weeks) => {
+            const active = value.kind === 'weeks' && value.weeks === weeks;
+            return (
+              <button
+                key={weeks}
+                type="button"
+                className={`oj-trend-range-option ${
+                  active ? 'is-active' : ''
+                }`.trim()}
+                onClick={() => handlePreset(weeks)}
+              >
+                <span>{getTrendPresetLabel(weeks)}</span>
+                {active ? (
+                  <CheckOutlined className="oj-trend-range-check" />
+                ) : null}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            className={`oj-trend-range-option ${
+              showCustom ? 'is-active' : ''
+            }`.trim()}
+            onClick={() => setShowCustom(true)}
+          >
+            <span>自定义</span>
+            {showCustom ? (
+              <CheckOutlined className="oj-trend-range-check" />
+            ) : null}
+          </button>
+        </div>
+        {showCustom ? (
+          <div className="oj-trend-range-custom">
+            <RangePicker
+              format={DATE_RANGE_FORMAT}
+              value={customRange}
+              onChange={(dates) => {
+                if (!dates) return;
+                setCustomRange(dates);
+              }}
+              onCalendarChange={(dates) => {
+                if (!dates || !dates[0] || !dates[1]) return;
+                const daysDiff = dates[1].diff(dates[0], 'day');
+                if (daysDiff >= 6) return;
+                setCustomRange([dates[0], dates[0].add(6, 'day')]);
+              }}
+              disabledDate={disabledDate}
+              size="small"
+              separator="~"
+              inputReadOnly
+              className="oj-trend-range-picker"
+            />
+            <button
+              type="button"
+              className="oj-trend-range-confirm"
+              onClick={handleConfirm}
+            >
+              确认
+            </button>
+          </div>
+        ) : null}
+      </div>
+    </ConfigProvider>
+  );
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={setOpen}
+      placement="bottomRight"
+      trigger="click"
+      overlayClassName="oj-trend-range-popover"
+      content={content}
+    >
+      <button
+        type="button"
+        className="oj-trend-range-trigger"
+        title="选择时间窗"
+      >
+        <CalendarOutlined className="oj-trend-range-icon" />
+        <span className="oj-trend-range-label">
+          {formatTrendWindowLabel(value)}
+        </span>
+        <DownOutlined className="oj-trend-range-caret" />
+      </button>
+    </Popover>
+  );
 };
 
 const TREND_VIEWBOX_W = 600;
@@ -160,7 +351,7 @@ const TrendChart: React.FC<{
   const totalLabelYs = totalTopYs.map((y) => Math.max(yTextMin, y - 8));
   const showRateLabel = points.map((p) => p.closeRate > 0);
   const showTotalLabel = points.map((p, index) => {
-    if (p.total <= 0) return false;
+    if (p.total < 0) return false;
     if (!showRateLabel[index]) return true;
     return Math.abs(totalLabelYs[index] - rateLabelYs[index]) >= 18;
   });
@@ -619,10 +810,12 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   title,
   summary,
   trend,
+  trendWindow,
   issues = [],
   commonIssues = [],
   mode = 'overall',
   tooltip,
+  onTrendWindowChange,
   onBucketClick,
   onPriorityBucketClick,
 }) => {
@@ -844,6 +1037,12 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
             <div className="ov-panel ov-trend-panel">
               <div className="ov-panel-head">
                 <div className="ov-panel-title">周度新增问题及闭环趋势</div>
+                {trendWindow && onTrendWindowChange ? (
+                  <TrendWindowPicker
+                    value={trendWindow}
+                    onChange={onTrendWindowChange}
+                  />
+                ) : null}
               </div>
               <TrendChart points={trend} mode={mode} />
               <div className="oj-trend-legend">

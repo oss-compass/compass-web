@@ -338,6 +338,8 @@ export const fetchOverviewCloseRateTrends = async (params: {
   includeCommonIssues?: boolean;
   commonOnly?: boolean | null;
   weeks?: number;
+  startDate?: string;
+  endDate?: string;
   countChildPains?: boolean;
 }): Promise<OverviewCloseRateTrendsResponse> => {
   const search = new URLSearchParams();
@@ -353,6 +355,8 @@ export const fetchOverviewCloseRateTrends = async (params: {
   if (typeof params.weeks === 'number' && Number.isFinite(params.weeks)) {
     search.set('weeks', String(params.weeks));
   }
+  if (params.startDate) search.set('start_date', params.startDate);
+  if (params.endDate) search.set('end_date', params.endDate);
   if (params.countChildPains === true) {
     search.set('count_child_pains', 'true');
   }

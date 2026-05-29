@@ -293,6 +293,141 @@ const DashboardStyles: React.FC = () => (
       color: #0f172a;
     }
 
+    .oj-trend-range-trigger {
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.18s ease, border-color 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    .oj-trend-range-trigger:hover {
+      border-color: rgba(148, 163, 184, 0.9);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+    }
+
+    .oj-trend-range-icon {
+      color: #3b82f6;
+      font-size: 14px;
+    }
+
+    .oj-trend-range-label {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .oj-trend-range-caret {
+      font-size: 10px;
+      color: #94a3b8;
+      margin-left: 2px;
+    }
+
+    .oj-trend-range-popover .ant-popover-inner {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .oj-trend-range-panel {
+      width: 332px;
+      padding: 12px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .oj-trend-range-presets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .oj-trend-range-option {
+      height: 32px;
+      border-radius: 12px;
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      background: rgba(248, 250, 252, 0.9);
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+      cursor: pointer;
+      transition: border-color 0.18s ease, background 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    .oj-trend-range-option:hover {
+      border-color: rgba(148, 163, 184, 0.9);
+      background: rgba(241, 245, 249, 0.96);
+    }
+
+    .oj-trend-range-option.is-active {
+      border-color: rgba(59, 130, 246, 0.55);
+      background: rgba(59, 130, 246, 0.12);
+      color: #0f172a;
+      box-shadow: 0 10px 18px rgba(59, 130, 246, 0.14);
+    }
+
+    .oj-trend-range-check {
+      color: #2563eb;
+      font-size: 12px;
+    }
+
+    .oj-trend-range-custom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 2px;
+    }
+
+    .oj-trend-range-picker {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .oj-trend-range-confirm {
+      flex: 0 0 auto;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      background: rgba(59, 130, 246, 0.1);
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease,
+        box-shadow 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .oj-trend-range-confirm:hover {
+      border-color: rgba(37, 99, 235, 0.75);
+      background: rgba(37, 99, 235, 0.14);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.16);
+    }
+
     .ov-priority-list {
       display: grid;
       gap: 10px;

@@ -57,6 +57,10 @@ export type WeeklyCloseRateTrendPoint = {
   closeRate: number;
 };
 
+export type TrendWindow =
+  | { kind: 'weeks'; weeks: number }
+  | { kind: 'range'; start: string; end: string };
+
 export type RepoProgressRow = {
   id: string;
   name: string;

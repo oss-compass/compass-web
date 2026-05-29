@@ -26,6 +26,7 @@ import type {
   Severity,
   TeamProgressRow,
   TeamSortKey,
+  TrendWindow,
 } from './types';
 import {
   buildMetricSummaryFromPainRows,
@@ -54,6 +55,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [issueSourceMode, setIssueSourceMode] =
     useState<IssueSourceMode>('overall');
   const [includeCommonIssues, setIncludeCommonIssues] = useState(true);
+  const [trendWindow, setTrendWindow] = useState<TrendWindow>({
+    kind: 'weeks',
+    weeks: 7,
+  });
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
   const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('team');
@@ -128,6 +133,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     return includeCommonIssues ? undefined : false;
   }, [includeCommonIssues, issueSourceMode]);
 
+  const trendWindowKey = useMemo(() => {
+    if (trendWindow.kind === 'weeks') return `weeks:${trendWindow.weeks}`;
+    return `range:${trendWindow.start}:${trendWindow.end}`;
+  }, [trendWindow]);
+
   const { data: summaryResp } = useQuery({
     queryKey: ['overview-summary', org, issueSourceMode, includeCommonIssues],
     queryFn: () =>
@@ -151,6 +161,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       org,
       issueSourceMode,
       includeCommonIssues,
+      trendWindowKey,
     ],
     queryFn: () =>
       fetchOverviewCloseRateTrends({
@@ -164,7 +175,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             : includeCommonIssues
             ? undefined
             : false,
-        weeks: 7,
+        weeks: trendWindow.kind === 'weeks' ? trendWindow.weeks : undefined,
+        startDate: trendWindow.kind === 'range' ? trendWindow.start : undefined,
+        endDate: trendWindow.kind === 'range' ? trendWindow.end : undefined,
         countChildPains: true,
       }),
   });
@@ -561,6 +574,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           issueSourceMode={issueSourceMode}
           includeCommonIssues={includeCommonIssues}
           commonIssues={commonIssues}
+          trendWindow={trendWindow}
+          onTrendWindowChange={setTrendWindow}
           onIssueSourceModeChange={setIssueSourceMode}
           onIncludeCommonIssuesChange={setIncludeCommonIssues}
           onOpenIssues={openSummaryIssues}
