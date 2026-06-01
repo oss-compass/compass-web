@@ -54,6 +54,7 @@ const BEAT_REPO_IDS = new Set([
   'cann_ops_tensor',
   'cann_ops_rand',
   'cann_ops_fft',
+  'cann_ops_collections',
 ]);
 
 const normalizeRepoId = (value: unknown) =>
