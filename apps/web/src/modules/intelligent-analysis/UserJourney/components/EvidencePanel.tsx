@@ -623,12 +623,13 @@ const PainPointBadge: React.FC<{
 
 /* ─── 单条总结行 ─── */
 const ObservationItem: React.FC<{
+  order: number;
   text: string;
   toolIds?: string[];
   taskId?: string;
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
   compact?: boolean;
-}> = ({ text, toolIds, taskId, onStepClick, compact = false }) => {
+}> = ({ order, text, toolIds, taskId, onStepClick, compact = false }) => {
   return (
     <li
       className={`flex items-start gap-2 rounded-md ${
@@ -637,7 +638,15 @@ const ObservationItem: React.FC<{
           : 'text-sm leading-5 text-sky-900'
       }`}
     >
-      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+      <span
+        className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold ${
+          compact
+            ? 'border-sky-200 bg-white text-sky-700'
+            : 'border-sky-200 bg-white text-sky-700'
+        }`}
+      >
+        {order}
+      </span>
       <div className="flex flex-1 items-start justify-between gap-3">
         <span className="flex-1 py-0.5">{text}</span>
         <div className="flex shrink-0 items-center">
@@ -670,6 +679,7 @@ function deriveProjectKeyFromFileKey(value?: string): string {
 
 /* ─── 单条痛点行（含确认交互） ─── */
 const PainPointItem: React.FC<{
+  order: number;
   text: string;
   index: number;
   childSeverity?: string;
@@ -685,6 +695,7 @@ const PainPointItem: React.FC<{
   onAutoOpenHandled?: () => void;
   versionOptions?: Array<{ value: string; label: string }>;
 }> = ({
+  order,
   text,
   index,
   childSeverity,
@@ -796,7 +807,15 @@ const PainPointItem: React.FC<{
             : 'text-sm leading-5 text-rose-900'
         }`}
       >
-        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
+        <span
+          className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold ${
+            compact
+              ? 'border-rose-200 bg-white text-rose-700'
+              : 'border-rose-200 bg-white text-rose-700'
+          }`}
+        >
+          {order}
+        </span>
         <div className="flex flex-1 items-start justify-between gap-3">
           <span className="flex-1 py-0.5">{text}</span>
           <div className="flex shrink-0 items-center gap-1.5">
@@ -983,9 +1002,7 @@ const HistoryPainTable: React.FC<{
                   key={`${
                     item.id || item.parentId || item.description
                   }-${index}`}
-                  className={`border-t border-rose-100/70 align-top transition-colors hover:bg-rose-100/40 ${
-                    index % 2 === 0 ? 'bg-white/80' : 'bg-rose-50/40'
-                  }`}
+                  className="border-t border-slate-200/70 bg-white align-top transition-colors hover:bg-slate-50/70"
                 >
                   <td className="px-3 py-3 font-medium text-slate-900">
                     {item.projectName || item.projectKey || '--'}
@@ -1320,9 +1337,10 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               痛点
             </div>
             <ul className="space-y-1">
-              {displayPainPoints.map(({ id, text, index, severity }) => (
+              {displayPainPoints.map(({ id, text, index, severity }, i) => (
                 <PainPointItem
                   key={id || index}
+                  order={i + 1}
                   text={text}
                   index={index}
                   childSeverity={severity}
@@ -1360,6 +1378,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               {observations!.map((obs, i) => (
                 <ObservationItem
                   key={i}
+                  order={i + 1}
                   text={obs}
                   toolIds={observations_tool_nums?.[i]}
                   taskId={stepId}
@@ -1387,9 +1406,10 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
             </span>
           </div>
           <ul className="space-y-1.5">
-            {displayPainPoints.map(({ id, text, index, severity }) => (
+            {displayPainPoints.map(({ id, text, index, severity }, i) => (
               <PainPointItem
                 key={id || index}
+                order={i + 1}
                 text={text}
                 index={index}
                 childSeverity={severity}
@@ -1446,6 +1466,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
               {observations!.map((obs, i) => (
                 <ObservationItem
                   key={i}
+                  order={i + 1}
                   text={obs}
                   toolIds={observations_tool_nums?.[i]}
                   taskId={stepId}
