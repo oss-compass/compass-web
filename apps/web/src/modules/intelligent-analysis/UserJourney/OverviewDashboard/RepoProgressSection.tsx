@@ -316,9 +316,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       rw(70, 60),
       rw(70, 60),
       rw(70, 60),
-      rw(200, 190),
+      rw(160, 140),
       rw(40, 30),
-      rw(60, 50),
+      rw(80, 70),
       rw(60, 50),
     ],
     [repoWidthScale]
@@ -332,9 +332,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       rw(70, 60),
       rw(70, 60),
       rw(70, 60),
-      rw(200, 190),
+      rw(160, 140),
       rw(40, 30),
-      rw(60, 50),
+      rw(80, 70),
       rw(60, 50),
     ],
     [repoWidthScale]
@@ -683,10 +683,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               ? Array.from({ length: 5 }, () => 100)
               : trendPoints.slice(-5).map((point) => point.closeRate);
           return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <button
                 type="button"
-                className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center rounded-md transition-colors hover:bg-slate-50"
                 title="查看闭环率趋势"
                 onClick={(event) => {
                   event.stopPropagation();

@@ -23,7 +23,7 @@ const buildLinePath = (
 
 export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
   values,
-  width = 50,
+  width = 38,
   height = 30,
   stroke = OJ_TREND_COLORS.line,
 }) => {
