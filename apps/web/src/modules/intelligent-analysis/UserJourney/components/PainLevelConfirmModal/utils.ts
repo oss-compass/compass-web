@@ -388,16 +388,19 @@ export const buildRollbackPayload = ({
   }
 
   if (rollbackTarget === PainStatus.CONFIRMED_PENDING_FIX) {
-    payload.issue_link =
-      String(base.issue_link || '').trim() || FALLBACK_LINK_TEXT;
-    payload.pr_link = String(base.pr_link || '').trim() || FALLBACK_LINK_TEXT;
-    payload.expected_close_time =
-      String(base.expected_close_time || '').trim() || undefined;
+    const issueLink = String(base.issue_link || '').trim();
+    const prLink = String(base.pr_link || '').trim();
+    const expectedCloseTime = String(base.expected_close_time || '').trim();
+
+    payload.issue_link = issueLink || undefined;
+    payload.pr_link = prLink || undefined;
+    payload.expected_close_time = expectedCloseTime || undefined;
     return payload;
   }
 
   if (rollbackTarget === PainStatus.FIXED_PENDING_RETEST) {
-    payload.pr_link = String(base.pr_link || '').trim() || FALLBACK_LINK_TEXT;
+    const prLink = String(base.pr_link || '').trim();
+    payload.pr_link = prLink || undefined;
     return payload;
   }
 
