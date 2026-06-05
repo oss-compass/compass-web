@@ -90,6 +90,30 @@ const data = [
     intro: `OpenCloudOS 社区秘书长，腾讯开源联盟主席<br/>专注在云原生、微服务、边缘计算、大数据、操作系统等领域的开源生态建设。为腾讯建立健康的开源生态努力，致力于以开源方式加速技术和产品的创新。作为腾源会导师，开展与开发者和开源组织的开源创新协作。`,
     tooltip: true,
   },
+  {
+    avatar: '/images/about/倪超.png',
+    name: '倪超',
+    intro: `浙江大学软件学院副教授、博导，“太乙”开源生态服务平台创建者。研究聚焦开源生态下的智能化软件工程，涵盖大模型训练与推理加速、代码自动生成、缺陷分析与自动修复、软件测试自动化、安全漏洞分析、供应链安全及开发者贡献评价等方向。在国际顶级期刊和会议发表论文50余篇，主持国家自然科学基金面上、青年项目及浙江省“尖兵”等项目，参与国家重点研发计划。“太乙”平台已服务全国200余所高校，获得教育部示范性软件学院联盟高度认可。`,
+    tooltip: true,
+  },
+  {
+    avatar: '/images/about/杨丽蕴.png',
+    name: '杨丽蕴',
+    intro: `正高级工程师 、中国电子技术标准化研究院 软件中心 开源研究室主任，从事云计算、开源等领域标准化工作，木兰开源社区核心发起人及负责人，木兰开源许可证主导人，全国信标委云计算和分布式平台分技术委员会（ TC28/SC38） 委员， CCF泛在操作系统开放社区秘书长，CCF 开源发展技术委员会执委， 中国通信学会开源技术委员会委员， 联合国咨商开源创新专委会委员、 中国开源云联盟常务副秘书长等。`,
+    tooltip: true,
+  },
+  {
+    avatar: '/images/about/郑子彬.png',
+    name: '郑子彬',
+    intro: `中山大学软件工程学院院长、人工智能研究院副院长。IEEE Fellow、IET Fellow、ACM杰出科学家、全球高被引科学家、国家优秀青年科学基金获得者。主要研究领域：可信大模型，软件可靠性，程序分析，区块链。主持国家重点研发计划项目、国家自然科学基金项目等多个项目。获得教育部自然科学二等奖、吴文俊人工智能自然科学二等奖等奖项。获授权发明专利70多件。担任TOSEM、TSC、TVT、OJCS等期刊的副编辑。`,
+    tooltip: true,
+  },
+  {
+    avatar: '/images/about/郭雪.png',
+    name: '郭雪',
+    intro: `中国信通院云大所开源和软件安全部主任。主要从事开源、安全相关工作，目前担任中国通信标准化协会TC608云计算标准和开源推进委员会副主席、中国通信学会开源治理与技术产品评价标准工作组组长。牵头编写《网络安全技术 软件产品开源代码安全评价方法》等2项国家标准、《开源项目选型参考框架》等2项行业标准、15项开源相关团体标准，牵头编写《开源生态白皮书》、《开源体系建设100问》等十余本开源领域白皮书。`,
+    tooltip: true,
+  },
 ];
 
 const Board = () => {
@@ -98,7 +122,7 @@ const Board = () => {
     <div className="mb-20">
       <Title>{t('about:governing_board')}</Title>
 
-      <div className="bg-[#FAFAFA] px-16 pt-16 pb-10">
+      <div className="bg-[#FAFAFA] px-16 pb-10 pt-16">
         <div className="grid grid-cols-3 gap-7 md:grid-cols-1">
           {data.map((item) => {
             const introNode = (
@@ -147,7 +171,7 @@ const Board = () => {
         <div className="mt-10 flex items-center justify-center">
           <a
             href={'#technical-committee'}
-            className="mr-6 flex cursor-pointer items-center border border-solid border-black py-2 px-4 hover:bg-gray-100 "
+            className="mr-6 flex cursor-pointer items-center border border-solid border-black px-4 py-2 hover:bg-gray-100 "
           >
             <FiUsers />
             <span className="ml-2 font-medium">
@@ -156,7 +180,7 @@ const Board = () => {
           </a>
           <a
             href={'#outreach-committee'}
-            className="flex cursor-pointer  items-center border border-solid border-black py-2 px-4 hover:bg-gray-100"
+            className="flex cursor-pointer  items-center border border-solid border-black px-4 py-2 hover:bg-gray-100"
           >
             <FiUsers />
             <span className="ml-2 font-medium">
