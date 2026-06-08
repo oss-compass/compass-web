@@ -16,6 +16,335 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       animation: none !important;
       transition: none !important;
     }
+
+    .oj-page {
+      background: #ffffff !important;
+      zoom: 1.35;
+    }
+
+    .detail-panel-body {
+      padding: 28px 32px !important;
+      gap: 28px !important;
+    }
+
+    .overview-summary-actions,
+    .team-filter,
+    .oj-dashboard-top-actions,
+    .oj-trend-range-trigger,
+    .overview-select-dropdown,
+    .overview-info-icon,
+    .oj-qa-expand-icon {
+      display: none !important;
+    }
+
+    .oj-section-title.ant-typography {
+      font-size: 30px !important;
+      line-height: 40px !important;
+      font-weight: 900 !important;
+    }
+
+    .section-card {
+      padding: 24px !important;
+      border-radius: 28px !important;
+      box-shadow: none !important;
+      border-color: #dbe4f0 !important;
+      background: #ffffff !important;
+    }
+
+    .overview-bottom-row {
+      min-height: 156px !important;
+    }
+
+    .bottom-metric {
+      padding: 28px 22px !important;
+    }
+
+    .bm-label {
+      font-size: 18px !important;
+      line-height: 24px !important;
+      font-weight: 700 !important;
+    }
+
+    .bm-value {
+      margin-top: 12px !important;
+      font-size: 50px !important;
+      line-height: 58px !important;
+      font-weight: 800 !important;
+    }
+
+    .bm-value-main {
+      line-height: 58px !important;
+    }
+
+    .bm-value-suffix {
+      font-size: 18px !important;
+      line-height: 24px !important;
+    }
+
+    .overview-grid,
+    .overview-insight-grid {
+      gap: 24px !important;
+    }
+
+    .overview-grid,
+    .overview-insight-grid {
+      grid-template-columns: 1fr !important;
+      height: auto !important;
+    }
+
+    .overview-block,
+    .ov-panel {
+      border-radius: 24px !important;
+      padding: 22px !important;
+      box-shadow: none !important;
+    }
+
+    .ov-title,
+    .ov-panel-title {
+      font-size: 22px !important;
+      line-height: 30px !important;
+      font-weight: 800 !important;
+    }
+
+    .ov-item {
+      min-height: 108px !important;
+      padding: 18px 18px 16px !important;
+    }
+
+    .ov-label,
+    .overview-progress-meta,
+    .overview-progress-text,
+    .overview-select-label {
+      font-size: 16px !important;
+      line-height: 24px !important;
+      font-weight: 600 !important;
+    }
+
+    .ov-value {
+      font-size: 38px !important;
+      line-height: 46px !important;
+      font-weight: 800 !important;
+    }
+
+    .tab-bar {
+      margin-bottom: 18px !important;
+    }
+
+    .overview-segmented {
+      transform: scale(1.08);
+      transform-origin: left center;
+    }
+
+    .overview-ant-table {
+      margin-top: 16px !important;
+    }
+
+    .overview-ant-table .ant-table-container {
+      border-width: 2px !important;
+      border-radius: 18px !important;
+    }
+
+    .overview-ant-table .ant-table-measure-row,
+    .overview-ant-table .ant-table-measure-row > td,
+    .overview-ant-table .ant-table-expanded-row,
+    .overview-ant-table .ant-table-expanded-row > td,
+    .overview-ant-table .ant-table-placeholder,
+    .overview-ant-table .ant-table-placeholder > td {
+      display: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      border: 0 !important;
+    }
+
+    .overview-ant-table .ant-table {
+      table-layout: auto !important;
+    }
+
+    .overview-ant-table .ant-table-thead > tr > th {
+      font-size: 15px !important;
+      line-height: 20px !important;
+      font-weight: 800 !important;
+      padding: 8px 10px !important;
+      white-space: nowrap !important;
+    }
+
+    .overview-ant-table .ant-table-tbody > tr > td {
+      font-size: 19px !important;
+      line-height: 30px !important;
+      padding: 16px 14px !important;
+      font-weight: 700 !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+    }
+
+    .overview-ant-table .ant-table-tbody > tr {
+      height: 92px !important;
+    }
+
+    .overview-ant-table .overview-table-link,
+    .overview-ant-table .overview-table-link-muted,
+    .overview-ant-table .overview-table-link-strong,
+    .overview-expanded-repo-name,
+    .row-num,
+    .overview-bar-value,
+    .overview-ring-label {
+      font-size: 18px !important;
+      line-height: 28px !important;
+      font-weight: 700 !important;
+    }
+
+    .overview-bar-track {
+      height: 12px !important;
+      max-width: 120px !important;
+    }
+
+    .overview-progress-bar {
+      height: 12px !important;
+    }
+
+    .overview-progress-cell {
+      gap: 12px !important;
+    }
+
+    .overview-progress-meta,
+    .overview-progress-link,
+    .overview-progress-text,
+    .ov-priority-meta-box,
+    .ov-priority-stats,
+    .ov-priority-total,
+    .ov-priority-rate {
+      white-space: nowrap !important;
+      flex-wrap: nowrap !important;
+    }
+
+    .overview-progress-link {
+      font-size: 17px !important;
+      font-weight: 700 !important;
+    }
+
+    .ov-priority-row .overview-progress-link,
+    .ov-priority-row .overview-progress-text,
+    .ov-priority-total,
+    .ov-priority-rate {
+      font-size: 12px !important;
+      line-height: 18px !important;
+      font-weight: 600 !important;
+    }
+
+    .ov-priority-meta-box,
+    .ov-priority-stats {
+      gap: 8px !important;
+    }
+
+    .overview-expand-label {
+      gap: 12px !important;
+      font-size: 18px !important;
+      font-weight: 700 !important;
+    }
+
+    .overview-expand-icon {
+      font-size: 14px !important;
+    }
+
+    .overview-expanded-cell {
+      padding: 20px 22px !important;
+      font-size: 19px !important;
+      line-height: 30px !important;
+      font-weight: 700 !important;
+    }
+
+    .overview-expanded-repo-name {
+      padding-left: 18px !important;
+    }
+
+    .overview-expanded-rows {
+      display: none !important;
+    }
+
+    .oj-trend-axis,
+    .oj-trend-axis-y,
+    .oj-trend-axis-title,
+    .oj-trend-axis-title-y,
+    .oj-trend-val,
+    .oj-trend-legend,
+    .oj-trend-tooltip,
+    .ov-ci-type,
+    .ov-ci-desc,
+    .ov-ci-repo,
+    .ov-ci-meta,
+    .ov-ci-status,
+    .ov-ci-sev,
+    .ov-priority-header,
+    .ov-priority-total,
+    .ov-priority-rate {
+      font-size: 11px !important;
+      line-height: 18px !important;
+      font-weight: 500 !important;
+    }
+
+    .ov-ci-row,
+    .ov-priority-row {
+      min-height: 64px !important;
+      height: 64px !important;
+      max-height: 64px !important;
+    }
+
+    .ov-priority-progress {
+      height: 10px !important;
+    }
+
+    .oj-trend-axis {
+      font-size: 10.5px !important;
+    }
+
+    .oj-trend-axis-y {
+      font-size: 9.5px !important;
+    }
+
+    .oj-trend-axis-title {
+      font-size: 10px !important;
+    }
+
+    .oj-trend-axis-title-y {
+      font-size: 9px !important;
+    }
+
+    .oj-trend-val {
+      font-size: 9.5px !important;
+    }
+
+    .oj-trend-legend {
+      font-size: 11.5px !important;
+    }
+
+    .oj-trend-tooltip {
+      font-size: 12px !important;
+    }
+
+    .ov-ci-type {
+      font-size: 11px !important;
+    }
+
+    .ov-ci-desc {
+      font-size: 13.5px !important;
+      line-height: 1.4 !important;
+    }
+
+    .ov-ci-repo,
+    .ov-ci-meta,
+    .ov-ci-status,
+    .ov-ci-sev {
+      font-size: 12px !important;
+      line-height: 18px !important;
+      font-weight: 600 !important;
+    }
+
+    .oj-qa-section,
+    .overview-common-issues-section {
+      display: none !important;
+    }
     `
       : ''}
     .oj-page {

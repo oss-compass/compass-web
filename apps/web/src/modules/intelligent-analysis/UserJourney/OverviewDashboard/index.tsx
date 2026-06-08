@@ -63,10 +63,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
-  const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('team');
-  const [repoSortAsc, setRepoSortAsc] = useState(true);
-  const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('name');
-  const [teamSortAsc, setTeamSortAsc] = useState(true);
+  const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('closeRate');
+  const [repoSortAsc, setRepoSortAsc] = useState(false);
+  const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('closeRate');
+  const [teamSortAsc, setTeamSortAsc] = useState(false);
   const autoExpandAllTeams = useMemo(() => {
     const raw = router.query.expandAllTeams;
     const value = Array.isArray(raw) ? raw[0] : raw;
@@ -607,6 +607,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           onProgressViewChange={setProgressView}
           currentTab={currentTab}
           onTabChange={setCurrentTab}
+          captureMode={captureMode}
           org={org}
           commonOnly={commonOnly}
           repoFilter={repoFilter}
