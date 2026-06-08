@@ -77,6 +77,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     const value = Array.isArray(raw) ? raw[0] : raw;
     return value === '1' || value === 'true';
   }, [router.query.captureMode]);
+  const captureIncludeCommonIssues = useMemo(() => {
+    const raw = router.query.includeCommonIssues;
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    return !(value === '0' || value === 'false');
+  }, [router.query.includeCommonIssues]);
+  useEffect(() => {
+    if (!captureMode) return;
+    setIncludeCommonIssues(captureIncludeCommonIssues);
+  }, [captureIncludeCommonIssues, captureMode]);
   const { data: cardsResp, isLoading } = useQuery({
     queryKey: [
       'overview-cards-page',
