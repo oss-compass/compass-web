@@ -607,7 +607,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           onProgressViewChange={setProgressView}
           currentTab={currentTab}
           onTabChange={setCurrentTab}
-          captureMode={captureMode}
           org={org}
           commonOnly={commonOnly}
           repoFilter={repoFilter}

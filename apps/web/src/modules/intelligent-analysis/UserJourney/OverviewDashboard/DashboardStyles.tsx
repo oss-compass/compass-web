@@ -146,8 +146,6 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
     .overview-ant-table .ant-table-measure-row,
     .overview-ant-table .ant-table-measure-row > td,
-    .overview-ant-table .ant-table-expanded-row,
-    .overview-ant-table .ant-table-expanded-row > td,
     .overview-ant-table .ant-table-placeholder,
     .overview-ant-table .ant-table-placeholder > td {
       display: none !important;
@@ -181,6 +179,12 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
     .overview-ant-table .ant-table-tbody > tr {
       height: 92px !important;
+    }
+
+    .overview-ant-table .ant-table-tbody > tr.ant-table-expanded-row,
+    .overview-ant-table .ant-table-tbody > tr.ant-table-expanded-row > td {
+      height: auto !important;
+      min-height: 0 !important;
     }
 
     .overview-ant-table .overview-table-link,
@@ -249,18 +253,14 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .overview-expanded-cell {
-      padding: 20px 22px !important;
-      font-size: 19px !important;
-      line-height: 30px !important;
+      padding: 6px 9px !important;
+      font-size: 18px !important;
+      line-height: 26px !important;
       font-weight: 700 !important;
     }
 
     .overview-expanded-repo-name {
-      padding-left: 18px !important;
-    }
-
-    .overview-expanded-rows {
-      display: none !important;
+      padding-left: 4px !important;
     }
 
     .oj-trend-axis,

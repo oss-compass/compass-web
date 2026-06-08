@@ -242,7 +242,6 @@ type RepoProgressSectionProps = {
   onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
   onTabChange: (tab: ProgressTab) => void;
-  captureMode?: boolean;
   autoExpandAllTeams?: boolean;
   org?: string;
   commonOnly?: boolean | null;
@@ -278,7 +277,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   onProgressViewChange,
   currentTab,
   onTabChange: _onTabChange,
-  captureMode = false,
   autoExpandAllTeams = false,
   org,
   commonOnly,
@@ -1260,24 +1258,20 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   );
 
   const teamExpandable = useMemo<TableProps<TeamProgressRow>['expandable']>(
-    () =>
-      captureMode
-        ? undefined
-        : {
-            expandedRowKeys,
-            expandRowByClick: true,
-            showExpandColumn: false,
-            onExpand: (expanded, record) => {
-              setExpandedRowKeys((prev) =>
-                expanded
-                  ? [...prev, record.id]
-                  : prev.filter((key) => key !== record.id)
-              );
-            },
-            expandedRowRender: (record) => renderExpandedRepoRows(record.repos),
-          },
+    () => ({
+      expandedRowKeys,
+      expandRowByClick: true,
+      showExpandColumn: false,
+      onExpand: (expanded, record) => {
+        setExpandedRowKeys((prev) =>
+          expanded
+            ? [...prev, record.id]
+            : prev.filter((key) => key !== record.id)
+        );
+      },
+      expandedRowRender: (record) => renderExpandedRepoRows(record.repos),
+    }),
     [
-      captureMode,
       currentTab,
       expandedRowKeys,
       teamColumnWidths,
