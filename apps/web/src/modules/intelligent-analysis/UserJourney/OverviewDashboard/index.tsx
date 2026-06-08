@@ -637,7 +637,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           onOpenIssueModal={openIssueModal}
         />
 
-        <ExperienceScoreRuleQASection />
+        {!captureMode && <ExperienceScoreRuleQASection />}
 
         <IssueDetailModal
           state={issueModal}
