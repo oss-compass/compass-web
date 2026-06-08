@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import {
   fetchOverviewCards,
   fetchOverviewCloseRateTrends,
@@ -45,6 +46,7 @@ type OverviewDashboardProps = {
 };
 
 const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
+  const router = useRouter();
   const [issueModal, setIssueModal] = useState<IssueModalState>({
     open: false,
     title: '',
@@ -65,6 +67,16 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [repoSortAsc, setRepoSortAsc] = useState(true);
   const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('name');
   const [teamSortAsc, setTeamSortAsc] = useState(true);
+  const autoExpandAllTeams = useMemo(() => {
+    const raw = router.query.expandAllTeams;
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    return value === '1' || value === 'true';
+  }, [router.query.expandAllTeams]);
+  const captureMode = useMemo(() => {
+    const raw = router.query.captureMode;
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    return value === '1' || value === 'true';
+  }, [router.query.captureMode]);
   const { data: cardsResp, isLoading } = useQuery({
     queryKey: [
       'overview-cards-page',
@@ -597,6 +609,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           isLoading={isLoading}
           teamRows={sortedTeamRows}
           repoRows={sortedRepoRows}
+          autoExpandAllTeams={autoExpandAllTeams}
           repoSortKey={repoSortKey}
           repoSortAsc={repoSortAsc}
           repoSortArrow={repoSortArrow}
@@ -620,7 +633,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           state={issueModal}
           onClose={() => setIssueModal({ open: false, title: '', issues: [] })}
         />
-        <DashboardStyles />
+        <DashboardStyles captureMode={captureMode} />
       </div>
     </div>
   );

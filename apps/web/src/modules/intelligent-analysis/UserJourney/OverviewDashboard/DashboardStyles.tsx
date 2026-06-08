@@ -1,7 +1,23 @@
 import React from 'react';
 
-const DashboardStyles: React.FC = () => (
+type DashboardStylesProps = {
+  captureMode?: boolean;
+};
+
+const DashboardStyles: React.FC<DashboardStylesProps> = ({
+  captureMode = false,
+}) => (
   <style jsx global>{`
+    ${captureMode
+      ? `
+    .oj-page *,
+    .oj-page *::before,
+    .oj-page *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    `
+      : ''}
     .oj-page {
       // background: radial-gradient(
       //     circle at top left,

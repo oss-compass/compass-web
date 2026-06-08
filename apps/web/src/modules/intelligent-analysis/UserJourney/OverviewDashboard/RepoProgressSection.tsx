@@ -242,6 +242,7 @@ type RepoProgressSectionProps = {
   onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
   onTabChange: (tab: ProgressTab) => void;
+  autoExpandAllTeams?: boolean;
   org?: string;
   commonOnly?: boolean | null;
   repoFilter: string;
@@ -276,6 +277,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   onProgressViewChange,
   currentTab,
   onTabChange: _onTabChange,
+  autoExpandAllTeams = false,
   org,
   commonOnly,
   repoFilter,
@@ -1033,6 +1035,20 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     () => sortedByProgressMetric(sortedTeamRowsBySortKey),
     [sortedByProgressMetric, sortedTeamRowsBySortKey]
   );
+
+  useEffect(() => {
+    if (!autoExpandAllTeams || progressView !== 'team') return;
+    const nextKeys = displayedTeamRows.map((row) => row.id);
+    setExpandedRowKeys((prev) => {
+      if (
+        prev.length === nextKeys.length &&
+        prev.every((key, index) => key === nextKeys[index])
+      ) {
+        return prev;
+      }
+      return nextKeys;
+    });
+  }, [autoExpandAllTeams, displayedTeamRows, progressView]);
 
   const renderExpandedRepoRows = useCallback(
     (repos: RepoProgressRow[]) => {
