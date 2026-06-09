@@ -244,6 +244,36 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       height: 10px !important;
     }
 
+    .overview-insight-grid .ov-priority-meta-box {
+      flex-wrap: nowrap !important;
+    }
+
+    .overview-insight-grid .overview-progress-meta {
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+      gap: 6px !important;
+      font-size: 11px !important;
+      line-height: 16px !important;
+    }
+
+    .overview-insight-grid .overview-progress-link,
+    .overview-insight-grid .overview-progress-text {
+      white-space: nowrap !important;
+    }
+
+    .overview-ant-table .overview-progress-meta {
+      gap: 6px !important;
+      font-size: 11px !important;
+      line-height: 16px !important;
+    }
+
+    .overview-ant-table .overview-progress-link,
+    .overview-ant-table .overview-progress-text {
+      font-size: 11px !important;
+      line-height: 16px !important;
+      font-weight: 400 !important;
+    }
+
     .oj-trend-axis {
       font-size: 10.5px !important;
     }
