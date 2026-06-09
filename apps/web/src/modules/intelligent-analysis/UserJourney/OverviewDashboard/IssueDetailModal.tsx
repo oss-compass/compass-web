@@ -408,10 +408,18 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     return sortOrder === 'asc' ? '↑' : '↓';
   };
 
-  const renderSortableHeader = (label: string, key: IssueSortKey) => (
+  const renderSortableHeader = (
+    label: string,
+    key: IssueSortKey,
+    align: 'left' | 'center' = 'center'
+  ) => (
     <button
       type="button"
-      className="inline-flex items-center gap-1 text-left font-semibold text-slate-500 hover:text-slate-700"
+      className={`inline-flex items-center gap-1 font-semibold text-slate-500 hover:text-slate-700 ${
+        align === 'left'
+          ? 'justify-start text-left'
+          : 'justify-center text-center'
+      }`}
       onClick={() => handleSort(key)}
     >
       <span>{label}</span>
@@ -519,18 +527,18 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
       destroyOnHidden
     >
       <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
-        <table className="w-full table-fixed border-collapse text-[12px] text-slate-700 md:text-[13px]">
+        <table className="w-full table-fixed border-collapse text-center text-[12px] text-slate-700 md:text-[13px]">
           <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
             <tr>
               <th className="w-[56px] px-2 py-2 text-center md:w-[64px] md:px-2 md:py-3">
                 序号
               </th>
-              <th className="w-[96px] px-2 py-2 text-left md:w-[100px] md:px-3 md:py-3">
+              <th className="w-[96px] px-2 py-2 text-center md:w-[100px] md:px-3 md:py-3">
                 {renderSortableHeader('仓库', 'repo')}
               </th>
               <th className="w-[120px] px-2 py-2 text-left md:w-[100px] md:px-2 md:py-3">
-                <div className="flex items-center gap-1.5">
-                  {renderSortableHeader('责任团队', 'team')}
+                <div className="flex items-center justify-start gap-1.5">
+                  {renderSortableHeader('责任团队', 'team', 'left')}
                   <Dropdown
                     trigger={['click']}
                     placement="bottomLeft"
@@ -577,8 +585,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   </Dropdown>
                 </div>
               </th>
-              <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
-                <div className="flex items-center gap-1.5">
+              <th className="w-[100px] px-2 py-2 text-center lg:table-cell">
+                <div className="flex items-center justify-center gap-1.5">
                   {renderSortableHeader('阶段', 'stage')}
                   <Dropdown
                     trigger={['click']}
@@ -626,14 +634,14 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   </Dropdown>
                 </div>
               </th>
-              <th className="w-[100px] px-2 py-2 text-left lg:table-cell">
+              <th className="w-[100px] px-2 py-2 text-center lg:table-cell">
                 {renderSortableHeader('具体任务', 'issueType')}
               </th>
               <th className="w-[220px] px-2 py-2 text-left md:w-[280px] md:px-3 md:py-3">
-                {renderSortableHeader('问题描述', 'description')}
+                {renderSortableHeader('问题描述', 'description', 'left')}
               </th>
-              <th className="w-[96px] px-2 py-2 text-left md:table-cell">
-                <div className="flex items-center gap-1.5">
+              <th className="w-[96px] px-2 py-2 text-center md:table-cell">
+                <div className="flex items-center justify-center gap-1.5">
                   {renderSortableHeader('严重程度', 'severity')}
                   <Dropdown
                     trigger={['click']}
@@ -683,8 +691,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   </Dropdown>
                 </div>
               </th>
-              <th className="w-[84px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
-                <div className="flex items-center gap-1.5">
+              <th className="w-[84px] px-2 py-2 text-center md:w-[90px] md:px-3 md:py-3">
+                <div className="flex items-center justify-center gap-1.5">
                   {renderSortableHeader('状态', 'status')}
                   <Dropdown
                     trigger={['click']}
@@ -748,11 +756,11 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   </Dropdown>
                 </div>
               </th>
-              <th className="w-[96px] px-2 py-2 text-left md:w-[120px] md:px-3 md:py-3">
+              <th className="w-[96px] px-2 py-2 text-center md:w-[120px] md:px-3 md:py-3">
                 {renderSortableHeader('发现时间', 'createdAt')}
               </th>
-              <th className="w-[88px] px-2 py-2 text-left md:w-[90px] md:px-3 md:py-3">
-                <div className="flex items-center gap-1.5">
+              <th className="w-[88px] px-2 py-2 text-center md:w-[90px] md:px-3 md:py-3">
+                <div className="flex items-center justify-center gap-1.5">
                   {renderSortableHeader('责任人', 'owner')}
                   <Dropdown
                     trigger={['click']}
@@ -800,7 +808,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                   </Dropdown>
                 </div>
               </th>
-              <th className="w-[96px] px-2 py-2 text-left md:w-[120px] md:px-3 md:py-3">
+              <th className="w-[96px] px-2 py-2 text-center md:w-[120px] md:px-3 md:py-3">
                 {renderSortableHeader('相关报告', 'report')}
               </th>
             </tr>
@@ -818,33 +826,33 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     <td className="px-2 py-2 text-center font-medium text-slate-500 md:px-2 md:py-3">
                       {index + 1}
                     </td>
-                    <td className="break-all px-2 py-2 font-medium text-slate-900 md:px-3 md:py-3">
+                    <td className="break-all px-2 py-2 text-center font-medium text-slate-900 md:px-3 md:py-3">
                       {getRepoName(issue)}
                     </td>
-                    <td className="break-all px-2 py-2 md:px-2 md:py-3">
+                    <td className="break-all px-2 py-2 text-left md:px-2 md:py-3">
                       {issue.team || '--'}
                     </td>
-                    <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
+                    <td className="whitespace-nowrap px-2 py-2 text-center lg:table-cell">
                       {issue.journeyStage || '--'}
                     </td>
-                    <td className="whitespace-nowrap px-2 py-2 lg:table-cell">
+                    <td className="whitespace-nowrap px-2 py-2 text-center lg:table-cell">
                       <Tooltip title={taskLabel || '--'}>
                         <span className="block truncate">
                           {taskLabel || '--'}
                         </span>
                       </Tooltip>
                     </td>
-                    <td className="max-w-[240px] px-2 py-2 md:max-w-[340px] md:px-3 md:py-3">
+                    <td className="max-w-[240px] px-2 py-2 text-left md:max-w-[340px] md:px-3 md:py-3">
                       <Tooltip title={issue.description || '--'}>
                         <span className="line-clamp-2 cursor-default">
                           {issue.description || '--'}
                         </span>
                       </Tooltip>
                     </td>
-                    <td className="whitespace-nowrap px-2 py-2 md:table-cell">
+                    <td className="whitespace-nowrap px-2 py-2 text-center md:table-cell">
                       <SeverityBadge severity={issue.severity} />
                     </td>
-                    <td className="whitespace-nowrap px-2 py-2 md:px-3 md:py-3">
+                    <td className="whitespace-nowrap px-2 py-2 text-center md:px-3 md:py-3">
                       {(() => {
                         const cfg = PAIN_STATUS_CFG[String(issue.status || '')];
                         if (!cfg)
@@ -862,7 +870,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                             )}`
                           : '';
                         return (
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col items-center gap-1">
                             <Tooltip title="请点击相关报告处理痛点">
                               <span className="inline-flex cursor-help">
                                 <Tag
@@ -893,7 +901,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         );
                       })()}
                     </td>
-                    <td className="whitespace-nowrap px-2 py-2 text-slate-600 md:px-3 md:py-3">
+                    <td className="whitespace-nowrap px-2 py-2 text-center text-slate-600 md:px-3 md:py-3">
                       {(() => {
                         const createdText = String(
                           issue.createdAt || issue.created_at || ''
@@ -906,10 +914,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         );
                       })()}
                     </td>
-                    <td className="break-all px-2 py-2 md:px-3 md:py-3">
+                    <td className="break-all px-2 py-2 text-center md:px-3 md:py-3">
                       {issue.owner || issue.teamOwner || '--'}
                     </td>
-                    <td className="px-2 py-2 text-[12px] md:px-3 md:py-3">
+                    <td className="px-2 py-2 text-center text-[12px] md:px-3 md:py-3">
                       {reportEntries.length ? (
                         reportEntries.map(({ painId, fileKey, taskId }) => {
                           const search = new URLSearchParams();

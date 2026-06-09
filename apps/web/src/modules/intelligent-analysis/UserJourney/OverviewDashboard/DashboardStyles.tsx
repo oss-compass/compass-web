@@ -23,8 +23,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .detail-panel-body {
-      padding: 28px 32px !important;
-      gap: 28px !important;
+      padding: 18px 22px !important;
+      gap: 14px !important;
     }
 
     .overview-summary-actions,
@@ -38,64 +38,80 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .oj-section-title.ant-typography {
-      font-size: 30px !important;
-      line-height: 40px !important;
+      margin: 0 0 8px 0 !important;
+      font-size: 26px !important;
+      line-height: 34px !important;
       font-weight: 900 !important;
     }
 
     .section-card {
-      padding: 24px !important;
-      border-radius: 28px !important;
+      padding: 16px !important;
+      border-radius: 22px !important;
       box-shadow: none !important;
       border-color: #dbe4f0 !important;
       background: #ffffff !important;
     }
 
     .overview-bottom-row {
-      min-height: 156px !important;
+      min-height: 108px !important;
     }
 
     .bottom-metric {
-      padding: 28px 22px !important;
+      padding: 12px 12px !important;
+    }
+
+    .bottom-metric:not(:last-child)::after {
+      top: 10px !important;
+      bottom: 10px !important;
     }
 
     .bm-label {
-      font-size: 18px !important;
-      line-height: 24px !important;
+      font-size: 13px !important;
+      line-height: 18px !important;
       font-weight: 700 !important;
     }
 
     .bm-value {
-      margin-top: 12px !important;
-      font-size: 50px !important;
-      line-height: 58px !important;
+      margin-top: 6px !important;
+      font-size: 34px !important;
+      line-height: 40px !important;
       font-weight: 800 !important;
     }
 
     .bm-value-main {
-      line-height: 58px !important;
+      line-height: 40px !important;
     }
 
     .bm-value-suffix {
-      font-size: 18px !important;
-      line-height: 24px !important;
+      font-size: 13px !important;
+      line-height: 18px !important;
+    }
+
+    .overview-summary-stack {
+      gap: 10px !important;
     }
 
     .overview-grid,
     .overview-insight-grid {
-      gap: 24px !important;
+      gap: 14px !important;
     }
 
-    .overview-grid,
-    .overview-insight-grid {
+    .overview-grid {
       grid-template-columns: 1fr !important;
       height: auto !important;
+    }
+
+    .overview-insight-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      gap: 16px !important;
+      height: auto !important;
+      align-items: stretch !important;
     }
 
     .overview-block,
     .ov-panel {
       border-radius: 24px !important;
-      padding: 22px !important;
+      padding: 16px !important;
       box-shadow: none !important;
     }
 
@@ -107,22 +123,22 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .ov-item {
-      min-height: 108px !important;
-      padding: 18px 18px 16px !important;
+      min-height: 82px !important;
+      padding: 10px 12px 10px !important;
     }
 
     .ov-label,
     .overview-progress-meta,
     .overview-progress-text,
     .overview-select-label {
-      font-size: 16px !important;
-      line-height: 24px !important;
+      font-size: 15px !important;
+      line-height: 22px !important;
       font-weight: 600 !important;
     }
 
     .ov-value {
-      font-size: 38px !important;
-      line-height: 46px !important;
+      font-size: 34px !important;
+      line-height: 40px !important;
       font-weight: 800 !important;
     }
 
@@ -135,132 +151,65 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       transform-origin: left center;
     }
 
-    .overview-ant-table {
-      margin-top: 16px !important;
+    .overview-insight-grid .ov-priority-bar-box {
+      width: 100% !important;
     }
 
-    .overview-ant-table .ant-table-container {
-      border-width: 2px !important;
-      border-radius: 18px !important;
-    }
-
-    .overview-ant-table .ant-table-measure-row,
-    .overview-ant-table .ant-table-measure-row > td,
-    .overview-ant-table .ant-table-placeholder,
-    .overview-ant-table .ant-table-placeholder > td {
-      display: none !important;
-      height: 0 !important;
-      min-height: 0 !important;
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
-      border: 0 !important;
-    }
-
-    .overview-ant-table .ant-table {
-      table-layout: auto !important;
-    }
-
-    .overview-ant-table .ant-table-thead > tr > th {
-      font-size: 15px !important;
-      line-height: 20px !important;
-      font-weight: 800 !important;
-      padding: 8px 10px !important;
-      white-space: nowrap !important;
-    }
-
-    .overview-ant-table .ant-table-tbody > tr > td {
-      font-size: 19px !important;
-      line-height: 30px !important;
-      padding: 16px 14px !important;
-      font-weight: 700 !important;
-      white-space: normal !important;
-      word-break: break-word !important;
-    }
-
-    .overview-ant-table .ant-table-tbody > tr {
-      height: 92px !important;
-    }
-
-    .overview-ant-table .ant-table-tbody > tr.ant-table-expanded-row,
-    .overview-ant-table .ant-table-tbody > tr.ant-table-expanded-row > td {
-      height: auto !important;
-      min-height: 0 !important;
-    }
-
-    .overview-ant-table .overview-table-link,
-    .overview-ant-table .overview-table-link-muted,
-    .overview-ant-table .overview-table-link-strong,
-    .overview-expanded-repo-name,
-    .row-num,
-    .overview-bar-value,
-    .overview-ring-label {
-      font-size: 18px !important;
-      line-height: 28px !important;
-      font-weight: 700 !important;
-    }
-
-    .overview-bar-track {
-      height: 12px !important;
-      max-width: 120px !important;
-    }
-
-    .overview-progress-bar {
-      height: 12px !important;
-    }
-
-    .overview-progress-cell {
-      gap: 12px !important;
-    }
-
-    .overview-progress-meta,
-    .overview-progress-link,
-    .overview-progress-text,
-    .ov-priority-meta-box,
-    .ov-priority-stats,
-    .ov-priority-total,
-    .ov-priority-rate {
-      white-space: nowrap !important;
-      flex-wrap: nowrap !important;
-    }
-
-    .overview-progress-link {
-      font-size: 17px !important;
-      font-weight: 700 !important;
-    }
-
-    .ov-priority-row .overview-progress-link,
-    .ov-priority-row .overview-progress-text,
-    .ov-priority-total,
-    .ov-priority-rate {
-      font-size: 12px !important;
-      line-height: 18px !important;
-      font-weight: 600 !important;
+    .overview-insight-grid .ov-priority-bar-box .overview-progress-bar {
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
     }
 
     .ov-priority-meta-box,
     .ov-priority-stats {
+      gap: 6px !important;
+    }
+
+    .overview-insight-grid .ov-panel {
+      padding: 16px !important;
+      border-radius: 20px !important;
+      height: 100% !important;
+    }
+
+    .overview-insight-grid .ov-panel-head {
+      margin-bottom: 10px !important;
+    }
+
+    .overview-insight-grid .ov-panel-title {
+      font-size: 18px !important;
+      line-height: 24px !important;
+    }
+
+    .overview-insight-grid .ov-priority-list,
+    .overview-insight-grid .ov-ci-list {
       gap: 8px !important;
     }
 
-    .overview-expand-label {
-      gap: 12px !important;
-      font-size: 18px !important;
-      font-weight: 700 !important;
+    .overview-insight-grid .ov-priority-row {
+      grid-template-columns: minmax(0, 1fr) 290px !important;
+      gap: 14px !important;
+      padding: 0 10px !important;
+      min-height: 58px !important;
+      height: 58px !important;
+      max-height: 58px !important;
     }
 
-    .overview-expand-icon {
-      font-size: 14px !important;
+    .overview-insight-grid .ov-priority-side {
+      width: 290px !important;
+      flex-basis: 290px !important;
+      gap: 6px !important;
     }
 
-    .overview-expanded-cell {
-      padding: 6px 9px !important;
-      font-size: 18px !important;
-      line-height: 26px !important;
-      font-weight: 700 !important;
+    .overview-insight-grid .ov-ci-row {
+      min-height: 58px !important;
+      height: 58px !important;
+      max-height: 58px !important;
+      padding: 12px 10px !important;
     }
 
-    .overview-expanded-repo-name {
-      padding-left: 4px !important;
+    .overview-insight-grid .oj-trend-legend {
+      margin-top: 8px !important;
     }
 
     .oj-trend-axis,
@@ -1501,20 +1450,26 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       font-weight: 600;
       padding: 10px 12px;
       white-space: nowrap;
-      text-align: left;
+      text-align: center;
     }
 
     .overview-ant-table .ant-table-tbody > tr > td {
       padding: 10px 12px;
       font-size: 13px;
       color: #0f172a;
-      text-align: left;
+      text-align: center;
     }
 
     .overview-ant-table .ant-table-summary td {
       background: rgba(241, 245, 249, 0.7);
       border-top: 1px solid rgba(148, 163, 184, 0.25);
       font-weight: 600;
+      text-align: center;
+    }
+
+    .overview-ant-table .ant-table-thead > tr > th.ant-table-column-align-left,
+    .overview-ant-table .ant-table-tbody > tr > td.ant-table-column-align-left,
+    .overview-ant-table .ant-table-summary td.ant-table-column-align-left {
       text-align: left;
     }
 
@@ -1531,7 +1486,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .sortable-col-title {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
+    }
+
+    .sortable-col-title-left {
+      justify-content: flex-start;
+      width: 100%;
     }
 
     .overview-info-icon {
@@ -1553,6 +1514,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-bar-cell {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
       min-width: 0;
     }
@@ -1613,6 +1575,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-progress-cell {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      align-items: center;
       gap: 8px;
     }
     .overview-select-label {
@@ -1621,6 +1585,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-progress-bar {
       display: flex;
       height: 8px;
+      min-width: 190px;
       overflow: hidden;
       border-radius: 999px;
       background: #e2e8f0;
@@ -1645,6 +1610,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-progress-meta {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 8px;
       font-size: 12px;
       line-height: 18px;
@@ -1673,6 +1639,20 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-progress-link:hover {
       opacity: 0.7;
       text-decoration: underline;
+    }
+
+    .overview-close-rate-cell {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .overview-close-rate-value {
+      min-width: 56px;
+      text-align: left;
+      font-variant-numeric: tabular-nums;
     }
 
     .overview-ant-table .overview-table-link {
@@ -1719,6 +1699,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-expand-label {
       display: inline-flex;
       align-items: center;
+      justify-content: flex-start;
       gap: 8px;
       font-weight: 600;
     }
@@ -1761,6 +1742,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       vertical-align: middle;
       color: #5b6168;
       font-size: 13px;
+      text-align: center;
       border: none;
     }
 
@@ -1783,6 +1765,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-expanded-repo-name {
       display: inline-flex;
       align-items: center;
+      justify-content: flex-start;
+      width: 100%;
       padding-left: 12px;
       color: #1e5fbf;
       font-size: 13px;
@@ -1792,6 +1776,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
     .overview-expanded-cell-name {
       position: relative;
+      text-align: left;
     }
 
     .overview-expanded-cell-name::before {

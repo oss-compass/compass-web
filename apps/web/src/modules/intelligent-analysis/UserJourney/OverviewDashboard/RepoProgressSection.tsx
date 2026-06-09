@@ -242,6 +242,7 @@ type RepoProgressSectionProps = {
   onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
   onTabChange: (tab: ProgressTab) => void;
+  hideBeatRepos?: boolean;
   autoExpandAllTeams?: boolean;
   org?: string;
   commonOnly?: boolean | null;
@@ -277,6 +278,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   onProgressViewChange,
   currentTab,
   onTabChange: _onTabChange,
+  hideBeatRepos = false,
   autoExpandAllTeams = false,
   org,
   commonOnly,
@@ -321,7 +323,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       rw(160, 140),
       rw(40, 30),
       rw(80, 70),
-      rw(60, 50),
+      rw(110, 96),
     ],
     [repoWidthScale]
   );
@@ -337,7 +339,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       rw(160, 140),
       rw(40, 30),
       rw(80, 70),
-      rw(60, 50),
+      rw(110, 96),
     ],
     [repoWidthScale]
   );
@@ -524,8 +526,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     );
   };
 
-  const sortableTitle = (label: string, arrow: string) => (
-    <span className="sortable-col-title">
+  const sortableTitle = (
+    label: string,
+    arrow: string,
+    align: 'left' | 'center' = 'center'
+  ) => (
+    <span
+      className={`sortable-col-title ${
+        align === 'left' ? 'sortable-col-title-left' : ''
+      }`}
+    >
       {label}
       <span className="sort-arrow">{arrow}</span>
     </span>
@@ -561,10 +571,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
-        title: sortableTitle('责任团队', repoSortArrow('team')),
+        title: sortableTitle('责任团队', repoSortArrow('team'), 'left'),
         dataIndex: 'team',
         key: 'team',
         width: repoColumnWidths[2],
+        align: 'left',
         ellipsis: true,
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('team'),
@@ -685,7 +696,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               ? Array.from({ length: 5 }, () => 100)
               : trendPoints.slice(-5).map((point) => point.closeRate);
           return (
-            <div className="flex items-center gap-1">
+            <div className="overview-close-rate-cell">
               <button
                 type="button"
                 className="inline-flex items-center rounded-md transition-colors hover:bg-slate-50"
@@ -708,7 +719,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               >
                 <CloseRateSparkline values={sparkValues} />
               </button>
-              <span className="text-sm font-semibold tabular-nums text-slate-700">
+              <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
                 {formatPercent(displayRate)}
               </span>
             </div>
@@ -747,10 +758,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         ),
       },
       {
-        title: sortableTitle('责任团队', teamSortArrow('name')),
+        title: sortableTitle('责任团队', teamSortArrow('name'), 'left'),
         dataIndex: 'name',
         key: 'name',
         width: teamColumnWidths[1],
+        align: 'left',
         render: (value, record) => (
           <span className="overview-expand-label">
             <RightOutlined
@@ -770,7 +782,12 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: sortableTitle('负责仓库', teamSortArrow('repoCount')),
         key: 'repoCount',
         width: teamColumnWidths[2],
-        render: (_value, record) => `${record.repoCount} 个`,
+        render: (_value, record) => {
+          const count = hideBeatRepos
+            ? (record.repos || []).filter((repo) => !isBeatRepo(repo.id)).length
+            : record.repoCount;
+          return `${count} 个`;
+        },
         onHeaderCell: () => ({
           onClick: () => handleTeamSortWithReset('repoCount'),
           className: 'sortable-col',
@@ -867,7 +884,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               ? Array.from({ length: 5 }, () => 100)
               : trendPoints.slice(-5).map((point) => point.closeRate);
           return (
-            <div className="flex items-center gap-2">
+            <div className="overview-close-rate-cell">
               <button
                 type="button"
                 className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
@@ -890,7 +907,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               >
                 <CloseRateSparkline values={sparkValues} />
               </button>
-              <span className="text-sm font-semibold tabular-nums text-slate-700">
+              <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
                 {formatPercent(displayRate)}
               </span>
             </div>
@@ -1036,9 +1053,27 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     [sortedByProgressMetric, sortedTeamRowsBySortKey]
   );
 
+  const displayedRepoRowsForTable = useMemo(
+    () =>
+      hideBeatRepos
+        ? displayedRepoRows.filter((row) => !isBeatRepo(row.id))
+        : displayedRepoRows,
+    [displayedRepoRows, hideBeatRepos]
+  );
+
+  const displayedTeamRowsForTable = useMemo(
+    () =>
+      hideBeatRepos
+        ? displayedTeamRows.filter((row) =>
+            (row.repos || []).some((repo) => !isBeatRepo(repo.id))
+          )
+        : displayedTeamRows,
+    [displayedTeamRows, hideBeatRepos]
+  );
+
   useEffect(() => {
     if (!autoExpandAllTeams || progressView !== 'team') return;
-    const nextKeys = displayedTeamRows.map((row) => row.id);
+    const nextKeys = displayedTeamRowsForTable.map((row) => row.id);
     setExpandedRowKeys((prev) => {
       if (
         prev.length === nextKeys.length &&
@@ -1048,12 +1083,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       }
       return nextKeys;
     });
-  }, [autoExpandAllTeams, displayedTeamRows, progressView]);
+  }, [autoExpandAllTeams, displayedTeamRowsForTable, progressView]);
 
   const renderExpandedRepoRows = useCallback(
     (repos: RepoProgressRow[]) => {
       // 按 teamSortKey 对仓库列表排序（repoCount 不适用于单仓库，跳过）
-      let sortedRepos = [...repos];
+      let sortedRepos = hideBeatRepos
+        ? repos.filter((repo) => !isBeatRepo(repo.id))
+        : [...repos];
       if (teamSortKey !== 'repoCount') {
         const repoKey = teamSortKey as RepoSortKey;
         sortedRepos.sort((a, b) => {
@@ -1075,6 +1112,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         });
       }
       const visibleRepos = sortedByProgressMetric(sortedRepos);
+      if (!visibleRepos.length) return null;
       return (
         <div className="overview-expanded-rows">
           <table
@@ -1201,7 +1239,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                               .slice(-5)
                               .map((point) => point.closeRate);
                       return (
-                        <div className="flex items-center gap-2">
+                        <div className="overview-close-rate-cell">
                           <button
                             type="button"
                             className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
@@ -1227,7 +1265,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                           >
                             <CloseRateSparkline values={sparkValues} />
                           </button>
-                          <span className="text-sm font-semibold tabular-nums text-slate-700">
+                          <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
                             {formatPercent(displayRate)}
                           </span>
                         </div>
@@ -1449,7 +1487,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           <Table<TeamProgressRow>
             className="overview-ant-table"
             loading={isLoading}
-            dataSource={displayedTeamRows}
+            dataSource={displayedTeamRowsForTable}
             columns={teamColumns}
             rowKey="id"
             pagination={false}
@@ -1462,7 +1500,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           <Table<RepoProgressRow>
             className="overview-ant-table"
             loading={isLoading}
-            dataSource={displayedRepoRows}
+            dataSource={displayedRepoRowsForTable}
             columns={repoColumns}
             rowKey="id"
             pagination={false}

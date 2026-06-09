@@ -29,7 +29,7 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
       title: '类型',
       dataIndex: 'issueType',
       key: 'issueType',
-      width: 110,
+      width: 140,
       responsive: ['sm'],
       ellipsis: true,
     },
@@ -47,7 +47,7 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
     {
       title: '涉及阶段',
       key: 'journeyStages',
-      width: 150,
+      width: 360,
       responsive: ['lg'],
       ellipsis: true,
       render: (_value, record) => {
@@ -91,7 +91,7 @@ const CommonIssuesSection: React.FC<CommonIssuesSectionProps> = ({
           return <SeverityBadge severity={record.severity} />;
         }
         return (
-          <span className="flex flex-wrap gap-1">
+          <span className="flex flex-wrap justify-center gap-1">
             {visible.map((sev) => (
               <SeverityBadge key={String(sev)} severity={sev} />
             ))}
