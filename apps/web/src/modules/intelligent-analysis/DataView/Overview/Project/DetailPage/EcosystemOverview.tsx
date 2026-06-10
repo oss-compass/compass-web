@@ -10,6 +10,8 @@ const { Text } = Typography;
 interface EcosystemScore {
   生态: string;
   生态年均分: number;
+  上一年: number;
+  当前年: number;
   '2024 年得分': number;
   '2025 年得分': number;
 }
@@ -20,6 +22,8 @@ interface EcosystemOverviewProps {
 
 const EcosystemOverview: React.FC<EcosystemOverviewProps> = ({ data }) => {
   const { t, i18n } = useTranslation('intelligent_analysis');
+  const previousYear = data[0]?.上一年 || 2024;
+  const currentYear = data[0]?.当前年 || 2025;
 
   // 生态得分表格列定义
   const columns: ColumnsType<EcosystemScore> = [
@@ -37,35 +41,33 @@ const EcosystemOverview: React.FC<EcosystemOverviewProps> = ({ data }) => {
       title: t('project_detail.ecosystem.annual_average_score'),
       dataIndex: '生态年均分',
       key: '生态年均分',
-      render: (score: number) => (
-        <Text>
-          {score?.toFixed(2) || '0.00'}
-        </Text>
-      ),
+      render: (score: number) => <Text>{score?.toFixed(2) || '0.00'}</Text>,
       sorter: (a, b) => a.生态年均分 - b.生态年均分,
     },
     {
-      title: t('project_detail.ecosystem.score_2024'),
+      title:
+        i18n.language === 'en'
+          ? `${previousYear} Score`
+          : `${previousYear} 年得分`,
       dataIndex: '2024 年得分',
       key: '2024 年得分',
       render: (score: number) =>
         score > 0 ? (
-          <Text>
-            {score?.toFixed(2) || '0.00'}
-          </Text>
+          <Text>{score?.toFixed(2) || '0.00'}</Text>
         ) : (
           <Text type="secondary">-</Text>
         ),
     },
     {
-      title: t('project_detail.ecosystem.score_2025'),
+      title:
+        i18n.language === 'en'
+          ? `${currentYear} Score`
+          : `${currentYear} 年得分`,
       dataIndex: '2025 年得分',
       key: '2025 年得分',
       render: (score: number) =>
         score > 0 ? (
-          <Text>
-            {score?.toFixed(2) || '0.00'}
-          </Text>
+          <Text>{score?.toFixed(2) || '0.00'}</Text>
         ) : (
           <Text type="secondary">-</Text>
         ),

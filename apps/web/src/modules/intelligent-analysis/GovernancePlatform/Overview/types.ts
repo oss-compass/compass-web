@@ -49,6 +49,8 @@ export interface EcosystemScore {
 // 生态数据类型（用于图表）
 export interface EcoData {
   name: string;
+  previousYear: number;
+  currentYear: number;
   score2024: number;
   score2025: number;
   roleScore2024: number;
@@ -75,12 +77,18 @@ export interface UserDetailData {
 // 解析后的用户详情数据
 export interface ParsedUserDetail {
   userId: string;
+  年份: {
+    上一年: number;
+    当前年: number;
+  };
   基本信息: {
     总得分: number;
   };
   生态得分概览: {
     生态: string;
     总得分: number;
+    上一年: number;
+    当前年: number;
     年度得分2024: number;
     年度得分2025: number;
   }[];

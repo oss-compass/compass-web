@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { UserDetailData, ParsedUserDetail, EcoData } from '../../types';
 import { PROJECT_NAME_MAP } from '../../utils';
 
+const DEFAULT_PREVIOUS_YEAR = 2024;
+const DEFAULT_CURRENT_YEAR = 2025;
+
 /**
  * 用于获取和解析用户详情数据的 Hook
  * @param projectType 项目类型，用于确定加载哪个详情文件
@@ -13,11 +16,47 @@ export const useUserDetail = (projectType: string, userId: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const getDisplayYears = (
+    rawData: Record<string, number | Record<string, number>>
+  ) => {
+    const years = Array.from(
+      new Set(
+        Object.keys(rawData)
+          .flatMap((key) =>
+            Array.from(key.matchAll(/\b(20\d{2})年/g)).map((match) =>
+              Number(match[1])
+            )
+          )
+          .filter((year) => Number.isFinite(year))
+      )
+    ).sort((a, b) => a - b);
+
+    if (years.length >= 2) {
+      return {
+        previousYear: years[years.length - 2],
+        currentYear: years[years.length - 1],
+      };
+    }
+
+    if (years.length === 1) {
+      return {
+        previousYear: years[0] - 1,
+        currentYear: years[0],
+      };
+    }
+
+    return {
+      previousYear: DEFAULT_PREVIOUS_YEAR,
+      currentYear: DEFAULT_CURRENT_YEAR,
+    };
+  };
+
   // 解析生态详细图表数据
   const parseEcoChartsData = (
     rawData: Record<string, number | Record<string, number>>
   ): EcoData[] => {
     const ecosystems = new Set<string>();
+    const { previousYear, currentYear } = getDisplayYears(rawData);
 
     // 提取所有生态名称 - 修改正则表达式以匹配用户数据格式
     Object.keys(rawData).forEach((key) => {
@@ -25,8 +64,7 @@ export const useUserDetail = (projectType: string, userId: string) => {
       const match = key.match(/^(.+?)(?:得分)$/);
       if (
         match &&
-        !key.includes('2024年') &&
-        !key.includes('2025年') &&
+        !/\b20\d{2}年/.test(key) &&
         !key.includes('角色') &&
         !key.includes('代码Issue') &&
         !key.includes('协作影响力')
@@ -47,44 +85,36 @@ export const useUserDetail = (projectType: string, userId: string) => {
           return typeof value === 'object' && value !== null ? value : {};
         };
 
-        // 角色得分数据
-        const roleScore2024 = getScoreValue('2024年角色得分');
-        const roleScore2025 = getScoreValue('2025年角色得分');
-        const roleBreakdown2024 = getDetailValue('2024年角色得分拆解');
-        const roleBreakdown2025 = getDetailValue('2025年角色得分拆解');
-
-        // 代码Issue贡献得分数据
-        const contributionScore2024 = getScoreValue('2024年代码Issue贡献得分');
-        const contributionScore2025 = getScoreValue('2025年代码Issue贡献得分');
-        const contributionBreakdown2024 =
-          getDetailValue('2024年代码Issue贡献得分拆解');
-        const contributionBreakdown2025 =
-          getDetailValue('2025年代码Issue贡献得分拆解');
-
-        // 协作影响力得分数据
-        const influenceScore2024 = getScoreValue('2024年协作影响力得分');
-        const influenceScore2025 = getScoreValue('2025年协作影响力得分');
-        const influenceBreakdown2024 =
-          getDetailValue('2024年协作影响力得分拆解');
-        const influenceBreakdown2025 =
-          getDetailValue('2025年协作影响力得分拆解');
-
         return {
           name: ecoName,
-          score2024: getScoreValue('2024年得分'),
-          score2025: getScoreValue('2025年得分'),
-          roleScore2024,
-          roleScore2025,
-          roleBreakdown2024,
-          roleBreakdown2025,
-          contributionScore2024,
-          contributionScore2025,
-          contributionBreakdown2024,
-          contributionBreakdown2025,
-          influenceScore2024,
-          influenceScore2025,
-          influenceBreakdown2024,
-          influenceBreakdown2025,
+          previousYear,
+          currentYear,
+          score2024: getScoreValue(`${previousYear}年得分`),
+          score2025: getScoreValue(`${currentYear}年得分`),
+          roleScore2024: getScoreValue(`${previousYear}年角色得分`),
+          roleScore2025: getScoreValue(`${currentYear}年角色得分`),
+          roleBreakdown2024: getDetailValue(`${previousYear}年角色得分拆解`),
+          roleBreakdown2025: getDetailValue(`${currentYear}年角色得分拆解`),
+          contributionScore2024: getScoreValue(
+            `${previousYear}年代码Issue贡献得分`
+          ),
+          contributionScore2025: getScoreValue(
+            `${currentYear}年代码Issue贡献得分`
+          ),
+          contributionBreakdown2024: getDetailValue(
+            `${previousYear}年代码Issue贡献得分拆解`
+          ),
+          contributionBreakdown2025: getDetailValue(
+            `${currentYear}年代码Issue贡献得分拆解`
+          ),
+          influenceScore2024: getScoreValue(`${previousYear}年协作影响力得分`),
+          influenceScore2025: getScoreValue(`${currentYear}年协作影响力得分`),
+          influenceBreakdown2024: getDetailValue(
+            `${previousYear}年协作影响力得分拆解`
+          ),
+          influenceBreakdown2025: getDetailValue(
+            `${currentYear}年协作影响力得分拆解`
+          ),
         };
       })
       .filter((eco) => eco.name && eco.name.trim());
@@ -94,6 +124,7 @@ export const useUserDetail = (projectType: string, userId: string) => {
   const parseUserDetail = (
     rawData: Record<string, number | Record<string, number>>
   ): ParsedUserDetail => {
+    const { previousYear, currentYear } = getDisplayYears(rawData);
     // 提取基本信息
     const 基本信息 = {
       总得分: 0, // 需要计算或从其他地方获取
@@ -102,7 +133,7 @@ export const useUserDetail = (projectType: string, userId: string) => {
     // 提取生态得分概览
     const ecosystems = new Set<string>();
     Object.keys(rawData).forEach((key) => {
-      const match = key.match(/^(.+?)(?:得分|2024年得分|2025年得分)$/);
+      const match = key.match(/^(.+?)(?:得分|\d{4}年得分)$/);
       if (
         match &&
         !key.includes('角色') &&
@@ -121,12 +152,14 @@ export const useUserDetail = (projectType: string, userId: string) => {
         };
 
         const totalScore = getScoreValue('得分');
-        const score2024 = getScoreValue('2024年得分');
-        const score2025 = getScoreValue('2025年得分');
+        const score2024 = getScoreValue(`${previousYear}年得分`);
+        const score2025 = getScoreValue(`${currentYear}年得分`);
 
         return {
           生态: ecoName,
           总得分: totalScore,
+          上一年: previousYear,
+          当前年: currentYear,
           年度得分2024: score2024,
           年度得分2025: score2025,
         };
@@ -154,37 +187,37 @@ export const useUserDetail = (projectType: string, userId: string) => {
         return {
           生态名称: ecoName,
           年度得分: {
-            2024: getScoreValue('2024年得分'),
-            2025: getScoreValue('2025年得分'),
+            2024: getScoreValue(`${previousYear}年得分`),
+            2025: getScoreValue(`${currentYear}年得分`),
           },
           角色得分: {
             2024: {
-              总分: getScoreValue('2024年角色得分'),
-              拆解: getDetailValue('2024年角色得分拆解'),
+              总分: getScoreValue(`${previousYear}年角色得分`),
+              拆解: getDetailValue(`${previousYear}年角色得分拆解`),
             },
             2025: {
-              总分: getScoreValue('2025年角色得分'),
-              拆解: getDetailValue('2025年角色得分拆解'),
+              总分: getScoreValue(`${currentYear}年角色得分`),
+              拆解: getDetailValue(`${currentYear}年角色得分拆解`),
             },
           },
           代码Issue贡献得分: {
             2024: {
-              总分: getScoreValue('2024年代码Issue贡献得分'),
-              拆解: getDetailValue('2024年代码Issue贡献得分拆解'),
+              总分: getScoreValue(`${previousYear}年代码Issue贡献得分`),
+              拆解: getDetailValue(`${previousYear}年代码Issue贡献得分拆解`),
             },
             2025: {
-              总分: getScoreValue('2025年代码Issue贡献得分'),
-              拆解: getDetailValue('2025年代码Issue贡献得分拆解'),
+              总分: getScoreValue(`${currentYear}年代码Issue贡献得分`),
+              拆解: getDetailValue(`${currentYear}年代码Issue贡献得分拆解`),
             },
           },
           协作影响力得分: {
             2024: {
-              总分: getScoreValue('2024年协作影响力得分'),
-              拆解: getDetailValue('2024年协作影响力得分拆解'),
+              总分: getScoreValue(`${previousYear}年协作影响力得分`),
+              拆解: getDetailValue(`${previousYear}年协作影响力得分拆解`),
             },
             2025: {
-              总分: getScoreValue('2025年协作影响力得分'),
-              拆解: getDetailValue('2025年协作影响力得分拆解'),
+              总分: getScoreValue(`${currentYear}年协作影响力得分`),
+              拆解: getDetailValue(`${currentYear}年协作影响力得分拆解`),
             },
           },
         };
@@ -193,6 +226,10 @@ export const useUserDetail = (projectType: string, userId: string) => {
 
     return {
       userId,
+      年份: {
+        上一年: previousYear,
+        当前年: currentYear,
+      },
       基本信息,
       生态得分概览,
       生态详细图表,
@@ -213,7 +250,7 @@ export const useUserDetail = (projectType: string, userId: string) => {
             fileName
           )}/user-detail?userId=${encodeURIComponent(userId)}`
         );
-        console.log(`/user-detail?userId=${userId}`)
+        console.log(`/user-detail?userId=${userId}`);
         if (!response.ok) {
           let message = `获取用户详情数据失败 (${response.status})`;
           try {
@@ -223,7 +260,7 @@ export const useUserDetail = (projectType: string, userId: string) => {
                 ? errJson.message
                 : '';
             if (maybeMessage) message = maybeMessage;
-          } catch { }
+          } catch {}
           throw new Error(message);
         }
 

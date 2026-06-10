@@ -74,14 +74,168 @@ interface ParticipantDetailsProps {
   organizationId: string; // 如 'org_google'
 }
 
+interface YearLabels {
+  previous: number;
+  current: number;
+}
+
+const DEFAULT_YEAR_LABELS: YearLabels = {
+  previous: 2024,
+  current: 2025,
+};
+
 const toSafeNumber = (value: unknown) => {
   const num = Number(value ?? 0);
   return Number.isFinite(num) ? num : 0;
 };
 
+const detectYearLabels = (value: unknown): YearLabels => {
+  const years = Array.from(
+    new Set(
+      JSON.stringify(value ?? {})
+        .match(/\b20\d{2}\b/g)
+        ?.map((item) => Number(item))
+        .filter((year) => Number.isFinite(year)) || []
+    )
+  ).sort((a, b) => a - b);
+
+  if (years.length >= 2) {
+    return {
+      previous: years[years.length - 2],
+      current: years[years.length - 1],
+    };
+  }
+
+  if (years.length === 1) {
+    return {
+      previous: years[0] - 1,
+      current: years[0],
+    };
+  }
+
+  return DEFAULT_YEAR_LABELS;
+};
+
+const getParticipantStringValue = (
+  item: Record<string, any>,
+  year: number,
+  field: string,
+  fallbackKey: string
+) => String(item?.[`${year}年${field}`] || item?.[fallbackKey] || '');
+
+const getParticipantNumberValue = (
+  item: Record<string, any>,
+  year: number,
+  field: string,
+  fallbackKey: string
+) => toSafeNumber(item?.[`${year}年${field}`] ?? item?.[fallbackKey]);
+
+const buildParticipantRepoData = (
+  item: Record<string, any>,
+  yearLabels: YearLabels
+) => ({
+  '2024年角色承担': getParticipantStringValue(
+    item,
+    yearLabels.previous,
+    '角色承担',
+    '2024年角色承担'
+  ),
+  '2024年目标生态占个人总活跃量比值': getParticipantNumberValue(
+    item,
+    yearLabels.previous,
+    '目标生态占个人总活跃量比值',
+    '2024年目标生态占个人总活跃量比值'
+  ),
+  '2024年个人代码贡献量': getParticipantNumberValue(
+    item,
+    yearLabels.previous,
+    '个人代码贡献量',
+    '2024年个人代码贡献量'
+  ),
+  '2024年个人Issue贡献量': getParticipantNumberValue(
+    item,
+    yearLabels.previous,
+    '个人Issue贡献量',
+    '2024年个人Issue贡献量'
+  ),
+  '2024年个人社区核心度': getParticipantStringValue(
+    item,
+    yearLabels.previous,
+    '个人社区核心度',
+    '2024年个人社区核心度'
+  ),
+  '2024年个人协作影响力': getParticipantStringValue(
+    item,
+    yearLabels.previous,
+    '个人协作影响力',
+    '2024年个人协作影响力'
+  ),
+  '2024年个人联通控制力': getParticipantStringValue(
+    item,
+    yearLabels.previous,
+    '个人联通控制力',
+    '2024年个人联通控制力'
+  ),
+  '2024年个人PageRank': getParticipantStringValue(
+    item,
+    yearLabels.previous,
+    '个人PageRank',
+    '2024年个人PageRank'
+  ),
+  '2025年角色承担': getParticipantStringValue(
+    item,
+    yearLabels.current,
+    '角色承担',
+    '2025年角色承担'
+  ),
+  '2025年目标生态占个人总活跃量比值': getParticipantNumberValue(
+    item,
+    yearLabels.current,
+    '目标生态占个人总活跃量比值',
+    '2025年目标生态占个人总活跃量比值'
+  ),
+  '2025年个人代码贡献量': getParticipantNumberValue(
+    item,
+    yearLabels.current,
+    '个人代码贡献量',
+    '2025年个人代码贡献量'
+  ),
+  '2025年个人Issue贡献量': getParticipantNumberValue(
+    item,
+    yearLabels.current,
+    '个人Issue贡献量',
+    '2025年个人Issue贡献量'
+  ),
+  '2025年个人社区核心度': getParticipantStringValue(
+    item,
+    yearLabels.current,
+    '个人社区核心度',
+    '2025年个人社区核心度'
+  ),
+  '2025年个人协作影响力': getParticipantStringValue(
+    item,
+    yearLabels.current,
+    '个人协作影响力',
+    '2025年个人协作影响力'
+  ),
+  '2025年个人联通控制力': getParticipantStringValue(
+    item,
+    yearLabels.current,
+    '个人联通控制力',
+    '2025年个人联通控制力'
+  ),
+  '2025年个人PageRank': getParticipantStringValue(
+    item,
+    yearLabels.current,
+    '个人PageRank',
+    '2025年个人PageRank'
+  ),
+});
+
 const transformApiDataToOrganizationData = (
   rawData: unknown,
-  organizationId: string
+  organizationId: string,
+  yearLabels: YearLabels
 ): OrganizationData => {
   const dataByEcosystem =
     rawData && typeof rawData === 'object'
@@ -96,6 +250,7 @@ const transformApiDataToOrganizationData = (
     const list = Array.isArray(meta['人员参与项目清单'])
       ? meta['人员参与项目清单']
       : [];
+    const rangeKey = `${yearLabels.previous}-${yearLabels.current}`;
 
     const participants = list.reduce<EcosystemData['人员参与项目清单']>(
       (participantAcc, item) => {
@@ -110,32 +265,10 @@ const transformApiDataToOrganizationData = (
           participantAcc[githubUser] = {};
         }
 
-        participantAcc[githubUser][repository] = {
-          '2024年角色承担': String(item?.['2024年角色承担'] || ''),
-          '2024年目标生态占个人总活跃量比值': toSafeNumber(
-            item?.['2024年目标生态占个人总活跃量比值']
-          ),
-          '2024年个人代码贡献量': toSafeNumber(item?.['2024年个人代码贡献量']),
-          '2024年个人Issue贡献量': toSafeNumber(
-            item?.['2024年个人Issue贡献量']
-          ),
-          '2024年个人社区核心度': String(item?.['2024年个人社区核心度'] || ''),
-          '2024年个人协作影响力': String(item?.['2024年个人协作影响力'] || ''),
-          '2024年个人联通控制力': String(item?.['2024年个人联通控制力'] || ''),
-          '2024年个人PageRank': String(item?.['2024年个人PageRank'] || ''),
-          '2025年角色承担': String(item?.['2025年角色承担'] || ''),
-          '2025年目标生态占个人总活跃量比值': toSafeNumber(
-            item?.['2025年目标生态占个人总活跃量比值']
-          ),
-          '2025年个人代码贡献量': toSafeNumber(item?.['2025年个人代码贡献量']),
-          '2025年个人Issue贡献量': toSafeNumber(
-            item?.['2025年个人Issue贡献量']
-          ),
-          '2025年个人社区核心度': String(item?.['2025年个人社区核心度'] || ''),
-          '2025年个人协作影响力': String(item?.['2025年个人协作影响力'] || ''),
-          '2025年个人联通控制力': String(item?.['2025年个人联通控制力'] || ''),
-          '2025年个人PageRank': String(item?.['2025年个人PageRank'] || ''),
-        };
+        participantAcc[githubUser][repository] = buildParticipantRepoData(
+          item,
+          yearLabels
+        );
 
         return participantAcc;
       },
@@ -144,17 +277,28 @@ const transformApiDataToOrganizationData = (
 
     acc[ecosystemName] = {
       '2024-2025组织代码贡献总量': toSafeNumber(
-        meta['2024-2025组织代码贡献总量']
+        meta[`${rangeKey}组织代码贡献总量`] ?? meta['2024-2025组织代码贡献总量']
       ),
       '2024-2025组织Issue贡献总量': toSafeNumber(
-        meta['2024-2025组织Issue贡献总量']
+        meta[`${rangeKey}组织Issue贡献总量`] ??
+          meta['2024-2025组织Issue贡献总量']
       ),
       '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
-        meta['2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'] ||
+        meta[
+          `${yearLabels.previous}组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`
+        ] ||
+          meta[
+            '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+          ] ||
           ''
       ),
       '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
-        meta['2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'] ||
+        meta[
+          `${yearLabels.current}组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`
+        ] ||
+          meta[
+            '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+          ] ||
           ''
       ),
       人员参与项目清单: participants,
@@ -187,6 +331,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   const [data, setData] = useState<OrganizationData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [yearLabels, setYearLabels] = useState<YearLabels>(DEFAULT_YEAR_LABELS);
 
   // 获取数据
   useEffect(() => {
@@ -204,6 +349,7 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
 
         if (jsonResponse.ok) {
           const jsonData = await jsonResponse.json();
+          setYearLabels(DEFAULT_YEAR_LABELS);
           setData(jsonData);
           return;
         }
@@ -255,8 +401,14 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
           );
         }
 
+        const detectedYearLabels = detectYearLabels(rawData?.data);
+        setYearLabels(detectedYearLabels);
         setData(
-          transformApiDataToOrganizationData(rawData?.data, organizationId)
+          transformApiDataToOrganizationData(
+            rawData?.data,
+            organizationId,
+            detectedYearLabels
+          )
         );
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
@@ -400,8 +552,8 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
               <Col span={6}>
                 {renderStatisticCard(
                   i18n.language === 'en'
-                    ? 'Organization Code Contribution Total'
-                    : '组织代码贡献总量',
+                    ? `Organization Code Contribution Total (${yearLabels.previous}-${yearLabels.current})`
+                    : `组织代码贡献总量(${yearLabels.previous}-${yearLabels.current})`,
                   ecosystemData['2024-2025组织代码贡献总量'],
                   '#1890ff',
                   (value) => value?.toLocaleString()
@@ -410,8 +562,8 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
               <Col span={6}>
                 {renderStatisticCard(
                   i18n.language === 'en'
-                    ? 'Organization Issue Contribution Total'
-                    : '组织Issue贡献总量',
+                    ? `Organization Issue Contribution Total (${yearLabels.previous}-${yearLabels.current})`
+                    : `组织Issue贡献总量(${yearLabels.previous}-${yearLabels.current})`,
                   ecosystemData['2024-2025组织Issue贡献总量'],
                   '#52c41a',
                   (value) => value?.toLocaleString()
@@ -423,8 +575,8 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
                       i18n.language === 'en'
-                        ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
-                        : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                        ? `${yearLabels.previous} Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)`
+                        : `${yearLabels.previous}组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`,
                       ecosystemData[
                         '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
                       ],
@@ -434,8 +586,8 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
                   <Col span={6}>
                     {renderNetworkInfluenceCard(
                       i18n.language === 'en'
-                        ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
-                        : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                        ? `${yearLabels.current} Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)`
+                        : `${yearLabels.current}年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`,
                       ecosystemData[
                         '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
                       ],
@@ -577,7 +729,10 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       },
     },
     {
-      title: i18n.language === 'en' ? '2024 Data' : '2024年数据',
+      title:
+        i18n.language === 'en'
+          ? `${yearLabels.previous} Data`
+          : `${yearLabels.previous}年数据`,
       children: [
         {
           title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
@@ -651,7 +806,10 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       ],
     },
     {
-      title: i18n.language === 'en' ? '2025 Data' : '2025年数据',
+      title:
+        i18n.language === 'en'
+          ? `${yearLabels.current} Data`
+          : `${yearLabels.current}年数据`,
       children: [
         {
           title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',

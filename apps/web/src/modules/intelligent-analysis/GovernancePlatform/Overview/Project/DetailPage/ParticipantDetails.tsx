@@ -1,16 +1,6 @@
 // autocorrect: false
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  Table,
-  Typography,
-  Space,
-  Tabs,
-  Statistic,
-  Row,
-  Col,
-  Spin,
-} from 'antd';
+import { Card, Table, Space, Tabs, Statistic, Row, Col, Spin } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
 import type { ColumnsType } from 'antd/es/table';
@@ -215,9 +205,206 @@ interface ParticipantDetailsProps {
   organizationId: string;
 }
 
+interface YearLabels {
+  previous: number;
+  current: number;
+}
+
+const DEFAULT_YEAR_LABELS: YearLabels = {
+  previous: 2024,
+  current: 2025,
+};
+
+const detectYearLabels = (value: unknown): YearLabels => {
+  const years = Array.from(
+    new Set(
+      JSON.stringify(value ?? {})
+        .match(/\b20\d{2}\b/g)
+        ?.map((item) => Number(item))
+        .filter((year) => Number.isFinite(year)) || []
+    )
+  ).sort((a, b) => a - b);
+
+  if (years.length >= 2) {
+    return {
+      previous: years[years.length - 2],
+      current: years[years.length - 1],
+    };
+  }
+
+  if (years.length === 1) {
+    return {
+      previous: years[0] - 1,
+      current: years[0],
+    };
+  }
+
+  return DEFAULT_YEAR_LABELS;
+};
+
+const getNormalizedStringValue = (
+  item: Record<string, any>,
+  year: number,
+  field: string,
+  fallbackKey: string
+) => String(item?.[`${year}年${field}`] || item?.[fallbackKey] || '');
+
+const getNormalizedNumberValue = (
+  item: Record<string, any>,
+  year: number,
+  field: string,
+  fallbackKey: string
+) => Number(item?.[`${year}年${field}`] ?? item?.[fallbackKey] ?? 0);
+
+const normalizeParticipantItem = (
+  item: Record<string, any>,
+  yearLabels: YearLabels
+) => ({
+  ...item,
+  '2024年角色承担': getNormalizedStringValue(
+    item,
+    yearLabels.previous,
+    '角色承担',
+    '2024年角色承担'
+  ),
+  '2024年目标生态占个人总活跃量比值': getNormalizedNumberValue(
+    item,
+    yearLabels.previous,
+    '目标生态占个人总活跃量比值',
+    '2024年目标生态占个人总活跃量比值'
+  ),
+  '2024年个人代码贡献量': getNormalizedNumberValue(
+    item,
+    yearLabels.previous,
+    '个人代码贡献量',
+    '2024年个人代码贡献量'
+  ),
+  '2024年个人Issue贡献量': getNormalizedNumberValue(
+    item,
+    yearLabels.previous,
+    '个人Issue贡献量',
+    '2024年个人Issue贡献量'
+  ),
+  '2024年个人社区核心度': getNormalizedStringValue(
+    item,
+    yearLabels.previous,
+    '个人社区核心度',
+    '2024年个人社区核心度'
+  ),
+  '2024年个人协作影响力': getNormalizedStringValue(
+    item,
+    yearLabels.previous,
+    '个人协作影响力',
+    '2024年个人协作影响力'
+  ),
+  '2024年个人联通控制力': getNormalizedStringValue(
+    item,
+    yearLabels.previous,
+    '个人联通控制力',
+    '2024年个人联通控制力'
+  ),
+  '2024年个人PageRank': getNormalizedStringValue(
+    item,
+    yearLabels.previous,
+    '个人PageRank',
+    '2024年个人PageRank'
+  ),
+  '2025年角色承担': getNormalizedStringValue(
+    item,
+    yearLabels.current,
+    '角色承担',
+    '2025年角色承担'
+  ),
+  '2025年目标生态占个人总活跃量比值': getNormalizedNumberValue(
+    item,
+    yearLabels.current,
+    '目标生态占个人总活跃量比值',
+    '2025年目标生态占个人总活跃量比值'
+  ),
+  '2025年个人代码贡献量': getNormalizedNumberValue(
+    item,
+    yearLabels.current,
+    '个人代码贡献量',
+    '2025年个人代码贡献量'
+  ),
+  '2025年个人Issue贡献量': getNormalizedNumberValue(
+    item,
+    yearLabels.current,
+    '个人Issue贡献量',
+    '2025年个人Issue贡献量'
+  ),
+  '2025年个人社区核心度': getNormalizedStringValue(
+    item,
+    yearLabels.current,
+    '个人社区核心度',
+    '2025年个人社区核心度'
+  ),
+  '2025年个人协作影响力': getNormalizedStringValue(
+    item,
+    yearLabels.current,
+    '个人协作影响力',
+    '2025年个人协作影响力'
+  ),
+  '2025年个人联通控制力': getNormalizedStringValue(
+    item,
+    yearLabels.current,
+    '个人联通控制力',
+    '2025年个人联通控制力'
+  ),
+  '2025年个人PageRank': getNormalizedStringValue(
+    item,
+    yearLabels.current,
+    '个人PageRank',
+    '2025年个人PageRank'
+  ),
+});
+
+const normalizeApiMeta = (
+  meta: Record<string, any>,
+  yearLabels: YearLabels
+) => {
+  const previousYear = yearLabels.previous;
+  const currentYear = yearLabels.current;
+  const rangeKey = `${previousYear}-${currentYear}`;
+  const list = Array.isArray(meta['人员参与项目清单'])
+    ? meta['人员参与项目清单']
+    : [];
+
+  return {
+    '2024-2025组织代码贡献总量': Number(
+      meta[`${rangeKey}组织代码贡献总量`] ??
+        meta['2024-2025组织代码贡献总量'] ??
+        0
+    ),
+    '2024-2025组织Issue贡献总量': Number(
+      meta[`${rangeKey}组织Issue贡献总量`] ??
+        meta['2024-2025组织Issue贡献总量'] ??
+        0
+    ),
+    '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
+      meta[
+        `${previousYear}组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`
+      ] ||
+        meta['2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'] ||
+        ''
+    ),
+    '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
+      meta[
+        `${currentYear}组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`
+      ] ||
+        meta['2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'] ||
+        ''
+    ),
+    人员参与项目清单: list.map((item: Record<string, any>) =>
+      normalizeParticipantItem(item, yearLabels)
+    ),
+  };
+};
+
 const buildColumns = (
   t: (key: string) => string,
-  i18n: { language: string }
+  i18n: { language: string },
+  yearLabels: YearLabels
 ): ColumnsType<ParticipantTableRow> => [
   {
     title: t('project_detail.participant.specific_personnel'),
@@ -274,7 +461,10 @@ const buildColumns = (
   },
 
   {
-    title: i18n.language === 'en' ? '2025 Data' : '2025年数据',
+    title:
+      i18n.language === 'en'
+        ? `${yearLabels.current} Data`
+        : `${yearLabels.current}年数据`,
     children: [
       {
         title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
@@ -339,7 +529,10 @@ const buildColumns = (
     ],
   },
   {
-    title: i18n.language === 'en' ? '2024 Data' : '2024年数据',
+    title:
+      i18n.language === 'en'
+        ? `${yearLabels.previous} Data`
+        : `${yearLabels.previous}年数据`,
     children: [
       {
         title: i18n.language === 'en' ? 'Role Responsibility' : '角色承担',
@@ -414,6 +607,7 @@ const buildColumns = (
 interface ParticipantMainContentProps {
   t: (key: string) => string;
   i18n: { language: string };
+  yearLabels: YearLabels;
   ecosystems: string[];
   activeEcosystem: string;
   onTabChange: (key: string) => void;
@@ -435,6 +629,7 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (
   const {
     t,
     i18n,
+    yearLabels,
     ecosystems,
     activeEcosystem,
     onTabChange,
@@ -592,29 +787,13 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (
           <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
             <Col span={6}>
               {(() => {
-                const hasA =
-                  activeMeta &&
-                  Object.prototype.hasOwnProperty.call(
-                    activeMeta,
-                    '2024-2025组织代码贡献总量'
-                  );
-                const hasB =
-                  activeMeta &&
-                  Object.prototype.hasOwnProperty.call(
-                    activeMeta,
-                    '2025-2026组织代码贡献总量'
-                  );
-                const range = hasA ? '2024-2025' : hasB ? '2025-2026' : '';
+                const range = `${yearLabels.previous}-${yearLabels.current}`;
                 const title =
                   i18n.language === 'en'
-                    ? `Organization Code Contribution Total${
-                        range ? ` (${range})` : ''
-                      }`
+                    ? `Organization Code Contribution Total (${range})`
                     : `组织代码贡献总量${range ? `(${range})` : ''}`;
                 const value = Number(
-                  (hasA
-                    ? (activeMeta as any)['2024-2025组织代码贡献总量']
-                    : (activeMeta as any)?.['2025-2026组织代码贡献总量']) ?? 0
+                  (activeMeta as any)?.['2024-2025组织代码贡献总量'] ?? 0
                 );
                 return renderStatisticCard(title, value, '#1890ff', (v) =>
                   v?.toLocaleString()
@@ -623,29 +802,13 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (
             </Col>
             <Col span={6}>
               {(() => {
-                const hasA =
-                  activeMeta &&
-                  Object.prototype.hasOwnProperty.call(
-                    activeMeta,
-                    '2024-2025组织Issue贡献总量'
-                  );
-                const hasB =
-                  activeMeta &&
-                  Object.prototype.hasOwnProperty.call(
-                    activeMeta,
-                    '2025-2026组织Issue贡献总量'
-                  );
-                const range = hasA ? '2024-2025' : hasB ? '2025-2026' : '';
+                const range = `${yearLabels.previous}-${yearLabels.current}`;
                 const title =
                   i18n.language === 'en'
-                    ? `Organization Issue Contribution Total${
-                        range ? ` (${range})` : ''
-                      }`
+                    ? `Organization Issue Contribution Total (${range})`
                     : `组织Issue贡献总量${range ? `(${range})` : ''}`;
                 const value = Number(
-                  (hasA
-                    ? (activeMeta as any)['2024-2025组织Issue贡献总量']
-                    : (activeMeta as any)?.['2025-2026组织Issue贡献总量']) ?? 0
+                  (activeMeta as any)?.['2024-2025组织Issue贡献总量'] ?? 0
                 );
                 return renderStatisticCard(title, value, '#52c41a', (v) =>
                   v?.toLocaleString()
@@ -658,8 +821,8 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (
                   {renderNetworkInfluenceCard(
                     i18n,
                     i18n.language === 'en'
-                      ? '2024 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
-                      : '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                      ? `${yearLabels.previous} Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)`
+                      : `${yearLabels.previous}组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`,
                     String(
                       activeMeta?.[
                         '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
@@ -672,8 +835,8 @@ const ParticipantMainContent: React.FC<ParticipantMainContentProps> = (
                   {renderNetworkInfluenceCard(
                     i18n,
                     i18n.language === 'en'
-                      ? '2025 Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)'
-                      : '2025年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)',
+                      ? `${yearLabels.current} Organization Network Influence(Community Centrality/Collaboration Influence/Connectivity Control/PageRank)`
+                      : `${yearLabels.current}年组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)`,
                     String(
                       activeMeta?.[
                         '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
@@ -821,8 +984,12 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       : ecosystems[0] || '';
   const activeMeta =
     activeEcosystem && dataByEcosystem[activeEcosystem]
-      ? dataByEcosystem[activeEcosystem]
+      ? normalizeApiMeta(
+          dataByEcosystem[activeEcosystem] as Record<string, any>,
+          detectYearLabels(dataByEcosystem[activeEcosystem])
+        )
       : null;
+  const yearLabels = detectYearLabels(activeMeta);
   const tableRows: ParticipantTableRow[] = (() => {
     const list = activeMeta?.['人员参与项目清单'];
     const items: any[] = Array.isArray(list) ? list : [];
@@ -859,12 +1026,13 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
       ? apiData.pagination.total
       : 0;
 
-  const columns = buildColumns(t, i18n);
+  const columns = buildColumns(t, i18n, yearLabels);
 
   return (
     <ParticipantMainContent
       t={t}
       i18n={i18n}
+      yearLabels={yearLabels}
       ecosystems={ecosystems}
       activeEcosystem={activeEcosystem}
       onTabChange={(key) => {

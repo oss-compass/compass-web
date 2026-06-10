@@ -16,6 +16,8 @@ export const generateEcosystemTableData = (
       ? translateByLocale(eco.生态, ecosystemMapping, locale)
       : eco.生态,
     生态年均分: eco.总得分,
+    上一年: eco.上一年,
+    当前年: eco.当前年,
     '2024 年得分': eco.年度得分2024,
     '2025 年得分': eco.年度得分2025,
   }));

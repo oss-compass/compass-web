@@ -8,6 +8,8 @@ import { translateByLocale, ecosystemMapping } from '../utils/countryMapping';
 // 根据实际JSON数据结构定义接口
 interface EcoData {
   name: string;
+  previousYear: number;
+  currentYear: number;
   score2024: number;
   score2025: number;
   roleScore2024: number;
@@ -30,8 +32,8 @@ interface EcoChartsProps {
 
 const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
   const { i18n } = useTranslation();
-  console.log('EcoCharts data:', data);
-  console.log('EcoCharts data length:', data?.length);
+  const previousYear = data[0]?.previousYear || 2024;
+  const currentYear = data[0]?.currentYear || 2025;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -88,7 +90,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
         },
       },
       legend: {
-        data: ['2024年', '2025年'],
+        data: [`${previousYear}年`, `${currentYear}年`],
         top: 0,
       },
       grid: {
@@ -111,7 +113,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
       },
       series: [
         {
-          name: '2024',
+          name: String(previousYear),
           type: 'bar' as const,
           data: categories.map((cat) => getValueByCategory(data2024, cat)),
           itemStyle: {
@@ -121,7 +123,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             show: true,
             position: 'top' as const,
             fontSize: 10,
-            formatter: function (params): string {
+            formatter: function (params: { value: unknown }): string {
               return typeof params.value === 'number'
                 ? params.value.toFixed(2)
                 : String(params.value);
@@ -129,7 +131,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
           },
         },
         {
-          name: '2025',
+          name: String(currentYear),
           type: 'bar' as const,
           data: categories.map((cat) => getValueByCategory(data2025, cat)),
           itemStyle: {
@@ -139,7 +141,7 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             show: true,
             position: 'top' as const,
             fontSize: 10,
-            formatter: function (params): string {
+            formatter: function (params: { value: unknown }): string {
               return typeof params.value === 'number'
                 ? params.value.toFixed(2)
                 : String(params.value);
@@ -183,17 +185,16 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             </h3>
             <div className="text-base text-gray-600">
               <span className="font-semibold text-blue-600">
-                2024:
-                {' ' + eco.score2024.toFixed(2)}
+                {previousYear}:{' ' + eco.score2024.toFixed(2)}
               </span>
               <span className="mx-3 text-gray-400">→</span>
               <span className="font-semibold text-green-600">
-                2025:
-                {' ' + eco.score2025.toFixed(2)}
+                {currentYear}:{' ' + eco.score2025.toFixed(2)}
               </span>
               <span
-                className={`ml-3 font-bold ${isPositiveChange ? 'text-green-600' : 'text-red-600'
-                  }`}
+                className={`ml-3 font-bold ${
+                  isPositiveChange ? 'text-green-600' : 'text-red-600'
+                }`}
               >
                 ({isPositiveChange ? '+' : ''}
                 {scoreChange.toFixed(2)})
@@ -205,8 +206,12 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             <Card
               title={
                 i18n.language === 'en'
-                  ? `Role Score (2024: ${eco.roleScore2024.toFixed(2)} → 2025: ${eco.roleScore2025.toFixed(2)})`
-                  : `角色得分（2024：${eco.roleScore2024.toFixed(2)} → 2025：${eco.roleScore2025.toFixed(2)}）`
+                  ? `Role Score (${previousYear}: ${eco.roleScore2024.toFixed(
+                      2
+                    )} → ${currentYear}: ${eco.roleScore2025.toFixed(2)})`
+                  : `角色得分（${previousYear}：${eco.roleScore2024.toFixed(
+                      2
+                    )} → ${currentYear}：${eco.roleScore2025.toFixed(2)}）`
               }
               size="small"
             >
@@ -228,8 +233,16 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             <Card
               title={
                 i18n.language === 'en'
-                  ? `Code Issue Contribution Score (2024: ${eco.contributionScore2024.toFixed(2)} → 2025: ${eco.contributionScore2025.toFixed(2)})`
-                  : `代码Issue贡献得分（2024：${eco.contributionScore2024.toFixed(2)} → 2025：${eco.contributionScore2025.toFixed(2)}）`
+                  ? `Code Issue Contribution Score (${previousYear}: ${eco.contributionScore2024.toFixed(
+                      2
+                    )} → ${currentYear}: ${eco.contributionScore2025.toFixed(
+                      2
+                    )})`
+                  : `代码Issue贡献得分（${previousYear}：${eco.contributionScore2024.toFixed(
+                      2
+                    )} → ${currentYear}：${eco.contributionScore2025.toFixed(
+                      2
+                    )}）`
               }
               size="small"
             >
@@ -255,8 +268,12 @@ const EcoCharts: React.FC<EcoChartsProps> = ({ data }) => {
             <Card
               title={
                 i18n.language === 'en'
-                  ? `Collaboration Influence Score (2024: ${eco.influenceScore2024.toFixed(2)} → 2025: ${eco.influenceScore2025.toFixed(2)})`
-                  : `协作影响力得分（2024：${eco.influenceScore2024.toFixed(2)} → 2025：${eco.influenceScore2025.toFixed(2)}）`
+                  ? `Collaboration Influence Score (${previousYear}: ${eco.influenceScore2024.toFixed(
+                      2
+                    )} → ${currentYear}: ${eco.influenceScore2025.toFixed(2)})`
+                  : `协作影响力得分（${previousYear}：${eco.influenceScore2024.toFixed(
+                      2
+                    )} → ${currentYear}：${eco.influenceScore2025.toFixed(2)}）`
               }
               size="small"
             >
