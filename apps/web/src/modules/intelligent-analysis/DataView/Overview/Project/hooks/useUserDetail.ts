@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { UserDetailData, ParsedUserDetail, EcoData } from '../../types';
 import { PROJECT_NAME_MAP } from '../../utils';
 
+const USER_DETAIL_API_URL =
+  'https://compute.lishengbao.com.cn/developer_discovery/detail';
+
 /**
  * 用于获取和解析用户详情数据的 Hook
  * @param projectType 项目类型，用于确定加载哪个详情文件
@@ -199,6 +202,68 @@ export const useUserDetail = (projectType: string, userId: string) => {
     };
   };
 
+  const parseJsonFromResponse = async (
+    response: Response,
+    emptyMessage: string,
+    invalidMessage: string
+  ) => {
+    const responseText = await response.text();
+    if (!responseText.trim()) {
+      throw new Error(emptyMessage);
+    }
+
+    try {
+      return JSON.parse(responseText);
+    } catch {
+      throw new Error(invalidMessage);
+    }
+  };
+
+  const isUserDetailRecord = (
+    value: unknown
+  ): value is Record<string, number | Record<string, number> | string> => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return false;
+    }
+
+    const keys = Object.keys(value);
+    return keys.some(
+      (key) =>
+        key === '用户ID' ||
+        key === '用户类型' ||
+        key === '总得分' ||
+        key.includes('得分')
+    );
+  };
+
+  const extractUserDetailFromApiResponse = (
+    rawData: unknown,
+    currentUserId: string
+  ) => {
+    if (!rawData || typeof rawData !== 'object' || Array.isArray(rawData)) {
+      return null;
+    }
+
+    const root = rawData as Record<string, any>;
+    const data =
+      root.data && typeof root.data === 'object' && !Array.isArray(root.data)
+        ? root.data
+        : null;
+
+    const candidates = [root[currentUserId], data?.[currentUserId], data, root];
+
+    return candidates.find((candidate) => {
+      if (!isUserDetailRecord(candidate)) {
+        return false;
+      }
+
+      const candidateUserId =
+        typeof candidate['用户ID'] === 'string' ? candidate['用户ID'] : null;
+
+      return candidateUserId ? candidateUserId === currentUserId : true;
+    });
+  };
+
   useEffect(() => {
     const fetchUserDetail = async () => {
       if (!projectType || !userId) return;
@@ -208,43 +273,79 @@ export const useUserDetail = (projectType: string, userId: string) => {
 
       try {
         const fileName = `${PROJECT_NAME_MAP[projectType] || projectType}`;
-        const response = await fetch(
-          `/test/intelligent-analysis-new/${fileName}/${userId.replace(
-            ':',
-            '_'
-          ).replaceAll(' ', '_')}_main.json`
-        );
-        console.log(`/test/intelligent-analysis-new/${fileName}/${userId.replace(
-          ':',
-          '_'
-        ).replaceAll(' ', '_')}_main.json`)
-        if (!response.ok) {
-          throw new Error(`当前仅提供前200个组织和开发者详情数据`);
+        const requestUrl = `/test/intelligent-analysis-new/${fileName}/${userId
+          .replace(':', '_')
+          .replaceAll(' ', '_')}_main.json`;
+
+        let userData: Record<
+          string,
+          number | Record<string, number> | string
+        > | null = null;
+
+        try {
+          const apiResponse = await fetch(USER_DETAIL_API_URL, {
+            method: 'POST',
+            headers: {
+              'X-API-Key': 'opensearch',
+              'Content-Type': 'application/json',
+              Accept: '*/*',
+            },
+            body: JSON.stringify({
+              ecosystem: fileName,
+              developer: userId,
+            }),
+          });
+
+          if (apiResponse.ok) {
+            const apiRawData = await parseJsonFromResponse(
+              apiResponse,
+              'API 用户详情数据为空',
+              'API 用户详情数据解析失败'
+            );
+            userData = extractUserDetailFromApiResponse(apiRawData, userId);
+          }
+        } catch {}
+
+        if (!userData) {
+          const response = await fetch(requestUrl);
+          if (!response.ok) {
+            throw new Error(`当前仅提供前200个组织和开发者详情数据`);
+          }
+
+          const rawData = (await parseJsonFromResponse(
+            response,
+            '用户详情数据为空',
+            `用户详情数据解析失败: ${requestUrl}`
+          )) as UserDetailData;
+
+          if (!rawData[userId]) {
+            throw new Error(`用户 ${userId} 的详情数据不存在`);
+          }
+
+          userData = rawData[userId];
         }
 
-        const rawData: UserDetailData = await response.json();
-
-        // 检查用户是否存在
-        if (!rawData[userId]) {
-          throw new Error(`用户 ${userId} 的详情数据不存在`);
-        }
-
-        // 删除不需要的属性
-        const userData = { ...rawData[userId] };
-        delete userData['用户ID'];
-        delete userData['总得分'];
-        delete userData['国家'];
-        delete userData['省'];
-        delete userData['市'];
-        delete userData['用户类型'];
+        const normalizedUserData = { ...userData };
+        delete normalizedUserData['用户ID'];
+        delete normalizedUserData['总得分'];
+        delete normalizedUserData['国家'];
+        delete normalizedUserData['省'];
+        delete normalizedUserData['市'];
+        delete normalizedUserData['用户类型'];
 
         // 解析数据
-        const parsedDetail = parseUserDetail(userData);
-        const ecoCharts = parseEcoChartsData(userData);
+        const parsedDetail = parseUserDetail(
+          normalizedUserData as Record<string, number | Record<string, number>>
+        );
+        const ecoCharts = parseEcoChartsData(
+          normalizedUserData as Record<string, number | Record<string, number>>
+        );
 
         setDetailData(parsedDetail);
         setEcoChartsData(ecoCharts);
       } catch (err) {
+        setDetailData(null);
+        setEcoChartsData([]);
         const errorMessage =
           err instanceof Error ? err.message : '获取用户详情数据失败';
         setError(errorMessage);

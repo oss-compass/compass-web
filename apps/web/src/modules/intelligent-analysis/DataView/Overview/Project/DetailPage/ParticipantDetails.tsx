@@ -1,16 +1,6 @@
 // autocorrect: false
-import React, { useMemo, useState, useEffect } from 'react';
-import {
-  Card,
-  Table,
-  Typography,
-  Space,
-  Tabs,
-  Statistic,
-  Row,
-  Col,
-  Spin,
-} from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Table, Space, Tabs, Statistic, Row, Col, Spin } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
 import type { ColumnsType } from 'antd/es/table';
@@ -20,8 +10,6 @@ import {
   ecosystemMapping,
 } from '../utils/countryMapping';
 import { PROJECT_NAME_MAP } from '../../utils';
-
-const { Text } = Typography;
 
 // 新的数据类型定义
 interface EcosystemData {
@@ -86,6 +74,100 @@ interface ParticipantDetailsProps {
   organizationId: string; // 如 'org_google'
 }
 
+const toSafeNumber = (value: unknown) => {
+  const num = Number(value ?? 0);
+  return Number.isFinite(num) ? num : 0;
+};
+
+const transformApiDataToOrganizationData = (
+  rawData: unknown,
+  organizationId: string
+): OrganizationData => {
+  const dataByEcosystem =
+    rawData && typeof rawData === 'object'
+      ? (rawData as Record<string, any>)
+      : {};
+
+  const organizationData = Object.entries(dataByEcosystem).reduce<
+    OrganizationData[string]
+  >((acc, [ecosystemName, ecosystemData]) => {
+    const meta =
+      ecosystemData && typeof ecosystemData === 'object' ? ecosystemData : {};
+    const list = Array.isArray(meta['人员参与项目清单'])
+      ? meta['人员参与项目清单']
+      : [];
+
+    const participants = list.reduce<EcosystemData['人员参与项目清单']>(
+      (participantAcc, item) => {
+        const githubUser = String(item?.['用户ID'] || '');
+        const repository = String(item?.['项目名称'] || '');
+
+        if (!githubUser || !repository) {
+          return participantAcc;
+        }
+
+        if (!participantAcc[githubUser]) {
+          participantAcc[githubUser] = {};
+        }
+
+        participantAcc[githubUser][repository] = {
+          '2024年角色承担': String(item?.['2024年角色承担'] || ''),
+          '2024年目标生态占个人总活跃量比值': toSafeNumber(
+            item?.['2024年目标生态占个人总活跃量比值']
+          ),
+          '2024年个人代码贡献量': toSafeNumber(item?.['2024年个人代码贡献量']),
+          '2024年个人Issue贡献量': toSafeNumber(
+            item?.['2024年个人Issue贡献量']
+          ),
+          '2024年个人社区核心度': String(item?.['2024年个人社区核心度'] || ''),
+          '2024年个人协作影响力': String(item?.['2024年个人协作影响力'] || ''),
+          '2024年个人联通控制力': String(item?.['2024年个人联通控制力'] || ''),
+          '2024年个人PageRank': String(item?.['2024年个人PageRank'] || ''),
+          '2025年角色承担': String(item?.['2025年角色承担'] || ''),
+          '2025年目标生态占个人总活跃量比值': toSafeNumber(
+            item?.['2025年目标生态占个人总活跃量比值']
+          ),
+          '2025年个人代码贡献量': toSafeNumber(item?.['2025年个人代码贡献量']),
+          '2025年个人Issue贡献量': toSafeNumber(
+            item?.['2025年个人Issue贡献量']
+          ),
+          '2025年个人社区核心度': String(item?.['2025年个人社区核心度'] || ''),
+          '2025年个人协作影响力': String(item?.['2025年个人协作影响力'] || ''),
+          '2025年个人联通控制力': String(item?.['2025年个人联通控制力'] || ''),
+          '2025年个人PageRank': String(item?.['2025年个人PageRank'] || ''),
+        };
+
+        return participantAcc;
+      },
+      {}
+    );
+
+    acc[ecosystemName] = {
+      '2024-2025组织代码贡献总量': toSafeNumber(
+        meta['2024-2025组织代码贡献总量']
+      ),
+      '2024-2025组织Issue贡献总量': toSafeNumber(
+        meta['2024-2025组织Issue贡献总量']
+      ),
+      '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
+        meta['2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'] ||
+          ''
+      ),
+      '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
+        meta['2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'] ||
+          ''
+      ),
+      人员参与项目清单: participants,
+    };
+
+    return acc;
+  }, {});
+
+  return {
+    [organizationId]: organizationData,
+  };
+};
+
 const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
   ecosystem,
   organizationId,
@@ -111,23 +193,71 @@ const ParticipantDetails: React.FC<ParticipantDetailsProps> = ({
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
         const mappedEcosystem =
           PROJECT_NAME_MAP[ecosystem.toLowerCase()] || ecosystem;
-        const response = await fetch(
+        const jsonResponse = await fetch(
           `/test/intelligent-analysis-new/${mappedEcosystem}/${organizationId
             .replace(':', '_')
             .replaceAll(' ', '_')}.json`
         );
-        console.log(
-          `/test/intelligent-analysis-new/${mappedEcosystem}/${organizationId
-            .replace(':', '_')
-            .replaceAll(' ', '_')}_main.json`
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`);
+
+        if (jsonResponse.ok) {
+          const jsonData = await jsonResponse.json();
+          setData(jsonData);
+          return;
         }
-        const jsonData = await response.json();
-        setData(jsonData);
+
+        if (jsonResponse.status !== 404) {
+          throw new Error(`Failed to fetch data: ${jsonResponse.status}`);
+        }
+
+        const response = await fetch(
+          'https://compute.lishengbao.com.cn/developer_discovery/detail_list',
+          {
+            method: 'POST',
+            headers: {
+              'X-API-Key': 'opensearch',
+              'Content-Type': 'application/json',
+              Accept: '*/*',
+            },
+            body: JSON.stringify({
+              ecosystem: mappedEcosystem,
+              developer: organizationId,
+              page: 1,
+              page_size: 1000,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          let message = `Failed to fetch data: ${response.status}`;
+          try {
+            const errJson = await response.json();
+            const maybeMessage =
+              errJson && typeof errJson.message === 'string'
+                ? errJson.message
+                : '';
+            if (maybeMessage) {
+              message = maybeMessage;
+            }
+          } catch {}
+          throw new Error(message);
+        }
+
+        const rawData = await response.json();
+
+        if (rawData?.status && rawData.status !== 'success') {
+          throw new Error(
+            typeof rawData?.message === 'string'
+              ? rawData.message
+              : 'Request failed'
+          );
+        }
+
+        setData(
+          transformApiDataToOrganizationData(rawData?.data, organizationId)
+        );
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {

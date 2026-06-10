@@ -310,6 +310,46 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     organizations: 16137,
     folderName: 'CANN',
   },
+  {
+    slug: 'loongOpen',
+    name: 'loongOpen',
+    displayName: 'loongOpen',
+    developers: 43,
+    organizations: 6,
+    folderName: 'loongOpen',
+  },
+  {
+    slug: 'openEuler',
+    name: 'openEuler',
+    displayName: 'openEuler',
+    developers: 8194,
+    organizations: 39,
+    folderName: 'openEuler',
+  },
+  {
+    slug: 'OpenHarmony',
+    name: 'OpenHarmony',
+    displayName: 'OpenHarmony',
+    developers: 13442,
+    organizations: 52,
+    folderName: 'OpenHarmony',
+  },
+  {
+    slug: 'openKylin',
+    name: 'openKylin',
+    displayName: 'openKylin',
+    developers: 1046,
+    organizations: 21,
+    folderName: 'openKylin',
+  },
+  {
+    slug: 'opentenbase-github',
+    name: 'opentenbase-github',
+    displayName: 'opentenbase-github',
+    developers: 35,
+    organizations: 5,
+    folderName: 'opentenbase-github',
+  },
 ];
 
 // 导出便捷的映射对象
