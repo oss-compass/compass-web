@@ -346,8 +346,8 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     slug: 'opentenbase-github',
     name: 'opentenbase-github',
     displayName: 'opentenbase-github',
-    developers: 35,
-    organizations: 5,
+    developers: 61,
+    organizations: 9,
     folderName: 'opentenbase-github',
   },
 ];
